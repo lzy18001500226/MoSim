@@ -1,5 +1,3 @@
-/mcp
-
 🔌  MCP Tools
 
   • syslab
@@ -11,5 +9,4 @@ read_syslab_doc, read_syslab_skill, restart_julia, run_julia_file, search_syslab
   • sysplorer_mcp
     • Auth: Unsupported
     • Command: /home/lzy18001500226/mcp-wrappers/sysplorer_mcp.sh
-    • Tools: call_code, check_model, get_api_document, get_lib_model_document, load_library, model_manager,
-plot_manager, resources_retrieval, result_manager, session_manager, simulate_model, smart_layout, translate_model
+    • Tools: call_code, check_model, get_api_document, get_lib_model_document, load_library, model_manager, plot_manager, resources_retrieval, result_manager, session_manager, simulate_model, smart_layout, translate_model
