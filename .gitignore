@@ -1,7 +1,9 @@
 *.mp4
+*.avi
+*.mov
+*.flv
 *.zip
 *.rar
 *.7z
 *.tar
 *.tar.gz
-
