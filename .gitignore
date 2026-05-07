@@ -1,4 +1,10 @@
-﻿*.mp4
+*.mp4
+*.pdf
 *.zip
 *.rar
+*.7z
+*.tar
 *.tar.gz
+
+# Large local resource packages
+MWORKS高校星火计划资料包/
