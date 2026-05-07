@@ -1,0 +1,6 @@
+A = false
+!A
+# true
+
+
+

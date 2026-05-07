@@ -1,0 +1,160 @@
+using TySignalProcessing
+using TyPlot
+using TyMath
+using TyCommunication
+#-------------------------------1、生成随机信号-------------------------------------
+rng = MT19937ar(1234)
+y = randn(rng, 8000, 1)
+#--------------------2、对信号进行信源编码-dpcm编码-------------------------
+initcodebook = collect(-1:0.005:2)
+# 优化参数
+predictor, codebook, partition = dpcmopt(vec(y), 1, initcodebook)
+encodex, = dpcmenco(vec(y), codebook, partition, vec(predictor))
+# 十进制转二进制
+i_b = int2bit(encodex, 9)
+#--------------------3、对信号进行差错控制编码-卷积编码---------------------
+# 生成网格结构
+trellis1 = poly2trellis([5 4], [23 35 0; 0 5 13])
+#卷积编码
+codedout, = convenc(i_b, trellis1)
+#-----------------4、对信号进行bpsk、qpsk、8psk、16psk调制----------------
+myBPSK = comm_BPSKModulator()
+bpskData = step(myBPSK, codedout)
+myQPSK = comm_QPSKModulator(; BitInput=true)
+qpskData = step(myQPSK, codedout)
+my8PSK = comm_PSKModulator(; ModulationOrder=8, BitInput=true)
+pskData = step(my8PSK, codedout)
+my16PSK = comm_PSKModulator(; ModulationOrder=16, BitInput=true)
+psk16Data = step(my16PSK, codedout)
+#--------------------5、调制信号通过信噪比为10db的AWGN------------------------
+# 绘制psk、qpsk、8psk、16psk的散点图#通过AWGN后的星座图
+rxsig1 = awgn(bpskData, 12)
+figure()
+sgtitle("通过AWGN后的星座图")
+tightlayout()
+subplot(2, 2, 1)
+scatterplot(rxsig1)
+grid("on")
+title("BPSK")
+rxsig2 = awgn(qpskData, 12)
+subplot(2, 2, 2)
+scatterplot(rxsig2)
+grid("on")
+title("QPSK")
+rxsig3 = awgn(pskData, 12)
+subplot(2, 2, 3)
+scatterplot(rxsig3)
+grid("on")
+title("8PSK")
+rxsig4 = awgn(psk16Data, 12)
+subplot(2, 2, 4)
+scatterplot(rxsig4)
+grid("on")
+title("16PSK")
+tightlayout()
+# 理想星座图
+figure()
+sgtitle("理想星座图")
+tightlayout()
+subplot(2, 2, 1)
+scatterplot(bpskData)
+grid("on")
+title("BPSK")
+subplot(2, 2, 2)
+scatterplot(qpskData)
+grid("on")
+title("QPSK")
+subplot(2, 2, 3)
+scatterplot(pskData)
+grid("on")
+title("8PSK")
+subplot(2, 2, 4)
+scatterplot(psk16Data)
+grid("on")
+title("16PSK")
+tightlayout()
+#-------------------------6、对信号进行bpsk、qpsk、8psk、16psk解调-------------------------
+myBPSKD1 = comm_BPSKDemodulator()
+bpskdData1 = step(myBPSKD1, rxsig1)
+myQPSKD1 = comm_QPSKDemodulator(; BitOutput=true)
+qpskdData1 = step(myQPSKD1, rxsig2)
+my8PSKD1 = comm_PSKDemodulator(; ModulationOrder=8, BitOutput=true)
+pskdData1 = step(my8PSKD1, rxsig3)
+my16PSKD1 = comm_PSKDemodulator(; ModulationOrder=16, BitOutput=true)
+pskd16Data1 = step(my16PSKD1, rxsig4)
+# ----------------------------7、对信号进行差错控制编码-维特比译码---------------------------
+tbdepth = 16
+dataout1, = vitdec(bpskdData1, trellis1, tbdepth, "cont", "hard")
+dataout2, = vitdec(qpskdData1, trellis1, tbdepth, "cont", "hard")
+dataout3, = vitdec(pskdData1, trellis1, tbdepth, "cont", "hard")
+dataout4, = vitdec(pskd16Data1, trellis1, tbdepth, "cont", "hard")
+K = log2(trellis1.numInputSymbols)
+decDelay = Int(K * tbdepth)
+# 编码的误码率
+berCoded1 = biterr(i_b[1:(end-decDelay)], dataout1[(decDelay+1):end])
+berCoded2 = biterr(i_b[1:(end-decDelay)], dataout2[(decDelay+1):end])
+berCoded3 = biterr(i_b[1:(end-decDelay)], dataout3[(decDelay+1):end])
+berCoded4 = biterr(i_b[1:(end-decDelay)], dataout4[(decDelay+1):end])
+[berCoded1[1] berCoded2[1] berCoded3[1] berCoded4[1]]
+#--------------绘制误比特率图,分析MPSK调制解调误码率与信噪比的关系---------------
+snrmax = 20
+snrdet = 2
+ber1 = zeros(Int(snrmax / snrdet) + 1)
+ber2 = zeros(Int(snrmax / snrdet) + 1)
+ber3 = zeros(Int(snrmax / snrdet) + 1)
+ber4 = zeros(Int(snrmax / snrdet) + 1)
+snrx = [0:snrdet:snrmax;]
+figure()
+for snr in 0:snrdet:snrmax
+    # bpsk调制
+    psk2 = comm_BPSKModulator()
+    psk2_Data = step(psk2, i_b)
+    # qpsk调制
+    psk4 = comm_QPSKModulator(; BitInput=true)
+    psk4_Data = step(psk4, i_b)
+    # 8psk调制
+    psk8 = comm_PSKModulator(; ModulationOrder=8, BitInput=true)
+    psk8_Data = step(psk8, i_b)
+    # 16psk调制
+    psk16 = comm_PSKModulator(; ModulationOrder=16, BitInput=true)
+    psk16_Data = step(psk16, i_b)
+    #加噪,信噪比为snr
+    rx1 = awgn(psk2_Data, snr)
+    rx2 = awgn(psk4_Data, snr)
+    rx3 = awgn(psk8_Data, snr)
+    rx4 = awgn(psk16_Data, snr)
+    # bpsk解调
+    pskd2 = comm_BPSKDemodulator()
+    pskd2_Data = step(pskd2, rx1)
+    # qpsk解调
+    pskd4 = comm_QPSKDemodulator(; BitOutput=true)
+    pskd4_Data = step(pskd4, rx2)
+    # 8psk解调
+    pskd8 = comm_PSKDemodulator(; ModulationOrder=8, BitOutput=true)
+    pskd8_Data = step(pskd8, rx3)
+    # 16psk解调
+    pskd16 = comm_PSKDemodulator(; ModulationOrder=16, BitOutput=true)
+    pskd16_Data = step(pskd16, rx4)
+    #对比传输过程的位误差
+    (NumberError1, ErrorRate1, ErrorLoaction1) = biterr(i_b, pskd2_Data)
+    (NumberError2, ErrorRate2, ErrorLoaction2) = biterr(i_b, pskd4_Data)
+    (NumberError3, ErrorRate3, ErrorLoaction3) = biterr(i_b, pskd8_Data)
+    (NumberError4, ErrorRate4, ErrorLoaction4) = biterr(i_b, pskd16_Data)
+    ber1[Int(snr / snrdet)+1] = ErrorRate1
+    ber2[Int(snr / snrdet)+1] = ErrorRate2
+    ber3[Int(snr / snrdet)+1] = ErrorRate3
+    ber4[Int(snr / snrdet)+1] = ErrorRate4
+end
+plot(snrx, ber1, "r-")
+hold("on")
+grid("on")
+plot(snrx, ber2, "g--")
+plot(snrx, ber3, "b-.")
+plot(snrx, ber4, "c:")
+legend(["BPSK", "QPSK", "8PSK", "16PSK"])
+axis([snrdet snrmax -0.1 0.3])
+ylabel("Bit Error Rate")
+title("Bit Error Rate")
+
+
+

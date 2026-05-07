@@ -1,0 +1,364 @@
+[2025-04-27 17:14:23] [Info] [cad_toolbox_manager.cpp] [SlotReadAndParseCad] Select file:C:/Users/TR/Desktop/齿轮案例/GearUnit.STEP
+[2025-04-27 17:14:23] [Info] [project_file_manager.cpp] [UpdateProjFileInfo] The file information of the current project has been updated.
+[2025-04-27 17:14:23] [Info] [mo_model_manager.cpp] [Init] Get modelice files package name "Default4" succeeded.
+[2025-04-27 17:14:23] [Info] [widget_occt_view.cpp] [initializeGL] OpenGL initialization successed.
+[2025-04-27 17:14:23] [Error] [widget_occt_view.cpp] [paintGL] Missing default FBO 
+[2025-04-27 17:14:33] [Info] [widget_ocaf_tree_browser.cpp] [LoadGround] Load ground succeed.
+[2025-04-27 17:14:33] [Info] [widget_ocaf_tree_browser.cpp] [LoadParts] Load parts succeed.
+[2025-04-27 17:14:33] [Info] [widget_ocaf_tree_browser.cpp] [LoadMarkers] Load markers succeed.
+[2025-04-27 17:14:33] [Info] [widget_ocaf_tree_browser.cpp] [LoadDesignPoints] Load design points succeed.
+[2025-04-27 17:14:33] [Info] [widget_ocaf_tree_browser.cpp] [LoadConnectors] Load connectors succeed.
+[2025-04-27 17:14:33] [Info] [widget_ocaf_tree_browser.cpp] [LoadJointMotions] Load joint motions succeed.
+[2025-04-27 17:14:33] [Info] [widget_ocaf_tree_browser.cpp] [LoadMaterials] Load materials succeed.
+[2025-04-27 17:14:33] [Info] [widget_ocaf_tree_browser.cpp] [LoadGravity] Load gravity succeed.
+[2025-04-27 17:14:34] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show parts succeed.
+[2025-04-27 17:14:34] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show grid succeed.
+[2025-04-27 17:14:34] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show design elements succeed.
+[2025-04-27 17:14:38] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:14:38] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:14:39] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:14:39] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:14:39] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:14:39] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:14:40] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:14:40] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:14:41] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:14:41] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:14:59] [Info] [command_group.cpp] [redo] Create empty group "Fixed"...
+[2025-04-27 17:14:59] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Fixed" succeeded.
+[2025-04-27 17:14:59] [Info] [mbs_model_data_manager.cpp] [CmdMoveParts2Group] Move parts "GearFixed_2;WormFixed;BevelGearFixed;GearFixed;" to group "Fixed".
+[2025-04-27 17:14:59] [Info] [mbs_model_data_manager.cpp] [CmdModifyEntityVisibility] Changed the visibility of "GearFixed_1".
+[2025-04-27 17:14:59] [Info] [mbs_model_data_manager.cpp] [CmdModifyEntityVisibility] Changed the visibility of "WormFixed_1".
+[2025-04-27 17:14:59] [Info] [mbs_model_data_manager.cpp] [CmdModifyEntityVisibility] Changed the visibility of "BevelGearFixed_1".
+[2025-04-27 17:14:59] [Info] [mbs_model_data_manager.cpp] [CmdModifyEntityVisibility] Changed the visibility of "GearFixed_3".
+[2025-04-27 17:14:59] [Info] [mbs_model_data_manager.cpp] [CmdModifyEntityVisibility] Changed the visibility of "Fixed".
+[2025-04-27 17:15:04] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:15:04] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:15:54] [Info] [command_group.cpp] [redo] Create empty group "First"...
+[2025-04-27 17:15:54] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "First" succeeded.
+[2025-04-27 17:15:54] [Info] [mbs_model_data_manager.cpp] [CmdMoveParts2Group] Move parts "BevelGear17X2;Axis2;STGearM2X34_M2X34;" to group "First".
+[2025-04-27 17:15:54] [Info] [mbs_model_data_manager.cpp] [CmdModifyEntityVisibility] Changed the visibility of "Axis2_1".
+[2025-04-27 17:15:54] [Info] [mbs_model_data_manager.cpp] [CmdModifyEntityVisibility] Changed the visibility of "STGearM2X34_M2X34_1".
+[2025-04-27 17:15:54] [Info] [mbs_model_data_manager.cpp] [CmdModifyEntityVisibility] Changed the visibility of "BevelGear17X2_1".
+[2025-04-27 17:15:54] [Info] [mbs_model_data_manager.cpp] [CmdModifyEntityVisibility] Changed the visibility of "First".
+[2025-04-27 17:16:20] [Info] [command_group.cpp] [redo] Create empty group "Second"...
+[2025-04-27 17:16:20] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Second" succeeded.
+[2025-04-27 17:16:20] [Info] [mbs_model_data_manager.cpp] [CmdMoveParts2Group] Move parts "Axis1;STGearM2X23_M2X23;WormGear28X2_5;" to group "Second".
+[2025-04-27 17:16:20] [Info] [mbs_model_data_manager.cpp] [CmdModifyEntityVisibility] Changed the visibility of "Axis1_1".
+[2025-04-27 17:16:20] [Info] [mbs_model_data_manager.cpp] [CmdModifyEntityVisibility] Changed the visibility of "STGearM2X23_M2X23_1".
+[2025-04-27 17:16:20] [Info] [mbs_model_data_manager.cpp] [CmdModifyEntityVisibility] Changed the visibility of "WormGear28X2_5_1".
+[2025-04-27 17:16:20] [Info] [mbs_model_data_manager.cpp] [CmdModifyEntityVisibility] Changed the visibility of "Second".
+[2025-04-27 17:16:26] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:16:26] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:16:37] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:16:37] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:16:37] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:16:37] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:16:37] [Info] [command_add_connector.cpp] [redo] Add imarker "Marker1"...
+[2025-04-27 17:16:37] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Marker1" succeeded.
+[2025-04-27 17:16:37] [Info] [command_add_connector] [redo] Add jmarker "Marker1"...
+[2025-04-27 17:16:37] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Marker1" succeeded.
+[2025-04-27 17:16:37] [Info] [command_add_connector.cpp] [redo] Add connector "Fixed1"...
+[2025-04-27 17:16:37] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Fixed1" succeeded.
+[2025-04-27 17:16:41] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:16:43] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:16:54] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:16:54] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:16:56] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:16:56] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:16:56] [Info] [command_add_connector.cpp] [redo] Add imarker "Marker2"...
+[2025-04-27 17:16:56] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Marker2" succeeded.
+[2025-04-27 17:16:56] [Info] [command_add_connector] [redo] Add jmarker "Marker2"...
+[2025-04-27 17:16:56] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Marker2" succeeded.
+[2025-04-27 17:16:56] [Info] [command_add_connector.cpp] [redo] Add connector "Revolute3"...
+[2025-04-27 17:16:56] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Revolute3" succeeded.
+[2025-04-27 17:17:03] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:17:03] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:17:03] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:17:03] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:17:03] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:17:03] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:17:06] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:17:06] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:17:08] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:17:08] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:17:08] [Info] [command_add_connector.cpp] [redo] Add imarker "Marker3"...
+[2025-04-27 17:17:08] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Marker3" succeeded.
+[2025-04-27 17:17:08] [Info] [command_add_connector] [redo] Add jmarker "Marker3"...
+[2025-04-27 17:17:08] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Marker3" succeeded.
+[2025-04-27 17:17:08] [Info] [command_add_connector.cpp] [redo] Add connector "Revolute4"...
+[2025-04-27 17:17:08] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Revolute4" succeeded.
+[2025-04-27 17:17:10] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:17:10] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:17:12] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:17:12] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:17:12] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:17:12] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:17:13] [Info] [command_add_connector.cpp] [redo] Add imarker "Marker4"...
+[2025-04-27 17:17:13] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Marker4" succeeded.
+[2025-04-27 17:17:13] [Info] [command_add_connector] [redo] Add jmarker "Marker4"...
+[2025-04-27 17:17:13] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Marker4" succeeded.
+[2025-04-27 17:17:13] [Info] [command_add_connector.cpp] [redo] Add connector "Revolute5"...
+[2025-04-27 17:17:13] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Revolute5" succeeded.
+[2025-04-27 17:17:15] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:17:15] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:17:16] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:17:16] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:17:16] [Info] [command_add_connector.cpp] [redo] Add imarker "Marker5"...
+[2025-04-27 17:17:16] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Marker5" succeeded.
+[2025-04-27 17:17:16] [Info] [command_add_connector] [redo] Add jmarker "Marker5"...
+[2025-04-27 17:17:16] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Marker5" succeeded.
+[2025-04-27 17:17:16] [Info] [command_add_connector.cpp] [redo] Add connector "Revolute6"...
+[2025-04-27 17:17:16] [Info] [mbs_model_data_manager.cpp] [CmdAddEntity] Add Entity "Revolute6" succeeded.
+[2025-04-27 17:17:19] [Info] [cad_toolbox_window.cpp] [UpdateAndSaveFile] Project has been saved for the first time.
+[2025-04-27 17:17:19] [Info] [mo_model_manager.cpp] [GetModelDxf] Create "C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Visualizers/Worm1_2_5.dxf" dxf file succeeded.
+[2025-04-27 17:17:19] [Info] [mo_model_manager.cpp] [GetModelDxf] Create "C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Visualizers/BevelGear34X2.dxf" dxf file succeeded.
+[2025-04-27 17:17:20] [Info] [mo_model_manager.cpp] [GetModelDxf] Create "C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Visualizers/Fixed.dxf" dxf file succeeded.
+[2025-04-27 17:17:20] [Info] [mo_model_manager.cpp] [GetModelDxf] Create "C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Visualizers/First.dxf" dxf file succeeded.
+[2025-04-27 17:17:20] [Info] [mo_model_manager.cpp] [GetModelDxf] Create "C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Visualizers/Second.dxf" dxf file succeeded.
+[2025-04-27 17:17:20] [Warning] [mo_model_manager.cpp] [LoadModelLibrary] TYMultibody 1.3.1 fail to load!
+[2025-04-27 17:17:20] [Info] [cad_toolbox_manager.cpp] [SlotMainWindowClosed] Close main window.
+[2025-04-27 17:20:31] [Info] [cad_toolbox_manager.cpp] [QueryGlVersionString] OpenGl Version Info: 4.6.0 - Build 32.0.101.5972
+[2025-04-27 17:20:31] [Info] [cad_toolbox_manager.cpp] [CheckOpenGlVersion] OpenGL version4.6
+[2025-04-27 17:20:31] [Info] [cad_toolbox_manager.cpp] [SlotReadAndParseCad] Reopen file:C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Cad/GearUnit.xbf
+[2025-04-27 17:20:31] [Info] [mo_model_manager.cpp] [Init] Get modelice files package name "Default4" succeeded.
+[2025-04-27 17:20:31] [Info] [widget_occt_view.cpp] [initializeGL] OpenGL initialization successed.
+[2025-04-27 17:20:31] [Error] [widget_occt_view.cpp] [paintGL] Missing default FBO 
+[2025-04-27 17:20:32] [Error] [mbs_file_reader.cpp] [ReadBodyInfo] The imported file is version V3.
+[2025-04-27 17:20:32] [Error] [mo_data_parser.cpp] [Parse] Current mo data validation failed!
+[2025-04-27 17:20:32] [Error] [data_import_task.cpp] [ParseModelica] Parse mo file "GearUnit" failed!
+[2025-04-27 17:20:32] [Warning] [cad_toolbox_manager.cpp] [SlotDisplayModelTree] Display model tree fail!
+[2025-04-27 17:20:32] [Warning] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Display 3d model fail!
+[2025-04-27 17:20:36] [Info] [cad_toolbox_manager.cpp] [SlotMainWindowClosed] Close main window.
+[2025-04-27 17:20:46] [Info] [cad_toolbox_manager.cpp] [QueryGlVersionString] OpenGl Version Info: 4.6.0 - Build 32.0.101.5972
+[2025-04-27 17:20:46] [Info] [cad_toolbox_manager.cpp] [CheckOpenGlVersion] OpenGL version4.6
+[2025-04-27 17:20:46] [Info] [cad_toolbox_manager.cpp] [SlotReadAndParseCad] Reopen file:C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Cad/GearUnit.xbf
+[2025-04-27 17:20:46] [Info] [mo_model_manager.cpp] [Init] Get modelice files package name "Default4" succeeded.
+[2025-04-27 17:20:46] [Info] [widget_occt_view.cpp] [initializeGL] OpenGL initialization successed.
+[2025-04-27 17:20:46] [Error] [widget_occt_view.cpp] [paintGL] Missing default FBO 
+[2025-04-27 17:20:46] [Error] [mbs_file_reader.cpp] [ReadBodyInfo] The imported file is version V3.
+[2025-04-27 17:20:46] [Error] [mo_data_parser.cpp] [Parse] Current mo data validation failed!
+[2025-04-27 17:20:46] [Error] [data_import_task.cpp] [ParseModelica] Parse mo file "GearUnit" failed!
+[2025-04-27 17:20:46] [Warning] [cad_toolbox_manager.cpp] [SlotDisplayModelTree] Display model tree fail!
+[2025-04-27 17:20:46] [Warning] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Display 3d model fail!
+[2025-04-27 17:20:47] [Info] [cad_toolbox_manager.cpp] [SlotMainWindowClosed] Close main window.
+[2025-04-27 17:20:57] [Info] [cad_toolbox_manager.cpp] [QueryGlVersionString] OpenGl Version Info: 4.6.0 - Build 32.0.101.5972
+[2025-04-27 17:20:57] [Info] [cad_toolbox_manager.cpp] [CheckOpenGlVersion] OpenGL version4.6
+[2025-04-27 17:20:57] [Info] [cad_toolbox_manager.cpp] [SlotReadAndParseCad] Reopen file:C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Cad/GearUnit.xbf
+[2025-04-27 17:20:57] [Info] [mo_model_manager.cpp] [Init] Get modelice files package name "Default4" succeeded.
+[2025-04-27 17:20:57] [Info] [widget_occt_view.cpp] [initializeGL] OpenGL initialization successed.
+[2025-04-27 17:20:57] [Error] [widget_occt_view.cpp] [paintGL] Missing default FBO 
+[2025-04-27 17:20:57] [Error] [mbs_file_reader.cpp] [ReadBodyInfo] The imported file is version V3.
+[2025-04-27 17:20:57] [Info] [mo_data_importer.cpp] [Import] Current modelica model key is zero.
+[2025-04-27 17:20:57] [Info] [widget_ocaf_tree_browser.cpp] [LoadGround] Load ground succeed.
+[2025-04-27 17:20:57] [Info] [widget_ocaf_tree_browser.cpp] [LoadParts] Load parts succeed.
+[2025-04-27 17:20:57] [Info] [widget_ocaf_tree_browser.cpp] [LoadMarkers] Load markers succeed.
+[2025-04-27 17:20:57] [Info] [widget_ocaf_tree_browser.cpp] [LoadDesignPoints] Load design points succeed.
+[2025-04-27 17:20:57] [Info] [widget_ocaf_tree_browser.cpp] [LoadConnectors] Load connectors succeed.
+[2025-04-27 17:20:57] [Info] [widget_ocaf_tree_browser.cpp] [LoadJointMotions] Load joint motions succeed.
+[2025-04-27 17:20:57] [Info] [widget_ocaf_tree_browser.cpp] [LoadMaterials] Load materials succeed.
+[2025-04-27 17:20:57] [Info] [widget_ocaf_tree_browser.cpp] [LoadGravity] Load gravity succeed.
+[2025-04-27 17:20:58] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show parts succeed.
+[2025-04-27 17:20:58] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show grid succeed.
+[2025-04-27 17:20:58] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show design elements succeed.
+[2025-04-27 17:21:19] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:21:20] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:21:24] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:21:24] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:21:25] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:21:26] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:21:36] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:21:36] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:21:37] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:21:37] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:21:38] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:21:38] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:21:42] [Info] [mo_model_manager.cpp] [GetModelDxf] Create "C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Visualizers/Worm1_2_5.dxf" dxf file succeeded.
+[2025-04-27 17:21:42] [Info] [mo_model_manager.cpp] [GetModelDxf] Create "C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Visualizers/BevelGear34X2.dxf" dxf file succeeded.
+[2025-04-27 17:21:42] [Info] [mo_model_manager.cpp] [GetModelDxf] Create "C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Visualizers/Fixed.dxf" dxf file succeeded.
+[2025-04-27 17:21:42] [Info] [mo_model_manager.cpp] [GetModelDxf] Create "C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Visualizers/First.dxf" dxf file succeeded.
+[2025-04-27 17:21:42] [Info] [mo_model_manager.cpp] [GetModelDxf] Create "C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Visualizers/Second.dxf" dxf file succeeded.
+[2025-04-27 17:21:43] [Warning] [mo_incremental_updater.cpp] [ExcuteUpdate] Current mo key is zero.
+[2025-04-27 17:21:43] [Warning] [mo_model_manager.cpp] [LoadModelLibrary] TYMultibody 1.3.1 fail to load!
+[2025-04-27 17:21:43] [Info] [cad_toolbox_manager.cpp] [OpenMoFile] Unload "C:/Users/TR/Documents/MWORKS/Default4/package.mo" succeeded.
+[2025-04-27 17:21:43] [Info] [cad_toolbox_manager.cpp] [SlotMainWindowClosed] Close main window.
+[2025-04-27 17:26:20] [Info] [cad_toolbox_manager.cpp] [QueryGlVersionString] OpenGl Version Info: 4.6.0 - Build 32.0.101.5972
+[2025-04-27 17:26:20] [Info] [cad_toolbox_manager.cpp] [CheckOpenGlVersion] OpenGL version4.6
+[2025-04-27 17:26:20] [Info] [cad_toolbox_manager.cpp] [SlotReadAndParseCad] Reopen file:C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Cad/GearUnit.xbf
+[2025-04-27 17:26:20] [Info] [mo_model_manager.cpp] [Init] Get modelice files package name "Default4" succeeded.
+[2025-04-27 17:26:20] [Info] [widget_occt_view.cpp] [initializeGL] OpenGL initialization successed.
+[2025-04-27 17:26:20] [Error] [widget_occt_view.cpp] [paintGL] Missing default FBO 
+[2025-04-27 17:26:20] [Error] [mbs_file_reader.cpp] [ReadBodyInfo] The imported file is version V3.
+[2025-04-27 17:26:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadGround] Load ground succeed.
+[2025-04-27 17:26:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadParts] Load parts succeed.
+[2025-04-27 17:26:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadMarkers] Load markers succeed.
+[2025-04-27 17:26:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadDesignPoints] Load design points succeed.
+[2025-04-27 17:26:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadConnectors] Load connectors succeed.
+[2025-04-27 17:26:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadJointMotions] Load joint motions succeed.
+[2025-04-27 17:26:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadMaterials] Load materials succeed.
+[2025-04-27 17:26:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadGravity] Load gravity succeed.
+[2025-04-27 17:26:21] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show parts succeed.
+[2025-04-27 17:26:21] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show grid succeed.
+[2025-04-27 17:26:21] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show design elements succeed.
+[2025-04-27 17:26:23] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:26:23] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:26:25] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:26:26] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:26:28] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:26:28] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:26:32] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:26:32] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:26:40] [Info] [cad_toolbox_manager.cpp] [SlotMainWindowClosed] Close main window.
+[2025-04-27 17:30:31] [Info] [cad_toolbox_manager.cpp] [QueryGlVersionString] OpenGl Version Info: 4.6.0 - Build 32.0.101.5972
+[2025-04-27 17:30:31] [Info] [cad_toolbox_manager.cpp] [CheckOpenGlVersion] OpenGL version4.6
+[2025-04-27 17:30:31] [Info] [cad_toolbox_manager.cpp] [SlotReadAndParseCad] Reopen file:C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Cad/GearUnit.xbf
+[2025-04-27 17:30:31] [Info] [mo_model_manager.cpp] [Init] Get modelice files package name "Default4" succeeded.
+[2025-04-27 17:30:31] [Info] [widget_occt_view.cpp] [initializeGL] OpenGL initialization successed.
+[2025-04-27 17:30:31] [Error] [widget_occt_view.cpp] [paintGL] Missing default FBO 
+[2025-04-27 17:30:32] [Error] [mbs_file_reader.cpp] [ReadBodyInfo] The imported file is version V3.
+[2025-04-27 17:30:32] [Info] [widget_ocaf_tree_browser.cpp] [LoadGround] Load ground succeed.
+[2025-04-27 17:30:32] [Info] [widget_ocaf_tree_browser.cpp] [LoadParts] Load parts succeed.
+[2025-04-27 17:30:32] [Info] [widget_ocaf_tree_browser.cpp] [LoadMarkers] Load markers succeed.
+[2025-04-27 17:30:32] [Info] [widget_ocaf_tree_browser.cpp] [LoadDesignPoints] Load design points succeed.
+[2025-04-27 17:30:32] [Info] [widget_ocaf_tree_browser.cpp] [LoadConnectors] Load connectors succeed.
+[2025-04-27 17:30:32] [Info] [widget_ocaf_tree_browser.cpp] [LoadJointMotions] Load joint motions succeed.
+[2025-04-27 17:30:32] [Info] [widget_ocaf_tree_browser.cpp] [LoadMaterials] Load materials succeed.
+[2025-04-27 17:30:32] [Info] [widget_ocaf_tree_browser.cpp] [LoadGravity] Load gravity succeed.
+[2025-04-27 17:30:32] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show parts succeed.
+[2025-04-27 17:30:32] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show grid succeed.
+[2025-04-27 17:30:32] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show design elements succeed.
+[2025-04-27 17:30:50] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:30:50] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:30:59] [Info] [cad_toolbox_manager.cpp] [SlotMainWindowClosed] Close main window.
+[2025-04-27 17:32:22] [Info] [cad_toolbox_manager.cpp] [QueryGlVersionString] OpenGl Version Info: 4.6.0 - Build 32.0.101.5972
+[2025-04-27 17:32:22] [Info] [cad_toolbox_manager.cpp] [CheckOpenGlVersion] OpenGL version4.6
+[2025-04-27 17:32:22] [Info] [cad_toolbox_manager.cpp] [SlotReadAndParseCad] Reopen file:C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Cad/GearUnit.xbf
+[2025-04-27 17:32:22] [Info] [mo_model_manager.cpp] [Init] Get modelice files package name "Default4" succeeded.
+[2025-04-27 17:32:22] [Info] [widget_occt_view.cpp] [initializeGL] OpenGL initialization successed.
+[2025-04-27 17:32:22] [Error] [widget_occt_view.cpp] [paintGL] Missing default FBO 
+[2025-04-27 17:32:22] [Error] [mbs_file_reader.cpp] [ReadBodyInfo] The imported file is version V3.
+[2025-04-27 17:32:22] [Info] [widget_ocaf_tree_browser.cpp] [LoadGround] Load ground succeed.
+[2025-04-27 17:32:22] [Info] [widget_ocaf_tree_browser.cpp] [LoadParts] Load parts succeed.
+[2025-04-27 17:32:22] [Info] [widget_ocaf_tree_browser.cpp] [LoadMarkers] Load markers succeed.
+[2025-04-27 17:32:22] [Info] [widget_ocaf_tree_browser.cpp] [LoadDesignPoints] Load design points succeed.
+[2025-04-27 17:32:22] [Info] [widget_ocaf_tree_browser.cpp] [LoadConnectors] Load connectors succeed.
+[2025-04-27 17:32:22] [Info] [widget_ocaf_tree_browser.cpp] [LoadJointMotions] Load joint motions succeed.
+[2025-04-27 17:32:22] [Info] [widget_ocaf_tree_browser.cpp] [LoadMaterials] Load materials succeed.
+[2025-04-27 17:32:22] [Info] [widget_ocaf_tree_browser.cpp] [LoadGravity] Load gravity succeed.
+[2025-04-27 17:32:23] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show parts succeed.
+[2025-04-27 17:32:23] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show grid succeed.
+[2025-04-27 17:32:23] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show design elements succeed.
+[2025-04-27 17:32:35] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:32:36] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:32:38] [Info] [cad_toolbox_manager.cpp] [SlotMainWindowClosed] Close main window.
+[2025-04-27 17:40:20] [Info] [cad_toolbox_manager.cpp] [QueryGlVersionString] OpenGl Version Info: 4.6.0 - Build 32.0.101.5972
+[2025-04-27 17:40:20] [Info] [cad_toolbox_manager.cpp] [CheckOpenGlVersion] OpenGL version4.6
+[2025-04-27 17:40:20] [Info] [cad_toolbox_manager.cpp] [SlotReadAndParseCad] Reopen file:C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Cad/GearUnit.xbf
+[2025-04-27 17:40:20] [Info] [mo_model_manager.cpp] [Init] Get modelice files package name "Default4" succeeded.
+[2025-04-27 17:40:20] [Info] [widget_occt_view.cpp] [initializeGL] OpenGL initialization successed.
+[2025-04-27 17:40:20] [Error] [widget_occt_view.cpp] [paintGL] Missing default FBO 
+[2025-04-27 17:40:20] [Error] [mbs_file_reader.cpp] [ReadBodyInfo] The imported file is version V3.
+[2025-04-27 17:40:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadGround] Load ground succeed.
+[2025-04-27 17:40:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadParts] Load parts succeed.
+[2025-04-27 17:40:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadMarkers] Load markers succeed.
+[2025-04-27 17:40:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadDesignPoints] Load design points succeed.
+[2025-04-27 17:40:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadConnectors] Load connectors succeed.
+[2025-04-27 17:40:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadJointMotions] Load joint motions succeed.
+[2025-04-27 17:40:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadMaterials] Load materials succeed.
+[2025-04-27 17:40:20] [Info] [widget_ocaf_tree_browser.cpp] [LoadGravity] Load gravity succeed.
+[2025-04-27 17:40:21] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show parts succeed.
+[2025-04-27 17:40:21] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show grid succeed.
+[2025-04-27 17:40:21] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show design elements succeed.
+[2025-04-27 17:40:23] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:40:25] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:40:27] [Info] [cad_toolbox_manager.cpp] [SlotMainWindowClosed] Close main window.
+[2025-04-27 17:40:41] [Info] [cad_toolbox_manager.cpp] [QueryGlVersionString] OpenGl Version Info: 4.6.0 - Build 32.0.101.5972
+[2025-04-27 17:40:41] [Info] [cad_toolbox_manager.cpp] [CheckOpenGlVersion] OpenGL version4.6
+[2025-04-27 17:40:41] [Info] [cad_toolbox_manager.cpp] [SlotReadAndParseCad] Reopen file:C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Cad/GearUnit.xbf
+[2025-04-27 17:40:41] [Info] [mo_model_manager.cpp] [Init] Get modelice files package name "Default4" succeeded.
+[2025-04-27 17:40:42] [Info] [widget_occt_view.cpp] [initializeGL] OpenGL initialization successed.
+[2025-04-27 17:40:42] [Error] [widget_occt_view.cpp] [paintGL] Missing default FBO 
+[2025-04-27 17:40:42] [Error] [mbs_file_reader.cpp] [ReadBodyInfo] The imported file is version V3.
+[2025-04-27 17:40:42] [Info] [widget_ocaf_tree_browser.cpp] [LoadGround] Load ground succeed.
+[2025-04-27 17:40:42] [Info] [widget_ocaf_tree_browser.cpp] [LoadParts] Load parts succeed.
+[2025-04-27 17:40:42] [Info] [widget_ocaf_tree_browser.cpp] [LoadMarkers] Load markers succeed.
+[2025-04-27 17:40:42] [Info] [widget_ocaf_tree_browser.cpp] [LoadDesignPoints] Load design points succeed.
+[2025-04-27 17:40:42] [Info] [widget_ocaf_tree_browser.cpp] [LoadConnectors] Load connectors succeed.
+[2025-04-27 17:40:42] [Info] [widget_ocaf_tree_browser.cpp] [LoadJointMotions] Load joint motions succeed.
+[2025-04-27 17:40:42] [Info] [widget_ocaf_tree_browser.cpp] [LoadMaterials] Load materials succeed.
+[2025-04-27 17:40:42] [Info] [widget_ocaf_tree_browser.cpp] [LoadGravity] Load gravity succeed.
+[2025-04-27 17:40:43] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show parts succeed.
+[2025-04-27 17:40:43] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show grid succeed.
+[2025-04-27 17:40:43] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show design elements succeed.
+[2025-04-27 17:40:45] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:40:45] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:40:52] [Info] [cad_toolbox_manager.cpp] [SlotMainWindowClosed] Close main window.
+[2025-04-27 17:42:03] [Info] [cad_toolbox_manager.cpp] [QueryGlVersionString] OpenGl Version Info: 4.6.0 - Build 32.0.101.5972
+[2025-04-27 17:42:03] [Info] [cad_toolbox_manager.cpp] [CheckOpenGlVersion] OpenGL version4.6
+[2025-04-27 17:42:03] [Info] [cad_toolbox_manager.cpp] [SlotReadAndParseCad] Reopen file:C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Cad/GearUnit.xbf
+[2025-04-27 17:42:03] [Info] [mo_model_manager.cpp] [Init] Get modelice files package name "Default4" succeeded.
+[2025-04-27 17:42:03] [Info] [widget_occt_view.cpp] [initializeGL] OpenGL initialization successed.
+[2025-04-27 17:42:03] [Error] [widget_occt_view.cpp] [paintGL] Missing default FBO 
+[2025-04-27 17:42:03] [Error] [mbs_file_reader.cpp] [ReadBodyInfo] The imported file is version V3.
+[2025-04-27 17:42:03] [Info] [widget_ocaf_tree_browser.cpp] [LoadGround] Load ground succeed.
+[2025-04-27 17:42:03] [Info] [widget_ocaf_tree_browser.cpp] [LoadParts] Load parts succeed.
+[2025-04-27 17:42:03] [Info] [widget_ocaf_tree_browser.cpp] [LoadMarkers] Load markers succeed.
+[2025-04-27 17:42:03] [Info] [widget_ocaf_tree_browser.cpp] [LoadDesignPoints] Load design points succeed.
+[2025-04-27 17:42:03] [Info] [widget_ocaf_tree_browser.cpp] [LoadConnectors] Load connectors succeed.
+[2025-04-27 17:42:03] [Info] [widget_ocaf_tree_browser.cpp] [LoadJointMotions] Load joint motions succeed.
+[2025-04-27 17:42:03] [Info] [widget_ocaf_tree_browser.cpp] [LoadMaterials] Load materials succeed.
+[2025-04-27 17:42:03] [Info] [widget_ocaf_tree_browser.cpp] [LoadGravity] Load gravity succeed.
+[2025-04-27 17:42:04] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show parts succeed.
+[2025-04-27 17:42:04] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show grid succeed.
+[2025-04-27 17:42:04] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show design elements succeed.
+[2025-04-27 17:42:07] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:42:07] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:42:13] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:42:13] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:42:14] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-27 17:42:14] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-27 17:42:24] [Info] [cad_toolbox_manager.cpp] [SlotMainWindowClosed] Close main window.
+[2025-04-28 10:39:37] [Info] [cad_toolbox_manager.cpp] [SlotReadAndParseCad] Reopen file:C:/Users/TR/Documents/MWORKS/Default4/GearUnit/Cad/GearUnit.xbf
+[2025-04-28 10:39:37] [Info] [mo_model_manager.cpp] [Init] Get modelice files package name "Default4" succeeded.
+[2025-04-28 10:39:37] [Info] [widget_occt_view.cpp] [initializeGL] OpenGL initialization successed.
+[2025-04-28 10:39:37] [Error] [widget_occt_view.cpp] [paintGL] Missing default FBO 
+[2025-04-28 10:39:38] [Error] [mbs_file_reader.cpp] [ReadBodyInfo] The imported file is version V3.
+[2025-04-28 10:39:38] [Info] [widget_ocaf_tree_browser.cpp] [LoadGround] Load ground succeed.
+[2025-04-28 10:39:38] [Info] [widget_ocaf_tree_browser.cpp] [LoadParts] Load parts succeed.
+[2025-04-28 10:39:38] [Info] [widget_ocaf_tree_browser.cpp] [LoadMarkers] Load markers succeed.
+[2025-04-28 10:39:38] [Info] [widget_ocaf_tree_browser.cpp] [LoadDesignPoints] Load design points succeed.
+[2025-04-28 10:39:38] [Info] [widget_ocaf_tree_browser.cpp] [LoadConnectors] Load connectors succeed.
+[2025-04-28 10:39:38] [Info] [widget_ocaf_tree_browser.cpp] [LoadJointMotions] Load joint motions succeed.
+[2025-04-28 10:39:38] [Info] [widget_ocaf_tree_browser.cpp] [LoadMaterials] Load materials succeed.
+[2025-04-28 10:39:38] [Info] [widget_ocaf_tree_browser.cpp] [LoadGravity] Load gravity succeed.
+[2025-04-28 10:39:39] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show parts succeed.
+[2025-04-28 10:39:39] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show grid succeed.
+[2025-04-28 10:39:39] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show design elements succeed.
+[2025-04-28 10:39:41] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-28 10:39:42] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-28 10:39:42] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-28 10:39:42] [Debug] [controller_doc.cpp] [HandleMouseButtonPress] 
+[2025-04-28 10:39:43] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-28 10:39:43] [Debug] [controller_doc.cpp] [HandleMouseButtonRelease] 
+[2025-04-28 11:16:58] [Info] [cad_toolbox_manager.cpp] [SlotInitEnvironment] Restore environment succeed.
+[2025-04-28 11:32:32] [Info] [cad_toolbox_manager.cpp] [SlotMainWindowClosed] Close main window.
+[2025-04-28 11:32:45] [Info] [cad_toolbox_manager.cpp] [QueryGlVersionString] OpenGl Version Info: 4.6.0 - Build 32.0.101.5972
+[2025-04-28 11:32:45] [Info] [cad_toolbox_manager.cpp] [CheckOpenGlVersion] OpenGL version4.6
+[2025-05-08 08:41:23] [Info] [cad_toolbox_manager.cpp] [SlotReadAndParseCad] Reopen file:D:/03-生态组事务/05-生态工作/2025/5月7号直播/Default5/GearUnit/Cad/GearUnit.xbf
+[2025-05-08 08:41:23] [Info] [mo_model_manager.cpp] [Init] Get modelice files package name "Default5" succeeded.
+[2025-05-08 08:41:23] [Info] [widget_occt_view.cpp] [initializeGL] OpenGL initialization successed.
+[2025-05-08 08:41:24] [Error] [widget_occt_view.cpp] [paintGL] Missing default FBO 
+[2025-05-08 08:41:26] [Error] [mbs_file_reader.cpp] [ReadBodyInfo] The imported file is version V3.
+[2025-05-08 08:41:26] [Info] [widget_ocaf_tree_browser.cpp] [LoadGround] Load ground succeed.
+[2025-05-08 08:41:26] [Info] [widget_ocaf_tree_browser.cpp] [LoadParts] Load parts succeed.
+[2025-05-08 08:41:26] [Info] [widget_ocaf_tree_browser.cpp] [LoadMarkers] Load markers succeed.
+[2025-05-08 08:41:26] [Info] [widget_ocaf_tree_browser.cpp] [LoadDesignPoints] Load design points succeed.
+[2025-05-08 08:41:26] [Info] [widget_ocaf_tree_browser.cpp] [LoadConnectors] Load connectors succeed.
+[2025-05-08 08:41:26] [Info] [widget_ocaf_tree_browser.cpp] [LoadJointMotions] Load joint motions succeed.
+[2025-05-08 08:41:26] [Info] [widget_ocaf_tree_browser.cpp] [LoadMaterials] Load materials succeed.
+[2025-05-08 08:41:26] [Info] [widget_ocaf_tree_browser.cpp] [LoadGravity] Load gravity succeed.
+[2025-05-08 08:41:27] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show parts succeed.
+[2025-05-08 08:41:27] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show grid succeed.
+[2025-05-08 08:41:27] [Info] [cad_toolbox_manager.cpp] [SlotDisplayModel3D] Create and show design elements succeed.
+[2025-05-08 08:41:30] [Info] [cad_toolbox_manager.cpp] [SlotMainWindowClosed] Close main window.
+[2025-05-08 08:41:50] [Info] [cad_toolbox_manager.cpp] [SlotInitEnvironment] Restore environment succeed.
