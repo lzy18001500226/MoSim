@@ -33,7 +33,7 @@
 | 05_路径规划与轨迹生成.md | 多种规划算法、轨迹平滑、动态可行性 |
 | 06_多机编队控制.md | 多机编队、队形切换、机间避碰 |
 | 07_场景扰动与测试矩阵.md | 场景库、扰动库、测试矩阵 |
-| 08_仿真指标与自动评估.md | 仿真流程、指标体系、图表设计、MCP 自动化评估 |
+| 08_仿真指标与自动评估.md | 仿真流程、指标体系、图表设计、Codex/MCP 自动化评估 |
 
 ## 推荐实现优先级
 
@@ -41,9 +41,35 @@
 P0：官方 PID baseline + 改进 PID + 数据导出 + 指标计算 + 三维回放素材
 P1-A：MPC/NMPC-INDI-L1 主控制链路 + 扰动识别 + 模式切换
 P1-B：Safety Filter + 电机故障注入 + 容错/降级策略
-P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP/批量评估
+P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP 批量评估
 P3：完整局部重规划、RL、完整 ROS/EGO-Planner 移植，作为展望
 ```
+
+## Codex/MCP 自动化入口
+
+当前已接入两组 MCP：
+
+```text
+syslab:
+  evaluate_julia_code / run_julia_file / read_syslab_doc / search_syslab_docs
+
+sysplorer_mcp:
+  session_manager / model_manager / check_model / simulate_model / result_manager / plot_manager
+```
+
+Codex 后续实现和验证时优先按以下顺序操作：
+
+```text
+查文档
+→ 打开/检查模型
+→ 运行仿真
+→ 读取结果
+→ 执行 Julia 指标脚本
+→ 生成 figures/summary/replay
+→ 记录 mcp_log.json
+```
+
+详细工具职责、调用模板和日志格式见 `08_仿真指标与自动评估.md` 第 17 节。
 
 ## 最小可交付闭环
 
