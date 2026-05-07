@@ -39,7 +39,8 @@
 
 ```text
 P0：官方 PID baseline + 改进 PID + 数据导出 + 指标计算 + 三维回放素材
-P1：MPC/NMPC-INDI-L1 主控制链路 + 扰动识别 + Safety/Fault + 模式切换
+P1-A：MPC/NMPC-INDI-L1 主控制链路 + 扰动识别 + 模式切换
+P1-B：Safety Filter + 电机故障注入 + 容错/降级策略
 P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP/批量评估
 P3：完整局部重规划、RL、完整 ROS/EGO-Planner 移植，作为展望
 ```
@@ -86,10 +87,20 @@ P3：完整局部重规划、RL、完整 ROS/EGO-Planner 移植，作为展望
 |---|---|
 | 0:00-0:30 | 项目概述 |
 | 0:30-1:10 | 架构和主线 |
-| 1:10-2:00 | 官方 PID 问题 |
-| 2:00-3:00 | 改进控制器效果 |
-| 3:00-3:50 | 风扰/质量变化鲁棒性 |
-| 3:50-4:40 | 故障或安全过滤 |
-| 4:40-5:30 | 路径规划或多机编队 |
-| 5:30-6:20 | 自动指标和图表 |
+| 1:10-2:00 | baseline vs improved/MPC-INDI 对比 |
+| 2:00-2:50 | 风扰走廊：模式切换 + 扰动补偿 |
+| 2:50-3:40 | 物流投递：质量变化 + 自适应补偿 |
+| 3:40-4:30 | 电机故障：容错重构 + 降级返航 |
+| 4:30-5:25 | 障碍规划/编队切换：可跟踪规划 + 三维回放 |
+| 5:25-6:20 | 自动指标、健康度评分和图表 |
 | 6:20-7:00 | 创新点总结 |
+
+## 五个王牌展示场景
+
+| 场景 | 核心看点 | 关键证据 |
+|---|---|---|
+| baseline_vs_mpc_indi | 官方 PID 与优化控制器对比 | RMSE、最大误差、3D 轨迹 |
+| wind_corridor | 风扰识别、模式切换、补偿恢复 | controller_mode、disturbance_hat、recovery_time |
+| delivery_mass_change | 投递导致质量突变后的自适应 | event_log、steady_error、质量变化前后误差 |
+| motor_fault_return | 电机效率下降后的容错和降级返航 | eta、fault_type、return_or_land_status |
+| obstacle_formation_replay | 可跟踪规划、队形切换、三维回放 | trackability_score、min_inter_uav_distance、replay.json |
