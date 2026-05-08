@@ -49,6 +49,19 @@ docs/mworks/
     └── script_building.md
 ```
 
+Current generated scan outputs:
+
+| Topic | File | Notes |
+|---|---|---|
+| MWORKS scan entry | `docs/mworks/README.md` | Entry point for scanned local resource package |
+| Scan summary | `docs/mworks/scan/scan_summary.md` | Relevant file counts and next steps |
+| Ranked relevant index | `docs/mworks/scan/relevant_index.md` | Top project-related files from the resource package |
+| Machine-readable index | `docs/mworks/scan/relevant_files.csv` | CSV for later filtering and scripts |
+| Sysplorer modeling category | `docs/mworks/scan/categories/sysplorer_modeling.md` | Sysplorer, Modelica, modeling examples |
+| Syslab analysis category | `docs/mworks/scan/categories/syslab_analysis.md` | Syslab, Julia, control analysis and plotting |
+| UAV/challenge category | `docs/mworks/scan/categories/quadrotor_uav.md` | Intelligent unmanned system challenge materials |
+| Extracted snippets | `docs/mworks/extracted/` | Markdown snippets converted from text-like source files |
+
 ---
 
 ## 4. MCP Docs
