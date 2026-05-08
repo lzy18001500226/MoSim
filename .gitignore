@@ -26,6 +26,7 @@ npm-debug.log*
 # Codex local state
 .codex/
 .mcp.json
+.tmp/
 
 # Logs and temp
 *.log

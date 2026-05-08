@@ -128,10 +128,14 @@ def xy_chart(title: str, data: dict[str, list[float]]) -> str:
 
 
 def bar_chart(title: str, metrics: dict[str, float | str | bool]) -> str:
+    def metric_float(name: str) -> float:
+        value = metrics.get(name, math.nan)
+        return float(value) if value is not None else math.nan
+
     items = [
-        ("RMSE / m", float(metrics.get("position_rmse_m", math.nan))),
-        ("Max error / m", float(metrics.get("max_position_error_m", math.nan))),
-        ("Steady error / m", float(metrics.get("steady_state_error_m", math.nan))),
+        ("RMSE / m", metric_float("position_rmse_m")),
+        ("Max error / m", metric_float("max_position_error_m")),
+        ("Steady error / m", metric_float("steady_state_error_m")),
     ]
     width, height = 760, 480
     left, right, top, bottom = 92, 36, 64, 94

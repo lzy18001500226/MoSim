@@ -145,6 +145,23 @@ python3 scripts/calc_metrics.py \
   pid_baseline
 ```
 
+指标输出包含：
+
+```text
+position_rmse_m
+max_position_error_m
+steady_state_error_m
+settling_time_s
+overshoot_x_pct / overshoot_y_pct / overshoot_z_pct / overshoot_max_pct
+roll_rmse_rad / pitch_rmse_rad / yaw_rmse_rad / max_tilt_rad
+minimum_altitude_m
+constraint_violation_count
+control_energy
+control_smoothness
+saturation_ratio
+tracking_score / robustness_score / safety_score / energy_score / smoothness_score / fault_tolerance_score / total_health_score
+```
+
 生成 SVG 图表：
 
 ```bash
@@ -171,6 +188,7 @@ figure_manifest.md
 ```bash
 python3 scripts/qa_check.py
 python3 scripts/check_reference_outputs.py
+python3 tests/test_metrics.py
 python3 -m py_compile scripts/*.py
 git diff --check
 ```
