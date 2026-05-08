@@ -13,6 +13,7 @@ validate MWORKS models.
 from __future__ import annotations
 
 from pathlib import Path
+import csv
 import os
 import subprocess
 import sys
@@ -73,6 +74,12 @@ OFFICIAL_SCENARIOS = [
     "scenarios/official/example3_pid_baseline.yaml",
 ]
 
+OFFICIAL_FULL_RESULT_EXPECTATIONS = {
+    "results/raw/official_example1_pid_baseline.csv": 50.0,
+    "results/raw/official_example2_pid_baseline.csv": 50.0,
+    "results/raw/official_example3_pid_baseline.csv": 120.0,
+}
+
 OFFICIAL_REFERENCE_OUTPUTS = [
     "results/raw/reference_official_example1.csv",
     "results/raw/reference_official_example2.csv",
@@ -83,6 +90,12 @@ OFFICIAL_REFERENCE_OUTPUTS = [
     "results/replay_html/reference_official_example1.html",
     "results/replay_html/reference_official_example2.html",
     "results/replay_html/reference_official_example3.html",
+]
+
+SMOKE_RESULT_OUTPUTS = [
+    "results/raw/smoke_official_example1_pid_baseline.csv",
+    "results/metrics/smoke_official_example1_pid_baseline.json",
+    "results/metrics/smoke_official_example1_pid_baseline.csv",
 ]
 
 OFFICIAL_RESULT_VARIABLE_CANDIDATES = [
@@ -253,6 +266,28 @@ def check_official_case(root: Path) -> bool:
     for item in OFFICIAL_REFERENCE_OUTPUTS:
         ok = check_path(root / item, required=True) and ok
 
+    print("\n== Smoke result evidence ==")
+    for item in SMOKE_RESULT_OUTPUTS:
+        ok = check_path(root / item, required=True) and ok
+
+    print("\n== Full baseline result guard ==")
+    for item, min_duration_s in OFFICIAL_FULL_RESULT_EXPECTATIONS.items():
+        path = root / item
+        if not path.exists():
+            print(f"[OK] Full baseline not present yet: {path}")
+            continue
+        try:
+            duration_s = read_csv_duration(path)
+        except Exception as exc:
+            print(f"[FAIL] Cannot read duration from {path}: {exc}")
+            ok = False
+            continue
+        if duration_s + 1e-9 >= min_duration_s:
+            print(f"[OK] Full baseline duration {duration_s:.3f}s: {path}")
+        else:
+            print(f"[FAIL] {path} duration {duration_s:.3f}s is shorter than expected {min_duration_s:.3f}s")
+            ok = False
+
     mapping_path = root / "docs" / "index" / "variable_mapping.md"
     if mapping_path.exists():
         mapping_text = mapping_path.read_text(encoding="utf-8", errors="replace")
@@ -264,6 +299,26 @@ def check_official_case(root: Path) -> bool:
                 ok = False
 
     return ok
+
+
+def read_csv_duration(path: Path) -> float:
+    with path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        if not reader.fieldnames or "time" not in reader.fieldnames:
+            raise ValueError("missing time column")
+        first_time = None
+        last_time = None
+        for row in reader:
+            value = row.get("time", "")
+            if value == "":
+                continue
+            current = float(value)
+            if first_time is None:
+                first_time = current
+            last_time = current
+        if first_time is None or last_time is None:
+            raise ValueError("no time samples")
+        return last_time - first_time
 
 
 def main() -> int:

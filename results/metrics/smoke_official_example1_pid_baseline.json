@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-05-08T21:31:21",
-  "raw_file": "results/raw/official_example1_pid_baseline.csv",
-  "scene_id": "official_example1",
+  "raw_file": "results/raw/smoke_official_example1_pid_baseline.csv",
+  "scene_id": "smoke_official_example1",
   "controller_id": "pid_baseline",
   "row_count": 101,
   "duration_s": 1.0,

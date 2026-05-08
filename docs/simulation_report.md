@@ -1,5 +1,7 @@
 # 仿真分析报告
 
+> 当前 `results/raw/smoke_official_example1_pid_baseline.csv` 仅为 0-1 s smoke 数据，用于验证 MCP 结果读取、CSV 导出和指标计算链路。完整官方 baseline 必须重新运行 `scenarios/official/*.yaml` 中的完整仿真时长后再写入结论。
+
 本文档用于汇总算法设计、实验场景、指标结果和结论。当前为骨架版本，后续由批量实验结果和报告图表逐步填充。
 
 ## 1. 算法主线
@@ -48,4 +50,3 @@ results/metrics/
 results/figures/
 mcp_log.json
 ```
-
