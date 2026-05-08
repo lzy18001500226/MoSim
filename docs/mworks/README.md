@@ -1,6 +1,6 @@
 # MWORKS 资料库索引
 
-本目录用于存放从 `references/MWORKS高校星火计划资料包/` 中筛选、索引和转换出来的项目相关资料，供 Codex/Agent 后续查询。
+本目录用于存放从 MWORKS 官方资料包中筛选、索引和转换出来的项目相关资料，供 Codex/Agent 后续查询。当前项目运行和 Agent 查询以本目录的 Markdown 索引与转换结果为准，不再依赖原始资料包。
 
 ## 主要入口
 
@@ -30,7 +30,7 @@ Codex 查询资料时优先顺序：
 3. docs/mworks/scan/categories/*.md
 4. docs/mworks/converted/转换索引.md
 5. docs/mworks/converted/**/*.md
-6. `references/MWORKS高校星火计划资料包/` 中的原始 PDF 或模型文件
+6. 如转换结果不足，再临时补充对应官方原始 PDF 或 MCP 官方文档
 ```
 
 ## PDF 说明

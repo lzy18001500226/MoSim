@@ -1,6 +1,6 @@
 # MWORKS 资料扫描摘要
 
-- Source: `MWORKS高校星火计划资料包`
+- Source: promoted MWORKS official materials; raw package removed after conversion
 - Total relevant files: `220`
 - Extracted markdown files: `0`
 

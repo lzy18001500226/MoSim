@@ -5,8 +5,9 @@ Basic project QA check for the A8 quadrotor control project.
 Usage:
     python scripts/qa_check.py
 
-This script checks the project entry points, key documents, source package
-location, and MCP wrapper scripts. It does not validate MWORKS models.
+This script checks the project entry points, key documents, converted MWORKS
+knowledge base, official quadrotor case, and MCP wrapper scripts. It does not
+validate MWORKS models.
 """
 
 from __future__ import annotations
@@ -22,7 +23,7 @@ REQUIRED_DIRS = [
     "docs",
     "docs/index",
     "docs/mworks/converted",
-    "references/MWORKS高校星火计划资料包",
+    "QuadrotorModel",
     "workflows",
 ]
 
@@ -61,11 +62,15 @@ RECOMMENDED_DOCS = [
 WRAPPER_SCRIPTS = {
     "syslab_mcp.sh": [
         "~/mcp-wrappers/syslab_mcp.sh",
-        "/home/lzy18001500226/mcp-wrappers/syslab_mcp.sh",
+        "/home/linux/mcp-wrappers/syslab_mcp.sh",
     ],
     "sysplorer_mcp.sh": [
         "~/mcp-wrappers/sysplorer_mcp.sh",
-        "/home/lzy18001500226/mcp-wrappers/sysplorer_mcp.sh",
+        "/home/linux/mcp-wrappers/sysplorer_mcp.sh",
+    ],
+    "filesystem_mcp.sh": [
+        "~/mcp-wrappers/filesystem_mcp.sh",
+        "/home/linux/mcp-wrappers/filesystem_mcp.sh",
     ],
 }
 

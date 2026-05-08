@@ -33,7 +33,7 @@ import subprocess
 from typing import Iterable
 
 
-DEFAULT_SOURCE = Path("references/MWORKS高校星火计划资料包")
+DEFAULT_SOURCE = Path("MWORKS高校星火计划资料包")
 DEFAULT_OUTPUT = Path("docs/mworks")
 
 TEXT_EXTS = {

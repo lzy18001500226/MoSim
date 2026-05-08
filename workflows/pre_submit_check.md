@@ -83,7 +83,7 @@ scripts/
 docs/
 docs/index/
 docs/mworks/converted/
-references/MWORKS高校星火计划资料包/
+QuadrotorModel/
 workflows/
 ```
 

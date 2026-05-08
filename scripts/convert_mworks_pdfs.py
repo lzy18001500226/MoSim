@@ -32,7 +32,7 @@ import time
 import fitz  # type: ignore[import-not-found]
 
 
-SOURCE_ROOT = Path("references/MWORKS高校星火计划资料包")
+SOURCE_ROOT = Path("MWORKS高校星火计划资料包")
 OUTPUT_ROOT = Path("docs/mworks/converted")
 TMP_ROOT = Path("docs/mworks/tmp/mineru")
 MINERU_BASE_URL = "https://mineru.net/api/v4"

@@ -129,14 +129,13 @@ A8-Quadrotor-Control/
 │   └── smoke/
 ├── results/
 │   └── test_reports/
-└── references/
-    └── MWORKS高校星火计划资料包/
 ```
 
 Create `models/`, `results/raw/`, `results/metrics/`, `results/figures/`, or
 `docs/figures/` only when there is actual content to store. The raw official
-MWORKS package lives under `references/MWORKS高校星火计划资料包/`; scripts should
-use that path by default.
+MWORKS package is not required after the useful documents have been promoted to
+`docs/mworks/converted/`; use a temporary `--source` path only when rescanning
+new official materials.
 
 ---
 
@@ -164,7 +163,7 @@ The Codex `/mcp` command should show the following MCP servers.
 
 ```text
 syslab
-  Command: /home/lzy18001500226/mcp-wrappers/syslab_mcp.sh
+  Command: /home/linux/mcp-wrappers/syslab_mcp.sh
   Auth: Unsupported
   Tools:
     detect_syslab_toolboxes
@@ -178,7 +177,7 @@ syslab
     search_syslab_docs
 
 sysplorer_mcp
-  Command: /home/lzy18001500226/mcp-wrappers/sysplorer_mcp.sh
+  Command: /home/linux/mcp-wrappers/sysplorer_mcp.sh
   Auth: Unsupported
   Tools:
     call_code
@@ -196,7 +195,7 @@ sysplorer_mcp
     translate_model
 
 filesystem
-  Command: /home/lzy18001500226/mcp-wrappers/filesystem_mcp.sh
+  Command: /home/linux/mcp-wrappers/filesystem_mcp.sh
   Auth: Unsupported
   Tools:
     create_directory
@@ -600,8 +599,8 @@ Codex runs inside WSL/Linux, while MWORKS.Sysplorer and MWORKS.Syslab are instal
 To avoid Windows path parsing problems, this project uses WSL wrapper scripts:
 
 ```text
-/home/lzy18001500226/mcp-wrappers/syslab_mcp.sh
-/home/lzy18001500226/mcp-wrappers/sysplorer_mcp.sh
+/home/linux/mcp-wrappers/syslab_mcp.sh
+/home/linux/mcp-wrappers/sysplorer_mcp.sh
 ```
 
 Configuration principle:
@@ -623,13 +622,13 @@ Use wrapper scripts instead:
 
 ```toml
 [mcp_servers.syslab]
-command = "/home/lzy18001500226/mcp-wrappers/syslab_mcp.sh"
+command = "/home/linux/mcp-wrappers/syslab_mcp.sh"
 args = []
 startup_timeout_sec = 180
 tool_timeout_sec = 300
 
 [mcp_servers.sysplorer_mcp]
-command = "/home/lzy18001500226/mcp-wrappers/sysplorer_mcp.sh"
+command = "/home/linux/mcp-wrappers/sysplorer_mcp.sh"
 args = []
 startup_timeout_sec = 180
 tool_timeout_sec = 300
@@ -706,7 +705,7 @@ git:
   uvx mcp-server-git --repository /mnt/c/Users/HP/Desktop/Quadrotor
 
 filesystem:
-  /home/lzy18001500226/mcp-wrappers/filesystem_mcp.sh
+  /home/linux/mcp-wrappers/filesystem_mcp.sh
 
 mineru:
   uvx mineru-open-mcp
@@ -1163,7 +1162,7 @@ scripts/
 docs/
 docs/index/
 docs/mworks/converted/
-references/MWORKS高校星火计划资料包/
+QuadrotorModel/
 workflows/
 ```
 
