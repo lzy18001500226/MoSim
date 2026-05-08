@@ -28,6 +28,12 @@ roll, pitch, yaw
 u1, u2, u3, u4
 ```
 
+Official model candidate names are maintained in:
+
+```text
+docs/index/variable_mapping.md
+```
+
 ---
 
 ## 3. MCP Tools
@@ -52,10 +58,12 @@ resources_retrieval
 
 1. Open the result file with `result_manager`.
 2. List available variables.
-3. Match model-specific variable names to standard project names.
-4. Read time series for required variables.
-5. Save project-standard CSV under `results/raw/`.
-6. Save variable mapping if non-obvious.
+3. Query `docs/index/variable_mapping.md` candidate names first.
+4. Match model-specific variable names to standard project names.
+5. If a candidate is missing, list available variables and update the mapping.
+6. Read time series for required variables.
+7. Save project-standard CSV under `results/raw/`.
+8. Save variable mapping if non-obvious.
 
 ---
 
@@ -67,11 +75,11 @@ Example:
 
 | Standard Name | Model Result Variable |
 |---|---|
-| `x` | `quadrotor.body.r_0[1]` |
-| `y` | `quadrotor.body.r_0[2]` |
-| `z` | `quadrotor.body.r_0[3]` |
-| `roll` | `quadrotor.attitude.roll` |
-| `u1` | `controller.motorCmd[1]` |
+| `x` | `sensors1_1.PosMea[1]` |
+| `y` | `sensors1_1.PosMea[2]` |
+| `z` | `sensors1_1.PosMea[3]` |
+| `roll` | `sensors1_1.AngleMea[1]` |
+| `u1` | `controller3_2.y` |
 
 Save mappings to:
 

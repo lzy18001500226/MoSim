@@ -53,8 +53,10 @@ RECOMMENDED_DOCS = [
     "docs/simulation_report.md",
     "docs/index/doc_index.md",
     "docs/index/api_index.md",
+    "docs/index/variable_mapping.md",
     "docs/index/workflow_index.md",
     "workflows/run_simulation.md",
+    "workflows/read_results.md",
     "workflows/calc_metrics.md",
     "workflows/pre_submit_check.md",
 ]
@@ -81,6 +83,17 @@ OFFICIAL_REFERENCE_OUTPUTS = [
     "results/replay_html/reference_official_example1.html",
     "results/replay_html/reference_official_example2.html",
     "results/replay_html/reference_official_example3.html",
+]
+
+OFFICIAL_RESULT_VARIABLE_CANDIDATES = [
+    "sensors1_1.PosMea",
+    "sensors1_1.AngleMea",
+    "climbePath.position_command",
+    "controller3_2.y",
+    "controller3_2.y1",
+    "controller3_2.y2",
+    "controller3_2.y3",
+    "speedSensor[4]",
 ]
 
 WRAPPER_SCRIPTS = {
@@ -239,6 +252,16 @@ def check_official_case(root: Path) -> bool:
 
     for item in OFFICIAL_REFERENCE_OUTPUTS:
         ok = check_path(root / item, required=True) and ok
+
+    mapping_path = root / "docs" / "index" / "variable_mapping.md"
+    if mapping_path.exists():
+        mapping_text = mapping_path.read_text(encoding="utf-8", errors="replace")
+        for item in OFFICIAL_RESULT_VARIABLE_CANDIDATES:
+            if item in mapping_text:
+                print(f"[OK] Result mapping candidate documented: {item}")
+            else:
+                print(f"[FAIL] Result mapping candidate missing from docs: {item}")
+                ok = False
 
     return ok
 
