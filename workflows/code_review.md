@@ -13,7 +13,7 @@ controllers/
 planners/
 scenarios/
 scripts/
-models/
+QuadrotorModel/
 docs/
 workflows/
 tests/

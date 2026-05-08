@@ -44,7 +44,7 @@ Recommended config format:
 experiment_id: figure8_pid_baseline_001
 scene_id: figure8
 controller_id: pid_baseline
-model_name: Quadrotor.Examples.Figure8_PID
+model_name: QuadrotorModel.Examples.Example3
 start_time: 0
 stop_time: 30
 step_size: 0.01

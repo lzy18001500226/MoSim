@@ -66,8 +66,13 @@ Use local scripts:
 
 ```text
 scripts/calc_metrics.jl
+scripts/calc_metrics.py
 scripts/plot_results.jl
 ```
+
+Prefer `scripts/calc_metrics.jl` when Syslab/Julia is available. If local WSL
+does not provide `julia`, use `scripts/calc_metrics.py` as the fallback so the
+automation can still produce `results/metrics/*.json` and `*.csv`.
 
 ---
 

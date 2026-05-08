@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-05-08T21:30:20",
+  "raw_file": "results/raw/official_example1_pid_baseline.csv",
+  "scene_id": "official_example1",
+  "controller_id": "pid_baseline",
+  "row_count": 101,
+  "duration_s": 1.0,
+  "position_rmse_m": 0.9779591521275217,
+  "x_rmse_m": 2.5459991144761275e-13,
+  "y_rmse_m": 2.1145057973877107e-13,
+  "z_rmse_m": 0.9779591521275217,
+  "max_position_error_m": 1.3694021270177918,
+  "steady_state_error_m": 0.8737184287305172,
+  "control_energy": NaN,
+  "saturation_ratio": NaN,
+  "nan_count": 0,
+  "valid": true
+}

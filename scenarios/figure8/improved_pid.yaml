@@ -5,7 +5,7 @@ priority: P0
 
 model:
   source_package: QuadrotorModel
-  model_name: Quadrotor.Examples.Figure8_PID
+  model_name: QuadrotorModel.Examples.Example3
   model_path_hint: QuadrotorModel/package.mo
 
 simulation:
@@ -28,4 +28,3 @@ result:
   raw_file: results/raw/figure8_improved_pid.csv
   metrics_file: results/metrics/figure8_improved_pid.json
   figure_dir: results/figures/figure8_improved_pid
-
