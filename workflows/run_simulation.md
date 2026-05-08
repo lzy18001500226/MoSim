@@ -295,6 +295,33 @@ If direct CSV export is unavailable, save the native result file and document th
 
 ---
 
+### Step 8.1: Reference/Replay Fallback
+
+If MWORKS or Sysplorer MCP is unavailable, do not fabricate simulated states.
+Instead, generate only the official reference trajectory and replay scaffold:
+
+```bash
+python3 scripts/generate_reference.py --scene all
+```
+
+Outputs:
+
+```text
+results/raw/reference_official_example1.csv
+results/raw/reference_official_example2.csv
+results/raw/reference_official_example3.csv
+results/replay/reference_official_example1.json
+results/replay/reference_official_example2.json
+results/replay/reference_official_example3.json
+```
+
+These files are valid for P0 trajectory inspection and video/replay pipeline
+development. They are not a substitute for controller simulation metrics; once
+Sysplorer simulation results are available, export measured `x,y,z` and compute
+metrics against the reference columns.
+
+---
+
 ## 5. Output Requirements
 
 For every successful simulation, create:
