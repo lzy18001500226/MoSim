@@ -77,12 +77,14 @@ RECOMMENDED_SCRIPTS = [
     "scripts/generate_replay_html.py",
     "scripts/summarize_experiments.py",
     "scripts/generate_planning_reference.py",
+    "scripts/generate_formation_reference.py",
 ]
 
 RECOMMENDED_TESTS = [
     "tests/test_metrics.py",
     "tests/test_summary.py",
     "tests/test_planning_reference.py",
+    "tests/test_formation_reference.py",
 ]
 
 OFFICIAL_MODELS = [
@@ -166,6 +168,13 @@ PLANNING_OUTPUTS = [
     "results/metrics/trackability_planning_trackable_waypoint.json",
     "results/replay/planning_trackable_waypoint.json",
     "results/replay_html/planning_trackable_waypoint.html",
+]
+
+FORMATION_OUTPUTS = [
+    "results/raw/reference_formation_triangle_switch.csv",
+    "results/metrics/formation_triangle_switch.json",
+    "results/replay/formation_triangle_switch.json",
+    "results/replay_html/formation_triangle_switch.html",
 ]
 
 OFFICIAL_RESULT_VARIABLE_CANDIDATES = [
@@ -539,6 +548,10 @@ def check_official_case(root: Path) -> bool:
 
     print("\n== Planning reference evidence ==")
     for item in PLANNING_OUTPUTS:
+        ok = check_path(root / item, required=True) and ok
+
+    print("\n== Formation reference evidence ==")
+    for item in FORMATION_OUTPUTS:
         ok = check_path(root / item, required=True) and ok
 
     print("\n== Full baseline result guard ==")

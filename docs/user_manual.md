@@ -218,7 +218,29 @@ results/replay_html/planning_trackable_waypoint.html
 
 `trackability` 报告包含速度、加速度、jerk、倾角、预测饱和比例和 `final_trackability_score`。脚本会在动态约束超限时自动放大分段时间，直到满足阈值或达到最大迭代次数。
 
-## 9. 提交前检查
+## 9. 编队参考轨迹
+
+生成三机 Leader-Follower 编队参考：
+
+```bash
+python3 scripts/generate_formation_reference.py
+python3 scripts/generate_replay_html.py \
+  results/replay/formation_triangle_switch.json \
+  results/replay_html/formation_triangle_switch.html
+```
+
+输出：
+
+```text
+results/raw/reference_formation_triangle_switch.csv
+results/metrics/formation_triangle_switch.json
+results/replay/formation_triangle_switch.json
+results/replay_html/formation_triangle_switch.html
+```
+
+编队指标包含 `formation_error_rmse`、`formation_error_max`、`minimum_inter_uav_distance`、`formation_mode_switch_count`、`switching_time_s` 和 `formation_score`。当前脚本生成三角形到一字形再恢复三角形的三机参考轨迹，用于后续多机仿真或视频回放。
+
+## 10. 提交前检查
 
 提交前运行：
 
@@ -228,6 +250,7 @@ python3 scripts/check_reference_outputs.py
 python3 tests/test_metrics.py
 python3 tests/test_summary.py
 python3 tests/test_planning_reference.py
+python3 tests/test_formation_reference.py
 python3 -m py_compile scripts/*.py
 git diff --check
 ```

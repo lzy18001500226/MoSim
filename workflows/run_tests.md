@@ -45,6 +45,7 @@ scripts/qa_check.py
 python3 tests/test_metrics.py
 python3 tests/test_summary.py
 python3 tests/test_planning_reference.py
+python3 tests/test_formation_reference.py
 ```
 
 Optional script tests when Julia/Syslab is available:
