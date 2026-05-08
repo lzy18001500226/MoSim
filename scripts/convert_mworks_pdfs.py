@@ -26,6 +26,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import time
 
 import fitz  # type: ignore[import-not-found]
@@ -196,20 +197,174 @@ def request_json(url: str, *, token: str, method: str = "GET", data: dict | None
 
 
 def upload_file(upload_url: str, source: Path, timeout: int = 300) -> None:
-    req = request.Request(upload_url, data=source.read_bytes(), method="PUT")
+    failures: list[str] = []
     try:
-        with request.urlopen(req, timeout=timeout) as resp:
-            if resp.status != 200:
-                raise RuntimeError(f"upload failed with HTTP {resp.status}")
-    except error.HTTPError as exc:
-        detail = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"HTTP {exc.code} during upload: {detail}") from exc
+        import requests  # type: ignore[import-not-found]
+
+        for attempt in range(1, 4):
+            try:
+                with source.open("rb") as f:
+                    resp = requests.put(upload_url, data=f, timeout=timeout)
+                if resp.status_code == 200:
+                    return
+                failures.append(f"requests attempt {attempt}: HTTP {resp.status_code}: {resp.text[:400]}")
+            except Exception as exc:
+                failures.append(f"requests attempt {attempt}: {exc}")
+            time.sleep(min(2 * attempt, 6))
+    except Exception as exc:
+        failures.append(f"requests unavailable: {exc}")
+
+    powershell = shutil.which("powershell.exe")
+    source_win = to_windows_path(source) if powershell else None
+    if powershell and source_win:
+        command = (
+            "$ErrorActionPreference='Stop'; & curl.exe --fail --silent --show-error "
+            "--retry 3 --retry-delay 2 -X PUT -T "
+            f"{powershell_single_quote(source_win)} {powershell_single_quote(upload_url)}"
+        )
+        result = subprocess.run(
+            [
+                powershell,
+                "-NoProfile",
+                "-Command",
+                command,
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            errors="replace",
+            timeout=timeout,
+            check=False,
+        )
+        if result.returncode == 0:
+            return
+        failures.append(f"windows curl fallback: {result.stderr.strip() or result.stdout.strip() or result.returncode}")
+
+    for attempt in range(1, 4):
+        req = request.Request(upload_url, data=source.read_bytes(), method="PUT")
+        try:
+            with request.urlopen(req, timeout=timeout) as resp:
+                if resp.status == 200:
+                    return
+                failures.append(f"urllib attempt {attempt}: HTTP {resp.status}")
+        except error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")
+            failures.append(f"urllib attempt {attempt}: HTTP {exc.code}: {detail}")
+        except Exception as exc:
+            failures.append(f"urllib attempt {attempt}: {exc}")
+        time.sleep(min(2 * attempt, 6))
+
+    curl = shutil.which("curl")
+    if curl:
+        result = subprocess.run(
+            [curl, "--fail", "--silent", "--show-error", "--retry", "3", "--retry-delay", "2", "-X", "PUT", "-T", str(source), upload_url],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            errors="replace",
+            timeout=timeout,
+            check=False,
+        )
+        if result.returncode == 0:
+            return
+        failures.append(f"curl fallback: {result.stderr.strip() or result.stdout.strip() or result.returncode}")
+
+    raise RuntimeError("MinerU upload failed; " + " | ".join(failures))
+
+
+def to_windows_path(path: Path) -> str | None:
+    wslpath = shutil.which("wslpath")
+    if not wslpath:
+        return None
+    result = subprocess.run(
+        [wslpath, "-w", str(path)],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return None
+    return result.stdout.strip()
+
+
+def powershell_single_quote(text: str) -> str:
+    return "'" + text.replace("'", "''") + "'"
 
 
 def download_file(url: str, output: Path, timeout: int = 300) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
-    with request.urlopen(url, timeout=timeout) as resp:
-        output.write_bytes(resp.read())
+    failures: list[str] = []
+    for attempt in range(1, 4):
+        try:
+            with request.urlopen(url, timeout=timeout) as resp:
+                output.write_bytes(resp.read())
+                return
+        except error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")
+            failures.append(f"urllib attempt {attempt}: HTTP {exc.code}: {detail}")
+        except Exception as exc:
+            failures.append(f"urllib attempt {attempt}: {exc}")
+        time.sleep(min(2 * attempt, 6))
+
+    curl = shutil.which("curl")
+    if curl:
+        result = subprocess.run(
+            [curl, "--fail", "--silent", "--show-error", "--location", "--retry", "3", "--retry-delay", "2", "-o", str(output), url],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            errors="replace",
+            timeout=timeout,
+            check=False,
+        )
+        if result.returncode == 0 and output.exists() and output.stat().st_size > 0:
+            return
+        failures.append(f"curl fallback: {result.stderr.strip() or result.stdout.strip() or result.returncode}")
+
+    powershell = shutil.which("powershell.exe")
+    output_win = to_windows_path(output) if powershell else None
+    if powershell and output_win:
+        command = (
+            "$ErrorActionPreference='Stop'; Invoke-WebRequest -Uri "
+            f"{powershell_single_quote(url)} -OutFile {powershell_single_quote(output_win)}"
+        )
+        result = subprocess.run(
+            [
+                powershell,
+                "-NoProfile",
+                "-Command",
+                command,
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            errors="replace",
+            timeout=timeout,
+            check=False,
+        )
+        if result.returncode == 0 and output.exists() and output.stat().st_size > 0:
+            return
+        failures.append(f"powershell fallback: {result.stderr.strip() or result.stdout.strip() or result.returncode}")
+
+    raise RuntimeError("MinerU result download failed; " + " | ".join(failures))
+
+
+def write_mineru_result_log(target: PdfTarget, batch_id: str, data_id: str, result_item: dict) -> Path:
+    TMP_ROOT.mkdir(parents=True, exist_ok=True)
+    log_path = TMP_ROOT / "last_result.json"
+    payload = {
+        "source": target.source,
+        "output_name": target.output_name,
+        "batch_id": batch_id,
+        "data_id": data_id,
+        "state": result_item.get("state"),
+        "full_zip_url": result_item.get("full_zip_url"),
+        "err_msg": result_item.get("err_msg", ""),
+        "saved_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+    }
+    log_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return log_path
 
 
 def find_full_markdown(extract_dir: Path) -> Path | None:
@@ -328,6 +483,10 @@ def write_markdown_with_mineru(
 
     if not result_item or not result_item.get("full_zip_url"):
         raise RuntimeError(f"MinerU did not return full_zip_url for {source.name}")
+
+    log_path = write_mineru_result_log(target, batch_id, data_id, result_item)
+    print(f"MinerU result URL: {result_item['full_zip_url']}")
+    print(f"MinerU result log: {log_path}")
 
     work_dir = TMP_ROOT / data_id
     if work_dir.exists():
