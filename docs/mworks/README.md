@@ -35,9 +35,9 @@ Codex 查询资料时优先顺序：
 
 ## PDF 说明
 
-已将第一批 P0/P1/P2 高价值 PDF 转换到 `docs/mworks/converted/`。当前转换批次优先尝试 MinerU MCP，但当前网络到 MinerU 服务出现 SSL EOF/disconnect，因此正式落盘内容采用本地 PyMuPDF 文本提取兜底。
+已将第一批 P0/P1/P2 高价值 PDF 转换到 `docs/mworks/converted/`。当前 15 份目标文档均已通过 MinerU 精准解析生成 Markdown，并同步保存各自的 `_images/` 图片目录。
 
-转换结果可用于关键词检索、流程定位和 Agent 实现参考，但以下内容仍需结合原 PDF 或 MCP 官方文档复核：
+转换结果可用于关键词检索、流程定位、截图查看和 Agent 实现参考，但以下内容仍需结合原 PDF 或 MCP 官方文档复核：
 
 - API 名称、函数参数和命令大小写；
 - 公式、表格、代码块；
@@ -65,7 +65,13 @@ uv run --with pymupdf python scripts/convert_mworks_pdfs.py --method pymupdf
 使用 MinerU 精准解析逐个转换重点 PDF：
 
 ```bash
-uv run --with pymupdf python scripts/convert_mworks_pdfs.py --method mineru --priority P0 --limit 1
+uv run --with pymupdf --with requests python scripts/convert_mworks_pdfs.py --method mineru --priority P0
 ```
 
-MinerU 转换只从环境变量 `MINERU_API_TOKEN` 读取 Token，不要把 Token 写入仓库文件。
+MinerU 转换只从环境变量 `MINERU_API_TOKEN` 读取 Token，不要把 Token 写入仓库文件。若下载结果 zip 失败，可加：
+
+```bash
+--continue-on-download-error
+```
+
+脚本会把 URL 写入 `docs/mworks/tmp/mineru/pending_downloads.md`，后续可手动下载后用 `--import-mineru-result` 导入。

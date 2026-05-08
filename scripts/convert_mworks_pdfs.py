@@ -375,6 +375,83 @@ def find_full_markdown(extract_dir: Path) -> Path | None:
     return candidates[0] if candidates else None
 
 
+def promote_mineru_markdown(
+    target: PdfTarget,
+    *,
+    source: Path,
+    extract_dir: Path,
+    batch_id: str,
+) -> dict[str, str]:
+    output = OUTPUT_ROOT / target.topic / target.output_name
+    output.parent.mkdir(parents=True, exist_ok=True)
+    full_md = find_full_markdown(extract_dir)
+    if full_md is None:
+        raise RuntimeError(f"MinerU result has no Markdown file for {source.name}")
+
+    image_source = full_md.parent / "images"
+    image_dir_name = f"{output.stem}_images"
+    image_output = output.parent / image_dir_name
+    body = full_md.read_text(encoding="utf-8", errors="replace").strip()
+    if image_source.exists():
+        if image_output.exists():
+            shutil.rmtree(image_output)
+        shutil.copytree(image_source, image_output)
+        body = body.replace("](images/", f"]({image_dir_name}/")
+        body = body.replace('src="images/', f'src="{image_dir_name}/')
+        body = body.replace("src='images/", f"src='{image_dir_name}/")
+
+    digest = hashlib.sha1(source.read_bytes()).hexdigest()[:12]
+    title = target.output_name.removesuffix(".md")
+    image_count = len(list(image_output.glob("*"))) if image_output.exists() else 0
+    output.write_text(
+        "\n".join(
+            [
+                f"# {title}",
+                "",
+                f"- Source: `{source.as_posix()}`",
+                "- Converted by: `MinerU precise API`",
+                f"- Conversion date: `{date.today().isoformat()}`",
+                "- Review status: `MinerU converted; spot check recommended`",
+                f"- Priority: `{target.priority}`",
+                f"- Source SHA1: `{digest}`",
+                f"- MinerU batch id: `{batch_id}`",
+                f"- Images: `{image_count}`",
+                f"- Notes: {target.note}",
+                "",
+                body,
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    return {
+        "source": target.source,
+        "output": output.as_posix(),
+        "status": "mineru_converted",
+        "pages": "-",
+        "images": str(image_count),
+    }
+
+
+def inspect_existing_result(target: PdfTarget) -> dict[str, str]:
+    output = OUTPUT_ROOT / target.topic / target.output_name
+    if not output.exists():
+        return {"source": target.source, "output": output.as_posix(), "status": "missing", "pages": "-"}
+    text = output.read_text(encoding="utf-8", errors="ignore")
+    result = {"source": target.source, "output": output.as_posix(), "status": "converted", "pages": "-", "images": "-"}
+    if "Converted by: `MinerU precise API`" in text:
+        result["status"] = "mineru_converted"
+        image_dir = output.parent / f"{output.stem}_images"
+        if image_dir.exists():
+            result["images"] = str(len([p for p in image_dir.iterdir() if p.is_file()]))
+    elif "Converted by: `local PyMuPDF fallback`" in text:
+        result["status"] = "converted"
+        match = re.search(r"- Pages: `([^`]+)`", text)
+        if match:
+            result["pages"] = match.group(1)
+    return result
+
+
 def write_markdown(target: PdfTarget) -> dict[str, str]:
     source = SOURCE_ROOT / target.source
     output = OUTPUT_ROOT / target.topic / target.output_name
@@ -436,6 +513,7 @@ def write_markdown_with_mineru(
     poll_interval: int,
     timeout_seconds: int,
     force: bool,
+    continue_on_download_error: bool,
 ) -> dict[str, str]:
     source = SOURCE_ROOT / target.source
     output = OUTPUT_ROOT / target.topic / target.output_name
@@ -493,38 +571,23 @@ def write_markdown_with_mineru(
         shutil.rmtree(work_dir)
     work_dir.mkdir(parents=True, exist_ok=True)
     zip_path = work_dir / "result.zip"
-    download_file(result_item["full_zip_url"], zip_path)
+    try:
+        download_file(result_item["full_zip_url"], zip_path)
+    except Exception as exc:
+        if continue_on_download_error:
+            return {
+                "source": target.source,
+                "output": output.as_posix(),
+                "status": "mineru_url_ready",
+                "pages": "-",
+                "full_zip_url": result_item["full_zip_url"],
+                "error": str(exc),
+            }
+        raise
     extract_dir = work_dir / "unzipped"
     with ZipFile(zip_path) as zf:
         zf.extractall(extract_dir)
-    full_md = find_full_markdown(extract_dir)
-    if full_md is None:
-        raise RuntimeError(f"MinerU result has no Markdown file for {source.name}")
-
-    digest = hashlib.sha1(source.read_bytes()).hexdigest()[:12]
-    body = full_md.read_text(encoding="utf-8", errors="replace").strip()
-    title = target.output_name.removesuffix(".md")
-    output.write_text(
-        "\n".join(
-            [
-                f"# {title}",
-                "",
-                f"- Source: `{source.as_posix()}`",
-                "- Converted by: `MinerU precise API`",
-                f"- Conversion date: `{date.today().isoformat()}`",
-                "- Review status: `MinerU converted; spot check recommended`",
-                f"- Priority: `{target.priority}`",
-                f"- Source SHA1: `{digest}`",
-                f"- MinerU batch id: `{batch_id}`",
-                f"- Notes: {target.note}",
-                "",
-                body,
-                "",
-            ]
-        ),
-        encoding="utf-8",
-    )
-    return {"source": target.source, "output": output.as_posix(), "status": "mineru_converted", "pages": "-"}
+    return promote_mineru_markdown(target, source=source, extract_dir=extract_dir, batch_id=batch_id)
 
 
 def write_index(results: list[dict[str, str]], method: str) -> None:
@@ -537,13 +600,13 @@ def write_index(results: list[dict[str, str]], method: str) -> None:
         f"- Current converter: `{method}`",
         "- Review note: 重要 API、公式、表格和代码块仍需结合 MCP 官方文档或原 PDF 复核。",
         "",
-        "| Status | Topic | Pages | Markdown | Source |",
-        "|---|---|---:|---|---|",
+        "| Status | Topic | Pages | Images | Markdown | Source | Result URL |",
+        "|---|---|---:|---:|---|---|---|",
     ]
     by_output = {r["output"]: r for r in results}
     for target in TARGETS:
         output = (OUTPUT_ROOT / target.topic / target.output_name).as_posix()
-        result = by_output.get(output, {})
+        result = by_output.get(output) or inspect_existing_result(target)
         lines.append(
             "| "
             + " | ".join(
@@ -551,13 +614,46 @@ def write_index(results: list[dict[str, str]], method: str) -> None:
                     result.get("status", "unknown"),
                     target.topic,
                     result.get("pages", "-"),
+                    result.get("images", "-"),
                     f"`{output}`",
                     f"`{target.source}`",
+                    result.get("full_zip_url", "-"),
                 ]
             )
             + " |"
         )
     index_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_pending_downloads(results: list[dict[str, str]]) -> None:
+    pending = [r for r in results if r.get("status") == "mineru_url_ready"]
+    if not pending:
+        return
+    TMP_ROOT.mkdir(parents=True, exist_ok=True)
+    path = TMP_ROOT / "pending_downloads.md"
+    lines = [
+        "# MinerU Pending Downloads",
+        "",
+        f"Generated: `{time.strftime('%Y-%m-%d %H:%M:%S')}`",
+        "",
+        "| Source | Output | URL | Error |",
+        "|---|---|---|---|",
+    ]
+    for item in pending:
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    item.get("source", "-"),
+                    item.get("output", "-"),
+                    item.get("full_zip_url", "-"),
+                    item.get("error", "-").replace("|", "\\|").replace("\n", " ")[:500],
+                ]
+            )
+            + " |"
+        )
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"Pending MinerU downloads: {path}")
 
 
 def parse_args() -> argparse.Namespace:
@@ -569,6 +665,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--poll-interval", type=int, default=10)
     parser.add_argument("--timeout-seconds", type=int, default=1800)
     parser.add_argument("--force", action="store_true", help="Overwrite existing MinerU-converted files.")
+    parser.add_argument(
+        "--continue-on-download-error",
+        action="store_true",
+        help="Record MinerU result URLs and continue if downloading result zip fails.",
+    )
+    parser.add_argument(
+        "--import-mineru-result",
+        type=Path,
+        help="Import a manually downloaded MinerU result zip or extracted directory for the first selected target.",
+    )
     return parser.parse_args()
 
 
@@ -586,7 +692,28 @@ def main() -> int:
     args = parse_args()
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
     targets = select_targets(args)
-    if args.method == "mineru":
+    method_label = args.method
+    if args.import_mineru_result:
+        method_label = "manual_mineru_import"
+        if not targets:
+            raise SystemExit("No target selected for --import-mineru-result.")
+        target = targets[0]
+        source = SOURCE_ROOT / target.source
+        import_path = args.import_mineru_result
+        if not import_path.exists():
+            raise SystemExit(f"MinerU result path not found: {import_path}")
+        work_dir = TMP_ROOT / f"manual_import_{safe_stem(target.output_name)}"
+        if work_dir.exists():
+            shutil.rmtree(work_dir)
+        work_dir.mkdir(parents=True, exist_ok=True)
+        if import_path.is_file():
+            with ZipFile(import_path) as zf:
+                zf.extractall(work_dir)
+            extract_dir = work_dir
+        else:
+            extract_dir = import_path
+        results = [promote_mineru_markdown(target, source=source, extract_dir=extract_dir, batch_id="manual_import")]
+    elif args.method == "mineru":
         token = os.environ.get("MINERU_API_TOKEN")
         if not token:
             raise SystemExit("MINERU_API_TOKEN is not set. Set it in the environment, not in tracked files.")
@@ -601,11 +728,13 @@ def main() -> int:
                     poll_interval=args.poll_interval,
                     timeout_seconds=args.timeout_seconds,
                     force=args.force,
+                    continue_on_download_error=args.continue_on_download_error,
                 )
             )
     else:
         results = [write_markdown(target) for target in targets]
-    write_index(results, args.method)
+    write_index(results, method_label)
+    write_pending_downloads(results)
     converted = sum(1 for r in results if r["status"] in {"converted", "mineru_converted", "skipped"})
     missing = sum(1 for r in results if r["status"] == "missing")
     print(f"Processed PDFs: {converted}")
