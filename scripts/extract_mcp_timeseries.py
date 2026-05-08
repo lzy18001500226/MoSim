@@ -55,7 +55,7 @@ def write_standard_csv(series: list[list[float]], output: Path, columns: list[st
     rows = len(series[0])
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(["time", *columns])
         for index in range(rows):
             row = [index / (rows - 1) if rows > 1 else 0.0]

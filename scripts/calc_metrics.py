@@ -101,7 +101,7 @@ def write_outputs(metrics: dict[str, object], json_path: Path) -> None:
     json_path.write_text(json.dumps(metrics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     csv_path = json_path.with_suffix(".csv")
     with csv_path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(["metric", "value"])
         for key in sorted(metrics):
             writer.writerow([key, metrics[key]])

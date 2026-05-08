@@ -2,7 +2,7 @@ metric,value
 control_energy,nan
 controller_id,pid_baseline
 duration_s,1.0
-generated_at,2026-05-08T21:30:20
+generated_at,2026-05-08T21:31:21
 max_position_error_m,1.3694021270177918
 nan_count,0
 position_rmse_m,0.9779591521275217
