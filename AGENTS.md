@@ -75,7 +75,109 @@ When working on this project, always follow these principles:
 
 ---
 
-## 3. Project Directory Convention
+## 3. Automation and Safety Boundary
+
+All Codex / AI-agent work in this project must follow the boundary below.
+
+### 3.1 Filesystem Boundary
+
+Before each operation, explicitly treat the following sentence as active:
+
+```text
+操作权限仅限 C:\Users\HP\Desktop\Quadrotor
+```
+
+The WSL path equivalent is:
+
+```text
+/mnt/c/Users/HP/Desktop/Quadrotor
+```
+
+Rules:
+
+1. All reads, writes, deletes, moves, searches, Git commands, tests, scripts, and MCP file operations must stay inside this project directory.
+2. Do not read or modify files under `/mnt/c/Users/HP`, `/mnt/c/Users/HP/Desktop`, `/home/linux`, `/home/lzy18001500226`, other drives, SSH folders, token files, browser profiles, or personal data directories.
+3. The only exception is when the user explicitly requests project infrastructure setup outside the repository, such as SSH authentication, MCP wrapper repair, or environment-variable verification.
+4. For exceptions, state the exact external path and reason before acting.
+5. Do not run broad destructive commands such as `rm -rf`, `git clean -fd`, or bulk file moves unless the target path is explicitly inside the project and the operation has been summarized first.
+
+### 3.2 Autonomous Execution Rule
+
+Default behavior is to continue working automatically until the requested task is complete.
+
+Do not stop only to ask whether to continue when the next step is clear. Continue through:
+
+- file inspection,
+- implementation,
+- documentation updates,
+- tests,
+- smoke simulations,
+- result checks,
+- Git status / diff review,
+- commit,
+- push when authentication is already available.
+
+Stop and ask for user intervention only when one of the following occurs:
+
+1. Credentials, tokens, SSH keys, GitHub login, VPN, or GUI permissions are required.
+2. A destructive or irreversible action is required, including history rewrite, force push, deleting untracked source materials, or resetting user changes.
+3. A command fails and the next fix could risk data loss or affect files outside the project.
+4. The task requirement is ambiguous enough that a wrong assumption would change project direction.
+5. A license, copyright, privacy, or secret-management concern appears.
+
+Waiting for a long-running command, simulation, MCP response, Git operation, or file conversion is not a reason to stop. Poll until completion or timeout, then continue.
+
+### 3.3 Git Automation Rule
+
+For normal project changes, use this workflow automatically:
+
+```text
+git status
+  → inspect relevant diff
+  → run targeted checks
+  → git add
+  → git diff --cached --check
+  → git commit
+  → git push
+```
+
+Rules:
+
+1. Commit completed, verified work without asking for a separate "continue" confirmation.
+2. Push automatically if Git authentication works.
+3. If push fails because authentication is missing, stop and report the exact command and error.
+4. Do not force push or rewrite history unless the user explicitly approves that specific action.
+5. Never commit secrets, private tokens, local credentials, or generated files larger than GitHub limits.
+6. Before commit, check for large files when binary outputs or official materials may have changed.
+
+### 3.4 MCP Minimal-Impact Rule
+
+MCP calls should be minimal, targeted, and non-disruptive.
+
+Rules:
+
+1. Prefer command-line, headless, or background MCP operations when available.
+2. Avoid opening GUI windows unless a model simulation, Sysplorer operation, or visual verification genuinely requires it.
+3. If a GUI window is opened by Sysplorer / Syslab / MCP, minimize it when possible and avoid bringing it to the foreground repeatedly.
+4. Do not use broad MCP discovery calls repeatedly when a targeted tool call is enough.
+5. After a simulation or model operation completes, close or release unnecessary MCP sessions and GUI windows when the tool supports it.
+6. Save result evidence under `results/` and documentation-ready assets under `docs/`.
+7. If MCP behavior may interrupt the user's desktop, state that risk before running the operation.
+
+### 3.5 Simulation Cleanup Rule
+
+For MWORKS simulations:
+
+1. Run `check_model` before simulation.
+2. Run the smallest simulation that validates the current change first.
+3. Read required result variables after simulation.
+4. Save logs or smoke-test evidence only when useful.
+5. Close simulation windows, plot windows, or sessions after use when the MCP tool supports it.
+6. Do not leave long-running simulations active after the task is complete.
+
+---
+
+## 4. Project Directory Convention
 
 Project structure should stay lean. Keep directories only when they contain
 real project inputs, outputs, or documentation; do not create placeholder
@@ -139,7 +241,7 @@ new official materials.
 
 ---
 
-## 4. MCP Tools
+## 5. MCP Tools
 
 This project uses Codex through MCP to call **MWORKS.Sysplorer** and **MWORKS.Syslab**.
 
@@ -157,7 +259,7 @@ MCP is used for:
 
 ---
 
-### 4.1 MCP Configuration State
+### 5.1 MCP Configuration State
 
 The Codex `/mcp` command should show the following MCP servers.
 
@@ -248,7 +350,7 @@ Important:
 
 ---
 
-### 4.2 Sysplorer MCP Usage Rules
+### 5.2 Sysplorer MCP Usage Rules
 
 Sysplorer MCP is used for model-level operations.
 
@@ -295,7 +397,7 @@ Rules:
 
 ---
 
-### 4.3 Syslab MCP Usage Rules
+### 5.3 Syslab MCP Usage Rules
 
 Syslab MCP is used for Julia execution, metrics computation, plotting, and document lookup.
 
@@ -335,7 +437,7 @@ Rules:
 
 --- 
 
-### 4.4 Git MCP Usage Rules
+### 5.4 Git MCP Usage Rules
 
 This project uses Git MCP for local repository inspection, change tracking, code review support, commit preparation, and rollback assistance.
 
@@ -418,7 +520,7 @@ feat(controller): add nmpc-indi-l1 simulation workflow
 ```
 ---
 
-### 4.5 Filesystem MCP Usage Rules
+### 5.5 Filesystem MCP Usage Rules
 
 This project uses Filesystem MCP for project-local file operations only.
 
@@ -470,7 +572,7 @@ git_status
   → commit
 ```
 
-### 4.6 MinerU MCP Usage Rules
+### 5.6 MinerU MCP Usage Rules
 
 This project uses MinerU MCP for converting official documents, PDFs, PPTX files, DOCX files, screenshots, images, and HTML documents into Markdown.
 
