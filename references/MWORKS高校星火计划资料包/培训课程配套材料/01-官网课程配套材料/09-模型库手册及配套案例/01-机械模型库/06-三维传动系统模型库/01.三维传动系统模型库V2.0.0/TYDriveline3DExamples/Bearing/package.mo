@@ -1,0 +1,28 @@
+﻿package Bearing "轴承"
+  annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, 
+    grid = {2, 2}), graphics = {Rectangle(origin = {0, 1.77636e-15}, 
+    lineColor = {231, 231, 231}, 
+    fillColor = {248, 248, 248}, 
+    fillPattern = FillPattern.HorizontalCylinder, 
+    extent = {{-100, -100}, {100, 100}}, 
+    radius = 25), Polygon(origin = {0, 32}, 
+    lineColor = {96, 96, 96}, 
+    fillColor = {255, 255, 255}, 
+    fillPattern = FillPattern.Solid, 
+    lineThickness = 5, 
+    points = {{-48, 0}, {0, 28}, {48, 0}, {0, -28}}), Polygon(origin = {30, -19}, 
+    lineColor = {96, 96, 96}, 
+    fillColor = {255, 255, 255}, 
+    fillPattern = FillPattern.Solid, 
+    lineThickness = 5, 
+    points = {{24, 42}, {-24, 14}, {-24, -42}, {24, -14}}), Polygon(origin = {-30, -19}, 
+    lineColor = {96, 96, 96}, 
+    fillColor = {255, 255, 255}, 
+    fillPattern = FillPattern.Solid, 
+    lineThickness = 5, 
+    points = {{-24, 42}, {24, 14}, {24, -42}, {-24, -14}}), Rectangle(origin = {0, 1.77636e-15}, 
+    lineColor = {128, 128, 128}, 
+    extent = {{-100, -100}, {100, 100}}, 
+    radius = 25)}),Protection(access=Access.nonPackageDuplicate));
+
+end Bearing;

@@ -1,0 +1,14 @@
+﻿CabinDemoSimple
+CarCabinDemo
+CabinHeatExchangeNetwork
+CoolantDemoCloseCircuitDemo
+HeatPumpCircuit
+MotorCool
+HtrLoop
+MotorplsBattPlsHVACparallel
+MotorplsBattPlsHVACseries
+MotorplsBattPlsHVAC
+HeatPumpCircuitR290
+ACR290
+SingleLoopHIL
+MultiLoopHIL
