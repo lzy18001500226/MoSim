@@ -8,6 +8,41 @@ features:
   reference_feedforward: true
   command_saturation: true
 
+model_interface:
+  replacement_component: controller3_2
+  compatible_source_model: QuadrotorModel.Blocks.Controller.Controller
+  implementation_target:
+    - Sysblock subsystem
+    - Modelica controller class
+  inputs:
+    position: sensors1_1.PosMea
+    attitude: sensors1_1.AngleMea
+    position_command: climbePath.position_command
+    velocity: derived_from_position
+    reference_velocity: derived_from_position_command
+    reference_acceleration: derived_from_position_command
+  outputs:
+    motor_1: y
+    motor_2: y1
+    motor_3: y2
+    motor_4: y3
+    debug_saturation: saturation_flag
+    debug_integral: integral_state
+  required_result_variables:
+    - sensors1_1.PosMea[1]
+    - sensors1_1.PosMea[2]
+    - sensors1_1.PosMea[3]
+    - sensors1_1.AngleMea[1]
+    - sensors1_1.AngleMea[2]
+    - sensors1_1.AngleMea[3]
+    - climbePath.position_command[1]
+    - climbePath.position_command[2]
+    - climbePath.position_command[3]
+    - controller3_2.y
+    - controller3_2.y1
+    - controller3_2.y2
+    - controller3_2.y3
+
 position_loop:
   kp: [1.2, 1.2, 1.8]
   ki: [0.02, 0.02, 0.05]
@@ -33,4 +68,3 @@ fallback:
   trigger:
     - nan_output
     - saturation_ratio_gt_0_8
-

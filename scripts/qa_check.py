@@ -17,6 +17,12 @@ import csv
 import os
 import subprocess
 import sys
+from typing import Any
+
+try:
+    import yaml
+except ImportError:  # pragma: no cover - checked at runtime for local setup
+    yaml = None
 
 
 REQUIRED_DIRS = [
@@ -82,6 +88,46 @@ OFFICIAL_SCENARIOS = [
     "scenarios/official/example2_pid_baseline.yaml",
     "scenarios/official/example3_pid_baseline.yaml",
 ]
+
+CONTROLLER_CONFIGS = {
+    "pid_baseline": "controllers/pid/baseline.yaml",
+    "improved_pid": "controllers/improved_pid/default.yaml",
+    "nmpc_indi_l1": "controllers/nmpc_indi_l1/default.yaml",
+}
+
+PLANNER_CONFIGS = [
+    "planners/waypoint/default.yaml",
+]
+
+REQUIRED_SCENARIO_KEYS = [
+    "experiment_id",
+    "scene_id",
+    "controller_id",
+    "model",
+    "simulation",
+    "reference",
+    "result",
+]
+
+REQUIRED_SIMULATION_KEYS = [
+    "start_time_s",
+    "stop_time_s",
+    "step_size_s",
+]
+
+REQUIRED_RESULT_KEYS = [
+    "raw_file",
+    "metrics_file",
+]
+
+REQUIRED_CONTROLLER_INTERFACE_KEYS = [
+    "replacement_component",
+    "inputs",
+    "outputs",
+    "required_result_variables",
+]
+
+OFFICIAL_REPLACEMENT_COMPONENT = "controller3_2"
 
 OFFICIAL_FULL_RESULT_EXPECTATIONS = {
     "results/raw/official_example1_pid_baseline.csv": 50.0,
@@ -225,6 +271,187 @@ def check_scripts(root: Path) -> bool:
     return ok
 
 
+def read_yaml(path: Path) -> dict[str, Any]:
+    if yaml is None:
+        return read_simple_yaml(path)
+    with path.open(encoding="utf-8") as handle:
+        data = yaml.safe_load(handle)
+    if not isinstance(data, dict):
+        raise ValueError("YAML root must be a mapping")
+    return data
+
+
+def parse_scalar(value: str) -> Any:
+    value = value.strip()
+    if value == "":
+        return {}
+    if value in {"true", "false"}:
+        return value == "true"
+    if value.startswith("[") and value.endswith("]"):
+        items = [item.strip() for item in value[1:-1].split(",") if item.strip()]
+        return [parse_scalar(item) for item in items]
+    try:
+        if any(token in value for token in [".", "e", "E"]):
+            return float(value)
+        return int(value)
+    except ValueError:
+        return value.strip('"').strip("'")
+
+
+def read_simple_yaml(path: Path) -> dict[str, Any]:
+    """Read the simple project YAML subset without external dependencies."""
+    root: dict[str, Any] = {}
+    stack: list[tuple[int, dict[str, Any]]] = [(-1, root)]
+
+    with path.open(encoding="utf-8") as handle:
+        for raw_line in handle:
+            line = raw_line.rstrip()
+            if not line.strip() or line.lstrip().startswith("#"):
+                continue
+            if line.lstrip().startswith("- "):
+                continue
+            if ":" not in line:
+                continue
+
+            indent = len(line) - len(line.lstrip(" "))
+            key, value = line.strip().split(":", 1)
+            while stack and indent <= stack[-1][0]:
+                stack.pop()
+            parent = stack[-1][1]
+            parsed = parse_scalar(value)
+            parent[key] = parsed
+            if isinstance(parsed, dict):
+                stack.append((indent, parsed))
+
+    if not root:
+        raise ValueError("YAML root must be a mapping")
+    return root
+
+
+def check_config_files(root: Path) -> bool:
+    print("\n== Controller, planner, and scenario configs ==")
+    ok = True
+
+    if yaml is None:
+        print("[WARN] PyYAML not installed; using built-in simple YAML parser")
+
+    controller_ids: set[str] = set()
+    for controller_id, rel_path in CONTROLLER_CONFIGS.items():
+        path = root / rel_path
+        if not check_path(path, required=True):
+            ok = False
+            continue
+        try:
+            config = read_yaml(path)
+        except Exception as exc:
+            print(f"[FAIL] Cannot parse controller config {path}: {exc}")
+            ok = False
+            continue
+
+        actual_id = config.get("controller_id")
+        if actual_id != controller_id:
+            print(f"[FAIL] Controller id mismatch in {path}: expected {controller_id}, got {actual_id}")
+            ok = False
+        else:
+            print(f"[OK] Controller id: {controller_id}")
+            controller_ids.add(controller_id)
+
+        interface = config.get("model_interface")
+        if not isinstance(interface, dict):
+            print(f"[FAIL] Missing model_interface in {path}")
+            ok = False
+            continue
+
+        for key in REQUIRED_CONTROLLER_INTERFACE_KEYS:
+            if key in interface:
+                print(f"[OK] {controller_id} model_interface.{key}")
+            else:
+                print(f"[FAIL] Missing {controller_id} model_interface.{key}")
+                ok = False
+
+        replacement = interface.get("replacement_component")
+        if replacement != OFFICIAL_REPLACEMENT_COMPONENT and controller_id != "pid_baseline":
+            print(f"[FAIL] {controller_id} replacement_component should be {OFFICIAL_REPLACEMENT_COMPONENT}, got {replacement}")
+            ok = False
+
+    for rel_path in PLANNER_CONFIGS:
+        path = root / rel_path
+        if not check_path(path, required=True):
+            ok = False
+            continue
+        try:
+            config = read_yaml(path)
+        except Exception as exc:
+            print(f"[FAIL] Cannot parse planner config {path}: {exc}")
+            ok = False
+            continue
+        if config.get("planner_id"):
+            print(f"[OK] Planner id: {config['planner_id']}")
+        else:
+            print(f"[FAIL] Missing planner_id in {path}")
+            ok = False
+
+    scenario_paths = sorted((root / "scenarios").glob("**/*.yaml"))
+    if not scenario_paths:
+        print("[FAIL] No scenario YAML files found")
+        return False
+
+    experiment_ids: set[str] = set()
+    for path in scenario_paths:
+        try:
+            config = read_yaml(path)
+        except Exception as exc:
+            print(f"[FAIL] Cannot parse scenario config {path}: {exc}")
+            ok = False
+            continue
+
+        rel_path = path.relative_to(root)
+        missing = [key for key in REQUIRED_SCENARIO_KEYS if key not in config]
+        if missing:
+            print(f"[FAIL] Missing scenario keys in {rel_path}: {', '.join(missing)}")
+            ok = False
+            continue
+
+        experiment_id = str(config["experiment_id"])
+        if experiment_id in experiment_ids:
+            print(f"[FAIL] Duplicate experiment_id: {experiment_id}")
+            ok = False
+        else:
+            experiment_ids.add(experiment_id)
+
+        controller_id = str(config["controller_id"])
+        if controller_id in controller_ids:
+            print(f"[OK] Scenario {rel_path} uses controller {controller_id}")
+        else:
+            print(f"[FAIL] Scenario {rel_path} references unknown controller {controller_id}")
+            ok = False
+
+        simulation = config.get("simulation", {})
+        if not isinstance(simulation, dict):
+            print(f"[FAIL] Scenario {rel_path} simulation must be a mapping")
+            ok = False
+        else:
+            missing_sim = [key for key in REQUIRED_SIMULATION_KEYS if key not in simulation]
+            if missing_sim:
+                print(f"[FAIL] Missing simulation keys in {rel_path}: {', '.join(missing_sim)}")
+                ok = False
+            elif float(simulation["stop_time_s"]) <= float(simulation["start_time_s"]):
+                print(f"[FAIL] Invalid simulation time range in {rel_path}")
+                ok = False
+
+        result = config.get("result", {})
+        if not isinstance(result, dict):
+            print(f"[FAIL] Scenario {rel_path} result must be a mapping")
+            ok = False
+        else:
+            missing_result = [key for key in REQUIRED_RESULT_KEYS if key not in result]
+            if missing_result:
+                print(f"[FAIL] Missing result keys in {rel_path}: {', '.join(missing_result)}")
+                ok = False
+
+    return ok
+
+
 def check_wrappers() -> bool:
     print("\n== MCP wrapper scripts ==")
     ok = True
@@ -346,6 +573,7 @@ def main() -> int:
     ok = check_dirs(root) and ok
     ok = check_docs(root) and ok
     ok = check_scripts(root) and ok
+    ok = check_config_files(root) and ok
     ok = check_official_case(root) and ok
     wrappers_ok = check_wrappers()
 

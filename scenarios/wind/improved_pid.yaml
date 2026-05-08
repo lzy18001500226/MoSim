@@ -1,0 +1,38 @@
+experiment_id: wind_improved_pid_001
+scene_id: wind_figure8
+controller_id: improved_pid
+priority: P0
+
+model:
+  source_package: QuadrotorModel
+  model_name: QuadrotorModel.Examples.Example3
+  model_path_hint: QuadrotorModel/package.mo
+
+controller:
+  params_file: controllers/improved_pid/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: official_example3_pid_baseline
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 60.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_eight_path
+  file: results/raw/reference_official_example3.csv
+
+disturbance:
+  wind:
+    type: constant_window
+    start_time_s: 15.0
+    stop_time_s: 40.0
+    force_n: [1.0, 0.0, 0.0]
+
+result:
+  raw_file: results/raw/wind_improved_pid.csv
+  metrics_file: results/metrics/wind_improved_pid.json
+  figure_dir: results/figures/wind_improved_pid
+  event_log: results/logs/wind_improved_pid_events.jsonl

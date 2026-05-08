@@ -2,6 +2,42 @@ controller_id: nmpc_indi_l1
 type: nmpc_outer_indi_inner_l1_disturbance_compensation
 priority: P1
 
+model_interface:
+  replacement_component: controller3_2
+  compatible_source_model: QuadrotorModel.Blocks.Controller.Controller
+  implementation_target:
+    - Sysblock subsystem
+    - external function prototype
+  inputs:
+    position: sensors1_1.PosMea
+    attitude: sensors1_1.AngleMea
+    position_command: climbePath.position_command
+    velocity: derived_from_position
+    angular_rate: optional_sensor_or_derivative
+    disturbance_event: scenario.disturbance
+  outputs:
+    motor_1: y
+    motor_2: y1
+    motor_3: y2
+    motor_4: y3
+    controller_mode: controller_mode
+    disturbance_hat: disturbance_hat_xyz
+    safety_active: safety_active
+  required_result_variables:
+    - sensors1_1.PosMea[1]
+    - sensors1_1.PosMea[2]
+    - sensors1_1.PosMea[3]
+    - sensors1_1.AngleMea[1]
+    - sensors1_1.AngleMea[2]
+    - sensors1_1.AngleMea[3]
+    - climbePath.position_command[1]
+    - climbePath.position_command[2]
+    - climbePath.position_command[3]
+    - controller3_2.y
+    - controller3_2.y1
+    - controller3_2.y2
+    - controller3_2.y3
+
 outer_loop:
   fallback_type: linear_mpc
   horizon_steps: 20
@@ -38,4 +74,3 @@ logging:
     - disturbance_hat_z
     - safety_active
     - saturation_flag
-
