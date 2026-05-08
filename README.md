@@ -27,20 +27,21 @@
 | 工作流索引 | `docs/index/workflow_index.md` |
 | 预提交检查 | `workflows/pre_submit_check.md` |
 
-## 推荐目录
+## 目录约定
 
 ```text
-models/        MWORKS 模型和模型副本
 controllers/   控制器模块和参数
 planners/      路径规划与轨迹生成模块
 scenarios/     场景和扰动配置
 scripts/       指标、绘图、批量实验脚本
-results/       raw、metrics、figures、视频素材
 docs/          用户手册、报告、索引和图件
 workflows/     可复现操作流程
 tests/         单元测试、烟雾测试和回归测试
-references/    外部资料、论文、官方文档索引
+results/       仿真结果和报告素材，按实际输出创建子目录
+references/    外部资料和官方原始资料包
 ```
+
+不要为了占位提前创建空目录；只有放入配置、脚本、模型、结果或说明文件时再创建对应目录。官方 MWORKS 原始资料包统一放在 `references/MWORKS高校星火计划资料包/`，Agent 查询时优先使用 `docs/mworks/converted/` 和索引文件。
 
 ## 当前实现主线
 
@@ -58,4 +59,3 @@ python scripts/qa_check.py
 ```
 
 `qa_check.py` 只检查工程骨架、关键文档和 MCP wrapper 可见性，不验证 MWORKS 模型正确性。
-

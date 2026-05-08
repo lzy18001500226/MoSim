@@ -5,8 +5,8 @@ Basic project QA check for the A8 quadrotor control project.
 Usage:
     python scripts/qa_check.py
 
-This script checks required directories, recommended directories, key documents,
-and MCP wrapper scripts. It does not validate MWORKS models.
+This script checks the project entry points, key documents, source package
+location, and MCP wrapper scripts. It does not validate MWORKS models.
 """
 
 from __future__ import annotations
@@ -18,24 +18,28 @@ import sys
 
 
 REQUIRED_DIRS = [
-    "models",
-    "controllers",
-    "scenarios",
     "scripts",
-    "results",
     "docs",
+    "docs/index",
+    "docs/mworks/converted",
+    "references/MWORKS高校星火计划资料包",
     "workflows",
 ]
 
 RECOMMENDED_DIRS = [
+    "controllers",
     "planners",
+    "scenarios",
     "tests",
-    "references",
-    "results/raw",
-    "results/metrics",
-    "results/figures",
-    "docs/figures",
-    "docs/index",
+    "results",
+]
+
+OPTIONAL_NONEMPTY_DIRS = [
+    "controllers",
+    "planners",
+    "scenarios",
+    "tests",
+    "results",
 ]
 
 REQUIRED_DOCS = [
@@ -76,6 +80,15 @@ def check_path(path: Path, required: bool = True) -> bool:
     return not required
 
 
+def has_real_content(path: Path) -> bool:
+    if not path.exists() or not path.is_dir():
+        return False
+    for item in path.rglob("*"):
+        if item.is_file() and item.name != ".gitkeep":
+            return True
+    return False
+
+
 def is_windows() -> bool:
     return os.name == "nt"
 
@@ -113,6 +126,16 @@ def check_dirs(root: Path) -> bool:
     print("\n== Recommended directories ==")
     for item in RECOMMENDED_DIRS:
         ok = check_path(root / item, required=False) and ok
+
+    print("\n== Optional implementation directories ==")
+    for item in OPTIONAL_NONEMPTY_DIRS:
+        path = root / item
+        if not path.exists():
+            print(f"[OK] Optional absent until used: {path}")
+        elif has_real_content(path):
+            print(f"[OK] Has content: {path}")
+        else:
+            print(f"[WARN] Empty placeholder directory: {path}")
 
     return ok
 

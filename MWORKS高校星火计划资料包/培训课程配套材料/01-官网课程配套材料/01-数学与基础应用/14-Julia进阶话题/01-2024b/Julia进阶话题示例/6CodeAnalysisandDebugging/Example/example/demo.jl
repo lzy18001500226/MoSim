@@ -1,3 +1,0 @@
-using Example
-
-greet()

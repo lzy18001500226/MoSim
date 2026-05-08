@@ -77,7 +77,9 @@ When working on this project, always follow these principles:
 
 ## 3. Project Directory Convention
 
-Recommended project structure:
+Project structure should stay lean. Keep directories only when they contain
+real project inputs, outputs, or documentation; do not create placeholder
+folders just to match a future plan.
 
 ```text
 A8-Quadrotor-Control/
@@ -86,11 +88,9 @@ A8-Quadrotor-Control/
 ├── docs/
 │   ├── user_manual.md
 │   ├── simulation_report.md
-│   ├── figures/
 │   ├── mworks/
-│   │   ├── sysplorer/
-│   │   ├── syslab/
-│   │   ├── sysblock/
+│   │   ├── converted/
+│   │   ├── scan/
 │   │   └── mcp/
 │   └── index/
 │       ├── doc_index.md
@@ -108,57 +108,35 @@ A8-Quadrotor-Control/
 │   ├── smoke_test.md
 │   ├── regression_test.md
 │   └── pre_submit_check.md
-├── models/
-│   ├── baseline_pid/
-│   ├── improved_pid/
-│   ├── nmpc_indi_l1/
-│   ├── planning/
-│   └── formation/
 ├── controllers/
 │   ├── pid/
 │   ├── improved_pid/
-│   ├── nmpc/
-│   ├── indi/
-│   ├── l1_adaptive/
-│   ├── safety_filter/
-│   └── allocation/
+│   └── nmpc_indi_l1/
 ├── planners/
-│   ├── waypoint/
-│   ├── astar/
-│   ├── rrt_star/
-│   ├── kinodynamic_astar/
-│   ├── bspline/
-│   └── min_snap/
+│   └── waypoint/
 ├── scenarios/
 │   ├── hover/
-│   ├── step/
 │   ├── figure8/
-│   ├── spiral/
-│   ├── wind/
-│   ├── motor_fault/
-│   ├── obstacle/
-│   └── formation/
+│   └── wind/
 ├── scripts/
 │   ├── calc_metrics.jl
 │   ├── plot_results.jl
-│   ├── batch_experiment.jl
-│   ├── export_report_assets.jl
+│   ├── scan_mworks_docs.py
+│   ├── convert_mworks_pdfs.py
 │   └── qa_check.py
 ├── tests/
-│   ├── test_config.py
-│   ├── test_metrics.py
-│   ├── test_trajectory.py
-│   ├── test_controller_interface.py
+│   ├── fixtures/
 │   └── smoke/
 ├── results/
-│   ├── raw/
-│   ├── metrics/
-│   ├── figures/
-│   └── videos/
+│   └── test_reports/
 └── references/
+    └── MWORKS高校星火计划资料包/
 ```
 
-If the real project has a different structure, preserve the existing structure but maintain the same conceptual separation.
+Create `models/`, `results/raw/`, `results/metrics/`, `results/figures/`, or
+`docs/figures/` only when there is actual content to store. The raw official
+MWORKS package lives under `references/MWORKS高校星火计划资料包/`; scripts should
+use that path by default.
 
 ---
 
@@ -1173,24 +1151,25 @@ Check:
 ```text
 MCP tools are available
 wrapper scripts exist
-required directories exist
+project entry directories exist
 required scripts exist
 required docs exist
 ```
 
-Required directories:
+Required project entry directories:
 
 ```text
-models/
-controllers/
-planners/
-scenarios/
 scripts/
-tests/
-results/
 docs/
+docs/index/
+docs/mworks/converted/
+references/MWORKS高校星火计划资料包/
 workflows/
 ```
+
+Implementation directories such as `controllers/`, `planners/`, `scenarios/`,
+`tests/`, `results/raw/`, `results/metrics/`, `results/figures/`,
+`docs/figures/`, and `models/` should exist only when they contain real files.
 
 ---
 
@@ -1202,13 +1181,6 @@ Implemented script tests:
 scripts/qa_check.py
 scripts/calc_metrics.jl
 scripts/plot_results.jl
-```
-
-The following automation scripts are still planned. Do not call them unless they exist in `scripts/`:
-
-```text
-scripts/batch_experiment.jl
-scripts/export_report_assets.jl
 ```
 
 For metrics scripts, use a small known input file and verify:

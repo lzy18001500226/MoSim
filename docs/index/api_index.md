@@ -121,19 +121,10 @@ map_matlab_functions_to_julia
 | Script | Purpose | Expected Input | Expected Output |
 |---|---|---|---|
 | `scripts/qa_check.py` | Project quality check | project root | pass/fail report |
-| `scripts/scan_mworks_docs.py` | Scan local MWORKS resource package with PDF preview review | `MWORKS高校星火计划资料包` | `docs/mworks/scan/` indexes |
+| `scripts/scan_mworks_docs.py` | Scan local MWORKS resource package with PDF preview review | `references/MWORKS高校星火计划资料包` | `docs/mworks/scan/` indexes |
 | `scripts/convert_mworks_pdfs.py` | Convert selected PDFs via MinerU or PyMuPDF fallback | selected local PDFs | `docs/mworks/converted/` Markdown and `_images/` directories |
 | `scripts/calc_metrics.jl` | Compute standard tracking/control metrics | `results/raw/*.csv` | `results/metrics/*.json` and `.csv` |
 | `scripts/plot_results.jl` | Write figure manifest for report assets | raw CSV and figure dir | `figure_manifest.md` |
-
-Planned scripts not yet implemented:
-
-```text
-scripts/batch_experiment.jl
-scripts/export_report_assets.jl
-```
-
----
 
 ## 6. MinerU Precise Parsing API
 

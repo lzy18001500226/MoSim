@@ -76,29 +76,28 @@ Tools: (none) is failure.
 
 ## 4. Directory Check
 
-Required directories:
+Required project entry points:
 
 ```text
-models/
-controllers/
-scenarios/
 scripts/
-results/
 docs/
+docs/index/
+docs/mworks/converted/
+references/MWORKS高校星火计划资料包/
 workflows/
 ```
 
-Recommended directories:
+Implementation directories are created only when they contain real files:
 
 ```text
+controllers/
 planners/
+scenarios/
 tests/
-references/
 results/raw/
 results/metrics/
 results/figures/
 docs/figures/
-docs/index/
 ```
 
 Run:
