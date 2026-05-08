@@ -1,4 +1,0 @@
-Welcome to syslab.
-Here is a tutorial for file Io.
-Hope you 学习愉快。
-
