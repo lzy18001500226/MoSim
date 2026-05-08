@@ -10,7 +10,7 @@ MinerU 精准解析 API 用于将复杂 PDF、图片、Doc/Docx、Ppt/PPTx 和 H
 - 多栏布局、扫描件、水印干扰；
 - 需要保留层级结构的官方手册、培训材料和报告素材。
 
-本项目推荐用它重转 `docs/mworks/converted/` 中的重点资料，替换当前 PyMuPDF 兜底版。
+本项目已用 MinerU 精准解析完成 `docs/mworks/converted/` 中的 P0/P1/P2 重点资料转换；后续仅在新增资料或发现解析质量问题时增量重转。
 
 ## 2. Token 放置
 

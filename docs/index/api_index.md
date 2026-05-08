@@ -233,7 +233,7 @@ or future local scripts:
 Syslab run_julia_file scripts/plot_results.jl
 ```
 
-Prefer Syslab script plots for report figures after the plotting script is implemented.
+Prefer Syslab script plots for report figures when a result CSV is available.
 
 ---
 
@@ -245,7 +245,7 @@ Use:
 Syslab run_julia_file scripts/calc_metrics.jl
 ```
 
-This script is planned but not implemented yet. Until then, compute metrics with `evaluate_julia_code` or a temporary reviewed script.
+`scripts/calc_metrics.jl` is implemented. Use `--help` to inspect the accepted CSV schema and `--self-test` for a quick local verification.
 
 Formula:
 

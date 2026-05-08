@@ -75,3 +75,5 @@ MinerU 转换只从环境变量 `MINERU_API_TOKEN` 读取 Token，不要把 Toke
 ```
 
 脚本会把 URL 写入 `docs/mworks/tmp/mineru/pending_downloads.md`，后续可手动下载后用 `--import-mineru-result` 导入。
+
+`docs/mworks/tmp/` 仅用于转换缓存和中间结果，不作为知识库入口；确认 `converted/` 已生成后可以安全清理。
