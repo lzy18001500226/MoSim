@@ -328,6 +328,9 @@ scenarios/official/example2_pid_baseline.yaml  -> QuadrotorModel.Examples.Exampl
 scenarios/official/example3_pid_baseline.yaml  -> QuadrotorModel.Examples.Example3
 ```
 
+Smoke logs may cover only a short interval such as 0-1 s. Full official
+baseline metrics require the scenario stop times in `scenarios/official/*.yaml`.
+
 ---
 
 ## 5. Output Requirements

@@ -137,3 +137,18 @@ After raw CSV is generated, run:
 ```text
 workflows/calc_metrics.md
 ```
+
+For MCP JSONL smoke logs that contain `GetVarsValues`, use:
+
+```bash
+python3 scripts/extract_mcp_timeseries.py \
+  results/test_reports/sysplorer_quadrotor_example1_values.jsonl \
+  results/raw/official_example1_pid_baseline.csv \
+  --columns x,y,z,x_ref,y_ref,z_ref \
+  --start-time 0 \
+  --stop-time 1
+```
+
+If `GetVarsValues` includes an explicit time series as its first output, use
+`--columns time,x,y,z,x_ref,y_ref,z_ref` and omit `--start-time/--stop-time`.
+Do not treat smoke-test output as the full 50 s official scenario.
