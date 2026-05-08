@@ -1,0 +1,207 @@
+# Debug MCP Workflow
+
+> Purpose: fix MCP configuration or initialization issues.
+
+---
+
+## 1. Success Criteria
+
+MCP is successful when `/mcp` shows tools.
+
+Expected:
+
+```text
+syslab
+Tools: detect_syslab_toolboxes, evaluate_julia_code, ...
+
+sysplorer_mcp
+Tools: call_code, check_model, simulate_model, result_manager, ...
+```
+
+Normal:
+
+```text
+Auth: Unsupported
+```
+
+Failure:
+
+```text
+Tools: (none)
+```
+
+---
+
+## 2. Check Current MCP State
+
+Run:
+
+```bash
+codex mcp list --json
+```
+
+Check that commands use WSL wrapper scripts:
+
+```text
+/home/<WSL_USER>/mcp-wrappers/syslab_mcp.sh
+/home/<WSL_USER>/mcp-wrappers/sysplorer_mcp.sh
+```
+
+---
+
+## 3. Check Wrapper Scripts
+
+```bash
+ls -l ~/mcp-wrappers/syslab_mcp.sh
+ls -l ~/mcp-wrappers/sysplorer_mcp.sh
+```
+
+They should be executable.
+
+If not:
+
+```bash
+chmod +x ~/mcp-wrappers/syslab_mcp.sh ~/mcp-wrappers/sysplorer_mcp.sh
+```
+
+---
+
+## 4. Check WSL Config
+
+```bash
+cat ~/.codex/config.toml
+```
+
+Expected:
+
+```toml
+[mcp_servers.syslab]
+command = "/home/<WSL_USER>/mcp-wrappers/syslab_mcp.sh"
+args = []
+startup_timeout_sec = 180
+tool_timeout_sec = 300
+
+[mcp_servers.sysplorer_mcp]
+command = "/home/<WSL_USER>/mcp-wrappers/sysplorer_mcp.sh"
+args = []
+startup_timeout_sec = 180
+tool_timeout_sec = 300
+```
+
+---
+
+## 5. Remove Windows-Side Conflicting Config
+
+In PowerShell:
+
+```powershell
+$cfg = "$env:USERPROFILE\.codex\config.toml"
+$content = Get-Content $cfg -Raw
+
+$content = [regex]::Replace(
+  $content,
+  '(?ms)^\[mcp_servers\.syslab\]\s*.*?(?=^\[mcp_servers\.|\z)',
+  ''
+)
+
+$content = [regex]::Replace(
+  $content,
+  '(?ms)^\[mcp_servers\.sysplorer_mcp\]\s*.*?(?=^\[mcp_servers\.|\z)',
+  ''
+)
+
+$content.Trim() | Set-Content $cfg -Encoding UTF8
+Get-Content $cfg
+```
+
+Reason:
+
+```text
+Windows auto-generated MCP config may conflict with WSL wrapper config.
+```
+
+---
+
+## 6. Test Wrapper Manually
+
+Sysplorer:
+
+```bash
+~/mcp-wrappers/sysplorer_mcp.sh
+```
+
+Syslab:
+
+```bash
+~/mcp-wrappers/syslab_mcp.sh
+```
+
+If a command prints nothing and waits, this may be normal because stdio MCP servers wait for client handshake.
+
+Press `Ctrl+C` after confirming no immediate error.
+
+---
+
+## 7. Check Logs
+
+```bash
+tail -n 160 ~/.codex/log/*.log
+```
+
+Common issues:
+
+| Symptom | Possible Cause | Fix |
+|---|---|---|
+| Tools none | MCP process failed | Check wrapper |
+| No such file | Wrong path | Check `/mnt/d/...` path |
+| No module named mcp | Missing Python package | Install package in Sysplorer Python |
+| Julia not found | Wrong julia-root | Check `C:\Users\Public\TongYuan\...` |
+| Desktop failure | GUI issue | Use `nodesktop` for Syslab |
+| Duplicate servers | Windows config conflict | Remove Windows-side config |
+
+---
+
+## 8. Recommended Syslab Wrapper
+
+```bash
+#!/usr/bin/env bash
+exec "/mnt/d/Program Files/MWORKS/Syslab 2026a/Tools/syslab-mcp-server/syslab-mcp-server-win64.exe" \
+  --syslab-root "D:\Program Files\MWORKS\Syslab 2026a" \
+  --julia-root "C:\Users\Public\TongYuan\julia-1.10.10" \
+  --syslab-display-mode nodesktop
+```
+
+---
+
+## 9. Recommended Sysplorer Wrapper
+
+```bash
+#!/usr/bin/env bash
+exec "/mnt/d/Program Files/MWORKS/Sysplorer 2026a/External/python64/python.exe" \
+  "D:\Program Files\MWORKS\Sysplorer 2026a\Tools\sysplorer_mcp\sysplorer-mcp-server\main.py" \
+  --mworks-install-dir "D:\Program Files\MWORKS\Sysplorer 2026a" \
+  --sysplorer-platform-label "Sysplorer 2026a"
+```
+
+---
+
+## 10. Final Validation
+
+Run Codex:
+
+```bash
+codex
+```
+
+Inside Codex:
+
+```text
+/mcp
+```
+
+Pass condition:
+
+```text
+syslab tools listed
+sysplorer_mcp tools listed
+```

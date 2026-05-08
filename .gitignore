@@ -1,3 +1,4 @@
+# MWORKS高校星火计划资料包
 *.mp4
 *.avi
 *.mov
@@ -7,3 +8,50 @@
 *.7z
 *.tar
 *.tar.gz
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# Julia
+.julia/
+*.ji
+
+# Node / MCP
+node_modules/
+npm-debug.log*
+.mcp-servers/
+
+# Codex local state
+.codex/
+.mcp.json
+
+# Logs and temp
+*.log
+*.tmp
+*.cache
+*.bak
+*.old
+
+# MWORKS / simulation temp
+results/tmp/
+results/cache/
+results/logs/*.log
+
+# Large binary outputs
+*.mat
+*.h5
+*.hdf5
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+*.key
+*.pem
+*.token
+secrets.*
+.env.*
