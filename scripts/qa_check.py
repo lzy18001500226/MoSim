@@ -59,6 +59,30 @@ RECOMMENDED_DOCS = [
     "workflows/pre_submit_check.md",
 ]
 
+OFFICIAL_MODELS = [
+    "QuadrotorModel.Examples.Example1",
+    "QuadrotorModel.Examples.Example2",
+    "QuadrotorModel.Examples.Example3",
+]
+
+OFFICIAL_SCENARIOS = [
+    "scenarios/official/example1_pid_baseline.yaml",
+    "scenarios/official/example2_pid_baseline.yaml",
+    "scenarios/official/example3_pid_baseline.yaml",
+]
+
+OFFICIAL_REFERENCE_OUTPUTS = [
+    "results/raw/reference_official_example1.csv",
+    "results/raw/reference_official_example2.csv",
+    "results/raw/reference_official_example3.csv",
+    "results/replay/reference_official_example1.json",
+    "results/replay/reference_official_example2.json",
+    "results/replay/reference_official_example3.json",
+    "results/replay_html/reference_official_example1.html",
+    "results/replay_html/reference_official_example2.html",
+    "results/replay_html/reference_official_example3.html",
+]
+
 WRAPPER_SCRIPTS = {
     "syslab_mcp.sh": [
         "~/mcp-wrappers/syslab_mcp.sh",
@@ -193,6 +217,32 @@ def check_wrappers() -> bool:
     return ok
 
 
+def check_official_case(root: Path) -> bool:
+    print("\n== Official quadrotor case ==")
+    ok = True
+    package_path = root / "QuadrotorModel" / "package.mo"
+    if not package_path.exists():
+        print(f"[FAIL] Missing official package: {package_path}")
+        return False
+
+    package_text = package_path.read_text(encoding="utf-8-sig", errors="replace")
+    for model_name in OFFICIAL_MODELS:
+        short_name = model_name.rsplit(".", 1)[-1]
+        if f"model {short_name} " in package_text:
+            print(f"[OK] Official model present: {model_name}")
+        else:
+            print(f"[FAIL] Official model missing: {model_name}")
+            ok = False
+
+    for item in OFFICIAL_SCENARIOS:
+        ok = check_path(root / item, required=True) and ok
+
+    for item in OFFICIAL_REFERENCE_OUTPUTS:
+        ok = check_path(root / item, required=True) and ok
+
+    return ok
+
+
 def main() -> int:
     root = Path.cwd()
     print(f"Project root: {root}")
@@ -200,6 +250,7 @@ def main() -> int:
     ok = True
     ok = check_dirs(root) and ok
     ok = check_docs(root) and ok
+    ok = check_official_case(root) and ok
     wrappers_ok = check_wrappers()
 
     print("\n== Summary ==")

@@ -27,6 +27,14 @@
 | 工作流索引 | `docs/index/workflow_index.md` |
 | 预提交检查 | `workflows/pre_submit_check.md` |
 
+官方案例复现入口：
+
+```text
+scenarios/official/example1_pid_baseline.yaml  阶梯爬升
+scenarios/official/example2_pid_baseline.yaml  螺旋爬升
+scenarios/official/example3_pid_baseline.yaml  8字形运动
+```
+
 ## 目录约定
 
 ```text

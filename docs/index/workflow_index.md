@@ -60,6 +60,18 @@ workflows/calc_metrics.md
 workflows/generate_report_figures.md
 ```
 
+Official baseline scenarios are tracked under:
+
+```text
+scenarios/official/example1_pid_baseline.yaml
+scenarios/official/example2_pid_baseline.yaml
+scenarios/official/example3_pid_baseline.yaml
+```
+
+These map directly to `QuadrotorModel.Examples.Example1/2/3`. When Sysplorer
+MCP is available, run these first before custom controllers so the official PID
+baseline is reproducible.
+
 ---
 
 ## 4. Controller Development Workflow

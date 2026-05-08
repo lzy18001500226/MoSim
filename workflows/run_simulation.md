@@ -320,6 +320,14 @@ development. They are not a substitute for controller simulation metrics; once
 Sysplorer simulation results are available, export measured `x,y,z` and compute
 metrics against the reference columns.
 
+Official scenario configs:
+
+```text
+scenarios/official/example1_pid_baseline.yaml  -> QuadrotorModel.Examples.Example1
+scenarios/official/example2_pid_baseline.yaml  -> QuadrotorModel.Examples.Example2
+scenarios/official/example3_pid_baseline.yaml  -> QuadrotorModel.Examples.Example3
+```
+
 ---
 
 ## 5. Output Requirements
