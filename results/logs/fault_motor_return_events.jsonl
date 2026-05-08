@@ -1,0 +1,6 @@
+{"event": "mode_switch", "mode": "NORMAL", "reason": "scenario_start", "time": 0.0}
+{"eta": [1.0, 0.7, 1.0, 1.0], "event": "motor_fault", "fault_type": "motor_efficiency_drop", "motor_index": 2, "time": 4.0}
+{"event": "mode_switch", "mode": "FAULT_TOLERANT", "reason": "eta_min_below_0.85", "time": 4.0}
+{"event": "degraded_return_start", "mode": "FAULT_TOLERANT", "return_point_m": [0.0, 0.0, 2.0], "time": 4.5}
+{"event": "fault_clear", "fault_type": "motor_efficiency_drop", "time": 9.0}
+{"event": "mode_switch", "mode": "DISTURBANCE_REJECTION", "reason": "post_fault_recovery_monitoring", "time": 9.0}

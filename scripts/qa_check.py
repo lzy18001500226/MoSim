@@ -78,6 +78,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/summarize_experiments.py",
     "scripts/generate_planning_reference.py",
     "scripts/generate_formation_reference.py",
+    "scripts/generate_fault_scenario.py",
 ]
 
 RECOMMENDED_TESTS = [
@@ -85,6 +86,7 @@ RECOMMENDED_TESTS = [
     "tests/test_summary.py",
     "tests/test_planning_reference.py",
     "tests/test_formation_reference.py",
+    "tests/test_fault_scenario.py",
 ]
 
 OFFICIAL_MODELS = [
@@ -175,6 +177,14 @@ FORMATION_OUTPUTS = [
     "results/metrics/formation_triangle_switch.json",
     "results/replay/formation_triangle_switch.json",
     "results/replay_html/formation_triangle_switch.html",
+]
+
+FAULT_OUTPUTS = [
+    "results/raw/fault_motor_return_reference.csv",
+    "results/metrics/fault_motor_return.json",
+    "results/logs/fault_motor_return_events.jsonl",
+    "results/replay/fault_motor_return.json",
+    "results/replay_html/fault_motor_return.html",
 ]
 
 OFFICIAL_RESULT_VARIABLE_CANDIDATES = [
@@ -552,6 +562,10 @@ def check_official_case(root: Path) -> bool:
 
     print("\n== Formation reference evidence ==")
     for item in FORMATION_OUTPUTS:
+        ok = check_path(root / item, required=True) and ok
+
+    print("\n== Fault tolerance evidence ==")
+    for item in FAULT_OUTPUTS:
         ok = check_path(root / item, required=True) and ok
 
     print("\n== Full baseline result guard ==")

@@ -1,0 +1,51 @@
+experiment_id: fault_motor_return
+scene_id: motor_fault_return
+controller_id: nmpc_indi_l1
+priority: P1
+
+model:
+  source_package: QuadrotorModel
+  model_name: QuadrotorModel.Examples.Example3
+  model_path_hint: QuadrotorModel/package.mo
+  replacement_component: controller3_2
+  realization: offline_fault_event_reference
+
+leader_reference:
+  file: results/raw/reference_planning_trackable_waypoint.csv
+  source_scenario: planning_trackable_waypoint
+
+fault:
+  type: motor_efficiency_drop
+  motor_index: 2
+  start_time_s: 4.0
+  end_time_s: 9.0
+  eta_nominal: [1.0, 1.0, 1.0, 1.0]
+  eta_fault: [1.0, 0.7, 1.0, 1.0]
+
+safety:
+  min_altitude_m: 0.8
+  return_altitude_m: 2.0
+  fault_eta_threshold: 0.85
+  emergency_eta_threshold: 0.5
+  max_return_speed_m_s: 1.0
+
+recovery:
+  action: degraded_return
+  return_point_m: [0.0, 0.0, 2.0]
+  trigger_delay_s: 0.5
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 12.0
+  step_size_s: 0.02
+
+reference:
+  type: fault_tolerant_return
+  file: results/raw/fault_motor_return_reference.csv
+
+result:
+  raw_file: results/raw/fault_motor_return_reference.csv
+  metrics_file: results/metrics/fault_motor_return.json
+  event_log: results/logs/fault_motor_return_events.jsonl
+  replay_file: results/replay/fault_motor_return.json
+  replay_html: results/replay_html/fault_motor_return.html

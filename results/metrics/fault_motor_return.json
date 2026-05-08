@@ -1,0 +1,22 @@
+{
+  "experiment_id": "fault_motor_return",
+  "scene_id": "motor_fault_return",
+  "controller_id": "nmpc_indi_l1",
+  "fault_type": "motor_efficiency_drop",
+  "fault_motor_index": 2,
+  "fault_start_time_s": 4.0,
+  "fault_duration_s": 5.0,
+  "eta_min": 0.7,
+  "controller_mode_switch_count": 3,
+  "event_count": 6,
+  "return_or_land_status": "return_hold",
+  "degraded_task_completion": 1.0,
+  "minimum_altitude_m": 1.5,
+  "altitude_violation_count": 0,
+  "safety_score": 100.0,
+  "fault_tolerance_score": 82.0,
+  "total_health_score": 82.0,
+  "sample_count": 586,
+  "duration_s": 11.71875,
+  "accepted": true
+}

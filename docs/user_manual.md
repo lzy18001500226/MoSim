@@ -184,7 +184,11 @@ figure_manifest.md
 生成实验汇总：
 
 ```bash
-python3 scripts/summarize_experiments.py --include-metrics-glob 'results/metrics/smoke_*.json'
+python3 scripts/summarize_experiments.py \
+  --include-metrics-glob 'results/metrics/smoke_*.json' \
+  --include-metrics-glob 'results/metrics/trackability_*.json' \
+  --include-metrics-glob 'results/metrics/formation_*.json' \
+  --include-metrics-glob 'results/metrics/fault_*.json'
 ```
 
 输出：
@@ -240,7 +244,30 @@ results/replay_html/formation_triangle_switch.html
 
 编队指标包含 `formation_error_rmse`、`formation_error_max`、`minimum_inter_uav_distance`、`formation_mode_switch_count`、`switching_time_s` 和 `formation_score`。当前脚本生成三角形到一字形再恢复三角形的三机参考轨迹，用于后续多机仿真或视频回放。
 
-## 10. 提交前检查
+## 10. 安全故障参考场景
+
+生成单电机效率下降与降级返航参考：
+
+```bash
+python3 scripts/generate_fault_scenario.py
+python3 scripts/generate_replay_html.py \
+  results/replay/fault_motor_return.json \
+  results/replay_html/fault_motor_return.html
+```
+
+输出：
+
+```text
+results/raw/fault_motor_return_reference.csv
+results/metrics/fault_motor_return.json
+results/logs/fault_motor_return_events.jsonl
+results/replay/fault_motor_return.json
+results/replay_html/fault_motor_return.html
+```
+
+故障指标包含 `eta_min`、`controller_mode_switch_count`、`fault_tolerance_score`、`degraded_task_completion`、`minimum_altitude_m` 和 `altitude_violation_count`。事件日志记录 `motor_fault`、`mode_switch`、`degraded_return_start`、`fault_clear`，用于报告、视频字幕和后续容错控制器接入。
+
+## 11. 提交前检查
 
 提交前运行：
 
@@ -251,7 +278,8 @@ python3 tests/test_metrics.py
 python3 tests/test_summary.py
 python3 tests/test_planning_reference.py
 python3 tests/test_formation_reference.py
-python3 -m py_compile scripts/*.py
+python3 tests/test_fault_scenario.py
+python3 -m py_compile scripts/*.py tests/*.py
 git diff --check
 ```
 
