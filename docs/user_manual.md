@@ -196,7 +196,29 @@ results/test_reports/experiment_summary.md
 
 说明：正式场景没有对应 metrics 文件时会标记为 `pending`，不会用 smoke 数据替代完整 baseline 结论。
 
-## 8. 提交前检查
+## 8. 规划参考轨迹
+
+生成可跟踪航点规划参考：
+
+```bash
+python3 scripts/generate_planning_reference.py
+python3 scripts/generate_replay_html.py \
+  results/replay/planning_trackable_waypoint.json \
+  results/replay_html/planning_trackable_waypoint.html
+```
+
+输出：
+
+```text
+results/raw/reference_planning_trackable_waypoint.csv
+results/metrics/trackability_planning_trackable_waypoint.json
+results/replay/planning_trackable_waypoint.json
+results/replay_html/planning_trackable_waypoint.html
+```
+
+`trackability` 报告包含速度、加速度、jerk、倾角、预测饱和比例和 `final_trackability_score`。脚本会在动态约束超限时自动放大分段时间，直到满足阈值或达到最大迭代次数。
+
+## 9. 提交前检查
 
 提交前运行：
 
@@ -205,6 +227,7 @@ python3 scripts/qa_check.py
 python3 scripts/check_reference_outputs.py
 python3 tests/test_metrics.py
 python3 tests/test_summary.py
+python3 tests/test_planning_reference.py
 python3 -m py_compile scripts/*.py
 git diff --check
 ```

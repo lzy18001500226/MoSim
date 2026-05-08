@@ -76,11 +76,13 @@ RECOMMENDED_SCRIPTS = [
     "scripts/plot_results.py",
     "scripts/generate_replay_html.py",
     "scripts/summarize_experiments.py",
+    "scripts/generate_planning_reference.py",
 ]
 
 RECOMMENDED_TESTS = [
     "tests/test_metrics.py",
     "tests/test_summary.py",
+    "tests/test_planning_reference.py",
 ]
 
 OFFICIAL_MODELS = [
@@ -157,6 +159,13 @@ SMOKE_RESULT_OUTPUTS = [
     "results/raw/smoke_official_example1_pid_baseline.csv",
     "results/metrics/smoke_official_example1_pid_baseline.json",
     "results/metrics/smoke_official_example1_pid_baseline.csv",
+]
+
+PLANNING_OUTPUTS = [
+    "results/raw/reference_planning_trackable_waypoint.csv",
+    "results/metrics/trackability_planning_trackable_waypoint.json",
+    "results/replay/planning_trackable_waypoint.json",
+    "results/replay_html/planning_trackable_waypoint.html",
 ]
 
 OFFICIAL_RESULT_VARIABLE_CANDIDATES = [
@@ -526,6 +535,10 @@ def check_official_case(root: Path) -> bool:
 
     print("\n== Smoke result evidence ==")
     for item in SMOKE_RESULT_OUTPUTS:
+        ok = check_path(root / item, required=True) and ok
+
+    print("\n== Planning reference evidence ==")
+    for item in PLANNING_OUTPUTS:
         ok = check_path(root / item, required=True) and ok
 
     print("\n== Full baseline result guard ==")

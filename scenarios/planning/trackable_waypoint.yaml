@@ -1,0 +1,39 @@
+experiment_id: planning_trackable_waypoint
+scene_id: planning_trackable_waypoint
+controller_id: improved_pid
+planner_id: waypoint_min_snap
+priority: P2
+
+planner:
+  params_file: planners/waypoint/default.yaml
+  type: manual_waypoint_smoothstep
+  waypoints:
+    - [0.0, 0.0, 1.5]
+    - [2.0, 1.0, 2.0]
+    - [4.0, -1.0, 2.4]
+    - [6.0, 1.2, 2.2]
+    - [8.0, 0.0, 2.0]
+  yaw_mode: face_velocity
+
+model:
+  source_package: QuadrotorModel
+  model_name: QuadrotorModel.Examples.Example3
+  model_path_hint: QuadrotorModel/package.mo
+  replacement_component: climbePath
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 12.0
+  step_size_s: 0.02
+
+reference:
+  type: generated_waypoint
+  file: results/raw/reference_planning_trackable_waypoint.csv
+
+result:
+  raw_file: results/raw/planning_trackable_waypoint_tracking.csv
+  metrics_file: results/metrics/planning_trackable_waypoint_tracking.json
+  figure_dir: results/figures/planning_trackable_waypoint
+  replay_file: results/replay/planning_trackable_waypoint.json
+  replay_html: results/replay_html/planning_trackable_waypoint.html
+  trackability_report: results/metrics/trackability_planning_trackable_waypoint.json

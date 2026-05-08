@@ -1,15 +1,16 @@
 # Experiment Summary
 
 - CSV: `results/test_reports/experiment_summary.csv`
-- Total scenarios: `10`
-- Done: `1`
-- Pending: `9`
+- Total scenarios: `12`
+- Done: `2`
+- Pending: `10`
 - Invalid: `0`
 
 ## Available Results
 
 | Experiment | Scene | Controller | RMSE | Health | Status |
 |---|---|---|---:|---:|---|
+| planning_trackable_waypoint | planning_trackable_waypoint |  |  | 100 | done |
 | smoke_official_example1_pid_baseline | official_example1 | pid_baseline | 0.977959 | 17.9231 | done |
 
 ## Pending Results
@@ -25,3 +26,4 @@
 | official_example3_pid_baseline | official_example3 | pid_baseline | `results/metrics/official_example3_pid_baseline.json` | metrics missing |
 | wind_improved_pid_001 | wind_figure8 | improved_pid | `results/metrics/wind_improved_pid.json` | metrics missing |
 | wind_nmpc_indi_l1_001 | wind_corridor | nmpc_indi_l1 | `results/metrics/wind_nmpc_indi_l1.json` | metrics missing |
+| planning_trackable_waypoint | planning_trackable_waypoint | improved_pid | `results/metrics/planning_trackable_waypoint_tracking.json` | metrics missing |

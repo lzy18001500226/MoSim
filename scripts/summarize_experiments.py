@@ -35,6 +35,7 @@ SUMMARY_COLUMNS = [
     "saturation_ratio",
     "constraint_violation_count",
     "total_health_score",
+    "final_trackability_score",
     "baseline_experiment",
     "rmse_improvement_pct",
     "health_score_delta",
@@ -142,6 +143,8 @@ def metrics_row(root: Path, metrics_path: Path, source: str) -> dict[str, Any]:
     for key in SUMMARY_COLUMNS:
         if key in metrics:
             row[key] = metrics[key]
+    if "final_trackability_score" in metrics and "total_health_score" not in metrics:
+        row["total_health_score"] = 100.0 * as_float(metrics["final_trackability_score"])
     return row
 
 

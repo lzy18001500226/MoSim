@@ -14,7 +14,10 @@ time_allocation:
   infeasible_scale_factor: 1.25
   max_rescale_iterations: 5
 
+trackability:
+  min_score: 0.8
+  require_zero_dynamic_violations: true
+
 outputs:
   reference_csv: results/raw/reference_{scene_id}.csv
   trackability_report: results/metrics/trackability_{scene_id}.json
-
