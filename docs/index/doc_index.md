@@ -9,8 +9,8 @@
 | Project overview | `README.md` | Repository entry point |
 | Agent rules | `AGENTS.md` | Codex/MCP usage, project conventions, implementation rules |
 | Design index | `Design/README.md` | Design document entry point |
-| User manual | `docs/user_manual.md` | Submission-facing usage guide draft |
-| Simulation report | `docs/simulation_report.md` | Submission-facing analysis report draft |
+| User manual | `docs/user_manual.md` | Usage guide and reproducible command entry points |
+| Simulation report | `docs/simulation_report.md` | Current evidence, metrics, figures, and experiment gaps |
 | API/tool index | `docs/index/api_index.md` | Available MCP tools, scripts, and API references |
 | Workflow index | `docs/index/workflow_index.md` | Repeatable development workflows |
 | Variable mapping | `docs/index/variable_mapping.md` | Standard raw CSV names vs Sysplorer result variables |

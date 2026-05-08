@@ -1,53 +1,178 @@
 # 用户手册
 
-本文档记录项目安装、配置、运行仿真和复现实验的步骤。当前为骨架版本，后续随模型和脚本实现逐步补充截图、参数表和常见问题。
+本文档说明如何检查项目结构、复现官方案例参考轨迹、处理 MWORKS/MCP 导出的仿真结果、生成指标和报告素材。
 
 ## 1. 环境要求
 
+必需环境：
+
 ```text
+Python 3.10+
 MWORKS.Sysplorer 2026
 MWORKS.Sysblock 2026
 MWORKS.Syslab 2026
 Codex MCP: syslab, sysplorer_mcp
-Python 3
-Julia / Syslab 运行环境
 ```
+
+可选环境：
+
+```text
+Julia / Syslab Julia runtime
+Sysplorer plot_manager / Syslab plotting APIs
+```
+
+当前 WSL 自动化优先使用 Python 脚本；当 Syslab/Julia 不可用时，仍可完成 QA、参考轨迹、指标和 SVG 图表生成。
 
 ## 2. 快速检查
 
 在项目根目录运行：
 
 ```bash
-python scripts/qa_check.py
+python3 scripts/qa_check.py
+python3 scripts/check_reference_outputs.py
 ```
 
-## 3. 基本运行流程
+通过标准：
 
 ```text
-1. 选择场景 scene_id
-2. 选择控制器 controller_id
-3. 使用 Sysplorer/MCP 打开模型
-4. 执行 check_model
-5. 执行 simulate_model
-6. 使用 result_manager 导出结果
-7. 使用 Syslab 计算 metrics 和 figures
-8. 保存 summary、mcp_log 和视频素材
+Required project structure passed
+MCP wrapper scripts found
+official_example1/2/3 reference checks OK
 ```
 
-详细流程见：
+## 3. 官方案例入口
+
+官方模型包：
 
 ```text
-workflows/run_simulation.md
-workflows/calc_metrics.md
-workflows/pre_submit_check.md
-Design/08_仿真指标与自动评估.md
+QuadrotorModel/package.mo
 ```
 
-## 4. 结果目录
+官方场景配置：
 
 ```text
-results/raw/       原始仿真结果
-results/metrics/   指标表、健康度评分
-results/figures/   图表和报告素材
+scenarios/official/example1_pid_baseline.yaml  阶梯爬升，50 s
+scenarios/official/example2_pid_baseline.yaml  螺旋爬升，50 s
+scenarios/official/example3_pid_baseline.yaml  8字形运动，120 s
 ```
 
+对应模型：
+
+```text
+QuadrotorModel.Examples.Example1
+QuadrotorModel.Examples.Example2
+QuadrotorModel.Examples.Example3
+```
+
+## 4. 参考轨迹与回放
+
+生成官方参考轨迹和回放 JSON：
+
+```bash
+python3 scripts/generate_reference.py --scene all
+python3 scripts/check_reference_outputs.py
+python3 scripts/generate_replay_html.py --all
+```
+
+输出：
+
+```text
+results/raw/reference_official_example1.csv
+results/raw/reference_official_example2.csv
+results/raw/reference_official_example3.csv
+results/replay/reference_official_example1.json
+results/replay/reference_official_example2.json
+results/replay/reference_official_example3.json
+results/replay_html/reference_official_example1.html
+results/replay_html/reference_official_example2.html
+results/replay_html/reference_official_example3.html
+```
+
+`results/replay_html/*.html` 为离线浏览器三维回放页面，可直接打开录屏，不依赖 CDN。
+
+## 5. 官方仿真流程
+
+使用 Sysplorer MCP 时按以下顺序执行：
+
+```text
+session_manager
+→ model_manager load QuadrotorModel/package.mo
+→ check_model
+→ simulate_model
+→ result_manager list/read variables
+→ export raw CSV
+→ calc metrics
+→ generate figures/replay
+```
+
+变量映射见：
+
+```text
+docs/index/variable_mapping.md
+```
+
+完整官方 baseline 结果应写入：
+
+```text
+results/raw/official_example1_pid_baseline.csv
+results/raw/official_example2_pid_baseline.csv
+results/raw/official_example3_pid_baseline.csv
+```
+
+`qa_check.py` 会检查这些正式结果的时长，Example1/2 不得短于 50 s，Example3 不得短于 120 s。
+
+## 6. Smoke 数据说明
+
+当前仓库包含一个 0-1 s smoke 数据集：
+
+```text
+results/raw/smoke_official_example1_pid_baseline.csv
+results/metrics/smoke_official_example1_pid_baseline.json
+results/figures/smoke_official_example1_pid_baseline/
+```
+
+该数据只用于验证 MCP 结果读取、CSV 导出、指标计算和图表生成链路，不作为完整官方 baseline 性能结论。
+
+## 7. 指标与图表
+
+计算指标：
+
+```bash
+python3 scripts/calc_metrics.py \
+  results/raw/smoke_official_example1_pid_baseline.csv \
+  results/metrics/smoke_official_example1_pid_baseline.json \
+  smoke_official_example1 \
+  pid_baseline
+```
+
+生成 SVG 图表：
+
+```bash
+python3 scripts/plot_results.py \
+  results/raw/smoke_official_example1_pid_baseline.csv \
+  results/figures/smoke_official_example1_pid_baseline \
+  --metrics results/metrics/smoke_official_example1_pid_baseline.json
+```
+
+图表输出：
+
+```text
+trajectory_xy.svg
+altitude_tracking.svg
+position_error.svg
+metrics_summary.svg
+figure_manifest.md
+```
+
+## 8. 提交前检查
+
+提交前运行：
+
+```bash
+python3 scripts/qa_check.py
+python3 scripts/check_reference_outputs.py
+python3 -m py_compile scripts/*.py
+git diff --check
+```
+
+若生成了新的二进制或官方资料文件，还需确认没有超过 GitHub 限制的大文件。
