@@ -198,6 +198,47 @@ HTML_TEMPLATE = """<!doctype html>
       drawLine3([0, 0, 0], [0, 0, 4], '#8fd3ff', 2);
     }}
 
+    function drawSphereObstacle(obstacle) {{
+      const center = obstacle.center || [0, 0, 0];
+      const radius = Number(obstacle.radius || 0.5);
+      const p = project(center);
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(p[0], p[1], Math.max(8, radius * scale * 0.82), Math.max(5, radius * scale * 0.38), 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 117, 117, 0.22)';
+      ctx.strokeStyle = 'rgba(255, 117, 117, 0.92)';
+      ctx.lineWidth = 2;
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }}
+
+    function drawBoxObstacle(obstacle) {{
+      const lo = obstacle.min || [0, 0, 0];
+      const hi = obstacle.max || [1, 1, 1];
+      const v = [
+        [lo[0], lo[1], lo[2]], [hi[0], lo[1], lo[2]], [hi[0], hi[1], lo[2]], [lo[0], hi[1], lo[2]],
+        [lo[0], lo[1], hi[2]], [hi[0], lo[1], hi[2]], [hi[0], hi[1], hi[2]], [lo[0], hi[1], hi[2]]
+      ];
+      const edges = [[0,1], [1,2], [2,3], [3,0], [4,5], [5,6], [6,7], [7,4], [0,4], [1,5], [2,6], [3,7]];
+      edges.forEach(([a, b]) => drawLine3(v[a], v[b], 'rgba(255, 117, 117, 0.95)', 2));
+      const top = [v[4], v[5], v[6], v[7]].map(project);
+      ctx.beginPath();
+      ctx.moveTo(top[0][0], top[0][1]);
+      for (let i = 1; i < top.length; i += 1) ctx.lineTo(top[i][0], top[i][1]);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(255, 117, 117, 0.16)';
+      ctx.fill();
+    }}
+
+    function drawObstacles() {{
+      const obstacles = replay.obstacles || [];
+      obstacles.forEach(obstacle => {{
+        if (obstacle.type === 'sphere') drawSphereObstacle(obstacle);
+        if (obstacle.type === 'box') drawBoxObstacle(obstacle);
+      }});
+    }}
+
     function drawPath() {{
       if (frames.length < 2) return;
       ctx.beginPath();
@@ -298,6 +339,7 @@ HTML_TEMPLATE = """<!doctype html>
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
       drawGrid();
+      drawObstacles();
       drawPath();
       drawDrone(getPosition(frame), time);
       drawLabels();

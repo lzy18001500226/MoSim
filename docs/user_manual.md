@@ -222,6 +222,27 @@ results/replay_html/planning_trackable_waypoint.html
 
 `trackability` 报告包含速度、加速度、jerk、倾角、预测饱和比例和 `final_trackability_score`。脚本会在动态约束超限时自动放大分段时间，直到满足阈值或达到最大迭代次数。
 
+生成带障碍物的 3D A* 规划参考：
+
+```bash
+python3 scripts/generate_obstacle_planning_reference.py
+python3 scripts/generate_replay_html.py \
+  results/replay/planning_obstacle_corridor.json \
+  results/replay_html/planning_obstacle_corridor.html
+```
+
+输出：
+
+```text
+results/raw/path_planning_obstacle_corridor.csv
+results/raw/reference_planning_obstacle_corridor.csv
+results/metrics/planning_obstacle_corridor.json
+results/replay/planning_obstacle_corridor.json
+results/replay_html/planning_obstacle_corridor.html
+```
+
+障碍规划指标包含 `minimum_obstacle_distance_m`、`safety_margin_m`、`obstacle_violation_count`、`obstacle_avoidance_score`、`final_trackability_score` 和 `total_health_score`。该场景用于证明规划器不是简单手工航点，而是能在 3D 地图中绕开膨胀障碍并输出可跟踪轨迹。
+
 ## 9. 编队参考轨迹
 
 生成三机 Leader-Follower 编队参考：
@@ -277,6 +298,7 @@ python3 scripts/check_reference_outputs.py
 python3 tests/test_metrics.py
 python3 tests/test_summary.py
 python3 tests/test_planning_reference.py
+python3 tests/test_obstacle_planning.py
 python3 tests/test_formation_reference.py
 python3 tests/test_fault_scenario.py
 python3 -m py_compile scripts/*.py tests/*.py

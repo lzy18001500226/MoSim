@@ -1,8 +1,8 @@
 # Experiment Summary
 
 - CSV: `results/test_reports/experiment_summary.csv`
-- Total scenarios: `14`
-- Done: `4`
+- Total scenarios: `15`
+- Done: `5`
 - Pending: `10`
 - Invalid: `0`
 
@@ -11,6 +11,7 @@
 | Experiment | Scene | Controller | RMSE | Health | Status |
 |---|---|---|---:|---:|---|
 | planning_trackable_waypoint | planning_trackable_waypoint |  |  | 100 | done |
+| planning_obstacle_corridor | obstacle_corridor | improved_pid |  | 100 | done |
 | formation_triangle_switch | formation_triangle_switch | improved_pid |  | 100 | done |
 | fault_motor_return | motor_fault_return | nmpc_indi_l1 |  | 82 | done |
 | smoke_official_example1_pid_baseline | official_example1 | pid_baseline | 0.977959 | 17.9231 | done |

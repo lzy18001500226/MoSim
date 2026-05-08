@@ -77,6 +77,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/generate_replay_html.py",
     "scripts/summarize_experiments.py",
     "scripts/generate_planning_reference.py",
+    "scripts/generate_obstacle_planning_reference.py",
     "scripts/generate_formation_reference.py",
     "scripts/generate_fault_scenario.py",
 ]
@@ -85,6 +86,7 @@ RECOMMENDED_TESTS = [
     "tests/test_metrics.py",
     "tests/test_summary.py",
     "tests/test_planning_reference.py",
+    "tests/test_obstacle_planning.py",
     "tests/test_formation_reference.py",
     "tests/test_fault_scenario.py",
 ]
@@ -170,6 +172,11 @@ PLANNING_OUTPUTS = [
     "results/metrics/trackability_planning_trackable_waypoint.json",
     "results/replay/planning_trackable_waypoint.json",
     "results/replay_html/planning_trackable_waypoint.html",
+    "results/raw/path_planning_obstacle_corridor.csv",
+    "results/raw/reference_planning_obstacle_corridor.csv",
+    "results/metrics/planning_obstacle_corridor.json",
+    "results/replay/planning_obstacle_corridor.json",
+    "results/replay_html/planning_obstacle_corridor.html",
 ]
 
 FORMATION_OUTPUTS = [
