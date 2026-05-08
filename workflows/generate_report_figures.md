@@ -41,9 +41,10 @@ scripts/generate_replay_html.py
 
 `scripts/plot_results.jl` currently writes a figure manifest. Use Syslab MCP plotting APIs or Sysplorer `plot_manager` to generate final image files, then update the manifest.
 
-`scripts/generate_replay_html.py` creates self-contained Three.js replay pages
-from `results/replay/*.json`. Use it for browser recording and 3D demo video
-materials without opening MWORKS:
+`scripts/generate_replay_html.py` creates self-contained offline browser replay
+pages from `results/replay/*.json`. The generated HTML has no CDN dependency
+and can be used for browser recording and 3D demo video materials without
+opening MWORKS:
 
 ```bash
 python3 scripts/generate_replay_html.py --all

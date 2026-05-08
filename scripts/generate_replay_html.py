@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Generate a self-contained Three.js replay HTML from replay JSON."""
+"""Generate an offline browser replay HTML from replay JSON.
+
+The generated page has no external CDN dependency. It uses Canvas 2D with a
+simple 3D projection, which is reliable for contest recording and works by
+opening the HTML file directly in a browser.
+"""
 
 from __future__ import annotations
 
@@ -22,20 +27,26 @@ HTML_TEMPLATE = """<!doctype html>
       height: 100%;
       overflow: hidden;
       background: #0f1117;
-      color: #e8edf7;
+      color: #eef3fb;
       font-family: Arial, "Microsoft YaHei", sans-serif;
+    }}
+    canvas {{
+      display: block;
+      width: 100vw;
+      height: 100vh;
     }}
     #hud {{
       position: fixed;
       left: 18px;
       top: 16px;
       z-index: 2;
-      min-width: 280px;
+      width: min(420px, calc(100vw - 36px));
       padding: 12px 14px;
-      background: rgba(16, 19, 28, 0.82);
+      background: rgba(14, 18, 28, 0.84);
       border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 8px;
       backdrop-filter: blur(8px);
+      box-sizing: border-box;
     }}
     #title {{
       font-size: 15px;
@@ -47,7 +58,7 @@ HTML_TEMPLATE = """<!doctype html>
       gap: 4px;
       font-size: 12px;
       line-height: 1.45;
-      color: #b9c3d9;
+      color: #bbc6db;
     }}
     #controls {{
       position: fixed;
@@ -60,13 +71,15 @@ HTML_TEMPLATE = """<!doctype html>
       gap: 12px;
       align-items: center;
       padding: 10px 12px;
-      background: rgba(16, 19, 28, 0.82);
+      background: rgba(14, 18, 28, 0.84);
       border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 8px;
       backdrop-filter: blur(8px);
+      box-sizing: border-box;
     }}
     button {{
       height: 34px;
+      min-width: 64px;
       padding: 0 14px;
       color: #10131c;
       background: #8fd3ff;
@@ -82,12 +95,13 @@ HTML_TEMPLATE = """<!doctype html>
     #timeLabel {{
       min-width: 92px;
       font-variant-numeric: tabular-nums;
-      color: #e8edf7;
+      color: #eef3fb;
       text-align: right;
     }}
   </style>
 </head>
 <body>
+  <canvas id="scene"></canvas>
   <div id="hud">
     <div id="title">{title}</div>
     <div id="meta">
@@ -95,6 +109,7 @@ HTML_TEMPLATE = """<!doctype html>
       <div>说明：{description}</div>
       <div>帧数：{frame_count}</div>
       <div>数据：{source}</div>
+      <div>渲染：离线 Canvas 3D 投影，无外部依赖</div>
     </div>
   </div>
   <div id="controls">
@@ -102,104 +117,190 @@ HTML_TEMPLATE = """<!doctype html>
     <input id="scrub" type="range" min="0" max="{max_index}" value="0" step="1">
     <div id="timeLabel">0.00 s</div>
   </div>
-  <script type="importmap">
-    {{
-      "imports": {{
-        "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/"
-      }}
-    }}
-  </script>
-  <script type="module">
-    import * as THREE from 'three';
-    import {{ OrbitControls }} from 'three/addons/controls/OrbitControls.js';
-
+  <script>
     const replay = {payload};
     const frames = replay.frames || [];
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f1117);
-    scene.fog = new THREE.Fog(0x0f1117, 28, 95);
-
-    const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 200);
-    camera.position.set(18, -24, 16);
-
-    const renderer = new THREE.WebGLRenderer({{ antialias: true }});
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 0, 4);
-    controls.enableDamping = true;
-
-    scene.add(new THREE.HemisphereLight(0xaec9ff, 0x1f2430, 1.6));
-    const sun = new THREE.DirectionalLight(0xffffff, 2.4);
-    sun.position.set(10, -12, 24);
-    scene.add(sun);
-
-    const grid = new THREE.GridHelper(32, 32, 0x3f4b61, 0x202632);
-    grid.rotation.x = Math.PI / 2;
-    scene.add(grid);
-
-    const axes = new THREE.AxesHelper(4);
-    scene.add(axes);
-
-    function getPosition(frame) {{
-      const uav = frame.uav && frame.uav[0];
-      return uav ? uav.position : [0, 0, 0];
-    }}
-
-    const pathPoints = frames.map((frame) => {{
-      const p = getPosition(frame);
-      return new THREE.Vector3(p[0], p[1], p[2]);
-    }});
-    const pathGeometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
-    const pathMaterial = new THREE.LineBasicMaterial({{ color: 0x8fd3ff }});
-    scene.add(new THREE.Line(pathGeometry, pathMaterial));
-
-    const drone = new THREE.Group();
-    const body = new THREE.Mesh(
-      new THREE.BoxGeometry(0.72, 0.42, 0.18),
-      new THREE.MeshStandardMaterial({{ color: 0xf2f6ff, roughness: 0.45, metalness: 0.15 }})
-    );
-    drone.add(body);
-
-    const armMaterial = new THREE.MeshStandardMaterial({{ color: 0x89a6c8, roughness: 0.35 }});
-    const arm1 = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.06, 0.06), armMaterial);
-    const arm2 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.35, 0.06), armMaterial);
-    drone.add(arm1, arm2);
-
-    const rotorMaterial = new THREE.MeshStandardMaterial({{ color: 0x61ffb5, roughness: 0.25 }});
-    for (const [x, y] of [[0.68, 0.68], [0.68, -0.68], [-0.68, 0.68], [-0.68, -0.68]]) {{
-      const rotor = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.035, 32), rotorMaterial);
-      rotor.rotation.x = Math.PI / 2;
-      rotor.position.set(x, y, 0.02);
-      drone.add(rotor);
-    }}
-    scene.add(drone);
-
-    const marker = new THREE.Mesh(
-      new THREE.SphereGeometry(0.08, 20, 20),
-      new THREE.MeshBasicMaterial({{ color: 0xffd166 }})
-    );
-    scene.add(marker);
-
+    const canvas = document.getElementById('scene');
+    const ctx = canvas.getContext('2d');
     const scrub = document.getElementById('scrub');
     const playButton = document.getElementById('play');
     const timeLabel = document.getElementById('timeLabel');
+
+    let width = 0;
+    let height = 0;
+    let scale = 34;
     let frameIndex = 0;
     let playing = true;
-    let lastTick = performance.now();
+    let lastStep = performance.now();
 
-    function setFrame(index) {{
-      frameIndex = Math.max(0, Math.min(frames.length - 1, index));
-      const frame = frames[frameIndex];
-      const p = getPosition(frame);
-      drone.position.set(p[0], p[1], p[2]);
-      marker.position.set(p[0], p[1], p[2]);
+    function resize() {{
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      width = Math.floor(window.innerWidth * ratio);
+      height = Math.floor(window.innerHeight * ratio);
+      canvas.width = width;
+      canvas.height = height;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      const bounds = computeBounds();
+      const span = Math.max(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY, bounds.maxZ - bounds.minZ, 1);
+      scale = Math.max(18, Math.min(54, Math.min(width, height) / (span * 2.2)));
+    }}
+
+    function getPosition(frame) {{
+      const uav = frame && frame.uav && frame.uav[0];
+      return uav ? uav.position : [0, 0, 0];
+    }}
+
+    function computeBounds() {{
+      const values = frames.map(getPosition);
+      const xs = values.map(p => p[0]);
+      const ys = values.map(p => p[1]);
+      const zs = values.map(p => p[2]);
+      return {{
+        minX: Math.min(...xs, -2), maxX: Math.max(...xs, 2),
+        minY: Math.min(...ys, -2), maxY: Math.max(...ys, 2),
+        minZ: Math.min(...zs, 0), maxZ: Math.max(...zs, 2)
+      }};
+    }}
+
+    function project(point) {{
+      const [x, y, z] = point;
+      const cx = width * 0.52;
+      const cy = height * 0.58;
+      const px = cx + (x - y) * scale * 0.82;
+      const py = cy + (x + y) * scale * 0.36 - z * scale * 0.92;
+      return [px, py];
+    }}
+
+    function drawLine3(a, b, color, lineWidth = 1) {{
+      const pa = project(a);
+      const pb = project(b);
+      ctx.beginPath();
+      ctx.moveTo(pa[0], pa[1]);
+      ctx.lineTo(pb[0], pb[1]);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.stroke();
+    }}
+
+    function drawGrid() {{
+      const size = 16;
+      for (let i = -size; i <= size; i += 1) {{
+        const strong = i === 0;
+        drawLine3([-size, i, 0], [size, i, 0], strong ? '#58647a' : '#263044', strong ? 1.5 : 0.8);
+        drawLine3([i, -size, 0], [i, size, 0], strong ? '#58647a' : '#263044', strong ? 1.5 : 0.8);
+      }}
+      drawLine3([0, 0, 0], [4, 0, 0], '#ff6b6b', 2);
+      drawLine3([0, 0, 0], [0, 4, 0], '#61d394', 2);
+      drawLine3([0, 0, 0], [0, 0, 4], '#8fd3ff', 2);
+    }}
+
+    function drawPath() {{
+      if (frames.length < 2) return;
+      ctx.beginPath();
+      frames.forEach((frame, index) => {{
+        const p = project(getPosition(frame));
+        if (index === 0) ctx.moveTo(p[0], p[1]);
+        else ctx.lineTo(p[0], p[1]);
+      }});
+      ctx.strokeStyle = '#8fd3ff';
+      ctx.lineWidth = 2.2;
+      ctx.stroke();
+    }}
+
+    function drawDrone(position, time) {{
+      const center = project(position);
+      const arm = 26;
+      const bob = Math.sin(time * 5) * 2;
+      ctx.save();
+      ctx.translate(center[0], center[1] + bob);
+      ctx.rotate(Math.sin(time * 0.8) * 0.18);
+
+      ctx.strokeStyle = '#dfe9ff';
+      ctx.lineWidth = 5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-arm, 0);
+      ctx.lineTo(arm, 0);
+      ctx.moveTo(0, -arm);
+      ctx.lineTo(0, arm);
+      ctx.stroke();
+
+      ctx.fillStyle = '#f5f8ff';
+      ctx.strokeStyle = '#1b2433';
+      ctx.lineWidth = 2;
+      roundRect(-17, -11, 34, 22, 5);
+      ctx.fill();
+      ctx.stroke();
+
+      const rotors = [[-arm, 0], [arm, 0], [0, -arm], [0, arm]];
+      for (const [x, y] of rotors) {{
+        ctx.beginPath();
+        ctx.ellipse(x, y, 11, 5, time * 7, 0, Math.PI * 2);
+        ctx.fillStyle = '#61ffb5';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+        ctx.stroke();
+      }}
+      ctx.restore();
+
+      const ground = project([position[0], position[1], 0]);
+      ctx.beginPath();
+      ctx.moveTo(center[0], center[1]);
+      ctx.lineTo(ground[0], ground[1]);
+      ctx.strokeStyle = 'rgba(255, 209, 102, 0.45)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(ground[0], ground[1], 12, 5, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 209, 102, 0.35)';
+      ctx.fill();
+    }}
+
+    function roundRect(x, y, w, h, r) {{
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }}
+
+    function drawLabels() {{
+      ctx.fillStyle = '#bbc6db';
+      ctx.font = '12px Arial';
+      const x = project([4.2, 0, 0]);
+      const y = project([0, 4.2, 0]);
+      const z = project([0, 0, 4.2]);
+      ctx.fillText('X', x[0], x[1]);
+      ctx.fillText('Y', y[0], y[1]);
+      ctx.fillText('Z', z[0], z[1]);
+    }}
+
+    function render(now) {{
+      requestAnimationFrame(render);
+      if (playing && frames.length > 0 && now - lastStep > 33) {{
+        frameIndex = (frameIndex + 1) % frames.length;
+        lastStep = now;
+      }}
+      const frame = frames[frameIndex] || {{ time: 0 }};
+      const time = Number(frame.time || 0);
       scrub.value = frameIndex;
-      timeLabel.textContent = `${{Number(frame.time || 0).toFixed(2)}} s`;
+      timeLabel.textContent = `${{time.toFixed(2)}} s`;
+
+      const gradient = ctx.createLinearGradient(0, 0, 0, height);
+      gradient.addColorStop(0, '#101827');
+      gradient.addColorStop(1, '#0f1117');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+      drawGrid();
+      drawPath();
+      drawDrone(getPosition(frame), time);
+      drawLabels();
     }}
 
     playButton.addEventListener('click', () => {{
@@ -210,28 +311,12 @@ HTML_TEMPLATE = """<!doctype html>
     scrub.addEventListener('input', () => {{
       playing = false;
       playButton.textContent = '播放';
-      setFrame(Number(scrub.value));
+      frameIndex = Number(scrub.value);
     }});
 
-    window.addEventListener('resize', () => {{
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }});
-
-    function animate(now) {{
-      requestAnimationFrame(animate);
-      controls.update();
-      if (playing && frames.length > 0 && now - lastTick > 33) {{
-        setFrame((frameIndex + 1) % frames.length);
-        lastTick = now;
-      }}
-      drone.rotation.z += 0.012;
-      renderer.render(scene, camera);
-    }}
-
-    setFrame(0);
-    animate(performance.now());
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(render);
   </script>
 </body>
 </html>
@@ -268,14 +353,14 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     if args.all:
-      paths = sorted(args.input_dir.glob("*.json"))
-      if not paths:
-          raise FileNotFoundError(f"No replay JSON files found in {args.input_dir}")
-      for replay_path in paths:
-          output_path = args.output_dir / f"{replay_path.stem}.html"
-          build_html(replay_path, output_path)
-          print(f"Wrote {output_path}")
-      return 0
+        paths = sorted(args.input_dir.glob("*.json"))
+        if not paths:
+            raise FileNotFoundError(f"No replay JSON files found in {args.input_dir}")
+        for replay_path in paths:
+            output_path = args.output_dir / f"{replay_path.stem}.html"
+            build_html(replay_path, output_path)
+            print(f"Wrote {output_path}")
+        return 0
 
     if not args.replay_json or not args.output_html:
         raise SystemExit("Usage: generate_replay_html.py <replay_json> <output_html> or --all")

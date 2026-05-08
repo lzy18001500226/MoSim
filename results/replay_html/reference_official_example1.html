@@ -11,20 +11,26 @@
       height: 100%;
       overflow: hidden;
       background: #0f1117;
-      color: #e8edf7;
+      color: #eef3fb;
       font-family: Arial, "Microsoft YaHei", sans-serif;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
     }
     #hud {
       position: fixed;
       left: 18px;
       top: 16px;
       z-index: 2;
-      min-width: 280px;
+      width: min(420px, calc(100vw - 36px));
       padding: 12px 14px;
-      background: rgba(16, 19, 28, 0.82);
+      background: rgba(14, 18, 28, 0.84);
       border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 8px;
       backdrop-filter: blur(8px);
+      box-sizing: border-box;
     }
     #title {
       font-size: 15px;
@@ -36,7 +42,7 @@
       gap: 4px;
       font-size: 12px;
       line-height: 1.45;
-      color: #b9c3d9;
+      color: #bbc6db;
     }
     #controls {
       position: fixed;
@@ -49,13 +55,15 @@
       gap: 12px;
       align-items: center;
       padding: 10px 12px;
-      background: rgba(16, 19, 28, 0.82);
+      background: rgba(14, 18, 28, 0.84);
       border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 8px;
       backdrop-filter: blur(8px);
+      box-sizing: border-box;
     }
     button {
       height: 34px;
+      min-width: 64px;
       padding: 0 14px;
       color: #10131c;
       background: #8fd3ff;
@@ -71,12 +79,13 @@
     #timeLabel {
       min-width: 92px;
       font-variant-numeric: tabular-nums;
-      color: #e8edf7;
+      color: #eef3fb;
       text-align: right;
     }
   </style>
 </head>
 <body>
+  <canvas id="scene"></canvas>
   <div id="hud">
     <div id="title">official_example1 三维回放</div>
     <div id="meta">
@@ -84,6 +93,7 @@
       <div>说明：阶梯爬升运动</div>
       <div>帧数：626</div>
       <div>数据：QuadrotorModel.PathPlanning reference equations</div>
+      <div>渲染：离线 Canvas 3D 投影，无外部依赖</div>
     </div>
   </div>
   <div id="controls">
@@ -91,104 +101,190 @@
     <input id="scrub" type="range" min="0" max="625" value="0" step="1">
     <div id="timeLabel">0.00 s</div>
   </div>
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/"
-      }
-    }
-  </script>
-  <script type="module">
-    import * as THREE from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
+  <script>
     const replay = {"scene_id": "official_example1", "model_name": "QuadrotorModel.Examples.Example1", "description": "阶梯爬升运动", "source": "QuadrotorModel.PathPlanning reference equations", "frame_count": 626, "frames": [{"time": 0.0, "uav": [{"id": "reference", "position": [0.0, 0.0, 0.0], "yaw": 0.0}]}, {"time": 0.08, "uav": [{"id": "reference", "position": [0.0, 0.0, 0.16], "yaw": 0.0}]}, {"time": 0.16, "uav": [{"id": "reference", "position": [0.0, 0.0, 0.32], "yaw": 0.0}]}, {"time": 0.24, "uav": [{"id": "reference", "position": [0.0, 0.0, 0.48], "yaw": 0.0}]}, {"time": 0.32, "uav": [{"id": "reference", "position": [0.0, 0.0, 0.64], "yaw": 0.0}]}, {"time": 0.4, "uav": [{"id": "reference", "position": [0.0, 0.0, 0.8], "yaw": 0.0}]}, {"time": 0.48, "uav": [{"id": "reference", "position": [0.0, 0.0, 0.96], "yaw": 0.0}]}, {"time": 0.56, "uav": [{"id": "reference", "position": [0.0, 0.0, 1.12], "yaw": 0.0}]}, {"time": 0.64, "uav": [{"id": "reference", "position": [0.0, 0.0, 1.28], "yaw": 0.0}]}, {"time": 0.72, "uav": [{"id": "reference", "position": [0.0, 0.0, 1.44], "yaw": 0.0}]}, {"time": 0.8, "uav": [{"id": "reference", "position": [0.0, 0.0, 1.6], "yaw": 0.0}]}, {"time": 0.88, "uav": [{"id": "reference", "position": [0.0, 0.0, 1.7600000000000002], "yaw": 0.0}]}, {"time": 0.96, "uav": [{"id": "reference", "position": [0.0, 0.0, 1.92], "yaw": 0.0}]}, {"time": 1.04, "uav": [{"id": "reference", "position": [0.0, 0.0, 2.08], "yaw": 0.0}]}, {"time": 1.12, "uav": [{"id": "reference", "position": [0.0, 0.0, 2.24], "yaw": 0.0}]}, {"time": 1.2, "uav": [{"id": "reference", "position": [0.0, 0.0, 2.4], "yaw": 0.0}]}, {"time": 1.28, "uav": [{"id": "reference", "position": [0.0, 0.0, 2.56], "yaw": 0.0}]}, {"time": 1.36, "uav": [{"id": "reference", "position": [0.0, 0.0, 2.72], "yaw": 0.0}]}, {"time": 1.44, "uav": [{"id": "reference", "position": [0.0, 0.0, 2.88], "yaw": 0.0}]}, {"time": 1.52, "uav": [{"id": "reference", "position": [0.0, 0.0, 3.04], "yaw": 0.0}]}, {"time": 1.6, "uav": [{"id": "reference", "position": [0.0, 0.0, 3.2], "yaw": 0.0}]}, {"time": 1.68, "uav": [{"id": "reference", "position": [0.0, 0.0, 3.3600000000000003], "yaw": 0.0}]}, {"time": 1.76, "uav": [{"id": "reference", "position": [0.0, 0.0, 3.5200000000000005], "yaw": 0.0}]}, {"time": 1.84, "uav": [{"id": "reference", "position": [0.0, 0.0, 3.6800000000000006], "yaw": 0.0}]}, {"time": 1.92, "uav": [{"id": "reference", "position": [0.0, 0.0, 3.84], "yaw": 0.0}]}, {"time": 2.0, "uav": [{"id": "reference", "position": [0.0, 0.0, 4.0], "yaw": 0.0}]}, {"time": 2.08, "uav": [{"id": "reference", "position": [0.0, 0.0, 4.16], "yaw": 0.0}]}, {"time": 2.16, "uav": [{"id": "reference", "position": [0.0, 0.0, 4.32], "yaw": 0.0}]}, {"time": 2.24, "uav": [{"id": "reference", "position": [0.0, 0.0, 4.48], "yaw": 0.0}]}, {"time": 2.32, "uav": [{"id": "reference", "position": [0.0, 0.0, 4.64], "yaw": 0.0}]}, {"time": 2.4, "uav": [{"id": "reference", "position": [0.0, 0.0, 4.8], "yaw": 0.0}]}, {"time": 2.48, "uav": [{"id": "reference", "position": [0.0, 0.0, 4.96], "yaw": 0.0}]}, {"time": 2.56, "uav": [{"id": "reference", "position": [0.0, 0.0, 5.12], "yaw": 0.0}]}, {"time": 2.64, "uav": [{"id": "reference", "position": [0.0, 0.0, 5.28], "yaw": 0.0}]}, {"time": 2.72, "uav": [{"id": "reference", "position": [0.0, 0.0, 5.44], "yaw": 0.0}]}, {"time": 2.8, "uav": [{"id": "reference", "position": [0.0, 0.0, 5.6], "yaw": 0.0}]}, {"time": 2.88, "uav": [{"id": "reference", "position": [0.0, 0.0, 5.76], "yaw": 0.0}]}, {"time": 2.96, "uav": [{"id": "reference", "position": [0.0, 0.0, 5.92], "yaw": 0.0}]}, {"time": 3.04, "uav": [{"id": "reference", "position": [0.0, 0.0, 6.08], "yaw": 0.0}]}, {"time": 3.12, "uav": [{"id": "reference", "position": [0.0, 0.0, 6.24], "yaw": 0.0}]}, {"time": 3.2, "uav": [{"id": "reference", "position": [0.0, 0.0, 6.4], "yaw": 0.0}]}, {"time": 3.28, "uav": [{"id": "reference", "position": [0.0, 0.0, 6.56], "yaw": 0.0}]}, {"time": 3.36, "uav": [{"id": "reference", "position": [0.0, 0.0, 6.720000000000001], "yaw": 0.0}]}, {"time": 3.44, "uav": [{"id": "reference", "position": [0.0, 0.0, 6.88], "yaw": 0.0}]}, {"time": 3.52, "uav": [{"id": "reference", "position": [0.0, 0.0, 7.040000000000001], "yaw": 0.0}]}, {"time": 3.6, "uav": [{"id": "reference", "position": [0.0, 0.0, 7.2], "yaw": 0.0}]}, {"time": 3.68, "uav": [{"id": "reference", "position": [0.0, 0.0, 7.360000000000001], "yaw": 0.0}]}, {"time": 3.76, "uav": [{"id": "reference", "position": [0.0, 0.0, 7.519999999999999], "yaw": 0.0}]}, {"time": 3.84, "uav": [{"id": "reference", "position": [0.0, 0.0, 7.68], "yaw": 0.0}]}, {"time": 3.92, "uav": [{"id": "reference", "position": [0.0, 0.0, 7.840000000000001], "yaw": 0.0}]}, {"time": 4.0, "uav": [{"id": "reference", "position": [0.0, 0.0, 8.0], "yaw": 0.0}]}, {"time": 4.08, "uav": [{"id": "reference", "position": [0.0, 0.0, 8.16], "yaw": 0.0}]}, {"time": 4.16, "uav": [{"id": "reference", "position": [0.0, 0.0, 8.32], "yaw": 0.0}]}, {"time": 4.24, "uav": [{"id": "reference", "position": [0.0, 0.0, 8.48], "yaw": 0.0}]}, {"time": 4.32, "uav": [{"id": "reference", "position": [0.0, 0.0, 8.64], "yaw": 0.0}]}, {"time": 4.4, "uav": [{"id": "reference", "position": [0.0, 0.0, 8.8], "yaw": 0.0}]}, {"time": 4.48, "uav": [{"id": "reference", "position": [0.0, 0.0, 8.96], "yaw": 0.0}]}, {"time": 4.56, "uav": [{"id": "reference", "position": [0.0, 0.0, 9.12], "yaw": 0.0}]}, {"time": 4.64, "uav": [{"id": "reference", "position": [0.0, 0.0, 9.28], "yaw": 0.0}]}, {"time": 4.72, "uav": [{"id": "reference", "position": [0.0, 0.0, 9.44], "yaw": 0.0}]}, {"time": 4.8, "uav": [{"id": "reference", "position": [0.0, 0.0, 9.6], "yaw": 0.0}]}, {"time": 4.88, "uav": [{"id": "reference", "position": [0.0, 0.0, 9.76], "yaw": 0.0}]}, {"time": 4.96, "uav": [{"id": "reference", "position": [0.0, 0.0, 9.92], "yaw": 0.0}]}, {"time": 5.04, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 5.12, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 5.2, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 5.28, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 5.36, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 5.44, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 5.52, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 5.6, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 5.68, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 5.76, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 5.84, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 5.92, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 6.0, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 6.08, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 6.16, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 6.24, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 6.32, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 6.4, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 6.48, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 6.56, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 6.64, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 6.72, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 6.8, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 6.88, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 6.96, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 7.04, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 7.12, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 7.2, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 7.28, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 7.36, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 7.44, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 7.52, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 7.6, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 7.68, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 7.76, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 7.84, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 7.92, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 8.0, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 8.08, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 8.16, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 8.24, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 8.32, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 8.4, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 8.48, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 8.56, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 8.64, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 8.72, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 8.8, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 8.88, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 8.96, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 9.04, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 9.12, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 9.2, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 9.28, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 9.36, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 9.44, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 9.52, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 9.6, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 9.68, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 9.76, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 9.84, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 9.92, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 10.0, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.0], "yaw": 0.0}]}, {"time": 10.08, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.133333333333333], "yaw": 0.0}]}, {"time": 10.16, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.266666666666667], "yaw": 0.0}]}, {"time": 10.24, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.4], "yaw": 0.0}]}, {"time": 10.32, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.533333333333333], "yaw": 0.0}]}, {"time": 10.4, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.666666666666668], "yaw": 0.0}]}, {"time": 10.48, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.8], "yaw": 0.0}]}, {"time": 10.56, "uav": [{"id": "reference", "position": [0.0, 0.0, 10.933333333333334], "yaw": 0.0}]}, {"time": 10.64, "uav": [{"id": "reference", "position": [0.0, 0.0, 11.066666666666668], "yaw": 0.0}]}, {"time": 10.72, "uav": [{"id": "reference", "position": [0.0, 0.0, 11.200000000000001], "yaw": 0.0}]}, {"time": 10.8, "uav": [{"id": "reference", "position": [0.0, 0.0, 11.333333333333334], "yaw": 0.0}]}, {"time": 10.88, "uav": [{"id": "reference", "position": [0.0, 0.0, 11.466666666666669], "yaw": 0.0}]}, {"time": 10.96, "uav": [{"id": "reference", "position": [0.0, 0.0, 11.600000000000001], "yaw": 0.0}]}, {"time": 11.04, "uav": [{"id": "reference", "position": [0.0, 0.0, 11.733333333333333], "yaw": 0.0}]}, {"time": 11.12, "uav": [{"id": "reference", "position": [0.0, 0.0, 11.866666666666665], "yaw": 0.0}]}, {"time": 11.2, "uav": [{"id": "reference", "position": [0.0, 0.0, 11.999999999999998], "yaw": 0.0}]}, {"time": 11.28, "uav": [{"id": "reference", "position": [0.0, 0.0, 12.133333333333333], "yaw": 0.0}]}, {"time": 11.36, "uav": [{"id": "reference", "position": [0.0, 0.0, 12.266666666666666], "yaw": 0.0}]}, {"time": 11.44, "uav": [{"id": "reference", "position": [0.0, 0.0, 12.399999999999999], "yaw": 0.0}]}, {"time": 11.52, "uav": [{"id": "reference", "position": [0.0, 0.0, 12.533333333333333], "yaw": 0.0}]}, {"time": 11.6, "uav": [{"id": "reference", "position": [0.0, 0.0, 12.666666666666666], "yaw": 0.0}]}, {"time": 11.68, "uav": [{"id": "reference", "position": [0.0, 0.0, 12.799999999999999], "yaw": 0.0}]}, {"time": 11.76, "uav": [{"id": "reference", "position": [0.0, 0.0, 12.933333333333334], "yaw": 0.0}]}, {"time": 11.84, "uav": [{"id": "reference", "position": [0.0, 0.0, 13.066666666666666], "yaw": 0.0}]}, {"time": 11.92, "uav": [{"id": "reference", "position": [0.0, 0.0, 13.2], "yaw": 0.0}]}, {"time": 12.0, "uav": [{"id": "reference", "position": [0.0, 0.0, 13.333333333333334], "yaw": 0.0}]}, {"time": 12.08, "uav": [{"id": "reference", "position": [0.0, 0.0, 13.466666666666667], "yaw": 0.0}]}, {"time": 12.16, "uav": [{"id": "reference", "position": [0.0, 0.0, 13.6], "yaw": 0.0}]}, {"time": 12.24, "uav": [{"id": "reference", "position": [0.0, 0.0, 13.733333333333334], "yaw": 0.0}]}, {"time": 12.32, "uav": [{"id": "reference", "position": [0.0, 0.0, 13.866666666666667], "yaw": 0.0}]}, {"time": 12.4, "uav": [{"id": "reference", "position": [0.0, 0.0, 14.0], "yaw": 0.0}]}, {"time": 12.48, "uav": [{"id": "reference", "position": [0.0, 0.0, 14.133333333333333], "yaw": 0.0}]}, {"time": 12.56, "uav": [{"id": "reference", "position": [0.0, 0.0, 14.266666666666667], "yaw": 0.0}]}, {"time": 12.64, "uav": [{"id": "reference", "position": [0.0, 0.0, 14.400000000000002], "yaw": 0.0}]}, {"time": 12.72, "uav": [{"id": "reference", "position": [0.0, 0.0, 14.533333333333335], "yaw": 0.0}]}, {"time": 12.8, "uav": [{"id": "reference", "position": [0.0, 0.0, 14.666666666666668], "yaw": 0.0}]}, {"time": 12.88, "uav": [{"id": "reference", "position": [0.0, 0.0, 14.8], "yaw": 0.0}]}, {"time": 12.96, "uav": [{"id": "reference", "position": [0.0, 0.0, 14.933333333333334], "yaw": 0.0}]}, {"time": 13.04, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 13.12, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 13.2, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 13.28, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 13.36, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 13.44, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 13.52, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 13.6, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 13.68, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 13.76, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 13.84, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 13.92, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 14.0, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 14.08, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 14.16, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 14.24, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 14.32, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 14.4, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 14.48, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 14.56, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 14.64, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 14.72, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 14.8, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 14.88, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 14.96, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 15.04, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 15.12, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 15.2, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 15.28, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 15.36, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 15.44, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 15.52, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 15.6, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 15.68, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 15.76, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 15.84, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 15.92, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 16.0, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 16.08, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 16.16, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 16.24, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 16.32, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 16.4, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 16.48, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 16.56, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 16.64, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 16.72, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 16.8, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 16.88, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 16.96, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 17.04, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 17.12, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 17.2, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 17.28, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 17.36, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 17.44, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 17.52, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 17.6, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 17.68, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 17.76, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 17.84, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 17.92, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 18.0, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 18.08, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 18.16, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 18.24, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 18.32, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 18.4, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 18.48, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 18.56, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 18.64, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 18.72, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 18.8, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 18.88, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 18.96, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 19.04, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 19.12, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 19.2, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 19.28, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 19.36, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 19.44, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 19.52, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 19.6, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 19.68, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 19.76, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 19.84, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 19.92, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 20.0, "uav": [{"id": "reference", "position": [0.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 20.08, "uav": [{"id": "reference", "position": [0.0799999999999983, 0.0, 15.0], "yaw": 0.0}]}, {"time": 20.16, "uav": [{"id": "reference", "position": [0.16000000000000014, 0.0, 15.0], "yaw": 0.0}]}, {"time": 20.24, "uav": [{"id": "reference", "position": [0.23999999999999844, 0.0, 15.0], "yaw": 0.0}]}, {"time": 20.32, "uav": [{"id": "reference", "position": [0.3200000000000003, 0.0, 15.0], "yaw": 0.0}]}, {"time": 20.4, "uav": [{"id": "reference", "position": [0.3999999999999986, 0.0, 15.0], "yaw": 0.0}]}, {"time": 20.48, "uav": [{"id": "reference", "position": [0.4800000000000004, 0.0, 15.0], "yaw": 0.0}]}, {"time": 20.56, "uav": [{"id": "reference", "position": [0.5599999999999987, 0.0, 15.0], "yaw": 0.0}]}, {"time": 20.64, "uav": [{"id": "reference", "position": [0.6400000000000006, 0.0, 15.0], "yaw": 0.0}]}, {"time": 20.72, "uav": [{"id": "reference", "position": [0.7199999999999989, 0.0, 15.0], "yaw": 0.0}]}, {"time": 20.8, "uav": [{"id": "reference", "position": [0.8000000000000007, 0.0, 15.0], "yaw": 0.0}]}, {"time": 20.88, "uav": [{"id": "reference", "position": [0.879999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 20.96, "uav": [{"id": "reference", "position": [0.9600000000000009, 0.0, 15.0], "yaw": 0.0}]}, {"time": 21.04, "uav": [{"id": "reference", "position": [1.0399999999999991, 0.0, 15.0], "yaw": 0.0}]}, {"time": 21.12, "uav": [{"id": "reference", "position": [1.120000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 21.2, "uav": [{"id": "reference", "position": [1.1999999999999993, 0.0, 15.0], "yaw": 0.0}]}, {"time": 21.28, "uav": [{"id": "reference", "position": [1.2800000000000011, 0.0, 15.0], "yaw": 0.0}]}, {"time": 21.36, "uav": [{"id": "reference", "position": [1.3599999999999994, 0.0, 15.0], "yaw": 0.0}]}, {"time": 21.44, "uav": [{"id": "reference", "position": [1.4400000000000013, 0.0, 15.0], "yaw": 0.0}]}, {"time": 21.52, "uav": [{"id": "reference", "position": [1.5199999999999996, 0.0, 15.0], "yaw": 0.0}]}, {"time": 21.6, "uav": [{"id": "reference", "position": [1.6000000000000014, 0.0, 15.0], "yaw": 0.0}]}, {"time": 21.68, "uav": [{"id": "reference", "position": [1.6799999999999997, 0.0, 15.0], "yaw": 0.0}]}, {"time": 21.76, "uav": [{"id": "reference", "position": [1.7600000000000016, 0.0, 15.0], "yaw": 0.0}]}, {"time": 21.84, "uav": [{"id": "reference", "position": [1.8399999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 21.92, "uav": [{"id": "reference", "position": [1.9200000000000017, 0.0, 15.0], "yaw": 0.0}]}, {"time": 22.0, "uav": [{"id": "reference", "position": [2.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 22.08, "uav": [{"id": "reference", "position": [2.0799999999999983, 0.0, 15.0], "yaw": 0.0}]}, {"time": 22.16, "uav": [{"id": "reference", "position": [2.16, 0.0, 15.0], "yaw": 0.0}]}, {"time": 22.24, "uav": [{"id": "reference", "position": [2.2399999999999984, 0.0, 15.0], "yaw": 0.0}]}, {"time": 22.32, "uav": [{"id": "reference", "position": [2.3200000000000003, 0.0, 15.0], "yaw": 0.0}]}, {"time": 22.4, "uav": [{"id": "reference", "position": [2.3999999999999986, 0.0, 15.0], "yaw": 0.0}]}, {"time": 22.48, "uav": [{"id": "reference", "position": [2.4800000000000004, 0.0, 15.0], "yaw": 0.0}]}, {"time": 22.56, "uav": [{"id": "reference", "position": [2.5599999999999987, 0.0, 15.0], "yaw": 0.0}]}, {"time": 22.64, "uav": [{"id": "reference", "position": [2.6400000000000006, 0.0, 15.0], "yaw": 0.0}]}, {"time": 22.72, "uav": [{"id": "reference", "position": [2.719999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 22.8, "uav": [{"id": "reference", "position": [2.8000000000000007, 0.0, 15.0], "yaw": 0.0}]}, {"time": 22.88, "uav": [{"id": "reference", "position": [2.879999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 22.96, "uav": [{"id": "reference", "position": [2.960000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 23.04, "uav": [{"id": "reference", "position": [3.039999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 23.12, "uav": [{"id": "reference", "position": [3.120000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 23.2, "uav": [{"id": "reference", "position": [3.1999999999999993, 0.0, 15.0], "yaw": 0.0}]}, {"time": 23.28, "uav": [{"id": "reference", "position": [3.280000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 23.36, "uav": [{"id": "reference", "position": [3.3599999999999994, 0.0, 15.0], "yaw": 0.0}]}, {"time": 23.44, "uav": [{"id": "reference", "position": [3.4400000000000013, 0.0, 15.0], "yaw": 0.0}]}, {"time": 23.52, "uav": [{"id": "reference", "position": [3.5199999999999996, 0.0, 15.0], "yaw": 0.0}]}, {"time": 23.6, "uav": [{"id": "reference", "position": [3.6000000000000014, 0.0, 15.0], "yaw": 0.0}]}, {"time": 23.68, "uav": [{"id": "reference", "position": [3.6799999999999997, 0.0, 15.0], "yaw": 0.0}]}, {"time": 23.76, "uav": [{"id": "reference", "position": [3.7600000000000016, 0.0, 15.0], "yaw": 0.0}]}, {"time": 23.84, "uav": [{"id": "reference", "position": [3.84, 0.0, 15.0], "yaw": 0.0}]}, {"time": 23.92, "uav": [{"id": "reference", "position": [3.9200000000000017, 0.0, 15.0], "yaw": 0.0}]}, {"time": 24.0, "uav": [{"id": "reference", "position": [4.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 24.08, "uav": [{"id": "reference", "position": [4.079999999999998, 0.0, 15.0], "yaw": 0.0}]}, {"time": 24.16, "uav": [{"id": "reference", "position": [4.16, 0.0, 15.0], "yaw": 0.0}]}, {"time": 24.24, "uav": [{"id": "reference", "position": [4.239999999999998, 0.0, 15.0], "yaw": 0.0}]}, {"time": 24.32, "uav": [{"id": "reference", "position": [4.32, 0.0, 15.0], "yaw": 0.0}]}, {"time": 24.4, "uav": [{"id": "reference", "position": [4.399999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 24.48, "uav": [{"id": "reference", "position": [4.48, 0.0, 15.0], "yaw": 0.0}]}, {"time": 24.56, "uav": [{"id": "reference", "position": [4.559999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 24.64, "uav": [{"id": "reference", "position": [4.640000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 24.72, "uav": [{"id": "reference", "position": [4.719999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 24.8, "uav": [{"id": "reference", "position": [4.800000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 24.88, "uav": [{"id": "reference", "position": [4.879999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 24.96, "uav": [{"id": "reference", "position": [4.960000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 25.04, "uav": [{"id": "reference", "position": [5.039999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 25.12, "uav": [{"id": "reference", "position": [5.120000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 25.2, "uav": [{"id": "reference", "position": [5.199999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 25.28, "uav": [{"id": "reference", "position": [5.280000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 25.36, "uav": [{"id": "reference", "position": [5.359999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 25.44, "uav": [{"id": "reference", "position": [5.440000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 25.52, "uav": [{"id": "reference", "position": [5.52, 0.0, 15.0], "yaw": 0.0}]}, {"time": 25.6, "uav": [{"id": "reference", "position": [5.600000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 25.68, "uav": [{"id": "reference", "position": [5.68, 0.0, 15.0], "yaw": 0.0}]}, {"time": 25.76, "uav": [{"id": "reference", "position": [5.760000000000002, 0.0, 15.0], "yaw": 0.0}]}, {"time": 25.84, "uav": [{"id": "reference", "position": [5.84, 0.0, 15.0], "yaw": 0.0}]}, {"time": 25.92, "uav": [{"id": "reference", "position": [5.920000000000002, 0.0, 15.0], "yaw": 0.0}]}, {"time": 26.0, "uav": [{"id": "reference", "position": [6.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 26.08, "uav": [{"id": "reference", "position": [6.079999999999998, 0.0, 15.0], "yaw": 0.0}]}, {"time": 26.16, "uav": [{"id": "reference", "position": [6.16, 0.0, 15.0], "yaw": 0.0}]}, {"time": 26.24, "uav": [{"id": "reference", "position": [6.239999999999998, 0.0, 15.0], "yaw": 0.0}]}, {"time": 26.32, "uav": [{"id": "reference", "position": [6.32, 0.0, 15.0], "yaw": 0.0}]}, {"time": 26.4, "uav": [{"id": "reference", "position": [6.399999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 26.48, "uav": [{"id": "reference", "position": [6.480000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 26.56, "uav": [{"id": "reference", "position": [6.56, 0.0, 15.0], "yaw": 0.0}]}, {"time": 26.64, "uav": [{"id": "reference", "position": [6.640000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 26.72, "uav": [{"id": "reference", "position": [6.719999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 26.8, "uav": [{"id": "reference", "position": [6.8, 0.0, 15.0], "yaw": 0.0}]}, {"time": 26.88, "uav": [{"id": "reference", "position": [6.879999999999998, 0.0, 15.0], "yaw": 0.0}]}, {"time": 26.96, "uav": [{"id": "reference", "position": [6.960000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 27.04, "uav": [{"id": "reference", "position": [7.039999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 27.12, "uav": [{"id": "reference", "position": [7.120000000000002, 0.0, 15.0], "yaw": 0.0}]}, {"time": 27.2, "uav": [{"id": "reference", "position": [7.2, 0.0, 15.0], "yaw": 0.0}]}, {"time": 27.28, "uav": [{"id": "reference", "position": [7.280000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 27.36, "uav": [{"id": "reference", "position": [7.359999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 27.44, "uav": [{"id": "reference", "position": [7.44, 0.0, 15.0], "yaw": 0.0}]}, {"time": 27.52, "uav": [{"id": "reference", "position": [7.519999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 27.6, "uav": [{"id": "reference", "position": [7.600000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 27.68, "uav": [{"id": "reference", "position": [7.68, 0.0, 15.0], "yaw": 0.0}]}, {"time": 27.76, "uav": [{"id": "reference", "position": [7.7600000000000025, 0.0, 15.0], "yaw": 0.0}]}, {"time": 27.84, "uav": [{"id": "reference", "position": [7.840000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 27.92, "uav": [{"id": "reference", "position": [7.920000000000002, 0.0, 15.0], "yaw": 0.0}]}, {"time": 28.0, "uav": [{"id": "reference", "position": [8.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 28.08, "uav": [{"id": "reference", "position": [8.079999999999998, 0.0, 15.0], "yaw": 0.0}]}, {"time": 28.16, "uav": [{"id": "reference", "position": [8.16, 0.0, 15.0], "yaw": 0.0}]}, {"time": 28.24, "uav": [{"id": "reference", "position": [8.239999999999998, 0.0, 15.0], "yaw": 0.0}]}, {"time": 28.32, "uav": [{"id": "reference", "position": [8.32, 0.0, 15.0], "yaw": 0.0}]}, {"time": 28.4, "uav": [{"id": "reference", "position": [8.399999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 28.48, "uav": [{"id": "reference", "position": [8.48, 0.0, 15.0], "yaw": 0.0}]}, {"time": 28.56, "uav": [{"id": "reference", "position": [8.559999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 28.64, "uav": [{"id": "reference", "position": [8.64, 0.0, 15.0], "yaw": 0.0}]}, {"time": 28.72, "uav": [{"id": "reference", "position": [8.719999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 28.8, "uav": [{"id": "reference", "position": [8.8, 0.0, 15.0], "yaw": 0.0}]}, {"time": 28.88, "uav": [{"id": "reference", "position": [8.879999999999999, 0.0, 15.0], "yaw": 0.0}]}, {"time": 28.96, "uav": [{"id": "reference", "position": [8.96, 0.0, 15.0], "yaw": 0.0}]}, {"time": 29.04, "uav": [{"id": "reference", "position": [9.04, 0.0, 15.0], "yaw": 0.0}]}, {"time": 29.12, "uav": [{"id": "reference", "position": [9.120000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 29.2, "uav": [{"id": "reference", "position": [9.2, 0.0, 15.0], "yaw": 0.0}]}, {"time": 29.28, "uav": [{"id": "reference", "position": [9.280000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 29.36, "uav": [{"id": "reference", "position": [9.36, 0.0, 15.0], "yaw": 0.0}]}, {"time": 29.44, "uav": [{"id": "reference", "position": [9.440000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 29.52, "uav": [{"id": "reference", "position": [9.52, 0.0, 15.0], "yaw": 0.0}]}, {"time": 29.6, "uav": [{"id": "reference", "position": [9.600000000000001, 0.0, 15.0], "yaw": 0.0}]}, {"time": 29.68, "uav": [{"id": "reference", "position": [9.68, 0.0, 15.0], "yaw": 0.0}]}, {"time": 29.76, "uav": [{"id": "reference", "position": [9.760000000000002, 0.0, 15.0], "yaw": 0.0}]}, {"time": 29.84, "uav": [{"id": "reference", "position": [9.84, 0.0, 15.0], "yaw": 0.0}]}, {"time": 29.92, "uav": [{"id": "reference", "position": [9.920000000000002, 0.0, 15.0], "yaw": 0.0}]}, {"time": 30.0, "uav": [{"id": "reference", "position": [10.0, 0.0, 15.0], "yaw": 0.0}]}, {"time": 30.08, "uav": [{"id": "reference", "position": [10.0, 0.0799999999999983, 15.0], "yaw": 0.0}]}, {"time": 30.16, "uav": [{"id": "reference", "position": [10.0, 0.16000000000000014, 15.0], "yaw": 0.0}]}, {"time": 30.24, "uav": [{"id": "reference", "position": [10.0, 0.23999999999999844, 15.0], "yaw": 0.0}]}, {"time": 30.32, "uav": [{"id": "reference", "position": [10.0, 0.3200000000000003, 15.0], "yaw": 0.0}]}, {"time": 30.4, "uav": [{"id": "reference", "position": [10.0, 0.3999999999999986, 15.0], "yaw": 0.0}]}, {"time": 30.48, "uav": [{"id": "reference", "position": [10.0, 0.4800000000000004, 15.0], "yaw": 0.0}]}, {"time": 30.56, "uav": [{"id": "reference", "position": [10.0, 0.5599999999999987, 15.0], "yaw": 0.0}]}, {"time": 30.64, "uav": [{"id": "reference", "position": [10.0, 0.6400000000000006, 15.0], "yaw": 0.0}]}, {"time": 30.72, "uav": [{"id": "reference", "position": [10.0, 0.7199999999999989, 15.0], "yaw": 0.0}]}, {"time": 30.8, "uav": [{"id": "reference", "position": [10.0, 0.8000000000000007, 15.0], "yaw": 0.0}]}, {"time": 30.88, "uav": [{"id": "reference", "position": [10.0, 0.879999999999999, 15.0], "yaw": 0.0}]}, {"time": 30.96, "uav": [{"id": "reference", "position": [10.0, 0.9600000000000009, 15.0], "yaw": 0.0}]}, {"time": 31.04, "uav": [{"id": "reference", "position": [10.0, 1.0399999999999991, 15.0], "yaw": 0.0}]}, {"time": 31.12, "uav": [{"id": "reference", "position": [10.0, 1.120000000000001, 15.0], "yaw": 0.0}]}, {"time": 31.2, "uav": [{"id": "reference", "position": [10.0, 1.1999999999999993, 15.0], "yaw": 0.0}]}, {"time": 31.28, "uav": [{"id": "reference", "position": [10.0, 1.2800000000000011, 15.0], "yaw": 0.0}]}, {"time": 31.36, "uav": [{"id": "reference", "position": [10.0, 1.3599999999999994, 15.0], "yaw": 0.0}]}, {"time": 31.44, "uav": [{"id": "reference", "position": [10.0, 1.4400000000000013, 15.0], "yaw": 0.0}]}, {"time": 31.52, "uav": [{"id": "reference", "position": [10.0, 1.5199999999999996, 15.0], "yaw": 0.0}]}, {"time": 31.6, "uav": [{"id": "reference", "position": [10.0, 1.6000000000000014, 15.0], "yaw": 0.0}]}, {"time": 31.68, "uav": [{"id": "reference", "position": [10.0, 1.6799999999999997, 15.0], "yaw": 0.0}]}, {"time": 31.76, "uav": [{"id": "reference", "position": [10.0, 1.7600000000000016, 15.0], "yaw": 0.0}]}, {"time": 31.84, "uav": [{"id": "reference", "position": [10.0, 1.8399999999999999, 15.0], "yaw": 0.0}]}, {"time": 31.92, "uav": [{"id": "reference", "position": [10.0, 1.9200000000000017, 15.0], "yaw": 0.0}]}, {"time": 32.0, "uav": [{"id": "reference", "position": [10.0, 2.0, 15.0], "yaw": 0.0}]}, {"time": 32.08, "uav": [{"id": "reference", "position": [10.0, 2.0799999999999983, 15.0], "yaw": 0.0}]}, {"time": 32.16, "uav": [{"id": "reference", "position": [10.0, 2.1599999999999966, 15.0], "yaw": 0.0}]}, {"time": 32.24, "uav": [{"id": "reference", "position": [10.0, 2.240000000000002, 15.0], "yaw": 0.0}]}, {"time": 32.32, "uav": [{"id": "reference", "position": [10.0, 2.3200000000000003, 15.0], "yaw": 0.0}]}, {"time": 32.4, "uav": [{"id": "reference", "position": [10.0, 2.3999999999999986, 15.0], "yaw": 0.0}]}, {"time": 32.48, "uav": [{"id": "reference", "position": [10.0, 2.479999999999997, 15.0], "yaw": 0.0}]}, {"time": 32.56, "uav": [{"id": "reference", "position": [10.0, 2.5600000000000023, 15.0], "yaw": 0.0}]}, {"time": 32.64, "uav": [{"id": "reference", "position": [10.0, 2.6400000000000006, 15.0], "yaw": 0.0}]}, {"time": 32.72, "uav": [{"id": "reference", "position": [10.0, 2.719999999999999, 15.0], "yaw": 0.0}]}, {"time": 32.8, "uav": [{"id": "reference", "position": [10.0, 2.799999999999997, 15.0], "yaw": 0.0}]}, {"time": 32.88, "uav": [{"id": "reference", "position": [10.0, 2.8800000000000026, 15.0], "yaw": 0.0}]}, {"time": 32.96, "uav": [{"id": "reference", "position": [10.0, 2.960000000000001, 15.0], "yaw": 0.0}]}, {"time": 33.04, "uav": [{"id": "reference", "position": [10.0, 3.039999999999999, 15.0], "yaw": 0.0}]}, {"time": 33.12, "uav": [{"id": "reference", "position": [10.0, 3.1199999999999974, 15.0], "yaw": 0.0}]}, {"time": 33.2, "uav": [{"id": "reference", "position": [10.0, 3.200000000000003, 15.0], "yaw": 0.0}]}, {"time": 33.28, "uav": [{"id": "reference", "position": [10.0, 3.280000000000001, 15.0], "yaw": 0.0}]}, {"time": 33.36, "uav": [{"id": "reference", "position": [10.0, 3.3599999999999994, 15.0], "yaw": 0.0}]}, {"time": 33.44, "uav": [{"id": "reference", "position": [10.0, 3.4399999999999977, 15.0], "yaw": 0.0}]}, {"time": 33.52, "uav": [{"id": "reference", "position": [10.0, 3.520000000000003, 15.0], "yaw": 0.0}]}, {"time": 33.6, "uav": [{"id": "reference", "position": [10.0, 3.6000000000000014, 15.0], "yaw": 0.0}]}, {"time": 33.68, "uav": [{"id": "reference", "position": [10.0, 3.6799999999999997, 15.0], "yaw": 0.0}]}, {"time": 33.76, "uav": [{"id": "reference", "position": [10.0, 3.759999999999998, 15.0], "yaw": 0.0}]}, {"time": 33.84, "uav": [{"id": "reference", "position": [10.0, 3.8400000000000034, 15.0], "yaw": 0.0}]}, {"time": 33.92, "uav": [{"id": "reference", "position": [10.0, 3.9200000000000017, 15.0], "yaw": 0.0}]}, {"time": 34.0, "uav": [{"id": "reference", "position": [10.0, 4.0, 15.0], "yaw": 0.0}]}, {"time": 34.08, "uav": [{"id": "reference", "position": [10.0, 4.079999999999998, 15.0], "yaw": 0.0}]}, {"time": 34.16, "uav": [{"id": "reference", "position": [10.0, 4.159999999999997, 15.0], "yaw": 0.0}]}, {"time": 34.24, "uav": [{"id": "reference", "position": [10.0, 4.240000000000002, 15.0], "yaw": 0.0}]}, {"time": 34.32, "uav": [{"id": "reference", "position": [10.0, 4.32, 15.0], "yaw": 0.0}]}, {"time": 34.4, "uav": [{"id": "reference", "position": [10.0, 4.399999999999999, 15.0], "yaw": 0.0}]}, {"time": 34.48, "uav": [{"id": "reference", "position": [10.0, 4.479999999999997, 15.0], "yaw": 0.0}]}, {"time": 34.56, "uav": [{"id": "reference", "position": [10.0, 4.560000000000002, 15.0], "yaw": 0.0}]}, {"time": 34.64, "uav": [{"id": "reference", "position": [10.0, 4.640000000000001, 15.0], "yaw": 0.0}]}, {"time": 34.72, "uav": [{"id": "reference", "position": [10.0, 4.719999999999999, 15.0], "yaw": 0.0}]}, {"time": 34.8, "uav": [{"id": "reference", "position": [10.0, 4.799999999999997, 15.0], "yaw": 0.0}]}, {"time": 34.88, "uav": [{"id": "reference", "position": [10.0, 4.880000000000003, 15.0], "yaw": 0.0}]}, {"time": 34.96, "uav": [{"id": "reference", "position": [10.0, 4.960000000000001, 15.0], "yaw": 0.0}]}, {"time": 35.04, "uav": [{"id": "reference", "position": [10.0, 5.039999999999999, 15.0], "yaw": 0.0}]}, {"time": 35.12, "uav": [{"id": "reference", "position": [10.0, 5.119999999999997, 15.0], "yaw": 0.0}]}, {"time": 35.2, "uav": [{"id": "reference", "position": [10.0, 5.200000000000003, 15.0], "yaw": 0.0}]}, {"time": 35.28, "uav": [{"id": "reference", "position": [10.0, 5.280000000000001, 15.0], "yaw": 0.0}]}, {"time": 35.36, "uav": [{"id": "reference", "position": [10.0, 5.359999999999999, 15.0], "yaw": 0.0}]}, {"time": 35.44, "uav": [{"id": "reference", "position": [10.0, 5.439999999999998, 15.0], "yaw": 0.0}]}, {"time": 35.52, "uav": [{"id": "reference", "position": [10.0, 5.520000000000003, 15.0], "yaw": 0.0}]}, {"time": 35.6, "uav": [{"id": "reference", "position": [10.0, 5.600000000000001, 15.0], "yaw": 0.0}]}, {"time": 35.68, "uav": [{"id": "reference", "position": [10.0, 5.68, 15.0], "yaw": 0.0}]}, {"time": 35.76, "uav": [{"id": "reference", "position": [10.0, 5.759999999999998, 15.0], "yaw": 0.0}]}, {"time": 35.84, "uav": [{"id": "reference", "position": [10.0, 5.840000000000003, 15.0], "yaw": 0.0}]}, {"time": 35.92, "uav": [{"id": "reference", "position": [10.0, 5.920000000000002, 15.0], "yaw": 0.0}]}, {"time": 36.0, "uav": [{"id": "reference", "position": [10.0, 6.0, 15.0], "yaw": 0.0}]}, {"time": 36.08, "uav": [{"id": "reference", "position": [10.0, 6.079999999999998, 15.0], "yaw": 0.0}]}, {"time": 36.16, "uav": [{"id": "reference", "position": [10.0, 6.159999999999997, 15.0], "yaw": 0.0}]}, {"time": 36.24, "uav": [{"id": "reference", "position": [10.0, 6.240000000000002, 15.0], "yaw": 0.0}]}, {"time": 36.32, "uav": [{"id": "reference", "position": [10.0, 6.32, 15.0], "yaw": 0.0}]}, {"time": 36.4, "uav": [{"id": "reference", "position": [10.0, 6.399999999999999, 15.0], "yaw": 0.0}]}, {"time": 36.48, "uav": [{"id": "reference", "position": [10.0, 6.479999999999997, 15.0], "yaw": 0.0}]}, {"time": 36.56, "uav": [{"id": "reference", "position": [10.0, 6.560000000000002, 15.0], "yaw": 0.0}]}, {"time": 36.64, "uav": [{"id": "reference", "position": [10.0, 6.640000000000001, 15.0], "yaw": 0.0}]}, {"time": 36.72, "uav": [{"id": "reference", "position": [10.0, 6.719999999999999, 15.0], "yaw": 0.0}]}, {"time": 36.8, "uav": [{"id": "reference", "position": [10.0, 6.799999999999997, 15.0], "yaw": 0.0}]}, {"time": 36.88, "uav": [{"id": "reference", "position": [10.0, 6.880000000000003, 15.0], "yaw": 0.0}]}, {"time": 36.96, "uav": [{"id": "reference", "position": [10.0, 6.960000000000001, 15.0], "yaw": 0.0}]}, {"time": 37.04, "uav": [{"id": "reference", "position": [10.0, 7.039999999999999, 15.0], "yaw": 0.0}]}, {"time": 37.12, "uav": [{"id": "reference", "position": [10.0, 7.119999999999997, 15.0], "yaw": 0.0}]}, {"time": 37.2, "uav": [{"id": "reference", "position": [10.0, 7.200000000000003, 15.0], "yaw": 0.0}]}, {"time": 37.28, "uav": [{"id": "reference", "position": [10.0, 7.280000000000001, 15.0], "yaw": 0.0}]}, {"time": 37.36, "uav": [{"id": "reference", "position": [10.0, 7.359999999999999, 15.0], "yaw": 0.0}]}, {"time": 37.44, "uav": [{"id": "reference", "position": [10.0, 7.439999999999998, 15.0], "yaw": 0.0}]}, {"time": 37.52, "uav": [{"id": "reference", "position": [10.0, 7.520000000000003, 15.0], "yaw": 0.0}]}, {"time": 37.6, "uav": [{"id": "reference", "position": [10.0, 7.600000000000001, 15.0], "yaw": 0.0}]}, {"time": 37.68, "uav": [{"id": "reference", "position": [10.0, 7.68, 15.0], "yaw": 0.0}]}, {"time": 37.76, "uav": [{"id": "reference", "position": [10.0, 7.759999999999998, 15.0], "yaw": 0.0}]}, {"time": 37.84, "uav": [{"id": "reference", "position": [10.0, 7.840000000000003, 15.0], "yaw": 0.0}]}, {"time": 37.92, "uav": [{"id": "reference", "position": [10.0, 7.920000000000002, 15.0], "yaw": 0.0}]}, {"time": 38.0, "uav": [{"id": "reference", "position": [10.0, 8.0, 15.0], "yaw": 0.0}]}, {"time": 38.08, "uav": [{"id": "reference", "position": [10.0, 8.079999999999998, 15.0], "yaw": 0.0}]}, {"time": 38.16, "uav": [{"id": "reference", "position": [10.0, 8.159999999999997, 15.0], "yaw": 0.0}]}, {"time": 38.24, "uav": [{"id": "reference", "position": [10.0, 8.240000000000002, 15.0], "yaw": 0.0}]}, {"time": 38.32, "uav": [{"id": "reference", "position": [10.0, 8.32, 15.0], "yaw": 0.0}]}, {"time": 38.4, "uav": [{"id": "reference", "position": [10.0, 8.399999999999999, 15.0], "yaw": 0.0}]}, {"time": 38.48, "uav": [{"id": "reference", "position": [10.0, 8.479999999999997, 15.0], "yaw": 0.0}]}, {"time": 38.56, "uav": [{"id": "reference", "position": [10.0, 8.560000000000002, 15.0], "yaw": 0.0}]}, {"time": 38.64, "uav": [{"id": "reference", "position": [10.0, 8.64, 15.0], "yaw": 0.0}]}, {"time": 38.72, "uav": [{"id": "reference", "position": [10.0, 8.719999999999999, 15.0], "yaw": 0.0}]}, {"time": 38.8, "uav": [{"id": "reference", "position": [10.0, 8.799999999999997, 15.0], "yaw": 0.0}]}, {"time": 38.88, "uav": [{"id": "reference", "position": [10.0, 8.880000000000003, 15.0], "yaw": 0.0}]}, {"time": 38.96, "uav": [{"id": "reference", "position": [10.0, 8.96, 15.0], "yaw": 0.0}]}, {"time": 39.04, "uav": [{"id": "reference", "position": [10.0, 9.04, 15.0], "yaw": 0.0}]}, {"time": 39.12, "uav": [{"id": "reference", "position": [10.0, 9.119999999999997, 15.0], "yaw": 0.0}]}, {"time": 39.2, "uav": [{"id": "reference", "position": [10.0, 9.200000000000003, 15.0], "yaw": 0.0}]}, {"time": 39.28, "uav": [{"id": "reference", "position": [10.0, 9.280000000000001, 15.0], "yaw": 0.0}]}, {"time": 39.36, "uav": [{"id": "reference", "position": [10.0, 9.36, 15.0], "yaw": 0.0}]}, {"time": 39.44, "uav": [{"id": "reference", "position": [10.0, 9.439999999999998, 15.0], "yaw": 0.0}]}, {"time": 39.52, "uav": [{"id": "reference", "position": [10.0, 9.520000000000003, 15.0], "yaw": 0.0}]}, {"time": 39.6, "uav": [{"id": "reference", "position": [10.0, 9.600000000000001, 15.0], "yaw": 0.0}]}, {"time": 39.68, "uav": [{"id": "reference", "position": [10.0, 9.68, 15.0], "yaw": 0.0}]}, {"time": 39.76, "uav": [{"id": "reference", "position": [10.0, 9.759999999999998, 15.0], "yaw": 0.0}]}, {"time": 39.84, "uav": [{"id": "reference", "position": [10.0, 9.840000000000003, 15.0], "yaw": 0.0}]}, {"time": 39.92, "uav": [{"id": "reference", "position": [10.0, 9.920000000000002, 15.0], "yaw": 0.0}]}, {"time": 40.0, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 40.08, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 40.16, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 40.24, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 40.32, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 40.4, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 40.48, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 40.56, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 40.64, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 40.72, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 40.8, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 40.88, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 40.96, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 41.04, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 41.12, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 41.2, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 41.28, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 41.36, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 41.44, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 41.52, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 41.6, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 41.68, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 41.76, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 41.84, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 41.92, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 42.0, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 42.08, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 42.16, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 42.24, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 42.32, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 42.4, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 42.48, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 42.56, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 42.64, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 42.72, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 42.8, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 42.88, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 42.96, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 43.04, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 43.12, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 43.2, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 43.28, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 43.36, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 43.44, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 43.52, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 43.6, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 43.68, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 43.76, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 43.84, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 43.92, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 44.0, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 44.08, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 44.16, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 44.24, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 44.32, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 44.4, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 44.48, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 44.56, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 44.64, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 44.72, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 44.8, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 44.88, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 44.96, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 45.04, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 45.12, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 45.2, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 45.28, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 45.36, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 45.44, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 45.52, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 45.6, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 45.68, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 45.76, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 45.84, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 45.92, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 46.0, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 46.08, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 46.16, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 46.24, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 46.32, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 46.4, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 46.48, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 46.56, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 46.64, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 46.72, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 46.8, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 46.88, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 46.96, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 47.04, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 47.12, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 47.2, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 47.28, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 47.36, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 47.44, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 47.52, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 47.6, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 47.68, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 47.76, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 47.84, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 47.92, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 48.0, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 48.08, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 48.16, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 48.24, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 48.32, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 48.4, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 48.48, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 48.56, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 48.64, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 48.72, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 48.8, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 48.88, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 48.96, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 49.04, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 49.12, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 49.2, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 49.28, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 49.36, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 49.44, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 49.52, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 49.6, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 49.68, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 49.76, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 49.84, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 49.92, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}, {"time": 50.0, "uav": [{"id": "reference", "position": [10.0, 10.0, 15.0], "yaw": 0.0}]}]};
     const frames = replay.frames || [];
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f1117);
-    scene.fog = new THREE.Fog(0x0f1117, 28, 95);
-
-    const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 200);
-    camera.position.set(18, -24, 16);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 0, 4);
-    controls.enableDamping = true;
-
-    scene.add(new THREE.HemisphereLight(0xaec9ff, 0x1f2430, 1.6));
-    const sun = new THREE.DirectionalLight(0xffffff, 2.4);
-    sun.position.set(10, -12, 24);
-    scene.add(sun);
-
-    const grid = new THREE.GridHelper(32, 32, 0x3f4b61, 0x202632);
-    grid.rotation.x = Math.PI / 2;
-    scene.add(grid);
-
-    const axes = new THREE.AxesHelper(4);
-    scene.add(axes);
-
-    function getPosition(frame) {
-      const uav = frame.uav && frame.uav[0];
-      return uav ? uav.position : [0, 0, 0];
-    }
-
-    const pathPoints = frames.map((frame) => {
-      const p = getPosition(frame);
-      return new THREE.Vector3(p[0], p[1], p[2]);
-    });
-    const pathGeometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
-    const pathMaterial = new THREE.LineBasicMaterial({ color: 0x8fd3ff });
-    scene.add(new THREE.Line(pathGeometry, pathMaterial));
-
-    const drone = new THREE.Group();
-    const body = new THREE.Mesh(
-      new THREE.BoxGeometry(0.72, 0.42, 0.18),
-      new THREE.MeshStandardMaterial({ color: 0xf2f6ff, roughness: 0.45, metalness: 0.15 })
-    );
-    drone.add(body);
-
-    const armMaterial = new THREE.MeshStandardMaterial({ color: 0x89a6c8, roughness: 0.35 });
-    const arm1 = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.06, 0.06), armMaterial);
-    const arm2 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.35, 0.06), armMaterial);
-    drone.add(arm1, arm2);
-
-    const rotorMaterial = new THREE.MeshStandardMaterial({ color: 0x61ffb5, roughness: 0.25 });
-    for (const [x, y] of [[0.68, 0.68], [0.68, -0.68], [-0.68, 0.68], [-0.68, -0.68]]) {
-      const rotor = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.035, 32), rotorMaterial);
-      rotor.rotation.x = Math.PI / 2;
-      rotor.position.set(x, y, 0.02);
-      drone.add(rotor);
-    }
-    scene.add(drone);
-
-    const marker = new THREE.Mesh(
-      new THREE.SphereGeometry(0.08, 20, 20),
-      new THREE.MeshBasicMaterial({ color: 0xffd166 })
-    );
-    scene.add(marker);
-
+    const canvas = document.getElementById('scene');
+    const ctx = canvas.getContext('2d');
     const scrub = document.getElementById('scrub');
     const playButton = document.getElementById('play');
     const timeLabel = document.getElementById('timeLabel');
+
+    let width = 0;
+    let height = 0;
+    let scale = 34;
     let frameIndex = 0;
     let playing = true;
-    let lastTick = performance.now();
+    let lastStep = performance.now();
 
-    function setFrame(index) {
-      frameIndex = Math.max(0, Math.min(frames.length - 1, index));
-      const frame = frames[frameIndex];
-      const p = getPosition(frame);
-      drone.position.set(p[0], p[1], p[2]);
-      marker.position.set(p[0], p[1], p[2]);
+    function resize() {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      width = Math.floor(window.innerWidth * ratio);
+      height = Math.floor(window.innerHeight * ratio);
+      canvas.width = width;
+      canvas.height = height;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      const bounds = computeBounds();
+      const span = Math.max(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY, bounds.maxZ - bounds.minZ, 1);
+      scale = Math.max(18, Math.min(54, Math.min(width, height) / (span * 2.2)));
+    }
+
+    function getPosition(frame) {
+      const uav = frame && frame.uav && frame.uav[0];
+      return uav ? uav.position : [0, 0, 0];
+    }
+
+    function computeBounds() {
+      const values = frames.map(getPosition);
+      const xs = values.map(p => p[0]);
+      const ys = values.map(p => p[1]);
+      const zs = values.map(p => p[2]);
+      return {
+        minX: Math.min(...xs, -2), maxX: Math.max(...xs, 2),
+        minY: Math.min(...ys, -2), maxY: Math.max(...ys, 2),
+        minZ: Math.min(...zs, 0), maxZ: Math.max(...zs, 2)
+      };
+    }
+
+    function project(point) {
+      const [x, y, z] = point;
+      const cx = width * 0.52;
+      const cy = height * 0.58;
+      const px = cx + (x - y) * scale * 0.82;
+      const py = cy + (x + y) * scale * 0.36 - z * scale * 0.92;
+      return [px, py];
+    }
+
+    function drawLine3(a, b, color, lineWidth = 1) {
+      const pa = project(a);
+      const pb = project(b);
+      ctx.beginPath();
+      ctx.moveTo(pa[0], pa[1]);
+      ctx.lineTo(pb[0], pb[1]);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.stroke();
+    }
+
+    function drawGrid() {
+      const size = 16;
+      for (let i = -size; i <= size; i += 1) {
+        const strong = i === 0;
+        drawLine3([-size, i, 0], [size, i, 0], strong ? '#58647a' : '#263044', strong ? 1.5 : 0.8);
+        drawLine3([i, -size, 0], [i, size, 0], strong ? '#58647a' : '#263044', strong ? 1.5 : 0.8);
+      }
+      drawLine3([0, 0, 0], [4, 0, 0], '#ff6b6b', 2);
+      drawLine3([0, 0, 0], [0, 4, 0], '#61d394', 2);
+      drawLine3([0, 0, 0], [0, 0, 4], '#8fd3ff', 2);
+    }
+
+    function drawPath() {
+      if (frames.length < 2) return;
+      ctx.beginPath();
+      frames.forEach((frame, index) => {
+        const p = project(getPosition(frame));
+        if (index === 0) ctx.moveTo(p[0], p[1]);
+        else ctx.lineTo(p[0], p[1]);
+      });
+      ctx.strokeStyle = '#8fd3ff';
+      ctx.lineWidth = 2.2;
+      ctx.stroke();
+    }
+
+    function drawDrone(position, time) {
+      const center = project(position);
+      const arm = 26;
+      const bob = Math.sin(time * 5) * 2;
+      ctx.save();
+      ctx.translate(center[0], center[1] + bob);
+      ctx.rotate(Math.sin(time * 0.8) * 0.18);
+
+      ctx.strokeStyle = '#dfe9ff';
+      ctx.lineWidth = 5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-arm, 0);
+      ctx.lineTo(arm, 0);
+      ctx.moveTo(0, -arm);
+      ctx.lineTo(0, arm);
+      ctx.stroke();
+
+      ctx.fillStyle = '#f5f8ff';
+      ctx.strokeStyle = '#1b2433';
+      ctx.lineWidth = 2;
+      roundRect(-17, -11, 34, 22, 5);
+      ctx.fill();
+      ctx.stroke();
+
+      const rotors = [[-arm, 0], [arm, 0], [0, -arm], [0, arm]];
+      for (const [x, y] of rotors) {
+        ctx.beginPath();
+        ctx.ellipse(x, y, 11, 5, time * 7, 0, Math.PI * 2);
+        ctx.fillStyle = '#61ffb5';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      const ground = project([position[0], position[1], 0]);
+      ctx.beginPath();
+      ctx.moveTo(center[0], center[1]);
+      ctx.lineTo(ground[0], ground[1]);
+      ctx.strokeStyle = 'rgba(255, 209, 102, 0.45)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(ground[0], ground[1], 12, 5, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 209, 102, 0.35)';
+      ctx.fill();
+    }
+
+    function roundRect(x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function drawLabels() {
+      ctx.fillStyle = '#bbc6db';
+      ctx.font = '12px Arial';
+      const x = project([4.2, 0, 0]);
+      const y = project([0, 4.2, 0]);
+      const z = project([0, 0, 4.2]);
+      ctx.fillText('X', x[0], x[1]);
+      ctx.fillText('Y', y[0], y[1]);
+      ctx.fillText('Z', z[0], z[1]);
+    }
+
+    function render(now) {
+      requestAnimationFrame(render);
+      if (playing && frames.length > 0 && now - lastStep > 33) {
+        frameIndex = (frameIndex + 1) % frames.length;
+        lastStep = now;
+      }
+      const frame = frames[frameIndex] || { time: 0 };
+      const time = Number(frame.time || 0);
       scrub.value = frameIndex;
-      timeLabel.textContent = `${Number(frame.time || 0).toFixed(2)} s`;
+      timeLabel.textContent = `${time.toFixed(2)} s`;
+
+      const gradient = ctx.createLinearGradient(0, 0, 0, height);
+      gradient.addColorStop(0, '#101827');
+      gradient.addColorStop(1, '#0f1117');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+      drawGrid();
+      drawPath();
+      drawDrone(getPosition(frame), time);
+      drawLabels();
     }
 
     playButton.addEventListener('click', () => {
@@ -199,28 +295,12 @@
     scrub.addEventListener('input', () => {
       playing = false;
       playButton.textContent = '播放';
-      setFrame(Number(scrub.value));
+      frameIndex = Number(scrub.value);
     });
 
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    function animate(now) {
-      requestAnimationFrame(animate);
-      controls.update();
-      if (playing && frames.length > 0 && now - lastTick > 33) {
-        setFrame((frameIndex + 1) % frames.length);
-        lastTick = now;
-      }
-      drone.rotation.z += 0.012;
-      renderer.render(scene, camera);
-    }
-
-    setFrame(0);
-    animate(performance.now());
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(render);
   </script>
 </body>
 </html>
