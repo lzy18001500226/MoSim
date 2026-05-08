@@ -1,0 +1,7 @@
+LIBRARY
+	EXPORTS
+;		ArrayMaker
+;		fillarr
+;		GetSum
+;		CreateInst
+;		DeleteInst
