@@ -2,126 +2,70 @@
 
 > Entry point for project documentation and converted MWORKS reference materials.
 
----
-
-## 1. Purpose
-
-This file tells Codex and project members where to find relevant documentation.
-
-Do not paste all official documentation into `AGENTS.md`. Store converted Markdown files under `docs/mworks/` and summarize their location here.
-
----
-
-## 2. Project Documents
+## Project Documents
 
 | Topic | File | Purpose |
 |---|---|---|
-| Project rules | `AGENTS.md` | AI agent behavior, MCP usage, workflows, testing |
-| User manual | `docs/user_manual.md` | How to install, configure, and run the project |
-| Simulation report | `docs/simulation_report.md` | Algorithm design and experiment results |
-| API index | `docs/index/api_index.md` | MCP and API lookup |
-| Workflow index | `docs/index/workflow_index.md` | Common development workflows |
+| Project overview | `README.md` | Repository entry point |
+| Agent rules | `AGENTS.md` | Codex/MCP usage, project conventions, implementation rules |
+| Design index | `Design/README.md` | Design document entry point |
+| User manual | `docs/user_manual.md` | Submission-facing usage guide draft |
+| Simulation report | `docs/simulation_report.md` | Submission-facing analysis report draft |
+| API/tool index | `docs/index/api_index.md` | Available MCP tools, scripts, and API references |
+| Workflow index | `docs/index/workflow_index.md` | Repeatable development workflows |
 
----
-
-## 3. MWORKS Documentation
-
-Recommended converted documentation structure:
-
-```text
-docs/mworks/
-├── mcp/
-│   ├── sysplorer_mcp.md
-│   └── syslab_mcp.md
-├── sysplorer/
-│   ├── model_manager.md
-│   ├── simulation.md
-│   ├── result_manager.md
-│   └── python_api.md
-├── syslab/
-│   ├── julia_env.md
-│   ├── plotting.md
-│   ├── script_execution.md
-│   └── matlab_to_julia.md
-└── sysblock/
-    ├── block_modeling.md
-    ├── controller_blocks.md
-    └── script_building.md
-```
-
-Current generated scan outputs:
+## MWORKS Reference Docs
 
 | Topic | File | Notes |
 |---|---|---|
-| MWORKS scan entry | `docs/mworks/README.md` | Entry point for scanned local resource package |
+| MWORKS docs entry | `docs/mworks/README.md` | How to use scanned and converted local resource docs |
 | Scan summary | `docs/mworks/scan/scan_summary.md` | Relevant file counts and next steps |
-| Ranked relevant index | `docs/mworks/scan/relevant_index.md` | Top project-related files from the resource package |
-| Machine-readable index | `docs/mworks/scan/relevant_files.csv` | CSV for later filtering and scripts |
-| Sysplorer modeling category | `docs/mworks/scan/categories/sysplorer_modeling.md` | Sysplorer, Modelica, modeling examples |
-| Syslab analysis category | `docs/mworks/scan/categories/syslab_analysis.md` | Syslab, Julia, control analysis and plotting |
-| UAV/challenge category | `docs/mworks/scan/categories/quadrotor_uav.md` | Intelligent unmanned system challenge materials |
-| Extracted snippets | `docs/mworks/extracted/` | Markdown snippets converted from text-like source files |
+| Ranked relevant index | `docs/mworks/scan/relevant_index.md` | Top project-related source files |
+| Machine-readable index | `docs/mworks/scan/relevant_files.csv` | CSV for scripts and filtering |
+| Sysplorer category | `docs/mworks/scan/categories/sysplorer_modeling.md` | Sysplorer, Modelica, modeling examples |
+| Syslab category | `docs/mworks/scan/categories/syslab_analysis.md` | Syslab, Julia, control analysis |
+| Challenge category | `docs/mworks/scan/categories/quadrotor_uav.md` | Intelligent unmanned systems challenge materials |
+| Converted PDF index | `docs/mworks/converted/转换索引.md` | Current curated converted PDF list |
+| MinerU precise API | `docs/mworks/mcp/mineru_precise_api.md` | Token-based precise parsing, batch upload, polling, errors |
 
----
-
-## 4. MCP Docs
-
-| Topic | File | Notes |
-|---|---|---|
-| Sysplorer MCP installation | `docs/mworks/mcp/sysplorer_mcp.md` | Installation, wrapper, tools |
-| Syslab MCP installation | `docs/mworks/mcp/syslab_mcp.md` | Julia, script execution, nodesktop mode |
-| MCP troubleshooting | `workflows/debug_mcp.md` | Tools none, wrapper, conflict config |
-
----
-
-## 5. Control Algorithm Docs
+## Converted PDF Topics
 
 | Topic | File |
 |---|---|
-| PID baseline | `docs/algorithms/pid_baseline.md` |
-| Improved PID | `docs/algorithms/improved_pid.md` |
-| NMPC | `docs/algorithms/nmpc.md` |
-| INDI | `docs/algorithms/indi.md` |
-| L1-inspired compensation | `docs/algorithms/l1_adaptive.md` |
-| Safety filter | `docs/algorithms/safety_filter.md` |
-| Fault tolerance | `docs/algorithms/fault_tolerance.md` |
+| Syslab/Sysplorer integration 2024a | `docs/mworks/converted/sysplorer/Syslab与Sysplorer双向集成_2024a.md` |
+| Syslab/Sysplorer integration 2025b | `docs/mworks/converted/sysplorer/Syslab与Sysplorer双向集成_2025b.md` |
+| Modelica behavior syntax | `docs/mworks/converted/sysplorer/Modelica语法详解_模型行为描述.md` |
+| Modelica reuse syntax | `docs/mworks/converted/sysplorer/Modelica语法详解_模型重用.md` |
+| Syslab control toolbox | `docs/mworks/converted/syslab/MWORKS.Syslab控制系统工具箱.md` |
+| Syslab control APP | `docs/mworks/converted/syslab/MWORKS.Syslab控制系统工具箱APP.md` |
+| Parameter estimation | `docs/mworks/converted/optimization/MWORKS.Sysplorer参数估计工具箱应用.md` |
+| System identification | `docs/mworks/converted/control/Syslab系统辨识工具箱.md` |
+| Robust control | `docs/mworks/converted/control/Syslab鲁棒控制工具箱.md` |
+| Sysplorer external functions | `docs/mworks/converted/api/MWORKS.Sysplorer外部接口_外部函数.md` |
+| Sysplorer Python scripts | `docs/mworks/converted/api/MWORKS.Sysplorer工具箱运行脚本_Python.md` |
+| Syslab external functions | `docs/mworks/converted/api/MWORKS.Syslab外部函数调用.md` |
+| Challenge rules | `docs/mworks/converted/challenge/智能无人系统应用挑战赛_无人车避障竞赛规则.md` |
+| Challenge training 1 | `docs/mworks/converted/challenge/智能无人系统应用挑战赛_专项培训一.md` |
+| Challenge training 2 | `docs/mworks/converted/challenge/智能无人系统应用挑战赛_专项培训二.md` |
 
----
-
-## 6. Planning and Formation Docs
+## Design Docs
 
 | Topic | File |
 |---|---|
-| Path planning overview | `docs/algorithms/planning.md` |
-| A* | `docs/algorithms/astar.md` |
-| RRT* | `docs/algorithms/rrt_star.md` |
-| Minimum Snap | `docs/algorithms/minimum_snap.md` |
-| B-spline | `docs/algorithms/bspline.md` |
-| EGO-inspired planning | `docs/algorithms/ego_inspired.md` |
-| Formation control | `docs/algorithms/formation.md` |
+| System overview | `Design/00_系统总体设计.md` |
+| Scope and acceptance | `Design/01_需求范围与验收.md` |
+| Model interfaces and runtime flow | `Design/02_模型接口与运行流程.md` |
+| Control architecture | `Design/03_控制系统架构.md` |
+| Safety, fault, and tolerance | `Design/04_安全故障与容错.md` |
+| Planning and trajectory generation | `Design/05_路径规划与轨迹生成.md` |
+| Formation control | `Design/06_多机编队控制.md` |
+| Scenarios and test matrix | `Design/07_场景扰动与测试矩阵.md` |
+| Metrics and automated evaluation | `Design/08_仿真指标与自动评估.md` |
 
----
+## Maintenance Rules
 
-## 7. How to Use This Index
-
-When answering development questions:
-
-1. Read `AGENTS.md` first.
-2. If the question is about a workflow, check `docs/index/workflow_index.md`.
-3. If the question is about a tool or API, check `docs/index/api_index.md`.
-4. If the question is about official behavior, check converted docs under `docs/mworks/`.
-5. If docs are missing or unclear, use MCP documentation tools:
-   - Sysplorer: `get_api_document`, `get_lib_model_document`, `resources_retrieval`
-   - Syslab: `search_syslab_docs`, `read_syslab_doc`
-
----
-
-## 8. Documentation Maintenance Rules
-
-When new documentation is added:
-
-1. Put the full converted Markdown under `docs/mworks/` or `docs/algorithms/`.
-2. Add an entry to this index.
-3. Add API-specific entries to `docs/index/api_index.md`.
-4. Add workflow-specific entries to `docs/index/workflow_index.md`.
-5. Do not duplicate long text into `AGENTS.md`.
+1. List only files that exist in the repository.
+2. Store high-value converted references under `docs/mworks/converted/`.
+3. Keep noisy one-off extraction output out of the default docs tree.
+4. Put repeatable procedures in `workflows/`.
+5. Do not duplicate long official documents into `AGENTS.md`.

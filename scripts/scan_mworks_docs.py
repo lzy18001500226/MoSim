@@ -4,13 +4,16 @@ Scan the local MWORKS resource package and build Markdown indexes for Codex.
 
 The script is intentionally conservative:
 - It scores files by project relevance.
-- It extracts text-like files into Markdown snippets.
-- It lists PDF files for later conversion. If a PDF text extractor is available,
-  it extracts the first pages automatically.
+- It writes scan indexes only by default.
+- It can optionally extract text-like files into Markdown snippets, but this is
+  disabled by default because the snippets are noisy and largely superseded by
+  curated `docs/mworks/converted/` outputs.
+- It lists PDF files for later conversion.
 
 Usage:
     python scripts/scan_mworks_docs.py
-    python scripts/scan_mworks_docs.py --top 120 --extract-limit 80
+    python scripts/scan_mworks_docs.py --top 120
+    python scripts/scan_mworks_docs.py --extract-snippets --extract-limit 80
 """
 
 from __future__ import annotations
@@ -322,13 +325,13 @@ def write_summary(records: list[FileRecord], extracted: list[dict[str, str]], ou
             "- `docs/mworks/scan/relevant_index.md`: ranked relevant file index",
             "- `docs/mworks/scan/relevant_files.csv`: machine-readable index",
             "- `docs/mworks/scan/categories/`: category indexes",
-            "- `docs/mworks/extracted/`: extracted Markdown snippets",
+            "- `docs/mworks/converted/`: curated PDF/API conversion outputs",
             "",
             "## Recommended Next Steps",
             "",
             "1. Review `scan/categories/quadrotor_uav.md`, `control_algorithm.md`, `sysplorer_modeling.md`, and `syslab_analysis.md` first.",
-            "2. Convert high-value PDFs with OCR or PDF text extraction when needed.",
-            "3. Promote stable extracted notes into `docs/mworks/` topic documents.",
+            "2. Convert high-value PDFs with MinerU precise API or `scripts/convert_mworks_pdfs.py` when needed.",
+            "3. Keep noisy snippet extraction disabled unless a one-off local search task needs it.",
             "4. Update `docs/index/doc_index.md` after promoting topic documents.",
             "",
         ]
@@ -344,6 +347,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--extract-limit", type=int, default=100)
     parser.add_argument("--max-chars", type=int, default=12000)
     parser.add_argument("--min-score", type=int, default=10)
+    parser.add_argument(
+        "--extract-snippets",
+        action="store_true",
+        help="Generate docs/mworks/extracted Markdown snippets. Disabled by default to keep the repo lean.",
+    )
     return parser.parse_args()
 
 
@@ -369,7 +377,9 @@ def main() -> int:
     write_table(records, scan_dir / "relevant_index.md")
     write_csv(records, scan_dir / "relevant_files.csv")
     write_category_indexes(records, output)
-    extracted = extract_records(records, output, args.extract_limit, args.max_chars)
+    extracted: list[dict[str, str]] = []
+    if args.extract_snippets:
+        extracted = extract_records(records, output, args.extract_limit, args.max_chars)
     write_summary(records, extracted, output, source)
 
     print(f"Relevant files: {len(records)}")

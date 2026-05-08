@@ -539,6 +539,13 @@ Rules:
 8. Keep original source documents or source paths recorded.
 9. Do not treat OCR output as fully reliable; review formulas, tables, and code blocks manually.
 10. For important APIs, verify with Sysplorer MCP `get_api_document` or Syslab MCP `search_syslab_docs`.
+11. Never write MinerU tokens into tracked files. Use `MINERU_API_TOKEN` from the environment only.
+
+Precise parsing API reference:
+
+```text
+docs/mworks/mcp/mineru_precise_api.md
+```
 
 Recommended document processing workflow:
 
@@ -549,6 +556,61 @@ parse_documents
   → update docs/index/doc_index.md
   → extract API entries into docs/index/api_index.md
   → extract repeatable procedures into workflows/
+```
+
+Recommended MinerU workflow for the local MWORKS resource package:
+
+```text
+scripts/scan_mworks_docs.py
+  → docs/mworks/scan/relevant_index.md
+  → choose high-value PDF/PPT/DOCX files
+  → MinerU parse_documents
+  → docs/mworks/converted/<topic>/<source-name>.md
+  → update docs/mworks/README.md
+  → update docs/index/doc_index.md
+```
+
+Conversion priority:
+
+| Priority | Source type | Examples |
+|---|---|---|
+| P0 | Sysplorer/Syslab integration docs | Syslab 与 Sysplorer 双向集成 |
+| P0 | Sysplorer basics and Modelica syntax | Sysplorer 基础功能、Modelica 语法详解 |
+| P1 | Syslab control and optimization docs | 控制系统工具箱、优化问题求解 |
+| P1 | Challenge-related materials | 智能无人系统应用挑战赛专项培训 |
+| P2 | API and open architecture docs | 平台层 API、开放架构、外部接口 |
+
+Output naming convention:
+
+```text
+docs/mworks/converted/
+  sysplorer/
+  syslab/
+  sysblock/
+  control/
+  optimization/
+  challenge/
+  api/
+```
+
+Each converted Markdown file should start with:
+
+```text
+# <Document Title>
+
+- Source: `<original path>`
+- Converted by: `MinerU MCP`
+- Conversion date: `YYYY-MM-DD`
+- Review status: `unchecked | reviewed`
+```
+
+After conversion, do not assume OCR is perfect. For APIs, command names, formulas, tables, code blocks, and model paths, verify against:
+
+```text
+sysplorer_mcp.get_api_document
+sysplorer_mcp.get_lib_model_document
+syslab.search_syslab_docs
+syslab.read_syslab_doc
 ```
 
 ---
@@ -1137,11 +1199,17 @@ workflows/
 Test scripts such as:
 
 ```text
+scripts/qa_check.py
+```
+
+The following automation scripts are planned but not implemented yet. Do not
+call them unless they exist in `scripts/`:
+
+```text
 scripts/calc_metrics.jl
 scripts/plot_results.jl
 scripts/batch_experiment.jl
 scripts/export_report_assets.jl
-scripts/qa_check.py
 ```
 
 For metrics scripts, use a small known input file and verify:
@@ -1401,7 +1469,7 @@ Good prompts:
 ```
 
 ```text
-按照 workflows/calc_metrics.md，调用 Syslab MCP 执行 scripts/calc_metrics.jl，对 results/raw/figure8_pid.csv 计算 RMSE、最大误差和控制能量。
+按照 workflows/calc_metrics.md，使用 Syslab MCP 计算 results/raw/figure8_pid.csv 的 RMSE、最大误差和控制能量；如果 scripts/calc_metrics.jl 尚不存在，先用 evaluate_julia_code 或临时脚本完成并说明。
 ```
 
 ```text

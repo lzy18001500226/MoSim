@@ -32,11 +32,13 @@ search_syslab_docs
 read_syslab_doc
 ```
 
-Use scripts:
+Planned script:
 
 ```text
 scripts/plot_results.jl
 ```
+
+`scripts/plot_results.jl` is not implemented yet. Until it exists, use Syslab MCP `evaluate_julia_code`, a temporary reviewed Julia script, or Sysplorer `plot_manager`.
 
 ---
 

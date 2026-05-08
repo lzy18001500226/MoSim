@@ -120,15 +120,45 @@ map_matlab_functions_to_julia
 
 | Script | Purpose | Expected Input | Expected Output |
 |---|---|---|---|
-| `scripts/calc_metrics.jl` | Calculate experiment metrics | raw CSV / config | metrics JSON/CSV |
-| `scripts/plot_results.jl` | Generate figures | raw CSV / metrics | PNG figures |
-| `scripts/batch_experiment.jl` | Run batch experiment logic | batch YAML | result folders |
-| `scripts/export_report_assets.jl` | Prepare report assets | metrics/figures | report-ready folder |
 | `scripts/qa_check.py` | Project quality check | project root | pass/fail report |
+| `scripts/scan_mworks_docs.py` | Scan local MWORKS resource package | `MWORKS高校星火计划资料包` | `docs/mworks/scan/` indexes |
+| `scripts/convert_mworks_pdfs.py` | Local fallback PDF-to-Markdown conversion | selected local PDFs | `docs/mworks/converted/` Markdown |
+
+Planned scripts not yet implemented:
+
+```text
+scripts/calc_metrics.jl
+scripts/plot_results.jl
+scripts/batch_experiment.jl
+scripts/export_report_assets.jl
+```
 
 ---
 
-## 6. Common API Questions
+## 6. MinerU Precise Parsing API
+
+| Item | Value |
+|---|---|
+| Reference | `docs/mworks/mcp/mineru_precise_api.md` |
+| Token variable | `MINERU_API_TOKEN` |
+| Single URL task | `POST https://mineru.net/api/v4/extract/task` |
+| Single result query | `GET https://mineru.net/api/v4/extract/task/{task_id}` |
+| Local batch upload URLs | `POST https://mineru.net/api/v4/file-urls/batch` |
+| URL batch task | `POST https://mineru.net/api/v4/extract/task/batch` |
+| Batch result query | `GET https://mineru.net/api/v4/extract-results/batch/{batch_id}` |
+| Models | `pipeline`, `vlm`, `MinerU-HTML` |
+
+Rules:
+
+1. Never write the real Token into tracked files.
+2. Use `MINERU_API_TOKEN` from the environment.
+3. Use `vlm` for high-fidelity PDF/PPT/DOC parsing.
+4. Use `MinerU-HTML` only for HTML input.
+5. Store converted outputs under `docs/mworks/converted/` and update `docs/mworks/converted/转换索引.md`.
+
+---
+
+## 7. Common API Questions
 
 ### How to check a model?
 
@@ -197,13 +227,13 @@ Use either:
 plot_manager
 ```
 
-or
+or future local scripts:
 
 ```text
 Syslab run_julia_file scripts/plot_results.jl
 ```
 
-Prefer Syslab script plots for report figures.
+Prefer Syslab script plots for report figures after the plotting script is implemented.
 
 ---
 
@@ -214,6 +244,8 @@ Use:
 ```text
 Syslab run_julia_file scripts/calc_metrics.jl
 ```
+
+This script is planned but not implemented yet. Until then, compute metrics with `evaluate_julia_code` or a temporary reviewed script.
 
 Formula:
 

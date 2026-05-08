@@ -261,13 +261,13 @@ required packages can be listed
 Use either:
 
 ```text
-run_julia_file scripts/calc_metrics.jl
+evaluate_julia_code
 ```
 
-or for small checks:
+or, after the script is implemented:
 
 ```text
-evaluate_julia_code
+run_julia_file scripts/calc_metrics.jl
 ```
 
 Required fields:
@@ -292,7 +292,13 @@ If required fields are missing:
 
 ### Step 3: Compute metrics
 
-Run:
+Current status:
+
+```text
+scripts/calc_metrics.jl is planned but not implemented yet.
+```
+
+Until it exists, compute metrics with `evaluate_julia_code` or a temporary reviewed Julia script. Once implemented, run:
 
 ```text
 scripts/calc_metrics.jl
@@ -315,7 +321,13 @@ results/metrics/{scene_id}_{controller_id}.csv
 
 ### Step 4: Generate figures
 
-Run:
+Current status:
+
+```text
+scripts/plot_results.jl is planned but not implemented yet.
+```
+
+Until it exists, generate figures with `evaluate_julia_code`, Syslab plotting APIs, or `plot_manager`. Once implemented, run:
 
 ```text
 scripts/plot_results.jl

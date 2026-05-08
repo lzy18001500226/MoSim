@@ -12,7 +12,13 @@
 | `scan/categories/sysplorer_modeling.md` | Sysplorer、Modelica、建模仿真相关资料 |
 | `scan/categories/syslab_analysis.md` | Syslab、Julia、指标计算、绘图相关资料 |
 | `scan/categories/quadrotor_uav.md` | 智能无人系统、挑战赛、无人车/无人机相关资料 |
-| `extracted/` | 从 `.mo/.jl/.py/.m/.txt/.csv` 等文件生成的 Markdown 摘录 |
+| `converted/转换索引.md` | 高价值 PDF 转换索引 |
+| `converted/sysplorer/` | Sysplorer、Modelica、Syslab/Sysplorer 集成资料 |
+| `converted/syslab/` | Syslab 控制系统工具箱资料 |
+| `converted/control/` | 系统辨识、鲁棒控制资料 |
+| `converted/optimization/` | 参数估计与优化资料 |
+| `converted/api/` | 外部接口、脚本和函数调用资料 |
+| `converted/challenge/` | 智能无人系统挑战赛规则与培训资料 |
 
 ## 使用建议
 
@@ -22,17 +28,38 @@ Codex 查询资料时优先顺序：
 1. docs/mworks/scan/scan_summary.md
 2. docs/mworks/scan/relevant_index.md
 3. docs/mworks/scan/categories/*.md
-4. docs/mworks/extracted/*.md
-5. 原始资料包中的 PDF 或模型文件
+4. docs/mworks/converted/转换索引.md
+5. docs/mworks/converted/**/*.md
+6. 原始资料包中的 PDF 或模型文件
 ```
 
 ## PDF 说明
 
-当前环境未检测到 `pdftotext`、`pypdf`、`PyPDF2`、`pdfplumber` 或 `fitz`，因此 PDF 目前主要生成索引条目和待转换 Markdown 占位。后续如安装 PDF 文本提取工具，可重新运行：
+已将第一批 P0/P1/P2 高价值 PDF 转换到 `docs/mworks/converted/`。当前转换批次优先尝试 MinerU MCP，但当前网络到 MinerU 服务出现 SSL EOF/disconnect，因此正式落盘内容采用本地 PyMuPDF 文本提取兜底。
+
+转换结果可用于关键词检索、流程定位和 Agent 实现参考，但以下内容仍需结合原 PDF 或 MCP 官方文档复核：
+
+- API 名称、函数参数和命令大小写；
+- 公式、表格、代码块；
+- 截图中的菜单路径和图形化操作步骤；
+- 需要高保真版式的报告素材。
+
+重新扫描资料包：
 
 ```bash
-python scripts/scan_mworks_docs.py --top 180 --extract-limit 120
+python scripts/scan_mworks_docs.py --top 180
 ```
 
-脚本会自动尝试提取 PDF 前 5 页文本。
+默认不再生成 `docs/mworks/extracted/`，因为该目录主要是自动扫描碎片，和 `converted/` 重复且噪声较多。如确实需要临时摘录文本文件，可显式运行：
 
+```bash
+python scripts/scan_mworks_docs.py --top 180 --extract-snippets --extract-limit 120
+```
+
+重新生成 PDF Markdown 兜底转换：
+
+```bash
+uv run --with pymupdf python scripts/convert_mworks_pdfs.py
+```
+
+MinerU 网络恢复后，可按 `AGENTS.md` 的 MinerU MCP 规则重新转换重点 PDF，并覆盖或对照 `docs/mworks/converted/` 中的本地兜底版。

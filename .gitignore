@@ -34,6 +34,9 @@ npm-debug.log*
 *.cache
 *.bak
 *.old
+docs/mworks/extracted/
+docs/mworks/tmp/
+docs/mworks/raw/
 
 # MWORKS / simulation temp
 results/tmp/

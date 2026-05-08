@@ -38,7 +38,13 @@ MCP config presence
 
 ## 3. Script Tests
 
-Test:
+Currently implemented script test:
+
+```text
+scripts/qa_check.py
+```
+
+Planned script tests, only after these files exist:
 
 ```text
 scripts/calc_metrics.jl
