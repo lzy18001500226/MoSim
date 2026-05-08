@@ -75,10 +75,12 @@ RECOMMENDED_SCRIPTS = [
     "scripts/calc_metrics.py",
     "scripts/plot_results.py",
     "scripts/generate_replay_html.py",
+    "scripts/summarize_experiments.py",
 ]
 
 RECOMMENDED_TESTS = [
     "tests/test_metrics.py",
+    "tests/test_summary.py",
 ]
 
 OFFICIAL_MODELS = [

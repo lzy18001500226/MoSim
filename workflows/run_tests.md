@@ -42,14 +42,15 @@ Currently implemented script test:
 
 ```text
 scripts/qa_check.py
-scripts/calc_metrics.jl --self-test
-scripts/plot_results.jl tests/fixtures/sample_tracking.csv results/test_reports/sample_figures
+python3 tests/test_metrics.py
+python3 tests/test_summary.py
 ```
 
-Planned script tests, only after these files exist:
+Optional script tests when Julia/Syslab is available:
 
 ```text
-scripts/batch_experiment.jl
+scripts/calc_metrics.jl --self-test
+scripts/plot_results.jl tests/fixtures/sample_tracking.csv results/test_reports/sample_figures
 ```
 
 Use small sample files if available.

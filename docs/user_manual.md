@@ -181,6 +181,21 @@ metrics_summary.svg
 figure_manifest.md
 ```
 
+生成实验汇总：
+
+```bash
+python3 scripts/summarize_experiments.py --include-metrics-glob 'results/metrics/smoke_*.json'
+```
+
+输出：
+
+```text
+results/test_reports/experiment_summary.csv
+results/test_reports/experiment_summary.md
+```
+
+说明：正式场景没有对应 metrics 文件时会标记为 `pending`，不会用 smoke 数据替代完整 baseline 结论。
+
 ## 8. 提交前检查
 
 提交前运行：
@@ -189,6 +204,7 @@ figure_manifest.md
 python3 scripts/qa_check.py
 python3 scripts/check_reference_outputs.py
 python3 tests/test_metrics.py
+python3 tests/test_summary.py
 python3 -m py_compile scripts/*.py
 git diff --check
 ```
