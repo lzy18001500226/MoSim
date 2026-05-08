@@ -67,6 +67,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/check_reference_outputs.py",
     "scripts/extract_mcp_timeseries.py",
     "scripts/calc_metrics.py",
+    "scripts/plot_results.py",
     "scripts/generate_replay_html.py",
 ]
 

@@ -35,11 +35,23 @@ read_syslab_doc
 Available helper script:
 
 ```text
+scripts/plot_results.py
 scripts/plot_results.jl
 scripts/generate_replay_html.py
 ```
 
-`scripts/plot_results.jl` currently writes a figure manifest. Use Syslab MCP plotting APIs or Sysplorer `plot_manager` to generate final image files, then update the manifest.
+`scripts/plot_results.py` generates dependency-free SVG figures from a standard
+CSV and optional metrics JSON:
+
+```bash
+python3 scripts/plot_results.py \
+  results/raw/smoke_official_example1_pid_baseline.csv \
+  results/figures/smoke_official_example1_pid_baseline \
+  --metrics results/metrics/smoke_official_example1_pid_baseline.json
+```
+
+Use `scripts/plot_results.jl`, Syslab MCP plotting APIs, or Sysplorer
+`plot_manager` only when higher-fidelity native plots are required.
 
 `scripts/generate_replay_html.py` creates self-contained offline browser replay
 pages from `results/replay/*.json`. The generated HTML has no CDN dependency
