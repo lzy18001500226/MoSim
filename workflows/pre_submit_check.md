@@ -104,6 +104,7 @@ Run:
 
 ```bash
 python scripts/qa_check.py
+python scripts/check_reference_outputs.py
 ```
 
 ---

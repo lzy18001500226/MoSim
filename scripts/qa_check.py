@@ -62,6 +62,14 @@ RECOMMENDED_DOCS = [
     "workflows/pre_submit_check.md",
 ]
 
+RECOMMENDED_SCRIPTS = [
+    "scripts/generate_reference.py",
+    "scripts/check_reference_outputs.py",
+    "scripts/extract_mcp_timeseries.py",
+    "scripts/calc_metrics.py",
+    "scripts/generate_replay_html.py",
+]
+
 OFFICIAL_MODELS = [
     "QuadrotorModel.Examples.Example1",
     "QuadrotorModel.Examples.Example2",
@@ -208,6 +216,14 @@ def check_docs(root: Path) -> bool:
     return ok
 
 
+def check_scripts(root: Path) -> bool:
+    print("\n== Recommended scripts ==")
+    ok = True
+    for item in RECOMMENDED_SCRIPTS:
+        ok = check_path(root / item, required=False) and ok
+    return ok
+
+
 def check_wrappers() -> bool:
     print("\n== MCP wrapper scripts ==")
     ok = True
@@ -328,6 +344,7 @@ def main() -> int:
     ok = True
     ok = check_dirs(root) and ok
     ok = check_docs(root) and ok
+    ok = check_scripts(root) and ok
     ok = check_official_case(root) and ok
     wrappers_ok = check_wrappers()
 
