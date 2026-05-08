@@ -1,0 +1,34 @@
+experiment_id: wind_nmpc_indi_l1_001
+scene_id: wind_corridor
+controller_id: nmpc_indi_l1
+priority: P1
+
+model:
+  source_package: QuadrotorModel
+  model_name: Quadrotor.Examples.Figure8_PID
+  model_path_hint: QuadrotorModel/package.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 35.0
+  step_size_s: 0.01
+
+reference:
+  type: figure8
+  amplitude_x_m: 2.0
+  amplitude_y_m: 1.2
+  altitude_m: 2.0
+  angular_rate_rad_s: 0.45
+
+disturbance:
+  wind:
+    type: constant_window
+    start_time_s: 10.0
+    stop_time_s: 24.0
+    force_n: [1.0, 0.0, 0.0]
+
+result:
+  raw_file: results/raw/wind_nmpc_indi_l1.csv
+  metrics_file: results/metrics/wind_nmpc_indi_l1.json
+  figure_dir: results/figures/wind_nmpc_indi_l1
+

@@ -1,0 +1,17 @@
+metric,value
+control_energy,0.6677850000000001
+controller_id,fixture
+duration_s,1.0
+generated_at,2026-05-08T17:48:06.904
+max_position_error_m,0.03741657386773925
+nan_count,0
+position_rmse_m,0.019540168418367847
+raw_file,tests/fixtures/sample_tracking.csv
+row_count,11
+saturation_ratio,0.0
+scene_id,sample_tracking
+steady_state_error_m,0.017413765446625443
+valid,true
+x_rmse_m,0.012060453783110549
+y_rmse_m,0.00904534033733291
+z_rmse_m,0.012431631210161151

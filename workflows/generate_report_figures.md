@@ -32,13 +32,13 @@ search_syslab_docs
 read_syslab_doc
 ```
 
-Planned script:
+Available helper script:
 
 ```text
 scripts/plot_results.jl
 ```
 
-`scripts/plot_results.jl` is not implemented yet. Until it exists, use Syslab MCP `evaluate_julia_code`, a temporary reviewed Julia script, or Sysplorer `plot_manager`.
+`scripts/plot_results.jl` currently writes a figure manifest. Use Syslab MCP plotting APIs or Sysplorer `plot_manager` to generate final image files, then update the manifest.
 
 ---
 

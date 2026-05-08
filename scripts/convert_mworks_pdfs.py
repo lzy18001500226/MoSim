@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-"""
-Convert high-value MWORKS PDF documents into Markdown for agent lookup.
+"""Convert high-value MWORKS PDF documents into Markdown for agent lookup.
 
-MinerU MCP is the preferred converter for final high-fidelity Markdown. This
-script is the local fallback path: it uses PyMuPDF text extraction so Codex can
-search official training materials even when the MinerU cloud endpoint is not
-reachable.
+Two conversion paths are supported:
+
+1. `--method pymupdf`: local text fallback, fast and offline.
+2. `--method mineru`: one-by-one MinerU precise API upload, better for tables,
+   formulas, layout, and scanned pages. The token must be provided through the
+   `MINERU_API_TOKEN` environment variable.
 
 Usage:
-    uv run --with pymupdf python scripts/convert_mworks_pdfs.py
+    uv run --with pymupdf python scripts/convert_mworks_pdfs.py --method pymupdf
+    uv run --with pymupdf python scripts/convert_mworks_pdfs.py --method mineru --limit 3
 """
 
 from __future__ import annotations
@@ -16,14 +18,23 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
+from urllib import request, error
+from zipfile import ZipFile
+import argparse
 import hashlib
+import json
+import os
 import re
+import shutil
+import time
 
 import fitz  # type: ignore[import-not-found]
 
 
 SOURCE_ROOT = Path("MWORKS高校星火计划资料包")
 OUTPUT_ROOT = Path("docs/mworks/converted")
+TMP_ROOT = Path("docs/mworks/tmp/mineru")
+MINERU_BASE_URL = "https://mineru.net/api/v4"
 
 
 @dataclass(frozen=True)
@@ -163,6 +174,52 @@ def extract_pdf(path: Path) -> tuple[int, str]:
     return doc.page_count, "\n\n".join(pages)
 
 
+def safe_stem(text: str) -> str:
+    stem = re.sub(r"[^\w\u4e00-\u9fff.-]+", "_", text, flags=re.UNICODE).strip("_")
+    return stem[:120] or "document"
+
+
+def request_json(url: str, *, token: str, method: str = "GET", data: dict | None = None, timeout: int = 60) -> dict:
+    body = json.dumps(data).encode("utf-8") if data is not None else None
+    req = request.Request(url, data=body, method=method)
+    req.add_header("Accept", "*/*")
+    req.add_header("Authorization", f"Bearer {token}")
+    if body is not None:
+        req.add_header("Content-Type", "application/json")
+    try:
+        with request.urlopen(req, timeout=timeout) as resp:
+            payload = resp.read().decode("utf-8", errors="replace")
+    except error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"HTTP {exc.code} from MinerU: {detail}") from exc
+    return json.loads(payload)
+
+
+def upload_file(upload_url: str, source: Path, timeout: int = 300) -> None:
+    req = request.Request(upload_url, data=source.read_bytes(), method="PUT")
+    try:
+        with request.urlopen(req, timeout=timeout) as resp:
+            if resp.status != 200:
+                raise RuntimeError(f"upload failed with HTTP {resp.status}")
+    except error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"HTTP {exc.code} during upload: {detail}") from exc
+
+
+def download_file(url: str, output: Path, timeout: int = 300) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with request.urlopen(url, timeout=timeout) as resp:
+        output.write_bytes(resp.read())
+
+
+def find_full_markdown(extract_dir: Path) -> Path | None:
+    candidates = sorted(extract_dir.rglob("full.md"))
+    if candidates:
+        return candidates[0]
+    candidates = sorted(extract_dir.rglob("*.md"))
+    return candidates[0] if candidates else None
+
+
 def write_markdown(target: PdfTarget) -> dict[str, str]:
     source = SOURCE_ROOT / target.source
     output = OUTPUT_ROOT / target.topic / target.output_name
@@ -216,14 +273,109 @@ def write_markdown(target: PdfTarget) -> dict[str, str]:
     return {"source": target.source, "output": output.as_posix(), "status": "converted", "pages": str(page_count)}
 
 
-def write_index(results: list[dict[str, str]]) -> None:
+def write_markdown_with_mineru(
+    target: PdfTarget,
+    *,
+    token: str,
+    model_version: str,
+    poll_interval: int,
+    timeout_seconds: int,
+    force: bool,
+) -> dict[str, str]:
+    source = SOURCE_ROOT / target.source
+    output = OUTPUT_ROOT / target.topic / target.output_name
+    output.parent.mkdir(parents=True, exist_ok=True)
+    if not source.exists():
+        return {"source": target.source, "output": output.as_posix(), "status": "missing"}
+    if output.exists() and not force:
+        text = output.read_text(encoding="utf-8", errors="ignore")
+        if "Converted by: `MinerU precise API`" in text:
+            return {"source": target.source, "output": output.as_posix(), "status": "skipped"}
+
+    data_id = safe_stem(f"{target.priority}_{target.topic}_{source.stem}_{hashlib.sha1(target.source.encode()).hexdigest()[:8]}")
+    apply_payload = {
+        "files": [{"name": source.name, "data_id": data_id}],
+        "model_version": model_version,
+        "language": "ch",
+        "enable_formula": True,
+        "enable_table": True,
+        "extra_formats": ["html"],
+    }
+    apply_result = request_json(f"{MINERU_BASE_URL}/file-urls/batch", token=token, method="POST", data=apply_payload)
+    if apply_result.get("code") != 0:
+        raise RuntimeError(f"MinerU upload URL request failed for {source.name}: {apply_result.get('msg')}")
+    batch_id = apply_result["data"]["batch_id"]
+    upload_url = apply_result["data"]["file_urls"][0]
+    upload_file(upload_url, source)
+
+    deadline = time.time() + timeout_seconds
+    last_state = "waiting-file"
+    result_item: dict | None = None
+    while time.time() < deadline:
+        poll_result = request_json(f"{MINERU_BASE_URL}/extract-results/batch/{batch_id}", token=token)
+        if poll_result.get("code") != 0:
+            raise RuntimeError(f"MinerU poll failed for {source.name}: {poll_result.get('msg')}")
+        items = poll_result.get("data", {}).get("extract_result", [])
+        result_item = items[0] if items else None
+        last_state = result_item.get("state", last_state) if result_item else last_state
+        if last_state == "done":
+            break
+        if last_state == "failed":
+            raise RuntimeError(f"MinerU parse failed for {source.name}: {result_item.get('err_msg', '')}")
+        time.sleep(poll_interval)
+    else:
+        raise TimeoutError(f"MinerU parse timeout for {source.name}; last state: {last_state}")
+
+    if not result_item or not result_item.get("full_zip_url"):
+        raise RuntimeError(f"MinerU did not return full_zip_url for {source.name}")
+
+    work_dir = TMP_ROOT / data_id
+    if work_dir.exists():
+        shutil.rmtree(work_dir)
+    work_dir.mkdir(parents=True, exist_ok=True)
+    zip_path = work_dir / "result.zip"
+    download_file(result_item["full_zip_url"], zip_path)
+    extract_dir = work_dir / "unzipped"
+    with ZipFile(zip_path) as zf:
+        zf.extractall(extract_dir)
+    full_md = find_full_markdown(extract_dir)
+    if full_md is None:
+        raise RuntimeError(f"MinerU result has no Markdown file for {source.name}")
+
+    digest = hashlib.sha1(source.read_bytes()).hexdigest()[:12]
+    body = full_md.read_text(encoding="utf-8", errors="replace").strip()
+    title = target.output_name.removesuffix(".md")
+    output.write_text(
+        "\n".join(
+            [
+                f"# {title}",
+                "",
+                f"- Source: `{source.as_posix()}`",
+                "- Converted by: `MinerU precise API`",
+                f"- Conversion date: `{date.today().isoformat()}`",
+                "- Review status: `MinerU converted; spot check recommended`",
+                f"- Priority: `{target.priority}`",
+                f"- Source SHA1: `{digest}`",
+                f"- MinerU batch id: `{batch_id}`",
+                f"- Notes: {target.note}",
+                "",
+                body,
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    return {"source": target.source, "output": output.as_posix(), "status": "mineru_converted", "pages": "-"}
+
+
+def write_index(results: list[dict[str, str]], method: str) -> None:
     index_path = OUTPUT_ROOT / "转换索引.md"
     lines = [
         "# MWORKS PDF 转换索引",
         "",
         f"- Generated: `{date.today().isoformat()}`",
         "- Preferred converter: `MinerU MCP`",
-        "- Current batch converter: `local PyMuPDF fallback`",
+        f"- Current converter: `{method}`",
         "- Review note: 重要 API、公式、表格和代码块仍需结合 MCP 官方文档或原 PDF 复核。",
         "",
         "| Status | Topic | Pages | Markdown | Source |",
@@ -249,13 +401,55 @@ def write_index(results: list[dict[str, str]]) -> None:
     index_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--method", choices=["pymupdf", "mineru"], default="pymupdf")
+    parser.add_argument("--limit", type=int, default=0, help="Convert only the first N targets; 0 means all targets.")
+    parser.add_argument("--priority", action="append", choices=["P0", "P1", "P2"], help="Filter target priority. Can be repeated.")
+    parser.add_argument("--model-version", default="vlm", choices=["pipeline", "vlm"])
+    parser.add_argument("--poll-interval", type=int, default=10)
+    parser.add_argument("--timeout-seconds", type=int, default=1800)
+    parser.add_argument("--force", action="store_true", help="Overwrite existing MinerU-converted files.")
+    return parser.parse_args()
+
+
+def select_targets(args: argparse.Namespace) -> list[PdfTarget]:
+    targets = TARGETS
+    if args.priority:
+        allowed = set(args.priority)
+        targets = [target for target in targets if target.priority in allowed]
+    if args.limit > 0:
+        targets = targets[: args.limit]
+    return targets
+
+
 def main() -> int:
+    args = parse_args()
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
-    results = [write_markdown(target) for target in TARGETS]
-    write_index(results)
-    converted = sum(1 for r in results if r["status"] == "converted")
+    targets = select_targets(args)
+    if args.method == "mineru":
+        token = os.environ.get("MINERU_API_TOKEN")
+        if not token:
+            raise SystemExit("MINERU_API_TOKEN is not set. Set it in the environment, not in tracked files.")
+        results = []
+        for index, target in enumerate(targets, start=1):
+            print(f"[{index}/{len(targets)}] MinerU converting: {target.source}")
+            results.append(
+                write_markdown_with_mineru(
+                    target,
+                    token=token,
+                    model_version=args.model_version,
+                    poll_interval=args.poll_interval,
+                    timeout_seconds=args.timeout_seconds,
+                    force=args.force,
+                )
+            )
+    else:
+        results = [write_markdown(target) for target in targets]
+    write_index(results, args.method)
+    converted = sum(1 for r in results if r["status"] in {"converted", "mineru_converted", "skipped"})
     missing = sum(1 for r in results if r["status"] == "missing")
-    print(f"Converted PDFs: {converted}")
+    print(f"Processed PDFs: {converted}")
     print(f"Missing PDFs: {missing}")
     print(f"Index: {OUTPUT_ROOT / '转换索引.md'}")
     return 0 if missing == 0 else 1

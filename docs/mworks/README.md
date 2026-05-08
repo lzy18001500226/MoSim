@@ -59,7 +59,13 @@ python scripts/scan_mworks_docs.py --top 180 --extract-snippets --extract-limit 
 重新生成 PDF Markdown 兜底转换：
 
 ```bash
-uv run --with pymupdf python scripts/convert_mworks_pdfs.py
+uv run --with pymupdf python scripts/convert_mworks_pdfs.py --method pymupdf
 ```
 
-MinerU 网络恢复后，可按 `AGENTS.md` 的 MinerU MCP 规则重新转换重点 PDF，并覆盖或对照 `docs/mworks/converted/` 中的本地兜底版。
+使用 MinerU 精准解析逐个转换重点 PDF：
+
+```bash
+uv run --with pymupdf python scripts/convert_mworks_pdfs.py --method mineru --priority P0 --limit 1
+```
+
+MinerU 转换只从环境变量 `MINERU_API_TOKEN` 读取 Token，不要把 Token 写入仓库文件。

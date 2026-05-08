@@ -1,21 +1,22 @@
 # MWORKS 资料扫描摘要
 
 - Source: `MWORKS高校星火计划资料包`
-- Total relevant files: `180`
+- Total relevant files: `220`
 - Extracted markdown files: `0`
 
 ## Category Counts
 
 | Category | Count |
 |---|---:|
-| sysplorer_modeling | 99 |
-| quadrotor_uav | 53 |
-| syslab_analysis | 28 |
+| sysplorer_modeling | 129 |
+| syslab_analysis | 52 |
+| quadrotor_uav | 39 |
 
 ## Main Outputs
 
 - `docs/mworks/scan/relevant_index.md`: ranked relevant file index
 - `docs/mworks/scan/relevant_files.csv`: machine-readable index
+- `docs/mworks/scan/pdf_review.md`: PDF first-page text relevance review
 - `docs/mworks/scan/categories/`: category indexes
 - `docs/mworks/converted/`: curated PDF/API conversion outputs
 

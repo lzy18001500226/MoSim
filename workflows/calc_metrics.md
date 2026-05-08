@@ -295,10 +295,10 @@ If required fields are missing:
 Current status:
 
 ```text
-scripts/calc_metrics.jl is planned but not implemented yet.
+scripts/calc_metrics.jl has a minimal implemented version.
 ```
 
-Until it exists, compute metrics with `evaluate_julia_code` or a temporary reviewed Julia script. Once implemented, run:
+Run:
 
 ```text
 scripts/calc_metrics.jl
@@ -324,10 +324,10 @@ results/metrics/{scene_id}_{controller_id}.csv
 Current status:
 
 ```text
-scripts/plot_results.jl is planned but not implemented yet.
+scripts/plot_results.jl has a minimal manifest-writing version.
 ```
 
-Until it exists, generate figures with `evaluate_julia_code`, Syslab plotting APIs, or `plot_manager`. Once implemented, run:
+For publication-quality images, generate figures with Syslab plotting APIs or `plot_manager`; use the script to keep a stable output contract and figure manifest. Run:
 
 ```text
 scripts/plot_results.jl

@@ -13,6 +13,7 @@
 | Simulation report | `docs/simulation_report.md` | Submission-facing analysis report draft |
 | API/tool index | `docs/index/api_index.md` | Available MCP tools, scripts, and API references |
 | Workflow index | `docs/index/workflow_index.md` | Repeatable development workflows |
+| Variable mapping | `docs/index/variable_mapping.md` | Standard raw CSV names vs Sysplorer result variables |
 
 ## MWORKS Reference Docs
 
@@ -22,6 +23,7 @@
 | Scan summary | `docs/mworks/scan/scan_summary.md` | Relevant file counts and next steps |
 | Ranked relevant index | `docs/mworks/scan/relevant_index.md` | Top project-related source files |
 | Machine-readable index | `docs/mworks/scan/relevant_files.csv` | CSV for scripts and filtering |
+| PDF preview review | `docs/mworks/scan/pdf_review.md` | PDF first-page content relevance evidence |
 | Sysplorer category | `docs/mworks/scan/categories/sysplorer_modeling.md` | Sysplorer, Modelica, modeling examples |
 | Syslab category | `docs/mworks/scan/categories/syslab_analysis.md` | Syslab, Julia, control analysis |
 | Challenge category | `docs/mworks/scan/categories/quadrotor_uav.md` | Intelligent unmanned systems challenge materials |

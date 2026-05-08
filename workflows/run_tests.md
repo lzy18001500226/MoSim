@@ -42,13 +42,13 @@ Currently implemented script test:
 
 ```text
 scripts/qa_check.py
+scripts/calc_metrics.jl --self-test
+scripts/plot_results.jl tests/fixtures/sample_tracking.csv results/test_reports/sample_figures
 ```
 
 Planned script tests, only after these files exist:
 
 ```text
-scripts/calc_metrics.jl
-scripts/plot_results.jl
 scripts/batch_experiment.jl
 ```
 

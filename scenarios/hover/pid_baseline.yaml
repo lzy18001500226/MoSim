@@ -1,0 +1,29 @@
+experiment_id: hover_pid_baseline_001
+scene_id: hover
+controller_id: pid_baseline
+priority: P0
+
+model:
+  source_package: QuadrotorModel
+  model_name: Quadrotor.Examples.Hover_PID
+  model_path_hint: QuadrotorModel/package.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 8.0
+  step_size_s: 0.01
+
+reference:
+  type: fixed_point
+  position_m: [0.0, 0.0, 2.0]
+  yaw_rad: 0.0
+
+disturbance:
+  wind:
+    type: none
+
+result:
+  raw_file: results/raw/hover_pid_baseline.csv
+  metrics_file: results/metrics/hover_pid_baseline.json
+  figure_dir: results/figures/hover_pid_baseline
+

@@ -4,6 +4,8 @@ Scan the local MWORKS resource package and build Markdown indexes for Codex.
 
 The script is intentionally conservative:
 - It scores files by project relevance.
+- It can use a lightweight PDF first-page preview to catch documents whose
+  filename is vague but whose content is relevant.
 - It writes scan indexes only by default.
 - It can optionally extract text-like files into Markdown snippets, but this is
   disabled by default because the snippets are noisy and largely superseded by
@@ -67,14 +69,25 @@ KEYWORDS = {
     "modelica": 24,
     "控制系统": 24,
     "控制": 16,
+    "控制器": 16,
     "pid": 22,
     "mpc": 20,
     "nmpc": 20,
+    "鲁棒控制": 24,
+    "系统辨识": 22,
+    "状态反馈": 18,
+    "根轨迹": 16,
+    "参数估计": 20,
     "路径规划": 22,
+    "避障": 20,
+    "编队": 18,
     "轨迹": 18,
+    "飞行": 14,
     "优化": 18,
     "仿真": 16,
     "模型": 14,
+    "可视化": 12,
+    "三维": 12,
     "mcp": 12,
     "julia": 12,
     "matlab": 10,
@@ -104,6 +117,10 @@ class FileRecord:
     score: int
     category: str
     matched: list[str]
+    path_matched: list[str]
+    content_matched: list[str]
+    preview_chars: int
+    review_reason: str
 
 
 def normalize_text(text: str) -> str:
@@ -118,33 +135,77 @@ def classify(search_text: str) -> str:
     return "other"
 
 
-def score_file(path: Path, source: Path) -> FileRecord:
-    rel = path.relative_to(source).as_posix()
-    ext = path.suffix.lower()
-    haystack = normalize_text(rel)
+def keyword_score(text: str, scale: float = 1.0) -> tuple[int, list[str]]:
+    haystack = normalize_text(text)
     score = 0
     matched: list[str] = []
-
     for keyword, weight in KEYWORDS.items():
         if keyword.lower() in haystack:
-            score += weight
+            score += max(1, int(weight * scale))
             matched.append(keyword)
+    return score, matched
+
+
+def score_file(
+    path: Path,
+    source: Path,
+    *,
+    scan_pdf_preview: bool,
+    pdf_preview_pages: int,
+    pdf_preview_max_chars: int,
+) -> FileRecord:
+    rel = path.relative_to(source).as_posix()
+    ext = path.suffix.lower()
+    path_score, path_matched = keyword_score(rel)
+    content_score = 0
+    content_matched: list[str] = []
+    preview_chars = 0
 
     if ext in TEXT_EXTS:
-        score += 8
+        ext_score = 8
     elif ext in PDF_EXTS:
-        score += 6
+        ext_score = 6
     elif ext in SKIP_EXTS:
-        score -= 30
+        ext_score = -30
+    else:
+        ext_score = 0
+
+    if scan_pdf_preview and ext in PDF_EXTS:
+        preview = extract_pdf_text(path, pdf_preview_max_chars, pages=pdf_preview_pages)
+        preview_chars = len(preview)
+        content_score, content_matched = keyword_score(preview, scale=0.65)
 
     size = path.stat().st_size
+    size_score = 0
     if size > 100 * 1024 * 1024:
-        score -= 50
+        size_score -= 50
     elif size > 50 * 1024 * 1024:
-        score -= 15
+        size_score -= 15
 
+    matched = sorted(set(path_matched + content_matched), key=lambda item: item.lower())
+    score = path_score + content_score + ext_score + size_score
     category = classify(f"{rel} {' '.join(matched)}")
-    return FileRecord(path, rel, ext, size, score, category, matched)
+    if path_matched and content_matched:
+        review_reason = "path+pdf_preview"
+    elif content_matched:
+        review_reason = "pdf_preview"
+    elif path_matched:
+        review_reason = "path"
+    else:
+        review_reason = "extension"
+    return FileRecord(
+        path,
+        rel,
+        ext,
+        size,
+        score,
+        category,
+        matched,
+        path_matched,
+        content_matched,
+        preview_chars,
+        review_reason,
+    )
 
 
 def safe_slug(text: str, max_len: int = 90) -> str:
@@ -168,12 +229,12 @@ def read_text(path: Path, max_chars: int) -> str:
     return text[:max_chars]
 
 
-def extract_pdf_text(path: Path, max_chars: int) -> str:
+def extract_pdf_text(path: Path, max_chars: int, pages: int = 5) -> str:
     pdftotext = shutil.which("pdftotext")
     if pdftotext:
         try:
             result = subprocess.run(
-                [pdftotext, "-f", "1", "-l", "5", str(path), "-"],
+                [pdftotext, "-f", "1", "-l", str(pages), str(path), "-"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL,
                 check=False,
@@ -190,11 +251,21 @@ def extract_pdf_text(path: Path, max_chars: int) -> str:
             reader_cls = getattr(module, "PdfReader")
             reader = reader_cls(str(path))
             chunks = []
-            for page in reader.pages[:5]:
+            for page in reader.pages[:pages]:
                 chunks.append(page.extract_text() or "")
             return "\n".join(chunks)[:max_chars]
         except Exception:
             continue
+
+    try:
+        fitz = __import__("fitz")
+        doc = fitz.open(str(path))
+        chunks = []
+        for index in range(min(pages, doc.page_count)):
+            chunks.append(doc[index].get_text("text") or "")
+        return "\n".join(chunks)[:max_chars]
+    except Exception:
+        pass
 
     return ""
 
@@ -210,8 +281,8 @@ def write_table(records: Iterable[FileRecord], out_path: Path) -> None:
         "",
         f"Generated: {datetime.now().isoformat(timespec='seconds')}",
         "",
-        "| Score | Category | Size MB | Ext | File | Matched |",
-        "|---:|---|---:|---|---|---|",
+        "| Score | Category | Evidence | Size MB | Ext | File | Matched |",
+        "|---:|---|---|---:|---|---|---|",
     ]
     for r in rows:
         lines.append(
@@ -220,6 +291,7 @@ def write_table(records: Iterable[FileRecord], out_path: Path) -> None:
                 [
                     str(r.score),
                     markdown_escape_cell(r.category),
+                    markdown_escape_cell(r.review_reason),
                     f"{r.size / 1024 / 1024:.2f}",
                     markdown_escape_cell(r.ext or "-"),
                     markdown_escape_cell(r.rel),
@@ -245,9 +317,66 @@ def write_category_indexes(records: list[FileRecord], output: Path) -> None:
 def write_csv(records: list[FileRecord], out_path: Path) -> None:
     with out_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(["score", "category", "size_bytes", "extension", "path", "matched"])
+        writer.writerow(
+            [
+                "score",
+                "category",
+                "size_bytes",
+                "extension",
+                "path",
+                "matched",
+                "path_matched",
+                "content_matched",
+                "preview_chars",
+                "review_reason",
+            ]
+        )
         for r in records:
-            writer.writerow([r.score, r.category, r.size, r.ext, r.rel, ";".join(r.matched)])
+            writer.writerow(
+                [
+                    r.score,
+                    r.category,
+                    r.size,
+                    r.ext,
+                    r.rel,
+                    ";".join(r.matched),
+                    ";".join(r.path_matched),
+                    ";".join(r.content_matched),
+                    r.preview_chars,
+                    r.review_reason,
+                ]
+            )
+
+
+def write_pdf_review(records: list[FileRecord], output: Path) -> None:
+    pdfs = [r for r in records if r.ext in PDF_EXTS]
+    lines = [
+        "# PDF 内容预览复核",
+        "",
+        f"Generated: {datetime.now().isoformat(timespec='seconds')}",
+        "",
+        "本文件用于判断 `relevant_files.csv` 是否只依赖路径名。`Evidence=pdf_preview` 表示路径名不明显，但 PDF 首页文本命中了项目关键词。",
+        "",
+        "| Score | Category | Evidence | Preview Chars | Size MB | File | Content Matched |",
+        "|---:|---|---|---:|---:|---|---|",
+    ]
+    for r in pdfs:
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    str(r.score),
+                    markdown_escape_cell(r.category),
+                    markdown_escape_cell(r.review_reason),
+                    str(r.preview_chars),
+                    f"{r.size / 1024 / 1024:.2f}",
+                    markdown_escape_cell(r.rel),
+                    markdown_escape_cell(", ".join(r.content_matched) or "-"),
+                ]
+            )
+            + " |"
+        )
+    (output / "scan" / "pdf_review.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def extract_records(records: list[FileRecord], output: Path, limit: int, max_chars: int) -> list[dict[str, str]]:
@@ -324,6 +453,7 @@ def write_summary(records: list[FileRecord], extracted: list[dict[str, str]], ou
             "",
             "- `docs/mworks/scan/relevant_index.md`: ranked relevant file index",
             "- `docs/mworks/scan/relevant_files.csv`: machine-readable index",
+            "- `docs/mworks/scan/pdf_review.md`: PDF first-page text relevance review",
             "- `docs/mworks/scan/categories/`: category indexes",
             "- `docs/mworks/converted/`: curated PDF/API conversion outputs",
             "",
@@ -347,6 +477,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--extract-limit", type=int, default=100)
     parser.add_argument("--max-chars", type=int, default=12000)
     parser.add_argument("--min-score", type=int, default=10)
+    parser.add_argument("--pdf-preview-pages", type=int, default=5)
+    parser.add_argument("--pdf-preview-max-chars", type=int, default=12000)
+    parser.add_argument(
+        "--no-pdf-preview",
+        action="store_true",
+        help="Skip lightweight PDF text preview and score paths only.",
+    )
     parser.add_argument(
         "--extract-snippets",
         action="store_true",
@@ -366,7 +503,13 @@ def main() -> int:
     scan_dir.mkdir(parents=True, exist_ok=True)
 
     records = [
-        score_file(path, source)
+        score_file(
+            path,
+            source,
+            scan_pdf_preview=not args.no_pdf_preview,
+            pdf_preview_pages=args.pdf_preview_pages,
+            pdf_preview_max_chars=args.pdf_preview_max_chars,
+        )
         for path in source.rglob("*")
         if path.is_file()
     ]
@@ -376,6 +519,7 @@ def main() -> int:
 
     write_table(records, scan_dir / "relevant_index.md")
     write_csv(records, scan_dir / "relevant_files.csv")
+    write_pdf_review(records, output)
     write_category_indexes(records, output)
     extracted: list[dict[str, str]] = []
     if args.extract_snippets:

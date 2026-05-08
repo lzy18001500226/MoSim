@@ -1196,18 +1196,17 @@ workflows/
 
 ### 9.5 Script Tests
 
-Test scripts such as:
+Implemented script tests:
 
 ```text
 scripts/qa_check.py
-```
-
-The following automation scripts are planned but not implemented yet. Do not
-call them unless they exist in `scripts/`:
-
-```text
 scripts/calc_metrics.jl
 scripts/plot_results.jl
+```
+
+The following automation scripts are still planned. Do not call them unless they exist in `scripts/`:
+
+```text
 scripts/batch_experiment.jl
 scripts/export_report_assets.jl
 ```
@@ -1469,7 +1468,7 @@ Good prompts:
 ```
 
 ```text
-按照 workflows/calc_metrics.md，使用 Syslab MCP 计算 results/raw/figure8_pid.csv 的 RMSE、最大误差和控制能量；如果 scripts/calc_metrics.jl 尚不存在，先用 evaluate_julia_code 或临时脚本完成并说明。
+按照 workflows/calc_metrics.md，使用 Syslab MCP 运行 scripts/calc_metrics.jl，计算 results/raw/figure8_pid.csv 的 RMSE、最大误差和控制能量，并保存到 results/metrics/figure8_pid.json。
 ```
 
 ```text

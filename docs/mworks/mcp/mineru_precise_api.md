@@ -14,7 +14,7 @@ MinerU 精准解析 API 用于将复杂 PDF、图片、Doc/Docx、Ppt/PPTx 和 H
 
 ## 2. Token 放置
 
-只使用环境变量：
+WSL使用环境变量：
 
 ```bash
 export MINERU_API_TOKEN="你的 Token"
@@ -23,7 +23,7 @@ export MINERU_API_TOKEN="你的 Token"
 PowerShell：
 
 ```powershell
-$env:MINERU_API_TOKEN = "$env:MINERU_API_TOKEN = "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFM1MTIifQ.eyJqdGkiOiIyODMwMDUxNCIsInJvbCI6IlJPTEVfUkVHSVNURVIiLCJpc3MiOiJPcGVuWExhYiIsImlhdCI6MTc3ODIzMDU1MCwiY2xpZW50SWQiOiJsa3pkeDU3bnZ5MjJqa3BxOXgydyIsInBob25lIjoiMTgwMDE1MDAyMjYiLCJvcGVuSWQiOm51bGwsInV1aWQiOiIzNDQyMWM4Yy0zY2FlLTQwM2YtOGJiNy0zNDNiY2IzZDk0YmYiLCJlbWFpbCI6IiIsImV4cCI6MTc4NjAwNjU1MH0.NLbYOxeorXrLOzdmouwipxL9jqeAO1jWRHF14ERgLXTaV45XY2AGFF8Rh_i6kPFQdQHld2v7T1iVkNO8vcpYmQ""
+$env:MINERU_API_TOKEN = "你的 Token"
 ```
 
 不要使用以下做法：

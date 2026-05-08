@@ -1,0 +1,41 @@
+controller_id: nmpc_indi_l1
+type: nmpc_outer_indi_inner_l1_disturbance_compensation
+priority: P1
+
+outer_loop:
+  fallback_type: linear_mpc
+  horizon_steps: 20
+  dt: 0.05
+  q_position: [10.0, 10.0, 14.0]
+  q_velocity: [2.0, 2.0, 3.0]
+  r_acceleration: [0.15, 0.15, 0.25]
+  velocity_limit_m_s: 6.0
+  acceleration_limit_m_s2: 5.0
+
+indi_inner_loop:
+  angular_acc_filter_alpha: 0.85
+  control_effectiveness_update: true
+  torque_limit_nm: [1.5, 1.5, 0.8]
+
+l1_compensation:
+  enabled: true
+  residual_filter_alpha: 0.90
+  compensation_limit_m_s2: 2.0
+
+safety_filter:
+  enabled: true
+  roll_max_rad: 0.61
+  pitch_max_rad: 0.61
+  min_altitude_m: 0.2
+  motor_cmd_min: 0.0
+  motor_cmd_max: 1.0
+
+logging:
+  required_signals:
+    - controller_mode
+    - disturbance_hat_x
+    - disturbance_hat_y
+    - disturbance_hat_z
+    - safety_active
+    - saturation_flag
+

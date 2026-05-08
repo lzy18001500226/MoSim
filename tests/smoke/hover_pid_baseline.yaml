@@ -1,0 +1,18 @@
+test_id: smoke_hover_pid_baseline
+experiment_config: scenarios/hover/pid_baseline.yaml
+duration_s: 3.0
+
+pass_conditions:
+  simulation_finishes: true
+  required_columns:
+    - time
+    - x
+    - y
+    - z
+    - x_ref
+    - y_ref
+    - z_ref
+  no_nan_core_fields: true
+  z_min_m: 0.0
+  row_count_min: 10
+
