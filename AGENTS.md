@@ -723,8 +723,13 @@ Codex runs inside WSL/Linux, while MWORKS.Sysplorer and MWORKS.Syslab are instal
 To avoid Windows path parsing problems, this project uses WSL wrapper scripts:
 
 ```text
-/home/linux/mcp-wrappers/syslab_mcp.sh
-/home/linux/mcp-wrappers/sysplorer_mcp.sh
+preferred on high-performance server:
+  /home/linux/mcp-wrappers/syslab_mcp.sh
+  /home/linux/mcp-wrappers/sysplorer_mcp.sh
+
+fallback on local WSL user:
+  ~/mcp-wrappers/syslab_mcp.sh
+  ~/mcp-wrappers/sysplorer_mcp.sh
 ```
 
 Configuration principle:
@@ -757,6 +762,11 @@ args = []
 startup_timeout_sec = 180
 tool_timeout_sec = 300
 ```
+
+If the high-performance server path does not exist on the current machine, use
+the local WSL fallback under `~/mcp-wrappers/`. Project scripts should prefer an
+explicit environment variable or auto-detect these candidates instead of
+hard-coding only one user home.
 
 If Windows-side auto-generated Codex MCP configuration exists at:
 
@@ -880,6 +890,18 @@ Rules:
 4. Do not paste large documentation dumps into `AGENTS.md`.
 5. Keep `AGENTS.md` as the project behavior and workflow control file.
 6. If documentation is missing or unclear, use MCP documentation tools.
+
+### 6.1 Project-Local MWORKS Skills
+
+This repository includes compact project-local skills translated from MathWorks / Simulink agent patterns:
+
+| Skill | Use When | File |
+|---|---|---|
+| `mworks-model-context` | Resolving Sysplorer model, component, port, parameter, controller replacement location, or signal interface | `Skills/mworks-model-context/SKILL.md` |
+| `mworks-simulation-evidence` | Running MWORKS simulations, reading results, computing metrics, or producing report evidence | `Skills/mworks-simulation-evidence/SKILL.md` |
+| `mworks-syslab-porting` | Translating MATLAB/Simulink skills, scripts, tests, plotting, or performance workflows into MWORKS/Syslab/Sysplorer practice | `Skills/mworks-syslab-porting/SKILL.md` |
+
+Use MathWorks / Simulink material under `Skills/` as pattern references only. Verify executable API calls through MWORKS docs or MCP, and prefer updating existing `workflows/` and `docs/index/` files over creating long new documents.
 
 ---
 
@@ -1462,6 +1484,8 @@ If `/mcp` shows `Tools: (none)`:
 1. Check wrapper scripts:
 
 ```bash
+ls -l /home/linux/mcp-wrappers/syslab_mcp.sh
+ls -l /home/linux/mcp-wrappers/sysplorer_mcp.sh
 ls -l ~/mcp-wrappers/syslab_mcp.sh
 ls -l ~/mcp-wrappers/sysplorer_mcp.sh
 ```
@@ -1507,6 +1531,7 @@ If it waits without output, this is normal for stdio MCP servers. Press `Ctrl+C`
 If Filesystem MCP fails, check:
 
 ```bash
+ls -l /home/linux/mcp-wrappers/filesystem_mcp.sh
 ls -l ~/mcp-wrappers/filesystem_mcp.sh
 cat ~/mcp-wrappers/filesystem_mcp.sh
 ```

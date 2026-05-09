@@ -133,8 +133,7 @@ large videos/PDFs unless explicitly required
 
 ## Current Recommended Translation Queue
 
-1. Convert `MWORKS与MATLAB功能对照` into compact Markdown under `docs/mworks/converted/matlab_compat/`.
-2. Translate Simulink model interaction skills into a Sysplorer model-inspection workflow.
-3. Translate Simulink simulation/logging skills into a Sysplorer simulation/result-export workflow.
-4. Translate MATLAB coding/performance rules into Syslab/Python metric-script standards.
-5. Only after the above, consider project-local Codex skills or plugin metadata.
+1. Use `Skills/mworks-model-context/SKILL.md` for Simulink-style model/block context requests.
+2. Use `Skills/mworks-simulation-evidence/SKILL.md` for simulation/logging/result evidence requests.
+3. Use `Skills/mworks-syslab-porting/SKILL.md` for MATLAB coding, testing, plotting, and performance migration.
+4. Add P1 workflows only when needed by a real task: solver/runtime diagnostics, command-line debugging analogs, or custom MCP wrapper design.

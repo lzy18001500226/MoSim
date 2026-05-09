@@ -306,16 +306,16 @@ OFFICIAL_RESULT_VARIABLE_CANDIDATES = [
 
 WRAPPER_SCRIPTS = {
     "syslab_mcp.sh": [
-        "~/mcp-wrappers/syslab_mcp.sh",
         "/home/linux/mcp-wrappers/syslab_mcp.sh",
+        "~/mcp-wrappers/syslab_mcp.sh",
     ],
     "sysplorer_mcp.sh": [
-        "~/mcp-wrappers/sysplorer_mcp.sh",
         "/home/linux/mcp-wrappers/sysplorer_mcp.sh",
+        "~/mcp-wrappers/sysplorer_mcp.sh",
     ],
     "filesystem_mcp.sh": [
-        "~/mcp-wrappers/filesystem_mcp.sh",
         "/home/linux/mcp-wrappers/filesystem_mcp.sh",
+        "~/mcp-wrappers/filesystem_mcp.sh",
     ],
 }
 

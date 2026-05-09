@@ -60,10 +60,10 @@ Do not paste large PDFs, screenshots, or full upstream manuals into `AGENTS.md`.
 
 | Priority | Upstream Skill / Rule | MWORKS Adaptation |
 |---|---|---|
-| P0 | Simulink interactions | Resolve opened Sysplorer model, component, ports, source text |
-| P0 | Simulating Simulink models | Run Sysplorer `check_model`, `simulate_model`, result export |
-| P0 | MATLAB coding standards | Syslab Julia/Python coding and data-processing standards |
-| P0 | MATLAB testing | Project smoke/regression/metrics tests |
+| P0 | Simulink interactions | `Skills/mworks-model-context/SKILL.md` |
+| P0 | Simulating Simulink models | `Skills/mworks-simulation-evidence/SKILL.md`, `workflows/run_simulation.md`, `workflows/read_results.md` |
+| P0 | MATLAB coding standards | `Skills/mworks-syslab-porting/SKILL.md`, project Python/Julia script conventions |
+| P0 | MATLAB testing | `workflows/smoke_test.md`, `workflows/regression_test.md`, `workflows/run_tests.md` |
 | P1 | Simulink debug command line | Sysplorer model introspection + result-variable probing workflow |
 | P1 | Solver profiler analyzer | Solver/runtime diagnostics for long or failed MWORKS simulations |
 | P1 | MATLAB performance optimization | Syslab/Python vectorization, preallocation, batch metrics |
@@ -71,4 +71,4 @@ Do not paste large PDFs, screenshots, or full upstream manuals into `AGENTS.md`.
 
 ## Recommended Next Action
 
-Use the converted comparison references to turn high-value MATLAB/Simulink skills into MWORKS-specific workflows. Start with simulation, result reading, plotting, model introspection, and Syslab coding rules.
+The P0 translation layer now exists as project-local skills. Next, refine P1 workflows only when a real task needs them, especially solver/runtime diagnostics and command-line debugging analogs.

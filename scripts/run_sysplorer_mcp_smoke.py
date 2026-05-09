@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import queue
 import subprocess
 import sys
@@ -23,7 +24,10 @@ from typing import Any
 from calc_metrics import compute_metrics
 
 
-DEFAULT_WRAPPER = "/home/linux/mcp-wrappers/sysplorer_mcp.sh"
+DEFAULT_WRAPPER_CANDIDATES = [
+    "/home/linux/mcp-wrappers/sysplorer_mcp.sh",
+    str(Path.home() / "mcp-wrappers" / "sysplorer_mcp.sh"),
+]
 DEFAULT_MODEL_FILE = r"C:\Users\HP\Desktop\Quadrotor\QuadrotorModel\package.mo"
 DEFAULT_MODEL_NAME = "QuadrotorModel.Examples.Example1"
 DEFAULT_VARIABLES = {
@@ -175,7 +179,14 @@ def write_metrics(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--wrapper", default=DEFAULT_WRAPPER)
+    parser.add_argument(
+        "--wrapper",
+        default=os.environ.get("SYSPLORER_MCP_WRAPPER"),
+        help=(
+            "Sysplorer MCP wrapper path. Defaults to SYSPLORER_MCP_WRAPPER, "
+            "/home/linux/mcp-wrappers/sysplorer_mcp.sh, then ~/mcp-wrappers/sysplorer_mcp.sh."
+        ),
+    )
     parser.add_argument("--model-file", default=DEFAULT_MODEL_FILE)
     parser.add_argument(
         "--extra-model-file",
@@ -200,13 +211,27 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def resolve_wrapper(wrapper: str | None) -> str:
+    candidates = [wrapper] if wrapper else []
+    candidates.extend(DEFAULT_WRAPPER_CANDIDATES)
+    for candidate in candidates:
+        if not candidate:
+            continue
+        path = Path(candidate).expanduser()
+        if path.exists():
+            return str(path)
+    searched = ", ".join(str(Path(item).expanduser()) for item in candidates if item)
+    raise FileNotFoundError(f"Sysplorer MCP wrapper not found. Checked: {searched}")
+
+
 def main() -> int:
     args = parse_args()
+    wrapper = resolve_wrapper(args.wrapper)
     target_time = [float(item.strip()) for item in args.target_time.split(",") if item.strip()]
     args.log_output.parent.mkdir(parents=True, exist_ok=True)
     args.log_output.write_text("", encoding="utf-8")
 
-    client = JsonlMcpClient([args.wrapper], args.log_output)
+    client = JsonlMcpClient([wrapper], args.log_output)
     try:
         client.request(
             "initialize",

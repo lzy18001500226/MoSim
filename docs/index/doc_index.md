@@ -16,6 +16,21 @@
 | Variable mapping | `docs/index/variable_mapping.md` | Standard raw CSV names vs Sysplorer result variables |
 | MathWorks to MWORKS migration | `docs/index/mathworks_to_mworks_migration.md` | How to translate MATLAB/Simulink skills into MWORKS workflows |
 
+## Project-Local Skills
+
+| Skill | File | Purpose |
+|---|---|---|
+| MWORKS model context | `Skills/mworks-model-context/SKILL.md` | Resolve Sysplorer model/component/port/parameter context before edits |
+| MWORKS simulation evidence | `Skills/mworks-simulation-evidence/SKILL.md` | Produce and label reproducible MWORKS simulation evidence |
+| MWORKS Syslab porting | `Skills/mworks-syslab-porting/SKILL.md` | Translate MATLAB/Simulink patterns into project-local MWORKS workflows |
+
+## High-Value Workflows
+
+| Workflow | File | Purpose |
+|---|---|---|
+| Resolve model context | `workflows/resolve_model_context.md` | Confirm model/component/interface before editing |
+| Produce simulation evidence | `workflows/produce_simulation_evidence.md` | Build a labeled evidence bundle for report claims |
+
 ## MWORKS Reference Docs
 
 | Topic | File | Notes |
