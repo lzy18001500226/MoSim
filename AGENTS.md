@@ -195,7 +195,7 @@ For MWORKS simulations:
 6. Do not leave long-running simulations active after the task is complete.
 7. Prefer one active Sysplorer/Syslab session at a time unless parallel simulation is explicitly required.
 8. Reuse an existing session for related operations instead of opening many windows.
-9. If repeated simulations open multiple windows despite cleanup attempts, stop and report the issue before launching more GUI-backed runs.
+9. If repeated simulations open multiple windows, continue only after attempting available minimize, close, release, or stop operations. Report the limitation only when those cleanup attempts fail or the tool exposes no cleanup method.
 
 ---
 
