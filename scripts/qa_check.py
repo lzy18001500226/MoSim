@@ -79,29 +79,12 @@ RECOMMENDED_SCRIPTS = [
     "scripts/plot_results.py",
     "scripts/generate_replay_html.py",
     "scripts/generate_replay_from_raw.py",
-    "scripts/generate_offline_tracking_demos.py",
     "scripts/summarize_experiments.py",
-    "scripts/generate_planning_reference.py",
-    "scripts/generate_obstacle_planning_reference.py",
-    "scripts/generate_formation_reference.py",
-    "scripts/generate_fault_scenario.py",
-    "scripts/generate_disturbance_mode_demo.py",
-    "scripts/generate_mass_adaptation_demo.py",
-    "scripts/generate_safety_filter_demo.py",
-    "scripts/generate_fault_reallocation_demo.py",
 ]
 
 RECOMMENDED_TESTS = [
     "tests/test_metrics.py",
     "tests/test_summary.py",
-    "tests/test_planning_reference.py",
-    "tests/test_obstacle_planning.py",
-    "tests/test_formation_reference.py",
-    "tests/test_fault_scenario.py",
-    "tests/test_disturbance_mode_demo.py",
-    "tests/test_mass_adaptation_demo.py",
-    "tests/test_safety_filter_demo.py",
-    "tests/test_fault_reallocation_demo.py",
 ]
 
 OFFICIAL_MODELS = [
@@ -177,20 +160,6 @@ OFFICIAL_REFERENCE_OUTPUTS = [
     "results/replay_html/reference_official_example3.html",
 ]
 
-SMOKE_RESULT_OUTPUTS = [
-    "results/raw/smoke_official_example1_pid_baseline.csv",
-    "results/metrics/smoke_official_example1_pid_baseline.json",
-    "results/metrics/smoke_official_example1_pid_baseline.csv",
-    "results/raw/hover_pid_baseline.csv",
-    "results/metrics/hover_pid_baseline.json",
-    "results/metrics/hover_pid_baseline.csv",
-    "results/figures/hover_pid_baseline/trajectory_xy.svg",
-    "results/raw/figure8_improved_pid.csv",
-    "results/metrics/figure8_improved_pid.json",
-    "results/metrics/figure8_improved_pid.csv",
-    "results/figures/figure8_improved_pid/trajectory_xy.svg",
-]
-
 MWORKS_MCP_SMOKE_OUTPUTS = [
     "results/test_reports/sysplorer_example1_pid_mcp_smoke_20260509.jsonl",
     "results/raw/mworks_mcp_example1_pid_smoke.csv",
@@ -226,71 +195,6 @@ MWORKS_MCP_IMPROVED_OUTPUTS = [
     "results/replay_html/official_example1_improved_pid.html",
     "results/replay_html/official_example2_improved_pid.html",
     "results/replay_html/official_example3_improved_pid.html",
-]
-
-DISTURBANCE_OUTPUTS = [
-    "results/raw/wind_nmpc_indi_l1.csv",
-    "results/metrics/wind_nmpc_indi_l1.json",
-    "results/logs/wind_nmpc_indi_l1_events.jsonl",
-    "results/replay/wind_nmpc_indi_l1.json",
-    "results/replay_html/wind_nmpc_indi_l1.html",
-    "results/raw/reference_delivery_mass_change.csv",
-    "results/raw/delivery_mass_change.csv",
-    "results/metrics/delivery_mass_change.json",
-    "results/logs/delivery_mass_change_events.jsonl",
-    "results/replay/delivery_mass_change.json",
-    "results/replay_html/delivery_mass_change.html",
-    "results/raw/wind_improved_pid.csv",
-    "results/metrics/wind_improved_pid.json",
-    "results/metrics/wind_improved_pid.csv",
-    "results/logs/wind_improved_pid_events.jsonl",
-    "results/figures/wind_improved_pid/trajectory_xy.svg",
-]
-
-PLANNING_OUTPUTS = [
-    "results/raw/reference_planning_trackable_waypoint.csv",
-    "results/metrics/trackability_planning_trackable_waypoint.json",
-    "results/replay/planning_trackable_waypoint.json",
-    "results/replay_html/planning_trackable_waypoint.html",
-    "results/raw/planning_trackable_waypoint_tracking.csv",
-    "results/metrics/planning_trackable_waypoint_tracking.json",
-    "results/metrics/planning_trackable_waypoint_tracking.csv",
-    "results/figures/planning_trackable_waypoint/trajectory_xy.svg",
-    "results/raw/path_planning_obstacle_corridor.csv",
-    "results/raw/reference_planning_obstacle_corridor.csv",
-    "results/metrics/planning_obstacle_corridor.json",
-    "results/replay/planning_obstacle_corridor.json",
-    "results/replay_html/planning_obstacle_corridor.html",
-]
-
-FORMATION_OUTPUTS = [
-    "results/raw/reference_formation_triangle_switch.csv",
-    "results/metrics/formation_triangle_switch.json",
-    "results/replay/formation_triangle_switch.json",
-    "results/replay_html/formation_triangle_switch.html",
-]
-
-FAULT_OUTPUTS = [
-    "results/raw/fault_motor_return_reference.csv",
-    "results/metrics/fault_motor_return.json",
-    "results/logs/fault_motor_return_events.jsonl",
-    "results/replay/fault_motor_return.json",
-    "results/replay_html/fault_motor_return.html",
-    "results/raw/reference_fault_reallocation_compare.csv",
-    "results/raw/fault_reallocation_compare.csv",
-    "results/metrics/fault_reallocation_compare.json",
-    "results/logs/fault_reallocation_compare_events.jsonl",
-    "results/replay/fault_reallocation_compare.json",
-    "results/replay_html/fault_reallocation_compare.html",
-]
-
-SAFETY_OUTPUTS = [
-    "results/raw/reference_safety_filter_guard.csv",
-    "results/raw/safety_filter_guard.csv",
-    "results/metrics/safety_filter_guard.json",
-    "results/logs/safety_filter_guard_events.jsonl",
-    "results/replay/safety_filter_guard.json",
-    "results/replay_html/safety_filter_guard.html",
 ]
 
 OFFICIAL_RESULT_VARIABLE_CANDIDATES = [
@@ -658,36 +562,12 @@ def check_official_case(root: Path) -> bool:
     for item in OFFICIAL_REFERENCE_OUTPUTS:
         ok = check_path(root / item, required=True) and ok
 
-    print("\n== Smoke result evidence ==")
-    for item in SMOKE_RESULT_OUTPUTS:
-        ok = check_path(root / item, required=True) and ok
-
     print("\n== Real MWORKS MCP smoke evidence ==")
     for item in MWORKS_MCP_SMOKE_OUTPUTS:
         ok = check_path(root / item, required=True) and ok
 
     print("\n== Real MWORKS MCP improved PID evidence ==")
     for item in MWORKS_MCP_IMPROVED_OUTPUTS:
-        ok = check_path(root / item, required=True) and ok
-
-    print("\n== Disturbance mode-switch evidence ==")
-    for item in DISTURBANCE_OUTPUTS:
-        ok = check_path(root / item, required=True) and ok
-
-    print("\n== Planning reference evidence ==")
-    for item in PLANNING_OUTPUTS:
-        ok = check_path(root / item, required=True) and ok
-
-    print("\n== Formation reference evidence ==")
-    for item in FORMATION_OUTPUTS:
-        ok = check_path(root / item, required=True) and ok
-
-    print("\n== Fault tolerance evidence ==")
-    for item in FAULT_OUTPUTS:
-        ok = check_path(root / item, required=True) and ok
-
-    print("\n== Safety filter evidence ==")
-    for item in SAFETY_OUTPUTS:
         ok = check_path(root / item, required=True) and ok
 
     print("\n== Full baseline result guard ==")

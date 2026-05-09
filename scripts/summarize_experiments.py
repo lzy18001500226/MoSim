@@ -145,18 +145,10 @@ def infer_evidence_level(row: dict[str, Any]) -> str:
     source = str(row.get("source", "") or "")
     metrics_file = str(row.get("metrics_file", "") or "")
     raw_file = str(row.get("raw_file", "") or "")
-    if source == "offline_script":
-        return "offline_tracking_demo"
     if source == "MWORKS_MCP" or "mworks_mcp_" in metrics_file:
         return "real_sysplorer_mcp_smoke"
-    if source.startswith("glob:results/metrics/smoke_"):
-        return "offline_smoke_demo"
-    if "trackability_" in metrics_file:
-        return "offline_reference_trackability"
-    if raw_file.startswith("results/raw/reference_"):
-        return "offline_reference_generation"
-    if source.startswith("scenarios/"):
-        return "offline_scenario_demo"
+    if raw_file.startswith("results/raw/reference_official_"):
+        return "official_reference_generation"
     return ""
 
 

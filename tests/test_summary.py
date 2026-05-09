@@ -34,16 +34,16 @@ def main() -> int:
         )
         with csv_path.open(newline="", encoding="utf-8") as handle:
             rows = list(csv.DictReader(handle))
-        if len(rows) < 10:
-            raise AssertionError(f"Expected at least 10 scenario rows, got {len(rows)}")
+        if len(rows) < 6:
+            raise AssertionError(f"Expected at least 6 real evidence rows, got {len(rows)}")
         if "evidence_level" not in rows[0]:
             raise AssertionError("Expected evidence_level column")
         if not any(row["evidence_level"] == "real_sysplorer_mcp_full_baseline" for row in rows):
             raise AssertionError("Expected full baseline Sysplorer MCP evidence")
-        if not any(row["source"] == "offline_script" for row in rows):
-            raise AssertionError("Expected offline_script rows to remain explicitly labeled")
-        if not any(row["experiment_id"] == "smoke_official_example1_pid_baseline" for row in rows):
-            raise AssertionError("Expected smoke metrics evidence row")
+        if any(row["source"] == "offline_script" for row in rows):
+            raise AssertionError("Offline script evidence should not be included in the real evidence summary")
+        if any(row["evidence_level"].startswith("offline_") for row in rows):
+            raise AssertionError("Offline evidence levels should not be included in the real evidence summary")
         markdown = md_path.read_text(encoding="utf-8")
         if "Experiment Summary" not in markdown:
             raise AssertionError("Markdown summary header missing")

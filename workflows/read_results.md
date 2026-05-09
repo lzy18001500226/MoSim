@@ -143,7 +143,7 @@ For MCP JSONL smoke logs that contain `GetVarsValues`, use:
 ```bash
 python3 scripts/extract_mcp_timeseries.py \
   results/test_reports/sysplorer_quadrotor_example1_values.jsonl \
-  results/raw/smoke_official_example1_pid_baseline.csv \
+  results/raw/mworks_mcp_example1_pid_smoke.csv \
   --columns x,y,z,x_ref,y_ref,z_ref \
   --start-time 0 \
   --stop-time 1

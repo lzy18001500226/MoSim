@@ -268,17 +268,7 @@ results/test_reports/pid_tuning_summary.md
 
 ## 6. Smoke 数据说明
 
-当前仓库包含一个 0-1 s smoke 数据集：
-
-```text
-results/raw/smoke_official_example1_pid_baseline.csv
-results/metrics/smoke_official_example1_pid_baseline.json
-results/figures/smoke_official_example1_pid_baseline/
-```
-
-该数据只用于验证 MCP 结果读取、CSV 导出、指标计算和图表生成链路，不作为完整官方 baseline 性能结论。
-
-当前仓库还包含一个真实 Sysplorer MCP 运行得到的官方 Example1 0-1 s smoke 数据集：
+当前仓库只保留真实 Sysplorer MCP 运行得到的官方 Example1 0-1 s smoke 数据集：
 
 ```text
 results/test_reports/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
@@ -295,16 +285,16 @@ python3 scripts/run_sysplorer_mcp_smoke.py
 
 该脚本会通过 `/home/linux/mcp-wrappers/sysplorer_mcp.sh` 调用 Sysplorer MCP，执行 `session_manager health`、`model_manager load_file`、`check_model`、`simulate_model` 和 `result_manager get_vars_values`。默认保留 Sysplorer GUI/session；只有传入 `--shutdown-session` 时才调用 `session_manager shutdown`。它属于 `source=MWORKS_MCP` 的真实 smoke 证据，但仍只覆盖 0-1 s，不能替代完整 50 s 官方 baseline。
 
-## 7. 指标与图表
+## 7. 指标、图表与汇总
 
 计算指标：
 
 ```bash
 python3 scripts/calc_metrics.py \
-  results/raw/smoke_official_example1_pid_baseline.csv \
-  results/metrics/smoke_official_example1_pid_baseline.json \
-  smoke_official_example1 \
-  pid_baseline
+  results/raw/official_example1_improved_pid.csv \
+  results/metrics/official_example1_improved_pid.json \
+  official_example1 \
+  improved_pid
 ```
 
 指标输出包含：
@@ -329,46 +319,19 @@ tracking_score / robustness_score / safety_score / energy_score / smoothness_sco
 
 ```bash
 python3 scripts/plot_results.py \
-  results/raw/smoke_official_example1_pid_baseline.csv \
-  results/figures/smoke_official_example1_pid_baseline \
-  --metrics results/metrics/smoke_official_example1_pid_baseline.json
+  results/raw/official_example1_improved_pid.csv \
+  results/figures/official_example1_improved_pid \
+  --metrics results/metrics/official_example1_improved_pid.json
 ```
 
-图表输出：
-
-```text
-trajectory_xy.svg
-altitude_tracking.svg
-position_error.svg
-metrics_summary.svg
-figure_manifest.md
-```
-
-生成实验汇总：
+生成实验汇总时只纳入真实 MWORKS/MCP 结果：
 
 ```bash
 python3 scripts/summarize_experiments.py \
   --include-metrics-glob 'results/metrics/official_example*_pid_baseline.json' \
   --include-metrics-glob 'results/metrics/official_example*_improved_pid.json' \
-  --include-metrics-glob 'results/metrics/hover_pid_baseline.json' \
-  --include-metrics-glob 'results/metrics/figure8_improved_pid.json' \
-  --include-metrics-glob 'results/metrics/wind_improved_pid.json' \
-  --include-metrics-glob 'results/metrics/planning_trackable_waypoint_tracking.json' \
-  --include-metrics-glob 'results/metrics/smoke_*.json' \
-  --include-metrics-glob 'results/metrics/mworks_mcp_*.json' \
-  --include-metrics-glob 'results/metrics/trackability_*.json' \
-  --include-metrics-glob 'results/metrics/formation_*.json' \
-  --include-metrics-glob 'results/metrics/fault_*.json'
+  --include-metrics-glob 'results/metrics/mworks_mcp_*.json'
 ```
-
-生成横向离线演示结果：
-
-```bash
-python3 scripts/generate_planning_reference.py scenarios/planning/trackable_waypoint.yaml
-python3 scripts/generate_offline_tracking_demos.py
-```
-
-该脚本会补齐 hover、figure8、wind improved 和 planning tracking 的 raw CSV、metrics、SVG 图表和必要回放素材。所有这些 metrics 都标记为 `source=offline_script`，只能用于横向功能展示和视频素材，不替代真实 Sysplorer/MWORKS 仿真证据。
 
 输出：
 
@@ -377,184 +340,28 @@ results/test_reports/experiment_summary.csv
 results/test_reports/experiment_summary.md
 ```
 
-说明：正式场景没有对应 metrics 文件时会标记为 `pending`，不会用 smoke 数据替代完整 baseline 结论。
+说明：项目不再生成或保留 Python/Julia 离线仿真结果。风扰、质量变化、故障、规划、编队等扩展场景必须通过 MWORKS/Sysplorer/MCP 或手动 MWORKS GUI 形成 `source=MWORKS_MCP` / `source=MWORKS_GUI` 证据后，才能进入正式实验汇总和报告结论。
 
-## 8. 扰动补偿与模式切换
+## 8. 下一阶段真实仿真入口
 
-生成风扰残差估计、L1-inspired 低通补偿和模式切换演示数据：
-
-```bash
-python3 scripts/generate_disturbance_mode_demo.py
-python3 scripts/generate_replay_html.py \
-  results/replay/wind_nmpc_indi_l1.json \
-  results/replay_html/wind_nmpc_indi_l1.html
-```
-
-输出：
+扩展功能保留在 `Design/` 中作为实现规格，但不再用离线脚本冒充仿真。新增场景时按以下流程推进：
 
 ```text
-results/raw/wind_nmpc_indi_l1.csv
-results/metrics/wind_nmpc_indi_l1.json
-results/logs/wind_nmpc_indi_l1_events.jsonl
-results/replay/wind_nmpc_indi_l1.json
-results/replay_html/wind_nmpc_indi_l1.html
+Design/*.md 明确接口和验收
+→ 在 MWORKS/Sysplorer 中建立或派生模型
+→ check_model
+→ simulate_model
+→ result_manager 导出 raw CSV
+→ calc_metrics.py 计算指标
+→ plot_results.py / generate_replay_from_raw.py 生成图表和回放
+→ summarize_experiments.py 纳入真实证据汇总
 ```
 
-指标包含 `raw_residual_rmse_m_s2`、`compensated_residual_rmse_m_s2`、`residual_reduction_pct`、`controller_mode_switch_count`、`wind_rejection_entered` 和 `total_health_score`。事件日志应包含 `NORMAL → WIND_REJECTION → NORMAL`，用于证明 P1-A 的扰动识别和控制模式切换链路。
+优先建议：
 
-生成投递后质量变化自适应演示数据：
-
-```bash
-python3 scripts/generate_mass_adaptation_demo.py
-python3 scripts/generate_replay_html.py \
-  results/replay/delivery_mass_change.json \
-  results/replay_html/delivery_mass_change.html
-```
-
-输出：
-
-```text
-results/raw/reference_delivery_mass_change.csv
-results/raw/delivery_mass_change.csv
-results/metrics/delivery_mass_change.json
-results/logs/delivery_mass_change_events.jsonl
-results/replay/delivery_mass_change.json
-results/replay_html/delivery_mass_change.html
-```
-
-指标包含 `raw_vertical_residual_rmse_m_s2`、`compensated_vertical_residual_rmse_m_s2`、`vertical_residual_reduction_pct`、`mass_adaptation_entered`、`return_position_error_m` 和 `degraded_task_completion`。事件日志应包含 `delivery` 和 `MASS_ADAPTATION`，用于证明投递任务中的质量变化识别与 z 向补偿链路。
-
-## 9. 规划参考轨迹
-
-生成可跟踪航点规划参考：
-
-```bash
-python3 scripts/generate_planning_reference.py
-python3 scripts/generate_replay_html.py \
-  results/replay/planning_trackable_waypoint.json \
-  results/replay_html/planning_trackable_waypoint.html
-```
-
-输出：
-
-```text
-results/raw/reference_planning_trackable_waypoint.csv
-results/metrics/trackability_planning_trackable_waypoint.json
-results/replay/planning_trackable_waypoint.json
-results/replay_html/planning_trackable_waypoint.html
-```
-
-`trackability` 报告包含速度、加速度、jerk、倾角、预测饱和比例和 `final_trackability_score`。脚本会在动态约束超限时自动放大分段时间，直到满足阈值或达到最大迭代次数。
-
-生成带障碍物的 3D A* 规划参考：
-
-```bash
-python3 scripts/generate_obstacle_planning_reference.py
-python3 scripts/generate_replay_html.py \
-  results/replay/planning_obstacle_corridor.json \
-  results/replay_html/planning_obstacle_corridor.html
-```
-
-输出：
-
-```text
-results/raw/path_planning_obstacle_corridor.csv
-results/raw/reference_planning_obstacle_corridor.csv
-results/metrics/planning_obstacle_corridor.json
-results/replay/planning_obstacle_corridor.json
-results/replay_html/planning_obstacle_corridor.html
-```
-
-障碍规划指标包含 `minimum_obstacle_distance_m`、`safety_margin_m`、`obstacle_violation_count`、`obstacle_avoidance_score`、`final_trackability_score` 和 `total_health_score`。该场景用于证明规划器不是简单手工航点，而是能在 3D 地图中绕开膨胀障碍并输出可跟踪轨迹。
-
-## 10. 编队参考轨迹
-
-生成三机 Leader-Follower 编队参考：
-
-```bash
-python3 scripts/generate_formation_reference.py
-python3 scripts/generate_replay_html.py \
-  results/replay/formation_triangle_switch.json \
-  results/replay_html/formation_triangle_switch.html
-```
-
-输出：
-
-```text
-results/raw/reference_formation_triangle_switch.csv
-results/metrics/formation_triangle_switch.json
-results/replay/formation_triangle_switch.json
-results/replay_html/formation_triangle_switch.html
-```
-
-编队指标包含 `formation_error_rmse`、`formation_error_max`、`minimum_inter_uav_distance`、`formation_mode_switch_count`、`switching_time_s` 和 `formation_score`。当前脚本生成三角形到一字形再恢复三角形的三机参考轨迹，用于后续多机仿真或视频回放。
-
-## 11. 安全故障与安全过滤
-
-生成单电机效率下降与降级返航参考：
-
-```bash
-python3 scripts/generate_fault_scenario.py
-python3 scripts/generate_replay_html.py \
-  results/replay/fault_motor_return.json \
-  results/replay_html/fault_motor_return.html
-```
-
-输出：
-
-```text
-results/raw/fault_motor_return_reference.csv
-results/metrics/fault_motor_return.json
-results/logs/fault_motor_return_events.jsonl
-results/replay/fault_motor_return.json
-results/replay_html/fault_motor_return.html
-```
-
-故障指标包含 `eta_min`、`controller_mode_switch_count`、`fault_tolerance_score`、`degraded_task_completion`、`minimum_altitude_m` 和 `altitude_violation_count`。事件日志记录 `motor_fault`、`mode_switch`、`degraded_return_start`、`fault_clear`，用于报告、视频字幕和后续容错控制器接入。
-
-生成电机故障下有/无控制分配重构对比：
-
-```bash
-python3 scripts/generate_fault_reallocation_demo.py
-python3 scripts/generate_replay_html.py \
-  results/replay/fault_reallocation_compare.json \
-  results/replay_html/fault_reallocation_compare.html
-```
-
-输出：
-
-```text
-results/raw/reference_fault_reallocation_compare.csv
-results/raw/fault_reallocation_compare.csv
-results/metrics/fault_reallocation_compare.json
-results/logs/fault_reallocation_compare_events.jsonl
-results/replay/fault_reallocation_compare.json
-results/replay_html/fault_reallocation_compare.html
-```
-
-重构指标包含 `no_realloc_wrench_rmse`、`realloc_wrench_rmse`、`wrench_error_reduction_pct`、`no_realloc_saturation_ratio`、`realloc_saturation_ratio` 和 `fault_tolerance_score`。该场景用于证明 `eta=0.7` 时按故障效率矩阵重构控制分配可以显著降低期望力/力矩误差。
-
-生成安全过滤器约束保护演示数据：
-
-```bash
-python3 scripts/generate_safety_filter_demo.py
-python3 scripts/generate_replay_html.py \
-  results/replay/safety_filter_guard.json \
-  results/replay_html/safety_filter_guard.html
-```
-
-输出：
-
-```text
-results/raw/reference_safety_filter_guard.csv
-results/raw/safety_filter_guard.csv
-results/metrics/safety_filter_guard.json
-results/logs/safety_filter_guard_events.jsonl
-results/replay/safety_filter_guard.json
-results/replay_html/safety_filter_guard.html
-```
-
-安全过滤指标包含 `raw_constraint_violation_count`、`safe_constraint_violation_count`、`constraint_violation_reduction_pct`、`safe_minimum_altitude_m`、`safe_minimum_obstacle_distance_m` 和 `safety_filter_activation_count`。该场景用于对比同一条不安全参考轨迹在过滤前后的高度、速度、加速度和障碍距离违规数量。
+1. 将 Improved PID 从参数搜索升级为真实的抗饱和、导数滤波和参考前馈实现。
+2. 选一个风扰或质量变化场景，接入官方模型并形成真实 MWORKS/MCP 证据。
+3. 再推进 INDI / MPC / L1-inspired 模块，不保留无法复现的离线结果。
 
 ## 12. 提交前检查
 
@@ -565,14 +372,6 @@ python3 scripts/qa_check.py
 python3 scripts/check_reference_outputs.py
 python3 tests/test_metrics.py
 python3 tests/test_summary.py
-python3 tests/test_planning_reference.py
-python3 tests/test_obstacle_planning.py
-python3 tests/test_formation_reference.py
-python3 tests/test_fault_scenario.py
-python3 tests/test_disturbance_mode_demo.py
-python3 tests/test_mass_adaptation_demo.py
-python3 tests/test_safety_filter_demo.py
-python3 tests/test_fault_reallocation_demo.py
 python3 -m py_compile scripts/*.py tests/*.py
 git diff --check
 ```

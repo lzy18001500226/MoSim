@@ -52,25 +52,25 @@ Primary project objective:
 
 When working on this project, always follow these principles:
 
-1. **Control is the main line.**  
+1. **Control is the main line.**
    The main technical contribution is robust quadrotor attitude and position control, not a general robotics navigation stack.
 
-2. **Modules must be decoupled.**  
+2. **Modules must be decoupled.**
    Path planning, formation control, MCP automation, safety filtering, fault injection, and metrics evaluation must be replaceable modules.
 
-3. **Every claim needs evidence.**  
+3. **Every claim needs evidence.**
    Report conclusions must be supported by simulation curves, metrics tables, screenshots, source modules, or experiment logs.
 
-4. **Prefer reproducible workflows.**  
+4. **Prefer reproducible workflows.**
    Every experiment should save its scenario configuration, controller parameters, raw results, metrics, and figures.
 
-5. **Use MCP first when working with MWORKS.**  
+5. **Use MCP first when working with MWORKS.**
    Use Sysplorer MCP for model-level operations and Syslab MCP for computation, metrics, plotting, and document lookup.
 
-6. **Do not guess APIs.**  
+6. **Do not guess APIs.**
    If an API, tool, parameter, or model component is unclear, first search the documentation or query MCP documentation tools.
 
-7. **Keep the deliverables report-ready.**  
+7. **Keep the deliverables report-ready.**
    Any generated figure, table, or metric should be saved in a location that can be used directly in the final report.
 
 ---

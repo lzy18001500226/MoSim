@@ -45,9 +45,9 @@ CSV and optional metrics JSON:
 
 ```bash
 python3 scripts/plot_results.py \
-  results/raw/smoke_official_example1_pid_baseline.csv \
-  results/figures/smoke_official_example1_pid_baseline \
-  --metrics results/metrics/smoke_official_example1_pid_baseline.json
+  results/raw/official_example1_improved_pid.csv \
+  results/figures/official_example1_improved_pid \
+  --metrics results/metrics/official_example1_improved_pid.json
 ```
 
 Use `scripts/plot_results.jl`, Syslab MCP plotting APIs, or Sysplorer

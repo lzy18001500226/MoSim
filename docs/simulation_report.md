@@ -11,11 +11,8 @@
 ```text
 官方 Example1/2/3 参考轨迹 CSV
 官方 Example1/2/3 完整 PID baseline CSV、指标和图表
-官方 Example1/3 MCP 参数搜索型 Improved PID CSV、指标和图表
-官方 Example1/2/3 离线浏览器回放 HTML
-Example1 0-1 s smoke 结果 CSV
-Example1 0-1 s smoke 指标 JSON/CSV
-Example1 0-1 s smoke SVG 图表
+官方 Example1/2/3 MCP 参数搜索型 Improved PID CSV、指标和图表
+官方 Example1/2/3 浏览器三维回放 HTML
 Example1 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 ```
 
@@ -24,7 +21,7 @@ Example1 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 | 场景 | 官方模型 | 时长 | 当前状态 |
 |---|---|---:|---|
 | 阶梯爬升 | `QuadrotorModel.Examples.Example1` | 50 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
-| 螺旋爬升 | `QuadrotorModel.Examples.Example2` | 50 s | 完整 PID baseline 已通过 Sysplorer MCP 仿真 |
+| 螺旋爬升 | `QuadrotorModel.Examples.Example2` | 50 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
 | 8字形运动 | `QuadrotorModel.Examples.Example3` | 120 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
 | Example1 smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已有 CSV、指标、图表 |
 | Example1 MWORKS MCP smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已通过 Sysplorer MCP 真实加载、检查、仿真和读取变量 |
@@ -71,8 +68,6 @@ time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4
 数据文件：
 
 ```text
-results/raw/smoke_official_example1_pid_baseline.csv
-results/metrics/smoke_official_example1_pid_baseline.json
 results/test_reports/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
 results/raw/mworks_mcp_example1_pid_smoke.csv
 results/metrics/mworks_mcp_example1_pid_smoke.json
@@ -135,10 +130,6 @@ results/figures/official_example2_pid_baseline/
 results/figures/official_example2_improved_pid/
 results/figures/official_example3_pid_baseline/
 results/figures/official_example3_improved_pid/
-results/figures/smoke_official_example1_pid_baseline/trajectory_xy.svg
-results/figures/smoke_official_example1_pid_baseline/altitude_tracking.svg
-results/figures/smoke_official_example1_pid_baseline/position_error.svg
-results/figures/smoke_official_example1_pid_baseline/metrics_summary.svg
 ```
 
 已生成回放：
@@ -157,22 +148,30 @@ results/replay_html/reference_official_example3.html
 
 其中 `official_example*_*.html` 来自真实 Sysplorer MCP raw CSV，包含实际飞行轨迹和参考轨迹；`reference_official_example*.html` 仅为官方参考路径展示。
 
-## 8. 横向功能演示结果
+## 8. 扩展场景状态
 
-以下结果为 `source=offline_script`，用于横向功能闭环、报告图表和视频素材，不作为真实 MWORKS 控制性能结论：
+此前用于横向展示的 Python/Julia 离线仿真结果已清理。当前报告结论只引用真实 Sysplorer/MWORKS MCP 证据。
 
-| 场景 | 输出 | 说明 |
-|---|---|---|
-| hover_pid_baseline | `results/metrics/hover_pid_baseline.json` | 悬停跟踪指标和 SVG 图表 |
-| figure8_improved_pid | `results/metrics/figure8_improved_pid.json` | 轻量 8 字跟踪演示 |
-| wind_improved_pid | `results/metrics/wind_improved_pid.json`、`results/logs/wind_improved_pid_events.jsonl` | 横风窗口和模式切换事件演示 |
-| planning_trackable_waypoint_tracking | `results/metrics/planning_trackable_waypoint_tracking.json` | 可跟踪轨迹的离线跟踪演示 |
+风扰、质量变化、故障、规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
 
-当前 `results/test_reports/experiment_summary.md` 中 `Pending=0`。后续需要继续提升名次时，优先把 `wind_improved_pid`、`planning_trackable_waypoint_tracking` 从离线演示升级为真实 Sysplorer/MWORKS 模型仿真证据。
+```text
+MWORKS/Sysplorer 模型或派生模型
+→ check_model 成功
+→ simulate_model 完整运行
+→ result_manager 导出 raw CSV
+→ metrics/figures/replay 可复现
+→ source=MWORKS_MCP 或 source=MWORKS_GUI
+```
+
+下一阶段优先把一个高展示度场景升级为真实证据：
+
+1. 风扰/质量变化下的鲁棒控制对比；
+2. 改进 PID 的抗积分饱和、导数滤波和参考前馈真实模型实现；
+3. INDI 或线性 MPC 外环的最小可运行模型。
 
 ## 9. 结论约束
 
 1. 不使用 smoke 数据做完整控制性能结论。
-2. 不把 `source=offline_script` 的横向演示包装成 MWORKS 控制性能结论。
+2. 不使用离线脚本结果作为 MWORKS 控制性能结论。
 3. 报告中的每张图必须能追溯到 `results/raw/` 和生成脚本。
 4. 完整 baseline 与优化控制器必须使用同一场景、同一时长和同一指标脚本。

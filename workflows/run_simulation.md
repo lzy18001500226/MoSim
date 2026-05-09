@@ -357,10 +357,11 @@ results/figures/{scene_id}_{controller_id}_error.png
 Use this for fast validation:
 
 ```yaml
-experiment_id: hover_pid_smoke
-scene_id: hover
+experiment_id: official_example1_mcp_smoke
+scene_id: official_example1
 controller_id: pid_baseline
-stop_time: 3
+model_name: QuadrotorModel.Examples.Example1
+stop_time: 1
 step_size: 0.01
 ```
 

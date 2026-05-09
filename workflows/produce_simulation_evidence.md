@@ -32,8 +32,11 @@ Valid source labels:
 ```text
 source=MWORKS_MCP
 source=MWORKS_GUI
-source=offline_script
 ```
+
+Do not use `source=offline_script` for report evidence. Script-generated
+reference data may be useful during design, but it must not enter the formal
+simulation evidence bundle unless the official model is run through MWORKS.
 
 ## Procedure
 

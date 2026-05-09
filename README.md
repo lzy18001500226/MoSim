@@ -37,7 +37,7 @@ scenarios/official/example2_pid_baseline.yaml  螺旋爬升
 scenarios/official/example3_pid_baseline.yaml  8字形运动
 ```
 
-`results/raw/smoke_official_example1_pid_baseline.csv` 只用于 0-1 s 数据导出链路验证，不作为完整官方 baseline 指标。
+`results/raw/mworks_mcp_example1_pid_smoke.csv` 只用于 0-1 s 真实 MCP 链路验证，不作为完整官方 baseline 指标。
 
 ## 目录约定
 

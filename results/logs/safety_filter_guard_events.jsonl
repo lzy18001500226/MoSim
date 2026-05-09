@@ -1,3 +1,0 @@
-{"event": "mode_switch", "from": "", "reason": "scenario_start", "time": 0.0, "to": "NORMAL"}
-{"event": "mode_switch", "from": "NORMAL", "reason": "safety_guard", "time": 1.84, "to": "SAFETY_PROTECTION"}
-{"event": "mode_switch", "from": "SAFETY_PROTECTION", "reason": "safety_margin_recovered", "time": 13.72, "to": "NORMAL"}

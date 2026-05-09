@@ -1,3 +1,0 @@
-{"event": "mode_switch", "from": "", "reason": "scenario_start", "time": 0.0, "to": "NORMAL"}
-{"event": "mode_switch", "from": "NORMAL", "reason": "wind_enter", "residual_xy_m_s2": 0.4685589999999999, "time": 10.05, "to": "WIND_REJECTION"}
-{"event": "mode_switch", "from": "WIND_REJECTION", "reason": "mode_recover", "residual_xy_m_s2": 0.16677181699666566, "time": 24.17, "to": "NORMAL"}
