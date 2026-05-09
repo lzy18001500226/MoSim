@@ -64,3 +64,24 @@ Save:
 results/raw/smoke_{scene}_{controller}.csv
 results/metrics/smoke_{scene}_{controller}.json
 ```
+
+## 6. Real Sysplorer MCP Smoke
+
+Use this project script to prove that the official model can be loaded,
+checked, simulated, and read through Sysplorer MCP:
+
+```bash
+python3 scripts/run_sysplorer_mcp_smoke.py
+```
+
+Expected outputs:
+
+```text
+results/test_reports/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
+results/raw/mworks_mcp_example1_pid_smoke.csv
+results/metrics/mworks_mcp_example1_pid_smoke.json
+results/metrics/mworks_mcp_example1_pid_smoke.csv
+```
+
+This is real `source=MWORKS_MCP` smoke evidence, but it is still only a
+0-1 s run. Do not copy it into `official_example*_pid_baseline` paths.

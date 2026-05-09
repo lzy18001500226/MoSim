@@ -133,6 +133,23 @@ results/figures/smoke_official_example1_pid_baseline/
 
 该数据只用于验证 MCP 结果读取、CSV 导出、指标计算和图表生成链路，不作为完整官方 baseline 性能结论。
 
+当前仓库还包含一个真实 Sysplorer MCP 运行得到的官方 Example1 0-1 s smoke 数据集：
+
+```text
+results/test_reports/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
+results/raw/mworks_mcp_example1_pid_smoke.csv
+results/metrics/mworks_mcp_example1_pid_smoke.json
+results/metrics/mworks_mcp_example1_pid_smoke.csv
+```
+
+复现实测 MCP smoke：
+
+```bash
+python3 scripts/run_sysplorer_mcp_smoke.py
+```
+
+该脚本会通过 `/home/linux/mcp-wrappers/sysplorer_mcp.sh` 调用 Sysplorer MCP，执行 `session_manager health`、`model_manager load_file`、`check_model`、`simulate_model` 和 `result_manager get_vars_values`，并在结束时尝试 `session_manager shutdown`。它属于 `source=MWORKS_MCP` 的真实 smoke 证据，但仍只覆盖 0-1 s，不能替代完整 50 s 官方 baseline。
+
 ## 7. 指标与图表
 
 计算指标：

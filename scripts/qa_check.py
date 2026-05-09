@@ -72,6 +72,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/generate_reference.py",
     "scripts/check_reference_outputs.py",
     "scripts/extract_mcp_timeseries.py",
+    "scripts/run_sysplorer_mcp_smoke.py",
     "scripts/calc_metrics.py",
     "scripts/plot_results.py",
     "scripts/generate_replay_html.py",
@@ -173,6 +174,13 @@ SMOKE_RESULT_OUTPUTS = [
     "results/raw/smoke_official_example1_pid_baseline.csv",
     "results/metrics/smoke_official_example1_pid_baseline.json",
     "results/metrics/smoke_official_example1_pid_baseline.csv",
+]
+
+MWORKS_MCP_SMOKE_OUTPUTS = [
+    "results/test_reports/sysplorer_example1_pid_mcp_smoke_20260509.jsonl",
+    "results/raw/mworks_mcp_example1_pid_smoke.csv",
+    "results/metrics/mworks_mcp_example1_pid_smoke.json",
+    "results/metrics/mworks_mcp_example1_pid_smoke.csv",
 ]
 
 DISTURBANCE_OUTPUTS = [
@@ -598,6 +606,10 @@ def check_official_case(root: Path) -> bool:
 
     print("\n== Smoke result evidence ==")
     for item in SMOKE_RESULT_OUTPUTS:
+        ok = check_path(root / item, required=True) and ok
+
+    print("\n== Real MWORKS MCP smoke evidence ==")
+    for item in MWORKS_MCP_SMOKE_OUTPUTS:
         ok = check_path(root / item, required=True) and ok
 
     print("\n== Disturbance mode-switch evidence ==")

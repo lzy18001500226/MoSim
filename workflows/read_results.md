@@ -152,3 +152,12 @@ python3 scripts/extract_mcp_timeseries.py \
 If `GetVarsValues` includes an explicit time series as its first output, use
 `--columns time,x,y,z,x_ref,y_ref,z_ref` and omit `--start-time/--stop-time`.
 Do not treat smoke-test output as the full 50 s official scenario.
+
+For the current real Sysplorer MCP smoke workflow, prefer:
+
+```bash
+python3 scripts/run_sysplorer_mcp_smoke.py
+```
+
+It performs the MCP run and result extraction in one reproducible step, then
+writes the raw CSV and metrics files under `results/`.

@@ -1,6 +1,6 @@
 # 仿真分析报告
 
-> 当前 `results/raw/smoke_official_example1_pid_baseline.csv` 仅为 0-1 s smoke 数据，用于验证 MCP 结果读取、CSV 导出和指标计算链路。完整官方 baseline 必须重新运行 `scenarios/official/*.yaml` 中的完整仿真时长后再写入性能结论。
+> 当前 smoke 数据均只覆盖 0-1 s，用于验证 MCP 结果读取、CSV 导出和指标计算链路。完整官方 baseline 必须重新运行 `scenarios/official/*.yaml` 中的完整仿真时长后再写入性能结论。
 
 ## 1. 报告范围
 
@@ -14,6 +14,7 @@
 Example1 0-1 s smoke 结果 CSV
 Example1 0-1 s smoke 指标 JSON/CSV
 Example1 0-1 s smoke SVG 图表
+Example1 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 ```
 
 ## 2. 模型与场景
@@ -24,6 +25,7 @@ Example1 0-1 s smoke SVG 图表
 | 螺旋爬升 | `QuadrotorModel.Examples.Example2` | 50 s | 参考轨迹已生成；完整 baseline 待 MCP 仿真 |
 | 8字形运动 | `QuadrotorModel.Examples.Example3` | 120 s | 参考轨迹已生成；完整 baseline 待 MCP 仿真 |
 | Example1 smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已有 CSV、指标、图表 |
+| Example1 MWORKS MCP smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已通过 Sysplorer MCP 真实加载、检查、仿真和读取变量 |
 
 官方完整 baseline 结果文件预期路径：
 
@@ -65,6 +67,9 @@ time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4
 ```text
 results/raw/smoke_official_example1_pid_baseline.csv
 results/metrics/smoke_official_example1_pid_baseline.json
+results/test_reports/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
+results/raw/mworks_mcp_example1_pid_smoke.csv
+results/metrics/mworks_mcp_example1_pid_smoke.json
 ```
 
 当前 smoke 指标用于验证计算链路：
@@ -78,7 +83,9 @@ results/metrics/smoke_official_example1_pid_baseline.json
 | steady_state_error_m | 0.873718 |
 | nan_count | 0 |
 
-说明：该结果只覆盖起飞初始 1 s，不能用于评价完整阶梯爬升控制性能。
+其中 `mworks_mcp_example1_pid_smoke` 是 `source=MWORKS_MCP` 的真实 Sysplorer MCP smoke：脚本通过 `model_manager load_file` 加载 `QuadrotorModel/package.mo`，`check_model` 检查 `QuadrotorModel.Examples.Example1`，`simulate_model` 运行 0-1 s，并通过 `result_manager get_vars_values` 导出 `time,x,y,z,x_ref,y_ref,z_ref`。
+
+说明：这些结果只覆盖起飞初始 1 s，不能用于评价完整阶梯爬升控制性能。
 
 ## 5. 当前图表
 
