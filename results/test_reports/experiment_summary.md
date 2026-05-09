@@ -16,7 +16,7 @@
 | official_example1_pid_baseline | official_example1 | pid_baseline | 0.275253 | 52.4645 | done |
 | official_example2_improved_pid | official_example2 | improved_pid | 0.479834 | 48.0258 | done |
 | official_example2_pid_baseline | official_example2 | pid_baseline | 0.487183 | 47.8827 | done |
-| mworks_mcp_example1_pid_smoke | mworks_mcp_example1 | pid_baseline | 0.977959 | 17.9231 | done |
+| mworks_mcp_example1_pid_smoke | mworks_mcp_example1 | pid_baseline | 0.977959 | 28.4231 | done |
 
 ## Evidence Levels
 
@@ -28,7 +28,7 @@
 | official_example1_improved_pid | MWORKS_MCP | real_sysplorer_mcp_full_improved_pid | `results/raw/official_example1_improved_pid.csv` |
 | official_example2_improved_pid | MWORKS_MCP | real_sysplorer_mcp_full_improved_pid | `results/raw/official_example2_improved_pid.csv` |
 | official_example3_improved_pid | MWORKS_MCP | real_sysplorer_mcp_full_improved_pid | `results/raw/official_example3_improved_pid.csv` |
-| mworks_mcp_example1_pid_smoke | glob:results/metrics/mworks_mcp_*.json | real_sysplorer_mcp_smoke | `results/raw/mworks_mcp_example1_pid_smoke.csv` |
+| mworks_mcp_example1_pid_smoke | MWORKS_MCP | real_sysplorer_mcp_smoke | `results/raw/mworks_mcp_example1_pid_smoke.csv` |
 
 ## Pending Results
 

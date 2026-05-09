@@ -156,8 +156,20 @@ Do not treat smoke-test output as the full 50 s official scenario.
 For the current real Sysplorer MCP smoke workflow, prefer:
 
 ```bash
-python3 scripts/run_sysplorer_mcp_smoke.py
+python3 scripts/run_mworks_scenario.py scenarios/smoke/example1_pid_mcp_smoke.yaml
 ```
 
 It performs the MCP run and result extraction in one reproducible step, then
-writes the raw CSV and metrics files under `results/`.
+writes raw CSV, metrics, figures, replay JSON, replay HTML, and MCP JSONL log
+under `results/`.
+
+For full official scenarios, use the same YAML-driven entrypoint:
+
+```bash
+python3 scripts/run_mworks_scenario.py scenarios/official/example1_pid_baseline.yaml
+python3 scripts/run_mworks_scenario.py scenarios/official/example1_improved_pid.yaml
+```
+
+Do not shorten an official YAML run for smoke testing, because that would
+overwrite full-duration formal evidence. Use `scenarios/smoke/` for short MCP
+chain checks.

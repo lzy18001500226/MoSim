@@ -71,7 +71,7 @@ Use this project script to prove that the official model can be loaded,
 checked, simulated, and read through Sysplorer MCP:
 
 ```bash
-python3 scripts/run_sysplorer_mcp_smoke.py
+python3 scripts/run_mworks_scenario.py scenarios/smoke/example1_pid_mcp_smoke.yaml
 ```
 
 Expected outputs:
@@ -81,6 +81,9 @@ results/test_reports/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
 results/raw/mworks_mcp_example1_pid_smoke.csv
 results/metrics/mworks_mcp_example1_pid_smoke.json
 results/metrics/mworks_mcp_example1_pid_smoke.csv
+results/figures/mworks_mcp_example1_pid_smoke/
+results/replay/mworks_mcp_example1_pid_smoke.json
+results/replay_html/mworks_mcp_example1_pid_smoke.html
 ```
 
 This is real `source=MWORKS_MCP` smoke evidence, but it is still only a

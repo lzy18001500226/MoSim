@@ -35,9 +35,18 @@
 scenarios/official/example1_pid_baseline.yaml  阶梯爬升
 scenarios/official/example2_pid_baseline.yaml  螺旋爬升
 scenarios/official/example3_pid_baseline.yaml  8字形运动
+scenarios/smoke/example1_pid_mcp_smoke.yaml    0-1 s MCP 链路烟雾测试
 ```
 
 `results/raw/mworks_mcp_example1_pid_smoke.csv` 只用于 0-1 s 真实 MCP 链路验证，不作为完整官方 baseline 指标。
+
+按场景 YAML 运行真实 Sysplorer MCP 证据链：
+
+```bash
+python scripts/run_mworks_scenario.py scenarios/smoke/example1_pid_mcp_smoke.yaml
+```
+
+该入口会读取模型名、时长和输出路径，调用 `check_model`、`simulate_model`、`result_manager`，再生成 metrics、SVG 图表和三维回放 HTML。
 
 ## 目录约定
 

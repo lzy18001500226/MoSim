@@ -280,10 +280,19 @@ results/metrics/mworks_mcp_example1_pid_smoke.csv
 复现实测 MCP smoke：
 
 ```bash
-python3 scripts/run_sysplorer_mcp_smoke.py
+python3 scripts/run_mworks_scenario.py scenarios/smoke/example1_pid_mcp_smoke.yaml
 ```
 
-该脚本会通过 `/home/linux/mcp-wrappers/sysplorer_mcp.sh` 调用 Sysplorer MCP，执行 `session_manager health`、`model_manager load_file`、`check_model`、`simulate_model` 和 `result_manager get_vars_values`。默认保留 Sysplorer GUI/session；只有传入 `--shutdown-session` 时才调用 `session_manager shutdown`。它属于 `source=MWORKS_MCP` 的真实 smoke 证据，但仍只覆盖 0-1 s，不能替代完整 50 s 官方 baseline。
+该脚本会读取 `scenarios/smoke/example1_pid_mcp_smoke.yaml`，再通过 `/home/linux/mcp-wrappers/sysplorer_mcp.sh` 调用 Sysplorer MCP，执行 `session_manager health`、`model_manager load_file`、`check_model`、`simulate_model` 和 `result_manager get_vars_values`。默认保留 Sysplorer GUI/session；只有传入 `--shutdown-session` 时才调用 `session_manager shutdown`。它属于 `source=MWORKS_MCP` 的真实 smoke 证据，但仍只覆盖 0-1 s，不能替代完整 50 s 官方 baseline。
+
+复现任一正式场景时使用同一入口，直接替换 YAML 路径：
+
+```bash
+python3 scripts/run_mworks_scenario.py scenarios/official/example1_pid_baseline.yaml
+python3 scripts/run_mworks_scenario.py scenarios/official/example1_improved_pid.yaml
+```
+
+不要用 `--stop-time 1` 覆盖正式 `scenarios/official/*.yaml`，短时链路验证统一使用 `scenarios/smoke/`。
 
 ## 7. 指标、图表与汇总
 
