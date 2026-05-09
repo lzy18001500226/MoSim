@@ -81,6 +81,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/generate_formation_reference.py",
     "scripts/generate_fault_scenario.py",
     "scripts/generate_disturbance_mode_demo.py",
+    "scripts/generate_mass_adaptation_demo.py",
 ]
 
 RECOMMENDED_TESTS = [
@@ -91,6 +92,7 @@ RECOMMENDED_TESTS = [
     "tests/test_formation_reference.py",
     "tests/test_fault_scenario.py",
     "tests/test_disturbance_mode_demo.py",
+    "tests/test_mass_adaptation_demo.py",
 ]
 
 OFFICIAL_MODELS = [
@@ -175,6 +177,12 @@ DISTURBANCE_OUTPUTS = [
     "results/logs/wind_nmpc_indi_l1_events.jsonl",
     "results/replay/wind_nmpc_indi_l1.json",
     "results/replay_html/wind_nmpc_indi_l1.html",
+    "results/raw/reference_delivery_mass_change.csv",
+    "results/raw/delivery_mass_change.csv",
+    "results/metrics/delivery_mass_change.json",
+    "results/logs/delivery_mass_change_events.jsonl",
+    "results/replay/delivery_mass_change.json",
+    "results/replay_html/delivery_mass_change.html",
 ]
 
 PLANNING_OUTPUTS = [

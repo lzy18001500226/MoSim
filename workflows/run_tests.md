@@ -49,6 +49,7 @@ python3 tests/test_obstacle_planning.py
 python3 tests/test_formation_reference.py
 python3 tests/test_fault_scenario.py
 python3 tests/test_disturbance_mode_demo.py
+python3 tests/test_mass_adaptation_demo.py
 ```
 
 Optional script tests when Julia/Syslab is available:

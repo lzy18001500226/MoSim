@@ -223,6 +223,28 @@ results/replay_html/wind_nmpc_indi_l1.html
 
 指标包含 `raw_residual_rmse_m_s2`、`compensated_residual_rmse_m_s2`、`residual_reduction_pct`、`controller_mode_switch_count`、`wind_rejection_entered` 和 `total_health_score`。事件日志应包含 `NORMAL → WIND_REJECTION → NORMAL`，用于证明 P1-A 的扰动识别和控制模式切换链路。
 
+生成投递后质量变化自适应演示数据：
+
+```bash
+python3 scripts/generate_mass_adaptation_demo.py
+python3 scripts/generate_replay_html.py \
+  results/replay/delivery_mass_change.json \
+  results/replay_html/delivery_mass_change.html
+```
+
+输出：
+
+```text
+results/raw/reference_delivery_mass_change.csv
+results/raw/delivery_mass_change.csv
+results/metrics/delivery_mass_change.json
+results/logs/delivery_mass_change_events.jsonl
+results/replay/delivery_mass_change.json
+results/replay_html/delivery_mass_change.html
+```
+
+指标包含 `raw_vertical_residual_rmse_m_s2`、`compensated_vertical_residual_rmse_m_s2`、`vertical_residual_reduction_pct`、`mass_adaptation_entered`、`return_position_error_m` 和 `degraded_task_completion`。事件日志应包含 `delivery` 和 `MASS_ADAPTATION`，用于证明投递任务中的质量变化识别与 z 向补偿链路。
+
 ## 9. 规划参考轨迹
 
 生成可跟踪航点规划参考：
@@ -325,6 +347,7 @@ python3 tests/test_obstacle_planning.py
 python3 tests/test_formation_reference.py
 python3 tests/test_fault_scenario.py
 python3 tests/test_disturbance_mode_demo.py
+python3 tests/test_mass_adaptation_demo.py
 python3 -m py_compile scripts/*.py tests/*.py
 git diff --check
 ```

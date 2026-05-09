@@ -1,0 +1,3 @@
+{"event": "mode_switch", "from": "", "reason": "scenario_start", "time": 0.0, "to": "NORMAL"}
+{"event": "delivery", "mass_scale_after": 1.0, "mass_scale_before": 1.2, "phase": "payload_released", "time": 15.0}
+{"event": "mode_switch", "from": "NORMAL", "reason": "mass_change", "residual_z_m_s2": 0.5564370124799998, "time": 15.04, "to": "MASS_ADAPTATION"}
