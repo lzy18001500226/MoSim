@@ -7,6 +7,7 @@
 | 文件 | 作用 |
 |---|---|
 | `scan/scan_summary.md` | 扫描摘要、分类统计和下一步建议 |
+| `matlab_compat_plan.md` | MWORKS 与 MATLAB 对照资料的转换计划 |
 | `scan/relevant_index.md` | 按相关性排序的资料清单 |
 | `scan/relevant_files.csv` | 机器可读索引，便于脚本二次处理 |
 | `scan/categories/sysplorer_modeling.md` | Sysplorer、Modelica、建模仿真相关资料 |
@@ -18,6 +19,7 @@
 | `converted/control/` | 系统辨识、鲁棒控制资料 |
 | `converted/optimization/` | 参数估计与优化资料 |
 | `converted/api/` | 外部接口、脚本和函数调用资料 |
+| `converted/matlab_compat/` | MWORKS 与 MATLAB/Simulink 迁移、差异和在线对照资料 |
 | `converted/challenge/` | 智能无人系统挑战赛规则与培训资料 |
 
 ## 使用建议
@@ -35,7 +37,7 @@ Codex 查询资料时优先顺序：
 
 ## PDF 说明
 
-已将第一批 P0/P1/P2 高价值 PDF 转换到 `docs/mworks/converted/`。当前 15 份目标文档均已通过 MinerU 精准解析生成 Markdown，并同步保存各自的 `_images/` 图片目录。
+已将第一批 P0/P1/P2 高价值 PDF 转换到 `docs/mworks/converted/`。当前 17 份目标 PDF 均已通过 MinerU 精准解析生成 Markdown，并同步保存各自的 `_images/` 图片目录；另有 1 份 MWORKS/MATLAB 在线链接索引已整理到 `converted/matlab_compat/`。
 
 转换结果可用于关键词检索、流程定位、截图查看和 Agent 实现参考，但以下内容仍需结合原 PDF 或 MCP 官方文档复核：
 

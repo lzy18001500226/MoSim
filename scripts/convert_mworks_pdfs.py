@@ -133,6 +133,20 @@ TARGETS = [
         "Syslab 调用 Python/C/外部函数的参考。",
     ),
     PdfTarget(
+        "matlab_compat",
+        "MWORKS与其他科学计算软件对比.md",
+        "MWORKS与MATLAB功能对照/01-MWORKS与其他科学计算软件对比.pdf",
+        "P0",
+        "MWORKS 与 MATLAB/Simulink 等科学计算软件的总体能力对比。",
+    ),
+    PdfTarget(
+        "matlab_compat",
+        "MWORKS简介及与MATLAB的对比.md",
+        "MWORKS与MATLAB功能对照/02-MWORKS简介及与MATLAB的对比V2.0.pdf",
+        "P0",
+        "MWORKS 平台简介，以及从 MATLAB/Simulink 迁移到 Syslab/Sysplorer 的差异参考。",
+    ),
+    PdfTarget(
         "challenge",
         "智能无人系统应用挑战赛_无人车避障竞赛规则.md",
         "培训课程配套材料/02-直播课程配套材料/06-智能无人系统应用挑战赛专项培训/01-第一期/无人车避障3.0竞赛规则.pdf",
@@ -181,6 +195,25 @@ def safe_stem(text: str) -> str:
 
 
 def request_json(url: str, *, token: str, method: str = "GET", data: dict | None = None, timeout: int = 60) -> dict:
+    headers = {"Accept": "*/*", "Authorization": f"Bearer {token}"}
+    if data is not None:
+        headers["Content-Type"] = "application/json"
+    failures: list[str] = []
+    try:
+        import requests  # type: ignore[import-not-found]
+
+        for attempt in range(1, 4):
+            try:
+                resp = requests.request(method, url, headers=headers, json=data, timeout=timeout)
+                if resp.status_code < 400:
+                    return resp.json()
+                failures.append(f"requests attempt {attempt}: HTTP {resp.status_code}: {resp.text[:400]}")
+            except Exception as exc:
+                failures.append(f"requests attempt {attempt}: {exc}")
+            time.sleep(min(2 * attempt, 6))
+    except Exception as exc:
+        failures.append(f"requests unavailable: {exc}")
+
     body = json.dumps(data).encode("utf-8") if data is not None else None
     req = request.Request(url, data=body, method=method)
     req.add_header("Accept", "*/*")
@@ -192,7 +225,11 @@ def request_json(url: str, *, token: str, method: str = "GET", data: dict | None
             payload = resp.read().decode("utf-8", errors="replace")
     except error.HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"HTTP {exc.code} from MinerU: {detail}") from exc
+        failures.append(f"urllib HTTP {exc.code}: {detail}")
+        raise RuntimeError(f"HTTP {exc.code} from MinerU: {detail}; attempts: {'; '.join(failures)}") from exc
+    except Exception as exc:
+        failures.append(f"urllib: {exc}")
+        raise RuntimeError(f"MinerU request failed: {'; '.join(failures)}") from exc
     return json.loads(payload)
 
 
@@ -659,8 +696,10 @@ def write_pending_downloads(results: list[dict[str, str]]) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--method", choices=["pymupdf", "mineru"], default="pymupdf")
+    parser.add_argument("--source-root", type=Path, default=SOURCE_ROOT, help="Root directory that target source paths are relative to.")
     parser.add_argument("--limit", type=int, default=0, help="Convert only the first N targets; 0 means all targets.")
     parser.add_argument("--priority", action="append", choices=["P0", "P1", "P2"], help="Filter target priority. Can be repeated.")
+    parser.add_argument("--topic", action="append", help="Filter target topic. Can be repeated.")
     parser.add_argument("--model-version", default="vlm", choices=["pipeline", "vlm"])
     parser.add_argument("--poll-interval", type=int, default=10)
     parser.add_argument("--timeout-seconds", type=int, default=1800)
@@ -680,6 +719,9 @@ def parse_args() -> argparse.Namespace:
 
 def select_targets(args: argparse.Namespace) -> list[PdfTarget]:
     targets = TARGETS
+    if args.topic:
+        allowed_topics = set(args.topic)
+        targets = [target for target in targets if target.topic in allowed_topics]
     if args.priority:
         allowed = set(args.priority)
         targets = [target for target in targets if target.priority in allowed]
@@ -689,7 +731,9 @@ def select_targets(args: argparse.Namespace) -> list[PdfTarget]:
 
 
 def main() -> int:
+    global SOURCE_ROOT
     args = parse_args()
+    SOURCE_ROOT = args.source_root
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
     targets = select_targets(args)
     method_label = args.method

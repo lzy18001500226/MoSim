@@ -14,6 +14,7 @@
 | API/tool index | `docs/index/api_index.md` | Available MCP tools, scripts, and API references |
 | Workflow index | `docs/index/workflow_index.md` | Repeatable development workflows |
 | Variable mapping | `docs/index/variable_mapping.md` | Standard raw CSV names vs Sysplorer result variables |
+| MathWorks to MWORKS migration | `docs/index/mathworks_to_mworks_migration.md` | How to translate MATLAB/Simulink skills into MWORKS workflows |
 
 ## MWORKS Reference Docs
 
@@ -29,6 +30,7 @@
 | Challenge category | `docs/mworks/scan/categories/quadrotor_uav.md` | Intelligent unmanned systems challenge materials |
 | Converted PDF index | `docs/mworks/converted/转换索引.md` | Current curated converted PDF list |
 | MinerU precise API | `docs/mworks/mcp/mineru_precise_api.md` | Token-based precise parsing, batch upload, polling, errors |
+| MATLAB compatibility plan | `docs/mworks/matlab_compat_plan.md` | Plan for converting official MWORKS/MATLAB comparison materials |
 
 ## Converted PDF Topics
 
@@ -46,6 +48,9 @@
 | Sysplorer external functions | `docs/mworks/converted/api/MWORKS.Sysplorer外部接口_外部函数.md` |
 | Sysplorer Python scripts | `docs/mworks/converted/api/MWORKS.Sysplorer工具箱运行脚本_Python.md` |
 | Syslab external functions | `docs/mworks/converted/api/MWORKS.Syslab外部函数调用.md` |
+| MWORKS and other scientific software | `docs/mworks/converted/matlab_compat/MWORKS与其他科学计算软件对比.md` |
+| MWORKS intro and MATLAB comparison | `docs/mworks/converted/matlab_compat/MWORKS简介及与MATLAB的对比.md` |
+| MATLAB compatibility online links | `docs/mworks/converted/matlab_compat/MWORKS与MATLAB在线链接.md` |
 | Challenge rules | `docs/mworks/converted/challenge/智能无人系统应用挑战赛_无人车避障竞赛规则.md` |
 | Challenge training 1 | `docs/mworks/converted/challenge/智能无人系统应用挑战赛_专项培训一.md` |
 | Challenge training 2 | `docs/mworks/converted/challenge/智能无人系统应用挑战赛_专项培训二.md` |
