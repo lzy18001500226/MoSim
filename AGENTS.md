@@ -160,12 +160,12 @@ Rules:
 2. Avoid opening GUI windows unless a model simulation, Sysplorer operation, or visual verification genuinely requires it.
 3. If a GUI window is opened by Sysplorer / Syslab / MCP, minimize it when possible and avoid bringing it to the foreground repeatedly.
 4. Do not use broad MCP discovery calls repeatedly when a targeted tool call is enough.
-5. After a simulation or model operation completes, close or release unnecessary MCP sessions and GUI windows when the tool supports it.
+5. After a simulation or model operation completes, release unnecessary MCP sessions when the tool supports it, but do not automatically close Sysplorer / Syslab / MWORKS GUI windows unless the user explicitly asks. Keeping the GUI open avoids repeated startup cost; the user will close windows manually when needed.
 6. Save result evidence under `results/` and documentation-ready assets under `docs/`.
 7. If MCP behavior may interrupt the user's desktop, state that risk before running the operation.
 8. Do not call MCP tools merely to create activity. Use the smallest set of MCP calls that proves the current engineering claim.
-9. If a tool exposes a close, release, stop, or session cleanup API, call it after the useful result is saved.
-10. If the MCP layer cannot minimize or close a GUI window automatically, state that limitation and do not pretend the cleanup was completed.
+9. If a tool exposes a release, stop, or non-GUI session cleanup API, call it after the useful result is saved.
+10. Do not spend extra time trying to close GUI windows after each run. Only report GUI cleanup limitations when the user specifically asks for cleanup.
 
 ### 3.5 Simulation Evidence Rule
 
@@ -191,11 +191,11 @@ For MWORKS simulations:
 2. Run the smallest simulation that validates the current change first.
 3. Read required result variables after simulation.
 4. Save logs or smoke-test evidence only when useful.
-5. Close simulation windows, plot windows, or sessions after use when the MCP tool supports it.
+5. Keep Sysplorer / Syslab / MWORKS GUI windows open after simulation unless the user explicitly asks for cleanup. Release or stop background sessions only when this does not close the reusable GUI.
 6. Do not leave long-running simulations active after the task is complete.
 7. Prefer one active Sysplorer/Syslab session at a time unless parallel simulation is explicitly required.
 8. Reuse an existing session for related operations instead of opening many windows.
-9. If repeated simulations open multiple windows, continue only after attempting available minimize, close, release, or stop operations. Report the limitation only when those cleanup attempts fail or the tool exposes no cleanup method.
+9. If repeated simulations open multiple windows, keep working and avoid extra close attempts. Try minimizing only when the windows interfere with normal desktop use, or when the user asks.
 
 ---
 
