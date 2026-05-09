@@ -74,6 +74,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/check_reference_outputs.py",
     "scripts/extract_mcp_timeseries.py",
     "scripts/run_sysplorer_mcp_smoke.py",
+    "scripts/tune_improved_pid_mcp.py",
     "scripts/calc_metrics.py",
     "scripts/plot_results.py",
     "scripts/generate_replay_html.py",
@@ -188,6 +189,8 @@ MWORKS_MCP_SMOKE_OUTPUTS = [
 
 MWORKS_MCP_IMPROVED_OUTPUTS = [
     "models/QuadrotorExperiments/package.mo",
+    "results/test_reports/pid_tuning_summary.csv",
+    "results/test_reports/pid_tuning_summary.md",
     "results/test_reports/sysplorer_example1_improved_pid_full_20260509.jsonl",
     "results/test_reports/sysplorer_example3_improved_pid_full_20260509.jsonl",
     "results/raw/official_example1_improved_pid.csv",

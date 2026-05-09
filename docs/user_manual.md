@@ -178,7 +178,7 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
   --evidence-level real_sysplorer_mcp_full_baseline
 ```
 
-复现保守阻尼增强 PID 对比：
+复现 MCP 参数搜索型 Improved PID 对比：
 
 ```bash
 python3 scripts/run_sysplorer_mcp_smoke.py \
@@ -205,6 +205,27 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
   --controller-id improved_pid \
   --evidence-level real_sysplorer_mcp_full_improved_pid
 ```
+
+默认情况下，`scripts/run_sysplorer_mcp_smoke.py` 会保留 Sysplorer GUI/session，避免连续仿真时反复启动。只有需要显式清理时才添加：
+
+```bash
+--shutdown-session
+```
+
+复现 Improved PID 参数搜索：
+
+```bash
+python3 scripts/tune_improved_pid_mcp.py --examples 1 3 --timeout-s 900
+```
+
+该脚本会生成临时 Modelica 派生包、串行调用真实 Sysplorer MCP 仿真候选参数，并输出：
+
+```text
+results/test_reports/pid_tuning_summary.csv
+results/test_reports/pid_tuning_summary.md
+```
+
+正式 improved PID 当前采用候选 `pos_kp_165_att_170`，对应 `PID3/PID4.KP=1.65`、`PID5/PID6.KD=1.70`。
 
 ## 6. Smoke 数据说明
 
@@ -233,7 +254,7 @@ results/metrics/mworks_mcp_example1_pid_smoke.csv
 python3 scripts/run_sysplorer_mcp_smoke.py
 ```
 
-该脚本会通过 `/home/linux/mcp-wrappers/sysplorer_mcp.sh` 调用 Sysplorer MCP，执行 `session_manager health`、`model_manager load_file`、`check_model`、`simulate_model` 和 `result_manager get_vars_values`，并在结束时尝试 `session_manager shutdown`。它属于 `source=MWORKS_MCP` 的真实 smoke 证据，但仍只覆盖 0-1 s，不能替代完整 50 s 官方 baseline。
+该脚本会通过 `/home/linux/mcp-wrappers/sysplorer_mcp.sh` 调用 Sysplorer MCP，执行 `session_manager health`、`model_manager load_file`、`check_model`、`simulate_model` 和 `result_manager get_vars_values`。默认保留 Sysplorer GUI/session；只有传入 `--shutdown-session` 时才调用 `session_manager shutdown`。它属于 `source=MWORKS_MCP` 的真实 smoke 证据，但仍只覆盖 0-1 s，不能替代完整 50 s 官方 baseline。
 
 ## 7. 指标与图表
 
