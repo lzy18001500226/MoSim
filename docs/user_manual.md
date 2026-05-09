@@ -63,6 +63,7 @@ QuadrotorModel.Examples.Example1
 QuadrotorModel.Examples.Example2
 QuadrotorModel.Examples.Example3
 QuadrotorExperiments.Example1ImprovedPID
+QuadrotorExperiments.Example2ImprovedPID
 QuadrotorExperiments.Example3ImprovedPID
 ```
 
@@ -121,6 +122,7 @@ python3 scripts/generate_replay_html.py \
 results/replay_html/official_example1_pid_baseline.html
 results/replay_html/official_example1_improved_pid.html
 results/replay_html/official_example2_pid_baseline.html
+results/replay_html/official_example2_improved_pid.html
 results/replay_html/official_example3_pid_baseline.html
 results/replay_html/official_example3_improved_pid.html
 ```
@@ -215,6 +217,18 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
   --metrics-csv results/metrics/official_example1_improved_pid.csv \
   --log-output results/test_reports/sysplorer_example1_improved_pid_full_20260509.jsonl \
   --scene-id official_example1 \
+  --controller-id improved_pid \
+  --evidence-level real_sysplorer_mcp_full_improved_pid
+
+python3 scripts/run_sysplorer_mcp_smoke.py \
+  --extra-model-file 'C:\Users\HP\Desktop\Quadrotor\models\QuadrotorExperiments\package.mo' \
+  --model-name QuadrotorExperiments.Example2ImprovedPID \
+  --target-time 0,50 \
+  --raw-output results/raw/official_example2_improved_pid.csv \
+  --metrics-json results/metrics/official_example2_improved_pid.json \
+  --metrics-csv results/metrics/official_example2_improved_pid.csv \
+  --log-output results/test_reports/sysplorer_example2_improved_pid_full_20260509.jsonl \
+  --scene-id official_example2 \
   --controller-id improved_pid \
   --evidence-level real_sysplorer_mcp_full_improved_pid
 

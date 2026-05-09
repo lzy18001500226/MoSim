@@ -107,7 +107,7 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 
 ## 6. 改进 PID 对比
 
-当前 `QuadrotorExperiments.Example1ImprovedPID` 和 `QuadrotorExperiments.Example3ImprovedPID` 采用 MCP 参数搜索选出的统一 PID 参数集 `pos_kp_165_att_170`：将水平位置环 `PID3/PID4.KP` 从 `1.5` 提高到 `1.65`，将姿态内环 `PID5/PID6.KD` 从 `1.414` 提高到 `1.70`，其余高度环与 yaw 环参数保持官方基线不变。搜索脚本为 `scripts/tune_improved_pid_mcp.py`，搜索摘要见 `results/test_reports/pid_tuning_summary.md`。
+当前 `QuadrotorExperiments.Example1ImprovedPID`、`QuadrotorExperiments.Example2ImprovedPID` 和 `QuadrotorExperiments.Example3ImprovedPID` 采用 MCP 参数搜索选出的统一 PID 参数集 `pos_kp_165_att_170`：将水平位置环 `PID3/PID4.KP` 从 `1.5` 提高到 `1.65`，将姿态内环 `PID5/PID6.KD` 从 `1.414` 提高到 `1.70`，其余高度环与 yaw 环参数保持官方基线不变。搜索脚本为 `scripts/tune_improved_pid_mcp.py`，搜索摘要见 `results/test_reports/pid_tuning_summary.md`。
 
 候选选择原则：不用单场景最优作为正式参数，而选取在 Example1 阶梯爬升和 Example3 8 字轨迹上均能降低 RMSE 的统一参数集。`pos_kd_115_att_170` 在 Example1 上 RMSE 更低，但最大倾角达到 `0.345064 rad`，且 Example3 不如 `pos_kp_165_att_170`；因此正式模型选择后者。
 
@@ -117,10 +117,12 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 |---|---|---:|---:|---:|---:|---:|---:|
 | Example1 阶梯爬升 | baseline | 0.275253 | - | 0.111457 | 0.225729 | 39925.003500 | 52.464469 |
 | Example1 阶梯爬升 | improved_pid | 0.269890 | +1.948% | 0.105559 | 0.273695 | 39926.972404 | 52.533227 |
+| Example2 螺旋爬升 | baseline | 0.487183 | - | 0.210149 | 0.330881 | 37306.013865 | 47.882655 |
+| Example2 螺旋爬升 | improved_pid | 0.479834 | +1.508% | 0.190661 | 0.358260 | 37312.619310 | 48.025785 |
 | Example3 8字形 | baseline | 0.172311 | - | 0.068172 | 0.286482 | 95610.155697 | 60.505386 |
 | Example3 8字形 | improved_pid | 0.167227 | +2.951% | 0.061940 | 0.295880 | 95611.212646 | 60.546610 |
 
-结论：参数搜索型 Improved PID 相比官方 PID 在 Example1/3 上分别降低 RMSE `1.948%` 和 `2.951%`，稳态误差分别降低 `5.291%` 和 `9.141%`。代价是最大倾角和控制能量略有增加，因此该结果适合作为 P0 可复现优化基线，不应包装成最终控制创新；后续仍应推进带抗饱和、参考前馈或 NMPC/INDI 的真实模型集成。
+结论：参数搜索型 Improved PID 相比官方 PID 在 Example1/2/3 上分别降低 RMSE `1.948%`、`1.508%` 和 `2.951%`，稳态误差分别降低 `5.291%`、`9.273%` 和 `9.141%`。代价是最大倾角和控制能量略有增加，因此该结果适合作为 P0 可复现优化基线，不应包装成最终控制创新；后续仍应推进带抗饱和、参考前馈或 NMPC/INDI 的真实模型集成。
 
 ## 7. 当前图表
 
@@ -130,6 +132,7 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 results/figures/official_example1_pid_baseline/
 results/figures/official_example1_improved_pid/
 results/figures/official_example2_pid_baseline/
+results/figures/official_example2_improved_pid/
 results/figures/official_example3_pid_baseline/
 results/figures/official_example3_improved_pid/
 results/figures/smoke_official_example1_pid_baseline/trajectory_xy.svg
@@ -144,6 +147,7 @@ results/figures/smoke_official_example1_pid_baseline/metrics_summary.svg
 results/replay_html/official_example1_pid_baseline.html
 results/replay_html/official_example1_improved_pid.html
 results/replay_html/official_example2_pid_baseline.html
+results/replay_html/official_example2_improved_pid.html
 results/replay_html/official_example3_pid_baseline.html
 results/replay_html/official_example3_improved_pid.html
 results/replay_html/reference_official_example1.html

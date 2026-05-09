@@ -1,0 +1,34 @@
+experiment_id: official_example2_improved_pid
+scene_id: official_example2
+controller_id: improved_pid
+priority: P0
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example2ImprovedPID
+  model_path_hint: models/QuadrotorExperiments/package.mo
+  base_model_path_hint: QuadrotorModel/package.mo
+  official_description: 螺旋爬升运动
+
+controller:
+  params_file: controllers/improved_pid/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: official_example2_pid_baseline
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_circle_path
+  file: results/raw/reference_official_example2.csv
+
+result:
+  raw_file: results/raw/official_example2_improved_pid.csv
+  metrics_file: results/metrics/official_example2_improved_pid.json
+  figure_dir: results/figures/official_example2_improved_pid
+  replay_file: results/replay/official_example2_improved_pid.json
+  replay_html: results/replay_html/official_example2_improved_pid.html

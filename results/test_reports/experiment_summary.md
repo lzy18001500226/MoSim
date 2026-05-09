@@ -1,8 +1,8 @@
 # Experiment Summary
 
 - CSV: `results/test_reports/experiment_summary.csv`
-- Total scenarios: `19`
-- Done: `19`
+- Total scenarios: `20`
+- Done: `20`
 - Pending: `0`
 - Invalid: `0`
 
@@ -26,6 +26,7 @@
 | figure8_improved_pid_001 | figure8 | improved_pid | 0.282178 | 53.1636 | done |
 | official_example1_improved_pid | official_example1 | improved_pid | 0.26989 | 52.5332 | done |
 | official_example1_pid_baseline | official_example1 | pid_baseline | 0.275253 | 52.4645 | done |
+| official_example2_improved_pid | official_example2 | improved_pid | 0.479834 | 48.0258 | done |
 | official_example2_pid_baseline | official_example2 | pid_baseline | 0.487183 | 47.8827 | done |
 | mworks_mcp_example1_pid_smoke | mworks_mcp_example1 | pid_baseline | 0.977959 | 17.9231 | done |
 | smoke_official_example1_pid_baseline | official_example1 | pid_baseline | 0.977959 | 17.9231 | done |
