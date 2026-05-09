@@ -209,15 +209,23 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
     motor_cols = [name for name in MOTOR_COLUMNS if name in data]
     control_norm_sq = []
     saturation_samples = 0
+    motor_values = []
     if motor_cols:
         for index in range(len(time)):
             total = 0.0
             for name in motor_cols:
                 value = data[name][index]
+                motor_values.append(value)
                 total += value * value
-                if value <= 1e-9 or value >= 1.0 - 1e-9:
-                    saturation_samples += 1
             control_norm_sq.append(total)
+        normalized_motor_commands = all(
+            not math.isnan(value) and not math.isinf(value) and -1e-9 <= value <= 1.0 + 1e-9
+            for value in motor_values
+        )
+        if normalized_motor_commands:
+            saturation_samples = sum(1 for value in motor_values if value <= 1e-9 or value >= 1.0 - 1e-9)
+    else:
+        normalized_motor_commands = False
 
     control_smoothness = derivative_energy(time, [data[name] for name in motor_cols]) if motor_cols else math.nan
 
@@ -266,7 +274,12 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
         "constraint_violation_count": constraint_violation_count,
         "control_energy": trapezoid_integral(time, control_norm_sq) if control_norm_sq else math.nan,
         "control_smoothness": control_smoothness,
-        "saturation_ratio": saturation_samples / (len(time) * len(motor_cols)) if motor_cols else math.nan,
+        "control_command_min": min_or_nan(motor_values) if motor_values else math.nan,
+        "control_command_max": max_or_nan(motor_values) if motor_values else math.nan,
+        "control_command_normalized": normalized_motor_commands,
+        "saturation_ratio": saturation_samples / (len(time) * len(motor_cols))
+        if motor_cols and normalized_motor_commands
+        else math.nan,
         "nan_count": nan_count,
         "valid": len(time) > 10 and nan_count == 0,
     }

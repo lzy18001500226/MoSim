@@ -33,6 +33,13 @@ DEFAULT_VARIABLES = {
     "x_ref": "climbePath.position_command[1]",
     "y_ref": "climbePath.position_command[2]",
     "z_ref": "climbePath.position_command[3]",
+    "roll": "sensors1_1.AngleMea[1]",
+    "pitch": "sensors1_1.AngleMea[2]",
+    "yaw": "sensors1_1.AngleMea[3]",
+    "u1": "controller3_2.y",
+    "u2": "controller3_2.y1",
+    "u3": "controller3_2.y2",
+    "u4": "controller3_2.y3",
 }
 
 

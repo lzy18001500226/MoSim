@@ -134,6 +134,14 @@ results/metrics/official_example3_pid_baseline.json
 
 `qa_check.py` 会检查这些正式结果的时长，Example1/2 不得短于 50 s，Example3 不得短于 120 s。
 
+`scripts/run_sysplorer_mcp_smoke.py` 当前会导出以下标准字段：
+
+```text
+time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4
+```
+
+其中 `roll/pitch/yaw` 来自 `sensors1_1.AngleMea[1..3]`，`u1-u4` 来自 `controller3_2.y/y1/y2/y3`。这组 `u1-u4` 是控制器原始输出，不是 0-1 归一化电机占空比；因此 `calc_metrics.py` 只在控制命令整体位于 0-1 范围内时计算 `saturation_ratio`，否则将其留空，并记录 `control_command_min/max` 与 `control_command_normalized=false`。
+
 复现完整官方 PID baseline：
 
 ```bash
@@ -252,6 +260,7 @@ minimum_altitude_m
 constraint_violation_count
 control_energy
 control_smoothness
+control_command_min / control_command_max / control_command_normalized
 saturation_ratio
 tracking_score / robustness_score / safety_score / energy_score / smoothness_score / fault_tolerance_score / total_health_score
 ```
