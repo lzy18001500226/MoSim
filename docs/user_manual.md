@@ -62,7 +62,17 @@ scenarios/official/example3_pid_baseline.yaml  8字形运动，120 s
 QuadrotorModel.Examples.Example1
 QuadrotorModel.Examples.Example2
 QuadrotorModel.Examples.Example3
+QuadrotorExperiments.Example1ImprovedPID
+QuadrotorExperiments.Example3ImprovedPID
 ```
+
+项目本地实验模型包：
+
+```text
+models/QuadrotorExperiments/package.mo
+```
+
+该包通过 `extends QuadrotorModel.Examples.*` 派生官方模型，只覆盖 `controller3_2.PID*` 参数，不修改官方 `QuadrotorModel/package.mo`。
 
 ## 4. 参考轨迹与回放
 
@@ -158,6 +168,34 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
   --scene-id official_example3 \
   --controller-id pid_baseline \
   --evidence-level real_sysplorer_mcp_full_baseline
+```
+
+复现保守阻尼增强 PID 对比：
+
+```bash
+python3 scripts/run_sysplorer_mcp_smoke.py \
+  --extra-model-file 'C:\Users\HP\Desktop\Quadrotor\models\QuadrotorExperiments\package.mo' \
+  --model-name QuadrotorExperiments.Example1ImprovedPID \
+  --target-time 0,50 \
+  --raw-output results/raw/official_example1_improved_pid.csv \
+  --metrics-json results/metrics/official_example1_improved_pid.json \
+  --metrics-csv results/metrics/official_example1_improved_pid.csv \
+  --log-output results/test_reports/sysplorer_example1_improved_pid_full_20260509.jsonl \
+  --scene-id official_example1 \
+  --controller-id improved_pid \
+  --evidence-level real_sysplorer_mcp_full_improved_pid
+
+python3 scripts/run_sysplorer_mcp_smoke.py \
+  --extra-model-file 'C:\Users\HP\Desktop\Quadrotor\models\QuadrotorExperiments\package.mo' \
+  --model-name QuadrotorExperiments.Example3ImprovedPID \
+  --target-time 0,120 \
+  --raw-output results/raw/official_example3_improved_pid.csv \
+  --metrics-json results/metrics/official_example3_improved_pid.json \
+  --metrics-csv results/metrics/official_example3_improved_pid.csv \
+  --log-output results/test_reports/sysplorer_example3_improved_pid_full_20260509.jsonl \
+  --scene-id official_example3 \
+  --controller-id improved_pid \
+  --evidence-level real_sysplorer_mcp_full_improved_pid
 ```
 
 ## 6. Smoke 数据说明

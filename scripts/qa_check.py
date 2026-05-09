@@ -31,6 +31,7 @@ REQUIRED_DIRS = [
     "docs/index",
     "docs/mworks/converted",
     "QuadrotorModel",
+    "models/QuadrotorExperiments",
     "workflows",
 ]
 
@@ -156,6 +157,8 @@ OFFICIAL_FULL_RESULT_EXPECTATIONS = {
     "results/raw/official_example1_pid_baseline.csv": 50.0,
     "results/raw/official_example2_pid_baseline.csv": 50.0,
     "results/raw/official_example3_pid_baseline.csv": 120.0,
+    "results/raw/official_example1_improved_pid.csv": 50.0,
+    "results/raw/official_example3_improved_pid.csv": 120.0,
 }
 
 OFFICIAL_REFERENCE_OUTPUTS = [
@@ -181,6 +184,18 @@ MWORKS_MCP_SMOKE_OUTPUTS = [
     "results/raw/mworks_mcp_example1_pid_smoke.csv",
     "results/metrics/mworks_mcp_example1_pid_smoke.json",
     "results/metrics/mworks_mcp_example1_pid_smoke.csv",
+]
+
+MWORKS_MCP_IMPROVED_OUTPUTS = [
+    "models/QuadrotorExperiments/package.mo",
+    "results/test_reports/sysplorer_example1_improved_pid_full_20260509.jsonl",
+    "results/test_reports/sysplorer_example3_improved_pid_full_20260509.jsonl",
+    "results/raw/official_example1_improved_pid.csv",
+    "results/raw/official_example3_improved_pid.csv",
+    "results/metrics/official_example1_improved_pid.json",
+    "results/metrics/official_example1_improved_pid.csv",
+    "results/metrics/official_example3_improved_pid.json",
+    "results/metrics/official_example3_improved_pid.csv",
 ]
 
 DISTURBANCE_OUTPUTS = [
@@ -610,6 +625,10 @@ def check_official_case(root: Path) -> bool:
 
     print("\n== Real MWORKS MCP smoke evidence ==")
     for item in MWORKS_MCP_SMOKE_OUTPUTS:
+        ok = check_path(root / item, required=True) and ok
+
+    print("\n== Real MWORKS MCP improved PID evidence ==")
+    for item in MWORKS_MCP_IMPROVED_OUTPUTS:
         ok = check_path(root / item, required=True) and ok
 
     print("\n== Disturbance mode-switch evidence ==")

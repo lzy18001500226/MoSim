@@ -169,6 +169,12 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--wrapper", default=DEFAULT_WRAPPER)
     parser.add_argument("--model-file", default=DEFAULT_MODEL_FILE)
+    parser.add_argument(
+        "--extra-model-file",
+        action="append",
+        default=[],
+        help="Additional Modelica package file to load after --model-file. Can be repeated.",
+    )
     parser.add_argument("--model-name", default=DEFAULT_MODEL_NAME)
     parser.add_argument("--target-time", default="0,1", help="Comma-separated simulation target time range")
     parser.add_argument("--raw-output", type=Path, default=Path("results/raw/mworks_mcp_example1_pid_smoke.csv"))
@@ -215,6 +221,20 @@ def main() -> int:
         )
         if not open_result.get("ok"):
             raise RuntimeError(f"Model load failed: {open_result}")
+
+        for extra_model_file in args.extra_model_file:
+            extra_open_result = client.call_tool(
+                "model_manager",
+                {
+                    "action": "load_file",
+                    "file_path": extra_model_file,
+                    "force_reload": True,
+                    "auto_load_deps": True,
+                },
+                timeout_s=300,
+            )
+            if not extra_open_result.get("ok"):
+                raise RuntimeError(f"Extra model load failed for {extra_model_file}: {extra_open_result}")
 
         check_result = client.call_tool(
             "check_model",
