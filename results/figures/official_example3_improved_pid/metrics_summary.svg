@@ -24,13 +24,13 @@ text { font-family: Arial, 'Microsoft YaHei', sans-serif; fill: #1f2937; }
 <text x="82" y="390.00" text-anchor="end" class="tick">0</text>
 <text x="408.00" y="462" text-anchor="middle" class="label">metric</text>
 <text x="22" y="225.00" text-anchor="middle" class="label" transform="rotate(-90 22 225.00)">value</text>
-<rect x="126.00" y="348.10" width="165.33" height="37.90" fill="#1f77b4"/>
+<rect x="126.00" y="349.13" width="165.33" height="36.87" fill="#1f77b4"/>
 <text x="208.67" y="428" text-anchor="middle" class="tick">RMSE / m</text>
-<text x="208.67" y="340.10" text-anchor="middle" class="tick">0.1719</text>
+<text x="208.67" y="341.13" text-anchor="middle" class="tick">0.1672</text>
 <rect x="325.33" y="117.67" width="165.33" height="268.33" fill="#1f77b4"/>
 <text x="408.00" y="428" text-anchor="middle" class="tick">Max error / m</text>
 <text x="408.00" y="109.67" text-anchor="middle" class="tick">1.217</text>
-<rect x="524.67" y="370.97" width="165.33" height="15.03" fill="#1f77b4"/>
+<rect x="524.67" y="372.34" width="165.33" height="13.66" fill="#1f77b4"/>
 <text x="607.33" y="428" text-anchor="middle" class="tick">Steady error / m</text>
-<text x="607.33" y="362.97" text-anchor="middle" class="tick">0.06818</text>
+<text x="607.33" y="364.34" text-anchor="middle" class="tick">0.06194</text>
 </svg>

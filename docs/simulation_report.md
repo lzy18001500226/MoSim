@@ -11,7 +11,7 @@
 ```text
 官方 Example1/2/3 参考轨迹 CSV
 官方 Example1/2/3 完整 PID baseline CSV、指标和图表
-官方 Example1/3 保守阻尼增强 PID CSV、指标和图表
+官方 Example1/3 MCP 参数搜索型 Improved PID CSV、指标和图表
 官方 Example1/2/3 离线浏览器回放 HTML
 Example1 0-1 s smoke 结果 CSV
 Example1 0-1 s smoke 指标 JSON/CSV
@@ -23,9 +23,9 @@ Example1 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 
 | 场景 | 官方模型 | 时长 | 当前状态 |
 |---|---|---:|---|
-| 阶梯爬升 | `QuadrotorModel.Examples.Example1` | 50 s | 完整 PID baseline 和保守阻尼增强 PID 已通过 Sysplorer MCP 仿真 |
+| 阶梯爬升 | `QuadrotorModel.Examples.Example1` | 50 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
 | 螺旋爬升 | `QuadrotorModel.Examples.Example2` | 50 s | 完整 PID baseline 已通过 Sysplorer MCP 仿真 |
-| 8字形运动 | `QuadrotorModel.Examples.Example3` | 120 s | 完整 PID baseline 和保守阻尼增强 PID 已通过 Sysplorer MCP 仿真 |
+| 8字形运动 | `QuadrotorModel.Examples.Example3` | 120 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
 | Example1 smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已有 CSV、指标、图表 |
 | Example1 MWORKS MCP smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已通过 Sysplorer MCP 真实加载、检查、仿真和读取变量 |
 
@@ -106,18 +106,20 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 
 ## 6. 改进 PID 对比
 
-当前 `QuadrotorExperiments.Example1ImprovedPID` 和 `QuadrotorExperiments.Example3ImprovedPID` 采用保守阻尼增强参数：保持位置环比例/微分参数与官方基线一致，仅将姿态内环 `PID5/PID6.KD` 从 `1.414` 提高到 `1.65`。该方案的目标是先建立不破坏官方模型的参数替换与对比链路，而不是宣称最终最优控制器。
+当前 `QuadrotorExperiments.Example1ImprovedPID` 和 `QuadrotorExperiments.Example3ImprovedPID` 采用 MCP 参数搜索选出的统一 PID 参数集 `pos_kp_165_att_170`：将水平位置环 `PID3/PID4.KP` 从 `1.5` 提高到 `1.65`，将姿态内环 `PID5/PID6.KD` 从 `1.414` 提高到 `1.70`，其余高度环与 yaw 环参数保持官方基线不变。搜索脚本为 `scripts/tune_improved_pid_mcp.py`，搜索摘要见 `results/test_reports/pid_tuning_summary.md`。
+
+候选选择原则：不用单场景最优作为正式参数，而选取在 Example1 阶梯爬升和 Example3 8 字轨迹上均能降低 RMSE 的统一参数集。`pos_kd_115_att_170` 在 Example1 上 RMSE 更低，但最大倾角达到 `0.345064 rad`，且 Example3 不如 `pos_kp_165_att_170`；因此正式模型选择后者。
 
 以下结果均为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_full_improved_pid`：
 
 | 场景 | controller | position_rmse_m | RMSE变化 | steady_state_error_m | max_tilt_rad | control_energy | total_health_score |
 |---|---|---:|---:|---:|---:|---:|---:|
 | Example1 阶梯爬升 | baseline | 0.275253 | - | 0.111457 | 0.225729 | 39925.003500 | 52.464469 |
-| Example1 阶梯爬升 | improved_pid | 0.274717 | +0.195% | 0.111766 | 0.262259 | 39925.741869 | 52.467486 |
+| Example1 阶梯爬升 | improved_pid | 0.269890 | +1.948% | 0.105559 | 0.273695 | 39926.972404 | 52.533227 |
 | Example3 8字形 | baseline | 0.172311 | - | 0.068172 | 0.286482 | 95610.155697 | 60.505386 |
-| Example3 8字形 | improved_pid | 0.171874 | +0.254% | 0.068177 | 0.293644 | 95610.320496 | 60.508930 |
+| Example3 8字形 | improved_pid | 0.167227 | +2.951% | 0.061940 | 0.295880 | 95611.212646 | 60.546610 |
 
-结论：该参数集能在 Example1/3 上带来很小的 RMSE 改善，但稳态误差基本持平或略差，不能作为最终创新算法的主要得分点。后续应继续推进带抗饱和、参考前馈或 NMPC/INDI 的真实模型集成。
+结论：参数搜索型 Improved PID 相比官方 PID 在 Example1/3 上分别降低 RMSE `1.948%` 和 `2.951%`，稳态误差分别降低 `5.291%` 和 `9.141%`。代价是最大倾角和控制能量略有增加，因此该结果适合作为 P0 可复现优化基线，不应包装成最终控制创新；后续仍应推进带抗饱和、参考前馈或 NMPC/INDI 的真实模型集成。
 
 ## 7. 当前图表
 

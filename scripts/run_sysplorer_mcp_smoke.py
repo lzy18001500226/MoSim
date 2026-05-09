@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Run a short official QuadrotorModel simulation through Sysplorer MCP.
+"""Run an official QuadrotorModel simulation through Sysplorer MCP.
 
-This script is intentionally narrow: it proves the real MWORKS/Sysplorer MCP
-path for the official Example1 PID model without using offline generated data.
-Outputs are project-local and labeled as MCP evidence.
+The script writes project-local raw CSV, metrics, and MCP JSONL evidence.
+By default it keeps the Windows Sysplorer GUI/session reusable between runs to
+avoid repeated startup cost. Pass --shutdown-session only when explicit cleanup
+is needed.
 """
 
 from __future__ import annotations
@@ -191,6 +192,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--scene-id", default="mworks_mcp_example1")
     parser.add_argument("--controller-id", default="pid_baseline")
     parser.add_argument("--evidence-level", default="real_sysplorer_mcp_smoke")
+    parser.add_argument(
+        "--shutdown-session",
+        action="store_true",
+        help="Explicitly request session_manager shutdown after saving outputs. Default keeps GUI reusable.",
+    )
     return parser.parse_args()
 
 
@@ -295,11 +301,14 @@ def main() -> int:
         print(f"Check model: ok")
         print(f"Simulate model: ok")
     finally:
-        try:
-            shutdown = client.call_tool("session_manager", {"action": "shutdown"}, timeout_s=60)
-            print(f"Shutdown: {shutdown.get('ok')}")
-        except Exception as exc:
-            print(f"Shutdown warning: {exc}", file=sys.stderr)
+        if args.shutdown_session:
+            try:
+                shutdown = client.call_tool("session_manager", {"action": "shutdown"}, timeout_s=60)
+                print(f"Shutdown: {shutdown.get('ok')}")
+            except Exception as exc:
+                print(f"Shutdown warning: {exc}", file=sys.stderr)
+        else:
+            print("Shutdown: skipped; Sysplorer GUI/session left reusable")
         client.close()
 
     return 0
