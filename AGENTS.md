@@ -163,8 +163,27 @@ Rules:
 5. After a simulation or model operation completes, close or release unnecessary MCP sessions and GUI windows when the tool supports it.
 6. Save result evidence under `results/` and documentation-ready assets under `docs/`.
 7. If MCP behavior may interrupt the user's desktop, state that risk before running the operation.
+8. Do not call MCP tools merely to create activity. Use the smallest set of MCP calls that proves the current engineering claim.
+9. If a tool exposes a close, release, stop, or session cleanup API, call it after the useful result is saved.
+10. If the MCP layer cannot minimize or close a GUI window automatically, state that limitation and do not pretend the cleanup was completed.
 
-### 3.5 Simulation Cleanup Rule
+### 3.5 Simulation Evidence Rule
+
+Separate offline generated evidence from real MWORKS/MCP simulation evidence.
+
+Rules:
+
+1. A result may be described as **MWORKS/Sysplorer simulation evidence** only if it was produced by loading or running the official model through Sysplorer/Syslab/MCP or MWORKS itself.
+2. A result produced by Python/Julia scripts without running the official model must be labeled as **offline algorithm demo**, **reference generator**, or **script-level validation**.
+3. Do not use offline generated CSV, metrics, or HTML replay as a substitute for official model reproduction.
+4. When adding new results, record the source path or mechanism in the scenario, report, or commit summary:
+   - `source=MWORKS_MCP` for MCP-driven model simulation;
+   - `source=MWORKS_GUI` for manually run MWORKS simulation;
+   - `source=offline_script` for generated validation data.
+5. Before claiming a controller is integrated into `QuadrotorModel`, verify the model replacement location, signal interface, and run result through MCP or manual MWORKS evidence.
+6. For each MCP-driven simulation, save at least the model name, scenario config, result variables, raw output path, metrics path, and any MCP/tool error log.
+
+### 3.6 Simulation Cleanup Rule
 
 For MWORKS simulations:
 
@@ -174,6 +193,9 @@ For MWORKS simulations:
 4. Save logs or smoke-test evidence only when useful.
 5. Close simulation windows, plot windows, or sessions after use when the MCP tool supports it.
 6. Do not leave long-running simulations active after the task is complete.
+7. Prefer one active Sysplorer/Syslab session at a time unless parallel simulation is explicitly required.
+8. Reuse an existing session for related operations instead of opening many windows.
+9. If repeated simulations open multiple windows despite cleanup attempts, stop and report the issue before launching more GUI-backed runs.
 
 ---
 
