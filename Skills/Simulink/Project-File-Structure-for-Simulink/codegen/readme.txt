@@ -1,0 +1,1 @@
+Usage: Simulink code generation tools will automatically put generated code in this folder (configured in the project's properties).

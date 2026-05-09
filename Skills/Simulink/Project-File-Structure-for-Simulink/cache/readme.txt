@@ -1,0 +1,1 @@
+Usage: Usage: Simulink will automatically put cache and other temporary generated files in this folder (configured in the project's properties).
