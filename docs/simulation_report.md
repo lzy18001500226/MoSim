@@ -153,18 +153,22 @@ results/replay_html/reference_official_example3.html
 
 其中 `official_example*_*.html` 来自真实 Sysplorer MCP raw CSV，包含实际飞行轨迹和参考轨迹；`reference_official_example*.html` 仅为官方参考路径展示。
 
-## 8. 待补全实验
+## 8. 横向功能演示结果
 
-| 优先级 | 实验 | 输出 |
+以下结果为 `source=offline_script`，用于横向功能闭环、报告图表和视频素材，不作为真实 MWORKS 控制性能结论：
+
+| 场景 | 输出 | 说明 |
 |---|---|---|
-| P0 | 改进 PID 深化：抗饱和/前馈参数集 | RMSE、稳态误差、控制能量对比 |
-| P1 | 风扰/质量变化鲁棒性 | recovery_time、degradation |
-| P1 | 电机效率下降/故障重分配 | saturation_ratio、max_error |
-| P2 | 规划与编队展示场景 | replay、健康度评分、最小距离 |
+| hover_pid_baseline | `results/metrics/hover_pid_baseline.json` | 悬停跟踪指标和 SVG 图表 |
+| figure8_improved_pid | `results/metrics/figure8_improved_pid.json` | 轻量 8 字跟踪演示 |
+| wind_improved_pid | `results/metrics/wind_improved_pid.json`、`results/logs/wind_improved_pid_events.jsonl` | 横风窗口和模式切换事件演示 |
+| planning_trackable_waypoint_tracking | `results/metrics/planning_trackable_waypoint_tracking.json` | 可跟踪轨迹的离线跟踪演示 |
+
+当前 `results/test_reports/experiment_summary.md` 中 `Pending=0`。后续需要继续提升名次时，优先把 `wind_improved_pid`、`planning_trackable_waypoint_tracking` 从离线演示升级为真实 Sysplorer/MWORKS 模型仿真证据。
 
 ## 9. 结论约束
 
 1. 不使用 smoke 数据做完整控制性能结论。
-2. 不引用未保存 raw CSV 和 metrics 的实验结果。
+2. 不把 `source=offline_script` 的横向演示包装成 MWORKS 控制性能结论。
 3. 报告中的每张图必须能追溯到 `results/raw/` 和生成脚本。
 4. 完整 baseline 与优化控制器必须使用同一场景、同一时长和同一指标脚本。
