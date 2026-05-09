@@ -117,9 +117,48 @@ docs/index/variable_mapping.md
 results/raw/official_example1_pid_baseline.csv
 results/raw/official_example2_pid_baseline.csv
 results/raw/official_example3_pid_baseline.csv
+results/metrics/official_example1_pid_baseline.json
+results/metrics/official_example2_pid_baseline.json
+results/metrics/official_example3_pid_baseline.json
 ```
 
 `qa_check.py` 会检查这些正式结果的时长，Example1/2 不得短于 50 s，Example3 不得短于 120 s。
+
+复现完整官方 PID baseline：
+
+```bash
+python3 scripts/run_sysplorer_mcp_smoke.py \
+  --target-time 0,50 \
+  --raw-output results/raw/official_example1_pid_baseline.csv \
+  --metrics-json results/metrics/official_example1_pid_baseline.json \
+  --metrics-csv results/metrics/official_example1_pid_baseline.csv \
+  --log-output results/test_reports/sysplorer_example1_pid_baseline_full_20260509.jsonl \
+  --scene-id official_example1 \
+  --controller-id pid_baseline \
+  --evidence-level real_sysplorer_mcp_full_baseline
+
+python3 scripts/run_sysplorer_mcp_smoke.py \
+  --model-name QuadrotorModel.Examples.Example2 \
+  --target-time 0,50 \
+  --raw-output results/raw/official_example2_pid_baseline.csv \
+  --metrics-json results/metrics/official_example2_pid_baseline.json \
+  --metrics-csv results/metrics/official_example2_pid_baseline.csv \
+  --log-output results/test_reports/sysplorer_example2_pid_baseline_full_20260509.jsonl \
+  --scene-id official_example2 \
+  --controller-id pid_baseline \
+  --evidence-level real_sysplorer_mcp_full_baseline
+
+python3 scripts/run_sysplorer_mcp_smoke.py \
+  --model-name QuadrotorModel.Examples.Example3 \
+  --target-time 0,120 \
+  --raw-output results/raw/official_example3_pid_baseline.csv \
+  --metrics-json results/metrics/official_example3_pid_baseline.json \
+  --metrics-csv results/metrics/official_example3_pid_baseline.csv \
+  --log-output results/test_reports/sysplorer_example3_pid_baseline_full_20260509.jsonl \
+  --scene-id official_example3 \
+  --controller-id pid_baseline \
+  --evidence-level real_sysplorer_mcp_full_baseline
+```
 
 ## 6. Smoke 数据说明
 

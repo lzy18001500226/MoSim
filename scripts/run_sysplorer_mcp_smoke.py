@@ -140,13 +140,20 @@ def write_csv(series: list[list[float]], variables: dict[str, str], output: Path
             writer.writerow([series[column_index][index] for column_index in range(len(names))])
 
 
-def write_metrics(raw_csv: Path, metrics_json: Path, metrics_csv: Path, scene_id: str, controller_id: str) -> None:
+def write_metrics(
+    raw_csv: Path,
+    metrics_json: Path,
+    metrics_csv: Path,
+    scene_id: str,
+    controller_id: str,
+    evidence_level: str,
+) -> None:
     from calc_metrics import read_csv as read_project_csv
 
     data = read_project_csv(raw_csv)
     metrics = compute_metrics(data, raw_csv, scene_id, controller_id)
     metrics["source"] = "MWORKS_MCP"
-    metrics["evidence_level"] = "real_sysplorer_mcp_smoke"
+    metrics["evidence_level"] = evidence_level
     metrics_json.parent.mkdir(parents=True, exist_ok=True)
     metrics_json.write_text(json.dumps(metrics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -170,6 +177,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--log-output", type=Path, default=Path("results/test_reports/sysplorer_example1_pid_mcp_smoke_20260509.jsonl"))
     parser.add_argument("--scene-id", default="mworks_mcp_example1")
     parser.add_argument("--controller-id", default="pid_baseline")
+    parser.add_argument("--evidence-level", default="real_sysplorer_mcp_smoke")
     return parser.parse_args()
 
 
@@ -243,7 +251,14 @@ def main() -> int:
             raise RuntimeError(f"Result read failed: {read_result}")
 
         write_csv(read_result["data"], DEFAULT_VARIABLES, args.raw_output)
-        write_metrics(args.raw_output, args.metrics_json, args.metrics_csv, args.scene_id, args.controller_id)
+        write_metrics(
+            args.raw_output,
+            args.metrics_json,
+            args.metrics_csv,
+            args.scene_id,
+            args.controller_id,
+            args.evidence_level,
+        )
 
         print(f"MCP log: {args.log_output}")
         print(f"Raw CSV: {args.raw_output}")

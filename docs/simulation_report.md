@@ -10,6 +10,7 @@
 
 ```text
 官方 Example1/2/3 参考轨迹 CSV
+官方 Example1/2/3 完整 PID baseline CSV、指标和图表
 官方 Example1/2/3 离线浏览器回放 HTML
 Example1 0-1 s smoke 结果 CSV
 Example1 0-1 s smoke 指标 JSON/CSV
@@ -21,9 +22,9 @@ Example1 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 
 | 场景 | 官方模型 | 时长 | 当前状态 |
 |---|---|---:|---|
-| 阶梯爬升 | `QuadrotorModel.Examples.Example1` | 50 s | 参考轨迹已生成；完整 baseline 待 MCP 仿真 |
-| 螺旋爬升 | `QuadrotorModel.Examples.Example2` | 50 s | 参考轨迹已生成；完整 baseline 待 MCP 仿真 |
-| 8字形运动 | `QuadrotorModel.Examples.Example3` | 120 s | 参考轨迹已生成；完整 baseline 待 MCP 仿真 |
+| 阶梯爬升 | `QuadrotorModel.Examples.Example1` | 50 s | 完整 PID baseline 已通过 Sysplorer MCP 仿真 |
+| 螺旋爬升 | `QuadrotorModel.Examples.Example2` | 50 s | 完整 PID baseline 已通过 Sysplorer MCP 仿真 |
+| 8字形运动 | `QuadrotorModel.Examples.Example3` | 120 s | 完整 PID baseline 已通过 Sysplorer MCP 仿真 |
 | Example1 smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已有 CSV、指标、图表 |
 | Example1 MWORKS MCP smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已通过 Sysplorer MCP 真实加载、检查、仿真和读取变量 |
 
@@ -33,6 +34,9 @@ Example1 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 results/raw/official_example1_pid_baseline.csv
 results/raw/official_example2_pid_baseline.csv
 results/raw/official_example3_pid_baseline.csv
+results/metrics/official_example1_pid_baseline.json
+results/metrics/official_example2_pid_baseline.json
+results/metrics/official_example3_pid_baseline.json
 ```
 
 `scripts/qa_check.py` 会阻止短时 smoke 数据误放入上述正式结果路径。
@@ -87,11 +91,24 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 
 说明：这些结果只覆盖起飞初始 1 s，不能用于评价完整阶梯爬升控制性能。
 
-## 5. 当前图表
+## 5. 官方 PID Baseline 指标
+
+以下结果均为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_full_baseline`：
+
+| 场景 | 时长/s | position_rmse_m | max_position_error_m | steady_state_error_m | total_health_score |
+|---|---:|---:|---:|---:|---:|
+| Example1 阶梯爬升 | 50.0 | 0.275253 | 1.369402 | 0.111457 | 41.964469 |
+| Example2 螺旋爬升 | 50.0 | 0.487183 | 3.005422 | 0.210149 | 37.382655 |
+| Example3 8字形 | 120.0 | 0.172311 | 1.217033 | 0.068172 | 50.005386 |
+
+## 6. 当前图表
 
 已生成图表：
 
 ```text
+results/figures/official_example1_pid_baseline/
+results/figures/official_example2_pid_baseline/
+results/figures/official_example3_pid_baseline/
 results/figures/smoke_official_example1_pid_baseline/trajectory_xy.svg
 results/figures/smoke_official_example1_pid_baseline/altitude_tracking.svg
 results/figures/smoke_official_example1_pid_baseline/position_error.svg
@@ -106,17 +123,16 @@ results/replay_html/reference_official_example2.html
 results/replay_html/reference_official_example3.html
 ```
 
-## 6. 待补全实验
+## 7. 待补全实验
 
 | 优先级 | 实验 | 输出 |
 |---|---|---|
-| P0 | 完整官方 PID baseline：Example1/2/3 | raw CSV、metrics、figures、replay |
 | P0 | 改进 PID 对比：Example1/3 | RMSE、稳态误差、控制能量对比 |
 | P1 | 风扰/质量变化鲁棒性 | recovery_time、degradation |
 | P1 | 电机效率下降/故障重分配 | saturation_ratio、max_error |
 | P2 | 规划与编队展示场景 | replay、健康度评分、最小距离 |
 
-## 7. 结论约束
+## 8. 结论约束
 
 1. 不使用 smoke 数据做完整控制性能结论。
 2. 不引用未保存 raw CSV 和 metrics 的实验结果。
