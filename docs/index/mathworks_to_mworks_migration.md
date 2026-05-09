@@ -60,15 +60,16 @@ Do not paste large PDFs, screenshots, or full upstream manuals into `AGENTS.md`.
 
 | Priority | Upstream Skill / Rule | MWORKS Adaptation |
 |---|---|---|
-| P0 | Simulink interactions | `Skills/mworks-model-context/SKILL.md` |
-| P0 | Simulating Simulink models | `Skills/mworks-simulation-evidence/SKILL.md`, `workflows/run_simulation.md`, `workflows/read_results.md` |
-| P0 | MATLAB coding standards | `Skills/mworks-syslab-porting/SKILL.md`, project Python/Julia script conventions |
-| P0 | MATLAB testing | `workflows/smoke_test.md`, `workflows/regression_test.md`, `workflows/run_tests.md` |
-| P1 | Simulink debug command line | Sysplorer model introspection + result-variable probing workflow |
-| P1 | Solver profiler analyzer | Solver/runtime diagnostics for long or failed MWORKS simulations |
-| P1 | MATLAB performance optimization | Syslab/Python vectorization, preallocation, batch metrics |
-| P2 | MCP wrapper generation | Only if we need custom project-local MCP tools later |
+| P0 | Simulink interactions | `Skills/Mworks/mworks-model-context/SKILL.md` |
+| P0 | Simulating Simulink models | `Skills/Mworks/mworks-simulation-evidence/SKILL.md`, `workflows/run_simulation.md`, `workflows/read_results.md` |
+| P0 | MATLAB coding standards | `Skills/Mworks/mworks-syslab-porting/SKILL.md`, project Python/Julia script conventions |
+| P0 | MATLAB testing | `Skills/Mworks/mworks-test-quality/SKILL.md`, `workflows/smoke_test.md`, `workflows/regression_test.md`, `workflows/run_tests.md` |
+| P1 | Simulink debug command line | `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
+| P1 | Solver/profiler analyzer | `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
+| P1 | MATLAB performance optimization | `Skills/Mworks/mworks-syslab-porting/SKILL.md`, `Skills/Mworks/mworks-test-quality/SKILL.md` |
+| P1 | Report/live-script style presentation | `Skills/Mworks/mworks-report-visualization/SKILL.md` |
+| P2 | MCP wrapper generation | `Skills/Mworks/mworks-mcp-operations/SKILL.md`; only if custom project-local MCP tools are needed later |
 
 ## Recommended Next Action
 
-The P0 translation layer now exists as project-local skills. Next, refine P1 workflows only when a real task needs them, especially solver/runtime diagnostics and command-line debugging analogs.
+The useful upstream MathWorks/Simulink skills have been collapsed into compact MWORKS project skills under `Skills/Mworks/`. Do not translate irrelevant upstream skills such as database, RF, wireless, or MATLAB app-building unless a real project feature needs them.

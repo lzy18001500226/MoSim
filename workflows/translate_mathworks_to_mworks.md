@@ -133,7 +133,10 @@ large videos/PDFs unless explicitly required
 
 ## Current Recommended Translation Queue
 
-1. Use `Skills/mworks-model-context/SKILL.md` for Simulink-style model/block context requests.
-2. Use `Skills/mworks-simulation-evidence/SKILL.md` for simulation/logging/result evidence requests.
-3. Use `Skills/mworks-syslab-porting/SKILL.md` for MATLAB coding, testing, plotting, and performance migration.
-4. Add P1 workflows only when needed by a real task: solver/runtime diagnostics, command-line debugging analogs, or custom MCP wrapper design.
+1. Use `Skills/Mworks/mworks-model-context/SKILL.md` for Simulink-style model/block context requests.
+2. Use `Skills/Mworks/mworks-simulation-evidence/SKILL.md` for simulation/logging/result evidence requests.
+3. Use `Skills/Mworks/mworks-syslab-porting/SKILL.md` for MATLAB coding, Syslab, plotting, and performance migration.
+4. Use `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` for debug/profiler/solver-style tasks.
+5. Use `Skills/Mworks/mworks-test-quality/SKILL.md` for testing, review, and regression tasks.
+6. Use `Skills/Mworks/mworks-report-visualization/SKILL.md` for report, replay, and video material.
+7. Use `Skills/Mworks/mworks-mcp-operations/SKILL.md` for wrapper, session, and MCP minimal-impact behavior.

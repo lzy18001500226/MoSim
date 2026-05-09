@@ -20,9 +20,13 @@
 
 | Skill | File | Purpose |
 |---|---|---|
-| MWORKS model context | `Skills/mworks-model-context/SKILL.md` | Resolve Sysplorer model/component/port/parameter context before edits |
-| MWORKS simulation evidence | `Skills/mworks-simulation-evidence/SKILL.md` | Produce and label reproducible MWORKS simulation evidence |
-| MWORKS Syslab porting | `Skills/mworks-syslab-porting/SKILL.md` | Translate MATLAB/Simulink patterns into project-local MWORKS workflows |
+| MWORKS model context | `Skills/Mworks/mworks-model-context/SKILL.md` | Resolve Sysplorer model/component/port/parameter context before edits |
+| MWORKS simulation evidence | `Skills/Mworks/mworks-simulation-evidence/SKILL.md` | Produce and label reproducible MWORKS simulation evidence |
+| MWORKS Syslab porting | `Skills/Mworks/mworks-syslab-porting/SKILL.md` | Translate MATLAB/Simulink patterns into project-local MWORKS workflows |
+| MWORKS MCP operations | `Skills/Mworks/mworks-mcp-operations/SKILL.md` | Keep MCP usage targeted, quiet, and project-local |
+| MWORKS runtime diagnostics | `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` | Diagnose failed, slow, unstable, or suspicious simulations |
+| MWORKS test quality | `Skills/Mworks/mworks-test-quality/SKILL.md` | Run/review tests, smoke checks, regressions, and pre-submit quality gates |
+| MWORKS report visualization | `Skills/Mworks/mworks-report-visualization/SKILL.md` | Prepare figures, replay assets, report sections, and video evidence |
 
 ## High-Value Workflows
 

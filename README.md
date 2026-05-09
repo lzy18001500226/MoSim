@@ -27,6 +27,8 @@
 | 工作流索引 | `docs/index/workflow_index.md` |
 | 预提交检查 | `workflows/pre_submit_check.md` |
 
+面向 Codex 的 MWORKS 专用 skills 位于 `Skills/Mworks/`。它们由 MathWorks/Simulink 原始 skills 转译而来，只保留本项目需要的模型上下文、仿真证据、Syslab 迁移、MCP 操作、运行诊断、测试质量和报告展示规则。
+
 官方案例复现入口：
 
 ```text

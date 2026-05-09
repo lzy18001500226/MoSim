@@ -10,9 +10,13 @@
 |---|---|
 | Debug MCP | `workflows/debug_mcp.md` |
 | Translate MathWorks/Simulink patterns to MWORKS | `workflows/translate_mathworks_to_mworks.md` |
-| Resolve MWORKS model context | `Skills/mworks-model-context/SKILL.md` |
-| Produce MWORKS simulation evidence | `Skills/mworks-simulation-evidence/SKILL.md` |
-| Port MATLAB/Syslab logic | `Skills/mworks-syslab-porting/SKILL.md` |
+| Resolve MWORKS model context | `Skills/Mworks/mworks-model-context/SKILL.md` |
+| Produce MWORKS simulation evidence | `Skills/Mworks/mworks-simulation-evidence/SKILL.md` |
+| Port MATLAB/Syslab logic | `Skills/Mworks/mworks-syslab-porting/SKILL.md` |
+| Operate MCP with minimal impact | `Skills/Mworks/mworks-mcp-operations/SKILL.md` |
+| Diagnose runtime/model issues | `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
+| Test and review quality gates | `Skills/Mworks/mworks-test-quality/SKILL.md` |
+| Prepare report and replay assets | `Skills/Mworks/mworks-report-visualization/SKILL.md` |
 | Resolve model context workflow | `workflows/resolve_model_context.md` |
 | Produce simulation evidence workflow | `workflows/produce_simulation_evidence.md` |
 | Run one simulation | `workflows/run_simulation.md` |
