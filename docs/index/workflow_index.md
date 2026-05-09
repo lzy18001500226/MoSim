@@ -9,6 +9,7 @@
 | Task | Workflow File |
 |---|---|
 | Debug MCP | `workflows/debug_mcp.md` |
+| Translate MathWorks/Simulink patterns to MWORKS | `workflows/translate_mathworks_to_mworks.md` |
 | Run one simulation | `workflows/run_simulation.md` |
 | Read simulation results | `workflows/read_results.md` |
 | Calculate metrics | `workflows/calc_metrics.md` |
