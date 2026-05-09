@@ -78,6 +78,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/calc_metrics.py",
     "scripts/plot_results.py",
     "scripts/generate_replay_html.py",
+    "scripts/generate_replay_from_raw.py",
     "scripts/summarize_experiments.py",
     "scripts/generate_planning_reference.py",
     "scripts/generate_obstacle_planning_reference.py",
@@ -199,6 +200,16 @@ MWORKS_MCP_IMPROVED_OUTPUTS = [
     "results/metrics/official_example1_improved_pid.csv",
     "results/metrics/official_example3_improved_pid.json",
     "results/metrics/official_example3_improved_pid.csv",
+    "results/replay/official_example1_pid_baseline.json",
+    "results/replay/official_example2_pid_baseline.json",
+    "results/replay/official_example3_pid_baseline.json",
+    "results/replay/official_example1_improved_pid.json",
+    "results/replay/official_example3_improved_pid.json",
+    "results/replay_html/official_example1_pid_baseline.html",
+    "results/replay_html/official_example2_pid_baseline.html",
+    "results/replay_html/official_example3_pid_baseline.html",
+    "results/replay_html/official_example1_improved_pid.html",
+    "results/replay_html/official_example3_improved_pid.html",
 ]
 
 DISTURBANCE_OUTPUTS = [

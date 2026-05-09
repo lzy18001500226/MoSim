@@ -54,7 +54,8 @@ QuadrotorModel/package.mo
 → scripts/run_sysplorer_mcp_smoke.py 导出标准 CSV
 → scripts/calc_metrics.py 计算指标
 → scripts/plot_results.py 生成 SVG 图表
-→ scripts/generate_replay_html.py 生成离线三维回放
+→ scripts/generate_replay_from_raw.py 生成真实轨迹回放 JSON
+→ scripts/generate_replay_html.py 生成离线三维回放 HTML
 ```
 
 标准 CSV 核心字段：
@@ -140,10 +141,17 @@ results/figures/smoke_official_example1_pid_baseline/metrics_summary.svg
 已生成回放：
 
 ```text
+results/replay_html/official_example1_pid_baseline.html
+results/replay_html/official_example1_improved_pid.html
+results/replay_html/official_example2_pid_baseline.html
+results/replay_html/official_example3_pid_baseline.html
+results/replay_html/official_example3_improved_pid.html
 results/replay_html/reference_official_example1.html
 results/replay_html/reference_official_example2.html
 results/replay_html/reference_official_example3.html
 ```
+
+其中 `official_example*_*.html` 来自真实 Sysplorer MCP raw CSV，包含实际飞行轨迹和参考轨迹；`reference_official_example*.html` 仅为官方参考路径展示。
 
 ## 8. 待补全实验
 

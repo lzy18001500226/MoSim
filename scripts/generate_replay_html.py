@@ -149,8 +149,8 @@ HTML_TEMPLATE = """<!doctype html>
       scale = Math.max(18, Math.min(54, Math.min(width, height) / (span * 2.2)));
     }}
 
-    function getPosition(frame) {{
-      const uav = frame && frame.uav && frame.uav[0];
+    function getPosition(frame, index = 0) {{
+      const uav = frame && frame.uav && frame.uav[index];
       return uav ? uav.position : [0, 0, 0];
     }}
 
@@ -239,17 +239,25 @@ HTML_TEMPLATE = """<!doctype html>
       }});
     }}
 
-    function drawPath() {{
+    function drawPathForUav(uavIndex, color, lineWidth = 2.2, dash = []) {{
       if (frames.length < 2) return;
+      ctx.save();
+      ctx.setLineDash(dash);
       ctx.beginPath();
       frames.forEach((frame, index) => {{
-        const p = project(getPosition(frame));
+        const p = project(getPosition(frame, uavIndex));
         if (index === 0) ctx.moveTo(p[0], p[1]);
         else ctx.lineTo(p[0], p[1]);
       }});
-      ctx.strokeStyle = '#8fd3ff';
-      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
       ctx.stroke();
+      ctx.restore();
+    }}
+
+    function drawPath() {{
+      drawPathForUav(0, '#8fd3ff', 2.2);
+      if ((frames[0]?.uav || []).length > 1) drawPathForUav(1, '#ffd166', 1.8, [6, 6]);
     }}
 
     function drawDrone(position, time) {{
@@ -341,7 +349,14 @@ HTML_TEMPLATE = """<!doctype html>
       drawGrid();
       drawObstacles();
       drawPath();
-      drawDrone(getPosition(frame), time);
+      if ((frame.uav || []).length > 1) {{
+        const ref = project(getPosition(frame, 1));
+        ctx.beginPath();
+        ctx.arc(ref[0], ref[1], 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffd166';
+        ctx.fill();
+      }}
+      drawDrone(getPosition(frame, 0), time);
       drawLabels();
     }}
 

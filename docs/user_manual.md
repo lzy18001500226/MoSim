@@ -100,6 +100,31 @@ results/replay_html/reference_official_example3.html
 
 `results/replay_html/*.html` 为离线浏览器三维回放页面，可直接打开录屏，不依赖 CDN。
 
+从真实 MCP raw CSV 生成实际轨迹回放：
+
+```bash
+python3 scripts/generate_replay_from_raw.py \
+  results/raw/official_example1_improved_pid.csv \
+  results/replay/official_example1_improved_pid.json \
+  --scene-id official_example1_improved_pid \
+  --model-name QuadrotorExperiments.Example1ImprovedPID \
+  --description 'Example1 MCP 参数搜索型 Improved PID 真实轨迹'
+
+python3 scripts/generate_replay_html.py \
+  results/replay/official_example1_improved_pid.json \
+  results/replay_html/official_example1_improved_pid.html
+```
+
+正式回放文件：
+
+```text
+results/replay_html/official_example1_pid_baseline.html
+results/replay_html/official_example1_improved_pid.html
+results/replay_html/official_example2_pid_baseline.html
+results/replay_html/official_example3_pid_baseline.html
+results/replay_html/official_example3_improved_pid.html
+```
+
 ## 5. 官方仿真流程
 
 使用 Sysplorer MCP 时按以下顺序执行：
