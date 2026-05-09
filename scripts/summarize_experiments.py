@@ -41,6 +41,7 @@ SUMMARY_COLUMNS = [
     "rmse_improvement_pct",
     "health_score_delta",
     "source",
+    "evidence_level",
     "notes",
 ]
 
@@ -125,6 +126,40 @@ def format_value(value: Any) -> str:
     return str(value)
 
 
+def normalize_repo_path(root: Path, value: Any) -> Any:
+    if not isinstance(value, str) or not value:
+        return value
+    path = Path(value)
+    if not path.is_absolute():
+        return value
+    try:
+        return path.relative_to(root).as_posix()
+    except ValueError:
+        return value
+
+
+def infer_evidence_level(row: dict[str, Any]) -> str:
+    explicit = str(row.get("evidence_level", "") or "")
+    if explicit:
+        return explicit
+    source = str(row.get("source", "") or "")
+    metrics_file = str(row.get("metrics_file", "") or "")
+    raw_file = str(row.get("raw_file", "") or "")
+    if source == "offline_script":
+        return "offline_tracking_demo"
+    if source == "MWORKS_MCP" or "mworks_mcp_" in metrics_file:
+        return "real_sysplorer_mcp_smoke"
+    if source.startswith("glob:results/metrics/smoke_"):
+        return "offline_smoke_demo"
+    if "trackability_" in metrics_file:
+        return "offline_reference_trackability"
+    if raw_file.startswith("results/raw/reference_"):
+        return "offline_reference_generation"
+    if source.startswith("scenarios/"):
+        return "offline_scenario_demo"
+    return ""
+
+
 def metrics_row(root: Path, metrics_path: Path, source: str) -> dict[str, Any]:
     metrics = read_metrics(metrics_path)
     if metrics is None:
@@ -139,11 +174,18 @@ def metrics_row(root: Path, metrics_path: Path, source: str) -> dict[str, Any]:
         "raw_file": metrics.get("raw_file", ""),
         "metrics_file": str(metrics_path.relative_to(root)),
         "source": source,
+        "evidence_level": metrics.get("evidence_level", ""),
         "notes": "metrics-only evidence",
     })
     for key in SUMMARY_COLUMNS:
         if key in metrics:
             row[key] = metrics[key]
+    row["experiment_id"] = metrics_path.stem
+    row["metrics_file"] = str(metrics_path.relative_to(root))
+    row["source"] = source
+    row["evidence_level"] = infer_evidence_level(row)
+    row["notes"] = "metrics-only evidence"
+    row["raw_file"] = normalize_repo_path(root, row.get("raw_file", ""))
     if "final_trackability_score" in metrics and "total_health_score" not in metrics:
         row["total_health_score"] = 100.0 * as_float(metrics["final_trackability_score"])
     if "formation_score" in metrics and "total_health_score" not in metrics:
@@ -180,6 +222,7 @@ def build_rows(root: Path, scenario_paths: list[Path], metrics_globs: list[str])
             "metrics_file": metrics_rel,
             "baseline_experiment": controller.get("baseline_experiment", ""),
             "source": str(path.relative_to(root)),
+            "evidence_level": "",
             "notes": "",
         }
 
@@ -191,6 +234,8 @@ def build_rows(root: Path, scenario_paths: list[Path], metrics_globs: list[str])
             for key in SUMMARY_COLUMNS:
                 if key in metrics:
                     row[key] = metrics[key]
+            row["raw_file"] = normalize_repo_path(root, row.get("raw_file", ""))
+            row["metrics_file"] = metrics_rel
             if "final_trackability_score" in metrics and "total_health_score" not in metrics:
                 row["total_health_score"] = 100.0 * as_float(metrics["final_trackability_score"])
             if "formation_score" in metrics and "total_health_score" not in metrics:
@@ -198,6 +243,7 @@ def build_rows(root: Path, scenario_paths: list[Path], metrics_globs: list[str])
             if not metrics.get("valid", True):
                 row["status"] = "invalid"
                 row["notes"] = "metrics valid=false"
+            row["evidence_level"] = infer_evidence_level(row)
             metrics_by_experiment[experiment_id] = metrics
             used_metrics_files.add(metrics_path.resolve())
         else:
@@ -268,6 +314,23 @@ def write_markdown(path: Path, rows: list[dict[str, Any]], csv_path: Path) -> No
                 rmse=format_value(row.get("position_rmse_m")),
                 health=format_value(row.get("total_health_score")),
                 status=row["status"],
+            )
+        )
+
+    lines.extend([
+        "",
+        "## Evidence Levels",
+        "",
+        "| Experiment | Source | Evidence Level | Raw File |",
+        "|---|---|---|---|",
+    ])
+    for row in sorted(done, key=lambda item: (str(item.get("source", "")), str(item.get("evidence_level", "")), str(item["experiment_id"]))):
+        lines.append(
+            "| {experiment_id} | {source} | {evidence_level} | `{raw_file}` |".format(
+                experiment_id=row["experiment_id"],
+                source=format_value(row.get("source")),
+                evidence_level=format_value(row.get("evidence_level")),
+                raw_file=format_value(row.get("raw_file")),
             )
         )
 
