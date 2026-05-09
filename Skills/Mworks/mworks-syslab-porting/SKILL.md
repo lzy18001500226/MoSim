@@ -5,13 +5,14 @@ description: Port MATLAB scripts, Simulink habits, MathWorks skills, numeric wor
 
 # MWORKS Syslab Porting
 
-Use MathWorks/Simulink material as a pattern library. Verify every executable API through MWORKS docs or MCP.
+Use project-local `Skills/Mworks/` first. Treat MathWorks/Simulink material as a second-level pattern library only when the MWORKS skills do not cover the task. After using an upstream pattern, translate it into MWORKS terms and update the relevant `Skills/Mworks/*/SKILL.md`, `workflows/`, or `docs/index/` artifact. Verify every executable API through MWORKS docs or MCP.
 
 ## Source Priority
 
 Check in this order:
 
 ```text
+Skills/Mworks/
 docs/index/mathworks_to_mworks_migration.md
 docs/mworks/converted/matlab_compat/
 docs/mworks/converted/

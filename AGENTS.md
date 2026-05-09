@@ -349,7 +349,7 @@ This repository includes compact project-local skills translated from MathWorks 
 | `mworks-test-quality` | Tests, reviews, smoke checks, regressions, and pre-submit gates | `Skills/Mworks/mworks-test-quality/SKILL.md` |
 | `mworks-report-visualization` | Report figures, replay assets, video evidence, and honest visual claims | `Skills/Mworks/mworks-report-visualization/SKILL.md` |
 
-Use MathWorks / Simulink material under `Skills/` as pattern references only. Verify executable API calls through MWORKS docs or MCP, and prefer updating existing `workflows/` and `docs/index/` files over creating long new documents.
+Use `Skills/Mworks/` as the default execution layer for this project. Treat upstream MATLAB / Simulink skills under `Skills/Matlab/` and `Skills/Simulink/` as second-level references only: consult them when the MWORKS skills do not cover a task, translate the useful pattern into MWORKS terms, and then update the relevant `Skills/Mworks/*/SKILL.md`, `workflows/`, or `docs/index/` file so the project improves over time. Verify every executable API call through MWORKS docs or MCP.
 
 ---
 

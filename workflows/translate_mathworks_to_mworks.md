@@ -2,6 +2,8 @@
 
 > Purpose: convert MATLAB/Simulink agent skills, prompts, or workflows into project-specific MWORKS.Syslab / Sysplorer / Sysblock procedures.
 
+Default rule: execute project tasks through `Skills/Mworks/` first. Use raw MATLAB/Simulink skills only as references when the MWORKS skill set has a gap, then fold the translated rule back into `Skills/Mworks/`, `workflows/`, or `docs/index/`.
+
 ## Success Criteria
 
 A translation is complete only when it produces at least one project-local artifact:
@@ -20,6 +22,14 @@ results/metrics/*.json
 Do not stop at a conceptual comparison.
 
 ## Step 1: Classify the Source Material
+
+Before reading raw upstream skills, check whether one of the project-local MWORKS skills already covers the task:
+
+```text
+Skills/Mworks/
+docs/index/workflow_index.md
+docs/index/doc_index.md
+```
 
 | Source Type | Example | Translate To |
 |---|---|---|
