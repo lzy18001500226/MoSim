@@ -79,6 +79,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/plot_results.py",
     "scripts/generate_replay_html.py",
     "scripts/generate_replay_from_raw.py",
+    "scripts/generate_offline_tracking_demos.py",
     "scripts/summarize_experiments.py",
     "scripts/generate_planning_reference.py",
     "scripts/generate_obstacle_planning_reference.py",
@@ -160,6 +161,7 @@ OFFICIAL_FULL_RESULT_EXPECTATIONS = {
     "results/raw/official_example2_pid_baseline.csv": 50.0,
     "results/raw/official_example3_pid_baseline.csv": 120.0,
     "results/raw/official_example1_improved_pid.csv": 50.0,
+    "results/raw/official_example2_improved_pid.csv": 50.0,
     "results/raw/official_example3_improved_pid.csv": 120.0,
 }
 
@@ -179,6 +181,14 @@ SMOKE_RESULT_OUTPUTS = [
     "results/raw/smoke_official_example1_pid_baseline.csv",
     "results/metrics/smoke_official_example1_pid_baseline.json",
     "results/metrics/smoke_official_example1_pid_baseline.csv",
+    "results/raw/hover_pid_baseline.csv",
+    "results/metrics/hover_pid_baseline.json",
+    "results/metrics/hover_pid_baseline.csv",
+    "results/figures/hover_pid_baseline/trajectory_xy.svg",
+    "results/raw/figure8_improved_pid.csv",
+    "results/metrics/figure8_improved_pid.json",
+    "results/metrics/figure8_improved_pid.csv",
+    "results/figures/figure8_improved_pid/trajectory_xy.svg",
 ]
 
 MWORKS_MCP_SMOKE_OUTPUTS = [
@@ -193,22 +203,28 @@ MWORKS_MCP_IMPROVED_OUTPUTS = [
     "results/test_reports/pid_tuning_summary.csv",
     "results/test_reports/pid_tuning_summary.md",
     "results/test_reports/sysplorer_example1_improved_pid_full_20260509.jsonl",
+    "results/test_reports/sysplorer_example2_improved_pid_full_20260509.jsonl",
     "results/test_reports/sysplorer_example3_improved_pid_full_20260509.jsonl",
     "results/raw/official_example1_improved_pid.csv",
+    "results/raw/official_example2_improved_pid.csv",
     "results/raw/official_example3_improved_pid.csv",
     "results/metrics/official_example1_improved_pid.json",
     "results/metrics/official_example1_improved_pid.csv",
+    "results/metrics/official_example2_improved_pid.json",
+    "results/metrics/official_example2_improved_pid.csv",
     "results/metrics/official_example3_improved_pid.json",
     "results/metrics/official_example3_improved_pid.csv",
     "results/replay/official_example1_pid_baseline.json",
     "results/replay/official_example2_pid_baseline.json",
     "results/replay/official_example3_pid_baseline.json",
     "results/replay/official_example1_improved_pid.json",
+    "results/replay/official_example2_improved_pid.json",
     "results/replay/official_example3_improved_pid.json",
     "results/replay_html/official_example1_pid_baseline.html",
     "results/replay_html/official_example2_pid_baseline.html",
     "results/replay_html/official_example3_pid_baseline.html",
     "results/replay_html/official_example1_improved_pid.html",
+    "results/replay_html/official_example2_improved_pid.html",
     "results/replay_html/official_example3_improved_pid.html",
 ]
 
@@ -224,6 +240,11 @@ DISTURBANCE_OUTPUTS = [
     "results/logs/delivery_mass_change_events.jsonl",
     "results/replay/delivery_mass_change.json",
     "results/replay_html/delivery_mass_change.html",
+    "results/raw/wind_improved_pid.csv",
+    "results/metrics/wind_improved_pid.json",
+    "results/metrics/wind_improved_pid.csv",
+    "results/logs/wind_improved_pid_events.jsonl",
+    "results/figures/wind_improved_pid/trajectory_xy.svg",
 ]
 
 PLANNING_OUTPUTS = [
@@ -231,6 +252,10 @@ PLANNING_OUTPUTS = [
     "results/metrics/trackability_planning_trackable_waypoint.json",
     "results/replay/planning_trackable_waypoint.json",
     "results/replay_html/planning_trackable_waypoint.html",
+    "results/raw/planning_trackable_waypoint_tracking.csv",
+    "results/metrics/planning_trackable_waypoint_tracking.json",
+    "results/metrics/planning_trackable_waypoint_tracking.csv",
+    "results/figures/planning_trackable_waypoint/trajectory_xy.svg",
     "results/raw/path_planning_obstacle_corridor.csv",
     "results/raw/reference_planning_obstacle_corridor.csv",
     "results/metrics/planning_obstacle_corridor.json",

@@ -34,14 +34,21 @@ def main() -> int:
         )
         with csv_path.open(newline="", encoding="utf-8") as handle:
             rows = list(csv.DictReader(handle))
-        if len(rows) < 6:
-            raise AssertionError(f"Expected at least 6 scenario rows, got {len(rows)}")
-        if not any(row["status"] == "pending" for row in rows):
-            raise AssertionError("Expected pending scenarios before full baseline simulation")
+        if len(rows) < 10:
+            raise AssertionError(f"Expected at least 10 scenario rows, got {len(rows)}")
+        if "evidence_level" not in rows[0]:
+            raise AssertionError("Expected evidence_level column")
+        if not any(row["evidence_level"] == "real_sysplorer_mcp_full_baseline" for row in rows):
+            raise AssertionError("Expected full baseline Sysplorer MCP evidence")
+        if not any(row["source"] == "offline_script" for row in rows):
+            raise AssertionError("Expected offline_script rows to remain explicitly labeled")
         if not any(row["experiment_id"] == "smoke_official_example1_pid_baseline" for row in rows):
             raise AssertionError("Expected smoke metrics evidence row")
-        if "Experiment Summary" not in md_path.read_text(encoding="utf-8"):
+        markdown = md_path.read_text(encoding="utf-8")
+        if "Experiment Summary" not in markdown:
             raise AssertionError("Markdown summary header missing")
+        if "Evidence Levels" not in markdown:
+            raise AssertionError("Markdown evidence section missing")
     finally:
         if temp_dir.exists():
             for item in sorted(temp_dir.glob("*"), reverse=True):

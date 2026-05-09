@@ -107,7 +107,7 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 
 ## 6. 改进 PID 对比
 
-当前 `QuadrotorExperiments.Example1ImprovedPID` 和 `QuadrotorExperiments.Example3ImprovedPID` 采用 MCP 参数搜索选出的统一 PID 参数集 `pos_kp_165_att_170`：将水平位置环 `PID3/PID4.KP` 从 `1.5` 提高到 `1.65`，将姿态内环 `PID5/PID6.KD` 从 `1.414` 提高到 `1.70`，其余高度环与 yaw 环参数保持官方基线不变。搜索脚本为 `scripts/tune_improved_pid_mcp.py`，搜索摘要见 `results/test_reports/pid_tuning_summary.md`。
+当前 `QuadrotorExperiments.Example1ImprovedPID`、`QuadrotorExperiments.Example2ImprovedPID` 和 `QuadrotorExperiments.Example3ImprovedPID` 采用 MCP 参数搜索选出的统一 PID 参数集 `pos_kp_165_att_170`：将水平位置环 `PID3/PID4.KP` 从 `1.5` 提高到 `1.65`，将姿态内环 `PID5/PID6.KD` 从 `1.414` 提高到 `1.70`，其余高度环与 yaw 环参数保持官方基线不变。搜索脚本为 `scripts/tune_improved_pid_mcp.py`，搜索摘要见 `results/test_reports/pid_tuning_summary.md`。
 
 候选选择原则：不用单场景最优作为正式参数，而选取在 Example1 阶梯爬升和 Example3 8 字轨迹上均能降低 RMSE 的统一参数集。`pos_kd_115_att_170` 在 Example1 上 RMSE 更低，但最大倾角达到 `0.345064 rad`，且 Example3 不如 `pos_kp_165_att_170`；因此正式模型选择后者。
 
@@ -117,10 +117,12 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 |---|---|---:|---:|---:|---:|---:|---:|
 | Example1 阶梯爬升 | baseline | 0.275253 | - | 0.111457 | 0.225729 | 39925.003500 | 52.464469 |
 | Example1 阶梯爬升 | improved_pid | 0.269890 | +1.948% | 0.105559 | 0.273695 | 39926.972404 | 52.533227 |
+| Example2 螺旋爬升 | baseline | 0.487183 | - | 0.210149 | 0.330881 | 37306.013865 | 47.882655 |
+| Example2 螺旋爬升 | improved_pid | 0.479834 | +1.508% | 0.190661 | 0.358260 | 37312.619310 | 48.025785 |
 | Example3 8字形 | baseline | 0.172311 | - | 0.068172 | 0.286482 | 95610.155697 | 60.505386 |
 | Example3 8字形 | improved_pid | 0.167227 | +2.951% | 0.061940 | 0.295880 | 95611.212646 | 60.546610 |
 
-结论：参数搜索型 Improved PID 相比官方 PID 在 Example1/3 上分别降低 RMSE `1.948%` 和 `2.951%`，稳态误差分别降低 `5.291%` 和 `9.141%`。代价是最大倾角和控制能量略有增加，因此该结果适合作为 P0 可复现优化基线，不应包装成最终控制创新；后续仍应推进带抗饱和、参考前馈或 NMPC/INDI 的真实模型集成。
+结论：参数搜索型 Improved PID 相比官方 PID 在 Example1/2/3 上分别降低 RMSE `1.948%`、`1.508%` 和 `2.951%`，稳态误差分别降低 `5.291%`、`9.273%` 和 `9.141%`。代价是最大倾角和控制能量略有增加，因此该结果适合作为 P0 可复现优化基线，不应包装成最终控制创新；后续仍应推进带抗饱和、参考前馈或 NMPC/INDI 的真实模型集成。
 
 ## 7. 当前图表
 
@@ -130,6 +132,7 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 results/figures/official_example1_pid_baseline/
 results/figures/official_example1_improved_pid/
 results/figures/official_example2_pid_baseline/
+results/figures/official_example2_improved_pid/
 results/figures/official_example3_pid_baseline/
 results/figures/official_example3_improved_pid/
 results/figures/smoke_official_example1_pid_baseline/trajectory_xy.svg
@@ -144,6 +147,7 @@ results/figures/smoke_official_example1_pid_baseline/metrics_summary.svg
 results/replay_html/official_example1_pid_baseline.html
 results/replay_html/official_example1_improved_pid.html
 results/replay_html/official_example2_pid_baseline.html
+results/replay_html/official_example2_improved_pid.html
 results/replay_html/official_example3_pid_baseline.html
 results/replay_html/official_example3_improved_pid.html
 results/replay_html/reference_official_example1.html
@@ -153,18 +157,22 @@ results/replay_html/reference_official_example3.html
 
 其中 `official_example*_*.html` 来自真实 Sysplorer MCP raw CSV，包含实际飞行轨迹和参考轨迹；`reference_official_example*.html` 仅为官方参考路径展示。
 
-## 8. 待补全实验
+## 8. 横向功能演示结果
 
-| 优先级 | 实验 | 输出 |
+以下结果为 `source=offline_script`，用于横向功能闭环、报告图表和视频素材，不作为真实 MWORKS 控制性能结论：
+
+| 场景 | 输出 | 说明 |
 |---|---|---|
-| P0 | 改进 PID 深化：抗饱和/前馈参数集 | RMSE、稳态误差、控制能量对比 |
-| P1 | 风扰/质量变化鲁棒性 | recovery_time、degradation |
-| P1 | 电机效率下降/故障重分配 | saturation_ratio、max_error |
-| P2 | 规划与编队展示场景 | replay、健康度评分、最小距离 |
+| hover_pid_baseline | `results/metrics/hover_pid_baseline.json` | 悬停跟踪指标和 SVG 图表 |
+| figure8_improved_pid | `results/metrics/figure8_improved_pid.json` | 轻量 8 字跟踪演示 |
+| wind_improved_pid | `results/metrics/wind_improved_pid.json`、`results/logs/wind_improved_pid_events.jsonl` | 横风窗口和模式切换事件演示 |
+| planning_trackable_waypoint_tracking | `results/metrics/planning_trackable_waypoint_tracking.json` | 可跟踪轨迹的离线跟踪演示 |
+
+当前 `results/test_reports/experiment_summary.md` 中 `Pending=0`。后续需要继续提升名次时，优先把 `wind_improved_pid`、`planning_trackable_waypoint_tracking` 从离线演示升级为真实 Sysplorer/MWORKS 模型仿真证据。
 
 ## 9. 结论约束
 
 1. 不使用 smoke 数据做完整控制性能结论。
-2. 不引用未保存 raw CSV 和 metrics 的实验结果。
+2. 不把 `source=offline_script` 的横向演示包装成 MWORKS 控制性能结论。
 3. 报告中的每张图必须能追溯到 `results/raw/` 和生成脚本。
 4. 完整 baseline 与优化控制器必须使用同一场景、同一时长和同一指标脚本。
