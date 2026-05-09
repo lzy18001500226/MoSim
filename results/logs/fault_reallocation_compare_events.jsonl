@@ -1,0 +1,6 @@
+{"event": "mode_switch", "from": "", "reason": "scenario_start", "time": 0.0, "to": "NORMAL"}
+{"eta": [1.0, 0.7, 1.0, 1.0], "event": "motor_fault", "fault_type": "motor_efficiency_drop", "motor_index": 2, "time": 4.0}
+{"event": "mode_switch", "from": "NORMAL", "reason": "eta_min_below_threshold", "time": 4.0, "to": "FAULT_TOLERANT"}
+{"eta": [1.0, 0.7, 1.0, 1.0], "event": "reallocator_enabled", "method": "fault_matrix_inverse", "time": 4.0}
+{"event": "fault_clear", "fault_type": "motor_efficiency_drop", "time": 9.0}
+{"event": "mode_switch", "from": "FAULT_TOLERANT", "reason": "eta_recovered", "time": 9.0, "to": "NORMAL"}

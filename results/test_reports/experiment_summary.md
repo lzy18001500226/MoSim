@@ -1,8 +1,8 @@
 # Experiment Summary
 
 - CSV: `results/test_reports/experiment_summary.csv`
-- Total scenarios: `17`
-- Done: `8`
+- Total scenarios: `18`
+- Done: `9`
 - Pending: `9`
 - Invalid: `0`
 
@@ -13,6 +13,7 @@
 | planning_trackable_waypoint | planning_trackable_waypoint |  |  | 100 | done |
 | planning_obstacle_corridor | obstacle_corridor | improved_pid |  | 100 | done |
 | formation_triangle_switch | formation_triangle_switch | improved_pid |  | 100 | done |
+| fault_reallocation_compare | motor_fault_reallocation_compare | nmpc_indi_l1 |  | 100 | done |
 | safety_filter_guard | safety_filter_guard | nmpc_indi_l1 |  | 98.3483 | done |
 | wind_nmpc_indi_l1_001 | wind_corridor | nmpc_indi_l1 |  | 93.5086 | done |
 | delivery_mass_change | delivery_mass_change | nmpc_indi_l1 |  | 92.9197 | done |

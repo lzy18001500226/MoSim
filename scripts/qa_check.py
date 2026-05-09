@@ -83,6 +83,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/generate_disturbance_mode_demo.py",
     "scripts/generate_mass_adaptation_demo.py",
     "scripts/generate_safety_filter_demo.py",
+    "scripts/generate_fault_reallocation_demo.py",
 ]
 
 RECOMMENDED_TESTS = [
@@ -95,6 +96,7 @@ RECOMMENDED_TESTS = [
     "tests/test_disturbance_mode_demo.py",
     "tests/test_mass_adaptation_demo.py",
     "tests/test_safety_filter_demo.py",
+    "tests/test_fault_reallocation_demo.py",
 ]
 
 OFFICIAL_MODELS = [
@@ -212,6 +214,12 @@ FAULT_OUTPUTS = [
     "results/logs/fault_motor_return_events.jsonl",
     "results/replay/fault_motor_return.json",
     "results/replay_html/fault_motor_return.html",
+    "results/raw/reference_fault_reallocation_compare.csv",
+    "results/raw/fault_reallocation_compare.csv",
+    "results/metrics/fault_reallocation_compare.json",
+    "results/logs/fault_reallocation_compare_events.jsonl",
+    "results/replay/fault_reallocation_compare.json",
+    "results/replay_html/fault_reallocation_compare.html",
 ]
 
 SAFETY_OUTPUTS = [

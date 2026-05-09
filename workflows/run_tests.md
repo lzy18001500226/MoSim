@@ -51,6 +51,7 @@ python3 tests/test_fault_scenario.py
 python3 tests/test_disturbance_mode_demo.py
 python3 tests/test_mass_adaptation_demo.py
 python3 tests/test_safety_filter_demo.py
+python3 tests/test_fault_reallocation_demo.py
 ```
 
 Optional script tests when Julia/Syslab is available:

@@ -333,6 +333,28 @@ results/replay_html/fault_motor_return.html
 
 故障指标包含 `eta_min`、`controller_mode_switch_count`、`fault_tolerance_score`、`degraded_task_completion`、`minimum_altitude_m` 和 `altitude_violation_count`。事件日志记录 `motor_fault`、`mode_switch`、`degraded_return_start`、`fault_clear`，用于报告、视频字幕和后续容错控制器接入。
 
+生成电机故障下有/无控制分配重构对比：
+
+```bash
+python3 scripts/generate_fault_reallocation_demo.py
+python3 scripts/generate_replay_html.py \
+  results/replay/fault_reallocation_compare.json \
+  results/replay_html/fault_reallocation_compare.html
+```
+
+输出：
+
+```text
+results/raw/reference_fault_reallocation_compare.csv
+results/raw/fault_reallocation_compare.csv
+results/metrics/fault_reallocation_compare.json
+results/logs/fault_reallocation_compare_events.jsonl
+results/replay/fault_reallocation_compare.json
+results/replay_html/fault_reallocation_compare.html
+```
+
+重构指标包含 `no_realloc_wrench_rmse`、`realloc_wrench_rmse`、`wrench_error_reduction_pct`、`no_realloc_saturation_ratio`、`realloc_saturation_ratio` 和 `fault_tolerance_score`。该场景用于证明 `eta=0.7` 时按故障效率矩阵重构控制分配可以显著降低期望力/力矩误差。
+
 生成安全过滤器约束保护演示数据：
 
 ```bash
@@ -371,6 +393,7 @@ python3 tests/test_fault_scenario.py
 python3 tests/test_disturbance_mode_demo.py
 python3 tests/test_mass_adaptation_demo.py
 python3 tests/test_safety_filter_demo.py
+python3 tests/test_fault_reallocation_demo.py
 python3 -m py_compile scripts/*.py tests/*.py
 git diff --check
 ```
