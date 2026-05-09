@@ -80,6 +80,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/generate_obstacle_planning_reference.py",
     "scripts/generate_formation_reference.py",
     "scripts/generate_fault_scenario.py",
+    "scripts/generate_disturbance_mode_demo.py",
 ]
 
 RECOMMENDED_TESTS = [
@@ -89,6 +90,7 @@ RECOMMENDED_TESTS = [
     "tests/test_obstacle_planning.py",
     "tests/test_formation_reference.py",
     "tests/test_fault_scenario.py",
+    "tests/test_disturbance_mode_demo.py",
 ]
 
 OFFICIAL_MODELS = [
@@ -165,6 +167,14 @@ SMOKE_RESULT_OUTPUTS = [
     "results/raw/smoke_official_example1_pid_baseline.csv",
     "results/metrics/smoke_official_example1_pid_baseline.json",
     "results/metrics/smoke_official_example1_pid_baseline.csv",
+]
+
+DISTURBANCE_OUTPUTS = [
+    "results/raw/wind_nmpc_indi_l1.csv",
+    "results/metrics/wind_nmpc_indi_l1.json",
+    "results/logs/wind_nmpc_indi_l1_events.jsonl",
+    "results/replay/wind_nmpc_indi_l1.json",
+    "results/replay_html/wind_nmpc_indi_l1.html",
 ]
 
 PLANNING_OUTPUTS = [
@@ -561,6 +571,10 @@ def check_official_case(root: Path) -> bool:
 
     print("\n== Smoke result evidence ==")
     for item in SMOKE_RESULT_OUTPUTS:
+        ok = check_path(root / item, required=True) and ok
+
+    print("\n== Disturbance mode-switch evidence ==")
+    for item in DISTURBANCE_OUTPUTS:
         ok = check_path(root / item, required=True) and ok
 
     print("\n== Planning reference evidence ==")

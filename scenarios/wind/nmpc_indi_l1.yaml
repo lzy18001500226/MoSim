@@ -27,7 +27,21 @@ disturbance:
     stop_time_s: 24.0
     force_n: [1.0, 0.0, 0.0]
 
+disturbance_estimator:
+  method: acceleration_residual_lpf
+  mass_kg: 1.0
+  residual_filter_alpha: 0.90
+  compensation_gain: 0.85
+  compensation_limit_m_s2: 2.0
+  wind_enter_threshold_m_s2: 0.45
+  wind_recover_threshold_m_s2: 0.18
+  enter_debounce_s: 0.2
+  min_hold_time_s: 1.0
+
 result:
   raw_file: results/raw/wind_nmpc_indi_l1.csv
   metrics_file: results/metrics/wind_nmpc_indi_l1.json
   figure_dir: results/figures/wind_nmpc_indi_l1
+  event_log: results/logs/wind_nmpc_indi_l1_events.jsonl
+  replay_file: results/replay/wind_nmpc_indi_l1.json
+  replay_html: results/replay_html/wind_nmpc_indi_l1.html
