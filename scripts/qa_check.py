@@ -82,6 +82,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/generate_fault_scenario.py",
     "scripts/generate_disturbance_mode_demo.py",
     "scripts/generate_mass_adaptation_demo.py",
+    "scripts/generate_safety_filter_demo.py",
 ]
 
 RECOMMENDED_TESTS = [
@@ -93,6 +94,7 @@ RECOMMENDED_TESTS = [
     "tests/test_fault_scenario.py",
     "tests/test_disturbance_mode_demo.py",
     "tests/test_mass_adaptation_demo.py",
+    "tests/test_safety_filter_demo.py",
 ]
 
 OFFICIAL_MODELS = [
@@ -210,6 +212,15 @@ FAULT_OUTPUTS = [
     "results/logs/fault_motor_return_events.jsonl",
     "results/replay/fault_motor_return.json",
     "results/replay_html/fault_motor_return.html",
+]
+
+SAFETY_OUTPUTS = [
+    "results/raw/reference_safety_filter_guard.csv",
+    "results/raw/safety_filter_guard.csv",
+    "results/metrics/safety_filter_guard.json",
+    "results/logs/safety_filter_guard_events.jsonl",
+    "results/replay/safety_filter_guard.json",
+    "results/replay_html/safety_filter_guard.html",
 ]
 
 OFFICIAL_RESULT_VARIABLE_CANDIDATES = [
@@ -595,6 +606,10 @@ def check_official_case(root: Path) -> bool:
 
     print("\n== Fault tolerance evidence ==")
     for item in FAULT_OUTPUTS:
+        ok = check_path(root / item, required=True) and ok
+
+    print("\n== Safety filter evidence ==")
+    for item in SAFETY_OUTPUTS:
         ok = check_path(root / item, required=True) and ok
 
     print("\n== Full baseline result guard ==")
