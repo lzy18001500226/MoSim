@@ -34,9 +34,11 @@ Do not hard-code only one user home.
 1. Use the smallest MCP tool sequence that proves the claim.
 2. Prefer headless/background calls.
 3. Reuse existing Sysplorer/Syslab sessions when useful.
-4. Keep GUI windows open after simulation unless the user asks for cleanup.
+4. Keep one reusable GUI window open during a related batch of checks when it avoids repeated startup cost.
 5. Save useful MCP evidence under `results/test_reports/` or `results/logs/`.
 6. Never write tokens, SSH keys, or API keys to tracked files.
+7. Before `git add`, `git commit`, or `git push`, close or explicitly verify closure of Sysplorer / Syslab / MWORKS windows and MCP wrapper/server processes created in the current round.
+8. If a GUI freezes, requests login unexpectedly, or an MCP call stalls past the planned timeout, stop that MCP sequence, clean up the clearly identifiable process/window, and continue with file-level work or report the blocker.
 
 ## Tool Routing
 
@@ -56,4 +58,5 @@ Do not hard-code only one user home.
 | wrapper missing | check server path, then `~/mcp-wrappers/` |
 | Syslab stale state | call `restart_julia` |
 | Sysplorer not ready | call `session_manager` health/probe/ensure |
-| GUI interruption | continue minimal calls; avoid repeated window operations |
+| GUI interruption | stop the current MCP sequence; close only clearly identifiable stale windows before Git |
+| model auto-upgrade backup created | inspect the diff; do not commit auto-generated rewrites or backup directories unless intentionally accepted |

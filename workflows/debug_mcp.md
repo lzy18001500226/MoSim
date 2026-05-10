@@ -30,6 +30,17 @@ Failure:
 Tools: (none)
 ```
 
+Operational rule:
+
+```text
+One development round may keep one Sysplorer / Syslab / MWORKS GUI window open
+to avoid repeated startup cost. Before git add/commit/push, close or explicitly
+verify closure of windows and MCP wrapper/server processes created by the round.
+If a window freezes, shows an unexpected login prompt, or MCP stalls past the
+planned timeout, stop the MCP sequence and clean up the clearly identifiable
+process/window before continuing.
+```
+
 ---
 
 ## 2. Check Current MCP State

@@ -160,12 +160,13 @@ Rules:
 2. Avoid opening GUI windows unless a model simulation, Sysplorer operation, or visual verification genuinely requires it.
 3. If a GUI window is opened by Sysplorer / Syslab / MCP, minimize it when possible and avoid bringing it to the foreground repeatedly.
 4. Do not use broad MCP discovery calls repeatedly when a targeted tool call is enough.
-5. After a simulation or model operation completes, release unnecessary MCP sessions when the tool supports it, but do not automatically close Sysplorer / Syslab / MWORKS GUI windows unless the user explicitly asks. Keeping the GUI open avoids repeated startup cost; the user will close windows manually when needed.
+5. During one development round, keep one reusable Sysplorer / Syslab / MWORKS GUI window open when repeated model checks are expected; do not close it after every small MCP call.
 6. Save result evidence under `results/` and documentation-ready assets under `docs/`.
 7. If MCP behavior may interrupt the user's desktop, state that risk before running the operation.
 8. Do not call MCP tools merely to create activity. Use the smallest set of MCP calls that proves the current engineering claim.
 9. If a tool exposes a release, stop, or non-GUI session cleanup API, call it after the useful result is saved.
-10. Do not spend extra time trying to close GUI windows after each run. Only report GUI cleanup limitations when the user specifically asks for cleanup.
+10. Before `git add`, `git commit`, or `git push`, close or explicitly verify closure of this round's Sysplorer / Syslab / MWORKS windows and MCP wrapper/server processes. This prevents stale login prompts, frozen windows, and accidental auto-upgrade rewrites from being committed.
+11. If a GUI window freezes, shows an unexpected login prompt, or an MCP call has no useful response within the planned timeout, stop that MCP sequence, clean up the related process/window if it is clearly identifiable, and continue with file-level work or report the blocker.
 
 ### 3.5 Simulation Evidence Rule
 
@@ -191,11 +192,12 @@ For MWORKS simulations:
 2. Run the smallest simulation that validates the current change first.
 3. Read required result variables after simulation.
 4. Save logs or smoke-test evidence only when useful.
-5. Keep Sysplorer / Syslab / MWORKS GUI windows open after simulation unless the user explicitly asks for cleanup. Release or stop background sessions only when this does not close the reusable GUI.
+5. Keep one Sysplorer / Syslab / MWORKS GUI window open during a related batch of checks to avoid repeated startup cost, but close or verify it before any Git commit/push.
 6. Do not leave long-running simulations active after the task is complete.
 7. Prefer one active Sysplorer/Syslab session at a time unless parallel simulation is explicitly required.
 8. Reuse an existing session for related operations instead of opening many windows.
-9. If repeated simulations open multiple windows, keep working and avoid extra close attempts. Try minimizing only when the windows interfere with normal desktop use, or when the user asks.
+9. If repeated simulations open multiple windows, stop opening new MCP sessions, clean up clearly identifiable stale windows before Git, and prefer fixing model files offline before retrying MCP.
+10. Do not document a model as verified unless its latest version has a successful `load_file` and `check_model` log, or the report explicitly marks it as an unverified draft.
 
 ---
 
