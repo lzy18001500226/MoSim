@@ -16,7 +16,7 @@
 辅助：Sysplorer/Modelica 派生模型闭环仿真、Syslab/Python 指标与图表
 ```
 
-截至当前版本，Sysplorer/Modelica 已经形成可复现性能证据；Sysblock 已完成 AWFF PID 高度环最小模型 `AWFF_PID_Sysblock_Demo` 的 `load_file/check_model/simulate_model/result_manager` 验证，并完成位置环、姿态环、电机分配三个分层 Sysblock 模型的 `load_file/check_model`。组合模型 `AWFF_FullController_Sysblock` 已经把三段控制器接入同一控制链，并通过真实 MCP `load_file/check_model/simulate_model/result_manager`。为解决嵌套 Sysblock 接入整机时的混合编译限制，当前新增扁平化 `AWFF_FullControllerEquation_Sysblock` 和 `QuadrotorExperiments.Example1AWFFSysblockClosedLoop`，已完成 0-1 s 整机 `check_model/simulate_model/result_manager` smoke。该结果只能证明 Sysblock 整机链路打通，不能作为全时长性能结论；后续应优先调参并完成 50 s Example1 主模型闭环证据。
+截至当前版本，Sysplorer/Modelica 已经形成可复现性能证据；Sysblock 已完成 AWFF PID 高度环最小模型 `AWFF_PID_Sysblock_Demo` 的 `load_file/check_model/simulate_model/result_manager` 验证，并完成位置环、姿态环、电机分配三个分层 Sysblock 模型的 `load_file/check_model`。组合模型 `AWFF_FullController_Sysblock` 已经把三段控制器接入同一控制链，并通过真实 MCP `load_file/check_model/simulate_model/result_manager`。为解决嵌套 Sysblock 接入整机时的混合编译限制，当前使用扁平化 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop`，已完成 Example1 50 s、Example2 50 s、Example3 120 s 整机 `check_model/simulate_model/result_manager` 全时长证据。后续应优先补齐风扰、质量摄动和执行器退化鲁棒场景。
 
 ## 主创新口径
 

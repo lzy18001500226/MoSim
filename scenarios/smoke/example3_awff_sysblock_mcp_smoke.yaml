@@ -1,0 +1,35 @@
+experiment_id: official_example3_awff_sysblock_smoke
+scene_id: official_example3_awff_sysblock_smoke
+controller_id: awff_sysblock
+priority: smoke
+evidence_level: real_sysplorer_mcp_sysblock_example3_smoke
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example3AWFFSysblockClosedLoop
+  model_path_hint: models/QuadrotorExperiments/Example3AWFFSysblockClosedLoop.mo
+  base_model_path_hint: QuadrotorModel/package.mo
+  official_description: 8字形运动 Sysblock AWFF closed-loop smoke
+
+controller:
+  params_file: controllers/awff_sysblock/default.yaml
+  replacement_component: controller3_2
+  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 1.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_eight_path
+  file: results/raw/reference_official_example3.csv
+
+result:
+  raw_file: results/raw/official_example3_awff_sysblock_smoke.csv
+  metrics_file: results/metrics/official_example3_awff_sysblock_smoke.json
+  figure_dir: results/figures/official_example3_awff_sysblock_smoke
+  replay_file: results/replay/official_example3_awff_sysblock_smoke.json
+  mcp_log: results/test_reports/sysplorer_example3_awff_sysblock_smoke_20260510.jsonl
