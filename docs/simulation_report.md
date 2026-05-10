@@ -135,7 +135,38 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 
 结论：Enhanced PID 在 Example1 完整 50 s 真实 Sysplorer MCP 仿真中，相比官方 PID 的 RMSE 降低 `3.270%`，稳态误差降低 `7.423%`，最大倾角降低 `22.733%`，控制平滑性指标明显改善；相比参数搜索型 Improved PID，RMSE 继续降低 `1.348%`，最大倾角降低 `36.268%`。该结果可以作为 P1 控制器增强的第一条真实证据。限制是：当前 Enhanced PID 仍通过参数化官方 PID 与限幅块实现，抗积分饱和和参考前馈尚未替换为独立控制器内部逻辑。
 
-## 8. 当前图表
+## 8. P1 鲁棒场景与控制器消融
+
+新增 `robust_mass20_example1` 场景用于真实模型鲁棒性验证：在 Example1 阶梯爬升任务中，将 `quadChassisTest17_1.body.m` 从官方 `0.159504 kg` 改为 `0.191405 kg`，即中心机体质量 +20%。该扰动模拟载荷变化或质量参数建模误差；路径、求解器、导出变量和仿真时长保持不变，因此可用于控制器消融对比。
+
+模型替换位置：
+
+```text
+models/QuadrotorExperiments/package.mo
+  QuadrotorExperiments.Example1Mass20PID
+  QuadrotorExperiments.Example1Mass20ImprovedPID
+  QuadrotorExperiments.Example1Mass20EnhancedPID
+```
+
+场景配置：
+
+```text
+scenarios/robustness/example1_mass20_pid_baseline.yaml
+scenarios/robustness/example1_mass20_improved_pid.yaml
+scenarios/robustness/example1_mass20_enhanced_pid.yaml
+```
+
+以下结果均为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_robust_mass20_ablation`，每条仿真均完成 `check_model ok`、`simulate_model ok`，导出 `5001` 行 50 s raw CSV：
+
+| 场景 | controller | position_rmse_m | RMSE变化 | steady_state_error_m | 稳态误差变化 | max_tilt_rad | 最大倾角变化 | control_energy | control_smoothness | total_health_score |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| +20% 质量摄动 Example1 | baseline | 0.291441 | - | 0.111428 | - | 0.241303 | - | 47694.497455 | 118385.622197 | 51.820711 |
+| +20% 质量摄动 Example1 | improved_pid | 0.286484 | +1.701% | 0.105508 | +5.313% | 0.289414 | -19.938% | 47696.493455 | 180930.153014 | 51.886273 |
+| +20% 质量摄动 Example1 | enhanced_pid | 0.282610 | +3.030% | 0.103144 | +7.434% | 0.174124 | +27.840% | 47665.293902 | 13535.800229 | 52.444636 |
+
+消融结论：在同一 +20% 质量摄动下，Improved PID 主要改善轨迹 RMSE 和稳态误差，但最大倾角增加 `19.938%`，说明单纯增益搜索会引入姿态代价。Enhanced PID 在 RMSE、稳态误差、最大倾角、控制能量和控制平滑性上均优于同扰动 baseline，其中 RMSE 降低 `3.030%`，稳态误差降低 `7.434%`，最大倾角降低 `27.840%`。这条结果可以作为 P1 鲁棒控制场景的正式消融证据，但仍应在下一阶段补充风扰或执行器退化场景，避免只覆盖参数摄动。
+
+## 9. 当前图表
 
 已生成图表：
 
@@ -147,6 +178,9 @@ results/figures/official_example2_pid_baseline/
 results/figures/official_example2_improved_pid/
 results/figures/official_example3_pid_baseline/
 results/figures/official_example3_improved_pid/
+results/figures/robust_mass20_example1_pid_baseline/
+results/figures/robust_mass20_example1_improved_pid/
+results/figures/robust_mass20_example1_enhanced_pid/
 ```
 
 已生成回放：
@@ -159,6 +193,9 @@ results/replay_html/official_example2_pid_baseline.html
 results/replay_html/official_example2_improved_pid.html
 results/replay_html/official_example3_pid_baseline.html
 results/replay_html/official_example3_improved_pid.html
+results/replay_html/robust_mass20_example1_pid_baseline.html
+results/replay_html/robust_mass20_example1_improved_pid.html
+results/replay_html/robust_mass20_example1_enhanced_pid.html
 results/replay_html/reference_official_example1.html
 results/replay_html/reference_official_example2.html
 results/replay_html/reference_official_example3.html
@@ -166,11 +203,11 @@ results/replay_html/reference_official_example3.html
 
 其中 `official_example*_*.html` 来自真实 Sysplorer MCP raw CSV，包含实际飞行轨迹和参考轨迹；`reference_official_example*.html` 仅为官方参考路径展示。
 
-## 9. 扩展场景状态
+## 10. 扩展场景状态
 
 此前用于横向展示的 Python/Julia 离线仿真结果已清理。当前报告结论只引用真实 Sysplorer/MWORKS MCP 证据。
 
-风扰、质量变化、故障、规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
+质量 +20% 参数摄动已完成真实 MWORKS MCP 闭环。风扰、故障、规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
 
 ```text
 MWORKS/Sysplorer 模型或派生模型
