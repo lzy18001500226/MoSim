@@ -1,22 +1,25 @@
 controller_id: awff_sysblock
-type: sysblock_awff_flattened_pd_feedforward
+type: sysblock_awff_pid_filtered_derivative_antiwindup
 priority: P1
 
 description: >
   Project Sysblock controller for the official Example1 closed-loop plant
-  smoke test. This controller keeps the official plant, sensors, actuators,
-  and result variable names, while replacing controller3_2 with a Sysblock
-  controller component.
+  validation. This controller keeps the official plant, sensors, actuators,
+  and result variable names, while replacing controller3_2 with a project
+  Sysblock controller component.
 
 implementation_status:
   current_mworks_model: QuadrotorExperiments.Example1AWFFSysblockClosedLoop
   sysblock_controller: AWFF_FullControllerEquation_Sysblock
-  verification_scope: 0-1 s closed-loop smoke passed with real Sysplorer MCP evidence
+  verification_scope: 0-1 s, 5 s, 10 s, 20 s, and 50 s Example1 closed-loop runs passed with real Sysplorer MCP evidence
   limitation: >
-    Current controller is a flattened, bounded P-D plus vertical feedforward
-    version for mixed Sysplorer/Sysblock integration. It is not yet the final
-    high-performance AWFF PID and must not be used as full-duration performance
-    evidence before tuning and full scenario validation.
+    Current controller is a flattened equation-form Sysblock implementation
+    used to avoid nested Sysblock port-resolution issues in mixed
+    Sysplorer/Sysblock plant integration. It includes bounded position and
+    attitude loops, filtered derivative terms, vertical conditional integration,
+    and output saturation. It has full Example1 evidence, but still needs
+    Example2/Example3 and robustness validation before being claimed as the
+    final controller for all scenarios.
 
 model_interface:
   replacement_component: controller3_2
@@ -28,7 +31,7 @@ model_interface:
     x_error: climbePath.position_command[1] - sensors1_1.PosMea[1]
     y_error: climbePath.position_command[2] - sensors1_1.PosMea[2]
     z_error: climbePath.position_command[3] - sensors1_1.PosMea[3]
-    z_ref_rate: zero-order smoke placeholder
+    z_ref_rate: zero-order placeholder for current Example1 full validation
     attitude: sensors1_1.AngleMea
     yaw_ref: zero-order smoke placeholder
   outputs:
@@ -57,7 +60,8 @@ acceptance:
     scenario_file: scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics
   full_example1:
-    required_before_claim: 50 s full run with stable altitude, bounded tilt, no NaN, and metrics comparison
+    scenario_file: scenarios/official/example1_awff_sysblock.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
 
 verified_results:
   smoke:
@@ -67,6 +71,42 @@ verified_results:
     mcp_log: results/test_reports/sysplorer_example1_awff_sysblock_smoke_20260510.jsonl
     row_count: 101
     duration_s: 1.0
-    position_rmse_m: 1.0941352961
-    max_tilt_rad: 0.000000000017
-    control_command_abs_max: 19.6740631098
+    position_rmse_m: 0.9528695569
+    max_tilt_rad: 0.000000000045
+    control_command_abs_max: 17.2780638223
+  staged_validation:
+    - scenario_file: scenarios/smoke/example1_awff_sysblock_mcp_5s.yaml
+      raw_file: results/raw/official_example1_awff_sysblock_5s.csv
+      metrics_file: results/metrics/official_example1_awff_sysblock_5s.json
+      duration_s: 5.0
+      row_count: 501
+      position_rmse_m: 0.6592382136
+      steady_state_error_m: 0.4742273393
+    - scenario_file: scenarios/smoke/example1_awff_sysblock_mcp_10s.yaml
+      raw_file: results/raw/official_example1_awff_sysblock_10s.csv
+      metrics_file: results/metrics/official_example1_awff_sysblock_10s.json
+      duration_s: 10.0
+      row_count: 1001
+      position_rmse_m: 0.4731896622
+      steady_state_error_m: 0.0739531289
+    - scenario_file: scenarios/smoke/example1_awff_sysblock_mcp_20s.yaml
+      raw_file: results/raw/official_example1_awff_sysblock_20s.csv
+      metrics_file: results/metrics/official_example1_awff_sysblock_20s.json
+      duration_s: 20.0
+      row_count: 2001
+      position_rmse_m: 0.3392683344
+      steady_state_error_m: 0.0154936926
+  full_example1:
+    scenario_file: scenarios/official/example1_awff_sysblock.yaml
+    raw_file: results/raw/official_example1_awff_sysblock.csv
+    metrics_file: results/metrics/official_example1_awff_sysblock.json
+    mcp_log: results/test_reports/sysplorer_example1_awff_sysblock_full_20260510.jsonl
+    figure_dir: results/figures/official_example1_awff_sysblock
+    replay_file: results/replay/official_example1_awff_sysblock.json
+    row_count: 5001
+    duration_s: 50.0
+    position_rmse_m: 0.2662166046
+    max_position_error_m: 1.2971645329
+    steady_state_error_m: 0.1031437867
+    max_tilt_rad: 0.1744370748
+    total_health_score: 55.4232273733

@@ -1,0 +1,35 @@
+experiment_id: official_example1_awff_sysblock_5s
+scene_id: official_example1_awff_sysblock_5s
+controller_id: awff_sysblock
+priority: smoke
+evidence_level: real_sysplorer_mcp_sysblock_closed_loop_5s
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1AWFFSysblockClosedLoop
+  model_path_hint: models/QuadrotorExperiments/Example1AWFFSysblockClosedLoop.mo
+  base_model_path_hint: QuadrotorModel/package.mo
+  official_description: 阶梯爬升 Sysblock AWFF closed-loop 5 s validation
+
+controller:
+  params_file: controllers/awff_sysblock/default.yaml
+  replacement_component: controller3_2
+  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 5.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: results/raw/reference_official_example1.csv
+
+result:
+  raw_file: results/raw/official_example1_awff_sysblock_5s.csv
+  metrics_file: results/metrics/official_example1_awff_sysblock_5s.json
+  figure_dir: results/figures/official_example1_awff_sysblock_5s
+  replay_file: results/replay/official_example1_awff_sysblock_5s.json
+  mcp_log: results/test_reports/sysplorer_example1_awff_sysblock_5s_20260510.jsonl

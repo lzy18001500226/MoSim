@@ -167,7 +167,7 @@ AWFF_FullController_Sysblock
 
 说明：Sysblock 控制器文件不是单纯的截图支撑材料，而是后续控制器闭环仿真的主实现路线之一。结构截图应来自 MWORKS.Sysblock/Sysplorer 打开的实际控制器模型窗口，用于证明模块连接、端口和信号流；正式控制器仿真结论必须以 `load_file`、`check_model`、必要时 `simulate_model` 的真实 MWORKS 证据为准，不使用手绘示意图或离线脚本替代。
 
-当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，并完成 `AWFF_FullController_Sysblock` 组合控制器独立仿真。由于嵌套 Sysblock 在整机混合编译中暴露端口解析限制，当前整机 smoke 使用扁平化 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1AWFFSysblockClosedLoop`，并已通过主模型 `check_model/simulate_model/result_manager`。已有完整性能结论仍应表述为“Sysplorer/Modelica 控制器闭环结果”；Sysblock 全时长性能结论必须等待 50 s 主模型验证。
+当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，并完成 `AWFF_FullController_Sysblock` 组合控制器独立仿真。由于嵌套 Sysblock 在整机混合编译中暴露端口解析限制，当前整机主线使用扁平化 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1AWFFSysblockClosedLoop`。该主线已经完成 0-1 s、5 s、10 s、20 s 渐进验证和 Example1 50 s 全时长真实 Sysplorer MCP 仿真，可作为当前 Sysblock 控制器仿真的主证据。
 
 当前验证状态：重新登录激活后，四个 Sysblock 控制器文件均已完成真实 Sysplorer MCP 复测：
 
@@ -198,16 +198,33 @@ Sysblock 整机 smoke 新增验证：
 models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
 models/QuadrotorExperiments/Example1AWFFSysblockClosedLoop.mo
 scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml
+scenarios/smoke/example1_awff_sysblock_mcp_5s.yaml
+scenarios/smoke/example1_awff_sysblock_mcp_10s.yaml
+scenarios/smoke/example1_awff_sysblock_mcp_20s.yaml
+scenarios/official/example1_awff_sysblock.yaml
 results/test_reports/sysplorer_example1_awff_sysblock_smoke_20260510.jsonl
+results/test_reports/sysplorer_example1_awff_sysblock_full_20260510.jsonl
 results/raw/official_example1_awff_sysblock_smoke.csv
+results/raw/official_example1_awff_sysblock.csv
 results/metrics/official_example1_awff_sysblock_smoke.json
+results/metrics/official_example1_awff_sysblock.json
 
-QuadrotorExperiments.Example1AWFFSysblockClosedLoop: check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行。
+QuadrotorExperiments.Example1AWFFSysblockClosedLoop: check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行，50 s 输出 5001 行。
 ```
 
 历史失败日志 `results/logs/sysplorer_layered_sysblock_check_failed_20260510_summary.json` 和 `results/logs/sysplorer_position_axis_check_failed_20260510_summary.json` 保留为授权/登录状态异常时的诊断记录，不再代表当前模型状态。
 
-当前 Sysblock 主线仍缺少的证据是：完成 `AWFF_FullControllerEquation_Sysblock` 的 50 s Example1 全时长稳定仿真、指标导出和与 PID/AWFF Modelica 结果的定量对比。
+Sysblock 渐进验证指标如下，均为 `source=MWORKS_MCP`：
+
+| 场景 | 时长/s | row_count | position_rmse_m | steady_state_error_m | max_tilt_rad | total_health_score |
+|---|---:|---:|---:|---:|---:|---:|
+| Sysblock smoke | 1.0 | 101 | 0.952870 | 0.855110 | 0.000000 | 28.844595 |
+| Sysblock staged | 5.0 | 501 | 0.659238 | 0.474227 | 0.000000 | 32.857746 |
+| Sysblock staged | 10.0 | 1001 | 0.473190 | 0.073953 | 0.000000 | 53.758541 |
+| Sysblock staged | 20.0 | 2001 | 0.339268 | 0.015494 | 0.000000 | 54.844389 |
+| Sysblock full Example1 | 50.0 | 5001 | 0.266217 | 0.103144 | 0.174437 | 55.423227 |
+
+50 s 全时长对比结果：
 
 
 | 场景 | controller | position_rmse_m | RMSE变化 | max_position_error_m | steady_state_error_m | max_tilt_rad | control_energy | control_smoothness | total_health_score |
@@ -215,8 +232,11 @@ QuadrotorExperiments.Example1AWFFSysblockClosedLoop: check_model/simulate_model/
 | Example1 阶梯爬升 | baseline | 0.275253 | - | 1.369402 | 0.111457 | 0.225729 | 39925.003500 | 111765.785252 | 52.464469 |
 | Example1 阶梯爬升 | enhanced_pid | 0.266250 | +3.270% | 1.297338 | 0.103184 | 0.174432 | 39896.485617 | 13260.747831 | 55.422450 |
 | Example1 阶梯爬升 | awff_pid | 0.259914 | +5.573% | 1.241362 | 0.103229 | 0.174490 | 39906.269209 | 14346.392213 | 52.334668 |
+| Example1 阶梯爬升 | awff_sysblock | 0.266217 | +3.283% | 1.297165 | 0.103144 | 0.174437 | 39896.207840 | 13258.808831 | 55.423227 |
 
 结论：AWFF PID 相比官方 PID 的 RMSE 降低 `5.573%`，最大位置误差降低 `9.350%`，稳态误差降低 `7.382%`，最大倾角降低 `22.699%`；相比 Enhanced PID，RMSE 继续降低 `2.380%`，最大位置误差降低 `4.315%`，稳态误差和最大倾角基本持平。该结果说明独立控制器本体替换已经跑通，并且比“参数化官方 PID”有进一步轨迹精度收益。
+
+Sysblock 结论：`awff_sysblock` 在 Example1 50 s 全时长真实 Sysplorer MCP 仿真中达到与 `enhanced_pid` 基本一致的性能，并略高于其综合健康分。相比官方 PID，Sysblock 控制器 RMSE 降低 `3.283%`，稳态误差降低 `7.460%`，最大倾角降低 `22.729%`，控制平滑性显著改善。该结果可以作为“MWORKS.Sysblock 控制器仿真为主”的第一条完整性能证据。限制是：当前 Sysblock 全时长证据只覆盖 Example1 阶梯爬升；后续仍需扩展到 Example2/Example3 和鲁棒扰动场景。
 
 限制：AWFF PID 当前 raw CSV 为 `25001` 行，而 baseline/enhanced 的正式 CSV 为 `5001` 行，因此 `constraint_violation_count` 和由采样点数量直接影响的健康分不做严格横向结论。下一步若继续对 AWFF 做正式消融，应补充时间归一化约束指标，或统一导出采样间隔后再比较 sample-count 类指标。
 
