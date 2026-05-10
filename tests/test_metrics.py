@@ -24,10 +24,16 @@ REQUIRED_METRICS = [
     "disturbance_recovery_time_s",
     "overshoot_max_pct",
     "control_energy",
+    "control_energy_per_second",
     "control_smoothness",
+    "control_smoothness_per_second",
     "saturation_ratio",
     "minimum_altitude_m",
     "constraint_violation_count",
+    "constraint_violation_rate_hz",
+    "altitude_violation_rate_hz",
+    "tilt_violation_rate_hz",
+    "sample_rate_hz",
     "tracking_score",
     "robustness_score",
     "safety_score",
@@ -78,8 +84,22 @@ def test_metrics_regression() -> None:
 
     if metrics["row_count"] != 11:
         raise AssertionError(f"Unexpected row_count: {metrics['row_count']}")
+    if not math.isclose(metrics["sample_rate_hz"], 10.0, rel_tol=1e-9):
+        raise AssertionError(f"Unexpected sample_rate_hz: {metrics['sample_rate_hz']}")
     if not math.isclose(metrics["position_rmse_m"], 0.019540168418367847, rel_tol=1e-9):
         raise AssertionError(f"Unexpected RMSE: {metrics['position_rmse_m']}")
+    if not math.isclose(
+        metrics["control_energy_per_second"],
+        metrics["control_energy"] / metrics["duration_s"],
+        rel_tol=1e-12,
+    ):
+        raise AssertionError("control_energy_per_second is inconsistent")
+    if not math.isclose(
+        metrics["control_smoothness_per_second"],
+        metrics["control_smoothness"] / metrics["duration_s"],
+        rel_tol=1e-12,
+    ):
+        raise AssertionError("control_smoothness_per_second is inconsistent")
     if metrics["settling_time_s"] is not None:
         raise AssertionError("Short fixture should not report a 2 s settling time")
     if metrics["total_health_score"] < 0.0 or metrics["total_health_score"] > 100.0:

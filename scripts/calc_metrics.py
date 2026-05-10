@@ -233,6 +233,7 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
     time = data["time"]
     if not time:
         raise ValueError(f"Metrics input has no data rows: {raw_file}")
+    duration_s = (max(time) - min(time)) if time else math.nan
     ex = [x - xr for x, xr in zip(data["x"], data["x_ref"])]
     ey = [y - yr for y, yr in zip(data["y"], data["y_ref"])]
     ez = [z - zr for z, zr in zip(data["z"], data["z_ref"])]
@@ -265,6 +266,7 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
     else:
         normalized_motor_commands = False
 
+    control_energy = trapezoid_integral(time, control_norm_sq) if control_norm_sq else math.nan
     control_smoothness = derivative_energy(time, [data[name] for name in motor_cols]) if motor_cols else math.nan
 
     attitude_cols = [name for name in ATTITUDE_COLUMNS if name in data]
@@ -286,7 +288,8 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
         "scene_id": scene_id,
         "controller_id": controller_id,
         "row_count": len(time),
-        "duration_s": (max(time) - min(time)) if time else math.nan,
+        "duration_s": duration_s,
+        "sample_rate_hz": (len(time) - 1) / duration_s if duration_s and duration_s > 0 and len(time) > 1 else math.nan,
         "position_rmse_m": rmse(ep),
         "x_rmse_m": rmse(ex),
         "y_rmse_m": rmse(ey),
@@ -325,8 +328,13 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
         "altitude_violation_count": altitude_violations,
         "tilt_violation_count": tilt_violations,
         "constraint_violation_count": constraint_violation_count,
-        "control_energy": trapezoid_integral(time, control_norm_sq) if control_norm_sq else math.nan,
+        "constraint_violation_rate_hz": constraint_violation_count / duration_s if duration_s and duration_s > 0 else math.nan,
+        "altitude_violation_rate_hz": altitude_violations / duration_s if duration_s and duration_s > 0 else math.nan,
+        "tilt_violation_rate_hz": tilt_violations / duration_s if duration_s and duration_s > 0 else math.nan,
+        "control_energy": control_energy,
+        "control_energy_per_second": control_energy / duration_s if duration_s and duration_s > 0 else math.nan,
         "control_smoothness": control_smoothness,
+        "control_smoothness_per_second": control_smoothness / duration_s if duration_s and duration_s > 0 else math.nan,
         "control_command_min": min_or_nan(motor_values) if motor_values else math.nan,
         "control_command_max": max_or_nan(motor_values) if motor_values else math.nan,
         "control_command_normalized": normalized_motor_commands,
