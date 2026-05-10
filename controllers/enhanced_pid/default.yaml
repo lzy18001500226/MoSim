@@ -96,3 +96,12 @@ acceptance:
       for the full 50 s run, raw CSV has valid time/state/reference columns,
       and RMSE / disturbance peak error / max tilt improve against
       robust_wind_gust_example1_pid_baseline.
+  robust_rotor1_loss15_example1:
+    baseline_experiment: robust_rotor1_loss15_example1_pid_baseline
+    comparison_experiment: robust_rotor1_loss15_example1_improved_pid
+    scenario_file: scenarios/robustness/example1_rotor1_loss15_enhanced_pid.yaml
+    expected: >
+      Under rotor 1 lift efficiency reduction to 85%, check_model and
+      simulate_model pass for the full 50 s run, raw CSV has valid
+      time/state/reference columns, and RMSE / max tilt improve against
+      robust_rotor1_loss15_example1_pid_baseline.

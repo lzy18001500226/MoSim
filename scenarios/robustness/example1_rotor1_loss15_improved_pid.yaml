@@ -1,0 +1,45 @@
+experiment_id: robust_rotor1_loss15_example1_improved_pid
+scene_id: robust_rotor1_loss15_example1
+controller_id: improved_pid
+priority: P1
+evidence_level: real_sysplorer_mcp_robust_rotor_loss_ablation
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1Rotor1Loss15ImprovedPID
+  model_path_hint: models/QuadrotorExperiments/package.mo
+  base_model_path_hint: QuadrotorModel/package.mo
+  official_description: 阶梯爬升 1号旋翼升力效率85% improved PID
+
+controller:
+  params_file: controllers/improved_pid/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: robust_rotor1_loss15_example1_pid_baseline
+
+disturbance:
+  type: actuator_efficiency_loss
+  target_component: quadChassisTest17_1.gain2.k
+  affected_rotor: rotor_1
+  nominal_lift_gain: 0.002
+  degraded_lift_gain: 0.0017
+  efficiency_ratio: 0.85
+  purpose: single_rotor_efficiency_degradation_robustness
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: results/raw/reference_official_example1.csv
+
+result:
+  raw_file: results/raw/robust_rotor1_loss15_example1_improved_pid.csv
+  metrics_file: results/metrics/robust_rotor1_loss15_example1_improved_pid.json
+  figure_dir: results/figures/robust_rotor1_loss15_example1_improved_pid
+  replay_file: results/replay/robust_rotor1_loss15_example1_improved_pid.json
+  replay_html: results/replay_html/robust_rotor1_loss15_example1_improved_pid.html
+  mcp_log: results/test_reports/sysplorer_robust_rotor1_loss15_example1_improved_pid_20260510.jsonl

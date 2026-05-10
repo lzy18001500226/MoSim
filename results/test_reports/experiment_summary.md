@@ -1,8 +1,8 @@
 # Experiment Summary
 
 - CSV: `results/test_reports/experiment_summary.csv`
-- Total scenarios: `15`
-- Done: `15`
+- Total scenarios: `18`
+- Done: `18`
 - Pending: `0`
 - Invalid: `0`
 
@@ -23,6 +23,9 @@
 | robust_mass20_example1_pid_baseline | robust_mass20_example1 | pid_baseline | 0.291441 | 51.8207 | done |
 | official_example2_improved_pid | official_example2 | improved_pid | 0.479834 | 48.0258 | done |
 | official_example2_pid_baseline | official_example2 | pid_baseline | 0.487183 | 47.8827 | done |
+| robust_rotor1_loss15_example1_enhanced_pid | robust_rotor1_loss15_example1 | enhanced_pid | 0.368251 | 36.0506 | done |
+| robust_rotor1_loss15_example1_improved_pid | robust_rotor1_loss15_example1 | improved_pid | 0.371435 | 35.8849 | done |
+| robust_rotor1_loss15_example1_pid_baseline | robust_rotor1_loss15_example1 | pid_baseline | 0.39212 | 35.6258 | done |
 | mworks_mcp_example1_enhanced_pid_smoke | mworks_mcp_example1 | enhanced_pid | 0.953097 | 28.8416 | done |
 | mworks_mcp_example1_pid_smoke | mworks_mcp_example1 | pid_baseline | 0.977959 | 28.4231 | done |
 
@@ -40,6 +43,9 @@
 | robust_mass20_example1_enhanced_pid | MWORKS_MCP | real_sysplorer_mcp_robust_mass20_ablation | `results/raw/robust_mass20_example1_enhanced_pid.csv` |
 | robust_mass20_example1_improved_pid | MWORKS_MCP | real_sysplorer_mcp_robust_mass20_ablation | `results/raw/robust_mass20_example1_improved_pid.csv` |
 | robust_mass20_example1_pid_baseline | MWORKS_MCP | real_sysplorer_mcp_robust_mass20_ablation | `results/raw/robust_mass20_example1_pid_baseline.csv` |
+| robust_rotor1_loss15_example1_enhanced_pid | MWORKS_MCP | real_sysplorer_mcp_robust_rotor_loss_ablation | `results/raw/robust_rotor1_loss15_example1_enhanced_pid.csv` |
+| robust_rotor1_loss15_example1_improved_pid | MWORKS_MCP | real_sysplorer_mcp_robust_rotor_loss_ablation | `results/raw/robust_rotor1_loss15_example1_improved_pid.csv` |
+| robust_rotor1_loss15_example1_pid_baseline | MWORKS_MCP | real_sysplorer_mcp_robust_rotor_loss_ablation | `results/raw/robust_rotor1_loss15_example1_pid_baseline.csv` |
 | robust_wind_gust_example1_enhanced_pid | MWORKS_MCP | real_sysplorer_mcp_robust_wind_gust_ablation | `results/raw/robust_wind_gust_example1_enhanced_pid.csv` |
 | robust_wind_gust_example1_improved_pid | MWORKS_MCP | real_sysplorer_mcp_robust_wind_gust_ablation | `results/raw/robust_wind_gust_example1_improved_pid.csv` |
 | robust_wind_gust_example1_pid_baseline | MWORKS_MCP | real_sysplorer_mcp_robust_wind_gust_ablation | `results/raw/robust_wind_gust_example1_pid_baseline.csv` |

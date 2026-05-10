@@ -198,6 +198,37 @@ scenarios/robustness/example1_wind_gust_enhanced_pid.yaml
 
 消融结论：在同一横向阵风扰动下，Improved PID 可降低 RMSE 和扰动窗口峰值误差，但最大倾角增加 `21.757%`，说明仅靠增益搜索仍会提高姿态代价。Enhanced PID 相比 baseline 的 RMSE 降低 `4.914%`，扰动窗口峰值误差降低 `7.661%`，恢复时间从 `3.460 s` 缩短到 `3.242 s`，最大倾角降低 `14.089%`，控制平滑性显著改善。因此风扰场景可以作为 P1 外部扰动鲁棒性的正式证据。
 
+
+
+新增 `robust_rotor1_loss15_example1` 场景用于执行器退化鲁棒性验证：在 Example1 阶梯爬升任务中，将 1 号旋翼对应升力增益 `quadChassisTest17_1.gain2.k` 从官方 `0.002` 改为 `0.0017`，等效为单旋翼升力效率下降到 `85%`。该场景不修改控制器接口，扰动直接作用在官方机体升力链路上。
+
+模型替换位置：
+
+```text
+models/QuadrotorExperiments/package.mo
+  QuadrotorExperiments.Example1Rotor1Loss15PID
+  QuadrotorExperiments.Example1Rotor1Loss15ImprovedPID
+  QuadrotorExperiments.Example1Rotor1Loss15EnhancedPID
+```
+
+场景配置：
+
+```text
+scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml
+scenarios/robustness/example1_rotor1_loss15_improved_pid.yaml
+scenarios/robustness/example1_rotor1_loss15_enhanced_pid.yaml
+```
+
+以下结果均为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_robust_rotor_loss_ablation`，每条仿真均完成 `check_model ok`、`simulate_model ok`，导出 `5001` 行 50 s raw CSV：
+
+| 场景 | controller | position_rmse_m | RMSE变化 | steady_state_error_m | max_tilt_rad | 最大倾角变化 | constraint_violation_count | control_smoothness | total_health_score |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1号旋翼效率85% Example1 | baseline | 0.392120 | - | 0.286884 | 0.211287 | - | 67 | 108378.264647 | 35.625782 |
+| 1号旋翼效率85% Example1 | improved_pid | 0.371435 | +5.275% | 0.265699 | 0.254032 | -20.231% | 67 | 156441.284930 | 35.884927 |
+| 1号旋翼效率85% Example1 | enhanced_pid | 0.368251 | +6.087% | 0.265416 | 0.174661 | +17.335% | 65 | 13260.581317 | 36.050556 |
+
+消融结论：单旋翼效率退化场景明显比质量摄动和横向阵风更困难，baseline 的 RMSE 增至 `0.392120 m`，健康分降至 `35.625782`。Improved PID 可降低 RMSE，但最大倾角增加 `20.231%`；Enhanced PID 相比 baseline 的 RMSE 降低 `6.087%`，最大倾角降低 `17.335%`，约束违规次数从 `67` 降到 `65`，并保持明显更低的控制平滑性指标。该场景可作为 P1 执行器退化/故障鲁棒性证据，但报告中应明确：当前控制器没有故障检测与重构逻辑，仍属于固定控制器在退化工况下的抗扰表现验证。
+
 ## 9. 当前图表
 
 已生成图表：
@@ -216,6 +247,9 @@ results/figures/robust_mass20_example1_enhanced_pid/
 results/figures/robust_wind_gust_example1_pid_baseline/
 results/figures/robust_wind_gust_example1_improved_pid/
 results/figures/robust_wind_gust_example1_enhanced_pid/
+results/figures/robust_rotor1_loss15_example1_pid_baseline/
+results/figures/robust_rotor1_loss15_example1_improved_pid/
+results/figures/robust_rotor1_loss15_example1_enhanced_pid/
 ```
 
 已生成回放：
@@ -234,6 +268,9 @@ results/replay_html/robust_mass20_example1_enhanced_pid.html
 results/replay_html/robust_wind_gust_example1_pid_baseline.html
 results/replay_html/robust_wind_gust_example1_improved_pid.html
 results/replay_html/robust_wind_gust_example1_enhanced_pid.html
+results/replay_html/robust_rotor1_loss15_example1_pid_baseline.html
+results/replay_html/robust_rotor1_loss15_example1_improved_pid.html
+results/replay_html/robust_rotor1_loss15_example1_enhanced_pid.html
 results/replay_html/reference_official_example1.html
 results/replay_html/reference_official_example2.html
 results/replay_html/reference_official_example3.html
@@ -245,7 +282,7 @@ results/replay_html/reference_official_example3.html
 
 此前用于横向展示的 Python/Julia 离线仿真结果已清理。当前报告结论只引用真实 Sysplorer/MWORKS MCP 证据。
 
-质量 +20% 参数摄动和 15-19 s 横向阵风扰动已完成真实 MWORKS MCP 闭环。故障、规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
+质量 +20% 参数摄动、15-19 s 横向阵风扰动和 1 号旋翼 85% 效率退化已完成真实 MWORKS MCP 闭环。规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
 
 ```text
 MWORKS/Sysplorer 模型或派生模型
