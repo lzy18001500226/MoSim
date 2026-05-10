@@ -16,7 +16,7 @@
 辅助：Sysplorer/Modelica 派生模型闭环仿真、Syslab/Python 指标与图表
 ```
 
-截至当前版本，Sysplorer/Modelica 已经形成可复现性能证据；Sysblock 仅完成 AWFF PID 高度环最小模型 `AWFF_PID_Sysblock_Demo` 的 `load_file/check_model` 验证。完整 Sysblock 位置环、姿态环和电机分配闭环尚未完成，后续实现应优先使用 MWORKS.Sysblock GUI/API 生成正式模型，再用 MCP 跑 `check_model/simulate_model`，避免把手写 `.mo` 草案当作主仿真证据。
+截至当前版本，Sysplorer/Modelica 已经形成可复现性能证据；Sysblock 已完成 AWFF PID 高度环最小模型 `AWFF_PID_Sysblock_Demo` 的 `load_file/check_model/simulate_model/result_manager` 验证，并完成位置环、姿态环和电机分配三个分层 Sysblock 模型的 `load_file/check_model`。完整 Sysblock 四旋翼闭环尚未完成，后续实现应优先把分层 Sysblock 控制器接入主模型，再用 MCP 跑 `check_model/simulate_model/result_manager`，避免把单模块检查结果当作主仿真证据。
 
 ## 主创新口径
 

@@ -163,29 +163,26 @@ AWFF_MotorMixer_Sysblock
 
 说明：Sysblock 控制器文件不是单纯的截图支撑材料，而是后续控制器闭环仿真的主实现路线之一。结构截图应来自 MWORKS.Sysblock/Sysplorer 打开的实际控制器模型窗口，用于证明模块连接、端口和信号流；正式控制器仿真结论必须以 `load_file`、`check_model`、必要时 `simulate_model` 的真实 MWORKS 证据为准，不使用手绘示意图或离线脚本替代。
 
-当前阶段结论：Sysblock 证据链尚未完成主闭环。已有性能结论应表述为“Sysplorer/Modelica 控制器闭环结果”，Sysblock 只作为已启动的主线建模方向和最小 demo 验证结果。后续若要满足“Sysblock 仿真为主、代码仿真为辅”，必须先完成 MWORKS.Sysblock 生成的完整控制器模型，并通过 `check_model/simulate_model/result_manager`。
+当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，但尚未完成四旋翼主模型闭环接入。已有完整性能结论仍应表述为“Sysplorer/Modelica 控制器闭环结果”；后续若要满足“Sysblock 仿真为主、代码仿真为辅”，必须把分层 Sysblock 控制器接入 QuadrotorModel 或 QuadrotorExperiments，并通过 `check_model/simulate_model/result_manager` 形成完整闭环证据。
 
-当前验证状态：三个分层模型已完成文件级结构草案；`AWFF_PositionOuterLoop_Sysblock` 已通过 `load_file`，但 `check_model` 返回失败且 MWORKS 未给出具体错误文本，失败诊断保存在：
-
-```text
-results/logs/sysplorer_layered_sysblock_check_failed_20260510_summary.json
-```
-
-因此分层模型暂不作为已验证仿真证据。下一步应按已通过的 `AWFF_PID_Sysblock_Demo` / 官方 `SimplePID` 导出形态继续收敛。
-
-补充诊断：进一步缩小到单轴位置环 `AWFF_PositionAxis_Sysblock` 后，仍然出现 `load_file` 成功但 `check_model` 失败且无具体错误文本，诊断保存在：
+当前验证状态：重新登录激活后，四个 Sysblock 控制器文件均已完成真实 Sysplorer MCP 复测：
 
 ```text
-results/logs/sysplorer_position_axis_check_failed_20260510_summary.json
+results/test_reports/sysplorer_sysblock_recheck_20260510.jsonl
+results/test_reports/sysplorer_sysblock_recheck_20260510_summary.json
 ```
-
-这说明问题不主要来自多端口复杂度，而更可能来自手写 Sysblock `.mo` 缺少 MWORKS/Sysblock 生成的绑定元数据或内部配置。后续不再盲目手写新的 Sysblock 控制器文件；应优先通过 MWORKS.Sysblock GUI/API 从已验证模型复制、另存或生成，再用 MCP 检查。
-
-当前模型已通过真实 Sysplorer MCP `load_file` 和 `check_model`，证据日志：
 
 ```text
-results/test_reports/sysplorer_awff_sysblock_demo_check_20260510.jsonl
+AWFF_PID_Sysblock_Demo: load_file/check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行
+AWFF_PositionOuterLoop_Sysblock: load_file/check_model 通过
+AWFF_AttitudeInnerLoop_Sysblock: load_file/check_model 通过
+AWFF_MotorMixer_Sysblock: load_file/check_model 通过
 ```
+
+历史失败日志 `results/logs/sysplorer_layered_sysblock_check_failed_20260510_summary.json` 和 `results/logs/sysplorer_position_axis_check_failed_20260510_summary.json` 保留为授权/登录状态异常时的诊断记录，不再代表当前模型状态。
+
+当前 Sysblock 主线仍缺少的证据是：把 position outer-loop、attitude inner-loop 和 motor mixer 接入同一四旋翼控制闭环，并完成主模型 `simulate_model` 与结果读取。
+
 
 | 场景 | controller | position_rmse_m | RMSE变化 | max_position_error_m | steady_state_error_m | max_tilt_rad | control_energy | control_smoothness | total_health_score |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|

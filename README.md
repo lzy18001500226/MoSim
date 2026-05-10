@@ -90,8 +90,8 @@ P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP
 
 ```text
 Sysplorer/Modelica 真实仿真：官方 baseline、Improved PID、Enhanced PID、AWFF PID、质量/风扰/旋翼退化消融已完成多组证据。
-Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model；完整位置环/姿态环/电机分配闭环尚未通过 check_model/simulate_model。
-后续优先级：通过 MWORKS.Sysblock GUI/API 生成正式控制器模型，再用 MCP 验证，不再把手写 Sysblock 草案作为主证据。
+Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/simulate_model/result_manager；位置环、姿态环、电机分配三个分层 Sysblock 模型已通过 load_file/check_model。
+后续优先级：把分层 Sysblock 控制器接入四旋翼主模型，形成 check_model/simulate_model/result_manager 闭环证据。
 ```
 
 ## QA 检查
