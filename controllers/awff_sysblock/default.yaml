@@ -14,15 +14,17 @@ implementation_status:
     - QuadrotorExperiments.Example2AWFFSysblockClosedLoop
     - QuadrotorExperiments.Example3AWFFSysblockClosedLoop
   sysblock_controller: AWFF_FullControllerEquation_Sysblock
-  verification_scope: 0-1 s smoke plus full Example1 50 s, Example2 50 s, and Example3 120 s closed-loop runs passed with real Sysplorer MCP evidence
+  verification_scope: official Example1 50 s, Example2 50 s, Example3 120 s, plus Example1 mass +20%, lateral gust, and rotor 1 loss 15% robustness runs passed with real Sysplorer MCP evidence
   limitation: >
     Current controller is a flattened equation-form Sysblock implementation
     used to avoid nested Sysblock port-resolution issues in mixed
     Sysplorer/Sysblock plant integration. It includes bounded position and
     attitude loops, filtered derivative terms, vertical conditional integration,
-    and output saturation. It now has full official Example1/2/3 evidence,
-    but still needs robustness validation before being claimed as the final
-    controller for disturbed and degraded scenarios.
+    and output saturation. It now has full official Example1/2/3 evidence
+    and three Example1 robustness scenarios. It still lacks explicit fault
+    detection, control allocation reconfiguration, and safety degradation
+    logic, so rotor-loss evidence is fixed-controller disturbance rejection
+    rather than full fault-tolerant control.
 
 model_interface:
   replacement_component: controller3_2
@@ -72,6 +74,15 @@ acceptance:
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
   full_example3:
     scenario_file: scenarios/official/example3_awff_sysblock.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
+  robust_mass20:
+    scenario_file: scenarios/robustness/example1_mass20_awff_sysblock.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
+  robust_wind_gust:
+    scenario_file: scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
+  robust_rotor1_loss15:
+    scenario_file: scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
 
 verified_results:
@@ -167,3 +178,42 @@ verified_results:
     steady_state_error_m: 0.0619050053
     max_tilt_rad: 0.2294259147
     total_health_score: 60.2812258564
+  robust_mass20:
+    scenario_file: scenarios/robustness/example1_mass20_awff_sysblock.yaml
+    raw_file: results/raw/robust_mass20_example1_awff_sysblock.csv
+    metrics_file: results/metrics/robust_mass20_example1_awff_sysblock.json
+    mcp_log: results/test_reports/sysplorer_robust_mass20_example1_awff_sysblock_20260510.jsonl
+    figure_dir: results/figures/robust_mass20_example1_awff_sysblock
+    replay_file: results/replay/robust_mass20_example1_awff_sysblock.json
+    row_count: 5001
+    duration_s: 50.0
+    position_rmse_m: 0.2827848404
+    steady_state_error_m: 0.1031118392
+    max_tilt_rad: 0.1741216310
+    total_health_score: 52.4435728028
+  robust_wind_gust:
+    scenario_file: scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
+    raw_file: results/raw/robust_wind_gust_example1_awff_sysblock.csv
+    metrics_file: results/metrics/robust_wind_gust_example1_awff_sysblock.json
+    mcp_log: results/test_reports/sysplorer_robust_wind_gust_example1_awff_sysblock_20260510.jsonl
+    figure_dir: results/figures/robust_wind_gust_example1_awff_sysblock
+    replay_file: results/replay/robust_wind_gust_example1_awff_sysblock.json
+    row_count: 5001
+    duration_s: 50.0
+    position_rmse_m: 0.3182242328
+    steady_state_error_m: 0.1031058861
+    max_tilt_rad: 0.1966454344
+    total_health_score: 55.0017007347
+  robust_rotor1_loss15:
+    scenario_file: scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
+    raw_file: results/raw/robust_rotor1_loss15_example1_awff_sysblock.csv
+    metrics_file: results/metrics/robust_rotor1_loss15_example1_awff_sysblock.json
+    mcp_log: results/test_reports/sysplorer_robust_rotor1_loss15_example1_awff_sysblock_20260510.jsonl
+    figure_dir: results/figures/robust_rotor1_loss15_example1_awff_sysblock
+    replay_file: results/replay/robust_rotor1_loss15_example1_awff_sysblock.json
+    row_count: 5001
+    duration_s: 50.0
+    position_rmse_m: 0.3690575238
+    steady_state_error_m: 0.2654186987
+    max_tilt_rad: 0.1746605348
+    total_health_score: 36.0438950524

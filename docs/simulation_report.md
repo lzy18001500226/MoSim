@@ -268,7 +268,7 @@ Sysblock 渐进验证指标如下，均为 `source=MWORKS_MCP`：
 
 结论：AWFF PID 相比官方 PID 的 RMSE 降低 `5.573%`，最大位置误差降低 `9.350%`，稳态误差降低 `7.382%`，最大倾角降低 `22.699%`；相比 Enhanced PID，RMSE 继续降低 `2.380%`，最大位置误差降低 `4.315%`，稳态误差和最大倾角基本持平。该结果说明独立控制器本体替换已经跑通，并且比“参数化官方 PID”有进一步轨迹精度收益。
 
-Sysblock 结论：`awff_sysblock` 在 Example1 50 s 全时长真实 Sysplorer MCP 仿真中达到与 `enhanced_pid` 基本一致的性能，并略高于其综合健康分。相比官方 PID，Sysblock 控制器 RMSE 降低 `3.283%`，稳态误差降低 `7.459%`，最大倾角降低 `22.723%`，控制平滑性降低 `88.137%`。在 Example2 螺旋爬升中，RMSE 与官方 PID 基本持平并略高 `0.043%`，但稳态误差降低 `9.495%`、最大倾角降低 `11.112%`、控制平滑性降低 `48.962%`。在 Example3 8字轨迹中，RMSE 降低 `3.274%`、稳态误差降低 `9.193%`、最大倾角降低 `19.916%`、控制平滑性降低 `62.527%`。该结果可以作为“MWORKS.Sysblock 控制器仿真为主”的完整官方场景证据。限制是：当前 Sysblock 仍未覆盖风扰、质量摄动和执行器退化鲁棒场景。
+Sysblock 结论：`awff_sysblock` 在 Example1 50 s 全时长真实 Sysplorer MCP 仿真中达到与 `enhanced_pid` 基本一致的性能，并略高于其综合健康分。相比官方 PID，Sysblock 控制器 RMSE 降低 `3.283%`，稳态误差降低 `7.459%`，最大倾角降低 `22.723%`，控制平滑性降低 `88.137%`。在 Example2 螺旋爬升中，RMSE 与官方 PID 基本持平并略高 `0.043%`，但稳态误差降低 `9.495%`、最大倾角降低 `11.112%`、控制平滑性降低 `48.962%`。在 Example3 8字轨迹中，RMSE 降低 `3.274%`、稳态误差降低 `9.193%`、最大倾角降低 `19.916%`、控制平滑性降低 `62.527%`。该结果可以作为“MWORKS.Sysblock 控制器仿真为主”的完整官方场景证据；鲁棒场景结论见第 9 节。
 
 限制：AWFF PID 当前 raw CSV 为 `25001` 行，而 baseline/enhanced 的正式 CSV 为 `5001` 行，因此 `constraint_violation_count` 和由采样点数量直接影响的健康分不做严格横向结论。下一步若继续对 AWFF 做正式消融，应补充时间归一化约束指标，或统一导出采样间隔后再比较 sample-count 类指标。
 
@@ -283,6 +283,8 @@ models/QuadrotorExperiments/package.mo
   QuadrotorExperiments.Example1Mass20PID
   QuadrotorExperiments.Example1Mass20ImprovedPID
   QuadrotorExperiments.Example1Mass20EnhancedPID
+models/QuadrotorExperiments/Example1Mass20AWFFSysblockClosedLoop.mo
+  QuadrotorExperiments.Example1Mass20AWFFSysblockClosedLoop
 ```
 
 场景配置：
@@ -291,6 +293,7 @@ models/QuadrotorExperiments/package.mo
 scenarios/robustness/example1_mass20_pid_baseline.yaml
 scenarios/robustness/example1_mass20_improved_pid.yaml
 scenarios/robustness/example1_mass20_enhanced_pid.yaml
+scenarios/robustness/example1_mass20_awff_sysblock.yaml
 ```
 
 以下结果均为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_robust_mass20_ablation`，每条仿真均完成 `check_model ok`、`simulate_model ok`，导出 `5001` 行 50 s raw CSV：
@@ -300,8 +303,9 @@ scenarios/robustness/example1_mass20_enhanced_pid.yaml
 | +20% 质量摄动 Example1 | baseline | 0.291441 | - | 0.111428 | - | 0.241303 | - | 47694.497455 | 118385.622197 | 51.820711 |
 | +20% 质量摄动 Example1 | improved_pid | 0.286484 | +1.701% | 0.105508 | +5.313% | 0.289414 | -19.938% | 47696.493455 | 180930.153014 | 51.886273 |
 | +20% 质量摄动 Example1 | enhanced_pid | 0.282610 | +3.030% | 0.103144 | +7.434% | 0.174124 | +27.840% | 47665.293902 | 13535.800229 | 52.444636 |
+| +20% 质量摄动 Example1 | awff_sysblock | 0.282785 | +2.970% | 0.103112 | +7.463% | 0.174122 | +27.841% | 47665.174880 | 13329.585348 | 52.443573 |
 
-消融结论：在同一 +20% 质量摄动下，Improved PID 主要改善轨迹 RMSE 和稳态误差，但最大倾角增加 `19.938%`，说明单纯增益搜索会引入姿态代价。Enhanced PID 在 RMSE、稳态误差、最大倾角、控制能量和控制平滑性上均优于同扰动 baseline，其中 RMSE 降低 `3.030%`，稳态误差降低 `7.434%`，最大倾角降低 `27.840%`。这条结果可以作为 P1 鲁棒控制场景的正式消融证据，但仍应在下一阶段补充风扰或执行器退化场景，避免只覆盖参数摄动。
+消融结论：在同一 +20% 质量摄动下，Improved PID 主要改善轨迹 RMSE 和稳态误差，但最大倾角增加 `19.938%`，说明单纯增益搜索会引入姿态代价。Enhanced PID 与 AWFF Sysblock 在 RMSE、稳态误差、最大倾角、控制能量和控制平滑性上均优于同扰动 baseline。AWFF Sysblock 相比 baseline 的 RMSE 降低 `2.970%`，稳态误差降低 `7.463%`，最大倾角降低 `27.841%`，控制平滑性降低 `88.741%`。该结果可作为 Sysblock 控制器质量参数鲁棒性的正式证据。
 
 
 
@@ -315,6 +319,8 @@ models/QuadrotorExperiments/package.mo
   QuadrotorExperiments.Example1WindGustPID
   QuadrotorExperiments.Example1WindGustImprovedPID
   QuadrotorExperiments.Example1WindGustEnhancedPID
+models/QuadrotorExperiments/Example1WindGustAWFFSysblockClosedLoop.mo
+  QuadrotorExperiments.Example1WindGustAWFFSysblockClosedLoop
 ```
 
 场景配置：
@@ -323,6 +329,7 @@ models/QuadrotorExperiments/package.mo
 scenarios/robustness/example1_wind_gust_pid_baseline.yaml
 scenarios/robustness/example1_wind_gust_improved_pid.yaml
 scenarios/robustness/example1_wind_gust_enhanced_pid.yaml
+scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
 ```
 
 以下结果均为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_robust_wind_gust_ablation`，每条仿真均完成 `check_model ok`、`simulate_model ok`，导出 `25001` 行 50 s raw CSV：
@@ -332,8 +339,9 @@ scenarios/robustness/example1_wind_gust_enhanced_pid.yaml
 | 15-19s 横向阵风 Example1 | baseline | 0.334706 | - | 0.753994 | - | 3.460 | 0.228849 | - | 137859.992546 | 51.989919 |
 | 15-19s 横向阵风 Example1 | improved_pid | 0.322116 | +3.762% | 0.699255 | +7.260% | 3.296 | 0.278640 | -21.757% | 199379.773866 | 52.117069 |
 | 15-19s 横向阵风 Example1 | enhanced_pid | 0.318260 | +4.914% | 0.696234 | +7.661% | 3.242 | 0.196606 | +14.089% | 13847.566948 | 55.004469 |
+| 15-19s 横向阵风 Example1 | awff_sysblock | 0.318224 | +4.924% | 0.696309 | +7.652% | 3.250 | 0.196645 | +14.072% | 13469.569440 | 55.001701 |
 
-消融结论：在同一横向阵风扰动下，Improved PID 可降低 RMSE 和扰动窗口峰值误差，但最大倾角增加 `21.757%`，说明仅靠增益搜索仍会提高姿态代价。Enhanced PID 相比 baseline 的 RMSE 降低 `4.914%`，扰动窗口峰值误差降低 `7.661%`，恢复时间从 `3.460 s` 缩短到 `3.242 s`，最大倾角降低 `14.089%`，控制平滑性显著改善。因此风扰场景可以作为 P1 外部扰动鲁棒性的正式证据。
+消融结论：在同一横向阵风扰动下，Improved PID 可降低 RMSE 和扰动窗口峰值误差，但最大倾角增加 `21.757%`，说明仅靠增益搜索仍会提高姿态代价。AWFF Sysblock 相比 baseline 的 RMSE 降低 `4.924%`，扰动窗口峰值误差降低 `7.652%`，恢复时间从 `3.460 s` 缩短到 `3.250 s`，最大倾角降低 `14.072%`，控制平滑性降低 `90.230%`。因此风扰场景可以作为 Sysblock 控制器外部扰动鲁棒性的正式证据。注意：该组 baseline/enhanced 历史结果导出为 `25001` 行，AWFF Sysblock 导出为 `5001` 行，RMSE、稳态误差和最大倾角可比，sample-count 直接影响的指标不做严格横向结论。
 
 
 
@@ -346,6 +354,8 @@ models/QuadrotorExperiments/package.mo
   QuadrotorExperiments.Example1Rotor1Loss15PID
   QuadrotorExperiments.Example1Rotor1Loss15ImprovedPID
   QuadrotorExperiments.Example1Rotor1Loss15EnhancedPID
+models/QuadrotorExperiments/Example1Rotor1Loss15AWFFSysblockClosedLoop.mo
+  QuadrotorExperiments.Example1Rotor1Loss15AWFFSysblockClosedLoop
 ```
 
 场景配置：
@@ -354,6 +364,7 @@ models/QuadrotorExperiments/package.mo
 scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml
 scenarios/robustness/example1_rotor1_loss15_improved_pid.yaml
 scenarios/robustness/example1_rotor1_loss15_enhanced_pid.yaml
+scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
 ```
 
 以下结果均为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_robust_rotor_loss_ablation`，每条仿真均完成 `check_model ok`、`simulate_model ok`，导出 `5001` 行 50 s raw CSV：
@@ -363,8 +374,9 @@ scenarios/robustness/example1_rotor1_loss15_enhanced_pid.yaml
 | 1号旋翼效率85% Example1 | baseline | 0.392120 | - | 0.286884 | 0.211287 | - | 67 | 108378.264647 | 35.625782 |
 | 1号旋翼效率85% Example1 | improved_pid | 0.371435 | +5.275% | 0.265699 | 0.254032 | -20.231% | 67 | 156441.284930 | 35.884927 |
 | 1号旋翼效率85% Example1 | enhanced_pid | 0.368251 | +6.087% | 0.265416 | 0.174661 | +17.335% | 65 | 13260.581317 | 36.050556 |
+| 1号旋翼效率85% Example1 | awff_sysblock | 0.369058 | +5.881% | 0.265419 | 0.174661 | +17.335% | 65 | 13248.907282 | 36.043895 |
 
-消融结论：单旋翼效率退化场景明显比质量摄动和横向阵风更困难，baseline 的 RMSE 增至 `0.392120 m`，健康分降至 `35.625782`。Improved PID 可降低 RMSE，但最大倾角增加 `20.231%`；Enhanced PID 相比 baseline 的 RMSE 降低 `6.087%`，最大倾角降低 `17.335%`，约束违规次数从 `67` 降到 `65`，并保持明显更低的控制平滑性指标。该场景可作为 P1 执行器退化/故障鲁棒性证据，但报告中应明确：当前控制器没有故障检测与重构逻辑，仍属于固定控制器在退化工况下的抗扰表现验证。
+消融结论：单旋翼效率退化场景明显比质量摄动和横向阵风更困难，baseline 的 RMSE 增至 `0.392120 m`，健康分降至 `35.625782`。Improved PID 可降低 RMSE，但最大倾角增加 `20.231%`；AWFF Sysblock 相比 baseline 的 RMSE 降低 `5.881%`，稳态误差降低 `7.482%`，最大倾角降低 `17.335%`，约束违规次数从 `67` 降到 `65`，控制平滑性降低 `87.775%`。该场景可作为 Sysblock 控制器执行器退化鲁棒性证据，但报告中应明确：当前控制器没有故障检测与控制分配重构逻辑，仍属于固定控制器在退化工况下的抗扰表现验证。
 
 ## 10. 当前图表
 
@@ -379,15 +391,21 @@ results/figures/official_example2_pid_baseline/
 results/figures/official_example2_improved_pid/
 results/figures/official_example3_pid_baseline/
 results/figures/official_example3_improved_pid/
+results/figures/official_example1_awff_sysblock/
+results/figures/official_example2_awff_sysblock/
+results/figures/official_example3_awff_sysblock/
 results/figures/robust_mass20_example1_pid_baseline/
 results/figures/robust_mass20_example1_improved_pid/
 results/figures/robust_mass20_example1_enhanced_pid/
+results/figures/robust_mass20_example1_awff_sysblock/
 results/figures/robust_wind_gust_example1_pid_baseline/
 results/figures/robust_wind_gust_example1_improved_pid/
 results/figures/robust_wind_gust_example1_enhanced_pid/
+results/figures/robust_wind_gust_example1_awff_sysblock/
 results/figures/robust_rotor1_loss15_example1_pid_baseline/
 results/figures/robust_rotor1_loss15_example1_improved_pid/
 results/figures/robust_rotor1_loss15_example1_enhanced_pid/
+results/figures/robust_rotor1_loss15_example1_awff_sysblock/
 ```
 
 已生成 replay JSON：
@@ -401,15 +419,21 @@ results/replay/official_example2_pid_baseline.json
 results/replay/official_example2_improved_pid.json
 results/replay/official_example3_pid_baseline.json
 results/replay/official_example3_improved_pid.json
+results/replay/official_example1_awff_sysblock.json
+results/replay/official_example2_awff_sysblock.json
+results/replay/official_example3_awff_sysblock.json
 results/replay/robust_mass20_example1_pid_baseline.json
 results/replay/robust_mass20_example1_improved_pid.json
 results/replay/robust_mass20_example1_enhanced_pid.json
+results/replay/robust_mass20_example1_awff_sysblock.json
 results/replay/robust_wind_gust_example1_pid_baseline.json
 results/replay/robust_wind_gust_example1_improved_pid.json
 results/replay/robust_wind_gust_example1_enhanced_pid.json
+results/replay/robust_wind_gust_example1_awff_sysblock.json
 results/replay/robust_rotor1_loss15_example1_pid_baseline.json
 results/replay/robust_rotor1_loss15_example1_improved_pid.json
 results/replay/robust_rotor1_loss15_example1_enhanced_pid.json
+results/replay/robust_rotor1_loss15_example1_awff_sysblock.json
 results/replay/reference_official_example1.json
 results/replay/reference_official_example2.json
 results/replay/reference_official_example3.json
@@ -421,7 +445,7 @@ results/replay/reference_official_example3.json
 
 此前用于横向展示的 Python/Julia 离线仿真结果已清理。当前报告结论只引用真实 Sysplorer/MWORKS MCP 证据。
 
-质量 +20% 参数摄动、15-19 s 横向阵风扰动、1 号旋翼 85% 效率退化和 Example1 AWFF 独立控制器替换已完成真实 MWORKS MCP 闭环。规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
+质量 +20% 参数摄动、15-19 s 横向阵风扰动、1 号旋翼 85% 效率退化、Example1 AWFF 独立控制器替换和 Example1/2/3 AWFF Sysblock 官方场景已完成真实 MWORKS MCP 闭环。规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
 
 ```text
 MWORKS/Sysplorer 模型或派生模型
@@ -432,31 +456,31 @@ MWORKS/Sysplorer 模型或派生模型
 → source=MWORKS_MCP 或 source=MWORKS_GUI
 ```
 
-下一阶段优先把一个高展示度场景升级为真实证据：
+下一阶段优先任务：
 
-1. 将 AWFF PID 扩展到风扰和执行器退化场景，形成独立控制器鲁棒消融；
-2. 增加时间归一化约束指标，修正不同导出采样间隔下的横向比较问题；
+1. 增加时间归一化约束指标，修正不同导出采样间隔下的横向比较问题；
+2. 在 Sysblock 主线中加入故障检测、控制分配重构或安全降级逻辑，区别于固定控制器抗扰；
 3. INDI 或线性 MPC 外环的最小可运行模型。
 
-更新状态：已补充 AWFF PID 的质量 +20%、横向阵风和 1 号旋翼 85% 效率退化派生模型及场景配置：
+更新状态：已补充 AWFF PID 与 AWFF Sysblock 的质量 +20%、横向阵风和 1 号旋翼 85% 效率退化派生模型及场景配置：
 
 ```text
 QuadrotorExperiments.Example1Mass20AntiWindupFeedforwardPID
 QuadrotorExperiments.Example1WindGustAntiWindupFeedforwardPID
 QuadrotorExperiments.Example1Rotor1Loss15AntiWindupFeedforwardPID
+QuadrotorExperiments.Example1Mass20AWFFSysblockClosedLoop
+QuadrotorExperiments.Example1WindGustAWFFSysblockClosedLoop
+QuadrotorExperiments.Example1Rotor1Loss15AWFFSysblockClosedLoop
 
 scenarios/robustness/example1_mass20_awff_pid.yaml
 scenarios/robustness/example1_wind_gust_awff_pid.yaml
 scenarios/robustness/example1_rotor1_loss15_awff_pid.yaml
+scenarios/robustness/example1_mass20_awff_sysblock.yaml
+scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
+scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
 ```
 
-但当前 Sysplorer 授权状态在 `check_model` 阶段返回：
-
-```text
-当前授权不允许变量方程数大于 300
-```
-
-因此这三条 AWFF 鲁棒场景暂记为“已建模、待授权条件下复验”，不进入本报告性能结论。已有 `official_example1_awff_pid` 成功结果仍保留为历史真实 MCP 证据；后续若重新验证 AWFF，应先确认授权不再触发变量/方程数量限制，或把 AWFF 控制器改造成更轻量的 Sysblock/Modelica 实现。
+授权恢复后，三条 AWFF Sysblock 鲁棒场景均已完成 `check_model/simulate_model/result_manager`，导出 `5001` 行 50 s raw CSV，并进入本报告性能结论。早期授权失效导致的失败日志只保留为诊断记录，不再代表当前模型状态。
 
 ## 12. 结论约束
 
