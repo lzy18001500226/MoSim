@@ -2,7 +2,7 @@
 
 本项目面向 A8 四旋翼无人机位姿控制系统设计优化赛题，基于 MWORKS.Sysplorer、Sysblock 和 Syslab 构建可复现的仿真验证工程。
 
-当前证据口径：项目目标以 **MWORKS.Sysblock 控制器仿真为主线**，Sysplorer/Modelica 闭环仿真和脚本指标计算为辅助。现阶段已经完成多组真实 Sysplorer MCP 性能证据；Sysblock 方向已完成 AWFF PID 高度环最小模型的 `load_file/check_model` 验证，但完整 Sysblock 闭环控制器仿真尚未完成，不能把现有 Modelica 结果表述为 Sysblock 主仿真结果。
+当前证据口径：项目目标以 **MWORKS.Sysblock 控制器仿真为主线**，Sysplorer/Modelica 闭环仿真和脚本指标计算为辅助。现阶段已经完成多组真实 Sysplorer MCP 性能证据；Sysblock 方向已完成 AWFF PID 高度环最小模型、位置环、姿态环、电机分配和组合控制器 `AWFF_FullController_Sysblock` 的真实 MCP 验证。组合控制器已经完成独立 `load_file/check_model/simulate_model/result_manager`，但尚未接入官方四旋翼主模型，因此不能把现有 Modelica 结果表述为 Sysblock 主闭环性能结果。
 
 核心闭环：
 
@@ -90,8 +90,8 @@ P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP
 
 ```text
 Sysplorer/Modelica 真实仿真：官方 baseline、Improved PID、Enhanced PID、AWFF PID、质量/风扰/旋翼退化消融已完成多组证据。
-Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/simulate_model/result_manager；位置环、姿态环、电机分配三个分层 Sysblock 模型已通过 load_file/check_model。
-后续优先级：把分层 Sysblock 控制器接入四旋翼主模型，形成 check_model/simulate_model/result_manager 闭环证据。
+Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/simulate_model/result_manager；位置环、姿态环、电机分配三个分层 Sysblock 模型已通过 load_file/check_model；AWFF_FullController_Sysblock 组合控制器已通过 load_file/check_model/simulate_model/result_manager。
+后续优先级：把 AWFF_FullController_Sysblock 接入官方四旋翼主模型，形成主模型 check_model/simulate_model/result_manager 闭环证据。
 ```
 
 ## QA 检查

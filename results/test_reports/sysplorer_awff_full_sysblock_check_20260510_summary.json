@@ -1,0 +1,33 @@
+{
+  "source": "MWORKS_MCP",
+  "evidence_level": "real_sysplorer_mcp_awff_full_sysblock_check",
+  "model_name": "AWFF_FullController_Sysblock",
+  "health_ok": true,
+  "loads": [
+    {
+      "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_PositionOuterLoop_Sysblock.mo",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_AttitudeInnerLoop_Sysblock.mo",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_MotorMixer_Sysblock.mo",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_FullController_Sysblock.mo",
+      "ok": true,
+      "error": ""
+    }
+  ],
+  "check_ok": true,
+  "simulate_ok": true,
+  "result_read_ok": true,
+  "result_series_count": 5,
+  "result_rows": 101
+}
