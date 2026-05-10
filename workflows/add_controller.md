@@ -56,6 +56,19 @@ debug
 9. Compare with PID baseline.
 10. Update documentation.
 
+For Sysblock controllers, do not treat hand-written `.mo` files as verified
+models unless the latest file has passed `load_file` and `check_model`. If a
+new block diagram is needed, create or duplicate it through MWORKS.Sysblock
+GUI/API so that generated binding metadata and internal configuration are
+present, then validate the generated files through MCP.
+
+Project rule:
+
+```text
+Sysblock screenshots support the report, but the controller simulation route
+must still be a real MWORKS/Sysplorer/Sysblock model with MCP or GUI evidence.
+```
+
 ---
 
 ## 4. Required Tests
@@ -91,3 +104,8 @@ comparison results
 3. Add saturation and limit checks.
 4. Log controller debug variables.
 5. If controller fails, provide fallback mode.
+6. If `check_model` fails because of license, variable/equation count, or
+   missing Sysblock metadata, record the failure log and mark the scenario as
+   pending instead of using old or offline results.
+7. Existing successful evidence logs must not be overwritten by failed reruns;
+   write failed rerun logs to a separate `.running` or diagnostic file.

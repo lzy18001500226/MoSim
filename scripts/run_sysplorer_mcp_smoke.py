@@ -229,9 +229,15 @@ def main() -> int:
     wrapper = resolve_wrapper(args.wrapper)
     target_time = [float(item.strip()) for item in args.target_time.split(",") if item.strip()]
     args.log_output.parent.mkdir(parents=True, exist_ok=True)
-    args.log_output.write_text("", encoding="utf-8")
+    final_log_output = args.log_output
+    protected_existing_log = final_log_output.exists()
+    active_log_output = final_log_output
+    if protected_existing_log:
+        active_log_output = final_log_output.with_name(f"{final_log_output.name}.running")
+    active_log_output.write_text("", encoding="utf-8")
 
-    client = JsonlMcpClient([wrapper], args.log_output)
+    client = JsonlMcpClient([wrapper], active_log_output)
+    success = False
     try:
         client.request(
             "initialize",
@@ -317,8 +323,11 @@ def main() -> int:
             args.controller_id,
             args.evidence_level,
         )
+        if active_log_output != final_log_output:
+            active_log_output.replace(final_log_output)
+        success = True
 
-        print(f"MCP log: {args.log_output}")
+        print(f"MCP log: {final_log_output}")
         print(f"Raw CSV: {args.raw_output}")
         print(f"Metrics JSON: {args.metrics_json}")
         print(f"Metrics CSV: {args.metrics_csv}")
@@ -326,6 +335,11 @@ def main() -> int:
         print(f"Check model: ok")
         print(f"Simulate model: ok")
     finally:
+        if not success and active_log_output != final_log_output:
+            print(
+                f"MCP failure log kept separate: {active_log_output}; existing log preserved: {final_log_output}",
+                file=sys.stderr,
+            )
         if args.shutdown_session:
             try:
                 shutdown = client.call_tool("session_manager", {"action": "shutdown"}, timeout_s=60)

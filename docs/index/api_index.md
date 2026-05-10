@@ -258,7 +258,33 @@ Then create a mapping from model-specific variable names to standard project nam
 
 ---
 
-## 7. API Usage Rules
+### How to create or extend a Sysblock controller?
+
+Known API evidence:
+
+```text
+OpenModelFile
+CheckModel
+TranslateModel
+SimulateModel
+GetComponents
+SetParamValue
+SetModelText
+ExportDiagram
+```
+
+The extracted Sysplorer API documents do not currently show a complete
+scripted interface for creating a new Sysblock model with all generated
+binding metadata. Therefore:
+
+1. Prefer MWORKS.Sysblock GUI/API generated models for new block diagrams.
+2. Use hand-written Sysblock `.mo` only as a draft until `check_model` passes.
+3. Store successful check/simulation evidence under `results/test_reports/`.
+4. Store failed check diagnostics under `results/logs/` or a preserved MCP log.
+
+---
+
+## 8. API Usage Rules
 
 1. Do not guess API names.
 2. Use `get_api_document` for Sysplorer API.

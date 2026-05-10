@@ -186,6 +186,13 @@ package QuadrotorExperiments
     extends Example1ProjectControllerBase;
   end Example1AntiWindupFeedforwardPID;
 
+  model Example1Mass20AntiWindupFeedforwardPID
+    "Example1 AWFF PID with +20% central body mass perturbation"
+    extends Example1ProjectControllerBase(
+      quadChassisTest17_1.body(m = 0.191405));
+    annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
+  end Example1Mass20AntiWindupFeedforwardPID;
+
   partial model Example1WindGustBase
     "Example1 with lateral world-frame gust force connected to the chassis body"
     extends QuadrotorModel.Examples.Example1;
@@ -213,6 +220,46 @@ package QuadrotorExperiments
     connect(gustForce.frame_b, quadChassisTest17_1.body.frame_b);
     annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
   end Example1WindGustBase;
+
+  partial model Example1WindGustProjectControllerBase
+    "Example1 project controller clone with lateral world-frame gust force"
+    extends Example1ProjectControllerBase;
+
+    parameter Real gust_force_x_N = 0.22;
+    parameter Real gust_force_y_N = -0.10;
+    parameter Real gust_start_s = 15.0;
+    parameter Real gust_duration_s = 4.0;
+    parameter Real gust_sine_amplitude_x_N = 0.08;
+    parameter Real gust_sine_amplitude_y_N = 0.04;
+    parameter Real gust_sine_frequency_Hz = 1.2;
+
+    Modelica.Mechanics.MultiBody.Forces.WorldForce gustForce(
+      resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameB.world,
+      animation = false);
+
+  equation
+    gustForce.force[1] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then
+      gust_force_x_N + gust_sine_amplitude_x_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s))
+      else 0;
+    gustForce.force[2] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then
+      gust_force_y_N + gust_sine_amplitude_y_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s))
+      else 0;
+    gustForce.force[3] = 0;
+    connect(gustForce.frame_b, quadChassisTest17_1.body.frame_b);
+    annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
+  end Example1WindGustProjectControllerBase;
+
+  model Example1WindGustAntiWindupFeedforwardPID
+    "Example1 AWFF PID with lateral gust disturbance"
+    extends Example1WindGustProjectControllerBase;
+  end Example1WindGustAntiWindupFeedforwardPID;
+
+  model Example1Rotor1Loss15AntiWindupFeedforwardPID
+    "Example1 AWFF PID with rotor 1 lift efficiency reduced to 85%"
+    extends Example1ProjectControllerBase(
+      quadChassisTest17_1.gain2(k = 0.0017));
+    annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
+  end Example1Rotor1Loss15AntiWindupFeedforwardPID;
 
   model Example1ImprovedPID
     "Example1 with project improved PID parameter set selected by MCP tuning"

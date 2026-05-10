@@ -359,6 +359,26 @@ MWORKS/Sysplorer 模型或派生模型
 2. 增加时间归一化约束指标，修正不同导出采样间隔下的横向比较问题；
 3. INDI 或线性 MPC 外环的最小可运行模型。
 
+更新状态：已补充 AWFF PID 的质量 +20%、横向阵风和 1 号旋翼 85% 效率退化派生模型及场景配置：
+
+```text
+QuadrotorExperiments.Example1Mass20AntiWindupFeedforwardPID
+QuadrotorExperiments.Example1WindGustAntiWindupFeedforwardPID
+QuadrotorExperiments.Example1Rotor1Loss15AntiWindupFeedforwardPID
+
+scenarios/robustness/example1_mass20_awff_pid.yaml
+scenarios/robustness/example1_wind_gust_awff_pid.yaml
+scenarios/robustness/example1_rotor1_loss15_awff_pid.yaml
+```
+
+但当前 Sysplorer 授权状态在 `check_model` 阶段返回：
+
+```text
+当前授权不允许变量方程数大于 300
+```
+
+因此这三条 AWFF 鲁棒场景暂记为“已建模、待授权条件下复验”，不进入本报告性能结论。已有 `official_example1_awff_pid` 成功结果仍保留为历史真实 MCP 证据；后续若重新验证 AWFF，应先确认授权不再触发变量/方程数量限制，或把 AWFF 控制器改造成更轻量的 Sysblock/Modelica 实现。
+
 ## 12. 结论约束
 
 1. 不使用 smoke 数据做完整控制性能结论。

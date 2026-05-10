@@ -1,9 +1,9 @@
 # Experiment Summary
 
 - CSV: `results/test_reports/experiment_summary.csv`
-- Total scenarios: `20`
+- Total scenarios: `23`
 - Done: `20`
-- Pending: `0`
+- Pending: `3`
 - Invalid: `0`
 
 ## Available Results
@@ -60,3 +60,6 @@
 
 | Experiment | Scene | Controller | Metrics File | Notes |
 |---|---|---|---|---|
+| robust_mass20_example1_awff_pid | robust_mass20_example1 | awff_pid | `results/metrics/robust_mass20_example1_awff_pid.json` | metrics missing |
+| robust_rotor1_loss15_example1_awff_pid | robust_rotor1_loss15_example1 | awff_pid | `results/metrics/robust_rotor1_loss15_example1_awff_pid.json` | metrics missing |
+| robust_wind_gust_example1_awff_pid | robust_wind_gust_example1 | awff_pid | `results/metrics/robust_wind_gust_example1_awff_pid.json` | metrics missing |
