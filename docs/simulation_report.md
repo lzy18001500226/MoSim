@@ -12,6 +12,7 @@
 官方 Example1/2/3 参考轨迹 CSV
 官方 Example1/2/3 完整 PID baseline CSV、指标和图表
 官方 Example1/2/3 MCP 参数搜索型 Improved PID CSV、指标和图表
+官方 Example1 Enhanced PID 完整 CSV、指标、图表和回放
 官方 Example1/2/3 浏览器三维回放 HTML
 Example1 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 ```
@@ -21,6 +22,7 @@ Example1 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 | 场景 | 官方模型 | 时长 | 当前状态 |
 |---|---|---:|---|
 | 阶梯爬升 | `QuadrotorModel.Examples.Example1` | 50 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
+| 阶梯爬升 Enhanced PID | `QuadrotorExperiments.Example1EnhancedPID` | 50 s | 导数滤波 + 保守限幅 Enhanced PID 已通过 Sysplorer MCP 仿真 |
 | 螺旋爬升 | `QuadrotorModel.Examples.Example2` | 50 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
 | 8字形运动 | `QuadrotorModel.Examples.Example3` | 120 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
 | Example1 smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已有 CSV、指标、图表 |
@@ -119,13 +121,28 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 
 结论：参数搜索型 Improved PID 相比官方 PID 在 Example1/2/3 上分别降低 RMSE `1.948%`、`1.508%` 和 `2.951%`，稳态误差分别降低 `5.291%`、`9.273%` 和 `9.141%`。代价是最大倾角和控制能量略有增加，因此该结果适合作为 P0 可复现优化基线，不应包装成最终控制创新；后续仍应推进带抗饱和、参考前馈或 NMPC/INDI 的真实模型集成。
 
-## 7. 当前图表
+## 7. Enhanced PID P1 初步结果
+
+`QuadrotorExperiments.Example1EnhancedPID` 在 `Example1ImprovedPID` 的 MCP 参数搜索结果基础上，显式设置 PID 导数环节滤波时间常数，并收紧姿态参考限幅和姿态/yaw 控制限幅。该分支仍复用官方控制器结构，不修改官方模型本体，定位为 P1 控制器替换前的真实模型增强验证。
+
+以下结果为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_full_enhanced_pid`：
+
+| 场景 | controller | position_rmse_m | RMSE变化 | steady_state_error_m | max_tilt_rad | control_energy | control_smoothness | total_health_score |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| Example1 阶梯爬升 | baseline | 0.275253 | - | 0.111457 | 0.225729 | 39925.003500 | 111765.785252 | 52.464469 |
+| Example1 阶梯爬升 | improved_pid | 0.269890 | +1.948% | 0.105559 | 0.273695 | 39926.972404 | 160907.671805 | 52.533227 |
+| Example1 阶梯爬升 | enhanced_pid | 0.266250 | +3.270% | 0.103184 | 0.174432 | 39896.485617 | 13260.747831 | 55.422450 |
+
+结论：Enhanced PID 在 Example1 完整 50 s 真实 Sysplorer MCP 仿真中，相比官方 PID 的 RMSE 降低 `3.270%`，稳态误差降低 `7.423%`，最大倾角降低 `22.733%`，控制平滑性指标明显改善；相比参数搜索型 Improved PID，RMSE 继续降低 `1.348%`，最大倾角降低 `36.268%`。该结果可以作为 P1 控制器增强的第一条真实证据。限制是：当前 Enhanced PID 仍通过参数化官方 PID 与限幅块实现，抗积分饱和和参考前馈尚未替换为独立控制器内部逻辑。
+
+## 8. 当前图表
 
 已生成图表：
 
 ```text
 results/figures/official_example1_pid_baseline/
 results/figures/official_example1_improved_pid/
+results/figures/official_example1_enhanced_pid/
 results/figures/official_example2_pid_baseline/
 results/figures/official_example2_improved_pid/
 results/figures/official_example3_pid_baseline/
@@ -137,6 +154,7 @@ results/figures/official_example3_improved_pid/
 ```text
 results/replay_html/official_example1_pid_baseline.html
 results/replay_html/official_example1_improved_pid.html
+results/replay_html/official_example1_enhanced_pid.html
 results/replay_html/official_example2_pid_baseline.html
 results/replay_html/official_example2_improved_pid.html
 results/replay_html/official_example3_pid_baseline.html
@@ -148,7 +166,7 @@ results/replay_html/reference_official_example3.html
 
 其中 `official_example*_*.html` 来自真实 Sysplorer MCP raw CSV，包含实际飞行轨迹和参考轨迹；`reference_official_example*.html` 仅为官方参考路径展示。
 
-## 8. 扩展场景状态
+## 9. 扩展场景状态
 
 此前用于横向展示的 Python/Julia 离线仿真结果已清理。当前报告结论只引用真实 Sysplorer/MWORKS MCP 证据。
 
@@ -166,10 +184,10 @@ MWORKS/Sysplorer 模型或派生模型
 下一阶段优先把一个高展示度场景升级为真实证据：
 
 1. 风扰/质量变化下的鲁棒控制对比；
-2. 改进 PID 的抗积分饱和、导数滤波和参考前馈真实模型实现；
+2. Enhanced PID 的抗积分饱和和参考前馈独立控制器实现；
 3. INDI 或线性 MPC 外环的最小可运行模型。
 
-## 9. 结论约束
+## 10. 结论约束
 
 1. 不使用 smoke 数据做完整控制性能结论。
 2. 不使用离线脚本结果作为 MWORKS 控制性能结论。

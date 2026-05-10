@@ -1,0 +1,81 @@
+controller_id: enhanced_pid
+type: filtered_limited_pid
+priority: P1
+
+description: >
+  Project enhanced PID branch based on the MCP-selected improved PID gains,
+  with explicit derivative filter time constants and conservative attitude /
+  command limit tightening. This is the first real-model P1 controller branch;
+  full anti-windup will be implemented by replacing the PID block internals in
+  a later step.
+
+features:
+  modelica_parameter_replacement: true
+  derivative_filter: true
+  attitude_reference_limit: true
+  command_limit_tightening: true
+  anti_windup: planned_controller_copy
+  reference_feedforward: planned
+
+implementation_status:
+  current_mworks_model: QuadrotorExperiments.Example1EnhancedPID
+  base_controller: controllers/improved_pid/default.yaml
+  verified_scope: Example1 smoke first, then full Example1 if smoke passes
+  planned_next_step: copy controller internals and replace PID integrator with saturation-aware integration
+
+model_interface:
+  replacement_component: controller3_2
+  compatible_source_model: QuadrotorModel.Blocks.Controller.Controller
+  implementation_target:
+    - Modelica derived experiment model
+  inputs:
+    position: sensors1_1.PosMea
+    attitude: sensors1_1.AngleMea
+    position_command: climbePath.position_command
+  outputs:
+    motor_1: y
+    motor_2: y1
+    motor_3: y2
+    motor_4: y3
+  required_result_variables:
+    - sensors1_1.PosMea[1]
+    - sensors1_1.PosMea[2]
+    - sensors1_1.PosMea[3]
+    - sensors1_1.AngleMea[1]
+    - sensors1_1.AngleMea[2]
+    - sensors1_1.AngleMea[3]
+    - climbePath.position_command[1]
+    - climbePath.position_command[2]
+    - climbePath.position_command[3]
+    - controller3_2.y
+    - controller3_2.y1
+    - controller3_2.y2
+    - controller3_2.y3
+
+position_loop:
+  kp: [1.65, 1.65, 8.0]
+  ki: [0.0, 0.0, 6.0]
+  kd: [1.0, 1.0, 4.0]
+  derivative_filter_T_s: [0.05, 0.05, 0.08]
+
+attitude_loop:
+  kp: [14.142, 14.142, 5.0]
+  ki: [0.0, 0.0, 0.0]
+  kd: [1.70, 1.70, 0.0]
+  derivative_filter_T_s: [0.03, 0.03, 0.08]
+
+limits:
+  roll_command_max_rad: 0.20944
+  pitch_command_max_rad: 0.20944
+  attitude_control_max: 6.5
+  yaw_control_max: 6.5
+
+acceptance:
+  smoke:
+    model_name: QuadrotorExperiments.Example1EnhancedPID
+    stop_time_s: 1.0
+    required: check_model and simulate_model pass
+  full_example1:
+    baseline_experiment: official_example1_pid_baseline
+    comparison_experiment: official_example1_improved_pid
+    expected: stable full run with no NaN and metrics available

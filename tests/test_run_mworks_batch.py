@@ -6,6 +6,7 @@ from __future__ import annotations
 import subprocess
 import sys
 from pathlib import Path
+import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,7 +29,8 @@ def main() -> int:
     output = proc.stdout
     if "example1_pid_mcp_smoke.yaml" not in output:
         raise AssertionError(output)
-    if "Skipped existing: 1" not in output:
+    match = re.search(r"Skipped existing: (\d+)", output)
+    if not match or int(match.group(1)) < 1:
         raise AssertionError(output)
     if "Failures: 0" not in output:
         raise AssertionError(output)

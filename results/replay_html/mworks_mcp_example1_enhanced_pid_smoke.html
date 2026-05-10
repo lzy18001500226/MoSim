@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>mworks_mcp_example1 三维回放</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0f1117;
+      color: #eef3fb;
+      font-family: Arial, "Microsoft YaHei", sans-serif;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+    }
+    #hud {
+      position: fixed;
+      left: 18px;
+      top: 16px;
+      z-index: 2;
+      width: min(420px, calc(100vw - 36px));
+      padding: 12px 14px;
+      background: rgba(14, 18, 28, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+      box-sizing: border-box;
+    }
+    #title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    #meta {
+      display: grid;
+      gap: 4px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #bbc6db;
+    }
+    #controls {
+      position: fixed;
+      left: 18px;
+      right: 18px;
+      bottom: 16px;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 12px;
+      background: rgba(14, 18, 28, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+      box-sizing: border-box;
+    }
+    button {
+      height: 34px;
+      min-width: 64px;
+      padding: 0 14px;
+      color: #10131c;
+      background: #8fd3ff;
+      border: 0;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: #8fd3ff;
+    }
+    #timeLabel {
+      min-width: 92px;
+      font-variant-numeric: tabular-nums;
+      color: #eef3fb;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="scene"></canvas>
+  <div id="hud">
+    <div id="title">mworks_mcp_example1 三维回放</div>
+    <div id="meta">
+      <div>模型：QuadrotorExperiments.Example1EnhancedPID</div>
+      <div>说明：Example1 Enhanced PID 0-1 s MCP 链路烟雾测试</div>
+      <div>帧数：101</div>
+      <div>数据：results/raw/mworks_mcp_example1_enhanced_pid_smoke.csv</div>
+      <div>渲染：离线 Canvas 3D 投影，无外部依赖</div>
+    </div>
+  </div>
+  <div id="controls">
+    <button id="play">暂停</button>
+    <input id="scrub" type="range" min="0" max="100" value="0" step="1">
+    <div id="timeLabel">0.00 s</div>
+  </div>
+  <script>
+    const replay = {"scene_id": "mworks_mcp_example1", "model_name": "QuadrotorExperiments.Example1EnhancedPID", "description": "Example1 Enhanced PID 0-1 s MCP 链路烟雾测试", "source": "results/raw/mworks_mcp_example1_enhanced_pid_smoke.csv", "frame_count": 101, "frames": [{"time": 0.0, "uav": [{"id": "actual", "position": [0.0, 0.0, 0.0], "yaw": -0.0}, {"id": "reference", "position": [0.0, 0.0, 0.0], "yaw": 0.0}]}, {"time": 0.01, "uav": [{"id": "actual", "position": [-3.1234418895580527e-15, -2.6243390429871604e-15, 1.5574128940343295e-06], "yaw": 1.1401539159955583e-13}, {"id": "reference", "position": [0.0, 0.0, 0.02], "yaw": 0.0}]}, {"time": 0.02, "uav": [{"id": "actual", "position": [-6.19827983173474e-15, -5.315283062872975e-15, 3.1283913710842473e-06], "yaw": -7.29550016578997e-13}, {"id": "reference", "position": [0.0, 0.0, 0.04], "yaw": 0.0}]}, {"time": 0.03, "uav": [{"id": "actual", "position": [-9.199810766481279e-15, -7.949850286278686e-15, 4.7242801308625594e-06], "yaw": 1.3902927740111838e-12}, {"id": "reference", "position": [0.0, 0.0, 0.06], "yaw": 0.0}]}, {"time": 0.04, "uav": [{"id": "actual", "position": [-1.1815402263733349e-14, -1.0337422708304137e-14, 6.3535284494904825e-06], "yaw": 3.65016377267936e-12}, {"id": "reference", "position": [0.0, 0.0, 0.08], "yaw": 0.0}]}, {"time": 0.05, "uav": [{"id": "actual", "position": [-1.3979752306770035e-14, -1.2180497089272235e-14, 8.021905763983493e-06], "yaw": 4.898587574623888e-12}, {"id": "reference", "position": [0.0, 0.0, 0.1], "yaw": 0.0}]}, {"time": 0.06, "uav": [{"id": "actual", "position": [-1.5534861134681348e-14, -1.3237932374529744e-14, 9.73310516032837e-06], "yaw": 4.403838550163979e-12}, {"id": "reference", "position": [0.0, 0.0, 0.12], "yaw": 0.0}]}, {"time": 0.07, "uav": [{"id": "actual", "position": [-1.6167652997510243e-14, -1.322206910141225e-14, 1.1489262836443046e-05], "yaw": 8.008463265686797e-12}, {"id": "reference", "position": [0.0, 0.0, 0.14], "yaw": 0.0}]}, {"time": 0.08, "uav": [{"id": "actual", "position": [-1.601622657272705e-14, -1.2760146081077801e-14, 1.3291371300516443e-05], "yaw": 1.2743174733657858e-11}, {"id": "reference", "position": [0.0, 0.0, 0.16], "yaw": 0.0}]}, {"time": 0.09, "uav": [{"id": "actual", "position": [-1.5311490466348377e-14, -1.2249678884200881e-14, 1.5139597916271684e-05], "yaw": 1.657314752067094e-11}, {"id": "reference", "position": [0.0, 0.0, 0.18], "yaw": 0.0}]}, {"time": 0.1, "uav": [{"id": "actual", "position": [-1.409600349298429e-14, -1.1212617330672579e-14, 1.703353662245745e-05], "yaw": 2.1824262296489817e-11}, {"id": "reference", "position": [0.0, 0.0, 0.2], "yaw": 0.0}]}, {"time": 0.11, "uav": [{"id": "actual", "position": [-1.2595144141826757e-14, -1.0144210584422338e-14, 1.8972406918658e-05], "yaw": 2.790597338288203e-11}, {"id": "reference", "position": [0.0, 0.0, 0.22000000000000003], "yaw": 0.0}]}, {"time": 0.12, "uav": [{"id": "actual", "position": [-1.0765065230984143e-14, -9.258249454130661e-15, 2.0955197856510874e-05], "yaw": 3.737837202338087e-11}, {"id": "reference", "position": [0.0, 0.0, 0.24], "yaw": 0.0}]}, {"time": 0.13, "uav": [{"id": "actual", "position": [-9.036549685077481e-15, -8.915702195257072e-15, 2.2980788303672254e-05], "yaw": 4.791488329589817e-11}, {"id": "reference", "position": [0.0, 0.0, 0.26], "yaw": 0.0}]}, {"time": 0.14, "uav": [{"id": "actual", "position": [-7.726508586763247e-15, -9.528756748439461e-15, 2.504798985203888e-05], "yaw": 5.523382982054806e-11}, {"id": "reference", "position": [0.0, 0.0, 0.28], "yaw": 0.0}]}, {"time": 0.15, "uav": [{"id": "actual", "position": [-7.094433138752673e-15, -1.1028526349920685e-14, 2.715563032218044e-05], "yaw": 5.775905576876603e-11}, {"id": "reference", "position": [0.0, 0.0, 0.3], "yaw": 0.0}]}, {"time": 0.16, "uav": [{"id": "actual", "position": [-6.579118292397468e-15, -1.2442891466289882e-14, 2.9302588995991382e-05], "yaw": 6.346387361105972e-11}, {"id": "reference", "position": [0.0, 0.0, 0.32], "yaw": 0.0}]}, {"time": 0.17, "uav": [{"id": "actual", "position": [-5.940207628968778e-15, -1.369517681101272e-14, 3.148782044162718e-05], "yaw": 7.007129341236832e-11}, {"id": "reference", "position": [0.0, 0.0, 0.34], "yaw": 0.0}]}, {"time": 0.18, "uav": [{"id": "actual", "position": [-5.2156440749827616e-15, -1.5035705066869576e-14, 3.371037249560865e-05], "yaw": 7.182430126945243e-11}, {"id": "reference", "position": [0.0, 0.0, 0.36], "yaw": 0.0}]}, {"time": 0.19, "uav": [{"id": "actual", "position": [-4.428900044179081e-15, -1.6403857580927036e-14, 3.5969397640033396e-05], "yaw": 6.646306101474173e-11}, {"id": "reference", "position": [0.0, 0.0, 0.38], "yaw": 0.0}]}, {"time": 0.2, "uav": [{"id": "actual", "position": [-3.2204320850130598e-15, -1.7058876697971853e-14, 3.826415498149145e-05], "yaw": 5.917751989734623e-11}, {"id": "reference", "position": [0.0, 0.0, 0.4], "yaw": 0.0}]}, {"time": 0.21, "uav": [{"id": "actual", "position": [-1.6292060134706212e-15, -1.6813650044662167e-14, 4.059401247664702e-05], "yaw": 5.0351447621473675e-11}, {"id": "reference", "position": [0.0, 0.0, 0.42000000000000004], "yaw": 0.0}]}, {"time": 0.22, "uav": [{"id": "actual", "position": [-2.294691235237786e-16, -1.6153853004129232e-14, 4.295844618182319e-05], "yaw": 4.009311488558342e-11}, {"id": "reference", "position": [0.0, 0.0, 0.44000000000000006], "yaw": 0.0}]}, {"time": 0.23, "uav": [{"id": "actual", "position": [5.770360941502961e-16, -1.5224807687804863e-14, 4.535703808060224e-05], "yaw": 2.902069940860978e-11}, {"id": "reference", "position": [0.0, 0.0, 0.4600000000000001], "yaw": 0.0}]}, {"time": 0.24, "uav": [{"id": "actual", "position": [1.1075738680442883e-15, -1.3064196678930789e-14, 4.7789471009397174e-05], "yaw": 1.947615569995228e-11}, {"id": "reference", "position": [0.0, 0.0, 0.48], "yaw": 0.0}]}, {"time": 0.25, "uav": [{"id": "actual", "position": [9.205554304838494e-16, -1.0479048097118797e-14, 5.025552255128094e-05], "yaw": 1.0270860300868022e-11}, {"id": "reference", "position": [0.0, 0.0, 0.5], "yaw": 0.0}]}, {"time": 0.26, "uav": [{"id": "actual", "position": [-2.4876317113856187e-17, -7.90334010363092e-15, 5.2755061978369166e-05], "yaw": 8.501127169261761e-13}, {"id": "reference", "position": [0.0, 0.0, 0.52], "yaw": 0.0}]}, {"time": 0.27, "uav": [{"id": "actual", "position": [-1.7342716919273205e-15, -5.967929021938508e-15, 5.5288042597127055e-05], "yaw": -9.412427741592701e-12}, {"id": "reference", "position": [0.0, 0.0, 0.54], "yaw": 0.0}]}, {"time": 0.28, "uav": [{"id": "actual", "position": [-3.729381579160696e-15, -4.567861041452919e-15, 5.785449718297377e-05], "yaw": -2.0203966738238745e-11}, {"id": "reference", "position": [0.0, 0.0, 0.56], "yaw": 0.0}]}, {"time": 0.29, "uav": [{"id": "actual", "position": [-5.1770337219679845e-15, -3.1810270925876555e-15, 6.04545323087843e-05], "yaw": -3.0356787742604224e-11}, {"id": "reference", "position": [0.0, 0.0, 0.58], "yaw": 0.0}]}, {"time": 0.3, "uav": [{"id": "actual", "position": [-4.9823488011568555e-15, -1.2552123553380238e-15, 6.308832268168613e-05], "yaw": -3.862049790176463e-11}, {"id": "reference", "position": [0.0, 0.0, 0.6], "yaw": 0.0}]}, {"time": 0.31, "uav": [{"id": "actual", "position": [-1.8321078507291012e-15, 2.1539465638870893e-15, 6.575610594241397e-05], "yaw": -4.3084302667459155e-11}, {"id": "reference", "position": [0.0, 0.0, 0.62], "yaw": 0.0}]}, {"time": 0.32, "uav": [{"id": "actual", "position": [3.851434615411226e-15, 5.328210671627478e-15, 6.845817825780384e-05], "yaw": -4.679290720432397e-11}, {"id": "reference", "position": [0.0, 0.0, 0.64], "yaw": 0.0}]}, {"time": 0.33, "uav": [{"id": "actual", "position": [1.1647546912972248e-14, 7.90293922745884e-15, 7.119520284928961e-05], "yaw": -5.1654112917759526e-11}, {"id": "reference", "position": [0.0, 0.0, 0.66], "yaw": 0.0}]}, {"time": 0.34, "uav": [{"id": "actual", "position": [1.993201571816521e-14, 1.3662750507308762e-14, 7.396920271762327e-05], "yaw": -5.762002275153129e-11}, {"id": "reference", "position": [0.0, 0.0, 0.68], "yaw": 0.0}]}, {"time": 0.35000000000000003, "uav": [{"id": "actual", "position": [2.638411171865253e-14, 3.994468669916277e-14, 7.679124534388134e-05], "yaw": -6.662306188237628e-11}, {"id": "reference", "position": [0.0, 0.0, 0.7000000000000001], "yaw": 0.0}]}, {"time": 0.36, "uav": [{"id": "actual", "position": [3.1217337406244665e-14, 1.7962348928937573e-13, 7.971736164259143e-05], "yaw": -7.533354511850021e-11}, {"id": "reference", "position": [0.0, 0.0, 0.72], "yaw": 0.0}]}, {"time": 0.37, "uav": [{"id": "actual", "position": [3.313053337778848e-14, 5.334730192127591e-13, 8.336469540812083e-05], "yaw": -8.093146166942669e-11}, {"id": "reference", "position": [0.0, 0.0, 0.74], "yaw": 0.0}]}, {"time": 0.38, "uav": [{"id": "actual", "position": [3.547919612889028e-14, 9.022085638448511e-13, 0.00013562343519986925], "yaw": -9.154829743503844e-11}, {"id": "reference", "position": [0.0, 0.0, 0.76], "yaw": 0.0}]}, {"time": 0.39, "uav": [{"id": "actual", "position": [3.665624309967578e-14, 9.123190260807754e-13, 0.0002965360320299614], "yaw": -9.995687944496026e-11}, {"id": "reference", "position": [0.0, 0.0, 0.78], "yaw": 0.0}]}, {"time": 0.4, "uav": [{"id": "actual", "position": [3.809597623087991e-14, 5.736097611721003e-13, 0.000600939321842966], "yaw": -1.0694383846192259e-10}, {"id": "reference", "position": [0.0, 0.0, 0.8], "yaw": 0.0}]}, {"time": 0.41000000000000003, "uav": [{"id": "actual", "position": [4.0905545297789343e-14, 4.691407648123815e-14, 0.0010616249551165283], "yaw": -1.140554370355477e-10}, {"id": "reference", "position": [0.0, 0.0, 0.8200000000000001], "yaw": 0.0}]}, {"time": 0.42, "uav": [{"id": "actual", "position": [4.4417231380127586e-14, -5.174278746629178e-13, 0.0017132528051964188], "yaw": -1.2123772344720325e-10}, {"id": "reference", "position": [0.0, 0.0, 0.8400000000000001], "yaw": 0.0}]}, {"time": 0.43, "uav": [{"id": "actual", "position": [4.772119538367732e-14, -9.854837253783035e-13, 0.00258432761846109], "yaw": -1.2849634544211232e-10}, {"id": "reference", "position": [0.0, 0.0, 0.86], "yaw": 0.0}]}, {"time": 0.44, "uav": [{"id": "actual", "position": [5.0054768826944155e-14, -1.269940911966475e-12, 0.0037031147827160642], "yaw": -1.3590567176878015e-10}, {"id": "reference", "position": [0.0, 0.0, 0.8800000000000001], "yaw": 0.0}]}, {"time": 0.45, "uav": [{"id": "actual", "position": [5.130809150915668e-14, -1.3796515382522196e-12, 0.0050958631042907765], "yaw": -1.428779323553913e-10}, {"id": "reference", "position": [0.0, 0.0, 0.9], "yaw": 0.0}]}, {"time": 0.46, "uav": [{"id": "actual", "position": [5.178371051144654e-14, -1.393383376035078e-12, 0.006787066452946837], "yaw": -1.491978581690817e-10}, {"id": "reference", "position": [0.0, 0.0, 0.9200000000000002], "yaw": 0.0}]}, {"time": 0.47000000000000003, "uav": [{"id": "actual", "position": [5.191887220849053e-14, -1.4084867781932814e-12, 0.008800245511052848], "yaw": -1.5504988896386154e-10}, {"id": "reference", "position": [0.0, 0.0, 0.9400000000000001], "yaw": 0.0}]}, {"time": 0.48, "uav": [{"id": "actual", "position": [5.2246745564900666e-14, -1.5098230214755024e-12, 0.011157567289435484], "yaw": -1.6076321996622967e-10}, {"id": "reference", "position": [0.0, 0.0, 0.96], "yaw": 0.0}]}, {"time": 0.49, "uav": [{"id": "actual", "position": [5.3178086590130496e-14, -1.7356783740958175e-12, 0.013878683154794649], "yaw": -1.6687571974068992e-10}, {"id": "reference", "position": [0.0, 0.0, 0.9800000000000001], "yaw": 0.0}]}, {"time": 0.5, "uav": [{"id": "actual", "position": [5.505021017224162e-14, -2.104862854470541e-12, 0.016983247722315308], "yaw": -1.7348011870563403e-10}, {"id": "reference", "position": [0.0, 0.0, 1.0], "yaw": 0.0}]}, {"time": 0.51, "uav": [{"id": "actual", "position": [5.795183529294395e-14, -2.5596114655178674e-12, 0.020488705122851714], "yaw": -1.8007945380996251e-10}, {"id": "reference", "position": [0.0, 0.0, 1.02], "yaw": 0.0}]}, {"time": 0.52, "uav": [{"id": "actual", "position": [6.164719010151652e-14, -3.0280134994574912e-12, 0.024410543640462832], "yaw": -1.8685871084812106e-10}, {"id": "reference", "position": [0.0, 0.0, 1.04], "yaw": 0.0}]}, {"time": 0.53, "uav": [{"id": "actual", "position": [6.566086948869223e-14, -3.416828383752607e-12, 0.02876232004583133], "yaw": -1.9388182234638704e-10}, {"id": "reference", "position": [0.0, 0.0, 1.06], "yaw": 0.0}]}, {"time": 0.54, "uav": [{"id": "actual", "position": [6.951329789605281e-14, -3.696012636780757e-12, 0.03355654147275585], "yaw": -2.0062238721901451e-10}, {"id": "reference", "position": [0.0, 0.0, 1.08], "yaw": 0.0}]}, {"time": 0.55, "uav": [{"id": "actual", "position": [7.27592766382944e-14, -3.848086803209352e-12, 0.038803553152314485], "yaw": -2.0703213213116463e-10}, {"id": "reference", "position": [0.0, 0.0, 1.1], "yaw": 0.0}]}, {"time": 0.56, "uav": [{"id": "actual", "position": [7.53165593065824e-14, -3.9467212546740486e-12, 0.04451234511987407], "yaw": -2.1307074424205e-10}, {"id": "reference", "position": [0.0, 0.0, 1.12], "yaw": 0.0}]}, {"time": 0.5700000000000001, "uav": [{"id": "actual", "position": [7.705686290416152e-14, -4.043035281482213e-12, 0.05069022634571103], "yaw": -2.1872344822114766e-10}, {"id": "reference", "position": [0.0, 0.0, 1.1400000000000001], "yaw": 0.0}]}, {"time": 0.58, "uav": [{"id": "actual", "position": [7.826445049474408e-14, -4.20578274603701e-12, 0.05734307263830667], "yaw": -2.24188869072734e-10}, {"id": "reference", "position": [0.0, 0.0, 1.16], "yaw": 0.0}]}, {"time": 0.59, "uav": [{"id": "actual", "position": [7.931017216832483e-14, -4.501810955279237e-12, 0.06447524930599603], "yaw": -2.2962899334148096e-10}, {"id": "reference", "position": [0.0, 0.0, 1.18], "yaw": 0.0}]}, {"time": 0.6, "uav": [{"id": "actual", "position": [8.065022897425036e-14, -4.93611012908164e-12, 0.07208978388194526], "yaw": -2.3506107345966794e-10}, {"id": "reference", "position": [0.0, 0.0, 1.2], "yaw": 0.0}]}, {"time": 0.61, "uav": [{"id": "actual", "position": [8.292178324103789e-14, -5.495342380205689e-12, 0.08018830768956266], "yaw": -2.406599299796236e-10}, {"id": "reference", "position": [0.0, 0.0, 1.22], "yaw": 0.0}]}, {"time": 0.62, "uav": [{"id": "actual", "position": [8.574163447674395e-14, -6.083843817152179e-12, 0.08877121420164068], "yaw": -2.464301066091352e-10}, {"id": "reference", "position": [0.0, 0.0, 1.24], "yaw": 0.0}]}, {"time": 0.63, "uav": [{"id": "actual", "position": [8.903657466107044e-14, -6.5284901787609866e-12, 0.09783763739476976], "yaw": -2.5233382005809233e-10}, {"id": "reference", "position": [0.0, 0.0, 1.26], "yaw": 0.0}]}, {"time": 0.64, "uav": [{"id": "actual", "position": [9.257039609893134e-14, -6.848435395716464e-12, 0.10738568828672276], "yaw": -2.584663869451221e-10}, {"id": "reference", "position": [0.0, 0.0, 1.28], "yaw": 0.0}]}, {"time": 0.65, "uav": [{"id": "actual", "position": [9.556650641479135e-14, -6.969581715830655e-12, 0.11741237067911245], "yaw": -2.647945572179039e-10}, {"id": "reference", "position": [0.0, 0.0, 1.3], "yaw": 0.0}]}, {"time": 0.66, "uav": [{"id": "actual", "position": [9.74068855234003e-14, -6.876641806194477e-12, 0.12791374473975992], "yaw": -2.7124961701140796e-10}, {"id": "reference", "position": [0.0, 0.0, 1.32], "yaw": 0.0}]}, {"time": 0.67, "uav": [{"id": "actual", "position": [9.854038517109337e-14, -6.71945985877126e-12, 0.13888508178454378], "yaw": -2.777627048023844e-10}, {"id": "reference", "position": [0.0, 0.0, 1.34], "yaw": 0.0}]}, {"time": 0.68, "uav": [{"id": "actual", "position": [9.858582266549345e-14, -6.6794505102445916e-12, 0.15032078764365453], "yaw": -2.842198556980207e-10}, {"id": "reference", "position": [0.0, 0.0, 1.36], "yaw": 0.0}]}, {"time": 0.6900000000000001, "uav": [{"id": "actual", "position": [9.78593502365679e-14, -6.758789827313167e-12, 0.16221462381088678], "yaw": -2.906623369053973e-10}, {"id": "reference", "position": [0.0, 0.0, 1.3800000000000001], "yaw": 0.0}]}, {"time": 0.7000000000000001, "uav": [{"id": "actual", "position": [9.705700160525565e-14, -7.050660988182866e-12, 0.17455973527684987], "yaw": -2.9713421051783344e-10}, {"id": "reference", "position": [0.0, 0.0, 1.4000000000000001], "yaw": 0.0}]}, {"time": 0.71, "uav": [{"id": "actual", "position": [9.720190253065214e-14, -7.714308885502475e-12, 0.18734872993005644], "yaw": -3.0369333433567096e-10}, {"id": "reference", "position": [0.0, 0.0, 1.42], "yaw": 0.0}]}, {"time": 0.72, "uav": [{"id": "actual", "position": [9.69854690970985e-14, -8.453401846798079e-12, 0.2005736757166796], "yaw": -3.104215762903805e-10}, {"id": "reference", "position": [0.0, 0.0, 1.44], "yaw": 0.0}]}, {"time": 0.73, "uav": [{"id": "actual", "position": [9.703737635731414e-14, -9.155562291311903e-12, 0.2142263313541982], "yaw": -3.1751918798737565e-10}, {"id": "reference", "position": [0.0, 0.0, 1.46], "yaw": 0.0}]}, {"time": 0.74, "uav": [{"id": "actual", "position": [9.720226446488675e-14, -9.54385987502381e-12, 0.22829811006250153], "yaw": -3.2521590363996323e-10}, {"id": "reference", "position": [0.0, 0.0, 1.48], "yaw": 0.0}]}, {"time": 0.75, "uav": [{"id": "actual", "position": [9.763259047321854e-14, -9.946121464140493e-12, 0.2427799989712552], "yaw": -3.3344897743120914e-10}, {"id": "reference", "position": [0.0, 0.0, 1.5], "yaw": 0.0}]}, {"time": 0.76, "uav": [{"id": "actual", "position": [9.778897933304737e-14, -1.0069775033636097e-11, 0.2576629441625589], "yaw": -3.424610334662154e-10}, {"id": "reference", "position": [0.0, 0.0, 1.52], "yaw": 0.0}]}, {"time": 0.77, "uav": [{"id": "actual", "position": [9.70964327084211e-14, -9.826287584676536e-12, 0.2729377064534069], "yaw": -3.523880729239997e-10}, {"id": "reference", "position": [0.0, 0.0, 1.54], "yaw": 0.0}]}, {"time": 0.78, "uav": [{"id": "actual", "position": [9.754779106104195e-14, -9.515406167052205e-12, 0.2885946706995451], "yaw": -3.629501284852695e-10}, {"id": "reference", "position": [0.0, 0.0, 1.56], "yaw": 0.0}]}, {"time": 0.79, "uav": [{"id": "actual", "position": [9.903907219243415e-14, -9.229428565289666e-12, 0.3046244269732497], "yaw": -3.7409933232812444e-10}, {"id": "reference", "position": [0.0, 0.0, 1.58], "yaw": 0.0}]}, {"time": 0.8, "uav": [{"id": "actual", "position": [1.0250458479792604e-13, -9.275429315435939e-12, 0.32101748924658075], "yaw": -3.855640122296885e-10}, {"id": "reference", "position": [0.0, 0.0, 1.6], "yaw": 0.0}]}, {"time": 0.81, "uav": [{"id": "actual", "position": [1.069714330914653e-13, -9.413365236530406e-12, 0.3377642525688782], "yaw": -3.9755094215751036e-10}, {"id": "reference", "position": [0.0, 0.0, 1.6200000000000003], "yaw": 0.0}]}, {"time": 0.8200000000000001, "uav": [{"id": "actual", "position": [1.1262407100245512e-13, -9.83324307932617e-12, 0.3548553515301939], "yaw": -4.098377235813058e-10}, {"id": "reference", "position": [0.0, 0.0, 1.6400000000000001], "yaw": 0.0}]}, {"time": 0.8300000000000001, "uav": [{"id": "actual", "position": [1.1972878743792305e-13, -1.0932326312272745e-11, 0.3722817205102228], "yaw": -4.2169258748234354e-10}, {"id": "reference", "position": [0.0, 0.0, 1.6600000000000001], "yaw": 0.0}]}, {"time": 0.84, "uav": [{"id": "actual", "position": [1.2597834002131217e-13, -1.1849004466641852e-11, 0.3900332900652669], "yaw": -4.3312806007101565e-10}, {"id": "reference", "position": [0.0, 0.0, 1.6800000000000002], "yaw": 0.0}]}, {"time": 0.85, "uav": [{"id": "actual", "position": [1.303147753990144e-13, -1.2339948869962979e-11, 0.40810140319559796], "yaw": -4.4379019299800694e-10}, {"id": "reference", "position": [0.0, 0.0, 1.7], "yaw": 0.0}]}, {"time": 0.86, "uav": [{"id": "actual", "position": [1.3333491077548355e-13, -1.2386316215022589e-11, 0.42647705299793653], "yaw": -4.538969742677586e-10}, {"id": "reference", "position": [0.0, 0.0, 1.72], "yaw": 0.0}]}, {"time": 0.87, "uav": [{"id": "actual", "position": [1.3490742962849097e-13, -1.211146455273933e-11, 0.4451513194801322], "yaw": -4.6387188643277194e-10}, {"id": "reference", "position": [0.0, 0.0, 1.7399999999999998], "yaw": 0.0}]}, {"time": 0.88, "uav": [{"id": "actual", "position": [1.362622620893539e-13, -1.1757303725566108e-11, 0.46411546290918126], "yaw": -4.736676108359241e-10}, {"id": "reference", "position": [0.0, 0.0, 1.7600000000000002], "yaw": 0.0}]}, {"time": 0.89, "uav": [{"id": "actual", "position": [1.3809578294049e-13, -1.1507462844386516e-11, 0.48336092669331243], "yaw": -4.832323546261363e-10}, {"id": "reference", "position": [0.0, 0.0, 1.78], "yaw": 0.0}]}, {"time": 0.9, "uav": [{"id": "actual", "position": [1.4103908006464985e-13, -1.1508585151927097e-11, 0.5028793037045903], "yaw": -4.924866103448825e-10}, {"id": "reference", "position": [0.0, 0.0, 1.8], "yaw": 0.0}]}, {"time": 0.91, "uav": [{"id": "actual", "position": [1.4570088906843744e-13, -1.178479859978594e-11, 0.5226624714464809], "yaw": -5.014440705381222e-10}, {"id": "reference", "position": [0.0, 0.0, 1.8199999999999998], "yaw": 0.0}]}, {"time": 0.92, "uav": [{"id": "actual", "position": [1.5247600687334263e-13, -1.2319227494498528e-11, 0.542702425552876], "yaw": -5.101847560929824e-10}, {"id": "reference", "position": [0.0, 0.0, 1.8400000000000003], "yaw": 0.0}]}, {"time": 0.93, "uav": [{"id": "actual", "position": [1.6089935093992608e-13, -1.2960894607973734e-11, 0.5629915177925393], "yaw": -5.19112819559699e-10}, {"id": "reference", "position": [0.0, 0.0, 1.86], "yaw": 0.0}]}, {"time": 0.9400000000000001, "uav": [{"id": "actual", "position": [1.704126747749308e-13, -1.354219012466665e-11, 0.5835222422073297], "yaw": -5.284819323889328e-10}, {"id": "reference", "position": [0.0, 0.0, 1.8800000000000001], "yaw": 0.0}]}, {"time": 0.9500000000000001, "uav": [{"id": "actual", "position": [1.7901529448363283e-13, -1.4014031127134911e-11, 0.6042873049257258], "yaw": -5.380461685982128e-10}, {"id": "reference", "position": [0.0, 0.0, 1.9], "yaw": 0.0}]}, {"time": 0.96, "uav": [{"id": "actual", "position": [1.8473241419855825e-13, -1.416377072156999e-11, 0.625279657051936], "yaw": -5.479307023549625e-10}, {"id": "reference", "position": [0.0, 0.0, 1.92], "yaw": 0.0}]}, {"time": 0.97, "uav": [{"id": "actual", "position": [1.8754914656761138e-13, -1.3985739041942213e-11, 0.6464924453188463], "yaw": -5.582634219582305e-10}, {"id": "reference", "position": [0.0, 0.0, 1.94], "yaw": 0.0}]}, {"time": 0.98, "uav": [{"id": "actual", "position": [1.8959164383223456e-13, -1.3645266596277243e-11, 0.6679190189380017], "yaw": -5.692909299203857e-10}, {"id": "reference", "position": [0.0, 0.0, 1.9600000000000002], "yaw": 0.0}]}, {"time": 0.99, "uav": [{"id": "actual", "position": [1.9285358217764196e-13, -1.3313035812496323e-11, 0.6895529437972074], "yaw": -5.812368072197434e-10}, {"id": "reference", "position": [0.0, 0.0, 1.98], "yaw": 0.0}]}, {"time": 1.0, "uav": [{"id": "actual", "position": [1.9418781696868125e-13, -1.2929507648532799e-11, 0.7113879902782693], "yaw": -5.935934348269887e-10}, {"id": "reference", "position": [0.0, 0.0, 2.0], "yaw": 0.0}]}]};
+    const frames = replay.frames || [];
+    const canvas = document.getElementById('scene');
+    const ctx = canvas.getContext('2d');
+    const scrub = document.getElementById('scrub');
+    const playButton = document.getElementById('play');
+    const timeLabel = document.getElementById('timeLabel');
+
+    let width = 0;
+    let height = 0;
+    let scale = 34;
+    let frameIndex = 0;
+    let playing = true;
+    let lastStep = performance.now();
+
+    function resize() {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      width = Math.floor(window.innerWidth * ratio);
+      height = Math.floor(window.innerHeight * ratio);
+      canvas.width = width;
+      canvas.height = height;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      const bounds = computeBounds();
+      const span = Math.max(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY, bounds.maxZ - bounds.minZ, 1);
+      scale = Math.max(18, Math.min(54, Math.min(width, height) / (span * 2.2)));
+    }
+
+    function getPosition(frame, index = 0) {
+      const uav = frame && frame.uav && frame.uav[index];
+      return uav ? uav.position : [0, 0, 0];
+    }
+
+    function computeBounds() {
+      const values = frames.map(getPosition);
+      const xs = values.map(p => p[0]);
+      const ys = values.map(p => p[1]);
+      const zs = values.map(p => p[2]);
+      return {
+        minX: Math.min(...xs, -2), maxX: Math.max(...xs, 2),
+        minY: Math.min(...ys, -2), maxY: Math.max(...ys, 2),
+        minZ: Math.min(...zs, 0), maxZ: Math.max(...zs, 2)
+      };
+    }
+
+    function project(point) {
+      const [x, y, z] = point;
+      const cx = width * 0.52;
+      const cy = height * 0.58;
+      const px = cx + (x - y) * scale * 0.82;
+      const py = cy + (x + y) * scale * 0.36 - z * scale * 0.92;
+      return [px, py];
+    }
+
+    function drawLine3(a, b, color, lineWidth = 1) {
+      const pa = project(a);
+      const pb = project(b);
+      ctx.beginPath();
+      ctx.moveTo(pa[0], pa[1]);
+      ctx.lineTo(pb[0], pb[1]);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.stroke();
+    }
+
+    function drawGrid() {
+      const size = 16;
+      for (let i = -size; i <= size; i += 1) {
+        const strong = i === 0;
+        drawLine3([-size, i, 0], [size, i, 0], strong ? '#58647a' : '#263044', strong ? 1.5 : 0.8);
+        drawLine3([i, -size, 0], [i, size, 0], strong ? '#58647a' : '#263044', strong ? 1.5 : 0.8);
+      }
+      drawLine3([0, 0, 0], [4, 0, 0], '#ff6b6b', 2);
+      drawLine3([0, 0, 0], [0, 4, 0], '#61d394', 2);
+      drawLine3([0, 0, 0], [0, 0, 4], '#8fd3ff', 2);
+    }
+
+    function drawSphereObstacle(obstacle) {
+      const center = obstacle.center || [0, 0, 0];
+      const radius = Number(obstacle.radius || 0.5);
+      const p = project(center);
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(p[0], p[1], Math.max(8, radius * scale * 0.82), Math.max(5, radius * scale * 0.38), 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 117, 117, 0.22)';
+      ctx.strokeStyle = 'rgba(255, 117, 117, 0.92)';
+      ctx.lineWidth = 2;
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawBoxObstacle(obstacle) {
+      const lo = obstacle.min || [0, 0, 0];
+      const hi = obstacle.max || [1, 1, 1];
+      const v = [
+        [lo[0], lo[1], lo[2]], [hi[0], lo[1], lo[2]], [hi[0], hi[1], lo[2]], [lo[0], hi[1], lo[2]],
+        [lo[0], lo[1], hi[2]], [hi[0], lo[1], hi[2]], [hi[0], hi[1], hi[2]], [lo[0], hi[1], hi[2]]
+      ];
+      const edges = [[0,1], [1,2], [2,3], [3,0], [4,5], [5,6], [6,7], [7,4], [0,4], [1,5], [2,6], [3,7]];
+      edges.forEach(([a, b]) => drawLine3(v[a], v[b], 'rgba(255, 117, 117, 0.95)', 2));
+      const top = [v[4], v[5], v[6], v[7]].map(project);
+      ctx.beginPath();
+      ctx.moveTo(top[0][0], top[0][1]);
+      for (let i = 1; i < top.length; i += 1) ctx.lineTo(top[i][0], top[i][1]);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(255, 117, 117, 0.16)';
+      ctx.fill();
+    }
+
+    function drawObstacles() {
+      const obstacles = replay.obstacles || [];
+      obstacles.forEach(obstacle => {
+        if (obstacle.type === 'sphere') drawSphereObstacle(obstacle);
+        if (obstacle.type === 'box') drawBoxObstacle(obstacle);
+      });
+    }
+
+    function drawPathForUav(uavIndex, color, lineWidth = 2.2, dash = []) {
+      if (frames.length < 2) return;
+      ctx.save();
+      ctx.setLineDash(dash);
+      ctx.beginPath();
+      frames.forEach((frame, index) => {
+        const p = project(getPosition(frame, uavIndex));
+        if (index === 0) ctx.moveTo(p[0], p[1]);
+        else ctx.lineTo(p[0], p[1]);
+      });
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawPath() {
+      drawPathForUav(0, '#8fd3ff', 2.2);
+      if ((frames[0]?.uav || []).length > 1) drawPathForUav(1, '#ffd166', 1.8, [6, 6]);
+    }
+
+    function drawDrone(position, time) {
+      const center = project(position);
+      const arm = 26;
+      const bob = Math.sin(time * 5) * 2;
+      ctx.save();
+      ctx.translate(center[0], center[1] + bob);
+      ctx.rotate(Math.sin(time * 0.8) * 0.18);
+
+      ctx.strokeStyle = '#dfe9ff';
+      ctx.lineWidth = 5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-arm, 0);
+      ctx.lineTo(arm, 0);
+      ctx.moveTo(0, -arm);
+      ctx.lineTo(0, arm);
+      ctx.stroke();
+
+      ctx.fillStyle = '#f5f8ff';
+      ctx.strokeStyle = '#1b2433';
+      ctx.lineWidth = 2;
+      roundRect(-17, -11, 34, 22, 5);
+      ctx.fill();
+      ctx.stroke();
+
+      const rotors = [[-arm, 0], [arm, 0], [0, -arm], [0, arm]];
+      for (const [x, y] of rotors) {
+        ctx.beginPath();
+        ctx.ellipse(x, y, 11, 5, time * 7, 0, Math.PI * 2);
+        ctx.fillStyle = '#61ffb5';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      const ground = project([position[0], position[1], 0]);
+      ctx.beginPath();
+      ctx.moveTo(center[0], center[1]);
+      ctx.lineTo(ground[0], ground[1]);
+      ctx.strokeStyle = 'rgba(255, 209, 102, 0.45)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(ground[0], ground[1], 12, 5, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 209, 102, 0.35)';
+      ctx.fill();
+    }
+
+    function roundRect(x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function drawLabels() {
+      ctx.fillStyle = '#bbc6db';
+      ctx.font = '12px Arial';
+      const x = project([4.2, 0, 0]);
+      const y = project([0, 4.2, 0]);
+      const z = project([0, 0, 4.2]);
+      ctx.fillText('X', x[0], x[1]);
+      ctx.fillText('Y', y[0], y[1]);
+      ctx.fillText('Z', z[0], z[1]);
+    }
+
+    function render(now) {
+      requestAnimationFrame(render);
+      if (playing && frames.length > 0 && now - lastStep > 33) {
+        frameIndex = (frameIndex + 1) % frames.length;
+        lastStep = now;
+      }
+      const frame = frames[frameIndex] || { time: 0 };
+      const time = Number(frame.time || 0);
+      scrub.value = frameIndex;
+      timeLabel.textContent = `${time.toFixed(2)} s`;
+
+      const gradient = ctx.createLinearGradient(0, 0, 0, height);
+      gradient.addColorStop(0, '#101827');
+      gradient.addColorStop(1, '#0f1117');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+      drawGrid();
+      drawObstacles();
+      drawPath();
+      if ((frame.uav || []).length > 1) {
+        const ref = project(getPosition(frame, 1));
+        ctx.beginPath();
+        ctx.arc(ref[0], ref[1], 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffd166';
+        ctx.fill();
+      }
+      drawDrone(getPosition(frame, 0), time);
+      drawLabels();
+    }
+
+    playButton.addEventListener('click', () => {
+      playing = !playing;
+      playButton.textContent = playing ? '暂停' : '播放';
+    });
+
+    scrub.addEventListener('input', () => {
+      playing = false;
+      playButton.textContent = '播放';
+      frameIndex = Number(scrub.value);
+    });
+
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(render);
+  </script>
+</body>
+</html>

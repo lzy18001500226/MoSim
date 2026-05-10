@@ -80,11 +80,15 @@ RECOMMENDED_SCRIPTS = [
     "scripts/generate_replay_html.py",
     "scripts/generate_replay_from_raw.py",
     "scripts/summarize_experiments.py",
+    "scripts/run_mworks_scenario.py",
+    "scripts/run_mworks_batch.py",
 ]
 
 RECOMMENDED_TESTS = [
     "tests/test_metrics.py",
     "tests/test_summary.py",
+    "tests/test_run_mworks_scenario.py",
+    "tests/test_run_mworks_batch.py",
 ]
 
 OFFICIAL_MODELS = [
@@ -102,6 +106,7 @@ OFFICIAL_SCENARIOS = [
 CONTROLLER_CONFIGS = {
     "pid_baseline": "controllers/pid/baseline.yaml",
     "improved_pid": "controllers/improved_pid/default.yaml",
+    "enhanced_pid": "controllers/enhanced_pid/default.yaml",
     "nmpc_indi_l1": "controllers/nmpc_indi_l1/default.yaml",
 }
 
