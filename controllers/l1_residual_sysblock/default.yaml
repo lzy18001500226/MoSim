@@ -1,0 +1,105 @@
+controller_id: l1_residual_sysblock
+type: sysblock_awff_l1_inspired_residual_compensation
+priority: P1
+
+description: >
+  Project Sysblock controller that extends the verified AWFF controller with
+  L1-inspired residual compensation. It estimates low-frequency position-error
+  residuals and injects bounded compensation into the outer-loop pitch, roll,
+  and thrust commands.
+
+implementation_status:
+  current_mworks_model:
+    - QuadrotorExperiments.Example1L1SysblockClosedLoop
+    - QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop
+  sysblock_controller: AWFF_L1ResidualControllerEquation_Sysblock
+  verification_scope: smoke and 50 s full MWORKS_MCP evidence complete for nominal Example1 and wind-gust Example1
+  limitation: >
+    This is an engineering L1-inspired residual compensator, not a formal L1
+    adaptive controller proof. It keeps the existing AWFF interface and uses
+    bounded low-pass compensation to reduce wind and model-mismatch residuals.
+
+model_interface:
+  replacement_component: controller3_2
+  compatible_source_model: AWFF_FullControllerEquation_Sysblock
+  implementation_target:
+    - Sysblock controller component
+    - Project-owned Example1 closed-loop wrapper
+    - Project-owned wind-gust Example1 closed-loop wrapper
+  inputs:
+    x_error: climbePath.position_command[1] - sensors1_1.PosMea[1]
+    y_error: climbePath.position_command[2] - sensors1_1.PosMea[2]
+    z_error: climbePath.position_command[3] - sensors1_1.PosMea[3]
+    z_ref_rate: zero-order placeholder for current validation
+    attitude: sensors1_1.AngleMea
+    yaw_ref: zero-order placeholder
+  outputs:
+    motor_1: y
+    motor_2: y1
+    motor_3: y2
+    motor_4: y3
+  required_result_variables:
+    - sensors1_1.PosMea[1]
+    - sensors1_1.PosMea[2]
+    - sensors1_1.PosMea[3]
+    - sensors1_1.AngleMea[1]
+    - sensors1_1.AngleMea[2]
+    - sensors1_1.AngleMea[3]
+    - climbePath.position_command[1]
+    - climbePath.position_command[2]
+    - climbePath.position_command[3]
+    - controller3_2.y
+    - controller3_2.y1
+    - controller3_2.y2
+    - controller3_2.y3
+
+l1_residual_compensation:
+  l1_model_decay: 1.25
+  l1_filter_T: 0.20
+  l1_gain_xy: 0.22
+  l1_gain_z: 0.35
+  l1_comp_limit_xy: 1.5
+  l1_comp_limit_z: 2.0
+
+acceptance:
+  smoke_nominal:
+    scenario_file: scenarios/smoke/example1_l1_residual_sysblock_mcp_smoke.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics
+  smoke_wind:
+    scenario_file: scenarios/smoke/example1_wind_gust_l1_residual_sysblock_mcp_smoke.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics
+  full_wind:
+    scenario_file: scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
+
+verified_evidence:
+  source: MWORKS_MCP
+  nominal_full:
+    scenario_file: scenarios/official/example1_l1_residual_sysblock.yaml
+    model_name: QuadrotorExperiments.Example1L1SysblockClosedLoop
+    raw_file: results/raw/official_example1_l1_residual_sysblock.csv
+    metrics_file: results/metrics/official_example1_l1_residual_sysblock.json
+    mcp_log: results/test_reports/sysplorer_example1_l1_residual_sysblock_full_20260510.jsonl
+    row_count: 5001
+    position_rmse_m: 0.24807049782638949
+    steady_state_error_m: 0.08207960402091787
+    disturbance_peak_error_m: 0.06602638586718257
+    disturbance_recovery_time_s: 2.789999999999999
+  wind_full:
+    scenario_file: scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
+    model_name: QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop
+    raw_file: results/raw/robust_wind_gust_example1_l1_residual_sysblock.csv
+    metrics_file: results/metrics/robust_wind_gust_example1_l1_residual_sysblock.json
+    mcp_log: results/test_reports/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_20260510.jsonl
+    row_count: 5001
+    position_rmse_m: 0.2870240496171749
+    steady_state_error_m: 0.08217222540083384
+    disturbance_peak_error_m: 0.5836311696658653
+    disturbance_recovery_time_s: 2.960000000000001
+  ablation_vs_awff_sysblock:
+    nominal_position_rmse_reduction_pct: 6.816
+    nominal_steady_state_error_reduction_pct: 20.422
+    wind_position_rmse_reduction_pct: 9.804
+    wind_disturbance_peak_error_reduction_pct: 16.195
+    wind_recovery_time_reduction_pct: 8.923
+    wind_control_smoothness_per_second_increase_pct: 3.896

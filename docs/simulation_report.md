@@ -6,7 +6,7 @@
 
 本报告记录当前工程已经可复现的仿真数据链路、官方参考轨迹、指标计算方法和图表生成方式。控制器性能对比只引用已保存 raw CSV、metrics JSON/CSV、MCP JSONL 日志和 SVG 图表的实验。
 
-证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表包含真实 Sysplorer MCP / Modelica 派生模型闭环仿真，以及 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 的全时长 Sysblock 控制器闭环证据。Sysblock 当前已完成 AWFF PID 高度环最小 demo、三段分层控制器、组合控制器 `AWFF_FullController_Sysblock` 的真实 MCP 验证，并完成 Example1 50 s、Example2 50 s、Example3 120 s 整机仿真。鲁棒扰动与执行器退化场景仍需继续补齐。
+证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表包含真实 Sysplorer MCP / Modelica 派生模型闭环仿真，以及 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 的全时长 Sysblock 控制器闭环证据。Sysblock 当前已完成 AWFF PID 高度环最小 demo、三段分层控制器、组合控制器 `AWFF_FullController_Sysblock` 的真实 MCP 验证，并完成 Example1 50 s、Example2 50 s、Example3 120 s 整机仿真；P1 创新控制器方向已完成 `AWFF_L1ResidualControllerEquation_Sysblock` 在 Example1 与横向阵风 Example1 中的首轮真实 MCP 消融。
 
 当前已完成的可复现资产：
 
@@ -18,6 +18,7 @@
 官方 Example1 AWFF 独立控制器完整 CSV、指标、图表和 replay JSON
 Example1/2/3 AWFF Sysblock 整机完整 CSV、指标、图表和 replay JSON
 Example1/2/3 AWFF Sysblock 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
+Example1 L1 residual Sysblock nominal/wind-gust 0-1 s smoke 与 50 s full CSV、指标、图表和 replay JSON
 ```
 
 ## 2. 模型与场景
@@ -28,6 +29,8 @@ Example1/2/3 AWFF Sysblock 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指�
 | 阶梯爬升 Enhanced PID | `QuadrotorExperiments.Example1EnhancedPID` | 50 s | 导数滤波 + 保守限幅 Enhanced PID 已通过 Sysplorer MCP 仿真 |
 | 阶梯爬升 AWFF PID | `QuadrotorExperiments.Example1AntiWindupFeedforwardPID` | 50 s | 项目自有抗饱和 + 竖直参考前馈控制器已通过 Sysplorer MCP 仿真 |
 | 阶梯爬升 AWFF Sysblock | `QuadrotorExperiments.Example1AWFFSysblockClosedLoop` | 50 s | 项目 Sysblock 控制器整机闭环已通过 Sysplorer MCP 仿真 |
+| 阶梯爬升 L1 residual Sysblock | `QuadrotorExperiments.Example1L1SysblockClosedLoop` | 50 s | AWFF + L1-inspired 残差补偿控制器已通过 Sysplorer MCP 仿真 |
+| 横向阵风 L1 residual Sysblock | `QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop` | 50 s | AWFF + L1-inspired 残差补偿风扰消融已通过 Sysplorer MCP 仿真 |
 | 螺旋爬升 | `QuadrotorModel.Examples.Example2` | 50 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
 | 螺旋爬升 AWFF Sysblock | `QuadrotorExperiments.Example2AWFFSysblockClosedLoop` | 50 s | 项目 Sysblock 控制器整机闭环已通过 Sysplorer MCP 仿真 |
 | 8字形运动 | `QuadrotorModel.Examples.Example3` | 120 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
@@ -378,6 +381,30 @@ scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
 
 消融结论：单旋翼效率退化场景明显比质量摄动和横向阵风更困难，baseline 的 RMSE 增至 `0.392120 m`，健康分降至 `35.625782`。Improved PID 可降低 RMSE，但最大倾角增加 `20.231%`；AWFF Sysblock 相比 baseline 的 RMSE 降低 `5.881%`，稳态误差降低 `7.482%`，最大倾角降低 `17.335%`，约束违规率从 `1.340 Hz` 降到 `1.300 Hz`，`control_smoothness_per_second` 降低 `87.775%`。该场景可作为 Sysblock 控制器执行器退化鲁棒性证据，但报告中应明确：当前控制器没有故障检测与控制分配重构逻辑，仍属于固定控制器在退化工况下的抗扰表现验证。
 
+### 9.4 L1-inspired 残差补偿控制器首轮消融
+
+`l1_residual_sysblock` 在 `AWFF_FullControllerEquation_Sysblock` 基础上加入低通残差估计和有界补偿，不改变 `controller3_2` 的输入输出接口。当前实现文件和场景为：
+
+```text
+models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo
+models/QuadrotorExperiments/Example1L1SysblockClosedLoop.mo
+models/QuadrotorExperiments/Example1WindGustL1SysblockClosedLoop.mo
+controllers/l1_residual_sysblock/default.yaml
+scenarios/official/example1_l1_residual_sysblock.yaml
+scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
+```
+
+以下结果均为 `source=MWORKS_MCP`。两条 full 场景均先完成 0-1 s smoke，再完成 50 s `check_model/simulate_model/result_manager`，导出 `5001` 行 raw CSV。
+
+| 场景 | controller | position_rmse_m | RMSE变化 | disturbance_peak_error_m | 峰值误差变化 | disturbance_recovery_time_s | steady_state_error_m | max_tilt_rad | control_smoothness_per_second | total_health_score |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Example1 阶梯爬升 | awff_sysblock | 0.266217 | - | 0.075009 | - | 3.030 | 0.103144 | 0.174437 | 265.176177 | 55.423227 |
+| Example1 阶梯爬升 | l1_residual_sysblock | 0.248070 | +6.816% | 0.066026 | +11.976% | 2.790 | 0.082080 | 0.195313 | 275.683925 | 55.782282 |
+| 15-19s 横向阵风 Example1 | awff_sysblock | 0.318224 | - | 0.696413 | - | 3.250 | 0.103106 | 0.196645 | 269.391389 | 55.001701 |
+| 15-19s 横向阵风 Example1 | l1_residual_sysblock | 0.287024 | +9.804% | 0.583631 | +16.195% | 2.960 | 0.082172 | 0.195237 | 279.885642 | 55.466442 |
+
+消融结论：L1-inspired 残差补偿在 nominal Example1 中降低 `position_rmse_m 6.816%`、稳态误差 `20.422%`、扰动窗口峰值误差 `11.976%`；在横向阵风场景中降低 `position_rmse_m 9.804%`、扰动窗口峰值误差 `16.195%`，恢复时间从 `3.250 s` 缩短到 `2.960 s`。代价是控制平滑性变差：nominal `control_smoothness_per_second` 增加 `3.963%`，风扰场景增加 `3.896%`。因此当前 L1 residual 可以作为 P1 创新控制器的首轮正式证据，但后续仍需在质量摄动和旋翼退化场景中复测，并调参降低高频控制动作。
+
 ## 10. 当前图表
 
 已生成图表：
@@ -406,6 +433,8 @@ results/figures/robust_rotor1_loss15_example1_pid_baseline/
 results/figures/robust_rotor1_loss15_example1_improved_pid/
 results/figures/robust_rotor1_loss15_example1_enhanced_pid/
 results/figures/robust_rotor1_loss15_example1_awff_sysblock/
+results/figures/official_example1_l1_residual_sysblock/
+results/figures/robust_wind_gust_example1_l1_residual_sysblock/
 ```
 
 已生成 replay JSON：
@@ -434,6 +463,8 @@ results/replay/robust_rotor1_loss15_example1_pid_baseline.json
 results/replay/robust_rotor1_loss15_example1_improved_pid.json
 results/replay/robust_rotor1_loss15_example1_enhanced_pid.json
 results/replay/robust_rotor1_loss15_example1_awff_sysblock.json
+results/replay/official_example1_l1_residual_sysblock.json
+results/replay/robust_wind_gust_example1_l1_residual_sysblock.json
 results/replay/reference_official_example1.json
 results/replay/reference_official_example2.json
 results/replay/reference_official_example3.json
@@ -445,7 +476,7 @@ results/replay/reference_official_example3.json
 
 此前用于横向展示的 Python/Julia 离线仿真结果已清理。当前报告结论只引用真实 Sysplorer/MWORKS MCP 证据。
 
-质量 +20% 参数摄动、15-19 s 横向阵风扰动、1 号旋翼 85% 效率退化、Example1 AWFF 独立控制器替换和 Example1/2/3 AWFF Sysblock 官方场景已完成真实 MWORKS MCP 闭环。规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
+质量 +20% 参数摄动、15-19 s 横向阵风扰动、1 号旋翼 85% 效率退化、Example1 AWFF 独立控制器替换、Example1/2/3 AWFF Sysblock 官方场景，以及 Example1 L1 residual Sysblock nominal/wind-gust 消融均已完成真实 MWORKS MCP 闭环。规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
 
 ```text
 MWORKS/Sysplorer 模型或派生模型
@@ -458,7 +489,7 @@ MWORKS/Sysplorer 模型或派生模型
 
 下一阶段优先任务：
 
-1. 在 Sysblock 主线中加入扰动观测/L1-inspired 补偿，形成区别于 PID 参数增强的 P1 创新控制器；
+1. 将 L1 residual Sysblock 补偿扩展到质量摄动和旋翼退化场景，并降低高频控制动作；
 2. 在旋翼退化场景中加入故障检测、控制分配重构或安全降级逻辑，区别于固定控制器抗扰；
 3. INDI 或线性 MPC 外环的最小可运行模型。
 
@@ -481,6 +512,23 @@ scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
 ```
 
 授权恢复后，三条 AWFF Sysblock 鲁棒场景均已完成 `check_model/simulate_model/result_manager`，导出 `5001` 行 50 s raw CSV，并进入本报告性能结论。早期授权失效导致的失败日志只保留为诊断记录，不再代表当前模型状态。
+
+L1 residual Sysblock 已完成以下真实 MCP 证据：
+
+```text
+QuadrotorExperiments.Example1L1SysblockClosedLoop
+QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop
+
+scenarios/smoke/example1_l1_residual_sysblock_mcp_smoke.yaml
+scenarios/smoke/example1_wind_gust_l1_residual_sysblock_mcp_smoke.yaml
+scenarios/official/example1_l1_residual_sysblock.yaml
+scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
+
+results/test_reports/sysplorer_example1_l1_residual_sysblock_smoke_20260510.jsonl
+results/test_reports/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_smoke_20260510.jsonl
+results/test_reports/sysplorer_example1_l1_residual_sysblock_full_20260510.jsonl
+results/test_reports/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_20260510.jsonl
+```
 
 ## 12. 结论约束
 
