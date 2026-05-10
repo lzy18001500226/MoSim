@@ -13,7 +13,7 @@
 官方 Example1/2/3 完整 PID baseline CSV、指标和图表
 官方 Example1/2/3 MCP 参数搜索型 Improved PID CSV、指标和图表
 官方 Example1 Enhanced PID 完整 CSV、指标、图表和 replay JSON
-官方 Example1 AWFF 独立控制器完整 CSV、指标、图表、replay JSON 和控制器结构图
+官方 Example1 AWFF 独立控制器完整 CSV、指标、图表和 replay JSON
 Example1 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 ```
 
@@ -143,11 +143,13 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 
 控制器内部包含条件积分抗饱和、一阶滤波导数、竖直参考速度前馈、姿态参考限幅和电机命令绝对值限幅。以下结果为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_full_awff_pid`：
 
-控制器结构图：
+控制器结构图状态：
 
 ```text
-docs/figures/awff_pid_controller_structure.svg
+待补真实 Sysblock/Simulink 风格控制器结构截图。
 ```
+
+说明：结构图应来自实际控制器模型文件或图形化建模环境截图，不使用手绘示意图替代。
 
 | 场景 | controller | position_rmse_m | RMSE变化 | max_position_error_m | steady_state_error_m | max_tilt_rad | control_energy | control_smoothness | total_health_score |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|
