@@ -161,6 +161,14 @@ AWFF_MotorMixer_Sysblock
 
 说明：Sysblock 控制器文件不是单纯的截图支撑材料，而是后续控制器闭环仿真的主实现路线之一。结构截图应来自 MWORKS.Sysblock/Sysplorer 打开的实际控制器模型窗口，用于证明模块连接、端口和信号流；正式控制器仿真结论必须以 `load_file`、`check_model`、必要时 `simulate_model` 的真实 MWORKS 证据为准，不使用手绘示意图或离线脚本替代。
 
+当前验证状态：三个分层模型已完成文件级结构草案；`AWFF_PositionOuterLoop_Sysblock` 已通过 `load_file`，但 `check_model` 返回失败且 MWORKS 未给出具体错误文本，失败诊断保存在：
+
+```text
+results/logs/sysplorer_layered_sysblock_check_failed_20260510_summary.json
+```
+
+因此分层模型暂不作为已验证仿真证据。下一步应按已通过的 `AWFF_PID_Sysblock_Demo` / 官方 `SimplePID` 导出形态继续收敛。
+
 当前模型已通过真实 Sysplorer MCP `load_file` 和 `check_model`，证据日志：
 
 ```text

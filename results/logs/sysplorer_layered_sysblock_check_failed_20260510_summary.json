@@ -1,0 +1,28 @@
+{
+  "source": "MWORKS_MCP",
+  "evidence_level": "real_sysplorer_mcp_layered_sysblock_check",
+  "records": [
+    {
+      "model_name": "AWFF_PositionOuterLoop_Sysblock",
+      "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_PositionOuterLoop_Sysblock.mo",
+      "load_ok": true,
+      "check_ok": false,
+      "load_error": "",
+      "check_error": "{\"ok\": false, \"tool\": \"check_model\", \"model_type\": \"MODELICA\", \"elapsed_s\": 0.041, \"count\": 1, \"results\": [{\"ok\": false, \"api\": \"CheckModel\", \"data\": false, \"error\": \"CheckModel returned False\\nGetLastErrors: \\nMessageText: [上一条命令没有日志信息]\", \"model_name\": \"AWFF_PositionOuterLoop_Sysblock\", \"dt_s\": 0.035}]}"
+    },
+    {
+      "model_name": "AWFF_AttitudeInnerLoop_Sysblock",
+      "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_AttitudeInnerLoop_Sysblock.mo",
+      "load_ok": false,
+      "check_ok": false,
+      "skipped": true
+    },
+    {
+      "model_name": "AWFF_MotorMixer_Sysblock",
+      "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_MotorMixer_Sysblock.mo",
+      "load_ok": false,
+      "check_ok": false,
+      "skipped": true
+    }
+  ]
+}
