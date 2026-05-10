@@ -6,6 +6,8 @@
 
 本报告记录当前工程已经可复现的仿真数据链路、官方参考轨迹、指标计算方法和图表生成方式。控制器性能对比只引用已保存 raw CSV、metrics JSON/CSV、MCP JSONL 日志和 SVG 图表的实验。
 
+证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表主要来自真实 Sysplorer MCP / Modelica 派生模型闭环仿真，属于 MWORKS 真实仿真证据，但不是完整 Sysblock 主仿真。Sysblock 当前只完成 AWFF PID 高度环最小 demo 的 `load_file/check_model`，尚未完成完整控制器闭环 `simulate_model`。
+
 当前已完成的可复现资产：
 
 ```text
@@ -160,6 +162,8 @@ AWFF_MotorMixer_Sysblock
 ```
 
 说明：Sysblock 控制器文件不是单纯的截图支撑材料，而是后续控制器闭环仿真的主实现路线之一。结构截图应来自 MWORKS.Sysblock/Sysplorer 打开的实际控制器模型窗口，用于证明模块连接、端口和信号流；正式控制器仿真结论必须以 `load_file`、`check_model`、必要时 `simulate_model` 的真实 MWORKS 证据为准，不使用手绘示意图或离线脚本替代。
+
+当前阶段结论：Sysblock 证据链尚未完成主闭环。已有性能结论应表述为“Sysplorer/Modelica 控制器闭环结果”，Sysblock 只作为已启动的主线建模方向和最小 demo 验证结果。后续若要满足“Sysblock 仿真为主、代码仿真为辅”，必须先完成 MWORKS.Sysblock 生成的完整控制器模型，并通过 `check_model/simulate_model/result_manager`。
 
 当前验证状态：三个分层模型已完成文件级结构草案；`AWFF_PositionOuterLoop_Sysblock` 已通过 `load_file`，但 `check_model` 返回失败且 MWORKS 未给出具体错误文本，失败诊断保存在：
 

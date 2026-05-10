@@ -7,6 +7,17 @@
        → 安全/故障降级 → 编队协同 → 自动化评估 → 三维回放/报告/视频
 ```
 
+## 当前仿真主线状态
+
+目标口径必须保持清晰：
+
+```text
+主线：MWORKS.Sysblock 控制器建模与仿真
+辅助：Sysplorer/Modelica 派生模型闭环仿真、Syslab/Python 指标与图表
+```
+
+截至当前版本，Sysplorer/Modelica 已经形成可复现性能证据；Sysblock 仅完成 AWFF PID 高度环最小模型 `AWFF_PID_Sysblock_Demo` 的 `load_file/check_model` 验证。完整 Sysblock 位置环、姿态环和电机分配闭环尚未完成，后续实现应优先使用 MWORKS.Sysblock GUI/API 生成正式模型，再用 MCP 跑 `check_model/simulate_model`，避免把手写 `.mo` 草案当作主仿真证据。
+
 ## 主创新口径
 
 项目名称保留为：
@@ -39,7 +50,7 @@
 
 ```text
 P0：官方 PID baseline + 改进 PID + 数据导出 + 指标计算 + 三维回放素材
-P1-A：MPC/NMPC-INDI-L1 主控制链路 + 扰动识别 + 模式切换
+P1-A：Sysblock 控制器主仿真链路 + MPC/NMPC-INDI-L1 主控制链路 + 扰动识别
 P1-B：Safety Filter + 电机故障注入 + 容错/降级策略
 P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP 批量评估
 P3：完整局部重规划、RL、完整 ROS/EGO-Planner 移植，作为展望

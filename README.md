@@ -2,6 +2,8 @@
 
 本项目面向 A8 四旋翼无人机位姿控制系统设计优化赛题，基于 MWORKS.Sysplorer、Sysblock 和 Syslab 构建可复现的仿真验证工程。
 
+当前证据口径：项目目标以 **MWORKS.Sysblock 控制器仿真为主线**，Sysplorer/Modelica 闭环仿真和脚本指标计算为辅助。现阶段已经完成多组真实 Sysplorer MCP 性能证据；Sysblock 方向已完成 AWFF PID 高度环最小模型的 `load_file/check_model` 验证，但完整 Sysblock 闭环控制器仿真尚未完成，不能把现有 Modelica 结果表述为 Sysblock 主仿真结果。
+
 核心闭环：
 
 ```text
@@ -79,9 +81,17 @@ results/       仿真结果和报告素材，按实际输出创建子目录
 
 ```text
 P0：官方 PID baseline + 改进 PID + 数据导出 + 指标计算 + 控制器结构/指标图
-P1-A：MPC/NMPC-INDI-L1 主控制链路 + 扰动识别 + 模式切换
+P1-A：Sysblock 控制器主仿真链路 + MPC/NMPC-INDI-L1 主控制链路 + 扰动识别
 P1-B：Safety Filter + 电机故障注入 + 容错/降级策略
 P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP 批量评估
+```
+
+当前完成状态：
+
+```text
+Sysplorer/Modelica 真实仿真：官方 baseline、Improved PID、Enhanced PID、AWFF PID、质量/风扰/旋翼退化消融已完成多组证据。
+Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model；完整位置环/姿态环/电机分配闭环尚未通过 check_model/simulate_model。
+后续优先级：通过 MWORKS.Sysblock GUI/API 生成正式控制器模型，再用 MCP 验证，不再把手写 Sysblock 草案作为主证据。
 ```
 
 ## QA 检查
