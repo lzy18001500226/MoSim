@@ -82,6 +82,7 @@ def windows_path(repo_path: str, *, default: str | None = None) -> str:
 def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[str]:
     experiment_id = str(config.get("experiment_id", args.scenario.stem))
     model = require_mapping(config, "model")
+    controller = require_mapping(config, "controller")
     simulation = require_mapping(config, "simulation")
     result = require_mapping(config, "result")
 
@@ -98,9 +99,12 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
     target_time = f"{start_time:g},{stop_time:g}"
 
     model_file = windows_path(str(model.get("base_model_path_hint") or model.get("model_path_hint", "")), default=DEFAULT_MODEL_FILE_WIN)
-    extra_model_file = ""
+    extra_model_files: list[str] = []
+    sysblock_controller_file = str(controller.get("sysblock_controller_file", ""))
+    if sysblock_controller_file:
+        extra_model_files.append(windows_path(sysblock_controller_file))
     if str(model.get("source_package", "")) != "QuadrotorModel":
-        extra_model_file = windows_path(str(model.get("model_path_hint", "")), default=DEFAULT_EXTRA_MODEL_WIN)
+        extra_model_files.append(windows_path(str(model.get("model_path_hint", "")), default=DEFAULT_EXTRA_MODEL_WIN))
 
     default_evidence_level = (
         str(config.get("evidence_level", ""))
@@ -135,7 +139,7 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
         "--evidence-level",
         args.evidence_level or default_evidence_level,
     ]
-    if extra_model_file:
+    for extra_model_file in extra_model_files:
         command.extend(["--extra-model-file", extra_model_file])
     if args.shutdown_session:
         command.append("--shutdown-session")

@@ -1,0 +1,72 @@
+controller_id: awff_sysblock
+type: sysblock_awff_flattened_pd_feedforward
+priority: P1
+
+description: >
+  Project Sysblock controller for the official Example1 closed-loop plant
+  smoke test. This controller keeps the official plant, sensors, actuators,
+  and result variable names, while replacing controller3_2 with a Sysblock
+  controller component.
+
+implementation_status:
+  current_mworks_model: QuadrotorExperiments.Example1AWFFSysblockClosedLoop
+  sysblock_controller: AWFF_FullControllerEquation_Sysblock
+  verification_scope: 0-1 s closed-loop smoke passed with real Sysplorer MCP evidence
+  limitation: >
+    Current controller is a flattened, bounded P-D plus vertical feedforward
+    version for mixed Sysplorer/Sysblock integration. It is not yet the final
+    high-performance AWFF PID and must not be used as full-duration performance
+    evidence before tuning and full scenario validation.
+
+model_interface:
+  replacement_component: controller3_2
+  compatible_source_model: QuadrotorModel.Blocks.Controller.Controller
+  implementation_target:
+    - Sysblock controller component
+    - Project-owned Example1 closed-loop wrapper
+  inputs:
+    x_error: climbePath.position_command[1] - sensors1_1.PosMea[1]
+    y_error: climbePath.position_command[2] - sensors1_1.PosMea[2]
+    z_error: climbePath.position_command[3] - sensors1_1.PosMea[3]
+    z_ref_rate: zero-order smoke placeholder
+    attitude: sensors1_1.AngleMea
+    yaw_ref: zero-order smoke placeholder
+  outputs:
+    motor_1: y
+    motor_2: y1
+    motor_3: y2
+    motor_4: y3
+  required_result_variables:
+    - sensors1_1.PosMea[1]
+    - sensors1_1.PosMea[2]
+    - sensors1_1.PosMea[3]
+    - sensors1_1.AngleMea[1]
+    - sensors1_1.AngleMea[2]
+    - sensors1_1.AngleMea[3]
+    - climbePath.position_command[1]
+    - climbePath.position_command[2]
+    - climbePath.position_command[3]
+    - controller3_2.y
+    - controller3_2.y1
+    - controller3_2.y2
+    - controller3_2.y3
+
+acceptance:
+  smoke:
+    model_name: QuadrotorExperiments.Example1AWFFSysblockClosedLoop
+    scenario_file: scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics
+  full_example1:
+    required_before_claim: 50 s full run with stable altitude, bounded tilt, no NaN, and metrics comparison
+
+verified_results:
+  smoke:
+    scenario_file: scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml
+    raw_file: results/raw/official_example1_awff_sysblock_smoke.csv
+    metrics_file: results/metrics/official_example1_awff_sysblock_smoke.json
+    mcp_log: results/test_reports/sysplorer_example1_awff_sysblock_smoke_20260510.jsonl
+    row_count: 101
+    duration_s: 1.0
+    position_rmse_m: 1.0941352961
+    max_tilt_rad: 0.000000000017
+    control_command_abs_max: 19.6740631098

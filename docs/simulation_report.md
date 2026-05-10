@@ -6,7 +6,7 @@
 
 本报告记录当前工程已经可复现的仿真数据链路、官方参考轨迹、指标计算方法和图表生成方式。控制器性能对比只引用已保存 raw CSV、metrics JSON/CSV、MCP JSONL 日志和 SVG 图表的实验。
 
-证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表主要来自真实 Sysplorer MCP / Modelica 派生模型闭环仿真，属于 MWORKS 真实仿真证据，但不是完整 Sysblock 主仿真。Sysblock 当前已完成 AWFF PID 高度环最小 demo、三段分层控制器和组合控制器 `AWFF_FullController_Sysblock` 的真实 MCP 验证；组合控制器已经通过独立 `load_file/check_model/simulate_model/result_manager`，但尚未接入官方四旋翼主模型形成整机闭环性能结论。
+证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表主要来自真实 Sysplorer MCP / Modelica 派生模型闭环仿真，属于 MWORKS 真实仿真证据，但不是完整 Sysblock 主仿真。Sysblock 当前已完成 AWFF PID 高度环最小 demo、三段分层控制器、组合控制器 `AWFF_FullController_Sysblock` 的真实 MCP 验证，并完成 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1 的 0-1 s 整机 smoke。该 smoke 只能证明整机链路打通，尚不能替代 50 s 全时长性能结论。
 
 当前已完成的可复现资产：
 
@@ -167,7 +167,7 @@ AWFF_FullController_Sysblock
 
 说明：Sysblock 控制器文件不是单纯的截图支撑材料，而是后续控制器闭环仿真的主实现路线之一。结构截图应来自 MWORKS.Sysblock/Sysplorer 打开的实际控制器模型窗口，用于证明模块连接、端口和信号流；正式控制器仿真结论必须以 `load_file`、`check_model`、必要时 `simulate_model` 的真实 MWORKS 证据为准，不使用手绘示意图或离线脚本替代。
 
-当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，并完成 `AWFF_FullController_Sysblock` 组合控制器独立仿真，但尚未完成四旋翼主模型闭环接入。已有完整性能结论仍应表述为“Sysplorer/Modelica 控制器闭环结果”；后续若要满足“Sysblock 仿真为主、代码仿真为辅”，必须把组合 Sysblock 控制器接入 QuadrotorModel 或 QuadrotorExperiments，并通过主模型 `check_model/simulate_model/result_manager` 形成整机闭环证据。
+当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，并完成 `AWFF_FullController_Sysblock` 组合控制器独立仿真。由于嵌套 Sysblock 在整机混合编译中暴露端口解析限制，当前整机 smoke 使用扁平化 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1AWFFSysblockClosedLoop`，并已通过主模型 `check_model/simulate_model/result_manager`。已有完整性能结论仍应表述为“Sysplorer/Modelica 控制器闭环结果”；Sysblock 全时长性能结论必须等待 50 s 主模型验证。
 
 当前验证状态：重新登录激活后，四个 Sysblock 控制器文件均已完成真实 Sysplorer MCP 复测：
 
@@ -192,9 +192,22 @@ results/test_reports/sysplorer_awff_full_sysblock_check_20260510_summary.json
 AWFF_FullController_Sysblock: load_file/check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行
 ```
 
+Sysblock 整机 smoke 新增验证：
+
+```text
+models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+models/QuadrotorExperiments/Example1AWFFSysblockClosedLoop.mo
+scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml
+results/test_reports/sysplorer_example1_awff_sysblock_smoke_20260510.jsonl
+results/raw/official_example1_awff_sysblock_smoke.csv
+results/metrics/official_example1_awff_sysblock_smoke.json
+
+QuadrotorExperiments.Example1AWFFSysblockClosedLoop: check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行。
+```
+
 历史失败日志 `results/logs/sysplorer_layered_sysblock_check_failed_20260510_summary.json` 和 `results/logs/sysplorer_position_axis_check_failed_20260510_summary.json` 保留为授权/登录状态异常时的诊断记录，不再代表当前模型状态。
 
-当前 Sysblock 主线仍缺少的证据是：把 `AWFF_FullController_Sysblock` 接入官方四旋翼主模型，并完成主模型 `simulate_model` 与结果读取。
+当前 Sysblock 主线仍缺少的证据是：完成 `AWFF_FullControllerEquation_Sysblock` 的 50 s Example1 全时长稳定仿真、指标导出和与 PID/AWFF Modelica 结果的定量对比。
 
 
 | 场景 | controller | position_rmse_m | RMSE变化 | max_position_error_m | steady_state_error_m | max_tilt_rad | control_energy | control_smoothness | total_health_score |

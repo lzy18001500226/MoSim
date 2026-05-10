@@ -108,6 +108,7 @@ CONTROLLER_CONFIGS = {
     "improved_pid": "controllers/improved_pid/default.yaml",
     "enhanced_pid": "controllers/enhanced_pid/default.yaml",
     "awff_pid": "controllers/awff_pid/default.yaml",
+    "awff_sysblock": "controllers/awff_sysblock/default.yaml",
     "nmpc_indi_l1": "controllers/nmpc_indi_l1/default.yaml",
 }
 

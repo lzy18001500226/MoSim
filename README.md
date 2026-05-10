@@ -2,7 +2,7 @@
 
 本项目面向 A8 四旋翼无人机位姿控制系统设计优化赛题，基于 MWORKS.Sysplorer、Sysblock 和 Syslab 构建可复现的仿真验证工程。
 
-当前证据口径：项目目标以 **MWORKS.Sysblock 控制器仿真为主线**，Sysplorer/Modelica 闭环仿真和脚本指标计算为辅助。现阶段已经完成多组真实 Sysplorer MCP 性能证据；Sysblock 方向已完成 AWFF PID 高度环最小模型、位置环、姿态环、电机分配和组合控制器 `AWFF_FullController_Sysblock` 的真实 MCP 验证。组合控制器已经完成独立 `load_file/check_model/simulate_model/result_manager`，但尚未接入官方四旋翼主模型，因此不能把现有 Modelica 结果表述为 Sysblock 主闭环性能结果。
+当前证据口径：项目目标以 **MWORKS.Sysblock 控制器仿真为主线**，Sysplorer/Modelica 闭环仿真和脚本指标计算为辅助。现阶段已经完成多组真实 Sysplorer MCP 性能证据；Sysblock 方向已完成 AWFF PID 高度环最小模型、位置环、姿态环、电机分配和组合控制器 `AWFF_FullController_Sysblock` 的真实 MCP 验证，并完成 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1 整机的 0-1 s smoke 闭环证据。当前 Sysblock 整机证据仍是 smoke 级别，不能替代 50 s 全时长性能结论。
 
 核心闭环：
 
@@ -38,6 +38,7 @@ scenarios/official/example1_pid_baseline.yaml  阶梯爬升
 scenarios/official/example2_pid_baseline.yaml  螺旋爬升
 scenarios/official/example3_pid_baseline.yaml  8字形运动
 scenarios/smoke/example1_pid_mcp_smoke.yaml    0-1 s MCP 链路烟雾测试
+scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml  0-1 s Sysblock 整机闭环烟雾测试
 ```
 
 `results/raw/mworks_mcp_example1_pid_smoke.csv` 只用于 0-1 s 真实 MCP 链路验证，不作为完整官方 baseline 指标。
@@ -90,8 +91,8 @@ P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP
 
 ```text
 Sysplorer/Modelica 真实仿真：官方 baseline、Improved PID、Enhanced PID、AWFF PID、质量/风扰/旋翼退化消融已完成多组证据。
-Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/simulate_model/result_manager；位置环、姿态环、电机分配三个分层 Sysblock 模型已通过 load_file/check_model；AWFF_FullController_Sysblock 组合控制器已通过 load_file/check_model/simulate_model/result_manager。
-后续优先级：把 AWFF_FullController_Sysblock 接入官方四旋翼主模型，形成主模型 check_model/simulate_model/result_manager 闭环证据。
+Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/simulate_model/result_manager；位置环、姿态环、电机分配三个分层 Sysblock 模型已通过 load_file/check_model；AWFF_FullController_Sysblock 组合控制器已通过 load_file/check_model/simulate_model/result_manager；AWFF_FullControllerEquation_Sysblock 已接入 QuadrotorExperiments.Example1AWFFSysblockClosedLoop 并完成 0-1 s 整机 smoke。
+后续优先级：对 awff_sysblock 做限幅、垂向参考速度、积分/抗饱和等可编译实现，形成 50 s Example1 全时长 check_model/simulate_model/result_manager 闭环证据。
 ```
 
 ## QA 检查
