@@ -143,16 +143,23 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 
 控制器内部包含条件积分抗饱和、一阶滤波导数、竖直参考速度前馈、姿态参考限幅和电机命令绝对值限幅。以下结果为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_full_awff_pid`：
 
-控制器结构图状态：
+Sysblock 控制器仿真路线：
 
 ```text
-待补真实 MWORKS.Sysblock 控制器结构截图。
-当前可打开的 Sysblock 风格模型草案：
+已验证的高度环最小模型：
 models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo
 AWFF_PID_Sysblock_Demo
+
+正在推进的分层控制器模型：
+models/QuadrotorControllerBlocks/AWFF_PositionOuterLoop_Sysblock.mo
+AWFF_PositionOuterLoop_Sysblock
+models/QuadrotorControllerBlocks/AWFF_AttitudeInnerLoop_Sysblock.mo
+AWFF_AttitudeInnerLoop_Sysblock
+models/QuadrotorControllerBlocks/AWFF_MotorMixer_Sysblock.mo
+AWFF_MotorMixer_Sysblock
 ```
 
-说明：结构图应来自 MWORKS.Sysblock/Sysplorer 打开的实际控制器模型窗口截图，不使用手绘示意图替代。当前草案只覆盖 AWFF PID 的高度环，用于先验证图形化控制器支撑材料链路；正式版需继续扩展到 x/y/z 外环、姿态内环、限幅/抗饱和和电机混控。
+说明：Sysblock 控制器文件不是单纯的截图支撑材料，而是后续控制器闭环仿真的主实现路线之一。结构截图应来自 MWORKS.Sysblock/Sysplorer 打开的实际控制器模型窗口，用于证明模块连接、端口和信号流；正式控制器仿真结论必须以 `load_file`、`check_model`、必要时 `simulate_model` 的真实 MWORKS 证据为准，不使用手绘示意图或离线脚本替代。
 
 当前模型已通过真实 Sysplorer MCP `load_file` 和 `check_model`，证据日志：
 
