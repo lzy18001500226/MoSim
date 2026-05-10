@@ -1,0 +1,11 @@
+{
+  "source": "MWORKS_MCP",
+  "evidence_level": "real_sysplorer_mcp_position_axis_sysblock_check",
+  "record": {
+    "model_name": "AWFF_PositionAxis_Sysblock",
+    "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_PositionAxis_Sysblock.mo",
+    "load_ok": true,
+    "check_ok": false,
+    "check_error": "{\"ok\": false, \"tool\": \"check_model\", \"model_type\": \"MODELICA\", \"elapsed_s\": 0.033, \"count\": 1, \"results\": [{\"ok\": false, \"api\": \"CheckModel\", \"data\": false, \"error\": \"CheckModel returned False\\nGetLastErrors: \\nMessageText: [上一条命令没有日志信息]\", \"model_name\": \"AWFF_PositionAxis_Sysblock\", \"dt_s\": 0.031}]}"
+  }
+}
