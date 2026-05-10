@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import math
+import importlib.util
 import subprocess
 import sys
 from pathlib import Path
@@ -35,6 +36,15 @@ REQUIRED_METRICS = [
     "fault_tolerance_score",
     "total_health_score",
 ]
+
+
+def load_metrics_module():
+    spec = importlib.util.spec_from_file_location("calc_metrics", ROOT / "scripts" / "calc_metrics.py")
+    if spec is None or spec.loader is None:
+        raise RuntimeError("Could not load calc_metrics.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def test_metrics_regression() -> None:
@@ -76,8 +86,36 @@ def test_metrics_regression() -> None:
         raise AssertionError(f"Invalid health score: {metrics['total_health_score']}")
 
 
+def test_metrics_rejects_empty_input() -> None:
+    module = load_metrics_module()
+    empty_data = {
+        "time": [],
+        "x": [],
+        "y": [],
+        "z": [],
+        "x_ref": [],
+        "y_ref": [],
+        "z_ref": [],
+        "roll": [],
+        "pitch": [],
+        "yaw": [],
+        "u1": [],
+        "u2": [],
+        "u3": [],
+        "u4": [],
+    }
+    try:
+        module.compute_metrics(empty_data, ROOT / "empty.csv", "empty", "fixture")
+    except ValueError as exc:
+        if "no data rows" not in str(exc):
+            raise AssertionError(f"Unexpected error message: {exc}") from exc
+    else:
+        raise AssertionError("Empty metrics input should fail")
+
+
 def main() -> int:
     test_metrics_regression()
+    test_metrics_rejects_empty_input()
     print("[OK] metrics regression")
     return 0
 

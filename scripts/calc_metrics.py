@@ -231,6 +231,8 @@ def to_csv_value(value: object) -> object:
 
 def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str, controller_id: str) -> dict[str, object]:
     time = data["time"]
+    if not time:
+        raise ValueError(f"Metrics input has no data rows: {raw_file}")
     ex = [x - xr for x, xr in zip(data["x"], data["x_ref"])]
     ey = [y - yr for y, yr in zip(data["y"], data["y_ref"])]
     ez = [z - zr for z, zr in zip(data["z"], data["z_ref"])]
@@ -329,7 +331,7 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
         "control_command_max": max_or_nan(motor_values) if motor_values else math.nan,
         "control_command_normalized": normalized_motor_commands,
         "saturation_ratio": saturation_samples / (len(time) * len(motor_cols))
-        if motor_cols and normalized_motor_commands
+        if motor_cols and normalized_motor_commands and time
         else math.nan,
         "nan_count": nan_count,
         "valid": len(time) > 10 and nan_count == 0,

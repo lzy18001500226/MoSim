@@ -140,16 +140,22 @@ def write_csv(series: list[list[float]], variables: dict[str, str], output: Path
     names = list(variables)
     if len(series) < len(names):
         raise ValueError(f"Expected {len(names)} series, got {len(series)}")
+    if not series or not series[0]:
+        raise ValueError("MCP result series is empty; refusing to overwrite raw CSV")
     row_count = len(series[0])
+    if row_count <= 0:
+        raise ValueError("MCP result series has zero rows; refusing to overwrite raw CSV")
     if any(len(item) != row_count for item in series):
         raise ValueError("MCP result series lengths are inconsistent")
 
     output.parent.mkdir(parents=True, exist_ok=True)
-    with output.open("w", newline="", encoding="utf-8") as handle:
+    temp_output = output.with_suffix(output.suffix + ".tmp")
+    with temp_output.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(names)
         for index in range(row_count):
             writer.writerow([series[column_index][index] for column_index in range(len(names))])
+    temp_output.replace(output)
 
 
 def write_metrics(

@@ -44,8 +44,20 @@ def test_run_mworks_scenario_command_regression() -> None:
         raise AssertionError("Default smoke scenario should not request replay HTML generation")
 
 
+def test_run_mworks_scenario_stop_time_override() -> None:
+    module = load_module()
+    config = module.read_yaml(Args.scenario)
+    args = Args()
+    args.stop_time = 10.0
+    command = module.scenario_command(args, config)
+    joined = " ".join(command)
+    if "--target-time 0,10" not in joined:
+        raise AssertionError(f"--stop-time should override scenario stop_time_s: {joined}")
+
+
 def main() -> int:
     test_run_mworks_scenario_command_regression()
+    test_run_mworks_scenario_stop_time_override()
     print("[OK] run_mworks_scenario command regression")
     return 0
 

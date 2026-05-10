@@ -94,7 +94,7 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
     metrics_json = Path(str(result.get("metrics_file", f"results/metrics/{experiment_id}.json")))
     metrics_csv = metrics_json.with_suffix(".csv")
     log_file = Path(str(result.get("mcp_log", f"results/test_reports/sysplorer_{experiment_id}_mcp.jsonl")))
-    stop_time = float(simulation.get("stop_time_s", args.stop_time or 1.0))
+    stop_time = float(args.stop_time if args.stop_time is not None else simulation.get("stop_time_s", 1.0))
     start_time = float(simulation.get("start_time_s", 0.0))
     target_time = f"{start_time:g},{stop_time:g}"
 
