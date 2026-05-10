@@ -40,6 +40,8 @@ def main() -> int:
         raise AssertionError("Smoke run must not write into formal baseline raw path")
     if "mworks_mcp_example1_pid_smoke.csv" not in joined:
         raise AssertionError("Smoke raw path missing")
+    if config.get("generate_replay_html"):
+        raise AssertionError("Default smoke scenario should not request replay HTML generation")
     print("[OK] run_mworks_scenario command regression")
     return 0
 

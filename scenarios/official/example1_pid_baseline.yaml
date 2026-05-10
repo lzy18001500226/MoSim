@@ -24,4 +24,3 @@ result:
   raw_file: results/raw/official_example1_pid_baseline.csv
   metrics_file: results/metrics/official_example1_pid_baseline.json
   replay_file: results/replay/reference_official_example1.json
-  replay_html: results/replay_html/reference_official_example1.html

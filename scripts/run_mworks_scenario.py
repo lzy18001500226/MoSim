@@ -150,7 +150,6 @@ def run_postprocess(config: dict[str, Any]) -> None:
     metrics_file = Path(str(result.get("metrics_file", "")))
     figure_dir = Path(str(result.get("figure_dir", f"results/figures/{experiment_id}")))
     replay_file = Path(str(result.get("replay_file", f"results/replay/{experiment_id}.json")))
-    replay_html = Path(str(result.get("replay_html", f"results/replay_html/{experiment_id}.html")))
 
     subprocess.run(
         [
@@ -182,11 +181,13 @@ def run_postprocess(config: dict[str, Any]) -> None:
         cwd=ROOT,
         check=True,
     )
-    subprocess.run(
-        [sys.executable, "scripts/generate_replay_html.py", str(replay_file), str(replay_html)],
-        cwd=ROOT,
-        check=True,
-    )
+    if config.get("generate_replay_html", False):
+        replay_html = Path(str(result.get("replay_html", f"results/replay_html/{experiment_id}.html")))
+        subprocess.run(
+            [sys.executable, "scripts/generate_replay_html.py", str(replay_file), str(replay_html)],
+            cwd=ROOT,
+            check=True,
+        )
 
 
 def parse_args() -> argparse.Namespace:

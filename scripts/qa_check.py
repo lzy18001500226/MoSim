@@ -161,9 +161,6 @@ OFFICIAL_REFERENCE_OUTPUTS = [
     "results/replay/reference_official_example1.json",
     "results/replay/reference_official_example2.json",
     "results/replay/reference_official_example3.json",
-    "results/replay_html/reference_official_example1.html",
-    "results/replay_html/reference_official_example2.html",
-    "results/replay_html/reference_official_example3.html",
 ]
 
 MWORKS_MCP_SMOKE_OUTPUTS = [
@@ -195,12 +192,6 @@ MWORKS_MCP_IMPROVED_OUTPUTS = [
     "results/replay/official_example1_improved_pid.json",
     "results/replay/official_example2_improved_pid.json",
     "results/replay/official_example3_improved_pid.json",
-    "results/replay_html/official_example1_pid_baseline.html",
-    "results/replay_html/official_example2_pid_baseline.html",
-    "results/replay_html/official_example3_pid_baseline.html",
-    "results/replay_html/official_example1_improved_pid.html",
-    "results/replay_html/official_example2_improved_pid.html",
-    "results/replay_html/official_example3_improved_pid.html",
 ]
 
 OFFICIAL_RESULT_VARIABLE_CANDIDATES = [

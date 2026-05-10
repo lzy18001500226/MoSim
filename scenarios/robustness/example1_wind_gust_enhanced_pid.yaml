@@ -44,5 +44,4 @@ result:
   metrics_file: results/metrics/robust_wind_gust_example1_enhanced_pid.json
   figure_dir: results/figures/robust_wind_gust_example1_enhanced_pid
   replay_file: results/replay/robust_wind_gust_example1_enhanced_pid.json
-  replay_html: results/replay_html/robust_wind_gust_example1_enhanced_pid.html
   mcp_log: results/test_reports/sysplorer_robust_wind_gust_example1_enhanced_pid_20260510.jsonl

@@ -32,5 +32,4 @@ result:
   metrics_file: results/metrics/mworks_mcp_example1_enhanced_pid_smoke.json
   figure_dir: results/figures/mworks_mcp_example1_enhanced_pid_smoke
   replay_file: results/replay/mworks_mcp_example1_enhanced_pid_smoke.json
-  replay_html: results/replay_html/mworks_mcp_example1_enhanced_pid_smoke.html
   mcp_log: results/test_reports/sysplorer_example1_enhanced_pid_mcp_smoke_20260510.jsonl

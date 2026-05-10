@@ -42,6 +42,7 @@ docs/mworks/raw/
 results/tmp/
 results/cache/
 results/logs/*.log
+results/replay_html/
 
 # Large binary outputs
 *.mat

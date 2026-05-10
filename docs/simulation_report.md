@@ -12,9 +12,8 @@
 官方 Example1/2/3 参考轨迹 CSV
 官方 Example1/2/3 完整 PID baseline CSV、指标和图表
 官方 Example1/2/3 MCP 参数搜索型 Improved PID CSV、指标和图表
-官方 Example1 Enhanced PID 完整 CSV、指标、图表和回放
-官方 Example1 AWFF 独立控制器完整 CSV、指标、图表和回放
-官方 Example1/2/3 浏览器三维回放 HTML
+官方 Example1 Enhanced PID 完整 CSV、指标、图表和 replay JSON
+官方 Example1 AWFF 独立控制器完整 CSV、指标、图表、replay JSON 和控制器结构图
 Example1 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 ```
 
@@ -55,9 +54,10 @@ QuadrotorModel/package.mo
 → scripts/run_sysplorer_mcp_smoke.py 导出标准 CSV
 → scripts/calc_metrics.py 计算指标
 → scripts/plot_results.py 生成 SVG 图表
-→ scripts/generate_replay_from_raw.py 生成真实轨迹回放 JSON
-→ scripts/generate_replay_html.py 生成离线三维回放 HTML
+→ scripts/generate_replay_from_raw.py 生成 replay JSON
 ```
+
+说明：`replay JSON/HTML` 只用于导出展示素材，不参与控制闭环，也不作为在线仿真证据。当前控制器仿真的正式证据为 MWORKS/Sysplorer 模型检查、仿真日志、raw CSV、metrics JSON/CSV 和报告图表。
 
 标准 CSV 核心字段：
 
@@ -142,6 +142,12 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 `QuadrotorExperiments.Example1AntiWindupFeedforwardPID` 是项目自有控制器分支，不再只通过官方 `controller3_2` 的 PID 参数和 limiter modifier 实现增强。该模型在 `QuadrotorExperiments.Example1ProjectControllerBase` 中替换 `controller3_2` 的类型，但保持原官方接口兼容：输入仍为 `position_command[3]`、`position[3]`、`angle[3]`，输出仍为 `y`、`y1`、`y2`、`y3`，因此后续指标脚本和回放链路无需改变量映射。
 
 控制器内部包含条件积分抗饱和、一阶滤波导数、竖直参考速度前馈、姿态参考限幅和电机命令绝对值限幅。以下结果为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_full_awff_pid`：
+
+控制器结构图：
+
+```text
+docs/figures/awff_pid_controller_structure.svg
+```
 
 | 场景 | controller | position_rmse_m | RMSE变化 | max_position_error_m | steady_state_error_m | max_tilt_rad | control_energy | control_smoothness | total_health_score |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -271,32 +277,32 @@ results/figures/robust_rotor1_loss15_example1_improved_pid/
 results/figures/robust_rotor1_loss15_example1_enhanced_pid/
 ```
 
-已生成回放：
+已生成 replay JSON：
 
 ```text
-results/replay_html/official_example1_pid_baseline.html
-results/replay_html/official_example1_improved_pid.html
-results/replay_html/official_example1_enhanced_pid.html
-results/replay_html/official_example1_awff_pid.html
-results/replay_html/official_example2_pid_baseline.html
-results/replay_html/official_example2_improved_pid.html
-results/replay_html/official_example3_pid_baseline.html
-results/replay_html/official_example3_improved_pid.html
-results/replay_html/robust_mass20_example1_pid_baseline.html
-results/replay_html/robust_mass20_example1_improved_pid.html
-results/replay_html/robust_mass20_example1_enhanced_pid.html
-results/replay_html/robust_wind_gust_example1_pid_baseline.html
-results/replay_html/robust_wind_gust_example1_improved_pid.html
-results/replay_html/robust_wind_gust_example1_enhanced_pid.html
-results/replay_html/robust_rotor1_loss15_example1_pid_baseline.html
-results/replay_html/robust_rotor1_loss15_example1_improved_pid.html
-results/replay_html/robust_rotor1_loss15_example1_enhanced_pid.html
-results/replay_html/reference_official_example1.html
-results/replay_html/reference_official_example2.html
-results/replay_html/reference_official_example3.html
+results/replay/official_example1_pid_baseline.json
+results/replay/official_example1_improved_pid.json
+results/replay/official_example1_enhanced_pid.json
+results/replay/official_example1_awff_pid.json
+results/replay/official_example2_pid_baseline.json
+results/replay/official_example2_improved_pid.json
+results/replay/official_example3_pid_baseline.json
+results/replay/official_example3_improved_pid.json
+results/replay/robust_mass20_example1_pid_baseline.json
+results/replay/robust_mass20_example1_improved_pid.json
+results/replay/robust_mass20_example1_enhanced_pid.json
+results/replay/robust_wind_gust_example1_pid_baseline.json
+results/replay/robust_wind_gust_example1_improved_pid.json
+results/replay/robust_wind_gust_example1_enhanced_pid.json
+results/replay/robust_rotor1_loss15_example1_pid_baseline.json
+results/replay/robust_rotor1_loss15_example1_improved_pid.json
+results/replay/robust_rotor1_loss15_example1_enhanced_pid.json
+results/replay/reference_official_example1.json
+results/replay/reference_official_example2.json
+results/replay/reference_official_example3.json
 ```
 
-其中 `official_example*_*.html` 来自真实 Sysplorer MCP raw CSV，包含实际飞行轨迹和参考轨迹；`reference_official_example*.html` 仅为官方参考路径展示。
+其中 `results/replay/*.json` 来自真实 Sysplorer MCP raw CSV 或官方参考轨迹 CSV，可作为后续 Gazebo/视频展示输入；它不是在线仿真结果。
 
 ## 11. 扩展场景状态
 

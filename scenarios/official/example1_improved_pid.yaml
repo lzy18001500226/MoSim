@@ -31,4 +31,3 @@ result:
   metrics_file: results/metrics/official_example1_improved_pid.json
   figure_dir: results/figures/official_example1_improved_pid
   replay_file: results/replay/official_example1_improved_pid.json
-  replay_html: results/replay_html/official_example1_improved_pid.html

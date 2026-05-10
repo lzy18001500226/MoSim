@@ -32,5 +32,4 @@ result:
   metrics_file: results/metrics/official_example1_enhanced_pid.json
   figure_dir: results/figures/official_example1_enhanced_pid
   replay_file: results/replay/official_example1_enhanced_pid.json
-  replay_html: results/replay_html/official_example1_enhanced_pid.html
   mcp_log: results/test_reports/sysplorer_example1_enhanced_pid_full_20260510.jsonl

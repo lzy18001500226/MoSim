@@ -41,5 +41,4 @@ result:
   metrics_file: results/metrics/robust_rotor1_loss15_example1_improved_pid.json
   figure_dir: results/figures/robust_rotor1_loss15_example1_improved_pid
   replay_file: results/replay/robust_rotor1_loss15_example1_improved_pid.json
-  replay_html: results/replay_html/robust_rotor1_loss15_example1_improved_pid.html
   mcp_log: results/test_reports/sysplorer_robust_rotor1_loss15_example1_improved_pid_20260510.jsonl

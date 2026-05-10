@@ -11,7 +11,7 @@
 → 安全/故障降级
 → 编队协同
 → Syslab/MCP 自动评估
-→ 三维回放、报告和视频素材
+→ 控制器结构图、指标报告和可选视频素材
 ```
 
 ## 快速入口
@@ -46,7 +46,7 @@ scenarios/smoke/example1_pid_mcp_smoke.yaml    0-1 s MCP 链路烟雾测试
 python scripts/run_mworks_scenario.py scenarios/smoke/example1_pid_mcp_smoke.yaml
 ```
 
-该入口会读取模型名、时长和输出路径，调用 `check_model`、`simulate_model`、`result_manager`，再生成 metrics、SVG 图表和三维回放 HTML。
+该入口会读取模型名、时长和输出路径，调用 `check_model`、`simulate_model`、`result_manager`，再生成 metrics、SVG 图表和 replay JSON。HTML 回放不作为控制器仿真证据，只有场景 YAML 显式设置 `generate_replay_html: true` 时才生成。
 
 批量复现已有场景：
 
@@ -78,7 +78,7 @@ results/       仿真结果和报告素材，按实际输出创建子目录
 ## 当前实现主线
 
 ```text
-P0：官方 PID baseline + 改进 PID + 数据导出 + 指标计算 + 三维回放素材
+P0：官方 PID baseline + 改进 PID + 数据导出 + 指标计算 + 控制器结构/指标图
 P1-A：MPC/NMPC-INDI-L1 主控制链路 + 扰动识别 + 模式切换
 P1-B：Safety Filter + 电机故障注入 + 容错/降级策略
 P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP 批量评估

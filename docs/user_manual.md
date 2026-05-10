@@ -75,14 +75,13 @@ models/QuadrotorExperiments/package.mo
 
 该包通过 `extends QuadrotorModel.Examples.*` 派生官方模型，只覆盖 `controller3_2.PID*` 参数，不修改官方 `QuadrotorModel/package.mo`。
 
-## 4. 参考轨迹与回放
+## 4. 参考轨迹与 replay JSON
 
 生成官方参考轨迹和回放 JSON：
 
 ```bash
 python3 scripts/generate_reference.py --scene all
 python3 scripts/check_reference_outputs.py
-python3 scripts/generate_replay_html.py --all
 ```
 
 输出：
@@ -94,12 +93,9 @@ results/raw/reference_official_example3.csv
 results/replay/reference_official_example1.json
 results/replay/reference_official_example2.json
 results/replay/reference_official_example3.json
-results/replay_html/reference_official_example1.html
-results/replay_html/reference_official_example2.html
-results/replay_html/reference_official_example3.html
 ```
 
-`results/replay_html/*.html` 为离线浏览器三维回放页面，可直接打开录屏，不依赖 CDN。
+`results/replay/*.json` 是从参考轨迹或真实 raw CSV 导出的展示素材输入，不参与控制闭环，也不作为在线仿真证据。正式控制器仿真证据以 MWORKS/Sysplorer 模型检查、仿真日志、raw CSV、metrics JSON/CSV 和 SVG 图表为准。
 
 从真实 MCP raw CSV 生成实际轨迹回放：
 
@@ -110,22 +106,22 @@ python3 scripts/generate_replay_from_raw.py \
   --scene-id official_example1_improved_pid \
   --model-name QuadrotorExperiments.Example1ImprovedPID \
   --description 'Example1 MCP 参数搜索型 Improved PID 真实轨迹'
-
-python3 scripts/generate_replay_html.py \
-  results/replay/official_example1_improved_pid.json \
-  results/replay_html/official_example1_improved_pid.html
 ```
 
-正式回放文件：
+正式 replay JSON 文件：
 
 ```text
-results/replay_html/official_example1_pid_baseline.html
-results/replay_html/official_example1_improved_pid.html
-results/replay_html/official_example2_pid_baseline.html
-results/replay_html/official_example2_improved_pid.html
-results/replay_html/official_example3_pid_baseline.html
-results/replay_html/official_example3_improved_pid.html
+results/replay/official_example1_pid_baseline.json
+results/replay/official_example1_improved_pid.json
+results/replay/official_example1_enhanced_pid.json
+results/replay/official_example1_awff_pid.json
+results/replay/official_example2_pid_baseline.json
+results/replay/official_example2_improved_pid.json
+results/replay/official_example3_pid_baseline.json
+results/replay/official_example3_improved_pid.json
 ```
+
+如需临时制作浏览器回放素材，可手动执行 `scripts/generate_replay_html.py`。仓库默认流程不再生成或提交 HTML 文件。
 
 ## 5. 官方仿真流程
 
