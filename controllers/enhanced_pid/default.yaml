@@ -87,3 +87,12 @@ acceptance:
       Under +20% central body mass perturbation, check_model and simulate_model
       pass for the full 50 s run, raw CSV has 5001 rows, and RMSE / steady-state
       error / max tilt improve against robust_mass20_example1_pid_baseline.
+  robust_wind_gust_example1:
+    baseline_experiment: robust_wind_gust_example1_pid_baseline
+    comparison_experiment: robust_wind_gust_example1_improved_pid
+    scenario_file: scenarios/robustness/example1_wind_gust_enhanced_pid.yaml
+    expected: >
+      Under the 15-19 s lateral gust force, check_model and simulate_model pass
+      for the full 50 s run, raw CSV has valid time/state/reference columns,
+      and RMSE / disturbance peak error / max tilt improve against
+      robust_wind_gust_example1_pid_baseline.

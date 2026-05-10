@@ -1,8 +1,8 @@
 # Experiment Summary
 
 - CSV: `results/test_reports/experiment_summary.csv`
-- Total scenarios: `12`
-- Done: `12`
+- Total scenarios: `15`
+- Done: `15`
 - Pending: `0`
 - Invalid: `0`
 
@@ -13,9 +13,12 @@
 | official_example3_improved_pid | official_example3 | improved_pid | 0.167227 | 60.5466 | done |
 | official_example3_pid_baseline | official_example3 | pid_baseline | 0.172311 | 60.5054 | done |
 | official_example1_enhanced_pid | official_example1 | enhanced_pid | 0.26625 | 55.4225 | done |
+| robust_wind_gust_example1_enhanced_pid | robust_wind_gust_example1 | enhanced_pid | 0.31826 | 55.0045 | done |
 | official_example1_improved_pid | official_example1 | improved_pid | 0.26989 | 52.5332 | done |
 | official_example1_pid_baseline | official_example1 | pid_baseline | 0.275253 | 52.4645 | done |
 | robust_mass20_example1_enhanced_pid | robust_mass20_example1 | enhanced_pid | 0.28261 | 52.4446 | done |
+| robust_wind_gust_example1_improved_pid | robust_wind_gust_example1 | improved_pid | 0.322116 | 52.1171 | done |
+| robust_wind_gust_example1_pid_baseline | robust_wind_gust_example1 | pid_baseline | 0.334706 | 51.9899 | done |
 | robust_mass20_example1_improved_pid | robust_mass20_example1 | improved_pid | 0.286484 | 51.8863 | done |
 | robust_mass20_example1_pid_baseline | robust_mass20_example1 | pid_baseline | 0.291441 | 51.8207 | done |
 | official_example2_improved_pid | official_example2 | improved_pid | 0.479834 | 48.0258 | done |
@@ -37,6 +40,9 @@
 | robust_mass20_example1_enhanced_pid | MWORKS_MCP | real_sysplorer_mcp_robust_mass20_ablation | `results/raw/robust_mass20_example1_enhanced_pid.csv` |
 | robust_mass20_example1_improved_pid | MWORKS_MCP | real_sysplorer_mcp_robust_mass20_ablation | `results/raw/robust_mass20_example1_improved_pid.csv` |
 | robust_mass20_example1_pid_baseline | MWORKS_MCP | real_sysplorer_mcp_robust_mass20_ablation | `results/raw/robust_mass20_example1_pid_baseline.csv` |
+| robust_wind_gust_example1_enhanced_pid | MWORKS_MCP | real_sysplorer_mcp_robust_wind_gust_ablation | `results/raw/robust_wind_gust_example1_enhanced_pid.csv` |
+| robust_wind_gust_example1_improved_pid | MWORKS_MCP | real_sysplorer_mcp_robust_wind_gust_ablation | `results/raw/robust_wind_gust_example1_improved_pid.csv` |
+| robust_wind_gust_example1_pid_baseline | MWORKS_MCP | real_sysplorer_mcp_robust_wind_gust_ablation | `results/raw/robust_wind_gust_example1_pid_baseline.csv` |
 | mworks_mcp_example1_enhanced_pid_smoke | MWORKS_MCP | real_sysplorer_mcp_smoke | `results/raw/mworks_mcp_example1_enhanced_pid_smoke.csv` |
 | mworks_mcp_example1_pid_smoke | MWORKS_MCP | real_sysplorer_mcp_smoke | `results/raw/mworks_mcp_example1_pid_smoke.csv` |
 

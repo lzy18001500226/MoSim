@@ -29,6 +29,8 @@ SUMMARY_COLUMNS = [
     "max_position_error_m",
     "steady_state_error_m",
     "settling_time_s",
+    "disturbance_peak_error_m",
+    "disturbance_recovery_time_s",
     "overshoot_max_pct",
     "control_energy",
     "control_smoothness",

@@ -18,6 +18,10 @@ DEFAULT_SETTLING_TOLERANCE_M = 0.10
 DEFAULT_SETTLING_HOLD_S = 2.0
 DEFAULT_MIN_ALTITUDE_M = 0.10
 DEFAULT_MAX_TILT_RAD = math.radians(60.0)
+DEFAULT_DISTURBANCE_START_S = 15.0
+DEFAULT_DISTURBANCE_END_S = 19.0
+DEFAULT_DISTURBANCE_RECOVERY_TOLERANCE_M = 0.20
+DEFAULT_DISTURBANCE_RECOVERY_HOLD_S = 2.0
 
 
 def read_csv(path: Path) -> dict[str, list[float]]:
@@ -107,6 +111,38 @@ def settling_time(time: list[float], error: list[float], tolerance: float, hold_
                 break
         if window_ok:
             return current_time - time[0]
+    return math.nan
+
+
+def disturbance_peak_error(time: list[float], error: list[float], start_s: float, end_s: float) -> float:
+    values = [value for t, value in zip(time, error) if start_s <= t <= end_s and not math.isnan(value)]
+    return max(values) if values else math.nan
+
+
+def disturbance_recovery_time(
+    time: list[float],
+    error: list[float],
+    end_s: float,
+    tolerance: float,
+    hold_s: float,
+) -> float:
+    if not time or not error or len(time) != len(error):
+        return math.nan
+    for index, current_time in enumerate(time):
+        if current_time < end_s:
+            continue
+        hold_until = current_time + hold_s
+        if hold_until > time[-1] + 1e-9:
+            break
+        window_ok = True
+        for t, value in zip(time[index:], error[index:]):
+            if t > hold_until + 1e-9:
+                break
+            if math.isnan(value) or value > tolerance:
+                window_ok = False
+                break
+        if window_ok:
+            return current_time - end_s
     return math.nan
 
 
@@ -256,6 +292,21 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
         "max_position_error_m": max(ep) if ep else math.nan,
         "steady_state_error_m": mean(final_error),
         "settling_time_s": settling_time(time, ep, DEFAULT_SETTLING_TOLERANCE_M, DEFAULT_SETTLING_HOLD_S),
+        "disturbance_window_start_s": DEFAULT_DISTURBANCE_START_S,
+        "disturbance_window_end_s": DEFAULT_DISTURBANCE_END_S,
+        "disturbance_peak_error_m": disturbance_peak_error(
+            time,
+            ep,
+            DEFAULT_DISTURBANCE_START_S,
+            DEFAULT_DISTURBANCE_END_S,
+        ),
+        "disturbance_recovery_time_s": disturbance_recovery_time(
+            time,
+            ep,
+            DEFAULT_DISTURBANCE_END_S,
+            DEFAULT_DISTURBANCE_RECOVERY_TOLERANCE_M,
+            DEFAULT_DISTURBANCE_RECOVERY_HOLD_S,
+        ),
         "overshoot_x_pct": axis_overshoot(data["x"], data["x_ref"]),
         "overshoot_y_pct": axis_overshoot(data["y"], data["y_ref"]),
         "overshoot_z_pct": axis_overshoot(data["z"], data["z_ref"]),
