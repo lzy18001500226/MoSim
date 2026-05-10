@@ -13,6 +13,7 @@
 官方 Example1/2/3 完整 PID baseline CSV、指标和图表
 官方 Example1/2/3 MCP 参数搜索型 Improved PID CSV、指标和图表
 官方 Example1 Enhanced PID 完整 CSV、指标、图表和回放
+官方 Example1 AWFF 独立控制器完整 CSV、指标、图表和回放
 官方 Example1/2/3 浏览器三维回放 HTML
 Example1 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 ```
@@ -23,6 +24,7 @@ Example1 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 |---|---|---:|---|
 | 阶梯爬升 | `QuadrotorModel.Examples.Example1` | 50 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
 | 阶梯爬升 Enhanced PID | `QuadrotorExperiments.Example1EnhancedPID` | 50 s | 导数滤波 + 保守限幅 Enhanced PID 已通过 Sysplorer MCP 仿真 |
+| 阶梯爬升 AWFF PID | `QuadrotorExperiments.Example1AntiWindupFeedforwardPID` | 50 s | 项目自有抗饱和 + 竖直参考前馈控制器已通过 Sysplorer MCP 仿真 |
 | 螺旋爬升 | `QuadrotorModel.Examples.Example2` | 50 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
 | 8字形运动 | `QuadrotorModel.Examples.Example3` | 120 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
 | Example1 smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已有 CSV、指标、图表 |
@@ -135,7 +137,23 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 
 结论：Enhanced PID 在 Example1 完整 50 s 真实 Sysplorer MCP 仿真中，相比官方 PID 的 RMSE 降低 `3.270%`，稳态误差降低 `7.423%`，最大倾角降低 `22.733%`，控制平滑性指标明显改善；相比参数搜索型 Improved PID，RMSE 继续降低 `1.348%`，最大倾角降低 `36.268%`。该结果可以作为 P1 控制器增强的第一条真实证据。限制是：当前 Enhanced PID 仍通过参数化官方 PID 与限幅块实现，抗积分饱和和参考前馈尚未替换为独立控制器内部逻辑。
 
-## 8. P1 鲁棒场景与控制器消融
+## 8. AWFF 独立控制器初步结果
+
+`QuadrotorExperiments.Example1AntiWindupFeedforwardPID` 是项目自有控制器分支，不再只通过官方 `controller3_2` 的 PID 参数和 limiter modifier 实现增强。该模型在 `QuadrotorExperiments.Example1ProjectControllerBase` 中替换 `controller3_2` 的类型，但保持原官方接口兼容：输入仍为 `position_command[3]`、`position[3]`、`angle[3]`，输出仍为 `y`、`y1`、`y2`、`y3`，因此后续指标脚本和回放链路无需改变量映射。
+
+控制器内部包含条件积分抗饱和、一阶滤波导数、竖直参考速度前馈、姿态参考限幅和电机命令绝对值限幅。以下结果为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_full_awff_pid`：
+
+| 场景 | controller | position_rmse_m | RMSE变化 | max_position_error_m | steady_state_error_m | max_tilt_rad | control_energy | control_smoothness | total_health_score |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Example1 阶梯爬升 | baseline | 0.275253 | - | 1.369402 | 0.111457 | 0.225729 | 39925.003500 | 111765.785252 | 52.464469 |
+| Example1 阶梯爬升 | enhanced_pid | 0.266250 | +3.270% | 1.297338 | 0.103184 | 0.174432 | 39896.485617 | 13260.747831 | 55.422450 |
+| Example1 阶梯爬升 | awff_pid | 0.259914 | +5.573% | 1.241362 | 0.103229 | 0.174490 | 39906.269209 | 14346.392213 | 52.334668 |
+
+结论：AWFF PID 相比官方 PID 的 RMSE 降低 `5.573%`，最大位置误差降低 `9.350%`，稳态误差降低 `7.382%`，最大倾角降低 `22.699%`；相比 Enhanced PID，RMSE 继续降低 `2.380%`，最大位置误差降低 `4.315%`，稳态误差和最大倾角基本持平。该结果说明独立控制器本体替换已经跑通，并且比“参数化官方 PID”有进一步轨迹精度收益。
+
+限制：AWFF PID 当前 raw CSV 为 `25001` 行，而 baseline/enhanced 的正式 CSV 为 `5001` 行，因此 `constraint_violation_count` 和由采样点数量直接影响的健康分不做严格横向结论。下一步若继续对 AWFF 做正式消融，应补充时间归一化约束指标，或统一导出采样间隔后再比较 sample-count 类指标。
+
+## 9. P1 鲁棒场景与控制器消融
 
 新增 `robust_mass20_example1` 场景用于真实模型鲁棒性验证：在 Example1 阶梯爬升任务中，将 `quadChassisTest17_1.body.m` 从官方 `0.159504 kg` 改为 `0.191405 kg`，即中心机体质量 +20%。该扰动模拟载荷变化或质量参数建模误差；路径、求解器、导出变量和仿真时长保持不变，因此可用于控制器消融对比。
 
@@ -229,7 +247,7 @@ scenarios/robustness/example1_rotor1_loss15_enhanced_pid.yaml
 
 消融结论：单旋翼效率退化场景明显比质量摄动和横向阵风更困难，baseline 的 RMSE 增至 `0.392120 m`，健康分降至 `35.625782`。Improved PID 可降低 RMSE，但最大倾角增加 `20.231%`；Enhanced PID 相比 baseline 的 RMSE 降低 `6.087%`，最大倾角降低 `17.335%`，约束违规次数从 `67` 降到 `65`，并保持明显更低的控制平滑性指标。该场景可作为 P1 执行器退化/故障鲁棒性证据，但报告中应明确：当前控制器没有故障检测与重构逻辑，仍属于固定控制器在退化工况下的抗扰表现验证。
 
-## 9. 当前图表
+## 10. 当前图表
 
 已生成图表：
 
@@ -237,6 +255,7 @@ scenarios/robustness/example1_rotor1_loss15_enhanced_pid.yaml
 results/figures/official_example1_pid_baseline/
 results/figures/official_example1_improved_pid/
 results/figures/official_example1_enhanced_pid/
+results/figures/official_example1_awff_pid/
 results/figures/official_example2_pid_baseline/
 results/figures/official_example2_improved_pid/
 results/figures/official_example3_pid_baseline/
@@ -258,6 +277,7 @@ results/figures/robust_rotor1_loss15_example1_enhanced_pid/
 results/replay_html/official_example1_pid_baseline.html
 results/replay_html/official_example1_improved_pid.html
 results/replay_html/official_example1_enhanced_pid.html
+results/replay_html/official_example1_awff_pid.html
 results/replay_html/official_example2_pid_baseline.html
 results/replay_html/official_example2_improved_pid.html
 results/replay_html/official_example3_pid_baseline.html
@@ -278,11 +298,11 @@ results/replay_html/reference_official_example3.html
 
 其中 `official_example*_*.html` 来自真实 Sysplorer MCP raw CSV，包含实际飞行轨迹和参考轨迹；`reference_official_example*.html` 仅为官方参考路径展示。
 
-## 10. 扩展场景状态
+## 11. 扩展场景状态
 
 此前用于横向展示的 Python/Julia 离线仿真结果已清理。当前报告结论只引用真实 Sysplorer/MWORKS MCP 证据。
 
-质量 +20% 参数摄动、15-19 s 横向阵风扰动和 1 号旋翼 85% 效率退化已完成真实 MWORKS MCP 闭环。规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
+质量 +20% 参数摄动、15-19 s 横向阵风扰动、1 号旋翼 85% 效率退化和 Example1 AWFF 独立控制器替换已完成真实 MWORKS MCP 闭环。规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
 
 ```text
 MWORKS/Sysplorer 模型或派生模型
@@ -295,11 +315,11 @@ MWORKS/Sysplorer 模型或派生模型
 
 下一阶段优先把一个高展示度场景升级为真实证据：
 
-1. 风扰/质量变化下的鲁棒控制对比；
-2. Enhanced PID 的抗积分饱和和参考前馈独立控制器实现；
+1. 将 AWFF PID 扩展到风扰和执行器退化场景，形成独立控制器鲁棒消融；
+2. 增加时间归一化约束指标，修正不同导出采样间隔下的横向比较问题；
 3. INDI 或线性 MPC 外环的最小可运行模型。
 
-## 11. 结论约束
+## 12. 结论约束
 
 1. 不使用 smoke 数据做完整控制性能结论。
 2. 不使用离线脚本结果作为 MWORKS 控制性能结论。

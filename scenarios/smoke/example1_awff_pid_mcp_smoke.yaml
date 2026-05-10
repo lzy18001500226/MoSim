@@ -1,0 +1,36 @@
+experiment_id: mworks_mcp_example1_awff_pid_smoke
+scene_id: mworks_mcp_example1
+controller_id: awff_pid
+priority: smoke
+evidence_level: real_sysplorer_mcp_smoke
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1AntiWindupFeedforwardPID
+  model_path_hint: models/QuadrotorExperiments/package.mo
+  base_model_path_hint: QuadrotorModel/package.mo
+  official_description: 阶梯爬升 Anti-windup feedforward PID smoke
+
+controller:
+  params_file: controllers/awff_pid/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: mworks_mcp_example1_enhanced_pid_smoke
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 1.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: results/raw/reference_official_example1.csv
+
+result:
+  raw_file: results/raw/mworks_mcp_example1_awff_pid_smoke.csv
+  metrics_file: results/metrics/mworks_mcp_example1_awff_pid_smoke.json
+  figure_dir: results/figures/mworks_mcp_example1_awff_pid_smoke
+  replay_file: results/replay/mworks_mcp_example1_awff_pid_smoke.json
+  replay_html: results/replay_html/mworks_mcp_example1_awff_pid_smoke.html
+  mcp_log: results/test_reports/sysplorer_example1_awff_pid_mcp_smoke_20260510.jsonl

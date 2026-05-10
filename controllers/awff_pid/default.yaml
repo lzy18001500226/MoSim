@@ -1,0 +1,108 @@
+controller_id: awff_pid
+type: anti_windup_feedforward_pid
+priority: P1
+
+description: >
+  Project-owned anti-windup and reference-feedforward PID controller. Unlike
+  enhanced_pid, this branch replaces the official controller component in a
+  project-owned Example1 clone while keeping the same input/output interface
+  and result variable names.
+
+features:
+  independent_controller_model: true
+  conditional_integration_anti_windup: true
+  vertical_reference_feedforward: true
+  derivative_action: true
+  command_limit_tightening: true
+
+implementation_status:
+  current_mworks_model: QuadrotorExperiments.Example1AntiWindupFeedforwardPID
+  base_controller: controllers/enhanced_pid/default.yaml
+  verification_scope: smoke and full Example1 passed with real Sysplorer MCP evidence
+
+model_interface:
+  replacement_component: controller3_2
+  compatible_source_model: QuadrotorModel.Blocks.Controller.Controller
+  implementation_target:
+    - Modelica project-owned controller
+    - Modelica project-owned Example1 clone
+  inputs:
+    position: sensors1_1.PosMea
+    attitude: sensors1_1.AngleMea
+    position_command: climbePath.position_command
+  outputs:
+    motor_1: y
+    motor_2: y1
+    motor_3: y2
+    motor_4: y3
+  required_result_variables:
+    - sensors1_1.PosMea[1]
+    - sensors1_1.PosMea[2]
+    - sensors1_1.PosMea[3]
+    - sensors1_1.AngleMea[1]
+    - sensors1_1.AngleMea[2]
+    - sensors1_1.AngleMea[3]
+    - climbePath.position_command[1]
+    - climbePath.position_command[2]
+    - climbePath.position_command[3]
+    - controller3_2.y
+    - controller3_2.y1
+    - controller3_2.y2
+    - controller3_2.y3
+
+position_loop:
+  kp: [1.65, 1.65, 8.0]
+  ki: [0.0, 0.0, 6.0]
+  kd: [1.0, 1.0, 4.0]
+
+attitude_loop:
+  kp: [14.142, 14.142, 5.0]
+  ki: [0.0, 0.0, 0.0]
+  kd: [1.70, 1.70, 0.0]
+
+limits:
+  roll_command_max_rad: 0.20944
+  pitch_command_max_rad: 0.20944
+  attitude_control_max: 6.5
+  yaw_control_max: 6.5
+  motor_command_abs_max: 20.0
+
+feedforward:
+  vertical_reference_rate_gain: 0.35
+  reference_filter_T_s: 0.20
+
+acceptance:
+  smoke:
+    model_name: QuadrotorExperiments.Example1AntiWindupFeedforwardPID
+    scenario_file: scenarios/smoke/example1_awff_pid_mcp_smoke.yaml
+    required: check_model and simulate_model pass
+  full_example1:
+    baseline_experiment: official_example1_enhanced_pid
+    scenario_file: scenarios/official/example1_awff_pid.yaml
+    expected: stable full run with no NaN and metrics available
+
+verified_results:
+  smoke:
+    scenario_file: scenarios/smoke/example1_awff_pid_mcp_smoke.yaml
+    raw_file: results/raw/mworks_mcp_example1_awff_pid_smoke.csv
+    metrics_file: results/metrics/mworks_mcp_example1_awff_pid_smoke.json
+    mcp_log: results/test_reports/sysplorer_example1_awff_pid_mcp_smoke_20260510.jsonl
+    row_count: 501
+    position_rmse_m: 0.9262406504
+    max_position_error_m: 1.2413616018
+  full_example1:
+    scenario_file: scenarios/official/example1_awff_pid.yaml
+    raw_file: results/raw/official_example1_awff_pid.csv
+    metrics_file: results/metrics/official_example1_awff_pid.json
+    mcp_log: results/test_reports/sysplorer_example1_awff_pid_full_20260510.jsonl
+    row_count: 25001
+    position_rmse_m: 0.2599138901
+    max_position_error_m: 1.2413616018
+    steady_state_error_m: 0.1032290791
+    max_tilt_rad: 0.1744897004
+    rmse_improvement_vs_pid_baseline_pct: 5.5726443900
+    rmse_improvement_vs_enhanced_pid_pct: 2.3799029949
+    comparison_note: >
+      Constraint violation count and total health score are not strictly
+      comparable with 5001-row baseline/enhanced outputs because this raw export
+      contains 25001 rows.

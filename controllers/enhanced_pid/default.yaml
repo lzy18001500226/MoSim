@@ -6,22 +6,22 @@ description: >
   Project enhanced PID branch based on the MCP-selected improved PID gains,
   with explicit derivative filter time constants and conservative attitude /
   command limit tightening. This is the first real-model P1 controller branch;
-  full anti-windup will be implemented by replacing the PID block internals in
-  a later step.
+  the independent anti-windup and reference-feedforward replacement branch is
+  tracked in controllers/awff_pid/default.yaml.
 
 features:
   modelica_parameter_replacement: true
   derivative_filter: true
   attitude_reference_limit: true
   command_limit_tightening: true
-  anti_windup: planned_controller_copy
-  reference_feedforward: planned
+  anti_windup: implemented_in_awff_pid
+  reference_feedforward: implemented_in_awff_pid
 
 implementation_status:
   current_mworks_model: QuadrotorExperiments.Example1EnhancedPID
   base_controller: controllers/improved_pid/default.yaml
-  verified_scope: Example1 smoke first, then full Example1 if smoke passes
-  planned_next_step: copy controller internals and replace PID integrator with saturation-aware integration
+  verified_scope: Example1 smoke, full Example1, and P1 robustness ablations
+  next_controller_branch: controllers/awff_pid/default.yaml
 
 model_interface:
   replacement_component: controller3_2
