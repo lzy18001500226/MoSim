@@ -170,6 +170,12 @@ python3 scripts/run_mworks_scenario.py scenarios/official/example1_pid_baseline.
 python3 scripts/run_mworks_scenario.py scenarios/official/example1_improved_pid.yaml
 ```
 
+For multiple scenarios:
+
+```bash
+python3 scripts/run_mworks_batch.py --skip-existing scenarios/official/*.yaml
+```
+
 Do not shorten an official YAML run for smoke testing, because that would
 overwrite full-duration formal evidence. Use `scenarios/smoke/` for short MCP
 chain checks.

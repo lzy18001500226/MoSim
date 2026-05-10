@@ -49,6 +49,19 @@ simulation evidence bundle unless the official model is run through MWORKS.
 7. Generate figures or replay assets under `results/figures/`, `results/replay/`, `results/replay_html/`, or `docs/figures/`.
 8. Update `docs/simulation_report.md` when the result supports a report claim.
 
+Project entrypoints:
+
+```bash
+# One scenario
+python3 scripts/run_mworks_scenario.py scenarios/smoke/example1_pid_mcp_smoke.yaml
+
+# Batch, without overwriting completed metrics
+python3 scripts/run_mworks_batch.py --skip-existing scenarios/official/*.yaml
+
+# Batch plan only, no MCP calls
+python3 scripts/run_mworks_batch.py --dry-run scenarios/official/*.yaml
+```
+
 ## Required Evidence Bundle
 
 ```text

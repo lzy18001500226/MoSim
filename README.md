@@ -48,6 +48,18 @@ python scripts/run_mworks_scenario.py scenarios/smoke/example1_pid_mcp_smoke.yam
 
 该入口会读取模型名、时长和输出路径，调用 `check_model`、`simulate_model`、`result_manager`，再生成 metrics、SVG 图表和三维回放 HTML。
 
+批量复现已有场景：
+
+```bash
+python scripts/run_mworks_batch.py --skip-existing scenarios/official/*.yaml
+```
+
+先检查将要执行的命令：
+
+```bash
+python scripts/run_mworks_batch.py --dry-run scenarios/official/*.yaml
+```
+
 ## 目录约定
 
 ```text

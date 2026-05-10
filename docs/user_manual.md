@@ -294,6 +294,18 @@ python3 scripts/run_mworks_scenario.py scenarios/official/example1_improved_pid.
 
 不要用 `--stop-time 1` 覆盖正式 `scenarios/official/*.yaml`，短时链路验证统一使用 `scenarios/smoke/`。
 
+批量复现已有场景：
+
+```bash
+python3 scripts/run_mworks_batch.py --skip-existing scenarios/official/*.yaml
+```
+
+如果只想检查批量计划而不启动 MWORKS/MCP 仿真：
+
+```bash
+python3 scripts/run_mworks_batch.py --dry-run scenarios/official/*.yaml
+```
+
 ## 7. 指标、图表与汇总
 
 计算指标：
