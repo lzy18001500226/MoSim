@@ -146,10 +146,19 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 控制器结构图状态：
 
 ```text
-待补真实 Sysblock/Simulink 风格控制器结构截图。
+待补真实 MWORKS.Sysblock 控制器结构截图。
+当前可打开的 Sysblock 风格模型草案：
+models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo
+AWFF_PID_Sysblock_Demo
 ```
 
-说明：结构图应来自实际控制器模型文件或图形化建模环境截图，不使用手绘示意图替代。
+说明：结构图应来自 MWORKS.Sysblock/Sysplorer 打开的实际控制器模型窗口截图，不使用手绘示意图替代。当前草案只覆盖 AWFF PID 的高度环，用于先验证图形化控制器支撑材料链路；正式版需继续扩展到 x/y/z 外环、姿态内环、限幅/抗饱和和电机混控。
+
+当前模型已通过真实 Sysplorer MCP `load_file` 和 `check_model`，证据日志：
+
+```text
+results/test_reports/sysplorer_awff_sysblock_demo_check_20260510.jsonl
+```
 
 | 场景 | controller | position_rmse_m | RMSE变化 | max_position_error_m | steady_state_error_m | max_tilt_rad | control_energy | control_smoothness | total_health_score |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|
