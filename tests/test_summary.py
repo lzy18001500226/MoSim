@@ -13,7 +13,7 @@ from uuid import uuid4
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def main() -> int:
+def test_experiment_summary_regression() -> None:
     temp_dir = ROOT / ".tmp" / f"summary_{uuid4().hex}"
     try:
         csv_path = temp_dir / "experiment_summary.csv"
@@ -58,6 +58,9 @@ def main() -> int:
         if tmp_root.exists() and not any(tmp_root.iterdir()):
             tmp_root.rmdir()
 
+
+def main() -> int:
+    test_experiment_summary_regression()
     print("[OK] experiment summary regression")
     return 0
 

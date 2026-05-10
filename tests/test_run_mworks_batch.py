@@ -12,7 +12,7 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def main() -> int:
+def test_run_mworks_batch_dry_run_regression() -> None:
     proc = subprocess.run(
         [
             sys.executable,
@@ -34,6 +34,10 @@ def main() -> int:
         raise AssertionError(output)
     if "Failures: 0" not in output:
         raise AssertionError(output)
+
+
+def main() -> int:
+    test_run_mworks_batch_dry_run_regression()
     print("[OK] run_mworks_batch dry-run regression")
     return 0
 

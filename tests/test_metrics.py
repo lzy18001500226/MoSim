@@ -37,7 +37,7 @@ REQUIRED_METRICS = [
 ]
 
 
-def main() -> int:
+def test_metrics_regression() -> None:
     temp_dir = ROOT / ".tmp" / f"metrics_{uuid4().hex}"
     try:
         output = temp_dir / "sample_tracking_metrics.json"
@@ -75,6 +75,9 @@ def main() -> int:
     if metrics["total_health_score"] < 0.0 or metrics["total_health_score"] > 100.0:
         raise AssertionError(f"Invalid health score: {metrics['total_health_score']}")
 
+
+def main() -> int:
+    test_metrics_regression()
     print("[OK] metrics regression")
     return 0
 

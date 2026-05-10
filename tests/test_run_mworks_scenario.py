@@ -27,7 +27,7 @@ class Args:
     shutdown_session = False
 
 
-def main() -> int:
+def test_run_mworks_scenario_command_regression() -> None:
     module = load_module()
     config = module.read_yaml(Args.scenario)
     command = module.scenario_command(Args, config)
@@ -42,6 +42,10 @@ def main() -> int:
         raise AssertionError("Smoke raw path missing")
     if config.get("generate_replay_html"):
         raise AssertionError("Default smoke scenario should not request replay HTML generation")
+
+
+def main() -> int:
+    test_run_mworks_scenario_command_regression()
     print("[OK] run_mworks_scenario command regression")
     return 0
 
