@@ -43,6 +43,7 @@ results/tmp/
 results/cache/
 results/logs/*.log
 results/replay_html/
+*_backup/
 
 # Large binary outputs
 *.mat
