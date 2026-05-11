@@ -50,5 +50,17 @@
   "fault_tolerance_score": 35.0,
   "total_health_score": 55.42245030728968,
   "source": "MWORKS_MCP",
-  "evidence_level": "real_sysplorer_mcp_full_enhanced_pid"
+  "evidence_level": "real_sysplorer_mcp_full_enhanced_pid",
+  "quality_checked_at": "2026-05-11T14:06:54",
+  "quality_experiment_id": "official_example1_enhanced_pid",
+  "quality_scene_id": "official_example1",
+  "quality_controller_id": "enhanced_pid",
+  "quality_status": "pass",
+  "quality_pass": true,
+  "quality_issues": [],
+  "quality_recommendations": [
+    "result meets current quality gate; it can be used as evidence if the report claim matches the scene"
+  ],
+  "quality_baseline_experiment": "official_example1_pid_baseline",
+  "quality_rmse_improvement_pct": 3.2705779784235514
 }

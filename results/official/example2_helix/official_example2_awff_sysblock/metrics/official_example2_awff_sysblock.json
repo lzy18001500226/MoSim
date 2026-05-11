@@ -51,7 +51,7 @@
   "total_health_score": 47.79304267084109,
   "source": "MWORKS_MCP",
   "evidence_level": "real_sysplorer_mcp_sysblock_closed_loop_full",
-  "quality_checked_at": "2026-05-11T11:53:34",
+  "quality_checked_at": "2026-05-11T14:06:55",
   "quality_experiment_id": "official_example2_awff_sysblock",
   "quality_scene_id": "official_example2",
   "quality_controller_id": "awff_sysblock",

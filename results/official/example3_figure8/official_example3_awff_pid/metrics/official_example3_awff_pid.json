@@ -51,7 +51,7 @@
   "total_health_score": 60.41833948479183,
   "source": "MWORKS_MCP",
   "evidence_level": "real_sysplorer_mcp_full_awff_pid",
-  "quality_checked_at": "2026-05-11T12:18:25",
+  "quality_checked_at": "2026-05-11T14:06:56",
   "quality_experiment_id": "official_example3_awff_pid",
   "quality_scene_id": "official_example3",
   "quality_controller_id": "awff_pid",
