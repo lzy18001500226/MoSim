@@ -1,8 +1,8 @@
 # Experiment Summary
 
 - CSV: `results/summaries/experiment_summary/experiment_summary.csv`
-- Total scenarios: `47`
-- Done: `47`
+- Total scenarios: `49`
+- Done: `49`
 - Pending: `0`
 - Invalid: `0`
 
@@ -36,6 +36,8 @@
 | robust_mass20_example1_awff_pid | robust_mass20_example1 | awff_pid | 0.276253 | 51.8138 | done |
 | official_example2_awff_sysblock_smoke | official_example2_awff_sysblock_smoke | awff_sysblock | 0.0770955 | 49.6942 | done |
 | official_example2_improved_pid | official_example2 | improved_pid | 0.479834 | 48.0258 | done |
+| official_example2_awff_pid_helix_tuned | official_example2 | awff_pid | 0.474799 | 47.9431 | done |
+| official_example2_awff_sysblock_helix_tuned | official_example2 | awff_sysblock | 0.47485 | 47.9081 | done |
 | official_example2_enhanced_pid_helix_tuned | official_example2 | enhanced_pid | 0.475477 | 47.8878 | done |
 | official_example2_pid_baseline | official_example2 | pid_baseline | 0.487183 | 47.8827 | done |
 | official_example2_awff_pid | official_example2 | awff_pid | 0.486621 | 47.8493 | done |
@@ -65,6 +67,8 @@
 | official_example1_awff_pid | MWORKS_MCP | real_sysplorer_mcp_full_awff_pid | `results/raw/official_example1_awff_pid.csv` |
 | official_example2_awff_pid | MWORKS_MCP | real_sysplorer_mcp_full_awff_pid | `results/official/example2_helix/official_example2_awff_pid/raw/official_example2_awff_pid.csv` |
 | official_example3_awff_pid | MWORKS_MCP | real_sysplorer_mcp_full_awff_pid | `results/official/example3_figure8/official_example3_awff_pid/raw/official_example3_awff_pid.csv` |
+| official_example2_awff_pid_helix_tuned | MWORKS_MCP | real_sysplorer_mcp_full_awff_pid_helix_tuned | `results/official/example2_helix/official_example2_awff_pid_helix_tuned/raw/official_example2_awff_pid_helix_tuned.csv` |
+| official_example2_awff_sysblock_helix_tuned | MWORKS_MCP | real_sysplorer_mcp_full_awff_sysblock_helix_tuned | `results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/raw/official_example2_awff_sysblock_helix_tuned.csv` |
 | official_example1_pid_baseline | MWORKS_MCP | real_sysplorer_mcp_full_baseline | `results/raw/official_example1_pid_baseline.csv` |
 | official_example2_pid_baseline | MWORKS_MCP | real_sysplorer_mcp_full_baseline | `results/raw/official_example2_pid_baseline.csv` |
 | official_example3_pid_baseline | MWORKS_MCP | real_sysplorer_mcp_full_baseline | `results/raw/official_example3_pid_baseline.csv` |

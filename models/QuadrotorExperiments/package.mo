@@ -255,6 +255,15 @@ package QuadrotorExperiments
     extends Example2ProjectControllerBase;
   end Example2AntiWindupFeedforwardPID;
 
+  model Example2HelixTunedAntiWindupFeedforwardPID
+    "Example2 AWFF PID with helix-specific lateral command authority"
+    extends Example2ProjectControllerBase(
+      controller3_2(
+        roll_pitch_cmd_limit = 15 / 57.3,
+        attitude_cmd_limit = 7.0,
+        yaw_cmd_limit = 7.0));
+  end Example2HelixTunedAntiWindupFeedforwardPID;
+
   model Example3AntiWindupFeedforwardPID
     "Example3 with project-owned anti-windup and reference-feedforward controller"
     extends Example3ProjectControllerBase;

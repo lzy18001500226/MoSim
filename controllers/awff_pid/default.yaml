@@ -19,6 +19,7 @@ implementation_status:
   current_mworks_models:
     - QuadrotorExperiments.Example1AntiWindupFeedforwardPID
     - QuadrotorExperiments.Example2AntiWindupFeedforwardPID
+    - QuadrotorExperiments.Example2HelixTunedAntiWindupFeedforwardPID
     - QuadrotorExperiments.Example3AntiWindupFeedforwardPID
     - QuadrotorExperiments.Example1Mass20AntiWindupFeedforwardPID
     - QuadrotorExperiments.Example1WindGustAntiWindupFeedforwardPID
@@ -26,11 +27,9 @@ implementation_status:
   base_controller: controllers/enhanced_pid/default.yaml
   verification_scope: >
     Full Example1/2/3 official scenarios and mass/wind/rotor-loss robustness
-    scenarios have real Sysplorer MCP evidence. Example1, Example3, mass +20%,
-    and lateral wind-gust are useful positive evidence. Example2 helix remains
-    needs_iteration for AWFF PID itself; the related Enhanced PID helix-tuned
-    branch proves the required lateral authority change. Rotor-loss also
-    remains needs_iteration.
+    scenarios have real Sysplorer MCP evidence. Example1, Example2 helix tuned,
+    Example3, mass +20%, and lateral wind-gust are useful positive evidence.
+    Rotor-loss remains needs_iteration.
 
 model_interface:
   replacement_component: controller3_2
@@ -102,6 +101,13 @@ acceptance:
       0.5% gate. Migrate the Example2HelixTunedEnhancedPID lateral command
       limits into the AWFF PID/Sysblock branch before using this as complete
       Example2 evidence.
+  full_example2_helix_tuned:
+    baseline_experiment: official_example2_improved_pid
+    comparison_experiment: official_example2_awff_pid_helix_tuned
+    scenario_file: scenarios/official/example2_awff_pid_helix_tuned.yaml
+    expected: >
+      Stable 50 s run with quality_status pass. Uses 15 deg lateral command
+      limits and 7.0 attitude command limits for the CirclePath onset at 10 s.
   full_example3:
     baseline_experiment: official_example3_pid_baseline
     comparison_experiment: official_example3_enhanced_pid
@@ -158,6 +164,17 @@ verified_results:
     position_rmse_m: 0.4866207910
     rmse_improvement_vs_pid_baseline_pct: 0.1153574467
     quality_status: needs_iteration
+  full_example2_helix_tuned:
+    scenario_file: scenarios/official/example2_awff_pid_helix_tuned.yaml
+    raw_file: results/official/example2_helix/official_example2_awff_pid_helix_tuned/raw/official_example2_awff_pid_helix_tuned.csv
+    metrics_file: results/official/example2_helix/official_example2_awff_pid_helix_tuned/metrics/official_example2_awff_pid_helix_tuned.json
+    mcp_log: results/official/example2_helix/official_example2_awff_pid_helix_tuned/logs/sysplorer_example2_awff_pid_helix_tuned_full_20260511.jsonl
+    row_count: 25001
+    position_rmse_m: 0.4747993989
+    rmse_improvement_vs_pid_baseline_pct: 2.542
+    rmse_improvement_vs_improved_pid_pct: 1.0493403680
+    max_tilt_rad: 0.3536107851
+    quality_status: pass
   full_example3:
     scenario_file: scenarios/official/example3_awff_pid.yaml
     raw_file: results/official/example3_figure8/official_example3_awff_pid/raw/official_example3_awff_pid.csv

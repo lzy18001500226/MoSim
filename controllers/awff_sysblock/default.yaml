@@ -12,9 +12,10 @@ implementation_status:
   current_mworks_model:
     - QuadrotorExperiments.Example1AWFFSysblockClosedLoop
     - QuadrotorExperiments.Example2AWFFSysblockClosedLoop
+    - QuadrotorExperiments.Example2HelixTunedAWFFSysblockClosedLoop
     - QuadrotorExperiments.Example3AWFFSysblockClosedLoop
   sysblock_controller: AWFF_FullControllerEquation_Sysblock
-  verification_scope: official Example1 50 s, Example2 50 s, Example3 120 s, plus Example1 mass +20%, lateral gust, and rotor 1 loss 15% robustness runs passed with real Sysplorer MCP evidence
+  verification_scope: official Example1 50 s, Example2 helix-tuned 50 s, Example3 120 s, plus Example1 mass +20%, lateral gust, and rotor 1 loss 15% robustness runs passed with real Sysplorer MCP evidence
   limitation: >
     Current controller is a flattened equation-form Sysblock implementation
     used to avoid nested Sysblock port-resolution issues in mixed
@@ -72,6 +73,9 @@ acceptance:
   full_example2:
     scenario_file: scenarios/official/example2_awff_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
+  full_example2_helix_tuned:
+    scenario_file: scenarios/official/example2_awff_sysblock_helix_tuned.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON, quality_status pass
   full_example3:
     scenario_file: scenarios/official/example3_awff_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
@@ -164,6 +168,23 @@ verified_results:
     steady_state_error_m: 0.1901960386
     max_tilt_rad: 0.2941133899
     total_health_score: 47.7930426708
+  full_example2_helix_tuned:
+    scenario_file: scenarios/official/example2_awff_sysblock_helix_tuned.yaml
+    raw_file: results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/raw/official_example2_awff_sysblock_helix_tuned.csv
+    metrics_file: results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/metrics/official_example2_awff_sysblock_helix_tuned.json
+    mcp_log: results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/logs/sysplorer_example2_awff_sysblock_helix_tuned_full_20260511.jsonl
+    figure_dir: results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/figures
+    replay_file: results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/replay/official_example2_awff_sysblock_helix_tuned.json
+    row_count: 25001
+    duration_s: 50.0
+    position_rmse_m: 0.4748499725
+    rmse_improvement_vs_pid_baseline_pct: 2.531
+    rmse_improvement_vs_improved_pid_pct: 1.038692
+    max_position_error_m: 3.0066758952
+    steady_state_error_m: 0.1901959755
+    max_tilt_rad: 0.3536105431
+    total_health_score: 47.9080652106
+    quality_status: pass
   full_example3:
     scenario_file: scenarios/official/example3_awff_sysblock.yaml
     raw_file: results/official/example3_figure8/official_example3_awff_sysblock/raw/official_example3_awff_sysblock.csv
