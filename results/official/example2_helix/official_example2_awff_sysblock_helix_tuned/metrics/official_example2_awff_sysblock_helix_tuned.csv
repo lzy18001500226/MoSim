@@ -1,5 +1,5 @@
 metric,value
-generated_at,2026-05-11T13:03:18
+generated_at,2026-05-11T14:21:41
 raw_file,results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/raw/official_example2_awff_sysblock_helix_tuned.csv
 scene_id,official_example2
 controller_id,awff_sysblock

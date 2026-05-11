@@ -44,8 +44,8 @@
 | official_example1_improved_pid | MWORKS_MCP | real_sysplorer_mcp_full_improved_pid | `results/raw/official_example1_improved_pid.csv` |
 | official_example2_improved_pid | MWORKS_MCP | real_sysplorer_mcp_full_improved_pid | `results/raw/official_example2_improved_pid.csv` |
 | official_example3_improved_pid | MWORKS_MCP | real_sysplorer_mcp_full_improved_pid | `results/raw/official_example3_improved_pid.csv` |
-| official_example1_awff_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_full | `results/raw/official_example1_awff_sysblock.csv` |
-| official_example3_awff_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_full | `results/raw/official_example3_awff_sysblock.csv` |
+| official_example1_awff_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_full | `results/official/example1_step/official_example1_awff_sysblock/raw/official_example1_awff_sysblock.csv` |
+| official_example3_awff_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_full | `results/official/example3_figure8/official_example3_awff_sysblock/raw/official_example3_awff_sysblock.csv` |
 | official_example1_l1_residual_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_l1_residual_full | `results/raw/official_example1_l1_residual_sysblock.csv` |
 
 ## Pending Results

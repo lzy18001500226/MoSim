@@ -2,7 +2,7 @@
   "scene_id": "official_example3",
   "model_name": "QuadrotorExperiments.Example3AWFFSysblockClosedLoop",
   "description": "8字形运动 Sysblock AWFF closed-loop full validation",
-  "source": "results/raw/official_example3_awff_sysblock.csv",
+  "source": "results/official/example3_figure8/official_example3_awff_sysblock/raw/official_example3_awff_sysblock.csv",
   "frame_count": 924,
   "frames": [
     {

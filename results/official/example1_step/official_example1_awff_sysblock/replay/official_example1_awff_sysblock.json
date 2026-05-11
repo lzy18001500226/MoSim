@@ -2,7 +2,7 @@
   "scene_id": "official_example1",
   "model_name": "QuadrotorExperiments.Example1AWFFSysblockClosedLoop",
   "description": "阶梯爬升 Sysblock AWFF closed-loop full validation",
-  "source": "results/raw/official_example1_awff_sysblock.csv",
+  "source": "results/official/example1_step/official_example1_awff_sysblock/raw/official_example1_awff_sysblock.csv",
   "frame_count": 1001,
   "frames": [
     {

@@ -39,8 +39,8 @@ Example1 L1 residual Sysblock nominal/wind-gust 0-1 s smoke 与 50 s full CSV、
 | 螺旋爬升 Helix-tuned Enhanced PID | `QuadrotorExperiments.Example2HelixTunedEnhancedPID` | 50 s | 15° 横向姿态权限 + 7.0 姿态控制限幅已通过 Sysplorer MCP 仿真，质量门禁为 `pass` |
 | 螺旋爬升 AWFF PID | `QuadrotorExperiments.Example2AntiWindupFeedforwardPID` | 50 s | 项目自有抗饱和 + 竖直参考前馈控制器已通过 Sysplorer MCP 仿真，但质量门禁为 `needs_iteration` |
 | 螺旋爬升 Helix-tuned AWFF PID | `QuadrotorExperiments.Example2HelixTunedAntiWindupFeedforwardPID` | 50 s | 15° 横向姿态权限 + 7.0 姿态控制限幅已通过 Sysplorer MCP 仿真，质量门禁为 `pass` |
-| 螺旋爬升 AWFF Sysblock | `QuadrotorExperiments.Example2AWFFSysblockClosedLoop` | 50 s | 项目 Sysblock 控制器整机闭环已通过 Sysplorer MCP 仿真 |
-| 螺旋爬升 Helix-tuned AWFF Sysblock | `QuadrotorExperiments.Example2HelixTunedAWFFSysblockClosedLoop` | 50 s | Sysblock 控制器参数化调优已通过 Sysplorer MCP 仿真，质量门禁为 `pass` |
+| 螺旋爬升 AWFF Sysblock | `QuadrotorExperiments.Example2AWFFSysblockClosedLoop` | 50 s | inactive 历史诊断证据，正式矩阵使用 Helix-tuned AWFF Sysblock |
+| 螺旋爬升 Helix-tuned AWFF Sysblock | `QuadrotorExperiments.Example2HelixTunedAWFFSysblockClosedLoop` | 50 s | Sysblock 控制器参数化调优已于 2026-05-11 复测通过，质量门禁为 `pass` |
 | 8字形运动 | `QuadrotorModel.Examples.Example3` | 120 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
 | 8字形运动 Enhanced PID | `QuadrotorExperiments.Example3EnhancedPID` | 120 s | 导数滤波 + 保守限幅 Enhanced PID 已通过 Sysplorer MCP 仿真，质量门禁为 `pass` |
 | 8字形运动 AWFF PID | `QuadrotorExperiments.Example3AntiWindupFeedforwardPID` | 120 s | 项目自有抗饱和 + 竖直参考前馈控制器已通过 Sysplorer MCP 仿真，质量门禁为 `pass` |
@@ -203,7 +203,21 @@ AWFF_FullController_Sysblock
 
 可视化状态：`AWFF_PositionOuterLoop_Sysblock`、`AWFF_AttitudeInnerLoop_Sysblock`、`AWFF_MotorMixer_Sysblock` 和 `AWFF_FullController_Sysblock` 已补齐 `connect(...)` 对应的 `annotation(Line(...))` 图形连线注释。这样模型既保留原有逻辑连接，又能在 Sysblock/Sysplorer 画布中显示连接线，避免人工连线时出现“连接已存在但画布无可见线段”的审核问题。复测日志见 `results/model_checks/awff_sysblock/logs/sysplorer_sysblock_line_annotation_check_20260511.jsonl` 与 `results/model_checks/awff_sysblock/logs/sysplorer_sysblock_line_annotation_check_20260511_summary.json`。
 
-当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，并完成 `AWFF_FullController_Sysblock` 组合控制器独立仿真。由于嵌套 Sysblock 在整机混合编译中暴露端口解析限制，当前整机主线使用扁平化 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop`。该主线已经完成 Example1 0-1 s、5 s、10 s、20 s 渐进验证，以及 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真，可作为当前 Sysblock 控制器仿真的主证据。
+当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，并完成 `AWFF_FullController_Sysblock` 组合控制器独立仿真。由于嵌套 Sysblock 在整机混合编译中暴露端口解析限制，当前整机主线使用扁平化 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop`。该主线已经完成 Example1 0-1 s、5 s、10 s、20 s 渐进验证，以及 active official 场景中的 Example1 50 s、Example2 helix-tuned 50 s、Example3 120 s 全时长真实 Sysplorer MCP 闭环复测，均通过质量门禁，可作为当前 Sysblock 控制器仿真的主证据。
+
+2026-05-11 official Sysblock 闭环复测使用 `scripts/run_mworks_batch.py --reuse-mcp-process` 在同一个 Sysplorer MCP wrapper 进程中连续执行三条 active official Sysblock 场景，避免反复打开新窗口。共享初始化日志为：
+
+```text
+results/official/sysblock_closed_loop/logs/mcp_reuse_batch_official_sysblock_20260511.jsonl
+```
+
+单场景证据日志、raw CSV、metrics JSON/CSV、SVG 图表和 replay JSON 位于：
+
+```text
+results/official/example1_step/official_example1_awff_sysblock/
+results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/
+results/official/example3_figure8/official_example3_awff_sysblock/
+```
 
 当前验证状态：重新登录激活后，四个 Sysblock 控制器文件均已完成真实 Sysplorer MCP 复测：
 
@@ -307,7 +321,7 @@ Sysblock 渐进验证指标如下，均为 `source=MWORKS_MCP`：
 
 结论：AWFF PID 在 Example1 相比官方 PID 的 RMSE 降低 `5.573%`，最大位置误差降低 `9.350%`，稳态误差降低 `7.382%`，最大倾角降低 `22.699%`；相比 Enhanced PID，RMSE 继续降低 `2.380%`。Example3 中 AWFF PID 是当前 PID 系列最优结果，RMSE 降低 `4.398%`。Example2 当前最优是 `helix_tuned_awff_pid`，RMSE `0.474799 m`，相比 baseline 降低 `2.542%`，相比原 Improved PID 继续降低 `1.049%`，质量门禁为 `pass`。
 
-Sysblock 结论：`awff_sysblock` 在 Example1 50 s 全时长真实 Sysplorer MCP 仿真中达到与 `enhanced_pid` 基本一致的性能，并略高于其综合健康分。相比官方 PID，Sysblock 控制器 RMSE 降低 `3.283%`，稳态误差降低 `7.459%`，最大倾角降低 `22.723%`，控制平滑性降低 `88.137%`。在 Example3 8字轨迹中，RMSE 降低 `3.274%`、稳态误差降低 `9.193%`、最大倾角降低 `19.916%`、控制平滑性降低 `62.527%`，并通过 8 字形状检查。Example2 螺旋爬升中，`helix_tuned_awff_sysblock` 已通过质量门禁，RMSE `0.474850 m`，相比 baseline 降低 `2.531%`，相比原 Improved PID 继续降低 `1.039%`。这说明 Example2 的 Sysblock 主线已完成参数迁移，后续应把同样的场景化参数写入用户手册和演示脚本。鲁棒场景结论见第 9 节。
+Sysblock 结论：`awff_sysblock` 在 Example1 50 s 全时长真实 Sysplorer MCP 仿真中达到与 `enhanced_pid` 基本一致的性能，并略高于其综合健康分。2026-05-11 复测结果显示，相比官方 PID，Sysblock 控制器 RMSE 降低 `3.283%`，稳态误差降低 `7.459%`，最大倾角降低 `22.723%`，控制平滑性降低 `88.137%`。在 Example3 8字轨迹中，RMSE 降低 `3.274%`、稳态误差降低 `9.193%`、最大倾角降低 `19.916%`、控制平滑性降低 `62.527%`，并通过 8 字形状检查。Example2 螺旋爬升中，active official 主线使用 `helix_tuned_awff_sysblock`，复测 RMSE `0.474850 m`，相比 baseline 降低 `2.531%`，相比原 Improved PID 继续降低 `1.039%`，质量门禁为 `pass`。这说明 Example2 的 Sysblock 主线已完成参数迁移，后续应把同样的场景化参数写入用户手册和演示脚本。鲁棒场景结论见第 9 节。
 
 指标口径更新：当前 metrics JSON/CSV 已补充 `sample_rate_hz`、`control_energy_per_second`、`control_smoothness_per_second`、`constraint_violation_rate_hz`、`altitude_violation_rate_hz` 和 `tilt_violation_rate_hz`。当历史结果和新结果导出采样率不同，例如 `25001` 行与 `5001` 行并存时，报告优先比较 RMSE、稳态误差、最大倾角、恢复时间和每秒归一化指标；由采样点数量直接决定的原始 `constraint_violation_count` 只作为同采样率结果内的辅助信息。
 

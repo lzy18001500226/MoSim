@@ -92,8 +92,8 @@
 | official_example1_awff_sysblock_10s | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_10s | `results/raw/official_example1_awff_sysblock_10s.csv` |
 | official_example1_awff_sysblock_20s | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_20s | `results/raw/official_example1_awff_sysblock_20s.csv` |
 | official_example1_awff_sysblock_5s | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_5s | `results/raw/official_example1_awff_sysblock_5s.csv` |
-| official_example1_awff_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_full | `results/raw/official_example1_awff_sysblock.csv` |
-| official_example3_awff_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_full | `results/raw/official_example3_awff_sysblock.csv` |
+| official_example1_awff_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_full | `results/official/example1_step/official_example1_awff_sysblock/raw/official_example1_awff_sysblock.csv` |
+| official_example3_awff_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_full | `results/official/example3_figure8/official_example3_awff_sysblock/raw/official_example3_awff_sysblock.csv` |
 | official_example1_awff_sysblock_smoke | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_smoke | `results/raw/official_example1_awff_sysblock_smoke.csv` |
 | official_example2_awff_sysblock_smoke | MWORKS_MCP | real_sysplorer_mcp_sysblock_example2_smoke | `results/raw/official_example2_awff_sysblock_smoke.csv` |
 | official_example3_awff_sysblock_smoke | MWORKS_MCP | real_sysplorer_mcp_sysblock_example3_smoke | `results/raw/official_example3_awff_sysblock_smoke.csv` |

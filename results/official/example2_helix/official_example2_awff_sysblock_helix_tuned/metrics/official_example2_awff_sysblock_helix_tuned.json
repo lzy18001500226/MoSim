@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-11T13:03:18",
+  "generated_at": "2026-05-11T14:21:41",
   "raw_file": "results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/raw/official_example2_awff_sysblock_helix_tuned.csv",
   "scene_id": "official_example2",
   "controller_id": "awff_sysblock",
@@ -51,7 +51,7 @@
   "total_health_score": 47.908064825832604,
   "source": "MWORKS_MCP",
   "evidence_level": "real_sysplorer_mcp_full_awff_sysblock_helix_tuned",
-  "quality_checked_at": "2026-05-11T14:06:55",
+  "quality_checked_at": "2026-05-11T14:21:42",
   "quality_experiment_id": "official_example2_awff_sysblock_helix_tuned",
   "quality_scene_id": "official_example2",
   "quality_controller_id": "awff_sysblock",
