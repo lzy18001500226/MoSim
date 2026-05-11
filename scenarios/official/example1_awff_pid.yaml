@@ -30,6 +30,6 @@ reference:
 result:
   raw_file: results/raw/official_example1_awff_pid.csv
   metrics_file: results/metrics/official_example1_awff_pid.json
-  figure_dir: results/figures/official_example1_awff_pid
+  figure_dir: results/figures/official/example1_step/awff_pid
   replay_file: results/replay/official_example1_awff_pid.json
   mcp_log: results/test_reports/sysplorer_example1_awff_pid_full_20260510.jsonl

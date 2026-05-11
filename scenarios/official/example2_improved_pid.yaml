@@ -29,5 +29,5 @@ reference:
 result:
   raw_file: results/raw/official_example2_improved_pid.csv
   metrics_file: results/metrics/official_example2_improved_pid.json
-  figure_dir: results/figures/official_example2_improved_pid
+  figure_dir: results/figures/official/example2_helix/improved_pid
   replay_file: results/replay/official_example2_improved_pid.json

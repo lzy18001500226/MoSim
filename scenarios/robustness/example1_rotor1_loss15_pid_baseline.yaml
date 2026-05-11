@@ -34,6 +34,6 @@ reference:
 result:
   raw_file: results/raw/robust_rotor1_loss15_example1_pid_baseline.csv
   metrics_file: results/metrics/robust_rotor1_loss15_example1_pid_baseline.json
-  figure_dir: results/figures/robust_rotor1_loss15_example1_pid_baseline
+  figure_dir: results/figures/robustness/rotor1_loss15_example1/pid_baseline
   replay_file: results/replay/robust_rotor1_loss15_example1_pid_baseline.json
   mcp_log: results/test_reports/sysplorer_robust_rotor1_loss15_example1_pid_baseline_20260510.jsonl

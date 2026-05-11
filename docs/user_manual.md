@@ -337,7 +337,7 @@ tracking_score / robustness_score / safety_score / energy_score / smoothness_sco
 ```bash
 python3 scripts/plot_results.py \
   results/raw/official_example1_improved_pid.csv \
-  results/figures/official_example1_improved_pid \
+  results/figures/official/example1_step/improved_pid \
   --metrics results/metrics/official_example1_improved_pid.json
 ```
 

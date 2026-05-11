@@ -46,7 +46,7 @@ CSV and optional metrics JSON:
 ```bash
 python3 scripts/plot_results.py \
   results/raw/official_example1_improved_pid.csv \
-  results/figures/official_example1_improved_pid \
+  results/figures/official/example1_step/improved_pid \
   --metrics results/metrics/official_example1_improved_pid.json
 ```
 
@@ -113,16 +113,40 @@ formation switching process
 
 ---
 
-## 5. Figure Naming
+## 5. Figure Directory Taxonomy
 
-Use:
+Do not write new report figures directly under `results/figures/`. Use one of
+the stable classified directories below:
 
 ```text
-results/figures/{scene}_{controller}/trajectory_3d.png
-results/figures/{scene}_{controller}/position_error.png
-results/figures/{scene}_{controller}/attitude.png
-results/figures/{scene}_{controller}/control_input.png
-results/figures/{scene}_{controller}/metrics_bar.png
+results/figures/official/example1_step/{controller}/
+results/figures/official/example2_helix/{controller}/
+results/figures/official/example3_figure8/{controller}/
+results/figures/robustness/mass20_example1/{controller}/
+results/figures/robustness/wind_gust_example1/{controller}/
+results/figures/robustness/rotor1_loss15_example1/{controller}/
+results/figures/smoke/example1_mcp/{controller}_smoke/
+```
+
+`official/example3_figure8/` is the only current 8-shaped official trajectory
+figure group. `smoke/` figures are process evidence only and should not be used
+as final report or demo-video material unless explicitly marked as smoke.
+
+Each generated directory should contain:
+
+```text
+trajectory_xy.svg
+altitude_tracking.svg
+position_error.svg
+metrics_summary.svg
+figure_manifest.md
+```
+
+After adding or regenerating figures, update:
+
+```text
+results/figures/人工审核清单.csv
+results/figures/README.md
 ```
 
 Copy report-selected figures to:

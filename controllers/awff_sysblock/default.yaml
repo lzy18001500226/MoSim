@@ -123,7 +123,7 @@ verified_results:
     raw_file: results/raw/official_example1_awff_sysblock.csv
     metrics_file: results/metrics/official_example1_awff_sysblock.json
     mcp_log: results/test_reports/sysplorer_example1_awff_sysblock_full_20260510.jsonl
-    figure_dir: results/figures/official_example1_awff_sysblock
+    figure_dir: results/figures/official/example1_step/awff_sysblock
     replay_file: results/replay/official_example1_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0
@@ -155,7 +155,7 @@ verified_results:
     raw_file: results/raw/official_example2_awff_sysblock.csv
     metrics_file: results/metrics/official_example2_awff_sysblock.json
     mcp_log: results/test_reports/sysplorer_example2_awff_sysblock_full_20260510.jsonl
-    figure_dir: results/figures/official_example2_awff_sysblock
+    figure_dir: results/figures/official/example2_helix/awff_sysblock
     replay_file: results/replay/official_example2_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0
@@ -169,7 +169,7 @@ verified_results:
     raw_file: results/raw/official_example3_awff_sysblock.csv
     metrics_file: results/metrics/official_example3_awff_sysblock.json
     mcp_log: results/test_reports/sysplorer_example3_awff_sysblock_full_20260510.jsonl
-    figure_dir: results/figures/official_example3_awff_sysblock
+    figure_dir: results/figures/official/example3_figure8/awff_sysblock
     replay_file: results/replay/official_example3_awff_sysblock.json
     row_count: 12001
     duration_s: 120.0
@@ -183,7 +183,7 @@ verified_results:
     raw_file: results/raw/robust_mass20_example1_awff_sysblock.csv
     metrics_file: results/metrics/robust_mass20_example1_awff_sysblock.json
     mcp_log: results/test_reports/sysplorer_robust_mass20_example1_awff_sysblock_20260510.jsonl
-    figure_dir: results/figures/robust_mass20_example1_awff_sysblock
+    figure_dir: results/figures/robustness/mass20_example1/awff_sysblock
     replay_file: results/replay/robust_mass20_example1_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0
@@ -196,7 +196,7 @@ verified_results:
     raw_file: results/raw/robust_wind_gust_example1_awff_sysblock.csv
     metrics_file: results/metrics/robust_wind_gust_example1_awff_sysblock.json
     mcp_log: results/test_reports/sysplorer_robust_wind_gust_example1_awff_sysblock_20260510.jsonl
-    figure_dir: results/figures/robust_wind_gust_example1_awff_sysblock
+    figure_dir: results/figures/robustness/wind_gust_example1/awff_sysblock
     replay_file: results/replay/robust_wind_gust_example1_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0
@@ -209,7 +209,7 @@ verified_results:
     raw_file: results/raw/robust_rotor1_loss15_example1_awff_sysblock.csv
     metrics_file: results/metrics/robust_rotor1_loss15_example1_awff_sysblock.json
     mcp_log: results/test_reports/sysplorer_robust_rotor1_loss15_example1_awff_sysblock_20260510.jsonl
-    figure_dir: results/figures/robust_rotor1_loss15_example1_awff_sysblock
+    figure_dir: results/figures/robustness/rotor1_loss15_example1/awff_sysblock
     replay_file: results/replay/robust_rotor1_loss15_example1_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0

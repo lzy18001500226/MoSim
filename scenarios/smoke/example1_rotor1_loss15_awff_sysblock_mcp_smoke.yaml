@@ -39,6 +39,6 @@ reference:
 result:
   raw_file: results/raw/robust_rotor1_loss15_example1_awff_sysblock_smoke.csv
   metrics_file: results/metrics/robust_rotor1_loss15_example1_awff_sysblock_smoke.json
-  figure_dir: results/figures/robust_rotor1_loss15_example1_awff_sysblock_smoke
+  figure_dir: results/figures/smoke/robustness/rotor1_loss15_example1_awff_sysblock_smoke
   replay_file: results/replay/robust_rotor1_loss15_example1_awff_sysblock_smoke.json
   mcp_log: results/test_reports/sysplorer_robust_rotor1_loss15_example1_awff_sysblock_smoke_20260510.jsonl
