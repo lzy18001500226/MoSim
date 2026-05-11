@@ -140,7 +140,7 @@ def run_reuse_mcp_batch(scenario_paths: list[Path], args: argparse.Namespace) ->
                 continue
 
             smoke_args = smoke_args_for_scenario(scenario_path, args, config)
-            command_preview = scenario_command(scenario_runner_args(scenario_path, args), config)
+            command_preview = scenario_command(scenario_path, args)
             print("[RUN:reuse-mcp]", " ".join(command_preview), flush=True)
             try:
                 run_sysplorer_mcp_smoke.run_mcp_simulation(smoke_args, client)
