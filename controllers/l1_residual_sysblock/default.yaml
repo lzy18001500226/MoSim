@@ -11,9 +11,16 @@ description: >
 implementation_status:
   current_mworks_model:
     - QuadrotorExperiments.Example1L1SysblockClosedLoop
+    - QuadrotorExperiments.Example3L1SysblockClosedLoop
+    - QuadrotorExperiments.Example1Mass20L1SysblockClosedLoop
     - QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop
+    - QuadrotorExperiments.Example1Rotor1Loss15L1SysblockClosedLoop
   sysblock_controller: AWFF_L1ResidualControllerEquation_Sysblock
-  verification_scope: smoke and 50 s full MWORKS_MCP evidence complete for nominal Example1 and wind-gust Example1
+  verification_scope: >
+    Full MWORKS_MCP evidence complete for nominal Example1, Example3 figure-8,
+    mass +20%, wind gust, and rotor-1 85% efficiency degradation. Nominal,
+    figure-8, mass, and wind pass the quality gate; rotor degradation improves
+    against AWFF Sysblock but remains needs_iteration.
   limitation: >
     This is an engineering L1-inspired residual compensator, not a formal L1
     adaptive controller proof. It keeps the existing AWFF interface and uses
@@ -25,7 +32,10 @@ model_interface:
   implementation_target:
     - Sysblock controller component
     - Project-owned Example1 closed-loop wrapper
+    - Project-owned Example3 figure-8 closed-loop wrapper
+    - Project-owned mass +20% Example1 closed-loop wrapper
     - Project-owned wind-gust Example1 closed-loop wrapper
+    - Project-owned rotor-1 85% efficiency degradation Example1 closed-loop wrapper
   inputs:
     x_error: climbePath.position_command[1] - sensors1_1.PosMea[1]
     y_error: climbePath.position_command[2] - sensors1_1.PosMea[2]
@@ -56,9 +66,9 @@ model_interface:
 l1_residual_compensation:
   l1_model_decay: 1.25
   l1_filter_T: 0.20
-  l1_gain_xy: 0.22
+  l1_gain_xy: 0.32
   l1_gain_z: 0.35
-  l1_comp_limit_xy: 1.5
+  l1_comp_limit_xy: 2.0
   l1_comp_limit_z: 2.0
 
 acceptance:
@@ -71,6 +81,11 @@ acceptance:
   full_wind:
     scenario_file: scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
+  rotor_degradation:
+    scenario_file: scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
+    required: >
+      check_model, simulate_model, result_manager, raw CSV, metrics, figures,
+      replay JSON; current status is needs_iteration and must not be claimed as solved fault tolerance
 
 verified_evidence:
   source: MWORKS_MCP
@@ -81,10 +96,35 @@ verified_evidence:
     metrics_file: results/official/example1_step/official_example1_l1_residual_sysblock/metrics/official_example1_l1_residual_sysblock.json
     mcp_log: results/official/example1_step/official_example1_l1_residual_sysblock/logs/sysplorer_example1_l1_residual_sysblock_full_20260510.jsonl
     row_count: 5001
-    position_rmse_m: 0.24807049782638949
-    steady_state_error_m: 0.08207960402091787
-    disturbance_peak_error_m: 0.06602638586718257
-    disturbance_recovery_time_s: 2.789999999999999
+    row_count: 5001
+    position_rmse_m: 0.24383726685702858
+    steady_state_error_m: 0.07480352719185822
+    disturbance_peak_error_m: 0.06602758124543264
+    disturbance_recovery_time_s: 2.6999999999999993
+    quality_status: pass
+  figure8_full:
+    scenario_file: scenarios/official/example3_l1_residual_sysblock.yaml
+    model_name: QuadrotorExperiments.Example3L1SysblockClosedLoop
+    raw_file: results/official/example3_figure8/official_example3_l1_residual_sysblock/raw/official_example3_l1_residual_sysblock.csv
+    metrics_file: results/official/example3_figure8/official_example3_l1_residual_sysblock/metrics/official_example3_l1_residual_sysblock.json
+    mcp_log: results/official/example3_figure8/official_example3_l1_residual_sysblock/logs/sysplorer_example3_l1_residual_sysblock_full_20260511.jsonl
+    row_count: 12001
+    position_rmse_m: 0.1522363382526918
+    steady_state_error_m: 0.0497202529516983
+    disturbance_peak_error_m: 0.070218774164581
+    quality_status: pass
+  mass20_full:
+    scenario_file: scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml
+    model_name: QuadrotorExperiments.Example1Mass20L1SysblockClosedLoop
+    raw_file: results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/raw/robust_mass20_example1_l1_residual_sysblock.csv
+    metrics_file: results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/metrics/robust_mass20_example1_l1_residual_sysblock.json
+    mcp_log: results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/logs/sysplorer_robust_mass20_example1_l1_residual_sysblock_20260511.jsonl
+    row_count: 5001
+    position_rmse_m: 0.26076887764258014
+    steady_state_error_m: 0.07485000641988045
+    disturbance_peak_error_m: 0.07264453681200525
+    disturbance_recovery_time_s: 2.6999999999999993
+    quality_status: pass
   wind_full:
     scenario_file: scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
     model_name: QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop
@@ -92,14 +132,34 @@ verified_evidence:
     metrics_file: results/robustness/wind_gust_example1/robust_wind_gust_example1_l1_residual_sysblock/metrics/robust_wind_gust_example1_l1_residual_sysblock.json
     mcp_log: results/robustness/wind_gust_example1/robust_wind_gust_example1_l1_residual_sysblock/logs/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_20260510.jsonl
     row_count: 5001
-    position_rmse_m: 0.2870240496171749
-    steady_state_error_m: 0.08217222540083384
-    disturbance_peak_error_m: 0.5836311696658653
-    disturbance_recovery_time_s: 2.960000000000001
+    position_rmse_m: 0.27823104480435936
+    steady_state_error_m: 0.07480679209929602
+    disturbance_peak_error_m: 0.541738636926632
+    disturbance_recovery_time_s: 2.8500000000000014
+    quality_status: pass
+  rotor1_loss15_full:
+    scenario_file: scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
+    model_name: QuadrotorExperiments.Example1Rotor1Loss15L1SysblockClosedLoop
+    raw_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_residual_sysblock/raw/robust_rotor1_loss15_example1_l1_residual_sysblock.csv
+    metrics_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_residual_sysblock/metrics/robust_rotor1_loss15_example1_l1_residual_sysblock.json
+    mcp_log: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_residual_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_l1_residual_sysblock_20260511.jsonl
+    row_count: 5001
+    position_rmse_m: 0.31985397386481687
+    steady_state_error_m: 0.21443185825175967
+    disturbance_peak_error_m: 0.21349059076429987
+    disturbance_recovery_time_s: 13.33
+    quality_status: needs_iteration
   ablation_vs_awff_sysblock:
-    nominal_position_rmse_reduction_pct: 6.816
-    nominal_steady_state_error_reduction_pct: 20.422
-    wind_position_rmse_reduction_pct: 9.804
-    wind_disturbance_peak_error_reduction_pct: 16.195
-    wind_recovery_time_reduction_pct: 8.923
-    wind_control_smoothness_per_second_increase_pct: 3.896
+    nominal_position_rmse_reduction_pct: 8.406
+    nominal_steady_state_error_reduction_pct: 27.476
+    figure8_position_rmse_reduction_pct: 8.660
+    figure8_steady_state_error_reduction_pct: 19.683
+    mass20_position_rmse_reduction_pct: 7.785
+    mass20_steady_state_error_reduction_pct: 27.409
+    wind_position_rmse_reduction_pct: 12.568
+    wind_disturbance_peak_error_reduction_pct: 22.210
+    wind_recovery_time_reduction_pct: 12.308
+    wind_control_smoothness_per_second_increase_pct: 3.912
+    rotor1_loss15_position_rmse_reduction_pct: 13.332
+    rotor1_loss15_steady_state_error_reduction_pct: 19.210
+    rotor1_loss15_quality_status: needs_iteration

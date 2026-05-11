@@ -468,22 +468,34 @@ scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
 ```text
 models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo
 models/QuadrotorExperiments/Example1L1SysblockClosedLoop.mo
+models/QuadrotorExperiments/Example3L1SysblockClosedLoop.mo
+models/QuadrotorExperiments/Example1Mass20L1SysblockClosedLoop.mo
 models/QuadrotorExperiments/Example1WindGustL1SysblockClosedLoop.mo
+models/QuadrotorExperiments/Example1Rotor1Loss15L1SysblockClosedLoop.mo
 controllers/l1_residual_sysblock/default.yaml
 scenarios/official/example1_l1_residual_sysblock.yaml
+scenarios/official/example3_l1_residual_sysblock.yaml
+scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml
 scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
+scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
 ```
 
-以下结果均为 `source=MWORKS_MCP`。两条 full 场景均先完成 0-1 s smoke，再完成 50 s `check_model/simulate_model/result_manager`，导出 `5001` 行 raw CSV。
+以下结果均为 `source=MWORKS_MCP`，每条正式场景均完成 `check_model/simulate_model/result_manager` 并导出 raw CSV。Example3 为 `12001` 行 120 s 8 字形数据，其余 Example1 派生场景为 `5001` 行 50 s 数据。
 
-| 场景 | controller | position_rmse_m | RMSE变化 | disturbance_peak_error_m | 峰值误差变化 | disturbance_recovery_time_s | steady_state_error_m | max_tilt_rad | control_smoothness_per_second | total_health_score |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Example1 阶梯爬升 | awff_sysblock | 0.266217 | - | 0.075009 | - | 3.030 | 0.103144 | 0.174437 | 265.176177 | 55.423227 |
-| Example1 阶梯爬升 | l1_residual_sysblock | 0.248070 | +6.816% | 0.066026 | +11.976% | 2.790 | 0.082080 | 0.195313 | 275.683925 | 55.782282 |
-| 15-19s 横向阵风 Example1 | awff_sysblock | 0.318224 | - | 0.696413 | - | 3.250 | 0.103106 | 0.196645 | 269.391389 | 55.001701 |
-| 15-19s 横向阵风 Example1 | l1_residual_sysblock | 0.287024 | +9.804% | 0.583631 | +16.195% | 2.960 | 0.082172 | 0.195237 | 279.885642 | 55.466442 |
+| 场景 | controller | status | position_rmse_m | RMSE变化 | disturbance_peak_error_m | 峰值误差变化 | disturbance_recovery_time_s | steady_state_error_m | max_tilt_rad | control_smoothness_per_second | total_health_score |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Example1 阶梯爬升 | awff_sysblock | pass | 0.266217 | - | 0.075009 | - | 3.030 | 0.103144 | 0.174437 | 265.176177 | 55.423227 |
+| Example1 阶梯爬升 | l1_residual_sysblock | pass | 0.243837 | +8.406% | 0.066028 | +11.974% | 2.700 | 0.074804 | 0.205017 | 275.737107 | 55.816606 |
+| Example3 8字形 | awff_sysblock | pass | 0.166669 | - | 0.098743 | - | 0.000 | 0.061905 | 0.229426 | 228.107001 | 60.281226 |
+| Example3 8字形 | l1_residual_sysblock | pass | 0.152236 | +8.660% | 0.070219 | +28.887% | 0.000 | 0.049720 | 0.241367 | 227.238718 | 60.201910 |
+| 质量+20% Example1 | awff_sysblock | pass | 0.282785 | - | 0.083369 | - | 3.030 | 0.103112 | 0.174122 | 266.591707 | 52.443573 |
+| 质量+20% Example1 | l1_residual_sysblock | pass | 0.260769 | +7.785% | 0.072645 | +12.864% | 2.700 | 0.074850 | 0.204374 | 276.357145 | 55.360839 |
+| 15-19s 横向阵风 Example1 | awff_sysblock | pass | 0.318224 | - | 0.696413 | - | 3.250 | 0.103106 | 0.196645 | 269.391389 | 55.001701 |
+| 15-19s 横向阵风 Example1 | l1_residual_sysblock | pass | 0.278231 | +12.568% | 0.541739 | +22.210% | 2.850 | 0.074807 | 0.204982 | 279.930682 | 55.537737 |
+| 1号旋翼效率85% Example1 | awff_sysblock | needs_iteration | 0.369058 | - | 0.261832 | - | 13.760 | 0.265419 | 0.174661 | 264.978146 | 36.043895 |
+| 1号旋翼效率85% Example1 | l1_residual_sysblock | needs_iteration | 0.319854 | +13.332% | 0.213491 | +18.463% | 13.330 | 0.214432 | 0.205298 | 275.174488 | 36.803366 |
 
-消融结论：L1-inspired 残差补偿在 nominal Example1 中降低 `position_rmse_m 6.816%`、稳态误差 `20.422%`、扰动窗口峰值误差 `11.976%`；在横向阵风场景中降低 `position_rmse_m 9.804%`、扰动窗口峰值误差 `16.195%`，恢复时间从 `3.250 s` 缩短到 `2.960 s`。代价是控制平滑性变差：nominal `control_smoothness_per_second` 增加 `3.963%`，风扰场景增加 `3.896%`。因此当前 L1 residual 可以作为 P1 创新控制器的首轮正式证据，但后续仍需在质量摄动和旋翼退化场景中复测，并调参降低高频控制动作。
+消融结论：L1-inspired 残差补偿在 Example1、Example3 8 字形、质量 +20% 和横向阵风四类正式场景中均通过质量门，并稳定降低 RMSE、稳态误差和扰动窗口峰值误差。横向阵风中 `position_rmse_m` 降低 `12.568%`、峰值误差降低 `22.210%`；8 字形中 RMSE 降低 `8.660%`。代价是 Example1 派生场景最大倾角约增加到 `0.205 rad`，控制平滑性约增加 `3.9%`。旋翼退化场景中 L1 相比 AWFF Sysblock 仍有 `13.332%` RMSE 改善和 `19.210%` 稳态误差改善，但健康分只有 `36.803366`，状态仍为 `needs_iteration`；该结果只能作为“固定残差补偿可缓解执行器退化”的证据，不能宣称已解决故障容错。后续应由 INDI、控制分配重构或效率估计模块专门处理旋翼退化。
 
 ## 10. 当前图表
 
@@ -551,9 +563,9 @@ MWORKS/Sysplorer 模型或派生模型
 下一阶段优先任务：
 
 1. 将 Example2 helix tuned AWFF PID / AWFF Sysblock 写入用户手册运行流程和演示素材清单；
-2. 将 L1 residual Sysblock 补偿扩展到质量摄动和旋翼退化场景，并降低高频控制动作；
-3. 在旋翼退化场景中加入故障检测、控制分配重构或安全降级逻辑，区别于固定控制器抗扰；
-4. INDI 或线性 MPC 外环的最小可运行模型。
+2. 在旋翼退化场景中加入故障检测、控制分配重构或安全降级逻辑，区别于固定控制器抗扰；
+3. INDI 或线性 MPC 外环的最小可运行模型；
+4. 对已通过的 L1 residual 场景继续降低高频控制动作和最大倾角。
 
 更新状态：已补充 AWFF PID 与 AWFF Sysblock 的质量 +20%、横向阵风和 1 号旋翼 85% 效率退化派生模型及场景配置：
 
@@ -579,17 +591,26 @@ L1 residual Sysblock 已完成以下真实 MCP 证据：
 
 ```text
 QuadrotorExperiments.Example1L1SysblockClosedLoop
+QuadrotorExperiments.Example3L1SysblockClosedLoop
+QuadrotorExperiments.Example1Mass20L1SysblockClosedLoop
 QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop
+QuadrotorExperiments.Example1Rotor1Loss15L1SysblockClosedLoop
 
 scenarios/smoke/example1_l1_residual_sysblock_mcp_smoke.yaml
 scenarios/smoke/example1_wind_gust_l1_residual_sysblock_mcp_smoke.yaml
 scenarios/official/example1_l1_residual_sysblock.yaml
+scenarios/official/example3_l1_residual_sysblock.yaml
+scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml
 scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
+scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
 
 results/smoke/example1_step/l1_residual_sysblock_smoke/logs/sysplorer_example1_l1_residual_sysblock_smoke_20260510.jsonl
 results/smoke/robustness/wind_gust_example1_l1_residual_sysblock_smoke/logs/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_smoke_20260510.jsonl
 results/official/example1_step/official_example1_l1_residual_sysblock/logs/sysplorer_example1_l1_residual_sysblock_full_20260510.jsonl
+results/official/example3_figure8/official_example3_l1_residual_sysblock/logs/sysplorer_example3_l1_residual_sysblock_full_20260511.jsonl
+results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/logs/sysplorer_robust_mass20_example1_l1_residual_sysblock_20260511.jsonl
 results/robustness/wind_gust_example1/robust_wind_gust_example1_l1_residual_sysblock/logs/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_20260510.jsonl
+results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_residual_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_l1_residual_sysblock_20260511.jsonl
 ```
 
 ## 12. 结论约束

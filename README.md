@@ -41,7 +41,10 @@ scenarios/official/example1_awff_sysblock.yaml  Sysblock AWFF 阶梯爬升
 scenarios/official/example2_awff_sysblock.yaml  Sysblock AWFF 螺旋爬升
 scenarios/official/example3_awff_sysblock.yaml  Sysblock AWFF 8字形运动
 scenarios/official/example1_l1_residual_sysblock.yaml  Sysblock AWFF + L1-inspired 残差补偿
+scenarios/official/example3_l1_residual_sysblock.yaml  Sysblock L1 8字形消融
+scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml  Sysblock L1 质量+20%消融
 scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml  Sysblock L1 横向阵风消融
+scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml  Sysblock L1 旋翼退化消融
 scenarios/smoke/example1_pid_mcp_smoke.yaml    0-1 s MCP 链路烟雾测试
 scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml  0-1 s Sysblock 整机闭环烟雾测试
 ```

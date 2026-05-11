@@ -1,9 +1,9 @@
 # Experiment Summary
 
 - CSV: `results/summaries/experiment_summary/experiment_summary.csv`
-- Total scenarios: `46`
-- Done: `46`
-- Pending: `0`
+- Total scenarios: `50`
+- Done: `49`
+- Pending: `1`
 - Invalid: `0`
 
 ## Available Results
@@ -15,10 +15,12 @@
 | official_example3_awff_pid | official_example3 | awff_pid | 0.164733 | 60.4183 | done |
 | official_example3_awff_sysblock | official_example3 | awff_sysblock | 0.166669 | 60.2812 | done |
 | official_example3_enhanced_pid | official_example3 | enhanced_pid | 0.16667 | 60.2812 | done |
-| official_example1_l1_residual_sysblock | official_example1 | l1_residual_sysblock | 0.24807 | 55.7823 | done |
-| robust_wind_gust_example1_l1_residual_sysblock | robust_wind_gust_example1 | l1_residual_sysblock | 0.287024 | 55.4664 | done |
+| official_example3_l1_residual_sysblock | official_example3 | l1_residual_sysblock | 0.152236 | 60.2019 | done |
+| official_example1_l1_residual_sysblock | official_example1 | l1_residual_sysblock | 0.243837 | 55.8166 | done |
+| robust_wind_gust_example1_l1_residual_sysblock | robust_wind_gust_example1 | l1_residual_sysblock | 0.278231 | 55.5377 | done |
 | official_example1_awff_sysblock | official_example1 | awff_sysblock | 0.266217 | 55.4232 | done |
 | official_example1_enhanced_pid | official_example1 | enhanced_pid | 0.26625 | 55.4225 | done |
+| robust_mass20_example1_l1_residual_sysblock | robust_mass20_example1 | l1_residual_sysblock | 0.260769 | 55.3608 | done |
 | robust_wind_gust_example1_enhanced_pid | robust_wind_gust_example1 | enhanced_pid | 0.31826 | 55.0045 | done |
 | robust_wind_gust_example1_awff_sysblock | robust_wind_gust_example1 | awff_sysblock | 0.318224 | 55.0017 | done |
 | official_example1_awff_sysblock_20s | official_example1_awff_sysblock_20s | awff_sysblock | 0.339268 | 54.8444 | done |
@@ -40,6 +42,7 @@
 | official_example2_awff_sysblock_helix_tuned | official_example2 | awff_sysblock | 0.47485 | 47.9081 | done |
 | official_example2_enhanced_pid_helix_tuned | official_example2 | enhanced_pid | 0.475477 | 47.8878 | done |
 | official_example2_pid_baseline | official_example2 | pid_baseline | 0.487183 | 47.8827 | done |
+| robust_rotor1_loss15_example1_l1_residual_sysblock | robust_rotor1_loss15_example1 | l1_residual_sysblock | 0.319854 | 36.8034 | done |
 | robust_rotor1_loss15_example1_awff_pid | robust_rotor1_loss15_example1 | awff_pid | 0.364823 | 36.185 | done |
 | robust_rotor1_loss15_example1_enhanced_pid | robust_rotor1_loss15_example1 | enhanced_pid | 0.368251 | 36.0506 | done |
 | robust_rotor1_loss15_example1_awff_sysblock | robust_rotor1_loss15_example1 | awff_sysblock | 0.369058 | 36.0439 | done |
@@ -97,9 +100,12 @@
 | official_example1_awff_sysblock_smoke | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_smoke | `results/raw/official_example1_awff_sysblock_smoke.csv` |
 | official_example2_awff_sysblock_smoke | MWORKS_MCP | real_sysplorer_mcp_sysblock_example2_smoke | `results/raw/official_example2_awff_sysblock_smoke.csv` |
 | official_example3_awff_sysblock_smoke | MWORKS_MCP | real_sysplorer_mcp_sysblock_example3_smoke | `results/raw/official_example3_awff_sysblock_smoke.csv` |
-| official_example1_l1_residual_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_l1_residual_full | `results/raw/official_example1_l1_residual_sysblock.csv` |
+| official_example3_l1_residual_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_l1_residual_figure8_full | `results/official/example3_figure8/official_example3_l1_residual_sysblock/raw/official_example3_l1_residual_sysblock.csv` |
+| official_example1_l1_residual_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_l1_residual_full | `results/official/example1_step/official_example1_l1_residual_sysblock/raw/official_example1_l1_residual_sysblock.csv` |
+| robust_mass20_example1_l1_residual_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_l1_residual_mass20_ablation | `results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/raw/robust_mass20_example1_l1_residual_sysblock.csv` |
+| robust_rotor1_loss15_example1_l1_residual_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_l1_residual_rotor_loss_ablation | `results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_residual_sysblock/raw/robust_rotor1_loss15_example1_l1_residual_sysblock.csv` |
 | official_example1_l1_residual_sysblock_smoke | MWORKS_MCP | real_sysplorer_mcp_sysblock_l1_residual_smoke | `results/raw/official_example1_l1_residual_sysblock_smoke.csv` |
-| robust_wind_gust_example1_l1_residual_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_l1_residual_wind_ablation | `results/raw/robust_wind_gust_example1_l1_residual_sysblock.csv` |
+| robust_wind_gust_example1_l1_residual_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_l1_residual_wind_ablation | `results/robustness/wind_gust_example1/robust_wind_gust_example1_l1_residual_sysblock/raw/robust_wind_gust_example1_l1_residual_sysblock.csv` |
 | robust_wind_gust_example1_l1_residual_sysblock_smoke | MWORKS_MCP | real_sysplorer_mcp_sysblock_l1_residual_wind_smoke | `results/raw/robust_wind_gust_example1_l1_residual_sysblock_smoke.csv` |
 | robust_mass20_example1_awff_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_robust_mass20_ablation | `results/raw/robust_mass20_example1_awff_sysblock.csv` |
 | robust_mass20_example1_awff_sysblock_smoke | MWORKS_MCP | real_sysplorer_mcp_sysblock_robust_mass20_smoke | `results/raw/robust_mass20_example1_awff_sysblock_smoke.csv` |
@@ -112,3 +118,4 @@
 
 | Experiment | Scene | Controller | Metrics File | Notes |
 |---|---|---|---|---|
+| official_example1_graphical_awff_sysblock_smoke | official_example1_graphical_awff_sysblock_smoke | awff_sysblock | `results/smoke/example1_step/graphical_awff_sysblock_smoke/metrics/official_example1_graphical_awff_sysblock_smoke.json` | metrics missing |

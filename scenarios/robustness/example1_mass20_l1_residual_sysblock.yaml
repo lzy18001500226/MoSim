@@ -1,0 +1,43 @@
+experiment_id: robust_mass20_example1_l1_residual_sysblock
+scene_id: robust_mass20_example1
+controller_id: l1_residual_sysblock
+priority: P1
+evidence_level: real_sysplorer_mcp_sysblock_l1_residual_mass20_ablation
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1Mass20L1SysblockClosedLoop
+  model_path_hint: models/QuadrotorExperiments/Example1Mass20L1SysblockClosedLoop.mo
+  base_model_path_hint: QuadrotorModel/package.mo
+  official_description: 阶梯爬升 +20% 机体质量摄动 AWFF + L1-inspired residual Sysblock
+
+controller:
+  params_file: controllers/l1_residual_sysblock/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: robust_mass20_example1_awff_sysblock
+  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo
+
+disturbance:
+  type: mass_parameter_perturbation
+  target_component: quadChassisTest17_1.body.m
+  nominal_value_kg: 0.159504
+  perturbed_value_kg: 0.191405
+  perturbation_pct: 20.0
+  purpose: payload_uncertainty_and_model_parameter_robustness
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
+result:
+  raw_file: results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/raw/robust_mass20_example1_l1_residual_sysblock.csv
+  metrics_file: results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/metrics/robust_mass20_example1_l1_residual_sysblock.json
+  figure_dir: results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/figures
+  replay_file: results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/replay/robust_mass20_example1_l1_residual_sysblock.json
+  mcp_log: results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/logs/sysplorer_robust_mass20_example1_l1_residual_sysblock_20260511.jsonl

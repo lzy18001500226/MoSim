@@ -30,9 +30,9 @@ model AWFF_L1ResidualControllerEquation_Sysblock
   parameter Real attitude_derivative_filter_T = 0.03;
   parameter Real l1_model_decay = 1.25;
   parameter Real l1_filter_T = 0.20;
-  parameter Real l1_gain_xy = 0.22;
+  parameter Real l1_gain_xy = 0.32;
   parameter Real l1_gain_z = 0.35;
-  parameter Real l1_comp_limit_xy = 1.5;
+  parameter Real l1_comp_limit_xy = 2.0;
   parameter Real l1_comp_limit_z = 2.0;
 
   SysplorerEmbeddedCoder.Port.Inport x_error annotation(Placement(transformation(origin={-300,180},extent={{-10,-10},{10,10}}),iconTransformation(origin={-101.8,87.5},extent={{-1.8,-1.8},{1.8,1.8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
