@@ -149,7 +149,7 @@ def infer_evidence_level(row: dict[str, Any]) -> str:
     raw_file = str(row.get("raw_file", "") or "")
     if source == "MWORKS_MCP" or "mworks_mcp_" in metrics_file:
         return "real_sysplorer_mcp_smoke"
-    if raw_file.startswith("results/raw/reference_official_"):
+    if "/raw/reference_official_" in raw_file:
         return "official_reference_generation"
     return ""
 
@@ -350,10 +350,10 @@ def parse_args() -> argparse.Namespace:
         "--include-metrics-glob",
         action="append",
         default=[],
-        help="Include metrics JSON files not referenced by scenarios, e.g. results/metrics/smoke_*.json",
+        help="Include metrics JSON files not referenced by scenarios, e.g. results/smoke/**/*.json",
     )
-    parser.add_argument("--csv", type=Path, default=Path("results/test_reports/experiment_summary.csv"))
-    parser.add_argument("--markdown", type=Path, default=Path("results/test_reports/experiment_summary.md"))
+    parser.add_argument("--csv", type=Path, default=Path("results/summaries/experiment_summary/experiment_summary.csv"))
+    parser.add_argument("--markdown", type=Path, default=Path("results/summaries/experiment_summary/experiment_summary.md"))
     return parser.parse_args()
 
 

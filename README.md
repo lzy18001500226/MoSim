@@ -46,7 +46,7 @@ scenarios/smoke/example1_pid_mcp_smoke.yaml    0-1 s MCP 链路烟雾测试
 scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml  0-1 s Sysblock 整机闭环烟雾测试
 ```
 
-`results/raw/mworks_mcp_example1_pid_smoke.csv` 只用于 0-1 s 真实 MCP 链路验证，不作为完整官方 baseline 指标。
+`results/smoke/example1_mcp/pid_baseline_smoke/raw/mworks_mcp_example1_pid_smoke.csv` 只用于 0-1 s 真实 MCP 链路验证，不作为完整官方 baseline 指标。
 
 按场景 YAML 运行真实 Sysplorer MCP 证据链：
 

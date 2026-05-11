@@ -15,8 +15,8 @@ controllers/*/*.yaml
 scenarios/**/*.yaml
 scripts/*.py or scripts/*.jl
 models/**/*.mo
-results/raw/*.csv
-results/metrics/*.json
+results/{group}/{scene}/raw/*.csv
+results/{group}/{scene}/metrics/*.json
 ```
 
 Do not stop at a conceptual comparison.

@@ -88,9 +88,9 @@ acceptance:
 verified_results:
   smoke:
     scenario_file: scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml
-    raw_file: results/raw/official_example1_awff_sysblock_smoke.csv
-    metrics_file: results/metrics/official_example1_awff_sysblock_smoke.json
-    mcp_log: results/test_reports/sysplorer_example1_awff_sysblock_smoke_20260510.jsonl
+    raw_file: results/smoke/example1_step/awff_sysblock_smoke/raw/official_example1_awff_sysblock_smoke.csv
+    metrics_file: results/smoke/example1_step/awff_sysblock_smoke/metrics/official_example1_awff_sysblock_smoke.json
+    mcp_log: results/smoke/example1_step/awff_sysblock_smoke/logs/sysplorer_example1_awff_sysblock_smoke_20260510.jsonl
     row_count: 101
     duration_s: 1.0
     position_rmse_m: 0.9528695569
@@ -98,33 +98,33 @@ verified_results:
     control_command_abs_max: 17.2780638223
   staged_validation:
     - scenario_file: scenarios/smoke/example1_awff_sysblock_mcp_5s.yaml
-      raw_file: results/raw/official_example1_awff_sysblock_5s.csv
-      metrics_file: results/metrics/official_example1_awff_sysblock_5s.json
+      raw_file: results/smoke/example1_step/awff_sysblock_5s/raw/official_example1_awff_sysblock_5s.csv
+      metrics_file: results/smoke/example1_step/awff_sysblock_5s/metrics/official_example1_awff_sysblock_5s.json
       duration_s: 5.0
       row_count: 501
       position_rmse_m: 0.6592382136
       steady_state_error_m: 0.4742273393
     - scenario_file: scenarios/smoke/example1_awff_sysblock_mcp_10s.yaml
-      raw_file: results/raw/official_example1_awff_sysblock_10s.csv
-      metrics_file: results/metrics/official_example1_awff_sysblock_10s.json
+      raw_file: results/smoke/example1_step/awff_sysblock_10s/raw/official_example1_awff_sysblock_10s.csv
+      metrics_file: results/smoke/example1_step/awff_sysblock_10s/metrics/official_example1_awff_sysblock_10s.json
       duration_s: 10.0
       row_count: 1001
       position_rmse_m: 0.4731896622
       steady_state_error_m: 0.0739531289
     - scenario_file: scenarios/smoke/example1_awff_sysblock_mcp_20s.yaml
-      raw_file: results/raw/official_example1_awff_sysblock_20s.csv
-      metrics_file: results/metrics/official_example1_awff_sysblock_20s.json
+      raw_file: results/smoke/example1_step/awff_sysblock_20s/raw/official_example1_awff_sysblock_20s.csv
+      metrics_file: results/smoke/example1_step/awff_sysblock_20s/metrics/official_example1_awff_sysblock_20s.json
       duration_s: 20.0
       row_count: 2001
       position_rmse_m: 0.3392683344
       steady_state_error_m: 0.0154936926
   full_example1:
     scenario_file: scenarios/official/example1_awff_sysblock.yaml
-    raw_file: results/raw/official_example1_awff_sysblock.csv
-    metrics_file: results/metrics/official_example1_awff_sysblock.json
-    mcp_log: results/test_reports/sysplorer_example1_awff_sysblock_full_20260510.jsonl
+    raw_file: results/official/example1_step/raw/official_example1_awff_sysblock.csv
+    metrics_file: results/official/example1_step/metrics/official_example1_awff_sysblock.json
+    mcp_log: results/official/example1_step/logs/sysplorer_example1_awff_sysblock_full_20260510.jsonl
     figure_dir: results/official/example1_step/figures/awff_sysblock
-    replay_file: results/replay/official_example1_awff_sysblock.json
+    replay_file: results/official/example1_step/replay/official_example1_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0
     position_rmse_m: 0.2662166046
@@ -134,29 +134,29 @@ verified_results:
     total_health_score: 55.4232273733
   smoke_example2:
     scenario_file: scenarios/smoke/example2_awff_sysblock_mcp_smoke.yaml
-    raw_file: results/raw/official_example2_awff_sysblock_smoke.csv
-    metrics_file: results/metrics/official_example2_awff_sysblock_smoke.json
-    mcp_log: results/test_reports/sysplorer_example2_awff_sysblock_smoke_20260510.jsonl
+    raw_file: results/smoke/example2_helix/awff_sysblock_smoke/raw/official_example2_awff_sysblock_smoke.csv
+    metrics_file: results/smoke/example2_helix/awff_sysblock_smoke/metrics/official_example2_awff_sysblock_smoke.json
+    mcp_log: results/smoke/example2_helix/awff_sysblock_smoke/logs/sysplorer_example2_awff_sysblock_smoke_20260510.jsonl
     row_count: 101
     duration_s: 1.0
     position_rmse_m: 0.0770954641
     max_tilt_rad: 0.0000002460
   smoke_example3:
     scenario_file: scenarios/smoke/example3_awff_sysblock_mcp_smoke.yaml
-    raw_file: results/raw/official_example3_awff_sysblock_smoke.csv
-    metrics_file: results/metrics/official_example3_awff_sysblock_smoke.json
-    mcp_log: results/test_reports/sysplorer_example3_awff_sysblock_smoke_20260510.jsonl
+    raw_file: results/smoke/example3_figure8/awff_sysblock_smoke/raw/official_example3_awff_sysblock_smoke.csv
+    metrics_file: results/smoke/example3_figure8/awff_sysblock_smoke/metrics/official_example3_awff_sysblock_smoke.json
+    mcp_log: results/smoke/example3_figure8/awff_sysblock_smoke/logs/sysplorer_example3_awff_sysblock_smoke_20260510.jsonl
     row_count: 101
     duration_s: 1.0
     position_rmse_m: 0.5786629100
     max_tilt_rad: 0.0000000000
   full_example2:
     scenario_file: scenarios/official/example2_awff_sysblock.yaml
-    raw_file: results/raw/official_example2_awff_sysblock.csv
-    metrics_file: results/metrics/official_example2_awff_sysblock.json
-    mcp_log: results/test_reports/sysplorer_example2_awff_sysblock_full_20260510.jsonl
+    raw_file: results/official/example2_helix/raw/official_example2_awff_sysblock.csv
+    metrics_file: results/official/example2_helix/metrics/official_example2_awff_sysblock.json
+    mcp_log: results/official/example2_helix/logs/sysplorer_example2_awff_sysblock_full_20260510.jsonl
     figure_dir: results/official/example2_helix/figures/awff_sysblock
-    replay_file: results/replay/official_example2_awff_sysblock.json
+    replay_file: results/official/example2_helix/replay/official_example2_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0
     position_rmse_m: 0.4873938471
@@ -166,11 +166,11 @@ verified_results:
     total_health_score: 47.7930426708
   full_example3:
     scenario_file: scenarios/official/example3_awff_sysblock.yaml
-    raw_file: results/raw/official_example3_awff_sysblock.csv
-    metrics_file: results/metrics/official_example3_awff_sysblock.json
-    mcp_log: results/test_reports/sysplorer_example3_awff_sysblock_full_20260510.jsonl
+    raw_file: results/official/example3_figure8/raw/official_example3_awff_sysblock.csv
+    metrics_file: results/official/example3_figure8/metrics/official_example3_awff_sysblock.json
+    mcp_log: results/official/example3_figure8/logs/sysplorer_example3_awff_sysblock_full_20260510.jsonl
     figure_dir: results/official/example3_figure8/figures/awff_sysblock
-    replay_file: results/replay/official_example3_awff_sysblock.json
+    replay_file: results/official/example3_figure8/replay/official_example3_awff_sysblock.json
     row_count: 12001
     duration_s: 120.0
     position_rmse_m: 0.1666690665
@@ -180,11 +180,11 @@ verified_results:
     total_health_score: 60.2812258564
   robust_mass20:
     scenario_file: scenarios/robustness/example1_mass20_awff_sysblock.yaml
-    raw_file: results/raw/robust_mass20_example1_awff_sysblock.csv
-    metrics_file: results/metrics/robust_mass20_example1_awff_sysblock.json
-    mcp_log: results/test_reports/sysplorer_robust_mass20_example1_awff_sysblock_20260510.jsonl
+    raw_file: results/robustness/mass20_example1/raw/robust_mass20_example1_awff_sysblock.csv
+    metrics_file: results/robustness/mass20_example1/metrics/robust_mass20_example1_awff_sysblock.json
+    mcp_log: results/robustness/mass20_example1/logs/sysplorer_robust_mass20_example1_awff_sysblock_20260510.jsonl
     figure_dir: results/robustness/mass20_example1/figures/awff_sysblock
-    replay_file: results/replay/robust_mass20_example1_awff_sysblock.json
+    replay_file: results/robustness/mass20_example1/replay/robust_mass20_example1_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0
     position_rmse_m: 0.2827848404
@@ -193,11 +193,11 @@ verified_results:
     total_health_score: 52.4435728028
   robust_wind_gust:
     scenario_file: scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
-    raw_file: results/raw/robust_wind_gust_example1_awff_sysblock.csv
-    metrics_file: results/metrics/robust_wind_gust_example1_awff_sysblock.json
-    mcp_log: results/test_reports/sysplorer_robust_wind_gust_example1_awff_sysblock_20260510.jsonl
+    raw_file: results/robustness/wind_gust_example1/raw/robust_wind_gust_example1_awff_sysblock.csv
+    metrics_file: results/robustness/wind_gust_example1/metrics/robust_wind_gust_example1_awff_sysblock.json
+    mcp_log: results/robustness/wind_gust_example1/logs/sysplorer_robust_wind_gust_example1_awff_sysblock_20260510.jsonl
     figure_dir: results/robustness/wind_gust_example1/figures/awff_sysblock
-    replay_file: results/replay/robust_wind_gust_example1_awff_sysblock.json
+    replay_file: results/robustness/wind_gust_example1/replay/robust_wind_gust_example1_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0
     position_rmse_m: 0.3182242328
@@ -206,11 +206,11 @@ verified_results:
     total_health_score: 55.0017007347
   robust_rotor1_loss15:
     scenario_file: scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
-    raw_file: results/raw/robust_rotor1_loss15_example1_awff_sysblock.csv
-    metrics_file: results/metrics/robust_rotor1_loss15_example1_awff_sysblock.json
-    mcp_log: results/test_reports/sysplorer_robust_rotor1_loss15_example1_awff_sysblock_20260510.jsonl
+    raw_file: results/robustness/rotor1_loss15_example1/raw/robust_rotor1_loss15_example1_awff_sysblock.csv
+    metrics_file: results/robustness/rotor1_loss15_example1/metrics/robust_rotor1_loss15_example1_awff_sysblock.json
+    mcp_log: results/robustness/rotor1_loss15_example1/logs/sysplorer_robust_rotor1_loss15_example1_awff_sysblock_20260510.jsonl
     figure_dir: results/robustness/rotor1_loss15_example1/figures/awff_sysblock
-    replay_file: results/replay/robust_rotor1_loss15_example1_awff_sysblock.json
+    replay_file: results/robustness/rotor1_loss15_example1/replay/robust_rotor1_loss15_example1_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0
     position_rmse_m: 0.3690575238

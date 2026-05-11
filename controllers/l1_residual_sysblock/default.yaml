@@ -77,9 +77,9 @@ verified_evidence:
   nominal_full:
     scenario_file: scenarios/official/example1_l1_residual_sysblock.yaml
     model_name: QuadrotorExperiments.Example1L1SysblockClosedLoop
-    raw_file: results/raw/official_example1_l1_residual_sysblock.csv
-    metrics_file: results/metrics/official_example1_l1_residual_sysblock.json
-    mcp_log: results/test_reports/sysplorer_example1_l1_residual_sysblock_full_20260510.jsonl
+    raw_file: results/official/example1_step/raw/official_example1_l1_residual_sysblock.csv
+    metrics_file: results/official/example1_step/metrics/official_example1_l1_residual_sysblock.json
+    mcp_log: results/official/example1_step/logs/sysplorer_example1_l1_residual_sysblock_full_20260510.jsonl
     row_count: 5001
     position_rmse_m: 0.24807049782638949
     steady_state_error_m: 0.08207960402091787
@@ -88,9 +88,9 @@ verified_evidence:
   wind_full:
     scenario_file: scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
     model_name: QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop
-    raw_file: results/raw/robust_wind_gust_example1_l1_residual_sysblock.csv
-    metrics_file: results/metrics/robust_wind_gust_example1_l1_residual_sysblock.json
-    mcp_log: results/test_reports/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_20260510.jsonl
+    raw_file: results/robustness/wind_gust_example1/raw/robust_wind_gust_example1_l1_residual_sysblock.csv
+    metrics_file: results/robustness/wind_gust_example1/metrics/robust_wind_gust_example1_l1_residual_sysblock.json
+    mcp_log: results/robustness/wind_gust_example1/logs/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_20260510.jsonl
     row_count: 5001
     position_rmse_m: 0.2870240496171749
     steady_state_error_m: 0.08217222540083384

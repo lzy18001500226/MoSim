@@ -37,11 +37,11 @@ simulation:
 
 reference:
   type: official_climb_path
-  file: results/raw/reference_official_example1.csv
+  file: results/official/example1_step/raw/reference_official_example1.csv
 
 result:
-  raw_file: results/raw/robust_wind_gust_example1_awff_pid.csv
-  metrics_file: results/metrics/robust_wind_gust_example1_awff_pid.json
+  raw_file: results/robustness/wind_gust_example1/raw/robust_wind_gust_example1_awff_pid.csv
+  metrics_file: results/robustness/wind_gust_example1/metrics/robust_wind_gust_example1_awff_pid.json
   figure_dir: results/robustness/wind_gust_example1/figures/awff_pid
-  replay_file: results/replay/robust_wind_gust_example1_awff_pid.json
-  mcp_log: results/test_reports/sysplorer_robust_wind_gust_example1_awff_pid_20260510.jsonl
+  replay_file: results/robustness/wind_gust_example1/replay/robust_wind_gust_example1_awff_pid.json
+  mcp_log: results/robustness/wind_gust_example1/logs/sysplorer_robust_wind_gust_example1_awff_pid_20260510.jsonl

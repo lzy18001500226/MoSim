@@ -25,11 +25,11 @@ simulation:
 
 reference:
   type: official_eight_path
-  file: results/raw/reference_official_example3.csv
+  file: results/official/example3_figure8/raw/reference_official_example3.csv
 
 result:
-  raw_file: results/raw/official_example3_awff_sysblock.csv
-  metrics_file: results/metrics/official_example3_awff_sysblock.json
+  raw_file: results/official/example3_figure8/raw/official_example3_awff_sysblock.csv
+  metrics_file: results/official/example3_figure8/metrics/official_example3_awff_sysblock.json
   figure_dir: results/official/example3_figure8/figures/awff_sysblock
-  replay_file: results/replay/official_example3_awff_sysblock.json
-  mcp_log: results/test_reports/sysplorer_example3_awff_sysblock_full_20260510.jsonl
+  replay_file: results/official/example3_figure8/replay/official_example3_awff_sysblock.json
+  mcp_log: results/official/example3_figure8/logs/sysplorer_example3_awff_sysblock_full_20260510.jsonl

@@ -11,19 +11,19 @@ from pathlib import Path
 
 EXPECTED = {
     "official_example1": {
-        "path": Path("results/raw/reference_official_example1.csv"),
+        "path": Path("results/official/example1_step/raw/reference_official_example1.csv"),
         "rows": 5001,
         "last_time": 50.0,
         "last_ref": (10.0, 10.0, 15.0),
     },
     "official_example2": {
-        "path": Path("results/raw/reference_official_example2.csv"),
+        "path": Path("results/official/example2_helix/raw/reference_official_example2.csv"),
         "rows": 5001,
         "last_time": 50.0,
         "last_ref": (1.0, 0.0, 20.0 / 3.0),
     },
     "official_example3": {
-        "path": Path("results/raw/reference_official_example3.csv"),
+        "path": Path("results/official/example3_figure8/raw/reference_official_example3.csv"),
         "rows": 12001,
         "last_time": 120.0,
         "last_ref": (

@@ -61,8 +61,8 @@ Do not use long scenes for smoke tests.
 Save:
 
 ```text
-results/raw/smoke_{scene}_{controller}.csv
-results/metrics/smoke_{scene}_{controller}.json
+results/smoke/{scene}/{controller}/raw/smoke_{scene}_{controller}.csv
+results/smoke/{scene}/{controller}/metrics/smoke_{scene}_{controller}.json
 ```
 
 ## 6. Real Sysplorer MCP Smoke
@@ -77,13 +77,13 @@ python3 scripts/run_mworks_scenario.py scenarios/smoke/example1_pid_mcp_smoke.ya
 Expected outputs:
 
 ```text
-results/test_reports/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
-results/raw/mworks_mcp_example1_pid_smoke.csv
-results/metrics/mworks_mcp_example1_pid_smoke.json
-results/metrics/mworks_mcp_example1_pid_smoke.csv
+results/smoke/example1_mcp/pid_baseline_smoke/logs/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
+results/smoke/example1_mcp/pid_baseline_smoke/raw/mworks_mcp_example1_pid_smoke.csv
+results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_smoke.json
+results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_smoke.csv
 results/smoke/example1_mcp/pid_baseline_smoke/figures/
-results/replay/mworks_mcp_example1_pid_smoke.json
-results/replay_html/mworks_mcp_example1_pid_smoke.html
+results/smoke/example1_mcp/pid_baseline_smoke/replay/mworks_mcp_example1_pid_smoke.json
+results/smoke/example1_mcp/pid_baseline_smoke/replay_html/mworks_mcp_example1_pid_smoke.html
 ```
 
 This is real `source=MWORKS_MCP` smoke evidence, but it is still only a

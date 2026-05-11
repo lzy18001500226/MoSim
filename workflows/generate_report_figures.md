@@ -45,16 +45,16 @@ CSV and optional metrics JSON:
 
 ```bash
 python3 scripts/plot_results.py \
-  results/raw/official_example1_improved_pid.csv \
+  results/official/example1_step/raw/official_example1_improved_pid.csv \
   results/official/example1_step/figures/improved_pid \
-  --metrics results/metrics/official_example1_improved_pid.json
+  --metrics results/official/example1_step/metrics/official_example1_improved_pid.json
 ```
 
 Use `scripts/plot_results.jl`, Syslab MCP plotting APIs, or Sysplorer
 `plot_manager` only when higher-fidelity native plots are required.
 
 `scripts/generate_replay_html.py` creates self-contained offline browser replay
-pages from `results/replay/*.json`. The generated HTML has no CDN dependency
+pages from `results/{group}/{scene}/replay/*.json`. The generated HTML has no CDN dependency
 and can be used for browser recording and 3D demo video materials without
 opening MWORKS:
 
@@ -65,7 +65,7 @@ python3 scripts/generate_replay_html.py --all
 Output:
 
 ```text
-results/replay_html/{replay_name}.html
+results/{group}/{scene}/replay_html/{replay_name}.html
 ```
 
 ---

@@ -3,14 +3,14 @@
 # Minimal metrics script for project-standard quadrotor CSV files.
 #
 # Usage:
-#   julia scripts/calc_metrics.jl results/raw/figure8.csv results/metrics/figure8.json
+#   julia scripts/calc_metrics.jl results/{group}/{scene}/raw/figure8.csv results/{group}/{scene}/metrics/figure8.json
 #   julia scripts/calc_metrics.jl --self-test
 
 using Dates
 
 function parse_args()
     if length(ARGS) == 1 && ARGS[1] == "--self-test"
-        return "tests/fixtures/sample_tracking.csv", "results/test_reports/sample_tracking_metrics.json", "sample_tracking", "fixture"
+        return "tests/fixtures/sample_tracking.csv", "results/samples/tracking_metrics/metrics/sample_tracking_metrics.json", "sample_tracking", "fixture"
     end
     if length(ARGS) < 2
         println(stderr, "Usage: julia scripts/calc_metrics.jl <raw_csv> <metrics_json> [scene_id] [controller_id]")

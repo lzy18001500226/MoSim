@@ -94,8 +94,8 @@ controllers/
 planners/
 scenarios/
 tests/
-results/raw/
-results/metrics/
+results/{group}/{scene}/raw/
+results/{group}/{scene}/metrics/
 results/{group}/{scene}/figures/
 docs/figures/
 ```

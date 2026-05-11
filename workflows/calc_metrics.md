@@ -11,7 +11,7 @@ Given a raw simulation result file, compute tracking, robustness, safety, planni
 Example task:
 
 ```text
-Compute RMSE, max error, settling time, control energy, and saturation ratio for results/raw/figure8_pid.csv.
+Compute RMSE, max error, settling time, control energy, and saturation ratio for results/official/example3_figure8/raw/figure8_pid.csv.
 ```
 
 ---
@@ -41,10 +41,10 @@ Recommended input format:
 
 ```yaml
 metrics_job:
-  raw_file: results/raw/figure8_nmpc_indi_l1.csv
+  raw_file: results/official/example3_figure8/raw/figure8_nmpc_indi_l1.csv
   scene_id: figure8
   controller_id: nmpc_indi_l1
-  output_file: results/metrics/figure8_nmpc_indi_l1.json
+  output_file: results/official/example3_figure8/metrics/figure8_nmpc_indi_l1.json
   figure_dir: results/official/example3_figure8/figures/nmpc_indi_l1/
 ```
 
@@ -72,7 +72,7 @@ scripts/plot_results.jl
 
 Prefer `scripts/calc_metrics.jl` when Syslab/Julia is available. If local WSL
 does not provide `julia`, use `scripts/calc_metrics.py` as the fallback so the
-automation can still produce `results/metrics/*.json` and `*.csv`.
+automation can still produce `results/{group}/{scene}/metrics/*.json` and `*.csv`.
 
 ---
 
@@ -318,8 +318,8 @@ run_julia_file with script_path = absolute path to scripts/calc_metrics.jl
 Script should save:
 
 ```text
-results/metrics/{scene_id}_{controller_id}.json
-results/metrics/{scene_id}_{controller_id}.csv
+results/{group}/{scene}/metrics/{scene_id}_{controller_id}.json
+results/{group}/{scene}/metrics/{scene_id}_{controller_id}.csv
 ```
 
 ---
@@ -363,7 +363,7 @@ metrics bar chart
 If baseline exists:
 
 ```text
-results/metrics/{scene_id}_pid_baseline.json
+results/{group}/{scene}/metrics/{scene_id}_pid_baseline.json
 ```
 
 Compute:

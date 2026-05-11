@@ -87,22 +87,22 @@ python3 scripts/check_reference_outputs.py
 输出：
 
 ```text
-results/raw/reference_official_example1.csv
-results/raw/reference_official_example2.csv
-results/raw/reference_official_example3.csv
-results/replay/reference_official_example1.json
-results/replay/reference_official_example2.json
-results/replay/reference_official_example3.json
+results/official/example1_step/raw/reference_official_example1.csv
+results/official/example2_helix/raw/reference_official_example2.csv
+results/official/example3_figure8/raw/reference_official_example3.csv
+results/official/example1_step/replay/reference_official_example1.json
+results/official/example2_helix/replay/reference_official_example2.json
+results/official/example3_figure8/replay/reference_official_example3.json
 ```
 
-`results/replay/*.json` 是从参考轨迹或真实 raw CSV 导出的展示素材输入，不参与控制闭环，也不作为在线仿真证据。正式控制器仿真证据以 MWORKS/Sysplorer 模型检查、仿真日志、raw CSV、metrics JSON/CSV 和 SVG 图表为准。
+`results/{group}/{scene}/replay/*.json` 是从参考轨迹或真实 raw CSV 导出的展示素材输入，不参与控制闭环，也不作为在线仿真证据。正式控制器仿真证据以 MWORKS/Sysplorer 模型检查、仿真日志、raw CSV、metrics JSON/CSV 和 SVG 图表为准。
 
 从真实 MCP raw CSV 生成实际轨迹回放：
 
 ```bash
 python3 scripts/generate_replay_from_raw.py \
-  results/raw/official_example1_improved_pid.csv \
-  results/replay/official_example1_improved_pid.json \
+  results/official/example1_step/raw/official_example1_improved_pid.csv \
+  results/official/example1_step/replay/official_example1_improved_pid.json \
   --scene-id official_example1_improved_pid \
   --model-name QuadrotorExperiments.Example1ImprovedPID \
   --description 'Example1 MCP 参数搜索型 Improved PID 真实轨迹'
@@ -111,14 +111,14 @@ python3 scripts/generate_replay_from_raw.py \
 正式 replay JSON 文件：
 
 ```text
-results/replay/official_example1_pid_baseline.json
-results/replay/official_example1_improved_pid.json
-results/replay/official_example1_enhanced_pid.json
-results/replay/official_example1_awff_pid.json
-results/replay/official_example2_pid_baseline.json
-results/replay/official_example2_improved_pid.json
-results/replay/official_example3_pid_baseline.json
-results/replay/official_example3_improved_pid.json
+results/official/example1_step/replay/official_example1_pid_baseline.json
+results/official/example1_step/replay/official_example1_improved_pid.json
+results/official/example1_step/replay/official_example1_enhanced_pid.json
+results/official/example1_step/replay/official_example1_awff_pid.json
+results/official/example2_helix/replay/official_example2_pid_baseline.json
+results/official/example2_helix/replay/official_example2_improved_pid.json
+results/official/example3_figure8/replay/official_example3_pid_baseline.json
+results/official/example3_figure8/replay/official_example3_improved_pid.json
 ```
 
 如需临时制作浏览器回放素材，可手动执行 `scripts/generate_replay_html.py`。仓库默认流程不再生成或提交 HTML 文件。
@@ -147,12 +147,12 @@ docs/index/variable_mapping.md
 完整官方 baseline 结果应写入：
 
 ```text
-results/raw/official_example1_pid_baseline.csv
-results/raw/official_example2_pid_baseline.csv
-results/raw/official_example3_pid_baseline.csv
-results/metrics/official_example1_pid_baseline.json
-results/metrics/official_example2_pid_baseline.json
-results/metrics/official_example3_pid_baseline.json
+results/official/example1_step/raw/official_example1_pid_baseline.csv
+results/official/example2_helix/raw/official_example2_pid_baseline.csv
+results/official/example3_figure8/raw/official_example3_pid_baseline.csv
+results/official/example1_step/metrics/official_example1_pid_baseline.json
+results/official/example2_helix/metrics/official_example2_pid_baseline.json
+results/official/example3_figure8/metrics/official_example3_pid_baseline.json
 ```
 
 `qa_check.py` 会检查这些正式结果的时长，Example1/2 不得短于 50 s，Example3 不得短于 120 s。
@@ -170,10 +170,10 @@ time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4
 ```bash
 python3 scripts/run_sysplorer_mcp_smoke.py \
   --target-time 0,50 \
-  --raw-output results/raw/official_example1_pid_baseline.csv \
-  --metrics-json results/metrics/official_example1_pid_baseline.json \
-  --metrics-csv results/metrics/official_example1_pid_baseline.csv \
-  --log-output results/test_reports/sysplorer_example1_pid_baseline_full_20260509.jsonl \
+  --raw-output results/official/example1_step/raw/official_example1_pid_baseline.csv \
+  --metrics-json results/official/example1_step/metrics/official_example1_pid_baseline.json \
+  --metrics-csv results/official/example1_step/metrics/official_example1_pid_baseline.csv \
+  --log-output results/official/example1_step/logs/sysplorer_example1_pid_baseline_full_20260509.jsonl \
   --scene-id official_example1 \
   --controller-id pid_baseline \
   --evidence-level real_sysplorer_mcp_full_baseline
@@ -181,10 +181,10 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
 python3 scripts/run_sysplorer_mcp_smoke.py \
   --model-name QuadrotorModel.Examples.Example2 \
   --target-time 0,50 \
-  --raw-output results/raw/official_example2_pid_baseline.csv \
-  --metrics-json results/metrics/official_example2_pid_baseline.json \
-  --metrics-csv results/metrics/official_example2_pid_baseline.csv \
-  --log-output results/test_reports/sysplorer_example2_pid_baseline_full_20260509.jsonl \
+  --raw-output results/official/example2_helix/raw/official_example2_pid_baseline.csv \
+  --metrics-json results/official/example2_helix/metrics/official_example2_pid_baseline.json \
+  --metrics-csv results/official/example2_helix/metrics/official_example2_pid_baseline.csv \
+  --log-output results/official/example2_helix/logs/sysplorer_example2_pid_baseline_full_20260509.jsonl \
   --scene-id official_example2 \
   --controller-id pid_baseline \
   --evidence-level real_sysplorer_mcp_full_baseline
@@ -192,10 +192,10 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
 python3 scripts/run_sysplorer_mcp_smoke.py \
   --model-name QuadrotorModel.Examples.Example3 \
   --target-time 0,120 \
-  --raw-output results/raw/official_example3_pid_baseline.csv \
-  --metrics-json results/metrics/official_example3_pid_baseline.json \
-  --metrics-csv results/metrics/official_example3_pid_baseline.csv \
-  --log-output results/test_reports/sysplorer_example3_pid_baseline_full_20260509.jsonl \
+  --raw-output results/official/example3_figure8/raw/official_example3_pid_baseline.csv \
+  --metrics-json results/official/example3_figure8/metrics/official_example3_pid_baseline.json \
+  --metrics-csv results/official/example3_figure8/metrics/official_example3_pid_baseline.csv \
+  --log-output results/official/example3_figure8/logs/sysplorer_example3_pid_baseline_full_20260509.jsonl \
   --scene-id official_example3 \
   --controller-id pid_baseline \
   --evidence-level real_sysplorer_mcp_full_baseline
@@ -208,10 +208,10 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
   --extra-model-file 'C:\Users\HP\Desktop\Quadrotor\models\QuadrotorExperiments\package.mo' \
   --model-name QuadrotorExperiments.Example1ImprovedPID \
   --target-time 0,50 \
-  --raw-output results/raw/official_example1_improved_pid.csv \
-  --metrics-json results/metrics/official_example1_improved_pid.json \
-  --metrics-csv results/metrics/official_example1_improved_pid.csv \
-  --log-output results/test_reports/sysplorer_example1_improved_pid_full_20260509.jsonl \
+  --raw-output results/official/example1_step/raw/official_example1_improved_pid.csv \
+  --metrics-json results/official/example1_step/metrics/official_example1_improved_pid.json \
+  --metrics-csv results/official/example1_step/metrics/official_example1_improved_pid.csv \
+  --log-output results/official/example1_step/logs/sysplorer_example1_improved_pid_full_20260509.jsonl \
   --scene-id official_example1 \
   --controller-id improved_pid \
   --evidence-level real_sysplorer_mcp_full_improved_pid
@@ -220,10 +220,10 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
   --extra-model-file 'C:\Users\HP\Desktop\Quadrotor\models\QuadrotorExperiments\package.mo' \
   --model-name QuadrotorExperiments.Example2ImprovedPID \
   --target-time 0,50 \
-  --raw-output results/raw/official_example2_improved_pid.csv \
-  --metrics-json results/metrics/official_example2_improved_pid.json \
-  --metrics-csv results/metrics/official_example2_improved_pid.csv \
-  --log-output results/test_reports/sysplorer_example2_improved_pid_full_20260509.jsonl \
+  --raw-output results/official/example2_helix/raw/official_example2_improved_pid.csv \
+  --metrics-json results/official/example2_helix/metrics/official_example2_improved_pid.json \
+  --metrics-csv results/official/example2_helix/metrics/official_example2_improved_pid.csv \
+  --log-output results/official/example2_helix/logs/sysplorer_example2_improved_pid_full_20260509.jsonl \
   --scene-id official_example2 \
   --controller-id improved_pid \
   --evidence-level real_sysplorer_mcp_full_improved_pid
@@ -232,10 +232,10 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
   --extra-model-file 'C:\Users\HP\Desktop\Quadrotor\models\QuadrotorExperiments\package.mo' \
   --model-name QuadrotorExperiments.Example3ImprovedPID \
   --target-time 0,120 \
-  --raw-output results/raw/official_example3_improved_pid.csv \
-  --metrics-json results/metrics/official_example3_improved_pid.json \
-  --metrics-csv results/metrics/official_example3_improved_pid.csv \
-  --log-output results/test_reports/sysplorer_example3_improved_pid_full_20260509.jsonl \
+  --raw-output results/official/example3_figure8/raw/official_example3_improved_pid.csv \
+  --metrics-json results/official/example3_figure8/metrics/official_example3_improved_pid.json \
+  --metrics-csv results/official/example3_figure8/metrics/official_example3_improved_pid.csv \
+  --log-output results/official/example3_figure8/logs/sysplorer_example3_improved_pid_full_20260509.jsonl \
   --scene-id official_example3 \
   --controller-id improved_pid \
   --evidence-level real_sysplorer_mcp_full_improved_pid
@@ -256,8 +256,8 @@ python3 scripts/tune_improved_pid_mcp.py --examples 1 3 --timeout-s 900
 该脚本会生成临时 Modelica 派生包、串行调用真实 Sysplorer MCP 仿真候选参数，并输出：
 
 ```text
-results/test_reports/pid_tuning_summary.csv
-results/test_reports/pid_tuning_summary.md
+results/tuning/pid_search/summary/pid_tuning_summary.csv
+results/tuning/pid_search/summary/pid_tuning_summary.md
 ```
 
 正式 improved PID 当前采用候选 `pos_kp_165_att_170`，对应 `PID3/PID4.KP=1.65`、`PID5/PID6.KD=1.70`。
@@ -267,10 +267,10 @@ results/test_reports/pid_tuning_summary.md
 当前仓库只保留真实 Sysplorer MCP 运行得到的官方 Example1 0-1 s smoke 数据集：
 
 ```text
-results/test_reports/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
-results/raw/mworks_mcp_example1_pid_smoke.csv
-results/metrics/mworks_mcp_example1_pid_smoke.json
-results/metrics/mworks_mcp_example1_pid_smoke.csv
+results/smoke/example1_mcp/pid_baseline_smoke/logs/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
+results/smoke/example1_mcp/pid_baseline_smoke/raw/mworks_mcp_example1_pid_smoke.csv
+results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_smoke.json
+results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_smoke.csv
 ```
 
 复现实测 MCP smoke：
@@ -308,8 +308,8 @@ python3 scripts/run_mworks_batch.py --dry-run scenarios/official/*.yaml
 
 ```bash
 python3 scripts/calc_metrics.py \
-  results/raw/official_example1_improved_pid.csv \
-  results/metrics/official_example1_improved_pid.json \
+  results/official/example1_step/raw/official_example1_improved_pid.csv \
+  results/official/example1_step/metrics/official_example1_improved_pid.json \
   official_example1 \
   improved_pid
 ```
@@ -336,25 +336,25 @@ tracking_score / robustness_score / safety_score / energy_score / smoothness_sco
 
 ```bash
 python3 scripts/plot_results.py \
-  results/raw/official_example1_improved_pid.csv \
+  results/official/example1_step/raw/official_example1_improved_pid.csv \
   results/official/example1_step/figures/improved_pid \
-  --metrics results/metrics/official_example1_improved_pid.json
+  --metrics results/official/example1_step/metrics/official_example1_improved_pid.json
 ```
 
 生成实验汇总时只纳入真实 MWORKS/MCP 结果：
 
 ```bash
 python3 scripts/summarize_experiments.py \
-  --include-metrics-glob 'results/metrics/official_example*_pid_baseline.json' \
-  --include-metrics-glob 'results/metrics/official_example*_improved_pid.json' \
-  --include-metrics-glob 'results/metrics/mworks_mcp_*.json'
+  --include-metrics-glob 'results/official/**/metrics/*pid_baseline.json' \
+  --include-metrics-glob 'results/official/**/metrics/*improved_pid.json' \
+  --include-metrics-glob 'results/smoke/**/metrics/mworks_mcp_*.json'
 ```
 
 输出：
 
 ```text
-results/test_reports/experiment_summary.csv
-results/test_reports/experiment_summary.md
+results/summaries/experiment_summary/experiment_summary.csv
+results/summaries/experiment_summary/experiment_summary.md
 ```
 
 说明：项目不再生成或保留 Python/Julia 离线仿真结果。风扰、质量变化、故障、规划、编队等扩展场景必须通过 MWORKS/Sysplorer/MCP 或手动 MWORKS GUI 形成 `source=MWORKS_MCP` / `source=MWORKS_GUI` 证据后，才能进入正式实验汇总和报告结论。

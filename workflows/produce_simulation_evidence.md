@@ -44,9 +44,9 @@ simulation evidence bundle unless the official model is run through MWORKS.
 2. Run `check_model`.
 3. Run the smallest simulation that validates the claim.
 4. Read required variables through `result_manager`.
-5. Export raw CSV under `results/raw/`.
-6. Compute metrics under `results/metrics/` or `results/test_reports/`.
-7. Generate figures or replay assets under `results/{group}/{scene}/figures/`, `results/replay/`, `results/replay_html/`, or `docs/figures/`.
+5. Export raw CSV under `results/{group}/{scene}/raw/`.
+6. Compute metrics under `results/{group}/{scene}/metrics/` or `results/{group}/{scene}/logs/`.
+7. Generate figures or replay assets under `results/{group}/{scene}/figures/`, `results/{group}/{scene}/replay/`, `results/{group}/{scene}/replay_html/`, or `docs/figures/`.
 8. Update `docs/simulation_report.md` when the result supports a report claim.
 
 Project entrypoints:

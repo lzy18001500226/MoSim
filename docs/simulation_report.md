@@ -41,12 +41,12 @@ Example1 L1 residual Sysblock nominal/wind-gust 0-1 s smoke 与 50 s full CSV、
 官方完整 baseline 结果文件预期路径：
 
 ```text
-results/raw/official_example1_pid_baseline.csv
-results/raw/official_example2_pid_baseline.csv
-results/raw/official_example3_pid_baseline.csv
-results/metrics/official_example1_pid_baseline.json
-results/metrics/official_example2_pid_baseline.json
-results/metrics/official_example3_pid_baseline.json
+results/official/example1_step/raw/official_example1_pid_baseline.csv
+results/official/example2_helix/raw/official_example2_pid_baseline.csv
+results/official/example3_figure8/raw/official_example3_pid_baseline.csv
+results/official/example1_step/metrics/official_example1_pid_baseline.json
+results/official/example2_helix/metrics/official_example2_pid_baseline.json
+results/official/example3_figure8/metrics/official_example3_pid_baseline.json
 ```
 
 `scripts/qa_check.py` 会阻止短时 smoke 数据误放入上述正式结果路径。
@@ -81,9 +81,9 @@ time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4
 数据文件：
 
 ```text
-results/test_reports/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
-results/raw/mworks_mcp_example1_pid_smoke.csv
-results/metrics/mworks_mcp_example1_pid_smoke.json
+results/smoke/example1_mcp/pid_baseline_smoke/logs/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
+results/smoke/example1_mcp/pid_baseline_smoke/raw/mworks_mcp_example1_pid_smoke.csv
+results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_smoke.json
 ```
 
 当前 smoke 指标用于验证计算链路：
@@ -115,7 +115,7 @@ results/metrics/mworks_mcp_example1_pid_smoke.json
 
 ## 6. 改进 PID 对比
 
-当前 `QuadrotorExperiments.Example1ImprovedPID`、`QuadrotorExperiments.Example2ImprovedPID` 和 `QuadrotorExperiments.Example3ImprovedPID` 采用 MCP 参数搜索选出的统一 PID 参数集 `pos_kp_165_att_170`：将水平位置环 `PID3/PID4.KP` 从 `1.5` 提高到 `1.65`，将姿态内环 `PID5/PID6.KD` 从 `1.414` 提高到 `1.70`，其余高度环与 yaw 环参数保持官方基线不变。搜索脚本为 `scripts/tune_improved_pid_mcp.py`，搜索摘要见 `results/test_reports/pid_tuning_summary.md`。
+当前 `QuadrotorExperiments.Example1ImprovedPID`、`QuadrotorExperiments.Example2ImprovedPID` 和 `QuadrotorExperiments.Example3ImprovedPID` 采用 MCP 参数搜索选出的统一 PID 参数集 `pos_kp_165_att_170`：将水平位置环 `PID3/PID4.KP` 从 `1.5` 提高到 `1.65`，将姿态内环 `PID5/PID6.KD` 从 `1.414` 提高到 `1.70`，其余高度环与 yaw 环参数保持官方基线不变。搜索脚本为 `scripts/tune_improved_pid_mcp.py`，搜索摘要见 `results/tuning/pid_search/summary/pid_tuning_summary.md`。
 
 候选选择原则：不用单场景最优作为正式参数，而选取在 Example1 阶梯爬升和 Example3 8 字轨迹上均能降低 RMSE 的统一参数集。`pos_kd_115_att_170` 在 Example1 上 RMSE 更低，但最大倾角达到 `0.345064 rad`，且 Example3 不如 `pos_kp_165_att_170`；因此正式模型选择后者。
 
@@ -174,15 +174,15 @@ AWFF_FullController_Sysblock
 
 说明：Sysblock 控制器文件不是单纯的截图支撑材料，而是后续控制器闭环仿真的主实现路线之一。结构截图应来自 MWORKS.Sysblock/Sysplorer 打开的实际控制器模型窗口，用于证明模块连接、端口和信号流；正式控制器仿真结论必须以 `load_file`、`check_model`、必要时 `simulate_model` 的真实 MWORKS 证据为准，不使用手绘示意图或离线脚本替代。
 
-可视化状态：`AWFF_PositionOuterLoop_Sysblock`、`AWFF_AttitudeInnerLoop_Sysblock`、`AWFF_MotorMixer_Sysblock` 和 `AWFF_FullController_Sysblock` 已补齐 `connect(...)` 对应的 `annotation(Line(...))` 图形连线注释。这样模型既保留原有逻辑连接，又能在 Sysblock/Sysplorer 画布中显示连接线，避免人工连线时出现“连接已存在但画布无可见线段”的审核问题。复测日志见 `results/logs/sysplorer_sysblock_line_annotation_check_20260511.jsonl` 与 `results/logs/sysplorer_sysblock_line_annotation_check_20260511_summary.json`。
+可视化状态：`AWFF_PositionOuterLoop_Sysblock`、`AWFF_AttitudeInnerLoop_Sysblock`、`AWFF_MotorMixer_Sysblock` 和 `AWFF_FullController_Sysblock` 已补齐 `connect(...)` 对应的 `annotation(Line(...))` 图形连线注释。这样模型既保留原有逻辑连接，又能在 Sysblock/Sysplorer 画布中显示连接线，避免人工连线时出现“连接已存在但画布无可见线段”的审核问题。复测日志见 `results/model_checks/awff_sysblock/logs/sysplorer_sysblock_line_annotation_check_20260511.jsonl` 与 `results/model_checks/awff_sysblock/logs/sysplorer_sysblock_line_annotation_check_20260511_summary.json`。
 
 当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，并完成 `AWFF_FullController_Sysblock` 组合控制器独立仿真。由于嵌套 Sysblock 在整机混合编译中暴露端口解析限制，当前整机主线使用扁平化 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop`。该主线已经完成 Example1 0-1 s、5 s、10 s、20 s 渐进验证，以及 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真，可作为当前 Sysblock 控制器仿真的主证据。
 
 当前验证状态：重新登录激活后，四个 Sysblock 控制器文件均已完成真实 Sysplorer MCP 复测：
 
 ```text
-results/test_reports/sysplorer_sysblock_recheck_20260510.jsonl
-results/test_reports/sysplorer_sysblock_recheck_20260510_summary.json
+results/model_checks/awff_sysblock/logs/sysplorer_sysblock_recheck_20260510.jsonl
+results/model_checks/awff_sysblock/logs/sysplorer_sysblock_recheck_20260510_summary.json
 ```
 
 ```text
@@ -195,8 +195,8 @@ AWFF_MotorMixer_Sysblock: load_file/check_model 通过
 组合控制器新增验证：
 
 ```text
-results/test_reports/sysplorer_awff_full_sysblock_check_20260510.jsonl
-results/test_reports/sysplorer_awff_full_sysblock_check_20260510_summary.json
+results/model_checks/awff_sysblock/logs/sysplorer_awff_full_sysblock_check_20260510.jsonl
+results/model_checks/awff_sysblock/logs/sysplorer_awff_full_sysblock_check_20260510_summary.json
 
 AWFF_FullController_Sysblock: load_file/check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行
 ```
@@ -217,31 +217,31 @@ scenarios/smoke/example1_awff_sysblock_mcp_20s.yaml
 scenarios/official/example1_awff_sysblock.yaml
 scenarios/official/example2_awff_sysblock.yaml
 scenarios/official/example3_awff_sysblock.yaml
-results/test_reports/sysplorer_example1_awff_sysblock_smoke_20260510.jsonl
-results/test_reports/sysplorer_example1_awff_sysblock_full_20260510.jsonl
-results/test_reports/sysplorer_example2_awff_sysblock_smoke_20260510.jsonl
-results/test_reports/sysplorer_example2_awff_sysblock_full_20260510.jsonl
-results/test_reports/sysplorer_example3_awff_sysblock_smoke_20260510.jsonl
-results/test_reports/sysplorer_example3_awff_sysblock_full_20260510.jsonl
-results/raw/official_example1_awff_sysblock_smoke.csv
-results/raw/official_example1_awff_sysblock.csv
-results/raw/official_example2_awff_sysblock_smoke.csv
-results/raw/official_example2_awff_sysblock.csv
-results/raw/official_example3_awff_sysblock_smoke.csv
-results/raw/official_example3_awff_sysblock.csv
-results/metrics/official_example1_awff_sysblock_smoke.json
-results/metrics/official_example1_awff_sysblock.json
-results/metrics/official_example2_awff_sysblock_smoke.json
-results/metrics/official_example2_awff_sysblock.json
-results/metrics/official_example3_awff_sysblock_smoke.json
-results/metrics/official_example3_awff_sysblock.json
+results/smoke/example1_step/awff_sysblock_smoke/logs/sysplorer_example1_awff_sysblock_smoke_20260510.jsonl
+results/official/example1_step/logs/sysplorer_example1_awff_sysblock_full_20260510.jsonl
+results/smoke/example2_helix/awff_sysblock_smoke/logs/sysplorer_example2_awff_sysblock_smoke_20260510.jsonl
+results/official/example2_helix/logs/sysplorer_example2_awff_sysblock_full_20260510.jsonl
+results/smoke/example3_figure8/awff_sysblock_smoke/logs/sysplorer_example3_awff_sysblock_smoke_20260510.jsonl
+results/official/example3_figure8/logs/sysplorer_example3_awff_sysblock_full_20260510.jsonl
+results/smoke/example1_step/awff_sysblock_smoke/raw/official_example1_awff_sysblock_smoke.csv
+results/official/example1_step/raw/official_example1_awff_sysblock.csv
+results/smoke/example2_helix/awff_sysblock_smoke/raw/official_example2_awff_sysblock_smoke.csv
+results/official/example2_helix/raw/official_example2_awff_sysblock.csv
+results/smoke/example3_figure8/awff_sysblock_smoke/raw/official_example3_awff_sysblock_smoke.csv
+results/official/example3_figure8/raw/official_example3_awff_sysblock.csv
+results/smoke/example1_step/awff_sysblock_smoke/metrics/official_example1_awff_sysblock_smoke.json
+results/official/example1_step/metrics/official_example1_awff_sysblock.json
+results/smoke/example2_helix/awff_sysblock_smoke/metrics/official_example2_awff_sysblock_smoke.json
+results/official/example2_helix/metrics/official_example2_awff_sysblock.json
+results/smoke/example3_figure8/awff_sysblock_smoke/metrics/official_example3_awff_sysblock_smoke.json
+results/official/example3_figure8/metrics/official_example3_awff_sysblock.json
 
 QuadrotorExperiments.Example1AWFFSysblockClosedLoop: check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行，50 s 输出 5001 行。
 QuadrotorExperiments.Example2AWFFSysblockClosedLoop: check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行，50 s 输出 5001 行。
 QuadrotorExperiments.Example3AWFFSysblockClosedLoop: check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行，120 s 输出 12001 行。
 ```
 
-历史失败日志 `results/logs/sysplorer_layered_sysblock_check_failed_20260510_summary.json` 和 `results/logs/sysplorer_position_axis_check_failed_20260510_summary.json` 保留为授权/登录状态异常时的诊断记录，不再代表当前模型状态。
+历史失败日志 `results/model_checks/awff_sysblock/logs/sysplorer_layered_sysblock_check_failed_20260510_summary.json` 和 `results/model_checks/awff_sysblock/logs/sysplorer_position_axis_check_failed_20260510_summary.json` 保留为授权/登录状态异常时的诊断记录，不再代表当前模型状态。
 
 Sysblock 渐进验证指标如下，均为 `source=MWORKS_MCP`：
 
@@ -442,37 +442,37 @@ results/robustness/wind_gust_example1/figures/l1_residual_sysblock/
 已生成 replay JSON：
 
 ```text
-results/replay/official_example1_pid_baseline.json
-results/replay/official_example1_improved_pid.json
-results/replay/official_example1_enhanced_pid.json
-results/replay/official_example1_awff_pid.json
-results/replay/official_example2_pid_baseline.json
-results/replay/official_example2_improved_pid.json
-results/replay/official_example3_pid_baseline.json
-results/replay/official_example3_improved_pid.json
-results/replay/official_example1_awff_sysblock.json
-results/replay/official_example2_awff_sysblock.json
-results/replay/official_example3_awff_sysblock.json
-results/replay/robust_mass20_example1_pid_baseline.json
-results/replay/robust_mass20_example1_improved_pid.json
-results/replay/robust_mass20_example1_enhanced_pid.json
-results/replay/robust_mass20_example1_awff_sysblock.json
-results/replay/robust_wind_gust_example1_pid_baseline.json
-results/replay/robust_wind_gust_example1_improved_pid.json
-results/replay/robust_wind_gust_example1_enhanced_pid.json
-results/replay/robust_wind_gust_example1_awff_sysblock.json
-results/replay/robust_rotor1_loss15_example1_pid_baseline.json
-results/replay/robust_rotor1_loss15_example1_improved_pid.json
-results/replay/robust_rotor1_loss15_example1_enhanced_pid.json
-results/replay/robust_rotor1_loss15_example1_awff_sysblock.json
-results/replay/official_example1_l1_residual_sysblock.json
-results/replay/robust_wind_gust_example1_l1_residual_sysblock.json
-results/replay/reference_official_example1.json
-results/replay/reference_official_example2.json
-results/replay/reference_official_example3.json
+results/official/example1_step/replay/official_example1_pid_baseline.json
+results/official/example1_step/replay/official_example1_improved_pid.json
+results/official/example1_step/replay/official_example1_enhanced_pid.json
+results/official/example1_step/replay/official_example1_awff_pid.json
+results/official/example2_helix/replay/official_example2_pid_baseline.json
+results/official/example2_helix/replay/official_example2_improved_pid.json
+results/official/example3_figure8/replay/official_example3_pid_baseline.json
+results/official/example3_figure8/replay/official_example3_improved_pid.json
+results/official/example1_step/replay/official_example1_awff_sysblock.json
+results/official/example2_helix/replay/official_example2_awff_sysblock.json
+results/official/example3_figure8/replay/official_example3_awff_sysblock.json
+results/robustness/mass20_example1/replay/robust_mass20_example1_pid_baseline.json
+results/robustness/mass20_example1/replay/robust_mass20_example1_improved_pid.json
+results/robustness/mass20_example1/replay/robust_mass20_example1_enhanced_pid.json
+results/robustness/mass20_example1/replay/robust_mass20_example1_awff_sysblock.json
+results/robustness/wind_gust_example1/replay/robust_wind_gust_example1_pid_baseline.json
+results/robustness/wind_gust_example1/replay/robust_wind_gust_example1_improved_pid.json
+results/robustness/wind_gust_example1/replay/robust_wind_gust_example1_enhanced_pid.json
+results/robustness/wind_gust_example1/replay/robust_wind_gust_example1_awff_sysblock.json
+results/robustness/rotor1_loss15_example1/replay/robust_rotor1_loss15_example1_pid_baseline.json
+results/robustness/rotor1_loss15_example1/replay/robust_rotor1_loss15_example1_improved_pid.json
+results/robustness/rotor1_loss15_example1/replay/robust_rotor1_loss15_example1_enhanced_pid.json
+results/robustness/rotor1_loss15_example1/replay/robust_rotor1_loss15_example1_awff_sysblock.json
+results/official/example1_step/replay/official_example1_l1_residual_sysblock.json
+results/robustness/wind_gust_example1/replay/robust_wind_gust_example1_l1_residual_sysblock.json
+results/official/example1_step/replay/reference_official_example1.json
+results/official/example2_helix/replay/reference_official_example2.json
+results/official/example3_figure8/replay/reference_official_example3.json
 ```
 
-其中 `results/replay/*.json` 来自真实 Sysplorer MCP raw CSV 或官方参考轨迹 CSV，可作为后续 Gazebo/视频展示输入；它不是在线仿真结果。
+其中 `results/{group}/{scene}/replay/*.json` 来自真实 Sysplorer MCP raw CSV 或官方参考轨迹 CSV，可作为后续 Gazebo/视频展示输入；它不是在线仿真结果。
 
 ## 11. 扩展场景状态
 
@@ -526,15 +526,15 @@ scenarios/smoke/example1_wind_gust_l1_residual_sysblock_mcp_smoke.yaml
 scenarios/official/example1_l1_residual_sysblock.yaml
 scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
 
-results/test_reports/sysplorer_example1_l1_residual_sysblock_smoke_20260510.jsonl
-results/test_reports/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_smoke_20260510.jsonl
-results/test_reports/sysplorer_example1_l1_residual_sysblock_full_20260510.jsonl
-results/test_reports/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_20260510.jsonl
+results/smoke/example1_step/l1_residual_sysblock_smoke/logs/sysplorer_example1_l1_residual_sysblock_smoke_20260510.jsonl
+results/smoke/robustness/wind_gust_example1_l1_residual_sysblock_smoke/logs/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_smoke_20260510.jsonl
+results/official/example1_step/logs/sysplorer_example1_l1_residual_sysblock_full_20260510.jsonl
+results/robustness/wind_gust_example1/logs/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_20260510.jsonl
 ```
 
 ## 12. 结论约束
 
 1. 不使用 smoke 数据做完整控制性能结论。
 2. 不使用离线脚本结果作为 MWORKS 控制性能结论。
-3. 报告中的每张图必须能追溯到 `results/raw/` 和生成脚本。
+3. 报告中的每张图必须能追溯到 `results/{group}/{scene}/raw/` 和生成脚本。
 4. 完整 baseline 与优化控制器必须使用同一场景、同一时长和同一指标脚本。

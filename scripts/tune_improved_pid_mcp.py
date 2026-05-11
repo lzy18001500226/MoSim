@@ -140,6 +140,7 @@ def render_modelica_package(path: Path, examples: list[int], candidates: list[di
 def run_candidate(example: int, candidate: dict[str, float | str], target_time: str, timeout_s: int) -> dict[str, object]:
     cid = str(candidate["id"])
     stem = f"pid_tuning_example{example}_{cid}"
+    result_base = Path("results/tuning/pid_search") / f"example{example}" / cid
     command = [
         sys.executable,
         "scripts/run_sysplorer_mcp_smoke.py",
@@ -150,13 +151,13 @@ def run_candidate(example: int, candidate: dict[str, float | str], target_time: 
         "--target-time",
         target_time,
         "--raw-output",
-        f"results/raw/{stem}.csv",
+        str(result_base / "raw" / f"{stem}.csv"),
         "--metrics-json",
-        f"results/metrics/{stem}.json",
+        str(result_base / "metrics" / f"{stem}.json"),
         "--metrics-csv",
-        f"results/metrics/{stem}.csv",
+        str(result_base / "metrics" / f"{stem}.csv"),
         "--log-output",
-        f"results/test_reports/sysplorer_{stem}_20260509.jsonl",
+        str(result_base / "logs" / f"sysplorer_{stem}_20260509.jsonl"),
         "--scene-id",
         f"pid_tuning_example{example}",
         "--controller-id",
@@ -165,7 +166,7 @@ def run_candidate(example: int, candidate: dict[str, float | str], target_time: 
         "real_sysplorer_mcp_pid_tuning",
     ]
     proc = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, timeout=timeout_s)
-    metrics_path = ROOT / f"results/metrics/{stem}.json"
+    metrics_path = ROOT / result_base / "metrics" / f"{stem}.json"
     row: dict[str, object] = {
         "example": example,
         "candidate_id": cid,
@@ -233,7 +234,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--target-time", default=None, help="Override target time, e.g. 0,20")
     parser.add_argument("--limit", type=int, default=None, help="Run only the first N candidates.")
     parser.add_argument("--timeout-s", type=int, default=600)
-    parser.add_argument("--summary-output", type=Path, default=Path("results/test_reports/pid_tuning_summary.csv"))
+    parser.add_argument("--summary-output", type=Path, default=Path("results/tuning/pid_search/summary/pid_tuning_summary.csv"))
     return parser.parse_args()
 
 

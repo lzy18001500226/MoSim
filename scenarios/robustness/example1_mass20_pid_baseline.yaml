@@ -28,11 +28,11 @@ simulation:
 
 reference:
   type: official_climb_path
-  file: results/raw/reference_official_example1.csv
+  file: results/official/example1_step/raw/reference_official_example1.csv
 
 result:
-  raw_file: results/raw/robust_mass20_example1_pid_baseline.csv
-  metrics_file: results/metrics/robust_mass20_example1_pid_baseline.json
+  raw_file: results/robustness/mass20_example1/raw/robust_mass20_example1_pid_baseline.csv
+  metrics_file: results/robustness/mass20_example1/metrics/robust_mass20_example1_pid_baseline.json
   figure_dir: results/robustness/mass20_example1/figures/pid_baseline
-  replay_file: results/replay/robust_mass20_example1_pid_baseline.json
-  mcp_log: results/test_reports/sysplorer_robust_mass20_example1_pid_baseline_20260510.jsonl
+  replay_file: results/robustness/mass20_example1/replay/robust_mass20_example1_pid_baseline.json
+  mcp_log: results/robustness/mass20_example1/logs/sysplorer_robust_mass20_example1_pid_baseline_20260510.jsonl

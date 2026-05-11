@@ -11,11 +11,11 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from run_mworks_scenario import ROOT, read_yaml
+    from run_mworks_scenario import ROOT, default_result_base, read_yaml
 except ImportError:  # pragma: no cover
     ROOT = Path(__file__).resolve().parents[1]
     sys.path.insert(0, str(ROOT / "scripts"))
-    from run_mworks_scenario import read_yaml  # type: ignore
+    from run_mworks_scenario import default_result_base, read_yaml  # type: ignore
 
 
 def expand_patterns(patterns: list[str]) -> list[Path]:
@@ -48,7 +48,7 @@ def metrics_path_for(scenario_path: Path) -> Path:
     metrics_file = str(result.get("metrics_file", ""))
     if not metrics_file:
         experiment_id = str(config.get("experiment_id", scenario_path.stem))
-        metrics_file = f"results/metrics/{experiment_id}.json"
+        metrics_file = (default_result_base(config, experiment_id) / "metrics" / f"{experiment_id}.json").as_posix()
     return ROOT / metrics_file
 
 

@@ -401,20 +401,23 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("replay_json", type=Path, nargs="?", help="Replay JSON file")
     parser.add_argument("output_html", type=Path, nargs="?", help="Output HTML file")
-    parser.add_argument("--all", action="store_true", help="Generate HTML for all results/replay/*.json files")
-    parser.add_argument("--input-dir", type=Path, default=Path("results/replay"))
-    parser.add_argument("--output-dir", type=Path, default=Path("results/replay_html"))
+    parser.add_argument("--all", action="store_true", help="Generate HTML for all replay JSON files under results/")
+    parser.add_argument("--input-dir", type=Path, default=Path("results"))
+    parser.add_argument("--output-dir", type=Path, default=None)
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     if args.all:
-        paths = sorted(args.input_dir.glob("*.json"))
+        paths = sorted(args.input_dir.glob("**/replay/*.json"))
         if not paths:
             raise FileNotFoundError(f"No replay JSON files found in {args.input_dir}")
         for replay_path in paths:
-            output_path = args.output_dir / f"{replay_path.stem}.html"
+            if args.output_dir is None:
+                output_path = replay_path.parent.parent / "replay_html" / f"{replay_path.stem}.html"
+            else:
+                output_path = args.output_dir / f"{replay_path.stem}.html"
             build_html(replay_path, output_path)
             print(f"Wrote {output_path}")
         return 0

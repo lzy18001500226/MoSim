@@ -25,11 +25,11 @@ simulation:
 
 reference:
   type: official_climb_path
-  file: results/raw/reference_official_example1.csv
+  file: results/official/example1_step/raw/reference_official_example1.csv
 
 result:
-  raw_file: results/raw/mworks_mcp_example1_enhanced_pid_smoke.csv
-  metrics_file: results/metrics/mworks_mcp_example1_enhanced_pid_smoke.json
+  raw_file: results/smoke/example1_mcp/enhanced_pid_smoke/raw/mworks_mcp_example1_enhanced_pid_smoke.csv
+  metrics_file: results/smoke/example1_mcp/enhanced_pid_smoke/metrics/mworks_mcp_example1_enhanced_pid_smoke.json
   figure_dir: results/smoke/example1_mcp/enhanced_pid_smoke/figures
-  replay_file: results/replay/mworks_mcp_example1_enhanced_pid_smoke.json
-  mcp_log: results/test_reports/sysplorer_example1_enhanced_pid_mcp_smoke_20260510.jsonl
+  replay_file: results/smoke/example1_mcp/enhanced_pid_smoke/replay/mworks_mcp_example1_enhanced_pid_smoke.json
+  mcp_log: results/smoke/example1_mcp/enhanced_pid_smoke/logs/sysplorer_example1_enhanced_pid_mcp_smoke_20260510.jsonl

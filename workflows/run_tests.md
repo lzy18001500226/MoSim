@@ -50,7 +50,7 @@ Optional script tests when Julia/Syslab is available:
 
 ```text
 scripts/calc_metrics.jl --self-test
-scripts/plot_results.jl tests/fixtures/sample_tracking.csv results/test_reports/sample_figures
+scripts/plot_results.jl tests/fixtures/sample_tracking.csv results/samples/tracking_metrics/figures
 ```
 
 Use small sample files if available.
@@ -100,5 +100,5 @@ RMSE must not worsen by more than 20% unless documented.
 Save test results to:
 
 ```text
-results/test_reports/
+results/{group}/{scene}/logs/
 ```

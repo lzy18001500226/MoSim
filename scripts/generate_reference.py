@@ -121,8 +121,8 @@ def write_replay(path: Path, scene_id: str, rows: list[dict[str, float]]) -> Non
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scene", choices=["all", *sorted(EXAMPLES)], default="all")
-    parser.add_argument("--output-dir", type=Path, default=Path("results/raw"))
-    parser.add_argument("--replay-dir", type=Path, default=Path("results/replay"))
+    parser.add_argument("--output-dir", type=Path, default=None)
+    parser.add_argument("--replay-dir", type=Path, default=None)
     return parser.parse_args()
 
 
@@ -132,8 +132,15 @@ def main() -> int:
     for scene_id in scenes:
         meta = EXAMPLES[scene_id]
         rows = generate_rows(scene_id, meta["stop_time"], meta["dt"])
-        csv_path = args.output_dir / f"reference_{scene_id}.csv"
-        replay_path = args.replay_dir / f"reference_{scene_id}.json"
+        default_base = {
+            "official_example1": Path("results/official/example1_step"),
+            "official_example2": Path("results/official/example2_helix"),
+            "official_example3": Path("results/official/example3_figure8"),
+        }[scene_id]
+        csv_dir = args.output_dir or default_base / "raw"
+        replay_dir = args.replay_dir or default_base / "replay"
+        csv_path = csv_dir / f"reference_{scene_id}.csv"
+        replay_path = replay_dir / f"reference_{scene_id}.json"
         write_csv(csv_path, rows)
         write_replay(replay_path, scene_id, rows)
         print(f"Wrote {csv_path} and {replay_path}")

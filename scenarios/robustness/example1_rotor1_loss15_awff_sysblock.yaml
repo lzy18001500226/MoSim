@@ -35,11 +35,11 @@ simulation:
 
 reference:
   type: official_climb_path
-  file: results/raw/reference_official_example1.csv
+  file: results/official/example1_step/raw/reference_official_example1.csv
 
 result:
-  raw_file: results/raw/robust_rotor1_loss15_example1_awff_sysblock.csv
-  metrics_file: results/metrics/robust_rotor1_loss15_example1_awff_sysblock.json
+  raw_file: results/robustness/rotor1_loss15_example1/raw/robust_rotor1_loss15_example1_awff_sysblock.csv
+  metrics_file: results/robustness/rotor1_loss15_example1/metrics/robust_rotor1_loss15_example1_awff_sysblock.json
   figure_dir: results/robustness/rotor1_loss15_example1/figures/awff_sysblock
-  replay_file: results/replay/robust_rotor1_loss15_example1_awff_sysblock.json
-  mcp_log: results/test_reports/sysplorer_robust_rotor1_loss15_example1_awff_sysblock_20260510.jsonl
+  replay_file: results/robustness/rotor1_loss15_example1/replay/robust_rotor1_loss15_example1_awff_sysblock.json
+  mcp_log: results/robustness/rotor1_loss15_example1/logs/sysplorer_robust_rotor1_loss15_example1_awff_sysblock_20260510.jsonl

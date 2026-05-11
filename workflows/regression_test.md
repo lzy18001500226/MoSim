@@ -15,14 +15,14 @@ Compare new metrics with previous accepted metrics.
 Store accepted metrics under:
 
 ```text
-results/metrics/baseline/
+results/{group}/{scene}/metrics/baseline/
 ```
 
 Example:
 
 ```text
-results/metrics/baseline/figure8_pid_baseline.json
-results/metrics/baseline/figure8_nmpc_indi_l1.json
+results/{group}/{scene}/metrics/baseline/figure8_pid_baseline.json
+results/{group}/{scene}/metrics/baseline/figure8_nmpc_indi_l1.json
 ```
 
 ---
@@ -46,7 +46,7 @@ saturation_ratio should not increase significantly
 Save regression report to:
 
 ```text
-results/test_reports/regression_report.md
+results/summaries/regression/regression_report.md
 ```
 
 ---
