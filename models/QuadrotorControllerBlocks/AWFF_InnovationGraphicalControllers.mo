@@ -1,10 +1,18 @@
-package AWFF_InnovationGraphicalControllers
-  "Graphical Sysblock controllers for L1, INDI, and rotor fault isolation"
+model AWFF_InnovationGraphicalControllers
+  "Openable overview for graphical L1, INDI, and rotor fault-isolation Sysblock controllers"
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
+  extends ModelWorkspace;
+  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
+    Icon(coordinateSystem(preserveAspectRatio=false),graphics={
+      Rectangle(extent={{-100,-100},{100,100}},lineColor={45,80,120},fillColor={238,246,255},fillPattern=FillPattern.Solid,radius=8),
+      Text(extent={{-90,34},{90,-2}},textString="AWFF",lineColor={20,45,75}),
+      Text(extent={{-90,-10},{90,-44}},textString="Innovation",lineColor={20,45,75}),
+      Text(extent={{-90,-52},{90,-82}},textString="L1 / INDI / Fault",lineColor={85,105,125})}),
+    Diagram(coordinateSystem(extent={{-340,-220},{340,220}},grid={2,2})));
 
   model ModelWorkspace
-    annotation(__MWORKS(hide=true,BlockSystem(blockKind=BlockKind.modelWorkspace)));
+    annotation(__MWORKS(hide=true,BlockSystem(blockKind=BlockKind.modelWorkspace),version="26.3.0"));
   end ModelWorkspace;
 
   model L1ResidualOuterLoopBlock
@@ -544,7 +552,7 @@ package AWFF_InnovationGraphicalControllers
   model AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock
     "Graphical L1 residual controller with online four-rotor fault isolation"
     extends ModelWorkspace;
-    annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(x_error,y_error,z_error,z_ref_rate,roll_mea,pitch_mea,yaw_mea,yaw_ref),Right(y,y1,y2,y3,eta_hat1,eta_hat2,eta_hat3,eta_hat4,fault_index)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
+    annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(x_error,y_error,z_error,z_ref_rate,roll_mea,pitch_mea,yaw_mea,yaw_ref),Right(y,y1,y2,y3,eta_hat1,eta_hat2,eta_hat3,eta_hat4,fault_index)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.02),SysblockVersion="1.0"),
       Icon(coordinateSystem(preserveAspectRatio=false)),Diagram(coordinateSystem(extent={{-340,-360},{320,220}},grid={2,2})));
 
     SysplorerEmbeddedCoder.Port.Inport x_error annotation(Placement(transformation(origin={-320,180},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
@@ -600,4 +608,9 @@ package AWFF_InnovationGraphicalControllers
     connect(fault_isolation.eta_hat4,eta_hat4) annotation(Line(points={{46,-176},{236,-176},{236,-295},{290,-295}},color={0,0,0}));
     connect(fault_isolation.fault_index,fault_index) annotation(Line(points={{46,-189},{228,-189},{228,-330},{290,-330}},color={0,0,0}));
   end AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock;
+
+  AWFF_L1ResidualControllerGraphical_Sysblock l1_residual_overview annotation(Placement(transformation(origin={-170,80},extent={{-70,-45},{70,45}})));
+  AWFF_INDIControllerGraphical_Sysblock l1_indi_overview annotation(Placement(transformation(origin={170,80},extent={{-70,-45},{70,45}})));
+  AWFF_L1FaultAllocationControllerGraphical_Sysblock known_fault_allocation_overview annotation(Placement(transformation(origin={-170,-100},extent={{-70,-45},{70,45}})));
+  AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock online_fault_isolation_overview annotation(Placement(transformation(origin={170,-100},extent={{-70,-45},{70,45}})));
 end AWFF_InnovationGraphicalControllers;

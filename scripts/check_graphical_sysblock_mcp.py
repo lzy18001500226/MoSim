@@ -57,6 +57,11 @@ MODELS = [
 
 INNOVATION_MODELS = [
     {
+        "model_name": "AWFF_InnovationGraphicalControllers",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "l1_residual_overview.y",
+    },
+    {
         "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock",
         "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "y",
