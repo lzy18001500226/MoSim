@@ -46,6 +46,7 @@ scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml  Sysblock L1 质�
 scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml  Sysblock L1 横向阵风消融
 scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml  Sysblock L1 旋翼退化消融
 scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml  Sysblock L1 + 已知效率控制分配补偿
+scenarios/robustness/example1_rotor1_loss15_l1_online_fault_allocation_sysblock.yaml  Sysblock L1 + 在线 eta_hat 估计控制分配补偿
 scenarios/smoke/example1_pid_mcp_smoke.yaml    0-1 s MCP 链路烟雾测试
 scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml  0-1 s Sysblock 整机闭环烟雾测试
 ```
@@ -101,8 +102,8 @@ P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP
 ```text
 Sysplorer/Modelica 真实仿真：官方 baseline、Improved PID、Enhanced PID、AWFF PID、质量/风扰/旋翼退化消融已完成多组证据。
 Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/simulate_model/result_manager；位置环、姿态环、电机分配、三层组合控制器和单层扁平图形化控制器已通过真实 MCP load_file/check_model/simulate_model。当前 Sysplorer 编译器不支持图形化 Sysblock 控制器作为 Modelica 整机子组件时的内部多输入端口解析，因此官方整机性能证据使用等价 `AWFF_FullControllerEquation_Sysblock` 接入 QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop，并已完成 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真。
-P1 创新控制器证据：AWFF_L1ResidualControllerEquation_Sysblock 已覆盖 Example1、8 字形、质量 +20%、横向阵风和旋翼退化真实 Sysplorer MCP 仿真；其中 Example1、8 字形、质量 +20% 和横向阵风均通过质量门。已知效率退化控制分配补偿 `AWFF_L1FaultAllocationControllerEquation_Sysblock` 在 1 号旋翼 85% 场景中通过质量门，RMSE 相比 AWFF Sysblock 降低 33.793%。
-后续优先级：补 eta 在线估计/故障检测，形成从检测到控制分配重构的完整 P1-B 容错闭环；并启动 INDI 或线性 MPC 外环最小可运行模型。
+P1 创新控制器证据：AWFF_L1ResidualControllerEquation_Sysblock 已覆盖 Example1、8 字形、质量 +20%、横向阵风和旋翼退化真实 Sysplorer MCP 仿真；其中 Example1、8 字形、质量 +20% 和横向阵风均通过质量门。已知效率退化控制分配补偿 `AWFF_L1FaultAllocationControllerEquation_Sysblock` 在 1 号旋翼 85% 场景中通过质量门，RMSE 相比 AWFF Sysblock 降低 33.793%。在线效率估计补偿 `AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock` 已输出 `eta_hat` 诊断列并通过质量门，RMSE 相比 AWFF Sysblock 降低 29.363%，`eta_hat` 末值约 0.904。
+后续优先级：把当前单旋翼在线估计扩展为多旋翼故障隔离和 eta 估计矩阵，并启动 INDI 或线性 MPC 外环最小可运行模型。
 ```
 
 ## QA 检查

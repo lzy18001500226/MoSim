@@ -113,6 +113,7 @@ CONTROLLER_CONFIGS = {
     "awff_sysblock": "controllers/awff_sysblock/default.yaml",
     "l1_residual_sysblock": "controllers/l1_residual_sysblock/default.yaml",
     "l1_fault_allocation_sysblock": "controllers/l1_fault_allocation_sysblock/default.yaml",
+    "l1_online_fault_allocation_sysblock": "controllers/l1_online_fault_allocation_sysblock/default.yaml",
     "nmpc_indi_l1": "controllers/nmpc_indi_l1/default.yaml",
 }
 

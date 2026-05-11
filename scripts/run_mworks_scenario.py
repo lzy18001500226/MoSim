@@ -184,6 +184,12 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
         "--evidence-level",
         args.evidence_level or default_evidence_level,
     ]
+    extra_variables = result.get("extra_variables", {})
+    if extra_variables:
+        if not isinstance(extra_variables, dict):
+            raise ValueError(f"Scenario result.extra_variables must be a mapping: {args.scenario}")
+        for alias, model_var in extra_variables.items():
+            command.extend(["--extra-variable", f"{alias}={model_var}"])
     for extra_model_file in extra_model_files:
         command.extend(["--extra-model-file", extra_model_file])
     if args.shutdown_session:

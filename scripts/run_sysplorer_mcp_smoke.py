@@ -48,6 +48,22 @@ DEFAULT_VARIABLES = {
 }
 
 
+def parse_extra_variables(items: list[str]) -> dict[str, str]:
+    variables: dict[str, str] = {}
+    for item in items:
+        if "=" not in item:
+            raise ValueError(f"Extra variable must use alias=model.variable syntax: {item}")
+        alias, model_var = item.split("=", 1)
+        alias = alias.strip()
+        model_var = model_var.strip()
+        if not alias or not model_var:
+            raise ValueError(f"Extra variable must use alias=model.variable syntax: {item}")
+        if alias in DEFAULT_VARIABLES or alias in variables:
+            raise ValueError(f"Duplicate result variable alias: {alias}")
+        variables[alias] = model_var
+    return variables
+
+
 class JsonlMcpClient:
     """Minimal JSON-lines MCP client for the local Sysplorer wrapper."""
 
@@ -213,6 +229,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--controller-id", default="pid_baseline")
     parser.add_argument("--evidence-level", default="real_sysplorer_mcp_smoke")
     parser.add_argument(
+        "--extra-variable",
+        action="append",
+        default=[],
+        help="Additional result variable as alias=model.variable. Can be repeated.",
+    )
+    parser.add_argument(
         "--shutdown-session",
         action="store_true",
         help="Explicitly request session_manager shutdown after saving outputs. Default keeps GUI reusable.",
@@ -277,6 +299,8 @@ def run_mcp_simulation(
         client.set_log_path(active_log_output)
 
     target_time = parse_target_time(args.target_time)
+    variables = dict(DEFAULT_VARIABLES)
+    variables.update(parse_extra_variables(args.extra_variable))
     success = False
     try:
         open_result = client.call_tool(
@@ -333,14 +357,14 @@ def run_mcp_simulation(
             {
                 "action": "get_vars_values",
                 "model_name": args.model_name,
-                "var_names": list(DEFAULT_VARIABLES.values()),
+                "var_names": list(variables.values()),
             },
             timeout_s=240,
         )
         if not read_result.get("ok"):
             raise RuntimeError(f"Result read failed: {read_result}")
 
-        write_csv(read_result["data"], DEFAULT_VARIABLES, args.raw_output)
+        write_csv(read_result["data"], variables, args.raw_output)
         write_metrics(
             args.raw_output,
             args.metrics_json,
