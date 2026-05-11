@@ -481,6 +481,8 @@ Prefer task-specific prompts with:
 验收标准
 ```
 
+After every MWORKS simulation, run or verify `scripts/evaluate_result_quality.py --write-metrics`. Treat `check_model ok` / `simulate_model ok` as execution evidence only. If `quality_status=needs_iteration`, keep the evidence, update the controller/scenario, and rerun before claiming the work is complete.
+
 ---
 
 ### Git / Filesystem / MinerU Prompts

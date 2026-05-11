@@ -50,5 +50,23 @@
   "fault_tolerance_score": 35.0,
   "total_health_score": 60.28122585642823,
   "source": "MWORKS_MCP",
-  "evidence_level": "real_sysplorer_mcp_sysblock_closed_loop_full"
+  "evidence_level": "real_sysplorer_mcp_sysblock_closed_loop_full",
+  "quality_checked_at": "2026-05-11T11:53:34",
+  "quality_experiment_id": "official_example3_awff_sysblock",
+  "quality_scene_id": "official_example3",
+  "quality_controller_id": "awff_sysblock",
+  "quality_status": "pass",
+  "quality_pass": true,
+  "quality_issues": [],
+  "quality_recommendations": [
+    "result meets current quality gate; it can be used as evidence if the report claim matches the scene"
+  ],
+  "figure8_xy_rmse_m": 0.11164656719291965,
+  "figure8_corr_x": 0.9999817264966017,
+  "figure8_corr_y": 0.9999408071820105,
+  "figure8_x_crossings": 2.0,
+  "figure8_act_x_range_m": 20.04881816538247,
+  "figure8_act_y_range_m": 20.19572787454615,
+  "quality_baseline_experiment": "official_example3_pid_baseline",
+  "quality_rmse_improvement_pct": 3.274260822624617
 }

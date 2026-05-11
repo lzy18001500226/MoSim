@@ -82,6 +82,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/summarize_experiments.py",
     "scripts/run_mworks_scenario.py",
     "scripts/run_mworks_batch.py",
+    "scripts/evaluate_result_quality.py",
 ]
 
 RECOMMENDED_TESTS = [
@@ -89,6 +90,7 @@ RECOMMENDED_TESTS = [
     "tests/test_summary.py",
     "tests/test_run_mworks_scenario.py",
     "tests/test_run_mworks_batch.py",
+    "tests/test_quality_gate.py",
 ]
 
 OFFICIAL_MODELS = [

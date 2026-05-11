@@ -238,12 +238,44 @@ def run_postprocess(config: dict[str, Any]) -> None:
         )
 
 
+def run_quality_gate(args: argparse.Namespace) -> int:
+    command = [
+        sys.executable,
+        "scripts/evaluate_result_quality.py",
+        str(args.scenario),
+        "--write-metrics",
+        "--min-rmse-improvement-pct",
+        f"{args.min_rmse_improvement_pct:g}",
+    ]
+    print("Quality gate:", " ".join(command), flush=True)
+    proc = subprocess.run(command, cwd=ROOT)
+    if proc.returncode and args.allow_needs_iteration:
+        print(
+            f"Quality gate requested iteration but continuing because --allow-needs-iteration is set: {args.scenario}",
+            flush=True,
+        )
+        return 0
+    return proc.returncode
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("scenario", type=Path, help="Scenario YAML path")
     parser.add_argument("--stop-time", type=float, default=None, help="Override scenario stop_time_s")
     parser.add_argument("--evidence-level", default=None, help="Override metrics evidence_level")
     parser.add_argument("--no-postprocess", action="store_true", help="Skip figure and replay generation")
+    parser.add_argument("--no-quality-gate", action="store_true", help="Skip automatic result quality evaluation")
+    parser.add_argument(
+        "--allow-needs-iteration",
+        action="store_true",
+        help="Keep exit code 0 when the quality gate marks the result as needs_iteration",
+    )
+    parser.add_argument(
+        "--min-rmse-improvement-pct",
+        type=float,
+        default=0.5,
+        help="Minimum RMSE improvement required for scenarios with controller.baseline_experiment",
+    )
     parser.add_argument("--shutdown-session", action="store_true", help="Request Sysplorer session shutdown after the run")
     return parser.parse_args()
 
@@ -256,6 +288,11 @@ def main() -> int:
     subprocess.run(command, cwd=ROOT, check=True)
     if not args.no_postprocess:
         run_postprocess(config)
+    if not args.no_quality_gate:
+        quality_returncode = run_quality_gate(args)
+        if quality_returncode:
+            print(f"Scenario evidence needs iteration: {args.scenario}", flush=True)
+            return quality_returncode
     print(f"Scenario evidence complete: {args.scenario}")
     return 0
 

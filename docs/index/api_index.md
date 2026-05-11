@@ -124,6 +124,7 @@ map_matlab_functions_to_julia
 | `scripts/scan_mworks_docs.py` | Scan a local MWORKS resource package with PDF preview review | optional `--source` directory | `docs/mworks/scan/` indexes |
 | `scripts/convert_mworks_pdfs.py` | Convert selected PDFs via MinerU or PyMuPDF fallback | selected local PDFs | `docs/mworks/converted/` Markdown and `_images/` directories |
 | `scripts/calc_metrics.jl` | Compute standard tracking/control metrics | `results/{group}/{scene}/{experiment}/raw/*.csv` | `results/{group}/{scene}/{experiment}/metrics/*.json` and `.csv` |
+| `scripts/evaluate_result_quality.py` | Decide whether a completed scenario passes, is smoke-only, or needs iteration | scenario YAML and existing metrics/raw files | `quality_status` fields written into metrics JSON |
 | `scripts/plot_results.jl` | Write figure manifest for report assets | raw CSV and figure dir | `figure_manifest.md` |
 
 ## 6. MinerU Precise Parsing API

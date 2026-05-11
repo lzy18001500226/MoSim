@@ -46,8 +46,9 @@ simulation evidence bundle unless the official model is run through MWORKS.
 4. Read required variables through `result_manager`.
 5. Export raw CSV under `results/{group}/{scene}/{experiment}/raw/`.
 6. Compute metrics under `results/{group}/{scene}/{experiment}/metrics/` or `results/{group}/{scene}/{experiment}/logs/`.
-7. Generate figures or replay assets under `results/{group}/{scene}/{experiment}/figures/`, `results/{group}/{scene}/{experiment}/replay/`, `results/{group}/{scene}/{experiment}/replay_html/`, or `docs/figures/`.
-8. Update `docs/simulation_report.md` when the result supports a report claim.
+7. Run `scripts/evaluate_result_quality.py <scenario> --write-metrics`.
+8. Generate figures or replay assets under `results/{group}/{scene}/{experiment}/figures/`, `results/{group}/{scene}/{experiment}/replay/`, `results/{group}/{scene}/{experiment}/replay_html/`, or `docs/figures/`.
+9. Update `docs/simulation_report.md` only when `quality_status=pass` or when the limitation is explicitly documented.
 
 Project entrypoints:
 
@@ -82,8 +83,16 @@ Pass if:
 1. Evidence source is explicitly labeled.
 2. Raw result has `time` and key state/reference columns.
 3. Metrics can be reproduced from the raw result.
-4. Claims in docs do not mix offline demo evidence with real MWORKS simulation evidence.
-5. Git diff contains no large temporary result dumps.
+4. `quality_status=pass` for full-performance claims.
+5. `quality_status=smoke_only` is used only for automation-chain validation.
+6. `quality_status=needs_iteration` is preserved as evidence but not treated as completed controller performance.
+7. Claims in docs do not mix offline demo evidence with real MWORKS simulation evidence.
+8. Git diff contains no large temporary result dumps.
+
+`check_model ok` and `simulate_model ok` mean the run executed. They do not mean
+the controller is good. If the quality gate reports `needs_iteration`, keep the
+result, inspect the failed metric, retune or revise the controller, then rerun the
+same scenario until the result passes or the limitation is documented.
 
 ## Failure Handling
 

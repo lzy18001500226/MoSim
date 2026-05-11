@@ -36,8 +36,27 @@ def test_run_mworks_batch_dry_run_regression() -> None:
         raise AssertionError(output)
 
 
+def test_run_mworks_batch_dry_run_quality_args() -> None:
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "scripts/run_mworks_batch.py",
+            "--dry-run",
+            "scenarios/smoke/example1_pid_mcp_smoke.yaml",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    output = proc.stdout
+    if "--min-rmse-improvement-pct 0.5" not in output:
+        raise AssertionError(output)
+
+
 def main() -> int:
     test_run_mworks_batch_dry_run_regression()
+    test_run_mworks_batch_dry_run_quality_args()
     print("[OK] run_mworks_batch dry-run regression")
     return 0
 

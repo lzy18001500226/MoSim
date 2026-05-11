@@ -296,6 +296,14 @@ python3 scripts/run_mworks_scenario.py scenarios/official/example1_improved_pid.
 python3 scripts/run_mworks_batch.py --skip-existing scenarios/official/*.yaml
 ```
 
+`run_mworks_scenario.py` 和 `run_mworks_batch.py` 默认会在仿真、后处理之后执行质量门禁：
+
+```bash
+python3 scripts/evaluate_result_quality.py scenarios/official/example3_awff_sysblock.yaml --write-metrics
+```
+
+`quality_status=pass` 才能作为完整性能结论；`quality_status=smoke_only` 只能证明链路可用；`quality_status=needs_iteration` 表示需要保留当前证据并继续调控制器或场景。MWORKS 没有报错只代表仿真执行完成，不代表轨迹形状、RMSE、健康分或消融对比达标。
+
 如果只想检查批量计划而不启动 MWORKS/MCP 仿真：
 
 ```bash
@@ -371,6 +379,7 @@ Design/*.md 明确接口和验收
 → simulate_model
 → result_manager 导出 raw CSV
 → calc_metrics.py 计算指标
+→ evaluate_result_quality.py 写入 quality_status
 → plot_results.py / generate_replay_from_raw.py 生成图表和回放
 → summarize_experiments.py 纳入真实证据汇总
 ```

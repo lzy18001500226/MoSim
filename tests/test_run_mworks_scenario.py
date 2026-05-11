@@ -25,6 +25,9 @@ class Args:
     stop_time = None
     evidence_level = None
     shutdown_session = False
+    no_quality_gate = False
+    allow_needs_iteration = False
+    min_rmse_improvement_pct = 0.5
 
 
 def test_run_mworks_scenario_command_regression() -> None:

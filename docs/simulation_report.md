@@ -8,6 +8,8 @@
 
 证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表包含真实 Sysplorer MCP / Modelica 派生模型闭环仿真，以及 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 的全时长 Sysblock 控制器闭环证据。Sysblock 当前已完成 AWFF PID 高度环最小 demo、三段分层控制器、组合控制器 `AWFF_FullController_Sysblock` 的真实 MCP 验证，并完成 Example1 50 s、Example2 50 s、Example3 120 s 整机仿真；P1 创新控制器方向已完成 `AWFF_L1ResidualControllerEquation_Sysblock` 在 Example1 与横向阵风 Example1 中的首轮真实 MCP 消融。
 
+质量判定规则：`check_model ok` 和 `simulate_model ok` 只说明模型可以执行；完整性能结论还必须通过 `scripts/evaluate_result_quality.py` 写入的 `quality_status`。`pass` 可支撑报告结论，`smoke_only` 只证明链路可用，`needs_iteration` 必须继续调控制器或明确写为未完成限制。当前 Example2 AWFF Sysblock 虽然稳定且姿态/平滑性改善，但 RMSE 相比 baseline 略高 `0.043%`，因此按质量门禁属于 `needs_iteration`；旋翼退化场景健康分低于阈值，也应作为后续控制分配/故障补偿迭代对象。
+
 当前已完成的可复现资产：
 
 ```text
@@ -273,7 +275,7 @@ Sysblock 渐进验证指标如下，均为 `source=MWORKS_MCP`：
 
 结论：AWFF PID 相比官方 PID 的 RMSE 降低 `5.573%`，最大位置误差降低 `9.350%`，稳态误差降低 `7.382%`，最大倾角降低 `22.699%`；相比 Enhanced PID，RMSE 继续降低 `2.380%`，最大位置误差降低 `4.315%`，稳态误差和最大倾角基本持平。该结果说明独立控制器本体替换已经跑通，并且比“参数化官方 PID”有进一步轨迹精度收益。
 
-Sysblock 结论：`awff_sysblock` 在 Example1 50 s 全时长真实 Sysplorer MCP 仿真中达到与 `enhanced_pid` 基本一致的性能，并略高于其综合健康分。相比官方 PID，Sysblock 控制器 RMSE 降低 `3.283%`，稳态误差降低 `7.459%`，最大倾角降低 `22.723%`，控制平滑性降低 `88.137%`。在 Example2 螺旋爬升中，RMSE 与官方 PID 基本持平并略高 `0.043%`，但稳态误差降低 `9.495%`、最大倾角降低 `11.112%`、控制平滑性降低 `48.962%`。在 Example3 8字轨迹中，RMSE 降低 `3.274%`、稳态误差降低 `9.193%`、最大倾角降低 `19.916%`、控制平滑性降低 `62.527%`。该结果可以作为“MWORKS.Sysblock 控制器仿真为主”的完整官方场景证据；鲁棒场景结论见第 9 节。
+Sysblock 结论：`awff_sysblock` 在 Example1 50 s 全时长真实 Sysplorer MCP 仿真中达到与 `enhanced_pid` 基本一致的性能，并略高于其综合健康分。相比官方 PID，Sysblock 控制器 RMSE 降低 `3.283%`，稳态误差降低 `7.459%`，最大倾角降低 `22.723%`，控制平滑性降低 `88.137%`。在 Example3 8字轨迹中，RMSE 降低 `3.274%`、稳态误差降低 `9.193%`、最大倾角降低 `19.916%`、控制平滑性降低 `62.527%`，并通过 8 字形状检查。Example2 螺旋爬升中，RMSE 与官方 PID 基本持平并略高 `0.043%`，但稳态误差降低 `9.495%`、最大倾角降低 `11.112%`、控制平滑性降低 `48.962%`；该条证据保留为已执行的真实 Sysblock 仿真，但不作为“完成优化”的主结论，后续需要针对螺旋轨迹继续调参或补横向前馈/残差补偿。鲁棒场景结论见第 9 节。
 
 指标口径更新：当前 metrics JSON/CSV 已补充 `sample_rate_hz`、`control_energy_per_second`、`control_smoothness_per_second`、`constraint_violation_rate_hz`、`altitude_violation_rate_hz` 和 `tilt_violation_rate_hz`。当历史结果和新结果导出采样率不同，例如 `25001` 行与 `5001` 行并存时，报告优先比较 RMSE、稳态误差、最大倾角、恢复时间和每秒归一化指标；由采样点数量直接决定的原始 `constraint_violation_count` 只作为同采样率结果内的辅助信息。
 
@@ -381,7 +383,7 @@ scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
 | 1号旋翼效率85% Example1 | enhanced_pid | 0.368251 | +6.087% | 0.265416 | 0.174661 | +17.335% | 1.300 | 265.211626 | 36.050556 |
 | 1号旋翼效率85% Example1 | awff_sysblock | 0.369058 | +5.881% | 0.265419 | 0.174661 | +17.335% | 1.300 | 264.978146 | 36.043895 |
 
-消融结论：单旋翼效率退化场景明显比质量摄动和横向阵风更困难，baseline 的 RMSE 增至 `0.392120 m`，健康分降至 `35.625782`。Improved PID 可降低 RMSE，但最大倾角增加 `20.231%`；AWFF Sysblock 相比 baseline 的 RMSE 降低 `5.881%`，稳态误差降低 `7.482%`，最大倾角降低 `17.335%`，约束违规率从 `1.340 Hz` 降到 `1.300 Hz`，`control_smoothness_per_second` 降低 `87.775%`。该场景可作为 Sysblock 控制器执行器退化鲁棒性证据，但报告中应明确：当前控制器没有故障检测与控制分配重构逻辑，仍属于固定控制器在退化工况下的抗扰表现验证。
+消融结论：单旋翼效率退化场景明显比质量摄动和横向阵风更困难，baseline 的 RMSE 增至 `0.392120 m`，健康分降至 `35.625782`。Improved PID 可降低 RMSE，但最大倾角增加 `20.231%`；AWFF Sysblock 相比 baseline 的 RMSE 降低 `5.881%`，稳态误差降低 `7.482%`，最大倾角降低 `17.335%`，约束违规率从 `1.340 Hz` 降到 `1.300 Hz`，`control_smoothness_per_second` 降低 `87.775%`。该场景可作为“已执行真实退化工况消融”的证据，但质量门禁会将其标为 `needs_iteration`：当前健康分仍低，且控制器没有故障检测与控制分配重构逻辑。后续应优先补旋翼效率估计、控制分配重构或故障容错限幅，再重新复测。
 
 ### 9.4 L1-inspired 残差补偿控制器首轮消融
 

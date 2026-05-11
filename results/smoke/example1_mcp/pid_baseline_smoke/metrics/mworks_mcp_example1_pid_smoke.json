@@ -50,5 +50,15 @@
   "fault_tolerance_score": 35.0,
   "total_health_score": 28.42309025526639,
   "source": "MWORKS_MCP",
-  "evidence_level": "real_sysplorer_mcp_smoke"
+  "evidence_level": "real_sysplorer_mcp_smoke",
+  "quality_checked_at": "2026-05-11T11:53:35",
+  "quality_experiment_id": "mworks_mcp_example1_pid_smoke",
+  "quality_scene_id": "mworks_mcp_example1",
+  "quality_controller_id": "pid_baseline",
+  "quality_status": "smoke_only",
+  "quality_pass": true,
+  "quality_issues": [],
+  "quality_recommendations": [
+    "smoke evidence only validates the automation chain; run full scenario before making performance claims"
+  ]
 }

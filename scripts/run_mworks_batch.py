@@ -56,9 +56,25 @@ def scenario_command(scenario_path: Path, args: argparse.Namespace) -> list[str]
     command = [sys.executable, "scripts/run_mworks_scenario.py", str(scenario_path)]
     if args.no_postprocess:
         command.append("--no-postprocess")
+    if args.no_quality_gate:
+        command.append("--no-quality-gate")
+    if args.allow_needs_iteration:
+        command.append("--allow-needs-iteration")
+    command.extend(["--min-rmse-improvement-pct", f"{args.min_rmse_improvement_pct:g}"])
     if args.shutdown_session:
         command.append("--shutdown-session")
     return command
+
+
+def quality_command(scenario_path: Path, args: argparse.Namespace) -> list[str]:
+    return [
+        sys.executable,
+        "scripts/evaluate_result_quality.py",
+        str(scenario_path),
+        "--write-metrics",
+        "--min-rmse-improvement-pct",
+        f"{args.min_rmse_improvement_pct:g}",
+    ]
 
 
 def parse_args() -> argparse.Namespace:
@@ -73,6 +89,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--skip-existing", action="store_true", help="Skip scenarios whose metrics JSON already exists")
     parser.add_argument("--continue-on-failure", action="store_true", help="Continue after a failed scenario and report failures")
     parser.add_argument("--no-postprocess", action="store_true", help="Skip figure and replay generation")
+    parser.add_argument("--no-quality-gate", action="store_true", help="Skip automatic result quality evaluation")
+    parser.add_argument(
+        "--allow-needs-iteration",
+        action="store_true",
+        help="Keep batch exit code 0 when a quality gate marks a scenario as needs_iteration",
+    )
+    parser.add_argument(
+        "--min-rmse-improvement-pct",
+        type=float,
+        default=0.5,
+        help="Minimum RMSE improvement required for scenarios with controller.baseline_experiment",
+    )
     parser.add_argument("--shutdown-session", action="store_true", help="Request Sysplorer session shutdown after each scenario")
     return parser.parse_args()
 
@@ -88,6 +116,14 @@ def main() -> int:
         if args.skip_existing and metrics_path.exists():
             skipped.append(scenario_path)
             print(f"[SKIP] {scenario_path} -> {metrics_path}")
+            if not args.dry_run and not args.no_quality_gate:
+                proc = subprocess.run(quality_command(scenario_path, args), cwd=ROOT)
+                if proc.returncode != 0:
+                    print(f"[ITERATE] skipped existing scenario failed quality gate: {scenario_path}", flush=True)
+                    if not args.allow_needs_iteration:
+                        failures.append((scenario_path, proc.returncode))
+                    if not args.continue_on_failure and not args.allow_needs_iteration:
+                        break
             continue
 
         command = scenario_command(scenario_path, args)

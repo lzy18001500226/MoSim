@@ -50,5 +50,20 @@
   "fault_tolerance_score": 35.0,
   "total_health_score": 47.79304267084109,
   "source": "MWORKS_MCP",
-  "evidence_level": "real_sysplorer_mcp_sysblock_closed_loop_full"
+  "evidence_level": "real_sysplorer_mcp_sysblock_closed_loop_full",
+  "quality_checked_at": "2026-05-11T11:53:34",
+  "quality_experiment_id": "official_example2_awff_sysblock",
+  "quality_scene_id": "official_example2",
+  "quality_controller_id": "awff_sysblock",
+  "quality_status": "needs_iteration",
+  "quality_pass": false,
+  "quality_issues": [
+    "RMSE improvement -0.043% vs official_example2_pid_baseline below 0.500%"
+  ],
+  "quality_recommendations": [
+    "retune controller or revise the control structure before marking this scenario complete",
+    "preserve current evidence, update controller/scenario, rerun, and compare against this result"
+  ],
+  "quality_baseline_experiment": "official_example2_pid_baseline",
+  "quality_rmse_improvement_pct": -0.04332140964210633
 }

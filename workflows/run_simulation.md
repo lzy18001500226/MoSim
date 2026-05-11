@@ -295,6 +295,34 @@ If direct CSV export is unavailable, save the native result file and document th
 
 ---
 
+### Step 9: Evaluate result quality
+
+Run the quality gate after metrics are available:
+
+```bash
+python3 scripts/evaluate_result_quality.py scenarios/official/example3_awff_sysblock.yaml --write-metrics
+```
+
+The scenario runner does this automatically unless `--no-quality-gate` is set:
+
+```bash
+python3 scripts/run_mworks_scenario.py scenarios/official/example3_awff_sysblock.yaml
+```
+
+Interpretation:
+
+```text
+quality_status=pass             result can support the stated performance claim
+quality_status=smoke_only       chain check only; do not use for full performance
+quality_status=needs_iteration  preserve evidence, revise controller/scenario, rerun
+```
+
+Execution success is not enough. A result with worse RMSE than its baseline,
+failed 8 字形 shape check, excessive error, low health score, or missing duration
+must be treated as unfinished even when MWORKS reports no runtime error.
+
+---
+
 ### Step 8.1: Reference/Replay Fallback
 
 If MWORKS or Sysplorer MCP is unavailable, do not fabricate simulated states.
