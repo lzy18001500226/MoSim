@@ -68,49 +68,49 @@ model AWFF_FullController_Sysblock "MWORKS.Sysblock composed AWFF PID controller
     end ModelWorkspace;
 
   equation
-    connect(x_error, x_kp.u)
+    connect(x_error, x_kp.u) 
       annotation(Line(origin={-205,120},points={{-25,-10},{23,10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(x_error, x_kd.u)
+    connect(x_error, x_kd.u) 
       annotation(Line(origin={-205,100},points={{-25,10},{23,-10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(x_kp.y, x_sum.u1)
+    connect(x_kp.y, x_sum.u1) 
       annotation(Line(origin={-135,120},points={{-23,10},{23,-10}},color={0,0,0}));
-    connect(x_kd.y, x_sum.u2)
+    connect(x_kd.y, x_sum.u2) 
       annotation(Line(origin={-135,100},points={{-23,-10},{23,10}},color={0,0,0}));
-    connect(x_sum.y, x_scale.u)
+    connect(x_sum.y, x_scale.u) 
       annotation(Line(origin={-65,110},points={{-23,0},{23,0}},color={0,0,0}));
-    connect(x_scale.y, pitch_ref)
+    connect(x_scale.y, pitch_ref) 
       annotation(Line(origin={60,110},points={{-78,0},{80,0}},color={0,0,0}));
 
-    connect(y_error, y_kp.u)
+    connect(y_error, y_kp.u) 
       annotation(Line(origin={-205,50},points={{-25,-10},{23,10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(y_error, y_kd.u)
+    connect(y_error, y_kd.u) 
       annotation(Line(origin={-205,30},points={{-25,10},{23,-10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(y_kp.y, y_sum.u1)
+    connect(y_kp.y, y_sum.u1) 
       annotation(Line(origin={-135,50},points={{-23,10},{23,-10}},color={0,0,0}));
-    connect(y_kd.y, y_sum.u2)
+    connect(y_kd.y, y_sum.u2) 
       annotation(Line(origin={-135,30},points={{-23,-10},{23,10}},color={0,0,0}));
-    connect(y_sum.y, y_scale.u)
+    connect(y_sum.y, y_scale.u) 
       annotation(Line(origin={-65,40},points={{-23,0},{23,0}},color={0,0,0}));
-    connect(y_scale.y, roll_ref)
+    connect(y_scale.y, roll_ref) 
       annotation(Line(origin={60,40},points={{-78,0},{80,0}},color={0,0,0}));
 
-    connect(z_error, z_kp.u)
+    connect(z_error, z_kp.u) 
       annotation(Line(origin={-205,-30},points={{-25,-10},{23,10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(z_error, z_ki.u1)
+    connect(z_error, z_ki.u1) 
       annotation(Line(origin={-205,-50},points={{-25,10},{23,-10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(z_error, z_kd.u)
+    connect(z_error, z_kd.u) 
       annotation(Line(origin={-205,-70},points={{-25,30},{23,-30}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(z_ref_rate, z_ff.u)
+    connect(z_ref_rate, z_ff.u) 
       annotation(Line(origin={-205,-130},points={{-25,10},{23,-10}},color={0,0,0}));
-    connect(z_kp.y, z_sum.u1)
+    connect(z_kp.y, z_sum.u1) 
       annotation(Line(origin={-125,-35},points={{-33,15},{33,-18}},color={0,0,0}));
-    connect(z_ki.y, z_sum.u2)
+    connect(z_ki.y, z_sum.u2) 
       annotation(Line(origin={-125,-60},points={{-33,0},{33,0}},color={0,0,0}));
-    connect(z_kd.y, z_sum.u3)
+    connect(z_kd.y, z_sum.u3) 
       annotation(Line(origin={-125,-85},points={{-33,-15},{33,18}},color={0,0,0}));
-    connect(z_ff.y, z_sum.u4)
+    connect(z_ff.y, z_sum.u4) 
       annotation(Line(origin={-125,-110},points={{-33,-30},{33,45}},color={0,0,0}));
-    connect(z_sum.y, thrust_ref)
+    connect(z_sum.y, thrust_ref) 
       annotation(Line(origin={35,-60},points={{-103,0},{105,0}},color={0,0,0}));
   end AWFF_PositionOuterLoop_Sysblock;
   model AWFF_AttitudeInnerLoop_Sysblock "MWORKS.Sysblock AWFF PID attitude inner-loop structure"
@@ -155,43 +155,43 @@ model AWFF_FullController_Sysblock "MWORKS.Sysblock composed AWFF PID controller
     end ModelWorkspace;
 
   equation
-    connect(roll_ref, roll_error.u1)
+    connect(roll_ref, roll_error.u1) 
       annotation(Line(origin={-205,95},points={{-25,15},{23,-15}},color={0,0,0}));
-    connect(roll_mea, roll_error.u2)
+    connect(roll_mea, roll_error.u2) 
       annotation(Line(origin={-205,20},points={{-25,-60},{23,60}},color={0,0,0}));
-    connect(roll_error.y, roll_kp.u)
+    connect(roll_error.y, roll_kp.u) 
       annotation(Line(origin={-130,90},points={{-28,-10},{28,10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(roll_error.y, roll_kd.u)
+    connect(roll_error.y, roll_kd.u) 
       annotation(Line(origin={-130,70},points={{-28,10},{28,-10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(roll_kp.y, roll_sum.u1)
+    connect(roll_kp.y, roll_sum.u1) 
       annotation(Line(origin={-45,95},points={{-33,5},{33,-15}},color={0,0,0}));
-    connect(roll_kd.y, roll_sum.u2)
+    connect(roll_kd.y, roll_sum.u2) 
       annotation(Line(origin={-45,65},points={{-33,-5},{33,15}},color={0,0,0}));
-    connect(roll_sum.y, roll_cmd)
+    connect(roll_sum.y, roll_cmd) 
       annotation(Line(origin={75,85},points={{-63,-5},{65,5}},color={0,0,0}));
 
-    connect(pitch_ref, pitch_error.u1)
+    connect(pitch_ref, pitch_error.u1) 
       annotation(Line(origin={-205,30},points={{-25,30},{23,-30}},color={0,0,0}));
-    connect(pitch_mea, pitch_error.u2)
+    connect(pitch_mea, pitch_error.u2) 
       annotation(Line(origin={-205,-45},points={{-25,-45},{23,45}},color={0,0,0}));
-    connect(pitch_error.y, pitch_kp.u)
+    connect(pitch_error.y, pitch_kp.u) 
       annotation(Line(origin={-130,10},points={{-28,-10},{28,10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(pitch_error.y, pitch_kd.u)
+    connect(pitch_error.y, pitch_kd.u) 
       annotation(Line(origin={-130,-10},points={{-28,10},{28,-10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(pitch_kp.y, pitch_sum.u1)
+    connect(pitch_kp.y, pitch_sum.u1) 
       annotation(Line(origin={-45,15},points={{-33,5},{33,-15}},color={0,0,0}));
-    connect(pitch_kd.y, pitch_sum.u2)
+    connect(pitch_kd.y, pitch_sum.u2) 
       annotation(Line(origin={-45,-15},points={{-33,-5},{33,15}},color={0,0,0}));
-    connect(pitch_sum.y, pitch_cmd)
+    connect(pitch_sum.y, pitch_cmd) 
       annotation(Line(origin={75,5},points={{-63,-5},{65,5}},color={0,0,0}));
 
-    connect(yaw_ref, yaw_error.u1)
+    connect(yaw_ref, yaw_error.u1) 
       annotation(Line(origin={-205,-40},points={{-25,50},{23,-50}},color={0,0,0}));
-    connect(yaw_mea, yaw_error.u2)
+    connect(yaw_mea, yaw_error.u2) 
       annotation(Line(origin={-205,-110},points={{-25,-20},{23,20}},color={0,0,0}));
-    connect(yaw_error.y, yaw_kp.u)
+    connect(yaw_error.y, yaw_kp.u) 
       annotation(Line(origin={-120,-90},points={{-38,0},{38,0}},color={0,0,0}));
-    connect(yaw_kp.y, yaw_cmd)
+    connect(yaw_kp.y, yaw_cmd) 
       annotation(Line(origin={45,-90},points={{-103,0},{95,0}},color={0,0,0}));
   end AWFF_AttitudeInnerLoop_Sysblock;
   model AWFF_MotorMixer_Sysblock "MWORKS.Sysblock quadrotor motor mixer structure"
@@ -231,56 +231,56 @@ model AWFF_FullController_Sysblock "MWORKS.Sysblock composed AWFF PID controller
     end ModelWorkspace;
 
   equation
-    connect(roll_cmd, neg_roll.u)
+    connect(roll_cmd, neg_roll.u) 
       annotation(Line(origin={-180,35},points={{-50,15},{48,-15}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(pitch_cmd, neg_pitch.u)
+    connect(pitch_cmd, neg_pitch.u) 
       annotation(Line(origin={-180,-35},points={{-50,15},{48,-15}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(yaw_cmd, neg_yaw.u)
+    connect(yaw_cmd, neg_yaw.u) 
       annotation(Line(origin={-180,-105},points={{-50,15},{48,-15}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
 
-    connect(thrust_ref, motor1_sum.u1)
+    connect(thrust_ref, motor1_sum.u1) 
       annotation(Line(origin={-95,120},points={{-135,0},{133,0}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(roll_cmd, motor1_sum.u2)
+    connect(roll_cmd, motor1_sum.u2) 
       annotation(Line(origin={-95,80},points={{-135,-30},{95,-30},{95,30},{133,30}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(neg_pitch.y, motor1_sum.u3)
+    connect(neg_pitch.y, motor1_sum.u3) 
       annotation(Line(origin={-35,35},points={{-73,-85},{15,-85},{15,65},{73,65}},color={0,0,0}));
-    connect(neg_yaw.y, motor1_sum.u4)
+    connect(neg_yaw.y, motor1_sum.u4) 
       annotation(Line(origin={-35,0},points={{-73,-120},{35,-120},{35,90},{73,90}},color={0,0,0}));
 
-    connect(thrust_ref, motor2_sum.u1)
+    connect(thrust_ref, motor2_sum.u1) 
       annotation(Line(origin={-95,85},points={{-135,35},{80,35},{80,-35},{133,-35}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(neg_roll.y, motor2_sum.u2)
+    connect(neg_roll.y, motor2_sum.u2) 
       annotation(Line(origin={-35,30},points={{-73,-10},{35,-10},{35,0},{73,0}},color={0,0,0}));
-    connect(pitch_cmd, motor2_sum.u3)
+    connect(pitch_cmd, motor2_sum.u3) 
       annotation(Line(origin={-95,10},points={{-135,-30},{90,-30},{90,20},{133,20}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(neg_yaw.y, motor2_sum.u4)
+    connect(neg_yaw.y, motor2_sum.u4) 
       annotation(Line(origin={-35,-40},points={{-73,-80},{20,-80},{20,70},{73,70}},color={0,0,0}));
 
-    connect(thrust_ref, motor3_sum.u1)
+    connect(thrust_ref, motor3_sum.u1) 
       annotation(Line(origin={-95,45},points={{-135,75},{65,75},{65,-75},{133,-75}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(neg_roll.y, motor3_sum.u2)
+    connect(neg_roll.y, motor3_sum.u2) 
       annotation(Line(origin={-35,-10},points={{-73,30},{20,30},{20,-20},{73,-20}},color={0,0,0}));
-    connect(pitch_cmd, motor3_sum.u3)
+    connect(pitch_cmd, motor3_sum.u3) 
       annotation(Line(origin={-95,-30},points={{-135,10},{95,10},{95,-20},{133,-20}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(yaw_cmd, motor3_sum.u4)
+    connect(yaw_cmd, motor3_sum.u4) 
       annotation(Line(origin={-95,-65},points={{-135,-25},{90,-25},{90,35},{133,35}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
 
-    connect(thrust_ref, motor4_sum.u1)
+    connect(thrust_ref, motor4_sum.u1) 
       annotation(Line(origin={-95,0},points={{-135,120},{50,120},{50,-120},{133,-120}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(roll_cmd, motor4_sum.u2)
+    connect(roll_cmd, motor4_sum.u2) 
       annotation(Line(origin={-95,-35},points={{-135,85},{65,85},{65,-75},{133,-75}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(pitch_cmd, motor4_sum.u3)
+    connect(pitch_cmd, motor4_sum.u3) 
       annotation(Line(origin={-95,-70},points={{-135,50},{80,50},{80,-40},{133,-40}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-    connect(yaw_cmd, motor4_sum.u4)
+    connect(yaw_cmd, motor4_sum.u4) 
       annotation(Line(origin={-95,-105},points={{-135,15},{95,15},{95,15},{133,15}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
 
-    connect(motor1_sum.y, y)
+    connect(motor1_sum.y, y) 
       annotation(Line(origin={110,120},points={{-48,0},{50,0}},color={0,0,0}));
-    connect(motor2_sum.y, y1)
+    connect(motor2_sum.y, y1) 
       annotation(Line(origin={110,40},points={{-48,0},{50,0}},color={0,0,0}));
-    connect(motor3_sum.y, y2)
+    connect(motor3_sum.y, y2) 
       annotation(Line(origin={110,-40},points={{-48,0},{50,0}},color={0,0,0}));
-    connect(motor4_sum.y, y3)
+    connect(motor4_sum.y, y3) 
       annotation(Line(origin={110,-120},points={{-48,0},{50,0}},color={0,0,0}));
   end AWFF_MotorMixer_Sysblock;
 
@@ -289,43 +289,43 @@ model AWFF_FullController_Sysblock "MWORKS.Sysblock composed AWFF PID controller
   end ModelWorkspace;
 
 equation
-  connect(x_error, position_loop.x_error)
+  connect(x_error, position_loop.x_error) 
     annotation(Line(points={{-290,180},{-230,180},{-230,119},{-191,119}},color={0,0,0}));
-  connect(y_error, position_loop.y_error)
+  connect(y_error, position_loop.y_error) 
     annotation(Line(points={{-290,130},{-220,130},{-220,96},{-191,96}},color={0,0,0}));
-  connect(z_error, position_loop.z_error)
+  connect(z_error, position_loop.z_error) 
     annotation(Line(points={{-290,80},{-218,80},{-218,74},{-191,74}},color={0,0,0}));
-  connect(z_ref_rate, position_loop.z_ref_rate)
+  connect(z_ref_rate, position_loop.z_ref_rate) 
     annotation(Line(points={{-290,30},{-220,30},{-220,51},{-191,51}},color={0,0,0}));
 
-  connect(position_loop.roll_ref, attitude_loop.roll_ref)
+  connect(position_loop.roll_ref, attitude_loop.roll_ref) 
     annotation(Line(points={{-98,85},{-70,85},{-70,1},{-42,1}},color={0,0,0}));
-  connect(position_loop.pitch_ref, attitude_loop.pitch_ref)
+  connect(position_loop.pitch_ref, attitude_loop.pitch_ref) 
     annotation(Line(points={{-98,112},{-58,112},{-58,-21},{-42,-21}},color={0,0,0}));
-  connect(yaw_ref, attitude_loop.yaw_ref)
+  connect(yaw_ref, attitude_loop.yaw_ref) 
     annotation(Line(points={{-290,-180},{-72,-180},{-72,-43},{-42,-43}},color={0,0,0}));
-  connect(roll_mea, attitude_loop.roll_mea)
+  connect(roll_mea, attitude_loop.roll_mea) 
     annotation(Line(points={{-290,-30},{-110,-30},{-110,-66},{-42,-66}},color={0,0,0}));
-  connect(pitch_mea, attitude_loop.pitch_mea)
+  connect(pitch_mea, attitude_loop.pitch_mea) 
     annotation(Line(points={{-290,-80},{-120,-80},{-120,-88},{-42,-88}},color={0,0,0}));
-  connect(yaw_mea, attitude_loop.yaw_mea)
+  connect(yaw_mea, attitude_loop.yaw_mea) 
     annotation(Line(points={{-290,-130},{-130,-130},{-130,-106},{-42,-106}},color={0,0,0}));
 
-  connect(position_loop.thrust_ref, motor_mixer.thrust_ref)
+  connect(position_loop.thrust_ref, motor_mixer.thrust_ref) 
     annotation(Line(points={{-98,58},{86,58},{86,-1},{108,-1}},color={0,0,0}));
-  connect(attitude_loop.roll_cmd, motor_mixer.roll_cmd)
+  connect(attitude_loop.roll_cmd, motor_mixer.roll_cmd) 
     annotation(Line(points={{52,-8},{86,-8},{86,-24},{108,-24}},color={0,0,0}));
-  connect(attitude_loop.pitch_cmd, motor_mixer.pitch_cmd)
+  connect(attitude_loop.pitch_cmd, motor_mixer.pitch_cmd) 
     annotation(Line(points={{52,-35},{108,-35},{108,-46}},color={0,0,0}));
-  connect(attitude_loop.yaw_cmd, motor_mixer.yaw_cmd)
+  connect(attitude_loop.yaw_cmd, motor_mixer.yaw_cmd) 
     annotation(Line(points={{52,-62},{86,-62},{86,-69},{108,-69}},color={0,0,0}));
 
-  connect(motor_mixer.y, y)
+  connect(motor_mixer.y, y) 
     annotation(Line(points={{202,-1},{225,-1},{225,150},{240,150}},color={0,0,0}));
-  connect(motor_mixer.y1, y1)
+  connect(motor_mixer.y1, y1) 
     annotation(Line(points={{202,-24},{220,-24},{220,50},{240,50}},color={0,0,0}));
-  connect(motor_mixer.y2, y2)
+  connect(motor_mixer.y2, y2) 
     annotation(Line(points={{202,-46},{220,-46},{220,-50},{240,-50}},color={0,0,0}));
-  connect(motor_mixer.y3, y3)
+  connect(motor_mixer.y3, y3) 
     annotation(Line(points={{202,-69},{225,-69},{225,-150},{240,-150}},color={0,0,0}));
 end AWFF_FullController_Sysblock;
