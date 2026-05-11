@@ -3,7 +3,11 @@ model AWFF_PositionOuterLoop_Sysblock "MWORKS.Sysblock AWFF PID position outer-l
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
   annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(x_error,y_error,z_error,z_ref_rate), Right(pitch_ref,roll_ref,thrust_ref)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
-    Icon(coordinateSystem(preserveAspectRatio=false)),
+    Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+      Rectangle(extent={{-100,-100},{100,100}},lineColor={45,85,130},fillColor={238,246,255},fillPattern=FillPattern.Solid,radius=8),
+      Text(extent={{-90,30},{90,-6}},textString="Position",lineColor={20,45,75}),
+      Text(extent={{-90,-12},{90,-48}},textString="Outer Loop",lineColor={20,45,75}),
+      Text(extent={{-90,-54},{90,-82}},textString="x/y/z -> attitude + thrust",lineColor={85,105,125})}),
     experiment(DoublePrecision=false,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=1,StoreEventValue=0),
     Diagram(coordinateSystem(extent={{-260,-160},{180,160}},grid={2,2})));
 

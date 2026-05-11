@@ -3,7 +3,11 @@ model AWFF_AttitudeInnerLoop_Sysblock "MWORKS.Sysblock AWFF PID attitude inner-l
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
   annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(roll_ref,pitch_ref,yaw_ref,roll_mea,pitch_mea,yaw_mea), Right(roll_cmd,pitch_cmd,yaw_cmd)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
-    Icon(coordinateSystem(preserveAspectRatio=false)),
+    Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+      Rectangle(extent={{-100,-100},{100,100}},lineColor={120,70,35},fillColor={255,244,232},fillPattern=FillPattern.Solid,radius=8),
+      Text(extent={{-90,30},{90,-6}},textString="Attitude",lineColor={80,45,20}),
+      Text(extent={{-90,-12},{90,-48}},textString="Inner Loop",lineColor={80,45,20}),
+      Text(extent={{-90,-54},{90,-82}},textString="roll/pitch/yaw PID",lineColor={120,85,55})}),
     experiment(DoublePrecision=false,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=1,StoreEventValue=0),
     Diagram(coordinateSystem(extent={{-260,-150},{180,150}},grid={2,2})));
 

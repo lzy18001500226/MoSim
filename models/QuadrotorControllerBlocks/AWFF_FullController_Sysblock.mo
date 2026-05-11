@@ -21,9 +21,9 @@ model AWFF_FullController_Sysblock "MWORKS.Sysblock composed AWFF PID controller
   SysplorerEmbeddedCoder.Port.Outport y2 annotation(Placement(transformation(origin={250,-50},extent={{-10,-10},{10,10}}),iconTransformation(origin={101.8,-25},extent={{-1.8,-1.8},{1.8,1.8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.Port.Outport y3 annotation(Placement(transformation(origin={250,-150},extent={{-10,-10},{10,10}}),iconTransformation(origin={101.8,-75},extent={{-1.8,-1.8},{1.8,1.8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
 
-  AWFF_PositionOuterLoop_Sysblock position_loop annotation(Placement(transformation(origin={-140,90},extent={{-40,-40},{40,40}})));
-  AWFF_AttitudeInnerLoop_Sysblock attitude_loop annotation(Placement(transformation(origin={10,10},extent={{-40,-40},{40,40}})));
-  AWFF_MotorMixer_Sysblock motor_mixer annotation(Placement(transformation(origin={150,0},extent={{-40,-40},{40,40}})));
+  AWFF_PositionOuterLoop_Sysblock position_loop annotation(Placement(transformation(origin={-145,85},extent={{-45,-45},{45,45}})));
+  AWFF_AttitudeInnerLoop_Sysblock attitude_loop annotation(Placement(transformation(origin={5,-35},extent={{-45,-45},{45,45}})));
+  AWFF_MotorMixer_Sysblock motor_mixer annotation(Placement(transformation(origin={155,-35},extent={{-45,-45},{45,45}})));
 
   model ModelWorkspace
     annotation(__MWORKS(hide = true,BlockSystem(blockKind=BlockKind.modelWorkspace)));
@@ -31,42 +31,42 @@ model AWFF_FullController_Sysblock "MWORKS.Sysblock composed AWFF PID controller
 
 equation
   connect(x_error, position_loop.x_error)
-    annotation(Line(origin={-220,155},points={{-70,25},{38,25},{38,-20}},color={0,0,0}));
+    annotation(Line(points={{-290,180},{-230,180},{-230,119},{-191,119}},color={0,0,0}));
   connect(y_error, position_loop.y_error)
-    annotation(Line(origin={-220,120},points={{-70,10},{38,10},{38,-20}},color={0,0,0}));
+    annotation(Line(points={{-290,130},{-220,130},{-220,96},{-191,96}},color={0,0,0}));
   connect(z_error, position_loop.z_error)
-    annotation(Line(origin={-220,85},points={{-70,-5},{38,-5},{38,-15}},color={0,0,0}));
+    annotation(Line(points={{-290,80},{-218,80},{-218,74},{-191,74}},color={0,0,0}));
   connect(z_ref_rate, position_loop.z_ref_rate)
-    annotation(Line(origin={-220,50},points={{-70,-20},{38,-20},{38,0}},color={0,0,0}));
+    annotation(Line(points={{-290,30},{-220,30},{-220,51},{-191,51}},color={0,0,0}));
 
   connect(position_loop.roll_ref, attitude_loop.roll_ref)
-    annotation(Line(origin={-65,80},points={{-33,10},{33,10},{33,-30}},color={0,0,0}));
+    annotation(Line(points={{-98,85},{-70,85},{-70,1},{-42,1}},color={0,0,0}));
   connect(position_loop.pitch_ref, attitude_loop.pitch_ref)
-    annotation(Line(origin={-65,105},points={{-33,25},{45,25},{45,-55},{33,-55}},color={0,0,0}));
+    annotation(Line(points={{-98,112},{-58,112},{-58,-21},{-42,-21}},color={0,0,0}));
   connect(yaw_ref, attitude_loop.yaw_ref)
-    annotation(Line(origin={-145,-90},points={{-145,-90},{105,-90},{105,60}},color={0,0,0}));
+    annotation(Line(points={{-290,-180},{-72,-180},{-72,-43},{-42,-43}},color={0,0,0}));
   connect(roll_mea, attitude_loop.roll_mea)
-    annotation(Line(origin={-145,-30},points={{-145,0},{105,0},{105,0}},color={0,0,0}));
+    annotation(Line(points={{-290,-30},{-110,-30},{-110,-66},{-42,-66}},color={0,0,0}));
   connect(pitch_mea, attitude_loop.pitch_mea)
-    annotation(Line(origin={-145,-60},points={{-145,-20},{105,-20},{105,20}},color={0,0,0}));
+    annotation(Line(points={{-290,-80},{-120,-80},{-120,-88},{-42,-88}},color={0,0,0}));
   connect(yaw_mea, attitude_loop.yaw_mea)
-    annotation(Line(origin={-145,-85},points={{-145,-45},{105,-45},{105,35}},color={0,0,0}));
+    annotation(Line(points={{-290,-130},{-130,-130},{-130,-106},{-42,-106}},color={0,0,0}));
 
   connect(position_loop.thrust_ref, motor_mixer.thrust_ref)
-    annotation(Line(origin={5,80},points={{-63,-30},{105,-30},{105,40}},color={0,0,0}));
+    annotation(Line(points={{-98,58},{86,58},{86,-1},{108,-1}},color={0,0,0}));
   connect(attitude_loop.roll_cmd, motor_mixer.roll_cmd)
-    annotation(Line(origin={80,35},points={{-28,15},{28,15},{28,5}},color={0,0,0}));
+    annotation(Line(points={{52,-8},{86,-8},{86,-24},{108,-24}},color={0,0,0}));
   connect(attitude_loop.pitch_cmd, motor_mixer.pitch_cmd)
-    annotation(Line(origin={80,5},points={{-28,5},{28,5},{28,-25}},color={0,0,0}));
+    annotation(Line(points={{52,-35},{108,-35},{108,-46}},color={0,0,0}));
   connect(attitude_loop.yaw_cmd, motor_mixer.yaw_cmd)
-    annotation(Line(origin={80,-25},points={{-28,-25},{28,-25},{28,-25}},color={0,0,0}));
+    annotation(Line(points={{52,-62},{86,-62},{86,-69},{108,-69}},color={0,0,0}));
 
   connect(motor_mixer.y, y)
-    annotation(Line(origin={210,125},points={{-18,25},{30,25}},color={0,0,0}));
+    annotation(Line(points={{202,-1},{225,-1},{225,150},{240,150}},color={0,0,0}));
   connect(motor_mixer.y1, y1)
-    annotation(Line(origin={210,45},points={{-18,-5},{30,5}},color={0,0,0}));
+    annotation(Line(points={{202,-24},{220,-24},{220,50},{240,50}},color={0,0,0}));
   connect(motor_mixer.y2, y2)
-    annotation(Line(origin={210,-45},points={{-18,5},{30,-5}},color={0,0,0}));
+    annotation(Line(points={{202,-46},{220,-46},{220,-50},{240,-50}},color={0,0,0}));
   connect(motor_mixer.y3, y3)
-    annotation(Line(origin={210,-125},points={{-18,-25},{30,-25}},color={0,0,0}));
+    annotation(Line(points={{202,-69},{225,-69},{225,-150},{240,-150}},color={0,0,0}));
 end AWFF_FullController_Sysblock;

@@ -3,7 +3,11 @@ model AWFF_MotorMixer_Sysblock "MWORKS.Sysblock quadrotor motor mixer structure"
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
   annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(thrust_ref,roll_cmd,pitch_cmd,yaw_cmd), Right(y,y1,y2,y3)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
-    Icon(coordinateSystem(preserveAspectRatio=false)),
+    Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+      Rectangle(extent={{-100,-100},{100,100}},lineColor={60,110,80},fillColor={238,250,242},fillPattern=FillPattern.Solid,radius=8),
+      Text(extent={{-90,30},{90,-6}},textString="Motor",lineColor={30,75,50}),
+      Text(extent={{-90,-12},{90,-48}},textString="Mixer",lineColor={30,75,50}),
+      Text(extent={{-90,-54},{90,-82}},textString="T/r/p/y -> u1..u4",lineColor={75,115,90})}),
     experiment(DoublePrecision=false,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=1,StoreEventValue=0),
     Diagram(coordinateSystem(extent={{-260,-160},{200,160}},grid={2,2})));
 
