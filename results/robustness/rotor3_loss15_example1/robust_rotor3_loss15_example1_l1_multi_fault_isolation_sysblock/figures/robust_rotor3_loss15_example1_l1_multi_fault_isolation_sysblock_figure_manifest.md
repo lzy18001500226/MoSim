@@ -8,6 +8,8 @@
 Generated figures:
 
 - `robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock_altitude_tracking.svg`
+- `robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock_eta_hat_diagnostics.svg`
+- `robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock_fault_index_diagnostics.svg`
 - `robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock_metrics_summary.svg`
 - `robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock_position_error.svg`
 - `robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock_trajectory_xy.svg`

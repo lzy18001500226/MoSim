@@ -647,7 +647,7 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 | rotor3 | `scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2684 | 0.1449 | 4.56 | 100% |
 | rotor4 | `scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2695 | 0.1423 | 4.56 | 100% |
 
-对应证据目录位于 `results/robustness/rotor{1..4}_loss15_example1/robust_rotor{1..4}_loss15_example1_l1_multi_fault_isolation_sysblock/`，其中包含 `raw/`、`metrics/`、`figures/`、`replay/` 和 `logs/`。该组结果可以支撑“四旋翼持续单故障隔离验证已完成”的表述；不支撑瞬态故障、复合多故障或故障切换声明。
+对应证据目录位于 `results/robustness/rotor{1..4}_loss15_example1/robust_rotor{1..4}_loss15_example1_l1_multi_fault_isolation_sysblock/`，其中包含 `raw/`、`metrics/`、`figures/`、`replay/` 和 `logs/`。`figures/` 中除轨迹、误差和指标图外，还包含 `*_eta_hat_diagnostics.svg` 与 `*_fault_index_diagnostics.svg`，用于报告和演示视频中展示在线效率估计与故障编号锁存过程。该组结果可以支撑“四旋翼持续单故障隔离验证已完成”的表述；不支撑瞬态故障、复合多故障或故障切换声明。
 
 ## 12. 结论约束
 

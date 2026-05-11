@@ -53,6 +53,11 @@ python3 scripts/plot_results.py \
 Use `scripts/plot_results.jl`, Syslab MCP plotting APIs, or Sysplorer
 `plot_manager` only when higher-fidelity native plots are required.
 
+When the raw CSV contains `eta_hat1..4` and `fault_index`, the Python figure
+generator also writes `*_eta_hat_diagnostics.svg` and
+`*_fault_index_diagnostics.svg`. Use these figures for fault-isolation claims
+instead of relying only on numeric metrics.
+
 `scripts/generate_replay_html.py` creates self-contained offline browser replay
 pages from `results/{group}/{scene}/{experiment}/replay/*.json`. The generated HTML has no CDN dependency
 and can be used for browser recording and 3D demo video materials without

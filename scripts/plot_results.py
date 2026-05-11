@@ -15,6 +15,11 @@ COLORS = {
     "actual": "#1f77b4",
     "reference": "#d62728",
     "error": "#2ca02c",
+    "eta1": "#1f77b4",
+    "eta2": "#ff7f0e",
+    "eta3": "#2ca02c",
+    "eta4": "#9467bd",
+    "fault": "#111827",
     "axis": "#2f3542",
     "grid": "#d7dde8",
     "text": "#1f2937",
@@ -98,6 +103,50 @@ def line_chart(
         parts.append(f'<line x1="{legend_x}" y1="30" x2="{legend_x + 28}" y2="30" stroke="{color}" stroke-width="3"/>')
         parts.append(f'<text x="{legend_x + 36}" y="35" class="legend">{escape(label)}</text>')
         legend_x += 150
+    parts.append(svg_footer())
+    return "\n".join(parts)
+
+
+def step_chart(
+    title: str,
+    x_values: list[float],
+    series: list[tuple[str, list[float], str]],
+    x_label: str,
+    y_label: str,
+) -> str:
+    width, height = 920, 520
+    left, right, top, bottom = 82, 28, 54, 76
+    x_min, x_max = bounds(x_values, pad_ratio=0.02)
+    y_min, y_max = bounds(*(values for _, values, _ in series), pad_ratio=0.12)
+
+    def point(x: float, y: float) -> str:
+        px = scale(x, x_min, x_max, left, width - right)
+        py = scale(y, y_min, y_max, height - bottom, top)
+        return f"{px:.2f},{py:.2f}"
+
+    def step_points(values: list[float]) -> str:
+        points: list[str] = []
+        last_x: float | None = None
+        last_y: float | None = None
+        for x, y in zip(x_values, values):
+            if not math.isfinite(x) or not math.isfinite(y):
+                continue
+            if last_x is not None and last_y is not None:
+                points.append(point(x, last_y))
+            points.append(point(x, y))
+            last_x = x
+            last_y = y
+        return " ".join(points)
+
+    parts = svg_header(width, height, title)
+    parts.append(axes(width, height, left, right, top, bottom, x_label, y_label, x_min, x_max, y_min, y_max))
+    legend_x = left
+    for label, values, color in series:
+        points = step_points(values)
+        parts.append(f'<polyline points="{points}" fill="none" stroke="{color}" stroke-width="2.2"/>')
+        parts.append(f'<line x1="{legend_x}" y1="30" x2="{legend_x + 28}" y2="30" stroke="{color}" stroke-width="3"/>')
+        parts.append(f'<text x="{legend_x + 36}" y="35" class="legend">{escape(label)}</text>')
+        legend_x += 170
     parts.append(svg_footer())
     return "\n".join(parts)
 
@@ -273,6 +322,28 @@ def main() -> int:
     }
     if metrics:
         figures["metrics_summary.svg"] = bar_chart(f"{title_prefix} metrics summary", metrics)
+    eta_cols = ["eta_hat1", "eta_hat2", "eta_hat3", "eta_hat4"]
+    if all(name in data for name in eta_cols):
+        figures["eta_hat_diagnostics.svg"] = line_chart(
+            f"{title_prefix} eta_hat diagnostics",
+            data["time"],
+            [
+                ("eta_hat1", data["eta_hat1"], COLORS["eta1"]),
+                ("eta_hat2", data["eta_hat2"], COLORS["eta2"]),
+                ("eta_hat3", data["eta_hat3"], COLORS["eta3"]),
+                ("eta_hat4", data["eta_hat4"], COLORS["eta4"]),
+            ],
+            "time / s",
+            "estimated efficiency",
+        )
+    if "fault_index" in data:
+        figures["fault_index_diagnostics.svg"] = step_chart(
+            f"{title_prefix} fault index diagnostics",
+            data["time"],
+            [("fault_index", data["fault_index"], COLORS["fault"])],
+            "time / s",
+            "fault index",
+        )
 
     file_prefix = args.file_prefix or ""
     figure_names = []
