@@ -194,7 +194,7 @@ def run_postprocess(config: dict[str, Any]) -> None:
     raw_file = Path(str(result.get("raw_file", "")))
     metrics_file = Path(str(result.get("metrics_file", "")))
     result_base = default_result_base(config, experiment_id)
-    figure_dir = Path(str(result.get("figure_dir", result_base / "figures" / experiment_id)))
+    figure_dir = Path(str(result.get("figure_dir", result_base / "figures")))
     replay_file = Path(str(result.get("replay_file", result_base / "replay" / f"{experiment_id}.json")))
 
     subprocess.run(
@@ -206,6 +206,8 @@ def run_postprocess(config: dict[str, Any]) -> None:
             "--metrics",
             str(metrics_file),
             "--title-prefix",
+            experiment_id,
+            "--file-prefix",
             experiment_id,
         ],
         cwd=ROOT,

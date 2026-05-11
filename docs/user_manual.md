@@ -337,8 +337,9 @@ tracking_score / robustness_score / safety_score / energy_score / smoothness_sco
 ```bash
 python3 scripts/plot_results.py \
   results/official/example1_step/raw/official_example1_improved_pid.csv \
-  results/official/example1_step/figures/improved_pid \
-  --metrics results/official/example1_step/metrics/official_example1_improved_pid.json
+  results/official/example1_step/figures \
+  --metrics results/official/example1_step/metrics/official_example1_improved_pid.json \
+  --file-prefix official_example1_improved_pid
 ```
 
 生成实验汇总时只纳入真实 MWORKS/MCP 结果：

@@ -217,7 +217,7 @@ def write_text(path: Path, content: str) -> None:
     path.write_text(content + "\n", encoding="utf-8")
 
 
-def write_manifest(output_dir: Path, raw_csv: Path, metrics_path: Path | None, figures: list[str]) -> None:
+def write_manifest(output_dir: Path, raw_csv: Path, metrics_path: Path | None, figures: list[str], prefix: str = "") -> None:
     lines = [
         "# Figure Manifest",
         "",
@@ -230,7 +230,8 @@ def write_manifest(output_dir: Path, raw_csv: Path, metrics_path: Path | None, f
         "",
     ]
     lines.extend(f"- `{name}`" for name in figures)
-    write_text(output_dir / "figure_manifest.md", "\n".join(lines))
+    manifest_name = f"{prefix}_figure_manifest.md" if prefix else "figure_manifest.md"
+    write_text(output_dir / manifest_name, "\n".join(lines))
 
 
 def parse_args() -> argparse.Namespace:
@@ -239,6 +240,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("figure_dir", type=Path)
     parser.add_argument("--metrics", type=Path, default=None)
     parser.add_argument("--title-prefix", default=None)
+    parser.add_argument("--file-prefix", default=None, help="Prefix generated figure filenames to avoid overwrites in shared figure dirs")
     return parser.parse_args()
 
 
@@ -272,9 +274,13 @@ def main() -> int:
     if metrics:
         figures["metrics_summary.svg"] = bar_chart(f"{title_prefix} metrics summary", metrics)
 
+    file_prefix = args.file_prefix or ""
+    figure_names = []
     for name, svg in figures.items():
-        write_text(args.figure_dir / name, svg)
-    write_manifest(args.figure_dir, args.raw_csv, args.metrics, sorted(figures))
+        output_name = f"{file_prefix}_{name}" if file_prefix else name
+        figure_names.append(output_name)
+        write_text(args.figure_dir / output_name, svg)
+    write_manifest(args.figure_dir, args.raw_csv, args.metrics, sorted(figure_names), file_prefix)
     print(f"Wrote {len(figures)} figures to {args.figure_dir}")
     return 0
 

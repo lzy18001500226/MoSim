@@ -29,5 +29,5 @@ reference:
 result:
   raw_file: results/official/example3_figure8/raw/official_example3_improved_pid.csv
   metrics_file: results/official/example3_figure8/metrics/official_example3_improved_pid.json
-  figure_dir: results/official/example3_figure8/figures/improved_pid
+  figure_dir: results/official/example3_figure8/figures
   replay_file: results/official/example3_figure8/replay/official_example3_improved_pid.json

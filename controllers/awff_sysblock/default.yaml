@@ -123,7 +123,7 @@ verified_results:
     raw_file: results/official/example1_step/raw/official_example1_awff_sysblock.csv
     metrics_file: results/official/example1_step/metrics/official_example1_awff_sysblock.json
     mcp_log: results/official/example1_step/logs/sysplorer_example1_awff_sysblock_full_20260510.jsonl
-    figure_dir: results/official/example1_step/figures/awff_sysblock
+    figure_dir: results/official/example1_step/figures
     replay_file: results/official/example1_step/replay/official_example1_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0
@@ -155,7 +155,7 @@ verified_results:
     raw_file: results/official/example2_helix/raw/official_example2_awff_sysblock.csv
     metrics_file: results/official/example2_helix/metrics/official_example2_awff_sysblock.json
     mcp_log: results/official/example2_helix/logs/sysplorer_example2_awff_sysblock_full_20260510.jsonl
-    figure_dir: results/official/example2_helix/figures/awff_sysblock
+    figure_dir: results/official/example2_helix/figures
     replay_file: results/official/example2_helix/replay/official_example2_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0
@@ -169,7 +169,7 @@ verified_results:
     raw_file: results/official/example3_figure8/raw/official_example3_awff_sysblock.csv
     metrics_file: results/official/example3_figure8/metrics/official_example3_awff_sysblock.json
     mcp_log: results/official/example3_figure8/logs/sysplorer_example3_awff_sysblock_full_20260510.jsonl
-    figure_dir: results/official/example3_figure8/figures/awff_sysblock
+    figure_dir: results/official/example3_figure8/figures
     replay_file: results/official/example3_figure8/replay/official_example3_awff_sysblock.json
     row_count: 12001
     duration_s: 120.0
@@ -183,7 +183,7 @@ verified_results:
     raw_file: results/robustness/mass20_example1/raw/robust_mass20_example1_awff_sysblock.csv
     metrics_file: results/robustness/mass20_example1/metrics/robust_mass20_example1_awff_sysblock.json
     mcp_log: results/robustness/mass20_example1/logs/sysplorer_robust_mass20_example1_awff_sysblock_20260510.jsonl
-    figure_dir: results/robustness/mass20_example1/figures/awff_sysblock
+    figure_dir: results/robustness/mass20_example1/figures
     replay_file: results/robustness/mass20_example1/replay/robust_mass20_example1_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0
@@ -196,7 +196,7 @@ verified_results:
     raw_file: results/robustness/wind_gust_example1/raw/robust_wind_gust_example1_awff_sysblock.csv
     metrics_file: results/robustness/wind_gust_example1/metrics/robust_wind_gust_example1_awff_sysblock.json
     mcp_log: results/robustness/wind_gust_example1/logs/sysplorer_robust_wind_gust_example1_awff_sysblock_20260510.jsonl
-    figure_dir: results/robustness/wind_gust_example1/figures/awff_sysblock
+    figure_dir: results/robustness/wind_gust_example1/figures
     replay_file: results/robustness/wind_gust_example1/replay/robust_wind_gust_example1_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0
@@ -209,7 +209,7 @@ verified_results:
     raw_file: results/robustness/rotor1_loss15_example1/raw/robust_rotor1_loss15_example1_awff_sysblock.csv
     metrics_file: results/robustness/rotor1_loss15_example1/metrics/robust_rotor1_loss15_example1_awff_sysblock.json
     mcp_log: results/robustness/rotor1_loss15_example1/logs/sysplorer_robust_rotor1_loss15_example1_awff_sysblock_20260510.jsonl
-    figure_dir: results/robustness/rotor1_loss15_example1/figures/awff_sysblock
+    figure_dir: results/robustness/rotor1_loss15_example1/figures
     replay_file: results/robustness/rotor1_loss15_example1/replay/robust_rotor1_loss15_example1_awff_sysblock.json
     row_count: 5001
     duration_s: 50.0

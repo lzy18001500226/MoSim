@@ -39,6 +39,6 @@ reference:
 result:
   raw_file: results/robustness/rotor1_loss15_example1/raw/robust_rotor1_loss15_example1_awff_pid.csv
   metrics_file: results/robustness/rotor1_loss15_example1/metrics/robust_rotor1_loss15_example1_awff_pid.json
-  figure_dir: results/robustness/rotor1_loss15_example1/figures/awff_pid
+  figure_dir: results/robustness/rotor1_loss15_example1/figures
   replay_file: results/robustness/rotor1_loss15_example1/replay/robust_rotor1_loss15_example1_awff_pid.json
   mcp_log: results/robustness/rotor1_loss15_example1/logs/sysplorer_robust_rotor1_loss15_example1_awff_pid_20260510.jsonl

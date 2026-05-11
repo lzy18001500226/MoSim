@@ -412,31 +412,12 @@ scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
 已生成图表：
 
 ```text
-results/official/example1_step/figures/pid_baseline/
-results/official/example1_step/figures/improved_pid/
-results/official/example1_step/figures/enhanced_pid/
-results/official/example1_step/figures/awff_pid/
-results/official/example2_helix/figures/pid_baseline/
-results/official/example2_helix/figures/improved_pid/
-results/official/example3_figure8/figures/pid_baseline/
-results/official/example3_figure8/figures/improved_pid/
-results/official/example1_step/figures/awff_sysblock/
-results/official/example2_helix/figures/awff_sysblock/
-results/official/example3_figure8/figures/awff_sysblock/
-results/robustness/mass20_example1/figures/pid_baseline/
-results/robustness/mass20_example1/figures/improved_pid/
-results/robustness/mass20_example1/figures/enhanced_pid/
-results/robustness/mass20_example1/figures/awff_sysblock/
-results/robustness/wind_gust_example1/figures/pid_baseline/
-results/robustness/wind_gust_example1/figures/improved_pid/
-results/robustness/wind_gust_example1/figures/enhanced_pid/
-results/robustness/wind_gust_example1/figures/awff_sysblock/
-results/robustness/rotor1_loss15_example1/figures/pid_baseline/
-results/robustness/rotor1_loss15_example1/figures/improved_pid/
-results/robustness/rotor1_loss15_example1/figures/enhanced_pid/
-results/robustness/rotor1_loss15_example1/figures/awff_sysblock/
-results/official/example1_step/figures/l1_residual_sysblock/
-results/robustness/wind_gust_example1/figures/l1_residual_sysblock/
+results/official/example1_step/figures
+results/official/example2_helix/figures
+results/official/example3_figure8/figures
+results/robustness/mass20_example1/figures
+results/robustness/wind_gust_example1/figures
+results/robustness/rotor1_loss15_example1/figures
 ```
 
 已生成 replay JSON：

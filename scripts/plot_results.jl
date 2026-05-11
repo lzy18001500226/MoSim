@@ -5,7 +5,7 @@
 # figure manifest so automated workflows have a stable output contract.
 #
 # Usage:
-#   julia scripts/plot_results.jl results/{group}/{scene}/raw/figure8.csv results/{group}/{scene}/figures/figure8
+#   julia scripts/plot_results.jl results/{group}/{scene}/raw/figure8.csv results/{group}/{scene}/figures
 
 using Dates
 
@@ -39,4 +39,3 @@ function main()
 end
 
 main()
-
