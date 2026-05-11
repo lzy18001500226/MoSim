@@ -24,10 +24,9 @@ simulation:
 
 reference:
   type: official_eight_path
-  file: results/official/example3_figure8/raw/reference_official_example3.csv
-
+  file: results/official/example3_figure8/reference_official_example3/raw/reference_official_example3.csv
 result:
-  raw_file: results/official/example3_figure8/raw/official_example3_improved_pid.csv
-  metrics_file: results/official/example3_figure8/metrics/official_example3_improved_pid.json
-  figure_dir: results/official/example3_figure8/figures
-  replay_file: results/official/example3_figure8/replay/official_example3_improved_pid.json
+  raw_file: results/official/example3_figure8/official_example3_improved_pid/raw/official_example3_improved_pid.csv
+  metrics_file: results/official/example3_figure8/official_example3_improved_pid/metrics/official_example3_improved_pid.json
+  figure_dir: results/official/example3_figure8/official_example3_improved_pid/figures
+  replay_file: results/official/example3_figure8/official_example3_improved_pid/replay/official_example3_improved_pid.json

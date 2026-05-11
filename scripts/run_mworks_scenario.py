@@ -105,17 +105,17 @@ def default_result_base(config: dict[str, Any], experiment_id: str) -> Path:
         return Path("results/smoke") / scene_group / suffix
 
     if scene_id.startswith("official_example1") or experiment_id.startswith("official_example1"):
-        return Path("results/official/example1_step")
+        return Path("results/official/example1_step") / experiment_id
     if scene_id.startswith("official_example2") or experiment_id.startswith("official_example2"):
-        return Path("results/official/example2_helix")
+        return Path("results/official/example2_helix") / experiment_id
     if scene_id.startswith("official_example3") or experiment_id.startswith("official_example3"):
-        return Path("results/official/example3_figure8")
+        return Path("results/official/example3_figure8") / experiment_id
     if "mass20" in scene_id or "mass20" in experiment_id:
-        return Path("results/robustness/mass20_example1")
+        return Path("results/robustness/mass20_example1") / experiment_id
     if "rotor1_loss15" in scene_id or "rotor1_loss15" in experiment_id:
-        return Path("results/robustness/rotor1_loss15_example1")
+        return Path("results/robustness/rotor1_loss15_example1") / experiment_id
     if "wind_gust" in scene_id or "wind_gust" in experiment_id:
-        return Path("results/robustness/wind_gust_example1")
+        return Path("results/robustness/wind_gust_example1") / experiment_id
     return Path("results") / "uncategorized" / experiment_id
 
 

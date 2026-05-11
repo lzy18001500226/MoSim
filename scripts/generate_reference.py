@@ -133,9 +133,9 @@ def main() -> int:
         meta = EXAMPLES[scene_id]
         rows = generate_rows(scene_id, meta["stop_time"], meta["dt"])
         default_base = {
-            "official_example1": Path("results/official/example1_step"),
-            "official_example2": Path("results/official/example2_helix"),
-            "official_example3": Path("results/official/example3_figure8"),
+            "official_example1": Path("results/official/example1_step/reference_official_example1"),
+            "official_example2": Path("results/official/example2_helix/reference_official_example2"),
+            "official_example3": Path("results/official/example3_figure8/reference_official_example3"),
         }[scene_id]
         csv_dir = args.output_dir or default_base / "raw"
         replay_dir = args.replay_dir or default_base / "replay"

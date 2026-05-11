@@ -258,7 +258,7 @@ A8-Quadrotor-Control/
 │   └── test_reports/
 ```
 
-Create `models/`, `results/{group}/{scene}/raw/`, `results/{group}/{scene}/metrics/`, `results/{group}/{scene}/figures/`, or
+Create `models/`, `results/{group}/{scene}/{experiment}/raw/`, `results/{group}/{scene}/{experiment}/metrics/`, `results/{group}/{scene}/{experiment}/figures/`, or
 `docs/figures/` only when there is actual content to store. The raw official
 MWORKS package is not required after the useful documents have been promoted to
 `docs/mworks/converted/`; use a temporary `--source` path only when rescanning
@@ -450,11 +450,11 @@ Use precise prompts when asking Codex to work.
 Good prompts:
 
 ```text
-按照 AGENTS.md 和 workflows/run_simulation.md，使用 Sysplorer MCP 运行 figure8 场景，控制器为 pid_baseline，结果保存到 results/official/example3_figure8/raw/figure8_pid.csv。
+按照 AGENTS.md 和 workflows/run_simulation.md，使用 Sysplorer MCP 运行 figure8 场景，控制器为 pid_baseline，结果保存到 results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv。
 ```
 
 ```text
-按照 workflows/calc_metrics.md，使用 Syslab MCP 运行 scripts/calc_metrics.jl，计算 results/official/example3_figure8/raw/figure8_pid.csv 的 RMSE、最大误差和控制能量，并保存到 results/official/example3_figure8/metrics/figure8_pid.json。
+按照 workflows/calc_metrics.md，使用 Syslab MCP 运行 scripts/calc_metrics.jl，计算 results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv 的 RMSE、最大误差和控制能量，并保存到 results/official/example3_figure8/official_example3_pid_baseline/metrics/official_example3_pid_baseline.json。
 ```
 
 ```text

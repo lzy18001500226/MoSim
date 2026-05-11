@@ -69,5 +69,5 @@ speedSensor[4].w
 1. Run or open a result file with Sysplorer MCP `result_manager`.
 2. Query the candidate variables above first.
 3. If a candidate name is rejected, list available variables and update this file.
-4. Use the standard names when exporting `results/{group}/{scene}/raw/*.csv`.
-5. Keep non-obvious mappings in experiment logs under `results/{group}/{scene}/logs/`.
+4. Use the standard names when exporting `results/{group}/{scene}/{experiment}/raw/*.csv`.
+5. Keep non-obvious mappings in experiment logs under `results/{group}/{scene}/{experiment}/logs/`.

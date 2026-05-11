@@ -19,5 +19,5 @@ trackability:
   require_zero_dynamic_violations: true
 
 outputs:
-  reference_csv: results/{group}/{scene}/raw/reference_{scene_id}.csv
-  trackability_report: results/{group}/{scene}/metrics/trackability_{scene_id}.json
+  reference_csv: results/{group}/{scene}/{experiment}/raw/reference_{scene_id}.csv
+  trackability_report: results/{group}/{scene}/{experiment}/metrics/trackability_{scene_id}.json

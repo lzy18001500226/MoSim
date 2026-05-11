@@ -3,7 +3,7 @@
 # Minimal metrics script for project-standard quadrotor CSV files.
 #
 # Usage:
-#   julia scripts/calc_metrics.jl results/{group}/{scene}/raw/figure8.csv results/{group}/{scene}/metrics/figure8.json
+#   julia scripts/calc_metrics.jl results/{group}/{scene}/{experiment}/raw/figure8.csv results/{group}/{scene}/{experiment}/metrics/figure8.json
 #   julia scripts/calc_metrics.jl --self-test
 
 using Dates

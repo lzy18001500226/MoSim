@@ -25,11 +25,10 @@ simulation:
 
 reference:
   type: official_eight_path
-  file: results/official/example3_figure8/raw/reference_official_example3.csv
+  file: results/official/example3_figure8/reference_official_example3/raw/reference_official_example3.csv
 
 result:
   raw_file: results/smoke/example3_figure8/awff_sysblock_smoke/raw/official_example3_awff_sysblock_smoke.csv
   metrics_file: results/smoke/example3_figure8/awff_sysblock_smoke/metrics/official_example3_awff_sysblock_smoke.json
   figure_dir: results/smoke/example3_figure8/awff_sysblock_smoke/figures
-  replay_file: results/smoke/example3_figure8/awff_sysblock_smoke/replay/official_example3_awff_sysblock_smoke.json
   mcp_log: results/smoke/example3_figure8/awff_sysblock_smoke/logs/sysplorer_example3_awff_sysblock_smoke_20260510.jsonl

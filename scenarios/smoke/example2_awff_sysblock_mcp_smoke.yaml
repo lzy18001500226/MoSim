@@ -25,11 +25,10 @@ simulation:
 
 reference:
   type: official_circle_path
-  file: results/official/example2_helix/raw/reference_official_example2.csv
+  file: results/official/example2_helix/reference_official_example2/raw/reference_official_example2.csv
 
 result:
   raw_file: results/smoke/example2_helix/awff_sysblock_smoke/raw/official_example2_awff_sysblock_smoke.csv
   metrics_file: results/smoke/example2_helix/awff_sysblock_smoke/metrics/official_example2_awff_sysblock_smoke.json
   figure_dir: results/smoke/example2_helix/awff_sysblock_smoke/figures
-  replay_file: results/smoke/example2_helix/awff_sysblock_smoke/replay/official_example2_awff_sysblock_smoke.json
   mcp_log: results/smoke/example2_helix/awff_sysblock_smoke/logs/sysplorer_example2_awff_sysblock_smoke_20260510.jsonl

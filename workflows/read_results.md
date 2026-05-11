@@ -62,7 +62,7 @@ resources_retrieval
 4. Match model-specific variable names to standard project names.
 5. If a candidate is missing, list available variables and update the mapping.
 6. Read time series for required variables.
-7. Save project-standard CSV under `results/{group}/{scene}/raw/`.
+7. Save project-standard CSV under `results/{group}/{scene}/{experiment}/raw/`.
 8. Save variable mapping if non-obvious.
 
 ---
@@ -142,7 +142,7 @@ For MCP JSONL smoke logs that contain `GetVarsValues`, use:
 
 ```bash
 python3 scripts/extract_mcp_timeseries.py \
-  results/official/example1_step/logs/sysplorer_quadrotor_example1_values.jsonl \
+  results/official/example1_step/diagnostics/logs/sysplorer_quadrotor_example1_values.jsonl \
   results/smoke/example1_mcp/pid_baseline_smoke/raw/mworks_mcp_example1_pid_smoke.csv \
   --columns x,y,z,x_ref,y_ref,z_ref \
   --start-time 0 \

@@ -100,5 +100,5 @@ RMSE must not worsen by more than 20% unless documented.
 Save test results to:
 
 ```text
-results/{group}/{scene}/logs/
+results/{group}/{scene}/{experiment}/logs/
 ```

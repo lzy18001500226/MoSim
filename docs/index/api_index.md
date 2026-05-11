@@ -123,7 +123,7 @@ map_matlab_functions_to_julia
 | `scripts/qa_check.py` | Project quality check | project root | pass/fail report |
 | `scripts/scan_mworks_docs.py` | Scan a local MWORKS resource package with PDF preview review | optional `--source` directory | `docs/mworks/scan/` indexes |
 | `scripts/convert_mworks_pdfs.py` | Convert selected PDFs via MinerU or PyMuPDF fallback | selected local PDFs | `docs/mworks/converted/` Markdown and `_images/` directories |
-| `scripts/calc_metrics.jl` | Compute standard tracking/control metrics | `results/{group}/{scene}/raw/*.csv` | `results/{group}/{scene}/metrics/*.json` and `.csv` |
+| `scripts/calc_metrics.jl` | Compute standard tracking/control metrics | `results/{group}/{scene}/{experiment}/raw/*.csv` | `results/{group}/{scene}/{experiment}/metrics/*.json` and `.csv` |
 | `scripts/plot_results.jl` | Write figure manifest for report assets | raw CSV and figure dir | `figure_manifest.md` |
 
 ## 6. MinerU Precise Parsing API
@@ -279,8 +279,8 @@ binding metadata. Therefore:
 
 1. Prefer MWORKS.Sysblock GUI/API generated models for new block diagrams.
 2. Use hand-written Sysblock `.mo` only as a draft until `check_model` passes.
-3. Store successful check/simulation evidence under `results/{group}/{scene}/logs/`.
-4. Store failed check diagnostics under `results/{group}/{scene}/logs/` or a preserved MCP log.
+3. Store successful check/simulation evidence under `results/{group}/{scene}/{experiment}/logs/`.
+4. Store failed check diagnostics under `results/{group}/{scene}/{experiment}/logs/` or a preserved MCP log.
 
 ---
 

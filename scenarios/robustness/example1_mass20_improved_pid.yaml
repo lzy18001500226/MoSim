@@ -33,11 +33,10 @@ simulation:
 
 reference:
   type: official_climb_path
-  file: results/official/example1_step/raw/reference_official_example1.csv
-
+  file: results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
 result:
-  raw_file: results/robustness/mass20_example1/raw/robust_mass20_example1_improved_pid.csv
-  metrics_file: results/robustness/mass20_example1/metrics/robust_mass20_example1_improved_pid.json
-  figure_dir: results/robustness/mass20_example1/figures
-  replay_file: results/robustness/mass20_example1/replay/robust_mass20_example1_improved_pid.json
-  mcp_log: results/robustness/mass20_example1/logs/sysplorer_robust_mass20_example1_improved_pid_20260510.jsonl
+  raw_file: results/robustness/mass20_example1/robust_mass20_example1_improved_pid/raw/robust_mass20_example1_improved_pid.csv
+  metrics_file: results/robustness/mass20_example1/robust_mass20_example1_improved_pid/metrics/robust_mass20_example1_improved_pid.json
+  figure_dir: results/robustness/mass20_example1/robust_mass20_example1_improved_pid/figures
+  replay_file: results/robustness/mass20_example1/robust_mass20_example1_improved_pid/replay/robust_mass20_example1_improved_pid.json
+  mcp_log: results/robustness/mass20_example1/robust_mass20_example1_improved_pid/logs/sysplorer_robust_mass20_example1_improved_pid_20260510.jsonl

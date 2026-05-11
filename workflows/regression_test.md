@@ -15,14 +15,14 @@ Compare new metrics with previous accepted metrics.
 Store accepted metrics under:
 
 ```text
-results/{group}/{scene}/metrics/baseline/
+results/{group}/{scene}/{experiment}/metrics/baseline/
 ```
 
 Example:
 
 ```text
-results/{group}/{scene}/metrics/baseline/figure8_pid_baseline.json
-results/{group}/{scene}/metrics/baseline/figure8_nmpc_indi_l1.json
+results/{group}/{scene}/{experiment}/metrics/baseline/figure8_pid_baseline.json
+results/{group}/{scene}/{experiment}/metrics/baseline/figure8_nmpc_indi_l1.json
 ```
 
 ---

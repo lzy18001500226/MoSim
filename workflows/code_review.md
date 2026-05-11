@@ -29,8 +29,8 @@ Check:
 2. Controller interfaces remain compatible.
 3. Scenario config fields are complete.
 4. Results are saved under `results/`.
-5. Figures are saved under `docs/figures/` or `results/{group}/{scene}/figures/`.
-6. Metrics are saved under `results/{group}/{scene}/metrics/`.
+5. Figures are saved under `docs/figures/` or `results/{group}/{scene}/{experiment}/figures/`.
+6. Metrics are saved under `results/{group}/{scene}/{experiment}/metrics/`.
 7. No unnecessary absolute paths are introduced.
 8. MCP workflows are followed.
 9. Model changes are backed up.

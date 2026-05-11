@@ -18,9 +18,8 @@ simulation:
 
 reference:
   type: official_climb_path
-  file: results/official/example1_step/raw/reference_official_example1.csv
-
+  file: results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
 result:
-  raw_file: results/official/example1_step/raw/official_example1_pid_baseline.csv
-  metrics_file: results/official/example1_step/metrics/official_example1_pid_baseline.json
-  replay_file: results/official/example1_step/replay/reference_official_example1.json
+  raw_file: results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv
+  metrics_file: results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.json
+  replay_file: results/official/example1_step/official_example1_pid_baseline/replay/official_example1_pid_baseline.json

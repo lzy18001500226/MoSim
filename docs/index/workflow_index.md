@@ -168,7 +168,7 @@ validation criteria
 Good example:
 
 ```text
-按照 workflows/run_simulation.md，使用 Sysplorer MCP 运行 figure8 场景，控制器为 pid_baseline，结果保存到 results/official/example3_figure8/raw/figure8_pid.csv。
+按照 workflows/run_simulation.md，使用 Sysplorer MCP 运行 figure8 场景，控制器为 pid_baseline，结果保存到 results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv。
 ```
 
 Bad example:

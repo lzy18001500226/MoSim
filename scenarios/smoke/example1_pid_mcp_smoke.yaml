@@ -19,7 +19,7 @@ simulation:
 
 reference:
   type: official_climb_path
-  file: results/official/example1_step/raw/reference_official_example1.csv
+  file: results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
 
 result:
   raw_file: results/smoke/example1_mcp/pid_baseline_smoke/raw/mworks_mcp_example1_pid_smoke.csv

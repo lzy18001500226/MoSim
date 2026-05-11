@@ -38,11 +38,10 @@ simulation:
 
 reference:
   type: official_climb_path
-  file: results/official/example1_step/raw/reference_official_example1.csv
-
+  file: results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
 result:
-  raw_file: results/robustness/wind_gust_example1/raw/robust_wind_gust_example1_awff_sysblock.csv
-  metrics_file: results/robustness/wind_gust_example1/metrics/robust_wind_gust_example1_awff_sysblock.json
-  figure_dir: results/robustness/wind_gust_example1/figures
-  replay_file: results/robustness/wind_gust_example1/replay/robust_wind_gust_example1_awff_sysblock.json
-  mcp_log: results/robustness/wind_gust_example1/logs/sysplorer_robust_wind_gust_example1_awff_sysblock_20260510.jsonl
+  raw_file: results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/raw/robust_wind_gust_example1_awff_sysblock.csv
+  metrics_file: results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/metrics/robust_wind_gust_example1_awff_sysblock.json
+  figure_dir: results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/figures
+  replay_file: results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/replay/robust_wind_gust_example1_awff_sysblock.json
+  mcp_log: results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/logs/sysplorer_robust_wind_gust_example1_awff_sysblock_20260510.jsonl

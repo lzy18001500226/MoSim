@@ -24,10 +24,9 @@ simulation:
 
 reference:
   type: official_circle_path
-  file: results/official/example2_helix/raw/reference_official_example2.csv
-
+  file: results/official/example2_helix/reference_official_example2/raw/reference_official_example2.csv
 result:
-  raw_file: results/official/example2_helix/raw/official_example2_improved_pid.csv
-  metrics_file: results/official/example2_helix/metrics/official_example2_improved_pid.json
-  figure_dir: results/official/example2_helix/figures
-  replay_file: results/official/example2_helix/replay/official_example2_improved_pid.json
+  raw_file: results/official/example2_helix/official_example2_improved_pid/raw/official_example2_improved_pid.csv
+  metrics_file: results/official/example2_helix/official_example2_improved_pid/metrics/official_example2_improved_pid.json
+  figure_dir: results/official/example2_helix/official_example2_improved_pid/figures
+  replay_file: results/official/example2_helix/official_example2_improved_pid/replay/official_example2_improved_pid.json

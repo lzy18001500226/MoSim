@@ -11,7 +11,7 @@ Run a specified scene and controller, then save raw simulation results for analy
 Example task:
 
 ```text
-Run the figure8 scene with pid_baseline and save results to results/official/example3_figure8/raw/figure8_pid_baseline.csv.
+Run the figure8 scene with pid_baseline and save results to results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv.
 ```
 
 ---
@@ -41,8 +41,8 @@ result_variables
 Recommended config format:
 
 ```yaml
-experiment_id: figure8_pid_baseline_001
-scene_id: figure8
+experiment_id: official_example3_pid_baseline
+scene_id: official_example3
 controller_id: pid_baseline
 model_name: QuadrotorModel.Examples.Example3
 start_time: 0
@@ -50,9 +50,9 @@ stop_time: 30
 step_size: 0.01
 
 result:
-  raw_file: results/official/example3_figure8/raw/figure8_pid_baseline.csv
-  metrics_file: results/official/example3_figure8/metrics/figure8_pid_baseline.json
-  figure_dir: results/official/example3_figure8/figures/pid_baseline/
+  raw_file: results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv
+  metrics_file: results/official/example3_figure8/official_example3_pid_baseline/metrics/official_example3_pid_baseline.json
+  figure_dir: results/official/example3_figure8/official_example3_pid_baseline/figures
 
 variables:
   - time
@@ -198,7 +198,7 @@ Rules:
 ```text
 Always run check_model before simulate_model.
 Do not run simulation if check_model fails.
-Save error messages into results/{group}/{scene}/logs/ if possible.
+Save error messages into results/{group}/{scene}/{experiment}/logs/ if possible.
 ```
 
 Success criteria:
@@ -282,7 +282,7 @@ If a variable is missing:
 Save to:
 
 ```text
-results/{group}/{scene}/raw/{scene_id}_{controller_id}.csv
+results/{group}/{scene}/{experiment}/raw/{scene_id}_{controller_id}.csv
 ```
 
 CSV should include:
@@ -307,12 +307,12 @@ python3 scripts/generate_reference.py --scene all
 Outputs:
 
 ```text
-results/official/example1_step/raw/reference_official_example1.csv
-results/official/example2_helix/raw/reference_official_example2.csv
-results/official/example3_figure8/raw/reference_official_example3.csv
-results/official/example1_step/replay/reference_official_example1.json
-results/official/example2_helix/replay/reference_official_example2.json
-results/official/example3_figure8/replay/reference_official_example3.json
+results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
+results/official/example2_helix/reference_official_example2/raw/reference_official_example2.csv
+results/official/example3_figure8/reference_official_example3/raw/reference_official_example3.csv
+results/official/example1_step/reference_official_example1/replay/reference_official_example1.json
+results/official/example2_helix/reference_official_example2/replay/reference_official_example2.json
+results/official/example3_figure8/reference_official_example3/replay/reference_official_example3.json
 ```
 
 These files are valid for P0 trajectory inspection and video/replay pipeline
@@ -338,14 +338,14 @@ baseline metrics require the scenario stop times in `scenarios/official/*.yaml`.
 For every successful simulation, create:
 
 ```text
-results/{group}/{scene}/raw/{scene_id}_{controller_id}.csv
-results/{group}/{scene}/logs/{scene_id}_{controller_id}.log
+results/{group}/{scene}/{experiment}/raw/{scene_id}_{controller_id}.csv
+results/{group}/{scene}/{experiment}/logs/{scene_id}_{controller_id}.log
 ```
 
 For every reported experiment, later create:
 
 ```text
-results/{group}/{scene}/metrics/{scene_id}_{controller_id}.json
+results/{group}/{scene}/{experiment}/metrics/{scene_id}_{controller_id}.json
 results/{group}/{scene_id}/figures/{controller_id}/trajectory.png
 results/{group}/{scene_id}/figures/{controller_id}/error.png
 ```

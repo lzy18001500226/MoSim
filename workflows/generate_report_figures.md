@@ -45,16 +45,16 @@ CSV and optional metrics JSON:
 
 ```bash
 python3 scripts/plot_results.py \
-  results/official/example1_step/raw/official_example1_improved_pid.csv \
-  results/official/example1_step/figures/improved_pid \
-  --metrics results/official/example1_step/metrics/official_example1_improved_pid.json
+  results/official/example1_step/official_example1_improved_pid/raw/official_example1_improved_pid.csv \
+  results/official/example1_step/official_example1_improved_pid/figures \
+  --metrics results/official/example1_step/official_example1_improved_pid/metrics/official_example1_improved_pid.json
 ```
 
 Use `scripts/plot_results.jl`, Syslab MCP plotting APIs, or Sysplorer
 `plot_manager` only when higher-fidelity native plots are required.
 
 `scripts/generate_replay_html.py` creates self-contained offline browser replay
-pages from `results/{group}/{scene}/replay/*.json`. The generated HTML has no CDN dependency
+pages from `results/{group}/{scene}/{experiment}/replay/*.json`. The generated HTML has no CDN dependency
 and can be used for browser recording and 3D demo video materials without
 opening MWORKS:
 
@@ -65,7 +65,7 @@ python3 scripts/generate_replay_html.py --all
 Output:
 
 ```text
-results/{group}/{scene}/replay_html/{replay_name}.html
+results/{group}/{scene}/{experiment}/replay_html/{replay_name}.html
 ```
 
 ---
@@ -115,20 +115,20 @@ formation switching process
 
 ## 5. Figure Directory Taxonomy
 
-Put report figures under the owning result group and scenario:
+Put report figures under the owning experiment directory. The scenario groups should contain experiment directories, not shared asset directories:
 
 ```text
-results/official/example1_step/figures/{controller}/
-results/official/example2_helix/figures/{controller}/
-results/official/example3_figure8/figures/{controller}/
-results/robustness/mass20_example1/figures/{controller}/
-results/robustness/wind_gust_example1/figures/{controller}/
-results/robustness/rotor1_loss15_example1/figures/{controller}/
+results/official/example1_step/official_example1_awff_sysblock/figures/
+results/official/example2_helix/official_example2_awff_sysblock/figures/
+results/official/example3_figure8/official_example3_awff_sysblock/figures/
+results/robustness/mass20_example1/robust_mass20_example1_awff_sysblock/figures/
+results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/figures/
+results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/figures/
 results/smoke/example1_mcp/{controller}_smoke/figures/
 ```
 
-`results/official/example3_figure8/` is the only current 8-shaped official
-trajectory figure group. `results/smoke/` figures are process evidence only and
+`results/official/example3_figure8/*/figures/` contains the current 8-shaped official
+trajectory figure groups. `results/smoke/` figures are process evidence only and
 should not be used as final report or demo-video material unless explicitly
 marked as smoke.
 

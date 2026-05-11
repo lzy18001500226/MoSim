@@ -25,11 +25,10 @@ simulation:
 
 reference:
   type: official_climb_path
-  file: results/official/example1_step/raw/reference_official_example1.csv
-
+  file: results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
 result:
-  raw_file: results/official/example1_step/raw/official_example1_awff_sysblock.csv
-  metrics_file: results/official/example1_step/metrics/official_example1_awff_sysblock.json
-  figure_dir: results/official/example1_step/figures
-  replay_file: results/official/example1_step/replay/official_example1_awff_sysblock.json
-  mcp_log: results/official/example1_step/logs/sysplorer_example1_awff_sysblock_full_20260510.jsonl
+  raw_file: results/official/example1_step/official_example1_awff_sysblock/raw/official_example1_awff_sysblock.csv
+  metrics_file: results/official/example1_step/official_example1_awff_sysblock/metrics/official_example1_awff_sysblock.json
+  figure_dir: results/official/example1_step/official_example1_awff_sysblock/figures
+  replay_file: results/official/example1_step/official_example1_awff_sysblock/replay/official_example1_awff_sysblock.json
+  mcp_log: results/official/example1_step/official_example1_awff_sysblock/logs/sysplorer_example1_awff_sysblock_full_20260510.jsonl

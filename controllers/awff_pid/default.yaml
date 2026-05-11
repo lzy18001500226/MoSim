@@ -92,9 +92,9 @@ verified_results:
     max_position_error_m: 1.2413616018
   full_example1:
     scenario_file: scenarios/official/example1_awff_pid.yaml
-    raw_file: results/official/example1_step/raw/official_example1_awff_pid.csv
-    metrics_file: results/official/example1_step/metrics/official_example1_awff_pid.json
-    mcp_log: results/official/example1_step/logs/sysplorer_example1_awff_pid_full_20260510.jsonl
+    raw_file: results/official/example1_step/official_example1_awff_pid/raw/official_example1_awff_pid.csv
+    metrics_file: results/official/example1_step/official_example1_awff_pid/metrics/official_example1_awff_pid.json
+    mcp_log: results/official/example1_step/official_example1_awff_pid/logs/sysplorer_example1_awff_pid_full_20260510.jsonl
     row_count: 25001
     position_rmse_m: 0.2599138901
     max_position_error_m: 1.2413616018
