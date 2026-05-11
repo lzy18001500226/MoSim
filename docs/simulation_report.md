@@ -6,7 +6,7 @@
 
 本报告记录当前工程已经可复现的仿真数据链路、官方参考轨迹、指标计算方法和图表生成方式。控制器性能对比只引用已保存 raw CSV、metrics JSON/CSV、MCP JSONL 日志和 SVG 图表的实验。
 
-证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表包含真实 Sysplorer MCP / Modelica 派生模型闭环仿真，以及 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 的全时长 Sysblock 控制器闭环证据。Sysblock 当前已完成 AWFF PID 高度环最小 demo、三段分层控制器、组合控制器 `AWFF_FullController_Sysblock` 的真实 MCP 验证，并完成 Example1 50 s、Example2 50 s、Example3 120 s 整机仿真；P1 创新控制器方向已完成 `AWFF_L1ResidualControllerEquation_Sysblock` 在 Example1 与横向阵风 Example1 中的首轮真实 MCP 消融。
+证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表包含真实 Sysplorer MCP / Modelica 派生模型闭环仿真，以及 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 的全时长 Sysblock 控制器闭环证据。Sysblock 当前已完成 AWFF PID 高度环最小 demo、三段分层控制器、组合控制器 `AWFF_FullController_Sysblock` 的真实 MCP 验证，并完成 Example1 50 s、Example2 50 s、Example3 120 s 整机仿真；P1 创新控制器方向已完成 `AWFF_L1ResidualControllerEquation_Sysblock` 和 `AWFF_INDIControllerEquation_Sysblock` 的真实 MCP 消融，其中后者当前为 L1-inspired 残差外环 + INDI-like 姿态增量组合控制器。
 
 质量判定规则：`check_model ok` 和 `simulate_model ok` 只说明模型可以执行；完整性能结论还必须通过 `scripts/evaluate_result_quality.py` 写入的 `quality_status`。`pass` 可支撑报告结论，`smoke_only` 只证明链路可用，`needs_iteration` 必须继续调控制器或明确写为未完成限制。当前 Example2 已通过 `helix_tuned` Enhanced PID、AWFF PID 和 AWFF Sysblock 分支解决 RMSE 门禁问题；旋翼退化场景健康分仍低于阈值，应作为后续控制分配/故障补偿迭代对象。
 
@@ -22,6 +22,7 @@ Example1/2/3 AWFF Sysblock 整机完整 CSV、指标、图表和 replay JSON
 质量 +20%、横向阵风、1号旋翼效率85% 的 AWFF PID 鲁棒消融 CSV、指标、图表和 replay JSON
 Example1/2/3 AWFF Sysblock 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 Example1 L1 residual Sysblock nominal/wind-gust 0-1 s smoke 与 50 s full CSV、指标、图表和 replay JSON
+Example1 和 Example3 L1-inspired + INDI-like Sysblock 组合控制器 full CSV、指标、图表和 replay JSON
 ```
 
 ## 2. 模型与场景
@@ -32,6 +33,7 @@ Example1 L1 residual Sysblock nominal/wind-gust 0-1 s smoke 与 50 s full CSV、
 | 阶梯爬升 Enhanced PID | `QuadrotorExperiments.Example1EnhancedPID` | 50 s | 导数滤波 + 保守限幅 Enhanced PID 已通过 Sysplorer MCP 仿真 |
 | 阶梯爬升 AWFF PID | `QuadrotorExperiments.Example1AntiWindupFeedforwardPID` | 50 s | 项目自有抗饱和 + 竖直参考前馈控制器已通过 Sysplorer MCP 仿真 |
 | 阶梯爬升 AWFF Sysblock | `QuadrotorExperiments.Example1AWFFSysblockClosedLoop` | 50 s | 项目 Sysblock 控制器整机闭环已通过 Sysplorer MCP 仿真 |
+| 阶梯爬升 L1+INDI Sysblock | `QuadrotorExperiments.Example1INDISysblockClosedLoop` | 50 s | AWFF + L1-inspired 残差外环 + INDI-like 姿态增量组合控制器已通过质量门 |
 | 阶梯爬升 L1 residual Sysblock | `QuadrotorExperiments.Example1L1SysblockClosedLoop` | 50 s | AWFF + L1-inspired 残差补偿控制器已通过 Sysplorer MCP 仿真 |
 | 横向阵风 L1 residual Sysblock | `QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop` | 50 s | AWFF + L1-inspired 残差补偿风扰消融已通过 Sysplorer MCP 仿真 |
 | 螺旋爬升 | `QuadrotorModel.Examples.Example2` | 50 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
@@ -45,6 +47,7 @@ Example1 L1 residual Sysblock nominal/wind-gust 0-1 s smoke 与 50 s full CSV、
 | 8字形运动 Enhanced PID | `QuadrotorExperiments.Example3EnhancedPID` | 120 s | 导数滤波 + 保守限幅 Enhanced PID 已通过 Sysplorer MCP 仿真，质量门禁为 `pass` |
 | 8字形运动 AWFF PID | `QuadrotorExperiments.Example3AntiWindupFeedforwardPID` | 120 s | 项目自有抗饱和 + 竖直参考前馈控制器已通过 Sysplorer MCP 仿真，质量门禁为 `pass` |
 | 8字形运动 AWFF Sysblock | `QuadrotorExperiments.Example3AWFFSysblockClosedLoop` | 120 s | 项目 Sysblock 控制器整机闭环已通过 Sysplorer MCP 仿真 |
+| 8字形运动 L1+INDI Sysblock | `QuadrotorExperiments.Example3INDISysblockClosedLoop` | 120 s | AWFF + L1-inspired 残差外环 + INDI-like 姿态增量组合控制器已通过质量门 |
 | Example1 smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已有 CSV、指标、图表 |
 | Example1 MWORKS MCP smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已通过 Sysplorer MCP 真实加载、检查、仿真和读取变量 |
 
@@ -486,8 +489,10 @@ scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | Example1 阶梯爬升 | awff_sysblock | pass | 0.266217 | - | 0.075009 | - | 3.030 | 0.103144 | 0.174437 | 265.176177 | 55.423227 |
 | Example1 阶梯爬升 | l1_residual_sysblock | pass | 0.243837 | +8.406% | 0.066028 | +11.974% | 2.700 | 0.074804 | 0.205017 | 275.737107 | 55.816606 |
+| Example1 阶梯爬升 | awff_indi_sysblock | pass | 0.243827 | +8.410% | 0.066025 | +11.977% | 2.700 | 0.075095 | 0.206096 | 273.945001 | 55.816620 |
 | Example3 8字形 | awff_sysblock | pass | 0.166669 | - | 0.098743 | - | 0.000 | 0.061905 | 0.229426 | 228.107001 | 60.281226 |
 | Example3 8字形 | l1_residual_sysblock | pass | 0.152236 | +8.660% | 0.070219 | +28.887% | 0.000 | 0.049720 | 0.241367 | 227.238718 | 60.201910 |
+| Example3 8字形 | awff_indi_sysblock | pass | 0.152232 | +8.662% | 0.070253 | +28.853% | 0.000 | 0.049718 | 0.252449 | 222.029816 | 60.201282 |
 | 质量+20% Example1 | awff_sysblock | pass | 0.282785 | - | 0.083369 | - | 3.030 | 0.103112 | 0.174122 | 266.591707 | 52.443573 |
 | 质量+20% Example1 | l1_residual_sysblock | pass | 0.260769 | +7.785% | 0.072645 | +12.864% | 2.700 | 0.074850 | 0.204374 | 276.357145 | 55.360839 |
 | 15-19s 横向阵风 Example1 | awff_sysblock | pass | 0.318224 | - | 0.696413 | - | 3.250 | 0.103106 | 0.196645 | 269.391389 | 55.001701 |
@@ -498,7 +503,7 @@ scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
 | 1号旋翼效率85% Example1 | l1_online_fault_allocation_sysblock | pass | 0.260671 | +29.363% | 0.110916 | +57.638% | 2.560 | 0.117032 | 0.205199 | 283.382251 | 51.143948 |
 | 1号旋翼效率85% Example1 | l1_multi_fault_isolation_sysblock | pass | 0.267917 | +27.405% | 0.110916 | +57.637% | 4.910 | 0.140601 | 0.204720 | 284.641308 | 50.984182 |
 
-消融结论：L1-inspired 残差补偿在 Example1、Example3 8 字形、质量 +20% 和横向阵风四类正式场景中均通过质量门，并稳定降低 RMSE、稳态误差和扰动窗口峰值误差。横向阵风中 `position_rmse_m` 降低 `12.568%`、峰值误差降低 `22.210%`；8 字形中 RMSE 降低 `8.660%`。代价是 Example1 派生场景最大倾角约增加到 `0.205 rad`，控制平滑性约增加 `3.9%`。旋翼退化场景中，单独 L1 仍为 `needs_iteration`；加入已知效率 `eta=0.85` 的混合控制分配补偿后，`l1_fault_allocation_sysblock` 通过质量门，RMSE 相比 AWFF Sysblock 降低 `33.793%`，稳态误差降低 `68.749%`，扰动窗口峰值误差降低 `74.091%`，恢复时间从 `13.760 s` 缩短到 `2.730 s`。进一步加入残差驱动在线效率估计后，`l1_online_fault_allocation_sysblock` 在不直接读取真实 `eta=0.85` 的条件下通过质量门，导出 `eta_hat` 诊断列，末值约 `0.904`，RMSE 相比 AWFF Sysblock 降低 `29.363%`。多旋翼隔离雏形 `l1_multi_fault_isolation_sysblock` 输出 `eta_hat1..4` 与 `fault_index`，在 rotor1 退化场景中 `5-50 s` 的 `fault_index=1` 正确率为 `100%`，并保持质量门 `pass`。该结果可作为“多旋翼故障隔离结构已接入并在 rotor1 场景验证”的证据；完整四旋翼故障隔离仍需补 rotor2/3/4 退化场景后才能声明。
+消融结论：L1-inspired 残差补偿在 Example1、Example3 8 字形、质量 +20% 和横向阵风四类正式场景中均通过质量门，并稳定降低 RMSE、稳态误差和扰动窗口峰值误差。横向阵风中 `position_rmse_m` 降低 `12.568%`、峰值误差降低 `22.210%`；8 字形中 RMSE 降低 `8.660%`。`awff_indi_sysblock` 当前为 L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，在 Example1 和 Example3 中同样通过质量门，RMSE 分别降低 `8.410%` 和 `8.662%`；它证明 INDI-like 姿态增量可以在不破坏 L1 残差补偿收益的前提下接入整机闭环，但不能单独宣称“纯 INDI”贡献了全部误差下降。代价是 Example1 派生场景最大倾角约增加到 `0.205 rad`，控制平滑性约增加 `3.9%`。旋翼退化场景中，单独 L1 仍为 `needs_iteration`；加入已知效率 `eta=0.85` 的混合控制分配补偿后，`l1_fault_allocation_sysblock` 通过质量门，RMSE 相比 AWFF Sysblock 降低 `33.793%`，稳态误差降低 `68.749%`，扰动窗口峰值误差降低 `74.091%`，恢复时间从 `13.760 s` 缩短到 `2.730 s`。进一步加入残差驱动在线效率估计后，`l1_online_fault_allocation_sysblock` 在不直接读取真实 `eta=0.85` 的条件下通过质量门，导出 `eta_hat` 诊断列，末值约 `0.904`，RMSE 相比 AWFF Sysblock 降低 `29.363%`。多旋翼隔离雏形 `l1_multi_fault_isolation_sysblock` 输出 `eta_hat1..4` 与 `fault_index`，在 rotor1 退化场景中 `5-50 s` 的 `fault_index=1` 正确率为 `100%`，并保持质量门 `pass`。该结果可作为“多旋翼故障隔离结构已接入并在 rotor1 场景验证”的证据；完整四旋翼故障隔离仍需补 rotor2/3/4 退化场景后才能声明。
 
 ## 10. 当前图表
 
