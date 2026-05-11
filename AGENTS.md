@@ -165,8 +165,9 @@ Rules:
 7. If MCP behavior may interrupt the user's desktop, state that risk before running the operation.
 8. Do not call MCP tools merely to create activity. Use the smallest set of MCP calls that proves the current engineering claim.
 9. If a tool exposes a release, stop, or non-GUI session cleanup API, call it after the useful result is saved.
-10. Before `git add`, `git commit`, or `git push`, close or explicitly verify closure of this round's Sysplorer / Syslab / MWORKS windows and MCP wrapper/server processes. This prevents stale login prompts, frozen windows, and accidental auto-upgrade rewrites from being committed.
-11. If a GUI window freezes, shows an unexpected login prompt, or an MCP call has no useful response within the planned timeout, stop that MCP sequence, clean up the related process/window if it is clearly identifiable, and continue with file-level work or report the blocker.
+10. Do not automatically close Sysplorer / Syslab / MWORKS windows before Git. Closing these windows can force license reactivation on the next run. Leave reusable windows open by default.
+11. Close Sysplorer / Syslab / MWORKS windows only when the user explicitly asks, when the window is clearly frozen, when a login/activation prompt blocks progress, or when a stale process is opening duplicate sessions uncontrollably.
+12. If a GUI window freezes, shows an unexpected login prompt, or an MCP call has no useful response within the planned timeout, stop that MCP sequence, clean up the related process/window if it is clearly identifiable, and continue with file-level work or report the blocker.
 
 ### 3.5 Simulation Evidence Rule
 
@@ -192,7 +193,7 @@ For MWORKS simulations:
 2. Run the smallest simulation that validates the current change first.
 3. Read required result variables after simulation.
 4. Save logs or smoke-test evidence only when useful.
-5. Keep one Sysplorer / Syslab / MWORKS GUI window open during a related batch of checks to avoid repeated startup cost, but close or verify it before any Git commit/push.
+5. Keep one Sysplorer / Syslab / MWORKS GUI window open during a related batch of checks to avoid repeated startup cost and license reactivation. Do not close it before Git unless the user asks or it is blocking progress.
 6. Do not leave long-running simulations active after the task is complete.
 7. Prefer one active Sysplorer/Syslab session at a time unless parallel simulation is explicitly required.
 8. Reuse an existing session for related operations instead of opening many windows.
