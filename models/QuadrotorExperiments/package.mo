@@ -181,10 +181,84 @@ package QuadrotorExperiments
     annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
   end Example1ProjectControllerBase;
 
+  partial model Example2ProjectControllerBase
+    "Project-owned Example2 clone with controller3_2 replaced by project controller"
+    QuadrotorModel.PathPlanning.CirclePath climbePath(ramp(height = 20), sine(f = 0.05), cosine(f = 0.05, startTime = 10, phase = 0));
+    QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1;
+    QuadrotorModel.Electricals.Actuator actuator1_1;
+    QuadrotorModel.Electricals.Actuator actuator1_2;
+    QuadrotorModel.Electricals.Actuator actuator1_3;
+    QuadrotorModel.Electricals.Actuator actuator1_4;
+    QuadrotorModel.Sensors.Sensors sensors1_1;
+    AntiWindupFeedforwardController controller3_2;
+    Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor[4];
+
+  equation
+    connect(actuator1_1.flange_a, quadChassisTest17_1.flange_a);
+    connect(actuator1_2.flange_a, quadChassisTest17_1.flange_a1);
+    connect(actuator1_3.flange_a, quadChassisTest17_1.flange_a2);
+    connect(actuator1_4.flange_a, quadChassisTest17_1.flange_a3);
+    connect(quadChassisTest17_1.frame_a, sensors1_1.frame_a);
+    connect(actuator1_1.u, controller3_2.y);
+    connect(actuator1_2.u, controller3_2.y1);
+    connect(actuator1_3.u, controller3_2.y2);
+    connect(actuator1_4.u, controller3_2.y3);
+    connect(sensors1_1.AngleMea, controller3_2.angle);
+    connect(sensors1_1.PosMea, controller3_2.position);
+    connect(climbePath.position_command, controller3_2.position_command);
+    connect(actuator1_1.flange_a, speedSensor[1].flange);
+    connect(actuator1_2.flange_a, speedSensor[2].flange);
+    connect(actuator1_3.flange_a, speedSensor[3].flange);
+    connect(actuator1_4.flange_a, speedSensor[4].flange);
+    annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
+  end Example2ProjectControllerBase;
+
+  partial model Example3ProjectControllerBase
+    "Project-owned Example3 clone with controller3_2 replaced by project controller"
+    QuadrotorModel.PathPlanning.EightPath climbePath;
+    QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1;
+    QuadrotorModel.Electricals.Actuator actuator1_1;
+    QuadrotorModel.Electricals.Actuator actuator1_2;
+    QuadrotorModel.Electricals.Actuator actuator1_3;
+    QuadrotorModel.Electricals.Actuator actuator1_4;
+    QuadrotorModel.Sensors.Sensors sensors1_1;
+    AntiWindupFeedforwardController controller3_2;
+    Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor[4];
+
+  equation
+    connect(actuator1_1.flange_a, quadChassisTest17_1.flange_a);
+    connect(actuator1_2.flange_a, quadChassisTest17_1.flange_a1);
+    connect(actuator1_3.flange_a, quadChassisTest17_1.flange_a2);
+    connect(actuator1_4.flange_a, quadChassisTest17_1.flange_a3);
+    connect(quadChassisTest17_1.frame_a, sensors1_1.frame_a);
+    connect(actuator1_1.u, controller3_2.y);
+    connect(actuator1_2.u, controller3_2.y1);
+    connect(actuator1_3.u, controller3_2.y2);
+    connect(actuator1_4.u, controller3_2.y3);
+    connect(sensors1_1.AngleMea, controller3_2.angle);
+    connect(sensors1_1.PosMea, controller3_2.position);
+    connect(climbePath.position_command, controller3_2.position_command);
+    connect(actuator1_1.flange_a, speedSensor[1].flange);
+    connect(actuator1_2.flange_a, speedSensor[2].flange);
+    connect(actuator1_3.flange_a, speedSensor[3].flange);
+    connect(actuator1_4.flange_a, speedSensor[4].flange);
+    annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 120, Tolerance = 0.0001, Interval = 0.01));
+  end Example3ProjectControllerBase;
+
   model Example1AntiWindupFeedforwardPID
     "Example1 with project-owned anti-windup and reference-feedforward controller"
     extends Example1ProjectControllerBase;
   end Example1AntiWindupFeedforwardPID;
+
+  model Example2AntiWindupFeedforwardPID
+    "Example2 with project-owned anti-windup and reference-feedforward controller"
+    extends Example2ProjectControllerBase;
+  end Example2AntiWindupFeedforwardPID;
+
+  model Example3AntiWindupFeedforwardPID
+    "Example3 with project-owned anti-windup and reference-feedforward controller"
+    extends Example3ProjectControllerBase;
+  end Example3AntiWindupFeedforwardPID;
 
   model Example1Mass20AntiWindupFeedforwardPID
     "Example1 AWFF PID with +20% central body mass perturbation"
@@ -401,6 +475,22 @@ package QuadrotorExperiments
     annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
   end Example2ImprovedPID;
 
+  model Example2EnhancedPID
+    "Example2 with explicit derivative filtering and conservative command limits"
+    extends QuadrotorModel.Examples.Example2(
+      controller3_2.PID3(KP = 1.65, KI = 0, KD = 1.0, der1(T = 0.05)),
+      controller3_2.PID4(KP = 1.65, KI = 0, KD = 1.0, der1(T = 0.05)),
+      controller3_2.PID5(KP = 14.142, KI = 0, KD = 1.70, der1(T = 0.03)),
+      controller3_2.PID6(KP = 14.142, KI = 0, KD = 1.70, der1(T = 0.03)),
+      controller3_2.PID7(KP = 8.0, KI = 6.0, KD = 4.0, der1(T = 0.08)),
+      controller3_2.limiter1(uMax = 12 / 57.3, uMin = -12 / 57.3),
+      controller3_2.limiter2(uMax = 12 / 57.3, uMin = -12 / 57.3),
+      controller3_2.limiter3(uMax = 6.5, uMin = -6.5),
+      controller3_2.limiter4(uMax = 6.5, uMin = -6.5),
+      controller3_2.limiter5(uMax = 6.5, uMin = -6.5));
+    annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
+  end Example2EnhancedPID;
+
   model Example3ImprovedPID
     "Example3 with project improved PID parameter set selected by MCP tuning"
     extends QuadrotorModel.Examples.Example3(
@@ -411,4 +501,20 @@ package QuadrotorExperiments
       controller3_2.PID7(KP = 8.0, KI = 6.0, KD = 4.0));
     annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 120, Tolerance = 0.0001, Interval = 0.01));
   end Example3ImprovedPID;
+
+  model Example3EnhancedPID
+    "Example3 with explicit derivative filtering and conservative command limits"
+    extends QuadrotorModel.Examples.Example3(
+      controller3_2.PID3(KP = 1.65, KI = 0, KD = 1.0, der1(T = 0.05)),
+      controller3_2.PID4(KP = 1.65, KI = 0, KD = 1.0, der1(T = 0.05)),
+      controller3_2.PID5(KP = 14.142, KI = 0, KD = 1.70, der1(T = 0.03)),
+      controller3_2.PID6(KP = 14.142, KI = 0, KD = 1.70, der1(T = 0.03)),
+      controller3_2.PID7(KP = 8.0, KI = 6.0, KD = 4.0, der1(T = 0.08)),
+      controller3_2.limiter1(uMax = 12 / 57.3, uMin = -12 / 57.3),
+      controller3_2.limiter2(uMax = 12 / 57.3, uMin = -12 / 57.3),
+      controller3_2.limiter3(uMax = 6.5, uMin = -6.5),
+      controller3_2.limiter4(uMax = 6.5, uMin = -6.5),
+      controller3_2.limiter5(uMax = 6.5, uMin = -6.5));
+    annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 120, Tolerance = 0.0001, Interval = 0.01));
+  end Example3EnhancedPID;
 end QuadrotorExperiments;

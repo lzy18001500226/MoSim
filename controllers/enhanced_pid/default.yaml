@@ -18,9 +18,16 @@ features:
   reference_feedforward: implemented_in_awff_pid
 
 implementation_status:
-  current_mworks_model: QuadrotorExperiments.Example1EnhancedPID
+  current_mworks_models:
+    - QuadrotorExperiments.Example1EnhancedPID
+    - QuadrotorExperiments.Example2EnhancedPID
+    - QuadrotorExperiments.Example3EnhancedPID
   base_controller: controllers/improved_pid/default.yaml
-  verified_scope: Example1 smoke, full Example1, and P1 robustness ablations
+  verified_scope: >
+    Full Example1/2/3 official scenarios and P1 robustness ablations with real
+    Sysplorer MCP evidence. Example1 and Example3 pass the intended enhancement
+    role; Example2 remains needs_iteration because RMSE is not improved enough
+    despite better steady-state error, tilt, and smoothness.
   next_controller_branch: controllers/awff_pid/default.yaml
 
 model_interface:
@@ -79,6 +86,22 @@ acceptance:
     baseline_experiment: official_example1_pid_baseline
     comparison_experiment: official_example1_improved_pid
     expected: stable full run with no NaN and metrics available
+  full_example2:
+    baseline_experiment: official_example2_pid_baseline
+    comparison_experiment: official_example2_enhanced_pid
+    scenario_file: scenarios/official/example2_enhanced_pid.yaml
+    expected: >
+      check_model and simulate_model pass for 50 s and metrics are available.
+      Current quality_status is needs_iteration because position RMSE is
+      0.041% worse than baseline, although steady-state error and max tilt are
+      improved.
+  full_example3:
+    baseline_experiment: official_example3_pid_baseline
+    comparison_experiment: official_example3_enhanced_pid
+    scenario_file: scenarios/official/example3_enhanced_pid.yaml
+    expected: >
+      check_model and simulate_model pass for 120 s, metrics are available,
+      and quality_status is pass with RMSE improvement against baseline.
   robust_mass20_example1:
     baseline_experiment: robust_mass20_example1_pid_baseline
     comparison_experiment: robust_mass20_example1_improved_pid

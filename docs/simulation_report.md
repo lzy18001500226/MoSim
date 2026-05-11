@@ -8,7 +8,7 @@
 
 证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表包含真实 Sysplorer MCP / Modelica 派生模型闭环仿真，以及 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 的全时长 Sysblock 控制器闭环证据。Sysblock 当前已完成 AWFF PID 高度环最小 demo、三段分层控制器、组合控制器 `AWFF_FullController_Sysblock` 的真实 MCP 验证，并完成 Example1 50 s、Example2 50 s、Example3 120 s 整机仿真；P1 创新控制器方向已完成 `AWFF_L1ResidualControllerEquation_Sysblock` 在 Example1 与横向阵风 Example1 中的首轮真实 MCP 消融。
 
-质量判定规则：`check_model ok` 和 `simulate_model ok` 只说明模型可以执行；完整性能结论还必须通过 `scripts/evaluate_result_quality.py` 写入的 `quality_status`。`pass` 可支撑报告结论，`smoke_only` 只证明链路可用，`needs_iteration` 必须继续调控制器或明确写为未完成限制。当前 Example2 AWFF Sysblock 虽然稳定且姿态/平滑性改善，但 RMSE 相比 baseline 略高 `0.043%`，因此按质量门禁属于 `needs_iteration`；旋翼退化场景健康分低于阈值，也应作为后续控制分配/故障补偿迭代对象。
+质量判定规则：`check_model ok` 和 `simulate_model ok` 只说明模型可以执行；完整性能结论还必须通过 `scripts/evaluate_result_quality.py` 写入的 `quality_status`。`pass` 可支撑报告结论，`smoke_only` 只证明链路可用，`needs_iteration` 必须继续调控制器或明确写为未完成限制。当前 Example2 Enhanced PID、Example2 AWFF PID 与 Example2 AWFF Sysblock 虽然稳定且姿态/平滑性改善，但 RMSE 改善未达到质量门禁；旋翼退化场景健康分低于阈值，也应作为后续控制分配/故障补偿迭代对象。
 
 当前已完成的可复现资产：
 
@@ -16,9 +16,10 @@
 官方 Example1/2/3 参考轨迹 CSV
 官方 Example1/2/3 完整 PID baseline CSV、指标和图表
 官方 Example1/2/3 MCP 参数搜索型 Improved PID CSV、指标和图表
-官方 Example1 Enhanced PID 完整 CSV、指标、图表和 replay JSON
-官方 Example1 AWFF 独立控制器完整 CSV、指标、图表和 replay JSON
+官方 Example1/2/3 Enhanced PID 完整 CSV、指标、图表和 replay JSON
+官方 Example1/2/3 AWFF 独立控制器完整 CSV、指标、图表和 replay JSON
 Example1/2/3 AWFF Sysblock 整机完整 CSV、指标、图表和 replay JSON
+质量 +20%、横向阵风、1号旋翼效率85% 的 AWFF PID 鲁棒消融 CSV、指标、图表和 replay JSON
 Example1/2/3 AWFF Sysblock 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 Example1 L1 residual Sysblock nominal/wind-gust 0-1 s smoke 与 50 s full CSV、指标、图表和 replay JSON
 ```
@@ -34,8 +35,12 @@ Example1 L1 residual Sysblock nominal/wind-gust 0-1 s smoke 与 50 s full CSV、
 | 阶梯爬升 L1 residual Sysblock | `QuadrotorExperiments.Example1L1SysblockClosedLoop` | 50 s | AWFF + L1-inspired 残差补偿控制器已通过 Sysplorer MCP 仿真 |
 | 横向阵风 L1 residual Sysblock | `QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop` | 50 s | AWFF + L1-inspired 残差补偿风扰消融已通过 Sysplorer MCP 仿真 |
 | 螺旋爬升 | `QuadrotorModel.Examples.Example2` | 50 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
+| 螺旋爬升 Enhanced PID | `QuadrotorExperiments.Example2EnhancedPID` | 50 s | 导数滤波 + 保守限幅 Enhanced PID 已通过 Sysplorer MCP 仿真，但质量门禁为 `needs_iteration` |
+| 螺旋爬升 AWFF PID | `QuadrotorExperiments.Example2AntiWindupFeedforwardPID` | 50 s | 项目自有抗饱和 + 竖直参考前馈控制器已通过 Sysplorer MCP 仿真，但质量门禁为 `needs_iteration` |
 | 螺旋爬升 AWFF Sysblock | `QuadrotorExperiments.Example2AWFFSysblockClosedLoop` | 50 s | 项目 Sysblock 控制器整机闭环已通过 Sysplorer MCP 仿真 |
 | 8字形运动 | `QuadrotorModel.Examples.Example3` | 120 s | 完整 PID baseline 和 MCP 参数搜索型 Improved PID 已通过 Sysplorer MCP 仿真 |
+| 8字形运动 Enhanced PID | `QuadrotorExperiments.Example3EnhancedPID` | 120 s | 导数滤波 + 保守限幅 Enhanced PID 已通过 Sysplorer MCP 仿真，质量门禁为 `pass` |
+| 8字形运动 AWFF PID | `QuadrotorExperiments.Example3AntiWindupFeedforwardPID` | 120 s | 项目自有抗饱和 + 竖直参考前馈控制器已通过 Sysplorer MCP 仿真，质量门禁为 `pass` |
 | 8字形运动 AWFF Sysblock | `QuadrotorExperiments.Example3AWFFSysblockClosedLoop` | 120 s | 项目 Sysblock 控制器整机闭环已通过 Sysplorer MCP 仿真 |
 | Example1 smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已有 CSV、指标、图表 |
 | Example1 MWORKS MCP smoke | `QuadrotorModel.Examples.Example1` | 1 s | 已通过 Sysplorer MCP 真实加载、检查、仿真和读取变量 |
@@ -136,7 +141,7 @@ results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_sm
 
 ## 7. Enhanced PID P1 初步结果
 
-`QuadrotorExperiments.Example1EnhancedPID` 在 `Example1ImprovedPID` 的 MCP 参数搜索结果基础上，显式设置 PID 导数环节滤波时间常数，并收紧姿态参考限幅和姿态/yaw 控制限幅。该分支仍复用官方控制器结构，不修改官方模型本体，定位为 P1 控制器替换前的真实模型增强验证。
+`QuadrotorExperiments.Example1/2/3EnhancedPID` 在 `Example*_ImprovedPID` 的 MCP 参数搜索结果基础上，显式设置 PID 导数环节滤波时间常数，并收紧姿态参考限幅和姿态/yaw 控制限幅。该分支仍复用官方控制器结构，不修改官方模型本体，定位为 P1 控制器替换前的真实模型增强验证。
 
 以下结果为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_full_enhanced_pid`：
 
@@ -145,14 +150,28 @@ results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_sm
 | Example1 阶梯爬升 | baseline | 0.275253 | - | 0.111457 | 0.225729 | 39925.003500 | 111765.785252 | 52.464469 |
 | Example1 阶梯爬升 | improved_pid | 0.269890 | +1.948% | 0.105559 | 0.273695 | 39926.972404 | 160907.671805 | 52.533227 |
 | Example1 阶梯爬升 | enhanced_pid | 0.266250 | +3.270% | 0.103184 | 0.174432 | 39896.485617 | 13260.747831 | 55.422450 |
+| Example2 螺旋爬升 | baseline | 0.487183 | - | 0.210149 | 0.330881 | 37306.013865 | 58929.532569 | 47.882655 |
+| Example2 螺旋爬升 | improved_pid | 0.479834 | +1.508% | 0.190661 | 0.358260 | 37312.619310 | 86192.163000 | 48.025785 |
+| Example2 螺旋爬升 | enhanced_pid | 0.487385 | -0.041% | 0.190195 | 0.294113 | 37305.466126 | 30076.777420 | 47.793116 |
+| Example3 8字形 | baseline | 0.172311 | - | 0.068172 | 0.286482 | 95610.155697 | 73046.625676 | 60.505386 |
+| Example3 8字形 | improved_pid | 0.167227 | +2.951% | 0.061940 | 0.295880 | 95611.212646 | 79889.936000 | 60.546610 |
+| Example3 8字形 | enhanced_pid | 0.166670 | +3.274% | 0.061916 | 0.229426 | 95604.823917 | 27373.214928 | 60.281192 |
 
-结论：Enhanced PID 在 Example1 完整 50 s 真实 Sysplorer MCP 仿真中，相比官方 PID 的 RMSE 降低 `3.270%`，稳态误差降低 `7.423%`，最大倾角降低 `22.733%`，控制平滑性指标明显改善；相比参数搜索型 Improved PID，RMSE 继续降低 `1.348%`，最大倾角降低 `36.268%`。该结果可以作为 P1 控制器增强的第一条真实证据。限制是：当前 Enhanced PID 仍通过参数化官方 PID 与限幅块实现，抗积分饱和和参考前馈尚未替换为独立控制器内部逻辑。
+结论：Enhanced PID 在 Example1 和 Example3 上可以作为有效增强证据：Example1 RMSE 降低 `3.270%`，Example3 RMSE 降低 `3.274%`，同时最大倾角和控制平滑性明显改善。Example2 是当前 PID 系列短板：Enhanced PID 将稳态误差从 `0.210149 m` 降到 `0.190195 m`、最大倾角从 `0.330881 rad` 降到 `0.294113 rad`，但 RMSE 比 baseline 高 `0.041%`，质量门禁为 `needs_iteration`。因此 Example2 后续应优先补螺旋轨迹横向速度/加速度前馈或场景专用参数，而不是继续只收紧限幅。
 
 ## 8. AWFF 独立控制器初步结果
 
-`QuadrotorExperiments.Example1AntiWindupFeedforwardPID` 是项目自有控制器分支，不再只通过官方 `controller3_2` 的 PID 参数和 limiter modifier 实现增强。该模型在 `QuadrotorExperiments.Example1ProjectControllerBase` 中替换 `controller3_2` 的类型，但保持原官方接口兼容：输入仍为 `position_command[3]`、`position[3]`、`angle[3]`，输出仍为 `y`、`y1`、`y2`、`y3`，因此后续指标脚本和回放链路无需改变量映射。
+`QuadrotorExperiments.Example1/2/3AntiWindupFeedforwardPID` 是项目自有控制器分支，不再只通过官方 `controller3_2` 的 PID 参数和 limiter modifier 实现增强。该模型在 `QuadrotorExperiments.Example*ProjectControllerBase` 中替换 `controller3_2` 的类型，但保持原官方接口兼容：输入仍为 `position_command[3]`、`position[3]`、`angle[3]`，输出仍为 `y`、`y1`、`y2`、`y3`，因此后续指标脚本和回放链路无需改变量映射。
 
 控制器内部包含条件积分抗饱和、一阶滤波导数、竖直参考速度前馈、姿态参考限幅和电机命令绝对值限幅。以下结果为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_full_awff_pid`：
+
+| 场景 | controller | position_rmse_m | RMSE变化 | max_position_error_m | steady_state_error_m | max_tilt_rad | control_energy | control_smoothness | total_health_score | quality_status |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| Example1 阶梯爬升 | awff_pid | 0.259914 | +5.573% | 1.241362 | 0.103229 | 0.174490 | 39906.269209 | 14346.392213 | 52.334668 | - |
+| Example2 螺旋爬升 | awff_pid | 0.486621 | +0.115% | 3.005621 | 0.190196 | 0.294114 | 37318.468375 | 64715.876271 | 47.849265 | needs_iteration |
+| Example3 8字形 | awff_pid | 0.164733 | +4.398% | 1.164021 | 0.061888 | 0.229670 | 95624.607100 | 62864.460905 | 60.418339 | pass |
+
+AWFF PID 结论：Example1 和 Example3 均有明确 RMSE 收益，其中 Example3 8 字轨迹 RMSE 降低 `4.398%`，比 Enhanced PID 继续降低 `1.162%`。Example2 虽然 RMSE 相比 baseline 仅改善 `0.115%`，并且相对 Enhanced PID 只改善 `0.157%`，低于质量门禁 `0.500%`，因此仍标记为 `needs_iteration`。这说明当前 AWFF 结构的竖直前馈对阶梯/8字轨迹有效，但对螺旋轨迹的横向相位误差处理不足。
 
 Sysblock 控制器仿真路线：
 
@@ -268,14 +287,18 @@ Sysblock 渐进验证指标如下，均为 `source=MWORKS_MCP`：
 | Example1 阶梯爬升 | awff_sysblock | 0.266217 | +3.283% | 1.297165 | 0.103144 | 0.174437 | 39896.207840 | 13258.808831 | 55.423227 |
 | Example2 螺旋爬升 | baseline | 0.487183 | - | 3.005422 | 0.210149 | 0.330881 | 37306.013865 | 58929.533000 | 47.882655 |
 | Example2 螺旋爬升 | improved_pid | 0.479834 | +1.508% | 3.005563 | 0.190661 | 0.358260 | 37312.619310 | 86192.163000 | 48.025785 |
+| Example2 螺旋爬升 | enhanced_pid | 0.487385 | -0.041% | 3.005600 | 0.190195 | 0.294113 | 37305.466126 | 30076.777420 | 47.793116 |
+| Example2 螺旋爬升 | awff_pid | 0.486621 | +0.115% | 3.005621 | 0.190196 | 0.294114 | 37318.468375 | 64715.876271 | 47.849265 |
 | Example2 螺旋爬升 | awff_sysblock | 0.487394 | -0.043% | 3.005597 | 0.190196 | 0.294113 | 37305.498694 | 30076.679195 | 47.793043 |
 | Example3 8字形 | baseline | 0.172311 | - | 1.217033 | 0.068172 | 0.286482 | 95610.155697 | 73046.626000 | 60.505386 |
 | Example3 8字形 | improved_pid | 0.167227 | +2.951% | 1.185933 | 0.061940 | 0.295880 | 95611.212646 | 79889.936000 | 60.546610 |
+| Example3 8字形 | enhanced_pid | 0.166670 | +3.274% | 1.187273 | 0.061916 | 0.229426 | 95604.823917 | 27373.214928 | 60.281192 |
+| Example3 8字形 | awff_pid | 0.164733 | +4.398% | 1.164021 | 0.061888 | 0.229670 | 95624.607100 | 62864.460905 | 60.418339 |
 | Example3 8字形 | awff_sysblock | 0.166669 | +3.274% | 1.187258 | 0.061905 | 0.229426 | 95604.798934 | 27372.840134 | 60.281226 |
 
-结论：AWFF PID 相比官方 PID 的 RMSE 降低 `5.573%`，最大位置误差降低 `9.350%`，稳态误差降低 `7.382%`，最大倾角降低 `22.699%`；相比 Enhanced PID，RMSE 继续降低 `2.380%`，最大位置误差降低 `4.315%`，稳态误差和最大倾角基本持平。该结果说明独立控制器本体替换已经跑通，并且比“参数化官方 PID”有进一步轨迹精度收益。
+结论：AWFF PID 在 Example1 相比官方 PID 的 RMSE 降低 `5.573%`，最大位置误差降低 `9.350%`，稳态误差降低 `7.382%`，最大倾角降低 `22.699%`；相比 Enhanced PID，RMSE 继续降低 `2.380%`。Example3 中 AWFF PID 是当前 PID 系列最优结果，RMSE 降低 `4.398%`。Example2 中 Improved PID 仍是当前 RMSE 最优，Enhanced/AWFF/Sysblock 都改善了稳态误差和最大倾角，但未在 RMSE 门禁上达标。
 
-Sysblock 结论：`awff_sysblock` 在 Example1 50 s 全时长真实 Sysplorer MCP 仿真中达到与 `enhanced_pid` 基本一致的性能，并略高于其综合健康分。相比官方 PID，Sysblock 控制器 RMSE 降低 `3.283%`，稳态误差降低 `7.459%`，最大倾角降低 `22.723%`，控制平滑性降低 `88.137%`。在 Example3 8字轨迹中，RMSE 降低 `3.274%`、稳态误差降低 `9.193%`、最大倾角降低 `19.916%`、控制平滑性降低 `62.527%`，并通过 8 字形状检查。Example2 螺旋爬升中，RMSE 与官方 PID 基本持平并略高 `0.043%`，但稳态误差降低 `9.495%`、最大倾角降低 `11.112%`、控制平滑性降低 `48.962%`；该条证据保留为已执行的真实 Sysblock 仿真，但不作为“完成优化”的主结论，后续需要针对螺旋轨迹继续调参或补横向前馈/残差补偿。鲁棒场景结论见第 9 节。
+Sysblock 结论：`awff_sysblock` 在 Example1 50 s 全时长真实 Sysplorer MCP 仿真中达到与 `enhanced_pid` 基本一致的性能，并略高于其综合健康分。相比官方 PID，Sysblock 控制器 RMSE 降低 `3.283%`，稳态误差降低 `7.459%`，最大倾角降低 `22.723%`，控制平滑性降低 `88.137%`。在 Example3 8字轨迹中，RMSE 降低 `3.274%`、稳态误差降低 `9.193%`、最大倾角降低 `19.916%`、控制平滑性降低 `62.527%`，并通过 8 字形状检查。Example2 螺旋爬升中，PID/Sysblock 系列共同暴露横向跟踪短板：Improved PID 的 RMSE 最好但姿态代价较高，Enhanced/AWFF/Sysblock 姿态更稳但 RMSE 门禁未过。该条证据保留为已执行的真实 Sysblock 仿真，但不作为“完成优化”的主结论，后续需要针对螺旋轨迹补横向速度/加速度前馈或残差补偿。鲁棒场景结论见第 9 节。
 
 指标口径更新：当前 metrics JSON/CSV 已补充 `sample_rate_hz`、`control_energy_per_second`、`control_smoothness_per_second`、`constraint_violation_rate_hz`、`altitude_violation_rate_hz` 和 `tilt_violation_rate_hz`。当历史结果和新结果导出采样率不同，例如 `25001` 行与 `5001` 行并存时，报告优先比较 RMSE、稳态误差、最大倾角、恢复时间和每秒归一化指标；由采样点数量直接决定的原始 `constraint_violation_count` 只作为同采样率结果内的辅助信息。
 
@@ -290,6 +313,7 @@ models/QuadrotorExperiments/package.mo
   QuadrotorExperiments.Example1Mass20PID
   QuadrotorExperiments.Example1Mass20ImprovedPID
   QuadrotorExperiments.Example1Mass20EnhancedPID
+  QuadrotorExperiments.Example1Mass20AntiWindupFeedforwardPID
 models/QuadrotorExperiments/Example1Mass20AWFFSysblockClosedLoop.mo
   QuadrotorExperiments.Example1Mass20AWFFSysblockClosedLoop
 ```
@@ -300,6 +324,7 @@ models/QuadrotorExperiments/Example1Mass20AWFFSysblockClosedLoop.mo
 scenarios/robustness/example1_mass20_pid_baseline.yaml
 scenarios/robustness/example1_mass20_improved_pid.yaml
 scenarios/robustness/example1_mass20_enhanced_pid.yaml
+scenarios/robustness/example1_mass20_awff_pid.yaml
 scenarios/robustness/example1_mass20_awff_sysblock.yaml
 ```
 
@@ -310,9 +335,10 @@ scenarios/robustness/example1_mass20_awff_sysblock.yaml
 | +20% 质量摄动 Example1 | baseline | 0.291441 | - | 0.111428 | - | 0.241303 | - | 953.889949 | 2367.712444 | 51.820711 |
 | +20% 质量摄动 Example1 | improved_pid | 0.286484 | +1.701% | 0.105508 | +5.313% | 0.289414 | -19.938% | 953.929869 | 3618.603060 | 51.886273 |
 | +20% 质量摄动 Example1 | enhanced_pid | 0.282610 | +3.030% | 0.103144 | +7.434% | 0.174124 | +27.840% | 953.305878 | 270.716005 | 52.444636 |
+| +20% 质量摄动 Example1 | awff_pid | 0.276253 | +5.211% | 0.103142 | +7.435% | 0.174106 | +27.847% | 953.596290 | 279.280619 | 51.813783 |
 | +20% 质量摄动 Example1 | awff_sysblock | 0.282785 | +2.970% | 0.103112 | +7.463% | 0.174122 | +27.841% | 953.303498 | 266.591707 | 52.443573 |
 
-消融结论：在同一 +20% 质量摄动下，Improved PID 主要改善轨迹 RMSE 和稳态误差，但最大倾角增加 `19.938%`，说明单纯增益搜索会引入姿态代价。Enhanced PID 与 AWFF Sysblock 在 RMSE、稳态误差、最大倾角、每秒控制能量和每秒控制平滑性上均优于同扰动 baseline。AWFF Sysblock 相比 baseline 的 RMSE 降低 `2.970%`，稳态误差降低 `7.463%`，最大倾角降低 `27.841%`，`control_smoothness_per_second` 降低 `88.741%`。该结果可作为 Sysblock 控制器质量参数鲁棒性的正式证据。
+消融结论：在同一 +20% 质量摄动下，Improved PID 主要改善轨迹 RMSE 和稳态误差，但最大倾角增加 `19.938%`，说明单纯增益搜索会引入姿态代价。AWFF PID 的 RMSE 改善最大，达到 `5.211%`，质量门禁为 `pass`；Enhanced PID 与 AWFF Sysblock 在稳态误差、最大倾角、每秒控制能量和每秒控制平滑性上更稳。AWFF Sysblock 相比 baseline 的 RMSE 降低 `2.970%`，稳态误差降低 `7.463%`，最大倾角降低 `27.841%`，`control_smoothness_per_second` 降低 `88.741%`。该结果可作为 Sysblock 控制器质量参数鲁棒性的正式证据。
 
 
 
@@ -326,6 +352,7 @@ models/QuadrotorExperiments/package.mo
   QuadrotorExperiments.Example1WindGustPID
   QuadrotorExperiments.Example1WindGustImprovedPID
   QuadrotorExperiments.Example1WindGustEnhancedPID
+  QuadrotorExperiments.Example1WindGustAntiWindupFeedforwardPID
 models/QuadrotorExperiments/Example1WindGustAWFFSysblockClosedLoop.mo
   QuadrotorExperiments.Example1WindGustAWFFSysblockClosedLoop
 ```
@@ -336,6 +363,7 @@ models/QuadrotorExperiments/Example1WindGustAWFFSysblockClosedLoop.mo
 scenarios/robustness/example1_wind_gust_pid_baseline.yaml
 scenarios/robustness/example1_wind_gust_improved_pid.yaml
 scenarios/robustness/example1_wind_gust_enhanced_pid.yaml
+scenarios/robustness/example1_wind_gust_awff_pid.yaml
 scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
 ```
 
@@ -346,9 +374,10 @@ scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
 | 15-19s 横向阵风 Example1 | baseline | 0.334706 | - | 0.753994 | - | 3.460 | 0.228849 | - | 2757.199851 | 51.989919 |
 | 15-19s 横向阵风 Example1 | improved_pid | 0.322116 | +3.762% | 0.699255 | +7.260% | 3.296 | 0.278640 | -21.757% | 3987.595477 | 52.117069 |
 | 15-19s 横向阵风 Example1 | enhanced_pid | 0.318260 | +4.914% | 0.696234 | +7.661% | 3.242 | 0.196606 | +14.089% | 276.951339 | 55.004469 |
+| 15-19s 横向阵风 Example1 | awff_pid | 0.313084 | +6.460% | 0.697626 | +7.477% | 3.242 | 0.196916 | +13.953% | 291.266878 | 51.903696 |
 | 15-19s 横向阵风 Example1 | awff_sysblock | 0.318224 | +4.924% | 0.696309 | +7.652% | 3.250 | 0.196645 | +14.072% | 269.391389 | 55.001701 |
 
-消融结论：在同一横向阵风扰动下，Improved PID 可降低 RMSE 和扰动窗口峰值误差，但最大倾角增加 `21.757%`，说明仅靠增益搜索仍会提高姿态代价。AWFF Sysblock 相比 baseline 的 RMSE 降低 `4.924%`，扰动窗口峰值误差降低 `7.652%`，恢复时间从 `3.460 s` 缩短到 `3.250 s`，最大倾角降低 `14.072%`，`control_smoothness_per_second` 降低 `90.230%`。因此风扰场景可以作为 Sysblock 控制器外部扰动鲁棒性的正式证据。注意：该组 baseline/enhanced 历史结果导出为 `25001` 行，AWFF Sysblock 导出为 `5001` 行；报告已使用每秒归一化指标避免 sample-count 直接影响。
+消融结论：在同一横向阵风扰动下，Improved PID 可降低 RMSE 和扰动窗口峰值误差，但最大倾角增加 `21.757%`，说明仅靠增益搜索仍会提高姿态代价。AWFF PID 的 RMSE 改善最大，达到 `6.460%`，质量门禁为 `pass`；AWFF Sysblock 相比 baseline 的 RMSE 降低 `4.924%`，扰动窗口峰值误差降低 `7.652%`，恢复时间从 `3.460 s` 缩短到 `3.250 s`，最大倾角降低 `14.072%`，`control_smoothness_per_second` 降低 `90.230%`。因此风扰场景可以作为 Sysblock 控制器外部扰动鲁棒性的正式证据。注意：该组历史结果存在 `25001` 行与 `5001` 行并存；报告已使用每秒归一化指标避免 sample-count 直接影响。
 
 
 
@@ -361,6 +390,7 @@ models/QuadrotorExperiments/package.mo
   QuadrotorExperiments.Example1Rotor1Loss15PID
   QuadrotorExperiments.Example1Rotor1Loss15ImprovedPID
   QuadrotorExperiments.Example1Rotor1Loss15EnhancedPID
+  QuadrotorExperiments.Example1Rotor1Loss15AntiWindupFeedforwardPID
 models/QuadrotorExperiments/Example1Rotor1Loss15AWFFSysblockClosedLoop.mo
   QuadrotorExperiments.Example1Rotor1Loss15AWFFSysblockClosedLoop
 ```
@@ -371,6 +401,7 @@ models/QuadrotorExperiments/Example1Rotor1Loss15AWFFSysblockClosedLoop.mo
 scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml
 scenarios/robustness/example1_rotor1_loss15_improved_pid.yaml
 scenarios/robustness/example1_rotor1_loss15_enhanced_pid.yaml
+scenarios/robustness/example1_rotor1_loss15_awff_pid.yaml
 scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
 ```
 
@@ -381,9 +412,10 @@ scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
 | 1号旋翼效率85% Example1 | baseline | 0.392120 | - | 0.286884 | 0.211287 | - | 1.340 | 2167.565293 | 35.625782 |
 | 1号旋翼效率85% Example1 | improved_pid | 0.371435 | +5.275% | 0.265699 | 0.254032 | -20.231% | 1.340 | 3128.825699 | 35.884927 |
 | 1号旋翼效率85% Example1 | enhanced_pid | 0.368251 | +6.087% | 0.265416 | 0.174661 | +17.335% | 1.300 | 265.211626 | 36.050556 |
+| 1号旋翼效率85% Example1 | awff_pid | 0.364823 | +6.961% | 0.265442 | 0.174642 | +17.344% | 1.240 | 278.351622 | 36.184951 |
 | 1号旋翼效率85% Example1 | awff_sysblock | 0.369058 | +5.881% | 0.265419 | 0.174661 | +17.335% | 1.300 | 264.978146 | 36.043895 |
 
-消融结论：单旋翼效率退化场景明显比质量摄动和横向阵风更困难，baseline 的 RMSE 增至 `0.392120 m`，健康分降至 `35.625782`。Improved PID 可降低 RMSE，但最大倾角增加 `20.231%`；AWFF Sysblock 相比 baseline 的 RMSE 降低 `5.881%`，稳态误差降低 `7.482%`，最大倾角降低 `17.335%`，约束违规率从 `1.340 Hz` 降到 `1.300 Hz`，`control_smoothness_per_second` 降低 `87.775%`。该场景可作为“已执行真实退化工况消融”的证据，但质量门禁会将其标为 `needs_iteration`：当前健康分仍低，且控制器没有故障检测与控制分配重构逻辑。后续应优先补旋翼效率估计、控制分配重构或故障容错限幅，再重新复测。
+消融结论：单旋翼效率退化场景明显比质量摄动和横向阵风更困难，baseline 的 RMSE 增至 `0.392120 m`，健康分降至 `35.625782`。Improved PID 可降低 RMSE，但最大倾角增加 `20.231%`；AWFF PID 相比 baseline 的 RMSE 降低 `6.961%`，约束违规率降到 `1.240 Hz`，但健康分仍只有 `36.184951`，质量门禁为 `needs_iteration`。AWFF Sysblock 相比 baseline 的 RMSE 降低 `5.881%`，稳态误差降低 `7.482%`，最大倾角降低 `17.335%`，`control_smoothness_per_second` 降低 `87.775%`。该场景可作为“已执行真实退化工况消融”的证据，但不能包装成已解决执行器故障；后续应优先补旋翼效率估计、控制分配重构或故障容错限幅，再重新复测。
 
 ### 9.4 L1-inspired 残差补偿控制器首轮消融
 
@@ -474,9 +506,10 @@ MWORKS/Sysplorer 模型或派生模型
 
 下一阶段优先任务：
 
-1. 将 L1 residual Sysblock 补偿扩展到质量摄动和旋翼退化场景，并降低高频控制动作；
-2. 在旋翼退化场景中加入故障检测、控制分配重构或安全降级逻辑，区别于固定控制器抗扰；
-3. INDI 或线性 MPC 外环的最小可运行模型。
+1. 优先修正 Example2 螺旋爬升横向跟踪短板：加入轨迹速度/加速度前馈、横向相位补偿或 Example2 专用增益组，并用质量门禁复测；
+2. 将 L1 residual Sysblock 补偿扩展到质量摄动和旋翼退化场景，并降低高频控制动作；
+3. 在旋翼退化场景中加入故障检测、控制分配重构或安全降级逻辑，区别于固定控制器抗扰；
+4. INDI 或线性 MPC 外环的最小可运行模型。
 
 更新状态：已补充 AWFF PID 与 AWFF Sysblock 的质量 +20%、横向阵风和 1 号旋翼 85% 效率退化派生模型及场景配置：
 
@@ -496,7 +529,7 @@ scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
 scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
 ```
 
-授权恢复后，三条 AWFF Sysblock 鲁棒场景均已完成 `check_model/simulate_model/result_manager`，导出 `5001` 行 50 s raw CSV，并进入本报告性能结论。早期授权失效导致的失败日志只保留为诊断记录，不再代表当前模型状态。
+授权恢复后，三条 AWFF PID 与三条 AWFF Sysblock 鲁棒场景均已完成 `check_model/simulate_model/result_manager`，导出 `5001` 行 50 s raw CSV，并进入本报告性能结论。其中质量摄动 AWFF PID、横向阵风 AWFF PID 质量门禁为 `pass`，旋翼退化 AWFF PID 为 `needs_iteration`。早期授权失效导致的失败日志只保留为诊断记录，不再代表当前模型状态。
 
 L1 residual Sysblock 已完成以下真实 MCP 证据：
 

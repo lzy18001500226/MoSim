@@ -1,0 +1,34 @@
+experiment_id: official_example2_awff_pid
+scene_id: official_example2
+controller_id: awff_pid
+priority: P1
+evidence_level: real_sysplorer_mcp_full_awff_pid
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example2AntiWindupFeedforwardPID
+  model_path_hint: models/QuadrotorExperiments/package.mo
+  base_model_path_hint: QuadrotorModel/package.mo
+  official_description: 螺旋爬升 Anti-windup feedforward PID
+
+controller:
+  params_file: controllers/awff_pid/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: official_example2_enhanced_pid
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_circle_path
+  file: results/official/example2_helix/reference_official_example2/raw/reference_official_example2.csv
+result:
+  raw_file: results/official/example2_helix/official_example2_awff_pid/raw/official_example2_awff_pid.csv
+  metrics_file: results/official/example2_helix/official_example2_awff_pid/metrics/official_example2_awff_pid.json
+  figure_dir: results/official/example2_helix/official_example2_awff_pid/figures
+  replay_file: results/official/example2_helix/official_example2_awff_pid/replay/official_example2_awff_pid.json
+  mcp_log: results/official/example2_helix/official_example2_awff_pid/logs/sysplorer_example2_awff_pid_full_20260511.jsonl
