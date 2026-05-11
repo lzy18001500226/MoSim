@@ -42,6 +42,6 @@ reference:
 result:
   raw_file: results/raw/robust_wind_gust_example1_awff_pid.csv
   metrics_file: results/metrics/robust_wind_gust_example1_awff_pid.json
-  figure_dir: results/figures/robustness/wind_gust_example1/awff_pid
+  figure_dir: results/robustness/wind_gust_example1/figures/awff_pid
   replay_file: results/replay/robust_wind_gust_example1_awff_pid.json
   mcp_log: results/test_reports/sysplorer_robust_wind_gust_example1_awff_pid_20260510.jsonl

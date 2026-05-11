@@ -38,6 +38,6 @@ reference:
 result:
   raw_file: results/raw/robust_mass20_example1_improved_pid.csv
   metrics_file: results/metrics/robust_mass20_example1_improved_pid.json
-  figure_dir: results/figures/robustness/mass20_example1/improved_pid
+  figure_dir: results/robustness/mass20_example1/figures/improved_pid
   replay_file: results/replay/robust_mass20_example1_improved_pid.json
   mcp_log: results/test_reports/sysplorer_robust_mass20_example1_improved_pid_20260510.jsonl

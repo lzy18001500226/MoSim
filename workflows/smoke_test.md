@@ -81,7 +81,7 @@ results/test_reports/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
 results/raw/mworks_mcp_example1_pid_smoke.csv
 results/metrics/mworks_mcp_example1_pid_smoke.json
 results/metrics/mworks_mcp_example1_pid_smoke.csv
-results/figures/mworks_mcp_example1_pid_smoke/
+results/smoke/example1_mcp/pid_baseline_smoke/figures/
 results/replay/mworks_mcp_example1_pid_smoke.json
 results/replay_html/mworks_mcp_example1_pid_smoke.html
 ```

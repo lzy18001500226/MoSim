@@ -39,6 +39,6 @@ reference:
 result:
   raw_file: results/raw/robust_mass20_example1_awff_sysblock.csv
   metrics_file: results/metrics/robust_mass20_example1_awff_sysblock.json
-  figure_dir: results/figures/robustness/mass20_example1/awff_sysblock
+  figure_dir: results/robustness/mass20_example1/figures/awff_sysblock
   replay_file: results/replay/robust_mass20_example1_awff_sysblock.json
   mcp_log: results/test_reports/sysplorer_robust_mass20_example1_awff_sysblock_20260510.jsonl

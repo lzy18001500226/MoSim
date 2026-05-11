@@ -42,6 +42,6 @@ reference:
 result:
   raw_file: results/raw/robust_wind_gust_example1_awff_sysblock_smoke.csv
   metrics_file: results/metrics/robust_wind_gust_example1_awff_sysblock_smoke.json
-  figure_dir: results/figures/smoke/robustness/wind_gust_example1_awff_sysblock_smoke
+  figure_dir: results/smoke/robustness/wind_gust_example1_awff_sysblock_smoke/figures
   replay_file: results/replay/robust_wind_gust_example1_awff_sysblock_smoke.json
   mcp_log: results/test_reports/sysplorer_robust_wind_gust_example1_awff_sysblock_smoke_20260510.jsonl

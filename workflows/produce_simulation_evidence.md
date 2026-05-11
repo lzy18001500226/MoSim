@@ -46,7 +46,7 @@ simulation evidence bundle unless the official model is run through MWORKS.
 4. Read required variables through `result_manager`.
 5. Export raw CSV under `results/raw/`.
 6. Compute metrics under `results/metrics/` or `results/test_reports/`.
-7. Generate figures or replay assets under `results/figures/`, `results/replay/`, `results/replay_html/`, or `docs/figures/`.
+7. Generate figures or replay assets under `results/{group}/{scene}/figures/`, `results/replay/`, `results/replay_html/`, or `docs/figures/`.
 8. Update `docs/simulation_report.md` when the result supports a report claim.
 
 Project entrypoints:

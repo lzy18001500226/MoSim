@@ -46,7 +46,7 @@ CSV and optional metrics JSON:
 ```bash
 python3 scripts/plot_results.py \
   results/raw/official_example1_improved_pid.csv \
-  results/figures/official/example1_step/improved_pid \
+  results/official/example1_step/figures/improved_pid \
   --metrics results/metrics/official_example1_improved_pid.json
 ```
 
@@ -115,22 +115,22 @@ formation switching process
 
 ## 5. Figure Directory Taxonomy
 
-Do not write new report figures directly under `results/figures/`. Use one of
-the stable classified directories below:
+Put report figures under the owning result group and scenario:
 
 ```text
-results/figures/official/example1_step/{controller}/
-results/figures/official/example2_helix/{controller}/
-results/figures/official/example3_figure8/{controller}/
-results/figures/robustness/mass20_example1/{controller}/
-results/figures/robustness/wind_gust_example1/{controller}/
-results/figures/robustness/rotor1_loss15_example1/{controller}/
-results/figures/smoke/example1_mcp/{controller}_smoke/
+results/official/example1_step/figures/{controller}/
+results/official/example2_helix/figures/{controller}/
+results/official/example3_figure8/figures/{controller}/
+results/robustness/mass20_example1/figures/{controller}/
+results/robustness/wind_gust_example1/figures/{controller}/
+results/robustness/rotor1_loss15_example1/figures/{controller}/
+results/smoke/example1_mcp/{controller}_smoke/figures/
 ```
 
-`official/example3_figure8/` is the only current 8-shaped official trajectory
-figure group. `smoke/` figures are process evidence only and should not be used
-as final report or demo-video material unless explicitly marked as smoke.
+`results/official/example3_figure8/` is the only current 8-shaped official
+trajectory figure group. `results/smoke/` figures are process evidence only and
+should not be used as final report or demo-video material unless explicitly
+marked as smoke.
 
 Each generated directory should contain:
 
@@ -145,8 +145,8 @@ figure_manifest.md
 After adding or regenerating figures, update:
 
 ```text
-results/figures/人工审核清单.csv
-results/figures/README.md
+results/人工审核清单.csv
+results/README.md
 ```
 
 Copy report-selected figures to:

@@ -30,6 +30,6 @@ reference:
 result:
   raw_file: results/raw/official_example3_awff_sysblock.csv
   metrics_file: results/metrics/official_example3_awff_sysblock.json
-  figure_dir: results/figures/official/example3_figure8/awff_sysblock
+  figure_dir: results/official/example3_figure8/figures/awff_sysblock
   replay_file: results/replay/official_example3_awff_sysblock.json
   mcp_log: results/test_reports/sysplorer_example3_awff_sysblock_full_20260510.jsonl

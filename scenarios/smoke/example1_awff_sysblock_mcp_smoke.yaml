@@ -30,6 +30,6 @@ reference:
 result:
   raw_file: results/raw/official_example1_awff_sysblock_smoke.csv
   metrics_file: results/metrics/official_example1_awff_sysblock_smoke.json
-  figure_dir: results/figures/smoke/example1_step/awff_sysblock_smoke
+  figure_dir: results/smoke/example1_step/awff_sysblock_smoke/figures
   replay_file: results/replay/official_example1_awff_sysblock_smoke.json
   mcp_log: results/test_reports/sysplorer_example1_awff_sysblock_smoke_20260510.jsonl

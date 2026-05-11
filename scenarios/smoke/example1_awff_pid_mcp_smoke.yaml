@@ -30,6 +30,6 @@ reference:
 result:
   raw_file: results/raw/mworks_mcp_example1_awff_pid_smoke.csv
   metrics_file: results/metrics/mworks_mcp_example1_awff_pid_smoke.json
-  figure_dir: results/figures/smoke/example1_mcp/awff_pid_smoke
+  figure_dir: results/smoke/example1_mcp/awff_pid_smoke/figures
   replay_file: results/replay/mworks_mcp_example1_awff_pid_smoke.json
   mcp_log: results/test_reports/sysplorer_example1_awff_pid_mcp_smoke_20260510.jsonl

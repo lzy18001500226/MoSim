@@ -37,6 +37,6 @@ reference:
 result:
   raw_file: results/raw/robust_wind_gust_example1_pid_baseline.csv
   metrics_file: results/metrics/robust_wind_gust_example1_pid_baseline.json
-  figure_dir: results/figures/robustness/wind_gust_example1/pid_baseline
+  figure_dir: results/robustness/wind_gust_example1/figures/pid_baseline
   replay_file: results/replay/robust_wind_gust_example1_pid_baseline.json
   mcp_log: results/test_reports/sysplorer_robust_wind_gust_example1_pid_baseline_20260510.jsonl

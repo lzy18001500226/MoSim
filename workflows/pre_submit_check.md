@@ -96,7 +96,7 @@ scenarios/
 tests/
 results/raw/
 results/metrics/
-results/figures/
+results/{group}/{scene}/figures/
 docs/figures/
 ```
 

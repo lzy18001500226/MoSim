@@ -45,7 +45,7 @@ metrics_job:
   scene_id: figure8
   controller_id: nmpc_indi_l1
   output_file: results/metrics/figure8_nmpc_indi_l1.json
-  figure_dir: results/figures/figure8_nmpc_indi_l1/
+  figure_dir: results/official/example3_figure8/figures/nmpc_indi_l1/
 ```
 
 ---
@@ -341,7 +341,7 @@ scripts/plot_results.jl
 Save figures to:
 
 ```text
-results/figures/{scene_id}_{controller_id}/
+results/{group}/{scene_id}/figures/{controller_id}/
 docs/figures/
 ```
 

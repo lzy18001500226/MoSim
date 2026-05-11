@@ -52,7 +52,7 @@ step_size: 0.01
 result:
   raw_file: results/raw/figure8_pid_baseline.csv
   metrics_file: results/metrics/figure8_pid_baseline.json
-  figure_dir: results/figures/figure8_pid_baseline/
+  figure_dir: results/official/example3_figure8/figures/pid_baseline/
 
 variables:
   - time
@@ -346,8 +346,8 @@ For every reported experiment, later create:
 
 ```text
 results/metrics/{scene_id}_{controller_id}.json
-results/figures/{scene_id}_{controller_id}_trajectory.png
-results/figures/{scene_id}_{controller_id}_error.png
+results/{group}/{scene_id}/figures/{controller_id}/trajectory.png
+results/{group}/{scene_id}/figures/{controller_id}/error.png
 ```
 
 ---
