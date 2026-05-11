@@ -41,6 +41,7 @@ scenarios/official/example1_awff_sysblock.yaml  Sysblock AWFF 阶梯爬升
 scenarios/official/example2_awff_sysblock.yaml  Sysblock AWFF 螺旋爬升
 scenarios/official/example3_awff_sysblock.yaml  Sysblock AWFF 8字形运动
 scenarios/official/example1_awff_indi_sysblock.yaml  Sysblock AWFF + L1-inspired + INDI-like 阶梯爬升
+scenarios/official/example2_awff_indi_sysblock_helix_tuned.yaml  Sysblock AWFF + L1-inspired + INDI-like 螺旋爬升
 scenarios/official/example3_awff_indi_sysblock.yaml  Sysblock AWFF + L1-inspired + INDI-like 8字形消融
 scenarios/official/example1_l1_residual_sysblock.yaml  Sysblock AWFF + L1-inspired 残差补偿
 scenarios/official/example3_l1_residual_sysblock.yaml  Sysblock L1 8字形消融
@@ -108,7 +109,7 @@ P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP
 ```text
 Sysplorer/Modelica 真实仿真：官方 baseline、Improved PID、Enhanced PID、AWFF PID、质量/风扰/旋翼退化消融已完成多组证据。
 Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/simulate_model/result_manager；位置环、姿态环、电机分配、三层组合控制器和单层扁平图形化控制器已通过真实 MCP load_file/check_model/simulate_model。当前 Sysplorer 编译器不支持图形化 Sysblock 控制器作为 Modelica 整机子组件时的内部多输入端口解析，因此官方整机性能证据使用等价 `AWFF_FullControllerEquation_Sysblock` 接入 QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop，并已完成 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真。
-P1 创新控制器证据：AWFF_L1ResidualControllerEquation_Sysblock 已覆盖 Example1、8 字形、质量 +20%、横向阵风和旋翼退化真实 Sysplorer MCP 仿真；其中 Example1、8 字形、质量 +20% 和横向阵风均通过质量门。`AWFF_INDIControllerEquation_Sysblock` 当前实现为 AWFF + L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，已在 Example1 和 Example3 8 字形通过质量门，相比 AWFF Sysblock 的 RMSE 分别降低 8.410% 和 8.662%。已知效率退化控制分配补偿 `AWFF_L1FaultAllocationControllerEquation_Sysblock` 在 1 号旋翼 85% 场景中通过质量门，RMSE 相比 AWFF Sysblock 降低 33.793%。在线效率估计补偿 `AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock` 已输出 `eta_hat` 诊断列并通过质量门，RMSE 相比 AWFF Sysblock 降低 29.363%，`eta_hat` 末值约 0.904。多旋翼隔离雏形 `AWFF_L1MultiFaultIsolationControllerEquation_Sysblock` 已输出 `eta_hat1..4` 和 `fault_index`，在 rotor1 85% 退化场景中通过质量门，5-50 s `fault_index=1` 正确率为 100%。
+P1 创新控制器证据：AWFF_L1ResidualControllerEquation_Sysblock 已覆盖 Example1、8 字形、质量 +20%、横向阵风和旋翼退化真实 Sysplorer MCP 仿真；其中 Example1、8 字形、质量 +20% 和横向阵风均通过质量门。`AWFF_INDIControllerEquation_Sysblock` 当前实现为 AWFF + L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，已在 Example1、Example2 helix-tuned 和 Example3 8 字形通过质量门，相比 AWFF Sysblock 对应基线的 RMSE 分别降低 8.410%、6.035% 和 8.662%。已知效率退化控制分配补偿 `AWFF_L1FaultAllocationControllerEquation_Sysblock` 在 1 号旋翼 85% 场景中通过质量门，RMSE 相比 AWFF Sysblock 降低 33.793%。在线效率估计补偿 `AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock` 已输出 `eta_hat` 诊断列并通过质量门，RMSE 相比 AWFF Sysblock 降低 29.363%，`eta_hat` 末值约 0.904。多旋翼隔离雏形 `AWFF_L1MultiFaultIsolationControllerEquation_Sysblock` 已输出 `eta_hat1..4` 和 `fault_index`，在 rotor1 85% 退化场景中通过质量门，5-50 s `fault_index=1` 正确率为 100%。
 后续优先级：补 rotor2/3/4 效率退化场景的报告表格和视频素材；随后启动线性 MPC 外环最小可运行模型。
 ```
 
