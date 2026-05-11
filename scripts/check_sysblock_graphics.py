@@ -53,10 +53,23 @@ def find_port_names(text: str, port_kind: str) -> list[str]:
     return pattern.findall(text)
 
 
+def top_level_model_text(text: str) -> str:
+    """Return declarations before nested model definitions.
+
+    Hierarchical Sysblock controllers may embed child models so a standalone
+    parent file can be opened without preloading dependencies. Static port
+    checks should still report only the parent model interface.
+    """
+
+    match = re.search(r"^  model\s+[A-Za-z_][A-Za-z0-9_]*\b", text, re.MULTILINE)
+    return text[: match.start()] if match else text
+
+
 def check_model(path: Path, spec: dict[str, Any]) -> dict[str, Any]:
     text = path.read_text(encoding="utf-8")
-    inports = find_port_names(text, "Inport")
-    outports = find_port_names(text, "Outport")
+    parent_text = top_level_model_text(text)
+    inports = find_port_names(parent_text, "Inport")
+    outports = find_port_names(parent_text, "Outport")
     connect_count = text.count("connect(")
     line_count = text.count("annotation(Line")
     placement_count = text.count("Placement(")

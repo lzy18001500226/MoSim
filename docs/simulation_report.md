@@ -215,6 +215,8 @@ AWFF_FullControllerEquation_Sysblock
 
 人工审查修正：2026-05-11 对 `AWFF_FullController_Sysblock` 的三层级父图进行展示层修复。三个子模块 `position_loop`、`attitude_loop`、`motor_mixer` 原先在父级画布中容易显示为默认红色子系统框，并且父级连线存在对角线交叉，不利于截图审核；现已为三个子控制器补齐明确 `Icon(graphics=...)`，并将父级连线重排为横平竖直走线。该修正只影响图形展示和人工审查可读性，不改变任何 `connect(...)` 连接对象和控制方程。静态契约与 MCP `load_file/check_model` 复测见 `results/model_checks/awff_sysblock/graphical_contract/graphical_awff_sysblock_contract_20260511_redbox_fix.json`、`results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_redbox_fix_20260511.jsonl` 和 `results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_redbox_fix_20260511_summary.json`。
 
+单文件打开修正：人工复核发现 `AWFF_FullController_Sysblock.mo` 在已有 Sysplorer 会话中正常，但单独打开父文件时可能因 `AWFF_PositionOuterLoop_Sysblock`、`AWFF_AttitudeInnerLoop_Sysblock`、`AWFF_MotorMixer_Sysblock` 未预加载而报“组件的类型查找不到”。现已将三个子控制器作为内部模型嵌入父文件，保留独立子模块文件用于单独审查，同时保证父级组合控制器可以被单独打开和推导。复测采用只加载父文件、不预加载子文件的 MCP 流程，`load_file/check_model` 均通过，日志见 `results/model_checks/awff_sysblock/logs/sysplorer_full_sysblock_self_contained_20260511.jsonl` 与 `results/model_checks/awff_sysblock/logs/sysplorer_full_sysblock_self_contained_20260511_summary.json`。
+
 当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，并完成 `AWFF_FullController_Sysblock` 组合控制器独立仿真。2026-05-11 新增 `AWFF_FullControllerFlatGraphical_Sysblock` 单层扁平图形化控制器，静态契约检查显示其具备 8 个输入端口、4 个输出端口、46 个图形元素放置、60 条连接线且全部具备 `annotation(Line(...))` 可视化连线。`scripts/check_graphical_sysblock_mcp.py` 已对位置环、姿态环、电机分配、三层组合控制器和单层扁平图形化控制器共 5 个图形化 Sysblock 文件完成真实 MCP `load_file/check_model/simulate_model` 验收，日志见：
 
 ```text
