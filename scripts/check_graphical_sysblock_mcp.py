@@ -55,6 +55,30 @@ MODELS = [
 ]
 
 
+INNOVATION_MODELS = [
+    {
+        "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "y",
+    },
+    {
+        "model_name": "AWFF_InnovationGraphicalControllers.AWFF_INDIControllerGraphical_Sysblock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "y",
+    },
+    {
+        "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1FaultAllocationControllerGraphical_Sysblock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "y",
+    },
+    {
+        "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "fault_index",
+    },
+]
+
+
 def windows_path(repo_path: str) -> str:
     return "C:\\Users\\HP\\Desktop\\Quadrotor\\" + repo_path.replace("/", "\\")
 
@@ -116,6 +140,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--log-output", type=Path, default=ROOT / "results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_controller_check_20260511.jsonl")
     parser.add_argument("--summary-output", type=Path, default=ROOT / "results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_controller_check_20260511_summary.json")
     parser.add_argument("--no-simulate", action="store_true", help="Only run load_file and check_model")
+    parser.add_argument("--include-innovation", action="store_true", help="Also check L1/INDI/fault-isolation graphical controller package")
+    parser.add_argument("--innovation-only", action="store_true", help="Check only L1/INDI/fault-isolation graphical controller package")
     return parser.parse_args()
 
 
@@ -126,7 +152,12 @@ def main() -> int:
     client = run_sysplorer_mcp_smoke.JsonlMcpClient([wrapper], args.log_output)
     try:
         health = run_sysplorer_mcp_smoke.initialize_mcp_client(client)
-        results = [validate_one(client, item, not args.no_simulate) for item in MODELS]
+        selected_models = []
+        if not args.innovation_only:
+            selected_models.extend(MODELS)
+        if args.include_innovation or args.innovation_only:
+            selected_models.extend(INNOVATION_MODELS)
+        results = [validate_one(client, item, not args.no_simulate) for item in selected_models]
     finally:
         print("Shutdown: skipped; Sysplorer GUI/session left reusable")
         client.close()
@@ -137,7 +168,7 @@ def main() -> int:
         "health_ok": bool(health.get("ok") and health.get("driver_ready")),
         "models_checked": len(results),
         "all_check_ok": all(item["check_ok"] for item in results),
-        "all_simulate_ok": all(item["simulate_ok"] is True for item in results),
+        "all_simulate_ok": None if args.no_simulate else all(item["simulate_ok"] is True for item in results),
         "results": results,
     }
     args.summary_output.parent.mkdir(parents=True, exist_ok=True)
@@ -150,7 +181,8 @@ def main() -> int:
         "summary_output": args.summary_output.as_posix(),
         "log_output": args.log_output.as_posix(),
     }, ensure_ascii=False, indent=2))
-    return 0 if summary["health_ok"] and summary["all_check_ok"] and summary["all_simulate_ok"] else 1
+    simulate_gate = True if args.no_simulate else bool(summary["all_simulate_ok"])
+    return 0 if summary["health_ok"] and summary["all_check_ok"] and simulate_gate else 1
 
 
 if __name__ == "__main__":

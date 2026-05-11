@@ -48,6 +48,36 @@ REQUIRED_MODELS: dict[str, dict[str, Any]] = {
 }
 
 
+PACKAGE_MODELS: dict[str, dict[str, dict[str, Any]]] = {
+    "AWFF_InnovationGraphicalControllers.mo": {
+        "AWFF_L1ResidualControllerGraphical_Sysblock": {
+            "inports": ["x_error", "y_error", "z_error", "z_ref_rate", "roll_mea", "pitch_mea", "yaw_mea", "yaw_ref"],
+            "outports": ["y", "y1", "y2", "y3"],
+            "required_blocks": ["l1_outer", "attitude_loop", "motor_mixer", "L1ResidualOuterLoopBlock", "PIDAttitudeInnerLoopBlock", "MotorMixerBlock"],
+            "min_connects": 18,
+        },
+        "AWFF_INDIControllerGraphical_Sysblock": {
+            "inports": ["x_error", "y_error", "z_error", "z_ref_rate", "roll_mea", "pitch_mea", "yaw_mea", "yaw_ref"],
+            "outports": ["y", "y1", "y2", "y3"],
+            "required_blocks": ["l1_outer", "attitude_loop", "motor_mixer", "L1ResidualOuterLoopBlock", "INDIAttitudeInnerLoopBlock", "MotorMixerBlock"],
+            "min_connects": 18,
+        },
+        "AWFF_L1FaultAllocationControllerGraphical_Sysblock": {
+            "inports": ["x_error", "y_error", "z_error", "z_ref_rate", "roll_mea", "pitch_mea", "yaw_mea", "yaw_ref"],
+            "outports": ["y", "y1", "y2", "y3"],
+            "required_blocks": ["l1_outer", "attitude_loop", "motor_mixer", "L1ResidualOuterLoopBlock", "PIDAttitudeInnerLoopBlock", "KnownRotorFaultMixerBlock"],
+            "min_connects": 18,
+        },
+        "AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock": {
+            "inports": ["x_error", "y_error", "z_error", "z_ref_rate", "roll_mea", "pitch_mea", "yaw_mea", "yaw_ref"],
+            "outports": ["y", "y1", "y2", "y3", "eta_hat1", "eta_hat2", "eta_hat3", "eta_hat4", "fault_index"],
+            "required_blocks": ["l1_outer", "attitude_loop", "motor_mixer", "fault_isolation", "L1ResidualOuterLoopBlock", "PIDAttitudeInnerLoopBlock", "AdaptiveFaultMixerBlock", "RotorFaultIsolationBlock"],
+            "min_connects": 29,
+        },
+    },
+}
+
+
 def find_port_names(text: str, port_kind: str) -> list[str]:
     pattern = re.compile(rf"SysplorerEmbeddedCoder\.Port\.{port_kind}\s+([A-Za-z_][A-Za-z0-9_]*)")
     return pattern.findall(text)
@@ -65,26 +95,42 @@ def top_level_model_text(text: str) -> str:
     return text[: match.start()] if match else text
 
 
-def check_model(path: Path, spec: dict[str, Any]) -> dict[str, Any]:
-    text = path.read_text(encoding="utf-8")
-    parent_text = top_level_model_text(text)
-    inports = find_port_names(parent_text, "Inport")
-    outports = find_port_names(parent_text, "Outport")
-    connect_count = text.count("connect(")
-    line_count = text.count("annotation(Line")
-    placement_count = text.count("Placement(")
+def named_model_text(text: str, model_name: str) -> str:
+    match = re.search(rf"^  model\s+{re.escape(model_name)}\b", text, re.MULTILINE)
+    if not match:
+        return ""
+    end_match = re.search(rf"^  end\s+{re.escape(model_name)};", text[match.start() :], re.MULTILINE)
+    if not end_match:
+        return text[match.start() :]
+    return text[match.start() : match.start() + end_match.end()]
+
+
+def check_text(
+    interface_text: str,
+    path: Path,
+    spec: dict[str, Any],
+    label: str | None = None,
+    structure_text: str | None = None,
+) -> dict[str, Any]:
+    if structure_text is None:
+        structure_text = interface_text
+    inports = find_port_names(interface_text, "Inport")
+    outports = find_port_names(interface_text, "Outport")
+    connect_count = structure_text.count("connect(")
+    line_count = structure_text.count("annotation(Line")
+    placement_count = structure_text.count("Placement(")
 
     missing_inports = [name for name in spec["inports"] if name not in inports]
     missing_outports = [name for name in spec["outports"] if name not in outports]
     missing_blocks = [
         name
         for name in spec.get("required_blocks", [])
-        if not re.search(rf"\b{name}\b", text)
+        if not re.search(rf"\b{name}\b", structure_text)
     ]
     missing_refs = [
         name
         for name in spec.get("required_references", [])
-        if name not in text
+        if name not in structure_text
     ]
 
     failures: list[str] = []
@@ -105,6 +151,7 @@ def check_model(path: Path, spec: dict[str, Any]) -> dict[str, Any]:
 
     return {
         "file": path.as_posix(),
+        "model": label,
         "ok": not failures,
         "inports": inports,
         "outports": outports,
@@ -115,9 +162,55 @@ def check_model(path: Path, spec: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def check_model(path: Path, spec: dict[str, Any]) -> dict[str, Any]:
+    text = path.read_text(encoding="utf-8")
+    parent_text = top_level_model_text(text)
+    return check_text(parent_text if parent_text else text, path, spec, structure_text=text)
+
+
+def check_package_models(path: Path, specs: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    text = path.read_text(encoding="utf-8")
+    results: list[dict[str, Any]] = []
+    for model_name, spec in specs.items():
+        model_text = named_model_text(text, model_name)
+        if not model_text:
+            results.append(
+                {
+                    "file": path.as_posix(),
+                    "model": model_name,
+                    "ok": False,
+                    "inports": [],
+                    "outports": [],
+                    "connect_count": 0,
+                    "line_annotation_count": 0,
+                    "placement_count": 0,
+                    "failures": ["model not found"],
+                }
+            )
+            continue
+        results.append(check_text(model_text, path, spec, model_name))
+    if re.search(r"extends\s+AWFF_|redeclare|extends\s+MotorMixerBlock", text):
+        results.append(
+            {
+                "file": path.as_posix(),
+                "model": "package_safety",
+                "ok": False,
+                "inports": [],
+                "outports": [],
+                "connect_count": 0,
+                "line_annotation_count": 0,
+                "placement_count": 0,
+                "failures": ["package contains fragile graphical inheritance/redeclare pattern"],
+            }
+        )
+    return results
+
+
 def run_checks() -> dict[str, Any]:
     base = ROOT / "models" / "QuadrotorControllerBlocks"
     results = [check_model(base / filename, spec) for filename, spec in REQUIRED_MODELS.items()]
+    for filename, specs in PACKAGE_MODELS.items():
+        results.extend(check_package_models(base / filename, specs))
     return {
         "source": "static_model_contract",
         "scope": "graphical_awff_sysblock_controller",
