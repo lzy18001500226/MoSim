@@ -62,6 +62,18 @@ new block diagram is needed, create or duplicate it through MWORKS.Sysblock
 GUI/API so that generated binding metadata and internal configuration are
 present, then validate the generated files through MCP.
 
+For graphical Sysblock controllers, also run the project contract check:
+
+```bash
+python3 scripts/check_sysblock_graphics.py
+python3 scripts/check_graphical_sysblock_mcp.py
+```
+
+The graphical controller can be accepted for structure review only when its
+ports, block placements, `connect(...)` statements, and visible
+`annotation(Line(...))` connections pass the static contract and the model
+itself passes real MCP `load_file/check_model/simulate_model`.
+
 Project rule:
 
 ```text

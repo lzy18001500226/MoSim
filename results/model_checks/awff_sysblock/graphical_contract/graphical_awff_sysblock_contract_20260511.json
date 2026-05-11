@@ -1,0 +1,115 @@
+{
+  "source": "static_model_contract",
+  "scope": "graphical_awff_sysblock_controller",
+  "ok": true,
+  "results": [
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_PositionOuterLoop_Sysblock.mo",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate"
+      ],
+      "outports": [
+        "pitch_ref",
+        "roll_ref",
+        "thrust_ref"
+      ],
+      "connect_count": 21,
+      "line_annotation_count": 21,
+      "placement_count": 20,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_AttitudeInnerLoop_Sysblock.mo",
+      "ok": true,
+      "inports": [
+        "roll_ref",
+        "pitch_ref",
+        "yaw_ref",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea"
+      ],
+      "outports": [
+        "roll_cmd",
+        "pitch_cmd",
+        "yaw_cmd"
+      ],
+      "connect_count": 18,
+      "line_annotation_count": 18,
+      "placement_count": 19,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_MotorMixer_Sysblock.mo",
+      "ok": true,
+      "inports": [
+        "thrust_ref",
+        "roll_cmd",
+        "pitch_cmd",
+        "yaw_cmd"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 23,
+      "line_annotation_count": 23,
+      "placement_count": 15,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_FullController_Sysblock.mo",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea",
+        "yaw_ref"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 18,
+      "line_annotation_count": 18,
+      "placement_count": 15,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea",
+        "yaw_ref"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 60,
+      "line_annotation_count": 60,
+      "placement_count": 46,
+      "failures": []
+    }
+  ]
+}

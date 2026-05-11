@@ -2,7 +2,7 @@
 
 本项目面向 A8 四旋翼无人机位姿控制系统设计优化赛题，基于 MWORKS.Sysplorer、Sysblock 和 Syslab 构建可复现的仿真验证工程。
 
-当前证据口径：项目目标以 **MWORKS.Sysblock 控制器仿真为主线**，Sysplorer/Modelica 闭环仿真和脚本指标计算为辅助。现阶段已经完成多组真实 Sysplorer MCP 性能证据；Sysblock 方向已完成 AWFF PID 高度环最小模型、位置环、姿态环、电机分配和组合控制器 `AWFF_FullController_Sysblock` 的真实 MCP 验证，并完成 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 整机的全时长闭环证据。当前 Sysblock 主线已覆盖阶梯爬升、螺旋爬升、8 字轨迹、质量摄动、横向阵风、旋翼退化和 L1-inspired 残差补偿控制器首轮消融。
+当前证据口径：项目目标以 **MWORKS.Sysblock 控制器仿真为主线**，Sysplorer/Modelica 闭环仿真和脚本指标计算为辅助。现阶段已经完成多组真实 Sysplorer MCP 性能证据；Sysblock 方向已完成 AWFF PID 高度环最小模型、位置环、姿态环、电机分配、三层组合控制器 `AWFF_FullController_Sysblock` 和单层扁平图形化控制器 `AWFF_FullControllerFlatGraphical_Sysblock` 的真实 MCP 验证，并完成 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 整机的全时长闭环证据。当前 Sysblock 主线已覆盖阶梯爬升、螺旋爬升、8 字轨迹、质量摄动、横向阵风、旋翼退化和 L1-inspired 残差补偿控制器首轮消融。
 
 核心闭环：
 
@@ -96,7 +96,7 @@ P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP
 
 ```text
 Sysplorer/Modelica 真实仿真：官方 baseline、Improved PID、Enhanced PID、AWFF PID、质量/风扰/旋翼退化消融已完成多组证据。
-Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/simulate_model/result_manager；位置环、姿态环、电机分配三个分层 Sysblock 模型已通过 load_file/check_model；AWFF_FullController_Sysblock 组合控制器已通过 load_file/check_model/simulate_model/result_manager；AWFF_FullControllerEquation_Sysblock 已接入 QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop 并完成 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真。
+Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/simulate_model/result_manager；位置环、姿态环、电机分配、三层组合控制器和单层扁平图形化控制器已通过真实 MCP load_file/check_model/simulate_model。当前 Sysplorer 编译器不支持图形化 Sysblock 控制器作为 Modelica 整机子组件时的内部多输入端口解析，因此官方整机性能证据使用等价 `AWFF_FullControllerEquation_Sysblock` 接入 QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop，并已完成 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真。
 P1 创新控制器证据：AWFF_L1ResidualControllerEquation_Sysblock 已接入 Example1 与横向阵风 Example1，完成 0-1 s smoke 和 50 s full 真实 Sysplorer MCP 仿真；相对 AWFF Sysblock，在横向阵风中 position_rmse_m 降低 9.804%，disturbance_peak_error_m 降低 16.195%，recovery_time_s 缩短 8.923%，代价是 control_smoothness_per_second 增加 3.896%。
 后续优先级：将 L1 residual 补偿扩展到质量摄动和旋翼退化，并开始故障检测/控制分配重构，形成区别于固定控制器抗扰的 P1-B 证据。
 ```

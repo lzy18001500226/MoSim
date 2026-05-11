@@ -197,13 +197,34 @@ AWFF_MotorMixer_Sysblock
 已完成独立组合仿真的控制器模型：
 models/QuadrotorControllerBlocks/AWFF_FullController_Sysblock.mo
 AWFF_FullController_Sysblock
+
+models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
+AWFF_FullControllerFlatGraphical_Sysblock
+
+models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+AWFF_FullControllerEquation_Sysblock
 ```
 
-说明：Sysblock 控制器文件不是单纯的截图支撑材料，而是后续控制器闭环仿真的主实现路线之一。结构截图应来自 MWORKS.Sysblock/Sysplorer 打开的实际控制器模型窗口，用于证明模块连接、端口和信号流；正式控制器仿真结论必须以 `load_file`、`check_model`、必要时 `simulate_model` 的真实 MWORKS 证据为准，不使用手绘示意图或离线脚本替代。
+说明：Sysblock 控制器文件不是单纯的截图支撑材料，而是控制器设计和审核的主实现路线之一。结构截图应来自 MWORKS.Sysblock/Sysplorer 打开的实际控制器模型窗口，用于证明模块连接、端口和信号流；正式控制器仿真结论必须以 `load_file`、`check_model`、必要时 `simulate_model` 的真实 MWORKS 证据为准，不使用手绘示意图或离线脚本替代。
 
 可视化状态：`AWFF_PositionOuterLoop_Sysblock`、`AWFF_AttitudeInnerLoop_Sysblock`、`AWFF_MotorMixer_Sysblock` 和 `AWFF_FullController_Sysblock` 已补齐 `connect(...)` 对应的 `annotation(Line(...))` 图形连线注释。这样模型既保留原有逻辑连接，又能在 Sysblock/Sysplorer 画布中显示连接线，避免人工连线时出现“连接已存在但画布无可见线段”的审核问题。复测日志见 `results/model_checks/awff_sysblock/logs/sysplorer_sysblock_line_annotation_check_20260511.jsonl` 与 `results/model_checks/awff_sysblock/logs/sysplorer_sysblock_line_annotation_check_20260511_summary.json`。
 
-当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，并完成 `AWFF_FullController_Sysblock` 组合控制器独立仿真。由于嵌套 Sysblock 在整机混合编译中暴露端口解析限制，当前整机主线使用扁平化 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop`。该主线已经完成 Example1 0-1 s、5 s、10 s、20 s 渐进验证，以及 active official 场景中的 Example1 50 s、Example2 helix-tuned 50 s、Example3 120 s 全时长真实 Sysplorer MCP 闭环复测，均通过质量门禁，可作为当前 Sysblock 控制器仿真的主证据。
+当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，并完成 `AWFF_FullController_Sysblock` 组合控制器独立仿真。2026-05-11 新增 `AWFF_FullControllerFlatGraphical_Sysblock` 单层扁平图形化控制器，静态契约检查显示其具备 8 个输入端口、4 个输出端口、46 个图形元素放置、60 条连接线且全部具备 `annotation(Line(...))` 可视化连线。`scripts/check_graphical_sysblock_mcp.py` 已对位置环、姿态环、电机分配、三层组合控制器和单层扁平图形化控制器共 5 个图形化 Sysblock 文件完成真实 MCP `load_file/check_model/simulate_model` 验收，日志见：
+
+```text
+results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_controller_check_20260511.jsonl
+results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_controller_check_20260511_summary.json
+results/model_checks/awff_sysblock/graphical_contract/graphical_awff_sysblock_contract_20260511.json
+```
+
+整机接入限制：三层组合图形化控制器和单层扁平图形化控制器作为 `controller3_2` 嵌入 `QuadrotorExperiments.Example1GraphicalAWFFSysblockClosedLoop` 时，当前 Sysplorer 编译器均在 `Sum.u1/u2/...` 等 Sysblock 内部多输入端口处报 `组件引用 ... 查找不到`。失败诊断日志保留为：
+
+```text
+results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_closed_loop_failed_hierarchical_20260511.jsonl
+results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_closed_loop_failed_flat_20260511.jsonl
+```
+
+因此当前整机闭环主线继续使用等价扁平方程实现 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop`。该主线已经完成 Example1 0-1 s、5 s、10 s、20 s 渐进验证，以及 active official 场景中的 Example1 50 s、Example2 helix-tuned 50 s、Example3 120 s 全时长真实 Sysplorer MCP 闭环复测，均通过质量门禁，可作为当前 Sysblock 控制器整机仿真的主证据。图形化 Sysblock 文件用于控制器结构审核、截图和独立模型验证；Equation 版用于整机闭环性能结论，两者保持相同 `controller3_2` 外部端口语义。
 
 2026-05-11 official Sysblock 闭环复测使用 `scripts/run_mworks_batch.py --reuse-mcp-process` 在同一个 Sysplorer MCP wrapper 进程中连续执行三条 active official Sysblock 场景，避免反复打开新窗口。共享初始化日志为：
 

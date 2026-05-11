@@ -4,7 +4,7 @@ model AWFF_MotorMixer_Sysblock "MWORKS.Sysblock quadrotor motor mixer structure"
   import BaseWorkspace.*;
   annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(thrust_ref,roll_cmd,pitch_cmd,yaw_cmd), Right(y,y1,y2,y3)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
     Icon(coordinateSystem(preserveAspectRatio=false)),
-    experiment(DoublePrecision=false,Algorithm=Euler,InlineIntegrator=false,InlineStepSize=false,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=1,Tolerance=0.0001),
+    experiment(DoublePrecision=false,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=1,StoreEventValue=0),
     Diagram(coordinateSystem(extent={{-260,-160},{200,160}},grid={2,2})));
 
   SysplorerEmbeddedCoder.Port.Inport thrust_ref annotation(Placement(transformation(origin={-240,120},extent={{-10,-10},{10,10}}),iconTransformation(origin={-101.8,75},extent={{-1.8,-1.8},{1.8,1.8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));

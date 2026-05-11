@@ -141,9 +141,13 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
 
     model_file = windows_path(str(model.get("base_model_path_hint") or model.get("model_path_hint", "")), default=DEFAULT_MODEL_FILE_WIN)
     extra_model_files: list[str] = []
+    for extra_model_file in model.get("extra_model_files", []) or []:
+        extra_model_files.append(windows_path(str(extra_model_file)))
     sysblock_controller_file = str(controller.get("sysblock_controller_file", ""))
     if sysblock_controller_file:
         extra_model_files.append(windows_path(sysblock_controller_file))
+    for extra_model_file in controller.get("extra_sysblock_controller_files", []) or []:
+        extra_model_files.append(windows_path(str(extra_model_file)))
     if str(model.get("source_package", "")) != "QuadrotorModel":
         extra_model_files.append(windows_path(str(model.get("model_path_hint", "")), default=DEFAULT_EXTRA_MODEL_WIN))
 

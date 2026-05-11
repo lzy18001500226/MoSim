@@ -15,17 +15,27 @@ implementation_status:
     - QuadrotorExperiments.Example2HelixTunedAWFFSysblockClosedLoop
     - QuadrotorExperiments.Example3AWFFSysblockClosedLoop
   sysblock_controller: AWFF_FullControllerEquation_Sysblock
+  graphical_sysblock_controller:
+    hierarchical: AWFF_FullController_Sysblock
+    flat_single_layer: AWFF_FullControllerFlatGraphical_Sysblock
+    mcp_summary: results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_controller_check_20260511_summary.json
+    static_contract: results/model_checks/awff_sysblock/graphical_contract/graphical_awff_sysblock_contract_20260511.json
   verification_scope: official Example1 50 s, Example2 helix-tuned 50 s, Example3 120 s, plus Example1 mass +20%, lateral gust, and rotor 1 loss 15% robustness runs passed with real Sysplorer MCP evidence
   limitation: >
     Current controller is a flattened equation-form Sysblock implementation
-    used to avoid nested Sysblock port-resolution issues in mixed
-    Sysplorer/Sysblock plant integration. It includes bounded position and
-    attitude loops, filtered derivative terms, vertical conditional integration,
-    and output saturation. It now has full official Example1/2/3 evidence
-    and three Example1 robustness scenarios. It still lacks explicit fault
-    detection, control allocation reconfiguration, and safety degradation
-    logic, so rotor-loss evidence is fixed-controller disturbance rejection
-    rather than full fault-tolerant control.
+    used to avoid Sysblock internal multi-input port-resolution issues when a
+    graphical Sysblock controller is embedded as a Modelica plant component.
+    The graphical controllers themselves now pass real MCP load/check/simulate
+    validation and are the source for screenshots and interface review. The
+    equation-form controller remains the official full-plant simulation route
+    because it preserves the same controller3_2 external interface and avoids
+    the mixed Sysplorer/Sysblock embedding compiler limitation. It includes
+    bounded position and attitude loops, filtered derivative terms, vertical
+    conditional integration, and output saturation. It now has full official
+    Example1/2/3 evidence and three Example1 robustness scenarios. It still
+    lacks explicit fault detection, control allocation reconfiguration, and
+    safety degradation logic, so rotor-loss evidence is fixed-controller
+    disturbance rejection rather than full fault-tolerant control.
 
 model_interface:
   replacement_component: controller3_2
@@ -63,6 +73,12 @@ model_interface:
     - controller3_2.y3
 
 acceptance:
+  graphical_contract:
+    script: scripts/check_sysblock_graphics.py
+    required: ports, internal block placements, connect statements, visible Line annotations
+  graphical_mcp_check:
+    script: scripts/check_graphical_sysblock_mcp.py
+    required: load_file, check_model, simulate_model for five graphical Sysblock controllers
   smoke:
     model_name: QuadrotorExperiments.Example1AWFFSysblockClosedLoop
     scenario_file: scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml
@@ -90,6 +106,16 @@ acceptance:
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
 
 verified_results:
+  graphical_mcp_check:
+    summary_file: results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_controller_check_20260511_summary.json
+    log_file: results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_controller_check_20260511.jsonl
+    models_checked: 5
+    all_check_ok: true
+    all_simulate_ok: true
+  graphical_full_plant_embedding_diagnostic:
+    hierarchical_failure_log: results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_closed_loop_failed_hierarchical_20260511.jsonl
+    flat_failure_log: results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_closed_loop_failed_flat_20260511.jsonl
+    status: mixed Sysplorer/Sysblock plant embedding fails at internal Sum.u* port lookup; keep official full-plant evidence on AWFF_FullControllerEquation_Sysblock
   smoke:
     scenario_file: scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml
     raw_file: results/smoke/example1_step/awff_sysblock_smoke/raw/official_example1_awff_sysblock_smoke.csv
