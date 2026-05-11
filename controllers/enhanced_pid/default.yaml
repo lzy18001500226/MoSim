@@ -21,13 +21,15 @@ implementation_status:
   current_mworks_models:
     - QuadrotorExperiments.Example1EnhancedPID
     - QuadrotorExperiments.Example2EnhancedPID
+    - QuadrotorExperiments.Example2HelixTunedEnhancedPID
     - QuadrotorExperiments.Example3EnhancedPID
   base_controller: controllers/improved_pid/default.yaml
   verified_scope: >
     Full Example1/2/3 official scenarios and P1 robustness ablations with real
     Sysplorer MCP evidence. Example1 and Example3 pass the intended enhancement
-    role; Example2 remains needs_iteration because RMSE is not improved enough
-    despite better steady-state error, tilt, and smoothness.
+    role. The original Example2EnhancedPID remains needs_iteration, but the
+    helix-tuned Example2 branch passes by restoring lateral command authority
+    for the 10 s circular-trajectory onset.
   next_controller_branch: controllers/awff_pid/default.yaml
 
 model_interface:
@@ -95,6 +97,15 @@ acceptance:
       Current quality_status is needs_iteration because position RMSE is
       0.041% worse than baseline, although steady-state error and max tilt are
       improved.
+  full_example2_helix_tuned:
+    baseline_experiment: official_example2_improved_pid
+    comparison_experiment: official_example2_enhanced_pid_helix_tuned
+    scenario_file: scenarios/official/example2_enhanced_pid_helix_tuned.yaml
+    expected: >
+      check_model and simulate_model pass for 50 s, quality_status is pass,
+      and RMSE improves against the previous best official_example2_improved_pid.
+      This branch uses 15 deg lateral command limits and 7.0 attitude command
+      limits to handle the CirclePath onset at 10 s.
   full_example3:
     baseline_experiment: official_example3_pid_baseline
     comparison_experiment: official_example3_enhanced_pid

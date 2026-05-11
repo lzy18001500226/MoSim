@@ -27,8 +27,10 @@ implementation_status:
   verification_scope: >
     Full Example1/2/3 official scenarios and mass/wind/rotor-loss robustness
     scenarios have real Sysplorer MCP evidence. Example1, Example3, mass +20%,
-    and lateral wind-gust are useful positive evidence. Example2 helix and
-    rotor-loss remain needs_iteration.
+    and lateral wind-gust are useful positive evidence. Example2 helix remains
+    needs_iteration for AWFF PID itself; the related Enhanced PID helix-tuned
+    branch proves the required lateral authority change. Rotor-loss also
+    remains needs_iteration.
 
 model_interface:
   replacement_component: controller3_2
@@ -97,7 +99,9 @@ acceptance:
     expected: >
       Stable 50 s run with no NaN and metrics available. Current
       quality_status is needs_iteration because RMSE improvement is below the
-      0.5% gate, so this scenario needs helix-specific feedforward or tuning.
+      0.5% gate. Migrate the Example2HelixTunedEnhancedPID lateral command
+      limits into the AWFF PID/Sysblock branch before using this as complete
+      Example2 evidence.
   full_example3:
     baseline_experiment: official_example3_pid_baseline
     comparison_experiment: official_example3_enhanced_pid
