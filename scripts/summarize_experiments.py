@@ -109,6 +109,10 @@ def read_metrics(path: Path) -> dict[str, Any] | None:
     return data
 
 
+def is_active_scenario(config: dict[str, Any]) -> bool:
+    return bool(config.get("active", True))
+
+
 def as_float(value: Any) -> float:
     if value is None or value == "":
         return math.nan
@@ -187,13 +191,21 @@ def metrics_row(root: Path, metrics_path: Path, source: str) -> dict[str, Any]:
     return row
 
 
-def build_rows(root: Path, scenario_paths: list[Path], metrics_globs: list[str]) -> list[dict[str, Any]]:
+def build_rows(
+    root: Path,
+    scenario_paths: list[Path],
+    metrics_globs: list[str],
+    *,
+    include_inactive: bool = False,
+) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     metrics_by_experiment: dict[str, dict[str, Any]] = {}
     used_metrics_files: set[Path] = set()
 
     for path in scenario_paths:
         config = read_yaml(path)
+        if not include_inactive and not is_active_scenario(config):
+            continue
         result = config.get("result", {})
         controller = config.get("controller", {})
         if not isinstance(result, dict):
@@ -217,7 +229,7 @@ def build_rows(root: Path, scenario_paths: list[Path], metrics_globs: list[str])
             "baseline_experiment": controller.get("baseline_experiment", ""),
             "source": str(path.relative_to(root)),
             "evidence_level": "",
-            "notes": "",
+            "notes": config.get("status_note", ""),
         }
 
         for key in SUMMARY_COLUMNS:
@@ -240,7 +252,7 @@ def build_rows(root: Path, scenario_paths: list[Path], metrics_globs: list[str])
             row["evidence_level"] = infer_evidence_level(row)
             metrics_by_experiment[experiment_id] = metrics
             used_metrics_files.add(metrics_path.resolve())
-        else:
+        elif not row["notes"]:
             row["notes"] = "metrics missing"
         rows.append(row)
 
@@ -354,6 +366,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--csv", type=Path, default=Path("results/summaries/experiment_summary/experiment_summary.csv"))
     parser.add_argument("--markdown", type=Path, default=Path("results/summaries/experiment_summary/experiment_summary.md"))
+    parser.add_argument(
+        "--include-inactive",
+        action="store_true",
+        help="Include scenarios marked active: false. Default summaries focus on the current formal matrix.",
+    )
     return parser.parse_args()
 
 
@@ -364,7 +381,7 @@ def main() -> int:
     scenario_paths = sorted(scenario_root.glob("**/*.yaml"))
     if not scenario_paths:
         raise FileNotFoundError(f"No scenario YAML files found under {scenario_root}")
-    rows = build_rows(root, scenario_paths, args.include_metrics_glob)
+    rows = build_rows(root, scenario_paths, args.include_metrics_glob, include_inactive=args.include_inactive)
     write_csv(root / args.csv, rows)
     write_markdown(root / args.markdown, rows, args.csv)
     print(f"Summary CSV: {args.csv}")

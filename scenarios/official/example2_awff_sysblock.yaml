@@ -2,6 +2,9 @@ experiment_id: official_example2_awff_sysblock
 scene_id: official_example2
 controller_id: awff_sysblock
 priority: P1
+active: false
+superseded_by: official_example2_awff_sysblock_helix_tuned
+status_note: 原 Sysblock 螺旋场景未迁移 helix_tuned 横向权限参数，保留为历史诊断证据；正式矩阵使用 helix_tuned 分支。
 evidence_level: real_sysplorer_mcp_sysblock_closed_loop_full
 
 model:

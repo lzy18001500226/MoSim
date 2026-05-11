@@ -66,6 +66,24 @@ def metrics_path_for(scenario_path: Path) -> Path:
     return ROOT / metrics_file
 
 
+def is_active_scenario(config: dict[str, Any]) -> bool:
+    return bool(config.get("active", True))
+
+
+def filter_active_scenarios(scenario_paths: list[Path], include_inactive: bool) -> tuple[list[Path], list[Path]]:
+    if include_inactive:
+        return scenario_paths, []
+    active_paths: list[Path] = []
+    inactive_paths: list[Path] = []
+    for scenario_path in scenario_paths:
+        config: dict[str, Any] = read_yaml(scenario_path)
+        if is_active_scenario(config):
+            active_paths.append(scenario_path)
+        else:
+            inactive_paths.append(scenario_path)
+    return active_paths, inactive_paths
+
+
 def scenario_command(scenario_path: Path, args: argparse.Namespace) -> list[str]:
     command = [sys.executable, "scripts/run_mworks_scenario.py", str(scenario_path)]
     if args.no_postprocess:
@@ -201,18 +219,26 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Run all non-skipped scenarios through one Sysplorer MCP wrapper process to reduce new GUI/window startup.",
     )
+    parser.add_argument(
+        "--include-inactive",
+        action="store_true",
+        help="Include scenarios marked active: false. By default these historical/superseded scenarios are skipped.",
+    )
     return parser.parse_args(argv)
 
 
 def main() -> int:
     args = parse_args()
     scenario_paths = expand_patterns(args.scenarios)
+    scenario_paths, inactive_paths = filter_active_scenarios(scenario_paths, args.include_inactive)
     failures: list[tuple[Path, int]] = []
     skipped: list[Path] = []
+    skipped_inactive = len(inactive_paths)
 
     if args.reuse_mcp_process and not args.dry_run:
         failures, skipped = run_reuse_mcp_batch(scenario_paths, args)
         print(f"Scenarios matched: {len(scenario_paths)}")
+        print(f"Skipped inactive: {skipped_inactive}")
         print(f"Skipped existing: {len(skipped)}")
         print(f"Failures: {len(failures)}")
         for path, returncode in failures:
@@ -247,6 +273,7 @@ def main() -> int:
                 break
 
     print(f"Scenarios matched: {len(scenario_paths)}")
+    print(f"Skipped inactive: {skipped_inactive}")
     print(f"Skipped existing: {len(skipped)}")
     print(f"Failures: {len(failures)}")
     for path, returncode in failures:

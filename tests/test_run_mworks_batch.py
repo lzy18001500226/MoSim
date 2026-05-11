@@ -101,11 +101,57 @@ def test_reuse_mcp_smoke_args_translation() -> None:
         raise AssertionError(smoke_args)
 
 
+def test_inactive_official_scenarios_are_skipped_by_default() -> None:
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "scripts/run_mworks_batch.py",
+            "--dry-run",
+            "scenarios/official/example2_awff_pid.yaml",
+            "scenarios/official/example2_awff_pid_helix_tuned.yaml",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    output = proc.stdout
+    if "Skipped inactive: 1" not in output:
+        raise AssertionError(output)
+    if "example2_awff_pid_helix_tuned.yaml" not in output:
+        raise AssertionError(output)
+    if "scripts/run_mworks_scenario.py scenarios/official/example2_awff_pid.yaml" in output:
+        raise AssertionError(output)
+
+
+def test_include_inactive_official_scenarios() -> None:
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "scripts/run_mworks_batch.py",
+            "--dry-run",
+            "--include-inactive",
+            "scenarios/official/example2_awff_pid.yaml",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    output = proc.stdout
+    if "Skipped inactive: 0" not in output:
+        raise AssertionError(output)
+    if "scripts/run_mworks_scenario.py scenarios/official/example2_awff_pid.yaml" not in output:
+        raise AssertionError(output)
+
+
 def main() -> int:
     test_run_mworks_batch_dry_run_regression()
     test_run_mworks_batch_dry_run_quality_args()
     test_run_mworks_batch_dry_run_reuse_mcp_arg()
     test_reuse_mcp_smoke_args_translation()
+    test_inactive_official_scenarios_are_skipped_by_default()
+    test_include_inactive_official_scenarios()
     print("[OK] run_mworks_batch dry-run regression")
     return 0
 

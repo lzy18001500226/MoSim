@@ -1,8 +1,8 @@
 # Experiment Summary
 
 - CSV: `results/summaries/experiment_summary/experiment_summary.csv`
-- Total scenarios: `49`
-- Done: `49`
+- Total scenarios: `46`
+- Done: `46`
 - Pending: `0`
 - Invalid: `0`
 
@@ -40,9 +40,6 @@
 | official_example2_awff_sysblock_helix_tuned | official_example2 | awff_sysblock | 0.47485 | 47.9081 | done |
 | official_example2_enhanced_pid_helix_tuned | official_example2 | enhanced_pid | 0.475477 | 47.8878 | done |
 | official_example2_pid_baseline | official_example2 | pid_baseline | 0.487183 | 47.8827 | done |
-| official_example2_awff_pid | official_example2 | awff_pid | 0.486621 | 47.8493 | done |
-| official_example2_enhanced_pid | official_example2 | enhanced_pid | 0.487385 | 47.7931 | done |
-| official_example2_awff_sysblock | official_example2 | awff_sysblock | 0.487394 | 47.793 | done |
 | robust_rotor1_loss15_example1_awff_pid | robust_rotor1_loss15_example1 | awff_pid | 0.364823 | 36.185 | done |
 | robust_rotor1_loss15_example1_enhanced_pid | robust_rotor1_loss15_example1 | enhanced_pid | 0.368251 | 36.0506 | done |
 | robust_rotor1_loss15_example1_awff_sysblock | robust_rotor1_loss15_example1 | awff_sysblock | 0.369058 | 36.0439 | done |
@@ -65,7 +62,6 @@
 | Experiment | Source | Evidence Level | Raw File |
 |---|---|---|---|
 | official_example1_awff_pid | MWORKS_MCP | real_sysplorer_mcp_full_awff_pid | `results/raw/official_example1_awff_pid.csv` |
-| official_example2_awff_pid | MWORKS_MCP | real_sysplorer_mcp_full_awff_pid | `results/official/example2_helix/official_example2_awff_pid/raw/official_example2_awff_pid.csv` |
 | official_example3_awff_pid | MWORKS_MCP | real_sysplorer_mcp_full_awff_pid | `results/official/example3_figure8/official_example3_awff_pid/raw/official_example3_awff_pid.csv` |
 | official_example2_awff_pid_helix_tuned | MWORKS_MCP | real_sysplorer_mcp_full_awff_pid_helix_tuned | `results/official/example2_helix/official_example2_awff_pid_helix_tuned/raw/official_example2_awff_pid_helix_tuned.csv` |
 | official_example2_awff_sysblock_helix_tuned | MWORKS_MCP | real_sysplorer_mcp_full_awff_sysblock_helix_tuned | `results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/raw/official_example2_awff_sysblock_helix_tuned.csv` |
@@ -73,7 +69,6 @@
 | official_example2_pid_baseline | MWORKS_MCP | real_sysplorer_mcp_full_baseline | `results/raw/official_example2_pid_baseline.csv` |
 | official_example3_pid_baseline | MWORKS_MCP | real_sysplorer_mcp_full_baseline | `results/raw/official_example3_pid_baseline.csv` |
 | official_example1_enhanced_pid | MWORKS_MCP | real_sysplorer_mcp_full_enhanced_pid | `results/raw/official_example1_enhanced_pid.csv` |
-| official_example2_enhanced_pid | MWORKS_MCP | real_sysplorer_mcp_full_enhanced_pid | `results/official/example2_helix/official_example2_enhanced_pid/raw/official_example2_enhanced_pid.csv` |
 | official_example3_enhanced_pid | MWORKS_MCP | real_sysplorer_mcp_full_enhanced_pid | `results/official/example3_figure8/official_example3_enhanced_pid/raw/official_example3_enhanced_pid.csv` |
 | official_example2_enhanced_pid_helix_tuned | MWORKS_MCP | real_sysplorer_mcp_full_enhanced_pid_helix_tuned | `results/official/example2_helix/official_example2_enhanced_pid_helix_tuned/raw/official_example2_enhanced_pid_helix_tuned.csv` |
 | official_example1_improved_pid | MWORKS_MCP | real_sysplorer_mcp_full_improved_pid | `results/raw/official_example1_improved_pid.csv` |
@@ -98,7 +93,6 @@
 | official_example1_awff_sysblock_20s | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_20s | `results/raw/official_example1_awff_sysblock_20s.csv` |
 | official_example1_awff_sysblock_5s | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_5s | `results/raw/official_example1_awff_sysblock_5s.csv` |
 | official_example1_awff_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_full | `results/raw/official_example1_awff_sysblock.csv` |
-| official_example2_awff_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_full | `results/raw/official_example2_awff_sysblock.csv` |
 | official_example3_awff_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_full | `results/raw/official_example3_awff_sysblock.csv` |
 | official_example1_awff_sysblock_smoke | MWORKS_MCP | real_sysplorer_mcp_sysblock_closed_loop_smoke | `results/raw/official_example1_awff_sysblock_smoke.csv` |
 | official_example2_awff_sysblock_smoke | MWORKS_MCP | real_sysplorer_mcp_sysblock_example2_smoke | `results/raw/official_example2_awff_sysblock_smoke.csv` |

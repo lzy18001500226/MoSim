@@ -2,6 +2,9 @@ experiment_id: official_example2_enhanced_pid
 scene_id: official_example2
 controller_id: enhanced_pid
 priority: P1
+active: false
+superseded_by: official_example2_enhanced_pid_helix_tuned
+status_note: 原 Enhanced PID 螺旋场景姿态权限过保守，保留为历史诊断证据；正式矩阵使用 helix_tuned 分支。
 evidence_level: real_sysplorer_mcp_full_enhanced_pid
 
 model:

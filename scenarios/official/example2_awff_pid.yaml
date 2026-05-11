@@ -2,6 +2,9 @@ experiment_id: official_example2_awff_pid
 scene_id: official_example2
 controller_id: awff_pid
 priority: P1
+active: false
+superseded_by: official_example2_awff_pid_helix_tuned
+status_note: 原 AWFF PID 螺旋场景相对增强基线收益不足，保留为历史诊断证据；正式矩阵使用 helix_tuned 分支。
 evidence_level: real_sysplorer_mcp_full_awff_pid
 
 model:
