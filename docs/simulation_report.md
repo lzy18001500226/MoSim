@@ -494,8 +494,9 @@ scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
 | 15-19s 横向阵风 Example1 | l1_residual_sysblock | pass | 0.278231 | +12.568% | 0.541739 | +22.210% | 2.850 | 0.074807 | 0.204982 | 279.930682 | 55.537737 |
 | 1号旋翼效率85% Example1 | awff_sysblock | needs_iteration | 0.369058 | - | 0.261832 | - | 13.760 | 0.265419 | 0.174661 | 264.978146 | 36.043895 |
 | 1号旋翼效率85% Example1 | l1_residual_sysblock | needs_iteration | 0.319854 | +13.332% | 0.213491 | +18.463% | 13.330 | 0.214432 | 0.205298 | 275.174488 | 36.803366 |
+| 1号旋翼效率85% Example1 | l1_fault_allocation_sysblock | pass | 0.244340 | +33.793% | 0.067839 | +74.091% | 2.730 | 0.082946 | 0.205545 | 292.033122 | 55.816623 |
 
-消融结论：L1-inspired 残差补偿在 Example1、Example3 8 字形、质量 +20% 和横向阵风四类正式场景中均通过质量门，并稳定降低 RMSE、稳态误差和扰动窗口峰值误差。横向阵风中 `position_rmse_m` 降低 `12.568%`、峰值误差降低 `22.210%`；8 字形中 RMSE 降低 `8.660%`。代价是 Example1 派生场景最大倾角约增加到 `0.205 rad`，控制平滑性约增加 `3.9%`。旋翼退化场景中 L1 相比 AWFF Sysblock 仍有 `13.332%` RMSE 改善和 `19.210%` 稳态误差改善，但健康分只有 `36.803366`，状态仍为 `needs_iteration`；该结果只能作为“固定残差补偿可缓解执行器退化”的证据，不能宣称已解决故障容错。后续应由 INDI、控制分配重构或效率估计模块专门处理旋翼退化。
+消融结论：L1-inspired 残差补偿在 Example1、Example3 8 字形、质量 +20% 和横向阵风四类正式场景中均通过质量门，并稳定降低 RMSE、稳态误差和扰动窗口峰值误差。横向阵风中 `position_rmse_m` 降低 `12.568%`、峰值误差降低 `22.210%`；8 字形中 RMSE 降低 `8.660%`。代价是 Example1 派生场景最大倾角约增加到 `0.205 rad`，控制平滑性约增加 `3.9%`。旋翼退化场景中，单独 L1 仍为 `needs_iteration`；加入已知效率 `eta=0.85` 的混合控制分配补偿后，`l1_fault_allocation_sysblock` 通过质量门，RMSE 相比 AWFF Sysblock 降低 `33.793%`，稳态误差降低 `68.749%`，扰动窗口峰值误差降低 `74.091%`，恢复时间从 `13.760 s` 缩短到 `2.730 s`。该结果可作为“已知执行器效率退化下的控制分配重构”证据，但仍不等同于在线故障检测；后续若要形成完整容错闭环，需要补 `eta` 在线估计或故障检测模块。
 
 ## 10. 当前图表
 
@@ -536,6 +537,7 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_pid_base
 results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_improved_pid/replay/robust_rotor1_loss15_example1_improved_pid.json
 results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_enhanced_pid/replay/robust_rotor1_loss15_example1_enhanced_pid.json
 results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/replay/robust_rotor1_loss15_example1_awff_sysblock.json
+results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock/replay/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock.json
 results/official/example1_step/official_example1_l1_residual_sysblock/replay/official_example1_l1_residual_sysblock.json
 results/robustness/wind_gust_example1/robust_wind_gust_example1_l1_residual_sysblock/replay/robust_wind_gust_example1_l1_residual_sysblock.json
 results/official/example1_step/reference_official_example1/replay/reference_official_example1.json
@@ -549,7 +551,7 @@ results/official/example3_figure8/reference_official_example3/replay/reference_o
 
 此前用于横向展示的 Python/Julia 离线仿真结果已清理。当前报告结论只引用真实 Sysplorer/MWORKS MCP 证据。
 
-质量 +20% 参数摄动、15-19 s 横向阵风扰动、1 号旋翼 85% 效率退化、Example1 AWFF 独立控制器替换、Example1/2/3 AWFF Sysblock 官方场景，以及 Example1 L1 residual Sysblock nominal/wind-gust 消融均已完成真实 MWORKS MCP 闭环。规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
+质量 +20% 参数摄动、15-19 s 横向阵风扰动、1 号旋翼 85% 效率退化、Example1 AWFF 独立控制器替换、Example1/2/3 AWFF Sysblock 官方场景、L1 residual Sysblock 消融，以及已知效率退化控制分配补偿均已完成真实 MWORKS MCP 闭环。规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
 
 ```text
 MWORKS/Sysplorer 模型或派生模型
@@ -563,9 +565,9 @@ MWORKS/Sysplorer 模型或派生模型
 下一阶段优先任务：
 
 1. 将 Example2 helix tuned AWFF PID / AWFF Sysblock 写入用户手册运行流程和演示素材清单；
-2. 在旋翼退化场景中加入故障检测、控制分配重构或安全降级逻辑，区别于固定控制器抗扰；
+2. 为旋翼退化场景补 `eta` 在线估计或故障检测模块，形成从检测到控制分配重构的完整闭环；
 3. INDI 或线性 MPC 外环的最小可运行模型；
-4. 对已通过的 L1 residual 场景继续降低高频控制动作和最大倾角。
+4. 对已通过的 L1 residual / fault allocation 场景继续降低高频控制动作和最大倾角。
 
 更新状态：已补充 AWFF PID 与 AWFF Sysblock 的质量 +20%、横向阵风和 1 号旋翼 85% 效率退化派生模型及场景配置：
 
@@ -611,6 +613,16 @@ results/official/example3_figure8/official_example3_l1_residual_sysblock/logs/sy
 results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/logs/sysplorer_robust_mass20_example1_l1_residual_sysblock_20260511.jsonl
 results/robustness/wind_gust_example1/robust_wind_gust_example1_l1_residual_sysblock/logs/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_20260510.jsonl
 results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_residual_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_l1_residual_sysblock_20260511.jsonl
+```
+
+已知效率退化控制分配补偿已完成以下真实 MCP 证据：
+
+```text
+QuadrotorExperiments.Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop
+
+scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml
+
+results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_l1_fault_allocation_sysblock_20260511.jsonl
 ```
 
 ## 12. 结论约束

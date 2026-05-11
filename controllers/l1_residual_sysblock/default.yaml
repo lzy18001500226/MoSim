@@ -96,7 +96,6 @@ verified_evidence:
     metrics_file: results/official/example1_step/official_example1_l1_residual_sysblock/metrics/official_example1_l1_residual_sysblock.json
     mcp_log: results/official/example1_step/official_example1_l1_residual_sysblock/logs/sysplorer_example1_l1_residual_sysblock_full_20260510.jsonl
     row_count: 5001
-    row_count: 5001
     position_rmse_m: 0.24383726685702858
     steady_state_error_m: 0.07480352719185822
     disturbance_peak_error_m: 0.06602758124543264
