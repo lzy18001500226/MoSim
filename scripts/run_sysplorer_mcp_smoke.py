@@ -78,6 +78,9 @@ class JsonlMcpClient:
         with self.log_path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(payload, ensure_ascii=False) + "\n")
 
+    def set_log_path(self, log_path: Path) -> None:
+        self.log_path = log_path
+
     def notify(self, method: str, params: dict[str, Any] | None = None) -> None:
         payload = {"jsonrpc": "2.0", "method": method, "params": params or {}}
         self._append_log({"direction": "notify", **payload})
@@ -183,7 +186,7 @@ def write_metrics(
             writer.writerow([key, "" if value is None else value])
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--wrapper",
@@ -214,7 +217,7 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Explicitly request session_manager shutdown after saving outputs. Default keeps GUI reusable.",
     )
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
 def resolve_wrapper(wrapper: str | None) -> str:
@@ -230,35 +233,52 @@ def resolve_wrapper(wrapper: str | None) -> str:
     raise FileNotFoundError(f"Sysplorer MCP wrapper not found. Checked: {searched}")
 
 
-def main() -> int:
-    args = parse_args()
-    wrapper = resolve_wrapper(args.wrapper)
-    target_time = [float(item.strip()) for item in args.target_time.split(",") if item.strip()]
-    args.log_output.parent.mkdir(parents=True, exist_ok=True)
-    final_log_output = args.log_output
+def parse_target_time(target_time: str) -> list[float]:
+    return [float(item.strip()) for item in target_time.split(",") if item.strip()]
+
+
+def prepare_log_output(log_output: Path) -> tuple[Path, Path]:
+    log_output.parent.mkdir(parents=True, exist_ok=True)
+    final_log_output = log_output
     protected_existing_log = final_log_output.exists()
     active_log_output = final_log_output
     if protected_existing_log:
         active_log_output = final_log_output.with_name(f"{final_log_output.name}.running")
     active_log_output.write_text("", encoding="utf-8")
+    return active_log_output, final_log_output
 
-    client = JsonlMcpClient([wrapper], active_log_output)
+
+def initialize_mcp_client(client: JsonlMcpClient) -> dict[str, Any]:
+    client.request(
+        "initialize",
+        {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {},
+            "clientInfo": {"name": "quadrotor-sysplorer-smoke", "version": "0.1"},
+        },
+        timeout_s=120,
+    )
+    client.notify("notifications/initialized")
+    health = client.call_tool("session_manager", {"action": "health"}, timeout_s=180)
+    if not health.get("ok") or not health.get("driver_ready"):
+        raise RuntimeError(f"Sysplorer MCP health failed: {health}")
+    return health
+
+
+def run_mcp_simulation(
+    args: argparse.Namespace,
+    client: JsonlMcpClient,
+    *,
+    active_log_output: Path | None = None,
+    final_log_output: Path | None = None,
+) -> dict[str, Any]:
+    if active_log_output is None or final_log_output is None:
+        active_log_output, final_log_output = prepare_log_output(args.log_output)
+        client.set_log_path(active_log_output)
+
+    target_time = parse_target_time(args.target_time)
     success = False
     try:
-        client.request(
-            "initialize",
-            {
-                "protocolVersion": "2024-11-05",
-                "capabilities": {},
-                "clientInfo": {"name": "quadrotor-sysplorer-smoke", "version": "0.1"},
-            },
-            timeout_s=120,
-        )
-        client.notify("notifications/initialized")
-        health = client.call_tool("session_manager", {"action": "health"}, timeout_s=180)
-        if not health.get("ok") or not health.get("driver_ready"):
-            raise RuntimeError(f"Sysplorer MCP health failed: {health}")
-
         open_result = client.call_tool(
             "model_manager",
             {
@@ -340,12 +360,35 @@ def main() -> int:
         print(f"Rows: {len(read_result['data'][0])}")
         print(f"Check model: ok")
         print(f"Simulate model: ok")
+        return {
+            "raw_output": args.raw_output,
+            "metrics_json": args.metrics_json,
+            "metrics_csv": args.metrics_csv,
+            "log_output": final_log_output,
+            "rows": len(read_result["data"][0]),
+        }
     finally:
         if not success and active_log_output != final_log_output:
             print(
                 f"MCP failure log kept separate: {active_log_output}; existing log preserved: {final_log_output}",
                 file=sys.stderr,
             )
+
+
+def main() -> int:
+    args = parse_args()
+    wrapper = resolve_wrapper(args.wrapper)
+    active_log_output, final_log_output = prepare_log_output(args.log_output)
+    client = JsonlMcpClient([wrapper], active_log_output)
+    try:
+        initialize_mcp_client(client)
+        run_mcp_simulation(
+            args,
+            client,
+            active_log_output=active_log_output,
+            final_log_output=final_log_output,
+        )
+    finally:
         if args.shutdown_session:
             try:
                 shutdown = client.call_tool("session_manager", {"action": "shutdown"}, timeout_s=60)

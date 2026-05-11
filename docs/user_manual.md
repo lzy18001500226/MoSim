@@ -296,6 +296,14 @@ python3 scripts/run_mworks_scenario.py scenarios/official/example1_improved_pid.
 python3 scripts/run_mworks_batch.py --skip-existing scenarios/official/*.yaml
 ```
 
+如果连续跑多个场景，优先复用同一个 Sysplorer MCP wrapper 进程，减少反复打开新窗口和重新激活的风险：
+
+```bash
+python3 scripts/run_mworks_batch.py --reuse-mcp-process scenarios/official/*.yaml
+```
+
+`--reuse-mcp-process` 只改变 MCP 进程复用方式，不会跳过质量门禁；默认仍不调用 `session_manager shutdown`，因此 Sysplorer GUI/session 会保留给后续人工检查或继续仿真。
+
 `run_mworks_scenario.py` 和 `run_mworks_batch.py` 默认会在仿真、后处理之后执行质量门禁：
 
 ```bash

@@ -5,17 +5,31 @@ from __future__ import annotations
 
 import argparse
 import glob
+import os
 import subprocess
 import sys
 from pathlib import Path
 from typing import Any
 
 try:
-    from run_mworks_scenario import ROOT, default_result_base, read_yaml
+    import run_sysplorer_mcp_smoke
+    from run_mworks_scenario import (
+        ROOT,
+        default_result_base,
+        read_yaml,
+        run_postprocess,
+        scenario_command as scenario_to_smoke_command,
+    )
 except ImportError:  # pragma: no cover
     ROOT = Path(__file__).resolve().parents[1]
     sys.path.insert(0, str(ROOT / "scripts"))
-    from run_mworks_scenario import default_result_base, read_yaml  # type: ignore
+    import run_sysplorer_mcp_smoke  # type: ignore
+    from run_mworks_scenario import (  # type: ignore
+        default_result_base,
+        read_yaml,
+        run_postprocess,
+        scenario_command as scenario_to_smoke_command,
+    )
 
 
 def expand_patterns(patterns: list[str]) -> list[Path]:
@@ -77,7 +91,87 @@ def quality_command(scenario_path: Path, args: argparse.Namespace) -> list[str]:
     ]
 
 
-def parse_args() -> argparse.Namespace:
+def scenario_runner_args(scenario_path: Path, args: argparse.Namespace) -> argparse.Namespace:
+    return argparse.Namespace(
+        scenario=scenario_path,
+        stop_time=None,
+        evidence_level=None,
+        shutdown_session=args.shutdown_session,
+        no_postprocess=args.no_postprocess,
+        no_quality_gate=args.no_quality_gate,
+        allow_needs_iteration=args.allow_needs_iteration,
+        min_rmse_improvement_pct=args.min_rmse_improvement_pct,
+    )
+
+
+def smoke_args_for_scenario(scenario_path: Path, args: argparse.Namespace, config: dict[str, Any]) -> argparse.Namespace:
+    command = scenario_to_smoke_command(scenario_runner_args(scenario_path, args), config)
+    if len(command) < 3 or not command[1].endswith("run_sysplorer_mcp_smoke.py"):
+        raise RuntimeError(f"Unexpected scenario command shape: {' '.join(command)}")
+    return run_sysplorer_mcp_smoke.parse_args(command[2:])
+
+
+def run_reuse_mcp_batch(scenario_paths: list[Path], args: argparse.Namespace) -> tuple[list[tuple[Path, int]], list[Path]]:
+    failures: list[tuple[Path, int]] = []
+    skipped: list[Path] = []
+    init_log = ROOT / "results" / "logs" / "mcp_reuse_batch_init.jsonl"
+    init_log.parent.mkdir(parents=True, exist_ok=True)
+    init_log.write_text("", encoding="utf-8")
+    wrapper = run_sysplorer_mcp_smoke.resolve_wrapper(os.environ.get("SYSPLORER_MCP_WRAPPER"))
+    client = run_sysplorer_mcp_smoke.JsonlMcpClient([wrapper], init_log)
+    try:
+        run_sysplorer_mcp_smoke.initialize_mcp_client(client)
+        print(f"[MCP] Reusing one Sysplorer MCP process for {len(scenario_paths)} scenarios", flush=True)
+
+        for scenario_path in scenario_paths:
+            config = read_yaml(scenario_path)
+            metrics_path = metrics_path_for(scenario_path)
+            if args.skip_existing and metrics_path.exists():
+                skipped.append(scenario_path)
+                print(f"[SKIP] {scenario_path} -> {metrics_path}")
+                if not args.no_quality_gate:
+                    proc = subprocess.run(quality_command(scenario_path, args), cwd=ROOT)
+                    if proc.returncode != 0:
+                        print(f"[ITERATE] skipped existing scenario failed quality gate: {scenario_path}", flush=True)
+                        if not args.allow_needs_iteration:
+                            failures.append((scenario_path, proc.returncode))
+                        if not args.continue_on_failure and not args.allow_needs_iteration:
+                            break
+                continue
+
+            smoke_args = smoke_args_for_scenario(scenario_path, args, config)
+            command_preview = scenario_command(scenario_runner_args(scenario_path, args), config)
+            print("[RUN:reuse-mcp]", " ".join(command_preview), flush=True)
+            try:
+                run_sysplorer_mcp_smoke.run_mcp_simulation(smoke_args, client)
+                if not args.no_postprocess:
+                    run_postprocess(config)
+                if not args.no_quality_gate:
+                    proc = subprocess.run(quality_command(scenario_path, args), cwd=ROOT)
+                    if proc.returncode != 0:
+                        print(f"[ITERATE] scenario failed quality gate: {scenario_path}", flush=True)
+                        if not args.allow_needs_iteration:
+                            raise subprocess.CalledProcessError(proc.returncode, quality_command(scenario_path, args))
+            except Exception as exc:
+                returncode = exc.returncode if isinstance(exc, subprocess.CalledProcessError) else 1
+                failures.append((scenario_path, returncode))
+                print(f"[FAIL] {scenario_path}: {exc}", flush=True)
+                if not args.continue_on_failure:
+                    break
+    finally:
+        if args.shutdown_session:
+            try:
+                shutdown = client.call_tool("session_manager", {"action": "shutdown"}, timeout_s=60)
+                print(f"Shutdown: {shutdown.get('ok')}")
+            except Exception as exc:
+                print(f"Shutdown warning: {exc}", file=sys.stderr)
+        else:
+            print("Shutdown: skipped; Sysplorer GUI/session left reusable")
+        client.close()
+    return failures, skipped
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "scenarios",
@@ -102,7 +196,12 @@ def parse_args() -> argparse.Namespace:
         help="Minimum RMSE improvement required for scenarios with controller.baseline_experiment",
     )
     parser.add_argument("--shutdown-session", action="store_true", help="Request Sysplorer session shutdown after each scenario")
-    return parser.parse_args()
+    parser.add_argument(
+        "--reuse-mcp-process",
+        action="store_true",
+        help="Run all non-skipped scenarios through one Sysplorer MCP wrapper process to reduce new GUI/window startup.",
+    )
+    return parser.parse_args(argv)
 
 
 def main() -> int:
@@ -110,6 +209,15 @@ def main() -> int:
     scenario_paths = expand_patterns(args.scenarios)
     failures: list[tuple[Path, int]] = []
     skipped: list[Path] = []
+
+    if args.reuse_mcp_process and not args.dry_run:
+        failures, skipped = run_reuse_mcp_batch(scenario_paths, args)
+        print(f"Scenarios matched: {len(scenario_paths)}")
+        print(f"Skipped existing: {len(skipped)}")
+        print(f"Failures: {len(failures)}")
+        for path, returncode in failures:
+            print(f"- {path}: returncode={returncode}")
+        return 1 if failures else 0
 
     for scenario_path in scenario_paths:
         metrics_path = metrics_path_for(scenario_path)

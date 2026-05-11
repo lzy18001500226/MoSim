@@ -59,6 +59,9 @@ python3 scripts/run_mworks_scenario.py scenarios/smoke/example1_pid_mcp_smoke.ya
 # Batch, without overwriting completed metrics
 python3 scripts/run_mworks_batch.py --skip-existing scenarios/official/*.yaml
 
+# Batch through one reusable Sysplorer MCP process
+python3 scripts/run_mworks_batch.py --reuse-mcp-process scenarios/official/*.yaml
+
 # Batch plan only, no MCP calls
 python3 scripts/run_mworks_batch.py --dry-run scenarios/official/*.yaml
 ```
