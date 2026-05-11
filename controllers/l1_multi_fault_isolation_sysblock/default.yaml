@@ -11,15 +11,17 @@ description: >
 implementation_status:
   current_mworks_model:
     - QuadrotorExperiments.Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop
+    - QuadrotorExperiments.Example1Rotor2Loss15L1MultiFaultIsolationSysblockClosedLoop
+    - QuadrotorExperiments.Example1Rotor3Loss15L1MultiFaultIsolationSysblockClosedLoop
+    - QuadrotorExperiments.Example1Rotor4Loss15L1MultiFaultIsolationSysblockClosedLoop
   sysblock_controller: AWFF_L1MultiFaultIsolationControllerEquation_Sysblock
-  verification_scope: real MWORKS_MCP 50 s full run complete for rotor-1 85% efficiency degradation; quality_status pass; fault_index=1 correct after initial detection
+  verification_scope: real MWORKS_MCP 50 s full runs complete for rotor-1..4 85% efficiency degradation; quality_status pass; fault_index correct after initial detection
   limitation: >
     Current isolation signatures are based on the Example1 climb-path lateral
-    residual geometry and are verified first on rotor_1. Rotor_2/3/4 scenarios
-    must be added before claiming full four-rotor fault isolation coverage.
-    The current fault_index logic is a first reliable-hit latch for persistent
-    single-rotor degradation; transient or changing faults require a reset or
-    mode-switch extension.
+    residual geometry and are verified on persistent single-rotor degradation.
+    The current fault_index logic is a first reliable-hit latch; transient
+    faults, changing faults, or simultaneous multi-rotor faults require a reset
+    or mode-switch extension.
 
 model_interface:
   replacement_component: controller3_2
@@ -93,6 +95,21 @@ acceptance:
     required: check_model, simulate_model, eta_hat1..4 raw columns, fault_index raw column, metrics, figures, replay JSON
     target_quality: pass_or_better_than_l1_residual
     expected_fault_index: 1
+  rotor2_degradation:
+    scenario_file: scenarios/robustness/example1_rotor2_loss15_l1_multi_fault_isolation_sysblock.yaml
+    required: check_model, simulate_model, eta_hat1..4 raw columns, fault_index raw column, metrics, figures, replay JSON
+    target_quality: pass
+    expected_fault_index: 2
+  rotor3_degradation:
+    scenario_file: scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml
+    required: check_model, simulate_model, eta_hat1..4 raw columns, fault_index raw column, metrics, figures, replay JSON
+    target_quality: pass
+    expected_fault_index: 3
+  rotor4_degradation:
+    scenario_file: scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml
+    required: check_model, simulate_model, eta_hat1..4 raw columns, fault_index raw column, metrics, figures, replay JSON
+    target_quality: pass
+    expected_fault_index: 4
 
 verified_evidence:
   source: MWORKS_MCP
@@ -114,6 +131,45 @@ verified_evidence:
     eta_hat3_final: 0.9850753166757784
     eta_hat4_final: 0.9721034996347846
     fault_index_final: 1
+    fault_index_accuracy_5_50s: 1.0
+  rotor2_loss15_full:
+    scenario_file: scenarios/robustness/example1_rotor2_loss15_l1_multi_fault_isolation_sysblock.yaml
+    model_name: QuadrotorExperiments.Example1Rotor2Loss15L1MultiFaultIsolationSysblockClosedLoop
+    raw_file: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock.csv
+    metrics_file: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock.json
+    mcp_log: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/logs/sysplorer_robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock_20260511.jsonl
+    row_count: 5001
+    quality_status: pass
+    position_rmse_m: 0.26894706171036703
+    steady_state_error_m: 0.14713153748597946
+    disturbance_recovery_time_s: 4.91
+    fault_index_final: 2
+    fault_index_accuracy_5_50s: 1.0
+  rotor3_loss15_full:
+    scenario_file: scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml
+    model_name: QuadrotorExperiments.Example1Rotor3Loss15L1MultiFaultIsolationSysblockClosedLoop
+    raw_file: results/robustness/rotor3_loss15_example1/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock.csv
+    metrics_file: results/robustness/rotor3_loss15_example1/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock.json
+    mcp_log: results/robustness/rotor3_loss15_example1/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock/logs/sysplorer_robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock_20260511.jsonl
+    row_count: 5001
+    quality_status: pass
+    position_rmse_m: 0.26838243259845085
+    steady_state_error_m: 0.14493071846251984
+    disturbance_recovery_time_s: 4.559999999999999
+    fault_index_final: 3
+    fault_index_accuracy_5_50s: 1.0
+  rotor4_loss15_full:
+    scenario_file: scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml
+    model_name: QuadrotorExperiments.Example1Rotor4Loss15L1MultiFaultIsolationSysblockClosedLoop
+    raw_file: results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock.csv
+    metrics_file: results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock.json
+    mcp_log: results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock/logs/sysplorer_robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock_20260511.jsonl
+    row_count: 5001
+    quality_status: pass
+    position_rmse_m: 0.2695134320502667
+    steady_state_error_m: 0.14230608859929156
+    disturbance_recovery_time_s: 4.559999999999999
+    fault_index_final: 4
     fault_index_accuracy_5_50s: 1.0
   ablation:
     vs_awff_sysblock:

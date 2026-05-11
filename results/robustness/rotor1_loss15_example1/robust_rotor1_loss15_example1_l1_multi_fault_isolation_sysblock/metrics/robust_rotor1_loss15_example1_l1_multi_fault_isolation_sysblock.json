@@ -51,7 +51,7 @@
   "total_health_score": 50.98418179294341,
   "source": "MWORKS_MCP",
   "evidence_level": "real_sysplorer_mcp_sysblock_l1_multi_fault_isolation_rotor_loss_ablation",
-  "quality_checked_at": "2026-05-11T16:22:53",
+  "quality_checked_at": "2026-05-11T16:35:47",
   "quality_experiment_id": "robust_rotor1_loss15_example1_l1_multi_fault_isolation_sysblock",
   "quality_scene_id": "robust_rotor1_loss15_example1",
   "quality_controller_id": "l1_multi_fault_isolation_sysblock",
@@ -61,6 +61,10 @@
   "quality_recommendations": [
     "result meets current quality gate; it can be used as evidence if the report claim matches the scene"
   ],
+  "fault_index_expected": 1.0,
+  "fault_index_accuracy": 1.0,
+  "fault_index_samples": 4501.0,
+  "fault_index_last": 1.0,
   "quality_baseline_experiment": "robust_rotor1_loss15_example1_l1_residual_sysblock",
   "quality_rmse_improvement_pct": 16.23762865382234
 }

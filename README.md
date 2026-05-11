@@ -47,7 +47,10 @@ scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml  Sysblock L1 �
 scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml  Sysblock L1 旋翼退化消融
 scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml  Sysblock L1 + 已知效率控制分配补偿
 scenarios/robustness/example1_rotor1_loss15_l1_online_fault_allocation_sysblock.yaml  Sysblock L1 + 在线 eta_hat 估计控制分配补偿
-scenarios/robustness/example1_rotor1_loss15_l1_multi_fault_isolation_sysblock.yaml  Sysblock L1 + eta_hat[4] 多旋翼故障隔离雏形
+scenarios/robustness/example1_rotor1_loss15_l1_multi_fault_isolation_sysblock.yaml  Sysblock L1 + eta_hat[4] 多旋翼故障隔离
+scenarios/robustness/example1_rotor2_loss15_l1_multi_fault_isolation_sysblock.yaml  Sysblock L1 + eta_hat[4] 2号旋翼退化隔离验证
+scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml  Sysblock L1 + eta_hat[4] 3号旋翼退化隔离验证
+scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml  Sysblock L1 + eta_hat[4] 4号旋翼退化隔离验证
 scenarios/smoke/example1_pid_mcp_smoke.yaml    0-1 s MCP 链路烟雾测试
 scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml  0-1 s Sysblock 整机闭环烟雾测试
 ```

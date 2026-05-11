@@ -26,6 +26,7 @@ disturbance:
   efficiency_ratio: 0.85
   known_to_controller: false
   purpose: four_rotor_online_fault_isolation_and_allocation_compensation
+  expected_fault_index: 1
 
 simulation:
   start_time_s: 0.0

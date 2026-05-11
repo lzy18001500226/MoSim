@@ -21,6 +21,8 @@ except ImportError:  # pragma: no cover
 
 
 PASS_STATUSES = {"pass", "smoke_only"}
+DEFAULT_FAULT_INDEX_START_S = 5.0
+DEFAULT_MIN_FAULT_INDEX_ACCURACY = 0.95
 
 SCENE_THRESHOLDS: dict[str, dict[str, float]] = {
     "official_example1": {
@@ -54,6 +56,24 @@ SCENE_THRESHOLDS: dict[str, dict[str, float]] = {
         "max_tilt_rad": 0.45,
     },
     "robust_rotor1_loss15_example1": {
+        "max_position_rmse_m": 0.45,
+        "max_position_error_m": 1.60,
+        "min_total_health_score": 40.0,
+        "max_tilt_rad": 0.45,
+    },
+    "robust_rotor2_loss15_example1": {
+        "max_position_rmse_m": 0.45,
+        "max_position_error_m": 1.60,
+        "min_total_health_score": 40.0,
+        "max_tilt_rad": 0.45,
+    },
+    "robust_rotor3_loss15_example1": {
+        "max_position_rmse_m": 0.45,
+        "max_position_error_m": 1.60,
+        "min_total_health_score": 40.0,
+        "max_tilt_rad": 0.45,
+    },
+    "robust_rotor4_loss15_example1": {
         "max_position_rmse_m": 0.45,
         "max_position_error_m": 1.60,
         "min_total_health_score": 40.0,
@@ -131,6 +151,8 @@ def find_baseline_metrics(baseline_experiment: str) -> Path | None:
 def get_baseline_experiment(config: dict[str, Any]) -> str:
     controller = config.get("controller", {})
     if isinstance(controller, dict):
+        if controller.get("require_baseline_improvement") is False:
+            return ""
         explicit = str(controller.get("baseline_experiment", "") or "")
         if explicit:
             return explicit
@@ -228,6 +250,47 @@ def figure8_shape_quality(raw_path: Path) -> tuple[bool, dict[str, float]]:
     }
 
 
+def fault_index_quality(
+    raw_path: Path,
+    *,
+    expected_fault_index: int,
+    start_s: float = DEFAULT_FAULT_INDEX_START_S,
+) -> dict[str, float]:
+    with raw_path.open(encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if not reader.fieldnames or "time" not in reader.fieldnames or "fault_index" not in reader.fieldnames:
+            return {
+                "fault_index_expected": float(expected_fault_index),
+                "fault_index_accuracy": math.nan,
+                "fault_index_samples": 0.0,
+                "fault_index_last": math.nan,
+            }
+        values: list[float] = []
+        for row in reader:
+            try:
+                t = float(row["time"])
+                fault_index = float(row["fault_index"])
+            except (TypeError, ValueError):
+                continue
+            if t >= start_s and math.isfinite(fault_index):
+                values.append(fault_index)
+
+    if not values:
+        return {
+            "fault_index_expected": float(expected_fault_index),
+            "fault_index_accuracy": math.nan,
+            "fault_index_samples": 0.0,
+            "fault_index_last": math.nan,
+        }
+    matches = sum(1 for value in values if int(round(value)) == expected_fault_index)
+    return {
+        "fault_index_expected": float(expected_fault_index),
+        "fault_index_accuracy": matches / len(values),
+        "fault_index_samples": float(len(values)),
+        "fault_index_last": values[-1],
+    }
+
+
 def evaluate_quality(config: dict[str, Any], scenario_path: Path, *, min_rmse_improvement_pct: float) -> dict[str, Any]:
     experiment_id = str(config.get("experiment_id", scenario_path.stem))
     scene_id = str(config.get("scene_id", ""))
@@ -309,6 +372,28 @@ def evaluate_quality(config: dict[str, Any], scenario_path: Path, *, min_rmse_im
             issues.append("figure8 shape check failed")
             recommendations.append("inspect x/y reference mapping and trajectory export before using this result in video")
 
+    disturbance = config.get("disturbance", {})
+    expected_fault_index = None
+    if isinstance(disturbance, dict) and disturbance.get("expected_fault_index") is not None:
+        try:
+            expected_fault_index = int(disturbance["expected_fault_index"])
+        except (TypeError, ValueError):
+            issues.append(f"invalid expected_fault_index: {disturbance.get('expected_fault_index')}")
+    if expected_fault_index is not None:
+        if raw_path is None or not raw_path.exists():
+            issues.append("fault_index check requested but raw result is missing")
+        else:
+            fault_metrics = fault_index_quality(raw_path, expected_fault_index=expected_fault_index)
+            result.update(fault_metrics)
+            accuracy = as_float(fault_metrics.get("fault_index_accuracy"))
+            if not math.isfinite(accuracy):
+                issues.append("fault_index column missing or has no valid samples")
+            elif accuracy < DEFAULT_MIN_FAULT_INDEX_ACCURACY:
+                issues.append(
+                    f"fault_index accuracy {accuracy:.3f} below {DEFAULT_MIN_FAULT_INDEX_ACCURACY:.3f}"
+                )
+                recommendations.append("retune fault signatures or inspect rotor-to-axis mapping before claiming isolation")
+
     baseline_id = get_baseline_experiment(config)
     if baseline_id:
         baseline_path = find_baseline_metrics(baseline_id)
@@ -347,7 +432,7 @@ def write_quality_to_metrics(config: dict[str, Any], scenario_path: Path, qualit
     metrics_path = scenario_metrics_path(config, scenario_path)
     metrics = read_json(metrics_path)
     for key in list(metrics):
-        if key.startswith("quality_") or key.startswith("figure8_"):
+        if key.startswith("quality_") or key.startswith("figure8_") or key.startswith("fault_index_"):
             metrics.pop(key)
     metrics.update(quality)
     metrics_path.write_text(json.dumps(metrics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

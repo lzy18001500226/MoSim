@@ -638,6 +638,17 @@ scenarios/robustness/example1_rotor1_loss15_l1_online_fault_allocation_sysblock.
 results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock_20260511.jsonl
 ```
 
+多旋翼故障隔离与控制分配补偿已完成 rotor1-4 四个方向的真实 MCP 证据，全部为 50 s Sysplorer 闭环仿真：
+
+| 退化旋翼 | 场景文件 | RMSE (m) | 稳态误差 (m) | 恢复时间 (s) | `fault_index` 正确率 |
+|---|---|---:|---:|---:|---:|
+| rotor1 | `scenarios/robustness/example1_rotor1_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2679 | 0.1406 | 4.91 | 100% |
+| rotor2 | `scenarios/robustness/example1_rotor2_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2689 | 0.1471 | 4.91 | 100% |
+| rotor3 | `scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2684 | 0.1449 | 4.56 | 100% |
+| rotor4 | `scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2695 | 0.1423 | 4.56 | 100% |
+
+对应证据目录位于 `results/robustness/rotor{1..4}_loss15_example1/robust_rotor{1..4}_loss15_example1_l1_multi_fault_isolation_sysblock/`，其中包含 `raw/`、`metrics/`、`figures/`、`replay/` 和 `logs/`。该组结果可以支撑“四旋翼持续单故障隔离验证已完成”的表述；不支撑瞬态故障、复合多故障或故障切换声明。
+
 ## 12. 结论约束
 
 1. 不使用 smoke 数据做完整控制性能结论。

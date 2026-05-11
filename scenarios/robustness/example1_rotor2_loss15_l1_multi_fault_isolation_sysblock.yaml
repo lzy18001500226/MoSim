@@ -1,0 +1,52 @@
+experiment_id: robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock
+scene_id: robust_rotor2_loss15_example1
+controller_id: l1_multi_fault_isolation_sysblock
+priority: P1-B
+evidence_level: real_sysplorer_mcp_sysblock_l1_multi_fault_isolation_rotor_loss_ablation
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1Rotor2Loss15L1MultiFaultIsolationSysblockClosedLoop
+  model_path_hint: models/QuadrotorExperiments/Example1Rotor2Loss15L1MultiFaultIsolationSysblockClosedLoop.mo
+  base_model_path_hint: QuadrotorModel/package.mo
+  official_description: 阶梯爬升 2号旋翼升力效率85% L1 residual + four-rotor eta_hat isolation Sysblock
+
+controller:
+  params_file: controllers/l1_multi_fault_isolation_sysblock/default.yaml
+  replacement_component: controller3_2
+  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_L1MultiFaultIsolationControllerEquation_Sysblock.mo
+  require_baseline_improvement: false
+
+disturbance:
+  type: actuator_efficiency_loss
+  target_component: quadChassisTest17_1.gain3.k
+  affected_rotor: rotor_2
+  nominal_lift_gain: 0.002
+  degraded_lift_gain: 0.0017
+  efficiency_ratio: 0.85
+  known_to_controller: false
+  purpose: four_rotor_online_fault_isolation_and_allocation_compensation
+  expected_fault_index: 2
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
+result:
+  raw_file: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock.csv
+  metrics_file: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock.json
+  figure_dir: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/figures
+  replay_file: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/replay/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock.json
+  mcp_log: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/logs/sysplorer_robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock_20260511.jsonl
+  extra_variables:
+    eta_hat1: controller3_2.eta_hat1
+    eta_hat2: controller3_2.eta_hat2
+    eta_hat3: controller3_2.eta_hat3
+    eta_hat4: controller3_2.eta_hat4
+    fault_index: controller3_2.fault_index
