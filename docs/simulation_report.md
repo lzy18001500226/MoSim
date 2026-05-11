@@ -174,6 +174,8 @@ AWFF_FullController_Sysblock
 
 说明：Sysblock 控制器文件不是单纯的截图支撑材料，而是后续控制器闭环仿真的主实现路线之一。结构截图应来自 MWORKS.Sysblock/Sysplorer 打开的实际控制器模型窗口，用于证明模块连接、端口和信号流；正式控制器仿真结论必须以 `load_file`、`check_model`、必要时 `simulate_model` 的真实 MWORKS 证据为准，不使用手绘示意图或离线脚本替代。
 
+可视化状态：`AWFF_PositionOuterLoop_Sysblock`、`AWFF_AttitudeInnerLoop_Sysblock`、`AWFF_MotorMixer_Sysblock` 和 `AWFF_FullController_Sysblock` 已补齐 `connect(...)` 对应的 `annotation(Line(...))` 图形连线注释。这样模型既保留原有逻辑连接，又能在 Sysblock/Sysplorer 画布中显示连接线，避免人工连线时出现“连接已存在但画布无可见线段”的审核问题。复测日志见 `results/logs/sysplorer_sysblock_line_annotation_check_20260511.jsonl` 与 `results/logs/sysplorer_sysblock_line_annotation_check_20260511_summary.json`。
+
 当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，并完成 `AWFF_FullController_Sysblock` 组合控制器独立仿真。由于嵌套 Sysblock 在整机混合编译中暴露端口解析限制，当前整机主线使用扁平化 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop`。该主线已经完成 Example1 0-1 s、5 s、10 s、20 s 渐进验证，以及 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真，可作为当前 Sysblock 控制器仿真的主证据。
 
 当前验证状态：重新登录激活后，四个 Sysblock 控制器文件均已完成真实 Sysplorer MCP 复测：
