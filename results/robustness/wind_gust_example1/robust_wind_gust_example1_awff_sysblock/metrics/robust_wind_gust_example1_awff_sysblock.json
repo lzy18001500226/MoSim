@@ -50,5 +50,17 @@
   "fault_tolerance_score": 35.0,
   "total_health_score": 55.00170073465435,
   "source": "MWORKS_MCP",
-  "evidence_level": "real_sysplorer_mcp_sysblock_robust_wind_gust_ablation"
+  "evidence_level": "real_sysplorer_mcp_sysblock_robust_wind_gust_ablation",
+  "quality_checked_at": "2026-05-12T19:46:19",
+  "quality_experiment_id": "robust_wind_gust_example1_awff_sysblock",
+  "quality_scene_id": "robust_wind_gust_example1",
+  "quality_controller_id": "awff_sysblock",
+  "quality_status": "pass",
+  "quality_pass": true,
+  "quality_issues": [],
+  "quality_recommendations": [
+    "result meets current quality gate; it can be used as evidence if the report claim matches the scene"
+  ],
+  "quality_baseline_experiment": "robust_wind_gust_example1_pid_baseline",
+  "quality_rmse_improvement_pct": 4.924325139971401
 }

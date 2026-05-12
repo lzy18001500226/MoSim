@@ -10,6 +10,8 @@
 
 质量判定规则：`check_model ok` 和 `simulate_model ok` 只说明模型可以执行；完整性能结论还必须通过 `scripts/evaluate_result_quality.py` 写入的 `quality_status`。`pass` 可支撑报告结论，`smoke_only` 只证明链路可用，`needs_iteration` 必须继续调控制器或明确写为未完成限制。当前 Example2 已通过 `helix_tuned` Enhanced PID、AWFF PID 和 AWFF Sysblock 分支解决 RMSE 门禁问题；旋翼退化场景显示“仅靠外环鲁棒控制不足”，需要控制分配或故障补偿层。
 
+证据包审查：2026-05-12 使用 `scripts/audit_evidence_bundle.py` 对 active 非 smoke 场景执行完整性审查，结果为 `scenarios_checked=51`、`issue_count=0`、`pass_evidence=44`、`boundary_or_negative_evidence=7`。7 个 `needs_iteration` 场景均为旋翼退化消融中的基线或边界负样本，只能用于说明“未加故障分配不足”，不能作为完成控制器声明。审查报告见 `results/test_reports/evidence_bundle_audit_20260512.md` 和 `results/test_reports/evidence_bundle_audit_20260512.json`。
+
 当前已完成的可复现资产：
 
 ```text
@@ -711,6 +713,8 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_m
 ```
 
 结论边界：该组结果可以支撑“线性 MPC-style 外环已完成官方三场景整机闭环验证，并在当前质量门下略优于对应 L1+INDI 基线”的表述；可以支撑“质量摄动和横向阵风鲁棒场景已通过”的表述；旋翼退化必须表述为“需要在线效率估计与控制分配补偿后通过”。不能支撑“在线优化 MPC/NMPC 已完成”的表述。
+
+证据包状态：截至 2026-05-12，active 非 smoke 场景证据包无 blocking issue；`linear_mpc_sysblock` 的 rotor1 退化纯外环结果保留为边界负样本，`linear_mpc_online_fault_allocation_sysblock` 才是可用于“退化场景通过”的正式证据。
 
 ## 13. 结论约束
 

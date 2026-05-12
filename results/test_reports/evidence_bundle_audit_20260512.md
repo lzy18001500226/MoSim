@@ -1,0 +1,28 @@
+# Evidence Bundle Audit
+
+- scenarios_checked: 51
+- pass_count: 51
+- issue_count: 0
+- warning_count: 13
+
+## Issues
+
+No blocking issues.
+
+## Warnings
+
+| Scenario | Warnings |
+|---|---|
+| `scenarios/official/example1_improved_pid.yaml` | missing mcp_log field |
+| `scenarios/official/example1_pid_baseline.yaml` | missing mcp_log field |
+| `scenarios/official/example2_improved_pid.yaml` | missing mcp_log field |
+| `scenarios/official/example2_pid_baseline.yaml` | missing mcp_log field |
+| `scenarios/official/example3_improved_pid.yaml` | missing mcp_log field |
+| `scenarios/official/example3_pid_baseline.yaml` | missing mcp_log field |
+| `scenarios/robustness/example1_rotor1_loss15_awff_pid.yaml` | quality_status is needs_iteration; usable only as boundary/ablation evidence, not as completed controller claim |
+| `scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml` | quality_status is needs_iteration; usable only as boundary/ablation evidence, not as completed controller claim |
+| `scenarios/robustness/example1_rotor1_loss15_enhanced_pid.yaml` | quality_status is needs_iteration; usable only as boundary/ablation evidence, not as completed controller claim |
+| `scenarios/robustness/example1_rotor1_loss15_improved_pid.yaml` | quality_status is needs_iteration; usable only as boundary/ablation evidence, not as completed controller claim |
+| `scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml` | quality_status is needs_iteration; usable only as boundary/ablation evidence, not as completed controller claim |
+| `scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml` | quality_status is needs_iteration; usable only as boundary/ablation evidence, not as completed controller claim |
+| `scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml` | quality_status is needs_iteration; usable only as boundary/ablation evidence, not as completed controller claim |

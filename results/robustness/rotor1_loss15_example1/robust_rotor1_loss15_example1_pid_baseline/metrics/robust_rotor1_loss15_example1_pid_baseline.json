@@ -50,5 +50,17 @@
   "fault_tolerance_score": 35.0,
   "total_health_score": 35.6257817116079,
   "source": "MWORKS_MCP",
-  "evidence_level": "real_sysplorer_mcp_robust_rotor_loss_ablation"
+  "evidence_level": "real_sysplorer_mcp_robust_rotor_loss_ablation",
+  "quality_checked_at": "2026-05-12T19:46:19",
+  "quality_experiment_id": "robust_rotor1_loss15_example1_pid_baseline",
+  "quality_scene_id": "robust_rotor1_loss15_example1",
+  "quality_controller_id": "pid_baseline",
+  "quality_status": "needs_iteration",
+  "quality_pass": false,
+  "quality_issues": [
+    "total_health_score=35.6258 below 40"
+  ],
+  "quality_recommendations": [
+    "preserve current evidence, update controller/scenario, rerun, and compare against this result"
+  ]
 }
