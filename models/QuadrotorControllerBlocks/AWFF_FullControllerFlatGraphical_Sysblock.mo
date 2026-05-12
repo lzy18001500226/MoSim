@@ -26,17 +26,20 @@ model AWFF_FullControllerFlatGraphical_Sysblock
   SysplorerEmbeddedCoder.MathOperation.Gain x_kd(k=1.0) annotation(Placement(transformation(origin={-310,220},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.MathOperation.Sum x_sum(isSaturate=false,inputs="++") annotation(Placement(transformation(origin={-230,240},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_ref_scale(k=0.1) annotation(Placement(transformation(origin={-150,240},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+  SysplorerEmbeddedCoder.Discontinuities.Saturation pitch_ref_sat(upLimit=12/57.3,lowLimit=-12/57.3) annotation(Placement(transformation(origin={-95,240},extent={{-10,-10},{10,10}})));
 
   SysplorerEmbeddedCoder.MathOperation.Gain y_kp(k=1.65) annotation(Placement(transformation(origin={-310,200},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.MathOperation.Gain y_kd(k=1.0) annotation(Placement(transformation(origin={-310,160},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.MathOperation.Sum y_sum(isSaturate=false,inputs="++") annotation(Placement(transformation(origin={-230,180},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.MathOperation.Gain roll_ref_scale(k=0.1) annotation(Placement(transformation(origin={-150,180},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+  SysplorerEmbeddedCoder.Discontinuities.Saturation roll_ref_sat(upLimit=12/57.3,lowLimit=-12/57.3) annotation(Placement(transformation(origin={-95,180},extent={{-10,-10},{10,10}})));
 
   SysplorerEmbeddedCoder.MathOperation.Gain z_kp(k=8.0) annotation(Placement(transformation(origin={-310,120},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator z_ki(externalResetType=SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator.ExternalResetType.None,gain=6.0,initCond=0) annotation(Placement(transformation(origin={-310,80},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(SampleTime(auto=true,group="D1")=0.01,Instance(u1(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),gain(Type(ref="double"),Dimension=1),initCond(Type(ref="double"),Dimension=1))),PortLabels(labelType="CustomType",labels(label(text="",instance="u1"),label(text="",instance="u2"),label(text="x0",instance="u3")))));
   SysplorerEmbeddedCoder.MathOperation.Gain z_kd(k=4.0) annotation(Placement(transformation(origin={-310,40},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.MathOperation.Gain z_ff(k=0.35) annotation(Placement(transformation(origin={-310,0},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.MathOperation.Sum thrust_sum(isSaturate=false,inputs="++++") annotation(Placement(transformation(origin={-190,80},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1),u3(Type(ref="double"),Dimension=1),u4(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
+  SysplorerEmbeddedCoder.Discontinuities.Saturation thrust_sat(upLimit=20.0,lowLimit=-20.0) annotation(Placement(transformation(origin={-120,80},extent={{-10,-10},{10,10}})));
 
   SysplorerEmbeddedCoder.MathOperation.Sum roll_error(isSaturate=false,inputs="++") annotation(Placement(transformation(origin={-40,180},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.MathOperation.Gain roll_kp(k=14.142) annotation(Placement(transformation(origin={40,200},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
@@ -73,12 +76,14 @@ equation
   connect(x_kp.y, x_sum.u1) annotation(Line(origin={-270,250},points={{-28,10},{28,-10}},color={0,0,0}));
   connect(x_kd.y, x_sum.u2) annotation(Line(origin={-270,230},points={{-28,-10},{28,10}},color={0,0,0}));
   connect(x_sum.y, pitch_ref_scale.u) annotation(Line(origin={-190,240},points={{-28,0},{28,0}},color={0,0,0}));
+  connect(pitch_ref_scale.y, pitch_ref_sat.u) annotation(Line(origin={-122,240},points={{-16,0},{15,0}},color={0,0,0}));
 
   connect(y_error, y_kp.u) annotation(Line(origin={-355,190},points={{-35,-10},{33,10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
   connect(y_error, y_kd.u) annotation(Line(origin={-355,170},points={{-35,10},{33,-10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
   connect(y_kp.y, y_sum.u1) annotation(Line(origin={-270,190},points={{-28,10},{28,-10}},color={0,0,0}));
   connect(y_kd.y, y_sum.u2) annotation(Line(origin={-270,170},points={{-28,-10},{28,10}},color={0,0,0}));
   connect(y_sum.y, roll_ref_scale.u) annotation(Line(origin={-190,180},points={{-28,0},{28,0}},color={0,0,0}));
+  connect(roll_ref_scale.y, roll_ref_sat.u) annotation(Line(origin={-122,180},points={{-16,0},{15,0}},color={0,0,0}));
 
   connect(z_error, z_kp.u) annotation(Line(origin={-355,110},points={{-35,-10},{33,10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
   connect(z_error, z_ki.u1) annotation(Line(origin={-355,90},points={{-35,10},{33,-10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
@@ -88,8 +93,9 @@ equation
   connect(z_ki.y, thrust_sum.u2) annotation(Line(origin={-250,80},points={{-48,0},{48,0}},color={0,0,0}));
   connect(z_kd.y, thrust_sum.u3) annotation(Line(origin={-250,55},points={{-48,-15},{48,18}},color={0,0,0}));
   connect(z_ff.y, thrust_sum.u4) annotation(Line(origin={-250,30},points={{-48,-30},{48,45}},color={0,0,0}));
+  connect(thrust_sum.y, thrust_sat.u) annotation(Line(origin={-155,80},points={{-23,0},{23,0}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
 
-  connect(roll_ref_scale.y, roll_error.u1) annotation(Line(origin={-95,180},points={{-43,0},{43,0}},color={0,0,0}));
+  connect(roll_ref_sat.y, roll_error.u1) annotation(Line(origin={-72,180},points={{-11,0},{20,0}},color={0,0,0}));
   connect(roll_mea, roll_error.u2) annotation(Line(origin={-220,70},points={{-170,-110},{170,-110},{170,105},{168,105}},color={0,0,0}));
   connect(roll_error.y, roll_kp.u) annotation(Line(origin={0,190},points={{-28,-10},{28,10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
   connect(roll_error.y, roll_kd.u) annotation(Line(origin={0,170},points={{-28,10},{28,-10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
@@ -98,7 +104,7 @@ equation
   connect(roll_cmd_sum.y, roll_mix.u) annotation(Line(origin={155,180},points={{-23,0},{23,0}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
   connect(roll_cmd_sum.y, neg_roll_mix.u) annotation(Line(origin={155,160},points={{-23,20},{23,-20}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
 
-  connect(pitch_ref_scale.y, pitch_error.u1) annotation(Line(origin={-95,160},points={{-43,80},{43,-80}},color={0,0,0}));
+  connect(pitch_ref_sat.y, pitch_error.u1) annotation(Line(origin={-72,160},points={{-11,80},{20,-80}},color={0,0,0}));
   connect(pitch_mea, pitch_error.u2) annotation(Line(origin={-220,-10},points={{-170,-90},{170,-90},{170,85},{168,85}},color={0,0,0}));
   connect(pitch_error.y, pitch_kp.u) annotation(Line(origin={0,90},points={{-28,-10},{28,10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
   connect(pitch_error.y, pitch_kd.u) annotation(Line(origin={0,70},points={{-28,10},{28,-10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
@@ -112,9 +118,9 @@ equation
   connect(yaw_error.y, yaw_kp.u) annotation(Line(origin={0,-40},points={{-28,0},{28,0}},color={0,0,0}));
   connect(yaw_kp.y, yaw_mix.u) annotation(Line(origin={115,-30},points={{-63,-10},{63,10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
   connect(yaw_kp.y, neg_yaw_mix.u) annotation(Line(origin={115,-50},points={{-63,10},{63,-10}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
-  connect(thrust_sum.y, neg_thrust.u) annotation(Line(origin={0,-20},points={{-178,100},{178,-100}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+  connect(thrust_sat.y, neg_thrust.u) annotation(Line(origin={35,-20},points={{-143,100},{143,-100}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
 
-  connect(thrust_sum.y, motor1_sum.u1) annotation(Line(origin={35,130},points={{-213,-50},{213,50}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+  connect(thrust_sat.y, motor1_sum.u1) annotation(Line(origin={70,130},points={{-178,-50},{178,50}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
   connect(neg_yaw_mix.y, motor1_sum.u2) annotation(Line(origin={225,55},points={{-23,-115},{23,115}},color={0,0,0}));
   connect(neg_pitch_mix.y, motor1_sum.u3) annotation(Line(origin={225,110},points={{-23,-70},{23,65}},color={0,0,0}));
   connect(roll_mix.y, motor1_sum.u4) annotation(Line(origin={225,180},points={{-23,0},{23,-5}},color={0,0,0}));
@@ -124,7 +130,7 @@ equation
   connect(pitch_mix.y, motor2_sum.u3) annotation(Line(origin={225,70},points={{-23,10},{23,-15}},color={0,0,0}));
   connect(roll_mix.y, motor2_sum.u4) annotation(Line(origin={225,120},points={{-23,60},{23,-65}},color={0,0,0}));
 
-  connect(thrust_sum.y, motor3_sum.u1) annotation(Line(origin={35,10},points={{-213,70},{213,-70}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+  connect(thrust_sat.y, motor3_sum.u1) annotation(Line(origin={70,10},points={{-178,70},{178,-70}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
   connect(neg_yaw_mix.y, motor3_sum.u2) annotation(Line(origin={225,-60},points={{-23,0},{23,-5}},color={0,0,0}));
   connect(pitch_mix.y, motor3_sum.u3) annotation(Line(origin={225,10},points={{-23,70},{23,-75}},color={0,0,0}));
   connect(neg_roll_mix.y, motor3_sum.u4) annotation(Line(origin={225,40},points={{-23,100},{23,-105}},color={0,0,0}));

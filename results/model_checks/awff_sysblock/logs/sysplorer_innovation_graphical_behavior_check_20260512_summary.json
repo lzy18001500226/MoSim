@@ -1,0 +1,1320 @@
+{
+  "source": "MWORKS_MCP",
+  "evidence_level": "real_sysplorer_mcp_graphical_sysblock_controller_check",
+  "health_ok": true,
+  "models_checked": 10,
+  "all_check_ok": true,
+  "all_simulate_ok": null,
+  "results": [
+    {
+      "model_name": "AWFF_InnovationGraphicalControllers",
+      "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "verify_result_var": "l1_residual_overview.y",
+      "load_ok": true,
+      "check_ok": true,
+      "simulate_ok": null,
+      "loads": [
+        {
+          "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+          "result": {
+            "ok": true,
+            "api": "OpenModelFile",
+            "data": true,
+            "cached": false,
+            "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_InnovationGraphicalControllers.mo",
+            "unload_loaded_classes_for_mo": {
+              "ok": true,
+              "api": "unload_loaded_classes_for_mo",
+              "data": [
+                {
+                  "class": "AWFF_InnovationGraphicalControllers",
+                  "class_exist": false,
+                  "erased": false
+                }
+              ]
+            },
+            "auto_loaded_libs": {
+              "BaseWorkspace": {
+                "ok": true,
+                "error": "",
+                "cached": false
+              },
+              "BlockKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DimensionType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discontinuities": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discrete": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DiscreteTimeIntegrator": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "ExternalResetType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "FillPattern": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "InheritType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "MathOperation": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "OverflowKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Port": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SignalRouting": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Sources": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SysplorerEmbeddedCoder": {
+                "ok": true,
+                "error": "",
+                "cached": false
+              },
+              "Types": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              }
+            },
+            "manager_action": "load_file"
+          }
+        }
+      ],
+      "check_result": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.446,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "AWFF_InnovationGraphicalControllers",
+            "dt_s": 0.444
+          }
+        ]
+      },
+      "simulate_result": null
+    },
+    {
+      "model_name": "AWFF_InnovationGraphicalControllers.MotorMixerBlock",
+      "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "verify_result_var": "y",
+      "load_ok": true,
+      "check_ok": true,
+      "simulate_ok": null,
+      "loads": [
+        {
+          "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+          "result": {
+            "ok": true,
+            "api": "OpenModelFile",
+            "data": true,
+            "cached": false,
+            "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_InnovationGraphicalControllers.mo",
+            "unload_loaded_classes_for_mo": {
+              "ok": true,
+              "api": "unload_loaded_classes_for_mo",
+              "data": [
+                {
+                  "class": "AWFF_InnovationGraphicalControllers",
+                  "class_exist": true,
+                  "erased": true
+                }
+              ]
+            },
+            "auto_loaded_libs": {
+              "BaseWorkspace": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "BlockKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DimensionType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discontinuities": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discrete": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DiscreteTimeIntegrator": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "ExternalResetType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "FillPattern": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "InheritType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "MathOperation": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "OverflowKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Port": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SignalRouting": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Sources": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SysplorerEmbeddedCoder": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "Types": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              }
+            },
+            "manager_action": "load_file"
+          }
+        }
+      ],
+      "check_result": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.3,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "AWFF_InnovationGraphicalControllers.MotorMixerBlock",
+            "dt_s": 0.299
+          }
+        ]
+      },
+      "simulate_result": null
+    },
+    {
+      "model_name": "AWFF_InnovationGraphicalControllers.INDIAttitudeInnerLoopBlock",
+      "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "verify_result_var": "roll_cmd",
+      "load_ok": true,
+      "check_ok": true,
+      "simulate_ok": null,
+      "loads": [
+        {
+          "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+          "result": {
+            "ok": true,
+            "api": "OpenModelFile",
+            "data": true,
+            "cached": false,
+            "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_InnovationGraphicalControllers.mo",
+            "unload_loaded_classes_for_mo": {
+              "ok": true,
+              "api": "unload_loaded_classes_for_mo",
+              "data": [
+                {
+                  "class": "AWFF_InnovationGraphicalControllers",
+                  "class_exist": true,
+                  "erased": true
+                }
+              ]
+            },
+            "auto_loaded_libs": {
+              "BaseWorkspace": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "BlockKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DimensionType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discontinuities": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discrete": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DiscreteTimeIntegrator": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "ExternalResetType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "FillPattern": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "InheritType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "MathOperation": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "OverflowKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Port": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SignalRouting": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Sources": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SysplorerEmbeddedCoder": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "Types": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              }
+            },
+            "manager_action": "load_file"
+          }
+        }
+      ],
+      "check_result": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.296,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "AWFF_InnovationGraphicalControllers.INDIAttitudeInnerLoopBlock",
+            "dt_s": 0.293
+          }
+        ]
+      },
+      "simulate_result": null
+    },
+    {
+      "model_name": "AWFF_InnovationGraphicalControllers.KnownRotorFaultMixerBlock",
+      "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "verify_result_var": "y",
+      "load_ok": true,
+      "check_ok": true,
+      "simulate_ok": null,
+      "loads": [
+        {
+          "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+          "result": {
+            "ok": true,
+            "api": "OpenModelFile",
+            "data": true,
+            "cached": false,
+            "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_InnovationGraphicalControllers.mo",
+            "unload_loaded_classes_for_mo": {
+              "ok": true,
+              "api": "unload_loaded_classes_for_mo",
+              "data": [
+                {
+                  "class": "AWFF_InnovationGraphicalControllers",
+                  "class_exist": true,
+                  "erased": true
+                }
+              ]
+            },
+            "auto_loaded_libs": {
+              "BaseWorkspace": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "BlockKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DimensionType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discontinuities": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discrete": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DiscreteTimeIntegrator": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "ExternalResetType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "FillPattern": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "InheritType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "MathOperation": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "OverflowKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Port": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SignalRouting": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Sources": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SysplorerEmbeddedCoder": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "Types": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              }
+            },
+            "manager_action": "load_file"
+          }
+        }
+      ],
+      "check_result": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.305,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "AWFF_InnovationGraphicalControllers.KnownRotorFaultMixerBlock",
+            "dt_s": 0.304
+          }
+        ]
+      },
+      "simulate_result": null
+    },
+    {
+      "model_name": "AWFF_InnovationGraphicalControllers.RotorFaultIsolationBlock",
+      "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "verify_result_var": "fault_index",
+      "load_ok": true,
+      "check_ok": true,
+      "simulate_ok": null,
+      "loads": [
+        {
+          "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+          "result": {
+            "ok": true,
+            "api": "OpenModelFile",
+            "data": true,
+            "cached": false,
+            "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_InnovationGraphicalControllers.mo",
+            "unload_loaded_classes_for_mo": {
+              "ok": true,
+              "api": "unload_loaded_classes_for_mo",
+              "data": [
+                {
+                  "class": "AWFF_InnovationGraphicalControllers",
+                  "class_exist": true,
+                  "erased": true
+                }
+              ]
+            },
+            "auto_loaded_libs": {
+              "BaseWorkspace": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "BlockKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DimensionType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discontinuities": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discrete": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DiscreteTimeIntegrator": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "ExternalResetType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "FillPattern": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "InheritType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "MathOperation": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "OverflowKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Port": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SignalRouting": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Sources": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SysplorerEmbeddedCoder": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "Types": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              }
+            },
+            "manager_action": "load_file"
+          }
+        }
+      ],
+      "check_result": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.298,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "AWFF_InnovationGraphicalControllers.RotorFaultIsolationBlock",
+            "dt_s": 0.297
+          }
+        ]
+      },
+      "simulate_result": null
+    },
+    {
+      "model_name": "AWFF_InnovationGraphicalControllers.AdaptiveFaultMixerBlock",
+      "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "verify_result_var": "y",
+      "load_ok": true,
+      "check_ok": true,
+      "simulate_ok": null,
+      "loads": [
+        {
+          "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+          "result": {
+            "ok": true,
+            "api": "OpenModelFile",
+            "data": true,
+            "cached": false,
+            "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_InnovationGraphicalControllers.mo",
+            "unload_loaded_classes_for_mo": {
+              "ok": true,
+              "api": "unload_loaded_classes_for_mo",
+              "data": [
+                {
+                  "class": "AWFF_InnovationGraphicalControllers",
+                  "class_exist": true,
+                  "erased": true
+                }
+              ]
+            },
+            "auto_loaded_libs": {
+              "BaseWorkspace": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "BlockKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DimensionType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discontinuities": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discrete": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DiscreteTimeIntegrator": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "ExternalResetType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "FillPattern": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "InheritType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "MathOperation": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "OverflowKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Port": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SignalRouting": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Sources": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SysplorerEmbeddedCoder": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "Types": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              }
+            },
+            "manager_action": "load_file"
+          }
+        }
+      ],
+      "check_result": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.305,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "AWFF_InnovationGraphicalControllers.AdaptiveFaultMixerBlock",
+            "dt_s": 0.304
+          }
+        ]
+      },
+      "simulate_result": null
+    },
+    {
+      "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock",
+      "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "verify_result_var": "y",
+      "load_ok": true,
+      "check_ok": true,
+      "simulate_ok": null,
+      "loads": [
+        {
+          "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+          "result": {
+            "ok": true,
+            "api": "OpenModelFile",
+            "data": true,
+            "cached": false,
+            "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_InnovationGraphicalControllers.mo",
+            "unload_loaded_classes_for_mo": {
+              "ok": true,
+              "api": "unload_loaded_classes_for_mo",
+              "data": [
+                {
+                  "class": "AWFF_InnovationGraphicalControllers",
+                  "class_exist": true,
+                  "erased": true
+                }
+              ]
+            },
+            "auto_loaded_libs": {
+              "BaseWorkspace": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "BlockKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DimensionType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discontinuities": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discrete": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DiscreteTimeIntegrator": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "ExternalResetType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "FillPattern": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "InheritType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "MathOperation": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "OverflowKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Port": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SignalRouting": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Sources": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SysplorerEmbeddedCoder": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "Types": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              }
+            },
+            "manager_action": "load_file"
+          }
+        }
+      ],
+      "check_result": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.325,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock",
+            "dt_s": 0.324
+          }
+        ]
+      },
+      "simulate_result": null
+    },
+    {
+      "model_name": "AWFF_InnovationGraphicalControllers.AWFF_INDIControllerGraphical_Sysblock",
+      "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "verify_result_var": "y",
+      "load_ok": true,
+      "check_ok": true,
+      "simulate_ok": null,
+      "loads": [
+        {
+          "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+          "result": {
+            "ok": true,
+            "api": "OpenModelFile",
+            "data": true,
+            "cached": false,
+            "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_InnovationGraphicalControllers.mo",
+            "unload_loaded_classes_for_mo": {
+              "ok": true,
+              "api": "unload_loaded_classes_for_mo",
+              "data": [
+                {
+                  "class": "AWFF_InnovationGraphicalControllers",
+                  "class_exist": true,
+                  "erased": true
+                }
+              ]
+            },
+            "auto_loaded_libs": {
+              "BaseWorkspace": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "BlockKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DimensionType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discontinuities": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discrete": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DiscreteTimeIntegrator": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "ExternalResetType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "FillPattern": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "InheritType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "MathOperation": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "OverflowKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Port": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SignalRouting": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Sources": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SysplorerEmbeddedCoder": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "Types": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              }
+            },
+            "manager_action": "load_file"
+          }
+        }
+      ],
+      "check_result": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.329,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "AWFF_InnovationGraphicalControllers.AWFF_INDIControllerGraphical_Sysblock",
+            "dt_s": 0.328
+          }
+        ]
+      },
+      "simulate_result": null
+    },
+    {
+      "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1FaultAllocationControllerGraphical_Sysblock",
+      "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "verify_result_var": "y",
+      "load_ok": true,
+      "check_ok": true,
+      "simulate_ok": null,
+      "loads": [
+        {
+          "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+          "result": {
+            "ok": true,
+            "api": "OpenModelFile",
+            "data": true,
+            "cached": false,
+            "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_InnovationGraphicalControllers.mo",
+            "unload_loaded_classes_for_mo": {
+              "ok": true,
+              "api": "unload_loaded_classes_for_mo",
+              "data": [
+                {
+                  "class": "AWFF_InnovationGraphicalControllers",
+                  "class_exist": true,
+                  "erased": true
+                }
+              ]
+            },
+            "auto_loaded_libs": {
+              "BaseWorkspace": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "BlockKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DimensionType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discontinuities": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discrete": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DiscreteTimeIntegrator": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "ExternalResetType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "FillPattern": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "InheritType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "MathOperation": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "OverflowKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Port": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SignalRouting": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Sources": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SysplorerEmbeddedCoder": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "Types": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              }
+            },
+            "manager_action": "load_file"
+          }
+        }
+      ],
+      "check_result": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.321,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1FaultAllocationControllerGraphical_Sysblock",
+            "dt_s": 0.32
+          }
+        ]
+      },
+      "simulate_result": null
+    },
+    {
+      "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock",
+      "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "verify_result_var": "fault_index",
+      "load_ok": true,
+      "check_ok": true,
+      "simulate_ok": null,
+      "loads": [
+        {
+          "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+          "result": {
+            "ok": true,
+            "api": "OpenModelFile",
+            "data": true,
+            "cached": false,
+            "file_path": "C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_InnovationGraphicalControllers.mo",
+            "unload_loaded_classes_for_mo": {
+              "ok": true,
+              "api": "unload_loaded_classes_for_mo",
+              "data": [
+                {
+                  "class": "AWFF_InnovationGraphicalControllers",
+                  "class_exist": true,
+                  "erased": true
+                }
+              ]
+            },
+            "auto_loaded_libs": {
+              "BaseWorkspace": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "BlockKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DimensionType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discontinuities": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Discrete": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "DiscreteTimeIntegrator": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "ExternalResetType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "FillPattern": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "InheritType": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "MathOperation": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "OverflowKind": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Port": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SignalRouting": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "Sources": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              },
+              "SysplorerEmbeddedCoder": {
+                "ok": true,
+                "error": "",
+                "cached": true
+              },
+              "Types": {
+                "ok": false,
+                "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+                "cached": false
+              }
+            },
+            "manager_action": "load_file"
+          }
+        }
+      ],
+      "check_result": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.332,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock",
+            "dt_s": 0.332
+          }
+        ]
+      },
+      "simulate_result": null
+    }
+  ]
+}

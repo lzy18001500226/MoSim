@@ -34,7 +34,11 @@ implementation_status:
     scenario is considered complete. The current behavior gate is intentionally
     separate from the structure gate so missing Saturation, DeadZone, UnitDelay,
     DiscreteTimeIntegrator, Switch, or Product blocks are visible instead of
-    being hidden behind a successful load/check result.
+    being hidden behind a successful load/check result. As of 2026-05-12, the
+    graphical behavior gate passes for the baseline AWFF graphical controller
+    and the L1/INDI/fault-allocation graphical controller package. Full-plant
+    performance conclusions still use the equation bridge until the mixed
+    Sysplorer/Sysblock embedding limitation is removed.
 
 model_interface:
   replacement_component: controller3_2
@@ -112,6 +116,16 @@ verified_results:
     all_check_ok: true
     all_simulate_ok: true
     note: structural MCP evidence only; behavior equivalence is tracked by graphical_contract.behavior_equivalence_ok
+  graphical_behavior_mcp_check:
+    baseline_summary_file: results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_behavior_check_20260512_summary.json
+    baseline_log_file: results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_behavior_check_20260512.jsonl
+    innovation_summary_file: results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_behavior_check_20260512_summary.json
+    innovation_log_file: results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_behavior_check_20260512.jsonl
+    baseline_models_checked: 5
+    innovation_models_checked: 10
+    all_check_ok: true
+    all_simulate_ok: null
+    note: load_file/check_model evidence for behavior-equivalent graphical Sysblock controllers; no full-plant simulation was run in this gate.
   graphical_full_plant_embedding_diagnostic:
     hierarchical_failure_log: results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_closed_loop_failed_hierarchical_20260511.jsonl
     flat_failure_log: results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_closed_loop_failed_flat_20260511.jsonl

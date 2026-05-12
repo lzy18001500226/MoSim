@@ -3,7 +3,7 @@
   "scope": "graphical_awff_sysblock_controller",
   "ok": true,
   "structure_ok": true,
-  "behavior_equivalence_ok": false,
+  "behavior_equivalence_ok": true,
   "results": [
     {
       "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_PositionOuterLoop_Sysblock.mo",
@@ -113,9 +113,9 @@
         "y2",
         "y3"
       ],
-      "connect_count": 60,
-      "line_annotation_count": 60,
-      "placement_count": 46,
+      "connect_count": 63,
+      "line_annotation_count": 63,
+      "placement_count": 49,
       "failures": []
     },
     {
@@ -135,9 +135,9 @@
         "pitch_cmd",
         "yaw_cmd"
       ],
-      "connect_count": 30,
-      "line_annotation_count": 30,
-      "placement_count": 28,
+      "connect_count": 39,
+      "line_annotation_count": 39,
+      "placement_count": 34,
       "failures": []
     },
     {
@@ -156,9 +156,9 @@
         "y2",
         "y3"
       ],
-      "connect_count": 27,
-      "line_annotation_count": 27,
-      "placement_count": 19,
+      "connect_count": 31,
+      "line_annotation_count": 31,
+      "placement_count": 23,
       "failures": []
     },
     {
@@ -177,9 +177,9 @@
         "y2",
         "y3"
       ],
-      "connect_count": 9,
-      "line_annotation_count": 9,
-      "placement_count": 10,
+      "connect_count": 13,
+      "line_annotation_count": 13,
+      "placement_count": 14,
       "failures": []
     },
     {
@@ -197,9 +197,9 @@
         "eta_hat4",
         "fault_index"
       ],
-      "connect_count": 29,
-      "line_annotation_count": 29,
-      "placement_count": 25,
+      "connect_count": 44,
+      "line_annotation_count": 44,
+      "placement_count": 39,
       "failures": []
     },
     {
@@ -222,9 +222,9 @@
         "y2",
         "y3"
       ],
-      "connect_count": 8,
-      "line_annotation_count": 8,
-      "placement_count": 13,
+      "connect_count": 20,
+      "line_annotation_count": 20,
+      "placement_count": 21,
       "failures": []
     },
     {
@@ -337,127 +337,89 @@
     {
       "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo",
       "model": "AWFF_FullControllerFlatGraphical_Sysblock.mo",
-      "ok": false,
+      "ok": true,
       "required_behavior_blocks": [
         "SysplorerEmbeddedCoder.Discontinuities.Saturation",
         "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator"
       ],
-      "missing_behavior_blocks": [
-        "SysplorerEmbeddedCoder.Discontinuities.Saturation"
-      ],
-      "failures": [
-        "missing graphical behavior blocks: SysplorerEmbeddedCoder.Discontinuities.Saturation"
-      ]
+      "missing_behavior_blocks": [],
+      "failures": []
     },
     {
       "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
       "model": "AWFF_InnovationGraphicalControllers.L1ResidualOuterLoopBlock",
-      "ok": false,
+      "ok": true,
       "required_behavior_blocks": [
         "SysplorerEmbeddedCoder.Discontinuities.Saturation",
         "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator"
       ],
-      "missing_behavior_blocks": [
-        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
-        "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator"
-      ],
-      "failures": [
-        "missing graphical behavior blocks: SysplorerEmbeddedCoder.Discontinuities.Saturation, SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator"
-      ]
+      "missing_behavior_blocks": [],
+      "failures": []
     },
     {
       "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
       "model": "AWFF_InnovationGraphicalControllers.PIDAttitudeInnerLoopBlock",
-      "ok": false,
+      "ok": true,
       "required_behavior_blocks": [
         "SysplorerEmbeddedCoder.Discontinuities.Saturation"
       ],
-      "missing_behavior_blocks": [
-        "SysplorerEmbeddedCoder.Discontinuities.Saturation"
-      ],
-      "failures": [
-        "missing graphical behavior blocks: SysplorerEmbeddedCoder.Discontinuities.Saturation"
-      ]
+      "missing_behavior_blocks": [],
+      "failures": []
     },
     {
       "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
       "model": "AWFF_InnovationGraphicalControllers.INDIAttitudeInnerLoopBlock",
-      "ok": false,
+      "ok": true,
       "required_behavior_blocks": [
         "SysplorerEmbeddedCoder.Discontinuities.Saturation",
         "SysplorerEmbeddedCoder.Discrete.UnitDelay"
       ],
-      "missing_behavior_blocks": [
-        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
-        "SysplorerEmbeddedCoder.Discrete.UnitDelay"
-      ],
-      "failures": [
-        "missing graphical behavior blocks: SysplorerEmbeddedCoder.Discontinuities.Saturation, SysplorerEmbeddedCoder.Discrete.UnitDelay"
-      ]
+      "missing_behavior_blocks": [],
+      "failures": []
     },
     {
       "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
       "model": "AWFF_InnovationGraphicalControllers.MotorMixerBlock",
-      "ok": false,
+      "ok": true,
       "required_behavior_blocks": [
         "SysplorerEmbeddedCoder.Discontinuities.Saturation"
       ],
-      "missing_behavior_blocks": [
-        "SysplorerEmbeddedCoder.Discontinuities.Saturation"
-      ],
-      "failures": [
-        "missing graphical behavior blocks: SysplorerEmbeddedCoder.Discontinuities.Saturation"
-      ]
+      "missing_behavior_blocks": [],
+      "failures": []
     },
     {
       "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
       "model": "AWFF_InnovationGraphicalControllers.KnownRotorFaultMixerBlock",
-      "ok": false,
+      "ok": true,
       "required_behavior_blocks": [
         "SysplorerEmbeddedCoder.Discontinuities.Saturation"
       ],
-      "missing_behavior_blocks": [
-        "SysplorerEmbeddedCoder.Discontinuities.Saturation"
-      ],
-      "failures": [
-        "missing graphical behavior blocks: SysplorerEmbeddedCoder.Discontinuities.Saturation"
-      ]
+      "missing_behavior_blocks": [],
+      "failures": []
     },
     {
       "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
       "model": "AWFF_InnovationGraphicalControllers.RotorFaultIsolationBlock",
-      "ok": false,
+      "ok": true,
       "required_behavior_blocks": [
         "SysplorerEmbeddedCoder.Discontinuities.DeadZone",
         "SysplorerEmbeddedCoder.Discontinuities.Saturation",
         "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator",
         "SysplorerEmbeddedCoder.SignalRouting.Switch"
       ],
-      "missing_behavior_blocks": [
-        "SysplorerEmbeddedCoder.Discontinuities.DeadZone",
-        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
-        "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator",
-        "SysplorerEmbeddedCoder.SignalRouting.Switch"
-      ],
-      "failures": [
-        "missing graphical behavior blocks: SysplorerEmbeddedCoder.Discontinuities.DeadZone, SysplorerEmbeddedCoder.Discontinuities.Saturation, SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator, SysplorerEmbeddedCoder.SignalRouting.Switch"
-      ]
+      "missing_behavior_blocks": [],
+      "failures": []
     },
     {
       "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
       "model": "AWFF_InnovationGraphicalControllers.AdaptiveFaultMixerBlock",
-      "ok": false,
+      "ok": true,
       "required_behavior_blocks": [
         "SysplorerEmbeddedCoder.MathOperation.Product",
         "SysplorerEmbeddedCoder.Discontinuities.Saturation"
       ],
-      "missing_behavior_blocks": [
-        "SysplorerEmbeddedCoder.MathOperation.Product",
-        "SysplorerEmbeddedCoder.Discontinuities.Saturation"
-      ],
-      "failures": [
-        "missing graphical behavior blocks: SysplorerEmbeddedCoder.MathOperation.Product, SysplorerEmbeddedCoder.Discontinuities.Saturation"
-      ]
+      "missing_behavior_blocks": [],
+      "failures": []
     }
   ]
 }
