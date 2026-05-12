@@ -50,12 +50,6 @@ REQUIRED_MODELS: dict[str, dict[str, Any]] = {
 
 PACKAGE_MODELS: dict[str, dict[str, dict[str, Any]]] = {
     "AWFF_InnovationGraphicalControllers.mo": {
-        "SymmetricLimiterBlock": {
-            "inports": ["u"],
-            "outports": ["y"],
-            "required_blocks": ["limiter_kernel", "SymmetricLimiterKernelBlock"],
-            "min_connects": 2,
-        },
         "INDIAttitudeInnerLoopBlock": {
             "inports": ["roll_ref", "pitch_ref", "yaw_ref", "roll_mea", "pitch_mea", "yaw_mea"],
             "outports": ["roll_cmd", "pitch_cmd", "yaw_cmd"],

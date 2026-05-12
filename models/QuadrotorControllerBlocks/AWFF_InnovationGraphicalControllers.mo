@@ -18,7 +18,7 @@ model AWFF_InnovationGraphicalControllers
   model SymmetricLimiterKernelBlock
     "Equation kernel for symmetric saturation"
     extends ModelWorkspace;
-    annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(u),Right(y)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
+    annotation(__MWORKS(hide=true,version="26.3.0",modelType=Control,PortArrangement(Left(u),Right(y)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
       Icon(coordinateSystem(preserveAspectRatio=false),graphics={
         Rectangle(extent={{-100,-100},{100,100}},lineColor={115,115,115},fillColor={250,250,250},fillPattern=FillPattern.Solid,radius=6),
         Text(extent={{-90,24},{90,-24}},textString="sat eq",lineColor={70,70,70})}),
@@ -51,7 +51,7 @@ model AWFF_InnovationGraphicalControllers
   model EfficiencyCompensationKernelBlock
     "Equation kernel for efficiency-aware rotor allocation"
     extends ModelWorkspace;
-    annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(raw_cmd,eta_hat),Right(y)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
+    annotation(__MWORKS(hide=true,version="26.3.0",modelType=Control,PortArrangement(Left(raw_cmd,eta_hat),Right(y)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
       Icon(coordinateSystem(preserveAspectRatio=false),graphics={
         Rectangle(extent={{-100,-100},{100,100}},lineColor={130,80,65},fillColor={255,246,242},fillPattern=FillPattern.Solid,radius=6),
         Text(extent={{-90,24},{90,-24}},textString="eta alloc",lineColor={95,50,35})}),
@@ -71,7 +71,7 @@ model AWFF_InnovationGraphicalControllers
   model FaultSignatureEstimatorKernelBlock
     "Equation kernel for four-rotor fault signature estimation"
     extends ModelWorkspace;
-    annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(x_error,y_error),Right(eta_hat1,eta_hat2,eta_hat3,eta_hat4,fault_index)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
+    annotation(__MWORKS(hide=true,version="26.3.0",modelType=Control,PortArrangement(Left(x_error,y_error),Right(eta_hat1,eta_hat2,eta_hat3,eta_hat4,fault_index)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
       Icon(coordinateSystem(preserveAspectRatio=false),graphics={
         Rectangle(extent={{-100,-100},{100,100}},lineColor={145,55,55},fillColor={255,244,244},fillPattern=FillPattern.Solid,radius=6),
         Text(extent={{-90,24},{90,-8}},textString="signature",lineColor={105,40,40}),

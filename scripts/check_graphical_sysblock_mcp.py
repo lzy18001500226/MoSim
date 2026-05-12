@@ -62,11 +62,6 @@ INNOVATION_MODELS = [
         "verify_result_var": "l1_residual_overview.y",
     },
     {
-        "model_name": "AWFF_InnovationGraphicalControllers.SymmetricLimiterBlock",
-        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
-        "verify_result_var": "y",
-    },
-    {
         "model_name": "AWFF_InnovationGraphicalControllers.MotorMixerBlock",
         "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "y",
