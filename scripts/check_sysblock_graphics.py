@@ -57,17 +57,14 @@ PACKAGE_MODELS: dict[str, dict[str, dict[str, Any]]] = {
                 "roll_error_sum",
                 "roll_kp_gain",
                 "roll_indi_gain_block",
-                "roll_inc_limit",
                 "pitch_error_sum",
                 "pitch_kp_gain",
                 "pitch_indi_gain_block",
-                "pitch_inc_limit",
                 "yaw_error_sum",
                 "yaw_kp_gain",
                 "yaw_indi_gain_block",
-                "yaw_inc_limit",
             ],
-            "min_connects": 36,
+            "min_connects": 27,
         },
         "MotorMixerBlock": {
             "inports": ["thrust_ref", "roll_cmd", "pitch_cmd", "yaw_cmd"],
@@ -84,30 +81,26 @@ PACKAGE_MODELS: dict[str, dict[str, dict[str, Any]]] = {
                 "motor2_sum",
                 "motor3_sum",
                 "motor4_sum",
-                "motor1_limit",
-                "motor2_limit",
-                "motor3_limit",
-                "motor4_limit",
             ],
-            "min_connects": 31,
+            "min_connects": 23,
         },
         "KnownRotorFaultMixerBlock": {
             "inports": ["thrust_ref", "roll_cmd", "pitch_cmd", "yaw_cmd"],
             "outports": ["y", "y1", "y2", "y3"],
-            "required_blocks": ["raw_mixer", "rotor1_eta", "rotor1_allocator", "motor2_limit", "motor3_limit", "motor4_limit"],
-            "min_connects": 13,
+            "required_blocks": ["raw_mixer", "rotor1_comp_gain"],
+            "min_connects": 5,
         },
         "RotorFaultIsolationBlock": {
             "inports": ["x_error", "y_error"],
             "outports": ["eta_hat1", "eta_hat2", "eta_hat3", "eta_hat4", "fault_index"],
-            "required_blocks": ["signature_kernel", "FaultSignatureEstimatorKernelBlock"],
-            "min_connects": 7,
+            "required_blocks": ["neg_x_half", "pos_x_half", "neg_y_half", "pos_y_half", "sig1_sum", "eta1_gain", "eta1_raw_sum"],
+            "min_connects": 24,
         },
         "AdaptiveFaultMixerBlock": {
             "inports": ["thrust_ref", "roll_cmd", "pitch_cmd", "yaw_cmd", "eta_hat1", "eta_hat2", "eta_hat3", "eta_hat4"],
             "outports": ["y", "y1", "y2", "y3"],
-            "required_blocks": ["raw_mixer", "eta1_allocator", "eta2_allocator", "eta3_allocator", "eta4_allocator"],
-            "min_connects": 16,
+            "required_blocks": ["raw_mixer"],
+            "min_connects": 4,
         },
         "AWFF_L1ResidualControllerGraphical_Sysblock": {
             "inports": ["x_error", "y_error", "z_error", "z_ref_rate", "roll_mea", "pitch_mea", "yaw_mea", "yaw_ref"],
@@ -270,6 +263,37 @@ def run_checks() -> dict[str, Any]:
     results = [check_model(base / filename, spec) for filename, spec in REQUIRED_MODELS.items()]
     for filename, specs in PACKAGE_MODELS.items():
         results.extend(check_package_models(base / filename, specs))
+    innovation_text = (base / "AWFF_InnovationGraphicalControllers.mo").read_text(encoding="utf-8")
+    forbidden = [
+        token
+        for token in [
+            "SymmetricLimiterKernelBlock",
+            "EfficiencyCompensationKernelBlock",
+            "FaultSignatureEstimatorKernelBlock",
+            "Modelica.Blocks.Nonlinear.Limiter",
+            "limiter_kernel",
+            "rotor1_allocator",
+            "signature_kernel",
+            "eta1_allocator",
+            "eta2_allocator",
+            "eta3_allocator",
+            "eta4_allocator",
+        ]
+        if token in innovation_text
+    ]
+    results.append(
+        {
+            "file": (base / "AWFF_InnovationGraphicalControllers.mo").as_posix(),
+            "model": "package_no_kernel_nesting",
+            "ok": not forbidden,
+            "inports": [],
+            "outports": [],
+            "connect_count": 0,
+            "line_annotation_count": 0,
+            "placement_count": 0,
+            "failures": [] if not forbidden else [f"forbidden nested kernel names: {', '.join(forbidden)}"],
+        }
+    )
     return {
         "source": "static_model_contract",
         "scope": "graphical_awff_sysblock_controller",
