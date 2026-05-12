@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -46,6 +47,16 @@ def count_csv_rows(path: Path) -> int | None:
             return sum(1 for _ in csv.DictReader(handle))
     except Exception:
         return None
+
+
+def graphical_model_declared(model_file: Path, model_name: str) -> bool:
+    if not model_file.exists():
+        return False
+    text = model_file.read_text(encoding="utf-8", errors="replace")
+    short_name = model_name.rsplit(".", 1)[-1]
+    if "." in model_name:
+        return bool(re.search(rf"^\s*model\s+{re.escape(short_name)}\b", text, re.MULTILINE))
+    return bool(re.search(rf"^model\s+{re.escape(short_name)}\b", text, re.MULTILINE))
 
 
 def scenario_paths(config: dict[str, Any], scenario_path: Path) -> dict[str, Path | None]:
@@ -128,6 +139,21 @@ def audit_one(scenario_path: Path) -> dict[str, Any]:
     source = str(metrics.get("source", ""))
     if metrics and source != "MWORKS_MCP":
         warnings.append(f"metrics source is not MWORKS_MCP: {source or '<missing>'}")
+
+    controller = config.get("controller", {})
+    if isinstance(controller, dict) and controller.get("sysblock_controller_file"):
+        graphical_model = str(controller.get("graphical_sysblock_model", "") or "")
+        graphical_file_value = controller.get("graphical_sysblock_file")
+        if not graphical_model:
+            issues.append("missing controller.graphical_sysblock_model")
+        if not graphical_file_value:
+            issues.append("missing controller.graphical_sysblock_file")
+        else:
+            graphical_file = repo_path(graphical_file_value)
+            if not graphical_file.exists():
+                issues.append(f"missing graphical_sysblock_file: {rel(graphical_file)}")
+            elif graphical_model and not graphical_model_declared(graphical_file, graphical_model):
+                issues.append(f"graphical_sysblock_model not declared in file: {graphical_model}")
 
     return {
         "scenario": rel(scenario_path),

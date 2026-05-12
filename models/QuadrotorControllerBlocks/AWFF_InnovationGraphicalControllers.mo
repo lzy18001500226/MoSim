@@ -9,7 +9,7 @@ model AWFF_InnovationGraphicalControllers
       Text(extent={{-90,34},{90,-2}},textString="AWFF",lineColor={20,45,75}),
       Text(extent={{-90,-10},{90,-44}},textString="Innovation",lineColor={20,45,75}),
       Text(extent={{-90,-52},{90,-82}},textString="L1 / INDI / MPC / Fault",lineColor={85,105,125})}),
-    Diagram(coordinateSystem(extent={{-340,-360},{340,220}},grid={2,2})));
+    Diagram(coordinateSystem(extent={{-340,-520},{340,220}},grid={2,2})));
 
   model ModelWorkspace
     annotation(__MWORKS(hide=true,BlockSystem(blockKind=BlockKind.modelWorkspace),version="26.3.0"));
@@ -775,6 +775,59 @@ model AWFF_InnovationGraphicalControllers
     connect(fault_isolation.fault_index,fault_index) annotation(Line(points={{46,-189},{228,-189},{228,-330},{290,-330}},color={0,0,0}));
   end AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock;
 
+  model AWFF_L1OnlineFaultAllocationControllerGraphical_Sysblock
+    "Graphical L1 residual controller with online rotor-1 efficiency allocation"
+    extends ModelWorkspace;
+    annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(x_error,y_error,z_error,z_ref_rate,roll_mea,pitch_mea,yaw_mea,yaw_ref),Right(y,y1,y2,y3,eta_hat)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
+      Icon(coordinateSystem(preserveAspectRatio=false)),Diagram(coordinateSystem(extent={{-340,-300},{320,220}},grid={2,2})));
+
+    SysplorerEmbeddedCoder.Port.Inport x_error annotation(Placement(transformation(origin={-320,180},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Inport y_error annotation(Placement(transformation(origin={-320,130},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Inport z_error annotation(Placement(transformation(origin={-320,80},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Inport z_ref_rate annotation(Placement(transformation(origin={-320,30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Inport roll_mea annotation(Placement(transformation(origin={-320,-30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Inport pitch_mea annotation(Placement(transformation(origin={-320,-80},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Inport yaw_mea annotation(Placement(transformation(origin={-320,-130},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Inport yaw_ref annotation(Placement(transformation(origin={-320,-180},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Outport y annotation(Placement(transformation(origin={300,150},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Outport y1 annotation(Placement(transformation(origin={300,50},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Outport y2 annotation(Placement(transformation(origin={300,-50},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Outport y3 annotation(Placement(transformation(origin={300,-150},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Outport eta_hat annotation(Placement(transformation(origin={300,-240},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+
+    L1ResidualOuterLoopBlock l1_outer annotation(Placement(transformation(origin={-160,70},extent={{-50,-45},{50,45}})));
+    PIDAttitudeInnerLoopBlock attitude_loop annotation(Placement(transformation(origin={0,-25},extent={{-50,-45},{50,45}})));
+    AdaptiveFaultMixerBlock motor_mixer annotation(Placement(transformation(origin={165,-25},extent={{-50,-45},{50,45}})));
+    Rotor1OnlineEfficiencyEstimatorBlock rotor1_eta_estimator annotation(Placement(transformation(origin={0,-185},extent={{-45,-35},{45,35}})));
+    SysplorerEmbeddedCoder.Sources.Constant eta_one(k=1) annotation(Placement(transformation(origin={80,-245},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(SampleTime(auto=true,group="D1")=0.01,Instance(y(Type(inherit=InheritType.constantValue,ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)))));
+  equation
+    connect(x_error,l1_outer.x_error) annotation(Line(points={{-310,180},{-240,180},{-240,111},{-211,111}},color={0,0,0}));
+    connect(y_error,l1_outer.y_error) annotation(Line(points={{-310,130},{-230,130},{-230,84},{-211,84}},color={0,0,0}));
+    connect(z_error,l1_outer.z_error) annotation(Line(points={{-310,80},{-230,80},{-230,56},{-211,56}},color={0,0,0}));
+    connect(z_ref_rate,l1_outer.z_ref_rate) annotation(Line(points={{-310,30},{-230,30},{-230,29},{-211,29}},color={0,0,0}));
+    connect(l1_outer.roll_ref,attitude_loop.roll_ref) annotation(Line(points={{-109,70},{-70,70},{-70,29},{-51,29}},color={0,0,0}));
+    connect(l1_outer.pitch_ref,attitude_loop.pitch_ref) annotation(Line(points={{-109,102},{-58,102},{-58,6},{-51,6}},color={0,0,0}));
+    connect(yaw_ref,attitude_loop.yaw_ref) annotation(Line(points={{-310,-180},{-78,-180},{-78,-16},{-51,-16}},color={0,0,0}));
+    connect(roll_mea,attitude_loop.roll_mea) annotation(Line(points={{-310,-30},{-94,-30},{-94,-43},{-51,-43}},color={0,0,0}));
+    connect(pitch_mea,attitude_loop.pitch_mea) annotation(Line(points={{-310,-80},{-102,-80},{-102,-66},{-51,-66}},color={0,0,0}));
+    connect(yaw_mea,attitude_loop.yaw_mea) annotation(Line(points={{-310,-130},{-112,-130},{-112,-88},{-51,-88}},color={0,0,0}));
+    connect(l1_outer.thrust_ref,motor_mixer.thrust_ref) annotation(Line(points={{-109,38},{92,38},{92,16},{114,16}},color={0,0,0}));
+    connect(attitude_loop.roll_cmd,motor_mixer.roll_cmd) annotation(Line(points={{51,16},{92,16},{92,-12},{114,-12}},color={0,0,0}));
+    connect(attitude_loop.pitch_cmd,motor_mixer.pitch_cmd) annotation(Line(points={{51,-25},{114,-25},{114,-39}},color={0,0,0}));
+    connect(attitude_loop.yaw_cmd,motor_mixer.yaw_cmd) annotation(Line(points={{51,-66},{92,-66},{92,-66},{114,-66}},color={0,0,0}));
+    connect(x_error,rotor1_eta_estimator.x_error) annotation(Line(points={{-310,180},{-260,180},{-260,-164},{-46,-164}},color={0,0,0}));
+    connect(y_error,rotor1_eta_estimator.y_error) annotation(Line(points={{-310,130},{-250,130},{-250,-199},{-46,-199}},color={0,0,0}));
+    connect(rotor1_eta_estimator.eta_hat,motor_mixer.eta_hat1) annotation(Line(points={{46,-182},{98,-182},{98,-86},{114,-86}},color={0,0,0}));
+    connect(eta_one.y,motor_mixer.eta_hat2) annotation(Line(points={{92,-245},{102,-245},{102,-99},{114,-99}},color={0,0,0}));
+    connect(eta_one.y,motor_mixer.eta_hat3) annotation(Line(points={{92,-245},{106,-245},{106,-113},{114,-113}},color={0,0,0}));
+    connect(eta_one.y,motor_mixer.eta_hat4) annotation(Line(points={{92,-245},{110,-245},{110,-126},{114,-126}},color={0,0,0}));
+    connect(motor_mixer.y,y) annotation(Line(points={{216,16},{250,16},{250,150},{290,150}},color={0,0,0}));
+    connect(motor_mixer.y1,y1) annotation(Line(points={{216,-12},{246,-12},{246,50},{290,50}},color={0,0,0}));
+    connect(motor_mixer.y2,y2) annotation(Line(points={{216,-39},{246,-39},{246,-50},{290,-50}},color={0,0,0}));
+    connect(motor_mixer.y3,y3) annotation(Line(points={{216,-66},{250,-66},{250,-150},{290,-150}},color={0,0,0}));
+    connect(rotor1_eta_estimator.eta_hat,eta_hat) annotation(Line(points={{46,-182},{260,-182},{260,-240},{290,-240}},color={0,0,0}));
+  end AWFF_L1OnlineFaultAllocationControllerGraphical_Sysblock;
+
   model LinearMPCOuterLoopBlock
     "Graphical finite-horizon linear MPC-style outer loop with L1 residual compensation"
     extends ModelWorkspace;
@@ -1094,4 +1147,5 @@ model AWFF_InnovationGraphicalControllers
   AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock online_fault_isolation_overview annotation(Placement(transformation(origin={170,-100},extent={{-70,-45},{70,45}})));
   AWFF_LinearMPCControllerGraphical_Sysblock linear_mpc_overview annotation(Placement(transformation(origin={-170,-280},extent={{-70,-45},{70,45}})));
   AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock linear_mpc_fault_allocation_overview annotation(Placement(transformation(origin={170,-280},extent={{-70,-45},{70,45}})));
+  AWFF_L1OnlineFaultAllocationControllerGraphical_Sysblock l1_online_fault_allocation_overview annotation(Placement(transformation(origin={0,-440},extent={{-70,-45},{70,45}})));
 end AWFF_InnovationGraphicalControllers;

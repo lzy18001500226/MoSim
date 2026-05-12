@@ -18,6 +18,8 @@ controller:
   params_file: controllers/awff_sysblock/default.yaml
   replacement_component: controller3_2
   sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_FullControllerFlatGraphical_Sysblock
+  graphical_sysblock_file: models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
 
 simulation:
   start_time_s: 0.0

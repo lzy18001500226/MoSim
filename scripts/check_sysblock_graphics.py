@@ -55,6 +55,11 @@ BEHAVIOR_EXPECTATIONS: dict[str, list[str]] = {
         "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator",
         "SysplorerEmbeddedCoder.Discontinuities.Saturation",
     ],
+    "AWFF_InnovationGraphicalControllers.AWFF_L1OnlineFaultAllocationControllerGraphical_Sysblock": [
+        "L1ResidualOuterLoopBlock",
+        "Rotor1OnlineEfficiencyEstimatorBlock",
+        "AdaptiveFaultMixerBlock",
+    ],
     "AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock": [
         "LinearMPCOuterLoopBlock",
         "INDIAttitudeInnerLoopBlock",
@@ -180,6 +185,12 @@ PACKAGE_MODELS: dict[str, dict[str, dict[str, Any]]] = {
             "outports": ["y", "y1", "y2", "y3", "eta_hat1", "eta_hat2", "eta_hat3", "eta_hat4", "fault_index"],
             "required_blocks": ["l1_outer", "attitude_loop", "motor_mixer", "fault_isolation", "L1ResidualOuterLoopBlock", "PIDAttitudeInnerLoopBlock", "AdaptiveFaultMixerBlock", "RotorFaultIsolationBlock"],
             "min_connects": 29,
+        },
+        "AWFF_L1OnlineFaultAllocationControllerGraphical_Sysblock": {
+            "inports": ["x_error", "y_error", "z_error", "z_ref_rate", "roll_mea", "pitch_mea", "yaw_mea", "yaw_ref"],
+            "outports": ["y", "y1", "y2", "y3", "eta_hat"],
+            "required_blocks": ["l1_outer", "attitude_loop", "motor_mixer", "rotor1_eta_estimator", "L1ResidualOuterLoopBlock", "PIDAttitudeInnerLoopBlock", "AdaptiveFaultMixerBlock", "Rotor1OnlineEfficiencyEstimatorBlock"],
+            "min_connects": 24,
         },
         "LinearMPCOuterLoopBlock": {
             "inports": ["x_error", "y_error", "z_error", "z_ref_rate"],

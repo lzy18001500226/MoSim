@@ -16,6 +16,8 @@ controller:
   replacement_component: controller3_2
   baseline_experiment: official_example1_awff_indi_sysblock
   sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
+  graphical_sysblock_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0

@@ -16,6 +16,8 @@ controller:
   replacement_component: controller3_2
   baseline_experiment: official_example3_awff_sysblock
   sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_INDIControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_INDIControllerGraphical_Sysblock
+  graphical_sysblock_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0

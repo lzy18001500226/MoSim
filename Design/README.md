@@ -16,7 +16,7 @@
 辅助：Sysplorer/Modelica 派生模型闭环仿真、Syslab/Python 指标与图表
 ```
 
-截至当前版本，Sysplorer/Modelica 已经形成可复现性能证据；Sysblock 已完成 AWFF PID 高度环最小模型 `AWFF_PID_Sysblock_Demo` 的 `load_file/check_model/simulate_model/result_manager` 验证，并完成位置环、姿态环、电机分配、三层组合模型 `AWFF_FullController_Sysblock` 和单层扁平图形化模型 `AWFF_FullControllerFlatGraphical_Sysblock` 的真实 MCP `load_file/check_model/simulate_model` 验证。图形化 Sysblock 控制器作为 Modelica 整机子组件时，当前编译器会在内部 `Sum.u*` 端口解析处失败，因此整机性能主线使用等价 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop`，已完成 Example1 50 s、Example2 50 s、Example3 120 s 整机 `check_model/simulate_model/result_manager` 全时长证据。图形化 Sysblock 不是截图外壳，而是控制器结构、信号流、离散状态、限幅和模式逻辑的主表达形式。Equation 版只作为当前 Sysplorer/Modelica 整机混合接入的临时桥接实现；每个正式仿真场景必须维护对应的图形化 Sysblock 行为等价模型，并用静态行为契约和 MCP 检查证明其与 Equation 控制律一致。
+截至当前版本，Sysplorer/Modelica 已经形成可复现性能证据；Sysblock 已完成 AWFF PID 高度环最小模型 `AWFF_PID_Sysblock_Demo` 的 `load_file/check_model/simulate_model/result_manager` 验证，并完成位置环、姿态环、电机分配、三层组合模型 `AWFF_FullController_Sysblock` 和单层扁平图形化模型 `AWFF_FullControllerFlatGraphical_Sysblock` 的真实 MCP `load_file/check_model/simulate_model` 验证。图形化 Sysblock 控制器作为 Modelica 整机子组件时，当前编译器会在内部 `Sum.u*` 端口解析处失败，因此整机性能主线使用等价 Equation Sysblock 控制器接入 `QuadrotorExperiments.*SysblockClosedLoop`。图形化 Sysblock 不是截图外壳，而是控制器结构、信号流、离散状态、限幅和模式逻辑的主表达形式；Equation 版只作为当前 Sysplorer/Modelica 整机混合接入的临时桥接实现。每个正式 Sysblock 仿真场景必须在 YAML 中维护 `controller.graphical_sysblock_model` 与 `controller.graphical_sysblock_file`，并由 `scripts/audit_evidence_bundle.py` 验证其对应图形化行为模型存在。
 
 2026-05-12 已完成 active 非 smoke 场景证据包审查：51 个场景无 blocking issue，其中 44 个为可支撑结论的 pass evidence，7 个为已标注的旋翼退化边界/负样本证据。后续推进重点应转向演示素材、视频脚本和三维回放，而不是继续扩散控制器分支。
 

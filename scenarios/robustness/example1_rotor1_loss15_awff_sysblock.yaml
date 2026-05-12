@@ -16,6 +16,8 @@ controller:
   replacement_component: controller3_2
   baseline_experiment: robust_rotor1_loss15_example1_pid_baseline
   sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_FullControllerFlatGraphical_Sysblock
+  graphical_sysblock_file: models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
 
 disturbance:
   type: actuator_efficiency_loss

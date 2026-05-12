@@ -15,6 +15,8 @@ controller:
   params_file: controllers/l1_residual_sysblock/default.yaml
   replacement_component: controller3_2
   sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock
+  graphical_sysblock_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0
