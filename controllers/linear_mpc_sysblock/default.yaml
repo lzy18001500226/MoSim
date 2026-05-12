@@ -1,0 +1,102 @@
+controller_id: linear_mpc_sysblock
+type: sysblock_linear_mpc_outer_loop_indi_inner_loop
+priority: P1
+
+description: >
+  Project Sysblock controller that replaces the PID-style position outer loop
+  with a finite-horizon linear MPC-style outer loop. The implementation keeps
+  the verified controller3_2 motor-command interface and uses an INDI-like
+  attitude inner loop and the existing quadrotor mixer.
+
+implementation_status:
+  current_mworks_model:
+    - QuadrotorExperiments.Example1LinearMPCSysblockClosedLoop
+    - QuadrotorExperiments.Example2LinearMPCSysblockClosedLoop
+    - QuadrotorExperiments.Example3LinearMPCSysblockClosedLoop
+  sysblock_controller: AWFF_LinearMPCOuterLoopControllerEquation_Sysblock
+  verification_scope: >
+    Initial controller/model/scenario integration. Full MWORKS_MCP evidence
+    must be generated before claiming performance improvement over AWFF or
+    L1/INDI variants.
+  limitation: >
+    This first implementation is a constrained finite-horizon linear predictive
+    control equivalent using explicit terminal-error and saturation terms. It
+    is not yet an online quadratic-program MPC solver.
+
+model_interface:
+  replacement_component: controller3_2
+  compatible_source_model:
+    - AWFF_FullControllerEquation_Sysblock
+    - AWFF_INDIControllerEquation_Sysblock
+  implementation_target:
+    - Sysblock controller component
+    - Example1 step/climb closed-loop wrapper
+    - Example2 helix closed-loop wrapper
+    - Example3 figure-8 closed-loop wrapper
+  inputs:
+    x_error: climbePath.position_command[1] - sensors1_1.PosMea[1]
+    y_error: climbePath.position_command[2] - sensors1_1.PosMea[2]
+    z_error: climbePath.position_command[3] - sensors1_1.PosMea[3]
+    z_ref_rate: zero-order placeholder for current validation
+    roll_mea: sensors1_1.AngleMea[1]
+    pitch_mea: sensors1_1.AngleMea[2]
+    yaw_mea: sensors1_1.AngleMea[3]
+    yaw_ref: zero-order placeholder
+  outputs:
+    motor_1: y
+    motor_2: y1
+    motor_3: y2
+    motor_4: y3
+  required_result_variables:
+    - sensors1_1.PosMea[1]
+    - sensors1_1.PosMea[2]
+    - sensors1_1.PosMea[3]
+    - sensors1_1.AngleMea[1]
+    - sensors1_1.AngleMea[2]
+    - sensors1_1.AngleMea[3]
+    - climbePath.position_command[1]
+    - climbePath.position_command[2]
+    - climbePath.position_command[3]
+    - controller3_2.y
+    - controller3_2.y1
+    - controller3_2.y2
+    - controller3_2.y3
+
+linear_mpc_outer_loop:
+  sample_time_s: 0.05
+  horizon_steps: 20
+  horizon_s: 1.0
+  lateral:
+    mpc_kp_xy: 1.45
+    mpc_kd_xy: 0.90
+    mpc_terminal_gain_xy: 0.10
+    acceleration_limit_mps2: 2.5
+    attitude_scale: 0.1
+    roll_pitch_limit_rad: 12 / 57.3
+  altitude:
+    mpc_kp_z: 8.0
+    mpc_ki_z: 5.4
+    mpc_kd_z: 3.6
+    mpc_terminal_gain_z: 0.08
+    reference_feedforward_z: 0.35
+    thrust_limit: 20.0
+
+inner_loop:
+  type: indi_like_attitude_loop
+  attitude_feedback_blend: 1.0
+  angular_accel_filter_T: 0.08
+  indi_increment_limit: 0.12
+
+acceptance:
+  smoke_nominal:
+    scenario_file: scenarios/smoke/example1_linear_mpc_sysblock_mcp_smoke.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics
+  full_nominal:
+    scenario_file: scenarios/official/example1_linear_mpc_sysblock.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
+  full_helix:
+    scenario_file: scenarios/official/example2_linear_mpc_sysblock.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
+  full_figure8:
+    scenario_file: scenarios/official/example3_linear_mpc_sysblock.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
