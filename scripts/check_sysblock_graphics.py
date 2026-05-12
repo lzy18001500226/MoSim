@@ -13,6 +13,41 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 
 
+BEHAVIOR_EXPECTATIONS: dict[str, list[str]] = {
+    "AWFF_FullControllerFlatGraphical_Sysblock.mo": [
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+        "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator",
+    ],
+    "AWFF_InnovationGraphicalControllers.L1ResidualOuterLoopBlock": [
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+        "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator",
+    ],
+    "AWFF_InnovationGraphicalControllers.PIDAttitudeInnerLoopBlock": [
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+    ],
+    "AWFF_InnovationGraphicalControllers.INDIAttitudeInnerLoopBlock": [
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+        "SysplorerEmbeddedCoder.Discrete.UnitDelay",
+    ],
+    "AWFF_InnovationGraphicalControllers.MotorMixerBlock": [
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+    ],
+    "AWFF_InnovationGraphicalControllers.KnownRotorFaultMixerBlock": [
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+    ],
+    "AWFF_InnovationGraphicalControllers.RotorFaultIsolationBlock": [
+        "SysplorerEmbeddedCoder.Discontinuities.DeadZone",
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+        "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator",
+        "SysplorerEmbeddedCoder.SignalRouting.Switch",
+    ],
+    "AWFF_InnovationGraphicalControllers.AdaptiveFaultMixerBlock": [
+        "SysplorerEmbeddedCoder.MathOperation.Product",
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+    ],
+}
+
+
 REQUIRED_MODELS: dict[str, dict[str, Any]] = {
     "AWFF_PositionOuterLoop_Sysblock.mo": {
         "inports": ["x_error", "y_error", "z_error", "z_ref_rate"],
@@ -258,47 +293,63 @@ def check_package_models(path: Path, specs: dict[str, dict[str, Any]]) -> list[d
     return results
 
 
+def behavior_contract_checks(base: Path) -> list[dict[str, Any]]:
+    """Report whether graphical models expose key dynamic/nonlinear behavior.
+
+    The structure checks above answer "can this model be opened and reviewed as
+    a block diagram?". This contract answers the separate question the project
+    actually needs before using a graphical model as a simulation counterpart:
+    do the diagrams contain the expected saturation, delay/integrator, switch,
+    dead-zone, and product behavior instead of only passing wires through?
+    """
+
+    results: list[dict[str, Any]] = []
+    innovation_path = base / "AWFF_InnovationGraphicalControllers.mo"
+    for label, required_tokens in BEHAVIOR_EXPECTATIONS.items():
+        if label.endswith(".mo"):
+            path = base / label
+            model_text = path.read_text(encoding="utf-8") if path.exists() else ""
+        else:
+            path = innovation_path
+            model_name = label.split(".")[-1]
+            package_text = path.read_text(encoding="utf-8") if path.exists() else ""
+            model_text = named_model_text(package_text, model_name)
+
+        missing = [token for token in required_tokens if token not in model_text]
+        results.append(
+            {
+                "file": path.as_posix(),
+                "model": label,
+                "ok": not missing,
+                "required_behavior_blocks": required_tokens,
+                "missing_behavior_blocks": missing,
+                "failures": []
+                if not missing
+                else [
+                    "missing graphical behavior blocks: "
+                    + ", ".join(missing)
+                ],
+            }
+        )
+    return results
+
+
 def run_checks() -> dict[str, Any]:
     base = ROOT / "models" / "QuadrotorControllerBlocks"
     results = [check_model(base / filename, spec) for filename, spec in REQUIRED_MODELS.items()]
     for filename, specs in PACKAGE_MODELS.items():
         results.extend(check_package_models(base / filename, specs))
-    innovation_text = (base / "AWFF_InnovationGraphicalControllers.mo").read_text(encoding="utf-8")
-    forbidden = [
-        token
-        for token in [
-            "SymmetricLimiterKernelBlock",
-            "EfficiencyCompensationKernelBlock",
-            "FaultSignatureEstimatorKernelBlock",
-            "Modelica.Blocks.Nonlinear.Limiter",
-            "limiter_kernel",
-            "rotor1_allocator",
-            "signature_kernel",
-            "eta1_allocator",
-            "eta2_allocator",
-            "eta3_allocator",
-            "eta4_allocator",
-        ]
-        if token in innovation_text
-    ]
-    results.append(
-        {
-            "file": (base / "AWFF_InnovationGraphicalControllers.mo").as_posix(),
-            "model": "package_no_kernel_nesting",
-            "ok": not forbidden,
-            "inports": [],
-            "outports": [],
-            "connect_count": 0,
-            "line_annotation_count": 0,
-            "placement_count": 0,
-            "failures": [] if not forbidden else [f"forbidden nested kernel names: {', '.join(forbidden)}"],
-        }
-    )
+    behavior_results = behavior_contract_checks(base)
+    structure_ok = all(item["ok"] for item in results)
+    behavior_equivalence_ok = all(item["ok"] for item in behavior_results)
     return {
         "source": "static_model_contract",
         "scope": "graphical_awff_sysblock_controller",
-        "ok": all(item["ok"] for item in results),
+        "ok": structure_ok,
+        "structure_ok": structure_ok,
+        "behavior_equivalence_ok": behavior_equivalence_ok,
         "results": results,
+        "behavior_results": behavior_results,
     }
 
 

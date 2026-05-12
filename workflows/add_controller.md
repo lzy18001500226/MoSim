@@ -69,16 +69,29 @@ python3 scripts/check_sysblock_graphics.py
 python3 scripts/check_graphical_sysblock_mcp.py
 ```
 
-The graphical controller can be accepted for structure review only when its
-ports, block placements, `connect(...)` statements, and visible
-`annotation(Line(...))` connections pass the static contract and the model
-itself passes real MCP `load_file/check_model/simulate_model`.
+The graphical controller is not only a screenshot artifact. Accept it as a
+simulation counterpart only when both gates pass:
+
+```text
+structure_ok = true
+behavior_equivalence_ok = true
+```
+
+`structure_ok` requires ports, block placements, `connect(...)` statements, and
+visible `annotation(Line(...))` connections. `behavior_equivalence_ok` requires
+the diagram to expose the expected time and nonlinear behavior, including
+Saturation, DeadZone, UnitDelay or DiscreteTimeIntegrator, Switch/state-machine
+logic, and Product/allocation blocks where the controller design uses them.
+After both static gates pass, run real MCP `load_file/check_model/simulate_model`.
 
 Project rule:
 
 ```text
-Sysblock screenshots support the report, but the controller simulation route
-must still be a real MWORKS/Sysplorer/Sysblock model with MCP or GUI evidence.
+Every reported Sysblock simulation needs a corresponding graphical Sysblock
+model. Equation-form Sysblock files may be used as temporary full-plant
+integration bridges only when the current mixed Sysplorer/Sysblock compiler
+blocks graphical embedding; they do not remove the requirement to maintain the
+behavior-equivalent graphical controller.
 ```
 
 ---

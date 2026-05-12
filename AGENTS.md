@@ -184,6 +184,9 @@ Rules:
    - `source=offline_script` for generated validation data.
 5. Before claiming a controller is integrated into `QuadrotorModel`, verify the model replacement location, signal interface, and run result through MCP or manual MWORKS evidence.
 6. For each MCP-driven simulation, save at least the model name, scenario config, result variables, raw output path, metrics path, and any MCP/tool error log.
+7. For every formal controller simulation claim, maintain a corresponding graphical Sysblock controller model that expresses the same system structure and time behavior. A graphical Sysblock file is not only a screenshot wrapper: it must expose the relevant signal path, saturation, filtering, discrete state, delay, switch/mode logic, fault-estimation logic, and allocation behavior used by the simulation.
+8. Equation-form Sysblock models may be used as temporary full-plant integration bridges when Sysplorer/Sysblock embedding has compiler limitations, but they do not replace the graphical Sysblock deliverable. Mark the graphical counterpart as incomplete until both `structure_ok=true` and `behavior_equivalence_ok=true`.
+9. Do not present a controller scenario as complete if its numerical simulation has no behavior-equivalent graphical Sysblock counterpart. In that case, label the result as equation-bridge evidence and keep the graphical model task open.
 
 ### 3.6 Simulation Cleanup Rule
 
