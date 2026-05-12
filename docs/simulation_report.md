@@ -6,7 +6,7 @@
 
 本报告记录当前工程已经可复现的仿真数据链路、官方参考轨迹、指标计算方法和图表生成方式。控制器性能对比只引用已保存 raw CSV、metrics JSON/CSV、MCP JSONL 日志和 SVG 图表的实验。
 
-证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表包含真实 Sysplorer MCP / Modelica 派生模型闭环仿真，以及 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 的全时长 Sysblock 控制器闭环证据。Sysblock 当前已完成 AWFF PID 高度环最小 demo、三段分层控制器、组合控制器 `AWFF_FullController_Sysblock` 和创新图形化控制器包 `AWFF_InnovationGraphicalControllers` 的真实 MCP 验证，并完成 Example1 50 s、Example2 50 s、Example3 120 s 整机仿真；P1 创新控制器方向已完成 `AWFF_L1ResidualControllerEquation_Sysblock` 和 `AWFF_INDIControllerEquation_Sysblock` 的真实 MCP 消融，其中后者当前为 L1-inspired 残差外环 + INDI-like 姿态增量组合控制器。`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 已完成 Example1/2/3 闭环包装和 0.05 s MCP smoke，当前只作为接入证据，不进入完整性能排名。
+证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表包含真实 Sysplorer MCP / Modelica 派生模型闭环仿真，以及 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 的全时长 Sysblock 控制器闭环证据。Sysblock 当前已完成 AWFF PID 高度环最小 demo、三段分层控制器、组合控制器 `AWFF_FullController_Sysblock` 和创新图形化控制器包 `AWFF_InnovationGraphicalControllers` 的真实 MCP 验证，并完成 Example1 50 s、Example2 50 s、Example3 120 s 整机仿真；P1 创新控制器方向已完成 `AWFF_L1ResidualControllerEquation_Sysblock` 和 `AWFF_INDIControllerEquation_Sysblock` 的真实 MCP 消融，其中后者当前为 L1-inspired 残差外环 + INDI-like 姿态增量组合控制器。`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 已完成 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真并通过质量门，当前定位为 finite-horizon linear MPC-style 外环 + L1-inspired residual feedforward + INDI-like 姿态内环。
 
 质量判定规则：`check_model ok` 和 `simulate_model ok` 只说明模型可以执行；完整性能结论还必须通过 `scripts/evaluate_result_quality.py` 写入的 `quality_status`。`pass` 可支撑报告结论，`smoke_only` 只证明链路可用，`needs_iteration` 必须继续调控制器或明确写为未完成限制。当前 Example2 已通过 `helix_tuned` Enhanced PID、AWFF PID 和 AWFF Sysblock 分支解决 RMSE 门禁问题；旋翼退化场景健康分仍低于阈值，应作为后续控制分配/故障补偿迭代对象。
 
@@ -23,7 +23,7 @@ Example1/2/3 AWFF Sysblock 整机完整 CSV、指标、图表和 replay JSON
 Example1/2/3 AWFF Sysblock 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指标
 Example1 L1 residual Sysblock nominal/wind-gust 0-1 s smoke 与 50 s full CSV、指标、图表和 replay JSON
 Example1、Example2 helix-tuned 和 Example3 L1-inspired + INDI-like Sysblock 组合控制器 full CSV、指标、图表和 replay JSON
-Example1/2/3 Linear MPC-style Sysblock 0.05 s MCP smoke 日志、CSV 和指标
+Example1/2/3 Linear MPC-style Sysblock full CSV、指标、图表和 replay JSON
 ```
 
 ## 2. 模型与场景
@@ -664,7 +664,31 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 
 对应证据目录位于 `results/robustness/rotor{1..4}_loss15_example1/robust_rotor{1..4}_loss15_example1_l1_multi_fault_isolation_sysblock/`，其中包含 `raw/`、`metrics/`、`figures/`、`replay/` 和 `logs/`。`figures/` 中除轨迹、误差和指标图外，还包含 `*_eta_hat_diagnostics.svg` 与 `*_fault_index_diagnostics.svg`，用于报告和演示视频中展示在线效率估计与故障编号锁存过程。该组结果可以支撑“四旋翼持续单故障隔离验证已完成”的表述；不支撑瞬态故障、复合多故障或故障切换声明。
 
-## 12. 结论约束
+## 12. Linear MPC-style 外环闭环结果
+
+`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 在 `controller3_2` 统一接口内实现 finite-horizon linear MPC-style 外环、L1-inspired residual feedforward 和 INDI-like 姿态内环。该版本不是在线 QP/NMPC 求解器；它使用显式终端误差项、加速度限幅、残差低通补偿和有界姿态增量项，在不改变官方机体、电机、传感器和路径模型的前提下接入 Example1/2/3。
+
+| 场景 | 模型 | 时长 | RMSE (m) | 稳态误差 (m) | 最大误差 (m) | 相对 L1+INDI RMSE 降低 | 质量门 |
+|---|---|---:|---:|---:|---:|---:|---|
+| 阶梯爬升 | `QuadrotorExperiments.Example1LinearMPCSysblockClosedLoop` | 50 s | 0.2418 | 0.0722 | 1.2186 | 0.828% | pass |
+| 螺旋爬升 | `QuadrotorExperiments.Example2LinearMPCSysblockClosedLoop` | 50 s | 0.4436 | 0.1463 | 3.0068 | 0.574% | pass |
+| 8字形运动 | `QuadrotorExperiments.Example3LinearMPCSysblockClosedLoop` | 120 s | 0.1494 | 0.0469 | 1.1355 | 1.882% | pass |
+
+证据文件：
+
+```text
+scenarios/official/example1_linear_mpc_sysblock.yaml
+scenarios/official/example2_linear_mpc_sysblock.yaml
+scenarios/official/example3_linear_mpc_sysblock.yaml
+
+results/official/example1_step/official_example1_linear_mpc_sysblock/
+results/official/example2_helix/official_example2_linear_mpc_sysblock/
+results/official/example3_figure8/official_example3_linear_mpc_sysblock/
+```
+
+结论边界：该组结果可以支撑“线性 MPC-style 外环已完成官方三场景整机闭环验证，并在当前质量门下略优于对应 L1+INDI 基线”的表述；不能支撑“在线优化 MPC/NMPC 已完成”的表述。
+
+## 13. 结论约束
 
 1. 不使用 smoke 数据做完整控制性能结论。
 2. 不使用离线脚本结果作为 MWORKS 控制性能结论。

@@ -16,7 +16,8 @@ model Example2LinearMPCSysblockClosedLoop
   Modelica.Blocks.Sources.Constant yaw_ref(k = 0);
 
   AWFF_LinearMPCOuterLoopControllerEquation_Sysblock controller3_2(
-    mpc_acc_limit_xy = 2.8,
+    mpc_acc_limit_xy = 3.0,
+    mpc_terminal_gain_xy = 0.06,
     roll_pitch_cmd_limit = 15 / 57.3,
     attitude_cmd_limit = 7.0,
     yaw_cmd_limit = 7.0);

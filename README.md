@@ -109,8 +109,8 @@ P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP
 ```text
 Sysplorer/Modelica 真实仿真：官方 baseline、Improved PID、Enhanced PID、AWFF PID、质量/风扰/旋翼退化消融已完成多组证据。
 Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/simulate_model/result_manager；位置环、姿态环、电机分配、三层组合控制器和单层扁平图形化控制器已通过真实 MCP load_file/check_model/simulate_model；`AWFF_InnovationGraphicalControllers` 中的 L1 residual、L1+INDI、L1+已知效率分配、L1+多旋翼故障隔离四个图形化控制器已通过真实 MCP load_file/check_model。当前 Sysplorer 编译器不支持图形化 Sysblock 控制器作为 Modelica 整机子组件时的内部多输入端口解析，因此官方整机性能证据使用等价 Equation Sysblock 接入 QuadrotorExperiments 闭环模型。
-P1 创新控制器证据：AWFF_L1ResidualControllerEquation_Sysblock 已覆盖 Example1、8 字形、质量 +20%、横向阵风和旋翼退化真实 Sysplorer MCP 仿真；其中 Example1、8 字形、质量 +20% 和横向阵风均通过质量门。`AWFF_INDIControllerEquation_Sysblock` 当前实现为 AWFF + L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，已在 Example1、Example2 helix-tuned 和 Example3 8 字形通过质量门。已知效率退化控制分配补偿、在线效率估计补偿和多旋翼隔离雏形均已完成 rotor1 85% 退化场景验证。`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 已完成 Example1/2/3 闭环包装和最短 MCP 烟测接入，当前只证明接口、推导、仿真和结果读取链路可用，尚不能作为性能提升结论。
-后续优先级：线性 MPC 外环全时长 Example1/2/3 复测与参数迭代；随后补 rotor2/3/4 效率退化场景的报告表格和视频素材。
+P1 创新控制器证据：AWFF_L1ResidualControllerEquation_Sysblock 已覆盖 Example1、8 字形、质量 +20%、横向阵风和旋翼退化真实 Sysplorer MCP 仿真；其中 Example1、8 字形、质量 +20% 和横向阵风均通过质量门。`AWFF_INDIControllerEquation_Sysblock` 当前实现为 AWFF + L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，已在 Example1、Example2 helix-tuned 和 Example3 8 字形通过质量门。已知效率退化控制分配补偿、在线效率估计补偿和多旋翼隔离雏形均已完成 rotor1 85% 退化场景验证。`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 当前实现为 finite-horizon linear MPC-style 外环 + L1-inspired residual feedforward + INDI-like 姿态内环，已完成 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真并通过质量门；相对 L1+INDI 对应基线的 RMSE 分别降低 0.828%、0.574% 和 1.882%。
+后续优先级：补线性 MPC 外环的鲁棒场景消融；随后补 rotor2/3/4 效率退化场景的报告表格和视频素材。
 ```
 
 ## QA 检查
