@@ -15,6 +15,22 @@ model AWFF_InnovationGraphicalControllers
     annotation(__MWORKS(hide=true,BlockSystem(blockKind=BlockKind.modelWorkspace),version="26.3.0"));
   end ModelWorkspace;
 
+  model SymmetricLimiterBlock
+    "Primitive graphical limiter with real signal ports"
+    extends ModelWorkspace;
+    annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(u),Right(y)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
+      Icon(coordinateSystem(preserveAspectRatio=false),graphics={
+        Rectangle(extent={{-100,-100},{100,100}},lineColor={100,100,100},fillColor={245,245,245},fillPattern=FillPattern.Solid,radius=6),
+        Text(extent={{-84,24},{84,-24}},textString="limit",lineColor={60,60,60})}),
+      Diagram(coordinateSystem(extent={{-120,-80},{120,80}},grid={2,2})));
+
+    parameter Real limit=1.0;
+    SysplorerEmbeddedCoder.Port.Inport u annotation(Placement(transformation(origin={-100,0},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Outport y annotation(Placement(transformation(origin={100,0},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+  equation
+    y = min(max(u,-limit),limit);
+  end SymmetricLimiterBlock;
+
   model L1ResidualOuterLoopBlock
     "L1-inspired residual compensated position outer loop"
     extends ModelWorkspace;
@@ -53,43 +69,89 @@ model AWFF_InnovationGraphicalControllers
     SysplorerEmbeddedCoder.Port.Outport roll_ref annotation(Placement(transformation(origin={200,0},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
     SysplorerEmbeddedCoder.Port.Outport thrust_ref annotation(Placement(transformation(origin={200,-70},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
 
-    Real x_error_filter(start=0,fixed=true);
-    Real y_error_filter(start=0,fixed=true);
-    Real z_error_filter(start=0,fixed=true);
-    Real z_integral(start=0,fixed=true);
-    Real d_hat_x(start=0,fixed=true);
-    Real d_hat_y(start=0,fixed=true);
-    Real d_hat_z(start=0,fixed=true);
-    Real x_error_rate;
-    Real y_error_rate;
-    Real z_error_rate;
-    Real comp_x;
-    Real comp_y;
-    Real comp_z;
-    Real pitch_ref_raw;
-    Real roll_ref_raw;
-    Real thrust_ref_raw;
+    SysplorerEmbeddedCoder.MathOperation.Gain x_rate_gain(k=l1_model_decay) annotation(Placement(transformation(origin={-145,105},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain x_decay_gain(k=l1_model_decay) annotation(Placement(transformation(origin={-145,75},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Sum x_l1_sum(isSaturate=false,inputs="++") annotation(Placement(transformation(origin={-95,90},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain x_l1_gain(k=l1_gain_xy) annotation(Placement(transformation(origin={-45,90},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SymmetricLimiterBlock x_comp_limit(limit=l1_comp_limit_xy) annotation(Placement(transformation(origin={5,90},extent={{-10,-10},{10,10}})));
+    SysplorerEmbeddedCoder.MathOperation.Gain x_kp_gain(k=kp_x) annotation(Placement(transformation(origin={-95,125},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain x_kd_gain(k=kd_x) annotation(Placement(transformation(origin={-45,125},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Sum pitch_raw_sum(isSaturate=false,inputs="+++") annotation(Placement(transformation(origin={55,110},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1),u3(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain pitch_scale(k=0.1) annotation(Placement(transformation(origin={105,110},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SymmetricLimiterBlock pitch_cmd_limit(limit=roll_pitch_cmd_limit) annotation(Placement(transformation(origin={155,110},extent={{-10,-10},{10,10}})));
+
+    SysplorerEmbeddedCoder.MathOperation.Gain y_rate_gain(k=l1_model_decay) annotation(Placement(transformation(origin={-145,35},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain y_decay_gain(k=l1_model_decay) annotation(Placement(transformation(origin={-145,5},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Sum y_l1_sum(isSaturate=false,inputs="++") annotation(Placement(transformation(origin={-95,20},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain y_l1_gain(k=l1_gain_xy) annotation(Placement(transformation(origin={-45,20},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SymmetricLimiterBlock y_comp_limit(limit=l1_comp_limit_xy) annotation(Placement(transformation(origin={5,20},extent={{-10,-10},{10,10}})));
+    SysplorerEmbeddedCoder.MathOperation.Gain y_kp_gain(k=kp_y) annotation(Placement(transformation(origin={-95,55},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain y_kd_gain(k=kd_y) annotation(Placement(transformation(origin={-45,55},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Sum roll_raw_sum(isSaturate=false,inputs="+++") annotation(Placement(transformation(origin={55,40},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1),u3(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain roll_scale(k=0.1) annotation(Placement(transformation(origin={105,40},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SymmetricLimiterBlock roll_cmd_limit(limit=roll_pitch_cmd_limit) annotation(Placement(transformation(origin={155,40},extent={{-10,-10},{10,10}})));
+
+    SysplorerEmbeddedCoder.MathOperation.Gain z_rate_gain(k=l1_model_decay) annotation(Placement(transformation(origin={-145,-40},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain z_decay_gain(k=l1_model_decay) annotation(Placement(transformation(origin={-145,-70},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Sum z_l1_sum(isSaturate=false,inputs="++") annotation(Placement(transformation(origin={-95,-55},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain z_l1_gain(k=l1_gain_z) annotation(Placement(transformation(origin={-45,-55},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SymmetricLimiterBlock z_comp_limit(limit=l1_comp_limit_z) annotation(Placement(transformation(origin={5,-55},extent={{-10,-10},{10,10}})));
+    SysplorerEmbeddedCoder.MathOperation.Gain z_kp_gain(k=kp_z) annotation(Placement(transformation(origin={-95,-105},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain z_kd_gain(k=kd_z) annotation(Placement(transformation(origin={-45,-105},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain z_ff_gain(k=kff_z) annotation(Placement(transformation(origin={-45,-130},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Sources.Constant z_integral_zero(k=0) annotation(Placement(transformation(origin={-45,-80},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(SampleTime(auto=true,group="D1")=0.01,Instance(y(Type(inherit=InheritType.constantValue,ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)))));
+    SysplorerEmbeddedCoder.MathOperation.Sum thrust_pid_sum(isSaturate=false,inputs="++++") annotation(Placement(transformation(origin={35,-95},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1),u3(Type(ref="double"),Dimension=1),u4(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Sum thrust_l1_sum(isSaturate=false,inputs="++") annotation(Placement(transformation(origin={90,-85},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
+    SymmetricLimiterBlock thrust_cmd_limit(limit=output_limit) annotation(Placement(transformation(origin={145,-85},extent={{-10,-10},{10,10}})));
 
   equation
-    x_error_filter = x_error;
-    y_error_filter = y_error;
-    x_error_rate = l1_model_decay * x_error;
-    y_error_rate = l1_model_decay * y_error;
-    d_hat_x = l1_gain_xy * (x_error_rate + l1_model_decay * x_error);
-    d_hat_y = l1_gain_xy * (y_error_rate + l1_model_decay * y_error);
-    comp_x = min(max(d_hat_x,-l1_comp_limit_xy),l1_comp_limit_xy);
-    comp_y = min(max(d_hat_y,-l1_comp_limit_xy),l1_comp_limit_xy);
-    pitch_ref_raw = 0.1 * (kp_x * x_error + kd_x * x_error_rate + comp_x);
-    roll_ref_raw = 0.1 * (kp_y * y_error + kd_y * y_error_rate + comp_y);
-    z_error_filter = z_error;
-    z_error_rate = l1_model_decay * z_error;
-    d_hat_z = l1_gain_z * (z_error_rate + l1_model_decay * z_error);
-    comp_z = min(max(d_hat_z,-l1_comp_limit_z),l1_comp_limit_z);
-    thrust_ref_raw = kp_z * z_error + ki_z * z_integral + kd_z * z_error_rate + kff_z * z_ref_rate + comp_z;
-    pitch_ref = min(max(pitch_ref_raw,-roll_pitch_cmd_limit),roll_pitch_cmd_limit);
-    roll_ref = min(max(roll_ref_raw,-roll_pitch_cmd_limit),roll_pitch_cmd_limit);
-    thrust_ref = min(max(thrust_ref_raw,-output_limit),output_limit);
-    z_integral = 0;
+    connect(x_error,x_rate_gain.u) annotation(Line(points={{-190,90},{-175,90},{-175,105},{-157,105}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(x_error,x_decay_gain.u) annotation(Line(points={{-190,90},{-175,90},{-175,75},{-157,75}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(x_error,x_kp_gain.u) annotation(Line(points={{-190,90},{-128,90},{-128,125},{-107,125}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(x_rate_gain.y,x_l1_sum.u1) annotation(Line(points={{-133,105},{-118,105},{-118,96},{-107,96}},color={0,0,0}));
+    connect(x_decay_gain.y,x_l1_sum.u2) annotation(Line(points={{-133,75},{-118,75},{-118,84},{-107,84}},color={0,0,0}));
+    connect(x_l1_sum.y,x_l1_gain.u) annotation(Line(points={{-83,90},{-57,90}},color={0,0,0}));
+    connect(x_l1_gain.y,x_comp_limit.u) annotation(Line(points={{-33,90},{-7,90}},color={0,0,0}));
+    connect(x_rate_gain.y,x_kd_gain.u) annotation(Line(points={{-133,105},{-118,105},{-118,125},{-57,125}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(x_kp_gain.y,pitch_raw_sum.u1) annotation(Line(points={{-83,125},{34,125},{34,118},{43,118}},color={0,0,0}));
+    connect(x_kd_gain.y,pitch_raw_sum.u2) annotation(Line(points={{-33,125},{30,125},{30,110},{43,110}},color={0,0,0}));
+    connect(x_comp_limit.y,pitch_raw_sum.u3) annotation(Line(points={{17,90},{34,90},{34,102},{43,102}},color={0,0,0}));
+    connect(pitch_raw_sum.y,pitch_scale.u) annotation(Line(points={{67,110},{93,110}},color={0,0,0}));
+    connect(pitch_scale.y,pitch_cmd_limit.u) annotation(Line(points={{117,110},{143,110}},color={0,0,0}));
+    connect(pitch_cmd_limit.y,pitch_ref) annotation(Line(points={{167,110},{185,110},{185,70},{190,70}},color={0,0,0}));
+
+    connect(y_error,y_rate_gain.u) annotation(Line(points={{-190,30},{-175,30},{-175,35},{-157,35}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(y_error,y_decay_gain.u) annotation(Line(points={{-190,30},{-175,30},{-175,5},{-157,5}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(y_error,y_kp_gain.u) annotation(Line(points={{-190,30},{-128,30},{-128,55},{-107,55}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(y_rate_gain.y,y_l1_sum.u1) annotation(Line(points={{-133,35},{-118,35},{-118,26},{-107,26}},color={0,0,0}));
+    connect(y_decay_gain.y,y_l1_sum.u2) annotation(Line(points={{-133,5},{-118,5},{-118,14},{-107,14}},color={0,0,0}));
+    connect(y_l1_sum.y,y_l1_gain.u) annotation(Line(points={{-83,20},{-57,20}},color={0,0,0}));
+    connect(y_l1_gain.y,y_comp_limit.u) annotation(Line(points={{-33,20},{-7,20}},color={0,0,0}));
+    connect(y_rate_gain.y,y_kd_gain.u) annotation(Line(points={{-133,35},{-118,35},{-118,55},{-57,55}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(y_kp_gain.y,roll_raw_sum.u1) annotation(Line(points={{-83,55},{34,55},{34,48},{43,48}},color={0,0,0}));
+    connect(y_kd_gain.y,roll_raw_sum.u2) annotation(Line(points={{-33,55},{30,55},{30,40},{43,40}},color={0,0,0}));
+    connect(y_comp_limit.y,roll_raw_sum.u3) annotation(Line(points={{17,20},{34,20},{34,32},{43,32}},color={0,0,0}));
+    connect(roll_raw_sum.y,roll_scale.u) annotation(Line(points={{67,40},{93,40}},color={0,0,0}));
+    connect(roll_scale.y,roll_cmd_limit.u) annotation(Line(points={{117,40},{143,40}},color={0,0,0}));
+    connect(roll_cmd_limit.y,roll_ref) annotation(Line(points={{167,40},{185,40},{185,0},{190,0}},color={0,0,0}));
+
+    connect(z_error,z_rate_gain.u) annotation(Line(points={{-190,-30},{-175,-30},{-175,-40},{-157,-40}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(z_error,z_decay_gain.u) annotation(Line(points={{-190,-30},{-175,-30},{-175,-70},{-157,-70}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(z_error,z_kp_gain.u) annotation(Line(points={{-190,-30},{-128,-30},{-128,-105},{-107,-105}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(z_rate_gain.y,z_l1_sum.u1) annotation(Line(points={{-133,-40},{-118,-40},{-118,-49},{-107,-49}},color={0,0,0}));
+    connect(z_decay_gain.y,z_l1_sum.u2) annotation(Line(points={{-133,-70},{-118,-70},{-118,-61},{-107,-61}},color={0,0,0}));
+    connect(z_l1_sum.y,z_l1_gain.u) annotation(Line(points={{-83,-55},{-57,-55}},color={0,0,0}));
+    connect(z_l1_gain.y,z_comp_limit.u) annotation(Line(points={{-33,-55},{-7,-55}},color={0,0,0}));
+    connect(z_rate_gain.y,z_kd_gain.u) annotation(Line(points={{-133,-40},{-120,-40},{-120,-105},{-57,-105}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(z_ref_rate,z_ff_gain.u) annotation(Line(points={{-190,-90},{-82,-90},{-82,-130},{-57,-130}},color={0,0,0}));
+    connect(z_kp_gain.y,thrust_pid_sum.u1) annotation(Line(points={{-83,-105},{14,-105},{14,-107},{23,-107}},color={0,0,0}));
+    connect(z_integral_zero.y,thrust_pid_sum.u2) annotation(Line(points={{-33,-80},{14,-80},{14,-99},{23,-99}},color={0,0,0}));
+    connect(z_kd_gain.y,thrust_pid_sum.u3) annotation(Line(points={{-33,-105},{10,-105},{10,-91},{23,-91}},color={0,0,0}));
+    connect(z_ff_gain.y,thrust_pid_sum.u4) annotation(Line(points={{-33,-130},{14,-130},{14,-83},{23,-83}},color={0,0,0}));
+    connect(thrust_pid_sum.y,thrust_l1_sum.u1) annotation(Line(points={{47,-95},{72,-95},{72,-91},{78,-91}},color={0,0,0}));
+    connect(z_comp_limit.y,thrust_l1_sum.u2) annotation(Line(points={{17,-55},{70,-55},{70,-79},{78,-79}},color={0,0,0}));
+    connect(thrust_l1_sum.y,thrust_cmd_limit.u) annotation(Line(points={{102,-85},{133,-85}},color={0,0,0}));
+    connect(thrust_cmd_limit.y,thrust_ref) annotation(Line(points={{157,-85},{180,-85},{180,-70},{190,-70}},color={0,0,0}));
   end L1ResidualOuterLoopBlock;
 
   model PIDAttitudeInnerLoopBlock
