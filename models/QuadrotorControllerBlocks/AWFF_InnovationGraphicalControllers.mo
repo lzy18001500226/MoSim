@@ -24,25 +24,7 @@ model AWFF_InnovationGraphicalControllers
         Text(extent={{-90,30},{90,-4}},textString="L1 Residual",lineColor={20,45,75}),
         Text(extent={{-90,-12},{90,-46}},textString="Outer Loop",lineColor={20,45,75}),
         Text(extent={{-90,-54},{90,-82}},textString="e,r -> attitude,T",lineColor={85,105,125})}),
-      Diagram(coordinateSystem(extent={{-220,-140},{220,140}},grid={2,2}),graphics={
-        Rectangle(extent={{-130,105},{-40,10}},lineColor={45,85,130},fillColor={238,246,255},fillPattern=FillPattern.Solid,radius=6),
-        Rectangle(extent={{-20,100},{80,20}},lineColor={80,120,160},fillColor={245,250,255},fillPattern=FillPattern.Solid,radius=6),
-        Rectangle(extent={{-20,-10},{80,-105}},lineColor={80,120,160},fillColor={245,250,255},fillPattern=FillPattern.Solid,radius=6),
-        Text(extent={{-124,92},{-46,62}},textString="XY residual",lineColor={20,45,75}),
-        Text(extent={{-124,56},{-46,26}},textString="L1 filter",lineColor={20,45,75}),
-        Text(extent={{-12,88},{72,58}},textString="attitude",lineColor={20,45,75}),
-        Text(extent={{-12,54},{72,30}},textString="limit",lineColor={20,45,75}),
-        Text(extent={{-12,-22},{72,-52}},textString="altitude",lineColor={20,45,75}),
-        Text(extent={{-12,-58},{72,-88}},textString="AW + FF",lineColor={20,45,75}),
-        Line(points={{-190,90},{-130,90}},color={45,85,130}),
-        Line(points={{-190,30},{-130,30}},color={45,85,130}),
-        Line(points={{-40,78},{-20,78}},color={45,85,130}),
-        Line(points={{-40,38},{-20,38}},color={45,85,130}),
-        Line(points={{80,70},{190,70}},color={45,85,130}),
-        Line(points={{80,36},{120,36},{120,0},{190,0}},color={45,85,130}),
-        Line(points={{-190,-30},{-70,-30},{-70,-42},{-20,-42}},color={45,85,130}),
-        Line(points={{-190,-90},{-80,-90},{-80,-78},{-20,-78}},color={45,85,130}),
-        Line(points={{80,-60},{130,-60},{130,-70},{190,-70}},color={45,85,130})}));
+      Diagram(coordinateSystem(extent={{-220,-140},{220,140}},grid={2,2})));
 
     parameter Real kp_x=1.65;
     parameter Real kd_x=1.0;
@@ -118,27 +100,7 @@ model AWFF_InnovationGraphicalControllers
         Rectangle(extent={{-100,-100},{100,100}},lineColor={120,70,35},fillColor={255,244,232},fillPattern=FillPattern.Solid,radius=8),
         Text(extent={{-90,28},{90,-6}},textString="PID",lineColor={80,45,20}),
         Text(extent={{-90,-12},{90,-46}},textString="Attitude",lineColor={80,45,20})}),
-      Diagram(coordinateSystem(extent={{-220,-160},{220,160}},grid={2,2}),graphics={
-        Rectangle(extent={{-130,135},{-25,35}},lineColor={120,70,35},fillColor={255,244,232},fillPattern=FillPattern.Solid,radius=6),
-        Rectangle(extent={{-130,15},{-25,-145}},lineColor={120,70,35},fillColor={255,248,240},fillPattern=FillPattern.Solid,radius=6),
-        Rectangle(extent={{20,95},{120,-95}},lineColor={130,85,45},fillColor={255,250,244},fillPattern=FillPattern.Solid,radius=6),
-        Text(extent={{-122,116},{-32,86}},textString="ref",lineColor={80,45,20}),
-        Text(extent={{-122,78},{-32,48}},textString="tracking",lineColor={80,45,20}),
-        Text(extent={{-122,-20},{-32,-50}},textString="attitude",lineColor={80,45,20}),
-        Text(extent={{-122,-58},{-32,-88}},textString="feedback",lineColor={80,45,20}),
-        Text(extent={{32,70},{108,40}},textString="PID",lineColor={80,45,20}),
-        Text(extent={{32,22},{108,-8}},textString="limit",lineColor={80,45,20}),
-        Line(points={{-190,120},{-130,120}},color={120,70,35}),
-        Line(points={{-190,70},{-130,70}},color={120,70,35}),
-        Line(points={{-190,20},{-60,20},{-60,35}},color={120,70,35}),
-        Line(points={{-190,-40},{-130,-40}},color={120,70,35}),
-        Line(points={{-190,-90},{-130,-90}},color={120,70,35}),
-        Line(points={{-190,-140},{-60,-140},{-60,-145}},color={120,70,35}),
-        Line(points={{-25,90},{20,65}},color={120,70,35}),
-        Line(points={{-25,-50},{20,-35}},color={120,70,35}),
-        Line(points={{120,65},{190,90}},color={120,70,35}),
-        Line(points={{120,0},{190,0}},color={120,70,35}),
-        Line(points={{120,-65},{190,-90}},color={120,70,35})}));
+      Diagram(coordinateSystem(extent={{-220,-160},{220,160}},grid={2,2})));
 
     parameter Real kp_roll=14.142;
     parameter Real kd_roll=1.70;
@@ -190,30 +152,7 @@ model AWFF_InnovationGraphicalControllers
         Rectangle(extent={{-100,-100},{100,100}},lineColor={130,65,135},fillColor={250,238,255},fillPattern=FillPattern.Solid,radius=8),
         Text(extent={{-90,28},{90,-6}},textString="INDI",lineColor={85,40,95}),
         Text(extent={{-90,-12},{90,-46}},textString="Attitude",lineColor={85,40,95})}),
-      Diagram(coordinateSystem(extent={{-220,-160},{220,160}},grid={2,2}),graphics={
-        Rectangle(extent={{-135,135},{-35,25}},lineColor={130,65,135},fillColor={250,238,255},fillPattern=FillPattern.Solid,radius=6),
-        Rectangle(extent={{-135,5},{-35,-145}},lineColor={130,65,135},fillColor={253,245,255},fillPattern=FillPattern.Solid,radius=6),
-        Rectangle(extent={{0,115},{110,5}},lineColor={125,70,140},fillColor={250,242,255},fillPattern=FillPattern.Solid,radius=6),
-        Rectangle(extent={{0,-15},{110,-125}},lineColor={125,70,140},fillColor={250,242,255},fillPattern=FillPattern.Solid,radius=6),
-        Text(extent={{-126,112},{-44,82}},textString="attitude",lineColor={85,40,95}),
-        Text(extent={{-126,78},{-44,48}},textString="error",lineColor={85,40,95}),
-        Text(extent={{-126,-28},{-44,-58}},textString="rate",lineColor={85,40,95}),
-        Text(extent={{-126,-64},{-44,-94}},textString="estimate",lineColor={85,40,95}),
-        Text(extent={{10,88},{100,58}},textString="feedback",lineColor={85,40,95}),
-        Text(extent={{10,50},{100,20}},textString="command",lineColor={85,40,95}),
-        Text(extent={{10,-42},{100,-72}},textString="increment",lineColor={85,40,95}),
-        Text(extent={{10,-80},{100,-110}},textString="limit",lineColor={85,40,95}),
-        Line(points={{-190,120},{-135,120}},color={130,65,135}),
-        Line(points={{-190,70},{-135,70}},color={130,65,135}),
-        Line(points={{-190,20},{-135,20}},color={130,65,135}),
-        Line(points={{-190,-40},{-135,-40}},color={130,65,135}),
-        Line(points={{-190,-90},{-135,-90}},color={130,65,135}),
-        Line(points={{-190,-140},{-135,-140}},color={130,65,135}),
-        Line(points={{-35,82},{0,70}},color={130,65,135}),
-        Line(points={{-35,-70},{0,-70}},color={130,65,135}),
-        Line(points={{110,62},{145,62},{145,90},{190,90}},color={130,65,135}),
-        Line(points={{110,40},{150,40},{150,0},{190,0}},color={130,65,135}),
-        Line(points={{110,-70},{145,-70},{145,-90},{190,-90}},color={130,65,135})}));
+      Diagram(coordinateSystem(extent={{-220,-160},{220,160}},grid={2,2})));
     parameter Real kp_roll=14.142;
     parameter Real kd_roll=1.70;
     parameter Real kp_pitch=14.142;
@@ -291,25 +230,7 @@ model AWFF_InnovationGraphicalControllers
         Rectangle(extent={{-100,-100},{100,100}},lineColor={60,110,80},fillColor={238,250,242},fillPattern=FillPattern.Solid,radius=8),
         Text(extent={{-90,26},{90,-8}},textString="Motor",lineColor={30,75,50}),
         Text(extent={{-90,-12},{90,-46}},textString="Mixer",lineColor={30,75,50})}),
-      Diagram(coordinateSystem(extent={{-220,-140},{220,140}},grid={2,2}),graphics={
-        Rectangle(extent={{-120,105},{-30,-105}},lineColor={60,110,80},fillColor={238,250,242},fillPattern=FillPattern.Solid,radius=6),
-        Rectangle(extent={{20,100},{115,-100}},lineColor={60,110,80},fillColor={246,252,248},fillPattern=FillPattern.Solid,radius=6),
-        Text(extent={{-112,72},{-38,42}},textString="T",lineColor={30,75,50}),
-        Text(extent={{-112,32},{-38,2}},textString="roll",lineColor={30,75,50}),
-        Text(extent={{-112,-8},{-38,-38}},textString="pitch",lineColor={30,75,50}),
-        Text(extent={{-112,-48},{-38,-78}},textString="yaw",lineColor={30,75,50}),
-        Text(extent={{30,62},{105,32}},textString="mix",lineColor={30,75,50}),
-        Text(extent={{30,20},{105,-10}},textString="limit",lineColor={30,75,50}),
-        Text(extent={{30,-22},{105,-52}},textString="u1..u4",lineColor={30,75,50}),
-        Line(points={{-190,90},{-120,90}},color={60,110,80}),
-        Line(points={{-190,30},{-120,30}},color={60,110,80}),
-        Line(points={{-190,-30},{-120,-30}},color={60,110,80}),
-        Line(points={{-190,-90},{-120,-90}},color={60,110,80}),
-        Line(points={{-30,0},{20,0}},color={60,110,80}),
-        Line(points={{115,55},{190,90}},color={60,110,80}),
-        Line(points={{115,15},{190,30}},color={60,110,80}),
-        Line(points={{115,-25},{190,-30}},color={60,110,80}),
-        Line(points={{115,-65},{190,-90}},color={60,110,80})}));
+      Diagram(coordinateSystem(extent={{-220,-140},{220,140}},grid={2,2})));
 
     parameter Real output_limit=20.0;
     SysplorerEmbeddedCoder.Port.Inport thrust_ref annotation(Placement(transformation(origin={-200,90},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
@@ -349,23 +270,7 @@ model AWFF_InnovationGraphicalControllers
         Rectangle(extent={{-100,-100},{100,100}},lineColor={135,95,45},fillColor={255,248,232},fillPattern=FillPattern.Solid,radius=8),
         Text(extent={{-90,26},{90,-8}},textString="Fault",lineColor={95,65,25}),
         Text(extent={{-90,-12},{90,-46}},textString="Allocation",lineColor={95,65,25})}),
-      Diagram(coordinateSystem(extent={{-220,-140},{220,140}},grid={2,2}),graphics={
-        Rectangle(extent={{-120,105},{-30,-105}},lineColor={135,95,45},fillColor={255,248,232},fillPattern=FillPattern.Solid,radius=6),
-        Rectangle(extent={{20,100},{115,-100}},lineColor={135,95,45},fillColor={255,252,244},fillPattern=FillPattern.Solid,radius=6),
-        Text(extent={{-112,72},{-38,42}},textString="mix",lineColor={95,65,25}),
-        Text(extent={{-112,30},{-38,0}},textString="commands",lineColor={95,65,25}),
-        Text(extent={{30,66},{105,36}},textString="rotor1",lineColor={95,65,25}),
-        Text(extent={{30,28},{105,-2}},textString="eta=0.85",lineColor={95,65,25}),
-        Text(extent={{30,-28},{105,-58}},textString="saturate",lineColor={95,65,25}),
-        Line(points={{-190,90},{-120,90}},color={135,95,45}),
-        Line(points={{-190,30},{-120,30}},color={135,95,45}),
-        Line(points={{-190,-30},{-120,-30}},color={135,95,45}),
-        Line(points={{-190,-90},{-120,-90}},color={135,95,45}),
-        Line(points={{-30,0},{20,0}},color={135,95,45}),
-        Line(points={{115,55},{190,90}},color={135,95,45}),
-        Line(points={{115,15},{190,30}},color={135,95,45}),
-        Line(points={{115,-25},{190,-30}},color={135,95,45}),
-        Line(points={{115,-65},{190,-90}},color={135,95,45})}));
+      Diagram(coordinateSystem(extent={{-220,-140},{220,140}},grid={2,2})));
     parameter Real output_limit=20.0;
     parameter Real rotor1_efficiency=0.85;
     parameter Real min_rotor_efficiency=0.50;
@@ -407,23 +312,7 @@ model AWFF_InnovationGraphicalControllers
         Rectangle(extent={{-100,-100},{100,100}},lineColor={145,55,55},fillColor={255,238,238},fillPattern=FillPattern.Solid,radius=8),
         Text(extent={{-90,26},{90,-8}},textString="Fault",lineColor={100,35,35}),
         Text(extent={{-90,-12},{90,-46}},textString="Isolation",lineColor={100,35,35})}),
-      Diagram(coordinateSystem(extent={{-220,-160},{220,160}},grid={2,2}),graphics={
-        Rectangle(extent={{-120,70},{-20,-70}},lineColor={145,55,55},fillColor={255,238,238},fillPattern=FillPattern.Solid,radius=6),
-        Rectangle(extent={{20,120},{115,-125}},lineColor={145,55,55},fillColor={255,246,246},fillPattern=FillPattern.Solid,radius=6),
-        Text(extent={{-110,46},{-28,16}},textString="lateral",lineColor={100,35,35}),
-        Text(extent={{-110,8},{-28,-22}},textString="residual",lineColor={100,35,35}),
-        Text(extent={{30,96},{105,66}},textString="eta_hat",lineColor={100,35,35}),
-        Text(extent={{30,56},{105,26}},textString="1..4",lineColor={100,35,35}),
-        Text(extent={{30,-48},{105,-78}},textString="fault",lineColor={100,35,35}),
-        Text(extent={{30,-86},{105,-116}},textString="index",lineColor={100,35,35}),
-        Line(points={{-190,50},{-120,50}},color={145,55,55}),
-        Line(points={{-190,-50},{-120,-50}},color={145,55,55}),
-        Line(points={{-20,0},{20,0}},color={145,55,55}),
-        Line(points={{115,92},{190,100}},color={145,55,55}),
-        Line(points={{115,52},{190,50}},color={145,55,55}),
-        Line(points={{115,12},{190,0}},color={145,55,55}),
-        Line(points={{115,-28},{190,-50}},color={145,55,55}),
-        Line(points={{115,-94},{190,-110}},color={145,55,55})}));
+      Diagram(coordinateSystem(extent={{-220,-160},{220,160}},grid={2,2})));
 
     parameter Real position_derivative_filter_T=0.05;
     parameter Real eta_min_est=0.50;
@@ -485,31 +374,7 @@ model AWFF_InnovationGraphicalControllers
         Rectangle(extent={{-100,-100},{100,100}},lineColor={120,55,55},fillColor={255,240,236},fillPattern=FillPattern.Solid,radius=8),
         Text(extent={{-90,26},{90,-8}},textString="Adaptive",lineColor={95,35,35}),
         Text(extent={{-90,-12},{90,-46}},textString="Fault Mixer",lineColor={95,35,35})}),
-      Diagram(coordinateSystem(extent={{-220,-240},{220,140}},grid={2,2}),graphics={
-        Rectangle(extent={{-120,105},{-25,-110}},lineColor={120,55,55},fillColor={255,240,236},fillPattern=FillPattern.Solid,radius=6),
-        Rectangle(extent={{-120,-125},{-25,-235}},lineColor={120,55,55},fillColor={255,246,244},fillPattern=FillPattern.Solid,radius=6),
-        Rectangle(extent={{20,100},{120,-100}},lineColor={120,55,55},fillColor={255,248,246},fillPattern=FillPattern.Solid,radius=6),
-        Text(extent={{-110,72},{-35,42}},textString="base",lineColor={95,35,35}),
-        Text(extent={{-110,32},{-35,2}},textString="mixer",lineColor={95,35,35}),
-        Text(extent={{-110,-156},{-35,-186}},textString="eta_hat",lineColor={95,35,35}),
-        Text(extent={{-110,-194},{-35,-224}},textString="1..4",lineColor={95,35,35}),
-        Text(extent={{30,62},{110,32}},textString="adaptive",lineColor={95,35,35}),
-        Text(extent={{30,22},{110,-8}},textString="allocation",lineColor={95,35,35}),
-        Text(extent={{30,-42},{110,-72}},textString="limit",lineColor={95,35,35}),
-        Line(points={{-190,90},{-120,90}},color={120,55,55}),
-        Line(points={{-190,30},{-120,30}},color={120,55,55}),
-        Line(points={{-190,-30},{-120,-30}},color={120,55,55}),
-        Line(points={{-190,-90},{-120,-90}},color={120,55,55}),
-        Line(points={{-190,-135},{-120,-135}},color={120,55,55}),
-        Line(points={{-190,-165},{-120,-165}},color={120,55,55}),
-        Line(points={{-190,-195},{-120,-195}},color={120,55,55}),
-        Line(points={{-190,-225},{-120,-225}},color={120,55,55}),
-        Line(points={{-25,0},{20,0}},color={120,55,55}),
-        Line(points={{-25,-180},{20,-50}},color={120,55,55}),
-        Line(points={{120,55},{190,90}},color={120,55,55}),
-        Line(points={{120,15},{190,30}},color={120,55,55}),
-        Line(points={{120,-25},{190,-30}},color={120,55,55}),
-        Line(points={{120,-65},{190,-90}},color={120,55,55})}));
+      Diagram(coordinateSystem(extent={{-220,-240},{220,140}},grid={2,2})));
 
     parameter Real output_limit=20.0;
     parameter Real allocation_blend=0.52;
