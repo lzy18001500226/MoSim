@@ -87,6 +87,16 @@ INNOVATION_MODELS = [
         "verify_result_var": "y",
     },
     {
+        "model_name": "AWFF_InnovationGraphicalControllers.LinearMPCOuterLoopBlock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "thrust_ref",
+    },
+    {
+        "model_name": "AWFF_InnovationGraphicalControllers.Rotor1OnlineEfficiencyEstimatorBlock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "eta_hat",
+    },
+    {
         "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock",
         "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "y",
@@ -105,6 +115,16 @@ INNOVATION_MODELS = [
         "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock",
         "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "fault_index",
+    },
+    {
+        "model_name": "AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "y",
+    },
+    {
+        "model_name": "AWFF_InnovationGraphicalControllers.AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "eta_hat",
     },
 ]
 

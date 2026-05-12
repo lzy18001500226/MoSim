@@ -12,6 +12,20 @@ implementation_status:
   current_mworks_model:
     - QuadrotorExperiments.Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop
   sysblock_controller: AWFF_LinearMPCOnlineFaultAllocationController_Sysblock
+  graphical_sysblock_counterpart:
+    package_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+    controller_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock
+    outer_loop_model: AWFF_InnovationGraphicalControllers.LinearMPCOuterLoopBlock
+    estimator_model: AWFF_InnovationGraphicalControllers.Rotor1OnlineEfficiencyEstimatorBlock
+    static_contract: results/model_checks/awff_sysblock/graphical_contract/graphical_awff_sysblock_contract_20260512_linear_mpc_gate.json
+    mcp_summary: results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_linear_mpc_check_20260512_summary.json
+    mcp_log: results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_linear_mpc_check_20260512.jsonl
+    verification_level: load_file_check_model
+    note: >
+      Graphical counterpart expresses LinearMPC outer-loop behavior, INDI-like
+      attitude behavior, online rotor-1 eta_hat estimation, and adaptive motor
+      allocation. Full-plant performance evidence still uses the Equation
+      bridge for current Sysplorer/Modelica embedding compatibility.
   verification_scope: >
     Real MWORKS_MCP 50 s full run is complete for rotor-1 85% efficiency
     degradation. The combined LinearMPC + online allocation controller passes

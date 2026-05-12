@@ -15,6 +15,21 @@ implementation_status:
     - QuadrotorExperiments.Example2LinearMPCSysblockClosedLoop
     - QuadrotorExperiments.Example3LinearMPCSysblockClosedLoop
   sysblock_controller: AWFF_LinearMPCOuterLoopControllerEquation_Sysblock
+  graphical_sysblock_counterpart:
+    package_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+    controller_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
+    outer_loop_model: AWFF_InnovationGraphicalControllers.LinearMPCOuterLoopBlock
+    static_contract: results/model_checks/awff_sysblock/graphical_contract/graphical_awff_sysblock_contract_20260512_linear_mpc_gate.json
+    mcp_summary: results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_linear_mpc_check_20260512_summary.json
+    mcp_log: results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_linear_mpc_check_20260512.jsonl
+    verification_level: load_file_check_model
+    note: >
+      Graphical Sysblock counterpart expresses terminal-error prediction,
+      error differencing, L1 residual low-pass compensation, z-axis integration,
+      acceleration/attitude/thrust saturation, INDI-like attitude loop, and
+      motor mixing. Full-plant performance evidence still uses the Equation
+      bridge because graphical Sysblock embedding in the Modelica plant has a
+      current internal multi-input-port parsing limitation.
   verification_scope: >
     Full MWORKS_MCP evidence is complete for official Example1, Example2 helix,
     Example3 figure-8, mass +20%, and lateral wind gust. These scenarios pass

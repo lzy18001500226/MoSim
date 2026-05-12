@@ -45,6 +45,26 @@ BEHAVIOR_EXPECTATIONS: dict[str, list[str]] = {
         "SysplorerEmbeddedCoder.MathOperation.Product",
         "SysplorerEmbeddedCoder.Discontinuities.Saturation",
     ],
+    "AWFF_InnovationGraphicalControllers.LinearMPCOuterLoopBlock": [
+        "SysplorerEmbeddedCoder.Discrete.UnitDelay",
+        "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator",
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+    ],
+    "AWFF_InnovationGraphicalControllers.Rotor1OnlineEfficiencyEstimatorBlock": [
+        "SysplorerEmbeddedCoder.Discontinuities.DeadZone",
+        "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator",
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+    ],
+    "AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock": [
+        "LinearMPCOuterLoopBlock",
+        "INDIAttitudeInnerLoopBlock",
+        "MotorMixerBlock",
+    ],
+    "AWFF_InnovationGraphicalControllers.AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock": [
+        "LinearMPCOuterLoopBlock",
+        "Rotor1OnlineEfficiencyEstimatorBlock",
+        "AdaptiveFaultMixerBlock",
+    ],
 }
 
 
@@ -160,6 +180,55 @@ PACKAGE_MODELS: dict[str, dict[str, dict[str, Any]]] = {
             "outports": ["y", "y1", "y2", "y3", "eta_hat1", "eta_hat2", "eta_hat3", "eta_hat4", "fault_index"],
             "required_blocks": ["l1_outer", "attitude_loop", "motor_mixer", "fault_isolation", "L1ResidualOuterLoopBlock", "PIDAttitudeInnerLoopBlock", "AdaptiveFaultMixerBlock", "RotorFaultIsolationBlock"],
             "min_connects": 29,
+        },
+        "LinearMPCOuterLoopBlock": {
+            "inports": ["x_error", "y_error", "z_error", "z_ref_rate"],
+            "outports": ["pitch_ref", "roll_ref", "thrust_ref"],
+            "required_blocks": [
+                "x_error_delay",
+                "x_horizon_gain",
+                "x_terminal_sum",
+                "x_l1_filter",
+                "x_acc_sat",
+                "pitch_ref_sat",
+                "y_error_delay",
+                "y_horizon_gain",
+                "y_terminal_sum",
+                "y_l1_filter",
+                "y_acc_sat",
+                "roll_ref_sat",
+                "z_error_delay",
+                "z_horizon_gain",
+                "z_terminal_sum",
+                "z_integrator",
+                "z_l1_filter_mpc",
+                "thrust_sat",
+            ],
+            "min_connects": 75,
+        },
+        "Rotor1OnlineEfficiencyEstimatorBlock": {
+            "inports": ["x_error", "y_error"],
+            "outports": ["eta_hat"],
+            "required_blocks": [
+                "eta_signature_sum",
+                "eta_signature_deadzone",
+                "eta_drop_filter",
+                "eta_raw_sum",
+                "eta_sat",
+            ],
+            "min_connects": 11,
+        },
+        "AWFF_LinearMPCControllerGraphical_Sysblock": {
+            "inports": ["x_error", "y_error", "z_error", "z_ref_rate", "roll_mea", "pitch_mea", "yaw_mea", "yaw_ref"],
+            "outports": ["y", "y1", "y2", "y3"],
+            "required_blocks": ["mpc_outer", "attitude_loop", "motor_mixer", "LinearMPCOuterLoopBlock", "INDIAttitudeInnerLoopBlock", "MotorMixerBlock"],
+            "min_connects": 18,
+        },
+        "AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock": {
+            "inports": ["x_error", "y_error", "z_error", "z_ref_rate", "roll_mea", "pitch_mea", "yaw_mea", "yaw_ref"],
+            "outports": ["y", "y1", "y2", "y3", "eta_hat"],
+            "required_blocks": ["mpc_outer", "attitude_loop", "motor_mixer", "rotor1_eta_estimator", "LinearMPCOuterLoopBlock", "INDIAttitudeInnerLoopBlock", "AdaptiveFaultMixerBlock", "Rotor1OnlineEfficiencyEstimatorBlock"],
+            "min_connects": 24,
         },
     },
 }
