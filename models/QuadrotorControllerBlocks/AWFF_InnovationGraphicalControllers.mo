@@ -15,6 +15,21 @@ model AWFF_InnovationGraphicalControllers
     annotation(__MWORKS(hide=true,BlockSystem(blockKind=BlockKind.modelWorkspace),version="26.3.0"));
   end ModelWorkspace;
 
+  model SymmetricLimiterKernelBlock
+    "Equation kernel for symmetric saturation"
+    extends ModelWorkspace;
+    annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(u),Right(y)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
+      Icon(coordinateSystem(preserveAspectRatio=false),graphics={
+        Rectangle(extent={{-100,-100},{100,100}},lineColor={115,115,115},fillColor={250,250,250},fillPattern=FillPattern.Solid,radius=6),
+        Text(extent={{-90,24},{90,-24}},textString="sat eq",lineColor={70,70,70})}),
+      Diagram(coordinateSystem(extent={{-120,-80},{120,80}},grid={2,2})));
+    parameter Real limit=1.0;
+    SysplorerEmbeddedCoder.Port.Inport u annotation(Placement(transformation(origin={-100,0},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Outport y annotation(Placement(transformation(origin={100,0},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+  equation
+    y = min(max(u,-limit),limit);
+  end SymmetricLimiterKernelBlock;
+
   model SymmetricLimiterBlock
     "Primitive graphical limiter with real signal ports"
     extends ModelWorkspace;
@@ -27,9 +42,88 @@ model AWFF_InnovationGraphicalControllers
     parameter Real limit=1.0;
     SysplorerEmbeddedCoder.Port.Inport u annotation(Placement(transformation(origin={-100,0},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
     SysplorerEmbeddedCoder.Port.Outport y annotation(Placement(transformation(origin={100,0},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SymmetricLimiterKernelBlock limiter_kernel(limit=limit) annotation(Placement(transformation(origin={0,0},extent={{-30,-20},{30,20}})));
   equation
-    y = min(max(u,-limit),limit);
+    connect(u,limiter_kernel.u) annotation(Line(points={{-90,0},{-31,0}},color={0,0,0}));
+    connect(limiter_kernel.y,y) annotation(Line(points={{31,0},{90,0}},color={0,0,0}));
   end SymmetricLimiterBlock;
+
+  model EfficiencyCompensationKernelBlock
+    "Equation kernel for efficiency-aware rotor allocation"
+    extends ModelWorkspace;
+    annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(raw_cmd,eta_hat),Right(y)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
+      Icon(coordinateSystem(preserveAspectRatio=false),graphics={
+        Rectangle(extent={{-100,-100},{100,100}},lineColor={130,80,65},fillColor={255,246,242},fillPattern=FillPattern.Solid,radius=6),
+        Text(extent={{-90,24},{90,-24}},textString="eta alloc",lineColor={95,50,35})}),
+      Diagram(coordinateSystem(extent={{-140,-80},{140,80}},grid={2,2})));
+    parameter Real output_limit=20.0;
+    parameter Real allocation_blend=0.52;
+    parameter Real min_rotor_efficiency=0.50;
+    SysplorerEmbeddedCoder.Port.Inport raw_cmd annotation(Placement(transformation(origin={-120,30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Inport eta_hat annotation(Placement(transformation(origin={-120,-30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Outport y annotation(Placement(transformation(origin={120,0},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    Real eta_safe;
+  equation
+    eta_safe = max(eta_hat,min_rotor_efficiency);
+    y = min(max(raw_cmd * (1 + allocation_blend * (1 / eta_safe - 1)),-output_limit),output_limit);
+  end EfficiencyCompensationKernelBlock;
+
+  model FaultSignatureEstimatorKernelBlock
+    "Equation kernel for four-rotor fault signature estimation"
+    extends ModelWorkspace;
+    annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(x_error,y_error),Right(eta_hat1,eta_hat2,eta_hat3,eta_hat4,fault_index)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
+      Icon(coordinateSystem(preserveAspectRatio=false),graphics={
+        Rectangle(extent={{-100,-100},{100,100}},lineColor={145,55,55},fillColor={255,244,244},fillPattern=FillPattern.Solid,radius=6),
+        Text(extent={{-90,24},{90,-8}},textString="signature",lineColor={105,40,40}),
+        Text(extent={{-90,-12},{90,-42}},textString="estimate",lineColor={105,40,40})}),
+      Diagram(coordinateSystem(extent={{-160,-120},{160,120}},grid={2,2})));
+    parameter Real eta_min_est=0.50;
+    parameter Real eta_max_est=1.00;
+    parameter Real eta_signature_deadband=0.015;
+    parameter Real eta_signature_gain=2.65;
+    parameter Real fault_lock_margin=0.012;
+    SysplorerEmbeddedCoder.Port.Inport x_error annotation(Placement(transformation(origin={-140,50},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Inport y_error annotation(Placement(transformation(origin={-140,-50},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Outport eta_hat1 annotation(Placement(transformation(origin={140,80},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Outport eta_hat2 annotation(Placement(transformation(origin={140,40},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Outport eta_hat3 annotation(Placement(transformation(origin={140,0},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Outport eta_hat4 annotation(Placement(transformation(origin={140,-40},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.Port.Outport fault_index annotation(Placement(transformation(origin={140,-90},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
+    Real x_error_filter(start=0,fixed=true);
+    Real y_error_filter(start=0,fixed=true);
+    Real sig1;
+    Real sig2;
+    Real sig3;
+    Real sig4;
+    Real eta_hat1_state(start=1.0,fixed=true);
+    Real eta_hat2_state(start=1.0,fixed=true);
+    Real eta_hat3_state(start=1.0,fixed=true);
+    Real eta_hat4_state(start=1.0,fixed=true);
+    Real max_sig;
+    Real second_sig;
+    Real fault_candidate;
+    Real fault_index_state(start=0,fixed=true);
+  equation
+    x_error_filter = x_error;
+    y_error_filter = y_error;
+    sig1 = max((-x_error_filter + y_error_filter) / 2 - eta_signature_deadband,0);
+    sig2 = max((-x_error_filter - y_error_filter) / 2 - eta_signature_deadband,0);
+    sig3 = max((x_error_filter - y_error_filter) / 2 - eta_signature_deadband,0);
+    sig4 = max((x_error_filter + y_error_filter) / 2 - eta_signature_deadband,0);
+    eta_hat1_state = min(max(1 - eta_signature_gain * sig1,eta_min_est),eta_max_est);
+    eta_hat2_state = min(max(1 - eta_signature_gain * sig2,eta_min_est),eta_max_est);
+    eta_hat3_state = min(max(1 - eta_signature_gain * sig3,eta_min_est),eta_max_est);
+    eta_hat4_state = min(max(1 - eta_signature_gain * sig4,eta_min_est),eta_max_est);
+    eta_hat1 = min(max(eta_hat1_state,eta_min_est),eta_max_est);
+    eta_hat2 = min(max(eta_hat2_state,eta_min_est),eta_max_est);
+    eta_hat3 = min(max(eta_hat3_state,eta_min_est),eta_max_est);
+    eta_hat4 = min(max(eta_hat4_state,eta_min_est),eta_max_est);
+    max_sig = max(max(sig1,sig2),max(sig3,sig4));
+    second_sig = if sig1 >= sig2 and sig1 >= sig3 and sig1 >= sig4 then max(max(sig2,sig3),sig4) else if sig2 >= sig1 and sig2 >= sig3 and sig2 >= sig4 then max(max(sig1,sig3),sig4) else if sig3 >= sig1 and sig3 >= sig2 and sig3 >= sig4 then max(max(sig1,sig2),sig4) else max(max(sig1,sig2),sig3);
+    fault_candidate = if max_sig <= 0 then 0 else if sig1 >= sig2 and sig1 >= sig3 and sig1 >= sig4 then 1 else if sig2 >= sig1 and sig2 >= sig3 and sig2 >= sig4 then 2 else if sig3 >= sig1 and sig3 >= sig2 and sig3 >= sig4 then 3 else 4;
+    fault_index_state = if max_sig > eta_signature_deadband and max_sig - second_sig > fault_lock_margin then fault_candidate else 0;
+    fault_index = fault_index_state;
+  end FaultSignatureEstimatorKernelBlock;
 
   model L1ResidualOuterLoopBlock
     "L1-inspired residual compensated position outer loop"
@@ -344,25 +438,60 @@ model AWFF_InnovationGraphicalControllers
     SysplorerEmbeddedCoder.Port.Outport y1 annotation(Placement(transformation(origin={200,30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
     SysplorerEmbeddedCoder.Port.Outport y2 annotation(Placement(transformation(origin={200,-30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
     SysplorerEmbeddedCoder.Port.Outport y3 annotation(Placement(transformation(origin={200,-90},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
-    Real yaw_mix;
-    Real pitch_mix;
-    Real roll_mix;
-    Real u1_raw;
-    Real u2_raw;
-    Real u3_raw;
-    Real u4_raw;
+
+    SysplorerEmbeddedCoder.MathOperation.Gain roll_pos(k=0.707) annotation(Placement(transformation(origin={-130,65},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain roll_neg(k=-0.707) annotation(Placement(transformation(origin={-130,40},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain pitch_pos(k=0.707) annotation(Placement(transformation(origin={-130,-5},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain pitch_neg(k=-0.707) annotation(Placement(transformation(origin={-130,-30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain yaw_pos(k=0.707) annotation(Placement(transformation(origin={-130,-75},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain yaw_neg(k=-0.707) annotation(Placement(transformation(origin={-130,-100},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Gain thrust_neg(k=-1.0) annotation(Placement(transformation(origin={-130,110},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(Type(ref="double"),Dimension=1),y(Type(ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)),SampleTime(group="D1")=0.01)));
+
+    SysplorerEmbeddedCoder.MathOperation.Sum motor1_sum(isSaturate=false,inputs="++++") annotation(Placement(transformation(origin={20,90},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1),u3(Type(ref="double"),Dimension=1),u4(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Sum motor2_sum(isSaturate=false,inputs="++++") annotation(Placement(transformation(origin={20,30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1),u3(Type(ref="double"),Dimension=1),u4(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Sum motor3_sum(isSaturate=false,inputs="++++") annotation(Placement(transformation(origin={20,-30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1),u3(Type(ref="double"),Dimension=1),u4(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
+    SysplorerEmbeddedCoder.MathOperation.Sum motor4_sum(isSaturate=false,inputs="++++") annotation(Placement(transformation(origin={20,-90},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1),u3(Type(ref="double"),Dimension=1),u4(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
+    SymmetricLimiterBlock motor1_limit(limit=output_limit) annotation(Placement(transformation(origin={110,90},extent={{-10,-10},{10,10}})));
+    SymmetricLimiterBlock motor2_limit(limit=output_limit) annotation(Placement(transformation(origin={110,30},extent={{-10,-10},{10,10}})));
+    SymmetricLimiterBlock motor3_limit(limit=output_limit) annotation(Placement(transformation(origin={110,-30},extent={{-10,-10},{10,10}})));
+    SymmetricLimiterBlock motor4_limit(limit=output_limit) annotation(Placement(transformation(origin={110,-90},extent={{-10,-10},{10,10}})));
   equation
-    yaw_mix = 0.707 * yaw_cmd;
-    pitch_mix = 0.707 * pitch_cmd;
-    roll_mix = 0.707 * roll_cmd;
-    u1_raw = thrust_ref + (-yaw_mix - pitch_mix + roll_mix);
-    u2_raw = -(thrust_ref + (yaw_mix - pitch_mix - roll_mix));
-    u3_raw = thrust_ref + (-yaw_mix + pitch_mix - roll_mix);
-    u4_raw = -(thrust_ref + (yaw_mix + pitch_mix + roll_mix));
-    y = min(max(u1_raw,-output_limit),output_limit);
-    y1 = min(max(u2_raw,-output_limit),output_limit);
-    y2 = min(max(u3_raw,-output_limit),output_limit);
-    y3 = min(max(u4_raw,-output_limit),output_limit);
+    connect(thrust_ref,thrust_neg.u) annotation(Line(points={{-190,90},{-170,90},{-170,110},{-142,110}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(roll_cmd,roll_pos.u) annotation(Line(points={{-190,30},{-164,30},{-164,65},{-142,65}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(roll_cmd,roll_neg.u) annotation(Line(points={{-190,30},{-164,30},{-164,40},{-142,40}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(pitch_cmd,pitch_pos.u) annotation(Line(points={{-190,-30},{-164,-30},{-164,-5},{-142,-5}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(pitch_cmd,pitch_neg.u) annotation(Line(points={{-190,-30},{-142,-30}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(yaw_cmd,yaw_pos.u) annotation(Line(points={{-190,-90},{-164,-90},{-164,-75},{-142,-75}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(yaw_cmd,yaw_neg.u) annotation(Line(points={{-190,-90},{-164,-90},{-164,-100},{-142,-100}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+
+    connect(thrust_ref,motor1_sum.u1) annotation(Line(points={{-190,90},{0,90},{0,99},{8,99}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(roll_pos.y,motor1_sum.u2) annotation(Line(points={{-118,65},{-10,65},{-10,93},{8,93}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(pitch_neg.y,motor1_sum.u3) annotation(Line(points={{-118,-30},{-4,-30},{-4,87},{8,87}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(yaw_neg.y,motor1_sum.u4) annotation(Line(points={{-118,-100},{2,-100},{2,81},{8,81}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+
+    connect(thrust_neg.y,motor2_sum.u1) annotation(Line(points={{-118,110},{-16,110},{-16,39},{8,39}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(roll_pos.y,motor2_sum.u2) annotation(Line(points={{-118,65},{-8,65},{-8,33},{8,33}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(pitch_pos.y,motor2_sum.u3) annotation(Line(points={{-118,-5},{-8,-5},{-8,27},{8,27}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(yaw_neg.y,motor2_sum.u4) annotation(Line(points={{-118,-100},{0,-100},{0,21},{8,21}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+
+    connect(thrust_ref,motor3_sum.u1) annotation(Line(points={{-190,90},{-22,90},{-22,-21},{8,-21}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(roll_neg.y,motor3_sum.u2) annotation(Line(points={{-118,40},{-14,40},{-14,-27},{8,-27}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(pitch_pos.y,motor3_sum.u3) annotation(Line(points={{-118,-5},{-10,-5},{-10,-33},{8,-33}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(yaw_neg.y,motor3_sum.u4) annotation(Line(points={{-118,-100},{-4,-100},{-4,-39},{8,-39}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+
+    connect(thrust_neg.y,motor4_sum.u1) annotation(Line(points={{-118,110},{-30,110},{-30,-81},{8,-81}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(roll_neg.y,motor4_sum.u2) annotation(Line(points={{-118,40},{-22,40},{-22,-87},{8,-87}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(pitch_neg.y,motor4_sum.u3) annotation(Line(points={{-118,-30},{-14,-30},{-14,-93},{8,-93}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+    connect(yaw_neg.y,motor4_sum.u4) annotation(Line(points={{-118,-100},{8,-100},{8,-99}},color={0,0,0}),__MWORKS(BlockSystem(NamedSignal)));
+
+    connect(motor1_sum.y,motor1_limit.u) annotation(Line(points={{32,90},{98,90}},color={0,0,0}));
+    connect(motor2_sum.y,motor2_limit.u) annotation(Line(points={{32,30},{98,30}},color={0,0,0}));
+    connect(motor3_sum.y,motor3_limit.u) annotation(Line(points={{32,-30},{98,-30}},color={0,0,0}));
+    connect(motor4_sum.y,motor4_limit.u) annotation(Line(points={{32,-90},{98,-90}},color={0,0,0}));
+    connect(motor1_limit.y,y) annotation(Line(points={{122,90},{190,90}},color={0,0,0}));
+    connect(motor2_limit.y,y1) annotation(Line(points={{122,30},{190,30}},color={0,0,0}));
+    connect(motor3_limit.y,y2) annotation(Line(points={{122,-30},{190,-30}},color={0,0,0}));
+    connect(motor4_limit.y,y3) annotation(Line(points={{122,-90},{190,-90}},color={0,0,0}));
   end MotorMixerBlock;
 
   model KnownRotorFaultMixerBlock
@@ -386,25 +515,26 @@ model AWFF_InnovationGraphicalControllers
     SysplorerEmbeddedCoder.Port.Outport y1 annotation(Placement(transformation(origin={200,30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
     SysplorerEmbeddedCoder.Port.Outport y2 annotation(Placement(transformation(origin={200,-30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
     SysplorerEmbeddedCoder.Port.Outport y3 annotation(Placement(transformation(origin={200,-90},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
-    Real yaw_mix;
-    Real pitch_mix;
-    Real roll_mix;
-    Real u1_raw;
-    Real u2_raw;
-    Real u3_raw;
-    Real u4_raw;
+    MotorMixerBlock raw_mixer(output_limit=1e9) annotation(Placement(transformation(origin={-40,0},extent={{-45,-50},{45,50}})));
+    SysplorerEmbeddedCoder.Sources.Constant rotor1_eta(k=rotor1_efficiency) annotation(Placement(transformation(origin={45,55},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(SampleTime(auto=true,group="D1")=0.01,Instance(y(Type(inherit=InheritType.constantValue,ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)))));
+    EfficiencyCompensationKernelBlock rotor1_allocator(output_limit=output_limit,allocation_blend=rotor1_allocation_blend,min_rotor_efficiency=min_rotor_efficiency) annotation(Placement(transformation(origin={105,80},extent={{-30,-20},{30,20}})));
+    SymmetricLimiterBlock motor2_limit(limit=output_limit) annotation(Placement(transformation(origin={105,20},extent={{-10,-10},{10,10}})));
+    SymmetricLimiterBlock motor3_limit(limit=output_limit) annotation(Placement(transformation(origin={105,-40},extent={{-10,-10},{10,10}})));
+    SymmetricLimiterBlock motor4_limit(limit=output_limit) annotation(Placement(transformation(origin={105,-100},extent={{-10,-10},{10,10}})));
   equation
-    yaw_mix = 0.707 * yaw_cmd;
-    pitch_mix = 0.707 * pitch_cmd;
-    roll_mix = 0.707 * roll_cmd;
-    u1_raw = thrust_ref + (-yaw_mix - pitch_mix + roll_mix);
-    u2_raw = -(thrust_ref + (yaw_mix - pitch_mix - roll_mix));
-    u3_raw = thrust_ref + (-yaw_mix + pitch_mix - roll_mix);
-    u4_raw = -(thrust_ref + (yaw_mix + pitch_mix + roll_mix));
-    y = min(max(u1_raw * (1 + rotor1_allocation_blend * (1 / max(rotor1_efficiency,min_rotor_efficiency) - 1)),-output_limit),output_limit);
-    y1 = min(max(u2_raw,-output_limit),output_limit);
-    y2 = min(max(u3_raw,-output_limit),output_limit);
-    y3 = min(max(u4_raw,-output_limit),output_limit);
+    connect(thrust_ref,raw_mixer.thrust_ref) annotation(Line(points={{-190,90},{-120,90},{-120,32},{-86,32}},color={0,0,0}));
+    connect(roll_cmd,raw_mixer.roll_cmd) annotation(Line(points={{-190,30},{-86,11}},color={0,0,0}));
+    connect(pitch_cmd,raw_mixer.pitch_cmd) annotation(Line(points={{-190,-30},{-120,-30},{-120,-11},{-86,-11}},color={0,0,0}));
+    connect(yaw_cmd,raw_mixer.yaw_cmd) annotation(Line(points={{-190,-90},{-120,-90},{-120,-32},{-86,-32}},color={0,0,0}));
+    connect(raw_mixer.y,rotor1_allocator.raw_cmd) annotation(Line(points={{6,32},{42,32},{42,88},{74,88}},color={0,0,0}));
+    connect(rotor1_eta.y,rotor1_allocator.eta_hat) annotation(Line(points={{57,55},{64,55},{64,72},{74,72}},color={0,0,0}));
+    connect(raw_mixer.y1,motor2_limit.u) annotation(Line(points={{6,11},{74,11},{74,20},{93,20}},color={0,0,0}));
+    connect(raw_mixer.y2,motor3_limit.u) annotation(Line(points={{6,-11},{74,-11},{74,-40},{93,-40}},color={0,0,0}));
+    connect(raw_mixer.y3,motor4_limit.u) annotation(Line(points={{6,-32},{68,-32},{68,-100},{93,-100}},color={0,0,0}));
+    connect(rotor1_allocator.y,y) annotation(Line(points={{136,80},{160,80},{160,90},{190,90}},color={0,0,0}));
+    connect(motor2_limit.y,y1) annotation(Line(points={{117,20},{160,20},{160,30},{190,30}},color={0,0,0}));
+    connect(motor3_limit.y,y2) annotation(Line(points={{117,-40},{160,-40},{160,-30},{190,-30}},color={0,0,0}));
+    connect(motor4_limit.y,y3) annotation(Line(points={{117,-100},{160,-100},{160,-90},{190,-90}},color={0,0,0}));
   end KnownRotorFaultMixerBlock;
 
   model RotorFaultIsolationBlock
@@ -433,40 +563,20 @@ model AWFF_InnovationGraphicalControllers
     SysplorerEmbeddedCoder.Port.Outport eta_hat4 annotation(Placement(transformation(origin={200,-50},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
     SysplorerEmbeddedCoder.Port.Outport fault_index annotation(Placement(transformation(origin={200,-110},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
 
-    Real x_error_filter(start=0,fixed=true);
-    Real y_error_filter(start=0,fixed=true);
-    Real sig1;
-    Real sig2;
-    Real sig3;
-    Real sig4;
-    Real eta_hat1_state(start=1.0,fixed=true);
-    Real eta_hat2_state(start=1.0,fixed=true);
-    Real eta_hat3_state(start=1.0,fixed=true);
-    Real eta_hat4_state(start=1.0,fixed=true);
-    Real max_sig;
-    Real second_sig;
-    Real fault_candidate;
-    Real fault_index_state(start=0,fixed=true);
+    FaultSignatureEstimatorKernelBlock signature_kernel(
+      eta_min_est=eta_min_est,
+      eta_max_est=eta_max_est,
+      eta_signature_deadband=eta_signature_deadband,
+      eta_signature_gain=eta_signature_gain,
+      fault_lock_margin=fault_lock_margin) annotation(Placement(transformation(origin={0,0},extent={{-60,-70},{60,70}})));
   equation
-    x_error_filter = x_error;
-    y_error_filter = y_error;
-    sig1 = max((-x_error_filter + y_error_filter) / 2 - eta_signature_deadband,0);
-    sig2 = max((-x_error_filter - y_error_filter) / 2 - eta_signature_deadband,0);
-    sig3 = max((x_error_filter - y_error_filter) / 2 - eta_signature_deadband,0);
-    sig4 = max((x_error_filter + y_error_filter) / 2 - eta_signature_deadband,0);
-    eta_hat1_state = min(max(1 - eta_signature_gain * sig1,eta_min_est),eta_max_est);
-    eta_hat2_state = min(max(1 - eta_signature_gain * sig2,eta_min_est),eta_max_est);
-    eta_hat3_state = min(max(1 - eta_signature_gain * sig3,eta_min_est),eta_max_est);
-    eta_hat4_state = min(max(1 - eta_signature_gain * sig4,eta_min_est),eta_max_est);
-    eta_hat1 = min(max(eta_hat1_state,eta_min_est),eta_max_est);
-    eta_hat2 = min(max(eta_hat2_state,eta_min_est),eta_max_est);
-    eta_hat3 = min(max(eta_hat3_state,eta_min_est),eta_max_est);
-    eta_hat4 = min(max(eta_hat4_state,eta_min_est),eta_max_est);
-    max_sig = max(max(sig1,sig2),max(sig3,sig4));
-    second_sig = if sig1 >= sig2 and sig1 >= sig3 and sig1 >= sig4 then max(max(sig2,sig3),sig4) else if sig2 >= sig1 and sig2 >= sig3 and sig2 >= sig4 then max(max(sig1,sig3),sig4) else if sig3 >= sig1 and sig3 >= sig2 and sig3 >= sig4 then max(max(sig1,sig2),sig4) else max(max(sig1,sig2),sig3);
-    fault_candidate = if max_sig <= 0 then 0 else if sig1 >= sig2 and sig1 >= sig3 and sig1 >= sig4 then 1 else if sig2 >= sig1 and sig2 >= sig3 and sig2 >= sig4 then 2 else if sig3 >= sig1 and sig3 >= sig2 and sig3 >= sig4 then 3 else 4;
-    fault_index_state = if max_sig > eta_signature_deadband and max_sig - second_sig > fault_lock_margin then fault_candidate else 0;
-    fault_index = fault_index_state;
+    connect(x_error,signature_kernel.x_error) annotation(Line(points={{-190,50},{-100,50},{-100,29},{-61,29}},color={0,0,0}));
+    connect(y_error,signature_kernel.y_error) annotation(Line(points={{-190,-50},{-100,-50},{-100,-29},{-61,-29}},color={0,0,0}));
+    connect(signature_kernel.eta_hat1,eta_hat1) annotation(Line(points={{61,47},{150,47},{150,100},{190,100}},color={0,0,0}));
+    connect(signature_kernel.eta_hat2,eta_hat2) annotation(Line(points={{61,23},{150,23},{150,50},{190,50}},color={0,0,0}));
+    connect(signature_kernel.eta_hat3,eta_hat3) annotation(Line(points={{61,0},{190,0}},color={0,0,0}));
+    connect(signature_kernel.eta_hat4,eta_hat4) annotation(Line(points={{61,-23},{150,-23},{150,-50},{190,-50}},color={0,0,0}));
+    connect(signature_kernel.fault_index,fault_index) annotation(Line(points={{61,-53},{140,-53},{140,-110},{190,-110}},color={0,0,0}));
   end RotorFaultIsolationBlock;
 
   model AdaptiveFaultMixerBlock
@@ -494,33 +604,28 @@ model AWFF_InnovationGraphicalControllers
     SysplorerEmbeddedCoder.Port.Outport y1 annotation(Placement(transformation(origin={200,30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
     SysplorerEmbeddedCoder.Port.Outport y2 annotation(Placement(transformation(origin={200,-30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
     SysplorerEmbeddedCoder.Port.Outport y3 annotation(Placement(transformation(origin={200,-90},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
-    Real yaw_mix;
-    Real pitch_mix;
-    Real roll_mix;
-    Real u1_raw;
-    Real u2_raw;
-    Real u3_raw;
-    Real u4_raw;
-    Real eta1_safe;
-    Real eta2_safe;
-    Real eta3_safe;
-    Real eta4_safe;
+    MotorMixerBlock raw_mixer(output_limit=1e9) annotation(Placement(transformation(origin={-35,0},extent={{-45,-50},{45,50}})));
+    EfficiencyCompensationKernelBlock eta1_allocator(output_limit=output_limit,allocation_blend=allocation_blend,min_rotor_efficiency=min_rotor_efficiency) annotation(Placement(transformation(origin={95,80},extent={{-30,-20},{30,20}})));
+    EfficiencyCompensationKernelBlock eta2_allocator(output_limit=output_limit,allocation_blend=allocation_blend,min_rotor_efficiency=min_rotor_efficiency) annotation(Placement(transformation(origin={95,20},extent={{-30,-20},{30,20}})));
+    EfficiencyCompensationKernelBlock eta3_allocator(output_limit=output_limit,allocation_blend=allocation_blend,min_rotor_efficiency=min_rotor_efficiency) annotation(Placement(transformation(origin={95,-40},extent={{-30,-20},{30,20}})));
+    EfficiencyCompensationKernelBlock eta4_allocator(output_limit=output_limit,allocation_blend=allocation_blend,min_rotor_efficiency=min_rotor_efficiency) annotation(Placement(transformation(origin={95,-100},extent={{-30,-20},{30,20}})));
   equation
-    yaw_mix = 0.707 * yaw_cmd;
-    pitch_mix = 0.707 * pitch_cmd;
-    roll_mix = 0.707 * roll_cmd;
-    u1_raw = thrust_ref + (-yaw_mix - pitch_mix + roll_mix);
-    u2_raw = -(thrust_ref + (yaw_mix - pitch_mix - roll_mix));
-    u3_raw = thrust_ref + (-yaw_mix + pitch_mix - roll_mix);
-    u4_raw = -(thrust_ref + (yaw_mix + pitch_mix + roll_mix));
-    eta1_safe = max(eta_hat1,min_rotor_efficiency);
-    eta2_safe = max(eta_hat2,min_rotor_efficiency);
-    eta3_safe = max(eta_hat3,min_rotor_efficiency);
-    eta4_safe = max(eta_hat4,min_rotor_efficiency);
-    y = min(max(u1_raw * (1 + allocation_blend * (1 / eta1_safe - 1)),-output_limit),output_limit);
-    y1 = min(max(u2_raw * (1 + allocation_blend * (1 / eta2_safe - 1)),-output_limit),output_limit);
-    y2 = min(max(u3_raw * (1 + allocation_blend * (1 / eta3_safe - 1)),-output_limit),output_limit);
-    y3 = min(max(u4_raw * (1 + allocation_blend * (1 / eta4_safe - 1)),-output_limit),output_limit);
+    connect(thrust_ref,raw_mixer.thrust_ref) annotation(Line(points={{-190,90},{-120,90},{-120,32},{-81,32}},color={0,0,0}));
+    connect(roll_cmd,raw_mixer.roll_cmd) annotation(Line(points={{-190,30},{-81,11}},color={0,0,0}));
+    connect(pitch_cmd,raw_mixer.pitch_cmd) annotation(Line(points={{-190,-30},{-120,-30},{-120,-11},{-81,-11}},color={0,0,0}));
+    connect(yaw_cmd,raw_mixer.yaw_cmd) annotation(Line(points={{-190,-90},{-120,-90},{-120,-32},{-81,-32}},color={0,0,0}));
+    connect(raw_mixer.y,eta1_allocator.raw_cmd) annotation(Line(points={{11,32},{42,32},{42,88},{64,88}},color={0,0,0}));
+    connect(raw_mixer.y1,eta2_allocator.raw_cmd) annotation(Line(points={{11,11},{64,11},{64,28}},color={0,0,0}));
+    connect(raw_mixer.y2,eta3_allocator.raw_cmd) annotation(Line(points={{11,-11},{42,-11},{42,-32},{64,-32}},color={0,0,0}));
+    connect(raw_mixer.y3,eta4_allocator.raw_cmd) annotation(Line(points={{11,-32},{36,-32},{36,-92},{64,-92}},color={0,0,0}));
+    connect(eta_hat1,eta1_allocator.eta_hat) annotation(Line(points={{-190,-135},{48,-135},{48,72},{64,72}},color={0,0,0}));
+    connect(eta_hat2,eta2_allocator.eta_hat) annotation(Line(points={{-190,-165},{52,-165},{52,12},{64,12}},color={0,0,0}));
+    connect(eta_hat3,eta3_allocator.eta_hat) annotation(Line(points={{-190,-195},{56,-195},{56,-48},{64,-48}},color={0,0,0}));
+    connect(eta_hat4,eta4_allocator.eta_hat) annotation(Line(points={{-190,-225},{60,-225},{60,-108},{64,-108}},color={0,0,0}));
+    connect(eta1_allocator.y,y) annotation(Line(points={{126,80},{160,80},{160,90},{190,90}},color={0,0,0}));
+    connect(eta2_allocator.y,y1) annotation(Line(points={{126,20},{160,20},{160,30},{190,30}},color={0,0,0}));
+    connect(eta3_allocator.y,y2) annotation(Line(points={{126,-40},{160,-40},{160,-30},{190,-30}},color={0,0,0}));
+    connect(eta4_allocator.y,y3) annotation(Line(points={{126,-100},{160,-100},{160,-90},{190,-90}},color={0,0,0}));
   end AdaptiveFaultMixerBlock;
 
   model AWFF_L1ResidualControllerGraphical_Sysblock

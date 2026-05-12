@@ -62,6 +62,36 @@ INNOVATION_MODELS = [
         "verify_result_var": "l1_residual_overview.y",
     },
     {
+        "model_name": "AWFF_InnovationGraphicalControllers.SymmetricLimiterBlock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "y",
+    },
+    {
+        "model_name": "AWFF_InnovationGraphicalControllers.MotorMixerBlock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "y",
+    },
+    {
+        "model_name": "AWFF_InnovationGraphicalControllers.INDIAttitudeInnerLoopBlock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "roll_cmd",
+    },
+    {
+        "model_name": "AWFF_InnovationGraphicalControllers.KnownRotorFaultMixerBlock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "y",
+    },
+    {
+        "model_name": "AWFF_InnovationGraphicalControllers.RotorFaultIsolationBlock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "fault_index",
+    },
+    {
+        "model_name": "AWFF_InnovationGraphicalControllers.AdaptiveFaultMixerBlock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "y",
+    },
+    {
         "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock",
         "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "y",
