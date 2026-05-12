@@ -6,9 +6,9 @@
 
 本报告记录当前工程已经可复现的仿真数据链路、官方参考轨迹、指标计算方法和图表生成方式。控制器性能对比只引用已保存 raw CSV、metrics JSON/CSV、MCP JSONL 日志和 SVG 图表的实验。
 
-证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表包含真实 Sysplorer MCP / Modelica 派生模型闭环仿真，以及 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 的全时长 Sysblock 控制器闭环证据。Sysblock 当前已完成 AWFF PID 高度环最小 demo、三段分层控制器、组合控制器 `AWFF_FullController_Sysblock` 和创新图形化控制器包 `AWFF_InnovationGraphicalControllers` 的真实 MCP 验证，并完成 Example1 50 s、Example2 50 s、Example3 120 s 整机仿真；P1 创新控制器方向已完成 `AWFF_L1ResidualControllerEquation_Sysblock` 和 `AWFF_INDIControllerEquation_Sysblock` 的真实 MCP 消融，其中后者当前为 L1-inspired 残差外环 + INDI-like 姿态增量组合控制器。`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 已完成 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真并通过质量门，当前定位为 finite-horizon linear MPC-style 外环 + L1-inspired residual feedforward + INDI-like 姿态内环。
+证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表包含真实 Sysplorer MCP / Modelica 派生模型闭环仿真，以及 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 的全时长 Sysblock 控制器闭环证据。Sysblock 当前已完成 AWFF PID 高度环最小 demo、三段分层控制器、组合控制器 `AWFF_FullController_Sysblock` 和创新图形化控制器包 `AWFF_InnovationGraphicalControllers` 的真实 MCP 验证，并完成 Example1 50 s、Example2 50 s、Example3 120 s 整机仿真；P1 创新控制器方向已完成 `AWFF_L1ResidualControllerEquation_Sysblock`、`AWFF_INDIControllerEquation_Sysblock` 和 `AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 的真实 MCP 消融。`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 已完成 Example1 50 s、Example2 50 s、Example3 120 s、质量 +20% 和横向阵风全时长真实 Sysplorer MCP 仿真并通过质量门；旋翼退化场景中，纯 LinearMPC 外环作为边界案例保留为 `needs_iteration`，组合控制器 `AWFF_LinearMPCOnlineFaultAllocationController_Sysblock` 已通过 1 号旋翼 85% 效率退化质量门。
 
-质量判定规则：`check_model ok` 和 `simulate_model ok` 只说明模型可以执行；完整性能结论还必须通过 `scripts/evaluate_result_quality.py` 写入的 `quality_status`。`pass` 可支撑报告结论，`smoke_only` 只证明链路可用，`needs_iteration` 必须继续调控制器或明确写为未完成限制。当前 Example2 已通过 `helix_tuned` Enhanced PID、AWFF PID 和 AWFF Sysblock 分支解决 RMSE 门禁问题；旋翼退化场景健康分仍低于阈值，应作为后续控制分配/故障补偿迭代对象。
+质量判定规则：`check_model ok` 和 `simulate_model ok` 只说明模型可以执行；完整性能结论还必须通过 `scripts/evaluate_result_quality.py` 写入的 `quality_status`。`pass` 可支撑报告结论，`smoke_only` 只证明链路可用，`needs_iteration` 必须继续调控制器或明确写为未完成限制。当前 Example2 已通过 `helix_tuned` Enhanced PID、AWFF PID 和 AWFF Sysblock 分支解决 RMSE 门禁问题；旋翼退化场景显示“仅靠外环鲁棒控制不足”，需要控制分配或故障补偿层。
 
 当前已完成的可复现资产：
 
@@ -24,6 +24,7 @@ Example1/2/3 AWFF Sysblock 0-1 s 真实 Sysplorer MCP smoke 日志、CSV 和指�
 Example1 L1 residual Sysblock nominal/wind-gust 0-1 s smoke 与 50 s full CSV、指标、图表和 replay JSON
 Example1、Example2 helix-tuned 和 Example3 L1-inspired + INDI-like Sysblock 组合控制器 full CSV、指标、图表和 replay JSON
 Example1/2/3 Linear MPC-style Sysblock full CSV、指标、图表和 replay JSON
+Linear MPC-style 质量 +20%、横向阵风、1号旋翼效率85% 边界案例，以及 Linear MPC-style + 在线 eta_hat 控制分配补偿 CSV、指标、图表和 replay JSON
 ```
 
 ## 2. 模型与场景
@@ -674,19 +675,38 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 | 螺旋爬升 | `QuadrotorExperiments.Example2LinearMPCSysblockClosedLoop` | 50 s | 0.4436 | 0.1463 | 3.0068 | 0.574% | pass |
 | 8字形运动 | `QuadrotorExperiments.Example3LinearMPCSysblockClosedLoop` | 120 s | 0.1494 | 0.0469 | 1.1355 | 1.882% | pass |
 
+鲁棒场景消融：
+
+| 场景 | 控制器 | 对比基线 | RMSE (m) | 稳态误差 (m) | 扰动峰值误差 (m) | 恢复时间 (s) | RMSE 降低 | 健康分 | 质量门 |
+|---|---|---|---:|---:|---:|---:|---:|---:|---|
+| 质量 +20% Example1 | `linear_mpc_sysblock` | `l1_residual_sysblock` | 0.2588 | 0.0722 | 0.0721 | 2.67 | 0.755% | 55.388 | pass |
+| 横向阵风 Example1 | `linear_mpc_sysblock` | `l1_residual_sysblock` | 0.2588 | 0.0722 | 0.0721 | 2.67 | 6.984% | 55.388 | pass |
+| 1号旋翼效率85% Example1 | `linear_mpc_sysblock` | `l1_residual_sysblock` | 0.3140 | 0.2075 | 0.2066 | 5.48 | 1.817% | 36.889 | needs_iteration |
+| 1号旋翼效率85% Example1 | `linear_mpc_online_fault_allocation_sysblock` | `linear_mpc_sysblock` | 0.2582 | 0.1150 | 0.1085 | 2.53 | 17.778% | 51.299 | pass |
+
+旋翼退化结论：纯 LinearMPC-style 外环在 1 号旋翼 85% 效率退化下虽然 RMSE 相比 L1 residual 低 `1.817%`，但健康分只有 `36.889`，不能作为“故障已解决”的证据。加入在线效率估计与控制分配补偿后，`linear_mpc_online_fault_allocation_sysblock` 通过质量门，`eta_hat` 末值约 `0.906`，45-50 s 尾段均值约 `0.908`，RMSE 相比纯 LinearMPC 降低 `17.778%`。该结果支撑“LinearMPC 外环需要与执行器故障分配层组合处理旋翼退化”的结论。
+
 证据文件：
 
 ```text
 scenarios/official/example1_linear_mpc_sysblock.yaml
 scenarios/official/example2_linear_mpc_sysblock.yaml
 scenarios/official/example3_linear_mpc_sysblock.yaml
+scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml
+scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml
+scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml
+scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml
 
 results/official/example1_step/official_example1_linear_mpc_sysblock/
 results/official/example2_helix/official_example2_linear_mpc_sysblock/
 results/official/example3_figure8/official_example3_linear_mpc_sysblock/
+results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/
+results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/
+results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_sysblock/
+results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/
 ```
 
-结论边界：该组结果可以支撑“线性 MPC-style 外环已完成官方三场景整机闭环验证，并在当前质量门下略优于对应 L1+INDI 基线”的表述；不能支撑“在线优化 MPC/NMPC 已完成”的表述。
+结论边界：该组结果可以支撑“线性 MPC-style 外环已完成官方三场景整机闭环验证，并在当前质量门下略优于对应 L1+INDI 基线”的表述；可以支撑“质量摄动和横向阵风鲁棒场景已通过”的表述；旋翼退化必须表述为“需要在线效率估计与控制分配补偿后通过”。不能支撑“在线优化 MPC/NMPC 已完成”的表述。
 
 ## 13. 结论约束
 

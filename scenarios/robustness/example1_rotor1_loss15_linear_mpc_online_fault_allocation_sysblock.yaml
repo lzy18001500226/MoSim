@@ -1,0 +1,49 @@
+experiment_id: robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock
+scene_id: robust_rotor1_loss15_example1
+controller_id: linear_mpc_online_fault_allocation_sysblock
+priority: P1-B
+evidence_level: real_sysplorer_mcp_sysblock_linear_mpc_online_fault_allocation_rotor_loss_ablation
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop
+  model_path_hint: models/QuadrotorExperiments/Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop.mo
+  base_model_path_hint: QuadrotorModel/package.mo
+  official_description: 阶梯爬升 1号旋翼升力效率85% LinearMPC outer loop + online eta_hat allocation Sysblock
+
+controller:
+  params_file: controllers/linear_mpc_online_fault_allocation_sysblock/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: robust_rotor1_loss15_example1_linear_mpc_sysblock
+  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_LinearMPCOnlineFaultAllocationController_Sysblock.mo
+  extra_sysblock_controller_files:
+    - models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+
+disturbance:
+  type: actuator_efficiency_loss
+  target_component: quadChassisTest17_1.gain2.k
+  affected_rotor: rotor_1
+  nominal_lift_gain: 0.002
+  degraded_lift_gain: 0.0017
+  efficiency_ratio: 0.85
+  known_to_controller: false
+  purpose: linear_mpc_outer_loop_with_online_efficiency_estimation_and_fault_allocation_compensation
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
+result:
+  raw_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.csv
+  metrics_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/metrics/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.json
+  figure_dir: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/figures
+  replay_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/replay/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.json
+  mcp_log: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock_20260512.jsonl
+  extra_variables:
+    eta_hat: controller3_2.eta_hat

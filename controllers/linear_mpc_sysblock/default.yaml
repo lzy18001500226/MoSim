@@ -17,12 +17,14 @@ implementation_status:
   sysblock_controller: AWFF_LinearMPCOuterLoopControllerEquation_Sysblock
   verification_scope: >
     Full MWORKS_MCP evidence is complete for official Example1, Example2 helix,
-    and Example3 figure-8. All three scenarios pass the quality gate against
-    the corresponding L1+INDI baseline.
+    Example3 figure-8, mass +20%, and lateral wind gust. These scenarios pass
+    the quality gate against the corresponding L1+INDI or L1 residual baseline.
   limitation: >
     This first implementation is a constrained finite-horizon linear predictive
     control equivalent using explicit terminal-error, residual compensation,
     and saturation terms. It is not yet an online quadratic-program MPC solver.
+    In the rotor-1 85% efficiency-loss scene, the pure outer-loop controller is
+    a boundary case and needs an actuator allocation layer to pass the quality gate.
 
 verified_evidence:
   source: MWORKS_MCP
@@ -56,6 +58,36 @@ verified_evidence:
     steady_state_error_m: 0.04694025868679281
     quality_status: pass
     rmse_reduction_vs_l1_indi_pct: 1.882
+  mass20_full:
+    scenario_file: scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml
+    model_name: QuadrotorExperiments.Example1Mass20LinearMPCSysblockClosedLoop
+    raw_file: results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/raw/robust_mass20_example1_linear_mpc_sysblock.csv
+    metrics_file: results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/metrics/robust_mass20_example1_linear_mpc_sysblock.json
+    row_count: 5001
+    position_rmse_m: 0.25879954824234275
+    steady_state_error_m: 0.07221678551451705
+    quality_status: pass
+    rmse_reduction_vs_l1_residual_pct: 0.755
+  wind_gust_full:
+    scenario_file: scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml
+    model_name: QuadrotorExperiments.Example1WindGustLinearMPCSysblockClosedLoop
+    raw_file: results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/raw/robust_wind_gust_example1_linear_mpc_sysblock.csv
+    metrics_file: results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/metrics/robust_wind_gust_example1_linear_mpc_sysblock.json
+    row_count: 5001
+    position_rmse_m: 0.25879954824234275
+    disturbance_peak_error_m: 0.072141453679329
+    quality_status: pass
+    rmse_reduction_vs_l1_residual_pct: 6.984
+  rotor1_loss15_boundary:
+    scenario_file: scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml
+    model_name: QuadrotorExperiments.Example1Rotor1Loss15LinearMPCSysblockClosedLoop
+    raw_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_sysblock.csv
+    metrics_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_sysblock/metrics/robust_rotor1_loss15_example1_linear_mpc_sysblock.json
+    row_count: 5001
+    position_rmse_m: 0.3140409802138421
+    total_health_score: 36.88850921905078
+    quality_status: needs_iteration
+    interpretation: pure_outer_loop_boundary_case_needs_fault_allocation
 
 model_interface:
   replacement_component: controller3_2
@@ -142,3 +174,12 @@ acceptance:
   full_figure8:
     scenario_file: scenarios/official/example3_linear_mpc_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
+  mass20_robust:
+    scenario_file: scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
+  wind_gust_robust:
+    scenario_file: scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
+  rotor1_loss15_boundary:
+    scenario_file: scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml
+    expected_status: needs_iteration_without_fault_allocation

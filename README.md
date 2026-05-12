@@ -2,7 +2,7 @@
 
 本项目面向 A8 四旋翼无人机位姿控制系统设计优化赛题，基于 MWORKS.Sysplorer、Sysblock 和 Syslab 构建可复现的仿真验证工程。
 
-当前证据口径：项目目标以 **MWORKS.Sysblock 控制器仿真为主线**，Sysplorer/Modelica 闭环仿真和脚本指标计算为辅助。现阶段已经完成多组真实 Sysplorer MCP 性能证据；Sysblock 方向已完成 AWFF PID 高度环最小模型、位置环、姿态环、电机分配、三层组合控制器 `AWFF_FullController_Sysblock`、单层扁平图形化控制器 `AWFF_FullControllerFlatGraphical_Sysblock`，以及 L1/INDI/故障隔离图形化控制器包 `AWFF_InnovationGraphicalControllers` 的真实 MCP `load_file/check_model` 验证，并完成 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 整机的全时长闭环证据。当前 Sysblock 主线已覆盖阶梯爬升、螺旋爬升、8 字轨迹、质量摄动、横向阵风、旋翼退化、L1-inspired 残差补偿和 L1-inspired + INDI-like 组合控制器消融。
+当前证据口径：项目目标以 **MWORKS.Sysblock 控制器仿真为主线**，Sysplorer/Modelica 闭环仿真和脚本指标计算为辅助。现阶段已经完成多组真实 Sysplorer MCP 性能证据；Sysblock 方向已完成 AWFF PID 高度环最小模型、位置环、姿态环、电机分配、三层组合控制器 `AWFF_FullController_Sysblock`、单层扁平图形化控制器 `AWFF_FullControllerFlatGraphical_Sysblock`，以及 L1/INDI/故障隔离图形化控制器包 `AWFF_InnovationGraphicalControllers` 的真实 MCP `load_file/check_model` 验证，并完成 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 整机的全时长闭环证据。当前 Sysblock 主线已覆盖阶梯爬升、螺旋爬升、8 字轨迹、质量摄动、横向阵风、旋翼退化、L1-inspired 残差补偿、L1-inspired + INDI-like 组合控制器、LinearMPC-style 外环和在线效率估计控制分配消融。
 
 核心闭环：
 
@@ -54,6 +54,13 @@ scenarios/robustness/example1_rotor1_loss15_l1_multi_fault_isolation_sysblock.ya
 scenarios/robustness/example1_rotor2_loss15_l1_multi_fault_isolation_sysblock.yaml  Sysblock L1 + eta_hat[4] 2号旋翼退化隔离验证
 scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml  Sysblock L1 + eta_hat[4] 3号旋翼退化隔离验证
 scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml  Sysblock L1 + eta_hat[4] 4号旋翼退化隔离验证
+scenarios/official/example1_linear_mpc_sysblock.yaml  Sysblock LinearMPC-style 阶梯爬升
+scenarios/official/example2_linear_mpc_sysblock.yaml  Sysblock LinearMPC-style 螺旋爬升
+scenarios/official/example3_linear_mpc_sysblock.yaml  Sysblock LinearMPC-style 8字形运动
+scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml  Sysblock LinearMPC-style 质量+20%消融
+scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml  Sysblock LinearMPC-style 横向阵风消融
+scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml  Sysblock LinearMPC-style 无故障分配旋翼退化边界案例
+scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml  Sysblock LinearMPC-style + 在线 eta_hat 控制分配补偿
 scenarios/smoke/example1_pid_mcp_smoke.yaml    0-1 s MCP 链路烟雾测试
 scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml  0-1 s Sysblock 整机闭环烟雾测试
 ```
@@ -109,8 +116,8 @@ P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP
 ```text
 Sysplorer/Modelica 真实仿真：官方 baseline、Improved PID、Enhanced PID、AWFF PID、质量/风扰/旋翼退化消融已完成多组证据。
 Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/simulate_model/result_manager；位置环、姿态环、电机分配、三层组合控制器和单层扁平图形化控制器已通过真实 MCP load_file/check_model/simulate_model；`AWFF_InnovationGraphicalControllers` 中的 L1 residual、L1+INDI、L1+已知效率分配、L1+多旋翼故障隔离四个图形化控制器已通过真实 MCP load_file/check_model。当前 Sysplorer 编译器不支持图形化 Sysblock 控制器作为 Modelica 整机子组件时的内部多输入端口解析，因此官方整机性能证据使用等价 Equation Sysblock 接入 QuadrotorExperiments 闭环模型。
-P1 创新控制器证据：AWFF_L1ResidualControllerEquation_Sysblock 已覆盖 Example1、8 字形、质量 +20%、横向阵风和旋翼退化真实 Sysplorer MCP 仿真；其中 Example1、8 字形、质量 +20% 和横向阵风均通过质量门。`AWFF_INDIControllerEquation_Sysblock` 当前实现为 AWFF + L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，已在 Example1、Example2 helix-tuned 和 Example3 8 字形通过质量门。已知效率退化控制分配补偿、在线效率估计补偿和多旋翼隔离雏形均已完成 rotor1 85% 退化场景验证。`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 当前实现为 finite-horizon linear MPC-style 外环 + L1-inspired residual feedforward + INDI-like 姿态内环，已完成 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真并通过质量门；相对 L1+INDI 对应基线的 RMSE 分别降低 0.828%、0.574% 和 1.882%。
-后续优先级：补线性 MPC 外环的鲁棒场景消融；随后补 rotor2/3/4 效率退化场景的报告表格和视频素材。
+P1 创新控制器证据：AWFF_L1ResidualControllerEquation_Sysblock 已覆盖 Example1、8 字形、质量 +20%、横向阵风和旋翼退化真实 Sysplorer MCP 仿真；其中 Example1、8 字形、质量 +20% 和横向阵风均通过质量门。`AWFF_INDIControllerEquation_Sysblock` 当前实现为 AWFF + L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，已在 Example1、Example2 helix-tuned 和 Example3 8 字形通过质量门。已知效率退化控制分配补偿、在线效率估计补偿和多旋翼隔离雏形均已完成 rotor1 85% 退化场景验证。`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 当前实现为 finite-horizon linear MPC-style 外环 + L1-inspired residual feedforward + INDI-like 姿态内环，已完成 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真并通过质量门；相对 L1+INDI 对应基线的 RMSE 分别降低 0.828%、0.574% 和 1.882%。LinearMPC-style 外环的质量 +20% 和横向阵风鲁棒场景也已通过质量门；纯外环在 1 号旋翼 85% 退化下健康分不足，加入在线 `eta_hat` 效率估计与控制分配补偿后质量门通过，RMSE 相对纯 LinearMPC 降低 17.778%。
+后续优先级：把 LinearMPC + 在线故障分配结果补成图形化 Sysblock 人工审核素材；随后补 rotor2/3/4 效率退化场景的报告表格和视频素材。
 ```
 
 ## QA 检查
