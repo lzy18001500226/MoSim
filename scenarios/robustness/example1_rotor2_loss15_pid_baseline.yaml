@@ -15,8 +15,8 @@ disturbance:
   type: actuator_efficiency_loss
   target_component: quadChassisTest17_1.gain3.k
   affected_rotor: rotor_2
-  nominal_lift_gain: 8.54858e-06
-  degraded_lift_gain: 7.266293e-06
+  nominal_lift_gain: 0.01253887049854549
+  degraded_lift_gain: 0.01065803992376367
   efficiency_ratio: 0.85
   purpose: single_rotor_efficiency_degradation_robustness_baseline
 

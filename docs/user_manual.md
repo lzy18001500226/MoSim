@@ -355,7 +355,7 @@ results/summaries/experiment_summary/experiment_summary.md
 
 说明：项目不再生成或保留 Python/Julia 离线仿真结果。风扰、质量变化、故障、规划、编队等扩展场景必须通过 MWORKS/Sysplorer/MCP 或手动 MWORKS GUI 形成 `source=MWORKS_MCP` / `source=MWORKS_GUI` 证据后，才能进入正式实验汇总和报告结论。
 
-默认情况下，正式场景运行会生成 Sysplorer 原生结果目录 `native_result/{ModelName}/Result.msr`，并在当前仿真会话中尝试打开模型窗口、结果曲线和四旋翼三维动画，便于人工审核。`Result.msr` 作为人工兜底审查文件保留在本地。人工审核目标是“真实四旋翼三维动画 + 关键跟踪曲线”；只看到桨叶静态/局部旋转、空白结果查看器或单独参数曲线，不能算完成可视化审核。脚本默认不自动调用阻塞式播放命令，动画窗口打开后由人工在 GUI 中点击播放。该目录只用于本地 GUI 审查，已被 Git 忽略。批量回归、无界面环境或授权状态不稳定时可添加 `--no-gui-result-viewer` 跳过原生结果和动画窗口。若出现无法解释的授权、登录、激活或大批量库加载失败，应先保存当前代码改动并停止 MCP 重试，等待人工重新登录/激活。
+默认情况下，正式场景运行会生成 Sysplorer 原生结果目录 `native_result/{ModelName}/Result.msr`，并在当前仿真会话中尝试打开模型窗口、结果曲线和四旋翼三维动画，便于人工审核。`Result.msr` 作为人工兜底审查文件保留在本地。人工审核目标是“真实四旋翼三维动画 + 关键跟踪曲线”；只看到桨叶静态/局部旋转、空白结果查看器或单独参数曲线，不能算完成可视化审核。脚本默认不自动调用阻塞式播放命令，动画窗口打开后由人工在 GUI 中点击播放。该目录只用于本地 GUI 审查，已被 Git 忽略。若原生结果路径过长，脚本会自动改写到 `results/native_result_cache/{experiment}/{ModelName}/Result.msr`，并在实验目录的 `native_result/native_result_manifest.json` 记录映射。批量回归、无界面环境或授权状态不稳定时可添加 `--no-gui-result-viewer` 跳过原生结果和动画窗口。若出现无法解释的授权、登录、激活或大批量库加载失败，应先保存当前代码改动并停止 MCP 重试，等待人工重新登录/激活。
 
 ## 8. 下一阶段真实仿真入口
 

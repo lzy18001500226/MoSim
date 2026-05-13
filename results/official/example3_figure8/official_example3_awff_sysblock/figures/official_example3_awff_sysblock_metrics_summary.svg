@@ -15,22 +15,22 @@ text { font-family: Arial, 'Microsoft YaHei', sans-serif; fill: #1f2937; }
 <line x1="92" y1="128.40" x2="724" y2="128.40" stroke="#d7dde8" stroke-width="0.8"/>
 <text x="82" y="132.40" text-anchor="end" class="tick">1.14</text>
 <line x1="92" y1="192.80" x2="724" y2="192.80" stroke="#d7dde8" stroke-width="0.8"/>
-<text x="82" y="196.80" text-anchor="end" class="tick">0.855</text>
+<text x="82" y="196.80" text-anchor="end" class="tick">0.854</text>
 <line x1="92" y1="257.20" x2="724" y2="257.20" stroke="#d7dde8" stroke-width="0.8"/>
-<text x="82" y="261.20" text-anchor="end" class="tick">0.57</text>
+<text x="82" y="261.20" text-anchor="end" class="tick">0.569</text>
 <line x1="92" y1="321.60" x2="724" y2="321.60" stroke="#d7dde8" stroke-width="0.8"/>
 <text x="82" y="325.60" text-anchor="end" class="tick">0.285</text>
 <line x1="92" y1="386.00" x2="724" y2="386.00" stroke="#d7dde8" stroke-width="0.8"/>
 <text x="82" y="390.00" text-anchor="end" class="tick">0</text>
 <text x="408.00" y="462" text-anchor="middle" class="label">metric</text>
 <text x="22" y="225.00" text-anchor="middle" class="label" transform="rotate(-90 22 225.00)">value</text>
-<rect x="126.00" y="348.33" width="165.33" height="37.67" fill="#1f77b4"/>
+<rect x="126.00" y="348.41" width="165.33" height="37.59" fill="#1f77b4"/>
 <text x="208.67" y="428" text-anchor="middle" class="tick">RMSE / m</text>
-<text x="208.67" y="340.33" text-anchor="middle" class="tick">0.1667</text>
+<text x="208.67" y="340.41" text-anchor="middle" class="tick">0.1661</text>
 <rect x="325.33" y="117.67" width="165.33" height="268.33" fill="#1f77b4"/>
 <text x="408.00" y="428" text-anchor="middle" class="tick">Max error / m</text>
-<text x="408.00" y="109.67" text-anchor="middle" class="tick">1.187</text>
-<rect x="524.67" y="372.01" width="165.33" height="13.99" fill="#1f77b4"/>
+<text x="408.00" y="109.67" text-anchor="middle" class="tick">1.186</text>
+<rect x="524.67" y="371.99" width="165.33" height="14.01" fill="#1f77b4"/>
 <text x="607.33" y="428" text-anchor="middle" class="tick">Steady error / m</text>
-<text x="607.33" y="364.01" text-anchor="middle" class="tick">0.06191</text>
+<text x="607.33" y="363.99" text-anchor="middle" class="tick">0.06192</text>
 </svg>

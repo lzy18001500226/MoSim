@@ -41,6 +41,7 @@ docs/mworks/raw/
 # MWORKS / simulation temp
 results/tmp/
 results/cache/
+results/native_result_cache/
 results/logs/*.log
 results/replay_html/
 results/**/native_result/

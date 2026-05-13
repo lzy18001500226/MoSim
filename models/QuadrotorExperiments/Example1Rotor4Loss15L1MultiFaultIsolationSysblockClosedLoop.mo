@@ -1,7 +1,7 @@
 model Example1Rotor4Loss15L1MultiFaultIsolationSysblockClosedLoop
   "Example1 rotor 4 lift efficiency 85% with four-rotor online fault isolation and allocation"
   QuadrotorModel.PathPlanning.ClimbPath climbePath(gain(k = 1));
-  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(gain5(k = 7.266293e-06));
+  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(gain5(k = 0.01065803992376367));
   QuadrotorModel.Electricals.Actuator actuator1_1;
   QuadrotorModel.Electricals.Actuator actuator1_2;
   QuadrotorModel.Electricals.Actuator actuator1_3;

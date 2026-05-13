@@ -919,7 +919,7 @@
 
         annotation (Placement(transformation(origin = {124.60787940430421, 90.30849111731482}, 
           extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-      parameter Real lift_cofficient = 8.54858e-06 "sunray150_with_mid360 PX4 Gazebo motorConstant, used as simplified rotor lift coefficient";
+      parameter Real lift_cofficient = 0.01253887049854549 "MWORKS-equivalent Sunray150 lift coefficient calibrated from original model hover speed and 1.0 kg mass";
       Modelica.Mechanics.MultiBody.Parts.BodyShape body(
         animation = true, 
         animateSphere = false, 

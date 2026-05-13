@@ -14,6 +14,7 @@ import csv
 import json
 import os
 import queue
+import re
 import subprocess
 import sys
 import threading
@@ -49,6 +50,7 @@ DEFAULT_WRAPPER_CANDIDATES = default_wrapper_candidates()
 DEFAULT_MODEL_FILE = r"C:\Users\HP\Desktop\Quadrotor\QuadrotorModel\package.mo"
 DEFAULT_MODEL_NAME = "QuadrotorModel.Examples.Example1"
 GUI_ANIMATION_TIMEOUT_S = 45
+WINDOWS_NATIVE_RESULT_PATH_LIMIT = 245
 DEFAULT_VARIABLES = {
     "time": "time",
     "x": "sensors1_1.PosMea[1]",
@@ -342,9 +344,49 @@ def default_native_result_dir(raw_output: Path) -> Path:
     return raw_output.parent.parent / "native_result"
 
 
+def slugify_for_path(text: str) -> str:
+    slug = re.sub(r"[^A-Za-z0-9_.-]+", "_", text).strip("._")
+    return slug or "mworks_result"
+
+
 def native_result_file(native_result_dir: Path, model_name: str) -> Path:
     leaf_name = model_name.rsplit(".", 1)[-1]
     return native_result_dir / leaf_name / "Result.msr"
+
+
+def resolve_native_result_dir(raw_output: Path, requested_dir: Path | None, model_name: str) -> tuple[Path, Path | None]:
+    """Choose a native result directory that MWORKS can write on Windows.
+
+    MWORKS runs on Windows even when this script is launched from WSL. Very
+    long project-local result paths can exceed Windows' traditional 260
+    character limit and produce a compiled native_result directory without
+    Result.msr. Keep the normal project-local layout for short paths, and use a
+    short ignored cache path only when needed.
+    """
+    preferred_dir = requested_dir or default_native_result_dir(raw_output)
+    preferred_result = native_result_file(preferred_dir, model_name)
+    if len(windows_path(preferred_result)) <= WINDOWS_NATIVE_RESULT_PATH_LIMIT:
+        return preferred_dir, None
+
+    leaf_name = model_name.rsplit(".", 1)[-1]
+    cache_key = slugify_for_path(raw_output.parent.parent.name)
+    short_dir = Path("results") / "native_result_cache" / cache_key
+    manifest = preferred_dir / "native_result_manifest.json"
+    return short_dir, manifest
+
+
+def write_native_result_manifest(manifest: Path | None, *, native_result_dir: Path, native_result: Path, model_name: str) -> None:
+    if manifest is None:
+        return
+    manifest.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "model_name": model_name,
+        "reason": "preferred native_result path is too long for reliable Windows/MWORKS Result.msr output",
+        "native_result_dir": str(native_result_dir),
+        "native_result_file": str(native_result),
+        "native_result_file_windows": windows_path(native_result),
+    }
+    manifest.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def open_gui_result_viewer(
@@ -442,11 +484,21 @@ def run_mcp_simulation(
     target_time = parse_target_time(args.target_time)
     variables = dict(DEFAULT_VARIABLES)
     variables.update(parse_extra_variables(args.extra_variable))
-    native_result_dir = args.native_result_dir or default_native_result_dir(args.raw_output)
+    native_result_dir, native_result_manifest = resolve_native_result_dir(
+        args.raw_output,
+        args.native_result_dir,
+        args.model_name,
+    )
     native_result = native_result_file(native_result_dir, args.model_name)
     gui_result_viewer = not args.no_gui_result_viewer
     if gui_result_viewer:
         native_result_dir.mkdir(parents=True, exist_ok=True)
+        write_native_result_manifest(
+            native_result_manifest,
+            native_result_dir=native_result_dir,
+            native_result=native_result,
+            model_name=args.model_name,
+        )
     success = False
     try:
         open_result = client.call_tool(
@@ -538,6 +590,8 @@ def run_mcp_simulation(
         print(f"Metrics CSV: {args.metrics_csv}")
         if gui_result_viewer:
             print(f"Native result: {native_result}")
+            if native_result_manifest is not None:
+                print(f"Native result manifest: {native_result_manifest}")
         if gui_result is not None:
             print(f"GUI model: {gui_result['model_result'].get('ok')}")
             print(f"GUI plot: {gui_result['plot_result'].get('ok')}")

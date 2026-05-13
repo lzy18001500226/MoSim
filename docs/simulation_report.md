@@ -32,9 +32,9 @@ Linear MPC-style 质量 +20%、横向阵风、1号旋翼效率85% 边界案例�
 
 ## 2. 当前机体模型迁移状态
 
-2026-05-13 起，项目主机体从官方示例轻量机架迁移为项目内本地源 `references/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` 的 Gazebo/PX4 参数：机体质量 `1.0 kg`，惯量 `Ixx=0.0085, Iyy=0.0085, Izz=0.012`，旋翼位置为 `(±0.065, ±0.065, -0.025) m`，简化升力系数采用 SDF 中 `motorConstant=8.54858e-06`。`QuadrotorModel/Resources/Visualization/` 中新增 `sunray150_mid360_body.stl` 和 `sunray150_mid360_propeller.stl`；Mid360 传感器安装位置按 SDF `{0.036, -0.0155, 0.075}` 在 `QuadChassis` 中添加轻量可视化件。源模型中的 `150.dae` 为 139 MB，超过 GitHub 单文件限制，未迁入仓库。
+2026-05-13 起，项目主机体从官方示例轻量机架迁移为项目内本地源 `references/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` 的 Gazebo/PX4 参数：机体质量 `1.0 kg`，惯量 `Ixx=0.0085, Iyy=0.0085, Izz=0.012`，旋翼位置为 `(±0.065, ±0.065, -0.025) m`。MWORKS 旋翼力模型未直接使用 SDF 的 `motorConstant=8.54858e-06`，而是采用保持官方电机链路悬停转速尺度的等效升力系数 `0.01253887049854549`。`QuadrotorModel/Resources/Visualization/` 中新增 `sunray150_mid360_body.stl` 和 `sunray150_mid360_propeller.stl`；Mid360 传感器安装位置按 SDF `{0.036, -0.0155, 0.075}` 在 `QuadChassis` 中添加轻量可视化件。源模型中的 `150.dae` 为 139 MB，超过 GitHub 单文件限制，未迁入仓库。
 
-迁移后，质量 +20% 场景的质量扰动改为 `1.0 kg -> 1.2 kg`；旋翼 85% 退化场景的升力增益改为 `8.54858e-06 -> 7.266293e-06`。本报告后续历史表格是旧机体证据快照，不应继续作为新机体性能结论；正式控制器排名和视频素材需要基于 `sunray150_with_mid360` 重新运行 Sysplorer/MWORKS 仿真后刷新。
+迁移后，质量 +20% 场景的质量扰动改为 `1.0 kg -> 1.2 kg`；旋翼 85% 退化场景的升力增益改为 `0.01253887049854549 -> 0.01065803992376367`。本报告后续历史表格是旧机体证据快照，不应继续作为新机体性能结论；正式控制器排名和视频素材需要基于 `sunray150_with_mid360` 重新运行 Sysplorer/MWORKS 仿真后刷新。
 
 ## 3. 模型与场景
 
@@ -431,7 +431,7 @@ scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
 
 
 
-当前 `robust_rotor1_loss15_example1` 场景用于执行器退化鲁棒性验证：在 Example1 阶梯爬升任务中，将 1 号旋翼对应升力增益 `quadChassisTest17_1.gain2.k` 从当前 Sunray150 nominal `8.54858e-06` 改为 `7.266293e-06`，等效为单旋翼升力效率下降到 `85%`。本节下方历史表格仍是旧轻量机架证据快照；新机体正式结论需要重跑后刷新。
+当前 `robust_rotor1_loss15_example1` 场景用于执行器退化鲁棒性验证：在 Example1 阶梯爬升任务中，将 1 号旋翼对应升力增益 `quadChassisTest17_1.gain2.k` 从当前 Sunray150 nominal `0.01253887049854549` 改为 `0.01065803992376367`，等效为单旋翼升力效率下降到 `85%`。本节下方历史表格仍是旧轻量机架证据快照；新机体正式结论需要重跑后刷新。
 
 模型替换位置：
 
@@ -657,7 +657,7 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 
 2026-05-12 复核：使用 `scripts/evaluate_result_quality.py` 对 rotor1-4 四个 `l1_multi_fault_isolation_sysblock` 场景重新执行质量门检查，均为 `pass`；`fault_index` 在 5-50 s 内对应退化旋翼的正确率均为 `100%`。复核摘要已写入 `results/test_reports/graphical_sysblock_manual_review_and_result_audit_20260512.json`。
 
-2026-05-13 证据审计：复合鲁棒场景 `rotor1_loss15_wind_gust_example1` 已有两条可用正样本。`l1_multi_fault_isolation_sysblock` 的健康分为 `50.686`、RMSE 为 `0.3047 m`、相对基线 RMSE 降低 `29.189%`，且 `fault_index` 正确率为 `100%`；`linear_mpc_online_fault_allocation_sysblock` 的健康分为 `51.006`、RMSE 为 `0.2944 m`、相对基线 RMSE 降低 `31.583%`。因此该复合场景不再列入默认重跑队列，后续只在控制器模型变更后重新仿真。
+2026-05-13 证据审计：迁移 `sunray150_with_mid360` 后，复合鲁棒场景 `rotor1_loss15_wind_gust_example1` 已形成一条负样本和三条正样本。普通 `awff_sysblock` 健康分为 `35.967`、RMSE 为 `0.3792 m`，质量门为 `needs_iteration`，保留为未补偿边界案例；`awff_fault_compensation_sysblock` 健康分为 `53.253`、RMSE 为 `0.2704 m`；`l1_multi_fault_isolation_sysblock` 健康分为 `50.994`、RMSE 为 `0.2721 m`；`linear_mpc_online_fault_allocation_sysblock` 健康分为 `51.318`、RMSE 为 `0.2614 m`。因此该复合场景结论应表述为“普通 AWFF 在复合扰动下不足，加入已知故障补偿、L1 多旋翼故障隔离或线性 MPC 在线分配后通过质量门”。
 
 ## 13. Linear MPC-style 外环闭环结果
 
@@ -682,6 +682,8 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 
 2026-05-12 复核：`official_example3_linear_mpc_sysblock` 重新通过 8 字形质量门；`linear_mpc_online_fault_allocation_sysblock` rotor1 退化场景重新通过质量门，复核得到 `eta_hat` 45-50 s 尾段均值约 `0.908`。该复核只读取已有 MWORKS_MCP raw CSV 和 metrics，不属于新增离线仿真。
 
+2026-05-13 复核：`linear_mpc_online_fault_allocation_sysblock` 在 rotor1 退化 + 横向阵风复合场景重新通过全时长 Sysplorer MCP 仿真，RMSE 为 `0.2614 m`、稳态误差为 `0.1145 m`、最大误差为 `1.2467 m`、健康分为 `51.318`。该场景原生 `Result.msr` 路径超过 Windows 传统路径长度限制时会写入 `results/native_result_cache/`，实验目录下的 `native_result/native_result_manifest.json` 记录映射；raw CSV、metrics、figures、replay 和 MCP log 仍保存在原实验目录。
+
 证据文件：
 
 ```text
@@ -692,6 +694,7 @@ scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml
 scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml
 scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml
 scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml
+scenarios/robustness/example1_rotor1_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
 
 results/official/example1_step/official_example1_linear_mpc_sysblock/
 results/official/example2_helix/official_example2_linear_mpc_sysblock/
@@ -700,6 +703,7 @@ results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/
 results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/
 results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_sysblock/
 results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/
+results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/
 ```
 
 结论边界：该组结果可以支撑“线性 MPC-style 外环已完成官方三场景整机闭环验证，并在当前质量门下略优于对应 L1+INDI 基线”的表述；可以支撑“质量摄动和横向阵风鲁棒场景已通过”的表述；旋翼退化必须表述为“需要在线效率估计与控制分配补偿后通过”。不能支撑“在线优化 MPC/NMPC 已完成”的表述。

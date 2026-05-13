@@ -299,6 +299,19 @@ The expected native result path is:
 results/{group}/{scene}/{experiment}/native_result/{ModelName}/Result.msr
 ```
 
+If that Windows path would be too long for reliable MWORKS output, the runner
+automatically writes the native result to:
+
+```text
+results/native_result_cache/{experiment}/{ModelName}/Result.msr
+```
+
+and leaves a project-local mapping file at:
+
+```text
+results/{group}/{scene}/{experiment}/native_result/native_result_manifest.json
+```
+
 For headless regression, batch runs, or a known GUI/license issue, skip native
 viewer generation explicitly:
 
@@ -333,6 +346,7 @@ ignored by Git:
 
 ```text
 results/**/native_result/
+results/native_result_cache/
 *.msr
 ```
 
