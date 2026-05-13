@@ -170,6 +170,7 @@ Rules:
 12. If a GUI window freezes, shows an unexpected login prompt, or an MCP call has no useful response within the planned timeout, stop that MCP sequence, clean up the related process/window if it is clearly identifiable, and continue with file-level work or report the blocker.
 13. Formal simulation runs should generate Sysplorer native result assets by default so the user can inspect curves and the actual quadrotor 3D animation. A window that only shows static propeller geometry or curves is not sufficient for manual visual audit. Use `--no-gui-result-viewer` only for headless tests, batch regressions, or known GUI/license instability.
 14. `native_result/` and `*.msr` files are local GUI review assets and are ignored by Git. Do not commit them.
+15. When Sysplorer/Syslab MCP tools are healthy, interactive model loading, checking, simulation, plotting, animation, and GUI review must go through MCP directly. Project scripts remain for batch runs, result export, metrics, summaries, and regression automation.
 
 ### 3.5 Simulation Evidence Rule
 

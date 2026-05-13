@@ -98,6 +98,12 @@ get_lib_model_document
 resources_retrieval
 ```
 
+Interactive model inspection, model checking, single-scenario simulation, and
+GUI animation review should use MCP tools directly when MCP is healthy. Project
+scripts such as `run_mworks_scenario.py` and `run_sysplorer_mcp_smoke.py` are
+primarily wrappers for batch execution, reproducible export, metrics, and
+regression flows.
+
 ---
 
 ## 4. Procedure
