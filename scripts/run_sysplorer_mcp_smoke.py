@@ -220,14 +220,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Additional Modelica package file to load after --model-file. Can be repeated.",
     )
     parser.add_argument("--model-name", default=DEFAULT_MODEL_NAME)
-    parser.add_argument("--target-time", default="0,1", help="Comma-separated simulation target time range")
-    parser.add_argument("--raw-output", type=Path, default=Path("results/smoke/example1_mcp/pid_baseline_smoke/raw/mworks_mcp_example1_pid_smoke.csv"))
-    parser.add_argument("--metrics-json", type=Path, default=Path("results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_smoke.json"))
-    parser.add_argument("--metrics-csv", type=Path, default=Path("results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_smoke.csv"))
-    parser.add_argument("--log-output", type=Path, default=Path("results/smoke/example1_mcp/pid_baseline_smoke/logs/sysplorer_example1_pid_mcp_smoke_20260509.jsonl"))
-    parser.add_argument("--scene-id", default="mworks_mcp_example1")
+    parser.add_argument("--target-time", default="0,50", help="Comma-separated simulation target time range")
+    parser.add_argument("--raw-output", type=Path, default=Path("results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv"))
+    parser.add_argument("--metrics-json", type=Path, default=Path("results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.json"))
+    parser.add_argument("--metrics-csv", type=Path, default=Path("results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.csv"))
+    parser.add_argument("--log-output", type=Path, default=Path("results/official/example1_step/official_example1_pid_baseline/logs/sysplorer_example1_pid_baseline_full.jsonl"))
+    parser.add_argument("--scene-id", default="official_example1_pid_baseline")
     parser.add_argument("--controller-id", default="pid_baseline")
-    parser.add_argument("--evidence-level", default="real_sysplorer_mcp_smoke")
+    parser.add_argument("--evidence-level", default="real_sysplorer_mcp_full_baseline")
     parser.add_argument(
         "--extra-variable",
         action="append",

@@ -177,9 +177,6 @@ inner_loop:
   indi_increment_limit: 0.15
 
 acceptance:
-  smoke_nominal:
-    scenario_file: scenarios/smoke/example1_linear_mpc_sysblock_mcp_smoke.yaml
-    required: check_model, simulate_model, result_manager, raw CSV, metrics
   full_nominal:
     scenario_file: scenarios/official/example1_linear_mpc_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON

@@ -21,7 +21,7 @@ def load_module():
 
 
 class Args:
-    scenario = ROOT / "scenarios" / "smoke" / "example1_pid_mcp_smoke.yaml"
+    scenario = ROOT / "scenarios" / "official" / "example1_pid_baseline.yaml"
     stop_time = None
     evidence_level = None
     shutdown_session = False
@@ -35,16 +35,16 @@ def test_run_mworks_scenario_command_regression() -> None:
     config = module.read_yaml(Args.scenario)
     command = module.scenario_command(Args, config)
     joined = " ".join(command)
-    if "--target-time 0,1" not in joined:
-        raise AssertionError(f"Smoke target time not preserved: {joined}")
-    if "--evidence-level real_sysplorer_mcp_smoke" not in joined:
-        raise AssertionError(f"Smoke evidence level not preserved: {joined}")
-    if "official_example1_pid_baseline.csv" in joined:
-        raise AssertionError("Smoke run must not write into formal baseline raw path")
-    if "mworks_mcp_example1_pid_smoke.csv" not in joined:
-        raise AssertionError("Smoke raw path missing")
+    if "--target-time 0,50" not in joined:
+        raise AssertionError(f"Official target time not preserved: {joined}")
+    if "--evidence-level real_sysplorer_mcp_full_baseline" not in joined:
+        raise AssertionError(f"Official evidence level not preserved: {joined}")
+    if "official_example1_pid_baseline.csv" not in joined:
+        raise AssertionError("Official baseline raw path missing")
+    if "results/smoke" in joined:
+        raise AssertionError("Official run must not write into removed smoke result path")
     if config.get("generate_replay_html"):
-        raise AssertionError("Default smoke scenario should not request replay HTML generation")
+        raise AssertionError("Default official scenario should not request replay HTML generation")
 
 
 def test_run_mworks_scenario_stop_time_override() -> None:

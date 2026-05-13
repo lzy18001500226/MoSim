@@ -46,12 +46,6 @@ def test_example2_awff_sysblock_needs_iteration_without_rmse_gain() -> None:
         raise AssertionError(quality)
 
 
-def test_smoke_result_is_smoke_only() -> None:
-    quality = evaluate("scenarios/smoke/example1_pid_mcp_smoke.yaml")
-    if quality["quality_status"] != "smoke_only":
-        raise AssertionError(quality)
-
-
 def test_fault_index_gate_rejects_wrong_isolation() -> None:
     module = load_quality_module()
     temp_dir = ROOT / ".tmp" / f"fault_gate_{uuid4().hex}"
@@ -115,7 +109,6 @@ def test_fault_index_gate_rejects_wrong_isolation() -> None:
 def main() -> int:
     test_example3_awff_sysblock_passes_figure8_gate()
     test_example2_awff_sysblock_needs_iteration_without_rmse_gain()
-    test_smoke_result_is_smoke_only()
     test_fault_index_gate_rejects_wrong_isolation()
     print("[OK] quality gate regression")
     return 0

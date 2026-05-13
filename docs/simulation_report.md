@@ -94,17 +94,17 @@ time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4
 
 官方变量映射见 `docs/index/variable_mapping.md`。
 
-## 4. 当前 Smoke 指标
+## 4. 当前正式基线指标
 
 数据文件：
 
 ```text
-results/smoke/example1_mcp/pid_baseline_smoke/logs/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
-results/smoke/example1_mcp/pid_baseline_smoke/raw/mworks_mcp_example1_pid_smoke.csv
-results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_smoke.json
+results/official/example1_step/official_example1_pid_baseline/logs/sysplorer_example1_pid_baseline_full_20260509.jsonl
+results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv
+results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.json
 ```
 
-当前 smoke 指标用于验证计算链路：
+当前基线指标用于后续控制器对比：
 
 | 指标 | 数值 |
 |---|---:|
@@ -240,7 +240,7 @@ results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_closed_loop
 
 因此当前整机闭环主线继续使用等价扁平方程实现 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop`。该主线已经完成 Example1 0-1 s、5 s、10 s、20 s 渐进验证，以及 active official 场景中的 Example1 50 s、Example2 helix-tuned 50 s、Example3 120 s 全时长真实 Sysplorer MCP 闭环复测，均通过质量门禁，可作为当前 Sysblock 控制器整机仿真的主证据。图形化 Sysblock 文件用于控制器结构、时间行为和非线性/模式逻辑审核；Equation 版仅作为当前整机混合仿真的临时桥接实现。2026-05-12 基础图形化控制器 5 个模型和创新图形化控制器 15 个模型均完成真实 MCP `load_file/check_model` 复测，日志分别见 `results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_behavior_check_20260512_summary.json` 和 `results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_l1_online_fault_allocation_check_20260512_summary.json`。后续新仿真场景仍必须同步维护图形化行为等价模型。
 
-2026-05-11 official Sysblock 闭环复测使用 `scripts/run_mworks_batch.py --reuse-mcp-process` 在同一个 Sysplorer MCP wrapper 进程中连续执行三条 active official Sysblock 场景，避免反复打开新窗口。共享初始化日志为：
+2026-05-11 official Sysblock 闭环复测完成三条 active official Sysblock 场景。共享初始化日志为：
 
 ```text
 results/official/sysblock_closed_loop/logs/mcp_reuse_batch_official_sysblock_20260511.jsonl
@@ -277,39 +277,24 @@ results/model_checks/awff_sysblock/logs/sysplorer_awff_full_sysblock_check_20260
 AWFF_FullController_Sysblock: load_file/check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行
 ```
 
-Sysblock 整机 smoke 新增验证：
+Sysblock 整机闭环验证：
 
 ```text
 models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
 models/QuadrotorExperiments/Example1AWFFSysblockClosedLoop.mo
 models/QuadrotorExperiments/Example2AWFFSysblockClosedLoop.mo
 models/QuadrotorExperiments/Example3AWFFSysblockClosedLoop.mo
-scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml
-scenarios/smoke/example2_awff_sysblock_mcp_smoke.yaml
-scenarios/smoke/example3_awff_sysblock_mcp_smoke.yaml
-scenarios/smoke/example1_awff_sysblock_mcp_5s.yaml
-scenarios/smoke/example1_awff_sysblock_mcp_10s.yaml
-scenarios/smoke/example1_awff_sysblock_mcp_20s.yaml
 scenarios/official/example1_awff_sysblock.yaml
 scenarios/official/example2_awff_sysblock.yaml
 scenarios/official/example3_awff_sysblock.yaml
-results/smoke/example1_step/awff_sysblock_smoke/logs/sysplorer_example1_awff_sysblock_smoke_20260510.jsonl
 results/official/example1_step/official_example1_awff_sysblock/logs/sysplorer_example1_awff_sysblock_full_20260510.jsonl
-results/smoke/example2_helix/awff_sysblock_smoke/logs/sysplorer_example2_awff_sysblock_smoke_20260510.jsonl
 results/official/example2_helix/official_example2_awff_sysblock/logs/sysplorer_example2_awff_sysblock_full_20260510.jsonl
-results/smoke/example3_figure8/awff_sysblock_smoke/logs/sysplorer_example3_awff_sysblock_smoke_20260510.jsonl
 results/official/example3_figure8/official_example3_awff_sysblock/logs/sysplorer_example3_awff_sysblock_full_20260510.jsonl
-results/smoke/example1_step/awff_sysblock_smoke/raw/official_example1_awff_sysblock_smoke.csv
 results/official/example1_step/official_example1_awff_sysblock/raw/official_example1_awff_sysblock.csv
-results/smoke/example2_helix/awff_sysblock_smoke/raw/official_example2_awff_sysblock_smoke.csv
 results/official/example2_helix/official_example2_awff_sysblock/raw/official_example2_awff_sysblock.csv
-results/smoke/example3_figure8/awff_sysblock_smoke/raw/official_example3_awff_sysblock_smoke.csv
 results/official/example3_figure8/official_example3_awff_sysblock/raw/official_example3_awff_sysblock.csv
-results/smoke/example1_step/awff_sysblock_smoke/metrics/official_example1_awff_sysblock_smoke.json
 results/official/example1_step/official_example1_awff_sysblock/metrics/official_example1_awff_sysblock.json
-results/smoke/example2_helix/awff_sysblock_smoke/metrics/official_example2_awff_sysblock_smoke.json
 results/official/example2_helix/official_example2_awff_sysblock/metrics/official_example2_awff_sysblock.json
-results/smoke/example3_figure8/awff_sysblock_smoke/metrics/official_example3_awff_sysblock_smoke.json
 results/official/example3_figure8/official_example3_awff_sysblock/metrics/official_example3_awff_sysblock.json
 
 QuadrotorExperiments.Example1AWFFSysblockClosedLoop: check_model/simulate_model/result_manager 通过，0-1 s 输出 101 行，50 s 输出 5001 行。
@@ -619,16 +604,12 @@ QuadrotorExperiments.Example1Mass20L1SysblockClosedLoop
 QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop
 QuadrotorExperiments.Example1Rotor1Loss15L1SysblockClosedLoop
 
-scenarios/smoke/example1_l1_residual_sysblock_mcp_smoke.yaml
-scenarios/smoke/example1_wind_gust_l1_residual_sysblock_mcp_smoke.yaml
 scenarios/official/example1_l1_residual_sysblock.yaml
 scenarios/official/example3_l1_residual_sysblock.yaml
 scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml
 scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
 scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
 
-results/smoke/example1_step/l1_residual_sysblock_smoke/logs/sysplorer_example1_l1_residual_sysblock_smoke_20260510.jsonl
-results/smoke/robustness/wind_gust_example1_l1_residual_sysblock_smoke/logs/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_smoke_20260510.jsonl
 results/official/example1_step/official_example1_l1_residual_sysblock/logs/sysplorer_example1_l1_residual_sysblock_full_20260510.jsonl
 results/official/example3_figure8/official_example3_l1_residual_sysblock/logs/sysplorer_example3_l1_residual_sysblock_full_20260511.jsonl
 results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/logs/sysplorer_robust_mass20_example1_l1_residual_sysblock_20260511.jsonl

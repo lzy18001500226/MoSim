@@ -235,7 +235,6 @@ A8-Quadrotor-Control/
 │   ├── add_controller.md
 │   ├── code_review.md
 │   ├── run_tests.md
-│   ├── smoke_test.md
 │   ├── regression_test.md
 │   └── pre_submit_check.md
 ├── controllers/
@@ -373,7 +372,7 @@ Use `docs/index/workflow_index.md` as the workflow entry point. Do not duplicate
 | Generate report figures/replay | `workflows/generate_report_figures.md` |
 | Add a controller | `workflows/add_controller.md` |
 | Run tests | `workflows/run_tests.md` |
-| Smoke/regression tests | `workflows/smoke_test.md`, `workflows/regression_test.md` |
+| Regression tests | `workflows/regression_test.md` |
 | Code review | `workflows/code_review.md` |
 | Pre-submit check | `workflows/pre_submit_check.md` |
 
@@ -411,7 +410,6 @@ Use `Skills/Mworks/mworks-test-quality/SKILL.md` for quality decisions.
 |---|---|
 | Code review checklist | `workflows/code_review.md` |
 | Test execution | `workflows/run_tests.md` |
-| Smoke test | `workflows/smoke_test.md` |
 | Regression test | `workflows/regression_test.md` |
 | Final packaging check | `workflows/pre_submit_check.md` |
 | Project structure and evidence guard | `scripts/qa_check.py` |

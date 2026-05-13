@@ -234,7 +234,7 @@ def write_markdown(summary: dict[str, Any], path: Path) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("scenario", nargs="*", help="Optional scenario YAML paths. Defaults to all non-smoke scenarios.")
-    parser.add_argument("--include-smoke", action="store_true", help="Include scenarios/smoke in the audit")
+    parser.add_argument("--include-smoke", action="store_true", help="Include historical smoke scenarios if the directory exists")
     parser.add_argument("--include-inactive", action="store_true", help="Include active: false scenarios in the audit")
     parser.add_argument("--json-output", type=Path, default=ROOT / "results/test_reports/evidence_bundle_audit_20260512.json")
     parser.add_argument("--md-output", type=Path, default=ROOT / "results/test_reports/evidence_bundle_audit_20260512.md")

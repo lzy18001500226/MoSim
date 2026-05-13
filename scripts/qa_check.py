@@ -173,13 +173,6 @@ OFFICIAL_REFERENCE_OUTPUTS = [
     "results/official/example3_figure8/reference_official_example3/replay/reference_official_example3.json",
 ]
 
-MWORKS_MCP_SMOKE_OUTPUTS = [
-    "results/smoke/example1_mcp/pid_baseline_smoke/logs/sysplorer_example1_pid_mcp_smoke_20260509.jsonl",
-    "results/smoke/example1_mcp/pid_baseline_smoke/raw/mworks_mcp_example1_pid_smoke.csv",
-    "results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_smoke.json",
-    "results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_smoke.csv",
-]
-
 MWORKS_MCP_IMPROVED_OUTPUTS = [
     "models/QuadrotorExperiments/package.mo",
     "results/tuning/pid_search/summary/pid_tuning_summary.csv",
@@ -567,10 +560,6 @@ def check_official_case(root: Path) -> bool:
         ok = check_path(root / item, required=True) and ok
 
     for item in OFFICIAL_REFERENCE_OUTPUTS:
-        ok = check_path(root / item, required=True) and ok
-
-    print("\n== Real MWORKS MCP smoke evidence ==")
-    for item in MWORKS_MCP_SMOKE_OUTPUTS:
         ok = check_path(root / item, required=True) and ok
 
     print("\n== Real MWORKS MCP improved PID evidence ==")

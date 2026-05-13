@@ -26,7 +26,6 @@
 | Add a controller | `workflows/add_controller.md` |
 | Code review | `workflows/code_review.md` |
 | Run tests | `workflows/run_tests.md` |
-| Smoke test | `workflows/smoke_test.md` |
 | Regression test | `workflows/regression_test.md` |
 | Pre-submit check | `workflows/pre_submit_check.md` |
 
@@ -103,7 +102,6 @@ Related files:
 
 ```text
 workflows/add_controller.md
-workflows/smoke_test.md
 workflows/regression_test.md
 workflows/code_review.md
 ```

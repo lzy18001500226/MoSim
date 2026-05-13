@@ -31,7 +31,7 @@ def test_run_mworks_batch_dry_run_regression() -> None:
             "scripts/run_mworks_batch.py",
             "--dry-run",
             "--skip-existing",
-            "scenarios/smoke/*.yaml",
+            "scenarios/official/example1_pid_baseline.yaml",
         ],
         cwd=ROOT,
         text=True,
@@ -39,7 +39,7 @@ def test_run_mworks_batch_dry_run_regression() -> None:
         check=True,
     )
     output = proc.stdout
-    if "example1_pid_mcp_smoke.yaml" not in output:
+    if "example1_pid_baseline.yaml" not in output:
         raise AssertionError(output)
     match = re.search(r"Skipped existing: (\d+)", output)
     if not match or int(match.group(1)) < 1:
@@ -54,7 +54,7 @@ def test_run_mworks_batch_dry_run_quality_args() -> None:
             sys.executable,
             "scripts/run_mworks_batch.py",
             "--dry-run",
-            "scenarios/smoke/example1_pid_mcp_smoke.yaml",
+            "scenarios/official/example1_pid_baseline.yaml",
         ],
         cwd=ROOT,
         text=True,
@@ -64,41 +64,6 @@ def test_run_mworks_batch_dry_run_quality_args() -> None:
     output = proc.stdout
     if "--min-rmse-improvement-pct 0.5" not in output:
         raise AssertionError(output)
-
-
-def test_run_mworks_batch_dry_run_reuse_mcp_arg() -> None:
-    proc = subprocess.run(
-        [
-            sys.executable,
-            "scripts/run_mworks_batch.py",
-            "--dry-run",
-            "--reuse-mcp-process",
-            "scenarios/smoke/example1_pid_mcp_smoke.yaml",
-        ],
-        cwd=ROOT,
-        text=True,
-        capture_output=True,
-        check=True,
-    )
-    output = proc.stdout
-    if "scripts/run_mworks_scenario.py scenarios/smoke/example1_pid_mcp_smoke.yaml" not in output:
-        raise AssertionError(output)
-    if "Failures: 0" not in output:
-        raise AssertionError(output)
-
-
-def test_reuse_mcp_smoke_args_translation() -> None:
-    module = load_module()
-    scenario_path = ROOT / "scenarios" / "smoke" / "example1_pid_mcp_smoke.yaml"
-    config = module.read_yaml(scenario_path)
-    args = module.parse_args(["--reuse-mcp-process", str(scenario_path)])
-    smoke_args = module.smoke_args_for_scenario(scenario_path, args, config)
-    if smoke_args.model_name != "QuadrotorModel.Examples.Example1":
-        raise AssertionError(smoke_args)
-    if smoke_args.target_time != "0,1":
-        raise AssertionError(smoke_args)
-    if not str(smoke_args.raw_output).endswith("mworks_mcp_example1_pid_smoke.csv"):
-        raise AssertionError(smoke_args)
 
 
 def test_inactive_official_scenarios_are_skipped_by_default() -> None:
@@ -148,8 +113,6 @@ def test_include_inactive_official_scenarios() -> None:
 def main() -> int:
     test_run_mworks_batch_dry_run_regression()
     test_run_mworks_batch_dry_run_quality_args()
-    test_run_mworks_batch_dry_run_reuse_mcp_arg()
-    test_reuse_mcp_smoke_args_translation()
     test_inactive_official_scenarios_are_skipped_by_default()
     test_include_inactive_official_scenarios()
     print("[OK] run_mworks_batch dry-run regression")

@@ -61,16 +61,12 @@ scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml  Sysblock LinearMP
 scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml  Sysblock LinearMPC-style 横向阵风消融
 scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml  Sysblock LinearMPC-style 无故障分配旋翼退化边界案例
 scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml  Sysblock LinearMPC-style + 在线 eta_hat 控制分配补偿
-scenarios/smoke/example1_pid_mcp_smoke.yaml    0-1 s MCP 链路烟雾测试
-scenarios/smoke/example1_awff_sysblock_mcp_smoke.yaml  0-1 s Sysblock 整机闭环烟雾测试
 ```
-
-`results/smoke/example1_mcp/pid_baseline_smoke/raw/mworks_mcp_example1_pid_smoke.csv` 只用于 0-1 s 真实 MCP 链路验证，不作为完整官方 baseline 指标。
 
 按场景 YAML 运行真实 Sysplorer MCP 证据链：
 
 ```bash
-python scripts/run_mworks_scenario.py scenarios/smoke/example1_pid_mcp_smoke.yaml
+python scripts/run_mworks_scenario.py scenarios/official/example1_pid_baseline.yaml
 ```
 
 该入口会读取模型名、时长和输出路径，调用 `check_model`、`simulate_model`、`result_manager`，再生成 metrics、SVG 图表和 replay JSON。HTML 回放不作为控制器仿真证据，只有场景 YAML 显式设置 `generate_replay_html: true` 时才生成。

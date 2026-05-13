@@ -85,24 +85,7 @@ def default_result_base(config: dict[str, Any], experiment_id: str) -> Path:
     evidence_level = str(config.get("evidence_level", "") or "")
 
     if "smoke" in experiment_id or "smoke" in scene_id or "smoke" in evidence_level:
-        suffix = f"{controller_id}_smoke" if controller_id else experiment_id
-        if scene_id.startswith("official_example1") or experiment_id.startswith("official_example1"):
-            scene_group = "example1_step"
-        elif scene_id.startswith("official_example2") or experiment_id.startswith("official_example2"):
-            scene_group = "example2_helix"
-        elif scene_id.startswith("official_example3") or experiment_id.startswith("official_example3"):
-            scene_group = "example3_figure8"
-        elif "robust" in scene_id or "robust" in experiment_id:
-            scene_group = "robustness"
-            if "mass20" in scene_id or "mass20" in experiment_id:
-                suffix = f"mass20_example1_{suffix}"
-            elif "rotor1_loss15" in scene_id or "rotor1_loss15" in experiment_id:
-                suffix = f"rotor1_loss15_example1_{suffix}"
-            elif "wind_gust" in scene_id or "wind_gust" in experiment_id:
-                suffix = f"wind_gust_example1_{suffix}"
-        else:
-            scene_group = scene_id or "misc"
-        return Path("results/smoke") / scene_group / suffix
+        return Path("results/diagnostics") / "smoke" / experiment_id
 
     if scene_id.startswith("official_example1") or experiment_id.startswith("official_example1"):
         return Path("results/official/example1_step") / experiment_id

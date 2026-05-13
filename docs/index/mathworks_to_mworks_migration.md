@@ -44,7 +44,7 @@ Do not paste large PDFs, screenshots, or full upstream manuals into `AGENTS.md`.
 | Simulink selected block / current model | Sysplorer opened model/component query | `model_manager.get_components`, `lookup_component`, `get_model_text` |
 | Simulink `sim()` + logsout | Sysplorer `simulate_model` + `result_manager` | raw CSV, metrics JSON, MCP JSONL log |
 | Data dictionary / model workspace | scenario YAML + controller YAML + Modelica parameters | QA check, scenario config, git diff |
-| Simulink Test harness | scenario smoke test + metrics threshold | `workflows/smoke_test.md`, `workflows/regression_test.md` |
+| Simulink Test harness | scenario regression test + metrics threshold | `workflows/regression_test.md`, `workflows/run_tests.md` |
 | MATLAB profiler / timeit | Syslab/Python timing and metrics scripts | explicit timing output, not anecdotal speed claims |
 | MATLAB code review skill | project code review workflow | `workflows/code_review.md` |
 
@@ -63,7 +63,7 @@ Do not paste large PDFs, screenshots, or full upstream manuals into `AGENTS.md`.
 | P0 | Simulink interactions | `Skills/Mworks/mworks-model-context/SKILL.md` |
 | P0 | Simulating Simulink models | `Skills/Mworks/mworks-simulation-evidence/SKILL.md`, `workflows/run_simulation.md`, `workflows/read_results.md` |
 | P0 | MATLAB coding standards | `Skills/Mworks/mworks-syslab-porting/SKILL.md`, project Python/Julia script conventions |
-| P0 | MATLAB testing | `Skills/Mworks/mworks-test-quality/SKILL.md`, `workflows/smoke_test.md`, `workflows/regression_test.md`, `workflows/run_tests.md` |
+| P0 | MATLAB testing | `Skills/Mworks/mworks-test-quality/SKILL.md`, `workflows/regression_test.md`, `workflows/run_tests.md` |
 | P1 | Simulink debug command line | `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
 | P1 | Solver/profiler analyzer | `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
 | P1 | MATLAB performance optimization | `Skills/Mworks/mworks-syslab-porting/SKILL.md`, `Skills/Mworks/mworks-test-quality/SKILL.md` |

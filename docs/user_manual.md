@@ -262,24 +262,9 @@ results/tuning/pid_search/summary/pid_tuning_summary.md
 
 正式 improved PID 当前采用候选 `pos_kp_165_att_170`，对应 `PID3/PID4.KP=1.65`、`PID5/PID6.KD=1.70`。
 
-## 6. Smoke 数据说明
+## 6. 正式场景复现
 
-当前仓库只保留真实 Sysplorer MCP 运行得到的官方 Example1 0-1 s smoke 数据集：
-
-```text
-results/smoke/example1_mcp/pid_baseline_smoke/logs/sysplorer_example1_pid_mcp_smoke_20260509.jsonl
-results/smoke/example1_mcp/pid_baseline_smoke/raw/mworks_mcp_example1_pid_smoke.csv
-results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_smoke.json
-results/smoke/example1_mcp/pid_baseline_smoke/metrics/mworks_mcp_example1_pid_smoke.csv
-```
-
-复现实测 MCP smoke：
-
-```bash
-python3 scripts/run_mworks_scenario.py scenarios/smoke/example1_pid_mcp_smoke.yaml
-```
-
-该脚本会读取 `scenarios/smoke/example1_pid_mcp_smoke.yaml`，再通过 `/home/linux/mcp-wrappers/sysplorer_mcp.sh` 调用 Sysplorer MCP，执行 `session_manager health`、`model_manager load_file`、`check_model`、`simulate_model` 和 `result_manager get_vars_values`。默认保留 Sysplorer GUI/session；只有传入 `--shutdown-session` 时才调用 `session_manager shutdown`。它属于 `source=MWORKS_MCP` 的真实 smoke 证据，但仍只覆盖 0-1 s，不能替代完整 50 s 官方 baseline。
+仓库已清理历史 0-1 s smoke 数据，当前复现和评审均以 `scenarios/official/` 与 `scenarios/robustness/` 下的正式场景为准。
 
 复现任一正式场景时使用同一入口，直接替换 YAML 路径：
 
@@ -288,21 +273,13 @@ python3 scripts/run_mworks_scenario.py scenarios/official/example1_pid_baseline.
 python3 scripts/run_mworks_scenario.py scenarios/official/example1_improved_pid.yaml
 ```
 
-不要用 `--stop-time 1` 覆盖正式 `scenarios/official/*.yaml`，短时链路验证统一使用 `scenarios/smoke/`。
+不要用短时参数覆盖正式 `scenarios/official/*.yaml`。如需临时链路诊断，应写入 `results/diagnostics/`，不要覆盖正式证据。
 
 批量复现已有场景：
 
 ```bash
 python3 scripts/run_mworks_batch.py --skip-existing scenarios/official/*.yaml
 ```
-
-如果连续跑多个场景，优先复用同一个 Sysplorer MCP wrapper 进程，减少反复打开新窗口和重新激活的风险：
-
-```bash
-python3 scripts/run_mworks_batch.py --reuse-mcp-process scenarios/official/*.yaml
-```
-
-`--reuse-mcp-process` 只改变 MCP 进程复用方式，不会跳过质量门禁；默认仍不调用 `session_manager shutdown`，因此 Sysplorer GUI/session 会保留给后续人工检查或继续仿真。
 
 `run_mworks_scenario.py` 和 `run_mworks_batch.py` 默认会在仿真、后处理之后执行质量门禁：
 
@@ -363,8 +340,7 @@ python3 scripts/plot_results.py \
 ```bash
 python3 scripts/summarize_experiments.py \
   --include-metrics-glob 'results/official/**/metrics/*pid_baseline.json' \
-  --include-metrics-glob 'results/official/**/metrics/*improved_pid.json' \
-  --include-metrics-glob 'results/smoke/**/metrics/mworks_mcp_*.json'
+  --include-metrics-glob 'results/official/**/metrics/*improved_pid.json'
 ```
 
 输出：

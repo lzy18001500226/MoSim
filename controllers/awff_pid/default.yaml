@@ -83,10 +83,6 @@ feedforward:
   reference_filter_T_s: 0.20
 
 acceptance:
-  smoke:
-    model_name: QuadrotorExperiments.Example1AntiWindupFeedforwardPID
-    scenario_file: scenarios/smoke/example1_awff_pid_mcp_smoke.yaml
-    required: check_model and simulate_model pass
   full_example1:
     baseline_experiment: official_example1_enhanced_pid
     scenario_file: scenarios/official/example1_awff_pid.yaml
@@ -131,14 +127,6 @@ acceptance:
       fixed-gain PID has solved actuator degradation.
 
 verified_results:
-  smoke:
-    scenario_file: scenarios/smoke/example1_awff_pid_mcp_smoke.yaml
-    raw_file: results/smoke/example1_mcp/awff_pid_smoke/raw/mworks_mcp_example1_awff_pid_smoke.csv
-    metrics_file: results/smoke/example1_mcp/awff_pid_smoke/metrics/mworks_mcp_example1_awff_pid_smoke.json
-    mcp_log: results/smoke/example1_mcp/awff_pid_smoke/logs/sysplorer_example1_awff_pid_mcp_smoke_20260510.jsonl
-    row_count: 501
-    position_rmse_m: 0.9262406504
-    max_position_error_m: 1.2413616018
   full_example1:
     scenario_file: scenarios/official/example1_awff_pid.yaml
     raw_file: results/official/example1_step/official_example1_awff_pid/raw/official_example1_awff_pid.csv

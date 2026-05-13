@@ -26,8 +26,6 @@ def test_experiment_summary_regression() -> None:
                 str(csv_path.relative_to(ROOT)),
                 "--markdown",
                 str(md_path.relative_to(ROOT)),
-                "--include-metrics-glob",
-                "results/smoke/**/*.json",
             ],
             cwd=ROOT,
             check=True,

@@ -129,13 +129,11 @@ results/official/example3_figure8/official_example3_awff_sysblock/figures/
 results/robustness/mass20_example1/robust_mass20_example1_awff_sysblock/figures/
 results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/figures/
 results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/figures/
-results/smoke/example1_mcp/{controller}_smoke/figures/
 ```
 
 `results/official/example3_figure8/*/figures/` contains the current 8-shaped official
-trajectory figure groups. `results/smoke/` figures are process evidence only and
-should not be used as final report or demo-video material unless explicitly
-marked as smoke.
+trajectory figure groups. Temporary process-check figures should not be used as
+final report or demo-video material unless explicitly marked as diagnostic.
 
 Each generated directory should contain:
 

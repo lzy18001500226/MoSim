@@ -362,7 +362,7 @@ def parse_args() -> argparse.Namespace:
         "--include-metrics-glob",
         action="append",
         default=[],
-        help="Include metrics JSON files not referenced by scenarios, e.g. results/smoke/**/*.json",
+        help="Include metrics JSON files not referenced by scenarios, e.g. results/robustness/**/*.json",
     )
     parser.add_argument("--csv", type=Path, default=Path("results/summaries/experiment_summary/experiment_summary.csv"))
     parser.add_argument("--markdown", type=Path, default=Path("results/summaries/experiment_summary/experiment_summary.md"))

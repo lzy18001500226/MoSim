@@ -72,12 +72,6 @@ l1_residual_compensation:
   l1_comp_limit_z: 2.0
 
 acceptance:
-  smoke_nominal:
-    scenario_file: scenarios/smoke/example1_l1_residual_sysblock_mcp_smoke.yaml
-    required: check_model, simulate_model, result_manager, raw CSV, metrics
-  smoke_wind:
-    scenario_file: scenarios/smoke/example1_wind_gust_l1_residual_sysblock_mcp_smoke.yaml
-    required: check_model, simulate_model, result_manager, raw CSV, metrics
   full_wind:
     scenario_file: scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON

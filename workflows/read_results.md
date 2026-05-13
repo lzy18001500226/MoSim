@@ -138,30 +138,19 @@ After raw CSV is generated, run:
 workflows/calc_metrics.md
 ```
 
-For MCP JSONL smoke logs that contain `GetVarsValues`, use:
+For MCP JSONL logs that contain `GetVarsValues`, use:
 
 ```bash
 python3 scripts/extract_mcp_timeseries.py \
   results/official/example1_step/diagnostics/logs/sysplorer_quadrotor_example1_values.jsonl \
-  results/smoke/example1_mcp/pid_baseline_smoke/raw/mworks_mcp_example1_pid_smoke.csv \
+  results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv \
   --columns x,y,z,x_ref,y_ref,z_ref \
   --start-time 0 \
-  --stop-time 1
+  --stop-time 50
 ```
 
 If `GetVarsValues` includes an explicit time series as its first output, use
 `--columns time,x,y,z,x_ref,y_ref,z_ref` and omit `--start-time/--stop-time`.
-Do not treat smoke-test output as the full 50 s official scenario.
-
-For the current real Sysplorer MCP smoke workflow, prefer:
-
-```bash
-python3 scripts/run_mworks_scenario.py scenarios/smoke/example1_pid_mcp_smoke.yaml
-```
-
-It performs the MCP run and result extraction in one reproducible step, then
-writes raw CSV, metrics, figures, replay JSON, replay HTML, and MCP JSONL log
-under `results/`.
 
 For full official scenarios, use the same YAML-driven entrypoint:
 
@@ -177,5 +166,4 @@ python3 scripts/run_mworks_batch.py --skip-existing scenarios/official/*.yaml
 ```
 
 Do not shorten an official YAML run for smoke testing, because that would
-overwrite full-duration formal evidence. Use `scenarios/smoke/` for short MCP
-chain checks.
+overwrite full-duration formal evidence.
