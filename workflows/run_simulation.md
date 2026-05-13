@@ -319,6 +319,18 @@ viewer generation explicitly:
 python3 scripts/run_mworks_scenario.py <scenario.yaml> --no-gui-result-viewer
 ```
 
+For one-at-a-time manual GUI review, avoid mixing old and current windows:
+
+```text
+python3 scripts/run_mworks_scenario.py <scenario.yaml> --gui-reset-windows
+```
+
+This keeps the Sysplorer session open, but closes existing plot/animation
+windows before opening the current result. The tracking plot is created with
+the current `Result.msr` path explicitly bound; the animation window is then
+created for the active simulated result. The script still does not call
+`RunAnimation()` by default.
+
 The durable evidence remains raw CSV, metrics JSON/CSV, logs, figures, and
 replay JSON. Native result files support human review but are intentionally not
 tracked.

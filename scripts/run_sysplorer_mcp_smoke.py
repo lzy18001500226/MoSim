@@ -284,6 +284,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Skip Sysplorer native result files and GUI plot/animation after simulation",
     )
+    parser.add_argument(
+        "--gui-reset-windows",
+        action="store_true",
+        help="Close existing Sysplorer plot/animation windows before opening the current result for manual GUI review",
+    )
     return parser.parse_args(argv)
 
 
@@ -395,8 +400,32 @@ def open_gui_result_viewer(
     native_result: Path,
     model_name: str,
     variables: dict[str, str],
+    reset_windows: bool = False,
 ) -> dict[str, Any]:
     result_file = windows_path(native_result)
+    cleanup_result: dict[str, Any] | None = None
+    if reset_windows:
+        cleanup_script = """
+import mworks.sysplorer as ModelingPy
+
+results = {}
+for name in ("StopAnimation", "RemoveAnimations", "RemovePlots"):
+    try:
+        results[name] = getattr(ModelingPy, name)()
+    except Exception as exc:
+        results[name + "_error"] = repr(exc)
+
+RUN_SCRIPT_RESULT = results
+"""
+        try:
+            cleanup_result = client.call_tool(
+                "call_code",
+                {"mode": "run_script", "payload": {"python_source": cleanup_script}},
+                timeout_s=30,
+            )
+        except Exception as exc:
+            cleanup_result = {"ok": False, "warning": f"gui_cleanup_failed: {exc}"}
+
     try:
         model_result = client.call_tool(
             "model_manager",
@@ -413,15 +442,26 @@ def open_gui_result_viewer(
         variables.get("x_ref", "climbePath.position_command[1]"),
     ]
     plot_vars = [item for index, item in enumerate(plot_vars) if item and item not in plot_vars[:index]]
+    plot_script = f"""
+import mworks.sysplorer as ModelingPy
+
+results = {{}}
+try:
+    results["create_plot"] = ModelingPy.CreatePlot(
+        id=1,
+        x="time",
+        y={plot_vars!r},
+        result_file={result_file!r},
+    )
+except Exception as exc:
+    results["create_plot_error"] = repr(exc)
+
+RUN_SCRIPT_RESULT = results
+"""
     try:
         plot_result = client.call_tool(
-            "plot_manager",
-            {
-                "action": "plot_variables",
-                "variables": plot_vars,
-                "heading": f"{model_name} tracking",
-                "clear_first": False,
-            },
+            "call_code",
+            {"mode": "run_script", "payload": {"python_source": plot_script}},
             timeout_s=30,
         )
     except Exception as exc:
@@ -464,6 +504,7 @@ RUN_SCRIPT_RESULT = results
     return {
         "native_result_file": result_file,
         "native_result_exists": native_result.exists(),
+        "cleanup_result": cleanup_result,
         "model_result": model_result,
         "plot_result": plot_result,
         "animation_result": animation_result,
@@ -579,6 +620,7 @@ def run_mcp_simulation(
                 native_result=native_result,
                 model_name=args.model_name,
                 variables=variables,
+                reset_windows=args.gui_reset_windows,
             )
         if active_log_output != final_log_output:
             active_log_output.replace(final_log_output)

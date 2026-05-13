@@ -27,6 +27,7 @@ class Args:
     evidence_level = None
     wrapper = None
     no_gui_result_viewer = False
+    gui_reset_windows = False
     shutdown_session = False
     no_quality_gate = False
     allow_needs_iteration = False
@@ -83,6 +84,17 @@ def test_run_mworks_scenario_no_gui_result_viewer_passthrough() -> None:
         raise AssertionError(f"GUI result viewer flag should be passed through: {joined}")
 
 
+def test_run_mworks_scenario_gui_reset_windows_passthrough() -> None:
+    module = load_module()
+    config = module.read_yaml(Args.scenario)
+    args = Args()
+    args.gui_reset_windows = True
+    command = module.scenario_command(args, config)
+    joined = " ".join(command)
+    if "--gui-reset-windows" not in joined:
+        raise AssertionError(f"GUI reset flag should be passed through: {joined}")
+
+
 def test_run_mworks_scenario_refuses_short_smoke_overwrite() -> None:
     module = load_module()
     config = module.read_yaml(Args.scenario)
@@ -103,6 +115,7 @@ def main() -> int:
     test_run_mworks_scenario_stop_time_override()
     test_run_mworks_scenario_wrapper_passthrough()
     test_run_mworks_scenario_no_gui_result_viewer_passthrough()
+    test_run_mworks_scenario_gui_reset_windows_passthrough()
     test_run_mworks_scenario_refuses_short_smoke_overwrite()
     print("[OK] run_mworks_scenario command regression")
     return 0
