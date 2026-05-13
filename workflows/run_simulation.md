@@ -331,6 +331,22 @@ the native result manually from:
 results/{group}/{scene}/{experiment}/native_result/{ModelName}/Result.msr
 ```
 
+GUI windows must be interpreted separately:
+
+```text
+model/diagram window: structure and connection review only
+plot/result window: tracking curve and signal review only
+3D animation window: visual flight review only
+```
+
+When several windows are already open, identify the active experiment from the
+model name, MCP log path, or native result path before judging the result. If
+the UAV appears to run out of view in the 3D animation but the quality gate
+passes, first adjust the view/camera/zoom or reopen the matching native result;
+do not mark the controller failed from view framing alone. If the quality gate
+also fails, preserve the evidence as a negative sample and iterate the
+controller or scenario.
+
 Do not keep retrying MCP if the window shows a login/activation prompt or a
 large set of unrelated library errors. Save the current work and request manual
 login/activation.

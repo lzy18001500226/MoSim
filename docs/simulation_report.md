@@ -659,6 +659,17 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 
 2026-05-13 证据审计：迁移 `sunray150_with_mid360` 后，复合鲁棒场景 `rotor1_loss15_wind_gust_example1` 已形成一条负样本和三条正样本。普通 `awff_sysblock` 健康分为 `35.967`、RMSE 为 `0.3792 m`，质量门为 `needs_iteration`，保留为未补偿边界案例；`awff_fault_compensation_sysblock` 健康分为 `53.253`、RMSE 为 `0.2704 m`；`l1_multi_fault_isolation_sysblock` 健康分为 `50.994`、RMSE 为 `0.2721 m`；`linear_mpc_online_fault_allocation_sysblock` 健康分为 `51.318`、RMSE 为 `0.2614 m`。因此该复合场景结论应表述为“普通 AWFF 在复合扰动下不足，加入已知故障补偿、L1 多旋翼故障隔离或线性 MPC 在线分配后通过质量门”。
 
+2026-05-14 复核：在 `sunray150_with_mid360` 等效参数下，新增 rotor2-4 的“单旋翼效率 85% + 横向阵风”复合鲁棒 L1 多故障隔离正样本，均为 50 s 真实 Sysplorer MCP 仿真。该组结果用于支撑“多旋翼单故障方向均完成复合扰动鲁棒验证”，不替代后续多故障/故障切换验证。
+
+| 退化旋翼 | 场景文件 | RMSE (m) | 稳态误差 (m) | 最大误差 (m) | 健康分 | `fault_index` 正确率 | 质量门 |
+|---|---|---:|---:|---:|---:|---:|---|
+| rotor1 | `scenarios/robustness/example1_rotor1_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2721 | 0.1402 | 1.2526 | 50.994 | 100% | pass |
+| rotor2 | `scenarios/robustness/example1_rotor2_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2728 | 0.1465 | 1.2526 | 50.961 | 100% | pass |
+| rotor3 | `scenarios/robustness/example1_rotor3_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2707 | 0.1446 | 1.2526 | 50.987 | 100% | pass |
+| rotor4 | `scenarios/robustness/example1_rotor4_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2727 | 0.1415 | 1.2526 | 50.984 | 100% | pass |
+
+对应证据目录位于 `results/robustness/rotor{1..4}_loss15_wind_gust_example1/robust_rotor{1..4}_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/`，包含 `raw/`、`metrics/`、`figures/`、`replay/` 和 `logs/`。为减少桌面窗口干扰，rotor2-4 本轮先使用 `--no-gui-result-viewer` 生成数值和图表证据；需要录制视频时再打开代表性场景的 native result 或重新运行单个场景的 GUI 审查。
+
 ## 13. Linear MPC-style 外环闭环结果
 
 `AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 在 `controller3_2` 统一接口内实现 finite-horizon linear MPC-style 外环、L1-inspired residual feedforward 和 INDI-like 姿态内环。该版本不是在线 QP/NMPC 求解器；它使用显式终端误差项、加速度限幅、残差低通补偿和有界姿态增量项，在不改变官方机体、电机、传感器和路径模型的前提下接入 Example1/2/3。对应图形化审查模型为 `AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock`；旋翼退化补偿版本对应 `AWFF_InnovationGraphicalControllers.AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock`。两者已通过静态行为契约和 Sysplorer MCP `check_model`，但整机性能表仍引用 Equation 控制器全时长闭环结果。
