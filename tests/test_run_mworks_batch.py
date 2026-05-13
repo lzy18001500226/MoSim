@@ -66,6 +66,26 @@ def test_run_mworks_batch_dry_run_quality_args() -> None:
         raise AssertionError(output)
 
 
+def test_run_mworks_batch_dry_run_wrapper_arg() -> None:
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "scripts/run_mworks_batch.py",
+            "--dry-run",
+            "--wrapper",
+            r"C:\Users\HP\mcp-wrappers\sysplorer_mcp.cmd",
+            "scenarios/official/example1_pid_baseline.yaml",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    output = proc.stdout
+    if r"--wrapper C:\Users\HP\mcp-wrappers\sysplorer_mcp.cmd" not in output:
+        raise AssertionError(output)
+
+
 def test_inactive_official_scenarios_are_skipped_by_default() -> None:
     proc = subprocess.run(
         [
@@ -113,6 +133,7 @@ def test_include_inactive_official_scenarios() -> None:
 def main() -> int:
     test_run_mworks_batch_dry_run_regression()
     test_run_mworks_batch_dry_run_quality_args()
+    test_run_mworks_batch_dry_run_wrapper_arg()
     test_inactive_official_scenarios_are_skipped_by_default()
     test_include_inactive_official_scenarios()
     print("[OK] run_mworks_batch dry-run regression")

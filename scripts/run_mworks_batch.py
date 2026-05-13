@@ -89,6 +89,8 @@ def scenario_command(scenario_path: Path, args: argparse.Namespace) -> list[str]
     if args.allow_needs_iteration:
         command.append("--allow-needs-iteration")
     command.extend(["--min-rmse-improvement-pct", f"{args.min_rmse_improvement_pct:g}"])
+    if args.wrapper:
+        command.extend(["--wrapper", args.wrapper])
     if args.shutdown_session:
         command.append("--shutdown-session")
     return command
@@ -128,6 +130,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=float,
         default=0.5,
         help="Minimum RMSE improvement required for scenarios with controller.baseline_experiment",
+    )
+    parser.add_argument(
+        "--wrapper",
+        default=None,
+        help="Override Sysplorer MCP wrapper path and pass it through to each scenario run",
     )
     parser.add_argument("--shutdown-session", action="store_true", help="Request Sysplorer session shutdown after each scenario")
     parser.add_argument(

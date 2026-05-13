@@ -24,10 +24,26 @@ from typing import Any
 from calc_metrics import compute_metrics
 
 
-DEFAULT_WRAPPER_CANDIDATES = [
-    "/home/linux/mcp-wrappers/sysplorer_mcp.sh",
-    str(Path.home() / "mcp-wrappers" / "sysplorer_mcp.sh"),
-]
+def default_wrapper_candidates() -> list[str]:
+    """Return known Sysplorer MCP wrapper locations for WSL and Windows shells."""
+    home = Path.home()
+    project_root = Path(__file__).resolve().parents[1]
+    names = ["sysplorer_mcp.sh", "sysplorer_mcp.bat", "sysplorer_mcp.cmd", "sysplorer_mcp.ps1"]
+    raw_candidates = [
+        "/home/linux/mcp-wrappers/sysplorer_mcp.sh",
+    ]
+    raw_candidates.extend(str(home / "mcp-wrappers" / name) for name in names)
+    raw_candidates.extend(str(project_root / "mcp-wrappers" / name) for name in names)
+    candidates: list[str] = []
+    seen: set[str] = set()
+    for candidate in raw_candidates:
+        if candidate not in seen:
+            seen.add(candidate)
+            candidates.append(candidate)
+    return candidates
+
+
+DEFAULT_WRAPPER_CANDIDATES = default_wrapper_candidates()
 DEFAULT_MODEL_FILE = r"C:\Users\HP\Desktop\Quadrotor\QuadrotorModel\package.mo"
 DEFAULT_MODEL_NAME = "QuadrotorModel.Examples.Example1"
 DEFAULT_VARIABLES = {
@@ -209,7 +225,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=os.environ.get("SYSPLORER_MCP_WRAPPER"),
         help=(
             "Sysplorer MCP wrapper path. Defaults to SYSPLORER_MCP_WRAPPER, "
-            "/home/linux/mcp-wrappers/sysplorer_mcp.sh, then ~/mcp-wrappers/sysplorer_mcp.sh."
+            "/home/linux/mcp-wrappers/sysplorer_mcp.sh, then ~/mcp-wrappers/sysplorer_mcp.{sh,bat,cmd,ps1}."
         ),
     )
     parser.add_argument("--model-file", default=DEFAULT_MODEL_FILE)
@@ -253,6 +269,14 @@ def resolve_wrapper(wrapper: str | None) -> str:
             return str(path)
     searched = ", ".join(str(Path(item).expanduser()) for item in candidates if item)
     raise FileNotFoundError(f"Sysplorer MCP wrapper not found. Checked: {searched}")
+
+
+def wrapper_command(wrapper: str) -> list[str]:
+    """Return a subprocess command for wrapper scripts on WSL or Windows."""
+    path = Path(wrapper)
+    if path.suffix.lower() == ".ps1":
+        return ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(path)]
+    return [str(path)]
 
 
 def parse_target_time(target_time: str) -> list[float]:
@@ -403,7 +427,7 @@ def main() -> int:
     args = parse_args()
     wrapper = resolve_wrapper(args.wrapper)
     active_log_output, final_log_output = prepare_log_output(args.log_output)
-    client = JsonlMcpClient([wrapper], active_log_output)
+    client = JsonlMcpClient(wrapper_command(wrapper), active_log_output)
     try:
         initialize_mcp_client(client)
         run_mcp_simulation(

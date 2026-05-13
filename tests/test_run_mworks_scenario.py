@@ -24,6 +24,7 @@ class Args:
     scenario = ROOT / "scenarios" / "official" / "example1_pid_baseline.yaml"
     stop_time = None
     evidence_level = None
+    wrapper = None
     shutdown_session = False
     no_quality_gate = False
     allow_needs_iteration = False
@@ -58,9 +59,21 @@ def test_run_mworks_scenario_stop_time_override() -> None:
         raise AssertionError(f"--stop-time should override scenario stop_time_s: {joined}")
 
 
+def test_run_mworks_scenario_wrapper_passthrough() -> None:
+    module = load_module()
+    config = module.read_yaml(Args.scenario)
+    args = Args()
+    args.wrapper = r"C:\Users\HP\mcp-wrappers\sysplorer_mcp.cmd"
+    command = module.scenario_command(args, config)
+    joined = " ".join(command)
+    if r"--wrapper C:\Users\HP\mcp-wrappers\sysplorer_mcp.cmd" not in joined:
+        raise AssertionError(f"Wrapper path should be passed to run_sysplorer_mcp_smoke.py: {joined}")
+
+
 def main() -> int:
     test_run_mworks_scenario_command_regression()
     test_run_mworks_scenario_stop_time_override()
+    test_run_mworks_scenario_wrapper_passthrough()
     print("[OK] run_mworks_scenario command regression")
     return 0
 

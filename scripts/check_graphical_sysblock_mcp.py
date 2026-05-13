@@ -202,14 +202,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--no-simulate", action="store_true", help="Only run load_file and check_model")
     parser.add_argument("--include-innovation", action="store_true", help="Also check L1/INDI/fault-isolation graphical controller package")
     parser.add_argument("--innovation-only", action="store_true", help="Check only L1/INDI/fault-isolation graphical controller package")
+    parser.add_argument(
+        "--wrapper",
+        default=os.environ.get("SYSPLORER_MCP_WRAPPER"),
+        help="Override Sysplorer MCP wrapper path",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     args.log_output.parent.mkdir(parents=True, exist_ok=True)
-    wrapper = run_sysplorer_mcp_smoke.resolve_wrapper(os.environ.get("SYSPLORER_MCP_WRAPPER"))
-    client = run_sysplorer_mcp_smoke.JsonlMcpClient([wrapper], args.log_output)
+    wrapper = run_sysplorer_mcp_smoke.resolve_wrapper(args.wrapper)
+    client = run_sysplorer_mcp_smoke.JsonlMcpClient(run_sysplorer_mcp_smoke.wrapper_command(wrapper), args.log_output)
     try:
         health = run_sysplorer_mcp_smoke.initialize_mcp_client(client)
         selected_models = []

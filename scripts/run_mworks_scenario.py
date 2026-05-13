@@ -167,6 +167,8 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
         "--evidence-level",
         args.evidence_level or default_evidence_level,
     ]
+    if args.wrapper:
+        command.extend(["--wrapper", args.wrapper])
     extra_variables = result.get("extra_variables", {})
     if extra_variables:
         if not isinstance(extra_variables, dict):
@@ -256,6 +258,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("scenario", type=Path, help="Scenario YAML path")
     parser.add_argument("--stop-time", type=float, default=None, help="Override scenario stop_time_s")
     parser.add_argument("--evidence-level", default=None, help="Override metrics evidence_level")
+    parser.add_argument(
+        "--wrapper",
+        default=None,
+        help="Override Sysplorer MCP wrapper path and pass it through to run_sysplorer_mcp_smoke.py",
+    )
     parser.add_argument("--no-postprocess", action="store_true", help="Skip figure and replay generation")
     parser.add_argument("--no-quality-gate", action="store_true", help="Skip automatic result quality evaluation")
     parser.add_argument(

@@ -102,12 +102,36 @@ resources_retrieval
 
 ## 4. Procedure
 
-### Step 0: Confirm WSL can execute the MCP wrapper
+### Step 0: Confirm the MCP wrapper
 
-Before running a real MWORKS simulation from WSL, verify that the wrapper can
-start the Sysplorer MCP server. If the wrapper directly `exec`s a Windows
-`python.exe` and WSL reports `cannot execute binary file: Exec format error`,
-the simulation cannot be launched from the current shell. In that case:
+Before running a real MWORKS simulation, verify that the wrapper can start the
+Sysplorer MCP server from the current shell. The runner auto-detects these
+locations:
+
+```text
+/home/linux/mcp-wrappers/sysplorer_mcp.sh
+~/mcp-wrappers/sysplorer_mcp.sh
+~/mcp-wrappers/sysplorer_mcp.bat
+~/mcp-wrappers/sysplorer_mcp.cmd
+~/mcp-wrappers/sysplorer_mcp.ps1
+```
+
+For a non-standard location, use either:
+
+```powershell
+$env:SYSPLORER_MCP_WRAPPER="C:\path\to\sysplorer_mcp.cmd"
+python scripts\run_mworks_scenario.py scenarios\official\example1_pid_baseline.yaml
+```
+
+or pass it per run:
+
+```powershell
+python scripts\run_mworks_scenario.py scenarios\official\example1_pid_baseline.yaml --wrapper "C:\path\to\sysplorer_mcp.cmd"
+```
+
+If the wrapper directly `exec`s a Windows `python.exe` from WSL and WSL reports
+`cannot execute binary file: Exec format error`, the simulation cannot be
+launched from the current shell. In that case:
 
 ```text
 1. Do not label the attempted run as MWORKS evidence.
