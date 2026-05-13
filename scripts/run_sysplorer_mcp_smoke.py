@@ -48,6 +48,7 @@ def default_wrapper_candidates() -> list[str]:
 DEFAULT_WRAPPER_CANDIDATES = default_wrapper_candidates()
 DEFAULT_MODEL_FILE = r"C:\Users\HP\Desktop\Quadrotor\QuadrotorModel\package.mo"
 DEFAULT_MODEL_NAME = "QuadrotorModel.Examples.Example1"
+GUI_ANIMATION_TIMEOUT_S = 45
 DEFAULT_VARIABLES = {
     "time": "time",
     "x": "sensors1_1.PosMea[1]",
@@ -413,7 +414,7 @@ RUN_SCRIPT_RESULT = results
         animation_result = client.call_tool(
             "call_code",
             {"mode": "run_script", "payload": {"python_source": animation_script}},
-            timeout_s=15,
+            timeout_s=GUI_ANIMATION_TIMEOUT_S,
         )
     except Exception as exc:
         animation_result = {"ok": False, "warning": f"gui_animation_failed: {exc}"}

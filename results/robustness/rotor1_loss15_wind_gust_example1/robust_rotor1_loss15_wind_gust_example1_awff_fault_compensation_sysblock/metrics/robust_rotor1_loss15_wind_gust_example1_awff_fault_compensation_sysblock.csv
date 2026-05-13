@@ -1,5 +1,5 @@
 metric,value
-generated_at,2026-05-13T13:58:19
+generated_at,2026-05-13T15:39:25
 raw_file,results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock/raw/robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock.csv
 scene_id,robust_rotor1_loss15_wind_gust_example1
 controller_id,awff_fault_compensation_sysblock
