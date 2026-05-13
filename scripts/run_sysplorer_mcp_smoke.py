@@ -66,6 +66,19 @@ DEFAULT_VARIABLES = {
 }
 
 
+def windows_path(path: Path) -> str:
+    """Return an absolute Windows path for paths under the shared project tree."""
+    resolved = path.resolve()
+    text = str(resolved)
+    if os.name == "nt":
+        return text
+    if text.startswith("/mnt/") and len(text) > 6 and text[6] == "/":
+        drive = text[5].upper()
+        rest = text[7:].replace("/", "\\")
+        return f"{drive}:\\{rest}"
+    return text.replace("/", "\\")
+
+
 def parse_extra_variables(items: list[str]) -> dict[str, str]:
     variables: dict[str, str] = {}
     for item in items:
@@ -243,6 +256,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--metrics-json", type=Path, default=Path("results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.json"))
     parser.add_argument("--metrics-csv", type=Path, default=Path("results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.csv"))
     parser.add_argument("--log-output", type=Path, default=Path("results/official/example1_step/official_example1_pid_baseline/logs/sysplorer_example1_pid_baseline_full.jsonl"))
+    parser.add_argument(
+        "--native-result-dir",
+        type=Path,
+        default=None,
+        help="Directory for Sysplorer native result files used by GUI result viewer and animation",
+    )
     parser.add_argument("--scene-id", default="official_example1_pid_baseline")
     parser.add_argument("--controller-id", default="pid_baseline")
     parser.add_argument("--evidence-level", default="real_sysplorer_mcp_full_baseline")
@@ -256,6 +275,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--shutdown-session",
         action="store_true",
         help="Explicitly request session_manager shutdown after saving outputs. Default keeps GUI reusable.",
+    )
+    parser.add_argument(
+        "--gui-result-viewer",
+        action="store_true",
+        help="Write Sysplorer native result files and try to open GUI plot/animation after simulation",
     )
     return parser.parse_args(argv)
 
@@ -313,6 +337,60 @@ def initialize_mcp_client(client: JsonlMcpClient) -> dict[str, Any]:
     return health
 
 
+def default_native_result_dir(raw_output: Path) -> Path:
+    return raw_output.parent.parent / "native_result"
+
+
+def native_result_file(native_result_dir: Path, model_name: str) -> Path:
+    leaf_name = model_name.rsplit(".", 1)[-1]
+    return native_result_dir / leaf_name / "Result.msr"
+
+
+def open_gui_result_viewer(
+    client: JsonlMcpClient,
+    *,
+    native_result: Path,
+    model_name: str,
+    variables: dict[str, str],
+) -> dict[str, Any]:
+    result_file = windows_path(native_result)
+    plot_vars = [
+        variables.get("z", "sensors1_1.PosMea[3]"),
+        variables.get("z_ref", "climbePath.position_command[3]"),
+        variables.get("x", "sensors1_1.PosMea[1]"),
+        variables.get("x_ref", "climbePath.position_command[1]"),
+    ]
+    plot_vars = [item for index, item in enumerate(plot_vars) if item and item not in plot_vars[:index]]
+    try:
+        plot_result = client.call_tool(
+            "plot_manager",
+            {
+                "action": "plot_variables",
+                "variables": plot_vars,
+                "heading": f"{model_name} tracking",
+                "clear_first": False,
+                "result_file": result_file,
+            },
+            timeout_s=45,
+        )
+    except Exception as exc:
+        plot_result = {"ok": False, "warning": f"gui_plot_failed: {exc}"}
+    try:
+        animation_result = client.call_tool(
+            "plot_manager",
+            {"action": "create_animation", "result_file": result_file},
+            timeout_s=45,
+        )
+    except Exception as exc:
+        animation_result = {"ok": False, "warning": f"gui_animation_failed: {exc}"}
+    return {
+        "native_result_file": result_file,
+        "native_result_exists": native_result.exists(),
+        "plot_result": plot_result,
+        "animation_result": animation_result,
+    }
+
+
 def run_mcp_simulation(
     args: argparse.Namespace,
     client: JsonlMcpClient,
@@ -327,6 +405,8 @@ def run_mcp_simulation(
     target_time = parse_target_time(args.target_time)
     variables = dict(DEFAULT_VARIABLES)
     variables.update(parse_extra_variables(args.extra_variable))
+    native_result_dir = args.native_result_dir or default_native_result_dir(args.raw_output)
+    native_result = native_result_file(native_result_dir, args.model_name)
     success = False
     try:
         open_result = client.call_tool(
@@ -370,6 +450,7 @@ def run_mcp_simulation(
                 "model_name": args.model_name,
                 "sim_mode": 0,
                 "target_time": target_time,
+                **({"ext_res_path": windows_path(native_result_dir)} if args.gui_result_viewer else {}),
                 "verify_result_var": "sensors1_1.PosMea[3]",
                 "verify_time_point": "end",
             },
@@ -399,6 +480,14 @@ def run_mcp_simulation(
             args.controller_id,
             args.evidence_level,
         )
+        gui_result: dict[str, Any] | None = None
+        if args.gui_result_viewer:
+            gui_result = open_gui_result_viewer(
+                client,
+                native_result=native_result,
+                model_name=args.model_name,
+                variables=variables,
+            )
         if active_log_output != final_log_output:
             active_log_output.replace(final_log_output)
         success = True
@@ -407,6 +496,11 @@ def run_mcp_simulation(
         print(f"Raw CSV: {args.raw_output}")
         print(f"Metrics JSON: {args.metrics_json}")
         print(f"Metrics CSV: {args.metrics_csv}")
+        if args.gui_result_viewer:
+            print(f"Native result: {native_result}")
+        if gui_result is not None:
+            print(f"GUI plot: {gui_result['plot_result'].get('ok')}")
+            print(f"GUI animation: {gui_result['animation_result'].get('ok')}")
         print(f"Rows: {len(read_result['data'][0])}")
         print(f"Check model: ok")
         print(f"Simulate model: ok")
@@ -414,6 +508,8 @@ def run_mcp_simulation(
             "raw_output": args.raw_output,
             "metrics_json": args.metrics_json,
             "metrics_csv": args.metrics_csv,
+            "native_result": native_result,
+            "gui_result": gui_result,
             "log_output": final_log_output,
             "rows": len(read_result["data"][0]),
         }

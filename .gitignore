@@ -43,9 +43,11 @@ results/tmp/
 results/cache/
 results/logs/*.log
 results/replay_html/
+results/**/native_result/
 *_backup/
 
 # Large binary outputs
+*.msr
 *.mat
 *.h5
 *.hdf5

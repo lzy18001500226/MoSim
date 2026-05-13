@@ -169,6 +169,8 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
     ]
     if args.wrapper:
         command.extend(["--wrapper", args.wrapper])
+    if args.gui_result_viewer:
+        command.append("--gui-result-viewer")
     extra_variables = result.get("extra_variables", {})
     if extra_variables:
         if not isinstance(extra_variables, dict):
@@ -233,6 +235,29 @@ def run_postprocess(config: dict[str, Any]) -> None:
         )
 
 
+def require_non_destructive_smoke(args: argparse.Namespace, config: dict[str, Any], command: list[str]) -> None:
+    if args.stop_time is None:
+        return
+    simulation = require_mapping(config, "simulation")
+    scenario_stop_time = float(simulation.get("stop_time_s", 1.0))
+    if float(args.stop_time) >= scenario_stop_time:
+        return
+    result = require_mapping(config, "result")
+    raw_file = Path(str(result.get("raw_file", "")))
+    metrics_file = Path(str(result.get("metrics_file", "")))
+    log_file = Path(str(result.get("mcp_log", "")))
+    protected_paths = [path for path in [raw_file, metrics_file, metrics_file.with_suffix(".csv"), log_file] if str(path)]
+    existing = [path for path in protected_paths if (ROOT / path).exists()]
+    if existing:
+        message = (
+            "Refusing to run a shortened smoke simulation into existing evidence paths. "
+            "Use a dedicated smoke scenario/result path or pass --allow-overwrite-evidence."
+        )
+        existing_text = ", ".join(path.as_posix() for path in existing)
+        command_text = " ".join(command)
+        raise RuntimeError(f"{message} Existing paths: {existing_text}. Command: {command_text}")
+
+
 def run_quality_gate(args: argparse.Namespace) -> int:
     command = [
         sys.executable,
@@ -257,11 +282,21 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("scenario", type=Path, help="Scenario YAML path")
     parser.add_argument("--stop-time", type=float, default=None, help="Override scenario stop_time_s")
+    parser.add_argument(
+        "--allow-overwrite-evidence",
+        action="store_true",
+        help="Allow shortened --stop-time runs to overwrite existing evidence paths",
+    )
     parser.add_argument("--evidence-level", default=None, help="Override metrics evidence_level")
     parser.add_argument(
         "--wrapper",
         default=None,
         help="Override Sysplorer MCP wrapper path and pass it through to run_sysplorer_mcp_smoke.py",
+    )
+    parser.add_argument(
+        "--gui-result-viewer",
+        action="store_true",
+        help="Write Sysplorer native result files and try to open GUI plot/animation after simulation",
     )
     parser.add_argument("--no-postprocess", action="store_true", help="Skip figure and replay generation")
     parser.add_argument("--no-quality-gate", action="store_true", help="Skip automatic result quality evaluation")
@@ -284,6 +319,8 @@ def main() -> int:
     args = parse_args()
     config = read_yaml(args.scenario)
     command = scenario_command(args, config)
+    if not args.allow_overwrite_evidence:
+        require_non_destructive_smoke(args, config, command)
     print("Running:", " ".join(command), flush=True)
     subprocess.run(command, cwd=ROOT, check=True)
     if not args.no_postprocess:

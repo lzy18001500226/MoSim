@@ -86,6 +86,25 @@ def test_run_mworks_batch_dry_run_wrapper_arg() -> None:
         raise AssertionError(output)
 
 
+def test_run_mworks_batch_dry_run_gui_result_viewer_arg() -> None:
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "scripts/run_mworks_batch.py",
+            "--dry-run",
+            "--gui-result-viewer",
+            "scenarios/official/example1_pid_baseline.yaml",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    output = proc.stdout
+    if "--gui-result-viewer" not in output:
+        raise AssertionError(output)
+
+
 def test_inactive_official_scenarios_are_skipped_by_default() -> None:
     proc = subprocess.run(
         [
@@ -134,6 +153,7 @@ def main() -> int:
     test_run_mworks_batch_dry_run_regression()
     test_run_mworks_batch_dry_run_quality_args()
     test_run_mworks_batch_dry_run_wrapper_arg()
+    test_run_mworks_batch_dry_run_gui_result_viewer_arg()
     test_inactive_official_scenarios_are_skipped_by_default()
     test_include_inactive_official_scenarios()
     print("[OK] run_mworks_batch dry-run regression")

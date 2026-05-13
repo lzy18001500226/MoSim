@@ -91,6 +91,8 @@ def scenario_command(scenario_path: Path, args: argparse.Namespace) -> list[str]
     command.extend(["--min-rmse-improvement-pct", f"{args.min_rmse_improvement_pct:g}"])
     if args.wrapper:
         command.extend(["--wrapper", args.wrapper])
+    if args.gui_result_viewer:
+        command.append("--gui-result-viewer")
     if args.shutdown_session:
         command.append("--shutdown-session")
     return command
@@ -135,6 +137,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--wrapper",
         default=None,
         help="Override Sysplorer MCP wrapper path and pass it through to each scenario run",
+    )
+    parser.add_argument(
+        "--gui-result-viewer",
+        action="store_true",
+        help="Write Sysplorer native result files and try to open GUI plot/animation after each scenario",
     )
     parser.add_argument("--shutdown-session", action="store_true", help="Request Sysplorer session shutdown after each scenario")
     parser.add_argument(

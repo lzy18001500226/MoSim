@@ -275,6 +275,37 @@ simulation status
 runtime logs
 ```
 
+For GUI review, the runner can optionally request a Sysplorer native result
+directory through `ext_res_path` / `result_file`. Enable this only when a human
+needs to inspect or play the native result viewer:
+
+```text
+python3 scripts/run_mworks_scenario.py <scenario.yaml> --gui-result-viewer
+```
+
+The expected native result path is:
+
+```text
+results/{group}/{scene}/{experiment}/native_result/{ModelName}/Result.msr
+```
+
+The default automated evidence path does not enable GUI viewer generation,
+because native result files can be large, locked by the GUI, and slower to
+produce. The durable evidence remains raw CSV, metrics JSON/CSV, logs, figures,
+and replay JSON.
+
+Native Sysplorer result files are local GUI assets. They are intentionally
+ignored by Git:
+
+```text
+results/**/native_result/
+*.msr
+```
+
+Do not run shortened `--stop-time` smoke checks into existing formal evidence
+paths. Use a dedicated smoke scenario/result path, or explicitly pass
+`--allow-overwrite-evidence` only when replacing those results is intended.
+
 If simulation fails:
 
 1. Save error message.

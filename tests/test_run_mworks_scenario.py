@@ -23,8 +23,10 @@ def load_module():
 class Args:
     scenario = ROOT / "scenarios" / "official" / "example1_pid_baseline.yaml"
     stop_time = None
+    allow_overwrite_evidence = False
     evidence_level = None
     wrapper = None
+    gui_result_viewer = False
     shutdown_session = False
     no_quality_gate = False
     allow_needs_iteration = False
@@ -70,10 +72,38 @@ def test_run_mworks_scenario_wrapper_passthrough() -> None:
         raise AssertionError(f"Wrapper path should be passed to run_sysplorer_mcp_smoke.py: {joined}")
 
 
+def test_run_mworks_scenario_gui_result_viewer_passthrough() -> None:
+    module = load_module()
+    config = module.read_yaml(Args.scenario)
+    args = Args()
+    args.gui_result_viewer = True
+    command = module.scenario_command(args, config)
+    joined = " ".join(command)
+    if "--gui-result-viewer" not in joined:
+        raise AssertionError(f"GUI result viewer flag should be passed through: {joined}")
+
+
+def test_run_mworks_scenario_refuses_short_smoke_overwrite() -> None:
+    module = load_module()
+    config = module.read_yaml(Args.scenario)
+    args = Args()
+    args.stop_time = 1.0
+    command = module.scenario_command(args, config)
+    try:
+        module.require_non_destructive_smoke(args, config, command)
+    except RuntimeError as exc:
+        if "Refusing to run a shortened smoke simulation" not in str(exc):
+            raise
+        return
+    raise AssertionError("Shortened smoke run should not overwrite existing official evidence")
+
+
 def main() -> int:
     test_run_mworks_scenario_command_regression()
     test_run_mworks_scenario_stop_time_override()
     test_run_mworks_scenario_wrapper_passthrough()
+    test_run_mworks_scenario_gui_result_viewer_passthrough()
+    test_run_mworks_scenario_refuses_short_smoke_overwrite()
     print("[OK] run_mworks_scenario command regression")
     return 0
 
