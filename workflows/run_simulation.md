@@ -276,8 +276,12 @@ runtime logs
 ```
 
 For GUI review, the runner requests a Sysplorer native result directory through
-`ext_res_path` / `result_file` by default. This lets the human reviewer inspect
-curves and play the native result viewer after each formal simulation.
+`ext_res_path` by default, then opens the model window and creates plots and
+animation from the active Sysplorer simulation session. The native `Result.msr`
+is retained as a manual fallback for inspection. The manual review target is
+the actual quadrotor 3D animation plus tracking curves; seeing only static
+propeller geometry, only a blank result viewer, or only parameter curves is not
+enough to mark visual review complete.
 
 ```text
 python3 scripts/run_mworks_scenario.py <scenario.yaml>
@@ -299,6 +303,24 @@ python3 scripts/run_mworks_scenario.py <scenario.yaml> --no-gui-result-viewer
 The durable evidence remains raw CSV, metrics JSON/CSV, logs, figures, and
 replay JSON. Native result files support human review but are intentionally not
 tracked.
+
+If the GUI viewer opens but the 3D quadrotor animation is missing, keep the
+raw/metrics/log evidence, record the GUI issue in the task notes, and inspect
+the native result manually from:
+
+```text
+results/{group}/{scene}/{experiment}/native_result/{ModelName}/Result.msr
+```
+
+Do not keep retrying MCP if the window shows a login/activation prompt or a
+large set of unrelated library errors. Save the current work and request manual
+login/activation.
+
+The runner should not call blocking playback commands such as `RunAnimation()`
+by default. It may create the animation window, but the human reviewer starts
+playback in the GUI. If animation-window creation blocks MCP health checks,
+disable GUI animation for the next batch and use the native result file for
+manual review.
 
 Native Sysplorer result files are local GUI assets. They are intentionally
 ignored by Git:

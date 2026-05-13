@@ -168,7 +168,7 @@ Rules:
 10. Do not automatically close Sysplorer / Syslab / MWORKS windows before Git. Closing these windows can force license reactivation on the next run. Leave reusable windows open by default.
 11. Close Sysplorer / Syslab / MWORKS windows only when the user explicitly asks, when the window is clearly frozen, when a login/activation prompt blocks progress, or when a stale process is opening duplicate sessions uncontrollably.
 12. If a GUI window freezes, shows an unexpected login prompt, or an MCP call has no useful response within the planned timeout, stop that MCP sequence, clean up the related process/window if it is clearly identifiable, and continue with file-level work or report the blocker.
-13. Formal simulation runs should generate Sysplorer native result assets by default so the user can inspect curves and GUI animation. Use `--no-gui-result-viewer` only for headless tests, batch regressions, or known GUI/license instability.
+13. Formal simulation runs should generate Sysplorer native result assets by default so the user can inspect curves and the actual quadrotor 3D animation. A window that only shows static propeller geometry or curves is not sufficient for manual visual audit. Use `--no-gui-result-viewer` only for headless tests, batch regressions, or known GUI/license instability.
 14. `native_result/` and `*.msr` files are local GUI review assets and are ignored by Git. Do not commit them.
 
 ### 3.5 Simulation Evidence Rule

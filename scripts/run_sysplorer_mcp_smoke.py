@@ -354,6 +354,15 @@ def open_gui_result_viewer(
     variables: dict[str, str],
 ) -> dict[str, Any]:
     result_file = windows_path(native_result)
+    try:
+        model_result = client.call_tool(
+            "model_manager",
+            {"action": "open", "model_name": model_name},
+            timeout_s=30,
+        )
+    except Exception as exc:
+        model_result = {"ok": False, "warning": f"gui_model_open_failed: {exc}"}
+
     plot_vars = [
         variables.get("z", "sensors1_1.PosMea[3]"),
         variables.get("z_ref", "climbePath.position_command[3]"),
@@ -369,23 +378,50 @@ def open_gui_result_viewer(
                 "variables": plot_vars,
                 "heading": f"{model_name} tracking",
                 "clear_first": False,
-                "result_file": result_file,
             },
-            timeout_s=45,
+            timeout_s=30,
         )
     except Exception as exc:
         plot_result = {"ok": False, "warning": f"gui_plot_failed: {exc}"}
+
+    animation_script = f"""
+import mworks.sysplorer as ModelingPy
+
+results = {{}}
+try:
+    try:
+        results["open_model_diagram"] = ModelingPy.OpenModel({model_name!r}, ModelingPy.ModelView.Diagram)
+    except Exception as exc:
+        results["open_model_diagram_fallback"] = repr(exc)
+        results["open_model"] = ModelingPy.OpenModel({model_name!r})
+except Exception as exc:
+    results["open_model_error"] = repr(exc)
+
+try:
+    results["create_animation"] = ModelingPy.CreateAnimation()
+except Exception as exc:
+    results["create_animation_error"] = repr(exc)
+
+try:
+    results["animation_speed"] = ModelingPy.AnimationSpeed(0.2)
+except Exception as exc:
+    results["animation_speed_error"] = repr(exc)
+
+RUN_SCRIPT_RESULT = results
+"""
     try:
         animation_result = client.call_tool(
-            "plot_manager",
-            {"action": "create_animation", "result_file": result_file},
-            timeout_s=45,
+            "call_code",
+            {"mode": "run_script", "payload": {"python_source": animation_script}},
+            timeout_s=15,
         )
     except Exception as exc:
         animation_result = {"ok": False, "warning": f"gui_animation_failed: {exc}"}
+
     return {
         "native_result_file": result_file,
         "native_result_exists": native_result.exists(),
+        "model_result": model_result,
         "plot_result": plot_result,
         "animation_result": animation_result,
     }
@@ -502,6 +538,7 @@ def run_mcp_simulation(
         if gui_result_viewer:
             print(f"Native result: {native_result}")
         if gui_result is not None:
+            print(f"GUI model: {gui_result['model_result'].get('ok')}")
             print(f"GUI plot: {gui_result['plot_result'].get('ok')}")
             print(f"GUI animation: {gui_result['animation_result'].get('ok')}")
         print(f"Rows: {len(read_result['data'][0])}")
