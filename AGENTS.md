@@ -168,6 +168,8 @@ Rules:
 10. Do not automatically close Sysplorer / Syslab / MWORKS windows before Git. Closing these windows can force license reactivation on the next run. Leave reusable windows open by default.
 11. Close Sysplorer / Syslab / MWORKS windows only when the user explicitly asks, when the window is clearly frozen, when a login/activation prompt blocks progress, or when a stale process is opening duplicate sessions uncontrollably.
 12. If a GUI window freezes, shows an unexpected login prompt, or an MCP call has no useful response within the planned timeout, stop that MCP sequence, clean up the related process/window if it is clearly identifiable, and continue with file-level work or report the blocker.
+13. Formal simulation runs should generate Sysplorer native result assets by default so the user can inspect curves and GUI animation. Use `--no-gui-result-viewer` only for headless tests, batch regressions, or known GUI/license instability.
+14. `native_result/` and `*.msr` files are local GUI review assets and are ignored by Git. Do not commit them.
 
 ### 3.5 Simulation Evidence Rule
 
@@ -202,6 +204,9 @@ For MWORKS simulations:
 8. Reuse an existing session for related operations instead of opening many windows.
 9. If repeated simulations open multiple windows, stop opening new MCP sessions, clean up clearly identifiable stale windows before Git, and prefer fixing model files offline before retrying MCP.
 10. Do not document a model as verified unless its latest version has a successful `load_file` and `check_model` log, or the report explicitly marks it as an unverified draft.
+11. After temporary smoke tests, probes, or failed MCP attempts, delete `.running`, `.tmp`, `__pycache__`, and ad-hoc probe logs before commit.
+12. If previously working MWORKS simulations start returning unexplained activation/login/license/library-load failures, assume possible login or activation loss. Preserve current source changes, remove temporary test artifacts, stop retrying MCP, and ask the user for manual login/activation review.
+13. At the end of each completed simulation task, leave reusable GUI windows open and report which scenario/result should be manually reviewed.
 
 ---
 

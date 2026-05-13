@@ -26,7 +26,7 @@ class Args:
     allow_overwrite_evidence = False
     evidence_level = None
     wrapper = None
-    gui_result_viewer = False
+    no_gui_result_viewer = False
     shutdown_session = False
     no_quality_gate = False
     allow_needs_iteration = False
@@ -72,14 +72,14 @@ def test_run_mworks_scenario_wrapper_passthrough() -> None:
         raise AssertionError(f"Wrapper path should be passed to run_sysplorer_mcp_smoke.py: {joined}")
 
 
-def test_run_mworks_scenario_gui_result_viewer_passthrough() -> None:
+def test_run_mworks_scenario_no_gui_result_viewer_passthrough() -> None:
     module = load_module()
     config = module.read_yaml(Args.scenario)
     args = Args()
-    args.gui_result_viewer = True
+    args.no_gui_result_viewer = True
     command = module.scenario_command(args, config)
     joined = " ".join(command)
-    if "--gui-result-viewer" not in joined:
+    if "--no-gui-result-viewer" not in joined:
         raise AssertionError(f"GUI result viewer flag should be passed through: {joined}")
 
 
@@ -102,7 +102,7 @@ def main() -> int:
     test_run_mworks_scenario_command_regression()
     test_run_mworks_scenario_stop_time_override()
     test_run_mworks_scenario_wrapper_passthrough()
-    test_run_mworks_scenario_gui_result_viewer_passthrough()
+    test_run_mworks_scenario_no_gui_result_viewer_passthrough()
     test_run_mworks_scenario_refuses_short_smoke_overwrite()
     print("[OK] run_mworks_scenario command regression")
     return 0

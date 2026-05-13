@@ -277,9 +277,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Explicitly request session_manager shutdown after saving outputs. Default keeps GUI reusable.",
     )
     parser.add_argument(
-        "--gui-result-viewer",
+        "--no-gui-result-viewer",
         action="store_true",
-        help="Write Sysplorer native result files and try to open GUI plot/animation after simulation",
+        help="Skip Sysplorer native result files and GUI plot/animation after simulation",
     )
     return parser.parse_args(argv)
 
@@ -407,6 +407,9 @@ def run_mcp_simulation(
     variables.update(parse_extra_variables(args.extra_variable))
     native_result_dir = args.native_result_dir or default_native_result_dir(args.raw_output)
     native_result = native_result_file(native_result_dir, args.model_name)
+    gui_result_viewer = not args.no_gui_result_viewer
+    if gui_result_viewer:
+        native_result_dir.mkdir(parents=True, exist_ok=True)
     success = False
     try:
         open_result = client.call_tool(
@@ -450,7 +453,7 @@ def run_mcp_simulation(
                 "model_name": args.model_name,
                 "sim_mode": 0,
                 "target_time": target_time,
-                **({"ext_res_path": windows_path(native_result_dir)} if args.gui_result_viewer else {}),
+                **({"ext_res_path": windows_path(native_result_dir)} if gui_result_viewer else {}),
                 "verify_result_var": "sensors1_1.PosMea[3]",
                 "verify_time_point": "end",
             },
@@ -481,7 +484,7 @@ def run_mcp_simulation(
             args.evidence_level,
         )
         gui_result: dict[str, Any] | None = None
-        if args.gui_result_viewer:
+        if gui_result_viewer:
             gui_result = open_gui_result_viewer(
                 client,
                 native_result=native_result,
@@ -496,7 +499,7 @@ def run_mcp_simulation(
         print(f"Raw CSV: {args.raw_output}")
         print(f"Metrics JSON: {args.metrics_json}")
         print(f"Metrics CSV: {args.metrics_csv}")
-        if args.gui_result_viewer:
+        if gui_result_viewer:
             print(f"Native result: {native_result}")
         if gui_result is not None:
             print(f"GUI plot: {gui_result['plot_result'].get('ok')}")

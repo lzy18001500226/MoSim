@@ -275,12 +275,12 @@ simulation status
 runtime logs
 ```
 
-For GUI review, the runner can optionally request a Sysplorer native result
-directory through `ext_res_path` / `result_file`. Enable this only when a human
-needs to inspect or play the native result viewer:
+For GUI review, the runner requests a Sysplorer native result directory through
+`ext_res_path` / `result_file` by default. This lets the human reviewer inspect
+curves and play the native result viewer after each formal simulation.
 
 ```text
-python3 scripts/run_mworks_scenario.py <scenario.yaml> --gui-result-viewer
+python3 scripts/run_mworks_scenario.py <scenario.yaml>
 ```
 
 The expected native result path is:
@@ -289,10 +289,16 @@ The expected native result path is:
 results/{group}/{scene}/{experiment}/native_result/{ModelName}/Result.msr
 ```
 
-The default automated evidence path does not enable GUI viewer generation,
-because native result files can be large, locked by the GUI, and slower to
-produce. The durable evidence remains raw CSV, metrics JSON/CSV, logs, figures,
-and replay JSON.
+For headless regression, batch runs, or a known GUI/license issue, skip native
+viewer generation explicitly:
+
+```text
+python3 scripts/run_mworks_scenario.py <scenario.yaml> --no-gui-result-viewer
+```
+
+The durable evidence remains raw CSV, metrics JSON/CSV, logs, figures, and
+replay JSON. Native result files support human review but are intentionally not
+tracked.
 
 Native Sysplorer result files are local GUI assets. They are intentionally
 ignored by Git:
@@ -305,6 +311,14 @@ results/**/native_result/
 Do not run shortened `--stop-time` smoke checks into existing formal evidence
 paths. Use a dedicated smoke scenario/result path, or explicitly pass
 `--allow-overwrite-evidence` only when replacing those results is intended.
+
+After smoke tests or temporary probes, delete `.running`, `.tmp`, `__pycache__`,
+and ad-hoc probe logs before committing.
+
+If Sysplorer/MWORKS suddenly reports unexplained license, activation, login, or
+bulk library load failures after previously passing, preserve current file
+changes, clean temporary files, stop the MCP sequence, and ask for manual
+login/activation review instead of repeatedly retrying.
 
 If simulation fails:
 

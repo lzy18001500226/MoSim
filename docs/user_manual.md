@@ -133,6 +133,7 @@ session_manager
 → check_model
 → simulate_model
 → result_manager list/read variables
+→ native_result / GUI result viewer for manual review
 → export raw CSV
 → calc metrics
 → generate figures/replay
@@ -351,6 +352,8 @@ results/summaries/experiment_summary/experiment_summary.md
 ```
 
 说明：项目不再生成或保留 Python/Julia 离线仿真结果。风扰、质量变化、故障、规划、编队等扩展场景必须通过 MWORKS/Sysplorer/MCP 或手动 MWORKS GUI 形成 `source=MWORKS_MCP` / `source=MWORKS_GUI` 证据后，才能进入正式实验汇总和报告结论。
+
+默认情况下，正式场景运行会生成 Sysplorer 原生结果目录 `native_result/{ModelName}/Result.msr`，并尝试打开结果曲线/动画，便于人工审核。该目录只用于本地 GUI 审查，已被 Git 忽略。批量回归、无界面环境或授权状态不稳定时可添加 `--no-gui-result-viewer` 跳过原生结果和动画窗口。若出现无法解释的授权、登录、激活或大批量库加载失败，应先保存当前代码改动并停止 MCP 重试，等待人工重新登录/激活。
 
 ## 8. 下一阶段真实仿真入口
 

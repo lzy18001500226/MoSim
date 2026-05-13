@@ -169,8 +169,8 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
     ]
     if args.wrapper:
         command.extend(["--wrapper", args.wrapper])
-    if args.gui_result_viewer:
-        command.append("--gui-result-viewer")
+    if args.no_gui_result_viewer:
+        command.append("--no-gui-result-viewer")
     extra_variables = result.get("extra_variables", {})
     if extra_variables:
         if not isinstance(extra_variables, dict):
@@ -294,9 +294,9 @@ def parse_args() -> argparse.Namespace:
         help="Override Sysplorer MCP wrapper path and pass it through to run_sysplorer_mcp_smoke.py",
     )
     parser.add_argument(
-        "--gui-result-viewer",
+        "--no-gui-result-viewer",
         action="store_true",
-        help="Write Sysplorer native result files and try to open GUI plot/animation after simulation",
+        help="Skip Sysplorer native result files and GUI plot/animation after simulation",
     )
     parser.add_argument("--no-postprocess", action="store_true", help="Skip figure and replay generation")
     parser.add_argument("--no-quality-gate", action="store_true", help="Skip automatic result quality evaluation")
