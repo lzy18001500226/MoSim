@@ -1,0 +1,38 @@
+experiment_id: robust_rotor2_loss15_example1_pid_baseline
+scene_id: robust_rotor2_loss15_example1
+controller_id: pid_baseline
+priority: P1
+evidence_level: real_sysplorer_mcp_robust_rotor_loss_ablation
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1Rotor2Loss15PID
+  model_path_hint: models/QuadrotorExperiments/package.mo
+  base_model_path_hint: QuadrotorModel/package.mo
+  official_description: 阶梯爬升 2号旋翼升力效率85% baseline PID
+
+disturbance:
+  type: actuator_efficiency_loss
+  target_component: quadChassisTest17_1.gain3.k
+  affected_rotor: rotor_2
+  nominal_lift_gain: 0.002
+  degraded_lift_gain: 0.0017
+  efficiency_ratio: 0.85
+  purpose: single_rotor_efficiency_degradation_robustness_baseline
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
+result:
+  raw_file: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_pid_baseline/raw/robust_rotor2_loss15_example1_pid_baseline.csv
+  metrics_file: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_pid_baseline/metrics/robust_rotor2_loss15_example1_pid_baseline.json
+  figure_dir: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_pid_baseline/figures
+  replay_file: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_pid_baseline/replay/robust_rotor2_loss15_example1_pid_baseline.json
+  mcp_log: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_pid_baseline/logs/sysplorer_robust_rotor2_loss15_example1_pid_baseline_20260512.jsonl

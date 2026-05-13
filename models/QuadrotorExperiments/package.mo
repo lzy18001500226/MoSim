@@ -473,6 +473,27 @@ package QuadrotorExperiments
     annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
   end Example1Rotor1Loss15EnhancedPID;
 
+  model Example1Rotor2Loss15PID
+    "Example1 baseline PID with rotor 2 lift efficiency reduced to 85%"
+    extends QuadrotorModel.Examples.Example1(
+      quadChassisTest17_1.gain3(k = 0.0017));
+    annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
+  end Example1Rotor2Loss15PID;
+
+  model Example1Rotor3Loss15PID
+    "Example1 baseline PID with rotor 3 lift efficiency reduced to 85%"
+    extends QuadrotorModel.Examples.Example1(
+      quadChassisTest17_1.gain4(k = 0.0017));
+    annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
+  end Example1Rotor3Loss15PID;
+
+  model Example1Rotor4Loss15PID
+    "Example1 baseline PID with rotor 4 lift efficiency reduced to 85%"
+    extends QuadrotorModel.Examples.Example1(
+      quadChassisTest17_1.gain5(k = 0.0017));
+    annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
+  end Example1Rotor4Loss15PID;
+
   model Example2ImprovedPID
     "Example2 with project improved PID parameter set selected by MCP tuning"
     extends QuadrotorModel.Examples.Example2(
