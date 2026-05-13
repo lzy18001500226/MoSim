@@ -678,7 +678,7 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 |---|---|---:|---:|---:|---:|---:|---|
 | 阶梯爬升 | `QuadrotorExperiments.Example1LinearMPCSysblockClosedLoop` | 50 s | 0.2418 | 0.0722 | 1.2186 | 0.828% | pass |
 | 螺旋爬升 | `QuadrotorExperiments.Example2LinearMPCSysblockClosedLoop` | 50 s | 0.4436 | 0.1463 | 3.0068 | 0.574% | pass |
-| 8字形运动 | `QuadrotorExperiments.Example3LinearMPCSysblockClosedLoop` | 120 s | 0.1494 | 0.0469 | 1.1355 | 1.882% | pass |
+| 8字形运动 | `QuadrotorExperiments.Example3LinearMPCSysblockClosedLoop` | 120 s | 0.1490 | 0.0469 | 1.1340 | 2.134% | pass |
 
 鲁棒场景消融：
 
