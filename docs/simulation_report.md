@@ -672,7 +672,7 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 
 ## 13. Linear MPC-style 外环闭环结果
 
-`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 在 `controller3_2` 统一接口内实现 finite-horizon linear MPC-style 外环、L1-inspired residual feedforward 和 INDI-like 姿态内环。该版本不是在线 QP/NMPC 求解器；它使用显式终端误差项、加速度限幅、残差低通补偿和有界姿态增量项，在不改变官方机体、电机、传感器和路径模型的前提下接入 Example1/2/3。对应图形化审查模型为 `AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock`；旋翼退化补偿版本对应 `AWFF_InnovationGraphicalControllers.AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock`。两者已通过静态行为契约和 Sysplorer MCP `check_model`，但整机性能表仍引用 Equation 控制器全时长闭环结果。
+`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 在 `controller3_2` 统一接口内实现 finite-horizon linear MPC-style 外环、L1-inspired residual feedforward 和 INDI-like 姿态内环。该版本不是在线 QP/NMPC 求解器；它使用显式终端误差项、加速度限幅、残差低通补偿和有界姿态增量项，在不改变官方机体、电机、传感器和路径模型的前提下接入 Example1/2/3。对应图形化审查模型为 `AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock`。旋翼退化补偿分两层：`AWFF_LinearMPCOnlineFaultAllocationController_Sysblock` 是 rotor1 在线 eta_hat 原型；`AWFF_LinearMPCMultiFaultAllocationController_Sysblock` 是 rotor1-4 通用多旋翼在线分配版本，输出 `eta_hat1..4` 与 `fault_index`，用于复合故障横向对照。图形化审查入口仍使用 `AWFF_InnovationGraphicalControllers.AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock` 表达 LinearMPC 外环、在线效率估计和自适应分配结构；整机性能表引用 Equation 控制器全时长闭环结果。
 
 | 场景 | 模型 | 时长 | RMSE (m) | 稳态误差 (m) | 最大误差 (m) | 相对 L1+INDI RMSE 降低 | 质量门 |
 |---|---|---:|---:|---:|---:|---:|---|
@@ -688,12 +688,18 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 | 横向阵风 Example1 | `linear_mpc_sysblock` | `l1_residual_sysblock` | 0.2588 | 0.0722 | 0.0721 | 2.67 | 6.984% | 55.388 | pass |
 | 1号旋翼效率85% Example1 | `linear_mpc_sysblock` | `l1_residual_sysblock` | 0.3140 | 0.2075 | 0.2066 | 5.48 | 1.817% | 36.889 | needs_iteration |
 | 1号旋翼效率85% Example1 | `linear_mpc_online_fault_allocation_sysblock` | `linear_mpc_sysblock` | 0.2582 | 0.1150 | 0.1085 | 2.53 | 17.778% | 51.299 | pass |
+| rotor1 85% + 横向阵风 | `linear_mpc_online_fault_allocation_sysblock` | `awff_sysblock` | 0.2614 | 0.1145 | 0.2003 | - | 31.063% | 51.318 | pass |
+| rotor2 85% + 横向阵风 | `linear_mpc_online_fault_allocation_sysblock` | `awff_sysblock` | 0.2691 | 0.1415 | 0.1685 | - | 28.191% | 51.140 | pass |
+| rotor3 85% + 横向阵风 | `linear_mpc_online_fault_allocation_sysblock` | `awff_sysblock` | 0.2669 | 0.1396 | 0.1687 | - | 26.691% | 51.165 | pass |
+| rotor4 85% + 横向阵风 | `linear_mpc_online_fault_allocation_sysblock` | `awff_sysblock` | 0.2688 | 0.1368 | 0.1652 | - | 27.157% | 51.163 | pass |
 
-旋翼退化结论：纯 LinearMPC-style 外环在 1 号旋翼 85% 效率退化下虽然 RMSE 相比 L1 residual 低 `1.817%`，但健康分只有 `36.889`，不能作为“故障已解决”的证据。加入在线效率估计与控制分配补偿后，`linear_mpc_online_fault_allocation_sysblock` 通过质量门，`eta_hat` 末值约 `0.906`，45-50 s 尾段均值约 `0.908`，RMSE 相比纯 LinearMPC 降低 `17.778%`。该结果支撑“LinearMPC 外环需要与执行器故障分配层组合处理旋翼退化”的结论。
+旋翼退化结论：纯 LinearMPC-style 外环在 1 号旋翼 85% 效率退化下虽然 RMSE 相比 L1 residual 低 `1.817%`，但健康分只有 `36.889`，不能作为“故障已解决”的证据。加入在线效率估计与控制分配补偿后，`linear_mpc_online_fault_allocation_sysblock` 通过质量门，`eta_hat` 末值约 `0.906`，45-50 s 尾段均值约 `0.908`，RMSE 相比纯 LinearMPC 降低 `17.778%`。2026-05-14 新增多旋翼版本后，rotor1-4 的“单旋翼效率 85% + 横向阵风”复合场景均通过质量门；其中 AWFF Sysblock 边界样本健康分仅 `35.812-36.051`，LinearMPC 多旋翼在线分配健康分提升到 `51.140-51.318`，RMSE 相比 AWFF 降低 `26.691%-31.063%`。该结果支撑“LinearMPC 外环需要与执行器故障分配层组合处理旋翼退化，并且多旋翼故障方向可由 eta_hat[4] 统一覆盖”的结论。
 
 2026-05-12 复核：`official_example3_linear_mpc_sysblock` 重新通过 8 字形质量门；`linear_mpc_online_fault_allocation_sysblock` rotor1 退化场景重新通过质量门，复核得到 `eta_hat` 45-50 s 尾段均值约 `0.908`。该复核只读取已有 MWORKS_MCP raw CSV 和 metrics，不属于新增离线仿真。
 
 2026-05-13 复核：`linear_mpc_online_fault_allocation_sysblock` 在 rotor1 退化 + 横向阵风复合场景重新通过全时长 Sysplorer MCP 仿真，RMSE 为 `0.2614 m`、稳态误差为 `0.1145 m`、最大误差为 `1.2467 m`、健康分为 `51.318`。该场景原生 `Result.msr` 路径超过 Windows 传统路径长度限制时会写入 `results/native_result_cache/`，实验目录下的 `native_result/native_result_manifest.json` 记录映射；raw CSV、metrics、figures、replay 和 MCP log 仍保存在原实验目录。
+
+2026-05-14 复核：补齐 rotor2-4 的 AWFF 复合扰动边界负样本，并新增 `AWFF_LinearMPCMultiFaultAllocationController_Sysblock` 接入 rotor2-4 复合鲁棒场景。rotor2、rotor3、rotor4 的 LinearMPC 多旋翼在线分配场景均完成 50 s 真实 Sysplorer MCP 仿真，GUI model/plot/animation 已打开审查，质量门均为 `pass`；`fault_index` 在 `5-50 s` 内分别锁定 2、3、4，正确率均为 `100%`。
 
 证据文件：
 
@@ -706,6 +712,12 @@ scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml
 scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml
 scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml
 scenarios/robustness/example1_rotor1_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+scenarios/robustness/example1_rotor2_loss15_wind_gust_awff_sysblock.yaml
+scenarios/robustness/example1_rotor3_loss15_wind_gust_awff_sysblock.yaml
+scenarios/robustness/example1_rotor4_loss15_wind_gust_awff_sysblock.yaml
+scenarios/robustness/example1_rotor2_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+scenarios/robustness/example1_rotor3_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+scenarios/robustness/example1_rotor4_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
 
 results/official/example1_step/official_example1_linear_mpc_sysblock/
 results/official/example2_helix/official_example2_linear_mpc_sysblock/
@@ -715,6 +727,12 @@ results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysbl
 results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_sysblock/
 results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/
 results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/
+results/robustness/rotor2_loss15_wind_gust_example1/robust_rotor2_loss15_wind_gust_example1_awff_sysblock/
+results/robustness/rotor3_loss15_wind_gust_example1/robust_rotor3_loss15_wind_gust_example1_awff_sysblock/
+results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_awff_sysblock/
+results/robustness/rotor2_loss15_wind_gust_example1/robust_rotor2_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/
+results/robustness/rotor3_loss15_wind_gust_example1/robust_rotor3_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/
+results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/
 ```
 
 结论边界：该组结果可以支撑“线性 MPC-style 外环已完成官方三场景整机闭环验证，并在当前质量门下略优于对应 L1+INDI 基线”的表述；可以支撑“质量摄动和横向阵风鲁棒场景已通过”的表述；旋翼退化必须表述为“需要在线效率估计与控制分配补偿后通过”。不能支撑“在线优化 MPC/NMPC 已完成”的表述。

@@ -3,15 +3,22 @@ type: sysblock_linear_mpc_outer_loop_online_efficiency_fault_allocation
 priority: P1-B
 
 description: >
-  Project Sysblock controller that combines the verified LinearMPC-style
-  outer loop and INDI-like attitude loop with the online rotor-1 efficiency
-  allocation layer used in the fault-allocation branch. It is intended for
-  actuator-degradation scenes where pure outer-loop compensation is not enough.
+  Project Sysblock controller family that combines the verified LinearMPC-style
+  outer loop and INDI-like attitude loop with online efficiency estimation and
+  motor allocation. The original rotor-1 eta_hat prototype is preserved; the
+  current P1-C evidence uses a four-rotor eta_hat[4] and fault_index extension
+  for rotor1-4 single-rotor degradation plus wind-gust scenes.
 
 implementation_status:
   current_mworks_model:
     - QuadrotorExperiments.Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop
-  sysblock_controller: AWFF_LinearMPCOnlineFaultAllocationController_Sysblock
+    - QuadrotorExperiments.Example1Rotor1Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop
+    - QuadrotorExperiments.Example1Rotor2Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop
+    - QuadrotorExperiments.Example1Rotor3Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop
+    - QuadrotorExperiments.Example1Rotor4Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop
+  sysblock_controller:
+    rotor1_prototype: AWFF_LinearMPCOnlineFaultAllocationController_Sysblock
+    multi_rotor: AWFF_LinearMPCMultiFaultAllocationController_Sysblock
   graphical_sysblock_counterpart:
     package_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
     controller_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock
@@ -27,13 +34,14 @@ implementation_status:
       allocation. Full-plant performance evidence still uses the Equation
       bridge for current Sysplorer/Modelica embedding compatibility.
   verification_scope: >
-    Real MWORKS_MCP 50 s full run is complete for rotor-1 85% efficiency
-    degradation. The combined LinearMPC + online allocation controller passes
-    the quality gate against the pure LinearMPC boundary case.
+    Real MWORKS_MCP 50 s full runs are complete for rotor-1 85% efficiency
+    degradation, rotor-1 85% plus wind-gust, and rotor2-4 85% plus wind-gust
+    scenes. The rotor2-4 wind-gust scenes use the multi-rotor eta_hat[4]
+    controller and pass the quality gate against AWFF boundary cases.
   limitation: >
-    This is a rotor-1 online allocation prototype. It should not be described
-    as general multi-rotor fault isolation until the multi-fault branch is
-    integrated and validated.
+    The multi-rotor branch is verified for persistent single-rotor degradation
+    plus wind gust. It should not be described as simultaneous multi-rotor
+    failure handling or transient fault switching.
 
 model_interface:
   replacement_component: controller3_2
@@ -42,7 +50,8 @@ model_interface:
     - AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock
   implementation_target:
     - Sysblock controller component
-    - Project-owned rotor-1 85% efficiency degradation Example1 closed-loop wrapper
+    - Project-owned rotor efficiency degradation Example1 closed-loop wrappers
+    - Project-owned rotor efficiency degradation plus wind-gust Example1 wrappers
   inputs:
     x_error: climbePath.position_command[1] - sensors1_1.PosMea[1]
     y_error: climbePath.position_command[2] - sensors1_1.PosMea[2]
@@ -55,7 +64,12 @@ model_interface:
     motor_2: y1
     motor_3: y2
     motor_4: y3
-    diagnostic_eta_hat: eta_hat
+    diagnostic_eta_hat: eta_hat for rotor-1 prototype
+    diagnostic_eta_hat1: eta_hat1 for multi-rotor branch
+    diagnostic_eta_hat2: eta_hat2 for multi-rotor branch
+    diagnostic_eta_hat3: eta_hat3 for multi-rotor branch
+    diagnostic_eta_hat4: eta_hat4 for multi-rotor branch
+    diagnostic_fault_index: fault_index for multi-rotor branch
   required_result_variables:
     - sensors1_1.PosMea[1]
     - sensors1_1.PosMea[2]
@@ -71,10 +85,15 @@ model_interface:
     - controller3_2.y2
     - controller3_2.y3
     - controller3_2.eta_hat
+    - controller3_2.eta_hat1
+    - controller3_2.eta_hat2
+    - controller3_2.eta_hat3
+    - controller3_2.eta_hat4
+    - controller3_2.fault_index
 
 online_fault_estimator:
-  affected_rotor: rotor_1
-  target_component: quadChassisTest17_1.gain2.k
+  affected_rotor: rotor_1 for the prototype; rotor_1..4 for the multi-rotor branch
+  target_component: quadChassisTest17_1.gain2.k through gain5.k
   nominal_lift_gain: 0.01253887049854549
   degraded_lift_gain: 0.01065803992376367
   true_efficiency_for_validation: 0.85
@@ -84,13 +103,28 @@ online_fault_estimator:
   eta_signature_deadband: 0.015
   eta_signature_gain: 2.65
   rotor1_allocation_blend: 0.52
-  diagnostic_signal: controller3_2.eta_hat
+  multi_rotor_allocation_blend: 0.52
+  diagnostic_signal:
+    - controller3_2.eta_hat
+    - controller3_2.eta_hat1
+    - controller3_2.eta_hat2
+    - controller3_2.eta_hat3
+    - controller3_2.eta_hat4
+    - controller3_2.fault_index
 
 acceptance:
-  rotor_degradation:
+  rotor1_degradation:
     scenario_file: scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml
     required: check_model, simulate_model, result_manager, eta_hat raw column, metrics, figures, replay JSON
     target_quality: pass_or_better_than_linear_mpc_without_fault_allocation
+  rotor1_to_4_wind_gust:
+    scenario_files:
+      - scenarios/robustness/example1_rotor1_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - scenarios/robustness/example1_rotor2_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - scenarios/robustness/example1_rotor3_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - scenarios/robustness/example1_rotor4_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+    required: check_model, simulate_model, eta_hat1..4 raw columns, fault_index raw column, metrics, figures, replay JSON
+    target_quality: pass_or_better_than_awff_boundary
 
 verified_evidence:
   source: MWORKS_MCP
@@ -110,3 +144,15 @@ verified_evidence:
     rmse_reduction_vs_linear_mpc_pct: 17.778
     eta_hat_final: 0.90557548713665
     eta_hat_tail_mean_45_50s: 0.9083956325514871
+
+  rotor_wind_gust_multi_rotor_full:
+    scenario_files:
+      - scenarios/robustness/example1_rotor1_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - scenarios/robustness/example1_rotor2_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - scenarios/robustness/example1_rotor3_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - scenarios/robustness/example1_rotor4_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+    quality_status: pass
+    rmse_reduction_vs_awff_pct_range: 26.691-31.063
+    health_score_range: 51.140-51.318
+    fault_index_accuracy_5_50s_rotor2_to_4: 1.0
+    note: rotor1 wind-gust uses the existing rotor-1 prototype output eta_hat; rotor2-4 use eta_hat1..4 and fault_index.

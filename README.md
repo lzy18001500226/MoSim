@@ -64,6 +64,7 @@ scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml  Sysblock LinearMP
 scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml  Sysblock LinearMPC-style 横向阵风消融
 scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml  Sysblock LinearMPC-style 无故障分配旋翼退化边界案例
 scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml  Sysblock LinearMPC-style + 在线 eta_hat 控制分配补偿
+scenarios/robustness/example1_rotor{1..4}_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml  Sysblock LinearMPC-style + eta_hat[4] 复合故障在线分配对照
 ```
 
 按场景 YAML 运行真实 Sysplorer MCP 证据链：
@@ -115,8 +116,8 @@ P2：可跟踪性感知路径规划 + 三机协同任务 + 健康度评分 + MCP
 ```text
 Sysplorer/Modelica 真实仿真：官方 baseline、Improved PID、Enhanced PID、AWFF PID、质量/风扰/旋翼退化消融已完成多组证据。
 Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/simulate_model/result_manager；位置环、姿态环、电机分配、三层组合控制器和单层扁平图形化控制器已通过真实 MCP load_file/check_model/simulate_model；`AWFF_InnovationGraphicalControllers` 中的 L1 residual、L1+INDI、L1+已知效率分配、L1+多旋翼故障隔离四个图形化控制器已通过真实 MCP load_file/check_model。当前 Sysplorer 编译器不支持图形化 Sysblock 控制器作为 Modelica 整机子组件时的内部多输入端口解析，因此官方整机性能证据暂由 Equation Sysblock 接入 QuadrotorExperiments 闭环模型；这只是整机接入约束，不降低图形化 Sysblock 对应模型的交付要求。
-P1 创新控制器证据：AWFF_L1ResidualControllerEquation_Sysblock 已覆盖 Example1、8 字形、质量 +20%、横向阵风和旋翼退化真实 Sysplorer MCP 仿真；其中 Example1、8 字形、质量 +20% 和横向阵风均通过质量门。`AWFF_INDIControllerEquation_Sysblock` 当前实现为 AWFF + L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，已在 Example1、Example2 helix-tuned 和 Example3 8 字形通过质量门。已知效率退化控制分配补偿、在线效率估计补偿和多旋翼隔离雏形均已完成 rotor1-4 单旋翼退化和 rotor1-4 单旋翼退化叠加横向阵风复合鲁棒验证，所有 `l1_multi_fault_isolation_sysblock` 对应场景均通过质量门，`fault_index` 在 `5-50 s` 内正确率为 `100%`。`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 当前实现为 finite-horizon linear MPC-style 外环 + L1-inspired residual feedforward + INDI-like 姿态内环，已完成 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真并通过质量门；相对 L1+INDI 对应基线的 RMSE 分别降低 0.828%、0.574% 和 2.134%。LinearMPC-style 外环的质量 +20% 和横向阵风鲁棒场景也已通过质量门；纯外环在 1 号旋翼 85% 退化下健康分不足，加入在线 `eta_hat` 效率估计与控制分配补偿后质量门通过，RMSE 相对纯 LinearMPC 降低 17.778%。
-后续优先级：补 LinearMPC 在线故障分配的 rotor2/3/4 复合鲁棒对照，随后整理代表性 GUI 录屏素材和最终报告图表。
+P1 创新控制器证据：AWFF_L1ResidualControllerEquation_Sysblock 已覆盖 Example1、8 字形、质量 +20%、横向阵风和旋翼退化真实 Sysplorer MCP 仿真；其中 Example1、8 字形、质量 +20% 和横向阵风均通过质量门。`AWFF_INDIControllerEquation_Sysblock` 当前实现为 AWFF + L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，已在 Example1、Example2 helix-tuned 和 Example3 8 字形通过质量门。已知效率退化控制分配补偿、在线效率估计补偿和多旋翼隔离雏形均已完成 rotor1-4 单旋翼退化和 rotor1-4 单旋翼退化叠加横向阵风复合鲁棒验证，所有 `l1_multi_fault_isolation_sysblock` 对应场景均通过质量门，`fault_index` 在 `5-50 s` 内正确率为 `100%`。`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 当前实现为 finite-horizon linear MPC-style 外环 + L1-inspired residual feedforward + INDI-like 姿态内环，已完成 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真并通过质量门；相对 L1+INDI 对应基线的 RMSE 分别降低 0.828%、0.574% 和 2.134%。LinearMPC-style 外环的质量 +20% 和横向阵风鲁棒场景也已通过质量门；纯外环在 1 号旋翼 85% 退化下健康分不足，加入在线 `eta_hat` 效率估计与控制分配补偿后质量门通过，RMSE 相对纯 LinearMPC 降低 17.778%。新增 `AWFF_LinearMPCMultiFaultAllocationController_Sysblock` 已完成 rotor1-4 单旋翼退化叠加横向阵风复合鲁棒对照，AWFF 边界样本均为 `needs_iteration`，LinearMPC 多旋翼在线分配均为 `pass`，RMSE 降低约 27.16% 至 31.06%，`fault_index` 在 rotor2-4 场景中正确率为 `100%`。
+后续优先级：整理代表性 GUI 录屏素材和最终报告图表；随后再考虑瞬态故障切换或多旋翼同时故障。
 ```
 
 ## QA 检查
