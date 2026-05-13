@@ -12,8 +12,8 @@ Use tests and review to protect the reproducible simulation loop.
 ```text
 workflows/code_review.md
 workflows/run_tests.md
-workflows/smoke_test.md
 workflows/regression_test.md
+workflows/build_sysblock_graphical_controller.md
 workflows/pre_submit_check.md
 scripts/qa_check.py
 ```
@@ -26,7 +26,8 @@ scripts/qa_check.py
 | Python script | `python3 -m py_compile`, relevant pytest |
 | scenario/controller config | `python3 scripts/qa_check.py` |
 | metrics logic | unit tests + known raw CSV regression |
-| MWORKS model change | `check_model` + smoke simulation |
+| MWORKS model change | `check_model` + shortest useful targeted simulation |
+| graphical Sysblock controller | `scripts/check_sysblock_graphics.py` + targeted MCP `check_model` |
 | report claim | raw result + metrics + figure/replay evidence |
 
 ## Review Checklist

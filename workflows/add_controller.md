@@ -56,11 +56,11 @@ debug
 9. Compare with PID baseline.
 10. Update documentation.
 
-For Sysblock controllers, do not treat hand-written `.mo` files as verified
-models unless the latest file has passed `load_file` and `check_model`. If a
-new block diagram is needed, create or duplicate it through MWORKS.Sysblock
-GUI/API so that generated binding metadata and internal configuration are
-present, then validate the generated files through MCP.
+For Sysblock controllers, follow `workflows/build_sysblock_graphical_controller.md`.
+Do not treat hand-written `.mo` files as verified graphical models unless the
+latest file has passed the graphical gates and Sysplorer MCP `load_file/check_model`.
+If a new block diagram is needed, create or repair it through MWORKS.Sysblock
+GUI/API so generated binding metadata and internal configuration are present.
 
 For graphical Sysblock controllers, also run the project contract check:
 

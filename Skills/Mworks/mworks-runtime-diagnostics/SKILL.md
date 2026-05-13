@@ -12,7 +12,7 @@ Translate Simulink debugging/profiling habits into MWORKS evidence-first diagnos
 1. Identify the model, scenario, controller, and expected variable.
 2. Run or inspect `check_model`.
 3. If structure changed, inspect model text and component ports.
-4. Run the smallest smoke simulation that reproduces the issue.
+4. Run the smallest targeted simulation that reproduces the issue.
 5. Probe result variables and values around the suspicious time.
 6. Save the failure as evidence; do not hide unstable results.
 

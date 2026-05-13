@@ -34,8 +34,8 @@ Operational rule:
 
 ```text
 One development round may keep one Sysplorer / Syslab / MWORKS GUI window open
-to avoid repeated startup cost. Before git add/commit/push, close or explicitly
-verify closure of windows and MCP wrapper/server processes created by the round.
+to avoid repeated startup cost and license reactivation. Do not close reusable
+MWORKS windows before Git by default.
 If a window freezes, shows an unexpected login prompt, or MCP stalls past the
 planned timeout, stop the MCP sequence and clean up the clearly identifiable
 process/window before continuing.
@@ -130,6 +130,18 @@ Reason:
 ```text
 Windows auto-generated MCP config may conflict with WSL wrapper config.
 ```
+
+Reference only:
+
+```text
+C:\Users\HP\.config\opencode\opencode.json
+C:\Users\HP\.config\opencode\opencode-mworks.json
+C:\Users\HP\.config\opencode\tongyuan-config.json
+```
+
+These files are useful for comparing official Windows MCP commands and provider
+settings. `tongyuan-oauth-config.json` is a credential file; never copy its
+contents into this repository or logs.
 
 ---
 

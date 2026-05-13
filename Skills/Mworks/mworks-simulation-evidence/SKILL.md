@@ -29,6 +29,7 @@ workflows/read_results.md
 workflows/calc_metrics.md
 workflows/generate_report_figures.md
 docs/index/variable_mapping.md
+workflows/build_sysblock_graphical_controller.md
 ```
 
 Minimum MCP sequence:
@@ -66,6 +67,7 @@ Pass only if:
 4. Core fields do not contain unexplained NaN/Inf.
 5. Metrics identify controller, scenario, source, and timestamp.
 6. The report does not overclaim offline evidence.
+7. Formal Sysblock controller claims have a behavior-equivalent graphical Sysblock counterpart, or are explicitly labeled as equation-bridge evidence.
 
 ## Failure Handling
 
@@ -75,3 +77,4 @@ Pass only if:
 | simulation fails | save error, inspect model, reduce to smoke scenario |
 | controller unstable | preserve result as failed evidence; do not hide it |
 | GUI disturbance | continue minimal MCP calls; keep reusable windows open |
+| graphical counterpart missing | do not mark the controller complete; route to `mworks-sysblock-graphical-modeling` |

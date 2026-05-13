@@ -32,6 +32,7 @@ session_manager
 | selected subsystem | use Sysplorer opened model/component query, not Simulink `gcs/gcb` |
 | signal interface | list ports, units, dimensions, signs, sample time or continuous/discrete assumption |
 | parameter | query component details and model text before editing |
+| graphical Sysblock controller | resolve visible topology, child block hierarchy, ports, behavior blocks, and replacement role |
 
 ## Required Output
 
@@ -53,6 +54,7 @@ model file diff with documented replacement location
 4. After structural edits, run `check_model`.
 5. If a Modelica/Sysplorer API name is unclear, call `get_api_document`.
 6. If a library component meaning is unclear, call `get_lib_model_document`.
+7. For Sysblock topology, prefer official API/`ConnectPort` workflow in `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`; do not rely on hand-written `.mo` text as the verification source.
 
 ## Failure Handling
 

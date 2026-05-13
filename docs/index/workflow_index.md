@@ -17,6 +17,7 @@
 | Diagnose runtime/model issues | `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
 | Test and review quality gates | `Skills/Mworks/mworks-test-quality/SKILL.md` |
 | Prepare report and replay assets | `Skills/Mworks/mworks-report-visualization/SKILL.md` |
+| Build graphical Sysblock controller | `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`, `workflows/build_sysblock_graphical_controller.md` |
 | Resolve model context workflow | `workflows/resolve_model_context.md` |
 | Produce simulation evidence workflow | `workflows/produce_simulation_evidence.md` |
 | Run one simulation | `workflows/run_simulation.md` |
@@ -24,6 +25,7 @@
 | Calculate metrics | `workflows/calc_metrics.md` |
 | Generate report figures | `workflows/generate_report_figures.md` |
 | Add a controller | `workflows/add_controller.md` |
+| Build Sysblock graphical controller | `workflows/build_sysblock_graphical_controller.md` |
 | Code review | `workflows/code_review.md` |
 | Run tests | `workflows/run_tests.md` |
 | Regression test | `workflows/regression_test.md` |
@@ -102,6 +104,7 @@ Related files:
 
 ```text
 workflows/add_controller.md
+workflows/build_sysblock_graphical_controller.md
 workflows/regression_test.md
 workflows/code_review.md
 ```

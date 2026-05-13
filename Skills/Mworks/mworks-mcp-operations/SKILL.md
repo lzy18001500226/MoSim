@@ -37,8 +37,9 @@ Do not hard-code only one user home.
 4. Keep one reusable GUI window open during a related batch of checks when it avoids repeated startup cost.
 5. Save useful MCP evidence under `results/test_reports/` or `results/logs/`.
 6. Never write tokens, SSH keys, or API keys to tracked files.
-7. Before `git add`, `git commit`, or `git push`, close or explicitly verify closure of Sysplorer / Syslab / MWORKS windows and MCP wrapper/server processes created in the current round.
-8. If a GUI freezes, requests login unexpectedly, or an MCP call stalls past the planned timeout, stop that MCP sequence, clean up the clearly identifiable process/window, and continue with file-level work or report the blocker.
+7. Do not close reusable Sysplorer / Syslab / MWORKS windows before Git by default. Closing windows can force license reactivation and slow the next run.
+8. Close or clean up only when the user asks, the GUI is frozen, a login/activation prompt blocks progress, or stale duplicate sessions are clearly causing failures.
+9. If a GUI freezes, requests login unexpectedly, or an MCP call stalls past the planned timeout, stop that MCP sequence, clean up the clearly identifiable process/window, and continue with file-level work or report the blocker.
 
 ## Tool Routing
 
@@ -48,6 +49,7 @@ Do not hard-code only one user home.
 | MCP troubleshooting | `workflows/debug_mcp.md` |
 | Model context | `Skills/Mworks/mworks-model-context/SKILL.md` |
 | Simulation evidence | `Skills/Mworks/mworks-simulation-evidence/SKILL.md` |
+| Graphical Sysblock controller modeling | `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md` |
 | MATLAB/Simulink translation | `Skills/Mworks/mworks-syslab-porting/SKILL.md` |
 
 ## Failure Handling
@@ -58,5 +60,5 @@ Do not hard-code only one user home.
 | wrapper missing | check server path, then `~/mcp-wrappers/` |
 | Syslab stale state | call `restart_julia` |
 | Sysplorer not ready | call `session_manager` health/probe/ensure |
-| GUI interruption | stop the current MCP sequence; close only clearly identifiable stale windows before Git |
+| GUI interruption | stop the current MCP sequence; close only clearly identifiable stale/blocking windows |
 | model auto-upgrade backup created | inspect the diff; do not commit auto-generated rewrites or backup directories unless intentionally accepted |

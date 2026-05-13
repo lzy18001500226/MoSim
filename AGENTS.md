@@ -111,7 +111,7 @@ Do not stop only to ask whether to continue when the next step is clear. Continu
 - implementation,
 - documentation updates,
 - tests,
-- smoke simulations,
+- shortest useful targeted simulations,
 - result checks,
 - Git status / diff review,
 - commit,
@@ -351,10 +351,11 @@ This repository includes compact project-local skills translated from MathWorks 
 | `mworks-syslab-porting` | Translating MATLAB/Simulink skills, scripts, tests, plotting, or performance workflows into MWORKS/Syslab/Sysplorer practice | `Skills/Mworks/mworks-syslab-porting/SKILL.md` |
 | `mworks-mcp-operations` | MCP session, wrapper, and minimal-impact operation behavior | `Skills/Mworks/mworks-mcp-operations/SKILL.md` |
 | `mworks-runtime-diagnostics` | Failed, slow, unstable, or suspicious simulation diagnostics | `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
-| `mworks-test-quality` | Tests, reviews, smoke checks, regressions, and pre-submit gates | `Skills/Mworks/mworks-test-quality/SKILL.md` |
+| `mworks-test-quality` | Tests, reviews, targeted simulation checks, regressions, and pre-submit gates | `Skills/Mworks/mworks-test-quality/SKILL.md` |
 | `mworks-report-visualization` | Report figures, replay assets, video evidence, and honest visual claims | `Skills/Mworks/mworks-report-visualization/SKILL.md` |
+| `mworks-sysblock-graphical-modeling` | Building, repairing, and validating graphical Sysblock controller diagrams | `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md` |
 
-Use `Skills/Mworks/` as the default execution layer for this project. Treat upstream MATLAB / Simulink skills under `Skills/Matlab/` and `Skills/Simulink/` as second-level references only: consult them when the MWORKS skills do not cover a task, translate the useful pattern into MWORKS terms, and then update the relevant `Skills/Mworks/*/SKILL.md`, `workflows/`, or `docs/index/` file so the project improves over time. Verify every executable API call through MWORKS docs or MCP.
+Use `Skills/Mworks/` as the default execution layer for this project. Treat upstream MATLAB / Simulink skills under `Skills/Matlab/`, `Skills/Simulink/`, and official opencode skills under `C:\Users\HP\.config\opencode\skills` as second-level references only: consult them when the MWORKS skills do not cover a task, translate the useful pattern into MWORKS terms, and then update the relevant `Skills/Mworks/*/SKILL.md`, `workflows/`, or `docs/index/` file so the project improves over time. Verify every executable API call through MWORKS docs or MCP. Never copy opencode OAuth/provider credentials into the repository.
 
 ---
 
@@ -371,6 +372,7 @@ Use `docs/index/workflow_index.md` as the workflow entry point. Do not duplicate
 | Calculate metrics | `workflows/calc_metrics.md` |
 | Generate report figures/replay | `workflows/generate_report_figures.md` |
 | Add a controller | `workflows/add_controller.md` |
+| Build/repair graphical Sysblock controller | `workflows/build_sysblock_graphical_controller.md` |
 | Run tests | `workflows/run_tests.md` |
 | Regression tests | `workflows/regression_test.md` |
 | Code review | `workflows/code_review.md` |

@@ -25,8 +25,9 @@
 | MWORKS Syslab porting | `Skills/Mworks/mworks-syslab-porting/SKILL.md` | Translate MATLAB/Simulink patterns into project-local MWORKS workflows |
 | MWORKS MCP operations | `Skills/Mworks/mworks-mcp-operations/SKILL.md` | Keep MCP usage targeted, quiet, and project-local |
 | MWORKS runtime diagnostics | `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` | Diagnose failed, slow, unstable, or suspicious simulations |
-| MWORKS test quality | `Skills/Mworks/mworks-test-quality/SKILL.md` | Run/review tests, smoke checks, regressions, and pre-submit quality gates |
+| MWORKS test quality | `Skills/Mworks/mworks-test-quality/SKILL.md` | Run/review tests, targeted simulation checks, regressions, and pre-submit quality gates |
 | MWORKS report visualization | `Skills/Mworks/mworks-report-visualization/SKILL.md` | Prepare figures, replay assets, report sections, and video evidence |
+| MWORKS Sysblock graphical modeling | `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md` | Build, repair, and validate graphical Sysblock controller diagrams |
 
 ## High-Value Workflows
 
@@ -34,6 +35,7 @@
 |---|---|---|
 | Resolve model context | `workflows/resolve_model_context.md` | Confirm model/component/interface before editing |
 | Produce simulation evidence | `workflows/produce_simulation_evidence.md` | Build a labeled evidence bundle for report claims |
+| Build Sysblock graphical controller | `workflows/build_sysblock_graphical_controller.md` | Create or repair behavior-equivalent graphical Sysblock controllers |
 
 ## MWORKS Reference Docs
 
