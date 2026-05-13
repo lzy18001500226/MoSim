@@ -1,7 +1,7 @@
 model Example1Rotor1Loss15AWFFSysblockClosedLoop
   "Example1 rotor 1 lift efficiency 85% with project AWFF Sysblock composed controller"
   QuadrotorModel.PathPlanning.ClimbPath climbePath(gain(k = 1));
-  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(gain2(k = 0.0017));
+  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(gain2(k = 7.266293e-06));
   QuadrotorModel.Electricals.Actuator actuator1_1;
   QuadrotorModel.Electricals.Actuator actuator1_2;
   QuadrotorModel.Electricals.Actuator actuator1_3;

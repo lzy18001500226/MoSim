@@ -9,7 +9,7 @@ model Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop
   parameter Real gust_sine_frequency_Hz = 1.2;
 
   QuadrotorModel.PathPlanning.ClimbPath climbePath(gain(k = 1));
-  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(gain2(k = 0.0017));
+  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(gain2(k = 7.266293e-06));
   QuadrotorModel.Electricals.Actuator actuator1_1;
   QuadrotorModel.Electricals.Actuator actuator1_2;
   QuadrotorModel.Electricals.Actuator actuator1_3;

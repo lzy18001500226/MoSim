@@ -644,21 +644,21 @@
         animation = true, 
         animateSphere = false, 
         r = {0, 0, 0}, 
-        r_CM = {0, 0, 0.0230935}, 
-        m = 0.159504, 
-        I_11 = 0.00010556, 
-        I_22 = 0.00010556, 
-        I_33 = 0.00010556, 
+        r_CM = {0, 0, 0},
+        m = 1.0,
+        I_11 = 0.0085,
+        I_22 = 0.0085,
+        I_33 = 0.012,
         I_21 = 0, 
         I_31 = 0, 
         I_32 = 0, 
-        shapeType = "modelica://QuadrotorModel/Resources/Visualization/QuadBody.hsf", 
-        r_shape = {0, 0, 0}, 
-        lengthDirection = {-1, 0, 0}, 
-        widthDirection = {0, 1, 0}, 
-        length = 1, 
-        width = 1, 
-        height = 1, 
+        shapeType = "modelica://QuadrotorModel/Resources/Visualization/sunray150_mid360_body.stl",
+        r_shape = {0, 0, 0.0525},
+        lengthDirection = {0, -1, 0},
+        widthDirection = {1, 0, 0},
+        length = 0.03,
+        width = 0.03,
+        height = 0.03,
         extra = 1, 
         color = {255, 255, 255}, 
         specularCoefficient = 1, 
@@ -681,20 +681,20 @@
         animation = true, 
         animateSphere = false, 
         r = {0, 0, 0}, 
-        m = 0.000913171, 
-        I_11 = 1.59662e-7, 
-        I_22 = 1.59594e-7, 
-        I_33 = 3.16359e-7, 
+        m = 0.005,
+        I_11 = 9.75e-7,
+        I_22 = 0.000173104,
+        I_33 = 0.000174004,
         I_21 = 0, 
         I_31 = 0, 
         I_32 = 0, 
-        shapeType = "box", 
-        r_shape = {-0.11, 0, -0.005}, 
+        shapeType = "modelica://QuadrotorModel/Resources/Visualization/sunray150_mid360_propeller.stl",
+        r_shape = {0, 0, 0},
         lengthDirection = {1, 0, 0}, 
         widthDirection = {0, 1, 0}, 
-        length = 0.22, 
-        width = 0.03, 
-        height = 0.01, 
+        length = 0.03,
+        width = 0.03,
+        height = 0.03,
         extra = 1, 
         color = {255, 255, 255}, 
         specularCoefficient = 1, 
@@ -736,22 +736,22 @@
     model Arm "机臂"
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed1(
         animation = false, 
-        r = {0.04243, -0.04243, 0.05460}) 
+        r = {0.065, -0.065, -0.025})
         annotation (Placement(transformation(origin = {2.4999999999999716, 75.50000000000004}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed2(
         animation = false, 
-        r = {0.04243, 0.04243, 0.05460}) 
+        r = {0.065, 0.065, -0.025})
         annotation (Placement(transformation(origin = {4.499999999999972, 24.83333333333337}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed3(
         animation = false, 
-        r = {-0.04243, 0.04243, 0.05460}) 
+        r = {-0.065, 0.065, -0.025})
         annotation (Placement(transformation(origin = {2.4999999999999716, -25.8333333333333}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed4(
         animation = false, 
-        r = {-0.04243, -0.04243, 0.05460}) 
+        r = {-0.065, -0.065, -0.025})
         annotation (Placement(transformation(origin = {2.4999999999999716, -76.49999999999997}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Interfaces.Frame_b frame_b 
@@ -919,26 +919,26 @@
 
         annotation (Placement(transformation(origin = {124.60787940430421, 90.30849111731482}, 
           extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-      parameter Real lift_cofficient = 0.002 "旋翼的升力系数，这里简化处理";
+      parameter Real lift_cofficient = 8.54858e-06 "sunray150_with_mid360 PX4 Gazebo motorConstant, used as simplified rotor lift coefficient";
       Modelica.Mechanics.MultiBody.Parts.BodyShape body(
         animation = true, 
         animateSphere = false, 
         r = {0, 0, 0}, 
-        r_CM = {0, 0, 0.0230935}, 
-        m = 0.159504, 
-        I_11 = 0.00010556, 
-        I_22 = 0.00010556, 
-        I_33 = 0.00010556, 
+        r_CM = {0, 0, 0},
+        m = 1.0,
+        I_11 = 0.0085,
+        I_22 = 0.0085,
+        I_33 = 0.012,
         I_21 = 0, 
         I_31 = 0, 
         I_32 = 0, 
-        shapeType = "modelica://QuadrotorModel/Resources/Visualization/jijia.stl", 
-        r_shape = {-0.0005, -0.0018, 0.0485}, 
-        lengthDirection = {0, 1, 0}, 
-        widthDirection = {0, 0, 1}, 
-        length = 0.253, 
-        width = 0.2, 
-        height = 0.28, 
+        shapeType = "modelica://QuadrotorModel/Resources/Visualization/sunray150_mid360_body.stl",
+        r_shape = {0, 0, 0.0525},
+        lengthDirection = {0, -1, 0},
+        widthDirection = {1, 0, 0},
+        length = 0.03,
+        width = 0.03,
+        height = 0.03,
         extra = 1, 
         color = {255, 141, 11}, 
         specularCoefficient = 1, 
@@ -949,20 +949,20 @@
         animation = true, 
         animateSphere = false, 
         r = {0, 0, 0}, 
-        m = 0.000913171, 
-        I_11 = 1.59662e-7, 
-        I_22 = 1.59594e-7, 
-        I_33 = 3.16359e-7, 
+        m = 0.005,
+        I_11 = 9.75e-7,
+        I_22 = 0.000173104,
+        I_33 = 0.000174004,
         I_21 = 0, 
         I_31 = 0, 
         I_32 = 0, 
-        shapeType = "box", 
-        r_shape = {-0.11, 0, -0.005}, 
+        shapeType = "modelica://QuadrotorModel/Resources/Visualization/sunray150_mid360_propeller.stl",
+        r_shape = {0, 0, 0},
         lengthDirection = {1, 0, 0}, 
         widthDirection = {0, 1, 0}, 
-        length = 0.22, 
-        width = 0.03, 
-        height = 0.01, 
+        length = 0.03,
+        width = 0.03,
+        height = 0.03,
         extra = 1, 
         color = {192, 192, 192}, 
         r_0(fixed = false), 
@@ -976,7 +976,7 @@
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed1(
         animation = false, 
-        r = {0.04243, -0.04243, 0.05460}) 
+        r = {0.065, -0.065, -0.025})
         annotation (Placement(transformation(origin = {73.77694849419791, 99.5026214436419}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Joints.Revolute revolute2(
@@ -987,7 +987,7 @@
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed2(
         animation = false, 
-        r = {0.04243, 0.04243, 0.05460}) 
+        r = {0.065, 0.065, -0.025})
         annotation (Placement(transformation(origin = {73.77694849419791, 39.502621443641885}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Joints.Revolute revolute3(
@@ -998,7 +998,7 @@
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed3(
         animation = false, 
-        r = {-0.04243, 0.04243, 0.05460}) 
+        r = {-0.065, 0.065, -0.025})
         annotation (Placement(transformation(origin = {73.77694849419791, -40.497378556358086}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Joints.Revolute revolute4(
@@ -1009,7 +1009,7 @@
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed4(
         animation = false, 
-        r = {-0.04243, -0.04243, 0.05460}) 
+        r = {-0.065, -0.065, -0.025})
         annotation (Placement(transformation(origin = {73.7769484941979, -100.49737855635811}, 
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Forces.WorldForce force1(resolveInFrame=Modelica.Mechanics.MultiBody.Types.ResolveInFrameB.frame_b, animation=false) annotation (Placement(transformation(origin = {-43.68550815051444, 80.71820959281155}, 
@@ -1034,6 +1034,15 @@
           extent = {{-10.0, -10.0}, {10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Visualizers.FixedShape2 fixedShape2_1(shapeType = "modelica://QuadrotorModel/Resources/Visualization/Jichang1.stl", 
         extra = 1, length = 4, width = 4, height = 4, color = {155, 155, 155}, animation = false) annotation (Placement(transformation(origin = {191.55742017263336, 92.28481521933296}, 
+          extent = {{-10.0, -10.0}, {10.0, 10.0}})));
+      Modelica.Mechanics.MultiBody.Parts.FixedTranslation mid360Mount(
+        animation = false,
+        r = {0.036, -0.0155, 0.075})
+        annotation (Placement(transformation(origin = {158.25275041021322, 58.48433844745136},
+          extent = {{-10.0, -10.0}, {10.0, 10.0}})));
+      Modelica.Mechanics.MultiBody.Visualizers.FixedShape2 mid360Visual(shapeType = "sphere",
+        extra = 1, length = 0.04, width = 0.04, height = 0.04, color = {45, 45, 45}, animation = true)
+        annotation (Placement(transformation(origin = {191.55742017263336, 58.28481521933296},
           extent = {{-10.0, -10.0}, {10.0, 10.0}})));
       Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor annotation (
         Placement(transformation(origin = {-167.0062898849564, 81.17560498021649}, 
@@ -1105,20 +1114,20 @@
         animation = true, 
         animateSphere = false, 
         r = {0, 0, 0}, 
-        m = 0.000913171, 
-        I_11 = 1.59662e-7, 
-        I_22 = 1.59594e-7, 
-        I_33 = 3.16359e-7, 
+        m = 0.005,
+        I_11 = 9.75e-7,
+        I_22 = 0.000173104,
+        I_33 = 0.000174004,
         I_21 = 0, 
         I_31 = 0, 
         I_32 = 0, 
-        shapeType = "box", 
-        r_shape = {-0.11, 0, -0.005}, 
+        shapeType = "modelica://QuadrotorModel/Resources/Visualization/sunray150_mid360_propeller.stl",
+        r_shape = {0, 0, 0},
         lengthDirection = {1, 0, 0}, 
         widthDirection = {0, 1, 0}, 
-        length = 0.22, 
-        width = 0.03, 
-        height = 0.01, 
+        length = 0.03,
+        width = 0.03,
+        height = 0.03,
         extra = 1, 
         color = {192, 192, 192}, 
         specularCoefficient = 1, 
@@ -1129,20 +1138,20 @@
         animation = true, 
         animateSphere = false, 
         r = {0, 0, 0}, 
-        m = 0.000913171, 
-        I_11 = 1.59662e-7, 
-        I_22 = 1.59594e-7, 
-        I_33 = 3.16359e-7, 
+        m = 0.005,
+        I_11 = 9.75e-7,
+        I_22 = 0.000173104,
+        I_33 = 0.000174004,
         I_21 = 0, 
         I_31 = 0, 
         I_32 = 0, 
-        shapeType = "box", 
-        r_shape = {-0.11, 0, -0.005}, 
+        shapeType = "modelica://QuadrotorModel/Resources/Visualization/sunray150_mid360_propeller.stl",
+        r_shape = {0, 0, 0},
         lengthDirection = {1, 0, 0}, 
         widthDirection = {0, 1, 0}, 
-        length = 0.22, 
-        width = 0.03, 
-        height = 0.01, 
+        length = 0.03,
+        width = 0.03,
+        height = 0.03,
         extra = 1, 
         color = {192, 192, 192}, 
         specularCoefficient = 1, 
@@ -1153,20 +1162,20 @@
         animation = true, 
         animateSphere = false, 
         r = {0, 0, 0}, 
-        m = 0.000913171, 
-        I_11 = 1.59662e-7, 
-        I_22 = 1.59594e-7, 
-        I_33 = 3.16359e-7, 
+        m = 0.005,
+        I_11 = 9.75e-7,
+        I_22 = 0.000173104,
+        I_33 = 0.000174004,
         I_21 = 0, 
         I_31 = 0, 
         I_32 = 0, 
-        shapeType = "box", 
-        r_shape = {-0.11, 0, -0.005}, 
+        shapeType = "modelica://QuadrotorModel/Resources/Visualization/sunray150_mid360_propeller.stl",
+        r_shape = {0, 0, 0},
         lengthDirection = {1, 0, 0}, 
         widthDirection = {0, 1, 0}, 
-        length = 0.22, 
-        width = 0.03, 
-        height = 0.01, 
+        length = 0.03,
+        width = 0.03,
+        height = 0.03,
         extra = 1, 
         color = {192, 192, 192}, 
         specularCoefficient = 1, 
@@ -1256,6 +1265,16 @@
         annotation (Line(origin = {176.88393527497624, 90.4095726524103}, 
           points = {{-9.0, 0.0}, {5.0, 0.0}, {5.0, 2.0}}, 
           color = {95, 95, 95}, 
+          thickness = 0.5));
+      connect(body.frame_b, mid360Mount.frame_a)
+        annotation (Line(origin = {153.0, 29.0},
+          points = {{-17.0, -32.0}, {-5.0, -32.0}, {-5.0, 29.0}, {-5.0, 29.0}},
+          color = {95, 95, 95},
+          thickness = 0.5));
+      connect(mid360Mount.frame_b, mid360Visual.frame_a)
+        annotation (Line(origin = {176.0, 58.0},
+          points = {{-8.0, 0.0}, {5.0, 0.0}},
+          color = {95, 95, 95},
           thickness = 0.5));
       connect(flange_a, speedSensor.flange) 
         annotation (Line(origin = {-152.40323470449508, 109.45508643941054}, 

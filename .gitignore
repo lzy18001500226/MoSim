@@ -46,6 +46,9 @@ results/replay_html/
 results/**/native_result/
 *_backup/
 
+# Local upstream simulation repositories
+references/Sunray/
+
 # Large binary outputs
 *.msr
 *.mat

@@ -29,7 +29,14 @@ Example1/2/3 Linear MPC-style Sysblock full CSV、指标、图表和 replay JSON
 Linear MPC-style 质量 +20%、横向阵风、1号旋翼效率85% 边界案例，以及 Linear MPC-style + 在线 eta_hat 控制分配补偿 CSV、指标、图表和 replay JSON
 ```
 
-## 2. 模型与场景
+
+## 2. 当前机体模型迁移状态
+
+2026-05-13 起，项目主机体从官方示例轻量机架迁移为项目内本地源 `references/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` 的 Gazebo/PX4 参数：机体质量 `1.0 kg`，惯量 `Ixx=0.0085, Iyy=0.0085, Izz=0.012`，旋翼位置为 `(±0.065, ±0.065, -0.025) m`，简化升力系数采用 SDF 中 `motorConstant=8.54858e-06`。`QuadrotorModel/Resources/Visualization/` 中新增 `sunray150_mid360_body.stl` 和 `sunray150_mid360_propeller.stl`；Mid360 传感器安装位置按 SDF `{0.036, -0.0155, 0.075}` 在 `QuadChassis` 中添加轻量可视化件。源模型中的 `150.dae` 为 139 MB，超过 GitHub 单文件限制，未迁入仓库。
+
+迁移后，质量 +20% 场景的质量扰动改为 `1.0 kg -> 1.2 kg`；旋翼 85% 退化场景的升力增益改为 `8.54858e-06 -> 7.266293e-06`。本报告后续历史表格是旧机体证据快照，不应继续作为新机体性能结论；正式控制器排名和视频素材需要基于 `sunray150_with_mid360` 重新运行 Sysplorer/MWORKS 仿真后刷新。
+
+## 3. 模型与场景
 
 | 场景 | 官方模型 | 时长 | 当前状态 |
 |---|---|---:|---|
@@ -69,7 +76,7 @@ results/official/example3_figure8/official_example3_pid_baseline/metrics/officia
 
 `scripts/qa_check.py` 会阻止短时 smoke 数据误放入上述正式结果路径。
 
-## 3. 数据链路
+## 4. 数据链路
 
 当前数据处理闭环：
 
@@ -94,7 +101,7 @@ time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4
 
 官方变量映射见 `docs/index/variable_mapping.md`。
 
-## 4. 当前正式基线指标
+## 5. 当前正式基线指标
 
 数据文件：
 
@@ -119,7 +126,7 @@ results/official/example1_step/official_example1_pid_baseline/metrics/official_e
 
 说明：这些结果只覆盖起飞初始 1 s，不能用于评价完整阶梯爬升控制性能。
 
-## 5. 官方 PID Baseline 指标
+## 6. 官方 PID Baseline 指标
 
 以下结果均为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_full_baseline`：
 
@@ -131,7 +138,7 @@ results/official/example1_step/official_example1_pid_baseline/metrics/official_e
 
 说明：`u1-u4` 当前取自 `controller3_2.y*` 原始控制命令，数值范围不是 0-1 归一化电机占空比，因此 `saturation_ratio` 不用于本批结果的饱和结论；相关 JSON 中记录 `control_command_min/max` 和 `control_command_normalized=false`。
 
-## 6. 改进 PID 对比
+## 7. 改进 PID 对比
 
 当前 `QuadrotorExperiments.Example1ImprovedPID`、`QuadrotorExperiments.Example2ImprovedPID` 和 `QuadrotorExperiments.Example3ImprovedPID` 采用 MCP 参数搜索选出的统一 PID 参数集 `pos_kp_165_att_170`：将水平位置环 `PID3/PID4.KP` 从 `1.5` 提高到 `1.65`，将姿态内环 `PID5/PID6.KD` 从 `1.414` 提高到 `1.70`，其余高度环与 yaw 环参数保持官方基线不变。搜索脚本为 `scripts/tune_improved_pid_mcp.py`，搜索摘要见 `results/tuning/pid_search/summary/pid_tuning_summary.md`。
 
@@ -150,7 +157,7 @@ results/official/example1_step/official_example1_pid_baseline/metrics/official_e
 
 结论：参数搜索型 Improved PID 相比官方 PID 在 Example1/2/3 上分别降低 RMSE `1.948%`、`1.508%` 和 `2.951%`，稳态误差分别降低 `5.291%`、`9.273%` 和 `9.141%`。代价是最大倾角和控制能量略有增加，因此该结果适合作为 P0 可复现优化基线，不应包装成最终控制创新；后续仍应推进带抗饱和、参考前馈或 NMPC/INDI 的真实模型集成。
 
-## 7. Enhanced PID P1 初步结果
+## 8. Enhanced PID P1 初步结果
 
 `QuadrotorExperiments.Example1/2/3EnhancedPID` 在 `Example*_ImprovedPID` 的 MCP 参数搜索结果基础上，显式设置 PID 导数环节滤波时间常数，并收紧姿态参考限幅和姿态/yaw 控制限幅。该分支仍复用官方控制器结构，不修改官方模型本体，定位为 P1 控制器替换前的真实模型增强验证。
 
@@ -173,7 +180,7 @@ results/official/example1_step/official_example1_pid_baseline/metrics/official_e
 
 结论：Enhanced PID 在 Example1 和 Example3 上可以作为有效增强证据：Example1 RMSE 降低 `3.270%`，Example3 RMSE 降低 `3.274%`，同时最大倾角和控制平滑性明显改善。Example2 的问题已定位为螺旋轨迹 `t≈10 s` 横向圆轨迹启动时参考突变导致的姿态权限不足：原 Enhanced PID 将最大倾角压低到 `0.294113 rad`，但 RMSE 变差；`helix_tuned_enhanced_pid` 恢复 15° 横向姿态权限和 7.0 姿态控制限幅后，RMSE 降到 `0.475477 m`，相比 baseline 降低 `2.403%`，相比原 Improved PID 继续降低 `0.908%`，质量门禁为 `pass`。同一调优迁移到 AWFF PID 和 AWFF Sysblock 后，RMSE 分别为 `0.474799 m` 与 `0.474850 m`，均通过质量门禁。代价是最大倾角回升到约 `0.3536 rad`，但仍低于门禁 `0.45 rad`。
 
-## 8. AWFF 独立控制器初步结果
+## 9. AWFF 独立控制器初步结果
 
 `QuadrotorExperiments.Example1/2/3AntiWindupFeedforwardPID` 是项目自有控制器分支，不再只通过官方 `controller3_2` 的 PID 参数和 limiter modifier 实现增强。该模型在 `QuadrotorExperiments.Example*ProjectControllerBase` 中替换 `controller3_2` 的类型，但保持原官方接口兼容：输入仍为 `position_command[3]`、`position[3]`、`angle[3]`，输出仍为 `y`、`y1`、`y2`、`y3`，因此后续指标脚本和回放链路无需改变量映射。
 
@@ -345,9 +352,9 @@ Sysblock 结论：`awff_sysblock` 在 Example1 50 s 全时长真实 Sysplorer MC
 
 指标口径更新：当前 metrics JSON/CSV 已补充 `sample_rate_hz`、`control_energy_per_second`、`control_smoothness_per_second`、`constraint_violation_rate_hz`、`altitude_violation_rate_hz` 和 `tilt_violation_rate_hz`。当历史结果和新结果导出采样率不同，例如 `25001` 行与 `5001` 行并存时，报告优先比较 RMSE、稳态误差、最大倾角、恢复时间和每秒归一化指标；由采样点数量直接决定的原始 `constraint_violation_count` 只作为同采样率结果内的辅助信息。
 
-## 9. P1 鲁棒场景与控制器消融
+## 10. P1 鲁棒场景与控制器消融
 
-新增 `robust_mass20_example1` 场景用于真实模型鲁棒性验证：在 Example1 阶梯爬升任务中，将 `quadChassisTest17_1.body.m` 从官方 `0.159504 kg` 改为 `0.191405 kg`，即中心机体质量 +20%。该扰动模拟载荷变化或质量参数建模误差；路径、求解器、导出变量和仿真时长保持不变，因此可用于控制器消融对比。
+当前 `robust_mass20_example1` 场景用于真实模型鲁棒性验证：在 Example1 阶梯爬升任务中，将 `quadChassisTest17_1.body.m` 从当前 Sunray150 机体 `1.0 kg` 改为 `1.2 kg`，即中心机体质量 +20%。本节下方历史表格仍是旧轻量机架证据快照；新机体正式结论需要重跑后刷新。
 
 模型替换位置：
 
@@ -424,7 +431,7 @@ scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
 
 
 
-新增 `robust_rotor1_loss15_example1` 场景用于执行器退化鲁棒性验证：在 Example1 阶梯爬升任务中，将 1 号旋翼对应升力增益 `quadChassisTest17_1.gain2.k` 从官方 `0.002` 改为 `0.0017`，等效为单旋翼升力效率下降到 `85%`。该场景不修改控制器接口，扰动直接作用在官方机体升力链路上。
+当前 `robust_rotor1_loss15_example1` 场景用于执行器退化鲁棒性验证：在 Example1 阶梯爬升任务中，将 1 号旋翼对应升力增益 `quadChassisTest17_1.gain2.k` 从当前 Sunray150 nominal `8.54858e-06` 改为 `7.266293e-06`，等效为单旋翼升力效率下降到 `85%`。本节下方历史表格仍是旧轻量机架证据快照；新机体正式结论需要重跑后刷新。
 
 模型替换位置：
 
@@ -503,7 +510,7 @@ scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
 
 消融结论：L1-inspired 残差补偿在 Example1、Example3 8 字形、质量 +20% 和横向阵风四类正式场景中均通过质量门，并稳定降低 RMSE、稳态误差和扰动窗口峰值误差。横向阵风中 `position_rmse_m` 降低 `12.568%`、峰值误差降低 `22.210%`；8 字形中 RMSE 降低 `8.660%`。`awff_indi_sysblock` 当前为 L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，在 Example1、Example2 helix-tuned 和 Example3 中均通过质量门，RMSE 分别降低 `8.410%`、`6.035%` 和 `8.662%`；它证明 INDI-like 姿态增量可以在不破坏 L1 残差补偿收益的前提下接入整机闭环，但不能单独宣称“纯 INDI”贡献了全部误差下降。代价是 Example1 派生场景最大倾角约增加到 `0.205 rad`，Example2 最大倾角从 `0.354 rad` 增至 `0.371 rad`。旋翼退化场景中，单独 L1 仍为 `needs_iteration`；加入已知效率 `eta=0.85` 的混合控制分配补偿后，`l1_fault_allocation_sysblock` 通过质量门，RMSE 相比 AWFF Sysblock 降低 `33.793%`，稳态误差降低 `68.749%`，扰动窗口峰值误差降低 `74.091%`，恢复时间从 `13.760 s` 缩短到 `2.730 s`。进一步加入残差驱动在线效率估计后，`l1_online_fault_allocation_sysblock` 在不直接读取真实 `eta=0.85` 的条件下通过质量门，导出 `eta_hat` 诊断列，末值约 `0.904`，RMSE 相比 AWFF Sysblock 降低 `29.363%`。多旋翼隔离雏形 `l1_multi_fault_isolation_sysblock` 输出 `eta_hat1..4` 与 `fault_index`，在 rotor1 退化场景中 `5-50 s` 的 `fault_index=1` 正确率为 `100%`，并保持质量门 `pass`。该结果可作为“多旋翼故障隔离结构已接入并在 rotor1 场景验证”的证据；完整四旋翼故障隔离仍需补 rotor2/3/4 退化场景后才能声明。
 
-## 10. 当前图表
+## 11. 当前图表
 
 已生成图表：
 
@@ -553,7 +560,7 @@ results/official/example3_figure8/reference_official_example3/replay/reference_o
 
 其中 `results/{group}/{scene}/{experiment}/replay/*.json` 来自真实 Sysplorer MCP raw CSV 或官方参考轨迹 CSV，可作为后续 Gazebo/视频展示输入；它不是在线仿真结果。
 
-## 11. 扩展场景状态
+## 12. 扩展场景状态
 
 此前用于横向展示的 Python/Julia 离线仿真结果已清理。当前报告结论只引用真实 Sysplorer/MWORKS MCP 证据。
 
@@ -652,7 +659,7 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 
 2026-05-13 证据审计：复合鲁棒场景 `rotor1_loss15_wind_gust_example1` 已有两条可用正样本。`l1_multi_fault_isolation_sysblock` 的健康分为 `50.686`、RMSE 为 `0.3047 m`、相对基线 RMSE 降低 `29.189%`，且 `fault_index` 正确率为 `100%`；`linear_mpc_online_fault_allocation_sysblock` 的健康分为 `51.006`、RMSE 为 `0.2944 m`、相对基线 RMSE 降低 `31.583%`。因此该复合场景不再列入默认重跑队列，后续只在控制器模型变更后重新仿真。
 
-## 12. Linear MPC-style 外环闭环结果
+## 13. Linear MPC-style 外环闭环结果
 
 `AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 在 `controller3_2` 统一接口内实现 finite-horizon linear MPC-style 外环、L1-inspired residual feedforward 和 INDI-like 姿态内环。该版本不是在线 QP/NMPC 求解器；它使用显式终端误差项、加速度限幅、残差低通补偿和有界姿态增量项，在不改变官方机体、电机、传感器和路径模型的前提下接入 Example1/2/3。对应图形化审查模型为 `AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock`；旋翼退化补偿版本对应 `AWFF_InnovationGraphicalControllers.AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock`。两者已通过静态行为契约和 Sysplorer MCP `check_model`，但整机性能表仍引用 Equation 控制器全时长闭环结果。
 
@@ -699,7 +706,7 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_m
 
 证据包状态：截至 2026-05-13，active 非 smoke 场景证据包无 blocking issue；`linear_mpc_sysblock` 的 rotor1 退化纯外环结果保留为边界负样本，`linear_mpc_online_fault_allocation_sysblock` 和 `l1_multi_fault_isolation_sysblock` 才是可用于“退化/复合扰动场景通过”的正式证据。完整差异审计见 `results/summaries/experiment_summary/simulation_gap_review.md`。
 
-## 13. 结论约束
+## 14. 结论约束
 
 1. 不使用 smoke 数据做完整控制性能结论。
 2. 不使用离线脚本结果作为 MWORKS 控制性能结论。

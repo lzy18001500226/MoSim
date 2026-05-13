@@ -14,8 +14,8 @@ model:
 disturbance:
   type: mass_parameter_perturbation
   target_component: quadChassisTest17_1.body.m
-  nominal_value_kg: 0.159504
-  perturbed_value_kg: 0.191405
+  nominal_value_kg: 1.0
+  perturbed_value_kg: 1.2
   perturbation_pct: 20.0
   purpose: payload_uncertainty_and_model_parameter_robustness
 

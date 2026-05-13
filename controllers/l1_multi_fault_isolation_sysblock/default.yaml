@@ -72,8 +72,8 @@ fault_isolation:
     rotor_2: quadChassisTest17_1.gain3.k
     rotor_3: quadChassisTest17_1.gain4.k
     rotor_4: quadChassisTest17_1.gain5.k
-  nominal_lift_gain: 0.002
-  degraded_lift_gain: 0.0017
+  nominal_lift_gain: 8.54858e-06
+  degraded_lift_gain: 7.266293e-06
   true_efficiency_for_validation: 0.85
   eta_min_est: 0.50
   eta_max_est: 1.00

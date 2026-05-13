@@ -1,7 +1,7 @@
 model Example1Mass20LinearMPCSysblockClosedLoop
   "Example1 +20% body mass with linear MPC-style Sysblock controller"
   QuadrotorModel.PathPlanning.ClimbPath climbePath(gain(k = 1));
-  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(body(m = 0.191405));
+  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(body(m = 1.2));
   QuadrotorModel.Electricals.Actuator actuator1_1;
   QuadrotorModel.Electricals.Actuator actuator1_2;
   QuadrotorModel.Electricals.Actuator actuator1_3;
