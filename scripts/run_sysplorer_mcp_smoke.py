@@ -29,11 +29,13 @@ def default_wrapper_candidates() -> list[str]:
     home = Path.home()
     project_root = Path(__file__).resolve().parents[1]
     names = ["sysplorer_mcp.sh", "sysplorer_mcp.bat", "sysplorer_mcp.cmd", "sysplorer_mcp.ps1"]
-    raw_candidates = [
-        "/home/linux/mcp-wrappers/sysplorer_mcp.sh",
-    ]
+    raw_candidates = []
+    if os.name != "nt":
+        raw_candidates.append(str(project_root / "scripts" / "sysplorer_mcp_wsl_bridge.sh"))
+    raw_candidates.append("/home/linux/mcp-wrappers/sysplorer_mcp.sh")
     raw_candidates.extend(str(home / "mcp-wrappers" / name) for name in names)
-    raw_candidates.extend(str(project_root / "mcp-wrappers" / name) for name in names)
+    if os.name == "nt":
+        raw_candidates.extend(str(project_root / "mcp-wrappers" / name) for name in names)
     candidates: list[str] = []
     seen: set[str] = set()
     for candidate in raw_candidates:

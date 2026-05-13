@@ -110,11 +110,16 @@ locations:
 
 ```text
 /home/linux/mcp-wrappers/sysplorer_mcp.sh
+scripts/sysplorer_mcp_wsl_bridge.sh
 ~/mcp-wrappers/sysplorer_mcp.sh
 ~/mcp-wrappers/sysplorer_mcp.bat
 ~/mcp-wrappers/sysplorer_mcp.cmd
 ~/mcp-wrappers/sysplorer_mcp.ps1
 ```
+
+In WSL/Codex, prefer `scripts/sysplorer_mcp_wsl_bridge.sh` because it starts
+the Windows MCP server through `/init ... cmd.exe /c`. Directly executing
+Windows `.exe` or `.cmd` files from WSL may fail with `Exec format error`.
 
 For a non-standard location, use either:
 
