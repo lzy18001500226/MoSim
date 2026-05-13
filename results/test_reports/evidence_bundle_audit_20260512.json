@@ -1,9 +1,9 @@
 {
   "source": "project_evidence_bundle_audit",
-  "scenarios_checked": 57,
-  "pass_count": 57,
+  "scenarios_checked": 60,
+  "pass_count": 60,
   "issue_count": 0,
-  "warning_count": 19,
+  "warning_count": 20,
   "results": [
     {
       "scenario": "scenarios/official/example1_awff_indi_sysblock.yaml",
@@ -1014,6 +1014,80 @@
       "warnings": [
         "quality_status is needs_iteration; usable only as boundary/ablation evidence, not as completed controller claim"
       ]
+    },
+    {
+      "scenario": "scenarios/robustness/example1_rotor1_loss15_wind_gust_awff_sysblock.yaml",
+      "experiment_id": "robust_rotor1_loss15_wind_gust_example1_awff_sysblock",
+      "scene_id": "robust_rotor1_loss15_wind_gust_example1",
+      "controller_id": "awff_sysblock",
+      "priority": "P1-C",
+      "active": true,
+      "role": "boundary_or_negative_evidence",
+      "evidence_level": "real_sysplorer_mcp_sysblock_rotor_loss_wind_gust_boundary",
+      "quality_status": "needs_iteration",
+      "metrics_valid": true,
+      "raw_rows": 5001,
+      "figure_count": 4,
+      "paths": {
+        "raw_file": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_awff_sysblock/raw/robust_rotor1_loss15_wind_gust_example1_awff_sysblock.csv",
+        "metrics_file": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_awff_sysblock/metrics/robust_rotor1_loss15_wind_gust_example1_awff_sysblock.json",
+        "figure_dir": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_awff_sysblock/figures",
+        "replay_file": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_awff_sysblock/replay/robust_rotor1_loss15_wind_gust_example1_awff_sysblock.json",
+        "mcp_log": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_awff_sysblock/logs/sysplorer_robust_rotor1_loss15_wind_gust_example1_awff_sysblock_20260513.jsonl"
+      },
+      "ok": true,
+      "issues": [],
+      "warnings": [
+        "quality_status is needs_iteration; usable only as boundary/ablation evidence, not as completed controller claim"
+      ]
+    },
+    {
+      "scenario": "scenarios/robustness/example1_rotor1_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml",
+      "experiment_id": "robust_rotor1_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock",
+      "scene_id": "robust_rotor1_loss15_wind_gust_example1",
+      "controller_id": "l1_multi_fault_isolation_sysblock",
+      "priority": "P1-C",
+      "active": true,
+      "role": "pass_evidence",
+      "evidence_level": "real_sysplorer_mcp_sysblock_l1_multi_fault_isolation_rotor_loss_wind_gust",
+      "quality_status": "pass",
+      "metrics_valid": true,
+      "raw_rows": 5001,
+      "figure_count": 6,
+      "paths": {
+        "raw_file": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor1_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock.csv",
+        "metrics_file": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor1_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock.json",
+        "figure_dir": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/figures",
+        "replay_file": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/replay/robust_rotor1_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock.json",
+        "mcp_log": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/logs/sysplorer_robust_rotor1_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock_20260513.jsonl"
+      },
+      "ok": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "scenario": "scenarios/robustness/example1_rotor1_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml",
+      "experiment_id": "robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock",
+      "scene_id": "robust_rotor1_loss15_wind_gust_example1",
+      "controller_id": "linear_mpc_online_fault_allocation_sysblock",
+      "priority": "P1-C",
+      "active": true,
+      "role": "pass_evidence",
+      "evidence_level": "real_sysplorer_mcp_sysblock_linear_mpc_online_fault_allocation_rotor_loss_wind_gust",
+      "quality_status": "pass",
+      "metrics_valid": true,
+      "raw_rows": 5001,
+      "figure_count": 4,
+      "paths": {
+        "raw_file": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.csv",
+        "metrics_file": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/metrics/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.json",
+        "figure_dir": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/figures",
+        "replay_file": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/replay/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.json",
+        "mcp_log": "results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/logs/sysplorer_robust_rotor1_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock_20260513.jsonl"
+      },
+      "ok": true,
+      "issues": [],
+      "warnings": []
     },
     {
       "scenario": "scenarios/robustness/example1_rotor2_loss15_awff_sysblock.yaml",
