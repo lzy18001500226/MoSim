@@ -22,4 +22,5 @@ reference:
 result:
   raw_file: results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv
   metrics_file: results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.json
+  mcp_log: results/official/example1_step/official_example1_pid_baseline/logs/sysplorer_example1_pid_baseline_full_20260509.jsonl
   replay_file: results/official/example1_step/official_example1_pid_baseline/replay/official_example1_pid_baseline.json

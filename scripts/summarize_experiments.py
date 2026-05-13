@@ -42,6 +42,8 @@ SUMMARY_COLUMNS = [
     "baseline_experiment",
     "rmse_improvement_pct",
     "health_score_delta",
+    "quality_status",
+    "quality_pass",
     "source",
     "evidence_level",
     "notes",
@@ -308,20 +310,46 @@ def write_markdown(path: Path, rows: list[dict[str, Any]], csv_path: Path) -> No
         "",
         "## Available Results",
         "",
-        "| Experiment | Scene | Controller | RMSE | Health | Status |",
-        "|---|---|---|---:|---:|---|",
+        "| Experiment | Scene | Controller | RMSE | Health | Quality | Status |",
+        "|---|---|---|---:|---:|---|---|",
     ]
     for row in best:
         lines.append(
-            "| {experiment_id} | {scene_id} | {controller_id} | {rmse} | {health} | {status} |".format(
+            "| {experiment_id} | {scene_id} | {controller_id} | {rmse} | {health} | {quality} | {status} |".format(
                 experiment_id=row["experiment_id"],
                 scene_id=row["scene_id"],
                 controller_id=row["controller_id"],
                 rmse=format_value(row.get("position_rmse_m")),
                 health=format_value(row.get("total_health_score")),
+                quality=format_value(row.get("quality_status")),
                 status=row["status"],
             )
         )
+
+    attention = [
+        row for row in rows
+        if row["status"] == "done" and format_value(row.get("quality_status")) not in {"", "pass"}
+    ]
+    lines.extend([
+        "",
+        "## Needs Attention",
+        "",
+        "| Experiment | Scene | Controller | Quality | Notes |",
+        "|---|---|---|---|---|",
+    ])
+    if not attention:
+        lines.append("| - | - | - | - | No completed result currently needs iteration. |")
+    else:
+        for row in sorted(attention, key=lambda item: (str(item["scene_id"]), str(item["controller_id"]))):
+            lines.append(
+                "| {experiment_id} | {scene_id} | {controller_id} | {quality} | {notes} |".format(
+                    experiment_id=row["experiment_id"],
+                    scene_id=row["scene_id"],
+                    controller_id=row["controller_id"],
+                    quality=format_value(row.get("quality_status")),
+                    notes=format_value(row.get("notes")),
+                )
+            )
 
     lines.extend([
         "",

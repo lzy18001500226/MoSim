@@ -28,5 +28,6 @@ reference:
 result:
   raw_file: results/official/example3_figure8/official_example3_improved_pid/raw/official_example3_improved_pid.csv
   metrics_file: results/official/example3_figure8/official_example3_improved_pid/metrics/official_example3_improved_pid.json
+  mcp_log: results/official/example3_figure8/official_example3_improved_pid/logs/sysplorer_example3_improved_pid_full_20260509.jsonl
   figure_dir: results/official/example3_figure8/official_example3_improved_pid/figures
   replay_file: results/official/example3_figure8/official_example3_improved_pid/replay/official_example3_improved_pid.json
