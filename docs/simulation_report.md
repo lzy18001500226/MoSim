@@ -508,7 +508,7 @@ scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
 | 1号旋翼效率85% Example1 | l1_online_fault_allocation_sysblock | pass | 0.260671 | +29.363% | 0.110916 | +57.638% | 2.560 | 0.117032 | 0.205199 | 283.382251 | 51.143948 |
 | 1号旋翼效率85% Example1 | l1_multi_fault_isolation_sysblock | pass | 0.267917 | +27.405% | 0.110916 | +57.637% | 4.910 | 0.140601 | 0.204720 | 284.641308 | 50.984182 |
 
-消融结论：L1-inspired 残差补偿在 Example1、Example3 8 字形、质量 +20% 和横向阵风四类正式场景中均通过质量门，并稳定降低 RMSE、稳态误差和扰动窗口峰值误差。横向阵风中 `position_rmse_m` 降低 `12.568%`、峰值误差降低 `22.210%`；8 字形中 RMSE 降低 `8.660%`。`awff_indi_sysblock` 当前为 L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，在 Example1、Example2 helix-tuned 和 Example3 中均通过质量门，RMSE 分别降低 `8.410%`、`6.035%` 和 `8.662%`；它证明 INDI-like 姿态增量可以在不破坏 L1 残差补偿收益的前提下接入整机闭环，但不能单独宣称“纯 INDI”贡献了全部误差下降。代价是 Example1 派生场景最大倾角约增加到 `0.205 rad`，Example2 最大倾角从 `0.354 rad` 增至 `0.371 rad`。旋翼退化场景中，单独 L1 仍为 `needs_iteration`；加入已知效率 `eta=0.85` 的混合控制分配补偿后，`l1_fault_allocation_sysblock` 通过质量门，RMSE 相比 AWFF Sysblock 降低 `33.793%`，稳态误差降低 `68.749%`，扰动窗口峰值误差降低 `74.091%`，恢复时间从 `13.760 s` 缩短到 `2.730 s`。进一步加入残差驱动在线效率估计后，`l1_online_fault_allocation_sysblock` 在不直接读取真实 `eta=0.85` 的条件下通过质量门，导出 `eta_hat` 诊断列，末值约 `0.904`，RMSE 相比 AWFF Sysblock 降低 `29.363%`。多旋翼隔离雏形 `l1_multi_fault_isolation_sysblock` 输出 `eta_hat1..4` 与 `fault_index`，在 rotor1 退化场景中 `5-50 s` 的 `fault_index=1` 正确率为 `100%`，并保持质量门 `pass`。该结果可作为“多旋翼故障隔离结构已接入并在 rotor1 场景验证”的证据；完整四旋翼故障隔离仍需补 rotor2/3/4 退化场景后才能声明。
+消融结论：L1-inspired 残差补偿在 Example1、Example3 8 字形、质量 +20% 和横向阵风四类正式场景中均通过质量门，并稳定降低 RMSE、稳态误差和扰动窗口峰值误差。横向阵风中 `position_rmse_m` 降低 `12.568%`、峰值误差降低 `22.210%`；8 字形中 RMSE 降低 `8.660%`。`awff_indi_sysblock` 当前为 L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，在 Example1、Example2 helix-tuned 和 Example3 中均通过质量门，RMSE 分别降低 `8.410%`、`6.035%` 和 `8.662%`；它证明 INDI-like 姿态增量可以在不破坏 L1 残差补偿收益的前提下接入整机闭环，但不能单独宣称“纯 INDI”贡献了全部误差下降。代价是 Example1 派生场景最大倾角约增加到 `0.205 rad`，Example2 最大倾角从 `0.354 rad` 增至 `0.371 rad`。旋翼退化场景中，单独 L1 仍为 `needs_iteration`；加入已知效率 `eta=0.85` 的混合控制分配补偿后，`l1_fault_allocation_sysblock` 通过质量门，RMSE 相比 AWFF Sysblock 降低 `33.793%`，稳态误差降低 `68.749%`，扰动窗口峰值误差降低 `74.091%`，恢复时间从 `13.760 s` 缩短到 `2.730 s`。进一步加入残差驱动在线效率估计后，`l1_online_fault_allocation_sysblock` 在不直接读取真实 `eta=0.85` 的条件下通过质量门，导出 `eta_hat` 诊断列，末值约 `0.904`，RMSE 相比 AWFF Sysblock 降低 `29.363%`。多旋翼隔离雏形 `l1_multi_fault_isolation_sysblock` 输出 `eta_hat1..4` 与 `fault_index`，已经在 rotor1-4 单旋翼退化以及 rotor1-4 单旋翼退化叠加横向阵风的复合鲁棒场景完成真实 Sysplorer MCP 50 s 验证，所有场景质量门均为 `pass`，`fault_index` 在 `5-50 s` 内对应退化旋翼的正确率均为 `100%`。该结果可以支撑“四个单旋翼故障方向均已完成隔离与鲁棒补偿验证”的表述；仍不支撑瞬态故障切换或多旋翼同时故障声明。
 
 ## 11. 当前图表
 
@@ -659,7 +659,7 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 
 2026-05-13 证据审计：迁移 `sunray150_with_mid360` 后，复合鲁棒场景 `rotor1_loss15_wind_gust_example1` 已形成一条负样本和三条正样本。普通 `awff_sysblock` 健康分为 `35.967`、RMSE 为 `0.3792 m`，质量门为 `needs_iteration`，保留为未补偿边界案例；`awff_fault_compensation_sysblock` 健康分为 `53.253`、RMSE 为 `0.2704 m`；`l1_multi_fault_isolation_sysblock` 健康分为 `50.994`、RMSE 为 `0.2721 m`；`linear_mpc_online_fault_allocation_sysblock` 健康分为 `51.318`、RMSE 为 `0.2614 m`。因此该复合场景结论应表述为“普通 AWFF 在复合扰动下不足，加入已知故障补偿、L1 多旋翼故障隔离或线性 MPC 在线分配后通过质量门”。
 
-2026-05-14 复核：在 `sunray150_with_mid360` 等效参数下，新增 rotor2-4 的“单旋翼效率 85% + 横向阵风”复合鲁棒 L1 多故障隔离正样本，均为 50 s 真实 Sysplorer MCP 仿真。该组结果用于支撑“多旋翼单故障方向均完成复合扰动鲁棒验证”，不替代后续多故障/故障切换验证。
+2026-05-14 复核：在 `sunray150_with_mid360` 等效参数下，新增并复跑 rotor2-4 的“单旋翼效率 85% + 横向阵风”复合鲁棒 L1 多故障隔离正样本，均为 50 s 真实 Sysplorer MCP 仿真，且本轮均打开 GUI model/plot/animation 供人工审查。该组结果用于支撑“多旋翼单故障方向均完成复合扰动鲁棒验证”，不替代后续多故障/故障切换验证。
 
 | 退化旋翼 | 场景文件 | RMSE (m) | 稳态误差 (m) | 最大误差 (m) | 健康分 | `fault_index` 正确率 | 质量门 |
 |---|---|---:|---:|---:|---:|---:|---|
@@ -668,7 +668,7 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 | rotor3 | `scenarios/robustness/example1_rotor3_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2707 | 0.1446 | 1.2526 | 50.987 | 100% | pass |
 | rotor4 | `scenarios/robustness/example1_rotor4_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2727 | 0.1415 | 1.2526 | 50.984 | 100% | pass |
 
-对应证据目录位于 `results/robustness/rotor{1..4}_loss15_wind_gust_example1/robust_rotor{1..4}_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/`，包含 `raw/`、`metrics/`、`figures/`、`replay/` 和 `logs/`。为减少桌面窗口干扰，rotor2-4 本轮先使用 `--no-gui-result-viewer` 生成数值和图表证据；需要录制视频时再打开代表性场景的 native result 或重新运行单个场景的 GUI 审查。
+对应证据目录位于 `results/robustness/rotor{1..4}_loss15_wind_gust_example1/robust_rotor{1..4}_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/`，包含 `raw/`、`metrics/`、`figures/`、`replay/`、`logs/` 和 `native_result/native_result_manifest.json`。由于 Windows 长路径限制，原生 `Result.msr` 可能实际缓存在 `results/native_result_cache/`，以 manifest 中的映射为准；报告和视频录制仍以该 native result 与 raw/metrics 双重证据为准。
 
 ## 13. Linear MPC-style 外环闭环结果
 
