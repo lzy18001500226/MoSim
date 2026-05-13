@@ -122,6 +122,11 @@ INNOVATION_MODELS = [
         "verify_result_var": "eta_hat",
     },
     {
+        "model_name": "AWFF_InnovationGraphicalControllers.AWFF_FaultCompensationControllerGraphical_Sysblock",
+        "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+        "verify_result_var": "y",
+    },
+    {
         "model_name": "AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock",
         "file": "models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "y",

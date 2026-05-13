@@ -102,6 +102,20 @@ resources_retrieval
 
 ## 4. Procedure
 
+### Step 0: Confirm WSL can execute the MCP wrapper
+
+Before running a real MWORKS simulation from WSL, verify that the wrapper can
+start the Sysplorer MCP server. If the wrapper directly `exec`s a Windows
+`python.exe` and WSL reports `cannot execute binary file: Exec format error`,
+the simulation cannot be launched from the current shell. In that case:
+
+```text
+1. Do not label the attempted run as MWORKS evidence.
+2. Remove any partial raw/metrics/log directories created by the failed attempt.
+3. Keep the scenario inactive with inactive_reason describing the wrapper block.
+4. Re-run from a Windows-capable shell or repair the wrapper so WSL can launch it.
+```
+
 ### Step 1: Check MCP status
 
 Run `/mcp` in Codex.

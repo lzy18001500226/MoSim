@@ -1,0 +1,635 @@
+{
+  "source": "static_model_contract",
+  "scope": "graphical_awff_sysblock_controller",
+  "ok": true,
+  "structure_ok": true,
+  "behavior_equivalence_ok": true,
+  "results": [
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_PositionOuterLoop_Sysblock.mo",
+      "model": null,
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate"
+      ],
+      "outports": [
+        "pitch_ref",
+        "roll_ref",
+        "thrust_ref"
+      ],
+      "connect_count": 21,
+      "line_annotation_count": 21,
+      "placement_count": 20,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_AttitudeInnerLoop_Sysblock.mo",
+      "model": null,
+      "ok": true,
+      "inports": [
+        "roll_ref",
+        "pitch_ref",
+        "yaw_ref",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea"
+      ],
+      "outports": [
+        "roll_cmd",
+        "pitch_cmd",
+        "yaw_cmd"
+      ],
+      "connect_count": 18,
+      "line_annotation_count": 18,
+      "placement_count": 19,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_MotorMixer_Sysblock.mo",
+      "model": null,
+      "ok": true,
+      "inports": [
+        "thrust_ref",
+        "roll_cmd",
+        "pitch_cmd",
+        "yaw_cmd"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 23,
+      "line_annotation_count": 23,
+      "placement_count": 15,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_FullController_Sysblock.mo",
+      "model": null,
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea",
+        "yaw_ref"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 80,
+      "line_annotation_count": 80,
+      "placement_count": 69,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo",
+      "model": null,
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea",
+        "yaw_ref"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 63,
+      "line_annotation_count": 63,
+      "placement_count": 49,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "INDIAttitudeInnerLoopBlock",
+      "ok": true,
+      "inports": [
+        "roll_ref",
+        "pitch_ref",
+        "yaw_ref",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea"
+      ],
+      "outports": [
+        "roll_cmd",
+        "pitch_cmd",
+        "yaw_cmd"
+      ],
+      "connect_count": 39,
+      "line_annotation_count": 39,
+      "placement_count": 34,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "MotorMixerBlock",
+      "ok": true,
+      "inports": [
+        "thrust_ref",
+        "roll_cmd",
+        "pitch_cmd",
+        "yaw_cmd"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 31,
+      "line_annotation_count": 31,
+      "placement_count": 23,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "KnownRotorFaultMixerBlock",
+      "ok": true,
+      "inports": [
+        "thrust_ref",
+        "roll_cmd",
+        "pitch_cmd",
+        "yaw_cmd"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 13,
+      "line_annotation_count": 13,
+      "placement_count": 14,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "RotorFaultIsolationBlock",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error"
+      ],
+      "outports": [
+        "eta_hat1",
+        "eta_hat2",
+        "eta_hat3",
+        "eta_hat4",
+        "fault_index"
+      ],
+      "connect_count": 44,
+      "line_annotation_count": 44,
+      "placement_count": 39,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AdaptiveFaultMixerBlock",
+      "ok": true,
+      "inports": [
+        "thrust_ref",
+        "roll_cmd",
+        "pitch_cmd",
+        "yaw_cmd",
+        "eta_hat1",
+        "eta_hat2",
+        "eta_hat3",
+        "eta_hat4"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 20,
+      "line_annotation_count": 20,
+      "placement_count": 21,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_L1ResidualControllerGraphical_Sysblock",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea",
+        "yaw_ref"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 18,
+      "line_annotation_count": 18,
+      "placement_count": 15,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_INDIControllerGraphical_Sysblock",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea",
+        "yaw_ref"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 18,
+      "line_annotation_count": 18,
+      "placement_count": 15,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_L1FaultAllocationControllerGraphical_Sysblock",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea",
+        "yaw_ref"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 18,
+      "line_annotation_count": 18,
+      "placement_count": 15,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea",
+        "yaw_ref"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3",
+        "eta_hat1",
+        "eta_hat2",
+        "eta_hat3",
+        "eta_hat4",
+        "fault_index"
+      ],
+      "connect_count": 29,
+      "line_annotation_count": 29,
+      "placement_count": 21,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_L1OnlineFaultAllocationControllerGraphical_Sysblock",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea",
+        "yaw_ref"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3",
+        "eta_hat"
+      ],
+      "connect_count": 25,
+      "line_annotation_count": 25,
+      "placement_count": 18,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_FaultCompensationControllerGraphical_Sysblock",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea",
+        "yaw_ref"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 18,
+      "line_annotation_count": 18,
+      "placement_count": 15,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "LinearMPCOuterLoopBlock",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate"
+      ],
+      "outports": [
+        "pitch_ref",
+        "roll_ref",
+        "thrust_ref"
+      ],
+      "connect_count": 75,
+      "line_annotation_count": 75,
+      "placement_count": 59,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "Rotor1OnlineEfficiencyEstimatorBlock",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error"
+      ],
+      "outports": [
+        "eta_hat"
+      ],
+      "connect_count": 11,
+      "line_annotation_count": 11,
+      "placement_count": 12,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_LinearMPCControllerGraphical_Sysblock",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea",
+        "yaw_ref"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3"
+      ],
+      "connect_count": 18,
+      "line_annotation_count": 18,
+      "placement_count": 15,
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock",
+      "ok": true,
+      "inports": [
+        "x_error",
+        "y_error",
+        "z_error",
+        "z_ref_rate",
+        "roll_mea",
+        "pitch_mea",
+        "yaw_mea",
+        "yaw_ref"
+      ],
+      "outports": [
+        "y",
+        "y1",
+        "y2",
+        "y3",
+        "eta_hat"
+      ],
+      "connect_count": 25,
+      "line_annotation_count": 25,
+      "placement_count": 18,
+      "failures": []
+    }
+  ],
+  "behavior_results": [
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo",
+      "model": "AWFF_FullControllerFlatGraphical_Sysblock.mo",
+      "ok": true,
+      "required_behavior_blocks": [
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+        "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_InnovationGraphicalControllers.L1ResidualOuterLoopBlock",
+      "ok": true,
+      "required_behavior_blocks": [
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+        "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_InnovationGraphicalControllers.PIDAttitudeInnerLoopBlock",
+      "ok": true,
+      "required_behavior_blocks": [
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_InnovationGraphicalControllers.INDIAttitudeInnerLoopBlock",
+      "ok": true,
+      "required_behavior_blocks": [
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+        "SysplorerEmbeddedCoder.Discrete.UnitDelay"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_InnovationGraphicalControllers.MotorMixerBlock",
+      "ok": true,
+      "required_behavior_blocks": [
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_InnovationGraphicalControllers.KnownRotorFaultMixerBlock",
+      "ok": true,
+      "required_behavior_blocks": [
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_InnovationGraphicalControllers.RotorFaultIsolationBlock",
+      "ok": true,
+      "required_behavior_blocks": [
+        "SysplorerEmbeddedCoder.Discontinuities.DeadZone",
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation",
+        "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator",
+        "SysplorerEmbeddedCoder.SignalRouting.Switch"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_InnovationGraphicalControllers.AdaptiveFaultMixerBlock",
+      "ok": true,
+      "required_behavior_blocks": [
+        "SysplorerEmbeddedCoder.MathOperation.Product",
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_InnovationGraphicalControllers.LinearMPCOuterLoopBlock",
+      "ok": true,
+      "required_behavior_blocks": [
+        "SysplorerEmbeddedCoder.Discrete.UnitDelay",
+        "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator",
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_InnovationGraphicalControllers.Rotor1OnlineEfficiencyEstimatorBlock",
+      "ok": true,
+      "required_behavior_blocks": [
+        "SysplorerEmbeddedCoder.Discontinuities.DeadZone",
+        "SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator",
+        "SysplorerEmbeddedCoder.Discontinuities.Saturation"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_InnovationGraphicalControllers.AWFF_L1OnlineFaultAllocationControllerGraphical_Sysblock",
+      "ok": true,
+      "required_behavior_blocks": [
+        "L1ResidualOuterLoopBlock",
+        "Rotor1OnlineEfficiencyEstimatorBlock",
+        "AdaptiveFaultMixerBlock"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_InnovationGraphicalControllers.AWFF_FaultCompensationControllerGraphical_Sysblock",
+      "ok": true,
+      "required_behavior_blocks": [
+        "L1ResidualOuterLoopBlock",
+        "PIDAttitudeInnerLoopBlock",
+        "KnownRotorFaultMixerBlock"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock",
+      "ok": true,
+      "required_behavior_blocks": [
+        "LinearMPCOuterLoopBlock",
+        "INDIAttitudeInnerLoopBlock",
+        "MotorMixerBlock"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    },
+    {
+      "file": "/mnt/c/Users/HP/Desktop/Quadrotor/models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+      "model": "AWFF_InnovationGraphicalControllers.AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock",
+      "ok": true,
+      "required_behavior_blocks": [
+        "LinearMPCOuterLoopBlock",
+        "Rotor1OnlineEfficiencyEstimatorBlock",
+        "AdaptiveFaultMixerBlock"
+      ],
+      "missing_behavior_blocks": [],
+      "failures": []
+    }
+  ]
+}

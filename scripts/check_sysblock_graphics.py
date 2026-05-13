@@ -60,6 +60,11 @@ BEHAVIOR_EXPECTATIONS: dict[str, list[str]] = {
         "Rotor1OnlineEfficiencyEstimatorBlock",
         "AdaptiveFaultMixerBlock",
     ],
+    "AWFF_InnovationGraphicalControllers.AWFF_FaultCompensationControllerGraphical_Sysblock": [
+        "L1ResidualOuterLoopBlock",
+        "PIDAttitudeInnerLoopBlock",
+        "KnownRotorFaultMixerBlock",
+    ],
     "AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock": [
         "LinearMPCOuterLoopBlock",
         "INDIAttitudeInnerLoopBlock",
@@ -191,6 +196,12 @@ PACKAGE_MODELS: dict[str, dict[str, dict[str, Any]]] = {
             "outports": ["y", "y1", "y2", "y3", "eta_hat"],
             "required_blocks": ["l1_outer", "attitude_loop", "motor_mixer", "rotor1_eta_estimator", "L1ResidualOuterLoopBlock", "PIDAttitudeInnerLoopBlock", "AdaptiveFaultMixerBlock", "Rotor1OnlineEfficiencyEstimatorBlock"],
             "min_connects": 24,
+        },
+        "AWFF_FaultCompensationControllerGraphical_Sysblock": {
+            "inports": ["x_error", "y_error", "z_error", "z_ref_rate", "roll_mea", "pitch_mea", "yaw_mea", "yaw_ref"],
+            "outports": ["y", "y1", "y2", "y3"],
+            "required_blocks": ["awff_outer", "attitude_loop", "motor_mixer", "L1ResidualOuterLoopBlock", "PIDAttitudeInnerLoopBlock", "KnownRotorFaultMixerBlock"],
+            "min_connects": 18,
         },
         "LinearMPCOuterLoopBlock": {
             "inports": ["x_error", "y_error", "z_error", "z_ref_rate"],
