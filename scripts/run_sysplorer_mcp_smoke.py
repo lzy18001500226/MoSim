@@ -82,7 +82,7 @@ def windows_path(path: Path) -> str:
     return text.replace("/", "\\")
 
 
-def parse_extra_variables(items: list[str]) -> dict[str, str]:
+def parse_extra_variables(items: list[str], *, allow_default_override: bool = False) -> dict[str, str]:
     variables: dict[str, str] = {}
     for item in items:
         if "=" not in item:
@@ -92,7 +92,7 @@ def parse_extra_variables(items: list[str]) -> dict[str, str]:
         model_var = model_var.strip()
         if not alias or not model_var:
             raise ValueError(f"Extra variable must use alias=model.variable syntax: {item}")
-        if alias in DEFAULT_VARIABLES or alias in variables:
+        if alias in variables or (not allow_default_override and alias in DEFAULT_VARIABLES):
             raise ValueError(f"Duplicate result variable alias: {alias}")
         variables[alias] = model_var
     return variables
@@ -273,6 +273,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="append",
         default=[],
         help="Additional result variable as alias=model.variable. Can be repeated.",
+    )
+    parser.add_argument(
+        "--override-variable",
+        action="append",
+        default=[],
+        help="Override a default result variable such as x_ref=model.variable. Can be repeated.",
     )
     parser.add_argument(
         "--shutdown-session",
@@ -524,6 +530,7 @@ def run_mcp_simulation(
 
     target_time = parse_target_time(args.target_time)
     variables = dict(DEFAULT_VARIABLES)
+    variables.update(parse_extra_variables(args.override_variable, allow_default_override=True))
     variables.update(parse_extra_variables(args.extra_variable))
     native_result_dir, native_result_manifest = resolve_native_result_dir(
         args.raw_output,

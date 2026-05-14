@@ -1,0 +1,32 @@
+{
+  "scene_id": "official_example1",
+  "controller_id": "nmpc_indi_l1",
+  "source": "raw_csv_controller_debug_signals",
+  "event_count": 3,
+  "max_safety_active": 1.0,
+  "events": [
+    {
+      "time_s": 0.0,
+      "event": "NORMAL",
+      "controller_mode": 1,
+      "event_code": 10,
+      "reason": "initial_mode"
+    },
+    {
+      "time_s": 0.39,
+      "event": "SAFETY_FILTER_ACTIVE",
+      "controller_mode": 2,
+      "event_code": 20,
+      "previous_mode": 1,
+      "reason": "mode_or_event_code_changed"
+    },
+    {
+      "time_s": 1.9000000000000001,
+      "event": "NORMAL",
+      "controller_mode": 1,
+      "event_code": 10,
+      "previous_mode": 2,
+      "reason": "mode_or_event_code_changed"
+    }
+  ]
+}

@@ -735,11 +735,41 @@ results/robustness/rotor3_loss15_wind_gust_example1/robust_rotor3_loss15_wind_gu
 results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/
 ```
 
-结论边界：该组结果可以支撑“线性 MPC-style 外环已完成官方三场景整机闭环验证，并在当前质量门下略优于对应 L1+INDI 基线”的表述；可以支撑“质量摄动和横向阵风鲁棒场景已通过”的表述；旋翼退化必须表述为“需要在线效率估计与控制分配补偿后通过”。不能支撑“在线优化 MPC/NMPC 已完成”的表述。
+## 14. QP/NMPC-style Safety Filter 与返航/降落闭环
+
+`AWFF_QPNMPCSafetyController_Sysblock` 在 LinearMPC nominal 控制器外增加固定迭代投影式 QP 约束修正、NMPC-style 非线性倾角软化、CBF-style 高度安全投影、模式管理和 event_log 调试信号。该实现不依赖外部 dense QP 库，也不是完整多重 shooting NMPC NLP；报告中应表述为“固定迭代投影式在线 QP/NMPC-style 安全优化”。
+
+| 场景 | 模型 | 时长 | RMSE (m) | 最大误差 (m) | 稳态误差 (m) | 最大倾角 (rad) | 健康分 | 质量门 |
+|---|---|---:|---:|---:|---:|---:|---:|---|
+| Example1 nominal | `QuadrotorExperiments.Example1QPNMPCSafetySysblockClosedLoop` | 50 s | 0.239803 | 1.201833 | 0.071135 | 0.269933 | 55.891 | pass |
+| Example1 返航/降落 | `QuadrotorExperiments.Example1QPNMPCSafetyReturnLandSysblockClosedLoop` | 50 s | 0.208361 | 1.201833 | 0.001624 | 0.000000 | 56.146 | pass |
+
+返航/降落闭环使用 `mission_ref_x/y/z` 替代官方爬升参考，并通过场景 YAML 的 `result.variable_overrides` 写入 raw CSV 的 `x_ref/y_ref/z_ref`，保证指标计算面向实际任务参考。20 s 后切换 `DEGRADED_RETURN`，参考高度以 `0.8 m/s` 连续下降；38 s 后切换 `EMERGENCY_LAND`，50 s 末端高度 `0.149998 m`，降落参考 `0.15 m`。
+
+event_log 证据：
+
+```text
+results/official/example1_step/official_example1_qp_nmpc_safety_sysblock/events/event_log.json
+results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/events/event_log.json
+```
+
+返航/降落事件序列：
+
+```text
+0.00 s  NORMAL
+0.39 s  SAFETY_FILTER_ACTIVE
+1.90 s  NORMAL
+20.04 s DEGRADED_RETURN
+38.04 s EMERGENCY_LAND
+```
+
+结论边界：该组结果可以支撑“QP/NMPC-style 安全优化、CBF-style Safety Filter、模式切换、event_log 和安全返航/降落闭环已完成首轮真实 Sysplorer MCP 验证”的表述；不能支撑“通用 dense QP 求解器、完整非线性多重 shooting NMPC 或硬实时优化器已完成”的表述。
+
+结论边界：LinearMPC 组结果可以支撑“线性 MPC-style 外环已完成官方三场景整机闭环验证，并在当前质量门下略优于对应 L1+INDI 基线”的表述；可以支撑“质量摄动和横向阵风鲁棒场景已通过”的表述；旋翼退化必须表述为“需要在线效率估计与控制分配补偿后通过”。
 
 证据包状态：截至 2026-05-13，active 非 smoke 场景证据包无 blocking issue；`linear_mpc_sysblock` 的 rotor1 退化纯外环结果保留为边界负样本，`linear_mpc_online_fault_allocation_sysblock` 和 `l1_multi_fault_isolation_sysblock` 才是可用于“退化/复合扰动场景通过”的正式证据。完整差异审计见 `results/summaries/experiment_summary/simulation_gap_review.md`。
 
-## 14. 结论约束
+## 15. 结论约束
 
 1. 不使用 smoke 数据做完整控制性能结论。
 2. 不使用离线脚本结果作为 MWORKS 控制性能结论。

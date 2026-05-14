@@ -179,6 +179,12 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
             raise ValueError(f"Scenario result.extra_variables must be a mapping: {args.scenario}")
         for alias, model_var in extra_variables.items():
             command.extend(["--extra-variable", f"{alias}={model_var}"])
+    variable_overrides = result.get("variable_overrides", {})
+    if variable_overrides:
+        if not isinstance(variable_overrides, dict):
+            raise ValueError(f"Scenario result.variable_overrides must be a mapping: {args.scenario}")
+        for alias, model_var in variable_overrides.items():
+            command.extend(["--override-variable", f"{alias}={model_var}"])
     for extra_model_file in extra_model_files:
         command.extend(["--extra-model-file", extra_model_file])
     if args.shutdown_session:
@@ -189,12 +195,14 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
 def run_postprocess(config: dict[str, Any]) -> None:
     experiment_id = str(config.get("experiment_id", ""))
     model = require_mapping(config, "model")
+    controller_id = str(config.get("controller_id", ""))
     result = require_mapping(config, "result")
     raw_file = Path(str(result.get("raw_file", "")))
     metrics_file = Path(str(result.get("metrics_file", "")))
     result_base = default_result_base(config, experiment_id)
     figure_dir = Path(str(result.get("figure_dir", result_base / "figures")))
     replay_file = Path(str(result.get("replay_file", result_base / "replay" / f"{experiment_id}.json")))
+    event_log_file = result.get("event_log_file")
 
     subprocess.run(
         [
@@ -228,6 +236,21 @@ def run_postprocess(config: dict[str, Any]) -> None:
         cwd=ROOT,
         check=True,
     )
+    if event_log_file:
+        subprocess.run(
+            [
+                sys.executable,
+                "scripts/generate_event_log.py",
+                str(raw_file),
+                str(Path(str(event_log_file))),
+                "--scene-id",
+                str(config.get("scene_id", experiment_id)),
+                "--controller-id",
+                controller_id,
+            ],
+            cwd=ROOT,
+            check=True,
+        )
     if config.get("generate_replay_html", False):
         replay_html = Path(str(result.get("replay_html", result_base / "replay_html" / f"{experiment_id}.html")))
         subprocess.run(

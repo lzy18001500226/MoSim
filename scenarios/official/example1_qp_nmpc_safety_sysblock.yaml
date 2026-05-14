@@ -1,0 +1,47 @@
+experiment_id: official_example1_qp_nmpc_safety_sysblock
+scene_id: official_example1
+controller_id: nmpc_indi_l1
+priority: P1-D
+evidence_level: real_sysplorer_mcp_sysblock_qp_nmpc_safety_full
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1QPNMPCSafetySysblockClosedLoop
+  model_path_hint: models/QuadrotorExperiments/Example1QPNMPCSafetySysblockClosedLoop.mo
+  base_model_path_hint: QuadrotorModel/package.mo
+  official_description: 阶梯爬升 QP/NMPC + CBF Safety Filter + 模式切换 Sysblock full validation
+
+controller:
+  params_file: controllers/nmpc_indi_l1/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: official_example1_linear_mpc_sysblock
+  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_QPNMPCSafetyController_Sysblock.mo
+  extra_sysblock_controller_files:
+    - models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
+  graphical_sysblock_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
+result:
+  raw_file: results/official/example1_step/official_example1_qp_nmpc_safety_sysblock/raw/official_example1_qp_nmpc_safety_sysblock.csv
+  metrics_file: results/official/example1_step/official_example1_qp_nmpc_safety_sysblock/metrics/official_example1_qp_nmpc_safety_sysblock.json
+  figure_dir: results/official/example1_step/official_example1_qp_nmpc_safety_sysblock/figures
+  replay_file: results/official/example1_step/official_example1_qp_nmpc_safety_sysblock/replay/official_example1_qp_nmpc_safety_sysblock.json
+  event_log_file: results/official/example1_step/official_example1_qp_nmpc_safety_sysblock/events/event_log.json
+  mcp_log: results/official/example1_step/official_example1_qp_nmpc_safety_sysblock/logs/sysplorer_example1_qp_nmpc_safety_sysblock_full_20260514.jsonl
+  extra_variables:
+    controller_mode: controller3_2.controller_mode
+    safety_active: controller3_2.safety_active
+    event_code: controller3_2.event_code
+    return_ref_x: controller3_2.return_ref_x
+    return_ref_y: controller3_2.return_ref_y
+    return_ref_z: controller3_2.return_ref_z

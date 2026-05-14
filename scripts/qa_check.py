@@ -79,6 +79,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/plot_results.py",
     "scripts/generate_replay_html.py",
     "scripts/generate_replay_from_raw.py",
+    "scripts/generate_event_log.py",
     "scripts/summarize_experiments.py",
     "scripts/run_mworks_scenario.py",
     "scripts/run_mworks_batch.py",
