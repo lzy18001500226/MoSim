@@ -93,6 +93,8 @@ def scenario_command(scenario_path: Path, args: argparse.Namespace) -> list[str]
         command.extend(["--wrapper", args.wrapper])
     if args.no_gui_result_viewer:
         command.append("--no-gui-result-viewer")
+    if getattr(args, "no_gui_open", False):
+        command.append("--no-gui-open")
     if args.shutdown_session:
         command.append("--shutdown-session")
     return command
@@ -142,6 +144,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--no-gui-result-viewer",
         action="store_true",
         help="Skip Sysplorer native result files and GUI plot/animation after each scenario",
+    )
+    parser.add_argument(
+        "--no-gui-open",
+        action="store_true",
+        help="Write Sysplorer native Result.msr for each scenario but skip automatic GUI plot/animation opening",
     )
     parser.add_argument("--shutdown-session", action="store_true", help="Request Sysplorer session shutdown after each scenario")
     parser.add_argument(

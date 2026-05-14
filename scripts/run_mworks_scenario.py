@@ -175,6 +175,8 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
         command.extend(["--wrapper", args.wrapper])
     if args.no_gui_result_viewer:
         command.append("--no-gui-result-viewer")
+    if getattr(args, "no_gui_open", False):
+        command.append("--no-gui-open")
     if args.gui_reset_windows:
         command.append("--gui-reset-windows")
     extra_variables = result.get("extra_variables", {})
@@ -326,6 +328,11 @@ def parse_args() -> argparse.Namespace:
         "--no-gui-result-viewer",
         action="store_true",
         help="Skip Sysplorer native result files and GUI plot/animation after simulation",
+    )
+    parser.add_argument(
+        "--no-gui-open",
+        action="store_true",
+        help="Write Sysplorer native Result.msr but skip automatic GUI plot/animation opening",
     )
     parser.add_argument(
         "--gui-reset-windows",

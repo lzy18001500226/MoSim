@@ -291,6 +291,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Skip Sysplorer native result files and GUI plot/animation after simulation",
     )
     parser.add_argument(
+        "--no-gui-open",
+        action="store_true",
+        help="Write Sysplorer native Result.msr but skip automatic GUI plot/animation opening",
+    )
+    parser.add_argument(
         "--gui-reset-windows",
         action="store_true",
         help="Close existing Sysplorer plot/animation windows before opening the current result for manual GUI review",
@@ -539,6 +544,7 @@ def run_mcp_simulation(
     )
     native_result = native_result_file(native_result_dir, args.model_name)
     gui_result_viewer = not args.no_gui_result_viewer
+    gui_open = gui_result_viewer and not args.no_gui_open
     if gui_result_viewer:
         native_result_dir.mkdir(parents=True, exist_ok=True)
         write_native_result_manifest(
@@ -621,7 +627,7 @@ def run_mcp_simulation(
             args.evidence_level,
         )
         gui_result: dict[str, Any] | None = None
-        if gui_result_viewer:
+        if gui_open:
             gui_result = open_gui_result_viewer(
                 client,
                 native_result=native_result,

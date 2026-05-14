@@ -1,5 +1,11 @@
 model Example1Rotor3Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop
   "Example1 rotor 3 lift efficiency 85% plus lateral gust with L1 multi-fault isolation controller"
+  parameter Real legacy_hover_motor_speed_cmd = 13.985413115099604
+    "Original MWORKS-equivalent hover command before Sunray150 SDF motorConstant calibration";
+  parameter Real hover_motor_speed_cmd = 53.562090367172424
+    "MWORKS visual rotor hover speed; physical Sunray150 motor speed is 10x by rotorVelocitySlowdownSim";
+  parameter Real motor_command_scale = hover_motor_speed_cmd / legacy_hover_motor_speed_cmd
+    "Scale legacy controller speed increments to the Sunray150 SDF motorConstant speed domain";
   parameter Real gust_force_x_N = 0.22;
   parameter Real gust_force_y_N = -0.10;
   parameter Real gust_start_s = 15.0;
@@ -10,12 +16,24 @@ model Example1Rotor3Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop
 
   QuadrotorModel.PathPlanning.ClimbPath climbePath(gain(k = 1));
   QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(gain4(k = 0.0007266293));
-  QuadrotorModel.Electricals.Actuator actuator1_1;
-  QuadrotorModel.Electricals.Actuator actuator1_2;
-  QuadrotorModel.Electricals.Actuator actuator1_3;
-  QuadrotorModel.Electricals.Actuator actuator1_4;
+  QuadrotorModel.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  QuadrotorModel.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  QuadrotorModel.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  QuadrotorModel.Electricals.Actuator actuator1_4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
   QuadrotorModel.Sensors.Sensors sensors1_1;
   Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor[4];
+  Modelica.Blocks.Sources.Constant hover_u1(k = hover_motor_speed_cmd);
+  Modelica.Blocks.Sources.Constant hover_u2(k = -hover_motor_speed_cmd);
+  Modelica.Blocks.Sources.Constant hover_u3(k = hover_motor_speed_cmd);
+  Modelica.Blocks.Sources.Constant hover_u4(k = -hover_motor_speed_cmd);
+  Modelica.Blocks.Math.Add motor1_hover_sum;
+  Modelica.Blocks.Math.Add motor2_hover_sum;
+  Modelica.Blocks.Math.Add motor3_hover_sum;
+  Modelica.Blocks.Math.Add motor4_hover_sum;
+  Modelica.Blocks.Math.Gain motor1_delta_scale(k = motor_command_scale);
+  Modelica.Blocks.Math.Gain motor2_delta_scale(k = motor_command_scale);
+  Modelica.Blocks.Math.Gain motor3_delta_scale(k = motor_command_scale);
+  Modelica.Blocks.Math.Gain motor4_delta_scale(k = motor_command_scale);
   Modelica.Mechanics.MultiBody.Forces.WorldForce gustForce(
     resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameB.world,
     animation = false);
@@ -60,10 +78,22 @@ equation
   connect(sensors1_1.AngleMea[3], controller3_2.yaw_mea);
   connect(yaw_ref.y, controller3_2.yaw_ref);
 
-  connect(actuator1_1.u, controller3_2.y);
-  connect(actuator1_2.u, controller3_2.y1);
-  connect(actuator1_3.u, controller3_2.y2);
-  connect(actuator1_4.u, controller3_2.y3);
+  connect(controller3_2.y, motor1_delta_scale.u);
+  connect(motor1_delta_scale.y, motor1_hover_sum.u1);
+  connect(hover_u1.y, motor1_hover_sum.u2);
+  connect(motor1_hover_sum.y, actuator1_1.u);
+  connect(controller3_2.y1, motor2_delta_scale.u);
+  connect(motor2_delta_scale.y, motor2_hover_sum.u1);
+  connect(hover_u2.y, motor2_hover_sum.u2);
+  connect(motor2_hover_sum.y, actuator1_2.u);
+  connect(controller3_2.y2, motor3_delta_scale.u);
+  connect(motor3_delta_scale.y, motor3_hover_sum.u1);
+  connect(hover_u3.y, motor3_hover_sum.u2);
+  connect(motor3_hover_sum.y, actuator1_3.u);
+  connect(controller3_2.y3, motor4_delta_scale.u);
+  connect(motor4_delta_scale.y, motor4_hover_sum.u1);
+  connect(hover_u4.y, motor4_hover_sum.u2);
+  connect(motor4_hover_sum.y, actuator1_4.u);
 
   connect(actuator1_1.flange_a, speedSensor[1].flange);
   connect(actuator1_2.flange_a, speedSensor[2].flange);
