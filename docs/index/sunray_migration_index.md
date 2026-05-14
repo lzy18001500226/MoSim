@@ -118,10 +118,10 @@ Sources: [CUAV Pixhawk V6X 文档](https://doc.cuav.net/controller/pixhawk-v6x/e
 |---|---|---|
 | Sunray150 机体 | `sunray150_mid360_body.stl` | 质量 `1.0 kg`、惯量 `Ixx=0.0085, Iyy=0.0085, Izz=0.012` |
 | 四旋翼旋翼/电机 | 4 个 propeller STL + 转速传感器 + 升力模型 | `lift_cofficient=0.000854858`，折算 `rotorVelocitySlowdownSim=10` |
-| Mid360 | 机体前上方球形可视化件 + `mid360_update_rate_Hz=20` | 表达传感器安装位置与规划/安全层更新节拍，不做真实扫描线仿真 |
-| V6X/PX6C 飞控 | 机体上方盒状可视化件 + `flight_controller_update_rate_Hz=20` | 表达飞控硬件和控制/模式管理节拍，不迁移 MAVLink 驱动 |
-| GPS/GNSS | 机体顶部圆盘可视化件 + `gps_update_rate_Hz=20` | 表达导航输入和后续 failsafe 状态机接口 |
-| ORIN NX 机载计算 | 机体上方盒状可视化件 + `onboard_computer_update_rate_Hz=20` | 表达规划、局部栅格和安全监督计算平台 |
+| Mid360 | 官方 `sunray150_with_mid360` 机体背景 + 20 Hz 局部栅格接口 | 表达规划/安全层更新节拍，不做真实扫描线仿真 |
+| V6X/PX6C 飞控 | `hardware_status_bus` 抽象健康状态 | 表达飞控硬件和控制/模式管理节拍，不迁移 MAVLink 驱动 |
+| GPS/GNSS | `hardware_status_bus` 抽象健康状态 | 表达导航输入和后续 failsafe 状态机接口 |
+| ORIN NX 机载计算 | `hardware_status_bus` 抽象健康状态 | 表达规划、局部栅格和安全监督计算平台 |
 | 地面/动画 | 原生 MWORKS MultiBody 动画 | 用于人工审核和视频素材 |
 
 CUAV/Livox 实物图片仅作为报告和答辩硬件说明素材：
@@ -133,15 +133,9 @@ CUAV/Livox 实物图片仅作为报告和答辩硬件说明素材：
 | `references/CUAV/MId360.png` | Mid360 激光雷达硬件说明 |
 | `references/CUAV/ORIN NX.jpg` | 机载计算平台说明 |
 
-Sysplorer 模型内使用轻量几何体而非直接贴图，以保证仿真和动画稳定。
+这些图片用于图形化仿真素材、报告和答辩硬件说明；当前不把图片对应硬件作为新增物理部件接入官方机体模型。
 
-2026-05-14 最小 `QuadrotorModel.Examples.Example1` 检查曾触发授权限制：
-
-```text
-当前授权不允许变量方程数大于 300
-```
-
-该结果说明当前 MCP/授权环境无法检查完整官方模型，不作为新增几何件的模型错误结论。后续在授权恢复后需重新执行 `check_model`。
+后续模型检查只针对官方机体、控制器闭环和图形化展示链路；CUAV/Livox/ORIN 图片不作为物理建模检查对象。
 
 ### PX4 Offboard / Failsafe
 
