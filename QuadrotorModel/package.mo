@@ -2526,7 +2526,7 @@ way and provides the result as output signal <strong>w</strong>
     preserveAspectRatio = false, 
     grid = {2.0, 2.0}), graphics = {Bitmap(origin = {4.0, -10.0}, 
     extent = {{-110.0, -110.0}, {110.0, 110.0}}, 
-    fileName = "modelica://QuadrotorModel/Resources/Images/图片1.png")}));
+    fileName = "modelica://QuadrotorModel/Resources/Images/Sunray150.png")}));
   package Utilities "附件"
     extends Modelica.Icons.UtilitiesPackage;
 
