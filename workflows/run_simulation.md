@@ -99,10 +99,12 @@ resources_retrieval
 ```
 
 Interactive model inspection, model checking, single-scenario simulation, and
-GUI animation review should use MCP tools directly when MCP is healthy. Project
+GUI animation review must use MCP tools directly when MCP is healthy. Do not
+wrap interactive `model_manager`, `check_model`, `simulate_model`,
+`plot_manager`, or `result_manager` operations in project scripts. Project
 scripts such as `run_mworks_scenario.py` and `run_sysplorer_mcp_smoke.py` are
-primarily wrappers for batch execution, reproducible export, metrics, and
-regression flows.
+only for batch execution, reproducible export, metrics, summaries, and
+regression automation.
 
 ---
 

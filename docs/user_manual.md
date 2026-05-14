@@ -23,7 +23,7 @@ Sysplorer plot_manager / Syslab plotting APIs
 
 当前 WSL 自动化优先使用 Python 脚本；当 Syslab/Julia 不可用时，仍可完成 QA、参考轨迹、指标和 SVG 图表生成。
 
-当 Sysplorer / Syslab MCP 状态正常时，交互式模型加载、检查、仿真、曲线查看和三维动画审核应优先直接通过 MCP 完成；项目脚本主要用于批量执行、结果导出、指标汇总和回归自动化。
+当 Sysplorer / Syslab MCP 状态正常时，交互式模型加载、检查、仿真、曲线查看和三维动画审核必须直接通过 MCP 工具完成。不要用项目脚本封装交互式 MCP 操作。项目脚本只用于批量执行、结果导出、指标汇总和回归自动化。
 
 ## 2. 快速检查
 
