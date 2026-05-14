@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<launch>
+	<!-- Gazebo 配置 -->
+    <arg name="gazebo_enable" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="world" default="$(find sunray_simulator)/worlds/planning_test.world"/>
+    <!-- 启动 Gazebo -->
+    <group if="$(arg gazebo_enable)">
+        <include file="$(find gazebo_ros)/launch/empty_world.launch">
+            <arg name="world_name" value="$(arg world)"/>
+            <arg name="gui" value="$(arg gui)"/>
+			<arg name="use_sim_time" value="true"/>
+        </include>
+    </group>
+
+    <!-- 无人机配置 -->
+    <!-- 无人机模型名称 -->
+    <arg name="vehicle" default="sunray150_D435i"/>
+    <!--无人机编号-->
+    <arg name="uav_id" default="1"/>
+    <!-- 无人机初始位置 -->
+    <arg name="uav_init_x" default="1.0"/>
+    <arg name="uav_init_y" default="1.0"/>
+    <arg name="uav_init_yaw" default="0.0"/>
+
+    <!-- UAV1 -->
+    <include file="$(find sunray_simulator)/launch_basic/sunray_px4_basic.launch">
+        <arg name="uav_id" value="$(arg uav_id)" />
+        <arg name="vehicle" value="$(arg vehicle)" />
+        <arg name="uav_init_x" value="$(arg uav_init_x)"/>
+        <arg name="uav_init_y" value="$(arg uav_init_y)"/>
+        <arg name="uav_init_yaw" value="$(arg uav_init_yaw)"/>
+    </include>
+
+    <!-- D435i 静态TF变换 -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="d435i_camera_link_tf" 
+          args="0.14 0 0.025 1.57 0 1.57 /uav1/base_link D435i::camera_link"/>
+    
+    <node pkg="tf2_ros" type="static_transform_publisher" name="d435i_color_frame_tf" 
+          args="0.16 0 0.025 0 0 0 /uav1/base_link D435i::camera_color_frame"/>
+    
+    <node pkg="tf2_ros" type="static_transform_publisher" name="d435i_depth_frame_tf" 
+          args="0.16 0 0.025 0 0 0 /uav1/base_link D435i::camera_depth_frame"/>
+    
+    <node pkg="tf2_ros" type="static_transform_publisher" name="d435i_ired1_frame_tf" 
+          args="0.16 0.03 0.025 0 0 0 /uav1/base_link D435i::camera_ired1_frame"/>
+    
+    <node pkg="tf2_ros" type="static_transform_publisher" name="d435i_ired2_frame_tf" 
+          args="0.16 -0.03 0.025 0 0 0 /uav1/base_link D435i::camera_ired2_frame"/>
+    
+    <node pkg="tf2_ros" type="static_transform_publisher" name="d435i_pointcloud_frame_tf" 
+          args="0.16 0 0.025 -1.57 0 -1.57 /uav1/base_link camera/d435i_link"/>
+    
+</launch>

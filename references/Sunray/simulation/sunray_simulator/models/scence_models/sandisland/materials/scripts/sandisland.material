@@ -1,0 +1,19 @@
+material Sandisland/Diffuse
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.5 0.5 0.5 1.0
+      diffuse 1.0 1.0 1.0 1.0
+      specular 0.1 0.1 0.1 1.0 12.5
+
+      texture_unit
+      {
+        texture sandisland.png
+        filtering trilinear
+        max_anisotropy 8
+      }
+    }
+  }
+}

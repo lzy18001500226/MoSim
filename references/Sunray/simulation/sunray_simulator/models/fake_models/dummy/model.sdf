@@ -1,0 +1,24 @@
+<?xml version='1.0'?>
+<sdf version='1.7'>
+    <model name="dummy">
+        <static>true</static> <!-- 不受重力影响，固定 -->
+        <link name="dummy_link">
+            <pose>0 0 0 0 0 0</pose> <!-- 模型在世界中的位置，可自行调整 -->
+            <visual name="dummy_visual">
+                <geometry>
+                    <mesh>
+                        <uri>model://dummy/dummy.stl</uri>
+                        <scale>0.45 0.45 0.45</scale> <!-- 视情况调整比例 -->
+                    </mesh>
+                </geometry>
+                <material>
+                    <!-- 蓝色材质 -->
+                    <ambient>0.1 0.1 0.8 1</ambient>   <!-- 环境光颜色 -->
+                    <diffuse>0.1 0.1 0.8 1</diffuse>   <!-- 漫反射颜色 -->
+                    <specular>0.3 0.3 0.9 1</specular> <!-- 高光反射 -->
+                    <emissive>0 0 0 1</emissive>       <!-- 自发光（通常为0） -->
+                </material>
+            </visual>
+        </link>
+    </model>
+</sdf>

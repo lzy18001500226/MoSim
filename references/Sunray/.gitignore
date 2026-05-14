@@ -1,0 +1,116 @@
+# ==============================================================================
+# Sunray Project .gitignore - Clean build environment management
+# ==============================================================================
+
+# Core ROS/Catkin workspace files
+.catkin_workspace
+build/
+devel/
+logs/
+
+# Media files
+*.mp4
+*.avi
+*.jpg
+*.png
+*.svj
+
+# ==============================================================================
+# Build System Artifacts
+# ==============================================================================
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+CPackConfig.cmake
+CPackSourceConfig.cmake
+Testing/
+*.cmake
+!CMakeLists.txt
+compile_commands.json
+
+# Make system files
+Makefile
+*.make
+
+# Compiled object files
+*.slo
+*.lo
+*.o
+*.obj
+*.d
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Fortran modules
+*.mod
+*.smod
+
+# ==============================================================================
+# Development Environment
+# ==============================================================================
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python bytecode
+*.pyc
+__pycache__/
+
+# System files
+.DS_Store
+*.cache
+*.log
+
+# ==============================================================================
+# TUI Build System
+# ==============================================================================
+
+# TUI build artifacts
+buildscripts/bin/
+buildscripts/tui/build/
+
+# Third-party dependencies (auto-downloaded)
+buildscripts/tui/third_party/
+
+# ==============================================================================
+# Testing and Temporary Files
+# ==============================================================================
+
+# Test scripts and directories
+test_*.sh
+testing/
+
+# Temporary files and directories
+temp/
+tmp/
+*.tmp
+
+# Configuration and state files
+.sunray_last_build_selection
+.claude
+CLAUDE.md

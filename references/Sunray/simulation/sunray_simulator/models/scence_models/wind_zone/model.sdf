@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <model name="wind_zone">
+    <static>true</static>
+    <link name="link">
+      <!-- 可视化 -->
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>1.0 2.0 0.01</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>1 0 0 1</ambient>
+          <diffuse>1 0 0 1</diffuse>
+        </material>
+      </visual>
+
+      <!-- 碰撞体 -->
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>1.0 2.0 0.01</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- 加载插件 -->
+    <plugin name="wind_zone_plugin" filename="libwind_zone_plugin.so"/>
+  </model>
+</sdf>
