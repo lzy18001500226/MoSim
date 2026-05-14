@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+<rect width="100%" height="100%" fill="#fbfcff"/>
+<style>text{font-family:Arial,Microsoft YaHei,sans-serif;font-size:14px}.label{fill:#263445}.grid{stroke:#d9e0ea;stroke-width:0.8}.obs{fill:#f08a8a;fill-opacity:.42;stroke:#b83b3b;stroke-width:2}.safe{fill:none;stroke:#d96a6a;stroke-width:1.2;stroke-dasharray:5 4}.raw{fill:none;stroke:#9aa7b8;stroke-width:1.8;stroke-dasharray:4 3}.path{fill:none;stroke:#1769aa;stroke-width:4}.pt{stroke:#102030;stroke-width:1.5}</style>
+<line class="grid" x1="45.0" y1="475.0" x2="45.0" y2="45.0"/>
+<line class="grid" x1="146.2" y1="475.0" x2="146.2" y2="45.0"/>
+<line class="grid" x1="247.5" y1="475.0" x2="247.5" y2="45.0"/>
+<line class="grid" x1="348.8" y1="475.0" x2="348.8" y2="45.0"/>
+<line class="grid" x1="450.0" y1="475.0" x2="450.0" y2="45.0"/>
+<line class="grid" x1="551.2" y1="475.0" x2="551.2" y2="45.0"/>
+<line class="grid" x1="652.5" y1="475.0" x2="652.5" y2="45.0"/>
+<line class="grid" x1="753.8" y1="475.0" x2="753.8" y2="45.0"/>
+<line class="grid" x1="855.0" y1="475.0" x2="855.0" y2="45.0"/>
+<line class="grid" x1="45.0" y1="432.0" x2="855.0" y2="432.0"/>
+<line class="grid" x1="45.0" y1="346.0" x2="855.0" y2="346.0"/>
+<line class="grid" x1="45.0" y1="260.0" x2="855.0" y2="260.0"/>
+<line class="grid" x1="45.0" y1="174.0" x2="855.0" y2="174.0"/>
+<line class="grid" x1="45.0" y1="88.0" x2="855.0" y2="88.0"/>
+<rect class="obs" x="348.8" y="277.2" width="81.0" height="86.0"/>
+<rect class="safe" x="313.3" y="247.1" width="151.9" height="146.2"/>
+<circle class="obs" cx="571.5" cy="191.2" r="38.7"/>
+<circle class="safe" cx="571.5" cy="191.2" r="68.8"/>
+<polyline class="raw" points="146.2,260.0 166.5,268.6 186.8,268.6 207.0,268.6 227.2,268.6 247.5,268.6 267.8,268.6 288.0,268.6 308.2,268.6 328.5,251.4 348.8,234.2 369.0,234.2 389.3,234.2 409.5,234.2 429.8,234.2 450.0,234.2 470.2,234.2 490.5,234.2 510.8,251.4 531.0,251.4 551.2,268.6 571.5,268.6 591.8,268.6 612.0,268.6 632.3,268.6 652.5,268.6 672.8,268.6 693.0,268.6 713.2,268.6 733.5,268.6 753.8,260.0"/>
+<polyline class="path" points="146.2,260.0 490.5,234.2 571.5,268.6 753.8,260.0"/>
+<circle class="pt" cx="146.2" cy="260.0" r="7" fill="#2ca02c"/>
+<circle class="pt" cx="753.8" cy="260.0" r="7" fill="#ffbf00"/>
+<text class="label" x="45" y="28">(0.0, 0.0, 1.0) -> (6.0, 0.0, 1.0), safety margin 0.35 m</text>
+</svg>

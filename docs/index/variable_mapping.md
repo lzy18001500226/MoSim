@@ -28,6 +28,9 @@ After the first successful Sysplorer MCP simulation, confirm the exact names wit
 | `x_ref` | `climbePath.position_command[1]` | yes | Reference x; component name is `climbePath` in all official examples |
 | `y_ref` | `climbePath.position_command[2]` | yes | Reference y; component name is `climbePath` in all official examples |
 | `z_ref` | `climbePath.position_command[3]` | yes | Reference z; component name is `climbePath` in all official examples |
+| `x_ref` | `planningReference.position_command[1]` | yes | A*/quintic planning reference in `Sunray150Planning*SysblockClosedLoop` models |
+| `y_ref` | `planningReference.position_command[2]` | yes | A*/quintic planning reference in `Sunray150Planning*SysblockClosedLoop` models |
+| `z_ref` | `planningReference.position_command[3]` | yes | A*/quintic planning reference in `Sunray150Planning*SysblockClosedLoop` models |
 | `x_ref` | `mission_ref_x.y` | yes | Custom mission reference for return/land-only review models |
 | `y_ref` | `mission_ref_y.y` | yes | Custom mission reference for return/land-only review models |
 | `z_ref` | `mission_ref_z.y` | yes | Custom mission reference for return/land-only review models |
@@ -43,6 +46,7 @@ The three official examples use the same component names for result extraction:
 | Example1 | `QuadrotorModel.Examples.Example1` | `climbePath` (`PathPlanning.ClimbPath`) | `sensors1_1` | `controller3_2` |
 | Example2 | `QuadrotorModel.Examples.Example2` | `climbePath` (`PathPlanning.CirclePath`) | `sensors1_1` | `controller3_2` |
 | Example3 | `QuadrotorModel.Examples.Example3` | `climbePath` (`PathPlanning.EightPath`) | `sensors1_1` | `controller3_2` |
+| Planning | `QuadrotorExperiments.Sunray150Planning*SysblockClosedLoop` | `planningReference` (`PlannedQuinticReference`) | `sensors1_1` | `controller3_2` |
 
 First `result_manager` query list:
 

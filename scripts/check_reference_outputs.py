@@ -34,6 +34,55 @@ EXPECTED = {
     },
 }
 
+PLANNING_EXPECTED = {
+    "single_obstacle_astar_awff": {
+        "path": Path("results/planning/single_obstacle_astar_awff/raw/reference.csv"),
+        "trackability": Path("results/planning/single_obstacle_astar_awff/metrics/trackability_report.json"),
+        "min_rows": 20,
+        "start_ref": (0.0, 0.0, 1.0),
+        "last_ref": (6.0, 0.0, 1.0),
+        "required_columns": {
+            "time",
+            "x_ref",
+            "y_ref",
+            "z_ref",
+            "vx_ref",
+            "vy_ref",
+            "vz_ref",
+            "ax_ref",
+            "ay_ref",
+            "az_ref",
+            "jx_ref",
+            "jy_ref",
+            "jz_ref",
+            "yaw_ref",
+        },
+    },
+    "corridor_gate_astar_awff": {
+        "path": Path("results/planning/corridor_gate_astar_awff/raw/reference.csv"),
+        "trackability": Path("results/planning/corridor_gate_astar_awff/metrics/trackability_report.json"),
+        "min_rows": 20,
+        "start_ref": (0.0, 0.0, 1.0),
+        "last_ref": (7.0, 0.0, 1.0),
+        "required_columns": {
+            "time",
+            "x_ref",
+            "y_ref",
+            "z_ref",
+            "vx_ref",
+            "vy_ref",
+            "vz_ref",
+            "ax_ref",
+            "ay_ref",
+            "az_ref",
+            "jx_ref",
+            "jy_ref",
+            "jz_ref",
+            "yaw_ref",
+        },
+    },
+}
+
 
 def read_rows(path: Path) -> list[dict[str, str]]:
     with path.open(newline="", encoding="utf-8") as handle:
@@ -67,17 +116,57 @@ def check_scene(scene_id: str, spec: dict[str, object]) -> None:
     assert_close(f"{scene_id}.yaw_ref", float(last["yaw_ref"]), 0.0)
 
 
+def check_planning_scene(scene_id: str, spec: dict[str, object]) -> None:
+    path = spec["path"]
+    assert isinstance(path, Path)
+    rows = read_rows(path)
+    required_columns = spec["required_columns"]
+    assert isinstance(required_columns, set)
+    missing = sorted(required_columns.difference(rows[0].keys() if rows else set()))
+    if missing:
+        raise AssertionError(f"{path} missing columns: {', '.join(missing)}")
+    min_rows = int(spec["min_rows"])
+    if len(rows) < min_rows:
+        raise AssertionError(f"{path}: expected at least {min_rows} rows, got {len(rows)}")
+
+    start_ref = spec["start_ref"]
+    last_ref = spec["last_ref"]
+    assert isinstance(start_ref, tuple)
+    assert isinstance(last_ref, tuple)
+    first = rows[0]
+    last = rows[-1]
+    for field, expected in zip(("x_ref", "y_ref", "z_ref"), start_ref):
+        assert_close(f"{scene_id}.start.{field}", float(first[field]), float(expected), tolerance=1e-7)
+    for field, expected in zip(("x_ref", "y_ref", "z_ref"), last_ref):
+        assert_close(f"{scene_id}.last.{field}", float(last[field]), float(expected), tolerance=1e-7)
+
+    trackability_path = spec["trackability"]
+    assert isinstance(trackability_path, Path)
+    import json
+
+    trackability = json.loads(trackability_path.read_text(encoding="utf-8"))
+    if trackability.get("accepted") is not True:
+        raise AssertionError(f"{scene_id} trackability not accepted: {trackability}")
+    if int(trackability.get("dynamic_violation_count", -1)) != 0:
+        raise AssertionError(f"{scene_id} has dynamic violations: {trackability}")
+    if float(trackability.get("min_obstacle_distance_m", 0.0)) < float(trackability.get("safety_margin_m", 0.0)):
+        raise AssertionError(f"{scene_id} violates obstacle safety margin: {trackability}")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--scene", choices=["all", *sorted(EXPECTED)], default="all")
+    parser.add_argument("--scene", choices=["all", *sorted(EXPECTED), *sorted(PLANNING_EXPECTED)], default="all")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    scenes = sorted(EXPECTED) if args.scene == "all" else [args.scene]
+    scenes = [*sorted(EXPECTED), *sorted(PLANNING_EXPECTED)] if args.scene == "all" else [args.scene]
     for scene_id in scenes:
-        check_scene(scene_id, EXPECTED[scene_id])
+        if scene_id in EXPECTED:
+            check_scene(scene_id, EXPECTED[scene_id])
+        else:
+            check_planning_scene(scene_id, PLANNING_EXPECTED[scene_id])
         print(f"[OK] {scene_id}")
     return 0
 

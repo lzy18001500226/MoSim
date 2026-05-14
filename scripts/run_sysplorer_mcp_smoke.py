@@ -604,6 +604,8 @@ def run_mcp_simulation(
         )
         if not sim_result.get("ok"):
             raise RuntimeError(f"Simulation failed: {sim_result}")
+        if sim_result.get("simulate_api_reported_failure"):
+            raise RuntimeError(f"Simulation API reported failure; refusing to read partial/empty result: {sim_result}")
 
         read_result = client.call_tool(
             "result_manager",

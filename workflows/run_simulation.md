@@ -201,6 +201,13 @@ launched from the current shell. In that case:
 4. Re-run from a Windows-capable shell or repair the wrapper so WSL can launch it.
 ```
 
+If `simulate_model` returns `ok=true` but the payload contains
+`simulate_api_reported_failure=true`, treat the run as failed. The MCP wrapper
+may still probe one variable with `GetVarValueAt`, but `GetVarsValues` can later
+return empty arrays. Do not overwrite evidence or claim a successful simulation
+from this state; fix the model or scenario and rerun until `simulate_model`
+does not report the API failure flag.
+
 ### Step 1: Check MCP status
 
 Run `/mcp` in Codex.
