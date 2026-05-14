@@ -121,6 +121,7 @@ Sources: [CUAV Pixhawk V6X 文档](https://doc.cuav.net/controller/pixhawk-v6x/e
 | Mid360 | 机体前上方球形可视化件 + `mid360_update_rate_Hz=20` | 表达传感器安装位置与规划/安全层更新节拍，不做真实扫描线仿真 |
 | V6X/PX6C 飞控 | 机体上方盒状可视化件 + `flight_controller_update_rate_Hz=20` | 表达飞控硬件和控制/模式管理节拍，不迁移 MAVLink 驱动 |
 | GPS/GNSS | 机体顶部圆盘可视化件 + `gps_update_rate_Hz=20` | 表达导航输入和后续 failsafe 状态机接口 |
+| ORIN NX 机载计算 | 机体上方盒状可视化件 + `onboard_computer_update_rate_Hz=20` | 表达规划、局部栅格和安全监督计算平台 |
 | 地面/动画 | 原生 MWORKS MultiBody 动画 | 用于人工审核和视频素材 |
 
 CUAV/Livox 实物图片仅作为报告和答辩硬件说明素材：
@@ -130,6 +131,7 @@ CUAV/Livox 实物图片仅作为报告和答辩硬件说明素材：
 | `references/CUAV/V6X.png` | 飞控硬件说明 |
 | `references/CUAV/GPS.png` | GPS/GNSS 硬件说明 |
 | `references/CUAV/MId360.png` | Mid360 激光雷达硬件说明 |
+| `references/CUAV/ORIN NX.jpg` | 机载计算平台说明 |
 
 Sysplorer 模型内使用轻量几何体而非直接贴图，以保证仿真和动画稳定。
 

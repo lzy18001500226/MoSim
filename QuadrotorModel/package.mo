@@ -926,6 +926,8 @@
         "Project-level Mid360 local grid update rate used by planning and safety layers";
       parameter Real gps_update_rate_Hz = 20
         "Project-level GNSS/navigation update rate used by the simplified flight-control state machine";
+      parameter Real onboard_computer_update_rate_Hz = 20
+        "Project-level onboard computer update rate for planning, local-grid, and safety supervision";
       Modelica.Mechanics.MultiBody.Parts.BodyShape body(
         animation = true, 
         animateSphere = false, 
@@ -1067,6 +1069,15 @@
       Modelica.Mechanics.MultiBody.Visualizers.FixedShape2 gpsVisual(shapeType = "sphere",
         extra = 1, length = 0.055, width = 0.055, height = 0.018, color = {155, 155, 155}, animation = true)
         annotation (Placement(transformation(origin = {191.55742017263336, -1.71518478066704},
+          extent = {{-10.0, -10.0}, {10.0, 10.0}})));
+      Modelica.Mechanics.MultiBody.Parts.FixedTranslation onboardComputerMount(
+        animation = false,
+        r = {-0.035, 0.0, 0.082})
+        annotation (Placement(transformation(origin = {158.25275041021322, -31.51566155254864},
+          extent = {{-10.0, -10.0}, {10.0, 10.0}})));
+      Modelica.Mechanics.MultiBody.Visualizers.FixedShape2 onboardComputerVisual(shapeType = "box",
+        extra = 1, length = 0.06, width = 0.045, height = 0.016, color = {20, 20, 20}, animation = true)
+        annotation (Placement(transformation(origin = {191.55742017263336, -31.71518478066704},
           extent = {{-10.0, -10.0}, {10.0, 10.0}})));
       Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor annotation (
         Placement(transformation(origin = {-167.0062898849564, 81.17560498021649}, 
@@ -1317,6 +1328,16 @@
           thickness = 0.5));
       connect(gpsMount.frame_b, gpsVisual.frame_a)
         annotation (Line(origin = {176.0, -2.0},
+          points = {{-8.0, 0.0}, {5.0, 0.0}},
+          color = {95, 95, 95},
+          thickness = 0.5));
+      connect(body.frame_b, onboardComputerMount.frame_a)
+        annotation (Line(origin = {153.0, -16.0},
+          points = {{-17.0, 13.0}, {-5.0, 13.0}, {-5.0, -15.0}, {-5.0, -15.0}},
+          color = {95, 95, 95},
+          thickness = 0.5));
+      connect(onboardComputerMount.frame_b, onboardComputerVisual.frame_a)
+        annotation (Line(origin = {176.0, -32.0},
           points = {{-8.0, 0.0}, {5.0, 0.0}},
           color = {95, 95, 95},
           thickness = 0.5));
