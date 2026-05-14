@@ -28,6 +28,9 @@ After the first successful Sysplorer MCP simulation, confirm the exact names wit
 | `x_ref` | `climbePath.position_command[1]` | yes | Reference x; component name is `climbePath` in all official examples |
 | `y_ref` | `climbePath.position_command[2]` | yes | Reference y; component name is `climbePath` in all official examples |
 | `z_ref` | `climbePath.position_command[3]` | yes | Reference z; component name is `climbePath` in all official examples |
+| `x_ref` | `mission_ref_x.y` | yes | Custom mission reference for return/land and tilted figure-8 review models |
+| `y_ref` | `mission_ref_y.y` | yes | Custom mission reference for return/land and tilted figure-8 review models |
+| `z_ref` | `mission_ref_z.y` | yes | Custom mission reference for return/land and tilted figure-8 review models |
 | `controller_mode` | custom controller only | optional | Mode switching and video annotation |
 | `event_log` | custom exporter only | optional | Event-driven replay and report evidence |
 

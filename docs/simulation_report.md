@@ -93,6 +93,8 @@ QuadrotorModel/package.mo
 
 说明：`replay JSON/HTML` 只用于导出展示素材，不参与控制闭环，也不作为在线仿真证据。当前控制器仿真的正式证据为 MWORKS/Sysplorer 模型检查、仿真日志、raw CSV、metrics JSON/CSV 和报告图表。
 
+在线三维审查说明：正式视频素材优先使用 Sysplorer 原生 3D 动画和 `native_result/Result.msr`。正式返航/降落模型 `QuadrotorExperiments.Example1QPNMPCSafetyReturnLandSysblockClosedLoop` 只保留控制证据；平面 8 字轨迹留痕放在审查模型 `QuadrotorExperiments.Example1PlanarFigure8TrailSysblockClosedLoop` 和场景 `scenarios/official/example1_planar_figure8_trail_sysblock.yaml`。该审查模型先原地爬升 8 s 到 0.8 m，再进入 30 s 平面 8 字定高飞行，yaw_ref 跟随轨迹切向，并在原生 3D 动画中显示 5 Hz 低负载参考轨迹线、绿色实际位置标记和黄色参考位置标记，raw CSV 输出为 20 Hz，不依赖 HTML/replay 后处理。
+
 标准 CSV 核心字段：
 
 ```text

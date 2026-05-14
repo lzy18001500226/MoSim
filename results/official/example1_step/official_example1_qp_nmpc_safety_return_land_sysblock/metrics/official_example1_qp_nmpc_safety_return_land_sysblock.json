@@ -51,7 +51,7 @@
   "total_health_score": 56.14604175346719,
   "source": "MWORKS_MCP",
   "evidence_level": "real_sysplorer_mcp_sysblock_qp_nmpc_safety_return_land",
-  "quality_checked_at": "2026-05-14T12:25:34",
+  "quality_checked_at": "2026-05-14T14:03:48",
   "quality_experiment_id": "official_example1_qp_nmpc_safety_return_land_sysblock",
   "quality_scene_id": "official_example1",
   "quality_controller_id": "nmpc_indi_l1",
