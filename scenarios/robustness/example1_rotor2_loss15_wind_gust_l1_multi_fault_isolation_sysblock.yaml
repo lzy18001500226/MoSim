@@ -23,8 +23,8 @@ disturbance:
   type: combined_actuator_efficiency_loss_and_lateral_world_force_gust
   actuator_target_component: quadChassisTest17_1.gain3.k
   affected_rotor: rotor_2
-  nominal_lift_gain: 0.01253887049854549
-  degraded_lift_gain: 0.01065803992376367
+  nominal_lift_gain: 0.000854858
+  degraded_lift_gain: 0.0007266293
   efficiency_ratio: 0.85
   expected_fault_index: 2
   gust_target_component: quadChassisTest17_1.body.frame_b

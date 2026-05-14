@@ -1,7 +1,7 @@
 model Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop
   "Example1 rotor 1 lift efficiency 85% with LinearMPC outer loop and online efficiency allocation compensation"
   QuadrotorModel.PathPlanning.ClimbPath climbePath(gain(k = 1));
-  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(gain2(k = 0.01065803992376367));
+  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(gain2(k = 0.0007266293));
   QuadrotorModel.Electricals.Actuator actuator1_1;
   QuadrotorModel.Electricals.Actuator actuator1_2;
   QuadrotorModel.Electricals.Actuator actuator1_3;

@@ -87,6 +87,10 @@ def default_result_base(config: dict[str, Any], experiment_id: str) -> Path:
     if "smoke" in experiment_id or "smoke" in scene_id or "smoke" in evidence_level:
         return Path("results/diagnostics") / "smoke" / experiment_id
 
+    if "helical_figure8" in scene_id or "helical_figure8" in experiment_id:
+        return Path("results/official/example1_helical_figure8") / experiment_id
+    if "planar_figure8" in scene_id or "planar_figure8" in experiment_id:
+        return Path("results/official/example1_planar_figure8") / experiment_id
     if scene_id.startswith("official_example1") or experiment_id.startswith("official_example1"):
         return Path("results/official/example1_step") / experiment_id
     if scene_id.startswith("official_example2") or experiment_id.startswith("official_example2"):

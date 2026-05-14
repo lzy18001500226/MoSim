@@ -7,7 +7,7 @@
 当前正式 active 场景矩阵共 `71` 个，均已完成结果生成并通过 evidence bundle 审计；其中 `54` 个为可支撑结论的 `pass` evidence，`17` 个为已标注的边界/负样本证据。负样本主要用于证明 PID/AWFF/纯 L1/纯 LinearMPC 在旋翼退化下不够，需要故障隔离、在线效率估计或控制分配补偿。当前 Sysblock 主线已覆盖阶梯爬升、螺旋爬升、8 字轨迹、质量摄动、横向阵风、旋翼退化、L1-inspired 残差补偿、L1-inspired + INDI-like 组合控制器、LinearMPC-style 外环、在线效率估计控制分配、QP/NMPC-style 安全投影、CBF-style Safety Filter、模式切换、event_log 和安全返航/降落闭环。
 
 
-当前机体迁移状态：`QuadrotorModel.Mechanics.QuadChassis` 已迁移到项目内本地源 `references/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` 的参数和可视化资源，机体质量 `1.0 kg`、惯量 `Ixx=0.0085, Iyy=0.0085, Izz=0.012`、旋翼位置 `±0.065 m`、升力系数 `0.01253887049854549`，并加入 Mid360 安装位置的轻量可视化件。此前基于旧机体生成的 full-run 指标保留为历史证据；正式控制器结论需要基于新机体重新跑 Sysplorer/MWORKS 结果。
+当前机体迁移状态：`QuadrotorModel.Mechanics.QuadChassis` 已迁移到项目内本地源 `references/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` 的参数和可视化资源，机体质量 `1.0 kg`、惯量 `Ixx=0.0085, Iyy=0.0085, Izz=0.012`、旋翼位置 `±0.065 m`，并加入 Mid360 安装位置的轻量可视化件。SDF 原始电机常数为 `8.54858e-06 N/(rad/s)^2`，`rotorVelocitySlowdownSim=10`；MWORKS 机体使用按可视化轴转速折算后的升力系数 `0.000854858`。此前基于旧机体生成的 full-run 指标保留为历史证据；正式控制器结论需要基于新机体重新跑 Sysplorer/MWORKS 结果。
 
 核心闭环：
 

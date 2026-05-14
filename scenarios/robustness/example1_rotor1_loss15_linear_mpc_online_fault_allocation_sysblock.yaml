@@ -25,8 +25,8 @@ disturbance:
   type: actuator_efficiency_loss
   target_component: quadChassisTest17_1.gain2.k
   affected_rotor: rotor_1
-  nominal_lift_gain: 0.01253887049854549
-  degraded_lift_gain: 0.01065803992376367
+  nominal_lift_gain: 0.000854858
+  degraded_lift_gain: 0.0007266293
   efficiency_ratio: 0.85
   known_to_controller: false
   purpose: linear_mpc_outer_loop_with_online_efficiency_estimation_and_fault_allocation_compensation

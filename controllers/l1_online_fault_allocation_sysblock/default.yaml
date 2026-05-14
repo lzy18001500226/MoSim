@@ -58,8 +58,8 @@ model_interface:
 online_fault_estimator:
   affected_rotor: rotor_1
   target_component: quadChassisTest17_1.gain2.k
-  nominal_lift_gain: 0.01253887049854549
-  degraded_lift_gain: 0.01065803992376367
+  nominal_lift_gain: 0.000854858
+  degraded_lift_gain: 0.0007266293
   true_efficiency_for_validation: 0.85
   eta_min_est: 0.50
   eta_max_est: 1.00
