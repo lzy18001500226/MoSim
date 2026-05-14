@@ -83,7 +83,7 @@
 |---|---|
 | Sunray Sysplorer migration index | `docs/index/sunray_migration_index.md` |
 | Sunray source tree | `references/Sunray/` |
-| CUAV/PX6C/V6X visual references | `references/CUAV/GPS.png`, `references/CUAV/V6X.png` |
+| CUAV/PX6C/V6X/Mid360 visual references | `references/CUAV/GPS.png`, `references/CUAV/V6X.png`, `references/CUAV/MId360.png` |
 
 ## Design Docs
 

@@ -920,6 +920,12 @@
         annotation (Placement(transformation(origin = {124.60787940430421, 90.30849111731482}, 
           extent = {{-10.0, -10.0}, {10.0, 10.0}})));
       parameter Real lift_cofficient = 0.000854858 "Sunray150 motorConstant scaled by rotorVelocitySlowdownSim^2 for MWORKS visual rotor speed";
+      parameter Real flight_controller_update_rate_Hz = 20
+        "Project-level PX6C/V6X flight-controller command update rate";
+      parameter Real mid360_update_rate_Hz = 20
+        "Project-level Mid360 local grid update rate used by planning and safety layers";
+      parameter Real gps_update_rate_Hz = 20
+        "Project-level GNSS/navigation update rate used by the simplified flight-control state machine";
       Modelica.Mechanics.MultiBody.Parts.BodyShape body(
         animation = true, 
         animateSphere = false, 
@@ -1043,6 +1049,24 @@
       Modelica.Mechanics.MultiBody.Visualizers.FixedShape2 mid360Visual(shapeType = "sphere",
         extra = 1, length = 0.04, width = 0.04, height = 0.04, color = {45, 45, 45}, animation = true)
         annotation (Placement(transformation(origin = {191.55742017263336, 58.28481521933296},
+          extent = {{-10.0, -10.0}, {10.0, 10.0}})));
+      Modelica.Mechanics.MultiBody.Parts.FixedTranslation flightControllerMount(
+        animation = false,
+        r = {0, 0, 0.092})
+        annotation (Placement(transformation(origin = {158.25275041021322, 28.48433844745136},
+          extent = {{-10.0, -10.0}, {10.0, 10.0}})));
+      Modelica.Mechanics.MultiBody.Visualizers.FixedShape2 flightControllerVisual(shapeType = "box",
+        extra = 1, length = 0.055, width = 0.035, height = 0.012, color = {40, 42, 45}, animation = true)
+        annotation (Placement(transformation(origin = {191.55742017263336, 28.28481521933296},
+          extent = {{-10.0, -10.0}, {10.0, 10.0}})));
+      Modelica.Mechanics.MultiBody.Parts.FixedTranslation gpsMount(
+        animation = false,
+        r = {0, 0, 0.135})
+        annotation (Placement(transformation(origin = {158.25275041021322, -1.51566155254864},
+          extent = {{-10.0, -10.0}, {10.0, 10.0}})));
+      Modelica.Mechanics.MultiBody.Visualizers.FixedShape2 gpsVisual(shapeType = "sphere",
+        extra = 1, length = 0.055, width = 0.055, height = 0.018, color = {155, 155, 155}, animation = true)
+        annotation (Placement(transformation(origin = {191.55742017263336, -1.71518478066704},
           extent = {{-10.0, -10.0}, {10.0, 10.0}})));
       Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor annotation (
         Placement(transformation(origin = {-167.0062898849564, 81.17560498021649}, 
@@ -1273,6 +1297,26 @@
           thickness = 0.5));
       connect(mid360Mount.frame_b, mid360Visual.frame_a)
         annotation (Line(origin = {176.0, 58.0},
+          points = {{-8.0, 0.0}, {5.0, 0.0}},
+          color = {95, 95, 95},
+          thickness = 0.5));
+      connect(body.frame_b, flightControllerMount.frame_a)
+        annotation (Line(origin = {153.0, 14.0},
+          points = {{-17.0, -17.0}, {-5.0, -17.0}, {-5.0, 14.0}, {-5.0, 14.0}},
+          color = {95, 95, 95},
+          thickness = 0.5));
+      connect(flightControllerMount.frame_b, flightControllerVisual.frame_a)
+        annotation (Line(origin = {176.0, 28.0},
+          points = {{-8.0, 0.0}, {5.0, 0.0}},
+          color = {95, 95, 95},
+          thickness = 0.5));
+      connect(body.frame_b, gpsMount.frame_a)
+        annotation (Line(origin = {153.0, -1.0},
+          points = {{-17.0, -2.0}, {-5.0, -2.0}, {-5.0, 0.0}, {-5.0, 0.0}},
+          color = {95, 95, 95},
+          thickness = 0.5));
+      connect(gpsMount.frame_b, gpsVisual.frame_a)
+        annotation (Line(origin = {176.0, -2.0},
           points = {{-8.0, 0.0}, {5.0, 0.0}},
           color = {95, 95, 95},
           thickness = 0.5));

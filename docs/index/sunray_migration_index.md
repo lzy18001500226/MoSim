@@ -77,7 +77,7 @@ Source: [云纵产品中心 - Sunray150 无刷电机](https://www.yundrone.cn/pr
 | 距离随机误差 | `≤ 2 cm @ 10 m`，`≤ 3 cm @ 0.2 m` |
 | 角度随机误差 | `≤ 0.15°` |
 | 点频 | `200,000 points/s` |
-| 帧率 | `10 Hz` 典型 |
+| 帧率 | `10 Hz` 典型；本项目规划/安全层统一按 `20 Hz` 局部栅格更新抽象建模 |
 | IMU | 内置 ICM40609，IMU 信息推送 `200 Hz` |
 | 数据接口 | `100 BASE-TX Ethernet` |
 | 同步 | IEEE 1588-2008 PTP v2、GPS |
@@ -88,7 +88,7 @@ Source: [云纵产品中心 - Sunray150 无刷电机](https://www.yundrone.cn/pr
 
 Sources: [Livox Mid-360 中文产品页](https://www.livoxtech.com/cn/mid-360), [Livox Mid-360 User Manual PDF](https://www.sachtleben-technology.com/wp-content/uploads/2024/07/LivoxMid-360UserManual.pdf).
 
-迁移判断：Sysplorer 中先建模为 `10 Hz` 局部栅格/点云更新源，噪声采用距离随机误差和角度随机误差的一阶近似；不直接复现 Livox 非重复扫描细节，除非后续要做感知算法对比。
+迁移判断：硬件物理资料按官方 `10 Hz` 典型帧率记录；Sysplorer 中为匹配当前控制器与 raw 输出节拍，先抽象为 `20 Hz` 局部栅格/点云更新源，噪声采用距离随机误差和角度随机误差的一阶近似；不直接复现 Livox 非重复扫描细节，除非后续要做感知算法对比。
 
 ### CUAV Pixhawk V6X / PX6C 级飞控
 
@@ -109,6 +109,37 @@ Sources: [Livox Mid-360 中文产品页](https://www.livoxtech.com/cn/mid-360), 
 Sources: [CUAV Pixhawk V6X 文档](https://doc.cuav.net/controller/pixhawk-v6x/en/), [CUAV Official Store V6X specifications](https://store.cuav.net/shop/cuav-v6x/), [CUAV 中文产品页](https://www.cuav.net/v6x/).
 
 迁移判断：Sysplorer 飞控状态机应建模“传感器健康度、IMU/气压计冗余切换、电源/通信异常、Offboard 控制丢失”这些行为；不需要迁移 MAVLink 驱动。
+
+### 当前 Sysplorer 完整机体抽象
+
+`QuadrotorModel.Mechanics.QuadChassis` 当前已包含：
+
+| 子系统 | 当前实现 | 说明 |
+|---|---|---|
+| Sunray150 机体 | `sunray150_mid360_body.stl` | 质量 `1.0 kg`、惯量 `Ixx=0.0085, Iyy=0.0085, Izz=0.012` |
+| 四旋翼旋翼/电机 | 4 个 propeller STL + 转速传感器 + 升力模型 | `lift_cofficient=0.000854858`，折算 `rotorVelocitySlowdownSim=10` |
+| Mid360 | 机体前上方球形可视化件 + `mid360_update_rate_Hz=20` | 表达传感器安装位置与规划/安全层更新节拍，不做真实扫描线仿真 |
+| V6X/PX6C 飞控 | 机体上方盒状可视化件 + `flight_controller_update_rate_Hz=20` | 表达飞控硬件和控制/模式管理节拍，不迁移 MAVLink 驱动 |
+| GPS/GNSS | 机体顶部圆盘可视化件 + `gps_update_rate_Hz=20` | 表达导航输入和后续 failsafe 状态机接口 |
+| 地面/动画 | 原生 MWORKS MultiBody 动画 | 用于人工审核和视频素材 |
+
+CUAV/Livox 实物图片仅作为报告和答辩硬件说明素材：
+
+| 图片 | 用途 |
+|---|---|
+| `references/CUAV/V6X.png` | 飞控硬件说明 |
+| `references/CUAV/GPS.png` | GPS/GNSS 硬件说明 |
+| `references/CUAV/MId360.png` | Mid360 激光雷达硬件说明 |
+
+Sysplorer 模型内使用轻量几何体而非直接贴图，以保证仿真和动画稳定。
+
+2026-05-14 最小 `QuadrotorModel.Examples.Example1` 检查曾触发授权限制：
+
+```text
+当前授权不允许变量方程数大于 300
+```
+
+该结果说明当前 MCP/授权环境无法检查完整官方模型，不作为新增几何件的模型错误结论。后续在授权恢复后需重新执行 `check_model`。
 
 ### PX4 Offboard / Failsafe
 
