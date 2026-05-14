@@ -8,7 +8,7 @@
 |---|---|---|
 | Project overview | `README.md` | Repository entry point |
 | Agent rules | `AGENTS.md` | Codex/MCP usage, project conventions, implementation rules |
-| Design index | `Design/README.md` | Design document entry point |
+| Design documents | `Design/00_系统总体设计.md` to `Design/08_仿真指标与自动评估.md` | Architecture, scope, interfaces, control design, scenarios, and metrics |
 | User manual | `docs/user_manual.md` | Usage guide and reproducible command entry points |
 | Simulation report | `docs/simulation_report.md` | Current evidence, metrics, figures, and experiment gaps |
 | API/tool index | `docs/index/api_index.md` | Available MCP tools, scripts, and API references |

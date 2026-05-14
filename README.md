@@ -2,7 +2,9 @@
 
 本项目面向 A8 四旋翼无人机位姿控制系统设计优化赛题，基于 MWORKS.Sysplorer、Sysblock 和 Syslab 构建可复现的仿真验证工程。
 
-当前证据口径：项目目标以 **MWORKS.Sysblock 控制器仿真为主线**，Sysplorer/Modelica 闭环仿真和脚本指标计算为辅助。现阶段已经完成多组真实 Sysplorer MCP 性能证据；Sysblock 方向已完成 AWFF PID 高度环最小模型、位置环、姿态环、电机分配、三层组合控制器 `AWFF_FullController_Sysblock`、单层扁平图形化控制器 `AWFF_FullControllerFlatGraphical_Sysblock`，以及 L1/INDI/故障隔离图形化控制器包 `AWFF_InnovationGraphicalControllers` 的真实 MCP `load_file/check_model` 验证，并完成 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 整机的全时长闭环证据。当前 Sysblock 主线已覆盖阶梯爬升、螺旋爬升、8 字轨迹、质量摄动、横向阵风、旋翼退化、L1-inspired 残差补偿、L1-inspired + INDI-like 组合控制器、LinearMPC-style 外环和在线效率估计控制分配消融。
+当前证据口径：项目目标以 **MWORKS.Sysblock 控制器仿真为主线**，Sysplorer/Modelica 闭环仿真和脚本指标计算为辅助。现阶段已经完成多组真实 Sysplorer MCP 性能证据；Sysblock 方向已完成 AWFF PID 高度环最小模型、位置环、姿态环、电机分配、三层组合控制器 `AWFF_FullController_Sysblock`、单层扁平图形化控制器 `AWFF_FullControllerFlatGraphical_Sysblock`，以及 L1/INDI/故障隔离图形化控制器包 `AWFF_InnovationGraphicalControllers` 的真实 MCP `load_file/check_model` 验证。图形化 Sysblock 控制器作为 Modelica 整机子组件时，当前编译器会在内部多输入端口解析处失败，因此整机性能主线使用等价 Equation Sysblock 控制器接入 `QuadrotorExperiments.*SysblockClosedLoop`；图形化模型仍是控制器结构、信号流、离散状态、限幅和模式逻辑的主表达形式，Equation 版只作为当前整机混合接入的桥接实现。
+
+当前正式 active 场景矩阵共 `69` 个，均已完成结果生成；其中 `52` 个为可支撑结论的 `pass` evidence，`17` 个为已标注的边界/负样本证据。负样本主要用于证明 PID/AWFF/纯 L1/纯 LinearMPC 在旋翼退化下不够，需要故障隔离、在线效率估计或控制分配补偿。当前 Sysblock 主线已覆盖阶梯爬升、螺旋爬升、8 字轨迹、质量摄动、横向阵风、旋翼退化、L1-inspired 残差补偿、L1-inspired + INDI-like 组合控制器、LinearMPC-style 外环和在线效率估计控制分配消融。
 
 
 当前机体迁移状态：`QuadrotorModel.Mechanics.QuadChassis` 已迁移到项目内本地源 `references/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` 的参数和可视化资源，机体质量 `1.0 kg`、惯量 `Ixx=0.0085, Iyy=0.0085, Izz=0.012`、旋翼位置 `±0.065 m`、升力系数 `0.01253887049854549`，并加入 Mid360 安装位置的轻量可视化件。此前基于旧机体生成的 full-run 指标保留为历史证据；正式控制器结论需要基于新机体重新跑 Sysplorer/MWORKS 结果。
@@ -24,7 +26,7 @@
 | 内容 | 路径 |
 |---|---|
 | Agent 操作规范 | `AGENTS.md` |
-| 设计文档总览 | `Design/README.md` |
+| 设计文档 | `Design/00_系统总体设计.md` 至 `Design/08_仿真指标与自动评估.md` |
 | 用户手册 | `docs/user_manual.md` |
 | 仿真分析报告 | `docs/simulation_report.md` |
 | 文档索引 | `docs/index/doc_index.md` |
@@ -119,6 +121,22 @@ Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/s
 P1 创新控制器证据：AWFF_L1ResidualControllerEquation_Sysblock 已覆盖 Example1、8 字形、质量 +20%、横向阵风和旋翼退化真实 Sysplorer MCP 仿真；其中 Example1、8 字形、质量 +20% 和横向阵风均通过质量门。`AWFF_INDIControllerEquation_Sysblock` 当前实现为 AWFF + L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，已在 Example1、Example2 helix-tuned 和 Example3 8 字形通过质量门。已知效率退化控制分配补偿、在线效率估计补偿和多旋翼隔离雏形均已完成 rotor1-4 单旋翼退化和 rotor1-4 单旋翼退化叠加横向阵风复合鲁棒验证，所有 `l1_multi_fault_isolation_sysblock` 对应场景均通过质量门，`fault_index` 在 `5-50 s` 内正确率为 `100%`。`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 当前实现为 finite-horizon linear MPC-style 外环 + L1-inspired residual feedforward + INDI-like 姿态内环，已完成 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真并通过质量门；相对 L1+INDI 对应基线的 RMSE 分别降低 0.828%、0.574% 和 2.134%。LinearMPC-style 外环的质量 +20% 和横向阵风鲁棒场景也已通过质量门；纯外环在 1 号旋翼 85% 退化下健康分不足，加入在线 `eta_hat` 效率估计与控制分配补偿后质量门通过，RMSE 相对纯 LinearMPC 降低 17.778%。新增 `AWFF_LinearMPCMultiFaultAllocationController_Sysblock` 已完成 rotor1-4 单旋翼退化叠加横向阵风复合鲁棒对照，AWFF 边界样本均为 `needs_iteration`，LinearMPC 多旋翼在线分配均为 `pass`，RMSE 降低约 27.16% 至 31.06%，`fault_index` 在 rotor2-4 场景中正确率为 `100%`。
 后续优先级：整理代表性 GUI 录屏素材和最终报告图表；随后再考虑瞬态故障切换或多旋翼同时故障。
 ```
+
+## 设计文档
+
+| 文件 | 主题 |
+|---|---|
+| `Design/00_系统总体设计.md` | 总体架构、创新点、模块关系、参考路线 |
+| `Design/01_需求范围与验收.md` | 需求、P0/P1/P2、验收指标、实现计划 |
+| `Design/02_模型接口与运行流程.md` | 模型接口、MWORKS 替换位置、信号接口、运行流程 |
+| `Design/03_控制系统架构.md` | PID、MPC/NMPC、INDI、L1-inspired 补偿 |
+| `Design/04_安全故障与容错.md` | 安全过滤、故障注入、执行器容错 |
+| `Design/05_路径规划与轨迹生成.md` | 多种规划算法、轨迹平滑、动态可行性 |
+| `Design/06_多机编队控制.md` | 多机编队、队形切换、机间避碰 |
+| `Design/07_场景扰动与测试矩阵.md` | 场景库、扰动库、测试矩阵 |
+| `Design/08_仿真指标与自动评估.md` | 仿真流程、指标体系、图表设计、Codex/MCP 自动化评估 |
+
+为避免文档口径漂移，Design 目录不再保留单独 README；项目总览、当前状态和文档入口统一维护在本文件。
 
 ## QA 检查
 
