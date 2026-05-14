@@ -47,14 +47,13 @@ results/replay_html/
 results/**/native_result/
 *_backup/
 
-# Local upstream simulation repositories
-references/Sunray/
-
 # Large binary outputs
 *.msr
 *.mat
 *.h5
 *.hdf5
+*.dae
+*.plan
 
 # OS
 .DS_Store

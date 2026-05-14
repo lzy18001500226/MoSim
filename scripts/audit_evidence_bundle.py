@@ -8,6 +8,7 @@ import csv
 import json
 import re
 import sys
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -190,7 +191,8 @@ def selected_scenarios(args: argparse.Namespace) -> list[Path]:
         except Exception:
             selected.append(path)
             continue
-        if config.get("active", True) is False and not args.include_inactive:
+        is_visual_review = str(config.get("priority", "")) == "visual-review"
+        if config.get("active", True) is False and not args.include_inactive and not is_visual_review:
             continue
         selected.append(path)
     return selected
@@ -231,6 +233,119 @@ def write_markdown(summary: dict[str, Any], path: Path) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def result_group(scene_id: str, scenario: str) -> str:
+    if scenario.startswith("scenarios/official/") or scene_id.startswith("official_"):
+        return "official"
+    if scenario.startswith("scenarios/robustness/") or "rotor" in scene_id or "wind" in scene_id or "mass" in scene_id:
+        return "robustness"
+    return "other"
+
+
+def is_figure8_scene(item: dict[str, Any]) -> str:
+    paths = item.get("paths", {})
+    text = " ".join([
+        str(item.get("scene_id", "")),
+        str(item.get("experiment_id", "")),
+        str(item.get("evidence_level", "")),
+        str(paths.get("raw_file", "")),
+        str(paths.get("metrics_file", "")),
+        str(paths.get("figure_dir", "")),
+    ]).lower()
+    return "yes" if "figure8" in text or "figure_8" in text else "no"
+
+
+def native_result_dir(paths: dict[str, str]) -> str:
+    raw_file = paths.get("raw_file", "")
+    if not raw_file:
+        return ""
+    raw_path = Path(raw_file)
+    try:
+        experiment_dir = raw_path.parents[1]
+    except IndexError:
+        return ""
+    candidate = experiment_dir / "native_result"
+    return candidate.as_posix()
+
+
+def review_priority(item: dict[str, Any]) -> str:
+    if item["role"] == "boundary_or_negative_evidence":
+        return "medium"
+    if is_figure8_scene(item) == "yes":
+        return "high"
+    if "rotor" in item["scene_id"] or "wind" in item["scene_id"] or "mass" in item["scene_id"]:
+        return "high"
+    return "medium"
+
+
+def write_manual_review_csv(summary: dict[str, Any], path: Path) -> None:
+    columns = [
+        "review_status",
+        "review_priority",
+        "group",
+        "scene",
+        "is_figure8",
+        "experiment_id",
+        "controller_or_case",
+        "quality_status",
+        "evidence_role",
+        "raw_exists",
+        "metrics_exists",
+        "figure_count",
+        "native_result_exists",
+        "raw_file",
+        "metrics_file",
+        "figure_dir",
+        "native_result_dir",
+        "notes",
+        "auto_quality_status",
+        "auto_quality_notes",
+        "auto_quality_checked_at",
+    ]
+    today = date.today().isoformat()
+    rows: list[dict[str, str]] = []
+    for item in summary["results"]:
+        paths = item.get("paths", {})
+        native_dir = native_result_dir(paths)
+        native_exists = bool(native_dir and (ROOT / native_dir).exists())
+        issues = "; ".join(item.get("issues", []))
+        warnings = "; ".join(item.get("warnings", []))
+        notes = warnings or issues or "待人工审核 GUI 动画、曲线和图形化模型入口"
+        rows.append({
+            "review_status": "pending",
+            "review_priority": review_priority(item),
+            "group": result_group(item["scene_id"], item["scenario"]),
+            "scene": item["scene_id"],
+            "is_figure8": is_figure8_scene(item),
+            "experiment_id": item["experiment_id"],
+            "controller_or_case": item["controller_id"],
+            "quality_status": item["quality_status"],
+            "evidence_role": item["role"],
+            "raw_exists": "yes" if item.get("raw_rows") else "no",
+            "metrics_exists": "yes" if item.get("metrics_valid") is not None else "no",
+            "figure_count": str(item.get("figure_count", 0)),
+            "native_result_exists": "yes" if native_exists else "no",
+            "raw_file": paths.get("raw_file", ""),
+            "metrics_file": paths.get("metrics_file", ""),
+            "figure_dir": paths.get("figure_dir", ""),
+            "native_result_dir": native_dir,
+            "notes": notes,
+            "auto_quality_status": "pass" if item.get("ok") else "needs_attention",
+            "auto_quality_notes": "ok" if item.get("ok") else issues,
+            "auto_quality_checked_at": today,
+        })
+    rows.sort(key=lambda row: (
+        {"high": 0, "medium": 1, "low": 2}.get(row["review_priority"], 9),
+        row["group"],
+        row["scene"],
+        row["controller_or_case"],
+    ))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8-sig") as handle:
+        writer = csv.DictWriter(handle, fieldnames=columns, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("scenario", nargs="*", help="Optional scenario YAML paths. Defaults to all non-smoke scenarios.")
@@ -238,6 +353,7 @@ def main() -> int:
     parser.add_argument("--include-inactive", action="store_true", help="Include active: false scenarios in the audit")
     parser.add_argument("--json-output", type=Path, default=ROOT / "results/test_reports/evidence_bundle_audit_20260512.json")
     parser.add_argument("--md-output", type=Path, default=ROOT / "results/test_reports/evidence_bundle_audit_20260512.md")
+    parser.add_argument("--manual-review-csv", type=Path, default=ROOT / "results/人工审核清单.csv")
     args = parser.parse_args()
 
     results = [audit_one(path) for path in selected_scenarios(args)]
@@ -252,9 +368,11 @@ def main() -> int:
     args.json_output.parent.mkdir(parents=True, exist_ok=True)
     args.json_output.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     write_markdown(summary, args.md_output)
+    write_manual_review_csv(summary, args.manual_review_csv)
     print(json.dumps({key: summary[key] for key in ["scenarios_checked", "pass_count", "issue_count", "warning_count"]}, ensure_ascii=False))
     print(f"json: {args.json_output}")
     print(f"md: {args.md_output}")
+    print(f"manual_review_csv: {args.manual_review_csv}")
     return 0 if summary["issue_count"] == 0 else 2
 
 

@@ -24,6 +24,7 @@
 | Read simulation results | `workflows/read_results.md` |
 | Calculate metrics | `workflows/calc_metrics.md` |
 | Generate report figures | `workflows/generate_report_figures.md` |
+| Review Sunray migration source | `docs/index/sunray_migration_index.md` |
 | Add a controller | `workflows/add_controller.md` |
 | Build Sysblock graphical controller | `workflows/build_sysblock_graphical_controller.md` |
 | Code review | `workflows/code_review.md` |

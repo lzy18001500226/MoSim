@@ -15,6 +15,7 @@
 | Workflow index | `docs/index/workflow_index.md` | Repeatable development workflows |
 | Variable mapping | `docs/index/variable_mapping.md` | Standard raw CSV names vs Sysplorer result variables |
 | MathWorks to MWORKS migration | `docs/index/mathworks_to_mworks_migration.md` | How to translate MATLAB/Simulink skills into MWORKS workflows |
+| Sunray migration index | `docs/index/sunray_migration_index.md` | Sunray code/model/config index for Sysplorer migration |
 
 ## Project-Local Skills
 
@@ -75,6 +76,14 @@
 | Challenge rules | `docs/mworks/converted/challenge/智能无人系统应用挑战赛_无人车避障竞赛规则.md` |
 | Challenge training 1 | `docs/mworks/converted/challenge/智能无人系统应用挑战赛_专项培训一.md` |
 | Challenge training 2 | `docs/mworks/converted/challenge/智能无人系统应用挑战赛_专项培训二.md` |
+
+## External Migration References
+
+| Topic | File |
+|---|---|
+| Sunray Sysplorer migration index | `docs/index/sunray_migration_index.md` |
+| Sunray source tree | `references/Sunray/` |
+| CUAV/PX6C/V6X visual references | `references/CUAV/GPS.png`, `references/CUAV/V6X.png` |
 
 ## Design Docs
 

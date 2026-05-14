@@ -1,7 +1,7 @@
 {
   "source": "project_evidence_bundle_audit",
-  "scenarios_checked": 71,
-  "pass_count": 71,
+  "scenarios_checked": 73,
+  "pass_count": 73,
   "issue_count": 0,
   "warning_count": 17,
   "results": [
@@ -102,6 +102,30 @@
       "warnings": []
     },
     {
+      "scenario": "scenarios/official/example1_helical_figure8_trail_sysblock.yaml",
+      "experiment_id": "official_example1_helical_figure8_trail_sysblock",
+      "scene_id": "official_example1_helical_figure8",
+      "controller_id": "linear_mpc_sysblock",
+      "priority": "visual-review",
+      "active": false,
+      "role": "pass_evidence",
+      "evidence_level": "real_sysplorer_mcp_native_gui_helical_figure8_trail",
+      "quality_status": "pass",
+      "metrics_valid": true,
+      "raw_rows": 2401,
+      "figure_count": 4,
+      "paths": {
+        "raw_file": "results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/raw/official_example1_helical_figure8_trail_sysblock.csv",
+        "metrics_file": "results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/metrics/official_example1_helical_figure8_trail_sysblock.json",
+        "figure_dir": "results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures",
+        "replay_file": "results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/replay/official_example1_helical_figure8_trail_sysblock.json",
+        "mcp_log": "results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/logs/sysplorer_example1_helical_figure8_trail_sysblock_full_20260514.jsonl"
+      },
+      "ok": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
       "scenario": "scenarios/official/example1_improved_pid.yaml",
       "experiment_id": "official_example1_improved_pid",
       "scene_id": "official_example1",
@@ -192,6 +216,30 @@
         "figure_dir": "results/official/example1_step/official_example1_pid_baseline/figures",
         "replay_file": "results/official/example1_step/official_example1_pid_baseline/replay/official_example1_pid_baseline.json",
         "mcp_log": "results/official/example1_step/official_example1_pid_baseline/logs/sysplorer_example1_pid_baseline_full_20260509.jsonl"
+      },
+      "ok": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "scenario": "scenarios/official/example1_planar_figure8_trail_sysblock.yaml",
+      "experiment_id": "official_example1_planar_figure8_trail_sysblock",
+      "scene_id": "official_example1_planar_figure8",
+      "controller_id": "linear_mpc_sysblock",
+      "priority": "visual-review",
+      "active": false,
+      "role": "pass_evidence",
+      "evidence_level": "real_sysplorer_mcp_native_gui_planar_figure8_trail",
+      "quality_status": "pass",
+      "metrics_valid": true,
+      "raw_rows": 2401,
+      "figure_count": 4,
+      "paths": {
+        "raw_file": "results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/raw/official_example1_planar_figure8_trail_sysblock.csv",
+        "metrics_file": "results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/metrics/official_example1_planar_figure8_trail_sysblock.json",
+        "figure_dir": "results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures",
+        "replay_file": "results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/replay/official_example1_planar_figure8_trail_sysblock.json",
+        "mcp_log": "results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/logs/sysplorer_example1_planar_figure8_trail_sysblock_full_20260514.jsonl"
       },
       "ok": true,
       "issues": [],

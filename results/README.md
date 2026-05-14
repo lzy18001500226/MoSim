@@ -18,11 +18,11 @@
 
 ## 当前数量
 
-实验数量以 `人工审核清单.csv` 和目录扫描为准，不在本文档手工维护固定数字，避免结果重生成或新增控制器后出现过期统计。
+实验数量以 `人工审核清单.csv`、`results/test_reports/evidence_bundle_audit_*.json` 和目录扫描为准，不在本文档手工维护固定数字，避免结果重生成或新增控制器后出现过期统计。
 
 ## 人工审核要求
 
 1. 优先审核 `official/example3_figure8/*/figures/`、`official/example3_figure8/*/raw/`、`official/example3_figure8/*/metrics/`、`official/example3_figure8/*/replay/`。这才是 8 字形轨迹相关证据。
 2. `smoke/` 目录默认不进入演示视频和正式报告主图，只保留为自动化链路证据。
-3. 每次新增或重生成图后，更新 `人工审核清单.csv` 的 `review_status` 和 `notes`。
+3. 每次新增或重生成图后，运行 `scripts/audit_evidence_bundle.py` 自动刷新 `人工审核清单.csv`，再人工更新 `review_status` 和 `notes`。
 4. 图不合格时不要删除同组 raw/metrics/replay/logs；在清单里标注原因，再决定是否重新生成。

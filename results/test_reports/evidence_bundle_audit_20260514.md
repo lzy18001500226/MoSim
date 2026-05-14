@@ -1,7 +1,7 @@
 # Evidence Bundle Audit
 
-- scenarios_checked: 71
-- pass_count: 71
+- scenarios_checked: 73
+- pass_count: 73
 - issue_count: 0
 - warning_count: 17
 

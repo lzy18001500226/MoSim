@@ -10,17 +10,18 @@
 
 | Experiment | Scene | Controller | RMSE | Health | Quality | Status |
 |---|---|---|---:|---:|---|---|
+| official_example3_linear_mpc_sysblock | official_example3 | linear_mpc_sysblock | 0.084584 | 68.3362 | pass | done |
+| official_example1_linear_mpc_sysblock | official_example1 | linear_mpc_sysblock | 0.135014 | 65.6656 | pass | done |
+| official_example2_linear_mpc_sysblock | official_example2 | linear_mpc_sysblock | 0.429079 | 62.0578 | pass | done |
 | official_example3_improved_pid | official_example3 | improved_pid | 0.167227 | 60.5466 | pass | done |
 | official_example3_pid_baseline | official_example3 | pid_baseline | 0.172311 | 60.5054 | pass | done |
 | official_example3_awff_pid | official_example3 | awff_pid | 0.164733 | 60.4183 | pass | done |
 | official_example3_awff_sysblock | official_example3 | awff_sysblock | 0.166117 | 60.3077 | pass | done |
 | official_example3_enhanced_pid | official_example3 | enhanced_pid | 0.16667 | 60.2812 | pass | done |
-| official_example3_linear_mpc_sysblock | official_example3 | linear_mpc_sysblock | 0.148984 | 60.2107 | pass | done |
 | official_example3_l1_residual_sysblock | official_example3 | l1_residual_sysblock | 0.152236 | 60.2019 | pass | done |
 | official_example3_awff_indi_sysblock | official_example3 | awff_indi_sysblock | 0.152232 | 60.2013 | pass | done |
 | official_example1_qp_nmpc_safety_return_land_sysblock | official_example1 | nmpc_indi_l1 | 0.208361 | 56.146 | pass | done |
 | official_example1_qp_nmpc_safety_sysblock | official_example1 | nmpc_indi_l1 | 0.239803 | 55.8911 | pass | done |
-| official_example1_linear_mpc_sysblock | official_example1 | linear_mpc_sysblock | 0.241809 | 55.8427 | pass | done |
 | robust_rotor1_loss15_example1_l1_fault_allocation_sysblock | robust_rotor1_loss15_example1 | l1_fault_allocation_sysblock | 0.24434 | 55.8166 | pass | done |
 | official_example1_awff_indi_sysblock | official_example1 | awff_indi_sysblock | 0.243827 | 55.8166 | pass | done |
 | official_example1_l1_residual_sysblock | official_example1 | l1_residual_sysblock | 0.243837 | 55.8166 | pass | done |
@@ -57,7 +58,6 @@
 | robust_rotor2_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock | robust_rotor2_loss15_wind_gust_example1 | l1_multi_fault_isolation_sysblock | 0.272847 | 50.9612 | pass | done |
 | robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock | robust_rotor2_loss15_example1 | l1_multi_fault_isolation_sysblock | 0.268947 | 50.9478 | pass | done |
 | robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock | robust_rotor4_loss15_example1 | l1_multi_fault_isolation_sysblock | 0.269513 | 50.9447 | pass | done |
-| official_example2_linear_mpc_sysblock | official_example2 | linear_mpc_sysblock | 0.443631 | 48.1799 | pass | done |
 | official_example2_awff_indi_sysblock_helix_tuned | official_example2 | awff_indi_sysblock | 0.446193 | 48.1623 | pass | done |
 | official_example2_improved_pid | official_example2 | improved_pid | 0.479834 | 48.0258 | pass | done |
 | official_example2_awff_pid_helix_tuned | official_example2 | awff_pid | 0.474799 | 47.9431 | pass | done |
