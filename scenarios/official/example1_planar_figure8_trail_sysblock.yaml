@@ -1,7 +1,7 @@
 active: false
 experiment_id: official_example1_planar_figure8_trail_sysblock
 scene_id: official_example1_planar_figure8
-controller_id: nmpc_indi_l1
+controller_id: linear_mpc_sysblock
 priority: visual-review
 evidence_level: real_sysplorer_mcp_native_gui_planar_figure8_trail
 
@@ -10,33 +10,35 @@ model:
   model_name: QuadrotorExperiments.Example1PlanarFigure8TrailSysblockClosedLoop
   model_path_hint: models/QuadrotorExperiments/Example1PlanarFigure8TrailSysblockClosedLoop.mo
   base_model_path_hint: QuadrotorModel/package.mo
-  official_description: 平面 8 字定高轨迹 + 原生三维参考线 + 实际/参考位置标记 GUI 审查
+  official_description: 官方 EightPath 同款 8 字轨迹 + LinearMPC 控制器 + 原生三维参考线 + 实际/参考位置标记 GUI 审查
 
 controller:
-  params_file: controllers/nmpc_indi_l1/default.yaml
+  params_file: controllers/linear_mpc_sysblock/default.yaml
   replacement_component: controller3_2
   require_baseline_improvement: false
-  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_QPNMPCSafetyController_Sysblock.mo
-  extra_sysblock_controller_files:
-    - models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
   graphical_sysblock_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0
-  stop_time_s: 50.0
+  stop_time_s: 120.0
   step_size_s: 0.05
   solver: Dassl
   tolerance: 0.0001
 
 reference:
-  type: planar_figure8_return_land_reference
-  takeoff_duration_s: 8.0
-  figure8_duration_s: 30.0
-  mission_altitude_m: 0.8
+  type: official_eightpath_native_gui_reference
+  takeoff_duration_s: 10.0
+  figure8_duration_s: 110.0
+  figure8_x_scale_m: 10.0
+  figure8_y_scale_m: 10.0
+  mission_altitude_m: 10.0
+  x_omega: 0.02
+  y_omega: 0.04
   raw_output_sample_rate_hz: 20
   native_gui_reference_trail_sample_rate_hz: 5
-  note: 先原地爬升 8 s，再进入平面 8 字定高飞行，yaw_ref 跟随轨迹切向，最后返航降落；20 Hz 原生几何线段在当前 MWORKS GUI 中会显著拖慢求解器，正式数值输出保持 20 Hz，GUI 参考线采用 5 Hz 低负载显示。
+  note: 复用官方 QuadrotorModel.PathPlanning.EightPath 的轨迹口径：前 10 s 只爬升到 10 m，x/y 参考通过 10 s 延迟后开始 10 m 幅值横 8 字运动；yaw_ref 跟随轨迹切向。20 Hz 原生几何线段在当前 MWORKS GUI 中会显著拖慢求解器，正式数值输出保持 20 Hz，GUI 参考线采用 5 Hz 低负载显示。
 
 result:
   raw_file: results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/raw/official_example1_planar_figure8_trail_sysblock.csv
@@ -44,13 +46,6 @@ result:
   figure_dir: results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/figures
   mcp_log: results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/logs/sysplorer_example1_planar_figure8_trail_sysblock_full_20260514.jsonl
   variable_overrides:
-    x_ref: mission_ref_x.y
-    y_ref: mission_ref_y.y
-    z_ref: mission_ref_z.y
-  extra_variables:
-    controller_mode: controller3_2.controller_mode
-    safety_active: controller3_2.safety_active
-    event_code: controller3_2.event_code
-    return_ref_x: controller3_2.return_ref_x
-    return_ref_y: controller3_2.return_ref_y
-    return_ref_z: controller3_2.return_ref_z
+    x_ref: climbePath.position_command[1]
+    y_ref: climbePath.position_command[2]
+    z_ref: climbePath.position_command[3]
