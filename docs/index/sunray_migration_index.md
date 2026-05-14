@@ -132,8 +132,9 @@ CUAV/Livox 实物图片仅作为报告和答辩硬件说明素材：
 | `references/CUAV/GPS.png` | GPS/GNSS 硬件说明 |
 | `references/CUAV/MId360.png` | Mid360 激光雷达硬件说明 |
 | `references/CUAV/ORIN NX.jpg` | 机载计算平台说明 |
+| `references/CUAV/Sunray150.png` | Sunray150 机体图形化展示和模型图标 |
 
-这些图片用于图形化仿真素材、报告和答辩硬件说明；当前不把图片对应硬件作为新增物理部件接入官方机体模型。
+这些图片用于完整系统图形化仿真画布、模型图标、报告和答辩硬件说明；当前不把图片对应硬件作为新增物理部件接入官方机体模型。`Sunray150.png` 已同步到 `QuadrotorModel/Resources/Images/Sunray150.png` 并用于 `QuadChassis` 图标；`GPS.png`、`V6X.png`、`MId360.png`、`ORIN NX.jpg` 已同步到 `QuadrotorModel/Resources/Images/`，并作为 `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock` 中 GPS、Mid360、V6X/PX6C、ORIN NX 硬件接口块的图标。为避免 Modelica URI 中空格导致解析差异，机载计算平台图片在模型资源目录中保存为 `ORIN_NX.jpg`。三维动画仍使用官方 STL 机体。
 
 后续模型检查只针对官方机体、控制器闭环和图形化展示链路；CUAV/Livox/ORIN 图片不作为物理建模检查对象。
 

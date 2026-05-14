@@ -829,7 +829,7 @@
         extent = {{-200.0, -200.0}, {200.0, 200.0}}, 
         radius = 25.0), Bitmap(origin = {-5.999999999999947, 7.628925581943946}, 
         extent = {{-137.50000000000006, -135.62892558194395}, {137.49999999999994, 135.62892558194395}}, 
-        fileName = "modelica://QuadrotorModel/Resources/Images/Quadpic 5.png"), Line(origin = {0.0, 35.0}, 
+        fileName = "modelica://QuadrotorModel/Resources/Images/Sunray150.png"), Line(origin = {0.0, 35.0},
         rotation = 270.0, 
         points = {{31.0, 0.0}, {-31.0, 0.0}}, 
         color = {255, 0, 0}, 

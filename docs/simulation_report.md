@@ -240,12 +240,14 @@ results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_controller_
 results/model_checks/awff_sysblock/graphical_contract/graphical_awff_sysblock_contract_20260511.json
 ```
 
-整机接入限制：三层组合图形化控制器和单层扁平图形化控制器作为 `controller3_2` 嵌入 `QuadrotorExperiments.Example1GraphicalAWFFSysblockClosedLoop` 时，当前 Sysplorer 编译器均在 `Sum.u1/u2/...` 等 Sysblock 内部多输入端口处报 `组件引用 ... 查找不到`。失败诊断日志保留为：
+整机接入限制：三层组合图形化控制器和单层扁平图形化控制器作为 `controller3_2` 嵌入 `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock` 时，当前 Sysplorer 编译器均在 `Sum.u1/u2/...` 等 Sysblock 内部多输入端口处报 `组件引用 ... 查找不到`。失败诊断日志保留为：
 
 ```text
 results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_closed_loop_failed_hierarchical_20260511.jsonl
 results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_closed_loop_failed_flat_20260511.jsonl
 ```
+
+2026-05-14 更新：完整系统级图形化模型已改名为 `Sunray150CompleteSystemGraphical_Sysblock`，不再沿用官方 `Example1` 命名。模型中新增 GPS、Mid360、V6X/PX6C、ORIN NX 四个带端口和方程的硬件接口块，CUAV 图片只作为这些接口块的图标；信号链路为任务轨迹/传感器输出 → 硬件接口块 → 图形化 AWFF 控制器 → 电机指令缩放与执行器 → Sunray150 机体。MCP 已验证该完整系统模型可打开，四个硬件接口块 `check_model` 通过；完整整机模型仍因上述 `controller3_2` 图形化控制器嵌入限制无法作为正式仿真模型。证据见 `results/model_checks/awff_sysblock/sunray150_complete_system_graphical/logs/`。
 
 因此当前整机闭环主线继续使用等价扁平方程实现 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop`。该主线已经完成 Example1 0-1 s、5 s、10 s、20 s 渐进验证，以及 active official 场景中的 Example1 50 s、Example2 helix-tuned 50 s、Example3 120 s 全时长真实 Sysplorer MCP 闭环复测，均通过质量门禁，可作为当前 Sysblock 控制器整机仿真的主证据。图形化 Sysblock 文件用于控制器结构、时间行为和非线性/模式逻辑审核；Equation 版仅作为当前整机混合仿真的临时桥接实现。2026-05-12 基础图形化控制器 5 个模型和创新图形化控制器 15 个模型均完成真实 MCP `load_file/check_model` 复测，日志分别见 `results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_behavior_check_20260512_summary.json` 和 `results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_l1_online_fault_allocation_check_20260512_summary.json`。后续新仿真场景仍必须同步维护图形化行为等价模型。
 
