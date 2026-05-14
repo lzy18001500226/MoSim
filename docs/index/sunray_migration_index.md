@@ -30,7 +30,7 @@
 | 项 | 路径 / 数值 |
 |---|---|
 | 主机体源 | `references/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` |
-| 质量 | `1.0 kg` |
+| 当前 MWORKS 建模质量 | `1.0 kg`，用于已完成单机控制器复测 |
 | 惯量 | `Ixx=0.0085, Iyy=0.0085, Izz=0.012` |
 | 旋翼位置 | `±0.065 m` |
 | Mid360 安装位置 | `{0.036, -0.0155, 0.075}` |
@@ -40,6 +40,94 @@
 | MWORKS 悬停轴转速 | `53.56 rad/s` |
 
 注意：`150.dae` 为约 `139 MB`，超过 GitHub 单文件限制。当前仓库内迁移的是轻量 STL/参数和 MWORKS 可视化资源，不应提交原始 DAE 大文件。
+
+## 联网核验的硬件参数
+
+### Sunray-150
+
+公开产品页显示 Sunray-150 是面向科研的实验平台，开源代码覆盖控制、SLAM、规划和目标检测等方向。该信息可作为报告中“实物平台背景”的来源，而不是直接替代 MWORKS 动力学辨识。
+
+| 型号 | 轴距 | 重量 | 续航 | 最大载重 | 尺寸 | 电池 | 飞控/主控 | 传感器 |
+|---|---:|---:|---:|---:|---|---|---|---|
+| Sunray150 基础款 | `150 mm` | `约 750 g` | `约 17 min` | `400 g` | `210 x 210 x 100 mm` | `4500 mAh` | `STM32H743VIH6`，PX4 开源版本 | 无前视单目、无三维激光雷达 |
+| Sunray150 激光雷达款 | `150 mm` | `约 1080 g` | `约 11 min` | `200 g` | `210 x 210 x 100 mm` | `4500 mAh` | `STM32H743VIH6`，PX4 开源版本 | 前视单目 + `MID-360` |
+
+Source: [云纵 Sunray-150 科研无人机](https://www.yundrone.cn/products/sunray-150).
+
+相关电机公开配件参数：
+
+| 项 | 数值 |
+|---|---|
+| 电机规格 | `2104` |
+| KV | `3000` |
+| 单电机重量 | `15.9 g` |
+| 电池芯数 | `3-4S` |
+
+Source: [云纵产品中心 - Sunray150 无刷电机](https://www.yundrone.cn/products).
+
+迁移判断：当前 MWORKS 模型质量 `1.0 kg` 与公开激光雷达款 `约 1080 g` 接近，可继续作为控制器复测模型；报告中应写成“参考 Sunray150 激光雷达款量级并结合 SDF 参数折算”，不要写成完整实物辨识。
+
+### Livox Mid-360
+
+| 项 | 数值 |
+|---|---|
+| FOV | 水平 `360°`，垂直 `-7° ~ 52°`，最大垂直 `59°` |
+| 探测距离 | `40 m @ 10%` 反射率，`70 m @ 80%` 反射率 |
+| 近处盲区 | `0.1 m` |
+| 距离随机误差 | `≤ 2 cm @ 10 m`，`≤ 3 cm @ 0.2 m` |
+| 角度随机误差 | `≤ 0.15°` |
+| 点频 | `200,000 points/s` |
+| 帧率 | `10 Hz` 典型 |
+| IMU | 内置 ICM40609，IMU 信息推送 `200 Hz` |
+| 数据接口 | `100 BASE-TX Ethernet` |
+| 同步 | IEEE 1588-2008 PTP v2、GPS |
+| 防护 | `IP67` |
+| 功耗 | `6.5 W`，低温自加热峰值可到 `14 W` |
+| 供电 | `9-27 V DC` |
+| 尺寸/重量 | `65 x 65 x 60 mm`，约 `265 g` |
+
+Sources: [Livox Mid-360 中文产品页](https://www.livoxtech.com/cn/mid-360), [Livox Mid-360 User Manual PDF](https://www.sachtleben-technology.com/wp-content/uploads/2024/07/LivoxMid-360UserManual.pdf).
+
+迁移判断：Sysplorer 中先建模为 `10 Hz` 局部栅格/点云更新源，噪声采用距离随机误差和角度随机误差的一阶近似；不直接复现 Livox 非重复扫描细节，除非后续要做感知算法对比。
+
+### CUAV Pixhawk V6X / PX6C 级飞控
+
+| 项 | 数值/说明 |
+|---|---|
+| 主处理器 | STM32H753，Cortex-M7，`480 MHz`，`2 MB Flash`，`1 MB RAM` |
+| IO/协处理器 | STM32F103 / Cortex-M3 |
+| IMU | ICM-42688-P / ICM-20649 / BMI088，三冗余 IMU |
+| 磁罗盘 | RM3100 |
+| 气压计 | ICP-20100 x2 / 双冗余气压计 |
+| 输出 | `16 PWM` |
+| 接口 | `TELEM x3`、`GPS x2`、`CAN x2`、`Ethernet x1`、`USB x2`、`SPI`、`ADIO`、`UART4`、TF 卡槽等 |
+| 供电 | 额定 `4.75~5.70 V`；USB `4.75~5.25 V`；舵机轨 `0~9.9 V` |
+| 工作温度 | `-20 ~ 85 °C` |
+| 尺寸/重量 | `45.0 x 90.0 x 29.2 mm`，控制器约 `99 g` |
+| 冗余设计 | 三冗余 IMU、双冗余气压计、独立总线/电源、多电源输入、双 GPS |
+
+Sources: [CUAV Pixhawk V6X 文档](https://doc.cuav.net/controller/pixhawk-v6x/en/), [CUAV Official Store V6X specifications](https://store.cuav.net/shop/cuav-v6x/), [CUAV 中文产品页](https://www.cuav.net/v6x/).
+
+迁移判断：Sysplorer 飞控状态机应建模“传感器健康度、IMU/气压计冗余切换、电源/通信异常、Offboard 控制丢失”这些行为；不需要迁移 MAVLink 驱动。
+
+### PX4 Offboard / Failsafe
+
+PX4 Offboard 模式要求外部控制器持续提供 `>2 Hz` 的 proof-of-life 信号；切入 Offboard 前需先接收超过 `1 s` 的有效 setpoint/OffboardControlMode 流。若外部控制信号低于 `2 Hz`，PX4 会在 `COM_OF_LOSS_T` 超时后退出 Offboard，并按 `COM_OBL_RC_ACT` 执行 Position/Altitude/Manual/Return/Land 等动作。
+
+关键参数：
+
+| 参数 | 建模含义 |
+|---|---|
+| `COM_OF_LOSS_T` | Offboard 连接丢失后的超时时间 |
+| `COM_OBL_RC_ACT` | Offboard 丢失后的模式切换动作，包含 Position、Altitude、Manual、Return、Land |
+| `COM_RCL_EXCEPT` | 可设置在 Offboard 模式下忽略 RC loss |
+| `COM_FAIL_ACT_T` | 触发 failsafe 到执行动作之间的反应延迟 |
+| `COM_LOW_BAT_ACT` / `BAT_LOW_THR` / `BAT_CRIT_THR` / `BAT_EMERGEN_THR` | 低电量告警、返航、紧急降落阈值 |
+| `COM_DLL_EXCEPT` | 数据链路丢失例外模式 |
+
+Sources: [PX4 Offboard Mode](https://docs.px4.io/main/en/flight_modes/offboard), [PX4 Safety/Failsafe Configuration](https://docs.px4.io/main/en/config/safety).
+
+迁移判断：后续安全返航/降落闭环可以按 `NORMAL -> OFFBOARD_ACTIVE -> OFFBOARD_LOSS_HOLD -> RETURN -> LAND` 建模；单机控制器仍接收连续轨迹参考，多机/规划层负责触发模式切换和安全目标生成。
 
 ## 单机路径规划索引
 
@@ -130,16 +218,27 @@ Sysplorer 迁移建议：
 | `simulation/gazebo_plugin/livox_laser_simulation/scan_mode/*.csv` | 每个约 25-35 MB，Sysplorer 只需要抽象扫描模型 |
 | ROS build/devel/log 产物 | 可再生成，不应作为源文件提交 |
 
-## 还建议补充下载/提供的资料
+## 是否还需要下载其他仓库
 
-当前 Sunray 已足够支撑“机体、PX4接口、单机规划、多机编队避障”的迁移设计。若要把 PX6C/V6X 背景建模得更完整，建议后续再补：
+暂时不建议继续下载大型 Gazebo/PX4/算法仓库。当前 `references/Sunray` 已包含：
 
-1. 雷迅 PX6C 或 CUAV V6X 官方参数手册 PDF：尺寸、质量、IMU、接口、供电、冗余特性。
-2. Mid360 官方参数手册：扫描频率、视场角、量程、点频、噪声。
-3. sunray150_with_mid360 对应实物或官方配置说明：机臂长度、电机/桨叶型号、电池质量。
-4. 如果要做更像真实飞控的状态机：PX4 flight mode / failsafe / offboard control 官方文档或参数表。
+- EGO-Planner-Swarm；
+- FUEL；
+- ORCA / formation control；
+- grid map、A*、B-spline、trajectory server；
+- PX4/MAVROS 控制接口参考；
+- Sunray150 / Sunray300 SDF 与传感器配置。
 
-暂时不建议继续下载大型 Gazebo/PX4 仓库。当前工作重点应该是把已有 Sunray 代码里的接口和算法迁移成 MWORKS/Sysplorer 模块。
+如果后续确实需要补仓库，优先级如下：
+
+| 优先级 | 仓库/资料 | 何时需要 |
+|---|---|---|
+| P1 | 不再补仓库，直接用当前 Sunray 内置 EGO/FUEL/ORCA | 当前 Sysplorer 迁移阶段 |
+| P2 | Livox ROS Driver 2 | 只有在要复现真实 Mid360 点云话题和驱动接口时 |
+| P2 | PX4-Autopilot 官方仓库 | 只有在要核对 PX4 源码级 failsafe 状态机时 |
+| P3 | EGO-Planner 或 FUEL 原始上游仓库 | 只有当 Sunray 内置版本缺文件或需要追溯算法论文实现差异时 |
+
+当前工作重点应该是把已有 Sunray 代码里的接口和算法迁移成 MWORKS/Sysplorer 模块，而不是继续堆仓库。
 
 ## 后续迁移任务清单
 
