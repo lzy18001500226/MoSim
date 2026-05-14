@@ -41,6 +41,23 @@ planned timeout, stop the MCP sequence and clean up the clearly identifiable
 process/window before continuing.
 ```
 
+When the task is interactive model review, do not use project scripts as a
+wrapper around MCP. Use the MCP tools directly. If the Codex tool surface does
+not expose a `sysplorer_mcp` namespace, connect to the configured stdio wrapper
+and issue JSON-RPC MCP calls directly; record the log under `results/`.
+
+For `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock`, follow the
+direct sequence in `workflows/run_simulation.md`. The key failure classes are:
+
+| Error | Interpretation |
+|---|---|
+| `错误(1401): 模型重复定义` | A duplicate standalone `.mo` was loaded; this is a workflow error |
+| `组件的类型 ... 查找不到` | Required package/controller file was not loaded first |
+| `组件引用 x_sum.u1` / `thrust_sum.u1` 查找不到 | Known graphical Sysblock embedding limitation, not an asset-load failure |
+
+Any newly observed MCP/model-loading failure must be written back to the
+workflow before the task is considered complete.
+
 ---
 
 ## 2. Check Current MCP State

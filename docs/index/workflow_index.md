@@ -153,6 +153,11 @@ Related file:
 workflows/debug_mcp.md
 ```
 
+For graphical system model review, use `workflows/run_simulation.md` section
+“Direct MCP Review For Graphical System Models”. It records the required load
+order, the `1401` duplicate-definition trap, and the known embedded graphical
+Sysblock multi-input-port limitation.
+
 ---
 
 ## 7. Automation Strategy

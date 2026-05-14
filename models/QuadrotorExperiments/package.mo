@@ -1,4 +1,3 @@
-within;
 package QuadrotorExperiments
   "Project-local experiment models for official quadrotor comparisons"
 
@@ -383,11 +382,11 @@ package QuadrotorExperiments
       animation = false);
 
   equation
-    gustForce.force[1] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then
-      gust_force_x_N + gust_sine_amplitude_x_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s))
+    gustForce.force[1] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then 
+      gust_force_x_N + gust_sine_amplitude_x_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s)) 
       else 0;
-    gustForce.force[2] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then
-      gust_force_y_N + gust_sine_amplitude_y_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s))
+    gustForce.force[2] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then 
+      gust_force_y_N + gust_sine_amplitude_y_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s)) 
       else 0;
     gustForce.force[3] = 0;
     connect(gustForce.frame_b, quadChassisTest17_1.body.frame_b);
@@ -411,11 +410,11 @@ package QuadrotorExperiments
       animation = false);
 
   equation
-    gustForce.force[1] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then
-      gust_force_x_N + gust_sine_amplitude_x_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s))
+    gustForce.force[1] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then 
+      gust_force_x_N + gust_sine_amplitude_x_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s)) 
       else 0;
-    gustForce.force[2] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then
-      gust_force_y_N + gust_sine_amplitude_y_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s))
+    gustForce.force[2] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then 
+      gust_force_y_N + gust_sine_amplitude_y_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s)) 
       else 0;
     gustForce.force[3] = 0;
     connect(gustForce.frame_b, quadChassisTest17_1.body.frame_b);
@@ -664,16 +663,16 @@ model Sunray150CompleteSystemGraphical_Sysblock
 
   block PerceptionInterfaceModule
     "Top-level perception interface: GPS/GNSS and Mid360 local-map data"
-    Modelica.Blocks.Interfaces.RealInput position_raw[3]
-      annotation (Placement(transformation(origin = {-110, 20}, extent = {{-20, -20}, {20, 20}})));
-    Modelica.Blocks.Interfaces.RealOutput gps_position[3]
-      annotation (Placement(transformation(origin = {110, 45}, extent = {{-10, -10}, {10, 10}})));
-    Modelica.Blocks.Interfaces.RealOutput local_position[3]
-      annotation (Placement(transformation(origin = {110, 5}, extent = {{-10, -10}, {10, 10}})));
-    Modelica.Blocks.Interfaces.RealOutput obstacle_margin
-      annotation (Placement(transformation(origin = {110, -35}, extent = {{-10, -10}, {10, 10}})));
-    Modelica.Blocks.Interfaces.RealOutput health
-      annotation (Placement(transformation(origin = {110, -75}, extent = {{-10, -10}, {10, 10}})));
+    Modelica.Blocks.Interfaces.RealInput position_raw[3] 
+      annotation (Placement(transformation(origin = {-110, 20}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput gps_position[3] 
+      annotation (Placement(transformation(origin = {110, 45}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput local_position[3] 
+      annotation (Placement(transformation(origin = {110, 5}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput obstacle_margin 
+      annotation (Placement(transformation(origin = {110, -35}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput health 
+      annotation (Placement(transformation(origin = {110, -75}, extent = {{-5, -5}, {5, 5}})));
   equation
     gps_position = position_raw;
     local_position = position_raw;
@@ -682,27 +681,27 @@ model Sunray150CompleteSystemGraphical_Sysblock
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {0, 100, 150}, fillColor = {242, 252, 255}, fillPattern = FillPattern.Solid),
-        Bitmap(origin = {-38, 24}, extent = {{-48, -36}, {48, 36}}, fileName = "modelica://QuadrotorModel/Resources/Images/GPS.png"),
-        Bitmap(origin = {42, 24}, extent = {{-48, -36}, {48, 36}}, fileName = "modelica://QuadrotorModel/Resources/Images/MId360.png"),
-        Text(origin = {0, -70}, extent = {{-90, 15}, {90, -15}}, textString = "GPS + Mid360", textColor = {0, 100, 150})}));
+        Bitmap(origin = {-58, 18}, extent = {{-48, -48}, {48, 48}}, fileName = "modelica://QuadrotorModel/Resources/Images/GPS.png"),
+        Bitmap(origin = {58, 18}, extent = {{-48, -48}, {48, 48}}, fileName = "modelica://QuadrotorModel/Resources/Images/MId360.png"),
+        Text(origin = {0, -78}, extent = {{-100, 14}, {100, -14}}, textString = "GPS + Mid360", textColor = {0, 100, 150})}));
   end PerceptionInterfaceModule;
 
   block V6XFlightControllerModule
     "Top-level V6X/PX6C flight-controller interface"
-    Modelica.Blocks.Interfaces.RealInput gps_position[3]
-      annotation (Placement(transformation(origin = {-110, 55}, extent = {{-20, -20}, {20, 20}})));
-    Modelica.Blocks.Interfaces.RealInput attitude_raw[3]
-      annotation (Placement(transformation(origin = {-110, 10}, extent = {{-20, -20}, {20, 20}})));
-    Modelica.Blocks.Interfaces.RealInput motor_speed_raw[4]
-      annotation (Placement(transformation(origin = {-110, -45}, extent = {{-20, -20}, {20, 20}})));
-    Modelica.Blocks.Interfaces.RealOutput position_est[3]
-      annotation (Placement(transformation(origin = {110, 55}, extent = {{-10, -10}, {10, 10}})));
-    Modelica.Blocks.Interfaces.RealOutput attitude_est[3]
-      annotation (Placement(transformation(origin = {110, 10}, extent = {{-10, -10}, {10, 10}})));
-    Modelica.Blocks.Interfaces.RealOutput motor_speed_est[4]
-      annotation (Placement(transformation(origin = {110, -45}, extent = {{-10, -10}, {10, 10}})));
-    Modelica.Blocks.Interfaces.RealOutput health
-      annotation (Placement(transformation(origin = {110, -80}, extent = {{-10, -10}, {10, 10}})));
+    Modelica.Blocks.Interfaces.RealInput gps_position[3] 
+      annotation (Placement(transformation(origin = {-110, 55}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealInput attitude_raw[3] 
+      annotation (Placement(transformation(origin = {-110, 10}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealInput motor_speed_raw[4] 
+      annotation (Placement(transformation(origin = {-110, -45}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput position_est[3] 
+      annotation (Placement(transformation(origin = {110, 55}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput attitude_est[3] 
+      annotation (Placement(transformation(origin = {110, 10}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput motor_speed_est[4] 
+      annotation (Placement(transformation(origin = {110, -45}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput health 
+      annotation (Placement(transformation(origin = {110, -80}, extent = {{-5, -5}, {5, 5}})));
   equation
     position_est = gps_position;
     attitude_est = attitude_raw;
@@ -711,26 +710,26 @@ model Sunray150CompleteSystemGraphical_Sysblock
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {100, 70, 20}, fillColor = {255, 248, 235}, fillPattern = FillPattern.Solid),
-        Bitmap(origin = {0, 20}, extent = {{-88, -58}, {88, 58}}, fileName = "modelica://QuadrotorModel/Resources/Images/V6X.png"),
-        Text(origin = {0, -76}, extent = {{-90, 15}, {90, -15}}, textString = "V6X / PX6C", textColor = {100, 70, 20})}));
+        Bitmap(origin = {0, 14}, extent = {{-96, -54}, {96, 54}}, fileName = "modelica://QuadrotorModel/Resources/Images/V6X.png"),
+        Text(origin = {0, -78}, extent = {{-95, 14}, {95, -14}}, textString = "V6X / PX6C", textColor = {100, 70, 20})}));
   end V6XFlightControllerModule;
 
   block ORINNXMissionComputerModule
     "Top-level ORIN NX mission computer with internal trajectory source"
-    Modelica.Blocks.Interfaces.RealInput aircraft_position[3]
-      annotation (Placement(transformation(origin = {-110, 40}, extent = {{-20, -20}, {20, 20}})));
-    Modelica.Blocks.Interfaces.RealInput local_position[3]
-      annotation (Placement(transformation(origin = {-110, 0}, extent = {{-20, -20}, {20, 20}})));
-    Modelica.Blocks.Interfaces.RealInput obstacle_margin
-      annotation (Placement(transformation(origin = {-110, -45}, extent = {{-20, -20}, {20, 20}})));
-    Modelica.Blocks.Interfaces.RealOutput reference_position[3]
-      annotation (Placement(transformation(origin = {110, 50}, extent = {{-10, -10}, {10, 10}})));
-    Modelica.Blocks.Interfaces.RealOutput yaw_reference
-      annotation (Placement(transformation(origin = {110, 5}, extent = {{-10, -10}, {10, 10}})));
-    Modelica.Blocks.Interfaces.RealOutput z_reference_rate
-      annotation (Placement(transformation(origin = {110, -40}, extent = {{-10, -10}, {10, 10}})));
-    Modelica.Blocks.Interfaces.RealOutput health
-      annotation (Placement(transformation(origin = {110, -80}, extent = {{-10, -10}, {10, 10}})));
+    Modelica.Blocks.Interfaces.RealInput aircraft_position[3] 
+      annotation (Placement(transformation(origin = {-110, 40}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealInput local_position[3] 
+      annotation (Placement(transformation(origin = {-110, 0}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealInput obstacle_margin 
+      annotation (Placement(transformation(origin = {-110, -45}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput reference_position[3] 
+      annotation (Placement(transformation(origin = {110, 50}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput yaw_reference 
+      annotation (Placement(transformation(origin = {110, 5}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput z_reference_rate 
+      annotation (Placement(transformation(origin = {110, -40}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput health 
+      annotation (Placement(transformation(origin = {110, -80}, extent = {{-5, -5}, {5, 5}})));
     QuadrotorModel.PathPlanning.ClimbPath trajectory(gain(k = 1));
   equation
     reference_position = trajectory.position_command;
@@ -740,8 +739,8 @@ model Sunray150CompleteSystemGraphical_Sysblock
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {80, 80, 80}, fillColor = {248, 248, 248}, fillPattern = FillPattern.Solid),
-        Bitmap(origin = {0, 18}, extent = {{-88, -58}, {88, 58}}, fileName = "modelica://QuadrotorModel/Resources/Images/ORIN_NX.png"),
-        Text(origin = {0, -76}, extent = {{-90, 15}, {90, -15}}, textString = "ORIN NX", textColor = {80, 80, 80})}));
+        Bitmap(origin = {0, 14}, extent = {{-96, -72}, {96, 72}}, fileName = "modelica://QuadrotorModel/Resources/Images/ORIN_NX.png"),
+        Text(origin = {0, -82}, extent = {{-95, 14}, {95, -14}}, textString = "ORIN NX", textColor = {80, 80, 80})}));
   end ORINNXMissionComputerModule;
 
   block AWFFControllerModule
@@ -749,18 +748,18 @@ model Sunray150CompleteSystemGraphical_Sysblock
     parameter Real hover_motor_speed_cmd = 53.562090367172424;
     parameter Real legacy_hover_motor_speed_cmd = 13.985413115099604;
     parameter Real motor_command_scale = hover_motor_speed_cmd / legacy_hover_motor_speed_cmd;
-    Modelica.Blocks.Interfaces.RealInput reference_position[3]
-      annotation (Placement(transformation(origin = {-110, 70}, extent = {{-20, -20}, {20, 20}})));
-    Modelica.Blocks.Interfaces.RealInput position_est[3]
-      annotation (Placement(transformation(origin = {-110, 25}, extent = {{-20, -20}, {20, 20}})));
-    Modelica.Blocks.Interfaces.RealInput attitude_est[3]
-      annotation (Placement(transformation(origin = {-110, -20}, extent = {{-20, -20}, {20, 20}})));
-    Modelica.Blocks.Interfaces.RealInput yaw_reference
-      annotation (Placement(transformation(origin = {-110, -60}, extent = {{-20, -20}, {20, 20}})));
-    Modelica.Blocks.Interfaces.RealInput z_reference_rate
-      annotation (Placement(transformation(origin = {-110, -90}, extent = {{-20, -20}, {20, 20}})));
-    Modelica.Blocks.Interfaces.RealOutput motor_command[4]
-      annotation (Placement(transformation(origin = {110, 0}, extent = {{-10, -10}, {10, 10}})));
+    Modelica.Blocks.Interfaces.RealInput reference_position[3] 
+      annotation (Placement(transformation(origin = {-110, 70}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealInput position_est[3] 
+      annotation (Placement(transformation(origin = {-110, 25}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealInput attitude_est[3] 
+      annotation (Placement(transformation(origin = {-110, -20}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealInput yaw_reference 
+      annotation (Placement(transformation(origin = {-110, -60}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealInput z_reference_rate 
+      annotation (Placement(transformation(origin = {-110, -90}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput motor_command[4] 
+      annotation (Placement(transformation(origin = {110, 0}, extent = {{-5, -5}, {5, 5}})));
 
     Modelica.Blocks.Math.Feedback x_error;
     Modelica.Blocks.Math.Feedback y_error;
@@ -820,12 +819,12 @@ model Sunray150CompleteSystemGraphical_Sysblock
   model MotorDriveModule
     "Motor actuator with speed feedback, shown as one top-level motor block"
     parameter Real initial_speed = 53.562090367172424;
-    Modelica.Blocks.Interfaces.RealInput command
-      annotation (Placement(transformation(origin = {-110, 0}, extent = {{-20, -20}, {20, 20}})));
-    Modelica.Blocks.Interfaces.RealOutput speed
-      annotation (Placement(transformation(origin = {110, -45}, extent = {{-10, -10}, {10, 10}})));
-    Modelica.Mechanics.Rotational.Interfaces.Flange_b flange
-      annotation (Placement(transformation(origin = {110, 45}, extent = {{-10, -10}, {10, 10}})));
+    Modelica.Blocks.Interfaces.RealInput command 
+      annotation (Placement(transformation(origin = {-110, 0}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput speed 
+      annotation (Placement(transformation(origin = {110, -45}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Mechanics.Rotational.Interfaces.Flange_b flange 
+      annotation (Placement(transformation(origin = {110, 45}, extent = {{-5, -5}, {5, 5}})));
     QuadrotorModel.Electricals.Actuator actuator(dcpm(wMechanical(start = initial_speed)));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor;
   equation
@@ -836,18 +835,18 @@ model Sunray150CompleteSystemGraphical_Sysblock
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {130, 0, 130}, fillColor = {252, 244, 255}, fillPattern = FillPattern.Solid),
-        Bitmap(origin = {0, 16}, extent = {{-88, -58}, {88, 58}}, fileName = "modelica://QuadrotorModel/Resources/Images/motor.png"),
-        Text(origin = {0, -76}, extent = {{-80, 15}, {80, -15}}, textString = "%name", textColor = {130, 0, 130})}));
+        Bitmap(origin = {0, 14}, extent = {{-96, -55}, {96, 55}}, fileName = "modelica://QuadrotorModel/Resources/Images/motor.png"),
+        Text(origin = {0, -80}, extent = {{-80, 14}, {80, -14}}, textString = "%name", textColor = {130, 0, 130})}));
   end MotorDriveModule;
 
   model Sunray150AirframeSensorModule
     "Sunray150 airframe, rotor flanges, and sensor outputs"
-    Modelica.Mechanics.Rotational.Interfaces.Flange_a rotor_flange[4]
-      annotation (Placement(transformation(origin = {-110, 40}, extent = {{-10, -10}, {10, 10}})));
-    Modelica.Blocks.Interfaces.RealOutput position[3]
-      annotation (Placement(transformation(origin = {110, 45}, extent = {{-10, -10}, {10, 10}})));
-    Modelica.Blocks.Interfaces.RealOutput attitude[3]
-      annotation (Placement(transformation(origin = {110, 0}, extent = {{-10, -10}, {10, 10}})));
+    Modelica.Mechanics.Rotational.Interfaces.Flange_a rotor_flange[4] 
+      annotation (Placement(transformation(origin = {-110, 40}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput position[3] 
+      annotation (Placement(transformation(origin = {110, 45}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput attitude[3] 
+      annotation (Placement(transformation(origin = {110, 0}, extent = {{-5, -5}, {5, 5}})));
     QuadrotorModel.Mechanics.QuadChassis chassis;
     QuadrotorModel.Sensors.Sensors sensors;
   equation
@@ -861,92 +860,168 @@ model Sunray150CompleteSystemGraphical_Sysblock
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {160, 80, 0}, fillColor = {255, 250, 240}, fillPattern = FillPattern.Solid),
-        Bitmap(origin = {0, 18}, extent = {{-88, -58}, {88, 58}}, fileName = "modelica://QuadrotorModel/Resources/Images/Sunray150.png"),
-        Text(origin = {0, -76}, extent = {{-90, 15}, {90, -15}}, textString = "Sunray150", textColor = {160, 80, 0})}));
+        Bitmap(origin = {0, 10}, extent = {{-96, -96}, {96, 96}}, fileName = "modelica://QuadrotorModel/Resources/Images/Sunray150.png"),
+        Text(origin = {0, -86}, extent = {{-95, 14}, {95, -14}}, textString = "Sunray150", textColor = {160, 80, 0})}));
   end Sunray150AirframeSensorModule;
 
-  PerceptionInterfaceModule perception
-    annotation (Placement(transformation(origin = {-610, -100}, extent = {{-70, -70}, {70, 70}})));
-  V6XFlightControllerModule flight_controller
-    annotation (Placement(transformation(origin = {-375, -100}, extent = {{-70, -70}, {70, 70}})));
-  ORINNXMissionComputerModule mission_computer
-    annotation (Placement(transformation(origin = {-610, 120}, extent = {{-70, -70}, {70, 70}})));
+  PerceptionInterfaceModule perception 
+    annotation (Placement(transformation(origin = {-760, -145}, extent = {{-135, -135}, {135, 135}})));
+  V6XFlightControllerModule flight_controller 
+    annotation (Placement(transformation(origin={-275,-230},
+extent={{-125,-125},{125,125}})));
+  ORINNXMissionComputerModule mission_computer 
+    annotation (Placement(transformation(origin = {-760, 170}, extent = {{-130, -130}, {130, 130}})));
   AWFFControllerModule controller(
     hover_motor_speed_cmd = hover_motor_speed_cmd,
     legacy_hover_motor_speed_cmd = legacy_hover_motor_speed_cmd,
-    motor_command_scale = motor_command_scale)
-    annotation (Placement(transformation(origin = {-120, 40}, extent = {{-80, -80}, {80, 80}})));
-  MotorDriveModule motor1(initial_speed = hover_motor_speed_cmd)
-    annotation (Placement(transformation(origin = {170, 165}, extent = {{-36, -36}, {36, 36}})));
-  MotorDriveModule motor2(initial_speed = -hover_motor_speed_cmd)
-    annotation (Placement(transformation(origin = {170, 55}, extent = {{-36, -36}, {36, 36}})));
-  MotorDriveModule motor3(initial_speed = hover_motor_speed_cmd)
-    annotation (Placement(transformation(origin = {170, -55}, extent = {{-36, -36}, {36, 36}})));
-  MotorDriveModule motor4(initial_speed = -hover_motor_speed_cmd)
-    annotation (Placement(transformation(origin = {170, -165}, extent = {{-36, -36}, {36, 36}})));
-  Sunray150AirframeSensorModule airframe
-    annotation (Placement(transformation(origin = {455, 0}, extent = {{-85, -85}, {85, 85}})));
+    motor_command_scale = motor_command_scale) 
+    annotation (Placement(transformation(origin={-285,149},
+extent={{-110,-110},{110,110}})));
+  MotorDriveModule motor1(initial_speed = hover_motor_speed_cmd) 
+    annotation (Placement(transformation(origin = {250, 255}, extent = {{-72, -72}, {72, 72}})));
+  MotorDriveModule motor2(initial_speed = -hover_motor_speed_cmd) 
+    annotation (Placement(transformation(origin = {250, 85}, extent = {{-72, -72}, {72, 72}})));
+  MotorDriveModule motor3(initial_speed = hover_motor_speed_cmd) 
+    annotation (Placement(transformation(origin = {250, -85}, extent = {{-72, -72}, {72, 72}})));
+  MotorDriveModule motor4(initial_speed = -hover_motor_speed_cmd) 
+    annotation (Placement(transformation(origin = {250, -255}, extent = {{-72, -72}, {72, 72}})));
+  Sunray150AirframeSensorModule airframe 
+    annotation (Placement(transformation(origin = {630, 0}, extent = {{-150, -150}, {150, 150}})));
 
 equation
-  connect(airframe.position, perception.position_raw)
-    annotation (Line(points = {{548, 38}, {585, 38}, {585, -245}, {-745, -245}, {-745, -86}, {-687, -86}}, color = {0, 0, 127}));
-  connect(perception.gps_position, flight_controller.gps_position)
-    annotation (Line(points = {{-533, -69}, {-452, -69}}, color = {0, 0, 127}));
-  connect(perception.local_position, mission_computer.local_position)
-    annotation (Line(points = {{-533, -96}, {-500, -96}, {-500, 120}, {-687, 120}}, color = {0, 0, 127}));
-  connect(perception.obstacle_margin, mission_computer.obstacle_margin)
-    annotation (Line(points = {{-533, -125}, {-485, -125}, {-485, 88}, {-687, 88}}, color = {0, 0, 127}));
-  connect(airframe.attitude, flight_controller.attitude_raw)
-    annotation (Line(points = {{548, 0}, {570, 0}, {570, -270}, {-470, -270}, {-470, -93}, {-452, -93}}, color = {0, 0, 127}));
-  connect(motor1.speed, flight_controller.motor_speed_raw[1])
-    annotation (Line(points = {{210, 149}, {250, 149}, {250, -285}, {-470, -285}, {-470, -131}, {-452, -131}}, color = {0, 0, 127}));
-  connect(motor2.speed, flight_controller.motor_speed_raw[2])
-    annotation (Line(points = {{210, 39}, {260, 39}, {260, -295}, {-460, -295}, {-460, -125}, {-452, -125}}, color = {0, 0, 127}));
-  connect(motor3.speed, flight_controller.motor_speed_raw[3])
-    annotation (Line(points = {{210, -71}, {270, -71}, {270, -305}, {-450, -305}, {-450, -119}, {-452, -119}}, color = {0, 0, 127}));
-  connect(motor4.speed, flight_controller.motor_speed_raw[4])
-    annotation (Line(points = {{210, -181}, {280, -181}, {280, -315}, {-440, -315}, {-440, -113}, {-452, -113}}, color = {0, 0, 127}));
-  connect(flight_controller.position_est, mission_computer.aircraft_position)
-    annotation (Line(points = {{-298, -69}, {-265, -69}, {-265, 148}, {-687, 148}}, color = {0, 0, 127}));
-  connect(mission_computer.reference_position, controller.reference_position)
-    annotation (Line(points = {{-533, 155}, {-330, 155}, {-330, 96}, {-208, 96}}, color = {0, 0, 127}));
-  connect(flight_controller.position_est, controller.position_est)
-    annotation (Line(points = {{-298, -69}, {-250, -69}, {-250, 60}, {-208, 60}}, color = {0, 0, 127}));
-  connect(flight_controller.attitude_est, controller.attitude_est)
-    annotation (Line(points = {{-298, -93}, {-240, -93}, {-240, 24}, {-208, 24}}, color = {0, 0, 127}));
-  connect(mission_computer.yaw_reference, controller.yaw_reference)
-    annotation (Line(points = {{-533, 124}, {-315, 124}, {-315, -8}, {-208, -8}}, color = {0, 0, 127}));
-  connect(mission_computer.z_reference_rate, controller.z_reference_rate)
-    annotation (Line(points = {{-533, 92}, {-300, 92}, {-300, -32}, {-208, -32}}, color = {0, 0, 127}));
-  connect(controller.motor_command[1], motor1.command)
-    annotation (Line(points = {{-32, 40}, {65, 40}, {65, 165}, {130, 165}}, color = {0, 0, 127}));
-  connect(controller.motor_command[2], motor2.command)
-    annotation (Line(points = {{-32, 40}, {80, 40}, {80, 55}, {130, 55}}, color = {0, 0, 127}));
-  connect(controller.motor_command[3], motor3.command)
-    annotation (Line(points = {{-32, 40}, {80, 40}, {80, -55}, {130, -55}}, color = {0, 0, 127}));
-  connect(controller.motor_command[4], motor4.command)
-    annotation (Line(points = {{-32, 40}, {65, 40}, {65, -165}, {130, -165}}, color = {0, 0, 127}));
-  connect(motor1.flange, airframe.rotor_flange[1])
-    annotation (Line(points = {{210, 181}, {315, 181}, {315, 34}, {362, 34}}, color = {95, 95, 95}, thickness = 0.5));
-  connect(motor2.flange, airframe.rotor_flange[2])
-    annotation (Line(points = {{210, 71}, {320, 71}, {320, 42}, {362, 42}}, color = {95, 95, 95}, thickness = 0.5));
-  connect(motor3.flange, airframe.rotor_flange[3])
-    annotation (Line(points = {{210, -39}, {320, -39}, {320, 50}, {362, 50}}, color = {95, 95, 95}, thickness = 0.5));
-  connect(motor4.flange, airframe.rotor_flange[4])
-    annotation (Line(points = {{210, -149}, {315, -149}, {315, 58}, {362, 58}}, color = {95, 95, 95}, thickness = 0.5));
+  connect(airframe.position, perception.position_raw) 
+    annotation (Line(points = {{792, 68}, {825, 68}, {825, -385}, {-950, -385}, {-950, -124}, {-909, -124}}, color = {110, 130, 145}, thickness = 0.08));
+  connect(perception.gps_position, flight_controller.gps_position) 
+    annotation (Line(origin={0,0},
+points={{-611.5,-84.25},{-420.75,-84.25},{-420.75,-161.25},{-412.5,-161.25}},
+color={110,130,145},
+thickness=0.08));
+  connect(perception.local_position, mission_computer.local_position) 
+    annotation (Line(points = {{-611, -140}, {-575, -140}, {-575, 170}, {-903, 170}}, color = {110, 130, 145}, thickness = 0.08));
+  connect(perception.obstacle_margin, mission_computer.obstacle_margin) 
+    annotation (Line(points = {{-611, -182}, {-560, -182}, {-560, 122}, {-903, 122}}, color = {110, 130, 145}, thickness = 0.08));
+  connect(airframe.attitude, flight_controller.attitude_raw) 
+    annotation (Line(origin={0,0},
+points={{795,0},{804.5,0},{804.5,-357},{-420.75,-357},{-420.75,-217.5},{-412.5,-217.5}},
+color={110,130,145},
+thickness=0.08));
+  connect(motor1.speed, flight_controller.motor_speed_raw[1]) 
+    annotation (Line(origin={0,0},
+points={{329.2,222.6},{-420.75,222.6},{-420.75,-286.25},{-412.5,-286.25}},
+color={110,130,145},
+thickness=0.08));
+  connect(motor2.speed, flight_controller.motor_speed_raw[2]) 
+    annotation (Line(origin={0,0},
+points={{329.2,52.6},{334.8,52.6},{334.8,145},{-420.75,145},{-420.75,-286.25},{-412.5,-286.25}},
+color={110,130,145},
+thickness=0.08));
+  connect(motor3.speed, flight_controller.motor_speed_raw[3]) 
+    annotation (Line(origin={0,0},
+points={{329.2,-117.4},{334.8,-117.4},{334.8,-357},{-420.75,-357},{-420.75,-286.25},{-412.5,-286.25}},
+color={110,130,145},
+thickness=0.08));
+  connect(motor4.speed, flight_controller.motor_speed_raw[4]) 
+    annotation (Line(origin={0,0},
+points={{329.2,-287.4},{334.8,-287.4},{334.8,-357},{-420.75,-357},{-420.75,-286.25},{-412.5,-286.25}},
+color={110,130,145},
+thickness=0.08));
+  connect(flight_controller.position_est, mission_computer.aircraft_position) 
+    annotation (Line(origin={0,0},
+points={{-137.5,-161.25},{33.4584,-161.25},{33.4584,302},{-911.5,302},{-911.5,222},{-903,222}},
+color={110,130,145},
+thickness=0.08));
+  connect(mission_computer.reference_position, controller.reference_position) 
+    annotation (Line(origin={0,0},
+points={{-617,235},{-413.5,235},{-413.5,226},{-406,226}},
+color={110,130,145},
+thickness=0.08));
+  connect(flight_controller.position_est, controller.position_est) 
+    annotation (Line(origin={0,0},
+points={{-137.5,-161.25},{33.4584,-161.25},{33.4584,261},{-413.5,261},{-413.5,176.5},{-406,176.5}},
+color={110,130,145},
+thickness=0.08));
+  connect(flight_controller.attitude_est, controller.attitude_est) 
+    annotation (Line(origin={0,0},
+points={{-137.5,-217.5},{33.4584,-217.5},{33.4584,261},{-413.5,261},{-413.5,127},{-406,127}},
+color={110,130,145},
+thickness=0.08));
+  connect(mission_computer.yaw_reference, controller.yaw_reference) 
+    annotation (Line(origin={0,0},
+points={{-617,176.5},{-413.5,176.5},{-413.5,83},{-406,83}},
+color={110,130,145},
+thickness=0.08));
+  connect(mission_computer.z_reference_rate, controller.z_reference_rate) 
+    annotation (Line(origin={0,0},
+points={{-617,118},{-413.5,118},{-413.5,50},{-406,50}},
+color={110,130,145},
+thickness=0.08));
+  connect(controller.motor_command[1], motor1.command) 
+    annotation (Line(origin={0,0},
+points={{-164,149},{95,149},{95,255},{170.8,255}},
+color={110,130,145},
+thickness=0.08));
+  connect(controller.motor_command[2], motor2.command) 
+    annotation (Line(origin={0,0},
+points={{-164,149},{165.2,149},{165.2,85},{170.8,85}},
+color={110,130,145},
+thickness=0.08));
+  connect(controller.motor_command[3], motor3.command) 
+    annotation (Line(origin={0,0},
+points={{-164,149},{120,149},{120,-85},{170.8,-85}},
+color={110,130,145},
+thickness=0.08));
+  connect(controller.motor_command[4], motor4.command) 
+    annotation (Line(origin={0,0},
+points={{-164,149},{95,149},{95,-255},{170.8,-255}},
+color={110,130,145},
+thickness=0.08));
+  connect(motor1.flange, airframe.rotor_flange[1]) 
+    annotation (Line(points = {{330, 288}, {430, 288}, {430, 60}, {465, 60}}, color = {115, 115, 115}, thickness = 0.1));
+  connect(motor2.flange, airframe.rotor_flange[2]) 
+    annotation (Line(points = {{330, 118}, {440, 118}, {440, 72}, {465, 72}}, color = {115, 115, 115}, thickness = 0.1));
+  connect(motor3.flange, airframe.rotor_flange[3]) 
+    annotation (Line(points = {{330, -52}, {440, -52}, {440, 84}, {465, 84}}, color = {115, 115, 115}, thickness = 0.1));
+  connect(motor4.flange, airframe.rotor_flange[4]) 
+    annotation (Line(points = {{330, -222}, {430, -222}, {430, 96}, {465, 96}}, color = {115, 115, 115}, thickness = 0.1));
 
   annotation(
-    Diagram(coordinateSystem(extent = {{-790, -330}, {610, 260}}, grid = {5, 5}), graphics = {
-      Rectangle(origin = {-610, 10}, extent = {{-155, 235}, {155, -245}}, lineColor = {0, 0, 127}, pattern = LinePattern.Dash),
-      Text(origin = {-610, 245}, extent = {{-130, 15}, {130, -15}}, textString = "mission and perception", textColor = {0, 0, 127}),
-      Rectangle(origin = {-375, -100}, extent = {{-95, 105}, {95, -105}}, lineColor = {100, 70, 20}, pattern = LinePattern.Dash),
-      Text(origin = {-375, 20}, extent = {{-105, 15}, {105, -15}}, textString = "flight controller", textColor = {100, 70, 20}),
-      Rectangle(origin = {-120, 40}, extent = {{-115, 120}, {115, -120}}, lineColor = {0, 130, 0}, pattern = LinePattern.Dash),
-      Text(origin = {-120, 175}, extent = {{-110, 15}, {110, -15}}, textString = "control law", textColor = {0, 130, 0}),
-      Rectangle(origin = {170, 0}, extent = {{-75, 215}, {75, -215}}, lineColor = {130, 0, 130}, pattern = LinePattern.Dash),
-      Text(origin = {170, 230}, extent = {{-95, 15}, {95, -15}}, textString = "motor drives", textColor = {130, 0, 130}),
-      Rectangle(origin = {455, 0}, extent = {{-115, 120}, {115, -120}}, lineColor = {160, 80, 0}, pattern = LinePattern.Dash),
-      Text(origin = {455, 135}, extent = {{-115, 15}, {115, -15}}, textString = "Sunray150 airframe", textColor = {160, 80, 0})}),
+    Diagram(coordinateSystem(extent={{-980,-430},{850,380}},
+grid={5,5}),graphics = {Rectangle(origin={-760,10},
+lineColor={0,0,127},
+pattern=LinePattern.Dash,
+extent={{-180,320},{180,-355}}), Text(origin={-760,355},
+lineColor={0,0,127},
+extent={{-150,14},{150,-14}},
+textString="mission and perception",
+textColor={0,0,127}), Rectangle(origin={-430,-145},
+lineColor={100,70,20},
+pattern=LinePattern.Dash,
+extent={{-150,130},{150,-130}}), Text(origin={-270,-70},
+lineColor={100,70,20},
+extent={{-125,14},{125,-14}},
+textString="flight controller",
+textColor={100,70,20}), Rectangle(origin={-120,40},
+lineColor={0,130,0},
+pattern=LinePattern.Dash,
+extent={{-145,150},{145,-150}}), Text(origin={-285,231},
+lineColor={0,130,0},
+extent={{-115,14},{115,-14}},
+textString="control law",
+textColor={0,130,0}), Rectangle(origin={250,0},
+lineColor={130,0,130},
+pattern=LinePattern.Dash,
+extent={{-100,340},{100,-340}}), Text(origin={250,360},
+lineColor={130,0,130},
+extent={{-95,14},{95,-14}},
+textString="motor drives",
+textColor={130,0,130}), Rectangle(origin={630,0},
+lineColor={160,80,0},
+pattern=LinePattern.Dash,
+extent={{-180,185},{180,-185}}), Text(origin={630,210},
+lineColor={160,80,0},
+extent={{-130,14},{130,-14}},
+textString="Sunray150 airframe",
+textColor={160,80,0})}),
     experiment(Algorithm = Dassl, StartTime = 0, StopTime = 1, Tolerance = 0.0001, Interval = 0.01));
 end Sunray150CompleteSystemGraphical_Sysblock;
 

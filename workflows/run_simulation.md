@@ -106,6 +106,54 @@ scripts such as `run_mworks_scenario.py` and `run_sysplorer_mcp_smoke.py` are
 only for batch execution, reproducible export, metrics, summaries, and
 regression automation.
 
+### Direct MCP Review For Graphical System Models
+
+For manual review of `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock`,
+use this direct MCP sequence:
+
+```text
+session_manager(action="health")
+model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\Quadrotor\\QuadrotorModel\\package.mo", force_reload=true, auto_load_deps=true)
+model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorControllerBlocks\\AWFF_FullControllerFlatGraphical_Sysblock.mo", force_reload=true, auto_load_deps=true)
+model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\Quadrotor\\models\\QuadrotorExperiments\\package.mo", force_reload=true, auto_load_deps=true)
+model_manager(action="open", model_name="QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock")
+check_model(model_name="QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock", stop_on_error=false)
+```
+
+Do not load this file because it must not exist:
+
+```text
+models/QuadrotorExperiments/Sunray150CompleteSystemGraphical_Sysblock.mo
+```
+
+That standalone file causes `错误(1401): 模型重复定义` because the model is
+defined inside `models/QuadrotorExperiments/package.mo`.
+
+Review-result interpretation:
+
+| Result | Meaning | Action |
+|---|---|---|
+| `open ok=true` and no `1401` | The review model loads and opens | Continue visual review |
+| `错误(1401): 模型重复定义` | A duplicate standalone model file exists or was loaded | Delete the standalone file and load only the package |
+| `组件的类型 QuadrotorModel... 查找不到` | Dependencies were not loaded first | Load `QuadrotorModel/package.mo` before `QuadrotorExperiments/package.mo` |
+| `组件的类型 AWFF_FullControllerFlatGraphical_Sysblock 查找不到` | Graphical controller was not loaded first | Load `models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo` before the experiment package |
+| `组件引用 x_sum.u1 / y_sum.u1 / thrust_sum.u1 查找不到` | Known Sysplorer limitation for embedded graphical Sysblock multi-input ports | Do not treat as image/load failure; keep Equation controller for executable closed-loop evidence |
+
+Graphical layout acceptance for this model:
+
+```text
+1. Resource images are copied directly from references/CUAV/ to QuadrotorModel/Resources/Images/ and keep transparent PNG alpha.
+2. Do not convert transparent images to white-background RGB files.
+3. GPS and Mid360 must be separate top-level modules, not one combined perception picture block. GPS feeds the flight-controller position input; Mid360 feeds local position and obstacle margin into mission computing.
+4. Top-level hardware module placements must use equal x/y scaling unless there is a model-level reason; otherwise the bitmap icon is visibly stretched.
+5. Module connector extents should stay small, for example {{-5,-5},{5,5}}, because top-level component scaling also scales connector arrows.
+6. Keep the layout compact with clear columns, but make cross-module connection lines visible enough for review and route them around hardware images when possible.
+```
+
+If this sequence discovers a new error, update this workflow and the relevant
+design/report note before committing, so the next run does not repeat the same
+mistake.
+
 ---
 
 ## 4. Procedure
