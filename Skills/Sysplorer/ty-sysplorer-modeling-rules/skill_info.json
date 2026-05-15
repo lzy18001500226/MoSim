@@ -1,0 +1,9 @@
+{
+  "英文名": "ty-sysplorer-modeling-rules",
+  "中文名": "Sysplorer 建模必须遵守的规范",
+  "版本号": "V1.0.0",
+  "中文功能定位": "Sysplorer 建模总规则。用于新建、搭建、修复、仿真模型，以及 Modelica 物理、Sysblock 框图、Modelica+Sysblock 混合建模分流。规定七门闸、工作路径、MCP 工具边界、Modelica 文本建模、Sysblock API 建模、混合模型嵌入路径和 Gate 6 图解语义/智能布局闭环。",
+  "英文功能定位": "Mandatory Sysplorer modeling rules for model creation, repair, simulation, and routing between Modelica physical, Sysblock block-diagram, and Modelica+Sysblock hybrid paths. Defines seven gates, work paths, MCP tool boundaries, Modelica text modeling, Sysblock API modeling, hybrid embedding, and Gate 6 diagram semantics / smart-layout closure.",
+  "中文分类": "建模必须遵守的规范",
+  "英文分类": "Mandatory Modeling Rules"
+}

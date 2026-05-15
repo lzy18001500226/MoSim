@@ -1,0 +1,9 @@
+﻿{
+  "英文名": "modelica-library-workflow",
+  "中文名": "Modelica 模型库与模型工作流",
+  "版本号": "V1.0.0",
+  "中文功能定位": "仅在已应用 `ty-sysplorer-modeling-rules` 且任务明确要求对 Modelica 模型库或 Modelica 模型执行新建、修复、扩充、规范化、审查、本地化或交付整理时，使用本 skill；也适用于与之直接相关的包结构规范化、Examples / Tests 补齐、图形修复、中文化、本地化或交付准备任务。",
+  "英文功能定位": "After `ty-sysplorer-modeling-rules` has been applied, use this skill only when the task explicitly asks to create, repair, extend, normalize, review, localize, or prepare delivery for a Modelica library or a Modelica model, or to perform closely related tasks such as package-structure normalization, example or test completion, diagram repair, Chinese localization, or delivery preparation.",
+  "中文分类": "模型开发调试（Model Development & Debugging）",
+  "英文分类": "Model Development & Debugging"
+}

@@ -1,0 +1,7 @@
+interface:
+  display_name: "TY 热流体建模"
+  short_description: "仅在明确出现 TY 热流体库名，或明确要求内置库/商业库路径处理相关热流体任务时使用"
+  default_prompt: "使用 $ty-thermofluid-modeling 的前提是任务明确出现 TYMedia、TYThermoFluidSys、TYAirTreatmentAndVentilation，或明确要求走内置库 / 商业库路径处理相关热流体场景。然后使用 TY 库执行热流体、换热、空气处理、通风、HVAC 或环境控制模型的新建、修复、验证与结果复核。"
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,43 @@
+interface:
+  display_name: "Sysblock 框图建模"
+  short_description: "在 ty-sysplorer-modeling-rules 分流到 Sysblock 后，使用官方 API 构建和验证 Sysblock 框图"
+  default_prompt: |
+    先应用 `ty-sysplorer-modeling-rules` 并确认任务已分流到 Sysblock 路径，再使用 $ty-sysblock-diagram-modeling。
+    使用 `SysplorerEmbeddedCoder` 组件，通过 `call_code(mode="run_script")` 和官方 API 创建、编辑、连线和参数化模型。
+    模型路径遵守父级规则：优先使用 Agent 当前工作目录，其次使用 `GetDirectory` 返回路径；不要默认保存到临时目录。
+
+trigger:
+  keywords:
+    - "Sysblock"
+    - "框图建模"
+    - "block diagram"
+    - "嵌入式控制"
+    - "PI控制"
+    - "PID控制"
+    - "传递函数"
+    - "TransferFcn"
+    - "积分器"
+    - "Integrator"
+    - "控制系统"
+  
+  exclusion_keywords:
+    - "液压"
+    - "气动"
+    - "机械"
+    - "Modelica物理"
+    - "物理建模"
+    - "TYHydraulics"
+    - "TYPneumatics"
+  
+  model_types:
+    - "Sysblock"
+
+policy:
+  allow_implicit_invocation: true
+  require_confirmation: false
+
+examples:
+  - "搭建一个 Sysblock 电机转速控制系统"
+  - "使用 Sysblock 创建 PI 控制器"
+  - "Sysblock 传递函数仿真"
+  - "在 Sysplorer 中进行框图建模"

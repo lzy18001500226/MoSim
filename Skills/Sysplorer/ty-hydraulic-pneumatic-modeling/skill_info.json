@@ -1,0 +1,9 @@
+﻿{
+  "英文名": "ty-hydraulic-pneumatic-modeling",
+  "中文名": "TY 液压气动建模",
+  "版本号": "V1.0.0",
+  "中文功能定位": "在已应用 ty-sysplorer-modeling-rules 之后，于 TY 液压、热液压与气动商业流体库范围内执行 TY 液压、热液压和气动系统模型的新建、修复、验证、结果校核与图面闭环。若提示词中未出现 `TYOilMedia`、`TYHydraulics`、`TYHydraulicComponents`、`TYThermalHydraulics`、`TYThermalHydraulicComponents`、`TYGasMedia`、`TYPneumatics`、`TYPneumaticComponents`、`TYThermals` 之一，且未明确要求走内置库 / 商业库路径来完成相关液压、热液压或气动场景任务，禁止触发或使用本 skill。",
+  "英文功能定位": "After ty-sysplorer-modeling-rules has been applied, build, repair, validate, and review TY hydraulic, thermal-hydraulic, and pneumatic system models with diagram closure within TY commercial fluid libraries. Do not trigger or use this skill if the prompt does not mention one of `TYOilMedia`, `TYHydraulics`, `TYHydraulicComponents`, `TYThermalHydraulics`, `TYThermalHydraulicComponents`, `TYGasMedia`, `TYPneumatics`, `TYPneumaticComponents`, or `TYThermals` and does not explicitly require the built-in library / commercial library path to complete related hydraulic, thermal-hydraulic, or pneumatic tasks.",
+  "中文分类": "Sysplorer 物理模型建模与调试",
+  "英文分类": "Sysplorer Physical Modeling & Debugging"
+}

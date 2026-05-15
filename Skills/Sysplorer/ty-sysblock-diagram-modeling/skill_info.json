@@ -1,0 +1,9 @@
+﻿{
+  "英文名": "ty-sysblock-diagram-modeling",
+  "中文名": "Sysblock 框图建模",
+  "版本号": "V1.0.0",
+  "中文功能定位": "使用 SysplorerEmbeddedCoder 进行 Sysblock 框图建模与仿真验证",
+  "英文功能定位": "Use SysplorerEmbeddedCoder for Sysblock diagram modeling and simulation verification",
+  "中文分类": "Sysblock框图模型建模与调试",
+  "英文分类": "Sysblock Diagram Modeling & Debugging"
+}

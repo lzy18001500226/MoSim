@@ -1,0 +1,8 @@
+interface:
+  display_name: "Sysplorer 建模总规则"
+  short_description: "用于 Sysplorer 建模分流、七门闸、路径约束、工具边界和 Gate 6 图解闭环"
+  default_prompt: "当任务涉及新建、搭建、修复、仿真 Sysplorer 模型，或需要在 Modelica 物理、Sysblock 框图、Modelica+Sysblock 混合建模之间分流时，先使用 $ty-sysplorer-modeling-rules。按七门闸、路径约束、MCP 工具边界和 Gate 6 图解语义/智能布局闭环执行。"
+
+policy:
+  allow_implicit_invocation: true
+

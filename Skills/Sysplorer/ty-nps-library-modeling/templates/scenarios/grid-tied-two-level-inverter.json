@@ -1,0 +1,46 @@
+{
+  "id": "grid-tied-two-level-inverter",
+  "system_type": "grid-tied two-level inverter",
+  "modeling_objective": "Build a minimum DC bus to grid closed loop and verify grid current control, PLL locking, and PCC behavior.",
+  "main_power_path": [
+    "DC source or DC bus",
+    "two-level converter bridge",
+    "filter",
+    "point of common coupling",
+    "grid"
+  ],
+  "control_path": [
+    "PLL",
+    "current controller",
+    "modulation or PWM"
+  ],
+  "mandatory_support_blocks": [
+    "Powergui",
+    "ground or reference",
+    "voltage measurement",
+    "current measurement",
+    "P/Q measurement"
+  ],
+  "required_parameters": [
+    "DC bus voltage",
+    "grid line voltage or phase voltage",
+    "grid frequency",
+    "switching frequency",
+    "filter parameters",
+    "sampling period",
+    "control period"
+  ],
+  "key_results": [
+    "grid current",
+    "PCC voltage",
+    "DC bus voltage",
+    "PLL angle",
+    "active power",
+    "reactive power"
+  ],
+  "simulation_baseline": {
+    "solver_preference": "discrete",
+    "recommended_method": "inline implicit Euler",
+    "step_rule": "step <= fastest relevant period / 10"
+  }
+}

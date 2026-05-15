@@ -1,0 +1,7 @@
+interface:
+  display_name: "Modelica 模型库与模型工作流"
+  short_description: "先应用 ty-sysplorer-modeling-rules，再在明确存在 Modelica 库/模型工作流目标时使用"
+  default_prompt: "先应用 `ty-sysplorer-modeling-rules`。仅当任务明确要求对 Modelica 模型库或 Modelica 模型执行新建、修复、扩充、规范化、审查、本地化或交付整理，或执行与之直接相关的包结构规范化、Examples / Tests 补齐、图形修复、中文化、本地化或交付准备任务时，才调用 $modelica-library-workflow。随后按顶层结构、公共层、业务包、Examples / Tests、静态自检、按需 Sysplorer 验证和交付的顺序推进，并用中文给出结论。"
+
+policy:
+  allow_implicit_invocation: true

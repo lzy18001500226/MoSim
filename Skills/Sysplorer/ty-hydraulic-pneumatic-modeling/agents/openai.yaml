@@ -1,0 +1,7 @@
+interface:
+  display_name: "TY 液压/热液压/气动建模"
+  short_description: "仅在明确出现 TY 液压/热液压/气动库名，或明确要求内置库/商业库路径处理相关流体任务时使用"
+  default_prompt: "使用 $ty-hydraulic-pneumatic-modeling 的前提是任务明确出现 TY 液压、热液压或气动库名，或明确要求走内置库 / 商业库路径处理相关流体场景。然后按液压气动工作流执行模型新建、修复、验证、仿真与结果复核，并显式记录组件映射、参数依据、结果证据和图面闭环情况。"
+
+policy:
+  allow_implicit_invocation: true

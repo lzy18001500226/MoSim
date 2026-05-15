@@ -1,0 +1,9 @@
+﻿{
+  "英文名": "ty-mechanical-modeling",
+  "中文名": "TY 机械系统建模",
+  "版本号": "V1.0.0",
+  "中文功能定位": "在已应用 ty-sysplorer-modeling-rules 之后，于 TY/同元商业机械库范围内执行机械系统模型新建、修复、验证、结果复核与交付整理。若提示词中未出现 TY 机械库名之一，且未明确要求走内置库 / 商业库路径来处理相关机械场景，禁止触发或使用本 skill。",
+  "英文功能定位": "After ty-sysplorer-modeling-rules has been applied, build, repair, validate, review, and package mechanical system models within TY/Tongyuan commercial mechanical libraries. Do not trigger or use this skill if the prompt does not mention a TY mechanical library name and does not explicitly require the built-in library / commercial library path for related mechanical scenarios.",
+  "中文分类": "Sysplorer 物理模型建模与调试",
+  "英文分类": "Sysplorer Physical Modeling & Debugging"
+}

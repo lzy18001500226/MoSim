@@ -1,0 +1,7 @@
+interface:
+  display_name: "TY NPS 库建模"
+  short_description: "仅在明确出现 NPSLibrary，或明确要求内置库/商业库路径处理相关 NPS 场景时使用"
+  default_prompt: "使用 $ty-nps-library-modeling 的前提是任务明确出现 NPSLibrary，或明确要求走内置库 / 商业库路径处理相关 NPS 场景。然后基于 NPSLibrary 完成建模、修复、仿真与结果校核，并显式记录真实连接、图面复核、求解器与步长设置、验收等级和关键证据。"
+
+policy:
+  allow_implicit_invocation: true

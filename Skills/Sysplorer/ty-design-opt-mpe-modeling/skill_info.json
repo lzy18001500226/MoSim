@@ -1,0 +1,9 @@
+{
+  "英文名": "ty-design-opt-mpe-modeling",
+  "中文名": "DesignOpt 与 MPE 参数设计估计",
+  "版本号": "1.0.0",
+  "中文功能定位": "指导 DesignOptMpe 参数设计、估计与优化脚本及与 MCP 工具协同",
+  "英文功能定位": "Guide DesignOptMpe design, estimation, optimization scripts with MCP tools",
+  "中文分类": "设计优化与参数估计（脚本）",
+  "英文分类": "Design Optimization & Parameter Estimation (Scripting)"
+}
