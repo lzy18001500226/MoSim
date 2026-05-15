@@ -17,6 +17,10 @@ EVENT_NAMES = {
     40: "EMERGENCY_LAND",
     50: "MISSION",
     60: "DEGRADED_NAV",
+    61: "BATTERY_LOW_RETURN",
+    62: "OFFBOARD_LOSS_RETURN",
+    63: "MISSION_FAILURE_RETURN",
+    64: "GEOFENCE_RETURN",
 }
 
 
@@ -58,7 +62,7 @@ def build_event_log(rows: list[dict[str, float]], *, scene_id: str, controller_i
         safety_active = row.get("safety_active", row.get("safety_status", 0.0))
         mode = rounded_code(mode_value, 1)
         event_code = rounded_code(row.get("event_code", math.nan), 10)
-        if mode == 6 and event_code not in {60}:
+        if mode == 6 and event_code not in {60, 61, 62, 63, 64}:
             event_code = 60
         if math.isfinite(safety_active):
             max_safety_active = max(max_safety_active, safety_active)

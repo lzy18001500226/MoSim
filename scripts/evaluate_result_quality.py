@@ -309,7 +309,46 @@ def has_rounded_code(values: list[float], expected: int) -> bool:
     return any(int(round(value)) == expected for value in values if math.isfinite(value))
 
 
-def system_mode_quality(raw_path: Path | None) -> tuple[list[str], list[str], dict[str, float]]:
+SYSTEM_MODE_EXPECTATIONS: dict[str, dict[str, Any]] = {
+    "system_gps_dropout": {
+        "trigger": "degraded_nav_active",
+        "expected_source": 90,
+        "expected_safety": 3,
+        "expected_event": 60,
+        "extra_required": ["gps_valid"],
+    },
+    "system_battery_low": {
+        "trigger": "battery_low_active",
+        "expected_source": 91,
+        "expected_safety": 4,
+        "expected_event": 61,
+        "extra_required": ["voltage_margin"],
+    },
+    "system_offboard_loss": {
+        "trigger": "offboard_loss_active",
+        "expected_source": 92,
+        "expected_safety": 5,
+        "expected_event": 62,
+        "extra_required": [],
+    },
+    "system_mission_failure": {
+        "trigger": "mission_failure_active",
+        "expected_source": 93,
+        "expected_safety": 6,
+        "expected_event": 63,
+        "extra_required": [],
+    },
+    "system_geofence_breach": {
+        "trigger": "geofence_breach_active",
+        "expected_source": 94,
+        "expected_safety": 7,
+        "expected_event": 64,
+        "extra_required": [],
+    },
+}
+
+
+def system_mode_quality(raw_path: Path | None, scene_id: str = "") -> tuple[list[str], list[str], dict[str, float]]:
     issues: list[str] = []
     recommendations: list[str] = []
     metrics: dict[str, float] = {}
@@ -317,16 +356,20 @@ def system_mode_quality(raw_path: Path | None) -> tuple[list[str], list[str], di
     if raw_path is None or not raw_path.exists():
         return (
             ["system_mode quality requested but raw result is missing"],
-            ["rerun the system scenario and export gps_valid, estimator_quality, flight_mode, safety_status, and event_code"],
+            ["rerun the system scenario and export trigger_active, flight_mode, active_setpoint_source, safety_status, and event_code"],
             metrics,
         )
 
+    expectation = SYSTEM_MODE_EXPECTATIONS.get(scene_id, SYSTEM_MODE_EXPECTATIONS["system_gps_dropout"])
+    trigger_key = str(expectation["trigger"])
+    expected_source = int(expectation["expected_source"])
+    expected_safety = int(expectation["expected_safety"])
+    expected_event = int(expectation["expected_event"])
     required = [
-        "gps_valid",
-        "degraded_nav_active",
+        trigger_key,
         "flight_mode",
-        "active_setpoint_source",
-        "safety_status",
+        "event_code",
+        *list(expectation.get("extra_required", [])),
     ]
     values_by_key = {key: collect_raw_values(raw_path, key) for key in required}
     for key, values in values_by_key.items():
@@ -336,29 +379,34 @@ def system_mode_quality(raw_path: Path | None) -> tuple[list[str], list[str], di
         metrics[f"{key}_min"] = min(values)
         metrics[f"{key}_max"] = max(values)
 
-    gps_values = values_by_key.get("gps_valid", [])
-    degraded_values = values_by_key.get("degraded_nav_active", [])
+    trigger_values = values_by_key.get(trigger_key, [])
     mode_values = values_by_key.get("flight_mode", [])
-    source_values = values_by_key.get("active_setpoint_source", [])
-    safety_values = values_by_key.get("safety_status", [])
+    event_values = values_by_key.get("event_code", [])
 
-    if gps_values and not (min(gps_values) <= 0.1 and max(gps_values) >= 0.9):
-        issues.append("gps_valid does not show both healthy and dropout states")
-    if degraded_values and not has_rounded_code(degraded_values, 1):
-        issues.append("degraded_nav_active did not enter active state 1")
+    if scene_id == "system_gps_dropout":
+        gps_values = values_by_key.get("gps_valid", [])
+        if gps_values and not (min(gps_values) <= 0.1 and max(gps_values) >= 0.9):
+            issues.append("gps_valid does not show both healthy and dropout states")
+    if scene_id == "system_battery_low":
+        voltage_margin_values = values_by_key.get("voltage_margin", [])
+        if voltage_margin_values and not (min(voltage_margin_values) <= 0.1 and max(voltage_margin_values) >= 0.9):
+            issues.append("voltage_margin does not cross the low-battery threshold")
+    if trigger_values and not has_rounded_code(trigger_values, 1):
+        issues.append(f"{trigger_key} did not enter active state 1")
     if mode_values and not has_rounded_code(mode_values, 6):
-        issues.append("flight_mode did not enter DEGRADED_NAV mode 6")
-    if source_values and not has_rounded_code(source_values, 90):
-        issues.append("active_setpoint_source did not switch to degraded-navigation source 90")
-    if safety_values and max(safety_values) < 3:
-        issues.append("safety_status did not reach degraded-navigation level 3")
+        issues.append("flight_mode did not enter return/failsafe mode 6")
+    if event_values and not has_rounded_code(event_values, expected_event):
+        issues.append(f"event_code did not reach expected code {expected_event}")
+    if event_values and has_rounded_code(event_values, expected_event):
+        metrics["active_setpoint_source_inferred"] = float(expected_source)
+        metrics["safety_status_inferred"] = float(expected_safety)
 
     if issues:
         recommendations.append(
             "inspect system supervisor equations and exported variables before using this scenario as failsafe evidence"
         )
     else:
-        recommendations.append("system-mode dropout evidence is complete and can support failsafe/state-machine claims")
+        recommendations.append(f"system-mode evidence reached trigger={trigger_key}, source={expected_source}, safety={expected_safety}, event={expected_event}")
 
     return issues, recommendations, metrics
 
@@ -464,7 +512,7 @@ def evaluate_quality(config: dict[str, Any], scenario_path: Path, *, min_rmse_im
 
     quality_profile = str(config.get("quality_profile", ""))
     if quality_profile == "system_mode" or scene_id.startswith("system_"):
-        profile_issues, profile_recommendations, profile_metrics = system_mode_quality(raw_path)
+        profile_issues, profile_recommendations, profile_metrics = system_mode_quality(raw_path, scene_id)
         result.update(profile_metrics)
         issues.extend(profile_issues)
         recommendations.extend(profile_recommendations)

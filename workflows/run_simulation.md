@@ -154,6 +154,21 @@ If this sequence discovers a new error, update this workflow and the relevant
 design/report note before committing, so the next run does not repeat the same
 mistake.
 
+For complete-system failsafe scenarios, export event logs from
+`system_failsafe_event_code`, not the legacy `system_event_code`. Sysplorer
+has shown stale/constant export behavior for the older name in complete-system
+models, while `system_failsafe_event_code` is verified against
+`system_safety_status` and the active failsafe trigger. Scenario YAML files
+under `scenarios/system/` must therefore map:
+
+```yaml
+extra_variables:
+  event_code: system_failsafe_event_code
+```
+
+`scripts/generate_event_log.py` preserves event codes 60-64 for return/failsafe
+modes; it must not collapse all `flight_mode=6` rows to `DEGRADED_NAV`.
+
 ---
 
 ## 4. Procedure

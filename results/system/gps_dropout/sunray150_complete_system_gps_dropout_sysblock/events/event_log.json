@@ -3,7 +3,7 @@
   "controller_id": "awff_complete_system",
   "source": "raw_csv_controller_debug_signals",
   "event_count": 3,
-  "max_safety_active": 3.0,
+  "max_safety_active": 0.0,
   "events": [
     {
       "time_s": 0.0,

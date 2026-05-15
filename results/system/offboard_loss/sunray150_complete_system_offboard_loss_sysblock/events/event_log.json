@@ -1,0 +1,32 @@
+{
+  "scene_id": "system_offboard_loss",
+  "controller_id": "awff_complete_system",
+  "source": "raw_csv_controller_debug_signals",
+  "event_count": 3,
+  "max_safety_active": 0.0,
+  "events": [
+    {
+      "time_s": 0.0,
+      "event": "DEGRADED_RETURN",
+      "controller_mode": 3,
+      "event_code": 30,
+      "reason": "initial_mode"
+    },
+    {
+      "time_s": 0.35000000000000003,
+      "event": "OFFBOARD_LOSS_RETURN",
+      "controller_mode": 6,
+      "event_code": 62,
+      "previous_mode": 3,
+      "reason": "mode_or_event_code_changed"
+    },
+    {
+      "time_s": 0.86,
+      "event": "DEGRADED_RETURN",
+      "controller_mode": 3,
+      "event_code": 30,
+      "previous_mode": 6,
+      "reason": "mode_or_event_code_changed"
+    }
+  ]
+}

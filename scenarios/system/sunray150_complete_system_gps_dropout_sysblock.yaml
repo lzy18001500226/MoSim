@@ -59,7 +59,7 @@ result:
     degraded_nav_active: system_degraded_nav_active
     obstacle_avoid_active: system_obstacle_avoid_active
     flight_mode: system_flight_mode
-    active_setpoint_source: system_active_setpoint_source
-    safety_status: system_safety_status
-    event_code: system_event_code
+    active_setpoint_source: system_failsafe_source_code
+    safety_status: system_failsafe_status_code
+    event_code: system_failsafe_event_code
     system_supervisor_keepalive: system_supervisor_keepalive

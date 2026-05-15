@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="520" viewBox="0 0 920 520">
+<style>
+text { font-family: Arial, 'Microsoft YaHei', sans-serif; fill: #1f2937; }
+.title { font-size: 20px; font-weight: 700; }
+.label { font-size: 13px; }
+.tick { font-size: 12px; fill: #4b5563; }
+.legend { font-size: 13px; fill: #374151; }
+</style>
+<rect x="0" y="0" width="100%" height="100%" fill="#ffffff"/>
+<text x="460.00" y="26" text-anchor="middle" class="title">sunray150_complete_system_geofence_breach_sysblock position error</text>
+<line x1="82" y1="444" x2="892" y2="444" stroke="#2f3542" stroke-width="1.4"/>
+<line x1="82" y1="54" x2="82" y2="444" stroke="#2f3542" stroke-width="1.4"/>
+<line x1="82" y1="54.00" x2="892" y2="54.00" stroke="#d7dde8" stroke-width="0.8"/>
+<text x="72" y="58.00" text-anchor="end" class="tick">4.2</text>
+<line x1="82" y1="132.00" x2="892" y2="132.00" stroke="#d7dde8" stroke-width="0.8"/>
+<text x="72" y="136.00" text-anchor="end" class="tick">3.27</text>
+<line x1="82" y1="210.00" x2="892" y2="210.00" stroke="#d7dde8" stroke-width="0.8"/>
+<text x="72" y="214.00" text-anchor="end" class="tick">2.34</text>
+<line x1="82" y1="288.00" x2="892" y2="288.00" stroke="#d7dde8" stroke-width="0.8"/>
+<text x="72" y="292.00" text-anchor="end" class="tick">1.41</text>
+<line x1="82" y1="366.00" x2="892" y2="366.00" stroke="#d7dde8" stroke-width="0.8"/>
+<text x="72" y="370.00" text-anchor="end" class="tick">0.48</text>
+<line x1="82" y1="444.00" x2="892" y2="444.00" stroke="#d7dde8" stroke-width="0.8"/>
+<text x="72" y="448.00" text-anchor="end" class="tick">-0.45</text>
+<text x="82.00" y="466" text-anchor="middle" class="tick">-0.02</text>
+<text x="244.00" y="466" text-anchor="middle" class="tick">0.188</text>
+<text x="406.00" y="466" text-anchor="middle" class="tick">0.396</text>
+<text x="568.00" y="466" text-anchor="middle" class="tick">0.604</text>
+<text x="730.00" y="466" text-anchor="middle" class="tick">0.812</text>
+<text x="892.00" y="466" text-anchor="middle" class="tick">1.02</text>
+<text x="487.00" y="502" text-anchor="middle" class="label">time / s</text>
+<text x="22" y="249.00" text-anchor="middle" class="label" transform="rotate(-90 22 249.00)">error / m</text>
+<polyline points="97.58,406.26 105.37,404.58 113.15,402.90 120.94,401.22 128.73,399.54 136.52,397.86 144.31,396.17 152.10,394.48 159.88,392.79 167.67,391.09 175.46,389.39 183.25,387.68 191.04,385.96 198.83,384.23 206.62,382.49 214.40,380.74 222.19,378.98 229.98,377.20 237.77,375.40 245.56,373.59 253.35,371.77 261.13,369.92 268.92,368.06 276.71,366.17 284.50,364.26 292.29,362.32 300.08,360.37 307.87,358.38 315.65,356.36 323.44,354.32 331.23,352.25 339.02,350.14 346.81,348.01 354.60,345.84 362.38,343.63 370.17,341.39 377.96,339.12 385.75,336.80 393.54,334.45 401.33,332.06 409.12,329.63 416.90,327.16 424.69,324.65 432.48,322.10 440.27,319.50 448.06,316.86 455.85,314.17 463.63,311.45 471.42,308.67 479.21,305.85 487.00,302.98 494.79,300.07 502.58,297.10 510.37,294.09 518.15,291.03 525.94,287.92 533.73,284.76 541.52,281.55 549.31,278.29 557.10,274.98 564.88,271.61 572.67,268.20 580.46,264.73 588.25,261.20 596.04,257.63 603.83,254.00 611.62,250.32 619.40,246.58 627.19,242.79 634.98,238.95 642.77,235.05 650.56,231.09 658.35,227.08 666.13,223.02 673.92,218.89 681.71,214.72 689.50,210.48 697.29,206.20 705.08,201.85 712.87,197.45 720.65,192.99 728.44,188.47 736.23,183.90 744.02,179.27 751.81,174.58 759.60,169.83 767.38,165.03 775.17,160.17 782.96,155.26 790.75,150.28 798.54,145.25 806.33,140.16 814.12,135.01 821.90,129.81 829.69,124.54 837.48,119.22 845.27,113.84 853.06,108.40 860.85,102.91 868.63,97.35 876.42,91.74" fill="none" stroke="#2ca02c" stroke-width="2.2"/>
+<line x1="82" y1="30" x2="110" y2="30" stroke="#2ca02c" stroke-width="3"/>
+<text x="118" y="35" class="legend">position error</text>
+</svg>

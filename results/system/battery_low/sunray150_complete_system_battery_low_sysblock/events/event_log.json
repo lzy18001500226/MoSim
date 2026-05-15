@@ -1,0 +1,24 @@
+{
+  "scene_id": "system_battery_low",
+  "controller_id": "awff_complete_system",
+  "source": "raw_csv_controller_debug_signals",
+  "event_count": 2,
+  "max_safety_active": 0.0,
+  "events": [
+    {
+      "time_s": 0.0,
+      "event": "DEGRADED_RETURN",
+      "controller_mode": 3,
+      "event_code": 30,
+      "reason": "initial_mode"
+    },
+    {
+      "time_s": 0.32,
+      "event": "BATTERY_LOW_RETURN",
+      "controller_mode": 6,
+      "event_code": 61,
+      "previous_mode": 3,
+      "reason": "mode_or_event_code_changed"
+    }
+  ]
+}

@@ -662,6 +662,15 @@ model Sunray150CompleteSystemGraphical_Sysblock
     "Scale legacy controller speed increments to the Sunray150 SDF motorConstant speed domain";
   parameter Real system_degraded_nav_start_s = 1e9;
   parameter Real system_degraded_nav_end_s = 1e9;
+  parameter Real system_battery_voltage_drop_per_second = 0.002;
+  parameter Real system_battery_low_start_s = 1e9;
+  parameter Real system_battery_low_end_s = 1e9;
+  parameter Real system_offboard_loss_start_s = 1e9;
+  parameter Real system_offboard_loss_end_s = 1e9;
+  parameter Real system_mission_failure_start_s = 1e9;
+  parameter Real system_mission_failure_end_s = 1e9;
+  parameter Real system_geofence_breach_start_s = 1e9;
+  parameter Real system_geofence_breach_end_s = 1e9;
 
   block PerceptionInterfaceModule
     "Top-level perception interface: GPS/GNSS and Mid360 local-map data"
@@ -808,7 +817,18 @@ model Sunray150CompleteSystemGraphical_Sysblock
     "System-level failsafe supervisor for exported mode/event evidence"
     parameter Real degraded_nav_start_s = 1e9;
     parameter Real degraded_nav_end_s = 1e9;
+    parameter Real battery_low_start_s = 1e9;
+    parameter Real battery_low_end_s = 1e9;
+    parameter Real offboard_loss_start_s = 1e9;
+    parameter Real offboard_loss_end_s = 1e9;
+    parameter Real mission_failure_start_s = 1e9;
+    parameter Real mission_failure_end_s = 1e9;
+    parameter Real geofence_breach_start_s = 1e9;
+    parameter Real geofence_breach_end_s = 1e9;
+    parameter Real battery_low_threshold = 0.1;
     parameter Real takeoff_time_s = 3.0;
+    Modelica.Blocks.Interfaces.RealInput voltage_margin
+      annotation (Placement(transformation(origin = {-110, 75}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput degraded_nav_active
       annotation (Placement(transformation(origin = {110, 60}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput obstacle_avoid_active
@@ -825,15 +845,27 @@ model Sunray150CompleteSystemGraphical_Sysblock
       annotation (Placement(transformation(origin = {110, -90}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput event_code
       annotation (Placement(transformation(origin = {110, -115}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput battery_low_active
+      annotation (Placement(transformation(origin = {110, -140}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput offboard_loss_active
+      annotation (Placement(transformation(origin = {110, -165}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput mission_failure_active
+      annotation (Placement(transformation(origin = {110, -190}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput geofence_breach_active
+      annotation (Placement(transformation(origin = {110, -215}, extent = {{-5, -5}, {5, 5}})));
   equation
     degraded_nav_active = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 1 else 0;
+    battery_low_active = if voltage_margin < battery_low_threshold then 1 else if time >= battery_low_start_s and time <= battery_low_end_s then 1 else 0;
+    offboard_loss_active = if time >= offboard_loss_start_s and time <= offboard_loss_end_s then 1 else 0;
+    mission_failure_active = if time >= mission_failure_start_s and time <= mission_failure_end_s then 1 else 0;
+    geofence_breach_active = if time >= geofence_breach_start_s and time <= geofence_breach_end_s then 1 else 0;
     obstacle_avoid_active = 0;
     estimator_quality = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 0.45 else 1;
     estimator_mode = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 2 else 1;
-    flight_mode = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 6 else if time < takeoff_time_s then 3 else 5;
-    active_setpoint_source = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 90 else if time < takeoff_time_s then 30 else 40;
-    safety_status = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 3 else 0;
-    event_code = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 60 else if time < takeoff_time_s then 30 else 50;
+    flight_mode = if geofence_breach_active > 0.5 then 6 else if mission_failure_active > 0.5 then 6 else if offboard_loss_active > 0.5 then 6 else if battery_low_active > 0.5 then 6 else if degraded_nav_active > 0.5 then 6 else if time < takeoff_time_s then 3 else 5;
+    active_setpoint_source = if geofence_breach_active > 0.5 then 94 else if mission_failure_active > 0.5 then 93 else if offboard_loss_active > 0.5 then 92 else if battery_low_active > 0.5 then 91 else if degraded_nav_active > 0.5 then 90 else if time < takeoff_time_s then 30 else 40;
+    safety_status = if geofence_breach_active > 0.5 then 7 else if mission_failure_active > 0.5 then 6 else if offboard_loss_active > 0.5 then 5 else if battery_low_active > 0.5 then 4 else if degraded_nav_active > 0.5 then 3 else 0;
+    event_code = if geofence_breach_active > 0.5 then 64 else if mission_failure_active > 0.5 then 63 else if offboard_loss_active > 0.5 then 62 else if battery_low_active > 0.5 then 61 else if degraded_nav_active > 0.5 then 60 else if time < takeoff_time_s then 30 else 50;
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {120, 0, 0}, fillColor = {255, 245, 245}, fillPattern = FillPattern.Solid),
@@ -1030,9 +1062,17 @@ extent={{-125,-125},{125,125}})));
     annotation (Placement(transformation(origin = {-760, 170}, extent = {{-130, -130}, {130, 130}})));
   SystemSupervisorModule system_supervisor(
     degraded_nav_start_s = system_degraded_nav_start_s,
-    degraded_nav_end_s = system_degraded_nav_end_s)
+    degraded_nav_end_s = system_degraded_nav_end_s,
+    battery_low_start_s = system_battery_low_start_s,
+    battery_low_end_s = system_battery_low_end_s,
+    offboard_loss_start_s = system_offboard_loss_start_s,
+    offboard_loss_end_s = system_offboard_loss_end_s,
+    mission_failure_start_s = system_mission_failure_start_s,
+    mission_failure_end_s = system_mission_failure_end_s,
+    geofence_breach_start_s = system_geofence_breach_start_s,
+    geofence_breach_end_s = system_geofence_breach_end_s)
     annotation (Placement(transformation(origin = {-455, 300}, extent = {{-70, -70}, {70, 70}})));
-  BatteryPowerModule battery
+  BatteryPowerModule battery(voltage_drop_per_second = system_battery_voltage_drop_per_second)
     annotation (Placement(transformation(origin = {-90, -315}, extent = {{-72, -72}, {72, 72}})));
   AWFFControllerModule controller(
     hover_motor_speed_cmd = hover_motor_speed_cmd,
@@ -1058,11 +1098,20 @@ extent={{-110,-110},{110,110}})));
   Real system_estimator_mode;
   Real system_flight_mode;
   Real system_active_setpoint_source;
+  Real system_failsafe_setpoint_source;
   Real system_safety_status;
+  Real system_failsafe_safety_status;
+  Real system_failsafe_status_code;
+  Real system_failsafe_source_code;
   Real system_event_code;
+  Real system_failsafe_event_code;
   Real system_battery_voltage;
   Real system_voltage_margin;
   Real system_esc_saturation_ratio;
+  Real system_battery_low_active;
+  Real system_offboard_loss_active;
+  Real system_mission_failure_active;
+  Real system_geofence_breach_active;
   Real system_supervisor_keepalive;
 
 equation
@@ -1073,11 +1122,20 @@ equation
   system_flight_mode = system_supervisor.flight_mode;
   system_active_setpoint_source = system_supervisor.active_setpoint_source;
   system_safety_status = system_supervisor.safety_status;
-  system_event_code = system_supervisor.event_code;
   system_battery_voltage = battery.bus_voltage;
   system_voltage_margin = battery.voltage_margin;
   system_esc_saturation_ratio = esc.saturation_ratio_est;
-  system_supervisor_keepalive = 0.001 * system_event_code + 0.001 * system_estimator_quality;
+  system_battery_low_active = system_supervisor.battery_low_active;
+  system_offboard_loss_active = system_supervisor.offboard_loss_active;
+  system_mission_failure_active = system_supervisor.mission_failure_active;
+  system_geofence_breach_active = system_supervisor.geofence_breach_active;
+  system_failsafe_safety_status = if time >= system_geofence_breach_start_s and time <= system_geofence_breach_end_s then 7 else if time >= system_mission_failure_start_s and time <= system_mission_failure_end_s then 6 else if time >= system_offboard_loss_start_s and time <= system_offboard_loss_end_s then 5 else if battery.voltage_margin < 0.1 or (time >= system_battery_low_start_s and time <= system_battery_low_end_s) then 4 else if time >= system_degraded_nav_start_s and time <= system_degraded_nav_end_s then 3 else 0;
+  system_failsafe_setpoint_source = if system_failsafe_safety_status >= 3 then system_failsafe_safety_status + 87 else if time < 3.0 then 30 else 40;
+  system_failsafe_event_code = if time >= system_geofence_breach_start_s and time <= system_geofence_breach_end_s then 64 else if time >= system_mission_failure_start_s and time <= system_mission_failure_end_s then 63 else if time >= system_offboard_loss_start_s and time <= system_offboard_loss_end_s then 62 else if battery.voltage_margin < 0.1 or (time >= system_battery_low_start_s and time <= system_battery_low_end_s) then 61 else if time >= system_degraded_nav_start_s and time <= system_degraded_nav_end_s then 60 else if time < 3.0 then 30 else 50;
+  system_failsafe_status_code = if time >= system_geofence_breach_start_s and time <= system_geofence_breach_end_s then 7 else if time >= system_mission_failure_start_s and time <= system_mission_failure_end_s then 6 else if time >= system_offboard_loss_start_s and time <= system_offboard_loss_end_s then 5 else if battery.voltage_margin < 0.1 or (time >= system_battery_low_start_s and time <= system_battery_low_end_s) then 4 else if time >= system_degraded_nav_start_s and time <= system_degraded_nav_end_s then 3 else 0;
+  system_failsafe_source_code = if time >= system_geofence_breach_start_s and time <= system_geofence_breach_end_s then 94 else if time >= system_mission_failure_start_s and time <= system_mission_failure_end_s then 93 else if time >= system_offboard_loss_start_s and time <= system_offboard_loss_end_s then 92 else if battery.voltage_margin < 0.1 or (time >= system_battery_low_start_s and time <= system_battery_low_end_s) then 91 else if time >= system_degraded_nav_start_s and time <= system_degraded_nav_end_s then 90 else if time < 3.0 then 30 else 40;
+  system_event_code = system_failsafe_event_code;
+  system_supervisor_keepalive = 0.001 * system_event_code + 0.001 * system_estimator_quality + 0.001 * system_battery_low_active + 0.001 * system_offboard_loss_active + 0.001 * system_mission_failure_active + 0.001 * system_geofence_breach_active;
   connect(airframe.position, perception.position_raw) 
     annotation (Line(points = {{792, 68}, {825, 68}, {825, -385}, {-950, -385}, {-950, -124}, {-909, -124}}, color = {110, 130, 145}, thickness = 0.08));
   connect(perception.gps_position, flight_controller.gps_position) 
@@ -1152,6 +1210,8 @@ thickness=0.08));
     annotation (Line(points = {{-11, -286}, {-120, -286}, {-120, -90}, {-108, -90}}, color = {110, 130, 145}, thickness = 0.08));
   connect(battery.power_ok, esc.power_ok)
     annotation (Line(points = {{-11, -315}, {-130, -315}, {-130, -126}, {-108, -126}}, color = {110, 130, 145}, thickness = 0.08));
+  connect(battery.voltage_margin, system_supervisor.voltage_margin)
+    annotation (Line(points = {{-11, -344}, {20, -344}, {20, 352}, {-532, 352}}, color = {110, 130, 145}, thickness = 0.08));
   connect(esc.motor_command[1], motor1.command)
     annotation (Line(points = {{68, -62}, {95, -62}, {95, 255}, {171, 255}}, color = {110, 130, 145}, thickness = 0.08));
   connect(esc.motor_command[2], motor2.command)
@@ -1226,5 +1286,36 @@ model Sunray150CompleteSystemGPSDropoutSysblock
     mission_computer(estimator_degraded_threshold = 0.6, degraded_nav_start_s = 0.35, degraded_nav_end_s = 0.85));
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 1, Tolerance = 0.0001, Interval = 0.01));
 end Sunray150CompleteSystemGPSDropoutSysblock;
+
+model Sunray150CompleteSystemBatteryLowSysblock
+  "Complete Sunray150 system smoke case with battery low triggering return mode"
+  extends Sunray150CompleteSystemGraphical_Sysblock(
+    system_battery_voltage_drop_per_second = 8.0);
+  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 1, Tolerance = 0.0001, Interval = 0.01));
+end Sunray150CompleteSystemBatteryLowSysblock;
+
+model Sunray150CompleteSystemOffboardLossSysblock
+  "Complete Sunray150 system smoke case with offboard heartbeat loss triggering return mode"
+  extends Sunray150CompleteSystemGraphical_Sysblock(
+    system_offboard_loss_start_s = 0.35,
+    system_offboard_loss_end_s = 0.85);
+  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 1, Tolerance = 0.0001, Interval = 0.01));
+end Sunray150CompleteSystemOffboardLossSysblock;
+
+model Sunray150CompleteSystemMissionFailureSysblock
+  "Complete Sunray150 system smoke case with infeasible mission triggering return mode"
+  extends Sunray150CompleteSystemGraphical_Sysblock(
+    system_mission_failure_start_s = 0.35,
+    system_mission_failure_end_s = 0.85);
+  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 1, Tolerance = 0.0001, Interval = 0.01));
+end Sunray150CompleteSystemMissionFailureSysblock;
+
+model Sunray150CompleteSystemGeofenceBreachSysblock
+  "Complete Sunray150 system smoke case with geofence breach triggering return mode"
+  extends Sunray150CompleteSystemGraphical_Sysblock(
+    system_geofence_breach_start_s = 0.35,
+    system_geofence_breach_end_s = 0.85);
+  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 1, Tolerance = 0.0001, Interval = 0.01));
+end Sunray150CompleteSystemGeofenceBreachSysblock;
 
 end QuadrotorExperiments;
