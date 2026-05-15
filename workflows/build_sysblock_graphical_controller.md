@@ -20,7 +20,15 @@ Expected behavior elements include limiters, filters, delays, switches, fault-es
 
 ## 2. Modeling Rule
 
-Use official Sysplorer/Sysblock APIs for topology. Prefer:
+First classify the target:
+
+```text
+Sysblock internal diagram -> official Sysplorer/Sysblock API route
+Modelica physical wrapper -> .mo text route with diagram annotations
+Hybrid integration -> build/check Sysblock first, then instantiate from Modelica wrapper
+```
+
+Use official Sysplorer/Sysblock APIs for Sysblock topology. Prefer:
 
 ```text
 call_code(mode="run_script")
@@ -31,20 +39,24 @@ ModelingPy.ConnectPort(model, src_port, dst_port)
 ModelingPy.SetModelParamValue(model, block, param, value)
 ```
 
-Do not rely on hand-written `.mo` text as the primary way to create Sysblock topology. Text edits are acceptable only for small generated-metadata repair followed by `check_model`.
+Do not rely on hand-written `.mo` text, `SetModelText`, Modelica `connect()` equations, or invented connection APIs as the primary way to create Sysblock topology. Text edits are acceptable only for small generated-metadata/display repair followed by `check_model` and graphical review.
+
+Do not call Sysplorer `ClearAll`, `ChangeDirectory`, or broad workspace-reset APIs. Use targeted model load/unload/reload and absolute project paths.
 
 ## 3. Build Sequence
 
 1. Resolve the controller interface and replacement location.
-2. Query concrete library blocks and ports when uncertain.
-3. Build the smallest runnable graphical chain.
-4. Add behavior blocks: saturation, filtering, delay/discrete state, switch/mode logic, products, allocation, and debug outputs.
-5. Wire all visible paths with `ConnectPort`.
-6. Run static graphical checks.
-7. Run Sysplorer MCP `load_file/check_model`.
-8. Run targeted simulation only after structure is correct.
-9. Compare behavior against the equation/reference model or scenario metrics.
-10. Save evidence under `results/model_checks/` or the relevant scenario result folder.
+2. Confirm the modeling path: Sysblock diagram, Modelica wrapper, or hybrid.
+3. Query concrete library blocks and ports when uncertain.
+4. Build the smallest runnable graphical chain.
+5. Add behavior blocks: saturation, filtering, delay/discrete state, switch/mode logic, products, allocation, and debug outputs.
+6. Wire all visible paths with `ConnectPort`.
+7. Run static graphical checks.
+8. Run Sysplorer MCP `load_file/check_model`.
+9. Verify diagram semantics after `check_model`; if the user would see empty blocks, missing wires, or unreadable layout, repair with official API/smart-layout before simulation.
+10. Run targeted simulation only after structure is correct.
+11. Compare behavior against the equation/reference model or scenario metrics.
+12. Save evidence under `results/model_checks/` or the relevant scenario result folder.
 
 ## 4. Required Gates
 
@@ -84,3 +96,14 @@ equation bridge = temporary full-plant integration artifact
 ```
 
 Both must be tracked until the platform limitation is resolved.
+
+## 7. Official Reference Skills
+
+When this workflow is ambiguous, consult the official Sysplorer skill references without copying them into project rules wholesale:
+
+```text
+Skills/Sysplorer/ty-sysplorer-modeling-rules
+Skills/Sysplorer/ty-sysblock-diagram-modeling
+Skills/Sysplorer/ty-sysblock-signal-modeling
+Skills/Sysplorer/modelica-library-workflow
+```

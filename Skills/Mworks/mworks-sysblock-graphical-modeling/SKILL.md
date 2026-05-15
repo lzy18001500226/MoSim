@@ -28,7 +28,14 @@ docs/index/variable_mapping.md
 docs/mworks/converted/
 ```
 
-The official opencode skills under `C:\Users\HP\.config\opencode\skills` are external references only. Do not copy OAuth/provider config or token files into this repo.
+The official opencode skills under `C:\Users\HP\.config\opencode\skills` and the checked project reference copy under `Skills/Sysplorer/` are external references only. Do not copy OAuth/provider config or token files into this repo. For Sysplorer modeling modality questions, use:
+
+```text
+Skills/Sysplorer/ty-sysplorer-modeling-rules
+Skills/Sysplorer/ty-sysblock-diagram-modeling
+Skills/Sysplorer/ty-sysblock-signal-modeling
+Skills/Sysplorer/modelica-library-workflow
+```
 
 ## Non-Negotiable Rules
 
@@ -39,22 +46,27 @@ The official opencode skills under `C:\Users\HP\.config\opencode\skills` are ext
    - `AddComponent`
    - `ConnectPort`
    - `SetModelParamValue`
-3. Do not treat hand-written `.mo` text alone as a verified graphical Sysblock diagram.
-4. Do not use `SetModelText` or text patches as the primary method for Sysblock topology unless you are only repairing generated annotation metadata and the behavior is rechecked afterwards.
-5. Use full library component paths and verify concrete block ports before wiring.
-6. Every formal controller simulation must have a graphical counterpart that expresses the same structure and time behavior.
-7. Equation-form Sysblock models are allowed only as full-plant integration bridges when graphical embedding is blocked by platform/compiler limits. They do not replace the graphical deliverable.
+3. Use `ConnectPort` for Sysblock signal wiring. Do not create Sysblock topology with Modelica `connect()` equations or invented `AddConnection` calls.
+4. Do not treat hand-written `.mo` text alone as a verified graphical Sysblock diagram.
+5. Do not use `SetModelText`, bulk text patches, or generated mega-text as the primary method for Sysblock topology unless you are only repairing generated annotation/display metadata and the behavior is rechecked afterwards.
+6. Use full library component paths and verify concrete block ports before wiring.
+7. Every formal controller simulation must have a graphical counterpart that expresses the same structure and time behavior.
+8. Equation-form Sysblock models are allowed only as full-plant integration bridges when graphical embedding is blocked by platform/compiler limits. They do not replace the graphical deliverable.
+9. Hybrid Modelica + Sysblock integration is layered: build/check the Sysblock controller first, then instantiate/connect it in the Modelica physical wrapper. Do not force physical components and SysplorerEmbeddedCoder blocks into one ordinary Sysblock layer.
+10. Never call Sysplorer `ClearAll`, `ChangeDirectory`, or broad workspace-reset APIs while authoring diagrams. Use targeted model load/unload/reload operations and explicit project paths.
 
 ## Required Gates
 
 Before claiming a graphical Sysblock controller is ready:
 
 1. **Context gate**: identify model name, file path, controller role, ports, sample-time/continuous assumption, and replacement location.
-2. **Topology gate**: verify visible blocks and wires exist in Sysplorer, not only equations.
-3. **Structure gate**: run `scripts/check_sysblock_graphics.py`.
-4. **MCP gate**: run `scripts/check_graphical_sysblock_mcp.py` or a targeted `check_model` through Sysplorer MCP.
-5. **Behavior gate**: compare against the equation/reference implementation or expected scenario signals.
-6. **Evidence gate**: save logs under `results/model_checks/` or the relevant scenario result folder.
+2. **Modeling-path gate**: classify the target as Sysblock internal diagram, Modelica physical/wrapper model, or hybrid integration before editing.
+3. **Topology gate**: verify visible blocks and wires exist in Sysplorer, not only equations.
+4. **Diagram gate**: after `check_model`, inspect whether the diagram has meaningful visible semantics; if layout is poor or missing, use API layout/smart-layout rather than text-only patches.
+5. **Structure gate**: run `scripts/check_sysblock_graphics.py`.
+6. **MCP gate**: run `scripts/check_graphical_sysblock_mcp.py` or a targeted `check_model` through Sysplorer MCP.
+7. **Behavior gate**: compare against the equation/reference implementation or expected scenario signals.
+8. **Evidence gate**: save logs under `results/model_checks/` or the relevant scenario result folder.
 
 ## Behavior Elements That Must Be Visible
 
@@ -95,6 +107,7 @@ Keep reusable Sysplorer windows open by default. Do not close them before Git un
 | red rectangle / diagonal line | resolve missing class/package path, then re-open and check model |
 | user sees no wires | verify connections are graphical `ConnectPort`/annotation-visible, not just equations |
 | child block is empty | build the child diagram, do not add another wrapper layer |
+| Modelica wrapper works but Sysblock diagram is empty | keep the wrapper as physical integration only; build the Sysblock internals with Sysplorer APIs |
 | API call succeeds but model fails | save JSONL log, inspect ports/classes, repair the smallest failing chain |
 | simulation works but diagram is incomplete | mark as equation-bridge evidence, not completed graphical Sysblock |
 

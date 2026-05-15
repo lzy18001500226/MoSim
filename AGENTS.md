@@ -171,8 +171,19 @@ Rules:
 13. Formal simulation runs should generate Sysplorer native result assets by default so the user can inspect curves and the actual quadrotor 3D animation. A window that only shows static propeller geometry or curves is not sufficient for manual visual audit. Use `--no-gui-result-viewer` only for headless tests, batch regressions, or known GUI/license instability. Use `--no-gui-open` when batch evidence should still write `native_result/Result.msr` but should not automatically open plot/animation windows.
 14. `native_result/` and `*.msr` files are local GUI review assets and are ignored by Git. Do not commit them.
 15. When Sysplorer/Syslab MCP tools are healthy, interactive model loading, checking, simulation, plotting, animation, and GUI review must go through MCP directly. Project scripts remain for batch runs, result export, metrics, summaries, and regression automation.
+16. Never call Sysplorer `ClearAll`, `ChangeDirectory`, or equivalent broad workspace-reset APIs from MCP automation. Use targeted `model_manager` load/unload/reload operations and explicit absolute project paths instead.
 
-### 3.5 Simulation Evidence Rule
+### 3.5 Sysplorer / Sysblock Modeling Modality Rule
+
+Use the official Sysplorer skill rules as the hard boundary between modeling modes:
+
+1. **Modelica physical / plant / wrapper models** are edited as `.mo` text in project-owned files. These models must keep meaningful `Placement` and `annotation(Line(...))` diagram semantics when they are used for graphical review.
+2. **Sysblock internal block diagrams** are built and repaired with official Sysplorer/Sysblock APIs, preferably `call_code(mode="run_script")` / `ModelingPy`, using `NewModel(..., "Sysblock")`, `AddComponent`, `ConnectPort`, and `SetModelParamValue`.
+3. Do not hand-write, bulk patch, or `SetModelText` a Sysblock block diagram as the primary topology authoring method. Text edits are allowed only for narrow generated metadata or display annotation repair, followed by `check_model` and graphical review.
+4. **Hybrid Modelica + Sysblock** means layered integration: finish/check the Sysblock controller first, then instantiate or connect it from a Modelica physical top-level wrapper. Do not force physical components and SysplorerEmbeddedCoder blocks into the same layer with ordinary `AddComponent` and do not interpret that failure as proof that hybrid modeling is unsupported.
+5. If a Sysblock graphical controller cannot be embedded into the physical plant because of current compiler/platform limitations, keep the graphical controller as the design/time-behavior artifact and use an equation bridge only for full-plant simulation evidence.
+
+### 3.6 Simulation Evidence Rule
 
 Separate offline generated evidence from real MWORKS/MCP simulation evidence.
 
@@ -191,7 +202,7 @@ Rules:
 8. Equation-form Sysblock models may be used as temporary full-plant integration bridges when Sysplorer/Sysblock embedding has compiler limitations, but they do not replace the graphical Sysblock deliverable. Mark the graphical counterpart as incomplete until both `structure_ok=true` and `behavior_equivalence_ok=true`.
 9. Do not present a controller scenario as complete if its numerical simulation has no behavior-equivalent graphical Sysblock counterpart. In that case, label the result as equation-bridge evidence and keep the graphical model task open.
 
-### 3.6 Simulation Cleanup Rule
+### 3.7 Simulation Cleanup Rule
 
 For MWORKS simulations:
 

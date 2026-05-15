@@ -18,6 +18,7 @@
 | Test and review quality gates | `Skills/Mworks/mworks-test-quality/SKILL.md` |
 | Prepare report and replay assets | `Skills/Mworks/mworks-report-visualization/SKILL.md` |
 | Build graphical Sysblock controller | `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`, `workflows/build_sysblock_graphical_controller.md` |
+| Consult official Sysplorer modeling rules | `Skills/Sysplorer/ty-sysplorer-modeling-rules`, `Skills/Sysplorer/ty-sysblock-diagram-modeling`, `Skills/Sysplorer/ty-sysblock-signal-modeling`, `Skills/Sysplorer/modelica-library-workflow` |
 | Resolve model context workflow | `workflows/resolve_model_context.md` |
 | Produce simulation evidence workflow | `workflows/produce_simulation_evidence.md` |
 | Run one simulation | `workflows/run_simulation.md` |
@@ -157,6 +158,8 @@ For graphical system model review, use `workflows/run_simulation.md` section
 “Direct MCP Review For Graphical System Models”. It records the required load
 order, the `1401` duplicate-definition trap, and the known embedded graphical
 Sysblock multi-input-port limitation.
+
+Official Sysplorer skills in `Skills/Sysplorer/` are reference material. Project execution should still go through `Skills/Mworks/` and `workflows/`; consult the official skills when a Sysblock/Modelica/hybrid modeling route is unclear.
 
 ---
 

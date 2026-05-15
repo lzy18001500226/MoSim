@@ -60,6 +60,34 @@ get_api_document
   → resources_retrieval if still unclear
 ```
 
+### Sysblock graphical authoring
+
+```text
+session_manager
+  → model_manager(load/open target)
+  → get_api_document / get_lib_model_document when ports or APIs are unclear
+  → call_code(mode="run_script") with ModelingPy
+  → check_model
+  → smart_layout only after structure is stable and when applicable
+```
+
+Preferred authoring calls:
+
+```text
+NewModel(..., "Sysblock")
+OpenModel
+AddComponent
+ConnectPort
+SetModelParamValue
+```
+
+Rules:
+
+1. Use `ConnectPort` for Sysblock wiring.
+2. Do not use `SetModelText`, Modelica `connect()` equations, or bulk `.mo` text patches as the primary Sysblock topology method.
+3. Do not call `ClearAll`, `ChangeDirectory`, or broad workspace-reset APIs.
+4. For hybrid models, build/check the Sysblock controller first, then instantiate/connect it from the Modelica physical wrapper.
+
 ---
 
 ## 3. Syslab MCP Tools
@@ -274,14 +302,13 @@ SetModelText
 ExportDiagram
 ```
 
-The extracted Sysplorer API documents do not currently show a complete
-scripted interface for creating a new Sysblock model with all generated
-binding metadata. Therefore:
+Current project rule:
 
-1. Prefer MWORKS.Sysblock GUI/API generated models for new block diagrams.
-2. Use hand-written Sysblock `.mo` only as a draft until `check_model` passes.
-3. Store successful check/simulation evidence under `results/{group}/{scene}/{experiment}/logs/`.
-4. Store failed check diagnostics under `results/{group}/{scene}/{experiment}/logs/` or a preserved MCP log.
+1. Prefer official MWORKS.Sysblock GUI/API generated models for new block diagrams.
+2. Use `call_code(mode="run_script")` / ModelingPy with `NewModel(..., "Sysblock")`, `AddComponent`, `ConnectPort`, and `SetModelParamValue` for scripted topology.
+3. Treat hand-written Sysblock `.mo` only as a diagnostic sketch or metadata/display repair input. It is not accepted as graphical Sysblock evidence until Sysplorer opens it with visible blocks/wires and `check_model` passes.
+4. Store successful check/simulation evidence under `results/{group}/{scene}/{experiment}/logs/`.
+5. Store failed check diagnostics under `results/{group}/{scene}/{experiment}/logs/` or a preserved MCP log.
 
 ---
 

@@ -40,6 +40,8 @@ Do not hard-code only one user home.
 7. Do not close reusable Sysplorer / Syslab / MWORKS windows before Git by default. Closing windows can force license reactivation and slow the next run.
 8. Close or clean up only when the user asks, the GUI is frozen, a login/activation prompt blocks progress, or stale duplicate sessions are clearly causing failures.
 9. If a GUI freezes, requests login unexpectedly, or an MCP call stalls past the planned timeout, stop that MCP sequence, clean up the clearly identifiable process/window, and continue with file-level work or report the blocker.
+10. Never call Sysplorer `ClearAll`, `ChangeDirectory`, or equivalent broad workspace-reset APIs. If the current directory must be inspected, use read-only inspection and pass absolute project paths to model operations.
+11. For Sysblock diagram authoring, use official API calls (`call_code`, `ModelingPy`, `AddComponent`, `ConnectPort`, `SetModelParamValue`) rather than text replacement of block topology.
 
 ## Tool Routing
 
@@ -62,3 +64,4 @@ Do not hard-code only one user home.
 | Sysplorer not ready | call `session_manager` health/probe/ensure |
 | GUI interruption | stop the current MCP sequence; close only clearly identifiable stale/blocking windows |
 | model auto-upgrade backup created | inspect the diff; do not commit auto-generated rewrites or backup directories unless intentionally accepted |
+| workspace path looks wrong | do not call `ChangeDirectory`; reload target models with explicit absolute paths under the project |

@@ -12,7 +12,16 @@ Resolve what model, component, port, parameter, or replacement point the user me
 1. Read project rules in `AGENTS.md`.
 2. Check `docs/index/mathworks_to_mworks_migration.md` if the request sounds like Simulink.
 3. Use `docs/mworks/converted/matlab_compat/` only as a migration reference, not as API truth.
-4. Prefer Sysplorer MCP over guessing:
+4. If the request touches Sysplorer modeling modality, use the official reference skills under `Skills/Sysplorer/` only as rule references:
+
+```text
+ty-sysplorer-modeling-rules
+ty-sysblock-diagram-modeling
+ty-sysblock-signal-modeling
+modelica-library-workflow
+```
+
+5. Prefer Sysplorer MCP over guessing:
 
 ```text
 session_manager
@@ -22,6 +31,15 @@ session_manager
 ```
 
 ## Context Resolution
+
+Before choosing an editing method, classify the target:
+
+| Target type | Editing route |
+|---|---|
+| Modelica physical plant, wrapper, package, experiment | `.mo` text edit with meaningful `Placement` and `annotation(Line(...))` when graphical review matters |
+| Sysblock internal controller diagram | Sysplorer/Sysblock API route with `call_code(mode="run_script")`, `ModelingPy`, `AddComponent`, `ConnectPort`, `SetModelParamValue` |
+| Hybrid Modelica + Sysblock | build/check Sysblock first, then instantiate/connect it from the Modelica physical top layer |
+| uncertain | inspect model text/components and consult `Skills/Sysplorer/ty-sysplorer-modeling-rules/references/modeling_path_router.md` if present |
 
 | User says | MWORKS action |
 |---|---|
@@ -55,6 +73,7 @@ model file diff with documented replacement location
 5. If a Modelica/Sysplorer API name is unclear, call `get_api_document`.
 6. If a library component meaning is unclear, call `get_lib_model_document`.
 7. For Sysblock topology, prefer official API/`ConnectPort` workflow in `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`; do not rely on hand-written `.mo` text as the verification source.
+8. Do not call `ClearAll`, `ChangeDirectory`, or broad workspace reset APIs for context resolution.
 
 ## Failure Handling
 
