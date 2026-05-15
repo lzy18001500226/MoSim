@@ -1,10 +1,10 @@
 model PlanningNavigationDisplay
   "Lightweight native 3D navigation display: pillar-cluster obstacle map and short-horizon local plan"
-  parameter Integer n_segments(min = 1, max = 16) = 1;
-  parameter Real p_x[17] = fill(0.0, 17);
-  parameter Real p_y[17] = fill(0.0, 17);
-  parameter Real p_z[17] = fill(1.0, 17);
-  parameter Real segment_duration[16] = fill(1.0, 16);
+  parameter Integer n_segments(min = 1, max = 20) = 1;
+  parameter Real p_x[21] = fill(0.0, 21);
+  parameter Real p_y[21] = fill(0.0, 21);
+  parameter Real p_z[21] = fill(1.0, 21);
+  parameter Real segment_duration[20] = fill(1.0, 20);
 
   parameter Real x_min = -1.0;
   parameter Real x_max = 7.0;
@@ -61,8 +61,8 @@ model PlanningNavigationDisplay
     annotation(Placement(transformation(origin = {-120, -30}, extent = {{-20, -20}, {20, 20}})));
 
 protected
-  Real segment_start[16];
-  Real segment_end[16];
+  Real segment_start[20];
+  Real segment_end[20];
   Real local_plan_end[3];
   Real local_plan_point[6, 3];
   Real local_plan_sample_time[6];
@@ -113,10 +113,10 @@ protected
   end smoothstep;
 
   function localInterp
-    input Real value[17];
+    input Real value[21];
     input Real query_time;
     input Integer n_segments;
-    input Real segment_duration[16];
+    input Real segment_duration[20];
     output Real y;
   protected
     Real elapsed;
@@ -125,7 +125,7 @@ protected
     elapsed := 0.0;
     y := value[1];
     found := false;
-    for i in 1:16 loop
+    for i in 1:20 loop
       if not found and i <= n_segments then
         if query_time <= elapsed + segment_duration[i] then
           y := value[i] + (value[i + 1] - value[i]) * smoothstep(query_time - elapsed, segment_duration[i]);
@@ -311,7 +311,7 @@ public
 equation
   segment_start[1] = 0.0;
   segment_end[1] = segment_duration[1];
-  for i in 2:16 loop
+  for i in 2:20 loop
     segment_start[i] = segment_end[i - 1];
     segment_end[i] = segment_start[i] + segment_duration[i];
   end for;

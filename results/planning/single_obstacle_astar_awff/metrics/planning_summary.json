@@ -1,29 +1,29 @@
 {
-  "sample_count": 2640,
-  "duration_s": 132.17254290258683,
-  "max_velocity_m_s": 0.3932157390807799,
-  "max_acceleration_m_s2": 0.37405625517804647,
-  "max_jerk_m_s3": 1.1197995268916563,
-  "max_tilt_rad": 0.038124640812684914,
-  "min_obstacle_distance_m": 0.5290437962511787,
+  "sample_count": 2144,
+  "duration_s": 107.45778242290717,
+  "max_velocity_m_s": 0.614397379691968,
+  "max_acceleration_m_s2": 0.968207729284666,
+  "max_jerk_m_s3": 5.104561896787242,
+  "max_tilt_rad": 0.09841078396901895,
+  "min_obstacle_distance_m": 0.6420521850572316,
   "collision_count": 0,
-  "inflated_collision_count": 35,
-  "dynamic_violation_count": 35,
+  "inflated_collision_count": 0,
+  "dynamic_violation_count": 0,
   "predicted_saturation_ratio": 0.0,
-  "trackability_score": 0.9904744528414449,
-  "accepted": false,
-  "time_scale": 3.814697265625,
-  "rescale_iteration": 6,
+  "trackability_score": 1.0,
+  "accepted": true,
+  "time_scale": 2.44140625,
+  "rescale_iteration": 4,
   "planner_id": "astar_min_snap",
   "map_id": "map_open_blocks",
   "planning_success": true,
-  "astar_iterations": 144236,
+  "astar_iterations": 236426,
   "truth_obstacle_count": 36,
-  "raw_path_points": 4243,
-  "simplified_path_points_before_fit": 13,
-  "simplified_path_points": 13,
-  "model_segment_limit": 16,
-  "path_length_m": 27.718591269324577,
+  "raw_path_points": 8308,
+  "simplified_path_points_before_fit": 17,
+  "simplified_path_points": 17,
+  "model_segment_limit": 20,
+  "path_length_m": 35.21176614433822,
   "safety_margin_m": 0.55,
   "truth_obstacles": [
     {
@@ -476,48 +476,68 @@
       1.0
     ],
     [
-      -0.8399999999999999,
-      -0.13999999999999968,
+      0.4399999999999995,
+      -4.62,
       1.0
     ],
     [
-      -0.5199999999999996,
-      0.5,
+      -0.1999999999999993,
+      -5.9,
       1.0
     ],
     [
-      0.9199999999999999,
-      4.18,
+      0.120000000000001,
+      -6.54,
       1.0
     ],
     [
-      1.4000000000000004,
-      4.66,
+      0.5999999999999996,
+      -7.02,
       1.0
     ],
     [
-      4.6,
-      4.82,
+      1.2400000000000002,
+      -7.02,
       1.0
     ],
     [
-      5.24,
-      5.140000000000001,
+      3.6400000000000006,
+      -4.62,
       1.0
     ],
     [
-      9.080000000000002,
-      5.140000000000001,
+      6.52,
+      -2.7,
       1.0
     ],
     [
       9.719999999999999,
-      4.82,
+      -2.38,
       1.0
     ],
     [
-      12.280000000000001,
-      5.300000000000001,
+      10.36,
+      -2.0599999999999996,
+      1.0
+    ],
+    [
+      10.68,
+      -1.42,
+      1.0
+    ],
+    [
+      10.36,
+      -0.13999999999999968,
+      1.0
+    ],
+    [
+      10.52,
+      1.1400000000000006,
+      1.0
+    ],
+    [
+      12.760000000000002,
+      4.34,
       1.0
     ],
     [
@@ -527,24 +547,28 @@
     ]
   ],
   "segment_durations": [
-    23.56103075957448,
-    23.08601081258813,
-    9.818678036677362,
-    4.264961199760036,
-    23.55401808782285,
-    4.04609745704583,
-    19.097313303471353,
-    4.264961199760039,
-    22.888183593750007,
-    4.2649611997600205,
-    15.524693103885385,
-    10.844769874138025
+    12.063247748902134,
+    11.820037536045122,
+    11.241078548067712,
+    4.367320268554276,
+    2.183660134277138,
+    2.0716018980074593,
+    1.9531250000000018,
+    10.358009490037317,
+    10.563138502335903,
+    9.814331661250867,
+    2.1836601342771402,
+    2.183660134277138,
+    4.026470337517248,
+    3.936649291161402,
+    11.920464468489945,
+    6.7713272697063775
   ],
   "local_planning_enabled": true,
   "local_window_radius_m": 2.5,
   "local_commit_distance_m": 1.2,
-  "local_replan_count": 54,
-  "known_obstacle_count_final": 18,
+  "local_replan_count": 96,
+  "known_obstacle_count_final": 29,
   "config_file": "planners/astar_min_snap/map_open_blocks.yaml",
   "reference_csv": "results/planning/single_obstacle_astar_awff/raw/reference.csv"
 }

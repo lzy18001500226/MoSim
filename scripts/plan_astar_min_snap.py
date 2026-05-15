@@ -510,17 +510,21 @@ def evaluate_reference(grid: OccupancyGrid, rows: list[dict[str, float]], limits
 def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], list[dict[str, float]], dict[str, Any]]:
     config = expand_random_obstacles(config)
     grid = OccupancyGrid(require_mapping(config, "map"))
+    planning_config = clone_jsonable(config)
+    planning_map = require_mapping(planning_config, "map")
+    if "planning_safety_margin" in planning_map:
+        planning_map["safety_margin"] = float(planning_map["planning_safety_margin"])
     local_config = require_mapping(config, "local_planning")
     if local_config.get("enabled", False):
-        raw_path, simplified, iterations, local_report, planning_grid = plan_receding_horizon(config, grid, local_config)
+        raw_path, simplified, iterations, local_report, planning_grid = plan_receding_horizon(planning_config, grid, local_config)
         max_segment_length_m = float(local_config.get("max_simplified_segment_length_m", 0.0))
         if max_segment_length_m <= 0.0:
             max_segment_length_m = None
     else:
-        raw_path, iterations = astar(grid, require_mapping(config, "astar"))
-        simplified = line_of_sight_simplify(grid, raw_path)
+        planning_grid = OccupancyGrid(planning_map)
+        raw_path, iterations = astar(planning_grid, require_mapping(config, "astar"))
+        simplified = line_of_sight_simplify(planning_grid, raw_path)
         local_report = {"local_planning_enabled": False}
-        planning_grid = grid
         max_segment_length_m = None
     max_model_segments = int(config.get("model_segment_limit", 5))
     simplified_before_fit = simplified
