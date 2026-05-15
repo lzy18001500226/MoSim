@@ -1,10 +1,10 @@
 model PlanningNavigationDisplay
   "Lightweight native 3D navigation display: pillar-cluster obstacle map and short-horizon local plan"
-  parameter Integer n_segments(min = 1, max = 20) = 1;
-  parameter Real p_x[21] = fill(0.0, 21);
-  parameter Real p_y[21] = fill(0.0, 21);
-  parameter Real p_z[21] = fill(1.0, 21);
-  parameter Real segment_duration[20] = fill(1.0, 20);
+  parameter Integer n_segments(min = 1, max = 60) = 1;
+  parameter Real p_x[61] = fill(0.0, 61);
+  parameter Real p_y[61] = fill(0.0, 61);
+  parameter Real p_z[61] = fill(1.0, 61);
+  parameter Real segment_duration[60] = fill(1.0, 60);
 
   parameter Real x_min = -1.0;
   parameter Real x_max = 7.0;
@@ -14,6 +14,8 @@ model PlanningNavigationDisplay
   parameter Real boundary_line_diameter_m = 0.018;
   parameter Real boundary_wall_height_m = 1.2;
   parameter Real boundary_wall_thickness_m = 0.08;
+  parameter Boolean render_boundary_walls = false
+    "Set false for large maps; disabled walls keep the map coordinates but avoid large zero-height wall arrays.";
   parameter Real boundary_wall_x_axis_phase_m = -0.25
     "Shift y-edge walls along x only; do not use for inward/outward correction.";
   parameter Real boundary_wall_y_axis_phase_m = 0.0
@@ -54,6 +56,10 @@ model PlanningNavigationDisplay
   parameter Real terrain_fill_scale = 1.0;
   parameter Real terrain_x_offset_m = -0.25;
   parameter Real terrain_y_offset_m = 0.0;
+  parameter Integer terrain_render_stride(min = 1) = 1
+    "Render every Nth terrain cell in each horizontal direction. 1 means full 3D grid; 2 keeps the same map coordinates with fewer GUI objects.";
+  parameter Integer local_terrain_half_cells(min = 1) = 6
+    "Kept for compatibility with older rolling-terrain configs; full-map terrain rendering now uses terrain_x_count * terrain_y_count cells.";
   parameter Boolean show_continuous_ground = true
     "Render a continuous base plate below terrain texture cells to avoid visual cracks.";
   parameter Real continuous_ground_thickness_m = 0.03;
@@ -64,8 +70,8 @@ model PlanningNavigationDisplay
     annotation(Placement(transformation(origin = {-120, -30}, extent = {{-20, -20}, {20, 20}})));
 
 protected
-  Real segment_start[20];
-  Real segment_end[20];
+  Real segment_start[60];
+  Real segment_end[60];
   Real local_plan_end[3];
   Real local_plan_point[12, 3];
   Real local_plan_sample_time[12];
@@ -85,11 +91,14 @@ protected
   Real local_grid_center_x;
   Real local_grid_center_y;
   Real local_window_half_width_m;
-  parameter Integer ground_pillar_count = terrain_x_count * terrain_y_count;
+  parameter Integer local_terrain_width_cells = 2 * local_terrain_half_cells + 1;
+  parameter Integer terrain_render_x_count = integer(ceil(terrain_x_count / terrain_render_stride));
+  parameter Integer terrain_render_y_count = integer(ceil(terrain_y_count / terrain_render_stride));
+  parameter Integer ground_pillar_count = terrain_render_x_count * terrain_render_y_count;
   parameter Integer ground_x_index[ground_pillar_count] = {
-    mod(i - 1, terrain_x_count) for i in 1:ground_pillar_count};
+    terrain_render_stride * mod(i - 1, terrain_render_x_count) for i in 1:ground_pillar_count};
   parameter Integer ground_y_index[ground_pillar_count] = {
-    div(i - 1, terrain_x_count) for i in 1:ground_pillar_count};
+    terrain_render_stride * div(i - 1, terrain_render_x_count) for i in 1:ground_pillar_count};
   Real ground_position[ground_pillar_count, 3];
   Real ground_height[ground_pillar_count];
   Real ground_length[ground_pillar_count];
@@ -97,12 +106,14 @@ protected
   Real ground_distance_to_uav[ground_pillar_count];
   Real ground_bearing_dot[ground_pillar_count];
   Boolean ground_sensed[ground_pillar_count];
-  parameter Integer boundary_wall_x_segment_count = terrain_y_count;
-  parameter Integer boundary_wall_y_segment_count = terrain_x_count;
+  parameter Integer boundary_wall_x_segment_count = if render_boundary_walls then terrain_y_count else 1;
+  parameter Integer boundary_wall_y_segment_count = if render_boundary_walls then terrain_x_count else 1;
   Real boundary_wall_x_position[2 * boundary_wall_x_segment_count, 3];
   Real boundary_wall_x_width[2 * boundary_wall_x_segment_count];
   Real boundary_wall_y_position[2 * boundary_wall_y_segment_count, 3];
   Real boundary_wall_y_length[2 * boundary_wall_y_segment_count];
+  Real local_terrain_center_x;
+  Real local_terrain_center_y;
 
   function smoothstep
     input Real tau;
@@ -116,10 +127,10 @@ protected
   end smoothstep;
 
   function localInterp
-    input Real value[21];
+    input Real value[61];
     input Real query_time;
     input Integer n_segments;
-    input Real segment_duration[20];
+    input Real segment_duration[60];
     output Real y;
   protected
     Real elapsed;
@@ -128,7 +139,7 @@ protected
     elapsed := 0.0;
     y := value[1];
     found := false;
-    for i in 1:20 loop
+    for i in 1:60 loop
       if not found and i <= n_segments then
         if query_time <= elapsed + segment_duration[i] then
           y := value[i] + (value[i + 1] - value[i]) * smoothstep(query_time - elapsed, segment_duration[i]);
@@ -218,7 +229,7 @@ public
     each shapeType = "box",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
     r = {pillar_position[i, :] for i in 1:max_pillars},
-    each r_shape = {0, 0, 0},
+    r_shape = {if pillar_active[i] then {-0.5 * pillar_width[i], -0.5 * pillar_width[i], -0.5 * pillar_height[i]} else {0.0, 0.0, 0.0} for i in 1:max_pillars},
     each lengthDirection = {1, 0, 0},
     each widthDirection = {0, 1, 0},
     length = {if pillar_active[i] then pillar_width[i] else 0.0 for i in 1:max_pillars},
@@ -229,8 +240,8 @@ public
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape continuous_ground(
     shapeType = "box",
     R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
-    r = {x_min, y_min, map_z - continuous_ground_thickness_m},
-    r_shape = {0, 0, 0},
+    r = {0.5 * (x_min + x_max), 0.5 * (y_min + y_max), map_z - 0.5 * continuous_ground_thickness_m},
+    r_shape = {-0.5 * (x_max - x_min), -0.5 * (y_max - y_min), -0.5 * continuous_ground_thickness_m},
     lengthDirection = {1, 0, 0},
     widthDirection = {0, 1, 0},
     length = if show_continuous_ground then x_max - x_min else 0.0,
@@ -242,13 +253,13 @@ public
     each shapeType = "box",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
     r = {ground_position[i, :] for i in 1:ground_pillar_count},
-    each r_shape = {0, 0, 0},
+    r_shape = {{-0.5 * ground_length[i] * terrain_fill_scale, -0.5 * ground_width[i] * terrain_fill_scale, -0.5 * ground_height[i]} for i in 1:ground_pillar_count},
     each lengthDirection = {1, 0, 0},
     each widthDirection = {0, 1, 0},
     length = {ground_length[i] * terrain_fill_scale for i in 1:ground_pillar_count},
     width = {ground_width[i] * terrain_fill_scale for i in 1:ground_pillar_count},
     height = {ground_height[i] for i in 1:ground_pillar_count},
-    color = {if ground_sensed[i] then {210, 232, 255} else {118, 118, 118} for i in 1:ground_pillar_count},
+    color = {if ground_sensed[i] then {210, 232, 255} else {215, 215, 215} for i in 1:ground_pillar_count},
     each specularCoefficient = 0.15);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape local_plan_curve[11](
     each shapeType = "cylinder",
@@ -326,7 +337,7 @@ public
 equation
   segment_start[1] = 0.0;
   segment_end[1] = segment_duration[1];
-  for i in 2:20 loop
+  for i in 2:60 loop
     segment_start[i] = segment_end[i - 1];
     segment_end[i] = segment_start[i] + segment_duration[i];
   end for;
@@ -372,6 +383,12 @@ equation
     floor((sensed_position[2] - y_min - terrain_y_offset_m) / local_costmap_cell_size_m) * local_costmap_cell_size_m +
     0.5 * local_costmap_cell_size_m;
   local_window_half_width_m = (local_costmap_half_cells + 0.5) * local_costmap_cell_size_m;
+  local_terrain_center_x = x_min + terrain_x_offset_m +
+    floor((sensed_position[1] - x_min - terrain_x_offset_m) / terrain_cell_size_m) * terrain_cell_size_m +
+    0.5 * terrain_cell_size_m;
+  local_terrain_center_y = y_min + terrain_y_offset_m +
+    floor((sensed_position[2] - y_min - terrain_y_offset_m) / terrain_cell_size_m) * terrain_cell_size_m +
+    0.5 * terrain_cell_size_m;
 
   for i in 1:max_pillars loop
     pillar_position[i, 1] = pillar_center[i, 1];
@@ -394,9 +411,9 @@ equation
   for i in 1:ground_pillar_count loop
     ground_height[i] = terrain_min_height_m + terrain_height_span_m *
       (0.5 + 0.5 * sin(0.91 * ground_x_index[i] + 1.37 * ground_y_index[i]));
-    ground_length[i] = max(0.0, min(terrain_cell_size_m,
+    ground_length[i] = max(0.0, min(terrain_cell_size_m * terrain_render_stride,
       x_max - (x_min + terrain_x_offset_m + ground_x_index[i] * terrain_cell_size_m)));
-    ground_width[i] = max(0.0, min(terrain_cell_size_m,
+    ground_width[i] = max(0.0, min(terrain_cell_size_m * terrain_render_stride,
       y_max - (y_min + terrain_y_offset_m + ground_y_index[i] * terrain_cell_size_m)));
     ground_position[i, 1] = x_min + terrain_x_offset_m + ground_x_index[i] * terrain_cell_size_m + 0.5 * ground_length[i];
     ground_position[i, 2] = y_min + terrain_y_offset_m + ground_y_index[i] * terrain_cell_size_m + 0.5 * ground_width[i];

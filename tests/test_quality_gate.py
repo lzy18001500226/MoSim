@@ -124,12 +124,23 @@ def test_system_mode_gate_requires_degraded_nav_event() -> None:
                     "flight_mode",
                     "active_setpoint_source",
                     "safety_status",
+                    "event_code",
                 ]
             )
             for index in range(101):
                 t = index / 100.0
                 dropout = 0.35 <= t <= 0.85
-                writer.writerow([t, 0 if dropout else 1, 1 if dropout else 0, 6 if dropout else 3, 90 if dropout else 30, 3 if dropout else 0])
+                writer.writerow(
+                    [
+                        t,
+                        0 if dropout else 1,
+                        1 if dropout else 0,
+                        6 if dropout else 3,
+                        90 if dropout else 30,
+                        3 if dropout else 0,
+                        60 if dropout else 0,
+                    ]
+                )
         metrics_path.write_text(
             json.dumps({"valid": True, "nan_count": 0, "row_count": 101, "duration_s": 1.0}, ensure_ascii=False)
             + "\n",
