@@ -841,6 +841,65 @@ model Sunray150CompleteSystemGraphical_Sysblock
         Text(origin = {0, -38}, extent = {{-95, 25}, {95, -25}}, textString = "Supervisor", textColor = {120, 0, 0})}));
   end SystemSupervisorModule;
 
+  block BatteryPowerModule
+    "Battery power source abstraction for system-level graphical review"
+    parameter Real nominal_voltage = 16.8;
+    parameter Real low_voltage = 14.0;
+    parameter Real voltage_drop_per_second = 0.002;
+    Modelica.Blocks.Interfaces.RealOutput bus_voltage
+      annotation (Placement(transformation(origin = {110, 40}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput power_ok
+      annotation (Placement(transformation(origin = {110, 0}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput voltage_margin
+      annotation (Placement(transformation(origin = {110, -40}, extent = {{-5, -5}, {5, 5}})));
+  equation
+    bus_voltage = max(low_voltage, nominal_voltage - voltage_drop_per_second * time);
+    voltage_margin = max(0, (bus_voltage - low_voltage) / (nominal_voltage - low_voltage));
+    power_ok = if voltage_margin > 0.05 then 1 else 0;
+    annotation (
+      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
+        Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {80, 80, 80}, fillColor = {250, 250, 250}, fillPattern = FillPattern.Solid),
+        Bitmap(origin = {0, 8}, extent = {{-96, -62}, {96, 62}}, fileName = "modelica://QuadrotorModel/Resources/Images/Battery.png"),
+        Text(origin = {0, -78}, extent = {{-90, 14}, {90, -14}}, textString = "Battery", textColor = {80, 80, 80})}));
+  end BatteryPowerModule;
+
+  block ESCDriveModule
+    "Electronic speed controller abstraction between control allocation and motors"
+    parameter Real nominal_voltage = 16.8;
+    parameter Real motor_limit_abs = 80.0;
+    Modelica.Blocks.Interfaces.RealInput motor_command_raw[4]
+      annotation (Placement(transformation(origin = {-110, 45}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealInput bus_voltage
+      annotation (Placement(transformation(origin = {-110, 0}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealInput power_ok
+      annotation (Placement(transformation(origin = {-110, -45}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput motor_command[4]
+      annotation (Placement(transformation(origin = {110, 35}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput esc_health[4]
+      annotation (Placement(transformation(origin = {110, -20}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput saturation_ratio_est
+      annotation (Placement(transformation(origin = {110, -65}, extent = {{-5, -5}, {5, 5}})));
+    Real voltage_scale;
+    Real saturated_count;
+  equation
+    voltage_scale = max(0.0, min(1.0, bus_voltage / nominal_voltage));
+    saturated_count =
+      (if abs(motor_command_raw[1] * voltage_scale) >= motor_limit_abs then 1 else 0) +
+      (if abs(motor_command_raw[2] * voltage_scale) >= motor_limit_abs then 1 else 0) +
+      (if abs(motor_command_raw[3] * voltage_scale) >= motor_limit_abs then 1 else 0) +
+      (if abs(motor_command_raw[4] * voltage_scale) >= motor_limit_abs then 1 else 0);
+    for i in 1:4 loop
+      motor_command[i] = if power_ok > 0.5 then max(-motor_limit_abs, min(motor_limit_abs, motor_command_raw[i] * voltage_scale)) else 0;
+      esc_health[i] = power_ok * voltage_scale;
+    end for;
+    saturation_ratio_est = saturated_count / 4;
+    annotation (
+      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
+        Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {70, 70, 120}, fillColor = {246, 246, 255}, fillPattern = FillPattern.Solid),
+        Bitmap(origin = {0, 8}, extent = {{-96, -62}, {96, 62}}, fileName = "modelica://QuadrotorModel/Resources/Images/ESC.png"),
+        Text(origin = {0, -78}, extent = {{-90, 14}, {90, -14}}, textString = "ESC", textColor = {70, 70, 120})}));
+  end ESCDriveModule;
+
   block AWFFControllerModule
     "Encapsulated AWFF graphical controller, error generation, hover trim, and motor command scaling"
     parameter Real hover_motor_speed_cmd = 53.562090367172424;
@@ -973,12 +1032,16 @@ extent={{-125,-125},{125,125}})));
     degraded_nav_start_s = system_degraded_nav_start_s,
     degraded_nav_end_s = system_degraded_nav_end_s)
     annotation (Placement(transformation(origin = {-455, 300}, extent = {{-70, -70}, {70, 70}})));
+  BatteryPowerModule battery
+    annotation (Placement(transformation(origin = {-90, -315}, extent = {{-72, -72}, {72, 72}})));
   AWFFControllerModule controller(
     hover_motor_speed_cmd = hover_motor_speed_cmd,
     legacy_hover_motor_speed_cmd = legacy_hover_motor_speed_cmd,
     motor_command_scale = motor_command_scale) 
     annotation (Placement(transformation(origin={-285,149},
 extent={{-110,-110},{110,110}})));
+  ESCDriveModule esc
+    annotation (Placement(transformation(origin = {-20, -90}, extent = {{-80, -80}, {80, 80}})));
   MotorDriveModule motor1(initial_speed = hover_motor_speed_cmd) 
     annotation (Placement(transformation(origin = {250, 255}, extent = {{-72, -72}, {72, 72}})));
   MotorDriveModule motor2(initial_speed = -hover_motor_speed_cmd) 
@@ -997,6 +1060,9 @@ extent={{-110,-110},{110,110}})));
   Real system_active_setpoint_source;
   Real system_safety_status;
   Real system_event_code;
+  Real system_battery_voltage;
+  Real system_voltage_margin;
+  Real system_esc_saturation_ratio;
   Real system_supervisor_keepalive;
 
 equation
@@ -1008,6 +1074,9 @@ equation
   system_active_setpoint_source = system_supervisor.active_setpoint_source;
   system_safety_status = system_supervisor.safety_status;
   system_event_code = system_supervisor.event_code;
+  system_battery_voltage = battery.bus_voltage;
+  system_voltage_margin = battery.voltage_margin;
+  system_esc_saturation_ratio = esc.saturation_ratio_est;
   system_supervisor_keepalive = 0.001 * system_event_code + 0.001 * system_estimator_quality;
   connect(airframe.position, perception.position_raw) 
     annotation (Line(points = {{792, 68}, {825, 68}, {825, -385}, {-950, -385}, {-950, -124}, {-909, -124}}, color = {110, 130, 145}, thickness = 0.08));
@@ -1077,26 +1146,20 @@ thickness=0.08));
 points={{-617,118},{-413.5,118},{-413.5,50},{-406,50}},
 color={110,130,145},
 thickness=0.08));
-  connect(controller.motor_command[1], motor1.command) 
-    annotation (Line(origin={0,0},
-points={{-164,149},{95,149},{95,255},{170.8,255}},
-color={110,130,145},
-thickness=0.08));
-  connect(controller.motor_command[2], motor2.command) 
-    annotation (Line(origin={0,0},
-points={{-164,149},{165.2,149},{165.2,85},{170.8,85}},
-color={110,130,145},
-thickness=0.08));
-  connect(controller.motor_command[3], motor3.command) 
-    annotation (Line(origin={0,0},
-points={{-164,149},{120,149},{120,-85},{170.8,-85}},
-color={110,130,145},
-thickness=0.08));
-  connect(controller.motor_command[4], motor4.command) 
-    annotation (Line(origin={0,0},
-points={{-164,149},{95,149},{95,-255},{170.8,-255}},
-color={110,130,145},
-thickness=0.08));
+  connect(controller.motor_command, esc.motor_command_raw)
+    annotation (Line(points = {{-164, 149}, {-120, 149}, {-120, -54}, {-108, -54}}, color = {110, 130, 145}, thickness = 0.08));
+  connect(battery.bus_voltage, esc.bus_voltage)
+    annotation (Line(points = {{-11, -286}, {-120, -286}, {-120, -90}, {-108, -90}}, color = {110, 130, 145}, thickness = 0.08));
+  connect(battery.power_ok, esc.power_ok)
+    annotation (Line(points = {{-11, -315}, {-130, -315}, {-130, -126}, {-108, -126}}, color = {110, 130, 145}, thickness = 0.08));
+  connect(esc.motor_command[1], motor1.command)
+    annotation (Line(points = {{68, -62}, {95, -62}, {95, 255}, {171, 255}}, color = {110, 130, 145}, thickness = 0.08));
+  connect(esc.motor_command[2], motor2.command)
+    annotation (Line(points = {{68, -62}, {132, -62}, {132, 85}, {171, 85}}, color = {110, 130, 145}, thickness = 0.08));
+  connect(esc.motor_command[3], motor3.command)
+    annotation (Line(points = {{68, -62}, {132, -62}, {132, -85}, {171, -85}}, color = {110, 130, 145}, thickness = 0.08));
+  connect(esc.motor_command[4], motor4.command)
+    annotation (Line(points = {{68, -62}, {95, -62}, {95, -255}, {171, -255}}, color = {110, 130, 145}, thickness = 0.08));
   connect(motor1.flange, airframe.rotor_flange[1]) 
     annotation (Line(points = {{330, 288}, {430, 288}, {430, 60}, {465, 60}}, color = {115, 115, 115}, thickness = 0.1));
   connect(motor2.flange, airframe.rotor_flange[2]) 
@@ -1129,7 +1192,14 @@ extent={{-145,150},{145,-150}}), Text(origin={-285,231},
 lineColor={0,130,0},
 extent={{-115,14},{115,-14}},
 textString="control law",
-textColor={0,130,0}), Rectangle(origin={250,0},
+textColor={0,130,0}), Rectangle(origin={-55,-205},
+lineColor={70,70,120},
+pattern=LinePattern.Dash,
+extent={{-125,175},{125,-190}}), Text(origin={-55,-395},
+lineColor={70,70,120},
+extent={{-105,14},{105,-14}},
+textString="power and ESC",
+textColor={70,70,120}), Rectangle(origin={250,0},
 lineColor={130,0,130},
 pattern=LinePattern.Dash,
 extent={{-100,340},{100,-340}}), Text(origin={250,360},

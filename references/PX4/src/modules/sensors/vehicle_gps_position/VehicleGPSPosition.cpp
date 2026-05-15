@@ -1,0 +1,229 @@
+/****************************************************************************
+ *
+ *   Copyright (c) 2020-2022 PX4 Development Team. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ * 3. Neither the name PX4 nor the names of its contributors may be
+ *    used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+ * OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ ****************************************************************************/
+
+#include "VehicleGPSPosition.hpp"
+
+#include <px4_platform_common/log.h>
+#include <lib/geo/geo.h>
+#include <lib/mathlib/mathlib.h>
+#include <lib/drivers/device/Device.hpp>
+
+namespace sensors
+{
+VehicleGPSPosition::VehicleGPSPosition() :
+	ModuleParams(nullptr),
+	ScheduledWorkItem(MODULE_NAME, px4::wq_configurations::nav_and_controllers)
+{
+	_vehicle_gps_position_pub.advertise();
+}
+
+VehicleGPSPosition::~VehicleGPSPosition()
+{
+	Stop();
+	perf_free(_cycle_perf);
+}
+
+bool VehicleGPSPosition::Start()
+{
+	// force initial updates
+	ParametersUpdate(true);
+
+	ScheduleNow();
+
+	return true;
+}
+
+void VehicleGPSPosition::Stop()
+{
+	Deinit();
+
+	// clear all registered callbacks
+	for (auto &sub : _sensor_gps_sub) {
+		sub.unregisterCallback();
+	}
+}
+
+void VehicleGPSPosition::ParametersUpdate(bool force)
+{
+	// Check if parameters have changed
+	if (_parameter_update_sub.updated() || force) {
+		// clear update
+		parameter_update_s param_update;
+		_parameter_update_sub.copy(&param_update);
+
+		updateParams();
+
+		if (_param_sens_gps_mask.get() == 0) {
+			_sensor_gps_sub[0].registerCallback();
+
+		} else {
+			for (auto &sub : _sensor_gps_sub) {
+				sub.registerCallback();
+			}
+		}
+
+		_gps_blending.setBlendingUseSpeedAccuracy(_param_sens_gps_mask.get() & BLEND_MASK_USE_SPD_ACC);
+		_gps_blending.setBlendingUseHPosAccuracy(_param_sens_gps_mask.get() & BLEND_MASK_USE_HPOS_ACC);
+		_gps_blending.setBlendingUseVPosAccuracy(_param_sens_gps_mask.get() & BLEND_MASK_USE_VPOS_ACC);
+		_gps_blending.setBlendingTimeConstant(_param_sens_gps_tau.get());
+
+		const int gps_prime = _param_sens_gps_prime.get();
+
+		if (math::isInRange(gps_prime, -1, 1)) {
+			_gps_blending.setPrimaryInstance(gps_prime);
+		}
+
+		_gps_param_slots[0] = {
+			static_cast<uint32_t>(_param_sens_gps0_id.get()),
+			{_param_sens_gps0_offx.get(), _param_sens_gps0_offy.get(), _param_sens_gps0_offz.get()},
+			static_cast<hrt_abstime>(_param_sens_gps0_delay.get()) * 1000
+		};
+		_gps_param_slots[1] = {
+			static_cast<uint32_t>(_param_sens_gps1_id.get()),
+			{_param_sens_gps1_offx.get(), _param_sens_gps1_offy.get(), _param_sens_gps1_offz.get()},
+			static_cast<hrt_abstime>(_param_sens_gps1_delay.get()) * 1000
+		};
+	}
+}
+
+void VehicleGPSPosition::Run()
+{
+	perf_begin(_cycle_perf);
+	ParametersUpdate();
+
+	pps_capture_s pps_capture;
+
+	if (_pps_capture_sub.update(&pps_capture)) {
+		_pps_time_sync.process_pps(pps_capture);
+	}
+
+	// Check all GPS instance
+	bool any_gps_updated = false;
+	bool gps_updated = false;
+	const int32_t gps_prime = _param_sens_gps_prime.get();
+
+	for (uint8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
+		gps_updated = _sensor_gps_sub[i].updated();
+
+		sensor_gps_s gps_data;
+
+		if (gps_updated) {
+			any_gps_updated = true;
+
+			_sensor_gps_sub[i].copy(&gps_data);
+
+			// Match device_id to receiver slot
+			matrix::Vector3f antenna_offset{};
+			hrt_abstime delay_us = 110_ms; // matches SENS_GPS*_DELAY default
+			bool matched = false;
+
+			for (uint8_t slot = 0; slot < GPS_MAX_RECEIVERS; slot++) {
+				if (_gps_param_slots[slot].device_id != 0
+				    && _gps_param_slots[slot].device_id == gps_data.device_id) {
+					antenna_offset = _gps_param_slots[slot].offset;
+					delay_us = _gps_param_slots[slot].delay_us;
+					matched = true;
+					break;
+				}
+			}
+
+			// Fallback: if no device IDs configured, match by instance index
+			if (!matched && _gps_param_slots[0].device_id == 0 && _gps_param_slots[1].device_id == 0) {
+				antenna_offset = _gps_param_slots[i].offset;
+				delay_us = _gps_param_slots[i].delay_us;
+			}
+
+			// Apply delay to timestamp_sample if the driver didn't set one
+			if (gps_data.timestamp_sample == 0 || gps_data.timestamp_sample == gps_data.timestamp) {
+				if (delay_us > 0 && gps_data.timestamp > delay_us) {
+					gps_data.timestamp_sample = gps_data.timestamp - delay_us;
+				}
+			}
+
+			_gps_blending.setAntennaOffset(antenna_offset, i);
+			_gps_blending.setGpsData(gps_data, i);
+
+			if (math::isInRange(static_cast<int>(gps_prime), 2, 127)) {
+				device::Device::DeviceId device_id{};
+				device_id.devid = gps_data.device_id;
+
+				if (device_id.devid_s.bus_type == device::Device::DeviceBusType_UAVCAN
+				    && device_id.devid_s.address == static_cast<uint8_t>(gps_prime)) {
+					_gps_blending.setPrimaryInstance(i);
+				}
+			}
+
+			if (!_sensor_gps_sub[i].registered()) {
+				_sensor_gps_sub[i].registerCallback();
+			}
+		}
+	}
+
+	if (any_gps_updated) {
+		_gps_blending.update(hrt_absolute_time());
+
+		if (_gps_blending.isNewOutputDataAvailable()) {
+			sensor_gps_s gps_output{_gps_blending.getOutputGpsData()};
+
+			// clear device_id if blending
+			if (_gps_blending.getSelectedGps() == GpsBlending::GPS_MAX_RECEIVERS_BLEND) {
+				gps_output.device_id = 0;
+			}
+
+			const matrix::Vector3f &out_offset = _gps_blending.getOutputAntennaOffset();
+			gps_output.antenna_offset_x = out_offset(0);
+			gps_output.antenna_offset_y = out_offset(1);
+			gps_output.antenna_offset_z = out_offset(2);
+
+			const uint64_t pps_timestamp = _pps_time_sync.correct_gps_timestamp(gps_output.timestamp, gps_output.time_utc_usec);
+
+			if (pps_timestamp != gps_output.timestamp) {
+				// PPS provided a correction — use it instead of the per-receiver delay
+				gps_output.timestamp_sample = pps_timestamp;
+			}
+
+			_vehicle_gps_position_pub.publish(gps_output);
+		}
+	}
+
+	ScheduleDelayed(300_ms); // backup schedule
+
+	perf_end(_cycle_perf);
+}
+
+void VehicleGPSPosition::PrintStatus()
+{
+	PX4_INFO_RAW("[vehicle_gps_position] selected GPS: %d\n", _gps_blending.getSelectedGps());
+}
+
+}; // namespace sensors
