@@ -292,6 +292,77 @@ def fault_index_quality(
     }
 
 
+def collect_raw_values(raw_path: Path, key: str) -> list[float]:
+    with raw_path.open(encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if not reader.fieldnames or key not in reader.fieldnames:
+            return []
+        values: list[float] = []
+        for row in reader:
+            value = as_float(row.get(key))
+            if math.isfinite(value):
+                values.append(value)
+        return values
+
+
+def has_rounded_code(values: list[float], expected: int) -> bool:
+    return any(int(round(value)) == expected for value in values if math.isfinite(value))
+
+
+def system_mode_quality(raw_path: Path | None) -> tuple[list[str], list[str], dict[str, float]]:
+    issues: list[str] = []
+    recommendations: list[str] = []
+    metrics: dict[str, float] = {}
+
+    if raw_path is None or not raw_path.exists():
+        return (
+            ["system_mode quality requested but raw result is missing"],
+            ["rerun the system scenario and export gps_valid, estimator_quality, flight_mode, safety_status, and event_code"],
+            metrics,
+        )
+
+    required = [
+        "gps_valid",
+        "degraded_nav_active",
+        "flight_mode",
+        "active_setpoint_source",
+        "safety_status",
+    ]
+    values_by_key = {key: collect_raw_values(raw_path, key) for key in required}
+    for key, values in values_by_key.items():
+        if not values:
+            issues.append(f"{key} missing or has no valid samples")
+            continue
+        metrics[f"{key}_min"] = min(values)
+        metrics[f"{key}_max"] = max(values)
+
+    gps_values = values_by_key.get("gps_valid", [])
+    degraded_values = values_by_key.get("degraded_nav_active", [])
+    mode_values = values_by_key.get("flight_mode", [])
+    source_values = values_by_key.get("active_setpoint_source", [])
+    safety_values = values_by_key.get("safety_status", [])
+
+    if gps_values and not (min(gps_values) <= 0.1 and max(gps_values) >= 0.9):
+        issues.append("gps_valid does not show both healthy and dropout states")
+    if degraded_values and not has_rounded_code(degraded_values, 1):
+        issues.append("degraded_nav_active did not enter active state 1")
+    if mode_values and not has_rounded_code(mode_values, 6):
+        issues.append("flight_mode did not enter DEGRADED_NAV mode 6")
+    if source_values and not has_rounded_code(source_values, 90):
+        issues.append("active_setpoint_source did not switch to degraded-navigation source 90")
+    if safety_values and max(safety_values) < 3:
+        issues.append("safety_status did not reach degraded-navigation level 3")
+
+    if issues:
+        recommendations.append(
+            "inspect system supervisor equations and exported variables before using this scenario as failsafe evidence"
+        )
+    else:
+        recommendations.append("system-mode dropout evidence is complete and can support failsafe/state-machine claims")
+
+    return issues, recommendations, metrics
+
+
 def planning_display_collision_quality(config: dict[str, Any]) -> dict[str, Any]:
     model = config.get("model", {})
     if not isinstance(model, dict):
@@ -389,6 +460,18 @@ def evaluate_quality(config: dict[str, Any], scenario_path: Path, *, min_rmse_im
         result["quality_recommendations"] = [
             "smoke evidence only validates the automation chain; run full scenario before making performance claims"
         ] if not issues else ["fix smoke evidence validity before extending to full simulation"]
+        return result
+
+    quality_profile = str(config.get("quality_profile", ""))
+    if quality_profile == "system_mode" or scene_id.startswith("system_"):
+        profile_issues, profile_recommendations, profile_metrics = system_mode_quality(raw_path)
+        result.update(profile_metrics)
+        issues.extend(profile_issues)
+        recommendations.extend(profile_recommendations)
+        result["quality_status"] = "needs_iteration" if issues else "pass"
+        result["quality_pass"] = not issues
+        result["quality_issues"] = issues
+        result["quality_recommendations"] = recommendations
         return result
 
     metric_checks = [

@@ -52,3 +52,30 @@ def test_event_log_records_mode_changes() -> None:
         raise AssertionError(payload)
     if payload["event_count"] != 4:
         raise AssertionError(payload)
+
+
+def test_event_log_maps_system_mode_6_to_degraded_nav() -> None:
+    module = load_event_module()
+    temp_dir = ROOT / ".tmp" / f"event_log_system_{uuid4().hex}"
+    raw = temp_dir / "raw.csv"
+    try:
+        temp_dir.mkdir(parents=True)
+        with raw.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.writer(handle, lineterminator="\n")
+            writer.writerow(["time", "flight_mode", "event_code", "safety_status"])
+            writer.writerow([0.0, 3, 30, 0])
+            writer.writerow([0.35, 6, 30, 3])
+            writer.writerow([0.86, 3, 30, 0])
+        payload = module.build_event_log(module.read_rows(raw), scene_id="system_gps_dropout", controller_id="awff")
+    finally:
+        if raw.exists():
+            raw.unlink()
+        if temp_dir.exists():
+            temp_dir.rmdir()
+        tmp_root = ROOT / ".tmp"
+        if tmp_root.exists() and not any(tmp_root.iterdir()):
+            tmp_root.rmdir()
+
+    names = [item["event"] for item in payload["events"]]
+    if names != ["DEGRADED_RETURN", "DEGRADED_NAV", "DEGRADED_RETURN"]:
+        raise AssertionError(payload)

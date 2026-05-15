@@ -512,6 +512,26 @@ paths. Use a dedicated smoke scenario/result path, or explicitly pass
 After smoke tests or temporary probes, delete `.running`, `.tmp`, `__pycache__`,
 and ad-hoc probe logs before committing.
 
+For system-mode/failsafe scenarios, do not judge the result with trajectory
+RMSE gates. Use a `quality_profile: system_mode` scenario and verify the
+exported mode signals instead:
+
+```text
+gps_valid toggles healthy/dropout
+degraded_nav_active reaches 1
+flight_mode reaches 6
+active_setpoint_source reaches 90
+safety_status reaches 3
+event_log.json contains DEGRADED_NAV
+```
+
+MWORKS/Sysplorer may fold or omit isolated top-level diagnostic equations that
+do not participate in the executable data flow. Put mode/failsafe logic inside
+a component such as `SystemSupervisorModule`, export the component or bridged
+top-level variables, and probe raw CSV before claiming a state-machine result.
+If a nominal `event_code` variable stays constant while `flight_mode` changes,
+derive the event-log label from `flight_mode` and document that mapping.
+
 If Sysplorer/MWORKS suddenly reports unexplained license, activation, login, or
 bulk library load failures after previously passing, preserve current file
 changes, clean temporary files, stop the MCP sequence, and ask for manual

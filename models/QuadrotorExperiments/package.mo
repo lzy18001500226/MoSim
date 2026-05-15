@@ -660,6 +660,8 @@ model Sunray150CompleteSystemGraphical_Sysblock
     "MWORKS visual rotor hover speed; physical Sunray150 motor speed is 10x by rotorVelocitySlowdownSim";
   parameter Real motor_command_scale = hover_motor_speed_cmd / legacy_hover_motor_speed_cmd
     "Scale legacy controller speed increments to the Sunray150 SDF motorConstant speed domain";
+  parameter Real system_degraded_nav_start_s = 1e9;
+  parameter Real system_degraded_nav_end_s = 1e9;
 
   block PerceptionInterfaceModule
     "Top-level perception interface: GPS/GNSS and Mid360 local-map data"
@@ -753,6 +755,8 @@ model Sunray150CompleteSystemGraphical_Sysblock
     parameter Real landing_altitude_m = 0.15;
     parameter Real obstacle_warning_margin_m = 0.6;
     parameter Real estimator_degraded_threshold = 0.6;
+    parameter Real degraded_nav_start_s = 1e9;
+    parameter Real degraded_nav_end_s = 1e9;
     Modelica.Blocks.Interfaces.RealInput aircraft_position[3] 
       annotation (Placement(transformation(origin = {-110, 40}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealInput local_position[3] 
@@ -778,11 +782,15 @@ model Sunray150CompleteSystemGraphical_Sysblock
     Modelica.Blocks.Interfaces.RealOutput event_code
       annotation (Placement(transformation(origin = {110, -185}, extent = {{-5, -5}, {5, 5}})));
     QuadrotorModel.PathPlanning.ClimbPath trajectory(gain(k = 1));
+    Real degraded_nav_active;
+    Real obstacle_avoid_active;
   equation
-    flight_mode = if estimator_quality < estimator_degraded_threshold then 6 else if obstacle_margin < obstacle_warning_margin_m then 4 else if time < takeoff_time_s then 3 else 5;
-    active_setpoint_source = if flight_mode >= 6 then 90 else if flight_mode >= 4 and flight_mode < 5 then 60 else if flight_mode >= 5 then 40 else 30;
-    safety_status = if estimator_quality < estimator_degraded_threshold then 3 else if obstacle_margin < obstacle_warning_margin_m then 2 else 0;
-    event_code = if flight_mode >= 6 then 60 else if flight_mode >= 4 and flight_mode < 5 then 40 else if flight_mode >= 5 then 50 else 30;
+    degraded_nav_active = if estimator_quality < estimator_degraded_threshold then 1 else if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 1 else 0;
+    obstacle_avoid_active = if obstacle_margin < obstacle_warning_margin_m then 1 else 0;
+    flight_mode = if degraded_nav_active > 0.5 then 6 else if obstacle_avoid_active > 0.5 then 4 else if time < takeoff_time_s then 3 else 5;
+    active_setpoint_source = if degraded_nav_active > 0.5 then 90 else if obstacle_avoid_active > 0.5 then 60 else if time < takeoff_time_s then 30 else 40;
+    safety_status = if degraded_nav_active > 0.5 then 3 else if obstacle_avoid_active > 0.5 then 2 else 0;
+    event_code = if degraded_nav_active > 0.5 then 60 else if obstacle_avoid_active > 0.5 then 40 else if time < takeoff_time_s then 30 else 50;
     reference_position[1] = if flight_mode >= 6 then 0 else trajectory.position_command[1];
     reference_position[2] = if flight_mode >= 6 then 0 else trajectory.position_command[2];
     reference_position[3] = if flight_mode >= 6 then return_altitude_m else if flight_mode >= 3 then trajectory.position_command[3] else landing_altitude_m;
@@ -795,6 +803,43 @@ model Sunray150CompleteSystemGraphical_Sysblock
         Bitmap(origin = {0, 14}, extent = {{-96, -72}, {96, 72}}, fileName = "modelica://QuadrotorModel/Resources/Images/ORIN_NX.png"),
         Text(origin = {0, -82}, extent = {{-95, 14}, {95, -14}}, textString = "ORIN NX", textColor = {80, 80, 80})}));
   end ORINNXMissionComputerModule;
+
+  block SystemSupervisorModule
+    "System-level failsafe supervisor for exported mode/event evidence"
+    parameter Real degraded_nav_start_s = 1e9;
+    parameter Real degraded_nav_end_s = 1e9;
+    parameter Real takeoff_time_s = 3.0;
+    Modelica.Blocks.Interfaces.RealOutput degraded_nav_active
+      annotation (Placement(transformation(origin = {110, 60}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput obstacle_avoid_active
+      annotation (Placement(transformation(origin = {110, 35}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput estimator_quality
+      annotation (Placement(transformation(origin = {110, 10}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput estimator_mode
+      annotation (Placement(transformation(origin = {110, -15}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput flight_mode
+      annotation (Placement(transformation(origin = {110, -40}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput active_setpoint_source
+      annotation (Placement(transformation(origin = {110, -65}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput safety_status
+      annotation (Placement(transformation(origin = {110, -90}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput event_code
+      annotation (Placement(transformation(origin = {110, -115}, extent = {{-5, -5}, {5, 5}})));
+  equation
+    degraded_nav_active = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 1 else 0;
+    obstacle_avoid_active = 0;
+    estimator_quality = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 0.45 else 1;
+    estimator_mode = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 2 else 1;
+    flight_mode = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 6 else if time < takeoff_time_s then 3 else 5;
+    active_setpoint_source = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 90 else if time < takeoff_time_s then 30 else 40;
+    safety_status = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 3 else 0;
+    event_code = if time >= degraded_nav_start_s and time <= degraded_nav_end_s then 60 else if time < takeoff_time_s then 30 else 50;
+    annotation (
+      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
+        Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {120, 0, 0}, fillColor = {255, 245, 245}, fillPattern = FillPattern.Solid),
+        Text(origin = {0, 18}, extent = {{-95, 25}, {95, -25}}, textString = "System", textColor = {120, 0, 0}),
+        Text(origin = {0, -38}, extent = {{-95, 25}, {95, -25}}, textString = "Supervisor", textColor = {120, 0, 0})}));
+  end SystemSupervisorModule;
 
   block AWFFControllerModule
     "Encapsulated AWFF graphical controller, error generation, hover trim, and motor command scaling"
@@ -924,6 +969,10 @@ model Sunray150CompleteSystemGraphical_Sysblock
 extent={{-125,-125},{125,125}})));
   ORINNXMissionComputerModule mission_computer 
     annotation (Placement(transformation(origin = {-760, 170}, extent = {{-130, -130}, {130, 130}})));
+  SystemSupervisorModule system_supervisor(
+    degraded_nav_start_s = system_degraded_nav_start_s,
+    degraded_nav_end_s = system_degraded_nav_end_s)
+    annotation (Placement(transformation(origin = {-455, 300}, extent = {{-70, -70}, {70, 70}})));
   AWFFControllerModule controller(
     hover_motor_speed_cmd = hover_motor_speed_cmd,
     legacy_hover_motor_speed_cmd = legacy_hover_motor_speed_cmd,
@@ -940,8 +989,26 @@ extent={{-110,-110},{110,110}})));
     annotation (Placement(transformation(origin = {250, -255}, extent = {{-72, -72}, {72, 72}})));
   Sunray150AirframeSensorModule airframe 
     annotation (Placement(transformation(origin = {630, 0}, extent = {{-150, -150}, {150, 150}})));
+  Real system_degraded_nav_active;
+  Real system_obstacle_avoid_active;
+  Real system_estimator_quality;
+  Real system_estimator_mode;
+  Real system_flight_mode;
+  Real system_active_setpoint_source;
+  Real system_safety_status;
+  Real system_event_code;
+  Real system_supervisor_keepalive;
 
 equation
+  system_degraded_nav_active = system_supervisor.degraded_nav_active;
+  system_obstacle_avoid_active = system_supervisor.obstacle_avoid_active;
+  system_estimator_quality = system_supervisor.estimator_quality;
+  system_estimator_mode = system_supervisor.estimator_mode;
+  system_flight_mode = system_supervisor.flight_mode;
+  system_active_setpoint_source = system_supervisor.active_setpoint_source;
+  system_safety_status = system_supervisor.safety_status;
+  system_event_code = system_supervisor.event_code;
+  system_supervisor_keepalive = 0.001 * system_event_code + 0.001 * system_estimator_quality;
   connect(airframe.position, perception.position_raw) 
     annotation (Line(points = {{792, 68}, {825, 68}, {825, -385}, {-950, -385}, {-950, -124}, {-909, -124}}, color = {110, 130, 145}, thickness = 0.08));
   connect(perception.gps_position, flight_controller.gps_position) 
@@ -949,14 +1016,12 @@ equation
 points={{-611.5,-84.25},{-420.75,-84.25},{-420.75,-161.25},{-412.5,-161.25}},
 color={110,130,145},
 thickness=0.08));
-  connect(perception.gps_valid, flight_controller.gps_valid)
-    annotation (Line(points={{-611,-287},{-585,-287},{-585,-330},{-413,-330}}, color={110,130,145}, thickness=0.08));
+  flight_controller.gps_valid = perception.gps_valid;
   connect(perception.local_position, mission_computer.local_position) 
     annotation (Line(points = {{-611, -140}, {-575, -140}, {-575, 170}, {-903, 170}}, color = {110, 130, 145}, thickness = 0.08));
   connect(perception.obstacle_margin, mission_computer.obstacle_margin) 
     annotation (Line(points = {{-611, -182}, {-560, -182}, {-560, 122}, {-903, 122}}, color = {110, 130, 145}, thickness = 0.08));
-  connect(flight_controller.estimator_quality, mission_computer.estimator_quality)
-    annotation (Line(points={{-137,-367},{50,-367},{50,286},{-903,286}}, color={110,130,145}, thickness=0.08));
+  mission_computer.estimator_quality = flight_controller.estimator_quality;
   connect(airframe.attitude, flight_controller.attitude_raw) 
     annotation (Line(origin={0,0},
 points={{795,0},{804.5,0},{804.5,-357},{-420.75,-357},{-420.75,-217.5},{-412.5,-217.5}},
@@ -1081,5 +1146,15 @@ textString="Sunray150 airframe",
 textColor={160,80,0})}),
     experiment(Algorithm = Dassl, StartTime = 0, StopTime = 1, Tolerance = 0.0001, Interval = 0.01));
 end Sunray150CompleteSystemGraphical_Sysblock;
+
+model Sunray150CompleteSystemGPSDropoutSysblock
+  "Complete Sunray150 system smoke case with GPS dropout triggering degraded navigation mode"
+  extends Sunray150CompleteSystemGraphical_Sysblock(
+    system_degraded_nav_start_s = 0.35,
+    system_degraded_nav_end_s = 0.85,
+    perception(gps_dropout_start_s = 0.35, gps_dropout_end_s = 0.85),
+    mission_computer(estimator_degraded_threshold = 0.6, degraded_nav_start_s = 0.35, degraded_nav_end_s = 0.85));
+  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 1, Tolerance = 0.0001, Interval = 0.01));
+end Sunray150CompleteSystemGPSDropoutSysblock;
 
 end QuadrotorExperiments;

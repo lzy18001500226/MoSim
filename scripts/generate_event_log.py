@@ -15,6 +15,8 @@ EVENT_NAMES = {
     20: "SAFETY_FILTER_ACTIVE",
     30: "DEGRADED_RETURN",
     40: "EMERGENCY_LAND",
+    50: "MISSION",
+    60: "DEGRADED_NAV",
 }
 
 
@@ -52,9 +54,12 @@ def build_event_log(rows: list[dict[str, float]], *, scene_id: str, controller_i
 
     for row in rows:
         time_s = row.get("time", math.nan)
-        mode = rounded_code(row.get("controller_mode", math.nan), 1)
+        mode_value = row.get("controller_mode", row.get("flight_mode", math.nan))
+        safety_active = row.get("safety_active", row.get("safety_status", 0.0))
+        mode = rounded_code(mode_value, 1)
         event_code = rounded_code(row.get("event_code", math.nan), 10)
-        safety_active = row.get("safety_active", 0.0)
+        if mode == 6 and event_code not in {60}:
+            event_code = 60
         if math.isfinite(safety_active):
             max_safety_active = max(max_safety_active, safety_active)
 

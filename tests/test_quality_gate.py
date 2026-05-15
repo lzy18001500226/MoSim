@@ -106,10 +106,69 @@ def test_fault_index_gate_rejects_wrong_isolation() -> None:
         raise AssertionError(quality)
 
 
+def test_system_mode_gate_requires_degraded_nav_event() -> None:
+    module = load_quality_module()
+    temp_dir = ROOT / ".tmp" / f"system_mode_gate_{uuid4().hex}"
+    try:
+        raw = temp_dir / "raw" / "system.csv"
+        metrics_path = temp_dir / "metrics" / "system.json"
+        raw.parent.mkdir(parents=True)
+        metrics_path.parent.mkdir(parents=True)
+        with raw.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.writer(handle, lineterminator="\n")
+            writer.writerow(
+                [
+                    "time",
+                    "gps_valid",
+                    "degraded_nav_active",
+                    "flight_mode",
+                    "active_setpoint_source",
+                    "safety_status",
+                ]
+            )
+            for index in range(101):
+                t = index / 100.0
+                dropout = 0.35 <= t <= 0.85
+                writer.writerow([t, 0 if dropout else 1, 1 if dropout else 0, 6 if dropout else 3, 90 if dropout else 30, 3 if dropout else 0])
+        metrics_path.write_text(
+            json.dumps({"valid": True, "nan_count": 0, "row_count": 101, "duration_s": 1.0}, ensure_ascii=False)
+            + "\n",
+            encoding="utf-8",
+        )
+        scenario_path = temp_dir / "scenario.yaml"
+        scenario_path.write_text("", encoding="utf-8")
+        config = {
+            "experiment_id": "system_mode_fixture",
+            "scene_id": "system_gps_dropout",
+            "controller_id": "awff_complete_system",
+            "quality_profile": "system_mode",
+            "simulation": {"start_time_s": 0.0, "stop_time_s": 1.0},
+            "result": {"raw_file": str(raw), "metrics_file": str(metrics_path)},
+        }
+        quality = module.evaluate_quality(config, scenario_path, min_rmse_improvement_pct=0.5)
+    finally:
+        if temp_dir.exists():
+            for item in sorted(temp_dir.glob("**/*"), key=lambda p: len(p.parts), reverse=True):
+                if item.is_file():
+                    item.unlink()
+                elif item.is_dir():
+                    item.rmdir()
+            temp_dir.rmdir()
+        tmp_root = ROOT / ".tmp"
+        if tmp_root.exists() and not any(tmp_root.iterdir()):
+            tmp_root.rmdir()
+
+    if quality["quality_status"] != "pass":
+        raise AssertionError(quality)
+    if quality.get("flight_mode_max") != 6:
+        raise AssertionError(quality)
+
+
 def main() -> int:
     test_example3_awff_sysblock_passes_figure8_gate()
     test_example2_awff_sysblock_needs_iteration_without_rmse_gain()
     test_fault_index_gate_rejects_wrong_isolation()
+    test_system_mode_gate_requires_degraded_nav_event()
     print("[OK] quality gate regression")
     return 0
 

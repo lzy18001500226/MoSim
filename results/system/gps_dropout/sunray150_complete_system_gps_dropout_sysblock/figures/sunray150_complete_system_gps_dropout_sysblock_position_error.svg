@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="520" viewBox="0 0 920 520">
+<style>
+text { font-family: Arial, 'Microsoft YaHei', sans-serif; fill: #1f2937; }
+.title { font-size: 20px; font-weight: 700; }
+.label { font-size: 13px; }
+.tick { font-size: 12px; fill: #4b5563; }
+.legend { font-size: 13px; fill: #374151; }
+</style>
+<rect x="0" y="0" width="100%" height="100%" fill="#ffffff"/>
+<text x="460.00" y="26" text-anchor="middle" class="title">sunray150_complete_system_gps_dropout_sysblock position error</text>
+<line x1="82" y1="444" x2="892" y2="444" stroke="#2f3542" stroke-width="1.4"/>
+<line x1="82" y1="54" x2="82" y2="444" stroke="#2f3542" stroke-width="1.4"/>
+<line x1="82" y1="54.00" x2="892" y2="54.00" stroke="#d7dde8" stroke-width="0.8"/>
+<text x="72" y="58.00" text-anchor="end" class="tick">5.74</text>
+<line x1="82" y1="132.00" x2="892" y2="132.00" stroke="#d7dde8" stroke-width="0.8"/>
+<text x="72" y="136.00" text-anchor="end" class="tick">4.47</text>
+<line x1="82" y1="210.00" x2="892" y2="210.00" stroke="#d7dde8" stroke-width="0.8"/>
+<text x="72" y="214.00" text-anchor="end" class="tick">3.2</text>
+<line x1="82" y1="288.00" x2="892" y2="288.00" stroke="#d7dde8" stroke-width="0.8"/>
+<text x="72" y="292.00" text-anchor="end" class="tick">1.93</text>
+<line x1="82" y1="366.00" x2="892" y2="366.00" stroke="#d7dde8" stroke-width="0.8"/>
+<text x="72" y="370.00" text-anchor="end" class="tick">0.656</text>
+<line x1="82" y1="444.00" x2="892" y2="444.00" stroke="#d7dde8" stroke-width="0.8"/>
+<text x="72" y="448.00" text-anchor="end" class="tick">-0.615</text>
+<text x="82.00" y="466" text-anchor="middle" class="tick">-0.02</text>
+<text x="244.00" y="466" text-anchor="middle" class="tick">0.188</text>
+<text x="406.00" y="466" text-anchor="middle" class="tick">0.396</text>
+<text x="568.00" y="466" text-anchor="middle" class="tick">0.604</text>
+<text x="730.00" y="466" text-anchor="middle" class="tick">0.812</text>
+<text x="892.00" y="466" text-anchor="middle" class="tick">1.02</text>
+<text x="487.00" y="502" text-anchor="middle" class="label">time / s</text>
+<text x="22" y="249.00" text-anchor="middle" class="label" transform="rotate(-90 22 249.00)">error / m</text>
+<polyline points="97.58,406.26 105.37,405.03 113.15,403.80 120.94,402.58 128.73,401.35 136.52,400.11 144.31,398.88 152.10,397.65 159.88,396.41 167.67,395.17 175.46,393.93 183.25,392.67 191.04,391.41 198.83,390.15 206.62,388.87 214.40,387.58 222.19,386.27 229.98,384.95 237.77,383.62 245.56,382.26 253.35,380.89 261.13,379.50 268.92,378.09 276.71,376.65 284.50,375.19 292.29,373.70 300.08,372.18 307.87,370.64 315.65,369.06 323.44,367.44 331.23,365.79 339.02,364.11 346.81,362.37 354.60,360.60 362.38,358.79 370.17,340.26 377.96,339.62 385.75,338.92 393.54,338.12 401.33,337.26 409.12,336.36 416.90,335.24 424.69,334.04 432.48,332.77 440.27,331.39 448.06,329.93 455.85,328.39 463.63,326.65 471.42,324.82 479.21,322.89 487.00,320.85 494.79,318.73 502.58,316.50 510.37,314.14 518.15,311.71 525.94,309.17 533.73,306.54 541.52,303.81 549.31,301.00 557.10,298.08 564.88,295.08 572.67,291.99 580.46,288.81 588.25,285.54 596.04,282.19 603.83,278.74 611.62,275.21 619.40,271.61 627.19,267.91 634.98,264.14 642.77,260.29 650.56,256.36 658.35,252.36 666.13,248.29 673.92,244.14 681.71,239.92 689.50,235.64 697.29,231.27 705.08,226.85 712.87,222.36 720.65,217.79 728.44,213.17 736.23,208.48 744.02,203.73 751.81,198.91 759.60,194.03 767.38,172.71 775.17,167.50 782.96,162.22 790.75,156.84 798.54,151.42 806.33,145.91 814.12,140.23 821.90,134.54 829.69,128.75 837.48,122.78 845.27,116.76 853.06,110.66 860.85,104.41 868.63,98.12 876.42,91.74" fill="none" stroke="#2ca02c" stroke-width="2.2"/>
+<line x1="82" y1="30" x2="110" y2="30" stroke="#2ca02c" stroke-width="3"/>
+<text x="118" y="35" class="legend">position error</text>
+</svg>
