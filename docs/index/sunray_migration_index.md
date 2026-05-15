@@ -135,7 +135,7 @@ CUAV/Livox 实物图片仅作为报告和答辩硬件说明素材：
 | `references/CUAV/Sunray150.png` | Sunray150 机体图形化展示和模型图标 |
 | `references/CUAV/motor.png` | 四电机图形化展示 |
 
-这些图片用于完整系统图形化仿真画布、模型图标、报告和答辩硬件说明；当前不把图片对应硬件作为新增物理部件接入官方机体模型。`references/CUAV/` 保留无背景原图，模型显示副本统一生成到 `QuadrotorModel/Resources/Images/`，画布尺寸统一为 `640x420`，内容按原始比例居中缩放。由于 Sysplorer 对透明 PNG 图标显示不稳定，模型显示副本统一导出为 RGB PNG，并把透明区域合成到白底，确保审查界面能看到具体内容。`GPS.png`、`V6X.png`、`MId360.png`、`ORIN NX.png`、`Sunray150.png`、`motor.png` 分别作为 `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock` 中感知、飞控、机载计算、四电机和机体顶层模块的图标。为避免 Modelica URI 中空格导致解析差异，机载计算平台图片在模型资源目录中保存为 `ORIN_NX.png`。三维动画仍使用官方 STL 机体。
+这些图片用于完整系统图形化仿真画布、模型图标、报告和答辩硬件说明；当前不把图片对应硬件作为新增物理部件接入官方机体模型。`references/CUAV/` 保留无背景原图，模型显示副本统一生成到 `QuadrotorModel/Resources/Images/`。模型显示副本直接使用透明 PNG 原图，保留每张图片自身宽高比例和透明背景。`GPS.png`、`V6X.png`、`MId360.png`、`ORIN NX.png`、`Sunray150.png`、`motor.png` 分别作为 `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock` 中感知、飞控、机载计算、四电机和机体顶层模块的图标。为避免 Modelica URI 中空格导致解析差异，机载计算平台图片在模型资源目录中保存为 `ORIN_NX.png`。三维动画仍使用官方 STL 机体。
 
 后续模型检查只针对官方机体、控制器闭环和图形化展示链路；CUAV/Livox/ORIN 图片不作为物理建模检查对象。
 

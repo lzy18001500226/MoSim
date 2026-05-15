@@ -11,6 +11,7 @@ model:
   base_model_path_hint: QuadrotorModel/package.mo
   extra_model_files:
     - models/QuadrotorExperiments/PlannedQuinticReference.mo
+    - models/QuadrotorExperiments/PlanningNavigationDisplay.mo
   official_description: Sunray150 单机 corridor gate A* 轨迹 LinearMPC-style Sysblock 闭环
 
 controller:

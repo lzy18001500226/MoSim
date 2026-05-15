@@ -24,9 +24,9 @@ text { font-family: Arial, 'Microsoft YaHei', sans-serif; fill: #1f2937; }
 <text x="82" y="390.00" text-anchor="end" class="tick">0</text>
 <text x="408.00" y="462" text-anchor="middle" class="label">metric</text>
 <text x="22" y="225.00" text-anchor="middle" class="label" transform="rotate(-90 22 225.00)">value</text>
-<rect x="126.00" y="273.43" width="165.33" height="112.57" fill="#1f77b4"/>
+<rect x="126.00" y="273.95" width="165.33" height="112.05" fill="#1f77b4"/>
 <text x="208.67" y="428" text-anchor="middle" class="tick">RMSE / m</text>
-<text x="208.67" y="265.43" text-anchor="middle" class="tick">0.1257</text>
+<text x="208.67" y="265.95" text-anchor="middle" class="tick">0.1251</text>
 <rect x="325.33" y="117.67" width="165.33" height="268.33" fill="#1f77b4"/>
 <text x="408.00" y="428" text-anchor="middle" class="tick">Max error / m</text>
 <text x="408.00" y="109.67" text-anchor="middle" class="tick">0.2996</text>

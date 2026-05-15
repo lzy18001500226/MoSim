@@ -9,11 +9,47 @@ model Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop
 
   PlannedQuinticReference planningReference(
     n_segments = 4,
-    p_x = {0.0, 0.0, 3.4, 4.2, 6.0, 6.0},
-    p_y = {0.0, 0.0, 0.3, -0.1, 0.0, 0.0},
-    p_z = {0.0, 1.0, 1.0, 1.0, 1.0, 1.0},
+    p_x = {-0.5, -0.5, 1.6, 3.4, 5.2, 6.6},
+    p_y = {-2.25, -2.25, -0.9, 0.35, 1.35, 2.1},
+    p_z = {0.5279007479379901, 1.0, 1.0, 1.0, 1.0, 1.0},
     segment_duration = {3.0, 6.944192775828457, 1.953125, 3.667756424422189, 1.0});
-  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1;
+  PlanningNavigationDisplay navigationDisplay(
+    n_segments = 4,
+    p_x = {-0.5, -0.5, 1.6, 3.4, 5.2, 6.6},
+    p_y = {-2.25, -2.25, -0.9, 0.35, 1.35, 2.1},
+    p_z = {0.5279007479379901, 1.0, 1.0, 1.0, 1.0, 1.0},
+    segment_duration = {3.0, 6.944192775828457, 1.953125, 3.667756424422189, 1.0},
+    x_min = -1.0,
+    x_max = 7.0,
+    y_min = -2.5,
+    y_max = 2.5,
+    local_costmap_radius_m = 100.0,
+    pillar_count = 34,
+    pillar_center = {{0.82, -1.82}, {0.99, -1.76}, {0.90, -1.58},
+      {1.28, 0.86}, {1.46, 0.93}, {1.33, 1.10}, {1.55, 1.13},
+      {1.88, -0.62}, {2.05, -0.50}, {1.98, -0.32},
+      {2.43, 1.64}, {2.60, 1.52}, {2.76, 1.66}, {2.58, 1.82},
+      {3.05, -1.72}, {3.23, -1.58}, {3.00, -1.43},
+      {3.68, 0.58}, {3.86, 0.47}, {3.79, 0.75}, {4.02, 0.66},
+      {4.22, -1.05}, {4.42, -0.96}, {4.31, -0.76},
+      {4.82, 1.42}, {5.01, 1.31}, {5.16, 1.50}, {4.96, 1.68},
+      {5.54, -1.76}, {5.75, -1.66}, {5.62, -1.45},
+      {6.18, 0.74}, {6.37, 0.90}, {6.10, 1.02},
+      {0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}},
+    pillar_width = fill(0.16, 40),
+    pillar_height = {1.8, 2.1, 1.9,
+      1.7, 2.0, 2.2, 1.9,
+      2.1, 1.8, 2.0,
+      2.3, 2.0, 1.8, 2.1,
+      2.2, 1.9, 2.0,
+      1.9, 2.2, 1.8, 2.1,
+      2.0, 2.3, 1.9,
+      1.8, 2.1, 2.3, 2.0,
+      2.2, 1.9, 2.1,
+      1.9, 2.2, 2.0,
+      1.0, 1.0, 1.0, 1.0, 1.0, 1.0});
+  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(
+    body(color = {135, 206, 235}, r_0(start = {-0.5, -2.25, 0.5279007479379901}, fixed = {true, true, true})));
   QuadrotorModel.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
   QuadrotorModel.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
   QuadrotorModel.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
@@ -44,6 +80,8 @@ equation
   connect(actuator1_3.flange_a, quadChassisTest17_1.flange_a2);
   connect(actuator1_4.flange_a, quadChassisTest17_1.flange_a3);
   connect(quadChassisTest17_1.frame_a, sensors1_1.frame_a);
+  connect(sensors1_1.PosMea, navigationDisplay.actual_position);
+  connect(planningReference.position_command, navigationDisplay.reference_position);
 
   connect(planningReference.position_command[1], x_error.u1);
   connect(sensors1_1.PosMea[1], x_error.u2);

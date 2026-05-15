@@ -522,6 +522,29 @@ RUN_SCRIPT_RESULT = results
     }
 
 
+def nested_run_script_status(result: dict[str, Any] | None, key: str) -> bool:
+    """Return the real nested run_script status, not only the MCP call status."""
+    if not result:
+        return False
+    if not result.get("ok"):
+        return False
+    run_script_result = result.get("run_script_result")
+    if isinstance(run_script_result, dict) and key in run_script_result:
+        return bool(run_script_result.get(key))
+    return bool(result.get(key))
+
+
+def gui_result_status(gui_result: dict[str, Any] | None) -> dict[str, bool]:
+    if not gui_result:
+        return {"model": False, "plot": False, "animation": False}
+    model_result = gui_result.get("model_result") or {}
+    return {
+        "model": bool(model_result.get("ok")),
+        "plot": nested_run_script_status(gui_result.get("plot_result"), "create_plot"),
+        "animation": nested_run_script_status(gui_result.get("animation_result"), "create_animation"),
+    }
+
+
 def run_mcp_simulation(
     args: argparse.Namespace,
     client: JsonlMcpClient,
@@ -650,9 +673,10 @@ def run_mcp_simulation(
             if native_result_manifest is not None:
                 print(f"Native result manifest: {native_result_manifest}")
         if gui_result is not None:
-            print(f"GUI model: {gui_result['model_result'].get('ok')}")
-            print(f"GUI plot: {gui_result['plot_result'].get('ok')}")
-            print(f"GUI animation: {gui_result['animation_result'].get('ok')}")
+            status = gui_result_status(gui_result)
+            print(f"GUI model: {status['model']}")
+            print(f"GUI plot: {status['plot']}")
+            print(f"GUI animation: {status['animation']}")
         print(f"Rows: {len(read_result['data'][0])}")
         print(f"Check model: ok")
         print(f"Simulate model: ok")

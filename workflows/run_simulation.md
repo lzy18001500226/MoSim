@@ -346,6 +346,36 @@ the actual quadrotor 3D animation plus tracking curves; seeing only static
 propeller geometry, only a blank result viewer, or only parameter curves is not
 enough to mark visual review complete.
 
+For single-UAV planning/navigation scenarios, the 3D animation must also show
+the model-level navigation context. Do not use offline HTML replay as a
+substitute. The closed-loop model should include `PlanningNavigationDisplay` or
+an equivalent component:
+
+```text
+actual pose input     = sensors1_1.PosMea
+local plan input      = planningReference.position_command
+local map source      = planner YAML obstacle semantics rendered as pillar clusters
+display policy        = rolling local costmap + short-horizon local plan
+```
+
+Acceptance for manual review:
+
+```text
+1. Light-gray obstacle map and 1.2 m boundary walls appear, with 10 adjacent vertical pillar clusters, with 3-4 irregularly placed pillars per obstacle plus wider white terrain pillars covering the map; it must align with the map boundary and must not look like tiny loose cubes, two giant boxes, or a dense point cloud.
+2. Blue local plan segment shows only the short forward horizon, not the full global path.
+3. Current actual and reference markers are small enough not to cover the UAV or path.
+4. Actual flown trajectory is inspected from MWORKS/native result or a separate viewer,
+   not from dynamic history states injected into the closed-loop model.
+```
+
+Do not implement actual history trails inside the Modelica/Sysplorer display
+component with `sample/pre` or `delay()`. In this project, `sample/pre`
+history once changed the planning open-blocks RMSE from about `0.1667 m` to
+about `70.08 m`, and a `delay()` history variant triggered
+`simulate_api_reported_failure=true`. Display logic must not perturb the
+closed-loop controller evidence. Actual flown history should be reviewed from
+raw/native result or a separate non-control viewer.
+
 ```text
 python3 scripts/run_mworks_scenario.py <scenario.yaml>
 ```
@@ -387,6 +417,22 @@ windows before opening the current result. The tracking plot is created with
 the current `Result.msr` path explicitly bound; the animation window is then
 created for the active simulated result. The script still does not call
 `RunAnimation()` by default.
+
+Important: a successful MCP `call_code` response is not sufficient evidence
+that the GUI plot or animation opened. Inspect the nested `run_script_result`
+fields:
+
+```text
+run_script_result.create_plot == true
+run_script_result.create_animation == true
+```
+
+If the log contains `错误(4007): 结果文件 ... Result.msr 未打开`, the native
+result exists on disk but was not opened/bound by the current Sysplorer GUI
+session. Treat the numerical simulation as valid only if `check_model`,
+`simulate_model`, raw CSV, and quality gates passed; treat GUI visual review as
+incomplete until the user manually opens the matching `Result.msr` or the MCP
+`plot_manager/result_manager` path is fixed.
 
 The durable evidence remains raw CSV, metrics JSON/CSV, logs, figures, and
 replay JSON. Native result files support human review but are intentionally not
