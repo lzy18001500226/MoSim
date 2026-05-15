@@ -54,6 +54,8 @@ results/**/native_result/
 *.hdf5
 *.dae
 *.plan
+*.onnx
+*.mol
 
 # OS
 .DS_Store
