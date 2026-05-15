@@ -666,7 +666,7 @@ def run_mcp_simulation(
                 "sim_mode": 0,
                 "target_time": target_time,
                 **({"ext_res_path": windows_path(native_result_dir)} if gui_result_viewer else {}),
-                "verify_result_var": "sensors1_1.PosMea[3]",
+                "verify_result_var": variables.get("z", "sensors1_1.PosMea[3]"),
                 "verify_time_point": "end",
             },
             timeout_s=360,

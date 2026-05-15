@@ -663,6 +663,11 @@ model Sunray150CompleteSystemGraphical_Sysblock
 
   block PerceptionInterfaceModule
     "Top-level perception interface: GPS/GNSS and Mid360 local-map data"
+    parameter Real gps_dropout_start_s = 1e9;
+    parameter Real gps_dropout_end_s = 1e9;
+    parameter Real mid360_dropout_start_s = 1e9;
+    parameter Real mid360_dropout_end_s = 1e9;
+    parameter Real nominal_obstacle_margin_m = 5.0;
     Modelica.Blocks.Interfaces.RealInput position_raw[3] 
       annotation (Placement(transformation(origin = {-110, 20}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput gps_position[3] 
@@ -673,11 +678,17 @@ model Sunray150CompleteSystemGraphical_Sysblock
       annotation (Placement(transformation(origin = {110, -35}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput health 
       annotation (Placement(transformation(origin = {110, -75}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput gps_valid
+      annotation (Placement(transformation(origin = {110, -105}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput mid360_valid
+      annotation (Placement(transformation(origin = {110, -130}, extent = {{-5, -5}, {5, 5}})));
   equation
     gps_position = position_raw;
     local_position = position_raw;
-    obstacle_margin = 5.0;
-    health = 1;
+    gps_valid = if time >= gps_dropout_start_s and time <= gps_dropout_end_s then 0 else 1;
+    mid360_valid = if time >= mid360_dropout_start_s and time <= mid360_dropout_end_s then 0 else 1;
+    obstacle_margin = if mid360_valid > 0.5 then nominal_obstacle_margin_m else 0.2;
+    health = 0.5 * gps_valid + 0.5 * mid360_valid;
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {0, 100, 150}, fillColor = {242, 252, 255}, fillPattern = FillPattern.Solid),
@@ -688,12 +699,17 @@ model Sunray150CompleteSystemGraphical_Sysblock
 
   block V6XFlightControllerModule
     "Top-level V6X/PX6C flight-controller interface"
+    parameter Real estimator_position_T = 0.08;
+    parameter Real estimator_attitude_T = 0.03;
+    parameter Real estimator_motor_T = 0.05;
     Modelica.Blocks.Interfaces.RealInput gps_position[3] 
       annotation (Placement(transformation(origin = {-110, 55}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealInput attitude_raw[3] 
       annotation (Placement(transformation(origin = {-110, 10}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealInput motor_speed_raw[4] 
       annotation (Placement(transformation(origin = {-110, -45}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealInput gps_valid
+      annotation (Placement(transformation(origin = {-110, -80}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput position_est[3] 
       annotation (Placement(transformation(origin = {110, 55}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput attitude_est[3] 
@@ -702,11 +718,27 @@ model Sunray150CompleteSystemGraphical_Sysblock
       annotation (Placement(transformation(origin = {110, -45}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput health 
       annotation (Placement(transformation(origin = {110, -80}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput estimator_quality
+      annotation (Placement(transformation(origin = {110, -110}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput estimator_mode
+      annotation (Placement(transformation(origin = {110, -135}, extent = {{-5, -5}, {5, 5}})));
+    Real position_est_state[3](start = {0, 0, 0}, fixed = {true, true, true});
+    Real attitude_est_state[3](start = {0, 0, 0}, fixed = {true, true, true});
+    Real motor_speed_est_state[4](start = {53.562090367172424, -53.562090367172424, 53.562090367172424, -53.562090367172424}, fixed = {true, true, true, true});
   equation
-    position_est = gps_position;
-    attitude_est = attitude_raw;
-    motor_speed_est = motor_speed_raw;
-    health = 1;
+    for i in 1:3 loop
+      der(position_est_state[i]) = if gps_valid > 0.5 then (gps_position[i] - position_est_state[i]) / estimator_position_T else 0;
+      der(attitude_est_state[i]) = (attitude_raw[i] - attitude_est_state[i]) / estimator_attitude_T;
+      position_est[i] = position_est_state[i];
+      attitude_est[i] = attitude_est_state[i];
+    end for;
+    for i in 1:4 loop
+      der(motor_speed_est_state[i]) = (motor_speed_raw[i] - motor_speed_est_state[i]) / estimator_motor_T;
+      motor_speed_est[i] = motor_speed_est_state[i];
+    end for;
+    estimator_quality = if gps_valid > 0.5 then 1 else 0.45;
+    estimator_mode = if gps_valid > 0.5 then 1 else 2;
+    health = estimator_quality;
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {100, 70, 20}, fillColor = {255, 248, 235}, fillPattern = FillPattern.Solid),
@@ -716,12 +748,19 @@ model Sunray150CompleteSystemGraphical_Sysblock
 
   block ORINNXMissionComputerModule
     "Top-level ORIN NX mission computer with internal trajectory source"
+    parameter Real takeoff_time_s = 3.0;
+    parameter Real return_altitude_m = 1.0;
+    parameter Real landing_altitude_m = 0.15;
+    parameter Real obstacle_warning_margin_m = 0.6;
+    parameter Real estimator_degraded_threshold = 0.6;
     Modelica.Blocks.Interfaces.RealInput aircraft_position[3] 
       annotation (Placement(transformation(origin = {-110, 40}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealInput local_position[3] 
       annotation (Placement(transformation(origin = {-110, 0}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealInput obstacle_margin 
       annotation (Placement(transformation(origin = {-110, -45}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealInput estimator_quality
+      annotation (Placement(transformation(origin = {-110, -80}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput reference_position[3] 
       annotation (Placement(transformation(origin = {110, 50}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput yaw_reference 
@@ -730,12 +769,26 @@ model Sunray150CompleteSystemGraphical_Sysblock
       annotation (Placement(transformation(origin = {110, -40}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput health 
       annotation (Placement(transformation(origin = {110, -80}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput flight_mode
+      annotation (Placement(transformation(origin = {110, -110}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput active_setpoint_source
+      annotation (Placement(transformation(origin = {110, -135}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput safety_status
+      annotation (Placement(transformation(origin = {110, -160}, extent = {{-5, -5}, {5, 5}})));
+    Modelica.Blocks.Interfaces.RealOutput event_code
+      annotation (Placement(transformation(origin = {110, -185}, extent = {{-5, -5}, {5, 5}})));
     QuadrotorModel.PathPlanning.ClimbPath trajectory(gain(k = 1));
   equation
-    reference_position = trajectory.position_command;
+    flight_mode = if estimator_quality < estimator_degraded_threshold then 6 else if obstacle_margin < obstacle_warning_margin_m then 4 else if time < takeoff_time_s then 3 else 5;
+    active_setpoint_source = if flight_mode >= 6 then 90 else if flight_mode >= 4 and flight_mode < 5 then 60 else if flight_mode >= 5 then 40 else 30;
+    safety_status = if estimator_quality < estimator_degraded_threshold then 3 else if obstacle_margin < obstacle_warning_margin_m then 2 else 0;
+    event_code = if flight_mode >= 6 then 60 else if flight_mode >= 4 and flight_mode < 5 then 40 else if flight_mode >= 5 then 50 else 30;
+    reference_position[1] = if flight_mode >= 6 then 0 else trajectory.position_command[1];
+    reference_position[2] = if flight_mode >= 6 then 0 else trajectory.position_command[2];
+    reference_position[3] = if flight_mode >= 6 then return_altitude_m else if flight_mode >= 3 then trajectory.position_command[3] else landing_altitude_m;
     yaw_reference = 0;
     z_reference_rate = 0;
-    health = if obstacle_margin >= 0 then 1 else 0;
+    health = min(estimator_quality, if obstacle_margin >= obstacle_warning_margin_m then 1 else 0.6);
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {80, 80, 80}, fillColor = {248, 248, 248}, fillPattern = FillPattern.Solid),
@@ -764,7 +817,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
     Modelica.Blocks.Math.Feedback x_error;
     Modelica.Blocks.Math.Feedback y_error;
     Modelica.Blocks.Math.Feedback z_error;
-    AWFF_FullControllerFlatGraphical_Sysblock controller;
+    AWFF_FullControllerEquation_Sysblock controller;
     Modelica.Blocks.Sources.Constant hover_u1(k = hover_motor_speed_cmd);
     Modelica.Blocks.Sources.Constant hover_u2(k = -hover_motor_speed_cmd);
     Modelica.Blocks.Sources.Constant hover_u3(k = hover_motor_speed_cmd);
@@ -896,10 +949,14 @@ equation
 points={{-611.5,-84.25},{-420.75,-84.25},{-420.75,-161.25},{-412.5,-161.25}},
 color={110,130,145},
 thickness=0.08));
+  connect(perception.gps_valid, flight_controller.gps_valid)
+    annotation (Line(points={{-611,-287},{-585,-287},{-585,-330},{-413,-330}}, color={110,130,145}, thickness=0.08));
   connect(perception.local_position, mission_computer.local_position) 
     annotation (Line(points = {{-611, -140}, {-575, -140}, {-575, 170}, {-903, 170}}, color = {110, 130, 145}, thickness = 0.08));
   connect(perception.obstacle_margin, mission_computer.obstacle_margin) 
     annotation (Line(points = {{-611, -182}, {-560, -182}, {-560, 122}, {-903, 122}}, color = {110, 130, 145}, thickness = 0.08));
+  connect(flight_controller.estimator_quality, mission_computer.estimator_quality)
+    annotation (Line(points={{-137,-367},{50,-367},{50,286},{-903,286}}, color={110,130,145}, thickness=0.08));
   connect(airframe.attitude, flight_controller.attitude_raw) 
     annotation (Line(origin={0,0},
 points={{795,0},{804.5,0},{804.5,-357},{-420.75,-357},{-420.75,-217.5},{-412.5,-217.5}},
