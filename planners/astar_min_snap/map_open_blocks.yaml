@@ -38,6 +38,20 @@ astar:
   tie_breaker: 1.001
   max_iterations: 500000
 
+ego_planner:
+  enabled: true
+  control_point_spacing_m: 1.2
+  max_segments: 20
+  max_iterations: 90
+  step_size: 0.06
+  max_step_m: 0.10
+  clearance_m: 0.70
+  accept_safety_margin_m: 0.60
+  lambda_smooth: 0.35
+  lambda_collision: 2.0
+  lambda_fitness: 0.22
+  convergence_tol_m: 0.001
+
 smoothing:
   type: quintic_segment
   sample_dt_s: 0.05

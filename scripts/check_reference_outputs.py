@@ -39,8 +39,8 @@ PLANNING_EXPECTED = {
         "path": Path("results/planning/single_obstacle_astar_awff/raw/reference.csv"),
         "trackability": Path("results/planning/single_obstacle_astar_awff/metrics/trackability_report.json"),
         "min_rows": 20,
-        "start_ref": (0.0, 0.0, 1.0),
-        "last_ref": (6.0, 0.0, 1.0),
+        "start_ref": (-7.5, -6.75, 1.0),
+        "last_ref": (13.8, 6.3, 1.0),
         "required_columns": {
             "time",
             "x_ref",

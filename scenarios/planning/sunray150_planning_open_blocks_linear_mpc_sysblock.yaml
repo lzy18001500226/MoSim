@@ -24,7 +24,7 @@ controller:
 
 simulation:
   start_time_s: 0.0
-  stop_time_s: 110.457782
+  stop_time_s: 80.2129830999
   step_size_s: 0.01
   solver: Dassl
   tolerance: 0.0001

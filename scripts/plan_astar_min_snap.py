@@ -322,6 +322,32 @@ def segment_collision_free(grid: OccupancyGrid, a: Point, b: Point) -> bool:
     return True
 
 
+def segment_min_obstacle_distance(grid: OccupancyGrid, a: Point, b: Point) -> float:
+    length = distance(a, b)
+    steps = max(1, int(math.ceil(length / (grid.resolution / 2.0))))
+    best = float("inf")
+    for i in range(steps + 1):
+        ratio = i / steps
+        point = Point(a.x + (b.x - a.x) * ratio, a.y + (b.y - a.y) * ratio, a.z + (b.z - a.z) * ratio)
+        best = min(best, min_obstacle_distance(point, grid.obstacles))
+    return best
+
+
+def min_segment_path_distance(grid: OccupancyGrid, path: list[Point]) -> float:
+    if len(path) < 2:
+        return min_obstacle_distance(path[0], grid.obstacles) if path else float("inf")
+    return min(segment_min_obstacle_distance(grid, a, b) for a, b in zip(path[:-1], path[1:]))
+
+
+def path_smoothness(path: list[Point]) -> float:
+    if len(path) < 3:
+        return 0.0
+    total = 0.0
+    for a, b, c in zip(path[:-2], path[1:-1], path[2:]):
+        total += (a.x - 2.0 * b.x + c.x) ** 2 + (a.y - 2.0 * b.y + c.y) ** 2
+    return total
+
+
 def line_of_sight_simplify(
     grid: OccupancyGrid,
     path: list[Point],
@@ -344,6 +370,177 @@ def line_of_sight_simplify(
         simplified.append(path[j])
         i = j
     return simplified
+
+
+def resample_polyline(path: list[Point], spacing_m: float) -> list[Point]:
+    if len(path) <= 2 or spacing_m <= 0.0:
+        return path
+    total = path_length(path)
+    if total <= spacing_m:
+        return path
+    target_count = max(2, int(math.ceil(total / spacing_m)) + 1)
+    samples = [path[0]]
+    segment_index = 0
+    segment_start_distance = 0.0
+    segment_length = distance(path[0], path[1])
+    for sample_index in range(1, target_count - 1):
+        target_distance = total * sample_index / (target_count - 1)
+        while segment_index < len(path) - 2 and segment_start_distance + segment_length < target_distance:
+            segment_start_distance += segment_length
+            segment_index += 1
+            segment_length = distance(path[segment_index], path[segment_index + 1])
+        ratio = 0.0 if segment_length <= 1e-9 else (target_distance - segment_start_distance) / segment_length
+        a = path[segment_index]
+        b = path[segment_index + 1]
+        samples.append(Point(a.x + (b.x - a.x) * ratio, a.y + (b.y - a.y) * ratio, a.z + (b.z - a.z) * ratio))
+    samples.append(path[-1])
+    return samples
+
+
+def nearest_obstacle_gradient(point: Point, obstacle: dict[str, Any]) -> tuple[float, float]:
+    kind = obstacle.get("type")
+    if kind == "box":
+        lo = point_from(obstacle["min"])
+        hi = point_from(obstacle["max"])
+        cx = min(max(point.x, lo.x), hi.x)
+        cy = min(max(point.y, lo.y), hi.y)
+        vx = point.x - cx
+        vy = point.y - cy
+        norm = math.hypot(vx, vy)
+        if norm > 1e-9:
+            return vx / norm, vy / norm
+        clearances = [
+            (abs(point.x - lo.x), -1.0, 0.0),
+            (abs(hi.x - point.x), 1.0, 0.0),
+            (abs(point.y - lo.y), 0.0, -1.0),
+            (abs(hi.y - point.y), 0.0, 1.0),
+        ]
+        _, gx, gy = min(clearances, key=lambda item: item[0])
+        return gx, gy
+    if kind in {"cylinder", "sphere"}:
+        center = point_from(obstacle["center"])
+        vx = point.x - center.x
+        vy = point.y - center.y
+        norm = math.hypot(vx, vy)
+        if norm > 1e-9:
+            return vx / norm, vy / norm
+    return 1.0, 0.0
+
+
+def min_obstacle_distance_and_gradient(point: Point, obstacles: list[dict[str, Any]]) -> tuple[float, tuple[float, float]]:
+    if not obstacles:
+        return float("inf"), (1.0, 0.0)
+    nearest = min(obstacles, key=lambda obstacle: obstacle_distance(point, obstacle))
+    return obstacle_distance(point, nearest), nearest_obstacle_gradient(point, nearest)
+
+
+def clamp_to_bounds(point: Point, grid: OccupancyGrid) -> Point:
+    return Point(
+        max(grid.x_min, min(grid.x_max, point.x)),
+        max(grid.y_min, min(grid.y_max, point.y)),
+        grid.z_plan,
+    )
+
+
+def ego_optimize_path(
+    grid: OccupancyGrid,
+    guide_path: list[Point],
+    ego_config: dict[str, Any],
+) -> tuple[list[Point], dict[str, Any]]:
+    """EGO-inspired ESDF-free local smoothing around an A* guide path.
+
+    This ports the useful planner behavior into a dependency-free project script:
+    keep the A* guide as the topological seed, optimize intermediate waypoints with
+    smoothness, guide-fitness, and geometric collision-clearance costs, then only
+    accept the result if the final path is still collision-free against the truth map.
+    """
+    if not ego_config.get("enabled", False) or len(guide_path) <= 2:
+        return guide_path, {"ego_planner_enabled": bool(ego_config.get("enabled", False)), "ego_optimizer_accepted": False}
+
+    spacing = float(ego_config.get("control_point_spacing_m", 1.2))
+    max_segments = int(ego_config.get("max_segments", ego_config.get("max_control_points", 20)))
+    max_points = max_segments + 1
+    control_points = list(guide_path) if len(guide_path) <= max_points else resample_polyline(guide_path, spacing)
+    if len(control_points) > max_points:
+        control_points = resample_polyline(guide_path, max(path_length(guide_path) / max(1, max_points - 1), spacing))
+    guide_points = list(control_points)
+    iterations = int(ego_config.get("max_iterations", 80))
+    step_size = float(ego_config.get("step_size", 0.08))
+    clearance = float(ego_config.get("clearance_m", grid.safety_margin))
+    lambda_smooth = float(ego_config.get("lambda_smooth", 0.35))
+    lambda_collision = float(ego_config.get("lambda_collision", 1.8))
+    lambda_fitness = float(ego_config.get("lambda_fitness", 0.18))
+    max_step = float(ego_config.get("max_step_m", 0.12))
+    accept_margin = float(ego_config.get("accept_safety_margin_m", grid.safety_margin))
+
+    points = list(control_points)
+    best_points = list(points)
+    best_min_distance = min_segment_path_distance(grid, points)
+    best_objective = path_smoothness(points)
+    for _ in range(iterations):
+        updated = list(points)
+        max_delta = 0.0
+        for i in range(1, len(points) - 1):
+            p = points[i]
+            prev_p = points[i - 1]
+            next_p = points[i + 1]
+            guide_p = guide_points[i]
+            grad_x = lambda_smooth * (2.0 * p.x - prev_p.x - next_p.x) + lambda_fitness * (p.x - guide_p.x)
+            grad_y = lambda_smooth * (2.0 * p.y - prev_p.y - next_p.y) + lambda_fitness * (p.y - guide_p.y)
+            clearance_distance, clearance_grad = min_obstacle_distance_and_gradient(p, grid.obstacles)
+            if clearance_distance < clearance:
+                gap = clearance - clearance_distance
+                grad_x -= lambda_collision * gap * clearance_grad[0]
+                grad_y -= lambda_collision * gap * clearance_grad[1]
+            delta_x = max(-max_step, min(max_step, -step_size * grad_x))
+            delta_y = max(-max_step, min(max_step, -step_size * grad_y))
+            candidate = clamp_to_bounds(Point(p.x + delta_x, p.y + delta_y, p.z), grid)
+            if (
+                segment_min_obstacle_distance(grid, updated[i - 1], candidate) >= accept_margin
+                and segment_min_obstacle_distance(grid, candidate, points[i + 1]) >= accept_margin
+            ):
+                updated[i] = candidate
+                max_delta = max(max_delta, math.hypot(candidate.x - p.x, candidate.y - p.y))
+        points = updated
+        current_min_distance = min_segment_path_distance(grid, points)
+        current_objective = path_smoothness(points) + max(0.0, accept_margin - current_min_distance) * 1000.0
+        if current_min_distance >= accept_margin and current_objective <= best_objective:
+            best_min_distance = current_min_distance
+            best_objective = current_objective
+            best_points = list(points)
+        if max_delta < float(ego_config.get("convergence_tol_m", 1e-3)):
+            break
+
+    optimized = list(best_points)
+    for _ in range(3):
+        changed = False
+        for i in range(1, len(optimized) - 1):
+            if (
+                segment_min_obstacle_distance(grid, optimized[i - 1], optimized[i]) < accept_margin
+                or segment_min_obstacle_distance(grid, optimized[i], optimized[i + 1]) < accept_margin
+            ):
+                optimized[i] = guide_points[i]
+                changed = True
+        if not changed:
+            break
+    segment_min_distance = min_segment_path_distance(grid, optimized)
+    collision_free = segment_min_distance > 0.0
+    accepted = segment_min_distance >= accept_margin
+    report = {
+        "ego_planner_enabled": True,
+        "ego_optimizer_accepted": accepted,
+        "ego_source": "EGO-Planner-inspired ESDF-free B-spline/local trajectory optimization",
+        "ego_control_point_count": len(optimized),
+        "ego_clearance_m": clearance,
+        "ego_accept_safety_margin_m": accept_margin,
+        "ego_min_control_point_distance_m": best_min_distance,
+        "ego_min_segment_distance_m": segment_min_distance,
+        "ego_iterations": iterations,
+    }
+    if not accepted:
+        report["ego_reject_reason"] = "optimized path failed segment collision or safety-margin check; using A* guide path"
+        return guide_path, report
+    return optimized, report
 
 
 def fit_segment_limit(
@@ -539,6 +736,8 @@ def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], li
         simplified = line_of_sight_simplify(planning_grid, raw_path)
         local_report = {"local_planning_enabled": False}
         max_segment_length_m = None
+    ego_config = require_mapping(config, "ego_planner")
+    simplified, ego_report = ego_optimize_path(planning_grid, simplified, ego_config)
     max_model_segments = int(config.get("model_segment_limit", 5))
     simplified_before_fit = simplified
     simplified = fit_segment_limit(planning_grid, simplified, max_model_segments, max_segment_length_m)
@@ -572,6 +771,7 @@ def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], li
             "simplified_path": [point.as_tuple() for point in simplified],
             "segment_durations": segment_durations(simplified, limits, scale),
             **local_report,
+            **ego_report,
         }
     )
     return raw_path, simplified, rows, report
