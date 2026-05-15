@@ -2,7 +2,7 @@ experiment_id: sunray150_planning_open_blocks_linear_mpc_sysblock
 scene_id: planning_open_blocks
 controller_id: linear_mpc_sysblock
 priority: P1
-evidence_level: real_sysplorer_mcp_sysblock_planning_open_blocks_linear_mpc
+evidence_level: real_sysplorer_mcp_sysblock_local_replanning_linear_mpc
 
 model:
   source_package: QuadrotorExperiments
@@ -12,7 +12,7 @@ model:
   extra_model_files:
     - models/QuadrotorExperiments/PlannedQuinticReference.mo
     - models/QuadrotorExperiments/PlanningNavigationDisplay.mo
-  official_description: Sunray150 单机 A* 障碍避让轨迹 LinearMPC-style Sysblock 闭环
+  official_description: Sunray150 单机局部感知避障 + 实时重规划 LinearMPC-style Sysblock 闭环
 
 controller:
   params_file: controllers/linear_mpc_sysblock/default.yaml
@@ -30,10 +30,23 @@ simulation:
   tolerance: 0.0001
 
 reference:
-  type: astar_min_snap
+  type: local_sensing_receding_astar_ego_min_snap
   planner_config: planners/astar_min_snap/map_open_blocks.yaml
   file: results/planning/single_obstacle_astar_awff/raw/reference.csv
   trackability_report: results/planning/single_obstacle_astar_awff/metrics/trackability_report.json
+
+planning_acceptance:
+  trackability_report: results/planning/single_obstacle_astar_awff/metrics/trackability_report.json
+  require_local_planning: true
+  require_ego_optimizer: true
+  min_replan_count: 1
+  min_truth_obstacles: 20
+  min_known_obstacles_final: 10
+  min_obstacle_distance_m: 0.55
+  require_collision_free: true
+  local_window_radius_m: 2.5
+  notes: "规划器仅使用局部感知窗口内已发现障碍，未知真值障碍只用于环境显示和碰撞评价。"
+
 result:
   raw_file: results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/raw/sunray150_planning_open_blocks_linear_mpc_sysblock.csv
   metrics_file: results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/metrics/sunray150_planning_open_blocks_linear_mpc_sysblock.json

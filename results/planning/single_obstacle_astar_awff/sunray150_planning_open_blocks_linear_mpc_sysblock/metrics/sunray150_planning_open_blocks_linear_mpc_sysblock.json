@@ -50,7 +50,7 @@
   "fault_tolerance_score": 100.0,
   "total_health_score": 94.0968428645054,
   "source": "MWORKS_MCP",
-  "evidence_level": "real_sysplorer_mcp_sysblock_planning_open_blocks_linear_mpc",
+  "evidence_level": "real_sysplorer_mcp_sysblock_local_replanning_linear_mpc",
   "quality_checked_at": "2026-05-15T17:27:23",
   "quality_experiment_id": "sunray150_planning_open_blocks_linear_mpc_sysblock",
   "quality_scene_id": "planning_open_blocks",

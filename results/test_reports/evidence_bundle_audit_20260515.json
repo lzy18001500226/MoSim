@@ -3,7 +3,7 @@
   "scenarios_checked": 76,
   "pass_count": 76,
   "issue_count": 0,
-  "warning_count": 17,
+  "warning_count": 18,
   "results": [
     {
       "scenario": "scenarios/official/example1_awff_indi_sysblock.yaml",
@@ -685,7 +685,7 @@
       "priority": "P1",
       "active": true,
       "role": "pass_evidence",
-      "evidence_level": "real_sysplorer_mcp_sysblock_planning_open_blocks_linear_mpc",
+      "evidence_level": "real_sysplorer_mcp_sysblock_local_replanning_linear_mpc",
       "quality_status": "pass",
       "metrics_valid": true,
       "raw_rows": 8023,
@@ -699,7 +699,9 @@
       },
       "ok": true,
       "issues": [],
-      "warnings": []
+      "warnings": [
+        "planning_acceptance: local_replan_count=96, known_obstacles=29/36, min_obstacle_distance_m=0.5998249624410645"
+      ]
     },
     {
       "scenario": "scenarios/robustness/example1_mass20_awff_pid.yaml",

@@ -42,6 +42,20 @@ def read_json(path: Path) -> dict[str, Any]:
     return data if isinstance(data, dict) else {"_read_error": "JSON root is not an object"}
 
 
+def as_float(value: Any) -> float | None:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def as_int(value: Any) -> int | None:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def count_csv_rows(path: Path) -> int | None:
     try:
         with path.open(encoding="utf-8-sig", newline="") as handle:
@@ -155,6 +169,52 @@ def audit_one(scenario_path: Path) -> dict[str, Any]:
                 issues.append(f"missing graphical_sysblock_file: {rel(graphical_file)}")
             elif graphical_model and not graphical_model_declared(graphical_file, graphical_model):
                 issues.append(f"graphical_sysblock_model not declared in file: {graphical_model}")
+
+    planning_acceptance = config.get("planning_acceptance", {})
+    if isinstance(planning_acceptance, dict) and planning_acceptance:
+        report_value = planning_acceptance.get("trackability_report")
+        report_path = repo_path(report_value) if report_value else None
+        report = read_json(report_path) if report_path and report_path.exists() else {}
+        if not report_path or not report_path.exists():
+            issues.append("missing planning_acceptance.trackability_report")
+        elif report.get("_read_error"):
+            issues.append(f"planning_acceptance report unreadable: {report['_read_error']}")
+        else:
+            if planning_acceptance.get("require_local_planning") and report.get("local_planning_enabled") is not True:
+                issues.append("planning_acceptance local_planning_enabled is not true")
+            if planning_acceptance.get("require_ego_optimizer"):
+                if report.get("ego_planner_enabled") is not True:
+                    issues.append("planning_acceptance ego_planner_enabled is not true")
+                if report.get("ego_optimizer_accepted") is not True:
+                    issues.append("planning_acceptance ego_optimizer_accepted is not true")
+            if planning_acceptance.get("require_collision_free"):
+                if as_int(report.get("collision_count")) not in {0, None}:
+                    issues.append(f"planning_acceptance collision_count={report.get('collision_count')}")
+                if as_int(report.get("inflated_collision_count")) not in {0, None}:
+                    issues.append(f"planning_acceptance inflated_collision_count={report.get('inflated_collision_count')}")
+            min_replans = as_int(planning_acceptance.get("min_replan_count"))
+            actual_replans = as_int(report.get("local_replan_count"))
+            if min_replans is not None and (actual_replans is None or actual_replans < min_replans):
+                issues.append(f"planning_acceptance local_replan_count={actual_replans}, expected >= {min_replans}")
+            min_truth = as_int(planning_acceptance.get("min_truth_obstacles"))
+            actual_truth = as_int(report.get("truth_obstacle_count"))
+            if min_truth is not None and (actual_truth is None or actual_truth < min_truth):
+                issues.append(f"planning_acceptance truth_obstacle_count={actual_truth}, expected >= {min_truth}")
+            min_known = as_int(planning_acceptance.get("min_known_obstacles_final"))
+            actual_known = as_int(report.get("known_obstacle_count_final"))
+            if min_known is not None and (actual_known is None or actual_known < min_known):
+                issues.append(f"planning_acceptance known_obstacle_count_final={actual_known}, expected >= {min_known}")
+            min_distance = as_float(planning_acceptance.get("min_obstacle_distance_m"))
+            actual_distance = as_float(report.get("min_obstacle_distance_m"))
+            if min_distance is not None and (actual_distance is None or actual_distance < min_distance):
+                issues.append(f"planning_acceptance min_obstacle_distance_m={actual_distance}, expected >= {min_distance}")
+            warnings.append(
+                "planning_acceptance: "
+                f"local_replan_count={report.get('local_replan_count', '<missing>')}, "
+                f"known_obstacles={report.get('known_obstacle_count_final', '<missing>')}/"
+                f"{report.get('truth_obstacle_count', '<missing>')}, "
+                f"min_obstacle_distance_m={report.get('min_obstacle_distance_m', '<missing>')}"
+            )
 
     return {
         "scenario": rel(scenario_path),
