@@ -1,10 +1,10 @@
 block PlannedQuinticReference
   "Piecewise quintic reference source generated from an accepted A* planning path"
-  parameter Integer n_segments(min = 1, max = 5) = 1;
-  parameter Real p_x[6] = fill(0.0, 6);
-  parameter Real p_y[6] = fill(0.0, 6);
-  parameter Real p_z[6] = fill(1.0, 6);
-  parameter Real segment_duration[5] = fill(1.0, 5);
+  parameter Integer n_segments(min = 1, max = 16) = 1;
+  parameter Real p_x[17] = fill(0.0, 17);
+  parameter Real p_y[17] = fill(0.0, 17);
+  parameter Real p_z[17] = fill(1.0, 17);
+  parameter Real segment_duration[16] = fill(1.0, 16);
 
   Modelica.Blocks.Interfaces.RealOutput position_command[3]
     annotation(Placement(transformation(origin = {100, 40}, extent = {{-10, -10}, {10, 10}})));
@@ -58,63 +58,63 @@ protected
     y := (b - a) * smoothstepDerivative(tau, duration);
   end interpRate;
 
-  Real t1;
-  Real t2;
-  Real t3;
-  Real t4;
-  Real t5;
+  function piecewiseInterp
+    input Real value[17];
+    input Real query_time;
+    input Integer n_segments;
+    input Real segment_duration[16];
+    output Real y;
+  protected
+    Real elapsed;
+    Boolean found;
+  algorithm
+    elapsed := 0.0;
+    y := value[1];
+    found := false;
+    for i in 1:16 loop
+      if not found and i <= n_segments then
+        if query_time <= elapsed + segment_duration[i] then
+          y := interp(value[i], value[i + 1], query_time - elapsed, segment_duration[i]);
+          found := true;
+        else
+          elapsed := elapsed + segment_duration[i];
+          y := value[i + 1];
+        end if;
+      end if;
+    end for;
+  end piecewiseInterp;
+
+  function piecewiseRate
+    input Real value[17];
+    input Real query_time;
+    input Integer n_segments;
+    input Real segment_duration[16];
+    output Real y;
+  protected
+    Real elapsed;
+    Boolean found;
+  algorithm
+    elapsed := 0.0;
+    y := 0.0;
+    found := false;
+    for i in 1:16 loop
+      if not found and i <= n_segments then
+        if query_time <= elapsed + segment_duration[i] then
+          y := interpRate(value[i], value[i + 1], query_time - elapsed, segment_duration[i]);
+          found := true;
+        else
+          elapsed := elapsed + segment_duration[i];
+          y := 0.0;
+        end if;
+      end if;
+    end for;
+  end piecewiseRate;
 
 equation
-  t1 = segment_duration[1];
-  t2 = t1 + segment_duration[2];
-  t3 = t2 + segment_duration[3];
-  t4 = t3 + segment_duration[4];
-  t5 = t4 + segment_duration[5];
-
-  position_command[1] =
-    if time <= t1 then interp(p_x[1], p_x[2], time, segment_duration[1])
-    else if n_segments <= 1 then p_x[2]
-    else if time <= t2 then interp(p_x[2], p_x[3], time - t1, segment_duration[2])
-    else if n_segments <= 2 then p_x[3]
-    else if time <= t3 then interp(p_x[3], p_x[4], time - t2, segment_duration[3])
-    else if n_segments <= 3 then p_x[4]
-    else if time <= t4 then interp(p_x[4], p_x[5], time - t3, segment_duration[4])
-    else if n_segments <= 4 then p_x[5]
-    else if time <= t5 then interp(p_x[5], p_x[6], time - t4, segment_duration[5])
-    else p_x[6];
-  position_command[2] =
-    if time <= t1 then interp(p_y[1], p_y[2], time, segment_duration[1])
-    else if n_segments <= 1 then p_y[2]
-    else if time <= t2 then interp(p_y[2], p_y[3], time - t1, segment_duration[2])
-    else if n_segments <= 2 then p_y[3]
-    else if time <= t3 then interp(p_y[3], p_y[4], time - t2, segment_duration[3])
-    else if n_segments <= 3 then p_y[4]
-    else if time <= t4 then interp(p_y[4], p_y[5], time - t3, segment_duration[4])
-    else if n_segments <= 4 then p_y[5]
-    else if time <= t5 then interp(p_y[5], p_y[6], time - t4, segment_duration[5])
-    else p_y[6];
-  position_command[3] =
-    if time <= t1 then interp(p_z[1], p_z[2], time, segment_duration[1])
-    else if n_segments <= 1 then p_z[2]
-    else if time <= t2 then interp(p_z[2], p_z[3], time - t1, segment_duration[2])
-    else if n_segments <= 2 then p_z[3]
-    else if time <= t3 then interp(p_z[3], p_z[4], time - t2, segment_duration[3])
-    else if n_segments <= 3 then p_z[4]
-    else if time <= t4 then interp(p_z[4], p_z[5], time - t3, segment_duration[4])
-    else if n_segments <= 4 then p_z[5]
-    else if time <= t5 then interp(p_z[5], p_z[6], time - t4, segment_duration[5])
-    else p_z[6];
-  z_ref_rate =
-    if time <= t1 then interpRate(p_z[1], p_z[2], time, segment_duration[1])
-    else if n_segments <= 1 then 0.0
-    else if time <= t2 then interpRate(p_z[2], p_z[3], time - t1, segment_duration[2])
-    else if n_segments <= 2 then 0.0
-    else if time <= t3 then interpRate(p_z[3], p_z[4], time - t2, segment_duration[3])
-    else if n_segments <= 3 then 0.0
-    else if time <= t4 then interpRate(p_z[4], p_z[5], time - t3, segment_duration[4])
-    else if n_segments <= 4 then 0.0
-    else if time <= t5 then interpRate(p_z[5], p_z[6], time - t4, segment_duration[5])
-    else 0.0;
+  position_command[1] = piecewiseInterp(p_x, time, n_segments, segment_duration);
+  position_command[2] = piecewiseInterp(p_y, time, n_segments, segment_duration);
+  position_command[3] = piecewiseInterp(p_z, time, n_segments, segment_duration);
+  z_ref_rate = piecewiseRate(p_z, time, n_segments, segment_duration);
   yaw_ref = 0.0;
 
   annotation(

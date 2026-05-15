@@ -1,27 +1,550 @@
 {
-  "sample_count": 252,
-  "duration_s": 12.565074200250645,
-  "max_velocity_m_s": 0.9215253512237961,
-  "max_acceleration_m_s2": 1.3531114368882604,
-  "max_jerk_m_s3": 7.133842122857276,
-  "max_tilt_rad": 0.13711321164853005,
-  "min_obstacle_distance_m": 0.3551878993767516,
+  "sample_count": 2640,
+  "duration_s": 132.17254290258683,
+  "max_velocity_m_s": 0.3932157390807799,
+  "max_acceleration_m_s2": 0.37405625517804647,
+  "max_jerk_m_s3": 1.1197995268916563,
+  "max_tilt_rad": 0.038124640812684914,
+  "min_obstacle_distance_m": 0.5290437962511787,
   "collision_count": 0,
-  "inflated_collision_count": 0,
-  "dynamic_violation_count": 0,
+  "inflated_collision_count": 35,
+  "dynamic_violation_count": 35,
   "predicted_saturation_ratio": 0.0,
-  "trackability_score": 1.0,
-  "accepted": true,
-  "time_scale": 2.44140625,
-  "rescale_iteration": 4,
+  "trackability_score": 0.9904744528414449,
+  "accepted": false,
+  "time_scale": 3.814697265625,
+  "rescale_iteration": 6,
   "planner_id": "astar_min_snap",
   "map_id": "map_open_blocks",
   "planning_success": true,
-  "astar_iterations": 109,
-  "raw_path_points": 31,
-  "simplified_path_points": 4,
-  "path_length_m": 6.110412461907112,
-  "safety_margin_m": 0.35,
+  "astar_iterations": 144236,
+  "truth_obstacle_count": 36,
+  "raw_path_points": 4243,
+  "simplified_path_points_before_fit": 13,
+  "simplified_path_points": 13,
+  "model_segment_limit": 16,
+  "path_length_m": 27.718591269324577,
+  "safety_margin_m": 0.55,
+  "truth_obstacles": [
+    {
+      "type": "cylinder",
+      "center": [
+        1.881,
+        -4.376,
+        1.0
+      ],
+      "radius": 0.315,
+      "height": 1.816,
+      "z_min": 0.0,
+      "z_max": 1.816
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        1.884,
+        3.678,
+        1.0
+      ],
+      "radius": 0.419,
+      "height": 2.334,
+      "z_min": 0.0,
+      "z_max": 2.334
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        10.902,
+        3.883,
+        1.0
+      ],
+      "radius": 0.394,
+      "height": 2.126,
+      "z_min": 0.0,
+      "z_max": 2.126
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        1.702,
+        0.148,
+        1.0
+      ],
+      "radius": 0.302,
+      "height": 1.53,
+      "z_min": 0.0,
+      "z_max": 1.53
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -1.575,
+        2.814,
+        1.0
+      ],
+      "radius": 0.435,
+      "height": 1.983,
+      "z_min": 0.0,
+      "z_max": 1.983
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        5.494,
+        -2.088,
+        1.0
+      ],
+      "radius": 0.292,
+      "height": 1.911,
+      "z_min": 0.0,
+      "z_max": 1.911
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -0.014,
+        -0.335,
+        1.0
+      ],
+      "radius": 0.297,
+      "height": 2.384,
+      "z_min": 0.0,
+      "z_max": 2.384
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        10.012,
+        5.89,
+        1.0
+      ],
+      "radius": 0.426,
+      "height": 1.657,
+      "z_min": 0.0,
+      "z_max": 1.657
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        4.23,
+        0.91,
+        1.0
+      ],
+      "radius": 0.401,
+      "height": 2.21,
+      "z_min": 0.0,
+      "z_max": 2.21
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        2.451,
+        -1.173,
+        1.0
+      ],
+      "radius": 0.402,
+      "height": 1.712,
+      "z_min": 0.0,
+      "z_max": 1.712
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        11.364,
+        0.084,
+        1.0
+      ],
+      "radius": 0.31,
+      "height": 1.713,
+      "z_min": 0.0,
+      "z_max": 1.713
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        9.169,
+        -6.594,
+        1.0
+      ],
+      "radius": 0.402,
+      "height": 2.347,
+      "z_min": 0.0,
+      "z_max": 2.347
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -7.395,
+        3.471,
+        1.0
+      ],
+      "radius": 0.34,
+      "height": 2.007,
+      "z_min": 0.0,
+      "z_max": 2.007
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        0.918,
+        -5.92,
+        1.0
+      ],
+      "radius": 0.349,
+      "height": 1.894,
+      "z_min": 0.0,
+      "z_max": 1.894
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        7.382,
+        -1.415,
+        1.0
+      ],
+      "radius": 0.422,
+      "height": 2.353,
+      "z_min": 0.0,
+      "z_max": 2.353
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        11.768,
+        -1.273,
+        1.0
+      ],
+      "radius": 0.292,
+      "height": 2.284,
+      "z_min": 0.0,
+      "z_max": 2.284
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -6.531,
+        -1.828,
+        1.0
+      ],
+      "radius": 0.405,
+      "height": 1.525,
+      "z_min": 0.0,
+      "z_max": 1.525
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        5.862,
+        6.488,
+        1.0
+      ],
+      "radius": 0.416,
+      "height": 1.993,
+      "z_min": 0.0,
+      "z_max": 1.993
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -5.937,
+        -3.695,
+        1.0
+      ],
+      "radius": 0.405,
+      "height": 1.992,
+      "z_min": 0.0,
+      "z_max": 1.992
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        5.21,
+        4.036,
+        1.0
+      ],
+      "radius": 0.426,
+      "height": 1.819,
+      "z_min": 0.0,
+      "z_max": 1.819
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        2.507,
+        1.751,
+        1.0
+      ],
+      "radius": 0.422,
+      "height": 1.774,
+      "z_min": 0.0,
+      "z_max": 1.774
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        13.416,
+        -4.303,
+        1.0
+      ],
+      "radius": 0.313,
+      "height": 2.203,
+      "z_min": 0.0,
+      "z_max": 2.203
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        8.239,
+        -4.297,
+        1.0
+      ],
+      "radius": 0.296,
+      "height": 1.693,
+      "z_min": 0.0,
+      "z_max": 1.693
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        3.51,
+        -6.275,
+        1.0
+      ],
+      "radius": 0.407,
+      "height": 1.637,
+      "z_min": 0.0,
+      "z_max": 1.637
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        9.563,
+        -1.347,
+        1.0
+      ],
+      "radius": 0.341,
+      "height": 1.724,
+      "z_min": 0.0,
+      "z_max": 1.724
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -2.62,
+        -4.564,
+        1.0
+      ],
+      "radius": 0.421,
+      "height": 1.986,
+      "z_min": 0.0,
+      "z_max": 1.986
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        2.471,
+        -2.768,
+        1.0
+      ],
+      "radius": 0.384,
+      "height": 1.865,
+      "z_min": 0.0,
+      "z_max": 1.865
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -5.818,
+        2.681,
+        1.0
+      ],
+      "radius": 0.359,
+      "height": 1.855,
+      "z_min": 0.0,
+      "z_max": 1.855
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        5.357,
+        2.486,
+        1.0
+      ],
+      "radius": 0.314,
+      "height": 2.324,
+      "z_min": 0.0,
+      "z_max": 2.324
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        4.1,
+        5.824,
+        1.0
+      ],
+      "radius": 0.352,
+      "height": 2.187,
+      "z_min": 0.0,
+      "z_max": 2.187
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        10.986,
+        -4.697,
+        1.0
+      ],
+      "radius": 0.441,
+      "height": 1.814,
+      "z_min": 0.0,
+      "z_max": 1.814
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        7.149,
+        -6.714,
+        1.0
+      ],
+      "radius": 0.424,
+      "height": 1.983,
+      "z_min": 0.0,
+      "z_max": 1.983
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -2.917,
+        5.929,
+        1.0
+      ],
+      "radius": 0.374,
+      "height": 1.55,
+      "z_min": 0.0,
+      "z_max": 1.55
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        13.29,
+        1.016,
+        1.0
+      ],
+      "radius": 0.32,
+      "height": 2.064,
+      "z_min": 0.0,
+      "z_max": 2.064
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        13.775,
+        2.485,
+        1.0
+      ],
+      "radius": 0.377,
+      "height": 1.924,
+      "z_min": 0.0,
+      "z_max": 1.924
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        13.194,
+        -2.086,
+        1.0
+      ],
+      "radius": 0.286,
+      "height": 1.747,
+      "z_min": 0.0,
+      "z_max": 1.747
+    }
+  ],
+  "simplified_path": [
+    [
+      -7.5,
+      -6.75,
+      1.0
+    ],
+    [
+      -4.68,
+      -3.98,
+      1.0
+    ],
+    [
+      -1.6399999999999997,
+      -1.58,
+      1.0
+    ],
+    [
+      -0.8399999999999999,
+      -0.13999999999999968,
+      1.0
+    ],
+    [
+      -0.5199999999999996,
+      0.5,
+      1.0
+    ],
+    [
+      0.9199999999999999,
+      4.18,
+      1.0
+    ],
+    [
+      1.4000000000000004,
+      4.66,
+      1.0
+    ],
+    [
+      4.6,
+      4.82,
+      1.0
+    ],
+    [
+      5.24,
+      5.140000000000001,
+      1.0
+    ],
+    [
+      9.080000000000002,
+      5.140000000000001,
+      1.0
+    ],
+    [
+      9.719999999999999,
+      4.82,
+      1.0
+    ],
+    [
+      12.280000000000001,
+      5.300000000000001,
+      1.0
+    ],
+    [
+      13.8,
+      6.3,
+      1.0
+    ]
+  ],
+  "segment_durations": [
+    23.56103075957448,
+    23.08601081258813,
+    9.818678036677362,
+    4.264961199760036,
+    23.55401808782285,
+    4.04609745704583,
+    19.097313303471353,
+    4.264961199760039,
+    22.888183593750007,
+    4.2649611997600205,
+    15.524693103885385,
+    10.844769874138025
+  ],
+  "local_planning_enabled": true,
+  "local_window_radius_m": 2.5,
+  "local_commit_distance_m": 1.2,
+  "local_replan_count": 54,
+  "known_obstacle_count_final": 18,
   "config_file": "planners/astar_min_snap/map_open_blocks.yaml",
   "reference_csv": "results/planning/single_obstacle_astar_awff/raw/reference.csv"
 }

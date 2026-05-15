@@ -24,7 +24,7 @@ controller:
 
 simulation:
   start_time_s: 0.0
-  stop_time_s: 16.0
+  stop_time_s: 73.0
   step_size_s: 0.01
   solver: Dassl
   tolerance: 0.0001
@@ -47,3 +47,6 @@ result:
   extra_variables:
     z_ref_rate: planningReference.z_ref_rate
     yaw_ref: planningReference.yaw_ref
+
+planning_display:
+  collision_clearance_m: 0.55

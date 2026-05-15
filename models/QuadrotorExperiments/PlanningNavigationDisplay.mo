@@ -1,10 +1,10 @@
 model PlanningNavigationDisplay
   "Lightweight native 3D navigation display: pillar-cluster obstacle map and short-horizon local plan"
-  parameter Integer n_segments(min = 1, max = 5) = 1;
-  parameter Real p_x[6] = fill(0.0, 6);
-  parameter Real p_y[6] = fill(0.0, 6);
-  parameter Real p_z[6] = fill(1.0, 6);
-  parameter Real segment_duration[5] = fill(1.0, 5);
+  parameter Integer n_segments(min = 1, max = 16) = 1;
+  parameter Real p_x[17] = fill(0.0, 17);
+  parameter Real p_y[17] = fill(0.0, 17);
+  parameter Real p_z[17] = fill(1.0, 17);
+  parameter Real segment_duration[16] = fill(1.0, 16);
 
   parameter Real x_min = -1.0;
   parameter Real x_max = 7.0;
@@ -28,14 +28,24 @@ model PlanningNavigationDisplay
     "Abstract forward field-of-view half angle, 135 deg by default.";
   parameter Real local_costmap_update_period_s = 0.05
     "Abstract local map update period, 20 Hz.";
+  parameter Integer local_costmap_half_cells(min = 1) = 1
+    "Local grid half-width. 2 means a fixed 5x5 ground-cell window around the UAV.";
+  parameter Real local_costmap_cell_size_m = terrain_cell_size_m
+    "Abstract local occupancy-grid cell size for sensing highlight; decoupled from coarse terrain display cells.";
   parameter Real local_plan_horizon_s = 2.0
     "Short forward local plan horizon; do not show the complete global path";
-  parameter Integer max_pillars = 40;
-  parameter Integer pillar_count(min = 0, max = 40) = 0;
-  parameter Real pillar_center[40, 2] = fill(0.0, 40, 2);
-  parameter Real pillar_width[40] = fill(0.16, 40);
-  parameter Real pillar_height[40] = fill(1.8, 40);
-  parameter Real pillar_z_min[40] = fill(0.0, 40);
+  parameter Integer local_plan_point_count(min = 2, max = 6) = 6
+    "Number of sampled future points used to render the local exploratory plan curve.";
+  parameter Real local_plan_max_length_m = 1.5
+    "Limit local plan arrow length so it stays inside the local map window.";
+  parameter Real body_axis_length_m = 0.35;
+  parameter Real body_axis_diameter_m = 0.018;
+  parameter Integer max_pillars = 144;
+  parameter Integer pillar_count(min = 0, max = max_pillars) = 0;
+  parameter Real pillar_center[max_pillars, 2] = fill(0.0, max_pillars, 2);
+  parameter Real pillar_width[max_pillars] = fill(0.16, max_pillars);
+  parameter Real pillar_height[max_pillars] = fill(1.8, max_pillars);
+  parameter Real pillar_z_min[max_pillars] = fill(0.0, max_pillars);
   parameter Real terrain_cell_size_m = 0.50;
   parameter Integer terrain_x_count = integer(ceil((x_max - x_min) / terrain_cell_size_m));
   parameter Integer terrain_y_count = integer(ceil((y_max - y_min) / terrain_cell_size_m));
@@ -51,12 +61,14 @@ model PlanningNavigationDisplay
     annotation(Placement(transformation(origin = {-120, -30}, extent = {{-20, -20}, {20, 20}})));
 
 protected
-  Real segment_start[5];
-  Real segment_end[5];
+  Real segment_start[16];
+  Real segment_end[16];
   Real local_plan_end[3];
-  Real local_plan_vector[3];
-  Real local_plan_length;
-  Real local_plan_direction[3];
+  Real local_plan_point[6, 3];
+  Real local_plan_sample_time[6];
+  Real local_plan_segment_vector[5, 3];
+  Real local_plan_segment_length[5];
+  Real local_plan_segment_direction[5, 3];
   Real lookahead_time;
   Real pillar_position[max_pillars, 3];
   Real pillar_distance_to_uav[max_pillars];
@@ -67,6 +79,9 @@ protected
   Real local_heading_vector[2];
   Real local_heading_norm;
   Real local_costmap_update_index;
+  Real local_grid_center_x;
+  Real local_grid_center_y;
+  Real local_window_half_width_m;
   parameter Integer ground_pillar_count = terrain_x_count * terrain_y_count;
   parameter Integer ground_x_index[ground_pillar_count] = {
     mod(i - 1, terrain_x_count) for i in 1:ground_pillar_count};
@@ -98,34 +113,29 @@ protected
   end smoothstep;
 
   function localInterp
-    input Real value[6];
+    input Real value[17];
     input Real query_time;
     input Integer n_segments;
-    input Real segment_duration[5];
+    input Real segment_duration[16];
     output Real y;
   protected
-    Real t1;
-    Real t2;
-    Real t3;
-    Real t4;
-    Real t5;
+    Real elapsed;
+    Boolean found;
   algorithm
-    t1 := segment_duration[1];
-    t2 := t1 + segment_duration[2];
-    t3 := t2 + segment_duration[3];
-    t4 := t3 + segment_duration[4];
-    t5 := t4 + segment_duration[5];
-    y :=
-      if query_time <= t1 then value[1] + (value[2] - value[1]) * smoothstep(query_time, segment_duration[1])
-      else if n_segments <= 1 then value[2]
-      else if query_time <= t2 then value[2] + (value[3] - value[2]) * smoothstep(query_time - t1, segment_duration[2])
-      else if n_segments <= 2 then value[3]
-      else if query_time <= t3 then value[3] + (value[4] - value[3]) * smoothstep(query_time - t2, segment_duration[3])
-      else if n_segments <= 3 then value[4]
-      else if query_time <= t4 then value[4] + (value[5] - value[4]) * smoothstep(query_time - t3, segment_duration[4])
-      else if n_segments <= 4 then value[5]
-      else if query_time <= t5 then value[5] + (value[6] - value[5]) * smoothstep(query_time - t4, segment_duration[5])
-      else value[6];
+    elapsed := 0.0;
+    y := value[1];
+    found := false;
+    for i in 1:16 loop
+      if not found and i <= n_segments then
+        if query_time <= elapsed + segment_duration[i] then
+          y := value[i] + (value[i + 1] - value[i]) * smoothstep(query_time - elapsed, segment_duration[i]);
+          found := true;
+        else
+          elapsed := elapsed + segment_duration[i];
+          y := value[i + 1];
+        end if;
+      end if;
+    end for;
   end localInterp;
 
 public
@@ -211,7 +221,7 @@ public
     length = {if pillar_active[i] then pillar_width[i] else 0.0 for i in 1:max_pillars},
     width = {if pillar_active[i] then pillar_width[i] else 0.0 for i in 1:max_pillars},
     height = {if pillar_active[i] then pillar_height[i] else 0.0 for i in 1:max_pillars},
-    color = {if pillar_sensed[i] then {70, 160, 255} else {210, 210, 210} for i in 1:max_pillars},
+    color = {if pillar_sensed[i] then {70, 160, 255} else {135, 135, 135} for i in 1:max_pillars},
     each specularCoefficient = 0.25);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape ground_pillar[ground_pillar_count](
     each shapeType = "box",
@@ -223,19 +233,55 @@ public
     length = {ground_length[i] * terrain_fill_scale for i in 1:ground_pillar_count},
     width = {ground_width[i] * terrain_fill_scale for i in 1:ground_pillar_count},
     height = {ground_height[i] for i in 1:ground_pillar_count},
-    color = {if ground_sensed[i] then {210, 232, 255} else {255, 255, 255} for i in 1:ground_pillar_count},
+    color = {if ground_sensed[i] then {210, 232, 255} else {118, 118, 118} for i in 1:ground_pillar_count},
     each specularCoefficient = 0.15);
-  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape local_plan_line(
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape local_plan_curve[5](
+    each shapeType = "cylinder",
+    each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
+    r = {local_plan_point[i, :] for i in 1:5},
+    each r_shape = {0, 0, 0},
+    lengthDirection = {local_plan_segment_direction[i, :] for i in 1:5},
+    each widthDirection = {0, 0, 1},
+    length = {if i < local_plan_point_count then local_plan_segment_length[i] else 0.0 for i in 1:5},
+    each width = planned_line_diameter_m,
+    each height = planned_line_diameter_m,
+    each color = {40, 130, 255},
+    each specularCoefficient = 0.35);
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape body_x_axis(
     shapeType = "cylinder",
     R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
-    r = reference_position,
+    r = actual_position,
     r_shape = {0, 0, 0},
-    lengthDirection = local_plan_direction,
-    widthDirection = {0, 0, 1},
-    length = local_plan_length,
-    width = planned_line_diameter_m,
-    height = planned_line_diameter_m,
-    color = {40, 130, 255},
+    lengthDirection = {1, 0, 0},
+    widthDirection = {0, 1, 0},
+    length = body_axis_length_m,
+    width = body_axis_diameter_m,
+    height = body_axis_diameter_m,
+    color = {230, 50, 50},
+    specularCoefficient = 0.35);
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape body_y_axis(
+    shapeType = "cylinder",
+    R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
+    r = actual_position,
+    r_shape = {0, 0, 0},
+    lengthDirection = {0, 1, 0},
+    widthDirection = {1, 0, 0},
+    length = body_axis_length_m,
+    width = body_axis_diameter_m,
+    height = body_axis_diameter_m,
+    color = {40, 190, 80},
+    specularCoefficient = 0.35);
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape body_z_axis(
+    shapeType = "cylinder",
+    R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
+    r = actual_position,
+    r_shape = {0, 0, 0},
+    lengthDirection = {0, 0, 1},
+    widthDirection = {1, 0, 0},
+    length = body_axis_length_m,
+    width = body_axis_diameter_m,
+    height = body_axis_diameter_m,
+    color = {50, 100, 255},
     specularCoefficient = 0.35);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape current_actual_marker(
     shapeType = "sphere",
@@ -264,26 +310,39 @@ public
 
 equation
   segment_start[1] = 0.0;
-  segment_start[2] = segment_duration[1];
-  segment_start[3] = segment_start[2] + segment_duration[2];
-  segment_start[4] = segment_start[3] + segment_duration[3];
-  segment_start[5] = segment_start[4] + segment_duration[4];
-  segment_end[1] = segment_start[1] + segment_duration[1];
-  segment_end[2] = segment_start[2] + segment_duration[2];
-  segment_end[3] = segment_start[3] + segment_duration[3];
-  segment_end[4] = segment_start[4] + segment_duration[4];
-  segment_end[5] = segment_start[5] + segment_duration[5];
+  segment_end[1] = segment_duration[1];
+  for i in 2:16 loop
+    segment_start[i] = segment_end[i - 1];
+    segment_end[i] = segment_start[i] + segment_duration[i];
+  end for;
   lookahead_time = min(segment_end[n_segments], time + local_plan_horizon_s);
   local_plan_end[1] = localInterp(p_x, lookahead_time, n_segments, segment_duration);
   local_plan_end[2] = localInterp(p_y, lookahead_time, n_segments, segment_duration);
   local_plan_end[3] = localInterp(p_z, lookahead_time, n_segments, segment_duration);
-  local_plan_vector[1] = local_plan_end[1] - reference_position[1];
-  local_plan_vector[2] = local_plan_end[2] - reference_position[2];
-  local_plan_vector[3] = local_plan_end[3] - reference_position[3];
-  local_plan_length = sqrt(local_plan_vector[1] ^ 2 + local_plan_vector[2] ^ 2 + local_plan_vector[3] ^ 2);
-  local_plan_direction[1] = if local_plan_length > 1e-6 then local_plan_vector[1] / local_plan_length else 1.0;
-  local_plan_direction[2] = if local_plan_length > 1e-6 then local_plan_vector[2] / local_plan_length else 0.0;
-  local_plan_direction[3] = if local_plan_length > 1e-6 then local_plan_vector[3] / local_plan_length else 0.0;
+  local_plan_sample_time[1] = time;
+  local_plan_point[1, 1] = actual_position[1];
+  local_plan_point[1, 2] = actual_position[2];
+  local_plan_point[1, 3] = actual_position[3];
+  for i in 2:6 loop
+    local_plan_sample_time[i] = min(segment_end[n_segments],
+      time + local_plan_horizon_s * (i - 1) / max(1, local_plan_point_count - 1));
+    local_plan_point[i, 1] = localInterp(p_x, local_plan_sample_time[i], n_segments, segment_duration);
+    local_plan_point[i, 2] = localInterp(p_y, local_plan_sample_time[i], n_segments, segment_duration);
+    local_plan_point[i, 3] = localInterp(p_z, local_plan_sample_time[i], n_segments, segment_duration);
+  end for;
+  for i in 1:5 loop
+    local_plan_segment_vector[i, 1] = local_plan_point[i + 1, 1] - local_plan_point[i, 1];
+    local_plan_segment_vector[i, 2] = local_plan_point[i + 1, 2] - local_plan_point[i, 2];
+    local_plan_segment_vector[i, 3] = local_plan_point[i + 1, 3] - local_plan_point[i, 3];
+    local_plan_segment_length[i] = min(local_plan_max_length_m / max(1, local_plan_point_count - 1),
+      sqrt(local_plan_segment_vector[i, 1] ^ 2 + local_plan_segment_vector[i, 2] ^ 2 + local_plan_segment_vector[i, 3] ^ 2));
+    local_plan_segment_direction[i, 1] = if local_plan_segment_length[i] > 1e-6 then local_plan_segment_vector[i, 1] /
+      sqrt(local_plan_segment_vector[i, 1] ^ 2 + local_plan_segment_vector[i, 2] ^ 2 + local_plan_segment_vector[i, 3] ^ 2) else 1.0;
+    local_plan_segment_direction[i, 2] = if local_plan_segment_length[i] > 1e-6 then local_plan_segment_vector[i, 2] /
+      sqrt(local_plan_segment_vector[i, 1] ^ 2 + local_plan_segment_vector[i, 2] ^ 2 + local_plan_segment_vector[i, 3] ^ 2) else 0.0;
+    local_plan_segment_direction[i, 3] = if local_plan_segment_length[i] > 1e-6 then local_plan_segment_vector[i, 3] /
+      sqrt(local_plan_segment_vector[i, 1] ^ 2 + local_plan_segment_vector[i, 2] ^ 2 + local_plan_segment_vector[i, 3] ^ 2) else 0.0;
+  end for;
   local_costmap_update_index = floor(time / max(1e-6, local_costmap_update_period_s));
   sensed_position[1] = actual_position[1];
   sensed_position[2] = actual_position[2];
@@ -291,6 +350,13 @@ equation
   local_heading_vector[1] = local_plan_end[1] - sensed_position[1];
   local_heading_vector[2] = local_plan_end[2] - sensed_position[2];
   local_heading_norm = sqrt(local_heading_vector[1] ^ 2 + local_heading_vector[2] ^ 2);
+  local_grid_center_x = x_min + terrain_x_offset_m +
+    floor((sensed_position[1] - x_min - terrain_x_offset_m) / local_costmap_cell_size_m) * local_costmap_cell_size_m +
+    0.5 * local_costmap_cell_size_m;
+  local_grid_center_y = y_min + terrain_y_offset_m +
+    floor((sensed_position[2] - y_min - terrain_y_offset_m) / local_costmap_cell_size_m) * local_costmap_cell_size_m +
+    0.5 * local_costmap_cell_size_m;
+  local_window_half_width_m = (local_costmap_half_cells + 0.5) * local_costmap_cell_size_m;
 
   for i in 1:max_pillars loop
     pillar_position[i, 1] = pillar_center[i, 1];
@@ -306,8 +372,8 @@ equation
     pillar_active[i] = i <= pillar_count;
     pillar_sensed[i] = i <= pillar_count and (
       highlight_local_costmap and (
-        pillar_distance_to_uav[i] <= local_costmap_radius_m and
-        pillar_bearing_dot[i] >= cos(local_costmap_front_half_angle_rad)));
+        abs(pillar_center[i, 1] - local_grid_center_x) <= local_window_half_width_m and
+        abs(pillar_center[i, 2] - local_grid_center_y) <= local_window_half_width_m));
   end for;
 
   for i in 1:ground_pillar_count loop
@@ -328,8 +394,8 @@ equation
         (ground_distance_to_uav[i] * local_heading_norm)
       else 1.0;
     ground_sensed[i] = highlight_local_costmap and
-      ground_distance_to_uav[i] <= local_costmap_radius_m and
-      ground_bearing_dot[i] >= cos(local_costmap_front_half_angle_rad);
+      abs(ground_position[i, 1] - local_grid_center_x) <= local_window_half_width_m and
+      abs(ground_position[i, 2] - local_grid_center_y) <= local_window_half_width_m;
   end for;
 
   for i in 1:boundary_wall_x_segment_count loop

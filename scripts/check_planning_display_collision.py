@@ -17,15 +17,20 @@ def parse_real_array(text: str, name: str) -> list[float]:
 
 
 def parse_pillar_centers(text: str) -> list[tuple[float, float]]:
-    match = re.search(r"pillar_center\s*=\s*\{\{(.*?)\}\},\s*\n\s*pillar_width", text, re.S)
+    match = re.search(r"pillar_center\s*=\s*\{(.*?)\}\s*,\s*pillar_width", text, re.S)
     if not match:
         raise ValueError("Missing pillar_center parameter before pillar_width")
     centers: list[tuple[float, float]] = []
-    for pair in re.findall(r"\{([^{}]+)\}", "{{" + match.group(1) + "}}"):
+    for pair in re.findall(r"\{([^{}]+)\}", match.group(1)):
         values = [float(item.strip()) for item in pair.split(",") if item.strip()]
         if len(values) == 2:
             centers.append((values[0], values[1]))
     return centers
+
+
+def parse_int_parameter(text: str, name: str, default: int) -> int:
+    match = re.search(rf"{re.escape(name)}\s*=\s*(\d+)", text)
+    return int(match.group(1)) if match else default
 
 
 def segment_min_distance(
@@ -65,7 +70,8 @@ def main() -> int:
     p_x = parse_real_array(text, "p_x")
     p_y = parse_real_array(text, "p_y")
     centers = parse_pillar_centers(text)
-    active_centers = centers[:40]
+    pillar_count = parse_int_parameter(text, "pillar_count", len(centers))
+    active_centers = centers[:pillar_count]
 
     points = list(zip(p_x, p_y))[: n_segments + 1]
     if len(points) < n_segments + 1:

@@ -306,13 +306,19 @@ def planning_display_collision_quality(config: dict[str, Any]) -> dict[str, Any]
     checker = ROOT / "scripts" / "check_planning_display_collision.py"
     if not checker.exists():
         return {"ok": False, "skipped": False, "reason": "collision checker missing"}
+    display_config = config.get("planning_display", {})
+    clearance_m = 0.35
+    if isinstance(display_config, dict):
+        clearance_m = as_float(display_config.get("collision_clearance_m", clearance_m))
+        if not math.isfinite(clearance_m) or clearance_m <= 0.0:
+            clearance_m = 0.35
     completed = subprocess.run(
         [
             sys.executable,
             str(checker),
             str(path),
             "--required-clearance-m",
-            "0.35",
+            f"{clearance_m:g}",
         ],
         cwd=ROOT,
         text=True,

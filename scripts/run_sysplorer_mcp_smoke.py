@@ -67,6 +67,7 @@ DEFAULT_VARIABLES = {
     "u3": "controller3_2.y2",
     "u4": "controller3_2.y3",
 }
+CORE_VARIABLE_ALIASES = {"time", "x", "y", "z", "x_ref", "y_ref", "z_ref"}
 
 
 def windows_path(path: Path) -> str:
@@ -189,16 +190,17 @@ class JsonlMcpClient:
             self.proc.kill()
 
 
-def write_csv(series: list[list[float]], variables: dict[str, str], output: Path) -> None:
+def write_csv(series_by_alias: dict[str, list[float]], variables: dict[str, str], output: Path) -> None:
     names = list(variables)
-    if len(series) < len(names):
-        raise ValueError(f"Expected {len(names)} series, got {len(series)}")
-    if not series or not series[0]:
+    missing_core = [name for name in names if name in CORE_VARIABLE_ALIASES and name not in series_by_alias]
+    if missing_core:
+        raise ValueError(f"Missing required result series: {', '.join(missing_core)}")
+    if not series_by_alias or "time" not in series_by_alias or not series_by_alias["time"]:
         raise ValueError("MCP result series is empty; refusing to overwrite raw CSV")
-    row_count = len(series[0])
+    row_count = len(series_by_alias["time"])
     if row_count <= 0:
         raise ValueError("MCP result series has zero rows; refusing to overwrite raw CSV")
-    if any(len(item) != row_count for item in series):
+    if any(len(item) != row_count for item in series_by_alias.values()):
         raise ValueError("MCP result series lengths are inconsistent")
 
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -207,8 +209,43 @@ def write_csv(series: list[list[float]], variables: dict[str, str], output: Path
         writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(names)
         for index in range(row_count):
-            writer.writerow([series[column_index][index] for column_index in range(len(names))])
+            writer.writerow([
+                series_by_alias[name][index] if name in series_by_alias else ""
+                for name in names
+            ])
     temp_output.replace(output)
+
+
+def read_result_series(
+    client: JsonlMcpClient,
+    model_name: str,
+    variables: dict[str, str],
+) -> dict[str, list[float]]:
+    series_by_alias: dict[str, list[float]] = {}
+    missing: dict[str, str] = {}
+    for alias, variable in variables.items():
+        read_result = client.call_tool(
+            "result_manager",
+            {
+                "action": "get_vars_values",
+                "model_name": model_name,
+                "var_names": [variable],
+            },
+            timeout_s=240,
+        )
+        data = read_result.get("data") if read_result.get("ok") else None
+        if isinstance(data, list) and data and isinstance(data[0], list) and data[0]:
+            series_by_alias[alias] = data[0]
+        else:
+            missing[alias] = variable
+    missing_core = [name for name in missing if name in CORE_VARIABLE_ALIASES]
+    if missing_core:
+        detail = ", ".join(f"{name}={missing[name]}" for name in missing_core)
+        raise RuntimeError(f"Missing required result variables: {detail}")
+    if missing:
+        detail = ", ".join(f"{name}={variable}" for name, variable in missing.items())
+        print(f"Warning: optional result variables were not exported and will be blank in CSV: {detail}", file=sys.stderr)
+    return series_by_alias
 
 
 def write_metrics(
@@ -257,7 +294,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--target-time", default="0,50", help="Comma-separated simulation target time range")
     parser.add_argument("--raw-output", type=Path, default=Path("results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv"))
     parser.add_argument("--metrics-json", type=Path, default=Path("results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.json"))
-    parser.add_argument("--metrics-csv", type=Path, default=Path("results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.csv"))
+    parser.add_argument("--metrics-csv", type=Path)
     parser.add_argument("--log-output", type=Path, default=Path("results/official/example1_step/official_example1_pid_baseline/logs/sysplorer_example1_pid_baseline_full.jsonl"))
     parser.add_argument(
         "--native-result-dir",
@@ -630,19 +667,8 @@ def run_mcp_simulation(
         if sim_result.get("simulate_api_reported_failure"):
             raise RuntimeError(f"Simulation API reported failure; refusing to read partial/empty result: {sim_result}")
 
-        read_result = client.call_tool(
-            "result_manager",
-            {
-                "action": "get_vars_values",
-                "model_name": args.model_name,
-                "var_names": list(variables.values()),
-            },
-            timeout_s=240,
-        )
-        if not read_result.get("ok"):
-            raise RuntimeError(f"Result read failed: {read_result}")
-
-        write_csv(read_result["data"], variables, args.raw_output)
+        result_series = read_result_series(client, args.model_name, variables)
+        write_csv(result_series, variables, args.raw_output)
         write_metrics(
             args.raw_output,
             args.metrics_json,
@@ -677,7 +703,7 @@ def run_mcp_simulation(
             print(f"GUI model: {status['model']}")
             print(f"GUI plot: {status['plot']}")
             print(f"GUI animation: {status['animation']}")
-        print(f"Rows: {len(read_result['data'][0])}")
+        print(f"Rows: {len(result_series['time'])}")
         print(f"Check model: ok")
         print(f"Simulate model: ok")
         return {
@@ -687,7 +713,7 @@ def run_mcp_simulation(
             "native_result": native_result,
             "gui_result": gui_result,
             "log_output": final_log_output,
-            "rows": len(read_result["data"][0]),
+            "rows": len(result_series["time"]),
         }
     finally:
         if not success and active_log_output != final_log_output:
@@ -699,6 +725,8 @@ def run_mcp_simulation(
 
 def main() -> int:
     args = parse_args()
+    if args.metrics_csv is None:
+        args.metrics_csv = args.metrics_json.with_suffix(".csv")
     wrapper = resolve_wrapper(args.wrapper)
     active_log_output, final_log_output = prepare_log_output(args.log_output)
     client = JsonlMcpClient(wrapper_command(wrapper), active_log_output)

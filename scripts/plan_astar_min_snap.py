@@ -8,6 +8,7 @@ import csv
 import heapq
 import json
 import math
+import random
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -47,6 +48,10 @@ def require_mapping(config: dict[str, Any], key: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(f"`{key}` must be a mapping")
     return value
+
+
+def clone_jsonable(value: dict[str, Any]) -> dict[str, Any]:
+    return json.loads(json.dumps(value))
 
 
 def point_from(value: Iterable[float]) -> Point:
@@ -105,6 +110,87 @@ def min_obstacle_distance(point: Point, obstacles: list[dict[str, Any]]) -> floa
     if not obstacles:
         return float("inf")
     return min(obstacle_distance(point, obstacle) for obstacle in obstacles)
+
+
+def obstacle_xy_center(obstacle: dict[str, Any]) -> tuple[float, float]:
+    kind = obstacle.get("type")
+    if kind == "box":
+        lo = point_from(obstacle["min"])
+        hi = point_from(obstacle["max"])
+        return ((lo.x + hi.x) / 2.0, (lo.y + hi.y) / 2.0)
+    if kind in {"cylinder", "sphere"}:
+        center = point_from(obstacle["center"])
+        return (center.x, center.y)
+    raise ValueError(f"Unsupported obstacle type: {kind}")
+
+
+def obstacle_xy_radius(obstacle: dict[str, Any]) -> float:
+    kind = obstacle.get("type")
+    if kind == "box":
+        lo = point_from(obstacle["min"])
+        hi = point_from(obstacle["max"])
+        return 0.5 * math.hypot(hi.x - lo.x, hi.y - lo.y)
+    if kind in {"cylinder", "sphere"}:
+        return float(obstacle["radius"])
+    raise ValueError(f"Unsupported obstacle type: {kind}")
+
+
+def expand_random_obstacles(config: dict[str, Any]) -> dict[str, Any]:
+    """Expand a reproducible random obstacle specification into concrete obstacles."""
+    expanded = clone_jsonable(config)
+    map_config = require_mapping(expanded, "map")
+    random_spec = map_config.get("random_obstacles")
+    if not isinstance(random_spec, dict) or not random_spec.get("enabled", False):
+        return expanded
+
+    bounds = require_mapping(map_config, "bounds")
+    x_min, x_max = bounds_value(bounds, "x")
+    y_min, y_max = bounds_value(bounds, "y")
+    z_min, _ = bounds_value(bounds, "z")
+    start = point_from(map_config["start"])
+    goal = point_from(map_config["goal"])
+    rng = random.Random(int(random_spec.get("seed", map_config.get("seed", 20260515))))
+    count = int(random_spec.get("count", 24))
+    radius_min, radius_max = [float(v) for v in random_spec.get("radius_range", [0.28, 0.46])]
+    height_min, height_max = [float(v) for v in random_spec.get("height_range", [1.5, 2.4])]
+    start_goal_clearance = float(random_spec.get("start_goal_clearance_m", 1.8))
+    min_spacing = float(random_spec.get("min_spacing_m", 1.05))
+    edge_margin = float(random_spec.get("edge_margin_m", 0.7))
+    obstacles = list(map_config.get("obstacles", []))
+
+    attempts = 0
+    while len(obstacles) < count and attempts < count * 500:
+        attempts += 1
+        radius = rng.uniform(radius_min, radius_max)
+        x = rng.uniform(x_min + edge_margin, x_max - edge_margin)
+        y = rng.uniform(y_min + edge_margin, y_max - edge_margin)
+        center = Point(x, y, start.z)
+        if distance(center, start) < start_goal_clearance or distance(center, goal) < start_goal_clearance:
+            continue
+        too_close = False
+        for obstacle in obstacles:
+            ox, oy = obstacle_xy_center(obstacle)
+            if math.hypot(x - ox, y - oy) < min_spacing + radius + obstacle_xy_radius(obstacle):
+                too_close = True
+                break
+        if too_close:
+            continue
+        height = rng.uniform(height_min, height_max)
+        obstacles.append(
+            {
+                "type": "cylinder",
+                "center": [round(x, 3), round(y, 3), round(start.z, 3)],
+                "radius": round(radius, 3),
+                "height": round(height, 3),
+                "z_min": round(z_min, 3),
+                "z_max": round(z_min + height, 3),
+            }
+        )
+
+    if len(obstacles) < count:
+        raise RuntimeError(f"Generated only {len(obstacles)} random obstacles, requested {count}")
+    map_config["obstacles"] = obstacles
+    return expanded
 
 
 class OccupancyGrid:
@@ -223,18 +309,71 @@ def segment_collision_free(grid: OccupancyGrid, a: Point, b: Point) -> bool:
     return True
 
 
-def line_of_sight_simplify(grid: OccupancyGrid, path: list[Point]) -> list[Point]:
+def line_of_sight_simplify(
+    grid: OccupancyGrid,
+    path: list[Point],
+    max_segment_length_m: float | None = None,
+) -> list[Point]:
     if len(path) <= 2:
         return path
     simplified = [path[0]]
     i = 0
     while i < len(path) - 1:
         j = len(path) - 1
-        while j > i + 1 and not segment_collision_free(grid, path[i], path[j]):
+        while j > i + 1 and (
+            not segment_collision_free(grid, path[i], path[j])
+            or (
+                max_segment_length_m is not None
+                and distance(path[i], path[j]) > max_segment_length_m
+            )
+        ):
             j -= 1
         simplified.append(path[j])
         i = j
     return simplified
+
+
+def fit_segment_limit(
+    grid: OccupancyGrid,
+    path: list[Point],
+    max_segments: int,
+    max_segment_length_m: float | None = None,
+) -> list[Point]:
+    """Reduce a collision-free polyline to the model segment limit without inventing a hand-tuned corridor."""
+    if len(path) <= max_segments + 1:
+        return path
+    candidate = line_of_sight_simplify(grid, path, max_segment_length_m)
+    if len(candidate) <= max_segments + 1:
+        return candidate
+
+    fitted = [candidate[0]]
+    current_index = 0
+    remaining_segments = max_segments
+    while remaining_segments > 1 and current_index < len(candidate) - 1:
+        max_index = len(candidate) - remaining_segments
+        best_index = current_index + 1
+        for next_index in range(max_index, current_index, -1):
+            if segment_collision_free(grid, candidate[current_index], candidate[next_index]) and (
+                max_segment_length_m is None
+                or distance(candidate[current_index], candidate[next_index]) <= max_segment_length_m
+            ):
+                best_index = next_index
+                break
+        fitted.append(candidate[best_index])
+        current_index = best_index
+        remaining_segments -= 1
+    if fitted[-1] != candidate[-1]:
+        if not segment_collision_free(grid, fitted[-1], candidate[-1]) or (
+            max_segment_length_m is not None
+            and distance(fitted[-1], candidate[-1]) > max_segment_length_m
+        ):
+            raise RuntimeError(
+                f"Unable to fit path with {len(candidate) - 1} simplified segments into max_segments={max_segments}"
+            )
+        fitted.append(candidate[-1])
+    if len(fitted) > max_segments + 1:
+        raise RuntimeError(f"Path fitting exceeded max_segments={max_segments}: {len(fitted) - 1}")
+    return fitted
 
 
 def quintic_coefficients(p0: float, p1: float, duration: float) -> tuple[float, float, float, float, float, float]:
@@ -369,9 +508,23 @@ def evaluate_reference(grid: OccupancyGrid, rows: list[dict[str, float]], limits
 
 
 def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], list[dict[str, float]], dict[str, Any]]:
+    config = expand_random_obstacles(config)
     grid = OccupancyGrid(require_mapping(config, "map"))
-    raw_path, iterations = astar(grid, require_mapping(config, "astar"))
-    simplified = line_of_sight_simplify(grid, raw_path)
+    local_config = require_mapping(config, "local_planning")
+    if local_config.get("enabled", False):
+        raw_path, simplified, iterations, local_report, planning_grid = plan_receding_horizon(config, grid, local_config)
+        max_segment_length_m = float(local_config.get("max_simplified_segment_length_m", 0.0))
+        if max_segment_length_m <= 0.0:
+            max_segment_length_m = None
+    else:
+        raw_path, iterations = astar(grid, require_mapping(config, "astar"))
+        simplified = line_of_sight_simplify(grid, raw_path)
+        local_report = {"local_planning_enabled": False}
+        planning_grid = grid
+        max_segment_length_m = None
+    max_model_segments = int(config.get("model_segment_limit", 5))
+    simplified_before_fit = simplified
+    simplified = fit_segment_limit(planning_grid, simplified, max_model_segments, max_segment_length_m)
     limits = require_mapping(config, "limits")
     smoothing = require_mapping(config, "smoothing")
     sample_dt = float(smoothing.get("sample_dt_s", 0.05))
@@ -391,13 +544,104 @@ def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], li
             "map_id": config.get("map_id", "unknown"),
             "planning_success": True,
             "astar_iterations": iterations,
+            "truth_obstacle_count": len(grid.obstacles),
             "raw_path_points": len(raw_path),
+            "simplified_path_points_before_fit": len(simplified_before_fit),
             "simplified_path_points": len(simplified),
+            "model_segment_limit": max_model_segments,
             "path_length_m": path_length(simplified),
             "safety_margin_m": grid.safety_margin,
+            "truth_obstacles": grid.obstacles,
+            "simplified_path": [point.as_tuple() for point in simplified],
+            "segment_durations": segment_durations(simplified, limits, scale),
+            **local_report,
         }
     )
     return raw_path, simplified, rows, report
+
+
+def discovered_obstacles(
+    truth_obstacles: list[dict[str, Any]],
+    position: Point,
+    known_indices: set[int],
+    window_radius_m: float,
+) -> set[int]:
+    discovered = set(known_indices)
+    for index, obstacle in enumerate(truth_obstacles):
+        x, y = obstacle_xy_center(obstacle)
+        if abs(x - position.x) <= window_radius_m and abs(y - position.y) <= window_radius_m:
+            discovered.add(index)
+    return discovered
+
+
+def plan_receding_horizon(
+    config: dict[str, Any],
+    truth_grid: OccupancyGrid,
+    local_config: dict[str, Any],
+) -> tuple[list[Point], list[Point], int, dict[str, Any], OccupancyGrid]:
+    """Plan with only locally discovered obstacles, then validate against truth."""
+    map_config = clone_jsonable(require_mapping(config, "map"))
+    truth_obstacles = list(map_config.get("obstacles", []))
+    window_radius_m = float(local_config.get("window_radius_m", 2.5))
+    commit_distance_m = float(local_config.get("commit_distance_m", 1.2))
+    goal_tolerance_m = float(local_config.get("goal_tolerance_m", truth_grid.resolution))
+    max_replans = int(local_config.get("max_replans", 80))
+    astar_config = require_mapping(config, "astar")
+    current = truth_grid.start
+    goal = truth_grid.goal
+    known_indices: set[int] = set()
+    raw_path = [current]
+    committed_path = [current]
+    total_iterations = 0
+    replan_count = 0
+
+    while distance(current, goal) > goal_tolerance_m:
+        if replan_count >= max_replans:
+            raise RuntimeError(f"local planning exceeded max_replans={max_replans}")
+        known_indices = discovered_obstacles(truth_obstacles, current, known_indices, window_radius_m)
+        local_map = clone_jsonable(map_config)
+        local_map["start"] = [current.x, current.y, current.z]
+        local_map["obstacles"] = [truth_obstacles[index] for index in sorted(known_indices)]
+        local_grid = OccupancyGrid(local_map)
+        segment_raw, iterations = astar(local_grid, astar_config)
+        total_iterations += iterations
+        raw_path.extend(segment_raw[1:])
+        if len(segment_raw) < 2:
+            break
+        committed = segment_raw[-1]
+        traveled = 0.0
+        for point in segment_raw[1:]:
+            step = distance(current, point)
+            traveled += step
+            committed = point
+            if traveled >= commit_distance_m:
+                break
+        if distance(committed, current) <= 1e-9:
+            raise RuntimeError("local planner did not advance")
+        if truth_grid.is_occupied_point(committed):
+            known_indices = discovered_obstacles(truth_obstacles, committed, known_indices, window_radius_m)
+            continue
+        committed_path.append(committed)
+        current = committed
+        replan_count += 1
+
+    if distance(committed_path[-1], goal) > 1e-9:
+        committed_path.append(goal)
+    final_known_map = clone_jsonable(map_config)
+    final_known_map["obstacles"] = [truth_obstacles[index] for index in sorted(known_indices)]
+    planning_grid = OccupancyGrid(final_known_map)
+    max_segment_length_m = float(local_config.get("max_simplified_segment_length_m", 0.0))
+    if max_segment_length_m <= 0.0:
+        max_segment_length_m = None
+    simplified = line_of_sight_simplify(planning_grid, committed_path, max_segment_length_m)
+    return raw_path, simplified, total_iterations, {
+        "local_planning_enabled": True,
+        "local_window_radius_m": window_radius_m,
+        "local_commit_distance_m": commit_distance_m,
+        "local_replan_count": replan_count,
+        "known_obstacle_count_final": len(known_indices),
+        "truth_obstacle_count": len(truth_obstacles),
+    }, planning_grid
 
 
 def path_length(path: list[Point]) -> float:
@@ -503,8 +747,9 @@ def output_paths(config: dict[str, Any], output_dir: Path | None) -> dict[str, P
 
 
 def write_outputs(config_path: Path, config: dict[str, Any], output_dir: Path | None) -> dict[str, Path]:
-    grid = OccupancyGrid(require_mapping(config, "map"))
-    raw_path, simplified, rows, report = plan_trackable(config)
+    expanded_config = expand_random_obstacles(config)
+    grid = OccupancyGrid(require_mapping(expanded_config, "map"))
+    raw_path, simplified, rows, report = plan_trackable(expanded_config)
     paths = output_paths(config, output_dir)
     write_path_csv(paths["raw_path"], raw_path)
     write_path_csv(paths["path"], simplified)

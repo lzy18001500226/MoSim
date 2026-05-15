@@ -361,8 +361,8 @@ display policy        = rolling local costmap + short-horizon local plan
 Acceptance for manual review:
 
 ```text
-1. Light-gray obstacle map and 1.2 m boundary walls appear, with 10 adjacent vertical pillar clusters, with 3-4 irregularly placed pillars per obstacle plus wider white terrain pillars covering the map; it must align with the map boundary and must not look like tiny loose cubes, two giant boxes, or a dense point cloud. Obstacles are objective environment objects and must remain visible; Mid360/local-map coverage is shown by recoloring sensed ground cells and obstacles, not by hiding unsensed obstacles.
-2. Blue local plan segment shows only the short forward horizon, not the full global path.
+1. Random obstacle map appears as compact pillar clusters plus terrain pillars covering the map. For GUI stability on the 3x map, the online review model uses 1.0 m terrain cells and no boundary walls. Obstacles are objective environment objects, but the visual layer must emphasize local sensing: cells and obstacles inside the current local window are bright/highlighted, while all unsensed area is black and updates with the UAV. The path must come from local-window receding A*, not from manually placed obstacles that leave a preselected corridor. The planner may only use obstacles already discovered inside the current local sensing window; undiscovered truth obstacles are allowed in the rendered environment only for review and collision evaluation.
+2. Blue local plan segment starts at the UAV actual position and shows only the short forward horizon inside the local 5x5 map window, not the full global path or far-future regions.
 3. Current actual and reference markers are small enough not to cover the UAV or path.
 4. Actual flown trajectory is inspected from MWORKS/native result or a separate viewer,
    not from dynamic history states injected into the closed-loop model.
@@ -448,6 +448,15 @@ session. Treat the numerical simulation as valid only if `check_model`,
 `simulate_model`, raw CSV, and quality gates passed; treat GUI visual review as
 incomplete until the user manually opens the matching `Result.msr` or the MCP
 `plot_manager/result_manager` path is fixed.
+
+For large 3D planning displays, do not increase visual object density just to
+make the map look smoother. Dense terrain grids can make the Sysplorer result
+viewer show a blank window or freeze when clicked. The `planning_open_blocks`
+review model therefore uses 1.0 m terrain cells on the 3x map while retaining
+the obstacle pillars, 1.2 m boundary walls, 5x5 local-map recoloring, body axes,
+and short local plan segment. If the GUI freezes, stop retrying animation
+creation, keep the numerical evidence, reduce display load, and rerun a short
+`check_model`/`simulate_model` smoke before any full run.
 
 The durable evidence remains raw CSV, metrics JSON/CSV, logs, figures, and
 replay JSON. Native result files support human review but are intentionally not

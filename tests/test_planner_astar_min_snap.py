@@ -54,6 +54,12 @@ def test_open_blocks_planner_outputs_trackable_reference() -> None:
         raise AssertionError(report)
     if report["trackability_score"] < 0.8:
         raise AssertionError(report)
+    if report.get("local_planning_enabled") is not True:
+        raise AssertionError("planning_open_blocks must use local-window receding planning")
+    if report.get("known_obstacle_count_final", 0) >= report.get("truth_obstacle_count", 0):
+        raise AssertionError("Planner appears to know every truth obstacle; local sensing constraint regressed")
+    if report.get("local_window_radius_m") != 2.5:
+        raise AssertionError(report)
     required = {
         "time",
         "x_ref",

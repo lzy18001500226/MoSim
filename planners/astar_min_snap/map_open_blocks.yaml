@@ -1,30 +1,41 @@
 planner_id: astar_min_snap
 map_id: map_open_blocks
 priority: P1
+model_segment_limit: 16
 
 map:
   bounds:
-    x: [-1.0, 7.0]
-    y: [-2.5, 2.5]
+    x: [-9.0, 15.0]
+    y: [-7.5, 7.5]
     z: [0.0, 3.0]
-  resolution: 0.2
-  safety_margin: 0.35
-  start: [0.0, 0.0, 1.0]
-  goal: [6.0, 0.0, 1.0]
-  obstacles:
-    - type: box
-      min: [2.0, -1.2, 0.0]
-      max: [2.8, -0.2, 2.2]
-    - type: cylinder
-      center: [4.2, 0.8, 1.0]
-      radius: 0.45
-      height: 2.0
+  resolution: 0.16
+  safety_margin: 0.55
+  start: [-7.5, -6.75, 1.0]
+  goal: [13.8, 6.3, 1.0]
+  obstacles: []
+  random_obstacles:
+    enabled: true
+    seed: 20260517
+    count: 36
+    radius_range: [0.28, 0.46]
+    height_range: [1.5, 2.4]
+    edge_margin_m: 0.7
+    min_spacing_m: 0.8
+    start_goal_clearance_m: 1.7
+
+local_planning:
+  enabled: true
+  window_radius_m: 2.5
+  commit_distance_m: 1.2
+  max_simplified_segment_length_m: 4.0
+  goal_tolerance_m: 0.35
+  max_replans: 130
 
 astar:
   neighbor_type: 8
   heuristic: euclidean
   tie_breaker: 1.001
-  max_iterations: 200000
+  max_iterations: 500000
 
 smoothing:
   type: quintic_segment
@@ -32,7 +43,7 @@ smoothing:
   yaw_mode: face_velocity
 
 limits:
-  velocity_reference_m_s: 1.2
+  velocity_reference_m_s: 0.8
   velocity_max_m_s: 2.0
   acceleration_max_m_s2: 2.5
   jerk_max_m_s3: 8.0
