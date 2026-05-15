@@ -249,7 +249,16 @@ def astar(grid: OccupancyGrid, astar_config: dict[str, Any]) -> tuple[list[Point
     goal = grid.index_from_point(grid.goal)
     offsets = neighbor_offsets(int(astar_config.get("neighbor_type", 8)))
     tie_breaker = float(astar_config.get("tie_breaker", 1.001))
+    progress_penalty = float(astar_config.get("progress_penalty", 0.0))
     max_iterations = int(astar_config.get("max_iterations", 200000))
+    start_point = grid.point_from_index(start)
+    goal_point = grid.point_from_index(goal)
+    goal_vector_x = goal_point.x - start_point.x
+    goal_vector_y = goal_point.y - start_point.y
+    goal_norm = math.hypot(goal_vector_x, goal_vector_y)
+    if goal_norm > 1e-9:
+        goal_vector_x /= goal_norm
+        goal_vector_y /= goal_norm
     open_heap: list[tuple[float, int, GridIndex]] = []
     counter = 0
     g_score: dict[GridIndex, float] = {start: 0.0}
@@ -275,6 +284,10 @@ def astar(grid: OccupancyGrid, astar_config: dict[str, Any]) -> tuple[list[Point
                 continue
             neighbor_point = grid.point_from_index(neighbor)
             step_cost = distance(current_point, neighbor_point)
+            if progress_penalty > 0.0 and goal_norm > 1e-9:
+                progress = (neighbor_point.x - current_point.x) * goal_vector_x + (neighbor_point.y - current_point.y) * goal_vector_y
+                if progress < 0.0:
+                    step_cost += progress_penalty * abs(progress)
             tentative = g_score[current] + step_cost
             if tentative >= g_score.get(neighbor, float("inf")):
                 continue

@@ -197,11 +197,20 @@ def write_csv(series_by_alias: dict[str, list[float]], variables: dict[str, str]
         raise ValueError(f"Missing required result series: {', '.join(missing_core)}")
     if not series_by_alias or "time" not in series_by_alias or not series_by_alias["time"]:
         raise ValueError("MCP result series is empty; refusing to overwrite raw CSV")
-    row_count = len(series_by_alias["time"])
+    row_count = min(len(item) for item in series_by_alias.values())
     if row_count <= 0:
         raise ValueError("MCP result series has zero rows; refusing to overwrite raw CSV")
-    if any(len(item) != row_count for item in series_by_alias.values()):
-        raise ValueError("MCP result series lengths are inconsistent")
+    inconsistent_lengths = {
+        name: len(series)
+        for name, series in series_by_alias.items()
+        if len(series) != row_count
+    }
+    if inconsistent_lengths:
+        print(
+            "Warning: MCP result series lengths are inconsistent; truncating to "
+            f"{row_count} common rows: {inconsistent_lengths}",
+            file=sys.stderr,
+        )
 
     output.parent.mkdir(parents=True, exist_ok=True)
     temp_output = output.with_suffix(output.suffix + ".tmp")

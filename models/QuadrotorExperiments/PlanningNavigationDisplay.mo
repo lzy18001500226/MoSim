@@ -34,7 +34,7 @@ model PlanningNavigationDisplay
     "Abstract local occupancy-grid cell size for sensing highlight; decoupled from coarse terrain display cells.";
   parameter Real local_plan_horizon_s = 2.0
     "Short forward local plan horizon; do not show the complete global path";
-  parameter Integer local_plan_point_count(min = 2, max = 6) = 6
+  parameter Integer local_plan_point_count(min = 2, max = 12) = 12
     "Number of sampled future points used to render the local exploratory plan curve.";
   parameter Real local_plan_max_length_m = 1.5
     "Limit local plan arrow length so it stays inside the local map window.";
@@ -54,6 +54,9 @@ model PlanningNavigationDisplay
   parameter Real terrain_fill_scale = 1.0;
   parameter Real terrain_x_offset_m = -0.25;
   parameter Real terrain_y_offset_m = 0.0;
+  parameter Boolean show_continuous_ground = true
+    "Render a continuous base plate below terrain texture cells to avoid visual cracks.";
+  parameter Real continuous_ground_thickness_m = 0.03;
 
   Modelica.Blocks.Interfaces.RealInput actual_position[3]
     annotation(Placement(transformation(origin = {-120, 30}, extent = {{-20, -20}, {20, 20}})));
@@ -64,11 +67,11 @@ protected
   Real segment_start[20];
   Real segment_end[20];
   Real local_plan_end[3];
-  Real local_plan_point[6, 3];
-  Real local_plan_sample_time[6];
-  Real local_plan_segment_vector[5, 3];
-  Real local_plan_segment_length[5];
-  Real local_plan_segment_direction[5, 3];
+  Real local_plan_point[12, 3];
+  Real local_plan_sample_time[12];
+  Real local_plan_segment_vector[11, 3];
+  Real local_plan_segment_length[11];
+  Real local_plan_segment_direction[11, 3];
   Real lookahead_time;
   Real pillar_position[max_pillars, 3];
   Real pillar_distance_to_uav[max_pillars];
@@ -223,6 +226,18 @@ public
     height = {if pillar_active[i] then pillar_height[i] else 0.0 for i in 1:max_pillars},
     color = {if pillar_sensed[i] then {70, 160, 255} else {135, 135, 135} for i in 1:max_pillars},
     each specularCoefficient = 0.25);
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape continuous_ground(
+    shapeType = "box",
+    R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
+    r = {x_min, y_min, map_z - continuous_ground_thickness_m},
+    r_shape = {0, 0, 0},
+    lengthDirection = {1, 0, 0},
+    widthDirection = {0, 1, 0},
+    length = if show_continuous_ground then x_max - x_min else 0.0,
+    width = if show_continuous_ground then y_max - y_min else 0.0,
+    height = continuous_ground_thickness_m,
+    color = {180, 180, 180},
+    specularCoefficient = 0.12);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape ground_pillar[ground_pillar_count](
     each shapeType = "box",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
@@ -235,14 +250,14 @@ public
     height = {ground_height[i] for i in 1:ground_pillar_count},
     color = {if ground_sensed[i] then {210, 232, 255} else {118, 118, 118} for i in 1:ground_pillar_count},
     each specularCoefficient = 0.15);
-  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape local_plan_curve[5](
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape local_plan_curve[11](
     each shapeType = "cylinder",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
-    r = {local_plan_point[i, :] for i in 1:5},
+    r = {local_plan_point[i, :] for i in 1:11},
     each r_shape = {0, 0, 0},
-    lengthDirection = {local_plan_segment_direction[i, :] for i in 1:5},
+    lengthDirection = {local_plan_segment_direction[i, :] for i in 1:11},
     each widthDirection = {0, 0, 1},
-    length = {if i < local_plan_point_count then local_plan_segment_length[i] else 0.0 for i in 1:5},
+    length = {if i < local_plan_point_count then local_plan_segment_length[i] else 0.0 for i in 1:11},
     each width = planned_line_diameter_m,
     each height = planned_line_diameter_m,
     each color = {40, 130, 255},
@@ -323,14 +338,14 @@ equation
   local_plan_point[1, 1] = actual_position[1];
   local_plan_point[1, 2] = actual_position[2];
   local_plan_point[1, 3] = actual_position[3];
-  for i in 2:6 loop
+  for i in 2:12 loop
     local_plan_sample_time[i] = min(segment_end[n_segments],
       time + local_plan_horizon_s * (i - 1) / max(1, local_plan_point_count - 1));
     local_plan_point[i, 1] = localInterp(p_x, local_plan_sample_time[i], n_segments, segment_duration);
     local_plan_point[i, 2] = localInterp(p_y, local_plan_sample_time[i], n_segments, segment_duration);
     local_plan_point[i, 3] = localInterp(p_z, local_plan_sample_time[i], n_segments, segment_duration);
   end for;
-  for i in 1:5 loop
+  for i in 1:11 loop
     local_plan_segment_vector[i, 1] = local_plan_point[i + 1, 1] - local_plan_point[i, 1];
     local_plan_segment_vector[i, 2] = local_plan_point[i + 1, 2] - local_plan_point[i, 2];
     local_plan_segment_vector[i, 3] = local_plan_point[i + 1, 3] - local_plan_point[i, 3];
