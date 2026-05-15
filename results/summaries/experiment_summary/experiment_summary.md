@@ -1,8 +1,8 @@
 # Experiment Summary
 
 - CSV: `results/summaries/experiment_summary/experiment_summary.csv`
-- Total scenarios: `71`
-- Done: `71`
+- Total scenarios: `76`
+- Done: `76`
 - Pending: `0`
 - Invalid: `0`
 
@@ -10,6 +10,10 @@
 
 | Experiment | Scene | Controller | RMSE | Health | Quality | Status |
 |---|---|---|---:|---:|---|---|
+| sunray150_planning_corridor_gate_linear_mpc_sysblock | planning_corridor_gate | linear_mpc_sysblock | 0.125095 | 94.2377 | pass | done |
+| sunray150_planning_open_blocks_linear_mpc_sysblock | planning_open_blocks | linear_mpc_sysblock | 0.142898 | 94.0968 | pass | done |
+| official_example1_planar_figure8_trail_sysblock | official_example1_planar_figure8 | linear_mpc_sysblock | 0.0188624 | 93.3638 | pass | done |
+| official_example1_helical_figure8_trail_sysblock | official_example1_helical_figure8 | linear_mpc_sysblock | 0.0188363 | 93.3606 | pass | done |
 | official_example3_linear_mpc_sysblock | official_example3 | linear_mpc_sysblock | 0.084584 | 68.3362 | pass | done |
 | official_example1_linear_mpc_sysblock | official_example1 | linear_mpc_sysblock | 0.135014 | 65.6656 | pass | done |
 | official_example2_linear_mpc_sysblock | official_example2 | linear_mpc_sysblock | 0.429079 | 62.0578 | pass | done |
@@ -81,6 +85,7 @@
 | robust_rotor1_loss15_example1_pid_baseline | robust_rotor1_loss15_example1 | pid_baseline | 0.39212 | 35.6258 | needs_iteration | done |
 | robust_rotor2_loss15_example1_pid_baseline | robust_rotor2_loss15_example1 | pid_baseline | 0.391914 | 35.3967 | needs_iteration | done |
 | robust_rotor3_loss15_example1_pid_baseline | robust_rotor3_loss15_example1 | pid_baseline | 0.392261 | 35.3937 | needs_iteration | done |
+| sunray150_complete_system_gps_dropout_sysblock | system_gps_dropout | awff_complete_system | 2.28966 | 0 | pass | done |
 
 ## Needs Attention
 
@@ -108,6 +113,7 @@
 
 | Experiment | Source | Evidence Level | Raw File |
 |---|---|---|---|
+| sunray150_complete_system_gps_dropout_sysblock | MWORKS_MCP | real_sysplorer_mcp_complete_system_gps_dropout | `results/system/gps_dropout/sunray150_complete_system_gps_dropout_sysblock/raw/sunray150_complete_system_gps_dropout_sysblock.csv` |
 | official_example1_awff_pid | MWORKS_MCP | real_sysplorer_mcp_full_awff_pid | `results/raw/official_example1_awff_pid.csv` |
 | official_example3_awff_pid | MWORKS_MCP | real_sysplorer_mcp_full_awff_pid | `results/official/example3_figure8/official_example3_awff_pid/raw/official_example3_awff_pid.csv` |
 | official_example2_awff_pid_helix_tuned | MWORKS_MCP | real_sysplorer_mcp_full_awff_pid_helix_tuned | `results/official/example2_helix/official_example2_awff_pid_helix_tuned/raw/official_example2_awff_pid_helix_tuned.csv` |
@@ -121,6 +127,8 @@
 | official_example1_improved_pid | MWORKS_MCP | real_sysplorer_mcp_full_improved_pid | `results/raw/official_example1_improved_pid.csv` |
 | official_example2_improved_pid | MWORKS_MCP | real_sysplorer_mcp_full_improved_pid | `results/raw/official_example2_improved_pid.csv` |
 | official_example3_improved_pid | MWORKS_MCP | real_sysplorer_mcp_full_improved_pid | `results/raw/official_example3_improved_pid.csv` |
+| official_example1_helical_figure8_trail_sysblock | MWORKS_MCP | real_sysplorer_mcp_native_gui_helical_figure8_trail | `results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/raw/official_example1_helical_figure8_trail_sysblock.csv` |
+| official_example1_planar_figure8_trail_sysblock | MWORKS_MCP | real_sysplorer_mcp_native_gui_planar_figure8_trail | `results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/raw/official_example1_planar_figure8_trail_sysblock.csv` |
 | robust_mass20_example1_enhanced_pid | MWORKS_MCP | real_sysplorer_mcp_robust_mass20_ablation | `results/raw/robust_mass20_example1_enhanced_pid.csv` |
 | robust_mass20_example1_improved_pid | MWORKS_MCP | real_sysplorer_mcp_robust_mass20_ablation | `results/raw/robust_mass20_example1_improved_pid.csv` |
 | robust_mass20_example1_pid_baseline | MWORKS_MCP | real_sysplorer_mcp_robust_mass20_ablation | `results/raw/robust_mass20_example1_pid_baseline.csv` |
@@ -167,6 +175,8 @@
 | robust_rotor4_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_linear_mpc_online_fault_allocation_rotor_loss_wind_gust | `results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor4_loss15_wind_gust_example1_linear_mpc_online_fault_allocation_sysblock.csv` |
 | robust_rotor1_loss15_example1_linear_mpc_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_linear_mpc_rotor_loss_ablation | `results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_sysblock.csv` |
 | robust_wind_gust_example1_linear_mpc_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_linear_mpc_wind_ablation | `results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/raw/robust_wind_gust_example1_linear_mpc_sysblock.csv` |
+| sunray150_planning_corridor_gate_linear_mpc_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_planning_corridor_gate_linear_mpc | `results/planning/corridor_gate_astar_awff/sunray150_planning_corridor_gate_linear_mpc_sysblock/raw/sunray150_planning_corridor_gate_linear_mpc_sysblock.csv` |
+| sunray150_planning_open_blocks_linear_mpc_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_planning_open_blocks_linear_mpc | `results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/raw/sunray150_planning_open_blocks_linear_mpc_sysblock.csv` |
 | official_example1_qp_nmpc_safety_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_qp_nmpc_safety_full | `results/official/example1_step/official_example1_qp_nmpc_safety_sysblock/raw/official_example1_qp_nmpc_safety_sysblock.csv` |
 | official_example1_qp_nmpc_safety_return_land_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_qp_nmpc_safety_return_land | `results/official/example1_step/official_example1_qp_nmpc_safety_return_land_sysblock/raw/official_example1_qp_nmpc_safety_return_land_sysblock.csv` |
 | robust_mass20_example1_awff_sysblock | MWORKS_MCP | real_sysplorer_mcp_sysblock_robust_mass20_ablation | `results/raw/robust_mass20_example1_awff_sysblock.csv` |

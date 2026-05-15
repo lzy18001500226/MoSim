@@ -10,7 +10,7 @@
 
 质量判定规则：`check_model ok` 和 `simulate_model ok` 只说明模型可以执行；完整性能结论还必须通过 `scripts/evaluate_result_quality.py` 写入的 `quality_status`。`pass` 可支撑报告结论，`smoke_only` 只证明链路可用，`needs_iteration` 必须继续调控制器或明确写为未完成限制。当前 Example2 已通过 `helix_tuned` Enhanced PID、AWFF PID 和 AWFF Sysblock 分支解决 RMSE 门禁问题；旋翼退化场景显示“仅靠外环鲁棒控制不足”，需要控制分配或故障补偿层。
 
-证据包审查：2026-05-13 使用 `scripts/audit_evidence_bundle.py` 对 active 非 smoke 场景执行完整性审查，结果为 `scenarios_checked=60`、`issue_count=0`、`pass_evidence=46`、`boundary_or_negative_evidence=14`。14 个 `needs_iteration` 场景均为基线、边界负样本或未加故障分配的消融项，只能用于说明“低复杂度控制器在旋翼退化/复合扰动下不足”，不能作为完成控制器声明。审查报告见 `results/summaries/experiment_summary/evidence_audit.md`、`results/summaries/experiment_summary/evidence_audit.json` 和 `results/summaries/experiment_summary/simulation_gap_review.md`。
+证据包审查：2026-05-15 使用 `scripts/audit_evidence_bundle.py` 对正式场景矩阵执行完整性审查，结果为 `scenarios_checked=76`、`issue_count=0`、`pass_evidence=59`、`boundary_or_negative_evidence=17`。17 个 `needs_iteration` 场景均为基线、边界负样本或未加故障分配的消融项，只能用于说明“低复杂度控制器在旋翼退化/复合扰动下不足”，不能作为完成控制器声明。审查报告见 `results/test_reports/evidence_bundle_audit_20260515.md`、`results/test_reports/evidence_bundle_audit_20260515.json` 和 `results/人工审核清单.csv`。
 
 当前已完成的可复现资产：
 

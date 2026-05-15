@@ -112,6 +112,8 @@ def read_metrics(path: Path) -> dict[str, Any] | None:
 
 
 def is_active_scenario(config: dict[str, Any]) -> bool:
+    if str(config.get("priority", "")) == "visual-review":
+        return True
     return bool(config.get("active", True))
 
 

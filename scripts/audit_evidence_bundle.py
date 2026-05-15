@@ -238,6 +238,10 @@ def result_group(scene_id: str, scenario: str) -> str:
         return "official"
     if scenario.startswith("scenarios/robustness/") or "rotor" in scene_id or "wind" in scene_id or "mass" in scene_id:
         return "robustness"
+    if scenario.startswith("scenarios/planning/") or scene_id.startswith("planning_"):
+        return "planning"
+    if scenario.startswith("scenarios/system/") or scene_id.startswith("system_"):
+        return "system"
     return "other"
 
 
@@ -271,6 +275,8 @@ def review_priority(item: dict[str, Any]) -> str:
     if item["role"] == "boundary_or_negative_evidence":
         return "medium"
     if is_figure8_scene(item) == "yes":
+        return "high"
+    if item["scenario"].startswith("scenarios/planning/") or item["scenario"].startswith("scenarios/system/"):
         return "high"
     if "rotor" in item["scene_id"] or "wind" in item["scene_id"] or "mass" in item["scene_id"]:
         return "high"
