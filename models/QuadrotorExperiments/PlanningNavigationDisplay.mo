@@ -317,9 +317,9 @@ public
     r_shape = {0, 0, 0},
     lengthDirection = {1, 0, 0},
     widthDirection = {0, 1, 0},
-    length = marker_diameter_m * 0.75,
-    width = marker_diameter_m * 0.75,
-    height = marker_diameter_m * 0.75,
+    length = 0.0,
+    width = 0.0,
+    height = 0.0,
     color = {255, 220, 0},
     specularCoefficient = 0.4);
 
