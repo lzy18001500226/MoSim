@@ -16,6 +16,7 @@
 | Variable mapping | `docs/index/variable_mapping.md` | Standard raw CSV names vs Sysplorer result variables |
 | MathWorks to MWORKS migration | `docs/index/mathworks_to_mworks_migration.md` | How to translate MATLAB/Simulink skills into MWORKS workflows |
 | Sunray migration index | `docs/index/sunray_migration_index.md` | Sunray code/model/config index for Sysplorer migration |
+| PX4 reference index | `docs/index/px4_reference_index.md` | PX4 source map for flight modes, failsafe, setpoints, battery, ESC, and actuator interfaces |
 
 ## Project-Local Skills
 
@@ -83,6 +84,8 @@
 |---|---|
 | Sunray Sysplorer migration index | `docs/index/sunray_migration_index.md` |
 | Sunray source tree | `references/Sunray/` |
+| PX4 source reference index | `docs/index/px4_reference_index.md` |
+| PX4 source tree | `references/PX4/` |
 | CUAV/PX6C/V6X/Mid360/ORIN visual references | Source images: `references/CUAV/`; normalized model icons: `QuadrotorModel/Resources/Images/` |
 
 ## Design Docs
