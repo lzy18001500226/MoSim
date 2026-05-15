@@ -361,12 +361,27 @@ display policy        = rolling local costmap + short-horizon local plan
 Acceptance for manual review:
 
 ```text
-1. Light-gray obstacle map and 1.2 m boundary walls appear, with 10 adjacent vertical pillar clusters, with 3-4 irregularly placed pillars per obstacle plus wider white terrain pillars covering the map; it must align with the map boundary and must not look like tiny loose cubes, two giant boxes, or a dense point cloud.
+1. Light-gray obstacle map and 1.2 m boundary walls appear, with 10 adjacent vertical pillar clusters, with 3-4 irregularly placed pillars per obstacle plus wider white terrain pillars covering the map; it must align with the map boundary and must not look like tiny loose cubes, two giant boxes, or a dense point cloud. Obstacles are objective environment objects and must remain visible; Mid360/local-map coverage is shown by recoloring sensed ground cells and obstacles, not by hiding unsensed obstacles.
 2. Blue local plan segment shows only the short forward horizon, not the full global path.
 3. Current actual and reference markers are small enough not to cover the UAV or path.
 4. Actual flown trajectory is inspected from MWORKS/native result or a separate viewer,
    not from dynamic history states injected into the closed-loop model.
 ```
+
+Planning scenarios have one extra gate: tracking quality is not enough. Before
+claiming obstacle avoidance, run the display/trajectory collision check against
+the same pillar map rendered in Sysplorer:
+
+```bash
+uv run python scripts/check_planning_display_collision.py \
+  models/QuadrotorExperiments/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo \
+  --required-clearance-m 0.35
+```
+
+If this check fails, the scenario may still be useful for controller tracking
+or GUI display review, but it must not be reported as successful autonomous
+obstacle avoidance. Fix the planner data source, generated waypoints, or local
+map injection first.
 
 Do not implement actual history trails inside the Modelica/Sysplorer display
 component with `sample/pre` or `delay()`. In this project, `sample/pre`

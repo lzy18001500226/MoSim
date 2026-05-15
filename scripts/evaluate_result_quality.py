@@ -7,6 +7,7 @@ import argparse
 import csv
 import json
 import math
+import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -291,6 +292,41 @@ def fault_index_quality(
     }
 
 
+def planning_display_collision_quality(config: dict[str, Any]) -> dict[str, Any]:
+    model = config.get("model", {})
+    if not isinstance(model, dict):
+        return {"ok": True, "skipped": True, "reason": "missing model mapping"}
+    model_path = model.get("model_path_hint")
+    if not model_path:
+        return {"ok": True, "skipped": True, "reason": "missing model_path_hint"}
+    path = repo_path(model_path)
+    if not path.exists():
+        return {"ok": False, "skipped": False, "reason": f"model file missing: {path.relative_to(ROOT)}"}
+
+    checker = ROOT / "scripts" / "check_planning_display_collision.py"
+    if not checker.exists():
+        return {"ok": False, "skipped": False, "reason": "collision checker missing"}
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(checker),
+            str(path),
+            "--required-clearance-m",
+            "0.35",
+        ],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        check=False,
+    )
+    return {
+        "ok": completed.returncode == 0,
+        "skipped": False,
+        "reason": completed.stdout.strip(),
+    }
+
+
 def evaluate_quality(config: dict[str, Any], scenario_path: Path, *, min_rmse_improvement_pct: float) -> dict[str, Any]:
     experiment_id = str(config.get("experiment_id", scenario_path.stem))
     scene_id = str(config.get("scene_id", ""))
@@ -371,6 +407,17 @@ def evaluate_quality(config: dict[str, Any], scenario_path: Path, *, min_rmse_im
         if not figure8_ok:
             issues.append("figure8 shape check failed")
             recommendations.append("inspect x/y reference mapping and trajectory export before using this result in video")
+
+    if scene_id.startswith("planning_"):
+        collision_quality = planning_display_collision_quality(config)
+        result["planning_display_collision_ok"] = bool(collision_quality["ok"])
+        result["planning_display_collision_skipped"] = bool(collision_quality["skipped"])
+        result["planning_display_collision_report"] = str(collision_quality["reason"])
+        if not collision_quality["ok"]:
+            issues.append("planning display collision check failed")
+            recommendations.append(
+                "do not claim obstacle avoidance; align planner map, rendered obstacles, and reference trajectory"
+            )
 
     disturbance = config.get("disturbance", {})
     expected_fault_index = None

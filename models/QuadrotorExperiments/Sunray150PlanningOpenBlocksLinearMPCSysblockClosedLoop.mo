@@ -8,22 +8,25 @@ model Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop
     "Scale legacy controller speed increments to the Sunray150 SDF motorConstant speed domain";
 
   PlannedQuinticReference planningReference(
-    n_segments = 4,
-    p_x = {-0.5, -0.5, 1.6, 3.4, 5.2, 6.6},
-    p_y = {-2.25, -2.25, -0.9, 0.35, 1.35, 2.1},
+    n_segments = 5,
+    p_x = {-0.5, -0.5, 1.0, 2.0, 4.5, 6.6},
+    p_y = {-2.25, -2.25, -1.0, -1.0, 0.4, 2.1},
     p_z = {0.5279007479379901, 1.0, 1.0, 1.0, 1.0, 1.0},
-    segment_duration = {3.0, 6.944192775828457, 1.953125, 3.667756424422189, 1.0});
+    segment_duration = {3.0, 2.4407030237208294, 1.25, 3.5816371954736006, 3.377314021526574});
   PlanningNavigationDisplay navigationDisplay(
-    n_segments = 4,
-    p_x = {-0.5, -0.5, 1.6, 3.4, 5.2, 6.6},
-    p_y = {-2.25, -2.25, -0.9, 0.35, 1.35, 2.1},
+    n_segments = 5,
+    p_x = {-0.5, -0.5, 1.0, 2.0, 4.5, 6.6},
+    p_y = {-2.25, -2.25, -1.0, -1.0, 0.4, 2.1},
     p_z = {0.5279007479379901, 1.0, 1.0, 1.0, 1.0, 1.0},
-    segment_duration = {3.0, 6.944192775828457, 1.953125, 3.667756424422189, 1.0},
+    segment_duration = {3.0, 2.4407030237208294, 1.25, 3.5816371954736006, 3.377314021526574},
     x_min = -1.0,
     x_max = 7.0,
     y_min = -2.5,
     y_max = 2.5,
-    local_costmap_radius_m = 100.0,
+    highlight_local_costmap = true,
+    local_costmap_radius_m = 1.25,
+    local_costmap_front_half_angle_rad = 0.9599310885968813,
+    local_costmap_update_period_s = 0.05,
     pillar_count = 34,
     pillar_center = {{0.82, -1.82}, {0.99, -1.76}, {0.90, -1.58},
       {1.28, 0.86}, {1.46, 0.93}, {1.33, 1.10}, {1.55, 1.13},

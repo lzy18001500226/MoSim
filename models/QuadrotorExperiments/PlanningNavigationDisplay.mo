@@ -20,8 +20,14 @@ model PlanningNavigationDisplay
     "Shift x-edge walls along y only; do not use for inward/outward correction.";
   parameter Real planned_line_diameter_m = 0.026;
   parameter Real marker_diameter_m = 0.08;
-  parameter Real local_costmap_radius_m = 100.0
-    "Manual-review radius. Keep large here so the static pillar map is visible in Sysplorer.";
+  parameter Boolean highlight_local_costmap = true
+    "If true, render all obstacles and recolor obstacles currently covered by the abstract Mid360 local map.";
+  parameter Real local_costmap_radius_m = 2.2
+    "Abstract Mid360 local map radius used only for native 3D review.";
+  parameter Real local_costmap_front_half_angle_rad = 2.356194490192345
+    "Abstract forward field-of-view half angle, 135 deg by default.";
+  parameter Real local_costmap_update_period_s = 0.05
+    "Abstract local map update period, 20 Hz.";
   parameter Real local_plan_horizon_s = 2.0
     "Short forward local plan horizon; do not show the complete global path";
   parameter Integer max_pillars = 40;
@@ -54,7 +60,13 @@ protected
   Real lookahead_time;
   Real pillar_position[max_pillars, 3];
   Real pillar_distance_to_uav[max_pillars];
+  Real pillar_bearing_dot[max_pillars];
   Boolean pillar_active[max_pillars];
+  Boolean pillar_sensed[max_pillars];
+  Real sensed_position[3];
+  Real local_heading_vector[2];
+  Real local_heading_norm;
+  Real local_costmap_update_index;
   parameter Integer ground_pillar_count = terrain_x_count * terrain_y_count;
   parameter Integer ground_x_index[ground_pillar_count] = {
     mod(i - 1, terrain_x_count) for i in 1:ground_pillar_count};
@@ -64,6 +76,9 @@ protected
   Real ground_height[ground_pillar_count];
   Real ground_length[ground_pillar_count];
   Real ground_width[ground_pillar_count];
+  Real ground_distance_to_uav[ground_pillar_count];
+  Real ground_bearing_dot[ground_pillar_count];
+  Boolean ground_sensed[ground_pillar_count];
   parameter Integer boundary_wall_x_segment_count = terrain_y_count;
   parameter Integer boundary_wall_y_segment_count = terrain_x_count;
   Real boundary_wall_x_position[2 * boundary_wall_x_segment_count, 3];
@@ -196,7 +211,7 @@ public
     length = {if pillar_active[i] then pillar_width[i] else 0.0 for i in 1:max_pillars},
     width = {if pillar_active[i] then pillar_width[i] else 0.0 for i in 1:max_pillars},
     height = {if pillar_active[i] then pillar_height[i] else 0.0 for i in 1:max_pillars},
-    each color = {210, 210, 210},
+    color = {if pillar_sensed[i] then {70, 160, 255} else {210, 210, 210} for i in 1:max_pillars},
     each specularCoefficient = 0.25);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape ground_pillar[ground_pillar_count](
     each shapeType = "box",
@@ -208,7 +223,7 @@ public
     length = {ground_length[i] * terrain_fill_scale for i in 1:ground_pillar_count},
     width = {ground_width[i] * terrain_fill_scale for i in 1:ground_pillar_count},
     height = {ground_height[i] for i in 1:ground_pillar_count},
-    each color = {255, 255, 255},
+    color = {if ground_sensed[i] then {210, 232, 255} else {255, 255, 255} for i in 1:ground_pillar_count},
     each specularCoefficient = 0.15);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape local_plan_line(
     shapeType = "cylinder",
@@ -269,13 +284,30 @@ equation
   local_plan_direction[1] = if local_plan_length > 1e-6 then local_plan_vector[1] / local_plan_length else 1.0;
   local_plan_direction[2] = if local_plan_length > 1e-6 then local_plan_vector[2] / local_plan_length else 0.0;
   local_plan_direction[3] = if local_plan_length > 1e-6 then local_plan_vector[3] / local_plan_length else 0.0;
+  local_costmap_update_index = floor(time / max(1e-6, local_costmap_update_period_s));
+  sensed_position[1] = actual_position[1];
+  sensed_position[2] = actual_position[2];
+  sensed_position[3] = actual_position[3];
+  local_heading_vector[1] = local_plan_end[1] - sensed_position[1];
+  local_heading_vector[2] = local_plan_end[2] - sensed_position[2];
+  local_heading_norm = sqrt(local_heading_vector[1] ^ 2 + local_heading_vector[2] ^ 2);
 
   for i in 1:max_pillars loop
     pillar_position[i, 1] = pillar_center[i, 1];
     pillar_position[i, 2] = pillar_center[i, 2];
     pillar_position[i, 3] = pillar_z_min[i] + 0.5 * pillar_height[i];
-    pillar_distance_to_uav[i] = sqrt((pillar_center[i, 1] - actual_position[1]) ^ 2 + (pillar_center[i, 2] - actual_position[2]) ^ 2);
-    pillar_active[i] = i <= pillar_count and pillar_distance_to_uav[i] <= local_costmap_radius_m;
+    pillar_distance_to_uav[i] = sqrt((pillar_center[i, 1] - sensed_position[1]) ^ 2 + (pillar_center[i, 2] - sensed_position[2]) ^ 2);
+    pillar_bearing_dot[i] =
+      if pillar_distance_to_uav[i] > 1e-6 and local_heading_norm > 1e-6 then
+        ((pillar_center[i, 1] - sensed_position[1]) * local_heading_vector[1] +
+        (pillar_center[i, 2] - sensed_position[2]) * local_heading_vector[2]) /
+        (pillar_distance_to_uav[i] * local_heading_norm)
+      else 1.0;
+    pillar_active[i] = i <= pillar_count;
+    pillar_sensed[i] = i <= pillar_count and (
+      highlight_local_costmap and (
+        pillar_distance_to_uav[i] <= local_costmap_radius_m and
+        pillar_bearing_dot[i] >= cos(local_costmap_front_half_angle_rad)));
   end for;
 
   for i in 1:ground_pillar_count loop
@@ -288,6 +320,16 @@ equation
     ground_position[i, 1] = x_min + terrain_x_offset_m + ground_x_index[i] * terrain_cell_size_m + 0.5 * ground_length[i];
     ground_position[i, 2] = y_min + terrain_y_offset_m + ground_y_index[i] * terrain_cell_size_m + 0.5 * ground_width[i];
     ground_position[i, 3] = map_z + 0.5 * ground_height[i];
+    ground_distance_to_uav[i] = sqrt((ground_position[i, 1] - sensed_position[1]) ^ 2 + (ground_position[i, 2] - sensed_position[2]) ^ 2);
+    ground_bearing_dot[i] =
+      if ground_distance_to_uav[i] > 1e-6 and local_heading_norm > 1e-6 then
+        ((ground_position[i, 1] - sensed_position[1]) * local_heading_vector[1] +
+        (ground_position[i, 2] - sensed_position[2]) * local_heading_vector[2]) /
+        (ground_distance_to_uav[i] * local_heading_norm)
+      else 1.0;
+    ground_sensed[i] = highlight_local_costmap and
+      ground_distance_to_uav[i] <= local_costmap_radius_m and
+      ground_bearing_dot[i] >= cos(local_costmap_front_half_angle_rad);
   end for;
 
   for i in 1:boundary_wall_x_segment_count loop
