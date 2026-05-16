@@ -65,18 +65,30 @@ def write_png(path: Path, width: int, height: int, pixels: bytearray) -> None:
 TERRAIN_HEIGHT_MIN_M = 0.10
 TERRAIN_HEIGHT_MAX_M = 0.80
 TERRAIN_HEIGHT_SPAN_M = TERRAIN_HEIGHT_MAX_M - TERRAIN_HEIGHT_MIN_M
+TERRAIN_VIS_CELL_M = 0.20
+TERRAIN_STEP_M = 0.01
 
 
 def terrain_height_xy(x: float, y: float) -> float:
-    """Smooth deterministic height field in the 0.1-0.8 m range."""
+    """Deterministic stepped height field in the 0.1-0.8 m range."""
+    ix = math.floor((x + 45.0) / TERRAIN_VIS_CELL_M)
+    iy = math.floor((y + 30.0) / TERRAIN_VIS_CELL_M)
+    cell_jitter = math.sin(ix * 12.9898 + iy * 78.233) * 43758.5453
+    cell_jitter = 0.24 * (cell_jitter - math.floor(cell_jitter) - 0.5)
+    parity_jitter = 0.035 * (((ix + 2 * iy) % 5) - 2)
     value = (
-        0.42 * math.sin(0.075 * x + 0.031 * y + 0.4)
-        + 0.31 * math.sin(-0.044 * x + 0.089 * y + 1.7)
-        + 0.18 * math.sin(0.132 * x - 0.061 * y + 2.1)
-        + 0.09 * math.sin(0.215 * x + 0.173 * y)
+        0.30 * math.sin(0.075 * x + 0.031 * y + 0.4)
+        + 0.24 * math.sin(-0.044 * x + 0.089 * y + 1.7)
+        + 0.22 * math.sin(0.210 * x - 0.135 * y + 2.1)
+        + 0.16 * math.sin(0.390 * x + 0.310 * y)
+        + 0.08 * math.sin(0.770 * x - 0.570 * y + 0.8)
+        + cell_jitter
+        + parity_jitter
     )
-    normalized = 0.5 + 0.5 * math.tanh(1.35 * value)
-    return TERRAIN_HEIGHT_MIN_M + TERRAIN_HEIGHT_SPAN_M * normalized
+    normalized = max(0.0, min(1.0, 0.5 + 0.62 * math.tanh(1.55 * value)))
+    smooth_height = TERRAIN_HEIGHT_MIN_M + TERRAIN_HEIGHT_SPAN_M * normalized
+    stepped_height = round(smooth_height / TERRAIN_STEP_M) * TERRAIN_STEP_M
+    return max(TERRAIN_HEIGHT_MIN_M, min(TERRAIN_HEIGHT_MAX_M, stepped_height))
 
 
 def terrain_height(ix: int, iy: int, cell_m: float = 0.2, x_min: float = -45.0, y_min: float = -30.0) -> float:
@@ -329,16 +341,6 @@ def build_static_mesh_layers(
         add_box(obstacle_triangles, x - half, x + half, y - half, y + half, z_min, z_min + height)
         random_count += 1
 
-    add_terrain_grid_overlay(
-        grid_triangles,
-        bounds,
-        global_spacing_m=2.0,
-        local_patch_center=(-41.0, -26.0),
-        local_patch_size_m=4.0,
-        local_spacing_m=0.2,
-        strip_width_m=0.035,
-        z_lift_m=0.025,
-    )
     return terrain_bands, obstacle_triangles, grid_triangles, random_count, nx * ny
 
 
@@ -607,7 +609,7 @@ def generate(
     )
     write_binary_stl(
         GRID_STL,
-        grid_triangles,
+        [],
         ground_cell_m=ground_cell_m,
         obstacle_height_min_m=obstacle_height_min_m,
         obstacle_height_max_m=obstacle_height_max_m,
@@ -643,9 +645,11 @@ def generate(
         "grid_overlay_triangle_count": len(grid_triangles),
         "terrain_visualization": {
             "mode": "volumetric_ground_columns_five_height_bands_plus_grid_overlay",
-            "terrain_geometry": "0.2 m x 0.2 m cuboid columns; each cell samples its own center-point height, starts at z=0, and does not share a quantized height with its height-band neighbors",
+            "terrain_geometry": "0.2 m x 0.2 m cuboid columns; each cell samples its own center-point height, starts at z=0, and uses 0.01 m stair-step height quantization plus deterministic per-cell height jitter",
             "height_band_count": TERRAIN_BAND_COUNT,
-            "height_band_policy": "bands split STL files and colors only; they do not quantize terrain heights",
+            "height_step_m": TERRAIN_STEP_M,
+            "height_band_policy": "bands split STL files and colors only; visible stair steps come from per-cell height quantization, not from shared band heights",
+            "grid_overlay_policy": "disabled in the GUI STL to remove dark grid lines; terrain height bands keep color coding",
             "global_grid_spacing_m": 2.0,
             "local_resolution_patch": {
                 "center_m": [-41.0, -26.0],

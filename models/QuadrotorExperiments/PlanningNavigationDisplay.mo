@@ -94,6 +94,8 @@ model PlanningNavigationDisplay
     "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_obstacles_0p4_0p64_h2p5_3p0.stl";
   parameter String static_grid_mesh_uri =
     "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_terrain_grid_2m_patch0p2.stl";
+  parameter Boolean show_static_grid_overlay = false
+    "Keep false for GUI review unless explicit grid debugging is needed. Dark grid lines hide terrain stair steps.";
 
   Modelica.Blocks.Interfaces.RealInput actual_position[3]
     annotation(Placement(transformation(origin = {-120, 30}, extent = {{-20, -20}, {20, 20}})));
@@ -364,9 +366,9 @@ public
     r_shape = {0, 0, 0},
     lengthDirection = {1, 0, 0},
     widthDirection = {0, 1, 0},
-    length = if show_static_map_layers then 1.0 else 0.0,
-    width = if show_static_map_layers then 1.0 else 0.0,
-    height = if show_static_map_layers then 1.0 else 0.0,
+    length = if show_static_map_layers and show_static_grid_overlay then 1.0 else 0.0,
+    width = if show_static_map_layers and show_static_grid_overlay then 1.0 else 0.0,
+    height = if show_static_map_layers and show_static_grid_overlay then 1.0 else 0.0,
     color = {150, 150, 150},
     specularCoefficient = 0.20);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape static_grid_mesh(
