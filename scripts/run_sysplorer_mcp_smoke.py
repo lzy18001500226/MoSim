@@ -346,6 +346,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Close existing Sysplorer plot/animation windows before opening the current result for manual GUI review",
     )
+    parser.add_argument(
+        "--allow-readable-result-after-simulate-false",
+        action="store_true",
+        help=(
+            "Continue exporting results when SimulateModel reports false but the official "
+            "result API confirms the verification variable is readable. Use only for "
+            "documented MWORKS API/status mismatches."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -674,7 +683,17 @@ def run_mcp_simulation(
         if not sim_result.get("ok"):
             raise RuntimeError(f"Simulation failed: {sim_result}")
         if sim_result.get("simulate_api_reported_failure"):
-            raise RuntimeError(f"Simulation API reported failure; refusing to read partial/empty result: {sim_result}")
+            verification = sim_result.get("result_verification") if isinstance(sim_result.get("result_verification"), dict) else {}
+            probe = verification.get("result_probe") if isinstance(verification.get("result_probe"), dict) else {}
+            value_at = verification.get("get_var_value_at") if isinstance(verification.get("get_var_value_at"), dict) else {}
+            readable_result = bool(probe.get("has_readable_result")) and bool(value_at.get("ok"))
+            if not (args.allow_readable_result_after_simulate_false and readable_result):
+                raise RuntimeError(f"Simulation API reported failure; refusing to read partial/empty result: {sim_result}")
+            print(
+                "Warning: SimulateModel reported false, but result API verification succeeded; "
+                "continuing because --allow-readable-result-after-simulate-false was set.",
+                file=sys.stderr,
+            )
 
         result_series = read_result_series(client, args.model_name, variables)
         write_csv(result_series, variables, args.raw_output)

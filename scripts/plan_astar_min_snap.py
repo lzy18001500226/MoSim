@@ -1017,6 +1017,58 @@ def generate_reference(
     return rows
 
 
+def planning_terrain_height_xy(x: float, y: float) -> float:
+    """Match the static planning-map terrain used by generate_static_planning_map.py."""
+    terrain_height_min_m = 0.10
+    terrain_height_max_m = 0.80
+    terrain_height_span_m = terrain_height_max_m - terrain_height_min_m
+    terrain_vis_cell_m = 0.20
+    terrain_step_m = 0.01
+    ix = math.floor((x + 45.0) / terrain_vis_cell_m)
+    iy = math.floor((y + 30.0) / terrain_vis_cell_m)
+    cell_jitter = math.sin(ix * 12.9898 + iy * 78.233) * 43758.5453
+    cell_jitter = 0.24 * (cell_jitter - math.floor(cell_jitter) - 0.5)
+    parity_jitter = 0.035 * (((ix + 2 * iy) % 5) - 2)
+    value = (
+        0.30 * math.sin(0.075 * x + 0.031 * y + 0.4)
+        + 0.24 * math.sin(-0.044 * x + 0.089 * y + 1.7)
+        + 0.22 * math.sin(0.210 * x - 0.135 * y + 2.1)
+        + 0.16 * math.sin(0.390 * x + 0.310 * y)
+        + 0.08 * math.sin(0.770 * x - 0.570 * y + 0.8)
+        + cell_jitter
+        + parity_jitter
+    )
+    normalized = max(0.0, min(1.0, 0.5 + 0.62 * math.tanh(1.55 * value)))
+    smooth_height = terrain_height_min_m + terrain_height_span_m * normalized
+    stepped_height = round(smooth_height / terrain_step_m) * terrain_step_m
+    return max(terrain_height_min_m, min(terrain_height_max_m, stepped_height))
+
+
+def apply_altitude_profile(path: list[Point], altitude_config: dict[str, Any] | None) -> tuple[list[Point], dict[str, Any]]:
+    if not altitude_config or altitude_config.get("mode", "constant") == "constant":
+        return path, {"altitude_profile_mode": "constant"}
+    mode = str(altitude_config.get("mode", "constant"))
+    if mode != "terrain_follow_agl":
+        raise ValueError(f"Unsupported altitude_profile.mode: {mode}")
+    agl_m = float(altitude_config.get("agl_m", 1.0))
+    min_z_m = float(altitude_config.get("min_z_m", agl_m))
+    max_z_m = float(altitude_config.get("max_z_m", agl_m + 1.0))
+    profiled = [
+        Point(point.x, point.y, max(min_z_m, min(max_z_m, planning_terrain_height_xy(point.x, point.y) + agl_m)))
+        for point in path
+    ]
+    z_values = [point.z for point in profiled]
+    return profiled, {
+        "altitude_profile_mode": mode,
+        "altitude_terrain_source": str(altitude_config.get("terrain_source", "static_planning_map")),
+        "altitude_agl_m": agl_m,
+        "altitude_min_z_m": min_z_m,
+        "altitude_max_z_m": max_z_m,
+        "altitude_reference_min_z_m": min(z_values) if z_values else 0.0,
+        "altitude_reference_max_z_m": max(z_values) if z_values else 0.0,
+    }
+
+
 def norm3(row: dict[str, float], prefix: str) -> float:
     return math.sqrt(row[f"{prefix}x_ref"] ** 2 + row[f"{prefix}y_ref"] ** 2 + row[f"{prefix}z_ref"] ** 2)
 
@@ -1111,6 +1163,10 @@ def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], li
         repair_margin,
         max_model_segments,
     )
+    simplified, altitude_report = apply_altitude_profile(
+        simplified,
+        config.get("altitude_profile") if isinstance(config.get("altitude_profile"), dict) else None,
+    )
     limits = require_mapping(config, "limits")
     smoothing = require_mapping(config, "smoothing")
     smoothing_type = str(smoothing.get("type", "quintic_segment"))
@@ -1148,6 +1204,7 @@ def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], li
             "segment_durations": segment_durations(simplified, limits, scale),
             **local_report,
             **ego_report,
+            **altitude_report,
         }
     )
     return raw_path, simplified, rows, report

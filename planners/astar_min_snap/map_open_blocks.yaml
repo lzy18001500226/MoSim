@@ -123,9 +123,17 @@ ego_planner:
   convergence_tol_m: 0.001
 
 smoothing:
-  type: linear_segment
+  type: quintic_segment
   sample_dt_s: 0.05
   yaw_mode: face_velocity
+
+altitude_profile:
+  mode: terrain_follow_agl
+  terrain_source: static_planning_map
+  agl_m: 1.0
+  min_z_m: 1.0
+  max_z_m: 1.8
+  note: "XY planner remains local-obstacle based; Z reference follows the static terrain height plus AGL clearance and is tracked through the existing piecewise quintic reference block."
 
 limits:
   velocity_reference_m_s: 0.8

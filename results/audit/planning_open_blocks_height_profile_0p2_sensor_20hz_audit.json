@@ -1,0 +1,35 @@
+{
+  "source": "project_evidence_bundle_audit",
+  "scenarios_checked": 1,
+  "pass_count": 1,
+  "issue_count": 0,
+  "warning_count": 1,
+  "results": [
+    {
+      "scenario": "scenarios/planning/sunray150_planning_open_blocks_linear_mpc_sysblock.yaml",
+      "experiment_id": "sunray150_planning_open_blocks_linear_mpc_sysblock",
+      "scene_id": "planning_open_blocks",
+      "controller_id": "linear_mpc_sysblock",
+      "priority": "P1",
+      "active": true,
+      "role": "pass_evidence",
+      "evidence_level": "real_sysplorer_mcp_planning_height_profile_0p2_sensor_20hz_simulate_false_result_readable",
+      "quality_status": "pass",
+      "metrics_valid": true,
+      "raw_rows": 9078,
+      "figure_count": 8,
+      "paths": {
+        "raw_file": "results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/raw/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.csv",
+        "metrics_file": "results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/metrics/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.json",
+        "figure_dir": "results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/figures",
+        "replay_file": "results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/replay/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.json",
+        "mcp_log": "results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/logs/sysplorer_sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz_20260517.jsonl"
+      },
+      "ok": true,
+      "issues": [],
+      "warnings": [
+        "planning_acceptance: local_replan_count=189, known_obstacles=173/1016, min_obstacle_distance_m=0.3522126977037104"
+      ]
+    }
+  ]
+}

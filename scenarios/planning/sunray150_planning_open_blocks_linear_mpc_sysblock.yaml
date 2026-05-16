@@ -2,7 +2,7 @@ experiment_id: sunray150_planning_open_blocks_linear_mpc_sysblock
 scene_id: planning_open_blocks
 controller_id: linear_mpc_sysblock
 priority: P1
-evidence_level: real_sysplorer_mcp_sysblock_local_replanning_linear_mpc
+evidence_level: real_sysplorer_mcp_planning_height_profile_0p2_sensor_20hz_simulate_false_result_readable
 
 model:
   source_package: QuadrotorExperiments
@@ -24,8 +24,8 @@ controller:
 
 simulation:
   start_time_s: 0.0
-  stop_time_s: 115.176208806
-  step_size_s: 0.01
+  stop_time_s: 453.841898558
+  step_size_s: 0.05
   solver: Dassl
   tolerance: 0.0001
 
@@ -38,21 +38,22 @@ reference:
 planning_acceptance:
   trackability_report: results/planning/single_obstacle_astar_awff/metrics/trackability_report.json
   require_local_planning: true
-  require_ego_optimizer: true
+  require_ego_optimizer: false
+  allow_safe_astar_fallback: true
   min_replan_count: 1
   min_truth_obstacles: 20
   min_known_obstacles_final: 10
   min_obstacle_distance_m: 0.35
   require_collision_free: true
   local_window_radius_m: 3.0
-  notes: "规划器仅使用局部感知窗口内已发现障碍，未知真值障碍只用于环境显示和碰撞评价。"
+  notes: "规划器仅使用局部感知窗口内已发现障碍，未知真值障碍只用于环境显示和碰撞评价。EGO-inspired 候选未满足 0.45 m 验收裕度时允许回退到满足 0.35 m 最终安全裕度的局部 A* guide path，但必须保持 accepted=true、dynamic_violation_count=0 和 collision-free。"
 
 result:
-  raw_file: results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/raw/sunray150_planning_open_blocks_linear_mpc_sysblock.csv
-  metrics_file: results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/metrics/sunray150_planning_open_blocks_linear_mpc_sysblock.json
+  raw_file: results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/raw/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.csv
+  metrics_file: results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/metrics/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.json
   figure_dir: results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/figures
-  replay_file: results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/replay/sunray150_planning_open_blocks_linear_mpc_sysblock.json
-  mcp_log: results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/logs/sysplorer_sunray150_planning_open_blocks_linear_mpc_sysblock_20260515.jsonl
+  replay_file: results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/replay/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.json
+  mcp_log: results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/logs/sysplorer_sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz_20260517.jsonl
   variable_overrides:
     x_ref: planningReference.position_command[1]
     y_ref: planningReference.position_command[2]

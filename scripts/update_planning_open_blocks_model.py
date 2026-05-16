@@ -18,6 +18,7 @@ MODEL_POINT_CAPACITY = 91
 MODEL_SEGMENT_CAPACITY = 90
 GUI_RENDER_RANDOM_OBSTACLE_LIMIT = 0
 DUMMY_DISABLED_PILLAR_SIZE_M = 0.16
+LOCAL_SENSOR_CELL_SIZE_M = 0.20
 
 
 def read_yaml(path: Path) -> dict[str, Any]:
@@ -51,13 +52,29 @@ def modelica_matrix(rows: list[list[float]], *, per_line: int = 3) -> str:
 
 
 def terrain_height(x: float, y: float, map_config: dict[str, Any]) -> float:
-    bounds = map_config["bounds"]
-    x_min = float(bounds["x"][0])
-    y_min = float(bounds["y"][0])
-    terrain_cell_size_m = 1.0
-    x_index = math.floor((x - x_min) / terrain_cell_size_m)
-    y_index = math.floor((y - y_min) / terrain_cell_size_m)
-    return 0.17 + 0.40 * (0.5 + 0.5 * math.sin(0.91 * x_index + 1.37 * y_index))
+    terrain_height_min_m = 0.10
+    terrain_height_max_m = 0.80
+    terrain_height_span_m = terrain_height_max_m - terrain_height_min_m
+    terrain_vis_cell_m = 0.20
+    terrain_step_m = 0.01
+    ix = math.floor((x + 45.0) / terrain_vis_cell_m)
+    iy = math.floor((y + 30.0) / terrain_vis_cell_m)
+    cell_jitter = math.sin(ix * 12.9898 + iy * 78.233) * 43758.5453
+    cell_jitter = 0.24 * (cell_jitter - math.floor(cell_jitter) - 0.5)
+    parity_jitter = 0.035 * (((ix + 2 * iy) % 5) - 2)
+    value = (
+        0.30 * math.sin(0.075 * x + 0.031 * y + 0.4)
+        + 0.24 * math.sin(-0.044 * x + 0.089 * y + 1.7)
+        + 0.22 * math.sin(0.210 * x - 0.135 * y + 2.1)
+        + 0.16 * math.sin(0.390 * x + 0.310 * y)
+        + 0.08 * math.sin(0.770 * x - 0.570 * y + 0.8)
+        + cell_jitter
+        + parity_jitter
+    )
+    normalized = max(0.0, min(1.0, 0.5 + 0.62 * math.tanh(1.55 * value)))
+    smooth_height = terrain_height_min_m + terrain_height_span_m * normalized
+    stepped_height = round(smooth_height / terrain_step_m) * terrain_step_m
+    return max(terrain_height_min_m, min(terrain_height_max_m, stepped_height))
 
 
 def padded(values: list[float], target: int, pad_value: float) -> list[float]:
@@ -104,8 +121,7 @@ def build_reference(report: dict[str, Any], map_config: dict[str, Any]) -> dict[
         raise ValueError("simplified_path and segment_durations are inconsistent")
 
     start = path[0]
-    ground_z = terrain_height(start[0], start[1], map_config)
-    points = [[start[0], start[1], ground_z], *path]
+    points = [path[0], *path]
     segment_duration = [3.0, *durations]
     n_segments = len(segment_duration)
     if n_segments > MODEL_SEGMENT_CAPACITY:
@@ -209,6 +225,8 @@ def build_display_constructor(
 ) -> str:
     base = build_constructor("PlanningNavigationDisplay navigationDisplay", ref, map_config, pillars)
     bounds = map_config["bounds"]
+    local_radius_m = float(map_config.get("local_planning_radius_m", 2.5))
+    local_half_cells = max(1, math.ceil(local_radius_m / LOCAL_SENSOR_CELL_SIZE_M))
     return f"""{base},
     x_min = {fmt(float(bounds["x"][0]))},
     x_max = {fmt(float(bounds["x"][1]))},
@@ -219,13 +237,13 @@ def build_display_constructor(
     boundary_wall_height_m = 0.0,
     boundary_wall_thickness_m = 0.0,
     highlight_local_costmap = true,
-    local_costmap_radius_m = {fmt(float(map_config.get("local_planning_radius_m", 2.5)))},
+    local_costmap_radius_m = {fmt(local_radius_m)},
     local_costmap_front_half_angle_rad = 3.141592653589793,
     local_costmap_update_period_s = 0.05,
-    local_costmap_half_cells = 10,
-    local_costmap_cell_size_m = 0.32,
-    local_sensed_cell_size_m = 0.32,
-    local_sensed_half_cells = 10,
+    local_costmap_half_cells = {local_half_cells},
+    local_costmap_cell_size_m = {fmt(LOCAL_SENSOR_CELL_SIZE_M)},
+    local_sensed_cell_size_m = {fmt(LOCAL_SENSOR_CELL_SIZE_M)},
+    local_sensed_half_cells = {local_half_cells},
     local_plan_horizon_s = 4.0,
     local_plan_point_count = 12,
     local_plan_max_length_m = 3.5,
@@ -287,8 +305,8 @@ def update_model(model_path: Path, planner_config_path: Path, report_path: Path)
     )
     text = replace_between(
         text,
-        r"annotation\(experiment\(Algorithm = Dassl, StartTime = 0, StopTime = [^,]+, Tolerance = 0.0001, Interval = 0.01\)\);",
-        f"annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = {fmt(ref['stop_time'])}, Tolerance = 0.0001, Interval = 0.01));",
+        r"annotation\(experiment\(Algorithm = Dassl, StartTime = 0, StopTime = [^,]+, Tolerance = 0.0001, Interval = [^)]+\)\);",
+        f"annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = {fmt(ref['stop_time'])}, Tolerance = 0.0001, Interval = 0.05));",
     )
     model_path.write_text(text, encoding="utf-8")
     print(f"Updated {model_path}")
