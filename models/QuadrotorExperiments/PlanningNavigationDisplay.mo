@@ -45,6 +45,7 @@ model PlanningNavigationDisplay
   parameter Integer max_pillars = 144;
   parameter Integer pillar_count(min = 0, max = max_pillars) = 0;
   parameter Real pillar_center[max_pillars, 2] = fill(0.0, max_pillars, 2);
+  parameter Real pillar_length[max_pillars] = fill(0.16, max_pillars);
   parameter Real pillar_width[max_pillars] = fill(0.16, max_pillars);
   parameter Real pillar_height[max_pillars] = fill(1.8, max_pillars);
   parameter Real pillar_z_min[max_pillars] = fill(0.0, max_pillars);
@@ -100,6 +101,7 @@ protected
   parameter Integer ground_y_index[ground_pillar_count] = {
     terrain_render_stride * div(i - 1, terrain_render_x_count) for i in 1:ground_pillar_count};
   Real ground_position[ground_pillar_count, 3];
+  Real ground_center[ground_pillar_count, 2];
   Real ground_height[ground_pillar_count];
   Real ground_length[ground_pillar_count];
   Real ground_width[ground_pillar_count];
@@ -229,10 +231,10 @@ public
     each shapeType = "box",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
     r = {pillar_position[i, :] for i in 1:max_pillars},
-    r_shape = {if pillar_active[i] then {-0.5 * pillar_width[i], -0.5 * pillar_width[i], -0.5 * pillar_height[i]} else {0.0, 0.0, 0.0} for i in 1:max_pillars},
+    r_shape = {if pillar_active[i] then {-0.5 * pillar_length[i], -0.5 * pillar_width[i], 0.0} else {0.0, 0.0, 0.0} for i in 1:max_pillars},
     each lengthDirection = {1, 0, 0},
     each widthDirection = {0, 1, 0},
-    length = {if pillar_active[i] then pillar_width[i] else 0.0 for i in 1:max_pillars},
+    length = {if pillar_active[i] then pillar_length[i] else 0.0 for i in 1:max_pillars},
     width = {if pillar_active[i] then pillar_width[i] else 0.0 for i in 1:max_pillars},
     height = {if pillar_active[i] then pillar_height[i] else 0.0 for i in 1:max_pillars},
     color = {if pillar_sensed[i] then {70, 160, 255} else {135, 135, 135} for i in 1:max_pillars},
@@ -240,8 +242,8 @@ public
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape continuous_ground(
     shapeType = "box",
     R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
-    r = {0.5 * (x_min + x_max), 0.5 * (y_min + y_max), map_z - 0.5 * continuous_ground_thickness_m},
-    r_shape = {-0.5 * (x_max - x_min), -0.5 * (y_max - y_min), -0.5 * continuous_ground_thickness_m},
+    r = {x_min + 0.5 * (x_max - x_min), y_min + 0.5 * (y_max - y_min), map_z - 0.5 * continuous_ground_thickness_m},
+    r_shape = {0, 0, 0},
     lengthDirection = {1, 0, 0},
     widthDirection = {0, 1, 0},
     length = if show_continuous_ground then x_max - x_min else 0.0,
@@ -253,7 +255,7 @@ public
     each shapeType = "box",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
     r = {ground_position[i, :] for i in 1:ground_pillar_count},
-    r_shape = {{-0.5 * ground_length[i] * terrain_fill_scale, -0.5 * ground_width[i] * terrain_fill_scale, -0.5 * ground_height[i]} for i in 1:ground_pillar_count},
+    each r_shape = {0, 0, 0},
     each lengthDirection = {1, 0, 0},
     each widthDirection = {0, 1, 0},
     length = {ground_length[i] * terrain_fill_scale for i in 1:ground_pillar_count},
@@ -404,8 +406,8 @@ equation
     pillar_active[i] = i <= pillar_count;
     pillar_sensed[i] = i <= pillar_count and (
       highlight_local_costmap and (
-        abs(pillar_center[i, 1] - local_grid_center_x) <= local_window_half_width_m and
-        abs(pillar_center[i, 2] - local_grid_center_y) <= local_window_half_width_m));
+        pillar_distance_to_uav[i] <= local_costmap_radius_m and
+        pillar_bearing_dot[i] >= cos(local_costmap_front_half_angle_rad)));
   end for;
 
   for i in 1:ground_pillar_count loop
@@ -418,16 +420,18 @@ equation
     ground_position[i, 1] = x_min + terrain_x_offset_m + ground_x_index[i] * terrain_cell_size_m + 0.5 * ground_length[i];
     ground_position[i, 2] = y_min + terrain_y_offset_m + ground_y_index[i] * terrain_cell_size_m + 0.5 * ground_width[i];
     ground_position[i, 3] = map_z + 0.5 * ground_height[i];
-    ground_distance_to_uav[i] = sqrt((ground_position[i, 1] - sensed_position[1]) ^ 2 + (ground_position[i, 2] - sensed_position[2]) ^ 2);
+    ground_center[i, 1] = ground_position[i, 1];
+    ground_center[i, 2] = ground_position[i, 2];
+    ground_distance_to_uav[i] = sqrt((ground_center[i, 1] - sensed_position[1]) ^ 2 + (ground_center[i, 2] - sensed_position[2]) ^ 2);
     ground_bearing_dot[i] =
       if ground_distance_to_uav[i] > 1e-6 and local_heading_norm > 1e-6 then
-        ((ground_position[i, 1] - sensed_position[1]) * local_heading_vector[1] +
-        (ground_position[i, 2] - sensed_position[2]) * local_heading_vector[2]) /
+        ((ground_center[i, 1] - sensed_position[1]) * local_heading_vector[1] +
+        (ground_center[i, 2] - sensed_position[2]) * local_heading_vector[2]) /
         (ground_distance_to_uav[i] * local_heading_norm)
       else 1.0;
     ground_sensed[i] = highlight_local_costmap and
-      abs(ground_position[i, 1] - local_grid_center_x) <= local_window_half_width_m and
-      abs(ground_position[i, 2] - local_grid_center_y) <= local_window_half_width_m;
+      ground_distance_to_uav[i] <= local_costmap_radius_m and
+      ground_bearing_dot[i] >= cos(local_costmap_front_half_angle_rad);
   end for;
 
   for i in 1:boundary_wall_x_segment_count loop

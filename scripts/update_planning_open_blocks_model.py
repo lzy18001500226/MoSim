@@ -64,7 +64,7 @@ def padded(values: list[float], target: int, pad_value: float) -> list[float]:
     return values + [pad_value] * (target - len(values))
 
 
-def pillar_cluster(obstacle: dict[str, Any]) -> list[tuple[float, float, float, float, float]]:
+def pillar_cluster(obstacle: dict[str, Any]) -> list[tuple[float, float, float, float, float, float]]:
     center = obstacle["center"]
     x = float(center[0])
     y = float(center[1])
@@ -74,10 +74,25 @@ def pillar_cluster(obstacle: dict[str, Any]) -> list[tuple[float, float, float, 
     width = max(0.16, min(0.42, 0.75 * radius))
     spread = 0.55 * radius
     return [
-        (x - spread, y, width, height, z_min),
-        (x + spread, y, width, height, z_min),
-        (x, y + 0.95 * spread, width, height, z_min),
+        (x - spread, y, width, width, height, z_min),
+        (x + spread, y, width, width, height, z_min),
+        (x, y + 0.95 * spread, width, width, height, z_min),
     ]
+
+
+def wall_pillars(obstacle: dict[str, Any]) -> list[tuple[float, float, float, float, float, float]]:
+    lo = obstacle["min"]
+    hi = obstacle["max"]
+    x0, x1 = sorted((float(lo[0]), float(hi[0])))
+    y0, y1 = sorted((float(lo[1]), float(hi[1])))
+    z0, z1 = sorted((float(lo[2]), float(hi[2])))
+    length_x = x1 - x0
+    length_y = y1 - y0
+    height = z1 - z0
+    if height <= 0.0 or length_x <= 0.0 or length_y <= 0.0:
+        return []
+
+    return [(0.5 * (x0 + x1), 0.5 * (y0 + y1), length_x, length_y, height, z0)]
 
 
 def build_reference(report: dict[str, Any], map_config: dict[str, Any]) -> dict[str, Any]:
@@ -106,20 +121,22 @@ def build_reference(report: dict[str, Any], map_config: dict[str, Any]) -> dict[
 
 
 def build_pillars(report: dict[str, Any]) -> dict[str, Any]:
-    pillars: list[tuple[float, float, float, float, float]] = []
+    pillars: list[tuple[float, float, float, float, float, float]] = []
     for obstacle in report["truth_obstacles"]:
-        if obstacle.get("type") != "cylinder":
-            continue
-        pillars.extend(pillar_cluster(obstacle))
+        if obstacle.get("type") == "cylinder":
+            pillars.extend(pillar_cluster(obstacle))
+        elif obstacle.get("type") == "box":
+            pillars.extend(wall_pillars(obstacle))
     if not pillars:
         raise ValueError("No renderable cylindrical obstacles in planner report")
     return {
         "max_pillars": max(144, len(pillars)),
         "pillar_count": len(pillars),
-        "centers": [[x, y] for x, y, _, _, _ in pillars],
-        "widths": [width for _, _, width, _, _ in pillars],
-        "heights": [height for _, _, _, height, _ in pillars],
-        "z_min": [z_min for _, _, _, _, z_min in pillars],
+        "centers": [[x, y] for x, y, _, _, _, _ in pillars],
+        "lengths": [length for _, _, length, _, _, _ in pillars],
+        "widths": [width for _, _, _, width, _, _ in pillars],
+        "heights": [height for _, _, _, _, height, _ in pillars],
+        "z_min": [z_min for _, _, _, _, _, z_min in pillars],
     }
 
 
@@ -151,7 +168,7 @@ def build_display_constructor(ref: dict[str, Any], map_config: dict[str, Any], p
     boundary_wall_thickness_m = 0.0,
     highlight_local_costmap = true,
     local_costmap_radius_m = {fmt(float(map_config.get("local_planning_radius_m", 2.5)))},
-    local_costmap_front_half_angle_rad = 0.9599310885968813,
+    local_costmap_front_half_angle_rad = 1.0471975511965976,
     local_costmap_update_period_s = 0.05,
     local_costmap_half_cells = 15,
     local_costmap_cell_size_m = 0.16,
@@ -162,12 +179,13 @@ def build_display_constructor(ref: dict[str, Any], map_config: dict[str, Any], p
     terrain_fill_scale = 1.02,
     terrain_x_offset_m = 0.0,
     terrain_y_offset_m = 0.0,
-    terrain_render_stride = 4,
+    terrain_render_stride = 3,
     local_terrain_half_cells = 6,
     show_continuous_ground = false,
     max_pillars = {pillars["max_pillars"]},
     pillar_count = {pillars["pillar_count"]},
     pillar_center = {modelica_matrix(pillars["centers"])},
+    pillar_length = {modelica_array(pillars["lengths"])},
     pillar_width = {modelica_array(pillars["widths"])},
     pillar_height = {modelica_array(pillars["heights"])},
     pillar_z_min = {modelica_array(pillars["z_min"])})"""

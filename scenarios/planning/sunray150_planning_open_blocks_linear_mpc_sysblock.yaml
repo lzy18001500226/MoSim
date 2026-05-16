@@ -42,9 +42,9 @@ planning_acceptance:
   min_replan_count: 1
   min_truth_obstacles: 20
   min_known_obstacles_final: 10
-  min_obstacle_distance_m: 0.55
+  min_obstacle_distance_m: 0.35
   require_collision_free: true
-  local_window_radius_m: 2.5
+  local_window_radius_m: 3.0
   notes: "规划器仅使用局部感知窗口内已发现障碍，未知真值障碍只用于环境显示和碰撞评价。"
 
 result:
@@ -62,4 +62,4 @@ result:
     yaw_ref: planningReference.yaw_ref
 
 planning_display:
-  collision_clearance_m: 0.55
+  collision_clearance_m: 0.35

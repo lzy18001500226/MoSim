@@ -1,582 +1,2110 @@
 {
-  "sample_count": 1539,
-  "duration_s": 77.21298309986226,
-  "max_velocity_m_s": 0.7679999293343772,
-  "max_acceleration_m_s2": 1.2959247676309722,
-  "max_jerk_m_s3": 6.829849442884741,
-  "max_tilt_rad": 0.13138628049142956,
-  "min_obstacle_distance_m": 0.5998249624410645,
+  "sample_count": 2226,
+  "duration_s": 111.69666033649726,
+  "max_velocity_m_s": 1.499999339477579,
+  "max_acceleration_m_s2": 1.7930585703720539,
+  "max_jerk_m_s3": 6.806171228360682,
+  "max_tilt_rad": 0.1808434958769139,
+  "min_obstacle_distance_m": 0.3510353698910949,
   "collision_count": 0,
   "inflated_collision_count": 0,
   "dynamic_violation_count": 0,
   "predicted_saturation_ratio": 0.0,
   "trackability_score": 1.0,
   "accepted": true,
-  "time_scale": 1.953125,
-  "rescale_iteration": 3,
+  "time_scale": 1.0,
+  "rescale_iteration": 0,
   "planner_id": "astar_min_snap",
   "map_id": "map_open_blocks",
   "planning_success": true,
-  "astar_iterations": 236426,
-  "truth_obstacle_count": 36,
-  "raw_path_points": 8308,
-  "simplified_path_points_before_fit": 17,
-  "simplified_path_points": 17,
-  "model_segment_limit": 20,
-  "path_length_m": 31.62643787770358,
-  "safety_margin_m": 0.55,
+  "astar_iterations": 9671,
+  "truth_obstacle_count": 160,
+  "raw_path_points": 1661,
+  "simplified_path_points_before_fit": 22,
+  "simplified_path_points": 22,
+  "model_segment_limit": 60,
+  "path_length_m": 89.35732826919781,
+  "safety_margin_m": 0.35,
   "truth_obstacles": [
     {
-      "type": "cylinder",
-      "center": [
-        1.881,
-        -4.376,
-        1.0
+      "type": "box",
+      "min": [
+        -10.3,
+        -2.61,
+        0.0
       ],
-      "radius": 0.315,
-      "height": 1.816,
-      "z_min": 0.0,
-      "z_max": 1.816
+      "max": [
+        -9.98,
+        15.39,
+        3.0
+      ]
+    },
+    {
+      "type": "box",
+      "min": [
+        -16.14,
+        -2.77,
+        0.0
+      ],
+      "max": [
+        -10.14,
+        -2.45,
+        3.0
+      ]
+    },
+    {
+      "type": "box",
+      "min": [
+        6.53,
+        9.83,
+        0.0
+      ],
+      "max": [
+        6.85,
+        27.83,
+        3.0
+      ]
+    },
+    {
+      "type": "box",
+      "min": [
+        6.69,
+        9.67,
+        0.0
+      ],
+      "max": [
+        12.69,
+        9.99,
+        3.0
+      ]
+    },
+    {
+      "type": "box",
+      "min": [
+        -7.99,
+        -21.04,
+        0.0
+      ],
+      "max": [
+        10.01,
+        -20.72,
+        3.0
+      ]
+    },
+    {
+      "type": "box",
+      "min": [
+        -8.15,
+        -26.88,
+        0.0
+      ],
+      "max": [
+        -7.83,
+        -20.88,
+        3.0
+      ]
+    },
+    {
+      "type": "box",
+      "min": [
+        -35.33,
+        -12.99,
+        0.0
+      ],
+      "max": [
+        -17.33,
+        -12.67,
+        3.0
+      ]
+    },
+    {
+      "type": "box",
+      "min": [
+        -17.49,
+        -12.83,
+        0.0
+      ],
+      "max": [
+        -17.17,
+        -6.83,
+        3.0
+      ]
+    },
+    {
+      "type": "box",
+      "min": [
+        17.57,
+        9.04,
+        0.0
+      ],
+      "max": [
+        35.57,
+        9.36,
+        3.0
+      ]
+    },
+    {
+      "type": "box",
+      "min": [
+        17.41,
+        3.2,
+        0.0
+      ],
+      "max": [
+        17.73,
+        9.2,
+        3.0
+      ]
     },
     {
       "type": "cylinder",
       "center": [
-        1.884,
-        3.678,
+        16.931,
+        -3.721,
         1.0
       ],
-      "radius": 0.419,
-      "height": 2.334,
+      "radius": 0.456,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 2.334
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        10.902,
-        3.883,
+        -24.356,
+        1.926,
         1.0
       ],
-      "radius": 0.394,
-      "height": 2.126,
+      "radius": 0.329,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 2.126
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        1.702,
-        0.148,
+        -36.876,
+        22.382,
         1.0
       ],
-      "radius": 0.302,
-      "height": 1.53,
+      "radius": 0.353,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.53
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        -1.575,
-        2.814,
+        20.586,
+        -11.078,
         1.0
       ],
-      "radius": 0.435,
-      "height": 1.983,
+      "radius": 0.475,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.983
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        5.494,
-        -2.088,
+        17.639,
+        19.649,
         1.0
       ],
-      "radius": 0.292,
-      "height": 1.911,
+      "radius": 0.431,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.911
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        -0.014,
-        -0.335,
+        8.427,
+        -10.903,
         1.0
       ],
-      "radius": 0.297,
-      "height": 2.384,
+      "radius": 0.415,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 2.384
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        10.012,
-        5.89,
+        -16.705,
+        18.345,
         1.0
       ],
-      "radius": 0.426,
-      "height": 1.657,
+      "radius": 0.318,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.657
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        4.23,
-        0.91,
+        33.545,
+        17.258,
         1.0
       ],
-      "radius": 0.401,
-      "height": 2.21,
+      "radius": 0.331,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 2.21
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        2.451,
-        -1.173,
+        -0.383,
+        1.831,
         1.0
       ],
-      "radius": 0.402,
-      "height": 1.712,
+      "radius": 0.366,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.712
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        11.364,
-        0.084,
+        8.513,
+        1.604,
         1.0
       ],
-      "radius": 0.31,
-      "height": 1.713,
+      "radius": 0.425,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.713
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        9.169,
-        -6.594,
+        -27.42,
+        11.296,
         1.0
       ],
-      "radius": 0.402,
-      "height": 2.347,
+      "radius": 0.305,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 2.347
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        -7.395,
-        3.471,
+        31.766,
+        -27.039,
         1.0
       ],
-      "radius": 0.34,
-      "height": 2.007,
+      "radius": 0.367,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 2.007
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        0.918,
-        -5.92,
+        -5.412,
+        -11.022,
         1.0
       ],
-      "radius": 0.349,
-      "height": 1.894,
+      "radius": 0.33,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.894
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        7.382,
-        -1.415,
+        16.006,
+        10.97,
         1.0
       ],
-      "radius": 0.422,
-      "height": 2.353,
+      "radius": 0.317,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 2.353
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        11.768,
-        -1.273,
+        -32.541,
+        4.75,
         1.0
       ],
-      "radius": 0.292,
-      "height": 2.284,
+      "radius": 0.472,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 2.284
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        -6.531,
-        -1.828,
+        -36.093,
+        -16.49,
         1.0
       ],
-      "radius": 0.405,
-      "height": 1.525,
+      "radius": 0.388,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.525
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        5.862,
-        6.488,
+        -35.311,
+        -5.135,
         1.0
       ],
-      "radius": 0.416,
-      "height": 1.993,
+      "radius": 0.354,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.993
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        -5.937,
-        -3.695,
+        9.105,
+        -27.565,
         1.0
       ],
-      "radius": 0.405,
-      "height": 1.992,
+      "radius": 0.351,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.992
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        5.21,
-        4.036,
+        17.109,
+        -24.096,
         1.0
       ],
-      "radius": 0.426,
-      "height": 1.819,
+      "radius": 0.323,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.819
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        2.507,
-        1.751,
+        10.951,
+        3.184,
         1.0
       ],
-      "radius": 0.422,
-      "height": 1.774,
+      "radius": 0.333,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.774
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        13.416,
-        -4.303,
+        34.433,
+        1.47,
         1.0
       ],
-      "radius": 0.313,
-      "height": 2.203,
+      "radius": 0.339,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 2.203
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        8.239,
-        -4.297,
+        -5.705,
+        18.206,
         1.0
       ],
-      "radius": 0.296,
-      "height": 1.693,
+      "radius": 0.386,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.693
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        3.51,
-        -6.275,
+        33.29,
+        -0.808,
         1.0
       ],
-      "radius": 0.407,
-      "height": 1.637,
+      "radius": 0.427,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.637
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        9.563,
-        -1.347,
+        -12.254,
+        -7.414,
+        1.0
+      ],
+      "radius": 0.472,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -6.945,
+        -7.527,
+        1.0
+      ],
+      "radius": 0.373,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -12.979,
+        21.495,
+        1.0
+      ],
+      "radius": 0.375,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -13.446,
+        -16.463,
+        1.0
+      ],
+      "radius": 0.447,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -5.604,
+        26.12,
+        1.0
+      ],
+      "radius": 0.381,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        24.362,
+        21.151,
+        1.0
+      ],
+      "radius": 0.476,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -36.556,
+        -20.572,
+        1.0
+      ],
+      "radius": 0.318,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        37.364,
+        19.424,
+        1.0
+      ],
+      "radius": 0.343,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -25.309,
+        -23.67,
+        1.0
+      ],
+      "radius": 0.467,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        30.651,
+        -16.746,
         1.0
       ],
       "radius": 0.341,
-      "height": 1.724,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.724
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        -2.62,
-        -4.564,
+        27.513,
+        -4.7,
         1.0
       ],
-      "radius": 0.421,
-      "height": 1.986,
+      "radius": 0.345,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.986
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        2.471,
-        -2.768,
+        -34.303,
+        12.712,
         1.0
       ],
-      "radius": 0.384,
-      "height": 1.865,
+      "radius": 0.301,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.865
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        -5.818,
-        2.681,
+        21.651,
+        -19.462,
+        1.0
+      ],
+      "radius": 0.409,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -14.982,
+        -23.971,
+        1.0
+      ],
+      "radius": 0.321,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        6.137,
+        -1.591,
+        1.0
+      ],
+      "radius": 0.329,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -24.801,
+        25.427,
+        1.0
+      ],
+      "radius": 0.417,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        17.707,
+        -13.261,
+        1.0
+      ],
+      "radius": 0.428,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -20.47,
+        -2.385,
+        1.0
+      ],
+      "radius": 0.476,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        17.763,
+        -18.235,
+        1.0
+      ],
+      "radius": 0.37,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -13.382,
+        18.014,
+        1.0
+      ],
+      "radius": 0.33,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        9.818,
+        -5.724,
+        1.0
+      ],
+      "radius": 0.308,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        17.035,
+        15.332,
+        1.0
+      ],
+      "radius": 0.468,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -29.767,
+        14.001,
+        1.0
+      ],
+      "radius": 0.318,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -33.767,
+        25.104,
+        1.0
+      ],
+      "radius": 0.36,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        1.525,
+        -2.044,
+        1.0
+      ],
+      "radius": 0.353,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -5.152,
+        -8.497,
+        1.0
+      ],
+      "radius": 0.414,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -25.829,
+        15.28,
+        1.0
+      ],
+      "radius": 0.369,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        20.114,
+        -27.055,
+        1.0
+      ],
+      "radius": 0.322,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        14.069,
+        27.603,
         1.0
       ],
       "radius": 0.359,
-      "height": 1.855,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.855
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        5.357,
-        2.486,
+        -29.93,
+        6.59,
         1.0
       ],
-      "radius": 0.314,
-      "height": 2.324,
+      "radius": 0.394,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 2.324
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        4.1,
-        5.824,
+        -11.364,
+        -12.7,
+        1.0
+      ],
+      "radius": 0.43,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        13.026,
+        6.294,
+        1.0
+      ],
+      "radius": 0.459,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        34.92,
+        -12.356,
+        1.0
+      ],
+      "radius": 0.309,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -2.005,
+        24.621,
+        1.0
+      ],
+      "radius": 0.417,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        36.292,
+        5.649,
+        1.0
+      ],
+      "radius": 0.437,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -0.435,
+        -10.471,
+        1.0
+      ],
+      "radius": 0.359,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -22.817,
+        -0.822,
+        1.0
+      ],
+      "radius": 0.331,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        19.932,
+        0.78,
+        1.0
+      ],
+      "radius": 0.427,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -37.14,
+        -11.804,
+        1.0
+      ],
+      "radius": 0.304,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        20.279,
+        18.056,
+        1.0
+      ],
+      "radius": 0.458,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -19.626,
+        -25.768,
+        1.0
+      ],
+      "radius": 0.461,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        35.506,
+        18.016,
+        1.0
+      ],
+      "radius": 0.367,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        29.658,
+        -3.088,
+        1.0
+      ],
+      "radius": 0.394,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -13.392,
+        -25.943,
+        1.0
+      ],
+      "radius": 0.392,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -36.089,
+        -22.181,
+        1.0
+      ],
+      "radius": 0.443,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        2.077,
+        -10.349,
+        1.0
+      ],
+      "radius": 0.466,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        19.522,
+        23.167,
+        1.0
+      ],
+      "radius": 0.439,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -27.056,
+        5.485,
+        1.0
+      ],
+      "radius": 0.345,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        26.163,
+        -1.944,
+        1.0
+      ],
+      "radius": 0.373,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        24.604,
+        -16.83,
+        1.0
+      ],
+      "radius": 0.465,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -19.462,
+        19.435,
+        1.0
+      ],
+      "radius": 0.357,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -33.023,
+        -1.735,
+        1.0
+      ],
+      "radius": 0.402,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -16.63,
+        -5.48,
+        1.0
+      ],
+      "radius": 0.376,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        30.14,
+        -22.402,
+        1.0
+      ],
+      "radius": 0.455,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -3.263,
+        15.602,
+        1.0
+      ],
+      "radius": 0.349,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        35.482,
+        20.409,
         1.0
       ],
       "radius": 0.352,
-      "height": 2.187,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 2.187
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        10.986,
-        -4.697,
+        13.359,
+        -19.234,
         1.0
       ],
-      "radius": 0.441,
-      "height": 1.814,
+      "radius": 0.322,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.814
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        7.149,
-        -6.714,
+        4.171,
+        1.405,
         1.0
       ],
-      "radius": 0.424,
-      "height": 1.983,
+      "radius": 0.375,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.983
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        -2.917,
-        5.929,
+        -9.932,
+        24.945,
+        1.0
+      ],
+      "radius": 0.362,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -30.528,
+        -26.259,
+        1.0
+      ],
+      "radius": 0.432,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        21.328,
+        -15.869,
+        1.0
+      ],
+      "radius": 0.429,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -11.922,
+        16.662,
+        1.0
+      ],
+      "radius": 0.312,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        32.241,
+        22.219,
+        1.0
+      ],
+      "radius": 0.354,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -23.837,
+        -26.676,
+        1.0
+      ],
+      "radius": 0.3,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -15.473,
+        -20.037,
+        1.0
+      ],
+      "radius": 0.454,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        36.767,
+        0.444,
+        1.0
+      ],
+      "radius": 0.381,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        8.422,
+        4.264,
+        1.0
+      ],
+      "radius": 0.397,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        17.489,
+        -26.01,
         1.0
       ],
       "radius": 0.374,
-      "height": 1.55,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.55
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        13.29,
-        1.016,
+        -28.94,
+        -2.46,
         1.0
       ],
-      "radius": 0.32,
-      "height": 2.064,
+      "radius": 0.385,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 2.064
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        13.775,
-        2.485,
+        -3.712,
+        27.053,
         1.0
       ],
-      "radius": 0.377,
-      "height": 1.924,
+      "radius": 0.402,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.924
+      "z_max": 3.0
     },
     {
       "type": "cylinder",
       "center": [
-        13.194,
-        -2.086,
+        -21.295,
+        8.794,
         1.0
       ],
-      "radius": 0.286,
-      "height": 1.747,
+      "radius": 0.334,
+      "height": 3.0,
       "z_min": 0.0,
-      "z_max": 1.747
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        34.733,
+        -21.074,
+        1.0
+      ],
+      "radius": 0.313,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -22.622,
+        23.119,
+        1.0
+      ],
+      "radius": 0.458,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        31.34,
+        -8.884,
+        1.0
+      ],
+      "radius": 0.371,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        16.93,
+        -6.577,
+        1.0
+      ],
+      "radius": 0.423,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -3.818,
+        18.101,
+        1.0
+      ],
+      "radius": 0.463,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -27.882,
+        -1.001,
+        1.0
+      ],
+      "radius": 0.351,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        2.97,
+        -7.599,
+        1.0
+      ],
+      "radius": 0.305,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        22.144,
+        -2.026,
+        1.0
+      ],
+      "radius": 0.461,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        28.09,
+        -19.804,
+        1.0
+      ],
+      "radius": 0.316,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -12.566,
+        19.39,
+        1.0
+      ],
+      "radius": 0.352,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        19.995,
+        20.803,
+        1.0
+      ],
+      "radius": 0.451,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -23.518,
+        10.307,
+        1.0
+      ],
+      "radius": 0.444,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -29.968,
+        15.553,
+        1.0
+      ],
+      "radius": 0.331,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        15.136,
+        0.922,
+        1.0
+      ],
+      "radius": 0.442,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        36.74,
+        13.949,
+        1.0
+      ],
+      "radius": 0.467,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -30.237,
+        23.348,
+        1.0
+      ],
+      "radius": 0.408,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        33.022,
+        -17.41,
+        1.0
+      ],
+      "radius": 0.303,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -8.216,
+        -3.926,
+        1.0
+      ],
+      "radius": 0.441,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        12.956,
+        -13.152,
+        1.0
+      ],
+      "radius": 0.305,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -8.307,
+        -15.603,
+        1.0
+      ],
+      "radius": 0.325,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -14.358,
+        -13.154,
+        1.0
+      ],
+      "radius": 0.333,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        14.248,
+        11.484,
+        1.0
+      ],
+      "radius": 0.382,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        18.541,
+        26.918,
+        1.0
+      ],
+      "radius": 0.36,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        5.724,
+        -11.139,
+        1.0
+      ],
+      "radius": 0.335,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -32.617,
+        2.605,
+        1.0
+      ],
+      "radius": 0.379,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -10.09,
+        16.815,
+        1.0
+      ],
+      "radius": 0.309,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -29.375,
+        20.392,
+        1.0
+      ],
+      "radius": 0.325,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -24.581,
+        -1.374,
+        1.0
+      ],
+      "radius": 0.442,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        31.314,
+        26.796,
+        1.0
+      ],
+      "radius": 0.452,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -20.529,
+        26.254,
+        1.0
+      ],
+      "radius": 0.352,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        25.026,
+        25.894,
+        1.0
+      ],
+      "radius": 0.353,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        26.8,
+        -15.548,
+        1.0
+      ],
+      "radius": 0.335,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        22.666,
+        -23.226,
+        1.0
+      ],
+      "radius": 0.335,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -36.556,
+        -14.432,
+        1.0
+      ],
+      "radius": 0.404,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        31.012,
+        -5.033,
+        1.0
+      ],
+      "radius": 0.367,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        5.503,
+        5.206,
+        1.0
+      ],
+      "radius": 0.475,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        21.904,
+        -4.251,
+        1.0
+      ],
+      "radius": 0.338,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        11.105,
+        -11.504,
+        1.0
+      ],
+      "radius": 0.395,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -10.904,
+        -10.929,
+        1.0
+      ],
+      "radius": 0.471,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        16.206,
+        25.044,
+        1.0
+      ],
+      "radius": 0.451,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -6.981,
+        22.988,
+        1.0
+      ],
+      "radius": 0.474,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        15.854,
+        -8.579,
+        1.0
+      ],
+      "radius": 0.37,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        17.781,
+        17.269,
+        1.0
+      ],
+      "radius": 0.469,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -32.164,
+        -23.873,
+        1.0
+      ],
+      "radius": 0.477,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -3.063,
+        -8.18,
+        1.0
+      ],
+      "radius": 0.43,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        35.546,
+        -16.376,
+        1.0
+      ],
+      "radius": 0.359,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -23.151,
+        12.675,
+        1.0
+      ],
+      "radius": 0.315,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -22.271,
+        -25.418,
+        1.0
+      ],
+      "radius": 0.385,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        12.674,
+        -26.95,
+        1.0
+      ],
+      "radius": 0.432,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        0.943,
+        9.801,
+        1.0
+      ],
+      "radius": 0.3,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        7.955,
+        -13.092,
+        1.0
+      ],
+      "radius": 0.361,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -9.177,
+        -11.861,
+        1.0
+      ],
+      "radius": 0.302,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -36.838,
+        -6.489,
+        1.0
+      ],
+      "radius": 0.341,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -11.8,
+        24.5,
+        1.0
+      ],
+      "radius": 0.322,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        36.133,
+        -19.798,
+        1.0
+      ],
+      "radius": 0.321,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
+    },
+    {
+      "type": "cylinder",
+      "center": [
+        -27.4,
+        7.275,
+        1.0
+      ],
+      "radius": 0.415,
+      "height": 3.0,
+      "z_min": 0.0,
+      "z_max": 3.0
     }
   ],
   "simplified_path": [
     [
-      -7.5,
-      -6.75,
+      -36.0,
+      -26.0,
       1.0
     ],
     [
-      -4.69999270771924,
-      -4.417461292995382,
+      -31.949969912827417,
+      -22.286155893332,
       1.0
     ],
     [
-      -2.095018188430516,
-      -3.181373762494372,
+      -27.8802320028596,
+      -18.84685687543746,
       1.0
     ],
     [
-      -0.7795157890709422,
-      -4.448463689457392,
+      -23.773255040644155,
+      -16.104586871320773,
       1.0
     ],
     [
-      -0.29086992244132687,
-      -5.573008708182073,
+      -19.84261878051122,
+      -14.35846759494701,
       1.0
     ],
     [
-      0.07961072852064212,
-      -6.440813862065675,
+      -16.878495064883847,
+      -13.201002127025541,
       1.0
     ],
     [
-      0.6332951905755188,
-      -6.942053575648859,
+      -13.2611192074811,
+      -9.936178605727614,
       1.0
     ],
     [
-      1.4097521862127642,
-      -6.796863776581838,
+      -9.697357049342669,
+      -6.660108528429884,
       1.0
     ],
     [
-      3.7527515727901157,
-      -4.701985289318434,
+      -6.470143143041825,
+      -3.861206566683842,
       1.0
     ],
     [
-      6.625899659156866,
-      -3.3369478234259558,
+      -3.0608563790490426,
+      -1.0632963275256004,
       1.0
     ],
     [
-      9.567477187992473,
-      -2.382642335004179,
+      0.15379693200555108,
+      0.9665980377848643,
       1.0
     ],
     [
-      10.327603198426784,
-      -2.033924096711425,
+      3.430190472865512,
+      3.01296557002995,
       1.0
     ],
     [
-      10.570422620665575,
-      -1.294359275201197,
+      6.077226049136075,
+      4.384519605490697,
       1.0
     ],
     [
-      10.39912092633923,
-      -0.1340852288848782,
+      8.863089588384886,
+      6.241867756789684,
       1.0
     ],
     [
-      10.6430547796352,
-      1.2528672050688003,
+      12.23722033281734,
+      8.245923122065456,
       1.0
     ],
     [
-      12.352731121417614,
-      3.9137560758204595,
+      15.543439339956485,
+      9.892927128851749,
       1.0
     ],
     [
-      13.8,
-      6.3,
+      17.29052163278453,
+      10.985466231897904,
+      1.0
+    ],
+    [
+      21.01754200466429,
+      14.47375338096103,
+      1.0
+    ],
+    [
+      24.887595307500263,
+      17.971843991511744,
+      1.0
+    ],
+    [
+      28.806763482172784,
+      21.12547326174514,
+      1.0
+    ],
+    [
+      32.701508923289886,
+      23.885302363293572,
+      1.0
+    ],
+    [
+      36.0,
+      26.0,
       1.0
     ]
   ],
   "segment_durations": [
-    8.897168282979926,
-    7.0394699491913375,
-    4.459202581527535,
-    2.993463032326856,
-    2.303660144828628,
-    1.8234015421095535,
-    1.9285031654601985,
-    7.67322837635543,
-    7.765939137989125,
-    7.550057146420788,
-    2.0417455238098214,
-    1.9004076197834998,
-    2.8634064536770745,
-    3.438086701378883,
-    7.721686996022509,
-    6.813556446001092
+    6.868790577181759,
+    6.660464556611221,
+    6.172937983606162,
+    5.376283849113952,
+    3.977624077058928,
+    6.091038591516595,
+    6.0509601344467745,
+    5.339821185630803,
+    5.5129872156463,
+    4.752378852446135,
+    4.828686207127105,
+    3.7265847749293792,
+    4.185312453697767,
+    4.905512872590215,
+    4.617173499816043,
+    2.575709316624679,
+    6.380981028455491,
+    6.520873993187029,
+    6.288041323049098,
+    5.966795978692218,
+    4.8977018650696005
   ],
   "local_planning_enabled": true,
-  "local_window_radius_m": 2.5,
+  "local_window_radius_m": 3.0,
   "local_commit_distance_m": 1.2,
-  "local_replan_count": 96,
-  "known_obstacle_count_final": 29,
+  "local_replan_count": 85,
+  "known_obstacle_count_final": 27,
   "ego_planner_enabled": true,
   "ego_optimizer_accepted": true,
   "ego_source": "EGO-Planner-inspired ESDF-free B-spline/local trajectory optimization",
-  "ego_control_point_count": 17,
-  "ego_clearance_m": 0.7,
-  "ego_accept_safety_margin_m": 0.6,
-  "ego_min_control_point_distance_m": 0.6000620196637936,
-  "ego_min_segment_distance_m": 0.6000620196637936,
+  "ego_control_point_count": 22,
+  "ego_clearance_m": 0.58,
+  "ego_accept_safety_margin_m": 0.35,
+  "ego_min_control_point_distance_m": 0.3514876836925917,
+  "ego_min_segment_distance_m": 0.3514876836925917,
   "ego_iterations": 90,
   "config_file": "planners/astar_min_snap/map_open_blocks.yaml",
   "reference_csv": "results/planning/single_obstacle_astar_awff/raw/reference.csv"
