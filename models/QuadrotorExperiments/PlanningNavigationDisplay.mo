@@ -79,9 +79,9 @@ model PlanningNavigationDisplay
     "Render a continuous base plate below terrain texture cells to avoid visual cracks.";
   parameter Real continuous_ground_thickness_m = 0.03;
   parameter Boolean show_static_map_mesh = true
-    "Render one pre-generated STL mesh for dense 0.5 m terrain and 600 small random obstacles.";
+    "Render one pre-generated STL mesh for dense 0.2 m terrain and 1000 random obstacles.";
   parameter String static_map_mesh_uri =
-    "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_ground_0p5_obstacles_0p4_0p64.stl";
+    "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_ground_0p2_obstacles_0p4_0p64_h2p5_3p0.stl";
 
   Modelica.Blocks.Interfaces.RealInput actual_position[3]
     annotation(Placement(transformation(origin = {-120, 30}, extent = {{-20, -20}, {20, 20}})));

@@ -23,7 +23,7 @@ from plan_astar_min_snap import expand_wall_groups, read_yaml
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG = ROOT / "planners/astar_min_snap/map_open_blocks.yaml"
 DEFAULT_OUTPUT_DIR = ROOT / "results/planning/single_obstacle_astar_awff/figures/static_map"
-DEFAULT_STL = ROOT / "QuadrotorModel/Resources/Visualization/map_open_blocks_static_ground_0p5_obstacles_0p4_0p64.stl"
+DEFAULT_STL = ROOT / "QuadrotorModel/Resources/Visualization/map_open_blocks_static_ground_0p2_obstacles_0p4_0p64_h2p5_3p0.stl"
 
 
 def crc_chunk(chunk_type: bytes, data: bytes) -> bytes:
@@ -54,8 +54,25 @@ def write_png(path: Path, width: int, height: int, pixels: bytearray) -> None:
     )
 
 
-def terrain_height(ix: int, iy: int) -> float:
-    return 0.08 + 0.16 * (0.5 + 0.5 * math.sin(0.73 * ix + 1.19 * iy))
+TERRAIN_HEIGHT_MIN_M = 0.10
+TERRAIN_HEIGHT_MAX_M = 0.50
+TERRAIN_HEIGHT_SPAN_M = TERRAIN_HEIGHT_MAX_M - TERRAIN_HEIGHT_MIN_M
+
+
+def terrain_height_xy(x: float, y: float) -> float:
+    """Smooth deterministic height field in the 0.1-0.5 m range."""
+    value = (
+        0.42 * math.sin(0.075 * x + 0.031 * y + 0.4)
+        + 0.31 * math.sin(-0.044 * x + 0.089 * y + 1.7)
+        + 0.18 * math.sin(0.132 * x - 0.061 * y + 2.1)
+        + 0.09 * math.sin(0.215 * x + 0.173 * y)
+    )
+    normalized = 0.5 + 0.5 * math.tanh(1.35 * value)
+    return TERRAIN_HEIGHT_MIN_M + TERRAIN_HEIGHT_SPAN_M * normalized
+
+
+def terrain_height(ix: int, iy: int, cell_m: float = 0.2, x_min: float = -45.0, y_min: float = -30.0) -> float:
+    return terrain_height_xy(x_min + ix * cell_m, y_min + iy * cell_m)
 
 
 def map_to_pixel(x: float, y: float, bounds: dict[str, Any], px_per_m: float, height_px: int) -> tuple[int, int]:
@@ -113,9 +130,12 @@ def draw_ground(
             y0 = y_min + iy * cell_m
             x1 = min(x0 + cell_m, x_max)
             y1 = min(y0 + cell_m, y_max)
-            shade = int(231 + 14 * (0.5 + 0.5 * math.sin(0.73 * ix + 1.19 * iy)))
+            normalized_height = (
+                terrain_height_xy(0.5 * (x0 + x1), 0.5 * (y0 + y1)) - TERRAIN_HEIGHT_MIN_M
+            ) / TERRAIN_HEIGHT_SPAN_M
+            shade = int(246 - 28 * normalized_height)
             if (ix + iy) % 2 == 0:
-                shade = min(250, shade + 3)
+                shade = min(250, shade + 1)
             px0, py1 = map_to_pixel(x0, y0, bounds, px_per_m, height_px)
             px1, py0 = map_to_pixel(x1, y1, bounds, px_per_m, height_px)
             fill_rect(pixels, width_px, height_px, px0, py0, px1, py1, (shade, shade, shade))
@@ -201,9 +221,14 @@ def add_box(
 def write_binary_stl(
     path: Path,
     triangles: list[tuple[tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float]]],
+    *,
+    ground_cell_m: float,
+    obstacle_height_min_m: float,
+    obstacle_height_max_m: float,
 ) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    header = b"Quadrotor static map: ground 0.5m, obstacle footprint 0.4-0.64m".ljust(80, b" ")
+    header_text = f"Quadrotor static map ground={ground_cell_m:g}m obstacle_h={obstacle_height_min_m:g}-{obstacle_height_max_m:g}m"
+    header = header_text.encode("ascii", errors="ignore")[:80].ljust(80, b" ")
     data = bytearray(header)
     data.extend(struct.pack("<I", len(triangles)))
     for normal, a, b, c in triangles:
@@ -230,8 +255,12 @@ def build_static_mesh(
             x1 = min(x0 + ground_cell_m, x_max)
             y0 = y_min + iy * ground_cell_m
             y1 = min(y0 + ground_cell_m, y_max)
-            z1 = terrain_height(ix, iy)
-            add_box(triangles, x0, x1, y0, y1, 0.0, z1)
+            z00 = terrain_height_xy(x0, y0)
+            z10 = terrain_height_xy(x1, y0)
+            z11 = terrain_height_xy(x1, y1)
+            z01 = terrain_height_xy(x0, y1)
+            add_triangle(triangles, (x0, y0, z00), (x1, y0, z10), (x1, y1, z11))
+            add_triangle(triangles, (x0, y0, z00), (x1, y1, z11), (x0, y1, z01))
 
     random_count = 0
     for obstacle in obstacles:
@@ -282,6 +311,8 @@ def generate_uniform_static_obstacles(
     map_config: dict[str, Any],
     footprint_min_m: float,
     footprint_max_m: float,
+    height_min_m: float,
+    height_max_m: float,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     random_spec = map_config.get("random_obstacles", {})
     if not isinstance(random_spec, dict):
@@ -293,43 +324,65 @@ def generate_uniform_static_obstacles(
     count = int(random_spec.get("count", 600))
     seed = int(random_spec.get("seed", 20260518))
     edge_margin = float(random_spec.get("edge_margin_m", 2.0))
-    height = 3.0
-
+    min_spacing_m = float(random_spec.get("min_spacing_m", 0.55))
     rng = random.Random(seed)
     usable_x0 = x_min + edge_margin
     usable_x1 = x_max - edge_margin
     usable_y0 = y_min + edge_margin
     usable_y1 = y_max - edge_margin
-    grid_x, grid_y = choose_stratified_grid(count, usable_x1 - usable_x0, usable_y1 - usable_y0)
-    cell_w = (usable_x1 - usable_x0) / grid_x
-    cell_h = (usable_y1 - usable_y0) / grid_y
-    jitter_x = max(0.0, min(0.45, 0.20 * cell_w, 0.5 * (cell_w - footprint_max_m) - 0.05))
-    jitter_y = max(0.0, min(0.45, 0.20 * cell_h, 0.5 * (cell_h - footprint_max_m) - 0.05))
+    coarse_x, coarse_y = 20, 12
+    cell_w = (usable_x1 - usable_x0) / coarse_x
+    cell_h = (usable_y1 - usable_y0) / coarse_y
+    base_per_cell = count // (coarse_x * coarse_y)
+    extra_count = count - base_per_cell * coarse_x * coarse_y
+    cell_indices = [(ix, iy) for iy in range(coarse_y) for ix in range(coarse_x)]
+    rng.shuffle(cell_indices)
+    extra_cells = set(cell_indices[:extra_count])
+    min_center_distance_m = min_spacing_m + footprint_max_m
 
     obstacles: list[dict[str, Any]] = []
-    for iy in range(grid_y):
-        for ix in range(grid_x):
-            if len(obstacles) >= count:
-                break
-            footprint_m = rng.uniform(footprint_min_m, footprint_max_m)
-            cx = usable_x0 + (ix + 0.5) * cell_w + rng.uniform(-jitter_x, jitter_x)
-            cy = usable_y0 + (iy + 0.5) * cell_h + rng.uniform(-jitter_y, jitter_y)
-            obstacles.append(
-                {
-                    "type": "cylinder",
-                    "center": [round(cx, 3), round(cy, 3), 1.0],
-                    "radius": round(0.5 * footprint_m, 3),
-                    "visual_size_m": round(footprint_m, 3),
-                    "height": height,
-                    "z_min": z_min,
-                    "z_max": z_min + height,
-                }
-            )
+    all_centers: list[tuple[float, float]] = []
+    for iy in range(coarse_y):
+        for ix in range(coarse_x):
+            target_in_cell = base_per_cell + (1 if (ix, iy) in extra_cells else 0)
+            placed_in_cell: list[tuple[float, float]] = []
+            attempts = 0
+            while len(placed_in_cell) < target_in_cell and attempts < 800:
+                attempts += 1
+                footprint_m = rng.uniform(footprint_min_m, footprint_max_m)
+                margin = 0.5 * footprint_m + 0.15
+                cx = rng.uniform(usable_x0 + ix * cell_w + margin, usable_x0 + (ix + 1) * cell_w - margin)
+                cy = rng.uniform(usable_y0 + iy * cell_h + margin, usable_y0 + (iy + 1) * cell_h - margin)
+                if any(math.hypot(cx - ox, cy - oy) < min_center_distance_m for ox, oy in all_centers):
+                    continue
+                height = rng.uniform(height_min_m, height_max_m)
+                placed_in_cell.append((cx, cy))
+                all_centers.append((cx, cy))
+                obstacles.append(
+                    {
+                        "type": "cylinder",
+                        "center": [round(cx, 3), round(cy, 3), 1.0],
+                        "radius": round(0.5 * footprint_m, 3),
+                        "visual_size_m": round(footprint_m, 3),
+                        "height": round(height, 3),
+                        "z_min": z_min,
+                        "z_max": round(z_min + height, 3),
+                    }
+                )
+            if len(placed_in_cell) < target_in_cell:
+                raise RuntimeError(
+                    f"Only placed {len(placed_in_cell)} of {target_in_cell} static obstacles in coarse cell ({ix},{iy}); "
+                    f"reduce count or min_spacing_m"
+                )
+    rng.shuffle(obstacles)
+    obstacles = obstacles[:count]
     diagnostics = {
-        "grid_cells": [grid_x, grid_y],
+        "coarse_cells": [coarse_x, coarse_y],
         "cell_size_m": [cell_w, cell_h],
-        "jitter_limit_m": [jitter_x, jitter_y],
-        "obstacles_per_cell": 1,
+        "obstacles_per_cell": [base_per_cell, base_per_cell + 1],
+        "extra_cells": extra_count,
+        "min_center_distance_m": min_center_distance_m,
+        "min_spacing_m": min_spacing_m,
     }
     return obstacles, diagnostics
 
@@ -342,7 +395,10 @@ def generate(
     ground_cell_m: float,
     obstacle_footprint_min_m: float,
     obstacle_footprint_max_m: float,
+    obstacle_height_min_m: float,
+    obstacle_height_max_m: float,
 ) -> dict[str, Any]:
+    config_path = config_path.resolve()
     raw_config = read_yaml(config_path)
     expanded_walls = expand_wall_groups(raw_config)
     map_config = expanded_walls["map"]
@@ -357,6 +413,8 @@ def generate(
         map_config,
         obstacle_footprint_min_m,
         obstacle_footprint_max_m,
+        obstacle_height_min_m,
+        obstacle_height_max_m,
     )
     draw_ground(pixels, width_px, height_px, bounds, px_per_m=px_per_m, cell_m=ground_cell_m)
     obstacle_count = draw_random_obstacles(
@@ -379,8 +437,8 @@ def generate(
     )
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    image_path = output_dir / "map_open_blocks_static_ground_0p5_obstacles_0p4_0p64.png"
-    manifest_path = output_dir / "map_open_blocks_static_ground_0p5_obstacles_0p4_0p64_manifest.json"
+    image_path = output_dir / "map_open_blocks_static_ground_0p2_obstacles_0p4_0p64_h2p5_3p0.png"
+    manifest_path = output_dir / "map_open_blocks_static_ground_0p2_obstacles_0p4_0p64_h2p5_3p0_manifest.json"
     write_png(image_path, width_px, height_px, pixels)
     triangles, mesh_obstacle_count, ground_cell_count = build_static_mesh(
         bounds,
@@ -388,7 +446,13 @@ def generate(
         ground_cell_m=ground_cell_m,
         default_obstacle_footprint_m=obstacle_footprint_max_m,
     )
-    write_binary_stl(stl_path, triangles)
+    write_binary_stl(
+        stl_path,
+        triangles,
+        ground_cell_m=ground_cell_m,
+        obstacle_height_min_m=obstacle_height_min_m,
+        obstacle_height_max_m=obstacle_height_max_m,
+    )
 
     wall_boxes = [item for item in map_config.get("obstacles", []) if item.get("type") == "box"]
     manifest = {
@@ -402,7 +466,9 @@ def generate(
         "pixels_per_meter": px_per_m,
         "ground_cell_size_m": ground_cell_m,
         "ground_cell_count": ground_cell_count,
-        "random_obstacle_visual_footprint_range_m": [obstacle_footprint_min_m, obstacle_footprint_max_m, 3.0],
+        "terrain_height_range_m": [TERRAIN_HEIGHT_MIN_M, TERRAIN_HEIGHT_MAX_M],
+        "random_obstacle_visual_footprint_range_m": [obstacle_footprint_min_m, obstacle_footprint_max_m],
+        "random_obstacle_height_range_m": [obstacle_height_min_m, obstacle_height_max_m],
         "random_obstacle_count": obstacle_count,
         "random_obstacle_distribution": "stratified_uniform_one_per_cell_no_wall_reservation",
         "random_obstacle_distribution_diagnostics": distribution_diagnostics,
@@ -425,9 +491,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--stl", type=Path, default=DEFAULT_STL)
     parser.add_argument("--pixels-per-meter", type=float, default=20.0)
-    parser.add_argument("--ground-cell-m", type=float, default=0.5)
+    parser.add_argument("--ground-cell-m", type=float, default=0.2)
     parser.add_argument("--obstacle-footprint-min-m", type=float, default=0.4)
     parser.add_argument("--obstacle-footprint-max-m", type=float, default=0.64)
+    parser.add_argument("--obstacle-height-min-m", type=float, default=2.5)
+    parser.add_argument("--obstacle-height-max-m", type=float, default=3.0)
     return parser.parse_args()
 
 
@@ -441,6 +509,8 @@ def main() -> int:
         args.ground_cell_m,
         args.obstacle_footprint_min_m,
         args.obstacle_footprint_max_m,
+        args.obstacle_height_min_m,
+        args.obstacle_height_max_m,
     )
     print(json.dumps(manifest, ensure_ascii=False, indent=2))
     return 0

@@ -1,7 +1,7 @@
 {
   "source_config": "planners/astar_min_snap/map_open_blocks.yaml",
-  "image": "results/planning/single_obstacle_astar_awff/figures/static_map/map_open_blocks_static_ground_0p5_obstacles_0p4_0p64.png",
-  "stl": "QuadrotorModel/Resources/Visualization/map_open_blocks_static_ground_0p5_obstacles_0p4_0p64.stl",
+  "image": "results/planning/single_obstacle_astar_awff/figures/static_map/map_open_blocks_static_ground_0p2_obstacles_0p4_0p64_h2p5_3p0.png",
+  "stl": "QuadrotorModel/Resources/Visualization/map_open_blocks_static_ground_0p2_obstacles_0p4_0p64_h2p5_3p0.stl",
   "purpose": "static_environment_visualization_only",
   "planner_knowledge_policy": "online_planner_must_use_local_discovered_map_not_this_full_static_image",
   "bounds_m": {
@@ -23,32 +23,41 @@
     1200
   ],
   "pixels_per_meter": 20.0,
-  "ground_cell_size_m": 0.5,
-  "ground_cell_count": 21600,
+  "ground_cell_size_m": 0.2,
+  "ground_cell_count": 135000,
+  "terrain_height_range_m": [
+    0.1,
+    0.5
+  ],
   "random_obstacle_visual_footprint_range_m": [
     0.4,
-    0.64,
+    0.64
+  ],
+  "random_obstacle_height_range_m": [
+    2.5,
     3.0
   ],
-  "random_obstacle_count": 600,
+  "random_obstacle_count": 1000,
   "random_obstacle_distribution": "stratified_uniform_one_per_cell_no_wall_reservation",
   "random_obstacle_distribution_diagnostics": {
-    "grid_cells": [
-      30,
-      20
+    "coarse_cells": [
+      20,
+      12
     ],
     "cell_size_m": [
-      2.8666666666666667,
-      2.8
+      4.3,
+      4.666666666666667
     ],
-    "jitter_limit_m": [
-      0.45,
-      0.45
+    "obstacles_per_cell": [
+      4,
+      5
     ],
-    "obstacles_per_cell": 1
+    "extra_cells": 40,
+    "min_center_distance_m": 1.19,
+    "min_spacing_m": 0.55
   },
-  "mesh_random_obstacle_count": 600,
-  "mesh_triangle_count": 266400,
+  "mesh_random_obstacle_count": 1000,
+  "mesh_triangle_count": 282000,
   "dynamic_wall_group_count": 8,
   "dynamic_wall_box_count": 16,
   "walls_baked_into_static_image": false,

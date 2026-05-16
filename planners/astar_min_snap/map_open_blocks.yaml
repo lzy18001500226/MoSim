@@ -81,7 +81,7 @@ map:
   random_obstacles:
     enabled: true
     seed: 20260518
-    count: 600
+    count: 1000
     radius_range: [0.30, 0.48]
     height_range: [3.0, 3.0]
     edge_margin_m: 2.0

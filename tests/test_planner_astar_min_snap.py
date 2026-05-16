@@ -82,9 +82,10 @@ def test_open_blocks_planner_outputs_trackable_reference() -> None:
     shape_counts = {shape: sum(1 for group in wall_groups if group.get("shape") == shape) for shape in ["L", "T"]}
     if shape_counts != {"L": 4, "T": 4}:
         raise AssertionError(f"Expected four L wall groups and four T wall groups, got {shape_counts}")
-    if fixed_wall_count != 16 or random_cylinder_count != 600:
+    expected_random_count = int(config["map"].get("random_obstacles", {}).get("count", 0))
+    if fixed_wall_count != 16 or random_cylinder_count != expected_random_count:
         raise AssertionError(
-            f"Expected eight L/T walls expanded as 16 boxes plus 600 random cylinders, got boxes={fixed_wall_count}, cylinders={random_cylinder_count}"
+            f"Expected eight L/T walls expanded as 16 boxes plus {expected_random_count} random cylinders, got boxes={fixed_wall_count}, cylinders={random_cylinder_count}"
         )
     required = {
         "time",
