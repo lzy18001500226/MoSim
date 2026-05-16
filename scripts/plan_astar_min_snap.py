@@ -144,6 +144,8 @@ def expand_wall_groups(config: dict[str, Any]) -> dict[str, Any]:
     wall_spec = map_config.get("wall_groups")
     if not isinstance(wall_spec, dict):
         return expanded
+    if wall_spec.get("expanded", False):
+        return expanded
 
     defaults = wall_spec.get("defaults", {})
     if not isinstance(defaults, dict):
@@ -540,6 +542,8 @@ def astar(grid: OccupancyGrid, astar_config: dict[str, Any]) -> tuple[list[Point
             neighbor_point = grid.point_from_index(neighbor)
             if not (search_x_min <= neighbor_point.x <= search_x_max and search_y_min <= neighbor_point.y <= search_y_max):
                 continue
+            if not segment_collision_free(grid, current_point, neighbor_point):
+                continue
             step_cost = distance(current_point, neighbor_point)
             if progress_penalty > 0.0 and goal_norm > 1e-9:
                 progress = (neighbor_point.x - current_point.x) * goal_vector_x + (neighbor_point.y - current_point.y) * goal_vector_y
@@ -691,12 +695,84 @@ def min_obstacle_distance_and_gradient(point: Point, obstacles: list[dict[str, A
     return obstacle_distance(point, nearest), nearest_obstacle_gradient(point, nearest)
 
 
+def nearest_obstacle(point: Point, obstacles: list[dict[str, Any]]) -> dict[str, Any] | None:
+    if not obstacles:
+        return None
+    return min(obstacles, key=lambda obstacle: obstacle_distance(point, obstacle))
+
+
 def clamp_to_bounds(point: Point, grid: OccupancyGrid) -> Point:
     return Point(
         max(grid.x_min, min(grid.x_max, point.x)),
         max(grid.y_min, min(grid.y_max, point.y)),
         grid.z_plan,
     )
+
+
+def segment_closest_sample(grid: OccupancyGrid, a: Point, b: Point) -> tuple[float, Point, dict[str, Any] | None]:
+    length = distance(a, b)
+    steps = max(1, int(math.ceil(length / (grid.resolution / 3.0))))
+    best_distance = float("inf")
+    best_point = a
+    best_obstacle: dict[str, Any] | None = None
+    for i in range(steps + 1):
+        ratio = i / steps
+        point = Point(a.x + (b.x - a.x) * ratio, a.y + (b.y - a.y) * ratio, a.z + (b.z - a.z) * ratio)
+        obstacle = nearest_obstacle(point, grid.obstacles)
+        current_distance = obstacle_distance(point, obstacle) if obstacle is not None else float("inf")
+        if current_distance < best_distance:
+            best_distance = current_distance
+            best_point = point
+            best_obstacle = obstacle
+    return best_distance, best_point, best_obstacle
+
+
+def insert_clearance_waypoints(
+    grid: OccupancyGrid,
+    path: list[Point],
+    required_margin: float,
+    max_segments: int,
+    max_insertions: int = 24,
+) -> tuple[list[Point], int]:
+    """Insert local detour points for segments that are safe as a polyline but unsafe after smoothing."""
+    repaired = list(path)
+    insertions = 0
+    while insertions < max_insertions and len(repaired) < max_segments + 1:
+        worst_index = -1
+        worst_distance = float("inf")
+        worst_point = repaired[0]
+        worst_obstacle: dict[str, Any] | None = None
+        for index, (a, b) in enumerate(zip(repaired[:-1], repaired[1:])):
+            current_distance, point, obstacle = segment_closest_sample(grid, a, b)
+            if current_distance < worst_distance:
+                worst_distance = current_distance
+                worst_index = index
+                worst_point = point
+                worst_obstacle = obstacle
+        if worst_distance >= required_margin or worst_index < 0 or worst_obstacle is None:
+            break
+
+        grad_x, grad_y = nearest_obstacle_gradient(worst_point, worst_obstacle)
+        gap = required_margin - worst_distance
+        detour = clamp_to_bounds(
+            Point(
+                worst_point.x + grad_x * max(0.45, gap + 0.35),
+                worst_point.y + grad_y * max(0.45, gap + 0.35),
+                worst_point.z,
+            ),
+            grid,
+        )
+        a = repaired[worst_index]
+        b = repaired[worst_index + 1]
+        if (
+            segment_min_obstacle_distance(grid, a, detour) >= required_margin
+            and segment_min_obstacle_distance(grid, detour, b) >= required_margin
+        ):
+            repaired.insert(worst_index + 1, detour)
+            insertions += 1
+        else:
+            break
+    return repaired, insertions
 
 
 def ego_optimize_path(
@@ -866,7 +942,14 @@ def segment_durations(path: list[Point], limits: dict[str, Any], scale: float) -
     return [max(distance(a, b) / v_ref, t_min) * scale for a, b in zip(path[:-1], path[1:])]
 
 
-def generate_reference(path: list[Point], limits: dict[str, Any], sample_dt: float, scale: float, yaw_mode: str) -> list[dict[str, float]]:
+def generate_reference(
+    path: list[Point],
+    limits: dict[str, Any],
+    sample_dt: float,
+    scale: float,
+    yaw_mode: str,
+    smoothing_type: str = "quintic_segment",
+) -> list[dict[str, float]]:
     durations = segment_durations(path, limits, scale)
     rows: list[dict[str, float]] = []
     elapsed = 0.0
@@ -877,10 +960,21 @@ def generate_reference(path: list[Point], limits: dict[str, Any], sample_dt: flo
             if seg_index > 0 and k == 0:
                 continue
             tau = min(k * sample_dt, duration)
-            samples = [sample_quintic(coeff, tau) for coeff in coeffs]
-            px, vx, ax, jx = samples[0]
-            py, vy, ay, jy = samples[1]
-            pz, vz, az, jz = samples[2]
+            if smoothing_type == "linear_segment":
+                ratio = min(1.0, max(0.0, tau / max(duration, 1e-9)))
+                px = a.x + (b.x - a.x) * ratio
+                py = a.y + (b.y - a.y) * ratio
+                pz = a.z + (b.z - a.z) * ratio
+                vx = (b.x - a.x) / max(duration, 1e-9)
+                vy = (b.y - a.y) / max(duration, 1e-9)
+                vz = (b.z - a.z) / max(duration, 1e-9)
+                ax = ay = az = 0.0
+                jx = jy = jz = 0.0
+            else:
+                samples = [sample_quintic(coeff, tau) for coeff in coeffs]
+                px, vx, ax, jx = samples[0]
+                py, vy, ay, jy = samples[1]
+                pz, vz, az, jz = samples[2]
             yaw = math.atan2(vy, vx) if yaw_mode == "face_velocity" and math.hypot(vx, vy) > 1e-6 else 0.0
             rows.append(
                 {
@@ -1010,8 +1104,16 @@ def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], li
     max_model_segments = int(config.get("model_segment_limit", 5))
     simplified_before_fit = simplified
     simplified = fit_segment_limit(planning_grid, simplified, max_model_segments, max_segment_length_m)
+    repair_margin = max(float(config["map"]["safety_margin"]), float(ego_config.get("accept_safety_margin_m", config["map"]["safety_margin"])))
+    simplified, clearance_repair_insertions = insert_clearance_waypoints(
+        planning_grid,
+        simplified,
+        repair_margin,
+        max_model_segments,
+    )
     limits = require_mapping(config, "limits")
     smoothing = require_mapping(config, "smoothing")
+    smoothing_type = str(smoothing.get("type", "quintic_segment"))
     sample_dt = float(smoothing.get("sample_dt_s", 0.05))
     yaw_mode = str(smoothing.get("yaw_mode", "face_velocity"))
     scale = 1.0
@@ -1019,7 +1121,7 @@ def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], li
     for attempt in range(int(limits.get("max_rescale_iterations", 5)) + 1):
         if VERBOSE:
             print(f"[planner] evaluate attempt={attempt} scale={scale:.3f}", flush=True)
-        rows = generate_reference(simplified, limits, sample_dt, scale, yaw_mode)
+        rows = generate_reference(simplified, limits, sample_dt, scale, yaw_mode, smoothing_type)
         report = evaluate_reference(grid, rows, limits)
         report.update({"time_scale": scale, "rescale_iteration": attempt})
         if report["accepted"]:
@@ -1036,8 +1138,11 @@ def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], li
             "simplified_path_points_before_fit": len(simplified_before_fit),
             "simplified_path_points": len(simplified),
             "model_segment_limit": max_model_segments,
+            "clearance_repair_insertions": clearance_repair_insertions,
+            "clearance_repair_margin_m": repair_margin,
             "path_length_m": path_length(simplified),
             "safety_margin_m": grid.safety_margin,
+            "smoothing_type": smoothing_type,
             "truth_obstacles": grid.obstacles,
             "simplified_path": [point.as_tuple() for point in simplified],
             "segment_durations": segment_durations(simplified, limits, scale),
@@ -1121,31 +1226,91 @@ def plan_receding_horizon(
                 current.z + (goal.z - current.z) * ratio,
             )
         local_map["start"] = [current.x, current.y, current.z]
-        local_map["goal"] = [local_goal.x, local_goal.y, local_goal.z]
         local_map["obstacles"] = [truth_obstacles[index] for index in sorted(known_indices)]
-        local_grid = OccupancyGrid(local_map)
-        if VERBOSE and (replan_count < 5 or replan_count % 10 == 0):
-            print(
-                f"[planner] replan={replan_count} current=({current.x:.2f},{current.y:.2f}) local_goal=({local_goal.x:.2f},{local_goal.y:.2f}) known={len(known_indices)}",
-                flush=True,
-            )
-        segment_raw, iterations = astar(local_grid, astar_config)
+        local_grid: OccupancyGrid | None = None
+        segment_raw: list[Point] | None = None
+        iterations = 0
+        goal_candidates = [local_goal]
+        if local_goal_horizon_m > 0.0 and distance_to_goal > local_goal_horizon_m:
+            for horizon_scale in [0.75, 0.5, 0.3]:
+                ratio = horizon_scale * local_goal_horizon_m / distance_to_goal
+                goal_candidates.append(
+                    Point(
+                        current.x + (goal.x - current.x) * ratio,
+                        current.y + (goal.y - current.y) * ratio,
+                        current.z + (goal.z - current.z) * ratio,
+                    )
+                )
+        last_error: Exception | None = None
+        for candidate_goal in goal_candidates:
+            try:
+                local_map["goal"] = [candidate_goal.x, candidate_goal.y, candidate_goal.z]
+                candidate_grid = OccupancyGrid(local_map)
+                if VERBOSE and (replan_count < 5 or replan_count % 10 == 0):
+                    print(
+                        f"[planner] replan={replan_count} current=({current.x:.2f},{current.y:.2f}) local_goal=({candidate_goal.x:.2f},{candidate_goal.y:.2f}) known={len(known_indices)}",
+                        flush=True,
+                    )
+                candidate_raw, candidate_iterations = astar(candidate_grid, astar_config)
+                local_goal = candidate_goal
+                local_grid = candidate_grid
+                segment_raw = candidate_raw
+                iterations = candidate_iterations
+                break
+            except (RuntimeError, ValueError) as exc:
+                last_error = exc
+                continue
+        if segment_raw is None or local_grid is None:
+            raise RuntimeError(f"local planner failed for all local-goal candidates near ({current.x:.2f},{current.y:.2f}): {last_error}")
         total_iterations += iterations
         raw_path.extend(segment_raw[1:])
         if len(segment_raw) < 2:
             break
         committed = segment_raw[-1]
         traveled = 0.0
+        previous_point = current
+        commit_polyline = [current]
         for point in segment_raw[1:]:
-            step = distance(current, point)
+            step = distance(previous_point, point)
             traveled += step
             committed = point
+            commit_polyline.append(point)
+            known_indices = discovered_obstacles_along_segment(
+                truth_obstacles,
+                previous_point,
+                point,
+                known_indices,
+                window_radius_m,
+                max(truth_grid.resolution, 0.4),
+            )
+            previous_point = point
             if traveled >= commit_distance_m:
                 break
         if distance(committed, current) <= 1e-9:
             raise RuntimeError("local planner did not advance")
-        if truth_grid.is_occupied_point(committed):
+        post_commit_map = clone_jsonable(map_config)
+        post_commit_map["start"] = [committed.x, committed.y, committed.z]
+        post_commit_map["goal"] = [local_goal.x, local_goal.y, local_goal.z]
+        post_commit_map["obstacles"] = [truth_obstacles[index] for index in sorted(known_indices)]
+        try:
+            post_commit_grid = OccupancyGrid(post_commit_map)
+            committed_unsafe = post_commit_grid.is_occupied_point(committed)
+            committed_segment_unsafe = min_segment_path_distance(post_commit_grid, commit_polyline) < post_commit_grid.safety_margin
+        except ValueError:
+            committed_unsafe = True
+            committed_segment_unsafe = True
+        truth_segment_unsafe = min_segment_path_distance(truth_grid, commit_polyline) < truth_grid.safety_margin
+        if truth_grid.is_occupied_point(committed) or committed_unsafe or committed_segment_unsafe or truth_segment_unsafe:
             previous_known_count = len(known_indices)
+            segment_distance = float("inf")
+            segment_point = commit_polyline[0]
+            segment_obstacle = None
+            for segment_start, segment_end in zip(commit_polyline[:-1], commit_polyline[1:]):
+                current_distance, current_point, current_obstacle = segment_closest_sample(truth_grid, segment_start, segment_end)
+                if current_distance < segment_distance:
+                    segment_distance = current_distance
+                    segment_point = current_point
+                    segment_obstacle = current_obstacle
             known_indices = discovered_obstacles_along_segment(
                 truth_obstacles,
                 current,
@@ -1156,15 +1321,27 @@ def plan_receding_horizon(
             )
             blocked_retry_count += 1
             if VERBOSE:
+                obstacle_label = None
+                if segment_obstacle is not None:
+                    obstacle_label = {
+                        "type": segment_obstacle.get("type"),
+                        "wall_group_id": segment_obstacle.get("wall_group_id"),
+                        "wall_arm": segment_obstacle.get("wall_arm"),
+                    }
                 print(
-                    f"[planner] blocked current=({current.x:.2f},{current.y:.2f}) committed=({committed.x:.2f},{committed.y:.2f}) known {previous_known_count}->{len(known_indices)} retry={blocked_retry_count}",
+                    f"[planner] blocked current=({current.x:.2f},{current.y:.2f}) committed=({committed.x:.2f},{committed.y:.2f}) "
+                    f"known {previous_known_count}->{len(known_indices)} retry={blocked_retry_count} "
+                    f"flags point_truth={truth_grid.is_occupied_point(committed)} point_known={committed_unsafe} "
+                    f"segment_known={committed_segment_unsafe} segment_truth={truth_segment_unsafe} "
+                    f"segment_min={segment_distance:.3f} nearest_point=({segment_point.x:.2f},{segment_point.y:.2f}) "
+                    f"nearest_obstacle={obstacle_label}",
                     flush=True,
                 )
             if blocked_retry_count > 20 and len(known_indices) == previous_known_count:
                 raise RuntimeError("local planner stuck on an undiscoverable blocked segment")
             continue
         blocked_retry_count = 0
-        committed_path.append(committed)
+        committed_path.extend(commit_polyline[1:])
         current = committed
         replan_count += 1
 
@@ -1290,7 +1467,7 @@ def output_paths(config: dict[str, Any], output_dir: Path | None) -> dict[str, P
 
 
 def write_outputs(config_path: Path, config: dict[str, Any], output_dir: Path | None) -> dict[str, Path]:
-    expanded_config = expand_random_obstacles(config)
+    expanded_config = expand_random_obstacles(expand_wall_groups(config))
     grid = OccupancyGrid(require_mapping(expanded_config, "map"))
     raw_path, simplified, rows, report = plan_trackable(expanded_config)
     paths = output_paths(config, output_dir)

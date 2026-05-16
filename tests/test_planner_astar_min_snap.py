@@ -71,18 +71,20 @@ def test_open_blocks_planner_outputs_trackable_reference() -> None:
         raise AssertionError("Planner appears to know every truth obstacle; local sensing constraint regressed")
     if report.get("local_window_radius_m") != 3.0:
         raise AssertionError(report)
+    if report.get("model_segment_limit") != 90:
+        raise AssertionError(report)
     truth_obstacles = report.get("truth_obstacles", [])
     fixed_wall_count = sum(1 for obstacle in truth_obstacles if obstacle.get("type") == "box")
     random_cylinder_count = sum(1 for obstacle in truth_obstacles if obstacle.get("type") == "cylinder")
     wall_groups = config["map"].get("wall_groups", {}).get("groups", [])
-    if len(wall_groups) != 5:
-        raise AssertionError("planning_open_blocks must use five reusable L/T wall-group templates")
+    if len(wall_groups) != 8:
+        raise AssertionError("planning_open_blocks must use eight reusable L/T wall-group templates")
     shape_counts = {shape: sum(1 for group in wall_groups if group.get("shape") == shape) for shape in ["L", "T"]}
-    if shape_counts != {"L": 3, "T": 2}:
-        raise AssertionError(f"Expected three L wall groups and two T wall groups, got {shape_counts}")
-    if fixed_wall_count != 10 or random_cylinder_count != 150:
+    if shape_counts != {"L": 4, "T": 4}:
+        raise AssertionError(f"Expected four L wall groups and four T wall groups, got {shape_counts}")
+    if fixed_wall_count != 16 or random_cylinder_count != 600:
         raise AssertionError(
-            f"Expected five L/T walls expanded as 10 boxes plus 150 random cylinders, got boxes={fixed_wall_count}, cylinders={random_cylinder_count}"
+            f"Expected eight L/T walls expanded as 16 boxes plus 600 random cylinders, got boxes={fixed_wall_count}, cylinders={random_cylinder_count}"
         )
     required = {
         "time",
@@ -128,7 +130,7 @@ def test_open_blocks_wall_groups_do_not_overlap_or_leave_map() -> None:
         for index in range(0, len(fixed), 2)
     ]
 
-    if len(groups) != 5:
+    if len(groups) != 8:
         raise AssertionError(groups)
     start = [float(value) for value in map_config["start"]]
     goal = [float(value) for value in map_config["goal"]]

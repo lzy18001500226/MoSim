@@ -14,8 +14,8 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MODEL_POINT_CAPACITY = 61
-MODEL_SEGMENT_CAPACITY = 60
+MODEL_POINT_CAPACITY = 91
+MODEL_SEGMENT_CAPACITY = 90
 
 
 def read_yaml(path: Path) -> dict[str, Any]:
@@ -203,18 +203,20 @@ def build_display_constructor(
     boundary_wall_thickness_m = 0.0,
     highlight_local_costmap = true,
     local_costmap_radius_m = {fmt(float(map_config.get("local_planning_radius_m", 2.5)))},
-    local_costmap_front_half_angle_rad = 1.0471975511965976,
+    local_costmap_front_half_angle_rad = 3.141592653589793,
     local_costmap_update_period_s = 0.05,
-    local_costmap_half_cells = 15,
-    local_costmap_cell_size_m = 0.16,
+    local_costmap_half_cells = 10,
+    local_costmap_cell_size_m = 0.32,
+    local_sensed_cell_size_m = 0.32,
+    local_sensed_half_cells = 10,
     local_plan_horizon_s = 4.0,
     local_plan_point_count = 12,
     local_plan_max_length_m = 3.5,
-    terrain_cell_size_m = 1.0,
+    terrain_cell_size_m = 3.0,
     terrain_fill_scale = 1.02,
     terrain_x_offset_m = 0.0,
     terrain_y_offset_m = 0.0,
-    terrain_render_stride = 3,
+    terrain_render_stride = 1,
     local_terrain_half_cells = 6,
     show_continuous_ground = false,
     max_pillars = {pillars["max_pillars"]},
@@ -273,7 +275,8 @@ def update_model(model_path: Path, planner_config_path: Path, report_path: Path)
     print(f"Updated {model_path}")
     print(
         f"segments={ref['n_segments']} stop_time={fmt(ref['stop_time'])} "
-        f"pillars={pillars['pillar_count']} wall_groups={walls['wall_group_count']}"
+        f"pillars={pillars['pillar_count']} "
+        f"wall_groups={walls['wall_group_count']} wall_boxes={walls['wall_group_count'] * 2}"
     )
 
 

@@ -1,10 +1,10 @@
 model PlanningNavigationDisplay
   "Lightweight native 3D navigation display: pillar-cluster obstacle map and short-horizon local plan"
-  parameter Integer n_segments(min = 1, max = 60) = 1;
-  parameter Real p_x[61] = fill(0.0, 61);
-  parameter Real p_y[61] = fill(0.0, 61);
-  parameter Real p_z[61] = fill(1.0, 61);
-  parameter Real segment_duration[60] = fill(1.0, 60);
+  parameter Integer n_segments(min = 1, max = 90) = 1;
+  parameter Real p_x[91] = fill(0.0, 91);
+  parameter Real p_y[91] = fill(0.0, 91);
+  parameter Real p_z[91] = fill(1.0, 91);
+  parameter Real segment_duration[90] = fill(1.0, 90);
 
   parameter Real x_min = -1.0;
   parameter Real x_max = 7.0;
@@ -27,13 +27,19 @@ model PlanningNavigationDisplay
   parameter Real local_costmap_radius_m = 2.2
     "Abstract Mid360 local map radius used only for native 3D review.";
   parameter Real local_costmap_front_half_angle_rad = 2.356194490192345
-    "Abstract forward field-of-view half angle, 135 deg by default.";
+    "Kept for compatibility. Current review mode uses spherical/radial sensing, not square or forward-sector recoloring.";
   parameter Real local_costmap_update_period_s = 0.05
     "Abstract local map update period, 20 Hz.";
   parameter Integer local_costmap_half_cells(min = 1) = 1
     "Local grid half-width. 2 means a fixed 5x5 ground-cell window around the UAV.";
   parameter Real local_costmap_cell_size_m = terrain_cell_size_m
     "Abstract local occupancy-grid cell size for sensing highlight; decoupled from coarse terrain display cells.";
+  parameter Real local_sensed_cell_size_m = 0.32
+    "Fine local sensing footprint cell size. Keep near obstacle pillar size; do not apply to full-map terrain.";
+  parameter Integer local_sensed_half_cells(min = 1) = 10
+    "Fine local sensing footprint half-width. 10 with 0.32 m cells covers the 3 m sensing sphere.";
+  parameter Real local_sensed_ground_thickness_m = 0.045
+    "Thin overlay used only to show the currently sensed local map.";
   parameter Real local_plan_horizon_s = 2.0
     "Short forward local plan horizon; do not show the complete global path";
   parameter Integer local_plan_point_count(min = 2, max = 12) = 12
@@ -77,8 +83,8 @@ model PlanningNavigationDisplay
     annotation(Placement(transformation(origin = {-120, -30}, extent = {{-20, -20}, {20, 20}})));
 
 protected
-  Real segment_start[60];
-  Real segment_end[60];
+  Real segment_start[90];
+  Real segment_end[90];
   Real local_plan_end[3];
   Real local_plan_point[12, 3];
   Real local_plan_sample_time[12];
@@ -113,6 +119,12 @@ protected
   Real local_grid_center_y;
   Real local_window_half_width_m;
   parameter Integer local_terrain_width_cells = 2 * local_terrain_half_cells + 1;
+  parameter Integer local_sensed_width_cells = 2 * local_sensed_half_cells + 1;
+  parameter Integer local_sensed_ground_count = local_sensed_width_cells * local_sensed_width_cells;
+  parameter Integer local_sensed_x_index[local_sensed_ground_count] = {
+    mod(i - 1, local_sensed_width_cells) - local_sensed_half_cells for i in 1:local_sensed_ground_count};
+  parameter Integer local_sensed_y_index[local_sensed_ground_count] = {
+    div(i - 1, local_sensed_width_cells) - local_sensed_half_cells for i in 1:local_sensed_ground_count};
   parameter Integer terrain_render_x_count = integer(ceil(terrain_x_count / terrain_render_stride));
   parameter Integer terrain_render_y_count = integer(ceil(terrain_y_count / terrain_render_stride));
   parameter Integer ground_pillar_count = terrain_render_x_count * terrain_render_y_count;
@@ -128,6 +140,9 @@ protected
   Real ground_distance_to_uav[ground_pillar_count];
   Real ground_bearing_dot[ground_pillar_count];
   Boolean ground_sensed[ground_pillar_count];
+  Real local_sensed_ground_position[local_sensed_ground_count, 3];
+  Real local_sensed_ground_distance[local_sensed_ground_count];
+  Boolean local_sensed_ground_active[local_sensed_ground_count];
   parameter Integer boundary_wall_x_segment_count = if render_boundary_walls then terrain_y_count else 1;
   parameter Integer boundary_wall_y_segment_count = if render_boundary_walls then terrain_x_count else 1;
   Real boundary_wall_x_position[2 * boundary_wall_x_segment_count, 3];
@@ -149,10 +164,10 @@ protected
   end smoothstep;
 
   function localInterp
-    input Real value[61];
+    input Real value[91];
     input Real query_time;
     input Integer n_segments;
-    input Real segment_duration[60];
+    input Real segment_duration[90];
     output Real y;
   protected
     Real elapsed;
@@ -161,7 +176,7 @@ protected
     elapsed := 0.0;
     y := value[1];
     found := false;
-    for i in 1:60 loop
+    for i in 1:90 loop
       if not found and i <= n_segments then
         if query_time <= elapsed + segment_duration[i] then
           y := value[i] + (value[i + 1] - value[i]) * smoothstep(query_time - elapsed, segment_duration[i]);
@@ -307,6 +322,18 @@ public
     height = {ground_height[i] for i in 1:ground_pillar_count},
     color = {if ground_sensed[i] then {210, 232, 255} else {215, 215, 215} for i in 1:ground_pillar_count},
     each specularCoefficient = 0.15);
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape local_sensed_ground[local_sensed_ground_count](
+    each shapeType = "box",
+    each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
+    r = {local_sensed_ground_position[i, :] for i in 1:local_sensed_ground_count},
+    each r_shape = {0, 0, 0},
+    each lengthDirection = {1, 0, 0},
+    each widthDirection = {0, 1, 0},
+    length = {if local_sensed_ground_active[i] then local_sensed_cell_size_m else 0.0 for i in 1:local_sensed_ground_count},
+    width = {if local_sensed_ground_active[i] then local_sensed_cell_size_m else 0.0 for i in 1:local_sensed_ground_count},
+    each height = local_sensed_ground_thickness_m,
+    each color = {185, 222, 255},
+    each specularCoefficient = 0.12);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape local_plan_curve[11](
     each shapeType = "cylinder",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
@@ -383,7 +410,7 @@ public
 equation
   segment_start[1] = 0.0;
   segment_end[1] = segment_duration[1];
-  for i in 2:60 loop
+  for i in 2:90 loop
     segment_start[i] = segment_end[i - 1];
     segment_end[i] = segment_start[i] + segment_duration[i];
   end for;
@@ -448,10 +475,8 @@ equation
         (pillar_distance_to_uav[i] * local_heading_norm)
       else 1.0;
     pillar_active[i] = i <= pillar_count;
-    pillar_sensed[i] = i <= pillar_count and (
-      highlight_local_costmap and (
-        pillar_distance_to_uav[i] <= local_costmap_radius_m and
-        pillar_bearing_dot[i] >= cos(local_costmap_front_half_angle_rad)));
+    pillar_sensed[i] = i <= pillar_count and highlight_local_costmap and
+      pillar_distance_to_uav[i] <= local_costmap_radius_m;
   end for;
 
   for i in 1:max_wall_groups loop
@@ -513,9 +538,21 @@ equation
         (ground_center[i, 2] - sensed_position[2]) * local_heading_vector[2]) /
         (ground_distance_to_uav[i] * local_heading_norm)
       else 1.0;
-    ground_sensed[i] = highlight_local_costmap and
-      ground_distance_to_uav[i] <= local_costmap_radius_m and
-      ground_bearing_dot[i] >= cos(local_costmap_front_half_angle_rad);
+    ground_sensed[i] = highlight_local_costmap and ground_distance_to_uav[i] <= local_costmap_radius_m;
+  end for;
+
+  for i in 1:local_sensed_ground_count loop
+    local_sensed_ground_position[i, 1] = local_grid_center_x + local_sensed_x_index[i] * local_sensed_cell_size_m;
+    local_sensed_ground_position[i, 2] = local_grid_center_y + local_sensed_y_index[i] * local_sensed_cell_size_m;
+    local_sensed_ground_position[i, 3] = map_z + local_sensed_ground_thickness_m;
+    local_sensed_ground_distance[i] = sqrt(
+      (local_sensed_ground_position[i, 1] - sensed_position[1]) ^ 2 +
+      (local_sensed_ground_position[i, 2] - sensed_position[2]) ^ 2 +
+      (local_sensed_ground_position[i, 3] - sensed_position[3]) ^ 2);
+    local_sensed_ground_active[i] = highlight_local_costmap and
+      local_sensed_ground_position[i, 1] >= x_min and local_sensed_ground_position[i, 1] <= x_max and
+      local_sensed_ground_position[i, 2] >= y_min and local_sensed_ground_position[i, 2] <= y_max and
+      local_sensed_ground_distance[i] <= local_costmap_radius_m;
   end for;
 
   for i in 1:boundary_wall_x_segment_count loop

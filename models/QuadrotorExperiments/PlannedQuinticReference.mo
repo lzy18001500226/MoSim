@@ -1,10 +1,10 @@
 block PlannedQuinticReference
   "Piecewise quintic reference source generated from an accepted A* planning path"
-  parameter Integer n_segments(min = 1, max = 60) = 1;
-  parameter Real p_x[61] = fill(0.0, 61);
-  parameter Real p_y[61] = fill(0.0, 61);
-  parameter Real p_z[61] = fill(1.0, 61);
-  parameter Real segment_duration[60] = fill(1.0, 60);
+  parameter Integer n_segments(min = 1, max = 90) = 1;
+  parameter Real p_x[91] = fill(0.0, 91);
+  parameter Real p_y[91] = fill(0.0, 91);
+  parameter Real p_z[91] = fill(1.0, 91);
+  parameter Real segment_duration[90] = fill(1.0, 90);
 
   Modelica.Blocks.Interfaces.RealOutput position_command[3]
     annotation(Placement(transformation(origin = {100, 40}, extent = {{-10, -10}, {10, 10}})));
@@ -59,10 +59,10 @@ protected
   end interpRate;
 
   function piecewiseInterp
-    input Real value[61];
+    input Real value[91];
     input Real query_time;
     input Integer n_segments;
-    input Real segment_duration[60];
+    input Real segment_duration[90];
     output Real y;
   protected
     Real elapsed;
@@ -71,7 +71,7 @@ protected
     elapsed := 0.0;
     y := value[1];
     found := false;
-    for i in 1:60 loop
+    for i in 1:90 loop
       if not found and i <= n_segments then
         if query_time <= elapsed + segment_duration[i] then
           y := interp(value[i], value[i + 1], query_time - elapsed, segment_duration[i]);
@@ -85,10 +85,10 @@ protected
   end piecewiseInterp;
 
   function piecewiseRate
-    input Real value[61];
+    input Real value[91];
     input Real query_time;
     input Integer n_segments;
-    input Real segment_duration[60];
+    input Real segment_duration[90];
     output Real y;
   protected
     Real elapsed;
@@ -97,7 +97,7 @@ protected
     elapsed := 0.0;
     y := 0.0;
     found := false;
-    for i in 1:60 loop
+    for i in 1:90 loop
       if not found and i <= n_segments then
         if query_time <= elapsed + segment_duration[i] then
           y := interpRate(value[i], value[i + 1], query_time - elapsed, segment_duration[i]);
