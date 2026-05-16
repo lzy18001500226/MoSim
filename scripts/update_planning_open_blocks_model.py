@@ -125,8 +125,6 @@ def build_pillars(report: dict[str, Any]) -> dict[str, Any]:
     for obstacle in report["truth_obstacles"]:
         if obstacle.get("type") == "cylinder":
             pillars.extend(pillar_cluster(obstacle))
-        elif obstacle.get("type") == "box":
-            pillars.extend(wall_pillars(obstacle))
     if not pillars:
         raise ValueError("No renderable cylindrical obstacles in planner report")
     return {
@@ -137,6 +135,38 @@ def build_pillars(report: dict[str, Any]) -> dict[str, Any]:
         "widths": [width for _, _, _, width, _, _ in pillars],
         "heights": [height for _, _, _, _, height, _ in pillars],
         "z_min": [z_min for _, _, _, _, _, z_min in pillars],
+    }
+
+
+def build_wall_groups(report: dict[str, Any]) -> dict[str, Any]:
+    boxes: list[dict[str, Any]] = [
+        obstacle for obstacle in report["truth_obstacles"] if obstacle.get("type") == "box"
+    ]
+    if len(boxes) % 2 != 0:
+        raise ValueError(f"Fixed wall box count must be even, got {len(boxes)}")
+
+    arm1_min: list[list[float]] = []
+    arm1_max: list[list[float]] = []
+    arm2_min: list[list[float]] = []
+    arm2_max: list[list[float]] = []
+    for index in range(0, len(boxes), 2):
+        first = boxes[index]
+        second = boxes[index + 1]
+        arm1_min.append([float(value) for value in first["min"]])
+        arm1_max.append([float(value) for value in first["max"]])
+        arm2_min.append([float(value) for value in second["min"]])
+        arm2_max.append([float(value) for value in second["max"]])
+
+    count = len(arm1_min)
+    max_wall_groups = max(8, count)
+    pad = [[0.0, 0.0, 0.0] for _ in range(max_wall_groups - count)]
+    return {
+        "max_wall_groups": max_wall_groups,
+        "wall_group_count": count,
+        "arm1_min": arm1_min + pad,
+        "arm1_max": arm1_max + pad,
+        "arm2_min": arm2_min + pad,
+        "arm2_max": arm2_max + pad,
     }
 
 
@@ -154,7 +184,12 @@ def build_constructor(name: str, ref: dict[str, Any], map_config: dict[str, Any]
     segment_duration = {modelica_array(ref["segment_duration"])}"""
 
 
-def build_display_constructor(ref: dict[str, Any], map_config: dict[str, Any], pillars: dict[str, Any]) -> str:
+def build_display_constructor(
+    ref: dict[str, Any],
+    map_config: dict[str, Any],
+    pillars: dict[str, Any],
+    walls: dict[str, Any],
+) -> str:
     base = build_constructor("PlanningNavigationDisplay navigationDisplay", ref, map_config, pillars)
     bounds = map_config["bounds"]
     return f"""{base},
@@ -188,7 +223,13 @@ def build_display_constructor(ref: dict[str, Any], map_config: dict[str, Any], p
     pillar_length = {modelica_array(pillars["lengths"])},
     pillar_width = {modelica_array(pillars["widths"])},
     pillar_height = {modelica_array(pillars["heights"])},
-    pillar_z_min = {modelica_array(pillars["z_min"])})"""
+    pillar_z_min = {modelica_array(pillars["z_min"])},
+    max_wall_groups = {walls["max_wall_groups"]},
+    wall_group_count = {walls["wall_group_count"]},
+    wall_arm1_min = {modelica_matrix(walls["arm1_min"])},
+    wall_arm1_max = {modelica_matrix(walls["arm1_max"])},
+    wall_arm2_min = {modelica_matrix(walls["arm2_min"])},
+    wall_arm2_max = {modelica_matrix(walls["arm2_max"])})"""
 
 
 def replace_between(text: str, pattern: str, replacement: str) -> str:
@@ -207,10 +248,11 @@ def update_model(model_path: Path, planner_config_path: Path, report_path: Path)
     report = json.loads(report_path.read_text(encoding="utf-8"))
     ref = build_reference(report, map_config)
     pillars = build_pillars(report)
+    walls = build_wall_groups(report)
     text = model_path.read_text(encoding="utf-8")
 
     planning_ref = build_constructor("PlannedQuinticReference planningReference", ref, map_config, pillars) + ")"
-    display = build_display_constructor(ref, map_config, pillars)
+    display = build_display_constructor(ref, map_config, pillars, walls)
     text = replace_between(
         text,
         r"  PlannedQuinticReference planningReference\([\s\S]*?\);\n  PlanningNavigationDisplay navigationDisplay\([\s\S]*?\);",
@@ -229,7 +271,10 @@ def update_model(model_path: Path, planner_config_path: Path, report_path: Path)
     )
     model_path.write_text(text, encoding="utf-8")
     print(f"Updated {model_path}")
-    print(f"segments={ref['n_segments']} stop_time={fmt(ref['stop_time'])} pillars={pillars['pillar_count']}")
+    print(
+        f"segments={ref['n_segments']} stop_time={fmt(ref['stop_time'])} "
+        f"pillars={pillars['pillar_count']} wall_groups={walls['wall_group_count']}"
+    )
 
 
 def parse_args() -> argparse.Namespace:

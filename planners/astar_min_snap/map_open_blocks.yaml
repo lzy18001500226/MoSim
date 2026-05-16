@@ -13,46 +13,53 @@ map:
   planning_safety_margin: 0.50
   start: [-36.0, -26.0, 1.0]
   goal: [36.0, 26.0, 1.0]
-  obstacles:
-    # Five fixed wall groups generated with seed 20260519. Each group uses
-    # one 18 m wall and one 6 m wall, both 0.32 m thick and 3.0 m high.
-    # The 6 m wall connects to an endpoint of the 18 m wall. Group bounding
-    # boxes are randomly placed with no overlap and no artificial route corridor.
-    # Group 1: vertical 18 m wall.
-    - type: box
-      min: [-10.30, -2.61, 0.0]
-      max: [-9.98, 15.39, 3.0]
-    - type: box
-      min: [-16.14, -2.77, 0.0]
-      max: [-10.14, -2.45, 3.0]
-    # Group 2: vertical 18 m wall.
-    - type: box
-      min: [6.53, 9.83, 0.0]
-      max: [6.85, 27.83, 3.0]
-    - type: box
-      min: [6.69, 9.67, 0.0]
-      max: [12.69, 9.99, 3.0]
-    # Group 3: horizontal 18 m wall.
-    - type: box
-      min: [-7.99, -21.04, 0.0]
-      max: [10.01, -20.72, 3.0]
-    - type: box
-      min: [-8.15, -26.88, 0.0]
-      max: [-7.83, -20.88, 3.0]
-    # Group 4: horizontal 18 m wall.
-    - type: box
-      min: [-35.33, -12.99, 0.0]
-      max: [-17.33, -12.67, 3.0]
-    - type: box
-      min: [-17.49, -12.83, 0.0]
-      max: [-17.17, -6.83, 3.0]
-    # Group 5: horizontal 18 m wall.
-    - type: box
-      min: [17.57, 9.04, 0.0]
-      max: [35.57, 9.36, 3.0]
-    - type: box
-      min: [17.41, 3.20, 0.0]
-      max: [17.73, 9.20, 3.0]
+  obstacles: []
+  wall_groups:
+    # Fixed template groups. Each group first occupies one 18 m x 6 m
+    # axis-aligned rectangle. Collision/display boxes are generated from
+    # this template; never hand-edit the two wall arm boxes directly.
+    #
+    # shape=L: short wall endpoint touches long wall endpoint.
+    # shape=T: short wall midpoint touches long wall endpoint.
+    # The dimensions are long_length_m x short_length_m x height_m with
+    # thickness_m wall thickness.
+    defaults:
+      long_length_m: 18.0
+      short_length_m: 6.0
+      thickness_m: 0.32
+      height_m: 3.0
+      z_min: 0.0
+    groups:
+      - id: wall_01
+        shape: L
+        long_axis: y
+        joint: lower
+        short_side: negative
+        bbox_min: [-16.14, -2.77]
+      - id: wall_02
+        shape: T
+        long_axis: y
+        joint: lower
+        short_side: positive
+        bbox_min: [6.53, 9.67]
+      - id: wall_03
+        shape: L
+        long_axis: x
+        joint: lower
+        short_side: negative
+        bbox_min: [-8.15, -26.88]
+      - id: wall_04
+        shape: T
+        long_axis: x
+        joint: upper
+        short_side: positive
+        bbox_min: [-35.33, -12.99]
+      - id: wall_05
+        shape: L
+        long_axis: x
+        joint: lower
+        short_side: negative
+        bbox_min: [17.41, 3.20]
   random_obstacles:
     enabled: true
     seed: 20260518
@@ -72,7 +79,7 @@ local_planning:
   window_radius_m: 3.0
   commit_distance_m: 1.2
   local_goal_horizon_m: 10.0
-  max_simplified_segment_length_m: 6.0
+  max_simplified_segment_length_m: 3.5
   goal_tolerance_m: 0.35
   max_replans: 260
 
@@ -91,7 +98,7 @@ ego_planner:
   step_size: 0.06
   max_step_m: 0.10
   clearance_m: 0.58
-  accept_safety_margin_m: 0.35
+  accept_safety_margin_m: 0.40
   lambda_smooth: 0.35
   lambda_collision: 2.0
   lambda_fitness: 0.22

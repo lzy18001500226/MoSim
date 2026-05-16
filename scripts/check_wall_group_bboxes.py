@@ -47,6 +47,20 @@ def box_from_obstacle(obstacle: dict[str, Any]) -> list[float]:
     ]
 
 
+def expanded_config_from_wall_groups(config: dict[str, Any]) -> dict[str, Any]:
+    import importlib.util
+    import sys
+
+    planner_path = ROOT / "scripts" / "plan_astar_min_snap.py"
+    spec = importlib.util.spec_from_file_location("plan_astar_min_snap_for_wall_check", planner_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load planner module: {planner_path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module.expand_wall_groups(config)
+
+
 def merge_boxes(boxes: list[list[float]]) -> list[float]:
     return [
         min(box[0] for box in boxes),
@@ -123,6 +137,25 @@ def wall_group_centerline_connection(
     }
 
 
+def wall_shape_from_parts(long_box: list[float], short_box: list[float]) -> dict[str, Any]:
+    long_line = wall_centerline(long_box)
+    short_line = wall_centerline(short_box)
+    endpoint_distances = [
+        point_distance_xy(long_endpoint, short_endpoint)
+        for long_endpoint in long_line["endpoints"]
+        for short_endpoint in short_line["endpoints"]
+    ]
+    midpoint_distances = [
+        point_distance_xy(long_endpoint, short_line["center"])
+        for long_endpoint in long_line["endpoints"]
+    ]
+    best_l = min(endpoint_distances)
+    best_t = min(midpoint_distances)
+    if best_l <= best_t:
+        return {"shape": "L", "distance": best_l}
+    return {"shape": "T", "distance": best_t}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--map", type=Path, default=DEFAULT_MAP)
@@ -144,7 +177,14 @@ def main() -> int:
         float(map_bounds["y"][1]),
         float(map_bounds["z"][1]),
     ]
-    fixed = map_config["obstacles"][: args.wall_box_count]
+    config = expanded_config_from_wall_groups(config)
+    map_config = config["map"]
+    fixed = [
+        obstacle for obstacle in map_config["obstacles"]
+        if obstacle.get("type") == "box" and "wall_group_id" in obstacle
+    ]
+    if not fixed:
+        fixed = map_config["obstacles"][: args.wall_box_count]
     if len(fixed) % args.boxes_per_group != 0:
         raise SystemExit("fixed wall count must be divisible by boxes_per_group")
 
@@ -166,6 +206,7 @@ def main() -> int:
         long_index = 0 if lines[0]["length"] >= lines[1]["length"] else 1
         short_index = 1 - long_index
         connection = wall_group_centerline_connection(parts[long_index], parts[short_index])
+        shape = wall_shape_from_parts(parts[long_index], parts[short_index])
         out_of_bounds = (
             box[0] < world[0] or box[1] < world[1] or box[2] < world[2]
             or box[3] > world[3] or box[4] > world[4] or box[5] > world[5]
@@ -176,14 +217,15 @@ def main() -> int:
             f"group {i}: bbox={box} "
             f"start_distance_m={start_distance:.3f} goal_distance_m={goal_distance:.3f} "
             f"out_of_bounds={out_of_bounds} "
+            f"shape={shape['shape']} "
             f"centerline_connection={connection['mode']} "
-            f"centerline_error_m={connection['distance']:.6f}"
+            f"centerline_error_m={shape['distance']:.6f}"
         )
         if out_of_bounds:
             ok = False
         if start_distance < args.min_start_goal_distance_m or goal_distance < args.min_start_goal_distance_m:
             ok = False
-        if connection["distance"] > args.centerline_connect_tol_m:
+        if shape["distance"] > args.centerline_connect_tol_m:
             ok = False
 
     print("group distances:")

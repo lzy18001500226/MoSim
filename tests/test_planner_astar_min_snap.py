@@ -74,9 +74,15 @@ def test_open_blocks_planner_outputs_trackable_reference() -> None:
     truth_obstacles = report.get("truth_obstacles", [])
     fixed_wall_count = sum(1 for obstacle in truth_obstacles if obstacle.get("type") == "box")
     random_cylinder_count = sum(1 for obstacle in truth_obstacles if obstacle.get("type") == "cylinder")
+    wall_groups = config["map"].get("wall_groups", {}).get("groups", [])
+    if len(wall_groups) != 5:
+        raise AssertionError("planning_open_blocks must use five reusable L/T wall-group templates")
+    shape_counts = {shape: sum(1 for group in wall_groups if group.get("shape") == shape) for shape in ["L", "T"]}
+    if shape_counts != {"L": 3, "T": 2}:
+        raise AssertionError(f"Expected three L wall groups and two T wall groups, got {shape_counts}")
     if fixed_wall_count != 10 or random_cylinder_count != 150:
         raise AssertionError(
-            f"Expected five L walls as 10 boxes plus 150 random cylinders, got boxes={fixed_wall_count}, cylinders={random_cylinder_count}"
+            f"Expected five L/T walls expanded as 10 boxes plus 150 random cylinders, got boxes={fixed_wall_count}, cylinders={random_cylinder_count}"
         )
     required = {
         "time",
@@ -103,6 +109,7 @@ def test_open_blocks_wall_groups_do_not_overlap_or_leave_map() -> None:
     bbox = load_wall_bbox_module()
     config_path = ROOT / "planners" / "astar_min_snap" / "map_open_blocks.yaml"
     config = module.read_yaml(config_path)
+    config = module.expand_wall_groups(config)
     map_config = config["map"]
     world = [
         float(map_config["bounds"]["x"][0]),
@@ -112,7 +119,10 @@ def test_open_blocks_wall_groups_do_not_overlap_or_leave_map() -> None:
         float(map_config["bounds"]["y"][1]),
         float(map_config["bounds"]["z"][1]),
     ]
-    fixed = map_config["obstacles"][:10]
+    fixed = [
+        obstacle for obstacle in map_config["obstacles"]
+        if obstacle.get("type") == "box" and "wall_group_id" in obstacle
+    ]
     groups = [
         bbox.merge_boxes([bbox.box_from_obstacle(item) for item in fixed[index:index + 2]])
         for index in range(0, len(fixed), 2)
@@ -135,9 +145,12 @@ def test_open_blocks_wall_groups_do_not_overlap_or_leave_map() -> None:
         lines = [bbox.wall_centerline(part) for part in parts]
         long_index = 0 if lines[0]["length"] >= lines[1]["length"] else 1
         short_index = 1 - long_index
-        connection = bbox.wall_group_centerline_connection(parts[long_index], parts[short_index])
-        if connection["distance"] > 1e-3:
-            raise AssertionError(f"wall centerline connection is open: group={index // 2 + 1} {connection}")
+        shape = bbox.wall_shape_from_parts(parts[long_index], parts[short_index])
+        expected_shape = config["map"]["wall_groups"]["groups"][index // 2]["shape"]
+        if shape["shape"] != expected_shape:
+            raise AssertionError(f"wall group shape mismatch: expected={expected_shape}, actual={shape}")
+        if shape["distance"] > 1e-3:
+            raise AssertionError(f"wall centerline connection is open: group={index // 2 + 1} {shape}")
 
     for i, group_a in enumerate(groups):
         for group_b in groups[i + 1:]:

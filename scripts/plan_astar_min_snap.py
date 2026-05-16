@@ -137,6 +137,154 @@ def obstacle_xy_radius(obstacle: dict[str, Any]) -> float:
     raise ValueError(f"Unsupported obstacle type: {kind}")
 
 
+def expand_wall_groups(config: dict[str, Any]) -> dict[str, Any]:
+    """Expand reusable L/T wall-group templates into concrete collision boxes."""
+    expanded = clone_jsonable(config)
+    map_config = require_mapping(expanded, "map")
+    wall_spec = map_config.get("wall_groups")
+    if not isinstance(wall_spec, dict):
+        return expanded
+
+    defaults = wall_spec.get("defaults", {})
+    if not isinstance(defaults, dict):
+        raise ValueError("map.wall_groups.defaults must be a mapping")
+    groups = wall_spec.get("groups", [])
+    if not isinstance(groups, list):
+        raise ValueError("map.wall_groups.groups must be a list")
+
+    long_length = float(defaults.get("long_length_m", 18.0))
+    short_length = float(defaults.get("short_length_m", 6.0))
+    thickness = float(defaults.get("thickness_m", 0.32))
+    height = float(defaults.get("height_m", 3.0))
+    z_min = float(defaults.get("z_min", 0.0))
+    if long_length <= 0.0 or short_length <= 0.0 or thickness <= 0.0 or height <= 0.0:
+        raise ValueError("wall_groups dimensions must be positive")
+
+    obstacles = list(map_config.get("obstacles", []))
+
+    def box(x0: float, y0: float, x1: float, y1: float, group_id: str, arm: str) -> dict[str, Any]:
+        return {
+            "type": "box",
+            "wall_group_id": group_id,
+            "wall_arm": arm,
+            "min": [round(min(x0, x1), 3), round(min(y0, y1), 3), round(z_min, 3)],
+            "max": [round(max(x0, x1), 3), round(max(y0, y1), 3), round(z_min + height, 3)],
+        }
+
+    for index, group in enumerate(groups, start=1):
+        if not isinstance(group, dict):
+            raise ValueError("Each wall_groups.groups item must be a mapping")
+        group_id = str(group.get("id", f"wall_{index:02d}"))
+        shape = str(group.get("shape", "L")).upper()
+        if shape not in {"L", "T"}:
+            raise ValueError(f"Unsupported wall group shape: {shape}")
+        long_axis = str(group.get("long_axis", "x")).lower()
+        if long_axis not in {"x", "y"}:
+            raise ValueError(f"Unsupported wall group long_axis: {long_axis}")
+        joint = str(group.get("joint", "lower")).lower()
+        if joint not in {"lower", "upper"}:
+            raise ValueError(f"Unsupported wall group joint: {joint}")
+        short_side = str(group.get("short_side", "positive")).lower()
+        if short_side not in {"positive", "negative"}:
+            raise ValueError(f"Unsupported wall group short_side: {short_side}")
+        bbox_min = group.get("bbox_min")
+        if not isinstance(bbox_min, list) or len(bbox_min) != 2:
+            raise ValueError(f"wall group {group_id} requires bbox_min=[x,y]")
+        x0 = float(bbox_min[0])
+        y0 = float(bbox_min[1])
+
+        if long_axis == "x":
+            bbox_w = long_length
+            bbox_h = short_length
+            long_center_y = y0 + 0.5 * thickness if short_side == "positive" else y0 + short_length - 0.5 * thickness
+            long_x0 = x0 + 0.5 * thickness
+            long_x1 = x0 + long_length - 0.5 * thickness
+            if joint == "lower":
+                joint_x = long_x0
+            else:
+                joint_x = long_x1
+            if shape == "L":
+                short_center_x = joint_x
+            else:
+                short_center_x = joint_x
+            short_x0 = short_center_x - 0.5 * thickness
+            short_x1 = short_center_x + 0.5 * thickness
+            if short_side == "positive":
+                if shape == "L":
+                    short_center_y0 = long_center_y + 0.5 * thickness
+                    short_center_y1 = y0 + short_length - 0.5 * thickness
+                else:
+                    short_center_y0 = long_center_y - 0.5 * short_length
+                    short_center_y1 = long_center_y + 0.5 * short_length
+            else:
+                if shape == "L":
+                    short_center_y0 = y0 + 0.5 * thickness
+                    short_center_y1 = long_center_y - 0.5 * thickness
+                else:
+                    short_center_y0 = long_center_y - 0.5 * short_length
+                    short_center_y1 = long_center_y + 0.5 * short_length
+            if shape == "L" and short_side == "positive":
+                short_y0 = long_center_y
+                short_y1 = short_center_y1 + 0.5 * thickness
+            elif shape == "L":
+                short_y0 = short_center_y0 - 0.5 * thickness
+                short_y1 = long_center_y
+            else:
+                short_y0 = short_center_y0 - 0.5 * thickness
+                short_y1 = short_center_y1 + 0.5 * thickness
+            long_arm = box(long_x0, long_center_y - 0.5 * thickness, long_x1, long_center_y + 0.5 * thickness, group_id, "long")
+            short_arm = box(short_x0, short_y0, short_x1, short_y1, group_id, "short")
+        else:
+            bbox_w = short_length
+            bbox_h = long_length
+            long_center_x = x0 + 0.5 * thickness if short_side == "positive" else x0 + short_length - 0.5 * thickness
+            long_y0 = y0 + 0.5 * thickness
+            long_y1 = y0 + long_length - 0.5 * thickness
+            if joint == "lower":
+                joint_y = long_y0
+            else:
+                joint_y = long_y1
+            if shape == "L":
+                short_center_y = joint_y
+            else:
+                short_center_y = joint_y
+            short_y0 = short_center_y - 0.5 * thickness
+            short_y1 = short_center_y + 0.5 * thickness
+            if short_side == "positive":
+                if shape == "L":
+                    short_center_x0 = long_center_x + 0.5 * thickness
+                    short_center_x1 = x0 + short_length - 0.5 * thickness
+                else:
+                    short_center_x0 = long_center_x - 0.5 * short_length
+                    short_center_x1 = long_center_x + 0.5 * short_length
+            else:
+                if shape == "L":
+                    short_center_x0 = x0 + 0.5 * thickness
+                    short_center_x1 = long_center_x - 0.5 * thickness
+                else:
+                    short_center_x0 = long_center_x - 0.5 * short_length
+                    short_center_x1 = long_center_x + 0.5 * short_length
+            if shape == "L" and short_side == "positive":
+                short_x0 = long_center_x
+                short_x1 = short_center_x1 + 0.5 * thickness
+            elif shape == "L":
+                short_x0 = short_center_x0 - 0.5 * thickness
+                short_x1 = long_center_x
+            else:
+                short_x0 = short_center_x0 - 0.5 * thickness
+                short_x1 = short_center_x1 + 0.5 * thickness
+            long_arm = box(long_center_x - 0.5 * thickness, long_y0, long_center_x + 0.5 * thickness, long_y1, group_id, "long")
+            short_arm = box(short_x0, short_y0, short_x1, short_y1, group_id, "short")
+
+        group["bbox_max"] = [round(x0 + bbox_w, 3), round(y0 + bbox_h, 3)]
+        obstacles.extend([long_arm, short_arm])
+
+    map_config["obstacles"] = obstacles
+    wall_spec["expanded"] = True
+    wall_spec["expanded_box_count"] = 2 * len(groups)
+    return expanded
+
+
 def expand_random_obstacles(config: dict[str, Any]) -> dict[str, Any]:
     """Expand a reproducible random obstacle specification into concrete obstacles."""
     expanded = clone_jsonable(config)
@@ -828,6 +976,7 @@ def evaluate_reference(grid: OccupancyGrid, rows: list[dict[str, float]], limits
 
 def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], list[dict[str, float]], dict[str, Any]]:
     start_t = time.perf_counter()
+    config = expand_wall_groups(config)
     config = expand_random_obstacles(config)
     if VERBOSE:
         print(f"[planner] expand done elapsed={time.perf_counter() - start_t:.3f}s", flush=True)

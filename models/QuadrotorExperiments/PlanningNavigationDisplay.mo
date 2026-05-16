@@ -49,6 +49,12 @@ model PlanningNavigationDisplay
   parameter Real pillar_width[max_pillars] = fill(0.16, max_pillars);
   parameter Real pillar_height[max_pillars] = fill(1.8, max_pillars);
   parameter Real pillar_z_min[max_pillars] = fill(0.0, max_pillars);
+  parameter Integer max_wall_groups = 8;
+  parameter Integer wall_group_count(min = 0, max = max_wall_groups) = 0;
+  parameter Real wall_arm1_min[max_wall_groups, 3] = fill(0.0, max_wall_groups, 3);
+  parameter Real wall_arm1_max[max_wall_groups, 3] = fill(0.0, max_wall_groups, 3);
+  parameter Real wall_arm2_min[max_wall_groups, 3] = fill(0.0, max_wall_groups, 3);
+  parameter Real wall_arm2_max[max_wall_groups, 3] = fill(0.0, max_wall_groups, 3);
   parameter Real terrain_cell_size_m = 0.50;
   parameter Integer terrain_x_count = integer(ceil((x_max - x_min) / terrain_cell_size_m));
   parameter Integer terrain_y_count = integer(ceil((y_max - y_min) / terrain_cell_size_m));
@@ -85,6 +91,20 @@ protected
   Real pillar_bearing_dot[max_pillars];
   Boolean pillar_active[max_pillars];
   Boolean pillar_sensed[max_pillars];
+  Real wall_arm1_position[max_wall_groups, 3];
+  Real wall_arm2_position[max_wall_groups, 3];
+  Real wall_arm1_length[max_wall_groups];
+  Real wall_arm2_length[max_wall_groups];
+  Real wall_arm1_width[max_wall_groups];
+  Real wall_arm2_width[max_wall_groups];
+  Real wall_arm1_height[max_wall_groups];
+  Real wall_arm2_height[max_wall_groups];
+  Real wall_arm1_length_direction[max_wall_groups, 3];
+  Real wall_arm2_length_direction[max_wall_groups, 3];
+  Real wall_arm1_width_direction[max_wall_groups, 3];
+  Real wall_arm2_width_direction[max_wall_groups, 3];
+  Boolean wall_arm1_x_axis[max_wall_groups];
+  Boolean wall_arm2_x_axis[max_wall_groups];
   Real sensed_position[3];
   Real local_heading_vector[2];
   Real local_heading_norm;
@@ -231,13 +251,37 @@ public
     each shapeType = "box",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
     r = {pillar_position[i, :] for i in 1:max_pillars},
-    r_shape = {if pillar_active[i] then {-0.5 * pillar_length[i], -0.5 * pillar_width[i], 0.0} else {0.0, 0.0, 0.0} for i in 1:max_pillars},
+    r_shape = {{-0.5 * pillar_length[i], 0.0, 0.0} for i in 1:max_pillars},
     each lengthDirection = {1, 0, 0},
     each widthDirection = {0, 1, 0},
     length = {if pillar_active[i] then pillar_length[i] else 0.0 for i in 1:max_pillars},
     width = {if pillar_active[i] then pillar_width[i] else 0.0 for i in 1:max_pillars},
     height = {if pillar_active[i] then pillar_height[i] else 0.0 for i in 1:max_pillars},
     color = {if pillar_sensed[i] then {70, 160, 255} else {135, 135, 135} for i in 1:max_pillars},
+    each specularCoefficient = 0.25);
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape wall_arm1[max_wall_groups](
+    each shapeType = "box",
+    each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
+    r = {wall_arm1_position[i, :] for i in 1:max_wall_groups},
+    each r_shape = {0, 0, 0},
+    lengthDirection = {wall_arm1_length_direction[i, :] for i in 1:max_wall_groups},
+    widthDirection = {wall_arm1_width_direction[i, :] for i in 1:max_wall_groups},
+    length = {if i <= wall_group_count then wall_arm1_length[i] else 0.0 for i in 1:max_wall_groups},
+    width = {if i <= wall_group_count then wall_arm1_width[i] else 0.0 for i in 1:max_wall_groups},
+    height = {if i <= wall_group_count then wall_arm1_height[i] else 0.0 for i in 1:max_wall_groups},
+    each color = {165, 165, 165},
+    each specularCoefficient = 0.25);
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape wall_arm2[max_wall_groups](
+    each shapeType = "box",
+    each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
+    r = {wall_arm2_position[i, :] for i in 1:max_wall_groups},
+    each r_shape = {0, 0, 0},
+    lengthDirection = {wall_arm2_length_direction[i, :] for i in 1:max_wall_groups},
+    widthDirection = {wall_arm2_width_direction[i, :] for i in 1:max_wall_groups},
+    length = {if i <= wall_group_count then wall_arm2_length[i] else 0.0 for i in 1:max_wall_groups},
+    width = {if i <= wall_group_count then wall_arm2_width[i] else 0.0 for i in 1:max_wall_groups},
+    height = {if i <= wall_group_count then wall_arm2_height[i] else 0.0 for i in 1:max_wall_groups},
+    each color = {165, 165, 165},
     each specularCoefficient = 0.25);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape continuous_ground(
     shapeType = "box",
@@ -408,6 +452,46 @@ equation
       highlight_local_costmap and (
         pillar_distance_to_uav[i] <= local_costmap_radius_m and
         pillar_bearing_dot[i] >= cos(local_costmap_front_half_angle_rad)));
+  end for;
+
+  for i in 1:max_wall_groups loop
+    wall_arm1_x_axis[i] = abs(wall_arm1_max[i, 1] - wall_arm1_min[i, 1]) >= abs(wall_arm1_max[i, 2] - wall_arm1_min[i, 2]);
+    wall_arm2_x_axis[i] = abs(wall_arm2_max[i, 1] - wall_arm2_min[i, 1]) >= abs(wall_arm2_max[i, 2] - wall_arm2_min[i, 2]);
+
+    wall_arm1_length[i] = if wall_arm1_x_axis[i] then
+      abs(wall_arm1_max[i, 1] - wall_arm1_min[i, 1]) else abs(wall_arm1_max[i, 2] - wall_arm1_min[i, 2]);
+    wall_arm2_length[i] = if wall_arm2_x_axis[i] then
+      abs(wall_arm2_max[i, 1] - wall_arm2_min[i, 1]) else abs(wall_arm2_max[i, 2] - wall_arm2_min[i, 2]);
+    wall_arm1_width[i] = if wall_arm1_x_axis[i] then
+      abs(wall_arm1_max[i, 2] - wall_arm1_min[i, 2]) else abs(wall_arm1_max[i, 1] - wall_arm1_min[i, 1]);
+    wall_arm2_width[i] = if wall_arm2_x_axis[i] then
+      abs(wall_arm2_max[i, 2] - wall_arm2_min[i, 2]) else abs(wall_arm2_max[i, 1] - wall_arm2_min[i, 1]);
+    wall_arm1_height[i] = abs(wall_arm1_max[i, 3] - wall_arm1_min[i, 3]);
+    wall_arm2_height[i] = abs(wall_arm2_max[i, 3] - wall_arm2_min[i, 3]);
+
+    wall_arm1_position[i, 1] = if wall_arm1_x_axis[i] then min(wall_arm1_min[i, 1], wall_arm1_max[i, 1])
+      else 0.5 * (wall_arm1_min[i, 1] + wall_arm1_max[i, 1]);
+    wall_arm1_position[i, 2] = if wall_arm1_x_axis[i] then 0.5 * (wall_arm1_min[i, 2] + wall_arm1_max[i, 2])
+      else min(wall_arm1_min[i, 2], wall_arm1_max[i, 2]);
+    wall_arm1_position[i, 3] = 0.5 * (wall_arm1_min[i, 3] + wall_arm1_max[i, 3]);
+    wall_arm2_position[i, 1] = if wall_arm2_x_axis[i] then min(wall_arm2_min[i, 1], wall_arm2_max[i, 1])
+      else 0.5 * (wall_arm2_min[i, 1] + wall_arm2_max[i, 1]);
+    wall_arm2_position[i, 2] = if wall_arm2_x_axis[i] then 0.5 * (wall_arm2_min[i, 2] + wall_arm2_max[i, 2])
+      else min(wall_arm2_min[i, 2], wall_arm2_max[i, 2]);
+    wall_arm2_position[i, 3] = 0.5 * (wall_arm2_min[i, 3] + wall_arm2_max[i, 3]);
+
+    wall_arm1_length_direction[i, 1] = if wall_arm1_x_axis[i] then 1.0 else 0.0;
+    wall_arm1_length_direction[i, 2] = if wall_arm1_x_axis[i] then 0.0 else 1.0;
+    wall_arm1_length_direction[i, 3] = 0.0;
+    wall_arm2_length_direction[i, 1] = if wall_arm2_x_axis[i] then 1.0 else 0.0;
+    wall_arm2_length_direction[i, 2] = if wall_arm2_x_axis[i] then 0.0 else 1.0;
+    wall_arm2_length_direction[i, 3] = 0.0;
+    wall_arm1_width_direction[i, 1] = if wall_arm1_x_axis[i] then 0.0 else 1.0;
+    wall_arm1_width_direction[i, 2] = if wall_arm1_x_axis[i] then 1.0 else 0.0;
+    wall_arm1_width_direction[i, 3] = 0.0;
+    wall_arm2_width_direction[i, 1] = if wall_arm2_x_axis[i] then 0.0 else 1.0;
+    wall_arm2_width_direction[i, 2] = if wall_arm2_x_axis[i] then 1.0 else 0.0;
+    wall_arm2_width_direction[i, 3] = 0.0;
   end for;
 
   for i in 1:ground_pillar_count loop

@@ -154,6 +154,24 @@ If this sequence discovers a new error, update this workflow and the relevant
 design/report note before committing, so the next run does not repeat the same
 mistake.
 
+### Planning Model GUI Review Variables
+
+For `QuadrotorExperiments.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop`,
+the reference trajectory is exported from `planningReference`, not from the
+official Example1 `climbePath`. When using `run_sysplorer_mcp_smoke.py` for
+GUI review or reproducible export, override the reference aliases explicitly:
+
+```text
+--override-variable x_ref=planningReference.position_command[1]
+--override-variable y_ref=planningReference.position_command[2]
+--override-variable z_ref=planningReference.position_command[3]
+```
+
+If these overrides are omitted, the runner may look for
+`climbePath.position_command[*]`, producing empty or failed exports even when
+`check_model` and `simulate_model` themselves are healthy. Treat that as a
+workflow-variable mapping issue, not an MCP connectivity failure.
+
 For complete-system failsafe scenarios, export event logs from
 `system_failsafe_event_code`, not the legacy `system_event_code`. Sysplorer
 has shown stale/constant export behavior for the older name in complete-system
