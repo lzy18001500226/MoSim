@@ -9,6 +9,7 @@ import heapq
 import json
 import math
 import random
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -17,6 +18,7 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
+VERBOSE = False
 G = 9.80665
 
 
@@ -142,6 +144,7 @@ def expand_random_obstacles(config: dict[str, Any]) -> dict[str, Any]:
     random_spec = map_config.get("random_obstacles")
     if not isinstance(random_spec, dict) or not random_spec.get("enabled", False):
         return expanded
+    start_t = time.perf_counter()
 
     bounds = require_mapping(map_config, "bounds")
     x_min, x_max = bounds_value(bounds, "x")
@@ -156,25 +159,73 @@ def expand_random_obstacles(config: dict[str, Any]) -> dict[str, Any]:
     start_goal_clearance = float(random_spec.get("start_goal_clearance_m", 1.8))
     min_spacing = float(random_spec.get("min_spacing_m", 1.05))
     edge_margin = float(random_spec.get("edge_margin_m", 0.7))
+    distribution = str(random_spec.get("distribution", "uniform"))
+    clear_corridors = random_spec.get("clear_corridors", [])
+    if clear_corridors is None:
+        clear_corridors = []
+    if not isinstance(clear_corridors, list):
+        raise ValueError("random_obstacles.clear_corridors must be a list")
+    grid_cells = random_spec.get("grid_cells", [1, 1])
+    if not isinstance(grid_cells, list) or len(grid_cells) != 2:
+        raise ValueError("random_obstacles.grid_cells must be [x_cells, y_cells]")
+    grid_x = max(1, int(grid_cells[0]))
+    grid_y = max(1, int(grid_cells[1]))
     obstacles = list(map_config.get("obstacles", []))
+    random_added = 0
 
-    attempts = 0
-    while len(obstacles) < count and attempts < count * 500:
-        attempts += 1
-        radius = rng.uniform(radius_min, radius_max)
-        x = rng.uniform(x_min + edge_margin, x_max - edge_margin)
-        y = rng.uniform(y_min + edge_margin, y_max - edge_margin)
+    def distance_to_segment_xy(x: float, y: float, a: Point, b: Point) -> float:
+        vx = b.x - a.x
+        vy = b.y - a.y
+        length2 = vx * vx + vy * vy
+        if length2 <= 1e-12:
+            return math.hypot(x - a.x, y - a.y)
+        t = max(0.0, min(1.0, ((x - a.x) * vx + (y - a.y) * vy) / length2))
+        closest_x = a.x + t * vx
+        closest_y = a.y + t * vy
+        return math.hypot(x - closest_x, y - closest_y)
+
+    def inside_clear_corridor(x: float, y: float, radius: float) -> bool:
+        for corridor in clear_corridors:
+            if not isinstance(corridor, dict):
+                raise ValueError("Each random_obstacles.clear_corridors entry must be a mapping")
+            kind = corridor.get("type")
+            if kind == "segment":
+                a_values = corridor.get("start")
+                b_values = corridor.get("end")
+                if not isinstance(a_values, list) or not isinstance(b_values, list):
+                    raise ValueError("segment clear corridor requires start/end")
+                a = Point(float(a_values[0]), float(a_values[1]), start.z)
+                b = Point(float(b_values[0]), float(b_values[1]), start.z)
+                width = float(corridor.get("width_m", 0.0))
+                if distance_to_segment_xy(x, y, a, b) <= 0.5 * width + radius:
+                    return True
+            elif kind == "box":
+                lo = corridor.get("min")
+                hi = corridor.get("max")
+                if not isinstance(lo, list) or not isinstance(hi, list):
+                    raise ValueError("box clear corridor requires min/max")
+                x0, x1 = sorted((float(lo[0]), float(hi[0])))
+                y0, y1 = sorted((float(lo[1]), float(hi[1])))
+                if x0 - radius <= x <= x1 + radius and y0 - radius <= y <= y1 + radius:
+                    return True
+            else:
+                raise ValueError(f"Unsupported clear_corridors type: {kind}")
+        return False
+
+    def can_place(x: float, y: float, radius: float) -> bool:
         center = Point(x, y, start.z)
         if distance(center, start) < start_goal_clearance or distance(center, goal) < start_goal_clearance:
-            continue
-        too_close = False
+            return False
+        if inside_clear_corridor(x, y, radius):
+            return False
         for obstacle in obstacles:
             ox, oy = obstacle_xy_center(obstacle)
             if math.hypot(x - ox, y - oy) < min_spacing + radius + obstacle_xy_radius(obstacle):
-                too_close = True
-                break
-        if too_close:
-            continue
+                return False
+        return True
+
+    def append_obstacle(x: float, y: float, radius: float) -> None:
+        nonlocal random_added
         height = rng.uniform(height_min, height_max)
         obstacles.append(
             {
@@ -186,10 +237,51 @@ def expand_random_obstacles(config: dict[str, Any]) -> dict[str, Any]:
                 "z_max": round(z_min + height, 3),
             }
         )
+        random_added += 1
 
-    if len(obstacles) < count:
-        raise RuntimeError(f"Generated only {len(obstacles)} random obstacles, requested {count}")
+    if distribution == "stratified":
+        x0 = x_min + edge_margin
+        x1 = x_max - edge_margin
+        y0 = y_min + edge_margin
+        y1 = y_max - edge_margin
+        if x1 <= x0 or y1 <= y0:
+            raise ValueError("random_obstacles edge margin leaves no placement area")
+        cell_w = (x1 - x0) / grid_x
+        cell_h = (y1 - y0) / grid_y
+        cell_indices = [(ix, iy) for iy in range(grid_y) for ix in range(grid_x)]
+        attempts_per_cell = int(random_spec.get("attempts_per_cell", 16))
+        pass_index = 0
+        while random_added < count and pass_index < max(1, math.ceil(count / len(cell_indices))) + 3:
+            rng.shuffle(cell_indices)
+            for ix, iy in cell_indices:
+                if random_added >= count:
+                    break
+                for _ in range(attempts_per_cell):
+                    radius = rng.uniform(radius_min, radius_max)
+                    x = rng.uniform(x0 + ix * cell_w + radius, x0 + (ix + 1) * cell_w - radius)
+                    y = rng.uniform(y0 + iy * cell_h + radius, y0 + (iy + 1) * cell_h - radius)
+                    if can_place(x, y, radius):
+                        append_obstacle(x, y, radius)
+                        break
+            pass_index += 1
+
+    attempts = 0
+    while random_added < count and attempts < count * 800:
+        attempts += 1
+        radius = rng.uniform(radius_min, radius_max)
+        x = rng.uniform(x_min + edge_margin, x_max - edge_margin)
+        y = rng.uniform(y_min + edge_margin, y_max - edge_margin)
+        if can_place(x, y, radius):
+            append_obstacle(x, y, radius)
+
+    if random_added < count:
+        raise RuntimeError(f"Generated only {random_added} random obstacles, requested {count}")
     map_config["obstacles"] = obstacles
+    random_spec["enabled"] = False
+    random_spec["expanded"] = True
+    random_spec["expanded_count"] = random_added
+    if VERBOSE:
+        print(f"[planner] random_obstacles expanded fixed={len(map_config.get('obstacles', [])) - random_added} random={random_added} total={len(obstacles)} elapsed={time.perf_counter() - start_t:.3f}s", flush=True)
     return expanded
 
 
@@ -207,6 +299,7 @@ class OccupancyGrid:
         self.nx = int(round((self.x_max - self.x_min) / self.resolution)) + 1
         self.ny = int(round((self.y_max - self.y_min) / self.resolution)) + 1
         self.z_plan = self.start.z
+        self._occupied_cache: dict[GridIndex, bool] = {}
         if not math.isclose(self.start.z, self.goal.z, abs_tol=1e-9):
             raise ValueError("P1 A* planner expects start.z == goal.z")
         if not self.in_bounds(self.start) or not self.in_bounds(self.goal):
@@ -232,7 +325,12 @@ class OccupancyGrid:
         return min_obstacle_distance(point, self.obstacles) <= self.safety_margin
 
     def is_occupied_index(self, index: GridIndex) -> bool:
-        return self.is_occupied_point(self.point_from_index(index))
+        cached = self._occupied_cache.get(index)
+        if cached is not None:
+            return cached
+        occupied = self.is_occupied_point(self.point_from_index(index))
+        self._occupied_cache[index] = occupied
+        return occupied
 
 
 def neighbor_offsets(neighbor_type: int) -> list[tuple[int, int]]:
@@ -255,6 +353,15 @@ def astar(grid: OccupancyGrid, astar_config: dict[str, Any]) -> tuple[list[Point
     goal_point = grid.point_from_index(goal)
     goal_vector_x = goal_point.x - start_point.x
     goal_vector_y = goal_point.y - start_point.y
+    search_margin_m = float(astar_config.get("search_margin_m", 0.0))
+    if search_margin_m > 0.0:
+        search_x_min = max(grid.x_min, min(start_point.x, goal_point.x) - search_margin_m)
+        search_x_max = min(grid.x_max, max(start_point.x, goal_point.x) + search_margin_m)
+        search_y_min = max(grid.y_min, min(start_point.y, goal_point.y) - search_margin_m)
+        search_y_max = min(grid.y_max, max(start_point.y, goal_point.y) + search_margin_m)
+    else:
+        search_x_min, search_x_max = grid.x_min, grid.x_max
+        search_y_min, search_y_max = grid.y_min, grid.y_max
     goal_norm = math.hypot(goal_vector_x, goal_vector_y)
     if goal_norm > 1e-9:
         goal_vector_x /= goal_norm
@@ -283,6 +390,8 @@ def astar(grid: OccupancyGrid, astar_config: dict[str, Any]) -> tuple[list[Point
             if not grid.is_index_valid(neighbor) or neighbor in closed or grid.is_occupied_index(neighbor):
                 continue
             neighbor_point = grid.point_from_index(neighbor)
+            if not (search_x_min <= neighbor_point.x <= search_x_max and search_y_min <= neighbor_point.y <= search_y_max):
+                continue
             step_cost = distance(current_point, neighbor_point)
             if progress_penalty > 0.0 and goal_norm > 1e-9:
                 progress = (neighbor_point.x - current_point.x) * goal_vector_x + (neighbor_point.y - current_point.y) * goal_vector_y
@@ -718,7 +827,10 @@ def evaluate_reference(grid: OccupancyGrid, rows: list[dict[str, float]], limits
 
 
 def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], list[dict[str, float]], dict[str, Any]]:
+    start_t = time.perf_counter()
     config = expand_random_obstacles(config)
+    if VERBOSE:
+        print(f"[planner] expand done elapsed={time.perf_counter() - start_t:.3f}s", flush=True)
     grid = OccupancyGrid(require_mapping(config, "map"))
     planning_config = clone_jsonable(config)
     planning_map = require_mapping(planning_config, "map")
@@ -726,7 +838,11 @@ def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], li
         planning_map["safety_margin"] = float(planning_map["planning_safety_margin"])
     local_config = require_mapping(config, "local_planning")
     if local_config.get("enabled", False):
+        if VERBOSE:
+            print("[planner] local receding-horizon start", flush=True)
         raw_path, simplified, iterations, local_report, planning_grid = plan_receding_horizon(planning_config, grid, local_config)
+        if VERBOSE:
+            print(f"[planner] local receding-horizon done raw={len(raw_path)} simplified={len(simplified)} iterations={iterations} replans={local_report.get('local_replan_count')} elapsed={time.perf_counter() - start_t:.3f}s", flush=True)
         max_segment_length_m = float(local_config.get("max_simplified_segment_length_m", 0.0))
         if max_segment_length_m <= 0.0:
             max_segment_length_m = None
@@ -737,7 +853,11 @@ def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], li
         local_report = {"local_planning_enabled": False}
         max_segment_length_m = None
     ego_config = require_mapping(config, "ego_planner")
+    if VERBOSE:
+        print("[planner] ego optimize start", flush=True)
     simplified, ego_report = ego_optimize_path(planning_grid, simplified, ego_config)
+    if VERBOSE:
+        print(f"[planner] ego optimize done points={len(simplified)} accepted={ego_report.get('ego_optimizer_accepted')} elapsed={time.perf_counter() - start_t:.3f}s", flush=True)
     max_model_segments = int(config.get("model_segment_limit", 5))
     simplified_before_fit = simplified
     simplified = fit_segment_limit(planning_grid, simplified, max_model_segments, max_segment_length_m)
@@ -748,6 +868,8 @@ def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], li
     scale = 1.0
     report: dict[str, Any] = {}
     for attempt in range(int(limits.get("max_rescale_iterations", 5)) + 1):
+        if VERBOSE:
+            print(f"[planner] evaluate attempt={attempt} scale={scale:.3f}", flush=True)
         rows = generate_reference(simplified, limits, sample_dt, scale, yaw_mode)
         report = evaluate_reference(grid, rows, limits)
         report.update({"time_scale": scale, "rescale_iteration": attempt})
@@ -785,9 +907,30 @@ def discovered_obstacles(
 ) -> set[int]:
     discovered = set(known_indices)
     for index, obstacle in enumerate(truth_obstacles):
-        x, y = obstacle_xy_center(obstacle)
-        if abs(x - position.x) <= window_radius_m and abs(y - position.y) <= window_radius_m:
+        if obstacle_distance(position, obstacle) <= window_radius_m:
             discovered.add(index)
+    return discovered
+
+
+def discovered_obstacles_along_segment(
+    truth_obstacles: list[dict[str, Any]],
+    start: Point,
+    end: Point,
+    known_indices: set[int],
+    window_radius_m: float,
+    step_m: float,
+) -> set[int]:
+    discovered = set(known_indices)
+    length = distance(start, end)
+    steps = max(1, int(math.ceil(length / max(step_m, 1e-6))))
+    for step in range(steps + 1):
+        ratio = step / steps
+        position = Point(
+            start.x + (end.x - start.x) * ratio,
+            start.y + (end.y - start.y) * ratio,
+            start.z + (end.z - start.z) * ratio,
+        )
+        discovered = discovered_obstacles(truth_obstacles, position, discovered, window_radius_m)
     return discovered
 
 
@@ -801,6 +944,7 @@ def plan_receding_horizon(
     truth_obstacles = list(map_config.get("obstacles", []))
     window_radius_m = float(local_config.get("window_radius_m", 2.5))
     commit_distance_m = float(local_config.get("commit_distance_m", 1.2))
+    local_goal_horizon_m = float(local_config.get("local_goal_horizon_m", 0.0))
     goal_tolerance_m = float(local_config.get("goal_tolerance_m", truth_grid.resolution))
     max_replans = int(local_config.get("max_replans", 80))
     astar_config = require_mapping(config, "astar")
@@ -811,15 +955,31 @@ def plan_receding_horizon(
     committed_path = [current]
     total_iterations = 0
     replan_count = 0
+    blocked_retry_count = 0
 
     while distance(current, goal) > goal_tolerance_m:
         if replan_count >= max_replans:
             raise RuntimeError(f"local planning exceeded max_replans={max_replans}")
         known_indices = discovered_obstacles(truth_obstacles, current, known_indices, window_radius_m)
         local_map = clone_jsonable(map_config)
+        distance_to_goal = distance(current, goal)
+        local_goal = goal
+        if local_goal_horizon_m > 0.0 and distance_to_goal > local_goal_horizon_m:
+            ratio = local_goal_horizon_m / distance_to_goal
+            local_goal = Point(
+                current.x + (goal.x - current.x) * ratio,
+                current.y + (goal.y - current.y) * ratio,
+                current.z + (goal.z - current.z) * ratio,
+            )
         local_map["start"] = [current.x, current.y, current.z]
+        local_map["goal"] = [local_goal.x, local_goal.y, local_goal.z]
         local_map["obstacles"] = [truth_obstacles[index] for index in sorted(known_indices)]
         local_grid = OccupancyGrid(local_map)
+        if VERBOSE and (replan_count < 5 or replan_count % 10 == 0):
+            print(
+                f"[planner] replan={replan_count} current=({current.x:.2f},{current.y:.2f}) local_goal=({local_goal.x:.2f},{local_goal.y:.2f}) known={len(known_indices)}",
+                flush=True,
+            )
         segment_raw, iterations = astar(local_grid, astar_config)
         total_iterations += iterations
         raw_path.extend(segment_raw[1:])
@@ -836,8 +996,25 @@ def plan_receding_horizon(
         if distance(committed, current) <= 1e-9:
             raise RuntimeError("local planner did not advance")
         if truth_grid.is_occupied_point(committed):
-            known_indices = discovered_obstacles(truth_obstacles, committed, known_indices, window_radius_m)
+            previous_known_count = len(known_indices)
+            known_indices = discovered_obstacles_along_segment(
+                truth_obstacles,
+                current,
+                committed,
+                known_indices,
+                window_radius_m,
+                max(truth_grid.resolution, 0.4),
+            )
+            blocked_retry_count += 1
+            if VERBOSE:
+                print(
+                    f"[planner] blocked current=({current.x:.2f},{current.y:.2f}) committed=({committed.x:.2f},{committed.y:.2f}) known {previous_known_count}->{len(known_indices)} retry={blocked_retry_count}",
+                    flush=True,
+                )
+            if blocked_retry_count > 20 and len(known_indices) == previous_known_count:
+                raise RuntimeError("local planner stuck on an undiscoverable blocked segment")
             continue
+        blocked_retry_count = 0
         committed_path.append(committed)
         current = committed
         replan_count += 1
@@ -991,11 +1168,14 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("config", type=Path, help="Planner YAML config")
     parser.add_argument("--output-dir", type=Path, default=None, help="Override output base directory")
+    parser.add_argument("--verbose", action="store_true", help="Print planner stage timing")
     return parser.parse_args()
 
 
 def main() -> int:
+    global VERBOSE
     args = parse_args()
+    VERBOSE = bool(args.verbose)
     config_path = args.config
     config = read_yaml(config_path)
     paths = write_outputs(config_path, config, args.output_dir)

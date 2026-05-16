@@ -217,6 +217,45 @@ def compute_health_scores(metrics: dict[str, object]) -> dict[str, float]:
     }
 
 
+def compute_formation_metrics(data: dict[str, list[float]]) -> dict[str, object]:
+    formation_keys = [
+        "formation_error_m",
+        "follower1_formation_error_m",
+        "follower2_formation_error_m",
+        "min_inter_uav_distance_m",
+    ]
+    if not any(key in data for key in formation_keys):
+        return {}
+
+    metrics: dict[str, object] = {}
+    if "formation_error_m" in data:
+        formation_error = finite(data["formation_error_m"])
+        metrics["formation_error_rmse_m"] = rmse(formation_error)
+        metrics["formation_error_max_m"] = max_or_nan(formation_error)
+        metrics["formation_keeping_rate"] = (
+            sum(1 for value in formation_error if value <= 0.35) / len(formation_error)
+            if formation_error
+            else math.nan
+        )
+    if "follower1_formation_error_m" in data:
+        values = finite(data["follower1_formation_error_m"])
+        metrics["follower1_formation_error_rmse_m"] = rmse(values)
+        metrics["follower1_formation_error_max_m"] = max_or_nan(values)
+    if "follower2_formation_error_m" in data:
+        values = finite(data["follower2_formation_error_m"])
+        metrics["follower2_formation_error_rmse_m"] = rmse(values)
+        metrics["follower2_formation_error_max_m"] = max_or_nan(values)
+    if "min_inter_uav_distance_m" in data:
+        metrics["min_inter_uav_distance_m"] = min_or_nan(data["min_inter_uav_distance_m"])
+
+    if "formation_error_rmse_m" in metrics and "min_inter_uav_distance_m" in metrics:
+        metrics["formation_score"] = (
+            0.65 * score_lower_better(float(metrics["formation_error_rmse_m"]), 0.20, 0.80)
+            + 0.35 * score_higher_better(float(metrics["min_inter_uav_distance_m"]), 0.80, 0.35)
+        )
+    return metrics
+
+
 def to_jsonable(value: object) -> object:
     if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
         return None
@@ -345,6 +384,7 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
         "valid": len(time) > 10 and nan_count == 0,
     }
     metrics.update(compute_health_scores(metrics))
+    metrics.update(compute_formation_metrics(data))
     return metrics
 
 

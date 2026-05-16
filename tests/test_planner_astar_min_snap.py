@@ -25,6 +25,17 @@ def load_planner_module():
     return module
 
 
+def load_wall_bbox_module():
+    path = ROOT / "scripts" / "check_wall_group_bboxes.py"
+    spec = importlib.util.spec_from_file_location("check_wall_group_bboxes", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("Unable to load check_wall_group_bboxes.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
 def remove_tree(path: Path) -> None:
     if not path.exists():
         return
@@ -58,8 +69,15 @@ def test_open_blocks_planner_outputs_trackable_reference() -> None:
         raise AssertionError("planning_open_blocks must use local-window receding planning")
     if report.get("known_obstacle_count_final", 0) >= report.get("truth_obstacle_count", 0):
         raise AssertionError("Planner appears to know every truth obstacle; local sensing constraint regressed")
-    if report.get("local_window_radius_m") != 2.5:
+    if report.get("local_window_radius_m") != 3.0:
         raise AssertionError(report)
+    truth_obstacles = report.get("truth_obstacles", [])
+    fixed_wall_count = sum(1 for obstacle in truth_obstacles if obstacle.get("type") == "box")
+    random_cylinder_count = sum(1 for obstacle in truth_obstacles if obstacle.get("type") == "cylinder")
+    if fixed_wall_count != 10 or random_cylinder_count != 150:
+        raise AssertionError(
+            f"Expected five L walls as 10 boxes plus 150 random cylinders, got boxes={fixed_wall_count}, cylinders={random_cylinder_count}"
+        )
     required = {
         "time",
         "x_ref",
@@ -78,6 +96,54 @@ def test_open_blocks_planner_outputs_trackable_reference() -> None:
     }
     if set(rows[0]) != required:
         raise AssertionError(rows[0].keys())
+
+
+def test_open_blocks_wall_groups_do_not_overlap_or_leave_map() -> None:
+    module = load_planner_module()
+    bbox = load_wall_bbox_module()
+    config_path = ROOT / "planners" / "astar_min_snap" / "map_open_blocks.yaml"
+    config = module.read_yaml(config_path)
+    map_config = config["map"]
+    world = [
+        float(map_config["bounds"]["x"][0]),
+        float(map_config["bounds"]["y"][0]),
+        float(map_config["bounds"]["z"][0]),
+        float(map_config["bounds"]["x"][1]),
+        float(map_config["bounds"]["y"][1]),
+        float(map_config["bounds"]["z"][1]),
+    ]
+    fixed = map_config["obstacles"][:10]
+    groups = [
+        bbox.merge_boxes([bbox.box_from_obstacle(item) for item in fixed[index:index + 2]])
+        for index in range(0, len(fixed), 2)
+    ]
+
+    if len(groups) != 5:
+        raise AssertionError(groups)
+    start = [float(value) for value in map_config["start"]]
+    goal = [float(value) for value in map_config["goal"]]
+    for group in groups:
+        if group[0] < world[0] or group[1] < world[1] or group[2] < world[2] or group[3] > world[3] or group[4] > world[4] or group[5] > world[5]:
+            raise AssertionError(f"wall group leaves map bounds: {group}")
+        if bbox.point_distance_to_box(start, group) < 5.0:
+            raise AssertionError(f"wall group too close to start: {group}")
+        if bbox.point_distance_to_box(goal, group) < 5.0:
+            raise AssertionError(f"wall group too close to goal: {group}")
+
+    for index in range(0, len(fixed), 2):
+        parts = [bbox.box_from_obstacle(item) for item in fixed[index:index + 2]]
+        lines = [bbox.wall_centerline(part) for part in parts]
+        long_index = 0 if lines[0]["length"] >= lines[1]["length"] else 1
+        short_index = 1 - long_index
+        connection = bbox.wall_group_centerline_connection(parts[long_index], parts[short_index])
+        if connection["distance"] > 1e-3:
+            raise AssertionError(f"wall centerline connection is open: group={index // 2 + 1} {connection}")
+
+    for i, group_a in enumerate(groups):
+        for group_b in groups[i + 1:]:
+            distance = bbox.bounds_distance(group_a, group_b)
+            if distance < 4.0:
+                raise AssertionError(f"wall groups too close or overlap: {group_a} {group_b} distance={distance}")
 
 
 def test_corridor_planner_writes_expected_artifacts() -> None:

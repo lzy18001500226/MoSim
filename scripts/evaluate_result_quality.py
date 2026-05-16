@@ -411,6 +411,28 @@ def system_mode_quality(raw_path: Path | None, scene_id: str = "") -> tuple[list
     return issues, recommendations, metrics
 
 
+def formation_quality(metrics: dict[str, Any]) -> tuple[list[str], list[str]]:
+    checks = [
+        ("formation_error_rmse_m", "max", 0.35),
+        ("formation_error_max_m", "max", 1.00),
+        ("min_inter_uav_distance_m", "min", 0.80),
+        ("formation_score", "min", 60.0),
+    ]
+    issues: list[str] = []
+    for key, direction, limit in checks:
+        value = as_float(metrics.get(key))
+        if not math.isfinite(value):
+            issues.append(f"{key} missing or non-finite")
+            continue
+        if direction == "max" and value > limit:
+            issues.append(f"{key}={value:.6g} exceeds {limit:.6g}")
+        if direction == "min" and value < limit:
+            issues.append(f"{key}={value:.6g} below {limit:.6g}")
+    if issues:
+        return issues, ["retune follower offsets/controllers or inspect follower signal export before using formation evidence"]
+    return [], ["formation evidence meets current keeping and separation gates"]
+
+
 def planning_display_collision_quality(config: dict[str, Any]) -> dict[str, Any]:
     model = config.get("model", {})
     if not isinstance(model, dict):
@@ -522,6 +544,13 @@ def evaluate_quality(config: dict[str, Any], scenario_path: Path, *, min_rmse_im
         result["quality_recommendations"] = recommendations
         return result
 
+    if quality_profile == "formation" or scene_id.startswith("formation_"):
+        thresholds = {
+            **thresholds,
+            "max_position_rmse_m": min(thresholds["max_position_rmse_m"], 0.35),
+            "max_position_error_m": min(thresholds["max_position_error_m"], 1.60),
+        }
+
     metric_checks = [
         ("position_rmse_m", "max", thresholds["max_position_rmse_m"]),
         ("max_position_error_m", "max", thresholds["max_position_error_m"]),
@@ -537,6 +566,11 @@ def evaluate_quality(config: dict[str, Any], scenario_path: Path, *, min_rmse_im
             issues.append(f"{key}={value:.6g} exceeds {limit:.6g}")
         if direction == "min" and value < limit:
             issues.append(f"{key}={value:.6g} below {limit:.6g}")
+
+    if quality_profile == "formation" or scene_id.startswith("formation_"):
+        profile_issues, profile_recommendations = formation_quality(metrics)
+        issues.extend(profile_issues)
+        recommendations.extend(profile_recommendations)
 
     if scene_id == "official_example3" and raw_path and raw_path.exists():
         figure8_ok, figure8_metrics = figure8_shape_quality(raw_path)
