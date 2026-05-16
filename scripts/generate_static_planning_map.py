@@ -24,6 +24,14 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG = ROOT / "planners/astar_min_snap/map_open_blocks.yaml"
 DEFAULT_OUTPUT_DIR = ROOT / "results/planning/single_obstacle_astar_awff/figures/static_map"
 DEFAULT_STL = ROOT / "QuadrotorModel/Resources/Visualization/map_open_blocks_static_ground_0p2_obstacles_0p4_0p64_h2p5_3p0.stl"
+DEFAULT_ASSET_DIR = ROOT / "QuadrotorModel/Resources/Visualization"
+TERRAIN_BAND_COUNT = 5
+TERRAIN_BAND_STLS = [
+    DEFAULT_ASSET_DIR / f"map_open_blocks_static_terrain_band_{index}_ground_0p2.stl"
+    for index in range(1, TERRAIN_BAND_COUNT + 1)
+]
+OBSTACLE_STL = DEFAULT_ASSET_DIR / "map_open_blocks_static_obstacles_0p4_0p64_h2p5_3p0.stl"
+GRID_STL = DEFAULT_ASSET_DIR / "map_open_blocks_static_terrain_grid_2m_patch0p2.stl"
 
 
 def crc_chunk(chunk_type: bytes, data: bytes) -> bytes:
@@ -55,12 +63,12 @@ def write_png(path: Path, width: int, height: int, pixels: bytearray) -> None:
 
 
 TERRAIN_HEIGHT_MIN_M = 0.10
-TERRAIN_HEIGHT_MAX_M = 0.50
+TERRAIN_HEIGHT_MAX_M = 0.80
 TERRAIN_HEIGHT_SPAN_M = TERRAIN_HEIGHT_MAX_M - TERRAIN_HEIGHT_MIN_M
 
 
 def terrain_height_xy(x: float, y: float) -> float:
-    """Smooth deterministic height field in the 0.1-0.5 m range."""
+    """Smooth deterministic height field in the 0.1-0.8 m range."""
     value = (
         0.42 * math.sin(0.075 * x + 0.031 * y + 0.4)
         + 0.31 * math.sin(-0.044 * x + 0.089 * y + 1.7)
@@ -255,12 +263,8 @@ def build_static_mesh(
             x1 = min(x0 + ground_cell_m, x_max)
             y0 = y_min + iy * ground_cell_m
             y1 = min(y0 + ground_cell_m, y_max)
-            z00 = terrain_height_xy(x0, y0)
-            z10 = terrain_height_xy(x1, y0)
-            z11 = terrain_height_xy(x1, y1)
-            z01 = terrain_height_xy(x0, y1)
-            add_triangle(triangles, (x0, y0, z00), (x1, y0, z10), (x1, y1, z11))
-            add_triangle(triangles, (x0, y0, z00), (x1, y1, z11), (x0, y1, z01))
+            z_top = terrain_height_xy(0.5 * (x0 + x1), 0.5 * (y0 + y1))
+            add_box(triangles, x0, x1, y0, y1, 0.0, z_top)
 
     random_count = 0
     for obstacle in obstacles:
@@ -274,6 +278,132 @@ def build_static_mesh(
         add_box(triangles, x - half, x + half, y - half, y + half, z_min, z_min + height)
         random_count += 1
     return triangles, random_count, nx * ny
+
+
+def build_static_mesh_layers(
+    bounds: dict[str, Any],
+    obstacles: list[dict[str, Any]],
+    *,
+    ground_cell_m: float,
+    default_obstacle_footprint_m: float,
+    band_count: int,
+) -> tuple[
+    list[list[tuple[tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float]]]],
+    list[tuple[tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float]]],
+    list[tuple[tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float]]],
+    int,
+    int,
+]:
+    x_min, x_max = [float(v) for v in bounds["x"]]
+    y_min, y_max = [float(v) for v in bounds["y"]]
+    nx = int(math.ceil((x_max - x_min) / ground_cell_m))
+    ny = int(math.ceil((y_max - y_min) / ground_cell_m))
+    terrain_bands = [[] for _ in range(band_count)]
+    obstacle_triangles: list[
+        tuple[tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float]]
+    ] = []
+    grid_triangles: list[
+        tuple[tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float]]
+    ] = []
+
+    for ix in range(nx):
+        for iy in range(ny):
+            x0 = x_min + ix * ground_cell_m
+            x1 = min(x0 + ground_cell_m, x_max)
+            y0 = y_min + iy * ground_cell_m
+            y1 = min(y0 + ground_cell_m, y_max)
+            z_center = terrain_height_xy(0.5 * (x0 + x1), 0.5 * (y0 + y1))
+            normalized = (z_center - TERRAIN_HEIGHT_MIN_M) / TERRAIN_HEIGHT_SPAN_M
+            band = max(0, min(band_count - 1, int(normalized * band_count)))
+            add_box(terrain_bands[band], x0, x1, y0, y1, 0.0, z_center)
+
+    random_count = 0
+    for obstacle in obstacles:
+        if obstacle.get("type") != "cylinder":
+            continue
+        x, y, _ = [float(v) for v in obstacle["center"]]
+        height = float(obstacle.get("height", 3.0))
+        z_min = float(obstacle.get("z_min", 0.0))
+        footprint_m = float(obstacle.get("visual_size_m", default_obstacle_footprint_m))
+        half = 0.5 * footprint_m
+        add_box(obstacle_triangles, x - half, x + half, y - half, y + half, z_min, z_min + height)
+        random_count += 1
+
+    add_terrain_grid_overlay(
+        grid_triangles,
+        bounds,
+        global_spacing_m=2.0,
+        local_patch_center=(-41.0, -26.0),
+        local_patch_size_m=4.0,
+        local_spacing_m=0.2,
+        strip_width_m=0.035,
+        z_lift_m=0.025,
+    )
+    return terrain_bands, obstacle_triangles, grid_triangles, random_count, nx * ny
+
+
+def add_terrain_grid_overlay(
+    triangles: list[tuple[tuple[float, float, float], tuple[float, float, float], tuple[float, float, float], tuple[float, float, float]]],
+    bounds: dict[str, Any],
+    *,
+    global_spacing_m: float,
+    local_patch_center: tuple[float, float],
+    local_patch_size_m: float,
+    local_spacing_m: float,
+    strip_width_m: float,
+    z_lift_m: float,
+) -> None:
+    x_min, x_max = [float(v) for v in bounds["x"]]
+    y_min, y_max = [float(v) for v in bounds["y"]]
+
+    def add_strip_x(x: float, y0: float, y1: float, step: float) -> None:
+        half = 0.5 * strip_width_m
+        segments = max(1, int(math.ceil((y1 - y0) / step)))
+        for index in range(segments):
+            ya = y0 + index * step
+            yb = min(y1, ya + step)
+            p00 = (x - half, ya, terrain_height_xy(x, ya) + z_lift_m)
+            p10 = (x + half, ya, terrain_height_xy(x, ya) + z_lift_m)
+            p11 = (x + half, yb, terrain_height_xy(x, yb) + z_lift_m)
+            p01 = (x - half, yb, terrain_height_xy(x, yb) + z_lift_m)
+            add_triangle(triangles, p00, p10, p11)
+            add_triangle(triangles, p00, p11, p01)
+
+    def add_strip_y(y: float, x0: float, x1: float, step: float) -> None:
+        half = 0.5 * strip_width_m
+        segments = max(1, int(math.ceil((x1 - x0) / step)))
+        for index in range(segments):
+            xa = x0 + index * step
+            xb = min(x1, xa + step)
+            p00 = (xa, y - half, terrain_height_xy(xa, y) + z_lift_m)
+            p10 = (xb, y - half, terrain_height_xy(xb, y) + z_lift_m)
+            p11 = (xb, y + half, terrain_height_xy(xb, y) + z_lift_m)
+            p01 = (xa, y + half, terrain_height_xy(xa, y) + z_lift_m)
+            add_triangle(triangles, p00, p10, p11)
+            add_triangle(triangles, p00, p11, p01)
+
+    x = math.ceil(x_min / global_spacing_m) * global_spacing_m
+    while x <= x_max + 1e-9:
+        add_strip_x(x, y_min, y_max, step=1.0)
+        x += global_spacing_m
+    y = math.ceil(y_min / global_spacing_m) * global_spacing_m
+    while y <= y_max + 1e-9:
+        add_strip_y(y, x_min, x_max, step=1.0)
+        y += global_spacing_m
+
+    cx, cy = local_patch_center
+    patch_x0 = max(x_min, cx - 0.5 * local_patch_size_m)
+    patch_x1 = min(x_max, cx + 0.5 * local_patch_size_m)
+    patch_y0 = max(y_min, cy - 0.5 * local_patch_size_m)
+    patch_y1 = min(y_max, cy + 0.5 * local_patch_size_m)
+    x = patch_x0
+    while x <= patch_x1 + 1e-9:
+        add_strip_x(x, patch_y0, patch_y1, step=local_spacing_m)
+        x += local_spacing_m
+    y = patch_y0
+    while y <= patch_y1 + 1e-9:
+        add_strip_y(y, patch_x0, patch_x1, step=local_spacing_m)
+        y += local_spacing_m
 
 
 def draw_markers(
@@ -453,12 +583,46 @@ def generate(
         obstacle_height_min_m=obstacle_height_min_m,
         obstacle_height_max_m=obstacle_height_max_m,
     )
+    terrain_band_triangles, obstacle_triangles, grid_triangles, layered_obstacle_count, layered_ground_cell_count = build_static_mesh_layers(
+        bounds,
+        static_obstacles,
+        ground_cell_m=ground_cell_m,
+        default_obstacle_footprint_m=obstacle_footprint_max_m,
+        band_count=TERRAIN_BAND_COUNT,
+    )
+    for band_path, band_triangles in zip(TERRAIN_BAND_STLS, terrain_band_triangles):
+        write_binary_stl(
+            band_path,
+            band_triangles,
+            ground_cell_m=ground_cell_m,
+            obstacle_height_min_m=obstacle_height_min_m,
+            obstacle_height_max_m=obstacle_height_max_m,
+        )
+    write_binary_stl(
+        OBSTACLE_STL,
+        obstacle_triangles,
+        ground_cell_m=ground_cell_m,
+        obstacle_height_min_m=obstacle_height_min_m,
+        obstacle_height_max_m=obstacle_height_max_m,
+    )
+    write_binary_stl(
+        GRID_STL,
+        grid_triangles,
+        ground_cell_m=ground_cell_m,
+        obstacle_height_min_m=obstacle_height_min_m,
+        obstacle_height_max_m=obstacle_height_max_m,
+    )
+    if layered_obstacle_count != mesh_obstacle_count or layered_ground_cell_count != ground_cell_count:
+        raise RuntimeError("Layered mesh counts do not match the combined static mesh counts")
 
     wall_boxes = [item for item in map_config.get("obstacles", []) if item.get("type") == "box"]
     manifest = {
         "source_config": str(config_path.relative_to(ROOT)),
         "image": str(image_path.relative_to(ROOT)),
         "stl": str(stl_path.relative_to(ROOT)),
+        "terrain_band_stls": [str(path.relative_to(ROOT)) for path in TERRAIN_BAND_STLS],
+        "obstacle_stl": str(OBSTACLE_STL.relative_to(ROOT)),
+        "grid_overlay_stl": str(GRID_STL.relative_to(ROOT)),
         "purpose": "static_environment_visualization_only",
         "planner_knowledge_policy": "online_planner_must_use_local_discovered_map_not_this_full_static_image",
         "bounds_m": bounds,
@@ -474,6 +638,20 @@ def generate(
         "random_obstacle_distribution_diagnostics": distribution_diagnostics,
         "mesh_random_obstacle_count": mesh_obstacle_count,
         "mesh_triangle_count": len(triangles),
+        "terrain_band_triangle_counts": [len(item) for item in terrain_band_triangles],
+        "obstacle_triangle_count": len(obstacle_triangles),
+        "grid_overlay_triangle_count": len(grid_triangles),
+        "terrain_visualization": {
+            "mode": "volumetric_ground_columns_five_height_bands_plus_grid_overlay",
+            "terrain_geometry": "0.2 m x 0.2 m cuboid columns, each column bottom at z=0 and top at deterministic terrain height",
+            "height_band_count": TERRAIN_BAND_COUNT,
+            "global_grid_spacing_m": 2.0,
+            "local_resolution_patch": {
+                "center_m": [-41.0, -26.0],
+                "size_m": 4.0,
+                "grid_spacing_m": ground_cell_m,
+            },
+        },
         "dynamic_wall_group_count": len(wall_boxes) // 2,
         "dynamic_wall_box_count": len(wall_boxes),
         "walls_baked_into_static_image": False,

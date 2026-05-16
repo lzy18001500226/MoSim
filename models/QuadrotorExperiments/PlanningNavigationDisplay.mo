@@ -67,7 +67,7 @@ model PlanningNavigationDisplay
   parameter Real terrain_min_height_m = 0.17;
   parameter Real terrain_height_span_m = 0.40;
   parameter Real terrain_fill_scale = 1.0;
-  parameter Boolean render_terrain_blocks = true
+  parameter Boolean render_terrain_blocks = false
     "Render the global low-resolution terrain block map. Disable for GUI review when native animation becomes too heavy.";
   parameter Real terrain_x_offset_m = -0.25;
   parameter Real terrain_y_offset_m = 0.0;
@@ -75,13 +75,25 @@ model PlanningNavigationDisplay
     "Render every Nth terrain cell in each horizontal direction. 1 means full 3D grid; 2 keeps the same map coordinates with fewer GUI objects.";
   parameter Integer local_terrain_half_cells(min = 1) = 6
     "Kept for compatibility with older rolling-terrain configs; full-map terrain rendering now uses terrain_x_count * terrain_y_count cells.";
-  parameter Boolean show_continuous_ground = true
+  parameter Boolean show_continuous_ground = false
     "Render a continuous base plate below terrain texture cells to avoid visual cracks.";
   parameter Real continuous_ground_thickness_m = 0.03;
   parameter Boolean show_static_map_mesh = true
-    "Render one pre-generated STL mesh for dense 0.2 m terrain and 1000 random obstacles.";
+    "Render one pre-generated STL mesh for dense 0.2 m volumetric terrain columns and 1000 random obstacles.";
   parameter String static_map_mesh_uri =
     "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_ground_0p2_obstacles_0p4_0p64_h2p5_3p0.stl";
+  parameter Boolean show_static_map_layers = true
+    "Render review-friendly split static map layers: five volumetric terrain-column height bands, obstacle mesh, and grid overlay.";
+  parameter String static_terrain_band_mesh_uri[5] = {
+    "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_terrain_band_1_ground_0p2.stl",
+    "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_terrain_band_2_ground_0p2.stl",
+    "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_terrain_band_3_ground_0p2.stl",
+    "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_terrain_band_4_ground_0p2.stl",
+    "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_terrain_band_5_ground_0p2.stl"};
+  parameter String static_obstacle_mesh_uri =
+    "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_obstacles_0p4_0p64_h2p5_3p0.stl";
+  parameter String static_grid_mesh_uri =
+    "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_terrain_grid_2m_patch0p2.stl";
 
   Modelica.Blocks.Interfaces.RealInput actual_position[3]
     annotation(Placement(transformation(origin = {-120, 30}, extent = {{-20, -20}, {20, 20}})));
@@ -323,11 +335,52 @@ public
     r_shape = {0, 0, 0},
     lengthDirection = {1, 0, 0},
     widthDirection = {0, 1, 0},
-    length = if show_static_map_mesh then 1.0 else 0.0,
-    width = if show_static_map_mesh then 1.0 else 0.0,
-    height = if show_static_map_mesh then 1.0 else 0.0,
+    length = if show_static_map_mesh and not show_static_map_layers then 1.0 else 0.0,
+    width = if show_static_map_mesh and not show_static_map_layers then 1.0 else 0.0,
+    height = if show_static_map_mesh and not show_static_map_layers then 1.0 else 0.0,
     color = {230, 230, 230},
     specularCoefficient = 0.12);
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape static_terrain_band_mesh[5](
+    shapeType = static_terrain_band_mesh_uri,
+    each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
+    each r = {0, 0, 0},
+    each r_shape = {0, 0, 0},
+    each lengthDirection = {1, 0, 0},
+    each widthDirection = {0, 1, 0},
+    each length = 1.0,
+    each width = 1.0,
+    each height = 1.0,
+    color = {
+      if show_static_map_layers then {210, 236, 248} else {0, 0, 0},
+      if show_static_map_layers then {184, 224, 236} else {0, 0, 0},
+      if show_static_map_layers then {158, 210, 206} else {0, 0, 0},
+      if show_static_map_layers then {180, 205, 150} else {0, 0, 0},
+      if show_static_map_layers then {218, 190, 125} else {0, 0, 0}},
+    each specularCoefficient = 0.10);
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape static_obstacle_mesh(
+    shapeType = static_obstacle_mesh_uri,
+    R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
+    r = {0, 0, 0},
+    r_shape = {0, 0, 0},
+    lengthDirection = {1, 0, 0},
+    widthDirection = {0, 1, 0},
+    length = if show_static_map_layers then 1.0 else 0.0,
+    width = if show_static_map_layers then 1.0 else 0.0,
+    height = if show_static_map_layers then 1.0 else 0.0,
+    color = {150, 150, 150},
+    specularCoefficient = 0.20);
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape static_grid_mesh(
+    shapeType = static_grid_mesh_uri,
+    R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
+    r = {0, 0, 0},
+    r_shape = {0, 0, 0},
+    lengthDirection = {1, 0, 0},
+    widthDirection = {0, 1, 0},
+    length = if show_static_map_layers then 1.0 else 0.0,
+    width = if show_static_map_layers then 1.0 else 0.0,
+    height = if show_static_map_layers then 1.0 else 0.0,
+    color = {60, 80, 95},
+    specularCoefficient = 0.05);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape ground_pillar[ground_pillar_count](
     each shapeType = "box",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),

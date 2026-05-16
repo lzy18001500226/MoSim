@@ -106,6 +106,19 @@ scripts such as `run_mworks_scenario.py` and `run_sysplorer_mcp_smoke.py` are
 only for batch execution, reproducible export, metrics, summaries, and
 regression automation.
 
+When driving the Sysplorer MCP wrapper through JSON-RPC, always perform the MCP
+handshake first:
+
+```text
+initialize(protocolVersion="2024-11-05")
+notifications/initialized
+session_manager(action="health")
+```
+
+Calling `tools/list` or `tools/call` before this handshake can return
+`Invalid request parameters` even when the wrapper and Sysplorer session are
+healthy.
+
 ### Direct MCP Review For Graphical System Models
 
 For manual review of `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock`,

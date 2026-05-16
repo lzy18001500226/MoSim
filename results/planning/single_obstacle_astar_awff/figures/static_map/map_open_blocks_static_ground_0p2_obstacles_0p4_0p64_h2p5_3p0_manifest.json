@@ -2,6 +2,15 @@
   "source_config": "planners/astar_min_snap/map_open_blocks.yaml",
   "image": "results/planning/single_obstacle_astar_awff/figures/static_map/map_open_blocks_static_ground_0p2_obstacles_0p4_0p64_h2p5_3p0.png",
   "stl": "QuadrotorModel/Resources/Visualization/map_open_blocks_static_ground_0p2_obstacles_0p4_0p64_h2p5_3p0.stl",
+  "terrain_band_stls": [
+    "QuadrotorModel/Resources/Visualization/map_open_blocks_static_terrain_band_1_ground_0p2.stl",
+    "QuadrotorModel/Resources/Visualization/map_open_blocks_static_terrain_band_2_ground_0p2.stl",
+    "QuadrotorModel/Resources/Visualization/map_open_blocks_static_terrain_band_3_ground_0p2.stl",
+    "QuadrotorModel/Resources/Visualization/map_open_blocks_static_terrain_band_4_ground_0p2.stl",
+    "QuadrotorModel/Resources/Visualization/map_open_blocks_static_terrain_band_5_ground_0p2.stl"
+  ],
+  "obstacle_stl": "QuadrotorModel/Resources/Visualization/map_open_blocks_static_obstacles_0p4_0p64_h2p5_3p0.stl",
+  "grid_overlay_stl": "QuadrotorModel/Resources/Visualization/map_open_blocks_static_terrain_grid_2m_patch0p2.stl",
   "purpose": "static_environment_visualization_only",
   "planner_knowledge_policy": "online_planner_must_use_local_discovered_map_not_this_full_static_image",
   "bounds_m": {
@@ -27,7 +36,7 @@
   "ground_cell_count": 135000,
   "terrain_height_range_m": [
     0.1,
-    0.5
+    0.8
   ],
   "random_obstacle_visual_footprint_range_m": [
     0.4,
@@ -57,7 +66,30 @@
     "min_spacing_m": 0.55
   },
   "mesh_random_obstacle_count": 1000,
-  "mesh_triangle_count": 282000,
+  "mesh_triangle_count": 1632000,
+  "terrain_band_triangle_counts": [
+    170136,
+    376752,
+    440388,
+    488424,
+    144300
+  ],
+  "obstacle_triangle_count": 12000,
+  "grid_overlay_triangle_count": 12660,
+  "terrain_visualization": {
+    "mode": "volumetric_ground_columns_five_height_bands_plus_grid_overlay",
+    "terrain_geometry": "0.2 m x 0.2 m cuboid columns, each column bottom at z=0 and top at deterministic terrain height",
+    "height_band_count": 5,
+    "global_grid_spacing_m": 2.0,
+    "local_resolution_patch": {
+      "center_m": [
+        -41.0,
+        -26.0
+      ],
+      "size_m": 4.0,
+      "grid_spacing_m": 0.2
+    }
+  },
   "dynamic_wall_group_count": 8,
   "dynamic_wall_box_count": 16,
   "walls_baked_into_static_image": false,
