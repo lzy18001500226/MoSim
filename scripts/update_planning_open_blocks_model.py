@@ -16,6 +16,8 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_POINT_CAPACITY = 91
 MODEL_SEGMENT_CAPACITY = 90
+GUI_RENDER_RANDOM_OBSTACLE_LIMIT = 0
+DUMMY_DISABLED_PILLAR_SIZE_M = 0.16
 
 
 def read_yaml(path: Path) -> dict[str, Any]:
@@ -122,14 +124,29 @@ def build_reference(report: dict[str, Any], map_config: dict[str, Any]) -> dict[
 
 def build_pillars(report: dict[str, Any]) -> dict[str, Any]:
     pillars: list[tuple[float, float, float, float, float, float]] = []
-    for obstacle in report["truth_obstacles"]:
-        if obstacle.get("type") == "cylinder":
-            pillars.extend(pillar_cluster(obstacle))
+    cylinders = [obstacle for obstacle in report["truth_obstacles"] if obstacle.get("type") == "cylinder"]
+    if GUI_RENDER_RANDOM_OBSTACLE_LIMIT <= 0:
+        render_cylinders = []
+    elif len(cylinders) > GUI_RENDER_RANDOM_OBSTACLE_LIMIT:
+        step = max(1, math.floor(len(cylinders) / GUI_RENDER_RANDOM_OBSTACLE_LIMIT))
+        render_cylinders = cylinders[::step][:GUI_RENDER_RANDOM_OBSTACLE_LIMIT]
+    else:
+        render_cylinders = cylinders
+    for obstacle in render_cylinders:
+        center = obstacle["center"]
+        x = float(center[0])
+        y = float(center[1])
+        height = float(obstacle.get("height", obstacle.get("z_max", 1.8)))
+        z_min = float(obstacle.get("z_min", 0.0))
+        width = DUMMY_DISABLED_PILLAR_SIZE_M
+        pillars.append((x, y, width, width, height, z_min))
     if not pillars:
-        raise ValueError("No renderable cylindrical obstacles in planner report")
+        pillars.append((0.0, 0.0, DUMMY_DISABLED_PILLAR_SIZE_M, DUMMY_DISABLED_PILLAR_SIZE_M, 3.0, 0.0))
     return {
-        "max_pillars": max(144, len(pillars)),
-        "pillar_count": len(pillars),
+        "max_pillars": max(1, len(pillars)),
+        "pillar_count": len(render_cylinders),
+        "truth_cylinder_count": len(cylinders),
+        "rendered_cylinder_count": len(render_cylinders),
         "centers": [[x, y] for x, y, _, _, _, _ in pillars],
         "lengths": [length for _, _, length, _, _, _ in pillars],
         "widths": [width for _, _, _, width, _, _ in pillars],
@@ -214,9 +231,11 @@ def build_display_constructor(
     local_plan_max_length_m = 3.5,
     terrain_cell_size_m = 3.0,
     terrain_fill_scale = 1.02,
+    render_terrain_blocks = false,
+    show_static_map_mesh = true,
     terrain_x_offset_m = 0.0,
     terrain_y_offset_m = 0.0,
-    terrain_render_stride = 1,
+    terrain_render_stride = 2,
     local_terrain_half_cells = 6,
     show_continuous_ground = false,
     max_pillars = {pillars["max_pillars"]},
@@ -275,7 +294,7 @@ def update_model(model_path: Path, planner_config_path: Path, report_path: Path)
     print(f"Updated {model_path}")
     print(
         f"segments={ref['n_segments']} stop_time={fmt(ref['stop_time'])} "
-        f"pillars={pillars['pillar_count']} "
+        f"rendered_pillars={pillars['pillar_count']} truth_cylinders={pillars['truth_cylinder_count']} "
         f"wall_groups={walls['wall_group_count']} wall_boxes={walls['wall_group_count'] * 2}"
     )
 

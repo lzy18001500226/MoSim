@@ -67,6 +67,8 @@ model PlanningNavigationDisplay
   parameter Real terrain_min_height_m = 0.17;
   parameter Real terrain_height_span_m = 0.40;
   parameter Real terrain_fill_scale = 1.0;
+  parameter Boolean render_terrain_blocks = true
+    "Render the global low-resolution terrain block map. Disable for GUI review when native animation becomes too heavy.";
   parameter Real terrain_x_offset_m = -0.25;
   parameter Real terrain_y_offset_m = 0.0;
   parameter Integer terrain_render_stride(min = 1) = 1
@@ -76,6 +78,10 @@ model PlanningNavigationDisplay
   parameter Boolean show_continuous_ground = true
     "Render a continuous base plate below terrain texture cells to avoid visual cracks.";
   parameter Real continuous_ground_thickness_m = 0.03;
+  parameter Boolean show_static_map_mesh = true
+    "Render one pre-generated STL mesh for dense 0.5 m terrain and 600 small random obstacles.";
+  parameter String static_map_mesh_uri =
+    "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_ground_0p5_obstacles_0p4_0p64.stl";
 
   Modelica.Blocks.Interfaces.RealInput actual_position[3]
     annotation(Placement(transformation(origin = {-120, 30}, extent = {{-20, -20}, {20, 20}})));
@@ -310,6 +316,18 @@ public
     height = continuous_ground_thickness_m,
     color = {180, 180, 180},
     specularCoefficient = 0.12);
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape static_map_mesh(
+    shapeType = static_map_mesh_uri,
+    R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
+    r = {0, 0, 0},
+    r_shape = {0, 0, 0},
+    lengthDirection = {1, 0, 0},
+    widthDirection = {0, 1, 0},
+    length = if show_static_map_mesh then 1.0 else 0.0,
+    width = if show_static_map_mesh then 1.0 else 0.0,
+    height = if show_static_map_mesh then 1.0 else 0.0,
+    color = {230, 230, 230},
+    specularCoefficient = 0.12);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape ground_pillar[ground_pillar_count](
     each shapeType = "box",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
@@ -317,9 +335,9 @@ public
     each r_shape = {0, 0, 0},
     each lengthDirection = {1, 0, 0},
     each widthDirection = {0, 1, 0},
-    length = {ground_length[i] * terrain_fill_scale for i in 1:ground_pillar_count},
-    width = {ground_width[i] * terrain_fill_scale for i in 1:ground_pillar_count},
-    height = {ground_height[i] for i in 1:ground_pillar_count},
+    length = {if render_terrain_blocks then ground_length[i] * terrain_fill_scale else 0.0 for i in 1:ground_pillar_count},
+    width = {if render_terrain_blocks then ground_width[i] * terrain_fill_scale else 0.0 for i in 1:ground_pillar_count},
+    height = {if render_terrain_blocks then ground_height[i] else 0.0 for i in 1:ground_pillar_count},
     color = {if ground_sensed[i] then {210, 232, 255} else {215, 215, 215} for i in 1:ground_pillar_count},
     each specularCoefficient = 0.15);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape local_sensed_ground[local_sensed_ground_count](
