@@ -643,8 +643,9 @@ def generate(
         "grid_overlay_triangle_count": len(grid_triangles),
         "terrain_visualization": {
             "mode": "volumetric_ground_columns_five_height_bands_plus_grid_overlay",
-            "terrain_geometry": "0.2 m x 0.2 m cuboid columns, each column bottom at z=0 and top at deterministic terrain height",
+            "terrain_geometry": "0.2 m x 0.2 m cuboid columns; each cell samples its own center-point height, starts at z=0, and does not share a quantized height with its height-band neighbors",
             "height_band_count": TERRAIN_BAND_COUNT,
+            "height_band_policy": "bands split STL files and colors only; they do not quantize terrain heights",
             "global_grid_spacing_m": 2.0,
             "local_resolution_patch": {
                 "center_m": [-41.0, -26.0],
