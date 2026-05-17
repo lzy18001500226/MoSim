@@ -105,6 +105,11 @@ local_planning:
   goal_tolerance_m: 0.35
   max_replans: 260
 
+visualization:
+  radar_radius_m: 6.0
+  radar_fade_radius_m: 9.0
+  radar_cell_size_m: 0.4
+
 astar:
   neighbor_type: 8
   heuristic: euclidean

@@ -27,6 +27,7 @@ LOCAL_SENSOR_CELL_SIZE_M = 0.20
 TAKEOFF_DURATION_S = 3.0
 LANDING_DURATION_S = 3.0
 GROUND_CLEARANCE_M = 0.0
+UAV_GROUND_CENTER_CLEARANCE_M = 0.22
 
 
 def read_yaml(path: Path) -> dict[str, Any]:
@@ -126,12 +127,12 @@ def build_reference(report: dict[str, Any], map_config: dict[str, Any]) -> dict[
     start_ground = [
         path[0][0],
         path[0][1],
-        terrain_height(path[0][0], path[0][1], map_config) + GROUND_CLEARANCE_M,
+        terrain_height(path[0][0], path[0][1], map_config) + GROUND_CLEARANCE_M + UAV_GROUND_CENTER_CLEARANCE_M,
     ]
     goal_ground = [
         path[-1][0],
         path[-1][1],
-        terrain_height(path[-1][0], path[-1][1], map_config) + GROUND_CLEARANCE_M,
+        terrain_height(path[-1][0], path[-1][1], map_config) + GROUND_CLEARANCE_M + UAV_GROUND_CENTER_CLEARANCE_M,
     ]
     points = [start_ground, *path, goal_ground]
     segment_duration = [TAKEOFF_DURATION_S, *durations, LANDING_DURATION_S]
@@ -154,29 +155,50 @@ def build_reference(report: dict[str, Any], map_config: dict[str, Any]) -> dict[
 
 def build_pillars(report: dict[str, Any]) -> dict[str, Any]:
     pillars: list[tuple[float, float, float, float, float, float]] = []
+    random_boxes = [
+        obstacle
+        for obstacle in report["truth_obstacles"]
+        if obstacle.get("type") == "box" and obstacle.get("random_cluster")
+    ]
     cylinders = [obstacle for obstacle in report["truth_obstacles"] if obstacle.get("type") == "cylinder"]
     if GUI_RENDER_RANDOM_OBSTACLE_LIMIT <= 0:
-        render_cylinders = []
+        render_obstacles = []
+    elif random_boxes:
+        if len(random_boxes) > GUI_RENDER_RANDOM_OBSTACLE_LIMIT:
+            step = max(1, math.floor(len(random_boxes) / GUI_RENDER_RANDOM_OBSTACLE_LIMIT))
+            render_obstacles = random_boxes[::step][:GUI_RENDER_RANDOM_OBSTACLE_LIMIT]
+        else:
+            render_obstacles = random_boxes
     elif len(cylinders) > GUI_RENDER_RANDOM_OBSTACLE_LIMIT:
         step = max(1, math.floor(len(cylinders) / GUI_RENDER_RANDOM_OBSTACLE_LIMIT))
-        render_cylinders = cylinders[::step][:GUI_RENDER_RANDOM_OBSTACLE_LIMIT]
+        render_obstacles = cylinders[::step][:GUI_RENDER_RANDOM_OBSTACLE_LIMIT]
     else:
-        render_cylinders = cylinders
-    for obstacle in render_cylinders:
-        center = obstacle["center"]
-        x = float(center[0])
-        y = float(center[1])
-        height = float(obstacle.get("height", obstacle.get("z_max", 1.8)))
-        z_min = float(obstacle.get("z_min", 0.0))
-        width = DUMMY_DISABLED_PILLAR_SIZE_M
-        pillars.append((x, y, width, width, height, z_min))
+        render_obstacles = cylinders
+    for obstacle in render_obstacles:
+        if obstacle.get("type") == "box":
+            lo = obstacle["min"]
+            hi = obstacle["max"]
+            x0, x1 = sorted((float(lo[0]), float(hi[0])))
+            y0, y1 = sorted((float(lo[1]), float(hi[1])))
+            z0, z1 = sorted((float(lo[2]), float(hi[2])))
+            pillars.append((0.5 * (x0 + x1), 0.5 * (y0 + y1), x1 - x0, y1 - y0, z1 - z0, z0))
+        else:
+            center = obstacle["center"]
+            x = float(center[0])
+            y = float(center[1])
+            height = float(obstacle.get("height", obstacle.get("z_max", 1.8)))
+            z_min = float(obstacle.get("z_min", 0.0))
+            width = DUMMY_DISABLED_PILLAR_SIZE_M
+            pillars.append((x, y, width, width, height, z_min))
     if not pillars:
         pillars.append((0.0, 0.0, DUMMY_DISABLED_PILLAR_SIZE_M, DUMMY_DISABLED_PILLAR_SIZE_M, 3.0, 0.0))
     return {
         "max_pillars": max(1, len(pillars)),
-        "pillar_count": len(render_cylinders),
+        "pillar_count": len(render_obstacles),
         "truth_cylinder_count": len(cylinders),
-        "rendered_cylinder_count": len(render_cylinders),
+        "truth_random_box_count": len(random_boxes),
+        "rendered_random_obstacle_count": len(render_obstacles),
+        "rendered_cylinder_count": sum(1 for obstacle in render_obstacles if obstacle.get("type") == "cylinder"),
         "centers": [[x, y] for x, y, _, _, _, _ in pillars],
         "lengths": [length for _, _, length, _, _, _ in pillars],
         "widths": [width for _, _, _, width, _, _ in pillars],
@@ -241,8 +263,10 @@ def build_display_constructor(
 ) -> str:
     base = build_constructor("PlanningNavigationDisplay navigationDisplay", ref, map_config, pillars)
     bounds = map_config["bounds"]
-    local_radius_m = float(map_config.get("local_planning_radius_m", 2.5))
-    local_half_cells = max(1, math.ceil(local_radius_m / LOCAL_SENSOR_CELL_SIZE_M))
+    local_radius_m = float(map_config.get("display_radar_radius_m", map_config.get("local_planning_radius_m", 2.5)))
+    local_fade_radius_m = float(map_config.get("display_radar_fade_radius_m", max(local_radius_m, 1.5 * local_radius_m)))
+    local_cell_size_m = float(map_config.get("display_radar_cell_size_m", LOCAL_SENSOR_CELL_SIZE_M))
+    local_half_cells = max(1, math.ceil(local_fade_radius_m / local_cell_size_m))
     return f"""{base},
     x_min = {fmt(float(bounds["x"][0]))},
     x_max = {fmt(float(bounds["x"][1]))},
@@ -254,11 +278,12 @@ def build_display_constructor(
     boundary_wall_thickness_m = 0.0,
     highlight_local_costmap = true,
     local_costmap_radius_m = {fmt(local_radius_m)},
+    local_costmap_fade_radius_m = {fmt(local_fade_radius_m)},
     local_costmap_front_half_angle_rad = 3.141592653589793,
     local_costmap_update_period_s = 0.05,
     local_costmap_half_cells = {local_half_cells},
-    local_costmap_cell_size_m = {fmt(LOCAL_SENSOR_CELL_SIZE_M)},
-    local_sensed_cell_size_m = {fmt(LOCAL_SENSOR_CELL_SIZE_M)},
+    local_costmap_cell_size_m = {fmt(local_cell_size_m)},
+    local_sensed_cell_size_m = {fmt(local_cell_size_m)},
     local_sensed_half_cells = {local_half_cells},
     local_plan_horizon_s = 4.0,
     local_plan_point_count = 12,
@@ -266,12 +291,13 @@ def build_display_constructor(
     terrain_cell_size_m = 3.0,
     terrain_fill_scale = 1.02,
     render_terrain_blocks = false,
-    show_static_map_mesh = true,
+    show_static_map_mesh = false,
     terrain_x_offset_m = 0.0,
     terrain_y_offset_m = 0.0,
     terrain_render_stride = 2,
     local_terrain_half_cells = 6,
     show_continuous_ground = false,
+    show_static_map_layers = false,
     max_pillars = {pillars["max_pillars"]},
     pillar_count = {pillars["pillar_count"]},
     pillar_center = {modelica_matrix(pillars["centers"])},
@@ -300,6 +326,18 @@ def update_model(model_path: Path, planner_config_path: Path, report_path: Path)
     local_config = config.get("local_planning", {})
     if isinstance(local_config, dict):
         map_config["local_planning_radius_m"] = float(local_config.get("window_radius_m", 2.5))
+    visualization_config = config.get("visualization", {})
+    if isinstance(visualization_config, dict):
+        radar_radius_m = float(
+            visualization_config.get("radar_radius_m", map_config.get("local_planning_radius_m", 2.5))
+        )
+        map_config["display_radar_radius_m"] = radar_radius_m
+        map_config["display_radar_fade_radius_m"] = float(
+            visualization_config.get("radar_fade_radius_m", max(radar_radius_m, 1.5 * radar_radius_m))
+        )
+        map_config["display_radar_cell_size_m"] = float(
+            visualization_config.get("radar_cell_size_m", LOCAL_SENSOR_CELL_SIZE_M)
+        )
     report = json.loads(report_path.read_text(encoding="utf-8"))
     ref = build_reference(report, map_config)
     pillars = build_pillars(report)

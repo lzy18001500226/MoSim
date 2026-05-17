@@ -587,6 +587,20 @@ regenerate the planner report and rerun the sync script instead. A high-speed
 stress case may raise `velocity_reference_m_s`, but report it separately from
 the low-speed precision evidence because tracking error can increase sharply.
 
+For `Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop`, keep planning
+radius and GUI radar radius separate. The planner currently discovers
+obstacles with `local_planning.window_radius_m=3.0`, while the Sysplorer GUI
+review uses `visualization.radar_radius_m=6.0` and
+`visualization.radar_fade_radius_m=9.0`: objects inside 6 m keep original
+color, objects in the 6-9 m band are gray-white, and farther objects are
+hidden. The full-duration GUI review default is `0.4 m` display cells
+(`2209` local dynamic cells for a 9 m fade radius). A `0.2 m` display grid is
+allowed for high-detail radar review, but it creates `8281` local dynamic
+cells at the same radius; run a 3-5 s GUI smoke first and only increase the
+duration if the viewer remains responsive. Static STL/map layers should stay
+disabled in the online review model unless a separate static-map screenshot is
+being generated.
+
 The durable evidence remains raw CSV, metrics JSON/CSV, logs, figures, and
 replay JSON. Native result files support human review but are intentionally not
 tracked.
