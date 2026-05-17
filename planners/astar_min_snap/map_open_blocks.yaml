@@ -7,7 +7,7 @@ map:
   bounds:
     x: [-45.0, 45.0]
     y: [-30.0, 30.0]
-    z: [0.0, 3.0]
+    z: [0.0, 3.5]
   resolution: 0.4
   safety_margin: 0.35
   planning_safety_margin: 0.35
@@ -27,7 +27,7 @@ map:
       long_length_m: 18.0
       short_length_m: 6.0
       thickness_m: 0.32
-      height_m: 3.0
+      height_m: 3.5
       z_min: 0.0
     groups:
       - id: wall_01
@@ -82,13 +82,17 @@ map:
     enabled: true
     seed: 20260518
     count: 1000
-    radius_range: [0.30, 0.48]
-    height_range: [3.0, 3.0]
-    edge_margin_m: 2.0
+    obstacle_model: column_cluster
+    column_size_m: 0.20
+    columns_per_cluster_range: [4, 10]
+    height_range: [2.8, 3.5]
+    edge_clearance_m: 0.20
+    edge_margin_m: 0.20
     min_spacing_m: 0.55
+    min_cluster_center_spacing_m: 1.05
     start_goal_clearance_m: 3.5
     distribution: stratified
-    grid_cells: [20, 12]
+    grid_cells: [40, 25]
     attempts_per_cell: 48
     clear_corridors: []
 
@@ -132,7 +136,7 @@ altitude_profile:
   terrain_source: static_planning_map
   agl_m: 1.0
   min_z_m: 1.0
-  max_z_m: 1.8
+  max_z_m: 2.5
   note: "XY planner remains local-obstacle based; Z reference follows the static terrain height plus AGL clearance and is tracked through the existing piecewise quintic reference block."
 
 limits:

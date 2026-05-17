@@ -74,8 +74,14 @@ def test_open_blocks_planner_outputs_trackable_reference() -> None:
     if report.get("model_segment_limit") != 90:
         raise AssertionError(report)
     truth_obstacles = report.get("truth_obstacles", [])
-    fixed_wall_count = sum(1 for obstacle in truth_obstacles if obstacle.get("type") == "box")
+    fixed_wall_count = sum(1 for obstacle in truth_obstacles if obstacle.get("type") == "box" and "wall_group_id" in obstacle)
     random_cylinder_count = sum(1 for obstacle in truth_obstacles if obstacle.get("type") == "cylinder")
+    random_column_count = sum(1 for obstacle in truth_obstacles if obstacle.get("random_cluster"))
+    random_cluster_count = len({
+        int(obstacle["random_cluster_id"])
+        for obstacle in truth_obstacles
+        if obstacle.get("random_cluster") and "random_cluster_id" in obstacle
+    })
     wall_groups = config["map"].get("wall_groups", {}).get("groups", [])
     if len(wall_groups) != 8:
         raise AssertionError("planning_open_blocks must use eight reusable L/T wall-group templates")
@@ -83,10 +89,12 @@ def test_open_blocks_planner_outputs_trackable_reference() -> None:
     if shape_counts != {"L": 4, "T": 4}:
         raise AssertionError(f"Expected four L wall groups and four T wall groups, got {shape_counts}")
     expected_random_count = int(config["map"].get("random_obstacles", {}).get("count", 0))
-    if fixed_wall_count != 16 or random_cylinder_count != expected_random_count:
+    if fixed_wall_count != 16 or random_cluster_count != expected_random_count or random_cylinder_count != 0:
         raise AssertionError(
-            f"Expected eight L/T walls expanded as 16 boxes plus {expected_random_count} random cylinders, got boxes={fixed_wall_count}, cylinders={random_cylinder_count}"
+            f"Expected eight L/T walls expanded as 16 boxes plus {expected_random_count} random column clusters, got wall_boxes={fixed_wall_count}, clusters={random_cluster_count}, columns={random_column_count}, cylinders={random_cylinder_count}"
         )
+    if random_column_count < expected_random_count * 4 or random_column_count > expected_random_count * 10:
+        raise AssertionError(f"Random cluster column count outside 4-10 per cluster: {random_column_count}")
     required = {
         "time",
         "x_ref",

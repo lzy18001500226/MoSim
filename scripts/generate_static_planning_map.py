@@ -17,20 +17,20 @@ import zlib
 from pathlib import Path
 from typing import Any
 
-from plan_astar_min_snap import expand_wall_groups, read_yaml
+from plan_astar_min_snap import expand_random_obstacles, expand_wall_groups, read_yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG = ROOT / "planners/astar_min_snap/map_open_blocks.yaml"
 DEFAULT_OUTPUT_DIR = ROOT / "results/planning/single_obstacle_astar_awff/figures/static_map"
-DEFAULT_STL = ROOT / "QuadrotorModel/Resources/Visualization/map_open_blocks_static_ground_0p2_obstacles_0p4_0p64_h2p5_3p0.stl"
+DEFAULT_STL = ROOT / "results/planning/single_obstacle_astar_awff/figures/static_map/map_open_blocks_static_ground_0p2_obstacle_columns_0p2_h2p8_3p5_combined_review_only.stl"
 DEFAULT_ASSET_DIR = ROOT / "QuadrotorModel/Resources/Visualization"
 TERRAIN_BAND_COUNT = 5
 TERRAIN_BAND_STLS = [
     DEFAULT_ASSET_DIR / f"map_open_blocks_static_terrain_band_{index}_ground_0p2.stl"
     for index in range(1, TERRAIN_BAND_COUNT + 1)
 ]
-OBSTACLE_STL = DEFAULT_ASSET_DIR / "map_open_blocks_static_obstacles_0p4_0p64_h2p5_3p0.stl"
+OBSTACLE_STL = DEFAULT_ASSET_DIR / "map_open_blocks_static_obstacle_columns_0p2_h2p8_3p5.stl"
 GRID_STL = DEFAULT_ASSET_DIR / "map_open_blocks_static_terrain_grid_2m_patch0p2.stl"
 
 
@@ -63,14 +63,14 @@ def write_png(path: Path, width: int, height: int, pixels: bytearray) -> None:
 
 
 TERRAIN_HEIGHT_MIN_M = 0.10
-TERRAIN_HEIGHT_MAX_M = 0.80
+TERRAIN_HEIGHT_MAX_M = 1.50
 TERRAIN_HEIGHT_SPAN_M = TERRAIN_HEIGHT_MAX_M - TERRAIN_HEIGHT_MIN_M
 TERRAIN_VIS_CELL_M = 0.20
 TERRAIN_STEP_M = 0.01
 
 
 def terrain_height_xy(x: float, y: float) -> float:
-    """Deterministic stepped height field in the 0.1-0.8 m range."""
+    """Deterministic stepped height field in the configured terrain range."""
     ix = math.floor((x + 45.0) / TERRAIN_VIS_CELL_M)
     iy = math.floor((y + 30.0) / TERRAIN_VIS_CELL_M)
     cell_jitter = math.sin(ix * 12.9898 + iy * 78.233) * 43758.5453
@@ -173,6 +173,14 @@ def draw_random_obstacles(
 ) -> int:
     count = 0
     for obstacle in obstacles:
+        if obstacle.get("random_cluster") and obstacle.get("type") == "box":
+            lo = obstacle["min"]
+            hi = obstacle["max"]
+            px0, py1 = map_to_pixel(float(lo[0]), float(lo[1]), bounds, px_per_m, height_px)
+            px1, py0 = map_to_pixel(float(hi[0]), float(hi[1]), bounds, px_per_m, height_px)
+            fill_rect(pixels, width_px, height_px, px0, py0, px1, py1, (92, 92, 92))
+            count += 1
+            continue
         if obstacle.get("type") != "cylinder":
             continue
         center = obstacle["center"]
@@ -280,6 +288,12 @@ def build_static_mesh(
 
     random_count = 0
     for obstacle in obstacles:
+        if obstacle.get("random_cluster") and obstacle.get("type") == "box":
+            lo = [float(v) for v in obstacle["min"]]
+            hi = [float(v) for v in obstacle["max"]]
+            add_box(triangles, lo[0], hi[0], lo[1], hi[1], lo[2], hi[2])
+            random_count += 1
+            continue
         if obstacle.get("type") != "cylinder":
             continue
         x, y, _ = [float(v) for v in obstacle["center"]]
@@ -331,6 +345,12 @@ def build_static_mesh_layers(
 
     random_count = 0
     for obstacle in obstacles:
+        if obstacle.get("random_cluster") and obstacle.get("type") == "box":
+            lo = [float(v) for v in obstacle["min"]]
+            hi = [float(v) for v in obstacle["max"]]
+            add_box(obstacle_triangles, lo[0], hi[0], lo[1], hi[1], lo[2], hi[2])
+            random_count += 1
+            continue
         if obstacle.get("type") != "cylinder":
             continue
         x, y, _ = [float(v) for v in obstacle["center"]]
@@ -439,86 +459,6 @@ def choose_stratified_grid(count: int, map_width: float, map_height: float) -> t
     return best
 
 
-def generate_uniform_static_obstacles(
-    map_config: dict[str, Any],
-    footprint_min_m: float,
-    footprint_max_m: float,
-    height_min_m: float,
-    height_max_m: float,
-) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    random_spec = map_config.get("random_obstacles", {})
-    if not isinstance(random_spec, dict):
-        random_spec = {}
-    bounds = map_config["bounds"]
-    x_min, x_max = [float(v) for v in bounds["x"]]
-    y_min, y_max = [float(v) for v in bounds["y"]]
-    z_min = float(bounds.get("z", [0.0, 3.0])[0])
-    count = int(random_spec.get("count", 600))
-    seed = int(random_spec.get("seed", 20260518))
-    edge_margin = float(random_spec.get("edge_margin_m", 2.0))
-    min_spacing_m = float(random_spec.get("min_spacing_m", 0.55))
-    rng = random.Random(seed)
-    usable_x0 = x_min + edge_margin
-    usable_x1 = x_max - edge_margin
-    usable_y0 = y_min + edge_margin
-    usable_y1 = y_max - edge_margin
-    coarse_x, coarse_y = 20, 12
-    cell_w = (usable_x1 - usable_x0) / coarse_x
-    cell_h = (usable_y1 - usable_y0) / coarse_y
-    base_per_cell = count // (coarse_x * coarse_y)
-    extra_count = count - base_per_cell * coarse_x * coarse_y
-    cell_indices = [(ix, iy) for iy in range(coarse_y) for ix in range(coarse_x)]
-    rng.shuffle(cell_indices)
-    extra_cells = set(cell_indices[:extra_count])
-    min_center_distance_m = min_spacing_m + footprint_max_m
-
-    obstacles: list[dict[str, Any]] = []
-    all_centers: list[tuple[float, float]] = []
-    for iy in range(coarse_y):
-        for ix in range(coarse_x):
-            target_in_cell = base_per_cell + (1 if (ix, iy) in extra_cells else 0)
-            placed_in_cell: list[tuple[float, float]] = []
-            attempts = 0
-            while len(placed_in_cell) < target_in_cell and attempts < 800:
-                attempts += 1
-                footprint_m = rng.uniform(footprint_min_m, footprint_max_m)
-                margin = 0.5 * footprint_m + 0.15
-                cx = rng.uniform(usable_x0 + ix * cell_w + margin, usable_x0 + (ix + 1) * cell_w - margin)
-                cy = rng.uniform(usable_y0 + iy * cell_h + margin, usable_y0 + (iy + 1) * cell_h - margin)
-                if any(math.hypot(cx - ox, cy - oy) < min_center_distance_m for ox, oy in all_centers):
-                    continue
-                height = rng.uniform(height_min_m, height_max_m)
-                placed_in_cell.append((cx, cy))
-                all_centers.append((cx, cy))
-                obstacles.append(
-                    {
-                        "type": "cylinder",
-                        "center": [round(cx, 3), round(cy, 3), 1.0],
-                        "radius": round(0.5 * footprint_m, 3),
-                        "visual_size_m": round(footprint_m, 3),
-                        "height": round(height, 3),
-                        "z_min": z_min,
-                        "z_max": round(z_min + height, 3),
-                    }
-                )
-            if len(placed_in_cell) < target_in_cell:
-                raise RuntimeError(
-                    f"Only placed {len(placed_in_cell)} of {target_in_cell} static obstacles in coarse cell ({ix},{iy}); "
-                    f"reduce count or min_spacing_m"
-                )
-    rng.shuffle(obstacles)
-    obstacles = obstacles[:count]
-    diagnostics = {
-        "coarse_cells": [coarse_x, coarse_y],
-        "cell_size_m": [cell_w, cell_h],
-        "obstacles_per_cell": [base_per_cell, base_per_cell + 1],
-        "extra_cells": extra_count,
-        "min_center_distance_m": min_center_distance_m,
-        "min_spacing_m": min_spacing_m,
-    }
-    return obstacles, diagnostics
-
-
 def generate(
     config_path: Path,
     output_dir: Path,
@@ -532,8 +472,8 @@ def generate(
 ) -> dict[str, Any]:
     config_path = config_path.resolve()
     raw_config = read_yaml(config_path)
-    expanded_walls = expand_wall_groups(raw_config)
-    map_config = expanded_walls["map"]
+    expanded_config = expand_random_obstacles(expand_wall_groups(raw_config))
+    map_config = expanded_config["map"]
     bounds = map_config["bounds"]
     x_min, x_max = [float(v) for v in bounds["x"]]
     y_min, y_max = [float(v) for v in bounds["y"]]
@@ -541,13 +481,13 @@ def generate(
     height_px = int(round((y_max - y_min) * px_per_m))
     pixels = bytearray([255] * width_px * height_px * 3)
 
-    static_obstacles, distribution_diagnostics = generate_uniform_static_obstacles(
-        map_config,
-        obstacle_footprint_min_m,
-        obstacle_footprint_max_m,
-        obstacle_height_min_m,
-        obstacle_height_max_m,
-    )
+    static_obstacles = [obstacle for obstacle in map_config.get("obstacles", []) if obstacle.get("random_cluster")]
+    distribution_diagnostics = {
+        "source": "planner_truth_random_clusters",
+        "random_cluster_count": len({obstacle.get("random_cluster_id") for obstacle in static_obstacles}),
+        "random_column_count": len(static_obstacles),
+        "column_size_m": map_config.get("random_obstacles", {}).get("column_size_m", 0.2),
+    }
     draw_ground(pixels, width_px, height_px, bounds, px_per_m=px_per_m, cell_m=ground_cell_m)
     obstacle_count = draw_random_obstacles(
         pixels,
@@ -569,8 +509,8 @@ def generate(
     )
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    image_path = output_dir / "map_open_blocks_static_ground_0p2_obstacles_0p4_0p64_h2p5_3p0.png"
-    manifest_path = output_dir / "map_open_blocks_static_ground_0p2_obstacles_0p4_0p64_h2p5_3p0_manifest.json"
+    image_path = output_dir / "map_open_blocks_static_ground_0p2_obstacle_columns_0p2_h2p8_3p5.png"
+    manifest_path = output_dir / "map_open_blocks_static_ground_0p2_obstacle_columns_0p2_h2p8_3p5_manifest.json"
     write_png(image_path, width_px, height_px, pixels)
     triangles, mesh_obstacle_count, ground_cell_count = build_static_mesh(
         bounds,
@@ -617,11 +557,16 @@ def generate(
     if layered_obstacle_count != mesh_obstacle_count or layered_ground_cell_count != ground_cell_count:
         raise RuntimeError("Layered mesh counts do not match the combined static mesh counts")
 
-    wall_boxes = [item for item in map_config.get("obstacles", []) if item.get("type") == "box"]
+    wall_boxes = [
+        item
+        for item in map_config.get("obstacles", [])
+        if item.get("type") == "box" and "wall_group_id" in item
+    ]
     manifest = {
         "source_config": str(config_path.relative_to(ROOT)),
         "image": str(image_path.relative_to(ROOT)),
         "stl": str(stl_path.relative_to(ROOT)),
+        "combined_stl_policy": "review_only_not_used_by_Sysplorer_model; model uses terrain_band_stls plus obstacle_stl to keep individual files below GitHub hard limit",
         "terrain_band_stls": [str(path.relative_to(ROOT)) for path in TERRAIN_BAND_STLS],
         "obstacle_stl": str(OBSTACLE_STL.relative_to(ROOT)),
         "grid_overlay_stl": str(GRID_STL.relative_to(ROOT)),
@@ -633,10 +578,11 @@ def generate(
         "ground_cell_size_m": ground_cell_m,
         "ground_cell_count": ground_cell_count,
         "terrain_height_range_m": [TERRAIN_HEIGHT_MIN_M, TERRAIN_HEIGHT_MAX_M],
-        "random_obstacle_visual_footprint_range_m": [obstacle_footprint_min_m, obstacle_footprint_max_m],
+        "random_obstacle_visual_footprint_range_m": [0.2, 0.2],
         "random_obstacle_height_range_m": [obstacle_height_min_m, obstacle_height_max_m],
-        "random_obstacle_count": obstacle_count,
-        "random_obstacle_distribution": "stratified_uniform_one_per_cell_no_wall_reservation",
+        "random_obstacle_count": len({obstacle.get("random_cluster_id") for obstacle in static_obstacles}),
+        "random_obstacle_column_count": obstacle_count,
+        "random_obstacle_distribution": "planner_truth_column_clusters",
         "random_obstacle_distribution_diagnostics": distribution_diagnostics,
         "mesh_random_obstacle_count": mesh_obstacle_count,
         "mesh_triangle_count": len(triangles),
@@ -675,10 +621,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--stl", type=Path, default=DEFAULT_STL)
     parser.add_argument("--pixels-per-meter", type=float, default=20.0)
     parser.add_argument("--ground-cell-m", type=float, default=0.2)
-    parser.add_argument("--obstacle-footprint-min-m", type=float, default=0.4)
-    parser.add_argument("--obstacle-footprint-max-m", type=float, default=0.64)
-    parser.add_argument("--obstacle-height-min-m", type=float, default=2.5)
-    parser.add_argument("--obstacle-height-max-m", type=float, default=3.0)
+    parser.add_argument("--obstacle-footprint-min-m", type=float, default=0.2)
+    parser.add_argument("--obstacle-footprint-max-m", type=float, default=0.2)
+    parser.add_argument("--obstacle-height-min-m", type=float, default=2.8)
+    parser.add_argument("--obstacle-height-max-m", type=float, default=3.5)
     return parser.parse_args()
 
 

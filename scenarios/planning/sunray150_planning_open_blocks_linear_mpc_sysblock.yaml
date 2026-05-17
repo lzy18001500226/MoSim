@@ -2,7 +2,7 @@ experiment_id: sunray150_planning_open_blocks_linear_mpc_sysblock
 scene_id: planning_open_blocks
 controller_id: linear_mpc_sysblock
 priority: P1
-evidence_level: real_sysplorer_mcp_planning_height_profile_0p2_sensor_20hz_simulate_false_result_readable
+evidence_level: real_sysplorer_mcp_planning_column_truth_0p2_sensor_20hz_simulate_model_pass
 
 model:
   source_package: QuadrotorExperiments
@@ -24,7 +24,7 @@ controller:
 
 simulation:
   start_time_s: 0.0
-  stop_time_s: 453.841898558
+  stop_time_s: 327.302075899
   step_size_s: 0.05
   solver: Dassl
   tolerance: 0.0001

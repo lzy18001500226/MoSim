@@ -20,6 +20,11 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 VERBOSE = False
 G = 9.80665
+TERRAIN_HEIGHT_MIN_M = 0.10
+TERRAIN_HEIGHT_MAX_M = 1.50
+TERRAIN_HEIGHT_SPAN_M = TERRAIN_HEIGHT_MAX_M - TERRAIN_HEIGHT_MIN_M
+TERRAIN_VIS_CELL_M = 0.20
+TERRAIN_STEP_M = 0.01
 
 
 @dataclass(frozen=True)
@@ -114,6 +119,12 @@ def min_obstacle_distance(point: Point, obstacles: list[dict[str, Any]]) -> floa
     return min(obstacle_distance(point, obstacle) for obstacle in obstacles)
 
 
+def min_obstacle_distance_to_subset(point: Point, obstacles: list[dict[str, Any]]) -> float:
+    if not obstacles:
+        return float("inf")
+    return min(obstacle_distance(point, obstacle) for obstacle in obstacles)
+
+
 def obstacle_xy_center(obstacle: dict[str, Any]) -> tuple[float, float]:
     kind = obstacle.get("type")
     if kind == "box":
@@ -135,6 +146,27 @@ def obstacle_xy_radius(obstacle: dict[str, Any]) -> float:
     if kind in {"cylinder", "sphere"}:
         return float(obstacle["radius"])
     raise ValueError(f"Unsupported obstacle type: {kind}")
+
+
+def obstacle_xy_bounds(obstacle: dict[str, Any]) -> tuple[float, float, float, float]:
+    kind = obstacle.get("type")
+    if kind == "box":
+        lo = point_from(obstacle["min"])
+        hi = point_from(obstacle["max"])
+        return min(lo.x, hi.x), min(lo.y, hi.y), max(lo.x, hi.x), max(lo.y, hi.y)
+    if kind in {"cylinder", "sphere"}:
+        center = point_from(obstacle["center"])
+        radius = float(obstacle["radius"])
+        return center.x - radius, center.y - radius, center.x + radius, center.y + radius
+    raise ValueError(f"Unsupported obstacle type: {kind}")
+
+
+def box_xy_distance(a: tuple[float, float, float, float], b: tuple[float, float, float, float]) -> float:
+    ax0, ay0, ax1, ay1 = a
+    bx0, by0, bx1, by1 = b
+    dx = max(bx0 - ax1, ax0 - bx1, 0.0)
+    dy = max(by0 - ay1, ay0 - by1, 0.0)
+    return math.hypot(dx, dy)
 
 
 def expand_wall_groups(config: dict[str, Any]) -> dict[str, Any]:
@@ -304,10 +336,21 @@ def expand_random_obstacles(config: dict[str, Any]) -> dict[str, Any]:
     goal = point_from(map_config["goal"])
     rng = random.Random(int(random_spec.get("seed", map_config.get("seed", 20260515))))
     count = int(random_spec.get("count", 24))
+    obstacle_model = str(random_spec.get("obstacle_model", "cylinder")).lower()
     radius_min, radius_max = [float(v) for v in random_spec.get("radius_range", [0.28, 0.46])]
+    column_size_m = float(random_spec.get("column_size_m", 0.20))
+    columns_per_cluster_range = random_spec.get("columns_per_cluster_range", [1, 1])
+    if not isinstance(columns_per_cluster_range, list) or len(columns_per_cluster_range) != 2:
+        raise ValueError("random_obstacles.columns_per_cluster_range must be [min,max]")
+    cluster_columns_min = int(columns_per_cluster_range[0])
+    cluster_columns_max = int(columns_per_cluster_range[1])
+    if cluster_columns_min <= 0 or cluster_columns_max < cluster_columns_min:
+        raise ValueError("random_obstacles.columns_per_cluster_range must be positive and ordered")
     height_min, height_max = [float(v) for v in random_spec.get("height_range", [1.5, 2.4])]
     start_goal_clearance = float(random_spec.get("start_goal_clearance_m", 1.8))
     min_spacing = float(random_spec.get("min_spacing_m", 1.05))
+    min_cluster_center_spacing = float(random_spec.get("min_cluster_center_spacing_m", min_spacing))
+    edge_clearance = float(random_spec.get("edge_clearance_m", random_spec.get("edge_margin_m", 0.7)))
     edge_margin = float(random_spec.get("edge_margin_m", 0.7))
     distribution = str(random_spec.get("distribution", "uniform"))
     clear_corridors = random_spec.get("clear_corridors", [])
@@ -321,6 +364,7 @@ def expand_random_obstacles(config: dict[str, Any]) -> dict[str, Any]:
     grid_x = max(1, int(grid_cells[0]))
     grid_y = max(1, int(grid_cells[1]))
     obstacles = list(map_config.get("obstacles", []))
+    placed_cluster_centers: list[tuple[float, float]] = []
     random_added = 0
 
     def distance_to_segment_xy(x: float, y: float, a: Point, b: Point) -> float:
@@ -362,31 +406,89 @@ def expand_random_obstacles(config: dict[str, Any]) -> dict[str, Any]:
                 raise ValueError(f"Unsupported clear_corridors type: {kind}")
         return False
 
-    def can_place(x: float, y: float, radius: float) -> bool:
+    def cluster_offsets(count_columns: int) -> list[tuple[int, int]]:
+        offsets: list[tuple[int, int]] = [(0, 0)]
+        ring = 1
+        while len(offsets) < count_columns:
+            candidates: list[tuple[int, int]] = []
+            for ix in range(-ring, ring + 1):
+                for iy in range(-ring, ring + 1):
+                    if max(abs(ix), abs(iy)) == ring:
+                        candidates.append((ix, iy))
+            rng.shuffle(candidates)
+            offsets.extend(candidates)
+            ring += 1
+        return offsets[:count_columns]
+
+    def candidate_boxes(x: float, y: float) -> list[dict[str, Any]]:
+        if obstacle_model != "column_cluster":
+            radius = rng.uniform(radius_min, radius_max)
+            height = rng.uniform(height_min, height_max)
+            return [
+                {
+                    "type": "cylinder",
+                    "center": [round(x, 3), round(y, 3), round(start.z, 3)],
+                    "radius": round(radius, 3),
+                    "height": round(height, 3),
+                    "z_min": round(z_min, 3),
+                    "z_max": round(z_min + height, 3),
+                }
+            ]
+        count_columns = rng.randint(cluster_columns_min, cluster_columns_max)
+        boxes: list[dict[str, Any]] = []
+        half = 0.5 * column_size_m
+        for ox, oy in cluster_offsets(count_columns):
+            cx = x + ox * column_size_m
+            cy = y + oy * column_size_m
+            height = rng.uniform(height_min, height_max)
+            boxes.append(
+                {
+                    "type": "box",
+                    "random_cluster": True,
+                    "cluster_center": [round(x, 3), round(y, 3)],
+                    "column_size_m": round(column_size_m, 3),
+                    "min": [round(cx - half, 3), round(cy - half, 3), round(z_min, 3)],
+                    "max": [round(cx + half, 3), round(cy + half, 3), round(z_min + height, 3)],
+                }
+            )
+        return boxes
+
+    def candidate_bounds(candidate_obstacles: list[dict[str, Any]]) -> tuple[float, float, float, float]:
+        bounds_list = [obstacle_xy_bounds(obstacle) for obstacle in candidate_obstacles]
+        return (
+            min(item[0] for item in bounds_list),
+            min(item[1] for item in bounds_list),
+            max(item[2] for item in bounds_list),
+            max(item[3] for item in bounds_list),
+        )
+
+    def can_place(x: float, y: float, radius: float, candidate_obstacles: list[dict[str, Any]]) -> bool:
         center = Point(x, y, start.z)
         if distance(center, start) < start_goal_clearance or distance(center, goal) < start_goal_clearance:
             return False
         if inside_clear_corridor(x, y, radius):
             return False
+        candidate_xy = candidate_bounds(candidate_obstacles)
+        if (
+            candidate_xy[0] < x_min + edge_clearance
+            or candidate_xy[1] < y_min + edge_clearance
+            or candidate_xy[2] > x_max - edge_clearance
+            or candidate_xy[3] > y_max - edge_clearance
+        ):
+            return False
+        if any(math.hypot(x - ox, y - oy) < min_cluster_center_spacing for ox, oy in placed_cluster_centers):
+            return False
         for obstacle in obstacles:
-            ox, oy = obstacle_xy_center(obstacle)
-            if math.hypot(x - ox, y - oy) < min_spacing + radius + obstacle_xy_radius(obstacle):
+            if box_xy_distance(candidate_xy, obstacle_xy_bounds(obstacle)) < min_spacing:
                 return False
         return True
 
-    def append_obstacle(x: float, y: float, radius: float) -> None:
+    def append_obstacle(x: float, y: float, candidate_obstacles: list[dict[str, Any]]) -> None:
         nonlocal random_added
-        height = rng.uniform(height_min, height_max)
-        obstacles.append(
-            {
-                "type": "cylinder",
-                "center": [round(x, 3), round(y, 3), round(start.z, 3)],
-                "radius": round(radius, 3),
-                "height": round(height, 3),
-                "z_min": round(z_min, 3),
-                "z_max": round(z_min + height, 3),
-            }
-        )
+        for obstacle in candidate_obstacles:
+            obstacle["random_cluster_id"] = random_added + 1
+            obstacles.append(obstacle)
+        placed_cluster_centers.append((x, y))
         random_added += 1
 
     if distribution == "stratified":
@@ -407,31 +509,44 @@ def expand_random_obstacles(config: dict[str, Any]) -> dict[str, Any]:
                 if random_added >= count:
                     break
                 for _ in range(attempts_per_cell):
-                    radius = rng.uniform(radius_min, radius_max)
-                    x = rng.uniform(x0 + ix * cell_w + radius, x0 + (ix + 1) * cell_w - radius)
-                    y = rng.uniform(y0 + iy * cell_h + radius, y0 + (iy + 1) * cell_h - radius)
-                    if can_place(x, y, radius):
-                        append_obstacle(x, y, radius)
+                    local_clearance = max(edge_clearance, 0.5 * column_size_m * math.sqrt(cluster_columns_max) + edge_clearance)
+                    x = rng.uniform(x0 + ix * cell_w + local_clearance, x0 + (ix + 1) * cell_w - local_clearance)
+                    y = rng.uniform(y0 + iy * cell_h + local_clearance, y0 + (iy + 1) * cell_h - local_clearance)
+                    candidate = candidate_boxes(x, y)
+                    radius = max(obstacle_xy_radius(item) for item in candidate)
+                    if can_place(x, y, radius, candidate):
+                        append_obstacle(x, y, candidate)
                         break
             pass_index += 1
 
     attempts = 0
     while random_added < count and attempts < count * 800:
         attempts += 1
-        radius = rng.uniform(radius_min, radius_max)
         x = rng.uniform(x_min + edge_margin, x_max - edge_margin)
         y = rng.uniform(y_min + edge_margin, y_max - edge_margin)
-        if can_place(x, y, radius):
-            append_obstacle(x, y, radius)
+        candidate = candidate_boxes(x, y)
+        radius = max(obstacle_xy_radius(item) for item in candidate)
+        if can_place(x, y, radius, candidate):
+            append_obstacle(x, y, candidate)
 
     if random_added < count:
         raise RuntimeError(f"Generated only {random_added} random obstacles, requested {count}")
     map_config["obstacles"] = obstacles
     random_spec["enabled"] = False
     random_spec["expanded"] = True
-    random_spec["expanded_count"] = random_added
+    random_spec["expanded_cluster_count"] = random_added
+    random_spec["expanded_box_count"] = len([item for item in obstacles if item.get("random_cluster")])
     if VERBOSE:
-        print(f"[planner] random_obstacles expanded fixed={len(map_config.get('obstacles', [])) - random_added} random={random_added} total={len(obstacles)} elapsed={time.perf_counter() - start_t:.3f}s", flush=True)
+        fixed_count = len(obstacles) - random_spec["expanded_box_count"]
+        print(
+            "[planner] random_obstacles expanded "
+            f"fixed={fixed_count} "
+            f"random_clusters={random_added} "
+            f"random_columns={random_spec['expanded_box_count']} "
+            f"total={len(obstacles)} "
+            f"elapsed={time.perf_counter() - start_t:.3f}s",
+            flush=True,
+        )
     return expanded
 
 
@@ -446,10 +561,13 @@ class OccupancyGrid:
         self.start = point_from(map_config["start"])
         self.goal = point_from(map_config["goal"])
         self.obstacles = list(map_config.get("obstacles", []))
+        self.spatial_cell_m = max(1.0, 4.0 * self.resolution)
+        self._spatial_index: dict[tuple[int, int], list[int]] = {}
         self.nx = int(round((self.x_max - self.x_min) / self.resolution)) + 1
         self.ny = int(round((self.y_max - self.y_min) / self.resolution)) + 1
         self.z_plan = self.start.z
         self._occupied_cache: dict[GridIndex, bool] = {}
+        self._build_spatial_index()
         if not math.isclose(self.start.z, self.goal.z, abs_tol=1e-9):
             raise ValueError("P1 A* planner expects start.z == goal.z")
         if not self.in_bounds(self.start) or not self.in_bounds(self.goal):
@@ -459,6 +577,43 @@ class OccupancyGrid:
 
     def in_bounds(self, point: Point) -> bool:
         return self.x_min <= point.x <= self.x_max and self.y_min <= point.y <= self.y_max and self.z_min <= point.z <= self.z_max
+
+    def _spatial_key(self, x: float, y: float) -> tuple[int, int]:
+        return (
+            math.floor((x - self.x_min) / self.spatial_cell_m),
+            math.floor((y - self.y_min) / self.spatial_cell_m),
+        )
+
+    def _build_spatial_index(self) -> None:
+        self._spatial_index.clear()
+        inflate = self.safety_margin + self.resolution
+        for index, obstacle in enumerate(self.obstacles):
+            x0, y0, x1, y1 = obstacle_xy_bounds(obstacle)
+            kx0, ky0 = self._spatial_key(x0 - inflate, y0 - inflate)
+            kx1, ky1 = self._spatial_key(x1 + inflate, y1 + inflate)
+            for kx in range(kx0, kx1 + 1):
+                for ky in range(ky0, ky1 + 1):
+                    self._spatial_index.setdefault((kx, ky), []).append(index)
+
+    def nearby_obstacles(self, point: Point, radius_m: float | None = None) -> list[dict[str, Any]]:
+        if not self.obstacles:
+            return []
+        radius = self.safety_margin + self.resolution if radius_m is None else radius_m
+        kx0, ky0 = self._spatial_key(point.x - radius, point.y - radius)
+        kx1, ky1 = self._spatial_key(point.x + radius, point.y + radius)
+        indices: set[int] = set()
+        for kx in range(kx0, kx1 + 1):
+            for ky in range(ky0, ky1 + 1):
+                indices.update(self._spatial_index.get((kx, ky), []))
+        if not indices:
+            return []
+        return [self.obstacles[index] for index in indices]
+
+    def min_distance(self, point: Point) -> float:
+        nearby = self.nearby_obstacles(point)
+        if nearby:
+            return min_obstacle_distance_to_subset(point, nearby)
+        return float("inf")
 
     def index_from_point(self, point: Point) -> GridIndex:
         ix = int(round((point.x - self.x_min) / self.resolution))
@@ -472,7 +627,7 @@ class OccupancyGrid:
         return 0 <= index.ix < self.nx and 0 <= index.iy < self.ny
 
     def is_occupied_point(self, point: Point) -> bool:
-        return min_obstacle_distance(point, self.obstacles) <= self.safety_margin
+        return self.min_distance(point) <= self.safety_margin
 
     def is_occupied_index(self, index: GridIndex) -> bool:
         cached = self._occupied_cache.get(index)
@@ -590,13 +745,13 @@ def segment_min_obstacle_distance(grid: OccupancyGrid, a: Point, b: Point) -> fl
     for i in range(steps + 1):
         ratio = i / steps
         point = Point(a.x + (b.x - a.x) * ratio, a.y + (b.y - a.y) * ratio, a.z + (b.z - a.z) * ratio)
-        best = min(best, min_obstacle_distance(point, grid.obstacles))
+        best = min(best, grid.min_distance(point))
     return best
 
 
 def min_segment_path_distance(grid: OccupancyGrid, path: list[Point]) -> float:
     if len(path) < 2:
-        return min_obstacle_distance(path[0], grid.obstacles) if path else float("inf")
+        return grid.min_distance(path[0]) if path else float("inf")
     return min(segment_min_obstacle_distance(grid, a, b) for a, b in zip(path[:-1], path[1:]))
 
 
@@ -695,10 +850,20 @@ def min_obstacle_distance_and_gradient(point: Point, obstacles: list[dict[str, A
     return obstacle_distance(point, nearest), nearest_obstacle_gradient(point, nearest)
 
 
+def grid_min_obstacle_distance_and_gradient(grid: OccupancyGrid, point: Point) -> tuple[float, tuple[float, float]]:
+    nearby = grid.nearby_obstacles(point, radius_m=max(grid.safety_margin + grid.resolution, 1.2))
+    return min_obstacle_distance_and_gradient(point, nearby)
+
+
 def nearest_obstacle(point: Point, obstacles: list[dict[str, Any]]) -> dict[str, Any] | None:
     if not obstacles:
         return None
     return min(obstacles, key=lambda obstacle: obstacle_distance(point, obstacle))
+
+
+def grid_nearest_obstacle(grid: OccupancyGrid, point: Point) -> dict[str, Any] | None:
+    nearby = grid.nearby_obstacles(point, radius_m=max(grid.safety_margin + grid.resolution, 1.2))
+    return nearest_obstacle(point, nearby)
 
 
 def clamp_to_bounds(point: Point, grid: OccupancyGrid) -> Point:
@@ -718,7 +883,7 @@ def segment_closest_sample(grid: OccupancyGrid, a: Point, b: Point) -> tuple[flo
     for i in range(steps + 1):
         ratio = i / steps
         point = Point(a.x + (b.x - a.x) * ratio, a.y + (b.y - a.y) * ratio, a.z + (b.z - a.z) * ratio)
-        obstacle = nearest_obstacle(point, grid.obstacles)
+        obstacle = grid_nearest_obstacle(grid, point)
         current_distance = obstacle_distance(point, obstacle) if obstacle is not None else float("inf")
         if current_distance < best_distance:
             best_distance = current_distance
@@ -820,7 +985,7 @@ def ego_optimize_path(
             guide_p = guide_points[i]
             grad_x = lambda_smooth * (2.0 * p.x - prev_p.x - next_p.x) + lambda_fitness * (p.x - guide_p.x)
             grad_y = lambda_smooth * (2.0 * p.y - prev_p.y - next_p.y) + lambda_fitness * (p.y - guide_p.y)
-            clearance_distance, clearance_grad = min_obstacle_distance_and_gradient(p, grid.obstacles)
+            clearance_distance, clearance_grad = grid_min_obstacle_distance_and_gradient(grid, p)
             if clearance_distance < clearance:
                 gap = clearance - clearance_distance
                 grad_x -= lambda_collision * gap * clearance_grad[0]
@@ -1019,13 +1184,8 @@ def generate_reference(
 
 def planning_terrain_height_xy(x: float, y: float) -> float:
     """Match the static planning-map terrain used by generate_static_planning_map.py."""
-    terrain_height_min_m = 0.10
-    terrain_height_max_m = 0.80
-    terrain_height_span_m = terrain_height_max_m - terrain_height_min_m
-    terrain_vis_cell_m = 0.20
-    terrain_step_m = 0.01
-    ix = math.floor((x + 45.0) / terrain_vis_cell_m)
-    iy = math.floor((y + 30.0) / terrain_vis_cell_m)
+    ix = math.floor((x + 45.0) / TERRAIN_VIS_CELL_M)
+    iy = math.floor((y + 30.0) / TERRAIN_VIS_CELL_M)
     cell_jitter = math.sin(ix * 12.9898 + iy * 78.233) * 43758.5453
     cell_jitter = 0.24 * (cell_jitter - math.floor(cell_jitter) - 0.5)
     parity_jitter = 0.035 * (((ix + 2 * iy) % 5) - 2)
@@ -1039,9 +1199,9 @@ def planning_terrain_height_xy(x: float, y: float) -> float:
         + parity_jitter
     )
     normalized = max(0.0, min(1.0, 0.5 + 0.62 * math.tanh(1.55 * value)))
-    smooth_height = terrain_height_min_m + terrain_height_span_m * normalized
-    stepped_height = round(smooth_height / terrain_step_m) * terrain_step_m
-    return max(terrain_height_min_m, min(terrain_height_max_m, stepped_height))
+    smooth_height = TERRAIN_HEIGHT_MIN_M + TERRAIN_HEIGHT_SPAN_M * normalized
+    stepped_height = round(smooth_height / TERRAIN_STEP_M) * TERRAIN_STEP_M
+    return max(TERRAIN_HEIGHT_MIN_M, min(TERRAIN_HEIGHT_MAX_M, stepped_height))
 
 
 def apply_altitude_profile(path: list[Point], altitude_config: dict[str, Any] | None) -> tuple[list[Point], dict[str, Any]]:
@@ -1084,9 +1244,10 @@ def evaluate_reference(grid: OccupancyGrid, rows: list[dict[str, float]], limits
     tilts = [math.atan2(math.hypot(row["ax_ref"], row["ay_ref"]), max(1e-6, G + row["az_ref"])) for row in rows]
     max_tilt = max(tilts)
     points = [Point(row["x_ref"], row["y_ref"], row["z_ref"]) for row in rows]
-    min_distance = min(min_obstacle_distance(point, grid.obstacles) for point in points)
-    collision_count = sum(1 for point in points if min_obstacle_distance(point, grid.obstacles) <= 0.0)
-    inflated_collision_count = sum(1 for point in points if min_obstacle_distance(point, grid.obstacles) < grid.safety_margin)
+    distances = [grid.min_distance(point) for point in points]
+    min_distance = min(distances)
+    collision_count = sum(1 for value in distances if value <= 0.0)
+    inflated_collision_count = sum(1 for value in distances if value < grid.safety_margin)
     violation_count = 0
     violation_count += sum(1 for row in rows if norm3(row, "v") > v_max)
     violation_count += sum(1 for row in rows if norm3(row, "a") > a_max)
@@ -1200,6 +1361,13 @@ def plan_trackable(config: dict[str, Any]) -> tuple[list[Point], list[Point], li
             "safety_margin_m": grid.safety_margin,
             "smoothing_type": smoothing_type,
             "truth_obstacles": grid.obstacles,
+            "truth_random_cluster_count": len({
+                int(obstacle["random_cluster_id"])
+                for obstacle in grid.obstacles
+                if obstacle.get("random_cluster") and "random_cluster_id" in obstacle
+            }),
+            "truth_random_column_count": sum(1 for obstacle in grid.obstacles if obstacle.get("random_cluster")),
+            "truth_wall_box_count": sum(1 for obstacle in grid.obstacles if obstacle.get("type") == "box" and "wall_group_id" in obstacle),
             "simplified_path": [point.as_tuple() for point in simplified],
             "segment_durations": segment_durations(simplified, limits, scale),
             **local_report,

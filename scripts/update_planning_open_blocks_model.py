@@ -14,6 +14,11 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
+TERRAIN_HEIGHT_MIN_M = 0.10
+TERRAIN_HEIGHT_MAX_M = 1.50
+TERRAIN_HEIGHT_SPAN_M = TERRAIN_HEIGHT_MAX_M - TERRAIN_HEIGHT_MIN_M
+TERRAIN_VIS_CELL_M = 0.20
+TERRAIN_STEP_M = 0.01
 MODEL_POINT_CAPACITY = 91
 MODEL_SEGMENT_CAPACITY = 90
 GUI_RENDER_RANDOM_OBSTACLE_LIMIT = 0
@@ -52,13 +57,8 @@ def modelica_matrix(rows: list[list[float]], *, per_line: int = 3) -> str:
 
 
 def terrain_height(x: float, y: float, map_config: dict[str, Any]) -> float:
-    terrain_height_min_m = 0.10
-    terrain_height_max_m = 0.80
-    terrain_height_span_m = terrain_height_max_m - terrain_height_min_m
-    terrain_vis_cell_m = 0.20
-    terrain_step_m = 0.01
-    ix = math.floor((x + 45.0) / terrain_vis_cell_m)
-    iy = math.floor((y + 30.0) / terrain_vis_cell_m)
+    ix = math.floor((x + 45.0) / TERRAIN_VIS_CELL_M)
+    iy = math.floor((y + 30.0) / TERRAIN_VIS_CELL_M)
     cell_jitter = math.sin(ix * 12.9898 + iy * 78.233) * 43758.5453
     cell_jitter = 0.24 * (cell_jitter - math.floor(cell_jitter) - 0.5)
     parity_jitter = 0.035 * (((ix + 2 * iy) % 5) - 2)
@@ -72,9 +72,9 @@ def terrain_height(x: float, y: float, map_config: dict[str, Any]) -> float:
         + parity_jitter
     )
     normalized = max(0.0, min(1.0, 0.5 + 0.62 * math.tanh(1.55 * value)))
-    smooth_height = terrain_height_min_m + terrain_height_span_m * normalized
-    stepped_height = round(smooth_height / terrain_step_m) * terrain_step_m
-    return max(terrain_height_min_m, min(terrain_height_max_m, stepped_height))
+    smooth_height = TERRAIN_HEIGHT_MIN_M + TERRAIN_HEIGHT_SPAN_M * normalized
+    stepped_height = round(smooth_height / TERRAIN_STEP_M) * TERRAIN_STEP_M
+    return max(TERRAIN_HEIGHT_MIN_M, min(TERRAIN_HEIGHT_MAX_M, stepped_height))
 
 
 def padded(values: list[float], target: int, pad_value: float) -> list[float]:
@@ -173,7 +173,9 @@ def build_pillars(report: dict[str, Any]) -> dict[str, Any]:
 
 def build_wall_groups(report: dict[str, Any]) -> dict[str, Any]:
     boxes: list[dict[str, Any]] = [
-        obstacle for obstacle in report["truth_obstacles"] if obstacle.get("type") == "box"
+        obstacle
+        for obstacle in report["truth_obstacles"]
+        if obstacle.get("type") == "box" and "wall_group_id" in obstacle
     ]
     if len(boxes) % 2 != 0:
         raise ValueError(f"Fixed wall box count must be even, got {len(boxes)}")
