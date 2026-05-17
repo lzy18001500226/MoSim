@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T11:33:51",
+  "generated_at": "2026-05-17T17:01:50",
   "raw_file": "results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/raw/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.csv",
   "scene_id": "planning_open_blocks",
   "controller_id": "linear_mpc_sysblock",
@@ -50,8 +50,8 @@
   "fault_tolerance_score": 100.0,
   "total_health_score": 93.82092905740706,
   "source": "MWORKS_MCP",
-  "evidence_level": "real_sysplorer_mcp_planning_height_profile_0p2_sensor_20hz_simulate_false_result_readable",
-  "quality_checked_at": "2026-05-17T11:36:40",
+  "evidence_level": "real_sysplorer_mcp_planning_column_truth_0p2_sensor_20hz_simulate_model_pass",
+  "quality_checked_at": "2026-05-17T17:04:36",
   "quality_experiment_id": "sunray150_planning_open_blocks_linear_mpc_sysblock",
   "quality_scene_id": "planning_open_blocks",
   "quality_controller_id": "linear_mpc_sysblock",

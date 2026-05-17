@@ -457,6 +457,14 @@ binding, the runner automatically writes the native result to:
 results/native_result_cache/{experiment}/{ModelName}/Result.msr
 ```
 
+Before writing a GUI-bound native result, the runner must delete only the exact
+target `{ModelName}` native result folder. Sysplorer otherwise creates
+`{ModelName}-1`, `{ModelName}-2`, ... when the folder already exists, while the
+GUI opener still targets stale `{ModelName}/Result.msr`; this produces
+`OpenResult returned False` / `错误(4007)` even though simulation and CSV export
+passed. This is an automation bug, not a valid reason to ask the user to open
+the `.msr` manually.
+
 and leaves a project-local mapping file at:
 
 ```text
@@ -493,11 +501,14 @@ run_script_result.create_animation == true
 
 If the log contains `错误(4007): 结果文件 ... Result.msr 未打开`, the native
 result exists on disk but was not opened/bound by the current Sysplorer GUI
-session. First rerun through the normal scenario runner so it can switch to
-`results/native_result_cache/` and bind the shorter `Result.msr` path. Treat
-the numerical simulation as valid only if `check_model`, raw CSV, and quality
-gates passed; treat GUI visual review as incomplete until both nested statuses
-are true:
+session. First verify whether Sysplorer wrote the current run to a suffixed
+folder such as `{ModelName}-1`; if so, fix the runner/cleanup path and rerun,
+do not ask the user to manually open the `.msr`. If no suffix mismatch exists,
+rerun through the normal scenario runner so it can switch to
+`results/native_result_cache/` and bind the shorter `Result.msr` path. Treat the
+numerical simulation as valid only if `check_model`, raw CSV, and quality gates
+passed; treat GUI visual review as incomplete until both nested statuses are
+true:
 
 ```text
 GUI plot: True
@@ -525,12 +536,17 @@ replay JSON. Native result files support human review but are intentionally not
 tracked.
 
 If the GUI viewer opens but the 3D quadrotor animation is missing, keep the
-raw/metrics/log evidence, record the GUI issue in the task notes, and inspect
-the native result manually from:
+raw/metrics/log evidence, record the GUI issue in the task notes, and run an
+automated GUI binding diagnosis against the exact native result path:
 
 ```text
 results/{group}/{scene}/{experiment}/native_result/{ModelName}/Result.msr
 ```
+
+Do not ask the user to manually open this `.msr`. If automation cannot open it,
+the next action is to diagnose the native result folder, MCP session state,
+Sysplorer activation, and animation API response. A user-side manual open is
+not a valid fallback because it exercises the same broken result binding path.
 
 GUI windows must be interpreted separately:
 

@@ -15,6 +15,7 @@ import json
 import os
 import queue
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -533,6 +534,19 @@ def write_native_result_manifest(manifest: Path | None, *, native_result_dir: Pa
     manifest.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def prepare_native_result_target(native_result: Path) -> None:
+    """Remove the exact model result folder before writing a GUI-bound run.
+
+    Sysplorer creates ``ModelName-1``/``ModelName-2`` folders when the target
+    model result directory already exists. The opener then points at stale
+    ``ModelName/Result.msr`` and GUI OpenResult fails. Removing only this exact
+    generated folder keeps the native result path deterministic.
+    """
+    result_folder = native_result.parent
+    if result_folder.exists():
+        shutil.rmtree(result_folder)
+
+
 def open_gui_result_viewer(
     client: JsonlMcpClient,
     *,
@@ -708,6 +722,7 @@ def run_mcp_simulation(
     gui_open = gui_result_viewer and not args.no_gui_open
     if gui_result_viewer:
         native_result_dir.mkdir(parents=True, exist_ok=True)
+        prepare_native_result_target(native_result)
         write_native_result_manifest(
             native_result_manifest,
             native_result_dir=native_result_dir,
