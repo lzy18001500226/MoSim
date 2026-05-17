@@ -492,10 +492,28 @@ created for the active simulated result. The script still does not call
 `RunAnimation()` by default.
 
 For long/heavy planning displays, do not create the animation from the full
-native result. A full 327 s `planning_open_blocks` native result can exceed
-1 GB and block `CreateAnimation()` even when `OpenResult/CreatePlot` succeed.
-Keep full numerical evidence from the scenario-defined time span, but create a
-separate short native result for GUI visual audit:
+high-rate native result. A full 327 s `planning_open_blocks` native result at
+the controller output rate can exceed 1 GB and block `CreateAnimation()` even
+when `OpenResult/CreatePlot` succeed. Keep full numerical evidence from the
+scenario-defined time span, but create a separate full-duration native result
+for GUI visual audit with a coarser output interval:
+
+```text
+python3 scripts/run_mworks_scenario.py <scenario.yaml> \
+  --gui-review-full-time \
+  --gui-review-interval 0.5 \
+  --gui-review-native-result-dir results/native_result_cache/gui_review_current_planning_open_blocks_full_0p5s \
+  --gui-reset-windows
+```
+
+In this mode the full run still writes raw CSV and metrics for the full target
+time, while the 3D animation and plot are also bound to a full-time native
+review result. The only reduction is the GUI review output interval, so the
+animation timeline remains complete and suitable for manual review.
+
+Short GUI review runs are diagnostics only. Use them to check whether the
+`OpenResult/CreatePlot/CreateAnimation` chain is working before spending time
+on a full GUI review:
 
 ```text
 python3 scripts/run_mworks_scenario.py <scenario.yaml> \
@@ -504,11 +522,10 @@ python3 scripts/run_mworks_scenario.py <scenario.yaml> \
   --gui-reset-windows
 ```
 
-In this mode the full run still writes raw CSV and metrics for the full target
-time, while the 3D animation and plot are bound to the short native review
-result. If the short review directory is already open in Sysplorer and Windows
-locks `Result.msr`, the runner must switch to a timestamped sibling directory
-instead of failing with `PermissionError`.
+Do not mark manual visual review complete from a shortened run. If any separate
+review directory is already open in Sysplorer and Windows locks `Result.msr`,
+the runner must switch to a timestamped sibling directory instead of failing
+with `PermissionError`.
 
 Important: a successful MCP `call_code` response is not sufficient evidence
 that the GUI plot or animation opened. Inspect the nested `run_script_result`

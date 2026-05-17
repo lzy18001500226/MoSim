@@ -20,7 +20,6 @@ import subprocess
 import sys
 import threading
 import time
-import time
 from pathlib import Path
 from typing import Any
 
@@ -267,12 +266,14 @@ def simulate_modelingpy(
     native_result_dir: Path | None,
     verify_result_var: str,
     verify_time_point: str = "end",
+    interval: float | None = None,
 ) -> dict[str, Any]:
     if len(target_time) != 2:
         raise ValueError(f"target_time must contain start and stop time, got: {target_time}")
     start_time = float(target_time[0])
     stop_time = float(target_time[1])
     result_dir = windows_path(native_result_dir) if native_result_dir is not None else ""
+    interval_arg = "None" if interval is None else repr(float(interval))
     script = f"""
 import mworks.sysplorer as ModelingPy
 
@@ -282,6 +283,7 @@ try:
         {model_name!r},
         startTime={start_time!r},
         stopTime={stop_time!r},
+        interval={interval_arg},
         simMode=0,
         path={result_dir!r},
     )
@@ -427,15 +429,29 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=float,
         default=None,
         help=(
-            "For long/heavy scenarios, open GUI plot/animation from a separate short native result "
+            "For diagnostics only, open GUI plot/animation from a separate shortened native result "
             "ending at this time while preserving full-length raw/metrics evidence."
         ),
+    )
+    parser.add_argument(
+        "--gui-review-full-time",
+        action="store_true",
+        help=(
+            "When using --gui-review-native-result-dir, keep the GUI review native result at the full "
+            "target time range. Use with --gui-review-interval to reduce animation result size."
+        ),
+    )
+    parser.add_argument(
+        "--gui-review-interval",
+        type=float,
+        default=None,
+        help="Optional output interval for the separate GUI review native result.",
     )
     parser.add_argument(
         "--gui-review-native-result-dir",
         type=Path,
         default=None,
-        help="Optional native result directory for the short GUI review run.",
+        help="Optional native result directory for the separate GUI review run.",
     )
     parser.add_argument(
         "--allow-readable-result-after-simulate-false",
@@ -570,12 +586,18 @@ def prepare_native_result_target(native_result: Path) -> Path:
 
 
 def should_use_short_gui_review(args: argparse.Namespace, target_time: list[float]) -> bool:
-    if args.gui_review_stop_time is None:
+    if args.gui_review_stop_time is None or args.gui_review_full_time:
         return False
     if len(target_time) != 2:
         return False
     start_time, stop_time = float(target_time[0]), float(target_time[1])
     return float(args.gui_review_stop_time) > start_time and float(args.gui_review_stop_time) < stop_time
+
+
+def gui_review_target_time(args: argparse.Namespace, target_time: list[float]) -> list[float]:
+    if args.gui_review_stop_time is not None and not args.gui_review_full_time:
+        return [float(target_time[0]), float(args.gui_review_stop_time)]
+    return [float(target_time[0]), float(target_time[1])]
 
 
 def gui_review_native_result_dir(args: argparse.Namespace, native_result_dir: Path) -> Path:
@@ -757,13 +779,17 @@ def run_mcp_simulation(
     native_result = native_result_file(native_result_dir, args.model_name)
     gui_result_viewer = not args.no_gui_result_viewer
     gui_open = gui_result_viewer and not args.no_gui_open
-    short_gui_review = gui_open and should_use_short_gui_review(args, target_time)
+    separate_gui_review = gui_open and (
+        should_use_short_gui_review(args, target_time)
+        or args.gui_review_native_result_dir is not None
+        or args.gui_review_interval is not None
+    )
     gui_native_result_dir = native_result_dir
     gui_native_result = native_result
-    if short_gui_review:
+    if separate_gui_review:
         gui_native_result_dir = gui_review_native_result_dir(args, native_result_dir)
         gui_native_result = native_result_file(gui_native_result_dir, args.model_name)
-    if gui_result_viewer:
+    if gui_result_viewer and not separate_gui_review:
         native_result_dir.mkdir(parents=True, exist_ok=True)
         native_result = prepare_native_result_target(native_result)
         write_native_result_manifest(
@@ -772,9 +798,9 @@ def run_mcp_simulation(
             native_result=native_result,
             model_name=args.model_name,
         )
-        if short_gui_review:
-            gui_native_result_dir.mkdir(parents=True, exist_ok=True)
-            gui_native_result = prepare_native_result_target(gui_native_result)
+    if separate_gui_review:
+        gui_native_result_dir.mkdir(parents=True, exist_ok=True)
+        gui_native_result = prepare_native_result_target(gui_native_result)
     success = False
     try:
         open_result = client.call_tool(
@@ -812,7 +838,7 @@ def run_mcp_simulation(
         if not check_result.get("ok"):
             raise RuntimeError(f"Model check failed: {check_result}")
 
-        if gui_result_viewer and not short_gui_review:
+        if gui_result_viewer and not separate_gui_review:
             sim_result = simulate_modelingpy(
                 client,
                 model_name=args.model_name,
@@ -860,8 +886,8 @@ def run_mcp_simulation(
         )
         gui_result: dict[str, Any] | None = None
         if gui_open:
-            if short_gui_review:
-                gui_target_time = [float(target_time[0]), float(args.gui_review_stop_time)]
+            if separate_gui_review:
+                gui_target_time = gui_review_target_time(args, target_time)
                 gui_sim_result = simulate_modelingpy(
                     client,
                     model_name=args.model_name,
@@ -869,9 +895,10 @@ def run_mcp_simulation(
                     native_result_dir=gui_native_result_dir,
                     verify_result_var=variables.get("z", "sensors1_1.PosMea[3]"),
                     verify_time_point="end",
+                    interval=args.gui_review_interval,
                 )
                 if not gui_sim_result.get("ok"):
-                    raise RuntimeError(f"Short GUI review simulation failed: {gui_sim_result}")
+                    raise RuntimeError(f"GUI review simulation failed: {gui_sim_result}")
             gui_result = open_gui_result_viewer(
                 client,
                 native_result=gui_native_result,
@@ -888,9 +915,11 @@ def run_mcp_simulation(
         print(f"Metrics JSON: {args.metrics_json}")
         print(f"Metrics CSV: {args.metrics_csv}")
         if gui_result_viewer:
-            print(f"Native result: {native_result}")
-            if short_gui_review:
+            if separate_gui_review:
+                print("Native result: skipped for separate GUI review")
                 print(f"GUI review native result: {gui_native_result}")
+            else:
+                print(f"Native result: {native_result}")
             if native_result_manifest is not None:
                 print(f"Native result manifest: {native_result_manifest}")
         if gui_result is not None:

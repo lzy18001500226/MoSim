@@ -184,6 +184,11 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
     gui_review_native_result_dir = getattr(args, "gui_review_native_result_dir", None)
     if gui_review_stop_time is not None:
         command.extend(["--gui-review-stop-time", f"{gui_review_stop_time:g}"])
+    if getattr(args, "gui_review_full_time", False):
+        command.append("--gui-review-full-time")
+    gui_review_interval = getattr(args, "gui_review_interval", None)
+    if gui_review_interval is not None:
+        command.extend(["--gui-review-interval", f"{gui_review_interval:g}"])
     if gui_review_native_result_dir is not None:
         command.extend(["--gui-review-native-result-dir", str(gui_review_native_result_dir)])
     if "simulate_false_result_readable" in evidence_level:
@@ -353,15 +358,29 @@ def parse_args() -> argparse.Namespace:
         type=float,
         default=None,
         help=(
-            "For long/heavy scenarios, open GUI plot/animation from a separate short native result "
+            "For diagnostics only, open GUI plot/animation from a separate shortened native result "
             "ending at this time while preserving full-length raw/metrics evidence."
         ),
+    )
+    parser.add_argument(
+        "--gui-review-full-time",
+        action="store_true",
+        help=(
+            "Open GUI plot/animation from a separate native result covering the full scenario time. "
+            "Use with --gui-review-interval for heavy 3D scenes."
+        ),
+    )
+    parser.add_argument(
+        "--gui-review-interval",
+        type=float,
+        default=None,
+        help="Optional output interval for the separate GUI review native result.",
     )
     parser.add_argument(
         "--gui-review-native-result-dir",
         type=Path,
         default=None,
-        help="Optional native result directory for the short GUI review run.",
+        help="Optional native result directory for the separate GUI review run.",
     )
     parser.add_argument("--no-postprocess", action="store_true", help="Skip figure and replay generation")
     parser.add_argument("--no-quality-gate", action="store_true", help="Skip automatic result quality evaluation")

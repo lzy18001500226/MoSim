@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T18:44:45",
+  "generated_at": "2026-05-17T19:42:32",
   "raw_file": "results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/raw/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.csv",
   "scene_id": "planning_open_blocks",
   "controller_id": "linear_mpc_sysblock",
