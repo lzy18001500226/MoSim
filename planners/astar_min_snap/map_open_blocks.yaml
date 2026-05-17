@@ -140,12 +140,12 @@ altitude_profile:
   note: "XY planner remains local-obstacle based; Z reference follows the static terrain height plus AGL clearance and is tracked through the existing piecewise quintic reference block."
 
 limits:
-  velocity_reference_m_s: 0.8
-  velocity_max_m_s: 2.0
-  acceleration_max_m_s2: 2.5
-  jerk_max_m_s3: 8.0
-  tilt_max_rad: 0.45
-  segment_time_min_s: 0.8
+  velocity_reference_m_s: 3.0
+  velocity_max_m_s: 3.5
+  acceleration_max_m_s2: 10.0
+  jerk_max_m_s3: 80.0
+  tilt_max_rad: 0.70
+  segment_time_min_s: 0.6
   infeasible_scale_factor: 1.25
   max_rescale_iterations: 6
 

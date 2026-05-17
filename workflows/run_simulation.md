@@ -579,6 +579,14 @@ and synchronize the Sysplorer model through
 interval is `0.05 s` so raw CSV aligns with the 20 Hz controller/local-sensing
 rate without producing oversized native results.
 
+For terrain-following planning scenes, start and goal phases must be explicit.
+`scripts/update_planning_open_blocks_model.py` inserts a ground takeoff segment
+and a ground landing segment from the same terrain-height function used for
+the static map. Do not hand-edit `p_z` arrays in the generated Modelica file;
+regenerate the planner report and rerun the sync script instead. A high-speed
+stress case may raise `velocity_reference_m_s`, but report it separately from
+the low-speed precision evidence because tracking error can increase sharply.
+
 The durable evidence remains raw CSV, metrics JSON/CSV, logs, figures, and
 replay JSON. Native result files support human review but are intentionally not
 tracked.

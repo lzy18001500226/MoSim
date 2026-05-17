@@ -24,6 +24,9 @@ MODEL_SEGMENT_CAPACITY = 90
 GUI_RENDER_RANDOM_OBSTACLE_LIMIT = 0
 DUMMY_DISABLED_PILLAR_SIZE_M = 0.16
 LOCAL_SENSOR_CELL_SIZE_M = 0.20
+TAKEOFF_DURATION_S = 3.0
+LANDING_DURATION_S = 3.0
+GROUND_CLEARANCE_M = 0.0
 
 
 def read_yaml(path: Path) -> dict[str, Any]:
@@ -120,9 +123,18 @@ def build_reference(report: dict[str, Any], map_config: dict[str, Any]) -> dict[
     if len(path) < 2 or len(durations) != len(path) - 1:
         raise ValueError("simplified_path and segment_durations are inconsistent")
 
-    start = path[0]
-    points = [path[0], *path]
-    segment_duration = [3.0, *durations]
+    start_ground = [
+        path[0][0],
+        path[0][1],
+        terrain_height(path[0][0], path[0][1], map_config) + GROUND_CLEARANCE_M,
+    ]
+    goal_ground = [
+        path[-1][0],
+        path[-1][1],
+        terrain_height(path[-1][0], path[-1][1], map_config) + GROUND_CLEARANCE_M,
+    ]
+    points = [start_ground, *path, goal_ground]
+    segment_duration = [TAKEOFF_DURATION_S, *durations, LANDING_DURATION_S]
     n_segments = len(segment_duration)
     if n_segments > MODEL_SEGMENT_CAPACITY:
         raise ValueError(f"n_segments={n_segments} exceeds {MODEL_SEGMENT_CAPACITY}")
@@ -134,6 +146,8 @@ def build_reference(report: dict[str, Any], map_config: dict[str, Any]) -> dict[
         "p_z": padded([point[2] for point in points], MODEL_POINT_CAPACITY, points[-1][2]),
         "segment_duration": padded(segment_duration, MODEL_SEGMENT_CAPACITY, 1.0),
         "start": points[0],
+        "takeoff_ground_z": start_ground[2],
+        "landing_ground_z": goal_ground[2],
         "stop_time": sum(segment_duration),
     }
 
