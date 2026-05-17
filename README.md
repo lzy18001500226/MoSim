@@ -11,6 +11,24 @@
 
 当前单机规划状态：已完成 `planner_astar_min_snap` 的最小闭环实现，包含标准地图配置、2D/2.5D A*、直线可见性简化、五次多项式平滑、速度/加速度/jerk/tilt/障碍距离预检查、`reference.csv`、`trackability_report.json` 和 `map_preview.svg` 输出。`map_open_blocks` 与 `map_corridor_gate` 两个 P1 标准地图均已通过离线可跟踪性预检查，并已接入 Sunray150 MWORKS 控制闭环。AWFF 版本在规划轨迹跟踪中作为负样本保留；LinearMPC-style 外环已在两个规划场景中通过真实 Sysplorer MCP 质量门。
 
+## 尺寸与参数速查
+
+当前 `planning_open_blocks` 地图、障碍物和无人机尺寸不要从动画里估算，统一从下面这些文件读取：
+
+| 类别 | 当前值 | 数据位置 |
+|---|---|---|
+| 地图范围 | `90 m x 60 m`，`x=[-45,45]`，`y=[-30,30]`，`z=[0,3]` | `planners/astar_min_snap/map_open_blocks.yaml` |
+| 规划栅格 | A*/碰撞检查分辨率 `0.4 m`；安全裕度 `0.35 m` | `planners/astar_min_snap/map_open_blocks.yaml` |
+| 局部感知 | 半径 `3.0 m`；局部显示/传感细格 `0.20 m`；更新周期 `0.05 s`，即 `20 Hz` | `planners/astar_min_snap/map_open_blocks.yaml`、`scripts/update_planning_open_blocks_model.py` |
+| 地面起伏 | 每个地形柱横截面 `0.20 m x 0.20 m`；高度 `0.10-0.80 m`；高度量化 `0.01 m`；底面固定 `z=0` | `scripts/generate_static_planning_map.py` |
+| 随机障碍碰撞真值 | `1000` 个圆柱障碍；半径 `0.30-0.48 m`；高度 `3.0 m`；最小中心距/净距约束 `0.55 m` | `planners/astar_min_snap/map_open_blocks.yaml`、`results/planning/single_obstacle_astar_awff/metrics/trackability_report.json` |
+| 随机障碍 GUI 显示 | `1000` 个长方柱；横截面约 `0.40-0.64 m`；高度 `2.5-3.0 m`；用于静态 STL 审查图，不作为规划器全局真值输入 | `scripts/generate_static_planning_map.py` |
+| L/T 墙体 | `8` 组墙，展开为 `16` 个 box；长边 `18 m`，短边 `6 m`，厚度 `0.32 m`，高度 `3.0 m`；`L` 为短墙端点接长墙端点，`T` 为短墙中点接长墙端点 | `planners/astar_min_snap/map_open_blocks.yaml`、`scripts/check_wall_group_bboxes.py` |
+| Sunray150 物理参数 | 质量 `1.0 kg`；惯量 `Ixx=0.0085`、`Iyy=0.0085`、`Izz=0.012`；旋翼安装偏移 `±0.065 m` | `QuadrotorModel/package.mo` |
+| Sunray150 可视化尺寸 | 机身 STL 当前显示包络约 `0.25 m x 0.25 m x 0.19 m`；桨叶显示包络约 `0.10 m` 级别；公开实物尺寸约 `210 x 210 x 100 mm`、重量约 `1080 g` | `QuadrotorModel/Resources/Visualization/*.stl`、`docs/index/sunray_migration_index.md` |
+
+说明：地面总起伏只有 `0.70 m`，相对 `90 m x 60 m` 地图和 `3 m` 高障碍物会显得不明显。若需要录屏中更突出地形，可以只调显示层的 `TERRAIN_HEIGHT_MIN_M/TERRAIN_HEIGHT_MAX_M` 或着色，不要直接改变规划碰撞真值，除非重新生成 reference、trackability report 和闭环仿真证据。
+
 核心闭环：
 
 ```text
@@ -134,7 +152,7 @@ Sysplorer/Modelica 真实仿真：官方 baseline、Improved PID、Enhanced PID�
 Sysblock 真实证据：AWFF_PID_Sysblock_Demo 已通过 load_file/check_model/simulate_model/result_manager；位置环、姿态环、电机分配、三层组合控制器和单层扁平图形化控制器已通过真实 MCP load_file/check_model/simulate_model；`AWFF_InnovationGraphicalControllers` 中的 L1 residual、L1+INDI、L1+已知效率分配、L1+多旋翼故障隔离四个图形化控制器已通过真实 MCP load_file/check_model。当前 Sysplorer 编译器不支持图形化 Sysblock 控制器作为 Modelica 整机子组件时的内部多输入端口解析，因此官方整机性能证据暂由 Equation Sysblock 接入 QuadrotorExperiments 闭环模型；这只是整机接入约束，不降低图形化 Sysblock 对应模型的交付要求。
 P1 创新控制器证据：AWFF_L1ResidualControllerEquation_Sysblock 已覆盖 Example1、8 字形、质量 +20%、横向阵风和旋翼退化真实 Sysplorer MCP 仿真；其中 Example1、8 字形、质量 +20% 和横向阵风均通过质量门。`AWFF_INDIControllerEquation_Sysblock` 当前实现为 AWFF + L1-inspired 残差外环 + INDI-like 姿态增量组合控制器，已在 Example1、Example2 helix-tuned 和 Example3 8 字形通过质量门。已知效率退化控制分配补偿、在线效率估计补偿和多旋翼隔离雏形均已完成 rotor1-4 单旋翼退化和 rotor1-4 单旋翼退化叠加横向阵风复合鲁棒验证，所有 `l1_multi_fault_isolation_sysblock` 对应场景均通过质量门，`fault_index` 在 `5-50 s` 内正确率为 `100%`。Sunray150_with_mid360 迁移后，所有单无人机实验包装模型均加入悬停电机速度偏置与控制增量缩放，避免 Equation Sysblock 控制器输出直接接入新机体电机速度域。`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 当前实现为 finite-horizon linear MPC-style 外环 + L1-inspired residual feedforward + INDI-like 姿态内环，已完成 Example1 50 s、Example2 50 s、Example3 120 s 全时长真实 Sysplorer MCP 仿真并通过质量门，Sunray 后 RMSE 分别为 `0.1350 m`、`0.4291 m`、`0.0846 m`。LinearMPC-style 外环的质量 +20% 和横向阵风鲁棒场景也已通过质量门；纯外环在 1 号旋翼 85% 退化下健康分不足，加入在线 `eta_hat` 效率估计与控制分配补偿后质量门通过。新增 `AWFF_LinearMPCMultiFaultAllocationController_Sysblock` 已完成 rotor1-4 单旋翼退化叠加横向阵风复合鲁棒对照，AWFF 边界样本均为 `needs_iteration`，LinearMPC 多旋翼在线分配均为 `pass`，`fault_index` 在 rotor2-4 场景中正确率为 `100%`。新增 `AWFF_QPNMPCSafetyController_Sysblock` 已完成 Example1 nominal 和 return/land 两个 50 s 真实 Sysplorer MCP 场景：nominal RMSE `0.2398 m`、健康分 `55.891`；返航/降落场景 RMSE `0.2084 m`、健康分 `56.146`，event_log 包含 `NORMAL -> SAFETY_FILTER_ACTIVE -> DEGRADED_RETURN -> EMERGENCY_LAND`，50 s 末端高度稳定在 `0.15 m`。该实现是固定迭代投影式 QP/NMPC-style 在线安全优化，不是通用 dense QP 库或完整多重 shooting NMPC NLP 求解器。
 单无人机控制收尾状态：截至 2026-05-15，正式场景矩阵 76 项均有结果，59 项为 `pass`，17 项为保留的边界/负样本；单机主控制、鲁棒、故障分配、安全返航/降落闭环、规划避障闭环和系统级 GPS dropout 降级场景可以进入报告和录屏素材整理。后续再考虑瞬态故障切换、多旋翼同时故障或编队扩展。
-单机规划闭环状态：`planners/astar_min_snap/map_open_blocks.yaml` 和 `planners/astar_min_snap/map_corridor_gate.yaml` 已生成 `results/planning/*/raw/reference.csv`、`metrics/trackability_report.json` 和 `figures/map_preview.svg`。`planning_open_blocks` 是正式局部感知实时重规划场景：固定随机种子生成 `36` 个真值障碍，规划器只使用局部窗口内已发现障碍，最终发现 `29` 个障碍，滚动重规划 `96` 次，EGO-inspired ESDF-free 局部优化通过，最小障碍距离 `0.600 m`。接入 Sunray150 MWORKS 闭环后，LinearMPC-style 外环在 `planning_open_blocks` 中 RMSE `0.1429 m`、最大误差 `0.3107 m`、健康分 `94.0968`；`planning_corridor_gate` 作为静态窄门对照，RMSE `0.1257 m`、最大误差 `0.2996 m`、最大倾角 `0.1003 rad`，两者均为 `quality_status=pass`。AWFF 规划闭环出现横向发散，保留为控制器适用性负样本。
+单机规划闭环状态：`planners/astar_min_snap/map_open_blocks.yaml` 和 `planners/astar_min_snap/map_corridor_gate.yaml` 已生成 `results/planning/*/raw/reference.csv`、`metrics/trackability_report.json` 和 `figures/map_preview.svg`。`planning_open_blocks` 是正式局部感知实时重规划场景：固定随机种子生成 `1016` 个真值障碍，其中 `1000` 个随机障碍和 `16` 个 L/T 墙体 box；规划器只使用局部窗口内已发现障碍，最终发现 `173` 个障碍，滚动重规划 `189` 次，最小障碍距离 `0.352 m`，相对 `0.35 m` 最终安全裕度仍有正裕度。接入 Sunray150 MWORKS 闭环后，LinearMPC-style 外环在地形跟随版本中 RMSE `0.1173 m`、最大误差 `0.2530 m`、健康分 `93.571`；`planning_corridor_gate` 作为静态窄门对照，RMSE `0.1257 m`、最大误差 `0.2996 m`、最大倾角 `0.1003 rad`，两者均为 `quality_status=pass`。AWFF 规划闭环出现横向发散，保留为控制器适用性负样本。
 ```
 
 ## 设计文档
