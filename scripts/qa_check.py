@@ -121,6 +121,7 @@ CONTROLLER_CONFIGS = {
     "linear_mpc_sysblock": "controllers/linear_mpc_sysblock/default.yaml",
     "linear_mpc_online_fault_allocation_sysblock": "controllers/linear_mpc_online_fault_allocation_sysblock/default.yaml",
     "nmpc_indi_l1": "controllers/nmpc_indi_l1/default.yaml",
+    "awff_complete_system": "controllers/awff_complete_system/default.yaml",
 }
 
 PLANNER_CONFIGS = [
@@ -156,6 +157,10 @@ REQUIRED_CONTROLLER_INTERFACE_KEYS = [
 ]
 
 OFFICIAL_REPLACEMENT_COMPONENT = "controller3_2"
+ALLOWED_REPLACEMENT_COMPONENTS = {
+    "pid_baseline": None,
+    "awff_complete_system": "controller",
+}
 
 OFFICIAL_FULL_RESULT_EXPECTATIONS = {
     "results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv": 50.0,
@@ -433,8 +438,9 @@ def check_config_files(root: Path) -> bool:
                 ok = False
 
         replacement = interface.get("replacement_component")
-        if replacement != OFFICIAL_REPLACEMENT_COMPONENT and controller_id != "pid_baseline":
-            print(f"[FAIL] {controller_id} replacement_component should be {OFFICIAL_REPLACEMENT_COMPONENT}, got {replacement}")
+        expected_replacement = ALLOWED_REPLACEMENT_COMPONENTS.get(controller_id, OFFICIAL_REPLACEMENT_COMPONENT)
+        if expected_replacement is not None and replacement != expected_replacement:
+            print(f"[FAIL] {controller_id} replacement_component should be {expected_replacement}, got {replacement}")
             ok = False
 
     for rel_path in PLANNER_CONFIGS:

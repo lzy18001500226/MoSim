@@ -147,6 +147,7 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
         )
     )
 
+    evidence_level = args.evidence_level or default_evidence_level
     command = [
         sys.executable,
         "scripts/run_sysplorer_mcp_smoke.py",
@@ -169,7 +170,7 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
         "--controller-id",
         str(config.get("controller_id", "")),
         "--evidence-level",
-        args.evidence_level or default_evidence_level,
+        evidence_level,
     ]
     if args.wrapper:
         command.extend(["--wrapper", args.wrapper])
@@ -179,6 +180,8 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
         command.append("--no-gui-open")
     if args.gui_reset_windows:
         command.append("--gui-reset-windows")
+    if "simulate_false_result_readable" in evidence_level:
+        command.append("--allow-readable-result-after-simulate-false")
     extra_variables = result.get("extra_variables", {})
     if extra_variables:
         if not isinstance(extra_variables, dict):

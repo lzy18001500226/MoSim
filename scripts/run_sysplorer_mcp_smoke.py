@@ -49,8 +49,8 @@ def default_wrapper_candidates() -> list[str]:
 DEFAULT_WRAPPER_CANDIDATES = default_wrapper_candidates()
 DEFAULT_MODEL_FILE = r"C:\Users\HP\Desktop\Quadrotor\QuadrotorModel\package.mo"
 DEFAULT_MODEL_NAME = "QuadrotorModel.Examples.Example1"
-GUI_ANIMATION_TIMEOUT_S = 45
-WINDOWS_NATIVE_RESULT_PATH_LIMIT = 245
+GUI_ANIMATION_TIMEOUT_S = 180
+WINDOWS_NATIVE_RESULT_PATH_LIMIT = 180
 DEFAULT_VARIABLES = {
     "time": "time",
     "x": "sensors1_1.PosMea[1]",
@@ -257,6 +257,80 @@ def read_result_series(
     return series_by_alias
 
 
+def simulate_modelingpy(
+    client: JsonlMcpClient,
+    *,
+    model_name: str,
+    target_time: list[float],
+    native_result_dir: Path | None,
+    verify_result_var: str,
+    verify_time_point: str = "end",
+) -> dict[str, Any]:
+    if len(target_time) != 2:
+        raise ValueError(f"target_time must contain start and stop time, got: {target_time}")
+    start_time = float(target_time[0])
+    stop_time = float(target_time[1])
+    result_dir = windows_path(native_result_dir) if native_result_dir is not None else ""
+    script = f"""
+import mworks.sysplorer as ModelingPy
+
+results = {{}}
+try:
+    results["simulate"] = ModelingPy.SimulateModel(
+        {model_name!r},
+        startTime={start_time!r},
+        stopTime={stop_time!r},
+        simMode=0,
+        path={result_dir!r},
+    )
+except Exception as exc:
+    results["simulate_error"] = repr(exc)
+
+try:
+    results["result_probe_type"] = ModelingPy.GetResultVariableInfo({verify_result_var!r}, "Type")
+    results["has_readable_result"] = True
+except Exception as exc:
+    results["result_probe_error"] = repr(exc)
+    results["has_readable_result"] = False
+
+try:
+    results["get_var_value_at"] = ModelingPy.GetVarValueAt({verify_result_var!r}, {verify_time_point!r})
+except Exception as exc:
+    results["get_var_value_at_error"] = repr(exc)
+
+RUN_SCRIPT_RESULT = results
+"""
+    run_result = client.call_tool(
+        "call_code",
+        {"mode": "run_script", "payload": {"python_source": script}},
+        timeout_s=360,
+    )
+    nested = run_result.get("run_script_result") if isinstance(run_result.get("run_script_result"), dict) else {}
+    simulate_ok = bool(nested.get("simulate"))
+    readable = bool(nested.get("has_readable_result")) and "get_var_value_at" in nested
+    return {
+        "ok": bool(run_result.get("ok")) and (simulate_ok or readable),
+        "api": "ModelingPy.SimulateModel",
+        "data": simulate_ok,
+        "simulate_api_reported_failure": not simulate_ok,
+        "result_verification": {
+            "result_probe": {
+                "ok": bool(nested.get("has_readable_result")),
+                "has_readable_result": bool(nested.get("has_readable_result")),
+                "data": nested.get("result_probe_type"),
+                "error": nested.get("result_probe_error"),
+            },
+            "get_var_value_at": {
+                "ok": "get_var_value_at" in nested,
+                "data": nested.get("get_var_value_at"),
+                "error": nested.get("get_var_value_at_error"),
+            },
+        },
+        "run_script_result": nested,
+        "raw_tool_result": run_result,
+    }
+
+
 def write_metrics(
     raw_csv: Path,
     metrics_json: Path,
@@ -428,11 +502,10 @@ def native_result_file(native_result_dir: Path, model_name: str) -> Path:
 def resolve_native_result_dir(raw_output: Path, requested_dir: Path | None, model_name: str) -> tuple[Path, Path | None]:
     """Choose a native result directory that MWORKS can write on Windows.
 
-    MWORKS runs on Windows even when this script is launched from WSL. Very
-    long project-local result paths can exceed Windows' traditional 260
-    character limit and produce a compiled native_result directory without
-    Result.msr. Keep the normal project-local layout for short paths, and use a
-    short ignored cache path only when needed.
+    MWORKS runs on Windows even when this script is launched from WSL. Paths
+    shorter than Windows' traditional 260 character limit can still fail
+    ModelingPy.OpenResult/CreatePlot in Sysplorer, so use a conservative
+    project-local cache path for GUI-bound native results.
     """
     preferred_dir = requested_dir or default_native_result_dir(raw_output)
     preferred_result = native_result_file(preferred_dir, model_name)
@@ -452,7 +525,7 @@ def write_native_result_manifest(manifest: Path | None, *, native_result_dir: Pa
     manifest.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "model_name": model_name,
-        "reason": "preferred native_result path is too long for reliable Windows/MWORKS Result.msr output",
+        "reason": "preferred native_result path is too long for reliable Windows/MWORKS OpenResult/CreatePlot binding",
         "native_result_dir": str(native_result_dir),
         "native_result_file": str(native_result),
         "native_result_file_windows": windows_path(native_result),
@@ -513,11 +586,16 @@ import mworks.sysplorer as ModelingPy
 
 results = {{}}
 try:
+    results["open_result"] = ModelingPy.OpenResult({result_file!r})
+except Exception as exc:
+    results["open_result_error"] = repr(exc)
+
+try:
     results["create_plot"] = ModelingPy.CreatePlot(
         id=1,
         x="time",
         y={plot_vars!r},
-        result_file={result_file!r},
+        resultFile={result_file!r},
     )
 except Exception as exc:
     results["create_plot_error"] = repr(exc)
@@ -537,6 +615,11 @@ RUN_SCRIPT_RESULT = results
 import mworks.sysplorer as ModelingPy
 
 results = {{}}
+try:
+    results["open_result"] = ModelingPy.OpenResult({result_file!r})
+except Exception as exc:
+    results["open_result_error"] = repr(exc)
+
 try:
     try:
         results["open_model_diagram"] = ModelingPy.OpenModel({model_name!r}, ModelingPy.ModelView.Diagram)
@@ -668,18 +751,27 @@ def run_mcp_simulation(
         if not check_result.get("ok"):
             raise RuntimeError(f"Model check failed: {check_result}")
 
-        sim_result = client.call_tool(
-            "simulate_model",
-            {
-                "model_name": args.model_name,
-                "sim_mode": 0,
-                "target_time": target_time,
-                **({"ext_res_path": windows_path(native_result_dir)} if gui_result_viewer else {}),
-                "verify_result_var": variables.get("z", "sensors1_1.PosMea[3]"),
-                "verify_time_point": "end",
-            },
-            timeout_s=360,
-        )
+        if gui_result_viewer:
+            sim_result = simulate_modelingpy(
+                client,
+                model_name=args.model_name,
+                target_time=target_time,
+                native_result_dir=native_result_dir,
+                verify_result_var=variables.get("z", "sensors1_1.PosMea[3]"),
+                verify_time_point="end",
+            )
+        else:
+            sim_result = client.call_tool(
+                "simulate_model",
+                {
+                    "model_name": args.model_name,
+                    "sim_mode": 0,
+                    "target_time": target_time,
+                    "verify_result_var": variables.get("z", "sensors1_1.PosMea[3]"),
+                    "verify_time_point": "end",
+                },
+                timeout_s=360,
+            )
         if not sim_result.get("ok"):
             raise RuntimeError(f"Simulation failed: {sim_result}")
         if sim_result.get("simulate_api_reported_failure"):

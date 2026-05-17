@@ -1,7 +1,7 @@
 {
-  "scene_id": "sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz",
-  "model_name": "",
-  "description": "",
+  "scene_id": "planning_open_blocks",
+  "model_name": "QuadrotorExperiments.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop",
+  "description": "Sunray150 单机局部感知避障 + 实时重规划 LinearMPC-style Sysblock 闭环",
   "source": "results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/raw/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.csv",
   "frame_count": 908,
   "frames": [

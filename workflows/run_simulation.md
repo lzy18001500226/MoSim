@@ -384,13 +384,16 @@ simulation status
 runtime logs
 ```
 
-For GUI review, the runner requests a Sysplorer native result directory through
-`ext_res_path` by default, then opens the model window and creates plots and
-animation from the active Sysplorer simulation session. The native `Result.msr`
-is retained as a manual fallback for inspection. The manual review target is
-the actual quadrotor 3D animation plus tracking curves; seeing only static
-propeller geometry, only a blank result viewer, or only parameter curves is not
-enough to mark visual review complete.
+For GUI review, the runner must use the official Python API
+`ModelingPy.SimulateModel(..., path=...)` to generate the Sysplorer native
+result, then explicitly call `OpenResult(Result.msr)` before creating tracking
+plots. Do not use MCP `simulate_model` with `ext_res_path` for GUI review: that
+path has produced results that `result_manager` can read but Sysplorer GUI
+cannot bind with `OpenResult/CreatePlot`. The native `Result.msr` is retained
+as a manual fallback for inspection. The manual review target is the actual
+quadrotor 3D animation plus tracking curves; seeing only static propeller
+geometry, only a blank result viewer, or only parameter curves is not enough to
+mark visual review complete.
 
 For single-UAV planning/navigation scenarios, the 3D animation must also show
 the model-level navigation context. Do not use offline HTML replay as a
@@ -447,8 +450,8 @@ The expected native result path is:
 results/{group}/{scene}/{experiment}/native_result/{ModelName}/Result.msr
 ```
 
-If that Windows path would be too long for reliable MWORKS output, the runner
-automatically writes the native result to:
+If that Windows path is too long for reliable MWORKS `OpenResult/CreatePlot`
+binding, the runner automatically writes the native result to:
 
 ```text
 results/native_result_cache/{experiment}/{ModelName}/Result.msr
@@ -490,10 +493,16 @@ run_script_result.create_animation == true
 
 If the log contains `错误(4007): 结果文件 ... Result.msr 未打开`, the native
 result exists on disk but was not opened/bound by the current Sysplorer GUI
-session. Treat the numerical simulation as valid only if `check_model`,
-`simulate_model`, raw CSV, and quality gates passed; treat GUI visual review as
-incomplete until the user manually opens the matching `Result.msr` or the MCP
-`plot_manager/result_manager` path is fixed.
+session. First rerun through the normal scenario runner so it can switch to
+`results/native_result_cache/` and bind the shorter `Result.msr` path. Treat
+the numerical simulation as valid only if `check_model`, raw CSV, and quality
+gates passed; treat GUI visual review as incomplete until both nested statuses
+are true:
+
+```text
+GUI plot: True
+GUI animation: True
+```
 
 For large 3D planning displays, do not add dynamic Modelica components just to
 make the map look smoother. The stable pattern is a static STL terrain/obstacle
