@@ -20,6 +20,7 @@ import subprocess
 import sys
 import threading
 import time
+import time
 from pathlib import Path
 from typing import Any
 
@@ -422,6 +423,21 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Close existing Sysplorer plot/animation windows before opening the current result for manual GUI review",
     )
     parser.add_argument(
+        "--gui-review-stop-time",
+        type=float,
+        default=None,
+        help=(
+            "For long/heavy scenarios, open GUI plot/animation from a separate short native result "
+            "ending at this time while preserving full-length raw/metrics evidence."
+        ),
+    )
+    parser.add_argument(
+        "--gui-review-native-result-dir",
+        type=Path,
+        default=None,
+        help="Optional native result directory for the short GUI review run.",
+    )
+    parser.add_argument(
         "--allow-readable-result-after-simulate-false",
         action="store_true",
         help=(
@@ -534,7 +550,7 @@ def write_native_result_manifest(manifest: Path | None, *, native_result_dir: Pa
     manifest.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def prepare_native_result_target(native_result: Path) -> None:
+def prepare_native_result_target(native_result: Path) -> Path:
     """Remove the exact model result folder before writing a GUI-bound run.
 
     Sysplorer creates ``ModelName-1``/``ModelName-2`` folders when the target
@@ -544,7 +560,28 @@ def prepare_native_result_target(native_result: Path) -> None:
     """
     result_folder = native_result.parent
     if result_folder.exists():
-        shutil.rmtree(result_folder)
+        try:
+            shutil.rmtree(result_folder)
+        except PermissionError:
+            suffix = time.strftime("%Y%m%d_%H%M%S")
+            result_folder = result_folder.with_name(f"{result_folder.name}_{suffix}")
+            native_result = result_folder / native_result.name
+    return native_result
+
+
+def should_use_short_gui_review(args: argparse.Namespace, target_time: list[float]) -> bool:
+    if args.gui_review_stop_time is None:
+        return False
+    if len(target_time) != 2:
+        return False
+    start_time, stop_time = float(target_time[0]), float(target_time[1])
+    return float(args.gui_review_stop_time) > start_time and float(args.gui_review_stop_time) < stop_time
+
+
+def gui_review_native_result_dir(args: argparse.Namespace, native_result_dir: Path) -> Path:
+    if args.gui_review_native_result_dir is not None:
+        return args.gui_review_native_result_dir
+    return native_result_dir.parent / f"{native_result_dir.name}_gui_review"
 
 
 def open_gui_result_viewer(
@@ -630,11 +667,6 @@ import mworks.sysplorer as ModelingPy
 
 results = {{}}
 try:
-    results["open_result"] = ModelingPy.OpenResult({result_file!r})
-except Exception as exc:
-    results["open_result_error"] = repr(exc)
-
-try:
     try:
         results["open_model_diagram"] = ModelingPy.OpenModel({model_name!r}, ModelingPy.ModelView.Diagram)
     except Exception as exc:
@@ -642,6 +674,11 @@ try:
         results["open_model"] = ModelingPy.OpenModel({model_name!r})
 except Exception as exc:
     results["open_model_error"] = repr(exc)
+
+try:
+    results["open_result"] = ModelingPy.OpenResult({result_file!r})
+except Exception as exc:
+    results["open_result_error"] = repr(exc)
 
 try:
     results["create_animation"] = ModelingPy.CreateAnimation()
@@ -720,15 +757,24 @@ def run_mcp_simulation(
     native_result = native_result_file(native_result_dir, args.model_name)
     gui_result_viewer = not args.no_gui_result_viewer
     gui_open = gui_result_viewer and not args.no_gui_open
+    short_gui_review = gui_open and should_use_short_gui_review(args, target_time)
+    gui_native_result_dir = native_result_dir
+    gui_native_result = native_result
+    if short_gui_review:
+        gui_native_result_dir = gui_review_native_result_dir(args, native_result_dir)
+        gui_native_result = native_result_file(gui_native_result_dir, args.model_name)
     if gui_result_viewer:
         native_result_dir.mkdir(parents=True, exist_ok=True)
-        prepare_native_result_target(native_result)
+        native_result = prepare_native_result_target(native_result)
         write_native_result_manifest(
             native_result_manifest,
             native_result_dir=native_result_dir,
             native_result=native_result,
             model_name=args.model_name,
         )
+        if short_gui_review:
+            gui_native_result_dir.mkdir(parents=True, exist_ok=True)
+            gui_native_result = prepare_native_result_target(gui_native_result)
     success = False
     try:
         open_result = client.call_tool(
@@ -766,7 +812,7 @@ def run_mcp_simulation(
         if not check_result.get("ok"):
             raise RuntimeError(f"Model check failed: {check_result}")
 
-        if gui_result_viewer:
+        if gui_result_viewer and not short_gui_review:
             sim_result = simulate_modelingpy(
                 client,
                 model_name=args.model_name,
@@ -814,9 +860,21 @@ def run_mcp_simulation(
         )
         gui_result: dict[str, Any] | None = None
         if gui_open:
+            if short_gui_review:
+                gui_target_time = [float(target_time[0]), float(args.gui_review_stop_time)]
+                gui_sim_result = simulate_modelingpy(
+                    client,
+                    model_name=args.model_name,
+                    target_time=gui_target_time,
+                    native_result_dir=gui_native_result_dir,
+                    verify_result_var=variables.get("z", "sensors1_1.PosMea[3]"),
+                    verify_time_point="end",
+                )
+                if not gui_sim_result.get("ok"):
+                    raise RuntimeError(f"Short GUI review simulation failed: {gui_sim_result}")
             gui_result = open_gui_result_viewer(
                 client,
-                native_result=native_result,
+                native_result=gui_native_result,
                 model_name=args.model_name,
                 variables=variables,
                 reset_windows=args.gui_reset_windows,
@@ -831,6 +889,8 @@ def run_mcp_simulation(
         print(f"Metrics CSV: {args.metrics_csv}")
         if gui_result_viewer:
             print(f"Native result: {native_result}")
+            if short_gui_review:
+                print(f"GUI review native result: {gui_native_result}")
             if native_result_manifest is not None:
                 print(f"Native result manifest: {native_result_manifest}")
         if gui_result is not None:
@@ -846,6 +906,7 @@ def run_mcp_simulation(
             "metrics_json": args.metrics_json,
             "metrics_csv": args.metrics_csv,
             "native_result": native_result,
+            "gui_native_result": gui_native_result,
             "gui_result": gui_result,
             "log_output": final_log_output,
             "rows": len(result_series["time"]),

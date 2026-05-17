@@ -384,16 +384,17 @@ simulation status
 runtime logs
 ```
 
-For GUI review, the runner must use the official Python API
+For normal-size GUI review, the runner must use the official Python API
 `ModelingPy.SimulateModel(..., path=...)` to generate the Sysplorer native
 result, then explicitly call `OpenResult(Result.msr)` before creating tracking
-plots. Do not use MCP `simulate_model` with `ext_res_path` for GUI review: that
-path has produced results that `result_manager` can read but Sysplorer GUI
-cannot bind with `OpenResult/CreatePlot`. The native `Result.msr` is retained
-as a manual fallback for inspection. The manual review target is the actual
-quadrotor 3D animation plus tracking curves; seeing only static propeller
-geometry, only a blank result viewer, or only parameter curves is not enough to
-mark visual review complete.
+plots and animation. Do not use MCP `simulate_model` with `ext_res_path` for
+GUI review: that path has produced results that `result_manager` can read but
+Sysplorer GUI cannot bind with `OpenResult/CreatePlot`. The native
+`Result.msr` is retained only as a local review asset, not as a manual fallback
+when automation fails. The manual review target is the actual quadrotor 3D
+animation plus tracking curves; seeing only static propeller geometry, only a
+blank result viewer, or only parameter curves is not enough to mark visual
+review complete.
 
 For single-UAV planning/navigation scenarios, the 3D animation must also show
 the model-level navigation context. Do not use offline HTML replay as a
@@ -490,6 +491,25 @@ the current `Result.msr` path explicitly bound; the animation window is then
 created for the active simulated result. The script still does not call
 `RunAnimation()` by default.
 
+For long/heavy planning displays, do not create the animation from the full
+native result. A full 327 s `planning_open_blocks` native result can exceed
+1 GB and block `CreateAnimation()` even when `OpenResult/CreatePlot` succeed.
+Keep full numerical evidence from the scenario-defined time span, but create a
+separate short native result for GUI visual audit:
+
+```text
+python3 scripts/run_mworks_scenario.py <scenario.yaml> \
+  --gui-review-stop-time 3 \
+  --gui-review-native-result-dir results/native_result_cache/gui_review_current_planning_open_blocks_3s \
+  --gui-reset-windows
+```
+
+In this mode the full run still writes raw CSV and metrics for the full target
+time, while the 3D animation and plot are bound to the short native review
+result. If the short review directory is already open in Sysplorer and Windows
+locks `Result.msr`, the runner must switch to a timestamped sibling directory
+instead of failing with `PermissionError`.
+
 Important: a successful MCP `call_code` response is not sufficient evidence
 that the GUI plot or animation opened. Inspect the nested `run_script_result`
 fields:
@@ -523,6 +543,17 @@ model uses 0.2 m static STL terrain columns, 1000 static random obstacle pillars
 short local plan segment. If the GUI freezes, stop retrying animation creation,
 keep the numerical evidence, reduce display load, and rerun a short
 `check_model`/`simulate_model` smoke before any full run.
+
+Every `modelica://.../Resources/Visualization/*.stl` URI must point to an
+existing file even if the component length/width/height is zero or a layer is
+disabled. Sysplorer model check still validates shape resources. For
+`PlanningNavigationDisplay`, the split terrain-band STL files plus the obstacle
+STL are the active display assets; `static_map_mesh_uri` must still reference a
+real STL to avoid the check-window error:
+
+```text
+navigationDisplay.static_map_mesh cannot identify shape / file not found
+```
 
 When the planning model uses terrain-following altitude, the planner must write
 `altitude_profile.mode=terrain_follow_agl`, keep `smoothing.type=quintic_segment`,

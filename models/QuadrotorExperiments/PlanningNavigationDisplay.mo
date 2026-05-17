@@ -81,7 +81,7 @@ model PlanningNavigationDisplay
   parameter Boolean show_static_map_mesh = true
     "Render one pre-generated STL mesh for dense 0.2 m volumetric terrain columns and 1000 random obstacles.";
   parameter String static_map_mesh_uri =
-    "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_ground_0p2_obstacle_columns_0p2_h2p8_3p5.stl";
+    "modelica://QuadrotorModel/Resources/Visualization/map_open_blocks_static_obstacle_columns_0p2_h2p8_3p5.stl";
   parameter Boolean show_static_map_layers = true
     "Render review-friendly split static map layers: five volumetric terrain-column height bands, obstacle mesh, and grid overlay.";
   parameter String static_terrain_band_mesh_uri[5] = {

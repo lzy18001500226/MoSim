@@ -180,6 +180,12 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
         command.append("--no-gui-open")
     if args.gui_reset_windows:
         command.append("--gui-reset-windows")
+    gui_review_stop_time = getattr(args, "gui_review_stop_time", None)
+    gui_review_native_result_dir = getattr(args, "gui_review_native_result_dir", None)
+    if gui_review_stop_time is not None:
+        command.extend(["--gui-review-stop-time", f"{gui_review_stop_time:g}"])
+    if gui_review_native_result_dir is not None:
+        command.extend(["--gui-review-native-result-dir", str(gui_review_native_result_dir)])
     if "simulate_false_result_readable" in evidence_level:
         command.append("--allow-readable-result-after-simulate-false")
     extra_variables = result.get("extra_variables", {})
@@ -341,6 +347,21 @@ def parse_args() -> argparse.Namespace:
         "--gui-reset-windows",
         action="store_true",
         help="Close existing Sysplorer plot/animation windows before opening the current result for manual GUI review",
+    )
+    parser.add_argument(
+        "--gui-review-stop-time",
+        type=float,
+        default=None,
+        help=(
+            "For long/heavy scenarios, open GUI plot/animation from a separate short native result "
+            "ending at this time while preserving full-length raw/metrics evidence."
+        ),
+    )
+    parser.add_argument(
+        "--gui-review-native-result-dir",
+        type=Path,
+        default=None,
+        help="Optional native result directory for the short GUI review run.",
     )
     parser.add_argument("--no-postprocess", action="store_true", help="Skip figure and replay generation")
     parser.add_argument("--no-quality-gate", action="store_true", help="Skip automatic result quality evaluation")
