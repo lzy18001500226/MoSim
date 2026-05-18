@@ -9,6 +9,7 @@
 | Task | Workflow File |
 |---|---|
 | Debug MCP | `workflows/debug_mcp.md` |
+| Operate Unreal MCP | `workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `docs/index/api_index.md#5-unreal-mcp-tools` |
 | Translate MathWorks/Simulink patterns to MWORKS | `workflows/translate_mathworks_to_mworks.md` |
 | Resolve MWORKS model context | `Skills/Mworks/mworks-model-context/SKILL.md` |
 | Produce MWORKS simulation evidence | `Skills/Mworks/mworks-simulation-evidence/SKILL.md` |

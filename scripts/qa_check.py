@@ -81,6 +81,7 @@ RECOMMENDED_SCRIPTS = [
     "scripts/generate_replay_from_raw.py",
     "scripts/stream_unreal_udp.py",
     "scripts/check_unreal_bridge.py",
+    "scripts/unreal_mcp_wsl_wrapper.sh",
     "scripts/generate_event_log.py",
     "scripts/summarize_experiments.py",
     "scripts/run_mworks_scenario.py",

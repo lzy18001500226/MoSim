@@ -201,6 +201,59 @@ Common issues:
 
 ---
 
+## 7.1 Unreal MCP Local Wrapper
+
+The local Unreal MCP source lives under:
+
+```text
+Skills/unreal-engine-mcp/
+```
+
+The WSL wrapper is project-local:
+
+```text
+scripts/unreal_mcp_wsl_wrapper.sh
+```
+
+Manual smoke test:
+
+```bash
+scripts/unreal_mcp_wsl_wrapper.sh
+```
+
+If it starts and waits for input, that is normal for stdio MCP. To verify with a
+client, send the standard MCP handshake and then `tools/list`; the server should
+report `UnrealMCP_Advanced` and tools such as `get_actors_in_level`,
+`set_actor_transform`, `create_blueprint`, `compile_blueprint`, and
+`set_mesh_material_color`.
+
+Codex MCP config entry, if enabling manually:
+
+```toml
+[mcp_servers.unreal_mcp]
+command = "/mnt/c/Users/HP/Desktop/Quadrotor/scripts/unreal_mcp_wsl_wrapper.sh"
+args = []
+startup_timeout_sec = 180
+tool_timeout_sec = 300
+```
+
+Do not register this against opencode config files. The Unreal editor side still
+needs the bundled `Skills/unreal-engine-mcp/UnrealMCP/` plugin enabled in a UE
+project. The Python MCP server talks to that editor plugin on `127.0.0.1:55557`.
+If Unreal is not open or the plugin is not enabled, `tools/list` can still work,
+but actor/Blueprint tools will fail with connection refused.
+
+Keep this separate from the project-owned external renderer plugin:
+
+```text
+unreal/QuadrotorMworksBridge/
+```
+
+`UnrealMCP` controls the editor through MCP. `QuadrotorMworksBridge` receives
+MWORKS simulation state for video rendering. They solve different problems.
+
+---
+
 ## 8. Recommended Syslab Wrapper
 
 ```bash

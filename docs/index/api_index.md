@@ -120,6 +120,46 @@ detect_syslab_toolboxes
 evaluate_julia_code
 ```
 
+---
+
+## 5. Unreal MCP Tools
+
+Local source:
+
+```text
+Skills/unreal-engine-mcp/
+```
+
+Project-local WSL wrapper:
+
+```text
+scripts/unreal_mcp_wsl_wrapper.sh
+```
+
+This wrapper starts the open-source local Unreal MCP Python server with `uv`.
+The server exposes editor-control tools and connects to an Unreal Editor plugin
+on `127.0.0.1:55557`.
+
+Typical tool groups:
+
+| Tool Group | Examples | Use |
+|---|---|---|
+| Actor query/edit | `get_actors_in_level`, `find_actors_by_name`, `set_actor_transform`, `delete_actor` | Inspect and place scene actors |
+| Blueprint | `create_blueprint`, `add_component_to_blueprint`, `compile_blueprint`, `read_blueprint_content` | Build or inspect Blueprint assets |
+| Materials | `get_available_materials`, `apply_material_to_actor`, `set_mesh_material_color` | Color UAV, terrain, radar, and obstacles |
+| Scene generation | `create_wall`, `create_tower`, `create_maze`, `create_town` | Generic scene-building helpers; use cautiously |
+
+Important boundary:
+
+```text
+Unreal MCP controls the Unreal editor.
+QuadrotorMworksBridge receives MWORKS simulation state for rendering.
+Neither one replaces MWORKS/Sysplorer simulation evidence.
+```
+
+Before write operations, first query the scene or asset with a read tool. Avoid
+large scene-generation tools until the minimal UAV renderer scene is stable.
+
 ### Script execution
 
 ```text
