@@ -561,6 +561,15 @@ short local plan segment. If the GUI freezes, stop retrying animation creation,
 keep the numerical evidence, reduce display load, and rerun a short
 `check_model`/`simulate_model` smoke before any full run.
 
+For video capture that needs the full colored global map, open
+`QuadrotorExperiments.Sunray150PlanningOpenBlocksColorMapReview`. This model is
+a thin review-only extension of
+`Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop`: it keeps the same
+controller, vehicle, path, local sensing overlay, and timing, but enables
+`navigationDisplay.show_static_map_layers=true` and disables dynamic terrain
+blocks. Do not use this review variant as the source of numerical performance
+claims; use it only for recording the global colored static-map visualization.
+
 Every `modelica://.../Resources/Visualization/*.stl` URI must point to an
 existing file even if the component length/width/height is zero or a layer is
 disabled. Sysplorer model check still validates shape resources. For
