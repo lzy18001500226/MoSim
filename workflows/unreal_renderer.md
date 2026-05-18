@@ -14,6 +14,7 @@ unreal/MworksUnrealRenderer/MworksUnrealRenderer.uproject
 From WSL, use the project-local launcher:
 
 ```bash
+scripts/build_unreal_renderer.sh
 scripts/open_unreal_renderer.sh
 ```
 
@@ -101,12 +102,33 @@ Minimum scene actors:
 Blueprints/materials should read from these actors rather than parsing raw CSV
 again inside Unreal.
 
+## Manual Review Checklist
+
+Before recording or comparing against Sysplorer animation, check these items in
+the Unreal viewport:
+
+| Item | Expected result |
+| --- | --- |
+| UAV body | visible, centered on the MWORKS state, no scale mismatch |
+| Propellers | four propellers visible and rotating from motor commands |
+| Static map | terrain, random columns, and L/T walls visible from `AQuadrotorMworksMapActor` |
+| Coordinate direction | start is lower-left, goal is upper-right, no X/Y swap |
+| Local plan | spline starts at UAV center and stays in front of the current pose |
+| Trail | history line follows the UAV, no detached yellow marker behavior |
+| Radar sector | yaw follows UAV heading, radius and FOV match packet metadata |
+| Camera | one follow view and one overview view are usable without manual dragging |
+| Performance | playback is smooth enough for video; if viewport interaction stutters, export video rather than lowering MWORKS evidence fidelity |
+
+If any item fails, fix Unreal rendering first. Do not alter MWORKS controller,
+planner, or metrics to hide a renderer issue.
+
 ## Verification
 
 Run:
 
 ```bash
 python3 scripts/check_unreal_bridge.py
+scripts/build_unreal_renderer.sh
 python3 scripts/export_unreal_scene_map.py --terrain-cell-m 1.0
 python3 scripts/stream_unreal_udp.py <raw.csv> --max-frames 2 --dry-run
 ```
@@ -115,6 +137,14 @@ If Unreal MCP is available, open the project first, then run a read-only probe
 such as project context or scene brief. If the wrapper hangs or the editor is
 not listening, do not modify the scene through MCP; continue with source-level
 changes and report the MCP state.
+
+Current WSL note: the Unreal editor plugin starts its TCP server on Windows
+`127.0.0.1:55557`. A Python MCP server running inside WSL may not reach that
+Windows loopback address directly. If `get_actors_in_level` reports
+`Connection refused` while the UE log says `Server started on 127.0.0.1:55557`,
+the plugin is loaded and the remaining issue is the WSL-to-Windows loopback
+path. Use source-level C++ work or run the Python MCP server from Windows until
+the plugin host binding is changed.
 
 ## Boundaries
 

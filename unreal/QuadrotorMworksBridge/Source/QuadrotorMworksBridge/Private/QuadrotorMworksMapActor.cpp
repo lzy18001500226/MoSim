@@ -202,11 +202,11 @@ bool AQuadrotorMworksMapActor::LoadRenderMapSummary()
             }
         }
 
-        const TSharedPtr<FJsonObject>* Obstacles = nullptr;
-        if (Root->TryGetObjectField(TEXT("obstacles"), Obstacles) && Obstacles && Obstacles->IsValid())
+        const TSharedPtr<FJsonObject>* PreviewObstacles = nullptr;
+        if (Root->TryGetObjectField(TEXT("obstacles"), PreviewObstacles) && PreviewObstacles && PreviewObstacles->IsValid())
         {
             const TArray<TSharedPtr<FJsonValue>>* RandomColumns = nullptr;
-            if ((*Obstacles)->TryGetArrayField(TEXT("random_columns"), RandomColumns) && RandomColumns)
+            if ((*PreviewObstacles)->TryGetArrayField(TEXT("random_columns"), RandomColumns) && RandomColumns)
             {
                 const int32 Limit = MaxRandomColumnInstances > 0 ? FMath::Min(MaxRandomColumnInstances, RandomColumns->Num()) : RandomColumns->Num();
                 for (int32 Index = 0; Index < Limit; ++Index)
@@ -222,7 +222,7 @@ bool AQuadrotorMworksMapActor::LoadRenderMapSummary()
             }
 
             const TArray<TSharedPtr<FJsonValue>>* Walls = nullptr;
-            if ((*Obstacles)->TryGetArrayField(TEXT("wall_boxes"), Walls) && Walls)
+            if ((*PreviewObstacles)->TryGetArrayField(TEXT("wall_boxes"), Walls) && Walls)
             {
                 const int32 Limit = MaxWallInstances > 0 ? FMath::Min(MaxWallInstances, Walls->Num()) : Walls->Num();
                 for (int32 Index = 0; Index < Limit; ++Index)

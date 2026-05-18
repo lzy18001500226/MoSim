@@ -3,6 +3,13 @@
 	"EngineAssociation": "5.7",
 	"Category": "Simulation",
 	"Description": "External Unreal renderer for MWORKS quadrotor visualization.",
+	"Modules": [
+		{
+			"Name": "MworksUnrealRenderer",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
 	"AdditionalPluginDirectories": [
 		"../",
 		"../../Skills/unreal-engine-mcp/FlopperamUnrealMCP/Plugins"

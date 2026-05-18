@@ -6,6 +6,7 @@
 #include "Misc/FileHelper.h"
 #include "HAL/RunnableThread.h"
 #include "Interfaces/IPv4/IPv4Address.h"
+#include "Common/UdpSocketReceiver.h"
 #include "Json.h"
 #include "Serialization/ArrayReader.h"
 #include "Sockets.h"

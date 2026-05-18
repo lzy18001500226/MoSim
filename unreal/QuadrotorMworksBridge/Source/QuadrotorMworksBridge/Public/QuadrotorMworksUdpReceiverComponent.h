@@ -2,6 +2,8 @@
 
 #include "Components/ActorComponent.h"
 #include "CoreMinimal.h"
+#include "Common/UdpSocketReceiver.h"
+#include "Interfaces/IPv4/IPv4Endpoint.h"
 #include "QuadrotorMworksTypes.h"
 #include "QuadrotorMworksUdpReceiverComponent.generated.h"
 

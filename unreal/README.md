@@ -30,6 +30,7 @@ unreal/MworksUnrealRenderer/MworksUnrealRenderer.uproject
 WSL launcher:
 
 ```bash
+scripts/build_unreal_renderer.sh
 scripts/open_unreal_renderer.sh
 ```
 
@@ -133,5 +134,7 @@ Skills/unreal-engine-mcp/FlopperamUnrealMCP/Plugins/UnrealMCP
 ```
 
 Use it only to automate Unreal Editor scene setup. If `get_actors_in_level`
-returns `Connection refused`, the WSL MCP wrapper is working but Unreal Editor
-has not loaded/listened through the plugin yet.
+returns `Connection refused` while the UE log says the server started on
+`127.0.0.1:55557`, the WSL MCP wrapper is working but cannot reach the Windows
+loopback listener. Run the MCP Python server from Windows or change the editor
+plugin host binding before using MCP scene writes.
