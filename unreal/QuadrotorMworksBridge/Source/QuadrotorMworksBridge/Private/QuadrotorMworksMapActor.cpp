@@ -4,6 +4,7 @@
 #include "Components/SceneComponent.h"
 #include "Dom/JsonObject.h"
 #include "Json.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "UObject/ConstructorHelpers.h"
@@ -78,22 +79,56 @@ AQuadrotorMworksMapActor::AQuadrotorMworksMapActor()
     WallInstances->SetupAttachment(SceneRoot);
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMesh(TEXT("/Engine/BasicShapes/Cube.Cube"));
+    static ConstructorHelpers::FObjectFinder<UMaterialInterface> BasicMaterial(TEXT("/Engine/BasicShapes/BasicShapeMaterial"));
     if (CubeMesh.Succeeded())
     {
         TerrainInstances->SetStaticMesh(CubeMesh.Object);
         RandomColumnInstances->SetStaticMesh(CubeMesh.Object);
         WallInstances->SetStaticMesh(CubeMesh.Object);
     }
+    if (BasicMaterial.Succeeded())
+    {
+        BaseMaterial = BasicMaterial.Object;
+    }
 
     TerrainInstances->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     RandomColumnInstances->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     WallInstances->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    ApplyPreviewMaterials();
+}
+
+void AQuadrotorMworksMapActor::OnConstruction(const FTransform& Transform)
+{
+    Super::OnConstruction(Transform);
+    ApplyPreviewMaterials();
 }
 
 void AQuadrotorMworksMapActor::BeginPlay()
 {
     Super::BeginPlay();
     LoadRenderMapSummary();
+}
+
+void AQuadrotorMworksMapActor::ApplyPreviewMaterials()
+{
+    auto ApplyColor = [this](UInstancedStaticMeshComponent* Component, const FLinearColor& Color)
+    {
+        if (!Component || !BaseMaterial)
+        {
+            return;
+        }
+        UMaterialInstanceDynamic* DynamicMaterial = Component->CreateDynamicMaterialInstance(0, BaseMaterial);
+        if (DynamicMaterial)
+        {
+            DynamicMaterial->SetVectorParameterValue(TEXT("Color"), Color);
+            DynamicMaterial->SetVectorParameterValue(TEXT("BaseColor"), Color);
+            Component->SetMaterial(0, DynamicMaterial);
+        }
+    };
+
+    ApplyColor(TerrainInstances, TerrainColor);
+    ApplyColor(RandomColumnInstances, RandomColumnColor);
+    ApplyColor(WallInstances, WallColor);
 }
 
 void AQuadrotorMworksMapActor::ClearPreviewInstances()

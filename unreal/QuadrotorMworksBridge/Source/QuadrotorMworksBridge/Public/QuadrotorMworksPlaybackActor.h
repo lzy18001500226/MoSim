@@ -6,6 +6,7 @@
 
 class UQuadrotorMworksPlaybackComponent;
 class UQuadrotorMworksUdpReceiverComponent;
+class UMaterialInterface;
 class UStaticMeshComponent;
 
 UCLASS()
@@ -40,7 +41,20 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS")
     UQuadrotorMworksPlaybackComponent* Playback = nullptr;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
+    UMaterialInterface* BaseMaterial = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
+    FLinearColor BodyColor = FLinearColor(0.10f, 0.55f, 1.0f, 1.0f);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
+    FLinearColor PropellerColor = FLinearColor(0.05f, 0.05f, 0.05f, 1.0f);
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS")
+    void ApplyDefaultMaterials();
+
 protected:
+    virtual void OnConstruction(const FTransform& Transform) override;
     virtual void Tick(float DeltaSeconds) override;
 
 private:

@@ -89,6 +89,10 @@ def main() -> int:
         if token not in playback_actor:
             print(f"[FAIL] playback actor missing token: {token}")
             return 1
+    for token in ["ApplyDefaultMaterials", "BodyColor", "PropellerColor", "BasicShapeMaterial"]:
+        if token not in playback_actor:
+            print(f"[FAIL] playback actor material setup missing token: {token}")
+            return 1
 
     map_actor = (PLUGIN / "Source/QuadrotorMworksBridge/Private/QuadrotorMworksMapActor.cpp").read_text(
         encoding="utf-8"
@@ -102,6 +106,10 @@ def main() -> int:
         "TerrainInstances",
         "RandomColumnInstances",
         "WallInstances",
+        "ApplyPreviewMaterials",
+        "TerrainColor",
+        "RandomColumnColor",
+        "WallColor",
     ]:
         if token not in map_actor:
             print(f"[FAIL] map actor missing token: {token}")

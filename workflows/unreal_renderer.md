@@ -21,6 +21,11 @@ scripts/open_unreal_renderer.sh
 Override `UE_EDITOR` only if Unreal is installed somewhere other than
 `D:\Program Files\Epic Games\UE_5.7`.
 
+When C++ files under `unreal/QuadrotorMworksBridge/Source` change, close the
+running Unreal Editor before rebuilding. Otherwise Windows keeps
+`UnrealEditor-QuadrotorMworksBridge.dll` locked and UBT will fail at the link
+step.
+
 The project enables:
 
 ```text

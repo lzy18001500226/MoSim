@@ -5,6 +5,7 @@
 #include "QuadrotorMworksMapActor.generated.h"
 
 class UInstancedStaticMeshComponent;
+class UMaterialInterface;
 class USceneComponent;
 
 UCLASS()
@@ -45,11 +46,26 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map", meta = (ClampMin = "0"))
     int32 MaxWallInstances = 0;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map|Material")
+    UMaterialInterface* BaseMaterial = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map|Material")
+    FLinearColor TerrainColor = FLinearColor(0.72f, 0.82f, 0.70f, 1.0f);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map|Material")
+    FLinearColor RandomColumnColor = FLinearColor(0.58f, 0.58f, 0.58f, 1.0f);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map|Material")
+    FLinearColor WallColor = FLinearColor(0.72f, 0.72f, 0.70f, 1.0f);
+
     UFUNCTION(BlueprintCallable, Category = "MWORKS Map")
     bool LoadRenderMapSummary();
 
     UFUNCTION(BlueprintCallable, Category = "MWORKS Map")
     void ClearPreviewInstances();
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Map")
+    void ApplyPreviewMaterials();
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
     int32 RandomColumnCount = 0;
@@ -65,4 +81,5 @@ public:
 
 protected:
     virtual void BeginPlay() override;
+    virtual void OnConstruction(const FTransform& Transform) override;
 };
