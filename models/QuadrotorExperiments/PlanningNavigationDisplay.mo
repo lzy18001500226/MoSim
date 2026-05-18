@@ -122,6 +122,7 @@ protected
   Boolean pillar_active[max_pillars];
   Boolean pillar_sensed[max_pillars];
   Boolean pillar_near[max_pillars];
+  Boolean pillar_occluded[max_pillars];
   Real wall_arm1_position[max_wall_groups, 3];
   Real wall_arm2_position[max_wall_groups, 3];
   Real wall_arm1_display_position[max_wall_groups, 3];
@@ -146,6 +147,8 @@ protected
   Boolean wall_arm2_sensed[max_wall_groups];
   Boolean wall_arm1_near[max_wall_groups];
   Boolean wall_arm2_near[max_wall_groups];
+  Boolean wall_arm1_occluded[max_wall_groups];
+  Boolean wall_arm2_occluded[max_wall_groups];
   Real wall_arm1_length_direction[max_wall_groups, 3];
   Real wall_arm2_length_direction[max_wall_groups, 3];
   Real wall_arm1_width_direction[max_wall_groups, 3];
@@ -182,11 +185,13 @@ protected
   Real ground_bearing_dot[ground_pillar_count];
   Boolean ground_sensed[ground_pillar_count];
   Boolean ground_near[ground_pillar_count];
+  Boolean ground_occluded[ground_pillar_count];
   Real local_sensed_ground_position[local_sensed_ground_count, 3];
   Real local_sensed_ground_height[local_sensed_ground_count];
   Real local_sensed_ground_distance[local_sensed_ground_count];
   Boolean local_sensed_ground_active[local_sensed_ground_count];
   Boolean local_sensed_ground_near[local_sensed_ground_count];
+  Boolean local_sensed_ground_occluded[local_sensed_ground_count];
   parameter Integer boundary_wall_x_segment_count = if render_boundary_walls then terrain_y_count else 1;
   parameter Integer boundary_wall_y_segment_count = if render_boundary_walls then terrain_x_count else 1;
   Real boundary_wall_x_position[2 * boundary_wall_x_segment_count, 3];
@@ -294,6 +299,181 @@ protected
     half_length := sqrt(max(0.0, radius ^ 2 - perpendicular_distance ^ 2));
     y := min(max(axis_min, axis_max), center + half_length);
   end clippedIntervalHigh;
+
+  function segmentBoxIntersectionT
+    "First XY intersection ratio between segment p0-p1 and an axis-aligned box."
+    input Real x0;
+    input Real y0;
+    input Real x1;
+    input Real y1;
+    input Real bx0;
+    input Real by0;
+    input Real bx1;
+    input Real by1;
+    input Real inflate;
+    output Boolean hit;
+    output Real t_hit;
+  protected
+    Real dx;
+    Real dy;
+    Real t0;
+    Real t1;
+    Real p;
+    Real q;
+    Real r;
+    Real lo_x;
+    Real hi_x;
+    Real lo_y;
+    Real hi_y;
+  algorithm
+    dx := x1 - x0;
+    dy := y1 - y0;
+    t0 := 0.0;
+    t1 := 1.0;
+    hit := true;
+    lo_x := min(bx0, bx1) - inflate;
+    hi_x := max(bx0, bx1) + inflate;
+    lo_y := min(by0, by1) - inflate;
+    hi_y := max(by0, by1) + inflate;
+
+    p := -dx;
+    q := x0 - lo_x;
+    if hit then
+      if abs(p) <= 1e-12 then
+        hit := q >= 0.0;
+      else
+        r := q / p;
+        if p < 0.0 then
+          if r > t1 then
+            hit := false;
+          else
+            t0 := max(t0, r);
+          end if;
+        else
+          if r < t0 then
+            hit := false;
+          else
+            t1 := min(t1, r);
+          end if;
+        end if;
+      end if;
+    end if;
+
+    p := dx;
+    q := hi_x - x0;
+    if hit then
+      if abs(p) <= 1e-12 then
+        hit := q >= 0.0;
+      else
+        r := q / p;
+        if p < 0.0 then
+          if r > t1 then
+            hit := false;
+          else
+            t0 := max(t0, r);
+          end if;
+        else
+          if r < t0 then
+            hit := false;
+          else
+            t1 := min(t1, r);
+          end if;
+        end if;
+      end if;
+    end if;
+
+    p := -dy;
+    q := y0 - lo_y;
+    if hit then
+      if abs(p) <= 1e-12 then
+        hit := q >= 0.0;
+      else
+        r := q / p;
+        if p < 0.0 then
+          if r > t1 then
+            hit := false;
+          else
+            t0 := max(t0, r);
+          end if;
+        else
+          if r < t0 then
+            hit := false;
+          else
+            t1 := min(t1, r);
+          end if;
+        end if;
+      end if;
+    end if;
+
+    p := dy;
+    q := hi_y - y0;
+    if hit then
+      if abs(p) <= 1e-12 then
+        hit := q >= 0.0;
+      else
+        r := q / p;
+        if p < 0.0 then
+          if r > t1 then
+            hit := false;
+          else
+            t0 := max(t0, r);
+          end if;
+        else
+          if r < t0 then
+            hit := false;
+          else
+            t1 := min(t1, r);
+          end if;
+        end if;
+      end if;
+    end if;
+
+    t_hit := t0;
+  end segmentBoxIntersectionT;
+
+  function occludedByWallArms
+    "Approximate Mid360 XY line-of-sight occlusion by fixed L/T wall arms."
+    input Real sx;
+    input Real sy;
+    input Real tx;
+    input Real ty;
+    input Integer skip_group;
+    input Integer skip_arm;
+    input Integer max_groups;
+    input Integer wall_group_count;
+    input Real wall_arm1_min[max_groups, 3];
+    input Real wall_arm1_max[max_groups, 3];
+    input Real wall_arm2_min[max_groups, 3];
+    input Real wall_arm2_max[max_groups, 3];
+    output Boolean blocked;
+  protected
+    Boolean hit;
+    Real t_hit;
+  algorithm
+    blocked := false;
+    for j in 1:max_groups loop
+      if not blocked and j <= wall_group_count then
+        (hit, t_hit) := segmentBoxIntersectionT(
+          sx, sy, tx, ty,
+          wall_arm1_min[j, 1], wall_arm1_min[j, 2],
+          wall_arm1_max[j, 1], wall_arm1_max[j, 2],
+          0.02);
+        if hit and t_hit > 1e-6 and t_hit < 0.985 and not (j == skip_group and skip_arm == 1) then
+          blocked := true;
+        end if;
+      end if;
+      if not blocked and j <= wall_group_count then
+        (hit, t_hit) := segmentBoxIntersectionT(
+          sx, sy, tx, ty,
+          wall_arm2_min[j, 1], wall_arm2_min[j, 2],
+          wall_arm2_max[j, 1], wall_arm2_max[j, 2],
+          0.02);
+        if hit and t_hit > 1e-6 and t_hit < 0.985 and not (j == skip_group and skip_arm == 2) then
+          blocked := true;
+        end if;
+      end if;
+    end for;
+  end occludedByWallArms;
 
 public
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape map_boundary_x_min(
@@ -634,11 +814,15 @@ equation
         (pillar_distance_to_uav[i] * local_heading_norm)
       else 1.0;
     pillar_active[i] = i <= pillar_count;
+    pillar_occluded[i] = i <= pillar_count and occludedByWallArms(
+      sensed_position[1], sensed_position[2], pillar_center[i, 1], pillar_center[i, 2],
+      0, 0, max_wall_groups, wall_group_count,
+      wall_arm1_min, wall_arm1_max, wall_arm2_min, wall_arm2_max);
     pillar_sensed[i] = i <= pillar_count and highlight_local_costmap and
-      pillar_distance_to_uav[i] <= local_costmap_radius_m;
+      pillar_distance_to_uav[i] <= local_costmap_radius_m and not pillar_occluded[i];
     pillar_near[i] = i <= pillar_count and highlight_local_costmap and
       pillar_distance_to_uav[i] > local_costmap_radius_m and
-      pillar_distance_to_uav[i] <= local_costmap_fade_radius_m;
+      pillar_distance_to_uav[i] <= local_costmap_fade_radius_m and not pillar_occluded[i];
   end for;
 
   for i in 1:max_wall_groups loop
@@ -688,8 +872,20 @@ equation
       else 0.0;
     wall_arm1_distance_to_uav[i] = sqrt(wall_arm1_dx_to_uav[i] ^ 2 + wall_arm1_dy_to_uav[i] ^ 2);
     wall_arm2_distance_to_uav[i] = sqrt(wall_arm2_dx_to_uav[i] ^ 2 + wall_arm2_dy_to_uav[i] ^ 2);
-    wall_arm1_sensed[i] = highlight_local_costmap and wall_arm1_distance_to_uav[i] <= local_costmap_radius_m;
-    wall_arm2_sensed[i] = highlight_local_costmap and wall_arm2_distance_to_uav[i] <= local_costmap_radius_m;
+    wall_arm1_occluded[i] = i <= wall_group_count and occludedByWallArms(
+      sensed_position[1], sensed_position[2],
+      clampReal(sensed_position[1], min(wall_arm1_min[i, 1], wall_arm1_max[i, 1]), max(wall_arm1_min[i, 1], wall_arm1_max[i, 1])),
+      clampReal(sensed_position[2], min(wall_arm1_min[i, 2], wall_arm1_max[i, 2]), max(wall_arm1_min[i, 2], wall_arm1_max[i, 2])),
+      i, 1, max_wall_groups, wall_group_count,
+      wall_arm1_min, wall_arm1_max, wall_arm2_min, wall_arm2_max);
+    wall_arm2_occluded[i] = i <= wall_group_count and occludedByWallArms(
+      sensed_position[1], sensed_position[2],
+      clampReal(sensed_position[1], min(wall_arm2_min[i, 1], wall_arm2_max[i, 1]), max(wall_arm2_min[i, 1], wall_arm2_max[i, 1])),
+      clampReal(sensed_position[2], min(wall_arm2_min[i, 2], wall_arm2_max[i, 2]), max(wall_arm2_min[i, 2], wall_arm2_max[i, 2])),
+      i, 2, max_wall_groups, wall_group_count,
+      wall_arm1_min, wall_arm1_max, wall_arm2_min, wall_arm2_max);
+    wall_arm1_sensed[i] = highlight_local_costmap and wall_arm1_distance_to_uav[i] <= local_costmap_radius_m and not wall_arm1_occluded[i];
+    wall_arm2_sensed[i] = highlight_local_costmap and wall_arm2_distance_to_uav[i] <= local_costmap_radius_m and not wall_arm2_occluded[i];
     wall_arm1_near[i] = false;
     wall_arm2_near[i] = false;
     wall_arm1_display_radius[i] = if wall_arm1_sensed[i] then local_costmap_radius_m else 0.0;
@@ -759,9 +955,13 @@ equation
         (ground_center[i, 2] - sensed_position[2]) * local_heading_vector[2]) /
         (ground_distance_to_uav[i] * local_heading_norm)
       else 1.0;
-    ground_sensed[i] = highlight_local_costmap and ground_distance_to_uav[i] <= local_costmap_radius_m;
+    ground_occluded[i] = occludedByWallArms(
+      sensed_position[1], sensed_position[2], ground_center[i, 1], ground_center[i, 2],
+      0, 0, max_wall_groups, wall_group_count,
+      wall_arm1_min, wall_arm1_max, wall_arm2_min, wall_arm2_max);
+    ground_sensed[i] = highlight_local_costmap and ground_distance_to_uav[i] <= local_costmap_radius_m and not ground_occluded[i];
     ground_near[i] = highlight_local_costmap and ground_distance_to_uav[i] > local_costmap_radius_m and
-      ground_distance_to_uav[i] <= local_costmap_fade_radius_m;
+      ground_distance_to_uav[i] <= local_costmap_fade_radius_m and not ground_occluded[i];
   end for;
 
   for i in 1:local_sensed_ground_count loop
@@ -772,15 +972,20 @@ equation
     local_sensed_ground_distance[i] = sqrt(
       (local_sensed_ground_position[i, 1] - sensed_position[1]) ^ 2 +
       (local_sensed_ground_position[i, 2] - sensed_position[2]) ^ 2);
+    local_sensed_ground_occluded[i] = occludedByWallArms(
+      sensed_position[1], sensed_position[2],
+      local_sensed_ground_position[i, 1], local_sensed_ground_position[i, 2],
+      0, 0, max_wall_groups, wall_group_count,
+      wall_arm1_min, wall_arm1_max, wall_arm2_min, wall_arm2_max);
     local_sensed_ground_active[i] = highlight_local_costmap and
       local_sensed_ground_position[i, 1] >= x_min and local_sensed_ground_position[i, 1] <= x_max and
       local_sensed_ground_position[i, 2] >= y_min and local_sensed_ground_position[i, 2] <= y_max and
-      local_sensed_ground_distance[i] <= local_costmap_radius_m;
+      local_sensed_ground_distance[i] <= local_costmap_radius_m and not local_sensed_ground_occluded[i];
     local_sensed_ground_near[i] = highlight_local_costmap and
       local_sensed_ground_position[i, 1] >= x_min and local_sensed_ground_position[i, 1] <= x_max and
       local_sensed_ground_position[i, 2] >= y_min and local_sensed_ground_position[i, 2] <= y_max and
       local_sensed_ground_distance[i] > local_costmap_radius_m and
-      local_sensed_ground_distance[i] <= local_costmap_fade_radius_m;
+      local_sensed_ground_distance[i] <= local_costmap_fade_radius_m and not local_sensed_ground_occluded[i];
   end for;
 
   for i in 1:boundary_wall_x_segment_count loop

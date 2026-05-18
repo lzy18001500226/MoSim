@@ -137,6 +137,20 @@ def obstacle_xy_center(obstacle: dict[str, Any]) -> tuple[float, float]:
     raise ValueError(f"Unsupported obstacle type: {kind}")
 
 
+def obstacle_xy_visible_target(position: Point, obstacle: dict[str, Any]) -> tuple[float, float]:
+    """Target the nearest visible XY surface point, not the geometric center."""
+    kind = obstacle.get("type")
+    if kind == "box":
+        lo = point_from(obstacle["min"])
+        hi = point_from(obstacle["max"])
+        x = max(min(lo.x, hi.x), min(max(lo.x, hi.x), position.x))
+        y = max(min(lo.y, hi.y), min(max(lo.y, hi.y), position.y))
+        if min(lo.x, hi.x) <= position.x <= max(lo.x, hi.x) and min(lo.y, hi.y) <= position.y <= max(lo.y, hi.y):
+            return (position.x, position.y)
+        return (x, y)
+    return obstacle_xy_center(obstacle)
+
+
 def obstacle_xy_radius(obstacle: dict[str, Any]) -> float:
     kind = obstacle.get("type")
     if kind == "box":
@@ -167,6 +181,76 @@ def box_xy_distance(a: tuple[float, float, float, float], b: tuple[float, float,
     dx = max(bx0 - ax1, ax0 - bx1, 0.0)
     dy = max(by0 - ay1, ay0 - by1, 0.0)
     return math.hypot(dx, dy)
+
+
+def segment_box_intersection_t(
+    a: tuple[float, float],
+    b: tuple[float, float],
+    box: tuple[float, float, float, float],
+    inflate: float = 0.0,
+) -> float | None:
+    """Return first XY intersection ratio between segment a-b and an AABB."""
+    x0, y0 = a
+    x1, y1 = b
+    bx0, by0, bx1, by1 = box
+    bx0 -= inflate
+    by0 -= inflate
+    bx1 += inflate
+    by1 += inflate
+    dx = x1 - x0
+    dy = y1 - y0
+    t0 = 0.0
+    t1 = 1.0
+    for p, q in [(-dx, x0 - bx0), (dx, bx1 - x0), (-dy, y0 - by0), (dy, by1 - y0)]:
+        if abs(p) <= 1e-12:
+            if q < 0.0:
+                return None
+            continue
+        r = q / p
+        if p < 0.0:
+            if r > t1:
+                return None
+            t0 = max(t0, r)
+        else:
+            if r < t0:
+                return None
+            t1 = min(t1, r)
+    return t0
+
+
+def obstacle_visible_from(
+    position: Point,
+    obstacle: dict[str, Any],
+    obstacle_index: int,
+    wall_blockers: list[tuple[int, tuple[float, float, float, float]]],
+    occlusion_margin_m: float = 0.02,
+) -> bool:
+    """Approximate Mid360 XY line-of-sight visibility blocked by wall boxes."""
+    tx, ty = obstacle_xy_visible_target(position, obstacle)
+    target_distance = math.hypot(tx - position.x, ty - position.y)
+    if target_distance <= 1e-9:
+        return True
+    for blocker_index, blocker_box in wall_blockers:
+        if blocker_index == obstacle_index:
+            continue
+        hit_t = segment_box_intersection_t(
+            (position.x, position.y),
+            (tx, ty),
+            blocker_box,
+            inflate=occlusion_margin_m,
+        )
+        if hit_t is not None and 1e-6 < hit_t < 0.985:
+            return False
+    return True
+
+
+def obstacle_index_in_list(obstacles: list[dict[str, Any]], target: dict[str, Any] | None) -> int | None:
+    if target is None:
+        return None
+    for index, obstacle in enumerate(obstacles):
+        if obstacle is target or obstacle == target:
+            return index
+    return None
 
 
 def expand_wall_groups(config: dict[str, Any]) -> dict[str, Any]:
@@ -1383,10 +1467,15 @@ def discovered_obstacles(
     position: Point,
     known_indices: set[int],
     window_radius_m: float,
+    wall_blockers: list[tuple[int, tuple[float, float, float, float]]] | None = None,
 ) -> set[int]:
     discovered = set(known_indices)
+    blockers = wall_blockers or []
     for index, obstacle in enumerate(truth_obstacles):
-        if obstacle_distance(position, obstacle) <= window_radius_m:
+        if (
+            obstacle_distance(position, obstacle) <= window_radius_m
+            and obstacle_visible_from(position, obstacle, index, blockers)
+        ):
             discovered.add(index)
     return discovered
 
@@ -1398,6 +1487,7 @@ def discovered_obstacles_along_segment(
     known_indices: set[int],
     window_radius_m: float,
     step_m: float,
+    wall_blockers: list[tuple[int, tuple[float, float, float, float]]] | None = None,
 ) -> set[int]:
     discovered = set(known_indices)
     length = distance(start, end)
@@ -1409,7 +1499,7 @@ def discovered_obstacles_along_segment(
             start.y + (end.y - start.y) * ratio,
             start.z + (end.z - start.z) * ratio,
         )
-        discovered = discovered_obstacles(truth_obstacles, position, discovered, window_radius_m)
+        discovered = discovered_obstacles(truth_obstacles, position, discovered, window_radius_m, wall_blockers)
     return discovered
 
 
@@ -1421,6 +1511,11 @@ def plan_receding_horizon(
     """Plan with only locally discovered obstacles, then validate against truth."""
     map_config = clone_jsonable(require_mapping(config, "map"))
     truth_obstacles = list(map_config.get("obstacles", []))
+    wall_blockers = [
+        (index, obstacle_xy_bounds(obstacle))
+        for index, obstacle in enumerate(truth_obstacles)
+        if obstacle.get("type") == "box" and "wall_group_id" in obstacle
+    ]
     window_radius_m = float(local_config.get("window_radius_m", 2.5))
     commit_distance_m = float(local_config.get("commit_distance_m", 1.2))
     local_goal_horizon_m = float(local_config.get("local_goal_horizon_m", 0.0))
@@ -1439,7 +1534,7 @@ def plan_receding_horizon(
     while distance(current, goal) > goal_tolerance_m:
         if replan_count >= max_replans:
             raise RuntimeError(f"local planning exceeded max_replans={max_replans}")
-        known_indices = discovered_obstacles(truth_obstacles, current, known_indices, window_radius_m)
+        known_indices = discovered_obstacles(truth_obstacles, current, known_indices, window_radius_m, wall_blockers)
         local_map = clone_jsonable(map_config)
         distance_to_goal = distance(current, goal)
         local_goal = goal
@@ -1507,6 +1602,7 @@ def plan_receding_horizon(
                 known_indices,
                 window_radius_m,
                 max(truth_grid.resolution, 0.4),
+                wall_blockers,
             )
             previous_point = point
             if traveled >= commit_distance_m:
@@ -1543,7 +1639,11 @@ def plan_receding_horizon(
                 known_indices,
                 window_radius_m,
                 max(truth_grid.resolution, 0.4),
+                wall_blockers,
             )
+            nearest_index = obstacle_index_in_list(truth_obstacles, segment_obstacle)
+            if nearest_index is not None:
+                known_indices.add(nearest_index)
             blocked_retry_count += 1
             if VERBOSE:
                 obstacle_label = None
@@ -1586,6 +1686,8 @@ def plan_receding_horizon(
         "local_replan_count": replan_count,
         "known_obstacle_count_final": len(known_indices),
         "truth_obstacle_count": len(truth_obstacles),
+        "lidar_wall_occlusion_enabled": True,
+        "lidar_occluding_wall_box_count": len(wall_blockers),
     }, planning_grid
 
 

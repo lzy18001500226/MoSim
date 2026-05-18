@@ -1,0 +1,81 @@
+{
+  "source": "MWORKS_MCP",
+  "purpose": "planning_lidar_wall_occlusion_check",
+  "load_ok": [
+    {
+      "file": "QuadrotorModel/package.mo",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "file": "models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "file": "models/QuadrotorExperiments/PlanningNavigationDisplay.mo",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "file": "models/QuadrotorExperiments/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo",
+      "ok": true,
+      "error": ""
+    }
+  ],
+  "checks": [
+    {
+      "model": "QuadrotorExperiments.PlanningNavigationDisplay",
+      "ok": true,
+      "result": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.395,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "QuadrotorExperiments.PlanningNavigationDisplay",
+            "dt_s": 0.392
+          }
+        ]
+      }
+    },
+    {
+      "model": "QuadrotorExperiments.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop",
+      "ok": true,
+      "result": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.806,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "QuadrotorExperiments.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop",
+            "dt_s": 0.793
+          }
+        ]
+      }
+    }
+  ],
+  "trackability": {
+    "lidar_wall_occlusion_enabled": true,
+    "lidar_occluding_wall_box_count": 16,
+    "known_obstacle_count_final": 822,
+    "truth_obstacle_count": 7118,
+    "local_replan_count": 113,
+    "path_length_m": 105.7588586748551,
+    "min_obstacle_distance_m": 0.3564919704207469,
+    "dynamic_violation_count": 0,
+    "inflated_collision_count": 0,
+    "trackability_score": 1.0
+  },
+  "log": "results/model_checks/planning_occlusion/logs/sysplorer_planning_lidar_occlusion_check_20260518.jsonl"
+}
