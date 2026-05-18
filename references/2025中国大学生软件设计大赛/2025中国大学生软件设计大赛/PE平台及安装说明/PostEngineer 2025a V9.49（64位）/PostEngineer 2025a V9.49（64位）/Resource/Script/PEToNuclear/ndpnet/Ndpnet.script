@@ -1,0 +1,2658 @@
+'创建时间: 2021-09-17
+'作者: ypj
+'描述: ndpnet 相关定义
+'更新记录:
+' ypj, 2022-08-27, SDK2.0 
+
+
+Script{
+
+'---------------------------------------------
+' 消息ID
+'---------------------------------------------
+'100 - 199 系统指令
+int NDPNET_HEART_MSG_ID;			 '100
+int NDPNET_HEART_RESPONSE_MSG_ID;    '101
+
+'200 - 299 响应指令
+int NDPNET_RESPONSE_MSG_ID;			 '200
+
+'300 - 399 计算指令 主控组件发送
+int NDPNET_CTRL_START_CALC_MSG_ID;		'301
+int NDPNET_CTRL_PAUSE_CALC_MSG_ID;		'302
+int NDPNET_CTRL_RESUME_CALC_MSG_ID;		'303
+int NDPNET_CTRL_STOP_CALC_MSG_ID;		'304
+int NDPNET_CTRL_STEP_CALC_MSG_ID;		'305
+int NDPNET_CTRL_SPEED_CALC_MSG_ID;		'306
+int NDPNET_CTRL_JUMP_CALC_MSG_ID;		'307
+int NDPNET_CTRL_VERIFY_CALC_MSG_ID;		'308
+
+
+'500 - 599 主控设置指令
+int NDPNET_SET_MODULE_ID_MSG_ID;        '501
+int NDPNET_SET_CALC_ENV_MSG_ID;			'502
+int NDPNET_SET_MODULE_MODE_MSG_ID;		'503
+int NDPNET_PROXY_SUBSCIBE_MSG_ID;		'504
+int NDPNET_PROXY_UNSUBSCIBE_MSG_ID;		'505
+
+'600 - 699 可视组件向主控组件发送指令
+int NDPNET_REGISTER_MODULE_MSG_ID;		 '600
+int NDPNET_UNREGISTER_MODULE_MSG_ID;     '601
+int NDPNET_CALC_FINISHED_MSG_ID;         '602
+int NDPNET_CALC_READY_MSG_ID ;           '603
+int NDPNET_SET_WORK_MODE_MSG_ID ;        '604
+int NDPNET_SET_CALE_PARAMETER_MSG_ID;    '605
+
+'800 - 899 数据订阅指令
+int NDPNET_SUBSCRIBE_DATA_MSG_ID;		'800
+int NDPNET_UNSUBSCRIBE_DATA_MSG_ID;		'801
+int NDPNET_QUERY_DATA_MSG_ID;		    '803
+
+'900 - 999    数据消息
+int NDPNET_DATA_MSG_ID;	                '900
+int NDPNET_DATA_UNION_MSG_ID;	        '901
+
+'代理指令
+int NDPNET_PROXY_REGISTER_MSG_ID;          '1000
+int NDPNET_PROXY_CTRL_MODULE_MSG_ID;      '1001
+int NDPNET_PROXY_MODULE_STATUS_MSG_ID;	  '1002
+int NDPNET_PROXY_UNREGISTER_MSG_ID;	      '1003
+
+'// 组件运行计算机资源报告指令
+int NDPNET_MACHINE_STATUS_MSG_ID;	      '1100
+
+'//计算引擎代理组件数据指令
+int NDPNET_PROXY_DATA_MSG_ID;              '1200
+int NDPNET_PROXY_DATA_UNION_MSG_ID;        '1201
+
+'//系统全局变量宏定义
+int NDPNET_NETWORK_ERROR;        '19000
+int NDPNET_NETWORK_TIMEOUT;      '(3*60)
+int NDPNET_UINT_MAX;             '0xffffffff
+int NDPNET_STR_SIZE;             '128
+int NDPNET_BUF_SIZE;             '(30*1024*1024)
+int NDPNET_READ_BYTES;           '(100*1024)
+int NDPNET_DATA_NAME_SIZE;       '(64)
+int NDPNET_DATA_VALUE_SIZE;      '(64)
+int NDPNET_HANDLE_MAX;           '0xffff
+'#define NDPNET_CALLBACK             '_stdcall
+int NDPNET_CALC_ENGINE_INPUT_PARAM_MAX;            '(15000)
+int NDPNET_CALC_ENGINE_INPUT_PARAM_BUF_SIZE;       '(NDPNET_DATA_NAME_SIZE * NDPNET_CALC_ENGINE_INPUT_PARAM_MAX)
+int NDPNET_CALC_ENGINE_OUTPUT_PARAM_MAX;           '(15000)
+int NDPNET_CALC_ENGINE_OUTPUT_PARAM_BUF_SIZE;      '(NDPNET_DATA_NAME_SIZE * NDPNET_CALC_ENGINE_OUTPUT_PARAM_MAX)
+	
+'//数据类型定义
+'typedef bool                        ndp_bool;           /* bool */
+'typedef char                        ndp_char;           /* char */
+'typedef unsigned char               ndp_uchar;          /* uchar */
+'typedef signed char                 ndp_int8;           /* 8 bit signed */
+'typedef unsigned char               ndp_uint8;          /* 8 bit unsigned */
+'typedef short                       ndp_int16;          /* 16 bit signed */
+'typedef short                       ndp_short;          /* 16 bit signed */
+'typedef unsigned short              ndp_uint16;         /* 16 bit unsigned */
+'typedef unsigned short              ndp_ushort;         /* 16 bit unsigned */
+'typedef int                         ndp_int;            /* 32 bit signed */
+'typedef int                         ndp_int32;          /* 32 bit signed */
+'typedef unsigned int                ndp_uint32;         /* 32 bit unsigned */
+'typedef long long                   ndp_int64;          /* 64 bit int */
+'typedef long                        ndp_long;           /* long */
+'typedef long long                   ndp_longlong;       /* long long */
+'typedef unsigned long long          ndp_uint64;         /* 64 bit unsigned */
+'typedef unsigned long long          ndp_ulonglong;      /* unsigned long long */
+'typedef float                       ndp_float;          /* float */
+'typedef double                      ndp_double;         /* double */
+'typedef long double                 ndp_longdouble;     /* long double */
+'typedef unsigned short              ndpnet_handle;      /* handle */
+	
+	'/******************************通信共用体结构定义*********************************/
+    '//数据对应结构
+    class NdpnetDataUnionValue 'typedef union ndpnetDataUnionValueTag
+    {
+        '//T_CHAR
+        'ndp_char    c_value;
+        '//T_BOOL
+        'ndp_bool    l_value;
+        '//T_BYTE
+        'ndp_uchar   b_value;
+        '//T_SHORT
+        'ndp_short   s_value;
+        '//T_INT
+        int     i_value; 'ndp_int     i_value;
+        '//T_FLOAT
+        float   f_value; 'ndp_float   f_value;
+        '//T_DOUBLE
+        'ndp_double	d_value;
+        '//T_LONG
+        'ndp_int     long_value;
+
+        NdpnetDataUnionValue()
+		{}
+    } 'ndpnet_data_union_value;
+    '/******************************通信共用体结构定义 end *********************************/
+	
+	'/***********************************通信枚举常量定义**************************************/
+    '//计算模式
+    'enum NDPNET_CALC_MODE_ENUM
+    '{
+        '//预测模式
+        byte NDPNET_CALC_MODE_PREDICT; 'NDPNET_CALC_MODE_PREDICT = 0,
+        '//设计模式
+        byte NDPNET_CALC_MODE_DESIGN; 'NDPNET_CALC_MODE_DESIGN
+    '};
+
+    '//计算引擎订阅参数类型
+    'enum NDPNET_CALC_ENGINE_PARAM_TYPE
+    '{
+        '//输入参数
+        byte NDPNET_CALC_PARAM_INPUT; 'NDPNET_CALC_PARAM_INPUT = 0,
+        '//输出参数
+        byte NDPNET_CALC_PARAM_OUTPUT; 'NDPNET_CALC_PARAM_OUTPUT
+    '};
+
+	'//包类型
+	'enum NDPNET_PACKAGE_TYPE_ENUM
+	'{
+		'//无效
+		byte NDPNET_INVALID_PACKAGE_TYPE;  ' 0
+		'//指令类
+		byte NDPNET_INSTRUCT_PACKAGE_TYPE; ' 1
+		'//响应类
+		byte NDPNET_RESPONSE_PACKAGE_TYPE; ' 2
+		'//数据类
+		byte NDPNET_DATA_PACKAGE_TYPE; '3
+		'//心跳类
+		byte NDPNET_HEART_PACKAGE_TYPE; '4
+		'//代理类
+		byte NDPNET_PROXY_PACKAGE_TYPE; '5
+		'//状态报告类
+        byte NDPNET_STATUS_REPORT_TYPE; '6
+	'};
+
+	'//响应类型
+	'enum NEPNET_RESPONSE_TYPE_ENUM
+	'{
+		'//无效
+		byte NDPNET_NO_RESPONSE; ' 0
+		'//立即回应
+		byte NDPNET_IMMEDIATELY_RESPONSE; '1
+		'//任务完成后回应
+		byte NDPNET_END_TASK_RESPONSE; ' 2
+	'};
+
+	'//响应类型
+	'enum NEPNET_CALC_READY_TYPE_ENUM
+	'{
+		'//计算准备错误
+		byte NDPNET_CALC_READY_ERROR; ' 0
+		'//计算准备就绪
+		byte NDPNET_CALC_READY_OK; ' 1
+	'};
+
+	'//响应类型
+	'enum NEPNET_EXCUTE_RESULT_ENUM
+	'{
+		'//计算执行错误
+		byte NDPNET_EXCUTE_ERROR; ' 0
+		'//计算执行就绪
+		byte NDPNET_EXCUTE_OK; ' 1
+	'};
+
+
+	'//数据类型
+	'enum NDPNET_DATA_TYPE_ENUM
+	'{
+	    '//字符
+        int NDPNET_TYPE_CHAR; '= -1,
+        '//布尔
+        int NDPNET_TYPE_BOOL; '= -2,
+        '//字节
+        int NDPNET_TYPE_BYTE; '= -3,
+        '//短整型
+        int NDPNET_TYPE_SHORT; '= -4,
+		'//整形
+		int NDPNET_TYPE_INT;    '=-5 ' 0
+		'//单精度浮点数
+		int NDPNET_TYPE_FLOAT;  '= -6 ' 1
+		'//双精度浮点
+		int NDPNET_TYPE_DOUBLE; '=-7  ' 2
+        '// 长整型
+        int NDPNET_TYPE_LONG;  ' NDPNET_TYPE_LONG = -9,
+		'//未知数据类型
+        int NDPNET_TYPE_UNKNOW; '= 0;
+		'//字符串
+		int NDPNET_TYPE_STRING; ' = 1 ' 3
+	'};
+
+	'//分包标识
+	'enum NDPNET_SUB_FLAG_ENUM
+	'{
+		'//整包标识
+		byte NDPNET_FULL_FLAG; ' 0
+		'//分包标识
+		byte NDPNET_SUB_FLAG;  ' 1
+	'};
+	'/***********************************通信枚举常量定义 end **********************************/
+
+	'/***********************************通信包结构定义************************************/
+    '//通信包基本结构体定义
+    '//包头信息
+	class NdpnetPkgHead 'typedef struct ndpnetPkgHeadTag
+    {
+        '//通信包分类类型ID
+        int pkgType;  'ndp_uint8 pkgType;
+        '//响应标示
+        int resFlag;  'ndp_uint8 resFlag;
+        '//消息ID
+        int msgId;    'ndp_uint16 msgId;
+        '//发送方组件ID
+        int senderId;  'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//数据包序列号
+        dword  sequence;  'ndp_uint32  sequence;
+        '//分包标识
+        int subFlag;  'ndp_uint8 subFlag;
+        '//子包序列号
+        int subSequence; 'ndp_uint16 subSequence;
+        '//包总长度
+        dword pkgLen; 'ndp_uint32 pkgLen;
+
+		NdpnetPkgHead()
+		{
+		}
+
+    } 'ndpnet_pkg_head;
+
+
+	'//计算环境结构
+	class NdpnetCalcEnv
+	{
+		NdpnetCalcEnv() {}
+
+		'//机组ID
+        int unitId;      'ndp_uint16 unitId;
+		'//计算模式	
+        byte calcModeId; 'ndp_uint8 calcModeId;
+		'//工况ID		
+        int workModeId;  'ndp_uint16 workModeId;
+		'//计算倍速
+        float speed;     'ndp_float  speed;
+	}
+
+
+	'//计算环境结构
+	class NdpnetCalcEnvFull
+	{
+		NdpnetCalcEnvFull() {}
+		'//机组ID
+		int unitId;           'ndp_uint16 unitId;
+        
+		'//计算模式
+		byte calcModeId;      'ndp_uint8 calcModeId;
+		'//工况ID
+		int workModeId;       'ndp_uint16 workModeId;
+		'//计算倍速
+        float speed;          'ndp_float  speed;
+		'//机组名称
+		string unitName;      'ndp_uint8 unitName[NDPNET_STR_SIZE];
+		'//计算模式名称
+		string calcModeName;  'ndp_uint8 calcModeName[NDPNET_STR_SIZE];
+		'//工况名称
+		string workModeName;  'ndp_uint8 workModeName[NDPNET_STR_SIZE];
+	}
+
+    '//子组件运行模式
+	class NdpnetModuleMode 'typedef struct ndpnetModuleModeTag
+     {
+		NdpnetModuleMode() {}
+
+		int modeId; 'ndp_uint16 modeId;
+		string modeName; 'ndp_uint8 modeName[NDPNET_STR_SIZE];   
+	}
+
+	'//组件订阅消息数据节点
+	class NdpnetSubscribeNode
+	{
+		NdpnetSubscribeNode() {}
+
+		'//数据项类型	
+        dword type;   'ndp_uint32 type;
+		'//数据项编码	
+        int code;    'ndp_short code;  
+	}
+
+	'//主控订阅消息数据节点
+    class NdpnetProxySubscribeNode 'typedef struct ndpnetProxySubscribeNodeTag 
+    {
+        '//参数ID
+        dword type; 'ndp_uint32 type;
+        '//参数编码
+        int code; 'ndp_short code;
+
+        NdpnetProxySubscribeNode() {}
+    } 'ndpnet_proxy_subscribe_node;
+
+    '//主控数据节点(ASCII)
+    class NdpnetDataNode 'typedef struct ndpnetDataNodeTag
+    {
+        '//参数类型
+        int type; 'ndp_int16 type;
+        '//参数ID
+        dword id; 'ndp_uint32  id;
+        '//参数编码
+        string code; 'ndp_uint8  code[NDPNET_DATA_NAME_SIZE];
+        '//参数值
+        string value; 'ndp_uint8  value[NDPNET_DATA_VALUE_SIZE];
+        
+        NdpnetDataNode() {}
+
+    } 'ndpnet_data_node;
+
+
+    '//主控数据节点(UNION)
+    class NdpnetDataUnionNode 'typedef struct ndpnetDataUnionNodeTag
+    {
+        '//参数类型
+        int type; 'ndp_int16 type;
+        '//参数ID
+        dword id; 'ndp_uint32  id;
+        '//参数编码
+        int code; 'ndp_short code;
+        '//参数值
+        NdpnetDataUnionValue value; 'ndpnet_data_union_value  value;
+    
+        NdpnetDataUnionNode() 
+		{
+		    value = new NdpnetDataUnionValue;
+		}
+    } 'ndpnet_data_union_node;
+
+    '//计算引擎数据节点（ASCII 码 表示）
+    class NdpnetProxyDataNode 'typedef struct ndpnetProxyDataNodeTag
+    {
+        '//参数类型
+        int type; 'ndp_int16 type;
+        '//参数ID
+        dword id; 'ndp_uint32  id;
+        '//参数编码
+        string code; 'ndp_uint8  code[NDPNET_DATA_NAME_SIZE];
+        '//参数值
+        string value; 'ndp_uint8  value[NDPNET_DATA_VALUE_SIZE];
+    
+        NdpnetProxyDataNode() {}
+    } 'ndpnet_proxy_data_node;
+
+    '//计算引擎数据节点（union 结构）
+    class NdpnetProxyDataUnionNode 'typedef struct ndpnetProxyDataUnionNodeTag
+    {
+        '//参数类型
+        int type; 'ndp_int16 type;
+        '//参数ID
+        dword id; 'ndp_uint32  id;
+        '//参数编码
+        int code; 'ndp_short  code;
+        '//参数值
+        NdpnetDataUnionValue value;'ndpnet_data_union_value  value;
+    
+        NdpnetProxyDataUnionNode() {}
+    } 'ndpnet_proxy_data_union_node;
+
+    '//代理注册节点
+    class NdpnetProxyRegisterNode 'typedef struct ndpnetProxyRegisterNodeTag
+    {
+        '//子组件ID
+        int moduleId; 'ndp_uint16  moduleId;
+        '//子组件名称
+        string moduleName; 'ndp_uint8   moduleName[NDPNET_STR_SIZE];
+        '//子组件状态
+        int state; 'ndp_uint8   state;
+
+        NdpnetProxyRegisterNode() {}
+    } 'ndpnet_proxy_register_node;
+
+    '//代理子组件状态节点
+    class NdpnetProxyModuleStatusNode 'typedef struct ndpnetProxyModuleStateNodeTag
+    {
+        '//子组件ID
+        int moduleId; 'ndp_uint16  moduleId;
+        '//子组件状态
+        int state; 'ndp_uint8   state;
+
+        NdpnetProxyModuleStatusNode() {}
+    } 'ndpnet_proxy_module_status_node;
+
+    '//100-199
+    '//NDPNET_HEART_MSG_ID				      100
+    '//心跳消息数据
+    class NdpnetHeartPkgData 'typedef struct ndpnetHeartPkgDataTag
+    {
+        dword len; 'ndp_uint32 len;//长度
+        dword ts; 'ndp_uint64 ts;//时间
+
+        NdpnetHeartPkgData() {}
+    } 'ndpnet_heart_pkg_data;
+
+    '//心跳消息
+    class NdpnetHeartPkg 'typedef struct ndpnetHeartPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;         //包头
+        NdpnetHeartPkgData data; 'ndpnet_heart_pkg_data data;   //包体
+    
+        NdpnetHeartPkg() {}
+    } 'ndpnet_heart_pkg;
+
+    '//心跳信息
+    class NdpnetHeartInfo 'typedef struct ndpnetHeartInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+
+        NdpnetHeartInfo() {}
+    } 'ndpnet_heart_info;
+
+    '//NDPNET_HEART_RESPONSE_MSG_ID          101
+    '//心跳响应消息数据
+    class NdpnetResponseHeartPkgData 'typedef struct ndpnetResponseHeartPkgDataTag
+    {
+        dword len; 'ndp_uint32 len;                  //长度
+        dword ts; 'ndp_uint64 ts;                   //时间
+  
+        NdpnetResponseHeartPkgData() {}
+    } 'ndpnet_response_heart_pkg_data;
+
+
+    '//心跳响应消息
+    class NdpnetResponseHeartPkg 'typedef struct ndpnetResponseHeartPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                     //包头
+        NdpnetResponseHeartPkgData data; 'ndpnet_response_heart_pkg_data data;      //包体
+   
+        NdpnetResponseHeartPkg() {}
+    } 'ndpnet_response_heart_pkg;
+
+    '//200-299
+    '//NDPNET_RESPONSE_MSG_ID			      200
+    '//响应消息
+    class NdpResponsePkgData 'typedef struct ndpResponsePkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//消息ID
+        int msgId; 'ndp_uint16 msgId;
+        '//执行结果
+        int excuteResult; 'ndp_uint16 excuteResult;
+        '//数据包序列值
+        dword sequence; 'ndp_uint32  sequence;
+        '//备注
+        string comment; 'ndp_uint8 comment[NDPNET_STR_SIZE];
+    
+        NdpResponsePkgData() {}
+    } 'ndpnet_response_pkg_data;
+
+    '//响应消息
+    class NdpResponsePkg 'typedef struct ndpResponsePkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;
+        NdpResponsePkgData data; 'ndpnet_response_pkg_data data;
+    
+        NdpResponsePkg() {}
+    } 'ndpnet_response_pkg;
+
+    '//300 - 399
+    '//NDPNET_CTRL_START_CALC_MSG_ID		  301
+    '//启动计算消息数据
+    class NdpnetCtrlStartCalcPkgData 'typedef struct ndpnetCtrlStartCalcPkgDataTag
+    {
+        '//数据区长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//组件工作模式ID
+        int moduleModeId; 'ndp_uint16 moduleModeId;
+        '//开始时间
+        dword starTime; 'ndp_uint32 starTime;
+        '//计算时长
+        dword calcTime; 'ndp_uint32 calcTime;
+        '//倍速
+        float speed; 'ndp_float speed;
+
+        NdpnetCtrlStartCalcPkgData() {}
+    } 'ndpnet_ctrl_start_calc_pkg_data;
+
+    '//启动计算消息
+    class NdpnetCtrlStartCalcPkg 'typedef struct ndpnetCtrlStartCalcPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                         //包头
+        NdpnetCtrlStartCalcPkgData data; 'ndpnet_ctrl_start_calc_pkg_data data;         //包体
+    
+        NdpnetCtrlStartCalcPkg() {}
+    } 'ndpnet_ctrl_start_calc_pkg;
+
+    '//NDPNET_CTRL_PAUSE_CALC_MSG_ID		  302
+    '//暂停计算消息数据
+    class NdpnetCtrlPauseCalcPkgData 'typedef struct ndpnetCtrlPauseCalcPkgDataTag
+    {
+        '//数据区长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+    
+        NdpnetCtrlPauseCalcPkgData() {}
+    } 'ndpnet_ctrl_pause_calc_pkg_data;
+
+    '//暂停计算消息
+    class NdpnetCtrlPauseCalcPkg 'typedef struct ndpnetCtrlPauseCalcPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                          //包头
+        NdpnetCtrlPauseCalcPkgData data; 'ndpnet_ctrl_pause_calc_pkg_data data;          //包体
+    
+        NdpnetCtrlPauseCalcPkg() {}
+    } 'ndpnet_ctrl_pause_calc_pkg;
+
+    '//NDPNET_CTRL_RESUME_CALC_MSG_ID		  303
+    '//恢复计算消息数据
+    class NdpnetCtrlResumeCalcPkgData 'typedef struct ndpnetCtrlResumeCalcPkgDataTag
+    {
+        '//数据区长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+    
+        NdpnetCtrlResumeCalcPkgData() {}
+    } 'ndpnet_ctrl_resume_calc_pkg_data;
+
+    '//恢复计算消息
+    class NdpnetCtrlResumeCalcPkg 'typedef struct ndpnetCtrlResumeCalcPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                          //包头
+        NdpnetCtrlResumeCalcPkgData data; 'ndpnet_ctrl_resume_calc_pkg_data data;         //包体
+    
+        NdpnetCtrlResumeCalcPkg() {}
+    } 'ndpnet_ctrl_resume_calc_pkg;
+
+    '//NDPNET_CTRL_STOP_CALC_MSG_ID		  304
+    '//停止计算消息数据
+    class NdpnetCtrlStopCalcPkgData'typedef struct ndpnetCtrlStopCalcPkgDataTag
+    {
+        '//数据区长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+    
+        NdpnetCtrlStopCalcPkgData() {}
+    } 'ndpnet_ctrl_stop_calc_pkg_data;
+
+    '//停止计算消息
+    class NdpnetCtrlStopCalcPkg 'typedef struct ndpnetCtrlStopCalcPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                     //包头
+        NdpnetCtrlStopCalcPkgData data; 'ndpnet_ctrl_stop_calc_pkg_data data;      //包体
+    
+        NdpnetCtrlStopCalcPkg() {}
+    } 'ndpnet_ctrl_stop_calc_pkg;
+
+    '//NDPNET_CTRL_STEP_CALC_MSG_ID		  305
+    '//步进计算消息数据
+    class NdpnetCtrlStepCalcPkgData 'typedef struct ndpnetCtrlStepCalcPkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//步进时间
+        dword step; 'ndp_int32  step;
+    
+        NdpnetCtrlStepCalcPkgData() {}
+    } 'ndpnet_ctrl_step_calc_pkg_data;
+
+    '//步进计算消息
+    class NdpnetCtrlStepCalcPkg 'typedef struct ndpnetCtrlStepCalcPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                 //包头
+        NdpnetCtrlStepCalcPkgData data; 'ndpnet_ctrl_step_calc_pkg_data data;  //包体
+    
+        NdpnetCtrlStepCalcPkg() {}
+    } 'ndpnet_ctrl_step_calc_pkg;
+
+    '//NDPNET_CTRL_SPEED_CALC_MSG_ID		  306
+    '//倍数计算消息数据
+    class NdpnetCtrlSpeedCalcPkgData 'typedef struct ndpnetCtrlSpeedCalcPkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//倍速
+        float speed; 'ndp_float  speed;
+    
+        NdpnetCtrlSpeedCalcPkgData() {}
+    } 'ndpnet_ctrl_speed_calc_pkg_data;
+
+    '//倍数计算消息
+    class NdpnetCtrlSpeedCalcPkg 'typedef struct ndpnetCtrlSpeedCalcPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                  //包头
+        NdpnetCtrlSpeedCalcPkgData data; 'ndpnet_ctrl_speed_calc_pkg_data data;  //包体
+    
+        NdpnetCtrlSpeedCalcPkg() {}
+    } 'ndpnet_ctrl_speed_calc_pkg;
+
+    '//NDPNET_CTRL_JUMP_CALC_MSG_ID		  307
+    '//跳转计算消息数据
+    class NdpnetCtrlJumpCalcPkgData 'typedef struct ndpnetCtrlJumpCalcPkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//跳转时间
+        dword jump; 'ndp_uint32  jump;
+
+        NdpnetCtrlJumpCalcPkgData() {}
+    } 'ndpnet_ctrl_jump_calc_pkg_data;
+
+    '//跳转计算消息
+    class NdpnetCtrlJumpCalcPkg 'typedef struct ndpnetCtrlJumpCalcPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                     //包头
+        NdpnetCtrlJumpCalcPkgData data; 'ndpnet_ctrl_jump_calc_pkg_data data;      //包体
+    
+        NdpnetCtrlJumpCalcPkg() {}
+    } 'ndpnet_ctrl_jump_calc_pkg;
+
+    '//NDPNET_CTRL_VERIFY_CALC_MSG_ID		  308
+    '//校验计算消息数据
+    class NdpnetCtrlVerifyCalcPkgData 'typedef struct ndpnetCtrlVerifyCalcPkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//跳转时间
+        dword verify; 'ndp_uint32  verify;
+
+        NdpnetCtrlVerifyCalcPkgData() {}
+    } 'ndpnet_ctrl_verify_calc_pkg_data;
+
+    '//校验计算消息
+    class NdpnetCtrlVerifyJumpCalcPkg 'typedef struct ndpnetCtrlVerifyJumpCalcPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                            //包头
+        NdpnetCtrlVerifyCalcPkgData data; 'ndpnet_ctrl_verify_calc_pkg_data data;           //包体
+    
+        NdpnetCtrlVerifyJumpCalcPkg() {}
+    } 'ndpnet_ctrl_verify_calc_pkg;
+
+    '//500 - 599
+    '//NDPNET_SET_MODULE_ID_MSG_ID           501
+    '//设置组件ID消息数据
+    class NdpnetSetModuleIdPkgData 'typedef struct ndpnetSetModuleIdPkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnvFull calcEnv; 'ndpnet_calc_env_full calcEnv;
+        '//组件类型
+        dword moduleTypeId; 'ndp_uint16 moduleTypeId;
+        '//组件ID
+        dword moduleId; 'ndp_uint32 moduleId;
+
+        NdpnetSetModuleIdPkgData() {}
+    } 'ndpnet_set_module_id_pkg_data;
+
+    '//设置组件ID消息
+    class NdpnetSetModuleIdPkg 'typedef struct ndpnetSetModuleIdPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                        //包头
+        NdpnetSetModuleIdPkgData data; 'ndpnet_set_module_id_pkg_data data;          //包体
+    
+        NdpnetSetModuleIdPkg() {}
+    } 'ndpnet_set_module_id_pkg;
+
+    '//NDPNET_SET_CALC_ENV_MSG_ID			  502
+    '//设置计算环境消息数据
+    class NdpnetSetCalcEnvPkgData 'typedef struct ndpnetSetCalcEnvPkgDataTag
+    {
+        dword len; 'ndp_uint32 len;                              //长度
+        NdpnetCalcEnvFull calcEnv; 'ndpnet_calc_env_full calcEnv;
+    
+        NdpnetSetCalcEnvPkgData() {}
+    } 'ndpnet_set_calc_env_pkg_data;
+
+    '//设置计算环境消息
+    class NdpnetSetCalcEnvPkg 'typedef struct ndpnetSetCalcEnvPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                        //包头
+        NdpnetSetCalcEnvPkgData data; 'ndpnet_set_calc_env_pkg_data data;           //包体
+    
+        NdpnetSetCalcEnvPkg() {}
+    } 'ndpnet_set_calc_env_pkg;
+
+    '//NDPNET_SET_MODULE_MODE_MSG_ID		  503
+    '//设置组件工作模式消息数据
+    class NdpnetSetModuleModePkgData 'typedef struct ndpnetSetModuleModePkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//组件工作模式ID
+        int moduleModeId; 'ndp_uint16 moduleModeId;
+
+        NdpnetSetModuleModePkgData() {}
+    } 'ndpnet_set_module_mode_pkg_data;
+
+    '//设置组件工作模式消息
+    class NdpnetSetModuleModePkg 'typedef struct ndpnetSetModuleModePkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                             //包头
+        NdpnetSetModuleModePkgData data; 'ndpnet_set_module_mode_pkg_data data;             //包体
+    
+        NdpnetSetModuleModePkg() {}
+    } 'ndpnet_set_module_mode_pkg;
+
+    '//NDPNET_PROXY_SUBSCIBE_MSG_ID		  504
+    '//主控订阅消息数据
+    class NdpnetProxySubscribePkgData 'typedef struct ndpnetProxySubscribePkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//子组件ID
+        int moduleId; 'ndp_uint16  moduleId;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//订阅参数方向;
+        int direction; 'ndp_int16 direction;
+        '//模式数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+
+        NdpnetProxySubscribePkgData() {}
+    } 'ndpnet_proxy_subscribe_pkg_data;
+
+    '//主控订阅消息
+    class NdpnetProxySubscribePkg 'typedef struct ndpnetProxySubscribePkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                               //包头
+        NdpnetProxySubscribePkgData data; 'ndpnet_proxy_subscribe_pkg_data data;               //包体
+    
+        NdpnetProxySubscribePkg() {}
+    } 'ndpnet_proxy_subscribe_pkg;
+
+    '//NDPNET_PROXY_UNSUBSCIBE_MSG_ID		  505
+    '//主控取消订阅消息数据
+    class NdpnetProxyUnsubscribePkgData 'typedef struct ndpnetProxyUnsubscribePkgDataTag
+    {
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+    
+        NdpnetProxyUnsubscribePkgData() {}
+    } 'ndpnet_proxy_unsubscribe_pkg_data;
+
+    '//主控取消订阅消息
+    class NdpnetProxyUnsubscribePkg 'typedef struct ndpnetProxyUnsubscribePkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                            //包头
+        NdpnetProxyUnsubscribePkgData data; 'ndpnet_proxy_unsubscribe_pkg_data data;          //包体
+    
+        NdpnetProxyUnsubscribePkg() {}
+    } 'ndpnet_proxy_unsubscribe_pkg;
+
+    '//600 - 699
+    '//NDPNET_REGISTER_MODULE_MSG_ID		  600
+    '//组件注册消息数据
+    class NdpnetRegisterModulePkgData 'typedef struct ndpnetRegisterModulePkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//组件类型
+        int moduleType; 'ndp_uint16 moduleType;
+        '//名称
+        string moduleName; 'ndp_uint8 moduleName[NDPNET_STR_SIZE];
+        '//专业
+        string profession; 'ndp_uint8 profession[NDPNET_STR_SIZE];
+        '//地址
+        string adress; 'ndp_uint8 adress[NDPNET_STR_SIZE];
+        '//描述
+        string description; 'ndp_uint8 description[NDPNET_STR_SIZE];
+        '//模式数量
+        int moduleModeNum; 'ndp_uint16 moduleModeNum;
+        
+        NdpnetRegisterModulePkgData() {}
+    } 'ndpnet_register_module_pkg_data;
+
+    '//组件注册消息
+    class NdpnetRegisterModulePkg 'typedef struct ndpnetRegisterModulePkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                   //包头
+        NdpnetRegisterModulePkgData data; 'ndpnet_register_module_pkg_data data;   //包体
+    
+        NdpnetRegisterModulePkg() {}
+    } 'ndpnet_register_module_pkg;
+
+    '//NDPNET_UNREGISTER_MODULE_MSG_ID       601
+    '//组件取消注册消息数据
+    class NdpnetUnregisterModulePkgData 'typedef struct ndpnetUnregisterModulePkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//组件ID
+        dword moduleId; 'ndp_uint32 moduleId;
+
+        NdpnetUnregisterModulePkgData() {}
+    } 'ndpnet_unregister_module_pkg_data;
+
+    '//组件取消注册消息
+    class NdpnetUnregisterModulePkg 'typedef struct ndpnetUnregisterModulePkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                           //包头
+        NdpnetUnregisterModulePkgData data; 'ndpnet_unregister_module_pkg_data data;         //包体
+    
+        NdpnetUnregisterModulePkg() {}
+    } 'ndpnet_unregister_module_pkg;
+
+    '//NDPNET_CALC_FINISHED_MSG_ID           602
+    '//计算结束消息数据
+    class NdpnetCalcFinishedPkgData 'typedef struct ndpnetCalcFinishedPkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//计算时间
+        dword calcTime; 'ndp_uint32 calcTime;
+
+        NdpnetCalcFinishedPkgData() {}
+    } 'ndpnet_calc_finished_pkg_data;
+
+    '//计算结束消息
+    class NdpnetCalcFinishedPkg 'typedef struct ndpnetCalcFinishedPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                            //包头
+        NdpnetCalcFinishedPkgData data; 'ndpnet_calc_finished_pkg_data data;              //包体
+    
+        NdpnetCalcFinishedPkg() {}
+    } 'ndpnet_calc_finished_pkg;
+
+    '//NDPNET_CALC_READY_MSG_ID              603
+    '//计算准备就绪消息数据
+    class NdpnetCalcReadyPkgData 'typedef struct ndpnetCalcReadyPkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//计算时长
+        dword dataTime; 'ndp_uint32 dataTime;
+        '//计算准备是否就绪标志
+        int flag; 'ndp_uint8 flag;
+        '//组件计算环境准备失败时的错误信息
+        string errorMsg; 'ndp_uint8 errorMsg[NDPNET_STR_SIZE];
+    
+        NdpnetCalcReadyPkgData() {}
+    } 'ndpnet_calc_ready_pkg_data;
+
+    '//计算准备就绪消息
+    class NdpnetCalcReadyPkg 'typedef struct ndpnetCalcReadyPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                      //包头
+        NdpnetCalcReadyPkgData data; 'ndpnet_calc_ready_pkg_data data;           //包体
+    
+        NdpnetCalcReadyPkg() {}
+    } 'ndpnet_calc_ready_pkg;
+
+    '// NDPNET_SET_WORK_MODE_MSG_ID           604
+    '//软操台设置工况消息数据
+    class NdpnetSetWorkModePkgData 'typedef struct ndpnetSetWorkModePkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        NdpnetCalcEnvFull calcEnv; 'ndpnet_calc_env_full calcEnv;
+    
+        NdpnetSetWorkModePkgData() {}
+    } 'ndpnet_set_work_mode_pkg_data;
+
+    '//软操台设置工况消息
+    class NdpnetSetWorkModePkg 'typedef struct ndpnetSetWorkModePkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                      //包头
+        NdpnetSetCalcEnvPkgData data; 'ndpnet_set_calc_env_pkg_data data;         //包体
+    
+        NdpnetSetWorkModePkg() {}
+    } 'ndpnet_set_work_mode_pkg;
+
+    '//NDPNET_SET_CALE_PARAMETER_MSG_ID      605
+    '//软操台设置参数消息数据
+    class NdpnetSetParameterPkgData 'typedef struct ndpnetSetParameterPkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//数据类型
+        int type; 'ndp_uint16 type;
+        '//数据项编码
+        int code; 'ndp_short code;
+        '//参数值
+        string paraValue; 'ndp_uint8 paraValue[NDPNET_DATA_VALUE_SIZE];
+    
+        NdpnetSetParameterPkgData() {}
+    } 'ndpnet_set_parameter_pkg_data;
+
+
+    '//软操台设置参数消息
+    class NdpnetSetParametPkg 'typedef struct ndpnetSetParametPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                          //包头
+        NdpnetSetParameterPkgData data; 'ndpnet_set_parameter_pkg_data data;            //包体
+    
+        NdpnetSetParametPkg() {}
+    } 'ndpnet_set_parameter_pkg;
+
+    '//800 - 899
+    '//NDPNET_SUBSCRIBE_DATA_MSG_ID		  800
+    '//组件订阅消息数据
+    class NdpnetSubscribePkgData 'typedef struct ndpnetSubscribePkgDataTag
+    {
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//订阅参数方向;
+        int direction; 'ndp_int16 direction;
+        '//模式数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+
+        NdpnetSubscribePkgData() {}
+    } 'ndpnet_subscribe_pkg_data;
+
+    '//组件订阅消息
+    class NdpnetSubscribePkg 'typedef struct ndpnetSubscribePkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                         //包头
+        NdpnetSubscribePkgData data; 'ndpnet_subscribe_pkg_data data;               //包体
+    
+        NdpnetSubscribePkg() {}
+    } 'ndpnet_subscribe_pkg;
+
+    '//NDPNET_UNSUBSCRIBE_DATA_MSG_ID		  801
+    '//组件取消订阅消息数据
+    class NdpnetUnsubscribePkgData 'typedef struct ndpnetUnsubscribePkgDataTag
+    {
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//订阅参数方向;
+        int direction;'ndp_int16 direction;
+        '//模式数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+
+        NdpnetUnsubscribePkgData() {}
+    } 'ndpnet_unsubscribe_pkg_data;
+
+    '//组件取消订阅消息
+    class NdpnetUnsubscribePkg 'typedef struct ndpnetUnsubscribePkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                      //包头
+        NdpnetUnsubscribePkgData data; 'ndpnet_unsubscribe_pkg_data data;          //包体
+    
+        NdpnetUnsubscribePkg() {}
+    } 'ndpnet_unsubscribe_pkg;
+
+    '//NDPNET_QUERY_DATA_MSG_ID		      803
+    '//数据查询消息数据
+    class NdpnetQueryDataPkgData 'typedef struct ndpnetQueryDataPkgDataTag
+    {
+        '//长度
+        dword len; 'ndp_uint32 len;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//组件ID
+        dword moduleId; 'ndp_uint32 moduleId;
+        '//开始时间
+        dword startTime; 'ndp_uint32 startTime;
+        '//结束时间
+        dword endTime; 'ndp_uint32 endTime;
+
+        NdpnetQueryDataPkgData() {}
+    } 'ndpnet_query_data_pkg_data;
+
+
+    '//数据查询消息
+    class NdpnetQueryDataPkg 'typedef struct ndpnetQueryDataPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                       //包头
+        NdpnetQueryDataPkgData data; 'ndpnet_query_data_pkg_data data;            //包体
+    
+        NdpnetQueryDataPkg() {}
+    } 'ndpnet_query_data_pkg;
+
+    '//900 - 999
+    '//NDPNET_DATA_MSG_ID	                  900
+    '//主控数据消息数据内容(ASCII)
+    class NdpnetDataPkgData 'typedef struct ndpnetDataPkgDataTag
+    {
+        dword len; 'ndp_uint32 len;        //数据总长度
+        dword nodeNum; 'ndp_uint32 nodeNum;    //数据数量
+        dword time; 'ndp_uint32 time;       //时间戳
+    
+        NdpnetDataPkgData() {}
+    } 'ndpnet_data_pkg_data;
+
+    '//主控数据消息包(ASCII)
+    class NdpnetDataPkg 'typedef struct ndpnetDataPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;        //包头
+        NdpnetDataPkgData data; 'ndpnet_data_pkg_data data;   //包体
+    
+        NdpnetDataPkg() {}
+    } 'ndpnet_data_pkg;
+
+    '//主控数据消息数据内容(UNION)
+    class NdpnetDataUnioPkgData 'typedef struct ndpnetDataUnioPkgDataTag
+    {
+        dword len; 'ndp_uint32 len;        //数据总长度
+        dword nodeNum; 'ndp_uint32 nodeNum;    //数据数量
+        dword time; 'ndp_uint32 time;       //时间戳
+    
+        NdpnetDataUnioPkgData() {}
+    } 'ndpnet_data_union_pkg_data;
+
+    '//主控数据消息包(UNION)
+    class NdpnetDataUnionPkg 'typedef struct ndpnetDataUnionPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;        //包头
+        NdpnetDataUnioPkgData data; 'ndpnet_data_union_pkg_data data;   //包体
+    
+        NdpnetDataUnionPkg() {}
+    } 'ndpnet_data_union_pkg;
+
+    '//1000 - 1099
+    '//NDPNET_PROXY_REGISTER_MSG_ID          1000
+    '//代理组件注册指令消息数据
+    class NdpnetProxyRegisterPkgData 'typedef struct ndpnetProxyRegisterPkgDataTag
+    {
+        '//数据体长度（字节）
+        dword len; 'ndp_uint32 len;
+        '//管理的子组件数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//代理IP
+        string proxyIp; 'ndp_uint8 proxyIp[NDPNET_STR_SIZE];
+        '//代理名称
+        string proxyName; 'ndp_uint8 proxyName[NDPNET_STR_SIZE];
+    
+        NdpnetProxyRegisterPkgData() {}
+    } 'ndpnet_proxy_register_pkg_data;
+
+    '//代理组件注册指令消息 1000
+    class NdpnetProxyRegisterPkg 'typedef struct ndpnetProxyRegisterPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                    //包头
+        NdpnetProxyRegisterPkgData data; 'ndpnet_proxy_register_pkg_data data;     //包体
+    
+        NdpnetProxyRegisterPkg() {}
+    } 'ndpnet_proxy_register_pkg;
+
+    '//NDPNET_PROXY_CTRL_MODULE_MSG_ID	      1001
+    '//代理组件控制指令消息数据
+    class NdpnetProxyCtrlPkgData 'typedef struct ndpnetProxyCtrlPkgDataTag
+    {
+        dword len; 'ndp_uint32 len;
+        '//代理id
+        int proxyId; 'ndp_uint16 proxyId;
+        '//子组件id
+        int moduleId; 'ndp_uint16 moduleId;
+        '//启停标志
+        int state; 'ndp_uint8  state;
+
+        NdpnetProxyCtrlPkgData() {}
+    } 'ndpnet_proxy_ctrl_pkg_data;
+
+
+    '//代理组件控制指令消息 1000
+    class NdpnetProxyCtrlPkg 'typedef struct ndpnetProxyCtrlPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                //包头
+        NdpnetProxyCtrlPkgData data; 'ndpnet_proxy_ctrl_pkg_data data;     //包体
+    
+        NdpnetProxyCtrlPkg() {}
+    } 'ndpnet_proxy_ctrl_pkg;
+
+
+    '//NDPNET_PROXY_MODULE_STATUS_MSG_ID	  1002
+    '//代理组件状态报告指令消息数据
+    class NdpnetProxyModuleStatusPkgData 'typedef struct ndpnetProxyModuleStatusPkgDataTag
+    {
+        '//数据体长度（字节数）
+        dword len; 'ndp_uint32 len;
+        '//管理的子组件数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//代理id
+        int proxyId; 'ndp_uint16 proxyId;
+
+        NdpnetProxyModuleStatusPkgData() {}
+    } 'ndpnet_proxy_module_status_pkg_data;
+
+    '//代理组件状态报告指令消息数据
+    class NdpnetProxyModuleStatusPkg 'typedef struct ndpnetProxyModuleStatusPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                         //包头
+        NdpnetProxyModuleStatusPkgData data; 'ndpnet_proxy_module_status_pkg_data data;     //包体
+    
+        NdpnetProxyModuleStatusPkg() {}
+    } 'ndpnet_proxy_module_status_pkg;
+
+    '//NDPNET_PROXY_UNREGISTER_MSG_ID	      1003
+    '//代理注销指令消息数据
+    class NdpnetProxyUnregisterPkgData 'typedef struct ndpnetProxyUnregisterPkgDataTag
+    {
+        dword len; 'ndp_uint32 len;
+        '//代理id
+        int proxyId; 'ndp_uint16 proxyId;
+
+        NdpnetProxyUnregisterPkgData() {}
+    } 'ndpnet_proxy_unregister_pkg_data;
+
+
+    '//代理注销指令指令消息 1003
+    class NdpnetProxyUnregisterPkg 'typedef struct ndpnetProxyUnregisterPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                      //包头
+        NdpnetProxyUnregisterPkgData data; 'ndpnet_proxy_unregister_pkg_data data;     //包体
+    
+        NdpnetProxyUnregisterPkg() {}
+    } 'ndpnet_proxy_unregister_pkg;
+
+
+    '//1100 - 1199
+    '//NDPNET_MACHINE_STATUS_MSG_ID	      1100
+    '//组件所在机器状态
+    class NdpnetMachineStatusPkgData 'typedef struct ndpnetMachineStatusPkgDataTag
+    {
+        '//数据体长度（字节数）
+        dword len; 'ndp_uint32 len;
+        '//组件id
+        int moduleId; 'ndp_uint16 moduleId;
+        '//CPU占用率(百分值，浮点数)
+        string cpu; 'ndp_uint8 cpu[NDPNET_DATA_VALUE_SIZE];
+        '//内存占用率(百分值，浮点数)
+        string mem; 'ndp_uint8 mem[NDPNET_DATA_VALUE_SIZE];
+        '//已使用内存总大小(MB)
+        dword usedMem; 'ndp_uint32 usedMem;
+        '//内存总大小(MB)
+        dword totalMem; 'ndp_uint32 totalMem;
+
+        NdpnetMachineStatusPkgData() {}
+    } 'ndpnet_machine_status_pkg_data;
+
+    '//代理组件状态报告指令消息数据
+    class NdpnetMachineStatusPkg 'typedef struct ndpnetMachineStatusPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;                         //包头
+        NdpnetMachineStatusPkgData data; 'ndpnet_machine_status_pkg_data data;          //包体
+    
+        NdpnetMachineStatusPkg() {}
+    } 'ndpnet_machine_status_pkg;
+
+    '//1200 - 1299
+    '//NDPNET_PROXY_DATA_MSG_ID	                  1200
+
+    '//引擎代理数据消息包数据内容(ASCII码表示)
+    class NdpnetProxyDataPkgData 'typedef struct ndpnetProxyDataPkgDataTag
+    {
+        dword len; 'ndp_uint32 len;        //数据总长度
+        dword nodeNum; 'ndp_uint32 nodeNum;    //数据数量
+        dword time; 'ndp_uint32 time;       //时间戳
+
+        NdpnetProxyDataPkgData() {}
+    } 'ndpnet_proxy_data_pkg_data;
+
+    '//引擎代理数据消息包数据内容(UNION结构表示)
+    class NdpnetProxyDataUnionPkgData 'typedef struct ndpnetProxyDataUnionPkgDataTag
+    {
+        dword len; 'ndp_uint32 len;        //数据总长度
+        dword moduleId; 'ndp_uint16  moduleId;  //子组件ID
+        dword nodeNum; 'ndp_uint32 nodeNum;    //数据数量
+        dword time; 'ndp_uint32 time;       //时间戳
+
+        NdpnetProxyDataUnionPkgData() {}
+    } 'ndpnet_proxy_data_union_pkg_data;
+
+    '//主控数据消息包(ASCII码表示)
+    class NdpnetProxyDataPkg 'typedef struct ndpnetProxyDataPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;              //包头
+        NdpnetProxyDataPkgData data; 'ndpnet_proxy_data_pkg_data data;   //包体
+    
+        NdpnetProxyDataPkg() {}
+    } 'ndpnet_proxy_data_pkg;
+
+    '//主控数据消息包(UNION结构表示)
+    class NdpnetProxyDataUnionPkg 'typedef struct ndpnetProxyDataUnionPkgTag
+    {
+        NdpnetPkgHead head; 'ndpnet_pkg_head head;              //包头
+        NdpnetProxyDataUnionPkgData data; 'ndpnet_proxy_data_union_pkg_data data;   //包体
+    
+        NdpnetProxyDataUnionPkg() {}
+    } 'ndpnet_proxy_data_union_pkg;
+
+    '/***********************************通信包定义**************************************/
+
+	'/***********************************封包解包一般性结构体定义****************************/
+	'//SDK客户端接收消息结构体
+	class NdpnetMsg     'typedef struct ndpnetMsgTag
+	{
+		'//消息ID
+		dword msgId; 'ndp_uint32 msgId;
+		'//消息结构体指针
+		handle pMsg; 'void* pMsg;
+
+        NdpnetMsg() {}
+	} 'ndpnet_msg;
+
+	'//SDK解包结构体
+	class NdpnetPkg 'typedef struct ndpnetPkgTag
+	{
+		'//消息ID
+		dword msgId; 'ndp_uint32 msgId;
+		'//消息结构体指针
+		handle pPkg; 'void* pPkg;
+
+        NdpnetPkg() {}
+	} 'ndpnet_pkg;
+
+	'//SDK发包字节流缓冲区结构体
+	class NdpnetBuf 'typedef struct ndpnetBufTag
+	{
+		'//包缓冲区字节长度
+		dword length; 'ndp_uint64 length;
+		'//包缓冲区
+		handle pBuf; 'void * pBuf;
+
+        NdpnetBuf() {}
+	} 'ndpnet_buf;
+	'/***********************************封包解包一般性结构体定义****************************/
+
+    '/***********************************服务端接口结构定义****************************/
+    '//主控数据消息包(ASCII码)
+    class NdpnetDataInfo 'typedef struct ndpnetDataInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//数据节点数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//时间
+        dword time; 'ndp_uint32 time;
+        '//数据节点起始地址
+        NdpnetDataNode pDataNode[10]; 'ndpnet_data_node* pDataNode;
+
+        NdpnetDataInfo() {}
+    } 'ndpnet_data_info;
+
+    '//主控数据消息包(union结构)
+    class NdpnetDataUnionInfo 'typedef struct ndpnetDataUnionInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//数据节点数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//时间
+        dword time; 'ndp_uint32 time;
+        '//数据节点起始地址
+        NdpnetDataUnionNode pDataNode[10]; 'ndpnet_data_union_node* pDataNode;
+    
+        NdpnetDataUnionInfo() {}
+    } 'ndpnet_data_union_info;
+
+    '//计算引擎代理数据消息包
+    class NdpnetProxyDataInfo 'typedef struct ndpnetProxyDataInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//时间
+        dword time; 'ndp_uint32 time;
+        '//数据节点数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//数据节点起始地址
+        NdpnetProxyDataNode pDataNode[10]; 'ndpnet_proxy_data_node* pDataNode;
+    
+        NdpnetProxyDataInfo() {}
+    } 'ndpnet_proxy_data_info;
+
+    '//设置组件ID指令信息
+    class NdpnetSetModuleIdInfo 'typedef struct ndpnetSetModuleIdInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//计算环境
+        NdpnetCalcEnvFull calcEnv; 'ndpnet_calc_env_full calcEnv;
+        '//组件类型
+        int moduleTypeId; 'ndp_uint16 moduleTypeId;
+        '//组件ID
+        dword moduleId; 'ndp_uint32 moduleId;
+        '//主控组件ID
+        dword controllerId; 'ndp_uint32 controllerId;
+
+        NdpnetSetModuleIdInfo() {}
+    } 'ndpnet_set_module_id_info;
+
+    '//注销指令信息
+    class NdpnetUnregisterInfo 'typedef struct ndpnetUnregisterInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//组件ID
+        dword moduleId; 'ndp_uint32 moduleId;
+
+        NdpnetUnregisterInfo() {}
+    } 'ndpnet_unregister_info;
+
+    '//设置计算环境指令信息
+    class NdpnetSetCalcEnvInfo 'typedef struct ndpnetSetCalcEnvInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//计算环境
+        NdpnetCalcEnvFull calcEnv; 'ndpnet_calc_env_full calcEnv;
+
+        NdpnetSetCalcEnvInfo() {}
+    } 'ndpnet_set_calc_env_info;
+
+
+    '//设置组件模式指令信息
+    class NdpnetSetModuleModeInfo 'typedef struct ndpnetSetModuleModeInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//组件模式ID
+        int moduleModeId; 'ndp_uint16 moduleModeId;
+
+        NdpnetSetModuleModeInfo() {}
+    } 'ndpnet_set_module_mode_info;
+
+
+    '//响应消息信息
+    class NdpnetResponseMsgInfo 'typedef struct ndpnetResponseMsgInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//消息ID
+        int msgId; 'ndp_uint16 msgId;
+        '//执行结果
+        int excuteResult; 'ndp_uint16 excuteResult;
+        '//数据包序列值
+        dword sequence; 'ndp_uint32  sequence;
+        '//备注
+        string comment; 'ndp_uint8 comment[NDPNET_STR_SIZE];
+
+        NdpnetResponseMsgInfo() {}
+    } 'ndpnet_response_info;
+
+
+    '//启动计算指令信息
+    class NdpnetCtrlStartCalcInfo 'typedef struct ndpnetCtrlStartCalcInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//组件工作模式
+        int moduleModeId; 'ndp_uint16 moduleModeId;
+        '//开始时间
+        dword startTime; 'ndp_uint32 starTime;
+        '//计算时长
+        dword calcTime; 'ndp_uint32 calcTime;
+        '//倍速
+        float speed; 'ndp_float speed;
+
+        NdpnetCtrlStartCalcInfo() {}
+    } 'ndpnet_ctrl_start_calc_info;
+
+    '//暂停计算指令信息
+    class NdpnetCtrlPauseCalcInfo 'typedef struct ndpnetCtrlPauseCalcInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+
+        NdpnetCtrlPauseCalcInfo() {}
+    } 'ndpnet_ctrl_pause_calc_info;
+
+    '//恢复计算指令信息
+    class NdpnetCtrlResumeCalcInfo 'typedef struct ndpnetCtrlResumeCalcInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件IDr
+        int receiverId; 'ndp_uint16 receiverId;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//倍速
+        float speed; 'ndp_float speed;
+
+        NdpnetCtrlResumeCalcInfo() {}
+    } 'ndpnet_ctrl_resume_calc_info;
+
+    '//停止计算指令信息
+    class NdpnetCtrlStopCalcInfo 'typedef struct ndpnetCtrlStopCalcInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+
+        NdpnetCtrlStopCalcInfo() {}
+    } 'ndpnet_ctrl_stop_calc_info;
+
+    '//步进计算指令信息
+    class NdpnetCtrlStepCalcInfo 'typedef struct ndpnetCtrlStepCalcInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//步进时间
+        int step; 'ndp_int32  step;
+
+        NdpnetCtrlStepCalcInfo() {}
+    } 'ndpnet_ctrl_step_calc_info;
+
+    '//倍速计算指令信息
+    class NdpnetCtrlSpeedCalcInfo 'typedef struct ndpnetCtrlSpeedCalcInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//倍速
+        float speed; 'ndp_float speed;
+
+        NdpnetCtrlSpeedCalcInfo() {}
+    } 'ndpnet_ctrl_speed_calc_info;
+
+    '//跳转计算指令信息
+    class NdpnetCtrlJumpCalcInfo 'typedef struct ndpnetCtrlJumpCalcInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//跳转时间
+        dword jump; 'ndp_uint32  jump;
+
+        NdpnetCtrlJumpCalcInfo() {}
+    } 'ndpnet_ctrl_jump_calc_info;
+
+    '//校验计算指令信息
+    class NdpnetCtrlVerifyCalcInfo 'typedef struct ndpnetCtrlVerifyCalcInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//校验时间
+        dword verify; 'ndp_uint32  verify;
+
+        NdpnetCtrlVerifyCalcInfo() {}
+    } 'ndpnet_ctrl_verify_calc_info;
+
+    '//代理注册指令信息
+    class NdpnetProxyRegisterInfo 'typedef struct ndpnetProxyRegisterInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//管理的子组件数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//代理IP
+        string proxyIp; 'ndp_uint8 proxyIp[NDPNET_STR_SIZE];
+        '//代理名称
+        string proxyName; 'ndp_uint8 proxyName[NDPNET_STR_SIZE];
+        '//代理注册数据项指针
+        NdpnetProxyRegisterNode pProxyRegisterNodes[10]; 'ndpnet_proxy_register_node* pProxyRegisterNodes;
+    
+        NdpnetProxyRegisterInfo() {}
+    } 'ndpnet_proxy_register_info;
+
+    '//代理模块状态报告指令信息
+    class NdpnetProxyModuleStatusInfo 'typedef struct ndpnetProxyModuleStatusInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//管理的子组件数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//代理IP
+        int proxyId; 'ndp_uint16 proxyId;
+        '//模块状态数据项指针
+        NdpnetProxyModuleStatusNode pProxyModuleStatusNodes[10]; 'ndpnet_proxy_module_status_node* pProxyModuleStatusNodes;
+    
+        NdpnetProxyModuleStatusInfo() {}
+    } 'ndpnet_proxy_module_status_info;
+
+    '//客户机机器状态报告指令信息
+    class NdpnetMachineStatusInfo 'typedef struct ndpnetMachineStatusInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//组件ID
+        int moduleId; 'ndp_uint16 moduleId;
+        '//CPU占用率(百分值，浮点数)
+        float cpu; 'ndp_float cpu;
+        '//内存占用率(百分值，浮点数)
+        float mem; 'ndp_float mem;
+        '//已使用内存总大小(MB)
+        dword usedMem; 'ndp_uint32 usedMem;
+        '//内存总大小(MB)
+        dword totalMem; 'ndp_uint32 totalMem;
+
+        NdpnetMachineStatusInfo() {}
+    } 'ndpnet_machine_status_info;
+
+    '//代理模块控制指令信息
+    class NdpnetProxyCtrlInfo 'typedef struct ndpnetProxyCtrlInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//代理id
+        int proxyId; 'ndp_uint16 proxyId;
+        '//子组件id
+        int moduleId; 'ndp_uint16 moduleId;
+        '//启停标志(0 关闭 1 开启)
+        int state; 'ndp_uint8  state;
+
+        NdpnetProxyCtrlInfo() {}
+    } 'ndpnet_proxy_ctrl_info;
+
+    '//代理注销指令信息
+    class NdpnetProxyUnregisterInfo 'typedef struct ndpnetProxyUnregisterInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//组件ID
+        dword proxyId; 'ndp_uint32 proxyId;
+
+        NdpnetProxyUnregisterInfo() {}
+    } 'ndpnet_proxy_unregister_info;
+
+    '//代理注册指令信息
+    class NdpnetProxySubscribeInfo 'typedef struct ndpnetProxySubscribeInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+        '//子组件ID
+        int moduleId; 'ndp_uint16  moduleId;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//订阅参数方向;
+        int direction; 'ndp_int16 direction;
+        '//订阅数据数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//代理注册数据项指针
+        NdpnetProxySubscribeNode pProxySubscribeNodes[10]; 'ndpnet_proxy_subscribe_node* pProxySubscribeNodes;
+    
+        NdpnetProxySubscribeInfo() {}
+    } 'ndpnet_proxy_subscribe_info;
+
+    '//主控取消订阅消息
+    class NdpnetProxyUnsubscribeInfo 'typedef struct ndpnetProxyUnsubscribeInfoTag
+    {
+        '//发送方组件ID
+        int senderId; 'ndp_uint16 senderId;
+        '//接收方组件ID
+        int receiverId; 'ndp_uint16 receiverId;
+
+        NdpnetProxyUnsubscribeInfo() {}
+    } 'ndpnet_proxy_unsubscribe_info;
+
+    '/***********************************服务端接口结构体定义****************************/
+
+'---------------------------------------------
+' 客户端信息结构体定义
+'---------------------------------------------
+	'//心跳消息信息
+	class NdpnetHeartMsg   'typedef struct ndpnetHeartMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//响应标示
+		byte resFlag;   'ndp_uint8 resFlag;
+		'//数据包序列值
+		dword sequence; 'ndp_uint32  sequence;
+		'//时间
+		dword ts;       'ndp_uint64 ts;
+
+		NdpnetHeartMsg() {}
+
+	} 'ndpnet_heart_msg;
+
+	'//组件注册消息
+	class NdpnetRegisterModuleMsg 'typedef struct ndpnetRegisterModuleMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//组件类型
+		int moduleTypeId;    'ndp_uint16 moduleTypeId;
+		'//名称
+		string moduleName;    'ndp_uint8 moduleName[NDPNET_STR_SIZE];
+		'//专业
+		string profession;    'ndp_uint8 profession[NDPNET_STR_SIZE];
+		'//地址
+		string adress;        'ndp_uint8 adress[NDPNET_STR_SIZE];
+		'//描述
+		string description;   'ndp_uint8 description[NDPNET_STR_SIZE];
+		'//模式数量
+		int moduleModeLength; 'ndp_uint16 moduleModeLength;
+		'//模式列表
+		NdpnetModuleMode pModuleModes[10];    'ndpnet_module_mode* pModuleModes;
+		
+		NdpnetRegisterModuleMsg() 
+		{
+		    'pModuleModes[0] = new NdpnetModuleMode;
+			'pModuleModes[1] = new NdpnetModuleMode;
+			'pModuleModes[2] = new NdpnetModuleMode;
+			'pModuleModes[3] = new NdpnetModuleMode;
+			'pModuleModes[4] = new NdpnetModuleMode;
+		}
+	} 'ndpnet_register_module_msg;
+
+
+	'//响应消息数据
+	class NdpnetResponseMsg  'typedef struct ndpnetResponseMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//响应标示
+		byte resFlag;    'ndp_uint8 resFlag;
+		'//数据包序列值
+		dword sequence;  'ndp_uint32  sequence;
+		'//消息ID
+		int msgId;       'ndp_uint16 msgId;
+		'//执行结果
+		int excuteResult;    'ndp_uint16  excuteResult;
+		'//备注
+		string comment;  'ndp_uint8   comment[NDPNET_STR_SIZE];
+
+		NdpnetResponseMsg() {}
+
+	} 'ndpnet_response_msg;
+
+
+	'//设置组件ID消息数据
+	class NdpnetSetModuleIdMsg    'typedef struct ndpnetSetModuleIdMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//响应标示 ndp_uint8
+		byte resFlag;    'ndp_uint8 resFlag;
+		'//数据包序列值
+		dword sequence;  'ndp_uint32  sequence;
+		'//计算环境
+		NdpnetCalcEnvFull calcEnv;      'ndpnet_calc_env_full calcEnv;
+		'//组件类型
+		int moduleTypeId;   'ndp_uint16 moduleTypeId;
+		'//组件ID
+		dword moduleId;  'ndp_uint32 moduleId;
+
+		NdpnetSetModuleIdMsg() {
+			calcEnv = new NdpnetCalcEnvFull;
+		}
+	} 'ndpnet_set_module_id_msg;
+
+	'//设置计算环境指令信息 bugfix: ndpnetSetCalcEnvcMsgTag -> ndpnetSetCalcEnvMsgTag
+	class NdpnetSetCalcEnvMsg    'typedef struct ndpnetSetCalcEnvMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//响应标示
+		byte resFlag;    'ndp_uint8 resFlag;
+		'//数据包序列值
+		dword sequence;  'ndp_uint32  sequence;
+		'//计算环境
+		NdpnetCalcEnvFull calcEnv;   'ndpnet_calc_env_full calcEnv;
+
+		NdpnetSetCalcEnvMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnvFull;
+		}
+	} 'ndpnet_set_calc_env_msg;
+
+	'//设置组件工作模式指令信息
+	class NdpnetSetModuleModeMsg    'typedef struct ndpnetSetModuleModeMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//响应标示
+		byte resFlag;    'ndp_uint8 resFlag;
+		'//数据包序列值
+		dword sequence;  'ndp_uint32  sequence;
+		'//计算环境
+		NdpnetCalcEnv calcEnv;   'ndpnet_calc_env calcEnv;
+		'//组件工作模式ID
+		int moduleModeId; 'ndp_uint16 moduleModeId;
+
+		NdpnetSetModuleModeMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+		}
+
+	} 'ndpnet_set_module_mode_msg;
+
+	'//启动计算指令信息
+	class NdpnetCtrlStartCalcMsg 'typedef struct ndpnetCtrlStartCalcMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//响应标示
+		byte resFlag;    'ndp_uint8 resFlag;
+		'//数据包序列值
+		dword sequence;  'ndp_uint32  sequence;
+		'//计算环境
+		NdpnetCalcEnv calcEnv;    'ndpnet_calc_env calcEnv;
+		'//组件工作模式
+		int moduleModeId;    'ndp_uint16 moduleModeId;
+		'//开始时间
+		dword starTime;    'ndp_uint32 starTime;
+		'//计算时长
+		dword calcTime;    'ndp_uint32 calcTime;
+        '//倍速
+        float speed; 'ndp_float speed; 
+
+		NdpnetCtrlStartCalcMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+		}
+
+	} 'ndpnet_ctrl_start_calc_msg;
+
+	'//暂停计算指令信息
+	class NdpnetCtrlPauseCalcMsg 'typedef struct ndpnetCtrlPauseCalcMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//响应标示
+		byte resFlag;    'ndp_uint8 resFlag;
+		'//数据包序列值
+		dword sequence;  'ndp_uint32  sequence;
+		'//计算环境
+		NdpnetCalcEnv calcEnv;    'ndpnet_calc_env calcEnv;
+
+		NdpnetCtrlPauseCalcMsg() 
+		{    
+		    calcEnv = new NdpnetCalcEnv;
+	    }
+	} 'ndpnet_ctrl_pause_calc_msg;
+
+	'//恢复计算指令信息
+	class NdpnetCtrlResumeCalcMsg    'typedef struct ndpnetCtrlResumeCalcMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//响应标示
+		byte resFlag;    'ndp_uint8 resFlag;
+		'//数据包序列值
+		dword sequence;  'ndp_uint32  sequence;
+		'//计算环境
+		NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//倍速
+        float speed; 'ndp_float speed; 
+
+		NdpnetCtrlResumeCalcMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+		}
+
+	} 'ndpnet_ctrl_resume_calc_msg;
+
+	'//启动计算指令信息
+	class NdpnetCtrlStopCalcMsg    'typedef struct ndpnetCtrlStopCalcMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//响应标示
+		byte resFlag;    'ndp_uint8 resFlag;
+		'//数据包序列值
+		dword sequence;  'ndp_uint32  sequence;
+		'//计算环境
+		NdpnetCalcEnv calcEnv;    'ndpnet_calc_env calcEnv;
+
+		NdpnetCtrlStopCalcMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+	    }
+	} 'ndpnet_ctrl_stop_calc_msg;
+
+
+	'//步进计算指令消息
+	class NdpnetCtrlStepCalcMsg    'typedef struct ndpnetCtrlStepCalcMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//响应标示
+		byte resFlag;    'ndp_uint8 resFlag;
+		'//数据包序列值
+		dword sequence;  'ndp_uint32  sequence;
+		'//计算环境
+		NdpnetCalcEnv calcEnv;    'ndpnet_calc_env calcEnv;
+		'//步进时长
+		dword stepTime;   'ndp_uint32 stepTime;
+
+		NdpnetCtrlStepCalcMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+		}
+
+	} 'ndpnet_ctrl_step_calc_msg;
+
+
+	'//倍速计算指令消息
+	class NdpnetCtrlSpeedCalcMsg    'typedef struct ndpnetCtrlSpeedCalcMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//响应标示
+		byte resFlag;    'ndp_uint8 resFlag;
+		'//数据包序列值
+		dword sequence;  'ndp_uint32  sequence;
+		'//计算环境
+		NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+		'//计算速率
+		float speed;    'ndp_float speed;
+
+		NdpnetCtrlSpeedCalcMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+		}
+
+	} 'ndpnet_ctrl_speed_calc_msg;
+
+
+	'//跳转计算指令消息
+	class NdpnetCtrlJumpCalcMsg    'typedef struct ndpnetCtrlJumpCalcMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//响应标示
+		byte resFlag;    'ndp_uint8 resFlag;
+		'//数据包序列值
+		dword sequence;  'ndp_uint32  sequence;
+		'//计算环境
+		NdpnetCalcEnv calcEnv;    'ndpnet_calc_env calcEnv;
+		'//跳转时间
+		dword jumpTime;    'ndp_uint32 jumpTime;
+
+		NdpnetCtrlJumpCalcMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+		}
+	} 'ndpnet_ctrl_jump_calc_msg;
+
+	'//校准计算指令消息
+	class NdpnetCtrlVerifyCalcMsg    'typedef struct ndpnetCtrlVerifyCalcMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//响应标示
+		byte resFlag;    'ndp_uint8 resFlag;
+		'//数据包序列值
+		dword sequence;    'ndp_uint32  sequence;
+		'//计算环境
+		NdpnetCalcEnv calcEnv;    'ndpnet_calc_env calcEnv;
+		'//校准时间
+		dword verifyTime;  'ndp_uint32 verifyTime;
+
+		NdpnetCtrlVerifyCalcMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+		}
+	} 'ndpnet_ctrl_verify_calc_msg;
+
+
+	'//设置参数值  软操台专用
+	class NdpnetSetParameterMsg    'typedef struct ndpnetSetParameterMsgTag
+	{
+		'//计算环境
+		NdpnetCalcEnv calcEnv;    'ndpnet_calc_env calcEnv;
+		'//数据类型
+		int type;    'ndp_uint16 type;
+		'//参数名称ID
+        int code; 'ndp_short code;
+		'//参数值
+		string paraValue;  'ndp_uint8 paraValue[NDPNET_DATA_VALUE_SIZE];
+
+		NdpnetSetParameterMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+		}
+	} 'ndpnet_set_parameter_msg;
+
+
+	'//响应消息
+	class NdpnetClientResponseMsg 'typedef struct ndpnetClientResponseMsgTag
+	{
+		'//消息ID
+		int msgId;    'ndp_uint16 msgId;
+		'//执行结果
+		int excuteResult;    'ndp_uint16 excuteResult;
+		'//数据包序列值
+		dword sequence;    'ndp_uint32  sequence;
+		'//备注
+		string comment;    'ndp_uint8 comment[NDPNET_STR_SIZE];
+
+		NdpnetClientResponseMsg() 
+		{}
+	} 'ndpnet_client_response_msg;
+
+
+	'//计算准备完成
+	class NdpnetCalcReadyMsg    'typedef struct ndpnetCalcReadyMsgTag
+	{
+		'//sdk实例句柄
+		dword mHandle; 'ndpnet_handle handle;
+		'//计算环境
+		NdpnetCalcEnv calcEnv;    'ndpnet_calc_env calcEnv;
+		'//初始化是否成功
+		byte flag;    'ndp_uint8  flag;
+		'//计算时长
+		dword dataTime;    'ndp_uint32 dataTime;
+		'//错误消息
+		string errorMsg;   'ndp_uint8  errorMsg[NDPNET_STR_SIZE];
+
+		NdpnetCalcReadyMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+		}
+
+	} 'ndpnet_calc_ready_msg;
+
+	'//计算结束通知消息
+	class NdpnetCalcFinishedMsg   'typedef struct ndpnetCalcFinishedMsgTag
+	{
+		'//计算环境
+		NdpnetCalcEnv calcEnv;  'ndpnet_calc_env calcEnv;
+		'//计算时长
+		dword calcTime;    'ndp_uint32 calcTime;
+
+		NdpnetCalcFinishedMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+		}
+	} 'ndpnet_calc_finished_msg;
+
+	'//软操台切换工况
+	class NdpnetWorkModeMsg   'typedef struct ndpnetWorkModeMsgTag
+	{
+		NdpnetCalcEnvFull calcEnv;    'ndpnet_calc_env_full calcEnv;
+		NdpnetWorkModeMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnvFull;
+		}
+	} 'ndpnet_set_work_mode_msg;
+
+	'//数据订阅消息
+	class NdpnetSubscribeMsg    'typedef struct ndpnetSubscribeMsgTag
+	{
+		'//计算环境
+		NdpnetCalcEnv calcEnv;    'ndpnet_calc_env calcEnv;
+        '//订阅参数方向;
+        int direction; 'ndp_int16 direction;
+		'//数据项个数
+		dword nodeNum;    'ndp_uint32 nodeNum;
+		'//数据项指针
+		NdpnetSubscribeNode pSubscribeNodes[10];    'ndpnet_subscribe_node* pSubscribeNodes;
+
+		NdpnetSubscribeMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+		}
+
+	} 'ndpnet_subscribe_msg;
+
+	'//数据取消订阅消息
+	class NdpnetUnsubscribeMsg
+	{
+		'//计算环境
+		NdpnetCalcEnv calcEnv;    'ndpnet_calc_env calcEnv;
+        '//订阅参数方向;
+        int direction; 'ndp_int16 direction;
+		'//数据项个数
+		dword nodeNum;    'ndp_uint32 nodeNum;
+		'//数据项指针
+		NdpnetSubscribeNode pSubscribeNodes[10];  'ndpnet_subscribe_node* pSubscribeNodes;
+
+		NdpnetUnsubscribeMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+		}
+
+	}
+
+	'//查询数据段消息
+	class NdpnetQueryDataMsg
+	{
+		'//计算环境
+		NdpnetCalcEnv calcEnv;    'ndpnet_calc_env calcEnv;
+		'//数据项指针 
+		dword  moduleId;   'ndp_uint32 moduleId;
+	    '//开始时间 
+		dword  startTime;  'ndp_uint32 startTime;
+		'//结束时间 
+		dword  endTime;    'ndp_uint32 endTime;
+		
+		NdpnetQueryDataMsg() 
+		{
+		    calcEnv = new NdpnetCalcEnv;
+		}
+
+	}
+
+    '//代理注册
+    class NdpnetProxyRegisterMsg 'typedef struct ndpnetProxyRegisterMsgTag
+    {
+        '//管理的子组件数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//代理IP
+        string proxyIp; 'ndp_uint8 proxyIp[NDPNET_STR_SIZE];
+        '//代理名称
+        string proxyName; 'ndp_uint8 proxyName[NDPNET_STR_SIZE];
+        '//代理注册数据项指针
+        NdpnetProxyRegisterNode pProxyRegisterNodes[10]; 'ndpnet_proxy_register_node* pProxyRegisterNodes;
+    
+        NdpnetProxyRegisterMsg() {}
+    } 'ndpnet_proxy_register_msg;
+
+    '//代理模块状态
+    class NdpnetProxyModuleStatusMsg 'typedef struct ndpnetProxyModuleStatusMsgTag
+    {
+        '//管理的子组件数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//代理IP
+        int proxyId; 'ndp_uint16 proxyId;
+        '//模块状态数据项指针
+        NdpnetProxyModuleStatusNode pProxyModuleStatusNodes[10]; 'ndpnet_proxy_module_status_node* pProxyModuleStatusNodes;
+    
+        NdpnetProxyModuleStatusMsg() {}
+    } 'ndpnet_proxy_module_status_msg;
+
+    '//客户机机器状态报告
+    class NdpnetMachineStatusMsg 'typedef struct ndpnetMachineStatusMsgTag
+    {
+        '//组件ID
+        int moduleId; 'ndp_uint16 moduleId;
+        '//CPU占用率(百分值，浮点数)
+        float cpu; 'ndp_float cpu;
+        '//内存占用率(百分值，浮点数)
+        float mem; 'ndp_float mem;
+        '//已使用内存总大小(MB)
+        dword usedMem; 'ndp_uint32 usedMem;
+        '//内存总大小(MB)
+        dword totalMem; 'ndp_uint32 totalMem;
+
+        NdpnetMachineStatusMsg() {}
+    } 'ndpnet_machine_status_msg;
+
+    '//代理注销消息
+    class NdpnetProxyUnregisterMsg 'typedef struct ndpnetProxyUnregisterMsgTag
+    {
+        '//代理IP
+        int proxyId; 'ndp_uint16 proxyId;
+
+        NdpnetProxyUnregisterMsg() {}
+    } 'ndpnet_proxy_unregister_msg;
+
+	'//主控数据消息(ASCII)
+	class NdpnetDataMsg
+	{
+        '//sdk实例句柄
+        dword mHandle; 'ndpnet_handle handle;
+        '//响应标示
+        byte resFlag; 'ndp_uint8 resFlag;
+        '//数据包序列值
+        dword sequence; 'ndp_uint32  sequence;
+        '//数据参数数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//时间
+        dword time; 'ndp_uint32 time;
+
+        '//数据节点首地址
+        NdpnetDataNode pnode[10]; 'ndpnet_data_node* pnode;
+
+		NdpnetDataMsg() {}
+	} 'ndpnet_data_msg;
+
+    '//主控数据消息(UNION)
+    class NdpnetDataUnionMsg 'typedef struct ndpnetDataUnionMsgTag
+    {
+        '//sdk实例句柄
+        dword mHandle; 'ndpnet_handle handle;
+        '//响应标示
+        byte resFlag; 'ndp_uint8 resFlag;
+        '//数据包序列值
+        dword sequence; 'ndp_uint32  sequence;
+        '//数据参数数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//时间
+        dword time; 'ndp_uint32 time;
+
+        '//数据节点首地址
+        NdpnetDataUnionNode pnode[100]; 'ndpnet_data_union_node* pnode;
+    
+        NdpnetDataUnionMsg() {}
+    } 'ndpnet_data_union_msg;
+
+    '//主控订阅数据消息
+    class NdpnetProxySubscribeMsg 'typedef struct ndpnetProxySubscribeMsgTag
+    {
+        '//sdk实例句柄
+        dword mHandle; 'ndpnet_handle handle;
+        '//响应标示
+        byte resFlag; 'ndp_uint8 resFlag;
+        '//数据包序列值
+        dword sequence; 'ndp_uint32  sequence;
+        '//子组件ID
+        int moduleId; 'ndp_uint16  moduleId;
+        '//订阅参数方向;
+        int direction; 'ndp_int16 direction;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+        '//订阅数据数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//订阅节点首地址
+        NdpnetProxySubscribeNode pnode[10]; 'ndpnet_proxy_subscribe_node* pnode;
+
+        NdpnetProxySubscribeMsg() {}
+    } 'ndpnet_proxy_subscribe_msg;
+
+    '//主控取消定阅消息
+    class NdpnetProxyUnsubscribeMsg 'typedef struct ndpnetProxyUnsubscribeMsgTag
+    {
+        '//sdk实例句柄
+        dword mHandle; 'ndpnet_handle handle;
+        '//响应标示
+        byte resFlag; 'ndp_uint8 resFlag;
+        '//数据包序列值
+        dword sequence; 'ndp_uint32  sequence;
+        '//计算环境
+        NdpnetCalcEnv calcEnv; 'ndpnet_calc_env calcEnv;
+
+        NdpnetProxyUnsubscribeMsg() {}
+    } 'ndpnet_proxy_unsubscribe_msg;
+
+    '//计算引擎代理数据消息(ASCII 表示)
+    class NdpnetProxyDataMsg 'typedef struct ndpnetProxyDataMsgTag
+    {
+        '//sdk实例句柄
+        dword mHandle; 'ndpnet_handle handle;
+        '//响应标示
+        byte resFlag; 'ndp_uint8 resFlag;
+        '//数据包序列值
+        dword sequence; 'ndp_uint32  sequence;
+        '//数据参数数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//时间
+        dword time; 'ndp_uint32 time;
+        '//数据数组起始地址
+        NdpnetProxyDataNode pNodes[10]; 'ndpnet_proxy_data_node * pNodes;
+    
+        NdpnetProxyDataMsg() {}
+    } 'ndpnet_proxy_data_msg;
+
+    '//计算引擎代理数据消息（UNION 结构）
+    class NdpnetProxyDataUnionMsg 'typedef struct ndpnetProxyDataUnionMsgTag
+    {
+        '//sdk实例句柄
+        dword mHandle; 'ndpnet_handle handle;
+        '//响应标示
+        byte resFlag; 'ndp_uint8 resFlag;
+        '//数据包序列值
+        dword sequence; 'ndp_uint32  sequence;
+        '//子组件ID
+        int moduleId; 'ndp_uint16  moduleId;
+        '//数据参数数量
+        dword nodeNum; 'ndp_uint32 nodeNum;
+        '//时间
+        dword time; 'ndp_uint32 time;
+        '//数据数组起始地址
+        NdpnetProxyDataUnionNode pNodes[10]; 'ndpnet_proxy_data_union_node * pNodes;
+    
+        NdpnetProxyDataUnionMsg() {}
+    } 'ndpnet_proxy_data_union_msg;
+
+    '/***********************************客户端接口结构体定义******************************/
+	
+	'------------------------------------------------------
+	' 消息变量声明 （23 个）
+	'------------------------------------------------------
+    ' 收到主操台的消息(in)：PE 端设置，脚本端访问的参数
+    ' 发送给主操台的消息(out)：脚本端设置，PE 端访问的参数
+    '------------------------------------------------------
+    '//心跳消息信息 in
+	NdpnetHeartMsg             ndpnetHeartMsg;
+	'//组件注册消息 out
+	NdpnetRegisterModuleMsg    ndpnetRegisterModuleMsg;
+	'//响应消息数据 in
+	NdpnetResponseMsg          ndpnetResponseMsg;
+	'//设置组件ID消息数据
+	NdpnetSetModuleIdMsg       ndpnetSetModuleIdMsg;
+	'//设置计算环境指令信息
+	NdpnetSetCalcEnvMsg       ndpnetSetCalcEnvMsg;
+	'//设置组件工作模式指令信息
+	NdpnetSetModuleModeMsg     ndpnetSetModuleModeMsg;
+	'//启动计算指令信息
+	NdpnetCtrlStartCalcMsg     ndpnetCtrlStartCalcMsg;
+	'//暂停计算指令信息
+	NdpnetCtrlPauseCalcMsg     ndpnetCtrlPauseCalcMsg;
+	'//恢复计算指令信息
+	NdpnetCtrlResumeCalcMsg    ndpnetCtrlResumeCalcMsg;
+	'//启动计算指令信息
+	NdpnetCtrlStopCalcMsg      ndpnetCtrlStopCalcMsg;
+	'//步进计算指令消息
+	NdpnetCtrlStepCalcMsg      ndpnetCtrlStepCalcMsg;
+	'//倍速计算指令消息
+	NdpnetCtrlSpeedCalcMsg     ndpnetCtrlSpeedCalcMsg;
+	'//跳转计算指令消息
+	NdpnetCtrlJumpCalcMsg      ndpnetCtrlJumpCalcMsg;
+	'//校准计算指令消息
+	NdpnetCtrlVerifyCalcMsg    ndpnetCtrlVerifyCalcMsg;
+	'//设置参数值   软操台专用
+	'NdpnetSetParameterMsg      ndpnetSetParameterMsg;
+	'//客户端响应消息
+	NdpnetClientResponseMsg    ndpnetClientResponseMsg;
+	'//计算准备完成
+	NdpnetCalcReadyMsg         ndpnetCalcReadyMsg; 
+	'//计算结束通知消息
+	NdpnetCalcFinishedMsg      ndpnetCalcFinishedMsg;
+	'//软操台切换工况  软操台专用
+	'NdpnetWorkModeMsg          ndpnetWorkModeMsg; 
+	'//数据订阅消息
+	NdpnetSubscribeMsg         ndpnetSubscribeMsg;  
+	'//数据取消订阅消息
+	NdpnetUnsubscribeMsg       ndpnetUnsubscribeMsg;
+	'//查询数据段消息
+	NdpnetQueryDataMsg         ndpnetQueryDataMsg;
+	'//数据节点
+	'NdpnetDataNode
+	'//数据消息
+	NdpnetDataMsg              ndpnetDataMsg;
+	NdpnetDataUnionMsg         ndpnetDataUnionMsg;
+
+
+'------------------------------
+' ndpnet 相关接口封装类
+'------------------------------
+class NdpnetManager 
+{
+    '//ndpnet 通信插件名
+    string mPluginName;
+	
+	void initEnum()
+	{
+		'//包类型
+	'enum NDPNET_PACKAGE_TYPE_ENUM
+	'{
+		'//无效
+		NDPNET_INVALID_PACKAGE_TYPE = 0;
+		'//指令类
+		NDPNET_INSTRUCT_PACKAGE_TYPE = 1;
+		'//响应类
+		NDPNET_RESPONSE_PACKAGE_TYPE = 2;
+		'//数据类
+		NDPNET_DATA_PACKAGE_TYPE = 3;
+		'//心跳类
+		NDPNET_HEART_PACKAGE_TYPE = 4;
+		'//代理类
+		NDPNET_PROXY_PACKAGE_TYPE = 5;
+	'};
+
+	'//响应类型
+	'enum NEPNET_RESPONSE_TYPE_ENUM
+	'{
+		'//无效
+		NDPNET_NO_RESPONSE = 0;
+		'//立即回应
+		NDPNET_IMMEDIATELY_RESPONSE = 1;
+		'//任务完成后回应
+		NDPNET_END_TASK_RESPONSE = 2;
+	'};
+
+	'//响应类型
+	'enum NEPNET_CALC_READY_TYPE_ENUM
+	'{
+		'//计算准备错误
+		NDPNET_CALC_READY_ERROR = 0;
+		'//计算准备就绪
+		NDPNET_CALC_READY_OK = 1;
+	'};
+
+	'//响应类型
+	'enum NEPNET_EXCUTE_RESULT_ENUM
+	'{
+		'//计算执行错误
+		NDPNET_EXCUTE_ERROR = 0;
+		'//计算执行就绪
+		NDPNET_EXCUTE_OK = 1;
+	'};
+
+
+	'//数据类型
+	'enum NDPNET_DATA_TYPE_ENUM
+	'{
+		'//整形
+		NDPNET_TYPE_INT = 0;
+		'//单精度浮点数
+		NDPNET_TYPE_FLOAT = 1;
+		'//双精度浮点
+		NDPNET_TYPE_DOUBLE = 2;
+		'//字符串
+		NDPNET_TYPE_STRING = 3;
+	'};
+
+	'//分包标识
+	'enum NDPNET_SUB_FLAG_ENUM
+	'{
+		'//整包标识
+		NDPNET_FULL_FLAG = 0;
+		'//分包标识
+		NDPNET_SUB_FLAG = 1;
+	'};
+	}
+	
+	'''
+    ' @brief 初始化消息ID
+    '/
+    void initMsgId()
+    {
+        '//消息ID定义
+
+        '//100 - 199 系统指令
+        NDPNET_HEART_MSG_ID			=	100;
+        NDPNET_HEART_RESPONSE_MSG_ID  =  101;
+
+        '//200 - 299 响应指令
+        NDPNET_RESPONSE_MSG_ID		=	200;
+
+        '//300 - 399 计算指令 主控组件发送
+        NDPNET_CTRL_START_CALC_MSG_ID	     = 301;
+        NDPNET_CTRL_PAUSE_CALC_MSG_ID	     = 302;
+        NDPNET_CTRL_RESUME_CALC_MSG_ID       = 303;
+        NDPNET_CTRL_STOP_CALC_MSG_ID	     = 304;
+        NDPNET_CTRL_STEP_CALC_MSG_ID	     = 305;
+        NDPNET_CTRL_SPEED_CALC_MSG_ID	     = 306;
+        NDPNET_CTRL_JUMP_CALC_MSG_ID	     = 307;
+        NDPNET_CTRL_VERIFY_CALC_MSG_ID       = 308;
+
+        '//500 - 599 主控设置指令
+        NDPNET_SET_MODULE_ID_MSG_ID          = 501;
+        NDPNET_SET_CALC_ENV_MSG_ID           = 502;
+        NDPNET_SET_MODULE_MODE_MSG_ID	     = 503;
+
+        '//600 - 699 可视组件向主控组件发送指令
+        NDPNET_REGISTER_MODULE_MSG_ID		 = 600;
+        NDPNET_UNREGISTER_MODULE_MSG_ID    = 601;
+        NDPNET_CALC_FINISHED_MSG_ID        = 602;
+        NDPNET_CALC_READY_MSG_ID           = 603;
+        NDPNET_SET_WORK_MODE_MSG_ID        = 604;
+        NDPNET_SET_CALE_PARAMETER_MSG_ID   = 605;
+
+        '//800 - 899 数据订阅指令
+        NDPNET_SUBSCRIBE_DATA_MSG_ID		= 800;
+        NDPNET_UNSUBSCRIBE_DATA_MSG_ID	    = 801;
+        NDPNET_QUERY_DATA_MSG_ID		    = 803;
+
+        '//900 - 999    数据消息
+        NDPNET_DATA_MSG_ID	 = 900;
+	    NDPNET_DATA_UNION_MSG_ID = 901;
+
+        '代理指令  暂用不到，注掉
+        'NDPNET_PROXY_REGISTER_MSG_ID        = 1000;
+        'NDPNET_PROXY_CTRL_MODULE_MSG_ID     = 1001;    '//NDPNET_PROXY_START_MODULE_MSG_ID	= 1001;
+        'NDPNET_PROXY_MODULE_STATUS_MSG_ID   = 1002;    '//NDPNET_PROXY_STOP_MODULE_MSG_ID	= 1002;
+		'NDPNET_PROXY_UNREGISTER_MSG_ID      = 1003;
+    }
+	
+	void initMsg()
+	{
+	'//心跳消息信息 in
+	ndpnetHeartMsg            = new NdpnetHeartMsg;
+	'//组件注册消息 out
+	ndpnetRegisterModuleMsg   = new NdpnetRegisterModuleMsg;
+	'//响应消息数据 in
+	ndpnetResponseMsg         = new NdpnetResponseMsg;
+	'//设置组件ID消息数据
+	ndpnetSetModuleIdMsg      = new NdpnetSetModuleIdMsg;
+	'//设置计算环境指令信息
+	ndpnetSetCalcEnvMsg      = new NdpnetSetCalcEnvMsg;
+	'//设置组件工作模式指令信息
+	ndpnetSetModuleModeMsg    = new NdpnetSetModuleModeMsg;
+	'//启动计算指令信息
+	ndpnetCtrlStartCalcMsg    = new NdpnetCtrlStartCalcMsg;
+	'//暂停计算指令信息
+	ndpnetCtrlPauseCalcMsg    = new NdpnetCtrlPauseCalcMsg;
+	'//恢复计算指令信息
+	ndpnetCtrlResumeCalcMsg   = new NdpnetCtrlResumeCalcMsg;
+	'//启动计算指令信息
+	ndpnetCtrlStopCalcMsg     = new NdpnetCtrlStopCalcMsg;
+	'//步进计算指令消息
+	ndpnetCtrlStepCalcMsg     = new NdpnetCtrlStepCalcMsg;
+	'//倍速计算指令消息
+	ndpnetCtrlSpeedCalcMsg    = new NdpnetCtrlSpeedCalcMsg;
+	'//跳转计算指令消息
+	ndpnetCtrlJumpCalcMsg     = new NdpnetCtrlJumpCalcMsg;
+	'//校准计算指令消息
+	ndpnetCtrlVerifyCalcMsg   = new NdpnetCtrlVerifyCalcMsg;
+	'//设置参数值 （软操台专用）
+	'ndpnetSetParameterMsg     = new NdpnetSetParameterMsg;
+	'//客户端响应消息
+	ndpnetClientResponseMsg   = new NdpnetClientResponseMsg;
+	'//计算准备完成 out
+	ndpnetCalcReadyMsg        = new NdpnetCalcReadyMsg; 
+	'//计算结束通知消息 out
+	ndpnetCalcFinishedMsg     = new NdpnetCalcFinishedMsg;
+	'//软操台切换工况 (软操台向主控发送工况切换信息)
+	'ndpnetWorkModeMsg        = new NdpnetWorkModeMsg; 
+	'//数据订阅消息  out
+	ndpnetSubscribeMsg        = new NdpnetSubscribeMsg;  
+	'//数据取消订阅消息 out
+	ndpnetUnsubscribeMsg      = new NdpnetUnsubscribeMsg;
+	'//查询数据段消息
+	ndpnetQueryDataMsg        = new NdpnetQueryDataMsg;
+	'//数据节点
+	'NdpnetDataNode
+	'//数据消息
+	ndpnetDataMsg             = new NdpnetDataMsg;
+	ndpnetDataUnionMsg = new NdpnetDataUnionMsg;
+	}
+	
+	NdpnetManager() 
+	{
+	    mPluginName = "PEToNuclear";
+
+        initMsgId();
+		initEnum();
+		initMsg();
+	}
+
+    '''
+     ' @brief 初始化网络，生成 handle
+     ' @return 0: 成功; 1: 失败
+     '/
+    int init()
+    {
+        return pluginCall(mPluginName, "ndpnetInit", "");
+    }
+
+    '''
+     ' @brief 网络终止化
+     '/
+    void release()
+    {
+        pluginCall(mPluginName, "ndpnetRelease", "");
+    }
+
+	'''
+     ' @brief 设置接收计算数据的时间间隔。单位为毫秒。若不设置，默认为 100 ms
+	 ' @since 2023-03-30
+     '/
+    void setDataTimeSpan(int ms)
+    {
+        pluginCall(mPluginName, "ndpnetSetDataTimeSpan", ms);
+    }
+
+	'''
+	 ' @brief 设置消息回调脚本函数
+	 '/
+	int setMessageListenerFunction(string& scriptFuncName)
+	{
+	    return pluginCall(mPluginName, "ndpnetSetMessageListenerFunc", scriptFuncName);
+	}
+
+	'''
+	 ' @brief 设置消息回调脚本对象
+	 '/
+	int setMessageListener(string& scriptObjectName)
+	{
+	    return pluginCall(mPluginName, "ndpnetSetMessageListener", scriptObjectName);
+	}
+
+
+
+    '''
+     ' @brief 连接主控
+     ' @param ip
+     ' @param port
+     ' @return 0: 成功；否则，失败
+     '/
+    int connect(string& ip , int port)
+	{
+	    return pluginCall(mPluginName, "ndpnetConnect", ip, port);
+	}
+
+    '''
+     ' @brief 断开与主控的连接
+     ' @return 0: 成功；否则，失败
+     '/
+    int disconnect()
+	{
+	    return pluginCall(mPluginName, "ndpnetDisconnect", "");
+	}
+
+    '''
+     ' @brief 注册组件
+     ' @return 0: 成功；否则，失败
+     '/
+    int registerModule()
+	{
+	    return pluginCall(mPluginName, "ndpnetRegisterModule", "");	
+	}
+
+    '''
+     ' @brief 取消注册组件
+     ' @return 0: 成功；否则，失败
+     '/
+    int unregisterModule()
+	{
+	    return pluginCall(mPluginName, "ndpnetUnregisterModule", "");	
+	}
+
+    '''
+     ' @brief 订阅
+     ' @return 0: 成功；否则，失败
+     '/
+    int subscribe()
+	{
+	    return pluginCall(mPluginName, "ndpnetSubscribe", "");
+	}
+
+    '''
+     ' @brief 取消订阅
+     ' @return 0: 成功；否则，失败
+     '/
+    int unsubscribe()
+    {
+	    return pluginCall(mPluginName, "ndpnetUnsubscribe", "");
+    }
+	
+    '/**
+	' * @brief 发送客户端响应消息
+	' * @return 0: 成功；否则，失败
+	' */
+	int sendClientResponseMsg()
+	{
+	    return pluginCall(mPluginName, "ndpnetSendClientResponseMsg", "");
+	}
+
+	'/**
+	' * @brief 可视化组件通知主控计算完成
+	' * @return 0: 成功；否则，失败
+	' */
+	int sendCalcFinished()
+	{
+	    return pluginCall(mPluginName, "ndpnetSendCalcFinished", "");
+	}
+
+	'/**
+	' * @brief 组件通知主控，准备就绪，可以开始计算
+	' * @return 0: 成功；否则，失败
+	' */
+	int sendCalcReady()
+	{
+		return pluginCall(mPluginName, "ndpnetSendCalcReady", "");
+	}
+
+	
+	'/**
+	' * @brief 组件响应心跳包
+	' * @return 0: 成功；否则，失败
+	' */
+	int sendHeartResponse()
+	{
+	    return pluginCall(mPluginName, "ndpnetSendHeartResponse", "");
+	}
+
+} 
+
+}

@@ -1,0 +1,430 @@
+
+''''''''''''''---------有用的函数---------------'''''''''''''''''
+
+	显示或隐藏菜单
+	void MagicFunc_ShowMenu(bool bShow)  
+
+	改变播放按钮的皮肤
+	void MagicFunc_Skin_SetPlay()     
+	void MagicFunc_Skin_SetPause()
+
+	改变音频按钮的皮肤
+	void MagicFunc_Skin_OpenSound()   
+	void MagicFunc_Skin_ShutSound()
+	
+''''''''''''''------------------------------------''''''''''''''''
+
+
+Script{
+
+Image{
+	name{魔幻桌面}
+	Rect{-1, -0.85, 1, -1, 30}
+	Bitmap{MagicMenu\绿水轻盈\桌面.jpg}
+	Bitmap_templ{MagicMenu\绿水轻盈\桌面MB.jpg}
+}
+
+
+''''''''''''''''''------------------常用按钮----------------------'''''''''''''''''''''''''''''''
+
+Button{Name{主菜单}
+	normal{ 
+		bitmap{MagicMenu\绿水轻盈\主菜单.jpg}
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{1}
+	}
+	Visible{FALSE}			
+	hover{ 
+		bitmap{MagicMenu\绿水轻盈\主菜单.jpg}  	
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{0.7}
+	}
+}					
+Button{Name{故障维修}		
+	normal{ 
+		bitmap{MagicMenu\绿水轻盈\故障维修.jpg}   
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{1}
+	}
+	Visible{FALSE}			
+	hover{ 
+		bitmap{MagicMenu\绿水轻盈\故障维修.jpg}    
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{0.7}
+	}
+}
+Button{Name{维护保养}		
+	normal{ 
+		bitmap{MagicMenu\绿水轻盈\维护保养.jpg}   
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{1}
+	}
+	Visible{FALSE}			
+	hover{ 
+		bitmap{MagicMenu\绿水轻盈\维护保养.jpg}
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{0.7}
+	}
+}							
+Button{Name{讲解} 			
+	normal{ 
+		bitmap{MagicMenu\绿水轻盈\讲解.jpg}       
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{1}
+	}
+	Visible{FALSE}			
+	hover{
+		bitmap{MagicMenu\绿水轻盈\讲解.jpg}        
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{0.7}
+	}
+}
+Button{Name{训练} 			
+	normal{ 
+		bitmap{MagicMenu\绿水轻盈\训练.jpg}       
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{1}
+	}
+	Visible{FALSE}			
+	hover{ 
+		bitmap{MagicMenu\绿水轻盈\训练.jpg}        
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{0.7}
+	}
+}
+Button{Name{考核}
+	normal{ 
+		bitmap{MagicMenu\绿水轻盈\考核.jpg}
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{1}
+	}
+	Visible{FALSE}			
+	hover{ 
+		bitmap{MagicMenu\绿水轻盈\考核.jpg}        
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{0.7}
+	}
+}	
+
+Button{Name{视角}
+	normal{ 
+		bitmap{MagicMenu\绿水轻盈\视角.jpg}
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{1}
+	}
+	Visible{FALSE}			
+	hover{ 
+		bitmap{MagicMenu\绿水轻盈\视角.jpg}        
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{0.7}
+	}
+}
+Button{Name{播放}
+	normal{
+		bitmap{MagicMenu\绿水轻盈\播放.jpg}       
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{1}
+	}
+	Visible{FALSE}			
+	hover{ 
+		bitmap{MagicMenu\绿水轻盈\播放.jpg}        
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{0.7}
+	}
+}
+Button{Name{音频} 			
+	normal{ 
+		bitmap{MagicMenu\绿水轻盈\音频开.jpg}     
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{1}
+	}
+	Visible{FALSE}			
+	hover{ 
+		bitmap{MagicMenu\绿水轻盈\音频开.jpg}      
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{0.7}
+	}
+}		
+
+Button{Name{退出} 			
+	normal{ 
+		bitmap{MagicMenu\绿水轻盈\退出.jpg}        
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{1}
+	}
+	Visible{FALSE}			
+	hover{ 
+		bitmap{MagicMenu\绿水轻盈\退出.jpg}         
+		bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+		transparency{0.7}
+	}
+}			
+
+button{                         ''''退出系统界面——确定 按钮定义 G12
+	name{退出系统确定按钮}
+	group{12}
+	enable{false}
+	rect{-0.12, -0.25, 0.0, -0.35,1}
+	normal{
+		bitmap{MagicMenu\绿水轻盈\退出系统界面\退出系统确定按钮01.jpg}
+		transparency{0.99}
+		bitmap_templ{MagicMenu\绿水轻盈\退出系统界面\退出系统按钮Mask.jpg}
+	}
+	hover{
+		bitmap{MagicMenu\绿水轻盈\退出系统界面\退出系统确定按钮02.jpg}
+		transparency{0.99}
+		bitmap_templ{MagicMenu\绿水轻盈\退出系统界面\退出系统按钮Mask.jpg}
+	}
+	push{
+		bitmap{MagicMenu\绿水轻盈\退出系统界面\退出系统确定按钮02.jpg}
+		transparency{0.99}
+		bitmap_templ{MagicMenu\绿水轻盈\退出系统界面\退出系统按钮Mask.jpg}
+	}
+}
+button{                         ''''退出系统界面——取消 按钮定义 G12
+	name{退出系统取消按钮}
+	group{12}
+	enable{false}
+	rect{0.15, -0.25, 0.27, -0.35,1}
+	normal{
+		bitmap{MagicMenu\绿水轻盈\退出系统界面\退出系统取消按钮01.jpg}
+		transparency{0.99}
+		bitmap_templ{MagicMenu\绿水轻盈\退出系统界面\退出系统按钮Mask.jpg}
+	}
+	hover{
+		bitmap{MagicMenu\绿水轻盈\退出系统界面\退出系统取消按钮02.jpg}
+		transparency{0.99}
+		bitmap_templ{MagicMenu\绿水轻盈\退出系统界面\退出系统按钮Mask.jpg}
+	}
+	push{
+		bitmap{MagicMenu\绿水轻盈\退出系统界面\退出系统取消按钮02.jpg}
+		transparency{0.99}
+		bitmap_templ{MagicMenu\绿水轻盈\退出系统界面\退出系统按钮Mask.jpg}
+	}
+}
+button{                         ''''退出系统界面 定义 G12
+	name{退出系统界面}
+	group{12}
+	enable{false}
+	rect{-0.35, 0.206,0.51, -0.441,2}
+	normal{
+		bitmap{MagicMenu\绿水轻盈\退出系统界面\退出系统询问框.jpg}
+		transparency{0.99}
+		bitmap_templ{MagicMenu\绿水轻盈\退出系统界面\退出系统询问框Mask.jpg}
+	}
+	hover{
+		bitmap{MagicMenu\绿水轻盈\退出系统界面\退出系统询问框.jpg}
+		transparency{0.99}
+		bitmap_templ{MagicMenu\绿水轻盈\退出系统界面\退出系统询问框Mask.jpg}
+	}
+	push{
+		bitmap{MagicMenu\绿水轻盈\退出系统界面\退出系统询问框.jpg}
+		transparency{0.99}
+		bitmap_templ{MagicMenu\绿水轻盈\退出系统界面\退出系统询问框Mask.jpg}
+	}
+}
+
+'''''''''''''------------实现魔幻菜单的显示隐藏(使用空格键)---------------''''''''''''''
+bool show_magic_menu = true;
+
+void MagicFunc_ShowMenu(bool bShow)
+{
+	showActiveMagicMenu(bShow); 
+	show_magic_menu = bShow; 
+	string path = getImagePath("魔幻桌面");
+	showField( path, bShow );
+}
+
+key_map
+{
+	key{space}
+	Reaction{
+		type{key up}
+		Action{
+			Program{
+				if(show_magic_menu) { 
+					MagicFunc_ShowMenu(false);
+				}
+				else { 
+					MagicFunc_ShowMenu(true);
+				}
+			}
+		}
+	}
+}
+
+'''''''''''''------------实现播放按钮的皮肤改变---------------'''''''''''''''''
+
+Texture
+{
+	name{纹理_播放}
+	bitmap{MagicMenu\绿水轻盈\播放.jpg}
+	bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+}
+
+Texture
+{
+	name{纹理_暂停}
+	bitmap{MagicMenu\绿水轻盈\暂停.jpg}
+	bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+}
+
+int play_or_pause = 1;
+
+void MagicFunc_Skin_SetPlay()
+{
+	play_or_pause = 1;
+	string path = getButtonPath("播放");
+	setImageTexture(path + "/normal", "纹理_播放");
+	setImageTexture(path + "/hover", "纹理_播放");
+	setTextContent(path + "/caption", "播放");
+}
+
+void MagicFunc_Skin_SetPause()
+{
+	play_or_pause = 2;
+	string path = getButtonPath("播放");
+	setImageTexture(path + "/normal", "纹理_暂停");
+	setImageTexture(path + "/hover", "纹理_暂停");
+	setTextContent(path + "/caption", "暂停");
+}
+
+Button
+{	
+	Name{播放}
+	Reaction{
+		Action{
+			Program{
+				if(play_or_pause == 1){	
+					MagicFunc_Skin_SetPause();
+				}
+				else{
+					MagicFunc_Skin_SetPlay();
+				}
+			}
+		}
+	}
+}
+
+
+
+'''''''''''''------------实现音频按钮的皮肤改变---------------'''''''''''''''''
+
+Texture
+{
+	name{纹理_音频开}
+	bitmap{MagicMenu\绿水轻盈\音频开.jpg}
+	bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+}
+
+Texture
+{
+	name{纹理_音频关}
+	bitmap{MagicMenu\绿水轻盈\音频关.jpg}
+	bitmap_templ{MagicMenu\绿水轻盈\按钮MB.jpg}
+}
+
+int sound_open_shut = 1;
+
+void MagicFunc_Skin_OpenSound()
+{
+	sound_open_shut = 1;
+	string path = getButtonPath("音频");
+	setImageTexture(path + "/normal", "纹理_音频开");
+	setImageTexture(path + "/hover", "纹理_音频开");
+}
+
+void MagicFunc_Skin_ShutSound()
+{
+	sound_open_shut = 2;
+	string path = getButtonPath("音频");
+	setImageTexture(path + "/normal", "纹理_音频关");
+	setImageTexture(path + "/hover", "纹理_音频关");
+}
+
+					
+
+Button
+{	
+	Name{音频}
+	Reaction{
+		Action{
+			Program{
+				if(sound_open_shut == 1){	
+					MagicFunc_Skin_ShutSound();
+				}
+				else{
+					MagicFunc_Skin_OpenSound();
+				}
+			}
+		}
+	}
+}
+
+Button
+{	
+	Name{退出}
+	Reaction{
+		Animation{
+			quick{pause active animations}
+		}
+		Action{
+			act{
+				type{enable ctrlpt group}
+				int{12}
+			}
+		}
+	}
+}
+'''''***************************************************************************
+Button{                                         ''''退出确定按钮 动画响应
+	name{退出系统确定按钮}
+	reaction{
+		type{LBUTTONDOWN}
+		animation{reference{animation{name{按钮按下音乐}}}}
+	}
+	reaction{
+		type{mouse move in}
+		animation{reference{animation{name{按钮靠近音乐}}}}
+	}
+	Reaction{
+		animation{
+			controller{
+				life{0,500}
+				action{
+					act{
+						type{exit}
+					}
+				}
+			}
+		}
+	}
+}
+Button{                                         ''''退出取消按钮 动画响应
+	name{退出系统取消按钮}
+	reaction{
+		type{LBUTTONDOWN}
+		animation{reference{animation{name{按钮按下音乐}}}}
+	}
+	reaction{
+		type{mouse move in}
+		animation{reference{animation{name{按钮靠近音乐}}}}
+	}
+	Reaction{
+		Animation{
+			controller{
+				life{0,500}
+				action{
+					act{
+						type{disable ctrlpt group}
+						int{12}
+					}	
+				}
+			}
+		}
+		Animation{
+				quick{continue active animations}
+		}
+	}
+}
+}'''END

@@ -1,0 +1,37 @@
+
+{
+    "topics" : {
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/ctl/scada/route/detail" : [
+        ],
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/ctl/scada/cruise/status" : [
+        ],
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/ctl/scada/train/reset/status" : [
+        ],
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/scada/action/auto"            : [
+        ],
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/scada/ctl/action/manual"      : [
+            "throttlePercent",
+            "rudderPercent"
+        ],
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/ctl/scada/parameter/adjustList" : [
+        ],
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/ctl/scada/action"               : [
+        ],
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/ctl/scada/parameter/monitorList" : [
+        ],
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/ctl/nav/autoCommand"             : [
+        ],
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/ctl/scada/sensor/status"         : [
+        ],
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/ctl/scada/running/status"        : [
+        ],
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/scada/ctl/action/pose"           : [
+        ],
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/scada/model/command/reply"       : [
+        ],
+        "/usv/69b7a7d6ddf6c61f0af03f66a93d32a9723b23dd/ctl/scada/communication/status"  : [
+        ]
+    },
+    "linkFields" : {
+    }
+}

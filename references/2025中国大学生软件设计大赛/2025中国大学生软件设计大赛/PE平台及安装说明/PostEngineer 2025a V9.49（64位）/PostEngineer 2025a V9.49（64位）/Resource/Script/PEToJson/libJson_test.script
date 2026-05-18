@@ -1,0 +1,174 @@
+'创建时间: 2022-06-08
+'作者: ypj
+'描述: json 操作测试
+'更新：2022-06-08
+
+
+Script{
+
+include{libJson.script}
+
+
+
+
+string gLogFile;    '// 日志文件
+Animation{
+	name{初始化Json库}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                gLogFile = "jsontest.log";
+                theJsonMgr = new JsonManager;
+				appPrintLog(gLogFile, "[初始化Json库] called", 1);
+            }
+        }
+    }
+}
+
+Animation{
+	name{读Json测试}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+'// Json 测试字符串:
+'// { 
+'//    "ao":[{"i": 1, "f": 1.2, "ns": "", "s": "so[0]::s 的值"}, {"i": 2, "f": 2.2, "s": "so[1]::s 的值"}],
+'//    "o": 
+'//    { 
+'//       "o": {"i": 2, "f":0.5, "s": "o::o:s"}, 
+'//       "i": 3, 
+'//       "f": 2.5, 
+'//       "s中文": "o::s中文", 
+'//	      "ia": [1,2], 
+'//       "fa": [1.1, 2.2, 3.3],
+'//       "sa": ["o::sa 0", "o::sa 1"]
+'//	   }
+'// }
+                appPrintLog(gLogFile, "[读Json测试] called", 1);
+				
+				JsonDocument jsonDoc = new JsonDocument;
+
+				string jsonStr = ""; 
+				theJsonMgr.genTestJsonString(jsonStr, theJsonMgr.mGB2312); '// 获取Json测试字符串。（脚本端不支持转义符，字符串中含引号不行。）
+
+				int codec = theJsonMgr.mGB2312;
+				int res = jsonDoc.parse(jsonStr, codec); '// 0: utf8; 1: gb2312
+				'int res = 0;
+				if(res==1) {
+				    messageBox("parse error");
+				}
+				else {
+				    messageBox("parse success");
+					messageBox(jsonStr);
+				}
+				'//--------------------------------
+				'//	JsonValue 方式查询值
+				'//--------------------------------
+				JsonValue jv = new JsonValue;
+				JsonValue jv2 = new JsonValue;
+				JsonValue jv3 = new JsonValue;
+
+				'// 对象数组测试
+				res = jsonDoc.getMember(jv, "ao", theJsonMgr.mGB2312);
+				if(res == 0) {
+				    messageBox("[对象数组测试] getMember ao 成功");
+				}
+				else {
+				    messageBox("[对象数组测试] getMember ao 失败");
+				}
+				string str;
+				'// ypj, 2022-06-23, 新的数组元素接口
+				res = jv.getArrayMemberString(str, 0, "s", theJsonMgr.mGB2312, theJsonMgr.mGB2312);
+				if(res == 0) {
+				    messageBox("[对象数组测试] getArrayMemberString 成功");
+					messageBox(str);
+				}
+				else {
+				    messageBox("[对象数组测试] getArrayMemberString 失败");
+				}
+
+				'// ypj, 2022-06-23, 下面的获取数组元素的接口弃用? 有问题? 初步测试也ok!
+				res = jv.getArrayElem(jv2, 1);
+				if(res == 0) {
+				    messageBox("[对象数组测试] getArrayElem 成功");
+				}
+				else {
+				    messageBox("[对象数组测试] getArrayElem 失败");
+				}
+				res = jv2.getMember(jv3, "s", theJsonMgr.mGB2312);
+				if(res == 0) {
+				    messageBox("[对象数组测试] ao[1] getMember s 成功");
+				}
+				else {
+				    messageBox("[对象数组测试] ao[1] getMember s  失败");
+				}
+				res = jv3.getString(str, theJsonMgr.mGB2312);
+				if(res == 0) {
+				    messageBox(str);
+				}
+				else {
+				    messageBox("[对象数组测试] getString ao[1]::s 获取失败");
+				}
+
+
+				'res = jsonDoc.getMember(jv, "o", theJsonMgr.mGB2312);
+				'if(res == 0) {
+				'    messageBox("一级 JsonValue 获取成功");
+				'}
+				'else {
+				'    messageBox("一级 JsonValue 获取失败");
+				'}
+				
+				
+				'res = jv.getMember(jv2, "s中文", theJsonMgr.mGB2312);
+				'if(res == 0) {
+				'    messageBox("二级 JsonValue 获取成功");
+				'}
+				'else {
+				'    messageBox("二级 JsonValue 获取失败");
+				'}
+				
+				'// 字符串数组
+				'res = jv.getMember(jv2, "sa", theJsonMgr.mGB2312);
+				'if(res == 0) {
+				'    messageBox("二级 JsonValue 字符串数组获取成功");
+				'}
+				'else {
+				'    messageBox("二级 JsonValue 字符串数组获取失败");
+				'}
+				'// 下面获取数组元素接口弃用，有问题。
+				'res = jv2.getArrayElem(jv3, 0);
+				'if(res == 0) {
+				'    messageBox("三级 JsonValue 字符串数组获取元素成功");
+				'}
+				'else {
+				'    messageBox("三级 JsonValue 字符串数组获取元素失败");
+				'}
+				'res = jv3.getString(str, theJsonMgr.mGB2312);
+				'if(res == 0) {
+				'    messageBox(str);
+				'}
+				'else {
+				'    messageBox("四级 JsonValue 字符串数组获取元素值失败");
+				'}
+				
+				'// JsonDocument key link 直接查询测试
+			    int ival=1; 
+				jsonDoc.getInt(ival, "o::i", 1);
+				float fval=1.0;
+				jsonDoc.getFloat(fval, "o::f", 1);
+				string sval="ddd";
+				jsonDoc.getString(sval, "o::s中文", 1, 1);
+
+				appPrintLog(gLogFile, "[读Json测试] o::i=", ival);
+				messageBox(sval); 
+
+				'//delete jsonDoc;
+			}
+        }
+    }
+}
+
+} ''' Script

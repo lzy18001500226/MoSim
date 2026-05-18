@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="gb2312"?>
+
+<指令表 version="100">
+	
+	<类别 name="手柄">
+		<中断 name="手柄菜单键按下" content="void OnMenuDown()">
+			<参数 name="备注"/>
+		</中断>
+	</类别>
+
+	<类别 name="通信">
+		<中断 name="UDP" content="void OnUdpReceived()">
+			<参数 name="备注"/>
+		</中断>
+	</类别>
+
+</指令表>

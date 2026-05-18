@@ -1,0 +1,18 @@
+script{
+
+settings{
+	workdir{CURDIR}
+}
+
+'载入模型
+' file{main/model/}
+
+include{虚动画.Script}
+include{main\Interface.Script}
+
+Animation{
+	Name{system boot}
+	
+}
+
+}

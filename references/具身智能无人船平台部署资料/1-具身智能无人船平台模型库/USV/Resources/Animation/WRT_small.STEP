@@ -1,0 +1,93 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION (( 'STEP AP203' ),
+    '1' );
+FILE_NAME ('WRT_small.STEP',
+    '2025-01-06T11:29:37',
+    ( '' ),
+    ( '' ),
+    'SwSTEP 2.0',
+    'SolidWorks 2020',
+    '' );
+FILE_SCHEMA (( 'CONFIG_CONTROL_DESIGN' ));
+ENDSEC;
+
+DATA;
+#1 = LOCAL_TIME ( 19, 29, 37.00000000000000000, #25 ) ;
+#2 = COORDINATED_UNIVERSAL_TIME_OFFSET ( 8, 0, .AHEAD. ) ;
+#3 = LOCAL_TIME ( 19, 29, 37.00000000000000000, #20 ) ;
+#4 = APPROVAL_STATUS ( 'not_yet_approved' ) ;
+#5 = APPROVAL_ROLE ( '' ) ;
+#6 = PRODUCT ( 'WRT_small', 'WRT_small', '', ( #17 ) ) ;
+#7 = DESIGN_CONTEXT ( 'detailed design', #18, 'design' ) ;
+#8 = APPROVAL_STATUS ( 'not_yet_approved' ) ;
+#9 = ORGANIZATION ( '未指定', '未指定', '' ) ;
+#10 = DATE_TIME_ROLE ( 'creation_date' ) ;
+#11 = PERSON_AND_ORGANIZATION_ROLE ( 'design_supplier' ) ;
+#12 = COORDINATED_UNIVERSAL_TIME_OFFSET ( 8, 0, .AHEAD. ) ;
+#13 = PERSON ( '未指定', '未指定', '未指定', ('未指定'), ('未指定'), ('未指定') ) ;
+#14 = APPLICATION_PROTOCOL_DEFINITION ( 'international standard', 'config_control_design', 1994, #75 ) ;
+#15 = CALENDAR_DATE ( 2025, 6, 1 ) ;
+#16 = DATE_AND_TIME ( #15, #1 ) ;
+#17 = MECHANICAL_CONTEXT ( 'NONE', #75, 'mechanical' ) ;
+#18 = APPLICATION_CONTEXT ( 'configuration controlled 3d designs of mechanical parts and assemblies' ) ;
+#19 = APPROVAL_DATE_TIME ( #68, #73 ) ;
+#20 = COORDINATED_UNIVERSAL_TIME_OFFSET ( 8, 0, .AHEAD. ) ;
+#21 = APPROVAL_PERSON_ORGANIZATION ( #67, #73, #55 ) ;
+#22 = CC_DESIGN_SECURITY_CLASSIFICATION ( #44, ( #53 ) ) ;
+#23 = APPROVAL_DATE_TIME ( #16, #69 ) ;
+#24 = PRODUCT_DEFINITION ( '未知', '', #53, #7 ) ;
+#25 = COORDINATED_UNIVERSAL_TIME_OFFSET ( 8, 0, .AHEAD. ) ;
+#26 = CC_DESIGN_PERSON_AND_ORGANIZATION_ASSIGNMENT ( #39, #35, ( #24 ) ) ;
+#27 = CC_DESIGN_PERSON_AND_ORGANIZATION_ASSIGNMENT ( #70, #11, ( #53 ) ) ;
+#28 = CC_DESIGN_APPROVAL ( #73, ( #24 ) ) ;
+#29 = COORDINATED_UNIVERSAL_TIME_OFFSET ( 8, 0, .AHEAD. ) ;
+#30 = PERSON_AND_ORGANIZATION ( #13, #9 ) ;
+#31 = SECURITY_CLASSIFICATION_LEVEL ( 'unclassified' ) ;
+#32 = DATE_TIME_ROLE ( 'classification_date' ) ;
+#33 = CC_DESIGN_APPROVAL ( #69, ( #53 ) ) ;
+#34 = CC_DESIGN_PERSON_AND_ORGANIZATION_ASSIGNMENT ( #49, #59, ( #53 ) ) ;
+#35 = PERSON_AND_ORGANIZATION_ROLE ( 'creator' ) ;
+#36 = PERSON_AND_ORGANIZATION_ROLE ( 'design_owner' ) ;
+#37 = DATE_AND_TIME ( #74, #40 ) ;
+#38 = CC_DESIGN_PERSON_AND_ORGANIZATION_ASSIGNMENT ( #54, #36, ( #6 ) ) ;
+#39 = PERSON_AND_ORGANIZATION ( #13, #9 ) ;
+#40 = LOCAL_TIME ( 19, 29, 37.00000000000000000, #12 ) ;
+#41 = APPROVAL_ROLE ( '' ) ;
+#42 = CALENDAR_DATE ( 2025, 6, 1 ) ;
+#43 = PERSON_AND_ORGANIZATION ( #13, #9 ) ;
+#44 = SECURITY_CLASSIFICATION ( '', '', #31 ) ;
+#45 = CC_DESIGN_PERSON_AND_ORGANIZATION_ASSIGNMENT ( #56, #72, ( #44 ) ) ;
+#46 = CC_DESIGN_DATE_AND_TIME_ASSIGNMENT ( #37, #32, ( #44 ) ) ;
+#47 = CC_DESIGN_APPROVAL ( #76, ( #44 ) ) ;
+#48 = APPLICATION_PROTOCOL_DEFINITION ( 'international standard', 'config_control_design', 1994, #18 ) ;
+#49 = PERSON_AND_ORGANIZATION ( #13, #9 ) ;
+#50 = APPROVAL_DATE_TIME ( #60, #76 ) ;
+#51 = LOCAL_TIME ( 19, 29, 37.00000000000000000, #2 ) ;
+#52 = APPROVAL_STATUS ( 'not_yet_approved' ) ;
+#53 = PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE ( '任何', '', #6, .NOT_KNOWN. ) ;
+#54 = PERSON_AND_ORGANIZATION ( #13, #9 ) ;
+#55 = APPROVAL_ROLE ( '' ) ;
+#56 = PERSON_AND_ORGANIZATION ( #13, #9 ) ;
+#57 = LOCAL_TIME ( 19, 29, 37.00000000000000000, #29 ) ;
+#58 = CALENDAR_DATE ( 2025, 6, 1 ) ;
+#59 = PERSON_AND_ORGANIZATION_ROLE ( 'creator' ) ;
+#60 = DATE_AND_TIME ( #42, #3 ) ;
+#61 = PRODUCT_DEFINITION_SHAPE ( 'NONE', 'NONE',  #24 ) ;
+#62 = PRODUCT_RELATED_PRODUCT_CATEGORY ( 'detail', '', ( #6 ) ) ;
+#63 = CALENDAR_DATE ( 2025, 6, 1 ) ;
+#64 = DATE_AND_TIME ( #58, #51 ) ;
+#65 = APPROVAL_PERSON_ORGANIZATION ( #30, #69, #5 ) ;
+#66 = CC_DESIGN_DATE_AND_TIME_ASSIGNMENT ( #64, #10, ( #24 ) ) ;
+#67 = PERSON_AND_ORGANIZATION ( #13, #9 ) ;
+#68 = DATE_AND_TIME ( #63, #57 ) ;
+#69 = APPROVAL ( #4, '未指定' ) ;
+#70 = PERSON_AND_ORGANIZATION ( #13, #9 ) ;
+#71 = APPROVAL_PERSON_ORGANIZATION ( #43, #76, #41 ) ;
+#72 = PERSON_AND_ORGANIZATION_ROLE ( 'classification_officer' ) ;
+#73 = APPROVAL ( #8, '未指定' ) ;
+#74 = CALENDAR_DATE ( 2025, 6, 1 ) ;
+#75 = APPLICATION_CONTEXT ( 'configuration controlled 3d designs of mechanical parts and assemblies' ) ;
+#76 = APPROVAL ( #52, '未指定' ) ;
+ENDSEC;
+END-ISO-10303-21;

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>模型的编辑、操作与修改 &mdash; PE 用户手册 2024 文档</title>
+
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/translations.js"></script>
+        <script src="../../../_static/js/custom.js"></script>
+    <script src="../../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc">
+  
+    <link rel="index" title="索引" href="../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../search.html" />
+    <link rel="next" title="对象" href="../../%E5%AF%B9%E8%B1%A1/index.html" />
+    <link rel="prev" title="模型文件导入" href="%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html" />
+ 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html">
+            <img src="../../../_static/docs_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">PE入门</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/index.html">认识 PE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html">PE 简介</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id1">PE是什么?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id2">PE可以用来做什么？</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id3">PE怎么做到的？</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id4">PE的基本思想</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E5%AE%89%E8%A3%85.html">PE 安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/index.html">项目开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE.html">创建项目</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html">项目开发</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#pe">PE界面概览</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#id2">图形化项目开发概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#id3">添加模型</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E8%B0%83%E8%AF%95.html">项目调试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E5%8F%91%E5%B8%83%E6%88%90%E6%9E%9C.html">发布成果</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">基础开发</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">资源</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">模型</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html">模型文件导入</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#dmax">安装 3Dmax 互导插件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#id2">导入模型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#id3">添加模型到工程</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">模型的编辑、操作与修改</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">模型操作</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">模型编辑</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">模型修改</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/index.html">对象</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/index.html">模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1.html">加载模型资源对象</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%85%89%E7%85%A7%E9%98%B4%E5%BD%B1%E6%95%88%E6%9E%9C%E8%AE%BE%E7%BD%AE.html">光照阴影效果设置</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%85%89%E7%85%A7%E9%98%B4%E5%BD%B1%E6%95%88%E6%9E%9C%E8%AE%BE%E7%BD%AE.html#id2">设置光照探针</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html">创建基础模型对象</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id2">创建长方体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id3">创建直线</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id4">创建圆柱体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id5">创建球体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id6">创建多边形</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id7">创建精灵</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html">动画</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html#id2">帧动画</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html#id3">复合动画</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E7%9B%B8%E6%9C%BA.html">相机</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%89%96%E5%88%87.html">剖切</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E8%B7%AF%E7%BA%BF.html">路线</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E7%AE%A1%E9%81%93.html">管道</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%A0%87%E6%B3%A8.html">标注</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E7%BB%B3%E7%B4%A2.html">绳索</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/index.html">界面</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E5%9B%BE%E7%89%87.html">图片</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E7%BA%B9%E7%90%86.html">纹理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E8%A7%86%E5%8F%A3.html">视口</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E8%A7%86%E9%A2%91.html">视频</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/index.html">交互</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%8E%A7%E5%88%B6%E7%82%B9.html">控制点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%8C%89%E9%92%AE.html">按钮</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E9%94%AE%E7%9B%98%E5%93%8D%E5%BA%94.html">键盘响应</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%97%8B%E9%92%AE.html">旋钮</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%BB%91%E5%9D%97.html">滑块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E8%8F%9C%E5%8D%95.html">菜单</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/index.html">数据</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E5%8F%98%E9%87%8F.html">变量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E6%97%8B%E9%87%8F.html">旋量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E4%B8%89%E7%BB%B4%E7%82%B9.html">三维点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E7%8A%B6%E6%80%81.html">状态</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E4%BD%93.html">体</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/index.html">图表</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/index.html">图表</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%96%87%E5%AD%97.html">文字</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%95%B0%E5%AD%97.html">数字</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%9B%B2%E7%BA%BF%E5%9B%BE.html">曲线图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%9F%B1%E7%8A%B6%E5%9B%BE.html">柱状图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E9%A5%BC%E7%8A%B6%E5%9B%BE.html">饼状图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E7%BD%91%E6%A0%BC%E8%A1%A8.html">网格表</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E8%BF%9B%E5%BA%A6%E6%9D%A1.html">进度条</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E8%A1%A8%E7%9B%98.html">表盘</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E9%9B%B7%E8%BE%BE%E5%9B%BE.html">雷达图</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E6%A0%87%E5%BF%97%E7%89%8C.html">标志牌</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/index.html">程序</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/%E5%87%BD%E6%95%B0.html">函数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/%E7%B1%BB.html">类</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/index.html">效果对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E7%B2%92%E5%AD%90.html">粒子</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E4%BA%91.html">云</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E5%B0%BE%E8%BF%B9.html">尾迹</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E5%A4%A9%E7%A9%BA%E7%9B%92.html">天空盒</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E7%89%A9%E7%90%86%E5%9C%BA/index.html">物理场</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E7%89%A9%E7%90%86%E5%9C%BA/%E5%9C%BA.html">场</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E4%BB%BF%E7%9C%9F%E5%AF%B9%E8%B1%A1/index.html">仿真对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%AF%B9%E8%B1%A1/%E4%BB%BF%E7%9C%9F%E5%AF%B9%E8%B1%A1/%E8%88%B9.html">船</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%A1%8C%E4%B8%BA%E5%9B%BE/index.html">行为图</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E8%A1%8C%E4%B8%BA%E5%9B%BE%E5%9B%BE%E5%85%83%E4%BB%8B%E7%BB%8D.html">行为图图元介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E7%BC%96%E8%BE%91%E6%8C%87%E4%BB%A4%E6%A8%A1%E6%9D%BF.html">编辑指令模板</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html">对象在行为图中的应用</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html#id2">(1)对象定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html#id3">(2)行为图实现流程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E7%BB%84%E4%BB%B6/index.html">组件</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E7%BB%84%E4%BB%B6/%E7%BB%84%E4%BB%B6%E4%BB%8B%E7%BB%8D.html">组件介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E7%BB%84%E4%BB%B6/%E5%88%9B%E5%BB%BA%E7%BB%84%E4%BB%B6.html">创建组件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E7%BB%84%E4%BB%B6/%E5%8A%A0%E8%BD%BD%E7%BB%84%E4%BB%B6.html">加载组件</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/index.html">调试与发布</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html">调试与发布</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html#id2">项目调试</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html#id3">项目发布</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html">启动画面图片更换</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html#id2">启动画面</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html#id3">启动画面更换方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">进阶开发</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html">概述</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#peinside">PEInside 应用开发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#pe">PE 插件开发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#id2">PE 编辑器定制开发</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/index.html">CSharp开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html">WpfScenePlayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id2">构建</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id3">程序说明</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html">示例场景</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id2">帧动画制作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id3">交互设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id4">行为设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id5">变量定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id6">发布与安装</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/index.html">Qt开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html">QtScenePlayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html#id1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html#id2">构建</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">脚本手册</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/index.html">PE 脚本</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/index.html#id1">类型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_act.html">Act</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_act.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_action.html">Action</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_action.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_animation.html">Animation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_animation.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_area.html">Area</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_area.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_avi.html">Avi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_avi.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_beam.html">Beam</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_beam.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_bool.html">bool</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_bool.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_button.html">Button</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_button.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_byte.html">byte</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_byte.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_dword.html">dword</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_dword.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_float.html">float</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_float.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_handle.html">handle</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_handle.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_int.html">int</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_int.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_long.html">long</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_long.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_string.html">string</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E7%B1%BB%E5%9E%8B/class_string.html#id1">描述</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/index.html#id2">函数</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_animation.html">动画相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_animation.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_animation.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_audio.html">声音相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_audio.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_audio.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_camera.html">相机函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_camera.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_camera.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_character.html">人物角色相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_character.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_character.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_database.html">数据库相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_database.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_database.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_environment.html">环境相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_environment.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_environment.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_field.html">Field 相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_field.html#id1">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_field.html#id5">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_file.html">文件相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_file.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_file.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_geometry.html">基本几何体相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_geometry.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_geometry.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_group.html">组相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_group.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_group.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_math.html">数学类函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_math.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_math.html#id6">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_module.html">模块相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_module.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_module.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_network.html">网络相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_network.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_network.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_particle.html">粒子系统相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_particle.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_particle.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_physics.html">物理相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_physics.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_physics.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_render.html">渲染相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_render.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_render.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_string.html">字符串函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_string.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_string.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_system.html">系统类函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_system.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_system.html#id5">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_ui.html">UI 相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_ui.html#id1">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_ui.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_video.html">视频相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_video.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../%E8%84%9A%E6%9C%AC%E6%89%8B%E5%86%8C/%E5%87%BD%E6%95%B0/func_video.html#id5">函数说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../%E6%89%A9%E5%B1%95/index.html">PE 扩展</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../%E6%89%A9%E5%B1%95/PECommand/index.html">PECommand</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../%E6%89%A9%E5%B1%95/PECommand/index.html#id1">函数说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PE 用户手册</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">资源</a> &raquo;</li>
+          <li><a href="index.html">模型</a> &raquo;</li>
+      <li>模型的编辑、操作与修改</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="doc">
+<span id="id1"></span><h1>模型的编辑、操作与修改<a class="headerlink" href="#doc" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id2">
+<h2>模型操作<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>模型操作包括模型的移动、旋转及缩放，模型对齐，模型剖切等。</p>
+<p>①模型移动</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>PE 平台支持3种模型移动方式：
+1）沿x、y、z三个坐标轴方向移动；
+2）沿着xy、zx、yz三个面移动；
+3）沿法线方向移动。</p>
+</div>
+<p>1）将光标放在机械手臂上，单击鼠标右键唤出菜单，选择“移动”。</p>
+<img alt="../../../_images/模型移动.png" src="../../../_images/模型移动.png" />
+<p>2）拖动模型，模型能以x、y、z三个方向移动，也可以沿着xy、zx、yz三个面移动（红色为x轴，绿色为y轴，蓝色为z轴）。</p>
+<img alt="../../../_images/x轴向移动.png" src="../../../_images/x轴向移动.png" />
+<p>3）还可以按住Ctrl键不放，按出现的绿色箭头方向（即法线方向）移动。</p>
+<img alt="../../../_images/法线方向移动.png" src="../../../_images/法线方向移动.png" />
+<p>②模型旋转</p>
+<p>1）将鼠标放在需要旋转的模型上，单击鼠标右键唤出菜单，鼠标左键选择“旋转”。</p>
+<img alt="../../../_images/模型旋转.png" src="../../../_images/模型旋转.png" />
+<p>2）拖动模型，模型即可以x、y、z三个坐标轴为轴心方向进行旋转（红色为x轴，绿色为y轴，蓝色为z轴）。</p>
+<img alt="../../../_images/x轴向旋转.png" src="../../../_images/x轴向旋转.png" />
+<p>③模型缩放</p>
+<p>1）将鼠标放在需要缩放的物体上，单击鼠标右键唤出菜单，鼠标左键选择“缩放”。</p>
+<img alt="../../../_images/模型缩放.png" src="../../../_images/模型缩放.png" />
+<p>2）拖动模型，模型可以x、y、z三个坐标轴方向放大或缩小；也可沿着xy、zx、yz、xyz四个面缩放（红色为x轴，绿色为y轴，蓝色为z轴）。</p>
+<img alt="../../../_images/xy轴向缩放.png" src="../../../_images/xy轴向缩放.png" />
+<p>④模型剖切</p>
+<p>通过模型剖切，可以展示模型的内部的剖切面结构。</p>
+<p>1）首先，在项目管理树的右键菜单中选择添加剖切：</p>
+<img alt="../../../_images/模型-添加剖切1.png" src="../../../_images/模型-添加剖切1.png" />
+<p>2）      在属性栏中添加所需要剖切的模型节点，模型节点可以在模型管理中点击选择对应模型，CTRL+C直接复制模型节点，复制到属性栏的剖切对象中，如下图：</p>
+<img alt="../../../_images/模型节点.png" src="../../../_images/模型节点.png" />
+<img alt="../../../_images/模型-设置剖切节点1.png" src="../../../_images/模型-设置剖切节点1.png" />
+<p>3）模型节点的获取方式为鼠标右击模型&gt;属性，即可获取模型节点。</p>
+<img alt="../../../_images/模型-模型属性1.png" src="../../../_images/模型-模型属性1.png" />
+<p>4）设置好其他属性后点击开始编辑，即可设置剖切的位置和角度，如下图：</p>
+<img alt="../../../_images/模型-设置剖切位置1.png" src="../../../_images/模型-设置剖切位置1.png" />
+<p>5）设置完成之后点击结束编辑，即剖切创建完成，可以看见被剖切位置的内部结构，如下图：</p>
+<img alt="../../../_images/模型-结束剖切设置1.png" src="../../../_images/模型-结束剖切设置1.png" />
+<p>⑤模型对齐</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>模型对齐：三维模型的布局处理除了可以通过上面移动、旋转、缩放等操作，还支持通过约束规则来进行对齐摆放，包括：共面、共轴、平行、垂直、角度、距离、固联等。</p>
+</div>
+<p>下面以两个不在同一水平面上的模型为例，将两个模型设置在同一水平面上，可以通过共面的约束规则进行操作，达到效果，实现方法如下：</p>
+<p>1）鼠标光标选择上面的模型，接着鼠标右键选择“对齐”。</p>
+<img alt="../../../_images/模型-对齐功能.png" src="../../../_images/模型-对齐功能.png" />
+<p>2）用Ctrl+鼠标左键点击，分别在需要移动的两个模型的共面的面上各点击一下，即可弹出添加约束的窗口，选择约束类型为“共面”，点击按钮确定完成。</p>
+<img alt="../../../_images/模型-约束类型.png" src="../../../_images/模型-约束类型.png" />
+<p>3）完成几何约束之后，两个模型即处于选定的同一平面上了。如下图所示：</p>
+<img alt="../../../_images/模型-共面效果.png" src="../../../_images/模型-共面效果.png" />
+</div>
+<div class="section" id="id3">
+<h2>模型编辑<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>PE 平台支持对三维模型进行如下编辑：
+1）模型的显示与隐藏；
+2）模型透明度设置；
+3）获取模型节点。</p>
+</div>
+<p>①模型的显示与隐藏</p>
+<p>隐藏模型：将光标放在模型上点击鼠标右键&gt;隐藏，即可隐藏模型。</p>
+<img alt="../../../_images/模型-隐藏模型.png" src="../../../_images/模型-隐藏模型.png" />
+<p>显示模型：找到所需显示的模型节点，点击鼠标右键&gt;显示，即可显示模型。</p>
+<img alt="../../../_images/模型-显示模型.png" src="../../../_images/模型-显示模型.png" />
+<p>②模型透明度设置</p>
+<p>1）将光标放在模型上，点击鼠标右键&gt;透明。</p>
+<img alt="../../../_images/模型-打开模型透明度属性.png" src="../../../_images/模型-打开模型透明度属性.png" />
+<p>2）在弹出的菜单上设置模型透明度，如下图将模型透明度设置为0.5（透明度的范围为0-1：0为完全透明，1为完全不透明）。</p>
+<img alt="../../../_images/模型-设置模型透明属性.png" src="../../../_images/模型-设置模型透明属性.png" />
+<img alt="../../../_images/模型-透明度设置完成效果.png" src="../../../_images/模型-透明度设置完成效果.png" />
+<p>③获取模型节点</p>
+<p>1）将光标放在模型上点击鼠标右键&gt;属性，即可显示属性框。</p>
+<img alt="../../../_images/模型-打开模型属性.png" src="../../../_images/模型-打开模型属性.png" />
+<p>2）属性框的路径一栏里所显示的即为模型节点。</p>
+<img alt="../../../_images/模型-查看模型节点.png" src="../../../_images/模型-查看模型节点.png" />
+</div>
+<div class="section" id="id4">
+<h2>模型修改<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<p>①修改模型节点名称</p>
+<p>1）将光标放在模型上点击鼠标右键&gt;属性，即可显示属性框。</p>
+<img alt="../../../_images/模型-打开模型属性.png" src="../../../_images/模型-打开模型属性.png" />
+<p>2）修改模型名称或节点后,点击改名或改路径即可完成修改。</p>
+<img alt="../../../_images/模型-更改模型节点或名称.png" src="../../../_images/模型-更改模型节点或名称.png" />
+<p>②修改模型材质</p>
+<p>为了使模型更加真实的接近真实的物体，我们通常会对模型进行材质处理。</p>
+<p>1）将光标放在模型上点击鼠标右键&gt;属性，即可在右侧显示属性框。</p>
+<img alt="../../../_images/模型-打开模型属性.png" src="../../../_images/模型-打开模型属性.png" />
+<p>2）在材质中，支持堆模型的散射色、环境色、镜面色、发光色进行修改，使模型更加接近真实物体的颜色。如图所示：</p>
+<img alt="../../../_images/模型-更改模型材质.png" src="../../../_images/模型-更改模型材质.png" />
+<p>③修改模型纹理</p>
+<p>为了使模型的表面更加接近真实效果，在对模型材质处理后，还可以给模型做贴图处理（即纹理贴图）。具体操作流程如下：</p>
+<p>1）将光标放在模型上点击鼠标右键&gt;属性，即可显示属性框。</p>
+<img alt="../../../_images/模型-打开模型属性.png" src="../../../_images/模型-打开模型属性.png" />
+<p>2）点击纹理打开纹理对话框。</p>
+<img alt="../../../_images/模型-打开纹理对话框.png" src="../../../_images/模型-打开纹理对话框.png" />
+<p>3）点击纹理上图中的红框处，弹出打开对话框，选择物体所需要的贴图图片，点击“打开”按钮确定贴图。</p>
+<img alt="../../../_images/模型-更换纹理贴图.png" src="../../../_images/模型-更换纹理贴图.png" />
+<img alt="../../../_images/模型-更换纹理贴图效果.png" src="../../../_images/模型-更换纹理贴图效果.png" />
+<p>④保存模型</p>
+<p>模型编辑完成之后可以通过Ctrl+s快捷保存，也可以通过菜单栏中的保存按钮保存，
+还可以点击文件&gt;保存模型或者文件&gt;另存为操作来进行保存。</p>
+<img alt="../../../_images/模型-保存模型按钮.png" src="../../../_images/模型-保存模型按钮.png" />
+<img alt="../../../_images/模型-保存模型菜单.png" src="../../../_images/模型-保存模型菜单.png" />
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html" class="btn btn-neutral float-left" title="模型文件导入" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../%E5%AF%B9%E8%B1%A1/index.html" class="btn btn-neutral float-right" title="对象" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, 武汉创景可视技术有限公司.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

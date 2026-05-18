@@ -1,0 +1,282 @@
+'创建时间: 2022-06-17
+'作者: ypj
+'描述: Json 库 
+'更新：2022-06-17
+
+Script{
+
+class JsonManager 
+{
+    string mPluginName;
+
+    int mIntValueBuffer;       ' 用来保存整型值。C++ 端会写此变量。
+    float mFloatValueBuffer;   ' 用来保存浮点型值。C++ 端会写此变量。
+    string mStringValueBuffer; ' 用来保存字符串值。C++ 端会写此变量。
+
+	int mUTF8;
+	int mGB2312;
+
+    JsonManager()
+    {
+        mPluginName = "PEToJson";
+		mUTF8 = 0;
+		mGB2312 = 1;
+
+		mStringValueBuffer = ""; '// ypj, 2022-06-22, add
+
+	    pluginCall(mPluginName, "jsonMgrInit", "");
+    }
+
+	'// 
+	'// { "o": 
+	'//    { "o": {"i": 2, "f":0.5, "s": "o::o:s"}, 
+	'//      "i": 3, "f": 2.5, "s中文": "o::s中文", 
+	'//	     "ia":[1,2], "fa":[1.1, 2.2, 3.3], "sa":["o::sa 0", "o::sa 1"]
+	'//	   }
+	'// }
+	int genTestJsonString(string& value, int codec)
+	{
+		pluginCall(mPluginName, "jsonMgrGenTestJsonString", codec); '// 会将测试 json string 数据填充到 mStringValueBuffer
+		value = mStringValueBuffer;
+		return 0;
+	}
+
+}
+
+JsonManager theJsonMgr; '// 唯一的 JsonMgr;
+
+'/**
+'* @brief Json值
+'*/
+class JsonValue
+{
+    'handle mHandle; '// JsonValue C++ 端 Handle
+	dword mHandle; '// JsonValue C++ 端 Handle
+	string mPluginName;
+
+    JsonValue()
+	{
+	    mHandle = 0;
+		mPluginName = "PEToJson";
+	}
+	bool isValid()
+	{
+	    '//return (mHandle > 0);
+		if(mHandle > 0) {
+		    return true;
+		}
+		return false;
+	}
+	'/**
+    '* @brief JsonValue 获取 Member。
+    '* @param jsonValue [in] JsonValue 指针
+    '* @name key [in] 带查找 Member 键名
+    '* @param keyCodec [in] key 键字符串的编码，0: utf8; 1: gb2312
+    '* @return 成功：JsonValue 指针；失败：0
+    '* @note 当 JsonValue 为 IsObject 类型时具有 Member。
+    '*/
+	int getMember(JsonValue& memberValue, string& key, int keyCodec)
+	{
+	   
+	   '//dword jsValueHandle = pluginCall(theJsonMgr.mPluginName, "jsonValueGetMember", mHandle, name, nameCodec);
+	   dword jsValueHandle = pluginCall(mPluginName, "jsonValueGetMember", mHandle, key, keyCodec);
+	   if(jsValueHandle == 0) {
+	       return 1;
+	   }
+	   memberValue.mHandle = jsValueHandle;
+	   return 0;
+	}
+
+	int getInt(int& value)
+	{
+		'//int res = pluginCall(theJsonMgr.mPluginName, "jsonValueGetInt", mHandle); '// 会将 int 数据填充到 mIntValueBuffer
+		int res = pluginCall(mPluginName, "jsonValueGetInt", mHandle); '// 会将 int 数据填充到 mIntValueBuffer
+	
+		if(res==0) {
+			value = theJsonMgr.mIntValueBuffer;
+		}	
+
+		return res;
+	}
+	int getFloat(float& value)
+	{
+		'//int res = pluginCall(theJsonMgr.mPluginName, "jsonValueGetFloat", mHandle); '// 会将 float 数据填充到 mFloatValueBuffer
+		int res = pluginCall(mPluginName, "jsonValueGetFloat", mHandle); '// 会将 float 数据填充到 mFloatValueBuffer
+	
+		if(res == 0) {
+			value = theJsonMgr.mFloatValueBuffer;
+		}	
+
+		return res;
+	}
+	int getString(string& value, int codec)
+	{
+		'//int res = pluginCall(theJsonMgr.mPluginName, "jsonValueGetString", mHandle, codec); '// 会将 string 数据填充到 mStringValueBuffer
+		int res = pluginCall(mPluginName, "jsonValueGetString", mHandle, codec); '// 会将 string 数据填充到 mStringValueBuffer
+	
+		if(res==0) {
+			value = theJsonMgr.mStringValueBuffer;
+		}	
+
+		return res;
+	}
+	'// 获取数组尺寸
+	int getArraySize()
+	{
+		'//return pluginCall(theJsonMgr.mPluginName, "jsonValueGetArraySize", mHandle); 
+		return pluginCall(mPluginName, "jsonValueGetArraySize", mHandle); 
+	}
+
+	'// 获取数组分量对应的 JsonValue
+	int getArrayElem(JsonValue& elemValue, int idx)
+	{
+	   '//dword jsValueHandle = pluginCall(theJsonMgr.mPluginName, "jsonValueGetArrayElem", mHandle, idx);
+	   dword jsValueHandle = pluginCall(mPluginName, "jsonValueGetArrayElem", mHandle, idx);
+	   if(jsValueHandle == 0) {
+	      return 1;
+	   }
+	   elemValue.mHandle = jsValueHandle;
+	
+	  return 0;
+	}
+
+	int getArrayMemberString(string& value, int idx, string& name, int namecodec, int valuecodec)
+	{
+	    int ret =  pluginCall(mPluginName, "jsonValueGetArrayMemberString", mHandle, idx, name, namecodec, valuecodec); 
+		if(ret == 0) {
+			value = theJsonMgr.mStringValueBuffer;
+		}
+		return ret;
+	}
+
+}
+
+'/**
+'* @brief Json 文档
+'* @example
+'* JsonDocument jsonDoc = new JsonDocument;
+'* 
+'*/
+class JsonDocument
+{
+    'handle mHandle; '// JsonDocument C++ 端 Handle
+	dword mHandle; '// JsonDocument C++ 端 Handle
+	bool mIsValid;
+
+	string mPluginName;
+
+	void init() 
+	{
+	    mPluginName = "PEToJson";
+	    mHandle = pluginCall(mPluginName, "jsonMgrCreateJsonDoc", "");
+		mIsValid = 0;
+	}
+
+    JsonDocument()
+	{  
+		'// ypj, 2023-06-09, 构造函数里调用非成员函数，以返回值赋给 dword/handle 型成员变量有问题。
+		'// 放到 init 里则可以 
+		init();
+	}
+	'~JsonDocument()
+	'{
+	'    pluginCall(mPluginName, "jsonMgrDeleteJsonDoc", mHandle);
+	'}
+	void destroy()
+	{
+	    pluginCall(mPluginName, "jsonMgrDeleteJsonDoc", mHandle);
+	}
+
+	bool isValid()
+	{
+	    return mIsValid;
+	}
+
+	'// codec [in] 0: utf8, 1: gb2312
+	int parse(string& jsonStr, int codec)
+	{
+	    '//return pluginCall(theJsonMgr.mPluginName, "jsonDocParse", mHandle, jsonStr, codec);
+		int res = pluginCall(mPluginName, "jsonDocParse", mHandle, jsonStr, codec);
+		if(res == 0) {
+		    mIsValid = true;
+		}
+		else {
+		    mIsValid = false;
+		}
+		return res;
+	}
+
+	'/**
+	'* @brief 获取成员 JsonValue
+	'*/
+	int getMember(JsonValue& memberValue, string& key, int keyCodec)
+	{
+	   '//dword jsValueHandle = pluginCall(theJsonMgr.mPluginName, "jsonDocGetMember", mHandle, name, nameCodec);
+	   dword jsValueHandle = pluginCall(mPluginName, "jsonDocGetMember", mHandle, key, keyCodec);
+	   if(jsValueHandle == 0) {
+	       return 1;
+	   }
+	   memberValue.mHandle = jsValueHandle;
+	   return 0;
+	}
+
+	'/**
+	'* @brief 获取 int 值
+	'* @param value [out] 值
+	'* @param keys [in] 键。可以是用 “::” 分隔的一串键，例如 key1::key2::key3
+	'* @param keycodec [in] key 编码，0：utf8; 1: gb2312. 参见 JsonManager
+	'* @return 0: 成功； 1: 失败
+	'* @deprecated
+	'*/
+	int getInt(int& value, string& keys, int keyCodec)
+	{
+		int res = pluginCall(mPluginName, "jsonDocGetInt", mHandle, keys, keyCodec); '// 会将 Int 数据填充到 mStringValueBuffer
+	
+		if(res==0) {
+			value = theJsonMgr.mIntValueBuffer;
+		}	
+
+		return res;
+	}
+
+	'/**
+    '* @brief 获取 float 值
+    '* @param value [out] 值
+    '* @param keys [in] 键。可以是用 “::” 分隔的一串键，例如 key1::key2::key3。
+	'* @param keycodec [in] key 编码，0：utf8; 1: gb2312. 参见 JsonManager
+    '* @return 0: 成功； 1: 失败
+	'* @deprecated
+    '*/
+	int getFloat(float& value, string& keys, int keyCodec)
+	{
+		int res = pluginCall(mPluginName, "jsonDocGetFloat", mHandle, keys, keyCodec); '// 会将 string 数据填充到 mStringValueBuffer
+	
+		if(res == 0) {
+			value = theJsonMgr.mFloatValueBuffer;
+		}
+
+		return res;
+	}
+
+	'/**
+	'* @brief 获取 string 值
+	'* @param value [out] 值
+	'* @param keys [in] 键。可以是用 “::” 分隔的一串键，例如 key1::key2::key3
+	'* @param keycodec [in] key 编码，0：utf8; 1: gb2312. 参见 JsonManager
+	'* @param valuecodec [in] 获得的字符串的编码。0：utf8; 1: gb2312. 参见 JsonManager
+	'* @return 0: 成功； 1: 失败
+	'* @deprecated
+	'*/
+	int getString(string& value, string& keys, int keyCodec, int valueCodec)
+	{
+		int res = pluginCall(mPluginName, "jsonDocGetString", mHandle, keys, keyCodec, valueCodec); '// 会将 string 数据填充到 mStringValueBuffer
+	
+		if(res == 0) {
+			value = theJsonMgr.mStringValueBuffer;
+		}	
+
+		return res;
+	}
+}
+
+} '// script

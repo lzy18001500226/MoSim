@@ -1,0 +1,60 @@
+script 
+{
+	'/**
+	'* @brief field 加载 Field 信息文件
+	'* @param jsonFilePath [in] 保存的文件路径，可为项目相对路径或绝对路径。
+	'* @return 0: 成功， 非零： 失败
+	'* @since 2023-04-25
+	'*/
+    int fieldInfoLoad(string& jsonFilePath) 
+    {
+        int ret = pluginCall("PEToProcessSim", "fieldInfoLoad", jsonFilePath); 
+        return ret;
+    }
+
+	'/**
+	'* @brief field 信息列表保存到文件
+	'* @param jsonFilePath [in] 保存的文件路径，可为项目相对路径或绝对路径。
+	'* @return 0: 成功， 非零： 失败
+	'* @since 2023-04-25
+	'*/
+    int fieldInfoSave(string& jsonFilePath) 
+    {
+        int ret = pluginCall("PEToProcessSim", "fieldInfoSave", jsonFilePath); 
+        return ret;
+    }
+	'/**
+	'* @brief 清空 field 信息列表
+	'* @since 2023-04-25
+	'*/
+    void fieldInfoClear() 
+    {
+        pluginCall("PEToProcessSim", "fieldInfoClear", ""); 
+    }
+
+	'/**
+	'* @brief 检查更新, 将带 collide 的 field 加入管理列表，默认昵称为节点名。
+	'* @return 0: 成功， 非零： 失败
+	'* @since 2023-04-25
+	'*/
+    int fieldInfoCheckAndUpdate() 
+    {
+        int ret = pluginCall("PEToProcessSim", "fieldInfoCheckAndUpdate", ""); 
+        return ret;
+    }
+
+	'/**
+	'* @brief 获取 field 的昵称
+	'* @param nickName [out] 昵称字符串
+	'* @param fieldPath [in] field 路径
+	'* @return 0: 成功， 非零： 失败
+	'* @since 2023-04-25
+	'*/
+    int fieldInfoGetNickName(string& nickName, string& fieldPath) 
+    {
+        int ret = pluginCall("PEToProcessSim", "fieldInfoGetNickName", nickName.self(), fieldPath); 
+
+        return ret;
+    }
+
+}

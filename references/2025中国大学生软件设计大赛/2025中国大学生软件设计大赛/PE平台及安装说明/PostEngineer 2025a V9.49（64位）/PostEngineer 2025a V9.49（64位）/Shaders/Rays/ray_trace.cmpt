@@ -1,0 +1,536 @@
+#version 430
+
+layout (local_size_x = 4, local_size_y = 4, local_size_z = 1) in;
+
+
+
+layout (binding=0, std430) buffer PointBuffer {
+    float data[];
+} point_buffer;
+
+layout (binding=1, std430) buffer TriangleBuffer {
+    float data[];
+} triangle_buffer;
+
+layout (binding=2, std430) buffer ObjectBuffer {
+    float data[];
+} object_buffer;
+
+layout (binding=3, std430) buffer InfoBuffer {
+    float data[];
+} info_buffer;
+
+layout (binding=4, std430) buffer RayBuffer {
+    float data[];
+} ray_buffer;
+
+
+int maxIterStep;
+int pointUnitSize;
+int triangleUnitSize;
+int objectUnitSize;
+int rayUnitSize;
+int interPointUnitSize;
+int receiverMaterial;
+
+int objectCount;
+
+struct RTRay
+{
+	vec3 start;
+	vec3 dir;
+	int level;
+	uint index;
+};
+
+struct RTPoint
+{
+	vec3 point;
+	vec3 normal;
+};
+
+struct RTTriangle
+{
+	vec3 p1;
+	vec3 p2;
+	vec3 p3;
+	vec3 n1;
+	vec3 n2;
+	vec3 n3;
+};
+
+
+struct RTObject
+{
+	int leftChild;
+	int rightChild;
+
+	int triangleIndex;
+	int triangleNum;
+
+	vec3 boundMin;
+	vec3 boundMax;
+
+	int materialID;
+};
+
+
+/*
+int objectStack[128];
+int objectStackSize;
+
+void InitObjectStack()
+{
+	objectStackSize = 0;
+}
+
+bool PushObjectStack(int index)
+{
+	if(objectStackSize >= 128) return false;
+
+	objectStack[objectStackSize] = index;
+	objectStackSize++;
+
+	return true;
+}
+
+bool PopObjectStack()
+{
+	if(objectStackSize == 0) return false;
+
+	objectStackSize--;
+
+	return true;
+}
+
+int GetObjectStackTop()
+{
+	if(objectStackSize == 0) return -1;
+
+	return objectStack[objectStackSize-1];
+}
+
+int GetObjectStackSize()
+{
+	return objectStackSize;
+}
+*/
+
+#define INF             114514.0
+
+int hitID;
+
+struct HitResult {
+	int id;
+	int materialID;      // 命中点的表面材质
+    bool isHit;             // 是否命中
+    bool isInside;          // 是否从内部命中
+    float distance;         // 与交点的距离
+    vec3 hitPoint;          // 光线命中点
+    vec3 normal;            // 命中点法线
+    vec3 inDir;           // 击中该点的光线的入射方向
+	//vec3 outDir;           // 击中该点的光线的出射方向, 就是下一点的入射方向， 因此不用保存
+};
+
+int INT(float f)
+{
+	if(f >= 0)return int(f + 0.1);
+	else return -int(-f + 0.1);
+}
+
+// 光线和三角形求交 
+HitResult HitTriangle(RTRay ray, RTTriangle triangle) 
+{
+
+    HitResult res;
+
+    res.distance = INF;
+    res.isHit = false;
+    res.isInside = false;
+
+    vec3 p1 = triangle.p1;
+    vec3 p2 = triangle.p2;
+    vec3 p3 = triangle.p3;
+
+    vec3 S = ray.start;    // 射线起点
+    vec3 d = ray.dir;     // 射线方向
+    vec3 N = normalize(cross(p2-p1, p3-p1));    // 法向量
+
+    // 从三角形背后（模型内部）击中
+    if (dot(N, d) > 0.0f) {
+        //N = -N;   
+        //res.isInside = true;
+		return res;
+    }
+
+    // 如果视线和三角形平行
+    if (abs(dot(N, d)) < 0.00001f) return res;
+
+    // 距离
+    float t = (dot(N, p1) - dot(S, N)) / dot(d, N);
+    if (t < 0.0005f) return res;    // 如果三角形在光线背面
+
+    // 交点计算
+    vec3 P = S + d * t;
+
+    // 判断交点是否在三角形中
+    vec3 c1 = cross(p2 - p1, P - p1);
+    vec3 c2 = cross(p3 - p2, P - p2);
+    vec3 c3 = cross(p1 - p3, P - p3);
+    bool r1 = (dot(c1, N) > 0 && dot(c2, N) > 0 && dot(c3, N) > 0);
+    bool r2 = (dot(c1, N) < 0 && dot(c2, N) < 0 && dot(c3, N) < 0);
+
+    // 命中，封装返回结果
+    if (r1 == true || r2 == true) {
+        res.isHit = true;
+        res.hitPoint = P;
+        res.distance = t;
+        res.normal = N;
+        res.inDir = d;
+        // 根据交点位置插值顶点法线
+       /* float alpha = (-(P.x-p2.x)*(p3.y-p2.y) + (P.y-p2.y)*(p3.x-p2.x)) / (-(p1.x-p2.x-0.00005)*(p3.y-p2.y+0.00005) + (p1.y-p2.y+0.00005)*(p3.x-p2.x+0.00005));
+        float beta  = (-(P.x-p3.x)*(p1.y-p3.y) + (P.y-p3.y)*(p1.x-p3.x)) / (-(p2.x-p3.x-0.00005)*(p1.y-p3.y+0.00005) + (p2.y-p3.y+0.00005)*(p1.x-p3.x+0.00005));
+        float gama  = 1.0 - alpha - beta;
+        vec3 Nsmooth = alpha * triangle.n1 + beta * triangle.n2 + gama * triangle.n3;
+        Nsmooth = normalize(Nsmooth);
+        res.normal = (res.isInside) ? (-Nsmooth) : (Nsmooth);*/
+		res.normal = (res.isInside) ? (-N) : (N);
+    }
+
+    return res;
+}
+
+/*bool IntersectWithAABB(vec3 s, vec3 d, vec3 bmin, vec3 bmax)
+{	
+	const float EPS = 1e-6;
+	// 因为是线段 所以参数t取值在0和1之间	
+	float tmin, tmax;
+	tmin = 0.0;	tmax = 1.0f;		
+	for (int i = 0; i < 3; i++)	{		
+	
+		// 如果光线某一个轴分量为 0，且在包围盒这个轴分量之外，那么直接判定不相交 		
+		if (abs(d[i]) < EPS)		
+		{			
+			if (s[i] < bmin[i] || s[i] > bmax[i])				
+				return false;		
+		}		
+		else		
+		{			
+			float ood = 1.0f / d[i];			
+			
+			// 计算参数t 并令 t1为较小值 t2为较大值			
+			float t1 = (bmin[i] - s[i]) * ood;			
+			float t2 = (bmax[i] - s[i]) * ood;			
+			if (t1 > t2) { float tmp = t1; t1 = t2; t2 = tmp; }						
+			if (t1 > tmin) tmin = t1;			
+			if (t2 < tmax) tmax = t2; 			
+			
+			// 判定不相交			
+			if (tmin > tmax) 
+				return false;		
+		}	
+	}		
+		
+	return true;
+}*/
+
+
+float HitAABB(RTRay r, vec3 AA, vec3 BB) 
+{
+	const float EPS = 1e-6;
+	for (int i = 0; i < 3; i++)	{		
+	
+		// 如果光线某一个轴分量为 0，且在包围盒这个轴分量之外，那么直接判定不相交 		
+		if (abs(r.dir[i]) < EPS)		
+		{			
+			if (r.start[i] < AA[i] || r.start[i] > BB[i])				
+				return -1;		
+		}	
+	}
+
+    vec3 invdir = 1.0 / r.dir;
+
+    vec3 f = (BB - r.start) * invdir;
+    vec3 n = (AA - r.start) * invdir;
+
+    vec3 tmax = max(f, n);
+    vec3 tmin = min(f, n);
+
+    float t1 = min(tmax.x, min(tmax.y, tmax.z));
+    float t0 = max(tmin.x, max(tmin.y, tmin.z));
+
+    return (t1 >= t0) ? ((t0 > 0.0) ? (t0) : (t1)) : (-1);
+}
+
+
+void RecordIntersection(RTRay ray, HitResult res)
+{
+	int count = INT(ray_buffer.data[ray.index*rayUnitSize + 0]);
+
+	if(count >= maxIterStep) return;
+
+	ray_buffer.data[ray.index*rayUnitSize + 1 + count*interPointUnitSize + 0] = res.hitPoint.x;
+	ray_buffer.data[ray.index*rayUnitSize + 1 + count*interPointUnitSize + 1] = res.hitPoint.y;
+	ray_buffer.data[ray.index*rayUnitSize + 1 + count*interPointUnitSize + 2] = res.hitPoint.z;
+
+	ray_buffer.data[ray.index*rayUnitSize + 1 + count*interPointUnitSize + 3] = res.normal.x;
+	ray_buffer.data[ray.index*rayUnitSize + 1 + count*interPointUnitSize + 4] = res.normal.y;
+	ray_buffer.data[ray.index*rayUnitSize + 1 + count*interPointUnitSize + 5] = res.normal.z;
+
+	ray_buffer.data[ray.index*rayUnitSize + 1 + count*interPointUnitSize + 6] = res.inDir.x;
+	ray_buffer.data[ray.index*rayUnitSize + 1 + count*interPointUnitSize + 7] = res.inDir.y;
+	ray_buffer.data[ray.index*rayUnitSize + 1 + count*interPointUnitSize + 8] = res.inDir.z;
+
+	ray_buffer.data[ray.index*rayUnitSize + 1 + count*interPointUnitSize + 9] = res.materialID;
+
+	ray_buffer.data[ray.index*rayUnitSize + 0] = count + 1;
+}
+
+bool CheckPath(uint index)
+{
+	
+	int count = INT(ray_buffer.data[index*rayUnitSize + 0]);
+
+	if(count == 0) return false;
+
+	int last_material = INT(ray_buffer.data[index*rayUnitSize + 1 + (count-1)*interPointUnitSize + 9]);
+	if(last_material != receiverMaterial){
+		ray_buffer.data[index*rayUnitSize + 0] = 0;
+		return false;
+	}
+
+	return true;
+}
+
+RTPoint GetRTPoint(int index)
+{
+	RTPoint rtp;
+	rtp.point = vec3(point_buffer.data[index*pointUnitSize + 0], point_buffer.data[index*pointUnitSize + 1], point_buffer.data[index*pointUnitSize + 2]);
+	rtp.normal = vec3(point_buffer.data[index*pointUnitSize + 3], point_buffer.data[index*pointUnitSize + 4], point_buffer.data[index*pointUnitSize + 5]);
+
+	return rtp;
+}
+
+RTObject GetRTObject(int index)
+{
+	RTObject object;
+
+	object.leftChild = INT(object_buffer.data[index*objectUnitSize + 0]);
+	object.rightChild = INT(object_buffer.data[index*objectUnitSize + 1]);
+
+	object.triangleIndex = INT(object_buffer.data[index*objectUnitSize + 2]);
+	object.triangleNum = INT(object_buffer.data[index*objectUnitSize + 3]);
+
+	object.boundMin = vec3(object_buffer.data[index*objectUnitSize + 4], object_buffer.data[index*objectUnitSize + 5], object_buffer.data[index*objectUnitSize + 6]);
+	object.boundMax = vec3(object_buffer.data[index*objectUnitSize + 7], object_buffer.data[index*objectUnitSize + 8], object_buffer.data[index*objectUnitSize + 9]);
+
+	object.materialID = INT(object_buffer.data[index*objectUnitSize + 10]);
+
+	return object;
+}
+
+RTTriangle GetRTTriangle(int index)
+{
+	int pi1, pi2, pi3;
+	pi1 = INT(triangle_buffer.data[index*triangleUnitSize + 0]);
+	pi2 = INT(triangle_buffer.data[index*triangleUnitSize + 1]);
+	pi3 = INT(triangle_buffer.data[index*triangleUnitSize + 2]);
+
+	RTPoint rpt1 = GetRTPoint(pi1);
+	RTPoint rpt2 = GetRTPoint(pi2);
+	RTPoint rpt3 = GetRTPoint(pi3);
+
+	RTTriangle tri;
+	tri.p1 = rpt1.point;
+	tri.p2 = rpt2.point;
+	tri.p3 = rpt3.point;
+
+	tri.n1 = rpt1.normal;
+	tri.n2 = rpt2.normal;
+	tri.n3 = rpt3.normal;
+
+	return tri;
+}
+
+
+bool HitObjectGeometry(RTObject object, RTRay ray, out RTRay refl_ray, inout HitResult res_nearest)
+{
+	bool bHit = false;
+	for(int i=0; i<object.triangleNum; i++){
+
+		RTTriangle tri = GetRTTriangle(object.triangleIndex + i);
+
+		HitResult res = HitTriangle(ray, tri);
+
+		if(res.isHit == true){
+
+			//res.id = hitID;  /// for test
+			//hitID++;  /// for test
+	
+			if(res_nearest.distance > res.distance + 0.00001){
+				res_nearest = res;
+				bHit = true;
+
+			}
+		}
+	}
+
+	if(bHit == true){
+		res_nearest.materialID = object.materialID;
+	}
+
+			/*if(res_nearest.materialID == receiverMaterial && bHit == true){
+					info_buffer.data[3] = 999;  // for test
+					info_buffer.data[5] = res_nearest.id;  // for test
+					info_buffer.data[6] = res_nearest.materialID;  // for test
+					info_buffer.data[7] = res_nearest.distance;  // for test
+				}*/
+
+	return bHit;
+}
+
+/*
+bool HitObject(RTObject object, RTRay ray, out RTRay refl_ray, inout HitResult res_nearest)
+{
+
+	if(HitAABB(ray, object.boundMin, object.boundMax) < 0){
+		//info_buffer.data[10]++;  // for test
+		return false;
+	}
+
+	if(object.triangleNum > 0){
+
+		HitObjectGeometry(object, ray, refl_ray, res_nearest);
+
+	}
+
+	if(object.rightChild > 0){
+		PushObjectStack(object.rightChild);
+	}
+
+	if(object.leftChild > 0){
+		PushObjectStack(object.leftChild);
+	}
+
+	return true;
+}*/
+
+bool HitScene(RTRay ray, out RTRay refl_ray)
+{
+	HitResult res_nearest;
+	res_nearest.distance = INF;
+	res_nearest.isHit = false;
+
+	int objectStack[128];
+	int objectStackSize = 1;
+	objectStack[0] = 0;
+
+	int n = 0;
+	int max_size = 0;
+	while(objectStackSize > 0 && n++ < 10000){
+		int index = objectStack[objectStackSize-1];
+		objectStackSize--;
+
+		//HitObject(GetRTObject(index), ray, refl_ray, res_nearest);
+
+		RTObject object = GetRTObject(index);
+		if(HitAABB(ray, object.boundMin, object.boundMax) < 0){
+			continue;
+		}
+
+		if(object.triangleNum > 0){
+			HitObjectGeometry(object, ray, refl_ray, res_nearest);
+		}
+		else{
+			if(object.rightChild > 0 && objectStackSize < 128){
+				objectStack[objectStackSize] = object.rightChild;
+				objectStackSize++;
+			}
+
+			if(object.leftChild > 0 && objectStackSize < 128){
+				objectStack[objectStackSize] = object.leftChild;
+				objectStackSize++;
+			}
+		}
+
+		if(max_size < objectStackSize) max_size = objectStackSize;
+	}
+
+	if(info_buffer.data[4] < n)info_buffer.data[4] = n;  //for test
+	if(info_buffer.data[5] < max_size) info_buffer.data[5] = max_size;  //for test
+	
+	if(res_nearest.isHit == true){
+
+		///记录交点
+		RecordIntersection(ray, res_nearest);
+
+		///到达接收器则停止
+		if(res_nearest.materialID % 1000 == receiverMaterial){
+			//if(res_nearest.materialID % 1000 == receiverMaterial) info_buffer.data[4] = 888;  // for test
+			return false;
+		}
+
+		if(ray.level >= maxIterStep - 1){
+
+			CheckPath(ray.index);
+
+			return false;
+		}
+
+		refl_ray.dir = normalize(reflect(ray.dir, res_nearest.normal));
+		refl_ray.start = res_nearest.hitPoint + refl_ray.dir * 0.00001; ///避免重复相交
+
+		refl_ray.level = ray.level + 1;
+		refl_ray.index = ray.index;
+	}
+
+	///最后检查路径是否有效
+	if(res_nearest.isHit == false){
+		CheckPath(ray.index);
+	}
+
+	return res_nearest.isHit;
+}
+
+
+
+void main() 
+{
+	ivec3 pos = ivec3(gl_GlobalInvocationID.xyz);
+	ivec2 groupNum = ivec2(gl_NumWorkGroups);
+	ivec2 groupSize = ivec2(gl_WorkGroupSize);
+
+	int globalIndex = (pos.z * groupNum.y * groupSize.y + pos.y) * groupNum.x * groupSize.x + pos.x;
+
+
+	maxIterStep = INT(info_buffer.data[0]);
+	pointUnitSize = 6;
+	triangleUnitSize = 3;
+	objectUnitSize = 11;
+	interPointUnitSize = 3 + 3 + 3 + 1; //点，法线，入射方向，材质ID
+	rayUnitSize = 1 + interPointUnitSize * maxIterStep;
+
+	objectCount = INT(info_buffer.data[1]);
+	receiverMaterial = INT(info_buffer.data[2]);
+
+	RTRay ray;
+	ray.start = vec3(ray_buffer.data[globalIndex*rayUnitSize + 1 + 0],
+					 ray_buffer.data[globalIndex*rayUnitSize + 1 + 1],
+					 ray_buffer.data[globalIndex*rayUnitSize + 1 + 2]);
+
+	ray.dir = vec3(ray_buffer.data[globalIndex*rayUnitSize + 1 + 3],
+				   ray_buffer.data[globalIndex*rayUnitSize + 1 + 4],
+				   ray_buffer.data[globalIndex*rayUnitSize + 1 + 5]);
+
+	///初始化交点个数
+	ray_buffer.data[globalIndex*rayUnitSize + 0] = 0;
+
+	ray.index = globalIndex;
+	ray.level = 0;
+
+	RTRay reflect_ray;
+	while(HitScene(ray, reflect_ray) == true){
+		ray = reflect_ray;
+	}
+
+}

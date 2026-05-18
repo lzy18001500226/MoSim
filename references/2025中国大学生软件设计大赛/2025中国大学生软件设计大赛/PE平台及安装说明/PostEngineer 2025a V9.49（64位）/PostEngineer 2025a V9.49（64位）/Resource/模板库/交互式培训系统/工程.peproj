@@ -1,0 +1,10 @@
+<基本设置 />
+<框架结构 />
+<菜单>
+    <MenuDefine>
+        <Item name="主菜单" 序号="6" />
+    </MenuDefine>
+    <MenuStruct>
+        <Item name="主菜单" 序号="6" />
+    </MenuStruct>
+</菜单>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<PEProject Name="机械臂仿真示例" Version="1.0" CoreVersion="201" OutputDir="C:\Users\97945\Desktop\机械臂案例\机械臂仿真示例\" Description="" TeamInfo="" Date="2025/5/12 15:50:38">
+    <Depends>
+        <Depend Name="LATEST_ANB_VERSION" Value="949" />
+        <Depend Name="PEPLUGIN_PROJECTMGR_VERSION" Value="201" />
+        <Depend Name="PEPLUGIN_PROJECTMGR_RELEASE" Value="May  7 2025, 17:53:42" />
+        <Depend Name="Exe" Value="PostEngineer.exe: 2025/05/08 10:18; VsMvo.dll: 2025/05/08 10:17; 3dgs.dll: 2025/05/08 10:16; ScriptReader.dll: 2025/05/07 17:57; VsStream.dll: 2025/05/07 15:12; VsSolver.dll: 2025/05/07 17:47;" />
+    </Depends>
+    <Models nStartIndex="0" Count="1">
+        <Model FileName="default.vis" />
+    </Models>
+    <Settings>
+        <Render Name="atmosphere" Enable="1" />
+        <Render Name="sun" Enable="1" />
+        <Render Name="sea" Enable="0" />
+        <Render Name="bloom" Enable="1" />
+        <Render Name="ssao" Enable="0" />
+        <Render Name="deferred" Enable="0" />
+        <Render Name="atmospheredensity" Value="3.000" />
+        <Render Name="sunexposure" Value="0.400" />
+        <Render Name="sunazimuth" Value="0.000" />
+        <Render Name="sunzenith" Value="45.000" />
+        <Render Name="bloomthreshold" Value="1.500" />
+        <Render Name="shadowcolor" Value="0.500" />
+        <Render Name="shadowfirstrange" Value="0.000" />
+        <Render Name="ssaodistance" Value="1.000" />
+        <Render Name="ssaofactor" Value="1.000" />
+        <Render Name="volumeattenuation" Value="0.000" />
+        <Render Name="volumedirectionbrightness" Value="1.000" />
+        <Render Name="volumemagnitudebrightness" Value="1.000" />
+        <Render Name="screenscale" Value="1.000" />
+    </Settings>
+    <ObjectCount OnlyIDCount="4" />
+    <Module Name="main">
+        <GroupList>
+            <Group GroupID="0">
+                <UIObjectList>
+                    <UIObject Name="main" OnlyID="NULL" ID="24" Enable="1" />
+                </UIObjectList>
+            </Group>
+        </GroupList>
+    </Module>
+    <IDs>
+        <ID Name="UI_OBJ_TYPE_VIEWPORT" Value="24" />
+    </IDs>
+</PEProject>

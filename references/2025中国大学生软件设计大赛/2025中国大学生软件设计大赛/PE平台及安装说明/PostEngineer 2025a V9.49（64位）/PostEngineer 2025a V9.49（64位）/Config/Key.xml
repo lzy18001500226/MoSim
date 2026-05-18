@@ -1,0 +1,454 @@
+<KeyMsg>
+    <KeyWord name="_T($end$);" text="_T" include="Script" />
+    <KeyWord name="acos($end$);" text="acos(float val);" include="Script" />
+    <KeyWord name="Act{\r\n\t$end$\r\n}" text="Act{\r\n\ttype{}\r\n\t...\r\n}" include="Script" />
+    <KeyWord name="Action{\r\n\t$end$\r\n}" text="Action{\r\n\t....\r\n\tact\r\n\t{\r\n\t\ttype{}\r\n\t\t...\r\n\t}\r\n}" include="Script" />
+    <KeyWord name="Animation{\r\n\t$end$\r\n}" text="Animation{\r\n\tname{}\r\n}" include="Script" />
+    <KeyWord name="appSendMessage($end$);" text="appSendMessage(string appName, string msg)" include="Script" />
+    <KeyWord name="Area{\r\n\t$end$\r\n}" text="Area{\r\n\tname{}\r\n\trect{}\r\n\tReaction{\r\n\t\t...\r\n\t}\r\n}" include="Script" />
+    <KeyWord name="areset($end$);" text="areset( string animName );" include="Script" />
+    <KeyWord name="ascii($end$);" text="ascii(string char);" include="Script" />
+    <KeyWord name="asin($end$);" text="asin(float val);" include="Script" />
+    <KeyWord name="astart($end$);" text="astart( string animName );" include="Script" />
+    <KeyWord name="atan($end$);" text="atan(float val);" include="Script" />
+    <KeyWord name="atof($end$);" text="atof(string vstr);" include="Script" />
+    <KeyWord name="atoi($end$);" text="atoi(string vstr);" include="Script" />
+    <KeyWord name="Avi{\r\n\t$end$\r\n}" text="Avi" include="Script" />
+    <KeyWord name="Axis{\r\n\t$end$\r\n}" text="Axis" include="Script" />
+    <KeyWord name="Beam{\r\n\t$end$\r\n}" text="Beam" include="Script" />
+    <KeyWord name="Bitmap{\r\n\t$end$\r\n}" text="Bitmap" include="Script" />
+    <KeyWord name="Bitmap_templ{\r\n\t$end$\r\n}" text="Bitmap_templ" include="Script" />
+    <KeyWord name="bool{\r\n\t$end$\r\n}" text="bool" include="Script" />
+    <KeyWord name="Button{\r\n\t$end$\r\n}" text="Button" include="Script" />
+    <KeyWord name="bytesToString ($end$);" text="bytesToString (byte array bytes, long len, string  str);" include="Script" />
+    <KeyWord name="calcCRC($end$);" text="calcCRC(byte array bytes, int count, byte crcHi, byte crcLo);" include="Script" />
+    <KeyWord name="calcLRC($end$);" text="calcLRC(byte array bytes, int count);" include="Script" />
+    <KeyWord name="calcLRCAscii($end$);" text="calcLRCAscii(byte array bytes, int count);" include="Script" />
+    <KeyWord name="call($end$);" text="call(dword handle, string funcName, dword param);" include="Script" />
+    <KeyWord name="Camera{\r\n\t$end$\r\n}" text="Camera" include="Script" />
+    <KeyWord name="camGetCamera($end$);" text="camGetCamera(string vportName, long key, float array values);" include="Script" />
+    <KeyWord name="camSetCamera($end$);" text="camSetCamera(string vportName, long key, float array values);" include="Script" />
+    <KeyWord name="camSetCameraHost($end$);" text="camSetCameraHost(string hostName);" include="Script" />
+    <KeyWord name="camSetDisableAllowed($end$);" text="camSetDisableAllowed(BOOL b);" include="Script" />
+    <KeyWord name="camZoomToField($end$);" text="camZoomToField(long key);" include="Script" />
+    <KeyWord name="checkCollisionByKey($end$);" text="checkCollisionByKey(long key1, long key2);" include="Script" />
+    <KeyWord name="clearEditContent($end$);" text="clearEditContent(string name);" include="Script" />
+    <KeyWord name="clickCtrlpt($end$);" text="clickCtrlpt(string Name);" include="Script" />
+    <KeyWord name="Color{\r\n\t$end$\r\n}" text="Color" include="Script" />
+    <KeyWord name="comClose($end$);" text="comClose(dword handle);" include="Script" />
+    <KeyWord name="comOpen($end$);" text="comOpen(int comm_id);" include="Script" />
+    <KeyWord name="computeMatrixMulti($end$);" text="computeMatrixMulti(float array matrix1, float array matrix2, float array matrix);" include="Script" />
+    <KeyWord name="computePositionByKey($end$);" text="computePositionByKey(long key1, float x1, float y1, float z1, long key2, float x2, float y2, float z2);" include="Script" />
+    <KeyWord name="computeVectorByKey($end$);" text="computeVectorByKey(long key1, float x1, float y1, float z1, long key2, float x2, float y2, float z2);" include="Script" />
+    <KeyWord name="comSend($end$);" text="comSend(dword handle, byte array bytes, long count);" include="Script" />
+    <KeyWord name="Conditions{\r\n\t$end$\r\n}" text="Conditions" include="Script" />
+    <KeyWord name="Content{\r\n\t$end$\r\n}" text="Content" include="Script" />
+    <KeyWord name="Controller{\r\n\t$end$\r\n}" text="Controller" include="Script" />
+    <KeyWord name="Coord{\r\n\t$end$\r\n}" text="Coord" include="Script" />
+    <KeyWord name="cos($end$);" text="cos(float val);" include="Script" />
+    <KeyWord name="Count{\r\n\t$end$\r\n}" text="Count" include="Script" />
+    <KeyWord name="createAvi($end$);" text="createAvi(string animName, long life, string pathname, string path, float x1, float y1, float x2, float y2, int count);" include="Script" />
+    <KeyWord name="createPipe($end$);" text="createPipe(string fieldPathname, float array points, int count, float radius);" include="Script" />
+    <KeyWord name="csClearTempConstrainModel($end$);" text="csClearTempConstrainModel();" include="Script" />
+    <KeyWord name="csMakePoleAlign($end$);" text="csMakePoleAlign(string pole1, string  pole2);" include="Script" />
+    <KeyWord name="csMakePoleCoAxis($end$);" text="csMakePoleCoAxis(string pole1, string  pole2);" include="Script" />
+    <KeyWord name="csMakePoleParallel($end$);" text="csMakePoleParallel(string pole1, string  pole2);" include="Script" />
+    <KeyWord name="csMovePart($end$);" text="csMovePart(string asmName, string partName, float axisx, float axisy, float axisz, float dis);" include="Script" />
+    <KeyWord name="csRotatePart($end$);" text="csRotatePart(string asmName, string partName, float x, float y, float z, float axisx, float axisy, float axisz, float angle);" include="Script" />
+    <KeyWord name="csSolvePart($end$);" text="csSolvePart(string asmName, string partName);" include="Script" />
+    <KeyWord name="Ctrlpt{\r\n\t$end$\r\n}" text="Ctrlpt" include="Script" />
+    <KeyWord name="Curve{\r\n\t$end$\r\n}" text="Curve" include="Script" />
+    <KeyWord name="Cut_plane{\r\n\t$end$\r\n}" text="Cut_plane" include="Script" />
+    <KeyWord name="dbAddNew($end$);" text="dbAddNew(handle record);" include="Script" />
+    <KeyWord name="dbClose($end$);" text="dbClose(handle hCnn);" include="Script" />
+    <KeyWord name="dbCloseRecordSet($end$);" text="dbCloseRecordSet(handle record);" include="Script" />
+    <KeyWord name="dbConnect($end$);" text="dbConnect(string cnnString);" include="Script" />
+    <KeyWord name="dbDelete($end$);" text="dbDelete(handle record);" include="Script" />
+    <KeyWord name="dbFindFirst($end$);" text="dbFindFirst(handle record, string strFilter);" include="Script" />
+    <KeyWord name="dbFindNext($end$);" text="dbFindNext(handle record, string strFilter);" include="Script" />
+    <KeyWord name="dbGetBits($end$);" text="dbGetBits(handle record, string fieldName, dword bits, long count);" include="Script" />
+    <KeyWord name="dbGetFloat($end$);" text="dbGetFloat(handle record, string fieldName, float lVal);" include="Script" />
+    <KeyWord name="dbGetLong($end$);" text="dbGetLong(handle record, string fieldName, long lVal);" include="Script" />
+    <KeyWord name="dbGetRecordCount($end$);" text="dbGetRecordCount(handle record);" include="Script" />
+    <KeyWord name="dbGetString($end$);" text="dbGetString(handle record, string fieldName, string str);" include="Script" />
+    <KeyWord name="dbGetTime($end$);" text="dbGetTime(handle record, string fieldName, int year, int month, int day, int hour, int minute, int second);" include="Script" />
+    <KeyWord name="dbIsBOF($end$);" text="dbIsBOF(handle record);" include="Script" />
+    <KeyWord name="dbIsEOF($end$);" text="dbIsEOF(handle record);" include="Script" />
+    <KeyWord name="dbMoveFirst($end$);" text="dbMoveFirst(handle record);" include="Script" />
+    <KeyWord name="dbMoveNext($end$);" text="dbMoveNext(handle record);" include="Script" />
+    <KeyWord name="dbOpenRecordSet($end$);" text="dbOpenRecordSet(handle hCnn, string tableName);" include="Script" />
+    <KeyWord name="dbSetBits($end$);" text="dbSetBits(handle record, string fieldName, dword bits, long count);" include="Script" />
+    <KeyWord name="dbSetFloat($end$);" text="dbSetFloat(handle record, string fieldName, float fVal);" include="Script" />
+    <KeyWord name="dbSetLong($end$);" text="dbSetLong(handle record, string fieldName, long lVal);" include="Script" />
+    <KeyWord name="dbSetString($end$);" text="dbSetString(handle record, string fieldName, string str);" include="Script" />
+    <KeyWord name="dbSetTime($end$);" text="dbSetTime(handle record, string fieldName, int year, int month, int day, int hour, int minute, int second);" include="Script" />
+    <KeyWord name="dbUpdate($end$);" text="dbUpdate(handle record);" include="Script" />
+    <KeyWord name="Direction{\r\n\t$end$\r\n}" text="Direction" include="Script" />
+    <KeyWord name="dlgExamination($end$);" text="dlgExamination(string questionFile, int questionCount, int limitedTime, int score);" include="Script" />
+    <KeyWord name="dlgGetFaults($end$);" text="dlgGetFaults(int array idArray, int count);" include="Script" />
+    <KeyWord name="dlgGetIdName($end$);" text="dlgGetIdName(string id, string name, string unit);" include="Script" />
+    <KeyWord name="dlgGetLoginInfo($end$);" text="dlgGetLoginInfo(string user, string password);" include="Script" />
+    <KeyWord name="dlgGetNetConnectSetting($end$);" text="dlgGetNetConnectSetting(string host, int port, string user, string password);" include="Script" />
+    <KeyWord name="dlgGetSingleFault($end$);" text="dlgGetSingleFault(int  fualtId);" include="Script" />
+    <KeyWord name="dlgSetMisfunction($end$);" text="dlgSetMisfunction(int array idArray, int count);" include="Script" />
+    <KeyWord name="dlgSetSingleMisfunction($end$);" text="dlgSetSingleMisfunction(int  id);" include="Script" />
+    <KeyWord name="drawLineOnEdit($end$);" text="drawLineOnEdit(string name, float x1, float  z1, float x2, float y2, float r, float g, float b,int width);" include="Script" />
+    <KeyWord name="Edit{\r\n\t$end$\r\n}" text="Edit" include="Script" />
+    <KeyWord name="else{\r\n\t$end$\r\n}" text="else" include="Script" />
+    <KeyWord name="else if{\r\n\t$end$\r\n}" text="else if" include="Script" />
+    <KeyWord name="Enable{\r\n\t$end$\r\n}" text="Enable" include="Script" />
+    <KeyWord name="enableCtrlpt($end$);" text="enableCtrlpt(string Name, bool bEnable);" include="Script" />
+    <KeyWord name="enableCtrlptGroup($end$);" text="enableCtrlptGroup(string moduleName, int gid, bool bEnable);" include="Script" />
+    <KeyWord name="enableTrigger($end$);" text="enableTrigger(string Name , bool bEnable);" include="Script" />
+    <KeyWord name="exp($end$);" text="exp(float val);" include="Script" />
+    <KeyWord name="Field{\r\n\t$end$\r\n}" text="Field" include="Script" />
+    <KeyWord name="Fields{\r\n\t$end$\r\n}" text="Fields" include="Script" />
+    <KeyWord name="File{\r\n\t$end$\r\n}" text="File" include="Script" />
+    <KeyWord name="fileClose($end$);" text="fileClose(file fp);" include="Script" />
+    <KeyWord name="fileGetLength($end$);" text="fileGetLength(file fp);" include="Script" />
+    <KeyWord name="fileGetLines($end$);" text="fileGetLines(file fp);" include="Script" />
+    <KeyWord name="fileOpen($end$);" text="fileOpen(string filename, string option);" include="Script" />
+    <KeyWord name="fileRead($end$);" text="fileRead(file fp, dword bits, long len);" include="Script" />
+    <KeyWord name="fileReadString($end$);" text="fileReadString(file fp, string word, string division);" include="Script" />
+    <KeyWord name="fileSeekLine($end$);" text="fileSeekLine(file fp, long pos);" include="Script" />
+    <KeyWord name="fileWrite($end$);" text="fileWrite(file fp, dword bits, long len);" include="Script" />
+    <KeyWord name="fileWriteLine($end$);" text="fileWriteLine(file fp, string lingString);" include="Script" />
+    <KeyWord name="findString($end$);" text="findString(string str, string subStr);" include="Script" />
+    <KeyWord name="float{\r\n\t$end$\r\n}" text="float" include="Script" />
+    <KeyWord name="floatToDword($end$);" text="floatToDword(float val);" include="Script" />
+    <KeyWord name="floatToWord($end$);" text="floatToWord(float val);" include="Script" />
+    <KeyWord name="flush($end$);" text="flush(string pathname);" include="Script" />
+    <KeyWord name="Frame{\r\n\t$end$\r\n}" text="Frame" include="Script" />
+    <KeyWord name="free($end$);" text="free(dword m);" include="Script" />
+    <KeyWord name="From{\r\n\t$end$\r\n}" text="From" include="Script" />
+    <KeyWord name="ftoa($end$);" text="ftoa(float val, int intNum, int decimalNum);" include="Script" />
+    <KeyWord name="getBit($end$);" text="getBit(dword d, int index);" include="Script" />
+    <KeyWord name="getBLFromXY($end$);" text="getBLFromXY(float x, float y, float B, float L);" include="Script" />
+    <KeyWord name="getBoxByKey($end$);" text="getBoxByKey(long key , float x, float y, float z , float r);" include="Script" />
+    <KeyWord name="getButtonPath($end$);" text="getButtonPath(string Name);" include="Script" />
+    <KeyWord name="getDate($end$);" text="getDate(int year, int month, int day);" include="Script" />
+    <KeyWord name="getEditLineCount($end$);" text="getEditLineCount(string name);" include="Script" />
+    <KeyWord name="getEditMultiText($end$);" text="getEditMultiText(string name, string text);" include="Script" />
+    <KeyWord name="getEditText($end$);" text="getEditText(string name, int lineIndex, string text);" include="Script" />
+    <KeyWord name="getEventTime($end$);" text="getEventTime();" include="Script" />
+    <KeyWord name="getFieldPath($end$);" text="getFieldPath(long key);" include="Script" />
+    <KeyWord name="getkey($end$);" text="getkey( string pathname);" include="Script" />
+    <KeyWord name="getMousePosition($end$);" text="getMousePosition( float x, float y );" include="Script" />
+    <KeyWord name="getNextStep($end$);" text="getNextStep(string fualtName, int examineId, int stepId, int nextExamineId, int nextStepId);" include="Script" />
+    <KeyWord name="getSelectedKey($end$);" text="getSelectedKey( );" include="Script" />
+    <KeyWord name="getStepMark($end$);" text="getStepMark(string faultName, int id);" include="Script" />
+    <KeyWord name="getStepName($end$);" text="getStepName(string faultName, int id);" include="Script" />
+    <KeyWord name="getStringContent($end$);" text="getStringContent(string vstr,int start,int end);" include="Script" />
+    <KeyWord name="getStringLength($end$);" text="getStringLength(string vstr);" include="Script" />
+    <KeyWord name="getTextContent($end$);" text="getTextContent(string pathname);" include="Script" />
+    <KeyWord name="getTickCount($end$);" text="getTickCount();" include="Script" />
+    <KeyWord name="getTime($end$);" text="getTime(int hour, int munite, int seconds);" include="Script" />
+    <KeyWord name="getWeek($end$);" text="getWeek(int week);" include="Script" />
+    <KeyWord name="Group{\r\n\t$end$\r\n}" text="Group" include="Script" />
+    <KeyWord name="Hover{\r\n\t$end$\r\n}" text="Hover" include="Script" />
+    <KeyWord name="Image{\r\n\t$end$\r\n}" text="Image" include="Script" />
+    <KeyWord name="Index{\r\n\t$end$\r\n}" text="Index" include="Script" />
+    <KeyWord name="Initial{\r\n\t$end$\r\n}" text="Initial" include="Script" />
+    <KeyWord name="insertEditText($end$);" text="insertEditText(string edit_name, string text);" include="Script" />
+    <KeyWord name="insertImage($end$);" text="insertImage(string pathname, float x, float y, float z, float width, float height, string bmpFile, string templFile, float transparency);" include="Script" />
+    <KeyWord name="insertText($end$);" text="insertText(string pathname, string content, float x, float y, float z, float sx, float sy, float sz, float r, float g, float b, string font);" include="Script" />
+    <KeyWord name="int{\r\n\t$end$\r\n}" text="int" include="Script" />
+    <KeyWord name="Interval{\r\n\t$end$\r\n}" text="Interval" include="Script" />
+    <KeyWord name="isChildOf($end$);" text="isChildOf( long key, long owner_key );" include="Script" />
+    <KeyWord name="isValidStep($end$);" text="isValidStep(string fualtName, int examineId, int stepId, int nextExamineId, int nextStepId);" include="Script" />
+    <KeyWord name="isValidStepEx($end$);" text="isValidStepEx(string fualtName, int mainNum, int array mainSteps, int array subNum, int array subSteps, int examineId, int stepId, int nextExamineId, int nextStepId);" include="Script" />
+    <KeyWord name="itoa($end$);" text="itoa(int val);" include="Script" />
+    <KeyWord name="itoa16($end$);" text="itoa16(int val);" include="Script" />
+    <KeyWord name="Key_map{\r\n\t$end$\r\n}" text="Key_map" include="Script" />
+    <KeyWord name="Knob{\r\n\t$end$\r\n}" text="Knob" include="Script" />
+    <KeyWord name="Life{\r\n\t$end$\r\n}" text="Life" include="Script" />
+    <KeyWord name="Line{\r\n\t$end$\r\n}" text="Line" include="Script" />
+    <KeyWord name="line3d($end$);" text="line3d(string pathname, float array points,int count,float width,int linetype,float lineFactor,float r,float g,float b);" include="Script" />
+    <KeyWord name="loadField($end$);" text="loadField(string father, dword buffer, long size);" include="Script" />
+    <KeyWord name="loadLibrary($end$);" text="loadLibrary(string filename);" include="Script" />
+    <KeyWord name="log($end$);" text="log(float val);" include="Script" />
+    <KeyWord name="long{\r\n\t$end$\r\n}" text="long" include="Script" />
+    <KeyWord name="MagicMenu{\r\n\t$end$\r\n}" text="MagicMenu" include="Script" />
+    <KeyWord name="makeDword($end$);" text="makeDword(byte bt1, byte bt2, byte bt3, byte bt4);" include="Script" />
+    <KeyWord name="makeWord($end$);" text="makeWord(byte bt1, byte bt2);" include="Script" />
+    <KeyWord name="malloc($end$);" text="malloc(long len);" include="Script" />
+    <KeyWord name="markProcess($end$);" text="markProcess(string fualtName, int mainNum, int array mainSteps, int array subNum, int array subSteps, int missNum, int array missArr, int errNum, int array errArr, int correctNum, int array correctArr);" include="Script" />
+    <KeyWord name="Material{\r\n\t$end$\r\n}" text="Material" include="Script" />
+    <KeyWord name="mediaClose($end$);" text="mediaClose();" include="Script" />
+    <KeyWord name="mediaContinue($end$);" text="mediaContinue();" include="Script" />
+    <KeyWord name="mediaGetAviDuration($end$);" text="mediaGetAviDuration(string aviFile);" include="Script" />
+    <KeyWord name="mediaOpen($end$);" text="mediaOpen(string filename);" include="Script" />
+    <KeyWord name="mediaPause($end$);" text="mediaPause();" include="Script" />
+    <KeyWord name="mediaPlay($end$);" text="mediaPlay();" include="Script" />
+    <KeyWord name="mediaSetPosition($end$);" text="mediaSetPosition(float x1, float y1, float x2, float y2);" include="Script" />
+    <KeyWord name="mediaShow($end$);" text="mediaShow(bool bShow);" include="Script" />
+    <KeyWord name="mediaStop($end$);" text="mediaStop();" include="Script" />
+    <KeyWord name="Menu{\r\n\t$end$\r\n}" text="Menu" include="Script" />
+    <KeyWord name="Message{\r\n\t$end$\r\n}" text="Message" include="Script" />
+    <KeyWord name="messageBox($end$);" text="messageBox(string msg);" include="Script" />
+    <KeyWord name="modifyFieldPath($end$);" text="modifyFieldPath(string oldPath, string newPath);" include="Script" />
+    <KeyWord name="moveField($end$);" text="moveField(string pathname, float axisx, float axisy, float axisz, float dis);" include="Script" />
+    <KeyWord name="moveField($end$);" text="moveField(string pathname, float axisx, float axisy, float axisz)" include="Script" />
+    <KeyWord name="moveFieldAnim($end$);" text="moveFieldAnim(string pathname, float x, float y, float z, float time)" include="Script" />
+    <KeyWord name="moveFieldByKey($end$);" text="moveFieldByKey(long key, float axisx, float axisy, float axisz, float dis);" include="Script" />
+    <KeyWord name="Name{\r\n\t$end$\r\n}" text="Name" include="Script" />
+    <KeyWord name="netClearReceiveBuffer($end$);" text="netClearReceiveBuffer();" include="Script" />
+    <KeyWord name="netClose($end$);" text="netClose();" include="Script" />
+    <KeyWord name="netConnect($end$);" text="netConnect(string hostAddress, int port, string user, string password);" include="Script" />
+    <KeyWord name="netCopyVariable($end$);" text="netCopyVariable(string address, int port, string varName);" include="Script" />
+    <KeyWord name="netCreateServer($end$);" text="netCreateServer(string hostAddress, int port, string user, string password);" include="Script" />
+    <KeyWord name="netGetHostAddress($end$);" text="netGetHostAddress(string hostAddress);" include="Script" />
+    <KeyWord name="netSend($end$);" text="netSend(string address, int port, byte array data, int len);" include="Script" />
+    <KeyWord name="netSendData($end$);" text="netSendData(string address, int port, byte array data, int len);" include="Script" />
+    <KeyWord name="netSendMessage($end$);" text="netSendMessage(string address, int port, string message);" include="Script" />
+    <KeyWord name="netSetEditText($end$);" text="netSetEditText(string address, int port, string editName, int row, string content);" include="Script" />
+    <KeyWord name="netSetReactionDefaultSetting($end$);" text="netSetReactionDefaultSetting(string setting);" include="Script" />
+    <KeyWord name="netSetVariableFloat($end$);" text="netSetVariableFloat(string address, int port, string varName, float val);" include="Script" />
+    <KeyWord name="netSetVariableInt($end$);" text="netSetVariableInt(string address, int port, string varName, int val);" include="Script" />
+    <KeyWord name="netSetVariableLong($end$);" text="netSetVariableLong(string address, int port, string varName, long val);" include="Script" />
+    <KeyWord name="netSetVariableString($end$);" text="netSetVariableString(string address, int port, string varName, string str);" include="Script" />
+    <KeyWord name="netStartAnimation($end$);" text="netStartAnimation(string address, int port, string animName);" include="Script" />
+    <KeyWord name="netTransformField($end$);" text="netTransformField(string address, int port, string pathname);" include="Script" />
+    <KeyWord name="Normal{\r\n\t$end$\r\n}" text="Normal" include="Script" />
+    <KeyWord name="notifyCtrlEvent($end$);" text="notifyCtrlEvent(int eventId);" include="Script" />
+    <KeyWord name="OnAppMessage($end$);" text="OnAppMessage(string appName, string msg);" include="Script" />
+    <KeyWord name="OnCommReceive($end$);" text="OnCommReceive(dword hComm, byte array bytes, long count);" include="Script" />
+    <KeyWord name="OnSocketAccept($end$);" text="OnSocketAccept(string IP);" include="Script" />
+    <KeyWord name="OnSocketClosed($end$);" text="OnSocketClosed(string IP);" include="Script" />
+    <KeyWord name="OnSocketConnected($end$);" text="OnSocketConnected(string peerIp);" include="Script" />
+    <KeyWord name="OnSocketFailed($end$);" text="OnSocketFailed(string wrong);" include="Script" />
+    <KeyWord name="OnSocketMessage($end$);" text="OnSocketMessage(string msg, string srcIP);" include="Script" />
+    <KeyWord name="OnSocketReceive($end$);" text="OnSocketReceive(string buffer);" include="Script" />
+    <KeyWord name="operateEdit($end$);" text="operateEdit(string edit_name, left);" include="Script" />
+    <KeyWord name="operateField($end$);" text="operateField(string opType, string fieldPath);" include="Script" />
+    <KeyWord name="operateField($end$);" text="operateField(string opType, string fieldPath, float ox, float oy, float oz);" include="Script" />
+    <KeyWord name="operateField($end$);" text="operateField(string opType, string fieldPath, float ox, float oy, float oz, float dir_x, float dir_y, float dir_z);" include="Script" />
+    <KeyWord name="Page{\r\n\t$end$\r\n}" text="Page" include="Script" />
+    <KeyWord name="Particle{\r\n\t$end$\r\n}" text="Particle" include="Script" />
+    <KeyWord name="Path{\r\n\t$end$\r\n}" text="Path" include="Script" />
+    <KeyWord name="pickField($end$);" text="pickField(float x, float y);" include="Script" />
+    <KeyWord name="pickModel($end$);" text="pickModel(float x, float y, float z );" include="Script" />
+    <KeyWord name="playProcess($end$);" text="playProcess(string faultName);" include="Script" />
+    <KeyWord name="Point{\r\n\t$end$\r\n}" text="Point" include="Script" />
+    <KeyWord name="Polyline{\r\n\t$end$\r\n}" text="Polyline" include="Script" />
+    <KeyWord name="Position{\r\n\t$end$\r\n}" text="Position" include="Script" />
+    <KeyWord name="pow($end$);" text="pow(float val, float index);" include="Script" />
+    <KeyWord name="Printer{\r\n\t$end$\r\n}" text="Printer" include="Script" />
+    <KeyWord name="printString($end$);" text="printString(float x, float y, string str);" include="Script" />
+    <KeyWord name="Program{\r\n\t$end$\r\n}" text="Program" include="Script" />
+    <KeyWord name="Property{single}{\r\n\t$end$\r\n}" text="Property{single}" include="Script" />
+    <KeyWord name="Property{Serial}{\r\n\t$end$\r\n}" text="Property{Serial}" include="Script" />
+    <KeyWord name="Property{reverse}{\r\n\t$end$\r\n}" text="Property{reverse}" include="Script" />
+    <KeyWord name="Property{parallel}{\r\n\t$end$\r\n}" text="Property{parallel}" include="Script" />
+    <KeyWord name="Property{on memory}{\r\n\t$end$\r\n}" text="Property{on memory}" include="Script" />
+    <KeyWord name="Property{necessary}{\r\n\t$end$\r\n}" text="Property{necessary}" include="Script" />
+    <KeyWord name="Property{continuous}{\r\n\t$end$\r\n}" text="Property{continuous}" include="Script" />
+    <KeyWord name="Property{constant}{\r\n\t$end$\r\n}" text="Property{constant}" include="Script" />
+    <KeyWord name="Property{\r\n\t$end$\r\n}" text="Property" include="Script" />
+    <KeyWord name="Quick{\r\n\t$end$\r\n}" text="Quick" include="Script" />
+    <KeyWord name="Radius;{\r\n\t$end$\r\n}" text="Radius;" include="Script" />
+    <KeyWord name="rand($end$);" text="rand();" include="Script" />
+    <KeyWord name="Range{\r\n\t$end$\r\n}" text="Range" include="Script" />
+    <KeyWord name="Reaction{\r\n\t$end$\r\n}" text="Reaction" include="Script" />
+    <KeyWord name="readString($end$);" text="readString(file fp, string  word, string division);" include="Script" />
+    <KeyWord name="recordScreen($end$);" text="recordScreen();" include="Script" />
+    <KeyWord name="recordScreenBegin($end$);" text="recordScreenBegin(string aviFile, int width, int height);" include="Script" />
+    <KeyWord name="recordScreenEnd($end$);" text="recordScreenEnd();" include="Script" />
+    <KeyWord name="Rect;{\r\n\t$end$\r\n}" text="Rect;" include="Script" />
+    <KeyWord name="Reference{\r\n\t$end$\r\n}" text="Reference" include="Script" />
+    <KeyWord name="rotateField($end$);" text="rotateField(string pathname, float x, float y, float z, float axisx, float axisy, float axisz, float angle);" include="Script" />
+    <KeyWord name="rotateFieldAnim($end$);" text="rotateFieldAnim(string pathname, float x, float y, float z, float axisx, float axisy, float axisz, float angle, float time);" include="Script" />
+    <KeyWord name="Scale{\r\n\t$end$\r\n}" text="Scale" include="Script" />
+    <KeyWord name="scaleField($end$);" text="scaleField(string pathname, float sx, float sy, float sz);" include="Script" />
+    <KeyWord name="Script{\r\n\t$end$\r\n}" text="Script" include="Script" />
+    <KeyWord name="scrollEditLine($end$);" text="scrollEditLine(string name, int lineNum);" include="Script" />
+    <KeyWord name="selectByKey($end$);" text="selectByKey( long key, bool bSel );" include="Script" />
+    <KeyWord name="setBit($end$);" text="setBit(dword d, int index, byte val);" include="Script" />
+    <KeyWord name="setButtonPosition($end$);" text="setButtonPosition(string Name, float x, float y, float z);" include="Script" />
+    <KeyWord name="setEditMultiText($end$);" text="setEditMultiText(string name, string text);" include="Script" />
+    <KeyWord name="setEditText($end$);" text="setEditText(string name, int lineIndex, string text);" include="Script" />
+    <KeyWord name="setEmissionByKey($end$);" text="setEmissionByKey( long key, float r, float g, float b );" include="Script" />
+    <KeyWord name="setFieldMatrix($end$);" text="setFieldMatrix(string pathname, float array matrix);" include="Script" />
+    <KeyWord name="setImageRect($end$);" text="setImageRect(string pathname, float x1 , float y1, float x2 , float y2);" include="Script" />
+    <KeyWord name="setImageTexture ($end$);" text="setImageTexture (string pathname, string tex_name);" include="Script" />
+    <KeyWord name="setPosition($end$);" text="setPosition(string pathname, float x, float y, float z);" include="Script" />
+    <KeyWord name="setTextContent($end$);" text="setTextContent(string pathname, string content);" include="Script" />
+    <KeyWord name="setTextureName($end$);" text="setTextureName( string pathname, string tex_name );" include="Script" />
+    <KeyWord name="setTextureParam($end$);" text="setTextureParam( string pathname, float sx, float sy, float angle, float ofx, float ofy );" include="Script" />
+    <KeyWord name="Settings{\r\n\t$end$\r\n}" text="Settings" include="Script" />
+    <KeyWord name="setTitle($end$);" text="setTitle(string title);" include="Script" />
+    <KeyWord name="Shift{\r\n\t$end$\r\n}" text="Shift" include="Script" />
+    <KeyWord name="showField($end$);" text="showField(string pathname, bool bShow);" include="Script" />
+    <KeyWord name="showFieldByKey($end$);" text="showFieldByKey(long key, bool bShow);" include="Script" />
+    <KeyWord name="showFieldInViewport($end$);" text="showFieldInViewport(string pathname, string viewport, bool bShow);" include="Script" />
+    <KeyWord name="showFieldLocalByKey($end$);" text="showFieldLocalByKey(long key, bool bShow);" include="Script" />
+    <KeyWord name="sin($end$);" text="sin(float val);" include="Script" />
+    <KeyWord name="Size{\r\n\t$end$\r\n}" text="Size" include="Script" />
+    <KeyWord name="Sky{\r\n\t$end$\r\n}" text="Sky" include="Script" />
+    <KeyWord name="Slider{\r\n\t$end$\r\n}" text="Slider" include="Script" />
+    <KeyWord name="Speedup{\r\n\t$end$\r\n}" text="Speedup" include="Script" />
+    <KeyWord name="splitDword($end$);" text="splitDword(dword val, byte bt1, byte bt2, byte bt3, byte bt4);" include="Script" />
+    <KeyWord name="splitString($end$);" text="splitString(string str, string div, string array strArray, int count);" include="Script" />
+    <KeyWord name="splitWord($end$);" text="splitWord(int val, byte bt1, byte bt2);" include="Script" />
+    <KeyWord name="sqrt($end$);" text="sqrt(float val);" include="Script" />
+    <KeyWord name="string{\r\n\t$end$\r\n}" text="string" include="Script" />
+    <KeyWord name="stringInclude($end$);" text="stringInclude(string str1, string str2);" include="Script" />
+    <KeyWord name="stringToBytes($end$);" text="stringToBytes(string str ,byte array bytes, long len);" include="Script" />
+    <KeyWord name="stringToValues($end$);" text="stringToValues(string str, float array values, int count);" include="Script" />
+    <KeyWord name="SystemMenu{\r\n\t$end$\r\n}" text="SystemMenu" include="Script" />
+    <KeyWord name="tan($end$);" text="tan(float val);" include="Script" />
+    <KeyWord name="Text{\r\n\t$end$\r\n}" text="Text" include="Script" />
+    <KeyWord name="Texture{\r\n\t$end$\r\n}" text="Texture" include="Script" />
+    <KeyWord name="Tick{\r\n\t$end$\r\n}" text="Tick" include="Script" />
+    <KeyWord name="Tip{\r\n\t$end$\r\n}" text="Tip" include="Script" />
+    <KeyWord name="Track{\r\n\t$end$\r\n}" text="Track" include="Script" />
+    <KeyWord name="trackPopupMenu($end$);" text="trackPopupMenu(dword hwnd, int x, int y, string menuName);" include="Script" />
+    <KeyWord name="Transparency{\r\n\t$end$\r\n}" text="Transparency" include="Script" />
+    <KeyWord name="Trigger{\r\n\t$end$\r\n}" text="Trigger" include="Script" />
+    <KeyWord name="trim($end$);" text="trim(string vstr);" include="Script" />
+    <KeyWord name="Type{Wave}{\r\n\t$end$\r\n}" text="Type{Wave}" include="Script" />
+    <KeyWord name="Type{Walk}{\r\n\t$end$\r\n}" text="Type{Walk}" include="Script" />
+    <KeyWord name="Type{Update Window}{\r\n\t$end$\r\n}" text="Type{Update Window}" include="Script" />
+    <KeyWord name="Type{Unlock Ctrlpt}{\r\n\t$end$\r\n}" text="Type{Unlock Ctrlpt}" include="Script" />
+    <KeyWord name="Type{Unload Sound}{\r\n\t$end$\r\n}" text="Type{Unload Sound}" include="Script" />
+    <KeyWord name="Type{Unload Model}{\r\n\t$end$\r\n}" text="Type{Unload Model}" include="Script" />
+    <KeyWord name="Type{Unload Ctrlpt Group}{\r\n\t$end$\r\n}" text="Type{Unload Ctrlpt Group}" include="Script" />
+    <KeyWord name="Type{Unload All Animations}{\r\n\t$end$\r\n}" text="Type{Unload All Animations}" include="Script" />
+    <KeyWord name="Type{To}{\r\n\t$end$\r\n}" text="Type{To}" include="Script" />
+    <KeyWord name="Type{Switch To Page}{\r\n\t$end$\r\n}" text="Type{Switch To Page}" include="Script" />
+    <KeyWord name="Type{String}{\r\n\t$end$\r\n}" text="Type{String}" include="Script" />
+    <KeyWord name="Type{Stop Animation}{\r\n\t$end$\r\n}" text="Type{Stop Animation}" include="Script" />
+    <KeyWord name="Type{Start Animation}{\r\n\t$end$\r\n}" text="Type{Start Animation}" include="Script" />
+    <KeyWord name="Type{Slow All Animations}{\r\n\t$end$\r\n}" text="Type{Slow All Animations}" include="Script" />
+    <KeyWord name="Type{Show Window}{\r\n\t$end$\r\n}" text="Type{Show Window}" include="Script" />
+    <KeyWord name="Type{Show Field}{\r\n\t$end$\r\n}" text="Type{Show Field}" include="Script" />
+    <KeyWord name="Type{Show Field In Viewport}{\r\n\t$end$\r\n}" text="Type{Show Field In Viewport}" include="Script" />
+    <KeyWord name="Type{Show Annotation}{\r\n\t$end$\r\n}" text="Type{Show Annotation}" include="Script" />
+    <KeyWord name="Type{Set Visited}{\r\n\t$end$\r\n}" text="Type{Set Visited}" include="Script" />
+    <KeyWord name="Type{Set Viewports}{\r\n\t$end$\r\n}" text="Type{Set Viewports}" include="Script" />
+    <KeyWord name="Type{Set Viewport Position}{\r\n\t$end$\r\n}" text="Type{Set Viewport Position}" include="Script" />
+    <KeyWord name="Type{Set Variable}{\r\n\t$end$\r\n}" text="Type{Set Variable}" include="Script" />
+    <KeyWord name="Type{Set Two Side}{\r\n\t$end$\r\n}" text="Type{Set Two Side}" include="Script" />
+    <KeyWord name="Type{Set Transparency}{\r\n\t$end$\r\n}" text="Type{Set Transparency}" include="Script" />
+    <KeyWord name="Type{Set Texture Name}{\r\n\t$end$\r\n}" text="Type{Set Texture Name}" include="Script" />
+    <KeyWord name="Type{Set Text Content}{\r\n\t$end$\r\n}" text="Type{Set Text Content}" include="Script" />
+    <KeyWord name="Type{Set String}{\r\n\t$end$\r\n}" text="Type{Set String}" include="Script" />
+    <KeyWord name="Type{Set Step}{\r\n\t$end$\r\n}" text="Type{Set Step}" include="Script" />
+    <KeyWord name="Type{Set Sight}{\r\n\t$end$\r\n}" text="Type{Set Sight}" include="Script" />
+    <KeyWord name="Type{Set Image Size}{\r\n\t$end$\r\n}" text="Type{Set Image Size}" include="Script" />
+    <KeyWord name="Type{Set Image Rect}{\r\n\t$end$\r\n}" text="Type{Set Image Rect}" include="Script" />
+    <KeyWord name="Type{Set Image Position}{\r\n\t$end$\r\n}" text="Type{Set Image Position}" include="Script" />
+    <KeyWord name="Type{Set Graspable}{\r\n\t$end$\r\n}" text="Type{Set Graspable}" include="Script" />
+    <KeyWord name="Type{Set Front}{\r\n\t$end$\r\n}" text="Type{Set Front}" include="Script" />
+    <KeyWord name="Type{Set Fovy}{\r\n\t$end$\r\n}" text="Type{Set Fovy}" include="Script" />
+    <KeyWord name="Type{Set Field Matrix}{\r\n\t$end$\r\n}" text="Type{Set Field Matrix}" include="Script" />
+    <KeyWord name="Type{Set Emission}{\r\n\t$end$\r\n}" text="Type{Set Emission}" include="Script" />
+    <KeyWord name="Type{Set Display Mode}{\r\n\t$end$\r\n}" text="Type{Set Display Mode}" include="Script" />
+    <KeyWord name="Type{Set Constant}{\r\n\t$end$\r\n}" text="Type{Set Constant}" include="Script" />
+    <KeyWord name="Type{Set Camera}{\r\n\t$end$\r\n}" text="Type{Set Camera}" include="Script" />
+    <KeyWord name="Type{Set Button Position}{\r\n\t$end$\r\n}" text="Type{Set Button Position}" include="Script" />
+    <KeyWord name="Type{Set Box}{\r\n\t$end$\r\n}" text="Type{Set Box}" include="Script" />
+    <KeyWord name="Type{Set Background}{\r\n\t$end$\r\n}" text="Type{Set Background}" include="Script" />
+    <KeyWord name="Type{Set All Animations Speed}{\r\n\t$end$\r\n}" text="Type{Set All Animations Speed}" include="Script" />
+    <KeyWord name="Type{Rotation}{\r\n\t$end$\r\n}" text="Type{Rotation}" include="Script" />
+    <KeyWord name="Type{Reverse Animation}{\r\n\t$end$\r\n}" text="Type{Reverse Animation}" include="Script" />
+    <KeyWord name="Type{Restore Status}{\r\n\t$end$\r\n}" text="Type{Restore Status}" include="Script" />
+    <KeyWord name="Type{Reset Visited}{\r\n\t$end$\r\n}" text="Type{Reset Visited}" include="Script" />
+    <KeyWord name="Type{Reset Ctrlpt}{\r\n\t$end$\r\n}" text="Type{Reset Ctrlpt}" include="Script" />
+    <KeyWord name="Type{Reset Animation}{\r\n\t$end$\r\n}" text="Type{Reset Animation}" include="Script" />
+    <KeyWord name="Type{Point Light}{\r\n\t$end$\r\n}" text="Type{Point Light}" include="Script" />
+    <KeyWord name="Type{Pick}{\r\n\t$end$\r\n}" text="Type{Pick}" include="Script" />
+    <KeyWord name="Type{Pause Animation}{\r\n\t$end$\r\n}" text="Type{Pause Animation}" include="Script" />
+    <KeyWord name="Type{Orbit}{\r\n\t$end$\r\n}" text="Type{Orbit}" include="Script" />
+    <KeyWord name="Type{Open Database}{\r\n\t$end$\r\n}" text="Type{Open Database}" include="Script" />
+    <KeyWord name="Type{Normal}{\r\n\t$end$\r\n}" text="Type{Normal}" include="Script" />
+    <KeyWord name="Type{No Operator}{\r\n\t$end$\r\n}" text="Type{No Operator}" include="Script" />
+    <KeyWord name="Type{Move Field World}{\r\n\t$end$\r\n}" text="Type{Move Field World}" include="Script" />
+    <KeyWord name="Type{Mouse Move}{\r\n\t$end$\r\n}" text="Type{Mouse Move}" include="Script" />
+    <KeyWord name="Type{Mouse Move Out}{\r\n\t$end$\r\n}" text="Type{Mouse Move Out}" include="Script" />
+    <KeyWord name="Type{Mouse Move In}{\r\n\t$end$\r\n}" text="Type{Mouse Move In}" include="Script" />
+    <KeyWord name="Type{Mouse Lbuttonup}{\r\n\t$end$\r\n}" text="Type{Mouse Lbuttonup}" include="Script" />
+    <KeyWord name="Type{Mouse Lbuttondown}{\r\n\t$end$\r\n}" text="Type{Mouse Lbuttondown}" include="Script" />
+    <KeyWord name="Type{Mouse Lbuttondblclk}{\r\n\t$end$\r\n}" text="Type{Mouse Lbuttondblclk}" include="Script" />
+    <KeyWord name="Type{Mouse Drag}{\r\n\t$end$\r\n}" text="Type{Mouse Drag}" include="Script" />
+    <KeyWord name="Type{Message}{\r\n\t$end$\r\n}" text="Type{Message}" include="Script" />
+    <KeyWord name="Type{Lock Ctrlpt}{\r\n\t$end$\r\n}" text="Type{Lock Ctrlpt}" include="Script" />
+    <KeyWord name="Type{Load Status}{\r\n\t$end$\r\n}" text="Type{Load Status}" include="Script" />
+    <KeyWord name="Type{Load File}{\r\n\t$end$\r\n}" text="Type{Load File}" include="Script" />
+    <KeyWord name="Type{Load Ctrlpt Group}{\r\n\t$end$\r\n}" text="Type{Load Ctrlpt Group}" include="Script" />
+    <KeyWord name="Type{Load All Animations}{\r\n\t$end$\r\n}" text="Type{Load All Animations}" include="Script" />
+    <KeyWord name="Type{Light Position}{\r\n\t$end$\r\n}" text="Type{Light Position}" include="Script" />
+    <KeyWord name="Type{Light Ambient}{\r\n\t$end$\r\n}" text="Type{Light Ambient}" include="Script" />
+    <KeyWord name="Type{LBUTTONUP}{\r\n\t$end$\r\n}" text="Type{LBUTTONUP}" include="Script" />
+    <KeyWord name="Type{LBUTTONDOWN}{\r\n\t$end$\r\n}" text="Type{LBUTTONDOWN}" include="Script" />
+    <KeyWord name="Type{Key Up}{\r\n\t$end$\r\n}" text="Type{Key Up}" include="Script" />
+    <KeyWord name="Type{Key Down}{\r\n\t$end$\r\n}" text="Type{Key Down}" include="Script" />
+    <KeyWord name="Type{Int}{\r\n\t$end$\r\n}" text="Type{Int}" include="Script" />
+    <KeyWord name="Type{Hilight Field}{\r\n\t$end$\r\n}" text="Type{Hilight Field}" include="Script" />
+    <KeyWord name="Type{Hide Window}{\r\n\t$end$\r\n}" text="Type{Hide Window}" include="Script" />
+    <KeyWord name="Type{Hide Field}{\r\n\t$end$\r\n}" text="Type{Hide Field}" include="Script" />
+    <KeyWord name="Type{Hide Field In Viewport}{\r\n\t$end$\r\n}" text="Type{Hide Field In Viewport}" include="Script" />
+    <KeyWord name="Type{Hide Annotation}{\r\n\t$end$\r\n}" text="Type{Hide Annotation}" include="Script" />
+    <KeyWord name="Type{Gray}{\r\n\t$end$\r\n}" text="Type{Gray}" include="Script" />
+    <KeyWord name="Type{Grasp}{\r\n\t$end$\r\n}" text="Type{Grasp}" include="Script" />
+    <KeyWord name="Type{Grasp Field}{\r\n\t$end$\r\n}" text="Type{Grasp Field}" include="Script" />
+    <KeyWord name="Type{Get Drawing}{\r\n\t$end$\r\n}" text="Type{Get Drawing}" include="Script" />
+    <KeyWord name="Type{Gas}{\r\n\t$end$\r\n}" text="Type{Gas}" include="Script" />
+    <KeyWord name="Type{Flush Field}{\r\n\t$end$\r\n}" text="Type{Flush Field}" include="Script" />
+    <KeyWord name="Type{Float Array}{\r\n\t$end$\r\n}" text="Type{Float Array}" include="Script" />
+    <KeyWord name="Type{Fast All Animations}{\r\n\t$end$\r\n}" text="Type{Fast All Animations}" include="Script" />
+    <KeyWord name="Type{Fadeout Page}{\r\n\t$end$\r\n}" text="Type{Fadeout Page}" include="Script" />
+    <KeyWord name="Type{Fadein Page}{\r\n\t$end$\r\n}" text="Type{Fadein Page}" include="Script" />
+    <KeyWord name="Type{Fade In}{\r\n\t$end$\r\n}" text="Type{Fade In}" include="Script" />
+    <KeyWord name="Type{Execute}{\r\n\t$end$\r\n}" text="Type{Execute}" include="Script" />
+    <KeyWord name="Type{End Twinkle}{\r\n\t$end$\r\n}" text="Type{End Twinkle}" include="Script" />
+    <KeyWord name="Type{Enable Viewport}{\r\n\t$end$\r\n}" text="Type{Enable Viewport}" include="Script" />
+    <KeyWord name="Type{Enable Trigger}{\r\n\t$end$\r\n}" text="Type{Enable Trigger}" include="Script" />
+    <KeyWord name="Type{Enable Model Induction}{\r\n\t$end$\r\n}" text="Type{Enable Model Induction}" include="Script" />
+    <KeyWord name="Type{Enable Lod}{\r\n\t$end$\r\n}" text="Type{Enable Lod}" include="Script" />
+    <KeyWord name="Type{Enable Cut_plane}{\r\n\t$end$\r\n}" text="Type{Enable Cut_plane}" include="Script" />
+    <KeyWord name="Type{Enable Ctrlpt}{\r\n\t$end$\r\n}" text="Type{Enable Ctrlpt}" include="Script" />
+    <KeyWord name="Type{Enable Ctrlpt Group}{\r\n\t$end$\r\n}" text="Type{Enable Ctrlpt Group}" include="Script" />
+    <KeyWord name="Type{Enable Camera Collision}{\r\n\t$end$\r\n}" text="Type{Enable Camera Collision}" include="Script" />
+    <KeyWord name="Type{Emission}{\r\n\t$end$\r\n}" text="Type{Emission}" include="Script" />
+    <KeyWord name="Type{Disable Viewport}{\r\n\t$end$\r\n}" text="Type{Disable Viewport}" include="Script" />
+    <KeyWord name="Type{Disable Model Induction}{\r\n\t$end$\r\n}" text="Type{Disable Model Induction}" include="Script" />
+    <KeyWord name="Type{Disable Mapping}{\r\n\t$end$\r\n}" text="Type{Disable Mapping}" include="Script" />
+    <KeyWord name="Type{Disable Cut_plane}{\r\n\t$end$\r\n}" text="Type{Disable Cut_plane}" include="Script" />
+    <KeyWord name="Type{Disable Ctrlpt}{\r\n\t$end$\r\n}" text="Type{Disable Ctrlpt}" include="Script" />
+    <KeyWord name="Type{Disable Ctrlpt Group}{\r\n\t$end$\r\n}" text="Type{Disable Ctrlpt Group}" include="Script" />
+    <KeyWord name="Type{Diffuse}{\r\n\t$end$\r\n}" text="Type{Diffuse}" include="Script" />
+    <KeyWord name="Type{Create Window}{\r\n\t$end$\r\n}" text="Type{Create Window}" include="Script" />
+    <KeyWord name="Type{Create Pipe}{\r\n\t$end$\r\n}" text="Type{Create Pipe}" include="Script" />
+    <KeyWord name="Type{Constant Animation}{\r\n\t$end$\r\n}" text="Type{Constant Animation}" include="Script" />
+    <KeyWord name="Type{Clockwise}{\r\n\t$end$\r\n}" text="Type{Clockwise}" include="Script" />
+    <KeyWord name="Type{Camera Light}{\r\n\t$end$\r\n}" text="Type{Camera Light}" include="Script" />
+    <KeyWord name="Type{Begin Twinkle}{\r\n\t$end$\r\n}" text="Type{Begin Twinkle}" include="Script" />
+    <KeyWord name="Type{Arrow}{\r\n\t$end$\r\n}" text="Type{Arrow}" include="Script" />
+    <KeyWord name="Type{Around}{\r\n\t$end$\r\n}" text="Type{Around}" include="Script" />
+    <KeyWord name="Type{Add Variable}{\r\n\t$end$\r\n}" text="Type{Add Variable}" include="Script" />
+    <KeyWord name="Type{Activate Viewport}{\r\n\t$end$\r\n}" text="Type{Activate Viewport}" include="Script" />
+    <KeyWord name="Type{\r\n\t$end$\r\n}" text="Type" include="Script" />
+    <KeyWord name="updateDisplay($end$);" text="updateDisplay();" include="Script" />
+    <KeyWord name="values{\r\n\t$end$\r\n}" text="values" include="Script" />
+    <KeyWord name="valuesToString($end$);" text="valuesToString(float array values, int count, string str);" include="Script" />
+    <KeyWord name="Variable{\r\n\t$end$\r\n}" text="Variable" include="Script" />
+    <KeyWord name="Variables{\r\n\t$end$\r\n}" text="Variables" include="Script" />
+    <KeyWord name="Viewport{\r\n\t$end$\r\n}" text="Viewport" include="Script" />
+    <KeyWord name="while{\r\n\t$end$\r\n}" text="while" include="Script" />
+    <KeyWord name="Window{\r\n\t$end$\r\n}" text="Window" include="Script" />
+    <KeyWord name="wordAppendString($end$);" text="wordAppendString(dword app, string lineString, string fontName, int fontSize, float array fontColor, bool fontBold, bool fontIterlic, bool underline);" include="Script" />
+    <KeyWord name="wordAppendTable($end$);" text="wordAppendTable(handle app, int rows, int cols);" include="Script" />
+    <KeyWord name="wordCloseFile($end$);" text="wordCloseFile(dword app);" include="Script" />
+    <KeyWord name="wordExecuteFile($end$);" text="wordExecuteFile(string filename);" include="Script" />
+    <KeyWord name="wordOpenFile($end$);" text="wordOpenFile(string filename, bool bCreateIfNoExists);" include="Script" />
+    <KeyWord name="wordOpenFile($end$);" text="wordOpenFile(string filename, string templFilename, bool bCreateIfNoExists);" include="Script" />
+    <KeyWord name="wordSelectionMoveDown ($end$);" text="wordSelectionMoveDown (handle app, int type, int units);" include="Script" />
+    <KeyWord name="wordSelectionMoveLeft($end$);" text="wordSelectionMoveLeft(handle app, int type, int units);" include="Script" />
+    <KeyWord name="wordSelectionMoveRight($end$);" text="wordSelectionMoveRight(handle app, int type, int units);" include="Script" />
+    <KeyWord name="wordSelectionMoveUp($end$);" text="wordSelectionMoveUp(handle app, int type, int units);" include="Script" />
+    <KeyWord name="wordSelectionTypeText($end$);" text="wordSelectionTypeText(handle app, string text);" include="Script" />
+    <KeyWord name="wordTableDeleteCell($end$);" text="wordTableDeleteCell(handle tab, int row, int col);" include="Script" />
+    <KeyWord name="wordTableMergeCell($end$);" text="wordTableMergeCell(handle tab, int row, int col, int row2, int col2);" include="Script" />
+    <KeyWord name="Workdir{\r\n\t$end$\r\n}" text="Workdir" include="Script" />
+</KeyMsg>

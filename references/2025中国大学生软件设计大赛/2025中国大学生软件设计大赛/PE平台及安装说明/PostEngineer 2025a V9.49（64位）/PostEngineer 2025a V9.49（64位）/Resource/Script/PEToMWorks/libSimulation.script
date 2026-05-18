@@ -1,0 +1,228 @@
+'创建时间: 2022-07-11
+'作者: ypj
+'描述: protobuffer 网络变量
+'更新：
+
+Script{
+
+'// PE 端可以定义如下变量, 接收 mworks 发送过来的 ddm 数据：
+'// machineTime ：float, 机器时间 
+'// simTime : float, 仿真时刻
+'// hasIsStartSim : int, 是否发送了 isStartSim 指令
+'// hasIsStopSim : int, 是否发送了 isStopSim 指令
+'// isStartSim : int, isStartSim 指令，标记开始仿真，当 hasIsStartSim 为 1 时才有效。
+'// isStopSim : int, isStop 指令，标记结束仿真，当 hasIsStopSim 为 1 时才有效。
+
+
+'-----------------------------------
+' SimulationManager: 仿真相关接口封装
+'-----------------------------------
+class SimulationManager 
+{
+    '// 插件名
+    string mPluginName;
+
+	float mFloatBuffer;
+
+	SimulationManager() 
+	{
+	    mPluginName = "PEToMWorks";
+	}
+
+	'/**
+	'* @brief 设置参数。须在 start 之前设置。形如：
+	'*   setParam("receiveip", "127.0.0.1");
+	'*   setParam("receiveport", "11005");
+ 	'*   setParam("sendip", "127.0.0.1");
+	'*   setParam("sendport", "11006");
+	'*   setParam("multicast", "1");
+	'*   setParam("loopsend", "0");
+	'* @since 2024-11-12
+	'*/
+	void setParam(string& paramName, string& paramValue)
+    {
+    	pluginCall(mPluginName, "SetParam", paramName, paramValue); 
+   	}
+
+	'/** 
+	'* @brief 开始仿真通信。
+	'* @param ignoreDefaultConfigFile [in] 0: 使用默认的配置文件参数； 1: 不使用默认的配置文件参数。
+	'* @note 2024-11-12, 添加 ignoreDefaultConfigFile 参数
+	'*/
+	void start(int ignoreDefaultConfigFile)
+    {
+       	pluginCall(mPluginName, "Start", ignoreDefaultConfigFile);
+   	}
+
+	'/**
+	'* @brief 添加输入型(in)网络变量。输入型网络变量，是用于接受外部程序发送过来的 protobuf 数据变量。 
+	'* @param varName [in] PE 里定义的仿真变量的名称。
+	'* @param inType [in] 外部程序以 protobuf 变量发送过来的变量类型名。"bool", "int", "float", "string"
+	'* @param inName [in] 外部程序以 protobuf 变量发送过来的名字。
+	'* @return 0:成功； 非零:失败。
+	'*/
+	int addNetVarOfInType(string& varName, string& inType, string& inName)
+	{
+	    return pluginCall(mPluginName, "simMgrAddNetVarOfInType", varName, inType, inName);
+	}
+
+	'/**
+	'* @brief 添加输出型(out)网络变量。输出型网络变量，是循环向外部程序发送的 protobuf 变量。 
+	'* @param varName [in] PE 里定义的仿真变量的名称。
+	'* @param outType [in] 以 protobuf 变量发送出去的变量类型名。"bool", "int", "float", "string"
+	'* @param outName [in] 以 protobuf 变量发送出去的名字。
+	'* @return 0:成功； 非零:失败。
+	'*/
+	int addNetVarOfOutType(string& varName, string& outType, string& outName)
+	{
+	    return pluginCall(mPluginName, "simMgrAddNetVarOfOutType", varName, outType, outName);
+	}
+
+	'/**
+	'* @brief 添加输入型(in)网络变量。用于接受外部程序发送过来的 protobuf 数据变量。 
+	'* @param varName [in] PE 里定义的仿真变量的名称。
+	'* @param inType [in] 外部程序以 protobuf 变量发送过来的变量类型名。"bool", "int", "float", "string"
+	'* @param inName [in] 外部程序以 protobuf 变量发送过来的名字。
+	'* @param outType [in] 以 protobuf 变量发送出去的变量类型名。"bool", "int", "float", "string"
+	'* @param outName [in] 以 protobuf 变量发送出去的名字。
+	'* @return 0:成功； 非零:失败。
+	'*/
+	int addNetVarOfInoutType(string& varName, string& inType, string& inName, string& outType, string& outName)
+	{
+	    return pluginCall(mPluginName, "simMgrAddNetVarOfInoutType", varName, inType, inName, outType, outName);
+	}
+} 
+
+'// SimulationManager 唯一实例, 使用前需实例化此对象:
+'// theSimulationMgr = new SimulationManager;
+SimulationManager theSimulationMgr;
+
+'/**
+'* @brief ddm 数据发送类。
+'* @detail 使用方法:
+'*    DDMWriter ddmWriter = new DDMWriter;
+'*    ddmWriter.beginPackData();
+'*    ddmWriter.addInt(4, "testIntVar");
+'*    ddmWriter.endPackData();
+'*    ddmWriter.writePackedData();    // 将打包好的数据以 ddm 形式通过 protobuffer 发送
+'* @remark 需先初始化 SimulationManager
+'* @author ypj
+'* @since 2022-07-11
+'*/
+class DDMWriter
+{
+    '// 插件名
+	string mPluginName;
+	
+    DDMWriter()
+	{
+	    mPluginName = "PEToMWorks";
+	}
+	
+	'/**
+	'* @brief 开始打包数据。 
+	'* @return 0:成功； 非零:失败。
+	'*/
+    int beginPackData()
+	{
+	    return pluginCall(mPluginName, "ddmWriterBeginPackData", "");
+	}
+	
+	'/**
+	'* @brief 添加 bool 数据到待发送数据包 
+	'* @param val [in] 待发送的值 
+	'* @param sendName [in] 发送将使用的变量名字，字符串。
+	'*/
+	int addBool(int val, string& sendName)
+	{
+	    return pluginCall(mPluginName, "ddmWriterAddBool", val, sendName);
+	}
+	
+	'/**
+	'* @brief 添加 int 数据到待发送数据包 
+	'* @param val [in] 待发送的值 
+	'* @param sendName [in] 发送将使用的变量名字，字符串。
+	'*/
+	int	addInt(int val, string& sendName)
+	{
+	    return pluginCall(mPluginName, "ddmWriterAddInt", val, sendName);
+	}
+	
+	'/**
+	'* @brief 添加 float 数据到待发送数据包 
+	'* @param val [in] 待发送的值 
+	'* @param sendName [in] 发送将使用的变量名字，字符串。
+	'*/
+	int addFloat(float val, string& sendName)
+	{
+	    '// ypj, 2022-07-12, todo: 可否传 float * 到插件？可以，但是可惜脚本里不能产生 float*.
+		'// ftoa 两个参数 3， 6，是否会导致截断？而只能正确处理一定位数的float?
+	    '//string strVal = ftoa(val, 3, 6); 
+	    '//return pluginCall(mPluginName, "ddmWriterAddFloat", strVal, sendName);
+
+		theSimulationMgr.mFloatBuffer = val; '// 会从 C++端获取
+		return pluginCall(mPluginName, "ddmWriterAddFloat", sendName); 
+	}
+
+	'/**
+	'* @brief 添加 string 数据到待发送数据包 
+	'* @param val [in] 待发送的值 
+	'* @param sendName [in] 发送将使用的变量名字，字符串。
+	'* @since 2023-11-17
+	'*/
+	int	addString(string& val, string& sendName)
+	{
+	    return pluginCall(mPluginName, "ddmWriterAddString", val, sendName);
+	}
+
+	'/**
+	'* @brief 设置仿真时刻
+	'* @param val [in] 仿真时刻
+	'* @since 2022-08-10
+	'*/
+	int setSimTime(float val)
+	{
+		theSimulationMgr.mFloatBuffer = val; '// 会从 C++端获取
+		return pluginCall(mPluginName, "ddmWriterSetSimTime", ""); 
+	}
+	'/**
+	'* @brief 设置是否开始仿真
+	'* @param val [in] 仿真时刻
+	'* @since 2022-08-10
+	'*/
+	int setIsStartSim(int val)
+	{
+		return pluginCall(mPluginName, "ddmWriterSetIsStartSim", val); 
+	}
+
+	'/**
+	'* @brief 设置是否结束仿真
+	'* @param val [in] 仿真时刻
+	'* @since 2022-08-10
+	'*/
+	int setIsStopSim(int val)
+	{
+		return pluginCall(mPluginName, "ddmWriterSetIsStopSim", val); 
+	}
+	
+
+	'/**
+	'* @brief 结束打包数据。 
+	'* @return 0:成功； 非零:失败。
+	'*/
+	int endPackData()
+	{
+	    return pluginCall(mPluginName, "ddmWriterEndPackData", "");
+	}
+	
+	'/**
+	'* @brief 发送打包数据。 
+	'* @return 0:成功； 非零:失败。
+	'*/
+	int writePackedData()
+	{
+	    return pluginCall(mPluginName, "ddmWriterWritePackedData", "");
+	}
+}
+
+}

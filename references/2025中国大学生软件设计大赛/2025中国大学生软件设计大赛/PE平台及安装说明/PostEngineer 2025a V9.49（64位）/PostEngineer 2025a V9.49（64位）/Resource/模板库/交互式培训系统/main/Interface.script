@@ -1,0 +1,16 @@
+Script{
+
+
+	include{main/script/variable.script}
+	include{main/script/image.script}
+	include{main/script/button.script}
+	include{main/script/ctrlpt.script}
+	include{main/script/reference.script}
+
+	include{main/script/animation.script}
+	include{main/script/ctrlpt_reaction.script}
+	include{main/script/button_reaction.script}
+
+
+
+}

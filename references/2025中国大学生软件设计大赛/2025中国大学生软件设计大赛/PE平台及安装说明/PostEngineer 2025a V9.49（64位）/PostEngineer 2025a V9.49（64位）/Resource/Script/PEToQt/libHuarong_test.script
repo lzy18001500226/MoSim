@@ -1,0 +1,50 @@
+'创建时间: 2022-10-13
+'作者: ypj
+'描述: libHuarong 测试
+'更新：2022-10-13
+
+
+Script{
+
+include{libHuarong.script}
+
+string gLogFile;    '// 日志文件
+Animation{
+	name{初始化 libHuarong 库}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                gLogFile = "test.log";
+                theHrMgr = new HuarongManager;
+				appPrintLog(gLogFile, "[初始化 libHuarong 库] called", 1);
+            }
+        }
+    }
+}
+
+Animation{
+	name{测试libHuarong}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                appPrintLog(gLogFile, "[测试libHuarong] called", 1);
+
+				int res = theHrMgr.loadCbd("wsctd.json", "武圣村"); '// ok
+
+				res = theHrMgr.createCbd("武圣村", 0, 30); '// ok
+				'if(res==0){'// 成功
+				'    messageBox(data);
+				'}
+				'else {
+				'    messageBox("get failed");
+				'	messageBox(data);
+				'}	
+            }
+        }
+    }
+}
+
+
+}

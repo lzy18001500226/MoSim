@@ -1,0 +1,72 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly PEInsideForCSharp, Version=0.0.*, Culture=固定语言(固定国家/地区): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: 
+	hash=None, flags=None
+Assembly System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Class PE.RenderWindow: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Windows.Forms.UserControl
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Events:
+    MessageHandler OnReceiveMessage: SpecialName
+  Methods:
+    add_OnReceiveMessage(MessageHandler): PrivateScope, Public, HideBySig, SpecialName
+    remove_OnReceiveMessage(MessageHandler): PrivateScope, Public, HideBySig, SpecialName
+    SendMessageToPE(UInt64, Int64): PrivateScope, Public, HideBySig
+Class PE.RenderWindow+MessageHandler: AutoLayout, AnsiClass, Class, NestedPublic, Sealed, BeforeFieldInit
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, SpecialName, RTSpecialName
+  Methods:
+    Invoke(IntPtr, IntPtr): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    BeginInvoke(IntPtr, IntPtr, AsyncCallback, Object): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Final, Virtual, VtableLayoutMask
+Class PE.PEInside: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    PE.RenderWindow RenderWindow 'get ' : 
+    IntPtr WindowHandle 'get ' : 
+    System.String SetupPath 'get set' : 
+    System.String ProjectAddress 'get set' : 
+  Methods:
+    get_ProjectAddress(): PrivateScope, Public, HideBySig, SpecialName
+    set_ProjectAddress(String): PrivateScope, Public, HideBySig, SpecialName
+    get_SetupPath(): PrivateScope, Public, HideBySig, SpecialName
+    set_SetupPath(String): PrivateScope, Public, HideBySig, SpecialName
+    get_WindowHandle(): PrivateScope, Public, HideBySig, SpecialName
+    get_RenderWindow(): PrivateScope, Public, HideBySig, SpecialName
+    Open(String): PrivateScope, Public, HideBySig
+    Clear(): PrivateScope, Public, HideBySig
+    GetVariableValue(String, Object&): PrivateScope, Public, HideBySig
+    GetVariableValue(String, Single&): PrivateScope, Public, HideBySig
+    GetVariableValue(String, Int32&): PrivateScope, Public, HideBySig
+    GetVariableValue(String, Int32&): PrivateScope, Public, HideBySig
+    GetVariableValue(String, String&): PrivateScope, Public, HideBySig
+    SetVariableValue(String, Single): PrivateScope, Public, HideBySig
+    SetVariableValue(String, Int32 IsLong): PrivateScope, Public, HideBySig
+    SetVariableValue(String, Int32): PrivateScope, Public, HideBySig
+    SetVariableValue(String, String): PrivateScope, Public, HideBySig
+    SetVariableValue(String, Object): PrivateScope, Public, HideBySig
+    AllocString(String, Int32): PrivateScope, Public, HideBySig
+    GetVariableAddress(String, IntPtr&, Int32&): PrivateScope, Public, HideBySig
+    GetVariableAddressQuickly(String): PrivateScope, Public, HideBySig
+    GetVariableValueQuickly(String, Type): PrivateScope, Public, HideBySig
+    SetVariableValueQuickly(String, Boolean(HasFieldMarshal)): PrivateScope, Public, HideBySig
+    SetVariableValueQuickly(String, Int32 IsLong): PrivateScope, Public, HideBySig
+    SetVariableValueQuickly(String, Int32): PrivateScope, Public, HideBySig
+    SetVariableValueQuickly(String, Single): PrivateScope, Public, HideBySig
+    SetVariableValueQuickly(String, String): PrivateScope, Public, HideBySig
+    ExecuteScript(String): PrivateScope, Public, HideBySig
+    ExecuteScriptFromFile(String): PrivateScope, Public, HideBySig
+    ExecuteAnimation(String): PrivateScope, Public, HideBySig
+    StopAnimation(String): PrivateScope, Public, HideBySig
+    ExecuteControlObject(String): PrivateScope, Public, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig

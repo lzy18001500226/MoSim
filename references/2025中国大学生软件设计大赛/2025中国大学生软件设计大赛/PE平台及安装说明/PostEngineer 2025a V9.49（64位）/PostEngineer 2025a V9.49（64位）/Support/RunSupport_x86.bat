@@ -1,0 +1,5 @@
+echo off
+set regpath="HKEY_CLASSES_ROOT\Installer\Dependencies\VC,redist.x86,x86,14.30,bundle"
+REG QUERY %regpath% /v Version
+if %errorlevel% == 1 start "" "%~dp0\VC_redist.x86.exe" /quiet /norestart
+echo on

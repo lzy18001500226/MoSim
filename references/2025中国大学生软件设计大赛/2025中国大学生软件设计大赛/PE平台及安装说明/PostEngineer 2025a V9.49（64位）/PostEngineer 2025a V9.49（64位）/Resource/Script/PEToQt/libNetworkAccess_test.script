@@ -1,0 +1,215 @@
+'创建时间: 2022-06-09
+'作者: ypj
+'描述: NetworkAccess 操作测试
+'更新：2022-06-09
+
+
+Script{
+
+include{libNetworkAccess.script}
+
+string gLogFile;    '// 日志文件
+Animation{
+	name{初始化NetworkAccess库}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                gLogFile = "test.log";
+                theNetworkAccessMgr = new NetworkAccessManager;
+				theNetworkAccessMgr.setTimeout(1000);
+				appPrintLog(gLogFile, "[初始化 NetworkAccess 库] called", 1);
+            }
+        }
+    }
+}
+
+Animation{
+	name{测试NetworkAccess}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                appPrintLog(gLogFile, "[测试NetworkAccess] called", 1);
+
+				string  url = "https://fly.wptech.net.cn:8099/stage-api/audit/jfsp/echarts/zjdPzmj?deptName=华容区";
+				int urlcodec = 1; '// url 以 gb2312 编码
+				int rescodec = 1; '// 结果以 gb2312 编码。0：utf8, 1: gb2312
+				string data;
+				int res = theNetworkAccessMgr.get(data, url, rescodec, urlcodec); '// ok
+				messageBox(data);
+				'if(res==0){'// 成功
+				'    messageBox(data);
+				'}
+				'else {
+				'    messageBox("get failed");
+				'	messageBox(data);
+				'}	
+            }
+        }
+    }
+}
+
+Animation{
+	name{测试NetworkAccess-withHeader}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                appPrintLog(gLogFile, "[测试NetworkAccess-withHeader] called", 1);
+	
+				string  url = "http://59.208.147.233:8925/demo/dev/DWS/rural/basic_info";
+				int urlcodec = 1; '// url 以 gb2312 编码
+				int rescodec = 1; '// 结果以 gb2312 编码。0：utf8, 1: gb2312
+				string key = "X-AURORA-TOKEN";
+                string token = "Bxm8FEucmhqz07xy";
+				string data = "get failed";
+				int res = theNetworkAccessMgr.getWithHeader(data, url, rescodec, urlcodec, key, token); '// ok
+				messageBox(data);
+				if(res > 0){
+				    messageBox("get failed");
+				}
+				'if(res == 0) { '// 成功
+				'    messageBox(data);
+				'}
+				'else {
+				'    messageBox("get failed");
+				'	messageBox(data);
+				'}
+            }
+        }
+    }
+}
+class PostTest
+{
+  int code; '// "code": 0,
+  int totalSize; '// "totalSize": 1,
+  bool success;  '// "success": true,
+
+  string lsys[1]; 
+  
+  '"content": [
+  '  {
+  '    "lsys": "38885",
+  '    "ldss": "27934",
+  '    "swdwj": "114650"
+  '  }
+
+    PostTest()
+    {
+    }
+
+	void request()
+	{
+		string  url = "http://59.208.147.233:8925/demo/prd/DPJG/cs";
+		int urlcodec = 1; '// url 以 gb2312 编码
+		int rescodec = 1; '// 结果以 gb2312 编码。0：utf8, 1: gb2312
+		string key = "X-AURORA-TOKEN";
+        string token = "Bxm8FEucmhqz07xy";
+		string contentStr = "";
+		string headerList = "X-AURORA-TOKEN:Bxm8FEucmhqz07xy";
+
+		'// 异步请求
+		'int res = theNetworkAccessMgr.postAndMapAsyn(this, 0, url, urlcodec, headerList, contentStr);
+		
+		'// 同步请求
+		theNetworkAccessMgr.postAndMap(this, url, urlcodec, headerList, contentStr);
+		messageBox(lsys[0]);
+	}
+
+	void onSuccess()
+    {
+		messageBox(lsys[0]);
+    }
+       
+	'// refresh 失败的回调
+    void onFailed()
+    {
+        '// 可以选择推送测试数据
+        messageBox("刷新失败");
+    }
+}
+
+Animation{
+	name{测试NetworkAccess-PostAndMapAsyn}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                appPrintLog(gLogFile, "[测试NetworkAccess-withHeader] called", 1);
+
+				PostTest pt = new PostTest;
+				pt.request();
+
+				'if(res == 0) { '// 成功
+				'    messageBox(data);
+				'}
+				'else {
+				'    messageBox("get failed");
+				'	messageBox(data);
+				'}
+            }
+        }
+    }
+}
+
+class JsonData
+{
+    int code;
+	int totalSize;
+	int success;
+
+	string village_num[1];  '// 如果 content 数组确定只有一个，也可直接用标量 village_num， 下同。
+	string totalPopulation[1];
+	string other_areas[1];
+	string group_num[1];
+	string area_proportion[1];
+	string rural_population[1];
+	string permanent_farmland_area[1];
+	string totalArea[1];
+
+	JsonData()
+	{
+	}
+
+
+	
+	int refreshMannual()
+	{
+
+	}
+	int refreshAuto()
+	{
+	    string  url = "http://59.208.147.233:8925/demo/dev/DWS/rural/basic_info";
+	    int urlcodec = 1; '// url 以 gb2312 编码
+	    string key = "X-AURORA-TOKEN";
+        string token = "Bxm8FEucmhqz07xy";
+	    int res = theNetworkAccessMgr.getAndMapWithHeader(this, url, urlcodec, key, token); '// ypj, 2022-08-03, todo: this 作为 handle 传递到 C++ 端。
+	}
+
+	int refresh()
+	{
+		return refreshAuto();
+
+		'// ypj, 2023-03-16, 返回一个没有返回值的函数调用，解析脚本会崩。 
+	} 
+}
+
+Animation{
+	name{测试NetworkAccess-withHeader-Map}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                '//appPrintLog(gLogFile, "[测试NetworkAccess-withHeader] called", 1);
+
+				JsonData js = new JsonData;
+				js.refreshAuto();
+
+				messageBox(js.village_num[0]);
+            }
+        }
+    }
+}
+
+}

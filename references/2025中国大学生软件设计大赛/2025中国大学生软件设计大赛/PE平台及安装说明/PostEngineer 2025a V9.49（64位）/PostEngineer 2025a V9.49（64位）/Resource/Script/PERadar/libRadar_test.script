@@ -1,0 +1,135 @@
+'创建时间: 2024-07-29
+'作者: ypj
+'描述: libRadar测试
+'更新：2024-07-29
+
+
+Script{
+
+include{PERadar/libRadar.script}
+'include{PEToMWorks/libSimulation.script} 
+
+'/**
+'* @brief libRadar 库的使用/测试示范
+'* @aurthor ypj
+'* @since 2024-07-29
+'*/
+class LibRadarTest 
+{
+    string mLogFile;    '// 日志文件
+	dword mMapHandle;  '// 栅格地图句柄
+	float mMapData[100][100]; '// 栅格地图数据。一般不需要获取数据，直接通过 handle 调用接口实现一些功能即可。
+
+	DDMWriter ddmWriter; '// DDMWriter, 用于测试发送栅格地图数据
+
+	LibRadarTest()
+	{
+		mLogFile = "libRadarTest.log";
+
+		'// RadarManager 唯一实例, 在 libRadar 中声明，使用前需实例化此对象。
+		theRadarMgr = new RadarManager;
+
+		'// 栅格地图句柄初始化
+		mMapHandle = 0; 
+
+		'// 初始化仿真管理器
+		'// 若项目中已初始化了，这里就不需要再初始化。
+		'theSimulationMgr = new SimulationManager;
+		'theSimulationMgr.start();
+		'// 初始化 DDMWriter
+		ddmWriter = new DDMWriter;
+	}
+
+	void testCreateGridMap() {
+	    appPrintLog(mLogFile, "[LibRadarTest] testCreateGridMap begin", 1);
+				
+		'//--------- 设置雷达参数 ------------------
+		'// 雷达对象名
+	    theRadarMgr.gridParam.radarName = "激光雷达_TY车";
+
+		'//-- 点云预处理相关参数. 
+		'// 注意：targetPos 应改为车的实时位置。
+		theRadarMgr.gridParam.targetPos[0] = 30.0; 
+		theRadarMgr.gridParam.targetPos[1] = 2.223913; 
+		theRadarMgr.gridParam.targetPos[2] = -80; 
+		theRadarMgr.gridParam.option = 1;         
+
+		'//-- 栅格构造相关参数
+		theRadarMgr.gridParam.resol = 1;      
+		theRadarMgr.gridParam.size[0] = 1000;
+		theRadarMgr.gridParam.size[1] = 1000;
+		theRadarMgr.gridParam.origin[0] = 500;
+		theRadarMgr.gridParam.origin[1] = 500;
+		theRadarMgr.gridParam.center[0] = 0;
+		theRadarMgr.gridParam.center[1] = 0;
+		'// Log-odd 参数
+		theRadarMgr.gridParam.lo_occ = 200.0;
+		theRadarMgr.gridParam.lo_free = 10.0;
+		theRadarMgr.gridParam.lo_max = 100.0;
+		theRadarMgr.gridParam.lo_min = -100.0;
+
+		'//-- 栅格缩放参数
+		theRadarMgr.gridParam.scale = 0.04;
+
+		'// 创建占用栅格
+		theRadarMgr.createOccupancyGrid(mMapHandle); 
+
+		appPrintLog(mLogFile, "[LibRadarTest] testCreateGridMap end", 1);
+	}
+
+	void testDestroyGridMap() {
+		appPrintLog(mLogFile, "[LibRadarTest] testDestroyGridMap begin", 1);
+		theRadarMgr.destroyOccupancyGrid(mMapHandle);
+		appPrintLog(mLogFile, "[LibRadarTest] testDestroyGridMap end", 1);
+	}
+
+	void testSendGridMap() {
+		appPrintLog(mLogFile, "[LibRadarTest] testSendGridMap begin", 1);
+
+		'// 打包并发送
+		ddmWriter.beginPackData();
+		theRadarMgr.ddmWriterAddGridMap(mMapHandle, "gm"); '// 直接通过 theRadarMgr 接口添加到 ddmWriter
+		ddmWriter.endPackData();
+		ddmWriter.writePackedData();
+
+		appPrintLog(mLogFile, "[LibRadarTest] testSendGridMap end", 1);
+	}
+
+	void testGetGridMapData() {
+		appPrintLog(mLogFile, "[LibRadarTest] testGetGridData begin", 1);
+
+		theRadarMgr.getOccupancyGridData(mMapHandle, mMapData);
+
+		string msg = "mMapData[0][0] = ";
+		msg = msg + ftoa(mMapData[0][0], 1, 6);
+		appPrintLog(mLogFile, msg, 1);
+
+		msg = "mMapData[1][1] = ";
+		msg = msg + ftoa(mMapData[1][1], 1, 6);
+		appPrintLog(mLogFile, msg, 1);
+
+		appPrintLog(mLogFile, "[LibRadarTest] testGetGridData end", 1);
+	}
+
+}
+Animation{
+	name{libRadar_test}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+				'// 创建测试对象
+				LibRadarTest lrt = new LibRadarTest;
+
+				'// 测试各接口
+				lrt.testCreateGridMap();
+				lrt.testGetGridMapData();
+				lrt.testSendGridMap();
+				lrt.testDestroyGridMap();
+            }
+        }
+    }
+}
+
+
+}

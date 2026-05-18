@@ -1,0 +1,68 @@
+'创建时间: 2022-06-13
+'作者: ypj
+'描述: libDigitEarth 操作测试
+'更新：2022-06-13
+
+
+Script{
+
+include{libDigitEarth.script}
+
+string gLogFile;    '// 日志文件
+
+Animation{
+	name{初始化DigitEarth库}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                gLogFile = "test.log";
+                theDigitEarthMgr = new DigitEarthManager;
+				appPrintLog(gLogFile, "[初始化 DigitEarth 库] called", 1);
+            }
+        }
+    }
+}
+
+Animation{
+	name{经纬度测试}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                appPrintLog(gLogFile, "[经纬度测试测试] called", 1);
+				float x=0.1;
+				float y=0.2; 
+				float z=0.3;
+			    float lat = 34.1111;
+				float lon = 114.1111;
+				'pluginCall("PETo3dEarth", "LatLonToXYZ", "34.1111", "114.1111", "dem_x", "dem_y","dem_z");
+				theDigitEarthMgr.latLonToXYZ(x, y, z, lat, lon); '// 
+				string sx = ftoa(x, 4, 4);
+				messageBox(sx);
+            }
+        }
+    }
+}
+
+Animation{
+	name{跳转测试}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                appPrintLog(gLogFile, "[经纬度跳转测试] called", 1);
+			    float lat = 34.1111;
+				float lon = 114.1111;
+				'messageBox("a1");
+				'theDigitEarthMgr.gotoLatLon(lat, lon, 16); '// 
+				'//string sx = ftoa(x, 4, 4);
+				pluginCall("PETo3dEarth", "GotoLatLon", "34.1111", "114.1111", "16");
+
+				messageBox("a2");
+            }
+        }
+    }
+}
+
+}

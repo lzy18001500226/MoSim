@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<PERightMenu>
+  <!-- 模型树右键菜单配置。可参照下面注释块，进行定制。 -->
+  <!--
+  <Item name="美腾交互" action="delete" />
+	<Item name="创建组件" action="delete" />
+	<Item name="装配约束" action="delete" />
+	<Item name="高级修改" action="delete" />
+	<Item name="高级变换" action="delete" />
+	<Item name="阵列" action="delete" />
+	<Item name="剖切" action="delete" />
+	<Item name="对齐" action="delete" />
+	
+	<Item name="-" action="add" position="3" />
+	<Item name="设为运动物体" action="add" position="4" plugin="PEPlugin1" function="Test1" />
+	<Item name="设为参考物体" action="add" position="5" plugin="PEPlugin1" function="Test2" />
+  -->
+	
+</PERightMenu>
+

@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>系统类函数 &mdash; PE 用户手册 2024 文档</title>
+
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/translations.js"></script>
+        <script src="../../_static/js/custom.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc">
+  
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="UI 相关函数" href="func_ui.html" />
+    <link rel="prev" title="字符串函数" href="func_string.html" />
+ 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html">
+            <img src="../../_static/docs_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">PE入门</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/index.html">认识 PE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html">PE 简介</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id1">PE是什么?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id2">PE可以用来做什么？</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id3">PE怎么做到的？</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id4">PE的基本思想</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E5%AE%89%E8%A3%85.html">PE 安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/index.html">项目开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE.html">创建项目</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html">项目开发</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#pe">PE界面概览</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#id2">图形化项目开发概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#id3">添加模型</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E8%B0%83%E8%AF%95.html">项目调试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E5%8F%91%E5%B8%83%E6%88%90%E6%9E%9C.html">发布成果</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">基础开发</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/index.html">资源</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/index.html">模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html">模型文件导入</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#dmax">安装 3Dmax 互导插件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#id2">导入模型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#id3">添加模型到工程</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html">模型的编辑、操作与修改</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id2">模型操作</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id3">模型编辑</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id4">模型修改</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/index.html">对象</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/index.html">模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1.html">加载模型资源对象</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%85%89%E7%85%A7%E9%98%B4%E5%BD%B1%E6%95%88%E6%9E%9C%E8%AE%BE%E7%BD%AE.html">光照阴影效果设置</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%85%89%E7%85%A7%E9%98%B4%E5%BD%B1%E6%95%88%E6%9E%9C%E8%AE%BE%E7%BD%AE.html#id2">设置光照探针</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html">创建基础模型对象</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id2">创建长方体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id3">创建直线</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id4">创建圆柱体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id5">创建球体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id6">创建多边形</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id7">创建精灵</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html">动画</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html#id2">帧动画</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html#id3">复合动画</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%9B%B8%E6%9C%BA.html">相机</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%89%96%E5%88%87.html">剖切</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E8%B7%AF%E7%BA%BF.html">路线</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%AE%A1%E9%81%93.html">管道</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A0%87%E6%B3%A8.html">标注</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%BB%B3%E7%B4%A2.html">绳索</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/index.html">界面</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E5%9B%BE%E7%89%87.html">图片</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E7%BA%B9%E7%90%86.html">纹理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E8%A7%86%E5%8F%A3.html">视口</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E8%A7%86%E9%A2%91.html">视频</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/index.html">交互</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%8E%A7%E5%88%B6%E7%82%B9.html">控制点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%8C%89%E9%92%AE.html">按钮</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E9%94%AE%E7%9B%98%E5%93%8D%E5%BA%94.html">键盘响应</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%97%8B%E9%92%AE.html">旋钮</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%BB%91%E5%9D%97.html">滑块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E8%8F%9C%E5%8D%95.html">菜单</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/index.html">数据</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E5%8F%98%E9%87%8F.html">变量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E6%97%8B%E9%87%8F.html">旋量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E4%B8%89%E7%BB%B4%E7%82%B9.html">三维点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E7%8A%B6%E6%80%81.html">状态</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E4%BD%93.html">体</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/index.html">图表</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/index.html">图表</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%96%87%E5%AD%97.html">文字</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%95%B0%E5%AD%97.html">数字</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%9B%B2%E7%BA%BF%E5%9B%BE.html">曲线图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%9F%B1%E7%8A%B6%E5%9B%BE.html">柱状图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E9%A5%BC%E7%8A%B6%E5%9B%BE.html">饼状图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E7%BD%91%E6%A0%BC%E8%A1%A8.html">网格表</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E8%BF%9B%E5%BA%A6%E6%9D%A1.html">进度条</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E8%A1%A8%E7%9B%98.html">表盘</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E9%9B%B7%E8%BE%BE%E5%9B%BE.html">雷达图</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E6%A0%87%E5%BF%97%E7%89%8C.html">标志牌</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/index.html">程序</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/%E5%87%BD%E6%95%B0.html">函数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/%E7%B1%BB.html">类</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/index.html">效果对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E7%B2%92%E5%AD%90.html">粒子</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E4%BA%91.html">云</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E5%B0%BE%E8%BF%B9.html">尾迹</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E5%A4%A9%E7%A9%BA%E7%9B%92.html">天空盒</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%89%A9%E7%90%86%E5%9C%BA/index.html">物理场</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%89%A9%E7%90%86%E5%9C%BA/%E5%9C%BA.html">场</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BB%BF%E7%9C%9F%E5%AF%B9%E8%B1%A1/index.html">仿真对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BB%BF%E7%9C%9F%E5%AF%B9%E8%B1%A1/%E8%88%B9.html">船</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/index.html">行为图</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E8%A1%8C%E4%B8%BA%E5%9B%BE%E5%9B%BE%E5%85%83%E4%BB%8B%E7%BB%8D.html">行为图图元介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E7%BC%96%E8%BE%91%E6%8C%87%E4%BB%A4%E6%A8%A1%E6%9D%BF.html">编辑指令模板</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html">对象在行为图中的应用</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html#id2">(1)对象定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html#id3">(2)行为图实现流程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/index.html">组件</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E7%BB%84%E4%BB%B6%E4%BB%8B%E7%BB%8D.html">组件介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E5%88%9B%E5%BB%BA%E7%BB%84%E4%BB%B6.html">创建组件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E5%8A%A0%E8%BD%BD%E7%BB%84%E4%BB%B6.html">加载组件</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/index.html">调试与发布</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html">调试与发布</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html#id2">项目调试</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html#id3">项目发布</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html">启动画面图片更换</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html#id2">启动画面</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html#id3">启动画面更换方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">进阶开发</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html">概述</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#peinside">PEInside 应用开发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#pe">PE 插件开发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#id2">PE 编辑器定制开发</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/index.html">CSharp开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html">WpfScenePlayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id2">构建</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id3">程序说明</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html">示例场景</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id2">帧动画制作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id3">交互设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id4">行为设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id5">变量定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id6">发布与安装</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/index.html">Qt开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html">QtScenePlayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html#id1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html#id2">构建</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">脚本手册</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PE 脚本</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#id1">类型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_act.html">Act</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_act.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_action.html">Action</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_action.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_animation.html">Animation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_animation.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_area.html">Area</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_area.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_avi.html">Avi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_avi.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_beam.html">Beam</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_beam.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html">bool</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_button.html">Button</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_button.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_byte.html">byte</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_byte.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html">dword</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html">float</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html">handle</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html">int</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html">long</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html">string</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#id1">描述</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#id2">函数</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="func_animation.html">动画相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_animation.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_animation.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_audio.html">声音相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_audio.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_audio.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_camera.html">相机函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_camera.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_camera.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_character.html">人物角色相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_character.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_character.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_database.html">数据库相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_database.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_database.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_environment.html">环境相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_environment.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_environment.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_field.html">Field 相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_field.html#id1">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_field.html#id5">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_file.html">文件相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_file.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_file.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_geometry.html">基本几何体相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_geometry.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_geometry.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_group.html">组相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_group.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_group.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_math.html">数学类函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_math.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_math.html#id6">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_module.html">模块相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_module.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_module.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_network.html">网络相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_network.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_network.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_particle.html">粒子系统相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_particle.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_particle.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_physics.html">物理相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_physics.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_physics.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_render.html">渲染相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_render.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_render.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_string.html">字符串函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_string.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_string.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">系统类函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_ui.html">UI 相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_ui.html#id1">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_ui.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_video.html">视频相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_video.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_video.html#id5">函数说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/index.html">PE 扩展</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/PECommand/index.html">PECommand</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/PECommand/index.html#id1">函数说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PE 用户手册</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">PE 脚本</a> &raquo;</li>
+      <li>系统类函数</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="doc-func-system">
+<span id="id1"></span><h1>系统类函数<a class="headerlink" href="#doc-func-system" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id2">
+<h2>函数<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id3">
+<h3>进程间通信<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 59%" />
+<col style="width: 27%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-appsendmessage"><span class="std std-ref">appSendMessage</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> appName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> msg <strong>)</strong></p></td>
+<td><p>向指定进程发送消息</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-onappmessage"><span class="std std-ref">OnAppMessage</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> appName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> msg <strong>)</strong></p></td>
+<td><p>接收数据的回调</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-appsettitle"><span class="std std-ref">appSetTitle</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> title <strong>)</strong></p></td>
+<td><p>设置程序标题名</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-appbringtotop"><span class="std std-ref">appBringToTop</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> appName <strong>)</strong></p></td>
+<td><p>置顶某个进程</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-apptaketobottom"><span class="std std-ref">appTakeToBottom</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> appName <strong>)</strong></p></td>
+<td><p>置底某个进程</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-appexit"><span class="std std-ref">appExit</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> appName <strong>)</strong></p></td>
+<td><p>退出某个进程</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-appgetmodulehandle"><span class="std std-ref">appGetModuleHandle</span></a> <strong>(</strong> <strong>)</strong></p></td>
+<td><p>获取某个组件模块句柄</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-appsetfullscreen"><span class="std std-ref">appSetFullScreen</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bFullScreen <strong>)</strong></p></td>
+<td><p>设置满屏/窗口化</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-appprintlog"><span class="std std-ref">appPrintLog</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> file, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> val <strong>)</strong></p></td>
+<td><p>指定路径存放log</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-shellexecute"><span class="std std-ref">shellExecute</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> strExePath <strong>)</strong></p></td>
+<td><p>打开应用程序</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-pausesystem"><span class="std std-ref">pauseSystem</span></a> <strong>(</strong> <strong>)</strong></p></td>
+<td><p>暂停整个系统的运行</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-pauseactiveanimations"><span class="std std-ref">pauseActiveAnimations</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName <strong>)</strong></p></td>
+<td><p>暂停模块的活动动画</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-continueactiveanimations"><span class="std std-ref">continueActiveAnimations</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName <strong>)</strong></p></td>
+<td><p>继续模块的活动动画</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id4">
+<h3>输出函数<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 59%" />
+<col style="width: 27%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-printstring"><span class="std std-ref">printString</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> str <strong>)</strong></p></td>
+<td><p>打印字符串</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-messagebox"><span class="std std-ref">messageBox</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> msg  <strong>)</strong></p></td>
+<td><p>弹出窗口</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-pause"><span class="std std-ref">pause</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> msg  <strong>)</strong></p></td>
+<td><p>断点暂停，显示断点对话框</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-pause-2"><span class="std std-ref">pause</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> iVal  <strong>)</strong></p></td>
+<td><p>断点暂停，显示断点对话框</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-pause-3"><span class="std std-ref">pause</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> iVal <strong>)</strong></p></td>
+<td><p>断点暂停，显示断点对话框</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-pause-4"><span class="std std-ref">pause</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fVal  <strong>)</strong></p></td>
+<td><p>断点暂停，显示断点对话框</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-pause-5"><span class="std std-ref">pause</span></a> <strong>(</strong> <strong>)</strong></p></td>
+<td><p>断点暂停，显示断点对话框</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-updatedisplay"><span class="std std-ref">updateDisplay</span></a> <strong>(</strong> <strong>)</strong></p></td>
+<td><p>强制刷新三维显示</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-enableupdate"><span class="std std-ref">enableUpdate</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></td>
+<td><p>激活/关闭页面刷新</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="memory">
+<h3>memory<a class="headerlink" href="#memory" title="永久链接至标题">¶</a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 59%" />
+<col style="width: 27%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-malloc"><span class="std std-ref">malloc</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html#class-long"><span class="std std-ref">long</span></a> len <strong>)</strong></p></td>
+<td><p>分配一个内存空间</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-free"><span class="std std-ref">free</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> m <strong>)</strong></p></td>
+<td><p>释放内存空间</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-initialid"><span class="std std-ref">initialID</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> IDName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html#class-long"><span class="std std-ref">long</span></a> maxID <strong>)</strong></p></td>
+<td><p>初始化ID对象</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html#class-long"><span class="std std-ref">long</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-allocid"><span class="std std-ref">allocID</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> IDName <strong>)</strong></p></td>
+<td><p>分配一个ID值</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-releaseid"><span class="std std-ref">releaseID</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> IDName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html#class-long"><span class="std std-ref">long</span></a> ID <strong>)</strong></p></td>
+<td><p>释放一个ID值</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="dll">
+<h3>dll加载<a class="headerlink" href="#dll" title="永久链接至标题">¶</a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 68%" />
+<col style="width: 21%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#class-handle"><span class="std std-ref">handle</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-loadlibrary"><span class="std std-ref">loadLibrary</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></td>
+<td><p>加载程序库</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#class-handle"><span class="std std-ref">handle</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-dllload"><span class="std std-ref">dllLoad</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></td>
+<td><p>动态库加载</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-dllfree"><span class="std std-ref">dllFree</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#class-handle"><span class="std std-ref">handle</span></a> hDll <strong>)</strong></p></td>
+<td><p>动态库解除</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-plugincall-2"><span class="std std-ref">pluginCall</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> dllName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> funName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param <strong>)</strong></p></td>
+<td><p>插件调用</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-plugincall-3"><span class="std std-ref">pluginCall</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> dllName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> funName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param1, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param2 <strong>)</strong></p></td>
+<td><p>插件调用</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-plugincall-4"><span class="std std-ref">pluginCall</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> dllName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> funName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param1, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param2, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param3 <strong>)</strong></p></td>
+<td><p>插件调用</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_system.html#class-pescript-method-plugincall-7"><span class="std std-ref">pluginCall</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> dllName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> funName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param1, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param2, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param3, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param4, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param5, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param6 <strong>)</strong></p></td>
+<td><p>插件调用</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>函数说明<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
+<ul class="simple" id="class-pescript-method-appsendmessage">
+<li><p>void <strong>appSendMessage</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> appName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> msg <strong>)</strong></p></li>
+</ul>
+<p>描述：向指定进程发送消息</p>
+<p><code class="docutils literal notranslate"><span class="pre">appName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    进程名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">msg</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        传递的信息</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：appSendMessage(&quot;Window_浏览器&quot;, &quot;Show_浏览器&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-onappmessage">
+<li><p>void <strong>OnAppMessage</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> appName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> msg <strong>)</strong></p></li>
+</ul>
+<p>描述：接收数据的回调</p>
+<p><code class="docutils literal notranslate"><span class="pre">appName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    进程名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">msg</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        传递的信息</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+void OnAppMessage(string appName, string msg)
+{
+        if( appName== &quot;雪亮摄像头&quot;){
+                监控视频:s_监_主窗口视频源地址 = &quot;rtsp://admin:xx@xx.xx.x.&quot; + msg;
+        }
+
+        else if( appName== &quot;秸秆摄像头&quot;){
+                监控视频:s_监_主窗口视频源地址 = msg;
+        }
+}
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-appsettitle">
+<li><p>void <strong>appSetTitle</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> title <strong>)</strong></p></li>
+</ul>
+<p>描述：设置程序标题名</p>
+<p><code class="docutils literal notranslate"><span class="pre">title</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>      标题名称</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：appSetTitle(&quot;数字乡村&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-appbringtotop">
+<li><p>void <strong>appBringToTop</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> appName <strong>)</strong></p></li>
+</ul>
+<p>描述：置顶某个进程</p>
+<p><code class="docutils literal notranslate"><span class="pre">appName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    进程名称</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：appBringToTop(&quot;微信&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-apptaketobottom">
+<li><p>void <strong>appTakeToBottom</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> appName <strong>)</strong></p></li>
+</ul>
+<p>描述：置底某个进程</p>
+<p><code class="docutils literal notranslate"><span class="pre">appName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    进程名称</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+appSetTitle(&quot;数字乡村&quot;);
+appTakeToBottom(&quot;数字乡村&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-appexit">
+<li><p>void <strong>appExit</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> appName <strong>)</strong></p></li>
+</ul>
+<p>描述：退出某个进程</p>
+<p><code class="docutils literal notranslate"><span class="pre">appName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    进程名称</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：     appExit(&quot;微信&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-appgetmodulehandle">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> <strong>appGetModuleHandle</strong> <strong>(</strong> <strong>)</strong></p></li>
+</ul>
+<p>描述：获取某个组件模块句柄</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：messageBox(  &quot;&quot;+appGetModuleHandle());
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-appsetfullscreen">
+<li><p>void <strong>appSetFullScreen</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bFullScreen <strong>)</strong></p></li>
+</ul>
+<p>描述：设置满屏/窗口化</p>
+<p><code class="docutils literal notranslate"><span class="pre">bFullScreen</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        1 or 0 (满屏 或 窗口化)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+appSetFullScreen(1); &#39;&#39;设置满屏
+appSetFullScreen(0); &#39;&#39;设置窗口化
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-appprintlog">
+<li><p>void <strong>appPrintLog</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> file, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> val <strong>)</strong></p></li>
+</ul>
+<p>描述：指定路径存放log</p>
+<p><code class="docutils literal notranslate"><span class="pre">file</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       log路径</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       打印string字段</p>
+<p><code class="docutils literal notranslate"><span class="pre">val</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       打印int字段</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+string gLogFile = &quot;1.log&quot;;
+appPrintLog(gLogFile,&quot;111&quot;,111);
+输出1.log内容为&quot;[11:20:10.65]: 111, 111&quot;。
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-shellexecute">
+<li><p>void <strong>shellExecute</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> strExePath <strong>)</strong></p></li>
+</ul>
+<p>描述：打开应用程序</p>
+<p><code class="docutils literal notranslate"><span class="pre">strExePath</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code> 应用程序路径</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：     shellExecute(&quot;main\Debug\测试.exe&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-pausesystem">
+<li><p>void <strong>pauseSystem</strong> <strong>(</strong> <strong>)</strong></p></li>
+</ul>
+<p>描述：暂停整个系统的运行。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：pauseSystem();       &#39;&#39;暂停后无法相应键盘和控制点，仅通过F8打断暂停
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-pauseactiveanimations">
+<li><p>void <strong>pauseActiveAnimations</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName <strong>)</strong></p></li>
+</ul>
+<p>描述：暂停模块的活动动画</p>
+<p><code class="docutils literal notranslate"><span class="pre">moduleName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         “main”或其他模块</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：     pauseActiveAnimations(&quot;main&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-continueactiveanimations">
+<li><p>void <strong>continueActiveAnimations</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName <strong>)</strong></p></li>
+</ul>
+<p>描述：继续模块的活动动画</p>
+<p><code class="docutils literal notranslate"><span class="pre">moduleName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         “main”或其他模块</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：     continueActiveAnimations(&quot;main&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-printstring">
+<li><p>void <strong>printString</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> str <strong>)</strong></p></li>
+</ul>
+<p>描述：打印字符串</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          坐标轴x</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          坐标轴y</p>
+<p><code class="docutils literal notranslate"><span class="pre">str</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        输入文字</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：printString(0,0,&quot;123&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-messagebox">
+<li><p>void <strong>messageBox</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> msg  <strong>)</strong></p></li>
+</ul>
+<p>描述：弹出窗口</p>
+<p><code class="docutils literal notranslate"><span class="pre">msg</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        输入文字</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+int n=405/360;
+messageBox(  &quot;&quot;+n);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-pause">
+<li><p>void <strong>pause</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> msg  <strong>)</strong></p></li>
+</ul>
+<p>描述：断点暂停，显示断点对话框</p>
+<p><code class="docutils literal notranslate"><span class="pre">msg</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        断点消息，显示在对话框的标题栏上</p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-pause-2">
+<li><p>void <strong>pause</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> iVal  <strong>)</strong></p></li>
+</ul>
+<p>描述：断点暂停，显示断点对话框</p>
+<p><code class="docutils literal notranslate"><span class="pre">iVal</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       断点变量，其值显示在对话框的标题栏上</p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-pause-3">
+<li><p>void <strong>pause</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> iVal <strong>)</strong></p></li>
+</ul>
+<p>描述：断点暂停，显示断点对话框</p>
+<p><code class="docutils literal notranslate"><span class="pre">iVal</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       断点变量，其值显示在对话框的标题栏上</p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-pause-4">
+<li><p>void <strong>pause</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fVal  <strong>)</strong></p></li>
+</ul>
+<p>描述：断点暂停，显示断点对话框</p>
+<p><code class="docutils literal notranslate"><span class="pre">fVal</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       断点变量，其值显示在对话框的标题栏上</p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-pause-5">
+<li><p>void <strong>pause</strong> <strong>(</strong> <strong>)</strong></p></li>
+</ul>
+<p>描述：断点暂停，显示断点对话框</p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-updatedisplay">
+<li><p>void <strong>updateDisplay</strong> <strong>(</strong> <strong>)</strong></p></li>
+</ul>
+<p>描述：强制刷新三维显示</p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-enableupdate">
+<li><p>void <strong>enableUpdate</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：激活/关闭页面刷新</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>  1 or 0(激活 或 关闭)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+enableUpdate(0); &#39;&#39;关闭页面刷新
+enableUpdate(1); &#39;&#39;激活页面刷新
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-malloc">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> <strong>malloc</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html#class-long"><span class="std std-ref">long</span></a> len <strong>)</strong></p></li>
+</ul>
+<p>描述：分配一个内存空间</p>
+<p><code class="docutils literal notranslate"><span class="pre">len</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       内存大小</p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-free">
+<li><p>void <strong>free</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> m <strong>)</strong></p></li>
+</ul>
+<p>描述：释放内存空间</p>
+<p><code class="docutils literal notranslate"><span class="pre">m</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         内存地址</p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-initialid">
+<li><p>void <strong>initialID</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> IDName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html#class-long"><span class="std std-ref">long</span></a> maxID <strong>)</strong></p></li>
+</ul>
+<p>描述：初始化ID对象，ID对象可以产生唯一的ID值</p>
+<p><code class="docutils literal notranslate"><span class="pre">mIDName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   ID对象名</p>
+<p><code class="docutils literal notranslate"><span class="pre">maxID</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             最大ID值</p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-allocid">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html#class-long"><span class="std std-ref">long</span></a> <strong>allocID</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> IDName <strong>)</strong></p></li>
+</ul>
+<p>描述：分配一个ID值</p>
+<p><code class="docutils literal notranslate"><span class="pre">IDName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    ID对象名</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-releaseid">
+<li><p>void <strong>releaseID</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> IDName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html#class-long"><span class="std std-ref">long</span></a> ID <strong>)</strong></p></li>
+</ul>
+<p>描述：释放一个ID值</p>
+<p><code class="docutils literal notranslate"><span class="pre">IDName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    ID对象名</p>
+<p><code class="docutils literal notranslate"><span class="pre">ID</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                ID值</p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-loadlibrary">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#class-handle"><span class="std std-ref">handle</span></a> <strong>loadLibrary</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></li>
+</ul>
+<p>描述：加载程序库</p>
+<p><code class="docutils literal notranslate"><span class="pre">filename</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>  函数库路径</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：     loadLibrary(&quot;main\Debug\Interface_WindowTouchAtPEPlay.dll&quot;)
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-dllload">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#class-handle"><span class="std std-ref">handle</span></a> <strong>dllLoad</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></li>
+</ul>
+<p>描述：动态库加载</p>
+<p><code class="docutils literal notranslate"><span class="pre">filename</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>  函数库路径</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：     dllLoad(&quot;main\Debug\Interface_WindowTouchAtPEPlay.dll&quot;)
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-dllfree">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>dllFree</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#class-handle"><span class="std std-ref">handle</span></a> hDll <strong>)</strong></p></li>
+</ul>
+<p>描述：动态库解除</p>
+<p><code class="docutils literal notranslate"><span class="pre">hDll</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>      (句柄)</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+handle han1 = dllLoad(&quot;main\Debug\Interface_WindowTouchAtPEPlay.dll&quot;)
+dllFree(han1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-plugincall-2">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> <strong>pluginCall</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> dllName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> funName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param <strong>)</strong></p></li>
+</ul>
+<p>描述：插件调用</p>
+<p><code class="docutils literal notranslate"><span class="pre">dllName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    函数库名</p>
+<p><code class="docutils literal notranslate"><span class="pre">funName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    函数名</p>
+<p><code class="docutils literal notranslate"><span class="pre">param</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>     参数</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+pluginCall(&quot;PETo3dEarth&quot;, &quot;ChangeScaleLevel&quot;, 1);
+pluginCall(&quot;PETo3dEarth&quot;, &quot;ChangeScaleLevel&quot;, -1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-plugincall-3">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> <strong>pluginCall</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> dllName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> funName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param1, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param2 <strong>)</strong></p></li>
+</ul>
+<p>描述：插件调用</p>
+<p><code class="docutils literal notranslate"><span class="pre">dllName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   函数库名</p>
+<p><code class="docutils literal notranslate"><span class="pre">funName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    函数名</p>
+<p><code class="docutils literal notranslate"><span class="pre">param1</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    参数1</p>
+<p><code class="docutils literal notranslate"><span class="pre">param2</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    参数2</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：     pluginCall(&quot;PETo3dEarth&quot;, &quot;SetOffsetAngle&quot;, &quot;tiles_A&quot;, &quot;-0.24&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-plugincall-4">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> <strong>pluginCall</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> dllName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> funName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param1, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param2, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param3 <strong>)</strong></p></li>
+</ul>
+<p>描述：插件调用</p>
+<p><code class="docutils literal notranslate"><span class="pre">dllName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   函数库名</p>
+<p><code class="docutils literal notranslate"><span class="pre">funName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    函数名</p>
+<p><code class="docutils literal notranslate"><span class="pre">param1</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    参数1</p>
+<p><code class="docutils literal notranslate"><span class="pre">param2</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    参数2</p>
+<p><code class="docutils literal notranslate"><span class="pre">param3</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    参数3</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：     pluginCall(&quot;PETo3dEarth&quot;, &quot;SetOffsetAngle&quot;, &quot;tiles_A&quot;, &quot;-0.25&quot;, &quot;-0.000035&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-plugincall-7">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> <strong>pluginCall</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> dllName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> funName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param1, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param2, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param3, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param4, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param5, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> param6 <strong>)</strong></p></li>
+</ul>
+<p>描述：插件调用</p>
+<p><code class="docutils literal notranslate"><span class="pre">dllName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    函数库名</p>
+<p><code class="docutils literal notranslate"><span class="pre">funName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    函数名</p>
+<p><code class="docutils literal notranslate"><span class="pre">param1</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    参数1</p>
+<p><code class="docutils literal notranslate"><span class="pre">param2</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    参数2</p>
+<p><code class="docutils literal notranslate"><span class="pre">param3</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    参数3</p>
+<p><code class="docutils literal notranslate"><span class="pre">param4</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    参数4</p>
+<p><code class="docutils literal notranslate"><span class="pre">param5</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    参数5</p>
+<p><code class="docutils literal notranslate"><span class="pre">param6</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    参数6</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float x; float y; float z; float lat; float lon; float dem;
+int res = pluginCall(mPluginName, &quot;LatLonDEMToXYZS&quot;, lat.self(), lon.self(), dem.self(), x.self(), y.self(), z.self());
+</pre></div>
+</div>
+<hr class="docutils" />
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="func_string.html" class="btn btn-neutral float-left" title="字符串函数" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="func_ui.html" class="btn btn-neutral float-right" title="UI 相关函数" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, 武汉创景可视技术有限公司.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

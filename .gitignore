@@ -80,3 +80,9 @@ secrets.*
 
 # Third-party contest submissions / large reference works
 references/2025中国大学生软件设计大赛/挑战赛作品/
+
+# Large third-party visualization/runtime assets over GitHub hard limit
+references/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE-MWORKS驱动案例/PE-MWORKS机械臂驱动运行案例/**/*.vis
+references/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE培训课程PPT/PE培训1_认识PE.pptx
+references/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/StreamingAssets/scene_神秘岛
+references/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/resources.assets.resS

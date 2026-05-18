@@ -1,0 +1,118 @@
+'创建时间: 2021-12-01
+'作者: ypj
+'描述: cvs 操作测试
+'更新：
+
+
+Script{
+
+include{csv.script}
+
+string gCsvLogFile;    '// 日志文件
+CsvFileManager gCsvFileMgr; '// ndpnet 功能接口
+
+'// 以下仿真时刻变量，可以以对象变量方式，或者脚本方式定义。
+'// 他们可能由主控决定，比如，仿真时间区间为 [0,7000] 毫秒，即 gT0 = 0, gTn=7000
+'// 收到主控对时消息， 将当前仿真时刻进行同步，比如，收到仿真时刻为 3000， 则修改 gTi = 3000
+'float gT0; '// 仿真时刻起点
+'float gTn; '// 仿真时刻终点
+'float gTi; '// 当前仿真时刻
+
+'// 功能：根据仿真时刻信息，获取与当前仿真时刻对应的一行数据。
+'// 参数：
+'//   f：文件。若为0，则非法。注意这个 handle 类型的 f 应这样初始化：f = gCsvFileMgr.open("xxx\xxx.csv")
+'//   t0: 仿真时刻起点
+'//   tn: 仿真时刻终点
+'//   ti: 当前仿真时刻
+'// 说明：
+'//   设有离散数据 n+1 条(0,..., n)，对应仿真时间区间 [t0, tn]。
+'//   对任意仿真时刻 ti(t0<=ti<=tn>), 对应于数据的第i条(0<=i<=n)，满足：
+'//   ti = t0+ i*(tn-t0)/n => i = n*(ti-t0)/(tn-t0)
+ string readCurrentLine(dword f, float t0, float tn, float ti)
+ {
+    '// 注意：因第一条为表头，所以实际数据条数 n+1= RowSize - 1；
+    '//int n = gCsvFileMgr.getRowSize(f) - 1;
+	int n = gCsvFileMgr.getRowSize(f) - 2;
+	'//appPrintLog(gCsvLogFile, "[readCurrentLine] called, n=", n);
+	if(n <= 0) {   
+	    return "";
+	}
+	'// 注意：因为第一条为表头，实际数据从表头下第一个开始。1<=i<=n+1
+	'// int i = n*(ti-t0)/(tn-t0);
+	int i = n*(ti-t0)/(tn-t0) + 1;  
+	'//appPrintLog(gCsvLogFile, "[readCurrentLine] called, i=", i);
+	if(i < 0 || i > n+1) {
+	    return "";
+	}
+	return gCsvFileMgr.readLine(f, i);
+ }
+
+Animation{
+	name{初始化CSV库}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                gCsvLogFile = "d:\temp\csvtest.log";
+                gCsvFileMgr = new CsvFileManager;
+				gCsvFileMgr.mLogFilePath = "d:\temp\csvtest2.log"; '//gCsvLogFile;
+				appPrintLog(gCsvLogFile, "[初始化CSV库] called", 1);
+            }
+        }
+    }
+}
+
+Animation{
+	name{读CSV测试}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+			    appPrintLog(gCsvLogFile, "[读CSV测试] called", 1);
+				' 中文路径似乎有问题
+				dword f = gCsvFileMgr.open("main\test.csv"); '// ok
+				'dword f = gCsvFileMgr.open("D:\temp\成都核电\二回路示例0902\main\(非密)升降负荷.csv"); '// not ok!
+				'dword f = gCsvFileMgr.open("main\(非密)升降负荷.csv"); '// not ok!
+				appPrintLog(gCsvLogFile, "[读CSV测试] f = ", f);
+				appPrintLog(gCsvLogFile, "测试通过仿真时间获取一行数据:", 1);
+			    
+				float t0 = 0;
+				float tn = 10;
+				float ti = 0;
+				'// ti = 0 即第一条数据
+				appPrintLog(gCsvLogFile, "ti = 0 即第一条数据:", 1);
+                string strline = readCurrentLine(f, t0, tn, ti);
+				appPrintLog(gCsvLogFile, strline, 1);
+				'// ti = tn/2 即中间一条数据
+				appPrintLog(gCsvLogFile, "ti = tn/2 即中间一条数据", 1);
+				ti = tn/2;
+				strline = readCurrentLine(f, t0, tn, ti);
+				appPrintLog(gCsvLogFile, strline, 1);
+				'// ti = tn 即最后一条数据 
+				appPrintLog(gCsvLogFile, "ti = tn 即最后一条数据", 1);
+				ti = tn;
+				strline = readCurrentLine(f, t0, tn, ti);
+				appPrintLog(gCsvLogFile, strline, 1);
+				
+				
+				'//直接测试获取第 i 条数据
+				appPrintLog(gCsvLogFile, "直接测试获取第 i 条数据:", 1);
+			    int n = gCsvFileMgr.getRowSize(f); '// 行数，包括第一行表头。
+				appPrintLog(gCsvLogFile, "行数，包括第一行表头", n);
+				strline = gCsvFileMgr.readLine(f, 1);
+				appPrintLog(gCsvLogFile, strline, 1);
+				strline = gCsvFileMgr.readLine(f, 2);
+				appPrintLog(gCsvLogFile, strline, 2);
+				strline = gCsvFileMgr.readLine(f, 3);
+				appPrintLog(gCsvLogFile, strline, 3);
+				strline = gCsvFileMgr.readLine(f, 3000);
+				appPrintLog(gCsvLogFile, strline, 3000);
+				strline = gCsvFileMgr.readLine(f, n-1);
+				appPrintLog(gCsvLogFile, strline, n-1); ' 最后一行
+				'messageBox(strline);
+            }
+        }
+    }
+}
+
+}

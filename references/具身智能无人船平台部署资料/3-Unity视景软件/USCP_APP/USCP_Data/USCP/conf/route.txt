@@ -1,0 +1,185 @@
+
+{
+    "routes" : {
+        "海韵湖" : [
+            {
+                "Name" : "test",
+                "Desc" : "",
+                "Points" : [
+                    {
+                        "CruiseSpeed" : 1.5,
+                        "Name"        : "导航点1",
+                        "Position"    : [
+                            381.4022,
+                            24.3,
+                            151.9669
+                        ]
+                    },
+                    {
+                        "CruiseSpeed" : 1.5,
+                        "Name"        : "导航点2",
+                        "Position"    : [
+                            409.5164,
+                            24.3,
+                            150.0027
+                        ]
+                    },
+                    {
+                        "CruiseSpeed" : 1.5,
+                        "Name"        : "导航点3",
+                        "Position"    : [
+                            427.7698,
+                            24.3,
+                            156.9944
+                        ]
+                    }
+                ],
+                "Obstacles" : [
+                ],
+                "Id"        : "3c3c403e67574e0397a065bee3cc677f",
+                "Version"   : 4
+            }
+        ],
+        "神秘岛" : [
+            {
+                "Name" : "航线1",
+                "Desc" : "",
+                "Points" : [
+                    {
+                        "CruiseSpeed" : 2,
+                        "Name"        : "导航点1",
+                        "Position"    : [
+                            702.678,
+                            24.3,
+                            256.2419
+                        ]
+                    },
+                    {
+                        "CruiseSpeed" : 2,
+                        "Name"        : "导航点2",
+                        "Position"    : [
+                            698.7167,
+                            24.3,
+                            279.9091
+                        ]
+                    },
+                    {
+                        "CruiseSpeed" : 2,
+                        "Name"        : "导航点3",
+                        "Position"    : [
+                            716.4641,
+                            24.3,
+                            273.4641
+                        ]
+                    },
+                    {
+                        "CruiseSpeed" : 2,
+                        "Name"        : "导航点4",
+                        "Position"    : [
+                            727.2271,
+                            24.3,
+                            278.0977
+                        ]
+                    },
+                    {
+                        "CruiseSpeed" : 2,
+                        "Name"        : "导航点5",
+                        "Position"    : [
+                            731.4855,
+                            24.3,
+                            267.6545
+                        ]
+                    },
+                    {
+                        "CruiseSpeed" : 2,
+                        "Name"        : "导航点6",
+                        "Position"    : [
+                            726.9432,
+                            24.3,
+                            258.7091
+                        ]
+                    },
+                    {
+                        "CruiseSpeed" : 2,
+                        "Name"        : "导航点7",
+                        "Position"    : [
+                            731.676,
+                            24.3,
+                            246.6084
+                        ]
+                    }
+                ],
+                "Obstacles" : [
+                    {
+                        "ScalcX" : 1,
+                        "ScalcY" : 1,
+                        "ScalcZ" : 1,
+                        "Name"   : "障碍物1",
+                        "Position" : [
+                            700.9519,
+                            24.3,
+                            267.1579
+                        ]
+                    },
+                    {
+                        "ScalcX" : 1,
+                        "ScalcY" : 1,
+                        "ScalcZ" : 1,
+                        "Name"   : "障碍物2",
+                        "Position" : [
+                            710.4293,
+                            24.3,
+                            275.1938
+                        ]
+                    },
+                    {
+                        "ScalcX" : 1,
+                        "ScalcY" : 1,
+                        "ScalcZ" : 1,
+                        "Name"   : "障碍物3",
+                        "Position" : [
+                            721.4812,
+                            24.3,
+                            275.786
+                        ]
+                    },
+                    {
+                        "ScalcX" : 1,
+                        "ScalcY" : 1,
+                        "ScalcZ" : 1,
+                        "Name"   : "障碍物4",
+                        "Position" : [
+                            729.3047,
+                            24.3,
+                            272.9451
+                        ]
+                    },
+                    {
+                        "ScalcX" : 1,
+                        "ScalcY" : 1,
+                        "ScalcZ" : 1,
+                        "Name"   : "障碍物5",
+                        "Position" : [
+                            728.4664,
+                            24.3,
+                            262.0356
+                        ]
+                    },
+                    {
+                        "ScalcX" : 1,
+                        "ScalcY" : 1,
+                        "ScalcZ" : 1,
+                        "Name"   : "障碍物6",
+                        "Position" : [
+                            731.0387,
+                            24.3,
+                            248.9664
+                        ]
+                    }
+                ],
+                "Id"        : "54464423984948aeaa9ef938266da8ee",
+                "Version"   : 77
+            }
+        ]
+    }
+}

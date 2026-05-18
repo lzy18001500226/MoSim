@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>环境相关函数 &mdash; PE 用户手册 2024 文档</title>
+
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/translations.js"></script>
+        <script src="../../_static/js/custom.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc">
+  
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+ 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html">
+            <img src="../../_static/docs_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">PE入门</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/index.html">认识 PE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html">PE 简介</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id1">PE是什么?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id2">PE可以用来做什么？</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id3">PE怎么做到的？</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id4">PE的基本思想</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E5%AE%89%E8%A3%85.html">PE 安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/index.html">项目开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE.html">创建项目</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html">项目开发</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#pe">PE界面概览</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#id2">图形化项目开发概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#id3">添加模型</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E8%B0%83%E8%AF%95.html">项目调试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E5%8F%91%E5%B8%83%E6%88%90%E6%9E%9C.html">发布成果</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">基础开发</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/index.html">资源</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/index.html">模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html">模型文件导入</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#dmax">安装 3Dmax 互导插件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#id2">导入模型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#id3">添加模型到工程</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html">模型的编辑、操作与修改</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id2">模型操作</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id3">模型编辑</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id4">模型修改</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/index.html">对象</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/index.html">模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1.html">加载模型资源对象</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%85%89%E7%85%A7%E9%98%B4%E5%BD%B1%E6%95%88%E6%9E%9C%E8%AE%BE%E7%BD%AE.html">光照阴影效果设置</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%85%89%E7%85%A7%E9%98%B4%E5%BD%B1%E6%95%88%E6%9E%9C%E8%AE%BE%E7%BD%AE.html#id2">设置光照探针</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html">创建基础模型对象</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id2">创建长方体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id3">创建直线</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id4">创建圆柱体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id5">创建球体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id6">创建多边形</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id7">创建精灵</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html">动画</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html#id2">帧动画</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html#id3">复合动画</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%9B%B8%E6%9C%BA.html">相机</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%89%96%E5%88%87.html">剖切</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E8%B7%AF%E7%BA%BF.html">路线</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%AE%A1%E9%81%93.html">管道</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A0%87%E6%B3%A8.html">标注</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%BB%B3%E7%B4%A2.html">绳索</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/index.html">界面</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E5%9B%BE%E7%89%87.html">图片</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E7%BA%B9%E7%90%86.html">纹理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E8%A7%86%E5%8F%A3.html">视口</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E8%A7%86%E9%A2%91.html">视频</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/index.html">交互</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%8E%A7%E5%88%B6%E7%82%B9.html">控制点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%8C%89%E9%92%AE.html">按钮</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E9%94%AE%E7%9B%98%E5%93%8D%E5%BA%94.html">键盘响应</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%97%8B%E9%92%AE.html">旋钮</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%BB%91%E5%9D%97.html">滑块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E8%8F%9C%E5%8D%95.html">菜单</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/index.html">数据</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E5%8F%98%E9%87%8F.html">变量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E6%97%8B%E9%87%8F.html">旋量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E4%B8%89%E7%BB%B4%E7%82%B9.html">三维点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E7%8A%B6%E6%80%81.html">状态</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E4%BD%93.html">体</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/index.html">图表</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/index.html">图表</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%96%87%E5%AD%97.html">文字</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%95%B0%E5%AD%97.html">数字</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%9B%B2%E7%BA%BF%E5%9B%BE.html">曲线图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%9F%B1%E7%8A%B6%E5%9B%BE.html">柱状图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E9%A5%BC%E7%8A%B6%E5%9B%BE.html">饼状图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E7%BD%91%E6%A0%BC%E8%A1%A8.html">网格表</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E8%BF%9B%E5%BA%A6%E6%9D%A1.html">进度条</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E8%A1%A8%E7%9B%98.html">表盘</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E9%9B%B7%E8%BE%BE%E5%9B%BE.html">雷达图</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E6%A0%87%E5%BF%97%E7%89%8C.html">标志牌</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/index.html">程序</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/%E5%87%BD%E6%95%B0.html">函数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/%E7%B1%BB.html">类</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/index.html">效果对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E7%B2%92%E5%AD%90.html">粒子</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E4%BA%91.html">云</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E5%B0%BE%E8%BF%B9.html">尾迹</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E5%A4%A9%E7%A9%BA%E7%9B%92.html">天空盒</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%89%A9%E7%90%86%E5%9C%BA/index.html">物理场</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%89%A9%E7%90%86%E5%9C%BA/%E5%9C%BA.html">场</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BB%BF%E7%9C%9F%E5%AF%B9%E8%B1%A1/index.html">仿真对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BB%BF%E7%9C%9F%E5%AF%B9%E8%B1%A1/%E8%88%B9.html">船</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/index.html">行为图</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E8%A1%8C%E4%B8%BA%E5%9B%BE%E5%9B%BE%E5%85%83%E4%BB%8B%E7%BB%8D.html">行为图图元介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E7%BC%96%E8%BE%91%E6%8C%87%E4%BB%A4%E6%A8%A1%E6%9D%BF.html">编辑指令模板</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html">对象在行为图中的应用</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html#id2">(1)对象定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html#id3">(2)行为图实现流程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/index.html">组件</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E7%BB%84%E4%BB%B6%E4%BB%8B%E7%BB%8D.html">组件介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E5%88%9B%E5%BB%BA%E7%BB%84%E4%BB%B6.html">创建组件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E5%8A%A0%E8%BD%BD%E7%BB%84%E4%BB%B6.html">加载组件</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/index.html">调试与发布</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html">调试与发布</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html#id2">项目调试</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html#id3">项目发布</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html">启动画面图片更换</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html#id2">启动画面</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html#id3">启动画面更换方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">进阶开发</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html">概述</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#peinside">PEInside 应用开发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#pe">PE 插件开发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#id2">PE 编辑器定制开发</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/index.html">CSharp开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html">WpfScenePlayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id2">构建</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id3">程序说明</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html">示例场景</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id2">帧动画制作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id3">交互设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id4">行为设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id5">变量定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id6">发布与安装</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/index.html">Qt开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html">QtScenePlayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html#id1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html#id2">构建</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">脚本手册</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">PE 脚本</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#id1">类型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_act.html">Act</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_act.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_action.html">Action</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_action.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_animation.html">Animation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_animation.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_area.html">Area</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_area.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_avi.html">Avi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_avi.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_beam.html">Beam</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_beam.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html">bool</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_button.html">Button</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_button.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_byte.html">byte</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_byte.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html">dword</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html">float</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html">handle</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html">int</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html">long</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html">string</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#id1">描述</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#id2">函数</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="func_animation.html">动画相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_animation.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_animation.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_audio.html">声音相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_audio.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_audio.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_camera.html">相机函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_camera.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_camera.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_character.html">人物角色相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_character.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_character.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_database.html">数据库相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_database.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_database.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_environment.html">环境相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_environment.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_environment.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_field.html">Field 相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_field.html#id1">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_field.html#id5">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_file.html">文件相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_file.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_file.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_geometry.html">基本几何体相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_geometry.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_geometry.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_group.html">组相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_group.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_group.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_math.html">数学类函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_math.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_math.html#id6">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_module.html">模块相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_module.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_module.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_network.html">网络相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_network.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_network.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_particle.html">粒子系统相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_particle.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_particle.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_physics.html">物理相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_physics.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_physics.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_render.html">渲染相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_render.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_render.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_string.html">字符串函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_string.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_string.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_system.html">系统类函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_system.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_system.html#id5">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_ui.html">UI 相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_ui.html#id1">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_ui.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_video.html">视频相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_video.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_video.html#id5">函数说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/index.html">PE 扩展</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/PECommand/index.html">PECommand</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/PECommand/index.html#id1">函数说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PE 用户手册</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>环境相关函数</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="doc-func-environment">
+<span id="id1"></span><h1>环境相关函数<a class="headerlink" href="#doc-func-environment" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id2">
+<h2>函数<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 73%" />
+<col style="width: 18%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setwavelevel"><span class="std std-ref">setWaveLevel</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> level <strong>)</strong></p></td>
+<td><p>设置海浪等级</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setwaveamplitude"><span class="std std-ref">setWaveAmplitude</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> amp <strong>)</strong></p></td>
+<td><p>设置海浪震幅</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setweather"><span class="std std-ref">setWeather</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> type <strong>)</strong></p></td>
+<td><p>设置天气(效果与实际不符)</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setsun"><span class="std std-ref">setSun</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> theta, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> phi, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> exposure <strong>)</strong></p></td>
+<td><p>设置太阳的角度及曝光</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setsuncolor"><span class="std std-ref">setSunColor</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></td>
+<td><p>设置太阳颜色(函数无效)</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setwind"><span class="std std-ref">setWind</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> len <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-createworld"><span class="std std-ref">createWorld</span></a> <strong>(</strong> <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-createsea"><span class="std std-ref">createSea</span></a> <strong>(</strong> <strong>)</strong></p></td>
+<td><p>创建海面</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setseacolor"><span class="std std-ref">setSeaColor</span></a>  <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></td>
+<td><p>设置海面颜色</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-enablesea"><span class="std std-ref">enableSea</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></td>
+<td><p>关闭/激活海面</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setseaposition"><span class="std std-ref">setSeaPosition</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></td>
+<td><p>设置海面高度位置</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-enablesun"><span class="std std-ref">enableSun</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></td>
+<td><p>关闭/激活太阳光</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-enablelight"><span class="std std-ref">enableLight</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></td>
+<td><p>关闭/激活灯光</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setlightposition"><span class="std std-ref">setLightPosition</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></td>
+<td><p>设置灯光位置</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setlightdiffuse"><span class="std std-ref">setLightDiffuse</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></td>
+<td><p>设置灯光散射色</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setlightambient"><span class="std std-ref">setLightAmbient</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></td>
+<td><p>设置灯光环境色</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setlightspecular"><span class="std std-ref">setLightSpecular</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></td>
+<td><p>设置灯光镜面色</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setfogdensity"><span class="std std-ref">setFogDensity</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vport, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> density <strong>)</strong></p></td>
+<td><p>设置雾的浓度</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setfogcolor"><span class="std std-ref">setFogColor</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vport, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></td>
+<td><p>设置雾的颜色</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-enablefog"><span class="std std-ref">enableFog</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fieldName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></td>
+<td><p>关闭/激活雾(节点名不知道填什么）</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setskybox"><span class="std std-ref">setSkyBox</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></td>
+<td><p>设置天空盒</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setclouddensity"><span class="std std-ref">setCloudDensity</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> d <strong>)</strong></p></td>
+<td><p>设置云的浓度(用法待补充)</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setcloudrainfactor"><span class="std std-ref">setCloudRainFactor</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> f <strong>)</strong></p></td>
+<td><p>设置云的雨量(用法待补充)</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-createcloud"><span class="std std-ref">createCloud</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> B, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> L, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> H, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sz <strong>)</strong></p></td>
+<td><p>创建并设置云的位置及大小(用法待补充)</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setcloudposition"><span class="std std-ref">setCloudPosition</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> B, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> L, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> H <strong>)</strong></p></td>
+<td><p>设置云的位置(用法待补充)</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setcloudsize"><span class="std std-ref">setCloudSize</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sz <strong>)</strong></p></td>
+<td><p>设置云的大小(用法待补充)</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setcloudweather"><span class="std std-ref">setCloudWeather</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></td>
+<td><p>设置云的天气图(用法待补充)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#class-handle"><span class="std std-ref">handle</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-createwake"><span class="std std-ref">createWake</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fieldpath, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ox, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> oy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> oz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ux, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> uy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> uz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> l, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> w <strong>)</strong></p></td>
+<td><p>创建艉流</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-enablewake"><span class="std std-ref">enableWake</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#class-handle"><span class="std std-ref">handle</span></a> hWake, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></td>
+<td><p>启用或禁用泡沫</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-getnearfar"><span class="std std-ref">getNearFar</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; near, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; faraway <strong>)</strong></p></td>
+<td><p>获取远近裁剪平面 (用法待补充)</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setnearfar"><span class="std std-ref">setNearFar</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> near, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> faraway <strong>)</strong></p></td>
+<td><p>设置远近裁剪平面 (用法待补充)</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-loadlights"><span class="std std-ref">loadLights</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fieldpath, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></td>
+<td><p>导入光源</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-removelights"><span class="std std-ref">removeLights</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fieldpath <strong>)</strong></p></td>
+<td><p>删除光源</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-loadmodeltomodule"><span class="std std-ref">loadModelToModule</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bLights <strong>)</strong></p></td>
+<td><p>加载模型到指定模块</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-shipsetactive"><span class="std std-ref">shipSetActive</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> shipName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bActive <strong>)</strong></p></td>
+<td><p>关闭/激活船</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_math.html#class-pescript-method-setsunpositionbydatetime"><span class="std std-ref">setSunPositionByDateTime</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> year, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> month, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> day, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> hour, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> minute, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> second <strong>)</strong></p></td>
+<td><p>根据时间日期设置太阳方位</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-startvolumesequence-1"><span class="std std-ref">startVolumeSequence</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></td>
+<td><p>播放动态场（从首帧播放到最后一帧）</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-startvolumesequence-2"><span class="std std-ref">startVolumeSequence</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> fromIndex <strong>)</strong></p></td>
+<td><p>播放场（从特定帧播放到最后一帧）</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_ui.html#class-pescript-method-stopvolumesequence"><span class="std std-ref">stopVolumeSequence</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></td>
+<td><p>暂停场播放</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-resetvolumesequence"><span class="std std-ref">resetVolumeSequence</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></td>
+<td><p>重置场</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setsubvolume"><span class="std std-ref">setSubVolume</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> subName <strong>)</strong></p></td>
+<td><p>按子场场名切换子场</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setcursubvolume"><span class="std std-ref">setCurSubVolume</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index <strong>)</strong></p></td>
+<td><p>按照索引值切换子场</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_ui.html#class-pescript-method-setvolumesourcefile"><span class="std std-ref">setVolumeSourceFile</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></td>
+<td><p>动态设置场数据文件</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_ui.html#class-pescript-method-setfieldvolume"><span class="std std-ref">setFieldVolume</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fieldPath, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> volumeName <strong>)</strong></p></td>
+<td><p>动态设置场着色节点</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setvolumepoints"><span class="std std-ref">setVolumePoints</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count <strong>)</strong></p></td>
+<td><p>设置场的网格点(用法待补充)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setvolumevalues"><span class="std std-ref">setVolumeValues</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; values, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> dimension, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count <strong>)</strong></p></td>
+<td><p>设置场的值</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-getvolumevalue"><span class="std std-ref">getVolumeValue</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, double array&amp; value, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> dimension <strong>)</strong></p></td>
+<td><p>根据坐标获取矢量场的值</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-getvolumevaluebyindex"><span class="std std-ref">getVolumeValueByIndex</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, double array&amp; value, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> dimension <strong>)</strong></p></td>
+<td><p>根据坐标获取矢量场的值</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-getvolumevalue-2"><span class="std std-ref">getVolumeValue</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, double&amp; value <strong>)</strong></p></td>
+<td><p>根据坐标获取标量场的值</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-getvolumevaluebyindex-2"><span class="std std-ref">getVolumeValueByIndex</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, double&amp; value <strong>)</strong></p></td>
+<td><p>根据坐标获取标量场的值</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-getvolumegrid"><span class="std std-ref">getVolumeGrid</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> &amp; i, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> &amp; j, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> &amp; k <strong>)</strong></p></td>
+<td><p>根据位置获取网格索引</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-getvolumevaluebygrid"><span class="std std-ref">getVolumeValueByGrid</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> i, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> j, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> k, double array&amp; value, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> dimension <strong>)</strong></p></td>
+<td><p>按网格索引获取值</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setvolumevaluebygrid"><span class="std std-ref">setVolumeValueByGrid</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> i, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> j, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> k, double array&amp; value, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> dimension <strong>)</strong></p></td>
+<td><p>按网格索引设置值</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_ui.html#class-pescript-method-setvolumecolorsetting"><span class="std std-ref">setVolumeColorSetting</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, double&amp; value, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> t <strong>)</strong></p></td>
+<td><p>设置色卡颜色</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_ui.html#class-pescript-method-clearvolumecolorsettings"><span class="std std-ref">clearVolumeColorSettings</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></td>
+<td><p>清除场色卡颜色</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-createvolumesequenceanimation"><span class="std std-ref">createVolumeSequenceAnimation</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></td>
+<td><p>根据场序列文件创建场动画(用法待补充)</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-loadvolumealldata"><span class="std std-ref">loadVolumeAllData</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></td>
+<td><p>加载场</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-getvolumecurframe"><span class="std std-ref">getVolumeCurFrame</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></td>
+<td><p>获取场当前帧索引</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_particle.html#class-pescript-method-scalevolume"><span class="std std-ref">scaleVolume</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, double factor <strong>)</strong></p></td>
+<td><p>场缩放</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setvolumeoption"><span class="std std-ref">setVolumeOption</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> option <strong>)</strong></p></td>
+<td><p>设置场的平滑选项(函数不起作用)</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setvolumeneighbours"><span class="std std-ref">setVolumeNeighbours</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> num <strong>)</strong></p></td>
+<td><p>设置场的邻域</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setvolumegridnum"><span class="std std-ref">setVolumeGridNum</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> xn, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> yn, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> zn <strong>)</strong></p></td>
+<td><p>设置场的网格数量(函数不起作用)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id3">
+<h2>函数说明<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<ul class="simple" id="class-pescript-method-setwavelevel">
+<li><p>void <strong>setWaveLevel</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> level <strong>)</strong></p></li>
+</ul>
+<p>描述：设置海浪等级1到10级</p>
+<p><code class="docutils literal notranslate"><span class="pre">level</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    海浪等级</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setWaveLevel(3);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setwaveamplitude">
+<li><p>void <strong>setWaveAmplitude</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> amp <strong>)</strong></p></li>
+</ul>
+<p>描述：设置海浪震幅</p>
+<p><code class="docutils literal notranslate"><span class="pre">amp</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              振幅</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setWaveAmplitude(10);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setweather">
+<li><p>void <strong>setWeather</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> type <strong>)</strong></p></li>
+</ul>
+<p>描述：设置天气    (问题反馈：效果与实际不符)</p>
+<p><code class="docutils literal notranslate"><span class="pre">type</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             天气类型”clear”, “rain”, “snow”</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setWeather(&quot;snow&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setsun">
+<li><p>void <strong>setSun</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> theta, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> phi, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> exposure <strong>)</strong></p></li>
+</ul>
+<p>描述：设置太阳的天顶角、方位角和曝光度</p>
+<p><code class="docutils literal notranslate"><span class="pre">theta</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    天顶角θ∈(0,90)</p>
+<p><code class="docutils literal notranslate"><span class="pre">phi</span></code>             <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    方位角Φ∈(0,360)</p>
+<p><code class="docutils literal notranslate"><span class="pre">exposure</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    曝光度(0, 1)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setSun(70, 0, 0.55);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setsuncolor">
+<li><p>void <strong>setSunColor</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：设置太阳颜色               (问题反馈：函数无效)</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色B</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setSunColor(0, 0, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setwind">
+<li><p>void <strong>setWind</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> len <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">len</span></code>         <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-createworld">
+<li><p>void <strong>createWorld</strong> <strong>(</strong> <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-createsea">
+<li><p>void <strong>createSea</strong> <strong>(</strong> <strong>)</strong></p></li>
+</ul>
+<p>描述：创建海面</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：createSea();
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setseacolor">
+<li><p>void <strong>setSeaColor</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></li>
+</ul>
+<p>描述：设置海面颜色</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色B</p>
+<p><code class="docutils literal notranslate"><span class="pre">a</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setSeaColor(0, 0, 1, 1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-enablesea">
+<li><p>void <strong>enableSea</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：关闭/激活海面</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code> 关闭0，激活1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：enableSea(1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setseaposition">
+<li><p>void <strong>setSeaPosition</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></li>
+</ul>
+<p>描述：设置海面高度位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setSeaPosition(0, -45, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-enablesun">
+<li><p>void <strong>enableSun</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：关闭/激活太阳光</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        关闭0，激活1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：enableSun(1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-enablelight">
+<li><p>void <strong>enableLight</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：关闭/激活灯光，灯光从0开始计数</p>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        灯光编号，从0开始</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        关闭0，激活1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：enableLight(1,1);&#39;&#39;&#39;开启灯光2
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setlightposition">
+<li><p>void <strong>setLightPosition</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></li>
+</ul>
+<p>描述：设置灯光位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        灯光编号</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色B</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setLightPosition(1, 0, 1, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setlightdiffuse">
+<li><p>void <strong>setLightDiffuse</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：设置灯光散射色</p>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        灯光编号</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色B</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setLightDiffuse(0, 1, 0, 1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setlightambient">
+<li><p>void <strong>setLightAmbient</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：设置灯光环境色</p>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        灯光编号</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色B</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setLightAmbient(0, 1, 0, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setlightspecular">
+<li><p>void <strong>setLightSpecular</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：设置灯光镜面色</p>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        灯光编号</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色B</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setLightSpecular(0, 1, 0, 1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setfogdensity">
+<li><p>void <strong>setFogDensity</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vport, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> density <strong>)</strong></p></li>
+</ul>
+<p>描述：设置雾的浓度</p>
+<p><code class="docutils literal notranslate"><span class="pre">vport</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        视口名</p>
+<p><code class="docutils literal notranslate"><span class="pre">density</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        浓度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setFogDensity(&quot;main&quot;, 0.01);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setfogcolor">
+<li><p>void <strong>setFogColor</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vport, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：设置雾的颜色</p>
+<p><code class="docutils literal notranslate"><span class="pre">vport</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        视口名</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        颜色B</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setFogColor(&quot;main&quot;, 0, 1, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-enablefog">
+<li><p>void <strong>enableFog</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fieldName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：关闭/激活雾          (问题反馈：节点名不知道填什么)</p>
+<p><code class="docutils literal notranslate"><span class="pre">fieldName</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        节点名</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        关闭0，激活1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例1：enableFog(fieldName, 1);
+示例2：enableFog(&quot;main&quot;, 1)&#39;&#39;&#39;&quot;main&quot;视口名
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setskybox">
+<li><p>void <strong>setSkyBox</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></li>
+</ul>
+<p>描述：设置天空盒</p>
+<p><code class="docutils literal notranslate"><span class="pre">fieldName</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        图片路径</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setSkyBox(&quot;main\image\天空.png&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setclouddensity">
+<li><p>void <strong>setCloudDensity</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> d <strong>)</strong></p></li>
+</ul>
+<p>描述：设置云的浓度  (问题反馈：用法待补充)</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             云对象名</p>
+<p><code class="docutils literal notranslate"><span class="pre">d</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             浓度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setcloudrainfactor">
+<li><p>void <strong>setCloudRainFactor</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> f <strong>)</strong></p></li>
+</ul>
+<p>描述：设置云的雨量  (问题反馈：用法待补充)</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">f</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-createcloud">
+<li><p>void <strong>createCloud</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> B, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> L, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> H, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sz <strong>)</strong></p></li>
+</ul>
+<p>描述：创建并设置云的位置及大小，位置为纬经高  (问题反馈：用法待补充)</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             云层对象名</p>
+<p><code class="docutils literal notranslate"><span class="pre">B</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             经纬高坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">L</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             经纬高坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">H</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             经纬高坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">sx</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             云层大小</p>
+<p><code class="docutils literal notranslate"><span class="pre">sy</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             云层大小</p>
+<p><code class="docutils literal notranslate"><span class="pre">sz</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             云层大小</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setcloudposition">
+<li><p>void <strong>setCloudPosition</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> B, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> L, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> H, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sz <strong>)</strong></p></li>
+</ul>
+<p>描述：设置云的位置  (问题反馈：用法待补充)</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             云层对象名</p>
+<p><code class="docutils literal notranslate"><span class="pre">B</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             经纬高坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">L</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             经纬高坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">H</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             经纬高坐标</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setcloudsize">
+<li><p>void <strong>setCloudSize</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> sz <strong>)</strong></p></li>
+</ul>
+<p>描述：设置云的大小  (问题反馈：用法待补充)</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">sx</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">sy</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">sz</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setcloudweather">
+<li><p>void <strong>setCloudWeather</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></li>
+</ul>
+<p>描述：设置云的天气图  (问题反馈：用法待补充)</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             云层对象名</p>
+<p><code class="docutils literal notranslate"><span class="pre">filename</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         天气图</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-createwake">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#class-handle"><span class="std std-ref">handle</span></a>  <strong>createWake</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fieldpath, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ox, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> oy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> oz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ux, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> uy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> uz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> l, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> w <strong>)</strong></p></li>
+</ul>
+<p>描述：创建艉流</p>
+<p><code class="docutils literal notranslate"><span class="pre">fieldpath</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        节点路径</p>
+<p><code class="docutils literal notranslate"><span class="pre">ox</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            中心点</p>
+<p><code class="docutils literal notranslate"><span class="pre">oy</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            中心点</p>
+<p><code class="docutils literal notranslate"><span class="pre">oz</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            中心点</p>
+<p><code class="docutils literal notranslate"><span class="pre">fx</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            前进方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">fy</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            前进方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">fz</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            前进方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">ux</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            竖直方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">uy</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            竖直方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">uz</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            竖直方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">l</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            长</p>
+<p><code class="docutils literal notranslate"><span class="pre">w</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            宽</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>  泡沫 handle</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：     handle h1 = createWake(“/scene/modules/main/model/救生艇.vis&quot;,-1,0,0,1,0,0,0,1,0,4,2);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-enablewake">
+<li><p>void  <strong>enableWake</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#class-handle"><span class="std std-ref">handle</span></a> hWake, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：启用或禁用泡沫。</p>
+<p><code class="docutils literal notranslate"><span class="pre">hWake</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code> 泡沫 handle</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code> true: 启用； false: 禁用</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：enableWake(handle1, 1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-getnearfar">
+<li><p>void  <strong>getNearFar</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; near, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; faraway <strong>)</strong></p></li>
+</ul>
+<p>描述：获取远近裁剪平面</p>
+<p><code class="docutils literal notranslate"><span class="pre">near</span></code>          <code class="docutils literal notranslate"><span class="pre">[out]</span></code>             近裁剪面</p>
+<p><code class="docutils literal notranslate"><span class="pre">faraway</span></code>   <code class="docutils literal notranslate"><span class="pre">[out]</span></code>         远裁剪面</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setnearfar">
+<li><p>void  <strong>setNearFar</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> near, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> faraway <strong>)</strong></p></li>
+</ul>
+<p>描述：设置远近裁剪平面</p>
+<p><code class="docutils literal notranslate"><span class="pre">near</span></code>          <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              近裁剪面</p>
+<p><code class="docutils literal notranslate"><span class="pre">faraway</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          远裁剪面</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-loadlights">
+<li><p>void  <strong>loadLights</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fieldpath, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></li>
+</ul>
+<p>描述：导入光源</p>
+<p><code class="docutils literal notranslate"><span class="pre">fieldpath</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   光源放置的父节点，一般为“/scene”</p>
+<p><code class="docutils literal notranslate"><span class="pre">filename</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    lgt文件路径(相对路径)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：loadLights(&quot;/scene&quot;, &quot;script\整体.lgt&quot;);&#39;&#39;&#39;加载光源
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-removelights">
+<li><p>void  <strong>removeLights</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fieldpath <strong>)</strong></p></li>
+</ul>
+<p>描述：删除光源</p>
+<p><code class="docutils literal notranslate"><span class="pre">fieldpath</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>  光源放置的父节点，一般为“/scene”</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：removeLights(&quot;/scene&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-loadmodeltomodule">
+<li><p>void  <strong>loadModelToModule</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bLights <strong>)</strong></p></li>
+</ul>
+<p>描述：将模型文件加载到模块</p>
+<p><code class="docutils literal notranslate"><span class="pre">moduleName</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       模块名</p>
+<p><code class="docutils literal notranslate"><span class="pre">filename</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       模型文件路径</p>
+<p><code class="docutils literal notranslate"><span class="pre">bLights</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       是否加载灯光</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：loadModelToModule(&quot;main&quot;, &quot;main\default.vis&quot;, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-shipsetactive">
+<li><p>void  <strong>shipSetActive</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> shipName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bActive <strong>)</strong></p></li>
+</ul>
+<p>描述：关闭/激活船</p>
+<p><code class="docutils literal notranslate"><span class="pre">shipName</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         船名</p>
+<p><code class="docutils literal notranslate"><span class="pre">bActive</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         关闭0，激活1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：shipSetActive(&quot;船_1&quot;, 1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setsunpositionbydatetime">
+<li><p>void  <strong>setSunPositionByDateTime</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> year, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> month, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> day, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> hour, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> minute, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> second <strong>)</strong></p></li>
+</ul>
+<p>描述：根据时间日期设置太阳方位</p>
+<p><code class="docutils literal notranslate"><span class="pre">year</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           年</p>
+<p><code class="docutils literal notranslate"><span class="pre">month</span></code>    <code class="docutils literal notranslate"><span class="pre">[out]</span></code>          月</p>
+<p><code class="docutils literal notranslate"><span class="pre">day</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           日</p>
+<p><code class="docutils literal notranslate"><span class="pre">hour</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           时</p>
+<p><code class="docutils literal notranslate"><span class="pre">minute</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           分</p>
+<p><code class="docutils literal notranslate"><span class="pre">second</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           秒</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setSunPositionByDateTime(2022, 11, 10, 14, 30, 30);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-startvolumesequence-1">
+<li><p>void  <strong>startVolumeSequence</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></li>
+</ul>
+<p>描述：播放场(从首帧播放到最后一帧)，需开启动态渐变选项</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：startVolumeSequence(&quot;场_1&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-startvolumesequence-2">
+<li><p>void  <strong>startVolumeSequence</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> fromIndex <strong>)</strong></p></li>
+</ul>
+<p>描述：播放场(从特定帧播放到最后一帧)，需开启动态渐变选项</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>         <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名</p>
+<p><code class="docutils literal notranslate"><span class="pre">fromIndex</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        子场索引值,从第0帧开始</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：startVolumeSequence(&quot;场_1&quot;, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-stopvolumesequence">
+<li><p>void  <strong>stopVolumeSequence</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></li>
+</ul>
+<p>描述：暂停播放场</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：stopVolumeSequence(&quot;场_1&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-resetvolumesequence">
+<li><p>void  <strong>resetVolumeSequence</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></li>
+</ul>
+<p>描述：重置场</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：resetVolumeSequence(&quot;场_1&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setsubvolume">
+<li><p>void  <strong>setSubVolume</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> subName <strong>)</strong></p></li>
+</ul>
+<p>描述：按子场场名切换子场</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">subName</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    子场名称</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setSubVolume(&quot;场_1&quot;, &quot;子场&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setcursubvolume">
+<li><p>void  <strong>setCurSubVolume</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index <strong>)</strong></p></li>
+</ul>
+<p>描述：按照索引值切换子场</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    子场索引值，从第0帧开始</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setCurSubVolume(&quot;场_1&quot;, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setvolumesourcefile">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>setVolumeSourceFile</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></li>
+</ul>
+<p>描述：动态设置场数据文件</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>                 <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">filename</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场数据文件路径</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setVolumeSourceFile(&quot;场_1&quot;, &quot;main\data\一维均匀场数据示例11.vol&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setfieldvolume">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>setFieldVolume</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fieldPath, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> volumeName <strong>)</strong></p></li>
+</ul>
+<p>描述：动态设置场着色节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">fieldPath</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    模型节点路径</p>
+<p><code class="docutils literal notranslate"><span class="pre">volumeName</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场名称</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setFieldVolume(&quot;/scene/modules/main/model/QT&quot;, &quot;场_1&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setvolumepoints">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>setVolumePoints</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count <strong>)</strong></p></li>
+</ul>
+<p>描述：设置场的网格点</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">points</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         网格点坐标数组</p>
+<p><code class="docutils literal notranslate"><span class="pre">count</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          网格点个数</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setvolumevalues">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>setVolumeValues</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; values, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> dimension, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count <strong>)</strong></p></li>
+</ul>
+<p>描述：设置场的值</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">values</span></code>      <code class="docutils literal notranslate"><span class="pre">[out]</span></code>       场值数组，数组长度为dimension*count</p>
+<p><code class="docutils literal notranslate"><span class="pre">dimension</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场值维度，标量场为1，矢量场为3</p>
+<p><code class="docutils literal notranslate"><span class="pre">count</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场的网格节点数</p>
+<p>注意数组的长度是dimension*count</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setVolumeValues(&quot;场_1&quot;, valueArray, 1, 128);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-getvolumevalue">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>getVolumeValue</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, double array&amp; value, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> dimension <strong>)</strong></p></li>
+</ul>
+<p>描述：根据坐标获取矢量场的值</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>                <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>                   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场坐标x，场范围内空间世界坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>                   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场坐标y</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>                   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场坐标z</p>
+<p><code class="docutils literal notranslate"><span class="pre">value</span></code>               <code class="docutils literal notranslate"><span class="pre">[out]</span></code>       单个场值数组，长度为dimension</p>
+<p><code class="docutils literal notranslate"><span class="pre">dimension</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场值维度，矢量场为3</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float arr[3] = {-4.06458, -75.96587, -0.75201};&#39;&#39;&#39;场坐标
+double vol_array[3];&#39;&#39;&#39;场值
+getVolumeValue(&quot;场_1&quot;, arr[0], arr[1], arr[2], vol_array, 3);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-getvolumevaluebyindex">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>getVolumeValueByIndex</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, double array&amp; value, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> dimension <strong>)</strong></p></li>
+</ul>
+<p>描述：根据坐标获取矢量场的值，当场的子场文件里不只有一列数据时，使用这个函数</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>         <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       场帧序号或子场序号，-1代表当前帧，0代表第0帧</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>                    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       场坐标x，场范围内空间世界坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>                    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       场坐标y</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>                    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       场坐标z</p>
+<p><code class="docutils literal notranslate"><span class="pre">value</span></code>        <code class="docutils literal notranslate"><span class="pre">[out]</span></code>      单个场值数组，长度为dimension</p>
+<p><code class="docutils literal notranslate"><span class="pre">dimension</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       场值维度，矢量场为3</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float arr[3] = {-4.06458, -75.96587, -0.75201};&#39;&#39;&#39;场坐标
+double vol_array[3];&#39;&#39;&#39;场值
+getVolumeValueByIndex(&quot;场_1&quot;, 0, arr[0], arr[1], arr[2], vol_array, 3);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-getvolumevalue-2">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>getVolumeValue</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, double&amp; value <strong>)</strong></p></li>
+</ul>
+<p>描述：根据坐标获取标量场的值</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场坐标x，场范围内空间世界坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场坐标y</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场坐标z</p>
+<p><code class="docutils literal notranslate"><span class="pre">value</span></code>    <code class="docutils literal notranslate"><span class="pre">[out]</span></code>   场值</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float arr[3] = {-4.06458, -75.96587, -0.75201};&#39;&#39;&#39;场坐标
+double num;&#39;&#39;&#39;场值
+getVolumeValue(&quot;场_1&quot;, arr[0], arr[1], arr[2], num);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-getvolumevaluebyindex-2">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>getVolumeValueByIndex</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, double&amp; value <strong>)</strong></p></li>
+</ul>
+<p>描述：根据坐标获取标量场的值，当场的子场文件里只有一列数据时，使用这个函数</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   场帧序号或子场序号，-1代表当前帧，0代表第0帧</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>            <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       场坐标x，场范围内空间世界坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>            <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       场坐标y</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>            <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       场坐标z</p>
+<p><code class="docutils literal notranslate"><span class="pre">value</span></code>    <code class="docutils literal notranslate"><span class="pre">[out]</span></code>  场值</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float arr[3] = {-4.06458, -75.96587, -0.75201};&#39;&#39;&#39;场坐标
+double num;&#39;&#39;&#39;场值
+getVolumeValueByIndex(&quot;场_1&quot;, 0, arr[0], arr[1], arr[2], num);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-getvolumegrid">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>getVolumeGrid</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> &amp; i, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> &amp; j, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> &amp; k <strong>)</strong></p></li>
+</ul>
+<p>描述：根据位置获取网格索引</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场坐标x，场范围内空间世界坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场坐标y</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场坐标z</p>
+<p><code class="docutils literal notranslate"><span class="pre">i</span></code>     <code class="docutils literal notranslate"><span class="pre">[out]</span></code>       网格节点序号</p>
+<p><code class="docutils literal notranslate"><span class="pre">j</span></code>     <code class="docutils literal notranslate"><span class="pre">[out]</span></code>       网格节点序号</p>
+<p><code class="docutils literal notranslate"><span class="pre">k</span></code>     <code class="docutils literal notranslate"><span class="pre">[out]</span></code>       网格节点序号</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float arr[3] = {-4.06458, -75.96587, -0.75201};&#39;&#39;&#39;场坐标
+int arr11[3];&#39;&#39;&#39;网格节点序号
+getVolumeGrid(&quot;场_1&quot;, arr[0], arr[1], arr[2], arr11[0], arr11[1], arr11[2]);&#39;&#39;&#39;根据位置获取网格索引
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-getvolumevaluebygrid">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>getVolumeValueByGrid</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> i, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> j, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> k, double array&amp; value, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> dimension <strong>)</strong></p></li>
+</ul>
+<p>描述：按网格索引获取值</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>            <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        帧序号或子场序号，-1代表当前帧，0代表第0帧</p>
+<p><code class="docutils literal notranslate"><span class="pre">i</span></code>                   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        网格节点序号</p>
+<p><code class="docutils literal notranslate"><span class="pre">j</span></code>               <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    网格节点序号</p>
+<p><code class="docutils literal notranslate"><span class="pre">k</span></code>               <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    网格节点序号</p>
+<p><code class="docutils literal notranslate"><span class="pre">value</span></code>       <code class="docutils literal notranslate"><span class="pre">[out]</span></code>    单个场值数组，长度为dimension</p>
+<p><code class="docutils literal notranslate"><span class="pre">dimension</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场值维度，标量场为1，矢量场为3</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float arr[3] = {-4.06458, -75.96587, -0.75201};&#39;&#39;&#39;场坐标
+int arr11[3];&#39;&#39;&#39;网格节点序号
+float num[3];&#39;&#39;&#39;场值
+getVolumeGrid(&quot;场_1&quot;, arr[0], arr[1], arr[2], arr11[0], arr11[1], arr11[2]);&#39;&#39;&#39;根据位置获取网格索引
+getVolumeValueByGrid(&quot;场_1&quot;, -1, arr11[0], arr11[1], arr11[2], num, 3);&#39;&#39;&#39;按网格索引获取值
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setvolumevaluebygrid">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>setVolumeValueByGrid</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> i, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> j, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> k, double array&amp; value, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> dimension <strong>)</strong></p></li>
+</ul>
+<p>描述：按网格索引设置值</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>                <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code>               <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场帧序号或子场序号，-1代表当前帧，0代表第0帧</p>
+<p><code class="docutils literal notranslate"><span class="pre">i</span></code>                   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        网格节点序号</p>
+<p><code class="docutils literal notranslate"><span class="pre">j</span></code>                   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        网格节点序号</p>
+<p><code class="docutils literal notranslate"><span class="pre">k</span></code>                   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        网格节点序号</p>
+<p><code class="docutils literal notranslate"><span class="pre">value</span></code>               <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    单个场值数组，长度为dimension</p>
+<p><code class="docutils literal notranslate"><span class="pre">dimension</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场值维度，标量场为1，矢量场为3</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float arr[3] = {-4.06458, -75.96587, -0.75201};&#39;&#39;&#39;场坐标
+int arr11[3];&#39;&#39;&#39;网格节点序号
+float num[3];&#39;&#39;&#39;场值
+getVolumeGrid(&quot;场_1&quot;, arr[0], arr[1], arr[2], arr11[0], arr11[1], arr11[2]);&#39;&#39;&#39;根据位置获取网格索引
+setVolumeValueByGrid(&quot;场_1&quot;, -1, arr11[0], arr11[1], arr11[2], num, 1);&#39;&#39;&#39;按网格索引设置值
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setvolumecolorsetting">
+<li><p>void  <strong>setVolumeColorSetting</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> index, double&amp; value, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> t <strong>)</strong></p></li>
+</ul>
+<p>描述：设置场色卡颜色</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    色卡序号</p>
+<p><code class="docutils literal notranslate"><span class="pre">value</span></code>    <code class="docutils literal notranslate"><span class="pre">[out]</span></code>   数值</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>               颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>               颜色B</p>
+<p><code class="docutils literal notranslate"><span class="pre">t</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>               透明度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setVolumeColorSetting(&quot;场_1&quot;, 0, -0.000094, 1, 0, 0, 0.6);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-clearvolumecolorsettings">
+<li><p>void  <strong>clearVolumeColorSettings</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></li>
+</ul>
+<p>描述：清除场色卡颜色</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：clearVolumeColorSettings(&quot;场_1&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-createvolumesequenceanimation">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>createVolumeSequenceAnimation</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></li>
+</ul>
+<p>描述：根据场序列文件创建场动画</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>         <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       动画名</p>
+<p><code class="docutils literal notranslate"><span class="pre">filename</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>               场序列文件名</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-loadvolumealldata">
+<li><p>void  <strong>loadVolumeAllData</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></li>
+</ul>
+<p>描述：加载场</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：loadVolumeAllData(&quot;场_1&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-getvolumecurframe">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> <strong>getVolumeCurFrame</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></li>
+</ul>
+<p>描述：获取场当前帧索引</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：int a = getVolumeCurFrame(&quot;场_1&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-scalevolume">
+<li><p>void  <strong>scaleVolume</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, double factor <strong>)</strong></p></li>
+</ul>
+<p>描述：场缩放</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">factor</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   场缩放值，一般为10的倍数，如：0.1，1，10，100。1：代表恢复成原样</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：scaleVolume(&quot;场_1&quot;, 10);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setvolumeoption">
+<li><p>void  <strong>setVolumeOption</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> option <strong>)</strong></p></li>
+</ul>
+<p>描述：设置场的平滑选项  (问题反馈：函数不起作用)</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">option</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   平滑选项smooth=on</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setVolumeOption(&quot;场_1&quot;, &quot;smooth=on&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setvolumeneighbours">
+<li><p>void  <strong>setVolumeNeighbours</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> num <strong>)</strong></p></li>
+</ul>
+<p>描述：设置场的邻域</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">num</span></code>         <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        邻域</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setVolumeNeighbours(&quot;场_1&quot;, 1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setvolumegridnum">
+<li><p>void  <strong>setVolumeGridNum</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> xn, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> yn, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> zn <strong>)</strong></p></li>
+</ul>
+<p>描述：设置场的网格数量  (问题反馈：函数不起作用)</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    场名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">xn</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        网格数量</p>
+<p><code class="docutils literal notranslate"><span class="pre">yn</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        网格数量</p>
+<p><code class="docutils literal notranslate"><span class="pre">zn</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        网格数量</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setVolumeGridNum(&quot;场_1&quot;, 20, 20, 20);
+</pre></div>
+</div>
+<hr class="docutils" />
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, 武汉创景可视技术有限公司.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,752 @@
+
+'创建时间: 2021-09-17
+'作者: ypj
+'描述: ndpnet 通信测试
+'更新: 2021-09-22
+'ypj, 2021-10-08, 添加消息处理
+
+Script {
+
+include{Ndpnet.script}	
+
+
+'--------------------------------
+' 消息处理类
+'--------------------------------
+class NdpnetMessageListener 
+{
+    string mLogFilePath;
+	NdpnetManager mNdpnetMgr;
+
+    '-------------------------------------------------------
+	' 涉及到的消息。在处理消息前，PE 会将相应 ID 的消息赋值。
+	'-------------------------------------------------------
+	
+    NdpnetMessageListener() 
+	{
+    } 
+
+    '//设置组件ID
+    void onMessageSetModuleId()
+	{
+		'//接收到消息，需要把消息内容及时拷贝出来，下次消息到来原地址内容会被覆盖
+		'printf("接收到 NDPNET_SET_MODULE_ID_MSG_ID 消息.\n");
+
+		'ndpnet_set_module_id_msg * pmsg = (ndpnet_set_module_id_msg*)(pvoid);
+		'ndp_uint32 sequence = pmsg->sequence;//包序号
+		'ndp_uint8 resFlag = pmsg->resFlag;//响应标识
+		'ndp_uint32 moduleId = pmsg->moduleId;//组件ID
+		'ndp_uint16 moduleTypeId = pmsg->moduleTypeId;//组件类型ID
+
+		'ndp_uint16 unitId = pmsg->calcEnv.unitId;//机组ID
+		'ndp_uint8  calcModeId = pmsg->calcEnv.calcModeId;//计算模式ID
+		'ndp_uint16 workModeId = pmsg->calcEnv.workModeId;//工况ID
+		'ndp_uint8 unitName[NDPNET_STR_SIZE];//机组名称
+		'ndp_uint8 calcModeName[NDPNET_STR_SIZE];//计算模式
+		'ndp_uint8 workModeName[NDPNET_STR_SIZE];//工况名称
+
+		'memset(unitName, 0, NDPNET_STR_SIZE);
+		'memset(calcModeName, 0, NDPNET_STR_SIZE);
+		'memset(workModeName, 0, NDPNET_STR_SIZE);
+
+		'memcpy(unitName, pmsg->calcEnv.unitName, NDPNET_STR_SIZE);
+		'memcpy(calcModeName, pmsg->calcEnv.calcModeName, NDPNET_STR_SIZE);
+		'memcpy(workModeName, pmsg->calcEnv.workModeName, NDPNET_STR_SIZE);
+		'printf("组件ID: %d.\n", moduleId);
+		'printf("机组ID: %d.\n", unitId);
+		'printf("机组名称: %s.\n", unitName);
+		'printf("计算模式: %s.\n", calcModeName);
+		'printf("工况名称: %s.\n", workModeName);
+
+
+		'// 计算环境准备就绪后，发送准备就绪消息
+		'ndpnet_calc_ready_msg ready_msg;
+		'ready_msg.flag = NDPNET_CALC_READY_ERROR;
+		'ready_msg.dataTime = 2000;
+		'strcpy((char *)(ready_msg.errorMsg), "计算准备错误时，设置的计算准备错误消息");
+
+		'ndpnet_send_calc_ready(pmsg->handle, &ready_msg);
+
+		'// 解析消息：获取消息值，并使用。
+		appPrintLog(mLogFilePath, "[onMessageSetModuleId] 接收到 NDPNET_SET_MODULE_ID_MSG_ID 消息.", 1);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleId] ndpnetSetModuleIdMsg.resFlag", ndpnetSetModuleIdMsg.resFlag);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleId] ndpnetSetModuleIdMsg.sequence", ndpnetSetModuleIdMsg.sequence);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleId] ndpnetSetModuleIdMsg.moduleTypeId", ndpnetSetModuleIdMsg.moduleTypeId);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleId] ndpnetSetModuleIdMsg.moduleId", ndpnetSetModuleIdMsg.moduleId);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleId] ndpnetSetModuleIdMsg.calcEnv.unitId", ndpnetSetModuleIdMsg.calcEnv.unitId);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleId] ndpnetSetModuleIdMsg.calcEnv.calcModeId", ndpnetSetModuleIdMsg.calcEnv.calcModeId);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleId] ndpnetSetModuleIdMsg.calcEnv.workModeId", ndpnetSetModuleIdMsg.calcEnv.workModeId);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleId] ndpnetSetModuleIdMsg.calcEnv.unitName", 1);
+		appPrintLog(mLogFilePath, ndpnetSetModuleIdMsg.calcEnv.unitName, 1);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleId] ndpnetSetModuleIdMsg.calcEnv.calcModeName", 2);
+		appPrintLog(mLogFilePath, ndpnetSetModuleIdMsg.calcEnv.calcModeName, 2);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleId] ndpnetSetModuleIdMsg.calcEnv.workModeName", 3);
+		appPrintLog(mLogFilePath, ndpnetSetModuleIdMsg.calcEnv.workModeName, 3);
+
+		'// 应答：设置应答消息并发送（ndpnet_calc_ready_msg）
+		ndpnetCalcReadyMsg.flag = NDPNET_CALC_READY_ERROR;
+		ndpnetCalcReadyMsg.dataTime = 2000;
+		ndpnetCalcReadyMsg.errorMsg = "计算准备错误时，设置的计算准备错误消息";
+		ndpnetCalcReadyMsg.calcEnv.unitId = ndpnetSetModuleIdMsg.calcEnv.unitId;
+		ndpnetCalcReadyMsg.calcEnv.calcModeId = ndpnetSetModuleIdMsg.calcEnv.calcModeId;
+		ndpnetCalcReadyMsg.calcEnv.workModeId = ndpnetSetModuleIdMsg.calcEnv.workModeId;
+		if(mNdpnetMgr.sendCalcReady() == 0) { '// 发送消息
+		    appPrintLog(mLogFilePath, "[onMessageSetModuleId]  sendCalcReady 成功。", 1);
+		}
+		else {
+		    appPrintLog(mLogFilePath, "[onMessageSetModuleId]  sendCalcReady 失败。", 1);
+		}
+		
+	}
+
+    '//设置计算环境
+    void onMessageSetCalcEnv()  
+    {
+		'printf("接收到 NDPNET_SET_CALC_ENV_MSG_ID 消息.\n");
+		
+		'ndpnet_set_calc_env_msg * pmsg = (ndpnet_set_calc_env_msg*)(pvoid);
+		'ndp_uint32 sequence = pmsg->sequence;//响应包序号
+		'ndp_uint8 resFlag = pmsg->resFlag;//响应标识
+
+		'ndp_uint16 unitId = pmsg->calcEnv.unitId;//机组ID
+		'ndp_uint8  calcModeId = pmsg->calcEnv.calcModeId;//计算模式ID
+		'ndp_uint16 workModeId = pmsg->calcEnv.workModeId;//工况ID
+		'ndp_uint8 unitName[NDPNET_STR_SIZE];//机组名称
+		'ndp_uint8 calcModeName[NDPNET_STR_SIZE];//计算模式
+		'ndp_uint8 workModeName[NDPNET_STR_SIZE];//工况名称
+
+		'memset(unitName, 0, NDPNET_STR_SIZE);
+		'memset(calcModeName, 0, NDPNET_STR_SIZE);
+		'memset(workModeName, 0, NDPNET_STR_SIZE);
+
+		'memcpy(unitName, pmsg->calcEnv.unitName, NDPNET_STR_SIZE);
+		'memcpy(calcModeName, pmsg->calcEnv.calcModeName, NDPNET_STR_SIZE);
+		'memcpy(workModeName, pmsg->calcEnv.workModeName, NDPNET_STR_SIZE);
+
+		'printf("机组ID: %d.\n", unitId);
+		'printf("机组ID: %s.\n", unitName);
+		'//计算环境准备就绪后，发送准备就绪消息
+		'ndpnet_calc_ready_msg ready_msg;
+		'ready_msg.flag = NDPNET_CALC_READY_ERROR;
+		'ready_msg.dataTime = 2000;
+		'strcpy((char *)(ready_msg.errorMsg), "计算准备错误时，设置的计算准备错误消息");
+		'ndpnet_send_calc_ready(pmsg->handle, &ready_msg);
+		
+		'// 解析消息：获取消息值，并使用。
+		appPrintLog(mLogFilePath, "[onMessageSetCalcEnv] 接收到 NDPNET_SET_CALC_ENV_MSG_ID 消息.", 1);
+		appPrintLog(mLogFilePath, "[onMessageSetCalcEnv] ndpnetSetCalcEnvMsg.resFlag", ndpnetSetCalcEnvMsg.resFlag);
+		appPrintLog(mLogFilePath, "[onMessageSetCalcEnv] ndpnetSetCalcEnvMsg.sequence", ndpnetSetCalcEnvMsg.sequence);
+		appPrintLog(mLogFilePath, "[onMessageSetCalcEnv] ndpnetSetCalcEnvMsg.calcEnv.unitId", ndpnetSetCalcEnvMsg.calcEnv.unitId);
+		appPrintLog(mLogFilePath, "[onMessageSetCalcEnv] ndpnetSetCalcEnvMsg.calcEnv.calcModeId", ndpnetSetCalcEnvMsg.calcEnv.calcModeId);
+		appPrintLog(mLogFilePath, "[onMessageSetCalcEnv] ndpnetSetCalcEnvMsg.calcEnv.workModeId", ndpnetSetCalcEnvMsg.calcEnv.workModeId);
+		appPrintLog(mLogFilePath, "[onMessageSetCalcEnv] ndpnetSetCalcEnvMsg.calcEnv.unitName", 1);
+		appPrintLog(mLogFilePath, ndpnetSetCalcEnvMsg.calcEnv.unitName, 1);
+		appPrintLog(mLogFilePath, "[onMessageSetCalcEnv] ndpnetSetCalcEnvMsg.calcEnv.calcModeName", 2);
+		appPrintLog(mLogFilePath, ndpnetSetCalcEnvMsg.calcEnv.calcModeName, 2);
+		appPrintLog(mLogFilePath, "[onMessageSetCalcEnv] ndpnetSetCalcEnvMsg.calcEnv.workModeName", 3);
+		appPrintLog(mLogFilePath, ndpnetSetCalcEnvMsg.calcEnv.workModeName, 3);
+
+		'// 应答：设置应答消息并发送（ndpnet_calc_ready_msg）
+		ndpnetCalcReadyMsg.flag = NDPNET_CALC_READY_ERROR;
+		ndpnetCalcReadyMsg.dataTime = 2000;
+		ndpnetCalcReadyMsg.errorMsg = "计算准备错误时，设置的计算准备错误消息";
+		ndpnetCalcReadyMsg.calcEnv.unitId = ndpnetSetCalcEnvMsg.calcEnv.unitId;
+		ndpnetCalcReadyMsg.calcEnv.calcModeId = ndpnetSetCalcEnvMsg.calcEnv.calcModeId;
+		ndpnetCalcReadyMsg.calcEnv.workModeId = ndpnetSetCalcEnvMsg.calcEnv.workModeId;
+		if(mNdpnetMgr.sendCalcReady() == 0) { '// 发送消息
+		    appPrintLog(mLogFilePath, "[onMessageSetCalcEnv]  sendCalcReady 成功。", 1);
+		}
+		else {
+		    appPrintLog(mLogFilePath, "[onMessageSetCalcEnv]  sendCalcReady 失败。", 1);
+		}
+
+	}
+    '//设置组件模式
+	void onMessageSetModuleMode()
+	{	
+		'printf("接收到 NDPNET_SET_MODULE_MODE_MSG_ID 消息.\n");
+		'ndpnet_set_module_mode_msg * pmsg = (ndpnet_set_module_mode_msg*)(pvoid);
+		'ndp_uint32 sequence = pmsg->sequence;//响应包序号
+		'ndp_uint8 resFlag = pmsg->resFlag;//响应标识
+
+		'ndp_uint16 unitId = pmsg->calcEnv.unitId;//机组ID
+		'ndp_uint8  calcModeId = pmsg->calcEnv.calcModeId;//计算模式ID
+		'ndp_uint16 workModeId = pmsg->calcEnv.workModeId;//工况ID
+		'ndp_uint16 moduleModeId = pmsg->moduleModeId;
+
+		'//根据响应标识，响应消息
+		'if (resFlag == NDPNET_IMMEDIATELY_RESPONSE) {
+		'	//发送指令响应消息
+		'	ndpnet_client_response_msg res_msg;
+		'	res_msg.msgId = NDPNET_SET_MODULE_MODE_MSG_ID;
+		'	res_msg.excuteResult = NDPNET_EXCUTE_ERROR;
+		'	res_msg.sequence = sequence;
+		'	strcpy((char *)(res_msg.comment), "设置组件工作模式失败");
+		'	ndpnet_send_client_response_msg(pmsg->handle, &res_msg);
+		'}
+
+		
+		'// 解析消息：获取消息值，并使用。
+		appPrintLog(mLogFilePath, "[onMessageSetModuleMode] 接收到 NDPNET_SET_MODULE_MODE_MSG_ID 消息.", 1);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleMode] ndpnetSetModuleModeMsg.resFlag", ndpnetSetModuleModeMsg.resFlag);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleMode] ndpnetSetModuleModeMsg.sequence", ndpnetSetModuleModeMsg.sequence);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleMode] ndpnetSetModuleModeMsg.moduleModeId", ndpnetSetModuleModeMsg.moduleModeId);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleMode] ndpnetSetModuleModeMsg.calcEnv.unitId", ndpnetSetModuleModeMsg.calcEnv.unitId);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleMode] ndpnetSetModuleModeMsg.calcEnv.calcModeId", ndpnetSetModuleModeMsg.calcEnv.calcModeId);
+		appPrintLog(mLogFilePath, "[onMessageSetModuleMode] ndpnetSetModuleModeMsg.calcEnv.workModeId", ndpnetSetModuleModeMsg.calcEnv.workModeId);
+
+
+		'// 应答：设置应答消息并发送（ndpnet_client_response_msg）
+		ndpnetClientResponseMsg.msgId = NDPNET_SET_MODULE_MODE_MSG_ID;
+		ndpnetClientResponseMsg.excuteResult = NDPNET_EXCUTE_ERROR;
+		ndpnetClientResponseMsg.sequence = ndpnetSetModuleModeMsg.sequence;
+		ndpnetClientResponseMsg.comment = "设置组件工作模式失败";
+
+		if(mNdpnetMgr.sendClientResponseMsg() == 0) { '// 发送消息
+		    appPrintLog(mLogFilePath, "[onMessageSetModuleMode]  sendClientResponseMsg 成功。", 1);
+		}
+		else {
+		    appPrintLog(mLogFilePath, "[onMessageSetModuleMode]  sendClientResponseMsg 失败。", 1);
+		}
+	}
+
+	'//服务端响应包消息
+	void onMessageResponse()
+	{
+		'printf("接收到 NDPNET_RESPONSE_MSG_ID 消息.\n");
+		'ndpnet_response_msg * pmsg = (ndpnet_response_msg*)(pvoid);
+		'ndp_uint32 sequence = pmsg->sequence;//响应包序号
+		'ndp_uint8 resFlag = pmsg->resFlag;//响应标识
+
+		'ndp_uint16 msgId = pmsg->msgId;//被响应的消息ID
+		'ndp_uint16 excuteResult = pmsg->excuteResult;//响应结果
+
+		'ndp_uint8 comment[NDPNET_STR_SIZE];//响应附加消息
+		'memset(comment, 0, NDPNET_STR_SIZE);
+		'memcpy(comment, pmsg->comment, NDPNET_STR_SIZE);
+
+		'// 不需要解析服务端响应消息包?
+		appPrintLog(mLogFilePath, "[onMessageResponse] 接收到 NDPNET_RESPONSE_MSG_ID 消息.", 1);
+	}
+
+	'//心跳消息
+	void onMessageHeart()
+	{
+		'printf("接收到 NDPNET_HEART_MSG_ID msg.\n");
+		'ndpnet_heart_msg * pmsg = (ndpnet_heart_msg*)(pvoid);
+		'ndp_uint32 sequence = pmsg->sequence;//包序号
+		'ndp_uint8 resFlag = pmsg->resFlag;//响应标识
+		'ndp_uint64 ts = pmsg->ts;//时间(1970年1月1日0时以来的秒数)
+		'						 //发送心跳响应包
+		'ndpnet_send_heart_response(pmsg->handle);
+
+		' 不需要解析心跳消息内容
+		appPrintLog(mLogFilePath, "[onMessageHeart] 接收到 NDPNET_HEART_MSG_ID msg.", 1);
+
+		' 应答：无需设置参数，直接应答
+		if(mNdpnetMgr.sendHeartResponse() == 0) '// 发送消息
+		{
+		    appPrintLog(mLogFilePath, "[onMessageHeart]  sendHeartResponse 成功。", 1);
+		}
+		else {
+		    appPrintLog(mLogFilePath, "[onMessageHeart]  sendHeartResponse 失败。", 1);
+		}
+	}
+    '//开始计算
+	void onMessageCtrlStartCalc()
+	{
+		'printf("接收到 NDPNET_CTRL_START_CALC_MSG_ID 消息.\n");
+		'ndpnet_ctrl_start_calc_msg * pmsg = (ndpnet_ctrl_start_calc_msg*)(pvoid);
+		'ndp_uint32 sequence = pmsg->sequence;//响应包序号
+		'ndp_uint8 resFlag = pmsg->resFlag;//响应标识
+		'ndp_uint16 moduleModeId = pmsg->moduleModeId;//组件运行模式ID
+		'ndp_uint32 starTime = pmsg->starTime;//开始时间
+		'ndp_uint32 calcTime = pmsg->calcTime;//计算时间
+		'									 //组件执行开始计算动作
+		'									 //根据响应标识，响应消息
+		'if (resFlag == NDPNET_IMMEDIATELY_RESPONSE) {
+		'	//发送指令响应消息
+		'	ndpnet_client_response_msg res_msg;
+		'	res_msg.msgId = NDPNET_CTRL_START_CALC_MSG_ID;
+		'	res_msg.excuteResult = NDPNET_EXCUTE_OK;
+		'	res_msg.sequence = pmsg->sequence;
+		'	strcpy((char *)(res_msg.comment), "启动计算成功");
+		'	ndpnet_send_client_response_msg(pmsg->handle, &res_msg);
+		'}
+		
+		'// 解析消息：获取消息值，并使用。
+		appPrintLog(mLogFilePath, "[onMessageCtrlStartCalc] 接收到 NDPNET_CTRL_START_CALC_MSG_ID 消息", 1);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStartCalc] ndpnetCtrlStartCalcMsg.resFlag", ndpnetCtrlStartCalcMsg.resFlag);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStartCalc] ndpnetCtrlStartCalcMsg.sequence", ndpnetCtrlStartCalcMsg.sequence);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStartCalc] ndpnetCtrlStartCalcMsg.moduleModeId", ndpnetCtrlStartCalcMsg.moduleModeId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStartCalc] ndpnetCtrlStartCalcMsg.calcEnv.unitId", ndpnetCtrlStartCalcMsg.calcEnv.unitId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStartCalc] ndpnetCtrlStartCalcMsg.calcEnv.calcModeId", ndpnetCtrlStartCalcMsg.calcEnv.calcModeId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStartCalc] ndpnetCtrlStartCalcMsg.calcEnv.workModeId", ndpnetCtrlStartCalcMsg.calcEnv.workModeId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStartCalc] ndpnetCtrlStartCalcMsg.starTime", ndpnetCtrlStartCalcMsg.starTime);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStartCalc] ndpnetCtrlStartCalcMsg.calcTime", ndpnetCtrlStartCalcMsg.calcTime);
+
+
+		'// 应答：设置应答消息并发送（ndpnet_client_response_msg）
+		ndpnetClientResponseMsg.msgId = NDPNET_CTRL_START_CALC_MSG_ID;
+		ndpnetClientResponseMsg.excuteResult = NDPNET_EXCUTE_OK;
+		ndpnetClientResponseMsg.sequence = ndpnetCtrlStartCalcMsg.sequence;
+		ndpnetClientResponseMsg.comment = "启动计算成功";
+
+		if(mNdpnetMgr.sendClientResponseMsg() == 0) { '// 发送消息
+		    appPrintLog(mLogFilePath, "[onMessageCtrlStartCalc]  sendClientResponseMsg 成功。", 1);
+		}
+		else {
+		    appPrintLog(mLogFilePath, "[onMessageCtrlStartCalc]  sendClientResponseMsg 失败。", 1);
+		}
+
+	}
+
+
+    '//结束计算
+	void onMessageCtrlStopCalc()
+	{
+		'printf("接收到 NDPNET_CTRL_STOP_CALC_MSG_ID 消息.\n");
+		'ndpnet_ctrl_stop_calc_msg * pmsg = (ndpnet_ctrl_stop_calc_msg*)(pvoid);
+		'ndp_uint32 sequence = pmsg->sequence;//响应包序号
+		'ndp_uint8 resFlag = pmsg->resFlag;//响应标识
+		'								  //组件执行结束计算动作
+        '
+		'								  //根据响应标识，响应消息
+		'if (resFlag == NDPNET_IMMEDIATELY_RESPONSE) {
+		'	//发送指令响应消息
+		'	ndpnet_client_response_msg res_msg;
+		'	res_msg.msgId = NDPNET_CTRL_STOP_CALC_MSG_ID;
+		'	res_msg.excuteResult = NDPNET_EXCUTE_OK;
+		'	res_msg.sequence = pmsg->sequence;
+		'	strcpy((char *)(res_msg.comment), "停止计算成功");
+		'	ndpnet_send_client_response_msg(pmsg->handle, &res_msg);
+		'}
+		
+		'// 解析消息：获取消息值，并使用。
+		appPrintLog(mLogFilePath, "[onMessageCtrlStopCalc] 接收到 NDPNET_CTRL_STOP_CALC_MSG_ID 消息.", 1);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStopCalc] ndpnetCtrlStopCalcMsg.resFlag", ndpnetCtrlStopCalcMsg.resFlag);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStopCalc] ndpnetCtrlStopCalcMsg.sequence", ndpnetCtrlStopCalcMsg.sequence);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStopCalc] ndpnetCtrlStopCalcMsg.calcEnv.unitId", ndpnetCtrlStopCalcMsg.calcEnv.unitId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStopCalc] ndpnetCtrlStopCalcMsg.calcEnv.calcModeId", ndpnetCtrlStopCalcMsg.calcEnv.calcModeId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStopCalc] ndpnetCtrlStopCalcMsg.calcEnv.workModeId", ndpnetCtrlStopCalcMsg.calcEnv.workModeId);
+
+
+		'// 应答：设置应答消息并发送（ndpnet_client_response_msg）
+		ndpnetClientResponseMsg.msgId = NDPNET_CTRL_STOP_CALC_MSG_ID;
+		ndpnetClientResponseMsg.excuteResult = NDPNET_EXCUTE_OK;
+		ndpnetClientResponseMsg.sequence = ndpnetCtrlStopCalcMsg.sequence;
+		ndpnetClientResponseMsg.comment = "停止计算成功";
+
+		if(mNdpnetMgr.sendClientResponseMsg() == 0) { '// 发送消息
+		    appPrintLog(mLogFilePath, "[onMessageCtrlStopCalc]  sendClientResponseMsg 成功。", 1);
+		}
+		else {
+		    appPrintLog(mLogFilePath, "[onMessageCtrlStopCalc]  sendClientResponseMsg 失败。", 1);
+		}
+	}
+
+    '//暂停计算
+	void onMessageCtrlPauseCalc()
+	{
+		'printf("接收到 NDPNET_CTRL_PAUSE_CALC_MSG_ID 消息.\n");
+		'ndpnet_ctrl_pause_calc_msg * pmsg = (ndpnet_ctrl_pause_calc_msg*)(pvoid);
+		'ndp_uint32 sequence = pmsg->sequence;//响应包序号
+		'ndp_uint8 resFlag = pmsg->resFlag;//响应标识
+		'								  //组件执行暂停计算动作
+
+
+		'								  //根据响应标识，响应消息
+		'if (resFlag == NDPNET_IMMEDIATELY_RESPONSE) {
+		'	//发送指令响应消息
+		'	ndpnet_client_response_msg res_msg;
+		'	res_msg.msgId = NDPNET_CTRL_PAUSE_CALC_MSG_ID;
+		'	res_msg.excuteResult = NDPNET_EXCUTE_OK;
+		'	res_msg.sequence = pmsg->sequence;
+		'	strcpy((char *)(res_msg.comment), "暂停计算成功");
+		'	ndpnet_send_client_response_msg(pmsg->handle, &res_msg);
+		'}
+		
+		'// 解析消息：获取消息值，并使用。
+		appPrintLog(mLogFilePath, "[onMessageCtrlPauseCalc] 接收到 NDPNET_CTRL_PAUSE_CALC_MSG_ID 消息.", 1);
+		appPrintLog(mLogFilePath, "[onMessageCtrlPauseCalc] ndpnetCtrlPauseCalcMsg.resFlag", ndpnetCtrlPauseCalcMsg.resFlag);
+		appPrintLog(mLogFilePath, "[onMessageCtrlPauseCalc] ndpnetCtrlPauseCalcMsg.sequence", ndpnetCtrlPauseCalcMsg.sequence);
+		appPrintLog(mLogFilePath, "[onMessageCtrlPauseCalc] ndpnetCtrlPauseCalcMsg.calcEnv.unitId", ndpnetCtrlPauseCalcMsg.calcEnv.unitId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlPauseCalc] ndpnetCtrlPauseCalcMsg.calcEnv.calcModeId", ndpnetCtrlPauseCalcMsg.calcEnv.calcModeId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlPauseCalc] ndpnetCtrlPauseCalcMsg.calcEnv.workModeId", ndpnetCtrlPauseCalcMsg.calcEnv.workModeId);
+
+
+		'// 应答：设置应答消息并发送（ndpnet_client_response_msg）
+		ndpnetClientResponseMsg.msgId = NDPNET_CTRL_PAUSE_CALC_MSG_ID;
+		ndpnetClientResponseMsg.excuteResult = NDPNET_EXCUTE_OK;
+		ndpnetClientResponseMsg.sequence = ndpnetCtrlPauseCalcMsg.sequence;
+		ndpnetClientResponseMsg.comment = "暂停计算成功";
+
+		if(mNdpnetMgr.sendClientResponseMsg() == 0) { '// 发送消息
+		    appPrintLog(mLogFilePath, "[onMessageCtrlPauseCalc]  sendClientResponseMsg 成功。", 1);
+		}
+		else {
+		    appPrintLog(mLogFilePath, "[onMessageCtrlPauseCalc]  sendClientResponseMsg 失败。", 1);
+		}
+	}
+
+    '//恢复计算
+	void onMessageCtrlResumeCalc()
+	{
+		'printf("接收到 NDPNET_CTRL_RESUME_CALC_MSG_ID 消息.\n");
+		'ndpnet_ctrl_resume_calc_msg * pmsg = (ndpnet_ctrl_resume_calc_msg*)(pvoid);
+		'ndp_uint32 sequence = pmsg->sequence;//响应包序号
+		'ndp_uint8 resFlag = pmsg->resFlag;//响应标识
+		'								  //组件执行恢复计算动作
+
+
+		'								  //根据响应标识，响应消息
+		'if (resFlag == NDPNET_IMMEDIATELY_RESPONSE) {
+		'	//发送指令响应消息
+		'	ndpnet_client_response_msg res_msg;
+		'	res_msg.msgId = NDPNET_CTRL_RESUME_CALC_MSG_ID;
+		'	res_msg.excuteResult = NDPNET_EXCUTE_OK;
+		'	res_msg.sequence = pmsg->sequence;
+		'	strcpy((char *)(res_msg.comment), "恢复计算成功");
+		'	ndpnet_send_client_response_msg(pmsg->handle, &res_msg);
+		'}
+		
+		'// 解析消息：获取消息值，并使用。
+		appPrintLog(mLogFilePath, "[onMessageCtrlResumeCalc] 接收到 NDPNET_CTRL_RESUME_CALC_MSG_ID 消息.", 1);
+		appPrintLog(mLogFilePath, "[onMessageCtrlResumeCalc] ndpnetCtrlResumeCalcMsg.resFlag", ndpnetCtrlResumeCalcMsg.resFlag);
+		appPrintLog(mLogFilePath, "[onMessageCtrlResumeCalc] ndpnetCtrlResumeCalcMsg.sequence", ndpnetCtrlResumeCalcMsg.sequence);
+		appPrintLog(mLogFilePath, "[onMessageCtrlResumeCalc] ndpnetCtrlResumeCalcMsg.calcEnv.unitId", ndpnetCtrlResumeCalcMsg.calcEnv.unitId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlResumeCalc] ndpnetCtrlResumeCalcMsg.calcEnv.calcModeId", ndpnetCtrlResumeCalcMsg.calcEnv.calcModeId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlResumeCalc] ndpnetCtrlResumeCalcMsg.calcEnv.workModeId", ndpnetCtrlResumeCalcMsg.calcEnv.workModeId);
+
+
+		'// 应答：设置应答消息并发送（ndpnet_client_response_msg）
+		ndpnetClientResponseMsg.msgId = NDPNET_CTRL_RESUME_CALC_MSG_ID;
+		ndpnetClientResponseMsg.excuteResult = NDPNET_EXCUTE_OK;
+		ndpnetClientResponseMsg.sequence = ndpnetCtrlResumeCalcMsg.sequence;
+		ndpnetClientResponseMsg.comment = "恢复计算成功";
+
+		if(mNdpnetMgr.sendClientResponseMsg() == 0) { '// 发送消息
+		    appPrintLog(mLogFilePath, "[onMessageCtrlResumeCalc]  sendClientResponseMsg 成功。", 1);
+		}
+		else {
+		    appPrintLog(mLogFilePath, "[onMessageCtrlResumeCalc]  sendClientResponseMsg 失败。", 1);
+		}
+
+	}
+
+    '//步进计算
+	void onMessageCtrlStepCalc()
+	{
+		'printf("接收到 NDPNET_CTRL_STEP_CALC_MSG_ID 消息.\n");
+		'ndpnet_ctrl_step_calc_msg * pmsg = (ndpnet_ctrl_step_calc_msg*)(pvoid);
+		'ndp_uint32 sequence = pmsg->sequence;//响应包序号
+		'ndp_uint8 resFlag = pmsg->resFlag;//响应标识
+		'ndp_uint32 stepTime = pmsg->stepTime;
+		'printf("步进时间： %d.\n", stepTime);
+		'//组件执行步进计算动作
+
+
+		'//根据响应标识，响应消息
+		'if (resFlag == NDPNET_IMMEDIATELY_RESPONSE) {
+		'	//发送指令响应消息
+		'	ndpnet_client_response_msg res_msg;
+		'	res_msg.msgId = NDPNET_CTRL_STEP_CALC_MSG_ID;
+		'	res_msg.excuteResult = NDPNET_EXCUTE_OK;
+		'	res_msg.sequence = pmsg->sequence;
+		'	strcpy((char *)(res_msg.comment), "步进计算成功");
+		'	ndpnet_send_client_response_msg(pmsg->handle, &res_msg);
+		'}
+		
+		'// 解析消息：获取消息值，并使用。
+		appPrintLog(mLogFilePath, "[onMessageCtrlStepCalc] 接收到 NDPNET_CTRL_STEP_CALC_MSG_ID 消息.", 1);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStepCalc] ndpnetCtrlStepCalcMsg.resFlag", ndpnetCtrlStepCalcMsg.resFlag);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStepCalc] ndpnetCtrlStepCalcMsg.sequence", ndpnetCtrlStepCalcMsg.sequence);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStepCalc] ndpnetCtrlStepCalcMsg.calcEnv.unitId", ndpnetCtrlStepCalcMsg.calcEnv.unitId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStepCalc] ndpnetCtrlStepCalcMsg.calcEnv.calcModeId", ndpnetCtrlStepCalcMsg.calcEnv.calcModeId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStepCalc] ndpnetCtrlStepCalcMsg.calcEnv.workModeId", ndpnetCtrlStepCalcMsg.calcEnv.workModeId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlStepCalc] ndpnetCtrlStepCalcMsg.stepTime", ndpnetCtrlStepCalcMsg.stepTime);
+
+
+		'// 应答：设置应答消息并发送（ndpnet_client_response_msg）
+		ndpnetClientResponseMsg.msgId = NDPNET_CTRL_STEP_CALC_MSG_ID;
+		ndpnetClientResponseMsg.excuteResult = NDPNET_EXCUTE_OK;
+		ndpnetClientResponseMsg.sequence = ndpnetCtrlStepCalcMsg.sequence;
+		ndpnetClientResponseMsg.comment = "步进计算成功";
+
+		if(mNdpnetMgr.sendClientResponseMsg() == 0) { '// 发送消息
+		    appPrintLog(mLogFilePath, "[onMessageCtrlStepCalc]  sendClientResponseMsg 成功。", 1);
+		}
+		else {
+		    appPrintLog(mLogFilePath, "[onMessageCtrlStepCalc]  sendClientResponseMsg 失败。", 1);
+		}
+	}
+
+    '//倍速计算
+    void onMessageCtrlSpeedCalc()
+	{
+		'printf("接收到 NDPNET_CTRL_SPEED_CALC_MSG_ID 消息.\n");
+		'ndpnet_ctrl_speed_calc_msg * pmsg = (ndpnet_ctrl_speed_calc_msg*)(pvoid);
+		'ndp_uint32 sequence = pmsg->sequence;//响应包序号
+		'ndp_uint8 resFlag = pmsg->resFlag;//响应标识
+		'ndp_uint32 speedTime = pmsg->speedTime;
+		'printf("计算倍速： %d.\n", speedTime);
+		'//组件执行倍速计算动作
+
+
+		'//根据响应标识，响应消息
+		'if (resFlag == NDPNET_IMMEDIATELY_RESPONSE) {
+		'	//发送指令响应消息
+		'	ndpnet_client_response_msg res_msg;
+		'	res_msg.msgId = NDPNET_CTRL_SPEED_CALC_MSG_ID;
+		'	res_msg.excuteResult = NDPNET_EXCUTE_OK;
+		'	res_msg.sequence = pmsg->sequence;
+		'	strcpy((char *)(res_msg.comment), "倍速计算成功");
+		'	ndpnet_send_client_response_msg(pmsg->handle, &res_msg);
+		'}
+		
+		'// 解析消息：获取消息值，并使用。
+		appPrintLog(mLogFilePath, "[onMessageCtrlSpeedCalc] 接收到 NDPNET_CTRL_SPEED_CALC_MSG_ID 消息.", 1);
+		appPrintLog(mLogFilePath, "[onMessageCtrlSpeedCalc] ndpnetCtrlSpeedCalcMsg.resFlag", ndpnetCtrlSpeedCalcMsg.resFlag);
+		appPrintLog(mLogFilePath, "[onMessageCtrlSpeedCalc] ndpnetCtrlSpeedCalcMsg.sequence", ndpnetCtrlSpeedCalcMsg.sequence);
+		appPrintLog(mLogFilePath, "[onMessageCtrlSpeedCalc] ndpnetCtrlSpeedCalcMsg.calcEnv.unitId", ndpnetCtrlSpeedCalcMsg.calcEnv.unitId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlSpeedCalc] ndpnetCtrlSpeedCalcMsg.calcEnv.calcModeId", ndpnetCtrlSpeedCalcMsg.calcEnv.calcModeId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlSpeedCalc] ndpnetCtrlSpeedCalcMsg.calcEnv.workModeId", ndpnetCtrlSpeedCalcMsg.calcEnv.workModeId);
+		'// 2.0 没有 speedTime 了，有哪些字段详见 Ndpnet.script
+		'//appPrintLog(mLogFilePath, "[onMessageCtrlSpeedCalc] ndpnetCtrlSpeedCalcMsg.speedTime", ndpnetCtrlSpeedCalcMsg.speedTime);
+
+
+		'// 应答：设置应答消息并发送（ndpnet_client_response_msg）
+		ndpnetClientResponseMsg.msgId = NDPNET_CTRL_SPEED_CALC_MSG_ID;
+		ndpnetClientResponseMsg.excuteResult = NDPNET_EXCUTE_OK;
+		ndpnetClientResponseMsg.sequence = ndpnetCtrlSpeedCalcMsg.sequence;
+		ndpnetClientResponseMsg.comment = "倍速计算成功";
+
+		if(mNdpnetMgr.sendClientResponseMsg() == 0) { '// 发送消息
+		    appPrintLog(mLogFilePath, "[onMessageCtrlSpeedCalc]  sendClientResponseMsg 成功。", 1);
+		}
+		else {
+		    appPrintLog(mLogFilePath, "[onMessageCtrlSpeedCalc]  sendClientResponseMsg 失败。", 1);
+		}
+	}
+
+    '//跳转计算
+	void onMessageCtrlJumpCalc()
+	{
+		'printf("接收到 NDPNET_CTRL_JUMP_CALC_MSG_ID 消息.\n");
+		'ndpnet_ctrl_jump_calc_msg * pmsg = (ndpnet_ctrl_jump_calc_msg*)(pvoid);
+		'ndp_uint32 sequence = pmsg->sequence;//响应包序号
+		'ndp_uint8 resFlag = pmsg->resFlag;//响应标识
+		'ndp_uint32 jumpTime = pmsg->jumpTime;
+		'printf("跳转时间： %d.\n", jumpTime);
+		'//组件执行跳转计算动作
+
+		'//根据响应标识，响应消息
+		'if (resFlag == NDPNET_IMMEDIATELY_RESPONSE) {
+		'	//发送指令响应消息
+		'	ndpnet_client_response_msg res_msg;
+		'	res_msg.msgId = NDPNET_CTRL_JUMP_CALC_MSG_ID;
+		'	res_msg.excuteResult = NDPNET_EXCUTE_OK;
+		'	res_msg.sequence = pmsg->sequence;
+		'	strcpy((char *)(res_msg.comment), "跳转计算成功");
+		'	ndpnet_send_client_response_msg(pmsg->handle, &res_msg);
+		'}
+		
+		'// 解析消息：获取消息值，并使用。
+		appPrintLog(mLogFilePath, "[onMessageCtrlJumpCalc] 接收到 NDPNET_CTRL_JUMP_CALC_MSG_ID 消息.", 1);
+		appPrintLog(mLogFilePath, "[onMessageCtrlJumpCalc] ndpnetCtrlJumpCalcMsg.resFlag", ndpnetCtrlJumpCalcMsg.resFlag);
+		appPrintLog(mLogFilePath, "[onMessageCtrlJumpCalc] ndpnetCtrlJumpCalcMsg.sequence", ndpnetCtrlJumpCalcMsg.sequence);
+		appPrintLog(mLogFilePath, "[onMessageCtrlJumpCalc] ndpnetCtrlJumpCalcMsg.calcEnv.unitId", ndpnetCtrlJumpCalcMsg.calcEnv.unitId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlJumpCalc] ndpnetCtrlJumpCalcMsg.calcEnv.calcModeId", ndpnetCtrlJumpCalcMsg.calcEnv.calcModeId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlJumpCalc] ndpnetCtrlJumpCalcMsg.calcEnv.workModeId", ndpnetCtrlJumpCalcMsg.calcEnv.workModeId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlJumpCalc] ndpnetCtrlJumpCalcMsg.jumpTime", ndpnetCtrlJumpCalcMsg.jumpTime);
+
+
+		'// 应答：设置应答消息并发送（ndpnet_client_response_msg）
+		ndpnetClientResponseMsg.msgId = NDPNET_CTRL_JUMP_CALC_MSG_ID;
+		ndpnetClientResponseMsg.excuteResult = NDPNET_EXCUTE_OK;
+		ndpnetClientResponseMsg.sequence = ndpnetCtrlJumpCalcMsg.sequence;
+		ndpnetClientResponseMsg.comment = "跳转计算成功";
+
+		if(mNdpnetMgr.sendClientResponseMsg() == 0) { '// 发送消息
+		    appPrintLog(mLogFilePath, "[onMessageCtrlJumpCalc]  sendClientResponseMsg 成功。", 1);
+		}
+		else {
+		    appPrintLog(mLogFilePath, "[onMessageCtrlJumpCalc]  sendClientResponseMsg 失败。", 1);
+		}
+	}
+
+    '//时间较准计算
+    void onMessageCtrlVerifyCalc()
+	{
+		'printf("接收到 NDPNET_CTRL_VERIFY_CALC_MSG_ID 消息.\n");
+		'ndpnet_ctrl_verify_calc_msg * pmsg = (ndpnet_ctrl_verify_calc_msg*)(pvoid);
+		'ndp_uint32 sequence = pmsg->sequence;//响应包序号
+		'ndp_uint8 resFlag = pmsg->resFlag;//响应标识
+		'ndp_uint32 verifyTime = pmsg->verifyTime;
+		'printf("较准时间： %d.\n", verifyTime);
+		'//组件执行时间较准计算动作
+
+		'//根据响应标识，响应消息
+		'if (resFlag == NDPNET_IMMEDIATELY_RESPONSE) {
+		'	//发送指令响应消息
+		'	ndpnet_client_response_msg res_msg;
+		'	res_msg.msgId = NDPNET_CTRL_VERIFY_CALC_MSG_ID;
+		'	res_msg.excuteResult = NDPNET_EXCUTE_OK;
+		'	res_msg.sequence = pmsg->sequence;
+		'	strcpy((char *)(res_msg.comment), "时间较准计算成功");
+		'	ndpnet_send_client_response_msg(pmsg->handle, &res_msg);
+		'}
+		
+		
+		'// 解析消息：获取消息值，并使用。
+		appPrintLog(mLogFilePath, "[onMessageCtrlVerifyCalc] 接收到 NDPNET_CTRL_VERIFY_CALC_MSG_ID 消息.", 1);
+		appPrintLog(mLogFilePath, "[onMessageCtrlVerifyCalc] ndpnetCtrlVerifyCalcMsg.resFlag", ndpnetCtrlVerifyCalcMsg.resFlag);
+		appPrintLog(mLogFilePath, "[onMessageCtrlVerifyCalc] ndpnetCtrlVerifyCalcMsg.sequence", ndpnetCtrlVerifyCalcMsg.sequence);
+		appPrintLog(mLogFilePath, "[onMessageCtrlVerifyCalc] ndpnetCtrlVerifyCalcMsg.calcEnv.unitId", ndpnetCtrlVerifyCalcMsg.calcEnv.unitId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlVerifyCalc] ndpnetCtrlVerifyCalcMsg.calcEnv.calcModeId", ndpnetCtrlVerifyCalcMsg.calcEnv.calcModeId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlVerifyCalc] ndpnetCtrlVerifyCalcMsg.calcEnv.workModeId", ndpnetCtrlVerifyCalcMsg.calcEnv.workModeId);
+		appPrintLog(mLogFilePath, "[onMessageCtrlVerifyCalc] ndpnetCtrlVerifyCalcMsg.verifyTime", ndpnetCtrlVerifyCalcMsg.verifyTime);
+
+
+		'// 应答：设置应答消息并发送（ndpnet_client_response_msg）
+		ndpnetClientResponseMsg.msgId = NDPNET_CTRL_VERIFY_CALC_MSG_ID;
+		ndpnetClientResponseMsg.excuteResult = NDPNET_EXCUTE_OK;
+		ndpnetClientResponseMsg.sequence = ndpnetCtrlVerifyCalcMsg.sequence;
+		ndpnetClientResponseMsg.comment = "时间较准计算成功";
+
+		if(mNdpnetMgr.sendClientResponseMsg() == 0) { '// 发送消息
+		    appPrintLog(mLogFilePath, "[onMessageCtrlVerifyCalc]  sendClientResponseMsg 成功。", 1);
+		}
+		else {
+		    appPrintLog(mLogFilePath, "[onMessageCtrlVerifyCalc]  sendClientResponseMsg 失败。", 1);
+		}
+	}
+
+	'// 收到主控数据的处理
+	'// 参见 Ndpnet.script 中  NdpnetDataUnionMsg， NdpnetDataUnionNode, NdpnetDataUnionValue 的定义
+	'// 注意：NdpnetDataUnionMsg 中声明的数据节点数为100， NdpnetDataUnionNode pnode[1000]，使用前应该初始化节点（全局初始化一次），比如只用到两个
+	'//    ndpnetDataUnionMsg.pnode[0] = new NdpnetDataUnionNode;
+	'//    ndpnetDataUnionMsg.pnode[1] = new NdpnetDataUnionNode;
+	void onMessageDataUnion()
+	{
+	    'messageBox("onMessageDataUnion");
+        '//响应标示
+        'byte resFlag; 'ndp_uint8 resFlag;
+        '//数据包序列值
+        'dword sequence; 'ndp_uint32  sequence;
+        '//数据参数数量
+        'dword nodeNum; 'ndp_uint32 nodeNum;
+        '//时间
+        'dword time; 'ndp_uint32 time;
+        '//数据节点首地址
+        'NdpnetDataUnionNode pnode[10]; 'ndpnet_data_union_node* pnode;
+        'NdpnetDataUnionMsg() {}
+
+	    '// 解析消息：获取消息值，并使用。
+		appPrintLog(mLogFilePath, "[onMessageDataUnion] 接收到 NDPNET_DATA_UNION_MSG_ID 消息.", 1);
+		appPrintLog(mLogFilePath, "[onMessageDataUnion] ndpnetDataUnionMsg.resFlag", ndpnetDataUnionMsg.resFlag);
+		appPrintLog(mLogFilePath, "[onMessageDataUnion] ndpnetDataUnionMsg.sequence", ndpnetDataUnionMsg.sequence);
+		appPrintLog(mLogFilePath, "[onMessageDataUnion] ndpnetDataUnionMsg.nodeNum", ndpnetDataUnionMsg.nodeNum);
+		appPrintLog(mLogFilePath, "[onMessageDataUnion] ndpnetDataUnionMsg.pnode[0].type", ndpnetDataUnionMsg.pnode[0].type);
+		appPrintLog(mLogFilePath, "[onMessageDataUnion] ndpnetDataUnionMsg.pnode[0].id", ndpnetDataUnionMsg.pnode[0].id);
+		appPrintLog(mLogFilePath, "[onMessageDataUnion] ndpnetDataUnionMsg.pnode[0].code", ndpnetDataUnionMsg.pnode[0].code);
+		'// 根据 pnode[0].type 确定数据类型，如果是整型（包括 char、bool、long 等），则使用 pnode[0].value.i_value， 如果浮点型，则使用 pnode[0].value.f_value
+		appPrintLog(mLogFilePath, "[onMessageDataUnion] ndpnetDataUnionMsg.pnode[0].value.i_value", ndpnetDataUnionMsg.pnode[0].value.i_value);
+		appPrintLog(mLogFilePath, "[onMessageDataUnion] ndpnetDataUnionMsg.time", ndpnetDataUnionMsg.time);
+
+
+		'// 应答：设置应答消息并发送（ndpnet_client_response_msg）
+		ndpnetClientResponseMsg.msgId = NDPNET_DATA_UNION_MSG_ID;
+		ndpnetClientResponseMsg.excuteResult = NDPNET_EXCUTE_OK;
+		ndpnetClientResponseMsg.sequence = ndpnetDataUnionMsg.sequence;
+		ndpnetClientResponseMsg.comment = "收到DataUnion数据包";
+
+		if(mNdpnetMgr.sendClientResponseMsg() == 0) { '// 发送消息
+		    appPrintLog(mLogFilePath, "[onMessageDataUnion]  sendClientResponseMsg 成功。", 1);
+		}
+		else {
+		    appPrintLog(mLogFilePath, "[onMessageDataUnion]  sendClientResponseMsg 失败。", 1);
+		}
+
+	}
+	
+	' 消息处理
+	void onMessage(int msgId)
+	{
+	
+	    '//模块初始化,服务端设置模块ID消息
+		if (msgId == NDPNET_SET_MODULE_ID_MSG_ID)   
+	    {
+			onMessageSetModuleId();
+	    }
+		'//设置计算环境消息
+		elseif (msgId == NDPNET_SET_CALC_ENV_MSG_ID)
+	    {
+			onMessageSetCalcEnv();
+		}
+		'//接收到数据 ypj, 2022-10-10, sdk 2.0 新增
+		elseif(msgId == NDPNET_DATA_UNION_MSG_ID)
+		{
+			onMessageDataUnion();
+		}
+		'//设置组件模式消息
+		elseif(msgId == NDPNET_SET_MODULE_MODE_MSG_ID)
+	    {
+			onMessageSetModuleMode();
+		}
+		'//服务端响应包消息
+		elseif(msgId == NDPNET_RESPONSE_MSG_ID)
+		{
+			onMessageResponse();
+		}
+	    '//心跳消息
+		elseif(msgId == NDPNET_HEART_MSG_ID)
+		{
+			onMessageHeart();
+		}
+		'//开始计算
+		elseif(msgId == NDPNET_CTRL_START_CALC_MSG_ID)
+		{
+			onMessageCtrlStartCalc();
+		}
+		'//结束计算
+		elseif(msgId == NDPNET_CTRL_STOP_CALC_MSG_ID)
+		{
+			onMessageCtrlStopCalc();
+		}
+		'//暂停计算
+		elseif(msgId == NDPNET_CTRL_PAUSE_CALC_MSG_ID)
+		{
+			onMessageCtrlPauseCalc();
+		}
+		'//恢复计算
+		elseif(msgId == NDPNET_CTRL_RESUME_CALC_MSG_ID)
+		{
+			onMessageCtrlResumeCalc();
+		}
+		'//步进计算
+		elseif(msgId == NDPNET_CTRL_STEP_CALC_MSG_ID)
+		{
+			onMessageCtrlStepCalc();
+		}
+		'//倍速计算
+		elseif(msgId == NDPNET_CTRL_SPEED_CALC_MSG_ID)
+		{
+			onMessageCtrlSpeedCalc();
+		}
+		'//跳转计算
+		elseif(msgId == NDPNET_CTRL_JUMP_CALC_MSG_ID)
+		{
+			onMessageCtrlJumpCalc();
+		}
+		'//时间较准计算
+		elseif(msgId == NDPNET_CTRL_JUMP_CALC_MSG_ID)
+		{
+			onMessageCtrlVerifyCalc();
+		}
+	}
+
+
+	} 'class NdpnetMassageListener
+
+} ' script

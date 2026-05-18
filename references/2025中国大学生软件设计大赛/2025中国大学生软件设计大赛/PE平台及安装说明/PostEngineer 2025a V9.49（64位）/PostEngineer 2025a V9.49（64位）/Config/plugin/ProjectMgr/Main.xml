@@ -1,0 +1,500 @@
+<ProjectMgr version="2.0">
+
+<ObjectType>
+	<MVO name="MVO_OBJ_TYPE_UNSET" id=0>
+
+    #define MVO_OBJ_TYPE_UNSET					0
+    #define MVO_OBJ_TYPE_ANIM					1
+    #define MVO_OBJ_TYPE_CTRLPT					2
+    #define MVO_OBJ_TYPE_VAR					3
+    #define MVO_OBJ_TYPE_BUT					4
+    #define MVO_OBJ_TYPE_KNOB					5
+    #define MVO_OBJ_TYPE_AREA					6
+    #define MVO_OBJ_TYPE_KEY_MAP				7
+    #define MVO_OBJ_TYPE_MSG					8
+    #define MVO_OBJ_TYPE_IMAGE					9
+    #define MVO_OBJ_TYPE_TEXT					10
+    #define MVO_OBJ_TYPE_PAGE					11
+    #define MVO_OBJ_TYPE_PROGRAM				12
+    #define MVO_OBJ_TYPE_FUCTION				13
+    #define MVO_OBJ_TYPE_TRIGGER				14
+    #define MVO_OBJ_TYPE_CAMERA_DRIVING			15
+    #define MVO_OBJ_TYPE_LENS_FLARE				16
+    #define MVO_OBJ_TYPE_SPRITE					17
+    #define MVO_OBJ_TYPE_COORD					18
+    #define MVO_OBJ_TYPE_STATUS					19
+    #define MVO_OBJ_TYPE_WINDOW					20
+    #define MVO_OBJ_TYPE_TRIGGER_CHECK			21
+    #define MVO_OBJ_TYPE_COORD_CHECK			22
+    #define MVO_OBJ_TYPE_PIPE					23
+    #define MVO_OBJ_TYPE_RECORD_SCENE			24
+    #define MVO_OBJ_TYPE_MENU					25
+    #define MVO_OBJ_TYPE_FAULT					26
+    #define MVO_OBJ_TYPE_EXAMINE				27
+    #define MVO_OBJ_TYPE_STEP					28
+    #define MVO_OBJ_TYPE_OPERATION				29
+    #define MVO_OBJ_TYPE_REACTION				30
+    #define MVO_OBJ_TYPE_EDIT					31
+    #define MVO_OBJ_TYPE_SLIDER					32
+    #define MVO_OBJ_TYPE_VECTOR					33
+    #define MVO_OBJ_TYPE_POLE					34
+    #define MVO_OBJ_TYPE_MENU_MAGIC				35
+    #define MVO_OBJ_TYPE_TEXT_EX				36
+    #define MVO_OBJ_TYPE_MAP					37
+    #define MVO_OBJ_TYPE_SHIP					38
+    #define MVO_OBJ_TYPE_SCREW					39
+    #define MVO_OBJ_TYPE_UDP					40
+    #define MVO_OBJ_TYPE_TCPIP					41
+    #define MVO_OBJ_TYPE_COM					42
+    #define MVO_OBJ_TYPE_PROCESS				43
+    #define MVO_OBJ_TYPE_OPC					44
+    #define MVO_OBJ_TYPE_TEXTURE				45
+    #define MVO_OBJ_TYPE_CHARACTER				46
+    #define MVO_OBJ_TYPE_DDE					47
+    #define MVO_OBJ_TYPE_VIEWPORT				48
+    #define MVO_OBJ_TYPE_CURSOR					49
+    #define MVO_OBJ_TYPE_DDS					50
+    #define MVO_OBJ_TYPE_ROUTE					51
+    #define MVO_OBJ_TYPE_ROBOT					52
+    #define MVO_OBJ_TYPE_TRIGGER_ANIM			53
+    #define MVO_OBJ_TYPE_WORKSHOP				54
+    #define MVO_OBJ_TYPE_MEDIA					55
+    #define MVO_OBJ_TYPE_HOME					56
+    #define MVO_OBJ_TYPE_WRENCH					57
+    #define MVO_OBJ_TYPE_NUT					58
+    #define MVO_OBJ_TYPE_PART					59
+    #define MVO_OBJ_TYPE_BUT_3D					60
+    #define MVO_OBJ_TYPE_TRIGGER_TIMER			61
+    #define MVO_OBJ_TYPE_SOUND					62
+    #define MVO_OBJ_TYPE_CAMERA					63
+    #define MVO_OBJ_TYPE_GUIDE					64
+    #define MVO_OBJ_TYPE_DASHBOARD				65
+    #define MVO_OBJ_TYPE_HISTOGRAM				66
+    #define MVO_OBJ_TYPE_PERCENT				67
+    #define MVO_OBJ_TYPE_GENERATOR				68
+    #define MVO_OBJ_TYPE_CURVE					69
+    #define MVO_OBJ_TYPE_CHART					70
+    #define MVO_OBJ_TYPE_NUMBER					71
+    #define MVO_OBJ_TYPE_THERMOGRAPHY			72
+    #define MVO_OBJ_TYPE_AIRLINE				73
+    #define MVO_OBJ_TYPE_TABLE					74
+    #define MVO_OBJ_TYPE_GUIDELINE				75
+    #define MVO_OBJ_TYPE_MARKER					76
+    #define MVO_OBJ_TYPE_SKYBOX					77
+    #define MVO_OBJ_TYPE_PARTICLE				78
+    #define MVO_OBJ_TYPE_BODY					79
+    #define MVO_OBJ_TYPE_DATATIMEBUFFER			80
+    #define MVO_OBJ_TYPE_POLYLINE				81
+    #define MVO_OBJ_TYPE_RADAR					82
+    #define MVO_OBJ_TYPE_CLOUD					83
+    #define MVO_OBJ_TYPE_JET					84
+    #define MVO_OBJ_TYPE_WAKE					85
+    #define MVO_OBJ_TYPE_VOLUME					86
+    #define MVO_OBJ_TYPE_VOLUME_POOL			87
+    #define MVO_OBJ_TYPE_PAGEDLOD				88
+    #define MVO_OBJ_TYPE_3DTILES				89
+    #define MVO_OBJ_TYPE_PROGRESS				90
+    #define MVO_OBJ_TYPE_SCALE					91
+    #define MVO_OBJ_TYPE_GRID					92
+    #define MVO_OBJ_TYPE_REMARK					93
+    #define MVO_OBJ_TYPE_VIDEO					94
+    #define MVO_OBJ_TYPE_MENU_POP 				95
+    #define MVO_OBJ_TYPE_LIST 				101
+    #define MVO_OBJ_TYPE_ROPE					102
+    #define MVO_OBJ_TYPE_SECTION					103
+    #define MVO_OBJ_TYPE_CAVE					104
+    #define MVO_OBJ_TYPE_ANNOTATION				108
+
+    #define MVO_OBJ_TYPE_SENSE_RADAR					109
+
+
+    #define MVO_OBJ_TYPE_DATABASE				1000
+
+
+
+  </MVO>
+ 
+	<!-- image:类型，组，子对象1，子对象2，子对象3，... -->
+	<!-- image:类型，子对象 -->
+	<Object name="UI_NONE" id="0" text="Null" text_chi="未知" image="0" />
+	<Object name="UI_PROJECT" text="Project" text_chi="项目" image="0" />
+	<Object name="UI_MODEL" text="Model" text_chi="模型" image="1,1" />
+	
+	<Object name="UI_OBJ_BEGIN" id="5"  />
+	<Object name="UI_OBJ_TYPE_MODULE" id="6" text="Module" text_chi="模块" image="3,3,61,62" />
+	
+	<Object name="UI_OBJ_STDBEGIN" id="9"  />
+	<Object name="UI_OBJ_TYPE_CTRLPT" id="10" text="Ctrlpt" text_chi="控制点" mvo="MVO_OBJ_TYPE_CTRLPT" order="1" image="4,4" />
+	<Object name="UI_OBJ_TYPE_BUTTON" text="Button" text_chi="按钮" mvo="MVO_OBJ_TYPE_BUT" order="3" image="5,5"/>
+	<Object name="UI_OBJ_TYPE_KEYMAP" text="Keymap" text_chi="键盘" mvo="MVO_OBJ_TYPE_KEY_MAP" image="34,6" />
+	<Object name="UI_OBJ_TYPE_KNOB" text="Knob" text_chi="旋钮" mvo="MVO_OBJ_TYPE_KNOB" image="35,7" />
+	<Object name="UI_OBJ_TYPE_SLIDER" text="Slider" text_chi="滑块" mvo="MVO_OBJ_TYPE_SLIDER" image="36,8" />
+	<Object name="UI_OBJ_TYPE_AREA" text="Area" text_chi="区域" mvo="MVO_OBJ_TYPE_AREA" image="37,9" />
+	<Object name="UI_OBJ_TYPE_WINDOW" text="Window" text_chi="窗口" mvo="MVO_OBJ_TYPE_WINDOW" image="38,10" />
+
+	<Object name="UI_OBJ_TYPE_ANIM" text="Animation" text_chi="动画" mvo="MVO_OBJ_TYPE_ANIM" order="0" image="39,55,11,11,39,55" />
+	<Object name="UI_OBJ_TYPE_TRIGGER" text="Trgger" text_chi="触发器" mvo="MVO_OBJ_TYPE_TRIGGER" order="2" image="12,12" />
+	<Object name="UI_OBJ_TYPE_MENU" text="Menu" text_chi="菜单" mvo="MVO_OBJ_TYPE_MENU_POP" image="41,41" />
+
+	<Object name="UI_OBJ_TYPE_TEXT" text="Text" text_chi="文本" mvo="MVO_OBJ_TYPE_TEXT" image="42,14" />
+	<Object name="UI_OBJ_TYPE_IMAGE" text="Image" text_chi="图片" mvo="MVO_OBJ_TYPE_IMAGE" image="15,15" />
+	<Object name="UI_OBJ_TYPE_TEXTURE" text="Texture" text_chi="纹理" image="58,27" />
+
+	<Object name="UI_OBJ_TYPE_EDIT" text="Edit" text_chi="编辑框" mvo="MVO_OBJ_TYPE_EDIT" image="16,16" />
+	<Object name="UI_OBJ_TYPE_VIEWPORT"  text="Viewport" text_chi="视口" mvo="MVO_OBJ_TYPE_UNSET:viewport" image="45,17" />
+	<Object name="UI_OBJ_TYPE_MSG" text="Message" text_chi="消息" mvo="MVO_OBJ_TYPE_MSG" image="46,18" />
+
+	<Object name="UI_OBJ_TYPE_VAR" text="Variable" text_chi="变量" mvo="MVO_OBJ_TYPE_VAR" image="47,19" />
+	<Object name="UI_OBJ_TYPE_VECTOR" text="Vector" text_chi="矢量" mvo="MVO_OBJ_TYPE_VECTOR" image="48,20" />
+	<Object name="UI_OBJ_TYPE_POLE" text="Pole" text_chi="三维轴" mvo="MVO_OBJ_TYPE_POLE" image="49,21"/>
+	<Object name="UI_OBJ_TYPE_COORD" text="Coord" text_chi="三维点" mvo="MVO_OBJ_TYPE_COORD" image="22,22"/>
+
+
+	<Object name="UI_OBJ_TYPE_MENU_MAGIC" text="MagicMenu" text_chi="魔幻菜单" mvo="MVO_OBJ_TYPE_MENU_MAGIC" image="51,23"/>
+	<Object name="UI_OBJ_TYPE_FAULT" text="Fault" text_chi="虚拟故障" image="52,24" />
+	<Object name="UI_OBJ_TYPE_MANIPULATION" text="Manipulation" text_chi="虚拟操作"  />
+ 
+	<Object name="UI_OBJ_TYPE_PROGRAM" text="Program" text_chi="程序段" mvo="MVO_OBJ_TYPE_PROGRAM" />
+	<Object name="UI_OBJ_TYPE_FUNCTION" text="Function" text_chi="函数" mvo="MVO_OBJ_TYPE_FUCTION" image="56,56" />
+	<Object name="UI_OBJ_TYPE_CLASS" text="Class" text_chi="类" mvo="MVO_OBJ_TYPE_PROGRAM" image="54,26" />
+
+	<Object name="UI_OBJ_TYPE_ACT" />
+	<Object name="UI_OBJ_TYPE_ACTION" />
+	<Object name="UI_OBJ_TYPE_SCREW" text="screw" text_chi="旋量" image="50,50" />
+	<Object name="UI_OBJ_TYPE_CAMERA" />
+	<Object name="UI_OBJ_TYPE_SEA" text="sea" text_chi="海面" image="60,60"/> 
+	<Object name="UI_OBJ_TYPE_WEATHER" text="weather" text_chi="雨雪" image="43,15" />
+	<Object name="UI_OBJ_TYPE_SHIP" text="ship" text_chi="船" mvo="MVO_OBJ_TYPE_SHIP" 	image="29,29" />
+	<Object name="UI_OBJ_TYPE_MAP" text="map" text_chi="地图" mvo="MVO_OBJ_TYPE_MAP" 	image="43,15" />
+	<Object name="UI_OBJ_TYPE_SKY" text="map" text_chi="天空" mvo="UI_OBJ_TYPE_SKY" 	image="43,15" />
+	<Object name="UI_OBJ_TYPE_CHARACTER" text="Skeleton" text_chi="骨骼" mvo="MVO_OBJ_TYPE_CHARACTER" 	image="43,15" />
+	<Object name="UI_OBJ_TYPE_PARTICLE" text="Particle" text_chi="粒子" mvo="MVO_OBJ_TYPE_PARTICLE" image="23,23" />
+	<Object name="UI_OBJ_TYPE_MEDIA" text="Media" text_chi="视频" image="43,15" />	
+	<Object name="UI_OBJ_TYPE_701_FAULT" id="800" text="Fault" text_chi="虚拟故障" image="52,24" />
+
+	<Object name="UI_OBJ_TYPE_CAMERA" id="39" text="Camera" text_chi="相机" mvo="MVO_OBJ_TYPE_CAMERA"  image="68,68" />
+	<Object name="UI_OBJ_TYPE_GRAPH" id="49" text="Graph" text_chi="行为" image="67,67" />
+	<Object name="UI_OBJ_TYPE_MODEL" id="52" text="Model" text_chi="模型" image="1,1" />
+	<Object name="UI_OBJ_TYPE_PART" id="50" text="Part" text_chi="部件" mvo="MVO_OBJ_TYPE_PART" image="26,26" />
+	
+
+	<Object name="UI_OBJ_TYPE_SOUND" id="51" text="Sound" text_chi="声音" mvo="MVO_OBJ_TYPE_SOUND"  image="43,43" />
+	
+	<Object name="UI_OBJ_TYPE_CHART"  id="53" text="Chart" text_chi="图表" mvo="MVO_OBJ_TYPE_CHART" image="69,69" />
+	<Object name="UI_OBJ_TYPE_DATASOURCE"  id="54" text="DataSource" text_chi="数据源" mvo="MVO_OBJ_TYPE_DATABASE" image="53,53" />
+	<Object name="UI_OBJ_TYPE_MARKER"  id="55" text="Marker" text_chi="标志牌" mvo="MVO_OBJ_TYPE_MARKER" image="18,18" />
+	<Object name="UI_OBJ_TYPE_GENERATOR"  id="56" text="Generator" text_chi="发生器" mvo="MVO_OBJ_TYPE_GENERATOR" image="31,31" />
+	<Object name="UI_OBJ_TYPE_SKYBOX"  id="57" text="Generator" text_chi="天空盒" mvo="MVO_OBJ_TYPE_SKYBOX" image="32,32" />
+	<Object name="UI_OBJ_TYPE_ROUTE"  id="58" text="Route" text_chi="路线" mvo="MVO_OBJ_TYPE_ROUTE" image="44,44" />
+
+	<Object name="UI_OBJ_TYPE_CONNECT"  id="100" text="Connect" text_chi="连接" image="20,20" />
+	<Object name="UI_OBJ_TYPE_BODY" id="59" text="Body" text_chi="体" mvo="MVO_OBJ_TYPE_BODY" image="57,57" />
+
+	<Object name="UI_OBJ_TYPE_POLYLINE" id="60" text="Polyline" text_chi="折线" mvo="MVO_OBJ_TYPE_POLYLINE" image="59,59" />
+	<Object name="UI_OBJ_TYPE_CLOUD" id="61" text="Cloud" text_chi="云" mvo="MVO_OBJ_TYPE_CLOUD" image="60,60" />
+
+	<Object name="UI_OBJ_TYPE_JET" id="62" text="Jet" text_chi="尾迹" mvo="MVO_OBJ_TYPE_JET" image="28,28" />
+
+	<Object name="UI_OBJ_TYPE_VOLUMEPOOL" id="64" text="Volume" text_chi="场" mvo="MVO_OBJ_TYPE_VOLUME_POOL" image="9,9" />
+
+	<Object name="UI_OBJ_TYPE_STATUS" id="65" text="Status" text_chi="状态" mvo="MVO_OBJ_TYPE_STATUS" image="18,18" />
+	<Object name="UI_OBJ_TYPE_3DTILES" id="66" text="3dtiles" text_chi="3dTiles" mvo="MVO_OBJ_TYPE_3DTILES" image="2,2" />
+	<Object name="UI_OBJ_TYPE_3DEARTH" id="67" text="3dearth" text_chi="3d地球" mvo="MVO_OBJ_TYPE_3DEARTH" image="63,63" />
+	<Object name="UI_OBJ_TYPE_VIDEO" text="Video" text_chi="视频" mvo="MVO_OBJ_TYPE_VIDEO" image="25,25" />
+  	<Object name="UI_OBJ_TYPE_LIST" text="List" text_chi="链表" mvo="MVO_OBJ_TYPE_LIST" image="47,19" />
+ 	<Object name="UI_OBJ_TYPE_PIPE" text="Pipe" text_chi="管道" mvo="MVO_OBJ_TYPE_PIPE" image="20,20" />
+ 	<Object name="UI_OBJ_TYPE_ROPE" text="Rope" text_chi="绳索" mvo="MVO_OBJ_TYPE_ROPE" image="33,33" />
+ 	<Object name="UI_OBJ_TYPE_SECTION" text="Section" text_chi="剖切" mvo="MVO_OBJ_TYPE_SECTION" image="13,13" />
+                <Object name="UI_OBJ_TYPE_ROAD"  text="Road" text_chi="道路" mvo="MVO_OBJ_TYPE_ROAD" image="20,20" />
+
+                <Object name="UI_OBJ_TYPE_CAVE"  text="Cave" text_chi="CAVE" mvo="MVO_OBJ_TYPE_CAVE" image="32,32" />
+
+ 	<Object name="UI_OBJ_TYPE_ANNOTATION" text="Annotation" text_chi="标注" mvo="MVO_OBJ_TYPE_ANNOTATION" image="18,18" />
+
+  	<Object name="UI_OBJ_TYPE_SENSOR_RADAR" text="Lidar" text_chi="激光雷达" mvo="MVO_OBJ_TYPE_SENSOR_RADAR" image="40,40" />
+	<Object name="UI_OBJ_TYPE_SENSOR_CAMERA" text="Camera" text_chi="图像传感器" mvo="MVO_OBJ_TYPE_SENSOR_CAMERA" image="30,30" />
+	
+	<Object name="UI_OBJ_TYPE_COOPERATION" text="cooperation" text_chi="协同操作"  />
+
+	
+	<Object name="UI_OBJ_TYPE_TEMP1" id="900" text="Temp1" text_chi="未知对象1" image="0" />
+	<Object name="UI_OBJ_TYPE_TEMP2" id="901" text="Temp2" text_chi="未知对象2" image="0" />
+	<Object name="UI_OBJ_TYPE_TEMP3" id="902" text="Temp3" text_chi="未知对象3" image="0" />
+	<Object name="UI_OBJ_TYPE_USEROBJ" id="1000" text="UserObj" text_chi="用户对象" image="3,3" />
+
+</ObjectType>
+
+<NameType ignoreCase="0">
+	<ObjName name="peVarAnimSpeed" ui="UI_OBJ_TYPE_VAR" show=0 />
+	<ObjName name="peVarCameraEye" ui="UI_OBJ_TYPE_COORD" show=0 />
+	<ObjName name="peVarCameraTarget" ui="UI_OBJ_TYPE_COORD" show=0 />   
+	<ObjName name="main" ui="UI_OBJ_TYPE_VIEWPORT" show=0 /> 
+	<ObjName name="main" ui="UI_OBJ_TYPE_MODULE" show=1 />
+	<ObjName name="_dial" postfix="1" />
+	<ObjName name="pe" prefix="1" />
+	<ObjName name="anim" prefix="1" />
+	<ObjName name="=" include="1" />
+	<ObjName name="main" />
+	<ObjName name="class" />
+	<ObjName name="system" />
+	<ObjName name="system boot" />
+	<ObjName name="系统动画" />
+	<ObjName name="$(" prefix="1" />
+	
+	<ObjName name="OnSocketClosed" />
+	<ObjName name="OnSocketConnected" />
+	<ObjName name="OnSocketFailed" />
+	<ObjName name="OnSocketAccept" />
+	<ObjName name="OnSocketReceive" />
+	<ObjName name="OnAppMessage" />
+	<ObjName name="OnCommReceive" />
+
+</NameType>
+
+<MenuType>
+   <MenuMain type="project" >
+    <Menu name="生成模板" action="createtemple" show="1" />
+	<Menu /> 
+    <Menu name="打开所在文件夹" action="opendir" />
+    <Menu />
+    <Menu name="属性" action="property" />
+  </MenuMain>
+  
+   <MenuMain type="modelset" >
+    <Menu name="从文件添加模型" action="addfromfile" />
+    <Menu name="从模型库添加模型" action="addfromlib" />
+    <Menu />
+    <Menu name="属性" action="property"/>
+  </MenuMain>
+  
+  <MenuMain type="model" >
+    <Menu name="设置为启动模型" action="startmodel" />
+    <Menu name="打开所在文件夹" action="opendir" />
+	<Menu name="编辑模型" action="edit" />
+	<Menu name="重载模型" action="reload" />
+    <Menu />
+	<Menu name="移除" action="remove" />
+    <Menu name="属性" action="property" />
+  </MenuMain>
+  
+  <MenuMain type="object" >
+	<!-- Menu name="编辑" action="edit" --> 
+	<Menu name="平移" action="move" condition="=UI_OBJ_TYPE_MODEL" />
+	<Menu name="旋转" action="rotate" condition="=UI_OBJ_TYPE_MODEL" />
+	<Menu name="缩放" action="scale" condition="=UI_OBJ_TYPE_MODEL" />
+	<Menu name="居中" action="zoomin" condition="=UI_OBJ_TYPE_MODEL" />
+	<Menu name="保存" action="save" condition="=UI_OBJ_TYPE_MODEL" />
+    	<Menu name="删除" action="del"  condition="{nosystem}"/>
+    	<Menu />
+	<Menu name="添加到组" action="addtogroup"  />
+	<Menu name="移到默认组" action="removefromgroup" condition="{parenttype}=UI_NODE_OBJGROUP" />
+	<Menu />	
+	<Menu name="绘制轨迹线" action="DrawRouteLine" condition="=UI_OBJ_TYPE_ANIM"    />
+	<Menu name="删除轨迹线" action="DeleteRouteLine" condition="=UI_OBJ_TYPE_ANIM"    />
+	
+	<Menu name="测试" action="test" condition="=UI_OBJ_TYPE_GRAPH" />
+	<Menu name="定位" action="locate" condition="=UI_OBJ_TYPE_CAMERA" />
+	<Menu name="平移" action="move" condition="=UI_OBJ_TYPE_VOLUMEPOOL" />
+	<Menu name="旋转" action="rotate" condition="=UI_OBJ_TYPE_VOLUMEPOOL" />
+	<Menu name="缩放" action="scale" condition="=UI_OBJ_TYPE_VOLUMEPOOL" />
+	<Menu name="居中" action="zoom" condition="=UI_OBJ_TYPE_VOLUMEPOOL" />
+	
+	<Menu name="属性" action="property" />
+  </MenuMain>
+  
+   <MenuMain type="objectset" >
+    	<Menu name="添加 帧动画" type="object" action="add" data="0" condition="=UI_OBJ_TYPE_ANIM" />
+	<Menu name="添加 复合动画" type="object" action="add" data="1" condition="=UI_OBJ_TYPE_ANIM" />
+	<Menu name="添加 场序列动画" type="object" action="add" data="3" condition="=UI_OBJ_TYPE_ANIM" />
+	<Menu name="添加 {name}" type="object" action="add" condition="!UI_OBJ_TYPE_ANIM;!UI_OBJ_TYPE_MENU_MAGIC" />
+   	 <Menu />
+	<Menu name="新建组" type="group" action="add"  />
+	<Menu name="导出" type="object" action="export"  data="object" condition="!UI_OBJ_TYPE_GRAPH;!UI_OBJ_TYPE_MODEL;!UI_OBJ_TYPE_FUNCTION;!UI_OBJ_TYPE_CLASS" />
+    <Menu />
+    <Menu name="属性" action="property" />
+  </MenuMain>
+  
+   <MenuMain type="group" >
+    	<Menu name="添加 帧动画" type="object" action="add" data="0" condition="=UI_OBJ_TYPE_ANIM" />
+	<Menu name="添加 复合动画" type="object" action="add" data="1" condition="=UI_OBJ_TYPE_ANIM" />
+	<Menu name="添加 场序列动画" type="object" action="add" data="3" condition="=UI_OBJ_TYPE_ANIM" />
+	<Menu name="添加 {name}" type="object" action="add" condition="!UI_OBJ_TYPE_ANIM;!UI_OBJ_TYPE_MENU_MAGIC" />
+    <Menu />
+	<Menu name="删除组" type="group" action="del"  />
+	<Menu name="清空组" type="group" action="clear"  />
+	<Menu name="排序" type="group" action="sort"  />
+    <Menu />
+    <Menu name="属性" action="property" />
+  </MenuMain>
+  
+   <MenuMain type="module" >
+	  <Menu name="添加子模块" type="object" action="add" data="UI_OBJ_TYPE_MODULE" />
+	  <Menu />
+
+	<Menu name="平移" action="move" condition="=UI_OBJ_TYPE_MODULE" />
+	<Menu name="旋转" action="rotate" condition="=UI_OBJ_TYPE_MODULE" />
+	<Menu name="缩放" action="scale" condition="=UI_OBJ_TYPE_MODULE" />
+	<Menu name="路径规划" action="route" condition="=UI_OBJ_TYPE_MODULE" />
+	<Menu name="运行" action="run" condition="=UI_OBJ_TYPE_MODULE" />
+	<Menu />
+
+	  <Menu name="添加模型" type="object" action="add" data="UI_OBJ_TYPE_MODEL" />
+
+	  <Menu name="添加动画">
+	  	<Menu name="添加帧动画" type="object" action="add" data="UI_OBJ_TYPE_ANIM:0" />
+	  	<Menu name="添加复合动画" type="object" action="add" data="UI_OBJ_TYPE_ANIM:1" />
+	  	<Menu name="添加场序列动画" type="object" action="add" data="UI_OBJ_TYPE_ANIM:3" />
+	  </Menu>
+
+	  <Menu name="添加相机" type="object" action="add" data="UI_OBJ_TYPE_CAMERA" />
+
+	  <Menu name="添加行为" type="object" action="add" data="UI_OBJ_TYPE_GRAPH" />
+
+	 <Menu name="添加剖切" type="object" action="add" data="UI_OBJ_TYPE_SECTION" />
+	 <Menu name="添加路线" type="object" action="add" data="UI_OBJ_TYPE_ROUTE" />
+	 <Menu name="添加管道" type="object" action="add" data="UI_OBJ_TYPE_PIPE" />
+	 <Menu name="添加标注" type="object" action="add" data="UI_OBJ_TYPE_ANNOTATION" />
+
+	 <Menu name="添加地图对象">
+	   	<Menu name="添加3dTiles" type="object" action="add" data="UI_OBJ_TYPE_3DTILES" />
+	   	<Menu name="添加3d地球" type="object" action="add" data="UI_OBJ_TYPE_3DEARTH" />
+	  </Menu>
+	   
+	  <Menu name="添加界面对象">
+		<Menu name="{UI_OBJ_TYPE_IMAGE}" type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_TEXTURE}" type="object" action="add" />
+
+		<Menu name="{UI_OBJ_TYPE_POLYLINE}" type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_VIEWPORT}"  type="object" action="add" />
+	  </Menu>
+
+	  <Menu name="添加交互对象">
+		<Menu name="{UI_OBJ_TYPE_CTRLPT}" type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_BUTTON}"  type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_KEYMAP}" type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_KNOB}"  type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_PART}"  type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_SLIDER}" type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_AREA}" type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_MENU}" type="object" action="add" />
+	  </Menu>
+
+	  <Menu name="添加数据对象">
+		<Menu name="{UI_OBJ_TYPE_DATASOURCE}"  type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_GENERATOR}"  type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_VAR}"  type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_SCREW}" type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_COORD}" type="object" action="add"  />
+		<Menu name="{UI_OBJ_TYPE_VECTOR}"  type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_BODY}"  type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_STATUS}"  type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_LIST}" type="object" action="add"  />
+	  </Menu>
+
+	  <Menu name="添加图表对象">
+		<Menu name="{UI_OBJ_TYPE_CHART}"  type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_MARKER}" type="object" action="add" />
+	  </Menu>
+
+	  <Menu name="添加媒体对象">
+		<Menu name="{UI_OBJ_TYPE_VIDEO}"  type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_SOUND}" type="object" action="add" />
+	  </Menu>
+
+
+	  <Menu name="添加程序对象">
+		<Menu name="{UI_OBJ_TYPE_FUNCTION}" type="object" action="add" />
+		<Menu name="{UI_OBJ_TYPE_CLASS}" type="object" action="add" />
+	  </Menu>
+
+	 <Menu name="添加效果对象">
+	 	<Menu name="粒子" type="object" action="add" data="UI_OBJ_TYPE_PARTICLE" />
+		 <Menu name="云" type="object" action="add" data="UI_OBJ_TYPE_CLOUD" />
+		 <Menu name="尾迹" type="object" action="add" data="UI_OBJ_TYPE_JET" />
+	 	 <Menu name="天空盒" type="object" action="add" data="UI_OBJ_TYPE_SKYBOX" />
+	  </Menu>
+
+	  <Menu name="添加物理场">
+		 <Menu name="{UI_OBJ_TYPE_VOLUMEPOOL}"  type="object" action="add" />
+		 <Menu name="VTK场" type="object" action="create_vtk" />
+	  </Menu>
+
+	  <Menu name="添加仿真对象">
+		<Menu name="{UI_OBJ_TYPE_SHIP}" type="object" action="add" />
+	  </Menu>
+
+	  <Menu name="添加传感器">
+	 	<Menu name="添加激光雷达" type="object" action="add" data="UI_OBJ_TYPE_SENSOR_RADAR" />
+		 <Menu name="添加图像传感器" type="object" action="add" data="UI_OBJ_TYPE_SENSOR_CAMERA" />
+	  </Menu>
+
+	  <Menu name="添加其他对象">
+	 	<Menu name="添加绳索" type="object" action="add" data="UI_OBJ_TYPE_ROPE" />
+		 <Menu name="添加连接对象" type="object" action="add" data="UI_OBJ_TYPE_CONNECT" />
+		 <Menu name="添加CAVE" type="object" action="add" data="UI_OBJ_TYPE_CAVE" />
+	  </Menu>
+
+
+	  <Menu />
+	  <Menu name="导入">
+		<Menu name="模块"  action="import" data="module" />
+		<Menu name="帧动画"  action="import" data="animation" />
+		<Menu name="对象"  action="import" data="object" />
+		<Menu name="函数"  action="import" data="function" />
+		<Menu name="行为"  action="import" data="graph" />
+	  </Menu>
+	  
+	  <Menu name="导出">
+	  	<Menu name="模块" action="export" data="module" />
+		<Menu name="帧动画"  action="export" data="animation" />
+	  </Menu>
+	  
+	  <Menu />
+	  <Menu name="清空" type="object" action="clear" />
+	   <Menu name="查找" type="object" action="find" />
+	  <Menu name="删除" type="object" action="delete" />
+	  <Menu />
+
+	  <Menu name="生成组件" type="object" action="CreateComponent" />
+	  <Menu />
+
+	  <Menu name="属性" action="property" />
+	  
+   </MenuMain>
+  
+
+   <MenuMain type="module_component" >
+	  <Menu name="编辑组件" type="object" action="EditComponent"  />
+	  <Menu name="编辑所有子组件" type="object" action="EditAllComponent"  />
+	  <Menu name="刷新组件" type="object" action="UpdateComponent"  />
+	  <Menu name="刷新组件与同源" type="object" action="UpCongCom"  />
+	  <Menu name="转为模块" type="object" action="ToModule"  />
+	  <Menu name="变量映射" type="object" action="VarMapping"  />
+	  <Menu />
+	 <Menu name="删除" type="object" action="delete" />
+	 <Menu name="属性" action="property" />
+   </MenuMain>
+</MenuType>
+
+<Add3DObject>
+  <Menu name="UI_OBJ_TYPE_CTRLPT" />
+  <Menu />  
+  <Menu name="UI_OBJ_TYPE_KNOB"  />
+  <Menu name="UI_OBJ_TYPE_SLIDER"  />
+  <Menu name="UI_OBJ_TYPE_AREA" />
+  <Menu name="UI_OBJ_TYPE_WINDOW" />
+  <Menu name="UI_OBJ_TYPE_EDIT"  />
+  <Menu name="UI_OBJ_TYPE_VIEWPORT"  />	
+  <Menu />
+  <Menu name="UI_OBJ_TYPE_POLE"  />
+  <Menu name="UI_OBJ_TYPE_COORD"  />
+</Add3DObject>
+
+
+<SearchReferObject>
+  <Obj bSearch="0" />
+  <name name="SEARCH_REFER_OBJECT"  />
+</SearchReferObject>
+
+</ProjectMgr>
+

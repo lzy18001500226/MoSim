@@ -1,0 +1,349 @@
+'创建时间: 2023-09-02
+'作者: ypj
+'描述: 数字地球
+'更新：2023-09-02
+
+Script{
+
+'/**
+'* @brief 数字地球脚本接口 v2.0
+'*/
+class DigitEarthManager 
+{
+string mPluginName;
+
+DigitEarthManager()
+{
+    mPluginName = "PETo3dEarth";
+}
+
+'//--------------------------------------------------------------------------------------
+'// 经纬度与世界坐标变换
+'//--------------------------------------------------------------------------------------
+
+'/** 
+'* @brief 经纬度高程转换为XYZ
+'* @since 2022-09-27
+'*/
+int latLonDemToXYZ(double& x, double& y, double& z, double lat, double lon, double dem)
+{
+	'// ypj, 2022-11-04, 使用新的基于脚本 handle 参数的实现
+	int res = pluginCall(mPluginName, "LatLonDEMToXYZS", lat.self(), lon.self(), dem.self(), x.self(), y.self(), z.self());
+	
+	return res;
+}
+
+'/** 
+'* @brief XYZ转经纬度高程
+'* @since 2023-09-02
+'*/
+int xyzToLatLonDem(double& lat, double& lon, double& dem, double x, double y, double z)
+{
+	int res = pluginCall(mPluginName, "XYZToLatLonDEMS", lat.self(), lon.self(), dem.self(), x.self(), y.self(), z.self());
+	
+	return res;
+}
+
+
+'//--------------------------------------------------------------------------------------
+'// 相机操作
+'//--------------------------------------------------------------------------------------
+
+'/**
+'* @brief 获取地球相机参数.（世界相机参数）
+'* @since 2023-09-27
+'*/
+void getCameraByWorld(float array& cam)
+{
+    pluginCall("PETo3dEarth", "CameraGetByWorld", cam.self());
+}
+
+'/**
+'* @brief 设置地球相机模式： 0: ORBIT_EARTH_OVERLOOK; 1: ORBIT_EARTH_INSPECT
+'* @since 2023-09-02
+'*/
+void setCameraMode(int mode)
+{
+    pluginCall("PETo3dEarth", "CameraSetMode", mode);
+}
+
+'/**
+'* @brief 设置地球相机参数，以世界相机参数设置
+'* @since 2023-09-02
+'*/
+void setCameraByWorld(float array & eye, float array & tar, float array & up)
+{
+    pluginCall("PETo3dEarth", "CameraSetByWorld", eye.self(), tar.self(), up.self());
+}
+
+'/**
+'* @brief 设置地球相机参数，以世界相机参数设置
+'* @since 2023-09-04
+'*/
+void setCameraByWorldEx(float e0, float e1, float e2, float t0, float t1, float t2, float u0, float u1, float u2)
+{
+    float eye[3]; eye[0] = e0; eye[1] = e1; eye[2] = e2;
+	float tar[3]; tar[0] = t0; tar[1] = t1; tar[2] = t2;
+	float up[3];  up[0] = u0; up[1] = u1; up[2] = u2;
+    pluginCall("PETo3dEarth", "CameraSetByWorld", eye.self(), tar.self(), up.self());
+}
+
+'/**
+'* @brief 设置地球相机参数，以经纬高设置。根据相机模式，设置 OverLookPositonOnEarth, 或 InspectOriginOnEarth
+'* @since 2023-09-02
+'*/
+void setCameraByLatLonDem(float lat, float lon, float dem)
+{
+    pluginCall("PETo3dEarth", "CameraSetByLatLonDem", lat.self(), lon.self(), dem.self());
+}
+
+'/**
+'* @brief 设置地球相机参数，以相对节点 key 和相机局部参数设置。
+'* @since 2023-09-02
+'*/
+void setCameraByObject(dword key, float array & eye, float array & tar, float array & up)
+{
+    pluginCall("PETo3dEarth", "CameraSetByObject", key, eye.self(), tar.self(), up.self());
+}
+
+'/**
+'* @brief 设置地球相机参数，以相对节点 key 和相机局部参数设置。
+'* @since 2023-09-04
+'*/
+void setCameraByObjectEx(dword key, float e0, float e1, float e2, float t0, float t1, float t2, float u0, float u1, float u2)
+{
+    float eye[3]; eye[0] = e0; eye[1] = e1; eye[2] = e2;
+	float tar[3]; tar[0] = t0; tar[1] = t1; tar[2] = t2;
+	float up[3];  up[0] = u0; up[1] = u1; up[2] = u2;
+    pluginCall("PETo3dEarth", "CameraSetByObject", key, eye.self(), tar.self(), up.self());
+}
+
+'/**
+'* @brief 设置地球相机参数，以相机对象(名)进行设置。
+'* @since 2023-09-04
+'*/
+void setCameraByCameraObject(string& cameraName)
+{
+    pluginCall("PETo3dEarth", "CameraSetByCameraObject", cameraName);
+}
+
+'/** 
+'* @brief 放大
+'* @since 2022-10-07
+'*/
+void zoomIn()
+{
+    pluginCall("PETo3dEarth", "ChangeScaleLevel", 1);
+}
+
+'/** 
+'* @brief 缩小
+'* @since 2022-10-07
+'*/
+void zoomOut()
+{
+    pluginCall("PETo3dEarth", "ChangeScaleLevel", -1);
+}
+
+'/**
+'* @brief 设置地球保护距离。防止相机到地球里去。
+'* @since 2023-01-04
+'*/
+int setGlobeProtectDistance(float dist)
+{
+    return pluginCall("PETo3dEarth", "SetGlobeProtectDistance", dist.self());
+}
+
+'//--------------------------------------------------------------------------------------
+'// field 操作
+'//--------------------------------------------------------------------------------------
+
+'/**
+'* @brief 设置物体到指定经纬高位置，局部坐标系y垂直地球向外，z指向北。
+'* @since 2023-09-09
+'*/
+int setPosition(string& fieldPath, float lat, float lon, float dem)
+{
+    return pluginCall("PETo3dEarth", "FieldSetPosition", fieldPath, lat.self(), lon.self(), dem.self());
+}
+'/**
+'* @brief 设置物体到指定经纬高位置，局部坐标系y垂直地球向外，z指向北
+'* @since 2023-09-09
+'*/
+int setPositionByKey(dword key, float lat, float lon, float dem)
+{
+    return pluginCall("PETo3dEarth", "FieldSetPositionByKey", key, lat.self(), lon.self(), dem.self());
+}
+'/**
+'* @brief 设置物体朝向，物体局部坐标系为 y 垂直地球向外，z 指向北。
+'*  局部坐标系下三个旋转角（单位为弧度）yaw: 绕向上方向 y 旋转； pitch: 绕向左方向 x 旋转； roll: 绕向前方向 z 旋转。 
+'* @since 2023-09-09
+'*/
+int setOrientation(string& fieldPath, float yaw, float pitch, float roll)
+{
+    return pluginCall("PETo3dEarth", "FieldSetOrientation", fieldPath, yaw.self(), pitch.self(), roll.self());
+}
+'/**
+'* @brief 设置物体朝向，物体局部坐标系为 y 垂直地球向外，z 指向北。
+'*  局部坐标系下三个旋转角（单位为弧度）yaw: 绕向上方向 y 旋转； pitch: 绕向左方向 x 旋转； roll: 绕向前方向 z 旋转。 
+'* @since 2023-09-09
+'*/
+int setOrientationByKey(dword key, float yaw, float pitch, float roll)
+{
+    return pluginCall("PETo3dEarth", "FieldSetOrientationByKey", key, yaw.self(), pitch.self(), roll.self());
+}
+
+'//--------------------------------------------------------------------------------------
+'// 3dtiles 对象操作
+'//--------------------------------------------------------------------------------------
+
+'/** 
+'* @brief 创建 3dtiles 对象
+'* @since 2022-11-16
+'*/
+dword create3dtiles(string& tilesName, string& jsonPath)
+{
+    dword hdl = pluginCall("PETo3dtiles", "Create", tilesName, 1);
+	pluginCall("PETo3dtiles", "SetProp", tilesName, "ModelDir", jsonPath);
+
+	return hdl;
+}
+
+'/** 
+'* @brief 创建 3dtiles 对象
+'* @since 2022-11-16
+'*/
+void delete3dtiles(string& tilesName)
+{
+    pluginCall("PETo3dtiles", "Delete", tilesName);
+}
+
+'/** 
+'* @brief 设置 3dtiles 最佳范围
+'* @example set3dtilesBestRange("tiles_1", "50");
+'* @since 2022-11-16
+'*/
+void set3dtilesBestRange(string& tilesName, string& bestRange)
+{
+    pluginCall("PETo3dtiles", "SetProp", tilesName, "BestRange", bestRange);
+}
+
+'/** 
+'* @brief 设置 3dtiles minSSE
+'* @example set3dtilesMinSSE("tiles_1", "5000");
+'* @since 2022-11-16
+'*/
+void set3dtilesMinSSE(string& tilesName, string& minSSE)
+{
+    pluginCall("PETo3dtiles", "SetProp", tilesName, "MinSSE", minSSE);
+}
+
+'/** 
+'* @brief 设置 3dtiles HiddenSSE。 对于Root节点或其子节点，当小于此 HiddenSSE 时，不显示。以便原距离时，可整体不显示。
+'* @example set3dtilesHiddenSSE("tiles_1", "2");
+'* @since 2022-12-10
+'*/
+void set3dtilesHiddenSSE(string& tilesName, string& hiddenSSE)
+{
+    pluginCall("PETo3dtiles", "SetProp", tilesName, "HiddenSSE", hiddenSSE);
+}
+
+'/** 
+'* @brief 设置 3dtiles 最小相机距离
+'* @example set3dtilesMinCameraDist("tiles_1", "10.0");
+'* @since 2022-11-16
+'*/
+void set3dtilesMinCameraDist(string& tilesName, string& dist)
+{
+    pluginCall("PETo3dtiles", "SetProp", tilesName, "MinCameraDis", dist);
+}
+
+'/** 
+'* @brief 设置 3dtiles 数据路径
+'* @example set3dtilesModelDir("tiles_1", "E:\\SomePath\\tiles.json");
+'* @since 2022-11-16
+'*/
+void set3dtilesModelDir(string& tilesName, string& jsonPath)
+{
+    pluginCall("PETo3dtiles", "SetProp", tilesName, "ModelDir", jsonPath);
+}
+
+'/** 
+'* @brief 设置 3dtiles 是否激活
+'* @param tilesName [in] 瓦片名
+'* @param active [in] 是否激活。"1" 表示激活，"0" 表示不激活。
+'* @example set3dtilesActive("tiles_1", "1");
+'* @since 2022-11-16
+'*/
+void set3dtilesActive(string& tilesName, string& active)
+{
+    pluginCall("PETo3dtiles", "SetProp", tilesName, "Active", active);
+}
+
+'/** 
+'* @brief 设置 3dtiles 是否可见
+'* @param tilesName [in] 瓦片名
+'* @param visible [in] 是否可见。1: 可见; 0: 不可见。
+'* @example set3dtilesVisible("tiles_1", 1);
+'* @since 2023-09-02
+'*/
+void set3dtilesVisible(string& tilesName, int visible)
+{
+	'// ypj, 2023-09-02, 添加设置显示隐藏
+	string tileFieldPath = "/scene/model/earth/" + tilesName; 
+	showField(tileFieldPath, visible);
+}
+
+'/** 
+'* @brief 并行加载 3dtiles 的 json 索引文件。 
+'* @param tileNameArray [in] 瓦片名字数组
+'* @example 
+'*    string tna[10];
+'*    asynInit3dtiles(tna, 10, 0);
+'* @since 2022-11-16
+'*/
+void asynInit3dtiles(string array & tileNameArray, int count, int start)
+{
+    pluginCall("PETo3dtiles", "AsynInit3dTiles", tileNameArray.self(),  count, start);
+}
+
+'/** 
+'* @brief 设置3dtiles线程池最大线程数
+'* @param n [in] 最大线程个数。默认为5。
+'* @since 2022-11-30
+'*/
+void set3dtilesMaxThreadNum(int n)
+{
+    pluginCall("PETo3dtiles", "SetMaxThreadNum", n);
+}
+
+'/** 
+'* @brief 设置3dtiles变换
+'* @param tilesName [in] 3dtiles 名。
+'* @param transform [in] 3dtiles 变换矩阵。 16分量 float 数组。
+'* @since 2024-01-29
+'*/
+void set3dtilesTransform(string& tilesName, float array& transform)
+{
+    pluginCall("PETo3dtiles", "Set3dTilesTransform", tilesName, transform.self());
+}
+
+'/** 
+'* @brief 设置3dtiles位置
+'* @param tilesName [in] 3dtiles 名。
+'* @param pos [in] 3dtiles 目标位置。 3 分量 float 数组。
+'* @since 2024-01-29
+'*/
+void set3dtilesPosition(string& tilesName, float x, float y, float z)
+{
+	float pos[3];
+	pos[0] = x;
+	pos[1] = y;
+	pos[2] = z;
+    pluginCall("PETo3dtiles", "Set3dTilesPosition", tilesName, pos.self());
+}
+
+}
+
+DigitEarthManager theDigitEarthMgr;
+} '// script

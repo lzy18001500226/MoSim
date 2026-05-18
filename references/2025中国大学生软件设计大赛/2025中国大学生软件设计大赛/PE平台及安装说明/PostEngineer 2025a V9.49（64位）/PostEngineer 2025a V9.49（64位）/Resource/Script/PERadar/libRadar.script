@@ -1,0 +1,132 @@
+'创建时间: 2024-07-28
+'作者: ypj
+'描述: 雷达相关接口
+'更新：2024-07-28
+
+Script{
+
+
+'// Radar后处理参数
+class RadarGridParam 
+{
+        '// 雷达对象名
+		string radarName;
+
+		'//-- 点云预处理相关参数
+		float targetPos[3]; '// 目标位置
+		int option;         '// 坐标是否需要变换到 scene 节点下, 1: 需变换到 scene
+
+		'//-- 栅格构造相关参数
+		int resol;       '// 分辨率，每米的栅格数
+		int size[2] ;     '// 网格尺寸
+		float origin[2] ; '// 地图原点在像素中的位置
+		float center[2] ; '// 传感器位置
+		'// Log-odd 参数
+		float lo_occ;
+		float lo_free;
+		float lo_max;
+		float lo_min;
+		
+		'//-- 栅格缩放参数
+		float scale; '// 栅格缩放因子
+
+	RadarGridParam()
+	{
+		'//-- 点云预处理相关参数
+		targetPos[0] = 10; 
+		targetPos[1] = 0; 
+		targetPos[2] = 0; 
+		option = 1;         
+
+		'//-- 栅格构造相关参数
+		resol = 10;      
+		size[0] = 1000;
+		size[1] = 1000;
+		origin[0] = 500;
+		origin[1] = 500;
+		center[0] = 0;
+		center[1] = 0;
+		'// Log-odd 参数
+		lo_occ = 200.0;
+		lo_free = 10.0;
+		lo_max = 100.0;
+		lo_min = -100.0;
+
+		'//-- 栅格缩放参数
+		scale = 0.1;
+	}
+}
+
+'------------------------------------------
+' 雷达相关接口封装类
+'------------------------------------------
+class RadarManager 
+{
+    '// 插件名
+	'// private
+    string mPluginName;
+
+	'// 参数
+	'// public
+	RadarGridParam gridParam;
+
+	RadarManager() 
+	{
+	    mPluginName = "PERadar";
+
+		gridParam = new RadarGridParam;
+	}
+
+	'''
+     ' @brief 获取占据栅格
+	 ' @param map [out] 地图栅格句柄。为二维数组。
+     ' @param param [in] 栅格相关参数
+     ' @return 成功: 0；否则： 非零值
+	 ' @since 2024-07-29
+     '/
+	int createOccupancyGrid(dword& map)
+    {
+        int status = pluginCall(mPluginName, "createOccupancyGrid", map.self(), gridParam.self()); 
+		return status;
+    }
+
+	'''
+     ' @brief 销毁占据栅格
+	 ' @param map [in/out] 地图栅格句柄。销毁后会被置为 0。
+     ' @return 成功: 0；否则： 非零值
+	 ' @since 2024-07-29
+     '/
+	int destroyOccupancyGrid(dword& map)
+    {
+        int status = pluginCall(mPluginName, "destroyOccupancyGrid", map.self()); 
+		return status;
+    }
+
+	int getOccupancyGridData(dword map, float array& gd)
+    {
+        int status = pluginCall(mPluginName, "getOccupancyGridData", map, gd.self()); 
+		return status;
+    }
+
+	int ddmWriterAddGridMap(dword map, string& sendName)
+	{
+	    int status = pluginCall(mPluginName, "ddmWriterAddGridMap", map, sendName, 1); 
+		return status;
+	}
+} 
+
+'// RadarManager 唯一实例, 使用前需实例化此对象:
+'theRadarMgr = new RadarManager;
+'// 设置雷达参数
+'//theRadarMgr.gridParam.xxx = ... 
+'dword map = 0;
+'theRadarMgr.createOccupancyGrid(map); '// 创建占用栅格
+'// 打包栅格数据发送 (利用 PEToMWorks相关脚本接口)
+'ddmWriter.beginPackData();
+'theRadarMgr.ddmWriterAddGridMap(map, "gm"); '// ddmWriter 中打包变量, gm为指定变量名，可简短一点以减小数据包。
+'theRadarMgr.destroyOccupancyGrid(map); '// 销毁占用栅格
+'ddmWriter.endPackData();
+'ddmWriter.writePackedData();
+RadarManager theRadarMgr;
+
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<PECheck>
+    <DogCheck isCheck="true" XmlPath="\config\DogCheck.xml">
+        <Server IP="200.200.200.200" port="898" Interval="60" />
+    </DogCheck>
+	<Release isRelease="true">
+        <Config ID="1000" Name="Code" bLoaded = "false" />
+        <VerType Type="1" subType="0" bSub = "false" />
+    </Release>
+</PECheck>

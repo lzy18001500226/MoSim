@@ -1,0 +1,38 @@
+{
+  "Version": "1.0",
+  "NetVarList": [
+    {
+      "VarName": "NetVar_in_f",
+      "VarType": "float",
+      "VarIOType": "in",
+      "VarInputName": "in_f"
+    },
+    {
+      "VarName": "NetVar_out_f",
+      "VarType": "float",
+      "VarIOType": "out",
+      "VarOutputName": "out_f"
+    },
+    {
+      "VarName": "NetVar_inout_f",
+      "VarType": "float",
+      "VarIOType": "inout",
+      "VarInputName": "in_f",
+      "VarOutputName": "out_f"
+    },
+    {
+      "VarName": "NetVar_inout_i",
+      "VarType": "int",
+      "VarIOType": "inout",
+      "VarInputName": "in_i",
+      "VarOutputName": "out_i"
+    },
+    {
+      "VarName": "NetVar_inout_b",
+      "VarType": "bool",
+      "VarIOType": "inout",
+      "VarInputName": "in_b",
+      "VarOutputName": "out_b"
+    }
+  ]
+}

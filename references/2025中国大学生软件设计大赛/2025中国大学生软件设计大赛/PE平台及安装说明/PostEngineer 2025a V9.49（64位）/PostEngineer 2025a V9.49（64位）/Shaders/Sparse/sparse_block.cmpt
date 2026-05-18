@@ -1,0 +1,76 @@
+#version 430
+
+layout (local_size_x = 4, local_size_y = 4, local_size_z = 1) in;
+
+
+
+layout (binding=0, std430) buffer IndexBuffer {
+    unsigned int data[];
+} index_buffer;
+
+layout (binding=1, std430) buffer PropertyBuffer {
+    float data[];
+} property_buffer;
+
+layout (binding=2, std430) buffer DataBuffer {
+    float data[];
+} data_buffer;
+
+layout (binding=3, std430) buffer InfoBuffer {
+    float data[];
+} info_buffer;
+
+
+int INT(float f)
+{
+	if(f >= 0)return int(f + 0.1);
+	else return -int(-f + 0.1);
+}
+
+#define MAX_VALUE 1073741824
+
+
+void main() 
+{
+	ivec3 pos = ivec3(gl_GlobalInvocationID.xyz);
+	ivec2 groupNum = ivec2(gl_NumWorkGroups);
+	ivec2 groupSize = ivec2(gl_WorkGroupSize);
+
+	int globalIndex = (pos.z * groupNum.y * groupSize.y + pos.y) * groupNum.x * groupSize.x + pos.x;
+
+	int dataSize;
+	dataSize = INT(info_buffer.data[0]);
+
+	float scale = info_buffer.data[3];
+	int dim = INT(info_buffer.data[4]);
+
+	int cellComp = INT(info_buffer.data[5]);
+	int cellCount = INT(info_buffer.data[6]);
+
+	if(globalIndex >= dataSize)
+		return;
+
+
+	unsigned int cell_index = index_buffer.data[globalIndex];
+
+	if(cell_index > 0){
+		if (dim == 2) {
+			data_buffer.data[globalIndex * dim + 0] = property_buffer.data[(cell_index-1) * cellComp + 0] * scale;
+			data_buffer.data[globalIndex * dim + 1] = property_buffer.data[(cell_index-1) * cellComp + 3];
+		}
+		else if (dim == 3) {  // normals
+			for(int k = 0; k < dim; k++) data_buffer.data[globalIndex*dim + k] = property_buffer.data[(cell_index-1) * cellComp + k] * scale;
+		}
+		else {
+			for(int k = 0; k < dim; k++) data_buffer.data[globalIndex*dim + k] = property_buffer.data[(cell_index-1) * cellComp + k] * scale;
+			data_buffer.data[globalIndex*dim + 3] = property_buffer.data[(cell_index-1) * cellComp + 3];
+		}
+	}
+	else{
+		for(int k = 0; k < dim; k++) {
+			if(dim == 3)  data_buffer.data[globalIndex*dim + k] = 0;
+			else data_buffer.data[globalIndex*dim + k] = -MAX_VALUE;
+		}
+	}
+
+}

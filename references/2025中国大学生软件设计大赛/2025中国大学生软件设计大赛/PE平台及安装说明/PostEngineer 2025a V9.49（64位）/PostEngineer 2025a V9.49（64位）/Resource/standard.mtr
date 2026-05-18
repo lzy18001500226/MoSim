@@ -1,0 +1,103 @@
+
+material{
+	name{std@mental01}
+	diffuse{1.0, 1.0, 1.0}
+	ambient{0.5, 0.5, 0.5}
+	emission{0.0, 0.0, 0.0}
+	specular{1.0, 1.0, 1.0}
+	transparency{1.0}
+	diffuse_map{Resource\PBR\mental01\rustediron-streaks_basecolor.png}
+	normal_map{Resource\PBR\mental01\rustediron-streaks_normal.png}
+	arm_map{Resource\PBR\mental01\rustediron-streaks_pe2.jpg}
+	factor{1.0, 1.0, 1.0, 1.0, 1.0}
+}
+
+
+material{
+	name{std@brick}
+	diffuse{1.0, 1.0, 1.0}
+	ambient{0.5, 0.5, 0.5}
+	emission{0.0, 0.0, 0.0}
+	specular{1.0, 1.0, 1.0}
+	transparency{1.0}
+	diffuse_map{Resource\PBR\brick_4_2k_jpg\brick_4_diff_2k.jpg}
+	normal_map{Resource\PBR\brick_4_2k_jpg\brick_4_nor_2k.jpg}
+	arm_map{Resource\PBR\brick_4_2k_jpg\arm.jpg}
+	factor{1.0, 1.0, 1.0, 1.0, 1.0}
+}
+
+
+
+
+material{
+	name{std@fabric_pattern}
+	diffuse{1.0, 1.0, 1.0}
+	ambient{0.5, 0.5, 0.5}
+	emission{0.0, 0.0, 0.0}
+	specular{1.0, 1.0, 1.0}
+	transparency{1.0}
+	diffuse_map{Resource\PBR\fabric_pattern_07_4k_jpg\fabric_pattern_07_col_1_4k.jpg}
+	normal_map{Resource\PBR\fabric_pattern_07_4k_jpg\fabric_pattern_07_nor_4k.jpg}
+	arm_map{Resource\PBR\fabric_pattern_07_4k_jpg\arm.jpg}
+	factor{1.0, 1.0, 1.0, 1.0, 1.0}
+}
+
+
+
+material{
+	name{std@leather}
+	diffuse{1.0, 1.0, 1.0}
+	ambient{0.5, 0.5, 0.5}
+	emission{0.0, 0.0, 0.0}
+	specular{1.0, 1.0, 1.0}
+	transparency{1.0}
+	diffuse_map{Resource\PBR\leather_red_02_4k_jpg\leather_red_02_coll1_4k.jpg}
+	normal_map{Resource\PBR\leather_red_02_4k_jpg\leather_red_02_nor_4k.jpg}
+	arm_map{Resource\PBR\leather_red_02_4k_jpg\arm.jpg}
+	factor{1.0, 1.0, 1.0, 1.0, 1.0}
+}
+
+
+
+material{
+	name{std@marble}
+	diffuse{1.0, 1.0, 1.0}
+	ambient{0.5, 0.5, 0.5}
+	emission{0.0, 0.0, 0.0}
+	specular{1.0, 1.0, 1.0}
+	transparency{1.0}
+	diffuse_map{Resource\PBR\marble_01_4k_jpg\marble_01_diff_4k.jpg}
+	normal_map{Resource\PBR\marble_01_4k_jpg\marble_01_nor_4k.jpg}
+	arm_map{Resource\PBR\marble_01_4k_jpg\arm.jpg}
+	factor{1.0, 1.0, 1.0, 1.0, 1.0}
+}
+
+
+
+material{
+	name{std@plywood}
+	diffuse{1.0, 1.0, 1.0}
+	ambient{0.5, 0.5, 0.5}
+	emission{0.0, 0.0, 0.0}
+	specular{1.0, 1.0, 1.0}
+	transparency{1.0}
+	diffuse_map{Resource\PBR\plywood_4k_jpg\plywood_diff_4k.jpg}
+	normal_map{Resource\PBR\plywood_4k_jpg\plywood_nor_4k.jpg}
+	arm_map{Resource\PBR\plywood_4k_jpg\arm.jpg}
+	factor{1.0, 1.0, 1.0, 1.0, 1.0}
+}
+
+
+
+material{
+	name{std@rock}
+	diffuse{1.0, 1.0, 1.0}
+	ambient{0.5, 0.5, 0.5}
+	emission{0.0, 0.0, 0.0}
+	specular{1.0, 1.0, 1.0}
+	transparency{1.0}
+	diffuse_map{Resource\PBR\rock_01_2k_jpg\rock_01_diff_2k.jpg}
+	normal_map{Resource\PBR\rock_01_2k_jpg\rock_01_Nor_2k.jpg}
+	arm_map{Resource\PBR\rock_01_2k_jpg\arm.jpg}
+	factor{1.0, 1.0, 1.0, 1.0, 1.0}
+}

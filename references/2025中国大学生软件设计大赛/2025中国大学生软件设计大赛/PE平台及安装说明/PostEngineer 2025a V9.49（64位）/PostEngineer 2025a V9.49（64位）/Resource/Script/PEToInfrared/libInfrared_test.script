@@ -1,0 +1,159 @@
+'创建时间: 2022-10-13
+'作者: ypj
+'描述: libHuarong 测试
+'更新：2022-10-13
+
+
+Script{
+
+include{PEToInfrared/libInfrared.script}
+
+string gLogFile;    '// 日志文件
+
+Animation{
+	name{初始化-libInfrared}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+			    appPrintLog(gLogFile, "[libInfrared] 初始化开始", 1);
+
+                gLogFile = "test.log";
+                theInfraredMgr = new InfraredManager;
+
+				appPrintLog(gLogFile, "[libInfrared] 初始化结束", 1);
+            }
+        }
+    }
+}
+
+Animation{
+	name{加载数据测试-libInfrared}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{ 
+			    appPrintLog(gLogFile, "[libInfrared] 加载数据测试开始", 1);
+
+				'// 加载数据
+				int res = theInfraredMgr.loadATSamples("data/atsamples.json"); 
+
+				appPrintLog(gLogFile, "[libInfrared] 加载数据测试结束", 1);
+            }
+        }
+    }
+}
+
+Animation{
+	name{插值测试-libInfrared}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                appPrintLog(gLogFile, "[libInfrared] 插值测试开始", 1);
+
+				'// 插值计算测试
+				string msg;
+				float r;
+				'// 透过率表1.txt
+				appPrintLog(gLogFile, "sample: 20.00000 180.00000  20.00000 0.4456", 1);
+				theInfraredMgr.getATValue(r, 20.0, 180.0, 20.0); 
+				msg = "f(20.0, 180.0, 20.0)="+ ftoa(r, 1, 6);
+				appPrintLog(gLogFile, msg, 1);
+				
+				appPrintLog(gLogFile, "sample: 20.00000   5.00000   3.00000    0.9379", 1);
+				theInfraredMgr.getATValue(r, 20.0, 5.0, 3.0); 
+				msg = "f(20.0, 5.0, 3.0)="+ ftoa(r, 1, 6);
+				appPrintLog(gLogFile, msg, 1);
+				
+				appPrintLog(gLogFile, "sample: 5.00000   5.00000   3.00000    0.7781", 1);
+				theInfraredMgr.getATValue(r, 5.0, 5.0, 3.0); 
+				msg = "f(5.0, 5.0, 3.0)="+ ftoa(r, 1, 6);
+				appPrintLog(gLogFile, msg, 1);
+				
+				'// 透过率表2.txt		
+				appPrintLog(gLogFile, "sample: 20.00000 175.00000   2.00000    0.9333", 1);
+				theInfraredMgr.getATValue(r, 20.0, 175.0, 2.0); 
+				msg = "f(20.0, 175.0, 2.0)="+ ftoa(r, 1, 6);
+				appPrintLog(gLogFile, msg, 1);
+					
+				appPrintLog(gLogFile, "sample: 20.00000 175.00000   1.80000    0.936", 1);
+				theInfraredMgr.getATValue(r, 20.0, 175.0, 1.8); 
+				msg = "f(20.0, 175.0, 1.8)="+ ftoa(r, 1, 6);
+				appPrintLog(gLogFile, msg, 1);
+					
+				appPrintLog(gLogFile, "sample: 5.00000  15.00000   0.60000    0.8508", 1);
+				theInfraredMgr.getATValue(r, 5.0, 15.0, 0.6);  
+				msg = "f(5.0, 15.0, 0.6)="+ ftoa(r, 1, 6);
+				appPrintLog(gLogFile, msg, 1);
+				
+				'// 透过率表3.txt
+				appPrintLog(gLogFile, "sample: 20.00000   10.00000   2.00000    0.9817", 1);
+				theInfraredMgr.getATValue(r, 20.0, 10.0, 2.0);
+				msg = "f(20.0, 10.0, 2.0)="+ ftoa(r, 1, 6);
+				appPrintLog(gLogFile, msg, 1);
+				
+				appPrintLog(gLogFile, "sample: 20.00000   10.00000   1.80000    0.9833", 1);
+				theInfraredMgr.getATValue(r, 20.0, 10.0, 1.8); 
+				msg = "f(20.0, 10.0, 1.8)="+ ftoa(r, 1, 6);
+				appPrintLog(gLogFile, msg, 1);
+				
+				appPrintLog(gLogFile, "sample: 5.00000   10.00000   0.60000    0.9601", 1);
+				theInfraredMgr.getATValue(r, 5.0, 10.0, 0.6); 
+				msg = "f(5.0, 10.0, 0.6)="+ ftoa(r, 1, 6);
+				appPrintLog(gLogFile, msg, 1);
+				 
+				'// 透过率表4.txt
+				appPrintLog(gLogFile, "sample: 20.00000   5.00000   2.00000    0.9817", 1);
+				theInfraredMgr.getATValue(r, 20.0, 5.0, 2.0);
+				msg = "f(20.0, 5.0, 2.0)="+ ftoa(r, 1, 6);
+				appPrintLog(gLogFile, msg, 1);
+			
+				appPrintLog(gLogFile, "sample: 20.00000   5.00000   1.80000    0.9833", 1);
+				theInfraredMgr.getATValue(r, 20.0, 5.0, 1.8); 
+				msg = "f(20.0, 5.0, 1.8)="+ ftoa(r, 1, 6);
+				appPrintLog(gLogFile, msg, 1);
+				
+				appPrintLog(gLogFile, "sample: 5.00000   5.00000   0.60000    0.9602", 1);
+				theInfraredMgr.getATValue(r, 5.0, 5.0, 0.6); 
+				msg = "f(5.0, 5.0, 0.6)="+ ftoa(r, 1, 6);
+				appPrintLog(gLogFile, msg, 1);	
+
+				appPrintLog(gLogFile, "[libInfrared] 插值测试结束", 1);
+            }
+        }
+    }
+}
+
+'// ypj, 2022-10-25, 未实测，供参考
+Animation{
+	name{出图测试-libInfrared}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+				appPrintLog(gLogFile, "[libInfrared] 出图测试开始", 1);
+
+				string filePath = "out.jpg";
+				theInfraredMgr.renderParam.w = 128;
+				theInfraredMgr.renderParam.h = 128;
+				theInfraredMgr.renderParam.fieldPath = "/scene";
+				theInfraredMgr.renderParam.eye[0] = 0.0;
+				theInfraredMgr.renderParam.eye[1] = 100.0;
+				theInfraredMgr.renderParam.eye[2] = 0.0;
+				theInfraredMgr.renderParam.target[0] = 0.0;
+				theInfraredMgr.renderParam.target[1] = 0.0;
+				theInfraredMgr.renderParam.target[2] = 0.0;
+
+				theInfraredMgr.renderParam.fov = 120.0;
+				theInfraredMgr.renderParam.exposure = 1.0;
+				theInfraredMgr.renderInfraredToFile(filePath);
+
+				appPrintLog(gLogFile, "[libInfrared] 出图测试结束", 1);
+            }
+        }
+    }
+}
+
+
+}

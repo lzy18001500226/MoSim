@@ -1,0 +1,15 @@
+[
+{"name":"型长","value":1.3,"tips":"船体长度","unit":"m"},
+{"name":"型宽","value":0.64,"tips":"主船体宽度","unit":"m"},
+{"name":"片体宽","value":0.27,"tips":"单个片体宽","unit":"m"},
+{"name":"质量","value":30,"tips":"船体质量","unit":"kg"},
+{"name":"纵向重心","value":0.45,"tips":"纵向重心","unit":"m"},
+{"name":"g","value":10,"tips":"重力加速度","unit":"m/s2"},
+{"name":"吃水","value":0.1,"tips":"型吃水","unit":"m"},
+{"name":"阻力系数","value":0.5,"tips":"船体阻力系数","unit":""},
+{"name":"密度","value":1000,"tips":"水密度","unit":""},
+{"name":"Xu_linear","value":75.55,"tips":"水动力导数","unit":""},
+{"name":"Xu_poly","value":-25,"tips":"拟合水动力导数","unit":""},
+{"name":"Xuu_linear","value":-70.92,"tips":"非线性水动力导数","unit":""},
+{"name":"Xuu_poly","value":0,"tips":"拟合非线性水动力导数","unit":""},
+]

@@ -1,0 +1,20 @@
+
+
+ void OnUdpReceived()
+ { 
+	一级臂 = R1_angle1;
+	二级臂 = R1_angle2;
+	三级臂 = R1_angle3;
+	四级臂 = R1_angle4;
+	五级臂 = R1_angle5;
+	六级臂 = R1_angle6;
+	
+	机械爪上.position[1] = -1.2532 + R1_x1;
+	机械爪下.position[1] = -1.3702 - R1_x2;
+
+
+
+
+
+
+ }

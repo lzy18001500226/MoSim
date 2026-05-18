@@ -1,0 +1,269 @@
+'创建时间: 2021-09-17
+'作者: ypj
+'描述: ndpnet 通信测试
+'更新：
+' ypj, 2021-10-08, NdpnetMessageListener 不直接访问全局变量 gNdpnetLogFile, gNdpnetMgr
+
+Script{
+
+
+include{NdpnetMessageListener.script}
+
+string gNdpnetLogFile;    '// 日志文件
+NdpnetManager gNdpnetMgr; '// ndpnet 功能接口
+NdpnetMessageListener gNdpnetListener;   '// ndpnet 消息响应
+
+Animation{
+	name{初始化网络}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                gNdpnetLogFile = "E:\tmp\成都核电\成都核电项目原型-脚本版\test.log";
+                gNdpnetMgr = new NdpnetManager;
+	            gNdpnetListener = new NdpnetMessageListener;
+				'// ypj, 2021-10-08, NdpnetMessageListener 不直接访问全局变量
+				gNdpnetListener.mLogFilePath = gNdpnetLogFile;
+				gNdpnetListener.mNdpnetMgr = gNdpnetMgr;
+
+	            ' 初始化网络
+                if(gNdpnetMgr.init() > 0) {
+                    messageBox("初始化网络失败");
+					appPrintLog(gNdpnetLogFile, "[初始化网络] 失败", 1);
+                }
+                else {
+				    appPrintLog(gNdpnetLogFile, "[初始化网络] 成功", 1);
+                    messageBox("初始化网络成功");
+                    '// 设置消息处理回调函数
+		            gNdpnetMgr.setMessageListener("gNdpnetListener");
+                }
+
+                '// 连接网络
+                if(gNdpnetMgr.connect("127.0.0.1", 8888) > 0) {
+                    messageBox("连接网络失败");
+                }
+                else {
+                    messageBox("连接网络成功");
+                }
+            }
+        }
+    }
+}
+
+Animation{
+	name{重连网络}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                '// 连接网络
+                if(gNdpnetMgr.connect("127.0.0.1", 8888) > 0) {
+                    messageBox("连接网络失败");
+                }
+                else {
+                    messageBox("连接网络成功");
+                }
+            }
+        }
+    }
+}
+
+Animation{
+	name{注册组件}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                '// 设置注册模块参数
+                ndpnetRegisterModuleMsg.moduleTypeId = 1;
+                ndpnetRegisterModuleMsg.moduleName = "可视化组件";
+                ndpnetRegisterModuleMsg.adress = "xxx 室";
+                ndpnetRegisterModuleMsg.description = "堆芯运行功率";
+                ndpnetRegisterModuleMsg.profession = "堆芯";
+                ndpnetRegisterModuleMsg.moduleModeLength = 3; 'Ndpnet.script 中定义了最大为5
+                ndpnetRegisterModuleMsg.pModuleModes[0] = new NdpnetModuleMode;
+                ndpnetRegisterModuleMsg.pModuleModes[1] = new NdpnetModuleMode;
+                ndpnetRegisterModuleMsg.pModuleModes[2] = new NdpnetModuleMode;
+                ndpnetRegisterModuleMsg.pModuleModes[0].modeId = 1;
+                ndpnetRegisterModuleMsg.pModuleModes[0].modeName = "模式1";
+                ndpnetRegisterModuleMsg.pModuleModes[1].modeId = 2;
+                ndpnetRegisterModuleMsg.pModuleModes[1].modeName = "模式2";
+                ndpnetRegisterModuleMsg.pModuleModes[2].modeId = 3;
+                ndpnetRegisterModuleMsg.pModuleModes[2].modeName = "模式3";
+
+                '// 注册模块
+                int ret = gNdpnetMgr.registerModule();
+                if(ret) {
+                    messageBox("注册组件失败!");
+                }
+                else {
+                    messageBox("注册组件成功!");
+                }
+			}
+		}
+	}
+}
+
+Animation{
+	name{取消注册组件}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                if(gNdpnetMgr.unregisterModule()) {
+                    messageBox("取消注册组件失败!");
+                }
+                else {
+                    messageBox("取消注册组件成功!");
+                }
+			}
+		}
+	}
+}
+
+
+'//计算环境结构
+'class NdpnetCalcEnv
+'{
+'	NdpnetCalcEnv() {}
+'
+'	'//机组ID
+'    int unitId;      'ndp_uint16 unitId;
+'	'//计算模式	
+'    byte calcModeId; 'ndp_uint8 calcModeId;
+'	'//工况ID		
+'    int workModeId;  'ndp_uint16 workModeId;
+'	'//计算倍速
+'    float speed;     'ndp_float  speed;
+'}
+
+'//组件订阅消息数据节点
+'// 参数类型 规则：0:none; 1:int; 2:float; 3:long;4:char;5:string
+'class NdpnetSubscribeNode
+'{
+'	NdpnetSubscribeNode() {}
+'
+'	'//数据项类型	
+'    dword type;   'ndp_uint32 type;
+'	'//数据项编码	
+'    int code;    'ndp_short code;  
+'}
+
+'//数据订阅消息
+'class NdpnetSubscribeMsg    'typedef struct ndpnetSubscribeMsgTag
+'{
+'	'//计算环境
+'	NdpnetCalcEnv calcEnv;    'ndpnet_calc_env calcEnv;
+'	'//订阅参数方向;
+'	int direction; 'ndp_int16 direction;
+'	'//数据项个数
+'	dword nodeNum;    'ndp_uint32 nodeNum;
+'	'//数据项指针
+'	NdpnetSubscribeNode pSubscribeNodes[10];    'ndpnet_subscribe_node* pSubscribeNodes;
+'
+'	NdpnetSubscribeMsg() 
+'	{
+'		calcEnv = new NdpnetCalcEnv;
+'	}
+'
+'} 'ndpnet_subscribe_msg;
+Animation{
+	name{订阅}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+			    '// 设置订阅消息
+			    'ndpnetSubscribeMsg.calcEnv.unitId = ;
+				'ndpnetSubscribeMsg.calcEnv.calcModeId = ;
+				'ndpnetSubscribeMsg.calcEnv.workModeId = ;
+				'ndpnetSubscribeMsg.calcEnv.speed = ;
+				'ndpnetSubscribeMsg.direction = ;
+				'ndpnetSubscribeMsg.nodeNum = ; 
+
+				'pSubscribeNodes[0] = new NdpnetSubscribeNode; '// 注意：NdpnetSubscribeMsg 类里声明的 node 数组维数为 10，弱更多，需改大。
+				'pSubscribeNodes[0].type = ;
+				'pSubscribeNodes[0].code = ;
+				'// 更多要订阅的节点设置 。。。
+
+
+				'// 订阅
+                if(gNdpnetMgr.subscribe()) {
+                    messageBox("订阅失败!");
+                }
+                else {
+                    messageBox("订阅成功!");
+                }
+			}
+		}
+	}
+}
+
+'//数据取消订阅消息
+'class NdpnetUnsubscribeMsg
+'{
+'	'//计算环境
+'	NdpnetCalcEnv calcEnv;    'ndpnet_calc_env calcEnv;
+'    '//订阅参数方向;
+'    int direction; 'ndp_int16 direction;
+'	'//数据项个数
+'	dword nodeNum;    'ndp_uint32 nodeNum;
+'	'//数据项指针
+'	NdpnetSubscribeNode pSubscribeNodes[10];  'ndpnet_subscribe_node* pSubscribeNodes;
+'
+'	NdpnetUnsubscribeMsg() 
+'	{
+'		calcEnv = new NdpnetCalcEnv;
+'	}
+'}
+Animation{
+	name{取消订阅}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+			    '// 设置取消订阅消息
+			    '//ndpnetUnsubscribeMsg.
+
+				'// 取消订阅
+                if(gNdpnetMgr.unsubscribe()) {
+                    messageBox("取消订阅失败!");
+                }
+                else {
+                    messageBox("取消订阅成功!");
+                }
+			}
+		}
+	}
+}
+
+
+Animation{
+	name{测试发数据开始}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+			ndpnetDataUnionMsg.pnode[0] = new NdpnetDataUnionNode;
+			ndpnetDataUnionMsg.pnode[1] = new NdpnetDataUnionNode;
+			    '// 设置取消订阅消息
+				pluginCall("PEToNuclear", "ndpnetStartTest", "");
+			}
+		}
+	}
+}
+
+Animation{
+	name{测试发数据结束}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+			    '// 设置取消订阅消息
+				pluginCall("PEToNuclear", "ndpnetStopTest", "");
+			}
+		}
+	}
+}
+
+} '// script

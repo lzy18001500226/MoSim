@@ -1,0 +1,485 @@
+<acts>
+    <acttype name="节点操作" type="UI_MODULE" id="2">
+
+      <act name="重算包围盒" type="142" byname="ACT_FIELD_REBUILD_BOX" image="1" showparam="节点路径">
+            <param name="节点路径" type="field" value="keypath" /> 
+        </act>
+
+
+
+
+        <act name="显示物体" type="101" byname="ACT_FIELD_SHOW_EXCLUDE_ANNOTATION" image="1" showparam="节点路径">
+            <param name="节点路径" type="field" value="keypath" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="隐藏物体" type="100" byname="ACT_FIELD_SHOW" image="1" showparam="节点路径">
+            <param name="节点路径" type="field" value="keypath" />
+            <param type="bool" value="FALSE" />
+        </act>
+        <act name="设置透明度" type="107" byname="ACT_FIELD_TRANSPARENCY" image="1" showparam="路径">
+            <param name="路径" type="field" value="keypath" />
+            <param name="数值" type="values" />
+        </act>
+        <act name="按局部坐标移动物体" type="115" byname="ACT_FIELD_MOVE" image="1" showparam="路径">
+            <param name="路径" type="field" value="keypath" />
+            <param name="数值" type="values" />
+        </act>
+        <act name="按世界坐标移动物体" type="136" byname="ACT_FIELD_MOVE_WORLD" image="1" showparam="路径">
+            <param name="路径" type="field" value="keypath" />
+            <param name="坐标" type="values" />
+        </act>
+        <act name="按局部坐标旋转物体" type="131" byname="ACT_FIELD_ROTATE_LOCAL" image="1" showparam="路径">
+            <param name="路径" type="field" value="keypath" />
+            <param name="坐标" type="values" />
+        </act>
+        <act name="按世界坐标旋转物体" type="114" byname="ACT_FIELD_ROTATE" image="1" showparam="路径">
+            <param name="路径" type="field" value="keypath" />
+            <param name="坐标" type="values" />
+        </act>
+        <act name="缩放物体" type="116" byname="ACT_FIELD_SCALE" image="1" showparam="路径">
+            <param name="路径" type="field" value="keypath" />
+            <param name="坐标" type="values" />
+        </act>
+        <act name="设置散射光" type="125" byname="ACT_FIELD_EMISSION" image="1" showparam="节点路径">
+            <param name="节点路径" type="field" value="keypath" />
+            <param name="数值" type="values" />
+        </act>
+        <act name="高亮物体" type="110" byname="ACT_FIELD_HILIGHT" image="1" showparam="节点路径">
+            <param name="节点路径" type="field" value="keypath" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="取消物体高亮" type="110" byname="ACT_FIELD_HILIGHT" image="1" showparam="节点路径">
+            <param name="节点路径" type="field" value="keypath" />
+            <param type="bool" value="FALSE" />
+        </act>
+        <act name="抓取物体" type="133" byname="ACT_FIELD_GRASPABLE" image="1" showparam="路径">
+            <param name="路径" type="field" value="keypath" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="取消抓取" type="133" byname="ACT_FIELD_GRASPABLE" image="1" showparam="路径">
+            <param name="路径" type="field" value="keypath" />
+            <param type="bool" value="FALSE" />
+        </act>
+		<act name="设置被抓取" type="138" byname="ACT_FIELD_GRASPED" image="1" showparam="路径">
+            <param name="路径" type="field" value="keypath" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="取消被抓取" type="138" byname="ACT_FIELD_GRASPED" image="1" showparam="路径">
+            <param name="路径" type="field" value="keypath" />
+            <param type="bool" value="FALSE" />
+        </act>
+        <act name="设置恒量" type="109" byname="ACT_FIELD_CONSTANT" image="1" showparam="路径">
+            <param name="路径" type="field" value="keypath" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="取消恒量" type="109" byname="ACT_FIELD_CONSTANT" image="1" showparam="路径">
+            <param name="路径" type="field" value="keypath" />
+            <param type="bool" value="FALSE" />
+        </act>
+	<act name="显示标注" type="102" byname="ACT_FIELD_SHOW_EXCLUDE_ANNOTATION" image="1" showparam="路径">
+            <param name="节点路径" type="field" value="keypath" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="隐藏标注" type="102" byname="ACT_FIELD_SHOW" image="1" showparam="路径"> 
+            <param name="节点路径" type="field" value="keypath" />
+            <param type="bool" value="FALSE" />
+        </act>
+
+        <act name="添加纹理" type="1300" byname="ACT_TEXTURE_NAME" image="27" showparam="纹理名">
+            <param name="纹理名" type="string" />
+            <param name="节点路径" type="field" value="keypath" />
+            <param name="值" type="values" value="1,1,0,0,0"/>
+        </act>
+        <act name="取消纹理" type="1300" byname="ACT_TEXTURE_NAME" image="27" showparam="纹理名">
+            <param name="纹理名" type="string" value="no texture" />
+            <param name="节点路径" type="field" value="keypath" />
+        </act>
+        <act name="透明变换" type="296" byname="ACT_TRANSPARENT_EDIT" />
+        <act name="模型旋转" type="295" byname="ACT_ROTATION_CHANGE" />
+        <act name="模型缩放" type="294" byname="ACT_SCALE_CHANGE" />
+        <act name="纹理流动" type="293" byname="ACT_TEXTURE_MOVE" />
+        <act name="光源变化" type="292" byname="ACT_BEAM" />
+	<act name="模型闪烁" type="290" byname="ACT_BLINK" />
+    </acttype>
+    <acttype name="组操作" type="UI_NODE_OBJGROUP" id="5">
+        <act name="激活组" type="4007" byname="ACT_GROUP" image="1" showparam="组号">
+	    <param name="激活" type="string" value="enable" />
+	    <param name="类型" type="string2" value="all" />
+	    <param name="模块" type="string3" value="当前模块" />
+            <param name="组号" type="int" value="groupnum"/> 
+        </act>
+	<act name="关闭组" type="4007" byname="ACT_GROUP" image="1" showparam="组号">
+	    <param name="关闭" type="string" value="disable" />
+	    <param name="类型" type="string2" value="all" />
+	    <param name="模块" type="string3" value="当前模块" />
+            <param name="组号" type="int" value="groupnum"/> 
+        </act> 
+    </acttype>
+    <acttype name="按钮" type="UI_OBJ_TYPE_BUTTON" id="11">
+        <act name="激活按钮" type="10" byname="ACT_CTRLPT_ENABLE" image="1" showparam="按钮名称">
+            <param name="按钮名称" type="string" value="this" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="关闭按钮" type="10" byname="ACT_CTRLPT_ENABLE" image="1" showparam="按钮名称">
+            <param name="按钮名称" type="string" value="this" />
+            <param type="bool" value="FALSE" />
+        </act>
+        <act name="设置按钮坐标" type="1202" byname="ACT_POSITION_BUTTON" image="1" showparam="按钮名称">
+            <param name="按钮名称" type="string" value="this" />
+            <param name="数值" type="values" />
+        </act>
+    </acttype>
+    <acttype name="右键菜单" type="UI_OBJ_TYPE_MENU" id="19">
+        <act name="激活右键菜单" type="10" byname="ACT_CTRLPT_ENABLE">
+            <param name="右键菜单名称" type="string" value="this" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="关闭右键菜单" type="10" byname="ACT_CTRLPT_ENABLE">
+            <param name="右键菜单名称" type="string" value="this" />
+            <param type="bool" value="FALSE" />
+        </act>
+    </acttype>
+    <acttype name="文本" type="UI_OBJ_TYPE_TEXT" id="20">
+        <act name="显示文本" type="101" byname="ACT_FIELD_SHOW_EXCLUDE_ANNOTATION">
+            <param name="节点路径" type="field" value="keypath" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="隐藏文本" type="100" byname="ACT_FIELD_SHOW">
+            <param name="节点路径" type="field" value="keypath" />
+            <param type="bool" value="FALSE" />
+        </act>
+        <act name="文本打印" type="297" byname="ACT_TEXT_PRINT" />
+    </acttype>
+    <acttype name="图片" type="UI_OBJ_TYPE_IMAGE" id="21">
+        <act name="显示图片" type="101" byname="ACT_FIELD_SHOW_EXCLUDE_ANNOTATION" image="3" showparam="节点路径">
+            <param name="节点路径" type="field" value="keypath" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="隐藏图片" type="100" byname="ACT_FIELD_SHOW" image="3" showparam="节点路径">
+            <param name="节点路径" type="field" value="keypath" />
+            <param type="bool" value="FALSE" />
+        </act>
+        <act name="设置图片位置" type="1200" byname="ACT_POSITION_IMAGE" image="3" showparam="图片路径">
+            <param name="图片路径" type="field" value="keypath" />
+            <param name="图片位置" type="values" />
+        </act>
+        <act name="设置透明度" type="107" byname="ACT_FIELD_TRANSPARENCY" image="1" showparam="路径">
+            <param name="路径" type="field" value="keypath" />
+            <param name="数值" type="values" />
+        </act>
+    </acttype>
+    <acttype name="控制点" type="UI_OBJ_TYPE_CTRLPT" id="10">
+        <act name="激活控制点" type="10" byname="ACT_CTRLPT_ENABLE" image="4" showparam="控制点名称">
+            <param name="控制点名称" type="string" value="this" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="关闭控制点" type="10" byname="ACT_CTRLPT_ENABLE" image="4" showparam="控制点名称">
+            <param name="控制点名称" type="string" value="this" />
+            <param type="bool" value="FALSE" />
+        </act>
+    </acttype>
+    <acttype name="键盘响应" type="UI_OBJ_TYPE_KEYMAP" id="12">
+        <act name="激活键盘" type="10" byname="ACT_CTRLPT_ENABLE">
+            <param name="控制点名称" type="string" value="this" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="关闭键盘" type="10" byname="ACT_CTRLPT_ENABLE">
+            <param name="控制点名称" type="string" value="this" />
+            <param type="bool" value="FALSE" />
+        </act>
+    </acttype>
+    <acttype name="旋钮" type="UI_OBJ_TYPE_KNOB," id="13">
+        <act name="激活旋钮" type="10" byname="ACT_CTRLPT_ENABLE">
+            <param name="旋钮名称" type="string" value="this" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="关闭旋钮" type="10" byname="ACT_CTRLPT_ENABLE">
+            <param name="旋钮名称" type="string" value="this" />
+            <param type="bool" value="FALSE" />
+        </act>
+    </acttype>
+    <acttype name="滑块" type="UI_OBJ_TYPE_SLIDER" id="14">
+        <act name="激活滑块" type="10" byname="ACT_CTRLPT_ENABLE">
+            <param name="滑块名称" type="string" value="this" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="关闭滑块" type="10" byname="ACT_CTRLPT_ENABLE">
+            <param name="滑块名称" type="string" value="this" />
+            <param type="bool" value="FALSE" />
+        </act>
+    </acttype>
+    <acttype name="区域响应" type="UI_OBJ_TYPE_AREA" id="15">
+        <act name="激活区域响应" type="10" byname="ACT_CTRLPT_ENABLE">
+            <param name="区域响应名称" type="string" value="this" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="关闭区域响应" type="10" byname="ACT_CTRLPT_ENABLE">
+            <param name="区域响应名称" type="string" value="this" />
+            <param type="bool" value="FALSE" />
+        </act>
+    </acttype>
+    <acttype name="触发器" type="UI_OBJ_TYPE_TRIGGER" id="18">
+        <act name="激活触发器" type="2500" byname="ACT_TRIGGER_ENABLE" image="4" showparam="触发器名称">
+            <param name="触发器名称" type="string" value="this" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="关闭触发器" type="2500" byname="ACT_TRIGGER_ENABLE" image="4" showparam="触发器名称">
+            <param name="触发器名称" type="string" value="this" />
+            <param type="bool" value="FALSE" />
+        </act>
+    </acttype>
+
+ <acttype name="视频操作" type="UI_OBJ_TYPE_MEDIA" id="47">
+        <act name="播放视频" type="3023" byname="ACT_FUNC_MEDIA" image="10" showparam="视频名称">
+            <param name="视频名称" type="string" value="this"/>
+        </act>
+</acttype>
+
+   <acttype name="动画操作" type="UI_OBJ_TYPE_ANIM" id="17">
+        <act name="插入动画" type="299" byname="ACT_ANIM_INSERT">
+            <param name="动画名称" type="string" value="this" />
+        </act>
+        <act name="复制独立动画" type="298" byname="ACT_ANIM_NEW">
+            <param name="动画名称" type="string" value="this" />
+        </act>
+        <act name="启动动画" type="200" byname="ACT_ANIM_START" image="11" showparam="动画名称">
+            <param name="动画名称" type="string" value="this" />
+        </act>
+        <act name="停止动画" type="203" byname="ACT_ANIM_STOP" image="11" showparam="动画名称">
+            <param name="动画名称" type="string" value="this" />
+        </act>
+        <act name="停止当前活动动画" type="203" byname="ACT_ANIM_STOP" image="11" showparam="动画名称">
+            <param name="动画名称" type="string" value="active" />
+        </act>
+        <act name="暂停动画" type="205" byname="ACT_ANIM_PAUSE" image="11" showparam="动画名称">
+            <param name="动画名称" type="string" value="this" />
+
+        </act>
+        <act name="继续动画" type="204" byname="ACT_ANIM_CONTINUE" image="11" showparam="动画名称">
+            <param name="动画名称" type="string" value="this" />
+        </act>
+	<act name="重置动画" type="201" byname="ACT_ANIM_RESET" image="11" showparam="动画名称">
+            <param name="动画名称" type="string" value="this" />
+            <param type="mask" value="1" />
+        </act>
+        <act name="重置动画组" type="201" byname="ACT_ANIM_RESET" image="11" showparam="动画组号">
+            <param name="动画组号" type="int" />
+            <param type="mask" value="2" />
+        </act>
+        <act name="暂停当前活动动画" type="205" byname="ACT_ANIM_PAUSE" image="11" showparam="动画名称">
+            <param name="动画名称" type="string" value="active" />
+        </act>
+        <act name="恢复当前暂停动画" type="204" byname="ACT_ANIM_CONTINUE" image="11" showparam="动画名称">
+            <param name="动画名称" type="string" value="active" />
+        </act>
+        <act name="重置当前活动动画" type="201" byname="ACT_ANIM_RESET" image="11">
+            <param type="string" value="active" />
+            <param type="mask" value="1" />
+        </act>
+    </acttype>
+    <acttype name="变量操作" type="UI_OBJ_TYPE_VAR" id="26">
+        <act name="变量赋值(int)" type="500" byname="ACT_VARIABLE_SET" image="19" showparam="变量名">
+            <param type="mask" value="2" />
+            <param name="变量名" type="string" value="this" />
+            <param name="int型" type="int" />
+        </act>
+        <act name="变量赋值(float)" type="500" byname="ACT_VARIABLE_SET" image="19" showparam="变量名">
+            <param type="mask" value="8" />
+            <param name="变量名" type="string" value="this" />
+            <param name="float型" type="float" />
+        </act>
+        <act name="变量赋值(bool)" type="500" byname="ACT_VARIABLE_SET" image="19" showparam="变量名">
+            <param type="mask" value="4" />
+            <param name="变量名" type="string" value="this" />
+            <param name="bool型" type="bool" />
+        </act>
+        <act name="变量赋值(long)" type="500" byname="ACT_VARIABLE_SET" image="19" showparam="变量名">
+            <param type="mask" value="8192" />
+            <param name="变量名" type="string" value="this" />
+            <param name="long型" type="long" />
+        </act>
+        <act name="变量赋值(string)" type="500" byname="ACT_VARIABLE_SET" image="19" showparam="变量名">
+            <param type="mask" value="512" />
+            <param name="变量名" type="string" value="this" />
+            <param name="string型" type="string2" />
+        </act>
+    </acttype>
+    <acttype name="窗口" type="UI_OBJ_TYPE_WINDOW" id="16">
+        <act name="创建窗口" type="1902" byname="ACT_WND_BMP_CREATE" image="10" showparam="窗口名称">
+            <param name="窗口名称" type="string" value="this" />
+        </act>
+        <act name="显示窗口" type="1903" byname="ACT_WND_BMP_SHOW" image="10" showparam="窗口名称">
+            <param name="窗口名称" type="string" value="this" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="刷新窗口" type="1901" byname="ACT_WND_BMP_UPDATE" image="10" showparam="窗口名称">
+            <param name="窗口名称" type="string" value="this" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="关闭窗口" type="1903" byname="ACT_WND_BMP_SHOW" image="10" showparam="窗口名称">
+            <param name="窗口名称" type="string" value="this" />
+            <param type="bool" value="FALSE" />
+        </act>
+    </acttype>
+
+    <acttype name="视口操作" type="UI_OBJ_TYPE_VECTOR" id="27">
+        <act name="激活视口" type="403" byname="ACT_VIEWPORT_ACTIVE" image="27" showparam="视口名称">
+            <param name="视口名称" type="string" value="this" />
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="关闭视口" type="403" byname="ACT_VIEWPORT_ACTIVE" image="27" showparam="视口名称">
+            <param name="视口名称" type="string" value="this" />
+            <param type="bool" value="FALSE" />
+        </act>
+        <act name="设置视口尺寸" type="400" byname="ACT_VIEWPORT_POSITION" image="27" showparam="视口名称">
+            <param name="视口名称" type="string" value="this" />
+            <param name="尺寸" type="values" />
+        </act>
+        <act name="显示新视口" type="401" byname="ACT_VIEWPORT_ENABLE" image="27" showparam="视口名称">
+            <param type="bool" value="TRUE" />
+            <param name="视口名称" type="string" />
+        </act>
+        <act name="关闭新视口" type="401" byname="ACT_VIEWPORT_ENABLE" image="27" showparam="视口名称">
+            <param type="bool" value="FALSE" />
+            <param name="视口名称" type="string" />
+        </act>
+        <act name="视口内显示物体" type="402" byname="ACT_VIEWPORT_HIDE_FIELD" image="17" showparam="视口名称">
+            <param type="bool" value="TRUE" />
+            <param name="路径" type="field" />
+            <param name="视口名称" type="string" value="this" />
+        </act>
+        <act name="视口内隐藏物体" type="402" byname="ACT_VIEWPORT_HIDE_FIELD" image="17" showparam="视口名称">
+            <param type="bool" value="FALSE" />
+            <param name="路径" type="field" />
+            <param name="视口名称" type="string" value="this" />
+        </act>
+        <act name="设置视角广角" type="900" byname="ACT_FOVY" image="3" showparam="视口名称">
+            <param name="视口名称" type="string" value="this" />
+            <param name="值" type="values" />
+        </act>
+    </acttype>
+    <acttype name="纹理" type="UI_OBJ_TYPE_TEXTURE" id="22">
+        <act name="添加纹理" type="1300" byname="ACT_TEXTURE_NAME" image="27" showparam="纹理名">
+            <param name="纹理名" type="string" value="this" />
+            <param name="节点路径" type="field" />
+            <param name="值" type="values" value="1,1,0,0,0"/>
+        </act>
+        <act name="取消纹理" type="1300" byname="ACT_TEXTURE_NAME" image="27" showparam="纹理名">
+            <param name="纹理名" type="string" value="no texture" />
+            <param name="节点路径" type="field" />
+        </act>
+    </acttype>
+    <acttype name="相机操作" type="UI_OBJ_TYPE_CAMERA" id="39">
+        <act name="开启相机碰撞" type="306" byname="ACT_CAMERA_COLLISION" image="2" >
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="关闭相机碰撞" type="306" byname="ACT_CAMERA_COLLISION" image="2" >
+            <param type="bool" value="FALSE" />
+        </act>
+        <act name="设置相机" type="300" byname="ACT_CAMERA" image="2" showparam="路径">
+            <param type="string" value="main"/>
+            <param name="模型路径" type="field" />
+            <param name="数值" type="values" value="camera"/>
+        </act>
+      <act name="设置漫游" type="1104" byname="ACT_OPERATE_WALK" image="2" >       
+		<param name="相机高度" type="values" value="4,4,45"/> 
+     </act> 
+
+        <act name="相机变换" type="291" byname="ACT_CAMERA_CHANGE" />
+
+      <act name="设置相机步伐" type="303" byname="ACT_CAMERA_STEP" image="2" >       
+		<param name="数值" type="float" value="2.0"/> 
+     </act> 
+    </acttype>
+	
+	<acttype name="视图操作" type="UI_OBJ_TYPE_VIEW" id="40">
+		<act name="设置旋转" type="1100" byname="ACT_OPERATE_ORBIT" image="2" /> 
+		<act name="设置平移" type="1101" byname="ACT_OPERATE_PAN" image="2" /> 
+		<act name="设置选择" type="1102" byname="ACT_OPERATE_PICK" image="2" /> 
+		<act name="设置缩放" type="1103" byname="ACT_OPERATE_NULL" image="2" /> 
+		<act name="设置漫游" type="1104" byname="ACT_OPERATE_WALK" image="2" />       
+		<act name="设置交互" type="1105" byname="ACT_OPERATE_GRASP" image="2" />
+    </acttype>
+
+    <acttype name="其他操作" type="UI_OBJ_TYPE_OTHER" id="5000">
+        <act name="退出" type="1" byname="ACT_EXIT" image="3" />
+        <act name="enablelod" type="406" byname="ACT_VIEWPORT_LOD_ENABLE" image="3" showparam="视口名称">
+            <param name="是/否" type="bool" />
+            <param name="视口名称" type="string" />
+        </act>
+        <act name="设置场景背景图" type="1000" byname="ACT_BACKGROUND" image="3" showparam="图片路径">
+            <param name="图片路径" type="string" />
+        </act>
+        <act name="显示场景背景" type="1001" byname="ACT_BACKGROUND_SHOW" image="3">
+            <param type="bool" value="TRUE" />
+        </act>
+        <act name="取消场景背景" type="1001" byname="ACT_BACKGROUND_SHOW" image="3">
+            <param type="bool" value="FALSE" />
+        </act>
+        <act name="设置场景范围" type="132" byname="ACT_FIELD_BOX" image="3" showparam="路径">
+            <param name="路径" type="field" />
+            <param name="数值" type="values" />
+        </act>
+        <act name="调用状态文件" type="2800" byname="ACT_STATUS_RESTORE" image="3" showparam="路径">
+            <param name="名称" type="string" />
+        </act>
+        <act name="加载图片" type="103" byname="ACT_FIELD_LOAD_IMAGE" image="3" showparam="图片路径" fileProperty="图片路径">
+            <param name="图片路径" type="field" />
+        </act>
+        <act name="卸载图片" type="104" byname="ACT_FIELD_UNLOAD_IMAGE" image="3" showparam="图片路径" fileProperty="图片路径">
+            <param name="图片路径" type="field" />
+        </act>
+        <act name="设置图片位置" type="1200" byname="ACT_POSITION_IMAGE" image="3" showparam="图片路径" fileProperty="图片路径">
+            <param name="图片路径" type="field" value="keypath" />
+            <param name="图片位置" type="values" />
+        </act>
+        <act name="设置透明度" type="107" byname="ACT_FIELD_TRANSPARENCY" image="3" showparam="图片路径" fileProperty="图片路径">
+            <param name="路径" type="field" value="keypath" />
+            <param name="数值" type="values" />
+        </act>
+        <act name="启动程序" type="2000" byname="ACT_EXECUTE" image="3" showparam="路径">
+            <param name="路径" type="string" />
+        </act>
+        <act name="进入模块" type="3200" byname="ACT_MODULE_INTO" image="3" showparam="模块名称">
+            <param name="模块名称" type="string" />
+        </act>
+        <act name="卸载AVI" type="704" byname="ACT_AVI_UNLOAD" image="3" showparam="AVI名称">
+            <param name="AVI名称" type="string" />
+        </act>
+        <act name="加速所有动画" type="206" byname="ACT_ANIM_FAST" image="11">
+            <param type="string" value="all" />
+        </act>
+        <act name="减速所有动画" type="207" byname="ACT_ANIM_SLOW" image="11">
+            <param type="string" value="all" />
+        </act>
+        <act name="恢复动画原速" type="216" byname="ACT_ANIM_ORIGINAL" image="11">
+            <param type="string" value="all" />
+        </act>
+        <act name="设置动画速度" type="210" byname="ACT_ANIM_SPEED" image="11">
+            <param name="动画名(all代表所有)" type="string"  />
+	    <param name="倍率" type="float" />
+        </act>
+
+
+        <act name="添加纹理" type="1300" byname="ACT_TEXTURE_NAME" image="27" showparam="纹理名">
+            <param name="纹理名" type="string" />
+            <param name="节点路径" type="field" />
+            <param name="值" type="values" />
+        </act>
+        <act name="镜面反射" type="147" byname="ACT_FIELD_SPECULAR" image="3" showparam="节点路径">
+            <param name="节点路径" type="field" />
+            <param name="值" type="values" />
+        </act>
+        <act name="设置视角广角" type="900" byname="ACT_FOVY" image="3" showparam="视口名称">
+            <param name="视口名称" type="string" />
+            <param name="值" type="values" />
+        </act>
+        <act name="雾" type="801" byname="ACT_FOG_ENABLE" image="3" showparam="启动/关闭">
+            <param name="启动/关闭" type="bool" />
+        </act>
+        <act name="设置雾" type="800" byname="ACT_FOG_DATA" image="3" showparam="颜色+浓度">
+            <param name="颜色+浓度" type="values" />
+        </act>
+        <act name="设置鼠标无法旋转" type="1103" byname="ACT_OPERATE_NULL" image="3" /> 
+    </acttype>
+</acts>

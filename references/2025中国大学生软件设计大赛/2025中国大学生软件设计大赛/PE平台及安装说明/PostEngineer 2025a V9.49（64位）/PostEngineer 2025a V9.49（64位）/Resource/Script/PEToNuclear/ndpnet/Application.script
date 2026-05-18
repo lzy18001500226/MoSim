@@ -1,0 +1,25 @@
+'创建时间: 2021-09-15
+'作者: ypj
+'描述: ndpnet 通信测试
+
+Script{
+
+
+include{NdpnetMessageListener.script}	
+
+class Application 
+{
+    NdpnetManager mNdpnetMgr;
+    NdpnetMessageListener mNdpnetListener;
+	
+	Application() 
+	{
+	    mNdpnetMgr = new NdpnetManager;
+	    mNdpnetListener = new NdpnetMessageListener;
+	}
+}
+
+
+
+
+}'''END Script

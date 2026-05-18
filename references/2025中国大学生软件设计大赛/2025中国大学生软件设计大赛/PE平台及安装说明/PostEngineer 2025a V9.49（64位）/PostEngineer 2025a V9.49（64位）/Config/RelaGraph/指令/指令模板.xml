@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="gb2312"?>
+
+<指令表 version="100">
+
+	<类别 name="系统">
+		<指令 name="设置仿真时间系数" content="setTickFactor(系数)">
+			<参数 name="系数"/>
+		</指令>
+		<指令 name="获取鼠标位置" content="getMousePosition(X,Y)">
+			<参数 name="X"/>
+			<参数 name="Y"/>
+		</指令>
+		<指令 name="发送网页消息" content="notifyWebMessage(消息);">
+			<参数 name="消息" type="STRING"/>
+		</指令>
+	</类别>
+
+	<类别 name="模块">
+		<指令 name="打开模块" content="enableModule(模块名, 1)">
+			<参数 name="模块名"/>
+		</指令>
+		<指令 name="关闭模块" content="enableModule(模块名, 0)">
+			<参数 name="模块名"/>
+		</指令>
+		<指令 name="设置模块位置" content="setModulePosition2D(模块名, X, Y, 0)">
+			<参数 name="模块名"/>
+			<参数 name="X"/>
+			<参数 name="Y"/>
+		</指令>
+	</类别>
+
+	<类别 name="对象">
+		<指令 name="激活对象" content="enableObject(对象名, 1);">
+			<参数 name="对象名"/>
+		</指令>
+		<指令 name="关闭对象" content="enableObject(对象名, 0);">
+			<参数 name="对象名"/>
+		</指令>
+	</类别>
+
+	<类别 name="动画">
+		<指令 name="启动动画" content="astart(动画名)">
+			<参数 name="动画名"/>
+		</指令>
+		<指令 name="停止动画" content="astop(动画名)">
+			<参数 name="动画名"/>
+		</指令>
+	</类别>
+
+	<类别 name="控制点">
+		<指令 name="激活控制点" content="enableCtrlpt(名称, 1)">
+			<参数 name="名称"/>
+		</指令>
+		<指令 name="关闭控制点" content="enableCtrlpt(名称, 0)">
+			<参数 name="名称"/>
+		</指令>
+		<指令 name="按下按钮" content="pushButtonDown(名称);">
+			<参数 name="名称"/>
+		</指令>
+	</类别>
+
+	<类别 name="触发器">
+		<指令 name="激活触发器" content="enableTrigger(名称, 1)">
+			<参数 name="名称"/>
+		</指令>
+		<指令 name="关闭触发器" content="enableTrigger(名称, 0)">
+			<参数 name="名称"/>
+		</指令>
+	</类别>
+	
+	<类别 name="变量">
+		<指令 name="变量赋值" content="变量名=值">
+			<参数 name="变量名"/>
+			<参数 name="值"/>
+		</指令>
+		<指令 name="变量累加" content="变量名=变量名+增幅">
+			<参数 name="变量名"/>
+			<参数 name="增幅"/>
+		</指令>
+		<指令 name="变量相加" content="结果变量=变量1+变量2">
+			<参数 name="结果变量"/>
+			<参数 name="变量1"/>
+			<参数 name="变量2"/>
+		</指令>
+		<指令 name="变量相减" content="结果变量=变量1-变量2">
+			<参数 name="结果变量"/>
+			<参数 name="变量1"/>
+			<参数 name="变量2"/>
+		</指令>
+		<指令 name="变量相乘" content="结果变量=变量1*变量2">
+			<参数 name="结果变量"/>
+			<参数 name="变量1"/>
+			<参数 name="变量2"/>
+		</指令>
+		<指令 name="历史赋值" content="setHistoryFloatArray(历史数组, 值)">
+			<参数 name="历史数组"/>
+			<参数 name="值"/>
+		</指令>
+		<指令 name="启动数据源" content="startDataSource(名称)">
+			<参数 name="名称"  type="STRING"/>
+		</指令>
+		<指令 name="停止数据源" content="stopDataSource(名称)">
+			<参数 name="名称"  type="STRING"/>
+		</指令>
+	</类别>
+
+	<类别 name="概率">
+		<指令 name="均匀分布随机数" content="变量名=下界+(rand()%1000)/1000.0*(上界-下界)">
+			<参数 name="变量名"/>
+			<参数 name="下界"/>
+			<参数 name="上界"/>
+		</指令>
+		<指令 name="指数分布随机数" content=" float r =  (rand()%1000)/1000.0; 变量名=-均值*log(1-r); ">
+			<参数 name="变量名"/>
+			<参数 name="均值"/>
+		</指令>
+		<指令 name="正态分布随机数" content=" float r1=(rand()%1000)/1000.0; float r2=(rand()%1000)/1000.0; float z=sqrt(-2*log(r1))*cos(2*3.1415926*r2); 变量名=均值+sqrt(方差)*z;">
+			<参数 name="变量名"/>
+			<参数 name="均值"/>
+			<参数 name="方差"/>
+		</指令>
+
+		<指令 name="均匀分布概率" content="积累概率=(自变量-下界)/(上界-下界); if(积累概率<0){积累概率=0;} else if(积累概率>1){积累概率=1;}">
+			<参数 name="积累概率"/>
+			<参数 name="下界"/>
+			<参数 name="上界"/>
+			<参数 name="自变量"/>
+		</指令>
+		<指令 name="指数分布概率" content="if(自变量<0){积累概率=0} else{积累概率=1-exp(-1.0/均值*自变量);}">
+			<参数 name="积累概率"/>
+			<参数 name="均值"/>
+			<参数 name="自变量"/>
+		</指令>
+		<指令 name="泊松分布概率" content="int i=1; int s = 1; 积累概率 = 0; while(i<=自变量){s=s*i; 积累概率+= exp(-均值)*pow(均值,i)/s; i++;}">
+			<参数 name="积累概率"/>
+			<参数 name="均值"/>
+			<参数 name="自变量"/>
+		</指令>
+		<指令 name="正态分布概率" content="积累概率=nd(均值, 方差, 自变量);">
+			<参数 name="积累概率"/>
+			<参数 name="均值"/>
+			<参数 name="方差"/>
+			<参数 name="自变量"/>
+		</指令>
+	</类别>
+
+	<类别 name="编号">
+		<指令 name="初始化编号池" content="initialID(编号名, 最大值)">
+			<参数 name="编号名" type="STRING" />
+			<参数 name="最大值" />
+		</指令>
+		<指令 name="分配编号" content="变量名 = allocID(编号名)">
+			<参数 name="编号名"  type="STRING"/>
+			<参数 name="变量名" />
+		</指令>
+		<指令 name="释放编号" content="releaseID(编号名, 变量名)">
+			<参数 name="编号名"  type="STRING"/>
+			<参数 name="变量名" />
+		</指令>
+	</类别>
+
+	<类别 name="相机">
+		<指令 name="设置相机节点" content="handle key = getkey(节点路径); camSetBasisField(&quot;main&quot;, key, 1);">
+			<参数 name="节点路径" type="STRING" />
+		</指令>
+		<指令 name="设置相机参数" content="camSetCamera(&quot;main&quot;, -1, 相机参数);">
+			<参数 name="相机参数"/>
+		</指令>
+		<指令 name="应用相机对象" content="applyCamera(相机名);">
+			<参数 name="相机名"/>
+		</指令>
+		<指令 name="相机拉近到" content="handle key = getkey(节点路径);  camZoomToField(key);">
+			<参数 name="节点路径" type="STRING" />
+		</指令>
+	</类别>
+
+	<类别 name="纹理">
+		<指令 name="设置纹理" content="setTextureName(节点路径, 纹理名);">
+			<参数 name="节点路径" type="STRING" />
+			<参数 name="纹理名" type="STRING" />
+		</指令>
+	</类别>
+
+
+	<类别 name="粒子">
+		<指令 name="启动粒子" content="startParticle(名称);">
+			<参数 name="名称" type="STRING" />
+		</指令>
+		<指令 name="停止粒子" content="stopParticle(名称);">
+			<参数 name="名称"/>
+		</指令>
+		<指令 name="结束粒子" content="killParticle(名称);">
+			<参数 name="名称" type="STRING" />
+		</指令>
+		<指令 name="启用尾迹" content="enableJet(名称, 1);">
+			<参数 name="名称" type="STRING" />
+		</指令>
+		<指令 name="关闭尾迹" content="enableJet(名称, 0);">
+			<参数 name="名称" type="STRING" />
+		</指令>
+	</类别>
+
+	<类别 name="物体">
+		<指令 name="隐藏物体" content="showField(路径,0)">
+			<参数 name="路径"/>
+			<参数 name="备注"/>
+		</指令>
+		<指令 name="显示物体" content="showField(路径,1)">
+			<参数 name="路径"/>
+			<参数 name="备注"/>
+		</指令>
+		<指令 name="仅隐藏父节点" content="showFieldLocal(路径,0)">
+			<参数 name="路径"/>
+			<参数 name="备注"/>
+		</指令>
+		<指令 name="仅显示父节点" content="showFieldLocal(路径,1)">
+			<参数 name="路径"/>
+			<参数 name="备注"/>
+		</指令>
+		<指令 name="旋转物体" content="rotateField(路径,轴,角度)">
+			<参数 name="路径"/>
+			<参数 name="轴"/>
+			<参数 name="角度"/>
+			<参数 name="备注"/>
+		</指令>
+		<指令 name="平移物体" content="moveField(路径,轴,距离)">
+			<参数 name="路径"/>
+			<参数 name="轴"/>
+			<参数 name="距离"/>
+			<参数 name="备注"/>
+		</指令>
+		<指令 name="设置单位矩阵" content="resetFieldMatrix(路径)">
+			<参数 name="路径"/>
+			<参数 name="备注"/>
+		</指令>
+	</类别>
+
+
+	<类别 name="实体">
+		<指令 name="创建实体" content="createEntity(名称, 模块名)">
+			<参数 name="名称" />
+			<参数 name="模块名" type="STRING"/>
+		</指令>
+		<指令 name="调用实体" content="executeEntity(名称)">
+			<参数 name="名称" />
+		</指令>
+		<指令 name="绑定实体" content="bindEntities(实体名, 目标实体)">
+			<参数 name="实体名" />
+			<参数 name="目标实体"/>
+		</指令>
+		<指令 name="绑定实体到模型" content="bindEntityToField(名称, 模型路径)">
+			<参数 name="名称" />
+			<参数 name="模型路径" type="STRING"/>
+		</指令>
+		<指令 name="解绑实体" content="unbindEntity(名称)">
+			<参数 name="名称" />
+		</指令>
+		<指令 name="移动实体" content="moveEntity(名称, dx, dy, dz)">
+			<参数 name="名称" />
+			<参数 name="dx" />
+			<参数 name="dy" />
+			<参数 name="dz" />
+		</指令>
+		<指令 name="放置实体" content="placeEntity(名称, x, y, z)">
+			<参数 name="名称" />
+			<参数 name="x" />
+			<参数 name="y" />
+			<参数 name="z" />
+		</指令>
+		<指令 name="预定路线移动实体" content="moveEntityOnRoute(名称, 路线名, 总时间, 起始时间)">
+			<参数 name="名称" />
+			<参数 name="路线名" />
+			<参数 name="总时间" />
+			<参数 name="起始时间" />
+		</指令>
+		<指令 name="预定路线移动模型" content="moveFieldOnRoute(路径, 路线名, 总时间, 起始时间)">
+			<参数 name="路径" />
+			<参数 name="路线名" />
+			<参数 name="总时间" />
+			<参数 name="起始时间" />
+		</指令>
+		<指令 name="发送实体消息" content="sendEntityMessage(目标实体名, 消息内容);">
+			<参数 name="目标实体名" />
+			<参数 name="消息内容"/>
+		</指令>
+		<指令 name="发送系统消息" content="sendSystemMessage(消息内容);">
+			<参数 name="消息内容"/>
+		</指令>
+		<指令 name="实体运行完成" content="sendSystemMessage(&quot;实体运行完成&quot;);">
+			<参数 name="备注"/>
+		</指令>
+	</类别>
+
+	<类别 name="流程">
+		<指令 name="激活流程" content="enableSequence(流程名, true)">
+			<参数 name="流程名" type="STRING"/>
+		</指令>
+		<指令 name="关闭流程" content="enableSequence(流程名, false)">
+			<参数 name="流程名" type="STRING"/>
+		</指令>
+		<指令 name="播放流程" content="playSequence(流程名,反向)">
+			<参数 name="流程名" type="STRING"/>
+			<参数 name="反向" />
+		</指令>
+	</类别>
+
+	<类别 name="效果">
+		<指令 name="启用雾" content="setFogDensity(浓度); setFogColor(R, G, B);">
+			<参数 name="浓度"/>
+			<参数 name="R"/>
+			<参数 name="G"/>
+			<参数 name="B"/>
+		</指令>
+		<指令 name="关闭雾" content="setFogDensity(0);">
+			<参数 name="备注"/>
+		</指令>
+		<指令 name="爆炸" content="explode(坐标X, 坐标Y, 坐标Z, 半径);">
+			<参数 name="坐标X"/>
+			<参数 name="坐标Y"/>
+			<参数 name="坐标Z"/>
+			<参数 name="半径"/>
+		</指令>
+		<指令 name="燃烧" content="burn(名称, 节点路径, 大小, 坐标X, 坐标Y, 坐标Z, 方向X, 方向Y, 方向Z, 层);">
+			<参数 name="名称"/>
+			<参数 name="节点路径"/>
+			<参数 name="大小"/>
+			<参数 name="坐标X"/>
+			<参数 name="坐标Y"/>
+			<参数 name="坐标Z"/>
+			<参数 name="方向X"/>
+			<参数 name="方向Y"/>
+			<参数 name="方向Z"/>
+			<参数 name="层"/>
+		</指令>
+		<指令 name="停止燃烧" content="burnStop(名称);">
+			<参数 name="名称"/>
+		</指令>
+	</类别>
+
+	<类别 name="组">
+		<指令 name="启用组" content="enableGroup(模块, 组号, 1);">
+			<参数 name="模块"/>
+			<参数 name="组号"/>
+		</指令>
+		<指令 name="关闭组" content="enableGroup(模块, 组号, 0);">
+			<参数 name="模块"/>
+			<参数 name="组号"/>
+		</指令>
+	</类别>
+
+
+	<类别 name="工具">
+		<指令 name="设置工具属性" content="setToolProperty(工具图片路径, 工具图片蒙板路径, 工具模型路径,工具类型, 工具参数)">
+			<参数 name="工具图片路径" type="STRING"/>
+			<参数 name="工具图片蒙板路径" type="STRING"/>
+			<参数 name="工具模型路径" type="STRING"/>
+			<参数 name="工具类型" type="STRING"/>
+			<参数 name="工具参数" type="STRING"/>
+		</指令>
+		<指令 name="设置工具对象" content="setToolObject(对象名)">
+			<参数 name="对象名" type="STRING"/>
+		</指令>
+		<指令 name="放置在面前" content="putFieldBeforeCamera(路径, 竖直放置)">
+			<参数 name="路径" type="STRING"/>
+			<参数 name="竖直放置"/>
+		</指令>
+	</类别>
+
+	<类别 name="动态加载">
+		<指令 name="加载模型" content="loadField(&quot;/&quot;, 文件)">
+			<参数 name="文件" type="STRING"/>
+			<参数 name="备注"/>
+		</指令>
+		<指令 name="加载动画" content="loadAnimation(文件)">
+			<参数 name="文件" type="STRING"/>
+			<参数 name="备注"/>
+		</指令>
+	</类别>
+
+	<类别 name="通信">
+		<指令 name="启动MWorks变量映射" content="pluginCall(&quot;PEToMWorks&quot;, &quot;DisableFlightSimulation&quot;, 0); pluginCall(&quot;PEToMWorks&quot;, &quot;Start&quot;, 0)">
+			<参数 name="备注"/>
+		</指令>
+	</类别>
+
+	<类别 name="其他">
+		<指令 name="打印文字" content="printString(X, Y, 字符串)">
+			<参数 name="X"/>
+			<参数 name="Y"/>
+			<参数 name="字符串" type="STRING"/>
+		</指令>
+		<指令 name="转换到文字" content="字符串变量名=itoa(数字变量)">
+			<参数 name="数字变量"/>
+			<参数 name="字符串变量"/>
+		</指令>
+		<指令 name="转换到数字" content="数字变量=aoti(字符串变量名)">
+			<参数 name="字符串变量"/>
+			<参数 name="数字变量"/>
+		</指令>
+
+		<指令 name="退出系统" content="appExit(&quot;myself&quot;)">
+			<参数 name="备注"/>
+		</指令>
+
+		<指令 name="恢复状态" content="restoreStatus(状态名)">
+			<参数 name="状态名"/>
+		</指令>
+
+	</类别>
+
+</指令表>

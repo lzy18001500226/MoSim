@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<Type:1 value="打包该文件夹下所有文件" />
+<Type:2 value="打包该文件夹下所有文件及其子文件" />
+<Type:3 value="按下列文件列表打包" />
+<Type:4 value="按下列文件类型打包" />
+<Type:5 value="黑名单" />
+<----Example 可在PERunLib下按下例设置需要打包的文件>
+    <Item name="Shaders" Type="1" />
+    <Item name="Support" Type="2" />
+    <Item name="Config" Type="3">
+        <File name="PluginManager.xml" />
+    </Item>
+    <Item name="Plugins" Type="4">
+        <File name="*.dll" />
+        <File name="*.ini" />
+    </Item>  
+    <--BlackList中可设置用户不需要打包的文件，可设置多个不需要的文件名/>  
+    <--BlackList Type="5">
+        <File name="abcde.dll" />
+     </--BlackList>
+</----Example>
+<PERunLib Version="100">
+    <Item name="Config" Type="2" />
+	<Item name="Shaders" Type="2" />
+    <Item name="Support" Type="2" />
+	<Item name="Resource\材质库" Type="2" />
+	<Item name="Resource\FMU" Type="2" />
+	<Item name="Resource\Fonts" Type="2" />
+	<Item name="Resource\System" Type="2" />
+	<Item name="Resource\lens" Type="2" />
+
+	<Item name="Plugins\platforms" Type="2"> </Item>
+	<Item name="Plugins\Common" Type="2"> </Item>
+
+	<Item name="Plugins" Type="3">
+		<File name="Effect.plu" />
+
+		<File name="FxLibPhysX.plu" />
+		
+		<File name="FxLibDatabase.plu" />
+		<File name="libmysql.dll" />
+		<File name="sqlite3.dll" />
+
+		<File name="FxLibAnimation.plu" />
+
+		<File name="FxLibNet.plu" />
+		<File name="PEToolBox.plu" />
+		<File name="PECommand.plu" />
+		<File name="libfbxsdk.dll" />
+
+    <File name="PEToSvg.plu" />
+    <File name="thorvg-0.dll" />
+    
+    <File name="PEToVideo.plu" />
+    <File name="avcodec-58.dll" />
+    <File name="avformat-58.dll" />
+    <File name="avutil-56.dll" />
+    <File name="swresample-3.dll" />
+    <File name="swscale-5.dll" />
+		
+		<File name="PEToOPC.plu" />
+		<File name="PEDiagram.plu" />
+		<File name="PEInterface.plu" />
+
+                <File name="PEToHTC.plu" />
+		<File name="HTCConfig.ini" />
+		<File name="HtcViveDll.dll" />
+		<File name="openvr_api.dll" />
+		<File name="FxDevice_HtcViveLibv1_0_3.dll" />
+		
+		<File name="IntelligentPlant.plu" />
+
+		<File name="PEToMWorks.plu" />
+		<File name="libprotobuf.dll" />
+		<File name="libprotoc.dll" />
+
+		<File name="PEToJson.plu" />
+
+		<File name="PEToQt.plu" />
+		<File name="Qt5Core.dll" />
+		<File name="Qt5Gui.dll" />
+		<File name="Qt5Network.dll" />
+		<File name="Qt5Widgets.dll" />
+		<File name="libssl-1_1-x64.dll" />
+		<File name="libcrypto-1_1-x64.dll" />
+
+		<File name="PETo3dEarth.plu" />
+		<File name="shp.dll" />
+
+		<File name="PETo3dtiles.plu" />
+
+		<File name="PEToNuclear.plu" />
+		<File name="ndpnet.dll" />
+
+		<File name="PEToInfrared.plu" />
+		<File name="PESatellites.plu" />
+
+	</Item>
+</PERunLib>
+
+<BlackList Type="5"> 
+	<File name="cairo.dll" /> 
+	<File name="FxPluginDecal.plu" />
+	<File name="PEAlgorithm.plu" />
+	<File name="PEDll_TrottingHorseLamp.plu" />
+	<File name="Support\ColorMapEditor" />
+	<File name="Support\OCCT" />
+	<File name="Support\ffmpeg" />
+</BlackList>

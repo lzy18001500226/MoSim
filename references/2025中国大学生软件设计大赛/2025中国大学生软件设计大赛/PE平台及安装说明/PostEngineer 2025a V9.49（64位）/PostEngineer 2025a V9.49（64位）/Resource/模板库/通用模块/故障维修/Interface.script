@@ -1,0 +1,18 @@
+Script{
+
+
+
+module   [!path_name]{
+
+	include{[!path_name]/script/[!path_name]_variable.script}
+	include{[!path_name]/script/[!path_name]_image.script}
+	include{[!path_name]/script/[!path_name]_button.script}
+	include{[!path_name]/script/[!path_name]_ctrlpt.script}
+	include{[!path_name]/script/[!path_name]_reference.script}
+
+	include{[!path_name]/script/[!path_name]_animation.script}
+	include{[!path_name]/script/[!path_name]_ctrlpt_reaction.script}
+	include{[!path_name]/script/[!path_name]_button_reaction.script}
+}
+
+}

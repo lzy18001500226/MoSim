@@ -1,0 +1,96 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly PETo3dMax, Version=0.0.*, Culture=固定语言(固定国家/地区): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly DH, Version=1.0.*, Culture=固定语言(固定国家/地区): 
+	hash=None, flags=None
+Assembly PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35: 
+	hash=None, flags=None
+Assembly PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35: 
+	hash=None, flags=None
+Assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: 
+	hash=None, flags=None
+Assembly System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35: 
+	hash=None, flags=None
+Assembly WindowsFormsIntegration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35: 
+	hash=None, flags=None
+Assembly mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Class pe.节点编辑: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Int64): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    Int64 k : Public
+  Properties:
+    DH.数据3D.网格数据 网格 'get set' : 
+    Single[] 世界矩阵 'get set' : 
+    Single[] 最大值 'get set' : 
+    Single[] 包裹盒 'get set' : 
+    Single[] 最小值 'get set' : 
+    Single[] 矩阵 'get set' : 
+    DH.数据3D.材质 材质 'get set' : 
+    pe.节点编辑[] 选择集 'get ' : 
+    pe.节点编辑[] 子节点 'get ' : 
+    pe.节点编辑[] 所有子节点 'get ' : 
+    pe.节点编辑 父节点 'get ' : 
+    System.String 路径名 'get ' : 
+    System.String 用户数据 'get set' : 
+    System.String 类型 'get ' : 
+    System.String 名称 'get ' : 
+    System.String 关联路径 'get set' : 
+  Methods:
+    被包含(节点编辑): PrivateScope, Public, HideBySig
+    计算世界矩阵(Int64, Single*): PrivateScope, Public, Static, HideBySig
+    获取所有子节点(Int64): PrivateScope, Public, Static, HideBySig
+    设置世界矩阵(Int64, Single*, Boolean(HasFieldMarshal)): PrivateScope, Public, Static, HideBySig
+    贴图数据到PE(位图贴图, Int32): PrivateScope, Public, Static, HideBySig
+    固化(): PrivateScope, Public, HideBySig
+    获取贴图(Int64, Int32): PrivateScope, Public, Static, HideBySig
+    get_关联路径(): PrivateScope, Public, HideBySig, SpecialName
+    set_关联路径(String): PrivateScope, Public, HideBySig, SpecialName
+    get_名称(): PrivateScope, Public, HideBySig, SpecialName
+    get_类型(): PrivateScope, Public, HideBySig, SpecialName
+    get_用户数据(): PrivateScope, Public, HideBySig, SpecialName
+    set_用户数据(String): PrivateScope, Public, HideBySig, SpecialName
+    get_路径名(): PrivateScope, Public, HideBySig, SpecialName
+    get_父节点(): PrivateScope, Public, HideBySig, SpecialName
+    get_所有子节点(): PrivateScope, Public, HideBySig, SpecialName
+    get_子节点(): PrivateScope, Public, HideBySig, SpecialName
+    get_选择集(): PrivateScope, Public, HideBySig, SpecialName
+    白模化材质(): PrivateScope, Public, HideBySig
+    get_材质(): PrivateScope, Public, HideBySig, SpecialName
+    set_材质(材质): PrivateScope, Public, HideBySig, SpecialName
+    get_矩阵(): PrivateScope, Public, HideBySig, SpecialName
+    set_矩阵(Single[]): PrivateScope, Public, HideBySig, SpecialName
+    get_最小值(): PrivateScope, Public, HideBySig, SpecialName
+    set_最小值(Single[]): PrivateScope, Public, HideBySig, SpecialName
+    get_包裹盒(): PrivateScope, Public, HideBySig, SpecialName
+    set_包裹盒(Single[]): PrivateScope, Public, HideBySig, SpecialName
+    get_最大值(): PrivateScope, Public, HideBySig, SpecialName
+    set_最大值(Single[]): PrivateScope, Public, HideBySig, SpecialName
+    get_世界矩阵(): PrivateScope, Public, HideBySig, SpecialName
+    set_世界矩阵(Single[]): PrivateScope, Public, HideBySig, SpecialName
+    创造网格数据_V0(Int32, UInt32*, Int32, Single*, Single*, Single*, Int32): PrivateScope, Public, Static, HideBySig
+    创造网格数据(Int32*, Int32, Single*, Int32, Single*, Single*, Int32): PrivateScope, Public, Static, HideBySig
+    创造网格数据(Int32*, Int32, Single*, Int32, Single*, Int32, Single*, Int32, Int32): PrivateScope, Public, Static, HideBySig
+    获取网格(Int64): PrivateScope, Public, Static, HideBySig
+    get_网格(): PrivateScope, Public, HideBySig, SpecialName
+    set_网格(网格数据): PrivateScope, Public, HideBySig, SpecialName
+Class pe.场景模型互导: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    DH.功能.模型交互 模型交互 : Public, Static
+  Methods:
+    交互实例(): PrivateScope, Public, Static, HideBySig
+    功能响应(Object, 功能响应): PrivateScope, Public, Static, HideBySig
+    导出位图(String, String): PrivateScope, Public, Static, HideBySig
+    导出所有位图(String): PrivateScope, Public, Static, HideBySig
+    获取场景数据(Boolean(HasFieldMarshal)): PrivateScope, Public, Static, HideBySig
+    节点集数据到PE(节点数据[], Boolean(HasFieldMarshal)): PrivateScope, Public, Static, HideBySig

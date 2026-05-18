@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="gb2312"?>
+
+<脚本表 version="100">
+	
+	<类别 name="对象">
+		<脚本 name="定义扳手"  file="脚本模板文件\定义扳手.tpl">
+			<参数 name="名字" type="STRING"/>
+			<参数 name="路径" type="STRING"/>
+			<参数 name="轴"/>
+			<参数 name="握点"/>
+		</脚本>
+	</类别>
+
+	<类别 name="其他">
+		
+	</类别>
+
+</脚本表>

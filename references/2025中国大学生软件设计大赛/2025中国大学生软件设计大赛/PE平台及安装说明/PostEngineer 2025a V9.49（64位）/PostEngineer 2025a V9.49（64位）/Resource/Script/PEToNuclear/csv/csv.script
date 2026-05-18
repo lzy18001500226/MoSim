@@ -1,0 +1,50 @@
+'创建时间: 2021-12-01
+'作者: ypj
+'描述: csv 文件操作库
+'更新：
+
+Script{
+
+class CsvFileManager 
+{
+string mLogFilePath;
+string mLineBuffer; ' 用来保存读取一行的内容。C++ 端会写此变量。
+string mPluginName;
+
+CsvFileManager()
+{
+    mPluginName = "PEToNuclear";
+	pluginCall(mPluginName, "csvInit", "");
+}
+
+dword open(string& filePath)
+{
+    'appPrintLog(mLogFilePath, "[CsvFileManager::open] called", 1);
+	'appPrintLog(mLogFilePath, filePath, 1);
+    return pluginCall(mPluginName, "csvOpen", filePath);
+}
+
+int close(handle csvFile)
+{
+    return pluginCall(mPluginName, "csvClose", csvFile);
+}
+
+int getRowSize(handle csvFile)
+{
+    return pluginCall(mPluginName, "csvGetRowSize", csvFile);
+}
+
+string readLine(handle csvFile, int n)
+{
+    mLineBuffer = "";
+    pluginCall(mPluginName, "csvReadLine", csvFile, n); '//会将一行数据填充到 mLineBuffer
+	
+	'appPrintLog(mLogFilePath, "readLine:", 1);
+	'appPrintLog(mLogFilePath, mLineBuffer, 1);
+	
+    return mLineBuffer;
+}
+
+}
+
+} '// script

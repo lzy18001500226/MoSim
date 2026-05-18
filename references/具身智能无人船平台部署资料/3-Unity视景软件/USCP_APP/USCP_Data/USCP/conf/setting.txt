@@ -1,0 +1,102 @@
+
+{
+    "RosSetting" : {
+        "IP" : "192.168.3.35",
+        "ModelIp" : "192.168.3.197",
+        "Username" : "hrt",
+        "Password" : "hrt",
+        "FilePath" : "//usr//local//project//usv_main_ws//record",
+        "RtspUrl"  : "",
+        "Port"     : 10000,
+        "ModelPort1" : 10804,
+        "ModelPort2" : 10805,
+        "EnableCtlLocal" : false,
+        "EnableModelLocal" : true,
+        "ModelMatlab"      : false
+    },
+    "EnvSetting" : {
+        "WindSpeed" : 2.436803,
+        "WaveSpeed" : 1,
+        "Level"     : 24
+    },
+    "ModelSetting" : {
+        "l" : 1.3,
+        "b" : 0.64,
+        "bHull" : 0.27,
+        "Mass"  : 30.0,
+        "lcg"   : 0.45,
+        "G"     : 10.0,
+        "t"     : 0.1,
+        "cd"    : 0.5,
+        "Rho"   : 1000.0,
+        "xulinear" : 75.55,
+        "xupoly"   : -25.0,
+        "xuulinear" : -70.92,
+        "xuupoly"   : 0.0
+    },
+    "SensorSetting" : {
+        "EnableCam" : false,
+        "EnableLidar" : false,
+        "EnableImu"   : false,
+        "EnableGps"   : false,
+        "EnableDeep"  : false,
+        "CamHz"       : 0,
+        "LidarHz"     : 0,
+        "ImuHz"       : 0,
+        "GpsHz"       : 0,
+        "DeepHz"      : 0
+    },
+    "VehicleSetting" : {
+        "MaxTrackTime" : 1
+    },
+    "GpsSettings"    : {
+        "岛屿场景" : {
+            "Latitude1" : 39.741518,
+            "Longitude1" : 116.176553,
+            "Latitude2"  : 39.740981,
+            "Longitude2" : 116.176858,
+            "UnityX1"    : 366.623779296875,
+            "UnityZ1"    : 279.691528320313,
+            "UnityX2"    : 389.8251953125,
+            "UnityZ2"    : 201.690902709961,
+            "TestLatitude" : 39.741258,
+            "TestLongitude" : 116.176292
+        },
+        "神秘岛"  : {
+            "Latitude1" : 39.741518,
+            "Longitude1" : 116.176553,
+            "Latitude2"  : 39.740981,
+            "Longitude2" : 116.176858,
+            "UnityX1"    : 366.623779296875,
+            "UnityZ1"    : 279.691528320313,
+            "UnityX2"    : 389.8251953125,
+            "UnityZ2"    : 201.690902709961,
+            "TestLatitude" : 39.741258,
+            "TestLongitude" : 116.176292
+        },
+        "北湖"   : {
+            "Latitude1" : 39.741518,
+            "Longitude1" : 116.176553,
+            "Latitude2"  : 39.740981,
+            "Longitude2" : 116.176858,
+            "UnityX1"    : 366.623779296875,
+            "UnityZ1"    : 279.691528320313,
+            "UnityX2"    : 389.8251953125,
+            "UnityZ2"    : 201.690902709961,
+            "TestLatitude" : 39.741258,
+            "TestLongitude" : 116.176292
+        },
+        "海韵湖"  : {
+            "Latitude1" : 39.741518,
+            "Longitude1" : 116.176553,
+            "Latitude2"  : 39.740981,
+            "Longitude2" : 116.176858,
+            "UnityX1"    : 366.623779296875,
+            "UnityZ1"    : 279.691528320313,
+            "UnityX2"    : 389.8251953125,
+            "UnityZ2"    : 201.690902709961,
+            "TestLatitude" : 39.741258,
+            "TestLongitude" : 116.176292
+        }
+    }
+}

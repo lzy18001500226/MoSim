@@ -1,0 +1,1067 @@
+#version 330
+
+
+layout (location = 0) out vec4 gFragColor; 
+
+
+
+/**
+ * Precomputed Atmospheric Scattering
+ * Copyright (c) 2008 INRIA
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the copyright holders nor the names of its
+ *    contributors may be used to endorse or promote products derived from
+ *    this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+ * THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+ * Author: Eric Bruneton
+ */
+
+const float SUN_INTENSITY = 100.0;
+uniform float atmosphere_density;
+
+const vec3 earthPos = vec3(0.0, 6360010.0, 0);
+
+// ----------------------------------------------------------------------------
+// PHYSICAL MODEL PARAMETERS
+// ----------------------------------------------------------------------------
+
+const float SCALE = 1000.0;
+
+const float Rg = 6360.0 * SCALE;
+const float Rt = 6420.0 * SCALE;
+const float RL = 6421.0 * SCALE;
+
+const float AVERAGE_GROUND_REFLECTANCE = 0.1;
+
+// Rayleigh
+const float HR = 8.0 * SCALE;
+const vec3 betaR = vec3(5.8e-3, 1.35e-2, 3.31e-2) / SCALE;
+
+// Mie
+// DEFAULT
+const float HM = 1.2 * SCALE;
+const vec3 betaMSca = vec3(4e-3) / SCALE;
+const vec3 betaMEx = betaMSca / 0.9;
+const float mieG = 0.8;
+// CLEAR SKY
+/*const float HM = 1.2 * SCALE;
+const vec3 betaMSca = vec3(20e-3) / SCALE;
+const vec3 betaMEx = betaMSca / 0.9;
+const float mieG = 0.76;*/
+// PARTLY CLOUDY
+/*const float HM = 3.0 * SCALE;
+const vec3 betaMSca = vec3(3e-3) / SCALE;
+const vec3 betaMEx = betaMSca / 0.9;
+const float mieG = 0.65;*/
+
+const float g = 9.81;
+
+const float M_PI = 3.141592657;
+
+// ----------------------------------------------------------------------------
+// NUMERICAL INTEGRATION PARAMETERS
+// ----------------------------------------------------------------------------
+
+const int TRANSMITTANCE_INTEGRAL_SAMPLES = 500;
+const int INSCATTER_INTEGRAL_SAMPLES = 50;
+const int IRRADIANCE_INTEGRAL_SAMPLES = 32;
+const int INSCATTER_SPHERICAL_INTEGRAL_SAMPLES = 16;
+
+// ----------------------------------------------------------------------------
+// PARAMETERIZATION OPTIONS
+// ----------------------------------------------------------------------------
+
+const int TRANSMITTANCE_W = 256;
+const int TRANSMITTANCE_H = 64;
+
+const int SKY_W = 64;
+const int SKY_H = 16;
+
+const int RES_R = 32;
+const int RES_MU = 128;
+const int RES_MU_S = 32;
+const int RES_NU = 8;
+
+#define TRANSMITTANCE_NON_LINEAR
+#define INSCATTER_NON_LINEAR
+
+// ----------------------------------------------------------------------------
+// PARAMETERIZATION FUNCTIONS
+// ----------------------------------------------------------------------------
+
+
+uniform sampler2D transmittanceSampler;
+
+uniform sampler2D skyIrradianceSampler;
+
+uniform sampler3D inscatterSampler;
+
+vec2 getTransmittanceUV(float r, float mu) {
+    float uR, uMu;
+#ifdef TRANSMITTANCE_NON_LINEAR
+    uR = sqrt((r - Rg) / (Rt - Rg));
+    uMu = atan((mu + 0.15) / (1.0 + 0.15) * tan(1.5)) / 1.5;
+#else
+    uR = (r - Rg) / (Rt - Rg);
+    uMu = (mu + 0.15) / (1.0 + 0.15);
+#endif
+    return vec2(uMu, uR);
+}
+
+void getTransmittanceRMu(out float r, out float muS) {
+    r = gl_FragCoord.y / float(TRANSMITTANCE_H);
+    muS = gl_FragCoord.x / float(TRANSMITTANCE_W);
+#ifdef TRANSMITTANCE_NON_LINEAR
+    r = Rg + (r * r) * (Rt - Rg);
+    muS = -0.15 + tan(1.5 * muS) / tan(1.5) * (1.0 + 0.15);
+#else
+    r = Rg + r * (Rt - Rg);
+    muS = -0.15 + muS * (1.0 + 0.15);
+#endif
+}
+
+vec2 getIrradianceUV(float r, float muS) {
+    float uR = (r - Rg) / (Rt - Rg);
+    float uMuS = (muS + 0.2) / (1.0 + 0.2);
+    return vec2(uMuS, uR);
+}
+
+void getIrradianceRMuS(out float r, out float muS) {
+    r = Rg + (gl_FragCoord.y - 0.5) / (float(SKY_H) - 1.0) * (Rt - Rg);
+    muS = -0.2 + (gl_FragCoord.x - 0.5) / (float(SKY_W) - 1.0) * (1.0 + 0.2);
+}
+
+vec4 texture4D(sampler3D table, float r, float mu, float muS, float nu)
+{
+    float H = sqrt(Rt * Rt - Rg * Rg);
+    float rho = sqrt(r * r - Rg * Rg);
+#ifdef INSCATTER_NON_LINEAR
+    float rmu = r * mu;
+    float delta = rmu * rmu - r * r + Rg * Rg;
+    vec4 cst = rmu < 0.0 && delta > 0.0 ? vec4(1.0, 0.0, 0.0, 0.5 - 0.5 / float(RES_MU)) : vec4(-1.0, H * H, H, 0.5 + 0.5 / float(RES_MU));
+    float uR = 0.5 / float(RES_R) + rho / H * (1.0 - 1.0 / float(RES_R));
+    float uMu = cst.w + (rmu * cst.x + sqrt(delta + cst.y)) / (rho + cst.z) * (0.5 - 1.0 / float(RES_MU));
+    // paper formula
+    //float uMuS = 0.5 / float(RES_MU_S) + max((1.0 - exp(-3.0 * muS - 0.6)) / (1.0 - exp(-3.6)), 0.0) * (1.0 - 1.0 / float(RES_MU_S));
+    // better formula
+    float uMuS = 0.5 / float(RES_MU_S) + (atan(max(muS, -0.1975) * tan(1.26 * 1.1)) / 1.1 + (1.0 - 0.26)) * 0.5 * (1.0 - 1.0 / float(RES_MU_S));
+#else
+    float uR = 0.5 / float(RES_R) + rho / H * (1.0 - 1.0 / float(RES_R));
+    float uMu = 0.5 / float(RES_MU) + (mu + 1.0) / 2.0 * (1.0 - 1.0 / float(RES_MU));
+    float uMuS = 0.5 / float(RES_MU_S) + max(muS + 0.2, 0.0) / 1.2 * (1.0 - 1.0 / float(RES_MU_S));
+#endif
+    float lerp = (nu + 1.0) / 2.0 * (float(RES_NU) - 1.0);
+    float uNu = floor(lerp);
+    lerp = lerp - uNu;
+    return texture(table, vec3((uNu + uMuS) / float(RES_NU), uMu, uR)) * (1.0 - lerp) +
+           texture(table, vec3((uNu + uMuS + 1.0) / float(RES_NU), uMu, uR)) * lerp;
+}
+
+void getMuMuSNu(float r, vec4 dhdH, out float mu, out float muS, out float nu) {
+    float x = gl_FragCoord.x - 0.5;
+    float y = gl_FragCoord.y - 0.5;
+#ifdef INSCATTER_NON_LINEAR
+    if (y < float(RES_MU) / 2.0) {
+        float d = 1.0 - y / (float(RES_MU) / 2.0 - 1.0);
+        d = min(max(dhdH.z, d * dhdH.w), dhdH.w * 0.999);
+        mu = (Rg * Rg - r * r - d * d) / (2.0 * r * d);
+        mu = min(mu, -sqrt(1.0 - (Rg / r) * (Rg / r)) - 0.001);
+    } else {
+        float d = (y - float(RES_MU) / 2.0) / (float(RES_MU) / 2.0 - 1.0);
+        d = min(max(dhdH.x, d * dhdH.y), dhdH.y * 0.999);
+        mu = (Rt * Rt - r * r - d * d) / (2.0 * r * d);
+    }
+    muS = mod(x, float(RES_MU_S)) / (float(RES_MU_S) - 1.0);
+    // paper formula
+    //muS = -(0.6 + log(1.0 - muS * (1.0 -  exp(-3.6)))) / 3.0;
+    // better formula
+    muS = tan((2.0 * muS - 1.0 + 0.26) * 1.1) / tan(1.26 * 1.1);
+    nu = -1.0 + floor(x / float(RES_MU_S)) / (float(RES_NU) - 1.0) * 2.0;
+#else
+    mu = -1.0 + 2.0 * y / (float(RES_MU) - 1.0);
+    muS = mod(x, float(RES_MU_S)) / (float(RES_MU_S) - 1.0);
+    muS = -0.2 + muS * 1.2;
+    nu = -1.0 + floor(x / float(RES_MU_S)) / (float(RES_NU) - 1.0) * 2.0;
+#endif
+}
+
+// ----------------------------------------------------------------------------
+// UTILITY FUNCTIONS
+// ----------------------------------------------------------------------------
+
+// nearest intersection of ray r,mu with ground or top atmosphere boundary
+// mu=cos(ray zenith angle at ray origin)
+float limit(float r, float mu) {
+    float dout = -r * mu + sqrt(r * r * (mu * mu - 1.0) + RL * RL);
+    float delta2 = r * r * (mu * mu - 1.0) + Rg * Rg;
+    if (delta2 >= 0.0) {
+        float din = -r * mu - sqrt(delta2);
+        if (din >= 0.0) {
+            dout = min(dout, din);
+        }
+    }
+    return dout;
+}
+
+// optical depth for ray (r,mu) of length d, using analytic formula
+// (mu=cos(view zenith angle)), intersections with ground ignored
+// H=height scale of exponential density function
+float opticalDepth(float H, float r, float mu, float d) {
+    float a = sqrt((0.5/H)*r);
+    vec2 a01 = a*vec2(mu, mu + d / r);
+    vec2 a01s = sign(a01);
+    vec2 a01sq = a01*a01;
+    float x = a01s.y > a01s.x ? exp(a01sq.x) : 0.0;
+    vec2 y = a01s / (2.3193*abs(a01) + sqrt(1.52*a01sq + 4.0)) * vec2(1.0, exp(-d/H*(d/(2.0*r)+mu)));
+    return sqrt((6.2831*H)*r) * exp((Rg-r)/H) * (x + dot(y, vec2(1.0, -1.0)));
+}
+
+// transmittance(=transparency) of atmosphere for infinite ray (r,mu)
+// (mu=cos(view zenith angle)), intersections with ground ignored
+vec3 transmittance(float r, float mu) {
+    vec2 uv = getTransmittanceUV(r, mu);
+    return texture(transmittanceSampler, uv).rgb;
+}
+
+// transmittance(=transparency) of atmosphere for ray (r,mu) of length d
+// (mu=cos(view zenith angle)), intersections with ground ignored
+// uses analytic formula instead of transmittance texture
+vec3 analyticTransmittance(float r, float mu, float d) {
+    return exp(- betaR * opticalDepth(HR, r, mu, d) - betaMEx * opticalDepth(HM, r, mu, d));
+}
+
+// transmittance(=transparency) of atmosphere for infinite ray (r,mu)
+// (mu=cos(view zenith angle)), or zero if ray intersects ground
+vec3 transmittanceWithShadow(float r, float mu) {
+    return mu < -sqrt(1.0 - (Rg / r) * (Rg / r)) ? vec3(0.0) : transmittance(r, mu);
+}
+
+// transmittance(=transparency) of atmosphere between x and x0
+// assume segment x,x0 not intersecting ground
+// r=||x||, mu=cos(zenith angle of [x,x0) ray at x), v=unit direction vector of [x,x0) ray
+vec3 transmittance(float r, float mu, vec3 v, vec3 x0) {
+    vec3 result;
+    float r1 = length(x0);
+    float mu1 = dot(x0, v) / r;
+    if (mu > 0.0) {
+        result = min(transmittance(r, mu) / transmittance(r1, mu1), 1.0);
+    } else {
+        result = min(transmittance(r1, -mu1) / transmittance(r, -mu), 1.0);
+    }
+    return result;
+}
+
+// transmittance(=transparency) of atmosphere between x and x0
+// assume segment x,x0 not intersecting ground
+// d = distance between x and x0, mu=cos(zenith angle of [x,x0) ray at x)
+vec3 transmittance(float r, float mu, float d) {
+    vec3 result;
+    float r1 = sqrt(r * r + d * d + 2.0 * r * mu * d);
+    float mu1 = (r * mu + d) / r1;
+    if (mu > 0.0) {
+        result = min(transmittance(r, mu) / transmittance(r1, mu1), 1.0);
+    } else {
+        result = min(transmittance(r1, -mu1) / transmittance(r, -mu), 1.0);
+    }
+    return result;
+}
+
+vec3 irradiance(sampler2D sampler, float r, float muS) {
+    vec2 uv = getIrradianceUV(r, muS);
+    return texture(sampler, uv).rgb;
+}
+
+// Rayleigh phase function
+float phaseFunctionR(float mu) {
+    return (3.0 / (16.0 * M_PI)) * (1.0 + mu * mu);
+}
+
+// Mie phase function
+float phaseFunctionM(float mu) {
+    return 1.5 * 1.0 / (4.0 * M_PI) * (1.0 - mieG*mieG) * pow(1.0 + (mieG*mieG) - 2.0*mieG*mu, -3.0/2.0) * (1.0 + mu * mu) / (2.0 + mieG*mieG);
+}
+
+// approximated single Mie scattering (cf. approximate Cm in paragraph "Angular precision")
+vec3 getMie(vec4 rayMie) { // rayMie.rgb=C*, rayMie.w=Cm,r
+    return rayMie.rgb * rayMie.w / max(rayMie.r, 1e-4) * (betaR.r / betaR);
+}
+
+// ----------------------------------------------------------------------------
+// PUBLIC FUNCTIONS
+// ----------------------------------------------------------------------------
+
+// incident sun light at given position (radiance)
+// r=length(x)
+// muS=dot(x,s) / r
+vec3 sunRadiance(float r, float muS) {
+    return transmittanceWithShadow(r, muS) * SUN_INTENSITY;
+}
+
+// incident sky light at given position, integrated over the hemisphere (irradiance)
+// r=length(x)
+// muS=dot(x,s) / r
+vec3 skyIrradiance(float r, float muS) {
+    return irradiance(skyIrradianceSampler, r, muS) * SUN_INTENSITY;
+}
+
+// scattered sunlight between two points
+// camera=observer
+// viewdir=unit vector towards observed point
+// sundir=unit vector towards the sun
+// return scattered light and extinction coefficient
+vec3 skyRadiance(vec3 camera, vec3 viewdir, vec3 sundir, out vec3 extinction)
+{
+    vec3 result;
+    float r = length(camera);
+    float rMu = dot(camera, viewdir);
+    float mu = rMu / r;
+    float r0 = r;
+    float mu0 = mu;
+
+    float deltaSq = sqrt(rMu * rMu - r * r + Rt*Rt);
+    float din = max(-rMu - deltaSq, 0.0);
+    if (din > 0.0) {
+        camera += din * viewdir;
+        rMu += din;
+        mu = rMu / Rt;
+        r = Rt;
+    }
+
+    if (r <= Rt) {
+        float nu = dot(viewdir, sundir);
+        float muS = dot(camera, sundir) / r;
+
+        vec4 inScatter = texture4D(inscatterSampler, r, rMu / r, muS, nu) * atmosphere_density;
+        extinction = transmittance(r, mu);
+
+        vec3 inScatterM = getMie(inScatter);
+        float phase = phaseFunctionR(nu);
+        float phaseM = phaseFunctionM(nu);
+        result = inScatter.rgb * phase + inScatterM * phaseM;
+    } else {
+        result = vec3(0.0);
+        extinction = vec3(1.0);
+    }
+
+    return result * SUN_INTENSITY;
+}
+
+// scattered sunlight between two points
+// camera=observer
+// point=point on the ground
+// sundir=unit vector towards the sun
+// return scattered light and extinction coefficient
+vec3 inScattering(vec3 camera, vec3 point, vec3 sundir, out vec3 extinction) {
+    vec3 result;
+    vec3 viewdir = point - camera;
+    float d = length(viewdir);
+    viewdir = viewdir / d;
+    float r = length(camera);
+    float rMu = dot(camera, viewdir);
+    float mu = rMu / r;
+    float r0 = r;
+    float mu0 = mu;
+
+    float deltaSq = sqrt(rMu * rMu - r * r + Rt*Rt);
+    float din = max(-rMu - deltaSq, 0.0);
+    if (din > 0.0) {
+        camera += din * viewdir;
+        rMu += din;
+        mu = rMu / Rt;
+        r = Rt;
+        d -= din;
+    }
+
+    if (r <= Rt) {
+        float nu = dot(viewdir, sundir);
+        float muS = dot(camera, sundir) / r;
+
+        vec4 inScatter;
+
+        if (r < Rg + 600.0) {
+            // avoids imprecision problems in aerial perspective near ground
+            float f = (Rg + 600.0) / r;
+            r = r * f;
+            rMu = rMu * f;
+            point = point * f;
+        }
+
+        float r1 = length(point);
+        float rMu1 = dot(point, viewdir);
+        float mu1 = rMu1 / r1;
+        float muS1 = dot(point, sundir) / r1;
+
+        if (mu > 0.0) {
+            extinction = min(transmittance(r, mu) / transmittance(r1, mu1), 1.0);
+        } else {
+            extinction = min(transmittance(r1, -mu1) / transmittance(r, -mu), 1.0);
+        }
+
+        vec4 inScatter0 = texture4D(inscatterSampler, r, mu, muS, nu) * atmosphere_density;
+        vec4 inScatter1 = texture4D(inscatterSampler, r1, mu1, muS1, nu) * atmosphere_density;
+        inScatter = max(inScatter0 - inScatter1 * extinction.rgbr, 0.0);
+
+        // avoids imprecision problems in Mie scattering when sun is below horizon
+        inScatter.w *= smoothstep(0.00, 0.02, muS);
+
+        vec3 inScatterM = getMie(inScatter);
+        float phase = phaseFunctionR(nu);
+        float phaseM = phaseFunctionM(nu);
+        result = inScatter.rgb * phase + inScatterM * phaseM;
+    } else {
+        result = vec3(0.0);
+        extinction = vec3(1.0);
+    }
+    
+    result *= clamp((d-10)/100.f, 0, 1)*2;  ///剔除近距离噪点误差
+
+    return result * SUN_INTENSITY;
+}
+
+void sunRadianceAndSkyIrradiance(vec3 worldP, vec3 worldS, out vec3 sunL, out vec3 skyE)
+{
+    vec3 worldV = normalize(worldP); // vertical vector
+    float r = length(worldP);
+    float muS = dot(worldV, worldS);
+    sunL = sunRadiance(r, muS);
+    skyE = skyIrradiance(r, muS);
+}
+
+// ----------------------------------------------------------------------------
+// SKYMAP AND HDR
+// ----------------------------------------------------------------------------
+
+uniform sampler2D skySampler;
+
+uniform float hdrExposure;
+
+vec4 skyRadiance(vec2 u) {
+    return texture(skySampler, (u * (0.5 / 1.1) + 0.5));
+}
+
+vec3 hdr(vec3 L, float expo) {
+    L = L * expo;
+    L.r = L.r < 1.413 ? pow(L.r * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.r);
+    L.g = L.g < 1.413 ? pow(L.g * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.g);
+    L.b = L.b < 1.413 ? pow(L.b * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.b);
+    return L;
+}
+
+
+
+
+
+
+uniform sampler2D gPositionDepth;
+
+uniform sampler3D gNoise;
+uniform sampler3D gNoiseDetail;
+
+uniform sampler2D gNoiseCurl;
+
+uniform sampler2D gWeather;   //r:覆盖率， g:降水概率（高频覆盖率）, b:类型
+
+
+uniform vec2 gNearFar;
+uniform vec2 gJitter;
+
+uniform float gAspect;
+uniform float gNearHeight;
+
+uniform vec3 gBoundMin;
+uniform vec3 gBoundMax;
+
+uniform mat4 gModelview;
+uniform mat4 gModelviewInverse;
+uniform mat4 gProjectionInverse;
+
+uniform vec3 worldSunDir;
+
+uniform float gDensity;
+uniform float gRain;
+
+uniform int flag;
+
+
+in vec2 vUv;
+
+
+bool bit_and(int val, int ref) {
+  if(val == 0) return false;
+  return (val/ref) % 2 != 0;
+}
+
+
+//裁剪空间转换为眼空间
+vec3 uvToEye(vec2 texCoord,float depth)
+{
+	vec2 deltaUV = (2.0*texCoord-vec2(1.0))*vec2(gAspect,1.0);    
+	
+	//计算近平面的平移向量    
+	vec2 deltaView = gNearHeight*deltaUV * depth / gNearFar.x;    
+	return vec3(vec2(deltaView),-depth);
+}  
+
+
+bool IntersectWithAABB(vec3 sp, vec3 sq,  vec3 amin, vec3 amax, out float tmin, out float tmax)
+{	
+	const float EPS = 1e-6f;		// 光线方向	
+	float d[3];	
+	d[0] = sq[0] - sp[0];	
+	d[1] = sq[1] - sp[1];	
+	d[2] = sq[2] - sp[2];	
+	
+	// 因为是线段 所以参数t取值在0和1之间	
+	tmin = 0.0;	tmax = 1.0f;		
+	for (int i = 0; i < 3; i++)	{		
+	
+		// 如果光线某一个轴分量为 0，且在包围盒这个轴分量之外，那么直接判定不相交 		
+		if (abs(d[i]) < EPS)		
+		{			
+			if (sp[i] < amin[i] || sp[i] > amax[i])				
+				return false;		
+		}		
+		else		
+		{			
+			float ood = 1.0f / d[i];			
+			
+			// 计算参数t 并令 t1为较小值 t2为较大值			
+			float t1 = (amin[i] - sp[i]) * ood;			
+			float t2 = (amax[i] - sp[i]) * ood;			
+			if (t1 > t2) { float tmp = t1; t1 = t2; t2 = tmp; }						
+			if (t1 > tmin) tmin = t1;			
+			if (t2 < tmax) tmax = t2; 			
+			
+			// 判定不相交			
+			if (tmin > tmax) 
+				return false;		
+		}	
+	}		
+		
+	return true;
+}
+
+
+
+struct Ray
+{
+	vec3 origin;
+	vec3 eye;
+	vec3 direction;
+};
+
+
+Ray CreateCameraRay(vec2 uv)
+{    
+	vec3 origin = (gModelviewInverse * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;    
+	vec3 direction = uvToEye(uv, gNearFar.x);    
+	direction = (gModelviewInverse * vec4(direction, 0.0f)).xyz;    
+	direction = normalize(direction);  
+	  
+	Ray ray;    
+	ray.origin = origin;   
+	ray.eye = origin;
+	ray.direction = direction;    
+	return ray;
+}
+
+
+vec2 GetJitterUV(vec2 uv)
+{
+	return uv + gJitter / 2;
+}
+
+
+float R(float original_value, float original_min, float original_max, 
+            float new_min, float new_max)
+{
+	//if(original_value <= original_min) return 0;
+	
+    return new_min + ((( original_value - original_min) / (original_max - original_min))
+            * (new_max - new_min));
+}
+
+
+float SAT(float v)
+{
+	return clamp(v, 0.0, 1.0);
+}
+
+
+float Li(float v0,float v1,float ival){
+    return (1.0-ival)*v0+ival*v1;
+}
+
+
+vec2 computeCurl2D(vec2 p, sampler2D noise)
+{
+  float eps = 0.0001;
+
+  //Find rate of change in X direction
+  float n1 = texture(noise, p + vec2(eps, 0)).r;
+  //var n2 = noise.simplex2(x - eps, y); 
+  float n2 = texture(noise, p + vec2(-eps, 0)).r;
+
+  //Average to find approximate derivative
+  float a = (n1 - n2)/(2 * eps);
+
+  //Find rate of change in Y direction
+  n1 = texture(noise, p + vec2(0, eps)).r;
+  n2 = texture(noise, p + vec2(0, -eps)).r;
+
+  //Average to find approximate derivative
+  //var b = (n1 - n2)/(2 * eps);
+  float b = (n1 - n2)/(2 * eps);
+
+  //Curl
+  return normalize( vec2(b, -a) );
+}
+
+
+vec3 computeCurl(vec3 p, sampler3D perlin)
+{
+    vec3 curl;
+    float h = 0.0001f;
+    float n, n1, a, b;
+    
+
+    n = texture(perlin, p).r;
+
+   // n1 = N(x, y - h, z);
+    n1 = texture(perlin, p-vec3(0, h, 0)).r;
+    a = (n - n1) / h;
+
+    //n1 = N(x, y, z - h);
+    n1 = texture(perlin, p-vec3(0, 0, h)).r;
+    b = (n - n1) / h;
+    curl.x = a - b;
+
+    //n1 = N(x, y, z - h);
+    a = (n - n1) / h;
+
+   // n1 = N(x - h, y, z);
+    n1 = texture(perlin, p-vec3(h, 0, 0)).r;
+    b = (n - n1) / h;
+    curl.y = a - b;
+
+    //n1 = N(x - h, y, z);
+    a = (n - n1) / h;
+
+    //n1 = N(x, y - h, z);
+    n1 = texture(perlin, p-vec3(0, h, 0)).r;
+    b = (n - n1) / h;
+    curl.z = a - b;
+
+    return curl;
+}
+
+
+
+
+vec4 GetWeatherData(vec3 P)
+{
+	vec3 p = clamp((P - gBoundMin) / (gBoundMax - gBoundMin), 0, 1);
+	
+	return texture(gWeather, p.xz);
+}
+
+
+float GetCloudHeightShape(float h, float type)
+{
+	if( type < 0.5 ){
+		float b1 = SAT( R(h, 0.0,0.01, 0.0,1.0) );
+		float t1 = SAT( R(h, 0.04,0.05, 1.0,0.0) );
+		
+		float b2 = SAT( R(h, 0.0,0.1, 0.0,1.0) );
+		float t2 = SAT( R(h, 0.5,0.6, 1.0,0.0) );
+		
+		return SAT(b1*t1 * (0.5-type)*2 + b2*t2 * type*2);
+	}
+	else{
+		float b2 = SAT( R(h, 0.0,0.1, 0.0,1.0) );
+		float t2 = SAT( R(h, 0.5,0.6, 1.0,0.0) );
+		
+		float b3 = SAT( R(h, 0.0,0.05, 0.0,1.0) );
+		float t3 = SAT( R(h, 0.7,1.0, 1.0,0.0) );
+		
+		type -= 0.5;
+		return SAT(b2*t2 * (0.5-type)*2 + b3*t3 * type*2);
+	}
+}
+
+
+vec2 GetDensity(vec3 P)
+{
+
+	vec4 weather_data = GetWeatherData(P);
+
+	float cloudCover = weather_data.r * gDensity;
+    float cloudRain = weather_data.g;
+    float cloudHeight = weather_data.b;
+    
+    if( cloudCover < 0.1) return vec2(0, cloudRain);
+    
+    
+    float maxH = (gBoundMax.y - gBoundMin.y);	
+    
+    ///当前点的归一化高度
+	float p_h = SAT((P.y - gBoundMin.y) / maxH );
+	
+	//float height_shape = GetCloudHeightShape(p_h, cloudType*cloudCover);
+	
+	
+	///云的归一化高度由覆盖系数和高度系数共同决定
+	cloudHeight = cloudHeight * SAT(pow(cloudCover*5, 1.0/2));
+	
+	if( cloudHeight < 0.05) return vec2(0, cloudRain);
+	
+	//float height_ratio = ( p_h - cloudHeight*0.1*(1 - cloudCover) ) / ( cloudHeight*cloudCover );
+	
+	///当前点在云空间中的归一化高度
+	float height_ratio = p_h / cloudHeight;
+	
+	///使云的底部和顶部形成线性渐变
+	float bottom = SAT(R(height_ratio, 0.0, 0.2,  0.0, 1.0 ));
+	float top = SAT(R(height_ratio, 0.6, 1.0,  1.0, 0.0 ));
+	
+	float height_shape = bottom * top;
+	
+	///使降水量下沉在底部
+	float rain_top = SAT(R(height_ratio, 0.2, 1.0,  1.0, 0.0 ));
+	cloudRain = SAT(cloudRain * rain_top );
+	 
+   
+    ///计算噪声采样空间坐标，高度方向要进行缩放，因为噪声是立方体纹理
+    vec3 samplePos = (P - gBoundMin)/(gBoundMax - gBoundMin);  
+    float h_scale = (gBoundMax.y - gBoundMin.y) / (gBoundMax.x - gBoundMin.x);
+    samplePos.y *= h_scale * 5;
+      
+    vec4 low_frequency_noises = texture(gNoise, samplePos );
+    
+    float low_freq_FBM = (low_frequency_noises.g * 0.625) + (low_frequency_noises.b * 0.25)
+        + (low_frequency_noises.a * 0.125);
+   
+    float base_cloud = SAT(R(low_frequency_noises.r,  -(1.0 - low_freq_FBM), 1.0,   0.0, 1.0));      
+
+    base_cloud = SAT(base_cloud * height_shape);
+    
+    // Cloud coverage is stored in weather_data's red channel.
+	float cloud_coverage = cloudCover; 
+	 
+	// Use remap to apply the cloud coverage attribute
+	float base_cloud_with_coverage = SAT(R(base_cloud, cloud_coverage, 1.0,  0.0, 1.0));
+	 
+	// Multiply the result by the cloud coverage attribute so that
+	// smaller clouds are lighter and more aesthetically pleasing
+	base_cloud_with_coverage *= cloud_coverage;
+	
+	//base_cloud_with_coverage = base_cloud * cloud_coverage;
+	
+    
+    
+    //细节噪声
+    
+    //vec3 curl_noise = computeCurl(samplePos, gNoise);
+    vec2 curl_noise = computeCurl2D(samplePos.xz, gNoiseCurl);
+    samplePos.xz += curl_noise.xy * ( SAT(1 - height_ratio) ) / 20; 
+    
+    vec3 high_frequency_noises = texture(gNoiseDetail, samplePos*4 ).rgb;
+    
+    float high_freq_FBM = (high_frequency_noises.r * 0.625) + (high_frequency_noises.g * 0.25) + (high_frequency_noises.b * 0.125);
+
+  
+    float high_freq_noise_modifier = mix(high_freq_FBM,  1.0 - high_freq_FBM, SAT(height_ratio*10));
+    
+    
+	float final_cloud = SAT(R(base_cloud_with_coverage, high_freq_noise_modifier * 0.2, 1.0, 0.0, 1.0));
+	
+
+	return vec2(final_cloud, cloudRain * gRain);
+
+}
+
+
+
+float HenyeyGreenstein(float cos_angle, float inG)
+{
+    return ((1.0 - inG * inG) / pow((1.0 + inG * inG - 2.0 * inG * cos_angle), 3.0/2.0))
+        / 4.0 * 3.1415;
+}
+
+
+vec3 frac(vec3 p){
+    return vec3(p.x-floor(p.x),p.y-floor(p.y),p.z-floor(p.z));
+}
+ 
+float frac(float p){
+    return p-floor(p);
+}
+ 
+float hash(vec3 p){
+    p = frac(p * 0.3183099 + 0.1);
+    p *= 17.0;
+    return frac(p.x * p.y * p.z * (p.x + p.y + p.z));
+}
+ 
+float Noise(vec3 x){
+    vec3 p = vec3(floor(x.x),floor(x.y),floor(x.z));
+    vec3 f = frac(x);
+    f = f * f * (3.0 - 2.0 * f);
+ 
+    return Li(Li(Li(hash(p + vec3(0, 0, 0)),
+                        hash(p + vec3(1, 0, 0)), f.x),
+                   Li(hash(p + vec3(0, 1, 0)),
+                        hash(p + vec3(1, 1, 0)), f.x), f.y),
+               Li(Li(hash(p + vec3(0, 0, 1)),
+                        hash(p + vec3(1, 0, 1)), f.x),
+                   Li(hash(p + vec3(0, 1, 1)),
+                        hash(p + vec3(1, 1, 1)), f.x), f.y), f.z);
+}
+ 
+float map2(vec3 p){
+    vec3 q = p;
+    float f = 0.0f;
+    f = 0.65000 * Noise(q);
+    q = q * 2.02;
+    f += 0.35000 * Noise(q);
+    return clamp(f, 0.0, 1.0);
+}
+ 
+float Jitter(vec3 p){
+    return R(map2(p * 100), 0, 1, 0.5, 1);
+}
+
+
+vec3 CalcAtmosphereColor(vec3 eye, vec3 P, vec3 viewDir, vec3 sunDir)
+{	
+	vec3 PP = P + earthPos;
+
+	vec3 extinction;
+	vec3 inscatter = inScattering(eye + earthPos, PP, -sunDir, extinction);
+	vec3 scatterColor = /*sunColor * extinction +*/ inscatter;
+   // scatterColor = hdr(scatterColor, hdrExposure);
+   
+	scatterColor = hdr(scatterColor, 0.6);
+	
+	//finalColor = finalColor * (1 - (atmosphere_density-1)*0.05) + scatterColor;
+	return scatterColor;
+}
+
+
+const int maxMarchingNum = 1000;
+
+void main()
+{
+	vec2 jitterUv = vUv;//GetJitterUV(vUv);
+    
+	Ray ray = CreateCameraRay(jitterUv);
+	
+	float t1 = 0, t2 = 1;
+	float DisOfNearFar = gNearFar.y - gNearFar.x;
+	bool bInter = IntersectWithAABB( ray.eye, ray.eye+ray.direction*DisOfNearFar, gBoundMin, gBoundMax, t1, t2 );
+	
+	if(bInter == false){
+		discard;	
+		return;
+	}
+	
+	t1 *= DisOfNearFar;
+	t2 *= DisOfNearFar;
+	
+	float depth = texture(gPositionDepth, jitterUv).w;
+	
+	if( t1 > depth ){
+		discard;	
+		return;
+	}
+	
+	if( t2 > depth ) t2 = depth;
+	
+	ray.eye += ray.direction*t1;
+	float maxDst = t2 - t1;
+	
+	float rayDst = 0;
+	vec3 Len = gBoundMax - gBoundMin;
+	float marchStepSmall = max(Len.x, max(Len.y, Len.z)) / maxMarchingNum; 
+	float marchStepBig = marchStepSmall*2;
+	
+	float marchStep = marchStepSmall;
+	
+	vec4 colorSum = vec4(0);
+	
+	const float EPS = 0.001;
+	
+	float verticle_angle = SAT(abs(dot(worldSunDir, vec3(0, 1, 0)))*2);
+    vec3 sunColor = mix(vec3(0.9, 0.7, 0.4), vec3(1.0, 1.0, 1.0), verticle_angle);// * clamp(hdrExposure * 1.5, 0, 1);
+    
+    int skip_num = 0;
+	
+	while (rayDst < maxDst) 
+	{        
+		        
+		vec2 density_rain = GetDensity(ray.eye);
+		
+				
+		///没有碰撞到云，加大步伐
+		if(density_rain.x < EPS){
+			if(rayDst > marchStepSmall * 0.5 && marchStep < marchStepSmall * 63.5){
+				///回到上一次的位置，增加步伐长度
+				rayDst -= marchStep;
+				ray.eye -= ray.direction * marchStep; 
+				marchStep *= 2;
+			}
+			
+			skip_num++;
+			if(skip_num > maxMarchingNum / 10) break;
+			
+			ray.eye += ray.direction * marchStep;       
+			rayDst += marchStep;  
+			continue;
+		}
+		
+		skip_num = 0;
+		
+		///一旦进入云内部，寻找最近碰撞点
+		vec2 density_rain_try = density_rain;
+		int move_direction = 1;
+		vec3 eye_opt = ray.eye;
+		float rayDst_opt = rayDst;
+		
+		while(true){
+			
+			if(density_rain_try.x > EPS){
+			
+				///保存最近的结果
+				density_rain = density_rain_try;
+				eye_opt = ray.eye;
+				rayDst_opt = rayDst;
+				
+				///试验点前进入云内部，则后退半步长，否则继续按原步长后退
+				if(move_direction == 1){
+					
+					if(marchStep < marchStepSmall*1.5) break;
+				
+					marchStep /= 2;
+					move_direction = -1;
+				}
+				
+				ray.eye -= ray.direction * marchStep;       
+				rayDst -= marchStep; 
+				
+				density_rain_try = GetDensity(ray.eye);
+				
+			}
+			
+			else{
+			
+				///试验点后退出云外部，前进半步长，否则继续按原步长前进
+				if(move_direction == -1){
+					if(marchStep < marchStepSmall*1.5) break;
+					
+					marchStep /= 2;
+					move_direction = 1;
+				}
+				
+				ray.eye += ray.direction * marchStep;       
+				rayDst += marchStep; 
+				
+				density_rain_try = GetDensity(ray.eye);
+				
+				break;
+			} 
+		}
+		
+		ray.eye = eye_opt;
+		rayDst = rayDst_opt;
+		marchStep = marchStepSmall;
+		
+		
+		///计算阳光反射的颜色
+		vec3 sun_pt = ray.eye - worldSunDir*marchStep*6;
+		float density_samples_along_light_ray = 0.0;
+		
+		for(int k=0; k<6; k++)
+		{
+			sun_pt += worldSunDir*marchStep;
+			density_samples_along_light_ray += GetDensity(sun_pt).x;
+
+		}
+		
+		float depth = density_samples_along_light_ray/10;
+		float powder_sugar_effect = 1.0 - exp(-depth * 5.0);
+		float beers_law = exp(-depth );
+		float light_energy = beers_law;
+		
+		float reflection = SAT(dot(worldSunDir, ray.direction)) * powder_sugar_effect * 0.5;
+		light_energy = beers_law + reflection;
+		light_energy *= ( 1.0 - density_rain.y);  ///被降雨系数吸收的光能
+		
+		float cos_angle = max(dot(worldSunDir, -ray.direction), 0);
+		light_energy = mix(light_energy * 0.9, light_energy * HenyeyGreenstein(cos_angle, 0.15), cos_angle);
+		
+		///颜色与浓度不是一回事
+		
+		vec4 color = vec4(sunColor, 1.0) * light_energy;
+		
+		float dis = distance(ray.eye, ray.origin);
+		
+		float min_dis = length(Len) / 3;
+		float coeff = 1.0;
+		if(dis > min_dis){
+			dis -= min_dis;
+			dis /= min_dis;
+			coeff = 1.0 / (1 + dis*dis);
+		}
+		
+		color.a = 1.0;
+		if(bit_and(flag, 0x2000) == true){
+		
+			vec3 atomsphereScatter = CalcAtmosphereColor(ray.origin, ray.eye, ray.direction, worldSunDir);
+			
+			color.rgb = mix(color.rgb + atomsphereScatter * 0.1, color.rgb + atomsphereScatter * 0.4, 1-coeff);
+			density_rain.x *= coeff;
+			color = clamp(color, 0.0, 1.0);
+		}
+		
+		color *= density_rain.x;
+		
+		
+        colorSum = colorSum + color * (1.0 - colorSum.a);
+        
+        if( colorSum.a > 1.0 - EPS ) break;
+		
+		ray.eye += ray.direction * marchStep;// * Jitter(ray.eye);       
+		rayDst += marchStep;  
+		
+	}
+		
+	gFragColor = clamp(colorSum, 0.0, 1.0);
+	
+}
+
+	
+	
+		

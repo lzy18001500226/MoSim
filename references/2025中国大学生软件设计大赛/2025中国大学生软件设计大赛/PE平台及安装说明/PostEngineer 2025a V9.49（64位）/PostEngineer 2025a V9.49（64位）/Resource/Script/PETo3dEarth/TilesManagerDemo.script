@@ -1,0 +1,224 @@
+'@brief 3dtiles 使用示例。
+'@note 不要直接使用本脚本，复制到项目，加以修改后使用。
+'@author: ypj
+'@since 2023-08-02
+'@update 2023-09-02
+
+Script{
+
+'// 数字地球系统库
+include{PETo3dEarth\libDigitEarth.script}
+
+'@brief 瓦片信息，如经纬高等。
+class TileInfo
+{
+	TileInfo()
+	{
+	}
+
+    string mUrl;    '// 瓦片路径
+	float mHeight;  '// 瓦片的高
+	float mLat;     '// 瓦片纬度
+	float mLon;     '// 瓦片经度
+}
+
+'@brief 瓦片管理器
+class TilesManager
+{
+	int mTilesCount;  '// 瓦片个数
+	string mTileNames[50];  '// 瓦片名列表。因要根据名称批量初始化，故需单独有个名字数组。
+	TileInfo mTileInfo[50]; '// 瓦片信息列表
+	
+    TilesManager()
+	{
+	    '// 初始化瓦片信息
+		' mTilesCount = 1;
+		
+		'// 台湾某地
+		' string tilesDir = "D:/test/obj3dtilesTest";
+		
+		' mTileNames[0] = "314341415-14-953-3dtiles";
+		' mTileInfo[0] = new TileInfo;
+		' mTileInfo[0].mUrl = mTilesDir + "/" + mTileNames[0] + "/tileset.json";
+		' mTileInfo[0].mHeight = 654.93555039 + 1000.0; '// 谷歌地球下载的 obj，转3dtiles, 在 pe 里，需在高度上抬高一个值，需测一下。暂用1000 
+		' mTileInfo[0].mLat = 22.85158946;
+		' mTileInfo[0].mLon = 120.58693002;
+
+		
+		
+        '// 初始化瓦片信息
+		mTilesCount = 1;
+
+	    '// 鄂州华容某地 30.599556, 114.753590
+		string tilesDir = "F:/3DTile_old";
+		mTileNames[0] = "571-3386";
+		mTileInfo[0] = new TileInfo;
+		mTileInfo[0].mUrl = tilesDir + "/" + mTileNames[0] + "/tileset.json";
+		mTileInfo[0].mHeight = 20;     '
+		mTileInfo[0].mLat = 30.599556;
+		mTileInfo[0].mLon = 114.753590;
+	}
+
+
+	'// 并行创建 tiles
+	void createTiles()
+	{
+		'// 不让视角穿到地球内部离地球表面20米内
+		theDigitEarthMgr.setGlobeProtectDistance(20.0);
+		
+	    '// ypj, 2023-01-03, add for test
+	    ' theDigitEarthMgr.set3dtilesMaxThreadNum(8);
+
+		int i = 0;
+		string tileName;
+		string tileUrl;
+		string tileFieldPath;
+		while(i < mTilesCount) {
+			tileName = mTileNames[i];
+			tileUrl = mTileInfo[i].mUrl;
+
+
+			theDigitEarthMgr.create3dtiles(tileName, tileUrl);
+
+			'// 下面可以设置 SSE 等参数
+			theDigitEarthMgr.set3dtilesMinSSE(tileName, "10000"); '// 需要，否则出不来。
+			theDigitEarthMgr.set3dtilesHiddenSSE(tileName, "2"); '// ypj, 2022-12-10, 根节点及其子节点小于此时，整体隐藏。（默认是2，用4块地测，hiddenSSE=3, minSSE=5, bestRange=80, 效果还可以）
+			theDigitEarthMgr.set3dtilesBestRange(tileName, "50"); '// 设的越小，则需拉的更近才能变清晰。设的越大，不需更近就较清晰，但难拉更近。
+			theDigitEarthMgr.set3dtilesMinCameraDist(tileName, "10"); 
+		
+			'// 旋转瓦片(位置存在偏差时尝试使用)
+		    'pluginCall("PETo3dEarth", "SetOffsetAngle", tileName, "-0.24");
+		    '// 调整瓦片高，根据瓦片实际来设
+			string tileHeight = ftoa(mTileInfo[i].mHeight, 1, 6);
+		    pluginCall("PETo3dEarth", "SetOffsetHeight", tileName, tileHeight);
+
+			i++;
+		}
+		
+		
+		'// 初始化瓦片，从第0个开始（0 ~ mTilesCount-1）
+		theDigitEarthMgr.asynInit3dtiles(mTileNames, mTilesCount, 0);
+	}
+
+	'// 切换到 3dtiles 模式时调用一下。
+	void enable3dTiles()
+	{
+		int i = 0;
+		string tileName;
+		string tileFieldPath;
+		while(i < mTilesCount) {
+			tileName = mTileNames[i];
+			'// ypj, 2023-01-03, test: 5 -> 7
+			theDigitEarthMgr.set3dtilesMinSSE(tileName, "5");
+			theDigitEarthMgr.set3dtilesActive(tileName, "1");'// ypj, 2022-11-18, 控制激活
+			theDigitEarthMgr.set3dtilesVisible(tileName, 1);
+			
+			i++;
+		}
+
+		appPrintLog("test.log", "[changeTo3dMap] called", 8);
+	}
+
+	'// 将 3dtiles 隐藏，去活，设置 SSE 等。
+	void disable3dTiles()
+	{
+		int i = 0;
+		string tileName;
+		string tileFieldPath;
+		while(i < mTilesCount) {
+			tileName = mTileNames[i];
+
+			theDigitEarthMgr.set3dtilesMinSSE(tileName, "10000"); '// 设置 MinSSE (最小屏幕误差)
+			theDigitEarthMgr.set3dtilesActive(tileName, "0");     '// 取消激活
+			theDigitEarthMgr.set3dtilesVisible(tileName, 0);
+
+			i++;
+		}
+	}
+}
+TilesManager theTilesMgr;
+
+
+
+'//----------------------------
+'// 测试
+'//----------------------------
+string gLogFile;    '// 日志文件
+Animation{
+	name{初始化TilesManager}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                gLogFile = "test.log";
+				'// 初始化 DigitEarth 与 TilesManager
+                theDigitEarthMgr = new DigitEarthManager;
+				theTilesMgr = new TilesManager;
+				appPrintLog(gLogFile, "[初始化 DigitEarth 库] called", 1);
+            }
+        }
+    }
+}
+Animation{
+	name{创建Tiles}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+			    messageBox("创建tiles开始");
+			    theTilesMgr.createTiles();
+				messageBox("创建tiles完成");
+            }
+        }
+    }
+}
+
+Animation{
+	name{切换到inspect模式}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+			    messageBox("切换到inspect开始");
+				theDigitEarthMgr.setCameraMode(1);
+				'//-2304144.25, 3246953, -4995055, -2303609.75, 3246880.75, -4993686, -0.360707, 0.508408, -0.781928
+				float eye[3];
+				float tar[3];
+				float up[3];
+				eye[0] = -2304144.25; eye[1] = 3246953; eye[2] = -4995055;
+				tar[0] = -2303609.75; tar[1] = 3246880.75; tar[2] = -4993686;
+				up[0] = -0.360707; up[1] = 0.508408; up[2] = -0.781928;
+				theDigitEarthMgr.setCameraByWorld(eye, tar, up);
+				
+				theTilesMgr.enable3dTiles();
+				messageBox("切换到inspect完成");
+            }
+        }
+    }
+}
+
+Animation{
+	name{切换到overlook模式}
+	Controller{
+		life{0,1000}
+		Action{
+			 Program{
+			    messageBox("切换到overlook开始");
+				theDigitEarthMgr.setCameraMode(0);
+				'// -2298162, 3265796.5, -5105990, -2262161.75, 3249956, -5008457, -0.354311, 0.509024, -0.784448
+				float eye[3];
+				float tar[3];
+				float up[3];
+				eye[0] = -2298162; eye[1] =3265796.5; eye[2] =-5105990;
+				tar[0] = -2262161.75; tar[1] = 3249956; tar[2] = -5008457; 
+				up[0] = -0.354311; up[1] = 0.509024; up[2] = -0.784448;
+				theDigitEarthMgr.setCameraByWorld(eye, tar, up);
+				
+				theTilesMgr.disable3dTiles();
+				messageBox("切换到overlook结束");
+            }
+        }
+    }
+}
+
+}

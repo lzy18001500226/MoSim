@@ -1,0 +1,15 @@
+一级臂：（float）R1_angle1
+
+二级臂：（float）R1_angle2
+
+三级臂：（float）R1_angle3
+
+四级臂：（float）R1_angle4
+
+五级臂：（float）R1_angle5
+
+六级臂：（float）R1_angle6
+
+机械爪上：（float）R1_x1
+
+机械爪上：（float）R1_x2

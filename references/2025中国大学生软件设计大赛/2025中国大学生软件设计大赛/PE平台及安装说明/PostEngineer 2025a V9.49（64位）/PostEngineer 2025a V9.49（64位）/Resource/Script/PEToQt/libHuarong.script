@@ -1,0 +1,378 @@
+'创建时间: 2022-10-09
+'作者: ypj
+'描述: HuarongManager
+'更新：
+
+Script{
+
+
+'-----------------------------------
+' HuarongManager 相关接口封装类
+'-----------------------------------
+class NotationConfig
+{
+	float size[2];       '// 标注图标尺寸
+	float transparency;  '// 标注透明度
+	float offset[2];     '// 标注偏移
+	float lineColor[3];  '// 标注指示线颜色
+	float lineWidth;     '// 标注线宽
+	int linePattern;     '// 标注线型
+	NotationConfig()
+	{
+	    size[0] = 0.06;
+		size[1] = 0.06;
+		transparency = 0.99;
+		offset[0] = 0.0;
+		offset[1] = 0.48;
+		lineColor[0] = 0.5;
+		lineColor[1] = 0.5;
+		lineColor[2] = 0.5;
+		lineWidth = 1.0;
+		linePattern = 0;
+	}
+}
+
+class HuarongManager 
+{
+    '// 插件名
+    string mPluginName;
+	'// 请求到的数据
+	string mGetDataBuffer; 
+
+	'// 标注参数
+	NotationConfig mNotationConfig;
+
+	HuarongManager() 
+	{
+	    mPluginName = "PEToQt";
+		pluginCall(mPluginName, "hrMgrInit", "");
+
+		mNotationConfig = new NotationConfig;
+
+		pluginCall(mPluginName, "hrMgrSetNotationConfig", mNotationConfig.getNativeHandle()); 
+	}
+
+	'/**
+    '* @brief 设置网络请求超时
+    '* @param timeout [in] 超时毫秒数
+    '*/
+	void setTimeout(int timeout)
+	{
+	    pluginCall(mPluginName, "hrMgrSetTimeout", timeout);
+	}
+
+	'''
+     ' @brief 获取网络数据
+	 ' @param res [out] 获取的数据
+     ' @param url
+     ' @param rescodec [in] 获取结果字符串的编码。0: utf8; 1:gb2312
+	 ' @param urlcodec [in] 传入的 url 编码。0: utf8; 1:gb2312
+     ' @return 0: 成功；否则，失败
+     '/
+	int get(string& res, string& url, int rescodec, int urlcodec)
+    {
+        int status = pluginCall(mPluginName, "hrMgrGet", url, rescodec, urlcodec); '//会将数据写入 mGetDataBuffer
+	
+		if(status == 0) {
+		    res = mGetDataBuffer;
+		}
+
+		return status;
+    }
+
+	'''
+     ' @brief 获取网络数据
+	 ' @param res [out] 获取的数据
+     ' @param url
+     ' @param rescodec [in] 获取结果字符串的编码。0: utf8; 1:gb2312
+	 ' @param urlcodec [in] 传入的 url 编码。0: utf8; 1:gb2312
+	 ' @param tokenkey [in] token key 字符串。
+	 ' @param token [in]  token 字符串。
+     ' @return 0: 成功；否则，失败
+	 ' @since 2022-06-14
+     '/
+	int getWithHeader(string& res, string& url, int rescodec, int urlcodec, string tokenkey, string token)
+    {
+        int status = pluginCall(mPluginName, "hrMgrGetWithHeader", url, rescodec, urlcodec, tokenkey, token); '//会将数据写入 mGetDataBuffer
+	
+		if(status == 0) {
+		    res = mGetDataBuffer;
+		}
+
+		return status;
+    }
+
+	'''
+     ' @brief 获取网络数据并映射到相应的变量对象。
+	 ' @param data [inout] 用来装载获取的数据的变量对应的 handle 
+     ' @param url [in] 以 gb2321 编码
+	 ' @param tokenkey [in] token key 字符串。
+	 ' @param token [in]  token 字符串。
+     ' @return 0: 成功；否则，失败
+	 ' @since 2022-08-02
+     '/
+	int getAndMapWithHeader(handle data, string& url, int urlcodec, string tokenkey, string token)
+	{	
+	    int ret = pluginCall(mPluginName, "hrMgrGetWithHeader2", data, url, urlcodec, tokenkey, token); 
+	    
+	    return ret;
+	}
+
+	'''
+     ' @brief 获取网络数据并映射到相应的变量对象。异步版。
+	 ' @param data [inout] 用来装载获取的数据的变量对应的 handle, 支持 onSuccess(); onFailed() 两个接口，供回调。
+	 ' @param listener [inout] 监听异步结果的变量对应的 handle, 支持 onSuccess(); onFailed() 两个接口，供回调。
+     ' @param url [in] 以 gb2321 编码
+	 ' @param tokenkey [in] token key 字符串。
+	 ' @param token [in]  token 字符串。
+     ' @return 0: 成功；否则，失败
+	 ' @remark listener 的回调在 data 回调之后回调
+	 ' @since 2022-08-25
+     '/
+	int getAndMapWithHeaderAsyn(handle data, handle listener, string& url, int urlcodec, string tokenkey, string token)
+	{	
+	    int ret = pluginCall(mPluginName, "hrMgrGetWithHeader3", data, listener, url, urlcodec, tokenkey, token); 
+	    
+	    return ret;
+	}
+
+	'//----------------------------------------------------------------------
+	'// 承包地相关接口
+	'//----------------------------------------------------------------------
+
+	'/**
+	'* @brief 加载承包地数据
+	'* @param jsonPath [in] json 文件路径，可以是绝对路径或者是相对项目的路径
+	'* @param groupName [in] 组名。一个文件可以对应起一个组名。
+	'* @return 成功：0； 失败：非零值
+	'* @eg  theHrMgr.loadCbd("data/wsctd.json", "武圣村");
+    '* @since 2022-10-19
+	'*/
+	int loadCbd(string& jsonPath, string& groupName)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrLoadCbd", jsonPath, groupName); 
+		return ret;
+	}
+	'/**
+	'* @brief 创建承包地多边形包围盒
+	'* @param groupName [in] 组名。在 loadCbd 加载json文件时起的组名。
+	'* @param bottomHeight [in] 包围盒底部高。
+	'* @return 成功：0； 失败：非零值
+	'* @eg  theHrMgr.createCbd("武圣村", 10, 30);
+	'* @since 2022-10-19
+	'*/
+	int createCbd(string& groupName, int bottomHeight, int topHeight)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrCreateCbd", groupName, bottomHeight, topHeight); 
+		return ret;
+	}
+
+	'/**
+	'* @brief 获取承包地节点根路径
+	'* @return 承包地节点根路径
+	'*/
+	string getCbdFieldPath()
+	{
+	    return "/scene/model/earth/polygons/cbd";
+	}
+	
+	
+	'/**
+	'* @brief 设置指定组承包地包围盒可见性
+	'* @param groupName [in] 组名。在 loadCbd 加载json文件时起的组名。
+	'* @param visible [in] 是否可见。
+	'* @return 成功：0； 失败：非零值
+	'* @since 2022-11-01
+	'*/
+	int setCbdVisible(string& groupName, bool visible)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrSetCbdVisible", groupName, visible); 
+	    return ret;
+	}
+
+
+	'/**
+	'* @brief 设置指定组承包地包围盒可见性
+	'* @param groupName [in] 组名。在 loadCbd 加载json文件时起的组名。
+	'* @param cbdId [in] 承包地ID。
+	'* @param cbfId [in] 承包方ID。
+	'* @param visible [in] 是否可见。
+	'* @return 成功：0； 失败：非零值
+	'* @since 2022-11-01
+	'*/
+	int setCbdVisibleById(string& groupName, string& cbdId, string& cbfId, bool visible)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrSetCbdVisibleById", groupName, cbdId, cbfId, visible); 
+	    return ret;
+	}
+
+	'/**
+	'* @brief 创建承包地标注
+	'* @param groupName [in] 组名。在 loadCbd 加载json文件时起的组名。
+	'* @param pathName [in] 承包地标注节点路径
+	'* @param group [in] 组号，在模块中的组。
+	'* @param imgFile [in] 图标文件。
+	'* @return 成功：0； 失败：非零值
+	'* @remark 承包地标注名字形如：【标注类型值】#【地块ID】#【纬度值】#【经度值】#【承包地组名】#【承包人ID】
+	'*        
+	'*      其中 【标注类型值】NT_承包地,取值 5； 【承包地组名】为加载承包地 json 数据时起的名字，如 "武圣村"，参见 loadCbd
+	'*
+	'*      e.g.  "5#2020000495866#34.123456#114.654321#武圣村#420821485942556789"
+	'* @since 2022-11-01
+	'*/
+	int createCbdNotation(string& groupName, string& pathName, string& imgFile, int group, int dem)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrCreateCbdNotation", groupName, pathName, imgFile, group, dem); 
+		return ret;
+	}
+
+	'/**
+	'* @brief 设置标注参数
+	'* @param nc [in] 标注配置参数。
+	'* @return 成功：0； 失败：非零值
+	'*/
+	int setNotationConfig(NotationConfig& nc)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrSetNotationConfig", nc.getNativeHandle()); 
+		return ret;
+	}
+
+	'//----------------------------------------------------------------------
+	'// 宅基地相关接口
+	'//----------------------------------------------------------------------
+
+	'/**
+	'* @brief 创建宅基地多边形包围盒
+	'* @param zjdId [in] 宅基地 ID
+	'* @param polygonJson [in] 多变形 json 串
+	'* @param bottomHeight [in] 包围盒底部高。
+	'* @param topHeight [in] 包围盒顶部高。
+	'* @return 成功：0； 失败：非零值
+	'* @since 2022-11-09
+	'*/
+	int createZjd(string& zjdId, string& polygonJson, int bottomHeight, int topHeight)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrCreateZjd", zjdId, polygonJson, bottomHeight, topHeight); 
+		return ret;
+	}
+
+	'/**
+	'* @brief 删除宅基地多边形包围盒
+	'* @param zjdId [in] 宅基地 ID
+	'* @return 成功：0； 失败：非零值
+	'* @since 2022-11-10
+	'*/
+	int deleteZjd(string& zjdId)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrDeleteZjd", zjdId); 
+		return ret;
+	}
+
+	'/**
+	'* @brief 获取指定宅基地节点路径
+	'* @return 宅基地节点路径
+	'* @since 2022-11-09
+	'*/
+	string getZjdFieldPath(string& zjdId)
+	{
+	    return "/scene/model/earth/polygons/zjd/" + zjdId;
+	}
+	
+	
+	'/**
+	'* @brief 设置指定宅基地包围盒可见性
+	'* @param zjdId [in] 宅基地ID
+	'* @param visible [in] 是否可见。
+	'* @return 成功：0； 失败：非零值
+	'* @since 2022-11-09
+	'*/
+	int setZjdVisible(string& zjdId, bool visible)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrSetZjdVisible", zjdId, visible); 
+	    return ret;
+	}
+
+	'//----------------------------------------------------------------------
+	'// 承包地在线相关接口
+	'//----------------------------------------------------------------------
+
+
+	'/**
+	'* @brief 创建承包地多边形包围盒
+	'* @param cbdId [in] 承包地 ID
+	'* @param polygonJson [in] 多变形 json 串
+	'* @param bottomHeight [in] 包围盒底部高。
+	'* @param topHeight [in] 包围盒顶部高。
+	'* @return 成功：0； 失败：非零值
+	'* @since 2023-04-21
+	'*/
+	int createCbdById(string& cbdId, string& polygonJson, int bottomHeight, int topHeight)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrCreateCbdById", cbdId, polygonJson, bottomHeight, topHeight); 
+		return ret;
+	}
+
+	'/**
+	'* @brief 删除承包地多边形包围盒
+	'* @param cbdId [in] 承包地 ID
+	'* @return 成功：0； 失败：非零值
+	'* @since 2023-04-21
+	'*/
+	int deleteCbdById(string& cbdId)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrDeleteCbdById", cbdId); 
+		return ret;
+	}
+
+	'/**
+	'* @brief 获取指定承包地节点路径
+	'* @return 承包地节点路径
+	'* @since 2023-04-21
+	'*/
+	string getCbdFieldPathById(string& cbdId)
+	{
+	    return "/scene/model/earth/polygons/cbd/" + cbdId;
+	}
+	
+	
+	'/**
+	'* @brief 设置指定承包地包围盒可见性
+	'* @param cbdId [in] 承包地ID
+	'* @param visible [in] 是否可见。
+	'* @return 成功：0； 失败：非零值
+	'* @since 2023-04-21
+	'*/
+	int setCbdVisibleById2(string& cbdId, bool visible)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrSetCbdVisibleById2", cbdId, visible); 
+	    return ret;
+	}
+
+	'/**
+	'* @brief 设置包围盒颜色
+	'* @remark 当不使用随机颜色时，才使用本接口设定的颜色。
+	'* @since 2023-04-24
+	'*/
+	int setPolygonColor(int r, int g, int b)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrSetPolygonColor", r, g, b); 
+	    return ret;
+	}
+
+	'/**
+	'* @brief 设置包围盒是否使用随机颜色
+	'* @param useRandom [in] 1: 使用随机颜色， 0: 使用指定颜色。
+	'* @since 2023-04-24
+	'*/
+	int setPolygonUseRandomColor(int useRandom)
+	{
+	    int ret = pluginCall(mPluginName, "hrMgrSetPolygonUseRandomColor", useRandom); 
+	    return ret;
+	}
+} 
+
+'// HuarongManager 唯一实例, 使用前需实例化此对象:
+'// theHrMgr = new HuarongManager;
+HuarongManager theHrMgr;
+
+}

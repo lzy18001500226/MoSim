@@ -1,0 +1,37 @@
+{
+	"common": {
+		"lod": "1",
+		"shader": "0",
+		"compressTexture": "1",
+		"loadNoTexture": "0",
+		"saveNoTexture": "0",
+		"cameraSize": "1",
+		"cameraStep": "5",
+		"cameraFOV": "45",
+		"jitter": "0"
+	},
+	
+	"statusBar": {
+		"shortStat": "1",
+		"showStat": "1",
+		"showCPU": "1",
+		"showMEM": "1",
+		"showFPS": "1",
+		"showCoord": "1"
+	},
+	
+	"mergeVertex": {
+		"enable": "1",
+		"threshold": "0.001",
+		"useTexture": "1",
+		"useNewNormal": "0"
+	},
+	
+	"showHideMode": "0",
+	"showHideList": [
+		"/scene/model/打磨总/打磨/U打磨机/U打磨机/U打磨机_05",
+		"/scene/model/打磨总/打磨/U打磨机/U打磨机/U打磨机_06",
+		"/scene/model/打磨总/打磨/U打磨机/U打磨机/U打磨机_02",
+		"/scene/model/打磨总/打磨/U打磨机/U打磨机/U打磨机_08"
+	]
+}

@@ -1,0 +1,7 @@
+{ 
+"name": "ActiveX hosting plugin for Firefox", 
+"manifest_version": 2, 
+"version": "1.39.0.0", 
+"description": "ActiveX hosting plugin for Firefox r39", 
+"plugins":[{"path": "npffax.dll", "public": true}] 
+} 

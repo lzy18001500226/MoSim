@@ -1,0 +1,9 @@
+Animation{
+	controller{
+		life{0,时间}
+		camera{
+			type{to}
+			values{相机}
+		}
+	}
+}

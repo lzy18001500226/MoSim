@@ -1,0 +1,66 @@
+'创建时间: 2022-07-14
+'作者: ypj
+'描述: Simulation 操作测试
+'更新：2022-07-14
+'   ypj, 2024-11-13, 支持设置相关参数
+
+
+Script{
+
+include{PEToMWorks/libSimulation.script} '// 系统库函数，不需复制到项目本地
+
+string gLogFile;     '// 日志文件
+DDMWriter ddmWriter; '// 回写数据对象
+
+Animation{
+	name{初始化Simulation库}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                gLogFile = "test.log";
+
+				'// 创建仿真管理器。在 [PEToMWorks/libSimulation.script] 中声明。
+                theSimulationMgr = new SimulationManager;
+
+				'// 设置参数
+				theSimulationMgr.setParam("receiveip", "127.0.0.1");
+				theSimulationMgr.setParam("receiveport", "11005");
+				theSimulationMgr.setParam("sendip", "127.0.0.1");
+				theSimulationMgr.setParam("sendport", "11006");
+				theSimulationMgr.setParam("multicast", "1");
+				theSimulationMgr.setParam("loopsend", "0");
+				'// 开始仿真
+				theSimulationMgr.start(1); '// 0: 使用默认配置文件; 1: 忽略默认配置文件。上面手动设置了参数，故忽略配置文件。
+
+				'// 创建回写数据对象
+				ddmWriter = new DDMWriter;
+
+				appPrintLog(gLogFile, "[初始化Simulation库] called", 1);
+            }
+        }
+    }
+}
+
+Animation{
+	name{测试Simulation库}
+	Controller{
+		life{0,1000}
+		Action{
+			Program{
+                appPrintLog(gLogFile, "[测试Simulation库] called", 1);
+				'// 打包待发数据
+				ddmWriter.beginPackData();
+				ddmWriter.addBool(1, "boolVar"); '// 添加待发送bool值1， 发送名为 boolVar
+				ddmWriter.addInt(4, "intVar");      '// 添加待发送整数4， 发送名为 intVar
+				ddmWriter.addFloat(3.14, "floatVar");  '// 添加待发送浮点数 3.14， 发送名为 floatVar
+				ddmWriter.setSimTime(456.0); '// 设置仿真时间
+				ddmWriter.endPackData();
+				'// 发送打包数据
+				ddmWriter.writePackedData();
+            }
+        }
+    }
+}
+
+}

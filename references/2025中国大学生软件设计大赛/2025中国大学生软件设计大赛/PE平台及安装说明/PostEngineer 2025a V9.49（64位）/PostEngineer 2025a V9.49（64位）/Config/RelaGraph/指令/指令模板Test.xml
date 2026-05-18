@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="gb2312"?>
+
+<指令表 version="100">
+
+	<类别 name="Test">
+		<指令 name="func1" content="setTickFactor(系数)">
+			<参数 name="系数"/>
+		</指令>
+		<指令 name="func2" content="getMousePosition(X,Y)">
+			<参数 name="X"/>
+			<参数 name="Y"/>
+		</指令>
+	</类别>
+
+</指令表>

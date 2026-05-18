@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<PluginManager>
+    <Properties>
+        <Property name="Var_bOculusDirectOpen" type="105" value="0"/>
+    </Properties>
+    <BlackList>
+        <Plugin name="HtcViveDll.dll"/>
+    </BlackList>
+    <DependList>
+		<Plugin name="FxLibPhysX" >
+			<Item name="{myapp}\Support\PhysX\v2.8.4" current="1" />
+		</Plugin>
+                <Plugin name="PEToQt" >
+			<Item name="{myapp}\Support\ColorMapEditor" current="1" />
+		</Plugin>
+		<Plugin name="FxLibDatabase" >
+			<Item name="libmysql.dll" />
+		</Plugin>
+		<Plugin name="PEToHTC" >
+			<Item name="openvr_api.dll" />
+			<Item name="FxDevice_HtcViveLibv1_0_3.dll" />
+			<Item name="HTCConfig.ini" />
+		</Plugin>	
+                <Plugin name="PEFmu" >
+			<Item name="{myapp}\Support\fmu" current="1" />
+		</Plugin>	
+                <Plugin name="PEToRomCase" >
+			<Item name="{myapp}\Support\vtk" current="1" />
+		</Plugin>
+                <Plugin name="PEToVtk" >
+			<Item name="{myapp}\Support\vtk" current="1" />
+		</Plugin>
+    </DependList>
+    <WebPlugin>
+      <Plugin name="PETo3dMax.plu" />
+      <Plugin name="ResourceLib.plu" />
+      <Plugin name="PEAssistX.plu" />
+      <Plugin name="FrameEditor.plu" />
+      <Plugin name="NppSearchInFiles.plu" />
+      <Plugin name="ProjectMgr.plu" />      
+    </WebPlugin>
+    <AutoRun>
+        <Plugin name="ProjectMgr" cmd_index="0" />
+        <Plugin name="FxLibNet" cmd_name="http_createServer" />
+    </AutoRun>
+</PluginManager>
+
+<!-- 
+（1）文件路径宏定义
+{myapp}：\bin 
+{myconfigs}: \bin\Config
+{mylogs}: \bin\Log
+{mydatas}: \bin\Data
+{myres}: \bin\Resource
+{myshaders}: \bin\Shaders
+{mysupports}: \bin\Support
+{myplugins}: \bin\Plugins
+{dlldir}: 插件dll所在文件夹
+{dllname}: 插件dll的名称，不包含扩展名
+{dllconfig}: \bin\Config\Plugin\{dllname}
+
+ -->

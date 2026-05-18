@@ -1,0 +1,108 @@
+'创建时间: 2022-10-23
+'作者: ypj
+'描述: 红外出图相关接口
+'更新：2022-10-25
+
+Script{
+
+
+'// 红外渲染出图参数
+class InfraredRenderParam 
+{
+	int w;
+	int h;
+	string fieldPath;
+	float eye[3];
+	float target[3];
+	float fov;
+	float exposure;
+
+	InfraredRenderParam()
+	{
+	    w = 256;
+		h = 256;
+		eye[0] = 0.0; 
+		eye[1] = 100.0;
+		eye[2] = 0.0;
+		target[0] = 0.0; 
+		target[1] = 0.0;
+		target[2] = 0.0;
+		fov = 120.0;
+		exposure = 1.0;
+	}
+}
+
+'------------------------------------------
+' 红外出图与大气透过率相关接口封装类
+' 大气透过率（Atmospheric Transmittance）
+'------------------------------------------
+class InfraredManager 
+{
+    '// 插件名
+	'// private
+    string mPluginName;
+
+	'// 红外出图参数
+	'// public
+	InfraredRenderParam renderParam;
+
+	InfraredManager() 
+	{
+	    mPluginName = "PEToInfrared";
+		pluginCall(mPluginName, "atMgrInit", "");
+
+		renderParam = new InfraredRenderParam;
+	}
+
+	'''
+     ' @brief 获取大气透过率值
+	 ' @param r [out] 值
+     ' @param h [in] 海拔
+     ' @param a [in] 天顶角
+	 ' @param d [in] 距离
+     ' @return 成功: 非负值；否则： 负值
+	 ' @since 2022-10-23
+     '/
+	int getATValue(float & r, float h, float a, float d)
+    {
+        int status = pluginCall(mPluginName, "atMgrGetATValueS", r.getNativeHandle(), h.getNativeHandle(), a.getNativeHandle(), d.getNativeHandle()); 
+		return status;
+    }
+
+	'/**
+	'* @brief 加载大气透过率样本数据
+	'* @param jsonPath [in] 大气透过率样本配置文件，json 文件路径，可以是绝对路径或者是相对项目的路径
+	'* @return 成功：0； 失败：非零值
+	'* @eg  theInfraredMgr.loadSamples("data/ATSamples.json");
+    '* @since 2022-10-23
+	'*/
+	int loadATSamples(string& jsonPath)
+	{
+	    int ret = pluginCall(mPluginName, "atMgrLoadSamples", jsonPath); 
+		return ret;
+	}
+
+	'/**
+	'* @brief 渲染红外图到指定文件
+	'* @param fileName [in]  保存文件路径
+	'* @note 调用前，先设置出图参数: 
+	'*       theInfraredMgr.renderParam.w = 128; 
+	'*       theInfraredMgr.renderParam.h = 128;
+	'*       ...
+	'*/
+	int renderInfraredToFile(string& filePathName)
+	{
+	    int ret = pluginCall(mPluginName, "infrMgrRenderToFile", filePathName, renderParam.getNativeHandle());
+
+		return ret;
+	}
+} 
+
+'// InfraredManager 唯一实例, 使用前需实例化此对象:
+'// theInfraredMgr = new InfraredManager;
+InfraredManager theInfraredMgr;
+
+
+
+
+}

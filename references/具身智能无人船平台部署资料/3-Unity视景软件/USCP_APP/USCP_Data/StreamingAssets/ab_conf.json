@@ -1,0 +1,48 @@
+﻿{
+    "scenes": [
+        {
+            "code": "Islands",
+            "name": "神秘岛",
+            "abName": "scene_神秘岛",
+            "apply": [
+                "USV"
+            ]
+        },
+        {
+            "code": "BitLake",
+            "name": "北湖",
+            "abName": "scene_北湖",
+            "apply": [
+                "USV"
+            ]
+        },
+        {
+            "code": "JustLake",
+            "name": "海韵湖",
+            "abName": "scene_海韵湖",
+            "apply": [
+                "USV"
+            ]
+        }
+    ],
+    "vehicles": [
+        {
+            "name": "USV100",
+            "type": "USV",
+            "abName": "vehicle_usv100",
+            "resName": "USV100"
+        },
+        {
+            "name": "USV130",
+            "type": "USV",
+            "abName": "vehicle_usv130",
+            "resName": "USV130"
+        },
+        {
+            "name": "USV180",
+            "type": "USV",
+            "abName": "vehicle_usv180",
+            "resName": "USV180"
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+
+script{
+
+module main{
+
+
+
+Animation{
+id{main\main.rg:3}
+	name{module boot}
+
+	controller{
+	life{0, 10}
+
+	Action{
+		Program{
+			id{main\main.rg:7}
+pluginCall("PEToMWorks", "DisableFlightSimulation", 0); pluginCall("PEToMWorks", "Start", 0);
+		}
+	}}
+
+
+}
+
+
+
+}
+}

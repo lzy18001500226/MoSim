@@ -1,0 +1,398 @@
+'创建时间: 2022-06-01
+'作者: ypj
+'描述: NetworkAccessManager
+'更新：
+' ypj, 2022-06-14, 添加 NetworkAccessManager：：getWithHeader
+
+Script{
+
+
+'-----------------------------------
+' NetworkAccessManager 相关接口封装类
+'-----------------------------------
+class NetworkAccessManager 
+{
+    '// 插件名
+    string mPluginName;
+	'// 请求到的数据
+	string mGetDataBuffer; 
+
+	NetworkAccessManager() 
+	{
+	    mPluginName = "PEToQt";
+		'//mGetDataBuffer = ""; '// ypj, 2022-06-22, add
+		pluginCall(mPluginName, "networkAccessMgrInit", "");
+	}
+
+	'/**
+    '* @brief 设置网络请求超时
+    '* @param timeout [in] 超时毫秒数
+    '*/
+	void setTimeout(int timeout)
+	{
+	    pluginCall(mPluginName, "networkAccessMgrSetTimeout", timeout);
+	}
+
+	'''
+     ' @brief 获取网络数据
+	 ' @param res [out] 获取的数据
+     ' @param url
+     ' @param rescodec [in] 获取结果字符串的编码。0: utf8; 1:gb2312
+	 ' @param urlcodec [in] 传入的 url 编码。0: utf8; 1:gb2312
+     ' @return 0: 成功；否则，失败
+     '/
+	int get(string& res, string& url, int rescodec, int urlcodec)
+    {
+        int status = pluginCall(mPluginName, "networkAccessMgrGet", url, rescodec, urlcodec); '//会将数据写入 mGetDataBuffer
+	
+		if(status == 0) {
+		    res = mGetDataBuffer;
+		}
+
+		return status;
+    }
+
+	'''
+     ' @brief 获取网络数据
+	 ' @param res [out] 获取的数据
+     ' @param url
+     ' @param rescodec [in] 获取结果字符串的编码。0: utf8; 1:gb2312
+	 ' @param urlcodec [in] 传入的 url 编码。0: utf8; 1:gb2312
+	 ' @param tokenkey [in] token key 字符串。
+	 ' @param token [in]  token 字符串。
+     ' @return 0: 成功；否则，失败
+	 ' @since 2022-06-14
+     '/
+	int getWithHeader(string& res, string& url, int rescodec, int urlcodec, string tokenkey, string token)
+    {
+        int status = pluginCall(mPluginName, "networkAccessMgrGetWithHeader", url, rescodec, urlcodec, tokenkey, token); '//会将数据写入 mGetDataBuffer
+	
+		if(status == 0) {
+		    res = mGetDataBuffer;
+		}
+
+		return status;
+    }
+
+	'''
+     ' @brief 获取网络数据并映射到相应的变量对象。
+	 ' @param data [inout] 用来装载获取的数据的变量对应的 handle 
+     ' @param url [in] 以 gb2321 编码
+	 ' @param tokenkey [in] token key 字符串。
+	 ' @param token [in]  token 字符串。
+     ' @return 0: 成功；否则，失败
+	 ' @since 2022-08-02
+     '/
+	int getAndMapWithHeader(handle data, string& url, int urlcodec, string tokenkey, string token)
+	{	
+	    int ret = pluginCall(mPluginName, "networkAccessMgrGetWithHeader2", data, url, urlcodec, tokenkey, token); 
+	    
+	    return ret;
+	}
+
+	'''
+     ' @brief 获取网络数据并映射到相应的变量对象。异步版。
+	 ' @param data [inout] 用来装载获取的数据的变量对应的 handle, 支持 onSuccess(); onFailed() 两个接口，供回调。
+	 ' @param listener [inout] 监听异步结果的变量对应的 handle, 支持 onSuccess(); onFailed() 两个接口，供回调。
+     ' @param url [in] 以 gb2321 编码
+	 ' @param tokenkey [in] token key 字符串。
+	 ' @param token [in]  token 字符串。
+     ' @return 0: 成功；否则，失败
+	 ' @remark listener 的回调在 data 回调之后回调
+	 ' @since 2022-08-25
+     '/
+	int getAndMapWithHeaderAsyn(handle data, handle listener, string& url, int urlcodec, string tokenkey, string token)
+	{	
+	    int ret = pluginCall(mPluginName, "networkAccessMgrGetWithHeader3", data, listener, url, urlcodec, tokenkey, token); 
+	    
+	    return ret;
+	}
+
+
+	'/**
+	'* @brief post 请求。
+	'* @param res [out] 返回串
+	'* @param url [in] 请求链接
+	'* @param rescodec [in] 请求链接编码  0： utf8; 1: gb2312
+	'* @param urlcodec [in] 请求链接编码  0： utf8; 1: gb2312
+	'* @param headerList [in] headerList 形如“key1:value1&key2:value2"
+	'* @param content [in] content 形如 "userName=zhangsan&age=10&xx=11|int", json 效果如下
+	'*    { "userName": "zhangsan", "age": "10", "xx": 11}
+	'*   key=value, value后支持 int, float, double, string 标注, 以表明类型，不加默认为 string
+	'* @return 0: 成功； 1: 失败
+	'* @since 2023-03-17
+	'*/
+	int post(string& res, string& url, int rescodec, int urlcodec, string& headerList, string& content)
+	{	
+	    int ret = pluginCall(mPluginName, "networkAccessMgrPost", res.self(), url, rescodec, urlcodec, headerList, content); 
+	    
+	    return ret;
+	}
+
+
+	'/**
+	'* @brief post 请求，并解析 json 填充到变量。
+	'* @param data [out] 填充 json 数据的变量 handle
+	'* @param url [in] 请求链接
+	'* @param urlcodec [in] 请求链接编码  0： utf8; 1: gb2312
+	'* @param headerList [in] headerList 形如“key1:value1&key2:value2"
+	'* @param content [in] content 形如 "userName=zhangsan&age=10&xx=11|int", json 效果如下
+	'*    { "userName": "zhangsan", "age": "10", "xx": 11}
+	'*   key=value, value后支持 int, float, double, string 标注, 以表明类型，不加默认为 string
+	'* @return 0: 成功； 1: 失败
+	'* @since 2023-03-16
+	'*/
+	int postAndMap(handle data, string& url, int urlcodec, string& headerList, string& content)
+	{	
+	    int ret = pluginCall(mPluginName, "networkAccessMgrPostAndMap", data, url, urlcodec, headerList, content); 
+	    
+	    return ret;
+	}
+
+
+	'/**
+	'* @brief post 请求，并异步解析 json 填充到变量。
+	'* @param data [out] 填充 json 数据的变量 handle
+	'* @param listener [in] 请求的回调对象 handle
+	'* @param url [in] 请求链接
+	'* @param urlcodec [in] 请求链接编码  0： utf8; 1: gb2312
+	'* @param headerList [in] headerList 形如“key1:value1&key2:value2"
+	'* @param content [in] content 形如 "userName=zhangsan&age=10"
+	'* @return 0: 成功； 1: 失败
+	'* @since 2023-03-16
+	'*/
+	int postAndMapAsyn(handle data, handle listener, string& url, int urlcodec, string& headerList, string& content)
+	{	
+	    int ret = pluginCall(mPluginName, "networkAccessMgrPostAndMapAsyn", data, listener, url, urlcodec, headerList, content); 
+	    
+	    return ret;
+	}
+
+	'/**
+	'* @brief get 请求。
+	'* @param res [out] 返回串
+	'* @param url [in] 请求链接
+	'* @param rescodec [in] 请求链接编码  0： utf8; 1: gb2312
+	'* @param urlcodec [in] 请求链接编码  0： utf8; 1: gb2312
+	'* @param headerList [in] headerList 形如“key1:value1&key2:value2"
+	'* @return 0: 成功； 1: 失败
+	'* @since 2023-03-17
+	'*/
+	int getEx(string& res, string& url, int rescodec, int urlcodec, string& headerList)
+	{	
+	    int ret = pluginCall(mPluginName, "networkAccessMgrGetEx", res.self(), url, rescodec, urlcodec, headerList); 
+	    
+	    return ret;
+	}
+
+	'/**
+	'* @brief get 请求，并解析 json 填充到变量。
+	'* @param data [out] 填充 json 数据的变量 handle
+	'* @param url [in] 请求链接
+	'* @param urlcodec [in] 请求链接编码  0： utf8; 1: gb2312
+	'* @param headerList [in] headerList 形如“key1:value1&key2:value2"
+	'* @return 0: 成功； 1: 失败
+	'* @since 2023-03-16
+	'*/
+    int getAndMap(handle data, string& url, int urlcodec, string& headerList)
+	{	
+	    int ret = pluginCall(mPluginName, "networkAccessMgrGetAndMap", data, url, urlcodec, headerList); 
+	    
+	    return ret;
+	}
+
+	'/**
+	'* @brief get 请求，并异步解析 json 填充到变量。
+	'* @param data [out] 填充 json 数据的变量 handle
+	'* @param listener [in] 请求的回调 handle
+	'* @param url [in] 请求链接
+	'* @param urlcodec [in] 请求链接编码  0： utf8; 1: gb2312
+	'* @param headerList [in] headerList 形如“key1:value1&key2:value2"
+	'* @return 0: 成功； 1: 失败
+	'* @since 2023-03-16
+	'*/
+    int getAndMapAsyn(handle data, handle listener, string& url, int urlcodec, string& headerList)
+	{	
+	    int ret = pluginCall(mPluginName, "networkAccessMgrGetAndMapAsyn", data, listener, url, urlcodec, headerList); 
+	    
+	    return ret;
+	}
+
+    '/**
+	'* @brief put 请求。
+	'* @param res [out] 返回串
+	'* @param url [in] 请求链接
+	'* @param rescodec [in] 请求链接编码  0： utf8; 1: gb2312
+	'* @param urlcodec [in] 请求链接编码  0： utf8; 1: gb2312
+	'* @param headerList [in] headerList 形如“key1:value1&key2:value2"
+	'* @param content [in] content 形如 "userName=zhangsan&age=10&xx=11|int", json 效果如下
+	'*    { "userName": "zhangsan", "age": "10", "xx": 11}
+	'*   key=value, value后支持 int, float, double, string 标注, 以表明类型，不加默认为 string
+	'* @return 0: 成功； 1: 失败
+	'* @since 2023-03-17
+	'*/
+	int put(string& res, string& url, int rescodec, int urlcodec, string& headerList, string& content)
+	{	
+	    int ret = pluginCall(mPluginName, "networkAccessMgrPut", res.self(), url, rescodec, urlcodec, headerList, content); 
+	    
+	    return ret;
+	}
+
+	'/**
+	'* @brief put 请求，并异步解析 json 填充到变量。异步版
+	'* @param data [out] 填充 json 数据的变量 handle
+	'* @param url [in] 请求链接
+	'* @param urlcodec [in] 请求链接编码  0： utf8; 1: gb2312
+	'* @param headerList [in] headerList 形如“key1:value1&key2:value2"
+	'* @param content [in] content 形如 "userName=zhangsan&age=10"
+	'* @return 0: 成功； 1: 失败
+	'* @since 2023-03-16
+	'*/
+	int putAndMap(handle data, string& url, int urlcodec, string& headerList, string& content)
+	{	
+	    int ret = pluginCall(mPluginName, "networkAccessMgrPutAndMap", data, url, urlcodec, headerList, content); 
+	    
+	    return ret;
+	}
+
+	'/**
+	'* @brief put 请求，并异步解析 json 填充到变量。异步版
+	'* @param data [out] 填充 json 数据的变量 handle
+	'* @param listener [in] 请求的回调对象 handle
+	'* @param url [in] 请求链接
+	'* @param urlcodec [in] 请求链接编码  0： utf8; 1: gb2312
+	'* @param headerList [in] headerList 形如“key1:value1&key2:value2"
+	'* @param content [in] content 形如 "userName=zhangsan&age=10"
+	'* @return 0: 成功； 1: 失败
+	'* @since 2023-03-16
+	'*/
+	int putAndMapAsyn(handle data, handle listener, string& url, int urlcodec, string& headerList, string& content)
+	{	
+	    int ret = pluginCall(mPluginName, "networkAccessMgrPutAndMapAsyn", data, listener, url, urlcodec, headerList, content); 
+	    
+	    return ret;
+	}
+
+	'/**
+	'* @brief md5 加密
+	'* @param strOut [out] string 类型变量。 a-f 小写。
+	'* @param strIn [in] string 类型的变量
+	'* @since 2023-03-16
+	'* @example 
+	'*   string out;
+	'*   string in;
+	'*   theNetworkAccessMgr.md5(out, in);
+	'*/
+	int md5(string& out, string& in)
+	{
+	    int ret = pluginCall(mPluginName, "networkAccessMgrMd5", out.self(), in); 
+		return ret;
+	}
+
+	'/**
+	'* @brief utc 时间转北京时间
+	'* @param strBeijing [out] 
+	'* @param strUtc [in] 
+	'* @param strBeijingFormat [in] 如 "yyyy:MM:dd:hh:mm:ss"
+	'* @param strUtcFormat [in] 如 utc 格式 "yyyyMMddTHHmmssZ"
+	'* @return 0: 成功; 1: 失败
+	'* @since 2023-05-22
+	'*/
+	int utcToBeijing(string& strBeijing, string& strUtc, string& strBeijingFormat, string& strUtcFormat)
+	{
+	    int ret = pluginCall(mPluginName, "networkAccessMgrUtcToBeijing", strBeijing.self(), strUtc, strBeijingFormat, strUtcFormat); 
+		return ret;
+	}
+	'/**
+	'* @brief 北京时间转 utc 时间
+	'* @param strUtc [out] utc 时间串。
+	'* @param strBeijing [in] 北京时间串。
+	'* @param strUtcFormat [in] utc时间串格式。 如 utc 格式 "yyyyMMddTHHmmssZ"
+	'* @param strBeijingFormat [in] 北京时间串格式。 如 "yyyy:MM:dd:hh:mm:ss"
+	'* @return 0: 成功; 1: 失败
+	'* @since 2023-05-22
+	'*/
+	int beijingToUtc(string& strUtc, string& strBeijing, string& strUtcFormat, string& strBeijingFormat)
+	{
+	    int ret = pluginCall(mPluginName, "networkAccessMgrBeijingToUtc", strUtc.self(), strBeijing, strUtcFormat, strBeijingFormat); 
+		return ret;
+	}
+	'/**
+	'* @brief 时间加上给定秒数。时区不变。
+	'* @param strOut [out] 输出时间串。 
+	'* @param strIn [in] 输入时间串。
+	'* @param strOutFormat [in] 输出时间串的格式。如 utc 格式 "yyyyMMddTHHmmssZ"，又如 "yyyy:MM:dd:hh:mm:ss"
+	'* @param strInFormat [in] 输入时间串格式。
+	'* @return 0: 成功; 1: 失败
+	'* @since 2023-05-22
+	'*/
+	int dateTimeAddSec(string& strOut, string& strIn, long sec, string& strOutFormat, string& strInFormat)
+	{
+	    int ret = pluginCall(mPluginName, "networkAccessMgrDateTimeAddSec", strOut.self(), strIn, sec, strOutFormat, strInFormat); 
+		return ret;
+	}
+
+	'/**
+	'* @brief 时间转时间戳
+	'* @param strSec [out] 输出时间戳。单位为秒。
+	'* @param strDateTime [in] 输入时间。
+	'* @param strDateTimeFormat [in] 输入时间串格式。
+	'* @return 0: 成功; 1: 失败
+	'* @since 2023-06-29
+	'*/
+	int dateTimeToSec(string& strSec, string& strDateTime, string& strDateTimeFormat)
+	{
+	    int ret = pluginCall(mPluginName, "networkAccessMgrDateTimeToSec", strSec.self(), strDateTime, strDateTimeFormat); 
+		return ret;
+	}
+	
+	'/**
+	'* @brief 时间转时间戳
+	'* @param strMSec [out] 输出时间戳。单位为毫秒。
+	'* @param strDateTime [in] 输入时间。
+	'* @param strDateTimeFormat [in] 输入时间串格式。
+	'* @return 0: 成功; 1: 失败
+	'* @since 2023-06-29
+	'*/
+	int dateTimeToMSec(string& strMSec, string& strDateTime, string& strDateTimeFormat)
+	{
+	    int ret = pluginCall(mPluginName, "networkAccessMgrDateTimeToMSec", strMSec.self(), strDateTime, strDateTimeFormat); 
+		return ret;
+	}
+
+	'/**
+	'* @brief 时间戳转时间
+	'* @param strDateTime [out] 输出时间。
+	'* @param strSec [in] 输入时间。单位为秒。
+	'* @param strDateTimeFormat [in] 输出时间串格式。
+	'* @param isUtc [in] 是否为 utc
+	'* @return 0: 成功; 1: 失败
+	'* @since 2023-06-29
+	'*/
+	int secToDateTime(string& strDateTime, string& strSec, string& strDateTimeFormat, int isUtc)
+	{
+	    int ret = pluginCall(mPluginName, "networkAccessMgrSecToDateTime", strDateTime.self(), strSec, strDateTimeFormat, isUtc); 
+		return ret;
+	}
+
+	'/**
+	'* @brief 时间戳转时间
+	'* @param strDateTime [out] 输出时间。
+	'* @param strMSec [in] 输入时间。单位为毫秒。
+	'* @param strDateTimeFormat [in] 输出时间串格式。
+	'* @param isUtc [in] 是否为 utc
+	'* @return 0: 成功; 1: 失败
+	'* @since 2023-06-29
+	'*/
+	int msecToDateTime(string& strDateTime, string& strMSec, string& strDateTimeFormat, int isUtc)
+	{
+	    int ret = pluginCall(mPluginName, "networkAccessMgrMSecToDateTime", strDateTime.self(), strMSec, strDateTimeFormat, isUtc); 
+		return ret;
+	}
+} 
+
+'// NetworkAccessManager 唯一实例, 使用前需实例化此对象:
+'// theNetworkAccessMgr = new NetworkAccessManager;
+NetworkAccessManager theNetworkAccessMgr;
+
+}

@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>模块相关函数 &mdash; PE 用户手册 2024 文档</title>
+
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/translations.js"></script>
+        <script src="../../_static/js/custom.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc">
+  
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="网络相关函数" href="func_network.html" />
+    <link rel="prev" title="数学类函数" href="func_math.html" />
+ 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html">
+            <img src="../../_static/docs_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">PE入门</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/index.html">认识 PE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html">PE 简介</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id1">PE是什么?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id2">PE可以用来做什么？</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id3">PE怎么做到的？</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id4">PE的基本思想</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E5%AE%89%E8%A3%85.html">PE 安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/index.html">项目开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE.html">创建项目</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html">项目开发</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#pe">PE界面概览</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#id2">图形化项目开发概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#id3">添加模型</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E8%B0%83%E8%AF%95.html">项目调试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E5%8F%91%E5%B8%83%E6%88%90%E6%9E%9C.html">发布成果</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">基础开发</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/index.html">资源</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/index.html">模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html">模型文件导入</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#dmax">安装 3Dmax 互导插件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#id2">导入模型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#id3">添加模型到工程</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html">模型的编辑、操作与修改</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id2">模型操作</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id3">模型编辑</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id4">模型修改</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/index.html">对象</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/index.html">模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1.html">加载模型资源对象</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%85%89%E7%85%A7%E9%98%B4%E5%BD%B1%E6%95%88%E6%9E%9C%E8%AE%BE%E7%BD%AE.html">光照阴影效果设置</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%85%89%E7%85%A7%E9%98%B4%E5%BD%B1%E6%95%88%E6%9E%9C%E8%AE%BE%E7%BD%AE.html#id2">设置光照探针</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html">创建基础模型对象</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id2">创建长方体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id3">创建直线</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id4">创建圆柱体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id5">创建球体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id6">创建多边形</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id7">创建精灵</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html">动画</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html#id2">帧动画</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html#id3">复合动画</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%9B%B8%E6%9C%BA.html">相机</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%89%96%E5%88%87.html">剖切</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E8%B7%AF%E7%BA%BF.html">路线</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%AE%A1%E9%81%93.html">管道</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A0%87%E6%B3%A8.html">标注</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%BB%B3%E7%B4%A2.html">绳索</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/index.html">界面</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E5%9B%BE%E7%89%87.html">图片</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E7%BA%B9%E7%90%86.html">纹理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E8%A7%86%E5%8F%A3.html">视口</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E8%A7%86%E9%A2%91.html">视频</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/index.html">交互</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%8E%A7%E5%88%B6%E7%82%B9.html">控制点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%8C%89%E9%92%AE.html">按钮</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E9%94%AE%E7%9B%98%E5%93%8D%E5%BA%94.html">键盘响应</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%97%8B%E9%92%AE.html">旋钮</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%BB%91%E5%9D%97.html">滑块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E8%8F%9C%E5%8D%95.html">菜单</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/index.html">数据</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E5%8F%98%E9%87%8F.html">变量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E6%97%8B%E9%87%8F.html">旋量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E4%B8%89%E7%BB%B4%E7%82%B9.html">三维点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E7%8A%B6%E6%80%81.html">状态</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E4%BD%93.html">体</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/index.html">图表</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/index.html">图表</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%96%87%E5%AD%97.html">文字</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%95%B0%E5%AD%97.html">数字</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%9B%B2%E7%BA%BF%E5%9B%BE.html">曲线图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%9F%B1%E7%8A%B6%E5%9B%BE.html">柱状图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E9%A5%BC%E7%8A%B6%E5%9B%BE.html">饼状图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E7%BD%91%E6%A0%BC%E8%A1%A8.html">网格表</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E8%BF%9B%E5%BA%A6%E6%9D%A1.html">进度条</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E8%A1%A8%E7%9B%98.html">表盘</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E9%9B%B7%E8%BE%BE%E5%9B%BE.html">雷达图</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E6%A0%87%E5%BF%97%E7%89%8C.html">标志牌</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/index.html">程序</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/%E5%87%BD%E6%95%B0.html">函数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/%E7%B1%BB.html">类</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/index.html">效果对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E7%B2%92%E5%AD%90.html">粒子</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E4%BA%91.html">云</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E5%B0%BE%E8%BF%B9.html">尾迹</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E5%A4%A9%E7%A9%BA%E7%9B%92.html">天空盒</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%89%A9%E7%90%86%E5%9C%BA/index.html">物理场</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%89%A9%E7%90%86%E5%9C%BA/%E5%9C%BA.html">场</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BB%BF%E7%9C%9F%E5%AF%B9%E8%B1%A1/index.html">仿真对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BB%BF%E7%9C%9F%E5%AF%B9%E8%B1%A1/%E8%88%B9.html">船</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/index.html">行为图</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E8%A1%8C%E4%B8%BA%E5%9B%BE%E5%9B%BE%E5%85%83%E4%BB%8B%E7%BB%8D.html">行为图图元介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E7%BC%96%E8%BE%91%E6%8C%87%E4%BB%A4%E6%A8%A1%E6%9D%BF.html">编辑指令模板</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html">对象在行为图中的应用</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html#id2">(1)对象定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html#id3">(2)行为图实现流程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/index.html">组件</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E7%BB%84%E4%BB%B6%E4%BB%8B%E7%BB%8D.html">组件介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E5%88%9B%E5%BB%BA%E7%BB%84%E4%BB%B6.html">创建组件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E5%8A%A0%E8%BD%BD%E7%BB%84%E4%BB%B6.html">加载组件</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/index.html">调试与发布</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html">调试与发布</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html#id2">项目调试</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html#id3">项目发布</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html">启动画面图片更换</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html#id2">启动画面</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html#id3">启动画面更换方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">进阶开发</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html">概述</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#peinside">PEInside 应用开发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#pe">PE 插件开发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#id2">PE 编辑器定制开发</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/index.html">CSharp开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html">WpfScenePlayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id2">构建</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id3">程序说明</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html">示例场景</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id2">帧动画制作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id3">交互设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id4">行为设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id5">变量定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id6">发布与安装</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/index.html">Qt开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html">QtScenePlayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html#id1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html#id2">构建</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">脚本手册</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PE 脚本</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#id1">类型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_act.html">Act</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_act.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_action.html">Action</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_action.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_animation.html">Animation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_animation.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_area.html">Area</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_area.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_avi.html">Avi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_avi.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_beam.html">Beam</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_beam.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html">bool</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_button.html">Button</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_button.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_byte.html">byte</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_byte.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html">dword</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html">float</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html">handle</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html">int</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html">long</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html">string</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#id1">描述</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#id2">函数</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="func_animation.html">动画相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_animation.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_animation.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_audio.html">声音相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_audio.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_audio.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_camera.html">相机函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_camera.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_camera.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_character.html">人物角色相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_character.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_character.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_database.html">数据库相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_database.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_database.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_environment.html">环境相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_environment.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_environment.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_field.html">Field 相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_field.html#id1">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_field.html#id5">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_file.html">文件相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_file.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_file.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_geometry.html">基本几何体相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_geometry.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_geometry.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_group.html">组相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_group.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_group.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_math.html">数学类函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_math.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_math.html#id6">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">模块相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_network.html">网络相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_network.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_network.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_particle.html">粒子系统相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_particle.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_particle.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_physics.html">物理相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_physics.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_physics.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_render.html">渲染相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_render.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_render.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_string.html">字符串函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_string.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_string.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_system.html">系统类函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_system.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_system.html#id5">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_ui.html">UI 相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_ui.html#id1">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_ui.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_video.html">视频相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_video.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_video.html#id5">函数说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/index.html">PE 扩展</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/PECommand/index.html">PECommand</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/PECommand/index.html#id1">函数说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PE 用户手册</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">PE 脚本</a> &raquo;</li>
+      <li>模块相关函数</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="doc-func-module">
+<span id="id1"></span><h1>模块相关函数<a class="headerlink" href="#doc-func-module" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id2">
+<h2>函数<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id3">
+<h3>模块函数<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 59%" />
+<col style="width: 27%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-intomodule"><span class="std std-ref">intoModule</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName <strong>)</strong></p></td>
+<td><p>进入模块</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-enablemodule"><span class="std std-ref">enableModule</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></td>
+<td><p>激活模块</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-setmoduleposition2d"><span class="std std-ref">setModulePosition2D</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></td>
+<td><p>设置模块所处在2D界面上的位置</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-enableobject"><span class="std std-ref">enableObject</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> objectName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></td>
+<td><p>激活目标</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-enablebutton"><span class="std std-ref">enableButton</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> objectName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></td>
+<td><p>激活/取消 按钮</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-enablemenu"><span class="std std-ref">enableMenu</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> objectName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></td>
+<td><p>激活菜单</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-deleteobject"><span class="std std-ref">deleteObject</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> objectName <strong>)</strong></p></td>
+<td><p>删除动态对象</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-deleteobjectbygroup"><span class="std std-ref">deleteObjectByGroup</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> gid <strong>)</strong></p></td>
+<td><p>通过组删除动态创建对象</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-setobjectanchor"><span class="std std-ref">setObjectAnchor</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> objectName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> anchorName <strong>)</strong></p></td>
+<td><p>将一个对象和另一个对象锚定</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-getfullfieldpath"><span class="std std-ref">getFullFieldPath</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> localPath <strong>)</strong></p></td>
+<td><p>从根据节点局部路径获取完整路径</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-deleteentity"><span class="std std-ref">deleteEntity</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> entityName <strong>)</strong></p></td>
+<td><p>删除实体（模块），实体即模块</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="component">
+<h3>component<a class="headerlink" href="#component" title="永久链接至标题">¶</a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 64%" />
+<col style="width: 23%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-loadcomponent"><span class="std std-ref">loadComponent</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></td>
+<td><p>加载组件</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-loadcomponent-2"><span class="std std-ref">loadComponent</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName <strong>)</strong></p></td>
+<td><p>加载组件</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-loadcomponent-3"><span class="std std-ref">loadComponent</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> nType <strong>)</strong></p></td>
+<td><p>加载组件</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-unloadcomponent"><span class="std std-ref">unloadComponent</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName <strong>)</strong></p></td>
+<td><p>卸载组件</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-createentity"><span class="std std-ref">createEntity</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> templModuleName <strong>)</strong></p></td>
+<td><p>创建实体</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-executeentity"><span class="std std-ref">executeEntity</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName <strong>)</strong></p></td>
+<td><p>调用实体</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-bindentitytofield"><span class="std std-ref">bindEntityToField</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fieldPath <strong>)</strong></p></td>
+<td><p>绑定实体到模型</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-bindentities"><span class="std std-ref">bindEntities</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName1, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName2 <strong>)</strong></p></td>
+<td><p>绑定实体</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-unbindentity"><span class="std std-ref">unbindEntity</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName <strong>)</strong></p></td>
+<td><p>解绑实体</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-moveentityonroute"><span class="std std-ref">moveEntityOnRoute</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> routeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> totalTime, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> startTime <strong>)</strong></p></td>
+<td><p>预定路线移动实体</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-moveentityautopath"><span class="std std-ref">moveEntityAutoPath</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fromCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> toCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> totalTime, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> startTime <strong>)</strong></p></td>
+<td><p>自动按照路径移动实体</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-moveentityautopathwithspeed"><span class="std std-ref">moveEntityAutoPathWithSpeed</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fromCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> toCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> speed, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> startTime <strong>)</strong></p></td>
+<td><p>自定义速度按照路径移动实体</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-moveentityonrouteanim"><span class="std std-ref">moveEntityOnRouteAnim</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> routeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> totalTime, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> startTime <strong>)</strong></p></td>
+<td><p>生成一个沿路径运动的动画</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-moveentityautopathanim"><span class="std std-ref">moveEntityAutoPathAnim</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fromCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> toCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> totalTime, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> startTime <strong>)</strong></p></td>
+<td><p>生成一个从起点到终点的动画</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-moveentityautopathwithspeedanim"><span class="std std-ref">moveEntityAutoPathWithSpeedAnim</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fromCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> toCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> speed, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> startTime <strong>)</strong></p></td>
+<td><p>生成一个按速度从起点到终点的动画</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-placeentity"><span class="std std-ref">placeEntity</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></td>
+<td><p>放置实体</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-getroutelength"><span class="std std-ref">getRouteLength</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></td>
+<td><p>获取路线长度</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-getvalueint"><span class="std std-ref">getValueInt</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> varName <strong>)</strong></p></td>
+<td><p>获实体中变量的值</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-getvaluefloat"><span class="std std-ref">getValueFloat</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> varName <strong>)</strong></p></td>
+<td><p>获实体中变量的值</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a></p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-getvaluestring"><span class="std std-ref">getValueString</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> varName <strong>)</strong></p></td>
+<td><p>获实体中变量的值</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-setvalueint"><span class="std std-ref">setValueInt</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> varName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> i <strong>)</strong></p></td>
+<td><p>设置实体中变量值</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-setvaluefloat"><span class="std std-ref">setValueFloat</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> varName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> f <strong>)</strong></p></td>
+<td><p>设置实体中变量值</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-setvaluestring"><span class="std std-ref">setValueString</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> varName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> s <strong>)</strong></p></td>
+<td><p>设置实体中变量值</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-sendentitymessage"><span class="std std-ref">sendEntityMessage</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> msg <strong>)</strong></p></td>
+<td><p>给实体（模块）发送消息，实体（模块）中的“实体消息”变量会被赋值</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="old_func_module.html#class-pescript-method-sendsystemmessage"><span class="std std-ref">sendSystemMessage</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> msg <strong>)</strong></p></td>
+<td><p>给系统发送消息，主模块中的“系统消息”变量会被赋值</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>函数说明<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<p>todo</p>
+<ul class="simple" id="class-pescript-method-intomodule">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>intoModule</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName <strong>)</strong></p></li>
+</ul>
+<p>描述：进入模块。</p>
+<p><code class="docutils literal notranslate"><span class="pre">moduleName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                字符串，模块名</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              布尔，是否进入</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+bool result = intoModule(&quot;模块_1&quot;);
+if(result)
+{
+        messageBox(&quot;进入模块_1&quot;);
+}
+bool result3 = intoModule(&quot;模块_3&quot;);
+if(result3)
+{
+        messageBox(&quot;进入模块_3&quot;);
+}
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-enablemodule">
+<li><p>void <strong>enableModule</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：激活模块，但不能直接执行模块中的行为图内容（暂时函数集合没有相关记载）。</p>
+<p><code class="docutils literal notranslate"><span class="pre">moduleName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                字符串，模块名</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                                 布尔，是否激活</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+enableModule(&quot;模块_3&quot;, 1);
+enableModule(&quot;模块_3&quot;, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setmoduleposition2d">
+<li><p>void <strong>setModulePosition2D</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></li>
+</ul>
+<p>描述：设置模块所处在2D界面上的位置（暂时函数集合没有相关记载）。</p>
+<p><code class="docutils literal notranslate"><span class="pre">moduleName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        字符串，模块名</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         浮点，x坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         浮点，y坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         浮点，z坐标</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+&#39;setModulePosition2D(&quot;模块_3&quot;,  1.591, -0.725, 0);
+setModulePosition2D(&quot;模块_3&quot;,  -1, -1, -3);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-enableobject">
+<li><p>void <strong>enableObject</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> objectName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：激活目标。</p>
+<p><code class="docutils literal notranslate"><span class="pre">objectName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                字符串，名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                                 布尔，激活</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例1：enableObject(&quot;main:图片_传感器属性背景&quot;, 1);         &#39;&#39; 脚本中的写法
+示例2：enableObject(&quot;main:按钮_关闭&quot;, 1);
+示例3：enableObject(&quot;main:电压电流曲线标题&quot;, 1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-enablebutton">
+<li><p>void <strong>enableButton</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> objectName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：激活/取消 按钮（暂时函数集合没有相关记载）。</p>
+<p><code class="docutils literal notranslate"><span class="pre">objectName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                字符串，按钮名</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                                 布尔，是否激活</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+enableButton(&quot;按钮_1&quot;, 0);
+&#39;enableButton(&quot;图片_1&quot;, 0);               &#39;&#39; 无效
+enableObject(&quot;图片_1&quot;, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-enablemenu">
+<li><p>void <strong>enableMenu</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> objectName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：激活菜单（暂时函数集合没有相关记载）。</p>
+<p><code class="docutils literal notranslate"><span class="pre">objectName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                字符串，菜单名</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                                 布尔，是否激活</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+enableMenu(&quot;菜单_1&quot;, 1);
+&#39;&#39;enableObject(&quot;菜单_1&quot;, 1);      &#39;&#39; 同样效果
+&#39;enableMenu(&quot;菜单_1&quot;, 0);
+enableObject(&quot;菜单_1&quot;, 0);                &#39;&#39; 同样效果
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-deleteobject">
+<li><p>void <strong>deleteObject</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> objectName <strong>)</strong></p></li>
+</ul>
+<p>描述：删除动态对象。目前已知不能删除菜单，可以删除图表。</p>
+<p><code class="docutils literal notranslate"><span class="pre">objectName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                字符串，对象名</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+deleteObject(&quot;图表_1&quot;);
+&#39;deleteObject(&quot;菜单_1&quot;);          &#39;&#39; 无效
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-deleteobjectbygroup">
+<li><p>void <strong>deleteObjectByGroup</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> gid <strong>)</strong></p></li>
+</ul>
+<p>描述：通过组删除动态创建对象。</p>
+<p><code class="docutils literal notranslate"><span class="pre">moduleName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        字符串，模块名</p>
+<p><code class="docutils literal notranslate"><span class="pre">gid</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                       整型，组号</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+deleteObjectByGroup(&quot;main&quot;, 3);         &#39;&#39; 关闭主模块的3组
+deleteObjectByGroup(&quot;模块_3&quot;, 1); &#39;&#39; 关闭模块_3的1组
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setobjectanchor">
+<li><p>void <strong>setObjectAnchor</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> objectName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> anchorName <strong>)</strong></p></li>
+</ul>
+<p>描述：将一个对象和另一个对象锚定。</p>
+<p><code class="docutils literal notranslate"><span class="pre">objectName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                字符串，本体对象名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">anchorName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                字符串，锚定体对象名</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+string OldTagName;
+void OnLButtonUp( long nFlags, float x, float y ){
+        dword key = pick2DObject(x, y);
+        string objName = getObjectFullName(key);
+        outputMessage(objName);
+        string strList[6];
+        int n;
+        splitString(objName, &quot;#&quot;, strList, n);
+        string NT_name = strList[0];
+        int ID = atoi(strList[1]);
+        if(objName != &quot;&quot;){
+                if(NT_name == &quot;main:NT_传感器&quot; ){
+                        &#39; string strName = NT_name + &quot;#&quot; +itoa(ID);
+                        setImageColor(OldTagName, 1.0, 1.0, 1.0, 1.0);
+                        setImageSize(OldTagName, 0.1, 0.1);
+                        setImageColor(objName, 0.0, 1.0, 0.5, 1.0);
+                        setImageSize(objName, 0.15, 0.15);
+                        setObjectAnchor(&quot;main:图片_传感器属性背景&quot; , &quot; &quot;);
+                        setImagePosition(&quot;main:图片_传感器属性背景&quot;, x-0.28,  y, 10.000);
+                        setObjectAnchor(&quot;main:图片_传感器属性背景&quot; , objName);
+
+                        enableObject(&quot;main:图片_传感器属性背景&quot;, 1);
+                        enableObject(&quot;main:按钮_关闭&quot;, 1);
+                        OldTagName = objName;
+                        &#39; enableObject(strName, 0);
+                }
+        }
+}
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-getfullfieldpath">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> <strong>getFullFieldPath</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> localPath <strong>)</strong></p></li>
+</ul>
+<p>描述：从根据节点局部路径获取完整路径</p>
+<p><code class="docutils literal notranslate"><span class="pre">localPath</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         节点局部路径</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-deleteentity">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>deleteEntity</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> entityName <strong>)</strong></p></li>
+</ul>
+<p>描述：删除实体（模块），实体即模块</p>
+<p><code class="docutils literal notranslate"><span class="pre">entityName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-loadcomponent">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>loadComponent</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename <strong>)</strong></p></li>
+</ul>
+<p>描述：加载组件。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             字符串，组件名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">filename</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                  字符串，文件名（路径名）</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              布尔， 加载结果</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+boolTest = loadComponent(&quot;PE项目_说明文档_节点操作类函数.pecom&quot;, &quot;E:\PEprojectTest\PE项目_说明文档_节点操作类函数\PE项目_说明文档_节点操作类函数.pecom&quot;);
+if(boolTest)
+{
+        messageBox(&quot;组件加载成功 &quot;);
+}
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-loadcomponent-2">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>loadComponent</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> moduleName <strong>)</strong></p></li>
+</ul>
+<p>描述：加载组件。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              字符串，组件名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">filename</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                  字符串，文件名（路径名）</p>
+<p><code class="docutils literal notranslate"><span class="pre">moduleName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                字符串，模块名</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              布尔， 加载结果</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+boolTest = loadComponent(&quot;PE项目_说明文档_节点操作类函数.pecom&quot;, &quot;E:\PEprojectTest\PE项目_说明文档_节点操作类函数\PE项目_说明文档_节点操作类函数.pecom&quot;, &quot;模块_3&quot;);
+if(boolTest)
+{
+        messageBox(&quot;组件加载成功 &quot;);
+}
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-loadcomponent-3">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>loadComponent</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filename, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> nType <strong>)</strong></p></li>
+</ul>
+<p>描述：加载组件。（变量含义不明）</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              字符串，组件名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">filename</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                  字符串，文件名（路径名）</p>
+<p><code class="docutils literal notranslate"><span class="pre">nType</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              布尔， 加载结果</p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-unloadcomponent">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>unloadComponent</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName <strong>)</strong></p></li>
+</ul>
+<p>描述：卸载组件。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             字符串，组件名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              布尔， 卸载结果</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+bool test = false;
+test = unloadComponent(&quot;PE项目_说明文档_节点操作类函数.pecom&quot;);
+if(test)
+{
+        messageBox(&quot;组件卸载成功&quot;);
+}
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-createentity">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>createEntity</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> templModuleName <strong>)</strong></p></li>
+</ul>
+<p>描述：创建实体。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             字符串，实体名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">templModuleName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   字符串，模块名</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              布尔，创建结果</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例1：
+bool test = false;
+test = createEntity(&quot;新实体1&quot;,&quot;新模块&quot;);
+if(test)
+{
+        messageBox(&quot;1,创建实体成功&quot;);
+        test = false;
+}
+else
+{
+        messageBox(&quot;1,创建实体失败&quot;);
+}
+
+test = createEntity(&quot;新实体2&quot;, &quot;main&quot;);            &#39;&#39;&#39;&#39; 用“main”可能崩溃
+if(test)
+{
+        messageBox(&quot;2,创建实体成功&quot;);
+        test = false;
+}
+else
+{
+        messageBox(&quot;2,创建实体失败&quot;);
+}
+
+示例2：
+&#39;&#39;&#39;&#39;&#39;&#39;动态创建--------------------------
+void 动态创建()
+{
+int i=1                                                                                                                         &#39;&#39;&#39;&#39;定义整型变量i，将1赋值给i
+string str;                                                                                                                     &#39;&#39;&#39;&#39;定义字符串变量str
+while(i&lt;=6){                                                                                                            &#39;&#39;&#39;&#39;当整型变量i不大于6时，执行while循环
+        string s_i = itoa(i);                                                                                   &#39;&#39;&#39;&#39;整型变量i转化为字符串变量s_i
+        str =&quot;烟雾发射器&quot; + s_i;                                                                             &#39;&#39;&#39;&#39;字符串变量str = &quot;烟雾发射器&quot; + s_i
+
+        createEntity(str,&quot;烟雾发射器&quot;)                                                                       &#39;&#39;&#39;&#39;当实体建立的时候调用----------------------
+        setValueString(str,&quot;s_CurrentModuleName&quot;,str)                                   &#39;&#39;&#39;&#39;设置字符串变量数值
+        setValueInt(str,&quot;carrierNumber&quot;,i)                                                              &#39;&#39;&#39;&#39;设置整型变量数值
+        showField(&quot;/scene/modules/main/&quot;+str+&quot;/model/烟雾系统.vis&quot;,1)       &#39;&#39;&#39;&#39;设置整型变量数值
+        i++;                                                                                                                    &#39;&#39;&#39;&#39;整型变量+1
+}
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-executeentity">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>executeEntity</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName <strong>)</strong></p></li>
+</ul>
+<p>描述：调用实体。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             字符串，实体名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              布尔，调用结果</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+createEntity(&quot;新实体&quot;, &quot;模块_3&quot;);
+bool test = false;
+test = executeEntity(&quot;新实体&quot;);
+if(test)
+{
+        messageBox(&quot;调用实体成功&quot;);
+}
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-bindentitytofield">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>bindEntityToField</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fieldPath <strong>)</strong></p></li>
+</ul>
+<p>描述：绑定实体到模型。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             字符串，实体名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">fieldPath</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 字符串，模型路径</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              布尔，绑定结果</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+createEntity(&quot;新实体&quot;, &quot;模块_3&quot;);
+bool test = false;
+test = executeEntity(&quot;新实体&quot;);
+if(test)
+{
+        messageBox(&quot;调用实体成功&quot;);
+}
+
+test = false;
+test = bindEntityToField(&quot;新实体&quot;, &quot;/scene/modules/main/模块_2/model/船桨pbr-加强缩小版.vis/group1_FBXASC0550FBXASC03276FBXASC03264FBXASC032108&quot;);
+if(test)
+{
+        messageBox(&quot;绑定实体成功&quot;);
+}
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-bindentities">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>bindEntities</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName1, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName2 <strong>)</strong></p></li>
+</ul>
+<p>描述：绑定实体（每个模块是一个实体）。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName1</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName2</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            字符串，目标实体</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                                      布尔，绑定结果</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+bool test = false;
+
+test =  bindEntities(&quot;模块_1&quot;, &quot;模块_2&quot;);
+if(test)
+{
+        messageBox(&quot;绑定成功&quot;);
+}
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-unbindentity">
+<li><p>void <strong>unbindEntity</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName <strong>)</strong></p></li>
+</ul>
+<p>描述：解绑实体。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：unbindEntity(&quot;模块_1&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-moveentityonroute">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>moveEntityOnRoute</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> routeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> totalTime, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> startTime <strong>)</strong></p></li>
+</ul>
+<p>描述：预定路线移动实体（指令：实体）。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">routeName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 字符串，路线名</p>
+<p><code class="docutils literal notranslate"><span class="pre">totalTime</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 浮点，总时间</p>
+<p><code class="docutils literal notranslate"><span class="pre">startTime</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 浮点，起始时间</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              布尔，移动是否完成</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+boolTest = moveEntityOnRoute(&quot;main&quot;, &quot;路线_2&quot;, 8000, 1000);
+&#39;&#39;&#39; 等待8s后&#39;&#39;&#39;&#39;
+if(boolTest)
+{
+ messageBox(&quot;移动完成&quot;);
+}
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-moveentityautopath">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>moveEntityAutoPath</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fromCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> toCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> totalTime, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> startTime <strong>)</strong></p></li>
+</ul>
+<p>描述：自动按照路径(三维点)移动实体，注意！三维点需要添加到一个路线里面，即路线的头、尾。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">fromCoord</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 字符串，三维点_1</p>
+<p><code class="docutils literal notranslate"><span class="pre">toCoord</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 字符串，三维点_2</p>
+<p><code class="docutils literal notranslate"><span class="pre">totalTime</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 浮点，总时间</p>
+<p><code class="docutils literal notranslate"><span class="pre">totalTime</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         浮点，起始时间</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              布尔，移动是否完成</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：moveEntityAutoPath(&quot;模块_2&quot;, &quot;三维点_1&quot;, &quot;三维点_2&quot;, 10000, 100);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-moveentityautopathwithspeed">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>moveEntityAutoPathWithSpeed</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fromCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> toCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> speed, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> startTime <strong>)</strong></p></li>
+</ul>
+<p>描述：自定义速度按照路径(三维点)移动实体，注意！三维点需要添加到一个路线里面，即路线的头、尾。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">fromCoord</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 字符串，三维点_1</p>
+<p><code class="docutils literal notranslate"><span class="pre">toCoord</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                  字符串，三维点_2</p>
+<p><code class="docutils literal notranslate"><span class="pre">speed</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                  浮点，速度</p>
+<p><code class="docutils literal notranslate"><span class="pre">startTime</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          浮点，起始时间</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              布尔，移动是否完成</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：moveEntityAutoPathWithSpeed(&quot;模块_2&quot;, &quot;三维点_1&quot;, &quot;三维点_2&quot;,  0.5, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-moveentityonrouteanim">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> <strong>moveEntityOnRouteAnim</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> routeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> totalTime, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> startTime <strong>)</strong></p></li>
+</ul>
+<p>描述：沿路径运动（预定路线移动实体（过程：实体）），生成一个动画。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">routeName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                  字符串，路线名</p>
+<p><code class="docutils literal notranslate"><span class="pre">totalTime</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                  浮点，总时间</p>
+<p><code class="docutils literal notranslate"><span class="pre">startTime</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                  浮点，起始时间</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              字符串，动画名</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+string s = moveEntityOnRouteAnim(&quot;main&quot;, &quot;路线_2&quot;, 8000, 1000);
+messageBox(s);
+astart(s);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-moveentityautopathanim">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> <strong>moveEntityAutoPathAnim</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fromCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> toCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> totalTime, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> startTime <strong>)</strong></p></li>
+</ul>
+<p>描述：从起点到终点（过程：实体），生成一个动画。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">fromCoord</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                  字符串，三维点_1</p>
+<p><code class="docutils literal notranslate"><span class="pre">toCoord</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          字符串，三维点_2</p>
+<p><code class="docutils literal notranslate"><span class="pre">totalTime</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                  浮点，总时间</p>
+<p><code class="docutils literal notranslate"><span class="pre">startTime</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          浮点，起始时间</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              字符串，动画名</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+string s = moveEntityAutoPathAnim(&quot;模块_2&quot;, &quot;三维点_1&quot;, &quot;三维点_2&quot;, 8000, 0);
+messageBox(s);
+astart(s);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-moveentityautopathwithspeedanim">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> <strong>moveEntityAutoPathWithSpeedAnim</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> fromCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> toCoord, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> speed, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> startTime <strong>)</strong></p></li>
+</ul>
+<p>描述：按速度从起点到终点（过程：实体），生成一个动画。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">fromCoord</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         字符串，三维点_1</p>
+<p><code class="docutils literal notranslate"><span class="pre">toCoord</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          字符串，三维点_2</p>
+<p><code class="docutils literal notranslate"><span class="pre">speed</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          浮点，速度</p>
+<p><code class="docutils literal notranslate"><span class="pre">startTime</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          浮点，起始时间</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                      字符串，动画名</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+string s = moveEntityAutoPathWithSpeedAnim(&quot;模块_2&quot;, &quot;三维点_1&quot;, &quot;三维点_2&quot;,  5, 0);
+messageBox(s);
+astart(s);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-placeentity">
+<li><p>void <strong>placeEntity</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></li>
+</ul>
+<p>描述：放置实体。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                                  浮点，x坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                                  浮点，y坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                                  浮点，z坐标</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：placeEntity(&quot;模块_1&quot;, 0, 0, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-getroutelength">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> <strong>getRouteLength</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name <strong>)</strong></p></li>
+</ul>
+<p>描述：获取路线长度。</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>               字符串，路径名</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                              浮点，路径长度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float RouteLength3 = getRouteLength(&quot;路线_3&quot;);
+float RouteLength2 = getRouteLength(&quot;路线_2&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-getvalueint">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> <strong>getValueInt</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> varName <strong>)</strong></p></li>
+</ul>
+<p>描述：获实体中变量的值，多用于动态创建的变量（createVariable(string varName, string VarType)  动态创建变量，如果用createVariable，变量一般在主模块，如果是子模块中，则需要在PE里面，先在模块中创建对应变量，详情请参考示例。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">varName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                    字符串，变量名</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                                              整型，变量值</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+&#39;&#39; 创建新实体
+createEntity(&quot;临时实体&quot;, &quot;模块_4&quot;);
+&#39;&#39; 动态创建变量
+createVariable(&quot;testInt&quot;, &quot;int&quot;) ;
+&#39;&#39; 设置变量值
+&#39;setValueInt(&quot;临时实体&quot;, &quot;testInt&quot;, 15);    &#39;&#39; 也能设置变量为15
+setValueInt(&quot;main&quot;, &quot;testInt&quot;, 15);             &#39;&#39; 模块：临时实体，没有起作用，获取是主模块
+intTest = getValueInt(&quot;临时实体&quot;, &quot;testInt&quot;);       &#39;&#39; 已经在PE中设置了整型变量intTest
+
+示例2：不在PE界面中，模块_4里面新建变量
+createEntity(&quot;临时实体&quot;, &quot;模块_4&quot;);
+setValueInt(&quot;临时实体&quot;, &quot;Int_test&quot;, 9);
+testFloat = getValueInt(&quot;临时实体&quot;, &quot;Int_test&quot;);
+&#39;&#39; 这样写在PE运行时，F8看不到对应变量
+
+&#39;&#39; 在示例2中在PE界面中，模块_4里面新建变量，不创建变量，直接set，且不用main
+&#39;&#39; 这样写在PE运行时，F8可以看到模块_4中变量且赋值9
+
+&#39;&#39; 示例3：在PE界面中，模块_4里面新建变量，不创建变量，用main去set值
+createEntity(&quot;临时实体&quot;, &quot;模块_4&quot;);
+setValueInt(&quot;main&quot;, &quot;Int_test&quot;, 9);
+testFloat = getValueInt(&quot;临时实体&quot;, &quot;Int_test&quot;);
+&#39;&#39; 这样写在PE运行时，F8不可以看到模块_4中变量且赋值9
+
+
+&#39;&#39; 示例4：在PE界面中，模块_4里面新建变量，创建变量
+createEntity(&quot;临时实体&quot;, &quot;模块_4&quot;);
+createVariable(&quot;Int_test&quot;, &quot;int&quot;) ;
+setValueInt(&quot;临时实体&quot;, &quot;Int_test&quot;, 9);
+testFloat = getValueInt(&quot;临时实体&quot;, &quot;Int_test&quot;);
+&#39;&#39; 这样写在PE运行时，F8可以看到模块_4中变量且赋值9
+
+&#39;&#39; 此时删除PE中，模块_4的变量，可以在main，即主模块中看到变量Int_test = 9，
+&#39;&#39;&#39; 这里即使写的setValueFloat(&quot;临时实体&quot;, &quot;Int_test&quot;, 9); 也是会操作的main里面的变量
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-getvaluefloat">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> <strong>getValueFloat</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> varName <strong>)</strong></p></li>
+</ul>
+<p>描述：获实体中变量的值。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">varName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            字符串，变量名</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                      浮点，变量值</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+createEntity(&quot;临时实体&quot;, &quot;模块_4&quot;);
+setValueFloat(&quot;临时实体&quot;, &quot;Float_test&quot;, 9.993);
+testFloat = getValueFloat(&quot;临时实体&quot;, &quot;Float_test&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-getvaluestring">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> <strong>getValueString</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> varName <strong>)</strong></p></li>
+</ul>
+<p>描述：获实体中变量的值。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">varName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            字符串，变量名</p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code>                      字符串，变量值</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+createEntity(&quot;临时实体&quot;, &quot;模块_4&quot;);
+setValueString(&quot;临时实体&quot;, &quot;String_test&quot;, &quot;XXXXXer&quot;);
+testFloat = getValueString(&quot;临时实体&quot;, &quot;String_test&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setvalueint">
+<li><p>void <strong>setValueInt</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> varName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> i <strong>)</strong></p></li>
+</ul>
+<p>描述：设置实体中变量值。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">varName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                    字符串，变量名</p>
+<p><code class="docutils literal notranslate"><span class="pre">i</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                                  整型，变量值</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+createEntity(&quot;临时实体&quot;, &quot;模块_4&quot;);
+setValueInt(&quot;临时实体&quot;, &quot;Int_test&quot;, 9);
+testFloat = getValueInt(&quot;临时实体&quot;, &quot;Int_test&quot;);
+</pre></div>
+</div>
+<ul class="simple" id="class-pescript-method-setvaluefloat">
+<li><p>void <strong>setValueFloat</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> varName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> f <strong>)</strong></p></li>
+</ul>
+<p>描述：设置实体中变量值。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">varName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            字符串，变量名</p>
+<p><code class="docutils literal notranslate"><span class="pre">f</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                  浮点，变量值</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+createEntity(&quot;临时实体&quot;, &quot;模块_4&quot;);
+setValueFloat(&quot;临时实体&quot;, &quot;floatTest4&quot;, 12.65);
+testFloat = getValueFloat(&quot;main&quot;, &quot;floatTest4&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setvaluestring">
+<li><p>void <strong>setValueString</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> varName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> s <strong>)</strong></p></li>
+</ul>
+<p>描述：设置实体中变量值。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              字符串，实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">varName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            字符串，变量名</p>
+<p><code class="docutils literal notranslate"><span class="pre">s</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                  字符串，变量值</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+createEntity(&quot;临时实体&quot;, &quot;模块_4&quot;);
+setValueString(&quot;临时实体&quot;, &quot;String_test&quot;, &quot;XXXXXer&quot;);
+testFloat = getValueString(&quot;临时实体&quot;, &quot;String_test&quot;);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-sendentitymessage">
+<li><p>void <strong>sendEntityMessage</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> componentName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> msg <strong>)</strong></p></li>
+</ul>
+<p>描述：给实体（模块）发送消息，实体（模块）中的“实体消息”变量会被赋值。</p>
+<p><code class="docutils literal notranslate"><span class="pre">componentName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              实体名</p>
+<p><code class="docutils literal notranslate"><span class="pre">msg</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                                消息内容</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：sendEntityMessage(&quot;模块_4&quot;,&quot;发送实体消息&quot;);          &#39;&#39; 没报错但也没有现象
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-sendsystemmessage">
+<li><p>void <strong>sendSystemMessage</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> msg <strong>)</strong></p></li>
+</ul>
+<p>描述：给系统发送消息，主模块中的“系统消息”变量会被赋值。</p>
+<p><code class="docutils literal notranslate"><span class="pre">msg</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                字符串，消息内容</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：sendSystemMessage(&quot;发送实体消息&quot;); &#39;&#39; 没报错但也没有现象
+</pre></div>
+</div>
+<hr class="docutils" />
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="func_math.html" class="btn btn-neutral float-left" title="数学类函数" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="func_network.html" class="btn btn-neutral float-right" title="网络相关函数" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, 武汉创景可视技术有限公司.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

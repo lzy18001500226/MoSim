@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>相机函数 &mdash; PE 用户手册 2024 文档</title>
+
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/translations.js"></script>
+        <script src="../../_static/js/custom.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc">
+  
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+ 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html">
+            <img src="../../_static/docs_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">PE入门</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/index.html">认识 PE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html">PE 简介</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id1">PE是什么?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id2">PE可以用来做什么？</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id3">PE怎么做到的？</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id4">PE的基本思想</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E5%AE%89%E8%A3%85.html">PE 安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/index.html">项目开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE.html">创建项目</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html">项目开发</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#pe">PE界面概览</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#id2">图形化项目开发概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#id3">添加模型</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E8%B0%83%E8%AF%95.html">项目调试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E5%8F%91%E5%B8%83%E6%88%90%E6%9E%9C.html">发布成果</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">基础开发</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/index.html">资源</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/index.html">模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html">模型文件导入</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#dmax">安装 3Dmax 互导插件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#id2">导入模型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#id3">添加模型到工程</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html">模型的编辑、操作与修改</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id2">模型操作</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id3">模型编辑</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id4">模型修改</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/index.html">对象</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/index.html">模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1.html">加载模型资源对象</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%85%89%E7%85%A7%E9%98%B4%E5%BD%B1%E6%95%88%E6%9E%9C%E8%AE%BE%E7%BD%AE.html">光照阴影效果设置</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%85%89%E7%85%A7%E9%98%B4%E5%BD%B1%E6%95%88%E6%9E%9C%E8%AE%BE%E7%BD%AE.html#id2">设置光照探针</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html">创建基础模型对象</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id2">创建长方体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id3">创建直线</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id4">创建圆柱体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id5">创建球体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id6">创建多边形</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id7">创建精灵</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html">动画</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html#id2">帧动画</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html#id3">复合动画</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%9B%B8%E6%9C%BA.html">相机</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%89%96%E5%88%87.html">剖切</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E8%B7%AF%E7%BA%BF.html">路线</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%AE%A1%E9%81%93.html">管道</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A0%87%E6%B3%A8.html">标注</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%BB%B3%E7%B4%A2.html">绳索</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/index.html">界面</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E5%9B%BE%E7%89%87.html">图片</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E7%BA%B9%E7%90%86.html">纹理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E8%A7%86%E5%8F%A3.html">视口</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E8%A7%86%E9%A2%91.html">视频</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/index.html">交互</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%8E%A7%E5%88%B6%E7%82%B9.html">控制点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%8C%89%E9%92%AE.html">按钮</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E9%94%AE%E7%9B%98%E5%93%8D%E5%BA%94.html">键盘响应</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%97%8B%E9%92%AE.html">旋钮</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%BB%91%E5%9D%97.html">滑块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E8%8F%9C%E5%8D%95.html">菜单</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/index.html">数据</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E5%8F%98%E9%87%8F.html">变量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E6%97%8B%E9%87%8F.html">旋量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E4%B8%89%E7%BB%B4%E7%82%B9.html">三维点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E7%8A%B6%E6%80%81.html">状态</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E4%BD%93.html">体</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/index.html">图表</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/index.html">图表</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%96%87%E5%AD%97.html">文字</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%95%B0%E5%AD%97.html">数字</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%9B%B2%E7%BA%BF%E5%9B%BE.html">曲线图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%9F%B1%E7%8A%B6%E5%9B%BE.html">柱状图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E9%A5%BC%E7%8A%B6%E5%9B%BE.html">饼状图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E7%BD%91%E6%A0%BC%E8%A1%A8.html">网格表</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E8%BF%9B%E5%BA%A6%E6%9D%A1.html">进度条</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E8%A1%A8%E7%9B%98.html">表盘</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E9%9B%B7%E8%BE%BE%E5%9B%BE.html">雷达图</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E6%A0%87%E5%BF%97%E7%89%8C.html">标志牌</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/index.html">程序</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/%E5%87%BD%E6%95%B0.html">函数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/%E7%B1%BB.html">类</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/index.html">效果对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E7%B2%92%E5%AD%90.html">粒子</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E4%BA%91.html">云</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E5%B0%BE%E8%BF%B9.html">尾迹</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E5%A4%A9%E7%A9%BA%E7%9B%92.html">天空盒</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%89%A9%E7%90%86%E5%9C%BA/index.html">物理场</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%89%A9%E7%90%86%E5%9C%BA/%E5%9C%BA.html">场</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BB%BF%E7%9C%9F%E5%AF%B9%E8%B1%A1/index.html">仿真对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BB%BF%E7%9C%9F%E5%AF%B9%E8%B1%A1/%E8%88%B9.html">船</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/index.html">行为图</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E8%A1%8C%E4%B8%BA%E5%9B%BE%E5%9B%BE%E5%85%83%E4%BB%8B%E7%BB%8D.html">行为图图元介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E7%BC%96%E8%BE%91%E6%8C%87%E4%BB%A4%E6%A8%A1%E6%9D%BF.html">编辑指令模板</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html">对象在行为图中的应用</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html#id2">(1)对象定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html#id3">(2)行为图实现流程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/index.html">组件</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E7%BB%84%E4%BB%B6%E4%BB%8B%E7%BB%8D.html">组件介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E5%88%9B%E5%BB%BA%E7%BB%84%E4%BB%B6.html">创建组件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E5%8A%A0%E8%BD%BD%E7%BB%84%E4%BB%B6.html">加载组件</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/index.html">调试与发布</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html">调试与发布</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html#id2">项目调试</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html#id3">项目发布</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html">启动画面图片更换</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html#id2">启动画面</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html#id3">启动画面更换方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">进阶开发</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html">概述</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#peinside">PEInside 应用开发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#pe">PE 插件开发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#id2">PE 编辑器定制开发</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/index.html">CSharp开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html">WpfScenePlayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id2">构建</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id3">程序说明</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html">示例场景</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id2">帧动画制作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id3">交互设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id4">行为设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id5">变量定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id6">发布与安装</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/index.html">Qt开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html">QtScenePlayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html#id1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html#id2">构建</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">脚本手册</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">PE 脚本</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#id1">类型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_act.html">Act</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_act.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_action.html">Action</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_action.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_animation.html">Animation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_animation.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_area.html">Area</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_area.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_avi.html">Avi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_avi.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_beam.html">Beam</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_beam.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html">bool</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_button.html">Button</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_button.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_byte.html">byte</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_byte.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html">dword</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html">float</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html">handle</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html">int</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html">long</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html">string</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#id1">描述</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#id2">函数</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="func_animation.html">动画相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_animation.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_animation.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_audio.html">声音相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_audio.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_audio.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_camera.html">相机函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_camera.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_camera.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_character.html">人物角色相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_character.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_character.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_database.html">数据库相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_database.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_database.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_environment.html">环境相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_environment.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_environment.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_field.html">Field 相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_field.html#id1">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_field.html#id5">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_file.html">文件相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_file.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_file.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_geometry.html">基本几何体相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_geometry.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_geometry.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_group.html">组相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_group.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_group.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_math.html">数学类函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_math.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_math.html#id6">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_module.html">模块相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_module.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_module.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_network.html">网络相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_network.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_network.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_particle.html">粒子系统相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_particle.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_particle.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_physics.html">物理相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_physics.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_physics.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_render.html">渲染相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_render.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_render.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_string.html">字符串函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_string.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_string.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_system.html">系统类函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_system.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_system.html#id5">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_ui.html">UI 相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_ui.html#id1">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_ui.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_video.html">视频相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_video.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_video.html#id5">函数说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/index.html">PE 扩展</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/PECommand/index.html">PECommand</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/PECommand/index.html#id1">函数说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PE 用户手册</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>相机函数</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="doc-func-camera">
+<span id="id1"></span><h1>相机函数<a class="headerlink" href="#doc-func-camera" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id2">
+<h2>函数<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 71%" />
+<col style="width: 18%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camzoomtofield"><span class="std std-ref">camZoomToField</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key <strong>)</strong></p></td>
+<td><p>视角移动到某个物体上</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camzoomtofieldanim"><span class="std std-ref">camZoomToFieldAnim</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> time <strong>)</strong></p></td>
+<td><p>相机设置到节点生成动画</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camzoomtofieldanimbypath"><span class="std std-ref">camZoomToFieldAnimByPath</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> time <strong>)</strong></p></td>
+<td><p>相机设置到节点生成动画</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camsetdisableallowed"><span class="std std-ref">camSetDisableAllowed</span></a> <strong>(</strong><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">BOOL</span></a> b <strong>)</strong></p></td>
+<td><p>允许/禁止用户相机变换</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camgetcamera"><span class="std std-ref">camGetCamera</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vportName, <span class="xref std std-ref">dword</span> array&amp; values <strong>)</strong></p></td>
+<td><p>获取当前视口内容的相机参数值</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camgetcamera-2"><span class="std std-ref">camGetCamera</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vportName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; values <strong>)</strong></p></td>
+<td><p>获取当前视口内容的相机参数值</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camsetcamera"><span class="std std-ref">camSetCamera</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vportName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array values <strong>)</strong></p></td>
+<td><p>设置相机视角</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camsetcamera-2"><span class="std std-ref">camSetCamera</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vportName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ex, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ey, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ez, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> tx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ty, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> tz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ux, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> uy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> uz <strong>)</strong></p></td>
+<td><p>设置相机视角</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camsetcamerahost"><span class="std std-ref">camSetCameraHost</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> hostName <strong>)</strong></p></td>
+<td><p>设置主变换相机的IP地址</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camzoom"><span class="std std-ref">camZoom</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> factor <strong>)</strong></p></td>
+<td><p>相机缩放(用法待补充)</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camlift"><span class="std std-ref">camLift</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> distance <strong>)</strong></p></td>
+<td><p>相机升降</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camsetbasisfield"><span class="std std-ref">camSetBasisField</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vportName,  <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bConvertCamera <strong>)</strong></p></td>
+<td><p>设置基础节点</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camsetvertical"><span class="std std-ref">camSetVertical</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></td>
+<td><p>设置相机垂直的旋转轴</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camlock"><span class="std std-ref">camLock</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> distance, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> minAngle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> maxAngle <strong>)</strong></p></td>
+<td><p>限制相机旋转的距离和幅度</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camlock-2"><span class="std std-ref">camLock</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> minDis, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> maxDis, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> minAngle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> maxAngle <strong>)</strong></p></td>
+<td><p>限制相机旋转的距离和幅度</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camunlock"><span class="std std-ref">camUnlock</span></a> <strong>(</strong> <strong>)</strong></p></td>
+<td><p>解除相机锁</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camsetwalkspeed"><span class="std std-ref">camSetWalkSpeed</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> speed <strong>)</strong></p></td>
+<td><p>设置漫游速度</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camgetwalkspeed"><span class="std std-ref">camGetWalkSpeed</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; speed <strong>)</strong></p></td>
+<td><p>获取漫游速度</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camsetcamerastep"><span class="std std-ref">camSetCameraStep</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> step <strong>)</strong></p></td>
+<td><p>设置漫游步长</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camgetcamerastep"><span class="std std-ref">camGetCameraStep</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; step <strong>)</strong></p></td>
+<td><p>获取漫游步长</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camsetcameraheight"><span class="std std-ref">camSetCameraHeight</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> height <strong>)</strong></p></td>
+<td><p>设置相机高度</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camgetcameraheight"><span class="std std-ref">camGetCameraHeight</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; height <strong>)</strong></p></td>
+<td><p>获取相机高度</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camsetcameraupward"><span class="std std-ref">camSetCameraUpward</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></td>
+<td><p>设置相机升高</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camgetcameraupward"><span class="std std-ref">camGetCameraUpward</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; z <strong>)</strong></p></td>
+<td><p>获取相机升高</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camsetgroundfield"><span class="std std-ref">camSetGroundField</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camseteyedistance"><span class="std std-ref">camSetEyeDistance</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> dis <strong>)</strong></p></td>
+<td><p>在立体显示中，设置两眼之间的距离(用法待补充)</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camsetuidepth"><span class="std std-ref">camSetUIDepth</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> depth <strong>)</strong></p></td>
+<td><p>在立体显示中，设置UI界面的深度(用法待补充)</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-enablecameracollision"><span class="std std-ref">enableCameraCollision</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bCollision <strong>)</strong></p></td>
+<td><p>激活相机碰撞</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camfindrouteto"><span class="std std-ref">camFindRouteTo</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; cameraParams <strong>)</strong></p></td>
+<td><p>相机变换到最终的相机(用法待补充)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camfindroute"><span class="std std-ref">camFindRoute</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; cameraParams1, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; cameraParams2 <strong>)</strong></p></td>
+<td><p>指定的初始相机到达最终的相机(用法待补充)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camfindrouteto-2"><span class="std std-ref">camFindRouteTo</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> posx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> posy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> posz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> tarx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> tary, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> tarz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> upx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> puy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> upz <strong>)</strong></p></td>
+<td><p>相机变换到最终的相机(用法待补充)</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camzoom-2"><span class="std std-ref">camZoom</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> dis <strong>)</strong></p></td>
+<td><p>相机缩放(用法待补充)</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-moveingcamera"><span class="std std-ref">moveingCamera</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> movingDir, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> dis <strong>)</strong></p></td>
+<td><p>移动相机</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-cammove"><span class="std std-ref">camMove</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> baseField, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> dis <strong>)</strong></p></td>
+<td><p>移动相机</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-camsetcollisionoffset"><span class="std std-ref">camSetCollisionOffset</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> front, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> left, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> up <strong>)</strong></p></td>
+<td><p>设置相机碰撞体的偏移量(用法待补充)</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-applycamera"><span class="std std-ref">applyCamera</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> ame <strong>)</strong></p></td>
+<td><p>执行/应用相机</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id3">
+<h2>函数说明<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<ul class="simple" id="class-pescript-method-camzoomtofield">
+<li><p>void <strong>camZoomToField</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key <strong>)</strong></p></li>
+</ul>
+<p>描述：将视角移动到某个物体上。</p>
+<p><code class="docutils literal notranslate"><span class="pre">key</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>     节点key值，通过getkey获取出来。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：camZoomToField(getkey(&quot;/scene/modules/main/model/模型.vis/.../...&quot;));
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camzoomtofieldanim">
+<li><p>void <strong>camZoomToFieldAnim</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> time <strong>)</strong></p></li>
+</ul>
+<p>描述：把相机设置到节点生成动画。</p>
+<p><code class="docutils literal notranslate"><span class="pre">key</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>     节点key值，通过getkey获取出来。</p>
+<p><code class="docutils literal notranslate"><span class="pre">time</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>     时间</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camzoomtofieldanimbypath">
+<li><p>void <strong>camZoomToFieldAnimByPath</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> time <strong>)</strong></p></li>
+</ul>
+<p>描述：把相机设置到节点生成动画，节点不用getkey，直接填写路径。</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        节点路径</p>
+<p><code class="docutils literal notranslate"><span class="pre">time</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        时间</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：camZoomToFieldAnimByPath(&quot;/scene/modules/main/model/模型.vis/.../...&quot;, 1000);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camsetdisableallowed">
+<li><p>void <strong>camSetDisableAllowed</strong> <strong>(</strong><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">BOOL</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：允许/禁止用户相机变换。（没有实现示例）</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camgetcamera">
+<li><p>void <strong>camGetCamera</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vportName, <span class="xref std std-ref">dword</span> array&amp; values <strong>)</strong></p></li>
+</ul>
+<p>描述：获取当前视口内容的相机参数值，将获取出来的值赋给 key值 数组float array&amp; values。</p>
+<p><code class="docutils literal notranslate"><span class="pre">vportName</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       视口名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">key</span></code>          <code class="docutils literal notranslate"><span class="pre">[out]</span></code>  节点key值</p>
+<p><code class="docutils literal notranslate"><span class="pre">values</span></code>       <code class="docutils literal notranslate"><span class="pre">[out]</span></code>      一个9位数的浮点型数组，内容为相机参数值</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+dword key_a;
+float values[9];
+camGetCamera(&quot;main&quot;, key_a,  values);  &#39;&#39; 或 camGetCamera(&quot;视口名称&quot;, key_a, values);
+string str = itoa(values[0]);           &#39;&#39; 显示数组中第一个值，可以改其它
+messageBox(str);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camgetcamera-2">
+<li><p>void <strong>camGetCamera</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vportName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; values <strong>)</strong></p></li>
+</ul>
+<p>描述：获取当前视口内容的相机参数值，将获取出来的值赋给 数组float array&amp; values。</p>
+<p><code class="docutils literal notranslate"><span class="pre">vportName</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       视口名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">values</span></code>       <code class="docutils literal notranslate"><span class="pre">[out]</span></code>      一个9位数的浮点型数组，内容为相机参数值</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>
+<span class="nb">float</span> <span class="n">CameraValues</span><span class="p">[</span><span class="mi">9</span><span class="p">];</span>
+<span class="n">camGetCamera</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">,</span>  <span class="n">CameraValues</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camsetcamera">
+<li><p>void <strong>camSetCamera</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vportName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array values <strong>)</strong></p></li>
+</ul>
+<p>描述：设置相机视角；类似  set camera。</p>
+<p><code class="docutils literal notranslate"><span class="pre">vportName</span></code>          <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         相机名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">key</span></code>                <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         节点key值</p>
+<p><code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">values</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         一个9位数的浮点型数组，内容为相机参数值</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例1</span><span class="p">:</span>
+<span class="n">dword</span> <span class="n">key_a</span><span class="p">;</span>
+<span class="nb">float</span> <span class="n">values</span><span class="p">[</span><span class="mi">9</span><span class="p">];</span>
+<span class="n">camGetCamera</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="n">key_a</span><span class="p">,</span>  <span class="n">values</span><span class="p">);</span>
+<span class="n">camSetCamera</span><span class="p">(</span><span class="s2">&quot;视口_1&quot;</span><span class="p">,</span> <span class="n">key_a</span><span class="p">,</span> <span class="n">values</span><span class="p">);</span>
+
+<span class="n">示例2</span><span class="p">:</span>
+<span class="n">camSetCamera</span><span class="p">(</span><span class="s2">&quot;XL无人机视角&quot;</span><span class="p">,</span> <span class="n">getkey</span><span class="p">(</span><span class="s2">&quot;/scene/modules/main/model/wrdj001.vis/通讯车/无人机&quot;</span><span class="p">),</span><span class="mf">1.566077</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.034142</span><span class="p">,</span> <span class="mf">0.043991</span><span class="p">,</span> <span class="mf">1.523037</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.204041</span><span class="p">,</span> <span class="mf">0.047614</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camsetcamera-2">
+<li><p>void <strong>camSetCamera</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vportName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ex, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ey, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ez, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> tx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ty, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> tz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ux, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> uy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> uz <strong>)</strong></p></li>
+</ul>
+<p>描述：设置相机视角。</p>
+<p><code class="docutils literal notranslate"><span class="pre">vportName</span></code>          <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         相机名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">key</span></code>                <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         节点key值</p>
+<p><code class="docutils literal notranslate"><span class="pre">ex</span></code>                 <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         相机参数值</p>
+<p><code class="docutils literal notranslate"><span class="pre">ey</span></code>                 <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         相机参数值</p>
+<p><code class="docutils literal notranslate"><span class="pre">ez</span></code>                 <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         相机参数值</p>
+<p><code class="docutils literal notranslate"><span class="pre">tx</span></code>                 <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         相机参数值</p>
+<p><code class="docutils literal notranslate"><span class="pre">ty</span></code>                 <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         相机参数值</p>
+<p><code class="docutils literal notranslate"><span class="pre">tz</span></code>                 <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         相机参数值</p>
+<p><code class="docutils literal notranslate"><span class="pre">ux</span></code>                 <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         相机参数值</p>
+<p><code class="docutils literal notranslate"><span class="pre">uy</span></code>                 <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         相机参数值</p>
+<p><code class="docutils literal notranslate"><span class="pre">uz</span></code>                 <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         相机参数值</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span> <span class="n">camSetCamera</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mf">8.744553</span><span class="p">,</span> <span class="mf">80.568665</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.936754</span><span class="p">,</span> <span class="mf">8.801472</span><span class="p">,</span> <span class="mf">20.440569</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.650128</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camsetcamerahost">
+<li><p>void <strong>camSetCameraHost</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> hostName <strong>)</strong></p></li>
+</ul>
+<p>描述：在网络协同中，设置主变换相机的IP地址，其他电脑的相机变换跟随这个相机进行变换。</p>
+<p><code class="docutils literal notranslate"><span class="pre">hostName</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              主变换相机的IP地址</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span> <span class="n">camSetCameraHost</span><span class="p">(</span><span class="n">hostName</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camzoom">
+<li><p>void <strong>camZoom</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> factor <strong>)</strong></p></li>
+</ul>
+<p>描述：设置相机缩放       （不清楚使用方法）</p>
+<p><code class="docutils literal notranslate"><span class="pre">factor</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        缩放系数</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camlift">
+<li><p>void <strong>camLift</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> distance <strong>)</strong></p></li>
+</ul>
+<p>描述：相机升降。</p>
+<p><code class="docutils literal notranslate"><span class="pre">distance</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>      浮点，距离</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span> <span class="n">camLift</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camsetbasisfield">
+<li><p>void <strong>camSetBasisField</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> vportName,  <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bConvertCamera <strong>)</strong></p></li>
+</ul>
+<p>描述：设置基础节点。</p>
+<p><code class="docutils literal notranslate"><span class="pre">vportName</span></code>          <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         字符串，接口名</p>
+<p><code class="docutils literal notranslate"><span class="pre">key</span></code>                <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         长整型，相机key值getKey(“/scene”)</p>
+<p><code class="docutils literal notranslate"><span class="pre">bConvertCamera</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         布尔，改变相机，bConvertCamera默认为1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例1</span><span class="p">:</span>    <span class="n">camSetBasisField</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">,</span> <span class="n">getkey</span><span class="p">(</span><span class="s2">&quot;/scene&quot;</span><span class="p">),</span> <span class="mi">1</span><span class="p">);</span>          <span class="s1">&#39;&#39;&#39;恢复到主视口</span>
+<span class="s1">示例2:    camSetBasisField(&quot;main&quot;, getkey(&quot;/scene&quot;), true);               &#39;&#39;&#39;</span><span class="n">解除主视口相机绑定相对节点</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camsetvertical">
+<li><p>void <strong>camSetVertical</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></li>
+</ul>
+<p>描述：设置相机垂直的旋转轴，例如当参数x=1时，运行程序，鼠标左键移动时会在当前视角下，以x轴旋转。</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              浮点.x</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              浮点.y</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              浮点.z</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>     <span class="n">camSetVertical</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camlock">
+<li><p>void <strong>camLock</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> distance, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> minAngle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> maxAngle <strong>)</strong></p></li>
+</ul>
+<p>描述：限制相机旋转的距离和幅度，角度限制是竖直方向的限制，对水平方向无限制。</p>
+<p><code class="docutils literal notranslate"><span class="pre">distance</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>               浮点，距离</p>
+<p><code class="docutils literal notranslate"><span class="pre">minAngle</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>               浮点，最小角度</p>
+<p><code class="docutils literal notranslate"><span class="pre">maxAngle</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>               浮点，最大角度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>     <span class="n">camLock</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">60</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camlock-2">
+<li><p>void <strong>camLock</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> minDis, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> maxDis, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> minAngle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> maxAngle <strong>)</strong></p></li>
+</ul>
+<p>描述：限制相机旋转的距离和幅度，角度限制是竖直方向的限制，对水平方向无限制。</p>
+<p><code class="docutils literal notranslate"><span class="pre">minDis</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>               浮点，最小距离</p>
+<p><code class="docutils literal notranslate"><span class="pre">maxDis</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>               浮点，最大距离</p>
+<p><code class="docutils literal notranslate"><span class="pre">minAngle</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>               浮点，最小角度</p>
+<p><code class="docutils literal notranslate"><span class="pre">maxAngle</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>               浮点，最大角度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>     <span class="n">camLock</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">16000</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">60</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camunlock">
+<li><p>void <strong>camUnlock</strong> <strong>(</strong> <strong>)</strong></p></li>
+</ul>
+<p>描述：解除相机锁，用于相机锁之后。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>
+<span class="n">camLock</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">16000</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">60</span><span class="p">);</span>
+<span class="n">camUnlock</span><span class="p">();</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camsetwalkspeed">
+<li><p>void <strong>camSetWalkSpeed</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> speed <strong>)</strong></p></li>
+</ul>
+<p>描述：设置漫游速度，按“W”，“S”方向键可以看到效果，注意，使用方向键时关掉中文输入法。</p>
+<p><code class="docutils literal notranslate"><span class="pre">speed</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          浮点，速度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>     <span class="n">camSetWalkSpeed</span><span class="p">(</span><span class="mi">6000</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camgetwalkspeed">
+<li><p>void <strong>camGetWalkSpeed</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; speed <strong>)</strong></p></li>
+</ul>
+<p>描述：获取漫游速度。</p>
+<p><code class="docutils literal notranslate"><span class="pre">speed</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          浮点，速度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>     <span class="n">camGetWalkSpeed</span><span class="p">(</span><span class="n">walkSpeed</span><span class="p">);</span>             <span class="s1">&#39;&#39;</span> <span class="nb">float</span> <span class="n">walkSpeed</span><span class="p">;</span> <span class="n">自定义变量</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camsetcamerastep">
+<li><p>void <strong>camSetCameraStep</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> step <strong>)</strong></p></li>
+</ul>
+<p>描述：设置漫游步长。      (可以赋值和获取，但是PE没有看到效果)</p>
+<p><code class="docutils literal notranslate"><span class="pre">step</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           浮点，迈步</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>     <span class="n">camSetCameraStep</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camgetcamerastep">
+<li><p>void <strong>camGetCameraStep</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; step <strong>)</strong></p></li>
+</ul>
+<p>描述：获取漫游步长。</p>
+<p><code class="docutils literal notranslate"><span class="pre">step</span></code>     <code class="docutils literal notranslate"><span class="pre">[out]</span></code>          浮点，迈步</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>     <span class="n">camGetCameraStep</span><span class="p">(</span><span class="n">cameraStep</span><span class="p">);</span>   <span class="s1">&#39;&#39;</span> <span class="nb">float</span> <span class="n">cameraStep</span><span class="p">;</span> <span class="n">自定义变量</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camsetcameraheight">
+<li><p>void <strong>camSetCameraHeight</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> height <strong>)</strong></p></li>
+</ul>
+<p>描述：设置相机高度。 (可以赋值和获取，但是PE没有看到效果)</p>
+<p><code class="docutils literal notranslate"><span class="pre">height</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         浮点，高度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>     <span class="n">camSetCameraHeight</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camgetcameraheight">
+<li><p>void <strong>camGetCameraHeight</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; height <strong>)</strong></p></li>
+</ul>
+<p>描述：获取相机高度。</p>
+<p><code class="docutils literal notranslate"><span class="pre">height</span></code>     <code class="docutils literal notranslate"><span class="pre">[out]</span></code>        浮点，高度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>     <span class="n">camGetCameraHeight</span><span class="p">(</span><span class="n">cameraHeight</span><span class="p">);</span>  <span class="s1">&#39;&#39;</span> <span class="nb">float</span> <span class="n">cameraHeight</span><span class="p">;</span> <span class="n">自定义变量</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camsetcameraupward">
+<li><p>void <strong>camSetCameraUpward</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></li>
+</ul>
+<p>描述：设置相机升高。(没有出现效果，但设置后可以获取到值)</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              浮点，x</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              浮点，y</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              浮点，z</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>     <span class="n">camSetCameraUpward</span><span class="p">(</span><span class="mi">110</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">1000</span><span class="p">);</span>
+                <span class="n">camSetCameraUpward</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camgetcameraupward">
+<li><p>void <strong>camGetCameraUpward</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; z <strong>)</strong></p></li>
+</ul>
+<p>描述：获取相机升高。</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>     <code class="docutils literal notranslate"><span class="pre">[out]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>     <code class="docutils literal notranslate"><span class="pre">[out]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>     <code class="docutils literal notranslate"><span class="pre">[out]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>     <span class="n">camGetCameraUpward</span><span class="p">(</span><span class="n">cameraUpwardX</span><span class="p">,</span> <span class="n">cameraUpwardY</span><span class="p">,</span> <span class="n">cameraUpwardZ</span><span class="p">);</span>        <span class="s1">&#39;&#39;</span>  <span class="nb">float</span> <span class="n">cameraUpwardX</span><span class="p">;</span> <span class="nb">float</span> <span class="n">cameraUpwardY</span><span class="p">;</span> <span class="nb">float</span> <span class="n">cameraUpwardZ</span><span class="p">;</span>  <span class="n">自定义变量</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camsetgroundfield">
+<li><p>void <strong>camSetGroundField</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname <strong>)</strong></p></li>
+</ul>
+<p>描述：设置地面路径。(具体用法不明)</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>               字符串，路径</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camseteyedistance">
+<li><p>void <strong>camSetEyeDistance</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> dis <strong>)</strong></p></li>
+</ul>
+<p>描述：在立体显示中，设置两眼之间的距离。（效果不明）</p>
+<p><code class="docutils literal notranslate"><span class="pre">dis</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            距离参数</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camsetuidepth">
+<li><p>void <strong>camSetUIDepth</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> depth <strong>)</strong></p></li>
+</ul>
+<p>描述：在立体显示中，设置UI界面的深度。（效果不明）</p>
+<p><code class="docutils literal notranslate"><span class="pre">depth</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-enablecameracollision">
+<li><p>void <strong>enableCameraCollision</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bCollision <strong>)</strong></p></li>
+</ul>
+<p>描述：激活相机碰撞。PE平台中模型的属性。模型管理中，右击模型，点击模型属性，平台界面右侧出现对应窗口，点击其它，即可找到相机碰撞。</p>
+<p><code class="docutils literal notranslate"><span class="pre">bCollision</span></code>          <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>  <span class="n">enableCameraCollision</span><span class="p">(</span><span class="n">true</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camfindrouteto">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>camFindRouteTo</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; cameraParams <strong>)</strong></p></li>
+</ul>
+<p>描述：根据已存在的路线对象，从当前相机自动找到一条相机变换路径，到达最终的相机</p>
+<p><code class="docutils literal notranslate"><span class="pre">cameraParams</span></code>          <code class="docutils literal notranslate"><span class="pre">[out]</span></code>             最终的相机参数，9个分量</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camfindroute">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>camFindRoute</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; cameraParams1, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; cameraParams2 <strong>)</strong></p></li>
+</ul>
+<p>描述：根据已存在的路线对象，从指定的初始相机自动找到一条相机变换路径，到达最终的相机</p>
+<p><code class="docutils literal notranslate"><span class="pre">cameraParams1</span></code>          <code class="docutils literal notranslate"><span class="pre">[out]</span></code>    初始的相机参数，9个分量</p>
+<p><code class="docutils literal notranslate"><span class="pre">cameraParams2</span></code>          <code class="docutils literal notranslate"><span class="pre">[out]</span></code>    初始的相机参数，9个分量</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camfindrouteto-2">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>camFindRouteTo</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> posx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> posy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> posz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> tarx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> tary, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> tarz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> upx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> puy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> upz <strong>)</strong></p></li>
+</ul>
+<p>描述：根据已存在的路线对象，从当前相机自动找到一条相机变换路径，到达最终的相机</p>
+<p><code class="docutils literal notranslate"><span class="pre">posx</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         最终的相机参数，9个分量</p>
+<p><code class="docutils literal notranslate"><span class="pre">posy</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         最终的相机参数，9个分量</p>
+<p><code class="docutils literal notranslate"><span class="pre">posz</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         最终的相机参数，9个分量</p>
+<p><code class="docutils literal notranslate"><span class="pre">tarx</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         最终的相机参数，9个分量</p>
+<p><code class="docutils literal notranslate"><span class="pre">tary</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         最终的相机参数，9个分量</p>
+<p><code class="docutils literal notranslate"><span class="pre">tarz</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         最终的相机参数，9个分量</p>
+<p><code class="docutils literal notranslate"><span class="pre">upx</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         最终的相机参数，9个分量</p>
+<p><code class="docutils literal notranslate"><span class="pre">upy</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         最终的相机参数，9个分量</p>
+<p><code class="docutils literal notranslate"><span class="pre">upz</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         最终的相机参数，9个分量</p>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camzoom-2">
+<li><p>void <strong>camZoom</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> dis <strong>)</strong></p></li>
+</ul>
+<p>描述：相机缩放</p>
+<p><code class="docutils literal notranslate"><span class="pre">dis</span></code>        <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         浮点，距离</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-moveingcamera">
+<li><p>void <strong>moveingCamera</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> movingDir, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> dis <strong>)</strong></p></li>
+</ul>
+<p>描述：移动相机</p>
+<p><code class="docutils literal notranslate"><span class="pre">movingDir</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        （用法不明，输入几种字符串 “x”,”y”,”相机_2_船桨盖”，都没有出现方向变化，全部是向下，y轴方向）</p>
+<p><code class="docutils literal notranslate"><span class="pre">dis</span></code>         <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        浮点，距离</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>  <span class="n">moveingCamera</span><span class="p">(</span><span class="s2">&quot;相机_2_船桨盖&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>            <span class="s1">&#39;&#39;</span> <span class="n">向下移动</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-cammove">
+<li><p>void <strong>camMove</strong>  <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> baseField, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> dis <strong>)</strong></p></li>
+</ul>
+<p>描述：移动相机</p>
+<p><code class="docutils literal notranslate"><span class="pre">baseField</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                字符串，根节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                浮点，x</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                浮点，y</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>           <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                浮点，z</p>
+<p><code class="docutils literal notranslate"><span class="pre">dis</span></code>         <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                浮点，距离</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>
+<span class="n">string</span> <span class="n">filed</span> <span class="o">=</span> <span class="s2">&quot;/scene/modules/main/model/船桨pbr.vis/group1_FBXASC0505FBXASC03250FBXASC03250FBXASC032100&quot;</span><span class="p">;</span>
+<span class="n">camMove</span><span class="p">(</span><span class="n">filed</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3000</span><span class="p">);</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-camsetcollisionoffset">
+<li><p>void <strong>camSetCollisionOffset</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> front, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> left, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> up <strong>)</strong></p></li>
+</ul>
+<p>描述：设置相机碰撞体的偏移量</p>
+<p><code class="docutils literal notranslate"><span class="pre">front</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            向前偏移量</p>
+<p><code class="docutils literal notranslate"><span class="pre">left</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            向左偏移量</p>
+<p><code class="docutils literal notranslate"><span class="pre">up</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            向上偏移量</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-applycamera">
+<li><p>void <strong>applyCamera</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> ame <strong>)</strong></p></li>
+</ul>
+<p>描述：执行/应用相机</p>
+<p><code class="docutils literal notranslate"><span class="pre">ame</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           字符串，相机名</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">示例</span><span class="p">:</span>     <span class="n">applyCamera</span><span class="p">(</span><span class="s2">&quot;main&quot;</span><span class="p">);</span>            <span class="s1">&#39;&#39;&#39;相机回到主视口</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, 武汉创景可视技术有限公司.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

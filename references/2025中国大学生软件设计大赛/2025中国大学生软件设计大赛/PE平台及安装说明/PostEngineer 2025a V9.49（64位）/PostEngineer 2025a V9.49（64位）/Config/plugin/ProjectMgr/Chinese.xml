@@ -1,0 +1,67 @@
+<ProjectMgr version="2.0">
+<ObjectItems>
+
+<ItemGroup type="UI_OBJ_TYPE_KNOB">
+<Item name="Axis"  text="旋转轴" demo="" />
+<Item name="Point"  text="指针点" demo="" />
+<Item name="Initial"  text="初始角度" demo="" />
+<Item name="Dial"  text="停靠角度" demo="" />
+<Item name="Range"  text="最大旋转角度" demo="" />
+<Item name="Speed"  text="速度" demo="" />
+</ItemGroup>
+
+<ItemGroup type="UI_OBJ_TYPE_SLIDER">
+<Item name="Axis"  text="移动轴" demo="" />
+<Item name="Point"  text="初始坐标点" demo="" />
+<Item name="Initial"  text="初始值" demo="" />
+<Item name="Range"  text="移动最大距离" demo="" />
+<Item name="Speed"  text="移动速度量" demo="" />
+</ItemGroup>
+
+<ItemGroup type="UI_OBJ_TYPE_COORD">
+<Item name="Values"  text="三维坐标点值" demo="" />
+</ItemGroup>
+
+<ItemGroup type="UI_OBJ_TYPE_POLE">
+<Item name="Values"  text="轴值" demo="" />
+</ItemGroup>
+
+<ItemGroup type="UI_OBJ_TYPE_VECTOR">
+<Item name="Values"  text="矢量值" demo="" />
+</ItemGroup>
+
+<ItemGroup type="UI_OBJ_TYPE_EDIT">
+<Item name="ReadOnly"  text="只读" demo="" />
+<Item name="SingleLine"  text="单行文本" demo="" />
+<Item name="AlignRight"  text="右对齐" demo="" />
+</ItemGroup>
+
+<ItemGroup type="UI_OBJ_TYPE_TEXT">
+<Item name="ReadOnly"  text="只读" demo="" />
+<Item name="SingleLine"  text="单行文本" demo="" />
+<Item name="AlignRight"  text="右对齐" demo="" />
+</ItemGroup>
+
+<ItemGroup>
+<Item name="General" text="常规" />
+<Item name="Advanced" text="高级" />
+<Item name="Other" text="其他" />
+<Item name="Name" text="名称" />
+<Item name="Enable" text="状态" />
+<Item name="field" text="节点路径" />
+<Item name="FieldSet" text="节点集合" />
+<Item name="Group" text="组号" />
+<Item name="True" text="启用" />
+<Item name="False" text="关闭" />
+<Item name="Yes" text="是" />
+<Item name="No" text="否" />
+<Item name="Position" text="位置" />
+<Item name="Size" text="大小" />
+<Item name="Scale" text="缩放" />
+</ItemGroup>
+
+</ObjectItems>
+
+<AnimEditor></AnimEditor>
+<RecationEditor></RecationEditor>
+</ProjectMgr>

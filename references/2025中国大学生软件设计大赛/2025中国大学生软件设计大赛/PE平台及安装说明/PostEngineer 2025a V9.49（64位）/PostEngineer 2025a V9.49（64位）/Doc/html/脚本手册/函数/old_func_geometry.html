@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>基本几何体相关函数 &mdash; PE 用户手册 2024 文档</title>
+
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/translations.js"></script>
+        <script src="../../_static/js/custom.js"></script>
+    <script src="../../_static/js/theme.js"></script><meta name="theme-color" content="#3d8fcc">
+  
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+ 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html">
+            <img src="../../_static/docs_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">PE入门</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/index.html">认识 PE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html">PE 简介</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id1">PE是什么?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id2">PE可以用来做什么？</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id3">PE怎么做到的？</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E7%AE%80%E4%BB%8B.html#id4">PE的基本思想</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/PE%E7%AE%80%E4%BB%8B/PE%E5%AE%89%E8%A3%85.html">PE 安装</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/index.html">项目开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE.html">创建项目</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html">项目开发</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#pe">PE界面概览</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#id2">图形化项目开发概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91.html#id3">添加模型</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E9%A1%B9%E7%9B%AE%E8%B0%83%E8%AF%95.html">项目调试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../PE%E5%85%A5%E9%97%A8/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/%E5%8F%91%E5%B8%83%E6%88%90%E6%9E%9C.html">发布成果</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">基础开发</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/index.html">资源</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/index.html">模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html">模型文件导入</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#dmax">安装 3Dmax 互导插件</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#id2">导入模型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%85%A5.html#id3">添加模型到工程</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html">模型的编辑、操作与修改</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id2">模型操作</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id3">模型编辑</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B5%84%E6%BA%90/%E6%A8%A1%E5%9E%8B/%E4%B8%89%E7%BB%B4%E6%A8%A1%E5%9E%8B%E7%BC%96%E8%BE%91%E3%80%81%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BF%AE%E6%94%B9.html#id4">模型修改</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/index.html">对象</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/index.html">模型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B%E8%B5%84%E6%BA%90%E5%AF%B9%E8%B1%A1.html">加载模型资源对象</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%85%89%E7%85%A7%E9%98%B4%E5%BD%B1%E6%95%88%E6%9E%9C%E8%AE%BE%E7%BD%AE.html">光照阴影效果设置</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%85%89%E7%85%A7%E9%98%B4%E5%BD%B1%E6%95%88%E6%9E%9C%E8%AE%BE%E7%BD%AE.html#id2">设置光照探针</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html">创建基础模型对象</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id2">创建长方体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id3">创建直线</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id4">创建圆柱体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id5">创建球体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id6">创建多边形</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A8%A1%E5%9E%8B/%E5%88%9B%E5%BB%BA%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E5%AF%B9%E8%B1%A1.html#id7">创建精灵</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html">动画</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html#id2">帧动画</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%8A%A8%E7%94%BB.html#id3">复合动画</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%9B%B8%E6%9C%BA.html">相机</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%89%96%E5%88%87.html">剖切</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E8%B7%AF%E7%BA%BF.html">路线</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%AE%A1%E9%81%93.html">管道</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%A0%87%E6%B3%A8.html">标注</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%BB%B3%E7%B4%A2.html">绳索</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/index.html">界面</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E5%9B%BE%E7%89%87.html">图片</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E7%BA%B9%E7%90%86.html">纹理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E8%A7%86%E5%8F%A3.html">视口</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%95%8C%E9%9D%A2/%E8%A7%86%E9%A2%91.html">视频</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/index.html">交互</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%8E%A7%E5%88%B6%E7%82%B9.html">控制点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%8C%89%E9%92%AE.html">按钮</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E9%94%AE%E7%9B%98%E5%93%8D%E5%BA%94.html">键盘响应</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%97%8B%E9%92%AE.html">旋钮</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E6%BB%91%E5%9D%97.html">滑块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BA%A4%E4%BA%92/%E8%8F%9C%E5%8D%95.html">菜单</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/index.html">数据</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E5%8F%98%E9%87%8F.html">变量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E6%97%8B%E9%87%8F.html">旋量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E4%B8%89%E7%BB%B4%E7%82%B9.html">三维点</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E7%8A%B6%E6%80%81.html">状态</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%B0%E6%8D%AE/%E4%BD%93.html">体</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/index.html">图表</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/index.html">图表</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%96%87%E5%AD%97.html">文字</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%95%B0%E5%AD%97.html">数字</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%9B%B2%E7%BA%BF%E5%9B%BE.html">曲线图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E6%9F%B1%E7%8A%B6%E5%9B%BE.html">柱状图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E9%A5%BC%E7%8A%B6%E5%9B%BE.html">饼状图</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E7%BD%91%E6%A0%BC%E8%A1%A8.html">网格表</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E8%BF%9B%E5%BA%A6%E6%9D%A1.html">进度条</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E8%A1%A8%E7%9B%98.html">表盘</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E5%9B%BE%E8%A1%A8/%E9%9B%B7%E8%BE%BE%E5%9B%BE.html">雷达图</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E5%9B%BE%E8%A1%A8/%E6%A0%87%E5%BF%97%E7%89%8C.html">标志牌</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/index.html">程序</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/%E5%87%BD%E6%95%B0.html">函数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%A8%8B%E5%BA%8F/%E7%B1%BB.html">类</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/index.html">效果对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E7%B2%92%E5%AD%90.html">粒子</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E4%BA%91.html">云</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E5%B0%BE%E8%BF%B9.html">尾迹</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E6%95%88%E6%9E%9C%E5%AF%B9%E8%B1%A1/%E5%A4%A9%E7%A9%BA%E7%9B%92.html">天空盒</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%89%A9%E7%90%86%E5%9C%BA/index.html">物理场</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E7%89%A9%E7%90%86%E5%9C%BA/%E5%9C%BA.html">场</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BB%BF%E7%9C%9F%E5%AF%B9%E8%B1%A1/index.html">仿真对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E5%AF%B9%E8%B1%A1/%E4%BB%BF%E7%9C%9F%E5%AF%B9%E8%B1%A1/%E8%88%B9.html">船</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/index.html">行为图</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E8%A1%8C%E4%B8%BA%E5%9B%BE%E5%9B%BE%E5%85%83%E4%BB%8B%E7%BB%8D.html">行为图图元介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E7%BC%96%E8%BE%91%E6%8C%87%E4%BB%A4%E6%A8%A1%E6%9D%BF.html">编辑指令模板</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html">对象在行为图中的应用</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html#id2">(1)对象定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%A1%8C%E4%B8%BA%E5%9B%BE/%E5%AF%B9%E8%B1%A1%E5%9C%A8%E8%A1%8C%E4%B8%BA%E5%9B%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.html#id3">(2)行为图实现流程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/index.html">组件</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E7%BB%84%E4%BB%B6%E4%BB%8B%E7%BB%8D.html">组件介绍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E5%88%9B%E5%BB%BA%E7%BB%84%E4%BB%B6.html">创建组件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E7%BB%84%E4%BB%B6/%E5%8A%A0%E8%BD%BD%E7%BB%84%E4%BB%B6.html">加载组件</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/index.html">调试与发布</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html">调试与发布</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html#id2">项目调试</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83.html#id3">项目发布</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html">启动画面图片更换</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html#id2">启动画面</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E5%9F%BA%E7%A1%80%E5%BC%80%E5%8F%91/%E8%B0%83%E8%AF%95%E4%B8%8E%E5%8F%91%E5%B8%83/%E5%90%AF%E5%8A%A8%E7%94%BB%E9%9D%A2%E5%9B%BE%E7%89%87%E6%9B%B4%E6%8D%A2.html#id3">启动画面更换方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">进阶开发</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html">概述</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#peinside">PEInside 应用开发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#pe">PE 插件开发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/%E6%A6%82%E8%BF%B0/index.html#id2">PE 编辑器定制开发</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/index.html">CSharp开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html">WpfScenePlayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id2">构建</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/WpfScenePlayer.html#id3">程序说明</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html">示例场景</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id2">帧动画制作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id3">交互设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id4">行为设计</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id5">变量定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/CSharp%E5%BC%80%E5%8F%91/%E7%A4%BA%E4%BE%8B%E5%9C%BA%E6%99%AF.html#id6">发布与安装</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/index.html">Qt开发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html">QtScenePlayer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html#id1">概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../%E8%BF%9B%E9%98%B6%E5%BC%80%E5%8F%91/Qt%E5%BC%80%E5%8F%91/QtScenePlayer.html#id2">构建</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">脚本手册</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">PE 脚本</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#id1">类型</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_act.html">Act</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_act.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_action.html">Action</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_action.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_animation.html">Animation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_animation.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_area.html">Area</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_area.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_avi.html">Avi</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_avi.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_beam.html">Beam</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_beam.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html">bool</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_button.html">Button</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_button.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_byte.html">byte</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_byte.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html">dword</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html">float</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html">handle</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_handle.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html">int</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html">long</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_long.html#id1">描述</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html">string</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#id1">描述</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#id2">函数</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="func_animation.html">动画相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_animation.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_animation.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_audio.html">声音相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_audio.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_audio.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_camera.html">相机函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_camera.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_camera.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_character.html">人物角色相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_character.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_character.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_database.html">数据库相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_database.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_database.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_environment.html">环境相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_environment.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_environment.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_field.html">Field 相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_field.html#id1">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_field.html#id5">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_file.html">文件相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_file.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_file.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_geometry.html">基本几何体相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_geometry.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_geometry.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_group.html">组相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_group.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_group.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_math.html">数学类函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_math.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_math.html#id6">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_module.html">模块相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_module.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_module.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_network.html">网络相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_network.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_network.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_particle.html">粒子系统相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_particle.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_particle.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_physics.html">物理相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_physics.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_physics.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_render.html">渲染相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_render.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_render.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_string.html">字符串函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_string.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_string.html#id3">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_system.html">系统类函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_system.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_system.html#id5">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_ui.html">UI 相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_ui.html#id1">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_ui.html#id4">函数说明</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="func_video.html">视频相关函数</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="func_video.html#id2">函数</a></li>
+<li class="toctree-l4"><a class="reference internal" href="func_video.html#id5">函数说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/index.html">PE 扩展</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/PECommand/index.html">PECommand</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../%E6%89%A9%E5%B1%95/PECommand/index.html#id1">函数说明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PE 用户手册</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>基本几何体相关函数</li>
+
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="doc-func-geometry">
+<span id="id1"></span><h1>基本几何体相关函数<a class="headerlink" href="#doc-func-geometry" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id2">
+<h2>函数<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id3">
+<h3>几何绘制函数<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 8%" />
+<col style="width: 77%" />
+<col style="width: 15%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-lines3d"><span class="std std-ref">lines3d</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> width, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> linetype, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> lineFactor, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></td>
+<td><p>3D划线</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-line3d"><span class="std std-ref">line3d</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; pt1, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; pt2, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> width, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> linetype, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> lineFactor, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></td>
+<td><p>3D划线</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-lines2d"><span class="std std-ref">lines2d</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> depth, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> width, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> linetype, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> lineFactor, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></td>
+<td><p>2D划线</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setlinespos2d"><span class="std std-ref">setLinesPos2d</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> depth <strong>)</strong></p></td>
+<td><p>设置2D线段位置</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setlinespos2dbykey"><span class="std std-ref">setLinesPos2dByKey</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> depth <strong>)</strong></p></td>
+<td><p>通过key值设置2D线段位置</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawpipe"><span class="std std-ref">drawPipe</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> curveType, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> arcRadius <strong>)</strong></p></td>
+<td><p>创建管道</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawpipebyaxis"><span class="std std-ref">drawPipeByAxis</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius <strong>)</strong></p></td>
+<td><p>通过坐标轴创建管道</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawsphere"><span class="std std-ref">drawSphere</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius <strong>)</strong></p></td>
+<td><p>创建球体</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawsphere-2"><span class="std std-ref">drawSphere</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></td>
+<td><p>创建球体</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawrect"><span class="std std-ref">drawRect</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> nx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ny, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> nz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> width, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> height <strong>)</strong></p></td>
+<td><p>创建矩形面</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawpolygon"><span class="std std-ref">drawPolygon</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count <strong>)</strong></p></td>
+<td><p>创建多边形</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawpolygonextend"><span class="std std-ref">drawPolygonExtend</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> height <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawcircle2d"><span class="std std-ref">drawCircle2d</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> depth, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> width, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> linetype, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> lineFactor, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></td>
+<td><p>创建平面圆形</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawcuboid"><span class="std std-ref">drawCuboid</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> w, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> h, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> l, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> layers, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; colors <strong>)</strong></p></td>
+<td><p>创建立方体</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setcuboidcolors"><span class="std std-ref">setCuboidColors</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> layers, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; colors <strong>)</strong></p></td>
+<td><p>设置立方体颜色</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawcamerarange"><span class="std std-ref">drawCameraRange</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> angle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> length, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></td>
+<td><p>创建四边形椎体</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawradarrange"><span class="std std-ref">drawRadarRange</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> angle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> length, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a , <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ratio <strong>)</strong></p></td>
+<td><p>创建带圆圈的圆柱</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawconerange"><span class="std std-ref">drawConeRange</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> angle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> length, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></td>
+<td><p>创建圆锥体</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawlightline"><span class="std std-ref">drawLightLine</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x2, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y2, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z3, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> width <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-computelightprojection"><span class="std std-ref">computeLightProjection</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> lightField, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array position, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array direction, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fov, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> precision, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> field, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; circlePoints, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; circleNormals, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> array&amp; pointCounts, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> &amp; num <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawfanrange"><span class="std std-ref">drawFanRange</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> angle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> height, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></td>
+<td><p>绘制扇形范围</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawspheregrid"><span class="std std-ref">drawSphereGrid</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> stepAngle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></td>
+<td><p>绘制带网格球体</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-drawsphereblhgrid"><span class="std std-ref">drawSphereBLHGrid</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> stepAngle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></td>
+<td><p>以经纬度坐标绘制带网格球体</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="plane">
+<h3>plane<a class="headerlink" href="#plane" title="永久链接至标题">¶</a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 11%" />
+<col style="width: 70%" />
+<col style="width: 19%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planecreate"><span class="std std-ref">planeCreate</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planedelete"><span class="std std-ref">planeDelete</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planesetfield"><span class="std std-ref">planeSetField</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filedPath <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planesettruss"><span class="std std-ref">planeSetTruss</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ox, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> oy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> oz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ux, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> uy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> uz <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planeinitialize"><span class="std std-ref">planeInitialize</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> courseAngle <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planesetactive"><span class="std std-ref">planeSetActive</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bActive <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planeoperate"><span class="std std-ref">planeOperate</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> command, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> param <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planegetvalue"><span class="std std-ref">planeGetValue</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> type, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; value <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planesetvalue"><span class="std std-ref">planeSetValue</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> type, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> value <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planesetvalues"><span class="std std-ref">planeSetValues</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> type, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; value, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planegetstatus"><span class="std std-ref">planeGetStatus</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> &amp; sta <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planeaddroutepoint"><span class="std std-ref">planeAddRoutePoint</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planeclearroutepoints"><span class="std std-ref">planeClearRoutePoints</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planebeginnavigate"><span class="std std-ref">planeBeginNavigate</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bEntryOnFirstPoint <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planeendnavigate"><span class="std std-ref">planeEndNavigate</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a></p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-planegettarget"><span class="std std-ref">planeGetTarget</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> &amp; index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; dis <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-clearclipplane"><span class="std std-ref">clearClipPlane</span></a> <strong>(</strong> <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setclipplane"><span class="std std-ref">setClipPlane</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> field_path, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> plane_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; pt, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; normal <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setclipplane-2"><span class="std std-ref">setClipPlane</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> field_path, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> plane_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> nx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ny, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> nz <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-enableclipplane"><span class="std std-ref">enableClipPlane</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> plane_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setcuroperator"><span class="std std-ref">setCurOperator</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> opName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key <strong>)</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-enablesection"><span class="std std-ref">enableSection</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> section_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></td>
+<td><p>激活剖切对象</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setsectionposition"><span class="std std-ref">setSectionPosition</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> section_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></td>
+<td><p>设置剖切位置</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setsectionnormal"><span class="std std-ref">setSectionNormal</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> section_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> nx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ny, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> nz <strong>)</strong></p></td>
+<td><p>设置剖切方向</p></td>
+</tr>
+<tr class="row-odd"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setsectionradius"><span class="std std-ref">setSectionRadius</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> section_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r <strong>)</strong></p></td>
+<td><p>设置圆柱剖切半径</p></td>
+</tr>
+<tr class="row-even"><td><p>void</p></td>
+<td><p><a class="reference internal" href="#class-pescript-method-setsectionlength"><span class="std std-ref">setSectionLength</span></a> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> section_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> l <strong>)</strong></p></td>
+<td><p>设置圆柱剖切长度</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>函数说明<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<p>todo</p>
+<ul class="simple" id="class-pescript-method-lines3d">
+<li><p>void <strong>lines3d</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> width, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> linetype, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> lineFactor, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：动态生成3D线段</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   节点路径</p>
+<p><code class="docutils literal notranslate"><span class="pre">points</span></code>     <code class="docutils literal notranslate"><span class="pre">[out]</span></code>  点的集合</p>
+<p><code class="docutils literal notranslate"><span class="pre">count</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   点的数量</p>
+<p><code class="docutils literal notranslate"><span class="pre">width</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   宽度</p>
+<p><code class="docutils literal notranslate"><span class="pre">linetype</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   类型  0实线,1虚线,2点线</p>
+<p><code class="docutils literal notranslate"><span class="pre">lineFactor</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   因子</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code> 颜色r</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code> 颜色g</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code> 颜色b</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float points[6];&#39;&#39;&#39;点集合
+line3d(&quot;/scene/modules/main/model/lines_guiji&quot;, points, 2, 2, 0, 1, 1, 0, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-line3d">
+<li><p>void <strong>line3d</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; pt1, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; pt2, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> width, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> linetype, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> lineFactor, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：动态生成3D线段</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>     节点路径</p>
+<p><code class="docutils literal notranslate"><span class="pre">pt1</span></code>                 <code class="docutils literal notranslate"><span class="pre">[out]</span></code>        点1坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">pt2</span></code>                 <code class="docutils literal notranslate"><span class="pre">[out]</span></code>        点2坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">width</span></code>       <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         宽度</p>
+<p><code class="docutils literal notranslate"><span class="pre">linetype</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         类型  0实线,1虚线,2点线</p>
+<p><code class="docutils literal notranslate"><span class="pre">lineFactor</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         比例</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>                   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>                   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>               <code class="docutils literal notranslate"><span class="pre">[in]</span></code>     颜色B</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float pt11[3];&#39;&#39;&#39;点1坐标
+float pt21[3];&#39;&#39;&#39;点2坐标
+line3d(&quot;/scene/modules/main/model/lines_guiji&quot;, pt11, pt21, 2, 2, 1, 1, 0, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-lines2d">
+<li><p>void <strong>lines2d</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> depth, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> width, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> linetype, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> lineFactor, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：动态生成2D线段</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         节点路径</p>
+<p><code class="docutils literal notranslate"><span class="pre">points</span></code>     <code class="docutils literal notranslate"><span class="pre">[out]</span></code>        点的集合</p>
+<p><code class="docutils literal notranslate"><span class="pre">count</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         点的数量</p>
+<p><code class="docutils literal notranslate"><span class="pre">depth</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         深度(意义不明确)</p>
+<p><code class="docutils literal notranslate"><span class="pre">width</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         宽度</p>
+<p><code class="docutils literal notranslate"><span class="pre">linetype</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         类型</p>
+<p><code class="docutils literal notranslate"><span class="pre">lineFactor</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         因子</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          颜色B</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float line[4] = {0,0,1,0};
+lines2d(&quot;/scene/modules/main/model/jwd&quot;, line, 2, 1, 1, 0, 0, 0, 1, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setlinespos2d">
+<li><p>void <strong>setLinesPos2d</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> depth <strong>)</strong></p></li>
+</ul>
+<p>描述：设置2D线段位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">points</span></code>     <code class="docutils literal notranslate"><span class="pre">[out]</span></code>        点的集合</p>
+<p><code class="docutils literal notranslate"><span class="pre">count</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         点的数量</p>
+<p><code class="docutils literal notranslate"><span class="pre">depth</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         深度(意义不明确)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float line[4] = {0,0,2,0};
+lines2d(&quot;/scene/modules/main/model/jwd&quot;, line, 2, 1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setlinespos2dbykey">
+<li><p>void <strong>setLinesPos2dByKey</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> depth <strong>)</strong></p></li>
+</ul>
+<p>描述：通过key值设置2D线段位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">key</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">points</span></code> <code class="docutils literal notranslate"><span class="pre">[out]</span></code>    点的集合</p>
+<p><code class="docutils literal notranslate"><span class="pre">count</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             点的数量</p>
+<p><code class="docutils literal notranslate"><span class="pre">depth</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             深度(意义不明确)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float line[4] = {0,0,2,0};
+handle key1 = getkey(&quot;/scene/modules/main/model/jwd&quot;);
+setLinesPos2dByKey(key1, line, 2, 1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawpipe">
+<li><p>void <strong>drawPipe</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> curveType, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> arcRadius <strong>)</strong></p></li>
+</ul>
+<p>描述：创建管道</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">points</span></code>   <code class="docutils literal notranslate"><span class="pre">[out]</span></code>          点的集合</p>
+<p><code class="docutils literal notranslate"><span class="pre">count</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           点的数量</p>
+<p><code class="docutils literal notranslate"><span class="pre">radius</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           管道半径</p>
+<p><code class="docutils literal notranslate"><span class="pre">curveType</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          管道类型  0直线圆弧,1自由圆弧,2保持长度</p>
+<p><code class="docutils literal notranslate"><span class="pre">arcRadius</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>          圆弧半径</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float points[9]={0,0,0,0,0,2,0,0,4};
+drawPipe(&quot;/scene/modules/main/model/Pipe&quot;,points,3,2,2,1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawpipebyaxis">
+<li><p>void <strong>drawPipeByAxis</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius <strong>)</strong></p></li>
+</ul>
+<p>描述：通过坐标轴创建管道</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">points</span></code>   <code class="docutils literal notranslate"><span class="pre">[out]</span></code>          点的集合</p>
+<p><code class="docutils literal notranslate"><span class="pre">count</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           点的数量</p>
+<p><code class="docutils literal notranslate"><span class="pre">radius</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           管道半径</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float points[9]={0,0,0,0,0,5,0,0,10};
+drawPipeByAxis(&quot;/scene/modules/main/model/Pipe&quot;,points,3,5);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawsphere">
+<li><p>void <strong>drawSphere</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius <strong>)</strong></p></li>
+</ul>
+<p>描述：创建一个球体跟随模型运动</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>            <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>            <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>            <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">radius</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   半径</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：drawSphere(&quot;/scene/modules/main/model/Sphere&quot;, 0, 0, 0, 300);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawsphere-2">
+<li><p>void <strong>drawSphere</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></li>
+</ul>
+<p>描述：创建一个球体跟随模型运动</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">radius</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   半径</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         颜色B</p>
+<p><code class="docutils literal notranslate"><span class="pre">a</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         透明度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：drawSphere(&quot;/scene/modules/main/model/Sphere&quot;, 0, 0, 0, 300, 0, 0.78, 1, 0.2);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawrect">
+<li><p>void <strong>drawRect</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> nx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ny, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> nz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> width, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> height <strong>)</strong></p></li>
+</ul>
+<p>描述：创建一个矩形面</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">nx</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">ny</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">nz</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">width</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             宽度</p>
+<p><code class="docutils literal notranslate"><span class="pre">height</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             高度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：drawRect( &quot;/scene/modules/main/model/Rect&quot;, 0, 0, 0, 1, 0, 0, 100, 200);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawpolygon">
+<li><p>void <strong>drawPolygon</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count <strong>)</strong></p></li>
+</ul>
+<p>描述：创建一个多边形</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">points</span></code>   <code class="docutils literal notranslate"><span class="pre">[out]</span></code>          点集合</p>
+<p><code class="docutils literal notranslate"><span class="pre">count</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           点数量</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：float pts[18]={0,0,0,10,0,0,20,10,0,20,20,0,10,30,0,0,0,0}
+          drawPolygon(&quot;/scene/modules/main/model/pp&quot;, pts, 6);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawpolygonextend">
+<li><p>void <strong>drawPolygonExtend</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; points, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> height <strong>)</strong></p></li>
+</ul>
+<p>描述：创建一个多边形     (问题反馈：函数无效)</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">points</span></code>   <code class="docutils literal notranslate"><span class="pre">[out]</span></code>          点集合</p>
+<p><code class="docutils literal notranslate"><span class="pre">count</span></code>    <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           点数量</p>
+<p><code class="docutils literal notranslate"><span class="pre">height</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           高度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float pts[18]={0,0,0,10,0,0,20,10,0,20,20,0,10,30,0,0,0,0}
+drawPolygonExtend(&quot;/scene/modules/main/model/pp&quot;, pts, 6, 10);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawcircle2d">
+<li><p>void <strong>drawCircle2d</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> depth, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> width, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> linetype, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> lineFactor, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：创建一个二维圆形</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         屏幕坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         屏幕坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">depth</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                     深度</p>
+<p><code class="docutils literal notranslate"><span class="pre">radius</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                     半径</p>
+<p><code class="docutils literal notranslate"><span class="pre">width</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                     宽度</p>
+<p><code class="docutils literal notranslate"><span class="pre">linetype</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         线型</p>
+<p><code class="docutils literal notranslate"><span class="pre">lineFactor</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         因子</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         颜色B</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：drawCircle2d(&quot;/scene/modules/main/model/line&quot;, 0, 0, 0, 0.2, 2, 0, 1, 0, 0, 1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawcuboid">
+<li><p>void <strong>drawCuboid</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> w, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> h, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> l, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> layers, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; colors <strong>)</strong></p></li>
+</ul>
+<p>描述：创建一个立方体                              (问题反馈：颜色显示有问题)</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">w</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 宽度</p>
+<p><code class="docutils literal notranslate"><span class="pre">h</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 高度</p>
+<p><code class="docutils literal notranslate"><span class="pre">l</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 长度</p>
+<p><code class="docutils literal notranslate"><span class="pre">layers</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             层数</p>
+<p><code class="docutils literal notranslate"><span class="pre">colors</span></code> <code class="docutils literal notranslate"><span class="pre">[out]</span></code>    颜色数组</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float colors[3] = {0,0,1};
+drawCuboid(&quot;/scene/modules/main/model/Cuboid&quot;, 0, 0, 0, 10, 10, 20, 1, colors);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setcuboidcolors">
+<li><p>void <strong>setCuboidColors</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> layers, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; colors <strong>)</strong></p></li>
+</ul>
+<p>描述：设置立方体颜色                              (问题反馈：颜色显示有问题)</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">layers</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   层数</p>
+<p><code class="docutils literal notranslate"><span class="pre">colors</span></code>   <code class="docutils literal notranslate"><span class="pre">[out]</span></code>  颜色数组</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+float colors[3]={0,1,0};
+setCuboidColors(&quot;/scene/modules/main/model/Cuboid&quot;, 1, colors);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawcamerarange">
+<li><p>void <strong>drawCameraRange</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> angle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> length, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></li>
+</ul>
+<p>描述：创建一个四边形椎体</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">vx</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">vy</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">vz</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">angle</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             角度</p>
+<p><code class="docutils literal notranslate"><span class="pre">length</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             长度</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 颜色B</p>
+<p><code class="docutils literal notranslate"><span class="pre">a</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 透明度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：drawCameraRange(&quot;/scene/modules/main/model&quot;, &quot;J2&quot;, 0, 0, 0, 1,0,0, 25, 400, 0,1,0, 0.4)
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawradarrange">
+<li><p>void <strong>drawRadarRange</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> angle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> length, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a , <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ratio <strong>)</strong></p></li>
+</ul>
+<p>描述：创建一个带圆圈的圆柱形图              (问题反馈：鼠标移动时圆圈才会有动效)</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">vx</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">vy</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">vz</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">angle</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             角度</p>
+<p><code class="docutils literal notranslate"><span class="pre">length</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             长度</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 颜色B</p>
+<p><code class="docutils literal notranslate"><span class="pre">a</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 透明度</p>
+<p><code class="docutils literal notranslate"><span class="pre">ratio</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             比例，默认1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：drawRadarRange(&quot;/scene/modules/main/model&quot;,&quot;radar&quot;, 0, 0, 0, 1, 0, 0, 6, 600, 1, 0, 0, 0.6, 1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawconerange">
+<li><p>void <strong>drawConeRange</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> angle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> length, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></li>
+</ul>
+<p>描述：创建一个圆锥体跟随模型运动</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">vx</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">vy</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">vz</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">angle</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             角度</p>
+<p><code class="docutils literal notranslate"><span class="pre">length</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             长度</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 颜色B</p>
+<p><code class="docutils literal notranslate"><span class="pre">a</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 透明度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：drawConeRange(&quot;/scene/modules/main/model&quot;,&quot;Cone&quot;,0, 0, 0,1,0,0,40,600,0,1,0,0.4);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawlightline">
+<li><p>void <strong>drawLightLine</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x2, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y2, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z3, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> width <strong>)</strong></p></li>
+</ul>
+<p>描述：   (问题反馈：函数功能不详)</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">x2</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">y2</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">z3</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">width</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             宽度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：drawLightLine(&quot;/scene/modules/main/model&quot;, &quot;Light&quot;, 0, 0, 0, 0, 0, 10, 0.1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planecreate">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>planeCreate</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planedelete">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>planeDelete</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planesetfield">
+<li><p>void <strong>planeSetField</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> filedPath <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">filedPath</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planesettruss">
+<li><p>void <strong>planeSetTruss</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ox, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> oy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> oz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ux, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> uy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> uz <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">ox</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">oy</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">oz</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">fx</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">fy</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">fz</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">ux</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">uy</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">uz</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planeinitialize">
+<li><p>void <strong>planeInitialize</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> courseAngle <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">courseAngle</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planesetactive">
+<li><p>void <strong>planeSetActive</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bActive <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">bActive</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planeoperate">
+<li><p>void <strong>planeOperate</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> command, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> param <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">command</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">param</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planegetvalue">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>planeGetValue</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> type, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; value <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">type</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">value</span></code>     <code class="docutils literal notranslate"><span class="pre">[out]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planesetvalue">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>planeSetValue</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> type, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> value <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">type</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">value</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planesetvalues">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>planeSetValues</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> type, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; value, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> count <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">type</span></code>      <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">value</span></code>     <code class="docutils literal notranslate"><span class="pre">[out]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">count</span></code>     <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planegetstatus">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>planeGetStatus</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> &amp; sta <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">sta</span></code> <code class="docutils literal notranslate"><span class="pre">[out]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planeaddroutepoint">
+<li><p>void <strong>planeAddRoutePoint</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planeclearroutepoints">
+<li><p>void <strong>planeClearRoutePoints</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planebeginnavigate">
+<li><p>void <strong>planeBeginNavigate</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> bEntryOnFirstPoint <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">bEntryOnFirstPoint</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planeendnavigate">
+<li><p>void <strong>planeEndNavigate</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code>   <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-planegettarget">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>planeGetTarget</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> planeName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> &amp; index, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> &amp; dis <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">planeName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code>  <code class="docutils literal notranslate"><span class="pre">[out]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">dis</span></code>    <code class="docutils literal notranslate"><span class="pre">[out]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-clearclipplane">
+<li><p>void <strong>clearClipPlane</strong> <strong>(</strong> <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setclipplane">
+<li><p>void <strong>setClipPlane</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> field_path, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> plane_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; pt, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; normal <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">field_path</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">plane_name</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">pt</span></code>    <code class="docutils literal notranslate"><span class="pre">[out]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">normal</span></code>    <code class="docutils literal notranslate"><span class="pre">[out]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setclipplane-2">
+<li><p>void <strong>setClipPlane</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> field_path, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> plane_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> nx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ny, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> nz <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">field_path</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">plane_name</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">nx</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">ny</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">nz</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-enableclipplane">
+<li><p>void <strong>enableClipPlane</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> plane_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">plane_name</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setcuroperator">
+<li><p>void <strong>setCurOperator</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> opName, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_dword.html#class-dword"><span class="std std-ref">dword</span></a> key <strong>)</strong></p></li>
+</ul>
+<p>描述：</p>
+<p><code class="docutils literal notranslate"><span class="pre">opName</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">key</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-computelightprojection">
+<li><p><a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> <strong>computeLightProjection</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> lightField, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array position, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array direction, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> fov, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> precision, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> field, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; circlePoints, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> array&amp; circleNormals, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> array&amp; pointCounts, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_int.html#class-int"><span class="std std-ref">int</span></a> &amp; num <strong>)</strong></p></li>
+</ul>
+<p>描述：计算光斑点</p>
+<p><code class="docutils literal notranslate"><span class="pre">lightField</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    //  光源所在的模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">position</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    //  光源位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">direction</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    //  光源方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">fov</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>       //      相机广角</p>
+<p><code class="docutils literal notranslate"><span class="pre">radius</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>             //  光束半径</p>
+<p><code class="docutils literal notranslate"><span class="pre">precision</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>  //  计算精度</p>
+<p><code class="docutils literal notranslate"><span class="pre">field</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    //  照射对象模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">circlePoints</span></code> <code class="docutils literal notranslate"><span class="pre">[out]</span></code>      //  返回所有光源点坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">circleNormals</span></code> <code class="docutils literal notranslate"><span class="pre">[out]</span></code>     //  返回所有光源点的法线</p>
+<p><code class="docutils literal notranslate"><span class="pre">pointCounts</span></code> <code class="docutils literal notranslate"><span class="pre">[out]</span></code>       //  每一光圈上点的个数</p>
+<p><code class="docutils literal notranslate"><span class="pre">num</span></code> <code class="docutils literal notranslate"><span class="pre">[out]</span></code>                       //  光圈数量</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-enablesection">
+<li><p>void <strong>enableSection</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> section_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_bool.html#class-bool"><span class="std std-ref">bool</span></a> b <strong>)</strong></p></li>
+</ul>
+<p>描述：禁用或激活剖切对象</p>
+<p><code class="docutils literal notranslate"><span class="pre">section_name</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code> 剖切对象名</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>  是否激活  0关闭，1激活</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：enableSection(&quot;剖切_1&quot;, 1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setsectionposition">
+<li><p>void <strong>setSectionPosition</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> section_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z <strong>)</strong></p></li>
+</ul>
+<p>描述：设置剖切对象的基点坐标</p>
+<p><code class="docutils literal notranslate"><span class="pre">section_name</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code> 剖切对象名</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   xyz为剖切平面或圆柱的基点</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setSectionPosition(&quot;剖切_1&quot;, 0, 0, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setsectionnormal">
+<li><p>void <strong>setSectionNormal</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> section_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> nx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> ny, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> nz <strong>)</strong></p></li>
+</ul>
+<p>描述：设置剖切对象的法向</p>
+<p><code class="docutils literal notranslate"><span class="pre">section_name</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>  剖切对象名</p>
+<p><code class="docutils literal notranslate"><span class="pre">nx</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">ny</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>  nx,ny,nz: 剖切平面的法向或圆柱的方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">nz</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setSectionNormal(&quot;剖切_1&quot;, 1, 0, 0);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setsectionradius">
+<li><p>void <strong>setSectionRadius</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> section_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r <strong>)</strong></p></li>
+</ul>
+<p>描述：设置剖切对象的半径（仅限于圆柱剖切）</p>
+<p><code class="docutils literal notranslate"><span class="pre">section_name</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>  剖切对象名</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code> 圆柱半径</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setSectionRadius(&quot;剖切_1&quot;, 0.2);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-setsectionlength">
+<li><p>void <strong>setSectionLength</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> section_name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> l <strong>)</strong></p></li>
+</ul>
+<p>描述：设置圆柱剖切长度</p>
+<p><code class="docutils literal notranslate"><span class="pre">section_name</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   剖切对象名</p>
+<p><code class="docutils literal notranslate"><span class="pre">l</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>  圆柱的长度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：setSectionLength(&quot;剖切_1&quot;, 1);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawfanrange">
+<li><p>void <strong>drawFanRange</strong>  <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> name, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vx, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vy, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> vz, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> angle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> height, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></li>
+</ul>
+<p>描述：绘制扇形范围</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>   模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>              名称</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>         位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">vx</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">vy</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>        方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">vz</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                方向</p>
+<p><code class="docutils literal notranslate"><span class="pre">angle</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>     扇形角度</p>
+<p><code class="docutils literal notranslate"><span class="pre">radius</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    扇形半径</p>
+<p><code class="docutils literal notranslate"><span class="pre">height</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>    扇面厚度</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 颜色B</p>
+<p><code class="docutils literal notranslate"><span class="pre">a</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 透明度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：drawFanRange(&quot;/scene/modules/main/model&quot;, &quot;Fan&quot;, 0, 0, 0, -1, 0, 0, 45,200, 10,1,0,0,0.7);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawspheregrid">
+<li><p>void <strong>drawSphereGrid</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> stepAngle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></li>
+</ul>
+<p>描述：绘制带有网格的球体</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">radius</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            半径</p>
+<p><code class="docutils literal notranslate"><span class="pre">stepAngle</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>     步长角，越大网格越密</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         颜色B</p>
+<p><code class="docutils literal notranslate"><span class="pre">a</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         透明度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：drawSphereGrid(&quot;/scene/modules/main/model/SphereGrid&quot;, 0, 0, 0,20, 20, 1,0,0,0.3);
+</pre></div>
+</div>
+<hr class="docutils" />
+<ul class="simple" id="class-pescript-method-drawsphereblhgrid">
+<li><p>void <strong>drawSphereBLHGrid</strong> <strong>(</strong> <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_string.html#class-string"><span class="std std-ref">string</span></a> pathname, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> x, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> y, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> z, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> radius, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> stepAngle, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> r, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> g, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> b, <a class="reference internal" href="../%E7%B1%BB%E5%9E%8B/class_float.html#class-float"><span class="std std-ref">float</span></a> a <strong>)</strong></p></li>
+</ul>
+<p>描述：以经纬度坐标绘制带网格的球体</p>
+<p><code class="docutils literal notranslate"><span class="pre">pathname</span></code> <code class="docutils literal notranslate"><span class="pre">[in]</span></code>           模型节点</p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                 位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">z</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         位置</p>
+<p><code class="docutils literal notranslate"><span class="pre">radius</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>            半径</p>
+<p><code class="docutils literal notranslate"><span class="pre">stepAngle</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>     步长角，越大网格越密</p>
+<p><code class="docutils literal notranslate"><span class="pre">r</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         颜色R</p>
+<p><code class="docutils literal notranslate"><span class="pre">g</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         颜色G</p>
+<p><code class="docutils literal notranslate"><span class="pre">b</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         颜色B</p>
+<p><code class="docutils literal notranslate"><span class="pre">a</span></code>  <code class="docutils literal notranslate"><span class="pre">[in]</span></code>                         透明度</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>示例：drawSphereBLHGrid(&quot;/scene/modules/main/model/SphereGrid&quot;, 0, 0, 0,20, 20, 1,0,0,0.3);
+</pre></div>
+</div>
+<hr class="docutils" />
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024, 武汉创景可视技术有限公司.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
