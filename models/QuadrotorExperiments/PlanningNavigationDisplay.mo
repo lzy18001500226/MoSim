@@ -38,6 +38,8 @@ model PlanningNavigationDisplay
     "Abstract local occupancy-grid cell size for sensing highlight; decoupled from coarse terrain display cells.";
   parameter Real local_sensed_cell_size_m = 0.32
     "Fine local sensing footprint cell size. Keep near obstacle pillar size; do not apply to full-map terrain.";
+  parameter Real local_sensed_grid_update_step_m = 2.0
+    "Quantization step for local terrain display center. Larger than cell size to reduce full-layer animation refreshes.";
   parameter Integer local_sensed_half_cells(min = 1) = 10
     "Fine local sensing footprint half-width. 10 with 0.32 m cells covers the 3 m sensing sphere.";
   parameter Real local_sensed_ground_thickness_m = 0.045
@@ -122,14 +124,24 @@ protected
   Boolean pillar_near[max_pillars];
   Real wall_arm1_position[max_wall_groups, 3];
   Real wall_arm2_position[max_wall_groups, 3];
+  Real wall_arm1_display_position[max_wall_groups, 3];
+  Real wall_arm2_display_position[max_wall_groups, 3];
   Real wall_arm1_length[max_wall_groups];
   Real wall_arm2_length[max_wall_groups];
+  Real wall_arm1_display_length[max_wall_groups];
+  Real wall_arm2_display_length[max_wall_groups];
+  Real wall_arm1_display_radius[max_wall_groups];
+  Real wall_arm2_display_radius[max_wall_groups];
   Real wall_arm1_width[max_wall_groups];
   Real wall_arm2_width[max_wall_groups];
   Real wall_arm1_height[max_wall_groups];
   Real wall_arm2_height[max_wall_groups];
   Real wall_arm1_distance_to_uav[max_wall_groups];
   Real wall_arm2_distance_to_uav[max_wall_groups];
+  Real wall_arm1_dx_to_uav[max_wall_groups];
+  Real wall_arm1_dy_to_uav[max_wall_groups];
+  Real wall_arm2_dx_to_uav[max_wall_groups];
+  Real wall_arm2_dy_to_uav[max_wall_groups];
   Boolean wall_arm1_sensed[max_wall_groups];
   Boolean wall_arm2_sensed[max_wall_groups];
   Boolean wall_arm1_near[max_wall_groups];
@@ -171,6 +183,7 @@ protected
   Boolean ground_sensed[ground_pillar_count];
   Boolean ground_near[ground_pillar_count];
   Real local_sensed_ground_position[local_sensed_ground_count, 3];
+  Real local_sensed_ground_height[local_sensed_ground_count];
   Real local_sensed_ground_distance[local_sensed_ground_count];
   Boolean local_sensed_ground_active[local_sensed_ground_count];
   Boolean local_sensed_ground_near[local_sensed_ground_count];
@@ -219,6 +232,68 @@ protected
       end if;
     end for;
   end localInterp;
+
+  function localTerrainHeight
+    "Match the deterministic static-map terrain height field for local radar review."
+    input Real x;
+    input Real y;
+    output Real z;
+  protected
+    Real value;
+    Real normalized;
+    Real smooth_height;
+  algorithm
+    value :=
+      0.30 * sin(0.075 * x + 0.031 * y + 0.4) +
+      0.24 * sin(-0.044 * x + 0.089 * y + 1.7) +
+      0.22 * sin(0.210 * x - 0.135 * y + 2.1) +
+      0.16 * sin(0.390 * x + 0.310 * y) +
+      0.08 * sin(0.770 * x - 0.570 * y + 0.8);
+    normalized := max(0.0, min(1.0, 0.5 + 0.62 * tanh(1.55 * value)));
+    smooth_height := 0.10 + 1.40 * normalized;
+    z := max(0.10, min(1.50, floor(smooth_height / 0.01 + 0.5) * 0.01));
+  end localTerrainHeight;
+
+  function clampReal
+    input Real value;
+    input Real low;
+    input Real high;
+    output Real y;
+  algorithm
+    y := min(high, max(low, value));
+  end clampReal;
+
+  function clippedIntervalLow
+    input Real axis_min;
+    input Real axis_max;
+    input Real query_axis;
+    input Real perpendicular_distance;
+    input Real radius;
+    output Real y;
+  protected
+    Real center;
+    Real half_length;
+  algorithm
+    center := clampReal(query_axis, min(axis_min, axis_max), max(axis_min, axis_max));
+    half_length := sqrt(max(0.0, radius ^ 2 - perpendicular_distance ^ 2));
+    y := max(min(axis_min, axis_max), center - half_length);
+  end clippedIntervalLow;
+
+  function clippedIntervalHigh
+    input Real axis_min;
+    input Real axis_max;
+    input Real query_axis;
+    input Real perpendicular_distance;
+    input Real radius;
+    output Real y;
+  protected
+    Real center;
+    Real half_length;
+  algorithm
+    center := clampReal(query_axis, min(axis_min, axis_max), max(axis_min, axis_max));
+    half_length := sqrt(max(0.0, radius ^ 2 - perpendicular_distance ^ 2));
+    y := min(max(axis_min, axis_max), center + half_length);
+  end clippedIntervalHigh;
 
 public
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape map_boundary_x_min(
@@ -276,9 +351,9 @@ public
     each r_shape = {0, 0, 0},
     each lengthDirection = {1, 0, 0},
     each widthDirection = {0, 1, 0},
-    each length = boundary_wall_thickness_m,
-    width = {boundary_wall_x_width[i] for i in 1:2 * boundary_wall_x_segment_count},
-    each height = boundary_wall_height_m,
+    length = {if render_boundary_walls then boundary_wall_thickness_m else 0.0 for i in 1:2 * boundary_wall_x_segment_count},
+    width = {if render_boundary_walls then boundary_wall_x_width[i] else 0.0 for i in 1:2 * boundary_wall_x_segment_count},
+    height = {if render_boundary_walls then boundary_wall_height_m else 0.0 for i in 1:2 * boundary_wall_x_segment_count},
     each color = {210, 210, 210},
     each specularCoefficient = 0.2);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape boundary_wall_y[2 * boundary_wall_y_segment_count](
@@ -288,9 +363,9 @@ public
     each r_shape = {0, 0, 0},
     each lengthDirection = {1, 0, 0},
     each widthDirection = {0, 1, 0},
-    length = {boundary_wall_y_length[i] for i in 1:2 * boundary_wall_y_segment_count},
-    each width = boundary_wall_thickness_m,
-    each height = boundary_wall_height_m,
+    length = {if render_boundary_walls then boundary_wall_y_length[i] else 0.0 for i in 1:2 * boundary_wall_y_segment_count},
+    width = {if render_boundary_walls then boundary_wall_thickness_m else 0.0 for i in 1:2 * boundary_wall_y_segment_count},
+    height = {if render_boundary_walls then boundary_wall_height_m else 0.0 for i in 1:2 * boundary_wall_y_segment_count},
     each color = {210, 210, 210},
     each specularCoefficient = 0.2);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape obstacle_pillar[max_pillars](
@@ -303,31 +378,31 @@ public
     length = {if pillar_sensed[i] or pillar_near[i] then pillar_length[i] else 0.0 for i in 1:max_pillars},
     width = {if pillar_sensed[i] or pillar_near[i] then pillar_width[i] else 0.0 for i in 1:max_pillars},
     height = {if pillar_sensed[i] or pillar_near[i] then pillar_height[i] else 0.0 for i in 1:max_pillars},
-    color = {if pillar_sensed[i] then {70, 160, 255} else {218, 218, 218} for i in 1:max_pillars},
+    color = {if pillar_sensed[i] then {70, 160, 255} else {238, 238, 238} for i in 1:max_pillars},
     each specularCoefficient = 0.25);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape wall_arm1[max_wall_groups](
     each shapeType = "box",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
-    r = {wall_arm1_position[i, :] for i in 1:max_wall_groups},
+    r = {wall_arm1_display_position[i, :] for i in 1:max_wall_groups},
     each r_shape = {0, 0, 0},
     lengthDirection = {wall_arm1_length_direction[i, :] for i in 1:max_wall_groups},
     widthDirection = {wall_arm1_width_direction[i, :] for i in 1:max_wall_groups},
-    length = {if i <= wall_group_count and (wall_arm1_sensed[i] or wall_arm1_near[i]) then wall_arm1_length[i] else 0.0 for i in 1:max_wall_groups},
+    length = {if i <= wall_group_count and (wall_arm1_sensed[i] or wall_arm1_near[i]) then wall_arm1_display_length[i] else 0.0 for i in 1:max_wall_groups},
     width = {if i <= wall_group_count and (wall_arm1_sensed[i] or wall_arm1_near[i]) then wall_arm1_width[i] else 0.0 for i in 1:max_wall_groups},
     height = {if i <= wall_group_count and (wall_arm1_sensed[i] or wall_arm1_near[i]) then wall_arm1_height[i] else 0.0 for i in 1:max_wall_groups},
-    color = {if wall_arm1_sensed[i] then {120, 155, 185} else {218, 218, 218} for i in 1:max_wall_groups},
+    color = {if wall_arm1_sensed[i] then {120, 155, 185} else {238, 238, 238} for i in 1:max_wall_groups},
     each specularCoefficient = 0.25);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape wall_arm2[max_wall_groups](
     each shapeType = "box",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
-    r = {wall_arm2_position[i, :] for i in 1:max_wall_groups},
+    r = {wall_arm2_display_position[i, :] for i in 1:max_wall_groups},
     each r_shape = {0, 0, 0},
     lengthDirection = {wall_arm2_length_direction[i, :] for i in 1:max_wall_groups},
     widthDirection = {wall_arm2_width_direction[i, :] for i in 1:max_wall_groups},
-    length = {if i <= wall_group_count and (wall_arm2_sensed[i] or wall_arm2_near[i]) then wall_arm2_length[i] else 0.0 for i in 1:max_wall_groups},
+    length = {if i <= wall_group_count and (wall_arm2_sensed[i] or wall_arm2_near[i]) then wall_arm2_display_length[i] else 0.0 for i in 1:max_wall_groups},
     width = {if i <= wall_group_count and (wall_arm2_sensed[i] or wall_arm2_near[i]) then wall_arm2_width[i] else 0.0 for i in 1:max_wall_groups},
     height = {if i <= wall_group_count and (wall_arm2_sensed[i] or wall_arm2_near[i]) then wall_arm2_height[i] else 0.0 for i in 1:max_wall_groups},
-    color = {if wall_arm2_sensed[i] then {120, 155, 185} else {218, 218, 218} for i in 1:max_wall_groups},
+    color = {if wall_arm2_sensed[i] then {120, 155, 185} else {238, 238, 238} for i in 1:max_wall_groups},
     each specularCoefficient = 0.25);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape continuous_ground(
     shapeType = "box",
@@ -342,7 +417,7 @@ public
     color = {180, 180, 180},
     specularCoefficient = 0.12);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape static_map_mesh(
-    shapeType = static_map_mesh_uri,
+    shapeType = if show_static_map_mesh and not show_static_map_layers then static_map_mesh_uri else "box",
     R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
     r = {0, 0, 0},
     r_shape = {0, 0, 0},
@@ -354,7 +429,7 @@ public
     color = {230, 230, 230},
     specularCoefficient = 0.12);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape static_terrain_band_mesh[5](
-    shapeType = static_terrain_band_mesh_uri,
+    shapeType = {if show_static_map_layers then static_terrain_band_mesh_uri[i] else "box" for i in 1:5},
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
     each r = {0, 0, 0},
     each r_shape = {0, 0, 0},
@@ -364,14 +439,14 @@ public
     each width = if show_static_map_layers then 1.0 else 0.0,
     each height = if show_static_map_layers then 1.0 else 0.0,
     color = {
-      if show_static_map_layers then {210, 236, 248} else {0, 0, 0},
-      if show_static_map_layers then {184, 224, 236} else {0, 0, 0},
-      if show_static_map_layers then {158, 210, 206} else {0, 0, 0},
-      if show_static_map_layers then {180, 205, 150} else {0, 0, 0},
-      if show_static_map_layers then {218, 190, 125} else {0, 0, 0}},
+      if show_static_map_layers then {210, 236, 248} else {232, 232, 232},
+      if show_static_map_layers then {184, 224, 236} else {232, 232, 232},
+      if show_static_map_layers then {158, 210, 206} else {232, 232, 232},
+      if show_static_map_layers then {180, 205, 150} else {232, 232, 232},
+      if show_static_map_layers then {218, 190, 125} else {232, 232, 232}},
     each specularCoefficient = 0.10);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape static_obstacle_mesh(
-    shapeType = static_obstacle_mesh_uri,
+    shapeType = if show_static_map_layers and show_static_grid_overlay then static_obstacle_mesh_uri else "box",
     R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
     r = {0, 0, 0},
     r_shape = {0, 0, 0},
@@ -383,7 +458,7 @@ public
     color = {150, 150, 150},
     specularCoefficient = 0.20);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape static_grid_mesh(
-    shapeType = static_grid_mesh_uri,
+    shapeType = if show_static_map_layers and show_static_grid_overlay then static_grid_mesh_uri else "box",
     R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
     r = {0, 0, 0},
     r_shape = {0, 0, 0},
@@ -415,8 +490,8 @@ public
     each widthDirection = {0, 1, 0},
     length = {if local_sensed_ground_active[i] or local_sensed_ground_near[i] then local_sensed_cell_size_m else 0.0 for i in 1:local_sensed_ground_count},
     width = {if local_sensed_ground_active[i] or local_sensed_ground_near[i] then local_sensed_cell_size_m else 0.0 for i in 1:local_sensed_ground_count},
-    each height = local_sensed_ground_thickness_m,
-    color = {if local_sensed_ground_active[i] then {185, 222, 255} else {224, 224, 224} for i in 1:local_sensed_ground_count},
+    height = {if local_sensed_ground_active[i] or local_sensed_ground_near[i] then local_sensed_ground_height[i] else 0.0 for i in 1:local_sensed_ground_count},
+    color = {if local_sensed_ground_active[i] then {170, 220, 255} else {242, 242, 242} for i in 1:local_sensed_ground_count},
     each specularCoefficient = 0.12);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape local_plan_curve[11](
     each shapeType = "cylinder",
@@ -534,11 +609,11 @@ equation
   local_heading_vector[2] = local_plan_end[2] - sensed_position[2];
   local_heading_norm = sqrt(local_heading_vector[1] ^ 2 + local_heading_vector[2] ^ 2);
   local_grid_center_x = x_min + terrain_x_offset_m +
-    floor((sensed_position[1] - x_min - terrain_x_offset_m) / local_costmap_cell_size_m) * local_costmap_cell_size_m +
-    0.5 * local_costmap_cell_size_m;
+    floor((sensed_position[1] - x_min - terrain_x_offset_m) / local_sensed_grid_update_step_m) * local_sensed_grid_update_step_m +
+    0.5 * local_sensed_grid_update_step_m;
   local_grid_center_y = y_min + terrain_y_offset_m +
-    floor((sensed_position[2] - y_min - terrain_y_offset_m) / local_costmap_cell_size_m) * local_costmap_cell_size_m +
-    0.5 * local_costmap_cell_size_m;
+    floor((sensed_position[2] - y_min - terrain_y_offset_m) / local_sensed_grid_update_step_m) * local_sensed_grid_update_step_m +
+    0.5 * local_sensed_grid_update_step_m;
   local_window_half_width_m = (local_costmap_half_cells + 0.5) * local_costmap_cell_size_m;
   local_terrain_center_x = x_min + terrain_x_offset_m +
     floor((sensed_position[1] - x_min - terrain_x_offset_m) / terrain_cell_size_m) * terrain_cell_size_m +
@@ -591,14 +666,65 @@ equation
     wall_arm2_position[i, 2] = if wall_arm2_x_axis[i] then 0.5 * (wall_arm2_min[i, 2] + wall_arm2_max[i, 2])
       else min(wall_arm2_min[i, 2], wall_arm2_max[i, 2]);
     wall_arm2_position[i, 3] = 0.5 * (wall_arm2_min[i, 3] + wall_arm2_max[i, 3]);
-    wall_arm1_distance_to_uav[i] = sqrt((wall_arm1_position[i, 1] - sensed_position[1]) ^ 2 + (wall_arm1_position[i, 2] - sensed_position[2]) ^ 2);
-    wall_arm2_distance_to_uav[i] = sqrt((wall_arm2_position[i, 1] - sensed_position[1]) ^ 2 + (wall_arm2_position[i, 2] - sensed_position[2]) ^ 2);
-    wall_arm1_sensed[i] = highlight_local_costmap and wall_arm1_distance_to_uav[i] <= local_costmap_radius_m + 0.5 * max(wall_arm1_length[i], wall_arm1_width[i]);
-    wall_arm2_sensed[i] = highlight_local_costmap and wall_arm2_distance_to_uav[i] <= local_costmap_radius_m + 0.5 * max(wall_arm2_length[i], wall_arm2_width[i]);
-    wall_arm1_near[i] = highlight_local_costmap and not wall_arm1_sensed[i] and
-      wall_arm1_distance_to_uav[i] <= local_costmap_fade_radius_m + 0.5 * max(wall_arm1_length[i], wall_arm1_width[i]);
-    wall_arm2_near[i] = highlight_local_costmap and not wall_arm2_sensed[i] and
-      wall_arm2_distance_to_uav[i] <= local_costmap_fade_radius_m + 0.5 * max(wall_arm2_length[i], wall_arm2_width[i]);
+    wall_arm1_dx_to_uav[i] = if sensed_position[1] < min(wall_arm1_min[i, 1], wall_arm1_max[i, 1]) then
+      min(wall_arm1_min[i, 1], wall_arm1_max[i, 1]) - sensed_position[1]
+      else if sensed_position[1] > max(wall_arm1_min[i, 1], wall_arm1_max[i, 1]) then
+      sensed_position[1] - max(wall_arm1_min[i, 1], wall_arm1_max[i, 1])
+      else 0.0;
+    wall_arm1_dy_to_uav[i] = if sensed_position[2] < min(wall_arm1_min[i, 2], wall_arm1_max[i, 2]) then
+      min(wall_arm1_min[i, 2], wall_arm1_max[i, 2]) - sensed_position[2]
+      else if sensed_position[2] > max(wall_arm1_min[i, 2], wall_arm1_max[i, 2]) then
+      sensed_position[2] - max(wall_arm1_min[i, 2], wall_arm1_max[i, 2])
+      else 0.0;
+    wall_arm2_dx_to_uav[i] = if sensed_position[1] < min(wall_arm2_min[i, 1], wall_arm2_max[i, 1]) then
+      min(wall_arm2_min[i, 1], wall_arm2_max[i, 1]) - sensed_position[1]
+      else if sensed_position[1] > max(wall_arm2_min[i, 1], wall_arm2_max[i, 1]) then
+      sensed_position[1] - max(wall_arm2_min[i, 1], wall_arm2_max[i, 1])
+      else 0.0;
+    wall_arm2_dy_to_uav[i] = if sensed_position[2] < min(wall_arm2_min[i, 2], wall_arm2_max[i, 2]) then
+      min(wall_arm2_min[i, 2], wall_arm2_max[i, 2]) - sensed_position[2]
+      else if sensed_position[2] > max(wall_arm2_min[i, 2], wall_arm2_max[i, 2]) then
+      sensed_position[2] - max(wall_arm2_min[i, 2], wall_arm2_max[i, 2])
+      else 0.0;
+    wall_arm1_distance_to_uav[i] = sqrt(wall_arm1_dx_to_uav[i] ^ 2 + wall_arm1_dy_to_uav[i] ^ 2);
+    wall_arm2_distance_to_uav[i] = sqrt(wall_arm2_dx_to_uav[i] ^ 2 + wall_arm2_dy_to_uav[i] ^ 2);
+    wall_arm1_sensed[i] = highlight_local_costmap and wall_arm1_distance_to_uav[i] <= local_costmap_radius_m;
+    wall_arm2_sensed[i] = highlight_local_costmap and wall_arm2_distance_to_uav[i] <= local_costmap_radius_m;
+    wall_arm1_near[i] = false;
+    wall_arm2_near[i] = false;
+    wall_arm1_display_radius[i] = if wall_arm1_sensed[i] then local_costmap_radius_m else 0.0;
+    wall_arm2_display_radius[i] = if wall_arm2_sensed[i] then local_costmap_radius_m else 0.0;
+
+    wall_arm1_display_length[i] = if wall_arm1_x_axis[i] then
+      max(0.0,
+        clippedIntervalHigh(wall_arm1_min[i, 1], wall_arm1_max[i, 1], sensed_position[1], wall_arm1_dy_to_uav[i], wall_arm1_display_radius[i]) -
+        clippedIntervalLow(wall_arm1_min[i, 1], wall_arm1_max[i, 1], sensed_position[1], wall_arm1_dy_to_uav[i], wall_arm1_display_radius[i]))
+      else
+      max(0.0,
+        clippedIntervalHigh(wall_arm1_min[i, 2], wall_arm1_max[i, 2], sensed_position[2], wall_arm1_dx_to_uav[i], wall_arm1_display_radius[i]) -
+        clippedIntervalLow(wall_arm1_min[i, 2], wall_arm1_max[i, 2], sensed_position[2], wall_arm1_dx_to_uav[i], wall_arm1_display_radius[i]));
+    wall_arm2_display_length[i] = if wall_arm2_x_axis[i] then
+      max(0.0,
+        clippedIntervalHigh(wall_arm2_min[i, 1], wall_arm2_max[i, 1], sensed_position[1], wall_arm2_dy_to_uav[i], wall_arm2_display_radius[i]) -
+        clippedIntervalLow(wall_arm2_min[i, 1], wall_arm2_max[i, 1], sensed_position[1], wall_arm2_dy_to_uav[i], wall_arm2_display_radius[i]))
+      else
+      max(0.0,
+        clippedIntervalHigh(wall_arm2_min[i, 2], wall_arm2_max[i, 2], sensed_position[2], wall_arm2_dx_to_uav[i], wall_arm2_display_radius[i]) -
+        clippedIntervalLow(wall_arm2_min[i, 2], wall_arm2_max[i, 2], sensed_position[2], wall_arm2_dx_to_uav[i], wall_arm2_display_radius[i]));
+    wall_arm1_display_position[i, 1] = if wall_arm1_x_axis[i] then
+      clippedIntervalLow(wall_arm1_min[i, 1], wall_arm1_max[i, 1], sensed_position[1], wall_arm1_dy_to_uav[i], wall_arm1_display_radius[i])
+      else 0.5 * (wall_arm1_min[i, 1] + wall_arm1_max[i, 1]);
+    wall_arm1_display_position[i, 2] = if wall_arm1_x_axis[i] then
+      0.5 * (wall_arm1_min[i, 2] + wall_arm1_max[i, 2])
+      else clippedIntervalLow(wall_arm1_min[i, 2], wall_arm1_max[i, 2], sensed_position[2], wall_arm1_dx_to_uav[i], wall_arm1_display_radius[i]);
+    wall_arm1_display_position[i, 3] = wall_arm1_position[i, 3];
+    wall_arm2_display_position[i, 1] = if wall_arm2_x_axis[i] then
+      clippedIntervalLow(wall_arm2_min[i, 1], wall_arm2_max[i, 1], sensed_position[1], wall_arm2_dy_to_uav[i], wall_arm2_display_radius[i])
+      else 0.5 * (wall_arm2_min[i, 1] + wall_arm2_max[i, 1]);
+    wall_arm2_display_position[i, 2] = if wall_arm2_x_axis[i] then
+      0.5 * (wall_arm2_min[i, 2] + wall_arm2_max[i, 2])
+      else clippedIntervalLow(wall_arm2_min[i, 2], wall_arm2_max[i, 2], sensed_position[2], wall_arm2_dx_to_uav[i], wall_arm2_display_radius[i]);
+    wall_arm2_display_position[i, 3] = wall_arm2_position[i, 3];
 
     wall_arm1_length_direction[i, 1] = if wall_arm1_x_axis[i] then 1.0 else 0.0;
     wall_arm1_length_direction[i, 2] = if wall_arm1_x_axis[i] then 0.0 else 1.0;
@@ -641,7 +767,8 @@ equation
   for i in 1:local_sensed_ground_count loop
     local_sensed_ground_position[i, 1] = local_grid_center_x + local_sensed_x_index[i] * local_sensed_cell_size_m;
     local_sensed_ground_position[i, 2] = local_grid_center_y + local_sensed_y_index[i] * local_sensed_cell_size_m;
-    local_sensed_ground_position[i, 3] = map_z + local_sensed_ground_thickness_m;
+    local_sensed_ground_height[i] = localTerrainHeight(local_sensed_ground_position[i, 1], local_sensed_ground_position[i, 2]);
+    local_sensed_ground_position[i, 3] = map_z + 0.5 * local_sensed_ground_height[i];
     local_sensed_ground_distance[i] = sqrt(
       (local_sensed_ground_position[i, 1] - sensed_position[1]) ^ 2 +
       (local_sensed_ground_position[i, 2] - sensed_position[2]) ^ 2);

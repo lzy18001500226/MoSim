@@ -22,6 +22,7 @@ TERRAIN_STEP_M = 0.01
 MODEL_POINT_CAPACITY = 91
 MODEL_SEGMENT_CAPACITY = 90
 GUI_RENDER_RANDOM_OBSTACLE_LIMIT = 0
+GUI_RENDER_ROUTE_BUFFER_M = 9.5
 DUMMY_DISABLED_PILLAR_SIZE_M = 0.16
 LOCAL_SENSOR_CELL_SIZE_M = 0.20
 TAKEOFF_DURATION_S = 3.0
@@ -153,7 +154,26 @@ def build_reference(report: dict[str, Any], map_config: dict[str, Any]) -> dict[
     }
 
 
-def build_pillars(report: dict[str, Any]) -> dict[str, Any]:
+def point_segment_distance_xy(point: tuple[float, float], a: list[float], b: list[float]) -> float:
+    px, py = point
+    ax, ay = float(a[0]), float(a[1])
+    bx, by = float(b[0]), float(b[1])
+    vx = bx - ax
+    vy = by - ay
+    denom = vx * vx + vy * vy
+    if denom <= 1e-12:
+        return math.hypot(px - ax, py - ay)
+    t = max(0.0, min(1.0, ((px - ax) * vx + (py - ay) * vy) / denom))
+    return math.hypot(px - (ax + t * vx), py - (ay + t * vy))
+
+
+def route_distance_xy(point: tuple[float, float], path: list[list[float]]) -> float:
+    if len(path) < 2:
+        return math.inf
+    return min(point_segment_distance_xy(point, path[i], path[i + 1]) for i in range(len(path) - 1))
+
+
+def build_pillars(report: dict[str, Any], ref: dict[str, Any]) -> dict[str, Any]:
     pillars: list[tuple[float, float, float, float, float, float]] = []
     random_boxes = [
         obstacle
@@ -161,14 +181,36 @@ def build_pillars(report: dict[str, Any]) -> dict[str, Any]:
         if obstacle.get("type") == "box" and obstacle.get("random_cluster")
     ]
     cylinders = [obstacle for obstacle in report["truth_obstacles"] if obstacle.get("type") == "cylinder"]
-    if GUI_RENDER_RANDOM_OBSTACLE_LIMIT <= 0:
-        render_obstacles = []
-    elif random_boxes:
-        if len(random_boxes) > GUI_RENDER_RANDOM_OBSTACLE_LIMIT:
-            step = max(1, math.floor(len(random_boxes) / GUI_RENDER_RANDOM_OBSTACLE_LIMIT))
-            render_obstacles = random_boxes[::step][:GUI_RENDER_RANDOM_OBSTACLE_LIMIT]
-        else:
-            render_obstacles = random_boxes
+    render_obstacles: list[dict[str, Any]] = []
+    if random_boxes:
+        grouped: dict[int, list[dict[str, Any]]] = {}
+        for obstacle in random_boxes:
+            grouped.setdefault(int(obstacle.get("random_cluster_id", len(grouped) + 1)), []).append(obstacle)
+        for cluster_id in sorted(grouped):
+            group = grouped[cluster_id]
+            x0 = min(float(item["min"][0]) for item in group)
+            y0 = min(float(item["min"][1]) for item in group)
+            z0 = min(float(item["min"][2]) for item in group)
+            x1 = max(float(item["max"][0]) for item in group)
+            y1 = max(float(item["max"][1]) for item in group)
+            z1 = max(float(item["max"][2]) for item in group)
+            render_obstacles.append({
+                "type": "box",
+                "random_cluster": True,
+                "random_cluster_id": cluster_id,
+                "min": [x0, y0, z0],
+                "max": [x1, y1, z1],
+            })
+        route_path = [[ref["p_x"][i], ref["p_y"][i]] for i in range(ref["n_segments"] + 1)]
+        filtered_obstacles = []
+        for obstacle in render_obstacles:
+            lo = obstacle["min"]
+            hi = obstacle["max"]
+            center = (0.5 * (float(lo[0]) + float(hi[0])), 0.5 * (float(lo[1]) + float(hi[1])))
+            half_diag = 0.5 * math.hypot(float(hi[0]) - float(lo[0]), float(hi[1]) - float(lo[1]))
+            if route_distance_xy(center, route_path) - half_diag <= GUI_RENDER_ROUTE_BUFFER_M:
+                filtered_obstacles.append(obstacle)
+        render_obstacles = filtered_obstacles
     elif len(cylinders) > GUI_RENDER_RANDOM_OBSTACLE_LIMIT:
         step = max(1, math.floor(len(cylinders) / GUI_RENDER_RANDOM_OBSTACLE_LIMIT))
         render_obstacles = cylinders[::step][:GUI_RENDER_RANDOM_OBSTACLE_LIMIT]
@@ -340,7 +382,7 @@ def update_model(model_path: Path, planner_config_path: Path, report_path: Path)
         )
     report = json.loads(report_path.read_text(encoding="utf-8"))
     ref = build_reference(report, map_config)
-    pillars = build_pillars(report)
+    pillars = build_pillars(report, ref)
     walls = build_wall_groups(report)
     text = model_path.read_text(encoding="utf-8")
 
