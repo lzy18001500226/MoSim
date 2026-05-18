@@ -11,6 +11,8 @@
 
 当前单机规划状态：已完成 `planner_astar_min_snap` 的最小闭环实现，包含标准地图配置、2D/2.5D A*、墙体视线遮挡、直线可见性简化、五次多项式平滑、速度/加速度/jerk/tilt/障碍距离预检查、`reference.csv`、`trackability_report.json` 和 `map_preview.svg` 输出。`map_open_blocks` 与 `map_corridor_gate` 两个 P1 标准地图均已通过离线可跟踪性预检查，并已接入 Sunray150 MWORKS 控制闭环。AWFF 版本在规划轨迹跟踪中作为负样本保留；LinearMPC-style 外环已在两个规划场景中通过真实 Sysplorer MCP 质量门。
 
+当前展示与工程化路线：近期主线是 MWORKS/Sysplorer 真实闭环仿真 + UE5/Unreal 外部渲染。UE5 只读取 raw/native result 或实时 UDP/TCP 状态流，负责材质、地图、雷达、轨迹、跟随相机和录屏，不参与控制、规划、碰撞验收或指标计算。MATLAB 式“一键生成 C++ 并接 Gazebo/ROS2/PX4”的能力保留为后续工程化出口，必须先完成控制器接口冻结和 MWORKS-vs-C++ 一致性测试。
+
 ## 尺寸与参数速查
 
 当前 `planning_open_blocks` 地图、障碍物和无人机尺寸不要从动画里估算，统一从下面这些文件读取：
