@@ -122,7 +122,8 @@ Sources: [CUAV Pixhawk V6X 文档](https://doc.cuav.net/controller/pixhawk-v6x/e
 | V6X/PX6C 飞控 | `hardware_status_bus` 抽象健康状态 | 表达飞控硬件和控制/模式管理节拍，不迁移 MAVLink 驱动 |
 | GPS/GNSS | `hardware_status_bus` 抽象健康状态 | 表达导航输入和后续 failsafe 状态机接口 |
 | ORIN NX 机载计算 | `hardware_status_bus` 抽象健康状态 | 表达规划、局部栅格和安全监督计算平台 |
-| 地面/动画 | 原生 MWORKS MultiBody 动画 | 用于人工审核和视频素材 |
+| 地面/动画 | 原生 MWORKS MultiBody 动画 | 用于模型级人工审核和证据兜底 |
+| 外部视频渲染 | Unreal TCP/UDP 状态流接收 | 用于高质量贴图、上色、雷达扇形、跟随相机和录屏，不参与控制/规划/指标 |
 
 CUAV/Livox 实物图片仅作为报告和答辩硬件说明素材：
 
@@ -135,7 +136,7 @@ CUAV/Livox 实物图片仅作为报告和答辩硬件说明素材：
 | `references/CUAV/Sunray150.png` | Sunray150 机体图形化展示和模型图标 |
 | `references/CUAV/motor.png` | 四电机图形化展示 |
 
-这些图片用于完整系统图形化仿真画布、模型图标、报告和答辩硬件说明；当前不把图片对应硬件作为新增物理部件接入官方机体模型。`references/CUAV/` 保留无背景原图，模型显示副本统一生成到 `QuadrotorModel/Resources/Images/`。模型显示副本直接使用透明 PNG 原图，保留每张图片自身宽高比例和透明背景。`GPS.png`、`V6X.png`、`MId360.png`、`ORIN NX.png`、`Sunray150.png`、`motor.png` 分别作为 `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock` 中感知、飞控、机载计算、四电机和机体顶层模块的图标。为避免 Modelica URI 中空格导致解析差异，机载计算平台图片在模型资源目录中保存为 `ORIN_NX.png`。三维动画仍使用官方 STL 机体。
+这些图片用于完整系统图形化仿真画布、模型图标、报告和答辩硬件说明；当前不把图片对应硬件作为新增物理部件接入官方机体模型。`references/CUAV/` 保留无背景原图，模型显示副本统一生成到 `QuadrotorModel/Resources/Images/`。模型显示副本直接使用透明 PNG 原图，保留每张图片自身宽高比例和透明背景。`GPS.png`、`V6X.png`、`MId360.png`、`ORIN NX.png`、`Sunray150.png`、`motor.png` 分别作为 `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock` 中感知、飞控、机载计算、四电机和机体顶层模块的图标。为避免 Modelica URI 中空格导致解析差异，机载计算平台图片在模型资源目录中保存为 `ORIN_NX.png`。三维控制证据仍使用官方 STL 机体；视频级视觉效果可在 Unreal 中重新配置材质、贴图和相机，但必须读取 MWORKS 输出状态，不作为新的仿真真值。
 
 后续模型检查只针对官方机体、控制器闭环和图形化展示链路；CUAV/Livox/ORIN 图片不作为物理建模检查对象。
 
