@@ -53,11 +53,41 @@ FRotator UQuadrotorMworksPlaybackComponent::MworksRotationToUnreal(const FVector
     return FRotator(PitchDeg, YawDeg, RollDeg);
 }
 
+void UQuadrotorMworksPlaybackComponent::ResetTrail()
+{
+    TrajectoryTrailUnreal.Reset();
+}
+
 void UQuadrotorMworksPlaybackComponent::ApplyFrame(const FQuadrotorMworksFrame& Frame, float DeltaSeconds)
 {
     LatestFrame = Frame;
     LatestUnrealLocation = MworksPositionToUnreal(Frame.PositionMeters);
     LatestUnrealRotation = MworksRotationToUnreal(Frame.RotationRadians);
+    ReferenceUnrealLocation = MworksPositionToUnreal(Frame.ReferencePositionMeters);
+
+    LocalPlanPointsUnreal.Reset(Frame.LocalPlanPointsMeters.Num());
+    for (const FVector& PointMeters : Frame.LocalPlanPointsMeters)
+    {
+        LocalPlanPointsUnreal.Add(MworksPositionToUnreal(PointMeters));
+    }
+
+    RadarNearRadiusCentimeters = static_cast<float>(Frame.RadarNearRadiusMeters) * MetersToCentimeters;
+    RadarFarRadiusCentimeters = static_cast<float>(Frame.RadarFarRadiusMeters) * MetersToCentimeters;
+    RadarFovDegrees = static_cast<float>(Frame.RadarFovDegrees);
+    const float YawSign = bConvertMworksYToUnrealNegativeY ? -1.0f : 1.0f;
+    RadarYawDegrees = YawSign * FMath::RadiansToDegrees(static_cast<float>(Frame.RadarYawRadians));
+
+    const float TrailMinDistanceCentimeters = TrailMinDistanceMeters * MetersToCentimeters;
+    if (TrajectoryTrailUnreal.Num() == 0
+        || FVector::DistSquared(TrajectoryTrailUnreal.Last(), LatestUnrealLocation)
+            >= TrailMinDistanceCentimeters * TrailMinDistanceCentimeters)
+    {
+        TrajectoryTrailUnreal.Add(LatestUnrealLocation);
+        while (MaxTrailPoints > 0 && TrajectoryTrailUnreal.Num() > MaxTrailPoints)
+        {
+            TrajectoryTrailUnreal.RemoveAt(0, 1, EAllowShrinking::No);
+        }
+    }
 
     if (PropellerAnglesDegrees.Num() != 4)
     {

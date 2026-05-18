@@ -72,6 +72,10 @@ def main() -> int:
         "MworksRotationToUnreal",
         "SetActorLocationAndRotation",
         "PropellerAnglesDegrees",
+        "LocalPlanPointsUnreal",
+        "TrajectoryTrailUnreal",
+        "RadarNearRadiusCentimeters",
+        "ResetTrail",
     ]
     missing_playback_tokens = [token for token in required_playback_tokens if token not in playback]
     if missing_playback_tokens:

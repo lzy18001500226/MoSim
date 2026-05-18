@@ -33,6 +33,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback")
     float PropellerVisualScale = 32.0f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback", meta = (ClampMin = "0"))
+    int32 MaxTrailPoints = 800;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback", meta = (ClampMin = "0.0"))
+    float TrailMinDistanceMeters = 0.05f;
+
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
     FQuadrotorMworksFrame LatestFrame;
 
@@ -45,8 +51,32 @@ public:
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
     TArray<float> PropellerAnglesDegrees;
 
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
+    TArray<FVector> LocalPlanPointsUnreal;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
+    TArray<FVector> TrajectoryTrailUnreal;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
+    FVector ReferenceUnrealLocation = FVector::ZeroVector;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
+    float RadarNearRadiusCentimeters = 600.0f;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
+    float RadarFarRadiusCentimeters = 900.0f;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
+    float RadarFovDegrees = 120.0f;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
+    float RadarYawDegrees = 0.0f;
+
     UFUNCTION(BlueprintCallable, Category = "MWORKS Playback")
     void ApplyFrame(const FQuadrotorMworksFrame& Frame, float DeltaSeconds);
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Playback")
+    void ResetTrail();
 
     UFUNCTION(BlueprintCallable, Category = "MWORKS Playback")
     FVector MworksPositionToUnreal(const FVector& PositionMeters) const;

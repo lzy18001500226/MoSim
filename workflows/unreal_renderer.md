@@ -29,7 +29,7 @@ MWORKS raw CSV / native result
   -> udp://127.0.0.1:5005
   -> QuadrotorMworksUdpReceiverComponent
   -> QuadrotorMworksPlaybackComponent
-  -> UAV actor, propellers, radar material, local plan spline, follow camera
+  -> UAV actor, propellers, radar material, local plan spline, trajectory trail, follow camera
 ```
 
 The packet schema is `quadrotor.unreal_state.v1`.
@@ -80,7 +80,8 @@ Minimum scene actors:
    - owns `QuadrotorMworksUdpReceiverComponent`;
    - owns `QuadrotorMworksPlaybackComponent`;
    - applies position/attitude from latest frame;
-   - exposes propeller visual angles.
+   - exposes propeller visual angles, `LocalPlanPointsUnreal`,
+     `TrajectoryTrailUnreal`, reference point, and radar sector parameters.
 2. `AQuadrotorMworksMapActor`
    - reads `Content/MworksData/map_open_blocks_render_map.json`;
    - instantiates stepped terrain, random obstacle columns, and L/T wall box

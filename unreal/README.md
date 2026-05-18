@@ -54,8 +54,8 @@ The same plugin also provides `QuadrotorMworksPlaybackComponent`. Add both
 `QuadrotorMworksUdpReceiverComponent` and `QuadrotorMworksPlaybackComponent` to
 the UAV actor. The playback component converts MWORKS meters/radians into
 Unreal actor transforms, exposes propeller visual angles from motor commands,
-and keeps reference position, local plan points, and radar range metadata
-available to Blueprint, Niagara, spline, or material logic.
+and keeps reference position, local plan points, history trail points, and radar
+sector metadata available to Blueprint, Niagara, spline, or material logic.
 
 Default coordinate policy:
 
@@ -115,7 +115,8 @@ python3 scripts/stream_unreal_udp.py \
 4. Add `QuadrotorMworksUdpReceiverComponent` and
    `QuadrotorMworksPlaybackComponent` to the UAV actor.
 5. Bind `OnFrameReceived` or read `LatestFrame` from the playback component for
-   splines, radar materials, propeller meshes, and camera follow logic.
+   splines, `TrajectoryTrailUnreal`, radar materials, propeller meshes, and
+   camera follow logic.
 6. Place `AQuadrotorMworksMapActor` and set `RenderMapJson` to
    `MworksData/map_open_blocks_render_map.json`.
 
