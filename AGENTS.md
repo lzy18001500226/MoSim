@@ -173,6 +173,8 @@ Rules:
 15. If automation cannot open a generated `.msr`, do not ask the user to open it manually. Diagnose the result binding path first. In particular, check whether Sysplorer wrote the current run to a suffixed folder such as `{ModelName}-1` while the opener targets stale `{ModelName}/Result.msr`; fix the cleanup/path logic and rerun.
 16. When Sysplorer/Syslab MCP tools are healthy, interactive model loading, checking, simulation, plotting, animation, and GUI review must go through MCP directly. Project scripts remain for batch runs, result export, metrics, summaries, and regression automation.
 17. Never call Sysplorer `ClearAll`, `ChangeDirectory`, or equivalent broad workspace-reset APIs from MCP automation. Use targeted `model_manager` load/unload/reload operations and explicit absolute project paths instead.
+18. Before any task that touches Sysplorer, Syslab, Sysblock, or Unreal Editor, check MCP availability first with the smallest useful probe. Expected MCP server names are `sysplorer`, `syslab`, and `unreal_engine`. If a required MCP server is missing, has `Tools: (none)`, or an editor-side read-only probe fails, stop the interactive operation and report the exact failing server, command, and error before falling back.
+19. Do not use command-line scripts as a substitute for healthy MCP during interactive model work. Command-line tools are allowed for Git, file inspection, documentation, batch export, metrics, tests, and MCP wrapper diagnostics.
 
 ### 3.5 Sysplorer / Sysblock Modeling Modality Rule
 
