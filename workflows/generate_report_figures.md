@@ -79,6 +79,18 @@ Unreal renderer over UDP. This is a video/display path only: it must not be used
 as simulation evidence and must not feed back into controller, planner, or
 metric calculations.
 
+Before UE scene construction, export the render-only map truth:
+
+```bash
+python3 scripts/export_unreal_scene_map.py --terrain-cell-m 1.0
+```
+
+The output `unreal/MworksUnrealRenderer/Content/MworksData/map_open_blocks_render_map.json`
+uses the same `map_open_blocks.yaml` wall/random-obstacle expansion as the
+planner. Unreal may instantiate terrain, random columns, L/T wall boxes, radar
+materials, and camera presets from this JSON, but the file remains a display
+asset, not a planning input.
+
 Example offline playback stream:
 
 ```bash
@@ -87,6 +99,7 @@ python3 scripts/stream_unreal_udp.py \
   --host 127.0.0.1 \
   --port 5005 \
   --scene-id planning_open_blocks \
+  --map-id map_open_blocks \
   --fps 20 \
   --near-radius-m 6 \
   --far-radius-m 9 \

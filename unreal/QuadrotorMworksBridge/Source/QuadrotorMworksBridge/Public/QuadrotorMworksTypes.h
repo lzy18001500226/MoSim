@@ -27,6 +27,9 @@ struct FQuadrotorMworksFrame
     FVector ReferencePositionMeters = FVector::ZeroVector;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
+    TArray<FVector> LocalPlanPointsMeters;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
     TArray<double> MotorCommand;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
@@ -37,6 +40,9 @@ struct FQuadrotorMworksFrame
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
     double RadarFovDegrees = 120.0;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
+    double RadarYawRadians = 0.0;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
     bool bIsValid = false;

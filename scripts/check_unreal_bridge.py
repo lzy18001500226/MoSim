@@ -16,8 +16,14 @@ REQUIRED_FILES = [
     "Source/QuadrotorMworksBridge/Public/QuadrotorMworksBridge.h",
     "Source/QuadrotorMworksBridge/Public/QuadrotorMworksTypes.h",
     "Source/QuadrotorMworksBridge/Public/QuadrotorMworksUdpReceiverComponent.h",
+    "Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackComponent.h",
+    "Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackActor.h",
+    "Source/QuadrotorMworksBridge/Public/QuadrotorMworksMapActor.h",
     "Source/QuadrotorMworksBridge/Private/QuadrotorMworksBridge.cpp",
     "Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp",
+    "Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackComponent.cpp",
+    "Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackActor.cpp",
+    "Source/QuadrotorMworksBridge/Private/QuadrotorMworksMapActor.cpp",
 ]
 
 
@@ -51,11 +57,51 @@ def main() -> int:
         "quadrotor.unreal_state.",
         "AsyncTask(ENamedThreads::GameThread",
         "OnFrameReceived.Broadcast",
+        "LocalPlanPointsMeters",
     ]
     missing_tokens = [token for token in required_tokens if token not in source]
     if missing_tokens:
         print(f"[FAIL] receiver source missing tokens: {', '.join(missing_tokens)}")
         return 1
+
+    playback = (PLUGIN / "Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackComponent.cpp").read_text(
+        encoding="utf-8"
+    )
+    required_playback_tokens = [
+        "MworksPositionToUnreal",
+        "MworksRotationToUnreal",
+        "SetActorLocationAndRotation",
+        "PropellerAnglesDegrees",
+    ]
+    missing_playback_tokens = [token for token in required_playback_tokens if token not in playback]
+    if missing_playback_tokens:
+        print(f"[FAIL] playback source missing tokens: {', '.join(missing_playback_tokens)}")
+        return 1
+
+    playback_actor = (PLUGIN / "Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackActor.cpp").read_text(
+        encoding="utf-8"
+    )
+    for token in ["MworksUdpReceiver", "MworksPlayback", "ApplyPropellerVisuals"]:
+        if token not in playback_actor:
+            print(f"[FAIL] playback actor missing token: {token}")
+            return 1
+
+    map_actor = (PLUGIN / "Source/QuadrotorMworksBridge/Private/QuadrotorMworksMapActor.cpp").read_text(
+        encoding="utf-8"
+    )
+    for token in [
+        "LoadRenderMapSummary",
+        "random_column_count",
+        "wall_box_count",
+        "UInstancedStaticMeshComponent",
+        "AddBoxInstance",
+        "TerrainInstances",
+        "RandomColumnInstances",
+        "WallInstances",
+    ]:
+        if token not in map_actor:
+            print(f"[FAIL] map actor missing token: {token}")
+            return 1
 
     print(f"[OK] Unreal bridge plugin layout: {PLUGIN}")
     return 0

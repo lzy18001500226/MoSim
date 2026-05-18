@@ -193,6 +193,28 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
         (*Perception)->TryGetNumberField(TEXT("near_radius_m"), OutFrame.RadarNearRadiusMeters);
         (*Perception)->TryGetNumberField(TEXT("far_radius_m"), OutFrame.RadarFarRadiusMeters);
         (*Perception)->TryGetNumberField(TEXT("fov_deg"), OutFrame.RadarFovDegrees);
+        (*Perception)->TryGetNumberField(TEXT("yaw_rad"), OutFrame.RadarYawRadians);
+    }
+
+    const TSharedPtr<FJsonObject>* LocalPlan = nullptr;
+    if (Root->TryGetObjectField(TEXT("local_plan"), LocalPlan) && LocalPlan && LocalPlan->IsValid())
+    {
+        const TArray<TSharedPtr<FJsonValue>>* Points = nullptr;
+        if ((*LocalPlan)->TryGetArrayField(TEXT("points_m"), Points) && Points)
+        {
+            OutFrame.LocalPlanPointsMeters.Reset();
+            for (const TSharedPtr<FJsonValue>& PointValue : *Points)
+            {
+                const TArray<TSharedPtr<FJsonValue>>* PointArray = nullptr;
+                if (PointValue.IsValid() && PointValue->TryGetArray(PointArray) && PointArray && PointArray->Num() >= 3)
+                {
+                    OutFrame.LocalPlanPointsMeters.Add(FVector(
+                        (*PointArray)[0]->AsNumber(),
+                        (*PointArray)[1]->AsNumber(),
+                        (*PointArray)[2]->AsNumber()));
+                }
+            }
+        }
     }
 
     OutFrame.bIsValid = true;

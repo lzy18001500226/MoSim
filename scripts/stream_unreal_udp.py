@@ -87,6 +87,7 @@ def make_frame(
     *,
     sequence: int,
     scene_id: str,
+    map_id: str,
     near_radius_m: float,
     far_radius_m: float,
     fov_deg: float,
@@ -96,10 +97,27 @@ def make_frame(
     reference = [finite(row.get(name), math.nan) for name in REFERENCE_COLUMNS]
     motor = [finite(row.get(name), math.nan) for name in MOTOR_COLUMNS]
     yaw = rpy[2]
+    local_plan = [position]
+    if all(math.isfinite(v) for v in reference):
+        for i in range(1, 9):
+            alpha = i / 8.0
+            # Render-side preview only. True planning evidence stays in MWORKS raw/native outputs.
+            bend = math.sin(alpha * math.pi) * 0.18
+            dx = reference[0] - position[0]
+            dy = reference[1] - position[1]
+            length = math.hypot(dx, dy)
+            nx = -dy / length if length > 1e-9 else 0.0
+            ny = dx / length if length > 1e-9 else 0.0
+            local_plan.append([
+                position[0] + alpha * dx + bend * nx,
+                position[1] + alpha * dy + bend * ny,
+                position[2] + alpha * (reference[2] - position[2]),
+            ])
     return {
         "schema": SCHEMA_VERSION,
         "type": "frame",
         "scene_id": scene_id,
+        "map_id": map_id,
         "seq": sequence,
         "t": finite(row.get("time")),
         "units": {"position": "m", "angle": "rad", "time": "s"},
@@ -120,7 +138,8 @@ def make_frame(
             "fov_deg": fov_deg,
         },
         "local_plan": {
-            "points_m": [position, reference] if all(math.isfinite(v) for v in reference) else [position],
+            "points_m": local_plan,
+            "render_only": True,
         },
     }
 
@@ -156,6 +175,7 @@ def stream_rows(args: argparse.Namespace) -> int:
         "schema": SCHEMA_VERSION,
         "type": "hello",
         "scene_id": scene_id,
+        "map_id": args.map_id,
         "source": str(args.raw_csv),
         "fieldnames": fieldnames,
         "frame_count": len(rows),
@@ -184,6 +204,7 @@ def stream_rows(args: argparse.Namespace) -> int:
                     row,
                     sequence=seq,
                     scene_id=scene_id,
+                    map_id=args.map_id,
                     near_radius_m=args.near_radius_m,
                     far_radius_m=args.far_radius_m,
                     fov_deg=args.fov_deg,
@@ -213,6 +234,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=5005)
     parser.add_argument("--scene-id", default=None)
+    parser.add_argument("--map-id", default="map_open_blocks")
     parser.add_argument("--start-time", type=float, default=None)
     parser.add_argument("--end-time", type=float, default=None)
     parser.add_argument("--stride", type=int, default=1)

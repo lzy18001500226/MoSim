@@ -50,16 +50,74 @@ Expected packet schema:
 quadrotor.unreal_state.v1
 ```
 
+The same plugin also provides `QuadrotorMworksPlaybackComponent`. Add both
+`QuadrotorMworksUdpReceiverComponent` and `QuadrotorMworksPlaybackComponent` to
+the UAV actor. The playback component converts MWORKS meters/radians into
+Unreal actor transforms, exposes propeller visual angles from motor commands,
+and keeps reference position, local plan points, and radar range metadata
+available to Blueprint, Niagara, spline, or material logic.
+
+Default coordinate policy:
+
+```text
+MWORKS: X/Y/Z in meters, roll/pitch/yaw in radians
+Unreal: X/Z kept, Y sign inverted by default, centimeters
+```
+
+Coordinate conversion belongs in Unreal. Do not change raw CSV units.
+
+## Map Asset
+
+Generate the render-only map JSON from the same planner config used by MWORKS:
+
+```bash
+python3 scripts/export_unreal_scene_map.py --terrain-cell-m 1.0
+```
+
+Default output:
+
+```text
+unreal/MworksUnrealRenderer/Content/MworksData/map_open_blocks_render_map.json
+```
+
+This file contains map bounds, start/goal, a terrain height grid, random
+obstacle columns, L/T wall boxes, and material tags. It is visualization input
+only. MWORKS/YAML/metrics remain the source of truth.
+
+`AQuadrotorMworksMapActor` can read this JSON and instantiate preview geometry
+from UE's basic cube mesh:
+
+- `TerrainInstances`: stepped terrain cells from the exported height grid;
+- `RandomColumnInstances`: random obstacle columns;
+- `WallInstances`: L/T wall box segments.
+
+The actor is a renderer-side preview. Collision truth, planner occupancy, and
+metrics still come from the MWORKS/YAML pipeline.
+
+## Playback Command
+
+Use a real MWORKS raw CSV:
+
+```bash
+python3 scripts/stream_unreal_udp.py \
+  results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/raw/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.csv \
+  --host 127.0.0.1 \
+  --port 5005 \
+  --map-id map_open_blocks \
+  --scene-id planning_open_blocks_ue_review
+```
+
 ## Integration
 
 1. Create or open a UE 5.7 C++ project.
 2. Copy `unreal/QuadrotorMworksBridge` into the project's `Plugins/` folder.
 3. Enable the plugin and rebuild the project.
-4. Add `QuadrotorMworksUdpReceiverComponent` to an Actor.
-5. Bind `OnFrameReceived` in Blueprint or C++.
-6. Convert MWORKS meters to Unreal centimeters in the receiving Actor.
-
-Coordinate conversion belongs in Unreal. Do not change raw CSV units.
+4. Add `QuadrotorMworksUdpReceiverComponent` and
+   `QuadrotorMworksPlaybackComponent` to the UAV actor.
+5. Bind `OnFrameReceived` or read `LatestFrame` from the playback component for
+   splines, radar materials, propeller meshes, and camera follow logic.
+6. Place `AQuadrotorMworksMapActor` and set `RenderMapJson` to
+   `MworksData/map_open_blocks_render_map.json`.
 
 `UnrealMCP` is loaded from:
 
