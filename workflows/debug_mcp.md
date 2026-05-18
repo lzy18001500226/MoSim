@@ -14,7 +14,7 @@ Expected:
 syslab
 Tools: detect_syslab_toolboxes, evaluate_julia_code, ...
 
-sysplorer_mcp
+sysplorer
 Tools: call_code, check_model, simulate_model, result_manager, ...
 ```
 
@@ -43,7 +43,7 @@ process/window before continuing.
 
 When the task is interactive model review, do not use project scripts as a
 wrapper around MCP. Use the MCP tools directly. If the Codex tool surface does
-not expose a `sysplorer_mcp` namespace, connect to the configured stdio wrapper
+not expose a `sysplorer` namespace, connect to the configured stdio wrapper
 and issue JSON-RPC MCP calls directly; record the log under `results/`.
 
 For `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock`, follow the
@@ -109,7 +109,7 @@ args = []
 startup_timeout_sec = 180
 tool_timeout_sec = 300
 
-[mcp_servers.sysplorer_mcp]
+[mcp_servers.sysplorer]
 command = "/home/<WSL_USER>/mcp-wrappers/sysplorer_mcp.sh"
 args = []
 startup_timeout_sec = 180
@@ -134,7 +134,7 @@ $content = [regex]::Replace(
 
 $content = [regex]::Replace(
   $content,
-  '(?ms)^\[mcp_servers\.sysplorer_mcp\]\s*.*?(?=^\[mcp_servers\.|\z)',
+  '(?ms)^\[mcp_servers\.sysplorer\]\s*.*?(?=^\[mcp_servers\.|\z)',
   ''
 )
 
@@ -230,7 +230,7 @@ report `UnrealMCP_Advanced` and tools such as `get_actors_in_level`,
 Codex MCP config entry, if enabling manually:
 
 ```toml
-[mcp_servers.unreal_mcp]
+[mcp_servers.unreal_engine]
 command = "/mnt/c/Users/HP/Desktop/Quadrotor/scripts/unreal_mcp_wsl_wrapper.sh"
 args = []
 startup_timeout_sec = 180

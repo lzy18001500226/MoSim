@@ -261,7 +261,7 @@ Run `/mcp` in Codex.
 Success criteria:
 
 ```text
-sysplorer_mcp Tools include:
+sysplorer Tools include:
 session_manager
 load_library
 model_manager

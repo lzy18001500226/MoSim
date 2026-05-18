@@ -219,21 +219,21 @@ OFFICIAL_RESULT_VARIABLE_CANDIDATES = [
 ]
 
 WRAPPER_SCRIPTS = {
-    "syslab_mcp": [
+    "syslab": [
         "/home/linux/mcp-wrappers/syslab_mcp.sh",
         "~/mcp-wrappers/syslab_mcp.sh",
         "~/mcp-wrappers/syslab_mcp.bat",
         "~/mcp-wrappers/syslab_mcp.cmd",
         "~/mcp-wrappers/syslab_mcp.ps1",
     ],
-    "sysplorer_mcp": [
+    "sysplorer": [
         "/home/linux/mcp-wrappers/sysplorer_mcp.sh",
         "~/mcp-wrappers/sysplorer_mcp.sh",
         "~/mcp-wrappers/sysplorer_mcp.bat",
         "~/mcp-wrappers/sysplorer_mcp.cmd",
         "~/mcp-wrappers/sysplorer_mcp.ps1",
     ],
-    "filesystem_mcp": [
+    "filesystem": [
         "/home/linux/mcp-wrappers/filesystem_mcp.sh",
         "~/mcp-wrappers/filesystem_mcp.sh",
         "~/mcp-wrappers/filesystem_mcp.bat",
