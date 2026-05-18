@@ -1,0 +1,27 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.7",
+	"Category": "Simulation",
+	"Description": "External Unreal renderer for MWORKS quadrotor visualization.",
+	"AdditionalPluginDirectories": [
+		"../",
+		"../../Skills/unreal-engine-mcp/FlopperamUnrealMCP/Plugins"
+	],
+	"Plugins": [
+		{
+			"Name": "UnrealMCP",
+			"Enabled": true
+		},
+		{
+			"Name": "QuadrotorMworksBridge",
+			"Enabled": true
+		},
+		{
+			"Name": "ModelingToolsEditorMode",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		}
+	]
+}

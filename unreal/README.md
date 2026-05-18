@@ -19,7 +19,18 @@ external visualization layer for:
 Unreal must not feed data back into the controller, planner, collision checker,
 or metrics.
 
-## Current Plugin
+## Project Entry
+
+Open this project when using Unreal as the external renderer:
+
+```text
+unreal/MworksUnrealRenderer/MworksUnrealRenderer.uproject
+```
+
+It enables the project-owned UDP bridge and the local Unreal MCP editor plugin
+without copying either plugin into the engine install directory.
+
+## Current Plugins
 
 `QuadrotorMworksBridge` provides a lightweight UDP receiver component:
 
@@ -49,3 +60,13 @@ quadrotor.unreal_state.v1
 6. Convert MWORKS meters to Unreal centimeters in the receiving Actor.
 
 Coordinate conversion belongs in Unreal. Do not change raw CSV units.
+
+`UnrealMCP` is loaded from:
+
+```text
+Skills/unreal-engine-mcp/FlopperamUnrealMCP/Plugins/UnrealMCP
+```
+
+Use it only to automate Unreal Editor scene setup. If `get_actors_in_level`
+returns `Connection refused`, the WSL MCP wrapper is working but Unreal Editor
+has not loaded/listened through the plugin yet.

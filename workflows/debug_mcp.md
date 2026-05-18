@@ -252,6 +252,26 @@ unreal/QuadrotorMworksBridge/
 `UnrealMCP` controls the editor through MCP. `QuadrotorMworksBridge` receives
 MWORKS simulation state for video rendering. They solve different problems.
 
+Project-local Unreal renderer entry:
+
+```text
+unreal/MworksUnrealRenderer/MworksUnrealRenderer.uproject
+```
+
+Open this project in UE 5.7 when using MCP-driven scene setup. It enables both
+`UnrealMCP` and `QuadrotorMworksBridge` through project-local plugin search
+paths. Do not copy these plugins into `D:\Program Files\Epic Games` unless the
+user explicitly asks for a global install.
+
+Interpretation of Unreal MCP checks:
+
+| Check | Meaning |
+|---|---|
+| MCP `initialize` succeeds | WSL wrapper and Python server are working |
+| MCP `tools/list` returns tools | stdio MCP side is usable |
+| `get_actors_in_level` returns `Connection refused` | UE Editor plugin is not loaded/listening yet |
+| `get_actors_in_level` returns actors | Editor-side MCP is ready for scene automation |
+
 ---
 
 ## 8. Recommended Syslab Wrapper
