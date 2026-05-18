@@ -11,6 +11,15 @@ Open:
 unreal/MworksUnrealRenderer/MworksUnrealRenderer.uproject
 ```
 
+From WSL, use the project-local launcher:
+
+```bash
+scripts/open_unreal_renderer.sh
+```
+
+Override `UE_EDITOR` only if Unreal is installed somewhere other than
+`D:\Program Files\Epic Games\UE_5.7`.
+
 The project enables:
 
 ```text
@@ -102,10 +111,10 @@ python3 scripts/export_unreal_scene_map.py --terrain-cell-m 1.0
 python3 scripts/stream_unreal_udp.py <raw.csv> --max-frames 2 --dry-run
 ```
 
-If Unreal MCP is available, first run a read-only probe such as project context
-or scene brief. If the wrapper hangs or the editor is not listening, do not
-modify the scene through MCP; continue with source-level changes and report the
-MCP state.
+If Unreal MCP is available, open the project first, then run a read-only probe
+such as project context or scene brief. If the wrapper hangs or the editor is
+not listening, do not modify the scene through MCP; continue with source-level
+changes and report the MCP state.
 
 ## Boundaries
 

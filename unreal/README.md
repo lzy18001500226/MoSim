@@ -27,6 +27,12 @@ Open this project when using Unreal as the external renderer:
 unreal/MworksUnrealRenderer/MworksUnrealRenderer.uproject
 ```
 
+WSL launcher:
+
+```bash
+scripts/open_unreal_renderer.sh
+```
+
 It enables the project-owned UDP bridge and the local Unreal MCP editor plugin
 without copying either plugin into the engine install directory.
 
