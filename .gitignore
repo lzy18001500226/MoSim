@@ -23,6 +23,16 @@ node_modules/
 npm-debug.log*
 .mcp-servers/
 
+# Unreal local build outputs
+unreal/**/Binaries/
+unreal/**/Intermediate/
+unreal/**/Saved/
+unreal/**/DerivedDataCache/
+*.sln
+*.suo
+*.opensdf
+*.VC.db
+
 # Codex local state
 .codex/
 .mcp.json

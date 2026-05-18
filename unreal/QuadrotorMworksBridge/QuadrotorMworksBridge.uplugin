@@ -1,0 +1,19 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "0.1.0",
+  "FriendlyName": "Quadrotor MWORKS Bridge",
+  "Description": "Receives MWORKS quadrotor render-only UDP state frames for Unreal visualization.",
+  "Category": "Simulation",
+  "CreatedBy": "Quadrotor Project",
+  "CanContainContent": false,
+  "IsBetaVersion": true,
+  "Installed": false,
+  "Modules": [
+    {
+      "Name": "QuadrotorMworksBridge",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ]
+}
