@@ -38,6 +38,7 @@ Available helper script:
 scripts/plot_results.py
 scripts/plot_results.jl
 scripts/generate_replay_html.py
+scripts/stream_unreal_udp.py
 ```
 
 `scripts/plot_results.py` generates dependency-free SVG figures from a standard
@@ -72,6 +73,55 @@ Output:
 ```text
 results/{group}/{scene}/{experiment}/replay_html/{replay_name}.html
 ```
+
+`scripts/stream_unreal_udp.py` streams a standard MWORKS raw CSV to an external
+Unreal renderer over UDP. This is a video/display path only: it must not be used
+as simulation evidence and must not feed back into controller, planner, or
+metric calculations.
+
+Example offline playback stream:
+
+```bash
+python3 scripts/stream_unreal_udp.py \
+  results/planning/sunray150_planning_open_blocks_linear_mpc_sysblock/gui_review_route_filtered_obstacles_1p0_full_50hz_step2/raw/gui_review_route_filtered_obstacles_1p0_full_50hz_step2.csv \
+  --host 127.0.0.1 \
+  --port 5005 \
+  --scene-id planning_open_blocks \
+  --fps 20 \
+  --near-radius-m 6 \
+  --far-radius-m 9 \
+  --fov-deg 120
+```
+
+Packet protocol:
+
+```json
+{
+  "schema": "quadrotor.unreal_state.v1",
+  "type": "frame",
+  "scene_id": "planning_open_blocks",
+  "seq": 0,
+  "t": 0.0,
+  "uav": {
+    "id": "uav_1",
+    "position_m": [-41.0, -26.0, 1.5],
+    "rpy_rad": [0.0, 0.0, 0.0],
+    "motor_command": [0.0, 0.0, 0.0, 0.0]
+  },
+  "reference": {"position_m": [-41.0, -26.0, 1.5]},
+  "perception": {
+    "radar_origin_m": [-41.0, -26.0, 1.5],
+    "yaw_rad": 0.0,
+    "near_radius_m": 6.0,
+    "far_radius_m": 9.0,
+    "fov_deg": 120.0
+  }
+}
+```
+
+Coordinate rule: packets keep MWORKS meters/radians. The Unreal receiver handles
+centimeter conversion, material selection, camera follow, radar-sector display,
+and any engine-specific axis conversion.
 
 ---
 
