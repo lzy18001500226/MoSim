@@ -89,6 +89,17 @@ def main() -> int:
         if token not in playback_actor:
             print(f"[FAIL] playback actor missing token: {token}")
             return 1
+    for token in [
+        "LocalPlanSpline",
+        "TrajectoryTrailSpline",
+        "ReferenceMarker",
+        "RadarDirectionMarker",
+        "UpdateVisualHelpers",
+        "UpdateSplineFromPoints",
+    ]:
+        if token not in playback_actor:
+            print(f"[FAIL] playback actor visualization helper missing token: {token}")
+            return 1
     for token in ["ApplyDefaultMaterials", "BodyColor", "PropellerColor", "BasicShapeMaterial"]:
         if token not in playback_actor:
             print(f"[FAIL] playback actor material setup missing token: {token}")

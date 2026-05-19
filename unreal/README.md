@@ -64,6 +64,18 @@ Unreal actor transforms, exposes propeller visual angles from motor commands,
 and keeps reference position, local plan points, history trail points, and radar
 sector metadata available to Blueprint, Niagara, spline, or material logic.
 
+`AQuadrotorMworksPlaybackActor` is the current C++ review actor. It contains:
+
+- a simple body mesh and four propeller meshes;
+- `LocalPlanSpline` for the current local plan;
+- `TrajectoryTrailSpline` for the actual history trail;
+- `ReferenceMarker` for the current reference point;
+- `RadarDirectionMarker` for the yaw-aligned radar preview direction.
+
+These helpers are render-only. They read `QuadrotorMworksPlaybackComponent`
+state and must not feed back into MWORKS, planning, collision checks, metrics,
+or event logs.
+
 Default coordinate policy:
 
 ```text

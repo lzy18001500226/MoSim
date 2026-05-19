@@ -7,6 +7,7 @@
 class UQuadrotorMworksPlaybackComponent;
 class UQuadrotorMworksUdpReceiverComponent;
 class UMaterialInterface;
+class USplineComponent;
 class UStaticMeshComponent;
 
 UCLASS()
@@ -35,6 +36,18 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS")
     UStaticMeshComponent* PropellerMesh4 = nullptr;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Visualization")
+    USplineComponent* LocalPlanSpline = nullptr;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Visualization")
+    USplineComponent* TrajectoryTrailSpline = nullptr;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Visualization")
+    UStaticMeshComponent* ReferenceMarker = nullptr;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Visualization")
+    UStaticMeshComponent* RadarDirectionMarker = nullptr;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS")
     UQuadrotorMworksUdpReceiverComponent* Receiver = nullptr;
 
@@ -50,6 +63,18 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
     FLinearColor PropellerColor = FLinearColor(0.05f, 0.05f, 0.05f, 1.0f);
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
+    FLinearColor ReferenceColor = FLinearColor(1.0f, 0.88f, 0.1f, 1.0f);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
+    FLinearColor RadarColor = FLinearColor(0.0f, 0.75f, 1.0f, 1.0f);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization")
+    bool bUpdateVisualHelpers = true;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization", meta = (ClampMin = "1"))
+    int32 MaxSplinePoints = 600;
+
     UFUNCTION(BlueprintCallable, Category = "MWORKS")
     void ApplyDefaultMaterials();
 
@@ -59,4 +84,6 @@ protected:
 
 private:
     void ApplyPropellerVisuals() const;
+    void UpdateVisualHelpers() const;
+    void UpdateSplineFromPoints(USplineComponent* Spline, const TArray<FVector>& Points) const;
 };
