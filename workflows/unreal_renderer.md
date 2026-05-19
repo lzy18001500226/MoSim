@@ -109,6 +109,77 @@ Cosys-AirSim or Colosseum for Unreal API/sensor/rendering patterns
   + project-owned QuadrotorMworksBridge for MWORKS state playback
 ```
 
+## Gazebo Architecture Lessons
+
+Gazebo is useful as an architecture reference even if it is not the final video
+renderer. The important lesson is separation of concerns:
+
+```text
+backend server:
+  physics system + sensor system + user command system + scene broadcaster
+
+frontend client:
+  GUI plugins + 3D view + visualization widgets
+
+shared libraries:
+  gz-physics + gz-rendering + gz-sensors + gz-transport + sdformat
+```
+
+This is why Gazebo can run efficiently with many visual objects:
+
+1. Physics is a compiled native plugin, not a symbolic Modelica/Sysblock
+   equation system containing all visual geometry.
+2. Visual meshes and collision geometry are separate. A detailed `.dae` mesh can
+   be rendered while physics uses a simpler collision proxy.
+3. The GUI/client can be separated from the server/backend. Headless or reduced
+   GUI runs avoid rendering overhead during batch simulation.
+4. Rendering is handled by a rendering library and plugins such as OGRE /
+   OGRE2 / OptiX, not by thousands of dynamic model components in the solver.
+5. Sensors are plugin systems. Rendering sensors such as cameras and GPU lidar
+   use the rendering pipeline, while physics/contact sensors can use physics
+   state. Sensor update rates can be lower than the physics step.
+6. Transport messages broadcast pose, scene, sensor, and command data across
+   process boundaries instead of coupling every visual object into the dynamics
+   equations.
+
+For this project, copy the architecture pattern, not Gazebo itself:
+
+```text
+MWORKS/Sysplorer:
+  closed-loop dynamics, controller, planner, fault/safety truth
+
+external renderer:
+  UE5 scene, materials, camera, radar visualization, video
+
+transport:
+  TCP/UDP state frames or raw/native result playback
+
+asset registry:
+  visual mesh + material + collision proxy + truth obstacle id
+```
+
+Do not push dense terrain blocks, thousands of obstacle visuals, local radar
+overlays, or camera behavior into the Sysplorer solver layer. Keep Sysplorer
+animation as a low-complexity audit view and move video-quality rendering to
+the external renderer.
+
+Official Gazebo documentation entry points for study:
+
+| Topic | Official source |
+| --- | --- |
+| Gazebo Sim architecture | `https://gazebosim.org/docs/harmonic/architecture/` |
+| Gazebo documentation source repo | `https://github.com/gazebosim/docs` |
+| Gazebo Rendering library | `https://gazebosim.org/libs/rendering/` |
+| Gazebo Sensors library | `https://gazebosim.org/libs/sensors/` |
+| Gazebo Physics plugin docs | `https://gazebosim.org/api/physics/9/physicsplugin.html` |
+| Gazebo Sim physics engine selection | `https://gazebosim.org/api/sim/8/physics.html` |
+
+There is no single authoritative PDF manual for current Gazebo Sim. The
+official manual is the versioned website plus the `gazebosim/docs` repository.
+If a local copy is needed for offline study, clone only the docs repository or
+only the `harmonic/` and `common/` folders; do not commit built HTML, generated
+Sphinx output, videos, or downloaded Gazebo Fuel assets.
+
 Before importing any external scene asset, check:
 
 1. license and attribution;
