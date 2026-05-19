@@ -140,6 +140,46 @@ This is an external-renderer route, not a replacement for the current UE bridge.
 Use it only if the local RflySim3D scenes produce better video faster than
 building a project-owned UE scene.
 
+Project-local prototype bridge:
+
+```bash
+python3 scripts/stream_rflysim3d.py \
+  results/official/example3_figure8/official_example3_linear_mpc_sysblock/raw/official_example3_linear_mpc_sysblock.csv \
+  --dry-run \
+  --max-frames 2
+```
+
+Actual RflySim3D playback requires the installed RflySim3D window to be open:
+
+```bash
+python3 scripts/stream_rflysim3d.py \
+  results/official/example3_figure8/official_example3_linear_mpc_sysblock/raw/official_example3_linear_mpc_sysblock.csv \
+  --rflysim-root /mnt/d/PX4PSP \
+  --transport direct \
+  --host 127.0.0.1 \
+  --window-id 0 \
+  --vehicle-type 3 \
+  --map-name MapData \
+  --resolution 1280x720w \
+  --max-fps 60 \
+  --fps 30
+```
+
+Coordinate and rotor-display policy:
+
+1. Project raw CSV uses `z` positive upward. RflySim3D examples use NED, so the
+   bridge sends `PosE=[x, y, -z]`.
+2. Project raw CSV `u1..u4` are controller/motor command channels, not verified
+   physical RPM. The bridge defaults to a constant visual RPM. Use
+   `--motor-mode command_magnitude` only for render-side rotor-speed variation,
+   not for evidence claims.
+3. If RflySim3D shows the vehicle underground, oversized, or mirrored, fix the
+   bridge coordinate/scale arguments. Do not alter MWORKS raw evidence.
+4. The bridge defaults to `--transport direct`, which sends the documented
+   RflySim3D UDP structures without importing the RflySim Python SDK. Use
+   `--transport sdk` only after the local Python environment has the SDK
+   dependencies such as OpenCV available.
+
 Do not rely on RflySim for controller truth unless a future task explicitly
 builds and validates a bidirectional co-simulation. For the current competition
 evidence chain, RflySim can only be:
