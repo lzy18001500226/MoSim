@@ -3,7 +3,9 @@
 #include "Components/SceneComponent.h"
 #include "Components/SplineComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/MeshComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "ProceduralMeshComponent.h"
 #include "QuadrotorMworksPlaybackComponent.h"
 #include "QuadrotorMworksUdpReceiverComponent.h"
 #include "UObject/ConstructorHelpers.h"
@@ -44,16 +46,28 @@ AQuadrotorMworksPlaybackActor::AQuadrotorMworksPlaybackActor()
 
     ReferenceMarker = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ReferenceMarker"));
     RadarDirectionMarker = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RadarDirectionMarker"));
+    RadarNearSectorMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("RadarNearSectorMesh"));
+    RadarFarSectorMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("RadarFarSectorMesh"));
     ReferenceMarker->SetupAttachment(SceneRoot);
     RadarDirectionMarker->SetupAttachment(SceneRoot);
+    RadarNearSectorMesh->SetupAttachment(SceneRoot);
+    RadarFarSectorMesh->SetupAttachment(SceneRoot);
     ReferenceMarker->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     RadarDirectionMarker->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    RadarNearSectorMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    RadarFarSectorMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     ReferenceMarker->SetUsingAbsoluteLocation(true);
     ReferenceMarker->SetUsingAbsoluteRotation(true);
     ReferenceMarker->SetUsingAbsoluteScale(true);
     RadarDirectionMarker->SetUsingAbsoluteLocation(true);
     RadarDirectionMarker->SetUsingAbsoluteRotation(true);
     RadarDirectionMarker->SetUsingAbsoluteScale(true);
+    RadarNearSectorMesh->SetUsingAbsoluteLocation(true);
+    RadarNearSectorMesh->SetUsingAbsoluteRotation(true);
+    RadarNearSectorMesh->SetUsingAbsoluteScale(true);
+    RadarFarSectorMesh->SetUsingAbsoluteLocation(true);
+    RadarFarSectorMesh->SetUsingAbsoluteRotation(true);
+    RadarFarSectorMesh->SetUsingAbsoluteScale(true);
 
     PropellerMesh1->SetRelativeLocation(FVector(32.0, 32.0, 0.0));
     PropellerMesh2->SetRelativeLocation(FVector(32.0, -32.0, 0.0));
@@ -99,7 +113,7 @@ void AQuadrotorMworksPlaybackActor::OnConstruction(const FTransform& Transform)
 
 void AQuadrotorMworksPlaybackActor::ApplyDefaultMaterials()
 {
-    auto ApplyColor = [this](UStaticMeshComponent* Component, const FLinearColor& Color)
+    auto ApplyColor = [this](UMeshComponent* Component, const FLinearColor& Color)
     {
         if (!Component || !BaseMaterial)
         {
@@ -121,6 +135,8 @@ void AQuadrotorMworksPlaybackActor::ApplyDefaultMaterials()
     ApplyColor(PropellerMesh4, PropellerColor);
     ApplyColor(ReferenceMarker, ReferenceColor);
     ApplyColor(RadarDirectionMarker, RadarColor);
+    ApplyColor(RadarNearSectorMesh, RadarColor);
+    ApplyColor(RadarFarSectorMesh, RadarFarColor);
 }
 
 void AQuadrotorMworksPlaybackActor::Tick(float DeltaSeconds)
@@ -189,4 +205,95 @@ void AQuadrotorMworksPlaybackActor::UpdateVisualHelpers() const
         RadarDirectionMarker->SetWorldRotation(FRotator(0.0f, Playback->RadarYawDegrees, 0.0f));
         RadarDirectionMarker->SetWorldScale3D(FVector(Length / 100.0f, 0.035f, 0.025f));
     }
+
+    UpdateRadarSectorMesh();
+}
+
+void AQuadrotorMworksPlaybackActor::UpdateRadarSectorMesh() const
+{
+    if (!Playback)
+    {
+        return;
+    }
+
+    if (!bShowRadarSectorMesh)
+    {
+        if (RadarNearSectorMesh)
+        {
+            RadarNearSectorMesh->ClearAllMeshSections();
+        }
+        if (RadarFarSectorMesh)
+        {
+            RadarFarSectorMesh->ClearAllMeshSections();
+        }
+        return;
+    }
+
+    BuildSectorMesh(RadarNearSectorMesh, 0.0f, Playback->RadarNearRadiusCentimeters, RadarColor);
+    BuildSectorMesh(
+        RadarFarSectorMesh,
+        Playback->RadarNearRadiusCentimeters,
+        Playback->RadarFarRadiusCentimeters,
+        RadarFarColor);
+}
+
+void AQuadrotorMworksPlaybackActor::BuildSectorMesh(
+    UProceduralMeshComponent* Mesh,
+    float InnerRadiusCm,
+    float OuterRadiusCm,
+    const FLinearColor& Color) const
+{
+    if (!Mesh || !Playback || OuterRadiusCm <= 0.0f || Playback->RadarFovDegrees <= 0.0f)
+    {
+        return;
+    }
+
+    const int32 Segments = FMath::Max(RadarSectorSegments, 3);
+    const float HalfFovRadians = FMath::DegreesToRadians(0.5f * Playback->RadarFovDegrees);
+    const float YawRadians = FMath::DegreesToRadians(Playback->RadarYawDegrees);
+    const FVector Origin = Playback->LatestUnrealLocation + FVector(0.0f, 0.0f, RadarSectorHeightOffsetCentimeters);
+
+    TArray<FVector> Vertices;
+    TArray<int32> Triangles;
+    TArray<FVector> Normals;
+    TArray<FVector2D> UVs;
+    TArray<FLinearColor> VertexColors;
+    TArray<FProcMeshTangent> Tangents;
+
+    Vertices.Reserve((Segments + 1) * 2);
+    for (int32 Index = 0; Index <= Segments; ++Index)
+    {
+        const float Alpha = static_cast<float>(Index) / static_cast<float>(Segments);
+        const float Angle = YawRadians - HalfFovRadians + Alpha * 2.0f * HalfFovRadians;
+        const FVector Direction(FMath::Cos(Angle), FMath::Sin(Angle), 0.0f);
+        Vertices.Add(Origin + Direction * FMath::Max(InnerRadiusCm, 0.0f));
+        Vertices.Add(Origin + Direction * OuterRadiusCm);
+        Normals.Add(FVector::UpVector);
+        Normals.Add(FVector::UpVector);
+        UVs.Add(FVector2D(Alpha, 0.0f));
+        UVs.Add(FVector2D(Alpha, 1.0f));
+        VertexColors.Add(Color);
+        VertexColors.Add(Color);
+        Tangents.Add(FProcMeshTangent(1.0f, 0.0f, 0.0f));
+        Tangents.Add(FProcMeshTangent(1.0f, 0.0f, 0.0f));
+    }
+
+    for (int32 Index = 0; Index < Segments; ++Index)
+    {
+        const int32 A = 2 * Index;
+        const int32 B = A + 1;
+        const int32 C = A + 2;
+        const int32 D = A + 3;
+        Triangles.Append({A, B, D, A, D, C});
+    }
+
+    Mesh->CreateMeshSection_LinearColor(
+        0,
+        Vertices,
+        Triangles,
+        Normals,
+        UVs,
+        VertexColors,
+        Tangents,
+        false);
 }

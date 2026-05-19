@@ -7,6 +7,7 @@
 class UQuadrotorMworksPlaybackComponent;
 class UQuadrotorMworksUdpReceiverComponent;
 class UMaterialInterface;
+class UProceduralMeshComponent;
 class USplineComponent;
 class UStaticMeshComponent;
 
@@ -48,6 +49,12 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Visualization")
     UStaticMeshComponent* RadarDirectionMarker = nullptr;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Visualization")
+    UProceduralMeshComponent* RadarNearSectorMesh = nullptr;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Visualization")
+    UProceduralMeshComponent* RadarFarSectorMesh = nullptr;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS")
     UQuadrotorMworksUdpReceiverComponent* Receiver = nullptr;
 
@@ -69,11 +76,23 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
     FLinearColor RadarColor = FLinearColor(0.0f, 0.75f, 1.0f, 1.0f);
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
+    FLinearColor RadarFarColor = FLinearColor(0.72f, 0.84f, 0.88f, 0.55f);
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization")
     bool bUpdateVisualHelpers = true;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization")
+    bool bShowRadarSectorMesh = true;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization", meta = (ClampMin = "1"))
     int32 MaxSplinePoints = 600;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization", meta = (ClampMin = "3"))
+    int32 RadarSectorSegments = 32;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization")
+    float RadarSectorHeightOffsetCentimeters = 5.0f;
 
     UFUNCTION(BlueprintCallable, Category = "MWORKS")
     void ApplyDefaultMaterials();
@@ -86,4 +105,6 @@ private:
     void ApplyPropellerVisuals() const;
     void UpdateVisualHelpers() const;
     void UpdateSplineFromPoints(USplineComponent* Spline, const TArray<FVector>& Points) const;
+    void UpdateRadarSectorMesh() const;
+    void BuildSectorMesh(UProceduralMeshComponent* Mesh, float InnerRadiusCm, float OuterRadiusCm, const FLinearColor& Color) const;
 };

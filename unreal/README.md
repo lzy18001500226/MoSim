@@ -70,7 +70,9 @@ sector metadata available to Blueprint, Niagara, spline, or material logic.
 - `LocalPlanSpline` for the current local plan;
 - `TrajectoryTrailSpline` for the actual history trail;
 - `ReferenceMarker` for the current reference point;
-- `RadarDirectionMarker` for the yaw-aligned radar preview direction.
+- `RadarDirectionMarker` for the yaw-aligned radar preview direction;
+- `RadarNearSectorMesh` and `RadarFarSectorMesh` for the near/weak radar
+  sector preview driven by packet radius, FOV, and yaw.
 
 These helpers are render-only. They read `QuadrotorMworksPlaybackComponent`
 state and must not feed back into MWORKS, planning, collision checks, metrics,

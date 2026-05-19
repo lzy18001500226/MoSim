@@ -14,6 +14,7 @@ public class QuadrotorMworksBridge : ModuleRules
             "Json",
             "JsonUtilities",
             "Networking",
+            "ProceduralMeshComponent",
             "Sockets"
         });
     }

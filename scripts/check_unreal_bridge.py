@@ -42,7 +42,7 @@ def main() -> int:
         return 1
 
     build_text = (PLUGIN / "Source/QuadrotorMworksBridge/QuadrotorMworksBridge.Build.cs").read_text(encoding="utf-8")
-    required_modules = ["Json", "JsonUtilities", "Networking", "Sockets"]
+    required_modules = ["Json", "JsonUtilities", "Networking", "ProceduralMeshComponent", "Sockets"]
     missing_modules = [name for name in required_modules if f'"{name}"' not in build_text]
     if missing_modules:
         print(f"[FAIL] Build.cs missing dependencies: {', '.join(missing_modules)}")
@@ -94,8 +94,13 @@ def main() -> int:
         "TrajectoryTrailSpline",
         "ReferenceMarker",
         "RadarDirectionMarker",
+        "RadarNearSectorMesh",
+        "RadarFarSectorMesh",
         "UpdateVisualHelpers",
         "UpdateSplineFromPoints",
+        "UpdateRadarSectorMesh",
+        "BuildSectorMesh",
+        "CreateMeshSection_LinearColor",
     ]:
         if token not in playback_actor:
             print(f"[FAIL] playback actor visualization helper missing token: {token}")
