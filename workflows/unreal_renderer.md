@@ -68,9 +68,46 @@ Repository crawl priority:
 | --- | --- | --- |
 | P0 | User-installed RflySim3D/RflySimUE/RflySimUE5 folder | Highest value if it contains editable scenes or protocol docs |
 | P0 | Local `references/Sunray/simulation/sunray_simulator/models` and `worlds` | Already available; convert SDF/DAE/PNG assets into UE scene registry |
+| P1 | Cosys-AirSim | Best AirSim-line candidate if we want a maintained Unreal plugin/API reference |
+| P1 | Colosseum | AirSim-line open-source Unreal robotics simulator; inspect for reusable plugin/scene patterns |
+| P1 | CARLA-Air | Strong UE urban-scene candidate for air-ground scenes, but likely heavy and Linux-oriented |
 | P1 | `RflySim/CopterSim` | Clone only if we need model/HIL/fault-injection reference; not for scene visuals |
 | P1 | `RflySim/RflyExpCode` | Clone only if we need RflySim workflow examples or course docs |
-| P2 | AirSim / Flightmare / RotorS / XTDrone / Pegasus | Use for architecture comparison only unless a specific reusable UE/Unity asset is identified |
+| P2 | Flightmare / FlightGoggles | Unity render/physics decoupling references; useful conceptually, less direct for UE5 |
+| P2 | Pegasus Simulator | High-quality Isaac Sim/PX4 reference, but dependency stack is heavy and not aligned with UE5 |
+| P3 | RotorS / XTDrone / Gazebo-only stacks | Use for multi-UAV, ROS/PX4, planning organization; not for final visual layer |
+
+Open-source simulator reference notes:
+
+| Platform | Engine | Useful for this project | Main risk |
+| --- | --- | --- | --- |
+| Cosys-AirSim | Unreal | Maintained AirSim-style Unreal plugin, drone/car APIs, PX4/HIL-style visual simulation ideas | Still a simulator stack; we should port only rendering/API patterns, not replace MWORKS |
+| Colosseum | Unreal/Unity support | AirSim successor-style robotics simulator; useful for API, sensor, and UE integration patterns | Need inspect asset availability and license before reuse |
+| CARLA-Air | Unreal | High-fidelity urban environments with drones in a CARLA world; useful if we want city/road scenes | Heavy; likely overkill for competition video unless prebuilt assets are easy to reuse |
+| AirSim | Unreal/Unity | Mature API and UE plugin design; useful for camera/weather/segmentation/control examples | Upstream Microsoft repo is archived/no longer updated, so avoid making it the main dependency |
+| Flightmare | Unity | Strong example of decoupling physics and rendering; good design reference for MWORKS + external renderer | Unity, not UE; less direct asset reuse |
+| FlightGoggles | Unity/ROS | Photorealistic HIL agile-flight visualization reference | ROS/Unity stack, not aligned with current UE5 bridge |
+| Pegasus Simulator | Isaac Sim | Modern multi-UAV/PX4/sensor simulation reference | Isaac/Omniverse is too heavy for the current workflow |
+| XTDrone / RotorS | Gazebo | Multi-UAV organization, PX4/ROS interface, swarm examples | Gazebo visuals are not the desired final video layer |
+
+For the current project, do not crawl all of these by default. Crawl only when
+the target use is clear:
+
+```text
+need UE API/plugin reference       -> Cosys-AirSim or Colosseum
+need high-quality urban UE scene   -> CARLA-Air / CARLA asset route
+need render/physics decoupling     -> Flightmare
+need agile-flight gate/drone logic -> Agilicious / FlightGoggles references
+need ROS/PX4 multi-UAV organization -> XTDrone / RotorS
+```
+
+If RflySim download remains blocked, the recommended fallback is:
+
+```text
+Cosys-AirSim or Colosseum for Unreal API/sensor/rendering patterns
+  + local Sunray/AWS Gazebo assets for actual scene meshes
+  + project-owned QuadrotorMworksBridge for MWORKS state playback
+```
 
 Before importing any external scene asset, check:
 
