@@ -3,6 +3,58 @@
 Unreal is a render-only layer. MWORKS/Sysplorer remains the simulation source
 of truth for dynamics, control, planning, collision checks, and metrics.
 
+## Asset-First Rendering Policy
+
+Do not build the final Unreal scene by hand from low-poly boxes unless the goal
+is a short collision/debug smoke test. The renderer must be asset-first:
+
+```text
+existing scene/model assets
+  -> asset registry
+  -> Unreal placement/material/collision proxy
+  -> MWORKS state playback
+  -> video review
+```
+
+MWORKS remains the truth source. Unreal is allowed to improve scene quality,
+materials, camera, radar visualization, trail rendering, and video export. It is
+not allowed to change controller output, planner truth, collision metrics, or
+event logs.
+
+Current asset-source priority:
+
+| Priority | Source | Use |
+| --- | --- | --- |
+| P0 | `references/Sunray/simulation/sunray_simulator/models` | Immediate reusable Gazebo/SDF assets: Sunray150/Mid360, houses, trees, windows, gates, targets, terrain, AWS RoboMaker residential/retail assets |
+| P0 | `references/Sunray/simulation/sunray_simulator/worlds/*.world` and `references/Sunray/simulation/sysu_competition/worlds/*.world` | Existing scene layout references such as competition maps, planning tests, houses, airport, outdoor, sand island |
+| P1 | RflySim3D / RflySimUE installer or asset package, if available locally | UE-style scenario, camera, UDP/display workflow reference; reuse assets only after license/source confirmation |
+| P1 | RflySim public GitHub repos | Interface/modeling reference, not primary visual assets. `CopterSim` is mainly Simulink multicopter/HIL model; `RflyExpCode` is experiment code |
+| P2 | UE Marketplace / open UE environment assets | Optional visual upgrade after license and file-size checks |
+
+Important finding: the public RflySim GitHub repositories inspected so far do
+not contain a complete UE scene asset project. They are still useful for MBD,
+MAVLink/HIL, fault-injection, and UDP/display interface ideas. For final visual
+quality, use the local Sunray/AWS assets first, or ask the user to provide a
+local RflySim3D/RflySimUE asset install if direct RflySim scene reuse is needed.
+
+Before importing any external scene asset, check:
+
+1. license and attribution;
+2. single-file size under GitHub limit;
+3. mesh scale and coordinate axes;
+4. material and texture dependencies;
+5. collision proxy availability;
+6. actor count, triangle count, texture memory, and LOD/performance risk.
+
+Generated primitives remain useful for:
+
+- collision truth debugging;
+- planner occupancy visualization;
+- radar sector and local-map overlays;
+- fallback review scenes when asset conversion fails.
+
+They are not the target visual quality for the final video.
+
 ## Project
 
 Open:
@@ -67,6 +119,22 @@ This JSON uses the same `map_open_blocks.yaml` random obstacle and L/T wall
 expansion as the planner. It contains map bounds, terrain height grid, random
 obstacle columns, wall boxes, start/goal, and material tags. It is display
 input only and must not feed back into MWORKS.
+
+For high-quality Unreal scenes, generate a second registry instead of only a
+primitive map:
+
+```text
+scene_asset_registry:
+  source_world: existing .world / handcrafted scenario profile
+  asset_refs: mesh/material/texture references
+  placements: transform + semantic tag
+  collision_proxies: simplified boxes/capsules/convex hulls
+  mworks_truth_link: obstacle_id / wall_id / gate_id
+```
+
+This registry is the bridge between SDF/world assets and Unreal actors. The
+planner uses truth geometry from MWORKS/scenario files; Unreal uses the registry
+to show a better-looking equivalent scene.
 
 ## Playback
 
