@@ -101,6 +101,34 @@ from UE's basic cube mesh:
 The actor is a renderer-side preview. Collision truth, planner occupancy, and
 metrics still come from the MWORKS/YAML pipeline.
 
+## Asset-First Scene Direction
+
+The generated cube map is a debug and fallback renderer. It is not the target
+visual quality for final video.
+
+Final scene work should reuse existing assets before hand-building geometry:
+
+```text
+references/Sunray/simulation/sunray_simulator/models
+references/Sunray/simulation/sunray_simulator/worlds
+references/Sunray/simulation/sysu_competition/worlds
+local RflySim3D / RflySimUE / RflySimUE5 install, if editable assets exist
+```
+
+Recommended pipeline:
+
+```text
+.world/.sdf/.dae/.png
+  -> asset registry
+  -> UE static mesh/material import
+  -> collision proxy linked to scenario geometry
+  -> MWORKS UDP playback
+```
+
+Do not commit RflySim installer files, cooked `.pak` packages, engine binaries,
+or unclear-license assets. If the RflySim install only contains a packaged
+viewer, use it as a visual and protocol reference, not as a direct asset source.
+
 ## Playback Command
 
 Use a real MWORKS raw CSV:

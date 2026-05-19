@@ -33,9 +33,44 @@ Current asset-source priority:
 
 Important finding: the public RflySim GitHub repositories inspected so far do
 not contain a complete UE scene asset project. They are still useful for MBD,
-MAVLink/HIL, fault-injection, and UDP/display interface ideas. For final visual
-quality, use the local Sunray/AWS assets first, or ask the user to provide a
-local RflySim3D/RflySimUE asset install if direct RflySim scene reuse is needed.
+MAVLink/HIL, fault-injection, and UDP/display interface ideas. `CopterSim` is a
+Simulink multicopter model with MAVLink/PX4/HIL/fault-injection ports; it is not
+a render scene repository. `RflyExpCode` is course/experiment code and also is
+not a UE environment asset repository. For final visual quality, use the local
+Sunray/AWS assets first, or ask the user to provide a local RflySim3D/RflySimUE
+asset install if direct RflySim scene reuse is needed.
+
+When the user installs RflySim locally, do not immediately copy files into this
+project. First audit the install directory for:
+
+```text
+RflySim3D / RflySimUE / RflySimUE5 executable or project
+Content / Paks / Maps / Plugins / Source / Config directories
+RflySimAPIs / Python / MATLAB / Simulink communication examples
+UDP / shared-memory / JSON / binary protocol examples
+license / third-party notices / redistribution restrictions
+single files larger than 100 MB
+```
+
+Classify the result before importing:
+
+| Finding | Action |
+| --- | --- |
+| UE project with `.uproject`, `Content/`, `.umap`, meshes, materials | Candidate for direct scene reuse after license and size check |
+| Cooked packaged executable only, no editable assets | Use as visual/reference target only; do not depend on direct asset import |
+| API examples only | Port the UDP/shared-memory protocol ideas into `QuadrotorMworksBridge` |
+| Large `.pak`, video, installer, or binary assets | Keep outside Git; document external dependency and local path |
+| No license or unclear redistribution terms | Do not commit assets; use only as implementation reference |
+
+Repository crawl priority:
+
+| Priority | Repository / source | Decision |
+| --- | --- | --- |
+| P0 | User-installed RflySim3D/RflySimUE/RflySimUE5 folder | Highest value if it contains editable scenes or protocol docs |
+| P0 | Local `references/Sunray/simulation/sunray_simulator/models` and `worlds` | Already available; convert SDF/DAE/PNG assets into UE scene registry |
+| P1 | `RflySim/CopterSim` | Clone only if we need model/HIL/fault-injection reference; not for scene visuals |
+| P1 | `RflySim/RflyExpCode` | Clone only if we need RflySim workflow examples or course docs |
+| P2 | AirSim / Flightmare / RotorS / XTDrone / Pegasus | Use for architecture comparison only unless a specific reusable UE/Unity asset is identified |
 
 Before importing any external scene asset, check:
 
@@ -135,6 +170,23 @@ scene_asset_registry:
 This registry is the bridge between SDF/world assets and Unreal actors. The
 planner uses truth geometry from MWORKS/scenario files; Unreal uses the registry
 to show a better-looking equivalent scene.
+
+Preferred asset conversion path:
+
+```text
+Gazebo .world / .sdf
+  -> parse model:// references, pose, scale, mesh URI
+  -> resolve .dae/.stl/.png under references/Sunray/...
+  -> convert mesh/materials through Blender/Assimp or UE import
+  -> write scene_asset_registry with original source path and license tag
+  -> spawn UE actors from registry
+  -> link each visual actor to MWORKS obstacle_id / gate_id / terrain_id
+```
+
+Do not let the imported scene become the planning source of truth. If a tree,
+building, gate, wall, or frame is visible in UE, it must have a corresponding
+`world_geometry` primitive or collision proxy in the scenario file before it is
+used for planning/collision claims.
 
 ## Playback
 
