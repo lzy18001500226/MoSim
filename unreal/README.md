@@ -37,6 +37,18 @@ scripts/open_unreal_renderer.sh
 It enables the project-owned UDP bridge and the local Unreal MCP editor plugin
 without copying either plugin into the engine install directory.
 
+## MCP Access From WSL
+
+Codex usually runs in WSL while Unreal Editor runs on Windows. In that setup,
+Windows `127.0.0.1` is not the same network endpoint as WSL `127.0.0.1`.
+
+The project-owned Unreal MCP plugin is therefore configured to listen on
+`0.0.0.0:55557`, and `scripts/unreal_mcp_wsl_wrapper.sh` exports `UNREAL_HOST`
+as the WSL default gateway before starting the Python MCP server. If MCP tools
+report `Connection refused` while the editor log shows the server listening only
+on `127.0.0.1:55557`, rebuild this Unreal project and restart the editor so the
+project plugin is reloaded.
+
 ## Current Plugins
 
 `QuadrotorMworksBridge` provides a lightweight UDP receiver component:

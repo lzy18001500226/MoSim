@@ -20,4 +20,11 @@ fi
 
 cd "${MCP_DIR}"
 export UV_LINK_MODE="${UV_LINK_MODE:-copy}"
+
+if [[ -z "${UNREAL_HOST:-}" ]]; then
+  UNREAL_HOST="$(ip route | awk '/^default / {print $3; exit}')"
+  export UNREAL_HOST
+fi
+
+export UNREAL_PORT="${UNREAL_PORT:-55557}"
 exec "${UV_BIN}" run unreal_mcp_server_advanced.py "$@"

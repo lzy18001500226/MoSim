@@ -6,6 +6,7 @@ Contains only the advanced tools from the expanded MCP tool system to keep tool 
 """
 
 import logging
+import os
 import socket
 import json
 import math
@@ -67,8 +68,8 @@ logging.basicConfig(
 logger = logging.getLogger("UnrealMCP_Advanced")
 
 # Configuration
-UNREAL_HOST = "127.0.0.1"
-UNREAL_PORT = 55557
+UNREAL_HOST = os.environ.get("UNREAL_HOST", "127.0.0.1")
+UNREAL_PORT = int(os.environ.get("UNREAL_PORT", "55557"))
 
 class UnrealConnection:
     """
@@ -2793,4 +2794,4 @@ def rename_function(
 # Run the server
 if __name__ == "__main__":
     logger.info("Starting Advanced MCP server with stdio transport")
-    mcp.run(transport='stdio') 
+    mcp.run(transport='stdio')
