@@ -1,0 +1,23 @@
+{
+  "points": 220,
+  "length_m": 15.860457616069295,
+  "min_clearance_m": 0.25,
+  "mean_clearance_m": 0.7136745633245491,
+  "start_pixel": [
+    167.0,
+    116.0
+  ],
+  "goal_pixel": [
+    58.0,
+    361.0
+  ],
+  "source": "rflysim_esdf_map_to_path_smoke",
+  "map_dir": "D:\\PX4PSP\\RflySimAPIs\\8.RflySimVision\\2.AdvExps\\e16_ESDFPathPlan\\maps",
+  "map_shape": [
+    210,
+    441
+  ],
+  "resolution_m": 0.05,
+  "obstacle_pixels": 62450,
+  "free_pixels": 30160
+}

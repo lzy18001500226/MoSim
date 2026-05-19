@@ -220,6 +220,51 @@ Minimum RflySim experience checklist before more Unreal scene implementation:
    bounding boxes. If not, use it as renderer reference only, not as planning
    truth.
 
+## Verified RflySim Smoke Tests
+
+Use RflySim's bundled Python for these tests:
+
+```text
+D:\PX4PSP\Python38\python.exe
+```
+
+Do not use the project Conda Python for RflySim SDK checks unless its native
+dependencies have been installed. The local SDK imports OpenCV and RflySim
+modules from `D:\PX4PSP`.
+
+Current project-owned smoke scripts:
+
+```text
+tools/rflysim/rflysim_windows_smoke.py
+tools/rflysim/rflysim_mid360_smoke.py
+```
+
+Verified status:
+
+| Test | Status | Meaning |
+| --- | --- | --- |
+| Vehicle UDP display | Passed | `UE4CtrlAPI` can create and move visible quadrotor actors in RflySim3D |
+| No-PX4 lightweight control | Passed | The official point-mass control demo runs without PX4/QGC |
+| Mid360 UDP point cloud | Passed | Direct sensor data arrives as `17408 x 4` point clouds at the demo update rate |
+| ESDF/Voronoi map-to-path | Partly passed | `tools/rflysim/rflysim_esdf_path_smoke.py` generates a nontrivial path from the official map with `15.86 m` length and `0.25 m` minimum clearance |
+| ESDF path playback | Partly passed | `tools/rflysim/rflysim_esdf_path_playback.py` replays the generated `220`-point path into RflySim3D |
+| ESDF/Voronoi closed-loop navigation | Pending | The generated path still needs to drive the vehicle through PX4/CopterSim or a project-owned control bridge |
+
+Radar, autonomous navigation, and path planning are separate layers. A visible
+aircraft in RflySim3D proves only the render/control command channel. Mid360
+point-cloud receipt proves the sensor channel. It does not prove autonomous
+navigation until the point cloud or map feeds a planner and the generated local
+trajectory drives the aircraft.
+
+Validated commands:
+
+```text
+D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_windows_smoke.py
+D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_mid360_smoke.py
+D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_esdf_path_smoke.py --json-output results\rflysim\esdf_path_smoke.json --path-output results\rflysim\esdf_path_smoke.npy
+D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_esdf_path_playback.py
+```
+
 ## Playback Command
 
 Use a real MWORKS raw CSV:

@@ -233,6 +233,53 @@ If `rflysim_object_truth` fails, RflySim can still be used for video rendering,
 but not as the source of obstacle/planning truth. In that case MWORKS/scenario
 files remain the truth source and RflySim is only the visual target.
 
+### Verified RflySim Status
+
+Current local verification status:
+
+| Gate | Status | Evidence |
+| --- | --- | --- |
+| `rflysim3d_map_view` | Passed | RflySim3D launches from `D:\PX4PSP\RflySim3D\RflySim3D.exe`; map and UDP command tests are visible in the native window |
+| `rflysim_vehicle_visual` | Passed | `tools/rflysim/rflysim_windows_smoke.py` creates and moves quadrotor actors through `UE4CtrlAPI` |
+| `rflysim_lightweight_control` | Passed | Official `UAVCtrlNoPX4Demo.py` runs a point-mass control sequence without PX4/QGC |
+| `rflysim_mid360` | Passed | `tools/rflysim/rflysim_mid360_smoke.py` receives direct UDP Mid360 point clouds: `80` frames, each `17408 x 4` |
+| `rflysim_esdf_path` | Partly passed | `tools/rflysim/rflysim_esdf_path_smoke.py` validates official map-to-path logic: `15.86 m` path, `0.25 m` minimum clearance |
+| `rflysim_esdf_playback` | Partly passed | `tools/rflysim/rflysim_esdf_path_playback.py` replays the generated `220`-point path into RflySim3D through `UE4CtrlAPI` |
+| `rflysim_object_truth` | Not complete | Object/bounding-box truth still needs scene-specific verification before using RflySim as planning truth |
+
+Use RflySim's bundled Python for local SDK smoke tests:
+
+```text
+D:\PX4PSP\Python38\python.exe
+```
+
+The project and Windows Anaconda environments may miss RflySim dependencies such
+as `cv2`. Do not treat that as an RflySim API failure.
+
+Radar and navigation scope:
+
+```text
+RflySim3D vehicle display
+  -> Mid360 point cloud request/receive
+  -> local point cloud / occupancy processing
+  -> ESDF or Voronoi planner waypoint output
+  -> controller / MWORKS trajectory replay
+  -> RflySim3D video rendering
+```
+
+The display, sensor, and map-to-path layers are now verified separately.
+Autonomous navigation is still not complete until the generated path is fed into
+a flight/control loop and inspected in RflySim3D or MWORKS.
+
+Validated local smoke commands:
+
+```text
+D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_windows_smoke.py
+D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_mid360_smoke.py
+D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_esdf_path_smoke.py --json-output results\rflysim\esdf_path_smoke.json --path-output results\rflysim\esdf_path_smoke.npy
+D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_esdf_path_playback.py
+```
+
 WSL networking note:
 
 RflySim3D runs on Windows and listens for UDP commands on `20010 + windowID`.
