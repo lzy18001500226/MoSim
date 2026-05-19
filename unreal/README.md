@@ -202,6 +202,10 @@ RflyReqObjData ...              -> camera/vehicle/object pose and bounding boxes
 This is parallel to the project-owned `QuadrotorMworksBridge`. RflySim can
 accelerate video work, but MWORKS/Sysplorer remains the truth source.
 
+WSL note: RflySim3D runs on Windows. From WSL, `127.0.0.1` is not a reliable
+target for RflySim3D UDP commands. Use the WSL default gateway IP, or run
+RflySim example scripts with Windows Python/PowerShell.
+
 Minimum RflySim experience checklist before more Unreal scene implementation:
 
 1. Launch RflySim3D and verify map switching, camera, FPS, and vehicle model

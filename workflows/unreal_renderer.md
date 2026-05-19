@@ -193,6 +193,9 @@ RflySim native experience path:
 1. RflySim3D command and map test
    - Start RflySim3D.
    - Use RflyChangeMapbyName, r.setres, t.MaxFPS, camera commands.
+   - If sending commands from WSL, do not assume 127.0.0.1 is the Windows
+     RflySim3D host. Use the WSL default gateway IP or run the command script
+     with Windows Python/PowerShell from the Windows side.
 
 2. Terrain service test
    - Run 3.RflySim3DUE/1.BasicExps/e3_RflySim3DTerrainPcd.
@@ -229,6 +232,22 @@ Manual review gates for the native RflySim experience:
 If `rflysim_object_truth` fails, RflySim can still be used for video rendering,
 but not as the source of obstacle/planning truth. In that case MWORKS/scenario
 files remain the truth source and RflySim is only the visual target.
+
+WSL networking note:
+
+RflySim3D runs on Windows and listens for UDP commands on `20010 + windowID`.
+When Codex runs in WSL, `127.0.0.1` points to WSL itself, not necessarily the
+Windows RflySim3D process. For WSL-driven smoke tests, resolve the Windows host
+with:
+
+```bash
+ip route | awk '/default/ {print $3; exit}'
+```
+
+Prefer Windows-side Python/PowerShell for official RflySim examples when they
+use RflySim's bundled Python environment or Windows-only dependencies. Use WSL
+only for lightweight UDP packets, documentation extraction, and project file
+updates.
 
 Candidate integration path after RflySim native examples and MWORKS evidence are
 stable:
