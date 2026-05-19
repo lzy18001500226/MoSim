@@ -70,6 +70,43 @@ RflySim `Content/` assets directly. Several RflySim3D files are larger than
 100 MB, including built-data and texture payloads, so wholesale import is not
 Git-safe.
 
+Current decision: do not keep porting the old Sysplorer/MWORKS blocky visual
+map into Unreal as the primary video route. That map was a workaround for
+MWORKS GUI limits. Before implementing more Unreal scene work, first understand
+and experience RflySim itself:
+
+```text
+RflySim docs/API audit
+  -> run native RflySim3D/CopterSim examples
+  -> inspect scene/map/sensor parameter availability
+  -> decide direct RflySim playback vs project-owned Unreal renderer
+```
+
+The first milestone is not "copy assets". It is to answer whether RflySim can
+provide stable renderer behavior, scene parameters, vehicle visual models,
+Mid360/lidar data, terrain service, and path-planning examples that are better
+than the current project-owned renderer.
+
+`D:\PX4PSP\HowToUse.pdf` establishes the official learning route:
+
+1. Start with chapters `1.RflySimIntro` and `2.RflySimUsage` only as platform
+   orientation.
+2. For this project, jump directly to:
+   - `3.RflySim3DUE` for scene/model loading, RflySim3D commands, terrain
+     service, collision, camera/view, and UE-style rendering behavior;
+   - `6.RflySimExtCtrl` for external control, trajectory, and MAVLink/UDP
+     command interfaces;
+   - `8.RflySimVision` for camera, depth, lidar, Mid360, point cloud, and
+     perception-control loops;
+   - `10.RflySimSwarm` for multi-UAV display, networking, and formation
+     references.
+3. Use each chapter in the official order `Intro.pdf -> PPT.pdf -> API.pdf ->
+   Index.pdf -> selected Readme.pdf`. Do not start by editing our Unreal scene.
+4. `HowToUse.pdf` also confirms RflySim3D accepts UDP commands from
+   CopterSim/Python/Simulink and can return collision, terrain, and visual data.
+   This is the key reason to test RflySim as a native renderer/runtime before
+   building more custom UE logic.
+
 Useful local entry points:
 
 | Local path | Use |
@@ -85,6 +122,8 @@ Useful local entry points:
 | `D:\PX4PSP\RflySimAPIs\3.RflySim3DUE` | RflySim3D command, map, model-load, viewport, collision, weather, and trajectory examples |
 | `D:\PX4PSP\RflySimAPIs\8.RflySimVision` | Vision, lidar, Livox/Mid360, direct UDP, ROS bridge, SLAM, and ESDF/path-planning examples |
 | `D:\PX4PSP\RflySimAPIs\10.RflySimSwarm` | Multi-UAV and swarm display/control references |
+| `D:\PX4PSP\CopterSim\ModelData.db` | Vehicle/component parameter database: motor, propeller, ESC, battery, frame presets |
+| `D:\PX4PSP\CopterSim\external\XML\F450.xml` | Example quadrotor physical parameters: mass, inertia, arm radius, thrust/moment coefficients, hover RPM |
 
 Most relevant RflySim3D examples:
 
@@ -125,8 +164,74 @@ Confirmed communication facts from the local SDK:
 | Terrain query | `RflyScanTerrainH ...` |
 | Sensor request channel | Vision sensor requests are sent to the RflySim3D window and can return shared-memory or UDP data |
 | Mid360 example | `TypeID=23`, `DataWidth=64`, `DataHeight=272`, `DataCheckFreq=10`, UDP return port example `9999` |
+| Object/camera query | `RflyReqObjData` can request camera, vehicle, and object pose plus bounding-box origin/extent for named objects |
+| Terrain service | `RflyScanTerrainH x0 y0 x1 y1 h interval` exports terrain PNG/TXT data; examples convert it to height query and PLY point cloud |
 
-Candidate integration path after MWORKS evidence is stable:
+Known parameter limits:
+
+1. Vehicle physical parameters are available from CopterSim XML and
+   `ModelData.db`. Example F450 data includes mass `1.4 kg`, inertia
+   `Jxx=0.0211`, `Jyy=0.0219`, `Jzz=0.0366`, arm radius `0.225 m`,
+   thrust coefficient `1.105e-05`, torque coefficient `1.779e-07`, motor
+   response time `0.05 s`, and hover motor speed `5235.8 rpm`.
+2. Terrain height can be sampled through RflySim3D terrain scan files. This is
+   useful for visual alignment and local height maps, but it is not yet proof
+   that every scene object/collision mesh can be exported as clean planning
+   truth.
+3. Scene object geometry may be available only for named/requested actors via
+   `RflyReqObjData`, returning `PosUE`, `angEuler`, `boxOrigin`, and
+   `BoxExtent`. Full static-scene collision truth is not guaranteed until the
+   target scene is tested.
+4. Cooked RflySim scenes and `.pak` files are not project-owned assets. If the
+   installed tree does not expose editable `.uasset/.umap` source with usable
+   license terms, treat it as a renderer/runtime reference rather than a source
+   asset library.
+
+RflySim native experience path:
+
+```text
+1. RflySim3D command and map test
+   - Start RflySim3D.
+   - Use RflyChangeMapbyName, r.setres, t.MaxFPS, camera commands.
+
+2. Terrain service test
+   - Run 3.RflySim3DUE/1.BasicExps/e3_RflySim3DTerrainPcd.
+   - Verify RflyScanTerrainH output and height-query consistency.
+
+3. Vehicle visual/control test
+   - Use UE4CtrlAPI.sendUE4PosFull or RflySim3D built-in SITL example.
+   - Check pose, scale, propeller RPM display, and camera following.
+
+4. Mid360/lidar test
+   - Run 8.RflySimVision/0.ApiExps/10.Mid360Demo.
+   - Verify TypeID=23 point cloud path and update frequency.
+
+5. Path-planning reference test
+   - Run 8.RflySimVision/2.AdvExps/e16_ESDFPathPlan.
+   - Record whether its ESDF/Voronoi path planner is usable as an algorithm
+     reference, not as final MWORKS evidence.
+```
+
+Only after these pass should the project connect MWORKS outputs to RflySim3D or
+continue building a project-owned Unreal scene.
+
+Manual review gates for the native RflySim experience:
+
+| Gate | What to check | Pass condition |
+| --- | --- | --- |
+| `rflysim3d_map_view` | RflySim3D starts, changes map, camera/FPS commands work | User can see a stable scene and switch views without freezing |
+| `rflysim_vehicle_visual` | Built-in or UDP-driven quadrotor model, propellers, scale, attitude | Vehicle model, propellers, and pose are visually credible |
+| `rflysim_mid360` | Mid360/lidar example data path | Point cloud or ROS/RViz output appears at expected update rate |
+| `rflysim_terrain_service` | Terrain scan and height lookup | Generated terrain files match selected scene region and can be queried |
+| `rflysim_object_truth` | Object/camera query or scene metadata | Named object pose and bounding boxes can be obtained, or limitation is documented |
+| `rflysim_esdf_path` | ESDF/Voronoi planning example | Path is not a hard-coded straight line and can be mapped to NED waypoints |
+
+If `rflysim_object_truth` fails, RflySim can still be used for video rendering,
+but not as the source of obstacle/planning truth. In that case MWORKS/scenario
+files remain the truth source and RflySim is only the visual target.
+
+Candidate integration path after RflySim native examples and MWORKS evidence are
+stable:
 
 ```text
 MWORKS raw/native result

@@ -167,12 +167,21 @@ D:\PX4PSP\RflySimAPIs\RflySimSDK\ue\UE4CtrlAPI.py
 D:\PX4PSP\RflySimAPIs\RflySimSDK\vision\VisionCaptureApi.py
 D:\PX4PSP\RflySimAPIs\3.RflySim3DUE
 D:\PX4PSP\RflySimAPIs\8.RflySimVision
+D:\PX4PSP\CopterSim\ModelData.db
+D:\PX4PSP\CopterSim\external\XML\F450.xml
 ```
 
-Use it in two ways only:
+Current rule: do not continue porting the old MWORKS block/cube visualization
+into Unreal as the main visual path. That scene was a workaround for Sysplorer
+GUI limits. First run and understand RflySim's own examples, then decide which
+parts to reuse.
 
-1. reference its UDP pose, model, camera, Mid360/lidar, and scene-loading APIs;
-2. optionally drive the installed RflySim3D executable from exported MWORKS
+Use RflySim in three ways:
+
+1. run native RflySim3D/CopterSim examples to learn the intended workflow;
+2. reference its UDP pose, model, camera, Mid360/lidar, terrain, and
+   scene-loading APIs;
+3. optionally drive the installed RflySim3D executable from exported MWORKS
    results for video comparison.
 
 Do not copy its `Content/` tree into this repository. The install contains
@@ -186,10 +195,26 @@ UE4CtrlAPI.sendUE4Cmd(...)      -> UDP command channel, port 20010 + windowID
 UE4CtrlAPI.sendUE4Pos(...)      -> pose + mean motor RPM
 UE4CtrlAPI.sendUE4PosFull(...)  -> pose + velocity + attitude + 8 motor RPMs
 VisionCaptureApi.sendReqToUE4  -> camera/lidar/Mid360 sensor request
+RflyScanTerrainH ...            -> terrain scan to PNG/TXT for height/point cloud
+RflyReqObjData ...              -> camera/vehicle/object pose and bounding boxes
 ```
 
 This is parallel to the project-owned `QuadrotorMworksBridge`. RflySim can
 accelerate video work, but MWORKS/Sysplorer remains the truth source.
+
+Minimum RflySim experience checklist before more Unreal scene implementation:
+
+1. Launch RflySim3D and verify map switching, camera, FPS, and vehicle model
+   commands.
+2. Run a CopterSim/SITL or no-PX4 visual control example and inspect the native
+   rendering quality.
+3. Run the Mid360 or point-cloud example and verify whether the sensor output
+   can support our radar/局部感知展示.
+4. Run the terrain scan example and confirm whether scene height/point-cloud
+   data can be exported for renderer alignment.
+5. Inspect whether the chosen RflySim scene exposes enough object geometry or
+   bounding boxes. If not, use it as renderer reference only, not as planning
+   truth.
 
 ## Playback Command
 
