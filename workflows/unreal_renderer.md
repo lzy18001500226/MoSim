@@ -62,6 +62,93 @@ Classify the result before importing:
 | Large `.pak`, video, installer, or binary assets | Keep outside Git; document external dependency and local path |
 | No license or unclear redistribution terms | Do not commit assets; use only as implementation reference |
 
+### Local RflySim Audit: `D:\PX4PSP`
+
+The user-installed RflySim tree at `D:\PX4PSP` is useful, but it must stay an
+external dependency. Do not copy the tree into this repository and do not commit
+RflySim `Content/` assets directly. Several RflySim3D files are larger than
+100 MB, including built-data and texture payloads, so wholesale import is not
+Git-safe.
+
+Useful local entry points:
+
+| Local path | Use |
+| --- | --- |
+| `D:\PX4PSP\RflySim3D\RflySim3D.exe` | Existing RflySim3D renderer executable |
+| `D:\PX4PSP\RflySim3D\RflySim3D\RflySim3D.uproject` | UE project-style entry for scene inspection |
+| `D:\PX4PSP\RflySim3D\RflySim3D\Content\*.umap` | Existing maps such as `MapData`, `MapSmall`, `MatchScene`, `MatchScene2025`, `MountainTerrain`, `OldFactory`, `CameraRoom`, `ExhibitionHall` |
+| `D:\PX4PSP\RflySim3D\RflySim3D\Content\FSJ150\XML` | Small quadrotor visual model references |
+| `D:\PX4PSP\RflySim3D\RflySim3D\Content\obstacle` | Box obstacle XML/PNG references |
+| `D:\PX4PSP\RflySim3D\RflySim3D\Content\ExhibitionHall\XML` | Trees, stones, city, factory, solar panel, windmill, and power-tower visual references |
+| `D:\PX4PSP\RflySimAPIs\RflySimSDK\ue\UE4CtrlAPI.py` | UDP command and pose-update API for RflySim3D |
+| `D:\PX4PSP\RflySimAPIs\RflySimSDK\vision\VisionCaptureApi.py` | Camera, lidar, point-cloud, and Mid360-style sensor request API |
+| `D:\PX4PSP\RflySimAPIs\3.RflySim3DUE` | RflySim3D command, map, model-load, viewport, collision, weather, and trajectory examples |
+| `D:\PX4PSP\RflySimAPIs\8.RflySimVision` | Vision, lidar, Livox/Mid360, direct UDP, ROS bridge, SLAM, and ESDF/path-planning examples |
+| `D:\PX4PSP\RflySimAPIs\10.RflySimSwarm` | Multi-UAV and swarm display/control references |
+
+Most relevant RflySim3D examples:
+
+```text
+3.RflySim3DUE/0.ApiExps/e6_RflySim3DCtrlAPI/1.UECtrlPy/PythonSendUE4Pos.py
+3.RflySim3DUE/0.ApiExps/e6_RflySim3DCtrlAPI/1.UECtrlPy/PythonSendUE4ExtDemo.py
+3.RflySim3DUE/0.ApiExps/e6_RflySim3DCtrlAPI/3.LoadModelsByTxt/LoadModelsByTxt.py
+3.RflySim3DUE/0.ApiExps/e6_RflySim3DCtrlAPI/4.TrajDemo/UE4MapTerrainDemo.py
+3.RflySim3DUE/0.ApiExps/e6_RflySim3DCtrlAPI/6.RflySim3DViewPortDemo/UE4ViewPortDemo.py
+3.RflySim3DUE/0.ApiExps/e6_RflySim3DCtrlAPI/9.RflySim3DPosGet/GetUE4PosAPI.py
+3.RflySim3DUE/0.ApiExps/e5_UEMapCtrl/2.TargetCreatePy/code/TargetCreateDemo.py
+3.RflySim3DUE/0.ApiExps/e5_UEMapCtrl/3.TargetPlace/code/TargetPlace.py
+3.RflySim3DUE/0.ApiExps/e9_RflySim3DCollision
+```
+
+Most relevant vision/lidar examples:
+
+```text
+8.RflySimVision/0.ApiExps/10.Mid360Demo
+8.RflySimVision/0.ApiExps/1-UsageAPI/3.PointCloudAPI
+8.RflySimVision/0.ApiExps/1-UsageAPI/4.SendProtocolAPI
+8.RflySimVision/0.ApiExps/4.Point-CloudVisualize
+8.RflySimVision/0.ApiExps/7.LidarLivoxDemo
+8.RflySimVision/2.AdvExps/e16_ESDFPathPlan
+```
+
+Confirmed communication facts from the local SDK:
+
+| Item | Finding |
+| --- | --- |
+| RflySim3D command channel | `sendUE4Cmd(...)` sends UDP commands to `20010 + windowID` |
+| RflySim3D pose channel | `sendUE4Pos(...)`, `sendUE4PosNew(...)`, `sendUE4PosFull(...)` create or update a vehicle by `copterID` and `vehicleType` |
+| Rotor visual input | `sendUE4Pos(...)` accepts `MotorRPMSMean`; `sendUE4PosFull(...)` accepts eight motor RPM values |
+| Scene switch | `RflyChangeMapbyName <map>` |
+| Model switch | `RflyChange3DModel <CopterID> <veTypes>` |
+| Camera/view | `RflyChangeViewKeyCmd`, `RflyCameraPosAng`, `RflyCameraFovDegrees` |
+| Text overlay | `RflyShowTextTime`, `RflyShowText` |
+| Terrain query | `RflyScanTerrainH ...` |
+| Sensor request channel | Vision sensor requests are sent to the RflySim3D window and can return shared-memory or UDP data |
+| Mid360 example | `TypeID=23`, `DataWidth=64`, `DataHeight=272`, `DataCheckFreq=10`, UDP return port example `9999` |
+
+Candidate integration path after MWORKS evidence is stable:
+
+```text
+MWORKS raw/native result
+  -> project bridge reads time, position, attitude, motor commands, local plan
+  -> RflySimSDK UE4CtrlAPI sends vehicle pose/RPM to RflySim3D
+  -> optional VisionCaptureApi requests Mid360/camera data for render-side display
+  -> video review
+```
+
+This is an external-renderer route, not a replacement for the current UE bridge.
+Use it only if the local RflySim3D scenes produce better video faster than
+building a project-owned UE scene.
+
+Do not rely on RflySim for controller truth unless a future task explicitly
+builds and validates a bidirectional co-simulation. For the current competition
+evidence chain, RflySim can only be:
+
+1. a visual renderer driven by MWORKS results;
+2. a protocol/API reference for our own Unreal bridge;
+3. a source of scene and sensor design ideas, subject to license and file-size
+   checks.
+
 Repository crawl priority:
 
 | Priority | Repository / source | Decision |

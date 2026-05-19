@@ -129,6 +129,42 @@ Do not commit RflySim installer files, cooked `.pak` packages, engine binaries,
 or unclear-license assets. If the RflySim install only contains a packaged
 viewer, use it as a visual and protocol reference, not as a direct asset source.
 
+## RflySim Local Reference
+
+The local RflySim install at `D:\PX4PSP` contains useful renderer and API
+references, but it is not project-owned source:
+
+```text
+D:\PX4PSP\RflySim3D\RflySim3D.exe
+D:\PX4PSP\RflySim3D\RflySim3D\RflySim3D.uproject
+D:\PX4PSP\RflySimAPIs\RflySimSDK\ue\UE4CtrlAPI.py
+D:\PX4PSP\RflySimAPIs\RflySimSDK\vision\VisionCaptureApi.py
+D:\PX4PSP\RflySimAPIs\3.RflySim3DUE
+D:\PX4PSP\RflySimAPIs\8.RflySimVision
+```
+
+Use it in two ways only:
+
+1. reference its UDP pose, model, camera, Mid360/lidar, and scene-loading APIs;
+2. optionally drive the installed RflySim3D executable from exported MWORKS
+   results for video comparison.
+
+Do not copy its `Content/` tree into this repository. The install contains
+large UE payloads well above GitHub limits, and asset redistribution is not yet
+cleared.
+
+Relevant local API facts:
+
+```text
+UE4CtrlAPI.sendUE4Cmd(...)      -> UDP command channel, port 20010 + windowID
+UE4CtrlAPI.sendUE4Pos(...)      -> pose + mean motor RPM
+UE4CtrlAPI.sendUE4PosFull(...)  -> pose + velocity + attitude + 8 motor RPMs
+VisionCaptureApi.sendReqToUE4  -> camera/lidar/Mid360 sensor request
+```
+
+This is parallel to the project-owned `QuadrotorMworksBridge`. RflySim can
+accelerate video work, but MWORKS/Sysplorer remains the truth source.
+
 ## Playback Command
 
 Use a real MWORKS raw CSV:
