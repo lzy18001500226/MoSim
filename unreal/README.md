@@ -248,6 +248,7 @@ Verified status:
 | Mid360 UDP point cloud | Passed | Direct sensor data arrives as `17408 x 4` point clouds at the demo update rate |
 | ESDF/Voronoi map-to-path | Partly passed | `tools/rflysim/rflysim_esdf_path_smoke.py` generates a nontrivial path from the official map with `15.86 m` length and `0.25 m` minimum clearance |
 | ESDF path playback | Partly passed | `tools/rflysim/rflysim_esdf_path_playback.py` replays the generated `220`-point path into RflySim3D |
+| Mid360 local-grid avoidance | Prototype passed | `tools/rflysim/rflysim_mid360_reactive_avoidance.py` reads Mid360 world-coordinate point clouds, converts them into a local occupancy grid, runs local A*, and drives the visible RflySim actor |
 | ESDF/Voronoi closed-loop navigation | Pending | The generated path still needs to drive the vehicle through PX4/CopterSim or a project-owned control bridge |
 
 Radar, autonomous navigation, and path planning are separate layers. A visible
@@ -256,6 +257,15 @@ point-cloud receipt proves the sensor channel. It does not prove autonomous
 navigation until the point cloud or map feeds a planner and the generated local
 trajectory drives the aircraft.
 
+Mid360 coordinate note: RflySim SDK documentation describes the Type 23 Mid360
+output as dense point-cloud data directly mapped into the world coordinate
+system. Do not treat `vis.Img[0]` as a body-frame point cloud. The local-grid
+prototype must transform candidate world points into the vehicle-local frame
+before building occupancy. A run is only useful when logs show nonzero
+`occupied` cells and `path_len > 1`; a straight-line run with `occupied=0` is a
+sensor/planner integration failure, even if RflySim3D visually moves the
+aircraft.
+
 Validated commands:
 
 ```text
@@ -263,6 +273,7 @@ D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_windows_smoke.py
 D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_mid360_smoke.py
 D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_esdf_path_smoke.py --json-output results\rflysim\esdf_path_smoke.json --path-output results\rflysim\esdf_path_smoke.npy
 D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_esdf_path_playback.py
+D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_mid360_reactive_avoidance.py --udp-port 9999 --spawn-test-obstacles
 ```
 
 ## Playback Command

@@ -10,7 +10,7 @@
 |---|---|
 | Debug MCP | `workflows/debug_mcp.md` |
 | Operate Unreal MCP | `workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `docs/index/api_index.md#5-unreal-mcp-tools` |
-| Build Unreal renderer | `workflows/unreal_renderer.md` |
+| Build Unreal/RflySim renderer and scene workflow | `workflows/unreal_renderer.md` |
 | Translate MathWorks/Simulink patterns to MWORKS | `workflows/translate_mathworks_to_mworks.md` |
 | Resolve MWORKS model context | `Skills/Mworks/mworks-model-context/SKILL.md` |
 | Produce MWORKS simulation evidence | `Skills/Mworks/mworks-simulation-evidence/SKILL.md` |
@@ -27,6 +27,7 @@
 | Read simulation results | `workflows/read_results.md` |
 | Calculate metrics | `workflows/calc_metrics.md` |
 | Generate report figures | `workflows/generate_report_figures.md` |
+| Parallel agent execution | `AGENTS.md#331-parallel-agent-rule`, `workflows/unreal_renderer.md#rflysimue-scene-workflow` |
 | Review Sunray migration source | `docs/index/sunray_migration_index.md` |
 | Add a controller | `workflows/add_controller.md` |
 | Build Sysblock graphical controller | `workflows/build_sysblock_graphical_controller.md` |
@@ -188,3 +189,28 @@ Bad example:
 ```text
 帮我跑一下仿真。
 ```
+
+---
+
+## 8. Parallel Agent Workflow
+
+Use parallel agents for RflySim/Unreal/MWORKS work only when the streams are
+independent. The main agent remains responsible for integration and final
+verification.
+
+| Stream | Typical Task | Output |
+|---|---|---|
+| Scene research | Compare RflySim/Fab/Gazebo/AirSim scene sources, license limits, file-size risk | Ranked source list and migration notes |
+| RflySim smoke | Run local map, vehicle, Mid360/lidar, collision, and point-cloud checks | Small tool patch, smoke log, pass/fail notes |
+| MWORKS evidence | Run controller or scenario checks through Sysplorer/Syslab MCP | `results/` evidence and metrics |
+| Documentation | Update architecture, workflow, and acceptance text | `Design/`, `docs/`, `workflows/` edits |
+| Git/quality | Scan large files, inspect diff, run targeted tests, commit/push | Clean Git state or exact blocker |
+
+Rules:
+
+1. Assign disjoint write sets before spawning agents.
+2. Keep only one Git/quality agent active.
+3. Research agents should not write files unless explicitly assigned.
+4. The main agent must review all returned changes before commit.
+5. If an agent finds a license, credential, activation, or destructive-action
+   issue, it must stop that stream and report the blocker.

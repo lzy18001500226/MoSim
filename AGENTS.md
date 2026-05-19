@@ -150,6 +150,40 @@ Rules:
 5. Never commit secrets, private tokens, local credentials, or generated files larger than GitHub limits.
 6. Before commit, check for large files when binary outputs or official materials may have changed.
 
+### 3.3.1 Parallel Agent Rule
+
+Use parallel agents when the user has authorized multi-agent work and the task
+can be split into independent work streams.
+
+Coordinator rules:
+
+1. The main agent owns the plan, final integration, verification, and user
+   report.
+2. Every sub-agent must receive a concrete scope, a clear write set, and an
+   explicit stop condition.
+3. Do not assign the same file or model family to multiple write-capable
+   agents at the same time.
+4. Use at most one Git/quality agent. Other agents should not commit, force
+   push, rewrite history, or clean broad directories.
+5. Research agents should not write files unless explicitly asked; they should
+   return sources, license notes, candidate rankings, and risks.
+6. Simulation agents may write only their assigned scenario, result, log, or
+   tool files.
+7. Documentation agents may update only assigned `Design/`, `docs/`, or
+   `workflows/` files.
+8. The main agent must review changed paths, run targeted checks, and resolve
+   conflicts before commit.
+
+Recommended split for RflySim / Unreal / MWORKS scene work:
+
+| Agent | Scope | Write Set |
+|---|---|---|
+| Scene research | Open-source UE/RflySim/Gazebo scene candidates, license, size, migration risk | No writes by default |
+| RflySim smoke | Local RflySim map/sensor/vehicle smoke tests and small tool fixes | `tools/rflysim/`, temporary logs |
+| MWORKS evidence | Sysplorer/Syslab model checks, controller evidence, result verification | assigned `models/`, `scenarios/`, `results/` subtree |
+| Docs/workflow | Architecture, workflow, manual/index updates | assigned `Design/`, `docs/`, `workflows/` files |
+| Git/quality | Large-file scan, status, diff review, tests, commit, push | `.gitignore`, quality logs only when needed |
+
 ### 3.4 MCP Minimal-Impact Rule
 
 MCP calls should be minimal, targeted, and non-disruptive.

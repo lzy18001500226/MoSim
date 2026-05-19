@@ -233,6 +233,81 @@ If `rflysim_object_truth` fails, RflySim can still be used for video rendering,
 but not as the source of obstacle/planning truth. In that case MWORKS/scenario
 files remain the truth source and RflySim is only the visual target.
 
+### RflySim/UE Scene Workflow
+
+Use this workflow before any new RflySim/UE navigation demo:
+
+```text
+1. Scene survey
+   - Run tools/rflysim/rflysim_scene_survey.py.
+   - Pick map, start, goal, camera.
+   - Do not move the UAV and do not spawn artificial boxes.
+
+2. Sensor smoke
+   - Run tools/rflysim/rflysim_mid360_smoke.py with --static.
+   - Verify point frames, point count, min/max range, and optional Open3D window.
+
+3. Truth/proxy binding
+   - Record map name, object source, asset path, approximate collision proxy, and coordinate frame.
+   - Do not use RflySim visual assets as planner truth until collision/bounding boxes are verified.
+
+4. Local planning smoke
+   - Enable only local point-cloud/occupancy input.
+   - The planner must not read the complete map object list.
+   - A useful run must show nonzero local obstacles, no yaw spinning, no wall-through path, and no artificial box corridor.
+
+5. Playback or real-time bridge
+   - For video, drive RflySim3D or UE from MWORKS raw/native result or a bounded real-time state stream.
+   - Keep controller and metrics truth in MWORKS unless a future task explicitly promotes RflySim/CopterSim as a separate evidence source.
+```
+
+Scenario families:
+
+| Family | Preferred map/source | Purpose |
+|---|---|---|
+| Dense forest | UE/Fab/open forest asset or RflySim compatible forest scene | Unknown-map dense obstacle avoidance |
+| Maze/building | project-owned maze or RflySim `OldFactory`/building scene | Wall occlusion and local replanning |
+| Old factory | RflySim `OldFactory` | Mid360 point cloud and industrial inspection demo |
+| Park/patrol | RflySim `NeighborhoodPark` or open UE park asset | inspection/logistics scenario |
+| Gate/ring indoor | `VisionRing`, `RobotMissionChallenge`, `MatchScene2025` | attitude tracking through tilted gates/rings |
+| Open grass | `Grasslands` / `3DDisplay` | wind and motor-efficiency robustness |
+
+Recommended open asset candidates:
+
+| Priority | Candidate | Best Use | Git Policy |
+|---|---|---|---|
+| P0 | Electric Dreams Env | Dense forest, PCG vegetation, forest-flight video | External asset only |
+| P0 | Factory Environment Collection | Old factory, industrial patrol, indoor/outdoor obstacle avoidance | External asset only |
+| P1 | Open World Demo Collection / A Boy and His Kite | Open forest, mountain, canyon, large outdoor flight | External asset only |
+| P1 | Rural Australia | Open natural patrol and logistics-style scenes | External asset only |
+| P2 | Poly Haven CC0 assets | HDRI, rocks, materials, small props | Small selected files may be committed if under limits |
+
+Large scene assets stay outside Git by default. Commit only scripts, config, scenario profiles, derived small manifests, and documentation.
+
+Scene randomization rules:
+
+1. Randomize scene layout only before the run starts.
+2. Save the seed, selected scene profile, moved objects, bounding boxes,
+   collision proxies, wind profile, and motor-efficiency profile.
+3. Keep `render_world` and `planner_known_map` separate. The renderer may load
+   the complete world, but the planner may only use local sensor updates and
+   previously discovered map memory.
+4. For validation, provide both views when possible: actual scene/map view and
+   local point-cloud or known-map view.
+
+Runtime latency rules:
+
+| Loop | Target | Timeout Policy |
+|---|---|---|
+| Control | 20-50 Hz initial target | Hold last valid command or switch safe mode |
+| Mid360/local map | 10-20 Hz initial target | Drop stale frames instead of blocking control |
+| Planner/trajectory update | 5-20 Hz depending on solver cost | Reuse previous feasible trajectory |
+| Renderer | 30-60 FPS target | Rendering must not block control or metrics |
+
+Every RflySim/UE experiment should log solver time, dropped sensor frames,
+planner timeout count, control-loop period, and bridge latency. A smooth replay
+video is not enough to claim real-time feasibility.
+
 ### Verified RflySim Status
 
 Current local verification status:
@@ -245,6 +320,7 @@ Current local verification status:
 | `rflysim_mid360` | Passed | `tools/rflysim/rflysim_mid360_smoke.py` receives direct UDP Mid360 point clouds: `80` frames, each `17408 x 4` |
 | `rflysim_esdf_path` | Partly passed | `tools/rflysim/rflysim_esdf_path_smoke.py` validates official map-to-path logic: `15.86 m` path, `0.25 m` minimum clearance |
 | `rflysim_esdf_playback` | Partly passed | `tools/rflysim/rflysim_esdf_path_playback.py` replays the generated `220`-point path into RflySim3D through `UE4CtrlAPI` |
+| `rflysim_mid360_local_grid` | Prototype passed | `tools/rflysim/rflysim_mid360_reactive_avoidance.py` converts Mid360 world-coordinate point clouds into a local occupancy grid and runs local A*; latest smoke produced nonzero occupied cells and active front-blocked decisions |
 | `rflysim_object_truth` | Not complete | Object/bounding-box truth still needs scene-specific verification before using RflySim as planning truth |
 
 Use RflySim's bundled Python for local SDK smoke tests:
@@ -271,6 +347,18 @@ The display, sensor, and map-to-path layers are now verified separately.
 Autonomous navigation is still not complete until the generated path is fed into
 a flight/control loop and inspected in RflySim3D or MWORKS.
 
+Mid360 local-planning integration rule:
+
+1. Treat `TypeID=23` Mid360 output as world-coordinate point cloud data, per the
+   local RflySim SDK documentation.
+2. Convert world points into the current vehicle-local frame before occupancy
+   generation. Do not assume `x-forward/y-left` body-frame points.
+3. A useful smoke run must show `occupied > 0`, `path_len > 1`, and meaningful
+   `front_blocked` transitions in the log.
+4. The current local-grid script is a render/control-channel prototype. It is
+   not yet a PX4/CopterSim or MWORKS dynamics proof. Promote it only after the
+   same planner drives the real controller interface.
+
 Validated local smoke commands:
 
 ```text
@@ -278,6 +366,7 @@ D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_windows_smoke.py
 D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_mid360_smoke.py
 D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_esdf_path_smoke.py --json-output results\rflysim\esdf_path_smoke.json --path-output results\rflysim\esdf_path_smoke.npy
 D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_esdf_path_playback.py
+D:\PX4PSP\Python38\python.exe tools\rflysim\rflysim_mid360_reactive_avoidance.py --udp-port 9999 --spawn-test-obstacles
 ```
 
 WSL networking note:
