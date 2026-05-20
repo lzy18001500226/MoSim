@@ -132,13 +132,14 @@ metrics still come from the MWORKS/YAML pipeline.
 The generated cube map is a debug and fallback renderer. It is not the target
 visual quality for final video.
 
-Final scene work should reuse existing assets before hand-building geometry:
+Final scene work should reuse existing assets before hand-building geometry,
+but the final renderer must remain this project-owned UE5 project:
 
 ```text
 references/Sunray/simulation/sunray_simulator/models
 references/Sunray/simulation/sunray_simulator/worlds
 references/Sunray/simulation/sysu_competition/worlds
-local RflySim3D / RflySimUE / RflySimUE5 install, if editable assets exist
+local RflySim3D / RflySimUE / RflySimUE5 install as a migration source, if editable assets exist
 ```
 
 Recommended pipeline:
@@ -153,7 +154,8 @@ Recommended pipeline:
 
 Do not commit RflySim installer files, cooked `.pak` packages, engine binaries,
 or unclear-license assets. If the RflySim install only contains a packaged
-viewer, use it as a visual and protocol reference, not as a direct asset source.
+viewer, use it as a protocol, timing, and scene-organization reference, not as a
+direct asset source or final runtime.
 
 ## RflySim Local Reference
 
@@ -173,16 +175,18 @@ D:\PX4PSP\CopterSim\external\XML\F450.xml
 
 Current rule: do not continue porting the old MWORKS block/cube visualization
 into Unreal as the main visual path. That scene was a workaround for Sysplorer
-GUI limits. First run and understand RflySim's own examples, then decide which
-parts to reuse.
+GUI limits. RflySim is a reference and migration source only; selected maps,
+models, materials, XML parameters, and UDP/shared-memory ideas must be moved
+into this project-owned UE5 renderer before they become part of the final
+system.
 
 Use RflySim in three ways:
 
 1. run native RflySim3D/CopterSim examples to learn the intended workflow;
 2. reference its UDP pose, model, camera, Mid360/lidar, terrain, and
    scene-loading APIs;
-3. optionally drive the installed RflySim3D executable from exported MWORKS
-   results for video comparison.
+3. migrate authorized useful assets/mechanisms into the project-owned UE5
+   scene and bridge.
 
 Do not copy its `Content/` tree into this repository. The install contains
 large UE payloads well above GitHub limits, and asset redistribution is not yet
@@ -200,13 +204,14 @@ RflyReqObjData ...              -> camera/vehicle/object pose and bounding boxes
 ```
 
 This is parallel to the project-owned `QuadrotorMworksBridge`. RflySim can
-accelerate video work, but MWORKS/Sysplorer remains the truth source.
+accelerate architecture and asset work, but MWORKS/Sysplorer remains the truth
+source and this UE5 project remains the final renderer.
 
 WSL note: RflySim3D runs on Windows. From WSL, `127.0.0.1` is not a reliable
 target for RflySim3D UDP commands. Use the WSL default gateway IP, or run
 RflySim example scripts with Windows Python/PowerShell.
 
-Minimum RflySim experience checklist before more Unreal scene implementation:
+Minimum RflySim reference checklist before more Unreal scene implementation:
 
 1. Launch RflySim3D and verify map switching, camera, FPS, and vehicle model
    commands.
@@ -217,8 +222,28 @@ Minimum RflySim experience checklist before more Unreal scene implementation:
 4. Run the terrain scan example and confirm whether scene height/point-cloud
    data can be exported for renderer alignment.
 5. Inspect whether the chosen RflySim scene exposes enough object geometry or
-   bounding boxes. If not, use it as renderer reference only, not as planning
-   truth.
+   bounding boxes. If not, use it only as a visual/protocol reference, not as
+   planning truth.
+
+## Real-Time Architecture Target
+
+The renderer follows the Gazebo/RflySim low-latency pattern: solver, control,
+sensor processing, planning, rendering, and logging run at independent rates.
+Do not put dense map rendering, lidar visualization, or UE actor updates inside
+the MWORKS solver loop.
+
+| Loop | Minimum | Target | Policy |
+| --- | ---: | ---: | --- |
+| MWORKS controller/safety | 20 Hz | 50 Hz | Hold or safety mode on timeout |
+| Local map / Mid360 abstraction | 20 Hz | 20-30 Hz | Drop stale frames; never block control |
+| Planner / smoother | 5 Hz | 10-20 Hz | Reuse last feasible trajectory on timeout |
+| UE5 render | 30 FPS | 60 FPS | Drop render frames if needed |
+| Metrics/logger | 20 Hz | 50 Hz | Record latency, seq gaps, and stale data |
+
+State packets should contain `seq`, `sim_time`, wall-clock timestamp, pose,
+velocity, attitude, motor/fault/mode state, reference, local-plan summary, radar
+metadata, and quality flags. Every packet consumer must reject stale or
+out-of-order frames.
 
 ## Verified RflySim Smoke Tests
 

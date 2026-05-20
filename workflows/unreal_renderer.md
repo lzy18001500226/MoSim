@@ -27,7 +27,7 @@ Current asset-source priority:
 | --- | --- | --- |
 | P0 | `references/Sunray/simulation/sunray_simulator/models` | Immediate reusable Gazebo/SDF assets: Sunray150/Mid360, houses, trees, windows, gates, targets, terrain, AWS RoboMaker residential/retail assets |
 | P0 | `references/Sunray/simulation/sunray_simulator/worlds/*.world` and `references/Sunray/simulation/sysu_competition/worlds/*.world` | Existing scene layout references such as competition maps, planning tests, houses, airport, outdoor, sand island |
-| P1 | RflySim3D / RflySimUE installer or asset package, if available locally | UE-style scenario, camera, UDP/display workflow reference; reuse assets only after license/source confirmation |
+| P1 | RflySim3D / RflySimUE installer or asset package, if available locally | UE-style scenario、camera、UDP/shared-memory、Mid360 and scene-asset reference; migrate useful assets into the project-owned UE5 renderer after license/source confirmation |
 | P1 | RflySim public GitHub repos | Interface/modeling reference, not primary visual assets. `CopterSim` is mainly Simulink multicopter/HIL model; `RflyExpCode` is experiment code |
 | P2 | UE Marketplace / open UE environment assets | Optional visual upgrade after license and file-size checks |
 
@@ -37,8 +37,9 @@ MAVLink/HIL, fault-injection, and UDP/display interface ideas. `CopterSim` is a
 Simulink multicopter model with MAVLink/PX4/HIL/fault-injection ports; it is not
 a render scene repository. `RflyExpCode` is course/experiment code and also is
 not a UE environment asset repository. For final visual quality, use the local
-Sunray/AWS assets first, or ask the user to provide a local RflySim3D/RflySimUE
-asset install if direct RflySim scene reuse is needed.
+Sunray/AWS assets first, or inspect the user's local RflySim3D/RflySimUE asset
+install as a migration source. Do not make the final renderer depend on running
+RflySim3D.
 
 When the user installs RflySim locally, do not immediately copy files into this
 project. First audit the install directory for:
@@ -72,20 +73,24 @@ Git-safe.
 
 Current decision: do not keep porting the old Sysplorer/MWORKS blocky visual
 map into Unreal as the primary video route. That map was a workaround for
-MWORKS GUI limits. Before implementing more Unreal scene work, first understand
-and experience RflySim itself:
+MWORKS GUI limits. RflySim is now a reference and migration source, not the
+final renderer runtime. Before implementing more Unreal scene work, identify
+which RflySim mechanisms or assets should be copied into the project-owned UE5
+renderer:
 
 ```text
 RflySim docs/API audit
   -> run native RflySim3D/CopterSim examples
   -> inspect scene/map/sensor parameter availability
-  -> decide direct RflySim playback vs project-owned Unreal renderer
+  -> migrate useful assets/protocol ideas into project-owned UE5 renderer
 ```
 
 The first milestone is not "copy assets". It is to answer whether RflySim can
 provide stable renderer behavior, scene parameters, vehicle visual models,
 Mid360/lidar data, terrain service, and path-planning examples that are better
-than the current project-owned renderer.
+than the current project-owned renderer. Selected assets must be re-imported or
+referenced through our UE5 asset registry, collision proxies, material system,
+naming rules, and scenario profiles.
 
 `D:\PX4PSP\HowToUse.pdf` establishes the official learning route:
 
@@ -124,6 +129,15 @@ Useful local entry points:
 | `D:\PX4PSP\RflySimAPIs\10.RflySimSwarm` | Multi-UAV and swarm display/control references |
 | `D:\PX4PSP\CopterSim\ModelData.db` | Vehicle/component parameter database: motor, propeller, ESC, battery, frame presets |
 | `D:\PX4PSP\CopterSim\external\XML\F450.xml` | Example quadrotor physical parameters: mass, inertia, arm radius, thrust/moment coefficients, hover RPM |
+
+Official RflySim documentation entry points used for architecture reference:
+
+| Topic | Source |
+| --- | --- |
+| RflySim3D / UE command and scene workflow | `https://rflysim.cn/doc/en/3/RflySim3DUE.html` |
+| Vision sensor configuration, shared memory / UDP / stream modes | `https://rflysim.cn/doc/en/3.Soft/viscreate.html` |
+| RflySim default UDP port allocation | `https://rflysim.com/doc/zh/RflySimAPIs/RflySimSDK/html/md_comm_2md_2port.html` |
+| High-frame-rate image access concept | `https://rflysim.com/en/4_Pro/UAVVisionAIControl.html` |
 
 Most relevant RflySim3D examples:
 
@@ -215,8 +229,9 @@ RflySim native experience path:
      reference, not as final MWORKS evidence.
 ```
 
-Only after these pass should the project connect MWORKS outputs to RflySim3D or
-continue building a project-owned Unreal scene.
+Only after these pass should the project port useful pieces into the
+project-owned Unreal scene. Driving RflySim3D from MWORKS output is allowed only
+as a temporary reference comparison, not as the final delivery path.
 
 Manual review gates for the native RflySim experience:
 
@@ -229,27 +244,34 @@ Manual review gates for the native RflySim experience:
 | `rflysim_object_truth` | Object/camera query or scene metadata | Named object pose and bounding boxes can be obtained, or limitation is documented |
 | `rflysim_esdf_path` | ESDF/Voronoi planning example | Path is not a hard-coded straight line and can be mapped to NED waypoints |
 
-If `rflysim_object_truth` fails, RflySim can still be used for video rendering,
-but not as the source of obstacle/planning truth. In that case MWORKS/scenario
-files remain the truth source and RflySim is only the visual target.
+If `rflysim_object_truth` fails, RflySim can still be used for mechanism study,
+but not as the source of obstacle/planning truth. In all cases MWORKS/scenario
+files remain the truth source, and final rendering should run in the
+project-owned UE5 scene.
 
-### RflySim/UE Scene Workflow
+### Project-Owned UE5 Scene Workflow
 
-Use this workflow before any new RflySim/UE navigation demo:
+Use this workflow before any new UE5 navigation demo:
 
 ```text
-1. Scene survey
-   - Run tools/rflysim/rflysim_scene_survey.py.
-   - Pick map, start, goal, camera.
-   - Do not move the UAV and do not spawn artificial boxes.
+1. Reference survey
+   - Inspect RflySim/Gazebo/AirSim-style examples only to identify useful
+     scene, sensor, protocol, and timing mechanisms.
+   - Do not treat RflySim runtime maps as planner truth.
 
-2. Sensor smoke
-   - Run tools/rflysim/rflysim_mid360_smoke.py with --static.
-   - Verify point frames, point count, min/max range, and optional Open3D window.
+2. Asset migration
+   - Pick authorized maps, meshes, materials, XML/parameter files, or scene
+     layout data.
+   - Convert them into project-owned UE5 assets, scenario profiles, and
+     collision proxies.
+   - Save source path, license/approval note, scale, coordinate frame, and
+     object IDs.
 
 3. Truth/proxy binding
-   - Record map name, object source, asset path, approximate collision proxy, and coordinate frame.
-   - Do not use RflySim visual assets as planner truth until collision/bounding boxes are verified.
+   - For every visible obstacle/tree/wall/gate, create a matching
+     world_geometry primitive or occupancy/collision proxy.
+   - Do not use visual meshes directly for planner truth until proxy extraction
+     is verified.
 
 4. Local planning smoke
    - Enable only local point-cloud/occupancy input.
@@ -257,20 +279,21 @@ Use this workflow before any new RflySim/UE navigation demo:
    - A useful run must show nonzero local obstacles, no yaw spinning, no wall-through path, and no artificial box corridor.
 
 5. Playback or real-time bridge
-   - For video, drive RflySim3D or UE from MWORKS raw/native result or a bounded real-time state stream.
-   - Keep controller and metrics truth in MWORKS unless a future task explicitly promotes RflySim/CopterSim as a separate evidence source.
+   - For video, drive project-owned UE5 from MWORKS raw/native result or a
+     bounded real-time state stream.
+   - Keep controller and metrics truth in MWORKS.
 ```
 
 Scenario families:
 
 | Family | Preferred map/source | Purpose |
 |---|---|---|
-| Dense forest | UE/Fab/open forest asset or RflySim compatible forest scene | Unknown-map dense obstacle avoidance |
-| Maze/building | project-owned maze or RflySim `OldFactory`/building scene | Wall occlusion and local replanning |
-| Old factory | RflySim `OldFactory` | Mid360 point cloud and industrial inspection demo |
-| Park/patrol | RflySim `NeighborhoodPark` or open UE park asset | inspection/logistics scenario |
-| Gate/ring indoor | `VisionRing`, `RobotMissionChallenge`, `MatchScene2025` | attitude tracking through tilted gates/rings |
-| Open grass | `Grasslands` / `3DDisplay` | wind and motor-efficiency robustness |
+| Dense forest | Migrated RflySim/open UE forest assets or project-owned forest scene | Unknown-map dense obstacle avoidance |
+| Maze/building | Project-owned maze or migrated RflySim building/factory assets | Wall occlusion and local replanning |
+| Old factory | Migrated RflySim `OldFactory`-style assets or equivalent UE factory scene | Mid360 point cloud and industrial inspection demo |
+| Park/patrol | Migrated RflySim/open UE park assets | Inspection/logistics scenario |
+| Gate/ring indoor | Migrated/self-built `VisionRing` / challenge-style indoor assets | Attitude tracking through tilted gates/rings |
+| Open grass | Migrated/self-built grassland scene | Wind and motor-efficiency robustness |
 
 Recommended open asset candidates:
 
@@ -299,8 +322,8 @@ Runtime latency rules:
 
 | Loop | Target | Timeout Policy |
 |---|---|---|
-| Control | 20-50 Hz initial target | Hold last valid command or switch safe mode |
-| Mid360/local map | 10-20 Hz initial target | Drop stale frames instead of blocking control |
+| Control | 20 Hz minimum, 50 Hz target | Hold last valid command or switch safe mode |
+| Mid360/local map | 20 Hz minimum, 20-30 Hz target | Drop stale frames instead of blocking control |
 | Planner/trajectory update | 5-20 Hz depending on solver cost | Reuse previous feasible trajectory |
 | Renderer | 30-60 FPS target | Rendering must not block control or metrics |
 
@@ -335,17 +358,16 @@ as `cv2`. Do not treat that as an RflySim API failure.
 Radar and navigation scope:
 
 ```text
-RflySim3D vehicle display
+RflySim3D reference display
   -> Mid360 point cloud request/receive
   -> local point cloud / occupancy processing
   -> ESDF or Voronoi planner waypoint output
-  -> controller / MWORKS trajectory replay
-  -> RflySim3D video rendering
+  -> project-owned UE5 bridge and renderer design
 ```
 
 The display, sensor, and map-to-path layers are now verified separately.
 Autonomous navigation is still not complete until the generated path is fed into
-a flight/control loop and inspected in RflySim3D or MWORKS.
+a flight/control loop and inspected in MWORKS plus the project-owned UE5 scene.
 
 Mid360 local-planning integration rule:
 
@@ -385,20 +407,20 @@ use RflySim's bundled Python environment or Windows-only dependencies. Use WSL
 only for lightweight UDP packets, documentation extraction, and project file
 updates.
 
-Candidate integration path after RflySim native examples and MWORKS evidence are
-stable:
+Reference-only RflySim playback path after native examples and MWORKS evidence
+are stable:
 
 ```text
 MWORKS raw/native result
   -> project bridge reads time, position, attitude, motor commands, local plan
   -> RflySimSDK UE4CtrlAPI sends vehicle pose/RPM to RflySim3D
   -> optional VisionCaptureApi requests Mid360/camera data for render-side display
-  -> video review
+  -> compare mechanisms against project-owned UE5 renderer
 ```
 
-This is an external-renderer route, not a replacement for the current UE bridge.
-Use it only if the local RflySim3D scenes produce better video faster than
-building a project-owned UE scene.
+This is a reference/debug route, not a replacement for the current UE bridge.
+Use it to learn timing, sensor, camera, and scene conventions. Final delivery
+should run through the project-owned `QuadrotorMworksBridge` and UE5 scene.
 
 Project-local prototype bridge:
 
@@ -555,6 +577,8 @@ Official Gazebo documentation entry points for study:
 | Topic | Official source |
 | --- | --- |
 | Gazebo Sim architecture | `https://gazebosim.org/docs/harmonic/architecture/` |
+| Gazebo Sim library and server/client usage | `https://gazebosim.org/libs/sim/` |
+| Gazebo Classic distributed architecture reference | `https://get.gazebosim.org/tutorials?cat=get_started&tut=architecture` |
 | Gazebo documentation source repo | `https://github.com/gazebosim/docs` |
 | Gazebo Rendering library | `https://gazebosim.org/libs/rendering/` |
 | Gazebo Sensors library | `https://gazebosim.org/libs/sensors/` |
