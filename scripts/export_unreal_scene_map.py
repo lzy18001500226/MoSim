@@ -78,6 +78,13 @@ def export_map(config_path: Path, output_path: Path, terrain_cell_m: float) -> d
         if obstacle.get("type") == "box"
         and (obstacle.get("wall_group_id") or obstacle.get("semantic") == "wall")
     ]
+    static_boxes = [
+        obstacle for obstacle in obstacles
+        if obstacle.get("type") == "box"
+        and not obstacle.get("random_cluster")
+        and not obstacle.get("wall_group_id")
+        and obstacle.get("semantic") != "wall"
+    ]
     payload = {
         "schema": "quadrotor.unreal_render_map.v1",
         "source_config": str(config_path.relative_to(ROOT)),
@@ -90,10 +97,13 @@ def export_map(config_path: Path, output_path: Path, terrain_cell_m: float) -> d
         "terrain": build_terrain_grid(bounds, terrain_cell_m),
         "obstacles": {
             "random_columns": [box_record(obstacle, semantic="random_column", index=i) for i, obstacle in enumerate(random_boxes, start=1)],
-            "wall_boxes": [box_record(obstacle, semantic="wall", index=i) for i, obstacle in enumerate(wall_boxes, start=1)],
+            "wall_boxes": [
+                box_record(obstacle, semantic=obstacle.get("semantic", "wall"), index=i)
+                for i, obstacle in enumerate(wall_boxes + static_boxes, start=1)
+            ],
             "random_cluster_count": len({obstacle.get("random_cluster_id") for obstacle in random_boxes}),
             "random_column_count": len(random_boxes),
-            "wall_box_count": len(wall_boxes),
+            "wall_box_count": len(wall_boxes) + len(static_boxes),
         },
         "materials": {
             "terrain_low": {"color": [0.78, 0.86, 0.78]},

@@ -18,6 +18,8 @@ VISION_RING_PLAN = ROOT / "results" / "rflysim" / "rflysim_vision_ring_migration
 VISION_RING_CHECKLIST = ROOT / "results" / "rflysim" / "rflysim_vision_ring_manual_review_checklist.md"
 MIGRATION_CHECKER = ROOT / "scripts" / "check_unreal_migration_package.py"
 VISION_RING_STAGING = ROOT / "unreal" / "migration_staging" / "rflysim_vision_ring"
+GATE_RING_STAGING = ROOT / "unreal" / "migration_staging" / "gate_ring_indoor"
+GATE_RING_RENDER_MAP = RENDERER / "Content" / "MworksData" / "map_corridor_gate_render_map.json"
 SCENE_PROFILE_PLANNER = ROOT / "scripts" / "plan_unreal_scene_profiles.py"
 SCENE_PROFILE_PLAN = ROOT / "results" / "unreal" / "unreal_scene_profile_implementation_plan.json"
 
@@ -229,6 +231,9 @@ def main() -> int:
     if not MAZE_RENDER_MAP.exists():
         print(f"[FAIL] missing maze/building render map: {MAZE_RENDER_MAP}")
         return 1
+    if not GATE_RING_RENDER_MAP.exists():
+        print(f"[FAIL] missing gate/ring render map: {GATE_RING_RENDER_MAP}")
+        return 1
     maze_map = json.loads(MAZE_RENDER_MAP.read_text(encoding="utf-8"))
     if maze_map.get("schema") != "quadrotor.unreal_render_map.v1":
         print("[FAIL] maze/building render map schema mismatch")
@@ -236,6 +241,14 @@ def main() -> int:
     maze_obstacles = maze_map.get("obstacles", {})
     if maze_obstacles.get("wall_box_count", 0) < 10:
         print("[FAIL] maze/building render map has too few wall boxes")
+        return 1
+    gate_map = json.loads(GATE_RING_RENDER_MAP.read_text(encoding="utf-8"))
+    if gate_map.get("schema") != "quadrotor.unreal_render_map.v1":
+        print("[FAIL] gate/ring render map schema mismatch")
+        return 1
+    gate_obstacles = gate_map.get("obstacles", {})
+    if gate_obstacles.get("wall_box_count", 0) < 3:
+        print("[FAIL] gate/ring render map must include gate obstacle boxes")
         return 1
 
     if not VISION_RING_PLAN.exists():
@@ -297,6 +310,9 @@ def main() -> int:
         return 1
     if not VISION_RING_STAGING.exists():
         print(f"[FAIL] missing VisionRing migration staging package: {VISION_RING_STAGING}")
+        return 1
+    if not GATE_RING_STAGING.exists():
+        print(f"[FAIL] missing project-owned gate/ring staging package: {GATE_RING_STAGING}")
         return 1
     asset_schema = json.loads(ASSET_REGISTRY_SCHEMA.read_text(encoding="utf-8"))
     if asset_schema.get("schema") != "quadrotor.scene_asset_registry.schema.v1":
