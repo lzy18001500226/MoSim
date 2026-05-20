@@ -76,6 +76,46 @@ def audit(
     plugin_source_files = list((rflysim_project / "Plugins").glob("*/Source/**/*.Build.cs"))
     plugin_binary_files = list((rflysim_project / "Plugins").glob("*/Binaries/**/*.dll"))
     runtime_exe = project_binaries / "Win64" / "RflySim3D.exe"
+    project_modules = [module.get("Name") for module in descriptor.get("Modules", []) if module.get("Name")]
+    project_module_status = []
+    for module_name in project_modules:
+        project_module_status.append(
+            {
+                "module": module_name,
+                "source_build_cs": str(project_source / module_name / f"{module_name}.Build.cs"),
+                "has_source_build_cs": (project_source / module_name / f"{module_name}.Build.cs").exists(),
+                "win64_dll": str(project_binaries / "Win64" / f"{module_name}.dll"),
+                "has_win64_dll": (project_binaries / "Win64" / f"{module_name}.dll").exists(),
+            }
+        )
+
+    plugin_status = []
+    for plugin_descriptor in sorted((rflysim_project / "Plugins").glob("*/*.uplugin")):
+        plugin_root = plugin_descriptor.parent
+        plugin_data = read_json(plugin_descriptor)
+        modules = [module.get("Name") for module in plugin_data.get("Modules", []) if module.get("Name")]
+        module_status = []
+        for module_name in modules:
+            module_status.append(
+                {
+                    "module": module_name,
+                    "source_build_cs": str(plugin_root / "Source" / module_name / f"{module_name}.Build.cs"),
+                    "has_source_build_cs": (plugin_root / "Source" / module_name / f"{module_name}.Build.cs").exists(),
+                    "win64_dll": str(plugin_root / "Binaries" / "Win64" / f"UE4Editor-{module_name}.dll"),
+                    "has_win64_dll": (
+                        plugin_root / "Binaries" / "Win64" / f"UE4Editor-{module_name}.dll"
+                    ).exists(),
+                }
+            )
+        plugin_status.append(
+            {
+                "plugin": plugin_data.get("FriendlyName") or plugin_descriptor.stem,
+                "descriptor": str(plugin_descriptor),
+                "engine_version": plugin_data.get("EngineVersion"),
+                "can_contain_content": plugin_data.get("CanContainContent"),
+                "modules": module_status,
+            }
+        )
 
     if plugin_source_files or plugin_binary_files:
         editor_source_conclusion = (
@@ -129,6 +169,8 @@ def audit(
         "enabled_plugins": [plugin.get("Name") for plugin in plugins if plugin.get("Enabled")],
         "has_project_source_dir": project_source.exists(),
         "has_project_runtime_exe": runtime_exe.exists(),
+        "project_module_status": project_module_status,
+        "plugin_status": plugin_status,
         "plugin_source_file_count": len(plugin_source_files),
         "plugin_binary_file_count": len(plugin_binary_files),
         "editor_source_conclusion": editor_source_conclusion,
@@ -161,6 +203,37 @@ def write_markdown(data: dict, path: Path) -> None:
         f"- Plugin source files: `{data.get('plugin_source_file_count')}`",
         f"- Plugin binary files: `{data.get('plugin_binary_file_count')}`",
         f"- Reference scan MB per map: `{data.get('reference_scan_mb')}`",
+        "",
+        "## Project Modules",
+        "",
+        "| Module | Source Build.cs | Win64 DLL |",
+        "| --- | --- | --- |",
+    ]
+    for item in data.get("project_module_status", []):
+        lines.append(
+            f"| `{item['module']}` | `{item['has_source_build_cs']}` | `{item['has_win64_dll']}` |"
+        )
+
+    lines += [
+        "",
+        "## Plugin Module Availability",
+        "",
+        "| Plugin | Engine | Content | Modules | Missing Source/DLL? |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for plugin in data.get("plugin_status", []):
+        modules = ", ".join(f"`{module['module']}`" for module in plugin.get("modules", [])) or "`none`"
+        missing = []
+        for module in plugin.get("modules", []):
+            if not module.get("has_source_build_cs") and not module.get("has_win64_dll"):
+                missing.append(module["module"])
+        lines.append(
+            f"| `{plugin['plugin']}` | `{plugin.get('engine_version')}` | "
+            f"`{plugin.get('can_contain_content')}` | {modules} | "
+            f"{', '.join(f'`{name}`' for name in missing) if missing else '`none`'} |"
+        )
+
+    lines += [
         "",
         "## Enabled Plugins",
         "",

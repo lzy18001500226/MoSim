@@ -5,7 +5,18 @@
   "source_engine_association": "4.27",
   "target_engine_association": "5.7",
   "direct_use_supported": false,
+  "direct_editor_open_supported": false,
+  "direct_editor_open_blockers": [
+    "project module RflySim3D has no Source Build.cs and no Win64 editor DLL",
+    "plugin Cesium for Unreal missing source/DLL for modules: CesiumRuntime, CesiumEditor",
+    "plugin Color Wheel missing source/DLL for modules: ColorWheelPlugin",
+    "plugin HZFRedis missing source/DLL for modules: DTRedisLib, DTRedis, DTRedisEditor",
+    "plugin Rfly3DSimPlugin missing source/DLL for modules: Rfly3DSimPlugin",
+    "plugin RuntimeTransformer missing source/DLL for modules: RuntimeTransformer",
+    "plugin Datasmith Twinmotion Importer missing source/DLL for modules: TwinmotionBase, TwinmotionStorageLite, TwinmotionToUnreal"
+  ],
   "direct_use_reason": "Not drop-in for UE5.7: RflySim maps are UE4.27 .umap/.uasset assets with project/plugin dependencies. Use as migration source only.",
+  "editor_source_conclusion": "Packaged/runtime install: RflySim3D.exe exists, but editable project/plugin source and plugin binaries are not present. Do not open this .uproject as a UE Editor source project; use the runtime as reference and rebuild scenes in the project-owned UE5 renderer.",
   "enabled_plugin_sample": [
     "ModelingToolsEditorMode",
     "PhysXVehicles",
@@ -17,6 +28,142 @@
     "LidarPointCloud",
     "ColorWheelPlugin",
     "RuntimeTransformer"
+  ],
+  "project_module_status": [
+    {
+      "module": "RflySim3D",
+      "source_build_cs": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Source/RflySim3D/RflySim3D.Build.cs",
+      "has_source_build_cs": false,
+      "win64_dll": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Binaries/Win64/RflySim3D.dll",
+      "has_win64_dll": false
+    }
+  ],
+  "plugin_status": [
+    {
+      "plugin": "Cesium for Unreal",
+      "descriptor": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/CesiumForUnreal_4.27/CesiumForUnreal.uplugin",
+      "engine_version": "4.27.0",
+      "can_contain_content": true,
+      "modules": [
+        {
+          "module": "CesiumRuntime",
+          "source_build_cs": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/CesiumForUnreal_4.27/Source/CesiumRuntime/CesiumRuntime.Build.cs",
+          "has_source_build_cs": false,
+          "win64_dll": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/CesiumForUnreal_4.27/Binaries/Win64/UE4Editor-CesiumRuntime.dll",
+          "has_win64_dll": false
+        },
+        {
+          "module": "CesiumEditor",
+          "source_build_cs": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/CesiumForUnreal_4.27/Source/CesiumEditor/CesiumEditor.Build.cs",
+          "has_source_build_cs": false,
+          "win64_dll": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/CesiumForUnreal_4.27/Binaries/Win64/UE4Editor-CesiumEditor.dll",
+          "has_win64_dll": false
+        }
+      ]
+    },
+    {
+      "plugin": "Color Wheel",
+      "descriptor": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/ColorWheelPlugin/ColorWheelPlugin.uplugin",
+      "engine_version": "4.27.0",
+      "can_contain_content": false,
+      "modules": [
+        {
+          "module": "ColorWheelPlugin",
+          "source_build_cs": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/ColorWheelPlugin/Source/ColorWheelPlugin/ColorWheelPlugin.Build.cs",
+          "has_source_build_cs": false,
+          "win64_dll": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/ColorWheelPlugin/Binaries/Win64/UE4Editor-ColorWheelPlugin.dll",
+          "has_win64_dll": false
+        }
+      ]
+    },
+    {
+      "plugin": "HZFRedis",
+      "descriptor": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/RedisConnector/DTRedis.uplugin",
+      "engine_version": null,
+      "can_contain_content": true,
+      "modules": [
+        {
+          "module": "DTRedisLib",
+          "source_build_cs": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/RedisConnector/Source/DTRedisLib/DTRedisLib.Build.cs",
+          "has_source_build_cs": false,
+          "win64_dll": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/RedisConnector/Binaries/Win64/UE4Editor-DTRedisLib.dll",
+          "has_win64_dll": false
+        },
+        {
+          "module": "DTRedis",
+          "source_build_cs": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/RedisConnector/Source/DTRedis/DTRedis.Build.cs",
+          "has_source_build_cs": false,
+          "win64_dll": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/RedisConnector/Binaries/Win64/UE4Editor-DTRedis.dll",
+          "has_win64_dll": false
+        },
+        {
+          "module": "DTRedisEditor",
+          "source_build_cs": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/RedisConnector/Source/DTRedisEditor/DTRedisEditor.Build.cs",
+          "has_source_build_cs": false,
+          "win64_dll": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/RedisConnector/Binaries/Win64/UE4Editor-DTRedisEditor.dll",
+          "has_win64_dll": false
+        }
+      ]
+    },
+    {
+      "plugin": "Rfly3DSimPlugin",
+      "descriptor": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/Rfly3DSimPlugin/Rfly3DSimPlugin.uplugin",
+      "engine_version": null,
+      "can_contain_content": true,
+      "modules": [
+        {
+          "module": "Rfly3DSimPlugin",
+          "source_build_cs": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/Rfly3DSimPlugin/Source/Rfly3DSimPlugin/Rfly3DSimPlugin.Build.cs",
+          "has_source_build_cs": false,
+          "win64_dll": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/Rfly3DSimPlugin/Binaries/Win64/UE4Editor-Rfly3DSimPlugin.dll",
+          "has_win64_dll": false
+        }
+      ]
+    },
+    {
+      "plugin": "RuntimeTransformer",
+      "descriptor": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/RuntimeTransformer/RuntimeTransformer.uplugin",
+      "engine_version": "4.27.0",
+      "can_contain_content": true,
+      "modules": [
+        {
+          "module": "RuntimeTransformer",
+          "source_build_cs": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/RuntimeTransformer/Source/RuntimeTransformer/RuntimeTransformer.Build.cs",
+          "has_source_build_cs": false,
+          "win64_dll": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/RuntimeTransformer/Binaries/Win64/UE4Editor-RuntimeTransformer.dll",
+          "has_win64_dll": false
+        }
+      ]
+    },
+    {
+      "plugin": "Datasmith Twinmotion Importer",
+      "descriptor": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/TwinmotiontoUnreal/TwinmotionToUnreal.uplugin",
+      "engine_version": "4.27.0",
+      "can_contain_content": true,
+      "modules": [
+        {
+          "module": "TwinmotionBase",
+          "source_build_cs": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/TwinmotiontoUnreal/Source/TwinmotionBase/TwinmotionBase.Build.cs",
+          "has_source_build_cs": false,
+          "win64_dll": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/TwinmotiontoUnreal/Binaries/Win64/UE4Editor-TwinmotionBase.dll",
+          "has_win64_dll": false
+        },
+        {
+          "module": "TwinmotionStorageLite",
+          "source_build_cs": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/TwinmotiontoUnreal/Source/TwinmotionStorageLite/TwinmotionStorageLite.Build.cs",
+          "has_source_build_cs": false,
+          "win64_dll": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/TwinmotiontoUnreal/Binaries/Win64/UE4Editor-TwinmotionStorageLite.dll",
+          "has_win64_dll": false
+        },
+        {
+          "module": "TwinmotionToUnreal",
+          "source_build_cs": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/TwinmotiontoUnreal/Source/TwinmotionToUnreal/TwinmotionToUnreal.Build.cs",
+          "has_source_build_cs": false,
+          "win64_dll": "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Plugins/TwinmotiontoUnreal/Binaries/Win64/UE4Editor-TwinmotionToUnreal.dll",
+          "has_win64_dll": false
+        }
+      ]
+    }
   ],
   "recommended_migration_order": [
     "rflysim_vision_ring",
@@ -39,6 +186,8 @@
       "target_engine_association": "5.7",
       "source_project": "/mnt/d/PX4PSP/RflySim3D/RflySim3D",
       "direct_use_supported": false,
+      "direct_editor_open_supported": false,
+      "direct_editor_blocker_count": 7,
       "migration_status": "audit_only",
       "asset_import_status": "pending",
       "collision_proxy_status": "pending",
@@ -64,6 +213,8 @@
       "target_engine_association": "5.7",
       "source_project": "/mnt/d/PX4PSP/RflySim3D/RflySim3D",
       "direct_use_supported": false,
+      "direct_editor_open_supported": false,
+      "direct_editor_blocker_count": 7,
       "migration_status": "audit_only",
       "asset_import_status": "pending",
       "collision_proxy_status": "pending",
@@ -89,6 +240,8 @@
       "target_engine_association": "5.7",
       "source_project": "/mnt/d/PX4PSP/RflySim3D/RflySim3D",
       "direct_use_supported": false,
+      "direct_editor_open_supported": false,
+      "direct_editor_blocker_count": 7,
       "migration_status": "audit_only",
       "asset_import_status": "pending",
       "collision_proxy_status": "pending",
@@ -114,6 +267,8 @@
       "target_engine_association": "5.7",
       "source_project": "/mnt/d/PX4PSP/RflySim3D/RflySim3D",
       "direct_use_supported": false,
+      "direct_editor_open_supported": false,
+      "direct_editor_blocker_count": 7,
       "migration_status": "audit_only",
       "asset_import_status": "pending",
       "collision_proxy_status": "pending",
@@ -139,6 +294,8 @@
       "target_engine_association": "5.7",
       "source_project": "/mnt/d/PX4PSP/RflySim3D/RflySim3D",
       "direct_use_supported": false,
+      "direct_editor_open_supported": false,
+      "direct_editor_blocker_count": 7,
       "migration_status": "audit_only",
       "asset_import_status": "pending",
       "collision_proxy_status": "pending",
@@ -164,6 +321,8 @@
       "target_engine_association": "5.7",
       "source_project": "/mnt/d/PX4PSP/RflySim3D/RflySim3D",
       "direct_use_supported": false,
+      "direct_editor_open_supported": false,
+      "direct_editor_blocker_count": 7,
       "migration_status": "audit_only",
       "asset_import_status": "pending",
       "collision_proxy_status": "pending",
@@ -189,6 +348,8 @@
       "target_engine_association": "5.7",
       "source_project": "/mnt/d/PX4PSP/RflySim3D/RflySim3D",
       "direct_use_supported": false,
+      "direct_editor_open_supported": false,
+      "direct_editor_blocker_count": 7,
       "migration_status": "audit_only",
       "asset_import_status": "pending",
       "collision_proxy_status": "pending",
@@ -214,6 +375,8 @@
       "target_engine_association": "5.7",
       "source_project": "/mnt/d/PX4PSP/RflySim3D/RflySim3D",
       "direct_use_supported": false,
+      "direct_editor_open_supported": false,
+      "direct_editor_blocker_count": 7,
       "migration_status": "audit_only",
       "asset_import_status": "pending",
       "collision_proxy_status": "pending",
@@ -239,6 +402,8 @@
       "target_engine_association": "5.7",
       "source_project": "/mnt/d/PX4PSP/RflySim3D/RflySim3D",
       "direct_use_supported": false,
+      "direct_editor_open_supported": false,
+      "direct_editor_blocker_count": 7,
       "migration_status": "audit_only",
       "asset_import_status": "pending",
       "collision_proxy_status": "pending",

@@ -88,8 +88,30 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def collect_direct_editor_blockers(audit: dict) -> list[str]:
+    blockers: list[str] = []
+    for item in audit.get("project_module_status", []):
+        module = item.get("module", "<unknown>")
+        if not item.get("has_source_build_cs") and not item.get("has_win64_dll"):
+            blockers.append(f"project module {module} has no Source Build.cs and no Win64 editor DLL")
+
+    for plugin in audit.get("plugin_status", []):
+        missing_modules = [
+            module.get("module", "<unknown>")
+            for module in plugin.get("modules", [])
+            if not module.get("has_source_build_cs") and not module.get("has_win64_dll")
+        ]
+        if missing_modules:
+            blockers.append(
+                f"plugin {plugin.get('plugin', '<unknown>')} missing source/DLL for modules: "
+                + ", ".join(missing_modules)
+            )
+    return blockers
+
+
 def build_registry(audit: dict) -> dict:
     maps_by_path = {item["relative_path"]: item for item in audit.get("maps", [])}
+    direct_editor_blockers = collect_direct_editor_blockers(audit)
     scenes = []
     for target in TARGET_SCENES:
         audit_item = maps_by_path.get(target["relative_path"], {})
@@ -100,6 +122,8 @@ def build_registry(audit: dict) -> dict:
                 "target_engine_association": "5.7",
                 "source_project": audit.get("rflysim_project"),
                 "direct_use_supported": False,
+                "direct_editor_open_supported": not direct_editor_blockers,
+                "direct_editor_blocker_count": len(direct_editor_blockers),
                 "migration_status": "audit_only",
                 "asset_import_status": "pending",
                 "collision_proxy_status": "pending",
@@ -120,8 +144,13 @@ def build_registry(audit: dict) -> dict:
         "source_engine_association": audit.get("engine_association"),
         "target_engine_association": "5.7",
         "direct_use_supported": False,
+        "direct_editor_open_supported": not direct_editor_blockers,
+        "direct_editor_open_blockers": direct_editor_blockers,
         "direct_use_reason": audit.get("direct_use_conclusion"),
+        "editor_source_conclusion": audit.get("editor_source_conclusion"),
         "enabled_plugin_sample": audit.get("enabled_plugins", []),
+        "project_module_status": audit.get("project_module_status", []),
+        "plugin_status": audit.get("plugin_status", []),
         "recommended_migration_order": [scene["scene_id"] for scene in scenes],
         "scenes": scenes,
     }

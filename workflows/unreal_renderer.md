@@ -151,6 +151,20 @@ Findings:
 | Editor-open status | Not a reliable editor source project: UE4.27 can load engine plugins such as `PhysXVehicles`, but RflySim modules need missing/incompatible source or binaries |
 | Direct copy risk | High: `.umap` references `/Game/...` assets and UE4.27/plugin packages that are not present in our UE5.7 project |
 
+Hard blocker evidence now lives in the generated audit and registry:
+
+```text
+results/rflysim/rflysim_map_audit.md
+unreal/MworksUnrealRenderer/Content/MworksData/rflysim_scene_registry.json
+```
+
+The current local tree has no usable `Source/RflySim3D/*.Build.cs`, no
+`Binaries/Win64/RflySim3D*.dll`, and no source/editor binaries for critical
+plugin modules such as `Rfly3DSimPlugin`, `CesiumRuntime`, `DTRedis`,
+`RuntimeTransformer`, and `TwinmotionToUnreal`. Installing UE4.27 alone does not
+solve this. A temporary UE editor pass is only diagnostic unless the missing
+source or matching editor plugin binaries are obtained.
+
 Representative candidate maps:
 
 | Candidate | Path | Use | Migration priority |
@@ -207,8 +221,12 @@ python3 scripts/build_rflysim_scene_registry.py
 
 The registry is the handoff point between RflySim research and our UE5 renderer.
 It marks every RflySim scene as `direct_use_supported=false` and
-`migration_status=audit_only` until a temporary UE conversion project proves the
-map, materials, dependencies, and collision proxies can be migrated cleanly.
+`direct_editor_open_supported=false` while required project/plugin source or
+editor binaries are missing. It also keeps the direct-editor blocker list so the
+workflow cannot silently return to the failed "open original `.uproject`"
+route. `migration_status` stays `audit_only` until a temporary UE conversion
+project proves the map, materials, dependencies, and collision proxies can be
+migrated cleanly.
 `stream_unreal_udp.py` already sends `map_id`; `QuadrotorMworksBridge` receives
 it as `FQuadrotorMworksFrame.MapId` so the renderer can later select a migrated
 scene profile without changing MWORKS simulation data.
@@ -285,6 +303,20 @@ This path was tested and is not the current main route.
    editor plugin binaries for a clean rebuild.
 4. Therefore this route is stopped. Continue with native RflySim runtime
    observation and project-owned UE5 scene reconstruction.
+
+Allowed fallback route when direct editor migration is blocked:
+
+```text
+RflySim runtime/manual observation
+  -> record map layout, scale, materials, sensors, and useful scene assets
+  -> rebuild scene in project-owned UE5 renderer using project-owned assets
+  -> bind every visible obstacle/gate/wall/terrain piece to collision proxies
+  -> drive visualization from MWORKS UDP/replay packets
+```
+
+Do not spend engineering time repeatedly clicking through missing-plugin dialogs
+unless the goal is to record a new blocker or verify newly obtained source or
+plugin binaries.
 
 Use the dry-run helper to print the exact Windows commands without copying
 assets:

@@ -3,7 +3,7 @@
 - Project: `/mnt/d/PX4PSP/RflySim3D/RflySim3D`
 - EngineAssociation: `4.27`
 - Map count: `28`
-- Loose mesh scan: `skipped`
+- Loose mesh scan: `scanned`
 - Loose mesh count: `0`
 - Conclusion: Not drop-in for UE5.7: RflySim maps are UE4.27 .umap/.uasset assets with project/plugin dependencies. Use as migration source only.
 - Editor source conclusion: Packaged/runtime install: RflySim3D.exe exists, but editable project/plugin source and plugin binaries are not present. Do not open this .uproject as a UE Editor source project; use the runtime as reference and rebuild scenes in the project-owned UE5 renderer.
@@ -11,7 +11,24 @@
 - Runtime executable: `True`
 - Plugin source files: `0`
 - Plugin binary files: `0`
-- Reference scan MB per map: `8`
+- Reference scan MB per map: `0`
+
+## Project Modules
+
+| Module | Source Build.cs | Win64 DLL |
+| --- | --- | --- |
+| `RflySim3D` | `False` | `False` |
+
+## Plugin Module Availability
+
+| Plugin | Engine | Content | Modules | Missing Source/DLL? |
+| --- | --- | --- | --- | --- |
+| `Cesium for Unreal` | `4.27.0` | `True` | `CesiumRuntime`, `CesiumEditor` | `CesiumRuntime`, `CesiumEditor` |
+| `Color Wheel` | `4.27.0` | `False` | `ColorWheelPlugin` | `ColorWheelPlugin` |
+| `HZFRedis` | `None` | `True` | `DTRedisLib`, `DTRedis`, `DTRedisEditor` | `DTRedisLib`, `DTRedis`, `DTRedisEditor` |
+| `Rfly3DSimPlugin` | `None` | `True` | `Rfly3DSimPlugin` | `Rfly3DSimPlugin` |
+| `RuntimeTransformer` | `4.27.0` | `True` | `RuntimeTransformer` | `RuntimeTransformer` |
+| `Datasmith Twinmotion Importer` | `4.27.0` | `True` | `TwinmotionBase`, `TwinmotionStorageLite`, `TwinmotionToUnreal` | `TwinmotionBase`, `TwinmotionStorageLite`, `TwinmotionToUnreal` |
 
 ## Enabled Plugins
 

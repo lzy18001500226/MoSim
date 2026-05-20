@@ -7,6 +7,16 @@
   "source_engine_association": "4.27",
   "target_engine_association": "5.7",
   "direct_use_supported": false,
+  "direct_editor_open_supported": false,
+  "direct_editor_open_blockers": [
+    "project module RflySim3D has no Source Build.cs and no Win64 editor DLL",
+    "plugin Cesium for Unreal missing source/DLL for modules: CesiumRuntime, CesiumEditor",
+    "plugin Color Wheel missing source/DLL for modules: ColorWheelPlugin",
+    "plugin HZFRedis missing source/DLL for modules: DTRedisLib, DTRedis, DTRedisEditor",
+    "plugin Rfly3DSimPlugin missing source/DLL for modules: Rfly3DSimPlugin",
+    "plugin RuntimeTransformer missing source/DLL for modules: RuntimeTransformer",
+    "plugin Datasmith Twinmotion Importer missing source/DLL for modules: TwinmotionBase, TwinmotionStorageLite, TwinmotionToUnreal"
+  ],
   "source_map": "Grasslands/Maps/Grasslands/3DDisplay.umap",
   "suggested_temp_project": "D:/UE_MigrationScratch/QuadrotorRflySimSceneProbe",
   "target_project": "unreal/MworksUnrealRenderer/MworksUnrealRenderer.uproject",
@@ -35,14 +45,15 @@
     "no .pak, installer, engine binary, or unclear-license asset is committed"
   ],
   "manual_steps": [
-    "copy the RflySim UE project to the suggested temporary project path outside this repo",
-    "open the temporary copy in Unreal and let only the copy upgrade if needed",
-    "open the source map and record missing asset/plugin warnings",
-    "migrate only the required source content roots into a disposable UE5 test project",
+    "do not open the original RflySim UE project as the main route while direct_editor_open_supported is false",
+    "if a diagnostic editor test is still needed, copy the RflySim UE project to the suggested temporary path outside this repo",
+    "record every missing project module, plugin module, asset, and incompatible-engine warning from the temporary copy",
+    "migrate only the required source content roots into a disposable UE5 test project, never into the final renderer first",
     "extract or author simplified collision proxies for visible obstacles, walls, gates, and terrain",
     "update the project-owned scene registry entry from audit_only to migrated_tested only after visual and collision checks pass"
   ],
   "stop_conditions": [
+    "project module or plugin module source/DLL remains missing and the scene requires that module",
     "required proprietary plugin is unavailable",
     "the map opens only in the packaged RflySim runtime",
     "core scene geometry is missing after migration",

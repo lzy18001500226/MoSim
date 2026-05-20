@@ -164,6 +164,17 @@ def main() -> int:
     if registry.get("direct_use_supported") is not False:
         print("[FAIL] scene registry must mark RflySim maps as migration-only")
         return 1
+    if registry.get("direct_editor_open_supported") is not False:
+        print("[FAIL] scene registry must mark local RflySim editor project as not directly openable")
+        return 1
+    blockers = registry.get("direct_editor_open_blockers", [])
+    if not blockers:
+        print("[FAIL] scene registry missing direct-editor blocker evidence")
+        return 1
+    for token in ["RflySim3D", "Rfly3DSimPlugin"]:
+        if token not in "\n".join(blockers):
+            print(f"[FAIL] scene registry missing expected blocker token: {token}")
+            return 1
     scenes = registry.get("scenes", [])
     if not any(scene.get("priority") == "P0" for scene in scenes):
         print("[FAIL] scene registry has no P0 migration candidate")
@@ -226,6 +237,12 @@ def main() -> int:
         return 1
     if plan.get("direct_use_supported") is not False:
         print("[FAIL] RflySim migration plan must remain migration-only")
+        return 1
+    if plan.get("direct_editor_open_supported") is not False:
+        print("[FAIL] RflySim migration plan must preserve direct editor blocker state")
+        return 1
+    if not plan.get("direct_editor_open_blockers"):
+        print("[FAIL] RflySim migration plan missing direct-editor blockers")
         return 1
 
     if not SCENE_PROFILE_PLANNER.exists():

@@ -57,6 +57,7 @@ def build_plan(registry: dict, scene_id: str) -> dict:
 
     source_project = registry.get("source_project", "")
     source_content_roots = [content_path_for_game_root(source_project, root) for root in roots]
+    direct_editor_blockers = registry.get("direct_editor_open_blockers", [])
 
     return {
         "schema": "quadrotor.rflysim_scene_migration_plan.v1",
@@ -67,6 +68,8 @@ def build_plan(registry: dict, scene_id: str) -> dict:
         "source_engine_association": registry.get("source_engine_association"),
         "target_engine_association": registry.get("target_engine_association"),
         "direct_use_supported": False,
+        "direct_editor_open_supported": registry.get("direct_editor_open_supported", False),
+        "direct_editor_open_blockers": direct_editor_blockers[:20],
         "source_map": scene.get("relative_path"),
         "suggested_temp_project": "D:/UE_MigrationScratch/QuadrotorRflySimSceneProbe",
         "target_project": "unreal/MworksUnrealRenderer/MworksUnrealRenderer.uproject",
@@ -82,14 +85,15 @@ def build_plan(registry: dict, scene_id: str) -> dict:
             "no .pak, installer, engine binary, or unclear-license asset is committed",
         ],
         "manual_steps": [
-            "copy the RflySim UE project to the suggested temporary project path outside this repo",
-            "open the temporary copy in Unreal and let only the copy upgrade if needed",
-            "open the source map and record missing asset/plugin warnings",
-            "migrate only the required source content roots into a disposable UE5 test project",
+            "do not open the original RflySim UE project as the main route while direct_editor_open_supported is false",
+            "if a diagnostic editor test is still needed, copy the RflySim UE project to the suggested temporary path outside this repo",
+            "record every missing project module, plugin module, asset, and incompatible-engine warning from the temporary copy",
+            "migrate only the required source content roots into a disposable UE5 test project, never into the final renderer first",
             "extract or author simplified collision proxies for visible obstacles, walls, gates, and terrain",
             "update the project-owned scene registry entry from audit_only to migrated_tested only after visual and collision checks pass",
         ],
         "stop_conditions": [
+            "project module or plugin module source/DLL remains missing and the scene requires that module",
             "required proprietary plugin is unavailable",
             "the map opens only in the packaged RflySim runtime",
             "core scene geometry is missing after migration",
@@ -109,6 +113,7 @@ def write_markdown(plan: dict, path: Path) -> None:
         f"- Source engine: `{plan['source_engine_association']}`",
         f"- Target engine: `{plan['target_engine_association']}`",
         f"- Direct use supported: `{str(plan['direct_use_supported']).lower()}`",
+        f"- Direct editor open supported: `{str(plan['direct_editor_open_supported']).lower()}`",
         "",
         "## Source Content Roots",
         "",
@@ -119,6 +124,11 @@ def write_markdown(plan: dict, path: Path) -> None:
     lines += ["", "## Acceptance", ""]
     for item in plan["acceptance"]:
         lines.append(f"- {item}")
+
+    if plan.get("direct_editor_open_blockers"):
+        lines += ["", "## Direct Editor Open Blockers", ""]
+        for item in plan["direct_editor_open_blockers"]:
+            lines.append(f"- {item}")
 
     lines += ["", "## Manual Steps", ""]
     for index, item in enumerate(plan["manual_steps"], start=1):
