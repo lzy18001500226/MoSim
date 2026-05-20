@@ -236,6 +236,19 @@ linked back to `world_geometry`. A visual-only asset may exist only if it is
 marked `render_only=true`. This prevents the final UE5 scene from drifting away
 from MWORKS collision truth.
 
+Before importing any migrated UE content into the project, validate the staged
+package:
+
+```bash
+python3 scripts/check_unreal_migration_package.py \
+  --package-dir tests/fixtures/unreal_migration_package_valid
+```
+
+For a real migration package, the package directory must be inside this project
+and must contain exactly one `scene_asset_registry.json`. The checker rejects
+`.pak`, installers, engine binaries, files over 100 MB, invalid licenses, and
+obstacle-like visual assets without collision proxies.
+
 Minimal practical migration test:
 
 1. In Windows Unreal Editor, open a temporary copy of

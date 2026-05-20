@@ -162,6 +162,17 @@ This keeps visual UE assets tied to MWORKS `world_geometry` and simplified
 collision proxies. Any obstacle-like visual without a proxy is a renderer bug,
 not a planning result.
 
+Validate any staged migration package before importing or committing it:
+
+```bash
+python3 scripts/check_unreal_migration_package.py \
+  --package-dir tests/fixtures/unreal_migration_package_valid
+```
+
+Use the fixture only to test the checker. Real migrated assets must live in an
+explicit staging folder under the project and pass the same gate before they are
+copied into `Content/`.
+
 ## Asset-First Scene Direction
 
 The generated cube map is a debug and fallback renderer. It is not the target
