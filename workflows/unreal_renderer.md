@@ -607,6 +607,58 @@ Useful questions if contacting an AirSim/Fork maintainer:
    proxies for a custom renderer/planner?
 4. Which sensor modules provide lidar/point-cloud plus object-level truth?
 
+### Open-Source Scene Candidate Survey
+
+The goal is not to find another full simulator to replace MWORKS. The goal is
+to find reusable scene assets or scene-generation ideas for the project-owned
+UE5 renderer. Prefer sources that provide editable project files, clear
+licenses, and extractable geometry/collision truth.
+
+Current candidate ranking:
+
+| Rank | Candidate | Scene Value | Reuse Mode | Risk |
+|---|---|---|---|---|
+| A | CARLA | Urban roads, buildings, layouts, vehicles; open digital assets with clear simulator workflow | Use as reference/source for city/building map assets and map-ingestion workflow | Heavy build; primarily autonomous-driving urban, not factory/indoor |
+| A- | UnrealROX | Photorealistic indoor UE4 project with `Content/`, `Source/`, `robotrix.uproject`; MIT code | Clone outside repo and test whether rooms/objects can be migrated or used as indoor reference | UE4.18-era project; not drone-specific; asset license needs review beyond code license |
+| B+ | PEDRA | Drone RL environments including many indoor and outdoor maps | Use as runtime/reference for drone navigation scenarios | Environments are packaged Windows binaries; not clearly editable source maps |
+| B | UnrealCV / UnrealZoo | Large set of UE virtual worlds and ground-truth APIs | Use API/ground-truth ideas; binaries may be useful for visual reference | Mostly compiled environments, not direct asset source |
+| B | Colosseum / Cosys-AirSim | Modern AirSim-style drone/PX4/UE architecture | Use plugin/sensor/control architecture as reference | Maps still need separate UE assets |
+| C | Small UE industrial demo repos | Factory/industrial visuals may exist as `.uproject` | Only use after inspecting included assets and licenses | Many use Quixel/Megascans or Marketplace assets; repo license may not cover assets |
+| C | StreetMap / OSM import plugins | Fast procedural buildings/roads from OSM | Use to generate simple city blocks if no better assets are available | Not factory/indoor; visual quality limited without material/asset work |
+
+Specific notes:
+
+1. CARLA is currently the best open-source asset candidate for outdoor
+   building/city scenes because its project explicitly provides simulator code
+   and open digital assets. It also documents `.fbx + .xodr` map ingestion and
+   editor customization. For this project, use CARLA ideas/assets only as a
+   scene-source layer; do not adopt CARLA as the control simulator.
+2. UnrealROX is the best candidate for an editable indoor UE project. It is not
+   a UAV simulator, but it has the right pattern: complete UE project,
+   photorealistic indoor scenes, and exportable scene/robot/camera data.
+3. PEDRA is drone-oriented and has many indoor/outdoor environments, but the
+   documented environment distribution is packaged. Treat it like RflySim unless
+   editable UE project files are found.
+4. UnrealZoo is promising for visual reference and ground-truth interfaces, but
+   current public distribution appears to focus on binaries/API rather than
+   editable scenes.
+5. Factory/warehouse GitHub demos should be treated as suspect until each asset
+   is checked. A repo can be Apache/MIT while still containing Quixel or
+   Marketplace assets whose license is not covered by the repo license.
+
+Recommended next asset actions:
+
+```text
+1. Clone UnrealROX outside the repo and check whether UE opens the project and
+   whether Content maps are useful for indoor/gate/maze scenes.
+2. Clone or inspect CARLA outside the repo only if we want outdoor city/building
+   assets or a robust map-ingestion reference.
+3. Search Fab/Marketplace for free factory/warehouse/industrial packs and keep
+   them external; record only manifest/paths/licenses in this repo.
+4. Keep project-owned generated geometry for gates, rings, and planner-truth
+   objects even if final visuals come from imported assets.
+```
+
 ### Long-Running UE5 Reconstruction Queue
 
 This queue is the default continuation path. The agent should keep moving down
