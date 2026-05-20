@@ -1503,6 +1503,61 @@ def discovered_obstacles_along_segment(
     return discovered
 
 
+def local_goal_candidates(
+    current: Point,
+    goal: Point,
+    horizon_m: float,
+    local_grid: OccupancyGrid,
+    max_candidates: int = 24,
+) -> list[Point]:
+    """Generate local-goal candidates that remain valid in maze-like scenes."""
+    distance_to_goal = distance(current, goal)
+    if horizon_m <= 0.0 or distance_to_goal <= horizon_m:
+        return [goal]
+
+    goal_angle = math.atan2(goal.y - current.y, goal.x - current.x)
+    candidates: list[Point] = []
+    for horizon_scale in [1.0, 0.75, 0.5, 0.3]:
+        ratio = horizon_scale * horizon_m / distance_to_goal
+        candidates.append(
+            Point(
+                current.x + (goal.x - current.x) * ratio,
+                current.y + (goal.y - current.y) * ratio,
+                current.z,
+            )
+        )
+
+    for radius in [horizon_m, 0.75 * horizon_m, 0.5 * horizon_m]:
+        for offset_deg in [20, -20, 40, -40, 65, -65, 90, -90, 120, -120, 160, -160]:
+            angle = goal_angle + math.radians(offset_deg)
+            candidates.append(
+                Point(
+                    current.x + radius * math.cos(angle),
+                    current.y + radius * math.sin(angle),
+                    current.z,
+                )
+            )
+
+    ranked: list[tuple[float, Point]] = []
+    seen: set[tuple[int, int]] = set()
+    for candidate in candidates:
+        if not local_grid.in_bounds(candidate) or local_grid.is_occupied_point(candidate):
+            continue
+        key = (
+            round(candidate.x / max(local_grid.resolution, 1e-6)),
+            round(candidate.y / max(local_grid.resolution, 1e-6)),
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        candidate_angle = math.atan2(candidate.y - current.y, candidate.x - current.x)
+        heading_error = abs(math.atan2(math.sin(candidate_angle - goal_angle), math.cos(candidate_angle - goal_angle)))
+        ranked.append((distance(candidate, goal) + 0.15 * heading_error, candidate))
+
+    ranked.sort(key=lambda item: item[0])
+    return [candidate for _, candidate in ranked[:max_candidates]] or [goal]
+
+
 def plan_receding_horizon(
     config: dict[str, Any],
     truth_grid: OccupancyGrid,
@@ -1550,18 +1605,15 @@ def plan_receding_horizon(
         local_grid: OccupancyGrid | None = None
         segment_raw: list[Point] | None = None
         iterations = 0
-        goal_candidates = [local_goal]
-        if local_goal_horizon_m > 0.0 and distance_to_goal > local_goal_horizon_m:
-            for horizon_scale in [0.75, 0.5, 0.3]:
-                ratio = horizon_scale * local_goal_horizon_m / distance_to_goal
-                goal_candidates.append(
-                    Point(
-                        current.x + (goal.x - current.x) * ratio,
-                        current.y + (goal.y - current.y) * ratio,
-                        current.z + (goal.z - current.z) * ratio,
-                    )
-                )
         last_error: Exception | None = None
+        goal_candidates = [local_goal]
+        try:
+            candidate_map = clone_jsonable(local_map)
+            candidate_map["goal"] = [current.x, current.y, current.z]
+            candidate_grid = OccupancyGrid(candidate_map)
+            goal_candidates = local_goal_candidates(current, goal, local_goal_horizon_m, candidate_grid)
+        except (RuntimeError, ValueError) as exc:
+            last_error = exc
         for candidate_goal in goal_candidates:
             try:
                 local_map["goal"] = [candidate_goal.x, candidate_goal.y, candidate_goal.z]

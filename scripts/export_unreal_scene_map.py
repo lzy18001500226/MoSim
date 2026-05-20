@@ -62,6 +62,8 @@ def build_terrain_grid(bounds: dict[str, Any], cell_m: float) -> dict[str, Any]:
 
 
 def export_map(config_path: Path, output_path: Path, terrain_cell_m: float) -> dict[str, Any]:
+    config_path = config_path.resolve()
+    output_path = output_path.resolve()
     raw_config = read_yaml(config_path)
     expanded_config = expand_random_obstacles(expand_wall_groups(raw_config))
     map_config = expanded_config["map"]
@@ -73,7 +75,8 @@ def export_map(config_path: Path, output_path: Path, terrain_cell_m: float) -> d
     ]
     wall_boxes = [
         obstacle for obstacle in obstacles
-        if obstacle.get("type") == "box" and obstacle.get("wall_group_id")
+        if obstacle.get("type") == "box"
+        and (obstacle.get("wall_group_id") or obstacle.get("semantic") == "wall")
     ]
     payload = {
         "schema": "quadrotor.unreal_render_map.v1",

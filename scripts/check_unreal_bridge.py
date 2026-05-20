@@ -12,6 +12,7 @@ PLUGIN = ROOT / "unreal" / "QuadrotorMworksBridge"
 RENDERER = ROOT / "unreal" / "MworksUnrealRenderer"
 SCENE_REGISTRY = RENDERER / "Content" / "MworksData" / "rflysim_scene_registry.json"
 SCENE_PROFILES = RENDERER / "Content" / "MworksData" / "unreal_scene_profiles.json"
+MAZE_RENDER_MAP = RENDERER / "Content" / "MworksData" / "map_maze_building_render_map.json"
 ASSET_REGISTRY_SCHEMA = RENDERER / "Content" / "MworksData" / "scene_asset_registry.schema.json"
 VISION_RING_PLAN = ROOT / "results" / "rflysim" / "rflysim_vision_ring_migration_plan.json"
 VISION_RING_CHECKLIST = ROOT / "results" / "rflysim" / "rflysim_vision_ring_manual_review_checklist.md"
@@ -198,6 +199,17 @@ def main() -> int:
         if not profile.get("acceptance"):
             print(f"[FAIL] scene profile missing acceptance list: {profile_id}")
             return 1
+    if not MAZE_RENDER_MAP.exists():
+        print(f"[FAIL] missing maze/building render map: {MAZE_RENDER_MAP}")
+        return 1
+    maze_map = json.loads(MAZE_RENDER_MAP.read_text(encoding="utf-8"))
+    if maze_map.get("schema") != "quadrotor.unreal_render_map.v1":
+        print("[FAIL] maze/building render map schema mismatch")
+        return 1
+    maze_obstacles = maze_map.get("obstacles", {})
+    if maze_obstacles.get("wall_box_count", 0) < 10:
+        print("[FAIL] maze/building render map has too few wall boxes")
+        return 1
 
     if not VISION_RING_PLAN.exists():
         print(f"[FAIL] missing P0 migration plan: {VISION_RING_PLAN}")
