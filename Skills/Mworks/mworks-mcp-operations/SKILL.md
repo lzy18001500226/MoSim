@@ -43,6 +43,20 @@ Do not hard-code only one user home.
 10. Never call Sysplorer `ClearAll`, `ChangeDirectory`, or equivalent broad workspace-reset APIs. If the current directory must be inspected, use read-only inspection and pass absolute project paths to model operations.
 11. For Sysblock diagram authoring, use official API calls (`call_code`, `ModelingPy`, `AddComponent`, `ConnectPort`, `SetModelParamValue`) rather than text replacement of block topology.
 
+## Tool Design Standard
+
+When adding or changing MCP wrappers, helper scripts, or workflow-level MCP
+steps, keep the tool boundary workflow-oriented:
+
+1. Return high-signal results, not raw dumps that force the next agent to parse
+   thousands of irrelevant lines.
+2. Include actionable error messages: failing server/tool, exact command or
+   model, original error text, likely cause, and next safe validation step.
+3. Preserve protocol/session contracts. Do not hide `Tools: (none)`, login,
+   activation, timeout, or GUI-freeze symptoms behind a generic script failure.
+4. Validate one normal path and one expected failure path before documenting a
+   tool sequence as the recommended workflow.
+
 ## Tool Routing
 
 | Need | Go To |

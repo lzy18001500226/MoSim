@@ -56,16 +56,23 @@ Check:
 
 ## 4. Output Format
 
-Review output should include:
+Review output should be PR-style and evidence-first. Findings lead the review,
+ordered by severity. Each finding should identify the file/line or artifact
+that proves the risk.
 
 ```text
-Summary
-Blocking issues
+Scope analyzed
+Blocking findings
 Warnings
-Suggested fixes
-Tests to run
-Files that need documentation updates
+Missing tests or missing simulation evidence
+File/line or artifact evidence
+Smallest recommended fix
+Residual risk
+Documentation updates needed
 ```
+
+Do not replace a review with a summary. If no issues are found, say that
+clearly and still state the remaining test/evidence gap.
 
 ---
 

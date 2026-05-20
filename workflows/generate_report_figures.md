@@ -19,6 +19,25 @@ scenario_config
 figure_output_dir
 ```
 
+For generated figure/report batches, prefer a small structured spec over
+ad-hoc command memory:
+
+```text
+experiment_id
+source label
+raw result path
+metrics path
+figure output directory
+required figure list
+manual review target
+report section that will cite the outputs
+```
+
+The generation step passes only when expected outputs exist, have nonzero size,
+and are listed in the figure manifest. A failed generation must expose the
+original error and leave old report-selected figures untouched unless the new
+bundle passes.
+
 ---
 
 ## 3. Tools

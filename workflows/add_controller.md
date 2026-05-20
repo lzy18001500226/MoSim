@@ -45,6 +45,26 @@ debug
 
 ## 3. Procedure
 
+Before implementation, write a short controller task contract in the working
+notes or scenario issue:
+
+```text
+Scope: controller family, model wrapper, and scenario(s) touched
+Action items: implementation, graphical Sysblock, integration, evidence, docs
+Open questions: signal interfaces, solver cost, expected failure mode
+Stop condition: check_model/smoke/metrics/manual review target
+```
+
+If the controller work is broad, split it into independent agents only after
+the interface is clear:
+
+```text
+model-context/research agent: read-only interface and replacement location
+implementation agent: one controller/model family write set
+evidence agent: one scenario/result subtree
+docs/quality agent: assigned workflow/report/check updates
+```
+
 1. Create controller folder under `controllers/`.
 2. Define parameters in a config file.
 3. Implement the control step.

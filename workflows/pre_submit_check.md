@@ -107,6 +107,32 @@ python scripts/qa_check.py
 python scripts/check_reference_outputs.py
 ```
 
+### Reference / Large-File / Secret Check
+
+Before staging or packaging, inspect newly added reference trees and generated
+assets. This is mandatory when `Skills/`, `references/`, `unreal/`, `results/`,
+or downloaded open-source repositories changed.
+
+```bash
+git status --short
+find . -type f -size +100M -not -path './.git/*' -print
+rg -n --hidden --glob '!.git/**' \
+  '(API_KEY|SECRET|TOKEN|OAuth|oauth|Bearer |PRIVATE KEY|GITHUB_TOKEN|OPENAI_API_KEY|COMPOSIO_API_KEY)' \
+  AGENTS.md README.md Design docs workflows scripts Skills controllers planners scenarios unreal
+```
+
+Rules:
+
+1. Do not stage whole reference repositories only because they are useful for
+   reading. Promote only selected project-owned files, manifests, or translated
+   workflows.
+2. External automation skills that require OAuth, SaaS accounts, browser
+   profiles, or cross-workspace file organization are not submission assets.
+3. Binary/fonts/media/reference payloads are allowed only when they are required
+   project assets, under GitHub limits, and have clear license/source notes.
+4. If a large or credential-like hit is intentional documentation, verify that
+   it is an example placeholder, not a real token or private config.
+
 ---
 
 ## 5. Required Experiment Check

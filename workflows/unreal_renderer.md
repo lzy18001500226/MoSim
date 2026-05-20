@@ -515,6 +515,26 @@ the queue without asking for "continue" after each small task. Stop only for
 license/authorization decisions, external write access, Unreal editor manual
 review, frozen GUI/MCP/editor state, or a change that risks data loss.
 
+Before each UE/RflySim/MWORKS renderer round, run a short task-distribution
+check instead of executing serially by habit:
+
+```text
+1. Critical path: what must the main agent do locally before anything else?
+2. Research sidecar: docs, open-source reference, license, or asset audit that
+   can run read-only in parallel.
+3. Implementation sidecar: one disjoint UE/MWORKS/tooling write scope, only if
+   the interface is already clear.
+4. Evidence sidecar: one bounded smoke/regression check with explicit output
+   paths.
+5. Git/quality sidecar: size scan, diff review, tests, commit, and push for
+   explicit paths only.
+```
+
+Every sidecar task must include `objective`, `read scope`, `write set`,
+`stop condition`, `expected output`, and `forbidden actions`. If the task is
+small enough that this overhead is larger than the work itself, do it locally
+and record the reason in the progress update.
+
 | Phase | Task | Owner Pattern | Done When | Human Gate |
 |---|---|---|---|---|
 | U0 | Keep RflySim/UE audit and scene registry current | main + Git/quality agent | `audit_rflysim_maps.py`, `build_rflysim_scene_registry.py`, and `check_unreal_bridge.py` pass | none |
@@ -548,6 +568,16 @@ Git/quality agent:
 The main agent should not wait idly for Git when it can safely continue with a
 non-overlapping file-level task. Conversely, it must not start UE editor scene
 writes while a Git agent is committing the same Unreal files.
+
+Recommended sub-agent contracts for this queue:
+
+| Agent Type | Objective | Default Write Set | Required Return |
+|---|---|---|---|
+| Research | Verify RflySim/Gazebo/AirSim/UE reference behavior, licenses, map candidates, or API docs | none | facts with source paths/URLs, inferences, unknowns, license risk |
+| UE implementation | Modify one assigned renderer, scene profile, bridge, or asset-registry slice | assigned `unreal/`, `scripts/`, or `results/unreal/` paths only | changed paths, manual review target, checks run |
+| MWORKS evidence | Run/check one assigned scenario/controller evidence bundle | assigned `scenarios/`, `models/`, or `results/` subtree only | model, source label, result paths, quality status |
+| Docs/workflow | Update the smallest relevant existing workflow/design/manual section | assigned `Design/`, `docs/`, `workflows/`, or `Skills/Mworks/` files only | sections changed, stale docs found, remaining gaps |
+| Git/quality | Scan size/secrets, review diff, run checks, commit, push | no source edits except narrow ignore/quality notes when assigned | status, staged paths, checks, commit hash, push result |
 
 Scene randomization rules:
 

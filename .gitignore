@@ -86,6 +86,11 @@ references/2025中国大学生软件设计大赛/挑战赛作品/
 references/RflySimAdv3Full/
 references/RflySimAdvFree/
 
+# Downloaded Codex skill/subagent catalogs are local references. Promote only
+# selected project-owned rules into AGENTS.md, workflows/, or Skills/Mworks/.
+Skills/awesome-codex-skills/
+Skills/awesome-codex-subagents/
+
 # Large third-party visualization/runtime assets over GitHub hard limit
 references/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE-MWORKS驱动案例/PE-MWORKS机械臂驱动运行案例/**/*.vis
 references/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE培训课程PPT/PE培训1_认识PE.pptx

@@ -40,6 +40,35 @@ scripts/qa_check.py
 6. No secret, token, credential, or accidental large temporary output is staged.
 7. Existing baseline evidence is not silently overwritten.
 
+## Agent-Aware Quality Gate
+
+For broad tasks, split quality work from implementation when it can run in
+parallel. The quality/Git agent may own only:
+
+```text
+git status and diff review
+large-file scan
+secret-pattern scan
+targeted tests or static checks
+commit and push for explicit staged paths
+```
+
+It must not edit controller/model/scene logic unless explicitly assigned a
+narrow fix. Its return should include:
+
+```text
+scope checked
+files staged
+checks run
+large-file/secret scan result
+commit hash
+push result or exact failure
+residual risk
+```
+
+Do not stage whole downloaded reference repositories, external skill packs, or
+RflySim/UE asset trees as a side effect of normal Git automation.
+
 ## Floating-Point Rules
 
 Use tolerances for numeric checks. Prefer deterministic fixtures and seeded random generators.

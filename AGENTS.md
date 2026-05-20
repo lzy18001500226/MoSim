@@ -155,6 +155,22 @@ Rules:
 Use parallel agents when the user has authorized multi-agent work and the task
 can be split into independent work streams.
 
+Before starting a non-trivial task, spend a short planning pass on the task
+graph:
+
+```text
+critical path work to do locally now
+parallel research or documentation checks
+parallel implementation slices with disjoint write sets
+parallel simulation/evidence checks
+parallel Git/quality checks
+blocked steps that require user, license, GUI, or external data
+```
+
+Do not spawn agents just to create activity. Do spawn or reuse agents when a
+sidecar task is independent, material to the result, and can proceed while the
+main agent stays on the critical path.
+
 Coordinator rules:
 
 1. The main agent owns the plan, final integration, verification, and user
@@ -181,6 +197,20 @@ Coordinator rules:
     continues planning or implementing the next independent task. If the agent
     limit is reached, reuse an existing Git/quality agent or commit locally only
     after targeted checks pass.
+11. Every delegated task must state:
+    `objective`, `read scope`, `write set`, `stop condition`,
+    `expected output`, and `forbidden actions`.
+12. Delegated outputs must separate confirmed evidence, inference, unknowns,
+    risks, and recommended next validation. Do not merge a sub-agent conclusion
+    that lacks evidence for a high-impact claim.
+13. Research, review, context, and documentation-discovery agents default to
+    read-only. Write-capable agents are allowed only for explicit assigned
+    paths.
+14. If an imported reference repository or asset tree is present under
+    `Skills/`, `references/`, or `unreal/`, the Git/quality agent must verify
+    large files and secrets before staging. Do not stage whole reference
+    repositories unless the user explicitly requests that exact repository be
+    tracked.
 
 Recommended split for RflySim / Unreal / MWORKS scene work:
 
