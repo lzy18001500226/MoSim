@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "unreal" / "QuadrotorMworksBridge"
 RENDERER = ROOT / "unreal" / "MworksUnrealRenderer"
 SCENE_REGISTRY = RENDERER / "Content" / "MworksData" / "rflysim_scene_registry.json"
+SCENE_PROFILES = RENDERER / "Content" / "MworksData" / "unreal_scene_profiles.json"
 ASSET_REGISTRY_SCHEMA = RENDERER / "Content" / "MworksData" / "scene_asset_registry.schema.json"
 VISION_RING_PLAN = ROOT / "results" / "rflysim" / "rflysim_vision_ring_migration_plan.json"
 VISION_RING_CHECKLIST = ROOT / "results" / "rflysim" / "rflysim_vision_ring_manual_review_checklist.md"
@@ -164,6 +165,37 @@ def main() -> int:
     if not any(scene.get("priority") == "P0" for scene in scenes):
         print("[FAIL] scene registry has no P0 migration candidate")
         return 1
+
+    if not SCENE_PROFILES.exists():
+        print(f"[FAIL] missing project-owned Unreal scene profiles: {SCENE_PROFILES}")
+        return 1
+    profiles_doc = json.loads(SCENE_PROFILES.read_text(encoding="utf-8"))
+    if profiles_doc.get("schema") != "quadrotor.unreal_scene_profiles.v1":
+        print("[FAIL] Unreal scene profiles schema mismatch")
+        return 1
+    required_profiles = {
+        "dense_forest",
+        "maze_building",
+        "old_factory",
+        "gate_ring_indoor",
+        "open_grass_wind",
+    }
+    profiles = {profile.get("profile_id"): profile for profile in profiles_doc.get("profiles", [])}
+    missing_profiles = sorted(required_profiles - set(profiles))
+    if missing_profiles:
+        print(f"[FAIL] Unreal scene profiles missing: {', '.join(missing_profiles)}")
+        return 1
+    for profile_id, profile in profiles.items():
+        truth = profile.get("truth_geometry", {})
+        if truth.get("global_map_available_to_planner") is not False:
+            print(f"[FAIL] scene profile must not expose global map to planner: {profile_id}")
+            return 1
+        if not truth.get("required_proxy_classes"):
+            print(f"[FAIL] scene profile missing collision proxy classes: {profile_id}")
+            return 1
+        if not profile.get("acceptance"):
+            print(f"[FAIL] scene profile missing acceptance list: {profile_id}")
+            return 1
 
     if not VISION_RING_PLAN.exists():
         print(f"[FAIL] missing P0 migration plan: {VISION_RING_PLAN}")

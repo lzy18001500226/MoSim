@@ -471,6 +471,18 @@ Scenario families:
 | Gate/ring indoor | Migrated/self-built `VisionRing` / challenge-style indoor assets | Attitude tracking through tilted gates/rings |
 | Open grass | Migrated/self-built grassland scene | Wind and motor-efficiency robustness |
 
+The project-owned profile source is:
+
+```text
+unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json
+```
+
+This file is the route away from direct RflySim editor migration. Each profile
+defines the intended visual world, required collision proxies, planner
+visibility rule, timing targets, and manual acceptance checks. Do not start a
+new UE5 scene without either using one of these profiles or adding a reviewed
+profile entry first.
+
 Recommended open asset candidates:
 
 | Priority | Candidate | Best Use | Git Policy |

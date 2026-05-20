@@ -1,0 +1,194 @@
+{
+    "schema": "quadrotor.unreal_scene_profiles.v1",
+    "truth_policy": "MWORKS/Sysplorer remains the source of control, planning, collision, disturbance and metrics truth. Unreal renders project-owned scene profiles and may not feed hidden global geometry back to the planner.",
+    "coordinate_frame": {
+        "source": "MWORKS world, meters, z-up",
+        "unreal_conversion": "X=mworks_x*100, Y=-mworks_y*100, Z=mworks_z*100"
+    },
+    "runtime_targets": {
+        "state_stream_hz_min": 20,
+        "state_stream_hz_target": 50,
+        "render_fps_target": 60,
+        "sensor_map_hz_min": 20,
+        "planner_hz_range": [
+            5,
+            20
+        ]
+    },
+    "profiles": [
+        {
+            "profile_id": "dense_forest",
+            "priority": "P0",
+            "purpose": "local perception, unknown-map obstacle avoidance and replanning under vegetation-like occlusion",
+            "render_world": {
+                "source_strategy": "project_owned_recreation_from_authorized_assets",
+                "candidate_references": [
+                    "RflySim runtime visual survey",
+                    "Sunray/Gazebo forest/tree assets",
+                    "UE marketplace/free forest assets after license review"
+                ],
+                "required_visual_classes": [
+                    "terrain",
+                    "tree_trunks",
+                    "canopy",
+                    "rocks",
+                    "waypoint_markers",
+                    "radar_sector",
+                    "local_plan",
+                    "trajectory_trail"
+                ]
+            },
+            "truth_geometry": {
+                "required_proxy_classes": [
+                    "tree_trunk_capsule_or_box",
+                    "rock_box",
+                    "terrain_heightfield"
+                ],
+                "planner_visibility": "local_sensor_only",
+                "global_map_available_to_planner": false
+            },
+            "acceptance": [
+                "visible trunks/rocks have collision_proxy_id equivalents",
+                "radar sector shows only currently sensed region",
+                "local plan is not a fixed straight line through obstacles"
+            ]
+        },
+        {
+            "profile_id": "maze_building",
+            "priority": "P0",
+            "purpose": "wall occlusion, corridor navigation, local map memory and no-through-wall radar behavior",
+            "render_world": {
+                "source_strategy": "project_owned_modular_walls",
+                "candidate_references": [
+                    "RflySim OldFactory/ChallengeMap runtime survey",
+                    "self-built modular wall kit"
+                ],
+                "required_visual_classes": [
+                    "walls",
+                    "doors_or_passages",
+                    "floor",
+                    "occlusion_shading",
+                    "radar_sector",
+                    "local_known_map"
+                ]
+            },
+            "truth_geometry": {
+                "required_proxy_classes": [
+                    "wall_box",
+                    "passage_box",
+                    "floor_plane"
+                ],
+                "planner_visibility": "raycast_occluded_local_sensor",
+                "global_map_available_to_planner": false
+            },
+            "acceptance": [
+                "radar does not reveal geometry behind walls",
+                "trajectory keeps minimum obstacle distance",
+                "planner can recover from blocked local plan without yaw spinning"
+            ]
+        },
+        {
+            "profile_id": "old_factory",
+            "priority": "P0",
+            "purpose": "industrial inspection scene with walls, pipes, towers and mixed vertical obstacles",
+            "render_world": {
+                "source_strategy": "project_owned_recreation_guided_by_rflysim_old_factory_runtime",
+                "candidate_references": [
+                    "RflySim OldFactory runtime",
+                    "authorized factory/industrial assets"
+                ],
+                "required_visual_classes": [
+                    "buildings",
+                    "pipes",
+                    "columns",
+                    "machines",
+                    "inspection_targets",
+                    "local_plan",
+                    "trail"
+                ]
+            },
+            "truth_geometry": {
+                "required_proxy_classes": [
+                    "building_box",
+                    "pipe_capsule",
+                    "column_box",
+                    "target_marker"
+                ],
+                "planner_visibility": "local_sensor_only",
+                "global_map_available_to_planner": false
+            },
+            "acceptance": [
+                "industrial visual objects are not only decorative when they affect flight",
+                "collision proxies are reviewed before video claim",
+                "MWORKS event_log records replanning or safety-filter interventions"
+            ]
+        },
+        {
+            "profile_id": "gate_ring_indoor",
+            "priority": "P0",
+            "purpose": "tilted gate/ring traversal for attitude tracking and aggressive trajectory display",
+            "render_world": {
+                "source_strategy": "project_owned_gate_and_ring_meshes",
+                "candidate_references": [
+                    "RflySim VisionRing runtime",
+                    "self-built rectangular frame/ring meshes"
+                ],
+                "required_visual_classes": [
+                    "tilted_gate",
+                    "ring",
+                    "indoor_floor",
+                    "axis_marker",
+                    "smooth_reference",
+                    "actual_trail"
+                ]
+            },
+            "truth_geometry": {
+                "required_proxy_classes": [
+                    "gate_frame_boxes",
+                    "ring_proxy",
+                    "safe_corridor"
+                ],
+                "planner_visibility": "known_task_geometry_plus_local_sensor",
+                "global_map_available_to_planner": false
+            },
+            "acceptance": [
+                "reference path passes through gate center with visible attitude change",
+                "actual UAV body does not clip frame proxies",
+                "attitude and position errors are exported from MWORKS evidence"
+            ]
+        },
+        {
+            "profile_id": "open_grass_wind",
+            "priority": "P0",
+            "purpose": "wind disturbance, motor-efficiency degradation and long-trajectory robustness video",
+            "render_world": {
+                "source_strategy": "project_owned_open_field",
+                "candidate_references": [
+                    "RflySim Grasslands/3DDisplay runtime",
+                    "authorized grass/sky/HDRI assets"
+                ],
+                "required_visual_classes": [
+                    "grass_field",
+                    "wind_vector_overlay",
+                    "gust_zone",
+                    "UAV",
+                    "trail",
+                    "metric_overlay"
+                ]
+            },
+            "truth_geometry": {
+                "required_proxy_classes": [
+                    "terrain_plane",
+                    "optional_boundary"
+                ],
+                "planner_visibility": "mostly_open_known_task_area",
+                "global_map_available_to_planner": false
+            },
+            "acceptance": [
+                "wind and motor-efficiency parameters are displayed and logged",
+                "trajectory comparison shows tracking degradation/recovery",
+                "rendered video maps to MWORKS raw/native result timestamps"
+            ]
+        }
+    ]
+}
