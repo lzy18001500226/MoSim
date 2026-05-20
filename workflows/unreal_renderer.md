@@ -57,7 +57,7 @@ Classify the result before importing:
 
 | Finding | Action |
 | --- | --- |
-| UE project with `.uproject`, `Content/`, `.umap`, meshes, materials | Candidate for direct scene reuse after license and size check |
+| UE project with `.uproject`, `Content/`, `.umap`, meshes, materials, plus editable `Source/` or matching plugin `Binaries/` | Candidate for direct scene reuse after license and size check |
 | Cooked packaged executable only, no editable assets | Use as visual/reference target only; do not depend on direct asset import |
 | API examples only | Port the UDP/shared-memory protocol ideas into `QuadrotorMworksBridge` |
 | Large `.pak`, video, installer, or binary assets | Keep outside Git; document external dependency and local path |
@@ -73,10 +73,11 @@ Git-safe.
 
 Current decision: do not keep porting the old Sysplorer/MWORKS blocky visual
 map into Unreal as the primary video route. That map was a workaround for
-MWORKS GUI limits. RflySim is now a reference and migration source, not the
-final renderer runtime. Before implementing more Unreal scene work, identify
-which RflySim mechanisms or assets should be copied into the project-owned UE5
-renderer:
+MWORKS GUI limits. The installed RflySim3D tree is now classified as a
+runtime/reference source, not an editable UE source project and not the final
+renderer runtime. Before implementing more Unreal scene work, identify which
+RflySim mechanisms, layouts, model references, protocols, or authorized assets
+should be recreated in the project-owned UE5 renderer:
 
 ```text
 RflySim docs/API audit
@@ -117,7 +118,7 @@ Useful local entry points:
 | Local path | Use |
 | --- | --- |
 | `D:\PX4PSP\RflySim3D\RflySim3D.exe` | Existing RflySim3D renderer executable |
-| `D:\PX4PSP\RflySim3D\RflySim3D\RflySim3D.uproject` | UE project-style entry for scene inspection |
+| `D:\PX4PSP\RflySim3D\RflySim3D\RflySim3D.uproject` | UE4.27 project descriptor for audit only; do not treat it as an editable source project unless matching source/binaries are present |
 | `D:\PX4PSP\RflySim3D\RflySim3D\Content\*.umap` | Existing maps such as `MapData`, `MapSmall`, `MatchScene`, `MatchScene2025`, `MountainTerrain`, `OldFactory`, `CameraRoom`, `ExhibitionHall` |
 | `D:\PX4PSP\RflySim3D\RflySim3D\Content\FSJ150\XML` | Small quadrotor visual model references |
 | `D:\PX4PSP\RflySim3D\RflySim3D\Content\obstacle` | Box obstacle XML/PNG references |
@@ -132,8 +133,11 @@ Useful local entry points:
 
 ### RflySim Map Direct-Use Test
 
-Static audit on the local install shows that RflySim maps are usable as a
-migration source, but not as one-file drop-in assets for the UE5 renderer.
+Static audit on the local install shows that RflySim maps are useful as a
+reference source, but not as one-file drop-in assets for the UE5 renderer.
+The local install is a packaged/runtime tree: it contains `RflySim3D.exe`, maps,
+content, and plugins, but it does not expose complete project/plugin source or
+matching plugin binaries for editor recompilation.
 
 Findings:
 
@@ -144,6 +148,7 @@ Findings:
 | Available map files | `28` `.umap` files under `RflySim3D/RflySim3D/Content` |
 | Source mesh formats | No loose `.fbx/.obj/.dae/.stl/.glb` found under the checked RflySim `Content`; most reusable geometry is inside `.uasset/.umap` |
 | Required plugins | `Rfly3DSimPlugin`, `CesiumForUnreal_4.27`, `TwinmotionToUnreal`, `LidarPointCloud`, `RuntimeTransformer`, `DTRedis`, `PhysXVehicles` |
+| Editor-open status | Not a reliable editor source project: UE4.27 can load engine plugins such as `PhysXVehicles`, but RflySim modules need missing/incompatible source or binaries |
 | Direct copy risk | High: `.umap` references `/Game/...` assets and UE4.27/plugin packages that are not present in our UE5.7 project |
 
 Representative candidate maps:
@@ -164,11 +169,14 @@ Decision:
 ```text
 Do not copy one .umap into MworksUnrealRenderer and expect it to work.
 Do not make RflySim3D.exe the final runtime.
-RflySim3D native runtime can switch/use these maps directly.
-Our UE5.7 renderer cannot use them directly without migration.
-Use RflySim maps as migration inputs:
-  full dependency folder or selected asset pack
-  -> UE5 migration/conversion test copy outside Git
+Do not spend more time trying to open the packaged RflySim `.uproject` as a
+normal UE editor source project unless the user obtains a source-enabled project
+or a matching editor plugin binary package.
+
+Use RflySim maps as reference inputs:
+  runtime scene observation
+  -> map/object/vehicle/sensor behavior notes
+  -> project-owned UE5 scene recreation
   -> project-owned asset registry
   -> collision proxy extraction
   -> MWORKS UDP playback
@@ -264,18 +272,19 @@ contain exactly one `scene_asset_registry.json`. The checker rejects `.pak`,
 installers, engine binaries, files over 100 MB, invalid licenses, and
 obstacle-like visual assets without collision proxies.
 
-Minimal practical migration test:
+Deprecated direct-editor migration test:
 
-1. In Windows Unreal Editor, open a temporary copy of
-   `D:\PX4PSP\RflySim3D\RflySim3D\RflySim3D.uproject` and let UE upgrade only
-   the temporary copy if required.
-2. Pick one P0 scene, starting with `OldFactory` or `VisionRing`.
-3. Use UE's migration/export tools to move the selected map and all referenced
-   assets into a temporary UE5 project, not directly into the competition repo.
-4. If the map opens without missing assets, copy only approved project-owned
-   converted assets or derived registries into `unreal/MworksUnrealRenderer`.
-5. Build collision proxies separately; visual mesh success alone is not enough
-   for planner truth.
+This path was tested and is not the current main route.
+
+1. A scratch copy of `D:\PX4PSP\RflySim3D\RflySim3D\RflySim3D.uproject` was
+   opened with UE4.27.2.
+2. UE4.27 found the engine `PhysXVehicles` plugin, but RflySim modules such as
+   `RflySim3D`, `Rfly3DSimPlugin`, `CesiumRuntime`, `DTRedis`, and
+   `RuntimeTransformer` remained incompatible or missing.
+3. The tree does not contain enough editable project/plugin source or matching
+   editor plugin binaries for a clean rebuild.
+4. Therefore this route is stopped. Continue with native RflySim runtime
+   observation and project-owned UE5 scene reconstruction.
 
 Use the dry-run helper to print the exact Windows commands without copying
 assets:
@@ -285,8 +294,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/prepare_rflysim_temp
 ```
 
 The helper intentionally does not run `robocopy`. Copying the RflySim UE project
-to `D:\UE_MigrationScratch` is an external write operation and should be done
-only when the user is ready to start the UE editor migration pass.
+to `D:\UE_MigrationScratch` is an external write operation and is now useful
+only for diagnostics. It is not a required step for the main UE5 reconstruction
+route.
 
 Stop conditions:
 

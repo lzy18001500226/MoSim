@@ -3,8 +3,15 @@
 - Project: `/mnt/d/PX4PSP/RflySim3D/RflySim3D`
 - EngineAssociation: `4.27`
 - Map count: `28`
+- Loose mesh scan: `skipped`
 - Loose mesh count: `0`
 - Conclusion: Not drop-in for UE5.7: RflySim maps are UE4.27 .umap/.uasset assets with project/plugin dependencies. Use as migration source only.
+- Editor source conclusion: Packaged/runtime install: RflySim3D.exe exists, but editable project/plugin source and plugin binaries are not present. Do not open this .uproject as a UE Editor source project; use the runtime as reference and rebuild scenes in the project-owned UE5 renderer.
+- Project source dir: `False`
+- Runtime executable: `True`
+- Plugin source files: `0`
+- Plugin binary files: `0`
+- Reference scan MB per map: `8`
 
 ## Enabled Plugins
 
