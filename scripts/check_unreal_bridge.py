@@ -138,6 +138,11 @@ def main() -> int:
     )
     for token in [
         "LoadRenderMapSummary",
+        "SceneRegistryJson",
+        "ResolveMapId",
+        "ApplyFrameMapSelection",
+        "CurrentMapId",
+        "direct_editor_open_supported",
         "random_column_count",
         "wall_box_count",
         "UInstancedStaticMeshComponent",
@@ -152,6 +157,17 @@ def main() -> int:
     ]:
         if token not in map_actor:
             print(f"[FAIL] map actor missing token: {token}")
+            return 1
+    playback_actor_header = (
+        PLUGIN / "Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackActor.h"
+    ).read_text(encoding="utf-8")
+    for token in ["AQuadrotorMworksMapActor", "MapActor"]:
+        if token not in playback_actor_header:
+            print(f"[FAIL] playback actor header missing map-selection token: {token}")
+            return 1
+    for token in ["UpdateMapSelection", "ApplyFrameMapSelection"]:
+        if token not in playback_actor:
+            print(f"[FAIL] playback actor missing map-selection token: {token}")
             return 1
 
     if not SCENE_REGISTRY.exists():
@@ -258,6 +274,20 @@ def main() -> int:
     if profile_plan.get("profile_count", 0) < len(required_profiles):
         print("[FAIL] Unreal scene profile implementation plan is incomplete")
         return 1
+    if profile_plan.get("rflysim_direct_use_supported") is not False:
+        print("[FAIL] Unreal scene profile plan must keep RflySim as non-direct-use")
+        return 1
+    if profile_plan.get("rflysim_direct_editor_open_supported") is not False:
+        print("[FAIL] Unreal scene profile plan must preserve RflySim editor-open blocker")
+        return 1
+    for profile in profile_plan.get("profiles", []):
+        if not profile.get("reconstruction_units"):
+            print(f"[FAIL] scene profile plan missing reconstruction units: {profile.get('profile_id')}")
+            return 1
+        if profile.get("profile_id") in {"maze_building", "gate_ring_indoor", "open_grass_wind"}:
+            if not profile.get("rflysim_reference_scenes"):
+                print(f"[FAIL] scene profile plan missing RflySim reference scenes: {profile.get('profile_id')}")
+                return 1
 
     if not ASSET_REGISTRY_SCHEMA.exists():
         print(f"[FAIL] missing asset registry schema: {ASSET_REGISTRY_SCHEMA}")

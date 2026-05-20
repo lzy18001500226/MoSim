@@ -7,6 +7,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "QuadrotorMworksTypes.h"
 #include "UObject/ConstructorHelpers.h"
 
 namespace
@@ -283,4 +284,80 @@ bool AQuadrotorMworksMapActor::LoadRenderMapSummary()
         RandomColumnCount,
         WallBoxCount);
     return true;
+}
+
+bool AQuadrotorMworksMapActor::ResolveMapId(const FString& MapId)
+{
+    if (MapId.IsEmpty())
+    {
+        return false;
+    }
+
+    const FString FullPath = FPaths::ProjectContentDir() / SceneRegistryJson;
+    FString Text;
+    if (!FFileHelper::LoadFileToString(Text, *FullPath))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to read RflySim scene registry: %s"), *FullPath);
+        return false;
+    }
+
+    TSharedPtr<FJsonObject> Root;
+    const TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Text);
+    if (!FJsonSerializer::Deserialize(Reader, Root) || !Root.IsValid())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to parse RflySim scene registry: %s"), *FullPath);
+        return false;
+    }
+
+    const TArray<TSharedPtr<FJsonValue>>* Scenes = nullptr;
+    if (!Root->TryGetArrayField(TEXT("scenes"), Scenes) || !Scenes)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("RflySim scene registry has no scenes array: %s"), *FullPath);
+        return false;
+    }
+
+    for (const TSharedPtr<FJsonValue>& SceneValue : *Scenes)
+    {
+        const TSharedPtr<FJsonObject> Scene = SceneValue.IsValid() ? SceneValue->AsObject() : nullptr;
+        if (!Scene.IsValid())
+        {
+            continue;
+        }
+
+        FString SceneId;
+        Scene->TryGetStringField(TEXT("scene_id"), SceneId);
+        if (SceneId != MapId)
+        {
+            continue;
+        }
+
+        CurrentMapId = MapId;
+        Scene->TryGetStringField(TEXT("purpose"), CurrentScenePurpose);
+        Scene->TryGetStringField(TEXT("relative_path"), CurrentSourceMap);
+        Scene->TryGetStringField(TEXT("migration_status"), CurrentMigrationStatus);
+        Scene->TryGetBoolField(TEXT("direct_use_supported"), bCurrentMapDirectUseSupported);
+        Scene->TryGetBoolField(TEXT("direct_editor_open_supported"), bCurrentMapEditorOpenSupported);
+        UE_LOG(
+            LogTemp,
+            Display,
+            TEXT("Selected map_id=%s source=%s migration=%s direct_use=%s editor_open=%s"),
+            *CurrentMapId,
+            *CurrentSourceMap,
+            *CurrentMigrationStatus,
+            bCurrentMapDirectUseSupported ? TEXT("true") : TEXT("false"),
+            bCurrentMapEditorOpenSupported ? TEXT("true") : TEXT("false"));
+        return true;
+    }
+
+    UE_LOG(LogTemp, Warning, TEXT("Unknown map_id in scene registry: %s"), *MapId);
+    return false;
+}
+
+void AQuadrotorMworksMapActor::ApplyFrameMapSelection(const FQuadrotorMworksFrame& Frame)
+{
+    if (Frame.MapId.IsEmpty() || Frame.MapId == CurrentMapId)
+    {
+        return;
+    }
+    ResolveMapId(Frame.MapId);
 }

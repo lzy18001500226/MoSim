@@ -6,6 +6,7 @@
 #include "Components/MeshComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "ProceduralMeshComponent.h"
+#include "QuadrotorMworksMapActor.h"
 #include "QuadrotorMworksPlaybackComponent.h"
 #include "QuadrotorMworksUdpReceiverComponent.h"
 #include "UObject/ConstructorHelpers.h"
@@ -143,6 +144,7 @@ void AQuadrotorMworksPlaybackActor::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
     ApplyPropellerVisuals();
+    UpdateMapSelection();
     UpdateVisualHelpers();
 }
 
@@ -161,6 +163,16 @@ void AQuadrotorMworksPlaybackActor::ApplyPropellerVisuals() const
             Props[Index]->SetRelativeRotation(FRotator(0.0f, Playback->PropellerAnglesDegrees[Index], 0.0f));
         }
     }
+}
+
+void AQuadrotorMworksPlaybackActor::UpdateMapSelection() const
+{
+    if (!MapActor || !Receiver || !Receiver->HasFrame())
+    {
+        return;
+    }
+
+    MapActor->ApplyFrameMapSelection(Receiver->GetLatestFrame());
 }
 
 void AQuadrotorMworksPlaybackActor::UpdateSplineFromPoints(USplineComponent* Spline, const TArray<FVector>& Points) const

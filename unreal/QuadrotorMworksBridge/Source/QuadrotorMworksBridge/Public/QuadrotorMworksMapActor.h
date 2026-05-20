@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "QuadrotorMworksMapActor.generated.h"
 
+struct FQuadrotorMworksFrame;
 class UInstancedStaticMeshComponent;
 class UMaterialInterface;
 class USceneComponent;
@@ -30,6 +31,9 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map")
     FString RenderMapJson = TEXT("MworksData/map_open_blocks_render_map.json");
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map")
+    FString SceneRegistryJson = TEXT("MworksData/rflysim_scene_registry.json");
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map")
     float MetersToCentimeters = 100.0f;
@@ -62,6 +66,12 @@ public:
     bool LoadRenderMapSummary();
 
     UFUNCTION(BlueprintCallable, Category = "MWORKS Map")
+    bool ResolveMapId(const FString& MapId);
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Map")
+    void ApplyFrameMapSelection(const FQuadrotorMworksFrame& Frame);
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Map")
     void ClearPreviewInstances();
 
     UFUNCTION(BlueprintCallable, Category = "MWORKS Map")
@@ -78,6 +88,24 @@ public:
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
     FBox2D BoundsMeters;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    FString CurrentMapId;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    FString CurrentScenePurpose;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    FString CurrentSourceMap;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    FString CurrentMigrationStatus;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    bool bCurrentMapDirectUseSupported = false;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    bool bCurrentMapEditorOpenSupported = false;
 
 protected:
     virtual void BeginPlay() override;

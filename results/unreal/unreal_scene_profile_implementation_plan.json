@@ -16,6 +16,9 @@
       20
     ]
   },
+  "rflysim_registry": "unreal/MworksUnrealRenderer/Content/MworksData/rflysim_scene_registry.json",
+  "rflysim_direct_use_supported": false,
+  "rflysim_direct_editor_open_supported": false,
   "profile_count": 5,
   "profiles": [
     {
@@ -41,8 +44,79 @@
       ],
       "planner_visibility": "local_sensor_only",
       "global_map_available_to_planner": false,
+      "rflysim_reference_scenes": [
+        {
+          "scene_id": "rflysim_neighborhood_park",
+          "priority": "P0",
+          "source_map": "ModularNeighborhood/Maps/NeighborhoodPark.umap",
+          "purpose": "park patrol with trees, roads, buildings, and low-altitude routing",
+          "direct_use_supported": false,
+          "direct_editor_open_supported": false,
+          "migration_status": "audit_only"
+        },
+        {
+          "scene_id": "rflysim_mountain_terrain",
+          "priority": "P1",
+          "source_map": "MountainTerrain/Maps/MountainTerrain.umap",
+          "purpose": "terrain following and outdoor altitude-hold visual review",
+          "direct_use_supported": false,
+          "direct_editor_open_supported": false,
+          "migration_status": "audit_only"
+        }
+      ],
+      "reconstruction_units": [
+        {
+          "visual_class": "terrain",
+          "proxy_class": "terrain_heightfield",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "tree_trunks",
+          "proxy_class": "tree_trunk_capsule_or_box",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "canopy",
+          "proxy_class": "",
+          "source": "project_owned_visual_only",
+          "action": "create visual asset; mark render_only unless later linked to a proxy"
+        },
+        {
+          "visual_class": "rocks",
+          "proxy_class": "rock_box",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "waypoint_markers",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "radar_sector",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "local_plan",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "trajectory_trail",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        }
+      ],
       "implementation_steps": [
         "create or select authorized visual assets",
+        "use RflySim runtime only as visual/layout reference unless direct_editor_open_supported is later verified true",
         "write scene_asset_registry entry with source and license note",
         "create matching world_geometry/collision proxies",
         "add scenario profile and planner visibility rule",
@@ -77,8 +151,67 @@
       ],
       "planner_visibility": "known_task_geometry_plus_local_sensor",
       "global_map_available_to_planner": false,
+      "rflysim_reference_scenes": [
+        {
+          "scene_id": "rflysim_vision_ring",
+          "priority": "P0",
+          "source_map": "Vision/Maps/VisionRing.umap",
+          "purpose": "ring/gate and high-attitude-control visual demo",
+          "direct_use_supported": false,
+          "direct_editor_open_supported": false,
+          "migration_status": "audit_only"
+        },
+        {
+          "scene_id": "rflysim_vision_ring_blank",
+          "priority": "P0",
+          "source_map": "Vision/Maps/VisionRingBlank.umap",
+          "purpose": "clean ring/gate scene for controller-focused video",
+          "direct_use_supported": false,
+          "direct_editor_open_supported": false,
+          "migration_status": "audit_only"
+        }
+      ],
+      "reconstruction_units": [
+        {
+          "visual_class": "tilted_gate",
+          "proxy_class": "gate_frame_boxes",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "ring",
+          "proxy_class": "ring_proxy",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "indoor_floor",
+          "proxy_class": "safe_corridor",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "axis_marker",
+          "proxy_class": "",
+          "source": "project_owned_visual_only",
+          "action": "create visual asset; mark render_only unless later linked to a proxy"
+        },
+        {
+          "visual_class": "smooth_reference",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "actual_trail",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        }
+      ],
       "implementation_steps": [
         "create or select authorized visual assets",
+        "use RflySim runtime only as visual/layout reference unless direct_editor_open_supported is later verified true",
         "write scene_asset_registry entry with source and license note",
         "create matching world_geometry/collision proxies",
         "add scenario profile and planner visibility rule",
@@ -113,8 +246,67 @@
       ],
       "planner_visibility": "raycast_occluded_local_sensor",
       "global_map_available_to_planner": false,
+      "rflysim_reference_scenes": [
+        {
+          "scene_id": "rflysim_challenge_map",
+          "priority": "P1",
+          "source_map": "RobotMissionChallenge/Map/ChallengeMap.umap",
+          "purpose": "maze-like challenge scene for local planning stress tests",
+          "direct_use_supported": false,
+          "direct_editor_open_supported": false,
+          "migration_status": "audit_only"
+        },
+        {
+          "scene_id": "rflysim_old_factory",
+          "priority": "P0",
+          "source_map": "OldFactory/Maps/OldFactory.umap",
+          "purpose": "industrial patrol, wall occlusion, and obstacle navigation",
+          "direct_use_supported": false,
+          "direct_editor_open_supported": false,
+          "migration_status": "audit_only"
+        }
+      ],
+      "reconstruction_units": [
+        {
+          "visual_class": "walls",
+          "proxy_class": "wall_box",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "doors_or_passages",
+          "proxy_class": "passage_box",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "floor",
+          "proxy_class": "floor_plane",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "occlusion_shading",
+          "proxy_class": "",
+          "source": "project_owned_visual_only",
+          "action": "create visual asset; mark render_only unless later linked to a proxy"
+        },
+        {
+          "visual_class": "radar_sector",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "local_known_map",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        }
+      ],
       "implementation_steps": [
         "create or select authorized visual assets",
+        "use RflySim runtime only as visual/layout reference unless direct_editor_open_supported is later verified true",
         "write scene_asset_registry entry with source and license note",
         "create matching world_geometry/collision proxies",
         "add scenario profile and planner visibility rule",
@@ -151,8 +343,64 @@
       ],
       "planner_visibility": "local_sensor_only",
       "global_map_available_to_planner": false,
+      "rflysim_reference_scenes": [
+        {
+          "scene_id": "rflysim_old_factory",
+          "priority": "P0",
+          "source_map": "OldFactory/Maps/OldFactory.umap",
+          "purpose": "industrial patrol, wall occlusion, and obstacle navigation",
+          "direct_use_supported": false,
+          "direct_editor_open_supported": false,
+          "migration_status": "audit_only"
+        }
+      ],
+      "reconstruction_units": [
+        {
+          "visual_class": "buildings",
+          "proxy_class": "building_box",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "pipes",
+          "proxy_class": "pipe_capsule",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "columns",
+          "proxy_class": "column_box",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "machines",
+          "proxy_class": "",
+          "source": "project_owned_visual_only",
+          "action": "create visual asset; mark render_only unless later linked to a proxy"
+        },
+        {
+          "visual_class": "inspection_targets",
+          "proxy_class": "target_marker",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "local_plan",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "trail",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        }
+      ],
       "implementation_steps": [
         "create or select authorized visual assets",
+        "use RflySim runtime only as visual/layout reference unless direct_editor_open_supported is later verified true",
         "write scene_asset_registry entry with source and license note",
         "create matching world_geometry/collision proxies",
         "add scenario profile and planner visibility rule",
@@ -186,8 +434,67 @@
       ],
       "planner_visibility": "mostly_open_known_task_area",
       "global_map_available_to_planner": false,
+      "rflysim_reference_scenes": [
+        {
+          "scene_id": "rflysim_grasslands_3d_display",
+          "priority": "P0",
+          "source_map": "Grasslands/Maps/Grasslands/3DDisplay.umap",
+          "purpose": "open wind, motor-efficiency, and long-range trajectory scene",
+          "direct_use_supported": false,
+          "direct_editor_open_supported": false,
+          "migration_status": "audit_only"
+        },
+        {
+          "scene_id": "rflysim_grasslands",
+          "priority": "P0",
+          "source_map": "Grasslands/Maps/Grasslands/Grasslands.umap",
+          "purpose": "open terrain scene and reusable landscape material source",
+          "direct_use_supported": false,
+          "direct_editor_open_supported": false,
+          "migration_status": "audit_only"
+        }
+      ],
+      "reconstruction_units": [
+        {
+          "visual_class": "grass_field",
+          "proxy_class": "terrain_plane",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "wind_vector_overlay",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "gust_zone",
+          "proxy_class": "optional_boundary",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "UAV",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "trail",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "metric_overlay",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        }
+      ],
       "implementation_steps": [
         "create or select authorized visual assets",
+        "use RflySim runtime only as visual/layout reference unless direct_editor_open_supported is later verified true",
         "write scene_asset_registry entry with source and license note",
         "create matching world_geometry/collision proxies",
         "add scenario profile and planner visibility rule",

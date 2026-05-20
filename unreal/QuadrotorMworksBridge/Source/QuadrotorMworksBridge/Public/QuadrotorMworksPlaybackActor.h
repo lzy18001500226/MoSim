@@ -10,6 +10,7 @@ class UMaterialInterface;
 class UProceduralMeshComponent;
 class USplineComponent;
 class UStaticMeshComponent;
+class AQuadrotorMworksMapActor;
 
 UCLASS()
 class QUADROTORMWORKSBRIDGE_API AQuadrotorMworksPlaybackActor : public AActor
@@ -94,6 +95,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization")
     float RadarSectorHeightOffsetCentimeters = 5.0f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Map")
+    AQuadrotorMworksMapActor* MapActor = nullptr;
+
     UFUNCTION(BlueprintCallable, Category = "MWORKS")
     void ApplyDefaultMaterials();
 
@@ -104,6 +108,7 @@ protected:
 private:
     void ApplyPropellerVisuals() const;
     void UpdateVisualHelpers() const;
+    void UpdateMapSelection() const;
     void UpdateSplineFromPoints(USplineComponent* Spline, const TArray<FVector>& Points) const;
     void UpdateRadarSectorMesh() const;
     void BuildSectorMesh(UProceduralMeshComponent* Mesh, float InnerRadiusCm, float OuterRadiusCm, const FLinearColor& Color) const;

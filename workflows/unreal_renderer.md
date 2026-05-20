@@ -490,6 +490,11 @@ Use this workflow before any new UE5 navigation demo:
    - For video, drive project-owned UE5 from MWORKS raw/native result or a
      bounded real-time state stream.
    - Keep controller and metrics truth in MWORKS.
+   - `stream_unreal_udp.py` sends `map_id`; `QuadrotorMworksPlaybackActor`
+     forwards it to `QuadrotorMworksMapActor`, which resolves the id against
+     `rflysim_scene_registry.json` and exposes/logs migration status and direct
+     use blockers. This is scene-selection/status plumbing, not a promise that
+     RflySim `.umap` files are loaded at runtime.
 ```
 
 Scenario families:
