@@ -216,6 +216,7 @@ Outputs:
 ```text
 results/rflysim/rflysim_vision_ring_migration_plan.json
 results/rflysim/rflysim_vision_ring_migration_plan.md
+results/rflysim/rflysim_vision_ring_manual_review_checklist.md
 ```
 
 `VisionRing` is the first P0 target because it is small, has direct relevance to
@@ -223,6 +224,9 @@ ring/gate and tilted-frame attitude-control video, and should expose asset
 migration problems before larger scenes such as `OldFactory` or `Grasslands`.
 This plan is a checklist for manual/Unreal-editor work; it does not copy assets
 and does not change the RflySim installation.
+The manual review checklist is the required handoff artifact for the first UE
+editor pass. It records missing plugins/assets, scale, coordinates, material
+quality, collision proxy readiness, playback readiness, and the import decision.
 
 Scene assets must be bound through the project-owned schema:
 

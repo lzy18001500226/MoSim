@@ -131,6 +131,60 @@ def write_markdown(plan: dict, path: Path) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def write_review_checklist(plan: dict, path: Path) -> None:
+    lines = [
+        f"# Manual UE Migration Review: {plan['scene_id']}",
+        "",
+        "Fill this checklist while inspecting the temporary Unreal conversion project.",
+        "Do not copy assets into the competition repo until every blocking item is resolved.",
+        "",
+        "## Scene Open Result",
+        "",
+        "| Item | Result | Notes |",
+        "| --- | --- | --- |",
+        "| Temporary project path | TODO | `D:/UE_MigrationScratch/QuadrotorRflySimSceneProbe` or equivalent |",
+        f"| Source map opens | TODO | `{plan['source_map']}` |",
+        "| Missing plugin warning | TODO | list exact plugin names or `none` |",
+        "| Missing asset warning | TODO | list exact assets or `none` |",
+        "| Core geometry visible | TODO | floor/walls/ring/terrain as applicable |",
+        "| Materials acceptable | TODO | transparent/black/missing material issues |",
+        "| Scale checked | TODO | compare one known dimension to MWORKS meters |",
+        "| Coordinate direction checked | TODO | X/Y/Z and handedness notes |",
+        "",
+        "## Migration Package Readiness",
+        "",
+        "| Item | Result | Notes |",
+        "| --- | --- | --- |",
+        "| Candidate content roots copied to staging only | TODO | not directly into `Content/` |",
+        "| `scene_asset_registry.json` created | TODO | must follow project schema |",
+        "| Collision proxies authored | TODO | every obstacle-like visible asset has proxy |",
+        "| Package checker passed | TODO | run `check_unreal_migration_package.py` |",
+        "| No `.pak`/installer/engine binary | TODO | required |",
+        "| No single file >100 MB | TODO | required before Git |",
+        "| License status recorded | TODO | `permitted` or `pending_review`, never blank |",
+        "",
+        "## Playback Readiness",
+        "",
+        "| Item | Result | Notes |",
+        "| --- | --- | --- |",
+        "| `map_id` selected | TODO | must match registry scene/map id |",
+        "| UAV scale and color acceptable | TODO | body, arms, propellers visible |",
+        "| Propeller RPM visual works | TODO | no static propellers unless source has no RPM |",
+        "| Local plan and trail visible | TODO | starts at UAV center |",
+        "| Radar sector visible | TODO | FOV/radius/yaw follows packet |",
+        "| Follow camera usable | TODO | no constant manual drag required |",
+        "",
+        "## Decision",
+        "",
+        "| Decision | Value |",
+        "| --- | --- |",
+        "| Import into project-owned UE5 renderer? | TODO yes/no |",
+        "| Reason | TODO |",
+        "| Next action | TODO |",
+    ]
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
@@ -144,10 +198,13 @@ def main() -> int:
     args.output_dir.mkdir(parents=True, exist_ok=True)
     json_path = args.output_dir / f"{args.scene_id}_migration_plan.json"
     md_path = args.output_dir / f"{args.scene_id}_migration_plan.md"
+    checklist_path = args.output_dir / f"{args.scene_id}_manual_review_checklist.md"
     json_path.write_text(json.dumps(plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     write_markdown(plan, md_path)
+    write_review_checklist(plan, checklist_path)
     print(f"[OK] wrote {json_path}")
     print(f"[OK] wrote {md_path}")
+    print(f"[OK] wrote {checklist_path}")
     return 0
 
 

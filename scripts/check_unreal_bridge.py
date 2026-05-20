@@ -13,6 +13,7 @@ RENDERER = ROOT / "unreal" / "MworksUnrealRenderer"
 SCENE_REGISTRY = RENDERER / "Content" / "MworksData" / "rflysim_scene_registry.json"
 ASSET_REGISTRY_SCHEMA = RENDERER / "Content" / "MworksData" / "scene_asset_registry.schema.json"
 VISION_RING_PLAN = ROOT / "results" / "rflysim" / "rflysim_vision_ring_migration_plan.json"
+VISION_RING_CHECKLIST = ROOT / "results" / "rflysim" / "rflysim_vision_ring_manual_review_checklist.md"
 MIGRATION_CHECKER = ROOT / "scripts" / "check_unreal_migration_package.py"
 
 REQUIRED_FILES = [
@@ -165,6 +166,9 @@ def main() -> int:
 
     if not VISION_RING_PLAN.exists():
         print(f"[FAIL] missing P0 migration plan: {VISION_RING_PLAN}")
+        return 1
+    if not VISION_RING_CHECKLIST.exists():
+        print(f"[FAIL] missing P0 manual review checklist: {VISION_RING_CHECKLIST}")
         return 1
     plan = json.loads(VISION_RING_PLAN.read_text(encoding="utf-8"))
     if plan.get("schema") != "quadrotor.rflysim_scene_migration_plan.v1":
