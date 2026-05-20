@@ -165,6 +165,23 @@ plugin modules such as `Rfly3DSimPlugin`, `CesiumRuntime`, `DTRedis`,
 solve this. A temporary UE editor pass is only diagnostic unless the missing
 source or matching editor plugin binaries are obtained.
 
+Questions for RflySim support:
+
+1. Does the free/advanced install provide an editable Unreal project for
+   `RflySim3D.uproject`, or is it intentionally runtime-only?
+2. Where can we obtain the UE4.27 editor binaries or source for the project
+   module `RflySim3D`?
+3. Where can we obtain matching UE4.27 editor binaries or source for
+   `Rfly3DSimPlugin`, `DTRedis`, `RuntimeTransformer`,
+   `TwinmotionToUnreal`, `CesiumRuntime`, and `ColorWheelPlugin`?
+4. Are the bundled `.umap/.uasset` scene assets allowed to be migrated into a
+   separate UE project for non-commercial competition visualization?
+5. If direct migration is not supported, is there an official export path for
+   scene geometry, object poses, collision boxes, lidar-visible obstacles, or
+   terrain height data?
+6. Which examples expose object/bounding-box truth or map geometry through the
+   Python/UDP API, beyond vehicle pose and point cloud output?
+
 Representative candidate maps:
 
 | Candidate | Path | Use | Migration priority |

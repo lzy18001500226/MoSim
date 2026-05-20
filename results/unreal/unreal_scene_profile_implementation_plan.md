@@ -29,6 +29,8 @@
 
 ### `dense_forest`
 
+- Map IDs: `dense_forest`
+
 RflySim runtime references:
 
 - `rflysim_neighborhood_park` -> `ModularNeighborhood/Maps/NeighborhoodPark.umap` (direct_use=False, editor_open=False)
@@ -55,6 +57,9 @@ Acceptance:
 
 ### `gate_ring_indoor`
 
+- Map IDs: `map_corridor_gate`, `gate_ring_indoor`
+- Render map JSON: `MworksData/map_corridor_gate_render_map.json`
+
 RflySim runtime references:
 
 - `rflysim_vision_ring` -> `Vision/Maps/VisionRing.umap` (direct_use=False, editor_open=False)
@@ -78,6 +83,9 @@ Acceptance:
 - attitude and position errors are exported from MWORKS evidence
 
 ### `maze_building`
+
+- Map IDs: `map_maze_building`, `maze_building`
+- Render map JSON: `MworksData/map_maze_building_render_map.json`
 
 RflySim runtime references:
 
@@ -103,6 +111,8 @@ Acceptance:
 
 ### `old_factory`
 
+- Map IDs: `old_factory`
+
 RflySim runtime references:
 
 - `rflysim_old_factory` -> `OldFactory/Maps/OldFactory.umap` (direct_use=False, editor_open=False)
@@ -126,6 +136,8 @@ Acceptance:
 - MWORKS event_log records replanning or safety-filter interventions
 
 ### `open_grass_wind`
+
+- Map IDs: `open_grass_wind`
 
 RflySim runtime references:
 

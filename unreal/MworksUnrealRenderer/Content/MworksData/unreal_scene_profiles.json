@@ -18,6 +18,10 @@
     "profiles": [
         {
             "profile_id": "dense_forest",
+            "map_ids": [
+                "dense_forest"
+            ],
+            "render_map_json": "",
             "priority": "P0",
             "purpose": "local perception, unknown-map obstacle avoidance and replanning under vegetation-like occlusion",
             "render_world": {
@@ -55,6 +59,11 @@
         },
         {
             "profile_id": "maze_building",
+            "map_ids": [
+                "map_maze_building",
+                "maze_building"
+            ],
+            "render_map_json": "MworksData/map_maze_building_render_map.json",
             "priority": "P0",
             "purpose": "wall occlusion, corridor navigation, local map memory and no-through-wall radar behavior",
             "render_world": {
@@ -89,6 +98,10 @@
         },
         {
             "profile_id": "old_factory",
+            "map_ids": [
+                "old_factory"
+            ],
+            "render_map_json": "",
             "priority": "P0",
             "purpose": "industrial inspection scene with walls, pipes, towers and mixed vertical obstacles",
             "render_world": {
@@ -125,6 +138,11 @@
         },
         {
             "profile_id": "gate_ring_indoor",
+            "map_ids": [
+                "map_corridor_gate",
+                "gate_ring_indoor"
+            ],
+            "render_map_json": "MworksData/map_corridor_gate_render_map.json",
             "priority": "P0",
             "purpose": "tilted gate/ring traversal for attitude tracking and aggressive trajectory display",
             "render_world": {
@@ -159,6 +177,10 @@
         },
         {
             "profile_id": "open_grass_wind",
+            "map_ids": [
+                "open_grass_wind"
+            ],
+            "render_map_json": "",
             "priority": "P0",
             "purpose": "wind disturbance, motor-efficiency degradation and long-trajectory robustness video",
             "render_world": {

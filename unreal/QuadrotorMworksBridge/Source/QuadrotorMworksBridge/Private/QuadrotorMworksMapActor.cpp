@@ -293,6 +293,69 @@ bool AQuadrotorMworksMapActor::ResolveMapId(const FString& MapId)
         return false;
     }
 
+    const FString ProfilesPath = FPaths::ProjectContentDir() / SceneProfilesJson;
+    FString ProfilesText;
+    if (FFileHelper::LoadFileToString(ProfilesText, *ProfilesPath))
+    {
+        TSharedPtr<FJsonObject> ProfilesRoot;
+        const TSharedRef<TJsonReader<>> ProfilesReader = TJsonReaderFactory<>::Create(ProfilesText);
+        if (FJsonSerializer::Deserialize(ProfilesReader, ProfilesRoot) && ProfilesRoot.IsValid())
+        {
+            const TArray<TSharedPtr<FJsonValue>>* Profiles = nullptr;
+            if (ProfilesRoot->TryGetArrayField(TEXT("profiles"), Profiles) && Profiles)
+            {
+                for (const TSharedPtr<FJsonValue>& ProfileValue : *Profiles)
+                {
+                    const TSharedPtr<FJsonObject> Profile = ProfileValue.IsValid() ? ProfileValue->AsObject() : nullptr;
+                    if (!Profile.IsValid())
+                    {
+                        continue;
+                    }
+
+                    const TArray<TSharedPtr<FJsonValue>>* MapIds = nullptr;
+                    if (!Profile->TryGetArrayField(TEXT("map_ids"), MapIds) || !MapIds)
+                    {
+                        continue;
+                    }
+                    bool bMatches = false;
+                    for (const TSharedPtr<FJsonValue>& Value : *MapIds)
+                    {
+                        if (Value.IsValid() && Value->AsString() == MapId)
+                        {
+                            bMatches = true;
+                            break;
+                        }
+                    }
+                    if (!bMatches)
+                    {
+                        continue;
+                    }
+
+                    CurrentMapId = MapId;
+                    Profile->TryGetStringField(TEXT("profile_id"), CurrentSceneProfileId);
+                    Profile->TryGetStringField(TEXT("purpose"), CurrentScenePurpose);
+                    Profile->TryGetStringField(TEXT("render_map_json"), RenderMapJson);
+                    CurrentSourceMap = RenderMapJson;
+                    CurrentMigrationStatus = TEXT("project_owned_profile");
+                    bCurrentMapDirectUseSupported = true;
+                    bCurrentMapEditorOpenSupported = true;
+                    UE_LOG(
+                        LogTemp,
+                        Display,
+                        TEXT("Selected project-owned map_id=%s profile=%s render_map=%s"),
+                        *CurrentMapId,
+                        *CurrentSceneProfileId,
+                        *RenderMapJson);
+                    if (!RenderMapJson.IsEmpty())
+                    {
+                        LoadRenderMapSummary();
+                    }
+                    return true;
+                }
+            }
+        }
+    }
+
     const FString FullPath = FPaths::ProjectContentDir() / SceneRegistryJson;
     FString Text;
     if (!FFileHelper::LoadFileToString(Text, *FullPath))

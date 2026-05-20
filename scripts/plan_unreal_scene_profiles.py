@@ -130,6 +130,8 @@ def profile_plan(profile: dict[str, Any], index: int, registry: dict[str, Any]) 
     return {
         "order": index,
         "profile_id": profile["profile_id"],
+        "map_ids": profile.get("map_ids", []),
+        "render_map_json": profile.get("render_map_json", ""),
         "priority": profile.get("priority", "P1"),
         "purpose": profile.get("purpose", ""),
         "source_strategy": render_world.get("source_strategy", ""),
@@ -214,6 +216,12 @@ def write_markdown(plan: dict[str, Any], path: Path) -> None:
     for profile in plan["profiles"]:
         lines.append(f"### `{profile['profile_id']}`")
         lines.append("")
+        if profile.get("map_ids"):
+            lines.append(f"- Map IDs: {', '.join(f'`{item}`' for item in profile['map_ids'])}")
+        if profile.get("render_map_json"):
+            lines.append(f"- Render map JSON: `{profile['render_map_json']}`")
+        if profile.get("map_ids") or profile.get("render_map_json"):
+            lines.append("")
         if profile.get("rflysim_reference_scenes"):
             lines.append("RflySim runtime references:")
             lines.append("")

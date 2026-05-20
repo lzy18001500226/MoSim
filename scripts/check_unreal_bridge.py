@@ -141,9 +141,13 @@ def main() -> int:
     for token in [
         "LoadRenderMapSummary",
         "SceneRegistryJson",
+        "SceneProfilesJson",
         "ResolveMapId",
         "ApplyFrameMapSelection",
         "CurrentMapId",
+        "CurrentSceneProfileId",
+        "map_ids",
+        "render_map_json",
         "direct_editor_open_supported",
         "random_column_count",
         "wall_box_count",
@@ -218,6 +222,12 @@ def main() -> int:
         print(f"[FAIL] Unreal scene profiles missing: {', '.join(missing_profiles)}")
         return 1
     for profile_id, profile in profiles.items():
+        if not profile.get("map_ids"):
+            print(f"[FAIL] scene profile missing map_ids: {profile_id}")
+            return 1
+        if profile_id in {"gate_ring_indoor", "maze_building"} and not profile.get("render_map_json"):
+            print(f"[FAIL] scene profile missing render_map_json: {profile_id}")
+            return 1
         truth = profile.get("truth_geometry", {})
         if truth.get("global_map_available_to_planner") is not False:
             print(f"[FAIL] scene profile must not expose global map to planner: {profile_id}")

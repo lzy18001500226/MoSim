@@ -36,6 +36,9 @@ public:
     FString SceneRegistryJson = TEXT("MworksData/rflysim_scene_registry.json");
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map")
+    FString SceneProfilesJson = TEXT("MworksData/unreal_scene_profiles.json");
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map")
     float MetersToCentimeters = 100.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map")
@@ -100,6 +103,9 @@ public:
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
     FString CurrentMigrationStatus;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    FString CurrentSceneProfileId;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
     bool bCurrentMapDirectUseSupported = false;
