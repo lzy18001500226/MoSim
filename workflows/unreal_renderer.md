@@ -447,6 +447,47 @@ Recommended open asset candidates:
 
 Large scene assets stay outside Git by default. Commit only scripts, config, scenario profiles, derived small manifests, and documentation.
 
+### Long-Running UE5 Reconstruction Queue
+
+This queue is the default continuation path. The agent should keep moving down
+the queue without asking for "continue" after each small task. Stop only for
+license/authorization decisions, external write access, Unreal editor manual
+review, frozen GUI/MCP/editor state, or a change that risks data loss.
+
+| Phase | Task | Owner Pattern | Done When | Human Gate |
+|---|---|---|---|---|
+| U0 | Keep RflySim/UE audit and scene registry current | main + Git/quality agent | `audit_rflysim_maps.py`, `build_rflysim_scene_registry.py`, and `check_unreal_bridge.py` pass | none |
+| U1 | Produce one-scene migration plan, starting with `rflysim_vision_ring` | main | `rflysim_vision_ring_migration_plan.json/.md` exists and passes bridge checks | none |
+| U2 | Validate staged migration packages before import | main + Git/quality agent | `check_unreal_migration_package.py` accepts valid fixture and rejects missing collision proxy | none |
+| U3 | Open temporary UE conversion copy and verify selected RflySim scene | user/UE editor + main guidance | map opens, missing plugin/asset warnings recorded, no repo files polluted | yes |
+| U4 | Create project-owned `scene_asset_registry.json` for the migrated scene | main, possibly docs/scene agent | every visible obstacle-like asset has `collision_proxy_id`; package gate passes | only if license/status unknown |
+| U5 | Import or recreate approved assets in `MworksUnrealRenderer` | UE MCP/Editor agent after MCP probe | assets appear in UE, scale/axis verified, no `.pak` or >100 MB tracked file | yes for visual audit |
+| U6 | Build playback scene using `QuadrotorMworksBridge` | UE MCP/Editor agent | UAV, propellers, local plan, trail, radar sector, and selected scene are visible | yes |
+| U7 | Run MWORKS raw/native replay into UE | main + MWORKS/UE tools | `stream_unreal_udp.py --dry-run` and a short real playback work | yes for video review |
+| U8 | Add camera/video workflow | UE MCP/Editor agent | follow/overview camera preset and export path documented | yes |
+| U9 | Expand scene family after first pass | research agent + main | next scene plan exists for `OldFactory` or `Grasslands` | none unless new license issue |
+
+Parallelization rule for this queue:
+
+```text
+main agent:
+  owns queue, integration, checks, and final user report
+
+research agent:
+  can investigate assets, docs, licenses, and reference architectures
+  writes nothing unless assigned a doc section
+
+UE/MCP agent:
+  can edit only assigned Unreal project/scene files after MCP/editor probe passes
+
+Git/quality agent:
+  stages only explicit paths, checks file sizes, runs tests, commits, pushes
+```
+
+The main agent should not wait idly for Git when it can safely continue with a
+non-overlapping file-level task. Conversely, it must not start UE editor scene
+writes while a Git agent is committing the same Unreal files.
+
 Scene randomization rules:
 
 1. Randomize scene layout only before the run starts.

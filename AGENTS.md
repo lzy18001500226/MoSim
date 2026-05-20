@@ -173,6 +173,14 @@ Coordinator rules:
    `workflows/` files.
 8. The main agent must review changed paths, run targeted checks, and resolve
    conflicts before commit.
+9. For long UE5/RflySim/MWORKS development runs, maintain and follow the
+   current task queue in `workflows/unreal_renderer.md` or the relevant
+   workflow file. Do not stop after a small successful subtask when the next
+   queued task is clear and remains inside the project boundary.
+10. Prefer using the Git/quality agent for commit and push while the main agent
+    continues planning or implementing the next independent task. If the agent
+    limit is reached, reuse an existing Git/quality agent or commit locally only
+    after targeted checks pass.
 
 Recommended split for RflySim / Unreal / MWORKS scene work:
 
