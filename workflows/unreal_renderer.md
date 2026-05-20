@@ -211,6 +211,13 @@ Build the first concrete migration smoke plan from the registry:
 python3 scripts/plan_rflysim_scene_migration.py --scene-id rflysim_vision_ring
 ```
 
+Generate the current P0 scene-plan batch:
+
+```bash
+python3 scripts/plan_rflysim_scene_migration.py \
+  --scene-ids rflysim_vision_ring,rflysim_old_factory,rflysim_grasslands_3d_display
+```
+
 Outputs:
 
 ```text

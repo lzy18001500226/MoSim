@@ -189,22 +189,28 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
     parser.add_argument("--scene-id", default="rflysim_vision_ring")
+    parser.add_argument(
+        "--scene-ids",
+        default="",
+        help="Comma-separated scene ids. Overrides --scene-id when non-empty.",
+    )
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     args = parser.parse_args()
 
     registry = load_json(args.registry)
-    plan = build_plan(registry, args.scene_id)
-
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    json_path = args.output_dir / f"{args.scene_id}_migration_plan.json"
-    md_path = args.output_dir / f"{args.scene_id}_migration_plan.md"
-    checklist_path = args.output_dir / f"{args.scene_id}_manual_review_checklist.md"
-    json_path.write_text(json.dumps(plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    write_markdown(plan, md_path)
-    write_review_checklist(plan, checklist_path)
-    print(f"[OK] wrote {json_path}")
-    print(f"[OK] wrote {md_path}")
-    print(f"[OK] wrote {checklist_path}")
+    scene_ids = [item.strip() for item in args.scene_ids.split(",") if item.strip()] or [args.scene_id]
+    for scene_id in scene_ids:
+        plan = build_plan(registry, scene_id)
+        json_path = args.output_dir / f"{scene_id}_migration_plan.json"
+        md_path = args.output_dir / f"{scene_id}_migration_plan.md"
+        checklist_path = args.output_dir / f"{scene_id}_manual_review_checklist.md"
+        json_path.write_text(json.dumps(plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        write_markdown(plan, md_path)
+        write_review_checklist(plan, checklist_path)
+        print(f"[OK] wrote {json_path}")
+        print(f"[OK] wrote {md_path}")
+        print(f"[OK] wrote {checklist_path}")
     return 0
 
 
