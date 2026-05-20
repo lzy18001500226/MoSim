@@ -562,6 +562,51 @@ Recommended open asset candidates:
 
 Large scene assets stay outside Git by default. Commit only scripts, config, scenario profiles, derived small manifests, and documentation.
 
+### AirSim / Cosys-AirSim Map Decision
+
+AirSim is useful as an architecture and API reference, but it is not a good
+primary source for finished high-quality maps.
+
+Current finding:
+
+| Source | Status | Project Use |
+|---|---|---|
+| Microsoft AirSim | Original repo is archived/no longer updated. The plugin and APIs are MIT and still useful as reference. | Study sensor/API/plugin architecture only |
+| AirSim `Blocks` | Source project exists in the repo and is lightweight/fast, but visually basic. | Use only for build/interface smoke ideas |
+| AirSim release environments | Downloadable maps such as `AirSimNH`, `LandscapeMountains`, `Africa`, `Coastline`, `ZhangJiajie`; official releases say many use proprietary assets and do not include source/project files. | Runtime visual reference only, not a direct asset migration source |
+| Cosys-AirSim | Maintained fork direction for newer UE versions, including Unreal 5.5 branch/release. Same MIT base, but provided as-is. | Better modern plugin/sensor reference than original AirSim |
+| Colosseum | AirSim successor fork targeting newer UE, MIT, useful for UE5 robotics architecture. | Reference for plugin architecture and SITL/HIL patterns |
+
+Decision:
+
+```text
+Do not depend on AirSim release maps as final UE assets.
+Do not expect AirSimNH/LandscapeMountains/etc. to provide editable scene source.
+Use AirSim/Cosys/Colosseum for architecture, vehicle/sensor API ideas, and
+runtime behavior references.
+Use Fab/Marketplace/open licensed UE assets or project-owned generated geometry
+for final maps.
+```
+
+If the user wants to test AirSim locally, download only source-controlled or
+explicitly licensed content first:
+
+1. Clone `Cosys-Lab/Cosys-AirSim` or `CodexLabsLLC/Colosseum` outside the repo
+   for source inspection.
+2. Use the original AirSim `Blocks` environment only as a small build sanity
+   check.
+3. Treat AirSim release environment zips as runtime demos unless their editable
+   Unreal project/source assets are separately available and licensed.
+
+Useful questions if contacting an AirSim/Fork maintainer:
+
+1. Which UE5 branch is currently recommended for multirotor simulation?
+2. Are any visually rich environments distributed as editable UE projects with
+   redistributable assets?
+3. Is there an official way to export map geometry, object pose, or collision
+   proxies for a custom renderer/planner?
+4. Which sensor modules provide lidar/point-cloud plus object-level truth?
+
 ### Long-Running UE5 Reconstruction Queue
 
 This queue is the default continuation path. The agent should keep moving down
