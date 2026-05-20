@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "unreal" / "QuadrotorMworksBridge"
 RENDERER = ROOT / "unreal" / "MworksUnrealRenderer"
 SCENE_REGISTRY = RENDERER / "Content" / "MworksData" / "rflysim_scene_registry.json"
+ASSET_REGISTRY_SCHEMA = RENDERER / "Content" / "MworksData" / "scene_asset_registry.schema.json"
 VISION_RING_PLAN = ROOT / "results" / "rflysim" / "rflysim_vision_ring_migration_plan.json"
 
 REQUIRED_FILES = [
@@ -174,6 +175,19 @@ def main() -> int:
     if plan.get("direct_use_supported") is not False:
         print("[FAIL] RflySim migration plan must remain migration-only")
         return 1
+
+    if not ASSET_REGISTRY_SCHEMA.exists():
+        print(f"[FAIL] missing asset registry schema: {ASSET_REGISTRY_SCHEMA}")
+        return 1
+    asset_schema = json.loads(ASSET_REGISTRY_SCHEMA.read_text(encoding="utf-8"))
+    if asset_schema.get("schema") != "quadrotor.scene_asset_registry.schema.v1":
+        print("[FAIL] scene asset registry schema mismatch")
+        return 1
+    rules = "\n".join(asset_schema.get("rules", []))
+    for token in ["collision_proxy_id", "visible obstacle", "RflySim assets"]:
+        if token not in rules:
+            print(f"[FAIL] scene asset registry schema missing rule token: {token}")
+            return 1
 
     forbidden_paks = sorted((RENDERER / "Content").rglob("*.pak"))
     if forbidden_paks:

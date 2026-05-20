@@ -224,6 +224,18 @@ migration problems before larger scenes such as `OldFactory` or `Grasslands`.
 This plan is a checklist for manual/Unreal-editor work; it does not copy assets
 and does not change the RflySim installation.
 
+Scene assets must be bound through the project-owned schema:
+
+```text
+unreal/MworksUnrealRenderer/Content/MworksData/scene_asset_registry.schema.json
+```
+
+The key rule is strict: every visible obstacle, wall, gate, tree trunk, building,
+terrain surface, or ring that matters to planning must have a `collision_proxy_id`
+linked back to `world_geometry`. A visual-only asset may exist only if it is
+marked `render_only=true`. This prevents the final UE5 scene from drifting away
+from MWORKS collision truth.
+
 Minimal practical migration test:
 
 1. In Windows Unreal Editor, open a temporary copy of

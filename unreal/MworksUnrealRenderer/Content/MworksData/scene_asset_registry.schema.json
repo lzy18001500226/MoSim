@@ -1,0 +1,52 @@
+{
+  "schema": "quadrotor.scene_asset_registry.schema.v1",
+  "description": "Project-owned metadata for binding Unreal visual assets to MWORKS planning/collision truth.",
+  "required_top_level_fields": [
+    "schema",
+    "scene_id",
+    "map_id",
+    "coordinate_system",
+    "assets",
+    "collision_proxies"
+  ],
+  "coordinate_system": {
+    "mworks_units": "meters",
+    "unreal_units": "centimeters",
+    "conversion_owner": "Unreal renderer",
+    "default_axis_policy": "MWORKS X/Z kept, MWORKS Y sign inverted in Unreal unless scene profile overrides"
+  },
+  "asset_fields": {
+    "asset_id": "stable unique id used by render profiles",
+    "semantic_type": "uav | propeller | terrain | tree | building | wall | gate | ring | obstacle | marker | sensor",
+    "source": {
+      "origin": "project | rflysim_migrated | sunray_migrated | marketplace | generated",
+      "source_path": "original local/reference path, never a token or private credential",
+      "license_status": "project_owned | permitted | pending_review | do_not_ship"
+    },
+    "unreal": {
+      "asset_path": "Unreal content path after import/migration",
+      "material_profile": "material preset id",
+      "scale_m": "[x, y, z] visual scale in MWORKS meters before UE conversion"
+    },
+    "truth_binding": {
+      "geometry_id": "world_geometry primitive id, if this visual participates in collision/planning truth",
+      "collision_proxy_id": "simplified proxy id used by planner/metrics",
+      "render_only": "true only for visual helpers such as sky, decals, or UI markers"
+    }
+  },
+  "collision_proxy_fields": {
+    "collision_proxy_id": "stable id referenced by assets and scenarios",
+    "geometry_type": "box | capsule | sphere | convex_hull | heightfield | occupancy_grid",
+    "frame": "mworks_world",
+    "bounds_m": "type-specific bounds in MWORKS meters",
+    "safety_margin_m": "planner inflation margin",
+    "source_asset_id": "asset_id that produced this proxy"
+  },
+  "rules": [
+    "Every non-render-only obstacle, wall, gate, tree trunk, building, terrain, or ring must have a collision_proxy_id.",
+    "A visible obstacle without planning/collision truth is not allowed in formal evidence.",
+    "A planning/collision obstacle without a visible or explicitly hidden render asset must be documented.",
+    "RflySim assets remain pending_review until license and migration checks pass.",
+    "Do not put .pak, engine binaries, installer files, tokens, or external absolute secrets into the registry."
+  ]
+}

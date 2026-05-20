@@ -152,6 +152,16 @@ status for UE5 scene reconstruction. The generated `VisionRing` migration plan
 is the first manual UE-editor smoke checklist and should be completed in a
 temporary conversion project before importing assets into this renderer.
 
+Scene asset metadata must follow:
+
+```text
+unreal/MworksUnrealRenderer/Content/MworksData/scene_asset_registry.schema.json
+```
+
+This keeps visual UE assets tied to MWORKS `world_geometry` and simplified
+collision proxies. Any obstacle-like visual without a proxy is a renderer bug,
+not a planning result.
+
 ## Asset-First Scene Direction
 
 The generated cube map is a debug and fallback renderer. It is not the target
