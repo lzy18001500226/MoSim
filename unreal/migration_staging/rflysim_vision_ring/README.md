@@ -11,7 +11,7 @@ not contain migrated RflySim assets yet.
 3. Run:
 
 ```bash
-python3 scripts/check_unreal_migration_package.py --package-dir /mnt/c/Users/HP/Desktop/Quadrotor/unreal/migration_staging/rflysim_vision_ring
+python3 scripts/check_unreal_migration_package.py --package-dir unreal/migration_staging/rflysim_vision_ring
 ```
 
 Do not copy `.pak`, engine binaries, installers, or files over 100 MB into

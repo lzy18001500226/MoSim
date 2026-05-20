@@ -103,6 +103,7 @@ def registry_from_plan(plan: dict) -> dict:
 
 
 def write_readme(plan: dict, package_dir: Path) -> None:
+    package_arg = package_dir.relative_to(ROOT).as_posix()
     lines = [
         f"# Migration Staging Package: {plan['scene_id']}",
         "",
@@ -117,7 +118,7 @@ def write_readme(plan: dict, package_dir: Path) -> None:
         "3. Run:",
         "",
         "```bash",
-        f"python3 scripts/check_unreal_migration_package.py --package-dir {package_dir.as_posix()}",
+        f"python3 scripts/check_unreal_migration_package.py --package-dir {package_arg}",
         "```",
         "",
         "Do not copy `.pak`, engine binaries, installers, or files over 100 MB into",
