@@ -618,44 +618,65 @@ Current candidate ranking:
 
 | Rank | Candidate | Scene Value | Reuse Mode | Risk |
 |---|---|---|---|---|
+| A+ | SPEAR / SpearSim | Photorealistic embodied-AI UE project/control layer; includes programmable UE access, camera modalities, and example UE app control | Use as primary reference for UE-side scene control, sensor rendering, Python/UE transaction design, and indoor/warehouse candidate inspection | Need local clone/open test; separate SPEAR-owned assets from Epic sample-project assets |
+| A | Project AirSim | UE5 drone/robot simulator framework with physics, controllers, actuators, sensors, headless/off-screen operation | Use as primary drone-renderer/interface reference for UE5, sensor configuration, robot JSONC, and off-screen rendering | Visual scenes are simple; use as architecture reference more than final scene source |
 | A | CARLA | Urban roads, buildings, layouts, vehicles; open digital assets with clear simulator workflow | Use as reference/source for city/building map assets and map-ingestion workflow | Heavy build; primarily autonomous-driving urban, not factory/indoor |
 | A- | UnrealROX | Photorealistic indoor UE4 project with `Content/`, `Source/`, `robotrix.uproject`; MIT code | Clone outside repo and test whether rooms/objects can be migrated or used as indoor reference | UE4.18-era project; not drone-specific; asset license needs review beyond code license |
 | B+ | PEDRA | Drone RL environments including many indoor and outdoor maps | Use as runtime/reference for drone navigation scenarios | Environments are packaged Windows binaries; not clearly editable source maps |
+| B+ | UESVONavigation | UE sparse-voxel-octree 3D navigation plugin | Use as algorithmic reference for volumetric navigation in UE scenes | Plugin is old UE4; integrate ideas, not direct dependency unless ported |
 | B | UnrealCV / UnrealZoo | Large set of UE virtual worlds and ground-truth APIs | Use API/ground-truth ideas; binaries may be useful for visual reference | Mostly compiled environments, not direct asset source |
 | B | Colosseum / Cosys-AirSim | Modern AirSim-style drone/PX4/UE architecture | Use plugin/sensor/control architecture as reference | Maps still need separate UE assets |
+| B | Cesium for Unreal Samples | Large-scale city/building/geospatial scenes and photogrammetry examples | Use for global/city visual reference and geospatial streaming patterns | Depends on Cesium plugin/ion data; not suitable as self-contained indoor map |
 | C | Small UE industrial demo repos | Factory/industrial visuals may exist as `.uproject` | Only use after inspecting included assets and licenses | Many use Quixel/Megascans or Marketplace assets; repo license may not cover assets |
 | C | StreetMap / OSM import plugins | Fast procedural buildings/roads from OSM | Use to generate simple city blocks if no better assets are available | Not factory/indoor; visual quality limited without material/asset work |
 
 Specific notes:
 
-1. CARLA is currently the best open-source asset candidate for outdoor
+1. SPEAR is the best architecture reference found so far for programmable UE
+   rendering. Its key value is not only scene assets: it demonstrates a
+   transaction-style Python/UE bridge, fast camera rendering into arrays, and
+   ground-truth modalities. This matches our need to keep MWORKS as the
+   controller/planner truth while UE handles visual state and perception views.
+2. Project AirSim is the best UE5 drone-simulator reference found so far. Its
+   immediate value is the UE5 sensor/robot/headless/off-screen architecture,
+   not final scenery. Use it to design the MWORKS-to-UE frame schema and future
+   lidar/camera playback modes.
+3. CARLA is currently the best open-source asset candidate for outdoor
    building/city scenes because its project explicitly provides simulator code
    and open digital assets. It also documents `.fbx + .xodr` map ingestion and
    editor customization. For this project, use CARLA ideas/assets only as a
    scene-source layer; do not adopt CARLA as the control simulator.
-2. UnrealROX is the best candidate for an editable indoor UE project. It is not
+4. UnrealROX is the best candidate for an editable indoor UE project. It is not
    a UAV simulator, but it has the right pattern: complete UE project,
    photorealistic indoor scenes, and exportable scene/robot/camera data.
-3. PEDRA is drone-oriented and has many indoor/outdoor environments, but the
+5. PEDRA is drone-oriented and has many indoor/outdoor environments, but the
    documented environment distribution is packaged. Treat it like RflySim unless
    editable UE project files are found.
-4. UnrealZoo is promising for visual reference and ground-truth interfaces, but
+6. UESVONavigation is not a scene source, but it is relevant because ordinary
+   ground navigation is not enough for quadrotor scenes. Keep it as a reference
+   if we need UE-side 3D collision/navigation previews.
+7. UnrealZoo is promising for visual reference and ground-truth interfaces, but
    current public distribution appears to focus on binaries/API rather than
    editable scenes.
-5. Factory/warehouse GitHub demos should be treated as suspect until each asset
+8. Factory/warehouse GitHub demos should be treated as suspect until each asset
    is checked. A repo can be Apache/MIT while still containing Quixel or
    Marketplace assets whose license is not covered by the repo license.
 
 Recommended next asset actions:
 
 ```text
-1. Clone UnrealROX outside the repo and check whether UE opens the project and
+1. Clone/inspect SPEAR outside the repo first and identify whether its warehouse
+   or indoor examples can be opened locally and whether its UE control bridge
+   design can inform our TCP/UDP renderer.
+2. Clone/inspect Project AirSim outside the repo second and extract its UE5
+   scene/sensor/headless architecture notes.
+3. Clone UnrealROX outside the repo and check whether UE opens the project and
    whether Content maps are useful for indoor/gate/maze scenes.
-2. Clone or inspect CARLA outside the repo only if we want outdoor city/building
+4. Clone or inspect CARLA outside the repo only if we want outdoor city/building
    assets or a robust map-ingestion reference.
-3. Search Fab/Marketplace for free factory/warehouse/industrial packs and keep
+5. Search Fab/Marketplace for free factory/warehouse/industrial packs and keep
    them external; record only manifest/paths/licenses in this repo.
-4. Keep project-owned generated geometry for gates, rings, and planner-truth
+6. Keep project-owned generated geometry for gates, rings, and planner-truth
    objects even if final visuals come from imported assets.
 ```
 
