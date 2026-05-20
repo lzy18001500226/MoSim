@@ -161,7 +161,8 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
         return false;
     }
 
-    OutFrame.SceneId = Root->GetStringField(TEXT("scene_id"));
+    Root->TryGetStringField(TEXT("scene_id"), OutFrame.SceneId);
+    Root->TryGetStringField(TEXT("map_id"), OutFrame.MapId);
     OutFrame.Sequence = static_cast<int32>(Root->GetIntegerField(TEXT("seq")));
     OutFrame.TimeSeconds = Root->GetNumberField(TEXT("t"));
 

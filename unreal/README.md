@@ -69,6 +69,11 @@ Expected packet schema:
 quadrotor.unreal_state.v1
 ```
 
+Packets include both `scene_id` and `map_id`. `scene_id` identifies the MWORKS
+scenario or replay context. `map_id` identifies the render-scene profile, such
+as a generated debug map or a future migrated RflySim/UE scene. Keep these
+separate so visual scene selection never changes simulation truth.
+
 The same plugin also provides `QuadrotorMworksPlaybackComponent`. Add both
 `QuadrotorMworksUdpReceiverComponent` and `QuadrotorMworksPlaybackComponent` to
 the UAV actor. The playback component converts MWORKS meters/radians into
@@ -126,6 +131,23 @@ from UE's basic cube mesh:
 
 The actor is a renderer-side preview. Collision truth, planner occupancy, and
 metrics still come from the MWORKS/YAML pipeline.
+
+RflySim scene migration metadata is stored separately:
+
+```text
+unreal/MworksUnrealRenderer/Content/MworksData/rflysim_scene_registry.json
+```
+
+Generate it with:
+
+```bash
+python3 scripts/audit_rflysim_maps.py
+python3 scripts/build_rflysim_scene_registry.py
+```
+
+This registry is small and tracked. It does not contain RflySim assets. It lists
+candidate maps, migration order, dependency samples, and current migration
+status for UE5 scene reconstruction.
 
 ## Asset-First Scene Direction
 

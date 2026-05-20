@@ -130,6 +130,102 @@ Useful local entry points:
 | `D:\PX4PSP\CopterSim\ModelData.db` | Vehicle/component parameter database: motor, propeller, ESC, battery, frame presets |
 | `D:\PX4PSP\CopterSim\external\XML\F450.xml` | Example quadrotor physical parameters: mass, inertia, arm radius, thrust/moment coefficients, hover RPM |
 
+### RflySim Map Direct-Use Test
+
+Static audit on the local install shows that RflySim maps are usable as a
+migration source, but not as one-file drop-in assets for the UE5 renderer.
+
+Findings:
+
+| Item | Result |
+| --- | --- |
+| Project type | `D:\PX4PSP\RflySim3D\RflySim3D\RflySim3D.uproject`, `EngineAssociation=4.27` |
+| Our renderer type | `unreal/MworksUnrealRenderer/MworksUnrealRenderer.uproject`, `EngineAssociation=5.7` |
+| Available map files | `28` `.umap` files under `RflySim3D/RflySim3D/Content` |
+| Source mesh formats | No loose `.fbx/.obj/.dae/.stl/.glb` found under the checked RflySim `Content`; most reusable geometry is inside `.uasset/.umap` |
+| Required plugins | `Rfly3DSimPlugin`, `CesiumForUnreal_4.27`, `TwinmotionToUnreal`, `LidarPointCloud`, `RuntimeTransformer`, `DTRedis`, `PhysXVehicles` |
+| Direct copy risk | High: `.umap` references `/Game/...` assets and UE4.27/plugin packages that are not present in our UE5.7 project |
+
+Representative candidate maps:
+
+| Candidate | Path | Use | Migration priority |
+| --- | --- | --- | --- |
+| `OldFactory` | `Content/OldFactory/Maps/OldFactory.umap` | industrial patrol, wall/pipe/building occlusion | P0 |
+| `NeighborhoodPark` | `Content/ModularNeighborhood/Maps/NeighborhoodPark.umap` | park patrol, trees/buildings | P0 |
+| `Grasslands` / `3DDisplay` | `Content/Grasslands/Maps/Grasslands/*.umap` | open wind/motor-efficiency scenes | P0 |
+| `VisionRing` | `Content/Vision/Maps/VisionRing.umap` | ring/gate attitude-control demo | P0 |
+| `ChallengeMap` | `Content/RobotMissionChallenge/Map/ChallengeMap.umap` | indoor challenge / maze-like task | P1 |
+| `MountainTerrain` | `Content/MountainTerrain/Maps/*.umap` | terrain-following and outdoor path planning | P1 |
+| `ExhibitionHall` | `Content/ExhibitionHall/Maps/ExhibitionHall.umap` | asset source for trees, stones, factory props, towers | P1 |
+| Cesium maps | `MapData`, `MapSmall`, `Changsha`, `Denver`, `EarthMap`, `MoutainRoad` | large geospatial background | P2 because Cesium token/plugin dependency is heavy |
+
+Decision:
+
+```text
+Do not copy one .umap into MworksUnrealRenderer and expect it to work.
+Do not make RflySim3D.exe the final runtime.
+RflySim3D native runtime can switch/use these maps directly.
+Our UE5.7 renderer cannot use them directly without migration.
+Use RflySim maps as migration inputs:
+  full dependency folder or selected asset pack
+  -> UE5 migration/conversion test copy outside Git
+  -> project-owned asset registry
+  -> collision proxy extraction
+  -> MWORKS UDP playback
+```
+
+Repeatable audit command:
+
+```bash
+python3 scripts/audit_rflysim_maps.py
+```
+
+Outputs:
+
+```text
+results/rflysim/rflysim_map_audit.json
+results/rflysim/rflysim_map_audit.md
+unreal/MworksUnrealRenderer/Content/MworksData/rflysim_scene_registry.json
+```
+
+Keep these files small and tracked. They document candidate maps and dependency
+samples, not the original RflySim binary assets.
+
+Build the project-owned scene registry after the audit:
+
+```bash
+python3 scripts/build_rflysim_scene_registry.py
+```
+
+The registry is the handoff point between RflySim research and our UE5 renderer.
+It marks every RflySim scene as `direct_use_supported=false` and
+`migration_status=audit_only` until a temporary UE conversion project proves the
+map, materials, dependencies, and collision proxies can be migrated cleanly.
+`stream_unreal_udp.py` already sends `map_id`; `QuadrotorMworksBridge` receives
+it as `FQuadrotorMworksFrame.MapId` so the renderer can later select a migrated
+scene profile without changing MWORKS simulation data.
+
+Minimal practical migration test:
+
+1. In Windows Unreal Editor, open a temporary copy of
+   `D:\PX4PSP\RflySim3D\RflySim3D\RflySim3D.uproject` and let UE upgrade only
+   the temporary copy if required.
+2. Pick one P0 scene, starting with `OldFactory` or `VisionRing`.
+3. Use UE's migration/export tools to move the selected map and all referenced
+   assets into a temporary UE5 project, not directly into the competition repo.
+4. If the map opens without missing assets, copy only approved project-owned
+   converted assets or derived registries into `unreal/MworksUnrealRenderer`.
+5. Build collision proxies separately; visual mesh success alone is not enough
+   for planner truth.
+
+Stop conditions:
+
+1. missing proprietary Marketplace plugin that cannot be installed;
+2. map opens only in the bundled RflySim runtime and not in editable Unreal;
+3. UE conversion rewrites large binary assets that cannot be tracked or
+   externalized cleanly;
+4. collision/geometry truth cannot be extracted or approximated.
+
 Official RflySim documentation entry points used for architecture reference:
 
 | Topic | Source |
@@ -771,6 +867,8 @@ planner, or metrics to hide a renderer issue.
 Run:
 
 ```bash
+python3 scripts/audit_rflysim_maps.py
+python3 scripts/build_rflysim_scene_registry.py
 python3 scripts/check_unreal_bridge.py
 scripts/build_unreal_renderer.sh
 python3 scripts/export_unreal_scene_map.py --terrain-cell-m 1.0

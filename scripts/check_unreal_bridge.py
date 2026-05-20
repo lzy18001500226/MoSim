@@ -9,6 +9,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "unreal" / "QuadrotorMworksBridge"
+RENDERER = ROOT / "unreal" / "MworksUnrealRenderer"
+SCENE_REGISTRY = RENDERER / "Content" / "MworksData" / "rflysim_scene_registry.json"
 
 REQUIRED_FILES = [
     "QuadrotorMworksBridge.uplugin",
@@ -32,6 +34,11 @@ def main() -> int:
     if missing:
         for path in missing:
             print(f"[FAIL] missing {PLUGIN / path}")
+        return 1
+
+    renderer_descriptor = RENDERER / "MworksUnrealRenderer.uproject"
+    if not renderer_descriptor.exists():
+        print(f"[FAIL] missing {renderer_descriptor}")
         return 1
 
     descriptor = json.loads((PLUGIN / "QuadrotorMworksBridge.uplugin").read_text(encoding="utf-8"))
@@ -58,11 +65,18 @@ def main() -> int:
         "AsyncTask(ENamedThreads::GameThread",
         "OnFrameReceived.Broadcast",
         "LocalPlanPointsMeters",
+        "map_id",
     ]
     missing_tokens = [token for token in required_tokens if token not in source]
     if missing_tokens:
         print(f"[FAIL] receiver source missing tokens: {', '.join(missing_tokens)}")
         return 1
+
+    types_source = (PLUGIN / "Source/QuadrotorMworksBridge/Public/QuadrotorMworksTypes.h").read_text(encoding="utf-8")
+    for token in ["SceneId", "MapId", "RadarNearRadiusMeters", "LocalPlanPointsMeters"]:
+        if token not in types_source:
+            print(f"[FAIL] frame type missing token: {token}")
+            return 1
 
     playback = (PLUGIN / "Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackComponent.cpp").read_text(
         encoding="utf-8"
@@ -130,6 +144,27 @@ def main() -> int:
         if token not in map_actor:
             print(f"[FAIL] map actor missing token: {token}")
             return 1
+
+    if not SCENE_REGISTRY.exists():
+        print(f"[FAIL] missing scene registry: {SCENE_REGISTRY}")
+        return 1
+    registry = json.loads(SCENE_REGISTRY.read_text(encoding="utf-8"))
+    if registry.get("schema") != "quadrotor.rflysim_scene_registry.v1":
+        print("[FAIL] scene registry schema mismatch")
+        return 1
+    if registry.get("direct_use_supported") is not False:
+        print("[FAIL] scene registry must mark RflySim maps as migration-only")
+        return 1
+    scenes = registry.get("scenes", [])
+    if not any(scene.get("priority") == "P0" for scene in scenes):
+        print("[FAIL] scene registry has no P0 migration candidate")
+        return 1
+
+    forbidden_paks = sorted((RENDERER / "Content").rglob("*.pak"))
+    if forbidden_paks:
+        for path in forbidden_paks[:10]:
+            print(f"[FAIL] packaged asset should not be committed: {path}")
+        return 1
 
     print(f"[OK] Unreal bridge plugin layout: {PLUGIN}")
     return 0

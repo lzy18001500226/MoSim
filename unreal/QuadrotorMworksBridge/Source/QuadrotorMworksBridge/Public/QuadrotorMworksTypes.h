@@ -12,6 +12,9 @@ struct FQuadrotorMworksFrame
     FString SceneId;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
+    FString MapId;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
     int32 Sequence = 0;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
