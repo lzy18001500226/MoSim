@@ -266,6 +266,17 @@ Minimal practical migration test:
 5. Build collision proxies separately; visual mesh success alone is not enough
    for planner truth.
 
+Use the dry-run helper to print the exact Windows commands without copying
+assets:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/prepare_rflysim_temp_migration.ps1
+```
+
+The helper intentionally does not run `robocopy`. Copying the RflySim UE project
+to `D:\UE_MigrationScratch` is an external write operation and should be done
+only when the user is ready to start the UE editor migration pass.
+
 Stop conditions:
 
 1. missing proprietary Marketplace plugin that cannot be installed;
