@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "unreal" / "QuadrotorMworksBridge"
 RENDERER = ROOT / "unreal" / "MworksUnrealRenderer"
 SCENE_REGISTRY = RENDERER / "Content" / "MworksData" / "rflysim_scene_registry.json"
+VISION_RING_PLAN = ROOT / "results" / "rflysim" / "rflysim_vision_ring_migration_plan.json"
 
 REQUIRED_FILES = [
     "QuadrotorMworksBridge.uplugin",
@@ -158,6 +159,20 @@ def main() -> int:
     scenes = registry.get("scenes", [])
     if not any(scene.get("priority") == "P0" for scene in scenes):
         print("[FAIL] scene registry has no P0 migration candidate")
+        return 1
+
+    if not VISION_RING_PLAN.exists():
+        print(f"[FAIL] missing P0 migration plan: {VISION_RING_PLAN}")
+        return 1
+    plan = json.loads(VISION_RING_PLAN.read_text(encoding="utf-8"))
+    if plan.get("schema") != "quadrotor.rflysim_scene_migration_plan.v1":
+        print("[FAIL] RflySim migration plan schema mismatch")
+        return 1
+    if plan.get("scene_id") != "rflysim_vision_ring":
+        print("[FAIL] RflySim migration plan must cover rflysim_vision_ring")
+        return 1
+    if plan.get("direct_use_supported") is not False:
+        print("[FAIL] RflySim migration plan must remain migration-only")
         return 1
 
     forbidden_paks = sorted((RENDERER / "Content").rglob("*.pak"))

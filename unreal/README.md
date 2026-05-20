@@ -143,11 +143,14 @@ Generate it with:
 ```bash
 python3 scripts/audit_rflysim_maps.py
 python3 scripts/build_rflysim_scene_registry.py
+python3 scripts/plan_rflysim_scene_migration.py --scene-id rflysim_vision_ring
 ```
 
 This registry is small and tracked. It does not contain RflySim assets. It lists
 candidate maps, migration order, dependency samples, and current migration
-status for UE5 scene reconstruction.
+status for UE5 scene reconstruction. The generated `VisionRing` migration plan
+is the first manual UE-editor smoke checklist and should be completed in a
+temporary conversion project before importing assets into this renderer.
 
 ## Asset-First Scene Direction
 

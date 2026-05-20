@@ -205,6 +205,25 @@ map, materials, dependencies, and collision proxies can be migrated cleanly.
 it as `FQuadrotorMworksFrame.MapId` so the renderer can later select a migrated
 scene profile without changing MWORKS simulation data.
 
+Build the first concrete migration smoke plan from the registry:
+
+```bash
+python3 scripts/plan_rflysim_scene_migration.py --scene-id rflysim_vision_ring
+```
+
+Outputs:
+
+```text
+results/rflysim/rflysim_vision_ring_migration_plan.json
+results/rflysim/rflysim_vision_ring_migration_plan.md
+```
+
+`VisionRing` is the first P0 target because it is small, has direct relevance to
+ring/gate and tilted-frame attitude-control video, and should expose asset
+migration problems before larger scenes such as `OldFactory` or `Grasslands`.
+This plan is a checklist for manual/Unreal-editor work; it does not copy assets
+and does not change the RflySim installation.
+
 Minimal practical migration test:
 
 1. In Windows Unreal Editor, open a temporary copy of
@@ -869,6 +888,7 @@ Run:
 ```bash
 python3 scripts/audit_rflysim_maps.py
 python3 scripts/build_rflysim_scene_registry.py
+python3 scripts/plan_rflysim_scene_migration.py --scene-id rflysim_vision_ring
 python3 scripts/check_unreal_bridge.py
 scripts/build_unreal_renderer.sh
 python3 scripts/export_unreal_scene_map.py --terrain-cell-m 1.0

@@ -1,0 +1,52 @@
+{
+  "schema": "quadrotor.rflysim_scene_migration_plan.v1",
+  "scene_id": "rflysim_vision_ring",
+  "priority": "P0",
+  "purpose": "ring/gate and high-attitude-control visual demo",
+  "source_project": "/mnt/d/PX4PSP/RflySim3D/RflySim3D",
+  "source_engine_association": "4.27",
+  "target_engine_association": "5.7",
+  "direct_use_supported": false,
+  "source_map": "Vision/Maps/VisionRing.umap",
+  "suggested_temp_project": "D:/UE_MigrationScratch/QuadrotorRflySimSceneProbe",
+  "target_project": "unreal/MworksUnrealRenderer/MworksUnrealRenderer.uproject",
+  "source_game_roots": [
+    "/Game/Vision"
+  ],
+  "source_content_roots": [
+    "/mnt/d/PX4PSP/RflySim3D/RflySim3D/Content/Vision"
+  ],
+  "reference_sample": [
+    "/Game/Vision/Architecture/Floor_400x400",
+    "/Game/Vision/Maps/VisionRing",
+    "/Game/Vision/Maps/VisionRing_BuiltData",
+    "/Game/Vision/Materials/AlignedGrass",
+    "/Game/Vision/Materials/Material_Master_Blue",
+    "/Game/Vision/Materials/Material_Master_Green",
+    "/Game/Vision/Materials/Material_Master_Red",
+    "/Game/Vision/Shapes/196294"
+  ],
+  "acceptance": [
+    "scene opens in a temporary Unreal conversion project with no missing core geometry",
+    "selected assets can be migrated into a project-owned UE5 test project without proprietary runtime dependency",
+    "visual scale is measured against MWORKS meters and stored as a scene profile transform",
+    "collision proxies are derived as simple boxes/convex hulls and linked to world_geometry ids",
+    "MWORKS UDP playback drives UAV pose, motor visuals, radar sector, local plan, and trail without feeding data back",
+    "no .pak, installer, engine binary, or unclear-license asset is committed"
+  ],
+  "manual_steps": [
+    "copy the RflySim UE project to the suggested temporary project path outside this repo",
+    "open the temporary copy in Unreal and let only the copy upgrade if needed",
+    "open the source map and record missing asset/plugin warnings",
+    "migrate only the required source content roots into a disposable UE5 test project",
+    "extract or author simplified collision proxies for visible obstacles, walls, gates, and terrain",
+    "update the project-owned scene registry entry from audit_only to migrated_tested only after visual and collision checks pass"
+  ],
+  "stop_conditions": [
+    "required proprietary plugin is unavailable",
+    "the map opens only in the packaged RflySim runtime",
+    "core scene geometry is missing after migration",
+    "asset size or license makes repository tracking impossible",
+    "collision truth cannot be approximated without changing planner assumptions"
+  ]
+}
