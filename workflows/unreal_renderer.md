@@ -483,6 +483,19 @@ visibility rule, timing targets, and manual acceptance checks. Do not start a
 new UE5 scene without either using one of these profiles or adding a reviewed
 profile entry first.
 
+Generate the current implementation plan from these profiles:
+
+```bash
+python3 scripts/plan_unreal_scene_profiles.py
+```
+
+Outputs:
+
+```text
+results/unreal/unreal_scene_profile_implementation_plan.json
+results/unreal/unreal_scene_profile_implementation_plan.md
+```
+
 Recommended open asset candidates:
 
 | Priority | Candidate | Best Use | Git Policy |

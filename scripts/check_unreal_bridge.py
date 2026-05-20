@@ -17,6 +17,8 @@ VISION_RING_PLAN = ROOT / "results" / "rflysim" / "rflysim_vision_ring_migration
 VISION_RING_CHECKLIST = ROOT / "results" / "rflysim" / "rflysim_vision_ring_manual_review_checklist.md"
 MIGRATION_CHECKER = ROOT / "scripts" / "check_unreal_migration_package.py"
 VISION_RING_STAGING = ROOT / "unreal" / "migration_staging" / "rflysim_vision_ring"
+SCENE_PROFILE_PLANNER = ROOT / "scripts" / "plan_unreal_scene_profiles.py"
+SCENE_PROFILE_PLAN = ROOT / "results" / "unreal" / "unreal_scene_profile_implementation_plan.json"
 
 REQUIRED_FILES = [
     "QuadrotorMworksBridge.uplugin",
@@ -212,6 +214,20 @@ def main() -> int:
         return 1
     if plan.get("direct_use_supported") is not False:
         print("[FAIL] RflySim migration plan must remain migration-only")
+        return 1
+
+    if not SCENE_PROFILE_PLANNER.exists():
+        print(f"[FAIL] missing Unreal scene profile planner: {SCENE_PROFILE_PLANNER}")
+        return 1
+    if not SCENE_PROFILE_PLAN.exists():
+        print(f"[FAIL] missing Unreal scene profile implementation plan: {SCENE_PROFILE_PLAN}")
+        return 1
+    profile_plan = json.loads(SCENE_PROFILE_PLAN.read_text(encoding="utf-8"))
+    if profile_plan.get("schema") != "quadrotor.unreal_scene_profile_implementation_plan.v1":
+        print("[FAIL] Unreal scene profile implementation plan schema mismatch")
+        return 1
+    if profile_plan.get("profile_count", 0) < len(required_profiles):
+        print("[FAIL] Unreal scene profile implementation plan is incomplete")
         return 1
 
     if not ASSET_REGISTRY_SCHEMA.exists():

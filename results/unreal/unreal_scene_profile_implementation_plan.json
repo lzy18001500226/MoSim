@@ -1,0 +1,206 @@
+{
+  "schema": "quadrotor.unreal_scene_profile_implementation_plan.v1",
+  "source_profiles": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+  "truth_policy": "MWORKS/Sysplorer remains the source of control, planning, collision, disturbance and metrics truth. Unreal renders project-owned scene profiles and may not feed hidden global geometry back to the planner.",
+  "coordinate_frame": {
+    "source": "MWORKS world, meters, z-up",
+    "unreal_conversion": "X=mworks_x*100, Y=-mworks_y*100, Z=mworks_z*100"
+  },
+  "runtime_targets": {
+    "state_stream_hz_min": 20,
+    "state_stream_hz_target": 50,
+    "render_fps_target": 60,
+    "sensor_map_hz_min": 20,
+    "planner_hz_range": [
+      5,
+      20
+    ]
+  },
+  "profile_count": 5,
+  "profiles": [
+    {
+      "order": 1,
+      "profile_id": "dense_forest",
+      "priority": "P0",
+      "purpose": "local perception, unknown-map obstacle avoidance and replanning under vegetation-like occlusion",
+      "source_strategy": "project_owned_recreation_from_authorized_assets",
+      "required_visual_classes": [
+        "terrain",
+        "tree_trunks",
+        "canopy",
+        "rocks",
+        "waypoint_markers",
+        "radar_sector",
+        "local_plan",
+        "trajectory_trail"
+      ],
+      "required_proxy_classes": [
+        "tree_trunk_capsule_or_box",
+        "rock_box",
+        "terrain_heightfield"
+      ],
+      "planner_visibility": "local_sensor_only",
+      "global_map_available_to_planner": false,
+      "implementation_steps": [
+        "create or select authorized visual assets",
+        "write scene_asset_registry entry with source and license note",
+        "create matching world_geometry/collision proxies",
+        "add scenario profile and planner visibility rule",
+        "run Unreal bridge checks",
+        "run short MWORKS playback or dry-run stream",
+        "perform manual viewport/video review"
+      ],
+      "acceptance": [
+        "visible trunks/rocks have collision_proxy_id equivalents",
+        "radar sector shows only currently sensed region",
+        "local plan is not a fixed straight line through obstacles"
+      ]
+    },
+    {
+      "order": 2,
+      "profile_id": "gate_ring_indoor",
+      "priority": "P0",
+      "purpose": "tilted gate/ring traversal for attitude tracking and aggressive trajectory display",
+      "source_strategy": "project_owned_gate_and_ring_meshes",
+      "required_visual_classes": [
+        "tilted_gate",
+        "ring",
+        "indoor_floor",
+        "axis_marker",
+        "smooth_reference",
+        "actual_trail"
+      ],
+      "required_proxy_classes": [
+        "gate_frame_boxes",
+        "ring_proxy",
+        "safe_corridor"
+      ],
+      "planner_visibility": "known_task_geometry_plus_local_sensor",
+      "global_map_available_to_planner": false,
+      "implementation_steps": [
+        "create or select authorized visual assets",
+        "write scene_asset_registry entry with source and license note",
+        "create matching world_geometry/collision proxies",
+        "add scenario profile and planner visibility rule",
+        "run Unreal bridge checks",
+        "run short MWORKS playback or dry-run stream",
+        "perform manual viewport/video review"
+      ],
+      "acceptance": [
+        "reference path passes through gate center with visible attitude change",
+        "actual UAV body does not clip frame proxies",
+        "attitude and position errors are exported from MWORKS evidence"
+      ]
+    },
+    {
+      "order": 3,
+      "profile_id": "maze_building",
+      "priority": "P0",
+      "purpose": "wall occlusion, corridor navigation, local map memory and no-through-wall radar behavior",
+      "source_strategy": "project_owned_modular_walls",
+      "required_visual_classes": [
+        "walls",
+        "doors_or_passages",
+        "floor",
+        "occlusion_shading",
+        "radar_sector",
+        "local_known_map"
+      ],
+      "required_proxy_classes": [
+        "wall_box",
+        "passage_box",
+        "floor_plane"
+      ],
+      "planner_visibility": "raycast_occluded_local_sensor",
+      "global_map_available_to_planner": false,
+      "implementation_steps": [
+        "create or select authorized visual assets",
+        "write scene_asset_registry entry with source and license note",
+        "create matching world_geometry/collision proxies",
+        "add scenario profile and planner visibility rule",
+        "run Unreal bridge checks",
+        "run short MWORKS playback or dry-run stream",
+        "perform manual viewport/video review"
+      ],
+      "acceptance": [
+        "radar does not reveal geometry behind walls",
+        "trajectory keeps minimum obstacle distance",
+        "planner can recover from blocked local plan without yaw spinning"
+      ]
+    },
+    {
+      "order": 4,
+      "profile_id": "old_factory",
+      "priority": "P0",
+      "purpose": "industrial inspection scene with walls, pipes, towers and mixed vertical obstacles",
+      "source_strategy": "project_owned_recreation_guided_by_rflysim_old_factory_runtime",
+      "required_visual_classes": [
+        "buildings",
+        "pipes",
+        "columns",
+        "machines",
+        "inspection_targets",
+        "local_plan",
+        "trail"
+      ],
+      "required_proxy_classes": [
+        "building_box",
+        "pipe_capsule",
+        "column_box",
+        "target_marker"
+      ],
+      "planner_visibility": "local_sensor_only",
+      "global_map_available_to_planner": false,
+      "implementation_steps": [
+        "create or select authorized visual assets",
+        "write scene_asset_registry entry with source and license note",
+        "create matching world_geometry/collision proxies",
+        "add scenario profile and planner visibility rule",
+        "run Unreal bridge checks",
+        "run short MWORKS playback or dry-run stream",
+        "perform manual viewport/video review"
+      ],
+      "acceptance": [
+        "industrial visual objects are not only decorative when they affect flight",
+        "collision proxies are reviewed before video claim",
+        "MWORKS event_log records replanning or safety-filter interventions"
+      ]
+    },
+    {
+      "order": 5,
+      "profile_id": "open_grass_wind",
+      "priority": "P0",
+      "purpose": "wind disturbance, motor-efficiency degradation and long-trajectory robustness video",
+      "source_strategy": "project_owned_open_field",
+      "required_visual_classes": [
+        "grass_field",
+        "wind_vector_overlay",
+        "gust_zone",
+        "UAV",
+        "trail",
+        "metric_overlay"
+      ],
+      "required_proxy_classes": [
+        "terrain_plane",
+        "optional_boundary"
+      ],
+      "planner_visibility": "mostly_open_known_task_area",
+      "global_map_available_to_planner": false,
+      "implementation_steps": [
+        "create or select authorized visual assets",
+        "write scene_asset_registry entry with source and license note",
+        "create matching world_geometry/collision proxies",
+        "add scenario profile and planner visibility rule",
+        "run Unreal bridge checks",
+        "run short MWORKS playback or dry-run stream",
+        "perform manual viewport/video review"
+      ],
+      "acceptance": [
+        "wind and motor-efficiency parameters are displayed and logged",
+        "trajectory comparison shows tracking degradation/recovery",
+        "rendered video maps to MWORKS raw/native result timestamps"
+      ]
+    }
+  ],
+  "next_recommended_task": "Implement gate_ring_indoor first if the goal is attitude-control video; implement maze_building first if the goal is local perception and replanning."
+}
