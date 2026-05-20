@@ -165,13 +165,14 @@ not a planning result.
 Validate any staged migration package before importing or committing it:
 
 ```bash
+python3 scripts/create_unreal_migration_package_stub.py
 python3 scripts/check_unreal_migration_package.py \
-  --package-dir tests/fixtures/unreal_migration_package_valid
+  --package-dir unreal/migration_staging/rflysim_vision_ring
 ```
 
-Use the fixture only to test the checker. Real migrated assets must live in an
-explicit staging folder under the project and pass the same gate before they are
-copied into `Content/`.
+The generated staging package is metadata-only until the UE migration pass
+fills in measured asset paths, scale, materials, and collision proxies. Use the
+fixture under `tests/fixtures/` only to test the checker.
 
 ## Asset-First Scene Direction
 

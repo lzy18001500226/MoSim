@@ -15,6 +15,7 @@ ASSET_REGISTRY_SCHEMA = RENDERER / "Content" / "MworksData" / "scene_asset_regis
 VISION_RING_PLAN = ROOT / "results" / "rflysim" / "rflysim_vision_ring_migration_plan.json"
 VISION_RING_CHECKLIST = ROOT / "results" / "rflysim" / "rflysim_vision_ring_manual_review_checklist.md"
 MIGRATION_CHECKER = ROOT / "scripts" / "check_unreal_migration_package.py"
+VISION_RING_STAGING = ROOT / "unreal" / "migration_staging" / "rflysim_vision_ring"
 
 REQUIRED_FILES = [
     "QuadrotorMworksBridge.uplugin",
@@ -186,6 +187,9 @@ def main() -> int:
         return 1
     if not MIGRATION_CHECKER.exists():
         print(f"[FAIL] missing migration package checker: {MIGRATION_CHECKER}")
+        return 1
+    if not VISION_RING_STAGING.exists():
+        print(f"[FAIL] missing VisionRing migration staging package: {VISION_RING_STAGING}")
         return 1
     asset_schema = json.loads(ASSET_REGISTRY_SCHEMA.read_text(encoding="utf-8"))
     if asset_schema.get("schema") != "quadrotor.scene_asset_registry.schema.v1":

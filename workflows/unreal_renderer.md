@@ -244,13 +244,17 @@ Before importing any migrated UE content into the project, validate the staged
 package:
 
 ```bash
+python3 scripts/create_unreal_migration_package_stub.py
 python3 scripts/check_unreal_migration_package.py \
-  --package-dir tests/fixtures/unreal_migration_package_valid
+  --package-dir unreal/migration_staging/rflysim_vision_ring
 ```
 
-For a real migration package, the package directory must be inside this project
-and must contain exactly one `scene_asset_registry.json`. The checker rejects
-`.pak`, installers, engine binaries, files over 100 MB, invalid licenses, and
+The stub is metadata-only and is allowed to pass the quality gate before real
+assets exist. After the temporary UE migration pass, replace placeholder
+`asset_path`, `source_path`, scale, material, and collision proxy bounds with
+measured values. The package directory must be inside this project and must
+contain exactly one `scene_asset_registry.json`. The checker rejects `.pak`,
+installers, engine binaries, files over 100 MB, invalid licenses, and
 obstacle-like visual assets without collision proxies.
 
 Minimal practical migration test:
