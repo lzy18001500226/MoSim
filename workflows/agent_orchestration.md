@@ -117,6 +117,53 @@ recovery point. Do not batch-close agents. For each agent, first write or
 update the terminal checkpoint in the ledger/PROGRESS/WAL, then close that one
 agent deliberately.
 
+Management analogy for long work:
+
+```text
+main agent:
+  director / general manager; owns objective, priorities, queue, approvals,
+  integration, verification, and final report
+TaskSecretary:
+  secretary / PMO; records instructions, checkpoints, blockers, task state,
+  review requirements, and supervision signals
+child owner:
+  project manager; owns one bounded stream and may coordinate workers
+grandchild worker:
+  employee; executes one explicit batch and returns evidence
+reviewer:
+  independent QA; checks evidence and risks before integration
+```
+
+The director should not grind through every worker task when the queue is
+large. It should update durable state, assign the next owner, keep the critical
+path moving, and review evidence before integration. A child owner must not
+silently wait after a small checkpoint when its assigned stream still has ready
+items inside the same scope.
+
+The TaskSecretary is not an implementation worker. It should:
+
+```text
+record:
+  user directives, changed priorities, owner assignments, checkpoints,
+  blockers, and manual-review decisions
+supervise:
+  whether owners are still progressing, waiting, blocked, or missing evidence
+review:
+  whether returned work matches scope, stop condition, and required evidence
+fan out review:
+  when several independent reviews are required, spawn the same number of
+  read-only secretary/reviewer grandchildren with disjoint review scopes
+```
+
+Testing is a separate stream. Use a `TestOwner` child agent when validation has
+multiple kinds, such as unit tests, Git checks, large-file checks, model checks,
+MCP smoke tests, or GUI/manual review preparation. Do not mix TestOwner with a
+Git owner or implementation owner unless the task is explicitly tiny.
+
+Skills are work instructions, not task owners. Agents use skills to execute a
+role; the orchestration ledger decides who owns the task, what evidence is
+required, and when the task is complete.
+
 ## 2. Ledger Requirement
 
 Record every long-running delegated task in `workflows/agent_task_ledger.md`.
