@@ -1,0 +1,12 @@
+sphinx>=5.0,<7.2
+sphinx_rtd_theme
+numpy
+matplotlib
+breathe
+docker
+pytest
+sphinx-issues
+pillow
+nbsphinx
+myst-parser
+unrealcv
