@@ -33,7 +33,7 @@
 | Agent workflow improvement | main agent + reviewers | awaiting-user-review | TaskSecretary/goal/Git-owner rules are promoted and `git diff --check` passed; next change should follow user review. |
 | External docs learning | `ExternalDocsLearningOwner` | recurring-loop-defined | Use `docs/index/external_learning_index.md` and `workflows/agent_orchestration.md#71-recurring-learning-owner` when failures, new tools, new repos, or milestones trigger another learn-and-patch cycle. |
 | Vehicle parameter identification | `VehicleParamIdentificationResearcher` | action-plan-defined-awaiting-data | Risk parameters and PX4-log/open-source identification route are promoted to `workflows/identify_quadrotor_parameters.md` and `Design/02/03/07`; next blocker is real `.ulg`/mass/motor-order/RPM or thrust data. |
-| AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | running | Source `C:\Users\HP\Desktop\AirSim` is approved only for read/copy into `references/AirSim`; `PEDRA` and workflow rules are pushed at `aadfb09bf`. Remaining batches must be delegated to child owners with child WAL/checkpoints. |
+| AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | running | Low-risk stage is pushed: `PEDRA`, `PegasusSimulator`, `ProjectAirSim`, `UESVONavigation-develop`, and sanitized `AirSim`. Remaining risky batches are `AirSim360/carla` media, `IsaacSim/unrealcv` LFS pointers, and `Cosys-AirSim/spear` generated Unreal artifacts. |
 
 ## Superseded Queues
 
