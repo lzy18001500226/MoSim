@@ -1,0 +1,34 @@
+name: Windows Build and Tests
+
+# Controls when the action will run.
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    permissions:
+      actions: write
+      pages: write
+      contents: write
+    runs-on: windows-2022
+    timeout-minutes: 120
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Build SimLibs
+        shell: cmd
+        run: build simlibs_debug
+
+      - name: Run SimLibs Debug Tests
+        shell: cmd
+        run: build test_simlibs_debug

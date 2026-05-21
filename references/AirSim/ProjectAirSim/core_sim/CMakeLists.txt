@@ -1,0 +1,24 @@
+# ---------------------------------------------------------------------------------------------------------------------
+#
+# Copyright (C) Microsoft Corporation.  
+# Copyright (C) 2025 IAMAI CONSULTING CORP
+#
+# MIT License. All rights reserved.
+#
+# Module Name:
+#
+#   CMakeLists.txt
+#
+# Abstract:
+#
+#   CMake build file.
+#
+# ---------------------------------------------------------------------------------------------------------------------
+
+# Add main source
+add_subdirectory(src)
+
+# Add unit tests
+if(BUILD_TESTING)
+	add_subdirectory(test)
+endif()
