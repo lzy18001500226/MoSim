@@ -33,7 +33,7 @@
 | Agent workflow improvement | main agent + reviewers | awaiting-user-review | TaskSecretary/goal/Git-owner rules are promoted and `git diff --check` passed; next change should follow user review. |
 | External docs learning | `ExternalDocsLearningOwner` | recurring-loop-defined | Use `docs/index/external_learning_index.md` and `workflows/agent_orchestration.md#71-recurring-learning-owner` when failures, new tools, new repos, or milestones trigger another learn-and-patch cycle. |
 | Vehicle parameter identification | `VehicleParamIdentificationResearcher` | action-plan-defined-awaiting-data | Risk parameters and PX4-log/open-source identification route are promoted to `workflows/identify_quadrotor_parameters.md` and `Design/02/03/07`; next blocker is real `.ulg`/mass/motor-order/RPM or thrust data. |
-| AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | running | Low-risk stage is pushed: `PEDRA`, `PegasusSimulator`, `ProjectAirSim`, `UESVONavigation-develop`, and sanitized `AirSim`. Remaining risky batches are `AirSim360/carla` media, `IsaacSim/unrealcv` LFS pointers, and `Cosys-AirSim/spear` generated Unreal artifacts. |
+| AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | running | Low-risk stage is pushed: `PEDRA`, `PegasusSimulator`, `ProjectAirSim`, `UESVONavigation-develop`, sanitized `AirSim`, and `unrealcv-5.2` source subset. Remaining risky batches are `AirSim360/carla` media, `IsaacSim` LFS pointers, and `Cosys-AirSim/spear` generated Unreal artifacts. |
 
 ## Superseded Queues
 
@@ -96,6 +96,11 @@
   or Git streams. Main agent is the director: keep ledger/PROGRESS current,
   assign child-owner queues, review returned evidence, and integrate/push only
   after batch gates pass.
+- Do not let Git batch owners rewrite third-party source formatting merely to
+  satisfy whitespace checks. For external imports, scope `git diff --check` to
+  project-owned docs/workflows or record third-party whitespace as accepted
+  upstream state. If a third-party subset was reformatted during initial import,
+  record it explicitly and do not repeat the pattern.
 
 ## Recovery Pointers
 
