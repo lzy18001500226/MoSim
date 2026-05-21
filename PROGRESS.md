@@ -33,6 +33,7 @@
 | Agent workflow improvement | main agent + reviewers | awaiting-user-review | TaskSecretary/goal/Git-owner rules are promoted and `git diff --check` passed; next change should follow user review. |
 | External docs learning | `ExternalDocsLearningOwner` | recurring-loop-defined | Use `docs/index/external_learning_index.md` and `workflows/agent_orchestration.md#71-recurring-learning-owner` when failures, new tools, new repos, or milestones trigger another learn-and-patch cycle. |
 | Vehicle parameter identification | `VehicleParamIdentificationResearcher` | action-plan-defined-awaiting-data | Risk parameters and PX4-log/open-source identification route are promoted to `workflows/identify_quadrotor_parameters.md` and `Design/02/03/07`; next blocker is real `.ulg`/mass/motor-order/RPM or thrust data. |
+| AirSim batch migration | `AirSimMigrationCoordinator` | running | Source `C:\Users\HP\Desktop\AirSim` is approved only for read/copy into `references/AirSim`; use nested agents only through queue/WAL. Do not copy all repositories at once. |
 
 ## Superseded Queues
 
@@ -87,6 +88,10 @@
 - Do not treat a temporary task/status table as final project truth until the
   user has reviewed it; promote only stable decisions to `PROGRESS.md`, ledger,
   or workflows.
+- Do not migrate AirSim-scale external repositories as one aggregate Git
+  operation. Use per-subproject batches, record exclusions, and verify
+  >100 MB files, gitlinks, LFS pointers, generated artifacts, and secrets
+  before every commit.
 
 ## Recovery Pointers
 

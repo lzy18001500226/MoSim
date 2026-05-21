@@ -1,0 +1,10 @@
+*.xlsx
+*.npy
+*.pyc
+*.xml
+.idea/
+models/
+pretrained_weights/*
+unreal_envs/*
+scratch.py
+

@@ -612,7 +612,103 @@ Each branch must pass large-file and gitlink checks before push. If a branch
 push fails because the pack is too large, split by narrower repository group
 instead of retrying the same pack repeatedly.
 
-## 5.1 Agent Log Analysis
+## 5.1 AirSim Batch Migration With Nested Agents
+
+Use this section when importing external AirSim-family repositories from a
+source directory such as `C:\Users\HP\Desktop\AirSim` into
+`references/AirSim/`.
+
+Do not copy the whole source tree into the repository in one operation. Treat
+AirSim migration as a queue-backed Git task:
+
+```text
+parent role:
+  AirSimMigrationCoordinator
+child role:
+  AirSimGitBatchOwner:<content_family>
+grandchild role:
+  AirSimBatchWorker:<batch_id>
+```
+
+The parent owns the migration plan, ledger, integration order, and final Git
+state. The child owner owns one content family and may spawn grandchildren only
+for single-batch scan/migrate/verify tasks. Grandchildren must not spawn more
+agents.
+
+Recommended content families:
+
+```text
+AirSimCore
+CosysAirSim
+ProjectAirSim
+PegasusSimulator
+UnrealCV
+SPEAR
+IsaacSim
+CarlaUE
+LabPlanning
+DocsAndExamples
+GeneratedOrBinaryArtifacts
+```
+
+Each batch must declare:
+
+```text
+batch_id:
+source_paths:
+target_paths:
+excluded_paths:
+write_set:
+large_file_scan:
+gitlink_scan:
+lfs_pointer_scan:
+secret_scan:
+expected_commit_branch:
+rollback_note:
+next_batch_hint:
+```
+
+Hard gates before commit:
+
+```text
+no file > 100 MB:
+no nested repository committed as gitlink:
+no broken Git LFS pointer files:
+no Binaries/Intermediate/Saved/DerivedDataCache unless explicitly approved:
+no copied credentials, tokens, or local IDE/user config:
+path count and pack size small enough for one push:
+```
+
+If a batch fails due to GitHub pack size, LFS missing objects, or slow status,
+split by narrower repository group or file type. Do not retry the same failed
+aggregate branch.
+
+External source exception:
+
+```text
+source:
+  C:\Users\HP\Desktop\AirSim
+target:
+  C:\Users\HP\Desktop\Quadrotor\references\AirSim
+scope:
+  read and copy only from that source into the target
+forbidden:
+  deleting source files, force push, history rewrite, writing outside target
+```
+
+Review every migrated batch with a read-only reviewer before merging it into
+`main`. The reviewer must check at least:
+
+```text
+requirements fit:
+file-size and GitHub limit:
+gitlink/LFS correctness:
+generated artifact pollution:
+license/attribution notes:
+recovery and rollback:
+```
+
+## 5.2 Agent Log Analysis
 
 For long-running agents, parse their WAL/run logs before changing the queue.
 Track:

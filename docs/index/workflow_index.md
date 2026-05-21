@@ -26,6 +26,7 @@
 | Sub-agent WAL / run ledger | `workflows/agent_task_ledger.md` |
 | Interrupted task resume / WAL recovery | `workflows/agent_orchestration.md`, `workflows/agent_task_ledger.md` |
 | External repository audit | `workflows/audit_external_repo.md`, `scripts/audit_external_repo.py` |
+| AirSim external repository batch migration | `workflows/agent_orchestration.md#51-airsim-batch-migration-with-nested-agents`, `workflows/audit_external_repo.md` |
 | Skills/workflow external repo audit | `workflows/audit_external_repo.md`, `workflows/agent_orchestration.md#7-skills--workflow-runtime-audits` |
 | Three-round learn-and-update audit | `workflows/audit_external_repo.md`, `workflows/agent_orchestration.md#7-skills--workflow-runtime-audits` |
 | Recurring external docs/skills learning | `workflows/agent_orchestration.md#71-recurring-learning-owner`, `docs/index/external_learning_index.md` |

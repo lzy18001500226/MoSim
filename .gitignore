@@ -71,6 +71,23 @@ secrets.*
 references/RflySim/RflySimAdv3Full/
 references/RflySim/RflySimAdvFree/
 
+# AirSim-family external references: keep source/docs/configs, exclude local
+# clones, build outputs, generated caches, and large compiled artifacts.
+references/AirSim/**/.git/
+references/AirSim/**/.svn/
+references/AirSim/**/.hg/
+references/AirSim/**/Binaries/
+references/AirSim/**/Intermediate/
+references/AirSim/**/Saved/
+references/AirSim/**/DerivedDataCache/
+references/AirSim/**/.vs/
+references/AirSim/**/*.pdb
+references/AirSim/**/*.pch
+references/AirSim/**/*.obj
+references/AirSim/**/*.iobj
+references/AirSim/**/*.ipdb
+references/AirSim/**/*.lib
+
 # Large third-party visualization/runtime assets over GitHub hard limit
 references/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE-MWORKS驱动案例/PE-MWORKS机械臂驱动运行案例/**/*.vis
 references/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE培训课程PPT/PE培训1_认识PE.pptx
