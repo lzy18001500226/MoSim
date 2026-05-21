@@ -1,0 +1,65 @@
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Sensitive (DO NOT COMMIT)
+.env
+.env.*
+!.env.example
+.envrc
+.direnv/
+.npmrc
+.pypirc
+.netrc
+AGENTS.md
+DOCS_INDEX.md
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+# JS/TS
+node_modules
+dist
+coverage
+*.log
+.turbo
+.cache
+tmp
+.tmp
+/.pnpm-store
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+build/
+*.egg-info/
+
+# Private offline docs (local only)
+docs/api/
+
+# Local-only worklog (do not publish)
+docs/worklog.md
+
+# Local-only docs (do not publish)
+docs/task-summaries/
+docs/templates/
+docs/testing-strategy.md
+docs/policies/

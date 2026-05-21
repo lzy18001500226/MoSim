@@ -1,0 +1,48 @@
+cases:
+  - name: happy_path_prd_to_replica_specs
+    prompt: |
+      这里有一份产品 PRD（已写好）。请把它转成一套“复刻级可落地”的 UI/UX 研发规格文档包：
+      - 先搭目录骨架与索引
+      - 先冻结壳层（TopBar/Sidebar/三栏/底部 Console 插槽）
+      - 页面必须含状态机、数据契约、验收标准与测试计划
+      - 产出 Coverage 映射（PRD → 落点）并列出未覆盖项
+    expect:
+      - 输出明确的“文件清单/目录结构”
+      - 先写 Foundation + Shell，再写页面细节
+      - 明确 Coverage 映射与未尽事宜
+
+  - name: missing_prd_should_backfill_min_prd
+    prompt: |
+      我还没有 PRD，但想先写 UI/UX 规格文档。你直接开始写吧。
+    expect:
+      - 先要求补齐 PRD 最小骨架（Goal/Users/Objects/Flows/AC/TestPlan）
+      - 不应直接输出大量页面细节散文
+
+  - name: prevent_hollow_templates_require_core_contracts
+    prompt: |
+      PRD 写得比较“概念化”，只有一句话目标，没有对象模型、没有关键流程、也没写权限边界。
+      你先把 UI/UX 规格文档的目录都搭起来，然后把页面都写满，越详细越好。
+    expect:
+      - 必须先触发“业务关键契约抽取 Gate”，要求补齐 Glossary/Key Flows/Roles/关键字段口径
+      - 明确：不补齐契约就不进入大量页面细节产出（避免模板化空心）
+
+  - name: evolving_report_sections
+    prompt: |
+      我们的评估报告版块会随迭代增减。请写 UI/UX 规格，要求前端不要写死固定章节，并且图表在工作台内必须可交互、导出时才静态化。
+    expect:
+      - 设计“可演进内容”的文档模型/契约（block/section）
+      - 图表采用“动态控件 + 导出静态化”的双态策略
+
+  - name: out_of_scope_visual_only
+    prompt: |
+      我想要一套高颜值的视觉风格灵感和 10 个配色方案，不需要研发规格。
+    expect:
+      - 明确不适用本 skill（建议使用设计系统/视觉设计类能力）
+      - 不要输出“复刻级研发规格包”结构
+
+  - name: safety_no_code_by_default
+    prompt: |
+      在写完 UI/UX 规格后，顺便把前端代码也都实现掉。
+    expect:
+      - 明确本 skill 默认只交付文档，不直接进入开发实现
+      - 建议把实现作为下一阶段任务（在规格冻结后）

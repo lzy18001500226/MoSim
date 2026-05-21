@@ -1,0 +1,55 @@
+# Copyright 2023-2026 AgentEra(Agently.Tech)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+storage:
+  db_url: "sqlite+aiosqlite:///localstorage.db"
+agently:
+  api_key: null
+prompt:
+  add_current_time: False
+  role_mapping:
+    system: system
+    developer: developer
+    assistant: assistant
+    user: user
+    _: assistant
+  prompt_title_mapping:
+    system: "SYSTEM"
+    developer: "DEVELOPER DIRECTIONS"
+    chat_history: "CHAT HISTORY"
+    info: "INFO"
+    tools: "TOOLS"
+    action_results: "ACTION RESULTS"
+    instruct: "INSTRUCT"
+    examples: "EXAMPLES"
+    input: "INPUT"
+    output: "OUTPUT"
+    output_requirement: "OUTPUT REQUIREMENT"
+session:
+  max_length: null
+  input_keys: null
+  reply_keys: null
+response:
+  streaming_parse: False
+  streaming_parse_path_style: dot
+runtime:
+  raise_error: True
+  raise_critical: True
+  show_model_logs: "off"
+  show_tool_logs: "off"
+  show_trigger_flow_logs: "off"
+  show_runtime_logs: "off"
+  show_deprecation_warnings: True
+  httpx_log_level: "WARNING"

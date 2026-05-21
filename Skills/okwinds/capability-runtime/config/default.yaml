@@ -1,0 +1,23 @@
+# capability-runtime 示例配置（RuntimeConfig）
+#
+# 说明：
+# - 本仓对外只承诺单一入口：Runtime + RuntimeConfig；
+# - 本文件仅提供 YAML “形态”示例；宿主可按自己的配置系统加载并构造 RuntimeConfig；
+# - `agently_agent` / `ApprovalProvider` / `HumanIOProvider` / `ExecSessionsProvider` 等运行期对象无法在 YAML 中表达，需由宿主注入。
+
+# 执行模式：bridge（默认）| sdk_native | mock
+mode: "bridge"
+
+# workspace_root：WAL/产物落盘根目录（建议用绝对路径；示例用相对路径）
+workspace_root: "."
+
+# 上游 SDK overlays（后者覆盖前者）
+sdk_config_paths:
+  - "./config/sdk.local.yaml"
+
+# 生产 gate：发现任何 issue 是否 fail-closed
+preflight_mode: "error" # error|warn|off
+
+# 护栏（可选）
+max_depth: 10
+max_total_loop_iterations: 50000

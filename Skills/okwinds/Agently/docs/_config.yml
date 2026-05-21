@@ -1,0 +1,28 @@
+title: Agently Docs
+description: Agently documentation for building AI applications with stable outputs, observable actions, and durable workflows.
+url: "https://agentera.github.io"
+baseurl: "/Agently"
+theme: jekyll-theme-minimal
+markdown: kramdown
+
+plugins:
+  - jekyll-relative-links
+
+relative_links:
+  enabled: true
+  collections: false
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+include:
+  - README.md
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/

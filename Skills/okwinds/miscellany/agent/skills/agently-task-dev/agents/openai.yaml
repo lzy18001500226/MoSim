@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agently Task Dev"
+  short_description: "Build agentic task workflows with Agently"
+  default_prompt: "Use $agently-task-dev to build a production Agently task plus regression tests (offline stubbed), then only declare success if tests pass."

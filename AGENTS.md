@@ -155,6 +155,13 @@ Rules:
 Use parallel agents when the user has authorized multi-agent work and the task
 can be split into independent work streams.
 
+Parallelism is not only for different task types. If one task type is itself
+large, split it by repository group, subsystem, model family, result family, or
+file ownership. For example, a broad open-source reference audit must not be
+assigned to one generic "research" agent when it covers many repos; split it
+into UE/rendering, planning/trajectory, perception/mapping, skills/workflow,
+and Git/quality work streams.
+
 Before starting a non-trivial task, spend a short planning pass on the task
 graph:
 
@@ -171,56 +178,33 @@ Do not spawn agents just to create activity. Do spawn or reuse agents when a
 sidecar task is independent, material to the result, and can proceed while the
 main agent stays on the critical path.
 
+If the user points out that the task should have been split, immediately update
+the relevant project rule or workflow before continuing implementation, so the
+same coordination failure is less likely in the next session.
+
 Coordinator rules:
 
-1. The main agent owns the plan, final integration, verification, and user
-   report.
-2. Every sub-agent must receive a concrete scope, a clear write set, and an
-   explicit stop condition.
-3. Do not assign the same file or model family to multiple write-capable
-   agents at the same time.
-4. Use at most one Git/quality agent. Other agents should not commit, force
-   push, rewrite history, or clean broad directories.
-5. Research agents should not write files unless explicitly asked; they should
-   return sources, license notes, candidate rankings, and risks.
-6. Simulation agents may write only their assigned scenario, result, log, or
-   tool files.
-7. Documentation agents may update only assigned `Design/`, `docs/`, or
-   `workflows/` files.
-8. The main agent must review changed paths, run targeted checks, and resolve
-   conflicts before commit.
-9. For long UE5/RflySim/MWORKS development runs, maintain and follow the
-   current task queue in `workflows/unreal_renderer.md` or the relevant
-   workflow file. Do not stop after a small successful subtask when the next
-   queued task is clear and remains inside the project boundary.
-10. Prefer using the Git/quality agent for commit and push while the main agent
-    continues planning or implementing the next independent task. If the agent
-    limit is reached, reuse an existing Git/quality agent or commit locally only
-    after targeted checks pass.
-11. Every delegated task must state:
-    `objective`, `read scope`, `write set`, `stop condition`,
-    `expected output`, and `forbidden actions`.
-12. Delegated outputs must separate confirmed evidence, inference, unknowns,
-    risks, and recommended next validation. Do not merge a sub-agent conclusion
-    that lacks evidence for a high-impact claim.
-13. Research, review, context, and documentation-discovery agents default to
-    read-only. Write-capable agents are allowed only for explicit assigned
-    paths.
-14. If an imported reference repository or asset tree is present under
-    `Skills/`, `references/`, or `unreal/`, the Git/quality agent must verify
-    large files and secrets before staging. Do not stage whole reference
-    repositories unless the user explicitly requests that exact repository be
-    tracked.
-
-Recommended split for RflySim / Unreal / MWORKS scene work:
-
-| Agent | Scope | Write Set |
-|---|---|---|
-| Scene research | Open-source UE/RflySim/Gazebo scene candidates, license, size, migration risk | No writes by default |
-| RflySim smoke | Local RflySim map/sensor/vehicle smoke tests and small tool fixes | `tools/rflysim/`, temporary logs |
-| MWORKS evidence | Sysplorer/Syslab model checks, controller evidence, result verification | assigned `models/`, `scenarios/`, `results/` subtree |
-| Docs/workflow | Architecture, workflow, manual/index updates | assigned `Design/`, `docs/`, `workflows/` files |
-| Git/quality | Large-file scan, status, diff review, tests, commit, push | `.gitignore`, quality logs only when needed |
+1. The main agent is the orchestrator. It owns task graph, ledger updates,
+   integration, verification, and final report.
+2. Spawn sub-agents with concrete objective, read scope, write set, stop
+   condition, expected output, and forbidden actions.
+3. Project sub-agent spawn calls should request `model=gpt-5.5` and
+   `reasoning_effort=high` when the current runtime accepts those parameters;
+   otherwise record the runtime limitation and continue with the configured
+   default.
+4. Keep research/review agents read-only by default. Use at most one
+   write-capable Git/quality owner.
+5. Split large task types by content family or model/result ownership.
+6. Record long-running tasks in `workflows/agent_task_ledger.md`; recover from
+   ledger/WAL, not chat memory.
+7. Accept sub-agent results only with evidence, inference, unknowns, risks, and
+   next validation.
+8. Use `workflows/agent_orchestration.md` for contracts, queues, nested
+   delegation, WAL, worktrees, reviewers, and external-repo audit routing.
+9. Use `PROGRESS.md` for current status and repeated mistakes.
+10. For long or volatile sessions, keep a `TaskSecretary` intake record so new
+    user instructions, corrections, sub-agent returns, and manual-review
+    decisions become recoverable tasks instead of chat-only memory.
 
 ### 3.4 MCP Minimal-Impact Rule
 
@@ -303,60 +287,22 @@ Project structure should stay lean. Keep directories only when they contain
 real project inputs, outputs, or documentation; do not create placeholder
 folders just to match a future plan.
 
-```text
-A8-Quadrotor-Control/
-├── AGENTS.md
-├── README.md
-├── docs/
-│   ├── user_manual.md
-│   ├── simulation_report.md
-│   ├── mworks/
-│   │   ├── converted/
-│   │   ├── scan/
-│   │   └── mcp/
-│   └── index/
-│       ├── doc_index.md
-│       ├── api_index.md
-│       └── workflow_index.md
-├── workflows/
-│   ├── debug_mcp.md
-│   ├── run_simulation.md
-│   ├── read_results.md
-│   ├── calc_metrics.md
-│   ├── generate_report_figures.md
-│   ├── add_controller.md
-│   ├── code_review.md
-│   ├── run_tests.md
-│   ├── regression_test.md
-│   └── pre_submit_check.md
-├── controllers/
-│   ├── pid/
-│   ├── improved_pid/
-│   └── nmpc_indi_l1/
-├── planners/
-│   └── waypoint/
-├── scenarios/
-│   ├── hover/
-│   ├── figure8/
-│   └── wind/
-├── scripts/
-│   ├── calc_metrics.jl
-│   ├── plot_results.jl
-│   ├── scan_mworks_docs.py
-│   ├── convert_mworks_pdfs.py
-│   └── qa_check.py
-├── tests/
-│   ├── fixtures/
-│   └── smoke/
-├── results/
-│   └── test_reports/
-```
+Core directories:
 
-Create `models/`, `results/{group}/{scene}/{experiment}/raw/`, `results/{group}/{scene}/{experiment}/metrics/`, `results/{group}/{scene}/{experiment}/figures/`, or
-`docs/figures/` only when there is actual content to store. The raw official
-MWORKS package is not required after the useful documents have been promoted to
-`docs/mworks/converted/`; use a temporary `--source` path only when rescanning
-new official materials.
+| Directory | Purpose |
+|---|---|
+| `Design/` | Algorithm and system design source of truth. |
+| `docs/` | User manual, simulation report, converted MWORKS docs, indexes. |
+| `workflows/` | Repeatable procedures and detailed agent/task mechanics. |
+| `Skills/` | Project-local and reference skills. |
+| `models/`, `QuadrotorModel/` | MWORKS/Sysplorer models and official case model. |
+| `scenarios/`, `scripts/`, `tests/` | Scenario configs, automation scripts, checks. |
+| `results/` | Reproducible outputs, metrics, logs, figures, local review assets. |
+
+Create subdirectories only when there is actual content to store. The raw
+official MWORKS package is not required after useful documents are promoted to
+`docs/mworks/converted/`; use temporary source paths only when rescanning new
+official materials.
 
 ---
 
@@ -538,77 +484,12 @@ Common routing:
 
 `Auth: Unsupported` is normal for local stdio MCP servers and is not a failure.
 
-## 12. Common Development Prompts
+## 12. Prompting and Task Shape
 
-Use precise prompts when asking Codex to work.
-
-Good prompts:
-
-```text
-按照 AGENTS.md 和 workflows/run_simulation.md，使用 Sysplorer MCP 运行 figure8 场景，控制器为 pid_baseline，结果保存到 results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv。
-```
-
-```text
-按照 workflows/calc_metrics.md，使用 Syslab MCP 运行 scripts/calc_metrics.jl，计算 results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv 的 RMSE、最大误差和控制能量，并保存到 results/official/example3_figure8/official_example3_pid_baseline/metrics/official_example3_pid_baseline.json。
-```
-
-```text
-按照 workflows/code_review.md，对 controllers/nmpc/ 的改动进行接口兼容性和硬编码路径审查。
-```
-
-```text
-按照 workflows/pre_submit_check.md，检查当前项目是否满足初赛提交要求。
-```
-
-Avoid vague prompts:
-
-```text
-帮我看看这个怎么仿真。
-```
-
-Prefer task-specific prompts with:
-
-```text
-目标
-输入文件
-使用工具
-输出路径
-验收标准
-```
-
-After every MWORKS simulation, run or verify `scripts/evaluate_result_quality.py --write-metrics`. Treat `check_model ok` / `simulate_model ok` as execution evidence only. If `quality_status=needs_iteration`, keep the evidence, update the controller/scenario, and rerun before claiming the work is complete.
-
----
-
-### Git / Filesystem / MinerU Prompts
-
-```text
-检查当前 git 状态，说明哪些文件被修改、哪些是新增文件，并判断是否有不应该提交的文件。
-```
-
-```text
-审查当前 git diff，重点检查硬编码路径、接口变更、结果文件缺失、测试是否需要更新。
-```
-
-```text
-根据当前 git diff 生成一条规范 commit message，包含改动内容、原因和已运行的测试。
-```
-
-```text
-我想回退刚才的改动。请先查看 git status 和 diff，告诉我有哪些安全回退方案，不要直接执行破坏性命令。
-```
-
-```text
-使用 Filesystem MCP 检查项目目录结构，确认 workflows、docs/index、scripts、results 是否完整。
-```
-
-```text
-使用 MinerU MCP 将指定官方 PDF 转为 Markdown，保存到 docs/mworks/converted/，然后更新 docs/index/doc_index.md。
-```
-
-```text
-使用 Git MCP 审查 AGENTS.md 的改动，检查 Markdown 代码块是否闭合、章节编号是否合理、是否存在重复或冲突规则。
-```
+Prefer task-specific prompts with goal, input file, tool/MCP route, output path,
+and acceptance criteria. Use `docs/index/workflow_index.md` for examples.
+After every formal MWORKS simulation, verify result quality; `check_model ok`
+and `simulate_model ok` are execution evidence only, not quality evidence.
 
 ---
 

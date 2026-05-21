@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "framework": "agently",
+  "in_development_file": "compatibility/in-development.json",
+  "release_files": {
+    "4.1.1": "compatibility/releases/4.1.1.json",
+    "4.1.2": "compatibility/releases/4.1.2.json",
+    "4.1.2.1": "compatibility/releases/4.1.2.1.json",
+    "4.1.2.2": "compatibility/releases/4.1.2.2.json",
+    "4.1.2.3": "compatibility/releases/4.1.2.3.json"
+  },
+  "latest_release": "4.1.2.3"
+}

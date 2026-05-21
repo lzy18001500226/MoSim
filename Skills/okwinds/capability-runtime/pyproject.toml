@@ -1,0 +1,51 @@
+[project]
+name = "capability-runtime"
+version = "0.1.4"
+description = "Bridge/glue layer that composes Agently (LLM/TriggerFlow) with skills-runtime-sdk (skills/tools/WAL/events)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+  "PyYAML>=6",
+  "pydantic>=2,<3",
+  "agently==4.0.8",
+  "skills-runtime-sdk==0.1.12",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7",
+  "pytest-asyncio>=0.23",
+  "mypy>=1.8",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+  "integration: optional integration tests (may require docker/services)",
+]
+
+[tool.mypy]
+python_version = "3.10"
+mypy_path = "src"
+explicit_package_bases = true
+ignore_missing_imports = true
+warn_unused_ignores = false
+warn_unused_configs = true
+disable_error_code = ["import-untyped"]
+
+[[tool.mypy.overrides]]
+module = ["examples.*"]
+ignore_errors = true
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"

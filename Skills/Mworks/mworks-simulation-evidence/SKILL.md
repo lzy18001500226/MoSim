@@ -57,6 +57,21 @@ figures or replay assets under results/figures/ or docs/figures/
 report note in docs/simulation_report.md when relevant
 ```
 
+Every evidence bundle should include `artifact_refs`:
+
+```text
+raw result path
+metrics path
+figure / replay / native-result path when present
+MCP/tool log path when present
+source label: MWORKS_MCP | MWORKS_GUI | offline_script
+optional sha256 and byte size for files used in report claims
+claim role: raw | metrics | figure | replay | native_result | log
+```
+
+GUI review is required for visual claims, but GUI state is not the audit source.
+The audit source is the artifact path plus source label and reproducible checks.
+
 ## Acceptance Checks
 
 Pass only if:

@@ -70,6 +70,30 @@ steps, keep the tool boundary workflow-oriented:
 
 ## Failure Handling
 
+Classify MCP/tool failures with this shared taxonomy:
+
+```text
+mcp_unavailable
+tools_none
+model_check_failed
+simulate_failed
+result_binding_failed
+timeout
+gui_blocked
+license_or_login
+permission
+validation
+unknown
+```
+
+Preserve the original server/tool/error text and the next safe validation step.
+Do not collapse activation, login, GUI freeze, missing wrapper, and model
+validation failures into a generic script failure.
+
+GUI windows, plots, animations, and UI events are review surfaces, not audit
+truth. Stable audit truth is the MCP/tool result, raw result path, metrics, log,
+native-result locator, artifact manifest, and Git commit.
+
 | Symptom | Action |
 |---|---|
 | `Tools: (none)` | Follow `workflows/debug_mcp.md` |

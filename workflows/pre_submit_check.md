@@ -107,6 +107,18 @@ python scripts/qa_check.py
 python scripts/check_reference_outputs.py
 ```
 
+### Skill / Workflow Hygiene Check
+
+Project-local skills and workflows must stay discoverable and credential-free:
+
+```text
+every `Skills/Mworks/*` skill has `SKILL.md`
+each `SKILL.md` has YAML frontmatter with `name` and `description`
+workflow links in `docs/index/workflow_index.md` resolve
+no copied OAuth/provider configs, private `.env`, token, or key files are tracked
+external skill/runtime repositories remain reference material unless explicitly promoted
+```
+
 ### Reference / Large-File / Secret Check
 
 Before staging or packaging, inspect newly added reference trees and generated

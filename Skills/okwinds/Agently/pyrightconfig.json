@@ -1,0 +1,28 @@
+{
+  "include": [
+    "agently",
+    "tests",
+    "examples"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    ".conda",
+    ".venv",
+    "venv",
+    "env",
+    "build",
+    "dist",
+    "node_modules",
+    ".pytest_cache",
+    ".example_runtime_outputs",
+    ".example_runtime_skills",
+    ".local_backups",
+    "demo_experiment",
+    "docs",
+    "spec"
+  ],
+  "pythonVersion": "3.10",
+  "typeCheckingMode": "basic",
+  "useLibraryCodeForTypes": true,
+  "reportMissingTypeStubs": "none"
+}

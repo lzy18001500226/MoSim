@@ -1,0 +1,40 @@
+name: Skill Version Guard
+
+on:
+  pull_request:
+    paths:
+      - "agent/skills/**"
+      - ".github/workflows/skill-version-guard.yml"
+  push:
+    paths:
+      - "agent/skills/**"
+      - ".github/workflows/skill-version-guard.yml"
+
+jobs:
+  skill-version-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Check skill versions (pull_request)
+        if: github.event_name == 'pull_request'
+        run: |
+          python3 agent/skills/_tools/check_skill_versions.py \
+            --base "${{ github.event.pull_request.base.sha }}" \
+            --head "${{ github.sha }}"
+
+      - name: Check skill versions (push)
+        if: github.event_name == 'push'
+        run: |
+          python3 agent/skills/_tools/check_skill_versions.py \
+            --base "${{ github.event.before }}" \
+            --head "${{ github.sha }}"
+

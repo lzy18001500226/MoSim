@@ -29,6 +29,9 @@ Current asset-source priority:
 | P0 | `references/Sunray/simulation/sunray_simulator/worlds/*.world` and `references/Sunray/simulation/sysu_competition/worlds/*.world` | Existing scene layout references such as competition maps, planning tests, houses, airport, outdoor, sand island |
 | P1 | RflySim3D / RflySimUE installer or asset package, if available locally | UE-style scenario、camera、UDP/shared-memory、Mid360 and scene-asset reference; migrate useful assets into the project-owned UE5 renderer after license/source confirmation |
 | P1 | RflySim public GitHub repos | Interface/modeling reference, not primary visual assets. `CopterSim` is mainly Simulink multicopter/HIL model; `RflyExpCode` is experiment code |
+| P1 | `references/AirSim/Cosys-AirSim/Unreal/Environments/Blocks/Blocks.uproject` | Modern UE Blocks scene candidate with AirSim/Cosys assets; first smoke target for UE scene reuse |
+| P2 | `references/AirSim/AirSim/Unreal/Environments/Blocks/Blocks.uproject` | Legacy UE4.27 AirSim Blocks scene and quadrotor visual/API reference |
+| P2 | `references/AirSim/PegasusSimulator` | Isaac/Omniverse USD UAV scene reference; not direct UE asset source |
 | P2 | UE Marketplace / open UE environment assets | Optional visual upgrade after license and file-size checks |
 
 Important finding: the public RflySim GitHub repositories inspected so far do
@@ -40,6 +43,18 @@ not a UE environment asset repository. For final visual quality, use the local
 Sunray/AWS assets first, or inspect the user's local RflySim3D/RflySimUE asset
 install as a migration source. Do not make the final renderer depend on running
 RflySim3D.
+
+Open-source simulator scene audit update:
+
+| Source | Local scene evidence | Decision |
+| --- | --- | --- |
+| Cosys-AirSim | `Unreal/Environments/Blocks/Blocks.uproject`, `Content/FlyingCPP/Maps/FlyingExampleMap.umap`, AirSim plugin asset map | First UE smoke candidate. Project says UE 5.4 while docs mention UE 5.5 support; test in UE 5.x before migration. |
+| AirSim | `Unreal/Environments/Blocks/Blocks.uproject`, `Content/FlyingCPP/Maps/FlyingExampleMap.umap`, Unity demo scenes | Backup/reference candidate. Requires UE 4.27 for lowest-risk open; useful for vehicle/API concepts. |
+| PegasusSimulator | USD worlds such as `Box`, `BoxWithCylinders`, `Lisbon`, plus `Iris`/`Pegasus` UAV USD assets | Strong UAV sim reference for Isaac/Omniverse branch, not direct UE renderer asset source. |
+| IsaacSim | Full Isaac Sim source/test tree, not a focused UAV map pack | Do not start here for maps. Use only if the project opens a dedicated Isaac Sim route. |
+
+Do not say these maps "cannot be used" until the matching runtime has been
+smoke-tested. The correct first test is Cosys-AirSim Blocks in UE 5.x.
 
 When the user installs RflySim locally, do not immediately copy files into this
 project. First audit the install directory for:
@@ -680,6 +695,74 @@ Recommended next asset actions:
    objects even if final visuals come from imported assets.
 ```
 
+### Local Reference Repository Triage
+
+The local reference folders are inputs for design extraction, not dependencies
+to vendor wholesale into the final project. Keep the names as broad buckets for
+now:
+
+```text
+references/AirSim/   UE/Isaac/drone-rendering and visual-sensor references
+references/Lab/      planning, mapping, trajectory optimization, racing, swarm references
+references/MWORKS/   official/contest/platform reference materials
+references/RflySim/  local RflySim installer/runtime/reference materials
+```
+
+Current local-priority split:
+
+| Bucket | Highest-Value Local Repos | Extract First |
+|---|---|---|
+| UE/rendering bridge | `spear`, `unrealcv-5.2`, `AirSim`, `ProjectAirSim`, `UESVONavigation-develop` | UE scene/control bridge pattern, camera/depth/semantic capture, object truth, 3D navigation preview |
+| Drone sim architecture | `AirSim`, `Cosys-AirSim`, `ProjectAirSim`, `PegasusSimulator` | vehicle/sensor/actuator schemas, client APIs, headless/off-screen modes, PX4/MAVLink integration patterns |
+| Trajectory/planning | `GCOPTER`, `Fast-Racing`, `ego-planner`, `EGO-Planner-v2`, `SUPER` | MINCO/GCOPTER constraints, B-spline replanning, aggressive/racing trajectories, benchmark task organization |
+| Swarm planning | `EGO-Planner-v2`, `ego-planner-swarm`, `SUPER` | multi-UAV formation, collision avoidance, swarm bridge, distributed replanning |
+| Mapping/localization | `Point-LIO-point-lio-with-grid-map`, `FAST_LIO`, `FAST-LIVO2` | LIO/LIVO interfaces and future local-map evidence; keep as P2 unless needed for perception demos |
+| Data-only or weak fit | `AirSim360`, packaged PEDRA/RflySim environments | reference only unless editable scenes or clear data conversion value is identified |
+
+Do not try to integrate all repositories. The next implementation pass should
+extract small, project-owned interfaces:
+
+1. A `map_id` / scene-profile manifest that can name imported or generated UE
+   scenes without hard-coding one simulator.
+2. A MWORKS-to-UE frame schema carrying pose, planned path, local perception
+   window, obstacle truth/proxies, controller mode, and fault/disturbance state.
+3. A planning module adapter API that can host simplified versions of
+   B-spline/EGO/GCOPTER/MINCO outputs while the official MWORKS model remains
+   the source of simulation evidence.
+4. A reference-audit note for each imported external repo before any asset or
+   algorithm is promoted into `unreal/`, `planners/`, or `models/`.
+
+Known local Git hygiene rule: files over GitHub's 100 MB hard limit are ignored
+under `references/**` by extension (`.iso`, `.msi`, `.exe`, `.dll`, `.vis`,
+`.resS`, `.pe`, `.peo`, `.onnx`, plus archives/videos already covered). If a
+large reference file is actually required for reproduction, keep it external and
+record only its path, checksum, and source in documentation.
+
+Immediate adapter work queue:
+
+| Queue | First Inputs | Output To Produce | Acceptance |
+|---|---|---|---|
+| UE frame schema | `spear/README.md`, `unrealcv-5.2/README.md`, `AirSim/README.md`, `ProjectAirSim/README.md` | Extend the existing MWORKS-to-UE frame schema with camera/depth/semantic/lidar visibility fields without binding to one simulator | `check_unreal_bridge.py` passes and old frame replay remains compatible |
+| Scene manifest | `spear`, `unrealcv-5.2`, `carla-ue5-dev`, RflySim audit results | A project-owned scene profile manifest that records source, license risk, map_id aliases, coordinate convention, and whether geometry/collision is importable | No raw third-party assets required for the manifest |
+| Planning adapter | `ego-planner`, `EGO-Planner-v2`, `GCOPTER`, `Fast-Racing`, `SUPER` | A small planner-adapter spec mapping external planner concepts to `path_bus`, `trajectory_bus`, and `planning_debug_bus` | `Design/02` and `Design/05` remain consistent; A* remains fallback only |
+| Aggressive flight demo | `Fast-Racing`, `GCOPTER`, current gate/ring scene profile | A staged plan for tilted gate/ring traversal with velocity/acceleration/tilt constraints | Does not bypass controller tracking metrics |
+| Swarm extension | `EGO-Planner-v2`, `ego-planner-swarm`, `SUPER` | Formation/swarm adapter notes for leader-follower, inter-UAV distance, and local collision avoidance | Plugs into `Design/06` without changing single-UAV closed-loop evidence |
+
+UE/rendering adapter backlog extracted from local references:
+
+| Adapter | Reference Pattern | Project-Owned Output |
+|---|---|---|
+| RenderBridge state protocol | ProjectAirSim `types.py`, `kinematics_message.hpp`; AirSim vehicle API | typed frame carrying time, vehicle id, NED pose, quaternion, velocity, angular velocity, motor speeds, controller mode, fault flags |
+| Coordinate/time adapter | ProjectAirSim `clock.hpp`; AirSim pause/sync/image timestamp API | NED-to-UE, meters-to-centimeters, quaternion convention, interpolation, pause/single-step rules |
+| UE actor sink | AirSim `PawnSimApi` / `MultirotorPawnSimApi` boundary | lightweight `QuadrotorRenderActor` / subsystem that updates body, rotors, trace, local plan, and fault highlights from MWORKS frames |
+| Camera/sensor capture | AirSim `PIPCamera`, `RenderRequest`; UnrealCV camera sensors | capture RGB/depth/segmentation/normal with pose, timestamp, and intrinsics |
+| Annotation layers | Cosys-AirSim annotation and proxy mesh design | semantic/fault-zone/safety-boundary/formation-role/obstacle-id visualization layers |
+| Scenario object API | ProjectAirSim `World` concepts | list/get/set/spawn/destroy scene objects and debug lines for obstacles, no-fly zones, wind/fault markers |
+| Replay adapter | Project result CSV/native exports | time-aligned UE playback that preserves `source=MWORKS_MCP`, `source=MWORKS_GUI`, or `source=offline_script` |
+| Headless QA | UnrealCV workflow harness/build/launch/test/log-monitor | build/launch smoke, frame capture, log filter, screenshot/hash evidence |
+| 3D path preview | UESVONavigation SVO/Theta* concepts | UE-side debug path/voxel markers only; not controller truth |
+| Minimal UE MCP | SPEAR single-frame transaction and MCP idea | `load_scene`, `spawn_quadrotor`, `apply_state_frame`, `capture_camera`, `export_replay_clip`; do not expose full UE reflection to normal workflow |
+
 ### Long-Running UE5 Reconstruction Queue
 
 This queue is the default continuation path. The agent should keep moving down
@@ -688,7 +771,10 @@ license/authorization decisions, external write access, Unreal editor manual
 review, frozen GUI/MCP/editor state, or a change that risks data loss.
 
 Before each UE/RflySim/MWORKS renderer round, run a short task-distribution
-check instead of executing serially by habit:
+check instead of executing serially by habit. Split by both task type and task
+scale: if a read-only investigation covers more than about 3 repositories or
+more than one subsystem, divide it into multiple explorers instead of assigning
+one broad "research" task.
 
 ```text
 1. Critical path: what must the main agent do locally before anything else?
@@ -706,6 +792,31 @@ Every sidecar task must include `objective`, `read scope`, `write set`,
 `stop condition`, `expected output`, and `forbidden actions`. If the task is
 small enough that this overhead is larger than the work itself, do it locally
 and record the reason in the progress update.
+
+Recommended split for the current external-reference phase:
+
+| Workstream | Scope | Expected Output |
+|---|---|---|
+| UE/rendering explorer | `spear`, `unrealcv-5.2`, `AirSim`, `ProjectAirSim`, `Cosys-AirSim`, `UESVONavigation` | MWORKS-to-UE frame/schema implications, reusable sensor/rendering APIs, direct-migration risks |
+| Planning/trajectory explorer | `ego-planner`, `EGO-Planner-v2`, `ego-planner-swarm`, `GCOPTER`, `Fast-Racing`, `SUPER` | Adapter mapping to `path_bus`, `trajectory_bus`, `planning_debug_bus`, and priority order |
+| Perception/mapping explorer | `Point-LIO`, `FAST_LIO`, `FAST-LIVO2`, `AirSim360`, `IsaacSim`, `PegasusSimulator` | P2/P3 value, Mid360/local-map interface implications, data/engine mismatch risks |
+| Skills/subagent explorer | `Skills/awesome-codex-skills`, `Skills/awesome-codex-subagents` | Reusable task patterns for Git/quality, codebase research, long-running simulation, and workflow updates |
+| Git/quality worker | Current repo status and staged paths | Large-file guard, diff check, commit, push, and remaining-change report |
+
+Reusable subagent patterns extracted from local skill catalogs:
+
+| Project Role | Borrowed Pattern | Project Adaptation |
+|---|---|---|
+| Git/quality agent | `reviewer`, `git-workflow-manager` | status, diff grouping, large-file guard, secret guard, `git diff --check`, targeted checks, commit, push, remaining-change report |
+| Codebase mapper | `code-mapper`, `context-manager` | read-only path/interface/model/result inventory before touching unfamiliar repos or MWORKS models |
+| Long-task coordinator | `multi-agent-coordinator`, `task-distributor`, `workflow-orchestrator` | split by scale and subsystem, define objective/read scope/write set/stop condition/forbidden actions for each agent |
+| Docs/API researcher | `docs-researcher`, `research-analyst` | separate facts, inferences, and pending validation; prefer local docs/MCP before external sources |
+| Simulation diagnostics | `debugger`, `qa-expert`, `performance-engineer` | distinguish slow simulation from frozen GUI, require logs/metrics, and preserve MWORKS evidence labels |
+| UE runtime reviewer | `game-developer` | use frame-rate, asset lifecycle, runtime smoke, and visual verification ideas, but keep project-owned Unreal workflow as source of truth |
+
+Do not install or copy the upstream skill catalogs wholesale. Promote only the
+specific workflow rule into `AGENTS.md`, `workflows/`, or `Skills/Mworks/` after
+it has been adapted to this project boundary.
 
 | Phase | Task | Owner Pattern | Done When | Human Gate |
 |---|---|---|---|---|

@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "framework": "agently",
+  "framework_version": "4.1.2",
+  "release_train": "2026-05-4.1.2",
+  "released_at": "2026-05-16",
+  "notes": "Version-scoped companion compatibility manifest for the Agently 4.1.2 release.",
+  "companions": {
+    "devtools": {
+      "companion_package": "agently-devtools",
+      "runtime_protocol": "agently-devtools.observation-runtime.v1",
+      "event_naming": {
+        "preferred_event_type": "ObservationEvent",
+        "legacy_event_type": "RuntimeEvent",
+        "legacy_compatibility": "Agently 4.1.x",
+        "replacement_line": "Agently 4.2"
+      },
+      "recommended_version_specifier": ">=0.1.4,<0.2.0"
+    },
+    "skills": {
+      "repository": "Agently-Skills",
+      "authoring_protocol": "agently-skills.authoring.v1",
+      "devtools_guidance_protocol": "agently-skills.devtools-guidance.v1",
+      "catalog_generation": "v2",
+      "recommended_bundle": "app",
+      "recommended_ref": "main",
+      "legacy_generations": [
+        {
+          "generation": "v1",
+          "last_supported_framework_version": "4.1.1",
+          "status": "frozen"
+        }
+      ]
+    },
+    "docs": {
+      "repository": "docs",
+      "public_surface_protocol": "agently-docs.public-surface.v1"
+    }
+  }
+}

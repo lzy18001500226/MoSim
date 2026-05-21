@@ -1,0 +1,71 @@
+# Copyright 2023-2026 AgentEra(Agently.Tech)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+from typing import Any, Literal, Callable, TYPE_CHECKING, overload
+
+from agently.utils import StateData
+
+if TYPE_CHECKING:
+    from agently.core import Prompt
+    from agently.core.ModelRequest import ModelResponseResult
+    from agently.utils import Settings
+    from agently.types.data import AgentlyModelResponseEvent, AgentlyModelResult, OutputValidateHandler
+
+
+class ExtensionHandlers(StateData):
+    @overload
+    def append(
+        self,
+        key: Literal["request_prefixes"],
+        value: "Callable[[Prompt, Settings], Any]",
+    ): ...
+    @overload
+    def append(
+        self,
+        key: Literal["broadcast_prefixes"],
+        value: "Callable[[AgentlyModelResult, Settings], Any]",
+    ): ...
+    @overload
+    def append(
+        self,
+        key: Literal["broadcast_suffixes"],
+        value: "Callable[[AgentlyModelResponseEvent, Any, AgentlyModelResult, Settings], Any]",
+        *,
+        event: "AgentlyModelResponseEvent",
+    ): ...
+    @overload
+    def append(
+        self,
+        key: Literal["finally"],
+        value: "Callable[[ModelResponseResult, Settings], Any]",
+    ): ...
+    @overload
+    def append(
+        self,
+        key: Literal["validate_handlers"],
+        value: "OutputValidateHandler",
+    ): ...
+    def append(
+        self,
+        key: Literal["request_prefixes", "broadcast_prefixes", "broadcast_suffixes", "finally", "validate_handlers"],
+        value: Callable,
+        *,
+        event: str | None = None,
+    ):
+        match key:
+            case "broadcast_suffixes":
+                super().append(f"{ key }.{ event }", value)
+            case _:
+                super().append(key, value)

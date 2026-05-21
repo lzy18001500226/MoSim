@@ -1,0 +1,310 @@
+# Copyright 2023-2026 AgentEra(Agently.Tech)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+import yaml
+import json5
+from pathlib import Path
+
+from typing import Any
+from json import JSONDecodeError
+
+from agently.core import BaseAgent
+from agently.utils import DataLocator, DataPathBuilder
+
+
+class ConfigurePromptExtension(BaseAgent):
+    @staticmethod
+    def _is_existing_file_path(path_or_content: str | Path):
+        path = Path(path_or_content)
+        try:
+            return path.exists() and path.is_file()
+        except (OSError, ValueError):
+            return False
+
+    def get_json_prompt(
+        self,
+        save_to: str | Path | None = None,
+        *,
+        encoding: str | None = "utf-8",
+    ):
+        prompt_data = {
+            ".agent": self.agent_prompt.to_serializable_prompt_data(),
+            ".request": self.request_prompt.to_serializable_prompt_data(),
+        }
+        content = json5.dumps(
+            prompt_data,
+            indent=2,
+            ensure_ascii=False,
+        )
+        if save_to is not None:
+            target = Path(save_to)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(content, encoding=encoding)
+        return content
+
+    def get_yaml_prompt(
+        self,
+        save_to: str | Path | None = None,
+        *,
+        encoding: str | None = "utf-8",
+    ):
+        prompt_data = {
+            ".agent": self.agent_prompt.to_serializable_prompt_data(),
+            ".request": self.request_prompt.to_serializable_prompt_data(),
+        }
+        content = yaml.safe_dump(
+            prompt_data,
+            indent=2,
+            allow_unicode=True,
+            sort_keys=False,
+        )
+        if save_to is not None:
+            target = Path(save_to)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(content, encoding=encoding)
+        return content
+
+    def _generate_output_value(self, output_prompt_value: Any):
+        if isinstance(output_prompt_value, dict):
+            output_type = None
+            output_desc = None
+            output_ensure = False
+            if "$type" in output_prompt_value:
+                output_type = output_prompt_value["$type"]
+            if ".type" in output_prompt_value:
+                output_type = output_prompt_value[".type"]
+            if "$desc" in output_prompt_value:
+                output_desc = output_prompt_value["$desc"]
+            if ".desc" in output_prompt_value:
+                output_desc = output_prompt_value[".desc"]
+            if "$ensure" in output_prompt_value:
+                output_ensure = DataPathBuilder.is_ensure_marker(output_prompt_value["$ensure"])
+            if ".ensure" in output_prompt_value:
+                output_ensure = DataPathBuilder.is_ensure_marker(output_prompt_value[".ensure"])
+            if "$default" in output_prompt_value or ".default" in output_prompt_value:
+                raise ValueError(
+                    "Agently output prompt config no longer supports $default/.default. "
+                    "Use $ensure for required fields."
+                )
+            if output_type is not None or output_desc is not None or output_ensure:
+                resolved_type = self._generate_output_value(output_type) if output_type is not None else Any
+                if output_ensure:
+                    return (
+                        resolved_type,
+                        output_desc,
+                        True,
+                    )
+                return (
+                    resolved_type,
+                    output_desc,
+                )
+            else:
+                return {key: self._generate_output_value(value) for key, value in output_prompt_value.items()}
+        elif isinstance(output_prompt_value, list):
+            return [self._generate_output_value(item) for item in output_prompt_value]
+        else:
+            return output_prompt_value
+
+    def _execute_prompt_configure(self, prompt: dict[str, Any], variable_mappings: dict[str, Any] | None):
+        for prompt_key, prompt_value in prompt.items():
+            match prompt_key:
+                case ".agent":
+                    if isinstance(prompt_value, dict):
+                        for agent_prompt_key, agent_prompt_value in prompt_value.items():
+                            if agent_prompt_key != "output":
+                                self.set_agent_prompt(
+                                    agent_prompt_key,
+                                    agent_prompt_value,
+                                    mappings=variable_mappings,
+                                )
+                            else:
+                                self.set_agent_prompt(
+                                    agent_prompt_key,
+                                    self._generate_output_value(agent_prompt_value),
+                                    mappings=variable_mappings,
+                                )
+                    else:
+                        self.set_agent_prompt(
+                            "system",
+                            prompt_value,
+                            mappings=variable_mappings,
+                        )
+                case ".request":
+                    if isinstance(prompt_value, dict):
+                        for request_prompt_key, request_prompt_value in prompt_value.items():
+                            if request_prompt_key != "output":
+                                self.set_request_prompt(
+                                    request_prompt_key,
+                                    request_prompt_value,
+                                    mappings=variable_mappings,
+                                )
+                            else:
+                                self.set_request_prompt(
+                                    request_prompt_key,
+                                    self._generate_output_value(request_prompt_value),
+                                    mappings=variable_mappings,
+                                )
+                    else:
+                        self.set_request_prompt(
+                            "input",
+                            prompt_value,
+                            mappings=variable_mappings,
+                        )
+                case ".alias":
+                    if isinstance(prompt_value, dict):
+                        for alias_name, alias_parameters in prompt_value.items():
+                            if hasattr(self, alias_name) and callable(getattr(self, alias_name)):
+                                if isinstance(alias_parameters, dict):
+                                    args = []
+                                    kwargs = {}
+
+                                    for parameter_name, parameter_value in alias_parameters.items():
+                                        if parameter_name == ".args":
+                                            if isinstance(parameter_value, list):
+                                                args = parameter_value
+                                            else:
+                                                raise TypeError(
+                                                    f"Cannot execute prompt alias configures, expect value of key '.args' of '{ alias_name }' as a list"
+                                                    "But received:"
+                                                    f"{ parameter_value }"
+                                                )
+                                        else:
+                                            kwargs[parameter_name] = parameter_value
+
+                                    getattr(self, alias_name)(*args, **kwargs)
+                                elif alias_parameters is None:
+                                    getattr(self, alias_name)()
+                                else:
+                                    raise ValueError(
+                                        "Cannot execute prompt alias configures, expect data structure like:"
+                                        f"{{ '{ alias_name }':"
+                                        "  { '<alias_parameter_name> | *args': '<alias_parameter_value>',"
+                                        "    ..."
+                                        "  }"
+                                        "}"
+                                        "But received:"
+                                        f"{ prompt_value }"
+                                    )
+                    else:
+                        raise ValueError(
+                            "Cannot execute prompt alias configures, expect data structure like:"
+                            "{ '<alias_name>':"
+                            "  { '<alias_parameter_name> | *args': '<alias_parameter_value>',"
+                            "    ..."
+                            "  }"
+                            "}"
+                            "But received:"
+                            f"{ prompt_value }"
+                        )
+                case _:
+                    if prompt_key.startswith("$") and not prompt_key.startswith("${"):
+                        prompt_key = prompt_key[1:]
+                        if prompt_key != "output":
+                            self.set_agent_prompt(
+                                prompt_key,
+                                prompt_value,
+                                mappings=variable_mappings,
+                            )
+                        else:
+                            self.set_agent_prompt(
+                                prompt_key,
+                                self._generate_output_value(prompt_value),
+                                mappings=variable_mappings,
+                            )
+                    else:
+                        if prompt_key != "output":
+                            self.set_request_prompt(
+                                prompt_key,
+                                prompt_value,
+                                mappings=variable_mappings,
+                            )
+                        else:
+                            self.set_request_prompt(
+                                prompt_key,
+                                self._generate_output_value(prompt_value),
+                                mappings=variable_mappings,
+                            )
+
+    def load_yaml_prompt(
+        self,
+        path_or_content: str | Path,
+        *,
+        mappings: dict[str, Any] | None = None,
+        prompt_key_path: str | None = None,
+        encoding: str | None = "utf-8",
+    ):
+        path = Path(path_or_content)
+        if self._is_existing_file_path(path_or_content):
+            try:
+                with path.open("r", encoding=encoding) as file:
+                    prompt = yaml.safe_load(file)
+            except yaml.YAMLError as e:
+                raise ValueError(f"Cannot load YAML file '{ path_or_content }'.\nError: { e }")
+        else:
+            try:
+                prompt = yaml.safe_load(str(path_or_content))
+            except yaml.YAMLError as e:
+                raise ValueError(f"Cannot load YAML content or file path not existed.\nError: { e }")
+        if not isinstance(prompt, dict):
+            raise TypeError(
+                "Cannot execute YAML prompt configures, expect prompt configures as a dictionary data but got:"
+                f"{ prompt }"
+            )
+        if prompt_key_path is not None:
+            prompt = DataLocator.locate_path_in_dict(prompt, prompt_key_path)
+        if isinstance(prompt, dict):
+            self._execute_prompt_configure(prompt, mappings)
+        else:
+            raise TypeError(
+                f"Cannot execute YAML prompt configures, expect prompt configures{ ' from [' + prompt_key_path + '] ' if prompt_key_path is not None else '' } as a dictionary data but got:"
+                f"{ prompt }"
+            )
+        return self
+
+    def load_json_prompt(
+        self,
+        path_or_content: str | Path,
+        *,
+        mappings: dict[str, Any] | None = None,
+        prompt_key_path: str | None = None,
+        encoding: str | None = "utf-8",
+    ):
+        path = Path(path_or_content)
+        if self._is_existing_file_path(path_or_content):
+            try:
+                with path.open("r", encoding=encoding) as file:
+                    prompt = json5.load(file)
+            except JSONDecodeError as e:
+                raise ValueError(f"Cannot load JSON file '{ path_or_content }'.\nError: { e }")
+        else:
+            try:
+                prompt = json5.loads(str(path_or_content))
+            except JSONDecodeError as e:
+                raise ValueError(f"Cannot load JSON content or file path not existed.\nError: { e }")
+        if not isinstance(prompt, dict):
+            raise TypeError(
+                "Cannot execute JSON prompt configures, expect prompt configures as a dictionary data but got:"
+                f"{ prompt }"
+            )
+        if prompt_key_path is not None:
+            prompt = DataLocator.locate_path_in_dict(prompt, prompt_key_path)
+        if isinstance(prompt, dict):
+            self._execute_prompt_configure(prompt, mappings)
+        else:
+            raise TypeError(
+                f"Cannot execute JSON prompt configures, expect prompt configures{ ' from [' + prompt_key_path + '] ' if prompt_key_path is not None else '' }as a dictionary data but got:"
+                f"{ prompt }"
+            )
+        return self

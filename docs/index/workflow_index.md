@@ -21,14 +21,25 @@
 | Prepare report and replay assets | `Skills/Mworks/mworks-report-visualization/SKILL.md` |
 | Build graphical Sysblock controller | `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`, `workflows/build_sysblock_graphical_controller.md` |
 | Consult official Sysplorer modeling rules | `Skills/Sysplorer/ty-sysplorer-modeling-rules`, `Skills/Sysplorer/ty-sysblock-diagram-modeling`, `Skills/Sysplorer/ty-sysblock-signal-modeling`, `Skills/Sysplorer/modelica-library-workflow` |
+| Main-agent orchestration | `AGENTS.md#331-parallel-agent-rule`, `workflows/agent_orchestration.md` |
+| Current project progress and recovery memory | `PROGRESS.md` |
+| Sub-agent WAL / run ledger | `workflows/agent_task_ledger.md` |
+| Interrupted task resume / WAL recovery | `workflows/agent_orchestration.md`, `workflows/agent_task_ledger.md` |
+| External repository audit | `workflows/audit_external_repo.md`, `scripts/audit_external_repo.py` |
+| Skills/workflow external repo audit | `workflows/audit_external_repo.md`, `workflows/agent_orchestration.md#7-skills--workflow-runtime-audits` |
+| Three-round learn-and-update audit | `workflows/audit_external_repo.md`, `workflows/agent_orchestration.md#7-skills--workflow-runtime-audits` |
+| Recurring external docs/skills learning | `workflows/agent_orchestration.md#71-recurring-learning-owner`, `docs/index/external_learning_index.md` |
+| Project doctor / self-check | `scripts/doctor.py`, `workflows/pre_submit_check.md`, `workflows/debug_mcp.md` |
 | Resolve model context workflow | `workflows/resolve_model_context.md` |
 | Produce simulation evidence workflow | `workflows/produce_simulation_evidence.md` |
 | Run one simulation | `workflows/run_simulation.md` |
 | Read simulation results | `workflows/read_results.md` |
 | Calculate metrics | `workflows/calc_metrics.md` |
 | Generate report figures | `workflows/generate_report_figures.md` |
-| Parallel agent execution | `AGENTS.md#331-parallel-agent-rule`, `workflows/unreal_renderer.md#rflysimue-scene-workflow` |
+| Parallel agent execution | `AGENTS.md#331-parallel-agent-rule`, `workflows/agent_orchestration.md`, `workflows/unreal_renderer.md#long-running-ue5-reconstruction-queue` |
+| Persistent long-running agent task ledger | `workflows/agent_task_ledger.md` |
 | Review Sunray migration source | `docs/index/sunray_migration_index.md` |
+| Identify Sunray150 quadrotor parameters from PX4 ULog | `workflows/identify_quadrotor_parameters.md` |
 | Add a controller | `workflows/add_controller.md` |
 | Build Sysblock graphical controller | `workflows/build_sysblock_graphical_controller.md` |
 | Code review | `workflows/code_review.md` |
@@ -37,6 +48,10 @@
 | Pre-submit check | `workflows/pre_submit_check.md` |
 
 ---
+
+Doctor and self-check workflows are cheap preflight gates. They do not replace
+WAL review, evidence review, or Git/quality review for long-running delegated
+tasks.
 
 ## 2. Recommended Development Order
 
@@ -214,3 +229,22 @@ Rules:
 4. The main agent must review all returned changes before commit.
 5. If an agent finds a license, credential, activation, or destructive-action
    issue, it must stop that stream and report the blocker.
+
+Use `workflows/agent_orchestration.md` for the full delegation contract and
+`workflows/agent_task_ledger.md` for persistent recovery state.
+
+---
+
+## 9. Doctor / Self-Check Workflow
+
+Use this before long Git/reference-import/MCP work or when the session state is
+unclear:
+
+```bash
+python3 scripts/doctor.py
+```
+
+The doctor is intentionally cheap: it checks the project-local Git lock/status,
+Git LFS availability, active agent ledger rows, tracked files over the selected
+size limit, key workflow files, and MCP wrapper file presence. Live MCP health
+still belongs to `/mcp` and `workflows/debug_mcp.md`.

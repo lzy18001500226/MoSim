@@ -1,0 +1,7 @@
+build/*
+logs*
+.venv/
+__pycache__/
+model_results/*.yaml
+*.pyc
+.DS_Store

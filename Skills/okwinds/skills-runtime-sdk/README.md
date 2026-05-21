@@ -1,0 +1,254 @@
+<div align="center">
+
+[English](README.md) | [中文](README.cn.md)
+
+</div>
+
+# Skills Runtime SDK
+
+_License: Apache License 2.0 (see `LICENSE`)_
+
+A **skills-first** Agent Runtime SDK (Python) plus a companion **Studio MVP** (minimal example), designed for:
+
+- Organizing reusable capabilities as standardized Skills (`SKILL.md`)
+- Running with observable **Runs + SSE event streams**
+- Reducing risk of tool execution with `approvals` (gatekeeper) + **OS sandbox** (fence)
+
+Conceptual model:
+- Skills are the primary extension surface (what you author/reuse).
+- The `Agent` API is the runtime engine used to execute runs and orchestrate tool calls safely.
+
+---
+
+## Architecture at a glance
+
+```text
+┌─────────────────────────────┐
+│  Bootstrap                  │  workspace_root + .env + runtime.yaml overlays
+└──────────────┬──────────────┘
+               │ config loader (pydantic validate + sources map)
+               v
+┌─────────────────────────────┐      ┌──────────────────────┐
+│  Agent API                  │─────▶│  PromptManager       │───(skills injection / history compaction)
+│  skills_runtime.agent       │      └──────────────────────┘
+└──────────────┬──────────────┘
+               │ stream chat events
+               v
+┌─────────────────────────────┐
+│  LLM backend                │  fake backend (offline) / OpenAI-compatible backend
+└──────────────┬──────────────┘
+               │ tool_calls
+               v
+┌───────────────────────────────────────────────────────────────┐
+│  Tool orchestration                                           │
+│  approvals gate  →  OS sandbox  →  exec session               │
+└───────────────────────────────────────────────────────────────┘
+               │
+               v
+┌─────────────────────────────┐
+│  WAL events                 │  <workspace>/.skills_runtime_sdk/runs/<run_id>/events.jsonl
+└─────────────────────────────┘
+```
+
+## Safety model (Gatekeeper vs Fence)
+
+The runtime enforces safety in **two distinct layers**:
+
+- **Gatekeeper (Policy + Approvals)** decides *whether* an action is allowed to run.
+- **Fence (OS Sandbox)** limits *what the allowed action can access/do* at the OS level.
+
+```text
+ToolCall
+  │
+  ├─ Guard (risk detection)           → risk_level + reason (e.g. sudo / rm -rf / mkfs)
+  │
+  ├─ Policy (deterministic gate)      → allow | ask | deny
+  │     - denylist hit  → deny (no approvals)
+  │     - allowlist hit → allow (no approvals)
+  │     - require_escalated → ask (even if mode=allow)
+  │
+  ├─ Approvals (human/programmatic)   → approved | approved_for_session | denied | abort
+  │     - ask but no ApprovalProvider → fail-fast (config_error)
+  │     - repeated denial of same approval_key → abort run (loop guard)
+  │
+  └─ OS Sandbox (execution isolation) → none | restricted
+        - restricted but no adapter → sandbox_denied (no silent fallback)
+        - macOS: seatbelt (sandbox-exec), Linux: bubblewrap (bwrap)
+```
+
+Approvals are auditable without leaking secrets:
+- `approval_key = sha256(canonical_json(tool, sanitized_request))`
+- `shell_exec`: records `argv` + `env_keys` (not env values)
+- `file_write` / `apply_patch`: record size + sha256 fingerprint (not raw content)
+
+## Quickstart (Try Studio MVP in ~5 minutes)
+
+### 0) Prerequisites
+
+- Python **3.10+**
+- Node.js (Studio frontend only; **20.19+** or **22.12+**)
+
+### 1) Configure (local only, do not commit)
+
+```bash
+cd <repo_root>
+
+# 1) Backend env (do NOT commit API keys)
+cp examples/studio/mvp/backend/.env.example \
+   examples/studio/mvp/backend/.env
+
+# 2) Runtime overlay (local sensitive file; only `.example` is kept in the repo)
+cp examples/studio/mvp/backend/config/runtime.yaml.example \
+   examples/studio/mvp/backend/config/runtime.yaml
+```
+
+Then edit:
+
+- `examples/studio/mvp/backend/.env`: set `OPENAI_API_KEY`
+- `examples/studio/mvp/backend/config/runtime.yaml`: set `llm.base_url` and `models.planner/executor`
+
+### 2) Start the backend
+
+```bash
+bash examples/studio/mvp/backend/scripts/dev.sh
+```
+
+Health check:
+
+```bash
+curl -s http://127.0.0.1:8000/api/v1/health
+```
+
+### 3) Start the frontend
+
+```bash
+npm -C examples/studio/mvp/frontend install
+npm -C examples/studio/mvp/frontend run dev
+```
+
+Open: `http://localhost:5173`
+
+### 4) Run a minimal task
+
+You can type a normal task in the UI. Studio MVP also installs two built-in example skills by default:
+
+- `$[web:mvp].article-writer`
+- `$[web:mvp].novel-writer`
+
+If you need an explicit skill call (system-to-system), use a valid mention:
+
+```text
+$[namespace].skill_name
+```
+
+See `help/13-namespace-mentions.md` for the contract and examples.
+
+Note: only **valid** mentions are extracted; invalid “mention-like” fragments are treated as plain text and will not interrupt the run.
+
+---
+
+## Install via `pip` (SDK only)
+
+PyPI package name: `skills-runtime-sdk` (Python `>=3.10`).
+
+```bash
+python -m pip install -U skills-runtime-sdk
+```
+
+Optional extras (skills sources):
+
+```bash
+python -m pip install -U "skills-runtime-sdk[redis]"
+python -m pip install -U "skills-runtime-sdk[pgsql]"
+python -m pip install -U "skills-runtime-sdk[all]"
+```
+
+Notes:
+- The import name is `skills_runtime` (package name differs from module name).
+- `pip install` ships the SDK; **Studio MVP is a repo example** (run it from source).
+
+### CLI
+
+```bash
+skills-runtime-sdk --help
+skills-runtime-sdk skills --help
+```
+
+### Minimal Python
+
+```python
+# BEGIN README_OFFLINE_MINIMAL
+import tempfile
+from pathlib import Path
+
+from skills_runtime.agent import Agent
+from skills_runtime.llm.chat_sse import ChatStreamEvent
+from skills_runtime.llm.fake import FakeChatBackend, FakeChatCall
+
+backend = FakeChatBackend(
+    calls=[
+        FakeChatCall(
+            events=[
+                ChatStreamEvent(type="text_delta", text="hi from offline backend"),
+                ChatStreamEvent(type="completed", finish_reason="stop"),
+            ]
+        )
+    ]
+)
+
+with tempfile.TemporaryDirectory() as d:
+    workspace_root = Path(d).resolve()
+    agent = Agent(workspace_root=workspace_root, backend=backend)
+
+    result = agent.run("Say hi in one sentence.")
+    print("final_output=", result.final_output)
+    print("wal_locator=", result.wal_locator)
+# END README_OFFLINE_MINIMAL
+```
+
+For a real OpenAI-compatible backend (base_url/models/config overlays), see `help/03-sdk-python-api.md` and `help/examples/run_agent_minimal.py`.
+
+## Help (recommended reading order)
+
+- Index: `help/README.md` (English) / `help/README.cn.md` (中文)
+- Quickstart: `help/01-quickstart.md`
+- Config reference: `help/02-config-reference.md`
+- Tools + Safety (approvals + sandbox): `help/06-tools-and-safety.md`
+- Studio end-to-end: `help/07-studio-guide.md`
+- Troubleshooting: `help/09-troubleshooting.md`
+
+## Examples & Coding-Agent Docs
+
+- Full-spectrum offline examples library: `examples/`
+- Coding-agent teaching pack (CAP inventory + coverage map + cheatsheets): `docs_for_coding_agent/`
+
+---
+
+## How to verify “real sandbox” (not just approvals)
+
+Do not rely on “absolute paths in output” (macOS seatbelt does not virtualize paths). Use the reproducible demo:
+
+```bash
+bash scripts/integration/os_sandbox_restriction_demo.sh
+```
+
+In Studio, check `Info → Sandbox` and inspect evidence fields:
+`tool_call_finished.result.data.sandbox.active/adapter/effective`.
+
+---
+
+## Offline tests
+
+```bash
+# Default repo-level gate (SDK + Studio backend + frontend)
+bash scripts/tier0.sh
+
+# Root + Python SDK offline regression only
+bash scripts/pytest.sh
+```
+
+---
+
+## Acknowledgements
+
+- Codex CLI (OpenAI): `https://github.com/openai/codex`

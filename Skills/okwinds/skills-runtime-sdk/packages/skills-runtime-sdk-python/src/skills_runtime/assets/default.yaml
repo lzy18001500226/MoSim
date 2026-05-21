@@ -1,0 +1,95 @@
+config_version: 1
+
+run:
+  max_steps: 40
+  max_wall_time_sec: 1800
+  human_timeout_ms: null
+
+safety:
+  mode: "ask" # allow|ask|deny
+  allowlist: []
+  denylist: []
+  approval_timeout_ms: 60000
+
+sandbox:
+  # profile（dev/balanced/prod）：用于“分阶段收紧”的可配置入口（未知值 fail-fast）
+  profile: "dev"
+  # none：默认不强制 OS sandbox（可用性优先；SDK 缺省）
+  # restricted：默认强制 OS sandbox（安全优先；推荐生产）
+  default_policy: "none" # none|restricted
+
+  os:
+    # auto：macOS 用 seatbelt，Linux 用 bubblewrap
+    mode: "auto" # auto|none|seatbelt|bubblewrap
+
+    seatbelt:
+      # 宽松默认 profile（仅用于演示/占位；是否启用由 default_policy 决定）
+      profile: "(version 1) (allow default)"
+
+    bubblewrap:
+      bwrap_path: "bwrap"
+      unshare_net: true
+
+llm:
+  # OpenAI-compatible Base URL（通常以 /v1 结尾）
+  base_url: "https://api.openai.com/v1"
+  # 仅声明“从哪个环境变量读取 key”；不要把真实 key 写入配置文件
+  api_key_env: "OPENAI_API_KEY"
+  timeout_sec: 60
+  retry:
+    max_retries: 3
+    base_delay_sec: 0.5
+    cap_delay_sec: 8.0
+    jitter_ratio: 0.1
+
+models:
+  # best-practice 默认值（调用方可通过 overlay 替换为实际可用模型名）
+  planner: "gpt-4"
+  executor: "gpt-4"
+
+skills:
+  # skills 仅允许显式配置：spaces + sources
+  spaces: []
+  sources: []
+  scan:
+    ignore_dot_entries: true
+    max_depth: 99
+    max_dirs_per_root: 100000
+    max_frontmatter_bytes: 65536
+    refresh_policy: "always"
+    ttl_sec: 300
+  injection:
+    max_bytes: null
+  bundles:
+    max_bytes: 1048576 # 1 MiB (fail-closed default for bundle-backed Phase 3 tools)
+    cache_dir: ".skills_runtime_sdk/bundles"
+    # 解压后预算（zip bomb mitigation）：
+    # - null 表示使用运行时默认推导值（见 `skills_runtime.skills.bundles.extract_zip_bundle_to_dir`）
+    max_extracted_bytes: null
+    max_files: null
+    max_single_file_bytes: null
+  actions:
+    enabled: false
+  references:
+    enabled: false
+    allow_assets: false
+    default_max_bytes: 65536
+
+prompt:
+  profile: "default_agent"
+  template: "default"
+  system_text: null
+  developer_text: null
+  system_path: null
+  developer_path: null
+  include_skills_list: null
+  include_cwd_tree: false
+  skill_injection:
+    mode: null
+    render: null
+  history:
+    mode: null
+    max_messages: 40
+    max_chars: 120000
+  tools:
+    exposure: null

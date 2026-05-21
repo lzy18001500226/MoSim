@@ -1,0 +1,110 @@
+# Copyright 2023-2026 AgentEra(Agently.Tech)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from dataclasses import dataclass, field
+from typing import Any, Generic, Literal, TypeAlias, TypeVar
+
+from pydantic import TypeAdapter
+from typing_extensions import NotRequired, TypedDict
+
+InputT = TypeVar("InputT")
+StreamT = TypeVar("StreamT")
+ResultT = TypeVar("ResultT")
+
+
+class TriggerFlowContractEntry(TypedDict):
+    label: str
+    schema: dict[str, Any] | None
+
+
+class TriggerFlowInterrupt(TypedDict):
+    id: str
+    type: str
+    status: Literal["waiting", "resumed"]
+    payload: NotRequired[Any]
+    resume_event: NotRequired[str | None]
+    resume_to: NotRequired[Any]
+    response: NotRequired[Any]
+    local_interrupt_id: NotRequired[str | None]
+    source_execution_id: NotRequired[str | None]
+    source_flow_name: NotRequired[str | None]
+    source_operator_id: NotRequired[str | None]
+    sub_flow_frame_id: NotRequired[str | None]
+
+
+class TriggerFlowInterruptEvent(TypedDict):
+    type: Literal["interrupt"]
+    action: Literal["pause", "resume", "project"]
+    execution_id: str
+    interrupt: TriggerFlowInterrupt
+    signal: NotRequired[dict[str, Any] | None]
+    value: NotRequired[Any]
+
+
+class TriggerFlowInterventionConsumer(TypedDict):
+    status: Literal["applied", "ignored"]
+    note: str | None
+    metadata: dict[str, Any]
+    consumed_at: float
+
+
+class TriggerFlowIntervention(TypedDict):
+    id: str
+    version: int
+    status: Literal["pending", "inserted", "expired", "rejected"]
+    payload: Any
+    target: NotRequired[str | None]
+    author: NotRequired[str | None]
+    note: NotRequired[str | None]
+    metadata: dict[str, Any]
+    created_at: float
+    inserted_at: float | None
+    insertion: dict[str, Any] | None
+    rejected_at: float | None
+    reject_reason: str | None
+    expired_at: float | None
+    consumers: dict[str, TriggerFlowInterventionConsumer]
+
+
+class TriggerFlowInterventionEvent(TypedDict):
+    type: Literal["intervention"]
+    action: Literal["append", "insert", "expire", "consume", "reject"]
+    execution_id: str
+    intervention: TriggerFlowIntervention
+
+
+TriggerFlowSystemStreamEvent: TypeAlias = TriggerFlowInterruptEvent | TriggerFlowInterventionEvent
+TRIGGER_FLOW_INTERRUPT_EVENT_SCHEMA = TypeAdapter(TriggerFlowInterruptEvent).json_schema()
+TRIGGER_FLOW_INTERVENTION_EVENT_SCHEMA = TypeAdapter(TriggerFlowInterventionEvent).json_schema()
+
+
+class TriggerFlowSystemStreamMetadata(TypedDict, total=False):
+    interrupt: TriggerFlowContractEntry
+    intervention: TriggerFlowContractEntry
+
+
+class TriggerFlowContractMetadata(TypedDict, total=False):
+    initial_input: TriggerFlowContractEntry | None
+    stream: TriggerFlowContractEntry | None
+    result: TriggerFlowContractEntry | None
+    meta: dict[str, Any]
+    system_stream: TriggerFlowSystemStreamMetadata
+
+
+@dataclass(frozen=True)
+class TriggerFlowContractSpec(Generic[InputT, StreamT, ResultT]):
+    initial_input: Any | None = None
+    stream: Any | None = None
+    result: Any | None = None
+    meta: dict[str, Any] = field(default_factory=dict)

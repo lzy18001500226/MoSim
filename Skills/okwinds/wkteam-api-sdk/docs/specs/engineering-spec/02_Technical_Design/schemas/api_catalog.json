@@ -1,0 +1,8242 @@
+{
+  "generatedAt": "2026-02-10T11:37:09.302Z",
+  "catalog": [
+    {
+      "doc": "docs/api/api-wen-dang2/biao-qian/addContactLabel.md",
+      "title": "创建标签",
+      "module": "biao-qian",
+      "kind": "endpoint",
+      "operationId": "biao_qian_addContactLabel",
+      "method": "POST",
+      "path": "/addContactLabel",
+      "requestUrl": "http://域名地址/addContactLabel",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "labelName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "标签名称"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/biao-qian/delContactLabel.md",
+      "title": "删除联系人标签",
+      "module": "biao-qian",
+      "kind": "endpoint",
+      "operationId": "biao_qian_delContactLabel",
+      "method": "POST",
+      "path": "/delContactLabel",
+      "requestUrl": "http://域名地址/delContactLabel",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "labelIdList",
+          "必选": "是",
+          "类型": "String",
+          "说明": "标签标识，多个标签已 \"，\" 号分割"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/biao-qian/getContactLabelList.md",
+      "title": "获取标签列表",
+      "module": "biao-qian",
+      "kind": "endpoint",
+      "operationId": "biao_qian_getContactLabelList",
+      "method": "POST",
+      "path": "/getContactLabelList",
+      "requestUrl": "http://域名地址/getContactLabelList",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/biao-qian/modifyContactLabel.md",
+      "title": "修改联系人标签",
+      "module": "biao-qian",
+      "kind": "endpoint",
+      "operationId": "biao_qian_modifyContactLabel",
+      "method": "POST",
+      "path": "/modifyContactLabel",
+      "requestUrl": "http://域名地址/modifyContactLabel",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "好友微信id"
+        },
+        {
+          "参数名": "labelIdList",
+          "必选": "是",
+          "类型": "String",
+          "说明": "标签标识，多个标签已 \"，\" 号分割"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/biao-qian/README.md",
+      "title": "标签",
+      "module": "biao-qian",
+      "kind": "category",
+      "operationId": "biao_qian_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/deng-lu/deng-lu-wei-kong-ping-tai-di-yi-bu.md",
+      "title": "登录E云平台（第一步）",
+      "module": "deng-lu",
+      "kind": "endpoint",
+      "operationId": "deng_lu_deng_lu_wei_kong_ping_tai_di_yi_bu",
+      "method": "POST",
+      "path": "/member/login",
+      "requestUrl": "http://域名地址/member/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "account",
+          "必选": "是",
+          "类型": "string",
+          "说明": "**开发者**账号"
+        },
+        {
+          "参数名": "password",
+          "必选": "是",
+          "类型": "string",
+          "说明": "**开发者**密码"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "**Authorization**",
+          "类型": "string",
+          "说明": "授权密钥，生成后永久有效"
+        },
+        {
+          "参数名": "callbackUrl",
+          "类型": "string",
+          "说明": "消息回调地址"
+        },
+        {
+          "参数名": "status",
+          "类型": "string",
+          "说明": "状态（0：正常，1：冻结，2：到期）"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/deng-lu/er-ci-deng-lu.md",
+      "title": "弹框登录",
+      "module": "deng-lu",
+      "kind": "endpoint",
+      "operationId": "deng_lu_er_ci_deng_lu",
+      "method": "POST",
+      "path": "/secondLogin",
+      "requestUrl": "http://域名地址/secondLogin",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "微信id（登录接口返回的wcId）"
+        },
+        {
+          "参数名": "ttuid",
+          "必选": "否",
+          "类型": "string",
+          "说明": "网络类型2，若上次登录使用ttuid，本参数则必传，反之则不传"
+        },
+        {
+          "参数名": "aid",
+          "必选": "否",
+          "类型": "string",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "**wId**",
+          "类型": "string",
+          "说明": "登录实例标识, **登录成功后wId会变更，记得更新**"
+        },
+        {
+          "参数名": "wcId",
+          "类型": "string",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "nickName",
+          "类型": "string",
+          "说明": "昵称"
+        },
+        {
+          "参数名": "headUrl",
+          "类型": "string",
+          "说明": "头像url"
+        },
+        {
+          "参数名": "wAccount",
+          "类型": "string",
+          "说明": "手机上显示的微信号"
+        },
+        {
+          "参数名": "sex",
+          "类型": "int",
+          "说明": "性别"
+        },
+        {
+          "参数名": "status",
+          "类型": "string",
+          "说明": "3 扫码登录成功"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/deng-lu/huo-qu-wei-xin-er-wei-ma2.md",
+      "title": "获取二维码（第二步-方式1）",
+      "module": "deng-lu",
+      "kind": "endpoint",
+      "operationId": "deng_lu_huo_qu_wei_xin_er_wei_ma2",
+      "method": "POST",
+      "path": "/iPadLogin",
+      "requestUrl": "http://域名地址/iPadLogin",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "**Authorization",
+          "value": "login接口返回**"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "**wcId**",
+          "必选": "是",
+          "类型": "string",
+          "说明": "微信原始id （首次登录平台的号传\"\"，掉线重登必须传值，否则会频繁掉线！！！） [第3步](zhi-xing-wei-xin-deng-lu.html)会返回此字段，记得入库保存"
+        },
+        {
+          "参数名": "deviceType",
+          "必选": "是",
+          "类型": "string",
+          "说明": "设备类型：ipad【推荐】、mac"
+        },
+        {
+          "参数名": "proxy",
+          "必选": "是",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "**wId**",
+          "类型": "string",
+          "说明": "登录实例标识 **（本值非固定的，每次重新登录会返回新的，数据库记得实时更新wid）**"
+        },
+        {
+          "参数名": "qrCodeUrl",
+          "类型": "string",
+          "说明": "扫码登录地址"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/deng-lu/initFriendList.md",
+      "title": "初始化通讯录列表",
+      "module": "deng-lu",
+      "kind": "endpoint",
+      "operationId": "deng_lu_initFriendList",
+      "method": "POST",
+      "path": "/initAddressList",
+      "requestUrl": "http://域名地址/initAddressList",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功、1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "JSONObject",
+          "说明": "无"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/deng-lu/queryFriendList.md",
+      "title": "获取通讯录列表",
+      "module": "deng-lu",
+      "kind": "endpoint",
+      "operationId": "deng_lu_queryFriendList",
+      "method": "POST",
+      "path": "/getAddressList",
+      "requestUrl": "http://域名地址/getAddressList",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/deng-lu/README.md",
+      "title": "好友操作",
+      "module": "deng-lu",
+      "kind": "category",
+      "operationId": "deng_lu_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/deng-lu/zhang-hao-mi-ma-deng-lu.md",
+      "title": "账号密码登录",
+      "module": "deng-lu",
+      "kind": "endpoint",
+      "operationId": "deng_lu_zhang_hao_mi_ma_deng_lu",
+      "method": "POST",
+      "path": "/loginByAccountAndPassword",
+      "requestUrl": "http://域名地址/loginByAccountAndPassword",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "**Authorization",
+          "value": "login接口返回**"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "否",
+          "类型": "string",
+          "说明": "**登录实例标识**"
+        },
+        {
+          "参数名": "**wcId**",
+          "必选": "否",
+          "类型": "string",
+          "说明": "微信原始id （首次登录平台的号传\"\"，掉线重登必须传值，否则会频繁掉线！！！）"
+        },
+        {
+          "参数名": "proxy",
+          "必选": "是",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "**wId**",
+          "类型": "string",
+          "说明": "登录实例标识 **（本值非固定的，每次重新登录会返回新的，数据库记得实时更新wid）**"
+        },
+        {
+          "参数名": "base64",
+          "类型": "string",
+          "说明": "图片二维码"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/deng-lu/zhi-xing-wei-xin-deng-lu.md",
+      "title": "执行微信登录（第三步）",
+      "module": "deng-lu",
+      "kind": "endpoint",
+      "operationId": "deng_lu_zhi_xing_wei_xin_deng_lu",
+      "method": "POST",
+      "path": "/getIPadLoginInfo",
+      "requestUrl": "http://域名地址/getIPadLoginInfo",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "**Authorization",
+          "value": "login接口返回**"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "**登录实例标识**"
+        },
+        {
+          "参数名": "autoCheck",
+          "必选": "是",
+          "类型": "boolean",
+          "说明": "是否自动验证【说明:设备类型为Mac时使用，其它情况传false】"
+        },
+        {
+          "参数名": "verifyCode",
+          "必选": "否",
+          "类型": "string",
+          "说明": "验证码"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "**wcId**",
+          "类型": "string",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/acceptUser.md",
+      "title": "同意添加好友",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_acceptUser",
+      "method": "POST",
+      "path": "/acceptUser",
+      "requestUrl": "http://域名地址/acceptUser",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "v1",
+          "必选": "是",
+          "类型": "string",
+          "说明": "v1（从消息回调中取）"
+        },
+        {
+          "参数名": "v2",
+          "必选": "是",
+          "类型": "string",
+          "说明": "v2（从消息回调中取）"
+        },
+        {
+          "参数名": "type",
+          "必选": "是",
+          "类型": "int",
+          "说明": "取回调中的scene来源"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/addFriend.md",
+      "title": "添加好友",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_addFriend",
+      "method": "POST",
+      "path": "/addUser",
+      "requestUrl": "http://域名地址/addUser",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "v1",
+          "必选": "是",
+          "类型": "string",
+          "说明": "v1 从[搜索好友接口](serchUser.html)获取"
+        },
+        {
+          "参数名": "v2",
+          "必选": "是",
+          "类型": "string",
+          "说明": "v2 从[搜索好友接口](serchUser.html)获取"
+        },
+        {
+          "参数名": "type",
+          "必选": "是",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/checkZombie.md",
+      "title": "检测好友状态",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_checkZombie",
+      "method": "POST",
+      "path": "/checkZombie",
+      "requestUrl": "http://域名地址/checkZombie",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "好友微信id，多个已\",\"分隔,每次最多支持个20"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/getImAddressList.md",
+      "title": "获取企微联系人列表",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_getImAddressList",
+      "method": "POST",
+      "path": "/getImAddressList",
+      "requestUrl": "http://域名地址/getImAddressList",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/getOpenImContact.md",
+      "title": "获取企微联系人信息",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_getOpenImContact",
+      "method": "POST",
+      "path": "/getOpenImContact",
+      "requestUrl": "http://域名地址/getOpenImContact",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "企微好友微信id"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/huo-qu-zi-ji-de-er-wei-ma.md",
+      "title": "获取我的二维码",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_huo_qu_zi_ji_de_er_wei_ma",
+      "method": "POST",
+      "path": "/getQrCode",
+      "requestUrl": "http://域名地址/getQrCode",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/queryUserInfo.md",
+      "title": "获取联系人信息",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_queryUserInfo",
+      "method": "POST",
+      "path": "/getContact",
+      "requestUrl": "http://域名地址/getContact",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "好友微信id/群id,多个好友/群 以\",\"分隔每次最多支持20个微信/群号,本接口每次调用请随机间隔300ms-800ms之间"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/README.md",
+      "title": "好友操作",
+      "module": "hao-you-cao-zuo",
+      "kind": "category",
+      "operationId": "hao_you_cao_zuo_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/serchUser.md",
+      "title": "搜索联系人",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_serchUser",
+      "method": "POST",
+      "path": "/searchUser",
+      "requestUrl": "http://域名地址/searchUser",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "微信号/手机号 (不支持微信id搜索)"
+        }
+      ],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/setDisturb.md",
+      "title": "设置聊天免打扰",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_setDisturb",
+      "method": "POST",
+      "path": "/setDisturb",
+      "requestUrl": "http://域名/setDisturb",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "好友id/群id"
+        },
+        {
+          "参数名": "type",
+          "必选": "是",
+          "类型": "int",
+          "说明": "0：开启 1：关闭"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/setFriendPermission.md",
+      "title": "设置好友权限",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_setFriendPermission",
+      "method": "POST",
+      "path": "/setFriendPemission",
+      "requestUrl": "http://域名地址/setFriendPemission",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "微信实列ID"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "好友微信id"
+        },
+        {
+          "参数名": "type",
+          "必选": "是",
+          "类型": "int",
+          "说明": "1:正常 2:仅聊天"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/setTop.md",
+      "title": "设置聊天置顶",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_setTop",
+      "method": "POST",
+      "path": "/setTop",
+      "requestUrl": "http://域名/setTop",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "好友id/群id"
+        },
+        {
+          "参数名": "operType",
+          "必选": "是",
+          "类型": "int",
+          "说明": "0：取消 1：置顶"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/shan-chu-hao-you.md",
+      "title": "删除好友",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_shan_chu_hao_you",
+      "method": "POST",
+      "path": "/delContact",
+      "requestUrl": "http://域名地址/delContact",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "微信实列ID"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "需删除的微信id"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/she-zhi-ge-ren-tou-tou-xiang.md",
+      "title": "设置个人头头像",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_she_zhi_ge_ren_tou_tou_xiang",
+      "method": "POST",
+      "path": "/sendHeadImage",
+      "requestUrl": "http://域名地址/sendHeadImage",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Authorization值（登录获取二维码信息接口中返回的认证信息值）"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "path",
+          "必选": "是",
+          "类型": "string",
+          "说明": "图片url链接"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/userPrivacySettings.md",
+      "title": "添加隐私设置",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_userPrivacySettings",
+      "method": "POST",
+      "path": "/userPrivacySettings",
+      "requestUrl": "http://域名地址/userPrivacySettings",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "privacyType",
+          "必选": "是",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/hao-you-cao-zuo/xiu-gai-hao-you-bei-zhu.md",
+      "title": "修改好友备注",
+      "module": "hao-you-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "hao_you_cao_zuo_xiu_gai_hao_you_bei_zhu",
+      "method": "POST",
+      "path": "/modifyRemark",
+      "requestUrl": "http://域名地址/modifyRemark",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "好友微信id"
+        },
+        {
+          "参数名": "remark",
+          "必选": "是",
+          "类型": "string",
+          "说明": "好友备注"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/asynSnsSendVideo.md",
+      "title": "异步发送视频朋友圈",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_asynSnsSendVideo",
+      "method": "POST",
+      "path": "/asynSnsSendVideo",
+      "requestUrl": "http://域名地址/asynSnsSendVideo",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "String",
+          "说明": "文本内容"
+        },
+        {
+          "参数名": "videoPath",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频链接URL 最大支持20M且30秒内"
+        },
+        {
+          "参数名": "thumbPath",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频封面URL 最大支持2M内"
+        },
+        {
+          "参数名": "groupUser",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁可见（传微信号,多个用,分隔）"
+        },
+        {
+          "参数名": "blackList",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁不可见（传微信号,多个用.分隔）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "asynId",
+          "类型": "String",
+          "说明": "异步发送视频朋友圈asynId，可用此参数[获取发送视频朋友圈结果](getAsynSnsSendVideoRes.html)"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/deleteSns.md",
+      "title": "删除朋友圈",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_deleteSns",
+      "method": "POST",
+      "path": "/deleteSns",
+      "requestUrl": "http://域名地址/deleteSns",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "id",
+          "必选": "是",
+          "类型": "String",
+          "说明": "朋友圈id"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/downloadSnsVideo.md",
+      "title": "下载朋友圈视频",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_downloadSnsVideo",
+      "method": "POST",
+      "path": "/downloadSnsVideo",
+      "requestUrl": "http://域名地址/downloadSnsVideo",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "String",
+          "说明": "通过获取某条朋友圈详细内容接口\\[/getSnsObject\\]返回的xml"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "message",
+          "类型": "String",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/forwardSns.md",
+      "title": "转发朋友圈",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_forwardSns",
+      "method": "POST",
+      "path": "/forwardSns",
+      "requestUrl": "http://域名地址/forwardSns",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "String",
+          "说明": "收到的xml"
+        },
+        {
+          "参数名": "blackList",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁不可见（传微信id,多个用,分隔）"
+        },
+        {
+          "参数名": "withUserList",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁可见 （传微信id,多个用,分隔）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "id",
+          "类型": "String",
+          "说明": "朋友圈ID"
+        },
+        {
+          "参数名": "userName",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "createTime",
+          "类型": "String",
+          "说明": "时间"
+        },
+        {
+          "参数名": "objectDesc",
+          "类型": "JSONObject",
+          "说明": "朋友圈内容"
+        },
+        {
+          "参数名": "xml",
+          "类型": "String",
+          "说明": "朋友圈xml"
+        },
+        {
+          "参数名": "len",
+          "类型": "int",
+          "说明": "xml 长度"
+        },
+        {
+          "参数名": "commentId",
+          "类型": "int",
+          "说明": "评论标识"
+        },
+        {
+          "参数名": "replyCommentId",
+          "类型": "int",
+          "说明": "回复评论标识"
+        },
+        {
+          "参数名": "deleteFlag",
+          "类型": "int",
+          "说明": "删除标识"
+        },
+        {
+          "参数名": "isNotRichText",
+          "类型": "int",
+          "说明": "是否试富文本"
+        },
+        {
+          "参数名": "content",
+          "类型": "String",
+          "说明": "评论内容"
+        },
+        {
+          "参数名": "commentId",
+          "类型": "int",
+          "说明": "评论ID"
+        },
+        {
+          "参数名": "snsLikes",
+          "类型": "JSONArray",
+          "说明": "点赞用户列表"
+        },
+        {
+          "参数名": "userName",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "nickName",
+          "类型": "String",
+          "说明": "昵称"
+        },
+        {
+          "参数名": "type",
+          "类型": "int",
+          "说明": "点赞类型"
+        },
+        {
+          "参数名": "createTime",
+          "类型": "int",
+          "说明": "点赞时间"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/getAsynSnsSendVideoRes.md",
+      "title": "获取发送视频朋友圈结果",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_getAsynSnsSendVideoRes",
+      "method": "POST",
+      "path": "/getAsynSnsSendVideoRes",
+      "requestUrl": "http://域名地址/getAsynSnsSendVideoRes",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "asynId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "异步发送视频朋友圈返回的asynId"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.asynId",
+          "类型": "String",
+          "说明": "异步发送视频朋友圈asynId"
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "发送状态。0：发送中、1：发送完成、2：发送失败"
+        },
+        {
+          "参数名": "data.id",
+          "类型": "string",
+          "说明": "朋友圈id"
+        },
+        {
+          "参数名": "data.userName",
+          "类型": "string",
+          "说明": "发送微信id"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "发送时间"
+        },
+        {
+          "参数名": "data.objectDesc",
+          "类型": "string",
+          "说明": "朋友圈文字"
+        },
+        {
+          "参数名": "data.des",
+          "类型": "string",
+          "说明": "描述"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/getCircle.md",
+      "title": "获取朋友圈",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_getCircle",
+      "method": "POST",
+      "path": "/getCircle",
+      "requestUrl": "http://域名地址/getCircle",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回 **参数：**"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "firstPageMd5",
+          "必选": "是",
+          "类型": "String",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "id",
+          "类型": "String",
+          "说明": "朋友圈ID"
+        },
+        {
+          "参数名": "userName",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "nickName",
+          "类型": "String",
+          "说明": "昵称"
+        },
+        {
+          "参数名": "createTime",
+          "类型": "String",
+          "说明": "时间"
+        },
+        {
+          "参数名": "objectDesc",
+          "类型": "JSONObject",
+          "说明": "朋友圈内容"
+        },
+        {
+          "参数名": "xml",
+          "类型": "String",
+          "说明": "朋友圈xml"
+        },
+        {
+          "参数名": "len",
+          "类型": "int",
+          "说明": "xml 长度"
+        },
+        {
+          "参数名": "snsComments",
+          "类型": "JSONArray",
+          "说明": "评论用户列表"
+        },
+        {
+          "参数名": "userName",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "nickName",
+          "类型": "String",
+          "说明": "昵称"
+        },
+        {
+          "参数名": "type",
+          "类型": "int",
+          "说明": "评论类型"
+        },
+        {
+          "参数名": "createTime",
+          "类型": "int",
+          "说明": "评论时间"
+        },
+        {
+          "参数名": "commentId",
+          "类型": "int",
+          "说明": "评论标识"
+        },
+        {
+          "参数名": "replyCommentId",
+          "类型": "int",
+          "说明": "回复评论标识"
+        },
+        {
+          "参数名": "deleteFlag",
+          "类型": "int",
+          "说明": "删除标识"
+        },
+        {
+          "参数名": "isNotRichText",
+          "类型": "int",
+          "说明": "是否试富文本"
+        },
+        {
+          "参数名": "content",
+          "类型": "String",
+          "说明": "评论内容"
+        },
+        {
+          "参数名": "commentId",
+          "类型": "int",
+          "说明": "评论ID"
+        },
+        {
+          "参数名": "snsLikes",
+          "类型": "JSONArray",
+          "说明": "点赞用户列表"
+        },
+        {
+          "参数名": "userName",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "nickName",
+          "类型": "String",
+          "说明": "昵称"
+        },
+        {
+          "参数名": "type",
+          "类型": "int",
+          "说明": "点赞类型"
+        },
+        {
+          "参数名": "createTime",
+          "类型": "int",
+          "说明": "点赞时间"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/getFriendCircle.md",
+      "title": "获取某个好友的朋友圈",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_getFriendCircle",
+      "method": "POST",
+      "path": "/getFriendCircle",
+      "requestUrl": "http://域名地址/getFriendCircle",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "firstPageMd5",
+          "必选": "是",
+          "类型": "String",
+          "说明": "首页传:\"\"，第2页及以后传返回的firstPageMd5 （PS：firstPageMd5为null情况下，则用上次不为null的值）"
+        },
+        {
+          "参数名": "maxId",
+          "必选": "是",
+          "类型": "long",
+          "说明": "首页传：0（PS：第2页及以后用返回数据最后一个条目的id）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "id",
+          "类型": "String",
+          "说明": "朋友圈ID"
+        },
+        {
+          "参数名": "userName",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "createTime",
+          "类型": "String",
+          "说明": "时间"
+        },
+        {
+          "参数名": "objectDesc",
+          "类型": "JSONObject",
+          "说明": "朋友圈内容"
+        },
+        {
+          "参数名": "xml",
+          "类型": "String",
+          "说明": "朋友圈xml"
+        },
+        {
+          "参数名": "len",
+          "类型": "int",
+          "说明": "xml 长度"
+        },
+        {
+          "参数名": "commentId",
+          "类型": "int",
+          "说明": "评论标识"
+        },
+        {
+          "参数名": "replyCommentId",
+          "类型": "int",
+          "说明": "回复评论标识"
+        },
+        {
+          "参数名": "deleteFlag",
+          "类型": "int",
+          "说明": "删除标识"
+        },
+        {
+          "参数名": "isNotRichText",
+          "类型": "int",
+          "说明": "是否试富文本"
+        },
+        {
+          "参数名": "content",
+          "类型": "String",
+          "说明": "评论内容"
+        },
+        {
+          "参数名": "commentId",
+          "类型": "int",
+          "说明": "评论ID"
+        },
+        {
+          "参数名": "snsLikes",
+          "类型": "JSONArray",
+          "说明": "点赞用户列表"
+        },
+        {
+          "参数名": "userName",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "nickName",
+          "类型": "String",
+          "说明": "昵称"
+        },
+        {
+          "参数名": "type",
+          "类型": "int",
+          "说明": "点赞类型"
+        },
+        {
+          "参数名": "createTime",
+          "类型": "int",
+          "说明": "点赞时间"
+        },
+        {
+          "参数名": "firstPageMd5",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/getSnsObject.md",
+      "title": "获取某条朋友圈详细内容",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_getSnsObject",
+      "method": "POST",
+      "path": "/getSnsObject",
+      "requestUrl": "http://域名地址/getSnsObject",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "好友微信id"
+        },
+        {
+          "参数名": "id",
+          "必选": "是",
+          "类型": "String",
+          "说明": "朋友圈标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "id",
+          "类型": "String",
+          "说明": "朋友圈ID"
+        },
+        {
+          "参数名": "userName",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "nickName",
+          "类型": "String",
+          "说明": "昵称"
+        },
+        {
+          "参数名": "createTime",
+          "类型": "String",
+          "说明": "时间"
+        },
+        {
+          "参数名": "objectDesc",
+          "类型": "JSONObject",
+          "说明": "朋友圈内容"
+        },
+        {
+          "参数名": "xml",
+          "类型": "String",
+          "说明": "朋友圈xml"
+        },
+        {
+          "参数名": "len",
+          "类型": "int",
+          "说明": "xml 长度"
+        },
+        {
+          "参数名": "snsComments",
+          "类型": "JSONArray",
+          "说明": "评论用户列表"
+        },
+        {
+          "参数名": "userName",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "nickName",
+          "类型": "String",
+          "说明": "昵称"
+        },
+        {
+          "参数名": "type",
+          "类型": "int",
+          "说明": "评论类型"
+        },
+        {
+          "参数名": "createTime",
+          "类型": "int",
+          "说明": "评论时间"
+        },
+        {
+          "参数名": "commentId",
+          "类型": "int",
+          "说明": "评论标识"
+        },
+        {
+          "参数名": "replyCommentId",
+          "类型": "int",
+          "说明": "回复评论标识"
+        },
+        {
+          "参数名": "deleteFlag",
+          "类型": "int",
+          "说明": "删除标识"
+        },
+        {
+          "参数名": "isNotRichText",
+          "类型": "int",
+          "说明": "是否试富文本"
+        },
+        {
+          "参数名": "content",
+          "类型": "String",
+          "说明": "评论内容"
+        },
+        {
+          "参数名": "commentId",
+          "类型": "int",
+          "说明": "评论ID"
+        },
+        {
+          "参数名": "snsLikes",
+          "类型": "JSONArray",
+          "说明": "点赞用户列表"
+        },
+        {
+          "参数名": "userName",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "nickName",
+          "类型": "String",
+          "说明": "昵称"
+        },
+        {
+          "参数名": "type",
+          "类型": "int",
+          "说明": "点赞类型"
+        },
+        {
+          "参数名": "createTime",
+          "类型": "int",
+          "说明": "点赞时间"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/README.md",
+      "title": "朋友圈",
+      "module": "peng-you-quan",
+      "kind": "category",
+      "operationId": "peng_you_quan_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/snsCancelPraise.md",
+      "title": "取消点赞",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_snsCancelPraise",
+      "method": "POST",
+      "path": "/snsCancelPraise",
+      "requestUrl": "http://域名地址/snsCancelPraise",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "id",
+          "必选": "是",
+          "类型": "String",
+          "说明": "朋友圈id"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/snsComment.md",
+      "title": "朋友圈评论",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_snsComment",
+      "method": "POST",
+      "path": "/snsComment",
+      "requestUrl": "http://域名地址/snsComment",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "id",
+          "必选": "是",
+          "类型": "String",
+          "说明": "朋友圈标识"
+        },
+        {
+          "参数名": "replyCommentId",
+          "必选": "是",
+          "类型": "int",
+          "说明": "评论标识（回复评论）"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "String",
+          "说明": "内容"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "int",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/snsCommentDel.md",
+      "title": "删除某条朋友圈的某条评论",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_snsCommentDel",
+      "method": "POST",
+      "path": "/snsCommentDel",
+      "requestUrl": "http://域名地址/snsCommentDel",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "id",
+          "必选": "是",
+          "类型": "String",
+          "说明": "朋友圈id"
+        },
+        {
+          "参数名": "commentId",
+          "必选": "是",
+          "类型": "int",
+          "说明": "评论id"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/snsPraise.md",
+      "title": "朋友圈点赞",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_snsPraise",
+      "method": "POST",
+      "path": "/snsPraise",
+      "requestUrl": "http://域名地址/snsPraise",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "id",
+          "必选": "是",
+          "类型": "String",
+          "说明": "朋友圈Id"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/snsPrivacySettings.md",
+      "title": "朋友圈权限设置",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_snsPrivacySettings",
+      "method": "POST",
+      "path": "/snsPrivacySettings",
+      "requestUrl": "http://域名地址/snsPrivacySettings",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "type",
+          "必选": "是",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/snsSend.md",
+      "title": "发送文字朋友圈消息",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_snsSend",
+      "method": "POST",
+      "path": "/snsSend",
+      "requestUrl": "http://域名地址/snsSend",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回 **参数：**"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "String",
+          "说明": "文本内容"
+        },
+        {
+          "参数名": "groupUser",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁可见（传微信id,多个用,分隔）"
+        },
+        {
+          "参数名": "blackList",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁不可见（传微信id,多个用,分隔）"
+        },
+        {
+          "参数名": "groupUserLabelIds",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁可见（传标签id,多个用,分隔）"
+        },
+        {
+          "参数名": "blackListLabelIds",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁不可见（传标签id,多个用,分隔）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "id",
+          "类型": "String",
+          "说明": "ID"
+        },
+        {
+          "参数名": "userName",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "createTime",
+          "类型": "String",
+          "说明": "发送时间"
+        },
+        {
+          "参数名": "objectDesc",
+          "类型": "String",
+          "说明": "内容"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/snsSendImage.md",
+      "title": "发送图片朋友圈消息",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_snsSendImage",
+      "method": "POST",
+      "path": "/snsSendImage",
+      "requestUrl": "http://域名地址/snsSendImage",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "String",
+          "说明": "文本内容"
+        },
+        {
+          "参数名": "paths",
+          "必选": "是",
+          "类型": "String",
+          "说明": "图片url(多个用;分隔 单张图片最大3M以内,必须是png格式)"
+        },
+        {
+          "参数名": "groupUser",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁可见（传微信id,多个用,分隔）"
+        },
+        {
+          "参数名": "blackList",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁不可见（传微信id,多个用,分隔）"
+        },
+        {
+          "参数名": "groupUserLabelIds",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁可见（传标签id,多个用,分隔）"
+        },
+        {
+          "参数名": "blackListLabelIds",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁不可见（传标签id,多个用,分隔）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "id",
+          "类型": "String",
+          "说明": "ID"
+        },
+        {
+          "参数名": "userName",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "createTime",
+          "类型": "String",
+          "说明": "发送时间"
+        },
+        {
+          "参数名": "objectDesc",
+          "类型": "String",
+          "说明": "内容"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/snsSendUrl.md",
+      "title": "发送链接朋友圈消息",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_snsSendUrl",
+      "method": "POST",
+      "path": "/snsSendUrl",
+      "requestUrl": "http://域名地址/snsSendUrl",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "String",
+          "说明": "文本内容"
+        },
+        {
+          "参数名": "title",
+          "必选": "是",
+          "类型": "String",
+          "说明": "标题"
+        },
+        {
+          "参数名": "description",
+          "必选": "是",
+          "类型": "String",
+          "说明": "描述"
+        },
+        {
+          "参数名": "url",
+          "必选": "是",
+          "类型": "String",
+          "说明": "url"
+        },
+        {
+          "参数名": "thumbUrl",
+          "必选": "是",
+          "类型": "String",
+          "说明": "缩略图url"
+        },
+        {
+          "参数名": "groupUser",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁可见（传微信id,多个用,分隔）"
+        },
+        {
+          "参数名": "blackList",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁不可见（传微信id,多个用,分隔）"
+        },
+        {
+          "参数名": "groupUserLabelIds",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁可见（传标签id,多个用,分隔）"
+        },
+        {
+          "参数名": "blackListLabelIds",
+          "必选": "否",
+          "类型": "String",
+          "说明": "对谁不可见（传标签id,多个用,分隔）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "id",
+          "类型": "String",
+          "说明": "ID"
+        },
+        {
+          "参数名": "userName",
+          "类型": "String",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "createTime",
+          "类型": "String",
+          "说明": "发送时间"
+        },
+        {
+          "参数名": "objectDesc",
+          "类型": "String",
+          "说明": "内容"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/snsSetAsPrivacy.md",
+      "title": "设置某条朋友圈为隐私",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_snsSetAsPrivacy",
+      "method": "POST",
+      "path": "/snsSetAsPrivacy",
+      "requestUrl": "http://域名地址/snsSetAsPrivacy",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "id",
+          "必选": "是",
+          "类型": "String",
+          "说明": "朋友圈id"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/peng-you-quan/snsSetPublic.md",
+      "title": "设置某条朋友圈为公开",
+      "module": "peng-you-quan",
+      "kind": "endpoint",
+      "operationId": "peng_you_quan_snsSetPublic",
+      "method": "POST",
+      "path": "/snsSetPublic",
+      "requestUrl": "http://域名地址/snsSetPublic",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "id",
+          "必选": "是",
+          "类型": "String",
+          "说明": "朋友圈id"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "String",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/acceptMemberGroup.md",
+      "title": "自动通过群（url）",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_acceptMemberGroup",
+      "method": "POST",
+      "path": "/acceptUrl",
+      "requestUrl": "http://域名地址/acceptUrl",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Authorization值（登录获取二维码信息接口中返回的认证信息值）"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "url",
+          "必选": "是",
+          "类型": "string",
+          "说明": "原始 url，好友发送的入群邀请卡片信息链接(回调中取)"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/addChatRoomMemberVerify.md",
+      "title": "邀请群成员（开启群验证）",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_addChatRoomMemberVerify",
+      "method": "POST",
+      "path": "/addChatRoomMemberVerify",
+      "requestUrl": "http://域名/addChatRoomMemberVerify",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群id"
+        },
+        {
+          "参数名": "userList",
+          "必选": "是",
+          "类型": "number",
+          "说明": "邀请好友的id"
+        },
+        {
+          "参数名": "reason",
+          "必选": "是",
+          "类型": "String",
+          "说明": "邀请理由（管理员查看，不得为空）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/addGroupMember.md",
+      "title": "添加群成员",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_addGroupMember",
+      "method": "POST",
+      "path": "/addChatRoomMember",
+      "requestUrl": "http://域名地址/addChatRoomMember",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群号"
+        },
+        {
+          "参数名": "userList",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群成员微信id，多个已 \",\" 分割"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/addRoomMemberFriend.md",
+      "title": "添加群成员为好友",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_addRoomMemberFriend",
+      "method": "POST",
+      "path": "/addRoomMemberFriend",
+      "requestUrl": "http://域名/addRoomMemberFriend",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群id"
+        },
+        {
+          "参数名": "memberWcId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群成员的wcId"
+        },
+        {
+          "参数名": "content",
+          "必选": "否",
+          "类型": "String",
+          "说明": "申请消息"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/agreeAddChatRoomMember.md",
+      "title": "群管理确认入群邀请",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_agreeAddChatRoomMember",
+      "method": "POST",
+      "path": "/agreeAddChatRoomMember",
+      "requestUrl": "http://域名/agreeAddChatRoomMember",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群id"
+        },
+        {
+          "参数名": "newMsgId",
+          "必选": "是",
+          "类型": "number",
+          "说明": "入群邀请回调返回newmMsgid"
+        },
+        {
+          "参数名": "xml",
+          "必选": "是",
+          "类型": "String",
+          "说明": "入群邀请的回调xml"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/chuang-jian-wei-xin-qun.md",
+      "title": "创建微信群",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_chuang_jian_wei_xin_qun",
+      "method": "POST",
+      "path": "/createChatroom",
+      "requestUrl": "http://域名地址/createChatroom",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "userList",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群成员微信id，多个已 \",\" 分割，（必须传输2个微信id以上才可创建群聊）"
+        },
+        {
+          "参数名": "topic",
+          "必选": "否",
+          "类型": "String",
+          "说明": "群名"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/delGroupMember.md",
+      "title": "删除群成员",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_delGroupMember",
+      "method": "POST",
+      "path": "/deleteChatRoomMember",
+      "requestUrl": "http://域名地址/deleteChatRoomMember",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群号"
+        },
+        {
+          "参数名": "userList",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群成员微信id，多个已 \",\" 分割"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/inviteGroupMember.md",
+      "title": "邀请群成员（40人以上）",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_inviteGroupMember",
+      "method": "POST",
+      "path": "/inviteChatRoomMember",
+      "requestUrl": "http://域名地址/inviteChatRoomMember",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群号"
+        },
+        {
+          "参数名": "userList",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群成员微信id，多个已 \",\" 分割"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/operateChatRoom.md",
+      "title": "群管理操作",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_operateChatRoom",
+      "method": "POST",
+      "path": "/operateChatRoom",
+      "requestUrl": "http://域名/operateChatRoom",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群号"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群成员微信id，多个用 \",\" 分割"
+        },
+        {
+          "参数名": "type",
+          "必选": "是",
+          "类型": "int",
+          "说明": "1：添加群管理（可添加多个微信id） 2：删除群管理（可删除多个） 3：转让（只能转让一个微信号）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/queryGroupDetail.md",
+      "title": "获取群信息",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_queryGroupDetail",
+      "method": "POST",
+      "path": "/getChatRoomInfo",
+      "requestUrl": "http://域名地址/getChatRoomInfo",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群号"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/queryGroupList.md",
+      "title": "获取群成员",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_queryGroupList",
+      "method": "POST",
+      "path": "/getChatRoomMember",
+      "requestUrl": "http://域名地址/getChatRoomMember",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群号"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/queryGroupMemberDetail.md",
+      "title": "获取群成员详情",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_queryGroupMemberDetail",
+      "method": "POST",
+      "path": "/getChatRoomMemberInfo",
+      "requestUrl": "http://域名/getChatRoomMemberInfo",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群号"
+        },
+        {
+          "参数名": "userList",
+          "必选": "是",
+          "类型": "String",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/queryGroupQrCode.md",
+      "title": "获取群二维码",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_queryGroupQrCode",
+      "method": "POST",
+      "path": "/getGroupQrCode",
+      "requestUrl": "http://域名地址/getGroupQrCode",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群号"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/quitGroup.md",
+      "title": "退出群聊",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_quitGroup",
+      "method": "POST",
+      "path": "/quitChatRoom",
+      "requestUrl": "http://域名地址/quitChatRoom",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "群id"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/README.md",
+      "title": "群操作",
+      "module": "qun-cao-zuo",
+      "kind": "category",
+      "operationId": "qun_cao_zuo_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/roomAppTodo.md",
+      "title": "设置群待办消息",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_roomAppTodo",
+      "method": "POST",
+      "path": "/roomAppTodo",
+      "requestUrl": "http://域名/roomAppTodo",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群id"
+        },
+        {
+          "参数名": "newMsgId",
+          "必选": "是",
+          "类型": "int",
+          "说明": "小程序的消息id(小程序消息回调返回newMsgid)"
+        },
+        {
+          "参数名": "title",
+          "必选": "是",
+          "类型": "小程序标题",
+          "说明": "小程序消息回调中取"
+        },
+        {
+          "参数名": "pagePath",
+          "必选": "是",
+          "类型": "小程序跳转地址",
+          "说明": "小程序消息回调中取"
+        },
+        {
+          "参数名": "userName",
+          "必选": "是",
+          "类型": "小程序id",
+          "说明": "小程序回调中取"
+        },
+        {
+          "参数名": "sendWcId",
+          "必选": "是",
+          "类型": "原小程序的发送者id",
+          "说明": "小程序回调中取"
+        },
+        {
+          "参数名": "sign",
+          "必选": "否",
+          "类型": "int",
+          "说明": "撤回传，设置待办成功后返回本字段"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/roomTodo.md",
+      "title": "设置群待办消息",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_roomTodo",
+      "method": "POST",
+      "path": "/roomTodo",
+      "requestUrl": "http://域名/roomTodo",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群id"
+        },
+        {
+          "参数名": "newMsgId",
+          "必选": "是",
+          "类型": "int",
+          "说明": "群公告的消息id(设置群公告成功后，回调返回newMsgId)"
+        },
+        {
+          "参数名": "operType",
+          "必选": "是",
+          "类型": "int",
+          "说明": "0:设置群待办 1:撤回群待办"
+        },
+        {
+          "参数名": "sign",
+          "必选": "否",
+          "类型": "int",
+          "说明": "撤回传，设置待办成功后返回本字段"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/saveGroup.md",
+      "title": "群保存|取消到通讯录",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_saveGroup",
+      "method": "POST",
+      "path": "/showInAddressBook",
+      "requestUrl": "http://域名地址/showInAddressBook",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群号"
+        },
+        {
+          "参数名": "flag",
+          "必选": "是",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/scanJoinRoom.md",
+      "title": "扫码入群",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_scanJoinRoom",
+      "method": "POST",
+      "path": "/scanJoinRoom",
+      "requestUrl": "http://域名地址/scanJoinRoom",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "url",
+          "必选": "是",
+          "类型": "string",
+          "说明": "群二维码url（二维码解析后的url）"
+        },
+        {
+          "参数名": "type",
+          "必选": "否",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/setGroupAnnounct.md",
+      "title": "设置群公告",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_setGroupAnnounct",
+      "method": "POST",
+      "path": "/setChatRoomAnnouncement",
+      "requestUrl": "http://域名地址/setChatRoomAnnouncement",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群号"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "String",
+          "说明": "内容"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/updateGroupName.md",
+      "title": "修改群名称",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_updateGroupName",
+      "method": "POST",
+      "path": "/modifyGroupName",
+      "requestUrl": "http://域名地址/modifyGroupName",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群号"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群名"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/updateGroupRemark.md",
+      "title": "修改群备注",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_updateGroupRemark",
+      "method": "POST",
+      "path": "/modifyGroupRemark",
+      "requestUrl": "http://域名地址/modifyGroupRemark",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "chatRoomId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群号"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "String",
+          "说明": "群名"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/qun-cao-zuo/updateIInChatRoomNickName.md",
+      "title": "修改我在某群的昵称",
+      "module": "qun-cao-zuo",
+      "kind": "endpoint",
+      "operationId": "qun_cao_zuo_updateIInChatRoomNickName",
+      "method": "POST",
+      "path": "/updateIInChatRoomNickName",
+      "requestUrl": "http://域名/updateIInChatRoomNickName",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/README.md",
+      "title": "API 文档",
+      "module": "README.md",
+      "kind": "category",
+      "operationId": "README_md_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/createFinder.md",
+      "title": "创建视频号",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_createFinder",
+      "method": "POST",
+      "path": "/createFinder",
+      "requestUrl": "http://域名/createFinder",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "nickName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号名称"
+        },
+        {
+          "参数名": "headImgUrl",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号头像"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/finderBrowse.md",
+      "title": "浏览",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_finderBrowse",
+      "method": "POST",
+      "path": "/finderBrowse",
+      "requestUrl": "http://域名/finderBrowse",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "objectId",
+          "必选": "是",
+          "类型": "bigint",
+          "说明": "视频号作品id"
+        },
+        {
+          "参数名": "objectNonceId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号作品nonceId"
+        },
+        {
+          "参数名": "sessionBuffer",
+          "必选": "是",
+          "类型": "String",
+          "说明": "通过获取用户主页返回的sessionBuffer"
+        },
+        {
+          "参数名": "myUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "自己的用户编码（获取个人主页接口返回的userName）"
+        },
+        {
+          "参数名": "myRoleType",
+          "必选": "是",
+          "类型": "int",
+          "说明": "自己的角色类型，根据角色关注（获取个人主页接口返回的roleType）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/finderComment.md",
+      "title": "评论",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_finderComment",
+      "method": "POST",
+      "path": "/finderComment",
+      "requestUrl": "http://域名/finderComment",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "String",
+          "说明": "评论内容"
+        },
+        {
+          "参数名": "id",
+          "必选": "是",
+          "类型": "bigint",
+          "说明": "视频号作品id"
+        },
+        {
+          "参数名": "objectNonceId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号作品nonceId"
+        },
+        {
+          "参数名": "type",
+          "必选": "是",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/finderCommentDetails.md",
+      "title": "获取评论列表",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_finderCommentDetails",
+      "method": "POST",
+      "path": "/finderCommentDetails",
+      "requestUrl": "http://域名/finderCommentDetails",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "id",
+          "必选": "是",
+          "类型": "bigint",
+          "说明": "视频号作品id"
+        },
+        {
+          "参数名": "pageCode",
+          "必选": "是",
+          "类型": "String",
+          "说明": "分页code，首次传空，后续传接口返回的"
+        },
+        {
+          "参数名": "sessionBuffer",
+          "必选": "是",
+          "类型": "String",
+          "说明": "通过获取用户主页返回的sessionBuffer"
+        },
+        {
+          "参数名": "refCommentId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "默认为0"
+        },
+        {
+          "参数名": "rootCommentId",
+          "必选": "是",
+          "类型": "bigint",
+          "说明": "获取评论的回复详情时传上级评论的ID"
+        },
+        {
+          "参数名": "nonceId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号作品nonceId"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/finderFollow.md",
+      "title": "关注",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_finderFollow",
+      "method": "POST",
+      "path": "/finderFollow",
+      "requestUrl": "http://域名/finderFollow",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "userName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号用户的编码（搜索接口返回的userName）"
+        },
+        {
+          "参数名": "meUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "自己的用户编码（获取个人主页接口返回的userName）"
+        },
+        {
+          "参数名": "meRoleType",
+          "必选": "是",
+          "类型": "int",
+          "说明": "自己的角色类型，根据角色关注（获取个人主页接口返回的roleType）"
+        },
+        {
+          "参数名": "type",
+          "必选": "是",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/finderHome.md",
+      "title": "获取个人主页",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_finderHome",
+      "method": "POST",
+      "path": "/finderHome",
+      "requestUrl": "http://域名/finderHome",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/finderIdFav.md",
+      "title": "点赞",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_finderIdFav",
+      "method": "POST",
+      "path": "/finderIdFav",
+      "requestUrl": "http://域名/finderIdFav",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "id",
+          "必选": "是",
+          "类型": "bigint",
+          "说明": "视频号作品id"
+        },
+        {
+          "参数名": "nonceId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号作品nonceId"
+        },
+        {
+          "参数名": "type",
+          "必选": "是",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/finderIdLike.md",
+      "title": "小红心",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_finderIdLike",
+      "method": "POST",
+      "path": "/finderIdLike",
+      "requestUrl": "http://域名/finderIdLike",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "id",
+          "必选": "是",
+          "类型": "bigint",
+          "说明": "视频号作品id"
+        },
+        {
+          "参数名": "commentId",
+          "必选": "是",
+          "类型": "bigint",
+          "说明": "评论的id"
+        },
+        {
+          "参数名": "nonceId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号作品nonceId"
+        },
+        {
+          "参数名": "type",
+          "必选": "是",
+          "类型": "int",
+          "说明": "视频操作 3喜欢 4不喜欢 评论操作 1喜欢 2不喜欢"
+        },
+        {
+          "参数名": "sessionBuffer",
+          "必选": "是",
+          "类型": "String",
+          "说明": "通过获取用户主页返回的sessionBuffer"
+        },
+        {
+          "参数名": "toUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "作者的username"
+        },
+        {
+          "参数名": "meUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "自己的用户编码（获取个人主页接口返回的userName）"
+        },
+        {
+          "参数名": "meRoleType",
+          "必选": "是",
+          "类型": "int",
+          "说明": "自己的角色类型，根据角色关注（获取个人主页接口返回的roleType）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/finderPublish.md",
+      "title": "发布视频号",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_finderPublish",
+      "method": "POST",
+      "path": "/finderPublish",
+      "requestUrl": "http://域名/finderPublish",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "myUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "自己的用户编码"
+        },
+        {
+          "参数名": "videoUrl",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频链接"
+        },
+        {
+          "参数名": "videoThumbUrl",
+          "必选": "是",
+          "类型": "String",
+          "说明": "封面链接"
+        },
+        {
+          "参数名": "videoWidth",
+          "必选": "是",
+          "类型": "int",
+          "说明": "视频宽度"
+        },
+        {
+          "参数名": "videoHeight",
+          "必选": "是",
+          "类型": "int",
+          "说明": "视频高度"
+        },
+        {
+          "参数名": "videoPlayLen",
+          "必选": "是",
+          "类型": "int",
+          "说明": "视频播放时长，单位秒"
+        },
+        {
+          "参数名": "title",
+          "必选": "是",
+          "类型": "String",
+          "说明": "标题"
+        },
+        {
+          "参数名": "topic",
+          "必选": "是",
+          "类型": "String\\[\\]",
+          "说明": "话题"
+        },
+        {
+          "参数名": "videoCdn",
+          "必选": "否",
+          "类型": "JSONObject",
+          "说明": "通过“上传视频号视频”接口获取"
+        },
+        {
+          "参数名": "videoCdn.fileUrl",
+          "必选": "是",
+          "类型": "String",
+          "说明": "通过“上传视频号视频”接口获取"
+        },
+        {
+          "参数名": "videoCdn.thumbUrl",
+          "必选": "是",
+          "类型": "String",
+          "说明": "通过“上传视频号视频”接口获取"
+        },
+        {
+          "参数名": "videoCdn.mp4Identify",
+          "必选": "是",
+          "类型": "String",
+          "说明": "通过“上传视频号视频”接口获取"
+        },
+        {
+          "参数名": "videoCdn.fileSize",
+          "必选": "是",
+          "类型": "int",
+          "说明": "通过“上传视频号视频”接口获取"
+        },
+        {
+          "参数名": "videoCdn.thumbMd5",
+          "必选": "是",
+          "类型": "String",
+          "说明": "通过“上传视频号视频”接口获取"
+        },
+        {
+          "参数名": "videoCdn.fileKey",
+          "必选": "是",
+          "类型": "String",
+          "说明": "通过“上传视频号视频”接口获取"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/finderUpload.md",
+      "title": "上传视频号视频",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_finderUpload",
+      "method": "POST",
+      "path": "/finderUpload",
+      "requestUrl": "http://域名/finderUpload",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "videoUrl",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频链接"
+        },
+        {
+          "参数名": "imgUrl",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频封面图片链接"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/finderUserHome.md",
+      "title": "获取用户主页",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_finderUserHome",
+      "method": "POST",
+      "path": "/finderUserHome",
+      "requestUrl": "http://域名/finderUserHome",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "userName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号用户的编码（搜索接口返回的userName）"
+        },
+        {
+          "参数名": "pageCode",
+          "必选": "否",
+          "类型": "String",
+          "说明": "分页参数，首次传空，获取下一页时传响应中返回的pageCode"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/getContactDetails.md",
+      "title": "获取私信联系人信息",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_getContactDetails",
+      "method": "POST",
+      "path": "/finder/getContactDetails",
+      "requestUrl": "http://域名/finder/getContactDetails",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "meUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "自己的用户编码（获取个人主页接口返回的userName）"
+        },
+        {
+          "参数名": "meRoleType",
+          "必选": "是",
+          "类型": "int",
+          "说明": "自己的角色类型，根据角色关注（获取个人主页接口返回的roleType）"
+        },
+        {
+          "参数名": "contactUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "私信联系人的username"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/getFollowList.md",
+      "title": "获取关注列表",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_getFollowList",
+      "method": "POST",
+      "path": "/finder/getFollowList",
+      "requestUrl": "http://域名/finder/getFollowList",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "lastBuff",
+          "必选": "否",
+          "类型": "String",
+          "说明": "首次传空，后续传接口返回的lastBuffer"
+        },
+        {
+          "参数名": "myUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "自己的用户编码（获取个人主页接口返回的userName）"
+        },
+        {
+          "参数名": "myRoleType",
+          "必选": "是",
+          "类型": "int",
+          "说明": "自己的角色类型，根据角色关注（获取个人主页接口返回的roleType）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/getLikeAndFavList.md",
+      "title": "获取赞和收藏的视频列表",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_getLikeAndFavList",
+      "method": "POST",
+      "path": "/finder/getLikeAndFavList",
+      "requestUrl": "http://域名/finder/getLikeAndFavList",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "lastBuffer",
+          "必选": "否",
+          "类型": "String",
+          "说明": "首次传空，后续传接口返回的lastBuffer"
+        },
+        {
+          "参数名": "myUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "自己的用户编码（获取个人主页接口返回的userName）"
+        },
+        {
+          "参数名": "myRoleType",
+          "必选": "是",
+          "类型": "int",
+          "说明": "自己的角色类型，根据角色关注（获取个人主页接口返回的roleType）"
+        },
+        {
+          "参数名": "flag",
+          "必选": "是",
+          "类型": "int",
+          "说明": "视频类型，7:全部 1:红心 2:大拇指 4:收藏"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/getMentionList.md",
+      "title": "消息列表",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_getMentionList",
+      "method": "POST",
+      "path": "/finder/getMentionList",
+      "requestUrl": "http://域名/finder/getMentionList",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "lastBuff",
+          "必选": "是",
+          "类型": "String",
+          "说明": "翻页的key，首次传空，翻页传接口返回的lastBuff"
+        },
+        {
+          "参数名": "myUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "自己的用户编码（获取个人主页接口返回的userName）"
+        },
+        {
+          "参数名": "myRoleType",
+          "必选": "是",
+          "类型": "int",
+          "说明": "自己的角色类型，根据角色关注（获取个人主页接口返回的roleType）"
+        },
+        {
+          "参数名": "reqScene",
+          "必选": "是",
+          "类型": "int",
+          "说明": "消息类型，3是点赞 4是评论 5是关注"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/getQrCode.md",
+      "title": "获取我的视频号二维码",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_getQrCode",
+      "method": "POST",
+      "path": "/finder/getQrCode",
+      "requestUrl": "http://域名/finder/getQrCode",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "meUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "自己的用户编码（获取个人主页接口返回的userName）"
+        },
+        {
+          "参数名": "meRoleType",
+          "必选": "是",
+          "类型": "int",
+          "说明": "自己的角色类型，根据角色关注（获取个人主页接口返回的roleType）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/getSessionId.md",
+      "title": "获取私信SessionId",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_getSessionId",
+      "method": "POST",
+      "path": "/getSessionId",
+      "requestUrl": "http://域名/getSessionId",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "toUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号用户的编码"
+        },
+        {
+          "参数名": "myUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "自己的用户编码"
+        },
+        {
+          "参数名": "type",
+          "必选": "是",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/modFinderProfile.md",
+      "title": "修改视频号资料",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_modFinderProfile",
+      "method": "POST",
+      "path": "/modFinderProfile",
+      "requestUrl": "http://域名/modFinderProfile",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "meUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "自己的用户编码（获取个人主页接口返回的userName）"
+        },
+        {
+          "参数名": "meRoleType",
+          "必选": "是",
+          "类型": "int",
+          "说明": "自己的角色类型，根据角色关注（获取个人主页接口返回的roleType）"
+        },
+        {
+          "参数名": "nickName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号昵称"
+        },
+        {
+          "参数名": "signature",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号简介"
+        },
+        {
+          "参数名": "headImgUrl",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号头像链接"
+        },
+        {
+          "参数名": "country",
+          "必选": "是",
+          "类型": "String",
+          "说明": "国家"
+        },
+        {
+          "参数名": "province",
+          "必选": "是",
+          "类型": "String",
+          "说明": "省份"
+        },
+        {
+          "参数名": "city",
+          "必选": "是",
+          "类型": "String",
+          "说明": "城市"
+        },
+        {
+          "参数名": "sex",
+          "必选": "是",
+          "类型": "int",
+          "说明": "性别"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/privateSend.md",
+      "title": "私信文字",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_privateSend",
+      "method": "POST",
+      "path": "/privateSend",
+      "requestUrl": "http://域名/privateSend",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "toUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号用户的编码"
+        },
+        {
+          "参数名": "myUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "当前微信的用户编码"
+        },
+        {
+          "参数名": "sessionId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "通过/getSessionId接口获取"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "String",
+          "说明": "私信内容"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/privateSendImg.md",
+      "title": "私信图片",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_privateSendImg",
+      "method": "POST",
+      "path": "/privateSendImg",
+      "requestUrl": "http://域名/privateSendImg",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "toUserName",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号用户的编码"
+        },
+        {
+          "参数名": "sessionId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "通过/getSessionId接口获取"
+        },
+        {
+          "参数名": "imgUrl",
+          "必选": "是",
+          "类型": "String",
+          "说明": "图片地址"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/README.md",
+      "title": "视频号",
+      "module": "shipinhao",
+      "kind": "category",
+      "operationId": "shipinhao_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/scanFinderHelper.md",
+      "title": "登录视频号助手",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_scanFinderHelper",
+      "method": "POST",
+      "path": "/scanFinderHelper",
+      "requestUrl": "http://域名/scanFinderHelper",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "url",
+          "必选": "是",
+          "类型": "String",
+          "说明": "视频号助手官方二维码解析的地址（[二维码](https://channels.weixin.qq.com/login.html)）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shipinhao/searchFinder.md",
+      "title": "搜索视频号",
+      "module": "shipinhao",
+      "kind": "endpoint",
+      "operationId": "shipinhao_searchFinder",
+      "method": "POST",
+      "path": "/newSearchFinder",
+      "requestUrl": "http://域名/newSearchFinder",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "String",
+          "说明": "搜索内容"
+        },
+        {
+          "参数名": "type",
+          "必选": "是",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "String",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shou-cang-jia/huo-qu-shou-cang-jia-lie-biao.md",
+      "title": "获取收藏夹列表",
+      "module": "shou-cang-jia",
+      "kind": "endpoint",
+      "operationId": "shou_cang_jia_huo_qu_shou_cang_jia_lie_biao",
+      "method": "POST",
+      "path": "/weChatFavorites/favSync",
+      "requestUrl": "http://域名地址/weChatFavorites/favSync",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "微信实列ID"
+        },
+        {
+          "参数名": "keyBuf",
+          "必选": "是",
+          "类型": "byte\\[\\]",
+          "说明": "第一次传null,如果接口返回keyBuf第二次传keyBuf"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "ret",
+          "类型": "int",
+          "说明": "接口状态 0:成功"
+        },
+        {
+          "参数名": "favList",
+          "类型": "list",
+          "说明": "收藏列表"
+        },
+        {
+          "参数名": "keyBuf",
+          "类型": "byte\\[\\]",
+          "说明": "同步密钥"
+        },
+        {
+          "参数名": "continueFlag",
+          "类型": "int",
+          "说明": "0:表示同步结束，1:表示还需要继续同步"
+        },
+        {
+          "参数名": "favId",
+          "类型": "int",
+          "说明": "收藏标识"
+        },
+        {
+          "参数名": "type",
+          "类型": "int",
+          "说明": "收藏类型"
+        },
+        {
+          "参数名": "updateTime",
+          "类型": "long",
+          "说明": "收藏时间戳"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shou-cang-jia/huo-qu-shou-cang-jia-nei-rong.md",
+      "title": "获取收藏夹内容",
+      "module": "shou-cang-jia",
+      "kind": "endpoint",
+      "operationId": "shou_cang_jia_huo_qu_shou_cang_jia_nei_rong",
+      "method": "POST",
+      "path": "/weChatFavorites/getFavItem",
+      "requestUrl": "http://域名地址/weChatFavorites/getFavItem",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "微信实列ID"
+        },
+        {
+          "参数名": "favId",
+          "必选": "是",
+          "类型": "int",
+          "说明": "收藏标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "object",
+          "类型": "xml",
+          "说明": "收藏详情"
+        },
+        {
+          "参数名": "updateTime",
+          "类型": "long",
+          "说明": "收藏时间戳"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shou-cang-jia/README.md",
+      "title": "收藏夹",
+      "module": "shou-cang-jia",
+      "kind": "category",
+      "operationId": "shou_cang_jia_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/shou-cang-jia/shan-chu-shou-cang-jia-nei-rong.md",
+      "title": "删除收藏夹内容",
+      "module": "shou-cang-jia",
+      "kind": "endpoint",
+      "operationId": "shou_cang_jia_shan_chu_shou_cang_jia_nei_rong",
+      "method": "POST",
+      "path": "/weChatFavorites/delFavItem",
+      "requestUrl": "http://域名地址/weChatFavorites/delFavItem",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "String",
+          "说明": "微信实列ID"
+        },
+        {
+          "参数名": "favId",
+          "必选": "是",
+          "类型": "int",
+          "说明": "收藏标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/te-shu/cdnDownFile.md",
+      "title": "CDN资源下载",
+      "module": "te-shu",
+      "kind": "endpoint",
+      "operationId": "te_shu_cdnDownFile",
+      "method": "POST",
+      "path": "/cdnDownFile",
+      "requestUrl": "http://域名地址/cdnDownFile",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "cdnUrl",
+          "必选": "是",
+          "类型": "string",
+          "说明": "XML获取"
+        },
+        {
+          "参数名": "aeskey",
+          "必选": "是",
+          "类型": "string",
+          "说明": "XML获取"
+        },
+        {
+          "参数名": "fileType",
+          "必选": "是",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/te-shu/getReqTimes.md",
+      "title": "查询接口调用次数",
+      "module": "te-shu",
+      "kind": "endpoint",
+      "operationId": "te_shu_getReqTimes",
+      "method": "POST",
+      "path": "/getReqTimes",
+      "requestUrl": "http://域名地址/getReqTimes",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "account",
+          "类型": "string",
+          "说明": "开发者账号"
+        },
+        {
+          "参数名": "nickName",
+          "类型": "string",
+          "说明": "微信昵称"
+        },
+        {
+          "参数名": "wcId",
+          "类型": "string",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "times",
+          "类型": "string",
+          "说明": "接口调用次数"
+        },
+        {
+          "参数名": "wid",
+          "类型": "string",
+          "说明": "登录实例标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "account",
+          "类型": "string",
+          "说明": "开发者账号"
+        },
+        {
+          "参数名": "nickName",
+          "类型": "string",
+          "说明": "微信昵称"
+        },
+        {
+          "参数名": "wcId",
+          "类型": "string",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "times",
+          "类型": "string",
+          "说明": "接口调用次数"
+        },
+        {
+          "参数名": "wid",
+          "类型": "string",
+          "说明": "登录实例标识"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/te-shu/getUserFlow.md",
+      "title": "查询使用流量",
+      "module": "te-shu",
+      "kind": "endpoint",
+      "operationId": "te_shu_getUserFlow",
+      "method": "POST",
+      "path": "/getUserFlow",
+      "requestUrl": "http://域名地址/getUserFlow",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "account",
+          "类型": "string",
+          "说明": "开发者账号"
+        },
+        {
+          "参数名": "nickName",
+          "类型": "string",
+          "说明": "微信昵称"
+        },
+        {
+          "参数名": "wcId",
+          "类型": "string",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "flow",
+          "类型": "string",
+          "说明": "使用流量"
+        },
+        {
+          "参数名": "size",
+          "类型": "int",
+          "说明": "使用流量（以B为单位）"
+        },
+        {
+          "参数名": "wid",
+          "类型": "string",
+          "说明": "登录实例标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "account",
+          "类型": "string",
+          "说明": "开发者账号"
+        },
+        {
+          "参数名": "nickName",
+          "类型": "string",
+          "说明": "微信昵称"
+        },
+        {
+          "参数名": "wcId",
+          "类型": "string",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "flow",
+          "类型": "string",
+          "说明": "使用流量"
+        },
+        {
+          "参数名": "size",
+          "类型": "int",
+          "说明": "使用流量（以B为单位）"
+        },
+        {
+          "参数名": "wid",
+          "类型": "string",
+          "说明": "登录实例标识"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/te-shu/offlineReason.md",
+      "title": "查询掉线原因",
+      "module": "te-shu",
+      "kind": "endpoint",
+      "operationId": "te_shu_offlineReason",
+      "method": "POST",
+      "path": "/offlineReason",
+      "requestUrl": "http://域名地址/offlineReason",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "微信id"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "wcId",
+          "类型": "string",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "reason",
+          "类型": "string",
+          "说明": "掉线原因（null则是在线）"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/te-shu/README.md",
+      "title": "工具箱",
+      "module": "te-shu",
+      "kind": "category",
+      "operationId": "te_shu_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/te-shu/sendCdnVideo.md",
+      "title": "CDN视频上传",
+      "module": "te-shu",
+      "kind": "endpoint",
+      "operationId": "te_shu_sendCdnVideo",
+      "method": "POST",
+      "path": "/sendCdnVideo",
+      "requestUrl": "http://域名地址/sendCdnVideo",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回 **参数：**"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "path",
+          "必选": "是",
+          "类型": "string",
+          "说明": "视频url链接"
+        },
+        {
+          "参数名": "thumbPath",
+          "必选": "是",
+          "类型": "string",
+          "说明": "图片url链接"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "cdnUrl",
+          "类型": "string",
+          "说明": "视频cdn信息"
+        },
+        {
+          "参数名": "aesKey",
+          "类型": "string",
+          "说明": "视频key信息"
+        },
+        {
+          "参数名": "length",
+          "类型": "string",
+          "说明": "视频长度"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/te-shu/setproxy.md",
+      "title": "动态设置代理IP",
+      "module": "te-shu",
+      "kind": "endpoint",
+      "operationId": "te_shu_setproxy",
+      "method": "POST",
+      "path": "/setproxy",
+      "requestUrl": "http://域名地址/setproxy",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "proxyIp",
+          "必选": "是",
+          "类型": "string",
+          "说明": "代理IP+端口"
+        },
+        {
+          "参数名": "proxyUser",
+          "必选": "是",
+          "类型": "string",
+          "说明": "代理IP平台账号"
+        },
+        {
+          "参数名": "proxyPassword",
+          "必选": "是",
+          "类型": "string",
+          "说明": "代理IP平台密码"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/te-shu/uploadCdnImage.md",
+      "title": "CDN图片上传",
+      "module": "te-shu",
+      "kind": "endpoint",
+      "operationId": "te_shu_uploadCdnImage",
+      "method": "POST",
+      "path": "/uploadCdnImage",
+      "requestUrl": "http://域名地址/uploadCdnImage",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回 **参数：**"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "图片url链接"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "cdnUrl",
+          "类型": "string",
+          "说明": "图片cdn信息（用于自定义小程序图片参数）"
+        },
+        {
+          "参数名": "aesKey",
+          "类型": "string",
+          "说明": "图片key信息（用于自定义小程序图片参数）"
+        },
+        {
+          "参数名": "hdLength",
+          "类型": "string",
+          "说明": "图片大小（用于自定义小程序图片参数）"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/wei-xin-guan-li/cha-xun-wei-xin-shi-fou-zai-xian.md",
+      "title": "查询微信是否在线",
+      "module": "wei-xin-guan-li",
+      "kind": "endpoint",
+      "operationId": "wei_xin_guan_li_cha_xun_wei_xin_shi_fou_zai_xian",
+      "method": "POST",
+      "path": "/isOnline",
+      "requestUrl": "http://域名地址/isOnline",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功（在线），1001失败（离线）"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/wei-xin-guan-li/duan-xian-chong-lian.md",
+      "title": "查询账号中在线的微信列表",
+      "module": "wei-xin-guan-li",
+      "kind": "endpoint",
+      "operationId": "wei_xin_guan_li_duan_xian_chong_lian",
+      "method": "POST",
+      "path": "/queryLoginWx",
+      "requestUrl": "http://域名地址/queryLoginWx",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功（在线），1001失败（离线）"
+        },
+        {
+          "参数名": "message",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "wcId",
+          "类型": "string",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "wId",
+          "类型": "string",
+          "说明": "登录实例标识"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功（在线），1001失败（离线）"
+        },
+        {
+          "参数名": "message",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "wcId",
+          "类型": "string",
+          "说明": "微信id"
+        },
+        {
+          "参数名": "wId",
+          "类型": "string",
+          "说明": "登录实例标识"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/wei-xin-guan-li/pi-liang-xia-xian-wei-xin-hao.md",
+      "title": "批量下线微信号",
+      "module": "wei-xin-guan-li",
+      "kind": "endpoint",
+      "operationId": "wei_xin_guan_li_pi_liang_xia_xian_wei_xin_hao",
+      "method": "POST",
+      "path": "/member/offline",
+      "requestUrl": "http://域名地址/member/offline",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "account",
+          "必选": "是",
+          "类型": "string",
+          "说明": "账号"
+        },
+        {
+          "参数名": "wcIds",
+          "必选": "是",
+          "类型": "list",
+          "说明": "须下线的微信id"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/wei-xin-guan-li/README.md",
+      "title": "账户管理",
+      "module": "wei-xin-guan-li",
+      "kind": "category",
+      "operationId": "wei_xin_guan_li_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/fa-song-emoji.md",
+      "title": "发送emoji表情",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_fa_song_emoji",
+      "method": "POST",
+      "path": "/sendEmoji",
+      "requestUrl": "http://域名地址/sendEmoji",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收人微信id/群id"
+        },
+        {
+          "参数名": "imageMd5",
+          "必选": "是",
+          "类型": "string",
+          "说明": "取回调中xml中md5字段值"
+        },
+        {
+          "参数名": "imgSize",
+          "必选": "是",
+          "类型": "string",
+          "说明": "取回调中xml中len字段值"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/fa-song-lian-jie-xiao-xi.md",
+      "title": "发送链接",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_fa_song_lian_jie_xiao_xi",
+      "method": "POST",
+      "path": "/sendUrl",
+      "requestUrl": "http://域名地址/sendUrl",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收人微信id/群id"
+        },
+        {
+          "参数名": "title",
+          "必选": "是",
+          "类型": "string",
+          "说明": "标题"
+        },
+        {
+          "参数名": "url",
+          "必选": "是",
+          "类型": "string",
+          "说明": "链接"
+        },
+        {
+          "参数名": "description",
+          "必选": "是",
+          "类型": "string",
+          "说明": "描述"
+        },
+        {
+          "参数名": "thumbUrl",
+          "必选": "是",
+          "类型": "string",
+          "说明": "图标url（JPG/PNG格式,50K以内）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/fa-song-ming-pian-xiao-xi.md",
+      "title": "发送名片消息",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_fa_song_ming_pian_xiao_xi",
+      "method": "POST",
+      "path": "/sendNameCard",
+      "requestUrl": "http://域名地址/sendNameCard",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收人微信id/群id"
+        },
+        {
+          "参数名": "nameCardId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "要发送的名片微信id"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/fa-song-shi-pin-xiao-xi.md",
+      "title": "发送视频消息",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_fa_song_shi_pin_xiao_xi",
+      "method": "POST",
+      "path": "/sendVideo",
+      "requestUrl": "http://域名地址/sendVideo",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收人微信id/群id"
+        },
+        {
+          "参数名": "path",
+          "必选": "是",
+          "类型": "string",
+          "说明": "视频url链接"
+        },
+        {
+          "参数名": "thumbPath",
+          "必选": "是",
+          "类型": "string",
+          "说明": "视频封面url链接（50KB以内）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/fa-song-tu-pian-xiao-xi2.md",
+      "title": "发送图片消息",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_fa_song_tu_pian_xiao_xi2",
+      "method": "POST",
+      "path": "/sendImage2",
+      "requestUrl": "http://域名地址/sendImage2",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回 **参数：**"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收人微信id/群id"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "图片url链接"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/fa-song-wen-ben-xiao-xi.md",
+      "title": "发送文本消息",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_fa_song_wen_ben_xiao_xi",
+      "method": "POST",
+      "path": "/sendText",
+      "requestUrl": "http://域名地址/sendText",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收人微信id/群id"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "文本内容消息"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/fa-song-yi-jing-shou-dao-de-shi-pin-xiao-xi.md",
+      "title": "转发视频消息",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_fa_song_yi_jing_shou_dao_de_shi_pin_xiao_xi",
+      "method": "POST",
+      "path": "/sendRecvVideo",
+      "requestUrl": "http://域名地址/sendRecvVideo",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收人微信id/群号id"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "xml视频内容"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/fa-song-yi-jing-shou-dao-de-tu-pian-xiao-xi.md",
+      "title": "转发图片消息",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_fa_song_yi_jing_shou_dao_de_tu_pian_xiao_xi",
+      "method": "POST",
+      "path": "/sendRecvImage",
+      "requestUrl": "http://域名地址/sendRecvImage",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回 **参数：**"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收人微信id/群id"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "xml图片内容"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/fa-song-yi-jing-shou-dao-de-wen-jian.md",
+      "title": "转发文件消息",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_fa_song_yi_jing_shou_dao_de_wen_jian",
+      "method": "POST",
+      "path": "/sendRecvFile",
+      "requestUrl": "http://域名地址/sendRecvFile",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收人微信id/群id"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "xml文件内容"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/fa-song-yu-yin-xiao-xi-ji-jiang-kai-fang.md",
+      "title": "发送语音",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_fa_song_yu_yin_xiao_xi_ji_jiang_kai_fang",
+      "method": "POST",
+      "path": "/sendVoice",
+      "requestUrl": "http://域名地址/sendVoice",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收人微信id/群id"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "语音url （silk/amr 格式,可以[下载消息中的语音返回silk格式](../xiao-xi-jie-shou/xia-zai-xiao-xi-nei-rong/xia-zai-yu-yin-ji-jiang-kai-fang.html)）"
+        },
+        {
+          "参数名": "length",
+          "必选": "是",
+          "类型": "int",
+          "说明": "语音时长（回调消息xml数据中的voicelength字段）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/forwardUrl.md",
+      "title": "转发链接消息",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_forwardUrl",
+      "method": "POST",
+      "path": "/forwardUrl",
+      "requestUrl": "http://域名地址/forwardUrl",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收人微信id/群id"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "xml文件内容"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/qun-liao-at.md",
+      "title": "群聊@",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_qun_liao_at",
+      "method": "POST",
+      "path": "/sendText",
+      "requestUrl": "http://域名地址/sendText",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收方群id"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "文本内容消息（@的微信昵称需要自己拼接，必须拼接艾特符号，不然不生效）"
+        },
+        {
+          "参数名": "at",
+          "必选": "是",
+          "类型": "string",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/README.md",
+      "title": "消息发送",
+      "module": "xiao-xi-fa-song",
+      "kind": "category",
+      "operationId": "xiao_xi_fa_song_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/revokeMsg.md",
+      "title": "撤回消息",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_revokeMsg",
+      "method": "POST",
+      "path": "/revokeMsg",
+      "requestUrl": "http://域名地址/revokeMsg",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收方微信id/群id"
+        },
+        {
+          "参数名": "msgId",
+          "必选": "是",
+          "类型": "long",
+          "说明": "消息msgId(发送类接口返回的msgId)"
+        },
+        {
+          "参数名": "newMsgId",
+          "必选": "是",
+          "类型": "long",
+          "说明": "消息newMsgId(发送类接口返回的newMsgId)"
+        },
+        {
+          "参数名": "createTime",
+          "必选": "是",
+          "类型": "long",
+          "说明": "发送时间"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/sendApp.md",
+      "title": "发送APP类消息",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_sendApp",
+      "method": "POST",
+      "path": "/sendApplet",
+      "requestUrl": "http://域名地址/sendApplet",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收方微信id/群id"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "消息xml回调内容, (此回调的XML需要去掉部分，截取appmsg开头的，具体请看请求参数示例）"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/sendApplet.md",
+      "title": "转发小程序",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_sendApplet",
+      "method": "POST",
+      "path": "/sendApplet",
+      "requestUrl": "http://域名地址/sendApplet",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收方微信id/群id"
+        },
+        {
+          "参数名": "imgUrl",
+          "必选": "是",
+          "类型": "string",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/sendApplets.md",
+      "title": "发送小程序",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_sendApplets",
+      "method": "POST",
+      "path": "/sendApplets",
+      "requestUrl": "http://域名地址/sendApplets",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收方微信id/群id"
+        },
+        {
+          "参数名": "displayName",
+          "必选": "是",
+          "类型": "string",
+          "说明": "小程序的名称，例如：京东"
+        },
+        {
+          "参数名": "iconUrl",
+          "必选": "是",
+          "类型": "string",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/sendFile.md",
+      "title": "发送文件",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_sendFile",
+      "method": "POST",
+      "path": "/sendFile",
+      "requestUrl": "http://域名地址/sendFile",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收方微信id/群id"
+        },
+        {
+          "参数名": "path",
+          "必选": "是",
+          "类型": "string",
+          "说明": "文件url链接"
+        },
+        {
+          "参数名": "fileName",
+          "必选": "是",
+          "类型": "string",
+          "说明": "文件名"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-fa-song/sendFileBase64.md",
+      "title": "发送文件",
+      "module": "xiao-xi-fa-song",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_fa_song_sendFileBase64",
+      "method": "POST",
+      "path": "/sendFileBase64",
+      "requestUrl": "http://域名地址/sendFileBase64",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "wcId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "接收方微信id/群id"
+        },
+        {
+          "参数名": "fileName",
+          "必选": "是",
+          "类型": "string",
+          "说明": "文件名"
+        },
+        {
+          "参数名": "base64",
+          "必选": "是",
+          "类型": "string",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "",
+          "说明": ""
+        },
+        {
+          "参数名": "data.type",
+          "类型": "int",
+          "说明": "类型"
+        },
+        {
+          "参数名": "data.msgId",
+          "类型": "long",
+          "说明": "消息msgId"
+        },
+        {
+          "参数名": "data.newMsgId",
+          "类型": "long",
+          "说明": "消息newMsgId"
+        },
+        {
+          "参数名": "data.createTime",
+          "类型": "long",
+          "说明": "消息发送时间戳"
+        },
+        {
+          "参数名": "data.wcId",
+          "类型": "string",
+          "说明": "消息接收方id"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-jie-shou/README.md",
+      "title": "消息接收",
+      "module": "xiao-xi-jie-shou",
+      "kind": "category",
+      "operationId": "xiao_xi_jie_shou_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-jie-shou/shou-xiao-xi/callback.md",
+      "title": "回调消息内容释义-优化版",
+      "module": "xiao-xi-jie-shou",
+      "kind": "reference",
+      "operationId": "xiao_xi_jie_shou_callback",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [
+        {
+          "---": "账号"
+        },
+        {
+          "---": "[消息类型](#msgtypeDef)"
+        },
+        {
+          "---": "消息体"
+        },
+        {
+          "---": "发送微信id"
+        },
+        {
+          "---": "发送群号"
+        },
+        {
+          "---": "接收微信id"
+        },
+        {
+          "---": "消息msgId"
+        },
+        {
+          "---": "消息newMsgId"
+        },
+        {
+          "---": "时间"
+        },
+        {
+          "---": "消息体"
+        },
+        {
+          "---": "是否是自己发送的消息"
+        }
+      ],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-jie-shou/shou-xiao-xi/qu-xiao-xiao-xi-jie-shou.md",
+      "title": "取消消息接收",
+      "module": "xiao-xi-jie-shou",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_jie_shou_qu_xiao_xiao_xi_jie_shou",
+      "method": "POST",
+      "path": "/cancelHttpCallbackUrl",
+      "requestUrl": "http://域名地址/cancelHttpCallbackUrl",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-jie-shou/shou-xiao-xi/README.md",
+      "title": "消息回调配置",
+      "module": "xiao-xi-jie-shou",
+      "kind": "category",
+      "operationId": "xiao_xi_jie_shou_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-jie-shou/shou-xiao-xi/she-zhi-http-hui-tiao-di-zhi.md",
+      "title": "设置消息接收地址",
+      "module": "xiao-xi-jie-shou",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_jie_shou_she_zhi_http_hui_tiao_di_zhi",
+      "method": "POST",
+      "path": "/setHttpCallbackUrl",
+      "requestUrl": "http://域名地址/setHttpCallbackUrl",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "**Authorization",
+          "value": "login接口返回**"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "httpUrl",
+          "必填": "是",
+          "类型": "string",
+          "说明": "开发者接口回调地址"
+        },
+        {
+          "参数名": "type",
+          "必填": "是",
+          "类型": "int",
+          "说明": "2:[优化版](callback.html)【PS：建议使用优化版】"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-jie-shou/xia-zai-xiao-xi-nei-rong/asynGetMsgVideo.md",
+      "title": "异步下载消息中的视频",
+      "module": "xiao-xi-jie-shou",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_jie_shou_asynGetMsgVideo",
+      "method": "POST",
+      "path": "/asynGetMsgVideo",
+      "requestUrl": "http://域名地址/asynGetMsgVideo",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识 (包含此参数 所有参数都是从消息回调中取）"
+        },
+        {
+          "参数名": "msgId",
+          "必选": "是",
+          "类型": "long",
+          "说明": "消息id"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "收到的消息的xml数据"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "string",
+          "说明": ""
+        },
+        {
+          "参数名": "data.id",
+          "类型": "string",
+          "说明": "异步下载视频id，可用此参数[获取下载视频结果](getMsgVideoRes.html)"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-jie-shou/xia-zai-xiao-xi-nei-rong/getMsgEmoji.md",
+      "title": "下载消息中的动图",
+      "module": "xiao-xi-jie-shou",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_jie_shou_getMsgEmoji",
+      "method": "POST",
+      "path": "/getMsgEmoji",
+      "requestUrl": "http://域名/getMsgEmoji",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识"
+        },
+        {
+          "参数名": "msgId",
+          "必选": "是",
+          "类型": "int",
+          "说明": "消息回调中返回"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "消息回调中返回，收到的emoji消息的xml数据"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "url",
+          "类型": "string",
+          "说明": "url地址"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-jie-shou/xia-zai-xiao-xi-nei-rong/getMsgVideoRes.md",
+      "title": "获取异步下载视频消息结果",
+      "module": "xiao-xi-jie-shou",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_jie_shou_getMsgVideoRes",
+      "method": "POST",
+      "path": "/getMsgVideoRes",
+      "requestUrl": "http://域名地址/getMsgVideoRes",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "id",
+          "必选": "是",
+          "类型": "string",
+          "说明": "[异步下载视频接口](asynGetMsgVideo.html)返回的id"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "data",
+          "类型": "string",
+          "说明": "下载结果"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-jie-shou/xia-zai-xiao-xi-nei-rong/README.md",
+      "title": "下载消息内容",
+      "module": "xiao-xi-jie-shou",
+      "kind": "category",
+      "operationId": "xiao_xi_jie_shou_README",
+      "method": null,
+      "path": null,
+      "requestUrl": null,
+      "headers": [],
+      "params": [],
+      "returns": []
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-jie-shou/xia-zai-xiao-xi-nei-rong/xia-zai-tu-pian-ji-jiang-kai-fang.md",
+      "title": "下载图片",
+      "module": "xiao-xi-jie-shou",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_jie_shou_xia_zai_tu_pian_ji_jiang_kai_fang",
+      "method": "POST",
+      "path": "/getMsgImg",
+      "requestUrl": "http://域名地址/getMsgImg",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识 (包含此参数 所有参数都是从消息回调中取）"
+        },
+        {
+          "参数名": "msgId",
+          "必选": "是",
+          "类型": "long",
+          "说明": "消息id"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "收到的消息的xml数据"
+        },
+        {
+          "参数名": "type",
+          "必选": "否",
+          "类型": "int",
+          "说明": ""
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        },
+        {
+          "参数名": "url",
+          "类型": "string",
+          "说明": "图片地址（7日内有效）"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-jie-shou/xia-zai-xiao-xi-nei-rong/xia-zai-wen-jian-ji-jiang-kai-fang.md",
+      "title": "下载文件",
+      "module": "xiao-xi-jie-shou",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_jie_shou_xia_zai_wen_jian_ji_jiang_kai_fang",
+      "method": "POST",
+      "path": "/getMsgFile",
+      "requestUrl": "http://域名地址/getMsgFile",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识 包含此参数 所有参数都是从消息回调中取）"
+        },
+        {
+          "参数名": "msgId",
+          "必选": "是",
+          "类型": "long",
+          "说明": "消息id"
+        },
+        {
+          "参数名": "content",
+          "必选": "是",
+          "类型": "string",
+          "说明": "收到的消息的xml数据"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    },
+    {
+      "doc": "docs/api/api-wen-dang2/xiao-xi-jie-shou/xia-zai-xiao-xi-nei-rong/xia-zai-yu-yin-ji-jiang-kai-fang.md",
+      "title": "下载消息中的语音",
+      "module": "xiao-xi-jie-shou",
+      "kind": "endpoint",
+      "operationId": "xiao_xi_jie_shou_xia_zai_yu_yin_ji_jiang_kai_fang",
+      "method": "POST",
+      "path": "/getMsgVoice",
+      "requestUrl": "http://域名地址/getMsgVoice",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "login接口返回"
+        }
+      ],
+      "params": [
+        {
+          "参数名": "wId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "登录实例标识 包含此参数 所有参数都是从消息回调中取）"
+        },
+        {
+          "参数名": "msgId",
+          "必选": "是",
+          "类型": "long",
+          "说明": "消息id"
+        },
+        {
+          "参数名": "length",
+          "必选": "是",
+          "类型": "int",
+          "说明": "语音长度（xml数据中的length字段）"
+        },
+        {
+          "参数名": "bufId",
+          "必选": "是",
+          "类型": "string",
+          "说明": "xml中返回的bufId字段值"
+        },
+        {
+          "参数名": "fromUser",
+          "必选": "是",
+          "类型": "string",
+          "说明": "发送者"
+        }
+      ],
+      "returns": [
+        {
+          "参数名": "code",
+          "类型": "string",
+          "说明": "1000成功，1001失败"
+        },
+        {
+          "参数名": "msg",
+          "类型": "string",
+          "说明": "反馈信息"
+        }
+      ]
+    }
+  ]
+}

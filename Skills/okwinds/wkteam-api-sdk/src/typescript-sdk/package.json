@@ -1,0 +1,39 @@
+{
+  "name": "wkteam-api-sdk",
+  "version": "0.1.0",
+  "description": "wkteam api-wen-dang2 SDK（离线文档驱动）",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "files": ["dist", "README.md", ".env.example"],
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.cjs"
+    }
+  },
+  "scripts": {
+    "generate:api": "node tools/generate_api_artifacts.mjs",
+    "generate:sdk": "node tools/generate_sdk.mjs",
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome check .",
+    "format": "biome format --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@vitest/coverage-v8": "1.6.0",
+    "tsup": "8.1.0",
+    "typescript": "5.4.5",
+    "vitest": "1.6.0"
+  },
+  "dependencies": {
+    "zod": "3.23.8"
+  }
+}

@@ -1,0 +1,11 @@
+0.历史版本安装包
+   https://pan.baidu.com/s/1coiTwV487PK_uzsCMhpBjA?pwd=cf8c
+1. MATLAB 2022b：https://pan.baidu.com/s/1msYUWukbD9pN9Sc0oCcVSw?pwd=b122
+2. MCR_R2017b_win64：不需要MATLAB的安装方式
+    百度云盘：https://pan.baidu.com/s/1vVNJLtFIQg7fDrV4p0OeUg?pwd=yzdw
+3. PX4Firmwares：1.7.3到1.13.3版本固件
+    百度云盘：https://pan.baidu.com/s/1SLyryqTvnTE2z1MZvzCGcA?pwd=w2ma
+4. 虚拟机：用于分布式视觉仿真、ROS开发等
+    百度云盘：https://pan.baidu.com/s/10MDjINKG20k4mWUYz0Nm1A?pwd=78r7
+
+注：交流QQ群 951534390

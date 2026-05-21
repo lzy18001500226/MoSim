@@ -1,0 +1,6 @@
+请从如下链接下载iso镜像，并按相同方式加载安装：
+https://pan.baidu.com/s/1H0LETcKAZIXH8H4F31KQMw?pwd=b122
+
+区别：本版本的WinWSL环境使用Ubuntu-20.04+Python38，而新版本使用Ubuntu22.04+Python312
+Ubuntu-20.04+Python38环境较旧，但兼容性更好，若自身主要开发程序或机载系统为Ubuntu20.04，请选用本版本。
+Ubuntu22.04+Python312环境较新，更好地支持大模型等AI控制功能，和最新的训练框架，将来会逐步过渡到本版本。

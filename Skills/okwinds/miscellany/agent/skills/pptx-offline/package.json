@@ -1,0 +1,11 @@
+{
+  "name": "pptx-offline",
+  "private": true,
+  "description": "Local Node.js deps for agent/skills/pptx-offline scripts (html2pptx).",
+  "type": "commonjs",
+  "dependencies": {
+    "playwright-core": "*",
+    "pptxgenjs": "*",
+    "sharp": "*"
+  }
+}

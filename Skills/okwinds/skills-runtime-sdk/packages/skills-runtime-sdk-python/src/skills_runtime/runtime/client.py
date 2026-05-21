@@ -1,0 +1,353 @@
+from __future__ import annotations
+
+import contextlib
+import json
+import os
+import secrets
+import socket
+import subprocess
+import sys
+import time
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, Optional
+
+from skills_runtime.runtime.paths import get_runtime_paths
+
+
+@dataclass(frozen=True)
+class RuntimeServerInfo:
+    """runtime server 发现信息（从 server.json 读取）。"""
+
+    pid: int
+    secret: str
+    socket_path: str
+    created_at_ms: int
+
+
+@dataclass(frozen=True)
+class _ServerInfoReadResult:
+    """server.json 读取结果：区分 missing / valid / invalid。"""
+
+    state: str
+    info: Optional[RuntimeServerInfo] = None
+
+
+def _pid_alive(pid: int) -> bool:
+    """
+    判断 pid 是否存活（best-effort）。
+
+    参数：
+    - pid：进程号
+    """
+
+    try:
+        os.kill(int(pid), 0)
+        return True
+    except OSError:
+        return False
+
+
+class RuntimeClient:
+    """
+    本地 runtime client（Unix socket JSON RPC）。
+
+    说明：
+    - client 会在首次请求时确保 server 已启动；
+    - server 为“workspace 级单例”，位于 `.skills_runtime_sdk/runtime/`。
+    """
+
+    def __init__(self, *, workspace_root: Path, start_timeout_ms: int = 2000) -> None:
+        """
+        创建 runtime client。
+
+        参数：
+        - workspace_root：工作区根目录（用于定位 `.skills_runtime_sdk/runtime/`）
+        - start_timeout_ms：启动 server 的最长等待时间
+        """
+
+        self._workspace_root = Path(workspace_root).resolve()
+        self._start_timeout_ms = int(start_timeout_ms)
+        self._paths = get_runtime_paths(workspace_root=self._workspace_root)
+
+    def _read_server_info_state(self) -> _ServerInfoReadResult:
+        """
+        读取 server.json，并区分 missing / valid / invalid。
+
+        返回：
+        - missing：文件不存在
+        - valid：成功解析为 RuntimeServerInfo
+        - invalid：文件存在但解析失败/字段不完整
+        """
+
+        info_reader = object.__getattribute__(self, "_read_server_info")
+        reader_func = getattr(info_reader, "__func__", None)
+        if reader_func is not RuntimeClient._read_server_info:
+            info = info_reader()
+            if info is not None:
+                return _ServerInfoReadResult(state="valid", info=info)
+
+        p = self._paths.server_info_path
+        if not p.exists():
+            return _ServerInfoReadResult(state="missing")
+        try:
+            obj = json.loads(p.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return _ServerInfoReadResult(state="invalid")
+        if not isinstance(obj, dict):
+            return _ServerInfoReadResult(state="invalid")
+        try:
+            info = RuntimeServerInfo(
+                pid=int(obj.get("pid")),
+                secret=str(obj.get("secret") or ""),
+                socket_path=str(obj.get("socket_path") or ""),
+                created_at_ms=int(obj.get("created_at_ms") or 0),
+            )
+            if info.pid <= 0 or not info.secret or not info.socket_path:
+                return _ServerInfoReadResult(state="invalid")
+            return _ServerInfoReadResult(state="valid", info=info)
+        except (TypeError, ValueError):
+            return _ServerInfoReadResult(state="invalid")
+
+    def _read_server_info(self) -> Optional[RuntimeServerInfo]:
+        """
+        兼容旧调用方：仅读取有效的 RuntimeServerInfo。
+
+        返回：
+        - RuntimeServerInfo：成功时返回
+        - None：missing / invalid
+        """
+
+        result = self._read_server_info_state()
+        return result.info if result.state == "valid" else None
+
+    def _cleanup_stale_server_files(self) -> None:
+        """
+        清理旧 runtime 文件（best-effort）。
+
+        说明：
+        - 用于处理 server 异常退出留下的残余 socket / server.json；
+        - 仅清理本 workspace 对应的 paths。
+        """
+
+        # best-effort：清理旧 socket / server.json，避免阻断启动
+        with contextlib.suppress(Exception):
+            if self._paths.socket_path.exists():
+                self._paths.socket_path.unlink()
+        with contextlib.suppress(Exception):
+            if self._paths.server_info_path.exists():
+                self._paths.server_info_path.unlink()
+
+    def _derive_timeout_sec(self, *, method: str, params: Optional[Dict[str, Any]] = None) -> float:
+        """
+        按 RPC 方法与参数推导 socket 超时。
+
+        规则：
+        - `ping` 保持短超时，用于快速健康探测；
+        - `exec.write` / `collab.wait` 需要覆盖调用方显式等待时间，并保留固定裕量；
+        - 其它方法使用稳定默认值。
+        """
+
+        params_obj = params if isinstance(params, dict) else {}
+        default_timeout_sec = 5.0
+        short_timeout_sec = 0.5
+        cushion_sec = 1.5
+
+        if method == "ping":
+            return short_timeout_sec
+
+        wait_ms: int | None = None
+        if method == "exec.write":
+            raw = params_obj.get("yield_time_ms")
+            if isinstance(raw, int):
+                wait_ms = raw
+        elif method == "collab.wait":
+            raw = params_obj.get("timeout_ms")
+            if isinstance(raw, int):
+                wait_ms = raw
+
+        if wait_ms is None:
+            return default_timeout_sec
+        if wait_ms < 0:
+            return default_timeout_sec
+
+        return max(default_timeout_sec, (wait_ms / 1000.0) + cushion_sec)
+
+    def ensure_server(self) -> RuntimeServerInfo:
+        """
+        确保 workspace 级 runtime server 已启动，并返回其发现信息。
+
+        语义：
+        - 若 server.json 存在且 pid/socket 都有效：直接复用
+        - 否则：清理残余文件并启动新 server，然后等待其写出 server.json
+        """
+
+        info_result = self._read_server_info_state()
+        info = info_result.info if info_result.state == "valid" else None
+        if info_result.state == "invalid" and self._paths.socket_path.exists():
+            raise RuntimeError(
+                "runtime discovery metadata invalid while socket still exists; refusing to cleanup stale files automatically"
+            )
+        if info is not None:
+            if _pid_alive(info.pid) and Path(info.socket_path).exists():
+                # 仅用 pid + socket file 存在并不足够：
+                # - crash 后可能出现 zombie 或残留 socket 文件；
+                # - 进程假存活会导致 client 误以为 server 可用，从而在后续 call 中表现为 hang/connection errors。
+                # 因此这里做一次轻量 ping 探测，确认 server 可响应。
+                try:
+                    _ = self._call_with_info(
+                        info,
+                        method="ping",
+                        params={},
+                        timeout_sec=self._derive_timeout_sec(method="ping", params={}),
+                    )
+                    return info
+                except RuntimeError as e:
+                    raise RuntimeError(
+                        "runtime server is alive but unresponsive; refusing to cleanup stale files automatically"
+                    ) from e
+                except TimeoutError as e:
+                    raise RuntimeError(
+                        "runtime server is alive but unresponsive; refusing to cleanup stale files automatically"
+                    ) from e
+                except (ConnectionResetError, ConnectionRefusedError, BrokenPipeError, OSError):
+                    # 运输层已断裂：更像 crash/restart 残留，而不是“活着但挂起”的 server。
+                    # 允许继续走 stale cleanup + restart 路径。
+                    pass
+
+        # stale：清理后重启
+        self._paths.runtime_dir.mkdir(parents=True, exist_ok=True)
+        self._cleanup_stale_server_files()
+
+        secret = secrets.token_urlsafe(24)
+        env = dict(os.environ)
+        env["SKILLS_RUNTIME_SDK_RUNTIME_SECRET"] = secret
+        env["SKILLS_RUNTIME_SDK_RUNTIME_WORKSPACE_ROOT"] = str(self._workspace_root)
+
+        # 测试/嵌入式调用场景下，当前进程可能通过 `sys.path`（pytest pythonpath）加载 SDK，
+        # 但环境变量里没有 `PYTHONPATH`。此时后台 server 进程若 cwd 改变会 import 失败。
+        if not str(env.get("PYTHONPATH") or "").strip():
+            try:
+                import skills_runtime as _skills_runtime  # local import to avoid circular
+
+                base = Path(_skills_runtime.__file__).resolve().parent.parent
+                env["PYTHONPATH"] = str(base)
+            except (ImportError, AttributeError, OSError):
+                pass
+
+        # 若调用方使用相对 PYTHONPATH（常见于本仓库开发态），则 server 进程的 cwd 不同会导致 import 失败。
+        # 这里将其归一化为绝对路径，避免 `ModuleNotFoundError: skills_runtime.runtime`。
+        py_path = str(env.get("PYTHONPATH") or "")
+        if py_path.strip():
+            parts = []
+            base = Path.cwd().resolve()
+            for raw in py_path.split(os.pathsep):
+                if not raw:
+                    continue
+                p = Path(raw)
+                if not p.is_absolute():
+                    p = (base / p).resolve()
+                parts.append(str(p))
+            if parts:
+                env["PYTHONPATH"] = os.pathsep.join(parts)
+
+        # 后台启动 server（Unix socket 监听后会写 server.json）
+        # 为了可观测性（避免 “start timeout 但无日志”），把 stdout/stderr 追加写到 runtime 目录。
+        stdout_log = (self._paths.runtime_dir / "server.stdout.log").resolve()
+        stderr_log = (self._paths.runtime_dir / "server.stderr.log").resolve()
+        with open(stdout_log, "ab") as out_f, open(stderr_log, "ab") as err_f:
+            subprocess.Popen(  # noqa: S603
+                [sys.executable, "-m", "skills_runtime.runtime.server"],
+                cwd=str(self._workspace_root),
+                env=env,
+                stdout=out_f,
+                stderr=err_f,
+                stdin=subprocess.DEVNULL,
+                start_new_session=True,
+                close_fds=True,
+            )
+
+        deadline = time.monotonic() + self._start_timeout_ms / 1000.0
+        while time.monotonic() < deadline:
+            info2_result = self._read_server_info_state()
+            info2 = info2_result.info if info2_result.state == "valid" else None
+            if info2 is not None:
+                if _pid_alive(info2.pid) and Path(info2.socket_path).exists():
+                    return info2
+            time.sleep(0.05)
+
+        # 超时：把 stderr 尾部带上，便于定位（避免输出 secrets）
+        tail = ""
+        try:
+            if stderr_log.exists():
+                b = stderr_log.read_bytes()
+                tail = b[-2000:].decode("utf-8", errors="replace")
+        except OSError:
+            tail = ""
+        msg = "runtime server start timeout"
+        if tail.strip():
+            msg += f"; server.stderr.tail={tail.strip()!r}"
+        raise RuntimeError(msg)
+
+    def _call_with_info(
+        self,
+        info: RuntimeServerInfo,
+        *,
+        method: str,
+        params: Optional[Dict[str, Any]] = None,
+        timeout_sec: float = 5.0,
+    ) -> Dict[str, Any]:
+        """
+        使用已知 server info 发起一次 RPC（不会触发 ensure_server，避免递归）。
+
+        参数：
+        - info：RuntimeServerInfo（pid/secret/socket_path）
+        - method：方法名
+        - params：参数对象（可选）
+        - timeout_sec：socket 超时秒数
+        """
+
+        sock_path = Path(info.socket_path)
+        req = {"method": str(method), "params": params or {}, "secret": info.secret}
+        data = json.dumps(req, ensure_ascii=False).encode("utf-8")
+
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
+            s.settimeout(float(timeout_sec))
+            s.connect(str(sock_path))
+            s.sendall(data)
+            s.shutdown(socket.SHUT_WR)
+
+            chunks: list[bytes] = []
+            while True:
+                b = s.recv(65536)
+                if not b:
+                    break
+                chunks.append(b)
+        raw = b"".join(chunks).decode("utf-8", errors="replace")
+        obj = json.loads(raw) if raw.strip() else {}
+        if not isinstance(obj, dict):
+            raise RuntimeError("invalid runtime response")
+        if obj.get("ok") is not True:
+            kind = str(obj.get("error_kind") or "").strip() or None
+            msg = str(obj.get("error") or "runtime call failed")
+            if kind:
+                raise RuntimeError(f"{kind}: {msg}")
+            raise RuntimeError(msg)
+        data_obj = obj.get("data")
+        return data_obj if isinstance(data_obj, dict) else {"data": data_obj}
+
+    def call(self, *, method: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        发起一次 runtime JSON RPC 调用。
+
+        参数：
+        - method：方法名（例如 `exec.spawn` / `exec.write` / `collab.wait`）
+        - params：参数对象（dict；可空）
+
+        返回：
+        - data 对象（dict）；当 server 返回 ok=false 时抛 RuntimeError
+        """
+
+        info = self.ensure_server()
+        timeout_sec = self._derive_timeout_sec(method=method, params=params)
+        return self._call_with_info(info, method=method, params=params, timeout_sec=timeout_sec)

@@ -38,6 +38,19 @@ Check:
 11. Report claims are backed by data.
 12. Non-original code is marked.
 
+## 2.1 Delivery Level
+
+Use delivery level to size the review and required checks:
+
+| Level | Scope | Minimum Review |
+|---|---|---|
+| L0 | Docs/index only | Link/path sanity and diff check |
+| L1 | Small script/workflow fix | Focused static check or script compile |
+| L2 | New controller, scenario, or evidence workflow | Task contract, tests, docs, evidence bundle |
+| L3 | High-risk model/runtime/Git/import change | Rollback plan, failure-path test, artifact/secret/large-file gate |
+
+Do not apply an L0 review to an L3 import or simulation-runtime change.
+
 ---
 
 ## 3. Common Problems
