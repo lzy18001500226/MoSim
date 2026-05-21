@@ -68,13 +68,8 @@ secrets.*
 .env.*
 
 # RflySim installer/runtime packages are local dependencies, not repo assets
-references/RflySimAdv3Full/
-references/RflySimAdvFree/
-
-# Downloaded Codex skill/subagent catalogs are local references. Promote only
-# selected project-owned rules into AGENTS.md, workflows/, or Skills/Mworks/.
-Skills/awesome-codex-skills/
-Skills/awesome-codex-subagents/
+references/RflySim/RflySimAdv3Full/
+references/RflySim/RflySimAdvFree/
 
 # Large third-party visualization/runtime assets over GitHub hard limit
 references/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE-MWORKS驱动案例/PE-MWORKS机械臂驱动运行案例/**/*.vis
@@ -118,36 +113,3 @@ references/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/
 /references/MWORKS/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/StreamingAssets/scene_神秘岛
 /references/MWORKS/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/resources.assets.resS
 /references/MWORKS/用于远程巡逻及异常检测的智能无人机/SmartDrone/SmartDrone .mol
-/references/RflySim/RflySimAdv3Full/0.UbuntuWSL/wsl.2.6.1.0.x64.msi
-/references/RflySim/RflySimAdv3Full/1.ToolChainZip/Ubuntu_20.04_adv.zip
-/references/RflySim/RflySimAdv3Full/2.FirmwareZip/PX4Firmware1.12.3.zip
-/references/RflySim/RflySimAdv3Full/2.FirmwareZip/PX4Firmware1.13.2.zip
-/references/RflySim/RflySimAdv3Full/2.FirmwareZip/PX4Firmware1.14.4.zip
-/references/RflySim/RflySimAdv3Full/2.FirmwareZip/PX4Firmware1.15.4.zip
-/references/RflySim/RflySimAdv3Full/2.FirmwareZip/PX4Firmware1.16.1.zip
-/references/RflySim/RflySimAdv3Full/2.FirmwareZip/PX4Firmware1.17.0.zip
-/references/RflySim/RflySimAdv3Full/2.FirmwareZip/Python38Adv3.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/QGC/QGroundControl.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/RflySimAPIs/RflySimAPIsFree.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/RflySimAPIs/RflySimAPIsFull.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/RflySimAPIs/RflySimAPIsPack.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/RflySimAPIs/RflySimAPIsPers.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/UE4/RflySim3D427.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/UE4/RflySim3DEx427.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/UE5/RflySim3DExUE5.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/UE5/RflySim3DUE5.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenes427/210_refueling.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenes427/CameraRoom.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenes427/DesertTown.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenes427/EastBomberSU24.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenes427/ExhibitionHall.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenes427/MatchScene.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenes427/MatchScene2025.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenes427/ModernCityBundle.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenes427/MountainTerrain.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenes427/NeighborhoodPark.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenes427/OldFactory.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenes427/RobotMissionChallenge.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenesUE5/229_HeliCopter.zip
-/references/RflySim/RflySimAdv3Full/4.HILApps/scenesUE5/Quarry.zip
-/references/RflySim/RflySimAdvFree/RflySimToolchain-v4.12-20260326.iso
