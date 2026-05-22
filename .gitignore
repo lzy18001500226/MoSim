@@ -81,12 +81,35 @@ references/AirSim/**/Intermediate/
 references/AirSim/**/Saved/
 references/AirSim/**/DerivedDataCache/
 references/AirSim/**/.vs/
+references/AirSim/**/cmake-build-*/
+references/AirSim/**/build/
+references/AirSim/**/BUILD/
+references/AirSim/**/CMakeFiles/
+references/AirSim/**/dist/
+references/AirSim/**/venv/
+references/AirSim/**/.venv/
+references/AirSim/**/.eggs/
+references/AirSim/**/__pycache__/
+references/AirSim/**/.pytest_cache/
+references/AirSim/**/.mypy_cache/
+references/AirSim/**/.ruff_cache/
+references/AirSim/**/node_modules/
+references/AirSim/**/*.zip
+references/AirSim/**/*.7z
+references/AirSim/**/*.rar
+references/AirSim/**/*.tar
+references/AirSim/**/*.tar.gz
 references/AirSim/**/*.pdb
 references/AirSim/**/*.pch
 references/AirSim/**/*.obj
 references/AirSim/**/*.iobj
 references/AirSim/**/*.ipdb
+references/AirSim/**/*.ilk
 references/AirSim/**/*.lib
+references/AirSim/**/*.dll
+references/AirSim/**/*.exe
+references/AirSim/**/*.pak
+references/AirSim/**/*.umap_BuiltData.uasset
 
 # Large third-party visualization/runtime assets over GitHub hard limit
 references/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE-MWORKS驱动案例/PE-MWORKS机械臂驱动运行案例/**/*.vis

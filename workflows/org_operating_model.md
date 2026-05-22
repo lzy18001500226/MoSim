@@ -87,6 +87,11 @@ When several independent reviews are needed, the secretary may spawn parallel
 read-only reviewer agents with disjoint review scopes. The parent secretary
 must merge the results and record the final decision.
 
+Sub-agents are not peer-to-peer workers. They do not route instructions or
+review findings directly to each other. The secretary must record dependencies,
+and the main agent or an explicitly assigned parent owner must distribute
+instructions, reviewer findings, and next tasks.
+
 ## 4. Test Department Structure
 
 Use separate test lanes when risk is non-trivial:
@@ -132,9 +137,10 @@ Security findings should be short, factual, and action-oriented.
 3. MainAgent assigns ProjectOwner/TestOwner/SecurityOfficer/GitIntegrator.
 4. Project owners execute bounded work streams.
 5. Test and security owners review evidence.
-6. GitIntegrator commits and pushes safe changes.
-7. TaskSecretary records completion, blockers, and next actions.
-8. MainAgent reports the integrated result.
+6. MainAgent routes review findings back to the responsible owner.
+7. GitIntegrator commits and pushes safe changes.
+8. TaskSecretary records completion, blockers, and next actions.
+9. MainAgent reports the integrated result.
 ```
 
 If the conversation ends, context compacts, or a sub-agent disappears, resume

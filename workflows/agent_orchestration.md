@@ -73,6 +73,24 @@ The owner may process the next ready item only when it remains inside the same
 declared read/write scope and acceptance gate. Otherwise it must return a
 handoff instead of silently expanding its task.
 
+Sub-agent communication topology:
+
+```text
+main agent
+  -> child owner
+  -> reviewer owner
+  -> git owner
+  -> optional grandchild workers
+```
+
+Sub-agents cannot be assumed to communicate with each other. All cross-agent
+coordination, review routing, and follow-up instructions must go through the
+main agent or a single explicitly assigned parent owner. If a child owner uses
+grandchild workers, the main agent must still receive the parent owner's
+checkpoint, decide the next instruction, and distribute any reviewer feedback.
+Do not leave one agent waiting for another agent's result unless the dependency
+is recorded in the ledger and the main agent owns the handoff.
+
 Nested delegation is allowed only when all of these are true:
 
 ```text
