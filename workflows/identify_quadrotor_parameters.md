@@ -312,7 +312,18 @@ logs into usable MWORKS parameters. Use this table as the working plan:
 | `fuselage_drag` | Current plant likely lacks identified drag; outdoor logs mix drag with wind | calm translational passes in x/y, local velocity, acceleration, attitude, wind note | data-driven-dynamics residual force fit; validate on independent figure-eight/forward-back passes | wrapper-level drag/disturbance block |
 | `sensor_noise` / delay | Sensor noise/delay affects planner/control robustness but current values may be arbitrary | stationary logs and flight logs from PX4 estimators/sensors | estimate variance, latency, and dropout rates from logs; keep separate from plant parameters | scenario noise profiles and observer/sensor wrapper |
 
-Open-source route priority:
+Current practical constraint:
+
+```text
+Do not require battery, Mid360, flight-controller, or computer mounting
+positions as hard inputs. The available STL is an integrated visual/engineering
+model and does not reliably expose semantic parts or exact component centers.
+Use STL only for outer geometry, rotor-axis sanity checks, and visual scale.
+Use PX4 logs and motor/prop public data as the main route for dynamics
+identification.
+```
+
+Code-first open-source route priority:
 
 1. Use `pyulog` to inspect topic availability and export aligned CSV.
 2. Use `references/Data/data-driven-dynamics` for ULog-to-parametric-model
@@ -325,7 +336,91 @@ Open-source route priority:
    hover-thrust sanity, and coarse inertia/motor sensitivity bands; do not
    claim high-confidence full identification.
 
-### 8.2 Public Data, Geometry, And Low-Cost Identification Audit
+Prefer reproducible repositories over paper-only methods. Paper-only methods
+may stay in the bibliography, but the implementation queue should be built from
+code that can be cloned, run, inspected, and adapted to Sunray150 logs.
+
+### 8.2 Local Code Audit: Required Logs
+
+The local code in `references/Data/` shows that the first useful data package
+can be collected by normal RC/manual operation. The special requirement is not
+a special flight computer or lab rig; it is enabling the right PX4 log topics
+and flying maneuvers that excite throttle, roll, pitch, yaw, and translation.
+
+| Local repository | What it can provide | Required log data | Verdict for Sunray150 |
+|---|---|---|---|
+| `references/Data/data-driven-system-identification` | Main route for inertia, thrust curve, yaw torque ratio, and motor first-order delay | `actuator_motors` or `actuator_motors_mux` `control[0..3]`, `vehicle_acceleration.xyz`, `vehicle_angular_velocity.xyz`, `vehicle_angular_velocity.xyz_derivative` when available; high-rate/system-ID logging recommended | Best route if PX4 can log high-rate actuator plus IMU-derived acceleration/rate data. Needs deliberate RC excitation, not just smooth autonomous flight. |
+| `references/Data/data-driven-dynamics` | Parametric multirotor force/moment model, fit-quality report, held-out prediction workflow | `actuator_outputs.output[0..3]`, `vehicle_local_position.vx/vy/vz`, `vehicle_attitude.q[0..3]`, `vehicle_angular_velocity.xyz`, `sensor_combined.accelerometer_m_s2/gyro_rad`, `vehicle_land_detected.landed` | Good auxiliary route and topic-completeness checker. Its sample vehicle parameters are not Sunray150 truth. |
+| `references/Data/px4_pid_tuner` | Rate-loop transfer behavior and PID sanity check | `actuator_controls_0.control[0..2]` and attitude/rate response (`rollspeed`, `pitchspeed`, `yawspeed` or equivalent modern PX4 topics) | Useful for controller tuning evidence only; do not use as physical mass/inertia truth. |
+| `references/Data/px4tools` | ULog/Pandas analysis, noise analysis, simple system-ID/control-design utilities | Standard ULog with attitude, rate, actuator, sensor, battery topics | Useful for topic audit, noise, delay, and sanity plots. |
+| `references/Data/esc_test` | Motor/prop/ESC bench characterization: thrust-vs-RPM and torque-vs-thrust | Bench data with RPM, thrust, torque, voltage/current | Optional. Use only if a thrust stand or ESC/RPM bench log is available. |
+| `references/Data/pyulog` | ULog parser and CSV exporter | Any PX4 `.ulg` | First-pass topic audit tool before running estimators. |
+
+Minimal RC-collected ULog package:
+
+| Log | Duration | RC operation | Main purpose |
+|---|---:|---|---|
+| `static_imu_01.ulg` | 30-60 s | Props disarmed or motors safe; vehicle stationary | Sensor bias/noise and topic audit. |
+| `hover_collective_01.ulg` | 60-90 s | Take off, hold 1.5-3 m, then apply gentle collective/altitude pulses within safe margin | Mass sanity, hover thrust, command-to-thrust trend, motor lag if actuator/RPM data exists. |
+| `attitude_excitation_01.ulg` | 90-120 s | Around hover, apply small roll, pitch, yaw stick pulses or slow chirps one axis at a time | Inertia, yaw moment ratio, cross-axis coupling, rate-loop dynamics. |
+| `translation_validation_01.ulg` | 90-120 s | Forward/back, left/right, slow figure-eight or box path at modest speed | Drag/residual validation and held-out trajectory check. |
+
+Practical RC constraints:
+
+1. Keep the vehicle in a safe stabilized/position/altitude mode. The estimator
+   does not require fully autonomous trajectory generation.
+2. Avoid aggressive maneuvers, crashes, motor saturation, failsafe, and large
+   battery sag during identification windows.
+3. Excite one main axis at a time for attitude logs. Mixed random stick motion
+   is useful later, but it makes the first fit harder to debug.
+4. Keep one complete log as held-out validation; do not tune or identify on
+   every available window.
+
+Preferred PX4 logging setup:
+
+```text
+Enable SDLOG_PROFILE entries for high-rate and system-identification topics.
+Minimum useful resampling target: 250 Hz.
+Preferred for ARPL-style identification if the SD card can keep up: 500-1000 Hz.
+If MAVLink shell access is available:
+  logger stop
+  logger start -r 250 -b 100
+or, for high-rate ARPL tests:
+  logger stop
+  logger start -r 1000 -b 100
+```
+
+Required topics by priority:
+
+| Priority | Topic / field | Reason |
+|---|---|---|
+| P0 | `actuator_outputs.output[0..3]` and/or `actuator_motors.control[0..3]` / `actuator_motors_mux.control[0..3]` | Motor command input. Need to know whether values are PWM, normalized command, or RPM-related. |
+| P0 | `vehicle_angular_velocity.xyz[0..2]` | Body-rate response for inertia, yaw, and controller dynamics. |
+| P0 | `vehicle_acceleration.xyz[0..2]` if available, otherwise `sensor_combined.accelerometer_m_s2[0..2]` | Thrust and translational acceleration fitting. |
+| P0 | `vehicle_attitude.q[0..3]` | Body/world-frame conversion and validation. |
+| P0 | `vehicle_local_position.vx/vy/vz` | Drag and trajectory validation. |
+| P0 | `vehicle_land_detected.landed` | Remove ground/takeoff/landing windows. |
+| P0 | PX4 parameter export (`.params`) | Decode control allocation, motor order, actuator scaling, logging configuration. |
+| P1 | `battery_status.voltage_v/current_a/remaining` or equivalents | Reject voltage-sag windows and calibrate thrust-envelope assumptions. |
+| P1 | ESC telemetry / RPM topics if available (`esc_status`, `esc_report`, `rpm`, vendor equivalent) | Convert command-thrust model into physical `T=k_f omega^2`. |
+| P1 | `manual_control_setpoint`, `vehicle_status`, `vehicle_rates_setpoint`, `rate_ctrl_status` if available | Reconstruct maneuver intent, flight mode, and controller saturation. |
+| P2 | Wind/weather notes, payload notes, prop/motor/ESC exact model | Explain residuals and build separate parameter profiles. |
+
+Do not block the first identification pass on exact battery, Mid360, flight
+controller, or computer mounting positions. If the engineer can provide only
+ULog + `.params` + exact takeoff mass + motor/prop/ESC model, that is enough to
+start a defensible first parameter fit.
+
+What each data level enables:
+
+| Available data | Parameters we can estimate or validate | Confidence |
+|---|---|---|
+| One ordinary `.ulg` only | Topic completeness, motor order/sign sanity, hover-thrust plausibility, rough controller delay | Low to medium |
+| RC logs above + `.params` + mass | Inertia band, command-thrust curve, yaw coefficient trend, motor lag trend, drag residual | Medium |
+| Same logs + ESC RPM | Physical thrust coefficient, motor time constant, better yaw/moment fit | Medium-high |
+| Thrust stand/bench data + flight logs | Motor/prop thrust/torque model plus flight-validated body dynamics | High |
+
+### 8.3 Public Data, Geometry, And Low-Cost Identification Audit
 
 Use three evidence tiers before asking for expensive lab measurements.
 
@@ -338,6 +433,8 @@ to claim identified dynamics:
 |---|---|---|
 | YunZong Sunray-150 hardware page | 210 mm x 210 mm x 160 mm outer size, 150 mm wheelbase, about 1080 g for the listed hardware configuration | Use as mass/dimension prior; still weigh the exact battery/Mid360/payload configuration before final model update. |
 | YunZong power-system page | Sunray BD-45 battery: 4S1P, 5000 mAh, 340 g, 92.5 mm x 46 mm x 52.3 mm; propeller diameter 90 mm, 5 blades, 2.4 inch pitch, 3.52 g | Use for component mass distribution, propeller sanity check, and hover thrust bounds. |
+| User-provided GTS V3 2104-M2-3000KV motor table | motor mass `16 g`, size about `25.35 mm x 13.8 mm`, 3-4S support, D90 prop thrust samples at 16 V: `299 g` at 50% throttle and `806 g` at 100% throttle | Use as thrust-envelope and hover-throttle prior before ULog fitting. Do not treat table throttle percentage as PX4 actuator command without calibration. |
+| User-provided D90 propeller spec | prop disc diameter `90 mm`, `5` blades, pitch `2.4 inch`, mass `3.52 g`; this is the propeller, while `3.5-inch` describes the frame class | Use for rotor/prop sanity check and thrust-table interpretation; do not call the propeller 3.5-inch in reports. |
 | Livox Mid-360 spec | 265 g, 65 mm x 65 mm x 60 mm, 360 deg horizontal FOV, vertical -7 deg to 52 deg, 200k points/s, 10 Hz typical frame rate, 9-27 V, 6.5 W | Use for payload mass, lidar pose, lidar update rate, and perception scenario limits. |
 | CUAV V6X / V6X V2 page | PX4-compatible controller, triple redundant IMU, barometer, RM3100 compass, Ethernet, PWM voltage-level switching, power module support | Use for log/topic expectations and hardware interface assumptions; page text is not enough for mass/inertia. |
 
@@ -370,11 +467,26 @@ Current project geometry audit:
 Important consistency check:
 
 ```text
-The SDF rotor coordinates imply x/y motor-axis spacing of 0.13 m and a diagonal
-motor-axis distance of about 0.184 m. The public Sunray page reports a 150 mm
-wheelbase. Do not overwrite either value blindly; define which wheelbase
-convention is used, then cross-check with STL, real frame measurement, and
-PX4 motor order.
+The SDF rotor coordinates are a migrated simulator seed, not final hardware
+truth. They imply x/y motor-axis spacing of 0.13 m and a diagonal motor-axis
+distance of about 0.184 m, while the public/user-provided Sunray150 / 3.5-inch
+frame-class evidence points to an about-150-mm frame class. The propeller is a
+D90/90-mm 5-blade prop, not a 3.5-inch prop. Do not overwrite either
+value blindly; define which wheelbase convention is used, then cross-check with
+STL, real motor-axis measurement, and PX4 motor order before changing dynamics
+or mixer geometry.
+```
+
+User audit update:
+
+```text
+For the current Sunray150 work, treat the provided takeoff mass as the accepted
+flight-configuration mass unless a later weighing/log consistency check
+contradicts it. Treat wheelbase/rotor geometry as a geometry-measurement issue:
+use STL and real motor-axis measurement as the primary source, and use the
+3.5-inch frame class / about-150-mm frame class as the plausibility check. Do not
+copy YunZong/Gazebo inertia values across vehicles just because the simulator
+runs.
 ```
 
 #### Tier C: Low-cost identification routes
@@ -429,7 +541,7 @@ optimizer configuration, and held-out prediction validation. It should not be
 treated as Sunray150 truth because its included quadrotor example parameters
 belong to a reference vehicle.
 
-### 8.3 Minimal Engineer Data Request
+### 8.4 Minimal Engineer Data Request
 
 If the engineer can only provide logs and ordinary product information, ask for
 this package first:
@@ -442,10 +554,71 @@ this package first:
 | P0 | Motor order, rotor spin direction, propeller model, motor/ESC model, battery model | Prevents wrong allocation signs and wrong thrust curve interpretation. |
 | P1 | Whether ESC RPM telemetry exists; if yes, include RPM logs | Converts command-thrust fitting into physical `T=k_f omega^2` fitting. |
 | P1 | Battery voltage/current logs and wind/weather notes | Rejects voltage-sag and wind-biased identification windows. |
-| P2 | Simple measurements: motor-axis coordinates relative to CG, battery/Mid360/flight-controller mounting positions | Improves inertia and CG seed without lab equipment. |
+| P2 | Simple measurements: motor-axis coordinates relative to CG, if available | Improves geometry seed. Component mounting positions are optional only; do not block identification on them because the integrated STL does not provide reliable semantic component centers. |
 
 If only one ordinary `.ulg` is available, the first deliverable should be a
 topic-completeness and sign-consistency report, not final parameters.
+
+### 8.5 Extended Paper And Project Survey
+
+Do not rely on a single paper or one repository. Use the following routes as a
+method stack and select the cheapest route that can identify the parameter in
+question.
+
+| Route | What it can identify | What data it needs | Project use |
+|---|---|---|---|
+| ARPL `data-driven-system-identification` / `sysid.tools` | inertia, thrust curve, torque coefficient, first-order motor delay | about one minute of proprioceptive flight data / PX4 ULog, mass, rotor positions, thrust and torque directions | Primary no-extra-instrument route for Sunray150 logs. |
+| ETH `data-driven-dynamics` | parametric dynamics from PX4 ULog/CSV, fit quality, held-out prediction, Gazebo parameter export | ULog topics configured per vehicle model; PX4/SITL tooling for full workflow | Local auxiliary pipeline for topic validation and MWORKS parameter YAML structure. |
+| IMU/Newton-Euler inertia estimation | inertia tensor from IMU angular velocity/acceleration and torque model | IMU/rate data plus known or estimated torque input | Useful when we want inertia refinement without dedicated inertia hardware. |
+| CAD/STL + component mass distribution | coarse mass, CG, inertia seed, rotor geometry | STL/CAD, actual component masses, mounting positions | Cheap first-pass seed; must be validated by flight logs. |
+| Low-cost rig method | PWM-to-RPM, PWM-to-thrust, rotor drag moment | simple motor/prop rig, scale/tachometer or equivalent | Best practical route if ESC RPM is unavailable and thrust curve quality matters. |
+| Drag coefficient from outdoor flight tests | translational drag / wind-related residual model | velocity, acceleration, attitude, mass, calm repeated flight segments | Use after thrust/inertia are stable; otherwise drag absorbs other model errors. |
+| Online mass/inertia RLS / adaptive estimation | payload mass/inertia changes | closed-loop input-output data with enough excitation | Later extension for payload-change robustness, not first calibration. |
+| Control-effectiveness / unknown actuator identification | motor effectiveness, thrust directions, IMU offset/orientation, motor dynamics | aggressive/throw/catch or rich excitation data; safety constraints | Reference for future fault/allocation work; not necessary for baseline Sunray model. |
+| IMU-data mass estimation / instrumental variables | mass or mass-change estimate from inertial measurements and pilot commands | IMU acceleration/rate, attitude/rate command or pilot command, closed-loop data | Useful sanity check against accepted takeoff mass and later payload tests. |
+| Motor-efficiency residual minimization | per-motor efficiency / degradation factors | measured flight states and motor thrust/moment model | Directly relevant to the motor-efficiency fault scenarios after baseline parameters are stable. |
+| High-speed gray-box aerodynamic identification | aerodynamic force/moment residuals, interaction terms | high-speed flight data, ideally rotor speed and wind/tunnel data | Useful for future high-speed / frame-pass scenarios, not required for first Sunray hover/8-shape model. |
+| MATLAB UAV Toolbox flight-log example | ULog import, time-window selection, parameter estimation workflow | PX4 ULog; MATLAB helper functions / UAV Toolbox | Useful workflow reference for our Syslab/MWORKS equivalent tooling. |
+| PX4 log PID/system-ID tools | attitude-rate loop transfer behavior and tuning evidence | PX4 ULog attitude-rate setpoint/response and actuator outputs | Useful for controller tuning and sanity checks, but not a full physical parameter estimator. |
+| MuJoCo body-regressor style identification | 10 rigid-body inertial parameters from dynamic maneuvers | known/estimated wrench or simulated ground truth; rich trajectory | Good conceptual reference for future toolchain; less direct for PX4-only logs unless wrench estimates are reliable. |
+
+Reference links to keep with this survey:
+
+```text
+ARPL / sysid.tools paper: https://arxiv.org/abs/2404.07837
+P0 code - ARPL data-driven-system-identification: https://github.com/arplaboratory/data-driven-system-identification
+P0 code - ETH data-driven-dynamics: https://github.com/ethz-asl/data-driven-dynamics
+P0 code - PX4 pyulog: https://github.com/PX4/pyulog
+P1 code - px4tools log/system-ID toolbox: https://github.com/dronecrew/px4tools
+P1 code - PX4 PID tuner: https://github.com/mzahana/px4_pid_tuner
+P1 code - HKPolyU airo_control_interface MPC system-ID launch/workflow: https://github.com/HKPolyU-UAV/airo_control_interface
+P1 code - motor/prop/ESC characterization scripts: https://github.com/alspitz/esc_test
+P2 code/data - nano-drone sysid benchmark: https://github.com/idsia-robotics/nanodrone-sysid-benchmark
+IMU-based inertia estimation: https://www.grasp.upenn.edu/publications/imu-based-inertia-estimation-for-a-quadrotor-using-newton-euler-dynamics/
+Low-cost parameter/test-rig methodology: https://amekhalifa.github.io/files/conference/2013_meth_ident_AIM13.pdf
+Quadrotor drag from flight tests: https://journals.sagepub.com/doi/10.1177/17568293221148378
+Unknown actuator/sensor configuration identification: https://arxiv.org/abs/2409.01080
+Mass estimation from IMU/pilot commands: https://liu.diva-portal.org/smash/record.jsf?pid=diva2%3A1133681
+Real-time mass and inertia tensor estimation: https://scholarworks.aub.edu.lb/handle/10938/23088
+Quadrotor gray-box aerodynamic identification: https://www.growkudos.com/publications/10.2514%25252F1.c035135/reader
+Motor-efficiency residual minimization: https://arxiv.org/abs/2510.11388
+PX4 control allocation rotor parameters: https://docs.px4.io/v1.13/en/advanced_config/parameter_reference.html
+MATLAB UAV Toolbox ULog parameter-estimation example: https://dokumen.pub/uav-toolbox-users-guide.html
+MuJoCo inertial parameter identification reference: https://deepwiki.com/based-robotics/mujoco-sysid/4.3-skydio-x2-quadrotor-identification
+```
+
+Current priority order for Sunray150:
+
+```text
+1. Lock geometry: STL/actual motor-axis measurement, motor order, rotor direction.
+2. Lock mass and component placement: accepted takeoff mass plus battery/Mid360/FC/motor positions.
+3. Run ULog topic audit: can we see actuator, gyro/rate, attitude, acceleration, battery, RPM?
+4. If RPM exists: fit physical thrust curve and motor lag.
+5. If RPM does not exist: use ARPL/sysid.tools latent delay + command-thrust fit.
+6. Use attitude excitation to refine inertia and yaw coefficient.
+7. Use calm translational logs only after 1-6 to fit drag.
+8. Apply to MWORKS and validate with hover, 8-shape, spiral, wind, and motor-efficiency scenarios.
+```
 
 Current audit result: no YunZong/Sunray real ULog files are present in the
 repository. The only usable local ULog-like material is reference/sample data

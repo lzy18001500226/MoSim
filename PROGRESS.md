@@ -33,7 +33,7 @@
 | Agent workflow improvement | main agent + reviewers | awaiting-user-review | TaskSecretary/goal/Git-owner rules are promoted and `git diff --check` passed; next change should follow user review. |
 | Agent organization model | main agent + `TaskSecretary` | done | Modern-company department model added in `workflows/org_operating_model.md`; future multi-agent work must record user directives and work checkpoints before relying on chat memory. |
 | External docs learning | `ExternalDocsLearningOwner` | recurring-loop-defined | Use `docs/index/external_learning_index.md` and `workflows/agent_orchestration.md#71-recurring-learning-owner` when failures, new tools, new repos, or milestones trigger another learn-and-patch cycle. |
-| Vehicle parameter identification | `VehicleParamIdentificationResearcher` | action-plan-defined-awaiting-data | Risk parameters and PX4-log/open-source identification route are promoted to `workflows/identify_quadrotor_parameters.md` and `Design/02/03/07`; next blocker is real `.ulg`/mass/motor-order/RPM or thrust data. |
+| Vehicle parameter identification | `VehicleParamIdentificationResearcher` | local-code-audit-complete-awaiting-sunray-ulog | `references/Data` code audit is promoted to `workflows/identify_quadrotor_parameters.md`; first useful data package is RC-collected PX4 `.ulg` logs plus `.params`, exact takeoff mass, motor order, and motor/prop/ESC info. RPM or thrust-stand data remains optional but improves confidence. |
 | AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | done | Git-safe migration is complete and pushed. Tracked scopes now include Cosys tutorial/content assets under 100 MB, SPEAR source/reference subset, CARLA UE5 source/reference subset, and IsaacSim text/source subset. Remaining local ignored content is intentional: CARLA image/content packs, IsaacSim LFS-managed assets/cache/data, and SPEAR `third_party`/Content/generated assets. |
 
 ## Superseded Queues
@@ -89,6 +89,9 @@
   in intake, ledger, PROGRESS, or WAL before they are treated as recoverable.
 - Do not conclude parameter identification with "parameters are wrong"; produce
   the data, log fields, estimator route, MWORKS mapping, and validation plan.
+  For Sunray150, ordinary RC operation is acceptable if PX4 logs include the
+  required actuator, attitude/rate, acceleration, position, battery/status, and
+  parameter-export data.
 - Do not treat external docs/skills learning as a one-time task. Make it a
   recurring loop after repeated failures, new tool installs, major milestones,
   and sub-agent management incidents.
