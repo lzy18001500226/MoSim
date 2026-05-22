@@ -1,0 +1,61 @@
+pub_debug: false
+enable_thrust_model: true
+
+# system parameters
+hover_thrust: 0.31
+enable_preview: true
+tau_phi: 0.1520336055355853
+tau_theta: 0.1413976464134012
+tau_psi: 0.540818835503479
+
+# # conservative costs
+# diag_cost_x:
+#   - 60.0
+#   - 60.0
+#   - 60.0
+#   - 30.0
+#   - 30.0
+#   - 30.0
+#   - 10.0
+#   - 10.0
+
+# diag_cost_u:
+#   - 200.0
+#   - 1000.0
+#   - 1000.0
+  
+# diag_cost_xn:
+#   - 60.0
+#   - 60.0
+#   - 60.0
+#   - 30.0
+#   - 30.0
+#   - 30.0
+#   - 10.0
+#   - 10.0
+
+# aggressive costs
+diag_cost_x:
+  - 80.0
+  - 80.0
+  - 150.0
+  - 80.0
+  - 80.0
+  - 120.0
+  - 10.0
+  - 10.0
+
+diag_cost_u:
+  - 20.0
+  - 1000.0
+  - 1000.0
+  
+diag_cost_xn:
+  - 80.0
+  - 80.0
+  - 150.0
+  - 80.0
+  - 80.0
+  - 120.0
+  - 10.0
+  - 10.0
