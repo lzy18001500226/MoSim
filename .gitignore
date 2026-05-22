@@ -77,9 +77,11 @@ references/RflySim/RflySimAdvFree/
 # Large reference families are staged deliberately. Keep them ignored by
 # default, then temporarily unignore one reviewed batch when committing it.
 references/AirSim/carla-ue5-dev/
-references/AirSim/Cosys-AirSim/
 references/AirSim/IsaacSim/
 references/AirSim/spear/
+references/AirSim/Cosys-AirSim/docs/annsim23_tutorial/*.mp4
+references/AirSim/Cosys-AirSim/docs/annsim23_tutorial/*.pdf
+references/AirSim/Cosys-AirSim/Unreal/Plugins/AirSim/Content/
 references/AirSim/**/.git/
 references/AirSim/**/.svn/
 references/AirSim/**/.hg/
