@@ -1,0 +1,69 @@
+//
+// Copyright (c) 2025 The SPEAR Development Team. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+// Copyright (c) 2022 Intel. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+//
+
+#pragma once
+
+#include <functional>  // std::function
+#include <map>
+#include <string>
+#include <vector>
+
+#include <Components/SceneComponent.h>
+#include <Containers/Array.h>
+#include <Containers/UnrealString.h> // FString
+#include <HAL/Platform.h>            // SPCORE_API
+#include <UObject/ObjectMacros.h>    // GENERATED_BODY, UCLASS, UPROPERTY
+
+#include "SpCore/FuncRegistry.h"
+#include "SpCore/SpArray.h"
+
+#include "SpFuncComponent.generated.h"
+
+// SpFuncDataBundle is intended as a high-level helper struct that can be used as the argument to, and the
+// return value from, an SpFunc. We choose to make this a struct so it will be easier to add fields if
+// necessary, without needing to explicitly update the signature of every SpFunc.
+struct SpFuncDataBundle
+{
+    std::map<std::string, SpPackedArray> packed_arrays_;
+    std::map<std::string, std::string> unreal_obj_strings_;
+    std::string info_;
+};
+
+// We need meta=(BlueprintSpawnableComponent) for the component to show up when using the "+Add" button in the editor.
+UCLASS(ClassGroup="SPEAR", HideCategories=(Activation, AssetUserData, Collision, Cooking, LOD, Navigation, Physics, Rendering, Tags), meta=(BlueprintSpawnableComponent))
+class SPCORE_API USpFuncComponent : public USceneComponent
+{
+    GENERATED_BODY()
+public:
+    // UActorComponent interface
+    void OnComponentCreated() override;
+    void PostLoad() override;
+    void BeginPlay() override;
+    void EndPlay(const EEndPlayReason::Type end_play_reason) override;
+
+    // typically called by the owning actor or component to register/unregister an SpFunc
+    void registerSharedMemoryView(const SpArraySharedMemoryView& shared_memory_view);
+    void unregisterSharedMemoryView(const SpArraySharedMemoryView& shared_memory_view);
+    void registerFunc(const std::string& func_name, const std::function<SpFuncDataBundle(SpFuncDataBundle&)>& func);
+    void unregisterFunc(const std::string& func_name);
+
+    // typically called by code that wants to call an SpFunc
+    std::vector<std::string> getFuncNames() const;
+    std::map<std::string, SpArraySharedMemoryView> getSharedMemoryViews() const;
+    SpFuncDataBundle callFunc(const std::string& func_name, SpFuncDataBundle& args) const;
+
+private:
+    UPROPERTY(VisibleAnywhere, Category="SPEAR")
+    FString SpFuncComponentPtr;
+
+    UPROPERTY(VisibleAnywhere, Category="SPEAR")
+    TArray<FString> FuncNames;
+
+    UPROPERTY(VisibleAnywhere, Category="SPEAR")
+    TArray<FString> SharedMemoryViewNames;
+
+    FuncRegistry<SpFuncDataBundle, SpFuncDataBundle&> funcs_;
+    std::map<std::string, SpArraySharedMemoryView> shared_memory_views_;
+};

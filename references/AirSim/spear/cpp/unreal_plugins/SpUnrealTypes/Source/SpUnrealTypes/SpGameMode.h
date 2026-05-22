@@ -1,0 +1,76 @@
+//
+// Copyright (c) 2025 The SPEAR Development Team. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+// Copyright (c) 2022 Intel. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+//
+
+#pragma once
+
+#include <map>
+#include <string>
+
+#include <Containers/UnrealString.h> // FString
+#include <GameFramework/GameModeBase.h>
+#include <HAL/Platform.h>            // uint64
+#include <Templates/SubclassOf.h>
+#include <UObject/ObjectMacros.h>    // GENERATED_BODY, UCLASS, UFUNCTION
+#include <UObject/ObjectPtr.h>
+
+#include "SpUnrealTypes/SpDebugCameraController.h"
+
+#include "SpGameMode.generated.h"
+
+class APlayerController;
+class ULevelStreamingDynamic;
+
+// This class has two distinct responsibilities. First, it is responsible for setting AGameModeBase::DefaultPawnClass
+// and AGameModeBase::PlayerControllerClass. We need to set these classes in a game mode so we can implement
+// custom spectator pawn behavior in the SpearSim executable. After defining our game mode, it can be
+// specified to Unreal in DefaultEngine.ini, or set very early in the application's life cycle (see SpServices/InitializeEngineService.h),
+// or specified when loading a new map. Second, AGameModeBase is one of a few classes in the Unreal class
+// hierarchy that can have UFUNCTION(Exec) methods for responding to Unreal console commands. So we use this
+// class as a central entry point for Unreal console commands. Note that UFUNCTION(Exec) methods will only
+// execute when the game is running, either in standalone mode or in play-in-editor mode. To respond to
+// console commands when only the editor is running, we need to use SpUnrealEdEngine::Exec(...).
+
+UCLASS()
+class ASpGameMode : public AGameModeBase
+{
+    GENERATED_BODY()
+public:
+    ASpGameMode();
+    ~ASpGameMode() override;
+
+    // AGameMode interface
+    void PostLogin(APlayerController* new_player) override;
+
+private:
+    UFUNCTION(Exec)
+    void SpAddOnScreenDebugMessage(uint64 Key, float TimeToDisplay, const FString& DisplayColor, const FString& DebugMessage) const;
+
+    UFUNCTION(Exec)
+    void SpMountPak(const FString& PakFile) const;
+
+    UFUNCTION(Exec)
+    void SpUnmountPak(const FString& PakFile) const;
+
+    UFUNCTION(Exec)
+    void SpLoadStreamLevel(const FString& LevelName) const;
+
+    UFUNCTION(Exec)
+    void SpUnloadStreamLevel(const FString& LevelName) const;
+
+    UFUNCTION(Exec)
+    void SpLoadLevelInstance(const FString& LevelName);
+
+    UFUNCTION(Exec)
+    void SpUnloadLevelInstance(const FString& LevelName);
+
+    UFUNCTION(Exec)
+    void SpOpenLevel(const FString& LevelName) const;
+
+    UFUNCTION(Exec)
+    void SpToggleDebugCamera();
+
+    std::map<std::string, ULevelStreamingDynamic*> level_instances_;
+    ASpDebugCameraController* sp_debug_camera_controller_ = nullptr;
+};

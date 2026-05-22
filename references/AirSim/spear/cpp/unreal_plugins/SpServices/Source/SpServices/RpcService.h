@@ -1,0 +1,82 @@
+//
+// Copyright (c) 2025 The SPEAR Development Team. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+// Copyright (c) 2022 Intel. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+//
+
+#pragma once
+
+#include <stdint.h> // uint16_t
+
+#include <exception> // std::current_exception, std::rethrow_exception
+#include <limits>    // std::numeric_limits
+#include <memory>    // std::unique_ptr
+
+#include "SpCore/Config.h"
+
+#include "SpServices/RpcServer.h"
+#include "SpServices/Service.h"
+
+class RpcService : public Service
+{
+public:
+    RpcService()
+    {
+        SP_LOG_CURRENT_FUNCTION();
+        SP_LOG("    Creating RPC server...");
+
+        // Create RPC server, allocate port, but don't launch yet. We defer launching the server until the
+        // first beginFrame() to give all other services a chance to bind their entry points. As long as all
+        // services bind their entry points before the first beginFrame(), then all entry points on all
+        // services will be available as soon as an RPC client connects.
+
+        int rpc_server_port = 30000;
+        if (Config::isInitialized()) {
+            rpc_server_port = Config::get<int>("SP_SERVICES.RPC_SERVICE.RPC_SERVER_PORT");
+        }
+
+        SP_ASSERT(rpc_server_port >= 0 && rpc_server_port <= std::numeric_limits<uint16_t>::max());
+
+        try {
+            rpc_server_ = std::make_unique<RpcServer>(static_cast<uint16_t>(rpc_server_port));
+            SP_ASSERT(rpc_server_);
+        } catch (...) {
+            SP_LOG("    ERROR: Couldn't create an RPC server. The Unreal Editor might be open already, or there might be another SPEAR executable running in the background. Close the Unreal Editor and other SPEAR executables, or change SP_SERVICES.RPC_SERVICE.RPC_SERVER_PORT to a different unused port, and try launching again.");
+            std::rethrow_exception(std::current_exception());
+        }
+    }
+
+    ~RpcService() override
+    {
+        SP_LOG_CURRENT_FUNCTION();
+        SP_LOG("    Destroying RPC server...");
+
+        // Destroy the RPC server. This should be done before destroying our other services. Otherwise, the
+        // RPC server might attempt to call a service's entry points after the service has been destroyed.
+        // Many of our services bind entry points that capture a pointer back to the service itself, so we
+        // need to make sure that these entry points are not called after the services that bound them have
+        // been destroyed.
+        SP_ASSERT(rpc_server_);
+        rpc_server_->closeSessions();
+        rpc_server_->stop();
+        rpc_server_ = nullptr;
+    }
+
+    std::unique_ptr<RpcServer> rpc_server_ = nullptr;
+
+protected:
+    void beginFrame() override
+    {
+        Service::beginFrame();
+
+        // Launch RPC server.
+        if (!initialized_) {
+            SP_LOG_CURRENT_FUNCTION();
+            SP_LOG("    Launching RPC server...");
+            rpc_server_->asyncRun();
+            initialized_ = true;
+        }
+    }
+
+private:
+    bool initialized_ = false;
+};

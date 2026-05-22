@@ -1,0 +1,122 @@
+//
+// Copyright (c) 2025 The SPEAR Development Team. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+// Copyright (c) 2022 Intel. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+//
+
+#pragma once
+
+#include <stddef.h> // size_t
+#include <stdint.h> // uint8_t, uint64_t
+
+#include <map>
+#include <span>
+#include <string>
+#include <vector>
+
+#include <nanobind/ndarray.h>
+
+//
+// Custom types
+//
+
+struct PropertyDesc
+{
+    uint64_t property_ = 0;
+    uint64_t value_ptr_ = 0;
+    std::string type_id_;
+};
+
+struct PropertyValue
+{
+    std::string value_;
+    std::string type_id_;
+};
+
+struct SharedMemoryView
+{
+    std::string id_;
+    uint64_t num_bytes_ = 0;
+    uint64_t offset_bytes_ = 0;
+    std::vector<std::string> usage_flags_ = {"DoNotUse"};
+    std::string name_ = "smem:invalid";
+};
+
+struct PackedArray
+{
+    nanobind::ndarray<nanobind::numpy> data_;
+    std::string data_source_ = "Invalid";
+    std::vector<size_t> shape_;
+    std::string shared_memory_name_;
+};
+
+struct DataBundle
+{
+    std::map<std::string, PackedArray> packed_arrays_;
+    std::map<std::string, std::string> unreal_obj_strings_;
+    std::string info_;
+};
+
+struct FuncSignatureDesc
+{
+    std::string name_;
+    std::vector<int> type_ids_;
+    std::vector<std::string> type_names_;
+};
+
+struct Future
+{
+    uint64_t future_ptr_ = 0;
+    std::string type_id_;
+};
+
+struct FunctionDesc
+{
+    uint64_t function_ = 0;
+    std::string function_name_;
+    uint64_t static_class_ = 0;
+    std::string static_class_name_;
+};
+
+struct StaticStructDesc
+{
+    uint64_t static_struct_ = 0;
+    std::string name_;
+};
+
+struct StaticClassDesc
+{
+    uint64_t static_class_ = 0;
+    std::string name_;
+    std::vector<uint64_t> derived_classes_;
+    std::vector<std::string> derived_class_names_;
+    std::map<std::string, FunctionDesc> function_descs_;
+};
+
+struct WorldDesc
+{
+    uint64_t world_ = 0;
+    int64_t world_id_ = -1;
+    bool is_editor_world_ = false;
+    bool is_game_world_ = false;
+    bool is_playing_ = false;
+};
+
+//
+// View types
+//
+
+struct PackedArrayView
+{
+    std::span<uint8_t> view_;
+    std::string data_source_ = "Invalid";
+    std::vector<size_t> shape_;
+    std::string shared_memory_name_;
+    std::string data_type_;
+};
+
+struct DataBundleView
+{
+    std::map<std::string, PackedArrayView> packed_array_views_;
+    std::map<std::string, std::string> unreal_obj_strings_;
+    std::string info_;
+};

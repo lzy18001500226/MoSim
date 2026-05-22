@@ -1,0 +1,57 @@
+{
+    "FileVersion": 3,
+    "EngineAssociation": "5.5",
+    "Category": "",
+    "Description": "",
+    "Modules":
+    [
+        {
+            "Name": "SpearSim",
+            "Type": "Runtime",
+            "LoadingPhase": "Default",
+            "AdditionalDependencies":
+            [
+                "SpCore"
+            ]
+        }
+    ],
+    "Plugins":
+    [
+        {
+            "Name": "ChaosVehiclesPlugin",
+            "Enabled":  true
+        },
+        {
+            "Name": "EditorScriptingUtilities",
+            "Enabled": true
+        },
+        {
+            "Name": "HDRIBackdrop",
+            "Enabled": true
+        },
+        {
+            "Name": "ModelingToolsEditorMode",
+            "Enabled": true
+        },
+        {
+            "Name": "MoviePipelineMaskRenderPass",
+            "Enabled": true
+        },
+        {
+            "Name": "MovieRenderPipeline",
+            "Enabled": true
+        },
+        {
+            "Name": "PythonScriptPlugin",
+            "Enabled": true
+        },
+        {
+            "Name": "SpCore",
+            "Enabled":  true
+        }
+    ],
+    "AdditionalPluginDirectories":
+    [
+        "../../unreal_plugins"
+    ]
+}

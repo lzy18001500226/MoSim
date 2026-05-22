@@ -1,0 +1,143 @@
+//
+// Copyright (c) 2025 The SPEAR Development Team. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+// Copyright (c) 2022 Intel. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+//
+
+#pragma once
+
+#include <set>
+#include <string>
+
+#include <Components/ActorComponent.h>
+#include <Containers/Map.h>
+#include <Containers/UnrealString.h>     // FString
+#include <Delegates/IDelegateInstance.h> // FDelegateHandle
+#include <GameFramework/Actor.h>
+#include <HAL/Platform.h>                // SPCORE_API
+#include <UObject/NameTypes.h>           // FName
+#include <UObject/Object.h>              // UObject
+#include <UObject/ObjectMacros.h>        // GENERATED_BODY, UCLASS, UPROPERTY
+
+#include "SpStableNameManager.generated.h"
+
+class ULevel;
+class UWorld;
+
+//
+// If an ASpStableNameManager is placed in a level, then all the actors in that level can be found using
+// their names and paths as shown in the Unreal Editor Outliner view, even in standalone shipping builds,
+// using UnrealUtils::findActorByName(...) and similar functions.
+//
+
+UCLASS(ClassGroup="SPEAR", HideCategories=(Actor, Collision, Cooking, DataLayers, HLOD, Input, LevelInstance, Navigation, Networking, Physics, Rendering, Replication, WorldPartition))
+class SPCORE_API ASpStableNameManager : public AActor
+{
+    GENERATED_BODY()
+public:
+    // AActor interface
+    void BeginPlay() override;
+    void EndPlay(const EEndPlayReason::Type end_play_reason) override;
+
+    #if WITH_EDITOR // defined in an auto-generated header
+        // AActor interface
+        void PostActorCreated() override;
+    #endif
+
+    bool hasActor(const AActor* actor) const;
+    void addActor(const AActor* actor, const std::string& stable_name);
+    void removeActor(const AActor* actor);
+
+    std::string getStableName(const AActor* actor) const;
+    void setStableName(const AActor* actor, const std::string& stable_name);
+
+    #if WITH_EDITOR // defined in an auto-generated header
+        void requestAddOrUpdateAllActors();
+        void requestAddOrUpdateActor(AActor* actor);
+        void requestAddActor(AActor* actor);
+        void requestRemoveActor(AActor* actor);
+        void requestUpdateActor(AActor* actor);
+    #endif
+
+private:
+    static std::string getStableIdString(const AActor* actor);
+
+    UPROPERTY(VisibleAnywhere, Category="SPEAR")
+    TMap<FString, FString> StableNames;
+
+    inline static std::set<UWorld*> s_worlds_with_stable_name_manager_;
+};
+
+//
+// If a USpStableNameComponent is attached to an actor, then it can be found using its name and path in the
+// Unreal Editor Outliner view, even in standalone shipping builds, using UnrealUtils::findActorByName(...)
+// and similar functions.
+//
+
+// We need meta=(BlueprintSpawnableComponent) for the component to show up when using the "+Add" button in the editor.
+UCLASS(ClassGroup="SPEAR", HideCategories=(Activation, AssetUserData, Collision, Cooking, LOD, Navigation, Physics, Rendering, Tags), meta=(BlueprintSpawnableComponent))
+class SPCORE_API USpStableNameComponent : public UActorComponent
+{
+    GENERATED_BODY()
+public:
+    #if WITH_EDITOR // defined in an auto-generated header
+        // UActorComponent interface
+        void OnComponentCreated() override;
+    #endif
+
+    std::string getStableName();
+    void setStableName(const std::string& stable_name);
+
+    #if WITH_EDITOR // defined in an auto-generated header
+        void requestUpdate();
+    #endif
+
+private:
+    UPROPERTY(VisibleAnywhere, Category="SPEAR")
+    FString StableName;
+};
+
+//
+// The USpStableNameEventHandler default object listens to UI events in the editor and keeps
+// ASpStableNameManager and USpStableNameComponent objects up-to-date.
+//
+
+UCLASS()
+class USpStableNameEventHandler : public UObject
+{
+    GENERATED_BODY()
+public: 
+    USpStableNameEventHandler();
+    ~USpStableNameEventHandler() override;
+
+#if WITH_EDITOR // defined in an auto-generated header
+    private:
+        void postEngineInitHandler();
+        void enginePreExitHandler();
+
+        void actorLabelChangedHandler(AActor* actor);
+
+        void levelAddedToWorldHandler(ULevel* level, UWorld* world);
+        void levelRemovedFromWorldHandler(ULevel* level, UWorld* world);
+
+        void levelActorAddedHandler(AActor* actor);
+        void levelActorFolderChangedHandler(const AActor* actor, FName name);
+        void levelActorDeletedHandler(AActor* actor);
+
+        // We need this re-entrancy guard for our handler functions, e.g., because calling levelActorAddedHandler(...)
+        // can trigger a call in our code to actor->GetActorLabel(), which can trigger a call to actorLabelChangedHandler(...)
+        // internally.
+        bool handler_active_ = false;
+
+        FDelegateHandle post_engine_init_handle_;
+        FDelegateHandle engine_pre_exit_handle_;
+
+        FDelegateHandle actor_label_changed_handle_;
+
+        FDelegateHandle level_added_to_world_handle_;
+        FDelegateHandle level_removed_from_world_handle_;
+
+        FDelegateHandle level_actor_added_handle_;
+        FDelegateHandle level_actor_folder_changed_handle_;
+        FDelegateHandle level_actor_deleted_handle_;
+#endif
+};

@@ -1,0 +1,125 @@
+#
+# Copyright (c) 2025 The SPEAR Development Team. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+# Copyright (c) 2022 Intel. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+#
+
+SP_SERVICES:
+
+  #
+  # RpcService
+  #
+
+  # Port for the RPC server.
+  RPC_SERVICE:
+    RPC_SERVER_PORT: 30000
+
+  #
+  # EngineService
+  #
+
+  ENGINE_SERVICE:
+    # If set to true, we allow the RPC worker thread to queue work for frame i+2 when the game thread is
+    # executing frame i. If set to false, we only allow the RPC worker thread to queue work for frame i+1
+    # when the game thread is executing frame i.
+    DOUBLE_BUFFERED_WORK_QUEUES: False
+
+    # Print debug info in EngineService.
+    PRINT_CALL_DEBUG_INFO: False
+    PRINT_FRAME_DEBUG_INFO: False
+
+  #
+  # EnhancedInputService
+  #
+
+  # Print debug info when injecting input into EnhancedInputService.
+  ENHANCED_INPUT_SERVICE:
+    PRINT_INJECT_DEBUG_INFO: False
+
+  #
+  # InitializeEngineService
+  #
+
+  INITIALIZE_ENGINE_SERVICE:
+
+    # Defaults for mounting PAK files.
+
+    MOUNT_PAK_FILES: False
+    PAK_FILES: []
+
+    #
+    # Override default game map settings.
+    #
+    # For each of the config strings below, if the corresponding override parameter is set to True, then the
+    # string will override the corresponding config parameter in the [/Script/EngineSettings.GameMapsSettings]
+    # section of cpp/unreal_projects/SpearSim/Config/DefaultEngine.ini. The strings below must be formatted in
+    # the format that would be expected in DefaultEngine.ini, e.g.,
+    #
+    #   OVERRIDE_GAME_DEFAULT_MAP: True
+    #   GAME_DEFAULT_MAP: "/Game/SPEAR/Scenes/apartment_0000/Maps/apartment_0000.apartment_0000"
+    #
+    #   OVERRIDE_EDITOR_STARTUP_MAP: True
+    #   EDITOR_STARTUP_MAP: "/Game/SPEAR/Scenes/apartment_0000/Maps/apartment_0000.apartment_0000"
+    #
+    #   OVERRIDE_GLOBAL_DEFAULT_GAME_MODE: True
+    #   GLOBAL_DEFAULT_GAME_MODE: "/SpContent/Blueprints/BP_SpGameMode.BP_SpGameMode_C"
+    #
+
+    OVERRIDE_GAME_DEFAULT_MAP: False
+    GAME_DEFAULT_MAP: ""
+
+    OVERRIDE_EDITOR_STARTUP_MAP: False
+    EDITOR_STARTUP_MAP: ""
+
+    OVERRIDE_GLOBAL_DEFAULT_GAME_MODE: False
+    GLOBAL_DEFAULT_GAME_MODE: ""
+
+    # Override benchmarking and fixed delta time.
+
+    OVERRIDE_BENCHMARKING: True
+    BENCHMARKING: True
+
+    OVERRIDE_FIXED_DELTA_TIME: True
+    FIXED_DELTA_TIME: 0.033333 # 1.0/30.0
+
+    # Override physics settings.
+
+    OVERRIDE_PHYSICS_SETTINGS: False
+    PHYSICS_SETTINGS_STRING: '''{}'''
+
+    # Override navigation settings.
+
+    OVERRIDE_NAVIGATION_SYSTEM_DEFAULT_OBJECT: False
+    NAVIGATION_SYSTEM_DEFAULT_OBJECT_STRING: '''{}'''
+
+    OVERRIDE_RECAST_NAV_MESH_DEFAULT_OBJECT: False
+    RECAST_NAV_MESH_DEFAULT_OBJECT_STRING: '''{}'''
+
+  #
+  # InputService
+  #
+
+  # Print debug info when injecting input into InputService.
+  INPUT_SERVICE:
+    PRINT_INJECT_DEBUG_INFO: False
+
+  #
+  # WorldRegistryService
+  #
+
+  WORLD_REGISTRY_SERVICE:
+
+    SPAWN_SP_STABLE_NAME_MANAGER: True
+
+    OVERRIDE_GAME_PAUSED: True
+    GAME_PAUSED: True
+
+    FORCE_SKYLIGHT_UPDATE: True
+    FORCE_SKYLIGHT_UPDATE_MAX_DURATION_SECONDS: 1.0
+
+  #
+  # WorkQueue
+  #
+
+  # Print debug info when executing scheduled functions.
+  WORK_QUEUE:
+    PRINT_CALL_DEBUG_INFO: False

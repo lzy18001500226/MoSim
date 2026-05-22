@@ -1,0 +1,31 @@
+#
+# Copyright (c) 2025 The SPEAR Development Team. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+# Copyright (c) 2022 Intel. Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+#
+
+SP_CORE:
+
+  # Wait for keyboard input during initialization, which can be useful when attempting to attach a debugger
+  # to the running executable.
+  WAIT_FOR_KEYBOARD_INPUT_DURING_INITIALIZATION: False
+
+  # Initial ID to use when creating shared memory regions. Shared memory regions are assigned monotonically
+  # increasing IDs when they are created. If there are multiple instances running on the same machine, each
+  # instance needs a unique initial ID, such that no instance ever needs to use an ID that has is already
+  # being used by another instance.
+  SHARED_MEMORY_INITIAL_UNIQUE_ID: 0
+
+  # Verbose debug printing for the proxy component system.
+  PROXY_COMPONENT_MANAGER:
+    VERBOSE: False
+  MESH_PROXY_COMPONENT_MANAGER:
+    VERBOSE: False
+
+  # We allow the user to override the ini values in the project Config directory. These overrides must happen
+  # very early in the application lifecycle because they can affect the initialization of engine systems that
+  # can't be changed at runtime, e.g., which graphics API to use, etc.
+  EDITOR_INI_CONFIG_VALUES: {}
+  ENGINE_INI_CONFIG_VALUES: {}
+  GAME_INI_CONFIG_VALUES: {}
+  GAME_USER_SETTINGS_INI_CONFIG_VALUES: {}
+  INPUT_INI_CONFIG_VALUES: {}
