@@ -1,0 +1,13 @@
+{
+  "SettingsVersion": 2.0,
+  "SimMode": "Multirotor",
+  "ViewMode": "Manual",
+  "Vehicles": {
+    "Drone1": {
+      "VehicleType": "SimpleFlight",
+      "DefaultVehicleState": "Armed",
+      "AutoCreate": true,
+      "EnableTrace": true
+    }
+  }
+}

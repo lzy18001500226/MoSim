@@ -58,7 +58,7 @@ Open-source simulator scene audit update:
 | Candidate | Open result | Practical conclusion |
 | --- | --- | --- |
 | `references/AirSim/AirSim/Unreal/Environments/Blocks/Blocks.uproject` | Opens in UE 4.27 standalone/game mode after root `build.cmd --no-full-poly-car` and project plugin rebuild. `Drone1` appears in `FlyingExampleMap`. | Directly runnable baseline. Visually simple, but useful for AirSim vehicle/API/camera smoke testing. Use `settings_quadrotor_manual.json` to force `Multirotor` and avoid the missing SUV/car path. |
-| `references/AirSim/Cosys-AirSim/Unreal/Environments/Blocks/Blocks.uproject` | UE 5.5 reaches rebuild prompt, then fails with `Blocks could not be compiled`; logs show `Blocks` and `AirSim` remain incompatible/missing. The captured build log also shows the spawned Windows command cannot resolve `dotnet`. | Not directly reviewable yet. First fix the UE5 build environment/PATH or run from a configured VS Developer shell; then decide whether UE 5.4 or a deliberate UE 5.5 migration build is required. Keep as maintained AirSim-line API/sensor reference until compiled. |
+| `references/AirSim/Cosys-AirSim/Unreal/Environments/Blocks/Blocks.uproject` | UE 5.5 standalone/game mode now opens `FlyingExampleMap` after generating the missing dependency libraries and forcing `SimMode=Multirotor` through `settings_quadrotor_manual.json`. Log shows `Game class is 'AirSimGameMode'` and `Drone1`. | Directly reviewable as the maintained AirSim/Cosys smoke scene. Keep generated `.lib/.dll/.obj/.pdb` local and ignored. Use the checked-in settings file to avoid the Car/SUV selection path. |
 | `references/AirSim/spear/cpp/unreal_projects/SpearSim/SpearSim.uproject` | UE 5.5 exits with `Plugin 'SpCore' failed to load because module 'SpCore' could not be found`. Maps present under `Content/SPEAR/Scenes/`: `apartment_0000`, `debug_0000`, `debug_0001`. | Promising indoor-scene/reference project, but blocked by the full SPEAR build/install chain. Not a UAV simulator by itself. |
 | `references/AirSim/spear/cpp/unreal_projects/DefaultProject/DefaultProject.uproject` | Opens in UE 5.5 standalone/game mode, but loads the default UE `OpenWorld` template. | Confirms UE 5.5 works; no target UAV or rich SPEAR scene value by itself. |
 | `references/AirSim/carla-ue5-dev/Unreal/CarlaUnreal/CarlaUnreal.uproject` | UE 5.5 stops at `Missing CarlaUnreal Modules`; logs show `CarlaUnreal`, `CarlaDeviceProfileSelector`, `Carla`, `CarlaTools`, and `CarlaExporter` incompatible/missing. The rebuild attempt also cannot resolve `dotnet`. Four `.umap` map-generator assets exist. | Useful city/map architecture reference only until the full CARLA build route is completed in a configured UE5 build shell. It is not a quadrotor runtime. |
@@ -76,9 +76,9 @@ inspection.
 | Original AirSim project files | `GenerateProjectFiles.bat` failed because `HKEY_CLASSES_ROOT\Unreal.ProjectFile\shell\rungenproj` is missing | Bypass the registry association and call UE directly: `D:\Program Files\Epic Games\UE_4.27\Engine\Binaries\DotNET\UnrealBuildTool.exe -projectfiles -project=C:\Users\HP\Desktop\Quadrotor\references\AirSim\AirSim\Unreal\Environments\Blocks\Blocks.uproject -game -rocket -progress`. |
 | Original AirSim compile | UE4.27 finds VS2022 and Windows SDK. After AirSim root dependency build, `UE4Editor-AirSim.dll` rebuilds successfully under `Unreal/Environments/Blocks/Plugins/AirSim/Binaries/Win64`. | Use this as the first local standalone AirSim smoke scene. If the DLL is deleted or stale, run direct UBT against `Blocks.uproject`. |
 | AirSim manual camera patch | Project-local patch adds right-mouse manual look and reduces keyboard rotation step to 0.1x in both root plugin source and Blocks' copied plugin source. `DefaultInput.ini` captures mouse during mouse-down. | In the running window, use `M` for manual view, hold right mouse to look around, arrow keys/PageUp/PageDown for translation, and W/A/S/D/Q/E for fine rotation. |
-| Dotnet availability | UE5.5 has bundled `.NET 8`, but the GUI-spawned Build.bat sessions for Cosys/CARLA still log `dotnet` as not resolvable. | Rebuild UE5 C++ projects from a configured VS Developer shell or call UBT with an explicit environment. Do not assume a normal GUI rebuild prompt is using the same PATH as the user's shell. |
+| Dotnet availability | UE5.5 has bundled `.NET 8`, but the GUI-spawned Build.bat sessions for Cosys/CARLA can still log `dotnet` as not resolvable. Direct `dotnet.exe UnrealBuildTool.dll ...` bypasses that PATH issue. | Rebuild UE5 C++ projects from a configured VS Developer shell or call UBT with UE's bundled dotnet explicitly. Do not assume a normal GUI rebuild prompt is using the same PATH as the user's shell. |
 | VS2022 toolchain | UE4.27 UBT detects `D:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207` and Windows SDK `10.0.26100.0` | VS/C++ toolchain exists. If Cosys-AirSim still fails after dotnet PATH repair, treat the next error as source/API compatibility rather than missing VS. |
-| Cosys-AirSim Blocks | Project has `Plugins/AirSim`, but UE5.5 module rebuild still leaves `Blocks` and `AirSim` incompatible/missing after the GUI Build.bat path fails to resolve `dotnet`. | First fix UE5 command-line build environment; then try UE 5.4 or a formal UE 5.5 migration build only if Cosys becomes a priority. Do not keep popping the rebuild dialog during scene review. |
+| Cosys-AirSim Blocks | Project has `Plugins/AirSim`. Direct UBT first failed on missing `MavLinkCom.lib`, then `AirLib.lib`, then `rpc.lib`; all were generated locally and synced into the Blocks plugin copy. UE5.5 direct UBT now produces `UnrealEditor-Blocks.dll` and `UnrealEditor-AirSim.dll`. | Use explicit dependency build commands instead of the GUI rebuild dialog. Keep generated libraries and Unreal binaries ignored; commit only small settings/docs/source changes. |
 | SPEAR `SpCore` | `SpCore` source is present under `references/AirSim/spear/cpp/unreal_plugins/SpCore`; it is not a separate module to download | Build SPEAR with its documented Python/CMake/UE5.5 flow before opening `SpearSim.uproject`. |
 | CARLA UE5 | Map-generator `.umap` files exist, but the project stops at missing/incompatible CARLA modules in UE5.5, with the same GUI Build.bat `dotnet` PATH failure. | Use as city/map architecture reference until a full CARLA build is justified in a configured shell. |
 
@@ -119,6 +119,78 @@ Recommended lowest-risk sequence:
 5. Keep Pegasus/IsaacSim on the Omniverse branch; do not try to open them as
    UE projects.
 ```
+
+### Cosys-AirSim Blocks Local Open Procedure
+
+Cosys-AirSim Blocks is now a runnable UE5.5 review scene on this machine.
+Do not use the Unreal GUI rebuild dialog as the primary repair path; it can hide
+the real linker error and may use a different `PATH` than the shell.
+
+Dependency build sequence used successfully:
+
+```text
+1. Build rpclib with explicit CMake/MSBuild:
+   D:\Program Files\Dev\CMake\bin\cmake.exe -G "Visual Studio 17 2022" ..
+   MSBuild build\rpc.vcxproj /p:Platform=x64 /p:Configuration=Release
+
+2. Copy `rpc.lib` to:
+   AirLib/deps/rpclib/lib/x64/Release/rpc.lib
+   Unreal/Plugins/AirSim/Source/AirLib/deps/rpclib/lib/x64/Release/rpc.lib
+   Unreal/Environments/Blocks/Plugins/AirSim/Source/AirLib/deps/rpclib/lib/x64/Release/rpc.lib
+
+3. Build MavLinkCom:
+   MSBuild MavLinkCom/MavLinkCom.sln /p:Platform=x64 /p:Configuration=Release
+
+4. Copy `MavLinkCom.lib` to the same three dependency layers under
+   `deps/MavLinkCom/lib/x64/Release/`.
+
+5. Build AirLib:
+   MSBuild AirSim.sln /p:Platform=x64 /p:Configuration=Release
+
+6. Copy `AirLib.lib` to:
+   Unreal/Plugins/AirSim/Source/AirLib/lib/x64/Release/AirLib.lib
+   Unreal/Environments/Blocks/Plugins/AirSim/Source/AirLib/lib/x64/Release/AirLib.lib
+
+7. Build the UE project with UE5.5 bundled dotnet/UBT:
+   D:\Program Files\Epic Games\UE_5.5\Engine\Binaries\ThirdParty\DotNet\8.0.300\win-x64\dotnet.exe
+   D:\Program Files\Epic Games\UE_5.5\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll
+   BlocksEditor Win64 Development
+   -Project=C:\Users\HP\Desktop\Quadrotor\references\AirSim\Cosys-AirSim\Unreal\Environments\Blocks\Blocks.uproject
+```
+
+Manual review launch:
+
+```text
+D:\Program Files\Epic Games\UE_5.5\Engine\Binaries\Win64\UnrealEditor.exe
+C:\Users\HP\Desktop\Quadrotor\references\AirSim\Cosys-AirSim\Unreal\Environments\Blocks\Blocks.uproject
+/Game/FlyingCPP/Maps/FlyingExampleMap
+-game -windowed -ResX=1280 -ResY=720
+-settings=C:\Users\HP\Desktop\Quadrotor\references\AirSim\Cosys-AirSim\Unreal\Environments\Blocks\settings_quadrotor_manual.json
+-log
+```
+
+`settings_quadrotor_manual.json` is intentionally small and checked in. It
+forces:
+
+```json
+{
+  "SettingsVersion": 2.0,
+  "SimMode": "Multirotor",
+  "ViewMode": "Manual",
+  "Vehicles": {
+    "Drone1": {
+      "VehicleType": "SimpleFlight",
+      "DefaultVehicleState": "Armed",
+      "AutoCreate": true,
+      "EnableTrace": true
+    }
+  }
+}
+```
+
+If this file is not passed with `-settings=...`, the project may enter the
+interactive Car/SUV selection flow and then fail because the optional SUV assets
+were intentionally skipped.
 
 When the user installs RflySim locally, do not immediately copy files into this
 project. First audit the install directory for:
