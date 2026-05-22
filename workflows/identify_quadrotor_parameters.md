@@ -325,6 +325,128 @@ Open-source route priority:
    hover-thrust sanity, and coarse inertia/motor sensitivity bands; do not
    claim high-confidence full identification.
 
+### 8.2 Public Data, Geometry, And Low-Cost Identification Audit
+
+Use three evidence tiers before asking for expensive lab measurements.
+
+#### Tier A: Public / vendor data usable as priors
+
+These values can seed the model or sanity-check logs, but they are not enough
+to claim identified dynamics:
+
+| Source | Data we can use | How to use it |
+|---|---|---|
+| YunZong Sunray-150 hardware page | 210 mm x 210 mm x 160 mm outer size, 150 mm wheelbase, about 1080 g for the listed hardware configuration | Use as mass/dimension prior; still weigh the exact battery/Mid360/payload configuration before final model update. |
+| YunZong power-system page | Sunray BD-45 battery: 4S1P, 5000 mAh, 340 g, 92.5 mm x 46 mm x 52.3 mm; propeller diameter 90 mm, 5 blades, 2.4 inch pitch, 3.52 g | Use for component mass distribution, propeller sanity check, and hover thrust bounds. |
+| Livox Mid-360 spec | 265 g, 65 mm x 65 mm x 60 mm, 360 deg horizontal FOV, vertical -7 deg to 52 deg, 200k points/s, 10 Hz typical frame rate, 9-27 V, 6.5 W | Use for payload mass, lidar pose, lidar update rate, and perception scenario limits. |
+| CUAV V6X / V6X V2 page | PX4-compatible controller, triple redundant IMU, barometer, RM3100 compass, Ethernet, PWM voltage-level switching, power module support | Use for log/topic expectations and hardware interface assumptions; page text is not enough for mass/inertia. |
+
+Keep source links in the parameter evidence bundle:
+
+```text
+Sunray hardware: https://wiki.yundrone.cn/docs/Sunray150-ying-jian-zheng-ti-jie-shao
+Sunray power system: https://wiki.yundrone.cn/docs/dong-li-xi-tong
+Sunray PX4 logs: https://wiki.yundrone.cn/docs/PX4-fei-xing-ri-zhi
+Mid360 on Sunray: https://wiki.yundrone.cn/docs/san-wei-ji-guang-lei-da
+Livox Mid-360 official specs: https://www.livoxtech.com/cn/mid-360/specs
+CUAV V6X: https://www.cuav.net/v6x/
+```
+
+#### Tier B: Geometry measurable from project assets
+
+The Sunray SDF and STL assets are valid geometry priors, not physical dynamics
+truth by themselves.
+
+Current project geometry audit:
+
+| Item | Local source | Current value / observation |
+|---|---|---|
+| Body visual STL | `QuadrotorModel/Resources/Visualization/sunray150_mid360_body.stl` and original `sunray.stl` | Raw STL bbox `8.3268 x 8.4508 x 6.3742`; SDF visual scale `0.03`, giving about `0.2498 x 0.2535 x 0.1912 m`. |
+| Propeller visual STL | `QuadrotorModel/Resources/Visualization/sunray150_mid360_propeller.stl` and original `sunray_cw.stl` | Raw STL bbox `71.1655 x 80.5003 x 7.3182`; SDF visual scale `0.001`, giving about `0.0712 x 0.0805 x 0.0073 m`. |
+| Rotor positions | `references/Sunray/.../sunray150_with_mid360.sdf` | rotor 0 `(0.065,-0.065,-0.025)`, rotor 1 `(-0.065,0.065,-0.025)`, rotor 2 `(0.065,0.065,-0.025)`, rotor 3 `(-0.065,-0.065,-0.025)`. |
+| Rotor directions | same SDF motor plugins | rotor 0/1 `ccw`, rotor 2/3 `cw`; confirm against PX4 motor order before changing allocation. |
+| Mid360 pose | same SDF | `(0.036,-0.0155,0.075)` relative to `base_link`. |
+
+Important consistency check:
+
+```text
+The SDF rotor coordinates imply x/y motor-axis spacing of 0.13 m and a diagonal
+motor-axis distance of about 0.184 m. The public Sunray page reports a 150 mm
+wheelbase. Do not overwrite either value blindly; define which wheelbase
+convention is used, then cross-check with STL, real frame measurement, and
+PX4 motor order.
+```
+
+#### Tier C: Low-cost identification routes
+
+Use these before requesting expensive professional measurement:
+
+| Parameter | Low-cost route | Confidence |
+|---|---|---|
+| `mass_kg` | Direct weighing of exact battery + Mid360 + guard + payload; cross-check with hover logs | High |
+| `center_of_gravity` | Balance/knife-edge method or component mass and lever-arm table | Medium-high |
+| `rotor_positions_m` | STL/SDF + ruler/caliper measurement from actual motor axes to CG | High |
+| `inertia_kg_m2` | Component mass distribution / CAD mesh as seed; bifilar/trifilar pendulum for low-cost physical measurement; PX4 ULog angular excitation for final fit | Medium to high when validated |
+| `thrust_curve` | PX4 ULog with actuator/RPM if available; otherwise hover/throttle excitation and motor command curve; cheap scale/thrust-stand as optional cross-check | Medium without RPM, high with RPM/thrust stand |
+| `moment_coefficient` | Yaw excitation logs after thrust curve and inertia are constrained | Medium |
+| `motor_time_constant_s` | ESC RPM telemetry step/chirp if available; otherwise ARPL/sysid.tools latent time-constant fit from ULog | Medium |
+| `drag` | Calm translational passes with velocity/acceleration/attitude logs; reject windy windows | Medium-low unless wind is measured |
+
+Do not fit everything from one ordinary mission log unless it contains enough
+excitation. One log can validate signs and rough hover behavior; it usually
+cannot identify a defensible full dynamics model.
+
+#### Tier D: Open-source / paper methods to reuse
+
+Primary method:
+
+```text
+sysid.tools / ARPL paper:
+Data-Driven System Identification of Quadrotors Subject to Motor Delays
+https://sysid.tools/
+https://arxiv.org/abs/2404.07837
+```
+
+Why it matches this project:
+
+1. It is explicitly designed for quadrotor parameter identification from PX4
+   ULog data.
+2. It estimates inertia, thrust curve, motor torque coefficient, and first
+   order motor delay.
+3. It only requires easy-to-measure parameters such as mass, rotor positions,
+   thrust directions, and torque directions, plus short excitation flights.
+4. It supports the practical case where RPM is not measured by estimating a
+   latent motor time constant.
+
+Local auxiliary method:
+
+```text
+references/Data/data-driven-dynamics/
+```
+
+Use it for ULog parsing, topic completeness checks, dataframe structure,
+optimizer configuration, and held-out prediction validation. It should not be
+treated as Sunray150 truth because its included quadrotor example parameters
+belong to a reference vehicle.
+
+### 8.3 Minimal Engineer Data Request
+
+If the engineer can only provide logs and ordinary product information, ask for
+this package first:
+
+| Priority | Request | Why |
+|---|---|---|
+| P0 | Exact takeoff mass of `sunray150_with_mid360` with battery, guards, payload, and current mounting | Mass affects every thrust and acceleration estimate. |
+| P0 | PX4 `.ulg` logs for hover/collective, small roll-pitch-yaw excitation, and one normal trajectory | Needed to identify or validate thrust, inertia, yaw coefficient, motor lag, and drag. |
+| P0 | PX4 parameter export (`.params`) and airframe/mixer/control-allocation config | Needed to decode actuator order, command scaling, motor direction, and logging setup. |
+| P0 | Motor order, rotor spin direction, propeller model, motor/ESC model, battery model | Prevents wrong allocation signs and wrong thrust curve interpretation. |
+| P1 | Whether ESC RPM telemetry exists; if yes, include RPM logs | Converts command-thrust fitting into physical `T=k_f omega^2` fitting. |
+| P1 | Battery voltage/current logs and wind/weather notes | Rejects voltage-sag and wind-biased identification windows. |
+| P2 | Simple measurements: motor-axis coordinates relative to CG, battery/Mid360/flight-controller mounting positions | Improves inertia and CG seed without lab equipment. |
+
+If only one ordinary `.ulg` is available, the first deliverable should be a
+topic-completeness and sign-consistency report, not final parameters.
+
 Current audit result: no YunZong/Sunray real ULog files are present in the
 repository. The only usable local ULog-like material is reference/sample data
 under `references/Data`, so all current MWORKS model values remain
