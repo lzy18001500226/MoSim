@@ -149,6 +149,10 @@ Rules:
 4. Do not force push or rewrite history unless the user explicitly approves that specific action.
 5. Never commit secrets, private tokens, local credentials, or generated files larger than GitHub limits.
 6. Before commit, check for large files when binary outputs or official materials may have changed.
+7. When Git is slow, has LFS/hook/index-lock residue, or another Git owner is
+   active, delegate commit/push work to `GitIntegrator` instead of blocking the
+   main engineering thread. The main agent remains responsible for scope,
+   review, and final reporting; details live in `workflows/agent_orchestration.md#5-long-git-work`.
 
 ### 3.3.1 Parallel Agent Rule
 

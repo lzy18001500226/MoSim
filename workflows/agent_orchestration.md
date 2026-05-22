@@ -669,6 +669,28 @@ Large `git add`, large-file scans, and reference import cleanup should be
 delegated to `GitIntegrator` when an agent slot is available. The main agent
 continues architecture, implementation, or review while Git runs.
 
+Git delegation is not limited to huge imports. If Git is slow, has LFS/hook
+side effects, stale `index.lock`, old polluted branches, broad untracked trees,
+or any repeated blocker, the main agent must treat Git as a separate DevOps
+stream. In that state, even a small Markdown commit should be assigned to
+`GitIntegrator`; the main agent's role is to give scope, review the result, and
+continue the engineering critical path.
+
+Normal small commits may be done by the main agent only when all of these are
+true:
+
+```text
+git status is fast enough to inspect safely
+no stale .git/index.lock exists
+no LFS hook is known to scan the whole repository
+the staged scope is explicit and small
+the commit/push is expected to finish quickly
+no other Git owner is active on the same worktree or branch
+```
+
+If any condition is false, spawn or reuse `GitIntegrator` and record the Git
+task in the ledger.
+
 `GitIntegrator` may:
 
 - inspect status and diffs;
@@ -711,6 +733,28 @@ unreal/*
 Each branch must pass large-file and gitlink checks before push. If a branch
 push fails because the pack is too large, split by narrower repository group
 instead of retrying the same pack repeatedly.
+
+Known local Git incident pattern:
+
+```text
+git commit can hang in git-lfs post-commit because git-lfs runs
+git ls-files -z --others --cached --exclude-standard over the whole large
+working tree.
+```
+
+When this recurs, `GitIntegrator` should:
+
+1. confirm no live Git process is using `.git/index.lock`;
+2. remove only stale zero-byte `.git/index.lock` after process check;
+3. prefer path-limited status/diff commands;
+4. avoid broad `git status` during large external-repo staging;
+5. if a single small commit is blocked only by slow hooks, use a documented
+   hook-bypass or Git plumbing path and report the exact command;
+6. push and report commit hash, branch, skipped paths, and residual state.
+
+Do not let the main agent spend multiple minutes debugging Git unless the user
+explicitly asks it to. Git blocker diagnosis belongs to `GitIntegrator`, with
+main-agent review of the final evidence.
 
 ## 5.1 AirSim Batch Migration With Nested Agents
 

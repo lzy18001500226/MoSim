@@ -108,6 +108,10 @@
   project-owned docs/workflows or record third-party whitespace as accepted
   upstream state. If a third-party subset was reformatted during initial import,
   record it explicitly and do not repeat the pattern.
+- Do not spend main-thread time on Git when local LFS hooks, stale
+  `index.lock`, polluted branches, or broad external-reference trees make even
+  small commits slow. Delegate Git to `GitIntegrator`; the main agent only sets
+  scope, reviews evidence, and keeps the engineering critical path moving.
 
 ## Recovery Pointers
 
