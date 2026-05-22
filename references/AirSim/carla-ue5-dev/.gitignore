@@ -1,0 +1,42 @@
+.vs/
+.vscode/
+.zed/
+.cache/
+.devcontainer/
+.idea/
+cmake-build-*/
+__pycache__/
+
+Build/
+Build-Tests/
+Install/
+Doxygen/
+Dist/
+Temp/
+out/
+
+CMakeSettings.json
+
+.clangd
+.env
+.venv
+
+# Compiled objects and libraries (outside Build/)
+*.a
+*.o
+*.so
+
+# Python artifacts
+*.egg-info
+*.py[cod]
+
+# Logs and core dumps
+*.log
+core
+
+# Script output directories
+_out*
+_images*
+
+# Temp
+Help.md
