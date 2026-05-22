@@ -1,0 +1,32 @@
+[package]
+version = "1.0.5"
+category = "Robotics"
+title = "Omni Isaac Cortex"
+description = "Decision framework and organizational structures for using Omni Isaac Sim as the mind of a physical robot."
+keywords = ["isaac", "robotics", "collaborative robotics", "digital twins"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.cortex.framework."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.cortex.framework" = {}
+
+[[python.module]]
+name = "omni.isaac.cortex"
+
+[[test]]
+args = [
+'--/app/settings/fabricDefaultStageFrameHistoryCount = 3',
+]
+
+[[test]]
+name = "startup"
+args = [
+    '--/app/settings/fabricDefaultStageFrameHistoryCount = 3',
+]

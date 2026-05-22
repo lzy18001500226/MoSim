@@ -1,0 +1,32 @@
+[package]
+version = "2.0.5"
+category = "Simulation"
+title = "Isaac Cortex Sample Behaviors"
+description = "Sample Behaviors for Isaac Cortex"
+keywords = ["isaac", "samples", "manipulation"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.cortex.behaviors."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.cortex.behaviors" = {}
+
+[[python.module]]
+name = "omni.isaac.cortex.sample_behaviors"
+
+[[test]]
+args = [
+'--/app/settings/fabricDefaultStageFrameHistoryCount = 3',
+]
+
+[[test]]
+name = "startup"
+args = [
+    '--/app/settings/fabricDefaultStageFrameHistoryCount = 3',
+]

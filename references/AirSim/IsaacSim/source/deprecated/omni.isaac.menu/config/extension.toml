@@ -1,0 +1,34 @@
+[package]
+version = "1.0.6"
+category = "Simulation"
+title = "Isaac Sim Menus"
+description = "Isaac Sim Utility Extensions"
+keywords = ["isaac", "menu"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.gui.menu"
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.gui.menu" = {}
+
+[[python.module]]
+name = "omni.isaac.menu"
+
+[[python.module]]
+name = "omni.isaac.menu.tests"
+
+[[test]]
+dependencies = [
+   "omni.isaac.core",
+   "omni.isaac.range_sensor",
+   "omni.isaac.sensor",
+]
+args = [
+    '--/app/settings/fabricDefaultStageFrameHistoryCount = 3',
+]

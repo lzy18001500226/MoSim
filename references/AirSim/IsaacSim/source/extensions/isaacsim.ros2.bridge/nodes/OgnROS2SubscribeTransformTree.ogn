@@ -1,0 +1,61 @@
+{
+    "ROS2SubscribeTransformTree": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node subscribes to a ROS2 Transform Tree"
+        ],
+        "metadata": {
+            "uiName": "ROS2 Subscribe Transform Tree"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2:subscriber",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port."
+            },
+            "context": {
+                "type": "uint64",
+                "description": "ROS2 context handle, Default of zero will use the default global context",
+                "default" : 0
+            },
+            "nodeNamespace": {
+                "type": "string",
+                "description": "Namespace of ROS2 Node, prepends any published/subscribed topic by the node namespace",
+                "default": ""
+            },
+            "topicName": {
+                "type": "string",
+                "description": "Name of ROS2 Topic",
+                "default": "tf"
+            },
+            "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": ""
+            },
+            "queueSize": {
+                "type": "uint64",
+                "description": "The number of messages to queue up before throwing some away, in case messages are collected faster than they can be processed. Only honored if 'history' QoS policy was set to 'keep last'. This setting can be overwritten by qosProfile input.",
+                "default": 10
+            },
+            "frameNamesMap": {
+                "type": "token[]",
+                "description": "Array of [prim_path_0, frame_name_0, prim_path_1, frame_name_1, ...].",
+                "default": []
+            },
+            "articulationRoots": {
+                "type": "token[]",
+                "description": "Array of articulation root prims that will be modified",
+                "default": []
+            }
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "Output execution triggers when a new message is received"
+            }
+        }
+    }
+}

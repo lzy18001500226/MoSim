@@ -1,0 +1,91 @@
+{
+    "ROS2PublishOdometry": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node publishes odometry as a ROS2 Odometry message"
+        ],
+        "metadata": {
+            "uiName": "ROS2 Publish Odometry"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2:publisher",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "context": {
+                "type": "uint64",
+                "description": "ROS2 context handle, Default of zero will use the default global context",
+                "default" : 0
+            },
+            "nodeNamespace": {
+                "type": "string",
+                "description": "Namespace of ROS2 Node, prepends any published/subscribed topic by the node namespace",
+                "default" : ""
+            },
+            "odomFrameId": {
+                "type": "string",
+                "description": "FrameId for ROS2 odometry message",
+                "default" : "odom"
+            },
+            "chassisFrameId": {
+                "type": "string",
+                "description": "FrameId for robot chassis frame",
+                "default" : "base_link"
+            },
+            "topicName": {
+                "type": "string",
+                "description": "Name of ROS2 Topic",
+                "default" : "odom"
+            },
+             "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": ""
+            },
+            "publishRawVelocities": {
+                "type":"bool",
+                "description":"When enabled, linear and angular velocities are published as provided, without transformation. When disabled, the given world velocities are projected into the robot's frame before publishing.",
+                "default": false
+            },
+            "queueSize": {
+                "type": "uint64",
+                "description": "The number of messages to queue up before throwing some away, in case messages are collected faster than they can be sent. Only honored if 'history' QoS policy was set to 'keep last'. This setting can be overwritten by qosProfile input.",
+                "default": 10
+            },
+            "timeStamp": {
+                "type": "double",
+                "description": "ROS2 Timestamp in seconds",
+                "uiName": "Timestamp",
+                "default": 0.0
+            },
+            "position": {
+                "type": "vectord[3]",
+                "description": "Position vector in meters",
+                "default": [0.0, 0.0, 0.0]
+            },
+            "orientation": {
+                "type": "quatd[4]",
+                "description": "Orientation as a quaternion (IJKR)",
+                "default": [0.0, 0.0, 0.0, 1.0]
+            },
+            "linearVelocity": {
+                "type": "vectord[3]",
+                "description": "Linear velocity vector in m/s",
+                "default": [0.0, 0.0, 0.0]
+            },
+            "angularVelocity": {
+                "type": "vectord[3]",
+                "description": "Angular velocity vector in rad/s",
+                "default": [0.0, 0.0, 0.0]
+            },
+            "robotFront": {
+                "type": "vectord[3]",
+                "description": "The front of the robot. The robotFront vector utilizes x and y, and drops the z component. We assume a robotUp vector of [0.0, 0.0, 1.0] to project given world linear and angular velocities into the robot's local frame.",
+                "default": [1.0, 0.0, 0.0]
+            }
+        }
+    }
+}

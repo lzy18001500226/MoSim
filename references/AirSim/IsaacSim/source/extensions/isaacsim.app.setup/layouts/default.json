@@ -1,0 +1,153 @@
+[
+  {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "dock_id": 5,
+                    "height": 772.0,
+                    "position_x": 0.0,
+                    "position_y": 22.666667938232422,
+                    "selected_in_dock": false,
+                    "title": "Main ToolBar",
+                    "visible": true,
+                    "width": 42.0
+                  }
+                ],
+                "dock_id": 5,
+                "position": "LEFT"
+              },
+              {
+                "children": [
+                  {
+                    "dock_id": 6,
+                    "dock_tab_bar_enabled": true,
+                    "dock_tab_bar_visible": true,
+                    "height": 772.0,
+                    "position_x": 43.333335876464844,
+                    "position_y": 22.666667938232422,
+                    "selected_in_dock": true,
+                    "title": "Viewport",
+                    "visible": true,
+                    "width": 1823.3333740234375
+                  }
+                ],
+                "dock_id": 6,
+                "position": "RIGHT"
+              }
+            ],
+            "dock_id": 3,
+            "position": "TOP"
+          },
+          {
+            "children": [
+              {
+                "dock_id": 4,
+                "dock_tab_bar_enabled": true,
+                "dock_tab_bar_visible": true,
+                "height": 554.6666870117188,
+                "position_x": 0.0,
+                "position_y": 796.0,
+                "selected_in_dock": true,
+                "title": "Content",
+                "visible": true,
+                "width": 1866.666748046875
+              },
+              {
+                "dock_id": 4,
+                "height": 554.6666870117188,
+                "position_x": 0.0,
+                "position_y": 22.666667938232422,
+                "selected_in_dock": false,
+                "title": "Robotics Examples",
+                "visible": true,
+                "width": 1866.666748046875
+              },
+              {
+                "dock_id": 4,
+                "height": 554.6666870117188,
+                "position_x": 0.0,
+                "position_y": 796.0,
+                "selected_in_dock": false,
+                "title": "Console",
+                "visible": true,
+                "width": 1866.666748046875
+              }
+            ],
+            "dock_id": 4,
+            "position": "BOTTOM"
+          }
+        ],
+        "dock_id": 1,
+        "position": "LEFT"
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "dock_id": 7,
+                "dock_tab_bar_enabled": true,
+                "dock_tab_bar_visible": true,
+                "height": 655.3333740234375,
+                "position_x": 1868.0,
+                "position_y": 22.666667938232422,
+                "selected_in_dock": true,
+                "title": "Stage",
+                "visible": true,
+                "width": 692.0
+              },
+              {
+                "dock_id": 7,
+                "height": 655.3333740234375,
+                "position_x": 1868.0,
+                "position_y": 22.666667938232422,
+                "selected_in_dock": false,
+                "title": "Layer",
+                "visible": true,
+                "width": 692.0
+              },
+              {
+                "dock_id": 7,
+                "height": 655.3333740234375,
+                "position_x": 1868.0,
+                "position_y": 22.666667938232422,
+                "selected_in_dock": false,
+                "title": "Render Settings",
+                "visible": true,
+                "width": 692.0
+              }
+            ],
+            "dock_id": 7,
+            "position": "TOP"
+          },
+          {
+            "children": [
+              {
+                "dock_id": 8,
+                "dock_tab_bar_enabled": true,
+                "dock_tab_bar_visible": true,
+                "height": 671.3333740234375,
+                "position_x": 1868.0,
+                "position_y": 679.3333740234375,
+                "selected_in_dock": true,
+                "title": "Property",
+                "visible": true,
+                "width": 692.0
+              }
+            ],
+            "dock_id": 8,
+            "position": "BOTTOM"
+          }
+        ],
+        "dock_id": 2,
+        "position": "RIGHT"
+      }
+    ],
+    "dock_id": 3358485147
+  }
+]

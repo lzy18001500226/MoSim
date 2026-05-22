@@ -1,0 +1,48 @@
+# Target kit 107.x
+[[dependency]]
+python = "../_build/target-deps/python"
+packages = [
+    "aioboto3==15.1.0",            # SWIPAT filed under: https://nvbugs/4895046
+    "aiobotocore==2.24.0",         # SWIPAT filed under: https://nvbugs/4576936
+    "boto3==1.39.11",              # SWIPAT filed under: https://nvbugs/3697913
+    "botocore==1.39.11",           # SWIPAT filed under: https://nvbugs/5303107
+    "awscrt==0.23.8",              # SWIPAT filed under: https://nvbugs/4603906
+    "s3transfer==0.13.1",          # SWIPAT filed under: https://nvbugs/3738087
+    "azure-storage-blob==12.17.0", # SWIPAT filed under: https://nvbugs/4221315
+    "azure-identity==1.13.0",      # SWIPAT filed under: https://nvbugs/4221323
+    "requests==2.32.3",            # SWIPAT filed under: https://nvbugs/3430668
+    "oauthlib==3.2.2",             # SWIPAT filed under: https://nvbugs/3433846
+    "requests-oauthlib==1.3.1",    # SWIPAT filed under: https://nvbugs/3433849
+    "isodate==0.6.1",              # SWIPAT filed under: https://nvbugs/5326903
+    "cryptography==44.0.0",        # SWIPAT filed under: https://nvbugs/5326914
+    "azure-core==1.28.0",          # SWIPAT filed under: https://nvbugs/5326927
+    "msal==1.27.0",                # SWIPAT filed under: https://nvbugs/5326933
+    "msal-extensions==1.0.0",      # SWIPAT filed under: https://nvbugs/5326943
+    "portalocker==2.7.0",          # SWIPAT filed under: https://nvbugs/5326953
+    "jmespath==1.0.1",             # SWIPAT filed under: https://nvbugs/5303117
+    "python-dateutil==2.9.0.post0",# SWIPAT filed under: https://nvbugs/5303032
+    "six==1.17.0",                 # SWIPAT filed under: https://nvbugs/5303087
+]
+
+target = "../_build/target-deps/pip_cloud_prebundle"
+platforms = ["*-x86_64", "linux-aarch64"]
+download_only = false
+install_dependencies = false
+append_to_install_folder = true
+gather_licenses_path = "../_build/PACKAGE-LICENSES/PIP-prebundled-LICENSES.txt"
+# extra_args = []
+
+
+[[dependency]]
+python = "../_build/target-deps/python"
+packages = [
+    "pywin32==306", # SWIPAT filed under:
+]
+
+target = "../_build/target-deps/pip_cloud_prebundle"
+platforms = ["windows-x86_64"]
+download_only = false
+install_dependencies = false
+append_to_install_folder = true
+gather_licenses_path = "../_build/PACKAGE-LICENSES/PIP-prebundled-LICENSES.txt"
+# extra_args = []

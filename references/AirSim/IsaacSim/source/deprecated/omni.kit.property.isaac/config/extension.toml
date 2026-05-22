@@ -1,0 +1,21 @@
+[package]
+version = "1.0.6"
+category = "Simulation"
+title = "Isaac Sim Property Extensions"
+description = "Adds Isaac Sim Specific Property Utils"
+keywords = ["isaac", "property"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.gui.property."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.gui.property" = {}
+
+[[python.module]]
+name = "omni.kit.property.isaac"

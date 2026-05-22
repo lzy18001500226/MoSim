@@ -1,0 +1,107 @@
+{
+    "ROS2QoSProfile": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": "This node generates a JSON config of a QoS Profile",
+        "language": "Python",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2",
+        "metadata": {
+            "uiName": "ROS2 QoS Profile"
+        },
+        "inputs": {
+            "history": {
+                "type": "token",
+                "description": "History policy",
+                "metadata": {
+                    "allowedTokens": {
+                        "systemDefault": "systemDefault",
+                        "keepLast": "keepLast",
+                        "keepAll": "keepAll",
+                        "unknown": "unknown"
+                    }
+                },
+                "default": "keepLast"
+            },
+            "depth": {
+                "type": "uint64",
+                "description": "Depth (Queue size) policy. Only honored if the'history' policy was set to 'keepLast'.",
+                "default": 10
+            },
+            "reliability": {
+                "type": "token",
+                "description": "Reliability policy",
+                "metadata": {
+                    "allowedTokens": {
+                        "systemDefault": "systemDefault",
+                        "reliable": "reliable",
+                        "bestEffort": "bestEffort",
+                        "unknown": "unknown"
+                    }
+                },
+                "default": "reliable"
+            },
+            "durability": {
+                "type": "token",
+                "description": "Durability policy",
+                "metadata": {
+                    "allowedTokens": {
+                        "systemDefault": "systemDefault",
+                        "transientLocal": "transientLocal",
+                        "volatile": "volatile",
+                        "unknown": "unknown"
+                    }
+                },
+                "default": "volatile"
+            },
+            "deadline": {
+                "type": "double",
+                "description": "Deadline policy. Defined in seconds",
+                "default": 0.0
+            },
+            "lifespan": {
+                "type": "double",
+                "description": "Lifespan policy. Defined in seconds",
+                "default": 0.0
+            },
+            "liveliness": {
+                "type": "token",
+                "description": "Liveliness policy",
+                "metadata": {
+                    "allowedTokens": {
+                        "systemDefault": "systemDefault",
+                        "automatic": "automatic",
+                        "manualByTopic": "manualByTopic",
+                        "unknown": "unknown"
+                    }
+                },
+                "default": "systemDefault"
+            },
+            "leaseDuration": {
+                "type": "double",
+                "description": "Lease Duration policy. Defined in seconds",
+                "default": 0.0
+            },
+            "createProfile": {
+                "type": "token",
+                "description": "Preset profile configs. Choosing a QoS profile will update the policies accordingly.",
+                "metadata": {
+                    "allowedTokens": {
+                        "defaultPubSub": "Default for publishers/subscribers",
+                        "services": "Services",
+                        "sensorData": "Sensor Data",
+                        "systemDefault": "System Default",
+                        "custom": "Custom"
+                    }
+                },
+                "default": "defaultPubSub"
+            }
+        },
+        "outputs": {
+            "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config"
+            }
+        }
+    }
+}

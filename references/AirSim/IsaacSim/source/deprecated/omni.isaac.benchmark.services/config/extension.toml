@@ -1,0 +1,29 @@
+[package]
+version = "2.0.7"
+category = "Simulation"
+title = "Benchmark Services"
+description = "This extension provides benchmarking utilities"
+keywords = ["isaac", "benchmark", "analyze"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.benchmark.services."
+
+[dependencies]
+"isaacsim.benchmark.services" = {}
+"isaacsim.core.deprecation_manager" = {}
+
+[[python.module]]
+name = "omni.isaac.benchmark.services"
+
+[[python.module]]
+name = "omni.isaac.benchmark.services.tests"
+
+[[test]]
+dependencies = [
+   "omni.isaac.core",
+]

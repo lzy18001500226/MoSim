@@ -1,0 +1,87 @@
+{
+    "IsaacConvertDepthToPointCloud": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": "Converts a 32FC1 image buffer into Point Cloud data",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacCore",
+        "metadata": {
+            "uiName": "Isaac Depth to Point Cloud"
+        },
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "dataPtr": {
+                "type": "uint64",
+                "description": "Pointer to the raw rgba array data",
+                "default": 0
+            },
+            "cudaDeviceIndex": {
+                "type": "int",
+                "description": "Index of the device where the data lives (-1 for host data)",
+                "default": -1
+            },
+            "width": {
+                "type": "uint",
+                "description": "Buffer array width, same as input"
+            },
+            "height": {
+                "type": "uint",
+                "description": "Buffer array height, same as input"
+            },
+            "focalLength":{
+                "type":"float",
+                "description": "focal length"
+            },
+            "horizontalAperture":{
+                "type":"float",
+                "description": "horizontal aperture"
+            },
+            "verticalAperture":{
+                "type":"float",
+                "description": "vertical aperture"
+            },
+            "bufferSize": {
+                "type": "uint",
+                "description": "Size (in bytes) of the buffer (0 if the input is a texture)"
+            },
+            "format": {
+                "type": "uint64",
+                "description": "Format",
+                "default": 33
+            }
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "Output execution triggers when lidar sensor has completed a full scan"
+            },
+            "dataPtr": {
+                "type": "uint64",
+                "description": "Pointer to the rgb buffer data",
+                "default": 0
+            },
+            "cudaDeviceIndex": {
+                "type": "int",
+                "description": "Index of the device where the data lives (-1 for host data)",
+                "default": -1
+            },
+            "bufferSize": {
+                "type": "uint",
+                "description": "Size (in bytes) of the buffer (0 if the input is a texture)"
+            },
+            "height":{
+                "type": "uint",
+                "description": "Height of point cloud buffer, will always return 1",
+                "default": 1
+            },
+            "width":{
+                "type": "uint",
+                "description": "number of points in point cloud buffer",
+                "default": 0
+            }
+        }
+    }
+}

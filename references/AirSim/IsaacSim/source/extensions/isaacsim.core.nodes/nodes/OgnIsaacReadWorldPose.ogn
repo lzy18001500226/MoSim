@@ -1,0 +1,35 @@
+{
+    "IsaacReadWorldPose": {
+        "version": 2,
+        "icon": "icons/isaac-sim.svg",
+        "description": "Isaac Sim node that reads world pose of an xform",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacCore",
+        "metadata": {
+            "uiName": "Isaac Read World Pose"
+        },
+        "inputs": {
+            "prim":{
+                "type": "target",
+                "description": "Usd prim reference from which the fabric pose will be read"
+            }
+        },
+        "outputs": {
+            "translation": {
+                "type": "vectord[3]",
+                "description": "Translation vector in meters",
+                "default": [0.0, 0.0, 0.0]
+            },
+            "orientation": {
+                "type": "quatd[4]",
+                "description": "Orientation as a quaternion (IJKR)",
+                "default": [0.0, 0.0, 0.0, 1.0]
+            },
+            "scale": {
+                "type": "vectord[3]",
+                "description": "Scale vector in meters",
+                "default": [0.0, 0.0, 0.0]
+            }
+        }
+    }
+}

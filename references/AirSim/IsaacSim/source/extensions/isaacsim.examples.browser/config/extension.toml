@@ -1,0 +1,26 @@
+[package]
+version = "0.2.1"
+category = "GUI"
+title = "Isaac Sim Example Browser"
+description = "A browser for Isaac Sim assets"
+keywords = ["isaac", "browser", "examples"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+feature = true
+# writeTarget.kit = true
+
+[dependencies]
+"omni.kit.browser.folder.core" = {}
+"omni.kit.clipboard" = { optional=true }
+"omni.kit.commands" = {}
+"omni.kit.menu.stage" = { optional=true }
+"omni.kit.menu.utils" = {}
+"omni.kit.pip_archive" = {}
+"omni.kit.tool.collect" = { optional=true }
+"omni.kit.viewport.utility" = { }
+"omni.usd" = {}
+
+[[python.module]]
+name = "isaacsim.examples.browser"

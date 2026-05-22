@@ -1,0 +1,38 @@
+{
+    "SurfaceGripper" :
+    {
+        "version": 2,
+        "icon": "icons/isaac-sim.svg",
+        "description": "Surface Gripper",
+        "language": "Python",
+        "categories":{
+            "isaacSurfaceGripper": "Surface Gripper inside Isaac Sim"
+        },
+        "scheduling": ["compute-on-request", "usd-write"],
+        "metadata": {
+            "uiName": "Surface Gripper"
+        },
+        "inputs": {
+            
+            "enabled": {
+                "type": "bool",
+                "description": "node does not execute if disabled",
+                "default": true
+            },
+            "SurfaceGripper": {
+                "type": "target",
+                "description" : "The Surface Gripper prim to control"
+            },
+            "Toggle": {
+                "type": "execution",
+                "description": "Toggle the gripper"
+            }
+        
+        },
+        "outputs":
+        {
+
+        }
+
+    }
+}

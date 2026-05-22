@@ -1,0 +1,33 @@
+{
+    "ROS2Context": {
+        "version": 2,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node creates a ROS2 Context for a given domain ID"
+        ],
+        "metadata": {
+            "uiName": "ROS2 Context"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2",
+        "inputs": {
+            "domain_id": {
+                "type": "uchar",
+                "description": "Domain ID for ROS context",
+                "default": 0
+            },
+            "useDomainIDEnvVar": {
+                "type": "bool",
+                "description": "Set to true to use ROS_DOMAIN_ID environment variable if set. Defaults to domain_id if not found",
+                "default": true
+            }
+        },
+        "outputs": {
+            "context": {
+                "type": "uint64",
+                "description": "handle to initialized ROS2 context",
+                "default": 0
+            }
+        }
+    }
+}

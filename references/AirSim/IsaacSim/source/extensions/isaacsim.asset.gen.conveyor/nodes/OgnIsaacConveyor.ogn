@@ -1,0 +1,65 @@
+{
+    "IsaacConveyor" :
+    {
+        "version": 1,
+        "description": "Conveyor Belt",
+        "categories":{
+            "isaacConveyor": "Conveyor belt controller inside Isaac Sim"
+        },
+        "scheduling": "compute-on-request",
+        "metadata": {
+            "uiName": "Conveyor Belt"
+        },
+        "inputs": {
+            
+            "enabled": {
+                "type": "bool",
+                "description": "node does not execute if disabled",
+                "default": true
+            },
+            "conveyorPrim": {
+                "type": "target",
+                "description" : "the prim reference to the conveyor"
+            },
+            "velocity": {
+                "type": "float",
+                "description": "the velocity of the conveyor unit",
+                "default": 0.0
+            },
+            "direction": {
+                "type": "float[3]",
+                "description": "relative direction to apply velocity",
+                "default": [1.0, 0.0, 0.0]
+            },
+            "curved":
+            {
+                "type":"bool",
+                "description":"If the conveyor belt is curved, check this box to apply angular velocities. The rotation origin will be the rigid body origin.",
+                "default": false
+            },
+            "animateTexture": {
+                "type": "bool",
+                "description": "If configured, Animates the texture based on the conveyor velocity. may affect performance specially if multiple instances are added to a scene.",
+                "default": false
+            },
+            "animateScale":{
+                "type":"float",
+                "description": "how fast to scale animate texture",
+                "default":1.0
+            },
+            "animateDirection": {
+                "type": "float[2]",
+                "description": "relative direction to apply to UV texture",
+                "default": [1.0, 0.0]
+            },     
+            "onStep": {
+                "type": "execution",
+                "description": "step to animate textures"
+            },
+            "delta": {
+                "type": "float",
+                "description": "time since last step in seconds"
+            }
+        }
+    }
+}

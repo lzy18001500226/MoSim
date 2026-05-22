@@ -1,0 +1,23 @@
+[package]
+version = "1.1.3"
+category = "Simulation"
+title = "Isaac Sim Property Extensions"
+description = "Adds Isaac Sim Specific Property Utils"
+keywords = ["isaac", "property"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.robot.schema" = {}
+"omni.kit.pip_archive" = {}
+"omni.kit.property.usd" = {}
+"omni.kit.uiapp" = {}
+"omni.kit.window.property" = {}
+"omni.usd" = {}
+
+[[python.module]]
+name = "isaacsim.gui.property"

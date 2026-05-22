@@ -1,0 +1,39 @@
+[package]
+version = "2.0.6"
+category = "Simulation"
+title = "Isaac Sim Core OmniGraph Nodes"
+description = "Core"
+keywords = ["isaac"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.core.nodes."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.core.nodes" = {}
+
+[[python.module]]
+name = "omni.isaac.core_nodes"
+
+[[python.module]]
+name = "omni.isaac.core_nodes.tests"
+
+[[test]]
+dependencies = [
+   "omni.isaac.core",
+   "omni.isaac.nucleus",
+]
+args = [
+'--/app/settings/fabricDefaultStageFrameHistoryCount = 3',
+]
+
+[[test]]
+name = "startup"
+args = [
+    '--/app/settings/fabricDefaultStageFrameHistoryCount = 3',
+]

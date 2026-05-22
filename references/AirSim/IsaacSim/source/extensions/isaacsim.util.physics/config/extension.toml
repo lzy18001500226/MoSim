@@ -1,0 +1,22 @@
+[package]
+version = "1.1.5"
+category = "Simulation"
+title = "Isaac Sim Physics API Editor"
+description = "Collision and Physics Utils"
+keywords = ["isaac", "physics", "utils",]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.gui.components" = {}
+"omni.physx" = {}
+
+[[python.module]]
+name = "isaacsim.util.physics"
+
+[[python.module]]
+name = "isaacsim.util.physics.tests"

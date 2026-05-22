@@ -1,0 +1,19 @@
+# Target kit 107.x
+[[dependency]]
+python = "../_build/target-deps/python"
+packages = [
+    "imageio==2.37.0",                  # SWIPAT filed under: https://nvbugs/3701046    # 
+    "scipy==1.15.3",                    # SWIPAT filed under: https://nvbugs/3673519    # General
+    "pyyaml==6.0.2",                    # SWIPAT filed under: https://nvbugs/3434739    # General
+    "opencv-python-headless==4.11.0.86",# SWIPAT filed under: https://nvbugs/4636915    # General
+    "trimesh==4.5.1",                   # SWIPAT filed under: https://nvbugs/4287403    # Grasp generation
+    "rtree==1.3.0",                     # SWIPAT filed under: https://nvbugs/5326957    # Grasp generation  
+]
+
+target = "../_build/target-deps/pip_compute_prebundle"
+platforms = ["*-x86_64", "linux-aarch64"]
+download_only = false
+install_dependencies = false
+append_to_install_folder = true
+gather_licenses_path = "../_build/PACKAGE-LICENSES/PIP-prebundled-LICENSES.txt"
+# extra_args = []

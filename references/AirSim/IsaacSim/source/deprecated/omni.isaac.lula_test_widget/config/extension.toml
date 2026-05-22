@@ -1,0 +1,21 @@
+[package]
+version = "1.0.6"
+category = "Simulation"
+title = "Lula Test Widget"
+description = "Run Simple Tests Using Lula Algorithms"
+keywords = ["isaac", "lula"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.robot_motion.lula_test_widget."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.robot_motion.lula_test_widget" = {}
+
+[[python.module]]
+name = "omni.isaac.lula_test_widget"

@@ -1,0 +1,27 @@
+[package]
+version = "2.0.7"
+category = "Simulation"
+title = "Grasp Editor"
+description = "Author grasps by hand for a specific robot gripper and USD asset."
+keywords = []
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.robot_setup.grasp_editor."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.robot_setup.grasp_editor" = {}
+
+[[python.module]]
+name = "omni.isaac.grasp_editor.tests"
+
+[[test]]
+dependencies = [
+   "omni.isaac.core",
+   "omni.isaac.nucleus"
+]

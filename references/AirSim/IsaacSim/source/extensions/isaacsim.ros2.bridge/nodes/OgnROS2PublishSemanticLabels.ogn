@@ -1,0 +1,66 @@
+{
+    "ROS2PublishSemanticLabels": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node publishes ROS2 semantic label messages"
+        ],
+        "metadata": {
+            "uiName": "ROS2 Publish Semantic Labels"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2:publisher",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port."
+            },
+            "context": {
+                "type": "uint64",
+                "description": "ROS2 context handle, Default of zero will use the default global context",
+                "default" : 0
+            },
+            "nodeNamespace": {
+                "type": "string",
+                "description": "Namespace of ROS2 Node, prepends any published/subscribed topic by the node namespace",
+                "default" : ""
+            },
+            "topicName": {
+                "type": "string",
+                "description": "Name of ROS2 Topic",
+                "default" : "labels"
+            },
+             "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": ""
+            },
+            "queueSize": {
+                "type": "uint64",
+                "description": "The number of messages to queue up before throwing some away, in case messages are collected faster than they can be sent. Only honored if 'history' QoS policy was set to 'keep last'. This setting can be overwritten by qosProfile input.",
+                "default": 10
+            },
+            "timeStamp": {
+                "type": "double",
+                "description": "Time in seconds to use when publishing the message",
+                "default" : 0.0
+            },
+            "ids": {
+                "type": "uint[]",
+                "description": "Unoccluded semantic u ids (or color, if `colorize` is set to True)."
+            },
+            "labels": {
+                "type": "token[]",
+                "description": "Prim path of the prim."
+            },
+            "semantics": {
+                "type": "token[]",
+                "description": "Semantic labels that correspeond to the ids."
+            },
+            "idToLabels": {
+                "description": "Mapping from id to semantic labels.",
+                "type": "string"
+            }
+        }
+    }
+}

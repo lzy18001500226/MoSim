@@ -1,0 +1,86 @@
+{
+    "ROS2SubscribeAckermannDrive": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node subscribes to a ROS2 AckermannDriveStamped message"
+        ],
+        "metadata": {
+            "uiName": "ROS2 Subscribe AckermannDrive"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2:subscriber",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port."
+            },
+            "context": {
+                "type": "uint64",
+                "description": "ROS2 context handle, Default of zero will use the default global context",
+                "default" : 0
+            },
+            "nodeNamespace": {
+                "type": "string",
+                "description": "Namespace of ROS2 Node, prepends any published/subscribed topic by the node namespace",
+                "default": ""
+            },
+            "topicName": {
+                "type": "string",
+                "description": "Name of ROS2 Topic",
+                "default": "ackermann_cmd"
+            },
+            "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": ""
+            },
+            "queueSize": {
+                "type": "uint64",
+                "description": "The number of messages to queue up before throwing some away, in case messages are collected faster than they can be processed. Only honored if 'history' QoS policy was set to 'keep last'. This setting can be overwritten by qosProfile input.",
+                "default": 10
+            }
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "Output execution triggers when a new message is received"
+            },
+            "frameId": {
+                "type": "string",
+                "description": "FrameId for ROS2 message",
+                "default" : ""
+            },
+            "timeStamp": {
+                "type": "double",
+                "description": "Timestamp of message in seconds",
+                "default" : 0
+            },
+            "steeringAngle": {
+                "type": "double",
+                "description": "Desired virtual angle in radians. Corresponds to the yaw of a virtual wheel located at the center of the front axle",
+                "default": 0.0
+            },
+            "steeringAngleVelocity": {
+                "type": "double",
+                "description": "Desired rate of change of virtual angle in rad/s. Corresponds to the yaw of a virtual wheel located at the center of the front axle",
+                "default": 0.0
+            },
+            "speed": {
+                "type": "double",
+                "description": "Desired forward speed in m/s",
+                "default": 0.0
+            },
+            "acceleration": {
+                "type": "double",
+                "description": "Desired acceleration in m/s^2",
+                "default": 0.0
+            },
+            "jerk": {
+                "type": "double",
+                "description": "Desired jerk in m/s^3",
+                "default": 0.0
+            }
+        }
+    }
+}

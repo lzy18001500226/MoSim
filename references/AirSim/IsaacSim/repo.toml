@@ -1,0 +1,1029 @@
+########################################################################################################################
+# Repo tool base settings
+########################################################################################################################
+
+[repo]
+# Use Kit Template repo configuration as a base. Only override things specific to the repo.
+import_configs = [
+  # Shared config for all kit extensions repos
+  "${root}/_repo/deps/repo_kit_tools/kit-template/repo.toml",
+  # Shared config for kit extensions repos that also publish an app to the Launcher
+  "${root}/_repo/deps/repo_kit_tools/kit-template/repo-app.toml",
+]
+
+# Repository Name. It is used for solution name and final package name
+name = "isaac-sim"
+
+#logging = "warn"
+
+# Specify python executable path for each platform
+python_executable."platform:linux-x86_64".python_executable_path = "python3${exe_ext}"
+python_executable."platform:linux-aarch64".python_executable_path = "python3${exe_ext}"
+python_executable."platform:windows-x86_64".python_executable_path = "python${exe_ext}"
+python_executable.packman_package_name = "python"
+python_executable.packman_package_version = "3.11.11+nv3-${platform}"
+python_executable.packman_link_path = "_repo/python/"
+
+########################################################################################################################
+# Override VERSION File
+########################################################################################################################
+
+[repo.folders]
+version_file = "${root}/VERSION"
+
+########################################################################################################################
+# Build tool setup
+########################################################################################################################
+
+[repo_build.premake]
+linux_x86_64_cxx_abi=true
+
+[repo_build.stage_files]
+allowed_paths=[
+  "${root}/_build",
+  "${root}/docs/source",
+]
+
+
+[repo_build.docker]
+enabled = false
+[repo_build]
+# List of packman projects to pull (in order)
+
+fetch.packman_target_files_to_pull = [
+  "${root}/deps/kit-sdk.packman.xml",
+  "${root}/deps/omni-physics.packman.xml",
+  "${root}/deps/kit-sdk-deps.packman.xml",
+  "${root}/deps/ext-deps.packman.xml",
+  "${root}/deps/isaac-sim.packman.xml",
+]
+
+fetch.pip.files_to_pull = [
+  "${root}/deps/pip.toml",
+  "${root}/deps/pip_ml.toml",
+  "${root}/deps/pip_lula.toml",
+  "${root}/deps/pip_compute.toml",
+  "${root}/deps/pip_usd_to_urdf.toml",
+  "${root}/deps/pip_cloud.toml",
+]
+fetch.pip.licensing_enabled = false
+fetch.pip.publish_pip_cache = false
+
+enable_compiler_version_check = true
+
+"platform:linux-x86_64".version_check_gcc_version = "11.*.*"
+"platform:linux-aarch64".version_check_gcc_version = "11.*.*"
+
+
+
+# # Extensions precache
+# # This is one way to get the headers and bin files from extensions to show up... like needed in omni.sensors.nv.common
+# pre_build.commands = [
+#     ["${root}/repo${shell_ext}", "precache_exts", "-c", "${config}", "${precache_flag_0}"],
+# ]
+
+# stage_files.extra_mapping.kit_sdk_debug = "${root}/_build/$platform/debug/kit"
+# stage_files.extra_mapping.kit_sdk_release = "${root}/_build/$platform/release/kit"
+
+# vscode.python = "${root}/_build/$platform/release/kit/python"
+
+vscode.python_env.PYTHONPATH = [
+  "$$$${PYTHONPATH}",
+  "$root/_build/$platform/$config/kit/python/lib/python3.11",
+  "$root/_build/$platform/$config/kit/python/lib/python3.11/site-packages",
+  "$root/_build/$platform/$config/python_packages",
+  "$root/_build/$platform/$config/exts/isaacsim.simulation_app",
+  "$root/_build/$platform/$config/extsDeprecated/omni.isaac.kit",
+  "$root/_build/$platform/$config/kit/kernel/py",
+  "$root/_build/$platform/$config/kit/plugins/bindings-python/",
+  "$root/_build/$platform/$config/exts/isaacsim.robot_motion.lula/pip_prebundle",
+  "$root/_build/$platform/$config/exts/isaacsim.asset.exporter.urdf/pip_prebundle",
+  "$root/_build/$platform/$config/extscache/omni.kit.pip_archive*/pip_prebundle",
+  "$root/_build/$platform/$config/kit/exts/omni.kit.pip_archive*/pip_prebundle",
+  "$root/_build/$platform/$config/exts/omni.isaac.core_archive/pip_prebundle",
+  "$root/_build/$platform/$config/exts/omni.isaac.ml_archive/pip_prebundle",
+  "$root/_build/$platform/$config/exts/omni.pip.compute/pip_prebundle",
+  "$root/_build/$platform/$config/exts/omni.pip.cloud/pip_prebundle",
+]
+
+vscode.python_env.PATH = [
+  "$$$${PATH}",
+  "$root/_build/$platform/$config",
+  "$root/_build/$platform/$config/exts/isaacsim.robot.schema/plugins/lib",
+  "$root/_build/$platform/$config/exts/isaacsim.robot_motion.lula/pip_prebundle",
+  "$root/_build/$platform/$config/exts/isaacsim.asset.exporter.urdf/pip_prebundle",
+  "$root/_build/$platform/$config/kit",
+  "$root/_build/$platform/$config/kit/kernel/plugins",
+  "$root/_build/$platform/$config/kit/libs/iray",
+  "$root/_build/$platform/$config/kit/plugins",
+  "$root/_build/$platform/$config/kit/plugins/bindings-python",
+  "$root/_build/$platform/$config/kit/plugins/carb_gfx",
+  "$root/_build/$platform/$config/kit/plugins/rtx",
+  "$root/_build/$platform/$config/kit/plugins/gpu.foundation",
+
+]
+
+vscode.write_python_paths_in_settings_json = false # We do this manually as a post processing step now to guarantee extscache is downloaded
+# vscode.generate_python_env_file = false
+
+# stage_files.error_if_missing = true
+
+licensing.enabled = false
+licensing.packages = [
+  "${root}/deps/rtx-target-deps.packman.xml",
+  "${root}/deps/ext-deps.packman.xml",
+  "${root}/deps/isaac-sim.packman.xml",
+]
+
+"platform:linux-aarch64".licensing.fail_on_missing = false # Disable licensing for aarch64 platforms, as it is not supported.
+"platform:windows-x86_64".licensing.fail_on_missing = true
+"platform:linux-x86_64".licensing.fail_on_missing = true
+
+# By default, precache_exts is run after pull. Instead, running it after generating projects and staging files, so the necessary app file exists.
+fetch.after_pull_commands = []
+# Extensions precache before build to pick up headers/binaries for linking
+post_build.commands = [
+  # ["${root}/repo${shell_ext}", "stubgen", "-c", "${config}"],
+  # ["${root}/repo${shell_ext}", "precache_exts", "-c", "${config}", "${precache_flag_0}"] ,
+  # ["${root}/tools/build_docs${shell_ext}", "--config", "${config}", "--warn-as-error=0"], # disabled to reduce local build times
+  [
+    "${root}/repo${shell_ext}",
+    "generate_vscode_settings",
+    "-c",
+    "${config}",
+  ],
+  [
+    "${root}/repo${shell_ext}",
+    "edit_sysconfig",
+    "-c",
+    "${config}",
+  ],
+  [
+    "${root}/repo${shell_ext}",
+    "usd",
+    "-c",
+    "${config}",
+  ],
+]
+pre_build.commands = [
+  [
+    "${root}/repo${shell_ext}",
+    "precache_exts",
+    "-c",
+    "${config}",
+    "${precache_flag_0}",
+  ],
+]
+
+[[repo_build.argument]]
+extra_tokens = {"precache_flag_0" = "-u"}
+help = "Update extensions: remove generated part from kit files and clean cache path before running exts precaching. (Pass -u flag to repo precache_exts tool)."
+kwargs.required = false
+name = "-u"
+
+[repo_build.build]
+enabled = true
+"platform:windows-x86_64".enabled = true  # Set to `true` to build C++ extensions on Windows.
+
+[repo_build.msbuild]
+sln_file = "isaac-sim.sln"
+# If set to true will attempt to link to host's Visual Studio and Windows SDK installations.
+# This is needed if C++ compilation is needed on Windows, and repo_build.build.enabled is set to true.
+link_host_toolchain = true   # This requires Microsoft Visual Studio BuildTools installed.
+
+# Filter on Visual Studio version e.g.: Visual Studio 2022. Empty string will match all years and prioritize the newest.
+vs_version = "vs2022"
+
+
+# Visual Studio path; This will be used if the user would like to point to a specific VS installation rather than rely on heuristic locating.
+# vs_path = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\"
+
+"token:in_ci==false".version_check_vs_version = "2022"
+"token:in_ci==false".version_check_msvc_version = "v143"
+"token:in_ci==false".version_check_msbuild_version = "17"
+"token:in_ci==false".version_check_winsdk_version = "10.0.22621.0"
+
+# Filter specifically to "Enterprise", "Professional", or "Community" editions of Visual Studio
+# vs_edition = "Community"
+
+# Filter by Visual Studio installations that have installed this version of the MSVC compiler.
+# msvc_version = "v142"
+
+# Filter by Visual Studio installations that ship with MSBuild of this major version.
+# msbuild_version = "17"
+
+# Windows SDK version
+# winsdk_version = "10.0.17763.0"
+
+# Windows SDK path; This will prevent needing to dynamically locate an installation by guesswork.
+# winsdk_path = "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.17763.0"
+
+
+
+
+########################################################################################################################
+# Extensions precacher
+########################################################################################################################
+
+[repo_precache_exts]
+generated_app_path = ""
+enabled = true
+kit_omit_ext_version = false
+# Extra args to pass to kit
+kit_extra_args = []
+
+# Folder to store cache extensions into
+cache_path = "${root}/_build/${platform}/${config}/extscache"
+
+ext_folders = [
+  "${root}/_build/$platform/$config/exts",
+  "${root}/_build/$platform/$config/extsDeprecated",
+]
+
+# Apps to run and precache
+apps = [
+    "${root}/_build/$platform/$config/apps/isaacsim.exp.extscache.kit"
+]
+
+# Registries to use
+registries = [
+  {name = "kit/default", url = "omniverse://kit-extensions.ov.nvidia.com/exts/kit/default"},
+  {name = "kit/sdk", url = "omniverse://kit-extensions.ov.nvidia.com/exts/kit/sdk/${kit_version_short}/${kit_git_hash}"},
+]
+
+# Link selected extensions into a separate folder without a version. Used for build-time referencing extensions.
+# Wildcards are supported in the list.
+links.exts.include = [
+  "omni.usd.core",
+  "omni.syntheticdata",
+  "usdrt.scenegraph",
+  "omni.graph.tools",
+  "omni.kit.test",
+  "isaacsim.util.debug_draw",
+  "omni.kit.asset_converter"
+]
+links.path = "${root}/_build/${platform}/${config}/extsbuild"
+
+
+# #####################################################################
+# # schema
+# #############################
+[repo_usd]
+generate_plugin_buildfiles = false
+plugin_buildfile_format = "premake"
+usd_python_root = "${root}/_build/target-deps/python"
+usd_root = "${root}/_build/target-deps/usd/%{cfg.buildcfg}"
+
+[repo_usd.plugin.robotSchema]
+schema_file = "${root}/source/extensions/isaacsim.robot.schema/robot_schema/RobotSchema.usda"
+generate_dir = "${root}/source/extensions/isaacsim.robot.schema/robot_schema"
+plugin_dir = "${root}/source/extensions/isaacsim.robot.schema/robot_schema"
+install_root =  "${root}/source/extensions/isaacsim.robot.schema/robot_schema"
+build_dir =  "${root}/source/extensions/isaacsim.robot.schema/robot_schema"
+
+library_prefix = "RobotSchema"
+generate_module_deps_cpp_file = false
+is_codeless = true
+usd_lib_dependencies = [
+  "arch",
+  "tf",
+  "vt",
+  "sdf",
+  "usd",
+  "usdPhysics",
+  "usdGeom",
+]
+
+# ########################################################################################################################
+# # Build Number
+# ########################################################################################################################
+
+# [repo_build_number]
+# enabled = true
+
+########################################################################################################################
+# Packaging
+########################################################################################################################
+
+[repo_package]
+archive_format = "7z"
+windows_max_path_length = 200
+ziponly = false
+# store_links_zip = true # preserve symlinks
+
+[repo_package.packages.isaac-sim]
+omniverse_flow_version_scheme = true
+package_per_config = true
+root = "_build/$${platform}/$${config}"
+manylinux_platform = "2_35"
+
+[repo_package.packages.isaac-sim-standalone]
+append_config = true
+omniverse_flow_version_scheme = true
+package_per_config = true
+replace_authors_in_kit_extensions = true
+root = "_build/$${platform}/$${config}"
+strip_package_infos = true
+windows_max_path_length = 220            #TODO: changed from default of 180 to make builds pass
+manylinux_platform = "2_35"
+
+# to generate docs package for isaac sim
+[repo_package.packages.docs]
+omniverse_flow_version_scheme = true
+ziponly = true
+
+[repo_package.packages.isaac-sim-assets-1]
+archive_format = "zip"
+omniverse_flow_version_scheme = true
+strip_package_infos = true
+
+[repo_package.packages.isaac-sim-assets-2]
+archive_format = "zip"
+omniverse_flow_version_scheme = true
+strip_package_infos = true
+
+[repo_package.packages.isaac-sim-assets-3]
+archive_format = "zip"
+omniverse_flow_version_scheme = true
+strip_package_infos = true
+
+[repo_package.packages.isaac-sim-assets-4]
+archive_format = "zip"
+omniverse_flow_version_scheme = true
+strip_package_infos = true
+
+[repo_package.packages.isaac-sim-assets-5]
+archive_format = "zip"
+omniverse_flow_version_scheme = true
+strip_package_infos = true
+
+########################################################################################################################
+# Package publishing to packman
+########################################################################################################################
+
+[repo_publish]
+enabled = true
+packages = ["isaac-sim*"]
+
+########################################################################################################################
+# Test Runner
+########################################################################################################################
+[repo_test]
+
+env_vars = [
+  [
+    "LD_PRELOAD",
+    "${root}/_build/${platform}/${config}/kit/libcarb.so",
+  ],
+  [
+    "RMW_IMPLEMENTATION",
+    "rmw_fastrtps_cpp",
+  ],
+  [
+    "LD_LIBRARY_PATH",
+    "${root}/_build/${platform}/${config}/exts/isaacsim.ros2.bridge/humble/lib",
+  ],
+]
+
+# When running from package, look for package using that path/pattern:
+archive_pattern = "${root}/_build/packages/isaac-sim*.7z"
+
+# archive_post_unpack_cmd = ["${test_root}/pull_kit_sdk${shell_ext}", "--registry=internal"]
+archive_post_unpack_cmd = []
+
+[repo_test.suites.alltests]
+
+generate_report_cmd = [
+  "${test_root}/kit/kit${exe_ext}",
+  "--empty",
+  "--enable",
+  "omni.kit.test",
+  "--/app/enableStdoutOutput=0",
+  "--/exts/omni.kit.test/testExtOutputPath='${test_root}/_testoutput'",
+  "--/exts/omni.kit.test/testExtGenerateReport=1",
+]
+stdout_fail_patterns.exclude = [
+  '*[Error] [carb] [Plugin: omni.sensors.nv.lidar.ext.plugin] Dependency: [omni::sensors::lidar::IGenericModelOutputIOFactory v0.1] failed to be resolved.*', # feature not included in Windows
+  "*[Error] [carb.glinterop.plugin] GLInteropContext::init: carb::windowing is not available*",
+]
+
+[repo_test.suites.startuptests]
+kind = "glob_and_exec"
+path = "${test_root}/tests"
+tests_per_process = 1
+stdout_fail_patterns.include = ["*[[]error[]]*", "*[[]fatal[]]*"]
+
+#-----------------------------------------------------------------------------------------------------------------------
+# Test Suite: 	Startup Tests
+# Description: 	Just run and exit big app configuration for both smoke testing and compiling shaders.
+#-----------------------------------------------------------------------------------------------------------------------
+
+[[repo_test.suites.startuptests.group]]
+# Run Kit App Full.
+args = [
+  "--/app/settings/persistent=0",
+  "--/app/settings/loadUserConfig=0",
+  "--/app/content/emptyStageOnStart=1",
+  "--/exts/omni.kit.registry.nucleus/registries/0/name=0",
+  "--portable-root ${test_root}/portable_root",
+  "--portable",
+  "--/log/flushStandardStreamOutput=1",                    # Prevents mixed up piped stdout
+  "--reset-user",
+]
+exclude = []
+include = ["tests-startup*${shell_ext}"]
+timeout = 500
+
+[repo_test.suites.selectortests]
+kind = "glob_and_exec"
+path = "${test_root}/tests"
+stdout_fail_patterns.include = ["*[[]error[]]*", "*[[]fatal[]]*"]
+tests_per_process = 1
+[[repo_test.suites.selectortests.group]]
+args = [
+  "--/app/settings/persistent=0",
+  "--/app/settings/loadUserConfig=0",
+  "--/app/content/emptyStageOnStart=1",
+  "--/exts/omni.kit.registry.nucleus/registries/0/name=0",
+  "--portable-root ${test_root}/portable_root",
+  "--portable",
+  "--/log/flushStandardStreamOutput=1",                    # Prevents mixed up piped stdout
+  "--reset-user",
+]
+include = ["tests-selector*${shell_ext}"]
+timeout = 500
+
+[repo_test.suites.postinstalltests]
+kind = "glob_and_exec"
+path = "${test_root}"
+tests_per_process = 1
+
+[[repo_test.suites.postinstalltests.group]]
+include = ["post_install${shell_ext}"]
+timeout = 1500
+
+[repo_test.suites.warmuptests]
+kind = "glob_and_exec"
+path = "${test_root}"
+tests_per_process = 1
+
+[[repo_test.suites.warmuptests.group]]
+include = ["warmup${shell_ext}"]
+timeout = 1500
+
+[repo_test.suites.pythontests]
+kind = "glob_and_exec"
+path = "${test_root}/tests"
+
+[[repo_test.suites.pythontests.group]]
+args = [
+  "--portable-root ${test_root}/portable_root",
+  "--reset-user",
+  "--/exts/omni.kit.test/testExtOutputPath='${test_root}/_testoutput'",
+]
+exclude = [
+  "tests-startup*${shell_ext}",
+  "tests-selector*${shell_ext}",
+  "tests-unit*${shell_ext}",
+  "tests-isaacsim.benchmarks*${shell_ext}",
+  "tests-standalone*${shell_ext}",
+  "tests-nativepython*${shell_ext}",
+  "tests-internaldocker*${shell_ext}",
+  "tests-external*${shell_ext}",
+]
+include = ["tests-*${shell_ext}"]
+stdout_fail_patterns.exclude = [
+  "*Remote server does not support WebSockets*",
+  "*[Error] [rtx.optixdenoising.plugin] [Optix] [DiskCacheDatabase]*", # optix disk cache errors
+  "*[Error] [rtx.optixdenoising.plugin] [Optix] [WARNING]*",           # optix disk cache errors
+]
+tc_report_enabled = false
+timeout = 3600
+
+[[repo_test.suites.pythontests.bucket]]
+include = ["tests-omni.isaac*${shell_ext}"]
+name = "deprecated"
+[[repo_test.suites.pythontests.bucket]]
+include = ["tests-isaacsim.asset*${shell_ext}"]
+name = "asset"
+[[repo_test.suites.pythontests.bucket]]
+include = ["tests-isaacsim.core*${shell_ext}"]
+name = "core"
+[[repo_test.suites.pythontests.bucket]]
+include = [
+  "tests-isaacsim.examples*${shell_ext}",
+  "tests-isaacsim.test*${shell_ext}",
+]
+name = "examples_tests"
+[[repo_test.suites.pythontests.bucket]]
+include = ["tests-isaacsim.replicator*${shell_ext}"]
+name = "replicator"
+[[repo_test.suites.pythontests.bucket]]
+include = [
+  "tests-isaacsim.ros2*${shell_ext}",
+]
+name = "ros"
+[[repo_test.suites.pythontests.bucket]]
+include = ["tests-isaacsim.sensors*${shell_ext}"]
+name = "sensors"
+[[repo_test.suites.pythontests.bucket]]
+include = [
+  "tests-isaacsim.gui*${shell_ext}",
+  "tests-isaacsim.utils*${shell_ext}",
+]
+name = "utils_gui"
+[[repo_test.suites.pythontests.bucket]]
+include = [
+  "tests-isaacsim.robot_motion*${shell_ext}",
+  "tests-isaacsim.robot_setup*${shell_ext}",
+  "tests-isaacsim.robot*${shell_ext}",
+]
+name = "robot"
+[[repo_test.suites.pythontests.bucket]]
+include = ["*"]
+name = "other"
+
+[repo_test.suites.benchmarks]
+kind = "glob_and_exec"
+path = "${test_root}/tests"
+
+generate_report_cmd = [
+  "./repo${shell_ext}",
+  "ci",
+  "standalone_report",
+  "--",
+  "${test_root}/_testoutput",
+  "benchmarks",
+]
+
+[[repo_test.suites.benchmarks.group]]
+args = [
+  "--portable-root ${test_root}/portable_root",
+  "--reset-user",
+  "--/exts/omni.kit.test/testExtOutputPath='${test_root}/_testoutput'",
+]
+exclude = []
+include = [
+  "tests-isaacsim.benchmark.*${shell_ext}",
+  "tests-standalone_benchmarks*${shell_ext}",
+]
+stdout_fail_patterns.exclude = [
+  "*[Error] [rtx.optixdenoising.plugin] [Optix] [DiskCacheDatabase]*", # optix disk cache errors
+  "*[Error] [rtx.optixdenoising.plugin] [Optix] [WARNING]*",           # optix disk cache errors
+]
+stdout_fail_patterns.include = ["*[[]error[]]*", "*[[]fatal[]]*"]
+tc_report_enabled = false
+timeout = 5000
+
+[repo_test.suites.nativepythontests]
+kind = "glob_and_exec"
+path = "${test_root}/tests"
+
+generate_report_cmd = [
+  "./repo${shell_ext}",
+  "ci",
+  "standalone_report",
+  "--",
+  "${test_root}/_testoutput",
+  "nativepythontests",
+]
+
+[[repo_test.suites.nativepythontests.group]]
+args = [
+  "--portable-root ${test_root}/portable_root",
+  "--reset-user",
+  "--/exts/omni.kit.test/testExtOutputPath='${test_root}/_testoutput'",
+]
+exclude = []
+include = ["tests-nativepython*${shell_ext}"]
+stdout_fail_patterns.include = ["*[[]error[]]*", "*[[]fatal[]]*"]
+tc_report_enabled = false
+timeout = 960
+
+[[repo_test.suites.nativepythontests.bucket]]
+include = ["tests-nativepython-replicator*${shell_ext}"]
+name = "replicator"
+[[repo_test.suites.nativepythontests.bucket]]
+include = ["tests-nativepython-testing*${shell_ext}"]
+name = "testing"
+[[repo_test.suites.nativepythontests.bucket]]
+include = ["*"]
+name = "api"
+
+[repo_test.suites.external]
+kind = "glob_and_exec"
+path = "${test_root}/tests"
+
+generate_report_cmd = [
+  "./repo${shell_ext}",
+  "ci",
+  "standalone_report",
+  "--",
+  "${test_root}/_testoutput",
+  "external",
+]
+
+[[repo_test.suites.external.group]]
+args = [
+  "--portable-root ${test_root}/portable_root",
+  "--reset-user",
+  "--/exts/omni.kit.test/testExtOutputPath='${test_root}/_testoutput'",
+]
+exclude = []
+include = [
+  "tests-external*${shell_ext}",
+]
+stdout_fail_patterns.exclude = [
+  "*[Error] [rtx.optixdenoising.plugin] [Optix] [DiskCacheDatabase]*", # optix disk cache errors
+  "*[Error] [rtx.optixdenoising.plugin] [Optix] [WARNING]*",           # optix disk cache errors
+]
+stdout_fail_patterns.include = ["*[[]error[]]*", "*[[]fatal[]]*"]
+tc_report_enabled = false
+timeout = 5000
+
+[[repo_test.suites.external.bucket]]
+include = ["tests-external-ar*${shell_ext}"]
+name = "ar"
+
+# [repo_test.suites.jupytertests]
+# kind = "glob_and_exec"
+# path = "${test_root}"
+#   [[repo_test.suites.jupytertests.group]]
+#   include = ["tests-jupyter*${shell_ext}"]
+#   exclude = []
+#   args = []
+#   tc_report_enabled = false
+#   timeout = 960
+#
+# Catch2 Unit Tests
+# [repo_test.suites.unittests]
+# kind = "catch2"
+# # default = true
+# executables = [
+# 	"${test_root}/tests/tests-unit-omni.isaac.range_sensor${exe_ext}",
+# ]
+
+
+########################################################################################################################
+# Extensions publisher
+########################################################################################################################
+# For publishing an ext locally, set the extension you want in exts.include (wild cards work) and run the following:
+# ./repo.sh publish_exts -c release
+[repo_publish_exts]
+enabled = true
+
+platforms = [
+    "windows-x86_64",
+    "linux-x86_64",
+    "linux-aarch64"
+]
+
+publish_root = "${root}/_build/$platform/$config"
+
+ext_folders = ["${publish_root}/exts", "${publish_root}/extsDeprecated"]
+
+# Extensions to publish, include and exclude among those discovered by kit. Wildcards are supported.
+exts.exclude = []
+exts.include = [
+  "omni.isaac.*",
+  "omni.exporter.urdf",
+  "isaacsim.*",
+  "omni.kit.loop-isaac",
+  "omni.pip.cloud",
+  "omni.pip.compute",
+  "omni.usd.schema.isaac",
+  "omni.kit.property.isaac",
+  "omni.replicator.isaac",
+]
+
+# This is hardcoded in template
+# # Registries to publish to.
+# registries = [
+#     { name = "kit/default", url = "omniverse://kit-extensions.ov.nvidia.com/exts/kit/default" },
+# ]
+
+# Signing must be enabled for us to publish to external registry as part of app template release process
+signing.enabled = true
+
+# verify before publishing
+publish_verification = true
+
+# upload archives using packman (switch to using packman by default to reduce load on nucleus registry)
+use_packman_to_upload_archive = true
+
+# When running from package, look for package using that path/pattern:
+archive_pattern = "${root}/_build/packages/isaac-sim-standalone@*${publish_platform_target_abi}.${config}.*"
+
+
+
+########################################################################################################################
+# Code formatting
+########################################################################################################################
+
+[repo_format]
+
+cpp.maintain_legal_blurbs = false
+python.maintain_legal_blurbs = false
+
+
+cpp.files.exclude = [
+  "tools/container/**",
+]
+
+python.files.exclude = [
+  "_build/*",
+  "_compiler/*",
+  "_repo/*",
+  ".eggs/*",
+  ".git/*",
+  ".local/*",
+  ".nvidia-omniverse/*",
+  ".venv/*",
+  ".vscode/*",
+  "schemas/*",
+  "tools/autopull/**",
+  "tools/ci/**",
+  "tools/container/**",
+  "tools/lib/**",
+  "tools/packman/*",
+  "tools/repoman/**",
+]
+
+license_preamble = '''
+SPDX-FileCopyrightText: Copyright (c) {years} NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+SPDX-License-Identifier: Apache-2.0
+'''
+
+# license_text will always be after the spdx_license_text or copyright line, separated by a single newline
+license_text = '''
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
+
+
+########################################################################################################################
+# Repo Docs (see: repo docs --help)
+########################################################################################################################
+
+[repo_docs]
+"platform:linux-aarch64".enabled = false # Disable docs generation for aarch64 platforms, as it is not supported.
+"platform:windows-x86_64".enabled = false # Disable docs generation for windows64 platforms, as it is not supported.
+"platform:linux-x86_64".enabled = true
+
+########################################################################################################################
+# Extension documentation building (see: repo extension_docs --help)
+########################################################################################################################
+
+[repo_extension_docs]
+build_extension_paths = [
+  "${root}/_build/${platform}/${config}/exts",
+  "${root}/_build/${platform}/${config}/extsDeprecated",
+  "${root}/_build/${platform}/${config}/extsbuild",
+]
+source_extension_paths = [
+  "${root}/source/extensions",
+  "${root}/source/deprecated",
+]
+
+sections = [
+  "reference",
+  "title",
+  "deprecation",
+  "version",
+  "description",
+  "preview",
+  "enable-extension",
+  { "usage" = "usage.rst" },
+  { "api" = "api.rst" },
+  { "actions" = "../config/actions_api.md" },
+  "ogn",
+  "settings",
+]
+
+# These extensions are excluded as they do not contain any documentation
+excluded_extensions = [
+    # archives
+    "omni.isaac.core_archive",
+    "omni.isaac.ml_archive",
+    "omni.pip.cloud",
+    "omni.pip.compute",
+    # deprecated
+    "omni.exporter.urdf",
+    "omni.isaac.app.selector",
+    "omni.isaac.app.setup",
+    "omni.isaac.articulation_inspector",
+    "omni.isaac.asset_browser",
+    "omni.isaac.assets_check",
+    "omni.isaac.benchmarks",
+    "omni.isaac.benchmark.services",
+    "omni.isaac.block_world",
+    "omni.isaac.camera_inspector",
+    "omni.isaac.cloner",
+    "omni.isaac.common_includes",
+    "omni.isaac.conveyor",
+    "omni.isaac.conveyor.ui",
+    "omni.isaac.core",
+    "omni.isaac.core_nodes",
+    "omni.isaac.cortex",
+    "omni.isaac.cortex.sample_behaviors",
+    "omni.isaac.debug_draw",
+    "omni.isaac.doctest",
+    "omni.isaac.examples",
+    "omni.isaac.examples_nodes",
+    "omni.isaac.extension_templates",
+    "omni.isaac.franka",
+    "omni.isaac.gain_tuner",
+    "omni.isaac.grasp_editor",
+    "omni.isaac.jupyter_notebook",
+    "omni.isaac.kit",
+    "omni.isaac.lula",
+    "omni.isaac.lula_test_widget",
+    "omni.isaac.manipulators",
+    "omni.isaac.manipulators.ui",
+    "omni.isaac.menu",
+    "omni.isaac.merge_mesh",
+    "omni.isaac.motion_generation",
+    "omni.isaac.nucleus",
+    "omni.isaac.occupancy_map",
+    "omni.isaac.occupancy_map.ui",
+    "omni.isaac.physics_inspector",
+    "omni.isaac.physics_utilities",
+    "omni.isaac.proximity_sensor",
+    "omni.isaac.quadruped",
+    "omni.isaac.range_sensor",
+    "omni.isaac.range_sensor.examples",
+    "omni.isaac.range_sensor.ui",
+    "omni.isaac.robot_assembler",
+    "omni.isaac.robot_description_editor",
+    "omni.isaac.ros2_bridge",
+    "omni.isaac.ros2_bridge.robot_description",
+    "omni.isaac.scene_blox",
+    "omni.isaac.sensor",
+    "omni.isaac.surface_gripper",
+    "omni.isaac.surface_gripper.ui",
+    "omni.isaac.synthetic_recorder",
+    "omni.isaac.tests",
+    "omni.isaac.tf_viewer",
+    "omni.isaac.throttling",
+    "omni.isaac.ui",
+    "omni.isaac.ui_template",
+    "omni.isaac.unit_converter",
+    "omni.isaac.universal_robots",
+    "omni.isaac.utils",
+    "omni.isaac.version",
+    "omni.isaac.vscode",
+    "omni.isaac.wheeled_robots",
+    "omni.isaac.wheeled_robots.ui",
+    "omni.isaac.window.about",
+    "omni.kit.property.isaac",
+    "omni.replicator.isaac",
+    "omni.usd.schema.isaac",
+    # extsbuild,
+    "omni.graph.tools",
+    "omni.kit.test",
+    "omni.syntheticdata",
+    "omni.usd.core",
+    "usdrt.scenegraph",
+]
+
+# Extensions from extsbuild that needed to be included in docs
+extsbuild_exts_includes = [
+    "isaacsim.util.debug_draw",
+]
+
+########################################################################################################################
+# Omnigraph Documentation Building
+########################################################################################################################
+
+[repo_ogn]
+
+build_path = "${root}/_build/${platform}/release/exts"
+home_path = "${root}/source/extensions"
+ogn_exts_includes = [
+  "isaacsim.replicator.domain_randomization",
+  "isaacsim.replicator.examples",
+  "isaacsim.replicator.writers",
+  "isaacsim.asset.gen.conveyor",
+  "isaacsim.ros2.bridge",
+  "isaacsim.sensors.physics",
+  "isaacsim.sensors.physx",
+  "isaacsim.sensors.rtx",
+  "isaacsim.core.nodes",
+  "isaacsim.examples.interactive_nodes",
+  "isaacsim.robot.wheeled_robots",
+  # "isaacsim.util.debug_draw",
+
+]
+
+
+[repo_lint.flake8]
+# most people coming to repo_lint will expect flake8 on by default as the bare minimun
+enabled = true
+config = "${root}/.flake8"
+
+files.include = [
+  "**/*.py"
+]
+files.exclude = [
+  ".vscode/*",
+  "_build/*",
+  "_compiler/*",
+  "_repo/*",
+  ".git/*",
+  ".eggs/*",
+  ".pytest_cache/*",
+  ".venv/*",
+  ".vscode/*",
+  "*/_vendor/*",
+  "tools/repoman/*",
+  "tools/packman/*",
+  "tools/container/*"
+]
+
+
+########################################################################################################################
+# Clang-Tidy
+########################################################################################################################
+
+[repo_clang_tidy]
+# Path to the clang-tidy configuration file
+config_file = "${root}/.clang-tidy"
+# Path to the compile_commands.json file
+compile_commands = "${root}/_build/${platform}/${config}/compile_commands.json"
+# Paths to exclude from analysis (glob patterns)
+exclude_paths = [
+  "*/isaacsim.robot.schema/*"
+]
+# Extra arguments to pass to clang-tidy
+extra_args = [
+  "--extra-arg=-std=c++17",
+  "--extra-arg=-Wno-error",
+  "--quiet",
+  "--warnings-as-errors=-*"
+]
+
+
+########################################################################################################################
+# Tool to pull kit kernel and extensions before running
+########################################################################################################################
+
+[repo_kit_pull_extensions]
+precache_exts_enabled = false
+
+
+[[repo_kit_pull_extensions.environment]]
+name = "integ"
+app_version_regex = ""
+"tokens.registry_url" = "https://ovextensionsprod.blob.core.windows.net"
+"tokens.registry_shared_name" = "shared"
+"tokens.registry_name" = "kit/prod"
+
+
+########################################################################################################################
+# Examples List Generator
+########################################################################################################################
+
+[repo_examples_list]
+# Path to the examples directory (relative to workspace root or absolute)
+examples_dir = "${root}/source/standalone_examples"
+# Output RST file path (relative to workspace root or absolute)
+output_file = "${root}/docs/source/standalone_examples_list.rst"
+
+
+########################################################################################################################
+# Generate vscode settings
+########################################################################################################################
+
+[repo_generate_vscode_settings]
+
+output_paths = ["${root}/", "${root}/_build/${platform}/${config}"]
+template_paths = [
+  "${root}/.vscode/settings.template.json",
+  "${root}/source/scripts/vscode/${platform}/settings.json",
+]
+
+# paths specific to python autocomplete, not added to pythonpath/env
+python_analysis_extra_mapping = [
+  "$root/_build/$platform/$config/exts/*",
+  "$root/_build/$platform/$config/extsDeprecated/*",
+  "$root/_build/$platform/$config/extscache/*",
+  "$root/_build/$platform/$config/kit/exts/*",
+  "$root/_build/$platform/$config/kit/extscore/*",
+]
+
+########################################################################################################################
+# Edit sysconfig
+########################################################################################################################
+
+[repo_edit_sysconfig]
+"platform:linux-x86_64".sysconfig_path = "${root}/_build/${platform}/${config}/kit/python/lib/python3.11/_sysconfigdata__linux_x86_64-linux-gnu.py"
+"platform:linux-aarch64".sysconfig_path = "${root}/_build/${platform}/${config}/kit/python/lib/python3.11/_sysconfigdata__linux_aarch64-linux-gnu.py"

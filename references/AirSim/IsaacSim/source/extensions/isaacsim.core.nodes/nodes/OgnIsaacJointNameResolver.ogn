@@ -1,0 +1,45 @@
+{
+    "IsaacJointNameResolver": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": "Checks for any joint prims with isaac:nameOverride attributes that match the provided names and updates those names to their corresponding original prim names.",
+        "metadata": {
+            "uiName": "Isaac Joint Name Resolver"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacCore",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "targetPrim": {
+                "type": "target",
+                "description": "The target robot prim with robot articulation root. Ensure robotPath is empty for this to be considered.",
+                "optional": true
+            },
+            "robotPath":{
+                "type": "string",
+                "description": "path to the robot articulation root. If this is populated, targetPrim is ignored."
+            },
+            "jointNames":{
+                "type": "token[]",
+                "description": "list of prim names in the given articulation"
+            }
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "The output execution port"
+            },
+            "jointNames":{
+                "type": "token[]",
+                "description": "A list of prim names in the given articulation, where prims with isaac:nameOverride attributes have been replaced with their real names."
+            },
+            "robotPath":{
+                "type": "string",
+                "description": "path to the robot articulation root."
+            }
+        }
+    }
+}

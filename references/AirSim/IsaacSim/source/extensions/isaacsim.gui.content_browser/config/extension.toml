@@ -1,0 +1,48 @@
+[package]
+version = "0.1.11"
+category = "other"
+title = "Content Browser"
+description = "Isaac Sim Content Browser"
+keywords = ["browser","assets","content"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.kit.widget.filebrowser" = {}
+"omni.kit.window.content_browser" = {}
+"omni.kit.window.filepicker" = {}
+"omni.usd.core" = {}
+
+[[python.module]]
+name = "isaacsim.gui.content_browser"
+
+# define the Python module for tests
+[[python.module]]
+name = "isaacsim.gui.content_browser.tests"
+
+[settings]
+# time out for resolving the content browser settings
+exts."isaacsim.gui.content_browser".timeout = 5
+
+# define the folders to be shown in the content browser
+exts."isaacsim.gui.content_browser".folders = [
+    "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Robots",
+    "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Environments",
+    "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab",
+    "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Materials",
+    "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/People",
+    "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Props",
+    "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Samples",
+    "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/Sensors",
+]
+
+[[test]]
+enabled = true
+
+# disable startup test
+[[test]]
+name = "startup"
+enabled = false

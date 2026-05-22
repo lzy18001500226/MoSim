@@ -1,0 +1,6 @@
+{
+    "categoryDefinitions": {
+        "$description": "These categories are applied to surface gripper nodes",
+        "isaacSurfaceGripper": "Nodes implementing isaac sim functionality for surface grippers"
+    }
+}

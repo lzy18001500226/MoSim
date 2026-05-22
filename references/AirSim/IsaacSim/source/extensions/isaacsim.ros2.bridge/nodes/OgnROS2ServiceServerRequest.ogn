@@ -1,0 +1,93 @@
+{
+    "OgnROS2ServiceServerRequest":{
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node is a generic service server that provides interface for a ROS service. The request/response fields of the service are parsed and are made accessible via the node based on the service specified from messagePackage, messageSubfolder, messageName. The server receives a request (accessible from the node outputs). To receive the response this node should be connected to a OgnROS2ServiceServerResponse node through the serverHandle input. The OgnROS2ServiceServerResponse node is responsible for providing the response."
+        ],
+        "metadata": {
+            "uiName": "ROS2 Service Server Request"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2:service",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "context": {
+                "type": "uint64",
+                "description": "ROS2 context handle, Default of zero will use the default global context",
+                "default" : 0,
+                "metadata": {
+                    "displayGroup": "parameters"
+                }            
+            },
+            "nodeNamespace": {
+                "type": "string",
+                "description": "Name of ROS2 Node, prepends any topic published/subscribed by the node name",
+                "default" : "",
+                "metadata": {
+                    "displayGroup": "parameters"
+                }            
+            },
+            "serviceName": {
+                "type": "string",
+                "description": "Name of ROS2 Service",
+                "default" : "/service_name",
+                "metadata": {
+                    "displayGroup": "parameters"
+                }            
+            },
+            "messagePackage": {
+                "type": "string",
+                "description": "Package name (e.g.: example_interfaces for example_interfaces/srv/AddTwoInts)",
+                "default" : "",
+                "metadata": {
+                    "displayGroup": "parameters"
+                }            
+            },
+            "messageSubfolder": {
+                "type": "string",
+                "description": "Subfolder name (e.g.: srv for example_interfaces/srv/AddTwoInts)",
+                "default": "srv",
+                "metadata": {
+                    "displayGroup": "parameters"
+                }            
+            },
+            "messageName": {
+                "type": "string",
+                "description": "Service name (e.g.: AddTwoInts for example_interfaces/srv/AddTwoInts)",
+                "default" : "",
+                "metadata": {
+                    "displayGroup": "parameters"
+                }            
+            },
+            "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": "",
+                "metadata": {
+                    "displayGroup": "parameters"
+                }            
+            }
+        },
+        "outputs": {
+            "onReceived": {
+                "type": "execution",
+                "description": "Output execution triggers when a request is received"
+            },
+            "serverHandle": {
+                "type": "uint64",
+                "description": "handle to the server",
+                "default": 0,
+                "metadata": {
+                    "displayGroup": "parameters"
+                }
+            }
+
+        }
+    }
+
+
+}

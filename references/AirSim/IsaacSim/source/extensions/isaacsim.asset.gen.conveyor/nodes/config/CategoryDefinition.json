@@ -1,0 +1,6 @@
+{
+    "categoryDefinitions": {
+        "$description": "These categories are applied isaac sim conveyor nodes",
+        "isaacConveyor": "Nodes implementing isaac sim conveyor functionality "
+    }
+}

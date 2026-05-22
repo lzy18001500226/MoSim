@@ -1,0 +1,36 @@
+{
+    "OgnSampleInSphere": {
+        "version": 1,
+        "description": "Assignes uniformly sampled location in a sphere.",
+        "language": "Python",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": ["isaacReplicatorExamples"],
+        "icon": "icons/isaac-sim.svg",
+        "metadata": {
+            "uiName": "Sample In Sphere"
+        },
+        "inputs": {
+            "prims": {
+                "type": "target",
+                "description": "prims to randomize",
+                "default": []
+            },
+            "execIn": {
+                "type": "execution",
+                "description": "exec",
+                "default": 0
+            },
+            "radius": {
+                "type": "float",
+                "description": "sphere radius",
+                "default": 1.0
+            }
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "exec"
+            }
+        }
+    }
+}

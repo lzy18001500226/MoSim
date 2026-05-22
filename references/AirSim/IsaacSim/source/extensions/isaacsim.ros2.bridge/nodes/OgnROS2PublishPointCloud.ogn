@@ -1,0 +1,77 @@
+{
+    "ROS2PublishPointCloud": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node publishes LiDAR scans as a ROS2 PointCloud2 message"
+        ],
+        "metadata": {
+            "uiName": "ROS2 Publish Point Cloud"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2:publisher",
+
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "context": {
+                "type": "uint64",
+                "description": "ROS2 context handle, Default of zero will use the default global context",
+                "default" : 0
+            },
+            "nodeNamespace": {
+                "type": "string",
+                "description": "Namespace of ROS2 Node, prepends any published/subscribed topic by the node namespace",
+                "default" : ""
+            },
+            "frameId": {
+                "type": "string",
+                "description": "FrameId for ROS2 message",
+                "default" : "sim_lidar"
+            },
+            "topicName": {
+                "type": "string",
+                "description": "Name of ROS2 Topic",
+                "default" : "point_cloud"
+            },
+             "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": ""
+            },
+            "queueSize": {
+                "type": "uint64",
+                "description": "The number of messages to queue up before throwing some away, in case messages are collected faster than they can be sent. Only honored if 'history' QoS policy was set to 'keep last'. This setting can be overwritten by qosProfile input.",
+                "default": 10
+            },
+            "timeStamp": {
+                "type": "double",
+                "description": "ROS2 Timestamp in seconds",
+                "uiName": "Timestamp",
+                "default": 0.0
+            },
+            "dataPtr": {
+                "type": "uint64",
+                "description": "Pointer to the buffer data",
+                "default": 0
+            },
+            "data": {
+                "type": "pointf[3][]",
+                "memoryType": "cpu",
+                "description": "Buffer array data, must contain data if dataPtr is null",
+                "default": []
+            },
+            "cudaDeviceIndex": {
+                "type": "int",
+                "description": "Index of the device where the data lives (-1 for host data)",
+                "default": -1
+            },
+            "bufferSize": {
+                "type": "uint",
+                "description": "Size (in bytes) of the buffer (0 if the input is a texture)"
+            }
+        }
+    }
+}

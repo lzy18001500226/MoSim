@@ -1,0 +1,76 @@
+{
+    "ROS2PublishRawTransformTree": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node publishes a user-defined transformation between any two coordinate frames as a ROS2 Transform Tree"
+        ],
+        "metadata": {
+            "uiName": "ROS2 Publish Raw Transform Tree"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2:publisher",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "context": {
+                "type": "uint64",
+                "description": "ROS2 context handle, Default of zero will use the default global context",
+                "default" : 0
+            },
+            "nodeNamespace": {
+                "type": "string",
+                "description": "Namespace of ROS2 Node, prepends any published/subscribed topic by the node namespace",
+                "default" : ""
+            },
+            "parentFrameId": {
+                "type": "string",
+                "description": "Parent frameId for ROS2 TF message",
+                "default" : "odom"
+            },
+            "childFrameId": {
+                "type": "string",
+                "description": "Child frameId for ROS2 TF message",
+                "default" : "base_link"
+            },
+            "topicName": {
+                "type": "string",
+                "description": "Name of ROS2 Topic",
+                "default" : "tf"
+            },
+             "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": ""
+            },
+            "queueSize": {
+                "type": "uint64",
+                "description": "The number of messages to queue up before throwing some away, in case messages are collected faster than they can be sent. Only honored if 'history' QoS policy was set to 'keep last'. This setting can be overwritten by qosProfile input.",
+                "default": 10
+            },
+            "timeStamp": {
+                "type": "double",
+                "description": "ROS2 Timestamp in seconds",
+                "uiName": "Timestamp",
+                "default": 0.0 
+            },
+            "translation": {
+                "type": "vectord[3]",
+                "description": "Translation vector in meters",
+                "default": [0.0, 0.0, 0.0]
+            },
+            "rotation": {
+                "type": "quatd[4]",
+                "description": "Rotation as a quaternion (IJKR)",
+                "default": [0.0, 0.0, 0.0, 1.0]
+            },
+            "staticPublisher": {
+                "type": "bool",
+                "description": "If enabled this will override QoS settings to publish static transform trees, similar to tf2::StaticTransformBroadcaster",
+                "default": false
+            }
+        }
+    }
+}

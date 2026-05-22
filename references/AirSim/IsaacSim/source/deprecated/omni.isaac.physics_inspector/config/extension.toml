@@ -1,0 +1,20 @@
+[package]
+version = "0.1.11"
+category = "Simulation"
+title = "Isaac Sim Physics Inspector"
+description = "Inspect Physics Objects During Simulation"
+keywords = ["isaac", "physics", "inspect",]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.2.0. Replaced by Physics Visualization tools"
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+
+[[python.module]]
+name = "omni.isaac.physics_inspector"

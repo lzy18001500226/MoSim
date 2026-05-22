@@ -1,0 +1,25 @@
+[package]
+version = "1.0.6"
+category = "Rendering"
+title = "Isaac Sim Asset Browser"
+description = "A browser for Isaac Sim assets"
+keywords = ["isaac", "browser", "asset"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.svg"
+feature = true
+# writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.asset.browser."
+
+[dependencies]
+"isaacsim.asset.browser" = {}
+"isaacsim.core.deprecation_manager" = {}
+
+[[python.module]]
+name = "omni.isaac.asset_browser"
+
+[[python.module]]
+name = "omni.isaac.asset_browser.tests"

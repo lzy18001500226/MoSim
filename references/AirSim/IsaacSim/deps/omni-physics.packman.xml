@@ -1,0 +1,13 @@
+<project toolsVersion="5.6">
+  <!-- Import Kit SDk target-deps xml file to steal some deps from it: -->
+  <!-- <import path="../_build/${platform_target}/${config}/kit/dev/deps/target-deps.packman.xml">
+    <filter include="omni_physics" />
+  </import> -->
+
+  <!-- Pull those deps of the same version as in Kit SDK. Override linkPath to point correctly, other properties can also be override, including version. -->
+  <dependency name="omni_physics_${config}" linkPath="../_build/target-deps/omni_physics/${config}">
+    <!-- Uncomment and change the version/path below when using a custom package -->
+    <package name="omni_physics" version="107.3.26-36011981-release_107.3-3a61992c-${platform_target_abi}" platforms="windows-x86_64 manylinux_2_35_x86_64 manylinux_2_35_aarch64"/>
+    <!-- <source path="/path/to/omni_physics" /> -->
+  </dependency>
+</project>

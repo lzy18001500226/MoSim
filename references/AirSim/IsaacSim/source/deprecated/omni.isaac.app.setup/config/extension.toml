@@ -1,0 +1,28 @@
+[package]
+version = "1.0.6"
+category = "Setup"
+title = "Isaac Sim Setup"
+description = "This Extension does the setup of the Isaac Sim App"
+keywords = ["isaac"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/omni.isaac.sim.png"
+toggleable = false
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.app.setup."
+
+[dependencies]
+"isaacsim.app.setup" = {}
+"isaacsim.core.deprecation_manager" = {}
+
+[[python.module]]
+name = "omni.isaac.app.setup"
+
+[[test]]
+stdoutFailPatterns.exclude = [
+    "*[Error] [carb.glinterop.plugin] GLInteropContext::init: carb::windowing is not available*",
+    "*[Error] [isaacsim.ros2.bridge.scripts.extension] ROS2 Bridge startup failed*"
+]

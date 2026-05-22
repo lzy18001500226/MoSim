@@ -1,0 +1,75 @@
+{
+    "IsaacPassthroughImagePtr": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": "Isaac Sim Node passes a pointer through without changing it",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacCore",
+        "metadata": {
+            "uiName": "Isaac Passthrough Image Pointer"
+        },
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "dataPtr": {
+                "type": "uint64",
+                "description": "pointer to pass throuh"
+            },
+            "cudaDeviceIndex": {
+                "type": "int",
+                "description": "Index of the device where the data lives (-1 for host data)",
+                "default": -1
+            },
+            "width": {
+                "type": "uint",
+                "description": "Buffer array width"
+            },
+            "height": {
+                "type": "uint",
+                "description": "Buffer array height"
+            },
+            "bufferSize": {
+                "type": "uint",
+                "description": "Size (in bytes) of the buffer (0 if the input is a texture)"
+            },
+            "format": {
+                "type": "uint64",
+                "description": "Format"
+            }
+            
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "The output execution port"
+            },
+            "dataPtr": {
+                "type": "uint64",
+                "description": "pointer to pass throuh"
+            },
+            "cudaDeviceIndex": {
+                "type": "int",
+                "description": "Index of the device where the data lives (-1 for host data)",
+                "default": -1
+            },
+            "width": {
+                "type": "uint",
+                "description": "Buffer array width"
+            },
+            "height": {
+                "type": "uint",
+                "description": "Buffer array height"
+            },
+            "bufferSize": {
+                "type": "uint",
+                "description": "Size (in bytes) of the buffer (0 if the input is a texture)"
+            },
+            "format": {
+                "type": "uint64",
+                "description": "Format"
+            }
+        }
+    }
+}

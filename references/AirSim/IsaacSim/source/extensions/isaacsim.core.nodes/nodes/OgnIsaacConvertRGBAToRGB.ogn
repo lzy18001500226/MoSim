@@ -1,0 +1,79 @@
+{
+    "IsaacConvertRGBAToRGB": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": "Converts a RGBA image buffer into RGB",
+        "uiName": "Isaac RGBA to RGB",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacCore",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "dataPtr": {
+                "type": "uint64",
+                "description": "Pointer to the raw rgba array data",
+                "default": 0
+            },
+            "cudaDeviceIndex": {
+                "type": "int",
+                "description": "Index of the device where the data lives (-1 for host data)",
+                "default": -1
+            },
+            "width": {
+                "type": "uint",
+                "description": "Buffer array width"
+            },
+            "height": {
+                "type": "uint",
+                "description": "Buffer array height"
+            },
+            "encoding": {
+                "type": "token",
+                "description": "Encoding as a token",
+                "default": "rgba8"
+            },
+            "bufferSize": {
+                "type": "uint",
+                "description": "Size (in bytes) of the buffer (0 if the input is a texture)"
+            },
+            "format": {
+                "type": "uint64",
+                "description": "Format"
+            }
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "Output execution triggers when conversion complete"
+            },
+            "dataPtr": {
+                "type": "uint64",
+                "description": "Pointer to the rgb buffer data",
+                "default": 0
+            },
+            "cudaDeviceIndex": {
+                "type": "int",
+                "description": "Index of the device where the data lives (-1 for host data)",
+                "default": -1
+            },
+            "encoding": {
+                "type": "token",
+                "description": "Encoding as a token"
+            },
+            "width": {
+                "type": "uint",
+                "description": "Buffer array width, same as input"
+            },
+            "height": {
+                "type": "uint",
+                "description": "Buffer array height, same as input"
+            },
+            "bufferSize": {
+                "type": "uint",
+                "description": "Size (in bytes) of the buffer (0 if the input is a texture)"
+            }
+        }
+    }
+}

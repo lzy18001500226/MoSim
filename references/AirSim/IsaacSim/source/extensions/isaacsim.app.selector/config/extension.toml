@@ -1,0 +1,23 @@
+[package]
+version = "2.10.0"
+category = "Simulation"
+title = "Isaac Sim App Selector"
+description = "Mini Launch Pad app for Isaac Sim Sub Apps"
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "icons/preview.png"
+icon = "icons/isaacsim.exp.full.png"
+toggleable = false
+writeTarget.kit = true
+
+[dependencies]
+"isaacsim.core.version" = {}
+"omni.kit.pip_archive" = {} # pulls in pyperclip
+"omni.kit.uiapp" = {}
+"omni.kit.window.title" = {}
+
+[deprecation]
+warning = "App selector is deprecated since Isaac Sim 5.1.0 and will be removed in a future release"
+
+[[python.module]]
+name = "isaacsim.app.selector"

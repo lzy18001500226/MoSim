@@ -1,0 +1,27 @@
+{
+    "IsaacReadSystemTime": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": "Holds values related to system timestamps",
+        "uiName": "Isaac Read System Time",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacCore",
+        "inputs": {
+            "referenceTimeNumerator": {
+                "type": "int64",
+                "description": "Reference time represented as a rational number : numerator"
+            },
+            "referenceTimeDenominator": {
+                "type": "uint64",
+                "description": "Reference time represented as a rational number : denominator"
+            }
+        },
+        "outputs": {
+            "systemTime": {
+                "type": "double",
+                "description": "Current system time in seconds",
+                "uiName": "System Time"
+            }
+        }
+    }
+}

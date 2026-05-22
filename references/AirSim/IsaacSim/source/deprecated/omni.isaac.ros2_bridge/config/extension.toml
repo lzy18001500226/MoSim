@@ -1,0 +1,43 @@
+[package]
+version = "3.0.8"
+category = "Simulation"
+title = "ROS2 Bridge"
+description = "ROS2 Bridge"
+keywords = ["isaac", "ROS2"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.ros2.bridge."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.ros2.bridge" = {}
+
+[[python.module]]
+name = "omni.isaac.ros2_bridge"
+
+[[python.module]]
+name = "omni.isaac.ros2_bridge.tests"
+
+[[test]]
+dependencies = [
+    "omni.isaac.benchmark.services",
+    "omni.isaac.core",
+    "omni.isaac.core_nodes",
+    "omni.isaac.nucleus",
+    "omni.isaac.sensor",
+    "isaacsim.test.utils",
+]
+args = [
+'--/app/settings/fabricDefaultStageFrameHistoryCount = 3',
+]
+
+[[test]]
+name = "startup"
+args = [
+    '--/app/settings/fabricDefaultStageFrameHistoryCount = 3',
+]

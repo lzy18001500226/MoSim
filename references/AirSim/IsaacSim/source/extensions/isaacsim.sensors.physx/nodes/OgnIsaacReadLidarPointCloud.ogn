@@ -1,0 +1,36 @@
+{
+    "IsaacReadLidarPointCloud": {
+        "version": 2,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node reads from the lidar sensor and holds point cloud data buffers for a full scan"
+        ],
+        "metadata": {
+            "uiName": "Isaac Read Lidar Point Cloud Node"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacPhysxSensor",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "lidarPrim":{
+                "type": "target",
+                "description": "Usd prim reference to the lidar prim"
+            }
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "Output execution triggers when lidar sensor has completed a full scan"
+            },
+            "data":{
+                "type": "pointf[3][]",
+                "description": "Buffer of 3d points containing point cloud data",
+                "memoryType": "cpu",
+                "default": []
+            }
+        }
+    }
+}

@@ -1,0 +1,78 @@
+{
+    "IsaacReadCameraInfo": {
+        "version": 2,
+        "icon": "icons/isaac-sim.svg",
+        "description": "Isaac Sim node that reads camera info for a viewport",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacCore",
+        "metadata": {
+            "uiName": "Isaac Read Camera Info"
+        },
+        "inputs": {
+            "renderProductPath": {
+                "type": "token",
+                "description": "Path of the render product"
+            }
+        },
+        "outputs": {
+            "width": {
+                "type": "uint",
+                "description": "Width for output image"
+            },
+            "height": {
+                "type": "uint",
+                "description": "Height for output image"
+            },
+            "focalLength":{
+                "type":"float",
+                "description": "focal length"
+            },
+            "horizontalAperture":{
+                "type":"float",
+                "description": "horizontal aperture"
+            },
+            "verticalAperture":{
+                "type":"float",
+                "description": "vertical aperture"
+            },
+            "horizontalOffset":{
+                "type":"float",
+                "description": "horizontal offset"
+            },
+            "verticalOffset":{
+                "type":"float",
+                "description": "vertical offset"
+            },
+            "projectionType":{
+                "type":"token",
+                "description": "projection type"
+            },
+            "cameraFisheyeParams": {
+                "type": "float[]",
+                "description": "Camera fisheye projection parameters"
+            },
+            "physicalDistortionModel": {
+                "type": "token",
+                "description": "physical distortion model used for approximation, empty if not specified on camera prim"
+            },
+            "physicalDistortionCoefficients": {
+                "type": "float[]",
+                "description": "physical distortion model used for approximation, empty if not specified on camera prim"
+            }
+        },
+        "tests": [
+            {
+                "description": "Test Camera Info",
+                "setup": {
+                    "create_nodes": [["TestNode", "isaacsim.core.nodes.IsaacReadCameraInfo"]]
+                },
+                "inputs":{
+                    "renderProductPath": "/Render/OmniverseKit/HydraTextures/omni_kit_widget_viewport_ViewportTexture_0"
+                },
+                "outputs": {
+                    "focalLength": 18.14756202697754
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,76 @@
+########################################################################################################################
+# Example:
+########################################################################################################################
+
+#
+# [[dependency]]                           # Toml way to define array of objects.
+# python = "../_build/target-deps/python"  # Path to python used to install. Absolute or relative to this config.
+# packages = ["numpy"]                     # Array of packages to install, they all will be passed directly to pip.
+# target = "../_build/target-deps/numpy"   # Folder to install into.   Absolute or relative to this config.
+# platforms = ["windows-x86_64"]           # Platform(s) to filter, default is ["*"].
+# download_only = true                     # Do pip download instead of install, gets a whl file that can be installed later.
+
+# !!!
+# IMPORTANT: If you change this config cleanup target folder. Script check that it already exists and does nothing.
+
+# Options.
+# Various options are available that are passed through pip during the installation.
+
+# download_only: Only download the pip package, do not install it.
+# install_dependencies: When set to False, dependencies of a pip package will not be downloaded or installed
+# append_to_install_folder: When set to true and the target directory already exists, these packages will be appended to the existing folder.
+# build_isolated: Sets `--isolated` for pip install when installing. This means that environment variables and user settings will be ignored.
+# add_python_to_lib_path: Will set --global-options to include Python's lib and include folders when running the pip install.
+#    Useful when a python pip package has a C extension that needs to bind to Python. Setting this to true will set build_isolated to False.
+
+########################################################################################################################
+# Dependencies:
+########################################################################################################################
+
+# For newer version of pip we bundle only wheel files, to be installed at runtime upon first usage.
+# Disabled because we get this with the base omni.kit.pip_archive extension
+# [[dependency]]
+# python = "../_build/target-deps/python"
+# packages = ["pip==23.0.1"]
+# target = "../_build/target-deps/pip_archive"
+# platforms = ["*-x86_64"]
+# download_only = true
+
+# For many other pip packages used by default we install them in `pip_prebundle` folder to make available without need to install immediately.
+
+# NOTE - For any new packages added to this list, please make sure that the license is compatible with Omniverse (i.e. avoid GPL/LGPL) and
+# that a SWIPAT bug report is filed for legal to validate if there is no existing ticket.
+# The SWIPAT template is here: http://nvbugs/2732212
+# Dependencies for aiohttp should not be installed by default as we do not want to pull in chardet due to its license. Use cchardet instead
+
+# Target kit 107.x
+[[dependency]]
+python = "../_build/target-deps/python"
+packages = [
+    "numba==0.59.1",                        # SWIPAT filed under: https://nvbugs/3430475
+    "llvmlite==0.42.0",                     # SWIPAT filed under: https://nvbugs/3433740
+    "nest_asyncio==1.5.6",                  # SWIPAT filed under: https://nvbugs/3433748
+    "markupsafe==2.1.3",                    # SWIPAT filed under: https://nvbugs/3433754
+    "matplotlib==3.10.3",                   # SWIPAT filed under: https://nvbugs/3430500
+    "contourpy==1.3.1",                     # SWIPAT filed under: https://nvbugs/5303073
+    "fonttools==4.55.3",                    # SWIPAT filed under: https://nvbugs/5303095
+    "pyparsing==3.0.9",                     # SWIPAT filed under: https://nvbugs/3433756
+    "cycler==0.11.0",                       # SWIPAT filed under: https://nvbugs/3433763
+    "kiwisolver==1.4.4",                    # SWIPAT filed under: https://nvbugs/3433770
+    "pint==0.20.1",                         # SWIPAT filed under: https://nvbugs/3433818
+    "packaging==23.0",                      # SWIPAT filed under: https://nvbugs/3433815
+    "gunicorn==23.0.0",                     # SWIPAT filed under: https://nvbugs/3439010
+    "osqp==0.6.7.post3",                    # SWIPAT filed under: https://nvbugs/3577752
+    "qdldl==0.1.7.post5",                   # SWIPAT filed under: https://nvbugs/3577749
+    "tornado==6.5.1",                       # For omni.sensors.nv.lidar_tools SWIPAT filed under: http://nvbugs/200609232
+    "pyperclip==1.8.0",                     # SWIPAT filed under: https://nvbugs/5326856
+    "python-dateutil==2.9.0.post0",         # SWIPAT filed under: https://nvbugs/5303032
+    "six==1.17.0",                          # SWIPAT filed under: https://nvbugs/5303087
+]
+
+target = "../_build/target-deps/isaac_core_prebundle"
+platforms = ["*-x86_64", "*-aarch64"]
+download_only = false
+install_dependencies = false
+append_to_install_folder = true
+gather_licenses_path = "../_build/PACKAGE-LICENSES/PIP-prebundled-LICENSES.txt"

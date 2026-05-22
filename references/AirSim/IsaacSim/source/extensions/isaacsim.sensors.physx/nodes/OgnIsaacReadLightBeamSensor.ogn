@@ -1,0 +1,66 @@
+{
+    "IsaacReadLightBeam": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": "Node that reads out light beam sensor data",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacPhysxSensor",
+        "metadata": {
+            "uiName": "Isaac Read LightBeam Sensor Node"
+        },
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "lightbeamPrim": {
+                "type": "target",
+                "description": "Usd prim reference to the light beam prim",
+                "metadata": {
+                    "uiName": "Light Beam Prim"
+                }
+            }
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "Output execution triggers when sensor has data"
+            },
+            "numRays": {
+                "type": "int",
+                "description": "The number of rays in light curtain",
+                "default": 0
+            },
+            "beamHitData": {
+                "type": "bool[]",
+                "description": "Array of bools that registers if a light beam is broken",
+                "memoryType": "cpu",
+                "default": []
+            },
+            "linearDepthData": {
+                "type": "float[]",
+                "description": "Array containing linear depth data",
+                "memoryType": "cpu",
+                "default": []
+            },
+            "hitPosData": {
+                "type": "pointf[3][]",
+                "description": "Array containing hit position data",
+                "memoryType": "cpu",
+                "default": []
+            },
+            "beamOrigins": {
+                "type": "pointf[3][]",
+                "description": "Array containing origins of each beam",
+                "memoryType": "cpu",
+                "default": []
+            },
+            "beamEndPoints": {
+                "type": "pointf[3][]",
+                "description": "Array containing end points of each beam",
+                "memoryType": "cpu",
+                "default": []
+            }
+        }
+    }
+}

@@ -1,0 +1,83 @@
+{
+    "IsaacReadIMU": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",        
+        "description": "Node that reads out IMU linear acceleration, angular velocity and orientation data",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacPhysicsSensor",
+        "metadata": {
+            "uiName": "Isaac Read IMU Node"
+        },
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },            
+            "imuPrim": {
+                "type": "target",
+                "description": "Usd prim reference to the IMU prim",
+                "metadata": {
+                    "uiName": "IMU Prim"
+                }
+            },
+            "useLatestData": {
+                "type": "bool",
+                "description": "True to use the latest data from the physics step, False to use the data measured by the sensor",
+                "default": false
+            },
+            "readGravity": {
+                "type": "bool",
+                "description": "True to read gravitational acceleration in the measurement, False to ignore gravitational acceleration",
+                "default": true
+            }
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "Output execution triggers when sensor has data"
+            },
+            "sensorTime":{
+                "type": "float",
+                "description": "Timestamp of the sensor reading",
+                "default": 0
+            },
+            "linAcc": {
+                "type": "vectord[3]",
+                "description": "Linear acceleration IMU reading",
+                "metadata": {
+                    "uiName": "Linear Acceleration Vector"
+                },
+                "default": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            },
+            "angVel": {
+                "type": "vectord[3]",
+                "description": "Angular velocity IMU reading",
+                "metadata": {
+                    "uiName": "Angular Velocity Vector"
+                },
+                "default": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            }, 
+            "orientation": {
+                "type": "quatd[4]",
+                "description": "Sensor orientation as quaternion",
+                "metadata": {
+                    "uiName": "Sensor Orientation Quaternion"
+                },
+                "default": [
+                    0.0, 
+                    0.0, 
+                    0.0, 
+                    1.0
+                ]
+            }
+        }
+    }
+}

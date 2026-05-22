@@ -1,0 +1,682 @@
+# search paths so extensions are found in the existing cache/folders
+[settings.app.exts]
+folders = [
+	"${app}/../exts",
+	"${app}",
+	"${app}/../extsDeprecated",
+]
+
+[dependencies]
+"isaacsim.exp.full" = { version = "5.1.0" }
+"isaacsim.exp.action_and_event_data_generation.full" = {}
+# All isaac sim extensions so we have their dependencies properly cached regardless if the extension is part of the full app or not
+"isaacsim.app.about" = {}
+"isaacsim.app.compatibility_check" = {}
+"isaacsim.app.selector" = {}
+"isaacsim.app.setup" = {}
+"isaacsim.asset.browser" = {}
+"isaacsim.asset.exporter.urdf" = {}
+"isaacsim.asset.gen.conveyor.ui" = {}
+"isaacsim.asset.gen.conveyor" = {}
+"isaacsim.asset.gen.omap.ui" = {}
+"isaacsim.asset.gen.omap" = {}
+"isaacsim.asset.importer.heightmap" = {}
+"isaacsim.asset.validation" = {}
+"isaacsim.benchmark.examples" = {}
+"isaacsim.benchmark.services" = {}
+"isaacsim.code_editor.jupyter" = {}
+"isaacsim.code_editor.vscode" = {}
+"isaacsim.core.api" = {}
+"isaacsim.core.cloner" = {}
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.core.experimental.materials" = {}
+"isaacsim.core.experimental.objects" = {}
+"isaacsim.core.experimental.prims" = {}
+"isaacsim.core.experimental.utils" = {}
+"isaacsim.core.includes" = {}
+"isaacsim.core.nodes" = {}
+"isaacsim.core.prims" = {}
+"isaacsim.core.simulation_manager" = {}
+"isaacsim.core.throttling" = {}
+"isaacsim.core.utils" = {}
+"isaacsim.core.version" = {}
+"isaacsim.cortex.behaviors" = {}
+"isaacsim.cortex.framework" = {}
+"isaacsim.examples.browser" = {}
+"isaacsim.examples.extension" = {}
+"isaacsim.examples.interactive" = {}
+"isaacsim.examples.ui" = {}
+"isaacsim.gui.components" = {}
+"isaacsim.gui.content_browser" = {}
+"isaacsim.gui.menu" = {}
+"isaacsim.gui.property" = {}
+"isaacsim.gui.sensors.icon" = {}
+"isaacsim.replicator.behavior.ui" = {}
+"isaacsim.replicator.behavior" = {}
+"isaacsim.replicator.domain_randomization" = {}
+"isaacsim.replicator.examples" = {}
+"isaacsim.replicator.grasping.ui" = {}
+"isaacsim.replicator.grasping" = {}
+"isaacsim.replicator.mobility_gen.examples" = {}
+"isaacsim.replicator.mobility_gen.ui" = {}
+"isaacsim.replicator.mobility_gen" = {}
+"isaacsim.replicator.scene_blox" = {}
+"isaacsim.replicator.synthetic_recorder" = {}
+"isaacsim.replicator.writers" = {}
+"isaacsim.robot_motion.lula_test_widget" = {}
+"isaacsim.robot_motion.lula" = {}
+"isaacsim.robot_motion.motion_generation" = {}
+"isaacsim.robot_setup.assembler" = {}
+"isaacsim.robot_setup.gain_tuner" = {}
+"isaacsim.robot_setup.grasp_editor" = {}
+"isaacsim.robot_setup.wizard" = {}
+"isaacsim.robot_setup.xrdf_editor" = {}
+"isaacsim.robot.manipulators.examples" = {}
+"isaacsim.robot.manipulators.ui" = {}
+"isaacsim.robot.manipulators" = {}
+"isaacsim.robot.policy.examples" = {}
+"isaacsim.robot.schema" = {}
+"isaacsim.robot.surface_gripper.ui" = {}
+"isaacsim.robot.surface_gripper" = {}
+"isaacsim.robot.wheeled_robots.ui" = {}
+"isaacsim.robot.wheeled_robots" = {}
+"isaacsim.ros2.bridge" = {}
+"isaacsim.ros2.sim_control" = {}
+"isaacsim.ros2.tf_viewer" = {}
+"isaacsim.ros2.urdf" = {}
+"isaacsim.sensors.camera.ui" = {}
+"isaacsim.sensors.camera" = {}
+"isaacsim.sensors.physics.examples" = {}
+"isaacsim.sensors.physics.ui" = {}
+"isaacsim.sensors.physics" = {}
+"isaacsim.sensors.physx.examples" = {}
+"isaacsim.sensors.physx.ui" = {}
+"isaacsim.sensors.physx" = {}
+"isaacsim.sensors.rtx.ui" = {}
+"isaacsim.sensors.rtx" = {}
+"isaacsim.simulation_app" = {}
+"isaacsim.storage.native" = {}
+"isaacsim.test.collection" = {}
+"isaacsim.test.docstring" = {}
+"isaacsim.util.camera_inspector" = {}
+"isaacsim.util.debug_draw" = {}
+"isaacsim.util.merge_mesh" = {}
+"isaacsim.util.physics" = {}
+"omni.exporter.urdf" = {}
+"omni.isaac.app.selector" = {}
+"omni.isaac.app.setup" = {}
+"omni.isaac.articulation_inspector" = {}
+"omni.isaac.asset_browser" = {}
+"omni.isaac.assets_check" = {}
+"omni.isaac.benchmark.services" = {}
+"omni.isaac.benchmarks" = {}
+"omni.isaac.block_world" = {}
+"omni.isaac.camera_inspector" = {}
+"omni.isaac.cloner" = {}
+"omni.isaac.common_includes" = {}
+"omni.isaac.conveyor.ui" = {}
+"omni.isaac.conveyor" = {}
+"omni.isaac.core_archive" = {}
+"omni.isaac.core_nodes" = {}
+"omni.isaac.core" = {}
+"omni.isaac.cortex.sample_behaviors" = {}
+"omni.isaac.cortex" = {}
+"omni.isaac.debug_draw" = {}
+"omni.isaac.doctest" = {}
+"omni.isaac.dynamic_control" = {}
+"omni.isaac.examples_nodes" = {}
+"omni.isaac.examples" = {}
+"omni.isaac.extension_templates" = {}
+"omni.isaac.franka" = {}
+"omni.isaac.gain_tuner" = {}
+"omni.isaac.grasp_editor" = {}
+"omni.isaac.jupyter_notebook" = {}
+"omni.isaac.kit" = {}
+"omni.isaac.lula_test_widget" = {}
+"omni.isaac.lula" = {}
+"omni.isaac.manipulators.ui" = {}
+"omni.isaac.manipulators" = {}
+"omni.isaac.menu" = {}
+"omni.isaac.merge_mesh" = {}
+"omni.isaac.ml_archive" = {}
+"omni.isaac.motion_generation" = {}
+"omni.isaac.nucleus" = {}
+"omni.isaac.occupancy_map.ui" = {}
+"omni.isaac.occupancy_map" = {}
+"omni.isaac.physics_inspector" = {}
+"omni.isaac.physics_utilities" = {}
+"omni.isaac.proximity_sensor" = {}
+"omni.isaac.quadruped" = {}
+"omni.isaac.range_sensor.examples" = {}
+"omni.isaac.range_sensor.ui" = {}
+"omni.isaac.range_sensor" = {}
+"omni.isaac.robot_assembler" = {}
+"omni.isaac.robot_description_editor" = {}
+"omni.isaac.ros2_bridge.robot_description" = {}
+"omni.isaac.ros2_bridge" = {}
+"omni.isaac.scene_blox" = {}
+"omni.isaac.sensor" = {}
+"omni.isaac.surface_gripper.ui" = {}
+"omni.isaac.surface_gripper" = {}
+"omni.isaac.synthetic_recorder" = {}
+"omni.isaac.tests" = {}
+"omni.isaac.tf_viewer" = {}
+"omni.isaac.throttling" = {}
+"omni.isaac.ui_template" = {}
+"omni.isaac.ui" = {}
+"omni.isaac.unit_converter" = {}
+"omni.isaac.universal_robots" = {}
+"omni.isaac.utils" = {}
+"omni.isaac.version" = {}
+"omni.isaac.vscode" = {}
+"omni.isaac.wheeled_robots.ui" = {}
+"omni.isaac.wheeled_robots" = {}
+"omni.isaac.window.about" = {}
+"omni.kit.loop-isaac" = {}
+"omni.kit.property.isaac" = {}
+"omni.pip.cloud" = {}
+"omni.pip.compute" = {}
+"omni.replicator.isaac" = {}
+"omni.usd.schema.isaac" = {}
+
+# Base Isaac Sim Dependencies
+"omni.warp" = {}
+"omni.warp.core" = {}
+"omni.replicator.core" = {}
+"omni.replicator.replicator_yaml" = {}
+
+# Physics Extensions
+"omni.physx.bundle" = {version = "107.3.26", exact = true}
+"omni.physx.fabric" = {version = "107.3.26", exact = true}
+"omni.physx.pvd" = {version = "107.3.26", exact = true}
+"omni.physics.tensors" = {version = "107.3.26", exact = true}
+"omni.physx.tensors" = {version = "107.3.26", exact = true}
+"omni.physx.tests" = {version = "107.3.26", exact = true}
+"omni.physx.tests.visual" = {version = "107.3.26", exact = true}
+# Isaac Sim Sensors
+"omni.sensors.net" = {}
+"omni.sensors.nv.camera" = {}
+"omni.sensors.nv.common" = {}
+"omni.sensors.nv.ids" = {}
+"omni.sensors.nv.lidar" = {}
+"omni.sensors.nv.materials" = {}
+"omni.sensors.nv.radar" = {}
+"omni.sensors.nv.ultrasonic" = {}
+"omni.sensors.nv.wpm" = {}
+
+# Isaac Sim Import/Export
+"isaacsim.asset.importer.mjcf" = {}
+"isaacsim.asset.importer.urdf" = {}
+"omni.importer.onshape" = {}
+
+# Isaac Sim Additional Dependencies
+"omni.cuopt.examples" = {}
+"omni.cuopt.service" = {}
+"omni.cuopt.visualization" = {}
+
+
+
+# Kit SDK
+"omni.rtx.shadercache.vulkan" = {}
+"omni.videoencoding" = {}
+"omni.kit.debug.vscode" = {}
+"omni.activity.ui" = {}
+"omni.kit.test_suite.helpers" = {}
+"omni.kit.widget.cache_indicator" = {}
+
+# External Extensions
+"omni.anim.asset" = {}
+"omni.anim.behavior.schema" = {}
+"omni.anim.curve.bundle" = {}
+"omni.anim.curve.core" = {}
+"omni.anim.curve_editor" = {}
+"omni.anim.graph.bundle" = {}
+"omni.anim.navigation.bundle" = {}
+"omni.anim.retarget.bundle" = {}
+"omni.anim.shared.core" = {}
+"omni.anim.skelJoint" = {}
+"omni.anim.timeline" = {}
+"omni.anim.window.timeline" = {}
+"omni.asset_validator.core" = {}
+"omni.asset_validator.ui" = {}
+"omni.curve.creator" = {}
+"omni.curve.manipulator" = {}
+"omni.genproc.core" = {}
+"omni.graph.action" = {}
+"omni.graph.bundle.action" = {}
+"omni.graph.examples.cpp" = {}
+"omni.graph.core" = {}
+"omni.graph.nodes" = {}
+"omni.graph.scriptnode" = {}
+"omni.graph.ui_nodes" = {}
+"omni.graph.window.action" = {}
+"omni.graph.window.generic" = {}
+"omni.graph.telemetry" = {}
+"omni.kit.asset_converter" = {}
+"omni.kit.browser.asset" = {}
+"omni.kit.browser.core" = {}
+"omni.kit.browser.folder.core" = {}
+"omni.kit.browser.material" = {}
+"omni.kit.browser.sample" = {}
+"omni.kit.core.collection" = {}
+"omni.kit.data2ui.core" = {}
+"omni.kit.data2ui.usd" = {}
+"omni.kit.environment.core" = {}
+"omni.kit.graph.delegate.default" = {}
+"omni.kit.livestream.messaging" = {}
+"omni.kit.menu.stage" = {}
+"omni.kit.mesh.raycast" = {}
+"omni.kit.ngsearch" = {}
+"omni.kit.playlist.core" = {}
+"omni.kit.preferences.animation" = {}
+"omni.kit.prim.icon" = {}
+"omni.kit.profiler.tracy" = {}
+"omni.kit.profiler.window" = {}
+"omni.kit.property.collection" = {}
+"omni.kit.property.environment" = {}
+"omni.kit.scripting" = {}
+"omni.kit.search.files" = {}
+"omni.kit.search.service" = {}
+"omni.kit.sequencer.core" = {}
+"omni.kit.sequencer.usd" = {}
+"omni.kit.stage_column.payload" = {}
+"omni.kit.stage_column.variant" = {}
+"omni.kit.stagerecorder.bundle" = {}
+"omni.kit.stagerecorder.core" = {}
+"omni.kit.stagerecorder.ui" = {}
+"omni.kit.thumbnails.mdl" = {}
+"omni.kit.timeline.minibar" = {}
+"omni.kit.tool.asset_exporter" = {}
+"omni.kit.tool.asset_importer" = {version = "4.3.2", exact = true}
+"omni.kit.tool.collect" = {}
+"omni.kit.tool.measure" = {}
+"omni.kit.tool.remove_unused.controller" = {}
+"omni.kit.tool.remove_unused.core" = {}
+"omni.kit.variant.editor" = {}
+"omni.kit.variant.presenter" = {}
+"omni.kit.viewport.menubar.lighting" = {}
+"omni.kit.viewport.menubar.waypoint" = {}
+"omni.kit.viewport.scene_camera_model" = {}
+"omni.kit.waypoint.core" = {}
+"omni.kit.waypoint.playlist" = {}
+"omni.kit.widget.calendar" = {}
+"omni.kit.widget.collection" = {}
+"omni.kit.widget.extended_searchfield" = {}
+"omni.kit.widget.material_preview" = {}
+"omni.kit.widget.sliderbar" = {}
+"omni.kit.widget.timeline" = {}
+"omni.kit.widget.zoombar" = {}
+"omni.kit.widgets.custom" = {}
+"omni.kit.window.collection" = {}
+"omni.kit.window.material_graph" = {}
+"omni.kit.window.material" = {}
+"omni.kit.window.movie_capture" = {}
+"omni.kit.window.quicksearch" = {}
+"omni.kit.window.section" = {}
+"omni.kit.window.usddebug" = {}
+"omni.no_code_ui.bundle" = {}
+"omni.ramp" = {}
+"omni.scene.optimizer.bundle" = {}
+"omni.scene.visualization.bundle" = {}
+"omni.services.client" = {}
+"omni.services.core" = {}
+"omni.services.facilities.base" = {}
+"omni.services.pip_archive" = {}
+"omni.services.starfleet.auth" = {}
+"omni.services.transport.client.base" = {}
+"omni.services.transport.client.http_async" = {}
+"omni.services.transport.server.base" = {}
+"omni.services.transport.server.http" = {}
+"omni.services.transport.server.zeroconf" = {}
+"omni.services.usd" = {}
+"omni.simready.explorer" = {}
+"omni.usd.fileformat.e57" = {}
+"omni.usd.fileformat.pts" = {}
+"omni.usd.metrics.assembler.physics" = {}
+"omni.usd.metrics.assembler.ui" = {}
+"omni.usd.metrics.assembler" = {}
+"omni.usd.schema.metrics.assembler" = {}
+"omni.usd.schema.scene.visualization" = {}
+"omni.usd.schema.sequence" = {}
+"omni.vdb_timesample_editor" = {}
+"omni.warehouse_creator" = {}
+"semantics.schema.editor" = {}
+"semantics.schema.property" = {}
+
+
+# Linux x86_64 dependencies
+[dependencies."filter:platform"."linux-x86_64"]
+# XR
+"isaacsim.xr.input_devices" = { version = "1.0.2", exact = true }
+"isaacsim.xr.openxr" = { version = "1.0.0", exact = true }
+
+# CAD Converters
+"omni.kit.converter.cad" = { version = "205.0.0", exact = true }
+"omni.kit.converter.common" = { version = "507.1.2", exact = true }
+"omni.kit.converter.dgn" = { version = "509.1.0", exact = true }
+"omni.kit.converter.dgn_core" = { version = "510.1.0", exact = true }
+"omni.kit.converter.hoops" = { version = "509.1.0", exact = true }
+"omni.kit.converter.hoops_core" = { version = "509.1.0", exact = true }
+"omni.kit.converter.jt" = { version = "508.1.0", exact = true }
+"omni.kit.converter.jt_core" = { version = "508.1.0", exact = true }
+
+# Livestreaming
+"omni.services.livestream.nvcf" = { version = "7.2.0", exact = true }
+"omni.kit.gfn" = { version = "107.0.4", exact = true }
+"omni.kit.livestream.core" = { version = "7.5.0", exact = true }
+"omni.kit.livestream.webrtc" = { version = "7.0.0", exact = true }
+"omni.kit.pointclouds" = { version = "1.5.14", exact = true }
+"omni.kit.streamsdk.plugins" = { version = "7.6.3", exact = true }
+
+# XR Extensions
+"omni.kit.xr.advertise" = { version = "107.3.109", exact = true }
+"omni.kit.xr.core" = { version = "107.3.109", exact = true }
+"omni.kit.xr.profile.ar" = { version = "107.3.109", exact = true }
+"omni.kit.xr.profile.common" = { version = "107.3.109", exact = true }
+"omni.kit.xr.profile.tabletar" = { version = "107.3.109", exact = true }
+"omni.kit.xr.profile.vr" = { version = "107.3.109", exact = true }
+"omni.kit.xr.scene_view.core" = { version = "107.3.109", exact = true }
+"omni.kit.xr.scene_view.utils" = { version = "107.3.109", exact = true }
+"omni.kit.xr.system.openxr" = { version = "107.3.109", exact = true }
+"omni.kit.xr.system.simulatedxr" = { version = "107.3.109", exact = true }
+"omni.kit.xr.ui.stage" = { version = "107.3.109", exact = true }
+"omni.kit.xr.ui.window.profile" = { version = "107.3.109", exact = true }
+"omni.kit.xr.ui.window.viewport" = { version = "107.3.109", exact = true }
+
+# Services
+"omni.services.convert.asset" = { version = "508.0.2", exact = true }
+"omni.services.convert.cad" = { version = "507.0.2", exact = true }
+
+# USD
+"omni.usdex.libs" = { version = "1.2.2", exact = true }
+
+# Windows x86_64 dependencies
+[dependencies."filter:platform"."windows-x86_64"]
+"omni.kit.window.modifier.titlebar" = { version = "105.2.16", exact = true }
+# XR
+"isaacsim.xr.openxr" = { version = "1.0.0", exact = true }
+
+# CAD Converters
+"omni.kit.converter.cad" = { version = "205.0.0", exact = true }
+"omni.kit.converter.common" = { version = "507.1.2", exact = true }
+"omni.kit.converter.dgn" = { version = "509.1.0", exact = true }
+"omni.kit.converter.dgn_core" = { version = "510.1.0", exact = true }
+"omni.kit.converter.hoops" = { version = "509.1.0", exact = true }
+"omni.kit.converter.hoops_core" = { version = "509.1.0", exact = true }
+"omni.kit.converter.jt" = { version = "508.1.0", exact = true }
+"omni.kit.converter.jt_core" = { version = "508.1.0", exact = true }
+
+# Livestreaming
+"omni.services.livestream.nvcf" = { version = "7.2.0", exact = true }
+"omni.kit.gfn" = { version = "107.0.4", exact = true }
+"omni.kit.livestream.core" = { version = "7.5.0", exact = true }
+"omni.kit.livestream.webrtc" = { version = "7.0.0", exact = true }
+"omni.kit.pointclouds" = { version = "1.5.14", exact = true }
+"omni.kit.streamsdk.plugins" = { version = "7.6.3", exact = true }
+
+# XR Extensions
+"omni.kit.xr.advertise" = { version = "107.3.109", exact = true }
+"omni.kit.xr.core" = { version = "107.3.109", exact = true }
+"omni.kit.xr.profile.ar" = { version = "107.3.109", exact = true }
+"omni.kit.xr.profile.common" = { version = "107.3.109", exact = true }
+"omni.kit.xr.profile.tabletar" = { version = "107.3.109", exact = true }
+"omni.kit.xr.profile.vr" = { version = "107.3.109", exact = true }
+"omni.kit.xr.scene_view.core" = { version = "107.3.109", exact = true }
+"omni.kit.xr.scene_view.utils" = { version = "107.3.109", exact = true }
+"omni.kit.xr.system.openxr" = { version = "107.3.109", exact = true }
+"omni.kit.xr.system.simulatedxr" = { version = "107.3.109", exact = true }
+"omni.kit.xr.ui.stage" = { version = "107.3.109", exact = true }
+"omni.kit.xr.ui.window.profile" = { version = "107.3.109", exact = true }
+"omni.kit.xr.ui.window.viewport" = { version = "107.3.109", exact = true }
+
+# Services
+"omni.services.convert.asset" = { version = "508.0.2", exact = true }
+"omni.services.convert.cad" = { version = "507.0.2", exact = true }
+
+# USD
+"omni.usdex.libs" = { version = "1.2.2", exact = true }
+
+########################################################################################################################
+# BEGIN GENERATED PART (Remove from 'BEGIN' to 'END' to regenerate)
+########################################################################################################################
+
+# Kit SDK Version: 107.3.3+isaac.229672.69cbf6ad.gl
+
+# Exact Version dependencies:
+# 	isaacsim.xr.input_devices-1.0.2
+# 	isaacsim.xr.openxr-1.0.0
+# 	omni.kit.converter.cad-205.0.0
+# 	omni.kit.converter.common-507.1.2
+# 	omni.kit.converter.dgn-509.1.0
+# 	omni.kit.converter.dgn_core-510.1.0
+# 	omni.kit.converter.hoops-509.1.0
+# 	omni.kit.converter.hoops_core-509.1.0
+# 	omni.kit.converter.jt-508.1.0
+# 	omni.kit.converter.jt_core-508.1.0
+# 	omni.kit.gfn-107.0.4
+# 	omni.kit.livestream.core-7.5.0
+# 	omni.kit.livestream.webrtc-7.0.0
+# 	omni.kit.pointclouds-1.5.14
+# 	omni.kit.streamsdk.plugins-7.6.3
+# 	omni.kit.tool.asset_importer-4.3.2
+# 	omni.kit.xr.advertise-107.3.109
+# 	omni.kit.xr.core-107.3.109
+# 	omni.kit.xr.profile.ar-107.3.109
+# 	omni.kit.xr.profile.common-107.3.109
+# 	omni.kit.xr.profile.tabletar-107.3.109
+# 	omni.kit.xr.profile.vr-107.3.109
+# 	omni.kit.xr.scene_view.core-107.3.109
+# 	omni.kit.xr.scene_view.utils-107.3.109
+# 	omni.kit.xr.system.openxr-107.3.109
+# 	omni.kit.xr.system.simulatedxr-107.3.109
+# 	omni.kit.xr.ui.stage-107.3.109
+# 	omni.kit.xr.ui.window.profile-107.3.109
+# 	omni.kit.xr.ui.window.viewport-107.3.109
+# 	omni.physics.tensors-107.3.26
+# 	omni.physx.bundle-107.3.26
+# 	omni.physx.fabric-107.3.26
+# 	omni.physx.pvd-107.3.26
+# 	omni.physx.tensors-107.3.26
+# 	omni.physx.tests-107.3.26
+# 	omni.physx.tests.visual-107.3.26
+# 	omni.services.convert.asset-508.0.2
+# 	omni.services.convert.cad-507.0.2
+# 	omni.services.livestream.nvcf-7.2.0
+# 	omni.usdex.libs-1.2.2
+
+# Version lock for all dependencies:
+[settings.app.exts]
+enabled = [
+	"isaacsim.action_and_event_data_generation.setup-0.0.9",
+	"isaacsim.anim.robot-0.0.15",
+	"isaacsim.app.compatibility_check-1.1.1",
+	"isaacsim.replicator.agent.core-0.7.28",
+	"isaacsim.replicator.agent.ui-0.7.11",
+	"isaacsim.replicator.caption.core-0.0.32",
+	"isaacsim.replicator.incident-0.1.28",
+	"isaacsim.replicator.object-0.4.13",
+	"isaacsim.sensors.rtx.placement-0.6.14",
+	"isaacsim.util.debug_draw-3.1.0",
+	"omni.anim.asset-107.3.0",
+	"omni.anim.behavior.schema-107.3.0",  # 107.3.1 is not available on AARCH64
+	"omni.anim.curve.bundle-1.2.3",
+	"omni.anim.curve.core-1.3.1",
+	"omni.anim.curve.ui-1.4.1",
+	"omni.anim.curve_editor-106.4.1",
+	"omni.anim.graph.bundle-107.3.3",
+	"omni.anim.graph.core-107.3.4",
+	"omni.anim.graph.schema-107.3.3",
+	"omni.anim.graph.ui-107.3.3",
+	"omni.anim.navigation.bundle-107.3.3",
+	"omni.anim.navigation.core-107.3.8",
+	"omni.anim.navigation.schema-107.3.3",
+	"omni.anim.navigation.ui-107.3.6",
+	"omni.anim.people-0.7.9",
+	"omni.anim.retarget.bundle-107.3.3",
+	"omni.anim.retarget.core-107.3.3",
+	"omni.anim.retarget.preview-107.3.3",
+	"omni.anim.retarget.ui-107.3.3",
+	"omni.anim.shared.core-107.0.1",
+	"omni.anim.skelJoint-107.3.3",
+	"omni.anim.timeline-107.0.0",
+	"omni.anim.widget.timeline-0.1.14",
+	"omni.anim.window.timeline-106.5.0",
+	"omni.asset_validator.core-1.1.6",
+	"omni.asset_validator.ui-1.1.6",
+	"omni.convexdecomposition-107.3.26",
+	"omni.cuopt.examples-1.3.0",
+	"omni.cuopt.service-1.3.0",
+	"omni.cuopt.visualization-1.3.0",
+	"omni.curve.creator-107.0.1",
+	"omni.curve.manipulator-107.0.4",
+	"omni.flowusd-107.1.8",
+	"omni.genproc.core-107.0.3",
+	"omni.graph.action-1.130.0",
+	"omni.graph.action_nodes-1.50.4",
+	"omni.graph.action_nodes_core-1.2.0",
+	"omni.graph.bundle.action-2.30.0",
+	"omni.graph.examples.cpp-1.50.2",
+	"omni.graph.io-1.30.1",
+	"omni.graph.nodes-1.170.10",
+	"omni.graph.nodes_core-1.1.0",
+	"omni.graph.scriptnode-1.50.0",
+	"omni.graph.telemetry-2.40.2",
+	"omni.graph.ui-1.101.6",
+	"omni.graph.ui_nodes-1.50.5",
+	"omni.graph.visualization.nodes-2.1.3",
+	"omni.graph.window.action-1.50.2",
+	"omni.graph.window.core-2.0.0",
+	"omni.graph.window.generic-1.50.2",
+	"omni.importer.onshape-1.0.1",
+	"omni.kit.asset_converter-5.0.17",
+	"omni.kit.browser.asset-1.3.12",
+	"omni.kit.browser.core-2.3.13",
+	"omni.kit.browser.folder.core-1.10.9",
+	"omni.kit.browser.material-1.6.2",
+	"omni.kit.browser.sample-1.4.9",
+	"omni.kit.core.collection-0.2.3",
+	"omni.kit.data2ui.core-1.1.2",
+	"omni.kit.data2ui.usd-1.1.2",
+	"omni.kit.environment.core-1.3.24",
+	"omni.kit.graph.delegate.default-1.2.3",
+	"omni.kit.graph.delegate.modern-1.10.9",
+	"omni.kit.graph.editor.core-1.5.3",
+	"omni.kit.graph.usd.commands-1.3.1",
+	"omni.kit.graph.widget.variables-2.1.0",
+	"omni.kit.livestream.messaging-1.1.1",
+	"omni.kit.menu.stage-1.2.7",
+	"omni.kit.mesh.raycast-107.0.1",
+	"omni.kit.ngsearch-0.3.3",
+	"omni.kit.playlist.core-1.3.5",
+	"omni.kit.preferences.animation-1.2.0",
+	"omni.kit.prim.icon-1.0.15",
+	"omni.kit.profiler.tracy-1.2.0",
+	"omni.kit.profiler.window-2.3.5",
+	"omni.kit.property.collection-0.2.3",
+	"omni.kit.property.environment-1.2.2",
+	"omni.kit.property.physx-107.3.26",
+	"omni.kit.scripting-107.3.2",
+	"omni.kit.search.files-1.0.4",
+	"omni.kit.search.service-0.1.12",
+	"omni.kit.sequencer.core-108.0.2",
+	"omni.kit.sequencer.usd-108.0.2",
+	"omni.kit.stage_column.payload-2.0.3",
+	"omni.kit.stage_column.variant-1.0.17",
+	"omni.kit.stagerecorder.bundle-105.0.2",
+	"omni.kit.stagerecorder.core-107.0.3",
+	"omni.kit.stagerecorder.ui-107.0.1",
+	"omni.kit.thumbnails.mdl-1.0.27",
+	"omni.kit.timeline.minibar-1.2.11",
+	"omni.kit.tool.asset_exporter-4.0.5",
+	"omni.kit.tool.measure-107.0.2",
+	"omni.kit.tool.remove_unused.controller-0.1.4",
+	"omni.kit.tool.remove_unused.core-0.1.3",
+	"omni.kit.variant.editor-107.5.3",
+	"omni.kit.variant.presenter-107.0.0",
+	"omni.kit.viewport.menubar.lighting-107.3.1",
+	"omni.kit.viewport.menubar.waypoint-104.2.16",
+	"omni.kit.waypoint.core-1.4.62",
+	"omni.kit.waypoint.playlist-1.0.9",
+	"omni.kit.widget.calendar-1.0.9",
+	"omni.kit.widget.collection-0.3.1",
+	"omni.kit.widget.extended_searchfield-1.0.31",
+	"omni.kit.widget.material_preview-1.0.16",
+	"omni.kit.widget.schema_api-1.0.3",
+	"omni.kit.widget.sliderbar-1.0.13",
+	"omni.kit.widget.timeline-107.0.1",
+	"omni.kit.widget.zoombar-1.0.6",
+	"omni.kit.widgets.custom-1.0.13",
+	"omni.kit.window.collection-0.3.1",
+	"omni.kit.window.material-1.7.2",
+	"omni.kit.window.material_graph-1.9.1",
+	"omni.kit.window.movie_capture-2.5.6",
+	"omni.kit.window.quicksearch-2.4.4",
+	"omni.kit.window.section-107.0.3",
+	"omni.kit.window.usddebug-1.1.2",
+	"omni.kvdb-107.3.26",
+	"omni.localcache-107.3.26",
+	"omni.metropolis.utils-0.1.20",
+	"omni.no_code_ui.bundle-1.1.2",
+	"omni.physics-107.3.26",
+	"omni.physics.physx-107.3.26",
+	"omni.physics.stageupdate-107.3.26",
+	"omni.physx-107.3.26",
+	"omni.physx.asset_validator-107.3.26",
+	"omni.physx.camera-107.3.26",
+	"omni.physx.cct-107.3.26",
+	"omni.physx.commands-107.3.26",
+	"omni.physx.cooking-107.3.26",
+	"omni.physx.demos-107.3.26",
+	"omni.physx.foundation-107.3.26",
+	"omni.physx.graph-107.3.26",
+	"omni.physx.supportui-107.3.26",
+	"omni.physx.telemetry-107.3.26",
+	"omni.physx.ui-107.3.26",
+	"omni.physx.vehicle-107.3.26",
+	"omni.ramp-107.0.1",
+	"omni.replicator.core-1.12.27",
+	"omni.replicator.replicator_yaml-2.0.11",
+	"omni.scene.optimizer.bundle-107.3.12",
+	"omni.scene.optimizer.core-107.3.12",
+	"omni.scene.optimizer.ui-107.3.12",
+	"omni.scene.visualization.bundle-105.1.0",
+	"omni.scene.visualization.core-107.0.2",
+	"omni.scene.visualization.ui-107.0.1",
+	"omni.services.client-0.5.3",
+	"omni.services.core-1.9.0",
+	"omni.services.facilities.base-1.0.4",
+	"omni.services.facilities.monitoring.metrics-0.3.0",
+	"omni.services.facilities.monitoring.progress-0.2.4",
+	"omni.services.pip_archive-0.16.0",
+	"omni.services.starfleet.auth-0.1.5",
+	"omni.services.transport.client.base-1.2.4",
+	"omni.services.transport.client.http_async-1.4.0",
+	"omni.services.transport.server.base-1.1.1",
+	"omni.services.transport.server.http-1.3.1",
+	"omni.services.transport.server.zeroconf-1.0.9",
+	"omni.services.usd-1.1.0",
+	"omni.simready.explorer-1.1.3",
+	"omni.tools.array-107.0.0",
+	"omni.usd.fileformat.e57-1.4.3",
+	"omni.usd.fileformat.pts-107.1.1",
+	"omni.usd.metrics.assembler-107.3.1",
+	"omni.usd.metrics.assembler.physics-107.3.26",
+	"omni.usd.metrics.assembler.ui-107.3.1",
+	"omni.usd.schema.flow-107.1.1",
+	"omni.usd.schema.metrics.assembler-107.3.1",
+	"omni.usd.schema.physx-107.3.26",
+	"omni.usd.schema.scene.visualization-2.0.2",
+	"omni.usd.schema.sequence-3.0.1",
+	"omni.usdphysics-107.3.26",
+	"omni.usdphysics.ui-107.3.26",
+	"omni.vdb_timesample_editor-0.2.0",
+	"omni.warehouse_creator-0.4.4",
+	"omni.warp-1.8.2",
+	"omni.warp.core-1.8.2",
+	"semantics.schema.editor-2.0.2",
+	"semantics.schema.property-2.0.1",
+]
+
+########################################################################################################################
+# END GENERATED PART
+########################################################################################################################

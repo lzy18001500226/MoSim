@@ -1,0 +1,98 @@
+{
+    "IsaacReadLidarBeams": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node reads from the lidar sensor and holds data buffers for a full scan"
+        ],
+        "metadata": {
+            "uiName": "Isaac Read Lidar Beams Node"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacPhysxSensor",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "lidarPrim":{
+                "type": "target",
+                "description": "Usd prim reference to the lidar prim"
+            }
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "Output execution triggers when lidar sensor has completed a full scan"
+            },
+            "horizontalFov": {
+                "type": "float",
+                "description": "Horizontal Field of View in degrees",
+                "default": 0
+            },
+            "verticalFov": {
+                "type": "float",
+                "description": "Vertical Field of View in degrees",
+                "default": 0
+            },
+            "horizontalResolution": {
+                "type": "float",
+                "description": "Degrees in between rays for horizontal axis",
+                "default": 0
+            },
+            "verticalResolution": {
+                "type": "float",
+                "description": "Degrees in between rays for vertical axis",
+                "default": 0
+            },
+            "depthRange": {
+                "type": "float[2]",
+                "description": "The min and max range for sensor to detect a hit [min, max]",
+                "default": [0, 0]
+            },
+            "rotationRate": {
+                "type": "float",
+                "description": "Rotation rate of sensor in Hz",
+                "default": 0
+            },
+            "beamTimeData":{
+                "type": "float[]",
+                "description": "Buffer array containing beam time data",
+                "memoryType": "cpu",
+                "default": []
+            },
+            "linearDepthData":{
+                "type": "float[]",
+                "description": "Buffer array containing linear depth data",
+                "memoryType": "cpu",
+                "default": []
+            },
+            "intensitiesData":{
+                "type": "uchar[]",
+                "description": "Buffer array containing intensities data",
+                "memoryType": "cpu",
+                "default": []
+            },
+            "numRows": {
+                "type": "int",
+                "description": "Number of rows in buffers",
+                "default": 0
+            },
+            "numCols": {
+                "type": "int",
+                "description": "Number of columns in buffers",
+                "default": 0
+            },
+            "azimuthRange": {
+                "type": "float[2]",
+                "description": "The azimuth range [min, max]",
+                "default": [0.0, 0.0]
+            },
+            "zenithRange": {
+                "type": "float[2]",
+                "description": "The zenith range [min, max]",
+                "default": [0.0, 0.0]
+            }
+        }
+    }
+}

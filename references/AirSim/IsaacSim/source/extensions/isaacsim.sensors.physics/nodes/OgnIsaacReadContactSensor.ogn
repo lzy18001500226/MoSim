@@ -1,0 +1,60 @@
+{
+    "IsaacReadContactSensor": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",        
+        "description": "Node that reads out contact sensor data",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacPhysicsSensor",
+        "metadata": {
+            "uiName": "Isaac Read Contact Sensor Node"
+        },
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },            
+            "csPrim": {
+                "type": "target",
+                "description": "USD prim reference to contact sensor prim",
+                "metadata": {
+                    "uiName": "Contact Sensor Prim"
+                }
+            },
+            "useLatestData": {
+                "type": "bool",
+                "description": "True to use the latest data from the physics step, False to use the data measured by the sensor",
+                "default": false
+            }
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "Output execution triggers when sensor has data"
+            },
+            "sensorTime": {
+                "type": "float",
+                "description": "Sensor reading timestamp",
+                "metadata": {
+                    "uiName": "Sensor Time"
+                },
+                "default": 0.0
+            },
+            "inContact": {
+                "type": "bool",
+                "description": "Bool that registers current sensor contact",
+                "metadata": {
+                    "uiName": "In Contact"
+                },
+                "default": false
+            },
+            "value": {
+                "type": "float",
+                "description": "Contact force value reading (N)",
+                "metadata": {
+                    "uiName": "Force Value"
+                },
+                "default": 0.0
+            }
+        }
+    }
+}

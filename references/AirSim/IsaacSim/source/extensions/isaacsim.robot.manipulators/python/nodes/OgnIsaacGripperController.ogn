@@ -1,0 +1,70 @@
+{
+    "IsaacGripperController": {
+        "version": 1,
+        "description": "Isaac Sim Gripper Controller Node",
+        "language": "Python",
+        "categories": { 
+            "isaacRobotManipulators":"Controller for Grippers"
+        },
+        "metadata": {
+            "uiName": "Isaac Gripper Controller Node"
+        },
+        "inputs": {
+            "execIn":{
+                "type": "execution",
+                "description": "tick"
+
+            },
+            "open": {
+                "type": "execution",
+                "description": "open gripper call"
+            },
+            "close": {
+                "type": "execution",
+                "description": "close gripper call"
+            },           
+            "stop": {
+                "type": "execution",
+                "description": "stop gripper call"
+            },  
+            "articulationRootPrim": {
+                "type": "target",
+                "description": "Articulation root prim of the robot",
+                "optional": true
+            },
+            "gripperPrim": {
+                "type": "target",
+                "description": "The gripper's root link prim",
+                "optional": true
+            },            
+            "jointNames":{
+                "type": "token[]",
+                "description": "gripper joint names"
+            },
+            "openPosition": {
+                "type": "double[]",
+                "description": "maximum opening position for the gripper joints, will use the joint limit if not provided",
+                "optional": true
+            },
+            "closePosition": {
+                "type": "double[]",
+                "description": "closing position for the gripper joints, will use the joint limit if not provided",
+                "optional": true
+            },           
+            "gripperSpeed":{
+                "type": "double[]",
+                "description": "gripper speed (distance per frame)"
+            }
+        },
+        "outputs": {
+            "jointNames": {
+                "type": "token[]",
+                "description": "gripper joint names"               
+            },
+            "positionCommands": {
+                "type": "double[]",
+                "description": "joint commands to the articulation controller"
+            }
+        }
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "OgnIsaacRunOneSimulationFrame": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": "Executes an output execution pulse the first time this node is ran",
+        "uiName": "Isaac Run One Simulation Frame",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacCore",        
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            } 
+        },
+        "outputs": {
+            "step": {
+                "type": "execution",
+                "description": "The execution output",
+                "uiName": "Step"
+            }   
+        }
+    }
+}

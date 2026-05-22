@@ -1,0 +1,32 @@
+[package]
+version = "2.0.6"
+category = "Simulation"
+title = "Isaac Sim Surface Gripper"
+description = "Helper to model Suction and Distance based grippers"
+keywords = ["isaac", "physics", "end-effector",]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.robot.surface_gripper."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.robot.surface_gripper" = {}
+
+[[python.module]]
+name = "omni.isaac.surface_gripper"
+
+[[python.module]]
+name = "omni.isaac.surface_gripper.tests"
+
+[[test]]
+dependencies = [
+   "omni.isaac.core"
+]
+stdoutFailPatterns.exclude = [
+    "*[Error] [carb.glinterop.plugin] GLInteropContext::init: carb::windowing is not available*",
+]

@@ -1,0 +1,21 @@
+{
+    "IsaacRealTimeFactor": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node calculates the real time factor (RTF)"
+        ],
+        "metadata": {
+            "uiName": "Isaac Real Time Factor"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacCore",
+        "outputs": {
+            "rtf": {
+                "type": "float",
+                "description": "RTF value calculated per frame",
+                "uiName": "Real Time Factor"
+            }
+        }
+    }
+}

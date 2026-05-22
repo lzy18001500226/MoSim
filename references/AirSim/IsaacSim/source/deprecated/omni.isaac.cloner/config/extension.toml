@@ -1,0 +1,29 @@
+[package]
+version = "1.0.7"
+category = "Simulation"
+title = "Isaac Sim Cloner"
+description = "Cloner"
+keywords = ["isaac"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.core.cloner"
+
+[dependencies]
+"isaacsim.core.cloner" = {}
+"isaacsim.core.deprecation_manager" = {}
+
+[[python.module]]
+name = "omni.isaac.cloner"
+
+[[python.module]]
+name = "omni.isaac.cloner.tests"
+
+[[test]]
+dependencies = [
+   "omni.isaac.nucleus",
+]

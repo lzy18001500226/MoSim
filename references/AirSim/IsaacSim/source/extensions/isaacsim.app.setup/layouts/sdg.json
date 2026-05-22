@@ -1,0 +1,183 @@
+[
+  {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "dock_id": 5,
+                    "height": 984.0,
+                    "position_x": 0.0,
+                    "position_y": 26.0,
+                    "selected_in_dock": false,
+                    "title": "Main ToolBar",
+                    "visible": true,
+                    "width": 44.0
+                  }
+                ],
+                "dock_id": 5,
+                "position": "LEFT"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "dock_id": 9,
+                        "dock_tab_bar_enabled": true,
+                        "dock_tab_bar_visible": true,
+                        "height": 984.0,
+                        "position_x": 48.0,
+                        "position_y": 26.0,
+                        "selected_in_dock": true,
+                        "title": "Viewport",
+                        "visible": true,
+                        "width": 942.0
+                      }
+                    ],
+                    "dock_id": 9,
+                    "position": "LEFT"
+                  },
+                  {
+                    "children": [
+                      {
+                        "dock_id": 10,
+                        "dock_tab_bar_enabled": true,
+                        "dock_tab_bar_visible": true,
+                        "height": 984.0,
+                        "position_x": 994.0,
+                        "position_y": 26.0,
+                        "selected_in_dock": true,
+                        "title": "Script Editor",
+                        "visible": true,
+                        "width": 860.0
+                      }
+                    ],
+                    "dock_id": 10,
+                    "position": "RIGHT"
+                  }
+                ],
+                "dock_id": 6,
+                "position": "RIGHT"
+              }
+            ],
+            "dock_id": 3,
+            "position": "TOP"
+          },
+          {
+            "children": [
+              {
+                "dock_id": 4,
+                "height": 299.0,
+                "position_x": 0.0,
+                "position_y": 1014.0,
+                "selected_in_dock": true,
+                "title": "Content",
+                "visible": true,
+                "width": 1854.0
+              },
+              {
+                "dock_id": 4,
+                "height": 299.0,
+                "position_x": 0.0,
+                "position_y": 927.0,
+                "selected_in_dock": false,
+                "title": "Console",
+                "visible": true,
+                "width": 1854.0
+              }
+            ],
+            "dock_id": 4,
+            "position": "BOTTOM"
+          }
+        ],
+        "dock_id": 1,
+        "position": "LEFT"
+      },
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "dock_id": 7,
+                "dock_tab_bar_enabled": true,
+                "dock_tab_bar_visible": true,
+                "height": 633.0,
+                "position_x": 1858.0,
+                "position_y": 26.0,
+                "selected_in_dock": true,
+                "title": "Stage",
+                "visible": true,
+                "width": 689.0
+              },
+              {
+                "dock_id": 7,
+                "height": 633.0,
+                "position_x": 1779.0,
+                "position_y": 26.0,
+                "selected_in_dock": false,
+                "title": "Layer",
+                "visible": true,
+                "width": 689.0
+              },
+              {
+                "dock_id": 7,
+                "height": 633.0,
+                "position_x": 1779.0,
+                "position_y": 26.0,
+                "selected_in_dock": false,
+                "title": "Render Settings",
+                "visible": true,
+                "width": 689.0
+              }
+            ],
+            "dock_id": 7,
+            "position": "TOP"
+          },
+          {
+            "children": [
+              {
+                "dock_id": 8,
+                "height": 642.0,
+                "position_x": 1858.0,
+                "position_y": 663.0,
+                "selected_in_dock": true,
+                "title": "Property",
+                "visible": true,
+                "width": 768.0
+              },
+              {
+                "dock_id": 8,
+                "height": 642.0,
+                "position_x": 1858.0,
+                "position_y": 663.0,
+                "selected_in_dock": false,
+                "title": "Semantics Schema Editor",
+                "visible": true,
+                "width": 768.0
+              },
+              {
+                "dock_id": 8,
+                "height": 642.0,
+                "position_x": 1779.0,
+                "position_y": 671.0,
+                "selected_in_dock": false,
+                "title": "Synthetic Data Recorder",
+                "visible": true,
+                "width": 768.0
+              }
+            ],
+            "dock_id": 8,
+            "position": "BOTTOM"
+          }
+        ],
+        "dock_id": 2,
+        "position": "RIGHT"
+      }
+    ],
+    "dock_id": 3358485147
+  }
+]

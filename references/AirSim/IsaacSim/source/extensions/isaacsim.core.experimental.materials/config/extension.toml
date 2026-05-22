@@ -1,0 +1,37 @@
+[package]
+version = "0.4.0"
+category = "Simulation"
+title = "Isaac Sim Core (Materials)"
+description = "The Core Materials extension provides a set of APIs to create and/or wrap one or more USD materials in the stage..."
+keywords = ["isaacsim", "core", "materials"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.core.experimental.prims" = {}
+"isaacsim.core.experimental.utils" = {}
+"omni.isaac.core_archive" = {}
+"omni.kit.material.library" = {}
+"omni.kit.usd.mdl" = {}
+"omni.warp.core" = {}
+
+[[python.module]]
+name = "isaacsim.core.experimental.materials"
+
+# define the Python module for tests
+[[python.module]]
+name = "isaacsim.core.experimental.materials.tests"
+
+[[test]]
+timeout = 900
+dependencies = [
+    "omni.physx.commands",
+]
+args = [
+    '--/persistent/physics/enableDeformableBeta=true',
+]
+pythonTests.include = ["isaacsim.core.experimental.materials.tests.*"]

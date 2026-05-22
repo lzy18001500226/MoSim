@@ -1,0 +1,68 @@
+{
+    "IsaacComputeOdometry": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": "Holds values related to odometry, this node is not a replcement for the IMU sensor and the associated Read IMU node",
+        "metadata": {
+            "uiName": "Isaac Compute Odometry Node"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacCore",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "chassisPrim":{
+                "type": "target",
+                "description": "Usd prim reference to the articulation root or rigid body prim"
+            }
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "The output execution port"
+            },
+            "position": {
+                "type": "vectord[3]",
+                "description": "Position vector in meters",
+                "default": [0.0, 0.0, 0.0]
+            },
+            "orientation": {
+                "type": "quatd[4]",
+                "description": "Rotation as a quaternion (IJKR)",
+                "default": [0.0, 0.0, 0.0, 1.0]
+            },
+            "linearVelocity": {
+                "type": "vectord[3]",
+                "description": "Linear velocity vector in m/s",
+                "default": [0.0, 0.0, 0.0]
+            },
+            "angularVelocity": {
+                "type": "vectord[3]",
+                "description": "Angular velocity vector in rad/s",
+                "default": [0.0, 0.0, 0.0]
+            },
+            "linearAcceleration": {
+                "type": "vectord[3]",
+                "description": "Linear acceleration vector in m/s^2",
+                "default": [0.0, 0.0, 0.0]
+            },
+            "angularAcceleration": {
+                "type": "vectord[3]",
+                "description": "Angular acceleration vector in rad/s^2",
+                "default": [0.0, 0.0, 0.0]
+            },
+            "globalLinearVelocity": {
+                "type": "vectord[3]",
+                "description": "Global linear velocity vector in m/s",
+                "default": [0.0, 0.0, 0.0]
+            },
+            "globalLinearAcceleration": {
+                "type": "vectord[3]",
+                "description": "Global linear acceleration vector in m/s^2",
+                "default": [0.0, 0.0, 0.0]
+            }
+        }
+    }
+}

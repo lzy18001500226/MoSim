@@ -1,0 +1,31 @@
+########################################################################################################################
+# Packaging
+########################################################################################################################
+
+[repo_package]
+# Hide default repo_package under internal command to be used by `repo_package_app`
+command = "_package"
+
+# Revert the override to the default command
+[repo_package_app]
+command = "package"
+entry_point = "omni.repo.package:setup_repo_tool"
+enabled = true
+
+########################################################################################################################
+# Edit sysconfig
+########################################################################################################################
+
+[edit_sysconfig]
+command = "edit_sysconfig"
+entry_point = "${config_root}/tools/isaac_build/edit_sysconfig.py:setup_repo_tool"
+
+########################################################################################################################
+# Generate Vscode Settings
+########################################################################################################################
+
+[generate_vscode_settings]
+command = "generate_vscode_settings"
+entry_point = "${config_root}/tools/isaac_build/generate_vscode_settings.py:setup_repo_tool"
+
+

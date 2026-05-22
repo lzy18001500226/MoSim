@@ -1,0 +1,29 @@
+{
+    "OnPhysicsStep": {
+        "version": 1,
+        "description": "Executes an output execution pulse for every physics Simulation Step",
+        "uiName": "On Physics Step",        
+        "categories": ["event", "isaacCore"],
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "icon": "icons/isaac-sim.svg",
+        "inputs": {
+        },
+        "outputs": {
+            "step": {
+                "type": "execution",
+                "description": "The execution output",
+                "uiName": "Step"
+            },
+            "deltaSimulationTime": {
+                "type": "double",
+                "description": "Simulation Time elapsed since the last update (seconds)",
+                "uiName": "Simulation Delta Time"
+            },
+            "deltaSystemTime": {
+                "type": "double",
+                "description": "System Time elapsed since last update (seconds)",
+                "uiName": "System Delta Time"
+            }      
+        }
+    }
+}

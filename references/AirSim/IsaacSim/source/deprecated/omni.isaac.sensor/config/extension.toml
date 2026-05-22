@@ -1,0 +1,51 @@
+[package]
+version = "13.0.7"
+category = "Simulation"
+title = "Isaac Sim Isaac Sensor Simulation"
+description = "Support physics based sensors, such as contact sensors and imu sensors"
+keywords = ["isaac", "physics", "robotics"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.sensors.camera, isaacsim.sensors.physics, isaacsim.sensors.physx, and isaacsim.sensors.rtx."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.sensors.camera" = {}
+"isaacsim.sensors.physics" = {}
+"isaacsim.sensors.physx" = {}
+"isaacsim.sensors.rtx" = {}
+
+[[python.module]]
+name = "omni.isaac.sensor"
+
+[[python.module]]
+name = "omni.isaac.sensor.scripts.samples.contact_sensor"
+
+[[python.module]]
+name = "omni.isaac.sensor.scripts.samples.imu_sensor"
+
+[[python.module]]
+name = "omni.isaac.sensor.scripts.samples.lightbeam_sensor"
+
+[[python.module]]
+name = "omni.isaac.sensor.tests"
+
+[[test]]
+dependencies = [
+   "omni.isaac.core",
+   "omni.isaac.nucleus"
+]
+args = [
+'--/app/settings/fabricDefaultStageFrameHistoryCount = 3',
+]
+
+[[test]]
+name = "startup"
+args = [
+    '--/app/settings/fabricDefaultStageFrameHistoryCount = 3',
+]

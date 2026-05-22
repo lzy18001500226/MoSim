@@ -1,0 +1,6 @@
+{
+    "categoryDefinitions": {
+        "$description": "These categories are applied to replicator writer nodes",
+        "isaacReplicatorWriters": "Nodes implementing isaac sim functionality for isaac replicator writers"
+    }
+}

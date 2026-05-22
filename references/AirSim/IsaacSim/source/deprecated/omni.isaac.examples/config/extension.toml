@@ -1,0 +1,39 @@
+[package]
+version = "4.0.7"
+category = "Simulation"
+title = "Isaac Sim Samples"
+description = "Sample extensions for Isaac Sim"
+keywords = ["isaac", "samples", "manipulation"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.examples.interactive"
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.examples.interactive" = {}
+"isaacsim.robot.policy.examples" = {}
+
+[[python.module]]
+name = "omni.isaac.examples"
+
+[[python.module]]
+name = "omni.isaac.examples.tests"
+
+[[test]]
+dependencies = [
+   "omni.isaac.core",
+]
+args = [
+'--/app/settings/fabricDefaultStageFrameHistoryCount = 3',
+]
+
+[[test]]
+name = "startup"
+args = [
+    '--/app/settings/fabricDefaultStageFrameHistoryCount = 3',
+]

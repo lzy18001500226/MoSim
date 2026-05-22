@@ -1,0 +1,24 @@
+[package]
+version = "2.1.7"
+category = "Simulation"
+title = "Isaac Sim Debug Drawing"
+description = "Persistent Debug Drawing Helpers"
+keywords = ["isaac", "physics", "inspect",]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.util.debug_draw."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.util.debug_draw" = {}
+
+[[python.module]]
+name = "omni.isaac.debug_draw"
+
+[[python.module]]
+name = "omni.isaac.debug_draw.tests"

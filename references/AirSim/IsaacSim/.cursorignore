@@ -1,0 +1,6 @@
+_build/*
+!_build/linux-x86_64
+!_build/target-deps
+_build/linux-x86_64/*
+!_build/linux-x86_64/release
+_compiler/*

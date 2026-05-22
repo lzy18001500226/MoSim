@@ -1,0 +1,39 @@
+<project toolsVersion="5.6">
+    <dependency name="nv_ros2_humble" linkPath="../_build/target-deps/nv_ros2_humble">
+        <package name="nv_ros2" version="humble_py_3.11_20250905_65d4830_manylinux_2_35_aarch64_release" platforms="manylinux_2_35_aarch64"/>
+        <package name="nv_ros2" version="humble_py_3.11_20250904_65d4830_manylinux_2_35_x86_64_release" platforms="manylinux_2_35_x86_64"/>
+        <package name="nv_ros2" version="humble_py_3.11_20250904_65d4830_windows-x86_64_release" platforms="windows-x86_64"/>
+    </dependency>
+    <dependency name="nv_ros2_jazzy" linkPath="../_build/target-deps/nv_ros2_jazzy">
+        <package name="nv_ros2" version="jazzy_py_3.11_20250905_65d4830_manylinux_2_35_aarch64_release" platforms="manylinux_2_35_aarch64"/>
+        <package name="nv_ros2" version="jazzy_py_3.11_20250904_65d4830_manylinux_2_35_x86_64_release" platforms="manylinux_2_35_x86_64"/>
+        <package name="nv_ros2" version="jazzy_py_3.11_20250904_65d4830_windows-x86_64_release" platforms="windows-x86_64"/>
+    </dependency>
+    <dependency name="lula" linkPath="../_build/target-deps/lula">
+        <package name="lula" version="v0.10.1_f39b9da.linux-x86_64.release" platforms="manylinux_2_35_x86_64"/>
+        <package name="lula" version="v0.10.1_9817dce.linux-aarc64.release" platforms="manylinux_2_35_aarch64" />
+        <package name="lula" version="v0.10.1_build3.windows-x86_64.release" platforms="windows-x86_64"/>
+    </dependency>
+    <dependency name="octomap" linkPath="../_build/target-deps/octomap/${config}">
+        <package name="octomap" version="linux-x86_64.${config}.20221128_d417c18" platforms="manylinux_2_35_x86_64" />
+        <package name="octomap" version="linux-aarch64.${config}.20250722_d417c18" platforms="manylinux_2_35_aarch64" />
+        <package name="octomap" version="windows-x86_64.${config}.20221405_d417c18" platforms="windows-x86_64" />
+    </dependency>
+    <dependency name="tinyxml2" linkPath="../_build/target-deps/tinyxml2">
+        <package name="tinyxml2" version="linux_x64_20200823_2c5a6bf" platforms="manylinux_2_35_x86_64" />
+        <package name="tinyxml2" version="linux_aarch64_20250203_2c5a6bf" platforms="manylinux_2_35_aarch64" />
+        <package name="tinyxml2" version="win_x64_20200824_2c5a6bf" platforms="windows-x86_64" />
+    </dependency>
+    <dependency name="omni-isaacsim-schema" linkPath="../_build/target-deps/omni-isaacsim-schema/${platform_target}/${config}">
+        <package name="omniisaacsimschemas_openusd_0.24.05_py_3.11" version="4.0.0-alpha-gl.mr13.15.c3d57d98.${platform_target_abi}.${config}"/>
+    </dependency>
+    <dependency name="nlohmann_json" linkPath="../_build/target-deps/nlohmann_json">
+        <package name="nlohmann_json" version="3.11.3-a3143f5-0"/>
+   </dependency>
+  <dependency name="generic_model_output_${config}" linkPath="../_build/target-deps/generic_model_output/${platform_target}/${config}">
+    <package name="generic-model-output" version="107.3.3+production.229672.69cbf6ad.gl.${platform_target_abi}.${config}"/>
+  </dependency>
+  <dependency name="rapidjson" linkPath="../_build/target-deps/rapidjson">
+    <package name="rapidjson" version="5.2.1-5-b4cf59b6" />
+  </dependency>
+</project>

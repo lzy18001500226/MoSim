@@ -1,0 +1,21 @@
+[package]
+version = "3.1.11"
+category = "Simulation"
+title = "Robot Description Editor"
+description = "Generates and edit Lula robot_description YAML files"
+keywords = ["isaac", "collision spheres", "lula", "robot description"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"isaacsim.core.api" = {}
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.gui.components" = {}
+"isaacsim.robot_motion.lula" = {}
+"omni.kit.uiapp" = {}
+
+[[python.module]]
+name = "isaacsim.robot_setup.xrdf_editor"

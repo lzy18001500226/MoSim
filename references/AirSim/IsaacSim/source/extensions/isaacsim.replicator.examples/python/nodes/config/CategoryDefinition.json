@@ -1,0 +1,6 @@
+{
+    "categoryDefinitions": {
+        "$description": "These categories are applied to isaac replicator examples nodes",
+        "isaacReplicatorExamples": "Nodes implementing isaac replicator examples functionality "
+    }
+}

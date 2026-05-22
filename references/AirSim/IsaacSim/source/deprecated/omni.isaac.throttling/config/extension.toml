@@ -1,0 +1,24 @@
+[package]
+version = "2.0.7"
+category = "Other"
+title = "Isaac Sim Throlling"
+description = "Control throttling behaviors for isaac sim"
+keywords = ["isaac"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.core.throttling."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.core.throttling" = {}
+
+[[python.module]]
+name = "omni.isaac.throttling"
+
+[[python.module]]
+name = "omni.isaac.throttling.tests"

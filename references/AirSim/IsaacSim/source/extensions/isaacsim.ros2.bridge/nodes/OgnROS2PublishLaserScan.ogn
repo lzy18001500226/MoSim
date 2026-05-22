@@ -1,0 +1,103 @@
+{
+    "ROS2PublishLaserScan": {
+        "version": 2,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node publishes LiDAR scans as a ROS2 LaserScan message"
+        ],
+        "metadata": {
+            "uiName": "ROS2 Publish Laser Scan"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2:publisher",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "context": {
+                "type": "uint64",
+                "description": "ROS2 context handle, Default of zero will use the default global context",
+                "default" : 0
+            },
+            "nodeNamespace": {
+                "type": "string",
+                "description": "Namespace of ROS2 Node, prepends any published/subscribed topic by the node namespace",
+                "default" : ""
+            },
+            "frameId": {
+                "type": "string",
+                "description": "FrameId for ROS2 message",
+                "default" : "sim_lidar"
+            },
+            "topicName": {
+                "type": "string",
+                "description": "Name of ROS2 Topic",
+                "default" : "scan"
+            },
+             "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": ""
+            },
+            "queueSize": {
+                "type": "uint64",
+                "description": "The number of messages to queue up before throwing some away, in case messages are collected faster than they can be sent. Only honored if 'history' QoS policy was set to 'keep last'. This setting can be overwritten by qosProfile input.",
+                "default": 10
+            },
+            "timeStamp": {
+                "type": "double",
+                "description": "ROS2 Timestamp in seconds",
+                "uiName": "Timestamp",
+                "default": 0.0
+            },
+            "horizontalFov": {
+                "type": "float",
+                "description": "Horizontal Field of View (deg)",
+                "default": 0
+            },
+            "horizontalResolution": {
+                "type": "float",
+                "description": "Increment between horizontal rays (deg)",
+                "default": 0
+            },
+            "depthRange": {
+                "type": "float[2]",
+                "description": "Range for sensor to detect a hit [min, max] (m)",
+                "default": [0, 0]
+            },
+            "rotationRate": {
+                "type": "float",
+                "description": "Rotation rate of sensor in Hz",
+                "default": 0
+            },
+            "linearDepthData":{
+                "type": "float[]",
+                "description": "Linear depth measurements from full scan, ordered by increasing azimuth (m)",
+                "memoryType": "cpu",
+                "default": []
+            },
+            "intensitiesData":{
+                "type": "uchar[]",
+                "description": "Intensity measurements from full scan, ordered by increasing azimuth",
+                "memoryType": "cpu",
+                "default": []
+            },
+            "numRows": {
+                "type": "int",
+                "description": "Number of rows in buffers",
+                "default": 0
+            },
+            "numCols": {
+                "type": "int",
+                "description": "Number of columns in buffers",
+                "default": 0
+            },
+            "azimuthRange": {
+                "type": "float[2]",
+                "description": "The azimuth range [min, max] (deg). Always [-180, 180] for rotary lidars.",
+                "default": [0.0, 0.0]
+            }
+        }
+    }
+}

@@ -1,0 +1,88 @@
+[package]
+version = "0.2.7"
+category = "Utility"
+title = "Deprecation manager"
+description = "Manage deprecated OmniGraph nodes and app/extension settings"
+keywords = ["isaacsim", "deprecation", "manager"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"omni.graph.core" = { optional = true }
+"omni.kit.notification_manager" = { optional = true }
+"omni.usd" = {}
+
+[[python.module]]
+name = "isaacsim.core.deprecation_manager"
+
+[settings]
+# list of deprecated settings and their replacements
+exts."isaacsim.core.deprecation_manager".settings = [
+    # omni.isaac.benchmark.services -> isaacsim.benchmark.services
+    { deprecated = "/exts/omni.isaac.benchmark.services/metrics/metrics_output_folder", new = "/exts/isaacsim.benchmark.services/metrics/metrics_output_folder", update = true },
+    { deprecated = "/exts/omni.isaac.benchmark.services/metrics/nvdataflow_default_test_suite_name", new = "/exts/isaacsim.benchmark.services/metrics/nvdataflow_default_test_suite_name", update = true },
+    { deprecated = "/exts/omni.isaac.benchmark.services/metrics/randomize_filename_prefix", new = "/exts/isaacsim.benchmark.services/metrics/randomize_filename_prefix", update = true },
+    # omni.isaac.vscode -> isaacsim.code_editor.vscode
+    { deprecated = "/exts/omni.isaac.vscode/host", new = "/exts/isaacsim.code_editor.vscode/host", update = true },
+    { deprecated = "/exts/omni.isaac.vscode/port", new = "/exts/isaacsim.code_editor.vscode/port", update = true },
+    { deprecated = "/exts/omni.isaac.vscode/carb_logs", new = "/exts/isaacsim.code_editor.vscode/carb_logs", update = true },
+    # omni.isaac.jupyter_notebook -> isaacsim.code_editor.jupyter
+    { deprecated = "/exts/omni.isaac.jupyter_notebook/host", new = "/exts/isaacsim.code_editor.jupyter/host", update = true },
+    { deprecated = "/exts/omni.isaac.jupyter_notebook/port", new = "/exts/isaacsim.code_editor.jupyter/port", update = true },
+    { deprecated = "/exts/omni.isaac.jupyter_notebook/kill_processes_with_port_in_use", new = "/exts/isaacsim.code_editor.jupyter/kill_processes_with_port_in_use", update = true },
+    { deprecated = "/exts/omni.isaac.jupyter_notebook/classic_notebook_interface", new = "/exts/isaacsim.code_editor.jupyter/classic_notebook_interface", update = true },
+    { deprecated = "/exts/omni.isaac.jupyter_notebook/notebook_ip", new = "/exts/isaacsim.code_editor.jupyter/notebook_ip", update = true },
+    { deprecated = "/exts/omni.isaac.jupyter_notebook/notebook_port", new = "/exts/isaacsim.code_editor.jupyter/notebook_port", update = true },
+    { deprecated = "/exts/omni.isaac.jupyter_notebook/notebook_token", new = "/exts/isaacsim.code_editor.jupyter/notebook_token", update = true },
+    { deprecated = "/exts/omni.isaac.jupyter_notebook/notebook_dir", new = "/exts/isaacsim.code_editor.jupyter/notebook_dir", update = true },
+    { deprecated = "/exts/omni.isaac.jupyter_notebook/command_line_options", new = "/exts/isaacsim.code_editor.jupyter/command_line_options", update = true },
+    # omni.isaac.ros2_bridge -> isaacsim.ros2.bridge
+    { deprecated = "/exts/omni.isaac.ros2_bridge/ros_distro", new = "/exts/isaacsim.ros2.bridge/ros_distro", update = true },
+    { deprecated = "/exts/omni.isaac.ros2_bridge/publish_without_verification", new = "/exts/isaacsim.ros2.bridge/publish_without_verification", update = true },
+    { deprecated = "/exts/omni.isaac.ros2_bridge/publish_multithreading_disabled", new = "/exts/isaacsim.ros2.bridge/publish_multithreading_disabled", update = true },
+    # omni.isaac.tf_viewer -> isaacsim.ros2.tf_viewer
+    { deprecated = "/exts/omni.isaac.tf_viewer/cpp", new = "/exts/isaacsim.ros2.tf_viewer/cpp", update = true },
+    { deprecated = "/exts/omni.isaac.asset_browser/folder", new = "/exts/isaacsim.asset.browser/folder", update = true },
+    { deprecated = "/exts/omni.isaac.asset_browser/instanceable", new = "/exts/isaacsim.asset.browser/instanceable", update = true },
+    { deprecated = "/exts/omni.isaac.asset_browser/data/timeout", new = "/exts/isaacsim.asset.browser/data/timeout", update = true },
+    { deprecated = "/exts/omni.isaac.asset_browser/visible_after_startup", new = "/exts/isaacsim.asset.browser/visible_after_startup", update = true },
+]
+# List of deprecated OmniGraph nodes and their replacements
+exts."isaacsim.core.deprecation_manager".omnigraph = [
+    { deprecated = "omni.isaac.isaac_sensor", new = "isaacsim.sensors.rtx" },
+    { deprecated = "omni.isaac.conveyor", new = "isaacsim.asset.gen.conveyor" },
+    { deprecated = "omni.isaac.core_nodes", new = "isaacsim.core.nodes" },
+    { deprecated = "omni.isaac.debug_draw", new = "isaacsim.util.debug_draw" },
+    { deprecated = "omni.isaac.manipulators", new = "isaacsim.robot.manipulators" },
+    { deprecated = "omni.isaac.range_sensor.IsaacReadLidarBeams", new = "isaacsim.sensors.physx.IsaacReadLidarBeams" },
+    { deprecated = "omni.isaac.range_sensor.IsaacReadLidarPointCloud", new = "isaacsim.sensors.physx.IsaacReadLidarPointCloud" },
+    { deprecated = "omni.isaac.ros2_bridge", new = "isaacsim.ros2.bridge" },
+    { deprecated = "omni.isaac.sensor.IsaacComputeRTXLidarFlatScan", new = "isaacsim.sensors.rtx.IsaacComputeRTXLidarFlatScan" },
+    { deprecated = "omni.isaac.sensor.IsaacComputeRTXLidarPointCloud", new = "isaacsim.sensors.rtx.IsaacComputeRTXLidarPointCloud" },
+    { deprecated = "omni.isaac.sensor.IsaacComputeRTXRadarPointCloud", new = "isaacsim.sensors.rtx.IsaacComputeRTXRadarPointCloud" },
+    { deprecated = "omni.isaac.sensor.IsaacCreateRTXLidarScanBuffer", new = "isaacsim.sensors.rtx.IsaacCreateRTXLidarScanBuffer" },
+    { deprecated = "omni.isaac.sensor.IsaacPrintRTXSensorInfo", new = "isaacsim.sensors.rtx.IsaacPrintRTXSensorInfo" },
+    { deprecated = "omni.isaac.sensor.IsaacReadContactSensor", new = "isaacsim.sensors.physics.IsaacReadContactSensor" },
+    { deprecated = "omni.isaac.sensor.IsaacReadEffortSensor", new = "isaacsim.sensors.physics.IsaacReadEffortSensor" },
+    { deprecated = "omni.isaac.sensor.IsaacReadIMU", new = "isaacsim.sensors.physics.IsaacReadIMU" },
+    { deprecated = "omni.isaac.sensor.IsaacReadLightBeamSensor", new = "isaacsim.sensors.physx.IsaacReadLightBeamSensor" },
+    { deprecated = "omni.isaac.sensor.IsaacReadRTXLidarData", new = "isaacsim.sensors.rtx.IsaacReadRTXLidarData" },
+    { deprecated = "omni.isaac.surface_gripper", new = "isaacsim.robot.surface_gripper" },
+    { deprecated = "omni.isaac.wheeled_robots", new = "isaacsim.robot.wheeled_robots" },
+    { deprecated = "omni.isaac.wheeled_robots.AckermannController", new = "isaacsim.robot.wheeled_robots.AckermannControllerDeprecated" },
+    { deprecated = "omni.replicator.isaac.OgnCountIndices", new = "isaacsim.replicator.domain_randomization.OgnCountIndices" },
+    { deprecated = "omni.replicator.isaac.OgnIntervalFiltering", new = "isaacsim.replicator.domain_randomization.OgnIntervalFiltering" },
+    { deprecated = "omni.replicator.isaac.OgnOnRLFrame", new = "isaacsim.replicator.domain_randomization.OgnOnRLFrame" },
+    { deprecated = "omni.replicator.isaac.OgnRandom3f", new = "isaacsim.replicator.domain_randomization.OgnRandom3f" },
+    { deprecated = "omni.replicator.isaac.OgnWritePhysicsArticulationView", new = "isaacsim.replicator.domain_randomization.OgnWritePhysicsArticulationView" },
+    { deprecated = "omni.replicator.isaac.OgnWritePhysicsRigidPrimView", new = "isaacsim.replicator.domain_randomization.OgnWritePhysicsRigidPrimView" },
+    { deprecated = "omni.replicator.isaac.OgnWritePhysicsSimulationContext", new = "isaacsim.replicator.domain_randomization.OgnWritePhysicsSimulationContext" },
+    { deprecated = "omni.replicator.isaac.OgnSampleBetweenSpheres", new = "isaacsim.replicator.examples.OgnSampleBetweenSpheres" },
+    { deprecated = "omni.replicator.isaac.OgnSampleInSphere", new = "isaacsim.replicator.examples.OgnSampleInSphere" },
+    { deprecated = "omni.replicator.isaac.OgnSampleOnSphere", new = "isaacsim.replicator.examples.OgnSampleOnSphere" },
+    { deprecated = "omni.replicator.isaac.OgnDope", new = "isaacsim.replicator.writers.OgnDope" },
+    { deprecated = "omni.replicator.isaac.OgnPose", new = "isaacsim.replicator.writers.OgnPose" },
+]

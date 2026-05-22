@@ -1,0 +1,24 @@
+[package]
+version = "1.0.7"
+category = "Internal"
+title = "Isaac Sim DocTest"
+description = "Test interactive Python docstrings examples"
+keywords = ["isaac", "test", "doctest", "docstrings"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.test.docstring."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.test.docstring" = {}
+
+[[python.module]]
+name = "omni.isaac.doctest"
+
+[[python.module]]
+name = "omni.isaac.doctest.tests"

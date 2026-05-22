@@ -1,0 +1,23 @@
+# Normalize text files on commit to LF endings by default
+* text=auto
+# Make sure Windows batch files preserve CR/LF line endings, otherwise they may not be able to execute.  Windows
+# batch files require a CR/LF for labels to work properly, otherwise they may fail when labels straddle 512-byte
+# block boundaries.  This is important when files are downloaded through a zip archive that was authored on a
+# Linux machine (the default behavior on GitHub)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+# Make sure shell scripts have LF line endings, even when checked out on a Windows client with autocrlf=true
+*.sh text eol=lf
+*.usd filter=lfs diff=lfs merge=lfs -text
+*.usda filter=lfs diff=lfs merge=lfs -text
+# Override the default text filter for schema.usda files
+*Schema.usda -filter=lfs -diff=lfs -merge=lfs text eol=crlf
+*.dae filter=lfs diff=lfs merge=lfs -text
+*.step filter=lfs diff=lfs merge=lfs -text
+*.stp filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.obj filter=lfs diff=lfs merge=lfs -text
+*.stl filter=lfs diff=lfs merge=lfs -text
+*.pdf filter=lfs diff=lfs merge=lfs -text
+*.ico filter=lfs diff=lfs merge=lfs -text
+source/apps/cache/isaacsim.asset.browser.cache.json filter=lfs diff=lfs merge=lfs -text

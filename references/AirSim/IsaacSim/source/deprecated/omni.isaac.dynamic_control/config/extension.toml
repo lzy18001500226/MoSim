@@ -1,0 +1,50 @@
+[package]
+version = "2.0.7"
+category = "Simulation"
+title = "Isaac Sim Dynamic Control"
+description = "The Dynamic Control extension provides a set of utilities to control physics objects. It provides opaque handles for different physics objects that remain valid between PhysX scene resets, which occur whenever play or stop is pressed."
+keywords = ["isaac", "physics"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0."
+
+[dependencies]
+"omni.kit.commands" = {}
+"omni.kit.numpy.common" = {}
+"omni.kit.pip_archive" = {} # pulls in numpy
+"omni.kit.usd.layers" = {}
+"omni.physics.physx" = {}
+"omni.physics.stageupdate" = {}
+"omni.timeline" = {} # Needed for simulation to occur
+"omni.usd" = {}
+"omni.usd.core" = {}
+"omni.usd.libs" = {}
+
+[[python.module]]
+name = "omni.isaac.dynamic_control"
+
+[[python.module]]
+name = "omni.isaac.dynamic_control.tests"
+
+[[native.plugin]]
+path = "bin/*.plugin"
+recursive = false
+
+[[test]]
+timeout = 900
+dependencies = [
+    "isaacsim.storage.native",
+    "omni.kit.test",
+    "omni.physx.ui",
+]
+
+args = [
+    "--/app/file/ignoreUnsavedOnExit=1",
+    '--/persistent/simulation/defaultMetersPerUnit = 1.0',
+    '--/persistent/app/stage/upAxis = "Z"',
+]

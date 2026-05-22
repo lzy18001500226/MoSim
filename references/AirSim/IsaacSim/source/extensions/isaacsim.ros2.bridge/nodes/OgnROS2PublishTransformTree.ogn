@@ -1,0 +1,68 @@
+{
+    "ROS2PublishTransformTree": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node publishes the pose of prims as a ROS2 Transform Tree"
+        ],
+        "metadata": {
+            "uiName": "ROS2 Publish Transform Tree"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2:publisher",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "context": {
+                "type": "uint64",
+                "description": "ROS2 context handle, Default of zero will use the default global context",
+                "default" : 0
+            },
+            "parentPrim":{
+                "type": "target",
+                "description": "Prim used as parent frame for poses, leave blank to use World",
+                "optional": true
+            },
+            "targetPrims":{
+                "type": "target",
+                "description": "Target prims to publish poses for, if prim is an articulation, the entire articulation tree will be published",
+                "metadata": { 
+                    "allowMultiInputs": "1"
+                } 
+            },
+            "nodeNamespace": {
+                "type": "string",
+                "description": "Namespace of ROS2 Node, prepends any published/subscribed topic by the node namespace",
+                "default" : ""
+            },
+            "topicName": {
+                "type": "string",
+                "description": "Name of ROS2 Topic",
+                "default" : "tf"
+            },
+             "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": ""
+            },
+            "queueSize": {
+                "type": "uint64",
+                "description": "The number of messages to queue up before throwing some away, in case messages are collected faster than they can be sent. Only honored if 'history' QoS policy was set to 'keep last'. This setting can be overwritten by qosProfile input.",
+                "default": 10
+            },
+            "timeStamp": {
+                "type": "double",
+                "description": "ROS2 Timestamp in seconds",
+                "uiName": "Timestamp",
+                "default": 0.0
+            },
+            "staticPublisher": {
+                "type": "bool",
+                "description": "If enabled this will override QoS settings to publish static transform trees, similar to tf2::StaticTransformBroadcaster",
+                "default": false
+            }
+        }
+    }
+}

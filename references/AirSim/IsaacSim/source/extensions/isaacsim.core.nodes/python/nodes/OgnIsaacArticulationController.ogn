@@ -1,0 +1,51 @@
+{
+    "IsaacArticulationController": {
+        "version": 1,
+        "description": "Controller for articulated robots. The controller takes either joint names or joint indices, and move them by the given position/velocity/effort commands. Note angular units are expressed in radians while angles in USD are expressed in degrees and will be adjusted accordingly by the articulation controller.",
+        "language": "Python",
+        "categories": {
+            "isaacSim": "robot controller inside Isaac Sim"
+        },
+        "metadata": {
+            "uiName": "Articulation Controller"
+        },
+        "$comment": "The controller takes either joint names or joint indices, and move them by the given position/velocity/effort commands. Note angular units are expressed in radians while angles in USD are expressed in degrees and will be adjusted accordingly by the articulation controller.",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution"
+            },
+            "targetPrim": {
+                "type": "target",
+                "description": "The target robot prim with robot articulation root. Ensure robotPath is empty for this to be considered.",
+                "optional": true
+            },           
+            "robotPath":{
+                "type": "string",
+                "description": "path to the robot articulation root. If this is populated, targetPrim is ignored."
+            },
+            "jointNames":{
+                "type": "token[]",
+                "description": "commanded joint names, use either Joint Names or Joint Indices, if neither is given, default to all joints",
+                "$comment": "Use either Joint Names or Joint Indices, if neither is given, default to all joints"
+            },
+            "jointIndices":{
+                "type": "int[]",
+                "description": "commanded joint indices, use either Joint Names or Joint Indices, if neither is given, default to all joints",
+                "$comment": "Use either Joint Names or Joint Indices, if neither is given, default to all joints"
+            },
+            "positionCommand":{
+                "type": "double[]",
+                "description": ["position commands", "Units:", "    linear (m)", "    angular (rad)"]
+            },
+            "velocityCommand":{
+                "type": "double[]",
+                "description": ["velocity commands", "Units:", "    linear (m/s)", "    angular (rad/s)"]
+            },            
+            "effortCommand":{
+                "type": "double[]",
+                "description": ["effort commands", "Force Units:  ", "    linear (kg*m/s^2) i.e. a force", "    angular (kg*m^2/s^2) i.e. a torque", "Acceleration Units:", "    linear (m/s^2), i.e. a linear acceleration", "    angular (rad/s^2) i.e. an angular acceleration"]
+            }            
+        }
+    }
+}

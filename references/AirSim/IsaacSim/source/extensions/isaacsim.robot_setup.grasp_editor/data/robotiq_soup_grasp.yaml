@@ -1,0 +1,49 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+format: isaac_grasp
+format_version: 1.0
+
+object_frame: /soup_can/subframe
+gripper_frame: /Robotiq_2F_140/robotiq_base_link
+
+grasps:
+   "grasp_0":
+      confidence: 1.0
+      position: [0.1702081836531487, -0.3537417141670435, 0.00979660628907153]
+      orientation: {w: 0.7623475595928682, xyz: [-0.4695775089798694, -0.40873251056616833, -0.17680751185777158]}
+      cspace_position:
+         finger_joint: 0.7853981852531433
+      pregrasp_cspace_position:
+         finger_joint: 0.7853981852531433
+
+   "grasp_1":
+      confidence: 1.0
+      position: [-0.0009131094756821209, -0.28328459852016874, -0.03614870380845439]
+      orientation: {w: 0.6372533998547685, xyz: [-0.49498908424706956, -0.0431810982305896, -0.5890919313701267]}
+      cspace_position:
+         finger_joint: 0.7853977680206299
+      pregrasp_cspace_position:
+         finger_joint: 0.7853977680206299
+
+   "grasp_2":
+      confidence: 1.0
+      position: [0.13596026745032588, -0.18254492409057607, 0.08318569039679365]
+      orientation: {w: 0.8832580786602408, xyz: [-0.15268400469354207, 0.3171002351280511, -0.3098228559578801]}
+      cspace_position:
+         finger_joint: 0.7853981256484985
+      pregrasp_cspace_position:
+         finger_joint: 0.7853981256484985
+

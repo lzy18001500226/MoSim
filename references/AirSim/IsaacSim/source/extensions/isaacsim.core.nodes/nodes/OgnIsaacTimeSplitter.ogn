@@ -1,0 +1,34 @@
+{
+    "IsaacTimeSplitter": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": "Spit time values",
+        "uiName": "Isaac Time Splitter",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacCore",
+        "inputs": {
+            "time": {
+                "type": ["double", "float", "half", "int", "int64", "uint", "uint64"],
+                "description": "Time (in seconds)"
+            }
+        },
+        "outputs": {
+            "seconds": {
+                "type": "int",
+                "description": "Seconds [INT_MIN, INT_MAX]"
+            },
+            "milliseconds": {
+                "type": "uint",
+                "description": "Milliseconds [0, 1e3)"
+            },
+            "microseconds": {
+                "type": "uint",
+                "description": "Microseconds [0, 1e6)"
+            },
+            "nanoseconds": {
+                "type": "uint",
+                "description": "Nanoseconds [0, 1e9)"
+            }
+        }
+    }
+}

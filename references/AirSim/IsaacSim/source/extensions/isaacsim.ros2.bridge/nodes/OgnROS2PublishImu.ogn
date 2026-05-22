@@ -1,0 +1,89 @@
+{
+    "ROS2PublishImu": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node publishes IMU data as a ROS2 IMU message"
+        ],
+        "metadata": {
+            "uiName": "ROS2 Publish Imu"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2:publisher",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "context": {
+                "type": "uint64",
+                "description": "ROS2 context handle, Default of zero will use the default global context",
+                "default" : 0
+            },
+            "nodeNamespace": {
+                "type": "string",
+                "description": "Namespace of ROS2 Node, prepends any published/subscribed topic by the node namespace",
+                "default" : ""
+            },
+            "frameId": {
+                "type": "string",
+                "description": "FrameId for ROS2 message",
+                "default" : "sim_imu"
+            },
+            "topicName": {
+                "type": "string",
+                "description": "Name of ROS2 Topic",
+                "default" : "imu"
+            },
+             "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": ""
+            },
+            "queueSize": {
+                "type": "uint64",
+                "description": "The number of messages to queue up before throwing some away, in case messages are collected faster than they can be sent. Only honored if 'history' QoS policy was set to 'keep last'. This setting can be overwritten by qosProfile input.",
+                "default": 10
+            },
+            "timeStamp": {
+                "type": "double",
+                "description": "ROS2 Timestamp in seconds",
+                "uiName": "Timestamp",
+                "default": 0.0
+            },
+            "publishOrientation": {
+                "type": "bool",
+                "description": "Include orientation in msg",
+                "default": true
+            },
+            "publishLinearAcceleration": {
+                "type": "bool",
+                "description": "Include Linear acceleration in msg",
+                "default": true
+            },
+            "publishAngularVelocity": {
+                "type": "bool",
+                "description": "Include Angular velocity in msg",
+                "default": true
+            },
+            "orientation": {
+                "type": "quatd[4]",
+                "description": "Orientation as a quaternion (IJKR)",
+                "optional": true,
+                "default": [0.0, 0.0, 0.0, 1.0]
+            },
+            "linearAcceleration": {
+                "type": "vectord[3]",
+                "description": "Linear acceleration vector in m/s^2",
+                "optional": true,
+                "default": [0.0, 0.0, 0.0]
+            },
+            "angularVelocity": {
+                "type": "vectord[3]",
+                "description": "Angular velocity vector in rad/s",
+                "optional": true,
+                "default": [0.0, 0.0, 0.0]
+            }
+        }
+    }
+}

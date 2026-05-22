@@ -1,0 +1,25 @@
+[package]
+version = "4.0.6"
+category = "Simulation"
+title = "Isaac Sim Lula"
+description = "Extension that provides lula python interface"
+keywords = ["isaac", "lula", "rmp"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+writeTarget.platform = true # pip prebundle makes this extension os specific
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.robot_motion.lula."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.robot_motion.lula" = {}
+
+[[python.module]]
+name = "omni.isaac.lula"
+
+[[python.module]]
+name = "omni.isaac.lula.tests"

@@ -1,0 +1,23 @@
+[package]
+version = "2.0.6"
+category = "Other"
+title = "Isaac Sim Version"
+description = "Isaac Sim Version extension provides tools to query Isaac Sim version and build information."
+keywords = ["isaac"]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+
+[[python.module]]
+name = "isaacsim.core.version"
+
+[[python.module]]
+name = "isaacsim.core.version.tests"
+
+[[test]]
+dependencies = ["omni.kit.test"]

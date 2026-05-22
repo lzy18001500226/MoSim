@@ -1,0 +1,22 @@
+[package]
+version = "1.1.0"
+category = "SyntheticData"
+title = "Isaac Sim Asset Validation Rules"
+description = "The extension provides various custom rules to validate content for Isaac Sim."
+keywords = ["Synthetic", "Data", "Generation", "SDG", "Asset", "Validation"]
+changelog = "docs/CHANGELOG.md"
+readme  = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.platform = true # Build separate extensions for Windows and Linux so appropriate libraries are bundled
+
+[dependencies]
+"isaacsim.robot.schema" = {}
+"omni.asset_validator.core" = {}
+"omni.hydra.usdrt_delegate" = {}
+"omni.physx"={}
+"omni.usd" = {}
+"omni.usd.schema.physx" = {}
+
+[[python.module]]
+name = "isaacsim.asset.validation"

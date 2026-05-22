@@ -1,0 +1,6 @@
+{
+    "categoryDefinitions": {
+        "$description": "These categories are applied robot manipulation isaac sim nodes",
+        "isaacRobotManipulators": "Nodes implementing isaac sim functionality for robot manipulators"
+    }
+}

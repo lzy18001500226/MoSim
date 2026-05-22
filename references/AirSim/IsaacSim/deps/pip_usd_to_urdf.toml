@@ -1,0 +1,19 @@
+# Target kit 107.x
+# the scene converter is a python tool created by the SRL to export USD to URDF
+[[dependency]]
+python = "../_build/target-deps/python"
+packages = [
+    "lxml==5.4.0",                   # SWIPAT filed under: https://nvbugs/4248625
+    "nvidia-srl-base==1.3.0",        # SWIPAT filed under: https://nvbugs/4235578
+    "nvidia-srl-math==1.0.0",        # SWIPAT filed under: https://nvbugs/4235574
+    "nvidia-srl-usd==2.0.0",         # SWIPAT filed under: https://nvbugs/4235568
+    "nvidia-srl-usd-to-urdf==1.0.2", # SWIPAT filed under: https://nvbugs/4235566
+    "setuptools_scm==8.2.0",         # SWIPAT filed under: https://nvbugs/4248640
+]
+target = "../_build/target-deps/isaac_usd_to_urdf_prebundle"
+platforms = ["*-x86_64", "*-aarch64"]
+download_only = false
+install_dependencies = false
+append_to_install_folder = true
+gather_licenses_path = "../_build/PACKAGE-LICENSES/PIP-prebundled-LICENSES.txt"
+extra_args = ["--extra-index-url", "https://pypi.org/simple"]

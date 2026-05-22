@@ -1,0 +1,61 @@
+{
+    "ROS2ServicePrim": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node provides the services to list prims and all their attributes, as well as read and write a specific attribute"
+        ],
+        "metadata": {
+            "uiName": "ROS2 Service Prim"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2:service",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port."
+            },
+            "context": {
+                "type": "uint64",
+                "description": "ROS2 context handle, Default of zero will use the default global context",
+                "default" : 0
+            },
+            "nodeNamespace": {
+                "type": "string",
+                "description": "Namespace of ROS2 Node, prepends any service name by the node namespace",
+                "default": ""
+            },
+            "primsServiceName": {
+                "type": "string",
+                "description": "Name of the ROS2 service to list all prims in the current stage",
+                "default": "get_prims"
+            },
+            "getAttributesServiceName": {
+                "type": "string",
+                "description": "Name of the ROS2 service to list all specific prim's attributes",
+                "default": "get_prim_attributes"
+            },
+            "getAttributeServiceName": {
+                "type": "string",
+                "description": "Name of the ROS2 service to read a specific prim attribute",
+                "default": "get_prim_attribute"
+            },
+            "setAttributeServiceName": {
+                "type": "string",
+                "description": "Name of the ROS2 service to write a specific prim attribute",
+                "default": "set_prim_attribute"
+            },
+            "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": ""
+            }
+        },
+        "outputs": {
+            "execOut": {
+                "type": "execution",
+                "description": "Output execution triggers when a response has been submitted"
+            }
+        }
+    }
+}

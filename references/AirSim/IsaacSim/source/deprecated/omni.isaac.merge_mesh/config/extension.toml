@@ -1,0 +1,24 @@
+[package]
+version = "2.0.8"
+category = "Simulation"
+title = "Isaac Sim Merge Mesh"
+description = "Inspect Physics Merge Mesh Utility"
+keywords = ["isaac", "merge", "mesh",]
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+preview_image = "data/preview.png"
+icon = "data/icon.png"
+writeTarget.kit = true
+
+[deprecation]
+warning = "Extension deprecated since Isaac Sim 4.5.0. Replaced by isaacsim.util.merge_mesh."
+
+[dependencies]
+"isaacsim.core.deprecation_manager" = {}
+"isaacsim.util.merge_mesh" = {}
+
+[[python.module]]
+name = "omni.isaac.merge_mesh"
+
+[[python.module]]
+name = "omni.isaac.merge_mesh.tests"

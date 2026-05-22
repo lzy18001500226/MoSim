@@ -1,0 +1,61 @@
+{
+    "ROS2PublishBbox2D": {
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node publishes ROS2 Bbox2d messages"
+        ],
+        "metadata": {
+            "uiName": "ROS2 Publish Bbox2D"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2:publisher",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port."
+            },
+            "context": {
+                "type": "uint64",
+                "description": "ROS2 context handle, Default of zero will use the default global context",
+                "default" : 0
+            },
+            "nodeNamespace": {
+                "type": "string",
+                "description": "Namespace of ROS2 Node, prepends any published/subscribed topic by the node namespace",
+                "default" : ""
+            },
+            "frameId": {
+                "type": "string",
+                "description": "FrameId for ROS2 message",
+                "default" : "sim_camera"
+            },
+            "topicName": {
+                "type": "string",
+                "description": "Name of ROS2 Topic",
+                "default" : "bbox2d"
+            },
+            "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": ""
+            },
+            "queueSize": {
+                "type": "uint64",
+                "description": "The number of messages to queue up before throwing some away, in case messages are collected faster than they can be sent. Only honored if 'history' QoS policy was set to 'keep last'. This setting can be overwritten by qosProfile input.",
+                "default": 10
+            },
+            "timeStamp": {
+                "type": "double",
+                "description": "Time in seconds to use when publishing the message",
+                "default" : 0.0
+            },
+            "data":{
+                "type": "uchar[]",
+                "description": "Buffer array data",
+                "memoryType": "cpu",
+                "default": []
+            }
+        }
+    }
+}

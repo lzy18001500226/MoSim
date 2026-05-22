@@ -1,0 +1,14 @@
+# Target kit 107.x, python 3.11, ABI=1
+# lula is a custom dependency that is compiled and brought in from packman for isaacsim.robot_motion.lula
+[[dependency]]
+python = "../_build/target-deps/python"
+packages = [
+    "nvidia_lula_no_cuda==0.10.1"            # SWIPAT filed under: N/A (NVIDIA-authored)
+]
+target = "../_build/target-deps/isaac_lula_prebundle"
+platforms = ["*-x86_64", "*aarch64"]
+download_only = false
+install_dependencies = false
+append_to_install_folder = true
+gather_licenses_path = "../_build/PACKAGE-LICENSES/PIP-prebundled-LICENSES.txt"
+extra_args = ["--no-index", "-f", "_build/target-deps/lula/pip-packages"]

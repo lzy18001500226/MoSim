@@ -1,0 +1,97 @@
+{
+    "ROS2RtxLidarHelper" : {
+        "version" : 1,
+        "icon" : "icons/isaac-sim.svg",
+        "description" : "Handles automation of Lidar Sensor pipeline",
+        "language" : "Python",
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2",
+        "metadata" : {
+            "uiName" : "ROS2 RTX Lidar Helper"
+        },
+        "inputs": {
+            "execIn" : {
+                "type" : "execution",
+                "description": "Triggering this causes the sensor pipeline to be generated"
+            },
+            "enabled": {
+                "type": "bool",
+                "description": "True to enable the lidar helper, False to disable",
+                "default": true
+            },
+            "context" : {
+                "type" : "uint64",
+                "description": "ROS2 context handle, default of zero will use the global context",
+                "default" : 0
+            },
+            "nodeNamespace" : {
+                "type" : "string",
+                "description" : "Namespace of ROS2 Node, prepends and published/subscribed topic by the node namespace",
+                "default" : ""
+            },
+            "frameId": { 
+                "type" : "string",
+                "description" : "FrameID for the ROS2 message, the nodeNamespace will not be prefixed to the frame id",
+                "default" : "sim_lidar"
+            },
+            "topicName": {
+                "type" : "string",
+                "description" : "Topic name for sensor data",
+                "default" : "scan"
+            },
+            "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": ""
+            },
+            "queueSize" : {
+                "type" : "uint64",
+                "description" : "Number of message to queue up before throwing away, in case messages are collected faster than they can be sent. Only honored if 'history' QoS policy was set to 'keep last'. This setting can be overwritten by qosProfile input.",
+                "default" : 10
+            },
+            "renderProductPath" : {
+                "type" : "token",
+                "description" : "Name of the render product path to publish lidar data"
+            },
+            "type": {
+                "type": "token",
+                "description": "Data to publish from node",
+                "metadata": {
+                    "allowedTokens": {
+                        "laser_scan": "laser_scan",
+                        "point_cloud": "point_cloud"
+                    }
+                },
+                "default": "laser_scan"
+            },
+            "resetSimulationTimeOnStop": {
+                "type": "bool",
+                "description": "If True the simulation time will reset when stop is pressed, False means time increases monotonically. This setting is ignored if useSystemTime is enabled.",
+                "uiName": "Reset Time On Stop",
+                "default": false
+            },
+            "fullScan": {
+                "type": "bool",
+                "description": "If True publish a full scan when enough data has accumulated instead of partial scans each frame. Supports point cloud type only",
+                "uiName": "Publish Full Scan",
+                "default": false
+            },
+            "showDebugView": {
+                "type": "bool",
+                "description": "If True a debug view of the lidar particles will appear in the scene.",
+                "uiName": "Show Debug View",
+                "default": false
+            },
+            "useSystemTime": {
+                "type": "bool",
+                "description": "If True, system timestamp will be included in messages. If False, simulation timestamp will be included in messages",
+                "default": false
+            },
+            "frameSkipCount": {
+                "type": "uint",
+                "description": "Specifies the number of simulation frames to skip between each message publish. (e.g. Set to 0 to publish each frame. Set 1 to publish every other frame)",
+                "default": 0
+            }
+        }
+    }
+}

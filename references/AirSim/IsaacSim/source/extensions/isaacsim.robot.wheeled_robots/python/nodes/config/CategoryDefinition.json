@@ -1,0 +1,6 @@
+{
+    "categoryDefinitions": {
+        "$description": "These categories are applied isaac sim wheeled robots nodes",
+        "isaacWheeledRobots": "Nodes implementing isaac sim wheeled robots functionality "
+    }
+}

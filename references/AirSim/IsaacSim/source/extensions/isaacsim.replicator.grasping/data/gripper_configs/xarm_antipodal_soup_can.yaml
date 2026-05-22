@@ -1,0 +1,52 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+grasp_phases:
+- joint_drive_targets:
+    /World/Grippers/xarm_gripper/joints/drive_joint: 48.0
+  name: Close
+  simulation_step_dt: 0.016666666666666666
+  simulation_steps: 32
+gripper_path: /World/Grippers/xarm_gripper
+joint_pregrasp_states:
+  /World/Grippers/xarm_gripper/joints/drive_joint: 0.0
+  /World/Grippers/xarm_gripper/joints/left_finger_joint: 0.0
+  /World/Grippers/xarm_gripper/joints/left_inner_knuckle_joint: 0.0
+  /World/Grippers/xarm_gripper/joints/right_finger_joint: 0.0
+  /World/Grippers/xarm_gripper/joints/right_inner_knuckle_joint: 0.0
+  /World/Grippers/xarm_gripper/joints/right_outer_knuckle_joint: 0.0
+  /World/Grippers/xarm_gripper/root_joint: 0.0
+object_path: /World/Objects/_05_tomato_soup_can
+sampler_config:
+  grasp_align_axis:
+  - 0
+  - 1
+  - 0
+  gripper_approach_direction:
+  - 0
+  - 0
+  - 1
+  gripper_maximum_aperture: 0.08
+  gripper_standoff_fingertips: 0.17000000178813934
+  lateral_sigma: 0.0
+  num_candidates: 5
+  num_orientations: 1
+  orientation_sample_axis:
+  - 0
+  - 1
+  - 0
+  random_seed: 12
+  sampler_type: antipodal
+  verbose: false

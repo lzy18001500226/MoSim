@@ -1,0 +1,58 @@
+{
+    "ROS2PublishJointState":{
+        "version": 1,
+        "icon": "icons/isaac-sim.svg",
+        "description": [
+            "This node publishes joint states of a robot in ROS2 JointState message"
+        ],
+        "metadata": {
+            "uiName": "ROS2 Publish Joint State"
+        },
+        "categoryDefinitions": "config/CategoryDefinition.json",
+        "categories": "isaacRos2:publisher",
+        "inputs": {
+            "execIn": {
+                "type": "execution",
+                "description": "The input execution port"
+            },
+            "context": {
+                "type": "uint64",
+                "description": "ROS2 context handle, Default of zero will use the default global context",
+                "default" : 0
+            },
+            "targetPrim":{
+                "type": "target",
+                "description": "USD reference to the robot prim"
+            },
+            "nodeNamespace": {
+                "type": "string",
+                "description": "Name of ROS2 Node, prepends any topic published/subscribed by the node name",
+                "default" : ""
+            },
+            "topicName": {
+                "type": "string",
+                "description": "Name of ROS2 Topic",
+                "default" : "joint_states"
+            },
+             "qosProfile": {
+                "type": "string",
+                "description": "QoS profile config",
+                "default": ""
+            },
+            "queueSize": {
+                "type": "uint64",
+                "description": "The number of messages to queue up before throwing some away, in case messages are collected faster than they can be sent. Only honored if 'history' QoS policy was set to 'keep last'. This setting can be overwritten by qosProfile input.",
+                "default": 10
+            },
+            "timeStamp": {
+                "type": "double",
+                "description": "ROS2 Timestamp in seconds",
+                "uiName": "Timestamp",
+                "default": 0.0
+                
+            }
+        }
+    }
+
+
+}
