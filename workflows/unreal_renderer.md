@@ -27,7 +27,7 @@ Current asset-source priority:
 | --- | --- | --- |
 | P0 | `references/Sunray/simulation/sunray_simulator/models` | Immediate reusable Gazebo/SDF assets: Sunray150/Mid360, houses, trees, windows, gates, targets, terrain, AWS RoboMaker residential/retail assets |
 | P0 | `references/Sunray/simulation/sunray_simulator/worlds/*.world` and `references/Sunray/simulation/sysu_competition/worlds/*.world` | Existing scene layout references such as competition maps, planning tests, houses, airport, outdoor, sand island |
-| P1 | RflySim3D / RflySimUE installer or asset package, if available locally | UE-style scenario、camera、UDP/shared-memory、Mid360 and scene-asset reference; migrate useful assets into the project-owned UE5 renderer after license/source confirmation |
+| P1 | RflySim3D / RflySimUE installer or asset package, if available locally | UE-style scenario、camera、UDP/shared-memory、Mid360 and scene-layout reference only. Treat packaged maps as black-box runtime references unless editable source project, license, and collision/object-truth export are explicitly provided |
 | P1 | RflySim public GitHub repos | Interface/modeling reference, not primary visual assets. `CopterSim` is mainly Simulink multicopter/HIL model; `RflyExpCode` is experiment code |
 | P1 | `references/AirSim/Cosys-AirSim/Unreal/Environments/Blocks/Blocks.uproject` | Modern UE Blocks scene candidate with AirSim/Cosys assets; first smoke target for UE scene reuse |
 | P2 | `references/AirSim/AirSim/Unreal/Environments/Blocks/Blocks.uproject` | Legacy UE4.27 AirSim Blocks scene and quadrotor visual/API reference |
@@ -40,9 +40,10 @@ MAVLink/HIL, fault-injection, and UDP/display interface ideas. `CopterSim` is a
 Simulink multicopter model with MAVLink/PX4/HIL/fault-injection ports; it is not
 a render scene repository. `RflyExpCode` is course/experiment code and also is
 not a UE environment asset repository. For final visual quality, use the local
-Sunray/AWS assets first, or inspect the user's local RflySim3D/RflySimUE asset
-install as a migration source. Do not make the final renderer depend on running
-RflySim3D.
+Sunray/AWS assets first, or inspect the user's local RflySim3D/RflySimUE install
+as a runtime/reference source. Do not make the final renderer depend on running
+RflySim3D, and do not describe RflySim packaged maps as directly reusable
+editable assets unless vendor/source evidence changes that status.
 
 Open-source simulator scene audit update:
 
@@ -243,6 +244,34 @@ Mid360/lidar data, terrain service, and path-planning examples that are better
 than the current project-owned renderer. Selected assets must be re-imported or
 referenced through our UE5 asset registry, collision proxies, material system,
 naming rules, and scenario profiles.
+
+Direct-use definition:
+
+| Meaning of "direct use" | Decision | Reason |
+| --- | --- | --- |
+| Run or view scenes in the native RflySim3D/RflySimUE runtime | Allowed as reference/demo only | The local install contains runnable map entries and the official UDP/API surface |
+| Use RflySim maps as editable UE source scenes for our own simulator | Not supported now | The available maps/assets are packaged UE binary content plus missing/incompatible project/plugin modules, not a clean editable source project |
+| Use RflySim maps as planner truth or obstacle truth | Not supported now | No verified object/bounding-box/collision export contract is available for our planner |
+| Use RflySim protocols and examples as design references | Allowed | UDP pose, sensor, terrain, camera, lidar, and timing ideas can inform a project-owned bridge |
+
+Therefore the simulator architecture is:
+
+```text
+MWORKS/Syslab/Sysplorer solver and evidence
+  -> project-owned bridge/API
+  -> project-owned UE5 renderer and editable scene assets
+  -> optional RflySim/AirSim/Cosys reference observation, not final dependency
+```
+
+RflySim is not the editable base for the new simulator unless the vendor or a
+licensed source package provides all of the following:
+
+```text
+editable `.uproject`
+matching source or editor binaries for required plugins/modules
+redistribution/migration permission
+object pose / collision / terrain export or rebuild workflow
+```
 
 `D:\PX4PSP\HowToUse.pdf` establishes the official learning route:
 
@@ -635,11 +664,11 @@ Use this workflow before any new UE5 navigation demo:
      scene, sensor, protocol, and timing mechanisms.
    - Do not treat RflySim runtime maps as planner truth.
 
-2. Asset migration
-   - Pick authorized maps, meshes, materials, XML/parameter files, or scene
-     layout data.
-   - Convert them into project-owned UE5 assets, scenario profiles, and
-     collision proxies.
+2. Editable scene construction
+   - Pick project-owned or explicitly licensed editable maps, meshes,
+     materials, XML/parameter files, or scene-layout data.
+   - Recreate or import them into project-owned UE5 assets, scenario profiles,
+     and collision proxies.
    - Save source path, license/approval note, scale, coordinate frame, and
      object IDs.
 
@@ -669,12 +698,12 @@ Scenario families:
 
 | Family | Preferred map/source | Purpose |
 |---|---|---|
-| Dense forest | Migrated RflySim/open UE forest assets or project-owned forest scene | Unknown-map dense obstacle avoidance |
-| Maze/building | Project-owned maze or migrated RflySim building/factory assets | Wall occlusion and local replanning |
-| Old factory | Migrated RflySim `OldFactory`-style assets or equivalent UE factory scene | Mid360 point cloud and industrial inspection demo |
-| Park/patrol | Migrated RflySim/open UE park assets | Inspection/logistics scenario |
-| Gate/ring indoor | Migrated/self-built `VisionRing` / challenge-style indoor assets | Attitude tracking through tilted gates/rings |
-| Open grass | Migrated/self-built grassland scene | Wind and motor-efficiency robustness |
+| Dense forest | Project-owned or licensed editable UE forest scene; RflySim/open scenes only as visual reference | Unknown-map dense obstacle avoidance |
+| Maze/building | Project-owned maze or licensed editable building/factory assets | Wall occlusion and local replanning |
+| Old factory | Project-owned `OldFactory`-style scene or licensed editable UE factory scene | Mid360 point cloud and industrial inspection demo |
+| Park/patrol | Project-owned or licensed editable park assets | Inspection/logistics scenario |
+| Gate/ring indoor | Project-owned `VisionRing` / challenge-style indoor assets | Attitude tracking through tilted gates/rings |
+| Open grass | Project-owned grassland scene | Wind and motor-efficiency robustness |
 
 The project-owned profile source is:
 
@@ -1028,7 +1057,7 @@ Current local verification status:
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
-| `rflysim3d_map_view` | Passed | RflySim3D launches from `D:\PX4PSP\RflySim3D\RflySim3D.exe`; map and UDP command tests are visible in the native window |
+| `rflysim3d_map_view` | Reference-only | RflySim3D launches from `D:\PX4PSP\RflySim3D\RflySim3D.exe`; use native maps for observation/demo only. Current evidence does not make the maps editable UE source assets or planner truth |
 | `rflysim_vehicle_visual` | Passed | `tools/rflysim/rflysim_windows_smoke.py` creates and moves quadrotor actors through `UE4CtrlAPI` |
 | `rflysim_lightweight_control` | Passed | Official `UAVCtrlNoPX4Demo.py` runs a point-mass control sequence without PX4/QGC |
 | `rflysim_mid360` | Passed | `tools/rflysim/rflysim_mid360_smoke.py` receives direct UDP Mid360 point clouds: `80` frames, each `17408 x 4` |
@@ -1109,9 +1138,10 @@ MWORKS raw/native result
   -> compare mechanisms against project-owned UE5 renderer
 ```
 
-This is a reference/debug route, not a replacement for the current UE bridge.
-Use it to learn timing, sensor, camera, and scene conventions. Final delivery
-should run through the project-owned `QuadrotorMworksBridge` and UE5 scene.
+This is a reference/debug route, not a replacement for the current UE bridge
+and not the final simulator product. Use it to learn timing, sensor, camera,
+and scene conventions. Final delivery should run through the project-owned
+`QuadrotorMworksBridge` and UE5 scene.
 
 Project-local prototype bridge:
 

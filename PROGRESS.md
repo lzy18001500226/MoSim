@@ -5,9 +5,10 @@
 
 ## Current Focus
 
-- Current active goal: recover and solidify the 2026-05-20/21 user instruction
-  ledger, establish main-thread and sub-agent goal/TaskSecretary coordination,
-  and clarify Git plus parameter-identification next steps.
+- Current active goal: keep the simulator architecture on the correct branch:
+  MWORKS/Syslab/Sysplorer solver evidence plus project-owned UE5 renderer and
+  editable scene assets. RflySim maps are native-runtime visual references only,
+  not an editable base for the new simulator.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.
@@ -64,6 +65,9 @@
   `workflows/agent_task_ledger.md` and `results/agent_runs/*/events.jsonl`.
 - Do not treat UE/RflySim/SPEAR/Cosys repositories as equivalent; record exact
   simulator role and evidence before adopting assets.
+- Do not say RflySim maps are "directly usable" without the qualifier. They are
+  directly viewable in the native RflySim runtime, but not currently directly
+  usable as editable UE5 scenes, planner truth, or the base of our simulator.
 - Do not accept a passing core library build as proof that a local Unreal
   environment builds; environment-local plugin copies can have missing
   dependencies.
