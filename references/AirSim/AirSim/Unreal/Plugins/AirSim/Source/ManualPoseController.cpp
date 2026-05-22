@@ -20,7 +20,11 @@ void UManualPoseController::initializeForPlay()
     down_pitch_mapping_ = FInputAxisKeyMapping("inputManualDownPitch", EKeys::S);
     inc_speed_mapping_ = FInputAxisKeyMapping("inputManualSpeedIncrease", EKeys::LeftShift);
     dec_speed_mapping_ = FInputAxisKeyMapping("inputManualSpeedDecrease", EKeys::LeftControl);
+    mouse_look_mapping_ = FInputAxisKeyMapping("inputManualMouseLook", EKeys::RightMouseButton);
+    mouse_yaw_mapping_ = FInputAxisKeyMapping("inputManualMouseYaw", EKeys::MouseX);
+    mouse_pitch_mapping_ = FInputAxisKeyMapping("inputManualMousePitch", EKeys::MouseY);
     input_positive_ = inpute_negative_ = last_velocity_ = FVector::ZeroVector;
+    mouse_look_active_ = false;
 }
 
 void UManualPoseController::clearBindings()
@@ -29,6 +33,7 @@ void UManualPoseController::clearBindings()
     forward_binding_ = backward_binding_ = left_yaw_binding_ = up_pitch_binding_ = nullptr;
     right_yaw_binding_ = down_pitch_binding_ = left_roll_binding_ = right_roll_binding_ = nullptr;
     inc_speed_binding_ = dec_speed_binding_ = nullptr;
+    mouse_look_binding_ = mouse_yaw_binding_ = mouse_pitch_binding_ = nullptr;
 }
 
 void UManualPoseController::setActor(AActor* actor)
@@ -108,6 +113,12 @@ void UManualPoseController::removeInputBindings()
         UAirBlueprintLib::RemoveAxisBinding(inc_speed_mapping_, inc_speed_binding_, actor_);
     if (dec_speed_binding_)
         UAirBlueprintLib::RemoveAxisBinding(dec_speed_mapping_, dec_speed_binding_, actor_);
+    if (mouse_look_binding_)
+        UAirBlueprintLib::RemoveAxisBinding(mouse_look_mapping_, mouse_look_binding_, actor_);
+    if (mouse_yaw_binding_)
+        UAirBlueprintLib::RemoveAxisBinding(mouse_yaw_mapping_, mouse_yaw_binding_, actor_);
+    if (mouse_pitch_binding_)
+        UAirBlueprintLib::RemoveAxisBinding(mouse_pitch_mapping_, mouse_pitch_binding_, actor_);
 
     clearBindings();
 }
@@ -130,6 +141,9 @@ void UManualPoseController::setupInputBindings()
     down_pitch_binding_ = &UAirBlueprintLib::BindAxisToKey(down_pitch_mapping_, actor_, this, &UManualPoseController::inputManualDownPitch);
     inc_speed_binding_ = &UAirBlueprintLib::BindAxisToKey(inc_speed_mapping_, actor_, this, &UManualPoseController::inputManualSpeedIncrease);
     dec_speed_binding_ = &UAirBlueprintLib::BindAxisToKey(dec_speed_mapping_, actor_, this, &UManualPoseController::inputManualSpeedDecrease);
+    mouse_look_binding_ = &UAirBlueprintLib::BindAxisToKey(mouse_look_mapping_, actor_, this, &UManualPoseController::inputManualMouseLook);
+    mouse_yaw_binding_ = &UAirBlueprintLib::BindAxisToKey(mouse_yaw_mapping_, actor_, this, &UManualPoseController::inputManualMouseYaw);
+    mouse_pitch_binding_ = &UAirBlueprintLib::BindAxisToKey(mouse_pitch_mapping_, actor_, this, &UManualPoseController::inputManualMousePitch);
 }
 
 void UManualPoseController::updateDeltaPosition(float dt)
@@ -188,30 +202,44 @@ void UManualPoseController::inputManualDown(float val)
 void UManualPoseController::inputManualLeftYaw(float val)
 {
     if (!FMath::IsNearlyEqual(val, 0.f))
-        delta_rotation_.Add(0, -val, 0);
+        delta_rotation_.Add(0, -val * keyboard_rotation_scaler_, 0);
 }
 void UManualPoseController::inputManualRightYaw(float val)
 {
     if (!FMath::IsNearlyEqual(val, 0.f))
-        delta_rotation_.Add(0, val, 0);
+        delta_rotation_.Add(0, val * keyboard_rotation_scaler_, 0);
 }
 void UManualPoseController::inputManualLeftRoll(float val)
 {
     if (!FMath::IsNearlyEqual(val, 0.f))
-        delta_rotation_.Add(0, 0, -val);
+        delta_rotation_.Add(0, 0, -val * keyboard_rotation_scaler_);
 }
 void UManualPoseController::inputManualRightRoll(float val)
 {
     if (!FMath::IsNearlyEqual(val, 0.f))
-        delta_rotation_.Add(0, 0, val);
+        delta_rotation_.Add(0, 0, val * keyboard_rotation_scaler_);
 }
 void UManualPoseController::inputManualUpPitch(float val)
 {
     if (!FMath::IsNearlyEqual(val, 0.f))
-        delta_rotation_.Add(val, 0, 0);
+        delta_rotation_.Add(val * keyboard_rotation_scaler_, 0, 0);
 }
 void UManualPoseController::inputManualDownPitch(float val)
 {
     if (!FMath::IsNearlyEqual(val, 0.f))
-        delta_rotation_.Add(-val, 0, 0);
+        delta_rotation_.Add(-val * keyboard_rotation_scaler_, 0, 0);
+}
+void UManualPoseController::inputManualMouseLook(float val)
+{
+    mouse_look_active_ = !FMath::IsNearlyEqual(val, 0.f);
+}
+void UManualPoseController::inputManualMouseYaw(float val)
+{
+    if (mouse_look_active_ && !FMath::IsNearlyEqual(val, 0.f))
+        delta_rotation_.Add(0, val * mouse_sensitivity_, 0);
+}
+void UManualPoseController::inputManualMousePitch(float val)
+{
+    if (mouse_look_active_ && !FMath::IsNearlyEqual(val, 0.f))
+        delta_rotation_.Add(-val * mouse_sensitivity_, 0, 0);
 }
