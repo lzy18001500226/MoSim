@@ -82,6 +82,9 @@ references/AirSim/spear/
 references/AirSim/Cosys-AirSim/docs/annsim23_tutorial/*.mp4
 references/AirSim/Cosys-AirSim/docs/annsim23_tutorial/*.pdf
 references/AirSim/Cosys-AirSim/Unreal/Plugins/AirSim/Content/
+references/AirSim/spear/third_party/
+references/AirSim/spear/**/Binaries/
+references/AirSim/spear/**/Intermediate/
 references/AirSim/**/.git/
 references/AirSim/**/.svn/
 references/AirSim/**/.hg/
