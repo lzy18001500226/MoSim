@@ -134,6 +134,11 @@ reviewer:
   independent QA; checks evidence and risks before integration
 ```
 
+The detailed department model lives in
+`workflows/org_operating_model.md`. Use it when a task needs company-style
+division of labor: secretary/PMO, project owners, testing, security, DevOps,
+architecture, knowledge management, and incident review.
+
 The director should not grind through every worker task when the queue is
 large. It should update durable state, assign the next owner, keep the critical
 path moving, and review evidence before integration. A child owner must not
@@ -154,6 +159,12 @@ fan out review:
   when several independent reviews are required, spawn the same number of
   read-only secretary/reviewer grandchildren with disjoint review scopes
 ```
+
+Secretary intake is mandatory for volatile instructions. Every new user
+directive, correction, manual-review result, sub-agent return, blocker, or work
+checkpoint must be captured in `results/tmp/task_intake/`, promoted to
+`workflows/agent_task_ledger.md` or `PROGRESS.md` when stable, and only then
+treated as recoverable state. Chat memory alone is not state.
 
 Testing is a separate stream. Use a `TestOwner` child agent when validation has
 multiple kinds, such as unit tests, Git checks, large-file checks, model checks,

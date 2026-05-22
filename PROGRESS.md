@@ -31,6 +31,7 @@
 | Git integration | `GitFullConvergenceOwner` | done-with-concerns | Use clean branches or `origin/main` for future Git work; do not push old polluted aggregate branches. |
 | Cosys-AirSim smoke | `UEBuildSmokeRunner` | visually-reviewed | UE 5.5 Blocks UBT build passed and user confirmed the opened scene is okay; next task is deciding the control/API/UI integration route. |
 | Agent workflow improvement | main agent + reviewers | awaiting-user-review | TaskSecretary/goal/Git-owner rules are promoted and `git diff --check` passed; next change should follow user review. |
+| Agent organization model | main agent + `TaskSecretary` | done | Modern-company department model added in `workflows/org_operating_model.md`; future multi-agent work must record user directives and work checkpoints before relying on chat memory. |
 | External docs learning | `ExternalDocsLearningOwner` | recurring-loop-defined | Use `docs/index/external_learning_index.md` and `workflows/agent_orchestration.md#71-recurring-learning-owner` when failures, new tools, new repos, or milestones trigger another learn-and-patch cycle. |
 | Vehicle parameter identification | `VehicleParamIdentificationResearcher` | action-plan-defined-awaiting-data | Risk parameters and PX4-log/open-source identification route are promoted to `workflows/identify_quadrotor_parameters.md` and `Design/02/03/07`; next blocker is real `.ulg`/mass/motor-order/RPM or thrust data. |
 | AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | running | Low-risk stage is pushed: `PEDRA`, `PegasusSimulator`, `ProjectAirSim`, `UESVONavigation-develop`, sanitized `AirSim`, and `unrealcv-5.2` source subset. Remaining risky batches are `AirSim360/carla` media, `IsaacSim` LFS pointers, and `Cosys-AirSim/spear` generated Unreal artifacts. |
@@ -80,6 +81,9 @@
   broader than that checkpoint.
 - Do not let user corrections stay only in chat. Add them to the current
   `TaskSecretary` intake and promote stable rules to durable docs after review.
+- Do not let user directives, manual review decisions, sub-agent returns, or
+  work checkpoints stay only in chat. The secretary/PMO route must capture them
+  in intake, ledger, PROGRESS, or WAL before they are treated as recoverable.
 - Do not conclude parameter identification with "parameters are wrong"; produce
   the data, log fields, estimator route, MWORKS mapping, and validation plan.
 - Do not treat external docs/skills learning as a one-time task. Make it a

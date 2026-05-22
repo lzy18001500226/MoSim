@@ -22,6 +22,7 @@
 | Build graphical Sysblock controller | `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`, `workflows/build_sysblock_graphical_controller.md` |
 | Consult official Sysplorer modeling rules | `Skills/Sysplorer/ty-sysplorer-modeling-rules`, `Skills/Sysplorer/ty-sysblock-diagram-modeling`, `Skills/Sysplorer/ty-sysblock-signal-modeling`, `Skills/Sysplorer/modelica-library-workflow` |
 | Main-agent orchestration | `AGENTS.md#331-parallel-agent-rule`, `workflows/agent_orchestration.md` |
+| Agent organization operating model | `workflows/org_operating_model.md` |
 | Current project progress and recovery memory | `PROGRESS.md` |
 | Sub-agent WAL / run ledger | `workflows/agent_task_ledger.md` |
 | Interrupted task resume / WAL recovery | `workflows/agent_orchestration.md`, `workflows/agent_task_ledger.md` |
