@@ -73,6 +73,13 @@ references/RflySim/RflySimAdvFree/
 
 # AirSim-family external references: keep source/docs/configs, exclude local
 # clones, build outputs, generated caches, and large compiled artifacts.
+#
+# Large reference families are staged deliberately. Keep them ignored by
+# default, then temporarily unignore one reviewed batch when committing it.
+references/AirSim/carla-ue5-dev/
+references/AirSim/Cosys-AirSim/
+references/AirSim/IsaacSim/
+references/AirSim/spear/
 references/AirSim/**/.git/
 references/AirSim/**/.svn/
 references/AirSim/**/.hg/

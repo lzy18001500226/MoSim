@@ -44,6 +44,9 @@
 
 ## Mistakes To Avoid
 
+- Do not execute first and plan later. Every non-trivial task starts by
+  recovering or writing a task graph with objective, current state, critical
+  path, owners, verification gates, Git strategy, and stop conditions.
 - Do not put live task state, long trigger phrases, or detailed mechanics into
   `AGENTS.md`.
 - Do not mark a sub-agent task done just because one checkpoint succeeded.

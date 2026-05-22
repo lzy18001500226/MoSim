@@ -133,7 +133,7 @@ Security findings should be short, factual, and action-oriented.
 
 ```text
 1. TaskSecretary records the instruction and recovery state.
-2. MainAgent builds the task graph.
+2. MainAgent builds the task graph before executing.
 3. MainAgent assigns ProjectOwner/TestOwner/SecurityOfficer/GitIntegrator.
 4. Project owners execute bounded work streams.
 5. Test and security owners review evidence.
@@ -142,6 +142,12 @@ Security findings should be short, factual, and action-oriented.
 8. TaskSecretary records completion, blockers, and next actions.
 9. MainAgent reports the integrated result.
 ```
+
+The task graph is not optional. It must name the objective, current state,
+critical path, side work, owners, write scopes, verification gates, Git
+strategy, and stop conditions. If the task is resumed from a previous session,
+the first step is recovering that graph from durable records, not acting from
+memory.
 
 If the conversation ends, context compacts, or a sub-agent disappears, resume
 from `workflows/agent_task_ledger.md`, `PROGRESS.md`, and any

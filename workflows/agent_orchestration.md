@@ -5,6 +5,12 @@
 
 ## 1. Task Graph First
 
+Planning is mandatory before execution. For any non-trivial task, the main
+agent must first create or update a task graph, even when the next action looks
+obvious. Do not spawn agents, copy large trees, run simulations, or start Git
+batches before this planning pass exists in chat or in a recoverable intake /
+ledger record.
+
 Before spawning agents, write a short task graph:
 
 ```text
@@ -15,6 +21,24 @@ blocking risks:
 verification:
 git/quality owner:
 ```
+
+Minimum planning gate:
+
+```text
+objective:
+current repo / tool state:
+critical path:
+parallelizable side work:
+owners and write scopes:
+verification gates:
+Git strategy:
+stop / ask conditions:
+```
+
+Execution may begin only after the plan identifies the next local critical-path
+step and any delegated streams. If the user says "continue", recover the
+current plan from `PROGRESS.md`, `workflows/agent_task_ledger.md`,
+`results/tmp/task_intake/`, or `results/agent_runs/*` before acting.
 
 For a learn-and-update audit, the task graph must also declare the round
 boundaries:
