@@ -611,6 +611,42 @@ Scene expansion order after the first scene:
 | P2 | `maze_indoor` | `CameraRoom`, challenge maps, indoor open assets | occlusion/local-replanning stress test |
 | P3 | `forest_dense` | licensed UE forest/open assets | dense obstacle and swarm extension |
 
+The full staged route is fixed now, but implementation is intentionally
+limited:
+
+| Stage | Profile | Implementation Status | Purpose |
+| --- | --- | --- | --- |
+| S0 | `renderer_framework` | active | UE5/MWORKS playback framework, object registry, collision proxy registry, camera, UAV, trail, radar/local-plan overlays |
+| S1 | `competition_industrial_hybrid` | active after S0 profile | first complete single-UAV navigation scene with industrial/challenge references |
+| S2 | `gate_ring_attitude` | planned only | tilted-frame/ring traversal and aggressive attitude-control display |
+| S3 | `park_city_patrol` | planned only | patrol/logistics style outdoor mission |
+| S4 | `open_grass_robustness` | planned only | wind, motor-efficiency, mass/inertia, sensor-noise and pulse-disturbance display |
+| S5 | `maze_indoor_occlusion` | planned only | wall occlusion, local map memory, no-through-wall radar, indoor replanning |
+| S6 | `dense_forest_high_obstacle` | planned only | dense local perception and high obstacle-count stress test |
+| S7 | `multi_uav_formation` | planned only | leader-follower, formation geometry, inter-UAV distance and formation avoidance |
+
+Current execution boundary:
+
+```text
+allowed now:
+  S0 renderer_framework
+  S1 competition_industrial_hybrid
+
+blocked pending later review:
+  S2-S7 implementation
+```
+
+Profiles for all stages live in:
+
+```text
+unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json
+```
+
+The file defines stage ids, map ids, source roles, visual classes, proxy
+classes, planner visibility rules, and acceptance checks. The Markdown plan is
+descriptive; the JSON profile is the machine-readable source for scripts and UE
+scene selection.
+
 Manual review checkpoints:
 
 ```text

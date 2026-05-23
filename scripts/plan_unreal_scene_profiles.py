@@ -16,47 +16,82 @@ DEFAULT_JSON = ROOT / "results/unreal/unreal_scene_profile_implementation_plan.j
 DEFAULT_MD = ROOT / "results/unreal/unreal_scene_profile_implementation_plan.md"
 
 PROFILE_RFLYSIM_REFERENCES = {
-    "dense_forest": ["rflysim_neighborhood_park", "rflysim_mountain_terrain"],
-    "maze_building": ["rflysim_challenge_map", "rflysim_old_factory"],
-    "old_factory": ["rflysim_old_factory"],
-    "gate_ring_indoor": ["rflysim_vision_ring", "rflysim_vision_ring_blank"],
-    "open_grass_wind": ["rflysim_grasslands_3d_display", "rflysim_grasslands"],
+    "renderer_framework": [],
+    "competition_industrial_hybrid": [
+        "rflysim_old_factory",
+        "rflysim_challenge_map",
+    ],
+    "gate_ring_attitude": ["rflysim_vision_ring", "rflysim_vision_ring_blank"],
+    "park_city_patrol": ["rflysim_neighborhood_park"],
+    "open_grass_robustness": ["rflysim_grasslands_3d_display", "rflysim_grasslands"],
+    "maze_indoor_occlusion": ["rflysim_challenge_map", "rflysim_old_factory"],
+    "dense_forest_high_obstacle": ["rflysim_neighborhood_park", "rflysim_mountain_terrain"],
+    "multi_uav_formation": [],
 }
 
 PROFILE_PROXY_BINDINGS = {
-    "dense_forest": {
-        "terrain": "terrain_heightfield",
-        "tree_trunks": "tree_trunk_capsule_or_box",
-        "rocks": "rock_box",
+    "renderer_framework": {
+        "optional_ground_plane": "optional_ground_plane",
     },
-    "maze_building": {
-        "walls": "wall_box",
-        "doors_or_passages": "passage_box",
-        "floor": "floor_plane",
+    "competition_industrial_hybrid": {
+        "terrain_or_floor": "terrain_heightfield_or_plane",
+        "takeoff_pad": "pad_box",
+        "landing_pad": "pad_box",
+        "pillars": "pillar_box_or_cylinder",
+        "boxes": "box_obstacle",
+        "short_walls": "wall_box",
+        "gate_or_frame": "gate_frame_boxes",
+        "inspection_targets": "inspection_target_box",
     },
-    "old_factory": {
-        "buildings": "building_box",
-        "pipes": "pipe_capsule",
-        "columns": "column_box",
-        "inspection_targets": "target_marker",
-    },
-    "gate_ring_indoor": {
+    "gate_ring_attitude": {
         "tilted_gate": "gate_frame_boxes",
         "ring": "ring_proxy",
         "indoor_floor": "safe_corridor",
     },
-    "open_grass_wind": {
+    "park_city_patrol": {
+        "terrain": "terrain_heightfield_or_plane",
+        "roads": "road_plane",
+        "buildings": "building_box",
+        "trees": "tree_trunk_capsule_or_box",
+        "inspection_waypoints": "waypoint_marker_box",
+    },
+    "open_grass_robustness": {
         "grass_field": "terrain_plane",
-        "gust_zone": "optional_boundary",
+        "gust_zone": "gust_zone_box",
+    },
+    "maze_indoor_occlusion": {
+        "walls": "wall_box",
+        "doors_or_passages": "passage_box",
+        "floor": "floor_plane",
+    },
+    "dense_forest_high_obstacle": {
+        "terrain": "terrain_heightfield",
+        "tree_trunks": "tree_trunk_capsule_or_box",
+        "rocks": "rock_box",
+    },
+    "multi_uav_formation": {
+        "shared_obstacles": "shared_obstacle_proxy",
     },
 }
 
 RUNTIME_VISUAL_CLASSES = {
     "actual_trail",
+    "axis_marker",
+    "body_axes",
+    "fault_efficiency_overlay",
+    "follow_camera",
+    "formation_links",
+    "inter_uav_distance_overlay",
+    "leader_trail",
     "local_known_map",
     "local_plan",
     "metric_overlay",
+    "multiple_UAVs",
+    "overview_camera",
+    "propellers",
     "radar_sector",
+    "role_labels",
+    "scene_status_overlay",
     "smooth_reference",
     "trail",
     "trajectory_trail",
@@ -175,9 +210,11 @@ def build_plan(profiles_doc: dict[str, Any], registry: dict[str, Any]) -> dict[s
         "rflysim_direct_editor_open_supported": registry.get("direct_editor_open_supported"),
         "profile_count": len(ordered),
         "profiles": [profile_plan(profile, index, registry) for index, profile in enumerate(ordered, start=1)],
+        "active_execution_scope": profiles_doc.get("active_execution_scope", {}),
+        "stage_roadmap": profiles_doc.get("stage_roadmap", []),
         "next_recommended_task": (
-            "Implement gate_ring_indoor first if the goal is attitude-control video; "
-            "implement maze_building first if the goal is local perception and replanning."
+            "Implement renderer_framework (S0) first, then competition_industrial_hybrid (S1). "
+            "Later stages are planning contracts only until user review unlocks them."
         ),
     }
 
@@ -192,6 +229,28 @@ def write_markdown(plan: dict[str, Any], path: Path) -> None:
         f"- RflySim direct editor open supported: `{plan['rflysim_direct_editor_open_supported']}`",
         f"- Profile count: `{plan['profile_count']}`",
         f"- Next recommended task: {plan['next_recommended_task']}",
+        "",
+        "## Active Execution Scope",
+        "",
+    ]
+    active_scope = plan.get("active_execution_scope", {})
+    if active_scope:
+        lines.append(f"- Allowed to implement now: {', '.join(f'`{item}`' for item in active_scope.get('allowed_to_implement_now', []))}")
+        lines.append(f"- Requires review before implementation: {', '.join(f'`{item}`' for item in active_scope.get('requires_user_review_before_implementation', []))}")
+        lines.append(f"- Rule: {active_scope.get('rule', '')}")
+    lines += [
+        "",
+        "## Stage Roadmap",
+        "",
+        "| Stage | Profile | Status | Objective | Manual Gate |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for stage in plan.get("stage_roadmap", []):
+        lines.append(
+            f"| `{stage.get('stage_id')}` | `{stage.get('profile_id')}` | "
+            f"`{stage.get('implementation_status')}` | {stage.get('objective')} | {stage.get('manual_gate')} |"
+        )
+    lines += [
         "",
         "## Runtime Targets",
         "",

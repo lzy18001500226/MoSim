@@ -13,6 +13,11 @@
   is the active plan. Do not start new UE5 scene implementation until the user
   reviews the scene source roles, first-scene family, data model, and acceptance
   gates.
+- UE scene roadmap now defines S0-S7 in
+  `unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json`.
+  Active implementation is limited to S0 `renderer_framework` and S1
+  `competition_industrial_hybrid`; S2-S7 are planning contracts only until
+  later review unlocks them.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.

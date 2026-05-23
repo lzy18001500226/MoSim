@@ -210,11 +210,14 @@ def main() -> int:
         print("[FAIL] Unreal scene profiles schema mismatch")
         return 1
     required_profiles = {
-        "dense_forest",
-        "maze_building",
-        "old_factory",
-        "gate_ring_indoor",
-        "open_grass_wind",
+        "renderer_framework",
+        "competition_industrial_hybrid",
+        "gate_ring_attitude",
+        "park_city_patrol",
+        "open_grass_robustness",
+        "maze_indoor_occlusion",
+        "dense_forest_high_obstacle",
+        "multi_uav_formation",
     }
     profiles = {profile.get("profile_id"): profile for profile in profiles_doc.get("profiles", [])}
     missing_profiles = sorted(required_profiles - set(profiles))
@@ -225,8 +228,12 @@ def main() -> int:
         if not profile.get("map_ids"):
             print(f"[FAIL] scene profile missing map_ids: {profile_id}")
             return 1
-        if profile_id in {"gate_ring_indoor", "maze_building"} and not profile.get("render_map_json"):
+        if profile_id in {"gate_ring_attitude", "maze_indoor_occlusion"} and not profile.get("render_map_json"):
             print(f"[FAIL] scene profile missing render_map_json: {profile_id}")
+            return 1
+        stage_id = profile.get("stage_id")
+        if not stage_id:
+            print(f"[FAIL] scene profile missing stage_id: {profile_id}")
             return 1
         truth = profile.get("truth_geometry", {})
         if truth.get("global_map_available_to_planner") is not False:
@@ -297,6 +304,14 @@ def main() -> int:
     if profile_plan.get("profile_count", 0) < len(required_profiles):
         print("[FAIL] Unreal scene profile implementation plan is incomplete")
         return 1
+    active_scope = profile_plan.get("active_execution_scope", {})
+    if active_scope.get("allowed_to_implement_now") != ["S0", "S1"]:
+        print("[FAIL] Unreal scene profile plan must keep active implementation scope to S0/S1")
+        return 1
+    stage_ids = {stage.get("stage_id") for stage in profile_plan.get("stage_roadmap", [])}
+    if not {"S0", "S1", "S2", "S3", "S4", "S5", "S6", "S7"}.issubset(stage_ids):
+        print("[FAIL] Unreal scene profile plan missing full S0-S7 roadmap")
+        return 1
     if profile_plan.get("rflysim_direct_use_supported") is not False:
         print("[FAIL] Unreal scene profile plan must keep RflySim as non-direct-use")
         return 1
@@ -307,7 +322,14 @@ def main() -> int:
         if not profile.get("reconstruction_units"):
             print(f"[FAIL] scene profile plan missing reconstruction units: {profile.get('profile_id')}")
             return 1
-        if profile.get("profile_id") in {"maze_building", "gate_ring_indoor", "open_grass_wind"}:
+        if profile.get("profile_id") in {
+            "competition_industrial_hybrid",
+            "gate_ring_attitude",
+            "park_city_patrol",
+            "open_grass_robustness",
+            "maze_indoor_occlusion",
+            "dense_forest_high_obstacle",
+        }:
             if not profile.get("rflysim_reference_scenes"):
                 print(f"[FAIL] scene profile plan missing RflySim reference scenes: {profile.get('profile_id')}")
                 return 1
