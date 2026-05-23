@@ -345,6 +345,54 @@ plugin modules such as `Rfly3DSimPlugin`, `CesiumRuntime`, `DTRedis`,
 solve this. A temporary UE editor pass is only diagnostic unless the missing
 source or matching editor plugin binaries are obtained.
 
+### Manual Archive / Extraction Gate
+
+Do not leave archive requirements implicit. If an archive must be unpacked by
+the user, report the exact archive, destination, purpose, and expected proof
+before continuing.
+
+Current archive decisions:
+
+| Archive family | Extract now? | Destination | Purpose | Reuse status |
+| --- | --- | --- | --- | --- |
+| `references/RflySim/RflySimAdv3Full/4.HILApps/scenes427/*.zip` | Only if a native RflySim runtime map is missing | External RflySim install tree such as `D:\PX4PSP`, not this repo | View/record RflySim reference scenes like `OldFactory`, `NeighborhoodPark`, `RobotMissionChallenge`, `ExhibitionHall`, `MatchScene2025` | Runtime/reference only; not editable UE5 source |
+| `references/RflySim/RflySimAdv3Full/4.HILApps/scenesUE5/Quarry.zip` | Only if testing the RflySim UE5 runtime scene | External RflySimUE5 tree, not this repo | View `Quarry` in the RflySim UE5 runtime | Runtime/reference only |
+| `references/RflySim/RflySimAdv3Full/4.HILApps/UE5/RflySim3DUE5.zip` and `RflySim3DExUE5.zip` | Only if the installed RflySimUE5 runtime is absent or corrupted | External installation/review location | Native UE5 RflySim runtime review | Do not import as our simulator base |
+| `references/RflySim/RflySimAdv3Full/4.HILApps/UE4/RflySim3D427.zip` and `RflySim3DEx427.zip` | Only if the installed UE4.27 RflySim runtime is absent or corrupted | External installation/review location | Native UE4.27 RflySim runtime review | Do not import as our simulator base |
+| AirSim/Cosys release environments | No, unless explicitly reviewing a packaged runtime demo | External temporary review directory | Visual reference only | Usually not editable scene source |
+| `references/Sunray/**` Gazebo/SDF/world assets | Already unpacked | Existing project reference tree | Convert or recreate scene layouts, objects, sensors, and planner truth in project-owned UE5 | Best current fallback source for editable/rebuildable scenes |
+
+If the goal is **our own simulator**, do not ask the user to unpack RflySim
+scene zips as the next step. The next step is to build or import a project-owned
+UE5 scene from editable/authorized sources. Use RflySim and YunZong/Sunray
+scenes as visual and layout references, then rebuild the map, object registry,
+collision proxies, and planner truth under our own UE5 project.
+
+Open-source scene-source reality check:
+
+1. AirSim/Cosys/Project AirSim are primarily **plugins / APIs / vehicle-sensor
+   frameworks**. Their bundled `Blocks` map is intentionally small; for
+   photorealistic scenes, official workflows expect users to create or provide
+   their own Unreal environment and drop the plugin into it.
+2. CARLA is a stronger open digital asset source for city/road scenes, but it
+   is heavy, car-oriented, and not a drop-in quadrotor simulator.
+3. UnrealROX/SPEAR-style projects are useful for indoor scene-control and
+   sensor/ground-truth patterns, but local builds may require old or specific
+   UE/plugin chains.
+4. The practical route for this project is a project-owned UE5 simulator shell:
+   MWORKS/Syslab/Sysplorer solver and evidence, project bridge, project-owned
+   scene profiles, and imported/recreated assets with explicit collision truth.
+
+External-source-backed summary:
+
+| Source | What it confirms | Project decision |
+| --- | --- | --- |
+| AirSim Blocks docs | Built-in Blocks is deliberately lightweight/basic and meant as a fast sanity environment | Do not keep showing Blocks as proof of rich scene availability |
+| AirSim custom-environment docs | High-quality AirSim usage is normally "bring your own Unreal environment, then copy/add the AirSim plugin" | Our simulator should own the UE scene and bridge, not wait for AirSim maps |
+| AirSim release notes | Rich released environments such as AirSimNH/LandscapeMountains are packaged demos and many cannot distribute source/project files because of proprietary assets | Treat released AirSim maps like RflySim-style runtime references unless editable source is obtained |
+| CARLA docs/repo | CARLA provides open digital assets and a map-import/content-authoring workflow, but it is automotive/road centered and heavy | Use as outdoor/city asset and import-pipeline reference, not as the UAV simulator core |
+| UnrealROX/SPEAR-style projects | Better fit for indoor photorealistic scene-control and sensor/ground-truth ideas | Use as scene-control/ground-truth reference; test editable maps only if build chain is stable |
+
 Questions for RflySim support:
 
 1. Does the free/advanced install provide an editable Unreal project for
