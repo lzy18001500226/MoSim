@@ -86,11 +86,16 @@ def make_frame(
     row: dict[str, float],
     *,
     sequence: int,
+    rows: list[dict[str, float]],
     scene_id: str,
     map_id: str,
     near_radius_m: float,
     far_radius_m: float,
     fov_deg: float,
+    local_map_grid_m: float,
+    local_map_radius_m: float,
+    local_map_cells: int,
+    local_plan_source: str,
 ) -> dict[str, Any]:
     position = [finite(row.get("x")), finite(row.get("y")), finite(row.get("z"))]
     rpy = [finite(row.get(name)) for name in RPY_COLUMNS]
@@ -130,6 +135,19 @@ def make_frame(
         "reference": {
             "position_m": reference,
         },
+        "mission": {
+            "start_m": [
+                finite(rows[0].get("x")),
+                finite(rows[0].get("y")),
+                finite(rows[0].get("z")),
+            ],
+            "goal_m": [
+                finite(rows[-1].get("x_ref"), finite(rows[-1].get("x"))),
+                finite(rows[-1].get("y_ref"), finite(rows[-1].get("y"))),
+                finite(rows[-1].get("z_ref"), finite(rows[-1].get("z"))),
+            ],
+            "current_goal_m": reference,
+        },
         "perception": {
             "radar_origin_m": position,
             "yaw_rad": yaw,
@@ -137,9 +155,42 @@ def make_frame(
             "far_radius_m": far_radius_m,
             "fov_deg": fov_deg,
         },
+        "local_known_map": {
+            "schema": "quadrotor.local_known_map.v1",
+            "origin_m": position,
+            "grid_m": local_map_grid_m,
+            "radius_m": local_map_radius_m,
+            "cells": [
+                {
+                    "offset": [0, 0, 0],
+                    "state": "observed_free",
+                    "source": "render_contract_smoke",
+                }
+            ][: max(local_map_cells, 0)],
+            "render_only": True,
+            "evidence_backed": False,
+        },
         "local_plan": {
             "points_m": local_plan,
-            "render_only": True,
+            "source": local_plan_source,
+            "render_only": local_plan_source == "preview_from_reference",
+            "evidence_backed": local_plan_source != "preview_from_reference",
+            "valid": local_plan_source != "preview_from_reference",
+        },
+        "status": {
+            "controller_mode": "unknown",
+            "planner_state": "render_contract_smoke",
+            "safety_state": "unknown",
+            "evidence_level": "render_only_preview",
+            "notes": "local_known_map and preview local_plan are display contracts unless evidence_backed=true",
+        },
+        "overlays": {
+            "scene_label": scene_id,
+            "map_label": map_id,
+            "quality_flags": [
+                "render_only_local_plan" if local_plan_source == "preview_from_reference" else "evidence_backed_local_plan",
+                "render_only_local_known_map",
+            ],
         },
     }
 
@@ -203,11 +254,16 @@ def stream_rows(args: argparse.Namespace) -> int:
                 frame = make_frame(
                     row,
                     sequence=seq,
+                    rows=rows,
                     scene_id=scene_id,
                     map_id=args.map_id,
                     near_radius_m=args.near_radius_m,
                     far_radius_m=args.far_radius_m,
                     fov_deg=args.fov_deg,
+                    local_map_grid_m=args.local_map_grid_m,
+                    local_map_radius_m=args.local_map_radius_m,
+                    local_map_cells=args.local_map_cells,
+                    local_plan_source=args.local_plan_source,
                 )
                 if seq > 0 and not args.no_sleep and not args.dry_run:
                     current_t = finite(row.get("time"), previous_t)
@@ -244,6 +300,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--near-radius-m", type=float, default=6.0)
     parser.add_argument("--far-radius-m", type=float, default=9.0)
     parser.add_argument("--fov-deg", type=float, default=120.0)
+    parser.add_argument("--local-map-grid-m", type=float, default=0.6)
+    parser.add_argument("--local-map-radius-m", type=float, default=6.0)
+    parser.add_argument("--local-map-cells", type=int, default=1, help="Small dry-run local map cell count placeholder")
+    parser.add_argument("--local-plan-source", default="preview_from_reference")
     parser.add_argument("--loop", action="store_true")
     parser.add_argument("--loop-count", type=int, default=0)
     parser.add_argument("--no-sleep", action="store_true", help="Send as fast as possible")
@@ -258,6 +318,10 @@ def main() -> int:
         raise ValueError("--replay-speed must be positive")
     if args.port <= 0 or args.port > 65535:
         raise ValueError("--port must be in 1..65535")
+    if args.local_map_grid_m <= 0:
+        raise ValueError("--local-map-grid-m must be positive")
+    if args.local_map_radius_m <= 0:
+        raise ValueError("--local-map-radius-m must be positive")
     return stream_rows(args)
 
 

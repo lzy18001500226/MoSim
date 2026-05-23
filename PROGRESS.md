@@ -27,6 +27,23 @@
   `scene_bounds_box`, `optional_ground_plane`, and `debug_collision_proxy`
   registry entries; S1 now has distinct takeoff and landing pad proxies. This is
   a scene-contract fix only. It is not UE viewport evidence.
+- 2026-05-23 UE MCP status distinction: `/mcp` may list the `unreal_engine`
+  tools, but the actual tool call still times out if Unreal Editor's plugin is
+  not reachable on TCP `55557`. Treat inventory success as wrapper availability
+  only, not viewport readiness.
+- 2026-05-23 S0/S1 packet contract extension: `stream_unreal_udp.py` now emits
+  `mission`, `local_known_map`, `status`, and `overlays` fields. These are
+  display contracts until `evidence_backed=true`; do not use preview packets as
+  proof of S1 local avoidance or occlusion behavior.
+- 2026-05-23 TaskSecretary intake: current goal is to resume S0/S1 Unreal
+  renderer work with a recoverable split. Main agent owns the critical path and
+  integration; `UEMCPProbe(Ptolemy)` owns the smallest UE MCP connection/read
+  probe; `SceneContractOwner(Maxwell)` owns no-viewport S0/S1 data-contract,
+  checks, and docs if MCP remains unavailable; `GitIntegrator` owns commit/push
+  only after checks pass. Acceptance: UE read probe plus viewport note when MCP
+  recovers, or no-viewport contract/check/doc update plus targeted verification
+  and pushed commit. Blocker: UE Editor UnrealMCP listener still unreachable
+  from WSL on `55557`, credentials, destructive cleanup, or unsafe Git state.
 - Active recovery goal for this turn: advance the next S0/S1 Unreal renderer
   round with recoverable sub-agent split. `UEMCPProbe(Ptolemy)` owns the
   smallest `unreal_engine` MCP blocker diagnosis; `SceneProfileAuditor(Maxwell)`
@@ -59,7 +76,7 @@
 | External docs learning | `ExternalDocsLearningOwner` | recurring-loop-defined | Use `docs/index/external_learning_index.md` and `workflows/agent_orchestration.md#71-recurring-learning-owner` when failures, new tools, new repos, or milestones trigger another learn-and-patch cycle. |
 | Vehicle parameter identification | `VehicleParamIdentificationResearcher` | local-code-audit-complete-awaiting-sunray-ulog | `references/Data` code audit is promoted to `workflows/identify_quadrotor_parameters.md`; first useful data package is RC-collected PX4 `.ulg` logs plus `.params`, exact takeoff mass, motor order, and motor/prop/ESC info. RPM or thrust-stand data remains optional but improves confidence. |
 | AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | done | Git-safe migration is complete and pushed. Tracked scopes now include Cosys tutorial/content assets under 100 MB, SPEAR source/reference subset, CARLA UE5 source/reference subset, and IsaacSim text/source subset. Remaining local ignored content is intentional: CARLA image/content packs, IsaacSim LFS-managed assets/cache/data, and SPEAR `third_party`/Content/generated assets. |
-| UE S0/S1 renderer next round | `TaskSecretary` + `UEMCPProbe(Ptolemy)` + `SceneProfileAuditor(Maxwell)` | source-contract-updated | Ptolemy found WSL cannot reach UE Editor `55557`; do not repeat `get_actors_in_level` until the editor plugin listener is confirmed. Maxwell found S0/S1 profile consistency gaps; S0 proxy registry and S1 distinct pad proxies were fixed at metadata level. Next safe action is UE MCP reconnection/manual plugin listener check, then smallest read probe and viewport review. |
+| UE S0/S1 renderer next round | `TaskSecretary` + `UEMCPProbe(Ptolemy)` + `SceneProfileAuditor(Maxwell)` + `RendererContractAuditor(Carson)` | packet-contract-updated | Ptolemy found WSL cannot reach UE Editor `55557`; latest probe still times out despite MCP inventory showing `unreal_engine` tools. Maxwell fixed S0/S1 metadata gaps. Carson identified missing S1 packet contracts; `stream_unreal_udp.py` now emits mission/local-map/status/overlay fields while keeping render-only flags explicit. Next safe action is UE MCP listener repair or C++ receiver parsing once the editor route is available. |
 
 ## Superseded Queues
 

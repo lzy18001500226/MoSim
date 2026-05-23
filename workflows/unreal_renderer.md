@@ -1641,6 +1641,22 @@ MWORKS raw CSV / native result
 
 The packet schema is `quadrotor.unreal_state.v1`.
 
+Current S0/S1 runtime packet contract:
+
+| Field | Purpose | Evidence status |
+| --- | --- | --- |
+| `uav.position_m`, `uav.rpy_rad` | UAV body pose and attitude | evidence-backed when sourced from MWORKS raw/native result |
+| `uav.motor_command` | propeller visual speed/angle driver | evidence-backed when sourced from controller/motor output |
+| `reference.position_m` | current reference marker | evidence-backed when sourced from MWORKS raw/native result |
+| `mission.start_m`, `mission.goal_m`, `mission.current_goal_m` | S1 start/goal/current-goal overlay | contract-ready; start/goal must be scenario-backed before formal claims |
+| `perception.radar_origin_m`, `yaw_rad`, `near_radius_m`, `far_radius_m`, `fov_deg` | radar sector display | contract-ready; occlusion truth still belongs to planner/perception evidence |
+| `local_known_map` | local observed/free/occupied/occluded-map display | render-contract placeholder until `evidence_backed=true` |
+| `local_plan.points_m` | local plan spline | render-only when `source=preview_from_reference`; formal S1 requires planner-backed points and clearance evidence |
+| `status`, `overlays` | controller/planner/safety state and quality flags | display contract; formal evidence must trace to MWORKS metrics/logs |
+
+Do not claim S1 local avoidance or occlusion behavior from a packet where
+`local_plan.render_only=true` or `local_known_map.evidence_backed=false`.
+
 ## Map Export
 
 Generate the render-only map JSON before building or refreshing the UE scene:
