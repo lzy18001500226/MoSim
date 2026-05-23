@@ -385,3 +385,20 @@ returns `Connection refused` while the UE log says the server started on
 `127.0.0.1:55557`, the WSL MCP wrapper is working but cannot reach the Windows
 loopback listener. Run the MCP Python server from Windows or change the editor
 plugin host binding before using MCP scene writes.
+
+Editor MCP and standalone runtime review are separate paths:
+
+```text
+Editor window:
+  scripts/probe_unreal_mcp_listener.py
+  unreal_engine read-only tools such as get_actors_in_level
+
+Standalone game window:
+  scripts/open_unreal_renderer.sh game
+  UDP receiver on Windows port 5005
+  scripts/review_unreal_s0_s1_renderer.sh
+```
+
+Do not require the editor MCP listener for a standalone `-game` window. Runtime
+readiness is proven by the game process, the UDP 5005 endpoint, and log lines
+showing map/playback actor spawn plus the first received MWORKS UDP frame.

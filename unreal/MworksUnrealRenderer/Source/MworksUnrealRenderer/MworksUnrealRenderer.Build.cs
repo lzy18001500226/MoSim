@@ -10,7 +10,8 @@ public class MworksUnrealRenderer : ModuleRules
         {
             "Core",
             "CoreUObject",
-            "Engine"
+            "Engine",
+            "QuadrotorMworksBridge"
         });
     }
 }

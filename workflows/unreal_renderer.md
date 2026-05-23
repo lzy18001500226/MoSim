@@ -1791,21 +1791,36 @@ python3 scripts/export_unreal_scene_map.py --terrain-cell-m 1.0
 python3 scripts/stream_unreal_udp.py <raw.csv> --max-frames 2 --dry-run
 ```
 
-If Unreal MCP is available, open the project first, then run a read-only probe
-such as project context or scene brief. If the wrapper hangs or the editor is
-not listening, do not modify the scene through MCP; continue with source-level
-changes and report the MCP state.
+If Unreal MCP is available, open the project editor first, then run a read-only
+probe such as project context or scene brief. If the wrapper hangs or the
+editor is not listening, do not modify the scene through MCP; continue with
+source-level changes and report the MCP state.
+
+Do not use the editor MCP listener as proof that a standalone `-game` review
+window is ready. The two routes are different:
+
+```text
+editor mode     -> UnrealMCP TCP listener, editor/asset/actor inspection
+standalone game -> UDP 5005 receiver, runtime actor spawn logs, viewport review
+```
 
 Before requesting manual viewport review, run:
 
 ```bash
 python3 scripts/check_unreal_s0_s1_readiness.py --build --check-listener
+bash scripts/review_unreal_s0_s1_renderer.sh
 ```
 
-`--check-listener` is expected to fail while the Unreal Editor MCP plugin is not
-reachable on TCP `55557` from `UNREAL_HOST`, the WSL default gateway, or
-`127.0.0.1`. In that case, source-level S0/S1 readiness can still be valid, but
-viewport readiness is not proven.
+`--check-listener` is an editor-mode gate only. It is expected to fail if the
+Unreal Editor MCP plugin is not reachable on TCP `55557` from `UNREAL_HOST`, the
+WSL default gateway, or `127.0.0.1`. In that case, source-level S0/S1 readiness
+can still be valid, but editor MCP work is not allowed.
+
+`scripts/review_unreal_s0_s1_renderer.sh` is the standalone game review gate.
+It starts or reuses `MworksUnrealRenderer.uproject -game`, waits for the game
+process to own UDP port 5005, then streams the MWORKS-derived replay packets.
+It must not wait for `probe_unreal_mcp_listener.py`, because standalone game
+windows do not expose the editor MCP listener.
 
 Current WSL note: the Unreal editor plugin starts its TCP server on Windows
 `127.0.0.1:55557`. A Python MCP server running inside WSL may not reach that

@@ -59,6 +59,7 @@ private:
 
     FSocket* Socket = nullptr;
     TSharedPtr<FUdpSocketReceiver> Receiver;
+    bool bLoggedFirstFrame = false;
 
     mutable FCriticalSection FrameMutex;
     FQuadrotorMworksFrame LatestFrame;

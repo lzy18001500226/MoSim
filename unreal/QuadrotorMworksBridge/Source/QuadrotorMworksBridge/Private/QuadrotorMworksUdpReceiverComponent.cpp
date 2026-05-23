@@ -57,6 +57,7 @@ void UQuadrotorMworksUdpReceiverComponent::EndPlay(const EEndPlayReason::Type En
 bool UQuadrotorMworksUdpReceiverComponent::StartReceiver()
 {
     StopReceiver();
+    bLoggedFirstFrame = false;
 
     FIPv4Address Address;
     if (!FIPv4Address::Parse(ListenAddress, Address))
@@ -126,6 +127,19 @@ void UQuadrotorMworksUdpReceiverComponent::HandleDatagram(const FArrayReaderPtr&
     if (!ParseFrameJson(Text, Frame))
     {
         return;
+    }
+
+    if (!bLoggedFirstFrame)
+    {
+        bLoggedFirstFrame = true;
+        UE_LOG(
+            LogTemp,
+            Display,
+            TEXT("Quadrotor MWORKS UDP first frame: scene=%s map=%s seq=%d t=%.3f"),
+            *Frame.SceneId,
+            *Frame.MapId,
+            Frame.Sequence,
+            Frame.TimeSeconds);
     }
 
     AsyncTask(ENamedThreads::GameThread, [this, Frame]()
