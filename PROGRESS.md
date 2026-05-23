@@ -54,6 +54,9 @@
   `scripts/probe_unreal_mcp_listener.py` before future interactive UE MCP work;
   do not retry actor/Blueprint tools while the editor-side listener is
   unreachable.
+- 2026-05-23 UE renderer build: `scripts/build_unreal_renderer.sh` passed after
+  the packet receiver extension, including UHT and `QuadrotorMworksBridge`
+  compile/link. Generated `Binaries/` and `Intermediate/` outputs are ignored.
 - 2026-05-23 TaskSecretary intake: current goal is to resume S0/S1 Unreal
   renderer work with a recoverable split. Main agent owns the critical path and
   integration; `UEMCPProbe(Ptolemy)` owns the smallest UE MCP connection/read
@@ -96,7 +99,7 @@
 | Vehicle parameter identification | `VehicleParamIdentificationResearcher` | local-code-audit-complete-awaiting-sunray-ulog | `references/Data` code audit is promoted to `workflows/identify_quadrotor_parameters.md`; first useful data package is RC-collected PX4 `.ulg` logs plus `.params`, exact takeoff mass, motor order, and motor/prop/ESC info. RPM or thrust-stand data remains optional but improves confidence. |
 | AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | done | Git-safe migration is complete and pushed. Tracked scopes now include Cosys tutorial/content assets under 100 MB, SPEAR source/reference subset, CARLA UE5 source/reference subset, and IsaacSim text/source subset. Remaining local ignored content is intentional: CARLA image/content packs, IsaacSim LFS-managed assets/cache/data, and SPEAR `third_party`/Content/generated assets. |
 | UE S0/S1 renderer next round | `TaskSecretary` + `UEMCPProbe(Ptolemy)` + `SceneProfileAuditor(Maxwell)` + `RendererContractAuditor(Carson)` | listener-blocked-source-progress-ok | Ptolemy found WSL cannot reach UE Editor `55557`; latest `get_actors_in_level` still times out despite MCP inventory showing `unreal_engine` tools. Maxwell fixed S0/S1 metadata gaps. Carson identified missing S1 packet contracts; `stream_unreal_udp.py` now emits mission/local-map/status/overlay fields while keeping render-only flags explicit, and the UE C++ receiver now parses them. Next safe action is listener repair/probe before viewport work. |
-| UE C++ UDP packet receiver | main agent | verify | Source-level compatible parsing for Python packet fields `mission`, `local_known_map`, `status`, and `overlays` has been implemented; run targeted static/package checks and commit/push if clean. |
+| UE C++ UDP packet receiver | main agent | done | Source-level compatible parsing for Python packet fields `mission`, `local_known_map`, `status`, and `overlays` is implemented, static checks passed, and UE 5.7 UBT/UHT build passed. |
 
 ## Superseded Queues
 
