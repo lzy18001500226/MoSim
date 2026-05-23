@@ -243,6 +243,16 @@ project. The Python MCP server talks to that editor plugin on `127.0.0.1:55557`.
 If Unreal is not open or the plugin is not enabled, `tools/list` can still work,
 but actor/Blueprint tools will fail with connection refused.
 
+Before running interactive actor/Blueprint tools, check the editor-side socket:
+
+```bash
+python3 scripts/probe_unreal_mcp_listener.py --host 127.0.0.1 --port 55557
+```
+
+If this fails, do not keep retrying actor/Blueprint MCP tools. Fix the Unreal
+Editor/plugin/listener route first, or continue only with source-level files and
+document the missing viewport evidence.
+
 Keep this separate from the project-owned external renderer plugin:
 
 ```text
@@ -270,6 +280,7 @@ Interpretation of Unreal MCP checks:
 | MCP `initialize` succeeds | WSL wrapper and Python server are working |
 | MCP `tools/list` returns tools | stdio MCP side is usable |
 | `get_actors_in_level` returns `Connection refused` | UE Editor plugin is not loaded/listening yet |
+| `get_actors_in_level` returns `Connection timeout` | UE Editor plugin listener is unreachable from the MCP server path |
 | `get_actors_in_level` returns actors | Editor-side MCP is ready for scene automation |
 
 ---
