@@ -1,0 +1,1095 @@
+{
+  "schema": "quadrotor.unreal_render_map.v1",
+  "source_config": "scripts/create_competition_industrial_hybrid_render_map.py",
+  "render_only": true,
+  "truth_policy": "S1 blockout visualizes collision-proxy-equivalent geometry but does not feed global truth into MWORKS planning or metrics",
+  "units": {
+    "position": "m",
+    "angle": "rad"
+  },
+  "bounds_m": {
+    "x": [
+      -22.0,
+      22.0
+    ],
+    "y": [
+      -14.0,
+      14.0
+    ],
+    "z": [
+      0.0,
+      3.8
+    ]
+  },
+  "start_m": [
+    -18.0,
+    -10.0,
+    1.0
+  ],
+  "goal_m": [
+    18.0,
+    10.0,
+    1.0
+  ],
+  "terrain": {
+    "origin_m": [
+      -22.0,
+      -14.0,
+      0.0
+    ],
+    "cell_m": 2.0,
+    "count": [
+      23,
+      15
+    ],
+    "height_m": [
+      [
+        0.08,
+        0.13,
+        0.18,
+        0.185,
+        0.095,
+        0.145,
+        0.15,
+        0.2,
+        0.11,
+        0.115,
+        0.165,
+        0.215,
+        0.095,
+        0.115,
+        0.18,
+        0.2,
+        0.08,
+        0.145,
+        0.165,
+        0.185,
+        0.11,
+        0.13,
+        0.15
+      ],
+      [
+        0.165,
+        0.215,
+        0.08,
+        0.13,
+        0.18,
+        0.185,
+        0.095,
+        0.145,
+        0.15,
+        0.2,
+        0.11,
+        0.115,
+        0.18,
+        0.2,
+        0.08,
+        0.145,
+        0.165,
+        0.185,
+        0.11,
+        0.13,
+        0.15,
+        0.215,
+        0.095
+      ],
+      [
+        0.11,
+        0.115,
+        0.165,
+        0.215,
+        0.08,
+        0.13,
+        0.18,
+        0.185,
+        0.095,
+        0.145,
+        0.15,
+        0.2,
+        0.08,
+        0.145,
+        0.165,
+        0.185,
+        0.11,
+        0.13,
+        0.15,
+        0.215,
+        0.095,
+        0.115,
+        0.18
+      ],
+      [
+        0.15,
+        0.2,
+        0.11,
+        0.115,
+        0.165,
+        0.215,
+        0.08,
+        0.13,
+        0.18,
+        0.185,
+        0.095,
+        0.145,
+        0.165,
+        0.185,
+        0.11,
+        0.13,
+        0.15,
+        0.215,
+        0.095,
+        0.115,
+        0.18,
+        0.2,
+        0.08
+      ],
+      [
+        0.095,
+        0.145,
+        0.15,
+        0.2,
+        0.11,
+        0.115,
+        0.165,
+        0.215,
+        0.08,
+        0.13,
+        0.18,
+        0.185,
+        0.11,
+        0.13,
+        0.15,
+        0.215,
+        0.095,
+        0.115,
+        0.18,
+        0.2,
+        0.08,
+        0.145,
+        0.165
+      ],
+      [
+        0.18,
+        0.185,
+        0.095,
+        0.145,
+        0.15,
+        0.2,
+        0.11,
+        0.115,
+        0.165,
+        0.215,
+        0.08,
+        0.13,
+        0.15,
+        0.215,
+        0.095,
+        0.115,
+        0.18,
+        0.2,
+        0.08,
+        0.145,
+        0.165,
+        0.185,
+        0.11
+      ],
+      [
+        0.08,
+        0.13,
+        0.18,
+        0.185,
+        0.095,
+        0.145,
+        0.15,
+        0.2,
+        0.11,
+        0.115,
+        0.165,
+        0.215,
+        0.095,
+        0.115,
+        0.18,
+        0.2,
+        0.08,
+        0.145,
+        0.165,
+        0.185,
+        0.11,
+        0.13,
+        0.15
+      ],
+      [
+        0.165,
+        0.215,
+        0.08,
+        0.13,
+        0.18,
+        0.185,
+        0.095,
+        0.145,
+        0.15,
+        0.2,
+        0.11,
+        0.115,
+        0.18,
+        0.2,
+        0.08,
+        0.145,
+        0.165,
+        0.185,
+        0.11,
+        0.13,
+        0.15,
+        0.215,
+        0.095
+      ],
+      [
+        0.08,
+        0.13,
+        0.18,
+        0.185,
+        0.095,
+        0.145,
+        0.15,
+        0.2,
+        0.11,
+        0.115,
+        0.165,
+        0.215,
+        0.095,
+        0.115,
+        0.18,
+        0.2,
+        0.08,
+        0.145,
+        0.165,
+        0.185,
+        0.11,
+        0.13,
+        0.15
+      ],
+      [
+        0.18,
+        0.185,
+        0.095,
+        0.145,
+        0.15,
+        0.2,
+        0.11,
+        0.115,
+        0.165,
+        0.215,
+        0.08,
+        0.13,
+        0.15,
+        0.215,
+        0.095,
+        0.115,
+        0.18,
+        0.2,
+        0.08,
+        0.145,
+        0.165,
+        0.185,
+        0.11
+      ],
+      [
+        0.095,
+        0.145,
+        0.15,
+        0.2,
+        0.11,
+        0.115,
+        0.165,
+        0.215,
+        0.08,
+        0.13,
+        0.18,
+        0.185,
+        0.11,
+        0.13,
+        0.15,
+        0.215,
+        0.095,
+        0.115,
+        0.18,
+        0.2,
+        0.08,
+        0.145,
+        0.165
+      ],
+      [
+        0.15,
+        0.2,
+        0.11,
+        0.115,
+        0.165,
+        0.215,
+        0.08,
+        0.13,
+        0.18,
+        0.185,
+        0.095,
+        0.145,
+        0.165,
+        0.185,
+        0.11,
+        0.13,
+        0.15,
+        0.215,
+        0.095,
+        0.115,
+        0.18,
+        0.2,
+        0.08
+      ],
+      [
+        0.11,
+        0.115,
+        0.165,
+        0.215,
+        0.08,
+        0.13,
+        0.18,
+        0.185,
+        0.095,
+        0.145,
+        0.15,
+        0.2,
+        0.08,
+        0.145,
+        0.165,
+        0.185,
+        0.11,
+        0.13,
+        0.15,
+        0.215,
+        0.095,
+        0.115,
+        0.18
+      ],
+      [
+        0.165,
+        0.215,
+        0.08,
+        0.13,
+        0.18,
+        0.185,
+        0.095,
+        0.145,
+        0.15,
+        0.2,
+        0.11,
+        0.115,
+        0.18,
+        0.2,
+        0.08,
+        0.145,
+        0.165,
+        0.185,
+        0.11,
+        0.13,
+        0.15,
+        0.215,
+        0.095
+      ],
+      [
+        0.08,
+        0.13,
+        0.18,
+        0.185,
+        0.095,
+        0.145,
+        0.15,
+        0.2,
+        0.11,
+        0.115,
+        0.165,
+        0.215,
+        0.095,
+        0.115,
+        0.18,
+        0.2,
+        0.08,
+        0.145,
+        0.165,
+        0.185,
+        0.11,
+        0.13,
+        0.15
+      ]
+    ],
+    "height_policy": "deterministic low-detail S1 blockout floor; final art replaces this"
+  },
+  "obstacles": {
+    "random_columns": [
+      {
+        "id": "s1_pillar_01",
+        "semantic": "pillar",
+        "center_m": [
+          -13.0,
+          -5.0,
+          1.75
+        ],
+        "extent_m": [
+          0.5,
+          0.5,
+          3.5
+        ],
+        "min_m": [
+          -13.25,
+          -5.25,
+          0.0
+        ],
+        "max_m": [
+          -12.75,
+          -4.75,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_pillar_01"
+        }
+      },
+      {
+        "id": "s1_pillar_02",
+        "semantic": "pillar",
+        "center_m": [
+          -9.5,
+          6.5,
+          1.75
+        ],
+        "extent_m": [
+          0.5,
+          0.5,
+          3.5
+        ],
+        "min_m": [
+          -9.75,
+          6.25,
+          0.0
+        ],
+        "max_m": [
+          -9.25,
+          6.75,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_pillar_02"
+        }
+      },
+      {
+        "id": "s1_pillar_03",
+        "semantic": "pillar",
+        "center_m": [
+          -3.5,
+          -8.0,
+          1.75
+        ],
+        "extent_m": [
+          0.5,
+          0.5,
+          3.5
+        ],
+        "min_m": [
+          -3.75,
+          -8.25,
+          0.0
+        ],
+        "max_m": [
+          -3.25,
+          -7.75,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_pillar_03"
+        }
+      },
+      {
+        "id": "s1_pillar_04",
+        "semantic": "pillar",
+        "center_m": [
+          2.5,
+          7.0,
+          1.75
+        ],
+        "extent_m": [
+          0.5,
+          0.5,
+          3.5
+        ],
+        "min_m": [
+          2.25,
+          6.75,
+          0.0
+        ],
+        "max_m": [
+          2.75,
+          7.25,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_pillar_04"
+        }
+      },
+      {
+        "id": "s1_pillar_05",
+        "semantic": "pillar",
+        "center_m": [
+          8.5,
+          -3.0,
+          1.75
+        ],
+        "extent_m": [
+          0.5,
+          0.5,
+          3.5
+        ],
+        "min_m": [
+          8.25,
+          -3.25,
+          0.0
+        ],
+        "max_m": [
+          8.75,
+          -2.75,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_pillar_05"
+        }
+      },
+      {
+        "id": "s1_pillar_06",
+        "semantic": "pillar",
+        "center_m": [
+          14.0,
+          5.0,
+          1.75
+        ],
+        "extent_m": [
+          0.5,
+          0.5,
+          3.5
+        ],
+        "min_m": [
+          13.75,
+          4.75,
+          0.0
+        ],
+        "max_m": [
+          14.25,
+          5.25,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_pillar_06"
+        }
+      },
+      {
+        "id": "s1_crate_01",
+        "semantic": "box_obstacle",
+        "center_m": [
+          -6.5,
+          1.0,
+          0.6
+        ],
+        "extent_m": [
+          1.2,
+          1.2,
+          1.2
+        ],
+        "min_m": [
+          -7.1,
+          0.4,
+          0.0
+        ],
+        "max_m": [
+          -5.9,
+          1.6,
+          1.2
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_crate_01"
+        }
+      },
+      {
+        "id": "s1_crate_02",
+        "semantic": "box_obstacle",
+        "center_m": [
+          6.5,
+          -7.0,
+          0.75
+        ],
+        "extent_m": [
+          1.6,
+          1.0,
+          1.5
+        ],
+        "min_m": [
+          5.7,
+          -7.5,
+          0.0
+        ],
+        "max_m": [
+          7.3,
+          -6.5,
+          1.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_crate_02"
+        }
+      },
+      {
+        "id": "s1_crate_03",
+        "semantic": "box_obstacle",
+        "center_m": [
+          12.0,
+          -9.0,
+          0.5
+        ],
+        "extent_m": [
+          1.0,
+          1.4,
+          1.0
+        ],
+        "min_m": [
+          11.5,
+          -9.7,
+          0.0
+        ],
+        "max_m": [
+          12.5,
+          -8.3,
+          1.0
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_crate_03"
+        }
+      },
+      {
+        "id": "s1_inspection_target_01",
+        "semantic": "inspection_target",
+        "center_m": [
+          -1.5,
+          10.0,
+          1.0
+        ],
+        "extent_m": [
+          1.0,
+          0.3,
+          2.0
+        ],
+        "min_m": [
+          -2.0,
+          9.85,
+          0.0
+        ],
+        "max_m": [
+          -1.0,
+          10.15,
+          2.0
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_inspection_target_01"
+        }
+      },
+      {
+        "id": "s1_inspection_target_02",
+        "semantic": "inspection_target",
+        "center_m": [
+          16.0,
+          -1.5,
+          1.0
+        ],
+        "extent_m": [
+          1.0,
+          0.3,
+          2.0
+        ],
+        "min_m": [
+          15.5,
+          -1.65,
+          0.0
+        ],
+        "max_m": [
+          16.5,
+          -1.35,
+          2.0
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_inspection_target_02"
+        }
+      }
+    ],
+    "wall_boxes": [
+      {
+        "id": "s1_wall_l_left_long",
+        "semantic": "wall",
+        "center_m": [
+          -14.0,
+          0.0,
+          1.75
+        ],
+        "extent_m": [
+          0.35,
+          10.0,
+          3.5
+        ],
+        "min_m": [
+          -14.175,
+          -5.0,
+          0.0
+        ],
+        "max_m": [
+          -13.825,
+          5.0,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_wall_l_left_long"
+        }
+      },
+      {
+        "id": "s1_wall_l_left_short",
+        "semantic": "wall",
+        "center_m": [
+          -10.5,
+          -5.0,
+          1.75
+        ],
+        "extent_m": [
+          7.0,
+          0.35,
+          3.5
+        ],
+        "min_m": [
+          -14.0,
+          -5.175,
+          0.0
+        ],
+        "max_m": [
+          -7.0,
+          -4.825,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_wall_l_left_short"
+        }
+      },
+      {
+        "id": "s1_wall_t_mid_long",
+        "semantic": "wall",
+        "center_m": [
+          1.0,
+          0.0,
+          1.75
+        ],
+        "extent_m": [
+          10.0,
+          0.35,
+          3.5
+        ],
+        "min_m": [
+          -4.0,
+          -0.175,
+          0.0
+        ],
+        "max_m": [
+          6.0,
+          0.175,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_wall_t_mid_long"
+        }
+      },
+      {
+        "id": "s1_wall_t_mid_short",
+        "semantic": "wall",
+        "center_m": [
+          -4.0,
+          3.0,
+          1.75
+        ],
+        "extent_m": [
+          0.35,
+          6.0,
+          3.5
+        ],
+        "min_m": [
+          -4.175,
+          0.0,
+          0.0
+        ],
+        "max_m": [
+          -3.825,
+          6.0,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_wall_t_mid_short"
+        }
+      },
+      {
+        "id": "s1_wall_l_right_long",
+        "semantic": "wall",
+        "center_m": [
+          12.0,
+          1.0,
+          1.75
+        ],
+        "extent_m": [
+          0.35,
+          9.0,
+          3.5
+        ],
+        "min_m": [
+          11.825,
+          -3.5,
+          0.0
+        ],
+        "max_m": [
+          12.175,
+          5.5,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_wall_l_right_long"
+        }
+      },
+      {
+        "id": "s1_wall_l_right_short",
+        "semantic": "wall",
+        "center_m": [
+          15.5,
+          5.5,
+          1.75
+        ],
+        "extent_m": [
+          7.0,
+          0.35,
+          3.5
+        ],
+        "min_m": [
+          12.0,
+          5.325,
+          0.0
+        ],
+        "max_m": [
+          19.0,
+          5.675,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_wall_l_right_short"
+        }
+      },
+      {
+        "id": "s1_gate_left_post",
+        "semantic": "gate",
+        "center_m": [
+          4.0,
+          -10.0,
+          1.75
+        ],
+        "extent_m": [
+          0.35,
+          0.35,
+          3.5
+        ],
+        "min_m": [
+          3.825,
+          -10.175,
+          0.0
+        ],
+        "max_m": [
+          4.175,
+          -9.825,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_gate_left_post"
+        }
+      },
+      {
+        "id": "s1_gate_right_post",
+        "semantic": "gate",
+        "center_m": [
+          7.0,
+          -10.0,
+          1.75
+        ],
+        "extent_m": [
+          0.35,
+          0.35,
+          3.5
+        ],
+        "min_m": [
+          6.825,
+          -10.175,
+          0.0
+        ],
+        "max_m": [
+          7.175,
+          -9.825,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_gate_right_post"
+        }
+      },
+      {
+        "id": "s1_gate_top_beam",
+        "semantic": "gate",
+        "center_m": [
+          5.5,
+          -10.0,
+          3.35
+        ],
+        "extent_m": [
+          3.35,
+          0.35,
+          0.3
+        ],
+        "min_m": [
+          3.825,
+          -10.175,
+          3.2
+        ],
+        "max_m": [
+          7.175,
+          -9.825,
+          3.5
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_gate_top_beam"
+        }
+      },
+      {
+        "id": "s1_takeoff_pad",
+        "semantic": "marker",
+        "center_m": [
+          -18.0,
+          -10.0,
+          0.04
+        ],
+        "extent_m": [
+          2.0,
+          2.0,
+          0.08
+        ],
+        "min_m": [
+          -19.0,
+          -11.0,
+          0.0
+        ],
+        "max_m": [
+          -17.0,
+          -9.0,
+          0.08
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_takeoff_pad"
+        }
+      },
+      {
+        "id": "s1_landing_pad",
+        "semantic": "marker",
+        "center_m": [
+          18.0,
+          10.0,
+          0.04
+        ],
+        "extent_m": [
+          2.0,
+          2.0,
+          0.08
+        ],
+        "min_m": [
+          17.0,
+          9.0,
+          0.0
+        ],
+        "max_m": [
+          19.0,
+          11.0,
+          0.08
+        ],
+        "source": {
+          "source_note": "project_owned_s1_blockout",
+          "collision_proxy_id": "proxy_s1_landing_pad"
+        }
+      }
+    ],
+    "random_cluster_count": 8,
+    "random_column_count": 11,
+    "wall_box_count": 11
+  },
+  "materials": {
+    "terrain_low": {
+      "color": [
+        0.55,
+        0.58,
+        0.56
+      ]
+    },
+    "terrain_high": {
+      "color": [
+        0.7,
+        0.72,
+        0.7
+      ]
+    },
+    "random_column": {
+      "color": [
+        0.55,
+        0.58,
+        0.62
+      ]
+    },
+    "wall": {
+      "color": [
+        0.74,
+        0.73,
+        0.69
+      ]
+    },
+    "radar_near": {
+      "color": [
+        0.1,
+        0.65,
+        1.0
+      ],
+      "alpha": 0.32
+    },
+    "radar_far": {
+      "color": [
+        0.82,
+        0.88,
+        0.92
+      ],
+      "alpha": 0.22
+    }
+  }
+}

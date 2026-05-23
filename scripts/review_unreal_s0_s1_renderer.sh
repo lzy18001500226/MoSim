@@ -7,6 +7,8 @@ set -euo pipefail
 PROJECT_ROOT="/mnt/c/Users/HP/Desktop/Quadrotor"
 RAW_CSV="${1:-${PROJECT_ROOT}/results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/raw/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.csv}"
 UNREAL_HOST="${UNREAL_HOST:-$(ip route | awk '/^default/ {print $3; exit}')}"
+SCENE_ID="${SCENE_ID:-renderer_framework_manual_review}"
+MAP_ID="${MAP_ID:-renderer_framework}"
 
 cd "${PROJECT_ROOT}"
 
@@ -26,8 +28,8 @@ powershell.exe -NoProfile -Command \
 python3 scripts/stream_unreal_udp.py "${RAW_CSV}" \
   --host "${UNREAL_HOST}" \
   --port 5005 \
-  --scene-id renderer_framework_manual_review \
-  --map-id renderer_framework \
+  --scene-id "${SCENE_ID}" \
+  --map-id "${MAP_ID}" \
   --fps 20 \
   --replay-speed 1.0 \
   --print-every 100

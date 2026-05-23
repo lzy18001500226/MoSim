@@ -71,7 +71,7 @@
                 "competition_industrial_hybrid",
                 "match_industrial_challenge"
             ],
-            "render_map_json": "",
+            "render_map_json": "MworksData/map_competition_industrial_hybrid_render_map.json",
             "priority": "P0",
             "purpose": "first complete single-UAV navigation scene combining challenge objects, industrial inspection context, local perception, realtime replanning and trajectory tracking",
             "render_world": {

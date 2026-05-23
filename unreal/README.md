@@ -402,3 +402,15 @@ Standalone game window:
 Do not require the editor MCP listener for a standalone `-game` window. Runtime
 readiness is proven by the game process, the UDP 5005 endpoint, and log lines
 showing map/playback actor spawn plus the first received MWORKS UDP frame.
+
+To review the S1 `competition_industrial_hybrid` blockout instead of the S0
+framework route:
+
+```bash
+SCENE_ID=competition_industrial_hybrid_manual_review \
+MAP_ID=competition_industrial_hybrid \
+bash scripts/review_unreal_s0_s1_renderer.sh
+```
+
+This validates the renderer/profile/proxy/map handoff only. It is not a claim
+that final art or planner-backed local avoidance is complete.

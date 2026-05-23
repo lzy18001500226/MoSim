@@ -1822,6 +1822,25 @@ process to own UDP port 5005, then streams the MWORKS-derived replay packets.
 It must not wait for `probe_unreal_mcp_listener.py`, because standalone game
 windows do not expose the editor MCP listener.
 
+For S1 blockout review, use the same gate with explicit scene/map IDs:
+
+```bash
+SCENE_ID=competition_industrial_hybrid_manual_review \
+MAP_ID=competition_industrial_hybrid \
+bash scripts/review_unreal_s0_s1_renderer.sh
+```
+
+Expected runtime log evidence:
+
+```text
+Selected project-owned map_id=competition_industrial_hybrid profile=competition_industrial_hybrid
+Loaded MWORKS render map ... map_competition_industrial_hybrid_render_map.json
+```
+
+The S1 blockout map is a project-owned visual/proxy review artifact. It is not
+final art and it does not prove formal S1 local-avoidance behavior while packet
+fields remain marked `render_only` or `evidence_backed=false`.
+
 Current WSL note: the Unreal editor plugin starts its TCP server on Windows
 `127.0.0.1:55557`. A Python MCP server running inside WSL may not reach that
 Windows loopback address directly. If `get_actors_in_level` reports

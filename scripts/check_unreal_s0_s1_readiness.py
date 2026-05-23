@@ -24,6 +24,8 @@ SAMPLE_RAW = (
     / "sunray150_planning_open_blocks_linear_mpc_sysblock/raw/"
     / "sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.csv"
 )
+S1_RENDER_MAP = ROOT / "unreal/MworksUnrealRenderer/Content/MworksData/map_competition_industrial_hybrid_render_map.json"
+SCENE_PROFILES = ROOT / "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json"
 
 
 def run_step(name: str, command: list[str], *, expect_success: bool = True) -> bool:
@@ -121,6 +123,51 @@ def run_packet_check() -> bool:
     )
 
 
+def run_s1_render_map_check() -> bool:
+    print("== S1 competition industrial hybrid render map ==")
+    if not S1_RENDER_MAP.exists():
+        print(f"[FAIL] S1 render map missing: {S1_RENDER_MAP.relative_to(ROOT)}")
+        return False
+    if not SCENE_PROFILES.exists():
+        print(f"[FAIL] scene profiles missing: {SCENE_PROFILES.relative_to(ROOT)}")
+        return False
+
+    render_map = json.loads(S1_RENDER_MAP.read_text(encoding="utf-8"))
+    profiles_doc = json.loads(SCENE_PROFILES.read_text(encoding="utf-8"))
+    profiles = {profile.get("profile_id"): profile for profile in profiles_doc.get("profiles", [])}
+    s1_profile = profiles.get("competition_industrial_hybrid")
+    if not s1_profile:
+        print("[FAIL] S1 profile missing: competition_industrial_hybrid")
+        return False
+    expected = "MworksData/map_competition_industrial_hybrid_render_map.json"
+    if s1_profile.get("render_map_json") != expected:
+        print(f"[FAIL] S1 profile render_map_json must be {expected}")
+        return False
+
+    if render_map.get("schema") != "quadrotor.unreal_render_map.v1":
+        print("[FAIL] S1 render map schema mismatch")
+        return False
+    if render_map.get("render_only") is not True:
+        print("[FAIL] S1 render map must be render_only")
+        return False
+    obstacles = render_map.get("obstacles", {})
+    terrain = render_map.get("terrain", {})
+    if terrain.get("count", [0, 0])[0] < 10 or terrain.get("count", [0, 0])[1] < 8:
+        print("[FAIL] S1 terrain grid is too small for manual review")
+        return False
+    if obstacles.get("random_column_count", 0) < 8:
+        print("[FAIL] S1 render map needs at least 8 pillar/box/target instances")
+        return False
+    if obstacles.get("wall_box_count", 0) < 8:
+        print("[FAIL] S1 render map needs at least 8 wall/gate/pad instances")
+        return False
+    if not render_map.get("start_m") or not render_map.get("goal_m"):
+        print("[FAIL] S1 render map missing start_m/goal_m")
+        return False
+    print("[OK] S1 render map is bound and reviewable")
+    return True
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check-listener", action="store_true", help="Also require the Unreal Editor MCP listener")
@@ -152,6 +199,7 @@ def main() -> int:
             "--package-dir",
             "unreal/migration_staging/competition_industrial_hybrid",
         ]),
+        run_s1_render_map_check(),
         run_packet_check(),
     ]
 
