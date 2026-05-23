@@ -76,6 +76,12 @@
   the WSL gateway (`TimeoutError`) and `127.0.0.1` (`ConnectionRefusedError`).
   Source-level S0/S1 checks and standalone UDP runtime review remain valid, but
   editor/viewport MCP verification is not complete in the current state.
+- 2026-05-23 completion audit: read-only reviewer `Erdos` found S0/S1
+  scene/profile/proxy/packet/C++ contracts and standalone review documentation
+  source-ready, but the active goal is not complete while current Editor MCP
+  listener verification fails. Continue only source-level or standalone `-game`
+  UDP work until the editor plugin listener and one read-only actor probe pass
+  again.
 - 2026-05-23 TaskSecretary intake: current goal is to resume S0/S1 Unreal
   renderer work with a recoverable split. Main agent owns the critical path and
   integration; `UEMCPProbe(Ptolemy)` owns the smallest UE MCP connection/read
@@ -85,9 +91,10 @@
   recovers, or no-viewport contract/check/doc update plus targeted verification
   and pushed commit. Blocker: UE Editor UnrealMCP listener still unreachable
   from WSL on `55557`, credentials, destructive cleanup, or unsafe Git state.
-- Active recovery goal for this turn: advance the next S0/S1 Unreal renderer
-  round with recoverable sub-agent split. `UEMCPProbe(Ptolemy)` owns the
-  smallest `unreal_engine` MCP blocker diagnosis; `SceneProfileAuditor(Maxwell)`
+- Current recoverable S0/S1 work state: source and standalone game review
+  contracts are ready; Editor MCP work remains gated by the live listener probe.
+  `UEMCPProbe(Ptolemy)` owns the smallest `unreal_engine` MCP blocker diagnosis;
+  `SceneProfileAuditor(Maxwell)`
   owns the read-only S0/S1 profile/workflow/code-contract audit. Main agent
   integrates only after those reports identify safe next writes and checks.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
@@ -117,7 +124,7 @@
 | External docs learning | `ExternalDocsLearningOwner` | recurring-loop-defined | Use `docs/index/external_learning_index.md` and `workflows/agent_orchestration.md#71-recurring-learning-owner` when failures, new tools, new repos, or milestones trigger another learn-and-patch cycle. |
 | Vehicle parameter identification | `VehicleParamIdentificationResearcher` | local-code-audit-complete-awaiting-sunray-ulog | `references/Data` code audit is promoted to `workflows/identify_quadrotor_parameters.md`; first useful data package is RC-collected PX4 `.ulg` logs plus `.params`, exact takeoff mass, motor order, and motor/prop/ESC info. RPM or thrust-stand data remains optional but improves confidence. |
 | AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | done | Git-safe migration is complete and pushed. Tracked scopes now include Cosys tutorial/content assets under 100 MB, SPEAR source/reference subset, CARLA UE5 source/reference subset, and IsaacSim text/source subset. Remaining local ignored content is intentional: CARLA image/content packs, IsaacSim LFS-managed assets/cache/data, and SPEAR `third_party`/Content/generated assets. |
-| UE S0/S1 renderer next round | `TaskSecretary` + `UEMCPProbe(Ptolemy)` + `SceneProfileAuditor(Maxwell)` + `RendererContractAuditor(Carson)` | source-ready-editor-mcp-currently-unreachable | S0/S1 source-level and standalone UDP runtime paths are ready: S0/S1 metadata gaps are fixed, packet contracts include mission/local-map/status/overlay fields, the UE C++ receiver parses them, and `scripts/check_unreal_s0_s1_readiness.py` passes. Current 2026-05-23 MCP read probe and listener probe fail, so editor/viewport MCP verification must be retried only after the UE editor plugin is reachable on TCP `55557`. |
+| UE S0/S1 renderer next round | `TaskSecretary` + `UEMCPProbe(Ptolemy)` + `SceneProfileAuditor(Maxwell)` + `RendererContractAuditor(Carson)` + `Erdos` | source-ready-editor-mcp-currently-unreachable | S0/S1 source-level and standalone UDP runtime paths are ready: S0/S1 metadata gaps are fixed, packet contracts include mission/local-map/status/overlay fields, the UE C++ receiver parses them, S1 render-map instances carry `source.collision_proxy_id`, and `scripts/check_unreal_s0_s1_readiness.py --build` passes. Current 2026-05-23 listener probe fails, so Editor MCP/viewport automation remains unavailable until the UE editor plugin is reachable on TCP `55557` and one read-only actor probe passes. |
 | UE S0/S1 runtime autos-pawn review | main agent | done | Runtime autos-pawn, S1 blockout map, and review-camera input fixes are pushed through `dbf03cdcd`. `scripts/check_unreal_s0_s1_readiness.py` and `scripts/build_unreal_renderer.sh` passed. `scripts/review_unreal_s0_s1_renderer.sh` streamed 1604 frames to the standalone game UDP receiver at `172.17.48.1:5005`. UE log confirms `MworksUnrealRendererGameMode`, map/playback actor spawn, UDP listen, first received MWORKS frame, and review-camera movement/rotation input accepted. |
 | S1 competition industrial hybrid blockout | main agent | runtime-reviewable-blockout | Added project-owned S1 blockout render map `map_competition_industrial_hybrid_render_map.json` and bound it from the S1 profile. `SCENE_ID=competition_industrial_hybrid_manual_review MAP_ID=competition_industrial_hybrid bash scripts/review_unreal_s0_s1_renderer.sh` streamed 1604 frames; UE log confirms map selection and load: terrain `308`, random/inspection columns `11`, wall/gate/pad boxes `11`. This is visual blockout evidence only, not final art or proof of formal local-avoidance behavior. |
 | UE C++ UDP packet receiver | main agent | done | Source-level compatible parsing for Python packet fields `mission`, `local_known_map`, `status`, and `overlays` is implemented, static checks passed, and UE 5.7 UBT/UHT build passed. |

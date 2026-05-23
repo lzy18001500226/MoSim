@@ -169,6 +169,23 @@ def run_s1_render_map_check() -> bool:
     if not render_map.get("start_m") or not render_map.get("goal_m"):
         print("[FAIL] S1 render map missing start_m/goal_m")
         return False
+    visible_instances = []
+    for collection_name in ["random_columns", "wall_boxes"]:
+        collection = obstacles.get(collection_name, [])
+        if not isinstance(collection, list):
+            print(f"[FAIL] S1 render map obstacles.{collection_name} must be a list")
+            return False
+        visible_instances.extend(collection)
+    missing_proxy_ids = [
+        str(instance.get("id", "<missing-id>"))
+        for instance in visible_instances
+        if not isinstance(instance, dict)
+        or not isinstance(instance.get("source"), dict)
+        or not instance["source"].get("collision_proxy_id")
+    ]
+    if missing_proxy_ids:
+        print("[FAIL] S1 render map instances missing source.collision_proxy_id: " + ", ".join(missing_proxy_ids))
+        return False
     print("[OK] S1 render map is bound and reviewable")
     return True
 
