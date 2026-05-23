@@ -18,11 +18,11 @@
   Active implementation is limited to S0 `renderer_framework` and S1
   `competition_industrial_hybrid`; S2-S7 are planning contracts only until
   later review unlocks them.
-- S0 source-level preparation is active: `renderer_framework` packets can be
-  dry-run streamed with `map_id=renderer_framework`, and the UE map actor now
-  clears stale static map previews when a profile has no `render_map_json`.
-  Interactive UE review is blocked until `unreal_engine` MCP can connect to the
-  running editor.
+- S0 source-level preparation is complete: `renderer_framework` packets can be
+  dry-run streamed with `map_id=renderer_framework`, and the UE map actor clears
+  stale static map previews when a profile has no `render_map_json`. Interactive
+  UE review is still blocked because `unreal_engine.get_actors_in_level` timed
+  out on 2026-05-23; do not claim viewport verification until MCP reconnects.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.
