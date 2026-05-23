@@ -1865,11 +1865,10 @@ editor mode     -> UnrealMCP TCP listener, editor/asset/actor inspection
 standalone game -> UDP 5005 receiver, runtime actor spawn logs, viewport review
 ```
 
-Before requesting manual viewport review, run:
+Before requesting editor-side MCP scene automation, run:
 
 ```bash
 python3 scripts/check_unreal_s0_s1_readiness.py --build --check-listener
-bash scripts/review_unreal_s0_s1_renderer.sh
 ```
 
 `--check-listener` is an editor-mode gate only. It is expected to fail if the
@@ -1877,10 +1876,18 @@ Unreal Editor MCP plugin is not reachable on TCP `55557` from `UNREAL_HOST`, the
 WSL default gateway, or `127.0.0.1`. In that case, source-level S0/S1 readiness
 can still be valid, but editor MCP work is not allowed.
 
+Before requesting standalone manual viewport review, run:
+
+```bash
+python3 scripts/check_unreal_s0_s1_readiness.py --build
+bash scripts/review_unreal_s0_s1_renderer.sh
+```
+
 `scripts/review_unreal_s0_s1_renderer.sh` is the standalone game review gate.
 It starts or reuses `MworksUnrealRenderer.uproject -game`, waits for the game
 process to own UDP port 5005, then streams the MWORKS-derived replay packets.
-It must not wait for `probe_unreal_mcp_listener.py`, because standalone game
+It must not wait for `probe_unreal_mcp_listener.py` or
+`check_unreal_s0_s1_readiness.py --check-listener`, because standalone game
 windows do not expose the editor MCP listener.
 
 For S1 blockout review, use the same gate with explicit scene/map IDs:
