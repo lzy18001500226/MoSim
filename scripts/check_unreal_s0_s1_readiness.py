@@ -26,6 +26,10 @@ SAMPLE_RAW = (
 )
 S1_RENDER_MAP = ROOT / "unreal/MworksUnrealRenderer/Content/MworksData/map_competition_industrial_hybrid_render_map.json"
 SCENE_PROFILES = ROOT / "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json"
+REVIEW_CAMERA_HEADER = ROOT / "unreal/MworksUnrealRenderer/Source/MworksUnrealRenderer/MworksReviewCameraPawn.h"
+REVIEW_CAMERA_SOURCE = ROOT / "unreal/MworksUnrealRenderer/Source/MworksUnrealRenderer/MworksReviewCameraPawn.cpp"
+RENDERER_GAMEMODE_SOURCE = ROOT / "unreal/MworksUnrealRenderer/Source/MworksUnrealRenderer/MworksUnrealRendererGameMode.cpp"
+DEFAULT_ENGINE_INI = ROOT / "unreal/MworksUnrealRenderer/Config/DefaultEngine.ini"
 
 
 def run_step(name: str, command: list[str], *, expect_success: bool = True) -> bool:
@@ -168,6 +172,61 @@ def run_s1_render_map_check() -> bool:
     return True
 
 
+def run_review_camera_check() -> bool:
+    print("== Unreal manual review camera contract ==")
+    for path in [REVIEW_CAMERA_HEADER, REVIEW_CAMERA_SOURCE, RENDERER_GAMEMODE_SOURCE]:
+        if not path.exists():
+            print(f"[FAIL] missing review camera file: {path.relative_to(ROOT)}")
+            return False
+
+    header = REVIEW_CAMERA_HEADER.read_text(encoding="utf-8")
+    source = REVIEW_CAMERA_SOURCE.read_text(encoding="utf-8")
+    gamemode = RENDERER_GAMEMODE_SOURCE.read_text(encoding="utf-8")
+
+    required_source_tokens = [
+        "AutoPossessPlayer = EAutoReceiveInput::Player0",
+        "EKeys::W",
+        "EKeys::A",
+        "EKeys::S",
+        "EKeys::D",
+        "EKeys::Q",
+        "EKeys::E",
+        "EKeys::RightMouseButton",
+        "GetInputMouseDelta",
+    ]
+    missing = [token for token in required_source_tokens if token not in source]
+    if missing:
+        print(f"[FAIL] review camera missing controls: {', '.join(missing)}")
+        return False
+    if "AMworksReviewCameraPawn" not in header:
+        print("[FAIL] review camera class missing from header")
+        return False
+    if "DefaultPawnClass = AMworksReviewCameraPawn::StaticClass()" not in gamemode:
+        print("[FAIL] renderer GameMode does not use the review camera pawn")
+        return False
+    print("[OK] manual review camera has keyboard/mouse controls and is bound to GameMode")
+    return True
+
+
+def run_runtime_map_check() -> bool:
+    print("== Unreal runtime default map contract ==")
+    if not DEFAULT_ENGINE_INI.exists():
+        print(f"[FAIL] missing DefaultEngine.ini: {DEFAULT_ENGINE_INI.relative_to(ROOT)}")
+        return False
+    text = DEFAULT_ENGINE_INI.read_text(encoding="utf-8")
+    if "GameDefaultMap=/Engine/Maps/Entry" not in text:
+        print("[FAIL] GameDefaultMap must be /Engine/Maps/Entry for runtime-generated renderer review")
+        return False
+    if "EditorStartupMap=/Engine/Maps/Entry" not in text:
+        print("[FAIL] EditorStartupMap must be /Engine/Maps/Entry for runtime-generated renderer review")
+        return False
+    if "/Engine/Maps/Templates/OpenWorld" in text:
+        print("[FAIL] OpenWorld template should not be the default runtime/editor map")
+        return False
+    print("[OK] runtime default map avoids the OpenWorld landscape template")
+    return True
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check-listener", action="store_true", help="Also require the Unreal Editor MCP listener")
@@ -200,6 +259,8 @@ def main() -> int:
             "unreal/migration_staging/competition_industrial_hybrid",
         ]),
         run_s1_render_map_check(),
+        run_review_camera_check(),
+        run_runtime_map_check(),
         run_packet_check(),
     ]
 

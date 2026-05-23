@@ -191,3 +191,9 @@ fresh user request overlaps an older ledger row:
 If any answer is no, mark the row `paused` or `blocked`, record the missing
 evidence, and resume only from the last checkpoint that has a matching
 objective and safe write scope.
+
+## Active / Recent Task Rows
+
+| Task ID | Owner | Status | Objective | Latest checkpoint | Next action |
+|---|---|---|---|---|---|
+| unreal-review-camera-20260523 | Main | active | Restore manual view movement in the project-owned Unreal standalone review window. | 2026-05-23 20:01 CST: Added `MworksReviewCameraPawn`; build passed after stopping the stale project-owned UE process; standalone launch exposed OpenWorld/Landscape crash, so default maps are switched to `/Engine/Maps/Entry`. | Rebuild/check, relaunch game window with `RESTART_UNREAL_GAME=1`, stream S1 review packets, and request user manual movement check. |

@@ -37,6 +37,30 @@ scripts/open_unreal_renderer.sh
 It enables the project-owned UDP bridge and the local Unreal MCP editor plugin
 without copying either plugin into the engine install directory.
 
+Manual review window controls:
+
+```text
+W / A / S / D     move review camera
+Q / E             move down / up
+Arrow keys        rotate view
+Hold right mouse  drag to look around
+Shift             faster movement
+Ctrl              slower movement
+```
+
+The standalone review window uses a project-owned `MworksReviewCameraPawn`.
+If a game window was already open before a camera/control code change, restart
+only that game window so the new binary is loaded:
+
+```bash
+RESTART_UNREAL_GAME=1 scripts/open_unreal_renderer.sh game
+```
+
+The default game/editor map is `/Engine/Maps/Entry`, not the UE OpenWorld
+template. The renderer spawns its own map/playback actors at runtime, and the
+OpenWorld landscape template can add unnecessary load or crash risk during
+standalone review.
+
 ## MCP Access From WSL
 
 Codex usually runs in WSL while Unreal Editor runs on Windows. In that setup,

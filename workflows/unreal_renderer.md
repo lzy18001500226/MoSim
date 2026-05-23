@@ -170,6 +170,32 @@ C:\Users\HP\Desktop\Quadrotor\references\AirSim\Cosys-AirSim\Unreal\Environments
 -log
 ```
 
+Project-owned MWORKS renderer manual controls:
+
+```text
+W/A/S/D: move camera
+Q/E: down/up
+Arrow keys: rotate camera
+Right mouse drag: look around
+Shift: fast move
+Ctrl: slow move
+```
+
+If the user reports that the game window opens but the view cannot move, check
+`MworksUnrealRendererGameMode.cpp` first. It must use
+`AMworksReviewCameraPawn::StaticClass()` as `DefaultPawnClass`; a null default
+Pawn means the viewport is display-only and cannot be manually reviewed. After
+C++ camera changes, relaunch the game window with:
+
+```bash
+RESTART_UNREAL_GAME=1 scripts/open_unreal_renderer.sh game
+```
+
+If the standalone review window exits immediately and the log points into
+`UnrealEditor-Landscape.dll`, check `DefaultEngine.ini`. This renderer should
+use `/Engine/Maps/Entry` because it generates map/playback actors at runtime;
+do not use the UE OpenWorld landscape template as the default runtime map.
+
 `settings_quadrotor_manual.json` is intentionally small and checked in. It
 forces:
 

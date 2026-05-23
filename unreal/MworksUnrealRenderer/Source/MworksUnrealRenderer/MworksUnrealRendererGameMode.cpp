@@ -1,12 +1,13 @@
 #include "MworksUnrealRendererGameMode.h"
 
 #include "Engine/World.h"
+#include "MworksReviewCameraPawn.h"
 #include "QuadrotorMworksMapActor.h"
 #include "QuadrotorMworksPlaybackActor.h"
 
 AMworksUnrealRendererGameMode::AMworksUnrealRendererGameMode()
 {
-    DefaultPawnClass = nullptr;
+    DefaultPawnClass = AMworksReviewCameraPawn::StaticClass();
 }
 
 void AMworksUnrealRendererGameMode::BeginPlay()

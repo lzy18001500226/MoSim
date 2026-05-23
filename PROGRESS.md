@@ -218,3 +218,18 @@
 - Clean docs/workflow recovery branch:
   `git/recovery-docs-workflows-clean-20260521` at
   `c279bf4add5a4efb0cf5699e93172047ad148a20`
+
+## Current Unreal Renderer Checkpoints
+
+- 2026-05-23 19:56 CST: User reported the standalone S1 Unreal review window
+  could not move its view. Root cause was `MworksUnrealRendererGameMode`
+  setting `DefaultPawnClass = nullptr`, leaving the game viewport without a
+  controllable review pawn. Added a project-owned review camera pawn with
+  WASD/QE movement, arrow/RMB mouse look, and Shift/Ctrl speed scaling; the
+  readiness check now verifies this contract.
+- 2026-05-23 20:01 CST: First rebuild attempt failed because the project-owned
+  Unreal Editor process held `UnrealEditor-MworksUnrealRenderer.dll`; after
+  stopping only the `MworksUnrealRenderer.uproject` process, the build passed.
+  The next standalone launch exited inside `UnrealEditor-Landscape.dll` while
+  loading `/Engine/Maps/Templates/OpenWorld`; default maps are now set to
+  `/Engine/Maps/Entry` because renderer geometry is spawned at runtime.

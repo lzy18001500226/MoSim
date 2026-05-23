@@ -7,6 +7,7 @@ PROJECT_ROOT="/mnt/c/Users/HP/Desktop/Quadrotor"
 UE_EDITOR="${UE_EDITOR:-/mnt/d/Program Files/Epic Games/UE_5.7/Engine/Binaries/Win64/UnrealEditor.exe}"
 UPROJECT="${PROJECT_ROOT}/unreal/MworksUnrealRenderer/MworksUnrealRenderer.uproject"
 MODE="${1:-editor}"
+RESTART_UNREAL_GAME="${RESTART_UNREAL_GAME:-0}"
 
 if [[ ! -f "${UE_EDITOR}" ]]; then
   echo "UnrealEditor.exe not found: ${UE_EDITOR}" >&2
@@ -27,8 +28,15 @@ fi
 
 if [[ "${MODE}" == "game" ]] && powershell.exe -NoProfile -Command \
   "Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MworksUnrealRenderer.uproject*' -and \$_.CommandLine -like '* -game*' } | Select-Object -First 1 | ForEach-Object { exit 0 }; exit 1" >/dev/null 2>&1; then
-  echo "MworksUnrealRenderer game window is already running."
-  exit 0
+  if [[ "${RESTART_UNREAL_GAME}" == "1" ]]; then
+    echo "Restarting existing MworksUnrealRenderer game window."
+    powershell.exe -NoProfile -Command \
+      "Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MworksUnrealRenderer.uproject*' -and \$_.CommandLine -like '* -game*' } | ForEach-Object { Stop-Process -Id \$_.ProcessId -Force }" >/dev/null
+    sleep 2
+  else
+    echo "MworksUnrealRenderer game window is already running."
+    exit 0
+  fi
 fi
 
 case "${MODE}" in
