@@ -1781,6 +1781,7 @@ planner, or metrics to hide a renderer issue.
 Run:
 
 ```bash
+python3 scripts/check_unreal_s0_s1_readiness.py
 python3 scripts/audit_rflysim_maps.py
 python3 scripts/build_rflysim_scene_registry.py
 python3 scripts/plan_rflysim_scene_migration.py --scene-id rflysim_vision_ring
@@ -1794,6 +1795,16 @@ If Unreal MCP is available, open the project first, then run a read-only probe
 such as project context or scene brief. If the wrapper hangs or the editor is
 not listening, do not modify the scene through MCP; continue with source-level
 changes and report the MCP state.
+
+Before requesting manual viewport review, run:
+
+```bash
+python3 scripts/check_unreal_s0_s1_readiness.py --build --check-listener
+```
+
+`--check-listener` is expected to fail while the Unreal Editor MCP plugin is not
+reachable on TCP `55557`. In that case, source-level S0/S1 readiness can still
+be valid, but viewport readiness is not proven.
 
 Current WSL note: the Unreal editor plugin starts its TCP server on Windows
 `127.0.0.1:55557`. A Python MCP server running inside WSL may not reach that

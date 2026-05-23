@@ -17,6 +17,7 @@ ASSET_REGISTRY_SCHEMA = RENDERER / "Content" / "MworksData" / "scene_asset_regis
 VISION_RING_PLAN = ROOT / "results" / "rflysim" / "rflysim_vision_ring_migration_plan.json"
 VISION_RING_CHECKLIST = ROOT / "results" / "rflysim" / "rflysim_vision_ring_manual_review_checklist.md"
 MIGRATION_CHECKER = ROOT / "scripts" / "check_unreal_migration_package.py"
+S0_S1_READINESS_CHECKER = ROOT / "scripts" / "check_unreal_s0_s1_readiness.py"
 VISION_RING_STAGING = ROOT / "unreal" / "migration_staging" / "rflysim_vision_ring"
 GATE_RING_STAGING = ROOT / "unreal" / "migration_staging" / "gate_ring_indoor"
 GATE_RING_RENDER_MAP = RENDERER / "Content" / "MworksData" / "map_corridor_gate_render_map.json"
@@ -376,6 +377,9 @@ def main() -> int:
         return 1
     if not MIGRATION_CHECKER.exists():
         print(f"[FAIL] missing migration package checker: {MIGRATION_CHECKER}")
+        return 1
+    if not S0_S1_READINESS_CHECKER.exists():
+        print(f"[FAIL] missing S0/S1 readiness checker: {S0_S1_READINESS_CHECKER}")
         return 1
     if not VISION_RING_STAGING.exists():
         print(f"[FAIL] missing VisionRing migration staging package: {VISION_RING_STAGING}")
