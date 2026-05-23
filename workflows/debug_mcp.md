@@ -6,7 +6,11 @@
 
 ## 1. Success Criteria
 
-MCP is successful when `/mcp` shows tools.
+For Sysplorer/Syslab, MCP startup is successful when `/mcp` shows tools.
+For Unreal, `/mcp` showing `unreal_engine` tools only proves the WSL stdio
+wrapper and Python server. Interactive Unreal actor/Blueprint/viewport work is
+successful only after the editor-side listener is reachable and one read-only
+actor/scene probe succeeds.
 
 Expected:
 
@@ -239,23 +243,27 @@ tool_timeout_sec = 300
 
 Do not register this against opencode config files. The Unreal editor side still
 needs the bundled `Skills/unreal-engine-mcp/UnrealMCP/` plugin enabled in a UE
-project. The Python MCP server talks to that editor plugin on `127.0.0.1:55557`.
-If Unreal is not open or the plugin is not enabled, `tools/list` can still work,
-but actor/Blueprint tools will fail with connection refused.
+project. The WSL wrapper exports `UNREAL_HOST` to the WSL default gateway when
+the variable is unset, and the Python MCP server connects to
+`$UNREAL_HOST:$UNREAL_PORT` (default port `55557`). If Unreal is not open, the
+plugin is not enabled, or the listener is bound to a route the WSL wrapper cannot
+reach, `tools/list` can still work, but actor/Blueprint tools will fail or time
+out.
 
 Before running interactive actor/Blueprint tools, check the editor-side socket:
 
 ```bash
-python3 scripts/probe_unreal_mcp_listener.py --port 55557
+python3 scripts/probe_unreal_mcp_listener.py --wrapper-route-only --timeout 1
 ```
 
 If this fails, do not keep retrying actor/Blueprint MCP tools. Fix the Unreal
 Editor/plugin/listener route first, or continue only with source-level files and
 document the missing viewport evidence.
 
-The probe checks the same practical host candidates used by the WSL wrapper:
-`UNREAL_HOST` when set, the WSL default gateway, and `127.0.0.1`. Use
-`--host <addr>` only when you want to test one explicit route.
+`--wrapper-route-only` checks the exact route used by
+`scripts/unreal_mcp_wsl_wrapper.sh`. Without it, the probe also checks practical
+diagnostic fallbacks: `UNREAL_HOST` when set, the WSL default gateway, and
+`127.0.0.1`. Use `--host <addr>` only when you want to test one explicit route.
 
 Interpret the preflight result before changing code:
 

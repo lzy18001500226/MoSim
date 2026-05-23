@@ -82,6 +82,12 @@
   listener verification fails. Continue only source-level or standalone `-game`
   UDP work until the editor plugin listener and one read-only actor probe pass
   again.
+- 2026-05-23 MCP quick-diagnostic hardening: `scripts/probe_unreal_mcp_listener.py`
+  now has a `--wrapper-route-only` mode and reports project-owned
+  `UnrealEditor.exe` processes. Latest probe reports no
+  `MworksUnrealRenderer.uproject` process, so current Editor MCP failure is
+  consistent with the editor not being open/listening rather than a source
+  regression.
 - 2026-05-23 TaskSecretary intake: current goal is to resume S0/S1 Unreal
   renderer work with a recoverable split. Main agent owns the critical path and
   integration; `UEMCPProbe(Ptolemy)` owns the smallest UE MCP connection/read

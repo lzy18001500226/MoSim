@@ -1837,12 +1837,17 @@ planner, or metrics to hide a renderer issue.
 Run:
 
 ```bash
-python3 scripts/check_unreal_s0_s1_readiness.py
+python3 scripts/check_unreal_s0_s1_readiness.py --build
+```
+
+Broader reference-scene and migration checks are separate from the minimal S0/S1
+readiness gate:
+
+```bash
 python3 scripts/audit_rflysim_maps.py
 python3 scripts/build_rflysim_scene_registry.py
 python3 scripts/plan_rflysim_scene_migration.py --scene-id rflysim_vision_ring
 python3 scripts/check_unreal_bridge.py
-scripts/build_unreal_renderer.sh
 python3 scripts/export_unreal_scene_map.py --terrain-cell-m 1.0
 python3 scripts/stream_unreal_udp.py <raw.csv> --max-frames 2 --dry-run
 ```
@@ -1868,6 +1873,7 @@ standalone game -> UDP 5005 receiver, runtime actor spawn logs, viewport review
 Before requesting editor-side MCP scene automation, run:
 
 ```bash
+python3 scripts/probe_unreal_mcp_listener.py --wrapper-route-only --timeout 1
 python3 scripts/check_unreal_s0_s1_readiness.py --build --check-listener
 ```
 
