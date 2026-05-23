@@ -1657,6 +1657,14 @@ Current S0/S1 runtime packet contract:
 Do not claim S1 local avoidance or occlusion behavior from a packet where
 `local_plan.render_only=true` or `local_known_map.evidence_backed=false`.
 
+The UE bridge C++ receiver must compatibly parse the same packet contract into
+Blueprint-readable frame data before a UI/HUD or visualization blueprint can
+depend on it. Current receiver fields include mission start/goal/current-goal,
+local-known-map metadata and cells, local-plan provenance flags, controller /
+planner / safety status, and display quality flags. This is a source-level data
+contract only; it is not viewport evidence until an Unreal MCP/editor review or
+packaged runtime review confirms the fields drive the intended visuals.
+
 ## Map Export
 
 Generate the render-only map JSON before building or refreshing the UE scene:

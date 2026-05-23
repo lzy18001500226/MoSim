@@ -12,6 +12,28 @@
 #include "Sockets.h"
 #include "SocketSubsystem.h"
 
+namespace
+{
+FIntVector ParseIntVector3(const TSharedPtr<FJsonObject>& Object, const FString& FieldName, const FIntVector& Fallback)
+{
+    if (!Object.IsValid())
+    {
+        return Fallback;
+    }
+
+    const TArray<TSharedPtr<FJsonValue>>* Array = nullptr;
+    if (!Object->TryGetArrayField(FieldName, Array) || !Array || Array->Num() < 3)
+    {
+        return Fallback;
+    }
+
+    return FIntVector(
+        static_cast<int32>((*Array)[0]->AsNumber()),
+        static_cast<int32>((*Array)[1]->AsNumber()),
+        static_cast<int32>((*Array)[2]->AsNumber()));
+}
+}
+
 UQuadrotorMworksUdpReceiverComponent::UQuadrotorMworksUdpReceiverComponent()
 {
     PrimaryComponentTick.bCanEverTick = false;
@@ -189,6 +211,14 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
         OutFrame.ReferencePositionMeters = ParseVector3(*Reference, TEXT("position_m"), FVector::ZeroVector);
     }
 
+    const TSharedPtr<FJsonObject>* Mission = nullptr;
+    if (Root->TryGetObjectField(TEXT("mission"), Mission) && Mission && Mission->IsValid())
+    {
+        OutFrame.Mission.StartMeters = ParseVector3(*Mission, TEXT("start_m"), FVector::ZeroVector);
+        OutFrame.Mission.GoalMeters = ParseVector3(*Mission, TEXT("goal_m"), FVector::ZeroVector);
+        OutFrame.Mission.CurrentGoalMeters = ParseVector3(*Mission, TEXT("current_goal_m"), OutFrame.Mission.GoalMeters);
+    }
+
     const TSharedPtr<FJsonObject>* Perception = nullptr;
     if (Root->TryGetObjectField(TEXT("perception"), Perception) && Perception && Perception->IsValid())
     {
@@ -198,9 +228,50 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
         (*Perception)->TryGetNumberField(TEXT("yaw_rad"), OutFrame.RadarYawRadians);
     }
 
+    const TSharedPtr<FJsonObject>* LocalKnownMap = nullptr;
+    if (Root->TryGetObjectField(TEXT("local_known_map"), LocalKnownMap) && LocalKnownMap && LocalKnownMap->IsValid())
+    {
+        (*LocalKnownMap)->TryGetStringField(TEXT("schema"), OutFrame.LocalKnownMap.Schema);
+        OutFrame.LocalKnownMap.OriginMeters = ParseVector3(*LocalKnownMap, TEXT("origin_m"), FVector::ZeroVector);
+        (*LocalKnownMap)->TryGetNumberField(TEXT("grid_m"), OutFrame.LocalKnownMap.GridMeters);
+        (*LocalKnownMap)->TryGetNumberField(TEXT("radius_m"), OutFrame.LocalKnownMap.RadiusMeters);
+        (*LocalKnownMap)->TryGetBoolField(TEXT("render_only"), OutFrame.LocalKnownMap.bRenderOnly);
+        (*LocalKnownMap)->TryGetBoolField(TEXT("evidence_backed"), OutFrame.LocalKnownMap.bEvidenceBacked);
+
+        const TArray<TSharedPtr<FJsonValue>>* Cells = nullptr;
+        if ((*LocalKnownMap)->TryGetArrayField(TEXT("cells"), Cells) && Cells)
+        {
+            OutFrame.LocalKnownMap.Cells.Reset();
+            for (const TSharedPtr<FJsonValue>& CellValue : *Cells)
+            {
+                if (!CellValue.IsValid())
+                {
+                    continue;
+                }
+
+                const TSharedPtr<FJsonObject> CellObject = CellValue->AsObject();
+                if (!CellObject.IsValid())
+                {
+                    continue;
+                }
+
+                FQuadrotorMworksLocalKnownMapCell Cell;
+                Cell.Offset = ParseIntVector3(CellObject, TEXT("offset"), FIntVector::ZeroValue);
+                CellObject->TryGetStringField(TEXT("state"), Cell.State);
+                CellObject->TryGetStringField(TEXT("source"), Cell.Source);
+                OutFrame.LocalKnownMap.Cells.Add(Cell);
+            }
+        }
+    }
+
     const TSharedPtr<FJsonObject>* LocalPlan = nullptr;
     if (Root->TryGetObjectField(TEXT("local_plan"), LocalPlan) && LocalPlan && LocalPlan->IsValid())
     {
+        (*LocalPlan)->TryGetStringField(TEXT("source"), OutFrame.LocalPlanSource);
+        (*LocalPlan)->TryGetBoolField(TEXT("render_only"), OutFrame.bLocalPlanRenderOnly);
+        (*LocalPlan)->TryGetBoolField(TEXT("evidence_backed"), OutFrame.bLocalPlanEvidenceBacked);
+        (*LocalPlan)->TryGetBoolField(TEXT("valid"), OutFrame.bLocalPlanValid);
+
         const TArray<TSharedPtr<FJsonValue>>* Points = nullptr;
         if ((*LocalPlan)->TryGetArrayField(TEXT("points_m"), Points) && Points)
         {
@@ -214,6 +285,36 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
                         (*PointArray)[0]->AsNumber(),
                         (*PointArray)[1]->AsNumber(),
                         (*PointArray)[2]->AsNumber()));
+                }
+            }
+        }
+    }
+
+    const TSharedPtr<FJsonObject>* Status = nullptr;
+    if (Root->TryGetObjectField(TEXT("status"), Status) && Status && Status->IsValid())
+    {
+        (*Status)->TryGetStringField(TEXT("controller_mode"), OutFrame.Status.ControllerMode);
+        (*Status)->TryGetStringField(TEXT("planner_state"), OutFrame.Status.PlannerState);
+        (*Status)->TryGetStringField(TEXT("safety_state"), OutFrame.Status.SafetyState);
+        (*Status)->TryGetStringField(TEXT("evidence_level"), OutFrame.Status.EvidenceLevel);
+        (*Status)->TryGetStringField(TEXT("notes"), OutFrame.Status.Notes);
+    }
+
+    const TSharedPtr<FJsonObject>* Overlays = nullptr;
+    if (Root->TryGetObjectField(TEXT("overlays"), Overlays) && Overlays && Overlays->IsValid())
+    {
+        (*Overlays)->TryGetStringField(TEXT("scene_label"), OutFrame.Overlays.SceneLabel);
+        (*Overlays)->TryGetStringField(TEXT("map_label"), OutFrame.Overlays.MapLabel);
+
+        const TArray<TSharedPtr<FJsonValue>>* QualityFlags = nullptr;
+        if ((*Overlays)->TryGetArrayField(TEXT("quality_flags"), QualityFlags) && QualityFlags)
+        {
+            OutFrame.Overlays.QualityFlags.Reset();
+            for (const TSharedPtr<FJsonValue>& FlagValue : *QualityFlags)
+            {
+                if (FlagValue.IsValid())
+                {
+                    OutFrame.Overlays.QualityFlags.Add(FlagValue->AsString());
                 }
             }
         }

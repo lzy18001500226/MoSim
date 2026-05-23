@@ -5,10 +5,14 @@
 
 ## Current Focus
 
-- Current active goal: keep the simulator architecture on the correct branch:
-  MWORKS/Syslab/Sysplorer solver evidence plus project-owned UE5 renderer and
-  editable scene assets. RflySim maps are native-runtime visual references only,
-  not an editable base for the new simulator.
+- Current active goal: complete the S0/S1 Unreal rendering loop to a state that
+  can be manually reviewed. Goal records are total objectives, not single-step
+  tasks; keep the immediate next action separately in the active queue or
+  ledger.
+- Current architecture boundary: keep the simulator architecture on the correct
+  branch: MWORKS/Syslab/Sysplorer solver evidence plus project-owned UE5
+  renderer and editable scene assets. RflySim maps are native-runtime visual
+  references only, not an editable base for the new simulator.
 - Current UE scene gate: `workflows/unreal_renderer.md#rflysim--sunray-scene-reconstruction-plan`
   is the active plan. Do not start new UE5 scene implementation until the user
   reviews the scene source roles, first-scene family, data model, and acceptance
@@ -35,6 +39,16 @@
   `mission`, `local_known_map`, `status`, and `overlays` fields. These are
   display contracts until `evidence_backed=true`; do not use preview packets as
   proof of S1 local avoidance or occlusion behavior.
+- 2026-05-23 TaskSecretary correction: do not set the thread goal to a single
+  engineering step. The active total goal is S0/S1 Unreal rendering loop to
+  manual-review readiness; the current small step is making the UE C++ UDP
+  receiver compatibly parse the Python packet contract fields `mission`,
+  `local_known_map`, `status`, and `overlays`.
+- 2026-05-23 UE C++ packet receiver: source-level receiver compatibility now
+  includes mission, local-known-map, local-plan provenance, status, and overlay
+  fields. This is still a packet/data-contract step only; viewport/manual
+  visual evidence remains blocked until the Unreal Editor MCP listener is
+  reachable.
 - 2026-05-23 TaskSecretary intake: current goal is to resume S0/S1 Unreal
   renderer work with a recoverable split. Main agent owns the critical path and
   integration; `UEMCPProbe(Ptolemy)` owns the smallest UE MCP connection/read
@@ -77,6 +91,7 @@
 | Vehicle parameter identification | `VehicleParamIdentificationResearcher` | local-code-audit-complete-awaiting-sunray-ulog | `references/Data` code audit is promoted to `workflows/identify_quadrotor_parameters.md`; first useful data package is RC-collected PX4 `.ulg` logs plus `.params`, exact takeoff mass, motor order, and motor/prop/ESC info. RPM or thrust-stand data remains optional but improves confidence. |
 | AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | done | Git-safe migration is complete and pushed. Tracked scopes now include Cosys tutorial/content assets under 100 MB, SPEAR source/reference subset, CARLA UE5 source/reference subset, and IsaacSim text/source subset. Remaining local ignored content is intentional: CARLA image/content packs, IsaacSim LFS-managed assets/cache/data, and SPEAR `third_party`/Content/generated assets. |
 | UE S0/S1 renderer next round | `TaskSecretary` + `UEMCPProbe(Ptolemy)` + `SceneProfileAuditor(Maxwell)` + `RendererContractAuditor(Carson)` | packet-contract-updated | Ptolemy found WSL cannot reach UE Editor `55557`; latest probe still times out despite MCP inventory showing `unreal_engine` tools. Maxwell fixed S0/S1 metadata gaps. Carson identified missing S1 packet contracts; `stream_unreal_udp.py` now emits mission/local-map/status/overlay fields while keeping render-only flags explicit. Next safe action is UE MCP listener repair or C++ receiver parsing once the editor route is available. |
+| UE C++ UDP packet receiver | main agent | verify | Source-level compatible parsing for Python packet fields `mission`, `local_known_map`, `status`, and `overlays` has been implemented; run targeted static/package checks and commit/push if clean. |
 
 ## Superseded Queues
 
@@ -120,6 +135,9 @@
 - Do not reduce "continue tasks" to only the latest user-visible thread.
   Maintain a ledger-backed queue for Git, external learning, simulator bring-up,
   parameter identification, docs review, and mainline implementation.
+- Do not use goal tracking for one-off implementation steps. The goal should
+  stay at the durable total objective level; record immediate actions as
+  ledger/queue tasks.
 - Do not open UE Editor when the requested review is a packaged simulator
   interface such as RflySim3D or CopterSim.
 - Do not adopt Loopback/self-repeating driver loops, Composio credentialed

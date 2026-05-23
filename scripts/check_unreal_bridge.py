@@ -77,6 +77,24 @@ def main() -> int:
         "AsyncTask(ENamedThreads::GameThread",
         "OnFrameReceived.Broadcast",
         "LocalPlanPointsMeters",
+        "mission",
+        "start_m",
+        "goal_m",
+        "current_goal_m",
+        "local_known_map",
+        "origin_m",
+        "grid_m",
+        "radius_m",
+        "cells",
+        "render_only",
+        "evidence_backed",
+        "status",
+        "controller_mode",
+        "planner_state",
+        "safety_state",
+        "evidence_level",
+        "overlays",
+        "quality_flags",
         "map_id",
     ]
     missing_tokens = [token for token in required_tokens if token not in source]
@@ -85,7 +103,18 @@ def main() -> int:
         return 1
 
     types_source = (PLUGIN / "Source/QuadrotorMworksBridge/Public/QuadrotorMworksTypes.h").read_text(encoding="utf-8")
-    for token in ["SceneId", "MapId", "RadarNearRadiusMeters", "LocalPlanPointsMeters"]:
+    for token in [
+        "SceneId",
+        "MapId",
+        "RadarNearRadiusMeters",
+        "LocalPlanPointsMeters",
+        "FQuadrotorMworksMission",
+        "FQuadrotorMworksLocalKnownMap",
+        "FQuadrotorMworksStatus",
+        "FQuadrotorMworksOverlays",
+        "LocalPlanSource",
+        "bLocalPlanEvidenceBacked",
+    ]:
         if token not in types_source:
             print(f"[FAIL] frame type missing token: {token}")
             return 1
