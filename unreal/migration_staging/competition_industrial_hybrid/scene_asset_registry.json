@@ -1,0 +1,458 @@
+{
+  "schema": "quadrotor.scene_asset_registry.v1",
+  "scene_id": "competition_industrial_hybrid",
+  "map_id": "competition_industrial_hybrid",
+  "coordinate_system": {
+    "mworks_units": "meters",
+    "unreal_units": "centimeters",
+    "axis_policy": "X=mworks_x*100, Y=-mworks_y*100, Z=mworks_z*100",
+    "scale_status": "profile_stub_pending_blockout_review"
+  },
+  "source_profile": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+  "stage_id": "S1",
+  "planner_visibility": "raycast_occluded_local_sensor_with_map_memory",
+  "global_map_available_to_planner": false,
+  "assets": [
+    {
+      "asset_id": "competition_industrial_hybrid_terrain_or_floor",
+      "semantic_type": "terrain",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/competition_industrial_hybrid/terrain_or_floor",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "competition_industrial_hybrid_terrain_heightfield_or_plane",
+        "collision_proxy_id": "proxy_competition_industrial_hybrid_terrain_heightfield_or_plane",
+        "render_only": false
+      }
+    },
+    {
+      "asset_id": "competition_industrial_hybrid_takeoff_pad",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/competition_industrial_hybrid/takeoff_pad",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "competition_industrial_hybrid_pad_box",
+        "collision_proxy_id": "proxy_competition_industrial_hybrid_pad_box",
+        "render_only": false
+      }
+    },
+    {
+      "asset_id": "competition_industrial_hybrid_landing_pad",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/competition_industrial_hybrid/landing_pad",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "competition_industrial_hybrid_pad_box",
+        "collision_proxy_id": "proxy_competition_industrial_hybrid_pad_box",
+        "render_only": false
+      }
+    },
+    {
+      "asset_id": "competition_industrial_hybrid_pillars",
+      "semantic_type": "obstacle",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/competition_industrial_hybrid/pillars",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "competition_industrial_hybrid_pillar_box_or_cylinder",
+        "collision_proxy_id": "proxy_competition_industrial_hybrid_pillar_box_or_cylinder",
+        "render_only": false
+      }
+    },
+    {
+      "asset_id": "competition_industrial_hybrid_boxes",
+      "semantic_type": "obstacle",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/competition_industrial_hybrid/boxes",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "competition_industrial_hybrid_box_obstacle",
+        "collision_proxy_id": "proxy_competition_industrial_hybrid_box_obstacle",
+        "render_only": false
+      }
+    },
+    {
+      "asset_id": "competition_industrial_hybrid_short_walls",
+      "semantic_type": "wall",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/competition_industrial_hybrid/short_walls",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "competition_industrial_hybrid_wall_box",
+        "collision_proxy_id": "proxy_competition_industrial_hybrid_wall_box",
+        "render_only": false
+      }
+    },
+    {
+      "asset_id": "competition_industrial_hybrid_gate_or_frame",
+      "semantic_type": "gate",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/competition_industrial_hybrid/gate_or_frame",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "competition_industrial_hybrid_gate_frame_boxes",
+        "collision_proxy_id": "proxy_competition_industrial_hybrid_gate_frame_boxes",
+        "render_only": false
+      }
+    },
+    {
+      "asset_id": "competition_industrial_hybrid_industrial_props",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/competition_industrial_hybrid/industrial_props",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    },
+    {
+      "asset_id": "competition_industrial_hybrid_inspection_targets",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/competition_industrial_hybrid/inspection_targets",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "competition_industrial_hybrid_inspection_target_box",
+        "collision_proxy_id": "proxy_competition_industrial_hybrid_inspection_target_box",
+        "render_only": false
+      }
+    },
+    {
+      "asset_id": "competition_industrial_hybrid_radar_sector",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/competition_industrial_hybrid/radar_sector",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    },
+    {
+      "asset_id": "competition_industrial_hybrid_local_known_map",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/competition_industrial_hybrid/local_known_map",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    },
+    {
+      "asset_id": "competition_industrial_hybrid_local_plan",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/competition_industrial_hybrid/local_plan",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    },
+    {
+      "asset_id": "competition_industrial_hybrid_trajectory_trail",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/competition_industrial_hybrid/trajectory_trail",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    }
+  ],
+  "collision_proxies": [
+    {
+      "collision_proxy_id": "proxy_competition_industrial_hybrid_terrain_heightfield_or_plane",
+      "geometry_type": "box",
+      "frame": "mworks_world",
+      "bounds_m": {
+        "center": [
+          0.0,
+          0.0,
+          -0.025
+        ],
+        "size": [
+          20.0,
+          20.0,
+          0.05
+        ]
+      },
+      "safety_margin_m": 0.2,
+      "source_asset_id": "competition_industrial_hybrid_terrain_or_floor"
+    },
+    {
+      "collision_proxy_id": "proxy_competition_industrial_hybrid_pad_box",
+      "geometry_type": "box",
+      "frame": "mworks_world",
+      "bounds_m": {
+        "center": [
+          0.0,
+          0.0,
+          0.02
+        ],
+        "size": [
+          1.0,
+          1.0,
+          0.04
+        ]
+      },
+      "safety_margin_m": 0.2,
+      "source_asset_id": "competition_industrial_hybrid_takeoff_pad"
+    },
+    {
+      "collision_proxy_id": "proxy_competition_industrial_hybrid_pillar_box_or_cylinder",
+      "geometry_type": "box",
+      "frame": "mworks_world",
+      "bounds_m": {
+        "center": [
+          0.0,
+          0.0,
+          1.5
+        ],
+        "size": [
+          0.4,
+          0.4,
+          3.0
+        ]
+      },
+      "safety_margin_m": 0.2,
+      "source_asset_id": "competition_industrial_hybrid_pillars"
+    },
+    {
+      "collision_proxy_id": "proxy_competition_industrial_hybrid_box_obstacle",
+      "geometry_type": "box",
+      "frame": "mworks_world",
+      "bounds_m": {
+        "center": [
+          0.0,
+          0.0,
+          0.5
+        ],
+        "size": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "safety_margin_m": 0.2,
+      "source_asset_id": "competition_industrial_hybrid_boxes"
+    },
+    {
+      "collision_proxy_id": "proxy_competition_industrial_hybrid_wall_box",
+      "geometry_type": "box",
+      "frame": "mworks_world",
+      "bounds_m": {
+        "center": [
+          0.0,
+          0.0,
+          1.5
+        ],
+        "size": [
+          6.0,
+          0.25,
+          3.0
+        ]
+      },
+      "safety_margin_m": 0.2,
+      "source_asset_id": "competition_industrial_hybrid_short_walls"
+    },
+    {
+      "collision_proxy_id": "proxy_competition_industrial_hybrid_gate_frame_boxes",
+      "geometry_type": "box",
+      "frame": "mworks_world",
+      "bounds_m": {
+        "center": [
+          5.0,
+          0.0,
+          1.5
+        ],
+        "size": [
+          0.25,
+          3.0,
+          3.0
+        ]
+      },
+      "safety_margin_m": 0.2,
+      "source_asset_id": "competition_industrial_hybrid_gate_or_frame"
+    },
+    {
+      "collision_proxy_id": "proxy_competition_industrial_hybrid_inspection_target_box",
+      "geometry_type": "box",
+      "frame": "mworks_world",
+      "bounds_m": {
+        "center": [
+          0.0,
+          0.0,
+          0.5
+        ],
+        "size": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "safety_margin_m": 0.2,
+      "source_asset_id": "competition_industrial_hybrid_inspection_targets"
+    }
+  ],
+  "acceptance": [
+    "start and goal are explicit and coordinate-frame reviewed",
+    "every planning-relevant visible object has a collision_proxy_id equivalent",
+    "radar/local map does not reveal occluded or unknown global geometry",
+    "local plan begins at the UAV center and avoids proxies rather than drawing a fixed straight line",
+    "MWORKS playback shows actual trail, reference/local plan, UAV attitude, and scene overlays"
+  ]
+}

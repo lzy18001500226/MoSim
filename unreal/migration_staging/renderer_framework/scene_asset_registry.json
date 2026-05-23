@@ -1,0 +1,253 @@
+{
+  "schema": "quadrotor.scene_asset_registry.v1",
+  "scene_id": "renderer_framework",
+  "map_id": "renderer_framework",
+  "coordinate_system": {
+    "mworks_units": "meters",
+    "unreal_units": "centimeters",
+    "axis_policy": "X=mworks_x*100, Y=-mworks_y*100, Z=mworks_z*100",
+    "scale_status": "profile_stub_pending_blockout_review"
+  },
+  "source_profile": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+  "stage_id": "S0",
+  "planner_visibility": "framework_only_no_planner_truth_leakage",
+  "global_map_available_to_planner": false,
+  "assets": [
+    {
+      "asset_id": "renderer_framework_UAV",
+      "semantic_type": "uav",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/renderer_framework/UAV",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    },
+    {
+      "asset_id": "renderer_framework_propellers",
+      "semantic_type": "propeller",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/renderer_framework/propellers",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    },
+    {
+      "asset_id": "renderer_framework_body_axes",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/renderer_framework/body_axes",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    },
+    {
+      "asset_id": "renderer_framework_overview_camera",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/renderer_framework/overview_camera",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    },
+    {
+      "asset_id": "renderer_framework_follow_camera",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/renderer_framework/follow_camera",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    },
+    {
+      "asset_id": "renderer_framework_radar_sector",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/renderer_framework/radar_sector",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    },
+    {
+      "asset_id": "renderer_framework_local_plan",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/renderer_framework/local_plan",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    },
+    {
+      "asset_id": "renderer_framework_trajectory_trail",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/renderer_framework/trajectory_trail",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    },
+    {
+      "asset_id": "renderer_framework_metric_overlay",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/renderer_framework/metric_overlay",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    },
+    {
+      "asset_id": "renderer_framework_scene_status_overlay",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/renderer_framework/scene_status_overlay",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "",
+        "collision_proxy_id": "",
+        "render_only": true
+      }
+    }
+  ],
+  "collision_proxies": [],
+  "acceptance": [
+    "UAV pose, attitude and propeller visuals are driven by MWORKS/replay state",
+    "scene profile and object registry can be loaded without hard-coded map assumptions",
+    "camera presets, radar sector, local plan and trajectory trail are visible and reviewable"
+  ]
+}

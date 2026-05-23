@@ -21,6 +21,7 @@ VISION_RING_STAGING = ROOT / "unreal" / "migration_staging" / "rflysim_vision_ri
 GATE_RING_STAGING = ROOT / "unreal" / "migration_staging" / "gate_ring_indoor"
 GATE_RING_RENDER_MAP = RENDERER / "Content" / "MworksData" / "map_corridor_gate_render_map.json"
 SCENE_PROFILE_PLANNER = ROOT / "scripts" / "plan_unreal_scene_profiles.py"
+SCENE_PROFILE_PACKAGE_CREATOR = ROOT / "scripts" / "create_unreal_scene_profile_package.py"
 SCENE_PROFILE_PLAN = ROOT / "results" / "unreal" / "unreal_scene_profile_implementation_plan.json"
 
 REQUIRED_FILES = [
@@ -294,6 +295,9 @@ def main() -> int:
     if not SCENE_PROFILE_PLANNER.exists():
         print(f"[FAIL] missing Unreal scene profile planner: {SCENE_PROFILE_PLANNER}")
         return 1
+    if not SCENE_PROFILE_PACKAGE_CREATOR.exists():
+        print(f"[FAIL] missing Unreal scene profile package creator: {SCENE_PROFILE_PACKAGE_CREATOR}")
+        return 1
     if not SCENE_PROFILE_PLAN.exists():
         print(f"[FAIL] missing Unreal scene profile implementation plan: {SCENE_PROFILE_PLAN}")
         return 1
@@ -346,6 +350,23 @@ def main() -> int:
     if not GATE_RING_STAGING.exists():
         print(f"[FAIL] missing project-owned gate/ring staging package: {GATE_RING_STAGING}")
         return 1
+    for profile_id in ["renderer_framework", "competition_industrial_hybrid"]:
+        package_dir = ROOT / "unreal" / "migration_staging" / profile_id
+        registry_path = package_dir / "scene_asset_registry.json"
+        readme_path = package_dir / "README.md"
+        if not registry_path.exists():
+            print(f"[FAIL] missing active scene profile staging registry: {registry_path}")
+            return 1
+        if not readme_path.exists():
+            print(f"[FAIL] missing active scene profile staging readme: {readme_path}")
+            return 1
+        registry_doc = json.loads(registry_path.read_text(encoding="utf-8"))
+        if registry_doc.get("schema") != "quadrotor.scene_asset_registry.v1":
+            print(f"[FAIL] active scene profile staging registry schema mismatch: {profile_id}")
+            return 1
+        if registry_doc.get("global_map_available_to_planner") is not False:
+            print(f"[FAIL] active scene profile staging must not expose global planner truth: {profile_id}")
+            return 1
     asset_schema = json.loads(ASSET_REGISTRY_SCHEMA.read_text(encoding="utf-8"))
     if asset_schema.get("schema") != "quadrotor.scene_asset_registry.schema.v1":
         print("[FAIL] scene asset registry schema mismatch")
