@@ -253,6 +253,22 @@ If this fails, do not keep retrying actor/Blueprint MCP tools. Fix the Unreal
 Editor/plugin/listener route first, or continue only with source-level files and
 document the missing viewport evidence.
 
+Interpret the preflight result before changing code:
+
+| Probe result | Meaning | Next action |
+|---|---|---|
+| `[OK] Unreal Editor MCP listener reachable` | Editor-side socket is reachable from the current shell | Run one read-only UE MCP actor/scene probe, then proceed to viewport review if it succeeds |
+| `ConnectionRefusedError` | No process is listening at that host/port from the current shell | Open the renderer `.uproject`, enable/load `UnrealMCP`, or start the editor-side plugin listener |
+| `TimeoutError` or MCP tool timeout | A listener path may be blocked, bound to another interface, or stalled | Check UE log/plugin host binding; avoid repeated actor/Blueprint MCP calls until socket reachability is resolved |
+
+For S0/S1 renderer work, run the combined gate first:
+
+```bash
+python3 scripts/check_unreal_s0_s1_readiness.py --build
+```
+
+Add `--check-listener` only when preparing for interactive viewport review.
+
 Keep this separate from the project-owned external renderer plugin:
 
 ```text

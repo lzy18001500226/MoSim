@@ -60,8 +60,9 @@
 - 2026-05-23 S0/S1 readiness gate: `scripts/check_unreal_s0_s1_readiness.py`
   now bundles source-level checks for Python syntax, bridge contract, S0/S1
   staging packages, and UDP packet fields. It passes without
-  `--check-listener`; with `--check-listener` it correctly fails while UE
-  Editor TCP `55557` is unreachable.
+  `--check-listener`; `--build` also passes UE 5.7 UBT/UHT. With
+  `--check-listener` it correctly fails while UE Editor TCP `55557` is
+  unreachable.
 - 2026-05-23 TaskSecretary intake: current goal is to resume S0/S1 Unreal
   renderer work with a recoverable split. Main agent owns the critical path and
   integration; `UEMCPProbe(Ptolemy)` owns the smallest UE MCP connection/read
