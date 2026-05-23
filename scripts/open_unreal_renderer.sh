@@ -21,7 +21,7 @@ if [[ ! -f "${UPROJECT}" ]]; then
 fi
 
 if [[ "${MODE}" == "editor" ]] && powershell.exe -NoProfile -Command \
-  "Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MworksUnrealRenderer.uproject*' } | Select-Object -First 1 | ForEach-Object { exit 0 }; exit 1" >/dev/null 2>&1; then
+  "Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MworksUnrealRenderer.uproject*' -and \$_.CommandLine -notlike '* -game*' } | Select-Object -First 1 | ForEach-Object { exit 0 }; exit 1" >/dev/null 2>&1; then
   echo "MworksUnrealRenderer UnrealEditor is already running."
   exit 0
 fi

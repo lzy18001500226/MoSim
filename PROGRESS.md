@@ -233,3 +233,12 @@
   The next standalone launch exited inside `UnrealEditor-Landscape.dll` while
   loading `/Engine/Maps/Templates/OpenWorld`; default maps are now set to
   `/Engine/Maps/Entry` because renderer geometry is spawned at runtime.
+- 2026-05-23 20:18 CST: `--check-listener` still failed while only the
+  standalone `-game` process was running. `open_unreal_renderer.sh editor`
+  incorrectly treated that `-game` process as an Editor session; editor-mode
+  reuse now excludes command lines containing `-game`.
+- 2026-05-23 20:26 CST: Actual Editor process was launched alongside the
+  standalone game process. `scripts/probe_unreal_mcp_listener.py --timeout 1`
+  reached `172.17.48.1:55557`; `scripts/check_unreal_s0_s1_readiness.py
+  --check-listener` passed; Unreal MCP read-only `get_actors_in_level` returned
+  actors from the Editor scene.

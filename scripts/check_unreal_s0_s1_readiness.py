@@ -30,6 +30,7 @@ REVIEW_CAMERA_HEADER = ROOT / "unreal/MworksUnrealRenderer/Source/MworksUnrealRe
 REVIEW_CAMERA_SOURCE = ROOT / "unreal/MworksUnrealRenderer/Source/MworksUnrealRenderer/MworksReviewCameraPawn.cpp"
 RENDERER_GAMEMODE_SOURCE = ROOT / "unreal/MworksUnrealRenderer/Source/MworksUnrealRenderer/MworksUnrealRendererGameMode.cpp"
 DEFAULT_ENGINE_INI = ROOT / "unreal/MworksUnrealRenderer/Config/DefaultEngine.ini"
+OPEN_UNREAL_RENDERER = ROOT / "scripts/open_unreal_renderer.sh"
 
 
 def run_step(name: str, command: list[str], *, expect_success: bool = True) -> bool:
@@ -227,6 +228,25 @@ def run_runtime_map_check() -> bool:
     return True
 
 
+def run_editor_launcher_check() -> bool:
+    print("== Unreal editor launcher process contract ==")
+    if not OPEN_UNREAL_RENDERER.exists():
+        print(f"[FAIL] missing launcher script: {OPEN_UNREAL_RENDERER.relative_to(ROOT)}")
+        return False
+    text = OPEN_UNREAL_RENDERER.read_text(encoding="utf-8")
+    if 'MODE}" == "editor"' not in text:
+        print("[FAIL] launcher missing editor mode branch")
+        return False
+    if "-and \\$_.CommandLine -notlike '* -game*'" not in text:
+        print("[FAIL] editor mode must not reuse a standalone -game process")
+        return False
+    if 'MODE}" == "game"' not in text or "-and \\$_.CommandLine -like '* -game*'" not in text:
+        print("[FAIL] launcher missing explicit game process branch")
+        return False
+    print("[OK] editor/game process reuse is separated")
+    return True
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check-listener", action="store_true", help="Also require the Unreal Editor MCP listener")
@@ -261,6 +281,7 @@ def main() -> int:
         run_s1_render_map_check(),
         run_review_camera_check(),
         run_runtime_map_check(),
+        run_editor_launcher_check(),
         run_packet_check(),
     ]
 

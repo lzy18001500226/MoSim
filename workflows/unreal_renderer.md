@@ -196,6 +196,22 @@ If the standalone review window exits immediately and the log points into
 use `/Engine/Maps/Entry` because it generates map/playback actors at runtime;
 do not use the UE OpenWorld landscape template as the default runtime map.
 
+MCP/Editor diagnostic note: `scripts/open_unreal_renderer.sh editor` must only
+reuse a non-`-game` Unreal process. A standalone `-game` process can receive UDP
+packets and support manual camera review, but it does not prove the
+editor-side Unreal MCP listener is reachable.
+
+Minimum MCP recovery proof:
+
+```bash
+bash scripts/open_unreal_renderer.sh editor
+python3 scripts/probe_unreal_mcp_listener.py --timeout 1
+python3 scripts/check_unreal_s0_s1_readiness.py --check-listener
+```
+
+Then run one read-only Unreal MCP tool, such as `get_actors_in_level`, to prove
+that the Codex MCP server can reach the live Editor, not just the TCP port.
+
 `settings_quadrotor_manual.json` is intentionally small and checked in. It
 forces:
 

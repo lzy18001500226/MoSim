@@ -196,4 +196,4 @@ objective and safe write scope.
 
 | Task ID | Owner | Status | Objective | Latest checkpoint | Next action |
 |---|---|---|---|---|---|
-| unreal-review-camera-20260523 | Main | active | Restore manual view movement in the project-owned Unreal standalone review window. | 2026-05-23 20:01 CST: Added `MworksReviewCameraPawn`; build passed after stopping the stale project-owned UE process; standalone launch exposed OpenWorld/Landscape crash, so default maps are switched to `/Engine/Maps/Entry`. | Rebuild/check, relaunch game window with `RESTART_UNREAL_GAME=1`, stream S1 review packets, and request user manual movement check. |
+| unreal-review-camera-20260523 | Main | active | Restore manual view movement in the project-owned Unreal standalone review window and close the UE MCP/editor diagnostic loop. | 2026-05-23 20:26 CST: Actual Editor process launched separately from standalone `-game`; listener probe and `check_unreal_s0_s1_readiness.py --check-listener` pass; Unreal MCP `get_actors_in_level` read probe succeeds. | Run final targeted checks, commit/push, then wait for/record user viewport movement review. |
