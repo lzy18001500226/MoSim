@@ -1796,6 +1796,11 @@ probe such as project context or scene brief. If the wrapper hangs or the
 editor is not listening, do not modify the scene through MCP; continue with
 source-level changes and report the MCP state.
 
+Use current probe results only. If an earlier session showed actors but the
+latest `unreal_engine.get_actors_in_level` call times out, editor MCP is not
+currently usable. Record that state and stop interactive editor automation until
+the listener and one read-only actor/scene probe pass again.
+
 Do not use the editor MCP listener as proof that a standalone `-game` review
 window is ready. The two routes are different:
 

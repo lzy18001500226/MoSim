@@ -303,6 +303,20 @@ Interpretation of Unreal MCP checks:
 | `get_actors_in_level` returns `Connection timeout` | UE Editor plugin listener is unreachable from the MCP server path |
 | `get_actors_in_level` returns actors | Editor-side MCP is ready for scene automation |
 
+Always treat the latest probe as authoritative. A previous successful
+`get_actors_in_level` result only proves that the editor-side route worked at
+that time. If a later read-only tool call times out, the current state is
+unavailable until both checks pass again:
+
+```bash
+python3 scripts/probe_unreal_mcp_listener.py --timeout 1
+python3 scripts/check_unreal_s0_s1_readiness.py --build --check-listener
+```
+
+Do not continue interactive actor, Blueprint, or viewport MCP work from stale
+success evidence. Source-level checks and standalone `-game` UDP playback may
+continue because they use different routes.
+
 ---
 
 ## 8. Recommended Syslab Wrapper
