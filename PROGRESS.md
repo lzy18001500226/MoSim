@@ -242,3 +242,7 @@
   reached `172.17.48.1:55557`; `scripts/check_unreal_s0_s1_readiness.py
   --check-listener` passed; Unreal MCP read-only `get_actors_in_level` returned
   actors from the Editor scene.
+- 2026-05-23 20:36 CST: UE Editor rewrote `DefaultEngine.ini` with
+  `AndroidFileServerRuntimeSettings/SecurityToken`. This is local generated
+  config, not project state. The readiness check now fails if this section is
+  present, so it must be removed before commit.

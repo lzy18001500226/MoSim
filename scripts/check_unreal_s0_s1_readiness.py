@@ -215,6 +215,11 @@ def run_runtime_map_check() -> bool:
         print(f"[FAIL] missing DefaultEngine.ini: {DEFAULT_ENGINE_INI.relative_to(ROOT)}")
         return False
     text = DEFAULT_ENGINE_INI.read_text(encoding="utf-8")
+    forbidden = ["AndroidFileServerRuntimeSettings", "SecurityToken="]
+    leaked = [token for token in forbidden if token in text]
+    if leaked:
+        print(f"[FAIL] DefaultEngine.ini contains local generated config: {', '.join(leaked)}")
+        return False
     if "GameDefaultMap=/Engine/Maps/Entry" not in text:
         print("[FAIL] GameDefaultMap must be /Engine/Maps/Entry for runtime-generated renderer review")
         return False

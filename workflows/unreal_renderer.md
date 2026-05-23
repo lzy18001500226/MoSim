@@ -195,6 +195,9 @@ If the standalone review window exits immediately and the log points into
 `UnrealEditor-Landscape.dll`, check `DefaultEngine.ini`. This renderer should
 use `/Engine/Maps/Entry` because it generates map/playback actors at runtime;
 do not use the UE OpenWorld landscape template as the default runtime map.
+UE Editor may auto-write an `AndroidFileServerRuntimeSettings` section with a
+local `SecurityToken`; remove it before commit. The readiness checker treats
+that section as a failure because it is machine-local generated configuration.
 
 MCP/Editor diagnostic note: `scripts/open_unreal_renderer.sh editor` must only
 reuse a non-`-game` Unreal process. A standalone `-game` process can receive UDP
