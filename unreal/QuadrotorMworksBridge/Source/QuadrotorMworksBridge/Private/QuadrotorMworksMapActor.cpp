@@ -147,6 +147,9 @@ void AQuadrotorMworksMapActor::ClearPreviewInstances()
         WallInstances->ClearInstances();
     }
     TerrainInstanceCount = 0;
+    RandomColumnCount = 0;
+    WallBoxCount = 0;
+    BoundsMeters = FBox2D();
 }
 
 bool AQuadrotorMworksMapActor::LoadRenderMapSummary()
@@ -154,6 +157,13 @@ bool AQuadrotorMworksMapActor::LoadRenderMapSummary()
     if (bBuildPreviewOnBeginPlay)
     {
         ClearPreviewInstances();
+    }
+
+    if (RenderMapJson.IsEmpty())
+    {
+        CurrentSourceMap = TEXT("");
+        UE_LOG(LogTemp, Display, TEXT("Selected scene profile has no static render map; preview instances cleared."));
+        return true;
     }
 
     const FString FullPath = FPaths::ProjectContentDir() / RenderMapJson;
@@ -346,10 +356,7 @@ bool AQuadrotorMworksMapActor::ResolveMapId(const FString& MapId)
                         *CurrentMapId,
                         *CurrentSceneProfileId,
                         *RenderMapJson);
-                    if (!RenderMapJson.IsEmpty())
-                    {
-                        LoadRenderMapSummary();
-                    }
+                    LoadRenderMapSummary();
                     return true;
                 }
             }

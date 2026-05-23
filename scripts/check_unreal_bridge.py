@@ -149,6 +149,7 @@ def main() -> int:
         "CurrentSceneProfileId",
         "map_ids",
         "render_map_json",
+        "Selected scene profile has no static render map",
         "direct_editor_open_supported",
         "random_column_count",
         "wall_box_count",
