@@ -246,12 +246,16 @@ but actor/Blueprint tools will fail with connection refused.
 Before running interactive actor/Blueprint tools, check the editor-side socket:
 
 ```bash
-python3 scripts/probe_unreal_mcp_listener.py --host 127.0.0.1 --port 55557
+python3 scripts/probe_unreal_mcp_listener.py --port 55557
 ```
 
 If this fails, do not keep retrying actor/Blueprint MCP tools. Fix the Unreal
 Editor/plugin/listener route first, or continue only with source-level files and
 document the missing viewport evidence.
+
+The probe checks the same practical host candidates used by the WSL wrapper:
+`UNREAL_HOST` when set, the WSL default gateway, and `127.0.0.1`. Use
+`--host <addr>` only when you want to test one explicit route.
 
 Interpret the preflight result before changing code:
 

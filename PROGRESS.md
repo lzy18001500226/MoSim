@@ -63,6 +63,11 @@
   `--check-listener`; `--build` also passes UE 5.7 UBT/UHT. With
   `--check-listener` it correctly fails while UE Editor TCP `55557` is
   unreachable.
+- 2026-05-23 UE MCP listener route audit: the WSL wrapper defaults
+  `UNREAL_HOST` to the WSL default gateway. The listener probe now tests
+  `UNREAL_HOST`, WSL gateway, and `127.0.0.1`; current results are gateway
+  timeout and localhost refused, so source readiness is valid but viewport
+  readiness remains unproven.
 - 2026-05-23 TaskSecretary intake: current goal is to resume S0/S1 Unreal
   renderer work with a recoverable split. Main agent owns the critical path and
   integration; `UEMCPProbe(Ptolemy)` owns the smallest UE MCP connection/read

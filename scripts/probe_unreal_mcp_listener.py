@@ -10,7 +10,9 @@ and port.
 from __future__ import annotations
 
 import argparse
+import os
 import socket
+import subprocess
 import sys
 from dataclasses import dataclass
 
@@ -31,20 +33,53 @@ def probe(host: str, port: int, timeout_seconds: float) -> ProbeResult:
         return ProbeResult(host=host, port=port, ok=False, error=f"{type(exc).__name__}: {exc}")
 
 
+def wsl_default_gateway() -> str | None:
+    try:
+        result = subprocess.run(
+            ["ip", "route"],
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=2.0,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+
+    for line in result.stdout.splitlines():
+        parts = line.split()
+        if len(parts) >= 3 and parts[0] == "default" and parts[1] == "via":
+            return parts[2]
+    return None
+
+
+def default_hosts(explicit_host: str | None) -> list[str]:
+    hosts: list[str] = []
+    for candidate in [explicit_host, os.environ.get("UNREAL_HOST"), wsl_default_gateway(), "127.0.0.1"]:
+        if candidate and candidate not in hosts:
+            hosts.append(candidate)
+    return hosts
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--host", default="127.0.0.1", help="Host used by the Unreal MCP Python server")
+    parser.add_argument(
+        "--host",
+        default=None,
+        help="Specific host to test. Defaults to UNREAL_HOST, WSL gateway, then 127.0.0.1.",
+    )
     parser.add_argument("--port", type=int, default=55557, help="Unreal Editor plugin TCP port")
     parser.add_argument("--timeout", type=float, default=2.0, help="Connection timeout in seconds")
     args = parser.parse_args()
 
-    result = probe(args.host, args.port, args.timeout)
-    if result.ok:
-        print(f"[OK] Unreal Editor MCP listener reachable at {result.host}:{result.port}")
-        return 0
+    results = [probe(host, args.port, args.timeout) for host in default_hosts(args.host)]
+    for result in results:
+        if result.ok:
+            print(f"[OK] Unreal Editor MCP listener reachable at {result.host}:{result.port}")
+            return 0
 
-    print(f"[FAIL] Unreal Editor MCP listener not reachable at {result.host}:{result.port}")
-    print(f"[FAIL] {result.error}")
+    print(f"[FAIL] Unreal Editor MCP listener not reachable on any tested host for port {args.port}")
+    for result in results:
+        print(f"[FAIL] {result.host}:{result.port} -> {result.error}")
     print("[INFO] `/mcp` tool inventory can still work when this probe fails.")
     print("[INFO] Open the UE project with the UnrealMCP plugin enabled, or run the MCP server where it can reach the editor listener.")
     return 1

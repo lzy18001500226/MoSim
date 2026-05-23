@@ -1803,8 +1803,9 @@ python3 scripts/check_unreal_s0_s1_readiness.py --build --check-listener
 ```
 
 `--check-listener` is expected to fail while the Unreal Editor MCP plugin is not
-reachable on TCP `55557`. In that case, source-level S0/S1 readiness can still
-be valid, but viewport readiness is not proven.
+reachable on TCP `55557` from `UNREAL_HOST`, the WSL default gateway, or
+`127.0.0.1`. In that case, source-level S0/S1 readiness can still be valid, but
+viewport readiness is not proven.
 
 Current WSL note: the Unreal editor plugin starts its TCP server on Windows
 `127.0.0.1:55557`. A Python MCP server running inside WSL may not reach that
