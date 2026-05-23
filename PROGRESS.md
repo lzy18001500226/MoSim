@@ -9,6 +9,10 @@
   MWORKS/Syslab/Sysplorer solver evidence plus project-owned UE5 renderer and
   editable scene assets. RflySim maps are native-runtime visual references only,
   not an editable base for the new simulator.
+- Current UE scene gate: `workflows/unreal_renderer.md#rflysim--sunray-scene-reconstruction-plan`
+  is the active plan. Do not start new UE5 scene implementation until the user
+  reviews the scene source roles, first-scene family, data model, and acceptance
+  gates.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.

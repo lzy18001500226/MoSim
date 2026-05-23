@@ -441,6 +441,187 @@ Use RflySim maps as reference inputs:
   -> MWORKS UDP playback
 ```
 
+### RflySim + Sunray Scene Reconstruction Plan
+
+This is the active planning gate before starting new UE5 scene work. Do not
+implement the scene until this plan has been reviewed.
+
+Goal:
+
+```text
+RflySim visual reference
+  + Sunray/YunZong parseable truth reference
+  -> project-owned editable UE5 scene
+  -> project-owned object registry and collision proxies
+  -> MWORKS-driven playback and later real-time bridge
+```
+
+Non-goals:
+
+1. Do not use RflySim `.umap/.uasset` files as the final editable project base.
+2. Do not make RflySim runtime maps the planner/collision truth.
+3. Do not restart the old MWORKS blocky-map workaround as the primary visual
+   route.
+4. Do not wait for PX4 logs or final Sunray150 parameter identification before
+   building the visual/sensor architecture.
+5. Do not start UE implementation until the first scene profile and review
+   gates below are accepted.
+
+Source roles:
+
+| Source | Role | Allowed Use | Forbidden Use |
+| --- | --- | --- | --- |
+| RflySim scenes | Visual and interaction reference | Observe scene style, object families, camera behavior, lidar/radar display, map scale, demo pacing | Planner truth, final runtime dependency, unlicensed asset import |
+| Sunray/YunZong assets and Gazebo worlds | Parseable truth and rebuild reference | Extract SDF/world layout, primitive dimensions, sensor/drone model references, object categories, coordinate assumptions | Treat Gazebo rendering as final video quality |
+| Project-owned UE5 renderer | Final editable visualization shell | Own scene profiles, object registry, collision proxies, materials, cameras, overlays, MWORKS playback | Change MWORKS controller/planner/metric truth |
+
+First scene family:
+
+```text
+competition_industrial_hybrid
+```
+
+Reference inputs:
+
+| Reference | Why it matters |
+| --- | --- |
+| `MatchScene2025` | competition-style objects, gates/boxes/pillars, challenge scale |
+| `RobotMissionChallenge` | indoor/challenge obstacle vocabulary, ArUco-like target ideas |
+| `OldFactory` | industrial patrol visual language: walls, pipes, crane, barrels, cabinets, debris |
+| Sunray/YunZong `.world/.sdf` | object dimensions, drone/sensor layout, truth geometry fallback |
+
+First UE5 scene modules:
+
+| Module | Required Behavior |
+| --- | --- |
+| start/goal/takeoff/landing pads | deterministic start in lower-left region and goal in upper-right region; explicit coordinate frame |
+| obstacle corridor | pillars, boxes, short walls, and local replanning blockers with collision proxies |
+| gate/ring/frame area | attitude-control visual target for later tilted-frame or ring traversal |
+| industrial inspection cluster | factory-style props for video context, with render-only tags unless they affect planning |
+| Mid360 visualization | local FOV/range display, local known-map coloring, occlusion-aware display target |
+| path/trail visualization | actual UAV trail, current local plan, reference trajectory, and controller mode/fault overlays |
+
+Data model to create before UE implementation:
+
+```text
+scene_profile:
+  scene_id
+  source_references
+  coordinate_frame
+  bounds_m
+  start_goal
+  object_registry[]
+  collision_proxy_registry[]
+  render_only_assets[]
+  local_perception_policy
+  randomization_policy
+  review_gates[]
+```
+
+Object registry rule:
+
+```text
+Every visible object that can affect planning must have:
+  object_id
+  semantic_tag
+  visual_asset_ref
+  transform_m
+  dimensions_m
+  collision_proxy_id
+  truth_source
+  license/source note
+
+Visual-only context objects must be explicitly marked:
+  render_only=true
+```
+
+Truth separation:
+
+```text
+render_world:
+  complete scene loaded in UE for video
+
+planner_truth:
+  scenario/world_geometry used by MWORKS metrics and collision checks
+
+planner_known_map:
+  local sensor memory built only from current/past perception packets
+```
+
+The planner must not read the full `render_world` object list during local
+unknown-map demonstrations.
+
+Acceptance gates before implementation:
+
+| Gate | Acceptance |
+| --- | --- |
+| `plan_review` | This section is reviewed and accepted by the user |
+| `scene_profile_review` | First `competition_industrial_hybrid` profile lists bounds, objects, collision proxies, randomization policy, and source roles |
+| `ue_mcp_probe` | `unreal_engine` MCP is available or a source-level fallback is explicitly recorded |
+| `blockout_review` | UE scene opens with pads, major obstacles, drone, axes, and camera; no asset-quality work yet |
+| `asset_style_review` | RflySim/Sunray-inspired visual styling is readable; no copied unlicensed runtime assets are required |
+| `perception_review` | Mid360/local map visualization shows local perception, occlusion, and known/unknown regions without exposing global truth to planner |
+| `playback_review` | MWORKS result playback drives UAV, propellers, trail, local plan, overlays, and camera smoothly enough for video |
+| `planning_smoke` | local planner path begins at UAV center, avoids visible collision proxies, and no longer behaves as a hard-coded straight line |
+
+Performance targets:
+
+| Loop | Initial Target | Stretch Target | Rule |
+| --- | --- | --- | --- |
+| MWORKS control evidence | 20 Hz | 50 Hz | Solver truth remains MWORKS-side |
+| Mid360/local map display | 20 Hz | 30 Hz | Drop stale render frames; do not block control evidence |
+| UE playback/render | 30 FPS | 60 FPS | Use instancing/LOD/static geometry before lowering visual clarity |
+| planner update | 5-20 Hz | 20 Hz | Reuse previous feasible trajectory on timeout |
+
+Implementation sequence after approval:
+
+1. Generate a small RflySim scene reference index from the unpacked scene
+   folders. This is documentation/metadata only; do not import assets.
+2. Extract or list Sunray/YunZong truth candidates from `.world/.sdf` files:
+   model names, primitive dimensions, mesh references, start/goal examples, and
+   coordinate assumptions.
+3. Draft `competition_industrial_hybrid` scene profile and object registry.
+4. Build a UE5 blockout using project-owned primitives/assets and collision
+   proxies.
+5. Add visual styling and imported/authorized assets only after collision truth
+   is stable.
+6. Add MWORKS playback, local perception coloring, path/trail, camera presets,
+   and video export.
+7. Only then expand to park/city, terrain/wind, indoor/gate, forest, maze, and
+   multi-UAV scene families.
+
+Risks and downgrade paths:
+
+| Risk | Response |
+| --- | --- |
+| RflySim assets cannot be legally or technically imported | Recreate layout/style with project-owned UE5 primitives, Fab/free assets, or Sunray/Gazebo assets |
+| Sunray/Gazebo dimensions are incomplete | Use them for coarse truth and mark uncertain dimensions; do not claim physical fidelity until parameters are identified |
+| UE performance drops with rich assets | Convert repeated objects to instanced meshes, simplify collision proxies, add LODs, and keep MWORKS evidence independent |
+| Local planner still cuts through obstacles | Fix planner/proxy/known-map interface before adding visual polish |
+| Visual map and planner truth diverge | Stop scene expansion and repair registry/proxy bindings |
+
+Scene expansion order after the first scene:
+
+| Priority | Scene Family | Reference Inputs | Purpose |
+| --- | --- | --- | --- |
+| P0 | `competition_industrial_hybrid` | `MatchScene2025`, `RobotMissionChallenge`, `OldFactory`, Sunray truth | main single-UAV navigation/control video |
+| P1 | `gate_ring_attitude` | `VisionRing`, challenge/gate references | tilted-frame and aggressive attitude demo |
+| P1 | `park_city_patrol` | `NeighborhoodPark`, `ModernCityBundle`, Sunray/AWS assets | patrol/logistics context |
+| P2 | `terrain_wind` | `DesertTown`, `MountainTerrain`, open grassland assets | wind and terrain-following videos |
+| P2 | `maze_indoor` | `CameraRoom`, challenge maps, indoor open assets | occlusion/local-replanning stress test |
+| P3 | `forest_dense` | licensed UE forest/open assets | dense obstacle and swarm extension |
+
+Manual review checkpoints:
+
+```text
+profile draft -> blockout viewport -> asset styling -> perception overlay
+-> playback/video -> planner-quality result
+```
+
+Do not skip from a profile draft directly to a polished scene. The profile and
+blockout must be accepted first so coordinates, object roles, and collision
+truth do not drift later.
+
 Repeatable audit command:
 
 ```bash
