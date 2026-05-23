@@ -186,6 +186,9 @@ def run_review_camera_check() -> bool:
 
     required_source_tokens = [
         "AutoPossessPlayer = EAutoReceiveInput::Player0",
+        "SetupPlayerInputComponent",
+        "BindAxis",
+        "SetReviewInputMode",
         "EKeys::W",
         "EKeys::A",
         "EKeys::S",
@@ -194,6 +197,7 @@ def run_review_camera_check() -> bool:
         "EKeys::E",
         "EKeys::RightMouseButton",
         "GetInputMouseDelta",
+        "MWORKS review camera input accepted",
     ]
     missing = [token for token in required_source_tokens if token not in source]
     if missing:
@@ -202,6 +206,17 @@ def run_review_camera_check() -> bool:
     if "AMworksReviewCameraPawn" not in header:
         print("[FAIL] review camera class missing from header")
         return False
+    input_text = (ROOT / "unreal/MworksUnrealRenderer/Config/DefaultInput.ini").read_text(encoding="utf-8")
+    for axis_name in [
+        "MworksReviewMoveForward",
+        "MworksReviewMoveRight",
+        "MworksReviewMoveUp",
+        "MworksReviewTurn",
+        "MworksReviewLookUp",
+    ]:
+        if axis_name not in input_text:
+            print(f"[FAIL] DefaultInput.ini missing review axis mapping: {axis_name}")
+            return False
     if "DefaultPawnClass = AMworksReviewCameraPawn::StaticClass()" not in gamemode:
         print("[FAIL] renderer GameMode does not use the review camera pawn")
         return False

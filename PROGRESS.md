@@ -246,3 +246,16 @@
   `AndroidFileServerRuntimeSettings/SecurityToken`. This is local generated
   config, not project state. The readiness check now fails if this section is
   present, so it must be removed before commit.
+- 2026-05-23 20:48 CST: Added runtime input evidence for the standalone review
+  camera. When keyboard/mouse input actually changes the camera, the game log
+  prints `MWORKS review camera input accepted` with location and rotation.
+- 2026-05-23 21:02 CST: Strengthened the Unreal review camera after a manual
+  report that the viewport could not move. The camera now uses UE axis bindings
+  plus key-poll fallback, reapplies GameOnly input after possession/restart, and
+  the standalone launcher no longer opens the extra `-log` window that can steal
+  focus from the game viewport.
+- 2026-05-23 21:14 CST: Confirmed the standalone S1 renderer window accepted
+  camera input during `competition_industrial_hybrid_manual_review`. Runtime log
+  evidence:
+  `MWORKS review camera input accepted moved=1` and
+  `MWORKS review camera input accepted moved=0 rotated=1`.

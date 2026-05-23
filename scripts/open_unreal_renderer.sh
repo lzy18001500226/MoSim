@@ -20,6 +20,22 @@ if [[ ! -f "${UPROJECT}" ]]; then
   exit 2
 fi
 
+focus_game_window() {
+  powershell.exe -NoProfile -Command \
+    "Add-Type @'
+using System;
+using System.Runtime.InteropServices;
+public class WinApi {
+  [DllImport(\"user32.dll\")] public static extern bool SetForegroundWindow(IntPtr hWnd);
+}
+'@;
+\$game = Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MworksUnrealRenderer.uproject*' -and \$_.CommandLine -like '* -game*' } | Select-Object -First 1;
+if (\$game) {
+  \$proc = Get-Process -Id \$game.ProcessId -ErrorAction SilentlyContinue;
+  if (\$proc -and \$proc.MainWindowHandle -ne 0) { [WinApi]::SetForegroundWindow(\$proc.MainWindowHandle) | Out-Null }
+}" >/dev/null 2>&1 || true
+}
+
 if [[ "${MODE}" == "editor" ]] && powershell.exe -NoProfile -Command \
   "Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MworksUnrealRenderer.uproject*' -and \$_.CommandLine -notlike '* -game*' } | Select-Object -First 1 | ForEach-Object { exit 0 }; exit 1" >/dev/null 2>&1; then
   echo "MworksUnrealRenderer UnrealEditor is already running."
@@ -35,6 +51,7 @@ if [[ "${MODE}" == "game" ]] && powershell.exe -NoProfile -Command \
     sleep 2
   else
     echo "MworksUnrealRenderer game window is already running."
+    focus_game_window
     exit 0
   fi
 fi
@@ -44,7 +61,7 @@ case "${MODE}" in
     EXTRA_ARGS=()
     ;;
   game)
-    EXTRA_ARGS=("-game" "-windowed" "-ResX=1280" "-ResY=720" "-log")
+    EXTRA_ARGS=("-game" "-windowed" "-ResX=1280" "-ResY=720")
     ;;
   *)
     echo "Usage: $0 [editor|game]" >&2
@@ -59,5 +76,7 @@ if [[ "${#EXTRA_ARGS[@]}" -eq 0 ]]; then
     "Start-Process -FilePath '${UE_WIN}' -ArgumentList @('${UPROJECT_WIN}') | Out-Null"
 else
   powershell.exe -NoProfile -Command \
-    "Start-Process -FilePath '${UE_WIN}' -ArgumentList @('${UPROJECT_WIN}', '-game', '-windowed', '-ResX=1280', '-ResY=720', '-log') | Out-Null"
+    "Start-Process -FilePath '${UE_WIN}' -ArgumentList @('${UPROJECT_WIN}', '-game', '-windowed', '-ResX=1280', '-ResY=720') | Out-Null"
+  sleep 5
+  focus_game_window
 fi

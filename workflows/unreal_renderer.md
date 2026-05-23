@@ -181,15 +181,26 @@ Shift: fast move
 Ctrl: slow move
 ```
 
+Runtime input evidence: when the review camera receives movement or look input,
+the game log prints `MWORKS review camera input accepted` with the camera
+location and rotation. Use this log line to distinguish a focused, controllable
+standalone review window from a display-only window.
+
 If the user reports that the game window opens but the view cannot move, check
 `MworksUnrealRendererGameMode.cpp` first. It must use
 `AMworksReviewCameraPawn::StaticClass()` as `DefaultPawnClass`; a null default
 Pawn means the viewport is display-only and cannot be manually reviewed. After
-C++ camera changes, relaunch the game window with:
+C++ camera changes, check `DefaultInput.ini` for the `MworksReviewMove*`,
+`MworksReviewTurn`, and `MworksReviewLookUp` axis mappings, then relaunch the
+game window with:
 
 ```bash
 RESTART_UNREAL_GAME=1 scripts/open_unreal_renderer.sh game
 ```
+
+The launcher intentionally avoids `-log` in standalone `game` mode. The extra
+UE log window can steal focus from the renderer viewport and make camera input
+look broken even when the pawn is active.
 
 If the standalone review window exits immediately and the log points into
 `UnrealEditor-Landscape.dll`, check `DefaultEngine.ini`. This renderer should

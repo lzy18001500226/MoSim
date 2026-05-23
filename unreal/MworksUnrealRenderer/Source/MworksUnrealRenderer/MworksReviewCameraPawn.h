@@ -17,6 +17,9 @@ public:
 
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaSeconds) override;
+    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+    virtual void PossessedBy(AController* NewController) override;
+    virtual void PawnClientRestart() override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera")
     FVector InitialCameraLocation = FVector(-3200.0, -2200.0, 1300.0);
@@ -49,4 +52,22 @@ protected:
 private:
     void ApplyReviewInput(float DeltaSeconds);
     float AxisFromKeys(class APlayerController* PlayerController, const FKey& PositiveKey, const FKey& NegativeKey) const;
+    void SetReviewInputMode(class APlayerController* PlayerController);
+    void MoveForward(float Value);
+    void MoveRight(float Value);
+    void MoveUp(float Value);
+    void TurnKeyboard(float Value);
+    void LookUpKeyboard(float Value);
+    void MouseTurn(float Value);
+    void MouseLookUp(float Value);
+    void LogReviewCameraMotionIfNeeded(bool bMoved, bool bRotated);
+
+    float MoveForwardAxis = 0.0f;
+    float MoveRightAxis = 0.0f;
+    float MoveUpAxis = 0.0f;
+    float TurnKeyboardAxis = 0.0f;
+    float LookUpKeyboardAxis = 0.0f;
+    float MouseTurnAxis = 0.0f;
+    float MouseLookUpAxis = 0.0f;
+    double LastMotionLogTimeSeconds = -1000.0;
 };
