@@ -54,8 +54,8 @@
         ]
       },
       "truth_binding": {
-        "geometry_id": "competition_industrial_hybrid_pad_box",
-        "collision_proxy_id": "proxy_competition_industrial_hybrid_pad_box",
+        "geometry_id": "competition_industrial_hybrid_takeoff_pad_box",
+        "collision_proxy_id": "proxy_competition_industrial_hybrid_takeoff_pad_box",
         "render_only": false
       }
     },
@@ -77,8 +77,8 @@
         ]
       },
       "truth_binding": {
-        "geometry_id": "competition_industrial_hybrid_pad_box",
-        "collision_proxy_id": "proxy_competition_industrial_hybrid_pad_box",
+        "geometry_id": "competition_industrial_hybrid_landing_pad_box",
+        "collision_proxy_id": "proxy_competition_industrial_hybrid_landing_pad_box",
         "render_only": false
       }
     },
@@ -334,23 +334,42 @@
       "source_asset_id": "competition_industrial_hybrid_terrain_or_floor"
     },
     {
-      "collision_proxy_id": "proxy_competition_industrial_hybrid_pad_box",
+      "collision_proxy_id": "proxy_competition_industrial_hybrid_takeoff_pad_box",
       "geometry_type": "box",
       "frame": "mworks_world",
       "bounds_m": {
         "center": [
-          0.0,
-          0.0,
+          -8.0,
+          -8.0,
           0.02
         ],
         "size": [
-          1.0,
-          1.0,
+          1.2,
+          1.2,
           0.04
         ]
       },
       "safety_margin_m": 0.2,
       "source_asset_id": "competition_industrial_hybrid_takeoff_pad"
+    },
+    {
+      "collision_proxy_id": "proxy_competition_industrial_hybrid_landing_pad_box",
+      "geometry_type": "box",
+      "frame": "mworks_world",
+      "bounds_m": {
+        "center": [
+          8.0,
+          8.0,
+          0.02
+        ],
+        "size": [
+          1.2,
+          1.2,
+          0.04
+        ]
+      },
+      "safety_margin_m": 0.2,
+      "source_asset_id": "competition_industrial_hybrid_landing_pad"
     },
     {
       "collision_proxy_id": "proxy_competition_industrial_hybrid_pillar_box_or_cylinder",

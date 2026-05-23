@@ -43,7 +43,10 @@
                     "local_plan",
                     "trajectory_trail",
                     "metric_overlay",
-                    "scene_status_overlay"
+                    "scene_status_overlay",
+                    "scene_bounds_box",
+                    "optional_ground_plane",
+                    "debug_collision_proxy"
                 ]
             },
             "truth_geometry": {
@@ -98,7 +101,8 @@
             "truth_geometry": {
                 "required_proxy_classes": [
                     "terrain_heightfield_or_plane",
-                    "pad_box",
+                    "takeoff_pad_box",
+                    "landing_pad_box",
                     "pillar_box_or_cylinder",
                     "box_obstacle",
                     "wall_box",

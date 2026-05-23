@@ -57,7 +57,17 @@ def semantic_to_asset_type(visual_class: str) -> str:
 def proxy_for_visual(profile: dict[str, Any], visual_class: str) -> str:
     proxy_classes = profile.get("truth_geometry", {}).get("required_proxy_classes", [])
     visual = visual_class.lower()
-    if "takeoff_pad" in visual or "landing_pad" in visual or visual.endswith("pad"):
+    if "scene_bounds" in visual:
+        return next((str(proxy) for proxy in proxy_classes if "scene_bounds" in str(proxy).lower()), "")
+    if "ground" in visual:
+        return next((str(proxy) for proxy in proxy_classes if "ground" in str(proxy).lower()), "")
+    if "debug_collision" in visual:
+        return next((str(proxy) for proxy in proxy_classes if "debug_collision" in str(proxy).lower()), "")
+    if "takeoff_pad" in visual:
+        return next((str(proxy) for proxy in proxy_classes if "takeoff_pad" in str(proxy).lower()), "")
+    if "landing_pad" in visual:
+        return next((str(proxy) for proxy in proxy_classes if "landing_pad" in str(proxy).lower()), "")
+    if visual.endswith("pad"):
         return next((str(proxy) for proxy in proxy_classes if "pad" in str(proxy).lower()), "")
     if "box" in visual or "boxes" in visual:
         return next((str(proxy) for proxy in proxy_classes if "box_obstacle" in str(proxy).lower()), "")
@@ -90,13 +100,17 @@ def proxy_for_visual(profile: dict[str, Any], visual_class: str) -> str:
 
 def is_runtime_visual(visual_class: str) -> bool:
     token = visual_class.lower()
+    runtime_exact_tokens = {
+        "local_plan",
+    }
+    if token in runtime_exact_tokens:
+        return True
     runtime_tokens = (
         "uav",
         "propeller",
         "axis",
         "camera",
         "radar",
-        "plan",
         "trail",
         "overlay",
         "marker",
@@ -111,8 +125,16 @@ def default_bounds_for_proxy(proxy_class: str) -> dict[str, Any]:
     proxy = proxy_class.lower()
     if "terrain" in proxy or "plane" in proxy or "floor" in proxy:
         return {"center": [0.0, 0.0, -0.025], "size": [20.0, 20.0, 0.05]}
+    if "takeoff_pad" in proxy:
+        return {"center": [-8.0, -8.0, 0.02], "size": [1.2, 1.2, 0.04]}
+    if "landing_pad" in proxy:
+        return {"center": [8.0, 8.0, 0.02], "size": [1.2, 1.2, 0.04]}
     if "pad" in proxy:
         return {"center": [0.0, 0.0, 0.02], "size": [1.0, 1.0, 0.04]}
+    if "scene_bounds" in proxy:
+        return {"center": [0.0, 0.0, 2.0], "size": [20.0, 20.0, 4.0]}
+    if "debug_collision" in proxy:
+        return {"center": [0.0, 0.0, 0.5], "size": [1.0, 1.0, 1.0]}
     if "wall" in proxy:
         return {"center": [0.0, 0.0, 1.5], "size": [6.0, 0.25, 3.0]}
     if "gate" in proxy or "ring" in proxy:

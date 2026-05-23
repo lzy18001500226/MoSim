@@ -23,6 +23,15 @@
   stale static map previews when a profile has no `render_map_json`. Interactive
   UE review is still blocked because `unreal_engine.get_actors_in_level` timed
   out on 2026-05-23; do not claim viewport verification until MCP reconnects.
+- 2026-05-23 S0/S1 metadata hardening: S0 now has explicit
+  `scene_bounds_box`, `optional_ground_plane`, and `debug_collision_proxy`
+  registry entries; S1 now has distinct takeoff and landing pad proxies. This is
+  a scene-contract fix only. It is not UE viewport evidence.
+- Active recovery goal for this turn: advance the next S0/S1 Unreal renderer
+  round with recoverable sub-agent split. `UEMCPProbe(Ptolemy)` owns the
+  smallest `unreal_engine` MCP blocker diagnosis; `SceneProfileAuditor(Maxwell)`
+  owns the read-only S0/S1 profile/workflow/code-contract audit. Main agent
+  integrates only after those reports identify safe next writes and checks.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.
@@ -50,6 +59,7 @@
 | External docs learning | `ExternalDocsLearningOwner` | recurring-loop-defined | Use `docs/index/external_learning_index.md` and `workflows/agent_orchestration.md#71-recurring-learning-owner` when failures, new tools, new repos, or milestones trigger another learn-and-patch cycle. |
 | Vehicle parameter identification | `VehicleParamIdentificationResearcher` | local-code-audit-complete-awaiting-sunray-ulog | `references/Data` code audit is promoted to `workflows/identify_quadrotor_parameters.md`; first useful data package is RC-collected PX4 `.ulg` logs plus `.params`, exact takeoff mass, motor order, and motor/prop/ESC info. RPM or thrust-stand data remains optional but improves confidence. |
 | AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | done | Git-safe migration is complete and pushed. Tracked scopes now include Cosys tutorial/content assets under 100 MB, SPEAR source/reference subset, CARLA UE5 source/reference subset, and IsaacSim text/source subset. Remaining local ignored content is intentional: CARLA image/content packs, IsaacSim LFS-managed assets/cache/data, and SPEAR `third_party`/Content/generated assets. |
+| UE S0/S1 renderer next round | `TaskSecretary` + `UEMCPProbe(Ptolemy)` + `SceneProfileAuditor(Maxwell)` | source-contract-updated | Ptolemy found WSL cannot reach UE Editor `55557`; do not repeat `get_actors_in_level` until the editor plugin listener is confirmed. Maxwell found S0/S1 profile consistency gaps; S0 proxy registry and S1 distinct pad proxies were fixed at metadata level. Next safe action is UE MCP reconnection/manual plugin listener check, then smallest read probe and viewport review. |
 
 ## Superseded Queues
 

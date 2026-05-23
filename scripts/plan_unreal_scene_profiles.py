@@ -31,12 +31,14 @@ PROFILE_RFLYSIM_REFERENCES = {
 
 PROFILE_PROXY_BINDINGS = {
     "renderer_framework": {
+        "scene_bounds_box": "scene_bounds_box",
         "optional_ground_plane": "optional_ground_plane",
+        "debug_collision_proxy": "debug_collision_proxy",
     },
     "competition_industrial_hybrid": {
         "terrain_or_floor": "terrain_heightfield_or_plane",
-        "takeoff_pad": "pad_box",
-        "landing_pad": "pad_box",
+        "takeoff_pad": "takeoff_pad_box",
+        "landing_pad": "landing_pad_box",
         "pillars": "pillar_box_or_cylinder",
         "boxes": "box_obstacle",
         "short_walls": "wall_box",

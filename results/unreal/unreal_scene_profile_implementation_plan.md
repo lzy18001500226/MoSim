@@ -38,8 +38,8 @@
 
 | Order | Profile | Priority | Planner visibility | Visual classes | Proxy classes |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | `renderer_framework` | P0 | `framework_only_no_planner_truth_leakage` | `UAV`, `propellers`, `body_axes`, `overview_camera`, `follow_camera`, `radar_sector`, `local_plan`, `trajectory_trail`, `metric_overlay`, `scene_status_overlay` | `scene_bounds_box`, `optional_ground_plane`, `debug_collision_proxy` |
-| 2 | `competition_industrial_hybrid` | P0 | `raycast_occluded_local_sensor_with_map_memory` | `terrain_or_floor`, `takeoff_pad`, `landing_pad`, `pillars`, `boxes`, `short_walls`, `gate_or_frame`, `industrial_props`, `inspection_targets`, `radar_sector`, `local_known_map`, `local_plan`, `trajectory_trail` | `terrain_heightfield_or_plane`, `pad_box`, `pillar_box_or_cylinder`, `box_obstacle`, `wall_box`, `gate_frame_boxes`, `inspection_target_box` |
+| 1 | `renderer_framework` | P0 | `framework_only_no_planner_truth_leakage` | `UAV`, `propellers`, `body_axes`, `overview_camera`, `follow_camera`, `radar_sector`, `local_plan`, `trajectory_trail`, `metric_overlay`, `scene_status_overlay`, `scene_bounds_box`, `optional_ground_plane`, `debug_collision_proxy` | `scene_bounds_box`, `optional_ground_plane`, `debug_collision_proxy` |
+| 2 | `competition_industrial_hybrid` | P0 | `raycast_occluded_local_sensor_with_map_memory` | `terrain_or_floor`, `takeoff_pad`, `landing_pad`, `pillars`, `boxes`, `short_walls`, `gate_or_frame`, `industrial_props`, `inspection_targets`, `radar_sector`, `local_known_map`, `local_plan`, `trajectory_trail` | `terrain_heightfield_or_plane`, `takeoff_pad_box`, `landing_pad_box`, `pillar_box_or_cylinder`, `box_obstacle`, `wall_box`, `gate_frame_boxes`, `inspection_target_box` |
 | 3 | `gate_ring_attitude` | P1 | `known_task_geometry_plus_local_sensor` | `tilted_gate`, `ring`, `indoor_floor`, `axis_marker`, `smooth_reference`, `actual_trail` | `gate_frame_boxes`, `ring_proxy`, `safe_corridor` |
 | 4 | `park_city_patrol` | P1 | `local_sensor_only_with_mission_waypoints` | `terrain`, `roads`, `buildings`, `trees`, `park_props`, `inspection_waypoints`, `radar_sector`, `local_plan`, `trajectory_trail` | `building_box`, `tree_trunk_capsule_or_box`, `road_plane`, `waypoint_marker_box` |
 | 5 | `open_grass_robustness` | P1 | `mostly_open_known_task_area` | `grass_field`, `wind_vector_overlay`, `gust_zone`, `UAV`, `trail`, `metric_overlay`, `fault_efficiency_overlay` | `terrain_plane`, `optional_boundary`, `gust_zone_box` |
@@ -67,6 +67,9 @@ Reconstruction units:
 | `trajectory_trail` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
 | `metric_overlay` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
 | `scene_status_overlay` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `scene_bounds_box` | `scene_bounds_box` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
+| `optional_ground_plane` | `optional_ground_plane` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
+| `debug_collision_proxy` | `debug_collision_proxy` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
 
 Acceptance:
 
@@ -88,8 +91,8 @@ Reconstruction units:
 | Visual class | Proxy class | Source | Action |
 | --- | --- | --- | --- |
 | `terrain_or_floor` | `terrain_heightfield_or_plane` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
-| `takeoff_pad` | `pad_box` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
-| `landing_pad` | `pad_box` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
+| `takeoff_pad` | `takeoff_pad_box` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
+| `landing_pad` | `landing_pad_box` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
 | `pillars` | `pillar_box_or_cylinder` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
 | `boxes` | `box_obstacle` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
 | `short_walls` | `wall_box` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |

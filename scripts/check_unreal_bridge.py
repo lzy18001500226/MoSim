@@ -247,6 +247,9 @@ def main() -> int:
         if not profile.get("acceptance"):
             print(f"[FAIL] scene profile missing acceptance list: {profile_id}")
             return 1
+    # Planned-stage inventory gate. These files prove that later S2/S5
+    # contracts are still documented, but they do not mean those stages are
+    # unlocked or visually verified.
     if not MAZE_RENDER_MAP.exists():
         print(f"[FAIL] missing maze/building render map: {MAZE_RENDER_MAP}")
         return 1
@@ -368,6 +371,30 @@ def main() -> int:
         if registry_doc.get("global_map_available_to_planner") is not False:
             print(f"[FAIL] active scene profile staging must not expose global planner truth: {profile_id}")
             return 1
+        proxies = registry_doc.get("collision_proxies", [])
+        proxy_ids = {proxy.get("collision_proxy_id") for proxy in proxies if isinstance(proxy, dict)}
+        if not proxy_ids:
+            print(f"[FAIL] active scene profile staging must define collision proxies: {profile_id}")
+            return 1
+        if profile_id == "renderer_framework":
+            expected = {
+                "proxy_renderer_framework_scene_bounds_box",
+                "proxy_renderer_framework_optional_ground_plane",
+                "proxy_renderer_framework_debug_collision_proxy",
+            }
+            missing_expected = sorted(expected - proxy_ids)
+            if missing_expected:
+                print(f"[FAIL] renderer framework missing proxy ids: {', '.join(missing_expected)}")
+                return 1
+        if profile_id == "competition_industrial_hybrid":
+            expected = {
+                "proxy_competition_industrial_hybrid_takeoff_pad_box",
+                "proxy_competition_industrial_hybrid_landing_pad_box",
+            }
+            missing_expected = sorted(expected - proxy_ids)
+            if missing_expected:
+                print(f"[FAIL] competition industrial profile missing distinct pad proxies: {', '.join(missing_expected)}")
+                return 1
     asset_schema = json.loads(ASSET_REGISTRY_SCHEMA.read_text(encoding="utf-8"))
     if asset_schema.get("schema") != "quadrotor.scene_asset_registry.schema.v1":
         print("[FAIL] scene asset registry schema mismatch")

@@ -42,7 +42,10 @@
         "local_plan",
         "trajectory_trail",
         "metric_overlay",
-        "scene_status_overlay"
+        "scene_status_overlay",
+        "scene_bounds_box",
+        "optional_ground_plane",
+        "debug_collision_proxy"
       ],
       "required_proxy_classes": [
         "scene_bounds_box",
@@ -112,6 +115,24 @@
           "proxy_class": "",
           "source": "bridge_runtime_visual",
           "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "scene_bounds_box",
+          "proxy_class": "scene_bounds_box",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "optional_ground_plane",
+          "proxy_class": "optional_ground_plane",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "debug_collision_proxy",
+          "proxy_class": "debug_collision_proxy",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
         }
       ],
       "implementation_steps": [
@@ -158,7 +179,8 @@
       ],
       "required_proxy_classes": [
         "terrain_heightfield_or_plane",
-        "pad_box",
+        "takeoff_pad_box",
+        "landing_pad_box",
         "pillar_box_or_cylinder",
         "box_obstacle",
         "wall_box",
@@ -196,13 +218,13 @@
         },
         {
           "visual_class": "takeoff_pad",
-          "proxy_class": "pad_box",
+          "proxy_class": "takeoff_pad_box",
           "source": "project_owned_geometry",
           "action": "create visible asset and bind to matching collision/world_geometry proxy"
         },
         {
           "visual_class": "landing_pad",
-          "proxy_class": "pad_box",
+          "proxy_class": "landing_pad_box",
           "source": "project_owned_geometry",
           "action": "create visible asset and bind to matching collision/world_geometry proxy"
         },

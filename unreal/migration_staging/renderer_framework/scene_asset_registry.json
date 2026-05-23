@@ -242,9 +242,136 @@
         "collision_proxy_id": "",
         "render_only": true
       }
+    },
+    {
+      "asset_id": "renderer_framework_scene_bounds_box",
+      "semantic_type": "obstacle",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/renderer_framework/scene_bounds_box",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "renderer_framework_scene_bounds_box",
+        "collision_proxy_id": "proxy_renderer_framework_scene_bounds_box",
+        "render_only": false
+      }
+    },
+    {
+      "asset_id": "renderer_framework_optional_ground_plane",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/renderer_framework/optional_ground_plane",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "renderer_framework_optional_ground_plane",
+        "collision_proxy_id": "proxy_renderer_framework_optional_ground_plane",
+        "render_only": false
+      }
+    },
+    {
+      "asset_id": "renderer_framework_debug_collision_proxy",
+      "semantic_type": "marker",
+      "source": {
+        "origin": "project_generated",
+        "source_path": "unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json",
+        "license_status": "project_owned"
+      },
+      "unreal": {
+        "asset_path": "/Game/Quadrotor/Scenes/renderer_framework/debug_collision_proxy",
+        "material_profile": "profile_stub",
+        "scale_m": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "truth_binding": {
+        "geometry_id": "renderer_framework_debug_collision_proxy",
+        "collision_proxy_id": "proxy_renderer_framework_debug_collision_proxy",
+        "render_only": false
+      }
     }
   ],
-  "collision_proxies": [],
+  "collision_proxies": [
+    {
+      "collision_proxy_id": "proxy_renderer_framework_scene_bounds_box",
+      "geometry_type": "box",
+      "frame": "mworks_world",
+      "bounds_m": {
+        "center": [
+          0.0,
+          0.0,
+          2.0
+        ],
+        "size": [
+          20.0,
+          20.0,
+          4.0
+        ]
+      },
+      "safety_margin_m": 0.2,
+      "source_asset_id": "renderer_framework_scene_bounds_box"
+    },
+    {
+      "collision_proxy_id": "proxy_renderer_framework_optional_ground_plane",
+      "geometry_type": "box",
+      "frame": "mworks_world",
+      "bounds_m": {
+        "center": [
+          0.0,
+          0.0,
+          -0.025
+        ],
+        "size": [
+          20.0,
+          20.0,
+          0.05
+        ]
+      },
+      "safety_margin_m": 0.2,
+      "source_asset_id": "renderer_framework_optional_ground_plane"
+    },
+    {
+      "collision_proxy_id": "proxy_renderer_framework_debug_collision_proxy",
+      "geometry_type": "box",
+      "frame": "mworks_world",
+      "bounds_m": {
+        "center": [
+          0.0,
+          0.0,
+          0.5
+        ],
+        "size": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "safety_margin_m": 0.2,
+      "source_asset_id": "renderer_framework_debug_collision_proxy"
+    }
+  ],
   "acceptance": [
     "UAV pose, attitude and propeller visuals are driven by MWORKS/replay state",
     "scene profile and object registry can be loaded without hard-coded map assumptions",
