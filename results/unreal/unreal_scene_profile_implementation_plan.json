@@ -23,6 +23,115 @@
   "profiles": [
     {
       "order": 1,
+      "profile_id": "renderer_framework",
+      "map_ids": [
+        "renderer_framework",
+        "ue5_framework_smoke"
+      ],
+      "render_map_json": "",
+      "priority": "P0",
+      "purpose": "foundation for all later scenes: project-owned UE5 scene profile, object registry, collision proxy registry, MWORKS playback, UAV visual, camera, trail, radar sector and local plan overlays",
+      "source_strategy": "project_owned_minimal_framework",
+      "required_visual_classes": [
+        "UAV",
+        "propellers",
+        "body_axes",
+        "overview_camera",
+        "follow_camera",
+        "radar_sector",
+        "local_plan",
+        "trajectory_trail",
+        "metric_overlay",
+        "scene_status_overlay"
+      ],
+      "required_proxy_classes": [
+        "scene_bounds_box",
+        "optional_ground_plane",
+        "debug_collision_proxy"
+      ],
+      "planner_visibility": "framework_only_no_planner_truth_leakage",
+      "global_map_available_to_planner": false,
+      "rflysim_reference_scenes": [],
+      "reconstruction_units": [
+        {
+          "visual_class": "UAV",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "propellers",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "body_axes",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "overview_camera",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "follow_camera",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "radar_sector",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "local_plan",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "trajectory_trail",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "metric_overlay",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "scene_status_overlay",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        }
+      ],
+      "implementation_steps": [
+        "create or select authorized visual assets",
+        "use RflySim runtime only as visual/layout reference unless direct_editor_open_supported is later verified true",
+        "write scene_asset_registry entry with source and license note",
+        "create matching world_geometry/collision proxies",
+        "add scenario profile and planner visibility rule",
+        "run Unreal bridge checks",
+        "run short MWORKS playback or dry-run stream",
+        "perform manual viewport/video review"
+      ],
+      "acceptance": [
+        "UAV pose, attitude and propeller visuals are driven by MWORKS/replay state",
+        "scene profile and object registry can be loaded without hard-coded map assumptions",
+        "camera presets, radar sector, local plan and trajectory trail are visible and reviewable"
+      ]
+    },
+    {
+      "order": 2,
       "profile_id": "competition_industrial_hybrid",
       "map_ids": [
         "competition_industrial_hybrid",
@@ -177,115 +286,6 @@
       ]
     },
     {
-      "order": 2,
-      "profile_id": "renderer_framework",
-      "map_ids": [
-        "renderer_framework",
-        "ue5_framework_smoke"
-      ],
-      "render_map_json": "",
-      "priority": "P0",
-      "purpose": "foundation for all later scenes: project-owned UE5 scene profile, object registry, collision proxy registry, MWORKS playback, UAV visual, camera, trail, radar sector and local plan overlays",
-      "source_strategy": "project_owned_minimal_framework",
-      "required_visual_classes": [
-        "UAV",
-        "propellers",
-        "body_axes",
-        "overview_camera",
-        "follow_camera",
-        "radar_sector",
-        "local_plan",
-        "trajectory_trail",
-        "metric_overlay",
-        "scene_status_overlay"
-      ],
-      "required_proxy_classes": [
-        "scene_bounds_box",
-        "optional_ground_plane",
-        "debug_collision_proxy"
-      ],
-      "planner_visibility": "framework_only_no_planner_truth_leakage",
-      "global_map_available_to_planner": false,
-      "rflysim_reference_scenes": [],
-      "reconstruction_units": [
-        {
-          "visual_class": "UAV",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "propellers",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "body_axes",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "overview_camera",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "follow_camera",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "radar_sector",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "local_plan",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "trajectory_trail",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "metric_overlay",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "scene_status_overlay",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        }
-      ],
-      "implementation_steps": [
-        "create or select authorized visual assets",
-        "use RflySim runtime only as visual/layout reference unless direct_editor_open_supported is later verified true",
-        "write scene_asset_registry entry with source and license note",
-        "create matching world_geometry/collision proxies",
-        "add scenario profile and planner visibility rule",
-        "run Unreal bridge checks",
-        "run short MWORKS playback or dry-run stream",
-        "perform manual viewport/video review"
-      ],
-      "acceptance": [
-        "UAV pose, attitude and propeller visuals are driven by MWORKS/replay state",
-        "scene profile and object registry can be loaded without hard-coded map assumptions",
-        "camera presets, radar sector, local plan and trajectory trail are visible and reviewable"
-      ]
-    },
-    {
       "order": 3,
       "profile_id": "gate_ring_attitude",
       "map_ids": [
@@ -388,113 +388,6 @@
     },
     {
       "order": 4,
-      "profile_id": "open_grass_robustness",
-      "map_ids": [
-        "open_grass_wind",
-        "open_grass_robustness"
-      ],
-      "render_map_json": "",
-      "priority": "P1",
-      "purpose": "wind disturbance, mass/inertia perturbation, motor-efficiency degradation and long-trajectory robustness video",
-      "source_strategy": "project_owned_open_field",
-      "required_visual_classes": [
-        "grass_field",
-        "wind_vector_overlay",
-        "gust_zone",
-        "UAV",
-        "trail",
-        "metric_overlay",
-        "fault_efficiency_overlay"
-      ],
-      "required_proxy_classes": [
-        "terrain_plane",
-        "optional_boundary",
-        "gust_zone_box"
-      ],
-      "planner_visibility": "mostly_open_known_task_area",
-      "global_map_available_to_planner": false,
-      "rflysim_reference_scenes": [
-        {
-          "scene_id": "rflysim_grasslands_3d_display",
-          "priority": "P0",
-          "source_map": "Grasslands/Maps/Grasslands/3DDisplay.umap",
-          "purpose": "open wind, motor-efficiency, and long-range trajectory scene",
-          "direct_use_supported": false,
-          "direct_editor_open_supported": false,
-          "migration_status": "audit_only"
-        },
-        {
-          "scene_id": "rflysim_grasslands",
-          "priority": "P0",
-          "source_map": "Grasslands/Maps/Grasslands/Grasslands.umap",
-          "purpose": "open terrain scene and reusable landscape material source",
-          "direct_use_supported": false,
-          "direct_editor_open_supported": false,
-          "migration_status": "audit_only"
-        }
-      ],
-      "reconstruction_units": [
-        {
-          "visual_class": "grass_field",
-          "proxy_class": "terrain_plane",
-          "source": "project_owned_geometry",
-          "action": "create visible asset and bind to matching collision/world_geometry proxy"
-        },
-        {
-          "visual_class": "wind_vector_overlay",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "gust_zone",
-          "proxy_class": "gust_zone_box",
-          "source": "project_owned_geometry",
-          "action": "create visible asset and bind to matching collision/world_geometry proxy"
-        },
-        {
-          "visual_class": "UAV",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "trail",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "metric_overlay",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "fault_efficiency_overlay",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        }
-      ],
-      "implementation_steps": [
-        "create or select authorized visual assets",
-        "use RflySim runtime only as visual/layout reference unless direct_editor_open_supported is later verified true",
-        "write scene_asset_registry entry with source and license note",
-        "create matching world_geometry/collision proxies",
-        "add scenario profile and planner visibility rule",
-        "run Unreal bridge checks",
-        "run short MWORKS playback or dry-run stream",
-        "perform manual viewport/video review"
-      ],
-      "acceptance": [
-        "wind and motor-efficiency parameters are displayed and logged",
-        "trajectory comparison shows tracking degradation/recovery",
-        "rendered video maps to MWORKS raw/native result timestamps"
-      ]
-    },
-    {
-      "order": 5,
       "profile_id": "park_city_patrol",
       "map_ids": [
         "park_city_patrol",
@@ -608,7 +501,215 @@
       ]
     },
     {
+      "order": 5,
+      "profile_id": "open_grass_robustness",
+      "map_ids": [
+        "open_grass_wind",
+        "open_grass_robustness"
+      ],
+      "render_map_json": "",
+      "priority": "P1",
+      "purpose": "wind disturbance, mass/inertia perturbation, motor-efficiency degradation and long-trajectory robustness video",
+      "source_strategy": "project_owned_open_field",
+      "required_visual_classes": [
+        "grass_field",
+        "wind_vector_overlay",
+        "gust_zone",
+        "UAV",
+        "trail",
+        "metric_overlay",
+        "fault_efficiency_overlay"
+      ],
+      "required_proxy_classes": [
+        "terrain_plane",
+        "optional_boundary",
+        "gust_zone_box"
+      ],
+      "planner_visibility": "mostly_open_known_task_area",
+      "global_map_available_to_planner": false,
+      "rflysim_reference_scenes": [
+        {
+          "scene_id": "rflysim_grasslands_3d_display",
+          "priority": "P0",
+          "source_map": "Grasslands/Maps/Grasslands/3DDisplay.umap",
+          "purpose": "open wind, motor-efficiency, and long-range trajectory scene",
+          "direct_use_supported": false,
+          "direct_editor_open_supported": false,
+          "migration_status": "audit_only"
+        },
+        {
+          "scene_id": "rflysim_grasslands",
+          "priority": "P0",
+          "source_map": "Grasslands/Maps/Grasslands/Grasslands.umap",
+          "purpose": "open terrain scene and reusable landscape material source",
+          "direct_use_supported": false,
+          "direct_editor_open_supported": false,
+          "migration_status": "audit_only"
+        }
+      ],
+      "reconstruction_units": [
+        {
+          "visual_class": "grass_field",
+          "proxy_class": "terrain_plane",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "wind_vector_overlay",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "gust_zone",
+          "proxy_class": "gust_zone_box",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "UAV",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "trail",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "metric_overlay",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "fault_efficiency_overlay",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        }
+      ],
+      "implementation_steps": [
+        "create or select authorized visual assets",
+        "use RflySim runtime only as visual/layout reference unless direct_editor_open_supported is later verified true",
+        "write scene_asset_registry entry with source and license note",
+        "create matching world_geometry/collision proxies",
+        "add scenario profile and planner visibility rule",
+        "run Unreal bridge checks",
+        "run short MWORKS playback or dry-run stream",
+        "perform manual viewport/video review"
+      ],
+      "acceptance": [
+        "wind and motor-efficiency parameters are displayed and logged",
+        "trajectory comparison shows tracking degradation/recovery",
+        "rendered video maps to MWORKS raw/native result timestamps"
+      ]
+    },
+    {
       "order": 6,
+      "profile_id": "maze_indoor_occlusion",
+      "map_ids": [
+        "map_maze_building",
+        "maze_building",
+        "maze_indoor_occlusion"
+      ],
+      "render_map_json": "MworksData/map_maze_building_render_map.json",
+      "priority": "P2",
+      "purpose": "wall occlusion, corridor navigation, local map memory and no-through-wall radar behavior",
+      "source_strategy": "project_owned_modular_walls",
+      "required_visual_classes": [
+        "walls",
+        "doors_or_passages",
+        "floor",
+        "occlusion_shading",
+        "radar_sector",
+        "local_known_map"
+      ],
+      "required_proxy_classes": [
+        "wall_box",
+        "passage_box",
+        "floor_plane"
+      ],
+      "planner_visibility": "raycast_occluded_local_sensor",
+      "global_map_available_to_planner": false,
+      "rflysim_reference_scenes": [
+        {
+          "scene_id": "rflysim_challenge_map",
+          "priority": "P1",
+          "source_map": "RobotMissionChallenge/Map/ChallengeMap.umap",
+          "purpose": "maze-like challenge scene for local planning stress tests",
+          "direct_use_supported": false,
+          "direct_editor_open_supported": false,
+          "migration_status": "audit_only"
+        },
+        {
+          "scene_id": "rflysim_old_factory",
+          "priority": "P0",
+          "source_map": "OldFactory/Maps/OldFactory.umap",
+          "purpose": "industrial patrol, wall occlusion, and obstacle navigation",
+          "direct_use_supported": false,
+          "direct_editor_open_supported": false,
+          "migration_status": "audit_only"
+        }
+      ],
+      "reconstruction_units": [
+        {
+          "visual_class": "walls",
+          "proxy_class": "wall_box",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "doors_or_passages",
+          "proxy_class": "passage_box",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "floor",
+          "proxy_class": "floor_plane",
+          "source": "project_owned_geometry",
+          "action": "create visible asset and bind to matching collision/world_geometry proxy"
+        },
+        {
+          "visual_class": "occlusion_shading",
+          "proxy_class": "",
+          "source": "project_owned_visual_only",
+          "action": "create visual asset; mark render_only unless later linked to a proxy"
+        },
+        {
+          "visual_class": "radar_sector",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        },
+        {
+          "visual_class": "local_known_map",
+          "proxy_class": "",
+          "source": "bridge_runtime_visual",
+          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
+        }
+      ],
+      "implementation_steps": [
+        "create or select authorized visual assets",
+        "use RflySim runtime only as visual/layout reference unless direct_editor_open_supported is later verified true",
+        "write scene_asset_registry entry with source and license note",
+        "create matching world_geometry/collision proxies",
+        "add scenario profile and planner visibility rule",
+        "run Unreal bridge checks",
+        "run short MWORKS playback or dry-run stream",
+        "perform manual viewport/video review"
+      ],
+      "acceptance": [
+        "radar does not reveal geometry behind walls",
+        "trajectory keeps minimum obstacle distance",
+        "planner can recover from blocked local plan without yaw spinning"
+      ]
+    },
+    {
+      "order": 7,
       "profile_id": "dense_forest_high_obstacle",
       "map_ids": [
         "dense_forest",
@@ -719,107 +820,6 @@
         "visible trunks/rocks have collision_proxy_id equivalents",
         "radar sector shows only currently sensed region",
         "local plan is not a fixed straight line through obstacles"
-      ]
-    },
-    {
-      "order": 7,
-      "profile_id": "maze_indoor_occlusion",
-      "map_ids": [
-        "map_maze_building",
-        "maze_building",
-        "maze_indoor_occlusion"
-      ],
-      "render_map_json": "MworksData/map_maze_building_render_map.json",
-      "priority": "P2",
-      "purpose": "wall occlusion, corridor navigation, local map memory and no-through-wall radar behavior",
-      "source_strategy": "project_owned_modular_walls",
-      "required_visual_classes": [
-        "walls",
-        "doors_or_passages",
-        "floor",
-        "occlusion_shading",
-        "radar_sector",
-        "local_known_map"
-      ],
-      "required_proxy_classes": [
-        "wall_box",
-        "passage_box",
-        "floor_plane"
-      ],
-      "planner_visibility": "raycast_occluded_local_sensor",
-      "global_map_available_to_planner": false,
-      "rflysim_reference_scenes": [
-        {
-          "scene_id": "rflysim_challenge_map",
-          "priority": "P1",
-          "source_map": "RobotMissionChallenge/Map/ChallengeMap.umap",
-          "purpose": "maze-like challenge scene for local planning stress tests",
-          "direct_use_supported": false,
-          "direct_editor_open_supported": false,
-          "migration_status": "audit_only"
-        },
-        {
-          "scene_id": "rflysim_old_factory",
-          "priority": "P0",
-          "source_map": "OldFactory/Maps/OldFactory.umap",
-          "purpose": "industrial patrol, wall occlusion, and obstacle navigation",
-          "direct_use_supported": false,
-          "direct_editor_open_supported": false,
-          "migration_status": "audit_only"
-        }
-      ],
-      "reconstruction_units": [
-        {
-          "visual_class": "walls",
-          "proxy_class": "wall_box",
-          "source": "project_owned_geometry",
-          "action": "create visible asset and bind to matching collision/world_geometry proxy"
-        },
-        {
-          "visual_class": "doors_or_passages",
-          "proxy_class": "passage_box",
-          "source": "project_owned_geometry",
-          "action": "create visible asset and bind to matching collision/world_geometry proxy"
-        },
-        {
-          "visual_class": "floor",
-          "proxy_class": "floor_plane",
-          "source": "project_owned_geometry",
-          "action": "create visible asset and bind to matching collision/world_geometry proxy"
-        },
-        {
-          "visual_class": "occlusion_shading",
-          "proxy_class": "",
-          "source": "project_owned_visual_only",
-          "action": "create visual asset; mark render_only unless later linked to a proxy"
-        },
-        {
-          "visual_class": "radar_sector",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        },
-        {
-          "visual_class": "local_known_map",
-          "proxy_class": "",
-          "source": "bridge_runtime_visual",
-          "action": "render from MWORKS UDP/replay packet; not a static scene asset"
-        }
-      ],
-      "implementation_steps": [
-        "create or select authorized visual assets",
-        "use RflySim runtime only as visual/layout reference unless direct_editor_open_supported is later verified true",
-        "write scene_asset_registry entry with source and license note",
-        "create matching world_geometry/collision proxies",
-        "add scenario profile and planner visibility rule",
-        "run Unreal bridge checks",
-        "run short MWORKS playback or dry-run stream",
-        "perform manual viewport/video review"
-      ],
-      "acceptance": [
-        "radar does not reveal geometry behind walls",
-        "trajectory keeps minimum obstacle distance",
-        "planner can recover from blocked local plan without yaw spinning"
       ]
     },
     {

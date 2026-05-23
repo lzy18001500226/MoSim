@@ -192,9 +192,14 @@ def profile_plan(profile: dict[str, Any], index: int, registry: dict[str, Any]) 
 
 def build_plan(profiles_doc: dict[str, Any], registry: dict[str, Any]) -> dict[str, Any]:
     profiles = profiles_doc.get("profiles", [])
+    stage_rank = {
+        stage.get("profile_id"): index
+        for index, stage in enumerate(profiles_doc.get("stage_roadmap", []), start=1)
+    }
     ordered = sorted(
         profiles,
         key=lambda item: (
+            stage_rank.get(item.get("profile_id"), 999),
             {"P0": 0, "P1": 1, "P2": 2}.get(item.get("priority", "P1"), 9),
             item.get("profile_id", ""),
         ),

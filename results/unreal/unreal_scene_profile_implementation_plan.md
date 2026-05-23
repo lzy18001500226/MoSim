@@ -38,16 +38,41 @@
 
 | Order | Profile | Priority | Planner visibility | Visual classes | Proxy classes |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | `competition_industrial_hybrid` | P0 | `raycast_occluded_local_sensor_with_map_memory` | `terrain_or_floor`, `takeoff_pad`, `landing_pad`, `pillars`, `boxes`, `short_walls`, `gate_or_frame`, `industrial_props`, `inspection_targets`, `radar_sector`, `local_known_map`, `local_plan`, `trajectory_trail` | `terrain_heightfield_or_plane`, `pad_box`, `pillar_box_or_cylinder`, `box_obstacle`, `wall_box`, `gate_frame_boxes`, `inspection_target_box` |
-| 2 | `renderer_framework` | P0 | `framework_only_no_planner_truth_leakage` | `UAV`, `propellers`, `body_axes`, `overview_camera`, `follow_camera`, `radar_sector`, `local_plan`, `trajectory_trail`, `metric_overlay`, `scene_status_overlay` | `scene_bounds_box`, `optional_ground_plane`, `debug_collision_proxy` |
+| 1 | `renderer_framework` | P0 | `framework_only_no_planner_truth_leakage` | `UAV`, `propellers`, `body_axes`, `overview_camera`, `follow_camera`, `radar_sector`, `local_plan`, `trajectory_trail`, `metric_overlay`, `scene_status_overlay` | `scene_bounds_box`, `optional_ground_plane`, `debug_collision_proxy` |
+| 2 | `competition_industrial_hybrid` | P0 | `raycast_occluded_local_sensor_with_map_memory` | `terrain_or_floor`, `takeoff_pad`, `landing_pad`, `pillars`, `boxes`, `short_walls`, `gate_or_frame`, `industrial_props`, `inspection_targets`, `radar_sector`, `local_known_map`, `local_plan`, `trajectory_trail` | `terrain_heightfield_or_plane`, `pad_box`, `pillar_box_or_cylinder`, `box_obstacle`, `wall_box`, `gate_frame_boxes`, `inspection_target_box` |
 | 3 | `gate_ring_attitude` | P1 | `known_task_geometry_plus_local_sensor` | `tilted_gate`, `ring`, `indoor_floor`, `axis_marker`, `smooth_reference`, `actual_trail` | `gate_frame_boxes`, `ring_proxy`, `safe_corridor` |
-| 4 | `open_grass_robustness` | P1 | `mostly_open_known_task_area` | `grass_field`, `wind_vector_overlay`, `gust_zone`, `UAV`, `trail`, `metric_overlay`, `fault_efficiency_overlay` | `terrain_plane`, `optional_boundary`, `gust_zone_box` |
-| 5 | `park_city_patrol` | P1 | `local_sensor_only_with_mission_waypoints` | `terrain`, `roads`, `buildings`, `trees`, `park_props`, `inspection_waypoints`, `radar_sector`, `local_plan`, `trajectory_trail` | `building_box`, `tree_trunk_capsule_or_box`, `road_plane`, `waypoint_marker_box` |
-| 6 | `dense_forest_high_obstacle` | P2 | `local_sensor_only` | `terrain`, `tree_trunks`, `canopy`, `rocks`, `waypoint_markers`, `radar_sector`, `local_plan`, `trajectory_trail` | `tree_trunk_capsule_or_box`, `rock_box`, `terrain_heightfield` |
-| 7 | `maze_indoor_occlusion` | P2 | `raycast_occluded_local_sensor` | `walls`, `doors_or_passages`, `floor`, `occlusion_shading`, `radar_sector`, `local_known_map` | `wall_box`, `passage_box`, `floor_plane` |
+| 4 | `park_city_patrol` | P1 | `local_sensor_only_with_mission_waypoints` | `terrain`, `roads`, `buildings`, `trees`, `park_props`, `inspection_waypoints`, `radar_sector`, `local_plan`, `trajectory_trail` | `building_box`, `tree_trunk_capsule_or_box`, `road_plane`, `waypoint_marker_box` |
+| 5 | `open_grass_robustness` | P1 | `mostly_open_known_task_area` | `grass_field`, `wind_vector_overlay`, `gust_zone`, `UAV`, `trail`, `metric_overlay`, `fault_efficiency_overlay` | `terrain_plane`, `optional_boundary`, `gust_zone_box` |
+| 6 | `maze_indoor_occlusion` | P2 | `raycast_occluded_local_sensor` | `walls`, `doors_or_passages`, `floor`, `occlusion_shading`, `radar_sector`, `local_known_map` | `wall_box`, `passage_box`, `floor_plane` |
+| 7 | `dense_forest_high_obstacle` | P2 | `local_sensor_only` | `terrain`, `tree_trunks`, `canopy`, `rocks`, `waypoint_markers`, `radar_sector`, `local_plan`, `trajectory_trail` | `tree_trunk_capsule_or_box`, `rock_box`, `terrain_heightfield` |
 | 8 | `multi_uav_formation` | P3 | `per_vehicle_local_sensor_plus_shared_formation_state` | `multiple_UAVs`, `formation_links`, `role_labels`, `inter_uav_distance_overlay`, `shared_obstacles`, `leader_trail`, `follower_trails` | `formation_safety_radius`, `shared_obstacle_proxy`, `mission_bounds_box` |
 
 ## Acceptance Gates
+
+### `renderer_framework`
+
+- Map IDs: `renderer_framework`, `ue5_framework_smoke`
+
+Reconstruction units:
+
+| Visual class | Proxy class | Source | Action |
+| --- | --- | --- | --- |
+| `UAV` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `propellers` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `body_axes` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `overview_camera` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `follow_camera` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `radar_sector` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `local_plan` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `trajectory_trail` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `metric_overlay` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `scene_status_overlay` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+
+Acceptance:
+
+- UAV pose, attitude and propeller visuals are driven by MWORKS/replay state
+- scene profile and object registry can be loaded without hard-coded map assumptions
+- camera presets, radar sector, local plan and trajectory trail are visible and reviewable
 
 ### `competition_industrial_hybrid`
 
@@ -84,31 +109,6 @@ Acceptance:
 - local plan begins at the UAV center and avoids proxies rather than drawing a fixed straight line
 - MWORKS playback shows actual trail, reference/local plan, UAV attitude, and scene overlays
 
-### `renderer_framework`
-
-- Map IDs: `renderer_framework`, `ue5_framework_smoke`
-
-Reconstruction units:
-
-| Visual class | Proxy class | Source | Action |
-| --- | --- | --- | --- |
-| `UAV` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `propellers` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `body_axes` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `overview_camera` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `follow_camera` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `radar_sector` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `local_plan` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `trajectory_trail` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `metric_overlay` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `scene_status_overlay` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-
-Acceptance:
-
-- UAV pose, attitude and propeller visuals are driven by MWORKS/replay state
-- scene profile and object registry can be loaded without hard-coded map assumptions
-- camera presets, radar sector, local plan and trajectory trail are visible and reviewable
-
 ### `gate_ring_attitude`
 
 - Map IDs: `map_corridor_gate`, `gate_ring_indoor`, `gate_ring_attitude`
@@ -135,33 +135,6 @@ Acceptance:
 - reference path passes through gate center with visible attitude change
 - actual UAV body does not clip frame proxies
 - attitude and position errors are exported from MWORKS evidence
-
-### `open_grass_robustness`
-
-- Map IDs: `open_grass_wind`, `open_grass_robustness`
-
-RflySim runtime references:
-
-- `rflysim_grasslands_3d_display` -> `Grasslands/Maps/Grasslands/3DDisplay.umap` (direct_use=False, editor_open=False)
-- `rflysim_grasslands` -> `Grasslands/Maps/Grasslands/Grasslands.umap` (direct_use=False, editor_open=False)
-
-Reconstruction units:
-
-| Visual class | Proxy class | Source | Action |
-| --- | --- | --- | --- |
-| `grass_field` | `terrain_plane` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
-| `wind_vector_overlay` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `gust_zone` | `gust_zone_box` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
-| `UAV` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `trail` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `metric_overlay` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `fault_efficiency_overlay` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-
-Acceptance:
-
-- wind and motor-efficiency parameters are displayed and logged
-- trajectory comparison shows tracking degradation/recovery
-- rendered video maps to MWORKS raw/native result timestamps
 
 ### `park_city_patrol`
 
@@ -191,33 +164,32 @@ Acceptance:
 - buildings and tree trunks have proxies when flight-relevant
 - local avoidance remains readable in outdoor view
 
-### `dense_forest_high_obstacle`
+### `open_grass_robustness`
 
-- Map IDs: `dense_forest`, `dense_forest_high_obstacle`
+- Map IDs: `open_grass_wind`, `open_grass_robustness`
 
 RflySim runtime references:
 
-- `rflysim_neighborhood_park` -> `ModularNeighborhood/Maps/NeighborhoodPark.umap` (direct_use=False, editor_open=False)
-- `rflysim_mountain_terrain` -> `MountainTerrain/Maps/MountainTerrain.umap` (direct_use=False, editor_open=False)
+- `rflysim_grasslands_3d_display` -> `Grasslands/Maps/Grasslands/3DDisplay.umap` (direct_use=False, editor_open=False)
+- `rflysim_grasslands` -> `Grasslands/Maps/Grasslands/Grasslands.umap` (direct_use=False, editor_open=False)
 
 Reconstruction units:
 
 | Visual class | Proxy class | Source | Action |
 | --- | --- | --- | --- |
-| `terrain` | `terrain_heightfield` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
-| `tree_trunks` | `tree_trunk_capsule_or_box` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
-| `canopy` | `` | `project_owned_visual_only` | create visual asset; mark render_only unless later linked to a proxy |
-| `rocks` | `rock_box` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
-| `waypoint_markers` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `radar_sector` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `local_plan` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
-| `trajectory_trail` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `grass_field` | `terrain_plane` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
+| `wind_vector_overlay` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `gust_zone` | `gust_zone_box` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
+| `UAV` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `trail` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `metric_overlay` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `fault_efficiency_overlay` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
 
 Acceptance:
 
-- visible trunks/rocks have collision_proxy_id equivalents
-- radar sector shows only currently sensed region
-- local plan is not a fixed straight line through obstacles
+- wind and motor-efficiency parameters are displayed and logged
+- trajectory comparison shows tracking degradation/recovery
+- rendered video maps to MWORKS raw/native result timestamps
 
 ### `maze_indoor_occlusion`
 
@@ -245,6 +217,34 @@ Acceptance:
 - radar does not reveal geometry behind walls
 - trajectory keeps minimum obstacle distance
 - planner can recover from blocked local plan without yaw spinning
+
+### `dense_forest_high_obstacle`
+
+- Map IDs: `dense_forest`, `dense_forest_high_obstacle`
+
+RflySim runtime references:
+
+- `rflysim_neighborhood_park` -> `ModularNeighborhood/Maps/NeighborhoodPark.umap` (direct_use=False, editor_open=False)
+- `rflysim_mountain_terrain` -> `MountainTerrain/Maps/MountainTerrain.umap` (direct_use=False, editor_open=False)
+
+Reconstruction units:
+
+| Visual class | Proxy class | Source | Action |
+| --- | --- | --- | --- |
+| `terrain` | `terrain_heightfield` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
+| `tree_trunks` | `tree_trunk_capsule_or_box` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
+| `canopy` | `` | `project_owned_visual_only` | create visual asset; mark render_only unless later linked to a proxy |
+| `rocks` | `rock_box` | `project_owned_geometry` | create visible asset and bind to matching collision/world_geometry proxy |
+| `waypoint_markers` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `radar_sector` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `local_plan` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+| `trajectory_trail` | `` | `bridge_runtime_visual` | render from MWORKS UDP/replay packet; not a static scene asset |
+
+Acceptance:
+
+- visible trunks/rocks have collision_proxy_id equivalents
+- radar sector shows only currently sensed region
+- local plan is not a fixed straight line through obstacles
 
 ### `multi_uav_formation`
 
