@@ -65,6 +65,19 @@
   `primary_scene_source_id=local_derelictcorridormegascans`. This means
   Launcher/Fab inventory is visible but not accepted as an imported/editable
   truth-backed MoSim scene yet; Derelict is the active local fallback.
+- `AQuadrotorMworksMapActor` now exposes `SceneSourceRegistryJson` and
+  `ResolveSceneSourceId`. It can resolve
+  `local_derelictcorridormegascans` from the registry, record editable project
+  and truth-artifact metadata, and explicitly mark
+  `bCurrentSceneImportedIntoRenderer=false`. This is source-level integration
+  of the fallback contract, not yet visual import of the Derelict map into the
+  renderer.
+- Latest UE build attempt reached C++ compile and failed only at DLL link
+  because an open `UnrealEditor.exe` held
+  `UnrealEditor-QuadrotorMworksBridge.dll` and
+  `UnrealEditor-MworksUnrealRenderer.dll`. Do not treat this as a compile
+  failure; rerun `Scripts/UE5/build_unreal_renderer.sh` after the editor is
+  closed when binary proof is needed.
 - Current Codex MCP config has been corrected from old `Quadrotor` paths to
   MoSim paths and now lists `mosim_epic_library`. The project-owned
   `MworksUnrealRenderer.uproject` now resolves `UnrealMCP` from

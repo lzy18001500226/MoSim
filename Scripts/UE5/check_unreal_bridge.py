@@ -13,6 +13,7 @@ RENDERER = ROOT / "UE5" / "MworksUnrealRenderer"
 SCENE_PROFILES = RENDERER / "Content" / "MworksData" / "unreal_scene_profiles.json"
 MAZE_RENDER_MAP = RENDERER / "Content" / "MworksData" / "map_maze_building_render_map.json"
 ASSET_REGISTRY_SCHEMA = RENDERER / "Content" / "MworksData" / "scene_asset_registry.schema.json"
+SCENE_SOURCE_REGISTRY = RENDERER / "Content" / "MworksData" / "scene_source_registry.json"
 S0_S1_READINESS_CHECKER = ROOT / "Scripts" / "UE5" / "check_unreal_s0_s1_readiness.py"
 GATE_RING_RENDER_MAP = RENDERER / "Content" / "MworksData" / "map_corridor_gate_render_map.json"
 SCENE_PROFILE_PLANNER = ROOT / "Scripts" / "UE5" / "plan_unreal_scene_profiles.py"
@@ -165,13 +166,25 @@ def main() -> int:
         "LoadRenderMapSummary",
         "SceneRegistryJson",
         "SceneProfilesJson",
+        "SceneSourceRegistryJson",
         "ResolveMapId",
+        "ResolveSceneSourceId",
         "ApplyFrameMapSelection",
+        "ClearSceneSourceState",
+        "Frame.MapId.StartsWith(TEXT(\"local_\"))",
         "CurrentMapId",
         "CurrentSceneProfileId",
+        "CurrentSceneSourceId",
+        "CurrentSceneTruthArtifacts",
+        "bCurrentScenePlanningTruthReady",
+        "bCurrentSceneImportedIntoRenderer",
         "map_ids",
         "render_map_json",
+        "local_editable_fallback",
+        "scene_sources",
+        "scene_source_id",
         "Selected scene profile has no static render map",
+        "Selected MoSim scene_source_id",
         "direct_editor_open_supported",
         "random_column_count",
         "wall_box_count",
@@ -211,6 +224,43 @@ def main() -> int:
     for token in ["collision_proxy_id", "visible obstacle", "RflySim assets"]:
         if token not in rules:
             print(f"[FAIL] scene asset registry schema missing rule token: {token}")
+            return 1
+
+    if not SCENE_SOURCE_REGISTRY.exists():
+        print(f"[FAIL] missing scene source registry: {SCENE_SOURCE_REGISTRY}")
+        return 1
+    scene_source_registry = json.loads(SCENE_SOURCE_REGISTRY.read_text(encoding="utf-8"))
+    if scene_source_registry.get("schema") != "mosim.unreal_scene_source_registry.v1":
+        print("[FAIL] scene source registry schema mismatch")
+        return 1
+    policy = scene_source_registry.get("policy", {})
+    if policy.get("primary_scene_source_id") != "local_derelictcorridormegascans":
+        print("[FAIL] scene source registry primary fallback is not Derelict")
+        return 1
+    if scene_source_registry.get("fab_route", {}).get("status") != "inventory_visible_not_scene_accepted":
+        print("[FAIL] Fab route should not be accepted without import/edit/truth evidence")
+        return 1
+    fallback = scene_source_registry.get("local_editable_fallback", {})
+    if fallback.get("status") != "active":
+        print("[FAIL] local editable fallback should be active")
+        return 1
+    source_by_id = {
+        source.get("scene_source_id"): source
+        for source in fallback.get("scene_sources", [])
+        if isinstance(source, dict)
+    }
+    derelict_source = source_by_id.get("local_derelictcorridormegascans", {})
+    for key in ["editable_candidate", "renderable_candidate", "planning_truth_ready"]:
+        if not derelict_source.get(key):
+            print(f"[FAIL] Derelict source missing true gate: {key}")
+            return 1
+    if not derelict_source.get("truth_artifacts"):
+        print("[FAIL] Derelict source missing truth artifacts")
+        return 1
+    serialized_registry = json.dumps(scene_source_registry, ensure_ascii=False)
+    for forbidden in ["C:/", "C:\\", "/mnt/c/", "ProgramData", "AppData"]:
+        if forbidden in serialized_registry:
+            print(f"[FAIL] scene source registry contains forbidden external path marker: {forbidden}")
             return 1
 
     forbidden_paks = sorted((RENDERER / "Content").rglob("*.pak"))

@@ -48,6 +48,29 @@ FVector MworksExtentToUnrealScale(const FVector& ExtentMeters)
         FMath::Max(ExtentMeters.Z, 0.001));
 }
 
+void ReadStringArray(const TSharedPtr<FJsonObject>& Object, const TCHAR* Field, TArray<FString>& Out)
+{
+    Out.Reset();
+    if (!Object.IsValid())
+    {
+        return;
+    }
+
+    const TArray<TSharedPtr<FJsonValue>>* Values = nullptr;
+    if (!Object->TryGetArrayField(Field, Values) || !Values)
+    {
+        return;
+    }
+
+    for (const TSharedPtr<FJsonValue>& Value : *Values)
+    {
+        if (Value.IsValid())
+        {
+            Out.Add(Value->AsString());
+        }
+    }
+}
+
 void AddBoxInstance(
     UInstancedStaticMeshComponent* Component,
     const FVector& CenterMeters,
@@ -62,6 +85,19 @@ void AddBoxInstance(
     const FVector Location = MworksPositionToUnreal(CenterMeters, MetersToCentimeters);
     const FVector Scale = MworksExtentToUnrealScale(ExtentMeters);
     Component->AddInstance(FTransform(FRotator::ZeroRotator, Location, Scale));
+}
+
+void ClearSceneSourceState(AQuadrotorMworksMapActor& Actor)
+{
+    Actor.CurrentSceneSourceId = TEXT("");
+    Actor.CurrentSceneSourceStatus = TEXT("");
+    Actor.CurrentSceneProjectRoot = TEXT("");
+    Actor.CurrentSceneUProjectPath = TEXT("");
+    Actor.CurrentSceneTruthArtifacts.Reset();
+    Actor.bCurrentSceneEditableCandidate = false;
+    Actor.bCurrentSceneRenderableCandidate = false;
+    Actor.bCurrentScenePlanningTruthReady = false;
+    Actor.bCurrentSceneImportedIntoRenderer = false;
 }
 }
 
@@ -342,6 +378,7 @@ bool AQuadrotorMworksMapActor::ResolveMapId(const FString& MapId)
                     }
 
                     CurrentMapId = MapId;
+                    ClearSceneSourceState(*this);
                     Profile->TryGetStringField(TEXT("profile_id"), CurrentSceneProfileId);
                     Profile->TryGetStringField(TEXT("purpose"), CurrentScenePurpose);
                     Profile->TryGetStringField(TEXT("render_map_json"), RenderMapJson);
@@ -402,6 +439,7 @@ bool AQuadrotorMworksMapActor::ResolveMapId(const FString& MapId)
         }
 
         CurrentMapId = MapId;
+        ClearSceneSourceState(*this);
         Scene->TryGetStringField(TEXT("purpose"), CurrentScenePurpose);
         Scene->TryGetStringField(TEXT("relative_path"), CurrentSourceMap);
         Scene->TryGetStringField(TEXT("migration_status"), CurrentMigrationStatus);
@@ -423,11 +461,108 @@ bool AQuadrotorMworksMapActor::ResolveMapId(const FString& MapId)
     return false;
 }
 
+bool AQuadrotorMworksMapActor::ResolveSceneSourceId(const FString& SceneSourceId)
+{
+    if (SceneSourceId.IsEmpty())
+    {
+        return false;
+    }
+
+    const FString FullPath = FPaths::ProjectContentDir() / SceneSourceRegistryJson;
+    FString Text;
+    if (!FFileHelper::LoadFileToString(Text, *FullPath))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to read MoSim scene source registry: %s"), *FullPath);
+        return false;
+    }
+
+    TSharedPtr<FJsonObject> Root;
+    const TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Text);
+    if (!FJsonSerializer::Deserialize(Reader, Root) || !Root.IsValid())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to parse MoSim scene source registry: %s"), *FullPath);
+        return false;
+    }
+
+    const TSharedPtr<FJsonObject>* Fallback = nullptr;
+    if (!Root->TryGetObjectField(TEXT("local_editable_fallback"), Fallback) || !Fallback || !Fallback->IsValid())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("MoSim scene source registry has no local_editable_fallback object: %s"), *FullPath);
+        return false;
+    }
+
+    const TArray<TSharedPtr<FJsonValue>>* Sources = nullptr;
+    if (!(*Fallback)->TryGetArrayField(TEXT("scene_sources"), Sources) || !Sources)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("MoSim scene source registry has no scene_sources array: %s"), *FullPath);
+        return false;
+    }
+
+    for (const TSharedPtr<FJsonValue>& SourceValue : *Sources)
+    {
+        const TSharedPtr<FJsonObject> Source = SourceValue.IsValid() ? SourceValue->AsObject() : nullptr;
+        if (!Source.IsValid())
+        {
+            continue;
+        }
+
+        FString SourceId;
+        Source->TryGetStringField(TEXT("scene_source_id"), SourceId);
+        if (SourceId != SceneSourceId)
+        {
+            continue;
+        }
+
+        CurrentSceneSourceId = SourceId;
+        Source->TryGetStringField(TEXT("status"), CurrentSceneSourceStatus);
+        Source->TryGetStringField(TEXT("project_root"), CurrentSceneProjectRoot);
+        Source->TryGetStringField(TEXT("uproject_path"), CurrentSceneUProjectPath);
+        Source->TryGetBoolField(TEXT("editable_candidate"), bCurrentSceneEditableCandidate);
+        Source->TryGetBoolField(TEXT("renderable_candidate"), bCurrentSceneRenderableCandidate);
+        Source->TryGetBoolField(TEXT("planning_truth_ready"), bCurrentScenePlanningTruthReady);
+        ReadStringArray(Source, TEXT("truth_artifacts"), CurrentSceneTruthArtifacts);
+        bCurrentSceneImportedIntoRenderer = false;
+
+        CurrentMapId = SourceId;
+        CurrentScenePurpose = TEXT("local_editable_scene_source");
+        CurrentSourceMap = CurrentSceneProjectRoot;
+        CurrentMigrationStatus = CurrentSceneSourceStatus;
+        bCurrentMapDirectUseSupported = false;
+        bCurrentMapEditorOpenSupported = bCurrentSceneEditableCandidate && bCurrentSceneRenderableCandidate;
+        RenderMapJson = TEXT("");
+        ClearPreviewInstances();
+
+        UE_LOG(
+            LogTemp,
+            Display,
+            TEXT("Selected MoSim scene_source_id=%s status=%s editable=%s renderable=%s truth_ready=%s truth_artifacts=%d project=%s imported_into_renderer=%s"),
+            *CurrentSceneSourceId,
+            *CurrentSceneSourceStatus,
+            bCurrentSceneEditableCandidate ? TEXT("true") : TEXT("false"),
+            bCurrentSceneRenderableCandidate ? TEXT("true") : TEXT("false"),
+            bCurrentScenePlanningTruthReady ? TEXT("true") : TEXT("false"),
+            CurrentSceneTruthArtifacts.Num(),
+            *CurrentSceneProjectRoot,
+            bCurrentSceneImportedIntoRenderer ? TEXT("true") : TEXT("false"));
+        return true;
+    }
+
+    UE_LOG(LogTemp, Warning, TEXT("Unknown scene_source_id in MoSim scene source registry: %s"), *SceneSourceId);
+    return false;
+}
+
 void AQuadrotorMworksMapActor::ApplyFrameMapSelection(const FQuadrotorMworksFrame& Frame)
 {
     if (Frame.MapId.IsEmpty() || Frame.MapId == CurrentMapId)
     {
         return;
     }
-    ResolveMapId(Frame.MapId);
+    if (Frame.MapId.StartsWith(TEXT("local_")) && ResolveSceneSourceId(Frame.MapId))
+    {
+        return;
+    }
+    if (!ResolveMapId(Frame.MapId))
+    {
+        ResolveSceneSourceId(Frame.MapId);
+    }
 }

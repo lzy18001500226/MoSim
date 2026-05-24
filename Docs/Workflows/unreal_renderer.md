@@ -233,6 +233,42 @@ assets, but none is accepted yet as a MoSim scene source until it is imported or
 reused in the MoSim UE sim project, editable through UE tooling, and paired with
 planning truth. `DerelictCorridorMegascans` is the current validated fallback.
 
+`AQuadrotorMworksMapActor` consumes this registry through:
+
+```text
+SceneSourceRegistryJson = MworksData/scene_source_registry.json
+ResolveSceneSourceId(<scene_source_id>)
+```
+
+When the incoming frame `map_id` is `local_derelictcorridormegascans`, the map
+actor now records the editable project path, `.uproject` path, truth artifact
+list, and acceptance gates from the registry. It also clears blockout preview
+instances and leaves `bCurrentSceneImportedIntoRenderer=false`. This is
+intentional: the scene is a truth-backed external editable fallback, not yet a
+fully imported static renderer map.
+
+Source-level gate:
+
+```bash
+uv run python Scripts/UE5/check_unreal_bridge.py
+```
+
+This check verifies that the C++ bridge exposes the scene-source registry fields
+and that the committed registry does not contain external Launcher/Fab absolute
+paths.
+
+Binary build gate:
+
+```bash
+Scripts/UE5/build_unreal_renderer.sh
+```
+
+If this fails at `LINK : fatal error LNK1104` for
+`UnrealEditor-QuadrotorMworksBridge.dll` or
+`UnrealEditor-MworksUnrealRenderer.dll`, check for an open `UnrealEditor.exe`.
+That state means the editor is holding the output DLLs. Close or restart the
+editor and rerun; do not record it as a source compile failure.
+
 Relevant current-phase skills:
 
 ```text

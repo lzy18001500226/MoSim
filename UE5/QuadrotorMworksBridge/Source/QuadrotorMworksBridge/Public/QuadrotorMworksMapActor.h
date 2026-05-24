@@ -39,6 +39,9 @@ public:
     FString SceneProfilesJson = TEXT("MworksData/unreal_scene_profiles.json");
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map")
+    FString SceneSourceRegistryJson = TEXT("MworksData/scene_source_registry.json");
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map")
     float MetersToCentimeters = 100.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Map")
@@ -70,6 +73,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "MWORKS Map")
     bool ResolveMapId(const FString& MapId);
+
+    UFUNCTION(BlueprintCallable, Category = "MWORKS Map")
+    bool ResolveSceneSourceId(const FString& SceneSourceId);
 
     UFUNCTION(BlueprintCallable, Category = "MWORKS Map")
     void ApplyFrameMapSelection(const FQuadrotorMworksFrame& Frame);
@@ -106,6 +112,33 @@ public:
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
     FString CurrentSceneProfileId;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    FString CurrentSceneSourceId;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    FString CurrentSceneSourceStatus;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    FString CurrentSceneProjectRoot;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    FString CurrentSceneUProjectPath;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    TArray<FString> CurrentSceneTruthArtifacts;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    bool bCurrentSceneEditableCandidate = false;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    bool bCurrentSceneRenderableCandidate = false;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    bool bCurrentScenePlanningTruthReady = false;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    bool bCurrentSceneImportedIntoRenderer = false;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
     bool bCurrentMapDirectUseSupported = false;
