@@ -7,6 +7,8 @@ import importlib.util
 import json
 from pathlib import Path
 import sqlite3
+import subprocess
+import sys
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -217,3 +219,56 @@ def test_epic_library_inventory_lists_old_vault_cache_projects(tmp_path: Path) -
     item = inventory["vault_cache_projects"][0]
     if not item["has_uproject"] or not item["uproject_path"].endswith("DarkRuins.uproject"):
         raise AssertionError(item)
+
+
+def test_epic_library_health_check_query_uses_baseline_for_global_checks(tmp_path: Path) -> None:
+    manifests = tmp_path / "Manifests"
+    fab = tmp_path / "FabLibrary"
+    saved = tmp_path / "SavedData"
+    vault = tmp_path / "VaultCache"
+    for folder in (manifests, fab, saved, vault):
+        folder.mkdir()
+    launcher = tmp_path / "LauncherInstalled.dat"
+    launcher.write_text(json.dumps({"InstallationList": []}), encoding="utf-8")
+    (manifests / "engine.item").write_text(
+        json.dumps({"DisplayName": "Unreal Engine", "AppName": "UE_5.5"}),
+        encoding="utf-8",
+    )
+    (saved / "OC_test.dat").write_bytes(b"FactoryPbfa035615186V1\x00")
+
+    script = ROOT / "Scripts" / "UE5" / "check_epic_library_inventory.py"
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(script),
+            "--query",
+            "Factory",
+            "--json",
+            "--manifests-dir",
+            str(manifests),
+            "--launcher-installed",
+            str(launcher),
+            "--fab-library-dir",
+            str(fab),
+            "--vault-cache-dir",
+            str(vault),
+            "--launcher-saved-data-dir",
+            str(saved),
+        ],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if completed.returncode != 0:
+        raise AssertionError(completed.stderr)
+    data = json.loads(completed.stdout)
+    if data["baseline_summary"]["launcher_item_count"] != 1:
+        raise AssertionError(data)
+    if data["summary"]["launcher_item_count"] != 0:
+        raise AssertionError(data)
+    if not data["checks"]["has_launcher_manifest_or_install"]:
+        raise AssertionError(data)
+    if not data["checks"]["query_has_results"]:
+        raise AssertionError(data)
