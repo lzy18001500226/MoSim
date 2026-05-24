@@ -70,6 +70,9 @@ python3 Scripts/UE5/epic_library_index.py --query Factory
 python3 Scripts/UE5/epic_library_index.py --query City
 python3 Scripts/UE5/check_epic_library_inventory.py
 python3 Scripts/UE5/audit_scene_source.py
+uv run python Scripts/UE5/build_scene_source_registry.py --write
+uv run python Scripts/UE5/build_scene_source_registry.py --validate \
+  UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json
 ```
 
 The inventory separates:
@@ -97,6 +100,18 @@ exists only in `account_library_items`, use Epic Launcher/Fab to create or add
 it to a UE project before treating it as editable local content. Do not parse or
 publish raw Launcher logs or webcache entries; only the allowlisted index output
 is safe to record.
+
+`build_scene_source_registry.py` writes the project-owned handoff contract:
+
+```text
+UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json
+```
+
+This registry intentionally redacts external Launcher/Fab cache paths. It keeps
+only sanitized inventory status, MoSim-local scene paths, the active fallback
+scene id, and explicit truth-artifact links. Use it as the current decision
+surface for whether the Fab route is accepted or the local editable fallback is
+active.
 
 When Codex needs this inventory through MCP, register
 `Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh` as `mosim_epic_library`.
@@ -204,6 +219,19 @@ collision proxies. The scene-source audit then marked
 `DerelictCorridorMegascans` as `ready_for_truth_backed_planning`. This proves
 the local editable scene has an explicit first-pass planner-truth route; it
 does not mean semantic labels or high-fidelity voxel occupancy are complete.
+
+Current scene-source registry state:
+
+```text
+fab_route.status: inventory_visible_not_scene_accepted
+local_editable_fallback.status: active
+primary_scene_source_id: local_derelictcorridormegascans
+```
+
+Interpretation: Fab/Epic library entries are visible and useful for selecting
+assets, but none is accepted yet as a MoSim scene source until it is imported or
+reused in the MoSim UE sim project, editable through UE tooling, and paired with
+planning truth. `DerelictCorridorMegascans` is the current validated fallback.
 
 Relevant current-phase skills:
 

@@ -58,6 +58,13 @@
   AABB collision proxies. `audit_scene_source.py` marks
   `DerelictCorridorMegascans` as `ready_for_truth_backed_planning`; this is
   not yet final semantic or voxel occupancy truth.
+- Current scene-source contract:
+  `UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json`.
+  It records `fab_route.status=inventory_visible_not_scene_accepted`,
+  `local_editable_fallback.status=active`, and
+  `primary_scene_source_id=local_derelictcorridormegascans`. This means
+  Launcher/Fab inventory is visible but not accepted as an imported/editable
+  truth-backed MoSim scene yet; Derelict is the active local fallback.
 - Current Codex MCP config has been corrected from old `Quadrotor` paths to
   MoSim paths and now lists `mosim_epic_library`. The project-owned
   `MworksUnrealRenderer.uproject` now resolves `UnrealMCP` from
@@ -153,6 +160,9 @@
 - Do not conflate UE Editor MCP with Epic/Fab/Launcher library access. UE MCP
   edits a running editor project; Epic/Fab library discovery is a separate
   read-only cache/index problem and must redact account/cache secrets.
+- Do not write external Epic Launcher/Fab cache absolute paths into committed
+  scene-source contracts. Use inventory commands for live inspection and keep
+  committed contracts limited to sanitized state, counts, and MoSim-local paths.
 - Do not create broad Skills for every possible simulator task in this phase.
   Current Skills should support only the `unreal_engine` and `mosim_epic_library`
   MCP boundaries.

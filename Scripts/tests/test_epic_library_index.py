@@ -416,6 +416,117 @@ def test_unreal_scene_truth_payload_validation() -> None:
         raise AssertionError("invalid payload unexpectedly passed")
 
 
+def test_scene_source_registry_sanitizes_external_paths(monkeypatch, tmp_path: Path) -> None:
+    module = load_ue5_module("build_scene_source_registry")
+    monkeypatch.setattr(
+        module,
+        "build_inventory",
+        lambda: {
+            "summary": {"account_library_item_count": 1},
+        },
+    )
+    monkeypatch.setattr(
+        module,
+        "merge_library_view",
+        lambda: [
+            {
+                "display_name": "Factory Environment Collection",
+                "states": ["account_owned", "fab_cached"],
+                "versions": ["5.5"],
+                "installed_or_cached": True,
+                "openable_project": False,
+                "uproject_paths": [],
+                "local_cache_paths": ["C:/ProgramData/Epic/FabLibrary/Factory"],
+            }
+        ],
+    )
+    monkeypatch.setattr(
+        module,
+        "audit_scene_root",
+        lambda scene_root, max_files, max_dirs, truth_root: [
+            {
+                "source_type": "local_unreal_project",
+                "name": "DerelictCorridorMegascans",
+                "project_root": "References/UnrealScenes/DerelictCorridorMegascans",
+                "uproject_path": "References/UnrealScenes/DerelictCorridorMegascans/DerelictCorridorMegascans.uproject",
+                "engine_association": "5.5",
+                "plugins": [],
+                "umap_count": 1,
+                "umap_samples": ["References/UnrealScenes/DerelictCorridorMegascans/Content/Maps/DerelictCorridor.umap"],
+                "uasset_count": 1,
+                "uasset_samples": ["References/UnrealScenes/DerelictCorridorMegascans/Content/Maps/Wall.uasset"],
+                "uplugin_count": 0,
+                "editable_candidate": True,
+                "renderable_candidate": True,
+                "planning_truth_ready": True,
+                "truth": {
+                    "explicit_truth_candidates": [
+                        "UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json"
+                    ],
+                    "truth_gap": "",
+                },
+                "verdict": "ready_for_truth_backed_planning",
+            }
+        ],
+    )
+    monkeypatch.setattr(module, "validate_truth_file", lambda path: [])
+
+    registry = module.build_registry(scene_root=Path("References/UnrealScenes"), truth_root=Path("UE5/MworksUnrealRenderer/Content/MworksData/scene_truth"))
+    errors = module.validate_registry(registry)
+    if errors:
+        raise AssertionError(errors)
+    serialized = json.dumps(registry, ensure_ascii=False)
+    if "C:/ProgramData" in serialized or "/ProgramData/" in serialized:
+        raise AssertionError(serialized)
+    if registry["fab_route"]["status"] != "inventory_visible_not_scene_accepted":
+        raise AssertionError(registry)
+    if registry["policy"]["primary_scene_source_id"] != "local_derelictcorridormegascans":
+        raise AssertionError(registry)
+    [entry] = registry["fab_route"]["candidate_entries"]
+    if entry["external_cache_path_count"] != 1 or entry["project_local_cache_paths"]:
+        raise AssertionError(entry)
+
+
+def test_scene_source_registry_validation_rejects_polluted_paths(monkeypatch, tmp_path: Path) -> None:
+    module = load_ue5_module("build_scene_source_registry")
+
+    registry = {
+        "schema": "mosim.unreal_scene_source_registry.v1",
+        "generated_at": "2026-05-25T00:00:00+00:00",
+        "policy": {
+            "active_strategy": "local_editable_fallback_until_fab_import_truth_verified",
+            "acceptance_gates": ["import_edit", "render", "planning_truth"],
+            "primary_scene_source_id": "local_derelictcorridormegascans",
+        },
+        "fab_route": {
+            "status": "inventory_visible_not_scene_accepted",
+            "library_summary": {},
+            "candidate_entries": [
+                {
+                    "display_name": "Polluted",
+                    "states": ["fab_cached"],
+                    "project_local_cache_paths": ["C:/Users/HP/AppData/Local/Epic/FabLibrary/private"],
+                }
+            ],
+        },
+        "local_editable_fallback": {
+            "status": "active",
+            "scene_sources": [
+                {
+                    "scene_source_id": "local_derelictcorridormegascans",
+                    "status": "accepted_local_truth_fallback",
+                    "truth_artifacts": ["UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/fake.json"],
+                }
+            ],
+        },
+    }
+
+    monkeypatch.setattr(module, "validate_truth_file", lambda path: [])
+    errors = module.validate_registry(registry)
+    if not any("forbidden external/private path string" in error for error in errors):
+        raise AssertionError(errors)
+
+
 def test_unreal_world_name_uses_available_methods() -> None:
     module = load_ue5_module("export_unreal_scene_truth")
 

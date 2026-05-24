@@ -1,0 +1,532 @@
+{
+  "fab_route": {
+    "candidate_entries": [
+      {
+        "display_name": "A Boy and His Kite",
+        "external_cache_path_count": 0,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": false,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned"
+        ],
+        "versions": [
+          "4.10",
+          "4.11",
+          "4.12",
+          "4.13",
+          "4.14",
+          "4.15",
+          "4.16",
+          "4.17",
+          "4.18",
+          "4.19",
+          "4.20",
+          "4.21",
+          "4.22",
+          "4.23",
+          "4.24",
+          "4.25",
+          "4.26",
+          "4.27",
+          "4.8",
+          "4.9"
+        ]
+      },
+      {
+        "display_name": "Automotive Beach Scene",
+        "external_cache_path_count": 0,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": false,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned"
+        ],
+        "versions": [
+          "5"
+        ]
+      },
+      {
+        "display_name": "City Park Environment Collection",
+        "external_cache_path_count": 0,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": false,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned"
+        ],
+        "versions": []
+      },
+      {
+        "display_name": "City Sample",
+        "external_cache_path_count": 0,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": false,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned"
+        ],
+        "versions": [
+          "5.0",
+          "5.1",
+          "5.2",
+          "5.3",
+          "5.4",
+          "5.5",
+          "5.6",
+          "5.7"
+        ]
+      },
+      {
+        "display_name": "Dark Ruins Megascans Sample",
+        "external_cache_path_count": 1,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": true,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned",
+          "fab_cached"
+        ],
+        "versions": []
+      },
+      {
+        "display_name": "DarkRuinac4b642bf8b9V1",
+        "external_cache_path_count": 1,
+        "external_uproject_path_count": 1,
+        "installed_or_cached": true,
+        "openable_project": true,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "vault_cached_project"
+        ],
+        "versions": []
+      },
+      {
+        "display_name": "Derelict Corridor Megascans Sample",
+        "external_cache_path_count": 1,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": true,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned",
+          "fab_cached"
+        ],
+        "versions": []
+      },
+      {
+        "display_name": "Derelict31b645c4b988V1",
+        "external_cache_path_count": 1,
+        "external_uproject_path_count": 1,
+        "installed_or_cached": true,
+        "openable_project": true,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "vault_cached_project"
+        ],
+        "versions": []
+      },
+      {
+        "display_name": "Electric Dreams Env",
+        "external_cache_path_count": 1,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": true,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned",
+          "fab_cached"
+        ],
+        "versions": [
+          "5.2",
+          "5.3",
+          "5.4",
+          "5.5",
+          "5.6",
+          "5.7"
+        ]
+      },
+      {
+        "display_name": "ElectricDreamsSample_5.5",
+        "external_cache_path_count": 1,
+        "external_uproject_path_count": 1,
+        "installed_or_cached": true,
+        "openable_project": true,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "vault_cached_project"
+        ],
+        "versions": []
+      },
+      {
+        "display_name": "Factory Environment Collection",
+        "external_cache_path_count": 0,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": false,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned"
+        ],
+        "versions": []
+      },
+      {
+        "display_name": "Landscape Mountains",
+        "external_cache_path_count": 0,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": false,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned"
+        ],
+        "versions": [
+          "4.10",
+          "4.11",
+          "4.12",
+          "4.13",
+          "4.14",
+          "4.15",
+          "4.16",
+          "4.17",
+          "4.18",
+          "4.19",
+          "4.20",
+          "4.21",
+          "4.22",
+          "4.23",
+          "4.24",
+          "4.4",
+          "4.5",
+          "4.6",
+          "4.7",
+          "4.8",
+          "4.9"
+        ]
+      },
+      {
+        "display_name": "Medieval Village Megascans Sample",
+        "external_cache_path_count": 0,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": false,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned"
+        ],
+        "versions": [
+          "5.3"
+        ]
+      },
+      {
+        "display_name": "Modular Rural Assets",
+        "external_cache_path_count": 0,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": false,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned"
+        ],
+        "versions": []
+      },
+      {
+        "display_name": "Old Mine",
+        "external_cache_path_count": 0,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": false,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned"
+        ],
+        "versions": []
+      },
+      {
+        "display_name": "Paragon: Agora and Monolith",
+        "external_cache_path_count": 0,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": false,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned"
+        ],
+        "versions": []
+      },
+      {
+        "display_name": "Rain Forest (PCG Environment)",
+        "external_cache_path_count": 0,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": false,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned"
+        ],
+        "versions": []
+      },
+      {
+        "display_name": "Soul: City",
+        "external_cache_path_count": 0,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": false,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "account_owned"
+        ],
+        "versions": [
+          "4.19"
+        ]
+      },
+      {
+        "display_name": "Twinmotion   Beta 4",
+        "external_cache_path_count": 1,
+        "external_uproject_path_count": 0,
+        "installed_or_cached": true,
+        "openable_project": false,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "fab_cached"
+        ],
+        "versions": []
+      }
+    ],
+    "library_summary": {
+      "account_library_item_count": 17,
+      "fab_asset_count": 5,
+      "launcher_install_count": 11,
+      "launcher_item_count": 11,
+      "vault_cache_project_count": 3
+    },
+    "reason": "Epic/Fab/Launcher inventory is visible, but no Fab asset is yet proven to be imported into the MoSim UE project, editable through UE MCP, and paired with explicit planner truth.",
+    "status": "inventory_visible_not_scene_accepted"
+  },
+  "generated_at": "2026-05-24T21:57:15+00:00",
+  "local_editable_fallback": {
+    "scene_root": "References/UnrealScenes",
+    "scene_sources": [
+      {
+        "audit_verdict": "needs_truth_extraction_or_proxy",
+        "editable_candidate": true,
+        "engine_association": "5.5",
+        "name": "DarkRuinsMegascansSample",
+        "planning_truth_ready": false,
+        "plugins": [
+          "ModelingToolsEditorMode",
+          "Water",
+          "WaterExtras"
+        ],
+        "project_root": "References/UnrealScenes/DarkRuinsMegascansSample",
+        "renderable_candidate": true,
+        "scene_source_id": "local_darkruinsmegascanssample",
+        "source_kind": "local_unreal_project",
+        "status": "needs_truth_extraction_or_proxy",
+        "truth_artifacts": [],
+        "truth_gap": "No explicit planner/collision truth file found; generate occupancy/collision truth from UE assets before planning validation.",
+        "uasset_count": 1570,
+        "uasset_samples": [
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Main_HLODLayer_Instanced.uasset",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Main_HLODLayer_Merged.uasset",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/AssetZoo/DemoRoom/Blueprints/BP_DemoDisplay.uasset",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/AssetZoo/DemoRoom/Blueprints/BP_DemoRoom.uasset",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/AssetZoo/DemoRoom/Blueprints/BP_FrameDisplay.uasset",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/AssetZoo/DemoRoom/Materials/MI_Display_Blue.uasset",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/AssetZoo/DemoRoom/Materials/MI_TileBlack.uasset",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/AssetZoo/DemoRoom/Materials/MI_Tile_Ceiling.uasset"
+        ],
+        "umap_count": 25,
+        "umap_samples": [
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Main.umap",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/CustomAssets/Characters/FallenSoldier/FallenSoldier_ForPreviewer.umap",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/CustomAssets/Characters/FallenSoldier/FallenSoldier_Merged.umap",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Maps/AssetZoo.umap",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Maps/MASS/Packed/MASS_NC_Boulders_L_01.umap",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Maps/MASS/Packed/MASS_NC_Boulders_M_02.umap",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Maps/MASS/Packed/MASS_NC_Cliff_M_01.umap",
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Maps/MASS/Packed/MASS_NC_Cliff_XL_02.umap"
+        ],
+        "uplugin_count": 0,
+        "uproject_path": "References/UnrealScenes/DarkRuinsMegascansSample/DarkRuins.uproject"
+      },
+      {
+        "audit_verdict": "ready_for_truth_backed_planning",
+        "editable_candidate": true,
+        "engine_association": "5.5",
+        "name": "DerelictCorridorMegascans",
+        "planning_truth_ready": true,
+        "plugins": [
+          "AppleProResDecoderElectra",
+          "AppleProResMedia",
+          "ModelingToolsEditorMode",
+          "MovieRenderPipeline"
+        ],
+        "project_root": "References/UnrealScenes/DerelictCorridorMegascans",
+        "renderable_candidate": true,
+        "scene_source_id": "local_derelictcorridormegascans",
+        "source_kind": "local_unreal_project",
+        "status": "accepted_local_truth_fallback",
+        "truth_artifacts": [
+          "UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json"
+        ],
+        "truth_gap": "",
+        "uasset_count": 1118,
+        "uasset_samples": [
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Assets/Blueprints/ASY_BrokenTiles_01.uasset",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Assets/Blueprints/ASY_BrokenTiles_02.uasset",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Assets/Blueprints/ASY_Ceiling_01.uasset",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Assets/Blueprints/ASY_Ceiling_02.uasset",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Assets/Blueprints/ASY_Ceiling_06.uasset",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Assets/Blueprints/ASY_Ceiling_07.uasset",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Assets/Blueprints/ASY_DarkPipe_01.uasset",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Assets/Blueprints/ASY_DarkPipe_02.uasset"
+        ],
+        "umap_count": 38,
+        "umap_samples": [
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/DerelictCorridor.umap",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_BrokenTiles_01.umap",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_BrokenTiles_02.umap",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_Ceiling_01.umap",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_Ceiling_02.umap",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_Ceiling_06.umap",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_Ceiling_07.umap",
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_DarkPipe_01.umap"
+        ],
+        "uplugin_count": 0,
+        "uproject_path": "References/UnrealScenes/DerelictCorridorMegascans/DerelictCorridorMegascans.uproject"
+      },
+      {
+        "audit_verdict": "needs_truth_extraction_or_proxy",
+        "editable_candidate": true,
+        "engine_association": "5.5",
+        "name": "ElectricDreamsEnv",
+        "planning_truth_ready": false,
+        "plugins": [
+          "AnimToTexture",
+          "AnimationLocomotionLibrary",
+          "AnimationWarping",
+          "AudioGameplay",
+          "AudioGameplayVolume",
+          "AudioModulation",
+          "ChaosFlesh",
+          "ChaosVehiclesPlugin",
+          "Chooser",
+          "ContextualAnimation",
+          "D3DExternalGPUStatistics",
+          "GameFeatures",
+          "GameplayAbilities",
+          "GameplayBehaviors",
+          "GameplayStateTree",
+          "HairStrands",
+          "LandscapePatch",
+          "LiveLink",
+          "LiveLinkControlRig",
+          "ModelingToolsEditorMode"
+        ],
+        "project_root": "References/UnrealScenes/ElectricDreamsEnv",
+        "renderable_candidate": true,
+        "scene_source_id": "local_electricdreamsenv",
+        "source_kind": "local_unreal_project",
+        "status": "needs_truth_extraction_or_proxy",
+        "truth_artifacts": [],
+        "truth_gap": "No explicit planner/collision truth file found; generate occupancy/collision truth from UE assets before planning validation.",
+        "uasset_count": 1478,
+        "uasset_samples": [
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/BPP_Asmbl_Catpalm_Shrub_00.uasset",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/BPP_Asmbl_CliffWall_00.uasset",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/BPP_Asmbl_CliffWall_01.uasset",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/BPP_Asmbl_CliffWall_02.uasset",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/BPP_Asmbl_CliffWall_03.uasset",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/BPP_Asmbl_Dracaena_Shrub_00.uasset",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/BPP_Asmbl_Dracaena_Shrub_01.uasset",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/BPP_Asmbl_Dracaena_Shrub_02.uasset"
+        ],
+        "umap_count": 113,
+        "umap_samples": [
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_Catpalm_Shrub_00.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_CliffWall_00.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_CliffWall_01.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_CliffWall_02.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_CliffWall_03.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_Dracaena_Shrub_00.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_Dracaena_Shrub_01.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_Dracaena_Shrub_02.umap"
+        ],
+        "uplugin_count": 0,
+        "uproject_path": "References/UnrealScenes/ElectricDreamsEnv/ElectricDreamsEnv.uproject"
+      },
+      {
+        "audit_verdict": "needs_truth_extraction_or_proxy",
+        "editable_candidate": true,
+        "engine_association": "5.4",
+        "name": "FPS-Shooter-Unreal",
+        "planning_truth_ready": false,
+        "plugins": [
+          "ModelingToolsEditorMode"
+        ],
+        "project_root": "References/UnrealScenes/FPS-Shooter-Unreal",
+        "renderable_candidate": true,
+        "scene_source_id": "local_fps_shooter_unreal",
+        "source_kind": "local_unreal_project",
+        "status": "needs_truth_extraction_or_proxy",
+        "truth_artifacts": [],
+        "truth_gap": "No explicit planner/collision truth file found; generate occupancy/collision truth from UE assets before planning validation.",
+        "uasset_count": 375,
+        "uasset_samples": [
+          "References/UnrealScenes/FPS-Shooter-Unreal/Content/FirstPerson/Blueprints/BP_FirstPersonCharacter.uasset",
+          "References/UnrealScenes/FPS-Shooter-Unreal/Content/FirstPerson/Blueprints/BP_FirstPersonGameMode.uasset",
+          "References/UnrealScenes/FPS-Shooter-Unreal/Content/FirstPerson/Blueprints/BP_FirstPersonProjectile.uasset",
+          "References/UnrealScenes/FPS-Shooter-Unreal/Content/FirstPerson/Blueprints/BP_gamemode.uasset",
+          "References/UnrealScenes/FPS-Shooter-Unreal/Content/FirstPerson/Blueprints/BP_target.uasset",
+          "References/UnrealScenes/FPS-Shooter-Unreal/Content/FirstPerson/Blueprints/BP_Weapon_Component.uasset",
+          "References/UnrealScenes/FPS-Shooter-Unreal/Content/FirstPerson/Blueprints/FirstPersonHUD.uasset",
+          "References/UnrealScenes/FPS-Shooter-Unreal/Content/FirstPerson/Blueprints/WBP_endscreen.uasset"
+        ],
+        "umap_count": 2,
+        "umap_samples": [
+          "References/UnrealScenes/FPS-Shooter-Unreal/Content/mainmap.umap",
+          "References/UnrealScenes/FPS-Shooter-Unreal/Content/FirstPerson/Maps/FirstPersonMap.umap"
+        ],
+        "uplugin_count": 0,
+        "uproject_path": "References/UnrealScenes/FPS-Shooter-Unreal/M2F.uproject"
+      }
+    ],
+    "status": "active",
+    "truth_root": "UE5/MworksUnrealRenderer/Content/MworksData/scene_truth"
+  },
+  "policy": {
+    "acceptance_gates": [
+      "import_edit",
+      "render",
+      "planning_truth"
+    ],
+    "active_strategy": "local_editable_fallback_until_fab_import_truth_verified",
+    "primary_scene_source_id": "local_derelictcorridormegascans"
+  },
+  "schema": "mosim.unreal_scene_source_registry.v1"
+}
