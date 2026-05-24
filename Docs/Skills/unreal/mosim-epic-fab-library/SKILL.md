@@ -47,6 +47,12 @@ Scene-source audit:
 uv run python Scripts/UE5/audit_scene_source.py
 ```
 
+Validate exported scene truth:
+
+```bash
+uv run python Scripts/UE5/export_unreal_scene_truth.py validate <truth-json>
+```
+
 Raw sanitized inventory:
 
 ```bash
@@ -85,6 +91,10 @@ editable Unreal content -> renderable map -> explicit/plannable truth
 truth artifacts such as occupancy/collision/semantic JSON/CSV/YAML or point
 cloud files. Collision/navigation `.uasset/.umap` names are only proxy
 candidates that still require export.
+
+Use `Scripts/UE5/export_unreal_scene_truth.py export` from Unreal Editor Python
+after the scene opens. The first accepted truth artifact is an AABB collision
+proxy JSON under `UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/`.
 
 If Fab cannot satisfy this, switch to local editable projects under:
 

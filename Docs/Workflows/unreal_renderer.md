@@ -140,6 +140,30 @@ planner/collision truth files. UE assets with collision/navigation names are
 treated only as proxy candidates; they are not accepted as planner truth until
 exported to an explicit occupancy/collision/semantic artifact.
 
+To promote an editable scene into a truth-backed scene, open it in Unreal Editor
+and run the exporter through Editor Python:
+
+```bash
+# Run inside Unreal Editor Python, not normal Python:
+py Scripts/UE5/export_unreal_scene_truth.py export \
+  --scene-id <scene_id> \
+  --map-id <map_id> \
+  --output UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/<map_id>_collision_truth.json
+```
+
+Then validate from the normal project shell:
+
+```bash
+uv run python Scripts/UE5/export_unreal_scene_truth.py validate \
+  UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/<map_id>_collision_truth.json
+uv run python Scripts/UE5/audit_scene_source.py
+```
+
+The exporter records world-space AABB collision proxies from collidable static
+mesh components. This is a first explicit truth route, not final high-fidelity
+mesh/voxel mapping. It is acceptable for deciding whether a candidate scene can
+enter planner integration; detailed occupancy/semantic refinement can follow.
+
 Relevant current-phase skills:
 
 ```text

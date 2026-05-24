@@ -40,6 +40,18 @@ Add `--check-listener` only when preparing for interactive editor review.
    paths.
 4. Batch UE edits, then verify with a read-only scene/actor probe.
 5. Keep Epic/Fab inventory and downloads outside this skill.
+6. After a candidate scene opens, export collision truth before claiming planner
+   readiness:
+
+```bash
+py Scripts/UE5/export_unreal_scene_truth.py export --scene-id <scene_id> --map-id <map_id>
+```
+
+Run validation from the normal project shell with:
+
+```bash
+uv run python Scripts/UE5/export_unreal_scene_truth.py validate <truth-json>
+```
 
 ## Architecture Note
 

@@ -12,6 +12,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SCENE_ROOT = ROOT / "References" / "UnrealScenes"
+DEFAULT_TRUTH_ROOT = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/scene_truth"
 IGNORED_DIRS = {".git", ".svn", ".hg", ".vs", "Binaries", "DerivedDataCache", "Intermediate", "Saved"}
 EXPLICIT_TRUTH_SUFFIXES = {".json", ".csv", ".yaml", ".yml", ".pcd", ".ply", ".las", ".laz", ".bin"}
 TRUTH_MARKERS = (
@@ -132,7 +133,25 @@ def truth_state(scan: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def audit_project(uproject: Path, *, max_files: int = 1600, max_dirs: int = 320) -> dict[str, Any]:
+def explicit_scene_truth_files(project_name: str, truth_root: Path = DEFAULT_TRUTH_ROOT) -> list[str]:
+    if not truth_root.exists():
+        return []
+    project_slug = project_name.lower().replace(" ", "_")
+    candidates: list[str] = []
+    for path in sorted(truth_root.glob("*.json")):
+        name = path.name.lower()
+        if project_slug in name or name.startswith(project_slug.split("_")[0]):
+            candidates.append(rel(path))
+    return candidates
+
+
+def audit_project(
+    uproject: Path,
+    *,
+    max_files: int = 1600,
+    max_dirs: int = 320,
+    truth_root: Path = DEFAULT_TRUTH_ROOT,
+) -> dict[str, Any]:
     project_root = uproject.parent
     data = read_uproject(uproject)
     scan = scan_project_files(project_root, max_files=max_files, max_dirs=max_dirs)
@@ -142,6 +161,11 @@ def audit_project(uproject: Path, *, max_files: int = 1600, max_dirs: int = 320)
         if isinstance(plugin, dict) and plugin.get("Name")
     ]
     truth = truth_state(scan)
+    exported_truth = explicit_scene_truth_files(project_root.name, truth_root)
+    if exported_truth:
+        truth["has_explicit_truth_source"] = True
+        truth["explicit_truth_candidates"] = sorted(set(truth["explicit_truth_candidates"] + exported_truth))[:40]
+        truth["truth_gap"] = ""
     editable = uproject.exists() and (project_root / "Content").exists() and scan["uasset_count"] > 0
     renderable_candidate = editable and scan["umap_count"] > 0
     planning_ready = truth["has_explicit_truth_source"]
@@ -198,9 +222,10 @@ def audit_scene_root(
     *,
     max_files: int = 1600,
     max_dirs: int = 320,
+    truth_root: Path = DEFAULT_TRUTH_ROOT,
 ) -> list[dict[str, Any]]:
     return [
-        audit_project(path, max_files=max_files, max_dirs=max_dirs)
+        audit_project(path, max_files=max_files, max_dirs=max_dirs, truth_root=truth_root)
         for path in find_uprojects(scene_root)
     ]
 
@@ -211,8 +236,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--max-files", type=int, default=1600)
     parser.add_argument("--max-dirs", type=int, default=320)
+    parser.add_argument("--truth-root", type=Path, default=DEFAULT_TRUTH_ROOT)
     args = parser.parse_args(argv)
-    rows = audit_scene_root(args.scene_root, max_files=args.max_files, max_dirs=args.max_dirs)
+    rows = audit_scene_root(
+        args.scene_root,
+        max_files=args.max_files,
+        max_dirs=args.max_dirs,
+        truth_root=args.truth_root,
+    )
     if args.json:
         print(json.dumps(rows, ensure_ascii=False, indent=2, sort_keys=True))
     else:

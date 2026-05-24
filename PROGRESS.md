@@ -38,6 +38,11 @@
   candidates exist, but explicit planner/collision truth files are not present
   yet. UE collision/navigation assets are proxy candidates only; they still need
   export into occupancy/collision/semantic artifacts before planner validation.
+- First truth-export route is now defined as
+  `Scripts/UE5/export_unreal_scene_truth.py`: run `export` inside Unreal Editor
+  Python to write AABB collision proxy JSON under
+  `UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/`, then run
+  `validate` from normal Python and rerun `audit_scene_source.py`.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.

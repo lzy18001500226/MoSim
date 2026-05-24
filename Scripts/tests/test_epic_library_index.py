@@ -357,3 +357,60 @@ def test_scene_source_audit_detects_truth_gap_and_truth_ready(tmp_path: Path) ->
         raise AssertionError(third)
     if not third["truth"]["has_ue_truth_proxy_candidates"]:
         raise AssertionError(third)
+
+
+def test_scene_source_audit_accepts_exported_scene_truth(tmp_path: Path) -> None:
+    module = load_ue5_module("audit_scene_source")
+    project = tmp_path / "DerelictCorridorMegascans"
+    content = project / "Content" / "Maps"
+    truth_root = tmp_path / "scene_truth"
+    content.mkdir(parents=True)
+    truth_root.mkdir()
+    uproject = project / "DerelictCorridorMegascans.uproject"
+    uproject.write_text(json.dumps({"EngineAssociation": "5.5"}), encoding="utf-8")
+    (content / "Main.umap").write_bytes(b"map")
+    (content / "Factory.uasset").write_bytes(b"asset")
+    (truth_root / "derelictcorridormegascans_collision_truth.json").write_text("{}", encoding="utf-8")
+
+    row = module.audit_project(uproject, truth_root=truth_root)
+    if row["verdict"] != "ready_for_truth_backed_planning":
+        raise AssertionError(row)
+    if not row["truth"]["explicit_truth_candidates"]:
+        raise AssertionError(row)
+
+
+def test_unreal_scene_truth_payload_validation() -> None:
+    module = load_ue5_module("export_unreal_scene_truth")
+    payload = module.build_payload(
+        scene_id="factory_scene",
+        map_id="factory_map",
+        project_path="C:/Scenes/Factory/Factory.uproject",
+        level_name="Main",
+        assets=[
+            {
+                "asset_id": "asset_box_001",
+                "semantic_type": "building",
+                "truth_binding": {"collision_proxy_id": "box_001", "render_only": False},
+            }
+        ],
+        collision_proxies=[
+            {
+                "collision_proxy_id": "box_001",
+                "geometry_type": "box",
+                "frame": "mworks_world",
+                "center_m": [1.0, 2.0, 1.5],
+                "size_m": [2.0, 3.0, 3.0],
+                "min_m": [0.0, 0.5, 0.0],
+                "max_m": [2.0, 3.5, 3.0],
+                "source_asset_id": "asset_box_001",
+            }
+        ],
+    )
+    errors = module.validate_truth_payload(payload)
+    if errors:
+        raise AssertionError(errors)
+
+    payload["collision_proxies"][0]["collision_proxy_id"] = ""
+    errors = module.validate_truth_payload(payload)
+    if not errors:
+        raise AssertionError("invalid payload unexpectedly passed")
