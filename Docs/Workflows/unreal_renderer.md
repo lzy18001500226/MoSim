@@ -144,6 +144,13 @@ To promote an editable scene into a truth-backed scene, open it in Unreal Editor
 and run the exporter through Editor Python:
 
 ```bash
+uv run python Scripts/UE5/plan_scene_truth_export.py --query Derelict
+```
+
+The planner prints the project path, a map sample, the Unreal Editor Python
+export command, and the normal-shell validation command.
+
+```bash
 # Run inside Unreal Editor Python, not normal Python:
 py Scripts/UE5/export_unreal_scene_truth.py export \
   --scene-id <scene_id> \

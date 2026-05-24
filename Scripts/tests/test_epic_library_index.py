@@ -414,3 +414,28 @@ def test_unreal_scene_truth_payload_validation() -> None:
     errors = module.validate_truth_payload(payload)
     if not errors:
         raise AssertionError("invalid payload unexpectedly passed")
+
+
+def test_plan_scene_truth_export_outputs_editor_and_validation_commands(tmp_path: Path) -> None:
+    plan_module = load_ue5_module("plan_scene_truth_export")
+    project = tmp_path / "DerelictCorridorMegascans"
+    content = project / "Content" / "Maps"
+    truth_root = tmp_path / "scene_truth"
+    content.mkdir(parents=True)
+    truth_root.mkdir()
+    uproject = project / "DerelictCorridorMegascans.uproject"
+    uproject.write_text(json.dumps({"EngineAssociation": "5.5"}), encoding="utf-8")
+    (content / "DerelictCorridor.umap").write_bytes(b"map")
+    (content / "Wall.uasset").write_bytes(b"asset")
+
+    plans = plan_module.plan_exports(tmp_path, truth_root, "Derelict")
+
+    if len(plans) != 1:
+        raise AssertionError(plans)
+    editor_command = plans[0]["editor_python_command"]
+    if "export_unreal_scene_truth.py" not in editor_command or " export " not in editor_command:
+        raise AssertionError(plans)
+    if "\\scene_truth\\derelictcorridormegascans_collision_truth.json" not in editor_command:
+        raise AssertionError(plans)
+    if "export_unreal_scene_truth.py validate" not in plans[0]["validate_command"]:
+        raise AssertionError(plans)

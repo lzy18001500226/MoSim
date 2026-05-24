@@ -45,6 +45,7 @@ Scene-source audit:
 
 ```bash
 uv run python Scripts/UE5/audit_scene_source.py
+uv run python Scripts/UE5/plan_scene_truth_export.py --query Derelict
 ```
 
 Validate exported scene truth:

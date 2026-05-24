@@ -5,10 +5,13 @@
 
 ## Current Focus
 
-- Current active goal: complete the S0/S1 Unreal rendering loop to a state that
-  can be manually reviewed. Goal records are total objectives, not single-step
-  tasks; keep the immediate next action separately in the active queue or
-  ledger.
+- Current active goal: complete the MoSim UE/Fab tool loop around
+  `unreal_engine` and `mosim_epic_library`: prove editable scene import/reuse,
+  UE-side map modification, and collision/semantic/occupancy truth export for
+  mapping and path planning; if Fab cannot satisfy that route, use local
+  editable scenes under `References/UnrealScenes`. Goal records are total
+  objectives, not single-step tasks; keep immediate next actions in the active
+  queue or ledger.
 - 2026-05-24 Unreal map reset: stop improving all old generated blockout,
   grid, STL, semantic-box, RflySim direct-mount, factory-review, and
   YunZong/Sunray primitive-reconstruction maps. The old routes have been
@@ -43,6 +46,9 @@
   Python to write AABB collision proxy JSON under
   `UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/`, then run
   `validate` from normal Python and rerun `audit_scene_source.py`.
+- Current Codex MCP config has been corrected from old `Quadrotor` paths to
+  MoSim paths and now lists `mosim_epic_library`; `unreal_engine` still requires
+  an open Unreal Editor listener before actor/Blueprint tools can be used.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.

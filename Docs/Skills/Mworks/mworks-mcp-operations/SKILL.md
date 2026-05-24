@@ -12,10 +12,10 @@ Keep MCP usage targeted, quiet, and project-local.
 Always treat this as active:
 
 ```text
-操作权限仅限 C:\Users\HP\Desktop\Quadrotor
+操作权限仅限 C:\Users\HP\Desktop\MoSim
 ```
 
-Use `/mnt/c/Users/HP/Desktop/Quadrotor` in WSL. Do not read or write outside the project unless the user explicitly asks for infrastructure setup.
+Use `/mnt/c/Users/HP/Desktop/MoSim` in WSL. Do not read or write outside the project unless the user explicitly asks for infrastructure setup.
 
 ## Wrapper Paths
 
@@ -61,12 +61,12 @@ steps, keep the tool boundary workflow-oriented:
 
 | Need | Go To |
 |---|---|
-| MCP tool list and sequences | `docs/index/api_index.md` |
-| MCP troubleshooting | `workflows/debug_mcp.md` |
-| Model context | `Skills/Mworks/mworks-model-context/SKILL.md` |
-| Simulation evidence | `Skills/Mworks/mworks-simulation-evidence/SKILL.md` |
-| Graphical Sysblock controller modeling | `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md` |
-| MATLAB/Simulink translation | `Skills/Mworks/mworks-syslab-porting/SKILL.md` |
+| MCP tool list and sequences | `Docs/Index/api_index.md` |
+| MCP troubleshooting | `Docs/Workflows/debug_mcp.md` |
+| Model context | `Docs/Skills/Mworks/mworks-model-context/SKILL.md` |
+| Simulation evidence | `Docs/Skills/Mworks/mworks-simulation-evidence/SKILL.md` |
+| Graphical Sysblock controller modeling | `Docs/Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md` |
+| MATLAB/Simulink translation | `Docs/Skills/Mworks/mworks-syslab-porting/SKILL.md` |
 
 ## Failure Handling
 
