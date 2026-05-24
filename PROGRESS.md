@@ -78,6 +78,13 @@
   source and keeps preview local-map / local-plan data explicitly render-only.
   This proves the frame contract for `ResolveSceneSourceId`; it is still not
   visual import evidence.
+- `Scripts/UE5/check_ue_fab_goal_acceptance.py` is now the gate-level audit
+  for the current UE/Fab tool objective. Latest status is `6/8` gates passed:
+  Fab inventory, local fallback readiness, Derelict truth validation, UDP
+  scene-source contract, live `unreal_engine` edit authority, and minimal
+  Skills/workflow docs pass. Remaining gaps are Fab route acceptance and
+  proof that the selected scene is visually imported/reused inside
+  `MworksUnrealRenderer`.
 - Latest UE build attempt reached C++ compile and failed only at DLL link
   because an open `UnrealEditor.exe` held
   `UnrealEditor-QuadrotorMworksBridge.dll` and

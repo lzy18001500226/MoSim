@@ -252,6 +252,7 @@ Source-level gate:
 ```bash
 uv run python Scripts/UE5/check_unreal_bridge.py
 uv run python Scripts/UE5/check_scene_source_udp_contract.py
+uv run python Scripts/UE5/check_ue_fab_goal_acceptance.py
 ```
 
 This check verifies that the C++ bridge exposes the scene-source registry fields
@@ -262,6 +263,26 @@ matches the registry primary scene id, carries truth artifacts, and keeps
 `local_known_map` / preview `local_plan` marked as render-only. It is not visual
 import evidence; it proves the packet path that triggers
 `ResolveSceneSourceId`.
+
+Use `check_ue_fab_goal_acceptance.py` as the current objective audit. It checks
+the UE/Fab tool goal gate by gate: Epic/Fab inventory visibility, Fab-route
+acceptance, local fallback readiness, truth-artifact validation, UDP
+scene-source selection, live `unreal_engine` edit evidence, minimal Skills /
+workflow presence, and visual import/reuse evidence. The default mode reports
+partial progress without failing. Use `--require-complete` only when deciding
+whether the full goal is ready to close.
+
+Current expected status before visual import work:
+
+```text
+6/8 gates passed
+fab_route_acceptance: partial
+scene_visual_import_or_reuse: missing
+```
+
+This means the local Derelict fallback has truth and packet-level selection,
+but the selected scene is not yet proven imported/reused inside
+`MworksUnrealRenderer`.
 
 Binary build gate:
 
