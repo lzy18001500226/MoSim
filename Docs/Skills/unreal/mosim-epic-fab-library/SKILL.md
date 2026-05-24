@@ -46,13 +46,26 @@ Scene-source audit:
 ```bash
 uv run python Scripts/UE5/audit_scene_source.py
 uv run python Scripts/UE5/plan_scene_truth_export.py --query Derelict
+uv run python Scripts/UE5/run_scene_truth_export.py --query Derelict --map-package /Game/DerelictCorridor/Maps/DerelictCorridor
 ```
+
+`run_scene_truth_export.py` defaults to dry-run command generation. Add `--run`
+only after the target project, engine version, plugins, and map package have
+been checked.
 
 Validate exported scene truth:
 
 ```bash
 uv run python Scripts/UE5/export_unreal_scene_truth.py validate <truth-json>
+uv run python Scripts/UE5/audit_scene_source.py
 ```
+
+Current validated local scene: `DerelictCorridorMegascans`. Its UE 5.5
+commandlet export writes
+`UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json`
+with 4753 collision proxies, and `audit_scene_source.py` marks it
+`ready_for_truth_backed_planning`. This is AABB collision-proxy truth, not final
+semantic or voxel occupancy truth.
 
 Raw sanitized inventory:
 

@@ -416,6 +416,43 @@ def test_unreal_scene_truth_payload_validation() -> None:
         raise AssertionError("invalid payload unexpectedly passed")
 
 
+def test_unreal_world_name_uses_available_methods() -> None:
+    module = load_ue5_module("export_unreal_scene_truth")
+
+    class WithPath:
+        def get_path_name(self) -> str:
+            return "/Game/Maps/Main.Main"
+
+    class WithName:
+        def get_map_name(self) -> str:
+            raise AttributeError("missing in this UE version")
+
+        def get_name(self) -> str:
+            return "Main"
+
+    if module.unreal_world_name(WithPath()) != "/Game/Maps/Main.Main":
+        raise AssertionError("path fallback failed")
+    if module.unreal_world_name(WithName()) != "Main":
+        raise AssertionError("name fallback failed")
+
+
+def test_component_or_actor_bounds_falls_back_to_actor() -> None:
+    module = load_ue5_module("export_unreal_scene_truth")
+
+    class ComponentWithoutBounds:
+        pass
+
+    class ActorWithBounds:
+        def get_actor_bounds(self, only_colliding_components: bool):
+            if only_colliding_components:
+                raise AssertionError("expected broad actor bounds fallback")
+            return "origin", "extent"
+
+    origin, extent, rotation = module.component_or_actor_bounds(ComponentWithoutBounds(), ActorWithBounds())
+    if (origin, extent, rotation) != ("origin", "extent", None):
+        raise AssertionError((origin, extent, rotation))
+
+
 def test_plan_scene_truth_export_outputs_editor_and_validation_commands(tmp_path: Path) -> None:
     plan_module = load_ue5_module("plan_scene_truth_export")
     project = tmp_path / "DerelictCorridorMegascans"
@@ -439,3 +476,42 @@ def test_plan_scene_truth_export_outputs_editor_and_validation_commands(tmp_path
         raise AssertionError(plans)
     if "export_unreal_scene_truth.py validate" not in plans[0]["validate_command"]:
         raise AssertionError(plans)
+
+
+def test_run_scene_truth_export_builds_windows_command_and_batch(tmp_path: Path) -> None:
+    run_module = load_ue5_module("run_scene_truth_export")
+    project = tmp_path / "DerelictCorridorMegascans"
+    content = project / "Content" / "Maps"
+    truth_root = tmp_path / "scene_truth"
+    batch_script = tmp_path / "run_export.py"
+    fake_engine = tmp_path / "UE_5.5"
+    editor_cmd = fake_engine / "Engine" / "Binaries" / "Win64" / "UnrealEditor-Cmd.exe"
+    content.mkdir(parents=True)
+    truth_root.mkdir()
+    editor_cmd.parent.mkdir(parents=True)
+    editor_cmd.write_text("", encoding="utf-8")
+    uproject = project / "DerelictCorridorMegascans.uproject"
+    uproject.write_text(json.dumps({"EngineAssociation": "5.5"}), encoding="utf-8")
+    (content / "DerelictCorridor.umap").write_bytes(b"map")
+    (content / "Wall.uasset").write_bytes(b"asset")
+
+    plan = run_module.first_plan(tmp_path, truth_root, "Derelict")
+    run_module.write_batch_script(plan, batch_script, "/Game/DerelictCorridor/Maps/DerelictCorridor")
+    command = run_module.build_command(
+        editor_cmd=editor_cmd,
+        uproject_path=run_module.to_wsl_path(plan["uproject_path"]),
+        batch_script=batch_script,
+        map_path="/Game/DerelictCorridor/Maps/DerelictCorridor",
+    )
+
+    batch_text = batch_script.read_text(encoding="utf-8")
+    if "unreal.EditorLevelLibrary.load_level" not in batch_text:
+        raise AssertionError(batch_text)
+    if "C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\\\\Scripts\\\\UE5\\\\export_unreal_scene_truth.py" not in batch_text:
+        raise AssertionError(batch_text)
+    if "\\\\scene_truth\\\\derelictcorridormegascans_collision_truth.json" not in batch_text:
+        raise AssertionError(batch_text)
+    if "-run=pythonscript" not in command:
+        raise AssertionError(command)
+    if not any(str(part).endswith("UnrealEditor-Cmd.exe") for part in command):
+        raise AssertionError(command)

@@ -407,6 +407,12 @@ Every sub-agent prompt for this project should include a concrete goal and
 terminal condition. If runtime support allows it, request `model=gpt-5.5` and
 `reasoning_effort=high` explicitly at spawn time.
 
+If a goal record becomes malformed, stale, over-narrow, or impossible to update
+through the available goal tools, do not let it block execution. Reset/delete
+the bad goal record and recreate only the durable total objective. Single
+implementation steps belong in this ledger or the active task queue, not in the
+top-level goal.
+
 ## 2.5 Git Owner Stop Condition
 
 A Git owner is not done after pushing one small branch unless that was the

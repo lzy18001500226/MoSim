@@ -38,14 +38,26 @@
   cannot provide editable content plus truth route, fall back to local editable
   projects under `References/UnrealScenes`.
 - Current `References/UnrealScenes` audit result: editable visual scene
-  candidates exist, but explicit planner/collision truth files are not present
-  yet. UE collision/navigation assets are proxy candidates only; they still need
-  export into occupancy/collision/semantic artifacts before planner validation.
+  candidates exist. `DerelictCorridorMegascans` now has explicit exported
+  AABB collision truth; the other local candidates still need truth extraction
+  before planner validation. UE collision/navigation assets are proxy
+  candidates only until exported into explicit occupancy/collision/semantic
+  artifacts.
 - First truth-export route is now defined as
   `Scripts/UE5/export_unreal_scene_truth.py`: run `export` inside Unreal Editor
   Python to write AABB collision proxy JSON under
   `UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/`, then run
   `validate` from normal Python and rerun `audit_scene_source.py`.
+- `Scripts/UE5/run_scene_truth_export.py` generates the matching
+  `UnrealEditor-Cmd.exe -run=pythonscript` command and temporary Editor Python
+  batch script for a selected local scene. It defaults to dry-run; add `--run`
+  only after the selected scene opens with the matching UE version/plugins.
+- Derelict corridor scene truth is now verified: UE 5.5 commandlet loaded
+  `/Game/DerelictCorridor/Maps/DerelictCorridor` and wrote
+  `derelictcorridormegascans_collision_truth.json` with 4753 assets and 4753
+  AABB collision proxies. `audit_scene_source.py` marks
+  `DerelictCorridorMegascans` as `ready_for_truth_backed_planning`; this is
+  not yet final semantic or voxel occupancy truth.
 - Current Codex MCP config has been corrected from old `Quadrotor` paths to
   MoSim paths and now lists `mosim_epic_library`; `unreal_engine` still requires
   an open Unreal Editor listener before actor/Blueprint tools can be used.
@@ -126,6 +138,10 @@
 - Do not use goal tracking for one-off implementation steps. The goal should
   stay at the durable total objective level; record immediate actions as
   ledger/queue tasks.
+- Do not let a stale or malformed goal block execution. If a goal cannot be
+  updated, corrected, or safely reused, delete/reset it and recreate it at the
+  durable total-objective level; do not keep working against a wrong
+  single-step goal.
 - Do not conflate UE Editor MCP with Epic/Fab/Launcher library access. UE MCP
   edits a running editor project; Epic/Fab library discovery is a separate
   read-only cache/index problem and must redact account/cache secrets.

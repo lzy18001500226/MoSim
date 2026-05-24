@@ -135,10 +135,12 @@ still needs a truth-extraction or proxy-generation pipeline before it can prove
 mapping/path-planning behavior.
 
 Current audit result: the editable local projects under `References/UnrealScenes`
-are usable visual candidates, but none currently exposes explicit
-planner/collision truth files. UE assets with collision/navigation names are
-treated only as proxy candidates; they are not accepted as planner truth until
-exported to an explicit occupancy/collision/semantic artifact.
+are usable visual candidates. `DerelictCorridorMegascans` now has an explicit
+collision-truth export and audits as `ready_for_truth_backed_planning`; the
+other local candidates still need truth extraction before planner validation.
+UE assets with collision/navigation names are treated only as proxy candidates;
+they are not accepted as planner truth until exported to an explicit
+occupancy/collision/semantic artifact.
 
 To promote an editable scene into a truth-backed scene, open it in Unreal Editor
 and run the exporter through Editor Python:
@@ -149,6 +151,18 @@ uv run python Scripts/UE5/plan_scene_truth_export.py --query Derelict
 
 The planner prints the project path, a map sample, the Unreal Editor Python
 export command, and the normal-shell validation command.
+
+For a command-line handoff, generate the Unreal commandlet command and the
+temporary Editor Python batch script:
+
+```bash
+uv run python Scripts/UE5/run_scene_truth_export.py \
+  --query Derelict \
+  --map-package /Game/DerelictCorridor/Maps/DerelictCorridor
+```
+
+The default mode is dry-run. Add `--run` only after confirming the selected
+scene opens with the matching UE version and required plugins.
 
 ```bash
 # Run inside Unreal Editor Python, not normal Python:
@@ -170,6 +184,26 @@ The exporter records world-space AABB collision proxies from collidable static
 mesh components. This is a first explicit truth route, not final high-fidelity
 mesh/voxel mapping. It is acceptable for deciding whether a candidate scene can
 enter planner integration; detailed occupancy/semantic refinement can follow.
+
+Validated example:
+
+```bash
+uv run python Scripts/UE5/run_scene_truth_export.py \
+  --query Derelict \
+  --map-package /Game/DerelictCorridor/Maps/DerelictCorridor \
+  --run
+uv run python Scripts/UE5/export_unreal_scene_truth.py validate \
+  UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json
+uv run python Scripts/UE5/audit_scene_source.py
+```
+
+Evidence from the latest run: UE 5.5 commandlet loaded
+`/Game/DerelictCorridor/Maps/DerelictCorridor` and wrote
+`derelictcorridormegascans_collision_truth.json` with 4753 assets and 4753
+collision proxies. The scene-source audit then marked
+`DerelictCorridorMegascans` as `ready_for_truth_backed_planning`. This proves
+the local editable scene has an explicit first-pass planner-truth route; it
+does not mean semantic labels or high-fidelity voxel occupancy are complete.
 
 Relevant current-phase skills:
 

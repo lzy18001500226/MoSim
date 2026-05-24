@@ -143,6 +143,39 @@ def validate_truth_payload(payload: dict[str, Any]) -> list[str]:
     return errors
 
 
+def unreal_world_name(world: Any) -> str:
+    if not world:
+        return ""
+    for method_name in ("get_map_name", "get_path_name", "get_name"):
+        method = getattr(world, method_name, None)
+        if callable(method):
+            try:
+                value = method()
+            except Exception:
+                continue
+            if value:
+                return str(value)
+    return str(world)
+
+
+def component_or_actor_bounds(component: Any, actor: Any) -> tuple[Any, Any, Any]:
+    for owner in (component, actor):
+        method = getattr(owner, "get_component_bounds", None)
+        if callable(method):
+            try:
+                return method()
+            except Exception:
+                pass
+        method = getattr(owner, "get_actor_bounds", None)
+        if callable(method):
+            try:
+                origin, extent = method(False)
+                return origin, extent, None
+            except Exception:
+                pass
+    raise AttributeError(f"Unable to read bounds for component {component} on actor {actor}")
+
+
 def export_from_unreal(scene_id: str, map_id: str, output: Path, include_no_collision: bool = False) -> dict[str, Any]:
     try:
         import unreal  # type: ignore
@@ -150,7 +183,7 @@ def export_from_unreal(scene_id: str, map_id: str, output: Path, include_no_coll
         raise RuntimeError("The export command must run inside Unreal Editor Python.") from exc
 
     world = unreal.EditorLevelLibrary.get_editor_world()
-    level_name = world.get_map_name() if world else ""
+    level_name = unreal_world_name(world)
     project_path = unreal.Paths.project_dir()
     actors = unreal.EditorLevelLibrary.get_all_level_actors()
     assets: list[dict[str, Any]] = []
@@ -170,7 +203,7 @@ def export_from_unreal(scene_id: str, map_id: str, output: Path, include_no_coll
                 continue
             mesh = component.static_mesh
             mesh_path = mesh.get_path_name() if mesh else ""
-            origin, extent, _ = component.get_component_bounds()
+            origin, extent, _ = component_or_actor_bounds(component, actor)
             center_m = unreal_vector_to_mworks_m(origin)
             size_m = unreal_extent_to_size_m(extent)
             if min(size_m) <= 0.0:
@@ -226,7 +259,7 @@ def export_from_unreal(scene_id: str, map_id: str, output: Path, include_no_coll
     if errors:
         raise RuntimeError("Invalid exported truth: " + "; ".join(errors))
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
     return payload
 
 
