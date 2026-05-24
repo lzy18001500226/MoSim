@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["scripts/tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
 addopts = "-q --capture=no"

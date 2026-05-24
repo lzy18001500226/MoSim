@@ -152,7 +152,7 @@ Rules:
 7. When Git is slow, has LFS/hook/index-lock residue, or another Git owner is
    active, delegate commit/push work to `GitIntegrator` instead of blocking the
    main engineering thread. The main agent remains responsible for scope,
-   review, and final reporting; details live in `workflows/agent_orchestration.md#5-long-git-work`.
+   review, and final reporting; details live in `Docs/Workflows/agent_orchestration.md#5-long-git-work`.
 
 ### 3.3.1 Parallel Agent Rule
 
@@ -199,11 +199,11 @@ Coordinator rules:
 4. Keep research/review agents read-only by default. Use at most one
    write-capable Git/quality owner.
 5. Split large task types by content family or model/result ownership.
-6. Record long-running tasks in `workflows/agent_task_ledger.md`; recover from
+6. Record long-running tasks in `Docs/Workflows/agent_task_ledger.md`; recover from
    ledger/WAL, not chat memory.
 7. Accept sub-agent results only with evidence, inference, unknowns, risks, and
    next validation.
-8. Use `workflows/agent_orchestration.md` for contracts, queues, nested
+8. Use `Docs/Workflows/agent_orchestration.md` for contracts, queues, nested
    delegation, WAL, worktrees, reviewers, and external-repo audit routing.
 9. Use `PROGRESS.md` for current status and repeated mistakes.
 10. For long or volatile sessions, keep a `TaskSecretary` intake record so new
@@ -221,7 +221,7 @@ Rules:
 3. If a GUI window is opened by Sysplorer / Syslab / MCP, minimize it when possible and avoid bringing it to the foreground repeatedly.
 4. Do not use broad MCP discovery calls repeatedly when a targeted tool call is enough.
 5. During one development round, keep one reusable Sysplorer / Syslab / MWORKS GUI window open when repeated model checks are expected; do not close it after every small MCP call.
-6. Save result evidence under `results/` and documentation-ready assets under `docs/`.
+6. Save result evidence under `results/` and documentation-ready assets under `Docs/`.
 7. If MCP behavior may interrupt the user's desktop, state that risk before running the operation.
 8. Do not call MCP tools merely to create activity. Use the smallest set of MCP calls that proves the current engineering claim.
 9. If a tool exposes a release, stop, or non-GUI session cleanup API, call it after the useful result is saved.
@@ -295,17 +295,17 @@ Core directories:
 
 | Directory | Purpose |
 |---|---|
-| `Design/` | Algorithm and system design source of truth. |
-| `docs/` | User manual, simulation report, converted MWORKS docs, indexes. |
-| `workflows/` | Repeatable procedures and detailed agent/task mechanics. |
-| `Skills/` | Project-local and reference skills. |
-| `models/`, `QuadrotorModel/` | MWORKS/Sysplorer models and official case model. |
-| `scenarios/`, `scripts/`, `tests/` | Scenario configs, automation scripts, checks. |
+| `Docs/Design/` | Algorithm and system design source of truth. |
+| `Docs/` | User manual, simulation report, converted MWORKS docs, indexes. |
+| `Docs/Workflows/` | Repeatable procedures and detailed agent/task mechanics. |
+| `Docs/Skills/` | Project-local and reference skills. |
+| `Models/`, `references/MWORKS/QuadrotorModel/` | MWORKS/Sysplorer models and official case model. |
+| `config/scenarios/`, `scripts/`, `scripts/tests/` | Scenario configs, automation scripts, checks. |
 | `results/` | Reproducible outputs, metrics, logs, figures, local review assets. |
 
 Create subdirectories only when there is actual content to store. The raw
 official MWORKS package is not required after useful documents are promoted to
-`docs/mworks/converted/`; use temporary source paths only when rescanning new
+`Docs/Mworks/converted/`; use temporary source paths only when rescanning new
 official materials.
 
 ---
@@ -318,15 +318,15 @@ Simulink patterns live in the indexes, workflows, and project-local skills.
 
 | Need | Primary Entry |
 |---|---|
-| MCP tool list and preferred sequences | `docs/index/api_index.md` |
-| MCP wrapper/debug steps | `workflows/debug_mcp.md` |
-| Minimal-impact MCP operation rules | `Skills/Mworks/mworks-mcp-operations/SKILL.md` |
-| Sysplorer model/component context | `Skills/Mworks/mworks-model-context/SKILL.md` |
-| MWORKS simulation evidence | `Skills/Mworks/mworks-simulation-evidence/SKILL.md` |
-| Syslab/MATLAB/Simulink migration | `Skills/Mworks/mworks-syslab-porting/SKILL.md` |
-| Failed/slow/wrong simulation diagnostics | `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
-| Tests, review, pre-submit quality | `Skills/Mworks/mworks-test-quality/SKILL.md` |
-| Report figures, replay, video evidence | `Skills/Mworks/mworks-report-visualization/SKILL.md` |
+| MCP tool list and preferred sequences | `Docs/Index/api_index.md` |
+| MCP wrapper/debug steps | `Docs/Workflows/debug_mcp.md` |
+| Minimal-impact MCP operation rules | `Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md` |
+| Sysplorer model/component context | `Docs/Skills/Mworks/mworks-model-context/SKILL.md` |
+| MWORKS simulation evidence | `Docs/Skills/Mworks/mworks-simulation-evidence/SKILL.md` |
+| Syslab/MATLAB/Simulink migration | `Docs/Skills/Mworks/mworks-syslab-porting/SKILL.md` |
+| Failed/slow/wrong simulation diagnostics | `Docs/Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
+| Tests, review, pre-submit quality | `Docs/Skills/Mworks/mworks-test-quality/SKILL.md` |
+| Report figures, replay, video evidence | `Docs/Skills/Mworks/mworks-report-visualization/SKILL.md` |
 
 Non-negotiable MCP rules:
 
@@ -349,11 +349,11 @@ Official docs / PDFs / web docs
     ↓
 Convert to Markdown with MinerU or equivalent
     ↓
-Store under docs/mworks/
+Store under Docs/Mworks/
     ↓
-Build manual indexes under docs/index/
+Build manual indexes under Docs/Index/
     ↓
-Write common workflows under workflows/
+Write common workflows under Docs/Workflows/
     ↓
 Use MCP documentation tools when unsure
 ```
@@ -361,13 +361,13 @@ Use MCP documentation tools when unsure
 Recommended documentation folders:
 
 ```text
-docs/mworks/
+Docs/Mworks/
 ├── sysplorer/
 ├── syslab/
 ├── sysblock/
 └── mcp/
 
-docs/index/
+Docs/Index/
 ├── doc_index.md
 ├── api_index.md
 └── workflow_index.md
@@ -375,9 +375,9 @@ docs/index/
 
 Rules:
 
-1. Use `docs/index/doc_index.md` as the entry point for official documentation.
-2. Use `docs/index/api_index.md` for API and MCP tool lookup.
-3. Use `docs/index/workflow_index.md` for common project workflows.
+1. Use `Docs/Index/doc_index.md` as the entry point for official documentation.
+2. Use `Docs/Index/api_index.md` for API and MCP tool lookup.
+3. Use `Docs/Index/workflow_index.md` for common project workflows.
 4. Do not paste large documentation dumps into `AGENTS.md`.
 5. Keep `AGENTS.md` as the project behavior and workflow control file.
 6. If documentation is missing or unclear, use MCP documentation tools.
@@ -388,55 +388,55 @@ This repository includes compact project-local skills translated from MathWorks 
 
 | Skill | Use When | File |
 |---|---|---|
-| `mworks-model-context` | Resolving Sysplorer model, component, port, parameter, controller replacement location, or signal interface | `Skills/Mworks/mworks-model-context/SKILL.md` |
-| `mworks-simulation-evidence` | Running MWORKS simulations, reading results, computing metrics, or producing report evidence | `Skills/Mworks/mworks-simulation-evidence/SKILL.md` |
-| `mworks-syslab-porting` | Translating MATLAB/Simulink skills, scripts, tests, plotting, or performance workflows into MWORKS/Syslab/Sysplorer practice | `Skills/Mworks/mworks-syslab-porting/SKILL.md` |
-| `mworks-mcp-operations` | MCP session, wrapper, and minimal-impact operation behavior | `Skills/Mworks/mworks-mcp-operations/SKILL.md` |
-| `mworks-runtime-diagnostics` | Failed, slow, unstable, or suspicious simulation diagnostics | `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
-| `mworks-test-quality` | Tests, reviews, targeted simulation checks, regressions, and pre-submit gates | `Skills/Mworks/mworks-test-quality/SKILL.md` |
-| `mworks-report-visualization` | Report figures, replay assets, video evidence, and honest visual claims | `Skills/Mworks/mworks-report-visualization/SKILL.md` |
-| `mworks-sysblock-graphical-modeling` | Building, repairing, and validating graphical Sysblock controller diagrams | `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md` |
+| `mworks-model-context` | Resolving Sysplorer model, component, port, parameter, controller replacement location, or signal interface | `Docs/Skills/Mworks/mworks-model-context/SKILL.md` |
+| `mworks-simulation-evidence` | Running MWORKS simulations, reading results, computing metrics, or producing report evidence | `Docs/Skills/Mworks/mworks-simulation-evidence/SKILL.md` |
+| `mworks-syslab-porting` | Translating MATLAB/Simulink skills, scripts, tests, plotting, or performance workflows into MWORKS/Syslab/Sysplorer practice | `Docs/Skills/Mworks/mworks-syslab-porting/SKILL.md` |
+| `mworks-mcp-operations` | MCP session, wrapper, and minimal-impact operation behavior | `Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md` |
+| `mworks-runtime-diagnostics` | Failed, slow, unstable, or suspicious simulation diagnostics | `Docs/Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
+| `mworks-test-quality` | Tests, reviews, targeted simulation checks, regressions, and pre-submit gates | `Docs/Skills/Mworks/mworks-test-quality/SKILL.md` |
+| `mworks-report-visualization` | Report figures, replay assets, video evidence, and honest visual claims | `Docs/Skills/Mworks/mworks-report-visualization/SKILL.md` |
+| `mworks-sysblock-graphical-modeling` | Building, repairing, and validating graphical Sysblock controller diagrams | `Docs/Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md` |
 
-Use `Skills/Mworks/` as the default execution layer for this project. Treat upstream MATLAB / Simulink skills under `Skills/Matlab/`, `Skills/Simulink/`, and official opencode skills under `C:\Users\HP\.config\opencode\skills` as second-level references only: consult them when the MWORKS skills do not cover a task, translate the useful pattern into MWORKS terms, and then update the relevant `Skills/Mworks/*/SKILL.md`, `workflows/`, or `docs/index/` file so the project improves over time. Verify every executable API call through MWORKS docs or MCP. Never copy opencode OAuth/provider credentials into the repository.
+Use `Docs/Skills/Mworks/` as the default execution layer for this project. Treat upstream MATLAB / Simulink skills under `Docs/Skills/Matlab/`, `Docs/Skills/Simulink/`, and official opencode skills under `C:\Users\HP\.config\opencode\skills` as second-level references only: consult them when the MWORKS skills do not cover a task, translate the useful pattern into MWORKS terms, and then update the relevant `Docs/Skills/Mworks/*/SKILL.md`, `Docs/Workflows/`, or `Docs/Index/` file so the project improves over time. Verify every executable API call through MWORKS docs or MCP. Never copy opencode OAuth/provider credentials into the repository.
 
 ---
 
 ## 7. Core Workflow Routing
 
-Use `docs/index/workflow_index.md` as the workflow entry point. Do not duplicate long workflow steps in this file.
+Use `Docs/Index/workflow_index.md` as the workflow entry point. Do not duplicate long workflow steps in this file.
 
 | Task | Workflow |
 |---|---|
-| Run one simulation | `workflows/run_simulation.md` |
-| Resolve model/component interface | `workflows/resolve_model_context.md` |
-| Produce labeled evidence bundle | `workflows/produce_simulation_evidence.md` |
-| Read exported results | `workflows/read_results.md` |
-| Calculate metrics | `workflows/calc_metrics.md` |
-| Generate report figures/replay | `workflows/generate_report_figures.md` |
-| Add a controller | `workflows/add_controller.md` |
-| Build/repair graphical Sysblock controller | `workflows/build_sysblock_graphical_controller.md` |
-| Run tests | `workflows/run_tests.md` |
-| Regression tests | `workflows/regression_test.md` |
-| Code review | `workflows/code_review.md` |
-| Pre-submit check | `workflows/pre_submit_check.md` |
+| Run one simulation | `Docs/Workflows/run_simulation.md` |
+| Resolve model/component interface | `Docs/Workflows/resolve_model_context.md` |
+| Produce labeled evidence bundle | `Docs/Workflows/produce_simulation_evidence.md` |
+| Read exported results | `Docs/Workflows/read_results.md` |
+| Calculate metrics | `Docs/Workflows/calc_metrics.md` |
+| Generate report figures/replay | `Docs/Workflows/generate_report_figures.md` |
+| Add a controller | `Docs/Workflows/add_controller.md` |
+| Build/repair graphical Sysblock controller | `Docs/Workflows/build_sysblock_graphical_controller.md` |
+| Run tests | `Docs/Workflows/run_tests.md` |
+| Regression tests | `Docs/Workflows/regression_test.md` |
+| Code review | `Docs/Workflows/code_review.md` |
+| Pre-submit check | `Docs/Workflows/pre_submit_check.md` |
 
 All workflow outputs should be report-ready: scenario/config, raw result, metrics, figure/replay, source label, and pass/fail summary when applicable.
 
 ## 8. Algorithm Source of Truth
 
-Algorithm details live in `Design/`. Keep this file limited to routing and non-negotiable project constraints.
+Algorithm details live in `Docs/Design/`. Keep this file limited to routing and non-negotiable project constraints.
 
 | Topic | Design File |
 |---|---|
-| Overall architecture and innovation line | `Design/00_系统总体设计.md` |
-| Scope, P0/P1/P2, acceptance | `Design/01_需求范围与验收.md` |
-| Model interface, coordinates, buses | `Design/02_模型接口与运行流程.md` |
-| PID / NMPC / INDI / L1-inspired control | `Design/03_控制系统架构.md` |
-| Safety filter, fault injection, tolerance | `Design/04_安全故障与容错.md` |
-| Path planning and trajectory generation | `Design/05_路径规划与轨迹生成.md` |
-| Formation control | `Design/06_多机编队控制.md` |
-| Scenario matrix | `Design/07_场景扰动与测试矩阵.md` |
-| Metrics and evaluation criteria | `Design/08_仿真指标与自动评估.md` |
+| Overall architecture and innovation line | `Docs/Design/00_系统总体设计.md` |
+| Scope, P0/P1/P2, acceptance | `Docs/Design/01_需求范围与验收.md` |
+| Model interface, coordinates, buses | `Docs/Design/02_模型接口与运行流程.md` |
+| PID / NMPC / INDI / L1-inspired control | `Docs/Design/03_控制系统架构.md` |
+| Safety filter, fault injection, tolerance | `Docs/Design/04_安全故障与容错.md` |
+| Path planning and trajectory generation | `Docs/Design/05_路径规划与轨迹生成.md` |
+| Formation control | `Docs/Design/06_多机编队控制.md` |
+| Scenario matrix | `Docs/Design/07_场景扰动与测试矩阵.md` |
+| Metrics and evaluation criteria | `Docs/Design/08_仿真指标与自动评估.md` |
 
 Core constraints:
 
@@ -448,50 +448,50 @@ Core constraints:
 
 ## 9. Review and Testing Routing
 
-Use `Skills/Mworks/mworks-test-quality/SKILL.md` for quality decisions.
+Use `Docs/Skills/Mworks/mworks-test-quality/SKILL.md` for quality decisions.
 
 | Need | File |
 |---|---|
-| Code review checklist | `workflows/code_review.md` |
-| Test execution | `workflows/run_tests.md` |
-| Regression test | `workflows/regression_test.md` |
-| Final packaging check | `workflows/pre_submit_check.md` |
-| Project structure and evidence guard | `scripts/qa_check.py` |
+| Code review checklist | `Docs/Workflows/code_review.md` |
+| Test execution | `Docs/Workflows/run_tests.md` |
+| Regression test | `Docs/Workflows/regression_test.md` |
+| Final packaging check | `Docs/Workflows/pre_submit_check.md` |
+| Project structure and evidence guard | `scripts/quality/qa_check.py` |
 
 Before commit, run the smallest relevant checks and `git diff --check`.
 
 ## 10. Report and Figure Routing
 
-Use `Skills/Mworks/mworks-report-visualization/SKILL.md` when producing figures, replay assets, report sections, or demo-video material.
+Use `Docs/Skills/Mworks/mworks-report-visualization/SKILL.md` when producing figures, replay assets, report sections, or demo-video material.
 
 | Need | File |
 |---|---|
-| Current evidence and report claims | `docs/simulation_report.md` |
-| User-facing reproduction guide | `docs/user_manual.md` |
-| Figure generation workflow | `workflows/generate_report_figures.md` |
-| Metrics definitions | `Design/08_仿真指标与自动评估.md` |
+| Current evidence and report claims | `Docs/simulation_report.md` |
+| User-facing reproduction guide | `Docs/user_manual.md` |
+| Figure generation workflow | `Docs/Workflows/generate_report_figures.md` |
+| Metrics definitions | `Docs/Design/08_仿真指标与自动评估.md` |
 
 Every comparison claim must trace to raw data, metrics, and a saved figure or replay asset.
 
 ## 11. Troubleshooting Routing
 
-Use `workflows/debug_mcp.md` and `Skills/Mworks/mworks-mcp-operations/SKILL.md` for MCP troubleshooting.
+Use `Docs/Workflows/debug_mcp.md` and `Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md` for MCP troubleshooting.
 
 Common routing:
 
 | Symptom | Route |
 |---|---|
-| `/mcp` shows `Tools: (none)` | `workflows/debug_mcp.md` |
-| Sysplorer/Syslab GUI/session behavior | `Skills/Mworks/mworks-mcp-operations/SKILL.md` |
-| Failed model check/simulation | `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
-| Missing result variables | `docs/index/variable_mapping.md` and `workflows/read_results.md` |
+| `/mcp` shows `Tools: (none)` | `Docs/Workflows/debug_mcp.md` |
+| Sysplorer/Syslab GUI/session behavior | `Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md` |
+| Failed model check/simulation | `Docs/Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
+| Missing result variables | `Docs/Index/variable_mapping.md` and `Docs/Workflows/read_results.md` |
 
 `Auth: Unsupported` is normal for local stdio MCP servers and is not a failure.
 
 ## 12. Prompting and Task Shape
 
 Prefer task-specific prompts with goal, input file, tool/MCP route, output path,
-and acceptance criteria. Use `docs/index/workflow_index.md` for examples.
+and acceptance criteria. Use `Docs/Index/workflow_index.md` for examples.
 After every formal MWORKS simulation, verify result quality; `check_model ok`
 and `simulate_model ok` are execution evidence only, not quality evidence.
 

@@ -35,9 +35,9 @@ unreal/**/DerivedDataCache/
 *.cache
 *.bak
 *.old
-docs/mworks/extracted/
-docs/mworks/tmp/
-docs/mworks/raw/
+Docs/Mworks/extracted/
+Docs/Mworks/tmp/
+Docs/Mworks/raw/
 
 # MWORKS / simulation temp
 results/tmp/
@@ -173,5 +173,5 @@ references/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/
 # Broken local LFS pointer assets from third-party UE MCP tests.
 # The real LFS objects are not present locally and these tiny test assets are
 # not needed for project operation.
-Skills/unreal/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset
-Skills/unreal/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
+Docs/Skills/unreal/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset
+Docs/Skills/unreal/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
