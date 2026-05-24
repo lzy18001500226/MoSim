@@ -59,8 +59,16 @@
   `DerelictCorridorMegascans` as `ready_for_truth_backed_planning`; this is
   not yet final semantic or voxel occupancy truth.
 - Current Codex MCP config has been corrected from old `Quadrotor` paths to
-  MoSim paths and now lists `mosim_epic_library`; `unreal_engine` still requires
-  an open Unreal Editor listener before actor/Blueprint tools can be used.
+  MoSim paths and now lists `mosim_epic_library`. The project-owned
+  `MworksUnrealRenderer.uproject` now resolves `UnrealMCP` from
+  `Docs/Skills/Unreal/unreal-engine-mcp/FlopperamUnrealMCP/Plugins`; UE 5.7
+  build passed after this path fix, the editor-side listener was reachable on
+  `172.17.48.1:55557`, and `Scripts/UE5/probe_unreal_editor_mcp_tools.py`
+  completed a reversible live-editor read/spawn/transform/delete round trip.
+  This proves the current `unreal_engine` route can modify the project-owned
+  UE shell. The remaining goal boundary is scene-source integration: prove a
+  selected Fab/local editable scene can be imported/reused with explicit
+  planning truth, or keep using `References/UnrealScenes` with exported truth.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.

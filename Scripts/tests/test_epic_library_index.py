@@ -515,3 +515,30 @@ def test_run_scene_truth_export_builds_windows_command_and_batch(tmp_path: Path)
         raise AssertionError(command)
     if not any(str(part).endswith("UnrealEditor-Cmd.exe") for part in command):
         raise AssertionError(command)
+
+
+def test_unreal_editor_mcp_probe_helpers(monkeypatch, tmp_path: Path) -> None:
+    module = load_ue5_module("probe_unreal_editor_mcp_tools")
+    monkeypatch.setattr(module, "wsl_default_gateway", lambda: "172.17.48.1")
+
+    if module.default_host(None) != "172.17.48.1":
+        raise AssertionError("WSL default gateway fallback failed")
+    if module.default_host("127.0.0.1") != "127.0.0.1":
+        raise AssertionError("explicit host override failed")
+    generated_name = module.unique_actor_name("Probe Name")
+    if not generated_name.startswith("Probe_Name_") or len(generated_name) <= len("Probe_Name_"):
+        raise AssertionError(generated_name)
+
+    actors_response = {"status": "success", "result": {"actors": [{"name": "A"}, {"name": "B"}]}}
+    if module.actor_count(actors_response) != 2:
+        raise AssertionError("actor_count did not unwrap MCP result payload")
+
+    direct_response = {"actors": [{"name": "A"}]}
+    if module.actor_count(direct_response) != 1:
+        raise AssertionError("actor_count did not handle direct payload")
+
+    output = tmp_path / "evidence.json"
+    data = {"ok": True, "steps": []}
+    output.write_text(json.dumps(data), encoding="utf-8")
+    if json.loads(output.read_text(encoding="utf-8")) != data:
+        raise AssertionError("probe evidence JSON sanity check failed")

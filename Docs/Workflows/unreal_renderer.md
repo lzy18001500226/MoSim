@@ -282,6 +282,34 @@ python3 Scripts/UE5/probe_unreal_mcp_listener.py --timeout 1
 If the probe fails, do not keep calling actor/Blueprint tools. Fix the editor
 listener or continue with file-level work only.
 
+After the listener is reachable, verify actual edit authority with the
+reversible editor round-trip probe:
+
+```bash
+uv run python Scripts/UE5/probe_unreal_editor_mcp_tools.py \
+  --json-output Results/tmp/unreal_mcp_editor_probe_<date>.json
+```
+
+This script uses the same UnrealMCP editor socket as the `unreal_engine` MCP
+server. It reads level actors, spawns a temporary uniquely named
+`MoSimMcpProbe_DoNotSave_*` static mesh actor, changes its transform, deletes
+it, and checks cleanup. A passing listener probe alone is not enough to claim
+map-edit capability; this round trip is the minimum evidence for live UE scene
+modification. Do not reuse a fixed probe actor name in the same editor session:
+UE can retain deleted actor names internally and may crash while generating a
+unique name.
+
+Current known project-owned renderer requirement:
+
+```text
+UE5/MworksUnrealRenderer/MworksUnrealRenderer.uproject
+AdditionalPluginDirectories must include:
+../../Docs/Skills/Unreal/unreal-engine-mcp/FlopperamUnrealMCP/Plugins
+```
+
+If this path drifts after repository restructuring, the editor may open but
+`UnrealMCP` will not compile/load, and actor tools will time out.
+
 ## MWORKS Playback Route
 
 After a map passes visual review, MWORKS playback can be streamed through:

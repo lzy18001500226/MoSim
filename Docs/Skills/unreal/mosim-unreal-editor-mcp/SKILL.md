@@ -22,6 +22,19 @@ Check the editor-side listener before actor/Blueprint calls:
 python3 Scripts/UE5/probe_unreal_mcp_listener.py --wrapper-route-only --timeout 1
 ```
 
+Then prove live editor read/write authority before claiming scene modification:
+
+```bash
+uv run python Scripts/UE5/probe_unreal_editor_mcp_tools.py \
+  --json-output Results/tmp/unreal_mcp_editor_probe_<date>.json
+```
+
+The round-trip probe creates a temporary uniquely named probe actor, modifies
+it, deletes it, and verifies cleanup. Treat its JSON output as temporary
+evidence; do not commit `Results/tmp` artifacts. Do not force a reused fixed
+actor name unless you have restarted the editor or verified no stale name state
+remains.
+
 For the project-owned renderer:
 
 ```bash
@@ -40,7 +53,11 @@ Add `--check-listener` only when preparing for interactive editor review.
    paths.
 4. Batch UE edits, then verify with a read-only scene/actor probe.
 5. Keep Epic/Fab inventory and downloads outside this skill.
-6. After a candidate scene opens, export collision truth before claiming planner
+6. Keep `MworksUnrealRenderer.uproject` plugin paths aligned with the current
+   repository layout. After the `Skills` tree moved under `Docs/Skills`, the
+   project must resolve `UnrealMCP` from
+   `../../Docs/Skills/Unreal/unreal-engine-mcp/FlopperamUnrealMCP/Plugins`.
+7. After a candidate scene opens, export collision truth before claiming planner
    readiness:
 
 ```bash
