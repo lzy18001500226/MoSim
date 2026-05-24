@@ -1,0 +1,49 @@
+experiment_id: sunray150_planning_corridor_gate_linear_mpc_sysblock
+scene_id: planning_corridor_gate
+controller_id: linear_mpc_sysblock
+priority: P1
+evidence_level: real_sysplorer_mcp_sysblock_planning_corridor_gate_linear_mpc
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop
+  model_path_hint: Models/QuadrotorExperiments/Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  extra_model_files:
+    - Models/QuadrotorExperiments/PlannedQuinticReference.mo
+    - Models/QuadrotorExperiments/PlanningNavigationDisplay.mo
+  official_description: Sunray150 单机 corridor gate A* 轨迹 LinearMPC-style Sysblock 闭环
+
+controller:
+  params_file: Config/controllers/linear_mpc_sysblock/default.yaml
+  replacement_component: controller3_2
+  require_baseline_improvement: false
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 23.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: astar_min_snap
+  planner_config: Config/planners/astar_min_snap/map_corridor_gate.yaml
+  file: Results/planning/corridor_gate_astar_awff/raw/reference.csv
+  trackability_report: Results/planning/corridor_gate_astar_awff/metrics/trackability_report.json
+result:
+  raw_file: Results/planning/corridor_gate_astar_awff/sunray150_planning_corridor_gate_linear_mpc_sysblock/raw/sunray150_planning_corridor_gate_linear_mpc_sysblock.csv
+  metrics_file: Results/planning/corridor_gate_astar_awff/sunray150_planning_corridor_gate_linear_mpc_sysblock/metrics/sunray150_planning_corridor_gate_linear_mpc_sysblock.json
+  figure_dir: Results/planning/corridor_gate_astar_awff/sunray150_planning_corridor_gate_linear_mpc_sysblock/figures
+  replay_file: Results/planning/corridor_gate_astar_awff/sunray150_planning_corridor_gate_linear_mpc_sysblock/replay/sunray150_planning_corridor_gate_linear_mpc_sysblock.json
+  mcp_log: Results/planning/corridor_gate_astar_awff/sunray150_planning_corridor_gate_linear_mpc_sysblock/logs/sysplorer_sunray150_planning_corridor_gate_linear_mpc_sysblock_20260515.jsonl
+  variable_overrides:
+    x_ref: planningReference.position_command[1]
+    y_ref: planningReference.position_command[2]
+    z_ref: planningReference.position_command[3]
+  extra_variables:
+    z_ref_rate: planningReference.z_ref_rate
+    yaw_ref: planningReference.yaw_ref

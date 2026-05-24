@@ -1,0 +1,67 @@
+experiment_id: formation_triangle_figure8_linear_mpc_sysblock
+scene_id: formation_triangle_figure8
+controller_id: linear_mpc_sysblock
+priority: P2
+quality_profile: formation
+evidence_level: real_sysplorer_mcp_sysblock_formation_triangle_figure8_linear_mpc
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.FormationTriangleFigure8LinearMPCSysblockClosedLoop
+  model_path_hint: Models/QuadrotorExperiments/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  official_description: 三机 leader-follower 三角编队 planar figure-8 LinearMPC-style Sysblock 闭环
+
+controller:
+  params_file: Config/controllers/linear_mpc_sysblock/default.yaml
+  replacement_component: controller3_2
+  require_baseline_improvement: false
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 80.0
+  step_size_s: 0.02
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: leader_follower_triangle_figure8
+  formation: triangle
+  leader_path: planar_figure8
+  follower_offsets_m:
+    follower1: [-1.0, -0.8, 0.0]
+    follower2: [-1.0, 0.8, 0.0]
+
+result:
+  raw_file: Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/raw/formation_triangle_figure8_linear_mpc_sysblock.csv
+  metrics_file: Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/metrics/formation_triangle_figure8_linear_mpc_sysblock.json
+  figure_dir: Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/figures
+  replay_file: Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/replay/formation_triangle_figure8_linear_mpc_sysblock.json
+  mcp_log: Results/formation/triangle_figure8/formation_triangle_figure8_linear_mpc_sysblock/logs/sysplorer_formation_triangle_figure8_linear_mpc_sysblock_20260515.jsonl
+  variable_overrides:
+    x_ref: leader_x_ref
+    y_ref: leader_y_ref
+    z_ref: leader_z_ref
+  extra_variables:
+    follower1_x: follower1_x
+    follower1_y: follower1_y
+    follower1_z: follower1_z
+    follower1_x_ref: follower1_x_ref
+    follower1_y_ref: follower1_y_ref
+    follower1_z_ref: follower1_z_ref
+    follower2_x: follower2_x
+    follower2_y: follower2_y
+    follower2_z: follower2_z
+    follower2_x_ref: follower2_x_ref
+    follower2_y_ref: follower2_y_ref
+    follower2_z_ref: follower2_z_ref
+    follower1_formation_error_m: follower1_formation_error_m
+    follower2_formation_error_m: follower2_formation_error_m
+    formation_error_m: formation_error_m
+    inter_uav_distance_01_m: inter_uav_distance_01_m
+    inter_uav_distance_02_m: inter_uav_distance_02_m
+    inter_uav_distance_12_m: inter_uav_distance_12_m
+    min_inter_uav_distance_m: min_inter_uav_distance_m

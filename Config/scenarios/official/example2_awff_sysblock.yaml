@@ -1,0 +1,39 @@
+experiment_id: official_example2_awff_sysblock
+scene_id: official_example2
+controller_id: awff_sysblock
+priority: P1
+active: false
+superseded_by: official_example2_awff_sysblock_helix_tuned
+status_note: 原 Sysblock 螺旋场景未迁移 helix_tuned 横向权限参数，保留为历史诊断证据；正式矩阵使用 helix_tuned 分支。
+evidence_level: real_sysplorer_mcp_sysblock_closed_loop_full
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example2AWFFSysblockClosedLoop
+  model_path_hint: Models/QuadrotorExperiments/Example2AWFFSysblockClosedLoop.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  official_description: 螺旋爬升 Sysblock AWFF closed-loop full validation
+
+controller:
+  params_file: Config/controllers/awff_sysblock/default.yaml
+  replacement_component: controller3_2
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_FullControllerFlatGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_circle_path
+  file: Results/official/example2_helix/reference_official_example2/raw/reference_official_example2.csv
+result:
+  raw_file: Results/official/example2_helix/official_example2_awff_sysblock/raw/official_example2_awff_sysblock.csv
+  metrics_file: Results/official/example2_helix/official_example2_awff_sysblock/metrics/official_example2_awff_sysblock.json
+  figure_dir: Results/official/example2_helix/official_example2_awff_sysblock/figures
+  replay_file: Results/official/example2_helix/official_example2_awff_sysblock/replay/official_example2_awff_sysblock.json
+  mcp_log: Results/official/example2_helix/official_example2_awff_sysblock/logs/sysplorer_example2_awff_sysblock_full_20260510.jsonl

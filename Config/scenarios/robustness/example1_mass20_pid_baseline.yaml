@@ -1,0 +1,37 @@
+experiment_id: robust_mass20_example1_pid_baseline
+scene_id: robust_mass20_example1
+controller_id: pid_baseline
+priority: P1
+evidence_level: real_sysplorer_mcp_robust_mass20_ablation
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1Mass20PID
+  model_path_hint: Models/QuadrotorExperiments/package.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  official_description: 阶梯爬升 +20% 机体质量摄动 baseline PID
+
+disturbance:
+  type: mass_parameter_perturbation
+  target_component: quadChassisTest17_1.body.m
+  nominal_value_kg: 1.0
+  perturbed_value_kg: 1.2
+  perturbation_pct: 20.0
+  purpose: payload_uncertainty_and_model_parameter_robustness
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: Results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
+result:
+  raw_file: Results/robustness/mass20_example1/robust_mass20_example1_pid_baseline/raw/robust_mass20_example1_pid_baseline.csv
+  metrics_file: Results/robustness/mass20_example1/robust_mass20_example1_pid_baseline/metrics/robust_mass20_example1_pid_baseline.json
+  figure_dir: Results/robustness/mass20_example1/robust_mass20_example1_pid_baseline/figures
+  replay_file: Results/robustness/mass20_example1/robust_mass20_example1_pid_baseline/replay/robust_mass20_example1_pid_baseline.json
+  mcp_log: Results/robustness/mass20_example1/robust_mass20_example1_pid_baseline/logs/sysplorer_robust_mass20_example1_pid_baseline_20260510.jsonl

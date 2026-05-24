@@ -1,0 +1,76 @@
+controller_id: awff_fault_compensation_sysblock
+type: sysblock_awff_known_efficiency_fault_compensation
+priority: P1-B
+
+description: >
+  Lightweight middle-tier Sysblock controller between plain AWFF and the
+  L1/MPC fault-allocation controllers. It keeps the AWFF outer and attitude
+  behavior, disables the L1 residual branch, and adds a bounded known rotor-1
+  efficiency allocation gain for the 1号旋翼效率85% scenario.
+
+implementation_status:
+  current_mworks_model:
+    - QuadrotorExperiments.Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop
+  sysblock_controller: AWFF_FaultCompensationControllerEquation_Sysblock
+  graphical_sysblock_controller:
+    controller_model: AWFF_InnovationGraphicalControllers.AWFF_FaultCompensationControllerGraphical_Sysblock
+    controller_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+    status: graphical counterpart uses AWFF outer-loop settings with L1 residual gains set to zero, PID attitude loop, and KnownRotorFaultMixerBlock.
+  verification_scope: pending real MWORKS_MCP full run for rotor-1 85% efficiency degradation plus wind gust
+  limitation: >
+    This is not an online detector. It assumes the degraded rotor and
+    efficiency are known for ablation and scoring-gradient evidence.
+
+model_interface:
+  replacement_component: controller3_2
+  compatible_source_model: AWFF_FullControllerEquation_Sysblock
+  implementation_target:
+    - Sysblock controller component
+    - Project-owned rotor-1 85% efficiency degradation plus wind-gust Example1 wrapper
+  inputs:
+    x_error: climbePath.position_command[1] - sensors1_1.PosMea[1]
+    y_error: climbePath.position_command[2] - sensors1_1.PosMea[2]
+    z_error: climbePath.position_command[3] - sensors1_1.PosMea[3]
+    z_ref_rate: zero-order placeholder
+    attitude: sensors1_1.AngleMea
+    yaw_ref: zero-order placeholder
+  outputs:
+    motor_1: y, allocation compensated by known rotor1_efficiency
+    motor_2: y1
+    motor_3: y2
+    motor_4: y3
+  required_result_variables:
+    - sensors1_1.PosMea[1]
+    - sensors1_1.PosMea[2]
+    - sensors1_1.PosMea[3]
+    - sensors1_1.AngleMea[1]
+    - sensors1_1.AngleMea[2]
+    - sensors1_1.AngleMea[3]
+    - climbePath.position_command[1]
+    - climbePath.position_command[2]
+    - climbePath.position_command[3]
+    - controller3_2.y
+    - controller3_2.y1
+    - controller3_2.y2
+    - controller3_2.y3
+
+fault_compensation:
+  affected_rotor: rotor_1
+  target_component: quadChassisTest17_1.gain2.k
+  nominal_lift_gain: 0.000854858
+  degraded_lift_gain: 0.0007266293
+  rotor1_efficiency: 0.85
+  min_rotor_efficiency: 0.50
+  rotor1_allocation_blend: 0.52
+  disabled_l1_residual_gains:
+    l1_gain_xy: 0.0
+    l1_gain_z: 0.0
+    l1_comp_limit_xy: 0.0
+    l1_comp_limit_z: 0.0
+  compensation: motor_1_command_multiplied_by_1_plus_blend_times_inverse_eta_error_then_saturated
+
+acceptance:
+  robust_rotor1_loss15_wind_gust:
+    scenario_file: Config/scenarios/robustness/example1_rotor1_loss15_wind_gust_awff_fault_compensation_sysblock.yaml
+    required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
+    target_quality: better_than_awff_sysblock_boundary_case

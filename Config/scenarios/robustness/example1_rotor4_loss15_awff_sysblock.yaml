@@ -1,0 +1,46 @@
+experiment_id: robust_rotor4_loss15_example1_awff_sysblock
+scene_id: robust_rotor4_loss15_example1
+controller_id: awff_sysblock
+priority: P1
+evidence_level: real_sysplorer_mcp_sysblock_robust_rotor_loss_ablation
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1Rotor4Loss15AWFFSysblockClosedLoop
+  model_path_hint: Models/QuadrotorExperiments/Example1Rotor4Loss15AWFFSysblockClosedLoop.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  official_description: 阶梯爬升 4号旋翼升力效率85% AWFF Sysblock
+
+controller:
+  params_file: Config/controllers/awff_sysblock/default.yaml
+  replacement_component: controller3_2
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_FullControllerFlatGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
+  require_baseline_improvement: false
+
+disturbance:
+  type: actuator_efficiency_loss
+  target_component: quadChassisTest17_1.gain5.k
+  affected_rotor: rotor_4
+  nominal_lift_gain: 0.000854858
+  degraded_lift_gain: 0.0007266293
+  efficiency_ratio: 0.85
+  purpose: single_rotor_efficiency_degradation_boundary_ablation
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: Results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
+result:
+  raw_file: Results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_awff_sysblock/raw/robust_rotor4_loss15_example1_awff_sysblock.csv
+  metrics_file: Results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_awff_sysblock/metrics/robust_rotor4_loss15_example1_awff_sysblock.json
+  figure_dir: Results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_awff_sysblock/figures
+  replay_file: Results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_awff_sysblock/replay/robust_rotor4_loss15_example1_awff_sysblock.json
+  mcp_log: Results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_awff_sysblock/logs/sysplorer_robust_rotor4_loss15_example1_awff_sysblock_20260512.jsonl

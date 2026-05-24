@@ -1,0 +1,141 @@
+controller_id: enhanced_pid
+type: filtered_limited_pid
+priority: P1
+
+description: >
+  Project enhanced PID branch based on the MCP-selected improved PID gains,
+  with explicit derivative filter time constants and conservative attitude /
+  command limit tightening. This is the first real-model P1 controller branch;
+  the independent anti-windup and reference-feedforward replacement branch is
+  tracked in Config/controllers/awff_pid/default.yaml.
+
+features:
+  modelica_parameter_replacement: true
+  derivative_filter: true
+  attitude_reference_limit: true
+  command_limit_tightening: true
+  anti_windup: implemented_in_awff_pid
+  reference_feedforward: implemented_in_awff_pid
+
+implementation_status:
+  current_mworks_models:
+    - QuadrotorExperiments.Example1EnhancedPID
+    - QuadrotorExperiments.Example2EnhancedPID
+    - QuadrotorExperiments.Example2HelixTunedEnhancedPID
+    - QuadrotorExperiments.Example3EnhancedPID
+  base_controller: Config/controllers/improved_pid/default.yaml
+  verified_scope: >
+    Full Example1/2/3 official scenarios and P1 robustness ablations with real
+    Sysplorer MCP evidence. Example1 and Example3 pass the intended enhancement
+    role. The original Example2EnhancedPID remains needs_iteration, but the
+    helix-tuned Example2 branch passes by restoring lateral command authority
+    for the 10 s circular-trajectory onset.
+  next_controller_branch: Config/controllers/awff_pid/default.yaml
+
+model_interface:
+  replacement_component: controller3_2
+  compatible_source_model: QuadrotorModel.Blocks.Controller.Controller
+  implementation_target:
+    - Modelica derived experiment model
+  inputs:
+    position: sensors1_1.PosMea
+    attitude: sensors1_1.AngleMea
+    position_command: climbePath.position_command
+  outputs:
+    motor_1: y
+    motor_2: y1
+    motor_3: y2
+    motor_4: y3
+  required_result_variables:
+    - sensors1_1.PosMea[1]
+    - sensors1_1.PosMea[2]
+    - sensors1_1.PosMea[3]
+    - sensors1_1.AngleMea[1]
+    - sensors1_1.AngleMea[2]
+    - sensors1_1.AngleMea[3]
+    - climbePath.position_command[1]
+    - climbePath.position_command[2]
+    - climbePath.position_command[3]
+    - controller3_2.y
+    - controller3_2.y1
+    - controller3_2.y2
+    - controller3_2.y3
+
+position_loop:
+  kp: [1.65, 1.65, 8.0]
+  ki: [0.0, 0.0, 6.0]
+  kd: [1.0, 1.0, 4.0]
+  derivative_filter_T_s: [0.05, 0.05, 0.08]
+
+attitude_loop:
+  kp: [14.142, 14.142, 5.0]
+  ki: [0.0, 0.0, 0.0]
+  kd: [1.70, 1.70, 0.0]
+  derivative_filter_T_s: [0.03, 0.03, 0.08]
+
+limits:
+  roll_command_max_rad: 0.20944
+  pitch_command_max_rad: 0.20944
+  attitude_control_max: 6.5
+  yaw_control_max: 6.5
+
+acceptance:
+  smoke:
+    model_name: QuadrotorExperiments.Example1EnhancedPID
+    stop_time_s: 1.0
+    required: check_model and simulate_model pass
+  full_example1:
+    baseline_experiment: official_example1_pid_baseline
+    comparison_experiment: official_example1_improved_pid
+    expected: stable full run with no NaN and metrics available
+  full_example2:
+    baseline_experiment: official_example2_pid_baseline
+    comparison_experiment: official_example2_enhanced_pid
+    scenario_file: Config/scenarios/official/example2_enhanced_pid.yaml
+    expected: >
+      check_model and simulate_model pass for 50 s and metrics are available.
+      Current quality_status is needs_iteration because position RMSE is
+      0.041% worse than baseline, although steady-state error and max tilt are
+      improved.
+  full_example2_helix_tuned:
+    baseline_experiment: official_example2_improved_pid
+    comparison_experiment: official_example2_enhanced_pid_helix_tuned
+    scenario_file: Config/scenarios/official/example2_enhanced_pid_helix_tuned.yaml
+    expected: >
+      check_model and simulate_model pass for 50 s, quality_status is pass,
+      and RMSE improves against the previous best official_example2_improved_pid.
+      This branch uses 15 deg lateral command limits and 7.0 attitude command
+      limits to handle the CirclePath onset at 10 s.
+  full_example3:
+    baseline_experiment: official_example3_pid_baseline
+    comparison_experiment: official_example3_enhanced_pid
+    scenario_file: Config/scenarios/official/example3_enhanced_pid.yaml
+    expected: >
+      check_model and simulate_model pass for 120 s, metrics are available,
+      and quality_status is pass with RMSE improvement against baseline.
+  robust_mass20_example1:
+    baseline_experiment: robust_mass20_example1_pid_baseline
+    comparison_experiment: robust_mass20_example1_improved_pid
+    scenario_file: Config/scenarios/robustness/example1_mass20_enhanced_pid.yaml
+    expected: >
+      Under +20% central body mass perturbation, check_model and simulate_model
+      pass for the full 50 s run, raw CSV has 5001 rows, and RMSE / steady-state
+      error / max tilt improve against robust_mass20_example1_pid_baseline.
+  robust_wind_gust_example1:
+    baseline_experiment: robust_wind_gust_example1_pid_baseline
+    comparison_experiment: robust_wind_gust_example1_improved_pid
+    scenario_file: Config/scenarios/robustness/example1_wind_gust_enhanced_pid.yaml
+    expected: >
+      Under the 15-19 s lateral gust force, check_model and simulate_model pass
+      for the full 50 s run, raw CSV has valid time/state/reference columns,
+      and RMSE / disturbance peak error / max tilt improve against
+      robust_wind_gust_example1_pid_baseline.
+  robust_rotor1_loss15_example1:
+    baseline_experiment: robust_rotor1_loss15_example1_pid_baseline
+    comparison_experiment: robust_rotor1_loss15_example1_improved_pid
+    scenario_file: Config/scenarios/robustness/example1_rotor1_loss15_enhanced_pid.yaml
+    expected: >
+      Under rotor 1 lift efficiency reduction to 85%, check_model and
+      simulate_model pass for the full 50 s run, raw CSV has valid
+      time/state/reference columns, and RMSE / max tilt improve against
+      robust_rotor1_loss15_example1_pid_baseline.

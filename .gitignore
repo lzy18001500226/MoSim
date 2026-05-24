@@ -15,10 +15,10 @@ npm-debug.log*
 .mcp-servers/
 
 # Unreal local build outputs
-unreal/**/Binaries/
-unreal/**/Intermediate/
-unreal/**/Saved/
-unreal/**/DerivedDataCache/
+UE5/**/Binaries/
+UE5/**/Intermediate/
+UE5/**/Saved/
+UE5/**/DerivedDataCache/
 *.sln
 *.suo
 *.opensdf
@@ -40,12 +40,12 @@ Docs/Mworks/tmp/
 Docs/Mworks/raw/
 
 # MWORKS / simulation temp
-results/tmp/
-results/cache/
-results/native_result_cache/
-results/logs/*.log
-results/replay_html/
-results/**/native_result/
+Results/tmp/
+Results/cache/
+Results/native_result_cache/
+Results/logs/*.log
+Results/replay_html/
+Results/**/native_result/
 *_backup/
 
 # Large binary outputs
@@ -68,110 +68,112 @@ secrets.*
 .env.*
 
 # RflySim installer/runtime packages are local dependencies, not repo assets
-references/RflySim/RflySimAdv3Full/
-references/RflySim/RflySimAdvFree/
+References/RflySim/RflySimAdv3Full/
+References/RflySim/RflySimAdvFree/
 
 # Downloaded Unreal scene candidates are large/local review assets. Track only
 # project-owned adapters/docs unless an explicit asset-batch task unignores one.
-references/UnrealScenes/
+References/UnrealScenes/
 
-# AirSim-family external references: keep source/docs/configs, exclude local
+# AirSim-family external references: keep source/Docs/configs, exclude local
 # clones, build outputs, generated caches, and large compiled artifacts.
 #
 # Large reference families are staged deliberately. Keep them ignored by
 # default, then temporarily unignore one reviewed batch when committing it.
-references/AirSim/carla-ue5-dev/
-references/AirSim/IsaacSim/
-references/AirSim/spear/
-references/AirSim/Cosys-AirSim/docs/annsim23_tutorial/*.mp4
-references/AirSim/Cosys-AirSim/docs/annsim23_tutorial/*.pdf
-references/AirSim/Cosys-AirSim/Unreal/Plugins/AirSim/Content/
-references/AirSim/spear/third_party/
-references/AirSim/spear/**/Binaries/
-references/AirSim/spear/**/Intermediate/
-references/AirSim/**/.git/
-references/AirSim/**/.svn/
-references/AirSim/**/.hg/
-references/AirSim/**/Binaries/
-references/AirSim/**/Intermediate/
-references/AirSim/**/Saved/
-references/AirSim/**/DerivedDataCache/
-references/AirSim/**/.vs/
-references/AirSim/**/cmake-build-*/
-references/AirSim/**/build/
-references/AirSim/**/BUILD/
-references/AirSim/**/CMakeFiles/
-references/AirSim/**/dist/
-references/AirSim/**/venv/
-references/AirSim/**/.venv/
-references/AirSim/**/.eggs/
-references/AirSim/**/__pycache__/
-references/AirSim/**/.pytest_cache/
-references/AirSim/**/.mypy_cache/
-references/AirSim/**/.ruff_cache/
-references/AirSim/**/node_modules/
-references/AirSim/**/*.zip
-references/AirSim/**/*.7z
-references/AirSim/**/*.rar
-references/AirSim/**/*.tar
-references/AirSim/**/*.tar.gz
-references/AirSim/**/*.pdb
-references/AirSim/**/*.pch
-references/AirSim/**/*.obj
-references/AirSim/**/*.iobj
-references/AirSim/**/*.ipdb
-references/AirSim/**/*.ilk
-references/AirSim/**/*.lib
-references/AirSim/**/*.dll
-references/AirSim/**/*.exe
-references/AirSim/**/*.pak
-references/AirSim/**/*.umap_BuiltData.uasset
+References/AirSim/carla-ue5-dev/
+References/AirSim/IsaacSim/
+References/AirSim/spear/
+References/AirSim/Cosys-AirSim/Docs/annsim23_tutorial/*.mp4
+References/AirSim/Cosys-AirSim/Docs/annsim23_tutorial/*.pdf
+References/AirSim/Cosys-AirSim/Unreal/Plugins/AirSim/Content/
+References/AirSim/spear/third_party/
+References/AirSim/spear/**/Binaries/
+References/AirSim/spear/**/Intermediate/
+References/AirSim/**/.git/
+References/AirSim/**/.svn/
+References/AirSim/**/.hg/
+References/AirSim/**/Binaries/
+References/AirSim/**/Intermediate/
+References/AirSim/**/Saved/
+References/AirSim/**/DerivedDataCache/
+References/AirSim/**/.vs/
+References/AirSim/**/cmake-build-*/
+References/AirSim/**/build/
+References/AirSim/**/BUILD/
+References/AirSim/**/CMakeFiles/
+References/AirSim/**/dist/
+References/AirSim/**/venv/
+References/AirSim/**/.venv/
+References/AirSim/**/.eggs/
+References/AirSim/**/__pycache__/
+References/AirSim/**/.pytest_cache/
+References/AirSim/**/.mypy_cache/
+References/AirSim/**/.ruff_cache/
+References/AirSim/**/node_modules/
+References/AirSim/**/*.zip
+References/AirSim/**/*.7z
+References/AirSim/**/*.rar
+References/AirSim/**/*.tar
+References/AirSim/**/*.tar.gz
+References/AirSim/**/*.pdb
+References/AirSim/**/*.pch
+References/AirSim/**/*.obj
+References/AirSim/**/*.iobj
+References/AirSim/**/*.ipdb
+References/AirSim/**/*.ilk
+References/AirSim/**/*.lib
+References/AirSim/**/*.dll
+References/AirSim/**/*.exe
+References/AirSim/**/*.pak
+References/AirSim/**/*.umap_BuiltData.uasset
 
 # Large third-party visualization/runtime assets over GitHub hard limit
-references/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE-MWORKS驱动案例/PE-MWORKS机械臂驱动运行案例/**/*.vis
-references/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE培训课程PPT/PE培训1_认识PE.pptx
-references/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/StreamingAssets/scene_神秘岛
-references/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/resources.assets.resS
+References/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE-MWORKS驱动案例/PE-MWORKS机械臂驱动运行案例/**/*.vis
+References/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE培训课程PPT/PE培训1_认识PE.pptx
+References/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/StreamingAssets/scene_神秘岛
+References/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/resources.assets.resS
 
 # Exact local reference files over GitHub 100 MB hard limit.
-/references/MWORKS/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE-MWORKS驱动案例/PE-MWORKS机械臂驱动运行案例/三维模型/产线.vis
-/references/MWORKS/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE-MWORKS驱动案例/PE-MWORKS机械臂驱动运行案例/机械臂仿真制作全流程录屏.mp4
-/references/MWORKS/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE-MWORKS驱动案例/PE-MWORKS机械臂驱动运行案例/机械臂仿真示例/main/产线.vis
-/references/MWORKS/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE培训课程PPT/PE培训1_认识PE.pptx
-/references/MWORKS/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE平台及安装说明/PostEngineer 2025a V9.49（64位）.zip
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9+25013688+合肥工业大学/参赛作品/2/PE项目_13/main/岛屿1.vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9+25013688+合肥工业大学/参赛作品/2/演示视频.mp4
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-07013576-武汉理工大学/07013576作品/main/岛屿1.vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-07013576-武汉理工大学/07013576作品/main/岛屿2.vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-07013576-武汉理工大学/07013576源码/main/岛屿1.vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-07013576-武汉理工大学/07013576源码/main/岛屿2.vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284介绍/演示视频.mp4
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284作品/windows/Ship.exe
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284作品/windows/Ship.pe
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284源码/.release/windows/Ship.exe
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284源码/.release/windows/Ship.pe
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284源码/Ship.peo
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284源码/main/面片.vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-26014478-太原师范学院/26014478作品---主要看这个即可  其他文件仅为补充/main/岛屿2(1).vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-26014478-太原师范学院/26014478作品---主要看这个即可  其他文件仅为补充/main/岛屿2.vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-26014478-太原师范学院/26014478源码/main/岛屿2(1).vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-26014478-太原师范学院/26014478源码/main/岛屿2.vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-26014478-太原师范学院/PE/main/岛屿2.vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿1.vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿1.vis_1
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿1.vis_2
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿2.vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿3.vis
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿3.vis_1
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿3.vis_2
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-81013188-燕山大学/81013188作品/PE项目_13.zip
-/references/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-81013188-燕山大学/81013188源码/PE项目_13.zip
-/references/MWORKS/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/StreamingAssets/scene_神秘岛
-/references/MWORKS/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/resources.assets.resS
-/references/MWORKS/用于远程巡逻及异常检测的智能无人机/SmartDrone/SmartDrone .mol
+/References/MWORKS/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE-MWORKS驱动案例/PE-MWORKS机械臂驱动运行案例/三维模型/产线.vis
+/References/MWORKS/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE-MWORKS驱动案例/PE-MWORKS机械臂驱动运行案例/机械臂仿真制作全流程录屏.mp4
+/References/MWORKS/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE-MWORKS驱动案例/PE-MWORKS机械臂驱动运行案例/机械臂仿真示例/main/产线.vis
+/References/MWORKS/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE培训课程PPT/PE培训1_认识PE.pptx
+/References/MWORKS/2025中国大学生软件设计大赛/2025中国大学生软件设计大赛/PE平台及安装说明/PostEngineer 2025a V9.49（64位）.zip
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9+25013688+合肥工业大学/参赛作品/2/PE项目_13/main/岛屿1.vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9+25013688+合肥工业大学/参赛作品/2/演示视频.mp4
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-07013576-武汉理工大学/07013576作品/main/岛屿1.vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-07013576-武汉理工大学/07013576作品/main/岛屿2.vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-07013576-武汉理工大学/07013576源码/main/岛屿1.vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-07013576-武汉理工大学/07013576源码/main/岛屿2.vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284介绍/演示视频.mp4
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284作品/windows/Ship.exe
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284作品/windows/Ship.pe
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284源码/.release/windows/Ship.exe
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284源码/.release/windows/Ship.pe
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284源码/Ship.peo
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-22013284-广东科学技术职业学院/22013284源码/main/面片.vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-26014478-太原师范学院/26014478作品---主要看这个即可  其他文件仅为补充/main/岛屿2(1).vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-26014478-太原师范学院/26014478作品---主要看这个即可  其他文件仅为补充/main/岛屿2.vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-26014478-太原师范学院/26014478源码/main/岛屿2(1).vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-26014478-太原师范学院/26014478源码/main/岛屿2.vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-26014478-太原师范学院/PE/main/岛屿2.vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿1.vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿1.vis_1
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿1.vis_2
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿2.vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿3.vis
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿3.vis_1
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-64012714-中国石油大学/参赛作品/64012714源码/PE项目_1/main/岛屿3.vis_2
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-81013188-燕山大学/81013188作品/PE项目_13.zip
+/References/MWORKS/2025中国大学生软件设计大赛/挑战赛作品/A9-81013188-燕山大学/81013188源码/PE项目_13.zip
+/References/MWORKS/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/StreamingAssets/scene_神秘岛
+/References/MWORKS/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/resources.assets.resS
+/References/MWORKS/用于远程巡逻及异常检测的智能无人机/SmartDrone/SmartDrone .mol
 
 # Broken local LFS pointer assets from third-party UE MCP tests.
 # The real LFS objects are not present locally and these tiny test assets are
 # not needed for project operation.
-Docs/Skills/unreal/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset
-Docs/Skills/unreal/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
+Docs/Skills/UE5/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset
+Docs/Skills/UE5/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
+Docs/Skills/Unreal/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset
+Docs/Skills/Unreal/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset

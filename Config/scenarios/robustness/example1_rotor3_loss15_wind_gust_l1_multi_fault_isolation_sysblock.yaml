@@ -1,0 +1,62 @@
+experiment_id: robust_rotor3_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock
+scene_id: robust_rotor3_loss15_wind_gust_example1
+controller_id: l1_multi_fault_isolation_sysblock
+priority: P1-C
+evidence_level: real_sysplorer_mcp_sysblock_l1_multi_fault_isolation_rotor_loss_wind_gust
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1Rotor3Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop
+  model_path_hint: Models/QuadrotorExperiments/Example1Rotor3Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  official_description: 阶梯爬升 3号旋翼升力效率85% + 15-19s横向阵风 L1多故障隔离 Sysblock
+
+controller:
+  params_file: Config/controllers/l1_multi_fault_isolation_sysblock/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: robust_rotor3_loss15_example1_awff_sysblock
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_L1MultiFaultIsolationControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+
+disturbance:
+  type: combined_actuator_efficiency_loss_and_lateral_world_force_gust
+  actuator_target_component: quadChassisTest17_1.gain4.k
+  affected_rotor: rotor_3
+  nominal_lift_gain: 0.000854858
+  degraded_lift_gain: 0.0007266293
+  efficiency_ratio: 0.85
+  expected_fault_index: 3
+  gust_target_component: quadChassisTest17_1.body.frame_b
+  start_time_s: 15.0
+  duration_s: 4.0
+  force_x_N: 0.22
+  force_y_N: -0.10
+  sine_amplitude_x_N: 0.08
+  sine_amplitude_y_N: 0.04
+  sine_frequency_Hz: 1.2
+  known_to_controller: false
+  purpose: combined_fault_isolation_and_external_disturbance_robustness
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: Results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
+result:
+  raw_file: Results/robustness/rotor3_loss15_wind_gust_example1/robust_rotor3_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor3_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock.csv
+  metrics_file: Results/robustness/rotor3_loss15_wind_gust_example1/robust_rotor3_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor3_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock.json
+  figure_dir: Results/robustness/rotor3_loss15_wind_gust_example1/robust_rotor3_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/figures
+  replay_file: Results/robustness/rotor3_loss15_wind_gust_example1/robust_rotor3_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/replay/robust_rotor3_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock.json
+  mcp_log: Results/robustness/rotor3_loss15_wind_gust_example1/robust_rotor3_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/logs/sysplorer_robust_rotor3_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock_20260514.jsonl
+  extra_variables:
+    eta_hat1: controller3_2.eta_hat1
+    eta_hat2: controller3_2.eta_hat2
+    eta_hat3: controller3_2.eta_hat3
+    eta_hat4: controller3_2.eta_hat4
+    fault_index: controller3_2.fault_index

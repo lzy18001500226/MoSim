@@ -12,7 +12,7 @@
 - 2026-05-24 Unreal map reset: stop improving all old generated blockout,
   grid, STL, semantic-box, RflySim direct-mount, factory-review, and
   YunZong/Sunray primitive-reconstruction maps. The old routes have been
-  cleaned from `unreal/` except for the reusable renderer/bridge shell.
+  cleaned from `UE5/` except for the reusable renderer/bridge shell.
   Current map work must start from real editable Unreal/Fab/Epic/open-source
   scene assets with physical-world visual language, then connect the existing
   MWORKS playback bridge after the map itself passes manual review.
@@ -24,7 +24,7 @@
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.
 - Current task/status review draft for user confirmation:
-  `results/tmp/session_audit_20260521/task_status_review_20260521.md`.
+  `Results/tmp/session_audit_20260521/task_status_review_20260521.md`.
   User reviewed it as broadly acceptable on 2026-05-21; promote stable items
   and keep it as the accepted task-state snapshot for this recovery round.
 - Latest Git owner returned `DONE_WITH_CONCERNS`: docs checkpoint branch
@@ -45,11 +45,11 @@
 | Agent workflow improvement | main agent + reviewers | awaiting-user-review | TaskSecretary/goal/Git-owner rules are promoted and `git diff --check` passed; next change should follow user review. |
 | Agent organization model | main agent + `TaskSecretary` | done | Modern-company department model added in `Docs/Workflows/org_operating_model.md`; future multi-agent work must record user directives and work checkpoints before relying on chat memory. |
 | External docs learning | `ExternalDocsLearningOwner` | recurring-loop-defined | Use `Docs/Index/external_learning_index.md` and `Docs/Workflows/agent_orchestration.md#71-recurring-learning-owner` when failures, new tools, new repos, or milestones trigger another learn-and-patch cycle. |
-| Vehicle parameter identification | `VehicleParamIdentificationResearcher` | local-code-audit-complete-awaiting-sunray-ulog | `references/Data` code audit is promoted to `Docs/Workflows/identify_quadrotor_parameters.md`; first useful data package is RC-collected PX4 `.ulg` logs plus `.params`, exact takeoff mass, motor order, and motor/prop/ESC info. RPM or thrust-stand data remains optional but improves confidence. |
+| Vehicle parameter identification | `VehicleParamIdentificationResearcher` | local-code-audit-complete-awaiting-sunray-ulog | `References/Data` code audit is promoted to `Docs/Workflows/identify_quadrotor_parameters.md`; first useful data package is RC-collected PX4 `.ulg` logs plus `.params`, exact takeoff mass, motor order, and motor/prop/ESC info. RPM or thrust-stand data remains optional but improves confidence. |
 | AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | done | Git-safe migration is complete and pushed. Tracked scopes now include Cosys tutorial/content assets under 100 MB, SPEAR source/reference subset, CARLA UE5 source/reference subset, and IsaacSim text/source subset. Remaining local ignored content is intentional: CARLA image/content packs, IsaacSim LFS-managed assets/cache/data, and SPEAR `third_party`/Content/generated assets. |
-| UE S0/S1 renderer next round | `TaskSecretary` + `UEMCPProbe(Ptolemy)` + `SceneProfileAuditor(Maxwell)` + `RendererContractAuditor(Carson)` + `Erdos` | source-ready-editor-mcp-currently-unreachable | S0/S1 source-level and standalone UDP runtime paths are ready: S0/S1 metadata gaps are fixed, packet contracts include mission/local-map/status/overlay fields, the UE C++ receiver parses them, S1 render-map instances carry `source.collision_proxy_id`, and `scripts/unreal/check_unreal_s0_s1_readiness.py --build` passes. Current 2026-05-23 listener probe fails, so Editor MCP/viewport automation remains unavailable until the UE editor plugin is reachable on TCP `55557` and one read-only actor probe passes. |
-| UE S0/S1 runtime autos-pawn review | main agent | done | Runtime autos-pawn, S1 blockout map, and review-camera input fixes are pushed through `dbf03cdcd`. `scripts/unreal/check_unreal_s0_s1_readiness.py` and `scripts/unreal/build_unreal_renderer.sh` passed. `scripts/unreal/review_unreal_s0_s1_renderer.sh` streamed 1604 frames to the standalone game UDP receiver at `172.17.48.1:5005`. UE log confirms `MworksUnrealRendererGameMode`, map/playback actor spawn, UDP listen, first received MWORKS frame, and review-camera movement/rotation input accepted. |
-| S1 competition industrial hybrid blockout | main agent | runtime-reviewable-blockout | Added project-owned S1 blockout render map `map_competition_industrial_hybrid_render_map.json` and bound it from the S1 profile. `SCENE_ID=competition_industrial_hybrid_manual_review MAP_ID=competition_industrial_hybrid bash scripts/unreal/review_unreal_s0_s1_renderer.sh` streamed 1604 frames; UE log confirms map selection and load: terrain `308`, random/inspection columns `11`, wall/gate/pad boxes `11`. This is visual blockout evidence only, not final art or proof of formal local-avoidance behavior. |
+| UE S0/S1 renderer next round | `TaskSecretary` + `UEMCPProbe(Ptolemy)` + `SceneProfileAuditor(Maxwell)` + `RendererContractAuditor(Carson)` + `Erdos` | source-ready-editor-mcp-currently-unreachable | S0/S1 source-level and standalone UDP runtime paths are ready: S0/S1 metadata gaps are fixed, packet contracts include mission/local-map/status/overlay fields, the UE C++ receiver parses them, S1 render-map instances carry `source.collision_proxy_id`, and `Scripts/UE5/check_unreal_s0_s1_readiness.py --build` passes. Current 2026-05-23 listener probe fails, so Editor MCP/viewport automation remains unavailable until the UE editor plugin is reachable on TCP `55557` and one read-only actor probe passes. |
+| UE S0/S1 runtime autos-pawn review | main agent | done | Runtime autos-pawn, S1 blockout map, and review-camera input fixes are pushed through `dbf03cdcd`. `Scripts/UE5/check_unreal_s0_s1_readiness.py` and `Scripts/UE5/build_unreal_renderer.sh` passed. `Scripts/UE5/review_unreal_s0_s1_renderer.sh` streamed 1604 frames to the standalone game UDP receiver at `172.17.48.1:5005`. UE log confirms `MworksUnrealRendererGameMode`, map/playback actor spawn, UDP listen, first received MWORKS frame, and review-camera movement/rotation input accepted. |
+| S1 competition industrial hybrid blockout | main agent | runtime-reviewable-blockout | Added project-owned S1 blockout render map `map_competition_industrial_hybrid_render_map.json` and bound it from the S1 profile. `SCENE_ID=competition_industrial_hybrid_manual_review MAP_ID=competition_industrial_hybrid bash Scripts/UE5/review_unreal_s0_s1_renderer.sh` streamed 1604 frames; UE log confirms map selection and load: terrain `308`, random/inspection columns `11`, wall/gate/pad boxes `11`. This is visual blockout evidence only, not final art or proof of formal local-avoidance behavior. |
 | UE C++ UDP packet receiver | main agent | done | Source-level compatible parsing for Python packet fields `mission`, `local_known_map`, `status`, and `overlays` is implemented, static checks passed, and UE 5.7 UBT/UHT build passed. |
 
 ## Superseded Queues
@@ -77,7 +77,7 @@
 - Do not paste raw SSE/UI/PTY streams, provider configs, full prompts, secrets,
   or huge logs into durable docs. Record locators, hashes, sizes, and summaries.
 - Do not trust chat memory for long tasks; recover from
-  `Docs/Workflows/agent_task_ledger.md` and `results/agent_runs/*/events.jsonl`.
+  `Docs/Workflows/agent_task_ledger.md` and `Results/agent_runs/*/events.jsonl`.
 - Do not treat UE/RflySim/SPEAR/Cosys repositories as equivalent; record exact
   simulator role and evidence before adopting assets.
 - Do not say RflySim maps are "directly usable" without the qualifier. They are
@@ -168,8 +168,8 @@
   incorrectly treated that `-game` process as an Editor session; editor-mode
   reuse now excludes command lines containing `-game`.
 - 2026-05-23 20:26 CST: Actual Editor process was launched alongside the
-  standalone game process. `scripts/unreal/probe_unreal_mcp_listener.py --timeout 1`
-  reached `172.17.48.1:55557`; `scripts/unreal/check_unreal_s0_s1_readiness.py
+  standalone game process. `Scripts/UE5/probe_unreal_mcp_listener.py --timeout 1`
+  reached `172.17.48.1:55557`; `Scripts/UE5/check_unreal_s0_s1_readiness.py
   --check-listener` passed; Unreal MCP read-only `get_actors_in_level` returned
   actors from the Editor scene.
 - 2026-05-23 20:36 CST: UE Editor rewrote `DefaultEngine.ini` with

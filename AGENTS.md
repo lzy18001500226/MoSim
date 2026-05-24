@@ -84,13 +84,13 @@ All Codex / AI-agent work in this project must follow the boundary below.
 Before each operation, explicitly treat the following sentence as active:
 
 ```text
-操作权限仅限 C:\Users\HP\Desktop\Quadrotor
+操作权限仅限 C:\Users\HP\Desktop\MoSim
 ```
 
 The WSL path equivalent is:
 
 ```text
-/mnt/c/Users/HP/Desktop/Quadrotor
+/mnt/c/Users/HP/Desktop/MoSim
 ```
 
 Rules:
@@ -221,7 +221,7 @@ Rules:
 3. If a GUI window is opened by Sysplorer / Syslab / MCP, minimize it when possible and avoid bringing it to the foreground repeatedly.
 4. Do not use broad MCP discovery calls repeatedly when a targeted tool call is enough.
 5. During one development round, keep one reusable Sysplorer / Syslab / MWORKS GUI window open when repeated model checks are expected; do not close it after every small MCP call.
-6. Save result evidence under `results/` and documentation-ready assets under `Docs/`.
+6. Save result evidence under `Results/` and documentation-ready assets under `Docs/`.
 7. If MCP behavior may interrupt the user's desktop, state that risk before running the operation.
 8. Do not call MCP tools merely to create activity. Use the smallest set of MCP calls that proves the current engineering claim.
 9. If a tool exposes a release, stop, or non-GUI session cleanup API, call it after the useful result is saved.
@@ -299,9 +299,9 @@ Core directories:
 | `Docs/` | User manual, simulation report, converted MWORKS docs, indexes. |
 | `Docs/Workflows/` | Repeatable procedures and detailed agent/task mechanics. |
 | `Docs/Skills/` | Project-local and reference skills. |
-| `Models/`, `references/MWORKS/QuadrotorModel/` | MWORKS/Sysplorer models and official case model. |
-| `config/scenarios/`, `scripts/`, `scripts/tests/` | Scenario configs, automation scripts, checks. |
-| `results/` | Reproducible outputs, metrics, logs, figures, local review assets. |
+| `Models/`, `References/MWORKS/QuadrotorModel/` | MWORKS/Sysplorer models and official case model. |
+| `Config/scenarios/`, `Scripts/`, `Scripts/tests/` | Scenario configs, automation scripts, checks. |
+| `Results/` | Reproducible outputs, metrics, logs, figures, local review assets. |
 
 Create subdirectories only when there is actual content to store. The raw
 official MWORKS package is not required after useful documents are promoted to
@@ -456,7 +456,7 @@ Use `Docs/Skills/Mworks/mworks-test-quality/SKILL.md` for quality decisions.
 | Test execution | `Docs/Workflows/run_tests.md` |
 | Regression test | `Docs/Workflows/regression_test.md` |
 | Final packaging check | `Docs/Workflows/pre_submit_check.md` |
-| Project structure and evidence guard | `scripts/quality/qa_check.py` |
+| Project structure and evidence guard | `Scripts/quality/qa_check.py` |
 
 Before commit, run the smallest relevant checks and `git diff --check`.
 

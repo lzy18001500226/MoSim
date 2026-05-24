@@ -1,0 +1,66 @@
+experiment_id: sunray150_planning_open_blocks_linear_mpc_sysblock
+scene_id: planning_open_blocks
+controller_id: linear_mpc_sysblock
+priority: P1
+evidence_level: real_sysplorer_mcp_planning_column_truth_0p2_sensor_20hz_simulate_model_pass
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop
+  model_path_hint: Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  extra_model_files:
+    - Models/QuadrotorExperiments/PlannedQuinticReference.mo
+    - Models/QuadrotorExperiments/PlanningNavigationDisplay.mo
+  official_description: Sunray150 单机局部感知避障 + 实时重规划 LinearMPC-style Sysblock 闭环
+
+controller:
+  params_file: Config/controllers/linear_mpc_sysblock/default.yaml
+  replacement_component: controller3_2
+  require_baseline_improvement: false
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 80.1247340259
+  step_size_s: 0.05
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: local_sensing_receding_astar_ego_min_snap
+  planner_config: Config/planners/astar_min_snap/map_open_blocks.yaml
+  file: Results/planning/single_obstacle_astar_awff/raw/reference.csv
+  trackability_report: Results/planning/single_obstacle_astar_awff/metrics/trackability_report.json
+
+planning_acceptance:
+  trackability_report: Results/planning/single_obstacle_astar_awff/metrics/trackability_report.json
+  require_local_planning: true
+  require_ego_optimizer: false
+  allow_safe_astar_fallback: true
+  min_replan_count: 1
+  min_truth_obstacles: 20
+  min_known_obstacles_final: 10
+  min_obstacle_distance_m: 0.35
+  require_collision_free: true
+  local_window_radius_m: 3.0
+  notes: "规划器仅使用局部感知窗口内已发现障碍，未知真值障碍只用于环境显示和碰撞评价。EGO-inspired 候选未满足 0.45 m 验收裕度时允许回退到满足 0.35 m 最终安全裕度的局部 A* guide path，但必须保持 accepted=true、dynamic_violation_count=0 和 collision-free。"
+
+result:
+  raw_file: Results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/raw/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.csv
+  metrics_file: Results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/metrics/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.json
+  figure_dir: Results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/figures
+  replay_file: Results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/replay/sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.json
+  mcp_log: Results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_linear_mpc_sysblock/logs/sysplorer_sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz_20260517.jsonl
+  variable_overrides:
+    x_ref: planningReference.position_command[1]
+    y_ref: planningReference.position_command[2]
+    z_ref: planningReference.position_command[3]
+  extra_variables:
+    z_ref_rate: planningReference.z_ref_rate
+    yaw_ref: planningReference.yaw_ref
+
+planning_display:
+  collision_clearance_m: 0.35

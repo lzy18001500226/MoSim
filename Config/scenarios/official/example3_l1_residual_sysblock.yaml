@@ -1,0 +1,37 @@
+experiment_id: official_example3_l1_residual_sysblock
+scene_id: official_example3
+controller_id: l1_residual_sysblock
+priority: P1
+evidence_level: real_sysplorer_mcp_sysblock_l1_residual_figure8_full
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example3L1SysblockClosedLoop
+  model_path_hint: Models/QuadrotorExperiments/Example3L1SysblockClosedLoop.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  official_description: 8字形运动 AWFF + L1-inspired residual Sysblock full validation
+
+controller:
+  params_file: Config/controllers/l1_residual_sysblock/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: official_example3_awff_sysblock
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 120.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_eight_path
+  file: Results/official/example3_figure8/reference_official_example3/raw/reference_official_example3.csv
+result:
+  raw_file: Results/official/example3_figure8/official_example3_l1_residual_sysblock/raw/official_example3_l1_residual_sysblock.csv
+  metrics_file: Results/official/example3_figure8/official_example3_l1_residual_sysblock/metrics/official_example3_l1_residual_sysblock.json
+  figure_dir: Results/official/example3_figure8/official_example3_l1_residual_sysblock/figures
+  replay_file: Results/official/example3_figure8/official_example3_l1_residual_sysblock/replay/official_example3_l1_residual_sysblock.json
+  mcp_log: Results/official/example3_figure8/official_example3_l1_residual_sysblock/logs/sysplorer_example3_l1_residual_sysblock_full_20260511.jsonl

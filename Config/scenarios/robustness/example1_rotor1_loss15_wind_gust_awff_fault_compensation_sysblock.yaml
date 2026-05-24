@@ -1,0 +1,59 @@
+experiment_id: robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock
+scene_id: robust_rotor1_loss15_wind_gust_example1
+controller_id: awff_fault_compensation_sysblock
+priority: P1-B
+evidence_level: real_sysplorer_mcp_sysblock_awff_known_fault_compensation_rotor_loss_wind_gust
+active: false
+inactive_reason: pending_real_mworks_mcp_run_blocked_by_wsl_windows_exe_interop
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop
+  model_path_hint: Models/QuadrotorExperiments/Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  extra_model_files:
+    - Models/QuadrotorControllerBlocks/AWFF_L1FaultAllocationControllerEquation_Sysblock.mo
+  official_description: 阶梯爬升 1号旋翼升力效率85% + 15-19s横向阵风 AWFF已知故障补偿 Sysblock
+
+controller:
+  params_file: Config/controllers/awff_fault_compensation_sysblock/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: robust_rotor1_loss15_wind_gust_example1_awff_sysblock
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_FaultCompensationControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_FaultCompensationControllerGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+
+disturbance:
+  type: combined_actuator_efficiency_loss_and_lateral_world_force_gust
+  actuator_target_component: quadChassisTest17_1.gain2.k
+  affected_rotor: rotor_1
+  nominal_lift_gain: 0.000854858
+  degraded_lift_gain: 0.0007266293
+  efficiency_ratio: 0.85
+  gust_target_component: quadChassisTest17_1.body.frame_b
+  start_time_s: 15.0
+  duration_s: 4.0
+  force_x_N: 0.22
+  force_y_N: -0.10
+  sine_amplitude_x_N: 0.08
+  sine_amplitude_y_N: 0.04
+  sine_frequency_Hz: 1.2
+  known_to_controller: true
+  purpose: intermediate_awff_fault_compensation_ablation_between_plain_awff_and_l1_mpc
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: Results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
+result:
+  raw_file: Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock/raw/robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock.csv
+  metrics_file: Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock/metrics/robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock.json
+  figure_dir: Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock/figures
+  replay_file: Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock/replay/robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock.json
+  mcp_log: Results/robustness/rotor1_loss15_wind_gust_example1/robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock/logs/sysplorer_robust_rotor1_loss15_wind_gust_example1_awff_fault_compensation_sysblock_20260513.jsonl

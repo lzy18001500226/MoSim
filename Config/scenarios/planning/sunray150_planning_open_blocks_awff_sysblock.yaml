@@ -1,0 +1,50 @@
+experiment_id: sunray150_planning_open_blocks_awff_sysblock
+scene_id: planning_open_blocks
+controller_id: awff_sysblock
+priority: P1
+evidence_level: real_sysplorer_mcp_sysblock_planning_open_blocks
+active: false
+inactive_reason: AWFF planning closed-loop is retained as a controller-suitability negative sample; LinearMPC-style is the active positive evidence.
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop
+  model_path_hint: Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  extra_model_files:
+    - Models/QuadrotorExperiments/PlannedQuinticReference.mo
+  official_description: Sunray150 单机 A* 障碍避让轨迹 AWFF Sysblock 闭环
+
+controller:
+  params_file: Config/controllers/awff_sysblock/default.yaml
+  replacement_component: controller3_2
+  require_baseline_improvement: false
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_FullControllerFlatGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 16.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: astar_min_snap
+  planner_config: Config/planners/astar_min_snap/map_open_blocks.yaml
+  file: Results/planning/single_obstacle_astar_awff/raw/reference.csv
+  trackability_report: Results/planning/single_obstacle_astar_awff/metrics/trackability_report.json
+result:
+  raw_file: Results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_awff_sysblock/raw/sunray150_planning_open_blocks_awff_sysblock.csv
+  metrics_file: Results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_awff_sysblock/metrics/sunray150_planning_open_blocks_awff_sysblock.json
+  figure_dir: Results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_awff_sysblock/figures
+  replay_file: Results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_awff_sysblock/replay/sunray150_planning_open_blocks_awff_sysblock.json
+  mcp_log: Results/planning/single_obstacle_astar_awff/sunray150_planning_open_blocks_awff_sysblock/logs/sysplorer_sunray150_planning_open_blocks_awff_sysblock_20260515.jsonl
+  variable_overrides:
+    x_ref: planningReference.position_command[1]
+    y_ref: planningReference.position_command[2]
+    z_ref: planningReference.position_command[3]
+  extra_variables:
+    z_ref_rate: planningReference.z_ref_rate
+    yaw_ref: planningReference.yaw_ref

@@ -1,0 +1,49 @@
+experiment_id: robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock
+scene_id: robust_rotor1_loss15_example1
+controller_id: l1_online_fault_allocation_sysblock
+priority: P1-B
+evidence_level: real_sysplorer_mcp_sysblock_l1_online_fault_allocation_rotor_loss_ablation
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop
+  model_path_hint: Models/QuadrotorExperiments/Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  official_description: 阶梯爬升 1号旋翼升力效率85% L1 residual + online eta_hat allocation Sysblock
+
+controller:
+  params_file: Config/controllers/l1_online_fault_allocation_sysblock/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: robust_rotor1_loss15_example1_l1_residual_sysblock
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_L1OnlineFaultAllocationControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_L1OnlineFaultAllocationControllerGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+
+disturbance:
+  type: actuator_efficiency_loss
+  target_component: quadChassisTest17_1.gain2.k
+  affected_rotor: rotor_1
+  nominal_lift_gain: 0.000854858
+  degraded_lift_gain: 0.0007266293
+  efficiency_ratio: 0.85
+  known_to_controller: false
+  purpose: residual_driven_online_efficiency_estimation_and_fault_allocation_compensation
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: Results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
+result:
+  raw_file: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock.csv
+  metrics_file: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock/metrics/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock.json
+  figure_dir: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock/figures
+  replay_file: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock/replay/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock.json
+  mcp_log: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock_20260511.jsonl
+  extra_variables:
+    eta_hat: controller3_2.eta_hat

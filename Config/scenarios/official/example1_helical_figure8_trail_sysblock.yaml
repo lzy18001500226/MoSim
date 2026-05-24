@@ -1,0 +1,52 @@
+active: false
+experiment_id: official_example1_helical_figure8_trail_sysblock
+scene_id: official_example1_helical_figure8
+controller_id: linear_mpc_sysblock
+priority: visual-review
+evidence_level: real_sysplorer_mcp_native_gui_helical_figure8_trail
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1HelicalFigure8TrailSysblockClosedLoop
+  model_path_hint: Models/QuadrotorExperiments/Example1HelicalFigure8TrailSysblockClosedLoop.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  official_description: 官方 EightPath 同款 x/y 8 字 + 单调螺旋上升高度 + LinearMPC 控制器 + 原生三维参考线 GUI 审查
+
+controller:
+  params_file: Config/controllers/linear_mpc_sysblock/default.yaml
+  replacement_component: controller3_2
+  require_baseline_improvement: false
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 120.0
+  step_size_s: 0.05
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_helical_eightpath_native_gui_reference
+  takeoff_duration_s: 10.0
+  figure8_duration_s: 110.0
+  figure8_x_scale_m: 2.5
+  figure8_y_scale_m: 2.5
+  mission_altitude_m: 1.0
+  mission_altitude_gain_m: 2.0
+  x_omega: 0.02
+  y_omega: 0.04
+  raw_output_sample_rate_hz: 20
+  native_gui_reference_trail_sample_rate_hz: 5
+  note: 复用官方 QuadrotorModel.PathPlanning.EightPath 的 x/y 轨迹口径；实验模型初始高度设为 1 m，前 10 s 原地保持，随后沿 8 字轨迹从 1 m 单调上升到 3 m，形成螺旋上升 8 字视觉审查轨迹；x/y 参考通过 10 s 延迟后开始 2.5 m 幅值横 8 字运动，完整轨迹宽度约 5 m。模型使用 Sunray150 SDF 电机常数并折算 rotorVelocitySlowdownSim=10：MWORKS 可视轴悬停转速约 53.56 rad/s，等效真实电机转速约 535.62 rad/s。CSV 中 u1..u4 保留控制器增量输出，实际电机输入为悬停偏置与增量之和。20 Hz 原生几何线段在当前 MWORKS GUI 中会显著拖慢求解器，正式数值输出保持 20 Hz，GUI 参考线采用 5 Hz 低负载显示。
+
+result:
+  raw_file: Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/raw/official_example1_helical_figure8_trail_sysblock.csv
+  metrics_file: Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/metrics/official_example1_helical_figure8_trail_sysblock.json
+  figure_dir: Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/figures
+  mcp_log: Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/logs/sysplorer_example1_helical_figure8_trail_sysblock_full_20260514.jsonl
+  variable_overrides:
+    x_ref: climbePath.position_command[1]
+    y_ref: climbePath.position_command[2]
+    z_ref: z_ref.y

@@ -1,7 +1,7 @@
 [project]
-name = "quadrotor-mworks"
+name = "mosim"
 version = "0.1.0"
-description = "MWORKS quadrotor control simulation automation and evidence tooling."
+description = "MoSim MWORKS quadrotor control simulation automation and evidence tooling."
 requires-python = ">=3.10"
 dependencies = [
   "pytest>=9.0.0",
@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["scripts/tests"]
+testpaths = ["Scripts/tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
 addopts = "-q --capture=no"

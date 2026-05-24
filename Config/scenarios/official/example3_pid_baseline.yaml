@@ -1,0 +1,26 @@
+experiment_id: official_example3_pid_baseline
+scene_id: official_example3
+controller_id: pid_baseline
+priority: P0
+
+model:
+  source_package: QuadrotorModel
+  model_name: QuadrotorModel.Examples.Example3
+  model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  official_description: 8字形运动
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 120.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_eight_path
+  file: Results/official/example3_figure8/reference_official_example3/raw/reference_official_example3.csv
+result:
+  raw_file: Results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv
+  metrics_file: Results/official/example3_figure8/official_example3_pid_baseline/metrics/official_example3_pid_baseline.json
+  mcp_log: Results/official/example3_figure8/official_example3_pid_baseline/logs/sysplorer_example3_pid_baseline_full_20260509.jsonl
+  replay_file: Results/official/example3_figure8/official_example3_pid_baseline/replay/official_example3_pid_baseline.json

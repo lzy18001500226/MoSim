@@ -1,0 +1,37 @@
+experiment_id: official_example2_awff_indi_sysblock_helix_tuned
+scene_id: official_example2
+controller_id: awff_indi_sysblock
+priority: P1
+evidence_level: real_sysplorer_mcp_sysblock_l1_indi_helix_tuned_full
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example2HelixTunedINDISysblockClosedLoop
+  model_path_hint: Models/QuadrotorExperiments/Example2HelixTunedINDISysblockClosedLoop.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  official_description: 螺旋爬升 AWFF + L1-inspired outer loop + INDI-like attitude Sysblock helix-tuned validation
+
+controller:
+  params_file: Config/controllers/awff_indi_sysblock/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: official_example2_awff_sysblock_helix_tuned
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_INDIControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_INDIControllerGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_circle_path
+  file: Results/official/example2_helix/reference_official_example2/raw/reference_official_example2.csv
+result:
+  raw_file: Results/official/example2_helix/official_example2_awff_indi_sysblock_helix_tuned/raw/official_example2_awff_indi_sysblock_helix_tuned.csv
+  metrics_file: Results/official/example2_helix/official_example2_awff_indi_sysblock_helix_tuned/metrics/official_example2_awff_indi_sysblock_helix_tuned.json
+  figure_dir: Results/official/example2_helix/official_example2_awff_indi_sysblock_helix_tuned/figures
+  replay_file: Results/official/example2_helix/official_example2_awff_indi_sysblock_helix_tuned/replay/official_example2_awff_indi_sysblock_helix_tuned.json
+  mcp_log: Results/official/example2_helix/official_example2_awff_indi_sysblock_helix_tuned/logs/sysplorer_example2_awff_indi_sysblock_helix_tuned_full_20260511.jsonl

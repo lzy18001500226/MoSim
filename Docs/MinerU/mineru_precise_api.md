@@ -214,7 +214,7 @@ import requests
 
 token = os.environ["MINERU_API_TOKEN"]
 batch_id = "提交任务返回的 batch_id"
-url = f"https://mineru.net/api/v4/extract-results/batch/{batch_id}"
+url = f"https://mineru.net/api/v4/extract-Results/batch/{batch_id}"
 headers = {
     "Content-Type": "application/json",
     "Authorization": f"Bearer {token}",
@@ -283,7 +283,7 @@ print(res.json())
 2. 从原始资料包复制 PDF 到临时目录，使用英文短文件名。
 3. 通过 /api/v4/file-urls/batch 申请上传链接。
 4. PUT 上传文件。
-5. 轮询 /api/v4/extract-results/batch/{batch_id}。
+5. 轮询 /api/v4/extract-Results/batch/{batch_id}。
 6. 下载 full_zip_url。
 7. 解压 full.md 到 Docs/Mworks/converted/<topic>/。
 8. 保留源路径、模型版本、页数、转换日期和 Review status。

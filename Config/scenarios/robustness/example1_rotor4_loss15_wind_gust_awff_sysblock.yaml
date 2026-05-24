@@ -1,0 +1,55 @@
+experiment_id: robust_rotor4_loss15_wind_gust_example1_awff_sysblock
+scene_id: robust_rotor4_loss15_wind_gust_example1
+controller_id: awff_sysblock
+priority: P1-C
+evidence_level: real_sysplorer_mcp_sysblock_rotor_loss_wind_gust_boundary
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Example1Rotor4Loss15WindGustAWFFSysblockClosedLoop
+  model_path_hint: Models/QuadrotorExperiments/Example1Rotor4Loss15WindGustAWFFSysblockClosedLoop.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  official_description: 阶梯爬升 4号旋翼升力效率85% + 15-19s横向阵风 AWFF Sysblock
+
+controller:
+  params_file: Config/controllers/awff_sysblock/default.yaml
+  replacement_component: controller3_2
+  baseline_experiment: robust_wind_gust_example1_awff_sysblock
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_FullControllerFlatGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
+
+disturbance:
+  type: combined_actuator_efficiency_loss_and_lateral_world_force_gust
+  actuator_target_component: quadChassisTest17_1.gain5.k
+  affected_rotor: rotor_4
+  nominal_lift_gain: 0.000854858
+  degraded_lift_gain: 0.0007266293
+  efficiency_ratio: 0.85
+  gust_target_component: quadChassisTest17_1.body.frame_b
+  start_time_s: 15.0
+  duration_s: 4.0
+  force_x_N: 0.22
+  force_y_N: -0.10
+  sine_amplitude_x_N: 0.08
+  sine_amplitude_y_N: 0.04
+  sine_frequency_Hz: 1.2
+  known_to_controller: false
+  purpose: combined_fault_and_external_disturbance_boundary_case
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 50.0
+  step_size_s: 0.01
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: official_climb_path
+  file: Results/official/example1_step/reference_official_example1/raw/reference_official_example1.csv
+result:
+  raw_file: Results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_awff_sysblock/raw/robust_rotor4_loss15_wind_gust_example1_awff_sysblock.csv
+  metrics_file: Results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_awff_sysblock/metrics/robust_rotor4_loss15_wind_gust_example1_awff_sysblock.json
+  figure_dir: Results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_awff_sysblock/figures
+  replay_file: Results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_awff_sysblock/replay/robust_rotor4_loss15_wind_gust_example1_awff_sysblock.json
+  mcp_log: Results/robustness/rotor4_loss15_wind_gust_example1/robust_rotor4_loss15_wind_gust_example1_awff_sysblock/logs/sysplorer_robust_rotor4_loss15_wind_gust_example1_awff_sysblock_20260514.jsonl
