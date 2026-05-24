@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from epic_library_index import build_inventory
+from epic_library_view import merge_library_view
 
 
 def inventory(query: str = "") -> dict[str, Any]:
@@ -18,6 +19,11 @@ def inventory(query: str = "") -> dict[str, Any]:
 
 def dump_json(query: str = "") -> int:
     print(json.dumps(inventory(query), ensure_ascii=False, indent=2, sort_keys=True))
+    return 0
+
+
+def dump_view(query: str = "") -> int:
+    print(json.dumps(merge_library_view(query), ensure_ascii=False, indent=2, sort_keys=True))
     return 0
 
 
@@ -60,18 +66,25 @@ def serve() -> int:
         """List local old-style VaultCache projects and any discovered .uproject paths."""
         return inventory(query).get("vault_cache_projects", [])
 
+    @mcp.tool()
+    def list_scene_library_view(query: str = "") -> list[dict[str, Any]]:
+        """List merged account/Fab/Vault scene candidates for manual review planning."""
+        return merge_library_view(query)
+
     mcp.run()
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("serve", "dump-json"), nargs="?", default="serve")
+    parser.add_argument("command", choices=("serve", "dump-json", "dump-view"), nargs="?", default="serve")
     parser.add_argument("--query", default="")
     args = parser.parse_args(argv)
 
     if args.command == "dump-json":
         return dump_json(args.query)
+    if args.command == "dump-view":
+        return dump_view(args.query)
     return serve()
 
 

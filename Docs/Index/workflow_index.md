@@ -10,7 +10,8 @@
 |---|---|
 | Debug MCP | `Docs/Workflows/debug_mcp.md` |
 | Operate Unreal MCP | `Docs/Workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `Docs/Index/api_index.md#5-unreal-mcp-tools` |
-| Inspect Epic/Fab/Launcher scene library | `Docs/Workflows/debug_mcp.md#73-epicfab-library-index-mcp`, `Docs/Workflows/unreal_renderer.md#scene-source-selection`, `Scripts/UE5/epic_library_index.py`, `Scripts/UE5/check_epic_library_inventory.py` |
+| Inspect Epic/Fab/Launcher scene library | `Docs/Skills/unreal/mosim-epic-fab-library/SKILL.md`, `Docs/Workflows/debug_mcp.md#73-epicfab-library-index-mcp`, `Docs/Workflows/unreal_renderer.md#scene-source-selection`, `Scripts/UE5/epic_library_view.py`, `Scripts/UE5/epic_library_index.py`, `Scripts/UE5/check_epic_library_inventory.py` |
+| Operate MoSim Unreal Editor MCP | `Docs/Skills/unreal/mosim-unreal-editor-mcp/SKILL.md`, `Docs/Workflows/debug_mcp.md#71-unreal-mcp-local-wrapper` |
 | Build Unreal/RflySim renderer and scene workflow | `Docs/Workflows/unreal_renderer.md` |
 | Project structure refactor toward RflySim-like simulator product | `Docs/Workflows/project_structure_refactor.md` |
 | Translate MathWorks/Simulink patterns to MWORKS | `Docs/Workflows/translate_mathworks_to_mworks.md` |

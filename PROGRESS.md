@@ -20,13 +20,24 @@
   factory/warehouse, forest/park, indoor corridor/cave, city/building, and open
   outdoor scene packs. Do not reconnect quadrotor, radar, trajectory, UDP, or
   MWORKS simulation until the selected map source is visually acceptable.
-- Current tool-capability split: keep `unreal_engine` for live UE Editor
-  authoring, and use the project-local Epic/Fab library index for Launcher/Fab
-  account/cache inventory. Do not treat `/mcp` tool inventory as proof that
-  Epic Launcher library assets are visible to UE MCP tools.
+- Current tool-capability scope is intentionally narrow: implement and operate
+  only `unreal_engine` for live UE Editor authoring and `mosim_epic_library`
+  for Epic/Fab/Launcher library inventory plus Fab/import feasibility. Do not expand this phase into
+  MWORKS, external renderer bridges, downloader automation, or a full simulator
+  MCP unless explicitly requested.
   Use `Scripts/UE5/check_epic_library_inventory.py` for a cheap health check
-  and `Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh` when exposing the
-  index as the `mosim_epic_library` MCP.
+  and `Scripts/UE5/epic_library_view.py` for the merged human-readable library
+  view. Use `Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh` when exposing
+  the index as the `mosim_epic_library` MCP.
+- Updated scene-source requirement: rendering is insufficient. A scene must be
+  importable/editable, renderable, and able to provide or generate
+  collision/semantic/occupancy truth for mapping and path planning. If Fab
+  cannot provide editable content plus truth route, fall back to local editable
+  projects under `References/UnrealScenes`.
+- Current `References/UnrealScenes` audit result: editable visual scene
+  candidates exist, but explicit planner/collision truth files are not present
+  yet. UE collision/navigation assets are proxy candidates only; they still need
+  export into occupancy/collision/semantic artifacts before planner validation.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.
@@ -107,6 +118,9 @@
 - Do not conflate UE Editor MCP with Epic/Fab/Launcher library access. UE MCP
   edits a running editor project; Epic/Fab library discovery is a separate
   read-only cache/index problem and must redact account/cache secrets.
+- Do not create broad Skills for every possible simulator task in this phase.
+  Current Skills should support only the `unreal_engine` and `mosim_epic_library`
+  MCP boundaries.
 - Do not open UE Editor when the requested review is a packaged simulator
   interface such as RflySim3D or CopterSim.
 - Do not adopt Loopback/self-repeating driver loops, Composio credentialed

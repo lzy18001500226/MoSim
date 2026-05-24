@@ -24,6 +24,20 @@ def load_module():
     return module
 
 
+def load_ue5_module(name: str):
+    path = ROOT / "Scripts" / "UE5" / f"{name}.py"
+    script_dir = str(path.parent)
+    if script_dir not in sys.path:
+        sys.path.insert(0, script_dir)
+    spec = importlib.util.spec_from_file_location(name, path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load {name}.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
 def make_fab_db(path: Path) -> None:
     con = sqlite3.connect(path)
     try:
@@ -272,3 +286,74 @@ def test_epic_library_health_check_query_uses_baseline_for_global_checks(tmp_pat
         raise AssertionError(data)
     if not data["checks"]["query_has_results"]:
         raise AssertionError(data)
+
+
+def test_epic_library_view_merges_account_fab_and_vault_entries(monkeypatch) -> None:
+    module = load_ue5_module("epic_library_view")
+
+    def fake_inventory():
+        return {
+            "account_library_items": [
+                {
+                    "display_name": "Factory Environment Collection",
+                    "app_names": ["FactoryPbfa035615186V1"],
+                    "versions": ["5.5"],
+                }
+            ],
+            "fab_assets": [
+                {
+                    "title": "Factory Environment Collection",
+                    "cache_path": "C:/Fab/Factory",
+                    "has_local_cache": True,
+                }
+            ],
+            "vault_cache_projects": [
+                {
+                    "cache_name": "Factory Environment Collection",
+                    "cache_path": "C:/Vault/Factory",
+                    "has_uproject": True,
+                    "uproject_path": "C:/Vault/Factory/Factory.uproject",
+                }
+            ],
+        }
+
+    monkeypatch.setattr(module, "build_inventory", fake_inventory)
+    rows = module.merge_library_view("Factory")
+    if len(rows) != 1:
+        raise AssertionError(rows)
+    row = rows[0]
+    if not row["openable_project"] or not row["installed_or_cached"]:
+        raise AssertionError(row)
+    if set(row["states"]) != {"account_owned", "fab_cached", "vault_cached_project"}:
+        raise AssertionError(row)
+
+
+def test_scene_source_audit_detects_truth_gap_and_truth_ready(tmp_path: Path) -> None:
+    module = load_ue5_module("audit_scene_source")
+    project = tmp_path / "FactoryScene"
+    content = project / "Content" / "Maps"
+    content.mkdir(parents=True)
+    uproject = project / "FactoryScene.uproject"
+    uproject.write_text(json.dumps({"EngineAssociation": "5.5"}), encoding="utf-8")
+    (content / "Main.umap").write_bytes(b"map")
+    (content / "Factory.uasset").write_bytes(b"asset")
+
+    first = module.audit_project(uproject)
+    if first["verdict"] != "needs_truth_extraction_or_proxy":
+        raise AssertionError(first)
+    if first["planning_truth_ready"]:
+        raise AssertionError(first)
+
+    (project / "Content" / "Maps" / "factory_occupancy_truth.json").write_text("{}", encoding="utf-8")
+    second = module.audit_project(uproject)
+    if second["verdict"] != "ready_for_truth_backed_planning":
+        raise AssertionError(second)
+    if not second["planning_truth_ready"]:
+        raise AssertionError(second)
+
+    (project / "Content" / "Maps" / "collision_proxy.uasset").write_bytes(b"proxy")
+    third = module.audit_project(uproject)
+    if not third["truth"]["has_explicit_truth_source"]:
+        raise AssertionError(third)
+    if not third["truth"]["has_ue_truth_proxy_candidates"]:
+        raise AssertionError(third)

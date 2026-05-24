@@ -65,9 +65,11 @@ Before choosing a scene source, inspect the local Epic/Fab/Launcher inventory:
 
 ```bash
 python3 Scripts/UE5/epic_library_index.py --compact
+python3 Scripts/UE5/epic_library_view.py
 python3 Scripts/UE5/epic_library_index.py --query Factory
 python3 Scripts/UE5/epic_library_index.py --query City
 python3 Scripts/UE5/check_epic_library_inventory.py
+python3 Scripts/UE5/audit_scene_source.py
 ```
 
 The inventory separates:
@@ -78,6 +80,7 @@ The inventory separates:
 | `account_library_items` | Owned library entries inferred from the local Launcher account cache; may not be installed |
 | `fab_assets` | Local FabLibrary cached downloads |
 | `vault_cache_projects` | Old-style VaultCache projects and any discovered `.uproject` |
+| `epic_library_view.py` | Merged human-readable view across account/Fab/Vault sources |
 
 Current verified local-library behavior on 2026-05-24:
 
@@ -99,6 +102,50 @@ When Codex needs this inventory through MCP, register
 `Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh` as `mosim_epic_library`.
 Keep it separate from `unreal_engine`: library inventory selects candidate
 assets, while `unreal_engine` edits a running UE project.
+
+## Scene Acceptance Gates
+
+A scene is not accepted just because it renders well. It must pass three gates:
+
+| Gate | Required Evidence |
+|---|---|
+| Import/edit | Editable `.uproject`, `.umap`, `.uasset`, required plugin source or compatible installed plugins |
+| Render | Opens in the target UE version and can be reviewed without missing modules/assets |
+| Planning truth | Has or can generate explicit collision/semantic/occupancy truth for mapping, local planning, and path validation |
+
+If a Fab entry only exposes a binary `manifest` and no editable project/content
+files, it is only an account/cache listing. It is not yet a MoSim scene source.
+Use Epic/Fab to create the local project, or switch to already available local
+projects under `References/UnrealScenes`.
+
+Current fallback source:
+
+```text
+References/UnrealScenes
+```
+
+Run:
+
+```bash
+python3 Scripts/UE5/audit_scene_source.py
+```
+
+Any scene with `needs_truth_extraction_or_proxy` may be visually useful, but it
+still needs a truth-extraction or proxy-generation pipeline before it can prove
+mapping/path-planning behavior.
+
+Current audit result: the editable local projects under `References/UnrealScenes`
+are usable visual candidates, but none currently exposes explicit
+planner/collision truth files. UE assets with collision/navigation names are
+treated only as proxy candidates; they are not accepted as planner truth until
+exported to an explicit occupancy/collision/semantic artifact.
+
+Relevant current-phase skills:
+
+```text
+Docs/Skills/unreal/mosim-epic-fab-library/SKILL.md
+Docs/Skills/unreal/mosim-unreal-editor-mcp/SKILL.md
+```
 
 ## First-Pass Manual Review Gate
 

@@ -325,18 +325,23 @@ Do not continue interactive actor, Blueprint, or viewport MCP work from stale
 success evidence. Source-level checks and standalone `-game` UDP playback may
 continue because they use different routes.
 
-## 7.2 MoSim Tool Capability Boundaries
+## 7.2 Current MoSim MCP Scope
 
-Do not force every simulator-adjacent tool into one MCP. Split MCP servers by
-software/runtime boundary, then compose them with Skills and workflows.
+Current development scope is limited to two MCP boundaries:
+
+```text
+unreal_engine        live Unreal Editor automation
+mosim_epic_library   Epic/Fab/Launcher library inventory
+```
+
+Do not expand this phase into MWORKS, external renderer bridge, downloader,
+or full simulator-control MCP work unless the user explicitly reopens that
+scope. Skills are still required, but only for these MCP boundaries.
 
 | Boundary | MCP / Tool Role | Why It Is Separate |
 |---|---|---|
-| MWORKS.Sysplorer | `sysplorer` | Model loading, checking, translation, simulation, result management |
-| MWORKS.Syslab | `syslab` | Julia/Syslab computation, docs, function mapping |
 | Unreal Editor | `unreal_engine` | Live editor scene/Blueprint/material/actor work through an editor listener |
 | Epic/Fab/Launcher library | `mosim_epic_library` | Read-only asset inventory from Launcher/Fab caches; not a UE Editor object graph |
-| Future runtime renderer bridge | `mosim_render_bridge` or UDP/TCP scripts | High-frequency simulation/render data transfer, not editor authoring |
 
 Current Unreal MCP audits show the strongest UE authoring design is usually:
 
@@ -363,15 +368,19 @@ Project-local scripts:
 
 ```text
 Scripts/UE5/epic_library_index.py
+Scripts/UE5/epic_library_view.py
 Scripts/UE5/mosim_epic_library_mcp.py
 Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh
 Scripts/UE5/check_epic_library_inventory.py
+Docs/Skills/unreal/mosim-epic-fab-library/SKILL.md
+Docs/Skills/unreal/mosim-unreal-editor-mcp/SKILL.md
 ```
 
 Read-only inventory command:
 
 ```bash
 python3 Scripts/UE5/epic_library_index.py --compact
+python3 Scripts/UE5/epic_library_view.py
 python3 Scripts/UE5/epic_library_index.py --query Factory
 python3 Scripts/UE5/check_epic_library_inventory.py
 ```
