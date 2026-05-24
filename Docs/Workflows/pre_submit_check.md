@@ -130,7 +130,7 @@ git status --short
 find . -type f -size +100M -not -path './.git/*' -print
 rg -n --hidden --glob '!.git/**' \
   '(API_KEY|SECRET|TOKEN|OAuth|oauth|Bearer |PRIVATE KEY|GITHUB_TOKEN|OPENAI_API_KEY|COMPOSIO_API_KEY)' \
-  AGENTS.md README.md Design docs workflows scripts Skills controllers planners scenarios unreal
+  AGENTS.md README.md PROGRESS.md Config Docs Models References Results Scripts UE5
 ```
 
 Rules:
@@ -144,6 +144,10 @@ Rules:
    project assets, under GitHub limits, and have clear license/source notes.
 4. If a large or credential-like hit is intentional documentation, verify that
    it is an example placeholder, not a real token or private config.
+5. If a source tree contains too many files to inspect or push safely, ignore
+   the entire tree first, then unignore/stage/commit/push one reviewed slice at
+   a time. Each slice must pass the checks above before the next slice is
+   opened.
 
 ---
 

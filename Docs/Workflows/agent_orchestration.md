@@ -734,6 +734,36 @@ Each branch must pass large-file and gitlink checks before push. If a branch
 push fails because the pack is too large, split by narrower repository group
 instead of retrying the same pack repeatedly.
 
+Large batch default strategy:
+
+```text
+1. Put the whole incoming tree behind `.gitignore`, or keep it outside the
+   repository until the queue is ready.
+2. Build an inventory grouped by source repo, content type, and expected value.
+3. Open one narrow batch by adding a precise negative `.gitignore` rule or by
+   copying only that slice into the tracked target.
+4. Run the batch gates: >100 MB scan, gitlink scan, LFS pointer scan, secret
+   scan, generated-artifact scan, and path-count sanity check.
+5. Stage only the reviewed slice with path-limited `git add`.
+6. Commit and push that slice before opening the next slice.
+7. Record skipped paths and the next batch in the ledger.
+```
+
+This strategy is mandatory when any of these are true:
+
+```text
+incoming file count is roughly 1000+:
+source tree contains external simulator/game/asset repositories:
+GitHub rejected a push for file size or pack size:
+git status/add/commit becomes slow because untracked trees are huge:
+the user explicitly says to use the previous divide-and-conquer method:
+```
+
+Do not solve a large import by repeatedly retrying one aggregate branch. The
+correct recovery is to ignore the aggregate, reopen one reviewed slice, and
+push slice-by-slice. If the batch is important but too large for Git, keep it
+ignored under `References/` and commit only a manifest plus usage notes.
+
 Known local Git incident pattern:
 
 ```text
@@ -764,6 +794,11 @@ source directory such as `C:\Users\HP\Desktop\AirSim` into
 
 Do not copy the whole source tree into the repository in one operation. Treat
 AirSim migration as a queue-backed Git task:
+
+If the source has already been copied into the repo and produces thousands of
+untracked files, immediately ignore the whole target subtree first. Then
+unignore or re-copy one AirSim content family at a time. This prevents the
+whole repository from becoming hostage to one failed bulk add/push.
 
 ```text
 parent role:
