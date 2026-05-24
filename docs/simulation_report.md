@@ -8,9 +8,9 @@
 
 证据主线说明：赛题实现目标应以 **MWORKS.Sysblock 控制器仿真为主**。当前报告中的完整性能表包含真实 Sysplorer MCP / Modelica 派生模型闭环仿真，以及 `AWFF_FullControllerEquation_Sysblock` 接入官方 Example1/2/3 的全时长 Sysblock 控制器闭环证据。Sysblock 当前已完成 AWFF PID 高度环最小 demo、三段分层控制器、组合控制器 `AWFF_FullController_Sysblock` 和创新图形化控制器包 `AWFF_InnovationGraphicalControllers` 的真实 MCP 验证，并完成 Example1 50 s、Example2 50 s、Example3 120 s 整机仿真；P1 创新控制器方向已完成 `AWFF_L1ResidualControllerEquation_Sysblock`、`AWFF_INDIControllerEquation_Sysblock` 和 `AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 的真实 MCP 消融。`AWFF_LinearMPCOuterLoopControllerEquation_Sysblock` 已完成 Example1 50 s、Example2 50 s、Example3 120 s、质量 +20% 和横向阵风全时长真实 Sysplorer MCP 仿真并通过质量门；旋翼退化场景中，纯 LinearMPC 外环作为边界案例保留为 `needs_iteration`，组合控制器 `AWFF_LinearMPCOnlineFaultAllocationController_Sysblock` 已通过 1 号旋翼 85% 效率退化质量门。
 
-质量判定规则：`check_model ok` 和 `simulate_model ok` 只说明模型可以执行；完整性能结论还必须通过 `scripts/evaluate_result_quality.py` 写入的 `quality_status`。`pass` 可支撑报告结论，`smoke_only` 只证明链路可用，`needs_iteration` 必须继续调控制器或明确写为未完成限制。当前 Example2 已通过 `helix_tuned` Enhanced PID、AWFF PID 和 AWFF Sysblock 分支解决 RMSE 门禁问题；旋翼退化场景显示“仅靠外环鲁棒控制不足”，需要控制分配或故障补偿层。
+质量判定规则：`check_model ok` 和 `simulate_model ok` 只说明模型可以执行；完整性能结论还必须通过 `scripts/results/evaluate_result_quality.py` 写入的 `quality_status`。`pass` 可支撑报告结论，`smoke_only` 只证明链路可用，`needs_iteration` 必须继续调控制器或明确写为未完成限制。当前 Example2 已通过 `helix_tuned` Enhanced PID、AWFF PID 和 AWFF Sysblock 分支解决 RMSE 门禁问题；旋翼退化场景显示“仅靠外环鲁棒控制不足”，需要控制分配或故障补偿层。
 
-证据包审查：2026-05-15 使用 `scripts/audit_evidence_bundle.py` 对正式场景矩阵执行完整性审查，结果为 `scenarios_checked=76`、`issue_count=0`、`pass_evidence=59`、`boundary_or_negative_evidence=17`。17 个 `needs_iteration` 场景均为基线、边界负样本或未加故障分配的消融项，只能用于说明“低复杂度控制器在旋翼退化/复合扰动下不足”，不能作为完成控制器声明。审查报告见 `results/test_reports/evidence_bundle_audit_20260515.md`、`results/test_reports/evidence_bundle_audit_20260515.json` 和 `results/人工审核清单.csv`。
+证据包审查：2026-05-15 使用 `scripts/quality/audit_evidence_bundle.py` 对正式场景矩阵执行完整性审查，结果为 `scenarios_checked=76`、`issue_count=0`、`pass_evidence=59`、`boundary_or_negative_evidence=17`。17 个 `needs_iteration` 场景均为基线、边界负样本或未加故障分配的消融项，只能用于说明“低复杂度控制器在旋翼退化/复合扰动下不足”，不能作为完成控制器声明。审查报告见 `results/test_reports/evidence_bundle_audit_20260515.md`、`results/test_reports/evidence_bundle_audit_20260515.json` 和 `results/人工审核清单.csv`。
 
 当前已完成的可复现资产：
 
@@ -32,7 +32,7 @@ Linear MPC-style 质量 +20%、横向阵风、1号旋翼效率85% 边界案例�
 
 ## 2. 当前机体模型迁移状态
 
-2026-05-13 起，项目主机体从官方示例轻量机架迁移为项目内本地源 `references/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` 的 Gazebo/PX4 参数：机体质量 `1.0 kg`，惯量 `Ixx=0.0085, Iyy=0.0085, Izz=0.012`，旋翼位置为 `(±0.065, ±0.065, -0.025) m`。Sunray150 SDF 原始电机常数为 `motorConstant=8.54858e-06 N/(rad/s)^2`，对应 1.0 kg 四旋翼真实悬停电机转速约 `535.62 rad/s`（`5115 rpm`）。由于 SDF 同时设置 `rotorVelocitySlowdownSim=10`，MWORKS 旋翼力模型使用按可视化轴转速折算后的升力系数 `0.000854858`，对应 MWORKS 轴悬停转速 `53.56 rad/s`。`QuadrotorModel/Resources/Visualization/` 中新增 `sunray150_mid360_body.stl` 和 `sunray150_mid360_propeller.stl`；Mid360 传感器安装位置按 SDF `{0.036, -0.0155, 0.075}` 在 `QuadChassis` 中添加轻量可视化件。源模型中的 `150.dae` 为 139 MB，超过 GitHub 单文件限制，未迁入仓库。
+2026-05-13 起，项目主机体从官方示例轻量机架迁移为项目内本地源 `references/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` 的 Gazebo/PX4 参数：机体质量 `1.0 kg`，惯量 `Ixx=0.0085, Iyy=0.0085, Izz=0.012`，旋翼位置为 `(±0.065, ±0.065, -0.025) m`。Sunray150 SDF 原始电机常数为 `motorConstant=8.54858e-06 N/(rad/s)^2`，对应 1.0 kg 四旋翼真实悬停电机转速约 `535.62 rad/s`（`5115 rpm`）。由于 SDF 同时设置 `rotorVelocitySlowdownSim=10`，MWORKS 旋翼力模型使用按可视化轴转速折算后的升力系数 `0.000854858`，对应 MWORKS 轴悬停转速 `53.56 rad/s`。`references/MWORKS/QuadrotorModel/Resources/Visualization/` 中新增 `sunray150_mid360_body.stl` 和 `sunray150_mid360_propeller.stl`；Mid360 传感器安装位置按 SDF `{0.036, -0.0155, 0.075}` 在 `QuadChassis` 中添加轻量可视化件。源模型中的 `150.dae` 为 139 MB，超过 GitHub 单文件限制，未迁入仓库。
 
 迁移后，质量 +20% 场景的质量扰动改为 `1.0 kg -> 1.2 kg`；旋翼 85% 退化场景的升力增益改为 `0.000854858 -> 0.0007266293`。本报告后续历史表格是旧机体证据快照，不应继续作为新机体性能结论；正式控制器排名和视频素材需要基于 `sunray150_with_mid360` 重新运行 Sysplorer/MWORKS 仿真后刷新。
 
@@ -74,28 +74,28 @@ results/official/example2_helix/official_example2_pid_baseline/metrics/official_
 results/official/example3_figure8/official_example3_pid_baseline/metrics/official_example3_pid_baseline.json
 ```
 
-`scripts/qa_check.py` 会阻止短时 smoke 数据误放入上述正式结果路径。
+`scripts/quality/qa_check.py` 会阻止短时 smoke 数据误放入上述正式结果路径。
 
 ## 4. 数据链路
 
 当前数据处理闭环：
 
 ```text
-QuadrotorModel/package.mo
-→ scenarios/official/*.yaml
+references/MWORKS/QuadrotorModel/package.mo
+→ config/scenarios/official/*.yaml
 → Sysplorer MCP check_model/simulate_model
 → result_manager 读取变量
-→ scripts/run_sysplorer_mcp_smoke.py 导出标准 CSV
-→ scripts/calc_metrics.py 计算指标
-→ scripts/plot_results.py 生成 SVG 图表
-→ scripts/generate_replay_from_raw.py 生成 replay JSON
+→ scripts/mworks/run_sysplorer_mcp_smoke.py 导出标准 CSV
+→ scripts/results/calc_metrics.py 计算指标
+→ scripts/results/plot_results.py 生成 SVG 图表
+→ scripts/results/generate_replay_from_raw.py 生成 replay JSON
 ```
 
 说明：`replay JSON/HTML` 只用于导出展示素材，不参与控制闭环，也不作为在线仿真证据。当前控制器仿真的正式证据为 MWORKS/Sysplorer 模型检查、仿真日志、raw CSV、metrics JSON/CSV 和报告图表。
 
-在线三维审查说明：正式控制证据优先使用 Sysplorer 原生 3D 动画和 `native_result/Result.msr`，视频级视觉效果可接入 Unreal 外部渲染器读取同一份 raw/native result 或实时 TCP/UDP 状态流。正式返航/降落模型 `QuadrotorExperiments.Example1QPNMPCSafetyReturnLandSysblockClosedLoop` 只保留安全返航/降落控制证据；8 字轨迹留痕放在审查模型 `QuadrotorExperiments.Example1PlanarFigure8TrailSysblockClosedLoop`、`QuadrotorExperiments.Example1HelicalFigure8TrailSysblockClosedLoop` 及对应场景 `scenarios/official/example1_*_figure8_trail_sysblock.yaml`。审查模型复用官方 `QuadrotorModel.PathPlanning.EightPath`：前 10 s 原地保持，随后进入完整宽度约 5 m 的横 8 字；平面 8 字高度恒为 1 m，螺旋上升 8 字从 1 m 单调上升到 3 m。控制器使用已验证的 `AWFF_LinearMPCOuterLoopControllerEquation_Sysblock`，不再用 QP/NMPC 安全返航控制器跑 8 字展示。原生 3D 动画显示 5 Hz 低负载参考轨迹线、绿色实际位置标记、黄色参考位置标记，以及直接挂接 `quadChassisTest17_1.frame_a` 的红/绿/蓝机体系姿态审查标尺。raw CSV 输出为 20 Hz，不依赖 HTML/replay 后处理。2026-05-14 基于 Sunray150 折算电机参数复测，平面 8 字质量门为 `pass`：RMSE `0.0189 m`，最大误差 `0.1460 m`；螺旋上升 8 字质量门为 `pass`：RMSE `0.0188 m`，最大误差 `0.1456 m`。
+在线三维审查说明：正式控制证据优先使用 Sysplorer 原生 3D 动画和 `native_result/Result.msr`，视频级视觉效果可接入 Unreal 外部渲染器读取同一份 raw/native result 或实时 TCP/UDP 状态流。正式返航/降落模型 `QuadrotorExperiments.Example1QPNMPCSafetyReturnLandSysblockClosedLoop` 只保留安全返航/降落控制证据；8 字轨迹留痕放在审查模型 `QuadrotorExperiments.Example1PlanarFigure8TrailSysblockClosedLoop`、`QuadrotorExperiments.Example1HelicalFigure8TrailSysblockClosedLoop` 及对应场景 `config/scenarios/official/example1_*_figure8_trail_sysblock.yaml`。审查模型复用官方 `QuadrotorModel.PathPlanning.EightPath`：前 10 s 原地保持，随后进入完整宽度约 5 m 的横 8 字；平面 8 字高度恒为 1 m，螺旋上升 8 字从 1 m 单调上升到 3 m。控制器使用已验证的 `AWFF_LinearMPCOuterLoopControllerEquation_Sysblock`，不再用 QP/NMPC 安全返航控制器跑 8 字展示。原生 3D 动画显示 5 Hz 低负载参考轨迹线、绿色实际位置标记、黄色参考位置标记，以及直接挂接 `quadChassisTest17_1.frame_a` 的红/绿/蓝机体系姿态审查标尺。raw CSV 输出为 20 Hz，不依赖 HTML/replay 后处理。2026-05-14 基于 Sunray150 折算电机参数复测，平面 8 字质量门为 `pass`：RMSE `0.0189 m`，最大误差 `0.1460 m`；螺旋上升 8 字质量门为 `pass`：RMSE `0.0188 m`，最大误差 `0.1456 m`。
 
-规划避障正式证据：`scenarios/planning/sunray150_planning_open_blocks_linear_mpc_sysblock.yaml` 已升级为局部感知避障 + 实时重规划场景。地图由 `planners/astar_min_snap/map_open_blocks.yaml` 固定随机种子生成 `1000` 处随机障碍簇，展开为 `7102` 根 `0.2 m` 小柱，并叠加 `4` 组 L 型和 `4` 组 T 型标准墙组。规划器局部窗口半径保持 `3.0 m`，只把当前窗口内且未被墙体遮挡的障碍加入已知集合，未观测障碍和墙后障碍只参与事后碰撞评价；被雷达视线命中的墙面本身会进入已知地图，避免“撞到墙但墙未知”。显示层单独配置 Mid360 审查半径：`0-6 m` 原色显示，`6-9 m` 灰白弱显示，`9 m` 以外隐藏，并对地面块、随机障碍和墙体应用同一套 L/T 墙线段遮挡。当前遮挡版 `trackability_report.json` 显示 `lidar_wall_occlusion_enabled=true`、`lidar_occluding_wall_box_count=16`、最终已知障碍 `822/7118`、局部重规划 `113` 次、路径长度约 `105.76 m`、最小障碍距离约 `0.356 m`、`dynamic_violation_count=0`、`trackability_score=1.0`。当前全时长 Sysplorer GUI 审查默认显示格为 `1.0 m x 1.0 m`，对应 `361` 个动态局部格，局部地面中心每 `2.0 m` 更新一次以减少短卡；`0.2 m x 0.2 m` 显示格仅作为短时高精细雷达审查配置。外部 Unreal 渲染层允许重新使用 0.2 m 地形、障碍物材质、雷达扇形、已知/未知地图上色和跟随相机，但只能读取 MWORKS 状态，不能改变规划真值或指标。路径参考使用 `quintic_segment` 五次段插值；高度环参考采用 `terrain_follow_agl`，按静态地形高度 + `1.0 m` AGL 生成。2026-05-17 最新高速压力测试把 `velocity_reference_m_s` 提升到 `3.0`，并通过 `scripts/update_planning_open_blocks_model.py` 自动加入地面起飞和地面降落段：起点地面高度约 `1.28 m`，模型起飞中心高度加入 `0.22 m` 机体离地补偿后约为 `1.50 m`，巡航高度约为地面 + `1.0 m`，终点降落中心高度约 `0.68 m`。对应 MWORKS/Sysplorer 闭环模型 `QuadrotorExperiments.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop` 历史全时长 `80.1247 s` 导出 `1604` 行 20 Hz raw CSV：实际水平速度均值约 `1.38 m/s`，95 分位约 `2.33 m/s`，峰值约 `2.63 m/s`；位置 RMSE `0.4327 m`、最大位置误差 `1.2293 m`、无约束违例。该高速版用于速度压力测试和人工视频审查，不能替代低速高精度版本 `RMSE≈0.11 m` 的最终控制精度结论。GUI 审核已从 `0.2 s`、`0.1 s` 逐步提高到 `0.05 s`，即 20 Hz 全时长原生动画结果；复测结果均为 `GUI model=True`、`GUI plot=True`、`GUI animation=True`。20 Hz 版本 `Result.msr` 约 `605 MB`，可用于人工审查，但仍应保留在 `results/native_result_cache/`，不进入 Git。
+规划避障正式证据：`config/scenarios/planning/sunray150_planning_open_blocks_linear_mpc_sysblock.yaml` 已升级为局部感知避障 + 实时重规划场景。地图由 `config/planners/astar_min_snap/map_open_blocks.yaml` 固定随机种子生成 `1000` 处随机障碍簇，展开为 `7102` 根 `0.2 m` 小柱，并叠加 `4` 组 L 型和 `4` 组 T 型标准墙组。规划器局部窗口半径保持 `3.0 m`，只把当前窗口内且未被墙体遮挡的障碍加入已知集合，未观测障碍和墙后障碍只参与事后碰撞评价；被雷达视线命中的墙面本身会进入已知地图，避免“撞到墙但墙未知”。显示层单独配置 Mid360 审查半径：`0-6 m` 原色显示，`6-9 m` 灰白弱显示，`9 m` 以外隐藏，并对地面块、随机障碍和墙体应用同一套 L/T 墙线段遮挡。当前遮挡版 `trackability_report.json` 显示 `lidar_wall_occlusion_enabled=true`、`lidar_occluding_wall_box_count=16`、最终已知障碍 `822/7118`、局部重规划 `113` 次、路径长度约 `105.76 m`、最小障碍距离约 `0.356 m`、`dynamic_violation_count=0`、`trackability_score=1.0`。当前全时长 Sysplorer GUI 审查默认显示格为 `1.0 m x 1.0 m`，对应 `361` 个动态局部格，局部地面中心每 `2.0 m` 更新一次以减少短卡；`0.2 m x 0.2 m` 显示格仅作为短时高精细雷达审查配置。外部 Unreal 渲染层允许重新使用 0.2 m 地形、障碍物材质、雷达扇形、已知/未知地图上色和跟随相机，但只能读取 MWORKS 状态，不能改变规划真值或指标。路径参考使用 `quintic_segment` 五次段插值；高度环参考采用 `terrain_follow_agl`，按静态地形高度 + `1.0 m` AGL 生成。2026-05-17 最新高速压力测试把 `velocity_reference_m_s` 提升到 `3.0`，并通过 `scripts/planning/update_planning_open_blocks_model.py` 自动加入地面起飞和地面降落段：起点地面高度约 `1.28 m`，模型起飞中心高度加入 `0.22 m` 机体离地补偿后约为 `1.50 m`，巡航高度约为地面 + `1.0 m`，终点降落中心高度约 `0.68 m`。对应 MWORKS/Sysplorer 闭环模型 `QuadrotorExperiments.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop` 历史全时长 `80.1247 s` 导出 `1604` 行 20 Hz raw CSV：实际水平速度均值约 `1.38 m/s`，95 分位约 `2.33 m/s`，峰值约 `2.63 m/s`；位置 RMSE `0.4327 m`、最大位置误差 `1.2293 m`、无约束违例。该高速版用于速度压力测试和人工视频审查，不能替代低速高精度版本 `RMSE≈0.11 m` 的最终控制精度结论。GUI 审核已从 `0.2 s`、`0.1 s` 逐步提高到 `0.05 s`，即 20 Hz 全时长原生动画结果；复测结果均为 `GUI model=True`、`GUI plot=True`、`GUI animation=True`。20 Hz 版本 `Result.msr` 约 `605 MB`，可用于人工审查，但仍应保留在 `results/native_result_cache/`，不进入 Git。
 
 标准 CSV 核心字段：
 
@@ -103,7 +103,7 @@ QuadrotorModel/package.mo
 time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4
 ```
 
-官方变量映射见 `docs/index/variable_mapping.md`。
+官方变量映射见 `Docs/Index/variable_mapping.md`。
 
 ## 5. 当前正式基线指标
 
@@ -126,7 +126,7 @@ results/official/example1_step/official_example1_pid_baseline/metrics/official_e
 | steady_state_error_m | 0.873718 |
 | nan_count | 0 |
 
-其中 `mworks_mcp_example1_pid_smoke` 是 `source=MWORKS_MCP` 的真实 Sysplorer MCP smoke：脚本通过 `model_manager load_file` 加载 `QuadrotorModel/package.mo`，`check_model` 检查 `QuadrotorModel.Examples.Example1`，`simulate_model` 运行 0-1 s，并通过 `result_manager get_vars_values` 导出 `time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4`。
+其中 `mworks_mcp_example1_pid_smoke` 是 `source=MWORKS_MCP` 的真实 Sysplorer MCP smoke：脚本通过 `model_manager load_file` 加载 `references/MWORKS/QuadrotorModel/package.mo`，`check_model` 检查 `QuadrotorModel.Examples.Example1`，`simulate_model` 运行 0-1 s，并通过 `result_manager get_vars_values` 导出 `time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4`。
 
 说明：这些结果只覆盖起飞初始 1 s，不能用于评价完整阶梯爬升控制性能。
 
@@ -144,7 +144,7 @@ results/official/example1_step/official_example1_pid_baseline/metrics/official_e
 
 ## 7. 改进 PID 对比
 
-当前 `QuadrotorExperiments.Example1ImprovedPID`、`QuadrotorExperiments.Example2ImprovedPID` 和 `QuadrotorExperiments.Example3ImprovedPID` 采用 MCP 参数搜索选出的统一 PID 参数集 `pos_kp_165_att_170`：将水平位置环 `PID3/PID4.KP` 从 `1.5` 提高到 `1.65`，将姿态内环 `PID5/PID6.KD` 从 `1.414` 提高到 `1.70`，其余高度环与 yaw 环参数保持官方基线不变。搜索脚本为 `scripts/tune_improved_pid_mcp.py`，搜索摘要见 `results/tuning/pid_search/summary/pid_tuning_summary.md`。
+当前 `QuadrotorExperiments.Example1ImprovedPID`、`QuadrotorExperiments.Example2ImprovedPID` 和 `QuadrotorExperiments.Example3ImprovedPID` 采用 MCP 参数搜索选出的统一 PID 参数集 `pos_kp_165_att_170`：将水平位置环 `PID3/PID4.KP` 从 `1.5` 提高到 `1.65`，将姿态内环 `PID5/PID6.KD` 从 `1.414` 提高到 `1.70`，其余高度环与 yaw 环参数保持官方基线不变。搜索脚本为 `scripts/mworks/tune_improved_pid_mcp.py`，搜索摘要见 `results/tuning/pid_search/summary/pid_tuning_summary.md`。
 
 候选选择原则：不用单场景最优作为正式参数，而选取在 Example1 阶梯爬升和 Example3 8 字轨迹上均能降低 RMSE 的统一参数集。`pos_kd_115_att_170` 在 Example1 上 RMSE 更低，但最大倾角达到 `0.345064 rad`，且 Example3 不如 `pos_kp_165_att_170`；因此正式模型选择后者。
 
@@ -202,25 +202,25 @@ Sysblock 控制器仿真路线：
 
 ```text
 已验证的高度环最小模型：
-models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo
+Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo
 AWFF_PID_Sysblock_Demo
 
 正在推进的分层控制器模型：
-models/QuadrotorControllerBlocks/AWFF_PositionOuterLoop_Sysblock.mo
+Models/QuadrotorControllerBlocks/AWFF_PositionOuterLoop_Sysblock.mo
 AWFF_PositionOuterLoop_Sysblock
-models/QuadrotorControllerBlocks/AWFF_AttitudeInnerLoop_Sysblock.mo
+Models/QuadrotorControllerBlocks/AWFF_AttitudeInnerLoop_Sysblock.mo
 AWFF_AttitudeInnerLoop_Sysblock
-models/QuadrotorControllerBlocks/AWFF_MotorMixer_Sysblock.mo
+Models/QuadrotorControllerBlocks/AWFF_MotorMixer_Sysblock.mo
 AWFF_MotorMixer_Sysblock
 
 已完成独立组合仿真的控制器模型：
-models/QuadrotorControllerBlocks/AWFF_FullController_Sysblock.mo
+Models/QuadrotorControllerBlocks/AWFF_FullController_Sysblock.mo
 AWFF_FullController_Sysblock
 
-models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
+Models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
 AWFF_FullControllerFlatGraphical_Sysblock
 
-models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
 AWFF_FullControllerEquation_Sysblock
 ```
 
@@ -232,9 +232,9 @@ AWFF_FullControllerEquation_Sysblock
 
 单文件打开修正：人工复核发现 `AWFF_FullController_Sysblock.mo` 在已有 Sysplorer 会话中正常，但单独打开父文件时可能因 `AWFF_PositionOuterLoop_Sysblock`、`AWFF_AttitudeInnerLoop_Sysblock`、`AWFF_MotorMixer_Sysblock` 未预加载而报“组件的类型查找不到”。现已将三个子控制器作为内部模型嵌入父文件，保留独立子模块文件用于单独审查，同时保证父级组合控制器可以被单独打开和推导。复测采用只加载父文件、不预加载子文件的 MCP 流程，`load_file/check_model` 均通过，日志见 `results/model_checks/awff_sysblock/logs/sysplorer_full_sysblock_self_contained_20260511.jsonl` 与 `results/model_checks/awff_sysblock/logs/sysplorer_full_sysblock_self_contained_20260511_summary.json`。
 
-创新图形化控制器：2026-05-11 新增 `models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo`，文件根节点本身是可打开的总览模型。2026-05-12 已扩展为 7 个创新控制器入口，内部包含 `AWFF_L1ResidualControllerGraphical_Sysblock`、`AWFF_INDIControllerGraphical_Sysblock`、`AWFF_L1FaultAllocationControllerGraphical_Sysblock`、`AWFF_L1OnlineFaultAllocationControllerGraphical_Sysblock`、`AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock`、`AWFF_LinearMPCControllerGraphical_Sysblock` 和 `AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock`。该包不使用 `redeclare` 图形继承，避免单文件打开时出现类型丢失或红框；包内状态更新按 Sysblock 编译器限制使用可检查的离散/代数近似，不使用 `der()`、`when` 或 `reinit()`。关键行为图形块包括：限幅使用 `SysplorerEmbeddedCoder.Discontinuities.Saturation`，残差死区使用 `DeadZone`，离散状态/低通估计使用 `DiscreteTimeIntegrator` 或 `UnitDelay`，故障模式选择使用 `Switch`，在线效率分配使用 `Product`。新增 LinearMPC 图形化外环 `LinearMPCOuterLoopBlock` 明确表达有限时域终端误差、误差差分、L1 residual 低通补偿、z 轴积分、加速度/姿态/推力限幅；`Rotor1OnlineEfficiencyEstimatorBlock` 明确表达 rotor-1 故障签名、死区、低通估计和效率限幅，并同时服务 L1 在线分配与 LinearMPC 在线分配图形化控制器。静态契约 `results/model_checks/awff_sysblock/graphical_contract/graphical_awff_sysblock_contract_20260512_linear_mpc_gate.json` 显示 `structure_ok=true` 且 `behavior_equivalence_ok=true`；最新真实 MCP `load_file/check_model` 对 15 个创新图形模型复测通过，日志见 `results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_l1_online_fault_allocation_check_20260512.jsonl` 与 `results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_l1_online_fault_allocation_check_20260512_summary.json`。2026-05-12 人工打开 6 个创新控制器入口复核，布局和可见连线均确认无问题；复核记录与关键结果审查摘要见 `results/test_reports/graphical_sysblock_manual_review_and_result_audit_20260512.json`。正式整机性能结论当前仍引用 Equation 控制器与 QuadrotorExperiments 场景结果；原因是图形化 Sysblock 作为 Modelica 整机子组件时仍受内部多输入端口解析限制，而不是缺少图形化行为模型。所有 active Sysblock 场景 YAML 现在必须声明 `controller.graphical_sysblock_model` 和 `controller.graphical_sysblock_file`，并由 `scripts/audit_evidence_bundle.py` 审计。
+创新图形化控制器：2026-05-11 新增 `Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo`，文件根节点本身是可打开的总览模型。2026-05-12 已扩展为 7 个创新控制器入口，内部包含 `AWFF_L1ResidualControllerGraphical_Sysblock`、`AWFF_INDIControllerGraphical_Sysblock`、`AWFF_L1FaultAllocationControllerGraphical_Sysblock`、`AWFF_L1OnlineFaultAllocationControllerGraphical_Sysblock`、`AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock`、`AWFF_LinearMPCControllerGraphical_Sysblock` 和 `AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock`。该包不使用 `redeclare` 图形继承，避免单文件打开时出现类型丢失或红框；包内状态更新按 Sysblock 编译器限制使用可检查的离散/代数近似，不使用 `der()`、`when` 或 `reinit()`。关键行为图形块包括：限幅使用 `SysplorerEmbeddedCoder.Discontinuities.Saturation`，残差死区使用 `DeadZone`，离散状态/低通估计使用 `DiscreteTimeIntegrator` 或 `UnitDelay`，故障模式选择使用 `Switch`，在线效率分配使用 `Product`。新增 LinearMPC 图形化外环 `LinearMPCOuterLoopBlock` 明确表达有限时域终端误差、误差差分、L1 residual 低通补偿、z 轴积分、加速度/姿态/推力限幅；`Rotor1OnlineEfficiencyEstimatorBlock` 明确表达 rotor-1 故障签名、死区、低通估计和效率限幅，并同时服务 L1 在线分配与 LinearMPC 在线分配图形化控制器。静态契约 `results/model_checks/awff_sysblock/graphical_contract/graphical_awff_sysblock_contract_20260512_linear_mpc_gate.json` 显示 `structure_ok=true` 且 `behavior_equivalence_ok=true`；最新真实 MCP `load_file/check_model` 对 15 个创新图形模型复测通过，日志见 `results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_l1_online_fault_allocation_check_20260512.jsonl` 与 `results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_l1_online_fault_allocation_check_20260512_summary.json`。2026-05-12 人工打开 6 个创新控制器入口复核，布局和可见连线均确认无问题；复核记录与关键结果审查摘要见 `results/test_reports/graphical_sysblock_manual_review_and_result_audit_20260512.json`。正式整机性能结论当前仍引用 Equation 控制器与 QuadrotorExperiments 场景结果；原因是图形化 Sysblock 作为 Modelica 整机子组件时仍受内部多输入端口解析限制，而不是缺少图形化行为模型。所有 active Sysblock 场景 YAML 现在必须声明 `controller.graphical_sysblock_model` 和 `controller.graphical_sysblock_file`，并由 `scripts/quality/audit_evidence_bundle.py` 审计。
 
-当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，并完成 `AWFF_FullController_Sysblock` 组合控制器独立仿真。2026-05-11 新增 `AWFF_FullControllerFlatGraphical_Sysblock` 单层扁平图形化控制器，静态契约检查显示其具备 8 个输入端口、4 个输出端口、46 个图形元素放置、60 条连接线且全部具备 `annotation(Line(...))` 可视化连线。`scripts/check_graphical_sysblock_mcp.py` 已对位置环、姿态环、电机分配、三层组合控制器和单层扁平图形化控制器共 5 个图形化 Sysblock 文件完成真实 MCP `load_file/check_model/simulate_model` 验收，日志见：
+当前阶段结论：Sysblock 证据链已从最小 demo 推进到分层控制器模型检查通过，并完成 `AWFF_FullController_Sysblock` 组合控制器独立仿真。2026-05-11 新增 `AWFF_FullControllerFlatGraphical_Sysblock` 单层扁平图形化控制器，静态契约检查显示其具备 8 个输入端口、4 个输出端口、46 个图形元素放置、60 条连接线且全部具备 `annotation(Line(...))` 可视化连线。`scripts/mworks/check_graphical_sysblock_mcp.py` 已对位置环、姿态环、电机分配、三层组合控制器和单层扁平图形化控制器共 5 个图形化 Sysblock 文件完成真实 MCP `load_file/check_model/simulate_model` 验收，日志见：
 
 ```text
 results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_controller_check_20260511.jsonl
@@ -251,7 +251,7 @@ results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_closed_loop
 
 2026-05-14 更新：完整系统级图形化模型已改名为 `Sunray150CompleteSystemGraphical_Sysblock`，不再沿用官方 `Example1` 命名。模型中新增 GPS、Mid360、V6X/PX6C、ORIN NX 四个带端口和方程的硬件接口块，CUAV 图片只作为这些接口块的图标；信号链路为任务轨迹/传感器输出 → 硬件接口块 → 图形化 AWFF 控制器 → 电机指令缩放与执行器 → Sunray150 机体。MCP 已验证该完整系统模型可打开，四个硬件接口块 `check_model` 通过；完整整机模型仍因上述 `controller3_2` 图形化控制器嵌入限制无法作为正式仿真模型。证据见 `results/model_checks/awff_sysblock/sunray150_complete_system_graphical/logs/`。
 
-2026-05-15 直接 MCP 复测：模型只保留在 `models/QuadrotorExperiments/package.mo` 中，删除同名 standalone 文件后不再出现 `错误(1401): 模型重复定义`。按 `QuadrotorModel/package.mo` → `AWFF_FullControllerFlatGraphical_Sysblock.mo` → `models/QuadrotorExperiments/package.mo` 顺序加载后，`QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock` 的 `model_manager.open` 成功。`check_model` 仍失败于 `controller.controller` 内部 `x_sum.u1`、`y_sum.u1`、`thrust_sum.u1` 等多输入端口解析，这是已知图形化 Sysblock 嵌入限制，不是资源图片或重复定义错误。直接 MCP 日志为 `results/model_checks/awff_sysblock/sunray150_complete_system_graphical/logs/direct_mcp_open_with_deps_after_asset_fix_20260515.jsonl`。
+2026-05-15 直接 MCP 复测：模型只保留在 `Models/QuadrotorExperiments/package.mo` 中，删除同名 standalone 文件后不再出现 `错误(1401): 模型重复定义`。按 `references/MWORKS/QuadrotorModel/package.mo` → `AWFF_FullControllerFlatGraphical_Sysblock.mo` → `Models/QuadrotorExperiments/package.mo` 顺序加载后，`QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock` 的 `model_manager.open` 成功。`check_model` 仍失败于 `controller.controller` 内部 `x_sum.u1`、`y_sum.u1`、`thrust_sum.u1` 等多输入端口解析，这是已知图形化 Sysblock 嵌入限制，不是资源图片或重复定义错误。直接 MCP 日志为 `results/model_checks/awff_sysblock/sunray150_complete_system_graphical/logs/direct_mcp_open_with_deps_after_asset_fix_20260515.jsonl`。
 
 因此当前整机闭环主线继续使用等价扁平方程实现 `AWFF_FullControllerEquation_Sysblock` 接入 `QuadrotorExperiments.Example1/2/3AWFFSysblockClosedLoop`。该主线已经完成 Example1 0-1 s、5 s、10 s、20 s 渐进验证，以及 active official 场景中的 Example1 50 s、Example2 helix-tuned 50 s、Example3 120 s 全时长真实 Sysplorer MCP 闭环复测，均通过质量门禁，可作为当前 Sysblock 控制器整机仿真的主证据。图形化 Sysblock 文件用于控制器结构、时间行为和非线性/模式逻辑审核；Equation 版仅作为当前整机混合仿真的临时桥接实现。2026-05-12 基础图形化控制器 5 个模型和创新图形化控制器 15 个模型均完成真实 MCP `load_file/check_model` 复测，日志分别见 `results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_behavior_check_20260512_summary.json` 和 `results/model_checks/awff_sysblock/logs/sysplorer_innovation_graphical_l1_online_fault_allocation_check_20260512_summary.json`。后续新仿真场景仍必须同步维护图形化行为等价模型。
 
@@ -295,13 +295,13 @@ AWFF_FullController_Sysblock: load_file/check_model/simulate_model/result_manage
 Sysblock 整机闭环验证：
 
 ```text
-models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
-models/QuadrotorExperiments/Example1AWFFSysblockClosedLoop.mo
-models/QuadrotorExperiments/Example2AWFFSysblockClosedLoop.mo
-models/QuadrotorExperiments/Example3AWFFSysblockClosedLoop.mo
-scenarios/official/example1_awff_sysblock.yaml
-scenarios/official/example2_awff_sysblock.yaml
-scenarios/official/example3_awff_sysblock.yaml
+Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+Models/QuadrotorExperiments/Example1AWFFSysblockClosedLoop.mo
+Models/QuadrotorExperiments/Example2AWFFSysblockClosedLoop.mo
+Models/QuadrotorExperiments/Example3AWFFSysblockClosedLoop.mo
+config/scenarios/official/example1_awff_sysblock.yaml
+config/scenarios/official/example2_awff_sysblock.yaml
+config/scenarios/official/example3_awff_sysblock.yaml
 results/official/example1_step/official_example1_awff_sysblock/logs/sysplorer_example1_awff_sysblock_full_20260510.jsonl
 results/official/example2_helix/official_example2_awff_sysblock/logs/sysplorer_example2_awff_sysblock_full_20260510.jsonl
 results/official/example3_figure8/official_example3_awff_sysblock/logs/sysplorer_example3_awff_sysblock_full_20260510.jsonl
@@ -367,23 +367,23 @@ Sysblock 结论：`awff_sysblock` 在 Example1 50 s 全时长真实 Sysplorer MC
 模型替换位置：
 
 ```text
-models/QuadrotorExperiments/package.mo
+Models/QuadrotorExperiments/package.mo
   QuadrotorExperiments.Example1Mass20PID
   QuadrotorExperiments.Example1Mass20ImprovedPID
   QuadrotorExperiments.Example1Mass20EnhancedPID
   QuadrotorExperiments.Example1Mass20AntiWindupFeedforwardPID
-models/QuadrotorExperiments/Example1Mass20AWFFSysblockClosedLoop.mo
+Models/QuadrotorExperiments/Example1Mass20AWFFSysblockClosedLoop.mo
   QuadrotorExperiments.Example1Mass20AWFFSysblockClosedLoop
 ```
 
 场景配置：
 
 ```text
-scenarios/robustness/example1_mass20_pid_baseline.yaml
-scenarios/robustness/example1_mass20_improved_pid.yaml
-scenarios/robustness/example1_mass20_enhanced_pid.yaml
-scenarios/robustness/example1_mass20_awff_pid.yaml
-scenarios/robustness/example1_mass20_awff_sysblock.yaml
+config/scenarios/robustness/example1_mass20_pid_baseline.yaml
+config/scenarios/robustness/example1_mass20_improved_pid.yaml
+config/scenarios/robustness/example1_mass20_enhanced_pid.yaml
+config/scenarios/robustness/example1_mass20_awff_pid.yaml
+config/scenarios/robustness/example1_mass20_awff_sysblock.yaml
 ```
 
 以下结果均为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_robust_mass20_ablation`，每条仿真均完成 `check_model ok`、`simulate_model ok`，导出 `5001` 行 50 s raw CSV：
@@ -405,24 +405,24 @@ scenarios/robustness/example1_mass20_awff_sysblock.yaml
 模型替换位置：
 
 ```text
-models/QuadrotorExperiments/package.mo
+Models/QuadrotorExperiments/package.mo
   QuadrotorExperiments.Example1WindGustBase
   QuadrotorExperiments.Example1WindGustPID
   QuadrotorExperiments.Example1WindGustImprovedPID
   QuadrotorExperiments.Example1WindGustEnhancedPID
   QuadrotorExperiments.Example1WindGustAntiWindupFeedforwardPID
-models/QuadrotorExperiments/Example1WindGustAWFFSysblockClosedLoop.mo
+Models/QuadrotorExperiments/Example1WindGustAWFFSysblockClosedLoop.mo
   QuadrotorExperiments.Example1WindGustAWFFSysblockClosedLoop
 ```
 
 场景配置：
 
 ```text
-scenarios/robustness/example1_wind_gust_pid_baseline.yaml
-scenarios/robustness/example1_wind_gust_improved_pid.yaml
-scenarios/robustness/example1_wind_gust_enhanced_pid.yaml
-scenarios/robustness/example1_wind_gust_awff_pid.yaml
-scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
+config/scenarios/robustness/example1_wind_gust_pid_baseline.yaml
+config/scenarios/robustness/example1_wind_gust_improved_pid.yaml
+config/scenarios/robustness/example1_wind_gust_enhanced_pid.yaml
+config/scenarios/robustness/example1_wind_gust_awff_pid.yaml
+config/scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
 ```
 
 以下结果均为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_robust_wind_gust_ablation`，每条仿真均完成 `check_model ok`、`simulate_model ok`，导出 `25001` 行 50 s raw CSV：
@@ -444,23 +444,23 @@ scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
 模型替换位置：
 
 ```text
-models/QuadrotorExperiments/package.mo
+Models/QuadrotorExperiments/package.mo
   QuadrotorExperiments.Example1Rotor1Loss15PID
   QuadrotorExperiments.Example1Rotor1Loss15ImprovedPID
   QuadrotorExperiments.Example1Rotor1Loss15EnhancedPID
   QuadrotorExperiments.Example1Rotor1Loss15AntiWindupFeedforwardPID
-models/QuadrotorExperiments/Example1Rotor1Loss15AWFFSysblockClosedLoop.mo
+Models/QuadrotorExperiments/Example1Rotor1Loss15AWFFSysblockClosedLoop.mo
   QuadrotorExperiments.Example1Rotor1Loss15AWFFSysblockClosedLoop
 ```
 
 场景配置：
 
 ```text
-scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml
-scenarios/robustness/example1_rotor1_loss15_improved_pid.yaml
-scenarios/robustness/example1_rotor1_loss15_enhanced_pid.yaml
-scenarios/robustness/example1_rotor1_loss15_awff_pid.yaml
-scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
+config/scenarios/robustness/example1_rotor1_loss15_pid_baseline.yaml
+config/scenarios/robustness/example1_rotor1_loss15_improved_pid.yaml
+config/scenarios/robustness/example1_rotor1_loss15_enhanced_pid.yaml
+config/scenarios/robustness/example1_rotor1_loss15_awff_pid.yaml
+config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
 ```
 
 以下结果均为 `source=MWORKS_MCP`、`evidence_level=real_sysplorer_mcp_robust_rotor_loss_ablation`，每条仿真均完成 `check_model ok`、`simulate_model ok`，导出 `5001` 行 50 s raw CSV：
@@ -480,18 +480,18 @@ scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
 `l1_residual_sysblock` 在 `AWFF_FullControllerEquation_Sysblock` 基础上加入低通残差估计和有界补偿，不改变 `controller3_2` 的输入输出接口。当前实现文件和场景为：
 
 ```text
-models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo
-models/QuadrotorExperiments/Example1L1SysblockClosedLoop.mo
-models/QuadrotorExperiments/Example3L1SysblockClosedLoop.mo
-models/QuadrotorExperiments/Example1Mass20L1SysblockClosedLoop.mo
-models/QuadrotorExperiments/Example1WindGustL1SysblockClosedLoop.mo
-models/QuadrotorExperiments/Example1Rotor1Loss15L1SysblockClosedLoop.mo
-controllers/l1_residual_sysblock/default.yaml
-scenarios/official/example1_l1_residual_sysblock.yaml
-scenarios/official/example3_l1_residual_sysblock.yaml
-scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml
-scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
-scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
+Models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo
+Models/QuadrotorExperiments/Example1L1SysblockClosedLoop.mo
+Models/QuadrotorExperiments/Example3L1SysblockClosedLoop.mo
+Models/QuadrotorExperiments/Example1Mass20L1SysblockClosedLoop.mo
+Models/QuadrotorExperiments/Example1WindGustL1SysblockClosedLoop.mo
+Models/QuadrotorExperiments/Example1Rotor1Loss15L1SysblockClosedLoop.mo
+config/controllers/l1_residual_sysblock/default.yaml
+config/scenarios/official/example1_l1_residual_sysblock.yaml
+config/scenarios/official/example3_l1_residual_sysblock.yaml
+config/scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml
+config/scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
+config/scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
 ```
 
 以下结果均为 `source=MWORKS_MCP`，每条正式场景均完成 `check_model/simulate_model/result_manager` 并导出 raw CSV。Example3 为 `12001` 行 120 s 8 字形数据，其余 Example1 派生场景为 `5001` 行 50 s 数据。
@@ -572,7 +572,7 @@ results/official/example3_figure8/reference_official_example3/replay/reference_o
 
 此前用于横向展示的 Python/Julia 离线仿真结果已清理。当前报告结论只引用真实 Sysplorer/MWORKS MCP 证据。
 
-质量 +20% 参数摄动、15-19 s 横向阵风扰动、1 号旋翼 85% 效率退化、Example1 AWFF 独立控制器替换、Example1/2/3 AWFF Sysblock 官方场景、L1 residual Sysblock 消融，以及已知效率退化控制分配补偿均已完成真实 MWORKS MCP 闭环。规划和编队仍保留在 `Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
+质量 +20% 参数摄动、15-19 s 横向阵风扰动、1 号旋翼 85% 效率退化、Example1 AWFF 独立控制器替换、Example1/2/3 AWFF Sysblock 官方场景、L1 residual Sysblock 消融，以及已知效率退化控制分配补偿均已完成真实 MWORKS MCP 闭环。规划和编队仍保留在 `Docs/Design/` 中作为下一阶段实现目标，但必须完成以下闭环后才能进入本报告的性能结论：
 
 ```text
 MWORKS/Sysplorer 模型或派生模型
@@ -600,12 +600,12 @@ QuadrotorExperiments.Example1Mass20AWFFSysblockClosedLoop
 QuadrotorExperiments.Example1WindGustAWFFSysblockClosedLoop
 QuadrotorExperiments.Example1Rotor1Loss15AWFFSysblockClosedLoop
 
-scenarios/robustness/example1_mass20_awff_pid.yaml
-scenarios/robustness/example1_wind_gust_awff_pid.yaml
-scenarios/robustness/example1_rotor1_loss15_awff_pid.yaml
-scenarios/robustness/example1_mass20_awff_sysblock.yaml
-scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
-scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
+config/scenarios/robustness/example1_mass20_awff_pid.yaml
+config/scenarios/robustness/example1_wind_gust_awff_pid.yaml
+config/scenarios/robustness/example1_rotor1_loss15_awff_pid.yaml
+config/scenarios/robustness/example1_mass20_awff_sysblock.yaml
+config/scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
+config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
 ```
 
 授权恢复后，三条 AWFF PID 与三条 AWFF Sysblock 鲁棒场景均已完成 `check_model/simulate_model/result_manager`，导出 `5001` 行 50 s raw CSV，并进入本报告性能结论。其中质量摄动 AWFF PID、横向阵风 AWFF PID 质量门禁为 `pass`，旋翼退化 AWFF PID 为 `needs_iteration`。早期授权失效导致的失败日志只保留为诊断记录，不再代表当前模型状态。
@@ -619,11 +619,11 @@ QuadrotorExperiments.Example1Mass20L1SysblockClosedLoop
 QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop
 QuadrotorExperiments.Example1Rotor1Loss15L1SysblockClosedLoop
 
-scenarios/official/example1_l1_residual_sysblock.yaml
-scenarios/official/example3_l1_residual_sysblock.yaml
-scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml
-scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
-scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
+config/scenarios/official/example1_l1_residual_sysblock.yaml
+config/scenarios/official/example3_l1_residual_sysblock.yaml
+config/scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml
+config/scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
+config/scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
 
 results/official/example1_step/official_example1_l1_residual_sysblock/logs/sysplorer_example1_l1_residual_sysblock_full_20260510.jsonl
 results/official/example3_figure8/official_example3_l1_residual_sysblock/logs/sysplorer_example3_l1_residual_sysblock_full_20260511.jsonl
@@ -637,7 +637,7 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_resid
 ```text
 QuadrotorExperiments.Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop
 
-scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml
+config/scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml
 
 results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_l1_fault_allocation_sysblock_20260511.jsonl
 ```
@@ -647,7 +647,7 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_fault
 ```text
 QuadrotorExperiments.Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop
 
-scenarios/robustness/example1_rotor1_loss15_l1_online_fault_allocation_sysblock.yaml
+config/scenarios/robustness/example1_rotor1_loss15_l1_online_fault_allocation_sysblock.yaml
 
 results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock_20260511.jsonl
 ```
@@ -656,14 +656,14 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 
 | 退化旋翼 | 场景文件 | RMSE (m) | 稳态误差 (m) | 恢复时间 (s) | `fault_index` 正确率 |
 |---|---|---:|---:|---:|---:|
-| rotor1 | `scenarios/robustness/example1_rotor1_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2679 | 0.1406 | 4.91 | 100% |
-| rotor2 | `scenarios/robustness/example1_rotor2_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2689 | 0.1471 | 4.91 | 100% |
-| rotor3 | `scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2684 | 0.1449 | 4.56 | 100% |
-| rotor4 | `scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2695 | 0.1423 | 4.56 | 100% |
+| rotor1 | `config/scenarios/robustness/example1_rotor1_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2679 | 0.1406 | 4.91 | 100% |
+| rotor2 | `config/scenarios/robustness/example1_rotor2_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2689 | 0.1471 | 4.91 | 100% |
+| rotor3 | `config/scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2684 | 0.1449 | 4.56 | 100% |
+| rotor4 | `config/scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml` | 0.2695 | 0.1423 | 4.56 | 100% |
 
 对应证据目录位于 `results/robustness/rotor{1..4}_loss15_example1/robust_rotor{1..4}_loss15_example1_l1_multi_fault_isolation_sysblock/`，其中包含 `raw/`、`metrics/`、`figures/`、`replay/` 和 `logs/`。`figures/` 中除轨迹、误差和指标图外，还包含 `*_eta_hat_diagnostics.svg` 与 `*_fault_index_diagnostics.svg`，用于报告和演示视频中展示在线效率估计与故障编号锁存过程。该组结果可以支撑“四旋翼持续单故障隔离验证已完成”的表述；不支撑瞬态故障、复合多故障或故障切换声明。
 
-2026-05-12 复核：使用 `scripts/evaluate_result_quality.py` 对 rotor1-4 四个 `l1_multi_fault_isolation_sysblock` 场景重新执行质量门检查，均为 `pass`；`fault_index` 在 5-50 s 内对应退化旋翼的正确率均为 `100%`。复核摘要已写入 `results/test_reports/graphical_sysblock_manual_review_and_result_audit_20260512.json`。
+2026-05-12 复核：使用 `scripts/results/evaluate_result_quality.py` 对 rotor1-4 四个 `l1_multi_fault_isolation_sysblock` 场景重新执行质量门检查，均为 `pass`；`fault_index` 在 5-50 s 内对应退化旋翼的正确率均为 `100%`。复核摘要已写入 `results/test_reports/graphical_sysblock_manual_review_and_result_audit_20260512.json`。
 
 2026-05-13 证据审计：迁移 `sunray150_with_mid360` 后，复合鲁棒场景 `rotor1_loss15_wind_gust_example1` 已形成一条负样本和三条正样本。普通 `awff_sysblock` 健康分为 `35.967`、RMSE 为 `0.3792 m`，质量门为 `needs_iteration`，保留为未补偿边界案例；`awff_fault_compensation_sysblock` 健康分为 `53.253`、RMSE 为 `0.2704 m`；`l1_multi_fault_isolation_sysblock` 健康分为 `50.994`、RMSE 为 `0.2721 m`；`linear_mpc_online_fault_allocation_sysblock` 健康分为 `51.318`、RMSE 为 `0.2614 m`。因此该复合场景结论应表述为“普通 AWFF 在复合扰动下不足，加入已知故障补偿、L1 多旋翼故障隔离或线性 MPC 在线分配后通过质量门”。
 
@@ -671,10 +671,10 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 
 | 退化旋翼 | 场景文件 | RMSE (m) | 稳态误差 (m) | 最大误差 (m) | 健康分 | `fault_index` 正确率 | 质量门 |
 |---|---|---:|---:|---:|---:|---:|---|
-| rotor1 | `scenarios/robustness/example1_rotor1_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2721 | 0.1402 | 1.2526 | 50.994 | 100% | pass |
-| rotor2 | `scenarios/robustness/example1_rotor2_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2728 | 0.1465 | 1.2526 | 50.961 | 100% | pass |
-| rotor3 | `scenarios/robustness/example1_rotor3_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2707 | 0.1446 | 1.2526 | 50.987 | 100% | pass |
-| rotor4 | `scenarios/robustness/example1_rotor4_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2727 | 0.1415 | 1.2526 | 50.984 | 100% | pass |
+| rotor1 | `config/scenarios/robustness/example1_rotor1_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2721 | 0.1402 | 1.2526 | 50.994 | 100% | pass |
+| rotor2 | `config/scenarios/robustness/example1_rotor2_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2728 | 0.1465 | 1.2526 | 50.961 | 100% | pass |
+| rotor3 | `config/scenarios/robustness/example1_rotor3_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2707 | 0.1446 | 1.2526 | 50.987 | 100% | pass |
+| rotor4 | `config/scenarios/robustness/example1_rotor4_loss15_wind_gust_l1_multi_fault_isolation_sysblock.yaml` | 0.2727 | 0.1415 | 1.2526 | 50.984 | 100% | pass |
 
 对应证据目录位于 `results/robustness/rotor{1..4}_loss15_wind_gust_example1/robust_rotor{1..4}_loss15_wind_gust_example1_l1_multi_fault_isolation_sysblock/`，包含 `raw/`、`metrics/`、`figures/`、`replay/`、`logs/` 和 `native_result/native_result_manifest.json`。由于 Windows 长路径限制，原生 `Result.msr` 可能实际缓存在 `results/native_result_cache/`，以 manifest 中的映射为准；报告和视频录制仍以该 native result 与 raw/metrics 双重证据为准。
 
@@ -703,7 +703,7 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 
 旋翼退化结论：纯 LinearMPC-style 外环在 1 号旋翼 85% 效率退化下健康分只有 `36.889`，不能作为“故障已解决”的证据。加入在线效率估计与控制分配补偿后，`linear_mpc_online_fault_allocation_sysblock` 通过质量门，rotor1 退化场景 RMSE 为 `0.2576 m`、健康分 `51.349`。2026-05-14 新增多旋翼版本后，rotor1-4 的“单旋翼效率 85% + 横向阵风”复合场景均通过质量门；其中 AWFF Sysblock 边界样本健康分仅 `35.812-36.051`，LinearMPC 多旋翼在线分配健康分提升到 `51.140-51.318`，RMSE 相比 AWFF 降低 `26.691%-31.063%`。该结果支撑“LinearMPC 外环需要与执行器故障分配层组合处理旋翼退化，并且多旋翼故障方向可由 eta_hat[4] 统一覆盖”的结论。
 
-2026-05-14 收尾修正：Sunray150_with_mid360 迁移后，所有 `models/QuadrotorExperiments/*SysblockClosedLoop.mo` 单机实验包装模型均补入悬停电机速度偏置 `53.5621 rad/s` 和控制增量缩放 `53.5621 / 13.9854`，避免旧控制器速度输出直接接入新机体电机输入域。修正后 Example1/2/3 LinearMPC 全时长真实 Sysplorer MCP 复测均为 `pass`，上表已更新为新机体指标。
+2026-05-14 收尾修正：Sunray150_with_mid360 迁移后，所有 `Models/QuadrotorExperiments/*SysblockClosedLoop.mo` 单机实验包装模型均补入悬停电机速度偏置 `53.5621 rad/s` 和控制增量缩放 `53.5621 / 13.9854`，避免旧控制器速度输出直接接入新机体电机输入域。修正后 Example1/2/3 LinearMPC 全时长真实 Sysplorer MCP 复测均为 `pass`，上表已更新为新机体指标。
 
 2026-05-12 复核：`official_example3_linear_mpc_sysblock` 重新通过 8 字形质量门；`linear_mpc_online_fault_allocation_sysblock` rotor1 退化场景重新通过质量门，复核得到 `eta_hat` 45-50 s 尾段均值约 `0.908`。该复核只读取已有 MWORKS_MCP raw CSV 和 metrics，不属于新增离线仿真。
 
@@ -714,20 +714,20 @@ results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_onlin
 证据文件：
 
 ```text
-scenarios/official/example1_linear_mpc_sysblock.yaml
-scenarios/official/example2_linear_mpc_sysblock.yaml
-scenarios/official/example3_linear_mpc_sysblock.yaml
-scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml
-scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml
-scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml
-scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml
-scenarios/robustness/example1_rotor1_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
-scenarios/robustness/example1_rotor2_loss15_wind_gust_awff_sysblock.yaml
-scenarios/robustness/example1_rotor3_loss15_wind_gust_awff_sysblock.yaml
-scenarios/robustness/example1_rotor4_loss15_wind_gust_awff_sysblock.yaml
-scenarios/robustness/example1_rotor2_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
-scenarios/robustness/example1_rotor3_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
-scenarios/robustness/example1_rotor4_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+config/scenarios/official/example1_linear_mpc_sysblock.yaml
+config/scenarios/official/example2_linear_mpc_sysblock.yaml
+config/scenarios/official/example3_linear_mpc_sysblock.yaml
+config/scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml
+config/scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml
+config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml
+config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml
+config/scenarios/robustness/example1_rotor1_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+config/scenarios/robustness/example1_rotor2_loss15_wind_gust_awff_sysblock.yaml
+config/scenarios/robustness/example1_rotor3_loss15_wind_gust_awff_sysblock.yaml
+config/scenarios/robustness/example1_rotor4_loss15_wind_gust_awff_sysblock.yaml
+config/scenarios/robustness/example1_rotor2_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+config/scenarios/robustness/example1_rotor3_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+config/scenarios/robustness/example1_rotor4_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
 
 results/official/example1_step/official_example1_linear_mpc_sysblock/
 results/official/example2_helix/official_example2_linear_mpc_sysblock/

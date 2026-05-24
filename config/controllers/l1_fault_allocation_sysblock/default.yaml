@@ -63,13 +63,13 @@ fault_allocation:
 
 acceptance:
   rotor_degradation:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON, quality_status pass
 
 verified_evidence:
   source: MWORKS_MCP
   rotor1_loss15_full:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml
     model_name: QuadrotorExperiments.Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop
     raw_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock.csv
     metrics_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock/metrics/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock.json

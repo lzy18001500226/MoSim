@@ -65,13 +65,13 @@ read_syslab_doc
 Use local scripts:
 
 ```text
-scripts/calc_metrics.jl
-scripts/calc_metrics.py
-scripts/plot_results.jl
+scripts/results/calc_metrics.jl
+scripts/results/calc_metrics.py
+scripts/results/plot_results.jl
 ```
 
-Prefer `scripts/calc_metrics.jl` when Syslab/Julia is available. If local WSL
-does not provide `julia`, use `scripts/calc_metrics.py` as the fallback so the
+Prefer `scripts/results/calc_metrics.jl` when Syslab/Julia is available. If local WSL
+does not provide `julia`, use `scripts/results/calc_metrics.py` as the fallback so the
 automation can still produce `results/{group}/{scene}/{experiment}/metrics/*.json` and `*.csv`.
 
 ---
@@ -272,7 +272,7 @@ evaluate_julia_code
 or, after the script is implemented:
 
 ```text
-run_julia_file scripts/calc_metrics.jl
+run_julia_file scripts/results/calc_metrics.jl
 ```
 
 Required fields:
@@ -300,19 +300,19 @@ If required fields are missing:
 Current status:
 
 ```text
-scripts/calc_metrics.jl has a minimal implemented version.
+scripts/results/calc_metrics.jl has a minimal implemented version.
 ```
 
 Run:
 
 ```text
-scripts/calc_metrics.jl
+scripts/results/calc_metrics.jl
 ```
 
 Recommended command via Syslab MCP:
 
 ```text
-run_julia_file with script_path = absolute path to scripts/calc_metrics.jl
+run_julia_file with script_path = absolute path to scripts/results/calc_metrics.jl
 ```
 
 Script should save:
@@ -329,20 +329,20 @@ results/{group}/{scene}/{experiment}/metrics/{scene_id}_{controller_id}.csv
 Current status:
 
 ```text
-scripts/plot_results.jl has a minimal manifest-writing version.
+scripts/results/plot_results.jl has a minimal manifest-writing version.
 ```
 
 For publication-quality images, generate figures with Syslab plotting APIs or `plot_manager`; use the script to keep a stable output contract and figure manifest. Run:
 
 ```text
-scripts/plot_results.jl
+scripts/results/plot_results.jl
 ```
 
 Save figures to:
 
 ```text
 results/{group}/{scene_id}/figures/{controller_id}/
-docs/figures/
+Docs/figures/
 ```
 
 Recommended figures:

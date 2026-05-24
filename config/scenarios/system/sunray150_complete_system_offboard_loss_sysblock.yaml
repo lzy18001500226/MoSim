@@ -8,11 +8,11 @@ quality_profile: system_mode
 model:
   source_package: QuadrotorExperiments
   model_name: QuadrotorExperiments.Sunray150CompleteSystemOffboardLossSysblock
-  model_path_hint: models/QuadrotorExperiments/package.mo
-  base_model_path_hint: QuadrotorModel/package.mo
+  model_path_hint: Models/QuadrotorExperiments/package.mo
+  base_model_path_hint: references/MWORKS/QuadrotorModel/package.mo
   official_description: Sunray150 complete system with offboard heartbeat loss and return-mode arbitration
   extra_model_files:
-    - models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+    - Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
 
 controller:
   replacement_component: controller

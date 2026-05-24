@@ -10,12 +10,12 @@ evidence_level: real_sysplorer_mcp_full_awff_pid
 model:
   source_package: QuadrotorExperiments
   model_name: QuadrotorExperiments.Example2AntiWindupFeedforwardPID
-  model_path_hint: models/QuadrotorExperiments/package.mo
-  base_model_path_hint: QuadrotorModel/package.mo
+  model_path_hint: Models/QuadrotorExperiments/package.mo
+  base_model_path_hint: references/MWORKS/QuadrotorModel/package.mo
   official_description: 螺旋爬升 Anti-windup feedforward PID
 
 controller:
-  params_file: controllers/awff_pid/default.yaml
+  params_file: config/controllers/awff_pid/default.yaml
   replacement_component: controller3_2
   baseline_experiment: official_example2_enhanced_pid
 

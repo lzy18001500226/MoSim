@@ -61,8 +61,8 @@ Do not call Sysplorer `ClearAll`, `ChangeDirectory`, or broad workspace-reset AP
 ## 4. Required Gates
 
 ```bash
-python3 scripts/check_sysblock_graphics.py
-python3 scripts/check_graphical_sysblock_mcp.py
+python3 scripts/mworks/check_sysblock_graphics.py
+python3 scripts/mworks/check_graphical_sysblock_mcp.py
 ```
 
 For targeted work, a narrower MCP check is acceptable if it records:
@@ -102,8 +102,8 @@ Both must be tracked until the platform limitation is resolved.
 When this workflow is ambiguous, consult the official Sysplorer skill references without copying them into project rules wholesale:
 
 ```text
-Skills/Sysplorer/ty-sysplorer-modeling-rules
-Skills/Sysplorer/ty-sysblock-diagram-modeling
-Skills/Sysplorer/ty-sysblock-signal-modeling
-Skills/Sysplorer/modelica-library-workflow
+Docs/Skills/Sysplorer/ty-sysplorer-modeling-rules
+Docs/Skills/Sysplorer/ty-sysblock-diagram-modeling
+Docs/Skills/Sysplorer/ty-sysblock-signal-modeling
+Docs/Skills/Sysplorer/modelica-library-workflow
 ```

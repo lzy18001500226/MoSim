@@ -80,31 +80,31 @@ Required project entry points:
 
 ```text
 scripts/
-docs/
-docs/index/
-docs/mworks/converted/
-QuadrotorModel/
-workflows/
+Docs/
+Docs/Index/
+Docs/Mworks/converted/
+references/MWORKS/QuadrotorModel/
+Docs/Workflows/
 ```
 
 Implementation directories are created only when they contain real files:
 
 ```text
-controllers/
-planners/
-scenarios/
-tests/
+config/controllers/
+config/planners/
+config/scenarios/
+scripts/tests/
 results/{group}/{scene}/{experiment}/raw/
 results/{group}/{scene}/{experiment}/metrics/
 results/{group}/{scene}/{experiment}/figures/
-docs/figures/
+Docs/figures/
 ```
 
 Run:
 
 ```bash
-python scripts/qa_check.py
-python scripts/check_reference_outputs.py
+python scripts/quality/qa_check.py
+python scripts/quality/check_reference_outputs.py
 ```
 
 ### Skill / Workflow Hygiene Check
@@ -112,9 +112,9 @@ python scripts/check_reference_outputs.py
 Project-local skills and workflows must stay discoverable and credential-free:
 
 ```text
-every `Skills/Mworks/*` skill has `SKILL.md`
+every `Docs/Skills/Mworks/*` skill has `SKILL.md`
 each `SKILL.md` has YAML frontmatter with `name` and `description`
-workflow links in `docs/index/workflow_index.md` resolve
+workflow links in `Docs/Index/workflow_index.md` resolve
 no copied OAuth/provider configs, private `.env`, token, or key files are tracked
 external skill/runtime repositories remain reference material unless explicitly promoted
 ```
@@ -122,7 +122,7 @@ external skill/runtime repositories remain reference material unless explicitly 
 ### Reference / Large-File / Secret Check
 
 Before staging or packaging, inspect newly added reference trees and generated
-assets. This is mandatory when `Skills/`, `references/`, `unreal/`, `results/`,
+assets. This is mandatory when `Docs/Skills/`, `references/`, `unreal/`, `results/`,
 or downloaded open-source repositories changed.
 
 ```bash

@@ -8,47 +8,47 @@
 
 | Task | Workflow File |
 |---|---|
-| Debug MCP | `workflows/debug_mcp.md` |
-| Operate Unreal MCP | `workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `docs/index/api_index.md#5-unreal-mcp-tools` |
-| Build Unreal/RflySim renderer and scene workflow | `workflows/unreal_renderer.md` |
-| Project structure refactor toward RflySim-like simulator product | `workflows/project_structure_refactor.md` |
-| Translate MathWorks/Simulink patterns to MWORKS | `workflows/translate_mathworks_to_mworks.md` |
-| Resolve MWORKS model context | `Skills/Mworks/mworks-model-context/SKILL.md` |
-| Produce MWORKS simulation evidence | `Skills/Mworks/mworks-simulation-evidence/SKILL.md` |
-| Port MATLAB/Syslab logic | `Skills/Mworks/mworks-syslab-porting/SKILL.md` |
-| Operate MCP with minimal impact | `Skills/Mworks/mworks-mcp-operations/SKILL.md` |
-| Diagnose runtime/model issues | `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
-| Test and review quality gates | `Skills/Mworks/mworks-test-quality/SKILL.md` |
-| Prepare report and replay assets | `Skills/Mworks/mworks-report-visualization/SKILL.md` |
-| Build graphical Sysblock controller | `Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`, `workflows/build_sysblock_graphical_controller.md` |
-| Consult official Sysplorer modeling rules | `Skills/Sysplorer/ty-sysplorer-modeling-rules`, `Skills/Sysplorer/ty-sysblock-diagram-modeling`, `Skills/Sysplorer/ty-sysblock-signal-modeling`, `Skills/Sysplorer/modelica-library-workflow` |
-| Main-agent orchestration | `AGENTS.md#331-parallel-agent-rule`, `workflows/agent_orchestration.md` |
-| Agent organization operating model | `workflows/org_operating_model.md` |
+| Debug MCP | `Docs/Workflows/debug_mcp.md` |
+| Operate Unreal MCP | `Docs/Workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `Docs/Index/api_index.md#5-unreal-mcp-tools` |
+| Build Unreal/RflySim renderer and scene workflow | `Docs/Workflows/unreal_renderer.md` |
+| Project structure refactor toward RflySim-like simulator product | `Docs/Workflows/project_structure_refactor.md` |
+| Translate MathWorks/Simulink patterns to MWORKS | `Docs/Workflows/translate_mathworks_to_mworks.md` |
+| Resolve MWORKS model context | `Docs/Skills/Mworks/mworks-model-context/SKILL.md` |
+| Produce MWORKS simulation evidence | `Docs/Skills/Mworks/mworks-simulation-evidence/SKILL.md` |
+| Port MATLAB/Syslab logic | `Docs/Skills/Mworks/mworks-syslab-porting/SKILL.md` |
+| Operate MCP with minimal impact | `Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md` |
+| Diagnose runtime/model issues | `Docs/Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
+| Test and review quality gates | `Docs/Skills/Mworks/mworks-test-quality/SKILL.md` |
+| Prepare report and replay assets | `Docs/Skills/Mworks/mworks-report-visualization/SKILL.md` |
+| Build graphical Sysblock controller | `Docs/Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md`, `Docs/Workflows/build_sysblock_graphical_controller.md` |
+| Consult official Sysplorer modeling rules | `Docs/Skills/Sysplorer/ty-sysplorer-modeling-rules`, `Docs/Skills/Sysplorer/ty-sysblock-diagram-modeling`, `Docs/Skills/Sysplorer/ty-sysblock-signal-modeling`, `Docs/Skills/Sysplorer/modelica-library-workflow` |
+| Main-agent orchestration | `AGENTS.md#331-parallel-agent-rule`, `Docs/Workflows/agent_orchestration.md` |
+| Agent organization operating model | `Docs/Workflows/org_operating_model.md` |
 | Current project progress and recovery memory | `PROGRESS.md` |
-| Sub-agent WAL / run ledger | `workflows/agent_task_ledger.md` |
-| Interrupted task resume / WAL recovery | `workflows/agent_orchestration.md`, `workflows/agent_task_ledger.md` |
-| External repository audit | `workflows/audit_external_repo.md`, `scripts/audit_external_repo.py` |
-| AirSim external repository batch migration | `workflows/agent_orchestration.md#51-airsim-batch-migration-with-nested-agents`, `workflows/audit_external_repo.md` |
-| Skills/workflow external repo audit | `workflows/audit_external_repo.md`, `workflows/agent_orchestration.md#7-skills--workflow-runtime-audits` |
-| Three-round learn-and-update audit | `workflows/audit_external_repo.md`, `workflows/agent_orchestration.md#7-skills--workflow-runtime-audits` |
-| Recurring external docs/skills learning | `workflows/agent_orchestration.md#71-recurring-learning-owner`, `docs/index/external_learning_index.md` |
-| Project doctor / self-check | `scripts/doctor.py`, `workflows/pre_submit_check.md`, `workflows/debug_mcp.md` |
-| Resolve model context workflow | `workflows/resolve_model_context.md` |
-| Produce simulation evidence workflow | `workflows/produce_simulation_evidence.md` |
-| Run one simulation | `workflows/run_simulation.md` |
-| Read simulation results | `workflows/read_results.md` |
-| Calculate metrics | `workflows/calc_metrics.md` |
-| Generate report figures | `workflows/generate_report_figures.md` |
-| Parallel agent execution | `AGENTS.md#331-parallel-agent-rule`, `workflows/agent_orchestration.md`, `workflows/unreal_renderer.md#long-running-ue5-reconstruction-queue` |
-| Persistent long-running agent task ledger | `workflows/agent_task_ledger.md` |
-| Review Sunray migration source | `docs/index/sunray_migration_index.md` |
-| Identify Sunray150 quadrotor parameters from PX4 ULog | `workflows/identify_quadrotor_parameters.md` |
-| Add a controller | `workflows/add_controller.md` |
-| Build Sysblock graphical controller | `workflows/build_sysblock_graphical_controller.md` |
-| Code review | `workflows/code_review.md` |
-| Run tests | `workflows/run_tests.md` |
-| Regression test | `workflows/regression_test.md` |
-| Pre-submit check | `workflows/pre_submit_check.md` |
+| Sub-agent WAL / run ledger | `Docs/Workflows/agent_task_ledger.md` |
+| Interrupted task resume / WAL recovery | `Docs/Workflows/agent_orchestration.md`, `Docs/Workflows/agent_task_ledger.md` |
+| External repository audit | `Docs/Workflows/audit_external_repo.md`, `scripts/reference/audit_external_repo.py` |
+| AirSim external repository batch migration | `Docs/Workflows/agent_orchestration.md#51-airsim-batch-migration-with-nested-agents`, `Docs/Workflows/audit_external_repo.md` |
+| Docs/Skills/workflow external repo audit | `Docs/Workflows/audit_external_repo.md`, `Docs/Workflows/agent_orchestration.md#7-skills--workflow-runtime-audits` |
+| Three-round learn-and-update audit | `Docs/Workflows/audit_external_repo.md`, `Docs/Workflows/agent_orchestration.md#7-skills--workflow-runtime-audits` |
+| Recurring external Docs/skills learning | `Docs/Workflows/agent_orchestration.md#71-recurring-learning-owner`, `Docs/Index/external_learning_index.md` |
+| Project doctor / self-check | `scripts/quality/doctor.py`, `Docs/Workflows/pre_submit_check.md`, `Docs/Workflows/debug_mcp.md` |
+| Resolve model context workflow | `Docs/Workflows/resolve_model_context.md` |
+| Produce simulation evidence workflow | `Docs/Workflows/produce_simulation_evidence.md` |
+| Run one simulation | `Docs/Workflows/run_simulation.md` |
+| Read simulation results | `Docs/Workflows/read_results.md` |
+| Calculate metrics | `Docs/Workflows/calc_metrics.md` |
+| Generate report figures | `Docs/Workflows/generate_report_figures.md` |
+| Parallel agent execution | `AGENTS.md#331-parallel-agent-rule`, `Docs/Workflows/agent_orchestration.md`, `Docs/Workflows/unreal_renderer.md#long-running-ue5-reconstruction-queue` |
+| Persistent long-running agent task ledger | `Docs/Workflows/agent_task_ledger.md` |
+| Review Sunray migration source | `Docs/Index/sunray_migration_index.md` |
+| Identify Sunray150 quadrotor parameters from PX4 ULog | `Docs/Workflows/identify_quadrotor_parameters.md` |
+| Add a controller | `Docs/Workflows/add_controller.md` |
+| Build Sysblock graphical controller | `Docs/Workflows/build_sysblock_graphical_controller.md` |
+| Code review | `Docs/Workflows/code_review.md` |
+| Run tests | `Docs/Workflows/run_tests.md` |
+| Regression test | `Docs/Workflows/regression_test.md` |
+| Pre-submit check | `Docs/Workflows/pre_submit_check.md` |
 
 ---
 
@@ -89,17 +89,17 @@ For every new scenario:
 Related files:
 
 ```text
-workflows/run_simulation.md
-workflows/calc_metrics.md
-workflows/generate_report_figures.md
+Docs/Workflows/run_simulation.md
+Docs/Workflows/calc_metrics.md
+Docs/Workflows/generate_report_figures.md
 ```
 
 Official baseline scenarios are tracked under:
 
 ```text
-scenarios/official/example1_pid_baseline.yaml
-scenarios/official/example2_pid_baseline.yaml
-scenarios/official/example3_pid_baseline.yaml
+config/scenarios/official/example1_pid_baseline.yaml
+config/scenarios/official/example2_pid_baseline.yaml
+config/scenarios/official/example3_pid_baseline.yaml
 ```
 
 These map directly to `QuadrotorModel.Examples.Example1/2/3`. When Sysplorer
@@ -126,10 +126,10 @@ For every new controller:
 Related files:
 
 ```text
-workflows/add_controller.md
-workflows/build_sysblock_graphical_controller.md
-workflows/regression_test.md
-workflows/code_review.md
+Docs/Workflows/add_controller.md
+Docs/Workflows/build_sysblock_graphical_controller.md
+Docs/Workflows/regression_test.md
+Docs/Workflows/code_review.md
 ```
 
 ---
@@ -150,7 +150,7 @@ workflows/code_review.md
 Related file:
 
 ```text
-workflows/pre_submit_check.md
+Docs/Workflows/pre_submit_check.md
 ```
 
 ---
@@ -172,15 +172,15 @@ If tools are missing:
 Related file:
 
 ```text
-workflows/debug_mcp.md
+Docs/Workflows/debug_mcp.md
 ```
 
-For graphical system model review, use `workflows/run_simulation.md` section
+For graphical system model review, use `Docs/Workflows/run_simulation.md` section
 “Direct MCP Review For Graphical System Models”. It records the required load
 order, the `1401` duplicate-definition trap, and the known embedded graphical
 Sysblock multi-input-port limitation.
 
-Official Sysplorer skills in `Skills/Sysplorer/` are reference material. Project execution should still go through `Skills/Mworks/` and `workflows/`; consult the official skills when a Sysblock/Modelica/hybrid modeling route is unclear.
+Official Sysplorer skills in `Docs/Skills/Sysplorer/` are reference material. Project execution should still go through `Docs/Skills/Mworks/` and `Docs/Workflows/`; consult the official skills when a Sysblock/Modelica/hybrid modeling route is unclear.
 
 ---
 
@@ -199,7 +199,7 @@ validation criteria
 Good example:
 
 ```text
-按照 workflows/run_simulation.md，使用 Sysplorer MCP 运行 figure8 场景，控制器为 pid_baseline，结果保存到 results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv。
+按照 Docs/Workflows/run_simulation.md，使用 Sysplorer MCP 运行 figure8 场景，控制器为 pid_baseline，结果保存到 results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv。
 ```
 
 Bad example:
@@ -221,7 +221,7 @@ verification.
 | Scene research | Compare RflySim/Fab/Gazebo/AirSim scene sources, license limits, file-size risk | Ranked source list and migration notes |
 | RflySim smoke | Run local map, vehicle, Mid360/lidar, collision, and point-cloud checks | Small tool patch, smoke log, pass/fail notes |
 | MWORKS evidence | Run controller or scenario checks through Sysplorer/Syslab MCP | `results/` evidence and metrics |
-| Documentation | Update architecture, workflow, and acceptance text | `Design/`, `docs/`, `workflows/` edits |
+| Documentation | Update architecture, workflow, and acceptance text | `Docs/Design/`, `Docs/`, `Docs/Workflows/` edits |
 | Git/quality | Scan large files, inspect diff, run targeted tests, commit/push | Clean Git state or exact blocker |
 
 Rules:
@@ -233,8 +233,8 @@ Rules:
 5. If an agent finds a license, credential, activation, or destructive-action
    issue, it must stop that stream and report the blocker.
 
-Use `workflows/agent_orchestration.md` for the full delegation contract and
-`workflows/agent_task_ledger.md` for persistent recovery state.
+Use `Docs/Workflows/agent_orchestration.md` for the full delegation contract and
+`Docs/Workflows/agent_task_ledger.md` for persistent recovery state.
 
 ---
 
@@ -244,10 +244,10 @@ Use this before long Git/reference-import/MCP work or when the session state is
 unclear:
 
 ```bash
-python3 scripts/doctor.py
+python3 scripts/quality/doctor.py
 ```
 
 The doctor is intentionally cheap: it checks the project-local Git lock/status,
 Git LFS availability, active agent ledger rows, tracked files over the selected
 size limit, key workflow files, and MCP wrapper file presence. Live MCP health
-still belongs to `/mcp` and `workflows/debug_mcp.md`.
+still belongs to `/mcp` and `Docs/Workflows/debug_mcp.md`.

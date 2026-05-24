@@ -33,7 +33,7 @@ hidden worker for large Git, research, audit, or simulation queues.
 | Security Department | `SecurityOfficer` | Path boundary, secrets, destructive operations, large files, license/copyright, unsafe GUI/MCP actions | General code quality or product decisions |
 | DevOps Department | `GitIntegrator` | Branch hygiene, add/commit/push, large-file/LFS gates, release checkpoints | Feature implementation or architecture approval |
 | Architecture Committee | `ArchitectureReviewer` | Module boundaries, MWORKS/UE5/Sysblock integration choices, long-term design risks | Day-to-day execution |
-| Knowledge Department | `KnowledgeManager` | External docs/skills/repo learning, source-to-doc coverage, rejected patterns | Importing full external runtimes without approval |
+| Knowledge Department | `KnowledgeManager` | External Docs/skills/repo learning, source-to-doc coverage, rejected patterns | Importing full external runtimes without approval |
 | Incident Review | `IncidentReviewOwner` | Postmortems for Git failures, MCP crashes, lost agents, repeated mistakes | Blame assignment |
 
 ## 3. Secretary / PMO Hard Rule
@@ -49,7 +49,7 @@ short-lived intake:
   results/tmp/task_intake/<date>_*.md
 
 long-running task state:
-  workflows/agent_task_ledger.md
+  Docs/Workflows/agent_task_ledger.md
 
 current project status and repeated mistakes:
   PROGRESS.md
@@ -79,7 +79,7 @@ Secretary checklist:
 [ ] Sub-agent returns consumed or queued.
 [ ] Manual-review decisions recorded.
 [ ] Blockers and required user actions recorded.
-[ ] Stable rules promoted to docs/workflows.
+[ ] Stable rules promoted to Docs/workflows.
 [ ] Docs update received a second review when important.
 ```
 
@@ -150,7 +150,7 @@ the first step is recovering that graph from durable records, not acting from
 memory.
 
 If the conversation ends, context compacts, or a sub-agent disappears, resume
-from `workflows/agent_task_ledger.md`, `PROGRESS.md`, and any
+from `Docs/Workflows/agent_task_ledger.md`, `PROGRESS.md`, and any
 `results/agent_runs/*/events.jsonl` records.
 
 ## 7. Role Prompt Contract

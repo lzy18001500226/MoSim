@@ -7,17 +7,17 @@ evidence_level: real_sysplorer_mcp_sysblock_rotor_loss_wind_gust_boundary
 model:
   source_package: QuadrotorExperiments
   model_name: QuadrotorExperiments.Example1Rotor4Loss15WindGustAWFFSysblockClosedLoop
-  model_path_hint: models/QuadrotorExperiments/Example1Rotor4Loss15WindGustAWFFSysblockClosedLoop.mo
-  base_model_path_hint: QuadrotorModel/package.mo
+  model_path_hint: Models/QuadrotorExperiments/Example1Rotor4Loss15WindGustAWFFSysblockClosedLoop.mo
+  base_model_path_hint: references/MWORKS/QuadrotorModel/package.mo
   official_description: 阶梯爬升 4号旋翼升力效率85% + 15-19s横向阵风 AWFF Sysblock
 
 controller:
-  params_file: controllers/awff_sysblock/default.yaml
+  params_file: config/controllers/awff_sysblock/default.yaml
   replacement_component: controller3_2
   baseline_experiment: robust_wind_gust_example1_awff_sysblock
-  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_FullControllerFlatGraphical_Sysblock
-  graphical_sysblock_file: models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
 
 disturbance:
   type: combined_actuator_efficiency_loss_and_lateral_world_force_gust

@@ -91,22 +91,22 @@ fault_isolation:
 
 acceptance:
   rotor1_degradation:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_l1_multi_fault_isolation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_l1_multi_fault_isolation_sysblock.yaml
     required: check_model, simulate_model, eta_hat1..4 raw columns, fault_index raw column, metrics, figures, replay JSON
     target_quality: pass_or_better_than_l1_residual
     expected_fault_index: 1
   rotor2_degradation:
-    scenario_file: scenarios/robustness/example1_rotor2_loss15_l1_multi_fault_isolation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor2_loss15_l1_multi_fault_isolation_sysblock.yaml
     required: check_model, simulate_model, eta_hat1..4 raw columns, fault_index raw column, metrics, figures, replay JSON
     target_quality: pass
     expected_fault_index: 2
   rotor3_degradation:
-    scenario_file: scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml
     required: check_model, simulate_model, eta_hat1..4 raw columns, fault_index raw column, metrics, figures, replay JSON
     target_quality: pass
     expected_fault_index: 3
   rotor4_degradation:
-    scenario_file: scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml
     required: check_model, simulate_model, eta_hat1..4 raw columns, fault_index raw column, metrics, figures, replay JSON
     target_quality: pass
     expected_fault_index: 4
@@ -114,7 +114,7 @@ acceptance:
 verified_evidence:
   source: MWORKS_MCP
   rotor1_loss15_full:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_l1_multi_fault_isolation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_l1_multi_fault_isolation_sysblock.yaml
     model_name: QuadrotorExperiments.Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop
     raw_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor1_loss15_example1_l1_multi_fault_isolation_sysblock.csv
     metrics_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor1_loss15_example1_l1_multi_fault_isolation_sysblock.json
@@ -133,7 +133,7 @@ verified_evidence:
     fault_index_final: 1
     fault_index_accuracy_5_50s: 1.0
   rotor2_loss15_full:
-    scenario_file: scenarios/robustness/example1_rotor2_loss15_l1_multi_fault_isolation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor2_loss15_l1_multi_fault_isolation_sysblock.yaml
     model_name: QuadrotorExperiments.Example1Rotor2Loss15L1MultiFaultIsolationSysblockClosedLoop
     raw_file: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock.csv
     metrics_file: results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock.json
@@ -146,7 +146,7 @@ verified_evidence:
     fault_index_final: 2
     fault_index_accuracy_5_50s: 1.0
   rotor3_loss15_full:
-    scenario_file: scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml
     model_name: QuadrotorExperiments.Example1Rotor3Loss15L1MultiFaultIsolationSysblockClosedLoop
     raw_file: results/robustness/rotor3_loss15_example1/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock.csv
     metrics_file: results/robustness/rotor3_loss15_example1/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock.json
@@ -159,7 +159,7 @@ verified_evidence:
     fault_index_final: 3
     fault_index_accuracy_5_50s: 1.0
   rotor4_loss15_full:
-    scenario_file: scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml
     model_name: QuadrotorExperiments.Example1Rotor4Loss15L1MultiFaultIsolationSysblockClosedLoop
     raw_file: results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock.csv
     metrics_file: results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock.json

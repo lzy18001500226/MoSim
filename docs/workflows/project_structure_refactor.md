@@ -13,17 +13,17 @@ documentation, then migrate one ownership group at a time.
 The current top level mixes different ownership classes:
 
 ```text
-controllers/      controller parameter configs
-models/           project MWORKS/Sysplorer model extensions
-QuadrotorModel/   official MWORKS case model
-planners/         planning configs and small planner modules
-scenarios/        experiment scenario configs
+config/controllers/      controller parameter configs
+Models/           project MWORKS/Sysplorer model extensions
+references/MWORKS/QuadrotorModel/   official MWORKS case model
+config/planners/         planning configs and small planner modules
+config/scenarios/        experiment scenario configs
 scripts/          batch runners, metrics, plotting, UE tools, docs tools
 unreal/           project UE renderer and bridge
 references/       vendor docs, cloned repos, specs, scene candidates
-Skills/           project/reference skills
-Agent/            agent tooling experiments
-workflows/        operating procedures
+Docs/Skills/           project/reference skills
+references/Agent/            agent tooling experiments
+Docs/Workflows/        operating procedures
 results/          formal results, smoke results, GUI review caches, temp data
 ```
 
@@ -52,9 +52,9 @@ sim/
     replay/               replay adapters
 
 configs/
-  controllers/
-  planners/
-  scenarios/
+  config/controllers/
+  config/planners/
+  config/scenarios/
   vehicles/
   scenes/
 
@@ -69,13 +69,13 @@ tools/
   mworks/
   unreal/
   data/
-  docs/
+  Docs/
   git/
 
-tests/
-docs/
-Design/
-workflows/
+scripts/tests/
+Docs/
+Docs/Design/
+Docs/Workflows/
 automation/
   skills/
   agents/
@@ -97,15 +97,15 @@ results/
 
 | Current | Target | Migration Risk |
 |---|---|---|
-| `controllers/` | `configs/controllers/` | Low. Mostly YAML. |
-| `planners/` | `configs/planners/` plus `src/planning/` | Medium. Scripts reference current paths. |
-| `scenarios/` | `configs/scenarios/` | Medium. Batch scripts reference current paths. |
-| `models/` | `sim/mworks/extensions/` | High. MWORKS model paths and load scripts may break. |
-| `QuadrotorModel/` | `sim/mworks/official/QuadrotorModel/` or keep as compatibility alias | High. Many scripts and Sysplorer load paths depend on it. |
+| `config/controllers/` | `configs/controllers/` | Low. Mostly YAML. |
+| `config/planners/` | `configs/planners/` plus `src/planning/` | Medium. Scripts reference current paths. |
+| `config/scenarios/` | `configs/scenarios/` | Medium. Batch scripts reference current paths. |
+| `Models/` | `sim/mworks/extensions/` | High. MWORKS model paths and load scripts may break. |
+| `references/MWORKS/QuadrotorModel/` | `sim/mworks/official/QuadrotorModel/` or keep as compatibility alias | High. Many scripts and Sysplorer load paths depend on it. |
 | `unreal/MworksUnrealRenderer/` | `sim/unreal/renderer/` | High. UE project paths and scripts depend on it. |
 | `unreal/QuadrotorMworksBridge/` | `sim/unreal/bridge/` | High. UE plugin paths and build scripts depend on it. |
 | `scripts/` | split into `tools/*` and `src/orchestration/*` | Medium/high. Tests and docs reference scripts. |
-| `Skills/`, `Agent/` | `automation/skills/`, `automation/agents/` | Medium. AGENTS/workflows/config references must update. |
+| `Docs/Skills/`, `references/Agent/` | `automation/skills/`, `automation/agents/` | Medium. AGENTS/workflows/config references must update. |
 | `references/` | `external/specs`, `external/source_repos`, `external/vendor_assets` | High. Large files and Git ignore rules. |
 | `results/` | keep now; later split `formal/review/diagnostics/tmp` | Medium. Report paths depend on existing evidence. |
 
@@ -119,8 +119,8 @@ Acceptance:
 
 ```text
 git diff --check
-python3 scripts/check_unreal_bridge.py
-python3 -m py_compile scripts/check_unreal_bridge.py scripts/check_unreal_s0_s1_readiness.py
+python3 scripts/unreal/check_unreal_bridge.py
+python3 -m py_compile scripts/unreal/check_unreal_bridge.py scripts/unreal/check_unreal_s0_s1_readiness.py
 ```
 
 ### Phase 1: Introduce Path Registry
@@ -154,9 +154,9 @@ Scripts should read logical paths instead of hardcoding top-level directories.
 Move only low-risk YAML/config directories first:
 
 ```text
-controllers/ -> configs/controllers/
-planners/    -> configs/planners/
-scenarios/   -> configs/scenarios/
+config/controllers/ -> configs/controllers/
+config/planners/    -> configs/planners/
+config/scenarios/   -> configs/scenarios/
 ```
 
 Keep temporary compatibility wrappers or update all references in one commit.
@@ -165,8 +165,8 @@ Acceptance:
 
 ```text
 python3 -m pytest tests
-python3 scripts/check_reference_outputs.py
-python3 scripts/run_mworks_batch.py --dry-run configs/scenarios/official/*.yaml
+python3 scripts/quality/check_reference_outputs.py
+python3 scripts/mworks/run_mworks_batch.py --dry-run configs/scenarios/official/*.yaml
 ```
 
 ### Phase 3: Split Scripts
@@ -189,8 +189,8 @@ path aliases exist.
 Only after Phase 1-3:
 
 ```text
-models/                -> sim/mworks/extensions/
-QuadrotorModel/         -> sim/mworks/official/QuadrotorModel/ or retained as alias
+Models/                -> sim/mworks/extensions/
+references/MWORKS/QuadrotorModel/         -> sim/mworks/official/QuadrotorModel/ or retained as alias
 unreal/MworksUnrealRenderer/ -> sim/unreal/renderer/
 unreal/QuadrotorMworksBridge/ -> sim/unreal/bridge/
 ```
@@ -217,8 +217,8 @@ results/diagnostics/
 results/tmp/
 ```
 
-Never move report-backed evidence without updating `docs/simulation_report.md`,
-`docs/user_manual.md`, and result manifests.
+Never move report-backed evidence without updating `Docs/simulation_report.md`,
+`Docs/user_manual.md`, and result manifests.
 
 ## Naming Rules
 
@@ -226,7 +226,7 @@ Never move report-backed evidence without updating `docs/simulation_report.md`,
 2. Configs live under `configs/`.
 3. External inputs live under `external/`.
 4. Generated outputs live under `results/`.
-5. Agent-only operating material lives under `automation/` or `workflows/`.
+5. Agent-only operating material lives under `automation/` or `Docs/Workflows/`.
 6. Keep `AGENTS.md` short. Long procedures belong here or in other workflows.
 7. Do not create empty future directories.
 8. Do not move MWORKS or Unreal project directories without a passing smoke
@@ -234,12 +234,12 @@ Never move report-backed evidence without updating `docs/simulation_report.md`,
 
 ## Immediate Recommendation
 
-Do not start with `models/`, `QuadrotorModel/`, or `unreal/`. Start with:
+Do not start with `Models/`, `references/MWORKS/QuadrotorModel/`, or `unreal/`. Start with:
 
 ```text
 Phase 0: commit current cleanup
 Phase 1: add path registry
-Phase 2: migrate controllers/planners/scenarios to configs/
+Phase 2: migrate config/controllers/planners/scenarios to configs/
 ```
 
 This reduces top-level clutter without breaking the heavy MWORKS/UE path

@@ -136,11 +136,11 @@ check_model(model_name="QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sy
 Do not load this file because it must not exist:
 
 ```text
-models/QuadrotorExperiments/Sunray150CompleteSystemGraphical_Sysblock.mo
+Models/QuadrotorExperiments/Sunray150CompleteSystemGraphical_Sysblock.mo
 ```
 
 That standalone file causes `错误(1401): 模型重复定义` because the model is
-defined inside `models/QuadrotorExperiments/package.mo`.
+defined inside `Models/QuadrotorExperiments/package.mo`.
 
 Review-result interpretation:
 
@@ -148,14 +148,14 @@ Review-result interpretation:
 |---|---|---|
 | `open ok=true` and no `1401` | The review model loads and opens | Continue visual review |
 | `错误(1401): 模型重复定义` | A duplicate standalone model file exists or was loaded | Delete the standalone file and load only the package |
-| `组件的类型 QuadrotorModel... 查找不到` | Dependencies were not loaded first | Load `QuadrotorModel/package.mo` before `QuadrotorExperiments/package.mo` |
-| `组件的类型 AWFF_FullControllerFlatGraphical_Sysblock 查找不到` | Graphical controller was not loaded first | Load `models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo` before the experiment package |
+| `组件的类型 QuadrotorModel... 查找不到` | Dependencies were not loaded first | Load `references/MWORKS/QuadrotorModel/package.mo` before `QuadrotorExperiments/package.mo` |
+| `组件的类型 AWFF_FullControllerFlatGraphical_Sysblock 查找不到` | Graphical controller was not loaded first | Load `Models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo` before the experiment package |
 | `组件引用 x_sum.u1 / y_sum.u1 / thrust_sum.u1 查找不到` | Known Sysplorer limitation for embedded graphical Sysblock multi-input ports | Do not treat as image/load failure; keep Equation controller for executable closed-loop evidence |
 
 Graphical layout acceptance for this model:
 
 ```text
-1. Resource images are copied directly from references/CUAV/ to QuadrotorModel/Resources/Images/ and keep transparent PNG alpha.
+1. Resource images are copied directly from references/CUAV/ to references/MWORKS/QuadrotorModel/Resources/Images/ and keep transparent PNG alpha.
 2. Do not convert transparent images to white-background RGB files.
 3. GPS and Mid360 must be separate top-level modules, not one combined perception picture block. GPS feeds the flight-controller position input; Mid360 feeds local position and obstacle margin into mission computing.
 4. Top-level hardware module placements must use equal x/y scaling unless there is a model-level reason; otherwise the bitmap icon is visibly stretched.
@@ -190,14 +190,14 @@ For complete-system failsafe scenarios, export event logs from
 has shown stale/constant export behavior for the older name in complete-system
 models, while `system_failsafe_event_code` is verified against
 `system_safety_status` and the active failsafe trigger. Scenario YAML files
-under `scenarios/system/` must therefore map:
+under `config/scenarios/system/` must therefore map:
 
 ```yaml
 extra_variables:
   event_code: system_failsafe_event_code
 ```
 
-`scripts/generate_event_log.py` preserves event codes 60-64 for return/failsafe
+`scripts/results/generate_event_log.py` preserves event codes 60-64 for return/failsafe
 modes; it must not collapse all `flight_mode=6` rows to `DEGRADED_NAV`.
 
 ---
@@ -212,14 +212,14 @@ locations:
 
 ```text
 /home/linux/mcp-wrappers/sysplorer_mcp.sh
-scripts/sysplorer_mcp_wsl_bridge.sh
+scripts/mworks/sysplorer_mcp_wsl_bridge.sh
 ~/mcp-wrappers/sysplorer_mcp.sh
 ~/mcp-wrappers/sysplorer_mcp.bat
 ~/mcp-wrappers/sysplorer_mcp.cmd
 ~/mcp-wrappers/sysplorer_mcp.ps1
 ```
 
-In WSL/Codex, prefer `scripts/sysplorer_mcp_wsl_bridge.sh` because it starts
+In WSL/Codex, prefer `scripts/mworks/sysplorer_mcp_wsl_bridge.sh` because it starts
 the Windows MCP server through `/init ... cmd.exe /c`. Directly executing
 Windows `.exe` or `.cmd` files from WSL may fail with `Exec format error`.
 
@@ -270,7 +270,7 @@ simulate_model
 result_manager
 ```
 
-If tools are not listed, follow `workflows/debug_mcp.md`.
+If tools are not listed, follow `Docs/Workflows/debug_mcp.md`.
 
 ---
 
@@ -423,8 +423,8 @@ claiming obstacle avoidance, run the display/trajectory collision check against
 the same pillar map rendered in Sysplorer:
 
 ```bash
-uv run python scripts/check_planning_display_collision.py \
-  models/QuadrotorExperiments/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo \
+uv run python scripts/planning/check_planning_display_collision.py \
+  Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo \
   --required-clearance-m 0.35
 ```
 
@@ -442,7 +442,7 @@ closed-loop controller evidence. Actual flown history should be reviewed from
 raw/native result or a separate non-control viewer.
 
 ```text
-python3 scripts/run_mworks_scenario.py <scenario.yaml>
+python3 scripts/mworks/run_mworks_scenario.py <scenario.yaml>
 ```
 
 The expected native result path is:
@@ -476,13 +476,13 @@ For headless regression, batch runs, or a known GUI/license issue, skip native
 viewer generation explicitly:
 
 ```text
-python3 scripts/run_mworks_scenario.py <scenario.yaml> --no-gui-result-viewer
+python3 scripts/mworks/run_mworks_scenario.py <scenario.yaml> --no-gui-result-viewer
 ```
 
 For one-at-a-time manual GUI review, avoid mixing old and current windows:
 
 ```text
-python3 scripts/run_mworks_scenario.py <scenario.yaml> --gui-reset-windows
+python3 scripts/mworks/run_mworks_scenario.py <scenario.yaml> --gui-reset-windows
 ```
 
 This keeps the Sysplorer session open, but closes existing plot/animation
@@ -499,7 +499,7 @@ scenario-defined time span, but create a separate full-duration native result
 for GUI visual audit with a coarser output interval:
 
 ```text
-python3 scripts/run_mworks_scenario.py <scenario.yaml> \
+python3 scripts/mworks/run_mworks_scenario.py <scenario.yaml> \
   --gui-review-full-time \
   --gui-review-interval 0.5 \
   --gui-review-native-result-dir results/native_result_cache/gui_review_current_planning_open_blocks_full_0p5s \
@@ -516,7 +516,7 @@ Short GUI review runs are diagnostics only. Use them to check whether the
 on a full GUI review:
 
 ```text
-python3 scripts/run_mworks_scenario.py <scenario.yaml> \
+python3 scripts/mworks/run_mworks_scenario.py <scenario.yaml> \
   --gui-review-stop-time 3 \
   --gui-review-native-result-dir results/native_result_cache/gui_review_current_planning_open_blocks_3s \
   --gui-reset-windows
@@ -584,12 +584,12 @@ navigationDisplay.static_map_mesh cannot identify shape / file not found
 When the planning model uses terrain-following altitude, the planner must write
 `altitude_profile.mode=terrain_follow_agl`, keep `smoothing.type=quintic_segment`,
 and synchronize the Sysplorer model through
-`scripts/update_planning_open_blocks_model.py`. The expected online output
+`scripts/planning/update_planning_open_blocks_model.py`. The expected online output
 interval is `0.05 s` so raw CSV aligns with the 20 Hz controller/local-sensing
 rate without producing oversized native results.
 
 For terrain-following planning scenes, start and goal phases must be explicit.
-`scripts/update_planning_open_blocks_model.py` inserts a ground takeoff segment
+`scripts/planning/update_planning_open_blocks_model.py` inserts a ground takeoff segment
 and a ground landing segment from the same terrain-height function used for
 the static map. Do not hand-edit `p_z` arrays in the generated Modelica file;
 regenerate the planner report and rerun the sync script instead. A high-speed
@@ -745,7 +745,7 @@ If a variable is missing:
 
 1. Use `result_manager` to list available variables.
 2. Map model variable names to standard result fields.
-3. Update `docs/index/api_index.md` if a useful mapping is found.
+3. Update `Docs/Index/api_index.md` if a useful mapping is found.
 
 ---
 
@@ -772,13 +772,13 @@ If direct CSV export is unavailable, save the native result file and document th
 Run the quality gate after metrics are available:
 
 ```bash
-python3 scripts/evaluate_result_quality.py scenarios/official/example3_awff_sysblock.yaml --write-metrics
+python3 scripts/results/evaluate_result_quality.py config/scenarios/official/example3_awff_sysblock.yaml --write-metrics
 ```
 
 The scenario runner does this automatically unless `--no-quality-gate` is set:
 
 ```bash
-python3 scripts/run_mworks_scenario.py scenarios/official/example3_awff_sysblock.yaml
+python3 scripts/mworks/run_mworks_scenario.py config/scenarios/official/example3_awff_sysblock.yaml
 ```
 
 Interpretation:
@@ -801,7 +801,7 @@ If MWORKS or Sysplorer MCP is unavailable, do not fabricate simulated states.
 Instead, generate only the official reference trajectory and replay scaffold:
 
 ```bash
-python3 scripts/generate_reference.py --scene all
+python3 scripts/results/generate_reference.py --scene all
 ```
 
 Outputs:
@@ -823,13 +823,13 @@ metrics against the reference columns.
 Official scenario configs:
 
 ```text
-scenarios/official/example1_pid_baseline.yaml  -> QuadrotorModel.Examples.Example1
-scenarios/official/example2_pid_baseline.yaml  -> QuadrotorModel.Examples.Example2
-scenarios/official/example3_pid_baseline.yaml  -> QuadrotorModel.Examples.Example3
+config/scenarios/official/example1_pid_baseline.yaml  -> QuadrotorModel.Examples.Example1
+config/scenarios/official/example2_pid_baseline.yaml  -> QuadrotorModel.Examples.Example2
+config/scenarios/official/example3_pid_baseline.yaml  -> QuadrotorModel.Examples.Example3
 ```
 
 Smoke logs may cover only a short interval such as 0-1 s. Full official
-baseline metrics require the scenario stop times in `scenarios/official/*.yaml`.
+baseline metrics require the scenario stop times in `config/scenarios/official/*.yaml`.
 
 ---
 
@@ -883,7 +883,7 @@ motor commands are not all zero
 
 | Failure | Action |
 |---|---|
-| MCP tools missing | Follow `workflows/debug_mcp.md` |
+| MCP tools missing | Follow `Docs/Workflows/debug_mcp.md` |
 | session_manager fails | Restart Sysplorer and retry |
 | load_library fails | Check library path and model installation |
 | check_model fails | Fix model before simulation |

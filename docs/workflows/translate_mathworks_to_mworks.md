@@ -2,19 +2,19 @@
 
 > Purpose: convert MATLAB/Simulink agent skills, prompts, or workflows into project-specific MWORKS.Syslab / Sysplorer / Sysblock procedures.
 
-Default rule: execute project tasks through `Skills/Mworks/` first. Use raw MATLAB/Simulink skills only as references when the MWORKS skill set has a gap, then fold the translated rule back into `Skills/Mworks/`, `workflows/`, or `docs/index/`.
+Default rule: execute project tasks through `Docs/Skills/Mworks/` first. Use raw MATLAB/Simulink skills only as references when the MWORKS skill set has a gap, then fold the translated rule back into `Docs/Skills/Mworks/`, `Docs/Workflows/`, or `Docs/Index/`.
 
 ## Success Criteria
 
 A translation is complete only when it produces at least one project-local artifact:
 
 ```text
-docs/index/*.md
-workflows/*.md
-controllers/*/*.yaml
-scenarios/**/*.yaml
+Docs/Index/*.md
+Docs/Workflows/*.md
+config/controllers/*/*.yaml
+config/scenarios/**/*.yaml
 scripts/*.py or scripts/*.jl
-models/**/*.mo
+Models/**/*.mo
 results/{group}/{scene}/{experiment}/raw/*.csv
 results/{group}/{scene}/{experiment}/metrics/*.json
 ```
@@ -26,9 +26,9 @@ Do not stop at a conceptual comparison.
 Before reading raw upstream skills, check whether one of the project-local MWORKS skills already covers the task:
 
 ```text
-Skills/Mworks/
-docs/index/workflow_index.md
-docs/index/doc_index.md
+Docs/Skills/Mworks/
+Docs/Index/workflow_index.md
+Docs/Index/doc_index.md
 ```
 
 | Source Type | Example | Translate To |
@@ -38,16 +38,16 @@ docs/index/doc_index.md
 | Simulink model interaction | current model, selected blocks, block params | Sysplorer model/component/port introspection |
 | Simulink simulation workflow | sim, logsout, signal logging | Sysplorer simulation + result_manager export |
 | Simulink debugging workflow | sldebug, solver profiler | MWORKS check/translate/simulate/result probe workflow |
-| Simulink project structure | models/data/doc/test separation | Quadrotor project directory conventions |
+| Simulink project structure | Models/data/doc/test separation | Quadrotor project directory conventions |
 
 ## Step 2: Check Official MWORKS Equivalence
 
 Before writing a workflow, check these sources in order:
 
 ```text
-docs/index/mathworks_to_mworks_migration.md
-docs/mworks/converted/
-docs/mworks/scan/relevant_index.md
+Docs/Index/mathworks_to_mworks_migration.md
+Docs/Mworks/converted/
+Docs/Mworks/scan/relevant_index.md
 references/MWORKS高校星火计划资料包/MWORKS与MATLAB功能对照/
 ```
 
@@ -68,9 +68,9 @@ sysplorer_mcp.resources_retrieval
 | numerical analysis, metrics, plots | Syslab Julia or project Python |
 | Modelica model/component operations | Sysplorer MCP |
 | block-level control subsystem design | Sysblock or Modelica class |
-| scenario configuration | YAML under `scenarios/` |
-| repeatable agent procedure | Markdown under `workflows/` |
-| long-term rule/index | Markdown under `docs/index/` |
+| scenario configuration | YAML under `config/scenarios/` |
+| repeatable agent procedure | Markdown under `Docs/Workflows/` |
+| long-term rule/index | Markdown under `Docs/Index/` |
 
 ## Step 4: Write the Translation as an Action Workflow
 
@@ -103,9 +103,9 @@ Use model_manager.get_components to locate the component, check_model before sim
 For control/simulation workflows:
 
 ```bash
-python3 scripts/qa_check.py
-python3 -m py_compile scripts/*.py tests/*.py
-python3 scripts/check_reference_outputs.py
+python3 scripts/quality/qa_check.py
+python3 -m py_compile scripts/*.py scripts/tests/*.py
+python3 scripts/quality/check_reference_outputs.py
 git diff --check
 ```
 
@@ -143,10 +143,10 @@ large videos/PDFs unless explicitly required
 
 ## Current Recommended Translation Queue
 
-1. Use `Skills/Mworks/mworks-model-context/SKILL.md` for Simulink-style model/block context requests.
-2. Use `Skills/Mworks/mworks-simulation-evidence/SKILL.md` for simulation/logging/result evidence requests.
-3. Use `Skills/Mworks/mworks-syslab-porting/SKILL.md` for MATLAB coding, Syslab, plotting, and performance migration.
-4. Use `Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` for debug/profiler/solver-style tasks.
-5. Use `Skills/Mworks/mworks-test-quality/SKILL.md` for testing, review, and regression tasks.
-6. Use `Skills/Mworks/mworks-report-visualization/SKILL.md` for report, replay, and video material.
-7. Use `Skills/Mworks/mworks-mcp-operations/SKILL.md` for wrapper, session, and MCP minimal-impact behavior.
+1. Use `Docs/Skills/Mworks/mworks-model-context/SKILL.md` for Simulink-style model/block context requests.
+2. Use `Docs/Skills/Mworks/mworks-simulation-evidence/SKILL.md` for simulation/logging/result evidence requests.
+3. Use `Docs/Skills/Mworks/mworks-syslab-porting/SKILL.md` for MATLAB coding, Syslab, plotting, and performance migration.
+4. Use `Docs/Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` for debug/profiler/solver-style tasks.
+5. Use `Docs/Skills/Mworks/mworks-test-quality/SKILL.md` for testing, review, and regression tasks.
+6. Use `Docs/Skills/Mworks/mworks-report-visualization/SKILL.md` for report, replay, and video material.
+7. Use `Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md` for wrapper, session, and MCP minimal-impact behavior.

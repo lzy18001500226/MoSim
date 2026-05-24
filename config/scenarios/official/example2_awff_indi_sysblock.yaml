@@ -10,17 +10,17 @@ evidence_level: real_sysplorer_mcp_sysblock_l1_indi_helix_full
 model:
   source_package: QuadrotorExperiments
   model_name: QuadrotorExperiments.Example2INDISysblockClosedLoop
-  model_path_hint: models/QuadrotorExperiments/Example2INDISysblockClosedLoop.mo
-  base_model_path_hint: QuadrotorModel/package.mo
+  model_path_hint: Models/QuadrotorExperiments/Example2INDISysblockClosedLoop.mo
+  base_model_path_hint: references/MWORKS/QuadrotorModel/package.mo
   official_description: 螺旋爬升 AWFF + L1-inspired outer loop + INDI-like attitude Sysblock interface wrapper
 
 controller:
-  params_file: controllers/awff_indi_sysblock/default.yaml
+  params_file: config/controllers/awff_indi_sysblock/default.yaml
   replacement_component: controller3_2
   baseline_experiment: official_example2_awff_sysblock
-  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_INDIControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_INDIControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_INDIControllerGraphical_Sysblock
-  graphical_sysblock_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0

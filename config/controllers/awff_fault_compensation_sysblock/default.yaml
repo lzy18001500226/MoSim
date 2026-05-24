@@ -14,7 +14,7 @@ implementation_status:
   sysblock_controller: AWFF_FaultCompensationControllerEquation_Sysblock
   graphical_sysblock_controller:
     controller_model: AWFF_InnovationGraphicalControllers.AWFF_FaultCompensationControllerGraphical_Sysblock
-    controller_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+    controller_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
     status: graphical counterpart uses AWFF outer-loop settings with L1 residual gains set to zero, PID attitude loop, and KnownRotorFaultMixerBlock.
   verification_scope: pending real MWORKS_MCP full run for rotor-1 85% efficiency degradation plus wind gust
   limitation: >
@@ -71,6 +71,6 @@ fault_compensation:
 
 acceptance:
   robust_rotor1_loss15_wind_gust:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_wind_gust_awff_fault_compensation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_wind_gust_awff_fault_compensation_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
     target_quality: better_than_awff_sysblock_boundary_case

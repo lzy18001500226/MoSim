@@ -459,8 +459,8 @@ Current project geometry audit:
 
 | Item | Local source | Current value / observation |
 |---|---|---|
-| Body visual STL | `QuadrotorModel/Resources/Visualization/sunray150_mid360_body.stl` and original `sunray.stl` | Raw STL bbox `8.3268 x 8.4508 x 6.3742`; SDF visual scale `0.03`, giving about `0.2498 x 0.2535 x 0.1912 m`. |
-| Propeller visual STL | `QuadrotorModel/Resources/Visualization/sunray150_mid360_propeller.stl` and original `sunray_cw.stl` | Raw STL bbox `71.1655 x 80.5003 x 7.3182`; SDF visual scale `0.001`, giving about `0.0712 x 0.0805 x 0.0073 m`. |
+| Body visual STL | `references/MWORKS/QuadrotorModel/Resources/Visualization/sunray150_mid360_body.stl` and original `sunray.stl` | Raw STL bbox `8.3268 x 8.4508 x 6.3742`; SDF visual scale `0.03`, giving about `0.2498 x 0.2535 x 0.1912 m`. |
+| Propeller visual STL | `references/MWORKS/QuadrotorModel/Resources/Visualization/sunray150_mid360_propeller.stl` and original `sunray_cw.stl` | Raw STL bbox `71.1655 x 80.5003 x 7.3182`; SDF visual scale `0.001`, giving about `0.0712 x 0.0805 x 0.0073 m`. |
 | Rotor positions | `references/Sunray/.../sunray150_with_mid360.sdf` | rotor 0 `(0.065,-0.065,-0.025)`, rotor 1 `(-0.065,0.065,-0.025)`, rotor 2 `(0.065,0.065,-0.025)`, rotor 3 `(-0.065,-0.065,-0.025)`. |
 | Rotor directions | same SDF motor plugins | rotor 0/1 `ccw`, rotor 2/3 `cw`; confirm against PX4 motor order before changing allocation. |
 | Mid360 pose | same SDF | `(0.036,-0.0155,0.075)` relative to `base_link`. |

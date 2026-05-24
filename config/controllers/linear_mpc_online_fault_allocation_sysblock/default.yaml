@@ -20,7 +20,7 @@ implementation_status:
     rotor1_prototype: AWFF_LinearMPCOnlineFaultAllocationController_Sysblock
     multi_rotor: AWFF_LinearMPCMultiFaultAllocationController_Sysblock
   graphical_sysblock_counterpart:
-    package_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+    package_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
     controller_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock
     outer_loop_model: AWFF_InnovationGraphicalControllers.LinearMPCOuterLoopBlock
     estimator_model: AWFF_InnovationGraphicalControllers.Rotor1OnlineEfficiencyEstimatorBlock
@@ -114,22 +114,22 @@ online_fault_estimator:
 
 acceptance:
   rotor1_degradation:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml
     required: check_model, simulate_model, result_manager, eta_hat raw column, metrics, figures, replay JSON
     target_quality: pass_or_better_than_linear_mpc_without_fault_allocation
   rotor1_to_4_wind_gust:
     scenario_files:
-      - scenarios/robustness/example1_rotor1_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
-      - scenarios/robustness/example1_rotor2_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
-      - scenarios/robustness/example1_rotor3_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
-      - scenarios/robustness/example1_rotor4_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - config/scenarios/robustness/example1_rotor1_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - config/scenarios/robustness/example1_rotor2_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - config/scenarios/robustness/example1_rotor3_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - config/scenarios/robustness/example1_rotor4_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
     required: check_model, simulate_model, eta_hat1..4 raw columns, fault_index raw column, metrics, figures, replay JSON
     target_quality: pass_or_better_than_awff_boundary
 
 verified_evidence:
   source: MWORKS_MCP
   rotor1_loss15_full:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_online_fault_allocation_sysblock.yaml
     model_name: QuadrotorExperiments.Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop
     raw_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.csv
     metrics_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock/metrics/robust_rotor1_loss15_example1_linear_mpc_online_fault_allocation_sysblock.json
@@ -147,10 +147,10 @@ verified_evidence:
 
   rotor_wind_gust_multi_rotor_full:
     scenario_files:
-      - scenarios/robustness/example1_rotor1_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
-      - scenarios/robustness/example1_rotor2_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
-      - scenarios/robustness/example1_rotor3_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
-      - scenarios/robustness/example1_rotor4_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - config/scenarios/robustness/example1_rotor1_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - config/scenarios/robustness/example1_rotor2_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - config/scenarios/robustness/example1_rotor3_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
+      - config/scenarios/robustness/example1_rotor4_loss15_wind_gust_linear_mpc_online_fault_allocation_sysblock.yaml
     quality_status: pass
     rmse_reduction_vs_awff_pct_range: 26.691-31.063
     health_score_range: 51.140-51.318

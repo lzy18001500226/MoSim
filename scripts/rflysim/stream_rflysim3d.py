@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_RFLYSIM_ROOTS = (
     Path("/mnt/d/PX4PSP"),
     Path("D:/PX4PSP"),

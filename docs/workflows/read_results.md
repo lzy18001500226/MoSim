@@ -31,7 +31,7 @@ u1, u2, u3, u4
 Official model candidate names are maintained in:
 
 ```text
-docs/index/variable_mapping.md
+Docs/Index/variable_mapping.md
 ```
 
 ---
@@ -58,7 +58,7 @@ resources_retrieval
 
 1. Open the result file with `result_manager`.
 2. List available variables.
-3. Query `docs/index/variable_mapping.md` candidate names first.
+3. Query `Docs/Index/variable_mapping.md` candidate names first.
 4. Match model-specific variable names to standard project names.
 5. If a candidate is missing, list available variables and update the mapping.
 6. Read time series for required variables.
@@ -84,7 +84,7 @@ Example:
 Save mappings to:
 
 ```text
-docs/index/api_index.md
+Docs/Index/api_index.md
 ```
 
 or:
@@ -135,13 +135,13 @@ row count > 10
 After raw CSV is generated, run:
 
 ```text
-workflows/calc_metrics.md
+Docs/Workflows/calc_metrics.md
 ```
 
 For MCP JSONL logs that contain `GetVarsValues`, use:
 
 ```bash
-python3 scripts/extract_mcp_timeseries.py \
+python3 scripts/mworks/extract_mcp_timeseries.py \
   results/official/example1_step/diagnostics/logs/sysplorer_quadrotor_example1_values.jsonl \
   results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv \
   --columns x,y,z,x_ref,y_ref,z_ref \
@@ -155,14 +155,14 @@ If `GetVarsValues` includes an explicit time series as its first output, use
 For full official scenarios, use the same YAML-driven entrypoint:
 
 ```bash
-python3 scripts/run_mworks_scenario.py scenarios/official/example1_pid_baseline.yaml
-python3 scripts/run_mworks_scenario.py scenarios/official/example1_improved_pid.yaml
+python3 scripts/mworks/run_mworks_scenario.py config/scenarios/official/example1_pid_baseline.yaml
+python3 scripts/mworks/run_mworks_scenario.py config/scenarios/official/example1_improved_pid.yaml
 ```
 
 For multiple scenarios:
 
 ```bash
-python3 scripts/run_mworks_batch.py --skip-existing scenarios/official/*.yaml
+python3 scripts/mworks/run_mworks_batch.py --skip-existing config/scenarios/official/*.yaml
 ```
 
 Do not shorten an official YAML run for smoke testing, because that would

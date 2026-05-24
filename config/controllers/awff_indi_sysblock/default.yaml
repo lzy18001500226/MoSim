@@ -84,15 +84,15 @@ indi_attitude_inner_loop:
 
 acceptance:
   full_example1:
-    scenario_file: scenarios/official/example1_awff_indi_sysblock.yaml
+    scenario_file: config/scenarios/official/example1_awff_indi_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
     target_quality: pass
   full_example3:
-    scenario_file: scenarios/official/example3_awff_indi_sysblock.yaml
+    scenario_file: config/scenarios/official/example3_awff_indi_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
     target_quality: pass
   full_example2_helix_tuned:
-    scenario_file: scenarios/official/example2_awff_indi_sysblock_helix_tuned.yaml
+    scenario_file: config/scenarios/official/example2_awff_indi_sysblock_helix_tuned.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
     target_quality: pass
 
@@ -101,7 +101,7 @@ verified_evidence:
   status: pass
   example1_full:
     date: 2026-05-11
-    scenario_file: scenarios/official/example1_awff_indi_sysblock.yaml
+    scenario_file: config/scenarios/official/example1_awff_indi_sysblock.yaml
     model_name: QuadrotorExperiments.Example1INDISysblockClosedLoop
     raw_file: results/official/example1_step/official_example1_awff_indi_sysblock/raw/official_example1_awff_indi_sysblock.csv
     metrics_file: results/official/example1_step/official_example1_awff_indi_sysblock/metrics/official_example1_awff_indi_sysblock.json
@@ -116,7 +116,7 @@ verified_evidence:
     max_tilt_rad: 0.20609569901997563
   example3_full:
     date: 2026-05-11
-    scenario_file: scenarios/official/example3_awff_indi_sysblock.yaml
+    scenario_file: config/scenarios/official/example3_awff_indi_sysblock.yaml
     model_name: QuadrotorExperiments.Example3INDISysblockClosedLoop
     raw_file: results/official/example3_figure8/official_example3_awff_indi_sysblock/raw/official_example3_awff_indi_sysblock.csv
     metrics_file: results/official/example3_figure8/official_example3_awff_indi_sysblock/metrics/official_example3_awff_indi_sysblock.json
@@ -132,7 +132,7 @@ verified_evidence:
     max_tilt_rad: 0.2524490159724228
   example2_helix_tuned_full:
     date: 2026-05-11
-    scenario_file: scenarios/official/example2_awff_indi_sysblock_helix_tuned.yaml
+    scenario_file: config/scenarios/official/example2_awff_indi_sysblock_helix_tuned.yaml
     model_name: QuadrotorExperiments.Example2HelixTunedINDISysblockClosedLoop
     raw_file: results/official/example2_helix/official_example2_awff_indi_sysblock_helix_tuned/raw/official_example2_awff_indi_sysblock_helix_tuned.csv
     metrics_file: results/official/example2_helix/official_example2_awff_indi_sysblock_helix_tuned/metrics/official_example2_awff_indi_sysblock_helix_tuned.json

@@ -62,10 +62,10 @@ the interface is clear:
 model-context/research agent: read-only interface and replacement location
 implementation agent: one controller/model family write set
 evidence agent: one scenario/result subtree
-docs/quality agent: assigned workflow/report/check updates
+Docs/quality agent: assigned workflow/report/check updates
 ```
 
-1. Create controller folder under `controllers/`.
+1. Create controller folder under `config/controllers/`.
 2. Define parameters in a config file.
 3. Implement the control step.
 4. Add logging/debug outputs.
@@ -76,7 +76,7 @@ docs/quality agent: assigned workflow/report/check updates
 9. Compare with PID baseline.
 10. Update documentation.
 
-For Sysblock controllers, follow `workflows/build_sysblock_graphical_controller.md`.
+For Sysblock controllers, follow `Docs/Workflows/build_sysblock_graphical_controller.md`.
 Do not treat hand-written `.mo` files as verified graphical models unless the
 latest file has passed the graphical gates and Sysplorer MCP `load_file/check_model`.
 If a new block diagram is needed, create or repair it through MWORKS.Sysblock
@@ -85,8 +85,8 @@ GUI/API so generated binding metadata and internal configuration are present.
 For graphical Sysblock controllers, also run the project contract check:
 
 ```bash
-python3 scripts/check_sysblock_graphics.py
-python3 scripts/check_graphical_sysblock_mcp.py
+python3 scripts/mworks/check_sysblock_graphics.py
+python3 scripts/mworks/check_graphical_sysblock_mcp.py
 ```
 
 The graphical controller is not only a screenshot artifact. Accept it as a

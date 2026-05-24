@@ -73,10 +73,10 @@ l1_residual_compensation:
 
 acceptance:
   full_wind:
-    scenario_file: scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
   rotor_degradation:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
     required: >
       check_model, simulate_model, result_manager, raw CSV, metrics, figures,
       replay JSON; current status is needs_iteration and must not be claimed as solved fault tolerance
@@ -84,7 +84,7 @@ acceptance:
 verified_evidence:
   source: MWORKS_MCP
   nominal_full:
-    scenario_file: scenarios/official/example1_l1_residual_sysblock.yaml
+    scenario_file: config/scenarios/official/example1_l1_residual_sysblock.yaml
     model_name: QuadrotorExperiments.Example1L1SysblockClosedLoop
     raw_file: results/official/example1_step/official_example1_l1_residual_sysblock/raw/official_example1_l1_residual_sysblock.csv
     metrics_file: results/official/example1_step/official_example1_l1_residual_sysblock/metrics/official_example1_l1_residual_sysblock.json
@@ -96,7 +96,7 @@ verified_evidence:
     disturbance_recovery_time_s: 2.6999999999999993
     quality_status: pass
   figure8_full:
-    scenario_file: scenarios/official/example3_l1_residual_sysblock.yaml
+    scenario_file: config/scenarios/official/example3_l1_residual_sysblock.yaml
     model_name: QuadrotorExperiments.Example3L1SysblockClosedLoop
     raw_file: results/official/example3_figure8/official_example3_l1_residual_sysblock/raw/official_example3_l1_residual_sysblock.csv
     metrics_file: results/official/example3_figure8/official_example3_l1_residual_sysblock/metrics/official_example3_l1_residual_sysblock.json
@@ -107,7 +107,7 @@ verified_evidence:
     disturbance_peak_error_m: 0.070218774164581
     quality_status: pass
   mass20_full:
-    scenario_file: scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml
     model_name: QuadrotorExperiments.Example1Mass20L1SysblockClosedLoop
     raw_file: results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/raw/robust_mass20_example1_l1_residual_sysblock.csv
     metrics_file: results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/metrics/robust_mass20_example1_l1_residual_sysblock.json
@@ -119,7 +119,7 @@ verified_evidence:
     disturbance_recovery_time_s: 2.6999999999999993
     quality_status: pass
   wind_full:
-    scenario_file: scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
     model_name: QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop
     raw_file: results/robustness/wind_gust_example1/robust_wind_gust_example1_l1_residual_sysblock/raw/robust_wind_gust_example1_l1_residual_sysblock.csv
     metrics_file: results/robustness/wind_gust_example1/robust_wind_gust_example1_l1_residual_sysblock/metrics/robust_wind_gust_example1_l1_residual_sysblock.json
@@ -131,7 +131,7 @@ verified_evidence:
     disturbance_recovery_time_s: 2.8500000000000014
     quality_status: pass
   rotor1_loss15_full:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
     model_name: QuadrotorExperiments.Example1Rotor1Loss15L1SysblockClosedLoop
     raw_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_residual_sysblock/raw/robust_rotor1_loss15_example1_l1_residual_sysblock.csv
     metrics_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_residual_sysblock/metrics/robust_rotor1_loss15_example1_l1_residual_sysblock.json

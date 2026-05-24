@@ -136,7 +136,7 @@ CUAV/Livox 实物图片仅作为报告和答辩硬件说明素材：
 | `references/CUAV/Sunray150.png` | Sunray150 机体图形化展示和模型图标 |
 | `references/CUAV/motor.png` | 四电机图形化展示 |
 
-这些图片用于完整系统图形化仿真画布、模型图标、报告和答辩硬件说明；当前不把图片对应硬件作为新增物理部件接入官方机体模型。`references/CUAV/` 保留无背景原图，模型显示副本统一生成到 `QuadrotorModel/Resources/Images/`。模型显示副本直接使用透明 PNG 原图，保留每张图片自身宽高比例和透明背景。`GPS.png`、`V6X.png`、`MId360.png`、`ORIN NX.png`、`Sunray150.png`、`motor.png` 分别作为 `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock` 中感知、飞控、机载计算、四电机和机体顶层模块的图标。为避免 Modelica URI 中空格导致解析差异，机载计算平台图片在模型资源目录中保存为 `ORIN_NX.png`。三维控制证据仍使用官方 STL 机体；视频级视觉效果可在 Unreal 中重新配置材质、贴图和相机，但必须读取 MWORKS 输出状态，不作为新的仿真真值。
+这些图片用于完整系统图形化仿真画布、模型图标、报告和答辩硬件说明；当前不把图片对应硬件作为新增物理部件接入官方机体模型。`references/CUAV/` 保留无背景原图，模型显示副本统一生成到 `references/MWORKS/QuadrotorModel/Resources/Images/`。模型显示副本直接使用透明 PNG 原图，保留每张图片自身宽高比例和透明背景。`GPS.png`、`V6X.png`、`MId360.png`、`ORIN NX.png`、`Sunray150.png`、`motor.png` 分别作为 `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock` 中感知、飞控、机载计算、四电机和机体顶层模块的图标。为避免 Modelica URI 中空格导致解析差异，机载计算平台图片在模型资源目录中保存为 `ORIN_NX.png`。三维控制证据仍使用官方 STL 机体；视频级视觉效果可在 Unreal 中重新配置材质、贴图和相机，但必须读取 MWORKS 输出状态，不作为新的仿真真值。
 
 后续模型检查只针对官方机体、控制器闭环和图形化展示链路；CUAV/Livox/ORIN 图片不作为物理建模检查对象。
 
@@ -274,10 +274,10 @@ Sysplorer 迁移建议：
 
 | 优先级 | 任务 | 输出位置 |
 |---|---|---|
-| P0 | 维持单机控制器结果收尾和人工审核清单更新 | `results/人工审核清单.csv`、`docs/simulation_report.md` |
-| P1 | 建立 `PlannerCommand`、`GridMap`、`TrajectoryReference`、`FormationCommand` 标准接口 | `Design/02_模型接口与运行流程.md`、`docs/index/variable_mapping.md` |
-| P1 | 从 EGO 抽取 A*/B-spline/minimum-snap 迁移设计 | `Design/05_路径规划与轨迹生成.md` |
-| P1 | 从 ORCA/formation_control 抽取多机避障和队形状态机 | `Design/06_多机编队控制.md` |
-| P2 | 建立 Sysplorer 图形化单机避障规划模型 | `models/QuadrotorPlanning*` |
-| P2 | 建立 Sysplorer 三机编队与 ORCA/CBF 安全层模型 | `models/QuadrotorFormation*` |
-| P2 | 增加多机指标：队形 RMSE、最小机间距、避障约束违反数 | `scripts/calc_metrics.py`、`Design/08_仿真指标与自动评估.md` |
+| P0 | 维持单机控制器结果收尾和人工审核清单更新 | `results/人工审核清单.csv`、`Docs/simulation_report.md` |
+| P1 | 建立 `PlannerCommand`、`GridMap`、`TrajectoryReference`、`FormationCommand` 标准接口 | `Docs/Design/02_模型接口与运行流程.md`、`Docs/Index/variable_mapping.md` |
+| P1 | 从 EGO 抽取 A*/B-spline/minimum-snap 迁移设计 | `Docs/Design/05_路径规划与轨迹生成.md` |
+| P1 | 从 ORCA/formation_control 抽取多机避障和队形状态机 | `Docs/Design/06_多机编队控制.md` |
+| P2 | 建立 Sysplorer 图形化单机避障规划模型 | `Models/QuadrotorPlanning*` |
+| P2 | 建立 Sysplorer 三机编队与 ORCA/CBF 安全层模型 | `Models/QuadrotorFormation*` |
+| P2 | 增加多机指标：队形 RMSE、最小机间距、避障约束违反数 | `scripts/results/calc_metrics.py`、`Docs/Design/08_仿真指标与自动评估.md` |

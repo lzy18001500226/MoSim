@@ -16,11 +16,11 @@ be reused:
 
 ## Audit Steps
 
-1. Confirm path is inside the project, usually under `references/` or `Skills/`.
+1. Confirm path is inside the project, usually under `references/` or `Docs/Skills/`.
 2. Run the local scanner:
 
 ```bash
-python3 scripts/audit_external_repo.py references/AirSim/spear --output results/audits/spear_audit.json --markdown results/audits/spear_audit.md
+python3 scripts/reference/audit_external_repo.py references/AirSim/spear --output results/audits/spear_audit.json --markdown results/audits/spear_audit.md
 ```
 
 3. Read project metadata:
@@ -28,7 +28,7 @@ python3 scripts/audit_external_repo.py references/AirSim/spear --output results/
    - `LICENSE*`
    - `.uproject`
    - `package.xml`, `CMakeLists.txt`, `pyproject.toml`, `package.json`
-   - `docs/`, `examples/`, `issues` notes if available locally.
+   - `Docs/`, `examples/`, `issues` notes if available locally.
 4. Classify usefulness:
 
 ```text
@@ -70,7 +70,7 @@ next validation:
 ```
 
 For agent, skill, or workflow-runtime repositories, use the three-pass audit
-structure from `workflows/agent_orchestration.md`:
+structure from `Docs/Workflows/agent_orchestration.md`:
 
 ```text
 PASS 1 inventory:
@@ -190,7 +190,7 @@ no duplicated policy text that belongs in AGENTS.md or a workflow:
 no external runtime setup steps promoted as project requirements:
 ```
 
-For `Skills/okwinds/**`, treat the useful source of truth as local reference
+For `Docs/Skills/okwinds/**`, treat the useful source of truth as local reference
 material for workflow process, not an execution dependency:
 
 ```text
@@ -228,7 +228,7 @@ skill_exec/actions module as a project automation requirement
 raw NodeReport/WAL schemas as normative without project adaptation
 ```
 
-For `Skills/Agent/**`, treat curated skills and subagent catalogs as
+For `Docs/Skills/Agent/**`, treat curated skills and subagent catalogs as
 third-party workflow references:
 
 ```text
@@ -243,7 +243,7 @@ superpowers:
   and stop-contract thinking
 ```
 
-Do not adopt from `Skills/Agent/**` by default:
+Do not adopt from `Docs/Skills/Agent/**` by default:
 
 ```text
 global `~/.codex/agents` installation changes

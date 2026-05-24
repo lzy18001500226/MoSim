@@ -20,10 +20,10 @@ no_patch: sources were checked and no project change was justified
 |---|---|---|---|---|---|
 | Codex / OpenAI docs | official docs when needed | skills, durable goals, config limits, long-running agent behavior | unverified config keys or provider assumptions | 2026-05-21 | Codex config/tool behavior changes or agent runtime issue |
 | Claude Code docs | official docs when needed | sub-agent role separation, memory, hooks, reviewer patterns | copying Claude-specific config syntax into Codex without verification | 2026-05-21 | recurring sub-agent lifecycle failure |
-| `awesome-codex-skills` | `Skills/Agent/awesome-codex-skills` | planning, review, CI fix, issue triage, small task workflows | unrelated app/UI workflows as project requirements | 2026-05-21 | new workflow failure or missing skill pattern |
-| `awesome-codex-subagents` | `Skills/Agent/awesome-codex-subagents` | reviewer, task-distributor, meta-orchestration, research roles | generic agents without project-specific scope/evidence contracts | 2026-05-21 | agent role design gap |
-| `superpowers` | `Skills/Agent/superpowers` | verification-before-completion, parallel dispatch, code review handoff | endless loop/self-driving patterns without user-approved scope | 2026-05-21 | completion/review quality failure |
-| OKWinds repos | `Skills/okwinds/*` | WAL, task graph, evidence chain, capability coverage, doctor checks | hosted/runtime dependencies, UI/TUI products, unrelated SDK services | 2026-05-21 | ledger/WAL/recovery weakness |
+| `awesome-codex-skills` | `Docs/Skills/Agent/awesome-codex-skills` | planning, review, CI fix, issue triage, small task workflows | unrelated app/UI workflows as project requirements | 2026-05-21 | new workflow failure or missing skill pattern |
+| `awesome-codex-subagents` | `Docs/Skills/Agent/awesome-codex-subagents` | reviewer, task-distributor, meta-orchestration, research roles | generic agents without project-specific scope/evidence contracts | 2026-05-21 | agent role design gap |
+| `superpowers` | `Docs/Skills/Agent/superpowers` | verification-before-completion, parallel dispatch, code review handoff | endless loop/self-driving patterns without user-approved scope | 2026-05-21 | completion/review quality failure |
+| OKWinds repos | `Docs/Skills/okwinds/*` | WAL, task graph, evidence chain, capability coverage, doctor checks | hosted/runtime dependencies, UI/TUI products, unrelated SDK services | 2026-05-21 | ledger/WAL/recovery weakness |
 
 ## Recurring Audit Contract
 
@@ -51,8 +51,8 @@ review_result:
 next_trigger:
 ```
 
-Durable changes go to `workflows/agent_orchestration.md`, `workflows/agent_task_ledger.md`,
-`docs/index/workflow_index.md`, or the relevant project-local skill. Keep
+Durable changes go to `Docs/Workflows/agent_orchestration.md`, `Docs/Workflows/agent_task_ledger.md`,
+`Docs/Index/workflow_index.md`, or the relevant project-local skill. Keep
 `AGENTS.md` policy-level only.
 
 Do not import third-party execution runtimes, global agent configs, provider

@@ -51,7 +51,7 @@ not expose a `sysplorer` namespace, connect to the configured stdio wrapper
 and issue JSON-RPC MCP calls directly; record the log under `results/`.
 
 For `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock`, follow the
-direct sequence in `workflows/run_simulation.md`. The key failure classes are:
+direct sequence in `Docs/Workflows/run_simulation.md`. The key failure classes are:
 
 | Error | Interpretation |
 |---|---|
@@ -210,19 +210,19 @@ Common issues:
 The local Unreal MCP source lives under:
 
 ```text
-Skills/unreal-engine-mcp/
+Docs/Skills/unreal-engine-mcp/
 ```
 
 The WSL wrapper is project-local:
 
 ```text
-scripts/unreal_mcp_wsl_wrapper.sh
+scripts/unreal/unreal_mcp_wsl_wrapper.sh
 ```
 
 Manual smoke test:
 
 ```bash
-scripts/unreal_mcp_wsl_wrapper.sh
+scripts/unreal/unreal_mcp_wsl_wrapper.sh
 ```
 
 If it starts and waits for input, that is normal for stdio MCP. To verify with a
@@ -235,14 +235,14 @@ Codex MCP config entry, if enabling manually:
 
 ```toml
 [mcp_servers.unreal_engine]
-command = "/mnt/c/Users/HP/Desktop/Quadrotor/scripts/unreal_mcp_wsl_wrapper.sh"
+command = "/mnt/c/Users/HP/Desktop/Quadrotor/scripts/unreal/unreal_mcp_wsl_wrapper.sh"
 args = []
 startup_timeout_sec = 180
 tool_timeout_sec = 300
 ```
 
 Do not register this against opencode config files. The Unreal editor side still
-needs the bundled `Skills/unreal-engine-mcp/UnrealMCP/` plugin enabled in a UE
+needs the bundled `Docs/Skills/unreal-engine-mcp/UnrealMCP/` plugin enabled in a UE
 project. The WSL wrapper exports `UNREAL_HOST` to the WSL default gateway when
 the variable is unset, and the Python MCP server connects to
 `$UNREAL_HOST:$UNREAL_PORT` (default port `55557`). If Unreal is not open, the
@@ -253,7 +253,7 @@ out.
 Before running interactive actor/Blueprint tools, check the editor-side socket:
 
 ```bash
-python3 scripts/probe_unreal_mcp_listener.py --wrapper-route-only --timeout 1
+python3 scripts/unreal/probe_unreal_mcp_listener.py --wrapper-route-only --timeout 1
 ```
 
 If this fails, do not keep retrying actor/Blueprint MCP tools. Fix the Unreal
@@ -261,7 +261,7 @@ Editor/plugin/listener route first, or continue only with source-level files and
 document the missing viewport evidence.
 
 `--wrapper-route-only` checks the exact route used by
-`scripts/unreal_mcp_wsl_wrapper.sh`. Without it, the probe also checks practical
+`scripts/unreal/unreal_mcp_wsl_wrapper.sh`. Without it, the probe also checks practical
 diagnostic fallbacks: `UNREAL_HOST` when set, the WSL default gateway, and
 `127.0.0.1`. Use `--host <addr>` only when you want to test one explicit route.
 
@@ -276,7 +276,7 @@ Interpret the preflight result before changing code:
 For S0/S1 renderer work, run the combined gate first:
 
 ```bash
-python3 scripts/check_unreal_s0_s1_readiness.py --build
+python3 scripts/unreal/check_unreal_s0_s1_readiness.py --build
 ```
 
 Add `--check-listener` only when preparing for interactive viewport review.
@@ -317,8 +317,8 @@ that time. If a later read-only tool call times out, the current state is
 unavailable until both checks pass again:
 
 ```bash
-python3 scripts/probe_unreal_mcp_listener.py --timeout 1
-python3 scripts/check_unreal_s0_s1_readiness.py --build --check-listener
+python3 scripts/unreal/probe_unreal_mcp_listener.py --timeout 1
+python3 scripts/unreal/check_unreal_s0_s1_readiness.py --build --check-listener
 ```
 
 Do not continue interactive actor, Blueprint, or viewport MCP work from stale

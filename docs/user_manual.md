@@ -30,8 +30,8 @@ Sysplorer plot_manager / Syslab plotting APIs
 在项目根目录运行：
 
 ```bash
-python3 scripts/qa_check.py
-python3 scripts/check_reference_outputs.py
+python3 scripts/quality/qa_check.py
+python3 scripts/quality/check_reference_outputs.py
 ```
 
 通过标准：
@@ -47,15 +47,15 @@ official_example1/2/3 reference checks OK
 官方模型包：
 
 ```text
-QuadrotorModel/package.mo
+references/MWORKS/QuadrotorModel/package.mo
 ```
 
 官方场景配置：
 
 ```text
-scenarios/official/example1_pid_baseline.yaml  阶梯爬升，50 s
-scenarios/official/example2_pid_baseline.yaml  螺旋爬升，50 s
-scenarios/official/example3_pid_baseline.yaml  8字形运动，120 s
+config/scenarios/official/example1_pid_baseline.yaml  阶梯爬升，50 s
+config/scenarios/official/example2_pid_baseline.yaml  螺旋爬升，50 s
+config/scenarios/official/example3_pid_baseline.yaml  8字形运动，120 s
 ```
 
 对应模型：
@@ -72,18 +72,18 @@ QuadrotorExperiments.Example3ImprovedPID
 项目本地实验模型包：
 
 ```text
-models/QuadrotorExperiments/package.mo
+Models/QuadrotorExperiments/package.mo
 ```
 
-该包通过 `extends QuadrotorModel.Examples.*` 派生官方模型，只覆盖 `controller3_2.PID*` 参数，不修改官方 `QuadrotorModel/package.mo`。
+该包通过 `extends QuadrotorModel.Examples.*` 派生官方模型，只覆盖 `controller3_2.PID*` 参数，不修改官方 `references/MWORKS/QuadrotorModel/package.mo`。
 
 ## 4. 参考轨迹与 replay JSON
 
 生成官方参考轨迹和回放 JSON：
 
 ```bash
-python3 scripts/generate_reference.py --scene all
-python3 scripts/check_reference_outputs.py
+python3 scripts/results/generate_reference.py --scene all
+python3 scripts/quality/check_reference_outputs.py
 ```
 
 输出：
@@ -102,7 +102,7 @@ results/official/example3_figure8/reference_official_example3/replay/reference_o
 从真实 MCP raw CSV 生成实际轨迹回放：
 
 ```bash
-python3 scripts/generate_replay_from_raw.py \
+python3 scripts/results/generate_replay_from_raw.py \
   results/official/example1_step/official_example1_improved_pid/raw/official_example1_improved_pid.csv \
   results/official/example1_step/official_example1_improved_pid/replay/official_example1_improved_pid.json \
   --scene-id official_example1_improved_pid \
@@ -123,7 +123,7 @@ results/official/example3_figure8/official_example3_pid_baseline/replay/official
 results/official/example3_figure8/official_example3_improved_pid/replay/official_example3_improved_pid.json
 ```
 
-如需临时制作浏览器回放素材，可手动执行 `scripts/generate_replay_html.py`。仓库默认流程不再生成或提交 HTML 文件。
+如需临时制作浏览器回放素材，可手动执行 `scripts/results/generate_replay_html.py`。仓库默认流程不再生成或提交 HTML 文件。
 
 ## 5. 官方仿真流程
 
@@ -131,7 +131,7 @@ results/official/example3_figure8/official_example3_improved_pid/replay/official
 
 ```text
 session_manager
-→ model_manager load QuadrotorModel/package.mo
+→ model_manager load references/MWORKS/QuadrotorModel/package.mo
 → check_model
 → simulate_model
 → result_manager list/read variables
@@ -144,7 +144,7 @@ session_manager
 变量映射见：
 
 ```text
-docs/index/variable_mapping.md
+Docs/Index/variable_mapping.md
 ```
 
 完整官方 baseline 结果应写入：
@@ -160,7 +160,7 @@ results/official/example3_figure8/official_example3_pid_baseline/metrics/officia
 
 `qa_check.py` 会检查这些正式结果的时长，Example1/2 不得短于 50 s，Example3 不得短于 120 s。
 
-`scripts/run_sysplorer_mcp_smoke.py` 当前会导出以下标准字段：
+`scripts/mworks/run_sysplorer_mcp_smoke.py` 当前会导出以下标准字段：
 
 ```text
 time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4
@@ -171,7 +171,7 @@ time,x,y,z,x_ref,y_ref,z_ref,roll,pitch,yaw,u1,u2,u3,u4
 复现完整官方 PID baseline：
 
 ```bash
-python3 scripts/run_sysplorer_mcp_smoke.py \
+python3 scripts/mworks/run_sysplorer_mcp_smoke.py \
   --target-time 0,50 \
   --raw-output results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv \
   --metrics-json results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.json \
@@ -181,7 +181,7 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
   --controller-id pid_baseline \
   --evidence-level real_sysplorer_mcp_full_baseline
 
-python3 scripts/run_sysplorer_mcp_smoke.py \
+python3 scripts/mworks/run_sysplorer_mcp_smoke.py \
   --model-name QuadrotorModel.Examples.Example2 \
   --target-time 0,50 \
   --raw-output results/official/example2_helix/official_example2_pid_baseline/raw/official_example2_pid_baseline.csv \
@@ -192,7 +192,7 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
   --controller-id pid_baseline \
   --evidence-level real_sysplorer_mcp_full_baseline
 
-python3 scripts/run_sysplorer_mcp_smoke.py \
+python3 scripts/mworks/run_sysplorer_mcp_smoke.py \
   --model-name QuadrotorModel.Examples.Example3 \
   --target-time 0,120 \
   --raw-output results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv \
@@ -207,7 +207,7 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
 复现 MCP 参数搜索型 Improved PID 对比：
 
 ```bash
-python3 scripts/run_sysplorer_mcp_smoke.py \
+python3 scripts/mworks/run_sysplorer_mcp_smoke.py \
   --extra-model-file 'C:\Users\HP\Desktop\Quadrotor\models\QuadrotorExperiments\package.mo' \
   --model-name QuadrotorExperiments.Example1ImprovedPID \
   --target-time 0,50 \
@@ -219,7 +219,7 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
   --controller-id improved_pid \
   --evidence-level real_sysplorer_mcp_full_improved_pid
 
-python3 scripts/run_sysplorer_mcp_smoke.py \
+python3 scripts/mworks/run_sysplorer_mcp_smoke.py \
   --extra-model-file 'C:\Users\HP\Desktop\Quadrotor\models\QuadrotorExperiments\package.mo' \
   --model-name QuadrotorExperiments.Example2ImprovedPID \
   --target-time 0,50 \
@@ -231,7 +231,7 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
   --controller-id improved_pid \
   --evidence-level real_sysplorer_mcp_full_improved_pid
 
-python3 scripts/run_sysplorer_mcp_smoke.py \
+python3 scripts/mworks/run_sysplorer_mcp_smoke.py \
   --extra-model-file 'C:\Users\HP\Desktop\Quadrotor\models\QuadrotorExperiments\package.mo' \
   --model-name QuadrotorExperiments.Example3ImprovedPID \
   --target-time 0,120 \
@@ -244,7 +244,7 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
   --evidence-level real_sysplorer_mcp_full_improved_pid
 ```
 
-默认情况下，`scripts/run_sysplorer_mcp_smoke.py` 会保留 Sysplorer GUI/session，避免连续仿真时反复启动。只有需要显式清理时才添加：
+默认情况下，`scripts/mworks/run_sysplorer_mcp_smoke.py` 会保留 Sysplorer GUI/session，避免连续仿真时反复启动。只有需要显式清理时才添加：
 
 ```bash
 --shutdown-session
@@ -253,7 +253,7 @@ python3 scripts/run_sysplorer_mcp_smoke.py \
 复现 Improved PID 参数搜索：
 
 ```bash
-python3 scripts/tune_improved_pid_mcp.py --examples 1 3 --timeout-s 900
+python3 scripts/mworks/tune_improved_pid_mcp.py --examples 1 3 --timeout-s 900
 ```
 
 该脚本会生成临时 Modelica 派生包、串行调用真实 Sysplorer MCP 仿真候选参数，并输出：
@@ -267,27 +267,27 @@ results/tuning/pid_search/summary/pid_tuning_summary.md
 
 ## 6. 正式场景复现
 
-仓库已清理历史 0-1 s smoke 数据，当前复现和评审均以 `scenarios/official/` 与 `scenarios/robustness/` 下的正式场景为准。
+仓库已清理历史 0-1 s smoke 数据，当前复现和评审均以 `config/scenarios/official/` 与 `config/scenarios/robustness/` 下的正式场景为准。
 
 复现任一正式场景时使用同一入口，直接替换 YAML 路径：
 
 ```bash
-python3 scripts/run_mworks_scenario.py scenarios/official/example1_pid_baseline.yaml
-python3 scripts/run_mworks_scenario.py scenarios/official/example1_improved_pid.yaml
+python3 scripts/mworks/run_mworks_scenario.py config/scenarios/official/example1_pid_baseline.yaml
+python3 scripts/mworks/run_mworks_scenario.py config/scenarios/official/example1_improved_pid.yaml
 ```
 
-不要用短时参数覆盖正式 `scenarios/official/*.yaml`。如需临时链路诊断，应写入 `results/diagnostics/`，不要覆盖正式证据。
+不要用短时参数覆盖正式 `config/scenarios/official/*.yaml`。如需临时链路诊断，应写入 `results/diagnostics/`，不要覆盖正式证据。
 
 批量复现已有场景：
 
 ```bash
-python3 scripts/run_mworks_batch.py --skip-existing scenarios/official/*.yaml
+python3 scripts/mworks/run_mworks_batch.py --skip-existing config/scenarios/official/*.yaml
 ```
 
 `run_mworks_scenario.py` 和 `run_mworks_batch.py` 默认会在仿真、后处理之后执行质量门禁：
 
 ```bash
-python3 scripts/evaluate_result_quality.py scenarios/official/example3_awff_sysblock.yaml --write-metrics
+python3 scripts/results/evaluate_result_quality.py config/scenarios/official/example3_awff_sysblock.yaml --write-metrics
 ```
 
 `quality_status=pass` 才能作为完整性能结论；`quality_status=smoke_only` 只能证明链路可用；`quality_status=needs_iteration` 表示需要保留当前证据并继续调控制器或场景。MWORKS 没有报错只代表仿真执行完成，不代表轨迹形状、RMSE、健康分或消融对比达标。
@@ -295,7 +295,7 @@ python3 scripts/evaluate_result_quality.py scenarios/official/example3_awff_sysb
 如果只想检查批量计划而不启动 MWORKS/MCP 仿真：
 
 ```bash
-python3 scripts/run_mworks_batch.py --dry-run scenarios/official/*.yaml
+python3 scripts/mworks/run_mworks_batch.py --dry-run config/scenarios/official/*.yaml
 ```
 
 ## 7. 指标、图表与汇总
@@ -303,7 +303,7 @@ python3 scripts/run_mworks_batch.py --dry-run scenarios/official/*.yaml
 计算指标：
 
 ```bash
-python3 scripts/calc_metrics.py \
+python3 scripts/results/calc_metrics.py \
   results/official/example1_step/official_example1_improved_pid/raw/official_example1_improved_pid.csv \
   results/official/example1_step/official_example1_improved_pid/metrics/official_example1_improved_pid.json \
   official_example1 \
@@ -331,7 +331,7 @@ tracking_score / robustness_score / safety_score / energy_score / smoothness_sco
 生成 SVG 图表：
 
 ```bash
-python3 scripts/plot_results.py \
+python3 scripts/results/plot_results.py \
   results/official/example1_step/official_example1_improved_pid/raw/official_example1_improved_pid.csv \
   results/official/example1_step/official_example1_improved_pid/figures \
   --metrics results/official/example1_step/official_example1_improved_pid/metrics/official_example1_improved_pid.json \
@@ -341,7 +341,7 @@ python3 scripts/plot_results.py \
 生成实验汇总时只纳入真实 MWORKS/MCP 结果：
 
 ```bash
-python3 scripts/summarize_experiments.py \
+python3 scripts/results/summarize_experiments.py \
   --include-metrics-glob 'results/official/**/metrics/*pid_baseline.json' \
   --include-metrics-glob 'results/official/**/metrics/*improved_pid.json'
 ```
@@ -363,10 +363,10 @@ GUI 人工审查时通常会看到三类窗口：模型/图形结构窗口用于
 
 ## 8. 下一阶段真实仿真入口
 
-扩展功能保留在 `Design/` 中作为实现规格，但不再用离线脚本冒充仿真。新增场景时按以下流程推进：
+扩展功能保留在 `Docs/Design/` 中作为实现规格，但不再用离线脚本冒充仿真。新增场景时按以下流程推进：
 
 ```text
-Design/*.md 明确接口和验收
+Docs/Design/*.md 明确接口和验收
 → 在 MWORKS/Sysplorer 中建立或派生模型
 → check_model
 → simulate_model
@@ -388,11 +388,11 @@ Design/*.md 明确接口和验收
 提交前运行：
 
 ```bash
-python3 scripts/qa_check.py
-python3 scripts/check_reference_outputs.py
-python3 tests/test_metrics.py
-python3 tests/test_summary.py
-python3 -m py_compile scripts/*.py tests/*.py
+python3 scripts/quality/qa_check.py
+python3 scripts/quality/check_reference_outputs.py
+python3 scripts/tests/test_metrics.py
+python3 scripts/tests/test_summary.py
+python3 -m py_compile scripts/*.py scripts/tests/*.py
 git diff --check
 ```
 

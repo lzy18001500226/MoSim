@@ -9,13 +9,13 @@ The script is intentionally conservative:
 - It writes scan indexes only by default.
 - It can optionally extract text-like files into Markdown snippets, but this is
   disabled by default because the snippets are noisy and largely superseded by
-  curated `docs/mworks/converted/` outputs.
+  curated `Docs/Mworks/converted/` outputs.
 - It lists PDF files for later conversion.
 
 Usage:
-    python scripts/scan_mworks_docs.py
-    python scripts/scan_mworks_docs.py --top 120
-    python scripts/scan_mworks_docs.py --extract-snippets --extract-limit 80
+    python scripts/docs/scan_mworks_docs.py
+    python scripts/docs/scan_mworks_docs.py --top 120
+    python scripts/docs/scan_mworks_docs.py --extract-snippets --extract-limit 80
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ from typing import Iterable
 
 
 DEFAULT_SOURCE = Path("MWORKS高校星火计划资料包")
-DEFAULT_OUTPUT = Path("docs/mworks")
+DEFAULT_OUTPUT = Path("Docs/Mworks")
 
 TEXT_EXTS = {
     ".txt",
@@ -451,18 +451,18 @@ def write_summary(records: list[FileRecord], extracted: list[dict[str, str]], ou
             "",
             "## Main Outputs",
             "",
-            "- `docs/mworks/scan/relevant_index.md`: ranked relevant file index",
-            "- `docs/mworks/scan/relevant_files.csv`: machine-readable index",
-            "- `docs/mworks/scan/pdf_review.md`: PDF first-page text relevance review",
-            "- `docs/mworks/scan/categories/`: category indexes",
-            "- `docs/mworks/converted/`: curated PDF/API conversion outputs",
+            "- `Docs/Mworks/scan/relevant_index.md`: ranked relevant file index",
+            "- `Docs/Mworks/scan/relevant_files.csv`: machine-readable index",
+            "- `Docs/Mworks/scan/pdf_review.md`: PDF first-page text relevance review",
+            "- `Docs/Mworks/scan/categories/`: category indexes",
+            "- `Docs/Mworks/converted/`: curated PDF/API conversion outputs",
             "",
             "## Recommended Next Steps",
             "",
             "1. Review `scan/categories/quadrotor_uav.md`, `control_algorithm.md`, `sysplorer_modeling.md`, and `syslab_analysis.md` first.",
-            "2. Convert high-value PDFs with MinerU precise API or `scripts/convert_mworks_pdfs.py` when needed.",
+            "2. Convert high-value PDFs with MinerU precise API or `scripts/docs/convert_mworks_pdfs.py` when needed.",
             "3. Keep noisy snippet extraction disabled unless a one-off local search task needs it.",
-            "4. Update `docs/index/doc_index.md` after promoting topic documents.",
+            "4. Update `Docs/Index/doc_index.md` after promoting topic documents.",
             "",
         ]
     )
@@ -487,7 +487,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--extract-snippets",
         action="store_true",
-        help="Generate docs/mworks/extracted Markdown snippets. Disabled by default to keep the repo lean.",
+        help="Generate Docs/Mworks/extracted Markdown snippets. Disabled by default to keep the repo lean.",
     )
     return parser.parse_args()
 

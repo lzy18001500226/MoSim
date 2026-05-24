@@ -2,7 +2,7 @@
 
 This file records how MWORKS/Sysplorer result variable names map to the project-standard CSV schema.
 
-The `Model Result Variable` column below is a candidate mapping derived from `QuadrotorModel/package.mo`.
+The `Model Result Variable` column below is a candidate mapping derived from `references/MWORKS/QuadrotorModel/package.mo`.
 After the first successful Sysplorer MCP simulation, confirm the exact names with `result_manager`.
 
 | Standard Name | Model Result Variable | Required | Notes |

@@ -37,7 +37,7 @@ stop / ask conditions:
 
 Execution may begin only after the plan identifies the next local critical-path
 step and any delegated streams. If the user says "continue", recover the
-current plan from `PROGRESS.md`, `workflows/agent_task_ledger.md`,
+current plan from `PROGRESS.md`, `Docs/Workflows/agent_task_ledger.md`,
 `results/tmp/task_intake/`, or `results/agent_runs/*` before acting.
 
 For a learn-and-update audit, the task graph must also declare the round
@@ -177,7 +177,7 @@ reviewer:
 ```
 
 The detailed department model lives in
-`workflows/org_operating_model.md`. Use it when a task needs company-style
+`Docs/Workflows/org_operating_model.md`. Use it when a task needs company-style
 division of labor: secretary/PMO, project owners, testing, security, DevOps,
 architecture, knowledge management, and incident review.
 
@@ -205,7 +205,7 @@ fan out review:
 Secretary intake is mandatory for volatile instructions. Every new user
 directive, correction, manual-review result, sub-agent return, blocker, or work
 checkpoint must be captured in `results/tmp/task_intake/`, promoted to
-`workflows/agent_task_ledger.md` or `PROGRESS.md` when stable, and only then
+`Docs/Workflows/agent_task_ledger.md` or `PROGRESS.md` when stable, and only then
 treated as recoverable state. Chat memory alone is not state.
 
 Testing is a separate stream. Use a `TestOwner` child agent when validation has
@@ -219,7 +219,7 @@ required, and when the task is complete.
 
 ## 2. Ledger Requirement
 
-Record every long-running delegated task in `workflows/agent_task_ledger.md`.
+Record every long-running delegated task in `Docs/Workflows/agent_task_ledger.md`.
 For runs lasting more than one turn, also write JSONL events under:
 
 ```text
@@ -241,8 +241,8 @@ multiple agents. Required fields:
   "task_id": "GIT-20260521-OKWINDS",
   "agent_role": "GitIntegrator",
   "event_type": "agent_spawned",
-  "summary": "Started safe integration of Skills/okwinds and branch cleanup",
-  "paths_read": ["workflows/agent_task_ledger.md"],
+  "summary": "Started safe integration of Docs/Skills/okwinds and branch cleanup",
+  "paths_read": ["Docs/Workflows/agent_task_ledger.md"],
   "paths_written": [],
   "artifact_refs": [],
   "wal_locator": "",
@@ -371,7 +371,7 @@ Write current-turn intake drafts under:
 results/tmp/task_intake/YYYY-MM-DD.md
 ```
 
-Promote only stable items into `workflows/agent_task_ledger.md` or
+Promote only stable items into `Docs/Workflows/agent_task_ledger.md` or
 `PROGRESS.md`. Do not paste entire session dumps into durable docs.
 
 Trigger a secretary update when any of these happen:
@@ -401,7 +401,7 @@ Recommended goal split:
 | Git owner | Classify every path group as pushed, ignored, needs-user-decision, or blocked | Pushed branch refs, commit hashes, large-file scan, residual table |
 | TaskSecretary | Convert user instructions and agent returns into recoverable tasks | `results/tmp/task_intake/*` plus promoted ledger/PROGRESS rows |
 | Research owner | Complete bounded source audit or parameter-identification research | Source list, evidence/inference/unknowns, patch plan or report |
-| Reviewer | Review docs/code/model changes without implementing | Findings with file references and residual risk |
+| Reviewer | Review Docs/code/model changes without implementing | Findings with file references and residual risk |
 
 Every sub-agent prompt for this project should include a concrete goal and
 terminal condition. If runtime support allows it, request `model=gpt-5.5` and
@@ -423,11 +423,11 @@ blocked
 Minimum path groups:
 
 ```text
-docs/workflows/AGENTS/PROGRESS
-Skills/Mworks
-Skills/Agent and Skills/okwinds
+Docs/Workflows/AGENTS/PROGRESS
+Docs/Skills/Mworks
+Docs/Skills/Agent and Docs/Skills/okwinds
 scripts/tests
-models/scenarios
+Models/scenarios
 references/AirSim
 references/Lab
 references/PX4
@@ -531,7 +531,7 @@ no duplicated or contradictory rules:
 AGENTS.md remains concise and policy-level:
 workflow files contain detailed mechanics:
 PROGRESS.md contains live state only:
-links in docs/index/workflow_index.md still resolve:
+links in Docs/Index/workflow_index.md still resolve:
 ```
 
 If the reviewer finds contamination or misplaced detail, fix the docs and run
@@ -722,8 +722,8 @@ integration and push ordering.
 When splitting Git work, use content-family branches:
 
 ```text
-docs/workflows
-Skills/*
+Docs/workflows
+Docs/Skills/*
 references/AirSim/*
 references/Lab/*
 references/RflySim/*
@@ -896,10 +896,10 @@ technical domain:
 | UE/rendering | AirSim, ProjectAirSim, RflySim, SPEAR, UnrealCV |
 | Planning/trajectory | ego-planner, GCOPTER, Fast-Racing, SUPER |
 | Perception/mapping | FAST-LIO, FAST-LIVO2, Point-LIO |
-| Skills/workflow | Codex skills, subagent catalogs, agent runtime repos |
+| Docs/Skills/workflow | Codex skills, subagent catalogs, agent runtime repos |
 | Git/quality | large-file scan, secret scan, nested repo cleanup |
 
-Use `workflows/audit_external_repo.md` and `scripts/audit_external_repo.py` for
+Use `Docs/Workflows/audit_external_repo.md` and `scripts/reference/audit_external_repo.py` for
 repeatable summaries.
 
 ## 7. Skills / Workflow Runtime Audits
@@ -958,7 +958,7 @@ loop/goal/task stop contracts:
 
 ### 7.1 Recurring Learning Owner
 
-External docs/skills learning is a recurring workflow, not a one-time cleanup.
+External Docs/skills learning is a recurring workflow, not a one-time cleanup.
 Start a fresh recurring-learning row when any trigger below occurs:
 
 ```text
@@ -984,7 +984,7 @@ review_required:
 next_trigger:
 ```
 
-Use `docs/index/external_learning_index.md` as the compact source inventory.
+Use `Docs/Index/external_learning_index.md` as the compact source inventory.
 Do not store raw session dumps, prompts, provider configs, secrets, or huge
 logs in durable docs. If no project rule improves, record `patch_or_no_patch:
 no_patch` with evidence and stop.

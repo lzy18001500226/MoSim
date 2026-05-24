@@ -127,13 +127,13 @@ evaluate_julia_code
 Local source:
 
 ```text
-Skills/unreal-engine-mcp/
+Docs/Skills/unreal-engine-mcp/
 ```
 
 Project-local WSL wrapper:
 
 ```text
-scripts/unreal_mcp_wsl_wrapper.sh
+scripts/unreal/unreal_mcp_wsl_wrapper.sh
 ```
 
 This wrapper starts the open-source local Unreal MCP Python server with `uv`.
@@ -188,18 +188,18 @@ map_matlab_functions_to_julia
 
 | Script | Purpose | Expected Input | Expected Output |
 |---|---|---|---|
-| `scripts/qa_check.py` | Project quality check | project root | pass/fail report |
-| `scripts/scan_mworks_docs.py` | Scan a local MWORKS resource package with PDF preview review | optional `--source` directory | `docs/mworks/scan/` indexes |
-| `scripts/convert_mworks_pdfs.py` | Convert selected PDFs via MinerU or PyMuPDF fallback | selected local PDFs | `docs/mworks/converted/` Markdown and `_images/` directories |
-| `scripts/calc_metrics.jl` | Compute standard tracking/control metrics | `results/{group}/{scene}/{experiment}/raw/*.csv` | `results/{group}/{scene}/{experiment}/metrics/*.json` and `.csv` |
-| `scripts/evaluate_result_quality.py` | Decide whether a completed scenario passes, is smoke-only, or needs iteration | scenario YAML and existing metrics/raw files | `quality_status` fields written into metrics JSON |
-| `scripts/plot_results.jl` | Write figure manifest for report assets | raw CSV and figure dir | `figure_manifest.md` |
+| `scripts/quality/qa_check.py` | Project quality check | project root | pass/fail report |
+| `scripts/docs/scan_mworks_docs.py` | Scan a local MWORKS resource package with PDF preview review | optional `--source` directory | `Docs/Mworks/scan/` indexes |
+| `scripts/docs/convert_mworks_pdfs.py` | Convert selected PDFs via MinerU or PyMuPDF fallback | selected local PDFs | `Docs/Mworks/converted/` Markdown and `_images/` directories |
+| `scripts/results/calc_metrics.jl` | Compute standard tracking/control metrics | `results/{group}/{scene}/{experiment}/raw/*.csv` | `results/{group}/{scene}/{experiment}/metrics/*.json` and `.csv` |
+| `scripts/results/evaluate_result_quality.py` | Decide whether a completed scenario passes, is smoke-only, or needs iteration | scenario YAML and existing metrics/raw files | `quality_status` fields written into metrics JSON |
+| `scripts/results/plot_results.jl` | Write figure manifest for report assets | raw CSV and figure dir | `figure_manifest.md` |
 
 ## 6. MinerU Precise Parsing API
 
 | Item | Value |
 |---|---|
-| Reference | `docs/mworks/mcp/mineru_precise_api.md` |
+| Reference | `Docs/Mworks/mcp/mineru_precise_api.md` |
 | Token variable | `MINERU_API_TOKEN` |
 | Single URL task | `POST https://mineru.net/api/v4/extract/task` |
 | Single result query | `GET https://mineru.net/api/v4/extract/task/{task_id}` |
@@ -214,7 +214,7 @@ Rules:
 2. Use `MINERU_API_TOKEN` from the environment.
 3. Use `vlm` for high-fidelity PDF/PPT/DOC parsing.
 4. Use `MinerU-HTML` only for HTML input.
-5. Store converted outputs under `docs/mworks/converted/` and update `docs/mworks/converted/转换索引.md`.
+5. Store converted outputs under `Docs/Mworks/converted/` and update `Docs/Mworks/converted/转换索引.md`.
 
 ---
 
@@ -290,7 +290,7 @@ plot_manager
 or future local scripts:
 
 ```text
-Syslab run_julia_file scripts/plot_results.jl
+Syslab run_julia_file scripts/results/plot_results.jl
 ```
 
 Prefer Syslab script plots for report figures when a result CSV is available.
@@ -302,10 +302,10 @@ Prefer Syslab script plots for report figures when a result CSV is available.
 Use:
 
 ```text
-Syslab run_julia_file scripts/calc_metrics.jl
+Syslab run_julia_file scripts/results/calc_metrics.jl
 ```
 
-`scripts/calc_metrics.jl` is implemented. Use `--help` to inspect the accepted CSV schema and `--self-test` for a quick local verification.
+`scripts/results/calc_metrics.jl` is implemented. Use `--help` to inspect the accepted CSV schema and `--self-test` for a quick local verification.
 
 Formula:
 
@@ -358,5 +358,5 @@ Current project rule:
 2. Use `get_api_document` for Sysplorer API.
 3. Use `search_syslab_docs` for Syslab functions.
 4. Save useful mappings in this file.
-5. If a tool call works, document the exact successful pattern in `workflows/`.
+5. If a tool call works, document the exact successful pattern in `Docs/Workflows/`.
 6. If a tool call fails repeatedly, save the error and fallback method.

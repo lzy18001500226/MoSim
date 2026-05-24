@@ -8,17 +8,17 @@ evidence_level: real_sysplorer_mcp_native_gui_helical_figure8_trail
 model:
   source_package: QuadrotorExperiments
   model_name: QuadrotorExperiments.Example1HelicalFigure8TrailSysblockClosedLoop
-  model_path_hint: models/QuadrotorExperiments/Example1HelicalFigure8TrailSysblockClosedLoop.mo
-  base_model_path_hint: QuadrotorModel/package.mo
+  model_path_hint: Models/QuadrotorExperiments/Example1HelicalFigure8TrailSysblockClosedLoop.mo
+  base_model_path_hint: references/MWORKS/QuadrotorModel/package.mo
   official_description: 官方 EightPath 同款 x/y 8 字 + 单调螺旋上升高度 + LinearMPC 控制器 + 原生三维参考线 GUI 审查
 
 controller:
-  params_file: controllers/linear_mpc_sysblock/default.yaml
+  params_file: config/controllers/linear_mpc_sysblock/default.yaml
   replacement_component: controller3_2
   require_baseline_improvement: false
-  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
-  graphical_sysblock_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0

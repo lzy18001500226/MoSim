@@ -27,17 +27,17 @@
 Codex 查询资料时优先顺序：
 
 ```text
-1. docs/mworks/scan/scan_summary.md
-2. docs/mworks/scan/relevant_index.md
-3. docs/mworks/scan/categories/*.md
-4. docs/mworks/converted/转换索引.md
-5. docs/mworks/converted/**/*.md
+1. Docs/Mworks/scan/scan_summary.md
+2. Docs/Mworks/scan/relevant_index.md
+3. Docs/Mworks/scan/categories/*.md
+4. Docs/Mworks/converted/转换索引.md
+5. Docs/Mworks/converted/**/*.md
 6. 如转换结果不足，再临时补充对应官方原始 PDF 或 MCP 官方文档
 ```
 
 ## PDF 说明
 
-已将第一批 P0/P1/P2 高价值 PDF 转换到 `docs/mworks/converted/`。当前 17 份目标 PDF 均已通过 MinerU 精准解析生成 Markdown，并同步保存各自的 `_images/` 图片目录；另有 1 份 MWORKS/MATLAB 在线链接索引已整理到 `converted/matlab_compat/`。
+已将第一批 P0/P1/P2 高价值 PDF 转换到 `Docs/Mworks/converted/`。当前 17 份目标 PDF 均已通过 MinerU 精准解析生成 Markdown，并同步保存各自的 `_images/` 图片目录；另有 1 份 MWORKS/MATLAB 在线链接索引已整理到 `converted/matlab_compat/`。
 
 转换结果可用于关键词检索、流程定位、截图查看和 Agent 实现参考，但以下内容仍需结合原 PDF 或 MCP 官方文档复核：
 
@@ -49,25 +49,25 @@ Codex 查询资料时优先顺序：
 重新扫描资料包：
 
 ```bash
-python scripts/scan_mworks_docs.py --top 180
+python scripts/docs/scan_mworks_docs.py --top 180
 ```
 
-默认不再生成 `docs/mworks/extracted/`，因为该目录主要是自动扫描碎片，和 `converted/` 重复且噪声较多。如确实需要临时摘录文本文件，可显式运行：
+默认不再生成 `Docs/Mworks/extracted/`，因为该目录主要是自动扫描碎片，和 `converted/` 重复且噪声较多。如确实需要临时摘录文本文件，可显式运行：
 
 ```bash
-python scripts/scan_mworks_docs.py --top 180 --extract-snippets --extract-limit 120
+python scripts/docs/scan_mworks_docs.py --top 180 --extract-snippets --extract-limit 120
 ```
 
 重新生成 PDF Markdown 兜底转换：
 
 ```bash
-uv run --with pymupdf python scripts/convert_mworks_pdfs.py --method pymupdf
+uv run --with pymupdf python scripts/docs/convert_mworks_pdfs.py --method pymupdf
 ```
 
 使用 MinerU 精准解析逐个转换重点 PDF：
 
 ```bash
-uv run --with pymupdf --with requests python scripts/convert_mworks_pdfs.py --method mineru --priority P0
+uv run --with pymupdf --with requests python scripts/docs/convert_mworks_pdfs.py --method mineru --priority P0
 ```
 
 MinerU 转换只从环境变量 `MINERU_API_TOKEN` 读取 Token，不要把 Token 写入仓库文件。若下载结果 zip 失败，可加：
@@ -76,6 +76,6 @@ MinerU 转换只从环境变量 `MINERU_API_TOKEN` 读取 Token，不要把 Toke
 --continue-on-download-error
 ```
 
-脚本会把 URL 写入 `docs/mworks/tmp/mineru/pending_downloads.md`，后续可手动下载后用 `--import-mineru-result` 导入。
+脚本会把 URL 写入 `Docs/Mworks/tmp/mineru/pending_downloads.md`，后续可手动下载后用 `--import-mineru-result` 导入。
 
-`docs/mworks/tmp/` 仅用于转换缓存和中间结果，不作为知识库入口；确认 `converted/` 已生成后可以安全清理。
+`Docs/Mworks/tmp/` 仅用于转换缓存和中间结果，不作为知识库入口；确认 `converted/` 已生成后可以安全清理。

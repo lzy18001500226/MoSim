@@ -83,17 +83,17 @@ Use a compact subset in MWORKS instead of importing the full PX4 state space.
 
 | Project component | Current file/model | PX4-inspired role |
 |---|---|---|
-| `PerceptionInterfaceModule` | `models/QuadrotorExperiments/package.mo` | GPS/Mid360 validity and obstacle margin |
-| `V6XFlightControllerModule` | `models/QuadrotorExperiments/package.mo` | simple state estimator and estimator quality |
-| `ORINNXMissionComputerModule` | `models/QuadrotorExperiments/package.mo` | flight mode, setpoint source, safety status |
-| `SystemSupervisorModule` | `models/QuadrotorExperiments/package.mo` | exported failsafe/status evidence |
-| `BatteryPowerModule` | `models/QuadrotorExperiments/package.mo` | voltage, power ok, voltage margin |
-| `ESCDriveModule` | `models/QuadrotorExperiments/package.mo` | motor command limiting, ESC health, saturation estimate |
-| `AWFFControllerModule` | `models/QuadrotorExperiments/package.mo` | controller + hover trim + motor command scaling |
+| `PerceptionInterfaceModule` | `Models/QuadrotorExperiments/package.mo` | GPS/Mid360 validity and obstacle margin |
+| `V6XFlightControllerModule` | `Models/QuadrotorExperiments/package.mo` | simple state estimator and estimator quality |
+| `ORINNXMissionComputerModule` | `Models/QuadrotorExperiments/package.mo` | flight mode, setpoint source, safety status |
+| `SystemSupervisorModule` | `Models/QuadrotorExperiments/package.mo` | exported failsafe/status evidence |
+| `BatteryPowerModule` | `Models/QuadrotorExperiments/package.mo` | voltage, power ok, voltage margin |
+| `ESCDriveModule` | `Models/QuadrotorExperiments/package.mo` | motor command limiting, ESC health, saturation estimate |
+| `AWFFControllerModule` | `Models/QuadrotorExperiments/package.mo` | controller + hover trim + motor command scaling |
 
 ## 7. Implementation Priority
 
-1. Freeze a PX4-like `system_status_bus` in `Design/02_模型接口与运行流程.md`.
+1. Freeze a PX4-like `system_status_bus` in `Docs/Design/02_模型接口与运行流程.md`.
 2. Add formal `battery_warning`, `home_position_valid`, `offboard_heartbeat_ok`, `mission_feasible`, and `geofence_ok` signals.
 3. Extend `SystemSupervisorModule` from GPS dropout only to multi-trigger failsafe.
 4. Add scenarios for battery low, offboard loss, planner failure, and geofence breach.

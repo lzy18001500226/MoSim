@@ -9,8 +9,8 @@ Two conversion paths are supported:
    `MINERU_API_TOKEN` environment variable.
 
 Usage:
-    uv run --with pymupdf python scripts/convert_mworks_pdfs.py --method pymupdf
-    uv run --with pymupdf python scripts/convert_mworks_pdfs.py --method mineru --limit 3
+    uv run --with pymupdf python scripts/docs/convert_mworks_pdfs.py --method pymupdf
+    uv run --with pymupdf python scripts/docs/convert_mworks_pdfs.py --method mineru --limit 3
 """
 
 from __future__ import annotations
@@ -33,8 +33,8 @@ import fitz  # type: ignore[import-not-found]
 
 
 SOURCE_ROOT = Path("MWORKS高校星火计划资料包")
-OUTPUT_ROOT = Path("docs/mworks/converted")
-TMP_ROOT = Path("docs/mworks/tmp/mineru")
+OUTPUT_ROOT = Path("Docs/Mworks/converted")
+TMP_ROOT = Path("Docs/Mworks/tmp/mineru")
 MINERU_BASE_URL = "https://mineru.net/api/v4"
 
 

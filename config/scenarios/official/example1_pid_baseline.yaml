@@ -6,7 +6,7 @@ priority: P0
 model:
   source_package: QuadrotorModel
   model_name: QuadrotorModel.Examples.Example1
-  model_path_hint: QuadrotorModel/package.mo
+  model_path_hint: references/MWORKS/QuadrotorModel/package.mo
   official_description: 阶梯爬升运动
 
 simulation:

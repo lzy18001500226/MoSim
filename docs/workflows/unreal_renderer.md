@@ -85,21 +85,21 @@ trajectory, or UDP playback until the map itself is acceptable.
 Build the project-owned renderer:
 
 ```bash
-scripts/build_unreal_renderer.sh
+scripts/unreal/build_unreal_renderer.sh
 ```
 
 Open the editor or standalone game:
 
 ```bash
-scripts/open_unreal_renderer.sh
-scripts/open_unreal_renderer.sh game
+scripts/unreal/open_unreal_renderer.sh
+scripts/unreal/open_unreal_renderer.sh game
 ```
 
 If the standalone game window was already open before a C++ or camera-control
 change, restart only that game window:
 
 ```bash
-RESTART_UNREAL_GAME=1 scripts/open_unreal_renderer.sh game
+RESTART_UNREAL_GAME=1 scripts/unreal/open_unreal_renderer.sh game
 ```
 
 Manual review controls:
@@ -125,7 +125,7 @@ Before interactive editor work, run the smallest useful probe. Inventory alone
 is not enough; the editor-side listener must be reachable:
 
 ```bash
-python3 scripts/probe_unreal_mcp_listener.py --timeout 1
+python3 scripts/unreal/probe_unreal_mcp_listener.py --timeout 1
 ```
 
 If the probe fails, do not keep calling actor/Blueprint tools. Fix the editor
@@ -136,7 +136,7 @@ listener or continue with file-level work only.
 After a map passes visual review, MWORKS playback can be streamed through:
 
 ```bash
-python3 scripts/stream_unreal_udp.py <raw.csv> --host 127.0.0.1 --port 5005
+python3 scripts/unreal/stream_unreal_udp.py <raw.csv> --host 127.0.0.1 --port 5005
 ```
 
 Expected packet schema:

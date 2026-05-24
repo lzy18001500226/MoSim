@@ -25,7 +25,7 @@ model_interface:
   compatible_source_model: AWFF_FullControllerEquation_Sysblock
   implementation_target:
     - Sunray150 complete-system Sysplorer wrapper
-    - Failsafe/event-log scenarios under scenarios/system
+    - Failsafe/event-log scenarios under config/scenarios/system
   inputs:
     reference_position: mission_computer.reference_position
     measured_position: airframe.position
@@ -56,5 +56,5 @@ acceptance:
   system_scenarios:
     required: check_model, simulate_model, raw CSV, metrics JSON/CSV, event_log JSON
   event_log:
-    script: scripts/generate_event_log.py
+    script: scripts/results/generate_event_log.py
     required: preserves failsafe event codes 60-64 and does not collapse return/failsafe rows to DEGRADED_NAV

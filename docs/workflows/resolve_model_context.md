@@ -41,8 +41,8 @@ session_manager
 Write findings to the smallest useful place:
 
 ```text
-docs/index/variable_mapping.md
-Design/02_模型接口与运行流程.md
+Docs/Index/variable_mapping.md
+Docs/Design/02_模型接口与运行流程.md
 results/model_checks/{model_or_component}/logs/{experiment_id}_model_context.md
 commit message / task summary
 ```

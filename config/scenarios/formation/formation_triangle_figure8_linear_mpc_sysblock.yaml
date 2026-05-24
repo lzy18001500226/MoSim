@@ -8,17 +8,17 @@ evidence_level: real_sysplorer_mcp_sysblock_formation_triangle_figure8_linear_mp
 model:
   source_package: QuadrotorExperiments
   model_name: QuadrotorExperiments.FormationTriangleFigure8LinearMPCSysblockClosedLoop
-  model_path_hint: models/QuadrotorExperiments/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo
-  base_model_path_hint: QuadrotorModel/package.mo
+  model_path_hint: Models/QuadrotorExperiments/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo
+  base_model_path_hint: references/MWORKS/QuadrotorModel/package.mo
   official_description: 三机 leader-follower 三角编队 planar figure-8 LinearMPC-style Sysblock 闭环
 
 controller:
-  params_file: controllers/linear_mpc_sysblock/default.yaml
+  params_file: config/controllers/linear_mpc_sysblock/default.yaml
   replacement_component: controller3_2
   require_baseline_improvement: false
-  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
-  graphical_sysblock_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0

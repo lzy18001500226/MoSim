@@ -22,7 +22,7 @@ pre-submit tests
 Run:
 
 ```bash
-python scripts/qa_check.py
+python scripts/quality/qa_check.py
 ```
 
 Checks:
@@ -41,16 +41,16 @@ MCP config presence
 Currently implemented script test:
 
 ```text
-scripts/qa_check.py
-python3 tests/test_metrics.py
-python3 tests/test_summary.py
+scripts/quality/qa_check.py
+python3 scripts/tests/test_metrics.py
+python3 scripts/tests/test_summary.py
 ```
 
 Optional script tests when Julia/Syslab is available:
 
 ```text
-scripts/calc_metrics.jl --self-test
-scripts/plot_results.jl tests/fixtures/sample_tracking.csv results/samples/tracking_metrics/figures
+scripts/results/calc_metrics.jl --self-test
+scripts/results/plot_results.jl scripts/tests/fixtures/sample_tracking.csv results/samples/tracking_metrics/figures
 ```
 
 Use small sample files if available.

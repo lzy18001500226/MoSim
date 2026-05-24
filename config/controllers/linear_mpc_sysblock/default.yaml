@@ -16,7 +16,7 @@ implementation_status:
     - QuadrotorExperiments.Example3LinearMPCSysblockClosedLoop
   sysblock_controller: AWFF_LinearMPCOuterLoopControllerEquation_Sysblock
   graphical_sysblock_counterpart:
-    package_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+    package_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
     controller_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
     outer_loop_model: AWFF_InnovationGraphicalControllers.LinearMPCOuterLoopBlock
     static_contract: results/model_checks/awff_sysblock/graphical_contract/graphical_awff_sysblock_contract_20260512_linear_mpc_gate.json
@@ -44,7 +44,7 @@ implementation_status:
 verified_evidence:
   source: MWORKS_MCP
   nominal_full:
-    scenario_file: scenarios/official/example1_linear_mpc_sysblock.yaml
+    scenario_file: config/scenarios/official/example1_linear_mpc_sysblock.yaml
     model_name: QuadrotorExperiments.Example1LinearMPCSysblockClosedLoop
     raw_file: results/official/example1_step/official_example1_linear_mpc_sysblock/raw/official_example1_linear_mpc_sysblock.csv
     metrics_file: results/official/example1_step/official_example1_linear_mpc_sysblock/metrics/official_example1_linear_mpc_sysblock.json
@@ -54,7 +54,7 @@ verified_evidence:
     quality_status: pass
     rmse_reduction_vs_l1_indi_pct: 0.828
   helix_full:
-    scenario_file: scenarios/official/example2_linear_mpc_sysblock.yaml
+    scenario_file: config/scenarios/official/example2_linear_mpc_sysblock.yaml
     model_name: QuadrotorExperiments.Example2LinearMPCSysblockClosedLoop
     raw_file: results/official/example2_helix/official_example2_linear_mpc_sysblock/raw/official_example2_linear_mpc_sysblock.csv
     metrics_file: results/official/example2_helix/official_example2_linear_mpc_sysblock/metrics/official_example2_linear_mpc_sysblock.json
@@ -64,7 +64,7 @@ verified_evidence:
     quality_status: pass
     rmse_reduction_vs_l1_indi_pct: 0.574
   figure8_full:
-    scenario_file: scenarios/official/example3_linear_mpc_sysblock.yaml
+    scenario_file: config/scenarios/official/example3_linear_mpc_sysblock.yaml
     model_name: QuadrotorExperiments.Example3LinearMPCSysblockClosedLoop
     raw_file: results/official/example3_figure8/official_example3_linear_mpc_sysblock/raw/official_example3_linear_mpc_sysblock.csv
     metrics_file: results/official/example3_figure8/official_example3_linear_mpc_sysblock/metrics/official_example3_linear_mpc_sysblock.json
@@ -74,7 +74,7 @@ verified_evidence:
     quality_status: pass
     rmse_reduction_vs_l1_indi_pct: 1.882
   mass20_full:
-    scenario_file: scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml
     model_name: QuadrotorExperiments.Example1Mass20LinearMPCSysblockClosedLoop
     raw_file: results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/raw/robust_mass20_example1_linear_mpc_sysblock.csv
     metrics_file: results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/metrics/robust_mass20_example1_linear_mpc_sysblock.json
@@ -84,7 +84,7 @@ verified_evidence:
     quality_status: pass
     rmse_reduction_vs_l1_residual_pct: 0.755
   wind_gust_full:
-    scenario_file: scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml
     model_name: QuadrotorExperiments.Example1WindGustLinearMPCSysblockClosedLoop
     raw_file: results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/raw/robust_wind_gust_example1_linear_mpc_sysblock.csv
     metrics_file: results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/metrics/robust_wind_gust_example1_linear_mpc_sysblock.json
@@ -94,7 +94,7 @@ verified_evidence:
     quality_status: pass
     rmse_reduction_vs_l1_residual_pct: 6.984
   rotor1_loss15_boundary:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml
     model_name: QuadrotorExperiments.Example1Rotor1Loss15LinearMPCSysblockClosedLoop
     raw_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_sysblock.csv
     metrics_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_sysblock/metrics/robust_rotor1_loss15_example1_linear_mpc_sysblock.json
@@ -178,20 +178,20 @@ inner_loop:
 
 acceptance:
   full_nominal:
-    scenario_file: scenarios/official/example1_linear_mpc_sysblock.yaml
+    scenario_file: config/scenarios/official/example1_linear_mpc_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
   full_helix:
-    scenario_file: scenarios/official/example2_linear_mpc_sysblock.yaml
+    scenario_file: config/scenarios/official/example2_linear_mpc_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
   full_figure8:
-    scenario_file: scenarios/official/example3_linear_mpc_sysblock.yaml
+    scenario_file: config/scenarios/official/example3_linear_mpc_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
   mass20_robust:
-    scenario_file: scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
   wind_gust_robust:
-    scenario_file: scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
   rotor1_loss15_boundary:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml
     expected_status: needs_iteration_without_fault_allocation

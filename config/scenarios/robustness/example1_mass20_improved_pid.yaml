@@ -7,12 +7,12 @@ evidence_level: real_sysplorer_mcp_robust_mass20_ablation
 model:
   source_package: QuadrotorExperiments
   model_name: QuadrotorExperiments.Example1Mass20ImprovedPID
-  model_path_hint: models/QuadrotorExperiments/package.mo
-  base_model_path_hint: QuadrotorModel/package.mo
+  model_path_hint: Models/QuadrotorExperiments/package.mo
+  base_model_path_hint: references/MWORKS/QuadrotorModel/package.mo
   official_description: 阶梯爬升 +20% 机体质量摄动 improved PID
 
 controller:
-  params_file: controllers/improved_pid/default.yaml
+  params_file: config/controllers/improved_pid/default.yaml
   replacement_component: controller3_2
   baseline_experiment: robust_mass20_example1_pid_baseline
 

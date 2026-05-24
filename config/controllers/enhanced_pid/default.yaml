@@ -7,7 +7,7 @@ description: >
   with explicit derivative filter time constants and conservative attitude /
   command limit tightening. This is the first real-model P1 controller branch;
   the independent anti-windup and reference-feedforward replacement branch is
-  tracked in controllers/awff_pid/default.yaml.
+  tracked in config/controllers/awff_pid/default.yaml.
 
 features:
   modelica_parameter_replacement: true
@@ -23,14 +23,14 @@ implementation_status:
     - QuadrotorExperiments.Example2EnhancedPID
     - QuadrotorExperiments.Example2HelixTunedEnhancedPID
     - QuadrotorExperiments.Example3EnhancedPID
-  base_controller: controllers/improved_pid/default.yaml
+  base_controller: config/controllers/improved_pid/default.yaml
   verified_scope: >
     Full Example1/2/3 official scenarios and P1 robustness ablations with real
     Sysplorer MCP evidence. Example1 and Example3 pass the intended enhancement
     role. The original Example2EnhancedPID remains needs_iteration, but the
     helix-tuned Example2 branch passes by restoring lateral command authority
     for the 10 s circular-trajectory onset.
-  next_controller_branch: controllers/awff_pid/default.yaml
+  next_controller_branch: config/controllers/awff_pid/default.yaml
 
 model_interface:
   replacement_component: controller3_2
@@ -91,7 +91,7 @@ acceptance:
   full_example2:
     baseline_experiment: official_example2_pid_baseline
     comparison_experiment: official_example2_enhanced_pid
-    scenario_file: scenarios/official/example2_enhanced_pid.yaml
+    scenario_file: config/scenarios/official/example2_enhanced_pid.yaml
     expected: >
       check_model and simulate_model pass for 50 s and metrics are available.
       Current quality_status is needs_iteration because position RMSE is
@@ -100,7 +100,7 @@ acceptance:
   full_example2_helix_tuned:
     baseline_experiment: official_example2_improved_pid
     comparison_experiment: official_example2_enhanced_pid_helix_tuned
-    scenario_file: scenarios/official/example2_enhanced_pid_helix_tuned.yaml
+    scenario_file: config/scenarios/official/example2_enhanced_pid_helix_tuned.yaml
     expected: >
       check_model and simulate_model pass for 50 s, quality_status is pass,
       and RMSE improves against the previous best official_example2_improved_pid.
@@ -109,14 +109,14 @@ acceptance:
   full_example3:
     baseline_experiment: official_example3_pid_baseline
     comparison_experiment: official_example3_enhanced_pid
-    scenario_file: scenarios/official/example3_enhanced_pid.yaml
+    scenario_file: config/scenarios/official/example3_enhanced_pid.yaml
     expected: >
       check_model and simulate_model pass for 120 s, metrics are available,
       and quality_status is pass with RMSE improvement against baseline.
   robust_mass20_example1:
     baseline_experiment: robust_mass20_example1_pid_baseline
     comparison_experiment: robust_mass20_example1_improved_pid
-    scenario_file: scenarios/robustness/example1_mass20_enhanced_pid.yaml
+    scenario_file: config/scenarios/robustness/example1_mass20_enhanced_pid.yaml
     expected: >
       Under +20% central body mass perturbation, check_model and simulate_model
       pass for the full 50 s run, raw CSV has 5001 rows, and RMSE / steady-state
@@ -124,7 +124,7 @@ acceptance:
   robust_wind_gust_example1:
     baseline_experiment: robust_wind_gust_example1_pid_baseline
     comparison_experiment: robust_wind_gust_example1_improved_pid
-    scenario_file: scenarios/robustness/example1_wind_gust_enhanced_pid.yaml
+    scenario_file: config/scenarios/robustness/example1_wind_gust_enhanced_pid.yaml
     expected: >
       Under the 15-19 s lateral gust force, check_model and simulate_model pass
       for the full 50 s run, raw CSV has valid time/state/reference columns,
@@ -133,7 +133,7 @@ acceptance:
   robust_rotor1_loss15_example1:
     baseline_experiment: robust_rotor1_loss15_example1_pid_baseline
     comparison_experiment: robust_rotor1_loss15_example1_improved_pid
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_enhanced_pid.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_enhanced_pid.yaml
     expected: >
       Under rotor 1 lift efficiency reduction to 85%, check_model and
       simulate_model pass for the full 50 s run, raw CSV has valid

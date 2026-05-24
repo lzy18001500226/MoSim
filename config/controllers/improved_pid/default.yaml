@@ -13,7 +13,7 @@ features:
 
 implementation_status:
   current_mworks_model: tuned_pid_parameters
-  tuning_script: scripts/tune_improved_pid_mcp.py
+  tuning_script: scripts/mworks/tune_improved_pid_mcp.py
   selected_candidate: pos_kp_165_att_170
   selection_reason: improves both official Example1 and Example3 RMSE while keeping max tilt lower than the best Example1-only candidate
   planned_next_step: replace the official PID block with a Sysblock/Modelica controller that adds anti-windup, derivative filtering, feedforward, and explicit command saturation

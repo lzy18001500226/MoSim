@@ -9,19 +9,19 @@ inactive_reason: AWFF planning closed-loop is retained as a controller-suitabili
 model:
   source_package: QuadrotorExperiments
   model_name: QuadrotorExperiments.Sunray150PlanningCorridorGateAWFFSysblockClosedLoop
-  model_path_hint: models/QuadrotorExperiments/Sunray150PlanningCorridorGateAWFFSysblockClosedLoop.mo
-  base_model_path_hint: QuadrotorModel/package.mo
+  model_path_hint: Models/QuadrotorExperiments/Sunray150PlanningCorridorGateAWFFSysblockClosedLoop.mo
+  base_model_path_hint: references/MWORKS/QuadrotorModel/package.mo
   extra_model_files:
-    - models/QuadrotorExperiments/PlannedQuinticReference.mo
+    - Models/QuadrotorExperiments/PlannedQuinticReference.mo
   official_description: Sunray150 单机 corridor gate A* 轨迹 AWFF Sysblock 闭环
 
 controller:
-  params_file: controllers/awff_sysblock/default.yaml
+  params_file: config/controllers/awff_sysblock/default.yaml
   replacement_component: controller3_2
   require_baseline_improvement: false
-  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_FullControllerFlatGraphical_Sysblock
-  graphical_sysblock_file: models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
 
 simulation:
   start_time_s: 0.0
@@ -32,7 +32,7 @@ simulation:
 
 reference:
   type: astar_min_snap
-  planner_config: planners/astar_min_snap/map_corridor_gate.yaml
+  planner_config: config/planners/astar_min_snap/map_corridor_gate.yaml
   file: results/planning/corridor_gate_astar_awff/raw/reference.csv
   trackability_report: results/planning/corridor_gate_astar_awff/metrics/trackability_report.json
 result:

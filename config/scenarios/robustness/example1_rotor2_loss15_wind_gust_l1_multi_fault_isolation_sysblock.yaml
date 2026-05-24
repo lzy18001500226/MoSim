@@ -7,17 +7,17 @@ evidence_level: real_sysplorer_mcp_sysblock_l1_multi_fault_isolation_rotor_loss_
 model:
   source_package: QuadrotorExperiments
   model_name: QuadrotorExperiments.Example1Rotor2Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop
-  model_path_hint: models/QuadrotorExperiments/Example1Rotor2Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop.mo
-  base_model_path_hint: QuadrotorModel/package.mo
+  model_path_hint: Models/QuadrotorExperiments/Example1Rotor2Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop.mo
+  base_model_path_hint: references/MWORKS/QuadrotorModel/package.mo
   official_description: 阶梯爬升 2号旋翼升力效率85% + 15-19s横向阵风 L1多故障隔离 Sysblock
 
 controller:
-  params_file: controllers/l1_multi_fault_isolation_sysblock/default.yaml
+  params_file: config/controllers/l1_multi_fault_isolation_sysblock/default.yaml
   replacement_component: controller3_2
   baseline_experiment: robust_rotor2_loss15_example1_awff_sysblock
-  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_L1MultiFaultIsolationControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_L1MultiFaultIsolationControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock
-  graphical_sysblock_file: models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
 
 disturbance:
   type: combined_actuator_efficiency_loss_and_lateral_world_force_gust

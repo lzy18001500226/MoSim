@@ -9,14 +9,14 @@
 Review changes in:
 
 ```text
-controllers/
-planners/
-scenarios/
+config/controllers/
+config/planners/
+config/scenarios/
 scripts/
-QuadrotorModel/
-docs/
-workflows/
-tests/
+references/MWORKS/QuadrotorModel/
+Docs/
+Docs/Workflows/
+scripts/tests/
 ```
 
 ---
@@ -29,7 +29,7 @@ Check:
 2. Controller interfaces remain compatible.
 3. Scenario config fields are complete.
 4. Results are saved under `results/`.
-5. Figures are saved under `docs/figures/` or `results/{group}/{scene}/{experiment}/figures/`.
+5. Figures are saved under `Docs/figures/` or `results/{group}/{scene}/{experiment}/figures/`.
 6. Metrics are saved under `results/{group}/{scene}/{experiment}/metrics/`.
 7. No unnecessary absolute paths are introduced.
 8. MCP workflows are followed.
@@ -44,7 +44,7 @@ Use delivery level to size the review and required checks:
 
 | Level | Scope | Minimum Review |
 |---|---|---|
-| L0 | Docs/index only | Link/path sanity and diff check |
+| L0 | Docs/Index only | Link/path sanity and diff check |
 | L1 | Small script/workflow fix | Focused static check or script compile |
 | L2 | New controller, scenario, or evidence workflow | Task contract, tests, docs, evidence bundle |
 | L3 | High-risk model/runtime/Git/import change | Rollback plan, failure-path test, artifact/secret/large-file gate |

@@ -6,13 +6,13 @@ implementation_status:
   current_mworks_model:
     - QuadrotorExperiments.Example1QPNMPCSafetySysblockClosedLoop
   sysblock_controller: AWFF_QPNMPCSafetyController_Sysblock
-  sysblock_controller_file: models/QuadrotorControllerBlocks/AWFF_QPNMPCSafetyController_Sysblock.mo
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_QPNMPCSafetyController_Sysblock.mo
   verification_scope: >
     First integrated implementation of fixed-iteration constrained QP MPC,
     NMPC-style nonlinear tilt correction, CBF-style safety projection,
     controller mode output, return/land references, and event_code logging.
     Full MWORKS_MCP evidence is tracked by
-    scenarios/official/example1_qp_nmpc_safety_sysblock.yaml.
+    config/scenarios/official/example1_qp_nmpc_safety_sysblock.yaml.
   limitation: >
     The QP solver is an embedded fixed-iteration projected-gradient/ADMM-style
     implementation suitable for Sysblock execution. It is an online constrained
@@ -125,5 +125,5 @@ logging:
 
 acceptance:
   nominal_full:
-    scenario_file: scenarios/official/example1_qp_nmpc_safety_sysblock.yaml
+    scenario_file: config/scenarios/official/example1_qp_nmpc_safety_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON, event_log JSON

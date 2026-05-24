@@ -77,31 +77,31 @@ model_interface:
 
 acceptance:
   graphical_contract:
-    script: scripts/check_sysblock_graphics.py
+    script: scripts/mworks/check_sysblock_graphics.py
     required: structure_ok true, behavior_equivalence_ok true before using graphical model as simulation counterpart
   graphical_mcp_check:
-    script: scripts/check_graphical_sysblock_mcp.py
+    script: scripts/mworks/check_graphical_sysblock_mcp.py
     required: load_file, check_model, simulate_model for graphical Sysblock controllers after structure and behavior gates pass
   full_example1:
-    scenario_file: scenarios/official/example1_awff_sysblock.yaml
+    scenario_file: config/scenarios/official/example1_awff_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
   full_example2:
-    scenario_file: scenarios/official/example2_awff_sysblock.yaml
+    scenario_file: config/scenarios/official/example2_awff_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
   full_example2_helix_tuned:
-    scenario_file: scenarios/official/example2_awff_sysblock_helix_tuned.yaml
+    scenario_file: config/scenarios/official/example2_awff_sysblock_helix_tuned.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON, quality_status pass
   full_example3:
-    scenario_file: scenarios/official/example3_awff_sysblock.yaml
+    scenario_file: config/scenarios/official/example3_awff_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
   robust_mass20:
-    scenario_file: scenarios/robustness/example1_mass20_awff_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_mass20_awff_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
   robust_wind_gust:
-    scenario_file: scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
   robust_rotor1_loss15:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
     required: check_model, simulate_model, result_manager, raw CSV, metrics, figures, replay JSON
 
 verified_results:
@@ -127,7 +127,7 @@ verified_results:
     flat_failure_log: results/model_checks/awff_sysblock/logs/sysplorer_graphical_sysblock_closed_loop_failed_flat_20260511.jsonl
     status: mixed Sysplorer/Sysblock plant embedding fails at internal Sum.u* port lookup; keep official full-plant evidence on AWFF_FullControllerEquation_Sysblock
   full_example1:
-    scenario_file: scenarios/official/example1_awff_sysblock.yaml
+    scenario_file: config/scenarios/official/example1_awff_sysblock.yaml
     raw_file: results/official/example1_step/official_example1_awff_sysblock/raw/official_example1_awff_sysblock.csv
     metrics_file: results/official/example1_step/official_example1_awff_sysblock/metrics/official_example1_awff_sysblock.json
     mcp_log: results/official/example1_step/official_example1_awff_sysblock/logs/sysplorer_example1_awff_sysblock_full_20260510.jsonl
@@ -141,7 +141,7 @@ verified_results:
     max_tilt_rad: 0.1744370748
     total_health_score: 55.4232273733
   full_example2:
-    scenario_file: scenarios/official/example2_awff_sysblock.yaml
+    scenario_file: config/scenarios/official/example2_awff_sysblock.yaml
     raw_file: results/official/example2_helix/official_example2_awff_sysblock/raw/official_example2_awff_sysblock.csv
     metrics_file: results/official/example2_helix/official_example2_awff_sysblock/metrics/official_example2_awff_sysblock.json
     mcp_log: results/official/example2_helix/official_example2_awff_sysblock/logs/sysplorer_example2_awff_sysblock_full_20260510.jsonl
@@ -155,7 +155,7 @@ verified_results:
     max_tilt_rad: 0.2941133899
     total_health_score: 47.7930426708
   full_example2_helix_tuned:
-    scenario_file: scenarios/official/example2_awff_sysblock_helix_tuned.yaml
+    scenario_file: config/scenarios/official/example2_awff_sysblock_helix_tuned.yaml
     raw_file: results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/raw/official_example2_awff_sysblock_helix_tuned.csv
     metrics_file: results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/metrics/official_example2_awff_sysblock_helix_tuned.json
     mcp_log: results/official/example2_helix/official_example2_awff_sysblock_helix_tuned/logs/sysplorer_example2_awff_sysblock_helix_tuned_full_20260511.jsonl
@@ -172,7 +172,7 @@ verified_results:
     total_health_score: 47.9080652106
     quality_status: pass
   full_example3:
-    scenario_file: scenarios/official/example3_awff_sysblock.yaml
+    scenario_file: config/scenarios/official/example3_awff_sysblock.yaml
     raw_file: results/official/example3_figure8/official_example3_awff_sysblock/raw/official_example3_awff_sysblock.csv
     metrics_file: results/official/example3_figure8/official_example3_awff_sysblock/metrics/official_example3_awff_sysblock.json
     mcp_log: results/official/example3_figure8/official_example3_awff_sysblock/logs/sysplorer_example3_awff_sysblock_full_20260510.jsonl
@@ -186,7 +186,7 @@ verified_results:
     max_tilt_rad: 0.2294259147
     total_health_score: 60.2812258564
   robust_mass20:
-    scenario_file: scenarios/robustness/example1_mass20_awff_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_mass20_awff_sysblock.yaml
     raw_file: results/robustness/mass20_example1/robust_mass20_example1_awff_sysblock/raw/robust_mass20_example1_awff_sysblock.csv
     metrics_file: results/robustness/mass20_example1/robust_mass20_example1_awff_sysblock/metrics/robust_mass20_example1_awff_sysblock.json
     mcp_log: results/robustness/mass20_example1/robust_mass20_example1_awff_sysblock/logs/sysplorer_robust_mass20_example1_awff_sysblock_20260510.jsonl
@@ -199,7 +199,7 @@ verified_results:
     max_tilt_rad: 0.1741216310
     total_health_score: 52.4435728028
   robust_wind_gust:
-    scenario_file: scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
     raw_file: results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/raw/robust_wind_gust_example1_awff_sysblock.csv
     metrics_file: results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/metrics/robust_wind_gust_example1_awff_sysblock.json
     mcp_log: results/robustness/wind_gust_example1/robust_wind_gust_example1_awff_sysblock/logs/sysplorer_robust_wind_gust_example1_awff_sysblock_20260510.jsonl
@@ -212,7 +212,7 @@ verified_results:
     max_tilt_rad: 0.1966454344
     total_health_score: 55.0017007347
   robust_rotor1_loss15:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_awff_sysblock.yaml
     raw_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/raw/robust_rotor1_loss15_example1_awff_sysblock.csv
     metrics_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/metrics/robust_rotor1_loss15_example1_awff_sysblock.json
     mcp_log: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_awff_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_awff_sysblock_20260510.jsonl

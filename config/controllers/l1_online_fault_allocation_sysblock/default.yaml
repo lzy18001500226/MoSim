@@ -72,14 +72,14 @@ online_fault_estimator:
 
 acceptance:
   rotor_degradation:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_l1_online_fault_allocation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_l1_online_fault_allocation_sysblock.yaml
     required: check_model, simulate_model, result_manager, eta_hat raw column, metrics, figures, replay JSON
     target_quality: pass_or_better_than_l1_residual
 
 verified_evidence:
   source: MWORKS_MCP
   rotor1_loss15_full:
-    scenario_file: scenarios/robustness/example1_rotor1_loss15_l1_online_fault_allocation_sysblock.yaml
+    scenario_file: config/scenarios/robustness/example1_rotor1_loss15_l1_online_fault_allocation_sysblock.yaml
     model_name: QuadrotorExperiments.Example1Rotor1Loss15L1OnlineFaultAllocationSysblockClosedLoop
     raw_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock.csv
     metrics_file: results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock/metrics/robust_rotor1_loss15_example1_l1_online_fault_allocation_sysblock.json

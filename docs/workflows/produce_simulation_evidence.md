@@ -40,27 +40,27 @@ simulation evidence bundle unless the official model is run through MWORKS.
 
 ## Procedure
 
-1. Resolve model context with `workflows/resolve_model_context.md` if the target component or interface is unclear.
+1. Resolve model context with `Docs/Workflows/resolve_model_context.md` if the target component or interface is unclear.
 2. Run `check_model`.
 3. Run the smallest simulation that validates the claim.
 4. Read required variables through `result_manager`.
 5. Export raw CSV under `results/{group}/{scene}/{experiment}/raw/`.
 6. Compute metrics under `results/{group}/{scene}/{experiment}/metrics/` or `results/{group}/{scene}/{experiment}/logs/`.
-7. Run `scripts/evaluate_result_quality.py <scenario> --write-metrics`.
-8. Generate figures or replay assets under `results/{group}/{scene}/{experiment}/figures/`, `results/{group}/{scene}/{experiment}/replay/`, `results/{group}/{scene}/{experiment}/replay_html/`, or `docs/figures/`.
-9. Update `docs/simulation_report.md` only when `quality_status=pass` or when the limitation is explicitly documented.
+7. Run `scripts/results/evaluate_result_quality.py <scenario> --write-metrics`.
+8. Generate figures or replay assets under `results/{group}/{scene}/{experiment}/figures/`, `results/{group}/{scene}/{experiment}/replay/`, `results/{group}/{scene}/{experiment}/replay_html/`, or `Docs/figures/`.
+9. Update `Docs/simulation_report.md` only when `quality_status=pass` or when the limitation is explicitly documented.
 
 Project entrypoints:
 
 ```bash
 # One scenario
-python3 scripts/run_mworks_scenario.py scenarios/official/example1_pid_baseline.yaml
+python3 scripts/mworks/run_mworks_scenario.py config/scenarios/official/example1_pid_baseline.yaml
 
 # Batch, without overwriting completed metrics
-python3 scripts/run_mworks_batch.py --skip-existing scenarios/official/*.yaml
+python3 scripts/mworks/run_mworks_batch.py --skip-existing config/scenarios/official/*.yaml
 
 # Batch plan only, no MCP calls
-python3 scripts/run_mworks_batch.py --dry-run scenarios/official/*.yaml
+python3 scripts/mworks/run_mworks_batch.py --dry-run config/scenarios/official/*.yaml
 ```
 
 ## Required Evidence Bundle
@@ -98,7 +98,7 @@ same scenario until the result passes or the limitation is documented.
 
 | Failure | Action |
 |---|---|
-| result variable missing | inspect available variables and update `docs/index/variable_mapping.md` |
+| result variable missing | inspect available variables and update `Docs/Index/variable_mapping.md` |
 | simulation unstable | save as failed evidence and compare against baseline |
 | MCP error | save JSONL/log output and reduce to smoke case |
 | generated artifact too large | keep summary/metrics; ignore or relocate raw bulky output |

@@ -54,23 +54,23 @@ read_syslab_doc
 Available helper script:
 
 ```text
-scripts/plot_results.py
-scripts/plot_results.jl
-scripts/generate_replay_html.py
-scripts/stream_unreal_udp.py
+scripts/results/plot_results.py
+scripts/results/plot_results.jl
+scripts/results/generate_replay_html.py
+scripts/unreal/stream_unreal_udp.py
 ```
 
-`scripts/plot_results.py` generates dependency-free SVG figures from a standard
+`scripts/results/plot_results.py` generates dependency-free SVG figures from a standard
 CSV and optional metrics JSON:
 
 ```bash
-python3 scripts/plot_results.py \
+python3 scripts/results/plot_results.py \
   results/official/example1_step/official_example1_improved_pid/raw/official_example1_improved_pid.csv \
   results/official/example1_step/official_example1_improved_pid/figures \
   --metrics results/official/example1_step/official_example1_improved_pid/metrics/official_example1_improved_pid.json
 ```
 
-Use `scripts/plot_results.jl`, Syslab MCP plotting APIs, or Sysplorer
+Use `scripts/results/plot_results.jl`, Syslab MCP plotting APIs, or Sysplorer
 `plot_manager` only when higher-fidelity native plots are required.
 
 When the raw CSV contains `eta_hat1..4` and `fault_index`, the Python figure
@@ -78,13 +78,13 @@ generator also writes `*_eta_hat_diagnostics.svg` and
 `*_fault_index_diagnostics.svg`. Use these figures for fault-isolation claims
 instead of relying only on numeric metrics.
 
-`scripts/generate_replay_html.py` creates self-contained offline browser replay
+`scripts/results/generate_replay_html.py` creates self-contained offline browser replay
 pages from `results/{group}/{scene}/{experiment}/replay/*.json`. The generated HTML has no CDN dependency
 and can be used for browser recording and 3D demo video materials without
 opening MWORKS:
 
 ```bash
-python3 scripts/generate_replay_html.py --all
+python3 scripts/results/generate_replay_html.py --all
 ```
 
 Output:
@@ -93,7 +93,7 @@ Output:
 results/{group}/{scene}/{experiment}/replay_html/{replay_name}.html
 ```
 
-`scripts/stream_unreal_udp.py` streams a standard MWORKS raw CSV to an external
+`scripts/unreal/stream_unreal_udp.py` streams a standard MWORKS raw CSV to an external
 Unreal renderer over UDP. This is a video/display path only: it must not be used
 as simulation evidence and must not feed back into controller, planner, or
 metric calculations.
@@ -101,7 +101,7 @@ metric calculations.
 Before UE scene construction, export the render-only map truth:
 
 ```bash
-python3 scripts/export_unreal_scene_map.py --terrain-cell-m 1.0
+python3 scripts/unreal/export_unreal_scene_map.py --terrain-cell-m 1.0
 ```
 
 The output `unreal/MworksUnrealRenderer/Content/MworksData/map_open_blocks_render_map.json`
@@ -113,7 +113,7 @@ asset, not a planning input.
 Example offline playback stream:
 
 ```bash
-python3 scripts/stream_unreal_udp.py \
+python3 scripts/unreal/stream_unreal_udp.py \
   results/planning/sunray150_planning_open_blocks_linear_mpc_sysblock/gui_review_route_filtered_obstacles_1p0_full_50hz_step2/raw/gui_review_route_filtered_obstacles_1p0_full_50hz_step2.csv \
   --host 127.0.0.1 \
   --port 5005 \
@@ -237,7 +237,7 @@ results/README.md
 Copy report-selected figures to:
 
 ```text
-docs/figures/
+Docs/figures/
 ```
 
 ---
