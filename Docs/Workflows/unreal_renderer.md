@@ -275,14 +275,25 @@ whether the full goal is ready to close.
 Current expected status before visual import work:
 
 ```text
-6/8 gates passed
+7/8 gates passed after local content-link reuse
 fab_route_acceptance: partial
-scene_visual_import_or_reuse: missing
+scene_visual_import_or_reuse: passed
 ```
 
-This means the local Derelict fallback has truth and packet-level selection,
-but the selected scene is not yet proven imported/reused inside
-`MworksUnrealRenderer`.
+This means the local Derelict fallback has truth, packet-level selection, and a
+renderer-local content link at `UE5/MworksUnrealRenderer/Content/DerelictCorridor`.
+Fab remains unaccepted until one Fab asset is created/imported with edit access
+and planning truth.
+
+The local fallback content link is created or verified with:
+
+```bash
+uv run python Scripts/UE5/link_renderer_scene_source.py
+uv run python Scripts/UE5/build_scene_source_registry.py --write
+```
+
+`References/UnrealScenes` stays ignored. The link is a local runtime/editor
+bridge, not a committed copy of third-party assets.
 
 Binary build gate:
 
@@ -379,6 +390,13 @@ reversible editor round-trip probe:
 ```bash
 uv run python Scripts/UE5/probe_unreal_editor_mcp_tools.py \
   --json-output Results/tmp/unreal_mcp_editor_probe_<date>.json
+```
+
+When a linked scene source is active, prefer the scene-source scoped probe:
+
+```bash
+uv run python Scripts/UE5/probe_linked_scene_source_mcp.py \
+  --json-output Results/tmp/linked_scene_source_mcp_probe_latest.json
 ```
 
 This script uses the same UnrealMCP editor socket as the `unreal_engine` MCP

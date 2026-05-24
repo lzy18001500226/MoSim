@@ -93,6 +93,9 @@ void ClearSceneSourceState(AQuadrotorMworksMapActor& Actor)
     Actor.CurrentSceneSourceStatus = TEXT("");
     Actor.CurrentSceneProjectRoot = TEXT("");
     Actor.CurrentSceneUProjectPath = TEXT("");
+    Actor.CurrentSceneRendererContentRoot = TEXT("");
+    Actor.CurrentSceneRendererMapAsset = TEXT("");
+    Actor.CurrentSceneRendererMapPackage = TEXT("");
     Actor.CurrentSceneTruthArtifacts.Reset();
     Actor.bCurrentSceneEditableCandidate = false;
     Actor.bCurrentSceneRenderableCandidate = false;
@@ -517,17 +520,20 @@ bool AQuadrotorMworksMapActor::ResolveSceneSourceId(const FString& SceneSourceId
         Source->TryGetStringField(TEXT("status"), CurrentSceneSourceStatus);
         Source->TryGetStringField(TEXT("project_root"), CurrentSceneProjectRoot);
         Source->TryGetStringField(TEXT("uproject_path"), CurrentSceneUProjectPath);
+        Source->TryGetStringField(TEXT("renderer_content_root"), CurrentSceneRendererContentRoot);
+        Source->TryGetStringField(TEXT("renderer_map_asset"), CurrentSceneRendererMapAsset);
+        Source->TryGetStringField(TEXT("renderer_map_package"), CurrentSceneRendererMapPackage);
         Source->TryGetBoolField(TEXT("editable_candidate"), bCurrentSceneEditableCandidate);
         Source->TryGetBoolField(TEXT("renderable_candidate"), bCurrentSceneRenderableCandidate);
         Source->TryGetBoolField(TEXT("planning_truth_ready"), bCurrentScenePlanningTruthReady);
         ReadStringArray(Source, TEXT("truth_artifacts"), CurrentSceneTruthArtifacts);
-        bCurrentSceneImportedIntoRenderer = false;
+        Source->TryGetBoolField(TEXT("imported_into_renderer"), bCurrentSceneImportedIntoRenderer);
 
         CurrentMapId = SourceId;
         CurrentScenePurpose = TEXT("local_editable_scene_source");
-        CurrentSourceMap = CurrentSceneProjectRoot;
+        CurrentSourceMap = bCurrentSceneImportedIntoRenderer ? CurrentSceneRendererMapPackage : CurrentSceneProjectRoot;
         CurrentMigrationStatus = CurrentSceneSourceStatus;
-        bCurrentMapDirectUseSupported = false;
+        bCurrentMapDirectUseSupported = bCurrentSceneImportedIntoRenderer;
         bCurrentMapEditorOpenSupported = bCurrentSceneEditableCandidate && bCurrentSceneRenderableCandidate;
         RenderMapJson = TEXT("");
         ClearPreviewInstances();
@@ -535,7 +541,7 @@ bool AQuadrotorMworksMapActor::ResolveSceneSourceId(const FString& SceneSourceId
         UE_LOG(
             LogTemp,
             Display,
-            TEXT("Selected MoSim scene_source_id=%s status=%s editable=%s renderable=%s truth_ready=%s truth_artifacts=%d project=%s imported_into_renderer=%s"),
+            TEXT("Selected MoSim scene_source_id=%s status=%s editable=%s renderable=%s truth_ready=%s truth_artifacts=%d project=%s renderer_map=%s imported_into_renderer=%s"),
             *CurrentSceneSourceId,
             *CurrentSceneSourceStatus,
             bCurrentSceneEditableCandidate ? TEXT("true") : TEXT("false"),
@@ -543,6 +549,7 @@ bool AQuadrotorMworksMapActor::ResolveSceneSourceId(const FString& SceneSourceId
             bCurrentScenePlanningTruthReady ? TEXT("true") : TEXT("false"),
             CurrentSceneTruthArtifacts.Num(),
             *CurrentSceneProjectRoot,
+            *CurrentSceneRendererMapPackage,
             bCurrentSceneImportedIntoRenderer ? TEXT("true") : TEXT("false"));
         return true;
     }

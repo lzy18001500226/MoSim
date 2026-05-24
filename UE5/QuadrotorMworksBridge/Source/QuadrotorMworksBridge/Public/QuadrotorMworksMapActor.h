@@ -126,6 +126,15 @@ public:
     FString CurrentSceneUProjectPath;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    FString CurrentSceneRendererContentRoot;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    FString CurrentSceneRendererMapAsset;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
+    FString CurrentSceneRendererMapPackage;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")
     TArray<FString> CurrentSceneTruthArtifacts;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Map")

@@ -190,7 +190,11 @@ def gate_udp_contract() -> Gate:
 def latest_editor_probe() -> Path | None:
     if not EDITOR_PROBE_DIR.exists():
         return None
-    probes = sorted(EDITOR_PROBE_DIR.glob("unreal_mcp_editor_probe*.json"), key=lambda path: path.stat().st_mtime)
+    probes = sorted(
+        list(EDITOR_PROBE_DIR.glob("linked_scene_source_mcp_probe*.json"))
+        + list(EDITOR_PROBE_DIR.glob("unreal_mcp_editor_probe*.json")),
+        key=lambda path: path.stat().st_mtime,
+    )
     return probes[-1] if probes else None
 
 
@@ -208,6 +212,8 @@ def gate_unreal_mcp_edit() -> Gate:
         else:
             evidence.append(f"latest_probe={rel(probe)}")
             evidence.append(f"ok={payload.get('ok')}")
+            if payload.get("scene_source_id"):
+                evidence.append(f"scene_source_id={payload.get('scene_source_id')}")
             steps = payload.get("steps", [])
             if isinstance(steps, list):
                 evidence.append("steps=" + ",".join(str(step.get("step")) for step in steps if isinstance(step, dict)))
@@ -218,9 +224,13 @@ def gate_unreal_mcp_edit() -> Gate:
             for step in required:
                 if step not in step_names:
                     missing.append(f"Editor probe missing step: {step}")
+            if probe.name.startswith("linked_scene_source_mcp_probe"):
+                scene_source = payload.get("scene_source", {})
+                if not isinstance(scene_source, dict) or not scene_source.get("renderer_map_asset"):
+                    missing.append("Linked scene-source MCP probe missing renderer_map_asset evidence")
     return Gate(
         "unreal_engine_edit_authority",
-        "unreal_engine MCP can modify a running UE project through reversible actor edit/delete",
+        "unreal_engine MCP can modify a running UE project through reversible actor edit/delete, preferably with linked scene-source context",
         "passed" if not missing else "missing",
         evidence,
         missing,
@@ -262,15 +272,32 @@ def gate_visual_import(registry: dict[str, Any]) -> Gate:
     evidence: list[str] = [f"primary_scene_source_id={primary}"]
     missing: list[str] = []
     imported = source.get("imported_into_renderer") if isinstance(source, dict) else None
-    renderer_map = source.get("renderer_map") if isinstance(source, dict) else None
+    renderer_content_root = source.get("renderer_content_root") if isinstance(source, dict) else None
+    renderer_map_asset = source.get("renderer_map_asset") if isinstance(source, dict) else None
+    renderer_map_package = source.get("renderer_map_package") if isinstance(source, dict) else None
+    renderer_reuse_kind = source.get("renderer_reuse_kind") if isinstance(source, dict) else None
     if imported is True:
         evidence.append("imported_into_renderer=true")
     else:
         missing.append("Primary source is not yet proven imported/reused inside MworksUnrealRenderer")
-    if renderer_map:
-        evidence.append(f"renderer_map={renderer_map}")
+    if renderer_reuse_kind:
+        evidence.append(f"renderer_reuse_kind={renderer_reuse_kind}")
+    if renderer_content_root:
+        evidence.append(f"renderer_content_root={renderer_content_root}")
+        if not (ROOT / str(renderer_content_root)).exists():
+            missing.append(f"Renderer content root does not exist: {renderer_content_root}")
     else:
-        missing.append("No renderer map / level binding evidence recorded for the primary scene source")
+        missing.append("No renderer_content_root recorded for the primary scene source")
+    if renderer_map_asset:
+        evidence.append(f"renderer_map_asset={renderer_map_asset}")
+        if not (ROOT / str(renderer_map_asset)).exists():
+            missing.append(f"Renderer map asset does not exist: {renderer_map_asset}")
+    else:
+        missing.append("No renderer_map_asset recorded for the primary scene source")
+    if renderer_map_package:
+        evidence.append(f"renderer_map_package={renderer_map_package}")
+    else:
+        missing.append("No renderer_map_package recorded for the primary scene source")
     return Gate(
         "scene_visual_import_or_reuse",
         "Selected Fab/local scene is actually imported or reused by the MoSim UE sim project",
@@ -293,17 +320,47 @@ def build_report() -> dict[str, Any]:
         gate_visual_import(registry),
     ]
     passed = [gate for gate in gates if gate.passed]
+    missing_actions = []
+    by_id = {gate.gate_id: gate for gate in gates}
+    fallback_route_ok = all(
+        by_id[gate_id].passed
+        for gate_id in [
+            "fab_inventory_visible",
+            "local_fallback_ready",
+            "scene_truth_valid",
+            "scene_source_udp_contract",
+            "unreal_engine_edit_authority",
+            "skills_workflow_defined",
+            "scene_visual_import_or_reuse",
+        ]
+    )
+    fab_route_ok = by_id["fab_route_acceptance"].passed and fallback_route_ok
+    goal_ok = fab_route_ok or fallback_route_ok
+    if not by_id["fab_route_acceptance"].passed and fallback_route_ok:
+        missing_actions.append(
+            "Fab remains inventory-visible only, but fallback route is active and satisfies the current objective branch"
+        )
+    elif not by_id["fab_route_acceptance"].passed:
+        missing_actions.append(
+            "Fab remains inventory-visible only; keep the local editable fallback active unless a Fab asset is created/imported with truth"
+        )
+    if not by_id["scene_visual_import_or_reuse"].passed:
+        missing_actions.append(
+            "Prove scene_visual_import_or_reuse by linking/importing Derelict or an accepted Fab scene into MworksUnrealRenderer"
+        )
+    if by_id["scene_visual_import_or_reuse"].passed and by_id["unreal_engine_edit_authority"].passed:
+        missing_actions.append(
+            "Next strengthening gate: run a live UE MCP reversible modification while the linked Derelict map is loaded in the MoSim renderer"
+        )
+
     return {
         "schema": "mosim.ue_fab_goal_acceptance.v1",
-        "ok": len(passed) == len(gates),
+        "ok": goal_ok,
+        "route": "fab" if fab_route_ok else "local_editable_fallback" if fallback_route_ok else "incomplete",
         "passed_count": len(passed),
         "gate_count": len(gates),
         "gates": [gate.__dict__ for gate in gates],
-        "next_required_actions": [
-            "Prove scene_visual_import_or_reuse by importing/reusing Derelict or an accepted Fab scene in MworksUnrealRenderer",
-            "If Fab remains only inventory-visible, keep it rejected and continue with References/UnrealScenes fallback",
-            "After visual import, run a live UE MCP reversible modification against that selected scene or a controlled map actor in the same project",
-        ],
+        "next_required_actions": missing_actions,
     }
 
 

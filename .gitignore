@@ -19,6 +19,9 @@ UE5/**/Binaries/
 UE5/**/Intermediate/
 UE5/**/Saved/
 UE5/**/DerivedDataCache/
+# Local renderer content links to ignored third-party scene assets.
+UE5/MworksUnrealRenderer/Content/DerelictCorridor/
+UE5/MworksUnrealRenderer/Content/DerelictCorridor
 *.sln
 *.suo
 *.opensdf

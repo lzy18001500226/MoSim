@@ -24,6 +24,7 @@ from export_unreal_scene_truth import validate_truth_payload
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json"
+RENDERER_CONTENT = ROOT / "UE5/MworksUnrealRenderer/Content"
 SCHEMA = "mosim.unreal_scene_source_registry.v1"
 FORBIDDEN_PATH_PATTERNS = (
     re.compile(r"[A-Za-z]:[\\/]", re.IGNORECASE),
@@ -37,6 +38,13 @@ FORBIDDEN_PATH_PATTERNS = (
 def rel(path: Path) -> str:
     try:
         return path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def rel_lexical(path: Path) -> str:
+    try:
+        return path.relative_to(ROOT).as_posix()
     except ValueError:
         return path.as_posix()
 
@@ -101,6 +109,37 @@ def truth_artifacts(row: dict[str, Any]) -> list[str]:
     return sorted({str(path) for path in candidates if str(path).endswith(".json")})
 
 
+def renderer_reuse_metadata(row: dict[str, Any]) -> dict[str, Any]:
+    samples = [str(value) for value in row.get("umap_samples", [])]
+    for sample in samples:
+        parts = list(Path(sample).parts)
+        if "Content" not in parts:
+            continue
+        content_index = parts.index("Content")
+        below_content = parts[content_index + 1 :]
+        if len(below_content) < 2:
+            continue
+        top_level = below_content[0]
+        renderer_content_root = RENDERER_CONTENT / top_level
+        renderer_map_asset = renderer_content_root.joinpath(*below_content[1:])
+        renderer_map_package = "/Game/" + "/".join(Path(*below_content).with_suffix("").parts)
+        imported = renderer_content_root.exists() and renderer_map_asset.exists()
+        return {
+            "imported_into_renderer": imported,
+            "renderer_reuse_kind": "content_link" if renderer_content_root.is_symlink() else "content_copy" if imported else "",
+            "renderer_content_root": rel_lexical(renderer_content_root) if imported else "",
+            "renderer_map_asset": rel_lexical(renderer_map_asset) if imported else "",
+            "renderer_map_package": renderer_map_package if imported else "",
+        }
+    return {
+        "imported_into_renderer": False,
+        "renderer_reuse_kind": "",
+        "renderer_content_root": "",
+        "renderer_map_asset": "",
+        "renderer_map_package": "",
+    }
+
+
 def compact_scene_entry(row: dict[str, Any]) -> dict[str, Any]:
     scene_id = f"local_{slug(str(row.get('name', 'scene')))}"
     artifacts = truth_artifacts(row)
@@ -108,7 +147,7 @@ def compact_scene_entry(row: dict[str, Any]) -> dict[str, Any]:
     status = "accepted_local_truth_fallback" if ready else "needs_truth_extraction_or_proxy"
     if not row.get("editable_candidate") or not row.get("renderable_candidate"):
         status = "not_import_ready"
-    return {
+    entry = {
         "scene_source_id": scene_id,
         "source_kind": row.get("source_type", "local_unreal_project"),
         "name": row.get("name", ""),
@@ -129,6 +168,8 @@ def compact_scene_entry(row: dict[str, Any]) -> dict[str, Any]:
         "audit_verdict": row.get("verdict", ""),
         "truth_gap": row.get("truth", {}).get("truth_gap", ""),
     }
+    entry.update(renderer_reuse_metadata(row))
+    return entry
 
 
 def selected_primary(local_sources: list[dict[str, Any]]) -> str:
@@ -267,6 +308,13 @@ def validate_registry(registry: dict[str, Any]) -> list[str]:
             errors.append(f"{source.get('scene_source_id')}: accepted source requires truth_artifacts")
         for artifact in artifacts:
             errors.extend(validate_truth_file(ROOT / artifact))
+        if source.get("imported_into_renderer"):
+            for key in ["renderer_content_root", "renderer_map_asset", "renderer_map_package"]:
+                if not source.get(key):
+                    errors.append(f"{source.get('scene_source_id')}: imported source requires {key}")
+            asset = source.get("renderer_map_asset")
+            if asset and not (ROOT / str(asset)).exists():
+                errors.append(f"{source.get('scene_source_id')}: renderer_map_asset not found: {asset}")
     return errors
 
 
@@ -301,7 +349,8 @@ def print_summary(registry: dict[str, Any]) -> None:
     for source in sources:
         print(
             f"- {source.get('scene_source_id')}: {source.get('status')} "
-            f"maps={source.get('umap_count')} assets={source.get('uasset_count')} truth={len(source.get('truth_artifacts', []))}"
+            f"maps={source.get('umap_count')} assets={source.get('uasset_count')} "
+            f"truth={len(source.get('truth_artifacts', []))} imported={source.get('imported_into_renderer')}"
         )
 
 

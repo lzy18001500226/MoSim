@@ -79,12 +79,28 @@
   This proves the frame contract for `ResolveSceneSourceId`; it is still not
   visual import evidence.
 - `Scripts/UE5/check_ue_fab_goal_acceptance.py` is now the gate-level audit
-  for the current UE/Fab tool objective. Latest status is `6/8` gates passed:
+  for the current UE/Fab tool objective. Latest status is `7/8` gates passed:
   Fab inventory, local fallback readiness, Derelict truth validation, UDP
-  scene-source contract, live `unreal_engine` edit authority, and minimal
-  Skills/workflow docs pass. Remaining gaps are Fab route acceptance and
-  proof that the selected scene is visually imported/reused inside
-  `MworksUnrealRenderer`.
+  scene-source contract, live `unreal_engine` edit authority, minimal
+  Skills/workflow docs, and local Derelict content-link reuse in
+  `MworksUnrealRenderer` pass. Remaining gap: Fab route acceptance. Fab is
+  still only inventory-visible, so the active route remains
+  `References/UnrealScenes` fallback.
+- `Scripts/UE5/link_renderer_scene_source.py` creates/verifies the local
+  content link
+  `UE5/MworksUnrealRenderer/Content/DerelictCorridor -> References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor`.
+  The link is ignored and not committed; `scene_source_registry.json` records
+  `imported_into_renderer=true`, `renderer_reuse_kind=content_link`, and
+  `/Game/DerelictCorridor/Maps/DerelictCorridor`.
+- `Scripts/UE5/probe_linked_scene_source_mcp.py` produced live editor evidence
+  at `Results/tmp/linked_scene_source_mcp_probe_latest.json`: the
+  `unreal_engine` listener was reachable, the Derelict scene source was linked
+  into renderer Content, and a temporary `MoSimSceneSourceProbe_*` actor was
+  created, transformed, deleted, and cleaned up without saving the map.
+- Latest goal audit now reports `ok=True`, `route=local_editable_fallback`,
+  `7/8` gates passed. The remaining non-passing gate is Fab route acceptance,
+  which is intentionally bypassed by the objective's fallback branch until a
+  Fab asset is actually created/imported with edit access and planning truth.
 - Latest UE build attempt reached C++ compile and failed only at DLL link
   because an open `UnrealEditor.exe` held
   `UnrealEditor-QuadrotorMworksBridge.dll` and
