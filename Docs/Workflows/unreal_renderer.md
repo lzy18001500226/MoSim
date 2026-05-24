@@ -61,6 +61,39 @@ Reject as final scene sources:
 - primitive boxes used to approximate a factory or competition map;
 - one-room demos when the requirement is a large flyable environment.
 
+Before choosing a scene source, inspect the local Epic/Fab/Launcher inventory:
+
+```bash
+python3 Scripts/UE5/epic_library_index.py --compact
+python3 Scripts/UE5/epic_library_index.py --query Factory
+python3 Scripts/UE5/epic_library_index.py --query City
+```
+
+The inventory separates:
+
+| Field | Meaning |
+|---|---|
+| `launcher_items` / `launcher_installs` | Installed engines and plugins from Epic manifests |
+| `account_library_items` | Owned library entries inferred from the local Launcher account cache; may not be installed |
+| `fab_assets` | Local FabLibrary cached downloads |
+| `vault_cache_projects` | Old-style VaultCache projects and any discovered `.uproject` |
+
+Current verified local-library behavior on 2026-05-24:
+
+```text
+launcher_item_count: 11
+launcher_install_count: 11
+fab_asset_count: 5
+vault_cache_project_count: 3
+account_library_item_count: 17
+```
+
+This inventory is a selection and planning tool, not a downloader. If an asset
+exists only in `account_library_items`, use Epic Launcher/Fab to create or add
+it to a UE project before treating it as editable local content. Do not parse or
+publish raw Launcher logs or webcache entries; only the allowlisted index output
+is safe to record.
+
 ## First-Pass Manual Review Gate
 
 For each candidate scene, record:

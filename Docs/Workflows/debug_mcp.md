@@ -325,6 +325,83 @@ Do not continue interactive actor, Blueprint, or viewport MCP work from stale
 success evidence. Source-level checks and standalone `-game` UDP playback may
 continue because they use different routes.
 
+## 7.2 MoSim Tool Capability Boundaries
+
+Do not force every simulator-adjacent tool into one MCP. Split MCP servers by
+software/runtime boundary, then compose them with Skills and workflows.
+
+| Boundary | MCP / Tool Role | Why It Is Separate |
+|---|---|---|
+| MWORKS.Sysplorer | `sysplorer` | Model loading, checking, translation, simulation, result management |
+| MWORKS.Syslab | `syslab` | Julia/Syslab computation, docs, function mapping |
+| Unreal Editor | `unreal_engine` | Live editor scene/Blueprint/material/actor work through an editor listener |
+| Epic/Fab/Launcher library | `mosim_epic_library` | Read-only asset inventory from Launcher/Fab caches; not a UE Editor object graph |
+| Future runtime renderer bridge | `mosim_render_bridge` or UDP/TCP scripts | High-frequency simulation/render data transfer, not editor authoring |
+
+Current Unreal MCP audits show the strongest UE authoring design is usually:
+
+```text
+Codex/agent
+  -> Python/TypeScript MCP server over stdio
+  -> WebSocket/TCP/HTTP bridge
+  -> C++ plugin inside Unreal Editor
+  -> UE Editor APIs on the game/editor thread
+```
+
+Reason: Blueprint graphs, AssetRegistry, `GEditor`, PIE, package saving,
+Undo/Redo, and thread dispatch are more reliable in a C++ UE plugin than in a
+pure external Python script. Python/TypeScript is still useful for MCP schema,
+tool descriptions, batching, safety checks, and transport.
+
+This does not mean the Epic/Fab library index should be a C++ UE plugin.
+Launcher account cache and VaultCache inventory exist outside the editor, so a
+read-only filesystem/cache MCP is a better boundary.
+
+## 7.3 Epic/Fab Library Index MCP
+
+Project-local scripts:
+
+```text
+Scripts/UE5/epic_library_index.py
+Scripts/UE5/mosim_epic_library_mcp.py
+```
+
+Read-only inventory command:
+
+```bash
+python3 Scripts/UE5/epic_library_index.py --compact
+python3 Scripts/UE5/epic_library_index.py --query Factory
+```
+
+The indexer reads:
+
+```text
+C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests\*.item
+C:\ProgramData\Epic\UnrealEngineLauncher\LauncherInstalled.dat
+C:\ProgramData\Epic\EpicGamesLauncher\VaultCache
+C:\ProgramData\Epic\EpicGamesLauncher\VaultCache\FabLibrary\listings_v1.db
+C:\Users\HP\AppData\Local\EpicGamesLauncher\Saved\Data\OC_*.dat
+```
+
+Safety rule:
+
+```text
+Never dump raw Launcher logs, webcache, OAuth URLs, tokens, account ids, or full
+cache blobs into docs, prompts, Git, or result files. The Epic library indexer
+must expose only allowlisted asset fields such as display_name, app_name,
+versions, local cache path, .uproject path, and install state.
+```
+
+MCP server smoke command:
+
+```bash
+uv run --with mcp python Scripts/UE5/mosim_epic_library_mcp.py serve
+```
+
+Use this MCP to answer "what assets do we own / have cached / can create a
+project from?" Use `unreal_engine` only after an editable UE project is open and
+the editor-side listener passes a read-only actor or scene probe.
+
 ---
 
 ## 8. Recommended Syslab Wrapper

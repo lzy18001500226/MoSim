@@ -20,6 +20,10 @@
   factory/warehouse, forest/park, indoor corridor/cave, city/building, and open
   outdoor scene packs. Do not reconnect quadrotor, radar, trajectory, UDP, or
   MWORKS simulation until the selected map source is visually acceptable.
+- Current tool-capability split: keep `unreal_engine` for live UE Editor
+  authoring, and use the project-local Epic/Fab library index for Launcher/Fab
+  account/cache inventory. Do not treat `/mcp` tool inventory as proof that
+  Epic Launcher library assets are visible to UE MCP tools.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.
@@ -97,6 +101,9 @@
 - Do not use goal tracking for one-off implementation steps. The goal should
   stay at the durable total objective level; record immediate actions as
   ledger/queue tasks.
+- Do not conflate UE Editor MCP with Epic/Fab/Launcher library access. UE MCP
+  edits a running editor project; Epic/Fab library discovery is a separate
+  read-only cache/index problem and must redact account/cache secrets.
 - Do not open UE Editor when the requested review is a packaged simulator
   interface such as RflySim3D or CopterSim.
 - Do not adopt Loopback/self-repeating driver loops, Composio credentialed
