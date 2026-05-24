@@ -364,6 +364,8 @@ Project-local scripts:
 ```text
 Scripts/UE5/epic_library_index.py
 Scripts/UE5/mosim_epic_library_mcp.py
+Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh
+Scripts/UE5/check_epic_library_inventory.py
 ```
 
 Read-only inventory command:
@@ -371,6 +373,7 @@ Read-only inventory command:
 ```bash
 python3 Scripts/UE5/epic_library_index.py --compact
 python3 Scripts/UE5/epic_library_index.py --query Factory
+python3 Scripts/UE5/check_epic_library_inventory.py
 ```
 
 The indexer reads:
@@ -395,7 +398,17 @@ versions, local cache path, .uproject path, and install state.
 MCP server smoke command:
 
 ```bash
-uv run --with mcp python Scripts/UE5/mosim_epic_library_mcp.py serve
+Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh
+```
+
+Codex MCP config entry, if enabling manually:
+
+```toml
+[mcp_servers.mosim_epic_library]
+command = "/mnt/c/Users/HP/Desktop/MoSim/Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh"
+args = []
+startup_timeout_sec = 60
+tool_timeout_sec = 60
 ```
 
 Use this MCP to answer "what assets do we own / have cached / can create a

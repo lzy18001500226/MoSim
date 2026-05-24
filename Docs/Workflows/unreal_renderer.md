@@ -67,6 +67,7 @@ Before choosing a scene source, inspect the local Epic/Fab/Launcher inventory:
 python3 Scripts/UE5/epic_library_index.py --compact
 python3 Scripts/UE5/epic_library_index.py --query Factory
 python3 Scripts/UE5/epic_library_index.py --query City
+python3 Scripts/UE5/check_epic_library_inventory.py
 ```
 
 The inventory separates:
@@ -93,6 +94,11 @@ exists only in `account_library_items`, use Epic Launcher/Fab to create or add
 it to a UE project before treating it as editable local content. Do not parse or
 publish raw Launcher logs or webcache entries; only the allowlisted index output
 is safe to record.
+
+When Codex needs this inventory through MCP, register
+`Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh` as `mosim_epic_library`.
+Keep it separate from `unreal_engine`: library inventory selects candidate
+assets, while `unreal_engine` edits a running UE project.
 
 ## First-Pass Manual Review Gate
 

@@ -24,6 +24,9 @@
   authoring, and use the project-local Epic/Fab library index for Launcher/Fab
   account/cache inventory. Do not treat `/mcp` tool inventory as proof that
   Epic Launcher library assets are visible to UE MCP tools.
+  Use `Scripts/UE5/check_epic_library_inventory.py` for a cheap health check
+  and `Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh` when exposing the
+  index as the `mosim_epic_library` MCP.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.
