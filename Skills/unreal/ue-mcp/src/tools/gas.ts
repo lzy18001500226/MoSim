@@ -1,0 +1,41 @@
+import { z } from "zod";
+import { categoryTool, bp, type ToolDef } from "../types.js";
+
+export const gasTool: ToolDef = categoryTool(
+  "gas",
+  "Gameplay Ability System: abilities, effects, attribute sets, cues.",
+  {
+    add_asc:             bp("Add AbilitySystemComponent. Params: blueprintPath, componentName?", "add_ability_system_component"),
+    create_attribute_set: bp("Create AttributeSet BP. Params: name, packagePath?", "create_attribute_set"),
+    add_attribute:       bp("Add attribute to set. Params: attributeSetPath, attributeName, defaultValue?", "add_attribute"),
+    create_ability:      bp("Create GameplayAbility BP. Params: name, packagePath?, parentClass?", "create_gameplay_ability"),
+    set_ability_tags:    bp("Set tags on ability. Params: abilityPath, ability_tags?, cancel_abilities_with_tag?, activation_required_tags?, activation_blocked_tags?", "set_ability_tags"),
+    create_effect:       bp("Create GameplayEffect BP. Params: name, packagePath?, durationPolicy?", "create_gameplay_effect"),
+    set_effect_modifier: bp("Add modifier. Params: effectPath, attribute, operation?, magnitude?", "set_effect_modifier"),
+    create_cue:          bp("Create GameplayCue. Params: name, packagePath?, cueType?", "create_gameplay_cue"),
+    get_info:            bp("Inspect GAS setup. Params: blueprintPath", "get_gas_info"),
+  },
+  undefined,
+  {
+    blueprintPath: z.string().optional(),
+    name: z.string().optional(),
+    packagePath: z.string().optional(),
+    componentName: z.string().optional(),
+    attributeSetPath: z.string().optional(),
+    attributeName: z.string().optional(),
+    defaultValue: z.number().optional(),
+    parentClass: z.string().optional(),
+    abilityPath: z.string().optional(),
+    ability_tags: z.array(z.string()).optional(),
+    cancel_abilities_with_tag: z.array(z.string()).optional(),
+    block_abilities_with_tag: z.array(z.string()).optional(),
+    activation_required_tags: z.array(z.string()).optional(),
+    activation_blocked_tags: z.array(z.string()).optional(),
+    effectPath: z.string().optional(),
+    attribute: z.string().optional(),
+    operation: z.string().optional(),
+    magnitude: z.number().optional(),
+    durationPolicy: z.string().optional(),
+    cueType: z.string().optional(),
+  },
+);

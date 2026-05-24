@@ -11,6 +11,7 @@
 | Debug MCP | `workflows/debug_mcp.md` |
 | Operate Unreal MCP | `workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `docs/index/api_index.md#5-unreal-mcp-tools` |
 | Build Unreal/RflySim renderer and scene workflow | `workflows/unreal_renderer.md` |
+| Project structure refactor toward RflySim-like simulator product | `workflows/project_structure_refactor.md` |
 | Translate MathWorks/Simulink patterns to MWORKS | `workflows/translate_mathworks_to_mworks.md` |
 | Resolve MWORKS model context | `Skills/Mworks/mworks-model-context/SKILL.md` |
 | Produce MWORKS simulation evidence | `Skills/Mworks/mworks-simulation-evidence/SKILL.md` |

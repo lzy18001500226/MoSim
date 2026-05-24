@@ -125,6 +125,8 @@ python scripts/check_reference_outputs.py
 
 ## 目录约定
 
+当前仓库仍保留竞赛工程阶段的目录形态。后续要向类似 RflySim 的仿真产品演进时，按 `workflows/project_structure_refactor.md` 分阶段重构：先建立路径注册表，再迁移低风险配置目录，最后再移动 MWORKS/Unreal 运行时目录。
+
 ```text
 controllers/   控制器模块和参数
 planners/      路径规划与轨迹生成模块

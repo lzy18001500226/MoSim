@@ -1,0 +1,89 @@
+# Unreal Engine Plugin .gitignore
+
+# Build outputs (but NOT plugin Binaries - those are needed for distribution)
+PackagedPlugin/
+Intermediate/
+DerivedDataCache/
+Build/
+CleanPlugin/
+PluginBuild/
+Tutorials/
+
+# IDE files
+.vs/
+.vscode/
+*.suo
+*.user
+*.sln
+*.vcxproj
+*.vcxproj.filters
+
+# Unreal generated files
+*.VC.db
+*.opensdf
+*.sdf
+*.cachefile
+
+# Node.js (for MCP bridge)
+# Ignore node_modules everywhere EXCEPT the mcp-bridge (needed for distribution)
+node_modules/
+!UnrealClaude/Resources/mcp-bridge/node_modules/
+npm-debug.log
+yarn-error.log
+# Keep package-lock.json for reproducible builds
+# package-lock.json
+
+# Claude Code session data
+.claude/
+CLAUDE.md
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*~
+
+# Test artifacts and output
+TestResults/
+AutomationTest/
+**/Saved/Automation/
+**/Saved/Logs/
+*.automation.json
+TestReport*.xml
+TestReport*.html
+coverage/
+*.coverage
+*.gcov
+*.gcda
+*.gcno
+
+# Debug symbols (optional - can include for debugging)
+# *.pdb
+
+# Build intermediates (NOT final binaries)
+*.obj
+*.o
+*.exp
+
+# Archives
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# Personal CLAUDE.md (use CLAUDE.md.default as template)
+UnrealClaude/CLAUDE.md
+UnrealClaude/Saved/UnrealClaude/test-output.txt

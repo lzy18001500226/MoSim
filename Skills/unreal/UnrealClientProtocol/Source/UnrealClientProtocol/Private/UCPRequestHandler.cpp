@@ -1,0 +1,226 @@
+// MIT License - Copyright (c) 2025 Italink
+
+#include "UCPRequestHandler.h"
+#include "UCPFunctionInvoker.h"
+#include "UCPSettings.h"
+#include "UObject/UObjectGlobals.h"
+#include "UObject/GarbageCollection.h"
+#include "Dom/JsonValue.h"
+#include "Misc/OutputDeviceRedirector.h"
+#include "Misc/Guid.h"
+#if WITH_EDITOR
+#include "ScopedTransaction.h"
+#endif
+
+// ---- Log Capture ----
+
+void FUCPLogCapture::Serialize(const TCHAR* V, ELogVerbosity::Type Verbosity, const FName& Category)
+{
+	if (Verbosity <= MinVerbosity)
+	{
+		FString LevelStr;
+		switch (Verbosity)
+		{
+		case ELogVerbosity::Fatal:   LevelStr = TEXT("Fatal"); break;
+		case ELogVerbosity::Error:   LevelStr = TEXT("Error"); break;
+		case ELogVerbosity::Warning: LevelStr = TEXT("Warning"); break;
+		case ELogVerbosity::Display: LevelStr = TEXT("Display"); break;
+		case ELogVerbosity::Log:     LevelStr = TEXT("Log"); break;
+		default:                     LevelStr = TEXT("Verbose"); break;
+		}
+
+		Entries.Add(FString::Printf(TEXT("[%s] %s: %s"), *LevelStr, *Category.ToString(), V));
+
+		if (Verbosity <= ELogVerbosity::Warning)
+		{
+			bHasIssues = true;
+		}
+	}
+}
+
+void FUCPLogCapture::Reset(ELogVerbosity::Type InMinVerbosity)
+{
+	Entries.Empty();
+	MinVerbosity = InMinVerbosity;
+	bHasIssues = false;
+}
+
+// ---- Security ----
+
+static bool IsCallAllowed(const FString& ObjectPath, const FString& FunctionName)
+{
+	const UUCPSettings* Settings = GetDefault<UUCPSettings>();
+
+	for (const FString& Blocked : Settings->BlockedFunctions)
+	{
+		if (Blocked.Equals(FunctionName, ESearchCase::IgnoreCase))
+		{
+			return false;
+		}
+		if (Blocked.Contains(TEXT("::")) && ObjectPath.Contains(Blocked.Left(Blocked.Find(TEXT("::")))))
+		{
+			FString BlockedFunc = Blocked.Mid(Blocked.Find(TEXT("::")) + 2);
+			if (BlockedFunc.Equals(FunctionName, ESearchCase::IgnoreCase))
+			{
+				return false;
+			}
+		}
+	}
+
+	if (Settings->AllowedClassPrefixes.Num() > 0)
+	{
+		bool bAllowed = false;
+		for (const FString& Prefix : Settings->AllowedClassPrefixes)
+		{
+			if (ObjectPath.StartsWith(Prefix))
+			{
+				bAllowed = true;
+				break;
+			}
+		}
+		if (!bAllowed)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+// ---- Log Capture Nesting ----
+
+ELogVerbosity::Type FUCPRequestHandler::ParseLogLevel(const TSharedPtr<FJsonObject>& Request)
+{
+	if (Request->HasField(TEXT("log_level")))
+	{
+		FString Level = Request->GetStringField(TEXT("log_level"));
+		if (Level == TEXT("all") || Level == TEXT("verbose")) return ELogVerbosity::VeryVerbose;
+		if (Level == TEXT("log"))     return ELogVerbosity::Log;
+		if (Level == TEXT("display")) return ELogVerbosity::Display;
+		if (Level == TEXT("warning")) return ELogVerbosity::Warning;
+		if (Level == TEXT("error"))   return ELogVerbosity::Error;
+	}
+	return ELogVerbosity::Warning;
+}
+
+void FUCPRequestHandler::BeginLogCapture(ELogVerbosity::Type InMinVerbosity)
+{
+	LogCaptureDepth++;
+	if (LogCaptureDepth == 1)
+	{
+		LogCapture.Reset(InMinVerbosity);
+		FOutputDeviceRedirector::Get()->AddOutputDevice(&LogCapture);
+	}
+}
+
+void FUCPRequestHandler::EndLogCapture(TSharedPtr<FJsonObject>& Response)
+{
+	LogCaptureDepth--;
+	if (LogCaptureDepth == 0)
+	{
+		FOutputDeviceRedirector::Get()->RemoveOutputDevice(&LogCapture);
+
+		if (LogCapture.bHasIssues && Response.IsValid())
+		{
+			TArray<TSharedPtr<FJsonValue>> LogArray;
+			for (const FString& Entry : LogCapture.Entries)
+			{
+				LogArray.Add(MakeShared<FJsonValueString>(Entry));
+			}
+			Response->SetArrayField(TEXT("log"), LogArray);
+		}
+	}
+}
+
+// ---- Request Handling ----
+
+TSharedPtr<FJsonObject> FUCPRequestHandler::HandleRequest(const TSharedPtr<FJsonObject>& Request, uint32 ConnectionId)
+{
+	if (!Request.IsValid())
+	{
+		return MakeError(FString(), TEXT("Null request"));
+	}
+
+	FString RequestId = FString::Printf(TEXT("UCP-%08X"), FGuid::NewGuid().A);
+
+	ELogVerbosity::Type RequestLogLevel = ParseLogLevel(Request);
+	BeginLogCapture(RequestLogLevel);
+
+	TSharedPtr<FJsonObject> Response;
+	FGCScopeGuard GCGuard;
+#if WITH_EDITOR
+	{
+		FScopedTransaction Transaction(FText::FromString(RequestId));
+		Response = CallUFunction(Request, ConnectionId, RequestId);
+	}
+#else
+	Response = CallUFunction(Request, ConnectionId, RequestId);
+#endif
+
+	if (!Response.IsValid())
+	{
+		EndLogCapture(Response);
+		return nullptr;
+	}
+
+	Response->SetStringField(TEXT("id"), RequestId);
+	EndLogCapture(Response);
+
+	return Response;
+}
+
+TSharedPtr<FJsonObject> FUCPRequestHandler::CallUFunction(const TSharedPtr<FJsonObject>& Request, uint32 ConnectionId, const FString& RequestId)
+{
+	FString ObjectPath = Request->GetStringField(TEXT("object"));
+	FString FunctionName = Request->GetStringField(TEXT("function"));
+	TSharedPtr<FJsonObject> Params;
+	if (Request->HasField(TEXT("params")))
+	{
+		Params = Request->GetObjectField(TEXT("params"));
+	}
+
+	if (ObjectPath.IsEmpty())
+	{
+		return MakeError(FString(), TEXT("Missing 'object' field"));
+	}
+	if (FunctionName.IsEmpty())
+	{
+		return MakeError(FString(), TEXT("Missing 'function' field"));
+	}
+
+	if (!IsCallAllowed(ObjectPath, FunctionName))
+	{
+		return MakeError(FString(), FString::Printf(TEXT("Call denied by security policy: %s::%s"), *ObjectPath, *FunctionName));
+	}
+
+	TSharedPtr<FJsonObject> Result = FUCPFunctionInvoker::Invoke(ObjectPath, FunctionName, Params, ConnectionId, RequestId);
+
+	if (!Result.IsValid())
+	{
+		return nullptr;
+	}
+
+	if (!Result->GetBoolField(TEXT("success")))
+	{
+		TSharedPtr<FJsonObject> Sig = FUCPFunctionInvoker::DescribeFunction(ObjectPath, FunctionName);
+		if (Sig->GetBoolField(TEXT("success")))
+		{
+			Result->SetObjectField(TEXT("expected"), Sig->GetObjectField(TEXT("result")));
+		}
+	}
+
+	return Result;
+}
+
+TSharedPtr<FJsonObject> FUCPRequestHandler::MakeError(const FString& Id, const FString& Error)
+{
+	TSharedPtr<FJsonObject> Resp = MakeShared<FJsonObject>();
+	if (!Id.IsEmpty())
+	{
+		Resp->SetStringField(TEXT("id"), Id);
+	}
+	Resp->SetBoolField(TEXT("success"), false);
+	Resp->SetStringField(TEXT("error"), Error);
+	return Resp;
+}
+

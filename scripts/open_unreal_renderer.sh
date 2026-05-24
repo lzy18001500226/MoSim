@@ -8,6 +8,7 @@ UE_EDITOR="${UE_EDITOR:-/mnt/d/Program Files/Epic Games/UE_5.7/Engine/Binaries/W
 UPROJECT="${PROJECT_ROOT}/unreal/MworksUnrealRenderer/MworksUnrealRenderer.uproject"
 MODE="${1:-editor}"
 RESTART_UNREAL_GAME="${RESTART_UNREAL_GAME:-0}"
+UNREAL_EXTRA_ARGS="${UNREAL_EXTRA_ARGS:-}"
 
 if [[ ! -f "${UE_EDITOR}" ]]; then
   echo "UnrealEditor.exe not found: ${UE_EDITOR}" >&2
@@ -75,8 +76,17 @@ if [[ "${#EXTRA_ARGS[@]}" -eq 0 ]]; then
   powershell.exe -NoProfile -Command \
     "Start-Process -FilePath '${UE_WIN}' -ArgumentList @('${UPROJECT_WIN}') | Out-Null"
 else
+  EXTRA_ARGS_WIN=()
+  if [[ -n "${UNREAL_EXTRA_ARGS}" ]]; then
+    # shellcheck disable=SC2206
+    EXTRA_ARGS_WIN=(${UNREAL_EXTRA_ARGS})
+  fi
+  ARG_LIST="'${UPROJECT_WIN}', '-game', '-windowed', '-ResX=1280', '-ResY=720'"
+  for Arg in "${EXTRA_ARGS_WIN[@]}"; do
+    ARG_LIST="${ARG_LIST}, '${Arg}'"
+  done
   powershell.exe -NoProfile -Command \
-    "Start-Process -FilePath '${UE_WIN}' -ArgumentList @('${UPROJECT_WIN}', '-game', '-windowed', '-ResX=1280', '-ResY=720') | Out-Null"
+    "Start-Process -FilePath '${UE_WIN}' -ArgumentList @(${ARG_LIST}) | Out-Null"
   sleep 5
   focus_game_window
 fi

@@ -71,6 +71,10 @@ secrets.*
 references/RflySim/RflySimAdv3Full/
 references/RflySim/RflySimAdvFree/
 
+# Downloaded Unreal scene candidates are large/local review assets. Track only
+# project-owned adapters/docs unless an explicit asset-batch task unignores one.
+references/UnrealScenes/
+
 # AirSim-family external references: keep source/docs/configs, exclude local
 # clones, build outputs, generated caches, and large compiled artifacts.
 #
@@ -165,3 +169,9 @@ references/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/
 /references/MWORKS/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/StreamingAssets/scene_神秘岛
 /references/MWORKS/具身智能无人船平台部署资料/3-Unity视景软件/USCP_APP/USCP_Data/resources.assets.resS
 /references/MWORKS/用于远程巡逻及异常检测的智能无人机/SmartDrone/SmartDrone .mol
+
+# Broken local LFS pointer assets from third-party UE MCP tests.
+# The real LFS objects are not present locally and these tiny test assets are
+# not needed for project operation.
+Skills/unreal/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset
+Skills/unreal/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset

@@ -6,6 +6,8 @@
 
 class AQuadrotorMworksMapActor;
 class AQuadrotorMworksPlaybackActor;
+class ADirectionalLight;
+class ASkyLight;
 
 UCLASS()
 class MWORKSUNREALRENDERER_API AMworksUnrealRendererGameMode : public AGameModeBase
@@ -27,6 +29,18 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Renderer")
     FVector PlaybackActorLocation = FVector(0.0, 0.0, 150.0);
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Renderer|Review")
+    bool bSpawnDefaultReviewLighting = true;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Renderer|Review")
+    float ReviewSunIntensity = 10.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Renderer|Review")
+    float ReviewSkyLightIntensity = 1.5f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Renderer|Review")
+    FRotator ReviewSunRotation = FRotator(-45.0f, -35.0f, 0.0f);
+
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Renderer")
     AQuadrotorMworksMapActor* SpawnedMapActor = nullptr;
 
@@ -35,4 +49,13 @@ public:
 
 protected:
     virtual void BeginPlay() override;
+
+private:
+    void SpawnDefaultReviewLighting(UWorld* World, const FActorSpawnParameters& SpawnParameters);
+
+    UPROPERTY()
+    ADirectionalLight* SpawnedReviewSunLight = nullptr;
+
+    UPROPERTY()
+    ASkyLight* SpawnedReviewSkyLight = nullptr;
 };

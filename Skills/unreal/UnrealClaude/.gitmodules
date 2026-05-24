@@ -1,0 +1,3 @@
+[submodule "UnrealClaude/Resources/mcp-bridge"]
+	path = UnrealClaude/Resources/mcp-bridge
+	url = https://github.com/Natfii/ue5-mcp-bridge.git

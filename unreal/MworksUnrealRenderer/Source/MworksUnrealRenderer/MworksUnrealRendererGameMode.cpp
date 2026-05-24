@@ -1,5 +1,9 @@
 #include "MworksUnrealRendererGameMode.h"
 
+#include "Components/LightComponent.h"
+#include "Components/SkyLightComponent.h"
+#include "Engine/DirectionalLight.h"
+#include "Engine/SkyLight.h"
 #include "Engine/World.h"
 #include "MworksReviewCameraPawn.h"
 #include "QuadrotorMworksMapActor.h"
@@ -29,6 +33,11 @@ void AMworksUnrealRendererGameMode::BeginPlay()
 
     FActorSpawnParameters SpawnParameters;
     SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+    if (bSpawnDefaultReviewLighting)
+    {
+        SpawnDefaultReviewLighting(World, SpawnParameters);
+    }
 
     SpawnedMapActor = World->SpawnActor<AQuadrotorMworksMapActor>(
         AQuadrotorMworksMapActor::StaticClass(),
@@ -64,4 +73,54 @@ void AMworksUnrealRendererGameMode::BeginPlay()
     {
         UE_LOG(LogTemp, Error, TEXT("MWORKS renderer failed to spawn playback actor."));
     }
+}
+
+void AMworksUnrealRendererGameMode::SpawnDefaultReviewLighting(UWorld* World, const FActorSpawnParameters& SpawnParameters)
+{
+    if (!World)
+    {
+        return;
+    }
+
+    SpawnedReviewSunLight = World->SpawnActor<ADirectionalLight>(
+        ADirectionalLight::StaticClass(),
+        FVector(0.0f, 0.0f, 3000.0f),
+        ReviewSunRotation,
+        SpawnParameters);
+
+    if (SpawnedReviewSunLight)
+    {
+        SpawnedReviewSunLight->SetActorLabel(TEXT("MWORKS_Review_SunLight"));
+        if (ULightComponent* LightComponent = SpawnedReviewSunLight->GetLightComponent())
+        {
+            LightComponent->SetMobility(EComponentMobility::Movable);
+            LightComponent->SetIntensity(ReviewSunIntensity);
+            LightComponent->SetLightColor(FLinearColor(1.0f, 0.96f, 0.86f));
+            LightComponent->SetCastShadows(false);
+        }
+    }
+
+    SpawnedReviewSkyLight = World->SpawnActor<ASkyLight>(
+        ASkyLight::StaticClass(),
+        FVector(0.0f, 0.0f, 1000.0f),
+        FRotator::ZeroRotator,
+        SpawnParameters);
+
+    if (SpawnedReviewSkyLight)
+    {
+        SpawnedReviewSkyLight->SetActorLabel(TEXT("MWORKS_Review_SkyLight"));
+        if (USkyLightComponent* SkyComponent = SpawnedReviewSkyLight->GetLightComponent())
+        {
+            SkyComponent->SetMobility(EComponentMobility::Movable);
+            SkyComponent->SetIntensity(ReviewSkyLightIntensity);
+            SkyComponent->RecaptureSky();
+        }
+    }
+
+    UE_LOG(
+        LogTemp,
+        Display,
+        TEXT("MWORKS renderer spawned default review lighting: sun=%s sky=%s"),
+        SpawnedReviewSunLight ? TEXT("true") : TEXT("false"),
+        SpawnedReviewSkyLight ? TEXT("true") : TEXT("false"));
 }

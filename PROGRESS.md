@@ -9,100 +9,17 @@
   can be manually reviewed. Goal records are total objectives, not single-step
   tasks; keep the immediate next action separately in the active queue or
   ledger.
-- Current architecture boundary: keep the simulator architecture on the correct
-  branch: MWORKS/Syslab/Sysplorer solver evidence plus project-owned UE5
-  renderer and editable scene assets. RflySim maps are native-runtime visual
-  references only, not an editable base for the new simulator.
-- Current UE scene gate: `workflows/unreal_renderer.md#rflysim--sunray-scene-reconstruction-plan`
-  is the active plan. Do not start new UE5 scene implementation until the user
-  reviews the scene source roles, first-scene family, data model, and acceptance
-  gates.
-- UE scene roadmap now defines S0-S7 in
-  `unreal/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json`.
-  Active implementation is limited to S0 `renderer_framework` and S1
-  `competition_industrial_hybrid`; S2-S7 are planning contracts only until
-  later review unlocks them.
-- S0 source-level preparation is complete: `renderer_framework` packets can be
-  dry-run streamed with `map_id=renderer_framework`, and the UE map actor clears
-  stale static map previews when a profile has no `render_map_json`.
-  2026-05-23 correction: editor MCP and standalone game review are separate
-  routes. Editor MCP read probes now work when the editor is open; standalone
-  game review must be validated through the `-game` process and UDP port 5005,
-  not through the editor MCP listener.
-- 2026-05-23 S0/S1 metadata hardening: S0 now has explicit
-  `scene_bounds_box`, `optional_ground_plane`, and `debug_collision_proxy`
-  registry entries; S1 now has distinct takeoff and landing pad proxies. This is
-  a scene-contract fix only. It is not UE viewport evidence.
-- 2026-05-23 UE MCP status distinction: `/mcp` may list the `unreal_engine`
-  tools, but the actual tool call still times out if Unreal Editor's plugin is
-  not reachable on TCP `55557`. Treat inventory success as wrapper availability
-  only, not viewport readiness.
-- 2026-05-23 S0/S1 packet contract extension: `stream_unreal_udp.py` now emits
-  `mission`, `local_known_map`, `status`, and `overlays` fields. These are
-  display contracts until `evidence_backed=true`; do not use preview packets as
-  proof of S1 local avoidance or occlusion behavior.
-- 2026-05-23 TaskSecretary correction: do not set the thread goal to a single
-  engineering step. The active total goal is S0/S1 Unreal rendering loop to
-  manual-review readiness; the current small step is making the UE C++ UDP
-  receiver compatibly parse the Python packet contract fields `mission`,
-  `local_known_map`, `status`, and `overlays`.
-- 2026-05-23 UE C++ packet receiver: source-level receiver compatibility now
-  includes mission, local-known-map, local-plan provenance, status, and overlay
-  fields. This is still a packet/data-contract step only; viewport/manual
-  visual evidence remains blocked until the Unreal Editor MCP listener is
-  reachable.
-- 2026-05-23 UE MCP listener probe: after opening the project-owned UE editor,
-  `scripts/probe_unreal_mcp_listener.py --timeout 1` reached
-  `172.17.48.1:55557`, and `unreal_engine.get_actors_in_level` returned the
-  editor world actor list. This proves editor-side MCP availability only.
-  Standalone `-game` windows are validated through UDP 5005 and log output.
-- 2026-05-23 UE renderer build: `scripts/build_unreal_renderer.sh` passed after
-  the packet receiver extension, including UHT and `QuadrotorMworksBridge`
-  compile/link. Generated `Binaries/` and `Intermediate/` outputs are ignored.
-- 2026-05-23 S0/S1 readiness gate: `scripts/check_unreal_s0_s1_readiness.py`
-  now bundles source-level checks for Python syntax, bridge contract, S0/S1
-  staging packages, and UDP packet fields. It passes without
-  `--check-listener`; `--build` also passes UE 5.7 UBT/UHT. With
-  `--check-listener` it correctly fails while UE Editor TCP `55557` is
-  unreachable.
-- 2026-05-23 UE MCP listener route audit: the WSL wrapper defaults
-  `UNREAL_HOST` to the WSL default gateway. The listener probe now tests
-  `UNREAL_HOST`, WSL gateway, and `127.0.0.1`. The editor route is healthy when
-  the editor plugin is running; do not use that probe as a gate for standalone
-  game UDP playback.
-- 2026-05-23 latest UE MCP check: the current Codex-side read-only MCP call
-  `unreal_engine.get_actors_in_level` timed out, and
-  `python3 scripts/probe_unreal_mcp_listener.py --timeout 1` failed on both
-  the WSL gateway (`TimeoutError`) and `127.0.0.1` (`ConnectionRefusedError`).
-  Source-level S0/S1 checks and standalone UDP runtime review remain valid, but
-  editor/viewport MCP verification is not complete in the current state.
-- 2026-05-23 completion audit: read-only reviewer `Erdos` found S0/S1
-  scene/profile/proxy/packet/C++ contracts and standalone review documentation
-  source-ready, but the active goal is not complete while current Editor MCP
-  listener verification fails. Continue only source-level or standalone `-game`
-  UDP work until the editor plugin listener and one read-only actor probe pass
-  again.
-- 2026-05-23 MCP quick-diagnostic hardening: `scripts/probe_unreal_mcp_listener.py`
-  now has a `--wrapper-route-only` mode and reports project-owned
-  `UnrealEditor.exe` processes. Latest probe reports no
-  `MworksUnrealRenderer.uproject` process, so current Editor MCP failure is
-  consistent with the editor not being open/listening rather than a source
-  regression.
-- 2026-05-23 TaskSecretary intake: current goal is to resume S0/S1 Unreal
-  renderer work with a recoverable split. Main agent owns the critical path and
-  integration; `UEMCPProbe(Ptolemy)` owns the smallest UE MCP connection/read
-  probe; `SceneContractOwner(Maxwell)` owns no-viewport S0/S1 data-contract,
-  checks, and docs if MCP remains unavailable; `GitIntegrator` owns commit/push
-  only after checks pass. Acceptance: UE read probe plus viewport note when MCP
-  recovers, or no-viewport contract/check/doc update plus targeted verification
-  and pushed commit. Blocker: UE Editor UnrealMCP listener still unreachable
-  from WSL on `55557`, credentials, destructive cleanup, or unsafe Git state.
-- Current recoverable S0/S1 work state: source and standalone game review
-  contracts are ready; Editor MCP work remains gated by the live listener probe.
-  `UEMCPProbe(Ptolemy)` owns the smallest `unreal_engine` MCP blocker diagnosis;
-  `SceneProfileAuditor(Maxwell)`
-  owns the read-only S0/S1 profile/workflow/code-contract audit. Main agent
-  integrates only after those reports identify safe next writes and checks.
+- 2026-05-24 Unreal map reset: stop improving all old generated blockout,
+  grid, STL, semantic-box, RflySim direct-mount, factory-review, and
+  YunZong/Sunray primitive-reconstruction maps. The old routes have been
+  cleaned from `unreal/` except for the reusable renderer/bridge shell.
+  Current map work must start from real editable Unreal/Fab/Epic/open-source
+  scene assets with physical-world visual language, then connect the existing
+  MWORKS playback bridge after the map itself passes manual review.
+- Current map-source priority: use downloaded Fab/Epic/free UE assets such as
+  factory/warehouse, forest/park, indoor corridor/cave, city/building, and open
+  outdoor scene packs. Do not reconnect quadrotor, radar, trajectory, UDP, or
+  MWORKS simulation until the selected map source is visually acceptable.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.

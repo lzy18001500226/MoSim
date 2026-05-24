@@ -1,0 +1,88 @@
+{
+  "name": "ue-mcp",
+  "version": "1.0.38",
+  "description": "Unreal Engine MCP server - 21 tools, 540+ actions for AI-driven editor control",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "ue-mcp": "dist/index.js",
+    "ue-mcp-init": "dist/init.js",
+    "ue-mcp-update": "dist/update.js"
+  },
+  "files": [
+    "dist",
+    "plugin",
+    "skills",
+    "assets",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [
+    "unreal-engine",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "game-development",
+    "editor",
+    "blueprint",
+    "ue5"
+  ],
+  "author": "David Lyon",
+  "license": "BUSL-1.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/db-lyon/ue-mcp.git"
+  },
+  "homepage": "https://db-lyon.github.io/ue-mcp/",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "up": "node scripts/run.js",
+    "build": "node scripts/build.js",
+    "up:build": "node scripts/build-and-run.js",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "audit:docs": "node scripts/audit-docs.mjs && node scripts/audit-params.mjs",
+    "audit:handlers": "node scripts/audit-handlers.mjs",
+    "audit": "npm run audit:docs && npm run audit:handlers",
+    "test:watch": "vitest",
+    "test:level": "vitest run tests/smoke/level.test.ts",
+    "test:asset": "vitest run tests/smoke/asset.test.ts",
+    "test:blueprint": "vitest run tests/smoke/blueprint.test.ts",
+    "test:material": "vitest run tests/smoke/material.test.ts",
+    "test:editor": "vitest run tests/smoke/editor.test.ts",
+    "test:reflection": "vitest run tests/smoke/reflection.test.ts",
+    "test:animation": "vitest run tests/smoke/animation.test.ts",
+    "test:landscape": "vitest run tests/smoke/landscape.test.ts",
+    "test:gameplay": "vitest run tests/smoke/gameplay.test.ts",
+    "test:audio": "vitest run tests/smoke/audio.test.ts",
+    "test:niagara": "vitest run tests/smoke/niagara.test.ts",
+    "test:pcg": "vitest run tests/smoke/pcg.test.ts",
+    "test:foliage": "vitest run tests/smoke/foliage.test.ts",
+    "test:widget": "vitest run tests/smoke/widget.test.ts",
+    "test:networking": "vitest run tests/smoke/networking.test.ts",
+    "test:gas": "vitest run tests/smoke/gas.test.ts",
+    "test:smoke": "node scripts/smoke-test.js",
+    "generate": "tsx scripts/generate-default-config.ts",
+    "generate:metadata": "tsx scripts/generate-tool-metadata.ts",
+    "prepublishOnly": "npx tsc && tsx scripts/generate-default-config.ts && tsx scripts/generate-tool-metadata.ts"
+  },
+  "dependencies": {
+    "@db-lyon/flowkit": "~0.5.3",
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "js-yaml": "^4.1.0",
+    "ws": "^8.18.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.5.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.4"
+  }
+}

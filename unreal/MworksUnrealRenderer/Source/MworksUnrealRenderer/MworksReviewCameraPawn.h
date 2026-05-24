@@ -22,10 +22,10 @@ public:
     virtual void PawnClientRestart() override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera")
-    FVector InitialCameraLocation = FVector(-3200.0, -2200.0, 1300.0);
+    FVector InitialCameraLocation = FVector(-3600.0, -2800.0, 1450.0);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera")
-    FRotator InitialCameraRotation = FRotator(-22.0, 36.0, 0.0);
+    FRotator InitialCameraRotation = FRotator(-20.0, 38.0, 0.0);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera")
     float MoveSpeedCmPerSec = 900.0f;

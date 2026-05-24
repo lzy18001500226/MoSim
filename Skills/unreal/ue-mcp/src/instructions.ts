@@ -1,0 +1,197 @@
+export const SERVER_INSTRUCTIONS = `UE-MCP: Unreal Engine editor bridge (C++ plugin) — 19 category tools covering 425+ actions.
+
+Every tool takes an "action" parameter that selects the operation. Call project(action="get_status") first.
+
+═══ QUICK START ═══
+1. project(action="get_status") — check if the editor is connected
+2. If not connected: editor(action="start_editor") to launch UE
+3. level(action="get_outliner") — see what's in the current level
+4. asset(action="list") — browse project assets
+5. reflection(action="reflect_class", className="StaticMeshActor") — understand any UE class
+6. demo(action="step", stepIndex=1) through 19 — run the Neon Shrine demo to see the bridge in action
+7. demo(action="cleanup") — clean up after the demo
+
+═══ TOOLS & ACTIONS ═══
+
+project — Project status, config INI, C++ source
+  get_status, set_project, get_info, read_config, search_config, list_config_tags,
+  set_config, read_cpp_header, read_module, list_modules, search_cpp
+
+asset — Assets: list, search, CRUD, import, export, datatables, textures
+  list, search, read, read_properties, duplicate, rename, move, delete, save,
+  import_static_mesh, import_skeletal_mesh, import_animation, import_texture,
+  read_datatable, create_datatable, reimport_datatable, list_textures,
+  get_texture_info, set_texture_settings,
+  add_socket, remove_socket, list_sockets
+
+blueprint — Blueprint reading, authoring, compilation
+  read, list_variables, list_functions, read_graph, create, add_variable,
+  set_variable_properties, create_function, delete_function, rename_function,
+  add_node, delete_node, set_node_property, connect_pins, add_component,
+  compile, list_node_types, search_node_types, create_interface, add_interface,
+  add_event_dispatcher, list_graphs
+
+level — Level actors, selection, components, volumes, lights, splines
+  get_outliner, place_actor, delete_actor, get_actor_details, move_actor,
+  select, get_selected, add_component, set_component_property,
+  get_current, load, save, list, create,
+  spawn_volume, list_volumes, set_volume_properties,
+  spawn_light, set_light_properties, build_lighting,
+  get_spline_info, set_spline_points
+
+material — Materials, shading, and graph authoring
+  read, list_parameters, set_parameter, create_instance, create,
+  set_shading_model, set_base_color, connect_texture,
+  add_expression, connect_expressions, connect_to_property,
+  list_expressions, delete_expression, list_expression_types, recompile
+
+animation — Anim assets, skeletons, montages, blendspaces
+  read_anim_blueprint, read_montage, read_sequence, read_blendspace, list,
+  create_montage, create_anim_blueprint, create_blendspace, add_notify,
+  get_skeleton_info, list_sockets, list_skeletal_meshes, get_physics_asset,
+  create_sequence, set_bone_keyframes, get_bone_transforms,
+  set_montage_sequence, set_montage_properties
+
+landscape — Terrain sculpting, painting, layers
+  get_info, list_layers, sample, list_splines, get_component,
+  sculpt, paint_layer, set_material, add_layer_info, import_heightmap
+
+pcg — Procedural Content Generation graphs
+  list_graphs, read_graph, read_node_settings, get_components,
+  get_component_details, create_graph, add_node, connect_nodes,
+  set_node_settings, remove_node, execute, add_volume
+
+foliage — Foliage painting and types
+  list_types, get_settings, sample, paint, erase, create_type, set_settings
+
+niagara — VFX systems and graph authoring
+  list, get_info, spawn, set_parameter, create,
+  create_emitter, add_emitter, list_emitters, set_emitter_property,
+  list_modules, get_emitter_info
+
+audio — Sound assets and playback
+  list, play_at_location, spawn_ambient, create_cue, create_metasound
+
+widget — UMG widgets and editor utilities
+  read_tree, get_details, set_property (slot.* for layout), list, read_animations,
+  create, add_widget, remove_widget, move_widget, list_classes,
+  create_utility_widget, run_utility_widget,
+  create_utility_blueprint, run_utility_blueprint
+
+editor — Console, Python, PIE, viewport, sequencer, perf, build pipeline, logs
+  execute_command, execute_python, set_property, play_in_editor,
+  get_runtime_value, hot_reload, undo, redo,
+  get_perf_stats, run_stat, set_scalability, capture_screenshot,
+  get_viewport, set_viewport, focus_on_actor,
+  create_sequence, get_sequence_info, add_sequence_track, play_sequence,
+  build_all, build_geometry, build_hlod, validate_assets,
+  get_build_status, cook_content,
+  get_log, search_log, get_message_log,
+  set_dialog_policy, clear_dialog_policy, get_dialog_policy,
+  list_dialogs, respond_to_dialog
+
+reflection — UE class/struct/enum reflection, gameplay tags
+  reflect_class, reflect_struct, reflect_enum, list_classes,
+  list_tags, create_tag
+
+gameplay — Physics, collision, navigation, input, behavior trees, AI, game framework
+  set_collision_profile, set_simulate_physics, set_collision_enabled,
+  set_physics_properties, rebuild_navigation, get_navmesh_info,
+  project_to_nav, spawn_nav_modifier,
+  create_input_action, create_input_mapping, list_input_assets, set_mapping_modifiers,
+  list_behavior_trees, get_behavior_tree_info,
+  create_blackboard, create_behavior_tree,
+  create_eqs_query, list_eqs_queries,
+  add_perception, configure_sense,
+  create_state_tree, list_state_trees, add_state_tree_component,
+  create_smart_object_def, add_smart_object_component,
+  create_game_mode, create_game_state, create_player_controller,
+  create_player_state, create_hud, set_world_game_mode, get_framework_info
+
+gas — Gameplay Ability System
+  add_asc, create_attribute_set, add_attribute,
+  create_ability, set_ability_tags,
+  create_effect, set_effect_modifier,
+  create_cue, get_info
+
+networking — Replication and networking
+  set_replicates, set_property_replicated, configure_net_frequency,
+  set_dormancy, set_net_load_on_client, set_always_relevant,
+  set_only_relevant_to_owner, configure_cull_distance,
+  set_priority, set_replicate_movement, get_info
+
+statetree — StateTree asset editing: read, modify states/tasks/conditions/transitions/bindings, compile
+  read, list_states, add_state, remove_state, set_state_property, clear_state_nodes,
+  add_task, add_enter_condition, remove_task, set_task_instance_property,
+  add_transition, add_transition_condition, remove_transition,
+  add_binding, remove_binding, list_bindings,
+  set_root_parameters, compile, validate
+
+demo — Neon Shrine demo scene
+  step, cleanup
+
+feedback — Agent feedback submission
+  submit
+
+plugins — Introspect npm-distributed plugins that inject actions into other categories (read-only)
+  list, describe
+
+═══ TIPS ═══
+• Start with level(action="get_outliner") or asset(action="list") to discover what's in the project.
+• Use reflection(action="reflect_class") to understand any UE class's properties.
+• asset(action="search", query="/Game/Characters/*") accepts wildcards.
+• For BP scripting: blueprint(action="search_node_types") → blueprint(action="add_node") → blueprint(action="connect_pins").
+• editor(action="execute_python") is the escape hatch for any Unreal Python API call.
+• Animation tools need a skeleton path — use animation(action="list_skeletal_meshes") to find it.
+• Editor lifecycle: editor(action="stop_editor") / editor(action="start_editor") / editor(action="restart_editor") manage the UE process.
+• editor(action="hot_reload") triggers Live Coding compilation without restarting the editor.
+• editor(action="focus_on_actor", actorLabel="MyActor") snaps the viewport to any actor.
+• Log output: editor(action="get_log", category="LogMCPBridge") to see bridge-specific logs.
+
+═══ FLOWS — READ BEFORE ACTING ═══
+
+Before you run bash/npm commands or chain 3+ category tool calls to
+satisfy a user request, look at the \`flows\` field returned by
+project(action="get_status").
+
+That field lists named, pre-built sequences for this project. Each
+entry has a name and description. If ANY flow's description matches
+what the user asked for, you MUST run it instead of building the
+sequence yourself.
+
+Examples:
+  User asks                          | Look for a flow like
+  ---------------------------------- | ------------------------------
+  "rebuild and relaunch the editor"  | rebuild
+  "run the smoke tests"              | smoke
+  "redeploy the plugin"              | deploy, redeploy
+  "package the project"              | package
+
+Run a matched flow with: flow(action="run", flowName="<name>")
+
+DO NOT:
+- Skip the get_status flows check before running bash/npm yourself.
+- Author a new flow on your own. Only the user authors flows.
+- Suggest a flow for a one-off task the user is unlikely to repeat.
+
+DO suggest a new flow IF AND ONLY IF all three are true:
+  1. You just finished a sequence with 3+ steps.
+  2. The sequence had the same shape every run, with only 1-2 values
+     changing.
+  3. The user is likely to ask for the same shape again.
+In that case say: "This sequence (X -> Y -> Z) might be worth registering
+as a flow in ue-mcp.yml. Want me to draft one?" Then STOP. Wait.
+
+═══ FEEDBACK ═══
+If you had to use editor(action="execute_python") as a workaround because a native tool
+couldn't handle the task, keep a mental note of what you did and why. When your task is
+complete, tell the user:
+  "I had to use custom Python scripts to [describe what]. Would you like to submit
+   feedback to help improve ue-mcp?"
+If the user agrees, call feedback(action="submit") with:
+  • title — short, generic description of the gap (no project-specific details)
+  • summary — what was attempted and why the native tool fell short
+  • pythonWorkaround — the Python code that was used
+  • idealTool — what tool/action should handle this natively
+This creates a GitHub issue so the maintainers can add proper support.
+`;

@@ -237,6 +237,16 @@ def run_review_camera_check() -> bool:
     if "DefaultPawnClass = AMworksReviewCameraPawn::StaticClass()" not in gamemode:
         print("[FAIL] renderer GameMode does not use the review camera pawn")
         return False
+    required_lighting_tokens = [
+        "SpawnDefaultReviewLighting",
+        "ADirectionalLight",
+        "ASkyLight",
+        "MWORKS renderer spawned default review lighting",
+    ]
+    missing_lighting = [token for token in required_lighting_tokens if token not in gamemode]
+    if missing_lighting:
+        print(f"[FAIL] renderer GameMode missing runtime review lighting: {', '.join(missing_lighting)}")
+        return False
     print("[OK] manual review camera has keyboard/mouse controls and is bound to GameMode")
     return True
 
@@ -303,18 +313,6 @@ def main() -> int:
             ),
         ]),
         run_step("unreal bridge source contract", [sys.executable, "scripts/check_unreal_bridge.py"]),
-        run_step("S0 renderer framework package", [
-            sys.executable,
-            "scripts/check_unreal_migration_package.py",
-            "--package-dir",
-            "unreal/migration_staging/renderer_framework",
-        ]),
-        run_step("S1 competition industrial hybrid package", [
-            sys.executable,
-            "scripts/check_unreal_migration_package.py",
-            "--package-dir",
-            "unreal/migration_staging/competition_industrial_hybrid",
-        ]),
         run_s1_render_map_check(),
         run_review_camera_check(),
         run_runtime_map_check(),

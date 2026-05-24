@@ -1,0 +1,288 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Prevent two concurrent publish/docs runs from racing on the same main.
+# Do not cancel in-progress publishes - canceling mid-npm-publish leaves
+# a half-published version.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: false
+
+# Default to least-privilege. Individual jobs escalate only what they need.
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install
+        # The committed package-lock.json was generated on Windows; npm has a
+        # known optional-deps bug (npm/cli#4828) where Linux-native rollup
+        # binaries are skipped when the lockfile is from another platform.
+        # Drop the lockfile and reinstall with --include=optional so vitest
+        # can load @rollup/rollup-linux-x64-gnu on the Ubuntu runner.
+        run: |
+          rm -f package-lock.json
+          npm install --include=optional
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Audit (high+ only, production deps)
+        run: npm audit --omit=dev --audit-level=high
+        continue-on-error: false
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write   # for git tag push and gh-release
+      id-token: write   # for npm provenance
+      statuses: write   # for posting landing/headline from the Promote step
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # needed for tag push
+
+      - uses: actions/setup-node@v4
+        with:
+          # Node 24 LTS ships npm 11.x natively. Trusted publishing (OIDC)
+          # requires npm >= 11.5.1. Bumping the node version here is the
+          # cleanest path — corepack on Node 22 downloads npm 11.x but its
+          # shim is shadowed by setup-node's pinned binary, so `npm` keeps
+          # resolving to 10.x and OIDC never engages.
+          node-version: "24"
+          cache: "npm"
+
+      - name: Verify npm >= 11.5.1
+        run: |
+          npm --version
+          node -e "const v=require('child_process').execSync('npm --version').toString().trim();const [maj,min,pat]=v.split('.').map(Number);if (maj < 11 || (maj===11 && min<5) || (maj===11 && min===5 && pat<1)) { console.error('npm '+v+' is below the 11.5.1 minimum for trusted publishing'); process.exit(1); }"
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Check if version changed
+        id: version
+        run: |
+          LOCAL=$(node -p "require('./package.json').version")
+          PUBLISHED=$(npm view ue-mcp version 2>/dev/null || echo "0.0.0")
+          echo "local=$LOCAL" >> "$GITHUB_OUTPUT"
+          echo "published=$PUBLISHED" >> "$GITHUB_OUTPUT"
+          if [ "$LOCAL" != "$PUBLISHED" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validate release inputs
+        # Single required pre-publish input: a draft release tagged vX.Y.Z
+        # whose body begins with YAML frontmatter containing a `headline:`
+        # array. The script enforces format (1-6 items, each 3-60 chars,
+        # restricted character set, no sentence punctuation) and fails
+        # publish before npm if anything is off.
+        #
+        # Polled for up to ~60s to absorb the small race between 'git push'
+        # and 'gh release create --draft'.
+        #
+        # Outputs:
+        #   HEADLINE  - the joined ` · ` string posted as the landing/headline status
+        #   BODY_PATH - path to a temp file containing the frontmatter-stripped body,
+        #               used by the Promote step to update the published release body
+        if: steps.version.outputs.changed == 'true'
+        id: release_inputs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.local }}
+        run: |
+          set -euo pipefail
+
+          DRAFT_BODY=""
+          for i in $(seq 1 30); do
+            DRAFT_BODY=$(gh release view "v$VERSION" --json body,isDraft \
+              --jq 'select(.isDraft==true) | .body' 2>/dev/null || true)
+            if [ -n "$DRAFT_BODY" ]; then break; fi
+            sleep 2
+          done
+          if [ -z "$DRAFT_BODY" ]; then
+            echo "::error::No draft release v$VERSION with non-empty body found."
+            echo "Create it with:"
+            echo "  gh release create v$VERSION --draft --notes-file <path/to/notes.md>"
+            echo "The notes file must start with frontmatter:"
+            echo "  ---"
+            echo "  headline:"
+            echo "    - First feature"
+            echo "    - Second feature"
+            echo "  ---"
+            exit 1
+          fi
+          echo "Draft release v$VERSION present (${#DRAFT_BODY} chars of body)."
+
+          # Parse + validate the headline frontmatter; step outputs go to
+          # $GITHUB_OUTPUT in the standard key=value form.
+          printf '%s' "$DRAFT_BODY" | node scripts/release-headline.mjs >> "$GITHUB_OUTPUT"
+
+      - name: Install & Build
+        if: steps.version.outputs.changed == 'true'
+        # See note on the build job's Install step re: the rollup
+        # optional-deps bug.
+        run: |
+          rm -f package-lock.json
+          npm install --include=optional
+          npx tsc
+
+      - name: Verify build output
+        if: steps.version.outputs.changed == 'true'
+        run: |
+          # Fail loud if prepublishOnly's output is missing or empty - a
+          # broken publish is very hard to retract, so we stop here.
+          test -s dist/index.js || (echo "dist/index.js missing or empty" && exit 1)
+          test -s dist/init.js || (echo "dist/init.js missing or empty" && exit 1)
+          test -s dist/update.js || (echo "dist/update.js missing or empty" && exit 1)
+
+      - name: Tag release (before publish)
+        if: steps.version.outputs.changed == 'true'
+        run: |
+          # Create and push the tag BEFORE publishing to npm. If the tag push
+          # fails (network / permissions), we have not yet stranded a live
+          # npm version without a corresponding tag.
+          TAG="v${{ steps.version.outputs.local }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists locally; skipping creation"
+          else
+            git tag "$TAG"
+          fi
+          git push origin "$TAG"
+
+      - name: Publish to npm
+        # Trusted publishing: no NPM_TOKEN secret. The npm CLI claims the
+        # GitHub Actions OIDC token from the runner and exchanges it with
+        # npmjs.org under the trusted-publisher config bound to this repo
+        # and workflow. `id-token: write` on the job is required (set above).
+        if: steps.version.outputs.changed == 'true'
+        run: npm publish --access public --provenance
+
+      - name: Package tarball
+        if: steps.version.outputs.changed == 'true'
+        run: tar czf ue-mcp.tar.gz dist/ plugin/ package.json package-lock.json README.md LICENSE
+
+      - name: Promote draft release
+        # The draft was authored before the bump push and validated by the
+        # 'Validate release inputs' step. Here we:
+        #   1. Attach the tarball.
+        #   2. Replace the body with the frontmatter-stripped version so the
+        #      published release page renders clean markdown.
+        #   3. Flip draft=false to publish.
+        #   4. Post the landing/headline commit status using the validated,
+        #      ` · `-joined string from the step output. CI authors the
+        #      status itself - releasers no longer post it manually.
+        if: steps.version.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          VERSION: ${{ steps.version.outputs.local }}
+          HEADLINE: ${{ steps.release_inputs.outputs.HEADLINE }}
+          BODY_PATH: ${{ steps.release_inputs.outputs.BODY_PATH }}
+        run: |
+          set -euo pipefail
+          gh release upload "v$VERSION" ue-mcp.tar.gz --clobber
+          gh release edit "v$VERSION" \
+            --notes-file "$BODY_PATH" \
+            --draft=false \
+            --tag "v$VERSION"
+          gh api -X POST "repos/$REPO/statuses/$SHA" \
+            -f state=success \
+            -f context=landing/headline \
+            -f description="$HEADLINE" \
+            -f target_url="https://github.com/$REPO/releases/tag/v$VERSION"
+          echo "Posted landing/headline: $HEADLINE"
+
+  surface_counts:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      statuses: write   # post the surface/counts commit status
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install
+        # Mirror the build job: lockfile is from Windows, drop it for Linux install.
+        run: |
+          rm -f package-lock.json
+          npm install --include=optional
+
+      - name: Compute surface counts
+        id: counts
+        # Derive the count from the source of truth (TS schema + C++
+        # RegisterHandler) so the status stays accurate across every release
+        # without anyone hand-editing package.json or .uplugin copy.
+        run: |
+          set -euo pipefail
+          DESC=$(npx tsx scripts/surface-counts.mts)
+          echo "desc=$DESC" >> "$GITHUB_OUTPUT"
+          echo "Computed: $DESC"
+
+      - name: Post surface/counts commit status
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          DESC: ${{ steps.counts.outputs.desc }}
+        run: |
+          set -euo pipefail
+          gh api -X POST "repos/$REPO/statuses/$SHA" \
+            -f state=success \
+            -f context=surface/counts \
+            -f description="$DESC" \
+            -f target_url="https://github.com/$REPO/blob/$SHA/scripts/surface-counts.mts"
+          echo "Posted surface/counts: $DESC"
+
+  docs:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write   # gh-deploy pushes to gh-pages
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install mkdocs-material
+        run: pip install mkdocs-material
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Deploy to GitHub Pages
+        run: mkdocs gh-deploy --force

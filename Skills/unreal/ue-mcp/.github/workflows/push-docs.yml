@@ -1,0 +1,45 @@
+name: Push docs to landing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+  workflow_dispatch:
+
+jobs:
+  push-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ue-mcp
+        uses: actions/checkout@v4
+        with:
+          path: ue-mcp
+
+      - name: Checkout ue-mcp-landing
+        uses: actions/checkout@v4
+        with:
+          repository: db-lyon/ue-mcp-landing
+          token: ${{ secrets.LANDING_REPO_TOKEN }}
+          path: ue-mcp-landing
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Convert docs
+        working-directory: ue-mcp-landing
+        run: node scripts/convert-docs.mjs ../ue-mcp/docs ./content/docs
+
+      - name: Commit and push if changed
+        working-directory: ue-mcp-landing
+        run: |
+          git config user.name "db-lyon"
+          git config user.email "david@bingham.me"
+          if [[ -z "$(git status --porcelain content/docs)" ]]; then
+            echo "No doc changes to sync."
+            exit 0
+          fi
+          git add content/docs
+          git commit -m "Sync docs from ue-mcp@${GITHUB_SHA::7}"
+          git push origin main
