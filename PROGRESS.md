@@ -72,6 +72,12 @@
   `bCurrentSceneImportedIntoRenderer=false`. This is source-level integration
   of the fallback contract, not yet visual import of the Derelict map into the
   renderer.
+- `Scripts/UE5/check_scene_source_udp_contract.py` verifies the matching UDP
+  packet-level contract: dry-run streaming with
+  `map_id=local_derelictcorridormegascans` selects the registry primary scene
+  source and keeps preview local-map / local-plan data explicitly render-only.
+  This proves the frame contract for `ResolveSceneSourceId`; it is still not
+  visual import evidence.
 - Latest UE build attempt reached C++ compile and failed only at DLL link
   because an open `UnrealEditor.exe` held
   `UnrealEditor-QuadrotorMworksBridge.dll` and

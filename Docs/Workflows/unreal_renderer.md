@@ -251,11 +251,17 @@ Source-level gate:
 
 ```bash
 uv run python Scripts/UE5/check_unreal_bridge.py
+uv run python Scripts/UE5/check_scene_source_udp_contract.py
 ```
 
 This check verifies that the C++ bridge exposes the scene-source registry fields
 and that the committed registry does not contain external Launcher/Fab absolute
-paths.
+paths. The scene-source UDP contract check generates one dry-run frame with
+`map_id=local_derelictcorridormegascans` and verifies that this selected source
+matches the registry primary scene id, carries truth artifacts, and keeps
+`local_known_map` / preview `local_plan` marked as render-only. It is not visual
+import evidence; it proves the packet path that triggers
+`ResolveSceneSourceId`.
 
 Binary build gate:
 
