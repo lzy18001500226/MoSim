@@ -31,6 +31,7 @@ EPIC_MCP = ROOT / "Scripts/UE5/mosim_epic_library_mcp.py"
 EPIC_MCP_WRAPPER = ROOT / "Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh"
 UNREAL_WRAPPER = ROOT / "Scripts/UE5/unreal_mcp_wsl_wrapper.sh"
 EDITOR_PROBE_DIR = ROOT / "Results/tmp"
+RENDERER_MAP_LOAD_PROBE = ROOT / "Results/tmp/renderer_map_load_probe_latest.json"
 
 
 @dataclass
@@ -298,9 +299,38 @@ def gate_visual_import(registry: dict[str, Any]) -> Gate:
         evidence.append(f"renderer_map_package={renderer_map_package}")
     else:
         missing.append("No renderer_map_package recorded for the primary scene source")
+    if RENDERER_MAP_LOAD_PROBE.exists():
+        try:
+            probe = load_json(RENDERER_MAP_LOAD_PROBE)
+        except Exception as exc:
+            missing.append(f"Renderer map-load probe is unreadable: {rel(RENDERER_MAP_LOAD_PROBE)}: {exc}")
+        else:
+            evidence.append(f"renderer_map_load_probe={rel(RENDERER_MAP_LOAD_PROBE)}")
+            evidence.append(f"map_load_ok={probe.get('ok')}")
+            evidence.append(f"loaded_level={probe.get('level_name')}")
+            evidence.append(f"actor_count={probe.get('actor_count')}")
+            if probe.get("ok") is not True:
+                missing.append("Renderer map-load probe did not report ok=true")
+            if probe.get("scene_source_id") != primary:
+                missing.append(
+                    f"Renderer map-load probe scene_source_id mismatch: {probe.get('scene_source_id')} != {primary}"
+                )
+            if renderer_map_asset and probe.get("renderer_map_asset") != renderer_map_asset:
+                missing.append(
+                    f"Renderer map-load probe asset mismatch: {probe.get('renderer_map_asset')} != {renderer_map_asset}"
+                )
+            if renderer_map_package and probe.get("renderer_map_package") != renderer_map_package:
+                missing.append(
+                    "Renderer map-load probe package mismatch: "
+                    f"{probe.get('renderer_map_package')} != {renderer_map_package}"
+                )
+            if int(probe.get("actor_count") or 0) <= 0:
+                missing.append("Renderer map-load probe loaded no actors")
+    else:
+        missing.append(f"Missing renderer map-load proof: {rel(RENDERER_MAP_LOAD_PROBE)}")
     return Gate(
         "scene_visual_import_or_reuse",
-        "Selected Fab/local scene is actually imported or reused by the MoSim UE sim project",
+        "Selected Fab/local scene is actually imported or reused by the MoSim UE sim project and loadable by the renderer",
         "passed" if not missing else "missing",
         evidence,
         missing,
@@ -346,7 +376,7 @@ def build_report() -> dict[str, Any]:
         )
     if not by_id["scene_visual_import_or_reuse"].passed:
         missing_actions.append(
-            "Prove scene_visual_import_or_reuse by linking/importing Derelict or an accepted Fab scene into MworksUnrealRenderer"
+            "Prove scene_visual_import_or_reuse by linking/importing Derelict or an accepted Fab scene into MworksUnrealRenderer, then run probe_renderer_map_load.py"
         )
     if by_id["scene_visual_import_or_reuse"].passed and by_id["unreal_engine_edit_authority"].passed:
         missing_actions.append(

@@ -242,10 +242,10 @@ ResolveSceneSourceId(<scene_source_id>)
 
 When the incoming frame `map_id` is `local_derelictcorridormegascans`, the map
 actor now records the editable project path, `.uproject` path, truth artifact
-list, and acceptance gates from the registry. It also clears blockout preview
-instances and leaves `bCurrentSceneImportedIntoRenderer=false`. This is
-intentional: the scene is a truth-backed external editable fallback, not yet a
-fully imported static renderer map.
+list, acceptance gates, renderer-local content root, renderer map asset, and
+renderer package name from the registry. For the current Derelict fallback it
+sets `bCurrentSceneImportedIntoRenderer=true` because the scene is reused inside
+the MoSim renderer through a local content junction rather than copied into Git.
 
 Source-level gate:
 
@@ -275,7 +275,7 @@ whether the full goal is ready to close.
 Current expected status before visual import work:
 
 ```text
-7/8 gates passed after local content-link reuse
+7/8 gates passed after local content-link reuse and renderer map-load proof
 fab_route_acceptance: partial
 scene_visual_import_or_reuse: passed
 ```
@@ -283,7 +283,9 @@ scene_visual_import_or_reuse: passed
 This means the local Derelict fallback has truth, packet-level selection, and a
 renderer-local content link at `UE5/MworksUnrealRenderer/Content/DerelictCorridor`.
 Fab remains unaccepted until one Fab asset is created/imported with edit access
-and planning truth.
+and planning truth. The local fallback route still satisfies the current goal
+branch because the goal explicitly allows switching to `References/UnrealScenes`
+when Fab cannot prove import/edit/truth.
 
 The local fallback content link is created or verified with:
 
@@ -293,7 +295,20 @@ uv run python Scripts/UE5/build_scene_source_registry.py --write
 ```
 
 `References/UnrealScenes` stays ignored. The link is a local runtime/editor
-bridge, not a committed copy of third-party assets.
+bridge, not a committed copy of third-party assets. On WSL/Windows, this must
+be a Windows directory junction, not a Linux symlink. A WSL symlink can pass
+Python `exists()` checks while Unreal cannot load the `.umap`.
+
+Verify that the renderer can actually load the linked package:
+
+```bash
+uv run python Scripts/UE5/probe_renderer_map_load.py
+```
+
+The probe must report `ok=true`, `loaded_expected_map=true`, and
+`actor_count>0` for `/Game/DerelictCorridor/Maps/DerelictCorridor`. A zero exit
+code from Unreal alone is not enough, because commandlets can return success
+after falling back to an empty temporary map.
 
 Binary build gate:
 

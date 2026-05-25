@@ -35,6 +35,17 @@ def rel_lexical(path: Path) -> str:
         return path.as_posix()
 
 
+def to_windows_path(path: Path) -> str:
+    result = subprocess.run(
+        ["wslpath", "-w", str(path)],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    return result.stdout.strip()
+
+
 def load_registry(path: Path) -> dict[str, Any]:
     data = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
@@ -97,6 +108,29 @@ def create_link(source_root: Path, target_root: Path, *, dry_run: bool) -> str:
     if dry_run:
         return "dry_run"
     target_root.parent.mkdir(parents=True, exist_ok=True)
+    # Unreal runs as a Windows process.  A Linux symlink created from WSL can
+    # look valid to Python on drvfs while remaining unreadable to Unreal.
+    # Prefer a Windows directory junction whenever the Windows tools are
+    # available, then fall back to a normal symlink on non-Windows hosts.
+    if shutil.which("cmd.exe"):
+        command = [
+            "cmd.exe",
+            "/c",
+            "mklink",
+            "/J",
+            to_windows_path(target_root),
+            to_windows_path(source_root),
+        ]
+        result = subprocess.run(
+            command,
+            cwd=ROOT,
+            text=True,
+            encoding="mbcs" if sys.platform == "win32" else "gbk",
+            errors="replace",
+            capture_output=True,
+        )
+        if result.returncode == 0:
+            return "junction_created"
     relative_source = os.path.relpath(source_root, target_root.parent)
     try:
         os.symlink(relative_source, target_root, target_is_directory=True)

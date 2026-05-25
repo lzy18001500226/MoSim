@@ -82,16 +82,23 @@
   for the current UE/Fab tool objective. Latest status is `7/8` gates passed:
   Fab inventory, local fallback readiness, Derelict truth validation, UDP
   scene-source contract, live `unreal_engine` edit authority, minimal
-  Skills/workflow docs, and local Derelict content-link reuse in
-  `MworksUnrealRenderer` pass. Remaining gap: Fab route acceptance. Fab is
-  still only inventory-visible, so the active route remains
-  `References/UnrealScenes` fallback.
+  Skills/workflow docs, and local Derelict renderer reuse/load proof pass.
+  Remaining gap: Fab route acceptance. Fab is still only inventory-visible, so
+  the active route remains `References/UnrealScenes` fallback.
 - `Scripts/UE5/link_renderer_scene_source.py` creates/verifies the local
   content link
   `UE5/MworksUnrealRenderer/Content/DerelictCorridor -> References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor`.
+  On WSL/Windows this must be a Windows directory junction, not a Linux symlink,
+  otherwise Unreal may fail to find the `.umap` even when Python sees the path.
   The link is ignored and not committed; `scene_source_registry.json` records
   `imported_into_renderer=true`, `renderer_reuse_kind=content_link`, and
   `/Game/DerelictCorridor/Maps/DerelictCorridor`.
+- `Scripts/UE5/probe_renderer_map_load.py` is the hard visual-reuse proof for
+  this fallback route. Latest evidence in
+  `Results/tmp/renderer_map_load_probe_latest.json` reports `ok=true`,
+  `loaded_expected_map=true`, `actor_count=1`, and level
+  `/Game/DerelictCorridor/Maps/DerelictCorridor.DerelictCorridor` loaded by
+  the project-owned `MworksUnrealRenderer` UE 5.7 commandlet.
 - `Scripts/UE5/probe_linked_scene_source_mcp.py` produced live editor evidence
   at `Results/tmp/linked_scene_source_mcp_probe_latest.json`: the
   `unreal_engine` listener was reachable, the Derelict scene source was linked
