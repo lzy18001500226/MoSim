@@ -5,7 +5,7 @@ set -euo pipefail
 
 PROJECT_ROOT="/mnt/c/Users/HP/Desktop/MoSim"
 UE_EDITOR="${UE_EDITOR:-/mnt/d/Program Files/Epic Games/UE_5.7/Engine/Binaries/Win64/UnrealEditor.exe}"
-UPROJECT="${PROJECT_ROOT}/UE5/MworksUnrealRenderer/MworksUnrealRenderer.uproject"
+UPROJECT="${PROJECT_ROOT}/UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject"
 MODE="${1:-editor}"
 RESTART_UNREAL_GAME="${RESTART_UNREAL_GAME:-0}"
 UNREAL_EXTRA_ARGS="${UNREAL_EXTRA_ARGS:-}"
@@ -30,7 +30,7 @@ public class WinApi {
   [DllImport(\"user32.dll\")] public static extern bool SetForegroundWindow(IntPtr hWnd);
 }
 '@;
-\$game = Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MworksUnrealRenderer.uproject*' -and \$_.CommandLine -like '* -game*' } | Select-Object -First 1;
+\$game = Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MoSimSceneLibrary.uproject*' -and \$_.CommandLine -like '* -game*' } | Select-Object -First 1;
 if (\$game) {
   \$proc = Get-Process -Id \$game.ProcessId -ErrorAction SilentlyContinue;
   if (\$proc -and \$proc.MainWindowHandle -ne 0) { [WinApi]::SetForegroundWindow(\$proc.MainWindowHandle) | Out-Null }
@@ -38,20 +38,20 @@ if (\$game) {
 }
 
 if [[ "${MODE}" == "editor" ]] && powershell.exe -NoProfile -Command \
-  "Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MworksUnrealRenderer.uproject*' -and \$_.CommandLine -notlike '* -game*' } | Select-Object -First 1 | ForEach-Object { exit 0 }; exit 1" >/dev/null 2>&1; then
-  echo "MworksUnrealRenderer UnrealEditor is already running."
+  "Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MoSimSceneLibrary.uproject*' -and \$_.CommandLine -notlike '* -game*' } | Select-Object -First 1 | ForEach-Object { exit 0 }; exit 1" >/dev/null 2>&1; then
+  echo "MoSimSceneLibrary UnrealEditor is already running."
   exit 0
 fi
 
 if [[ "${MODE}" == "game" ]] && powershell.exe -NoProfile -Command \
-  "Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MworksUnrealRenderer.uproject*' -and \$_.CommandLine -like '* -game*' } | Select-Object -First 1 | ForEach-Object { exit 0 }; exit 1" >/dev/null 2>&1; then
+  "Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MoSimSceneLibrary.uproject*' -and \$_.CommandLine -like '* -game*' } | Select-Object -First 1 | ForEach-Object { exit 0 }; exit 1" >/dev/null 2>&1; then
   if [[ "${RESTART_UNREAL_GAME}" == "1" ]]; then
-    echo "Restarting existing MworksUnrealRenderer game window."
+    echo "Restarting existing MoSimSceneLibrary game window."
     powershell.exe -NoProfile -Command \
-      "Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MworksUnrealRenderer.uproject*' -and \$_.CommandLine -like '* -game*' } | ForEach-Object { Stop-Process -Id \$_.ProcessId -Force }" >/dev/null
+      "Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MoSimSceneLibrary.uproject*' -and \$_.CommandLine -like '* -game*' } | ForEach-Object { Stop-Process -Id \$_.ProcessId -Force }" >/dev/null
     sleep 2
   else
-    echo "MworksUnrealRenderer game window is already running."
+    echo "MoSimSceneLibrary game window is already running."
     focus_game_window
     exit 0
   fi

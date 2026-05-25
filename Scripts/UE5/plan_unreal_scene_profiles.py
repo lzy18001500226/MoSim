@@ -10,8 +10,8 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_PROFILES = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json"
-DEFAULT_RFLYSIM_REGISTRY = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/rflysim_scene_registry.json"
+DEFAULT_PROFILES = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/unreal_scene_profiles.json"
+DEFAULT_RFLYSIM_REGISTRY = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/rflysim_scene_registry.json"
 DEFAULT_JSON = ROOT / "Results/UE5/unreal_scene_profile_implementation_plan.json"
 DEFAULT_MD = ROOT / "Results/UE5/unreal_scene_profile_implementation_plan.md"
 

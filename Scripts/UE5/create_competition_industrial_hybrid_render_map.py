@@ -13,7 +13,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUTPUT = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/map_competition_industrial_hybrid_render_map.json"
+OUTPUT = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/map_competition_industrial_hybrid_render_map.json"
 
 
 def rounded(value: float, digits: int = 4) -> float:

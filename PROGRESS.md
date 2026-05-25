@@ -62,7 +62,7 @@
 - First truth-export route is now defined as
   `Scripts/UE5/export_unreal_scene_truth.py`: run `export` inside Unreal Editor
   Python to write AABB collision proxy JSON under
-  `UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/`, then run
+  `UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/`, then run
   `validate` from normal Python and rerun `audit_scene_source.py`.
 - `Scripts/UE5/run_scene_truth_export.py` generates the matching
   `UnrealEditor-Cmd.exe -run=pythonscript` command and temporary Editor Python
@@ -75,7 +75,7 @@
   `DerelictCorridorMegascans` as `ready_for_truth_backed_planning`; this is
   not yet final semantic or voxel occupancy truth.
 - Current scene-source contract:
-  `UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json`.
+  `UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json`.
   It records `fab_route.status=inventory_visible_not_scene_accepted`,
   `local_editable_fallback.status=active`, and
   `primary_scene_source_id=local_derelictcorridormegascans`. This means
@@ -103,7 +103,7 @@
   the active route remains `References/UnrealScenes` fallback.
 - `Scripts/UE5/link_renderer_scene_source.py` creates/verifies the local
   content link
-  `UE5/MworksUnrealRenderer/Content/DerelictCorridor -> References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor`.
+  `UE5/MoSimSceneLibrary/Content/DerelictCorridor -> References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor`.
   On WSL/Windows this must be a Windows directory junction, not a Linux symlink,
   otherwise Unreal may fail to find the `.umap` even when Python sees the path.
   The link is ignored and not committed; `scene_source_registry.json` records
@@ -114,7 +114,7 @@
   `Results/tmp/renderer_map_load_probe_latest.json` reports `ok=true`,
   `loaded_expected_map=true`, `actor_count=1`, and level
   `/Game/DerelictCorridor/Maps/DerelictCorridor.DerelictCorridor` loaded by
-  the project-owned `MworksUnrealRenderer` UE 5.7 commandlet.
+  the project-owned `MoSimSceneLibrary` UE 5.7 commandlet.
 - `Scripts/UE5/probe_linked_scene_source_mcp.py` produced live editor evidence
   at `Results/tmp/linked_scene_source_mcp_probe_latest.json`: the
   `unreal_engine` listener was reachable, the Derelict scene source was linked
@@ -127,12 +127,12 @@
 - Latest UE build attempt reached C++ compile and failed only at DLL link
   because an open `UnrealEditor.exe` held
   `UnrealEditor-QuadrotorMworksBridge.dll` and
-  `UnrealEditor-MworksUnrealRenderer.dll`. Do not treat this as a compile
+  `UnrealEditor-MoSimSceneLibrary.dll`. Do not treat this as a compile
   failure; rerun `Scripts/UE5/build_unreal_renderer.sh` after the editor is
   closed when binary proof is needed.
 - Current Codex MCP config has been corrected from old `Quadrotor` paths to
   MoSim paths and now lists `mosim_epic_library`. The project-owned
-  `MworksUnrealRenderer.uproject` now resolves `UnrealMCP` from
+  `MoSimSceneLibrary.uproject` now resolves `UnrealMCP` from
   `Docs/Skills/Unreal/unreal-engine-mcp/FlopperamUnrealMCP/Plugins`; UE 5.7
   build passed after this path fix, the editor-side listener was reachable on
   `172.17.48.1:55557`, and `Scripts/UE5/probe_unreal_editor_mcp_tools.py`
@@ -169,7 +169,7 @@
 | Vehicle parameter identification | `VehicleParamIdentificationResearcher` | local-code-audit-complete-awaiting-sunray-ulog | `References/Data` code audit is promoted to `Docs/Workflows/identify_quadrotor_parameters.md`; first useful data package is RC-collected PX4 `.ulg` logs plus `.params`, exact takeoff mass, motor order, and motor/prop/ESC info. RPM or thrust-stand data remains optional but improves confidence. |
 | AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | done | Git-safe migration is complete and pushed. Tracked scopes now include Cosys tutorial/content assets under 100 MB, SPEAR source/reference subset, CARLA UE5 source/reference subset, and IsaacSim text/source subset. Remaining local ignored content is intentional: CARLA image/content packs, IsaacSim LFS-managed assets/cache/data, and SPEAR `third_party`/Content/generated assets. |
 | UE S0/S1 renderer next round | `TaskSecretary` + `UEMCPProbe(Ptolemy)` + `SceneProfileAuditor(Maxwell)` + `RendererContractAuditor(Carson)` + `Erdos` | source-ready-editor-mcp-currently-unreachable | S0/S1 source-level and standalone UDP runtime paths are ready: S0/S1 metadata gaps are fixed, packet contracts include mission/local-map/status/overlay fields, the UE C++ receiver parses them, S1 render-map instances carry `source.collision_proxy_id`, and `Scripts/UE5/check_unreal_s0_s1_readiness.py --build` passes. Current 2026-05-23 listener probe fails, so Editor MCP/viewport automation remains unavailable until the UE editor plugin is reachable on TCP `55557` and one read-only actor probe passes. |
-| UE S0/S1 runtime autos-pawn review | main agent | done | Runtime autos-pawn, S1 blockout map, and review-camera input fixes are pushed through `dbf03cdcd`. `Scripts/UE5/check_unreal_s0_s1_readiness.py` and `Scripts/UE5/build_unreal_renderer.sh` passed. `Scripts/UE5/review_unreal_s0_s1_renderer.sh` streamed 1604 frames to the standalone game UDP receiver at `172.17.48.1:5005`. UE log confirms `MworksUnrealRendererGameMode`, map/playback actor spawn, UDP listen, first received MWORKS frame, and review-camera movement/rotation input accepted. |
+| UE S0/S1 runtime autos-pawn review | main agent | done | Runtime autos-pawn, S1 blockout map, and review-camera input fixes are pushed through `dbf03cdcd`. `Scripts/UE5/check_unreal_s0_s1_readiness.py` and `Scripts/UE5/build_unreal_renderer.sh` passed. `Scripts/UE5/review_unreal_s0_s1_renderer.sh` streamed 1604 frames to the standalone game UDP receiver at `172.17.48.1:5005`. UE log confirms `MoSimSceneLibraryGameMode`, map/playback actor spawn, UDP listen, first received MWORKS frame, and review-camera movement/rotation input accepted. |
 | S1 competition industrial hybrid blockout | main agent | runtime-reviewable-blockout | Added project-owned S1 blockout render map `map_competition_industrial_hybrid_render_map.json` and bound it from the S1 profile. `SCENE_ID=competition_industrial_hybrid_manual_review MAP_ID=competition_industrial_hybrid bash Scripts/UE5/review_unreal_s0_s1_renderer.sh` streamed 1604 frames; UE log confirms map selection and load: terrain `308`, random/inspection columns `11`, wall/gate/pad boxes `11`. This is visual blockout evidence only, not final art or proof of formal local-avoidance behavior. |
 | UE C++ UDP packet receiver | main agent | done | Source-level compatible parsing for Python packet fields `mission`, `local_known_map`, `status`, and `overlays` is implemented, static checks passed, and UE 5.7 UBT/UHT build passed. |
 
@@ -286,14 +286,14 @@
 ## Current Unreal Renderer Checkpoints
 
 - 2026-05-23 19:56 CST: User reported the standalone S1 Unreal review window
-  could not move its view. Root cause was `MworksUnrealRendererGameMode`
+  could not move its view. Root cause was `MoSimSceneLibraryGameMode`
   setting `DefaultPawnClass = nullptr`, leaving the game viewport without a
   controllable review pawn. Added a project-owned review camera pawn with
   WASD/QE movement, arrow/RMB mouse look, and Shift/Ctrl speed scaling; the
   readiness check now verifies this contract.
 - 2026-05-23 20:01 CST: First rebuild attempt failed because the project-owned
-  Unreal Editor process held `UnrealEditor-MworksUnrealRenderer.dll`; after
-  stopping only the `MworksUnrealRenderer.uproject` process, the build passed.
+  Unreal Editor process held `UnrealEditor-MoSimSceneLibrary.dll`; after
+  stopping only the `MoSimSceneLibrary.uproject` process, the build passed.
   The next standalone launch exited inside `UnrealEditor-Landscape.dll` while
   loading `/Engine/Maps/Templates/OpenWorld`; default maps are now set to
   `/Engine/Maps/Entry` because renderer geometry is spawned at runtime.
@@ -319,6 +319,14 @@
   refuse write probes on Entry or unidentified maps unless an explicit smoke-test
   override is passed. If an Entry recovery package appears, skip recovery rather
   than restoring the temporary editor state.
+- 2026-05-25 CST: The old `UE5/MworksUnrealRenderer` project has been directly
+  replaced by `UE5/MoSimSceneLibrary`; do not keep a separate deprecated
+  renderer shell. `UE5/MoSimSceneLibrary` is now both the Fab/Marketplace scene
+  staging project and the runtime renderer project. The bridge plugin lives at
+  `UE5/Bridge` while retaining the module name `QuadrotorMworksBridge`.
+  `Scripts/UE5/check_unreal_bridge.py` passes against the new layout. Scene
+  source UDP/truth checks may still fail until the local, ignored scene asset
+  link such as `UE5/MoSimSceneLibrary/Content/DerelictCorridor` is recreated.
 - 2026-05-23 21:02 CST: Strengthened the Unreal review camera after a manual
   report that the viewport could not move. The camera now uses UE axis bindings
   plus key-poll fallback, reapplies GameOnly input after possession/restart, and

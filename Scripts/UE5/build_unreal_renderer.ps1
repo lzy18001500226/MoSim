@@ -1,7 +1,7 @@
 param(
     [string]$UnrealEditorRoot = "D:\Program Files\Epic Games\UE_5.7",
-    [string]$ProjectPath = "C:\Users\HP\Desktop\MoSim\UE5\MworksUnrealRenderer\MworksUnrealRenderer.uproject",
-    [string]$Target = "MworksUnrealRendererEditor",
+    [string]$ProjectPath = "C:\Users\HP\Desktop\MoSim\UE5\MoSimSceneLibrary\MoSimSceneLibrary.uproject",
+    [string]$Target = "MoSimSceneLibraryEditor",
     [string]$Platform = "Win64",
     [string]$Configuration = "Development"
 )

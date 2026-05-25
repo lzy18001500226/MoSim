@@ -20,7 +20,7 @@ from build_scene_source_registry import validate_registry
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_REGISTRY = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json"
+DEFAULT_REGISTRY = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json"
 DEFAULT_RAW = (
     ROOT
     / "Results/planning/single_obstacle_astar_awff/"

@@ -461,7 +461,7 @@ def test_scene_source_registry_sanitizes_external_paths(monkeypatch, tmp_path: P
                 "planning_truth_ready": True,
                 "truth": {
                     "explicit_truth_candidates": [
-                        "UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json"
+                        "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json"
                     ],
                     "truth_gap": "",
                 },
@@ -471,7 +471,7 @@ def test_scene_source_registry_sanitizes_external_paths(monkeypatch, tmp_path: P
     )
     monkeypatch.setattr(module, "validate_truth_file", lambda path: [])
 
-    registry = module.build_registry(scene_root=Path("References/UnrealScenes"), truth_root=Path("UE5/MworksUnrealRenderer/Content/MworksData/scene_truth"))
+    registry = module.build_registry(scene_root=Path("References/UnrealScenes"), truth_root=Path("UE5/MoSimSceneLibrary/Content/MworksData/scene_truth"))
     errors = module.validate_registry(registry)
     if errors:
         raise AssertionError(errors)
@@ -515,7 +515,7 @@ def test_scene_source_registry_validation_rejects_polluted_paths(monkeypatch, tm
                 {
                     "scene_source_id": "local_derelictcorridormegascans",
                     "status": "accepted_local_truth_fallback",
-                    "truth_artifacts": ["UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/fake.json"],
+                    "truth_artifacts": ["UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/fake.json"],
                 }
             ],
         },

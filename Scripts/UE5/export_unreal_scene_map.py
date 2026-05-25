@@ -14,7 +14,7 @@ from plan_astar_min_snap import expand_random_obstacles, expand_wall_groups, rea
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = ROOT / "Config/planners/astar_min_snap/map_open_blocks.yaml"
-DEFAULT_OUTPUT = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/map_open_blocks_render_map.json"
+DEFAULT_OUTPUT = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/map_open_blocks_render_map.json"
 
 
 def rounded(value: float, digits: int = 4) -> float:

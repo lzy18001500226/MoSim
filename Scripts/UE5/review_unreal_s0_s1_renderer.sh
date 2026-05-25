@@ -14,16 +14,16 @@ cd "${PROJECT_ROOT}"
 
 bash Scripts/UE5/open_unreal_renderer.sh game
 
-echo "Waiting for MworksUnrealRenderer game UDP endpoint on Windows port 5005..."
+echo "Waiting for MoSimSceneLibrary game UDP endpoint on Windows port 5005..."
 for _ in $(seq 1 90); do
   if powershell.exe -NoProfile -Command \
-    "\$game = Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MworksUnrealRenderer.uproject*' -and \$_.CommandLine -like '* -game*' } | Select-Object -First 1; if (-not \$game) { exit 1 }; \$udp = Get-NetUDPEndpoint -LocalPort 5005 -ErrorAction SilentlyContinue | Where-Object { \$_.OwningProcess -eq \$game.ProcessId } | Select-Object -First 1; if (\$udp) { exit 0 } else { exit 1 }" >/dev/null 2>&1; then
+    "\$game = Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MoSimSceneLibrary.uproject*' -and \$_.CommandLine -like '* -game*' } | Select-Object -First 1; if (-not \$game) { exit 1 }; \$udp = Get-NetUDPEndpoint -LocalPort 5005 -ErrorAction SilentlyContinue | Where-Object { \$_.OwningProcess -eq \$game.ProcessId } | Select-Object -First 1; if (\$udp) { exit 0 } else { exit 1 }" >/dev/null 2>&1; then
     break
   fi
   sleep 1
 done
 powershell.exe -NoProfile -Command \
-  "\$game = Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MworksUnrealRenderer.uproject*' -and \$_.CommandLine -like '* -game*' } | Select-Object -First 1; if (-not \$game) { Write-Error 'MworksUnrealRenderer -game process not found'; exit 1 }; \$udp = Get-NetUDPEndpoint -LocalPort 5005 -ErrorAction SilentlyContinue | Where-Object { \$_.OwningProcess -eq \$game.ProcessId } | Select-Object -First 1; if (-not \$udp) { Write-Error 'UDP 5005 endpoint not found for MworksUnrealRenderer -game process'; exit 1 }; \$game | Select-Object ProcessId,CommandLine; \$udp | Select-Object LocalAddress,LocalPort,OwningProcess"
+  "\$game = Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MoSimSceneLibrary.uproject*' -and \$_.CommandLine -like '* -game*' } | Select-Object -First 1; if (-not \$game) { Write-Error 'MoSimSceneLibrary -game process not found'; exit 1 }; \$udp = Get-NetUDPEndpoint -LocalPort 5005 -ErrorAction SilentlyContinue | Where-Object { \$_.OwningProcess -eq \$game.ProcessId } | Select-Object -First 1; if (-not \$udp) { Write-Error 'UDP 5005 endpoint not found for MoSimSceneLibrary -game process'; exit 1 }; \$game | Select-Object ProcessId,CommandLine; \$udp | Select-Object LocalAddress,LocalPort,OwningProcess"
 
 python3 Scripts/UE5/stream_unreal_udp.py "${RAW_CSV}" \
   --host "${UNREAL_HOST}" \

@@ -1,4 +1,4 @@
-#include "MworksUnrealRendererGameMode.h"
+#include "MoSimSceneLibraryGameMode.h"
 
 #include "Components/LightComponent.h"
 #include "Components/SkyLightComponent.h"
@@ -9,12 +9,12 @@
 #include "QuadrotorMworksMapActor.h"
 #include "QuadrotorMworksPlaybackActor.h"
 
-AMworksUnrealRendererGameMode::AMworksUnrealRendererGameMode()
+AMoSimSceneLibraryGameMode::AMoSimSceneLibraryGameMode()
 {
     DefaultPawnClass = AMworksReviewCameraPawn::StaticClass();
 }
 
-void AMworksUnrealRendererGameMode::BeginPlay()
+void AMoSimSceneLibraryGameMode::BeginPlay()
 {
     Super::BeginPlay();
 
@@ -75,7 +75,7 @@ void AMworksUnrealRendererGameMode::BeginPlay()
     }
 }
 
-void AMworksUnrealRendererGameMode::SpawnDefaultReviewLighting(UWorld* World, const FActorSpawnParameters& SpawnParameters)
+void AMoSimSceneLibraryGameMode::SpawnDefaultReviewLighting(UWorld* World, const FActorSpawnParameters& SpawnParameters)
 {
     if (!World)
     {

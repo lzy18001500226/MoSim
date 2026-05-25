@@ -1,8 +1,8 @@
 using UnrealBuildTool;
 
-public class MworksUnrealRenderer : ModuleRules
+public class MoSimSceneLibrary : ModuleRules
 {
-    public MworksUnrealRenderer(ReadOnlyTargetRules Target) : base(Target)
+    public MoSimSceneLibrary(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 

@@ -1,13 +1,13 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class MworksUnrealRendererEditorTarget : TargetRules
+public class MoSimSceneLibraryEditorTarget : TargetRules
 {
-    public MworksUnrealRendererEditorTarget(TargetInfo Target) : base(Target)
+    public MoSimSceneLibraryEditorTarget(TargetInfo Target) : base(Target)
     {
         Type = TargetType.Editor;
         DefaultBuildSettings = BuildSettingsVersion.V6;
         IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
-        ExtraModuleNames.Add("MworksUnrealRenderer");
+        ExtraModuleNames.Add("MoSimSceneLibrary");
     }
 }

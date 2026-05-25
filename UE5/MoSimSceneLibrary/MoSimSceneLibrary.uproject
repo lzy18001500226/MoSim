@@ -1,11 +1,11 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.7",
+	"EngineAssociation": "5.5",
 	"Category": "Simulation",
-	"Description": "External Unreal renderer for MWORKS quadrotor visualization.",
+	"Description": "MoSim Unreal scene library and runtime renderer shell.",
 	"Modules": [
 		{
-			"Name": "MworksUnrealRenderer",
+			"Name": "MoSimSceneLibrary",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
@@ -29,6 +29,20 @@
 		},
 		{
 			"Name": "ModelingToolsEditorMode",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		},
+		{
+			"Name": "EditorScriptingUtilities",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		},
+		{
+			"Name": "PythonScriptPlugin",
 			"Enabled": true,
 			"TargetAllowList": [
 				"Editor"

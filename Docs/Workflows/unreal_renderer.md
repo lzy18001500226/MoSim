@@ -24,7 +24,20 @@ The map must first pass manual visual review as a believable physical-world
 scene. Only after that should we reconnect quadrotor playback, radar overlays,
 trajectory trails, MWORKS UDP streaming, planning truth, and video recording.
 
-The preferred route is end-to-end MCP automation:
+The current practical route separates manual Fab/Launcher actions from
+project-local automation:
+
+```text
+Epic Launcher / Fab UI
+  -> user manually creates/adds assets into UE5/MoSimSceneLibrary
+MoSim scripts / MCP
+  -> inspect the local scene-library project
+  -> rank .uproject + .umap candidates
+  -> export collision/planning truth
+  -> link or migrate accepted scene content into MoSimSceneLibrary
+```
+
+The long-term preferred route is end-to-end MCP automation:
 
 ```text
 mosim_epic_library MCP
@@ -32,7 +45,7 @@ mosim_epic_library MCP
   -> choose candidate scene asset
   -> verify local editable project/content
 unreal_engine MCP
-  -> open/import/reuse scene in MworksUnrealRenderer
+  -> open/import/reuse scene in MoSimSceneLibrary
   -> modify scene components when needed
   -> run reversible edit probes
   -> export or verify map truth
@@ -43,21 +56,28 @@ MWORKS/Syslab MCP
 
 If any route cannot be automated reliably, stop that route early and record the
 blocker. Do not spend hours retrying the same failing Launcher/UE/plugin path.
-The approved fallback is the local editable scene library:
+The approved local editable scene targets are:
 
 ```text
+C:\Users\HP\Desktop\MoSim\UE5\MoSimSceneLibrary
 C:\Users\HP\Desktop\MoSim\References\UnrealScenes
 ```
 
 ## Kept Project Components
 
 ```text
-UE5/MworksUnrealRenderer/
-UE5/QuadrotorMworksBridge/
+UE5/MoSimSceneLibrary/
+UE5/Bridge/
 ```
 
-`MworksUnrealRenderer` is the project-owned UE shell. `QuadrotorMworksBridge`
-provides UDP reception and playback state for MWORKS simulation output.
+`MoSimSceneLibrary` is the project-owned Unreal project for both Fab /
+Marketplace scene staging and runtime rendering. Use it for manual Epic
+Launcher **Create Project** / **Add To Project** actions. Imported scene assets
+under `Content/` and project-local `Plugins/` are ignored by Git unless a
+reviewed asset batch explicitly unignores them.
+
+`Bridge` contains the `QuadrotorMworksBridge` plugin, which provides UDP
+reception and playback state for MWORKS simulation output.
 
 Generated folders are disposable and must not be committed:
 
@@ -66,6 +86,8 @@ UE5/**/Binaries/
 UE5/**/Intermediate/
 UE5/**/Saved/
 UE5/**/DerivedDataCache/
+UE5/MoSimSceneLibrary/Content/
+UE5/MoSimSceneLibrary/Plugins/
 ```
 
 ## Scene Source Selection
@@ -85,7 +107,7 @@ Route decision rule:
 
 | Route | Accept When | Stop When |
 |---|---|---|
-| Fab/Launcher automated | Asset can be created/added to a local UE project, then imported/reused in `MworksUnrealRenderer`, edited through UE MCP, and paired with planning truth | Asset is account-visible only, plugin is incompatible, download requires manual login for this step, or no editable project/content is produced |
+| Fab/Launcher automated | Asset can be created/added to a local UE project, then imported/reused in `MoSimSceneLibrary`, edited through UE MCP, and paired with planning truth | Asset is account-visible only, plugin is incompatible, download requires manual login for this step, or no editable project/content is produced |
 | Local `References/UnrealScenes` | `.uproject/.umap/.uasset` are already local, loadable, and can export truth | It is a one-room demo, runtime-only package, missing modules cannot be rebuilt, or manual visual review rejects it |
 | Open-source external UE project | License is acceptable, editable content exists, required plugins/builds are available | Project only provides code without useful scenes, cooked assets, or unavailable plugins |
 | RflySim native runtime | Useful for visual/API/reference behavior | Treating packaged runtime scenes as directly editable MoSim assets |
@@ -109,7 +131,7 @@ python3 Scripts/UE5/audit_scene_source.py
 python3 Scripts/UE5/audit_scene_source.py --maps
 uv run python Scripts/UE5/build_scene_source_registry.py --write
 uv run python Scripts/UE5/build_scene_source_registry.py --validate \
-  UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json
+  UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json
 ```
 
 The inventory separates:
@@ -145,7 +167,7 @@ export/proxy route.
 `build_scene_source_registry.py` writes the project-owned handoff contract:
 
 ```text
-UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json
+UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json
 ```
 
 This registry intentionally redacts external Launcher/Fab cache paths. It keeps
@@ -284,14 +306,14 @@ scene opens with the matching UE version and required plugins.
 py Scripts/UE5/export_unreal_scene_truth.py export \
   --scene-id <scene_id> \
   --map-id <map_id> \
-  --output UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/<map_id>_collision_truth.json
+  --output UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/<map_id>_collision_truth.json
 ```
 
 Then validate from the normal project shell:
 
 ```bash
 uv run python Scripts/UE5/export_unreal_scene_truth.py validate \
-  UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/<map_id>_collision_truth.json
+  UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/<map_id>_collision_truth.json
 uv run python Scripts/UE5/audit_scene_source.py
 ```
 
@@ -308,7 +330,7 @@ uv run python Scripts/UE5/run_scene_truth_export.py \
   --map-package /Game/DerelictCorridor/Maps/DerelictCorridor \
   --run
 uv run python Scripts/UE5/export_unreal_scene_truth.py validate \
-  UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json
+  UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json
 uv run python Scripts/UE5/audit_scene_source.py
 ```
 
@@ -381,7 +403,7 @@ scene_visual_import_or_reuse: passed
 ```
 
 This means the local Derelict fallback has truth, packet-level selection, and a
-renderer-local content link at `UE5/MworksUnrealRenderer/Content/DerelictCorridor`.
+renderer-local content link at `UE5/MoSimSceneLibrary/Content/DerelictCorridor`.
 Fab remains unaccepted until one Fab asset is created/imported with edit access
 and planning truth. The local fallback route still satisfies the current goal
 branch because the goal explicitly allows switching to `References/UnrealScenes`
@@ -418,7 +440,7 @@ Scripts/UE5/build_unreal_renderer.sh
 
 If this fails at `LINK : fatal error LNK1104` for
 `UnrealEditor-QuadrotorMworksBridge.dll` or
-`UnrealEditor-MworksUnrealRenderer.dll`, check for an open `UnrealEditor.exe`.
+`UnrealEditor-MoSimSceneLibrary.dll`, check for an open `UnrealEditor.exe`.
 That state means the editor is holding the output DLLs. Close or restart the
 editor and rerun; do not record it as a source compile failure.
 
@@ -535,7 +557,7 @@ acceptance evidence.
 Current known project-owned renderer requirement:
 
 ```text
-UE5/MworksUnrealRenderer/MworksUnrealRenderer.uproject
+UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject
 AdditionalPluginDirectories must include:
 ../../Docs/Skills/Unreal/unreal-engine-mcp/FlopperamUnrealMCP/Plugins
 ```

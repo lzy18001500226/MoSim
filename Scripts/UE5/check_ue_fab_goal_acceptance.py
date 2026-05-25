@@ -18,10 +18,10 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SCENE_SOURCE_REGISTRY = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json"
+SCENE_SOURCE_REGISTRY = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json"
 DERELICT_TRUTH = (
     ROOT
-    / "UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/"
+    / "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/"
     / "derelictcorridormegascans_collision_truth.json"
 )
 UNREAL_SKILL = ROOT / "Docs/Skills/Unreal/mosim-unreal-editor-mcp/SKILL.md"
@@ -280,7 +280,7 @@ def gate_visual_import(registry: dict[str, Any]) -> Gate:
     if imported is True:
         evidence.append("imported_into_renderer=true")
     else:
-        missing.append("Primary source is not yet proven imported/reused inside MworksUnrealRenderer")
+        missing.append("Primary source is not yet proven imported/reused inside MoSimSceneLibrary")
     if renderer_reuse_kind:
         evidence.append(f"renderer_reuse_kind={renderer_reuse_kind}")
     if renderer_content_root:
@@ -376,7 +376,7 @@ def build_report() -> dict[str, Any]:
         )
     if not by_id["scene_visual_import_or_reuse"].passed:
         missing_actions.append(
-            "Prove scene_visual_import_or_reuse by linking/importing Derelict or an accepted Fab scene into MworksUnrealRenderer, then run probe_renderer_map_load.py"
+            "Prove scene_visual_import_or_reuse by linking/importing Derelict or an accepted Fab scene into MoSimSceneLibrary, then run probe_renderer_map_load.py"
         )
     if by_id["scene_visual_import_or_reuse"].passed and by_id["unreal_engine_edit_authority"].passed:
         missing_actions.append(

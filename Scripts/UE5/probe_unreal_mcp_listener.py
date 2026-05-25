@@ -77,7 +77,7 @@ def windows_unreal_processes() -> tuple[list[dict[str, object]], str]:
         (
             "$ErrorActionPreference='SilentlyContinue';"
             "$items = Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | "
-            "Where-Object { $_.CommandLine -like '*MworksUnrealRenderer.uproject*' } | "
+            "Where-Object { $_.CommandLine -like '*MoSimSceneLibrary.uproject*' } | "
             "Select-Object ProcessId,CommandLine;"
             "if ($items) { $items | ConvertTo-Json -Compress }"
         ),
@@ -118,7 +118,7 @@ def print_process_diagnostics() -> None:
         print(f"[INFO] Unable to query Windows UnrealEditor processes: {error}")
         return
     if not processes:
-        print("[INFO] No project-owned UnrealEditor.exe process found for MworksUnrealRenderer.uproject.")
+        print("[INFO] No project-owned UnrealEditor.exe process found for MoSimSceneLibrary.uproject.")
         return
 
     print("[INFO] Project-owned UnrealEditor.exe processes:")

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Verify that the MoSim renderer project can load the linked scene-source map.
 
-This runs UnrealEditor-Cmd against `UE5/MworksUnrealRenderer` and loads the map
+This runs UnrealEditor-Cmd against `UE5/MoSimSceneLibrary` and loads the map
 package recorded in the scene-source registry. It writes a small JSON evidence
 file through Editor Python and exits without saving the map.
 """
@@ -18,8 +18,8 @@ from run_scene_truth_export import ENGINE_ROOT_BY_VERSION, quote, resolve_editor
 
 
 ROOT = Path(__file__).resolve().parents[2]
-RENDERER_UPROJECT = ROOT / "UE5/MworksUnrealRenderer/MworksUnrealRenderer.uproject"
-SCENE_SOURCE_REGISTRY = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json"
+RENDERER_UPROJECT = ROOT / "UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject"
+SCENE_SOURCE_REGISTRY = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json"
 
 
 def rel(path: Path) -> str:

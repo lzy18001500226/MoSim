@@ -23,8 +23,8 @@ from export_unreal_scene_truth import validate_truth_payload
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_OUTPUT = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json"
-RENDERER_CONTENT = ROOT / "UE5/MworksUnrealRenderer/Content"
+DEFAULT_OUTPUT = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json"
+RENDERER_CONTENT = ROOT / "UE5/MoSimSceneLibrary/Content"
 SCHEMA = "mosim.unreal_scene_source_registry.v1"
 FORBIDDEN_PATH_PATTERNS = (
     re.compile(r"[A-Za-z]:[\\/]", re.IGNORECASE),

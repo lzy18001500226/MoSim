@@ -394,15 +394,15 @@
         ],
         "project_root": "References/UnrealScenes/DerelictCorridorMegascans",
         "renderable_candidate": true,
-        "renderer_content_root": "UE5/MworksUnrealRenderer/Content/DerelictCorridor",
-        "renderer_map_asset": "UE5/MworksUnrealRenderer/Content/DerelictCorridor/Maps/DerelictCorridor.umap",
+        "renderer_content_root": "UE5/MoSimSceneLibrary/Content/DerelictCorridor",
+        "renderer_map_asset": "UE5/MoSimSceneLibrary/Content/DerelictCorridor/Maps/DerelictCorridor.umap",
         "renderer_map_package": "/Game/DerelictCorridor/Maps/DerelictCorridor",
         "renderer_reuse_kind": "content_link",
         "scene_source_id": "local_derelictcorridormegascans",
         "source_kind": "local_unreal_project",
         "status": "accepted_local_truth_fallback",
         "truth_artifacts": [
-          "UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json"
+          "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json"
         ],
         "truth_gap": "",
         "uasset_count": 1118,
@@ -537,7 +537,7 @@
       }
     ],
     "status": "active",
-    "truth_root": "UE5/MworksUnrealRenderer/Content/MworksData/scene_truth"
+    "truth_root": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth"
   },
   "policy": {
     "acceptance_gates": [

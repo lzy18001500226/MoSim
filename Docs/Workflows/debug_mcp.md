@@ -284,7 +284,7 @@ Add `--check-listener` only when preparing for interactive viewport review.
 Keep this separate from the project-owned external renderer plugin:
 
 ```text
-UE5/QuadrotorMworksBridge/
+UE5/Bridge/
 ```
 
 `UnrealMCP` controls the editor through MCP. `QuadrotorMworksBridge` receives
@@ -293,7 +293,7 @@ MWORKS simulation state for video rendering. They solve different problems.
 Project-local Unreal renderer entry:
 
 ```text
-UE5/MworksUnrealRenderer/MworksUnrealRenderer.uproject
+UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject
 ```
 
 Open this project in UE 5.7 when using MCP-driven scene setup. It enables both

@@ -19,9 +19,20 @@ UE5/**/Binaries/
 UE5/**/Intermediate/
 UE5/**/Saved/
 UE5/**/DerivedDataCache/
-# Local renderer content links to ignored third-party scene assets.
-UE5/MworksUnrealRenderer/Content/DerelictCorridor/
-UE5/MworksUnrealRenderer/Content/DerelictCorridor
+UE5/Bridge/Intermediate/
+UE5/Bridge/Binaries/
+# MoSimSceneLibrary is the editable Fab/Marketplace scene staging project and
+# runtime renderer shell. Track project code/config plus MworksData truth files,
+# but never commit imported Marketplace assets unless a reviewed asset batch
+# explicitly unignores them.
+UE5/MoSimSceneLibrary/Content/
+!UE5/MoSimSceneLibrary/Content/
+!UE5/MoSimSceneLibrary/Content/MworksData/
+!UE5/MoSimSceneLibrary/Content/MworksData/**
+UE5/MoSimSceneLibrary/Plugins/
+UE5/MoSimSceneLibrary/Collections/
+UE5/MoSimSceneLibrary/Developers/
+UE5/MoSimSceneLibrary/.vs/
 *.sln
 *.suo
 *.opensdf

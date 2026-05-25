@@ -29,7 +29,7 @@
             "render_world": {
                 "source_strategy": "project_owned_minimal_framework",
                 "candidate_references": [
-                    "current MworksUnrealRenderer bridge",
+                    "current MoSimSceneLibrary bridge",
                     "AirSim/Cosys camera and vehicle API reference",
                     "RflySim runtime camera/radar behavior reference"
                 ],

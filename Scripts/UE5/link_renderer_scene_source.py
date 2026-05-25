@@ -20,8 +20,8 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_REGISTRY = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json"
-RENDERER_CONTENT = ROOT / "UE5/MworksUnrealRenderer/Content"
+DEFAULT_REGISTRY = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json"
+RENDERER_CONTENT = ROOT / "UE5/MoSimSceneLibrary/Content"
 
 
 def rel(path: Path) -> str:

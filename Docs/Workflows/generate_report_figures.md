@@ -104,7 +104,7 @@ Before UE scene construction, export the render-only map truth:
 python3 Scripts/UE5/export_unreal_scene_map.py --terrain-cell-m 1.0
 ```
 
-The output `UE5/MworksUnrealRenderer/Content/MworksData/map_open_blocks_render_map.json`
+The output `UE5/MoSimSceneLibrary/Content/MworksData/map_open_blocks_render_map.json`
 uses the same `map_open_blocks.yaml` wall/random-obstacle expansion as the
 planner. Unreal may instantiate terrain, random columns, L/T wall boxes, radar
 materials, and camera presets from this JSON, but the file remains a display

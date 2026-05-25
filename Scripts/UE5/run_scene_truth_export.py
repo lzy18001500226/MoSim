@@ -153,7 +153,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--query", required=True, help="Unique scene name substring, e.g. Derelict.")
     parser.add_argument("--scene-root", type=Path, default=ROOT / "References/UnrealScenes")
-    parser.add_argument("--truth-root", type=Path, default=ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/scene_truth")
+    parser.add_argument("--truth-root", type=Path, default=ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth")
     parser.add_argument("--engine-root", type=Path, default=None)
     parser.add_argument("--editor-cmd", type=Path, default=None)
     parser.add_argument("--map-package", default="", help="Optional UE package path, e.g. /Game/DerelictCorridor/Maps/DerelictCorridor.")

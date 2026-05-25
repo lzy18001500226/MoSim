@@ -24,12 +24,12 @@ SAMPLE_RAW = (
     / "sunray150_planning_open_blocks_linear_mpc_sysblock/raw/"
     / "sunray150_planning_open_blocks_linear_mpc_height_profile_0p2_sensor_20hz.csv"
 )
-S1_RENDER_MAP = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/map_competition_industrial_hybrid_render_map.json"
-SCENE_PROFILES = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/unreal_scene_profiles.json"
-REVIEW_CAMERA_HEADER = ROOT / "UE5/MworksUnrealRenderer/Source/MworksUnrealRenderer/MworksReviewCameraPawn.h"
-REVIEW_CAMERA_SOURCE = ROOT / "UE5/MworksUnrealRenderer/Source/MworksUnrealRenderer/MworksReviewCameraPawn.cpp"
-RENDERER_GAMEMODE_SOURCE = ROOT / "UE5/MworksUnrealRenderer/Source/MworksUnrealRenderer/MworksUnrealRendererGameMode.cpp"
-DEFAULT_ENGINE_INI = ROOT / "UE5/MworksUnrealRenderer/Config/DefaultEngine.ini"
+S1_RENDER_MAP = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/map_competition_industrial_hybrid_render_map.json"
+SCENE_PROFILES = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/unreal_scene_profiles.json"
+REVIEW_CAMERA_HEADER = ROOT / "UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.h"
+REVIEW_CAMERA_SOURCE = ROOT / "UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.cpp"
+RENDERER_GAMEMODE_SOURCE = ROOT / "UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MoSimSceneLibraryGameMode.cpp"
+DEFAULT_ENGINE_INI = ROOT / "UE5/MoSimSceneLibrary/Config/DefaultEngine.ini"
 OPEN_UNREAL_RENDERER = ROOT / "Scripts/UE5/open_unreal_renderer.sh"
 
 
@@ -223,7 +223,7 @@ def run_review_camera_check() -> bool:
     if "AMworksReviewCameraPawn" not in header:
         print("[FAIL] review camera class missing from header")
         return False
-    input_text = (ROOT / "UE5/MworksUnrealRenderer/Config/DefaultInput.ini").read_text(encoding="utf-8")
+    input_text = (ROOT / "UE5/MoSimSceneLibrary/Config/DefaultInput.ini").read_text(encoding="utf-8")
     for axis_name in [
         "MworksReviewMoveForward",
         "MworksReviewMoveRight",

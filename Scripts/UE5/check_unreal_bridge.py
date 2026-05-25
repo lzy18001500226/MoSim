@@ -8,8 +8,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-PLUGIN = ROOT / "UE5" / "QuadrotorMworksBridge"
-RENDERER = ROOT / "UE5" / "MworksUnrealRenderer"
+PLUGIN = ROOT / "UE5" / "Bridge"
+RENDERER = ROOT / "UE5" / "MoSimSceneLibrary"
 SCENE_PROFILES = RENDERER / "Content" / "MworksData" / "unreal_scene_profiles.json"
 MAZE_RENDER_MAP = RENDERER / "Content" / "MworksData" / "map_maze_building_render_map.json"
 ASSET_REGISTRY_SCHEMA = RENDERER / "Content" / "MworksData" / "scene_asset_registry.schema.json"
@@ -42,7 +42,7 @@ def main() -> int:
             print(f"[FAIL] missing {PLUGIN / path}")
         return 1
 
-    renderer_descriptor = RENDERER / "MworksUnrealRenderer.uproject"
+    renderer_descriptor = RENDERER / "MoSimSceneLibrary.uproject"
     if not renderer_descriptor.exists():
         print(f"[FAIL] missing {renderer_descriptor}")
         return 1

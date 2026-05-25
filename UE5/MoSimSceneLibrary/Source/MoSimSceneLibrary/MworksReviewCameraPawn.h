@@ -8,7 +8,7 @@ class UCameraComponent;
 class USceneComponent;
 
 UCLASS()
-class MWORKSUNREALRENDERER_API AMworksReviewCameraPawn : public APawn
+class MOSIMSCENELIBRARY_API AMworksReviewCameraPawn : public APawn
 {
     GENERATED_BODY()
 

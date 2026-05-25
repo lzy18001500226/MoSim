@@ -12,7 +12,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SCENE_ROOT = ROOT / "References" / "UnrealScenes"
-DEFAULT_TRUTH_ROOT = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/scene_truth"
+DEFAULT_TRUTH_ROOT = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth"
 IGNORED_DIRS = {".git", ".svn", ".hg", ".vs", "Binaries", "DerivedDataCache", "Intermediate", "Saved"}
 EXPLICIT_TRUTH_SUFFIXES = {".json", ".csv", ".yaml", ".yml", ".pcd", ".ply", ".las", ".laz", ".bin"}
 TRUTH_MARKERS = (

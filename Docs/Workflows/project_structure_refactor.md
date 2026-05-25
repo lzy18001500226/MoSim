@@ -102,8 +102,8 @@ Results/
 | `Config/scenarios/` | `configs/scenarios/` | Medium. Batch scripts reference current paths. |
 | `Models/` | `sim/mworks/extensions/` | High. MWORKS model paths and load scripts may break. |
 | `References/MWORKS/QuadrotorModel/` | `sim/mworks/official/QuadrotorModel/` or keep as compatibility alias | High. Many scripts and Sysplorer load paths depend on it. |
-| `UE5/MworksUnrealRenderer/` | `sim/UE5/renderer/` | High. UE project paths and scripts depend on it. |
-| `UE5/QuadrotorMworksBridge/` | `sim/UE5/bridge/` | High. UE plugin paths and build scripts depend on it. |
+| `UE5/MoSimSceneLibrary/` | `sim/UE5/renderer/` | High. UE project paths and scripts depend on it. |
+| `UE5/Bridge/` | `sim/UE5/bridge/` | High. UE plugin paths and build scripts depend on it. |
 | `Scripts/` | split into `tools/*` and `src/orchestration/*` | Medium/high. Tests and docs reference scripts. |
 | `Docs/Skills/`, `References/Agent/` | `automation/skills/`, `automation/agents/` | Medium. AGENTS/workflows/config references must update. |
 | `References/` | `external/specs`, `external/source_repos`, `external/vendor_assets` | High. Large files and Git ignore rules. |
@@ -191,8 +191,8 @@ Only after Phase 1-3:
 ```text
 Models/                -> sim/mworks/extensions/
 References/MWORKS/QuadrotorModel/         -> sim/mworks/official/QuadrotorModel/ or retained as alias
-UE5/MworksUnrealRenderer/ -> sim/UE5/renderer/
-UE5/QuadrotorMworksBridge/ -> sim/UE5/bridge/
+UE5/MoSimSceneLibrary/ -> sim/UE5/renderer/
+UE5/Bridge/ -> sim/UE5/bridge/
 ```
 
 This phase must be guarded by MWORKS/UE build and smoke checks. It is not a

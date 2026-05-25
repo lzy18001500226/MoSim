@@ -21,7 +21,7 @@ def linked_source(source_id: str) -> dict[str, object]:
     if not source:
         raise ValueError(f"scene source not found: {source_id}")
     if source.get("imported_into_renderer") is not True:
-        raise ValueError(f"{source_id} is not imported/reused in MworksUnrealRenderer")
+        raise ValueError(f"{source_id} is not imported/reused in MoSimSceneLibrary")
     renderer_map_asset = source.get("renderer_map_asset")
     renderer_content_root = source.get("renderer_content_root")
     for key, value in [("renderer_content_root", renderer_content_root), ("renderer_map_asset", renderer_map_asset)]:

@@ -17,7 +17,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_OUTPUT_DIR = ROOT / "UE5/MworksUnrealRenderer/Content/MworksData/scene_truth"
+DEFAULT_OUTPUT_DIR = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth"
 SCHEMA = "mosim.unreal_scene_truth.v1"
 UNREAL_CM_PER_M = 100.0
 SEMANTIC_KEYWORDS = {

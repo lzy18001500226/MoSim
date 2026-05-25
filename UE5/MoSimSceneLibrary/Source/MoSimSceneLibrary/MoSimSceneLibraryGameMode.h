@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "MworksUnrealRendererGameMode.generated.h"
+#include "MoSimSceneLibraryGameMode.generated.h"
 
 class AQuadrotorMworksMapActor;
 class AQuadrotorMworksPlaybackActor;
@@ -10,12 +10,12 @@ class ADirectionalLight;
 class ASkyLight;
 
 UCLASS()
-class MWORKSUNREALRENDERER_API AMworksUnrealRendererGameMode : public AGameModeBase
+class MOSIMSCENELIBRARY_API AMoSimSceneLibraryGameMode : public AGameModeBase
 {
     GENERATED_BODY()
 
 public:
-    AMworksUnrealRendererGameMode();
+    AMoSimSceneLibraryGameMode();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Renderer")
     bool bSpawnDefaultRendererActors = true;
