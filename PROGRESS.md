@@ -38,6 +38,20 @@
   and `Scripts/UE5/epic_library_view.py` for the merged human-readable library
   view. Use `Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh` when exposing
   the index as the `mosim_epic_library` MCP.
+- 2026-05-25 MCP route update: `unreal_engine` now points to MoSim's own
+  first-stage MCP wrapper `Scripts/UE5/mosim_unreal_engine_mcp_wsl_wrapper.sh`
+  through `Scripts/UE5/unreal_mcp_wsl_wrapper.sh`. The legacy Flopperam wrapper
+  remains at `Scripts/UE5/unreal_mcp_legacy_flopperam_wsl_wrapper.sh` for
+  rollback. Current MoSim-native tools are `ue_health`, `project_context`,
+  `scene_source_registry`, `ue_fab_goal_acceptance`, `scene_truth_export_plan`,
+  `epic_scene_library_view`, and `tool_boundary`. Do not add arbitrary Python
+  execution, Launcher clicking, raw account-cache parsing, or Fab downloading to
+  `unreal_engine`; keep those concerns either manual or in the read-only
+  `mosim_epic_library` boundary.
+- 2026-05-25 MCP wrapper fix: `/home/linux/mcp-wrappers/sysplorer_mcp.sh`
+  previously pointed at `C:\Users\HP\Desktop\Quadrotor\scripts\...` and caused
+  `sysplorer` handshake failures after the MoSim restructure. It should point to
+  `C:\Users\HP\Desktop\MoSim\Scripts\mworks\sysplorer_mcp_wsl_entry.py`.
 - Updated scene-source requirement: rendering is insufficient. A scene must be
   importable/editable, renderable, and able to provide or generate
   collision/semantic/occupancy truth for mapping and path planning. If Fab

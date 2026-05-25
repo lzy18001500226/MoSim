@@ -447,8 +447,8 @@ editor and rerun; do not record it as a source compile failure.
 Relevant current-phase skills:
 
 ```text
-Docs/Skills/unreal/mosim-epic-fab-library/SKILL.md
-Docs/Skills/unreal/mosim-unreal-editor-mcp/SKILL.md
+Docs/Skills/Unreal/mosim-epic-fab-library/SKILL.md
+Docs/Skills/Unreal/mosim-unreal-editor-mcp/SKILL.md
 ```
 
 ## First-Pass Manual Review Gate
@@ -510,6 +510,75 @@ Expected MCP server name:
 ```text
 unreal_engine
 ```
+
+Current policy: `unreal_engine` is MoSim's own UE automation MCP. It should not
+be a generic world-building MCP and should not own Epic/Fab downloads.
+`mosim_epic_library` remains the separate read-only inventory MCP.
+
+First-stage `unreal_engine` tools:
+
+```text
+ue_health
+project_context
+scene_source_registry
+ue_fab_goal_acceptance
+scene_truth_export_plan
+epic_scene_library_view
+tool_boundary
+```
+
+Wrapper layout:
+
+```text
+Scripts/UE5/unreal_mcp_wsl_wrapper.sh
+  -> Scripts/UE5/mosim_unreal_engine_mcp_wsl_wrapper.sh
+  -> Scripts/UE5/mosim_unreal_engine_mcp.py
+```
+
+Legacy rollback wrapper:
+
+```text
+Scripts/UE5/unreal_mcp_legacy_flopperam_wsl_wrapper.sh
+```
+
+Do not remove the legacy wrapper until the MoSim-native route has equivalent
+read-only scene query, controlled actor edit, viewport capture, and editor-log
+coverage. The current native route intentionally starts with stable MoSim
+workflow tools rather than Flopperam's broad `create_town/create_castle` style
+tool surface.
+
+Open-source MCP audit decision:
+
+| Source | Adopt | Reject For Phase 1 |
+|---|---|---|
+| `Docs/Skills/Unreal/Unreal_mcp-dev` | tool registry, schema discipline, C++ bridge, transport and safety patterns | broad game/GAS/networking/inventory tools |
+| `Docs/Skills/Unreal/UnrealClientProtocol` | reflection and future Blueprint/graph editing ideas | arbitrary reflection as the default public tool |
+| `Docs/Skills/Unreal/UnrealClaude` | game-thread task queue, project context, log/viewport ideas | Claude-specific chat/product shell and default script execution |
+| `Docs/Skills/Unreal/UnrealGenAISupport` | small actor/Blueprint utility examples | inactive/broad GenAI plugin assumptions |
+| `Docs/Skills/Unreal/unreal-engine-mcp` | rollback bridge and existing live-editor smoke path | final MoSim interface shape |
+
+Target architecture:
+
+```text
+Codex / MCP client
+  -> MoSim stdio or HTTP MCP server
+  -> TCP/WebSocket/HTTP bridge
+  -> C++ UE Editor plugin
+  -> UE AssetRegistry / GEditor / PIE / package APIs on the editor thread
+```
+
+Phase order:
+
+1. Read-only: `ue_health`, `project_context`, `asset_search`,
+   `scene_source_registry`, `scene_truth_export_plan`, `editor_log`.
+2. Controlled writes: reversible actor edit/delete, map open/save, material
+   instance parameter edits, and viewport capture.
+3. Simulator truth: collision/semantic/occupancy export and validation.
+4. Advanced authoring: minimal Blueprint/material graph edits.
+
+Do not implement arbitrary `python_execution`, Launcher button-clicking, raw
+webcache parsing, OAuth/token reuse, or automatic Fab downloads in
+`unreal_engine`.
 
 Before interactive editor work, run the smallest useful probe. Inventory alone
 is not enough; the editor-side listener must be reachable:

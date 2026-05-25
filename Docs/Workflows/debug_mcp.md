@@ -207,16 +207,29 @@ Common issues:
 
 ## 7.1 Unreal MCP Local Wrapper
 
-The local Unreal MCP source lives under:
+The configured MCP server name remains:
 
 ```text
-Docs/Skills/unreal-engine-mcp/
+unreal_engine
 ```
 
-The WSL wrapper is project-local:
+The stable WSL wrapper is project-local:
 
 ```text
 Scripts/UE5/unreal_mcp_wsl_wrapper.sh
+```
+
+It currently points to MoSim's own narrow MCP surface:
+
+```text
+Scripts/UE5/mosim_unreal_engine_mcp_wsl_wrapper.sh
+Scripts/UE5/mosim_unreal_engine_mcp.py
+```
+
+The older Flopperam wrapper is retained for rollback only:
+
+```text
+Scripts/UE5/unreal_mcp_legacy_flopperam_wsl_wrapper.sh
 ```
 
 Manual smoke test:
@@ -227,9 +240,17 @@ Scripts/UE5/unreal_mcp_wsl_wrapper.sh
 
 If it starts and waits for input, that is normal for stdio MCP. To verify with a
 client, send the standard MCP handshake and then `tools/list`; the server should
-report `UnrealMCP_Advanced` and tools such as `get_actors_in_level`,
-`set_actor_transform`, `create_blueprint`, `compile_blueprint`, and
-`set_mesh_material_color`.
+report MoSim tools such as `ue_health`, `project_context`,
+`scene_source_registry`, `ue_fab_goal_acceptance`, and
+`scene_truth_export_plan`.
+
+Command-line checks that do not require UE Editor:
+
+```bash
+python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-tools
+python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-context
+python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-boundary
+```
 
 Codex MCP config entry, if enabling manually:
 
@@ -241,14 +262,11 @@ startup_timeout_sec = 180
 tool_timeout_sec = 300
 ```
 
-Do not register this against opencode config files. The Unreal editor side still
-needs the bundled `Docs/Skills/unreal-engine-mcp/UnrealMCP/` plugin enabled in a UE
-project. The WSL wrapper exports `UNREAL_HOST` to the WSL default gateway when
-the variable is unset, and the Python MCP server connects to
-`$UNREAL_HOST:$UNREAL_PORT` (default port `55557`). If Unreal is not open, the
-plugin is not enabled, or the listener is bound to a route the WSL wrapper cannot
-reach, `tools/list` can still work, but actor/Blueprint tools will fail or time
-out.
+Do not register this against opencode config files. The MoSim MCP can report
+project context without an open UE Editor. Live actor/Blueprint/viewport work
+still requires an editor-side listener. The legacy Flopperam bridge and future
+MoSim C++ plugin use `$UNREAL_HOST:$UNREAL_PORT` (default port `55557`) for
+editor-side calls.
 
 Before running interactive actor/Blueprint tools, check the editor-side socket:
 
@@ -372,8 +390,8 @@ Scripts/UE5/epic_library_view.py
 Scripts/UE5/mosim_epic_library_mcp.py
 Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh
 Scripts/UE5/check_epic_library_inventory.py
-Docs/Skills/unreal/mosim-epic-fab-library/SKILL.md
-Docs/Skills/unreal/mosim-unreal-editor-mcp/SKILL.md
+Docs/Skills/Unreal/mosim-epic-fab-library/SKILL.md
+Docs/Skills/Unreal/mosim-unreal-editor-mcp/SKILL.md
 ```
 
 Read-only inventory command:
@@ -442,11 +460,14 @@ exec "/mnt/d/Program Files/MWORKS/Syslab 2026a/Tools/syslab-mcp-server/syslab-mc
 
 ```bash
 #!/usr/bin/env bash
-exec "/mnt/d/Program Files/MWORKS/Sysplorer 2026a/External/python64/python.exe" \
-  "D:\Program Files\MWORKS\Sysplorer 2026a\Tools\sysplorer_mcp\sysplorer-mcp-server\main.py" \
-  --mworks-install-dir "D:\Program Files\MWORKS\Sysplorer 2026a" \
-  --sysplorer-platform-label "Sysplorer 2026a"
+set -euo pipefail
+
+exec /init /mnt/c/WINDOWS/system32/cmd.exe /c \
+  "D:\PROGRA~1\MWORKS\SYSPLO~1\External\python64\python.exe C:\Users\HP\Desktop\MoSim\Scripts\mworks\sysplorer_mcp_wsl_entry.py"
 ```
+
+The old `C:\Users\HP\Desktop\Quadrotor\scripts\...` path is invalid after the
+MoSim restructure and causes a `sysplorer` MCP handshake failure.
 
 ---
 

@@ -124,41 +124,59 @@ evaluate_julia_code
 
 ## 5. Unreal MCP Tools
 
-Local source:
+Configured server names:
 
 ```text
-Docs/Skills/unreal-engine-mcp/
+unreal_engine
+mosim_epic_library
 ```
 
-Project-local WSL wrapper:
+`unreal_engine` is MoSim's UE automation boundary. It currently points to the
+project-specific MCP wrapper:
 
 ```text
 Scripts/UE5/unreal_mcp_wsl_wrapper.sh
+  -> Scripts/UE5/mosim_unreal_engine_mcp_wsl_wrapper.sh
+  -> Scripts/UE5/mosim_unreal_engine_mcp.py
 ```
 
-This wrapper starts the open-source local Unreal MCP Python server with `uv`.
-The server exposes editor-control tools and connects to an Unreal Editor plugin
-on `127.0.0.1:55557`.
+The old open-source Flopperam wrapper is retained only for rollback:
 
-Typical tool groups:
+```text
+Scripts/UE5/unreal_mcp_legacy_flopperam_wsl_wrapper.sh
+```
+
+Current MoSim-native `unreal_engine` tools:
 
 | Tool Group | Examples | Use |
 |---|---|---|
-| Actor query/edit | `get_actors_in_level`, `find_actors_by_name`, `set_actor_transform`, `delete_actor` | Inspect and place scene actors |
-| Blueprint | `create_blueprint`, `add_component_to_blueprint`, `compile_blueprint`, `read_blueprint_content` | Build or inspect Blueprint assets |
-| Materials | `get_available_materials`, `apply_material_to_actor`, `set_mesh_material_color` | Color UAV, terrain, radar, and obstacles |
-| Scene generation | `create_wall`, `create_tower`, `create_maze`, `create_town` | Generic scene-building helpers; use cautiously |
+| Health/context | `ue_health`, `project_context` | Check project files, installed engines, enabled plugins, and listener reachability |
+| Scene source | `scene_source_registry`, `scene_truth_export_plan` | Read scene-source contract and plan collision/planning-truth export |
+| Acceptance gates | `ue_fab_goal_acceptance` | Distinguish tool health from scene import/truth readiness |
+| Library convenience | `epic_scene_library_view` | Read sanitized Epic/Fab scene inventory without Launcher automation |
+| Boundary | `tool_boundary` | Explain the split between UE automation and Epic/Fab inventory |
 
 Important boundary:
 
 ```text
-Unreal MCP controls the Unreal editor.
-QuadrotorMworksBridge receives MWORKS simulation state for rendering.
-Neither one replaces MWORKS/Sysplorer simulation evidence.
+unreal_engine owns UE project/editor/listener/truth workflow.
+mosim_epic_library owns sanitized Epic/Fab/Launcher inventory.
+Neither MCP logs in to Epic, clicks Launcher buttons, downloads Fab assets, or
+claims an account-owned asset is editable before it is imported/linked locally.
 ```
 
-Before write operations, first query the scene or asset with a read tool. Avoid
-large scene-generation tools until the minimal UAV renderer scene is stable.
+Command-line checks:
+
+```bash
+python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-tools
+python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-context
+python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-boundary
+python3 Scripts/UE5/check_epic_library_inventory.py --json
+```
+
+Before write operations, prove an editor-side listener and map source first.
+Avoid switching back to broad generic scene-generation tools to bypass
+import/editability/truth acceptance gates.
 
 ### Script execution
 
