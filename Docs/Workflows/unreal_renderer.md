@@ -523,6 +523,15 @@ modification. Do not reuse a fixed probe actor name in the same editor session:
 UE can retain deleted actor names internally and may crash while generating a
 unique name.
 
+Do not run write probes on the engine default Entry map. The reversible probe
+now refuses `/Engine/Maps/Entry` by default and also refuses to write when the
+current map cannot be identified. Load the target review map first, then run the
+scene-source scoped probe. If UE shows a recovery package for `Entry` after a
+probe crash, choose **Skip Recovery** and remove ignored `Saved/Autosaves`
+artifacts before reopening the editor. Only use `--allow-entry-map` or
+`--allow-unknown-map` for deliberate smoke tests, not for normal scene-source
+acceptance evidence.
+
 Current known project-owned renderer requirement:
 
 ```text

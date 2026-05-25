@@ -36,6 +36,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--host", default=None)
     parser.add_argument("--port", type=int, default=55557)
     parser.add_argument("--timeout", type=float, default=30.0)
+    parser.add_argument(
+        "--allow-entry-map",
+        action="store_true",
+        help="Allow write probe on /Engine/Maps/Entry. Use only for intentional smoke tests.",
+    )
+    parser.add_argument(
+        "--allow-unknown-map",
+        action="store_true",
+        help="Allow write probe when UnrealMCP does not report the current map. Use only for intentional smoke tests.",
+    )
     parser.add_argument("--json-output", type=Path, default=None)
     return parser.parse_args()
 
@@ -45,7 +55,14 @@ def main() -> int:
     source = linked_source(args.scene_source_id)
     host = default_host(args.host)
     actor_name = unique_actor_name(f"MoSimSceneSourceProbe_{args.scene_source_id}")
-    evidence = run_probe(host, args.port, actor_name, args.timeout)
+    evidence = run_probe(
+        host,
+        args.port,
+        actor_name,
+        args.timeout,
+        allow_entry_map=args.allow_entry_map,
+        allow_unknown_map=args.allow_unknown_map,
+    )
     evidence["scene_source_id"] = args.scene_source_id
     evidence["scene_source"] = {
         "renderer_content_root": source.get("renderer_content_root"),

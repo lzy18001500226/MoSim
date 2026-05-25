@@ -313,6 +313,12 @@
 - 2026-05-23 20:48 CST: Added runtime input evidence for the standalone review
   camera. When keyboard/mouse input actually changes the camera, the game log
   prints `MWORKS review camera input accepted` with location and rotation.
+- 2026-05-25 CST: UE crashed after an Unreal MCP write probe tried to create a
+  probe actor while the editor was on `/Engine/Maps/Entry`. The probe scripts now
+  treat CLI actor names as prefixes, append a UUID suffix unconditionally, and
+  refuse write probes on Entry or unidentified maps unless an explicit smoke-test
+  override is passed. If an Entry recovery package appears, skip recovery rather
+  than restoring the temporary editor state.
 - 2026-05-23 21:02 CST: Strengthened the Unreal review camera after a manual
   report that the viewport could not move. The camera now uses UE axis bindings
   plus key-poll fallback, reapplies GameOnly input after possession/restart, and

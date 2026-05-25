@@ -639,6 +639,11 @@ def test_unreal_editor_mcp_probe_helpers(monkeypatch, tmp_path: Path) -> None:
     generated_name = module.unique_actor_name("Probe Name")
     if not generated_name.startswith("Probe_Name_") or len(generated_name) <= len("Probe_Name_"):
         raise AssertionError(generated_name)
+    generated_from_cli = module.unique_actor_name_from_user_value("MoSimMcpProbe_DoNotSave")
+    if generated_from_cli == "MoSimMcpProbe_DoNotSave" or not generated_from_cli.startswith(
+        "MoSimMcpProbe_DoNotSave_"
+    ):
+        raise AssertionError(generated_from_cli)
 
     actors_response = {"status": "success", "result": {"actors": [{"name": "A"}, {"name": "B"}]}}
     if module.actor_count(actors_response) != 2:
@@ -647,6 +652,21 @@ def test_unreal_editor_mcp_probe_helpers(monkeypatch, tmp_path: Path) -> None:
     direct_response = {"actors": [{"name": "A"}]}
     if module.actor_count(direct_response) != 1:
         raise AssertionError("actor_count did not handle direct payload")
+
+    entry_response = {
+        "status": "success",
+        "result": {
+            "world": {
+                "persistentLevel": "/Engine/Maps/Entry.Entry:PersistentLevel",
+            }
+        },
+    }
+    if module.current_level_name(entry_response) != "/Engine/Maps/Entry.Entry:PersistentLevel":
+        raise AssertionError("current_level_name did not inspect nested MCP payloads")
+    if not module.is_entry_level("/Engine/Maps/Entry.Entry:PersistentLevel"):
+        raise AssertionError("Entry map was not detected")
+    if module.is_entry_level("/Game/DerelictCorridor/Maps/DerelictCorridor"):
+        raise AssertionError("non-Entry map was classified as Entry")
 
     output = tmp_path / "evidence.json"
     data = {"ok": True, "steps": []}

@@ -23,6 +23,7 @@ from typing import Any
 
 DEFAULT_PORT = 55557
 BUFFER_SIZE = 8192
+ENTRY_MAP_MARKERS = ("/engine/maps/entry", "engine/maps/entry", "entry.entry")
 
 
 def wsl_default_gateway() -> str | None:
@@ -106,6 +107,43 @@ def actor_count(response: dict[str, Any]) -> int:
     return len(actors) if isinstance(actors, list) else 0
 
 
+def current_level_name(response: dict[str, Any]) -> str:
+    """Best-effort map/level name extraction from varied UnrealMCP payloads."""
+
+    queue: list[Any] = [response_result(response)]
+    keys = (
+        "level",
+        "level_name",
+        "current_level",
+        "currentLevel",
+        "map",
+        "map_name",
+        "current_map",
+        "currentMap",
+        "world",
+        "world_name",
+        "worldName",
+        "persistent_level",
+        "persistentLevel",
+    )
+    while queue:
+        item = queue.pop(0)
+        if isinstance(item, dict):
+            for key in keys:
+                value = item.get(key)
+                if isinstance(value, str) and value:
+                    return value
+            queue.extend(item.values())
+        elif isinstance(item, list):
+            queue.extend(item)
+    return ""
+
+
+def is_entry_level(name: str) -> bool:
+    lowered = name.lower()
+    return any(marker in lowered for marker in ENTRY_MAP_MARKERS)
+
+
 def find_count(host: str, port: int, pattern: str, timeout_seconds: float) -> int:
     return actor_count(send_command(host, port, "find_actors_by_name", {"pattern": pattern}, timeout_seconds))
 
@@ -119,7 +157,21 @@ def unique_actor_name(prefix: str) -> str:
     return f"{cleaned}_{uuid.uuid4().hex[:12]}"
 
 
-def run_probe(host: str, port: int, actor_name: str, timeout_seconds: float) -> dict[str, Any]:
+def unique_actor_name_from_user_value(value: str | None) -> str:
+    """Treat CLI actor names as prefixes so fixed names cannot be reused."""
+
+    return unique_actor_name(value or "MoSimMcpProbe_DoNotSave")
+
+
+def run_probe(
+    host: str,
+    port: int,
+    actor_name: str,
+    timeout_seconds: float,
+    *,
+    allow_entry_map: bool = False,
+    allow_unknown_map: bool = False,
+) -> dict[str, Any]:
     evidence: dict[str, Any] = {
         "host": host,
         "port": port,
@@ -145,6 +197,19 @@ def run_probe(host: str, port: int, actor_name: str, timeout_seconds: float) -> 
     try:
         before = record("read actors before probe", "get_actors_in_level")
         evidence["initial_actor_count"] = actor_count(before)
+        current_level = current_level_name(before)
+        evidence["current_level"] = current_level
+        if current_level and is_entry_level(current_level) and not allow_entry_map:
+            raise RuntimeError(
+                "Refusing reversible write probe on /Engine/Maps/Entry. "
+                "Load a real review map first, or pass --allow-entry-map for an intentional smoke test."
+            )
+        if not current_level and not allow_unknown_map:
+            raise RuntimeError(
+                "Refusing reversible write probe because the current Unreal map could not be identified. "
+                "Run the listener probe or a read-only actor query first, then load the target review map. "
+                "Use --allow-unknown-map only for an intentional smoke test."
+            )
 
         preexisting = find_count(host, port, actor_name, timeout_seconds)
         if preexisting:
@@ -214,15 +279,35 @@ def main() -> int:
     parser.add_argument(
         "--actor-name",
         default=None,
-        help="Temporary actor name to create and remove. Defaults to a unique MoSimMcpProbe_DoNotSave_* name.",
+        help=(
+            "Temporary actor name prefix to create and remove. The script always appends a UUID suffix "
+            "to avoid same-session UE actor-name reuse crashes."
+        ),
+    )
+    parser.add_argument(
+        "--allow-entry-map",
+        action="store_true",
+        help="Allow write probe on /Engine/Maps/Entry. Use only for intentional smoke tests.",
+    )
+    parser.add_argument(
+        "--allow-unknown-map",
+        action="store_true",
+        help="Allow write probe when UnrealMCP does not report the current map. Use only for intentional smoke tests.",
     )
     parser.add_argument("--json-output", type=Path, default=None, help="Optional evidence JSON output path.")
     args = parser.parse_args()
 
     try:
         host = default_host(args.host)
-        actor_name = args.actor_name or unique_actor_name("MoSimMcpProbe_DoNotSave")
-        evidence = run_probe(host, args.port, actor_name, args.timeout)
+        actor_name = unique_actor_name_from_user_value(args.actor_name)
+        evidence = run_probe(
+            host,
+            args.port,
+            actor_name,
+            args.timeout,
+            allow_entry_map=args.allow_entry_map,
+            allow_unknown_map=args.allow_unknown_map,
+        )
     except Exception as exc:
         print(f"[FAIL] Unreal MCP editor round trip failed: {type(exc).__name__}: {exc}")
         return 1
