@@ -1,7 +1,8 @@
 # Unreal Renderer Workflow
 
-Unreal is a render-only layer. MWORKS/Sysplorer/Syslab remain the truth source
-for dynamics, control, planning, collision checks, and metrics.
+Unreal is the high-quality visual layer of the MoSim simulator product.
+MWORKS/Sysplorer/Syslab remain the truth source for dynamics, control,
+planning, collision checks, event logs, and metrics.
 
 ## Current Policy
 
@@ -18,9 +19,35 @@ Do not spend more time polishing these routes. Keep them only as historical
 lessons in `PROGRESS.md` or the task ledger when needed.
 
 Current map work starts from real editable Unreal/Fab/Epic/open-source assets.
+The target is an RflySim-like simulator experience, not a primitive blockout.
 The map must first pass manual visual review as a believable physical-world
 scene. Only after that should we reconnect quadrotor playback, radar overlays,
-trajectory trails, or MWORKS UDP streaming.
+trajectory trails, MWORKS UDP streaming, planning truth, and video recording.
+
+The preferred route is end-to-end MCP automation:
+
+```text
+mosim_epic_library MCP
+  -> inspect Epic/Fab/Launcher inventory
+  -> choose candidate scene asset
+  -> verify local editable project/content
+unreal_engine MCP
+  -> open/import/reuse scene in MworksUnrealRenderer
+  -> modify scene components when needed
+  -> run reversible edit probes
+  -> export or verify map truth
+MWORKS/Syslab MCP
+  -> stream validated simulation states
+  -> generate metrics/evidence
+```
+
+If any route cannot be automated reliably, stop that route early and record the
+blocker. Do not spend hours retrying the same failing Launcher/UE/plugin path.
+The approved fallback is the local editable scene library:
+
+```text
+C:\Users\HP\Desktop\MoSim\References\UnrealScenes
+```
 
 ## Kept Project Components
 
@@ -53,6 +80,15 @@ Preferred source order:
 3. RflySim, AirSim, Cosys, SPEAR, CARLA, Sunray, and YunZong scenes only as
    visual/API/layout references unless their editable assets and required
    plugins can be opened cleanly.
+
+Route decision rule:
+
+| Route | Accept When | Stop When |
+|---|---|---|
+| Fab/Launcher automated | Asset can be created/added to a local UE project, then imported/reused in `MworksUnrealRenderer`, edited through UE MCP, and paired with planning truth | Asset is account-visible only, plugin is incompatible, download requires manual login for this step, or no editable project/content is produced |
+| Local `References/UnrealScenes` | `.uproject/.umap/.uasset` are already local, loadable, and can export truth | It is a one-room demo, runtime-only package, missing modules cannot be rebuilt, or manual visual review rejects it |
+| Open-source external UE project | License is acceptable, editable content exists, required plugins/builds are available | Project only provides code without useful scenes, cooked assets, or unavailable plugins |
+| RflySim native runtime | Useful for visual/API/reference behavior | Treating packaged runtime scenes as directly editable MoSim assets |
 
 Reject as final scene sources:
 
@@ -101,6 +137,10 @@ it to a UE project before treating it as editable local content. Do not parse or
 publish raw Launcher logs or webcache entries; only the allowlisted index output
 is safe to record.
 
+Do not treat an owned Fab entry as an accepted scene. It becomes a scene source
+only after it has local editable content, a renderer load proof, and a truth
+export/proxy route.
+
 `build_scene_source_registry.py` writes the project-owned handoff contract:
 
 ```text
@@ -128,6 +168,13 @@ A scene is not accepted just because it renders well. It must pass three gates:
 | Render | Opens in the target UE version and can be reviewed without missing modules/assets |
 | Planning truth | Has or can generate explicit collision/semantic/occupancy truth for mapping, local planning, and path validation |
 
+For the RflySim-like simulator goal, add two operational gates:
+
+| Gate | Required Evidence |
+|---|---|
+| MCP automation | The selected route can be operated through `mosim_epic_library` and/or `unreal_engine` MCP, or the blocker is documented with an approved fallback |
+| Manual review | The user confirms the map/animation/video view is visually acceptable before UAV/radar/planning work is layered on top |
+
 If a Fab entry only exposes a binary `manifest` and no editable project/content
 files, it is only an account/cache listing. It is not yet a MoSim scene source.
 Use Epic/Fab to create the local project, or switch to already available local
@@ -138,6 +185,11 @@ Current fallback source:
 ```text
 References/UnrealScenes
 ```
+
+This fallback is not a downgrade of the product goal. It is the controlled path
+when Fab/Launcher automation cannot produce editable local content quickly
+enough. The final product can still look and operate like RflySim; the scene
+source simply comes from local editable projects instead of directly from Fab.
 
 Run:
 

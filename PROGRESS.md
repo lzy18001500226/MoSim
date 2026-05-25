@@ -5,13 +5,19 @@
 
 ## Current Focus
 
-- Current active goal: complete the MoSim UE/Fab tool loop around
-  `unreal_engine` and `mosim_epic_library`: prove editable scene import/reuse,
-  UE-side map modification, and collision/semantic/occupancy truth export for
-  mapping and path planning; if Fab cannot satisfy that route, use local
-  editable scenes under `References/UnrealScenes`. Goal records are total
-  objectives, not single-step tasks; keep immediate next actions in the active
-  queue or ledger.
+- Current active goal: design and advance MoSim as an RflySim-like UAV
+  simulation product. MWORKS/Sysplorer/Syslab remain the authoritative solver,
+  controller, planner, disturbance, metric, and event-log source; UE5 provides
+  high-quality scene rendering, camera, radar/point-cloud overlays, trajectory
+  display, and video recording. MCP automation should cover scene inventory,
+  scene import/reuse, UE editing, truth export, simulation streaming, evidence
+  generation, and pre-review checks where practical.
+- Current UE/Fab decision boundary: first attempt automation through
+  `mosim_epic_library` and `unreal_engine`; if Fab/Launcher/UE automation
+  cannot reliably produce local editable content, renderer load proof, and
+  planning truth, stop that route and use
+  `References/UnrealScenes` as the scene source. Login/authorization/download
+  prompts and final visual review remain manual-intervention points.
 - 2026-05-24 Unreal map reset: stop improving all old generated blockout,
   grid, STL, semantic-box, RflySim direct-mount, factory-review, and
   YunZong/Sunray primitive-reconstruction maps. The old routes have been
@@ -68,10 +74,10 @@
 - `AQuadrotorMworksMapActor` now exposes `SceneSourceRegistryJson` and
   `ResolveSceneSourceId`. It can resolve
   `local_derelictcorridormegascans` from the registry, record editable project
-  and truth-artifact metadata, and explicitly mark
-  `bCurrentSceneImportedIntoRenderer=false`. This is source-level integration
-  of the fallback contract, not yet visual import of the Derelict map into the
-  renderer.
+  and truth-artifact metadata, and record renderer-local content root, renderer
+  map asset, and renderer map package. The Derelict fallback now uses
+  `imported_into_renderer=true` through an ignored Windows directory junction,
+  not a committed asset copy.
 - `Scripts/UE5/check_scene_source_udp_contract.py` verifies the matching UDP
   packet-level contract: dry-run streaming with
   `map_id=local_derelictcorridormegascans` selects the registry primary scene
