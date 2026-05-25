@@ -48,7 +48,7 @@ uv run python Scripts/UE5/audit_scene_source.py
 uv run python Scripts/UE5/plan_scene_truth_export.py --query Derelict
 uv run python Scripts/UE5/run_scene_truth_export.py --query Derelict --map-package /Game/DerelictCorridor/Maps/DerelictCorridor
 uv run python Scripts/UE5/build_scene_source_registry.py --write
-uv run python Scripts/UE5/build_scene_source_registry.py --validate UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json
+uv run python Scripts/UE5/build_scene_source_registry.py --validate UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json
 ```
 
 `run_scene_truth_export.py` defaults to dry-run command generation. Add `--run`
@@ -64,7 +64,7 @@ uv run python Scripts/UE5/audit_scene_source.py
 
 Current validated local scene: `DerelictCorridorMegascans`. Its UE 5.5
 commandlet export writes
-`UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json`
+`UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json`
 with 4753 collision proxies, and `audit_scene_source.py` marks it
 `ready_for_truth_backed_planning`. This is AABB collision-proxy truth, not final
 semantic or voxel occupancy truth.
@@ -72,7 +72,7 @@ semantic or voxel occupancy truth.
 The durable handoff artifact is:
 
 ```text
-UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json
+UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json
 ```
 
 Use this registry to decide whether the Fab route is actually accepted. Current
@@ -127,7 +127,7 @@ candidates that still require export.
 
 Use `Scripts/UE5/export_unreal_scene_truth.py export` from Unreal Editor Python
 after the scene opens. The first accepted truth artifact is an AABB collision
-proxy JSON under `UE5/MworksUnrealRenderer/Content/MworksData/scene_truth/`.
+proxy JSON under `UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/`.
 
 If Fab cannot satisfy this, switch to local editable projects under:
 
