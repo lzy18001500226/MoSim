@@ -23,27 +23,27 @@ do we have?"
 The stable configured wrapper is:
 
 ```bash
-Scripts/UE5/unreal_mcp_wsl_wrapper.sh
+Docs/Skills/Unreal/unreal-engine-mcp/wrappers/unreal_engine.sh
 ```
 
 It points to MoSim's project-specific MCP server:
 
 ```bash
-Scripts/UE5/mosim_unreal_engine_mcp_wsl_wrapper.sh
+Docs/Skills/Unreal/unreal-engine-mcp/wrappers/wsl.sh
 ```
 
 The previous open-source Flopperam wrapper is retained only for rollback:
 
 ```bash
-Scripts/UE5/unreal_mcp_legacy_flopperam_wsl_wrapper.sh
+Docs/Skills/Unreal/unreal-engine-mcp/wrappers/legacy_flopperam_wsl.sh
 ```
 
 First verify the MoSim MCP surface without opening UE:
 
 ```bash
-python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-tools
-python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-context
-python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-boundary
+python3 Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py dump-tools
+python3 Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py dump-context
+python3 Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py dump-boundary
 ```
 
 Check the editor-side listener before actor/Blueprint calls:
@@ -86,7 +86,7 @@ Add `--check-listener` only when preparing for interactive editor review.
 6. Keep `MoSimSceneLibrary.uproject` plugin paths aligned with the current
    repository layout. After the `Skills` tree moved under `Docs/Skills`, the
    project must resolve `UnrealMCP` from
-   `../../Docs/Skills/Unreal/unreal-engine-mcp/FlopperamUnrealMCP/Plugins`.
+   `../../Docs/Skills/Unreal/mcp/unreal-engine-mcp/FlopperamUnrealMCP/Plugins`.
 7. After a candidate scene opens, export collision truth before claiming planner
    readiness:
 
@@ -134,11 +134,11 @@ read-only scene query -> controlled reversible edit -> manual viewport review
 Open-source implementation sources worth borrowing:
 
 ```text
-Docs/Skills/Unreal/Unreal_mcp-dev/
-Docs/Skills/Unreal/UnrealClientProtocol/
-Docs/Skills/Unreal/UnrealClaude/
-Docs/Skills/Unreal/UnrealGenAISupport/
-Docs/Skills/Unreal/unreal-engine-mcp/
+Docs/Skills/Unreal/mcp/Unreal_mcp-dev/
+Docs/Skills/Unreal/mcp/UnrealClientProtocol/
+Docs/Skills/Unreal/mcp/UnrealClaude/
+Docs/Skills/Unreal/mcp/UnrealGenAISupport/
+Docs/Skills/Unreal/mcp/unreal-engine-mcp/
 ```
 
 Adopt their registry, transport, schema, game-thread dispatch, reflection, and

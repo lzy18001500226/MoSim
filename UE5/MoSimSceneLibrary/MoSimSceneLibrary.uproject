@@ -12,7 +12,7 @@
 	],
 	"AdditionalPluginDirectories": [
 		"../",
-		"../../Docs/Skills/Unreal/unreal-engine-mcp/FlopperamUnrealMCP/Plugins"
+		"../../Docs/Skills/Unreal/mcp/unreal-engine-mcp/FlopperamUnrealMCP/Plugins"
 	],
 	"Plugins": [
 		{

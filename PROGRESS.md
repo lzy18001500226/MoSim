@@ -39,10 +39,11 @@
   view. Use `Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh` when exposing
   the index as the `mosim_epic_library` MCP.
 - 2026-05-25 MCP route update: `unreal_engine` now points to MoSim's own
-  first-stage MCP wrapper `Scripts/UE5/mosim_unreal_engine_mcp_wsl_wrapper.sh`
-  through `Scripts/UE5/unreal_mcp_wsl_wrapper.sh`. The legacy Flopperam wrapper
-  remains at `Scripts/UE5/unreal_mcp_legacy_flopperam_wsl_wrapper.sh` for
-  rollback. Current MoSim-native tools are `ue_health`, `project_context`,
+  first-stage MCP project under
+  `Docs/Skills/Unreal/unreal-engine-mcp/`. The configured wrapper is
+  `Docs/Skills/Unreal/unreal-engine-mcp/wrappers/unreal_engine.sh`;
+  the legacy Flopperam wrapper remains in the same project for rollback.
+  Current MoSim-native tools are `ue_health`, `project_context`,
   `scene_source_registry`, `ue_fab_goal_acceptance`, `scene_truth_export_plan`,
   `epic_scene_library_view`, and `tool_boundary`. Do not add arbitrary Python
   execution, Launcher clicking, raw account-cache parsing, or Fab downloading to
@@ -147,7 +148,7 @@
 - Current Codex MCP config has been corrected from old `Quadrotor` paths to
   MoSim paths and now lists `mosim_epic_library`. The project-owned
   `MoSimSceneLibrary.uproject` now resolves `UnrealMCP` from
-  `Docs/Skills/Unreal/unreal-engine-mcp/FlopperamUnrealMCP/Plugins`; UE 5.7
+  `Docs/Skills/Unreal/mcp/unreal-engine-mcp/FlopperamUnrealMCP/Plugins`; UE 5.7
   build passed after this path fix, the editor-side listener was reachable on
   `172.17.48.1:55557`, and `Scripts/UE5/probe_unreal_editor_mcp_tools.py`
   completed a reversible live-editor read/spawn/transform/delete round trip.

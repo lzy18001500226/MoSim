@@ -216,26 +216,26 @@ unreal_engine
 The stable WSL wrapper is project-local:
 
 ```text
-Scripts/UE5/unreal_mcp_wsl_wrapper.sh
+Docs/Skills/Unreal/unreal-engine-mcp/wrappers/unreal_engine.sh
 ```
 
 It currently points to MoSim's own narrow MCP surface:
 
 ```text
-Scripts/UE5/mosim_unreal_engine_mcp_wsl_wrapper.sh
-Scripts/UE5/mosim_unreal_engine_mcp.py
+Docs/Skills/Unreal/unreal-engine-mcp/wrappers/wsl.sh
+Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py
 ```
 
 The older Flopperam wrapper is retained for rollback only:
 
 ```text
-Scripts/UE5/unreal_mcp_legacy_flopperam_wsl_wrapper.sh
+Docs/Skills/Unreal/unreal-engine-mcp/wrappers/legacy_flopperam_wsl.sh
 ```
 
 Manual smoke test:
 
 ```bash
-Scripts/UE5/unreal_mcp_wsl_wrapper.sh
+Docs/Skills/Unreal/unreal-engine-mcp/wrappers/unreal_engine.sh
 ```
 
 If it starts and waits for input, that is normal for stdio MCP. To verify with a
@@ -247,16 +247,16 @@ report MoSim tools such as `ue_health`, `project_context`,
 Command-line checks that do not require UE Editor:
 
 ```bash
-python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-tools
-python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-context
-python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-boundary
+python3 Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py dump-tools
+python3 Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py dump-context
+python3 Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py dump-boundary
 ```
 
 Codex MCP config entry, if enabling manually:
 
 ```toml
 [mcp_servers.unreal_engine]
-command = "/mnt/c/Users/HP/Desktop/MoSim/Scripts/UE5/unreal_mcp_wsl_wrapper.sh"
+command = "/mnt/c/Users/HP/Desktop/MoSim/Docs/Skills/Unreal/unreal-engine-mcp/wrappers/unreal_engine.sh"
 args = []
 startup_timeout_sec = 180
 tool_timeout_sec = 300
@@ -279,8 +279,9 @@ Editor/plugin/listener route first, or continue only with source-level files and
 document the missing viewport evidence.
 
 `--wrapper-route-only` checks the exact route used by
-`Scripts/UE5/unreal_mcp_wsl_wrapper.sh`. Without it, the probe also checks practical
-diagnostic fallbacks: `UNREAL_HOST` when set, the WSL default gateway, and
+`Docs/Skills/Unreal/unreal-engine-mcp/wrappers/unreal_engine.sh`.
+Without it, the probe also checks practical diagnostic fallbacks:
+`UNREAL_HOST` when set, the WSL default gateway, and
 `127.0.0.1`. Use `--host <addr>` only when you want to test one explicit route.
 
 Interpret the preflight result before changing code:

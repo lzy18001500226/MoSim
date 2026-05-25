@@ -5,7 +5,7 @@ set -euo pipefail
 # Keep this for rollback while MoSim's own `unreal_engine` MCP is being built.
 
 PROJECT_ROOT="/mnt/c/Users/HP/Desktop/MoSim"
-MCP_DIR="${PROJECT_ROOT}/Docs/Skills/Unreal/unreal-engine-mcp/Python"
+MCP_DIR="${PROJECT_ROOT}/Docs/Skills/Unreal/mcp/unreal-engine-mcp/Python"
 UV_BIN="${UV_BIN:-/home/linux/.local/bin/uv}"
 
 if [[ ! -x "${UV_BIN}" ]]; then

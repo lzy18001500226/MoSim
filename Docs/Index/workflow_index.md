@@ -9,9 +9,9 @@
 | Task | Workflow File |
 |---|---|
 | Debug MCP | `Docs/Workflows/debug_mcp.md` |
-| Operate Unreal MCP | `Docs/Skills/Unreal/mosim-unreal-editor-mcp/SKILL.md`, `Docs/Workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `Docs/Index/api_index.md#5-unreal-mcp-tools` |
-| Inspect Epic/Fab/Launcher scene library | `Docs/Skills/Unreal/mosim-epic-fab-library/SKILL.md`, `Docs/Workflows/debug_mcp.md#73-epicfab-library-index-mcp`, `Docs/Workflows/unreal_renderer.md#scene-source-selection`, `Scripts/UE5/epic_library_view.py`, `Scripts/UE5/epic_library_index.py`, `Scripts/UE5/check_epic_library_inventory.py`, `Scripts/UE5/audit_scene_source.py`, `Scripts/UE5/build_scene_source_registry.py`, `Scripts/UE5/plan_scene_truth_export.py`, `Scripts/UE5/run_scene_truth_export.py`, `Scripts/UE5/export_unreal_scene_truth.py` |
-| Operate MoSim Unreal Editor MCP | `Docs/Skills/Unreal/mosim-unreal-editor-mcp/SKILL.md`, `Docs/Workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `Scripts/UE5/probe_unreal_mcp_listener.py`, `Scripts/UE5/probe_unreal_editor_mcp_tools.py` |
+| Operate Unreal MCP | `Docs/Skills/Unreal/mcp/mosim-unreal-editor-mcp/SKILL.md`, `Docs/Skills/Unreal/unreal-engine-mcp/SKILL.md`, `Docs/Workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `Docs/Index/api_index.md#5-unreal-mcp-tools` |
+| Inspect Epic/Fab/Launcher scene library | `Docs/Skills/Unreal/mcp/mosim-epic-fab-library/SKILL.md`, `Docs/Workflows/debug_mcp.md#73-epicfab-library-index-mcp`, `Docs/Workflows/unreal_renderer.md#scene-source-selection`, `Scripts/UE5/epic_library_view.py`, `Scripts/UE5/epic_library_index.py`, `Scripts/UE5/check_epic_library_inventory.py`, `Scripts/UE5/audit_scene_source.py`, `Scripts/UE5/build_scene_source_registry.py`, `Scripts/UE5/plan_scene_truth_export.py`, `Scripts/UE5/run_scene_truth_export.py`, `Scripts/UE5/export_unreal_scene_truth.py` |
+| Operate MoSim Unreal Editor MCP | `Docs/Skills/Unreal/mcp/mosim-unreal-editor-mcp/SKILL.md`, `Docs/Workflows/debug_mcp.md#71-unreal-mcp-local-wrapper`, `Scripts/UE5/probe_unreal_mcp_listener.py`, `Scripts/UE5/probe_unreal_editor_mcp_tools.py` |
 | Build Unreal/RflySim renderer and scene workflow | `Docs/Workflows/unreal_renderer.md` |
 | Project structure refactor toward RflySim-like simulator product | `Docs/Workflows/project_structure_refactor.md` |
 | Translate MathWorks/Simulink patterns to MWORKS | `Docs/Workflows/translate_mathworks_to_mworks.md` |

@@ -447,8 +447,8 @@ editor and rerun; do not record it as a source compile failure.
 Relevant current-phase skills:
 
 ```text
-Docs/Skills/Unreal/mosim-epic-fab-library/SKILL.md
-Docs/Skills/Unreal/mosim-unreal-editor-mcp/SKILL.md
+Docs/Skills/Unreal/mcp/mosim-epic-fab-library/SKILL.md
+Docs/Skills/Unreal/mcp/mosim-unreal-editor-mcp/SKILL.md
 ```
 
 ## First-Pass Manual Review Gate
@@ -530,15 +530,15 @@ tool_boundary
 Wrapper layout:
 
 ```text
-Scripts/UE5/unreal_mcp_wsl_wrapper.sh
-  -> Scripts/UE5/mosim_unreal_engine_mcp_wsl_wrapper.sh
-  -> Scripts/UE5/mosim_unreal_engine_mcp.py
+Docs/Skills/Unreal/unreal-engine-mcp/wrappers/unreal_engine.sh
+  -> Docs/Skills/Unreal/unreal-engine-mcp/wrappers/wsl.sh
+  -> Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py
 ```
 
 Legacy rollback wrapper:
 
 ```text
-Scripts/UE5/unreal_mcp_legacy_flopperam_wsl_wrapper.sh
+Docs/Skills/Unreal/unreal-engine-mcp/wrappers/legacy_flopperam_wsl.sh
 ```
 
 Do not remove the legacy wrapper until the MoSim-native route has equivalent
@@ -551,11 +551,11 @@ Open-source MCP audit decision:
 
 | Source | Adopt | Reject For Phase 1 |
 |---|---|---|
-| `Docs/Skills/Unreal/Unreal_mcp-dev` | tool registry, schema discipline, C++ bridge, transport and safety patterns | broad game/GAS/networking/inventory tools |
-| `Docs/Skills/Unreal/UnrealClientProtocol` | reflection and future Blueprint/graph editing ideas | arbitrary reflection as the default public tool |
-| `Docs/Skills/Unreal/UnrealClaude` | game-thread task queue, project context, log/viewport ideas | Claude-specific chat/product shell and default script execution |
-| `Docs/Skills/Unreal/UnrealGenAISupport` | small actor/Blueprint utility examples | inactive/broad GenAI plugin assumptions |
-| `Docs/Skills/Unreal/unreal-engine-mcp` | rollback bridge and existing live-editor smoke path | final MoSim interface shape |
+| `Docs/Skills/Unreal/mcp/Unreal_mcp-dev` | tool registry, schema discipline, C++ bridge, transport and safety patterns | broad game/GAS/networking/inventory tools |
+| `Docs/Skills/Unreal/mcp/UnrealClientProtocol` | reflection and future Blueprint/graph editing ideas | arbitrary reflection as the default public tool |
+| `Docs/Skills/Unreal/mcp/UnrealClaude` | game-thread task queue, project context, log/viewport ideas | Claude-specific chat/product shell and default script execution |
+| `Docs/Skills/Unreal/mcp/UnrealGenAISupport` | small actor/Blueprint utility examples | inactive/broad GenAI plugin assumptions |
+| `Docs/Skills/Unreal/mcp/unreal-engine-mcp` | rollback bridge and existing live-editor smoke path | final MoSim interface shape |
 
 Target architecture:
 
@@ -628,7 +628,7 @@ Current known project-owned renderer requirement:
 ```text
 UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject
 AdditionalPluginDirectories must include:
-../../Docs/Skills/Unreal/unreal-engine-mcp/FlopperamUnrealMCP/Plugins
+../../Docs/Skills/Unreal/mcp/unreal-engine-mcp/FlopperamUnrealMCP/Plugins
 ```
 
 If this path drifts after repository restructuring, the editor may open but

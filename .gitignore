@@ -89,6 +89,12 @@ References/RflySim/RflySimAdvFree/
 # project-owned adapters/docs unless an explicit asset-batch task unignores one.
 References/UnrealScenes/
 
+# Third-party Unreal MCP reference repositories may contain Git LFS pointer-only
+# test assets. Keep source/docs tracked, but do not commit missing binary test
+# fixtures from cloned references.
+Docs/Skills/Unreal/mcp/**/Content/**/*.uasset
+Docs/Skills/Unreal/mcp/**/Content/**/*.umap
+
 # AirSim-family external references: keep source/Docs/configs, exclude local
 # clones, build outputs, generated caches, and large compiled artifacts.
 #

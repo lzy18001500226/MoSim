@@ -17,6 +17,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
+ROOT = Path(__file__).resolve().parents[5]
+SCRIPTS_UE5 = ROOT / "Scripts" / "UE5"
+if str(SCRIPTS_UE5) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_UE5))
+
 from build_scene_source_registry import DEFAULT_OUTPUT as SCENE_SOURCE_REGISTRY
 from build_scene_source_registry import build_registry
 from check_ue_fab_goal_acceptance import build_report as build_goal_report
@@ -25,13 +30,13 @@ from plan_scene_truth_export import plan_exports
 from probe_unreal_mcp_listener import default_hosts, probe
 
 
-ROOT = Path(__file__).resolve().parents[2]
 RENDERER = ROOT / "UE5" / "MoSimSceneLibrary"
 UPROJECT = RENDERER / "MoSimSceneLibrary.uproject"
 DEFAULT_ENGINE = RENDERER / "Config" / "DefaultEngine.ini"
 BRIDGE_PLUGIN = ROOT / "UE5" / "Bridge" / "QuadrotorMworksBridge.uplugin"
-LEGACY_FLOPPERAM_WRAPPER = ROOT / "Scripts" / "UE5" / "unreal_mcp_legacy_flopperam_wsl_wrapper.sh"
-THIS_WRAPPER = ROOT / "Scripts" / "UE5" / "unreal_mcp_wsl_wrapper.sh"
+MCP_PROJECT = ROOT / "Docs" / "Skills" / "Unreal" / "unreal-engine-mcp"
+LEGACY_FLOPPERAM_WRAPPER = MCP_PROJECT / "wrappers" / "legacy_flopperam_wsl.sh"
+THIS_WRAPPER = MCP_PROJECT / "wrappers" / "unreal_engine.sh"
 
 
 TOOLSET = [
@@ -224,7 +229,7 @@ def serve() -> int:
     except ImportError:
         print(
             "Missing MCP Python SDK. Run with: uv run --with mcp python "
-            "Scripts/UE5/mosim_unreal_engine_mcp.py serve",
+            "Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py serve",
             file=sys.stderr,
         )
         return 2

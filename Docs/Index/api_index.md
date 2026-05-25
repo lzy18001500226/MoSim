@@ -135,15 +135,15 @@ mosim_epic_library
 project-specific MCP wrapper:
 
 ```text
-Scripts/UE5/unreal_mcp_wsl_wrapper.sh
-  -> Scripts/UE5/mosim_unreal_engine_mcp_wsl_wrapper.sh
-  -> Scripts/UE5/mosim_unreal_engine_mcp.py
+Docs/Skills/Unreal/unreal-engine-mcp/wrappers/unreal_engine.sh
+  -> Docs/Skills/Unreal/unreal-engine-mcp/wrappers/wsl.sh
+  -> Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py
 ```
 
 The old open-source Flopperam wrapper is retained only for rollback:
 
 ```text
-Scripts/UE5/unreal_mcp_legacy_flopperam_wsl_wrapper.sh
+Docs/Skills/Unreal/unreal-engine-mcp/wrappers/legacy_flopperam_wsl.sh
 ```
 
 Current MoSim-native `unreal_engine` tools:
@@ -168,9 +168,9 @@ claims an account-owned asset is editable before it is imported/linked locally.
 Command-line checks:
 
 ```bash
-python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-tools
-python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-context
-python3 Scripts/UE5/mosim_unreal_engine_mcp.py dump-boundary
+python3 Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py dump-tools
+python3 Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py dump-context
+python3 Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py dump-boundary
 python3 Scripts/UE5/check_epic_library_inventory.py --json
 ```
 
