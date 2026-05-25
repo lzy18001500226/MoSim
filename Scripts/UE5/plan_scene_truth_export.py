@@ -7,7 +7,13 @@ import argparse
 import json
 from pathlib import Path
 
-from audit_scene_source import DEFAULT_SCENE_ROOT, DEFAULT_TRUTH_ROOT, audit_scene_root
+from audit_scene_source import (
+    DEFAULT_SCENE_ROOT,
+    DEFAULT_TRUTH_ROOT,
+    audit_project,
+    find_uprojects,
+    read_default_map_packages,
+)
 from export_unreal_scene_truth import slug
 
 
@@ -32,25 +38,56 @@ def to_windows_path(path: Path | str) -> str:
     return text.replace("/", "\\")
 
 
+def map_file_from_package(project_root: Path, package: str) -> Path | None:
+    if not package.startswith("/Game/"):
+        return None
+    candidate = project_root / "Content" / (package.removeprefix("/Game/") + ".umap")
+    return candidate if candidate.exists() else None
+
+
+def recommend_project_map(uproject_path: Path) -> tuple[str, Path | None]:
+    """Return a fast map recommendation without scanning every project asset."""
+    project_root = uproject_path.parent
+    defaults = read_default_map_packages(project_root)
+    for key in ("GameDefaultMap", "EditorStartupMap", "ServerDefaultMap"):
+        package = defaults.get(key, "")
+        if not package:
+            continue
+        map_file = map_file_from_package(project_root, package)
+        if map_file:
+            return package, map_file
+
+    row = audit_project(uproject_path)
+    recommended_maps = row.get("recommended_review_maps", [])
+    if recommended_maps:
+        package = str(recommended_maps[0].get("package", ""))
+        path_text = str(recommended_maps[0].get("path", ""))
+        return package, resolve_project_path(path_text) if path_text else None
+    if row.get("umap_samples"):
+        path_text = str(row["umap_samples"][0])
+        return "", resolve_project_path(path_text)
+    return "", None
+
+
 def plan_exports(scene_root: Path, truth_root: Path, query: str = "") -> list[dict[str, str]]:
-    rows = audit_scene_root(scene_root)
     plans: list[dict[str, str]] = []
     query_lower = query.lower()
-    for row in rows:
-        name = str(row["name"])
-        if query_lower and query_lower not in name.lower():
-            continue
+    uprojects = find_uprojects(scene_root)
+    if query_lower:
+        uprojects = [path for path in uprojects if query_lower in path.parent.name.lower()]
+    for uproject in uprojects:
+        name = uproject.parent.name
         map_id = slug(name)
         output = truth_root / f"{map_id}_collision_truth.json"
-        uproject_path = resolve_project_path(str(row["uproject_path"]))
+        uproject_path = uproject
         script_path = ROOT / "Scripts" / "UE5" / "export_unreal_scene_truth.py"
-        map_sample = str(row["umap_samples"][0]) if row["umap_samples"] else ""
-        map_sample_path = resolve_project_path(map_sample) if map_sample else None
+        map_package, map_sample_path = recommend_project_map(uproject_path)
         plans.append(
             {
                 "name": name,
                 "uproject_path": to_windows_path(uproject_path),
                 "recommended_map_sample": to_windows_path(map_sample_path) if map_sample_path else "",
+                "recommended_map_package": map_package,
                 "truth_output": str(output),
                 "editor_python_command": (
                     f"py {quote(to_windows_path(script_path))} export "
@@ -83,6 +120,7 @@ def main() -> int:
             print(f"Scene: {plan['name']}")
             print(f"  Project: {plan['uproject_path']}")
             print(f"  Map sample: {plan['recommended_map_sample']}")
+            print(f"  Map package: {plan['recommended_map_package']}")
             print("  Run inside Unreal Editor Python:")
             print(f"    {plan['editor_python_command']}")
             print("  Then run in MoSim shell:")

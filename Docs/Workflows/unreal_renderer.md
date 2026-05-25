@@ -106,6 +106,7 @@ python3 Scripts/UE5/epic_library_index.py --query Factory
 python3 Scripts/UE5/epic_library_index.py --query City
 python3 Scripts/UE5/check_epic_library_inventory.py
 python3 Scripts/UE5/audit_scene_source.py
+python3 Scripts/UE5/audit_scene_source.py --maps
 uv run python Scripts/UE5/build_scene_source_registry.py --write
 uv run python Scripts/UE5/build_scene_source_registry.py --validate \
   UE5/MworksUnrealRenderer/Content/MworksData/scene_source_registry.json
@@ -179,6 +180,53 @@ If a Fab entry only exposes a binary `manifest` and no editable project/content
 files, it is only an account/cache listing. It is not yet a MoSim scene source.
 Use Epic/Fab to create the local project, or switch to already available local
 projects under `References/UnrealScenes`.
+
+## Main Map Selection
+
+Do not guess the main `.umap` by directory order. Fab/Epic sample projects often
+contain hundreds of component maps, packed-level maps, preview maps, and asset
+zoos. Loading those maps produces misleading blank, partial, or non-scene
+results.
+
+Selection order:
+
+1. Read `Config/DefaultEngine.ini`.
+2. Prefer `GameDefaultMap`.
+3. Fall back to `EditorStartupMap`.
+4. Fall back to `ServerDefaultMap` only if it is a project `/Game/...` map.
+5. Only if no configured map exists, use `audit_scene_source.py --maps` ranking.
+
+Reject these as first-review maps unless explicitly requested:
+
+```text
+Content/**/PackedLevels/**/*.umap
+Content/**/Packed/**/*.umap
+Content/**/PLBPs/**/*.umap
+Content/**/Asmbly/**/*.umap
+Content/**/Previewer/**/*.umap
+Content/**/AssetZoo*.umap
+```
+
+Current local review candidates:
+
+| Scene | First Review Map | Notes |
+|---|---|---|
+| `DerelictCorridorMegascans` | `/Game/DerelictCorridor/Maps/DerelictCorridor` | Already has renderer load proof and first-pass AABB truth. |
+| `DarkRuinsMegascansSample` | `/Game/Main` | Good cave/ruins candidate; still needs renderer reuse and truth export. |
+| `ElectricDreamsEnv` | `/Game/Levels/PCG/ElectricDreams_PCGCloseRange` | Strong forest candidate; plugin/PCG risk is higher. |
+| `FPS-Shooter-Unreal` | `/Game/FirstPerson/Maps/FirstPersonMap` | Lower priority; useful mostly as UE control/template smoke. |
+
+Use the fast planner to produce the exact command without scanning the full
+asset tree:
+
+```bash
+uv run python Scripts/UE5/plan_scene_truth_export.py --query Electric
+uv run python Scripts/UE5/run_scene_truth_export.py --query Electric
+```
+
+`run_scene_truth_export.py` is dry-run by default. It now uses the configured
+map package automatically; do not pass old guessed packages unless the user is
+intentionally reviewing an alternate map.
 
 Current fallback source:
 

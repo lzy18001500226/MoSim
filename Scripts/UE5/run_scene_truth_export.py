@@ -165,12 +165,13 @@ def main() -> int:
     plan = first_plan(args.scene_root, args.truth_root, args.query)
     uproject_path = to_wsl_path(plan["uproject_path"])
     editor_cmd = resolve_editor_cmd(uproject_path, args.engine_root, args.editor_cmd)
-    write_batch_script(plan, args.batch_script, args.map_package or None)
+    map_package = args.map_package or plan.get("recommended_map_package", "")
+    write_batch_script(plan, args.batch_script, map_package or None)
     command = build_command(
         editor_cmd=editor_cmd,
         uproject_path=uproject_path,
         batch_script=args.batch_script,
-        map_path=args.map_package,
+        map_path=map_package,
     )
     result = {
         "scene": plan["name"],
@@ -179,6 +180,7 @@ def main() -> int:
         "editor_cmd": to_windows_path(editor_cmd),
         "batch_script": str(args.batch_script),
         "truth_output": plan["truth_output"],
+        "map_package": map_package,
         "command": command,
         "dry_run": not args.run,
     }

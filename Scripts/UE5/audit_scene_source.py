@@ -29,6 +29,7 @@ TRUTH_MARKERS = (
     "lidar",
     "voxel",
 )
+DEFAULT_MAP_KEYS = ("GameDefaultMap", "EditorStartupMap", "ServerDefaultMap")
 
 
 def empty_scan() -> dict[str, Any]:
@@ -38,6 +39,7 @@ def empty_scan() -> dict[str, Any]:
         "scan_truncated": False,
         "umap_count": 0,
         "umap_samples": [],
+        "umap_records": [],
         "uasset_count": 0,
         "uasset_samples": [],
         "uplugin_count": 0,
@@ -47,9 +49,216 @@ def empty_scan() -> dict[str, Any]:
     }
 
 
+def package_from_content_path(path: Path) -> str:
+    parts = list(path.parts)
+    if "Content" not in parts:
+        return ""
+    below_content = parts[parts.index("Content") + 1 :]
+    if not below_content:
+        return ""
+    return "/Game/" + "/".join(Path(*below_content).with_suffix("").parts)
+
+
+def normalize_map_package(value: str) -> str:
+    value = value.strip().strip('"').strip("'")
+    if not value.startswith("/Game/"):
+        return ""
+    package, _, asset_name = value.rpartition(".")
+    if package and asset_name and package.rsplit("/", 1)[-1] == asset_name:
+        return package
+    return value
+
+
+def read_default_map_packages(project_root: Path) -> dict[str, str]:
+    config = project_root / "Config" / "DefaultEngine.ini"
+    packages: dict[str, str] = {}
+    if not config.exists():
+        return packages
+    try:
+        lines = config.read_text(encoding="utf-8-sig", errors="replace").splitlines()
+    except OSError:
+        return packages
+    for line in lines:
+        stripped = line.strip()
+        if not stripped or stripped.startswith(("#", ";")) or "=" not in stripped:
+            continue
+        key, raw_value = stripped.split("=", 1)
+        key = key.strip()
+        if key not in DEFAULT_MAP_KEYS:
+            continue
+        package = normalize_map_package(raw_value)
+        if package:
+            packages[key] = package
+    return packages
+
+
+def map_file_from_package(project_root: Path, package: str) -> Path | None:
+    if not package.startswith("/Game/"):
+        return None
+    candidate = project_root / "Content" / (package.removeprefix("/Game/") + ".umap")
+    return candidate if candidate.exists() else None
+
+
+def classify_umap(path: Path, default_map_packages: dict[str, str] | None = None) -> dict[str, Any]:
+    """Classify a .umap as a likely review scene or a component map.
+
+    Fab/sample projects often include hundreds of assembly maps.  For MoSim we
+    need the playable/reviewable level first, not every PLBP/Asmbly asset.
+    """
+    lower_parts = [part.lower() for part in path.parts]
+    stem = path.stem.lower()
+    package = package_from_content_path(path)
+    default_map_packages = default_map_packages or {}
+    content_index = lower_parts.index("content") if "content" in lower_parts else -1
+    below_content = lower_parts[content_index + 1 :] if content_index >= 0 else []
+    immediate_parent = lower_parts[-2] if len(lower_parts) >= 2 else ""
+    direct_content_map = len(below_content) == 1
+    direct_maps_dir = immediate_parent in {"maps", "levels"}
+    component_dir_parts = {
+        "plbps",
+        "asmbly",
+        "assemblies",
+        "previewer",
+        "packed",
+        "packedlevels",
+        "mass",
+    }
+    score = 0
+    tags: list[str] = []
+
+    default_roles = [key for key, value in default_map_packages.items() if value == package]
+    if "GameDefaultMap" in default_roles:
+        score += 120
+        tags.append("game_default_map")
+    if "EditorStartupMap" in default_roles:
+        score += 90
+        tags.append("editor_startup_map")
+    if "ServerDefaultMap" in default_roles:
+        score += 20
+        tags.append("server_default_map")
+
+    if direct_content_map:
+        score += 70
+        tags.append("direct_content_map")
+    if direct_maps_dir:
+        score += 50
+        tags.append("direct_maps_or_levels_dir")
+    elif "levels" in lower_parts or "maps" in lower_parts:
+        score += 40
+        tags.append("level_or_maps_dir")
+    if stem in {"main", "mainmap"}:
+        score += 35
+        tags.append("main_map")
+    if "env" in stem or "environment" in stem:
+        score += 25
+        tags.append("environment")
+    if "startup" in stem:
+        score -= 35
+        tags.append("startup")
+    if "assetzoo" in stem or "asset_zoo" in stem:
+        score -= 50
+        tags.append("asset_zoo")
+    if any(part in component_dir_parts for part in lower_parts):
+        score -= 80
+        tags.append("component_or_preview")
+    if any(token in stem for token in ("floor", "door", "window", "module", "assembly", "asmbl")):
+        score -= 20
+        tags.append("asset_piece")
+
+    if score >= 45:
+        role = "primary_review_candidate"
+    elif score >= 15:
+        role = "secondary_review_candidate"
+    elif "startup" in tags:
+        role = "startup_or_bootstrap"
+    elif "asset_zoo" in tags:
+        role = "asset_zoo"
+    else:
+        role = "component_map"
+
+    return {
+        "path": rel(path),
+        "package": package,
+        "role": role,
+        "score": score,
+        "tags": tags,
+    }
+
+
 def append_sample(values: list[str], path: Path, sample_limit: int) -> None:
     if len(values) < sample_limit:
         values.append(rel(path))
+
+
+def scan_project_umaps(project_root: Path, *, sample_limit: int = 12, record_limit: int = 600) -> dict[str, Any]:
+    """Scan maps independently so large asset projects do not hide the main level.
+
+    The bounded general scan is useful for quick readiness signals, but map
+    selection is critical enough that it should not stop just because thousands
+    of textures or meshes appear before the primary `.umap`.
+    """
+    result = {"umap_count": 0, "umap_samples": [], "umap_records": [], "umap_record_truncated": False}
+    if not project_root.exists():
+        return result
+    default_map_packages = read_default_map_packages(project_root)
+    seen: set[Path] = set()
+
+    def add_map(path: Path) -> None:
+        resolved = path.resolve()
+        if resolved in seen:
+            return
+        seen.add(resolved)
+        result["umap_count"] += 1
+        append_sample(result["umap_samples"], path, sample_limit)
+        if len(result["umap_records"]) < record_limit:
+            result["umap_records"].append(classify_umap(path, default_map_packages))
+        else:
+            result["umap_record_truncated"] = True
+
+    for package in default_map_packages.values():
+        map_file = map_file_from_package(project_root, package)
+        if map_file:
+            add_map(map_file)
+
+    content_root = project_root / "Content"
+    priority_roots = [
+        content_root,
+        content_root / "Maps",
+        content_root / "Levels",
+    ]
+    if content_root.exists():
+        for child in content_root.iterdir():
+            if child.is_dir() and child.name.lower() in {"maps", "levels"}:
+                priority_roots.append(child)
+            for nested_name in ("Maps", "Levels"):
+                nested = child / nested_name
+                if nested.is_dir():
+                    priority_roots.append(nested)
+
+    dirs_seen = 0
+    for root in dict.fromkeys(priority_roots):
+        if not root.exists():
+            continue
+        for current, dirs, files in os.walk(root):
+            dirs[:] = [name for name in dirs if name not in IGNORED_DIRS]
+            dirs_seen += 1
+            if dirs_seen > 160:
+                dirs[:] = []
+                result["umap_record_truncated"] = True
+                break
+            if Path(current) == content_root:
+                dirs[:] = [name for name in dirs if name.lower() in {"maps", "levels"}]
+            if any(part.lower() in {"asmbly", "plbps", "previewer", "packed", "packedlevels", "mass"} for part in Path(current).parts):
+                dirs[:] = []
+                continue
+            for filename in files:
+                if not filename.lower().endswith(".umap"):
+                    continue
+                path = Path(current) / filename
+                add_map(path)
+        if result["umap_record_truncated"] and len(result["umap_records"]) >= record_limit:
+            break
+    return result
 
 
 def scan_project_files(
@@ -85,6 +294,8 @@ def scan_project_files(
             if suffix == ".umap":
                 result["umap_count"] += 1
                 append_sample(result["umap_samples"], path, sample_limit)
+                if len(result["umap_records"]) < 240:
+                    result["umap_records"].append(classify_umap(path))
             elif suffix == ".uasset":
                 result["uasset_count"] += 1
                 append_sample(result["uasset_samples"], path, sample_limit)
@@ -155,6 +366,12 @@ def audit_project(
     project_root = uproject.parent
     data = read_uproject(uproject)
     scan = scan_project_files(project_root, max_files=max_files, max_dirs=max_dirs)
+    map_scan = scan_project_umaps(project_root)
+    scan["umap_count"] = map_scan["umap_count"]
+    scan["umap_samples"] = map_scan["umap_samples"]
+    scan["umap_records"] = map_scan["umap_records"]
+    if map_scan["umap_record_truncated"]:
+        scan["scan_truncated"] = True
     plugins = [
         plugin.get("Name")
         for plugin in data.get("Plugins", [])
@@ -169,6 +386,11 @@ def audit_project(
     editable = uproject.exists() and (project_root / "Content").exists() and scan["uasset_count"] > 0
     renderable_candidate = editable and scan["umap_count"] > 0
     planning_ready = truth["has_explicit_truth_source"]
+    recommended_maps = sorted(
+        scan["umap_records"],
+        key=lambda record: (int(record.get("score", 0)), str(record.get("path", ""))),
+        reverse=True,
+    )[:12]
     return {
         "source_type": "local_unreal_project",
         "name": project_root.name,
@@ -183,6 +405,7 @@ def audit_project(
         "uplugin_samples": scan["uplugin_samples"],
         "umap_count": scan["umap_count"],
         "umap_samples": scan["umap_samples"],
+        "recommended_review_maps": recommended_maps,
         "uasset_count": scan["uasset_count"],
         "uasset_samples": scan["uasset_samples"],
         "editable_candidate": editable,
@@ -234,6 +457,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scene-root", type=Path, default=DEFAULT_SCENE_ROOT)
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--maps", action="store_true", help="Print ranked candidate review maps for each project.")
     parser.add_argument("--max-files", type=int, default=1600)
     parser.add_argument("--max-dirs", type=int, default=320)
     parser.add_argument("--truth-root", type=Path, default=DEFAULT_TRUTH_ROOT)
@@ -246,6 +470,18 @@ def main(argv: list[str] | None = None) -> int:
     )
     if args.json:
         print(json.dumps(rows, ensure_ascii=False, indent=2, sort_keys=True))
+    elif args.maps:
+        print(f"{'score':>5} {'role':<28} {'scene':<34} package")
+        print("-" * 120)
+        for row in rows:
+            for record in row.get("recommended_review_maps", [])[:8]:
+                print(
+                    f"{int(record.get('score', 0)):>5} "
+                    f"{str(record.get('role', '')):<28} "
+                    f"{row['name']:<34} "
+                    f"{record.get('package')}"
+                )
+                print(f"{'':>5} {'':<28} {'':<34} {record.get('path')}")
     else:
         print(f"{'verdict':<32} {'maps':<5} {'assets':<7} {'truth':<5} {'trunc':<5} name")
         print("-" * 104)

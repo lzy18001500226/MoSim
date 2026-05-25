@@ -49,6 +49,16 @@
   before planner validation. UE collision/navigation assets are proxy
   candidates only until exported into explicit occupancy/collision/semantic
   artifacts.
+- Local scene map selection is now config-first, not path-order-first:
+  `audit_scene_source.py --maps` reads `Config/DefaultEngine.ini` and ranks
+  `GameDefaultMap` / `EditorStartupMap` ahead of guessed `.umap` paths.
+  Current main-map candidates are `DerelictCorridorMegascans` ->
+  `/Game/DerelictCorridor/Maps/DerelictCorridor`,
+  `DarkRuinsMegascansSample` -> `/Game/Main`, `ElectricDreamsEnv` ->
+  `/Game/Levels/PCG/ElectricDreams_PCGCloseRange`, and
+  `FPS-Shooter-Unreal` -> `/Game/FirstPerson/Maps/FirstPersonMap`. Do not
+  load `PackedLevels`, `PLBPs`, `Asmbly`, `Previewer`, or `AssetZoo` maps as
+  first-review scenes.
 - First truth-export route is now defined as
   `Scripts/UE5/export_unreal_scene_truth.py`: run `export` inside Unreal Editor
   Python to write AABB collision proxy JSON under
