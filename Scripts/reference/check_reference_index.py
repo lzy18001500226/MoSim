@@ -22,16 +22,41 @@ FAMILIES_WITH_CHILD_PROJECTS = {
     "RflySim",
     "UnrealScenes",
 }
+AGENT_CATEGORY_DIRS = {
+    "Platforms",
+    "Control",
+    "Workflow",
+    "Skills",
+    "Memory",
+    "Security",
+    "UI",
+    "SDK",
+    "Domain",
+    "ReviewLater",
+}
 
 
 def collect_expected_paths() -> list[str]:
     expected: set[str] = set()
     for family_dir in sorted(p for p in REFERENCES.iterdir() if p.is_dir() and not p.name.startswith(".")):
         expected.add(path_text(family_dir))
+        if family_dir.name == "Agent":
+            expected.update(collect_agent_paths(family_dir))
+            continue
         if family_dir.name in FAMILIES_WITH_CHILD_PROJECTS:
             for child in sorted(p for p in family_dir.iterdir() if p.is_dir() and not p.name.startswith(".")):
                 expected.add(path_text(child))
     return sorted(expected)
+
+
+def collect_agent_paths(agent_dir: Path) -> set[str]:
+    paths: set[str] = set()
+    for child in sorted(p for p in agent_dir.iterdir() if p.is_dir() and not p.name.startswith(".")):
+        paths.add(path_text(child))
+        if child.name in AGENT_CATEGORY_DIRS:
+            for project in sorted(p for p in child.iterdir() if p.is_dir() and not p.name.startswith(".")):
+                paths.add(path_text(project))
+    return paths
 
 
 def collect_indexed_paths() -> list[str]:

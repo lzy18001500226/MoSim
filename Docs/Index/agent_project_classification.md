@@ -32,39 +32,48 @@ Current safe layout:
 
 ```text
 References/Agent/
-  <upstream projects kept flat for now>
+  Platforms/
+  Control/
+  Workflow/
+  Skills/
+  Memory/
+  Security/
+  UI/
+  SDK/
+  Domain/
+  ReviewLater/
+  <remaining upstream projects kept flat until classified>
 Docs/Index/agent_project_classification.md
-  <capability classification, reuse priority, and future move plan>
+  <capability classification, reuse priority, and move plan>
 CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md
   <stable master coverage index for all References/>
 ```
 
-Physical category folders are not created yet. Moving 114 upstream trees should
-be a separate Git-batched task, because many existing docs and scripts still
-refer to `References/Agent/<project>` paths.
+Physical category folders exist. Move projects in Git-safe batches only,
+because many existing docs and scripts may still refer to
+`References/Agent/<project>` paths.
 
 ## Target Categories
 
-Use these short category names for study queues, future folders, and migration
-planning.
+Use these category directory names for study queues and migration planning.
 
 | Category | Meaning |
 |---|---|
-| `platforms` | Full coding-agent or multi-agent products/runtimes that may contain reusable code |
-| `control` | Team orchestration, task boards, worktrees, inboxes, dispatch, and visible-agent coordination |
-| `workflow` | Durable state, checkpoints, specs, workflow engines, WAL/replay, task lifecycle |
-| `frameworks` | General multi-agent frameworks to learn from, not import wholesale |
-| `skills` | Skills, hooks, commands, plugins, rules, role packs, and operator methods |
-| `memory` | RAG, repo indexes, graph memory, context assembly, search, knowledge bases |
-| `security` | Red-team, eval, MCP/skill scanning, guardrails, SOC, governance |
-| `ui` | Desktop/web/mobile UI surfaces, dashboards, Kanban, Codex App-like shells |
-| `sdk` | Official SDKs, model APIs, tokenizers, model references |
-| `domain` | Domain agent products or examples useful only for a specific scenario |
-| `misc` | Low-priority, unclear, or currently unrelated material |
+| `Platforms` | Full coding-agent or multi-agent products/runtimes that may contain reusable code |
+| `Control` | Team orchestration, task boards, worktrees, inboxes, dispatch, and visible-agent coordination |
+| `Workflow` | Durable state, checkpoints, specs, workflow engines, WAL/replay, task lifecycle |
+| `Frameworks` | General multi-agent frameworks to learn from, not import wholesale |
+| `Skills` | Skills, hooks, commands, plugins, rules, role packs, and operator methods |
+| `Memory` | RAG, repo indexes, graph memory, context assembly, search, knowledge bases |
+| `Security` | Red-team, eval, MCP/skill scanning, guardrails, SOC, governance |
+| `UI` | Desktop/web/mobile UI surfaces, dashboards, Kanban, Codex App-like shells |
+| `SDK` | Official SDKs, model APIs, tokenizers, model references |
+| `Domain` | Domain agent products or examples useful only for a specific scenario |
+| `ReviewLater` | Low-priority, unclear, or currently unrelated material |
 
 MCP is not a top-level category. Treat MCP as an interface inside the owning
-category: search MCP belongs under `memory`, security MCP under `security`,
-plugin MCP under `skills`, and MoSim Unreal/Epic MCPs stay under
+category: search MCP belongs under `Memory`, security MCP under `Security`,
+plugin MCP under `Skills`, and MoSim Unreal/Epic MCPs stay under
 `Docs/Skills/Unreal/`.
 
 ## Reuse Priority
@@ -76,16 +85,17 @@ they are candidates for direct adaptation.
 
 | Project | Category | Reuse Target |
 |---|---|---|
-| `openclaw` | `platforms` | Control UI, session/workspace routing, skill/sandbox boundaries, gateway ideas |
-| `CodexMonitor` | `ui` | Codex App/server workspace UI, thread state, worktree/clone agent management |
-| `agent-teams-ai` | `control` | Kanban/team UI, agent-to-agent communication concepts, desktop app pattern |
-| `OpenHands` | `platforms` | Coding-agent execution environment, web frontend, runtime/server split |
-| `hermes-agent` | `platforms` | Memory, scheduler, skill evolution, messaging gateway, TUI/web surfaces |
-| `hermes-desktop` | `ui` | Desktop wrapper and Hermes management UX ideas |
-| `OpenMOSS` | `control` | AI-company/task/subtask/agent management backend model |
-| `ClawTeam` | `control` | Worktree/tmux/agent inbox/task-board multi-agent CLI |
-| `AgentsMesh` | `control` | Control-plane/data-plane split, AgentPods, distributed runner model |
-| `codex` | `platforms` | Codex runtime, app-server, thread store, session/rollout, exec policy |
+| `openclaw` | `Platforms` | Control UI, session/workspace routing, skill/sandbox boundaries, gateway ideas |
+| `CodexMonitor` | `Control` | Codex App/server workspace UI, thread state, worktree/clone agent management |
+| `agent-teams-ai` | `Control` | Kanban/team UI, agent-to-agent communication concepts, desktop app pattern |
+| `OpenHands` | `Platforms` | Coding-agent execution environment, web frontend, runtime/server split |
+| `hermes-agent` | `Platforms` | Memory, scheduler, skill evolution, messaging gateway, TUI/web surfaces |
+| `hermes-desktop` | `UI` | Desktop wrapper and Hermes management UX ideas |
+| `OpenMOSS` | `Control` | AI-company/task/subtask/agent management backend model |
+| `ClawTeam` | `Control` | Worktree/tmux/agent inbox/task-board multi-agent CLI |
+| `AgentsMesh` | `Control` | Control-plane/data-plane split, AgentPods, distributed runner model |
+| `codex` | `Platforms` | Codex runtime, app-server, thread store, session/rollout, exec policy |
+| `bifrost` | `Platforms` | AI gateway, provider routing, failover, monitoring, and MCP gateway ideas |
 
 ### P0: Architecture Foundations
 
@@ -93,23 +103,23 @@ Study first for design constraints and implementation contracts.
 
 | Project | Category | Reuse Target |
 |---|---|---|
-| `langgraph` | `workflow` | State graph, checkpointing, HITL and durable execution patterns |
-| `temporal` | `workflow` | Long-running workflow semantics and failure recovery |
-| `sdk-python` | `workflow` | Temporal Python SDK usage patterns |
-| `sdk-typescript` | `workflow` | Temporal TypeScript SDK usage patterns |
-| `OpenSpec` | `workflow` | Spec/proposal/tasks workflow for controlled AI coding |
-| `TaskWeaver` | `workflow` | Planner/executor state and data-analysis workflow separation |
-| `antfarm` | `workflow` | Deterministic local team workflow, YAML/SQLite/fresh context |
-| `ECC` | `skills` | Cross-client operator system, hooks, rules, skills, MCP config patterns |
-| `context-engineering-kit` | `skills` | Context engineering, review/TDD/reflexion plugin patterns |
-| `AutoSkill` | `skills` | Skill extraction, skill evolution, OpenClaw trajectory-to-skill ideas |
-| `AI-Infra-Guard` | `security` | MCP/skill/agent security scanning and AI red-team controls |
-| `promptfoo` | `security` | LLM eval/red-team baseline and CI-style checks |
-| `rogue` | `security` | Agent/MCP/A2A behavior evaluation |
-| `openai-agents-python` | `frameworks` | Official tool/handoff/guardrail/tracing primitives |
-| `anthropic-sdk-python` | `sdk` | Anthropic beta resources, sessions, memory stores |
-| `openai-skills` | `skills` | OpenAI/Codex skill format |
-| `anthropics-skills` | `skills` | Anthropic skill templates and packaging |
+| `langgraph` | `Workflow` | State graph, checkpointing, HITL and durable execution patterns |
+| `temporal` | `Workflow` | Long-running workflow semantics and failure recovery |
+| `sdk-python` | `Workflow` | Temporal Python SDK usage patterns |
+| `sdk-typescript` | `Workflow` | Temporal TypeScript SDK usage patterns |
+| `OpenSpec` | `Workflow` | Spec/proposal/tasks workflow for controlled AI coding |
+| `TaskWeaver` | `Workflow` | Planner/executor state and data-analysis workflow separation |
+| `antfarm` | `Workflow` | Deterministic local team workflow, YAML/SQLite/fresh context |
+| `ECC` | `Skills` | Cross-client operator system, hooks, rules, skills, MCP config patterns |
+| `context-engineering-kit` | `Skills` | Context engineering, review/TDD/reflexion plugin patterns |
+| `AutoSkill` | `Skills` | Skill extraction, skill evolution, OpenClaw trajectory-to-skill ideas |
+| `AI-Infra-Guard` | `Security` | MCP/skill/agent security scanning and AI red-team controls |
+| `promptfoo` | `Security` | LLM eval/red-team baseline and CI-style checks |
+| `rogue` | `Security` | Agent/MCP/A2A behavior evaluation |
+| `openai-agents-python` | `Frameworks` | Official tool/handoff/guardrail/tracing primitives |
+| `anthropic-sdk-python` | `SDK` | Anthropic beta resources, sessions, memory stores |
+| `openai-skills` | `Skills` | OpenAI/Codex skill format |
+| `anthropics-skills` | `Skills` | Anthropic skill templates and packaging |
 
 ## Full Classification
 
@@ -236,6 +246,8 @@ and search tools.
 | Project | Notes |
 |---|---|
 | `GraphRAG` | Graph-based retrieval and memory/reference indexing |
+| `context7` | Up-to-date documentation retrieval MCP/skill reference |
+| `docs-mcp-server` | Local documentation indexing and MCP server reference |
 | `graphify-8` | Code/document/media knowledge graph for coding assistants |
 | `RepoAgent` | Repository documentation and chat-with-repo |
 | `deepwiki-rs` | C4/wiki generation for repositories |
@@ -335,36 +347,46 @@ Do not start with these unless a task directly touches them.
 | `harness` | Needs deeper review before classification is trusted |
 | `intentkit` | Product scope needs more review |
 
-## Optional Physical Folder Plan
+## Physical Folder Plan
 
-If physical sorting is approved later, use short folders and move in Git-safe
-batches:
+Use these folders and move in Git-safe batches:
 
 ```text
 References/Agent/
-  platforms/
-  control/
-  workflow/
-  frameworks/
-  skills/
-  memory/
-  security/
-  ui/
-  sdk/
-  domain/
-  misc/
+  Platforms/
+  Control/
+  Workflow/
+  Skills/
+  Memory/
+  Security/
+  UI/
+  SDK/
+  Domain/
+  ReviewLater/
 ```
 
-Do not move all 114 projects in one commit. Recommended batch order:
+Do not move all projects in one commit. Completed first batch:
 
-1. `ui`: `openclaw`, `CodexMonitor`, `agent-teams-ai`, `hermes-desktop`,
-   `OpenHands`.
-2. `platforms`: `codex`, `hermes-agent`, `openclaw`, `OpenHands`,
-   `tinyagi`, `CowAgent`.
-3. `skills`: `ECC`, `AutoSkill`, `Agent-Skills-for-Context-Engineering`,
-   `openai-skills`, `anthropics-skills`, `SuperClaude_Framework`.
-4. `security`: `AI-Infra-Guard`, `promptfoo`, `rogue`, `agentic_security`.
-5. Remaining projects after updating every path reference.
+- `Platforms`: `openclaw`, `hermes-agent`, `OpenHands`, `codex`, `bifrost`.
+- `Control`: `ClawTeam`, `agent-teams-ai`, `AgentsMesh`, `OpenMOSS`,
+  `CodexMonitor`.
+- `UI`: `hermes-desktop`, `AionUi`, `CodexDesktop-Rebuild`.
+- `Skills`: `AutoSkill`, `ECC`, `openai-skills`, `anthropics-skills`,
+  `SuperClaude_Framework`.
+- `Security`: `AI-Infra-Guard`, `promptfoo`, `rogue`.
+- `Memory`: `context7`, `docs-mcp-server`.
+
+Recommended next batch candidates:
+
+1. `Workflow`: `langgraph`, `temporal`, `OpenSpec`, `TaskWeaver`, `okwinds`,
+   `mlflow`.
+2. `Skills`: `Agent-Skills-for-Context-Engineering`, `agent-skills`,
+   `context-engineering-kit`, `awesome-codex-skills`,
+   `awesome-codex-subagents`, `awesome-claude-agents`.
+3. `Security`: `agentic_security`, `AiSOC`, `tracecat`, `LitterBox`,
+   `Decepticon`, `pentestagent`, `redamon`.
+4. `Memory`: `GraphRAG`, `RepoAgent`, `deepwiki-rs`, `SurfSense`,
+   `anysearch-mcp-server`, `anysearch-skill`, `graphify-8`.
 
 Before any physical move:
 
@@ -382,13 +404,16 @@ After each move, update:
 
 ## Current Recommendation
 
-Keep `References/Agent` flat for now and use this document as the routing map.
+Keep moving in small reviewed batches and use this document as the routing map.
 The next implementation step should reuse existing projects selectively:
 
-1. inspect `openclaw/ui`, `CodexMonitor`, and `agent-teams-ai` for frontend reuse;
-2. inspect `ClawTeam`, `AgentsMesh`, and `OpenMOSS` for multi-agent control
-   plane/task-board patterns;
-3. inspect `AutoSkill`, `ECC`, and `Agent-Skills-for-Context-Engineering` for
-   skill lifecycle and context-management migration;
-4. inspect `AI-Infra-Guard`, `promptfoo`, and `rogue` before enabling any
+1. inspect `Platforms/openclaw`, `Control/CodexMonitor`, and
+   `Control/agent-teams-ai` for frontend/control-plane reuse;
+2. inspect `Control/ClawTeam`, `Control/AgentsMesh`, and `Control/OpenMOSS`
+   for multi-agent control plane/task-board patterns;
+3. inspect `Skills/AutoSkill`, `Skills/ECC`, and
+   `Agent-Skills-for-Context-Engineering` for skill lifecycle and
+   context-management migration;
+4. inspect `Security/AI-Infra-Guard`, `Security/promptfoo`, and
+   `Security/rogue` before enabling any
    unattended automation or MCP/tool expansion.
