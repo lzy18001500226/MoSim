@@ -22,6 +22,13 @@ verification:
 git/quality owner:
 ```
 
+Runtime guard: any interactive Codex thread bootstrap, external GUI probe, MCP
+probe, or unclear-progress command gets a 60 second timeout by default. On
+timeout, terminate only the directly related child process, record what was
+created or not created, and return to the task graph. Do not spend multi-minute
+turns waiting for a bootstrap command unless the user explicitly approved that
+wait.
+
 Minimum planning gate:
 
 ```text
@@ -135,29 +142,258 @@ arguments such as `reasoning_effort` are not the same as persistent Codex config
 keys such as `model_reasoning_effort`; mark unverified config keys as
 unsupported until checked against official docs for the installed version.
 
+Codex subagents are not the same thing as durable workers. In this project they
+are short-lived capability calls: useful for a bounded audit, focused research,
+or a one-batch execution, but not reliable as Git departments, permanent
+reviewers, test daemons, secretaries, or cross-turn supervisors. They have
+isolated context and must return evidence to the main agent; they cannot be the
+source of truth for task state.
+
+Visible department conversations are also not the same thing as internal
+Codex subagents. If the user asks to send work to `MoSim｜DevOps 发布部`,
+`MoSim｜验证测试部`, or another visible department thread, do not use an
+internal `spawn_agent` call and claim the department received it. Dispatch to
+the real visible thread with `codex exec resume <thread_id>` and capture the
+last response with `--output-last-message`. Internal subagents may still be used
+for one bounded private analysis slice, but they are not acceptable evidence of
+department communication.
+
+Known visible department dispatch command pattern:
+
+```bash
+codex exec resume <department_thread_id> \
+  -m gpt-5.5 \
+  -c model_reasoning_effort='"high"' \
+  --dangerously-bypass-approvals-and-sandbox \
+  --output-last-message /tmp/<task_id>_result.txt \
+  - < /tmp/<task_id>_packet.txt
+```
+
+Use a 60 second outer timeout for probes and short packets. For long Git or
+large-tree tasks, split the task into path-scoped batches and require the
+department owner to return a checkpoint/result packet instead of waiting on a
+full-tree scan. Communication is proven only when the visible thread returns a
+department result. The first accepted DevOps communication probe returned:
+`DEVOPS_COMM_OK｜received_from_main｜task_id=comm-probe-20260526-01`.
+
+Codex App / VSCode visibility and CLI communication use different metadata
+contracts. Keep WSL-side thread metadata CLI-compatible for communication:
+`source=cli`, `thread_source=user`, and lowercase WSL `cwd`. Keep Windows App
+metadata UI-compatible for display: `source=vscode`, `thread_source=vscode`,
+and canonical `/mnt/c/Users/HP/Desktop/MoSim` `cwd`. If both sides are forced
+to `vscode`, `codex exec resume` may fail with `unknown thread source: vscode`.
+If both sides are forced to `cli`, the department conversation may disappear
+from the App/VSCode task list. After each visible-thread dispatch, copy or
+materialize the updated rollout to the Windows session store and update the
+Windows index/state preview; do not mutate the WSL source away from `cli/user`.
+Accepted regression probe:
+`DEVOPS_VISIBLE_ACK｜task_id=DEVOPS-VISIBLE-PROBE-20260526-03`.
+
+Durable department behavior must be implemented by MoSim-owned infrastructure:
+a persistent task queue, append-only event stream, path/security hooks, explicit
+claim/heartbeat/terminal events, and human-readable recovery surfaces in this
+workflow, `PROGRESS.md`, and `Docs/Workflows/agent_task_ledger.md`. Subagents may
+help inspect or execute one queue item, but the queue and state machine are not
+owned by the subagent runtime.
+
+The first project-local implementation is
+`Scripts/agent/mosim_agent_runtime.py`. It is deliberately a local state tool:
+SQLite task queue plus JSONL event stream. It does not call model APIs, does not
+spawn Codex, and does not open GUI tools. Use it to make long work recoverable
+before assigning one-shot Codex subagents or manual workers.
+
+Minimum runtime commands:
+
+```bash
+python Scripts/agent/mosim_agent_runtime.py create \
+  --objective "Review current UE MCP design" \
+  --role ArchitectureReviewer \
+  --read-scope Docs/Skills/Unreal \
+  --write-scope Results/agent_runs \
+  --acceptance "structured review event recorded" \
+  --stop-condition "done, blocked, or failed with evidence"
+
+python Scripts/agent/mosim_agent_runtime.py claim --owner ArchitectureReviewer
+python Scripts/agent/mosim_agent_runtime.py checkpoint --task-id <id> --actor ArchitectureReviewer --summary "read first slice"
+python Scripts/agent/mosim_agent_runtime.py complete --task-id <id> --actor ArchitectureReviewer --summary "review complete"
+```
+
+User-facing task UI:
+
+Use the VSCode/Codex App task/conversation list as the front end. The user opens
+separate Codex conversations manually when a stream needs sustained context,
+manual inspection, or long-running ownership. The main agent provides a standard
+task packet for each conversation, or dispatches it with
+`codex exec resume <thread_id>` when the target visible thread id is known, and
+records the task in the MoSim runtime/ledger. Do not build a separate web
+dashboard unless the VSCode/Codex task UI becomes insufficient.
+
+Conversation classes:
+
+| Class | Owner | Purpose | Examples |
+|---|---|---|---|
+| Primary conversation | MainAgent | User dialogue, goal, integration, final decisions | current WSL-backed project thread |
+| Department conversation | Department owner | Recurring work inside one broad responsibility | `MoSim｜DevOps 发布部`, `MoSim｜验证测试部` |
+| Dedicated task conversation | Parent department + DispatchCenter | Long-running high-context task with repeated review | `Sunray150 参数识别`, `UE Fab 场景导入` |
+| One-shot subagent | MainAgent or parent owner | Bounded research/review/execution slice returning one result | one repo audit slice, one doc review |
+
+Use a dedicated task conversation instead of a one-shot subagent when the task:
+
+```text
+will take multiple turns or manual review cycles
+needs to preserve technical context across many messages
+has iterative user feedback
+requires independent progress visibility in Codex App
+would fail if treated as a single disposable subagent call
+```
+
+The PX4-log-based Sunray150 parameter identification task is the canonical
+example: it should be a dedicated task conversation under the Project
+Department, not a one-shot subagent, because it needs literature/code audit,
+log-field requirements, user-provided data, estimator design, and MWORKS
+parameter mapping across multiple turns.
+
+Conversation communication protocol:
+
+```text
+MainAgent responsibilities:
+  1. Keep the top-level goal accurate.
+  2. Decide whether work stays local, goes to a department conversation, becomes
+     a dedicated task conversation, or is a one-shot subagent call.
+  3. Ensure the DispatchCenter creates or updates the durable task record first.
+  4. Produce one copy-paste task packet for the user-opened conversation.
+  5. Continue the main critical path without waiting unless the result blocks it.
+  6. Parse returned result packets, update runtime/ledger, and integrate or reject.
+
+DispatchCenter responsibilities:
+  1. Maintain task tickets and department status board.
+  2. Track owner conversation, task conversation, blocker, next action, and evidence.
+  3. Detect stale waiting tasks and request a checkpoint.
+  4. Route result packets to test, security, docs, Git, or main integration.
+
+DocumentationSecretary responsibilities:
+  1. Record directives, decisions, corrections, and manual-review outcomes.
+  2. Patch durable docs after stable decisions.
+  3. Run or request docs-quality review.
+  4. Avoid becoming the global dispatcher or hidden implementation worker.
+
+User responsibilities:
+  1. Open the Codex conversation manually when asked.
+  2. Paste the task packet exactly.
+  3. Keep the conversation visible for manual progress inspection when desired.
+  4. Paste the returned result packet back to MainAgent when integration is needed.
+```
+
+Task packet template:
+
+```text
+[MoSim Task Packet]
+task_id:
+role:
+objective:
+read_scope:
+write_scope:
+allowed_actions:
+forbidden_actions:
+acceptance:
+stop_condition:
+required_checks:
+return_format:
+  summary:
+  files_changed:
+  evidence:
+  blockers:
+  next_recommended_action:
+```
+
+Result packet requirements:
+
+```text
+[MoSim Result Packet]
+task_id:
+status: done | done_with_concerns | blocked | failed
+summary:
+files_changed:
+commands_run:
+evidence:
+risks:
+blockers:
+next_recommended_action:
+```
+
+Do not rely on a side conversation's memory as project state. A conversation is
+only an execution/review surface; durable state remains in the runtime database,
+JSONL events, `Docs/Workflows/agent_task_ledger.md`, and `PROGRESS.md`.
+
+Department status board entry:
+
+```text
+[MoSim Status Board Entry]
+task_id:
+parent_goal:
+department:
+owner_conversation:
+task_conversation:
+state:
+read_scope:
+write_scope:
+dependencies:
+next_action:
+human_needed:
+last_checkpoint:
+evidence:
+review_status:
+git_status:
+```
+
+Daily/recurring Codex App automations may be used only after their behavior is
+verified for the current installed App version. Until then, model them as
+normal task tickets:
+
+```text
+Daily workflow/skills improvement:
+  owner: DispatchCenter + KnowledgeDepartment
+  action: inspect recent incidents, official docs, local skills, and update workflow docs
+
+Daily external repository update:
+  owner: DevOpsDepartment + KnowledgeDepartment
+  action: pull/update tracked reference repos within ignored/reference scope,
+  summarize changes, and flag useful upstream fixes
+
+Daily documentation drift check:
+  owner: DocumentationSecretary + DocsQualityTest
+  action: compare PROGRESS/ledger/workflows against current task state
+
+Daily safety scan:
+  owner: SecurityDepartment
+  action: large files, secrets, external paths, destructive-operation residues
+```
+
+Do not assume App automations replace durable MoSim status records. They can
+trigger or remind; they are not the project state source.
+
 Provider behavior matrix:
 
 | Capability | Codex policy here | Claude Code note |
 |---|---|---|
-| Subagent trigger | Explicitly spawned by main agent/user-authorized task graph | May auto-delegate from descriptions |
-| Nested delegation | Default depth 1; depth 2 only for bounded parent/child queue with WAL | Do not assume named subagents can spawn subagents |
+| Subagent trigger | Explicitly spawned by main agent/user-authorized task graph; one bounded result expected | May auto-delegate from descriptions |
+| Durable workers | Use MoSim task queue/runtime, not Codex subagent chat state | Claude subagents still need external state for reliability |
+| Nested delegation | Avoid for durable work; depth 2 only for bounded read-only or disjoint-scope batches with WAL | Do not assume named subagents can spawn subagents |
 | Worktrees | Prefer one Git owner; use isolated worktrees only for disjoint branches/scopes | Claude has separate worktree-isolation concepts |
 | Custom schemas | Treat local `.toml` examples as unverified until official Codex docs confirm | Claude frontmatter is not Codex syntax |
 | Background tools | Record pending/denied tool state in WAL | Claude background behavior may deny prompt-required tools |
 
 For long-running execution streams such as Git batching, Unreal project smoke
 tests, simulator bring-up, large reference audits, and repeated documentation
-learning passes, assign one owner agent and keep feeding that agent until its
-stop condition is reached. Do not let the main agent take over the worker's
-implementation details unless the worker is blocked, closed, or explicitly
-hands back a decision point.
+learning passes, create a durable queue item first. A Codex subagent may process
+one bounded item, but it must not be left as the only holder of continuation
+state. If the task needs to continue after a checkpoint, the next item must be
+recorded in the MoSim queue/ledger, then explicitly dispatched again.
 
-The main agent must not close a long-running owner agent just because one
-checkpoint succeeded. Close it only after the full stop condition is reached,
-the task is superseded, or the owner is blocked and the ledger records the
-recovery point. Do not batch-close agents. For each agent, first write or
-update the terminal checkpoint in the ledger/PROGRESS/WAL, then close that one
-agent deliberately.
+The main agent must not treat a missing or closed subagent as task completion.
+Completion is defined only by the durable queue state and required evidence. If
+a subagent returns a useful checkpoint, consume it, update the queue/ledger, and
+either dispatch the next bounded task or mark the durable task blocked/done.
 
 Management analogy for long work:
 
@@ -166,26 +402,29 @@ main agent:
   director / general manager; owns objective, priorities, queue, approvals,
   integration, verification, and final report
 TaskSecretary:
-  secretary / PMO; records instructions, checkpoints, blockers, task state,
-  review requirements, and supervision signals
-child owner:
-  project manager; owns one bounded stream and may coordinate workers
-grandchild worker:
-  employee; executes one explicit batch and returns evidence
+  role definition for MoSim runtime, not a Codex subagent job by default;
+  records instructions, checkpoints, blockers, task state, review requirements,
+  and supervision signals
+MoSim runtime worker:
+  durable worker process; claims queue items, emits heartbeat/events, returns
+  terminal evidence, and can survive chat/session loss
+Codex subagent:
+  short-lived specialist; executes one explicit batch and returns evidence
 reviewer:
-  independent QA; checks evidence and risks before integration
+  durable queue role when ongoing; Codex subagent only for one bounded review
 ```
 
 The detailed department model lives in
 `Docs/Workflows/org_operating_model.md`. Use it when a task needs company-style
-division of labor: secretary/PMO, project owners, testing, security, DevOps,
-architecture, knowledge management, and incident review.
+division of labor: dispatch center, documentation secretary, project owners,
+testing, security, DevOps, architecture, knowledge management, and incident
+review.
 
 The director should not grind through every worker task when the queue is
-large. It should update durable state, assign the next owner, keep the critical
-path moving, and review evidence before integration. A child owner must not
-silently wait after a small checkpoint when its assigned stream still has ready
-items inside the same scope.
+large, but Codex subagents are not the replacement for a real worker pool. The
+director should update durable state, enqueue bounded items, review returned
+evidence, and use Codex subagents only as disposable specialists until a
+MoSim-owned runtime worker exists.
 
 The TaskSecretary is not an implementation worker. It should:
 
@@ -208,10 +447,10 @@ checkpoint must be captured in `Results/tmp/task_intake/`, promoted to
 `Docs/Workflows/agent_task_ledger.md` or `PROGRESS.md` when stable, and only then
 treated as recoverable state. Chat memory alone is not state.
 
-Testing is a separate stream. Use a `TestOwner` child agent when validation has
-multiple kinds, such as unit tests, Git checks, large-file checks, model checks,
-MCP smoke tests, or GUI/manual review preparation. Do not mix TestOwner with a
-Git owner or implementation owner unless the task is explicitly tiny.
+Testing is a separate stream. For sustained test coverage, use the MoSim task
+queue/runtime and record results in durable logs. A Codex `TestOwner` subagent is
+acceptable only for one bounded review or test-analysis slice; it must return
+evidence and cannot remain the test department of record.
 
 Skills are work instructions, not task owners. Agents use skills to execute a
 role; the orchestration ledger decides who owns the task, what evidence is

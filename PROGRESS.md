@@ -13,7 +13,7 @@
   scene import/reuse, UE editing, truth export, simulation streaming, evidence
   generation, and pre-review checks where practical.
 - Current UE/Fab decision boundary: first attempt automation through
-  `mosim_epic_library` and `unreal_engine`; if Fab/Launcher/UE automation
+  `mosim-epic` and `mosim-unreal`; if Fab/Launcher/UE automation
   cannot reliably produce local editable content, renderer load proof, and
   planning truth, stop that route and use
   `References/UnrealScenes` as the scene source. Login/authorization/download
@@ -30,29 +30,142 @@
   outdoor scene packs. Do not reconnect quadrotor, radar, trajectory, UDP, or
   MWORKS simulation until the selected map source is visually acceptable.
 - Current tool-capability scope is intentionally narrow: implement and operate
-  only `unreal_engine` for live UE Editor authoring and `mosim_epic_library`
-  for Epic/Fab/Launcher library inventory plus Fab/import feasibility. Do not expand this phase into
+  only `mosim-unreal` for live UE Editor authoring through the
+  `Docs/Skills/Unreal/mosim-unreal` implementation, and
+  `mosim-epic` for Epic/Fab/Launcher inventory, scene-source registry, and
+  Fab/import feasibility. Do not expand this phase into
   MWORKS, external renderer bridges, downloader automation, or a full simulator
   MCP unless explicitly requested.
   Use `Scripts/UE5/check_epic_library_inventory.py` for a cheap health check
   and `Scripts/UE5/epic_library_view.py` for the merged human-readable library
-  view. Use `Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh` when exposing
-  the index as the `mosim_epic_library` MCP.
-- 2026-05-25 MCP route update: `unreal_engine` now points to MoSim's own
-  first-stage MCP project under
-  `Docs/Skills/Unreal/unreal-engine-mcp/`. The configured wrapper is
-  `Docs/Skills/Unreal/unreal-engine-mcp/wrappers/unreal_engine.sh`;
-  the legacy Flopperam wrapper remains in the same project for rollback.
-  Current MoSim-native tools are `ue_health`, `project_context`,
-  `scene_source_registry`, `ue_fab_goal_acceptance`, `scene_truth_export_plan`,
-  `epic_scene_library_view`, and `tool_boundary`. Do not add arbitrary Python
-  execution, Launcher clicking, raw account-cache parsing, or Fab downloading to
-  `unreal_engine`; keep those concerns either manual or in the read-only
-  `mosim_epic_library` boundary.
+  view. The project-owned MCP wrapper for this boundary is
+  `Docs/Skills/Unreal/mosim-epic/wrappers/mosim-epic.sh`.
+- 2026-05-25 MCP route update: the live UE Editor implementation is now
+  `Docs/Skills/Unreal/mosim-unreal/`. The intended configured MCP server
+  key is `mosim-unreal`, and it should point to
+  `Docs/Skills/Unreal/mosim-unreal/wrappers/mosim-unreal.sh`; the legacy
+  Flopperam wrapper remains in the same project for rollback. Current
+  MoSim-native UE tools are `ue_health`, `project_context`,
+  `editor_listener_health`, `asset_search`, `list_maps`,
+  `current_level_summary`, `find_level_actors`, `reversible_actor_probe`,
+  `scene_source_status`, `scene_truth_export_plan`, `editor_log_summary`, and
+  `tool_boundary`.
+  `current_level_summary` and `find_level_actors` are live-editor read-only
+  tools and may return `ok=false` when UE is closed; this is a diagnostic state,
+  not an MCP startup failure. `reversible_actor_probe` is plan-only by default;
+  execute it only after loading a real review map. `scene_source_status` is
+  compact by default; use detailed output only for targeted review. Epic/Fab
+  inventory, scene-source registry, scene-source acceptance gates, and
+  Launcher/Fab readiness belong to `mosim-epic`, not `mosim-unreal`.
 - 2026-05-25 MCP wrapper fix: `/home/linux/mcp-wrappers/sysplorer_mcp.sh`
   previously pointed at `C:\Users\HP\Desktop\Quadrotor\scripts\...` and caused
   `sysplorer` handshake failures after the MoSim restructure. It should point to
   `C:\Users\HP\Desktop\MoSim\Scripts\mworks\sysplorer_mcp_wsl_entry.py`.
+- 2026-05-26 Codex App config fix: Codex App was unreliable when the
+  Windows-side config was absent. Keep `/home/linux/.codex/config.toml` as the
+  canonical source, but copy it to `C:\Users\HP\.codex\config.toml` when the
+  Windows App requires a local config. Do not hand-edit the Windows copy. The
+  Windows default WSL distro should remain `Ubuntu-22.04`. Verification
+  command: `/mnt/c/Users/HP/.codex/bin/wsl/codex mcp list`, which should show
+  `mosim-epic` and `mosim-unreal` plus filesystem/git/syslab/sysplorer.
+- 2026-05-26 Codex App session policy: keep this WSL-backed conversation as the
+  primary project conversation. Codex App is currently used as a Windows desktop
+  review/front-end surface and for opening other project conversations. Even if
+  the App appears to receive live updates, durable state must still be written
+  to repo docs, not trusted to chat sync. Manual one-way session handoff from
+  WSL to App requires copying the selected JSONL, fixing stale `cwd` values, and
+  updating `C:\Users\HP\.codex\state_5.sqlite`; do not attempt live
+  bidirectional session writes.
+- 2026-05-26 Codex App manual-thread test: manually writing App-local
+  `state_5.sqlite` rows and short `rollout-*.jsonl` files made conversations
+  visible only in Codex App and produced stale-path resume errors. This route is
+  rejected. Do not directly create department/task conversations in the Windows
+  App database. Create them from the WSL/VSCode Codex environment first, then let
+  Codex App display the synced conversation.
+- 2026-05-26 Codex App department threads: removed over-split role threads and
+  replaced the old "secretary owns everything" model with a clearer operating
+  model:
+  `MoSim｜主线总控` for user dialogue and integration,
+  `MoSim｜调度中台` for task tickets/status board/routing,
+  `MoSim｜文档秘书部` for decisions and docs,
+  `MoSim｜研发工程部` for implementation/research,
+  `MoSim｜验证测试部` for evidence gates,
+  `MoSim｜安全合规部` for boundary/secret/license/large-file safety, and
+  `MoSim｜DevOps 发布部` for Git. Do not create persistent App threads for every
+  narrow role; create dedicated task conversations only for long-running
+  high-context tasks with a parent department, task_id, stop condition, and
+  result-packet contract.
+- 2026-05-26 Codex App conversation rollback: after App resume failures, backed
+  up the broken local department-thread state to
+  `C:\Users\HP\.codex\backups\revert-app-local-department-threads-20260526-123853`,
+  removed the manually seeded App-only department/test conversations, cleaned the
+  short 2026-05-26 rollout files, and restored the App sidebar index to the
+  original main project thread `四旋翼无人机图形化仿真系统`. Future department or
+  dedicated-task conversations must be created from WSL/VSCode Codex, not by
+  direct SQLite/JSONL injection into the App.
+- 2026-05-26 Codex App department-thread sync: created six real WSL-origin
+  department conversations with `codex exec`, normalized their WSL thread titles
+  and `cwd`, copied the existing WSL rollout files into the Windows Codex App
+  session store, and upserted matching App thread rows. Backup before sync:
+  `C:\Users\HP\.codex\backups\wsl-department-thread-sync-20260526-130607`.
+  This first ID set was later superseded by the real visible department threads
+  listed below.
+- 2026-05-26 Codex App/VSCode visibility correction: the first WSL-origin
+  department sync still did not appear in either UI because `codex exec`
+  generated background-style rows (`source=exec`, `has_user_event=0`) and the
+  WSL `session_index.jsonl` did not include the six department IDs. Backed up
+  both WSL and Windows state/index files to
+  `C:\Users\HP\.codex\backups\visibility-fix-20260526-142902`, then normalized
+  both sides: added the six department rows to WSL and Windows
+  `session_index.jsonl`, set `source=vscode`, `thread_source=vscode`,
+  `has_user_event=1`, `archived=0`, and verified every `rollout_path` exists.
+  If the UI still does not show these threads after a refresh/restart, treat
+  `codex exec` bootstrap as insufficient for durable department conversations
+  and create future department/task threads through a real interactive
+  WSL/VSCode Codex conversation before handoff to Codex App.
+- 2026-05-26 visible department communication correction: internal
+  `spawn_agent` calls are not department communication. The visible department
+  threads currently used by the UI are:
+  `019e6335-a2e2-7b92-b9f8-396400f4429e` (`MoSim｜总经办 PMO`),
+  `019e6318-4516-72c1-a50a-a36dc2aed215` (`MoSim｜调度中台`),
+  `019e6319-fecd-7bd1-a4d5-7a5207e0ddba` (`MoSim｜研发工程部`),
+  `019e631b-c6b2-73e3-9ad9-551b12687fe0` (`MoSim｜文档秘书部`),
+  `019e631d-8164-72e3-aac5-4ee3d91e462e` (`MoSim｜验证测试部`),
+  `019e631f-406e-7401-af17-8f17e09a50e3` (`MoSim｜安全合规部`), and
+  `019e6321-1940-7bc0-8a97-f2720aa8af1b` (`MoSim｜DevOps 发布部`). Dispatch to a
+  visible department by `codex exec resume <thread_id>` plus
+  `--output-last-message`; do not represent an internal subagent as that
+  department. Communication probe `comm-probe-20260526-01` to DevOps returned
+  `DEVOPS_COMM_OK｜received_from_main｜task_id=comm-probe-20260526-01`.
+- 2026-05-26 visible department metadata fix: `codex exec resume` failed when
+  WSL-side DevOps thread metadata was normalized to `source=vscode` /
+  `thread_source=vscode`, reporting `unknown thread source: vscode`. The
+  working split is WSL-side `source=cli`, `thread_source=user` for resume
+  communication, and Windows App-side `source=vscode`, `thread_source=vscode`
+  for task-list visibility. Regression probe
+  `DEVOPS-VISIBLE-PROBE-20260526-03` returned
+  `DEVOPS_VISIBLE_ACK｜task_id=DEVOPS-VISIBLE-PROBE-20260526-03` and was then
+  copied to the Windows rollout/index/state for UI inspection.
+- 2026-05-26 long-running task conversation policy: tasks like PX4-log-based
+  Sunray150 parameter identification should not be delegated to disposable
+  Codex subagents. They should run as dedicated Codex App/VSCode conversations
+  under the Project Department, while this primary conversation continues to
+  integrate results and report to the user. Subagents remain useful only for
+  bounded read/review/execution slices that return one structured result.
+- 2026-05-26 recurring automation policy: Codex App automations may be used for
+  daily workflow/skills improvement, external-repo update checks,
+  documentation drift checks, and safety scans after their behavior is verified
+  for the installed App version. Automation notifications are triggers, not
+  durable project state; convert outputs into task tickets or evidence files.
+- 2026-05-25 UE/MCP chain verification: `MoSimSceneLibrary.uproject` is bound
+  to UE `5.5`; `Scripts/UE5/build_unreal_renderer.sh` passes with target up to
+  date; `Scripts/UE5/open_unreal_renderer.sh editor` finds the running editor;
+  `Scripts/UE5/probe_unreal_mcp_listener.py --wrapper-route-only --timeout 1`
+  reaches `172.17.48.1:55557`; and
+  `Docs/Skills/Unreal/mosim-unreal/mcp/server.py dump-level --timeout 2`
+  returns live actor data. Local UE installs detected are UE 4.27
+  (`UE4Editor.exe`) plus UE 5.4/5.5/5.7 (`UnrealEditor.exe`). This is the
+  current baseline before adding more UE MCP write tools.
 - Updated scene-source requirement: rendering is insufficient. A scene must be
   importable/editable, renderable, and able to provide or generate
   collision/semantic/occupancy truth for mapping and path planning. If Fab
@@ -112,7 +225,7 @@
 - `Scripts/UE5/check_ue_fab_goal_acceptance.py` is now the gate-level audit
   for the current UE/Fab tool objective. Latest status is `7/8` gates passed:
   Fab inventory, local fallback readiness, Derelict truth validation, UDP
-  scene-source contract, live `unreal_engine` edit authority, minimal
+  scene-source contract, live `mosim-unreal` edit authority, minimal
   Skills/workflow docs, and local Derelict renderer reuse/load proof pass.
   Remaining gap: Fab route acceptance. Fab is still only inventory-visible, so
   the active route remains `References/UnrealScenes` fallback.
@@ -129,33 +242,23 @@
   `Results/tmp/renderer_map_load_probe_latest.json` reports `ok=true`,
   `loaded_expected_map=true`, `actor_count=1`, and level
   `/Game/DerelictCorridor/Maps/DerelictCorridor.DerelictCorridor` loaded by
-  the project-owned `MoSimSceneLibrary` UE 5.7 commandlet.
+  the project-owned `MoSimSceneLibrary` UE 5.5 commandlet.
 - `Scripts/UE5/probe_linked_scene_source_mcp.py` produced live editor evidence
   at `Results/tmp/linked_scene_source_mcp_probe_latest.json`: the
-  `unreal_engine` listener was reachable, the Derelict scene source was linked
+  `mosim-unreal` listener was reachable, the Derelict scene source was linked
   into renderer Content, and a temporary `MoSimSceneSourceProbe_*` actor was
   created, transformed, deleted, and cleaned up without saving the map.
 - Latest goal audit now reports `ok=True`, `route=local_editable_fallback`,
   `7/8` gates passed. The remaining non-passing gate is Fab route acceptance,
   which is intentionally bypassed by the objective's fallback branch until a
   Fab asset is actually created/imported with edit access and planning truth.
-- Latest UE build attempt reached C++ compile and failed only at DLL link
-  because an open `UnrealEditor.exe` held
-  `UnrealEditor-QuadrotorMworksBridge.dll` and
-  `UnrealEditor-MoSimSceneLibrary.dll`. Do not treat this as a compile
-  failure; rerun `Scripts/UE5/build_unreal_renderer.sh` after the editor is
-  closed when binary proof is needed.
-- Current Codex MCP config has been corrected from old `Quadrotor` paths to
-  MoSim paths and now lists `mosim_epic_library`. The project-owned
-  `MoSimSceneLibrary.uproject` now resolves `UnrealMCP` from
-  `Docs/Skills/Unreal/mcp/unreal-engine-mcp/FlopperamUnrealMCP/Plugins`; UE 5.7
-  build passed after this path fix, the editor-side listener was reachable on
-  `172.17.48.1:55557`, and `Scripts/UE5/probe_unreal_editor_mcp_tools.py`
-  completed a reversible live-editor read/spawn/transform/delete round trip.
-  This proves the current `unreal_engine` route can modify the project-owned
-  UE shell. The remaining goal boundary is scene-source integration: prove a
-  selected Fab/local editable scene can be imported/reused with explicit
-  planning truth, or keep using `References/UnrealScenes` with exported truth.
+- Current Codex MCP config should use MoSim paths and split the Unreal-related
+  servers into `mosim-unreal` and `mosim-epic`. The project-owned
+  `MoSimSceneLibrary.uproject` resolves `UnrealMCP` from
+  `Docs/Skills/Unreal/mcp/unreal-engine-mcp/FlopperamUnrealMCP/Plugins`; UE 5.5
+  build/open/listener/read probes now pass. Persistent map edits still require a
+  loaded real review map and an explicit reversible probe; do not execute write
+  probes on `/Engine/Maps/Entry`.
 - Keep a `TaskSecretary` intake record for new user corrections, sub-agent
   terminal results, Git blockers, and manual-review decisions before promoting
   stable items to this file or the ledger.
@@ -179,11 +282,11 @@
 | Git integration | `GitFullConvergenceOwner` | done-with-concerns | Use clean branches or `origin/main` for future Git work; do not push old polluted aggregate branches. |
 | Cosys-AirSim smoke | `UEBuildSmokeRunner` | visually-reviewed | UE 5.5 Blocks UBT build passed and user confirmed the opened scene is okay; next task is deciding the control/API/UI integration route. |
 | Agent workflow improvement | main agent + reviewers | awaiting-user-review | TaskSecretary/goal/Git-owner rules are promoted and `git diff --check` passed; next change should follow user review. |
-| Agent organization model | main agent + `TaskSecretary` | done | Modern-company department model added in `Docs/Workflows/org_operating_model.md`; future multi-agent work must record user directives and work checkpoints before relying on chat memory. |
+| Agent organization model | main agent + `DispatchCenter` + `TaskSecretary` | updating | Department model now separates Dispatch Center from Documentation Secretary and defines long-running task conversations. Next safe action: run docs checks, then use this model for future task packets. |
 | External docs learning | `ExternalDocsLearningOwner` | recurring-loop-defined | Use `Docs/Index/external_learning_index.md` and `Docs/Workflows/agent_orchestration.md#71-recurring-learning-owner` when failures, new tools, new repos, or milestones trigger another learn-and-patch cycle. |
 | Vehicle parameter identification | `VehicleParamIdentificationResearcher` | local-code-audit-complete-awaiting-sunray-ulog | `References/Data` code audit is promoted to `Docs/Workflows/identify_quadrotor_parameters.md`; first useful data package is RC-collected PX4 `.ulg` logs plus `.params`, exact takeoff mass, motor order, and motor/prop/ESC info. RPM or thrust-stand data remains optional but improves confidence. |
 | AirSim batch migration | `AirSimMigrationCoordinator` + `AirSimGitBatchOwner` | done | Git-safe migration is complete and pushed. Tracked scopes now include Cosys tutorial/content assets under 100 MB, SPEAR source/reference subset, CARLA UE5 source/reference subset, and IsaacSim text/source subset. Remaining local ignored content is intentional: CARLA image/content packs, IsaacSim LFS-managed assets/cache/data, and SPEAR `third_party`/Content/generated assets. |
-| UE S0/S1 renderer next round | `TaskSecretary` + `UEMCPProbe(Ptolemy)` + `SceneProfileAuditor(Maxwell)` + `RendererContractAuditor(Carson)` + `Erdos` | source-ready-editor-mcp-currently-unreachable | S0/S1 source-level and standalone UDP runtime paths are ready: S0/S1 metadata gaps are fixed, packet contracts include mission/local-map/status/overlay fields, the UE C++ receiver parses them, S1 render-map instances carry `source.collision_proxy_id`, and `Scripts/UE5/check_unreal_s0_s1_readiness.py --build` passes. Current 2026-05-23 listener probe fails, so Editor MCP/viewport automation remains unavailable until the UE editor plugin is reachable on TCP `55557` and one read-only actor probe passes. |
+| UE S0/S1 renderer next round | `TaskSecretary` + `UEMCPProbe(Ptolemy)` + `SceneProfileAuditor(Maxwell)` + `RendererContractAuditor(Carson)` + `Erdos` | superseded-by-real-scene-source-route | S0/S1 source-level and standalone UDP runtime paths are available, but old generated/blockout maps are no longer the active map route. Current UE 5.5 editor listener and read probes pass; new map work must start from real editable scene sources with truth export. |
 | UE S0/S1 runtime autos-pawn review | main agent | done | Runtime autos-pawn, S1 blockout map, and review-camera input fixes are pushed through `dbf03cdcd`. `Scripts/UE5/check_unreal_s0_s1_readiness.py` and `Scripts/UE5/build_unreal_renderer.sh` passed. `Scripts/UE5/review_unreal_s0_s1_renderer.sh` streamed 1604 frames to the standalone game UDP receiver at `172.17.48.1:5005`. UE log confirms `MoSimSceneLibraryGameMode`, map/playback actor spawn, UDP listen, first received MWORKS frame, and review-camera movement/rotation input accepted. |
 | S1 competition industrial hybrid blockout | main agent | runtime-reviewable-blockout | Added project-owned S1 blockout render map `map_competition_industrial_hybrid_render_map.json` and bound it from the S1 profile. `SCENE_ID=competition_industrial_hybrid_manual_review MAP_ID=competition_industrial_hybrid bash Scripts/UE5/review_unreal_s0_s1_renderer.sh` streamed 1604 frames; UE log confirms map selection and load: terrain `308`, random/inspection columns `11`, wall/gate/pad boxes `11`. This is visual blockout evidence only, not final art or proof of formal local-avoidance behavior. |
 | UE C++ UDP packet receiver | main agent | done | Source-level compatible parsing for Python packet fields `mission`, `local_known_map`, `status`, and `overlays` is implemented, static checks passed, and UE 5.7 UBT/UHT build passed. |
@@ -244,8 +347,8 @@
   scene-source contracts. Use inventory commands for live inspection and keep
   committed contracts limited to sanitized state, counts, and MoSim-local paths.
 - Do not create broad Skills for every possible simulator task in this phase.
-  Current Skills should support only the `unreal_engine` and `mosim_epic_library`
-  MCP boundaries.
+  Current Skills should support only the `mosim-unreal` and `mosim-epic`
+  boundaries.
 - Do not open UE Editor when the requested review is a packaged simulator
   interface such as RflySim3D or CopterSim.
 - Do not adopt Loopback/self-repeating driver loops, Composio credentialed
@@ -256,8 +359,17 @@
 - Do not let user corrections stay only in chat. Add them to the current
   `TaskSecretary` intake and promote stable rules to durable docs after review.
 - Do not let user directives, manual review decisions, sub-agent returns, or
-  work checkpoints stay only in chat. The secretary/PMO route must capture them
-  in intake, ledger, PROGRESS, or WAL before they are treated as recoverable.
+  work checkpoints stay only in chat. The Dispatch Center and Documentation
+  Secretary routes must capture them in task tickets, intake, ledger, PROGRESS,
+  or WAL before they are treated as recoverable.
+- Do not overload the Documentation Secretary with global dispatch. Dispatch
+  Center owns task tickets, owner routing, status board, blocked-task checks,
+  and result-packet routing; Documentation Secretary owns durable decisions,
+  doc patches, and docs-quality review.
+- Do not assign long-running high-context tasks such as Sunray150 parameter
+  identification, UE scene integration, or broad simulator bring-up to a
+  disposable subagent. Open a dedicated task conversation with a task packet,
+  parent department, stop condition, and result-packet contract.
 - Do not conclude parameter identification with "parameters are wrong"; produce
   the data, log fields, estimator route, MWORKS mapping, and validation plan.
   For Sunray150, ordinary RC operation is acceptable if PX4 logs include the
