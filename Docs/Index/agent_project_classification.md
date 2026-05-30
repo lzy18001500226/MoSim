@@ -42,16 +42,15 @@ References/Agent/
   SDK/
   Domain/
   ReviewLater/
-  <remaining upstream projects kept flat until classified>
 Docs/Index/agent_project_classification.md
   <capability classification, reuse priority, and move plan>
 CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md
   <stable master coverage index for all References/>
 ```
 
-Physical category folders exist. Move projects in Git-safe batches only,
-because many existing docs and scripts may still refer to
-`References/Agent/<project>` paths.
+Physical category folders exist. All current Agent reference projects are under
+one primary category directory. Keep future additions in the same pattern and
+update both indexes after moving.
 
 ## Target Categories
 
@@ -142,8 +141,7 @@ after license and integration review.
 | `goclaw-dev` | Multi-tenant agent gateway platform |
 | `zylos-core` | Autonomous agent infrastructure with scheduler/message channels |
 | `AChat-canary` | Enterprise/local-first AI chat platform |
-| `lobehub-canary` | 7x24 agent operation/product surface |
-| `AionUi` | Desktop/mobile UI over command-line agents |
+| `bifrost` | AI gateway, provider routing, failover, monitoring, and MCP gateway reference |
 
 ### Control
 
@@ -165,7 +163,6 @@ communication surfaces.
 | `squad-dev` | Human-led AI agent team workflow |
 | `symphony` | Work item to autonomous implementation/PR/CI/evidence automation |
 | `AutoGroq` | Dynamic expert-agent/team generator |
-| `antfarm` | Also workflow; useful for local team/task dispatch |
 
 ### Workflow
 
@@ -203,7 +200,6 @@ core CoAgent runtime.
 | `haystack` | RAG/search/agent pipeline framework |
 | `NeMo-Agent-Toolkit-develop` | NVIDIA agent ops, evaluation, profiling, MCP/A2A |
 | `swarm` | Minimal handoff model; historical OpenAI reference |
-| `Pearl` | RL agent library; low relevance for CoAgent control plane |
 
 ### Skills
 
@@ -329,10 +325,8 @@ Useful product/domain examples, but not first-line CoAgent infrastructure.
 |---|---|
 | `ai-data-science-team` | Data-science agent team/product |
 | `intentkit` | Cloud-native agent team/product reference |
-| `openpencil` | Design product with agent team ideas |
 | `terminal-velocity` | Creative multi-agent case study |
 | `YC-Killer` | Industry agent scenario collection |
-| `relaticle` | CRM domain example |
 
 ### Misc / Review Later
 
@@ -342,10 +336,6 @@ Do not start with these unless a task directly touches them.
 |---|---|
 | `coding-interview-university` | General CS material, not CoAgent-specific |
 | `Pearl` | RL library; not central to coding/department CoAgent |
-| `CLIP` | Model reference only |
-| `whisper` | Model reference only |
-| `harness` | Needs deeper review before classification is trusted |
-| `intentkit` | Product scope needs more review |
 
 ## Physical Folder Plan
 
@@ -365,28 +355,19 @@ References/Agent/
   ReviewLater/
 ```
 
-Do not move all projects in one commit. Completed first batch:
+Current count by primary category:
 
-- `Platforms`: `openclaw`, `hermes-agent`, `OpenHands`, `codex`, `bifrost`.
-- `Control`: `ClawTeam`, `agent-teams-ai`, `AgentsMesh`, `OpenMOSS`,
-  `CodexMonitor`.
-- `UI`: `hermes-desktop`, `AionUi`, `CodexDesktop-Rebuild`.
-- `Skills`: `AutoSkill`, `ECC`, `openai-skills`, `anthropics-skills`,
-  `SuperClaude_Framework`.
-- `Security`: `AI-Infra-Guard`, `promptfoo`, `rogue`.
-- `Memory`: `context7`, `docs-mcp-server`.
-
-Recommended next batch candidates:
-
-1. `Workflow`: `langgraph`, `temporal`, `OpenSpec`, `TaskWeaver`, `okwinds`,
-   `mlflow`.
-2. `Skills`: `Agent-Skills-for-Context-Engineering`, `agent-skills`,
-   `context-engineering-kit`, `awesome-codex-skills`,
-   `awesome-codex-subagents`, `awesome-claude-agents`.
-3. `Security`: `agentic_security`, `AiSOC`, `tracecat`, `LitterBox`,
-   `Decepticon`, `pentestagent`, `redamon`.
-4. `Memory`: `GraphRAG`, `RepoAgent`, `deepwiki-rs`, `SurfSense`,
-   `anysearch-mcp-server`, `anysearch-skill`, `graphify-8`.
+- `Platforms`: 13
+- `Control`: 13
+- `Workflow`: 10
+- `Frameworks`: 12
+- `Skills`: 25
+- `Memory`: 12
+- `Security`: 11
+- `UI`: 9
+- `SDK`: 6
+- `Domain`: 4
+- `ReviewLater`: 2
 
 Before any physical move:
 
@@ -404,8 +385,8 @@ After each move, update:
 
 ## Current Recommendation
 
-Keep moving in small reviewed batches and use this document as the routing map.
-The next implementation step should reuse existing projects selectively:
+Use this document as the routing map. The next implementation step should reuse
+existing projects selectively:
 
 1. inspect `Platforms/openclaw`, `Control/CodexMonitor`, and
    `Control/agent-teams-ai` for frontend/control-plane reuse;

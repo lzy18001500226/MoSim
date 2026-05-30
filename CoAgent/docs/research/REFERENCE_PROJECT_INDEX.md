@@ -42,6 +42,7 @@ The goal is to answer:
 | Agent category: Platforms | `References/Agent/Platforms` | complete agent products, runtimes, and gateway/platform systems |
 | Agent category: Control | `References/Agent/Control` | multi-agent coordination, task boards, worktrees, departments, and communication |
 | Agent category: Workflow | `References/Agent/Workflow` | durable workflows, state machines, checkpoints, WAL, and spec flows |
+| Agent category: Frameworks | `References/Agent/Frameworks` | general multi-agent frameworks and reusable agent app frameworks |
 | Agent category: Skills | `References/Agent/Skills` | skills, hooks, commands, plugins, role packs, and operator methods |
 | Agent category: Memory | `References/Agent/Memory` | context retrieval, RAG, documentation indexes, knowledge graphs, and repo understanding |
 | Agent category: Security | `References/Agent/Security` | evals, red-team, safety, MCP/skill scanning, and governance |
@@ -51,120 +52,120 @@ The goal is to answer:
 | Agent category: ReviewLater | `References/Agent/ReviewLater` | unclear or low-priority projects for later review |
 | Project | Path | Primary Use |
 |---|---|---|
-| AFFiNE-canary | `References/Agent/AFFiNE-canary` | agent/product architecture reference |
-| CowAgent | `References/Agent/CowAgent` | agent orchestration reference |
-| MetaGPT | `References/Agent/MetaGPT` | role-based software-company agent reference |
+| AFFiNE-canary | `References/Agent/UI/AFFiNE-canary` | agent/product architecture reference |
+| CowAgent | `References/Agent/Platforms/CowAgent` | agent orchestration reference |
+| MetaGPT | `References/Agent/Frameworks/MetaGPT` | role-based software-company agent reference |
 | OpenHands | `References/Agent/Platforms/OpenHands` | coding-agent runtime reference |
-| OpenSpec | `References/Agent/OpenSpec` | spec-driven workflow reference |
-| TaskWeaver | `References/Agent/TaskWeaver` | planner/executor workflow reference |
-| ag2 | `References/Agent/ag2` | multi-agent framework reference |
-| anthropic-sdk-python | `References/Agent/anthropic-sdk-python` | SDK/client and agent integration reference |
-| autogen | `References/Agent/autogen` | multi-agent framework reference |
-| camel | `References/Agent/camel` | agent society/workflow reference |
-| claw-code | `References/Agent/claw-code` | coding-agent reference |
+| OpenSpec | `References/Agent/Workflow/OpenSpec` | spec-driven workflow reference |
+| TaskWeaver | `References/Agent/Workflow/TaskWeaver` | planner/executor workflow reference |
+| ag2 | `References/Agent/Frameworks/ag2` | multi-agent framework reference |
+| anthropic-sdk-python | `References/Agent/SDK/anthropic-sdk-python` | SDK/client and agent integration reference |
+| autogen | `References/Agent/Frameworks/autogen` | multi-agent framework reference |
+| camel | `References/Agent/Frameworks/camel` | agent society/workflow reference |
+| claw-code | `References/Agent/Platforms/claw-code` | coding-agent reference |
 | codex | `References/Agent/Platforms/codex` | Codex source, app-server, thread-store, rollout, skills, execpolicy reference |
-| coding-interview-university | `References/Agent/coding-interview-university` | general CS reference, low priority |
-| crewAI | `References/Agent/crewAI` | crew/task orchestration reference |
-| haystack | `References/Agent/haystack` | agent/search pipeline reference |
+| coding-interview-university | `References/Agent/ReviewLater/coding-interview-university` | general CS reference, low priority |
+| crewAI | `References/Agent/Frameworks/crewAI` | crew/task orchestration reference |
+| haystack | `References/Agent/Frameworks/haystack` | agent/search pipeline reference |
 | hermes-agent | `References/Agent/Platforms/hermes-agent` | durable agent runtime, gateway, memory, skills, scheduler reference |
 | hermes-desktop | `References/Agent/UI/hermes-desktop` | Hermes desktop/client surface reference |
-| langchain | `References/Agent/langchain` | chain/tool abstraction reference |
-| langgraph | `References/Agent/langgraph` | graph-based agent orchestration reference |
-| llama-agents | `References/Agent/llama-agents` | distributed agent architecture reference |
-| okwinds | `References/Agent/okwinds` | workflow/runtime/WAL ideas reference |
+| langchain | `References/Agent/Frameworks/langchain` | chain/tool abstraction reference |
+| langgraph | `References/Agent/Workflow/langgraph` | graph-based agent orchestration reference |
+| llama-agents | `References/Agent/Frameworks/llama-agents` | distributed agent architecture reference |
+| okwinds | `References/Agent/Workflow/okwinds` | workflow/runtime/WAL ideas reference |
 | openclaw | `References/Agent/Platforms/openclaw` | predecessor-style coding-agent/runtime reference |
-| sdk-typescript | `References/Agent/sdk-typescript` | TS SDK/interface reference |
-| temporal | `References/Agent/temporal` | durable workflow runtime reference |
-| AChat-canary | `References/Agent/AChat-canary` | crawled agent/project reference pending detailed classification |
+| sdk-typescript | `References/Agent/Workflow/sdk-typescript` | TS SDK/interface reference |
+| temporal | `References/Agent/Workflow/temporal` | durable workflow runtime reference |
+| AChat-canary | `References/Agent/Platforms/AChat-canary` | crawled agent/project reference pending detailed classification |
 | AI-Infra-Guard | `References/Agent/Security/AI-Infra-Guard` | crawled agent/project reference pending detailed classification |
-| Agent-Skills-for-Context-Engineering | `References/Agent/Agent-Skills-for-Context-Engineering` | context engineering and skill reference |
+| Agent-Skills-for-Context-Engineering | `References/Agent/Skills/Agent-Skills-for-Context-Engineering` | context engineering and skill reference |
 | AutoSkill | `References/Agent/Skills/AutoSkill` | automatic skill discovery/evolution reference |
-| Awesome-Agent-Skills | `References/Agent/Awesome-Agent-Skills` | agent skill collection reference |
+| Awesome-Agent-Skills | `References/Agent/Skills/Awesome-Agent-Skills` | agent skill collection reference |
 | AgentsMesh | `References/Agent/Control/AgentsMesh` | crawled multi-agent/runtime reference pending detailed classification |
-| AiSOC | `References/Agent/AiSOC` | security/agent operations reference pending detailed classification |
+| AiSOC | `References/Agent/Security/AiSOC` | security/agent operations reference pending detailed classification |
 | AionUi | `References/Agent/UI/AionUi` | agent UI/product reference pending detailed classification |
-| AutoGroq | `References/Agent/AutoGroq` | agent workflow reference pending detailed classification |
-| CLIP | `References/Agent/CLIP` | model/tooling reference pending detailed classification |
+| AutoGroq | `References/Agent/Control/AutoGroq` | agent workflow reference pending detailed classification |
+| CLIP | `References/Agent/SDK/CLIP` | model/tooling reference pending detailed classification |
 | ClawTeam | `References/Agent/Control/ClawTeam` | Claw/OpenClaw ecosystem reference |
-| ClawTeam-OpenClaw | `References/Agent/ClawTeam-OpenClaw` | OpenClaw ecosystem reference |
+| ClawTeam-OpenClaw | `References/Agent/Control/ClawTeam-OpenClaw` | OpenClaw ecosystem reference |
 | CodexDesktop-Rebuild | `References/Agent/UI/CodexDesktop-Rebuild` | Codex desktop/UI reference pending detailed classification |
 | CodexMonitor | `References/Agent/Control/CodexMonitor` | Codex monitoring/reference tooling pending detailed classification |
-| Decepticon | `References/Agent/Decepticon` | crawled agent/project reference pending detailed classification |
+| Decepticon | `References/Agent/Security/Decepticon` | crawled agent/project reference pending detailed classification |
 | ECC | `References/Agent/Skills/ECC` | crawled agent/project reference pending detailed classification |
-| LitterBox | `References/Agent/LitterBox` | crawled agent/project reference pending detailed classification |
-| Mysti | `References/Agent/Mysti` | crawled agent/project reference pending detailed classification |
-| NeMo-Agent-Toolkit-develop | `References/Agent/NeMo-Agent-Toolkit-develop` | NVIDIA agent toolkit reference |
+| LitterBox | `References/Agent/Security/LitterBox` | crawled agent/project reference pending detailed classification |
+| Mysti | `References/Agent/UI/Mysti` | crawled agent/project reference pending detailed classification |
+| NeMo-Agent-Toolkit-develop | `References/Agent/Frameworks/NeMo-Agent-Toolkit-develop` | NVIDIA agent toolkit reference |
 | OpenMOSS | `References/Agent/Control/OpenMOSS` | multi-agent/open-source agent reference pending detailed classification |
-| Pearl | `References/Agent/Pearl` | crawled agent/project reference pending detailed classification |
-| RepoAgent | `References/Agent/RepoAgent` | repository agent/documentation reference |
+| Pearl | `References/Agent/ReviewLater/Pearl` | crawled agent/project reference pending detailed classification |
+| RepoAgent | `References/Agent/Memory/RepoAgent` | repository agent/documentation reference |
 | SuperClaude_Framework | `References/Agent/Skills/SuperClaude_Framework` | Claude workflow/command framework reference |
-| SurfSense | `References/Agent/SurfSense` | research/search agent reference pending detailed classification |
-| Viper | `References/Agent/Viper` | crawled agent/project reference pending detailed classification |
-| YC-Killer | `References/Agent/YC-Killer` | crawled agent/product reference pending detailed classification |
-| agent-skills | `References/Agent/agent-skills` | agent skills reference |
+| SurfSense | `References/Agent/Memory/SurfSense` | research/search agent reference pending detailed classification |
+| Viper | `References/Agent/Security/Viper` | crawled agent/project reference pending detailed classification |
+| YC-Killer | `References/Agent/Domain/YC-Killer` | crawled agent/product reference pending detailed classification |
+| agent-skills | `References/Agent/Skills/agent-skills` | agent skills reference |
 | agent-teams-ai | `References/Agent/Control/agent-teams-ai` | agent team architecture reference |
-| agentic_security | `References/Agent/agentic_security` | agent security reference |
-| agor | `References/Agent/agor` | crawled agent/project reference pending detailed classification |
-| ai-data-science-team | `References/Agent/ai-data-science-team` | data-science agent team reference |
-| andrej-karpathy-skills | `References/Agent/andrej-karpathy-skills` | skills/workflow reference |
-| antfarm | `References/Agent/antfarm` | multi-agent reference pending detailed classification |
+| agentic_security | `References/Agent/Security/agentic_security` | agent security reference |
+| agor | `References/Agent/Control/agor` | crawled agent/project reference pending detailed classification |
+| ai-data-science-team | `References/Agent/Domain/ai-data-science-team` | data-science agent team reference |
+| andrej-karpathy-skills | `References/Agent/Skills/andrej-karpathy-skills` | skills/workflow reference |
+| antfarm | `References/Agent/Workflow/antfarm` | multi-agent reference pending detailed classification |
 | anthropics-skills | `References/Agent/Skills/anthropics-skills` | Anthropic-style skills reference |
-| anysearch-mcp-server | `References/Agent/anysearch-mcp-server` | MCP/search server reference |
-| anysearch-skill | `References/Agent/anysearch-skill` | search skill reference |
-| awesome-claude-agents | `References/Agent/awesome-claude-agents` | Claude agent collection reference |
-| awesome-codex-skills | `References/Agent/awesome-codex-skills` | Codex skills collection reference |
-| awesome-codex-subagents | `References/Agent/awesome-codex-subagents` | Codex subagent collection reference |
-| awesome-openclaw-skills | `References/Agent/awesome-openclaw-skills` | OpenClaw skills collection reference |
-| claude-plugins-official | `References/Agent/claude-plugins-official` | Claude plugin/reference implementation source |
-| codex-plugin-cc | `References/Agent/codex-plugin-cc` | Codex plugin reference |
-| context-engineering-kit | `References/Agent/context-engineering-kit` | context-engineering reference |
-| csghub | `References/Agent/csghub` | crawled agent/project reference pending detailed classification |
-| deepwiki-rs | `References/Agent/deepwiki-rs` | repository knowledge/search reference |
-| gelab-zero | `References/Agent/gelab-zero` | crawled agent/project reference pending detailed classification |
-| goclaw-dev | `References/Agent/goclaw-dev` | Claw ecosystem reference |
-| GraphRAG | `References/Agent/GraphRAG` | graph-based retrieval and memory/reference indexing |
-| graphify-8 | `References/Agent/graphify-8` | graph/indexing reference pending detailed classification |
-| harness | `References/Agent/harness` | harness/evaluation reference |
-| HeavySkill | `References/Agent/HeavySkill` | skill-heavy agent workflow reference |
-| intentkit | `References/Agent/intentkit` | intent/workflow agent reference |
-| lobehub-canary | `References/Agent/lobehub-canary` | agent UI/product reference |
-| mastra | `References/Agent/mastra` | agent framework reference |
-| mattpocock-skills | `References/Agent/mattpocock-skills` | skills/workflow reference |
-| MMSkills | `References/Agent/MMSkills` | multimodal skill and task-skill mapping reference |
-| mlflow | `References/Agent/mlflow` | AI/ML lifecycle and agent evaluation reference |
-| moltis | `References/Agent/moltis` | crawled agent/project reference pending detailed classification |
-| oh-my-agent | `References/Agent/oh-my-agent` | agent workflow collection reference |
-| oh-my-claudecode | `References/Agent/oh-my-claudecode` | Claude Code workflow reference |
-| oh-my-codex | `References/Agent/oh-my-codex` | Codex workflow reference |
-| openai-agents-python | `References/Agent/openai-agents-python` | OpenAI Agents SDK reference |
-| openai-cookbook | `References/Agent/openai-cookbook` | OpenAI examples/reference |
-| openai-python | `References/Agent/openai-python` | OpenAI Python SDK reference |
+| anysearch-mcp-server | `References/Agent/Memory/anysearch-mcp-server` | MCP/search server reference |
+| anysearch-skill | `References/Agent/Memory/anysearch-skill` | search skill reference |
+| awesome-claude-agents | `References/Agent/Skills/awesome-claude-agents` | Claude agent collection reference |
+| awesome-codex-skills | `References/Agent/Skills/awesome-codex-skills` | Codex skills collection reference |
+| awesome-codex-subagents | `References/Agent/Skills/awesome-codex-subagents` | Codex subagent collection reference |
+| awesome-openclaw-skills | `References/Agent/Skills/awesome-openclaw-skills` | OpenClaw skills collection reference |
+| claude-plugins-official | `References/Agent/Skills/claude-plugins-official` | Claude plugin/reference implementation source |
+| codex-plugin-cc | `References/Agent/Skills/codex-plugin-cc` | Codex plugin reference |
+| context-engineering-kit | `References/Agent/Skills/context-engineering-kit` | context-engineering reference |
+| csghub | `References/Agent/Memory/csghub` | crawled agent/project reference pending detailed classification |
+| deepwiki-rs | `References/Agent/Memory/deepwiki-rs` | repository knowledge/search reference |
+| gelab-zero | `References/Agent/UI/gelab-zero` | crawled agent/project reference pending detailed classification |
+| goclaw-dev | `References/Agent/Platforms/goclaw-dev` | Claw ecosystem reference |
+| GraphRAG | `References/Agent/Memory/GraphRAG` | graph-based retrieval and memory/reference indexing |
+| graphify-8 | `References/Agent/Memory/graphify-8` | graph/indexing reference pending detailed classification |
+| harness | `References/Agent/Workflow/harness` | harness/evaluation reference |
+| HeavySkill | `References/Agent/Skills/HeavySkill` | skill-heavy agent workflow reference |
+| intentkit | `References/Agent/Domain/intentkit` | intent/workflow agent reference |
+| lobehub-canary | `References/Agent/UI/lobehub-canary` | agent UI/product reference |
+| mastra | `References/Agent/Frameworks/mastra` | agent framework reference |
+| mattpocock-skills | `References/Agent/Skills/mattpocock-skills` | skills/workflow reference |
+| MMSkills | `References/Agent/Skills/MMSkills` | multimodal skill and task-skill mapping reference |
+| mlflow | `References/Agent/Workflow/mlflow` | AI/ML lifecycle and agent evaluation reference |
+| moltis | `References/Agent/Platforms/moltis` | crawled agent/project reference pending detailed classification |
+| oh-my-agent | `References/Agent/Control/oh-my-agent` | agent workflow collection reference |
+| oh-my-claudecode | `References/Agent/Control/oh-my-claudecode` | Claude Code workflow reference |
+| oh-my-codex | `References/Agent/Control/oh-my-codex` | Codex workflow reference |
+| openai-agents-python | `References/Agent/Frameworks/openai-agents-python` | OpenAI Agents SDK reference |
+| openai-cookbook | `References/Agent/SDK/openai-cookbook` | OpenAI examples/reference |
+| openai-python | `References/Agent/SDK/openai-python` | OpenAI Python SDK reference |
 | openai-skills | `References/Agent/Skills/openai-skills` | OpenAI skills reference |
-| openpencil | `References/Agent/openpencil` | agent/product reference pending detailed classification |
-| pentestagent | `References/Agent/pentestagent` | security agent reference |
-| plannotator | `References/Agent/plannotator` | planning/annotation agent reference |
-| pro-workflow | `References/Agent/pro-workflow` | professional workflow reference |
+| openpencil | `References/Agent/Memory/openpencil` | agent/product reference pending detailed classification |
+| pentestagent | `References/Agent/Security/pentestagent` | security agent reference |
+| plannotator | `References/Agent/UI/plannotator` | planning/annotation agent reference |
+| pro-workflow | `References/Agent/Skills/pro-workflow` | professional workflow reference |
 | promptfoo | `References/Agent/Security/promptfoo` | prompt/eval harness reference |
-| redamon | `References/Agent/redamon` | crawled agent/project reference pending detailed classification |
-| relaticle | `References/Agent/relaticle` | crawled agent/project reference pending detailed classification |
+| redamon | `References/Agent/Security/redamon` | crawled agent/project reference pending detailed classification |
+| relaticle | `References/Agent/UI/relaticle` | crawled agent/project reference pending detailed classification |
 | rogue | `References/Agent/Security/rogue` | crawled agent/project reference pending detailed classification |
-| sdk-python | `References/Agent/sdk-python` | SDK/client reference |
-| SkillRouter | `References/Agent/SkillRouter` | skill routing and evaluation reference |
-| SkillX | `References/Agent/SkillX` | agent skill execution/evaluation reference |
-| spacebot | `References/Agent/spacebot` | crawled agent/project reference pending detailed classification |
-| SR-Agents | `References/Agent/SR-Agents` | search/research agent reference |
-| SSL | `References/Agent/SSL` | skill/self-supervised learning reference |
-| squad-dev | `References/Agent/squad-dev` | agent team/dev workflow reference |
-| superpowers | `References/Agent/superpowers` | skills/workflow reference |
-| swarm | `References/Agent/swarm` | multi-agent swarm reference |
-| symphony | `References/Agent/symphony` | multi-agent/workflow reference pending detailed classification |
-| terminal-velocity | `References/Agent/terminal-velocity` | terminal/coding-agent reference pending detailed classification |
-| tiktoken | `References/Agent/tiktoken` | tokenization/context-budget reference |
-| tinyagi | `References/Agent/tinyagi` | small agent framework reference |
-| tracecat | `References/Agent/tracecat` | workflow/automation reference |
-| vexa | `References/Agent/vexa` | crawled agent/project reference pending detailed classification |
-| whisper | `References/Agent/whisper` | audio/model reference pending detailed classification |
-| zylos-core | `References/Agent/zylos-core` | crawled agent/project reference pending detailed classification |
+| sdk-python | `References/Agent/Workflow/sdk-python` | SDK/client reference |
+| SkillRouter | `References/Agent/Skills/SkillRouter` | skill routing and evaluation reference |
+| SkillX | `References/Agent/Skills/SkillX` | agent skill execution/evaluation reference |
+| spacebot | `References/Agent/Platforms/spacebot` | crawled agent/project reference pending detailed classification |
+| SR-Agents | `References/Agent/Skills/SR-Agents` | search/research agent reference |
+| SSL | `References/Agent/Skills/SSL` | skill/self-supervised learning reference |
+| squad-dev | `References/Agent/Control/squad-dev` | agent team/dev workflow reference |
+| superpowers | `References/Agent/Skills/superpowers` | skills/workflow reference |
+| swarm | `References/Agent/Frameworks/swarm` | multi-agent swarm reference |
+| symphony | `References/Agent/Control/symphony` | multi-agent/workflow reference pending detailed classification |
+| terminal-velocity | `References/Agent/Domain/terminal-velocity` | terminal/coding-agent reference pending detailed classification |
+| tiktoken | `References/Agent/SDK/tiktoken` | tokenization/context-budget reference |
+| tinyagi | `References/Agent/Platforms/tinyagi` | small agent framework reference |
+| tracecat | `References/Agent/Security/tracecat` | workflow/automation reference |
+| vexa | `References/Agent/Memory/vexa` | crawled agent/project reference pending detailed classification |
+| whisper | `References/Agent/SDK/whisper` | audio/model reference pending detailed classification |
+| zylos-core | `References/Agent/Platforms/zylos-core` | crawled agent/project reference pending detailed classification |
 | docs-mcp-server | `References/Agent/Memory/docs-mcp-server` | local documentation indexing and MCP server reference |
 | context7 | `References/Agent/Memory/context7` | up-to-date documentation retrieval MCP/skill reference |
 | bifrost | `References/Agent/Platforms/bifrost` | AI gateway, provider routing, failover, monitoring, and MCP gateway reference |
@@ -264,17 +265,17 @@ If the task is about agent architecture:
 2. `References/Agent/Platforms/codex`
 3. `References/Agent/Platforms/hermes-agent`
 4. `References/Agent/UI/hermes-desktop`
-5. `References/Agent/anthropic-sdk-python/src/anthropic/resources/beta`
+5. `References/Agent/SDK/anthropic-sdk-python/src/anthropic/resources/beta`
 6. `References/Agent/Platforms/openclaw`
-7. `References/Agent/okwinds`
+7. `References/Agent/Workflow/okwinds`
 8. `Docs/Index/agent_project_classification.md`
 
 If the task is about long-context degradation, context packs, or durable agent
 memory:
 
 1. `CoAgent/docs/research/LEARNING_STRATEGY.md`
-2. `References/Agent/anthropic-sdk-python/src/anthropic/resources/beta/memory_stores`
-3. `References/Agent/anthropic-sdk-python/src/anthropic/resources/beta/sessions`
+2. `References/Agent/SDK/anthropic-sdk-python/src/anthropic/resources/beta/memory_stores`
+3. `References/Agent/SDK/anthropic-sdk-python/src/anthropic/resources/beta/sessions`
 4. `References/Agent/Platforms/codex`
 5. `References/Agent/Platforms/hermes-agent`
 6. `Docs/Index/agent_project_classification.md`

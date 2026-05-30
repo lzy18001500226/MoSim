@@ -26,6 +26,7 @@ AGENT_CATEGORY_DIRS = {
     "Platforms",
     "Control",
     "Workflow",
+    "Frameworks",
     "Skills",
     "Memory",
     "Security",
