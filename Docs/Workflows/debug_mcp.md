@@ -181,6 +181,61 @@ mosim-epic
 mosim-unreal
 ```
 
+### 5.1 Windows-MCP Desktop Automation Server
+
+Windows-MCP is a Windows-native desktop automation MCP server. Do not run it
+with WSL Python because its UI, screenshot, PowerShell, registry, and window
+automation dependencies must execute in the Windows desktop session.
+
+Install or repair the Windows-side runtime:
+
+```bash
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \
+  "irm https://astral.sh/uv/install.ps1 | iex"
+
+/mnt/c/WINDOWS/system32/cmd.exe /c \
+  "cd /d C:\Users\HP\Desktop\MoSim\Docs\Skills\Windows-MCP && C:\Users\HP\.local\bin\uv.exe sync"
+```
+
+Use a WSL wrapper at:
+
+```text
+/home/linux/mcp-wrappers/windows_mcp.sh
+```
+
+Expected wrapper command:
+
+```bash
+exec /init /mnt/c/WINDOWS/system32/cmd.exe /c \
+  "cd /d C:\Users\HP\Desktop\MoSim\Docs\Skills\Windows-MCP && set ANONYMIZED_TELEMETRY=false&& set WINDOWS_MCP_DEBUG=false&& set WINDOWS_MCP_SCREENSHOT_BACKEND=auto&& C:\Users\HP\.local\bin\uv.exe run windows-mcp serve"
+```
+
+Register it in the Codex config:
+
+```toml
+[mcp_servers."windows-mcp"]
+command = "/home/linux/mcp-wrappers/windows_mcp.sh"
+args = []
+startup_timeout_sec = 180
+tool_timeout_sec = 300
+```
+
+Verify:
+
+```bash
+codex mcp list
+```
+
+Expected entry:
+
+```text
+windows-mcp   /home/linux/mcp-wrappers/windows_mcp.sh   enabled
+```
+
+Security note: Windows-MCP can operate the Windows desktop and run PowerShell
+commands. Use the smallest necessary tool call and avoid broad desktop or
+filesystem actions unless the user explicitly requests them.
+
 Reference only:
 
 ---
