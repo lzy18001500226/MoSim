@@ -74,6 +74,11 @@ duplicate locks, or missing review confirmation are detected.
 Stale locks are warning evidence, not automatic deletion. A human or a recovery
 workflow should inspect and explicitly release or reclaim them.
 
+Smoke tests must not mutate the live lock directory
+`Results/coagent_automation/locks`. Use an isolated temporary lock directory
+when testing guardrail concurrency; doctor and status-export checks can run in
+parallel during long tasks.
+
 High-impact automations that write docs, workflow state, reference indexes, or
 Git planning records should keep `requires_human_review: true`. Low-risk index
 refreshes that write only ignored `Results/` paths may set it to `false`.

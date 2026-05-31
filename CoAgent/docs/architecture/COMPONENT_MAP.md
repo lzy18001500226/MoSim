@@ -29,9 +29,10 @@ Current implementation gate:
 - use `CoAgent/docs/research/THREE_ROUND_STUDY_AND_DISCUSSION.md` for supporting
   evidence,
 - the discussion packet checklist is confirmed; `COAGENT-IMPL-01` through
-  `COAGENT-IMPL-08` are complete, and current design continuation is
-  `COAGENT-DESIGN-11` at the vendor/framework-pattern mapping layer before
-  final operating-architecture synthesis.
+  `COAGENT-IMPL-08` are complete, and the current approved implementation
+  stream is `COAGENT-IMPL-LONGRUN-20260531` for project-local runtime,
+  task/result, review, notification-packet, checkpoint, status, evidence, and
+  recovery work.
 
 ## Current Mapping
 
@@ -59,19 +60,25 @@ Current implementation gate:
 | Post-approval backlog | `CoAgent/docs/decisions/coagent_post_approval_backlog.md` | frozen first implementation tasks, acceptance gates, and stop conditions after approval |
 | Three-round synthesis | `CoAgent/docs/research/THREE_ROUND_STUDY_AND_DISCUSSION.md` | expanded study notes behind the current packet |
 | External project master index | `CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md` | stable entry to `References/` |
-| Runtime seed | `CoAgent/runtime/mosim_agent_runtime.py` | SQLite task queue, JSONL event stream, and conversation edge graph |
+| Runtime seed | `CoAgent/runtime/mosim_agent_runtime.py` | SQLite task queue, JSONL event stream, conversation edge graph, and event audit |
 | Runtime data | `Results/agent_runtime/` | local queue DB and event log |
 | Compatibility launcher | `Scripts/agent/mosim_agent_runtime.py` | thin wrapper kept for old workflows |
 | Protocol schemas | `CoAgent/protocol/` | task packet and result packet definitions |
-| Task bootstrap | `CoAgent/bootstrap/` | creates reusable context, dispatch, handoff, transport-plan, runtime edge, recovery, and knowledge-upsert artifacts for long-running task conversations |
+| Task bootstrap | `CoAgent/bootstrap/` | creates reusable context, dispatch, handoff, transport-plan, runtime edge, recovery, knowledge-upsert artifacts, and read-only recovery status for long-running task conversations |
 | Dispatch helpers | `CoAgent/dispatch/` | department registry, dispatch envelope/text builder, review brief, result packet import |
 | Transport adapters | `CoAgent/transport/` | visible conversation delivery interface and `codex_exec_resume` adapter |
 | Result router | `CoAgent/result_router/` | validates, review-gates, imports, archives, and summarizes result packets from visible conversations |
 | Context packs | `CoAgent/context/` | compact startup packets and measurable quality/budget metrics for dedicated long-running task conversations |
 | Memory context | `CoAgent/memory/` | fenced and sanitised project-memory recall with source weights and character budgets, injected only as background evidence |
+| Status export | `CoAgent/status_export/` | compact task, active-board, review-queue, doctor, and context-quality bundles for human review |
+| Task health | `CoAgent/task_health/` | read-only task health snapshots that combine runtime state, review queue, event audit, and preflight findings into intervention hints |
+| Blocker packet | `CoAgent/blocker_packet/` | `blocker_notification` packet generator from task-health continuation decisions; read-only by default, with explicit claim-token metadata recording |
+| Evidence manifest | `CoAgent/evidence/` | read-only index of task evidence paths from runtime metadata and known review/status/check artifact folders; separates current recovery staleness from archival/supporting staleness and owns the shared standard refresh-command plan |
+| Review package | `CoAgent/review_package/` | read-only human-review package that summarizes task checkpoint, review queue, closeout verification, runtime audit, generated artifacts, and advisory evidence-refresh state |
 | Lifecycle proof | `CoAgent/tests/test_lifecycle_smoke.py` | executable proof that task, context pack, dispatch text, conversation edge, result router, summary, and knowledge recovery form one closed loop |
 | Hooks / preflight | `CoAgent/hooks/` | CoAgent-owned guardrails and local preflight checks |
 | Automation | `CoAgent/automation/` | recurring automation definitions, runtime enqueue helper, execution guardrails, worker lock TTL, and concurrency policy |
+| DevOps helpers | `CoAgent/devops/` | read-only Git integration planning, batch splitting, handoff packets, and release hygiene helpers |
 | Knowledge | `CoAgent/knowledge/` | project-owned source list, index build, and local search |
 | Learning records | `CoAgent/learning/` | bounded architecture audits, source-to-architecture indexer, and adopt/adapt/portable/reject decisions |
 | Doctor / health report | `CoAgent/doctor/` | structured CoAgent recoverability report inspired by Codex doctor and Hermes runtime guardrails |
@@ -101,6 +108,11 @@ These are still missing or partial:
 | integrated review/test/security queue runtime | missing |
 | source-to-architecture audit database | partial, generated from `CoAgent/learning/audits/*.md` |
 | project-local doctor report | present, first version |
+| compact human-review status export | present, first version |
+| task-health/intervention snapshot | present, read-only first version |
+| blocker notification packet generator | present, first version with explicit claim-token metadata recording |
+| task evidence manifest | present, read-only first version |
+| task human-review package | present, includes closeout verification so manual decisions can be checked before resuming |
 
 ## Planned Runtime Ownership
 
@@ -117,9 +129,16 @@ script buckets:
 | result packet router | `CoAgent/result_router/` |
 | safety hooks | `CoAgent/hooks/` |
 | recurring automation | `CoAgent/automation/` |
+| Git integration helpers | `CoAgent/devops/` |
 | knowledge and indexing utilities | `CoAgent/knowledge/` |
 | context-pack generation | `CoAgent/context/` |
 | fenced memory/context recall | `CoAgent/memory/` |
+| compact status/review export | `CoAgent/status_export/` |
+| task-health snapshots | `CoAgent/task_health/` |
+| blocker notification packets | `CoAgent/blocker_packet/` |
+| evidence manifests | `CoAgent/evidence/` |
+| human-review packages | `CoAgent/review_package/` |
+| review closeout verification | `CoAgent/review_queue/` |
 | architecture-learning audit records | `CoAgent/learning/` |
 | doctor and recovery checks | `CoAgent/doctor/` |
 

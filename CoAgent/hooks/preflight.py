@@ -63,6 +63,35 @@ RESULT_EVIDENCE_REASONS = {
     "missing_next_action",
     "missing_blocker_details",
 }
+EXPECTED_IGNORED_RUNTIME_OUTPUTS = (
+    "Results/tmp/coagent_preflight_probe.txt",
+    "Results/cache/coagent_preflight_probe.txt",
+    "Results/native_result_cache/coagent_preflight_probe.txt",
+    "Results/coagent_transport/probe.json",
+    "Results/coagent_automation/probe.json",
+    "Results/coagent_doctor/probe.json",
+    "Results/coagent_gateway/probe.jsonl",
+    "Results/coagent_status/probe.json",
+    "Results/coagent_bootstrap/probe.json",
+    "Results/coagent_knowledge/knowledge_index.json",
+    "Results/coagent_learning/learning_index.json",
+    "Results/agent_packets/probe.json",
+    "Results/agent_runtime/tasks.sqlite3",
+    "Results/context_packs/probe.md",
+    "CoAgent/runtime/__pycache__/probe.pyc",
+)
+STAGED_RUNTIME_PREFIXES = (
+    "Results/",
+    "CoAgent/__pycache__/",
+)
+STAGED_RUNTIME_PARTS = (
+    "/__pycache__/",
+)
+STAGED_EXTERNAL_PREFIXES = (
+    "References/",
+    "Docs/Skills/Agent/",
+)
+STAGED_BROAD_THRESHOLD = 200
 
 
 def run(command: list[str], timeout: int = 20) -> dict:
@@ -271,6 +300,109 @@ def check_result_packet_evidence(packet_paths: list[str]) -> dict:
     return {"ok": not findings, "findings": findings, "checked_packets": len(packet_paths), "packets": packets}
 
 
+def check_runtime_output_ignore(paths: tuple[str, ...] = EXPECTED_IGNORED_RUNTIME_OUTPUTS) -> dict:
+    try:
+        completed = subprocess.run(
+            ["git", "check-ignore", "--stdin"],
+            cwd=ROOT,
+            input="\n".join(paths) + "\n",
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=20,
+            check=False,
+        )
+    except Exception as exc:
+        return {"ok": False, "error": str(exc), "checked_paths": list(paths)}
+    ignored = set(completed.stdout.splitlines())
+    missing = [path for path in paths if path not in ignored]
+    return {
+        "ok": completed.returncode in {0, 1} and not missing,
+        "returncode": completed.returncode,
+        "ignored_count": len(ignored),
+        "missing": missing,
+        "checked_paths": list(paths),
+        "stderr": completed.stderr.strip(),
+    }
+
+
+def staged_files() -> tuple[list[str], dict]:
+    result = run(["git", "diff", "--cached", "--name-only", "--diff-filter=ACMRTD"], timeout=30)
+    if not result.get("ok"):
+        return [], {"ok": False, "error": result}
+    return [line for line in result["stdout"].splitlines() if line], {"ok": True, "result": result}
+
+
+def check_git_workspace_state(
+    staged_limit: int = STAGED_BROAD_THRESHOLD,
+    *,
+    staged_override: list[str] | None = None,
+    index_lock_present: bool | None = None,
+) -> dict:
+    findings = []
+    index_lock = ROOT / ".git" / "index.lock"
+    lock_present = index_lock.exists() if index_lock_present is None else index_lock_present
+    if lock_present:
+        findings.append({"severity": "fail", "field": "git", "value": ".git/index.lock", "reason": "git_index_lock_present"})
+
+    if staged_override is None:
+        staged, staged_result = staged_files()
+        if not staged_result.get("ok"):
+            findings.append({"severity": "fail", "field": "git", "value": "staged_files", "reason": "cannot_read_staged_files"})
+            staged = []
+    else:
+        staged = staged_override
+
+    staged_runtime = [
+        path
+        for path in staged
+        if path.startswith(STAGED_RUNTIME_PREFIXES)
+        or any(part in path for part in STAGED_RUNTIME_PARTS)
+        or path.endswith(".pyc")
+    ]
+    staged_external = [path for path in staged if path.startswith(STAGED_EXTERNAL_PREFIXES)]
+    if staged_runtime:
+        findings.append(
+            {
+                "severity": "fail",
+                "field": "git",
+                "value": staged_runtime[:30],
+                "reason": "staged_runtime_output",
+                "count": len(staged_runtime),
+            }
+        )
+    if staged_external:
+        findings.append(
+            {
+                "severity": "fail",
+                "field": "git",
+                "value": staged_external[:30],
+                "reason": "staged_external_reference_tree",
+                "count": len(staged_external),
+            }
+        )
+    if len(staged) > staged_limit:
+        findings.append(
+            {
+                "severity": "warning",
+                "field": "git",
+                "value": len(staged),
+                "reason": "staged_file_count_exceeds_split_threshold",
+                "threshold": staged_limit,
+            }
+        )
+    fail_findings = [item for item in findings if item["severity"] == "fail"]
+    return {
+        "ok": not fail_findings,
+        "findings": findings,
+        "staged_count": len(staged),
+        "staged_limit": staged_limit,
+        "staged_runtime_count": len(staged_runtime),
+        "staged_external_count": len(staged_external),
+        "index_lock_present": lock_present,
+    }
+
+
 def collect(args: argparse.Namespace) -> dict:
     paths = args.path or []
     write_paths = args.write_path or []
@@ -288,6 +420,8 @@ def collect(args: argparse.Namespace) -> dict:
         "secret_paths": check_secret_paths(candidate_large_paths),
         "command_policy": check_command_policy(commands, allow_destructive=args.allow_destructive_command, allow_broad_git=args.allow_broad_git),
         "result_packet_evidence": check_result_packet_evidence(result_packets),
+        "runtime_output_ignore": check_runtime_output_ignore(),
+        "git_workspace_state": check_git_workspace_state(args.staged_file_warning_threshold),
     }
     checks["ok"] = all(item.get("ok", False) for item in checks.values())
     return checks
@@ -304,6 +438,7 @@ def main() -> int:
     parser.add_argument("--full-repo-large-scan", action="store_true")
     parser.add_argument("--allow-destructive-command", action="store_true")
     parser.add_argument("--allow-broad-git", action="store_true")
+    parser.add_argument("--staged-file-warning-threshold", type=int, default=STAGED_BROAD_THRESHOLD)
     args = parser.parse_args()
 
     data = collect(args)
@@ -324,6 +459,9 @@ def main() -> int:
             if name == "candidate_large_files" and value.get("offenders"):
                 for item in value["offenders"]:
                     print(f"      {item['size_mb']} MB {item['path']}")
+            if name == "runtime_output_ignore" and value.get("missing"):
+                for item in value["missing"]:
+                    print(f"      not ignored {item}")
             if name == "scope" and value.get("outside"):
                 for item in value["outside"]:
                     print(f"      outside {item}")

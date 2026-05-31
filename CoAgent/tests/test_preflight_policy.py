@@ -18,6 +18,22 @@ if str(ROOT) not in sys.path:
 from CoAgent.hooks import preflight
 
 
+def make_args(**overrides):
+    values = {
+        "path": [],
+        "write_path": [],
+        "command": [],
+        "result_packet": [],
+        "large_limit_mb": 100,
+        "full_repo_large_scan": False,
+        "allow_destructive_command": False,
+        "allow_broad_git": False,
+        "staged_file_warning_threshold": 200,
+    }
+    values.update(overrides)
+    return Namespace(**values)
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory(dir=ROOT / "Results" / "tmp") as tmp:
         tmp_root = Path(tmp)
@@ -61,7 +77,7 @@ def main() -> int:
         )
 
         policy = preflight.collect(
-            Namespace(
+            make_args(
                 path=["CoAgent/hooks/preflight.py", "/tmp/outside-read"],
                 write_path=["Results/tmp/preflight-ok", "/tmp/outside-write", "C:/Users/HP/.codex/auth.json"],
                 command=["git add .", "rm -rf Results/tmp/bad", "python3 CoAgent/hooks/preflight.py"],
@@ -80,9 +96,11 @@ def main() -> int:
         assert any(item["reason"] == "broad_git_risk" for item in policy["command_policy"]["findings"])
         assert policy["candidate_large_files"]["offenders"], policy["candidate_large_files"]
         assert any(item["reason"] == "missing_terminal_evidence" for item in policy["result_packet_evidence"]["findings"])
+        assert policy["runtime_output_ignore"]["ok"], policy["runtime_output_ignore"]
+        assert "Results/coagent_status/probe.json" in policy["runtime_output_ignore"]["checked_paths"]
 
         clean = preflight.collect(
-            Namespace(
+            make_args(
                 path=["CoAgent/hooks/preflight.py"],
                 write_path=["Results/tmp/preflight-ok"],
                 command=["python3 CoAgent/hooks/preflight.py"],
@@ -98,6 +116,25 @@ def main() -> int:
         assert clean["secret_paths"]["ok"], clean["secret_paths"]
         assert clean["command_policy"]["ok"], clean["command_policy"]
         assert clean["result_packet_evidence"]["ok"], clean["result_packet_evidence"]
+        assert clean["runtime_output_ignore"]["ok"], clean["runtime_output_ignore"]
+        assert clean["git_workspace_state"]["ok"], clean["git_workspace_state"]
+
+        git_policy = preflight.check_git_workspace_state(
+            staged_limit=2,
+            staged_override=
+                [
+                    "Results/agent_runtime/tasks.sqlite3",
+                    "References/Agent/example/README.md",
+                    "CoAgent/runtime/mosim_agent_runtime.py",
+                ],
+            index_lock_present=True,
+        )
+        assert not git_policy["ok"], git_policy
+        reasons = {item["reason"] for item in git_policy["findings"]}
+        assert "git_index_lock_present" in reasons
+        assert "staged_runtime_output" in reasons
+        assert "staged_external_reference_tree" in reasons
+        assert "staged_file_count_exceeds_split_threshold" in reasons
 
         direct = subprocess.run(
             [
@@ -105,6 +142,8 @@ def main() -> int:
                 "CoAgent/hooks/preflight.py",
                 "--result-packet",
                 str(complete_packet.relative_to(ROOT)),
+                "--staged-file-warning-threshold",
+                "1000",
             ],
             cwd=ROOT,
             text=True,

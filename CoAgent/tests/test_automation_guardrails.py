@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import sys
 import json
+import tempfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -39,7 +40,7 @@ def sample_task(**overrides):
     return task
 
 
-def main() -> int:
+def run_smoke() -> None:
     lock_path = guardrails.lock_path_for("guardrail_smoke")
     if lock_path.exists():
         lock_path.unlink()
@@ -133,6 +134,16 @@ def main() -> int:
     assert "active_count" in worker
     assert "policy" in worker
 
+
+def main() -> int:
+    (ROOT / "Results" / "tmp").mkdir(parents=True, exist_ok=True)
+    original_lock_dir = guardrails.LOCK_DIR
+    with tempfile.TemporaryDirectory(prefix="coagent_automation_guardrails_", dir=ROOT / "Results" / "tmp") as tmp:
+        guardrails.LOCK_DIR = Path(tmp) / "locks"
+        try:
+            run_smoke()
+        finally:
+            guardrails.LOCK_DIR = original_lock_dir
     print("automation_guardrails_smoke ok")
     return 0
 
