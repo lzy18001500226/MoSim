@@ -94,6 +94,7 @@ secrets.*
 # RflySim installer/runtime packages are local dependencies, not repo assets
 References/RflySim/RflySimAdv3Full/
 References/RflySim/RflySimAdvFree/
+References/MWORKS/**/Log/
 
 # Downloaded Unreal scene candidates are large/local review assets. Track only
 # project-owned adapters/docs unless an explicit asset-batch task unignores one.
