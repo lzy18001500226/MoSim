@@ -156,11 +156,32 @@ def main() -> int:
                 context_root=context_root,
                 actor="MainAgent",
                 task_id=task_id,
+                skip_preflight=True,
+                staged_file_warning_threshold=1000,
             )
         )
         assert status["terminal"], status
         assert status["conversation_graph"]["count"] == 1
         assert status["transport_plan_summary"].endswith(f"{task_id}.transport-plan.json")
+        assert status["continue_allowed"] is False, status
+        assert status["recommended_action"] == "ask_user_once", status
+        assert status["stop_reason"] == "human_needed", status
+        assert status["human_task_ids"] == [task_id], status
+        assert status["review_task_ids"] == [task_id], status
+        assert status["blocking_task_ids"] == [task_id], status
+        assert status["task_health"]["decision"]["continue_allowed"] is False, status["task_health"]
+        assert status["blocker_packet_needed"] is True, status
+        assert "blocker_packet.py" in status["blocker_packet_command"], status
+        assert "--record-metadata" in status["blocker_packet_record_command"], status
+        assert status["evidence_manifest"]["ok"], status["evidence_manifest"]
+        assert status["evidence_manifest"]["evidence_count"] >= 1, status["evidence_manifest"]
+        assert status["evidence_manifest_summary"] == status["evidence_manifest"], status
+        assert "critical_stale_count" in status["evidence_manifest_summary"], status["evidence_manifest_summary"]
+        assert status["review_status"] == "needs_review", status
+        assert status["human_needed"] == "yes", status
+        assert len(status["review_queue_items"]) == 1, status["review_queue_items"]
+        assert status["review_queue_items"][0]["task_id"] == task_id, status["review_queue_items"]
+        assert "review_status=needs_review" in status["review_queue_items"][0]["reasons"], status["review_queue_items"]
         task = runtime.show_task(ns(db=db, events=events, task_id=task_id))
         assert task["state"] == "done"
 

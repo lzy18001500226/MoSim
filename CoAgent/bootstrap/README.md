@@ -90,3 +90,27 @@ python3 CoAgent/bootstrap/task_bootstrap.py status-task \
   --department ProjectOwner \
   --task-id example_long_task
 ```
+
+`status-task` is read-only. It returns the runtime state, artifact paths,
+conversation edge graph, task-health continuation decision, review-queue item
+for the task, evidence-manifest summary, and the standard blocker-packet
+commands. Use it as the first recovery command when a dedicated long-task
+conversation is resumed by another agent.
+
+The recovery decision is also exposed at the response root:
+
+- `continue_allowed`
+- `recommended_action`
+- `stop_reason`
+- `next_intervention`
+- `blocking_task_ids`
+- `watch_task_ids`
+- `human_task_ids`
+- `review_task_ids`
+- `safety_task_ids`
+- `evidence_manifest_summary`
+
+By default `status-task` uses the same Git/preflight threshold as task-health,
+status export, and review packages, so broad staged surfaces remain visible as
+`continue_with_watch`. Use `--skip-preflight` only for isolated smoke tests or
+fixtures where the live Git workspace is intentionally irrelevant.

@@ -27,9 +27,13 @@ from CoAgent.context import context_pack
 from CoAgent.dispatch import codex_transport
 from CoAgent.dispatch import dispatch_helper
 from CoAgent.dispatch.conversation_registry import THREADS_JSON, get_thread_by_department
+from CoAgent.evidence import evidence_manifest
+from CoAgent.hooks import preflight
 from CoAgent.knowledge import knowledge_indexer
+from CoAgent.review_queue import review_queue
 from CoAgent.result_router import result_router
 from CoAgent.runtime import mosim_agent_runtime as runtime
+from CoAgent.task_health import task_health
 
 
 def rel(path: Path) -> str:
@@ -112,6 +116,85 @@ def build_artifact_paths(task_id: str, output_root: Path, context_root: Path) ->
         "bootstrap": output_root / f"{task_id}.bootstrap.json",
         "recovery": output_root / f"{task_id}.recovery.json",
         "transport_plan": output_root / f"{task_id}.transport-plan.json",
+    }
+
+
+def blocker_packet_command(task_id: str, *, record_metadata: bool = False) -> str:
+    command = (
+        f"python3 CoAgent/blocker_packet/blocker_packet.py --task-id {task_id} "
+        f"--output Results/agent_packets/blockers/{task_id}.blocker.json "
+        f"--markdown-output Results/agent_packets/blockers/{task_id}.blocker.md --json"
+    )
+    if record_metadata:
+        command += " --record-metadata --claim-token <claim-token>"
+    return command
+
+
+def task_health_summary(args: argparse.Namespace) -> dict[str, Any]:
+    snapshot = task_health.build_snapshot(
+        argparse.Namespace(
+            db=args.db,
+            events=args.events,
+            task_id=args.task_id,
+            state="",
+            active_only=True,
+            stale_minutes=task_health.DEFAULT_STALE_MINUTES,
+            staged_file_warning_threshold=getattr(args, "staged_file_warning_threshold", preflight.STAGED_BROAD_THRESHOLD),
+            skip_preflight=getattr(args, "skip_preflight", False),
+            skip_runtime_audit=False,
+        )
+    )
+    return {
+        "ok": snapshot.get("ok"),
+        "decision": snapshot.get("decision", {}),
+        "task_count": snapshot.get("task_count"),
+        "warning_count": snapshot.get("warning_count"),
+        "fail_count": snapshot.get("fail_count"),
+        "tasks": [
+            {
+                "task_id": item.get("task_id", ""),
+                "runtime_state": item.get("runtime_state", ""),
+                "health_state": item.get("health_state", ""),
+                "decision": item.get("decision", {}),
+                "findings": item.get("findings", []),
+            }
+            for item in snapshot.get("tasks", [])[:5]
+        ],
+    }
+
+
+def review_queue_items(args: argparse.Namespace) -> list[dict[str, Any]]:
+    queue = review_queue.build_queue(
+        argparse.Namespace(
+            db=args.db,
+            include_terminal=True,
+            include_superseded=False,
+            json=True,
+        )
+    )
+    return [item for item in queue.get("items", []) if item.get("task_id") == args.task_id]
+
+
+def evidence_summary(args: argparse.Namespace) -> dict[str, Any]:
+    manifest = evidence_manifest.build_manifest(
+        argparse.Namespace(db=args.db, events=args.events, task_id=args.task_id)
+    )
+    return {
+        "ok": manifest.get("ok"),
+        "freshness_status": manifest.get("freshness_status", ""),
+        "stale_refresh_recommended": manifest.get("stale_refresh_recommended", False),
+        "evidence_count": manifest.get("evidence_count", 0),
+        "missing_count": manifest.get("missing_count", 0),
+        "stale_count": manifest.get("stale_count", 0),
+        "critical_stale_count": manifest.get("critical_stale_count", 0),
+        "archival_stale_count": manifest.get("archival_stale_count", 0),
+        "unknown_freshness_count": manifest.get("unknown_freshness_count", 0),
+        "refresh_commands": manifest.get("refresh_commands", []),
+        "by_kind": manifest.get("by_kind", {}),
+        "missing": [
+            {"path": item.get("path", ""), "sources": item.get("sources", [])}
+            for item in manifest.get("missing", [])[:10]
+        ],
     }
 
 
@@ -324,6 +407,7 @@ def recover_task(args: argparse.Namespace) -> dict[str, Any]:
 
 def status_task(args: argparse.Namespace) -> dict[str, Any]:
     task = runtime.show_task(argparse.Namespace(db=args.db, events=args.events, task_id=args.task_id))
+    metadata = task.get("metadata", {})
     packet = runtime.export_task_packet(argparse.Namespace(db=args.db, events=args.events, task_id=args.task_id))
     result_file = project_path(Path(packet["result_file"]))
     graph = runtime.conversation_graph(
@@ -337,10 +421,27 @@ def status_task(args: argparse.Namespace) -> dict[str, Any]:
         )
     )
     paths = build_artifact_paths(args.task_id, args.output_root, args.context_root)
+    health = task_health_summary(args)
+    health_decision = health.get("decision", {})
+    review_items = review_queue_items(args)
+    evidence = evidence_summary(args)
     return {
         "task_id": args.task_id,
         "runtime_state": task["state"],
         "terminal": task["state"] in runtime.TERMINAL_STATES,
+        "checkpoint": metadata.get("checkpoint", ""),
+        "next_action": metadata.get("next_action", ""),
+        "continue_allowed": health_decision.get("continue_allowed"),
+        "recommended_action": health_decision.get("recommended_action", ""),
+        "stop_reason": health_decision.get("stop_reason", ""),
+        "next_intervention": health_decision.get("next_intervention", ""),
+        "blocking_task_ids": health_decision.get("blocking_task_ids", []),
+        "watch_task_ids": health_decision.get("watch_task_ids", []),
+        "human_task_ids": health_decision.get("human_task_ids", []),
+        "review_task_ids": health_decision.get("review_task_ids", []),
+        "safety_task_ids": health_decision.get("safety_task_ids", []),
+        "review_status": metadata.get("review_status", ""),
+        "human_needed": metadata.get("human_needed", ""),
         "result_file": packet["result_file"],
         "result_file_exists": result_file.exists(),
         "context_pack": rel(paths["context"]) if paths["context"].exists() else "",
@@ -348,6 +449,13 @@ def status_task(args: argparse.Namespace) -> dict[str, Any]:
         "bootstrap_summary": rel(paths["bootstrap"]) if paths["bootstrap"].exists() else "",
         "recovery_summary": rel(paths["recovery"]) if paths["recovery"].exists() else "",
         "transport_plan_summary": rel(paths["transport_plan"]) if paths["transport_plan"].exists() else "",
+        "task_health": health,
+        "review_queue_items": review_items,
+        "blocker_packet_needed": health_decision.get("continue_allowed") is False,
+        "blocker_packet_command": blocker_packet_command(args.task_id),
+        "blocker_packet_record_command": blocker_packet_command(args.task_id, record_metadata=True),
+        "evidence_manifest": evidence,
+        "evidence_manifest_summary": evidence,
         "conversation_graph": graph,
     }
 
@@ -407,6 +515,8 @@ def build_parser() -> argparse.ArgumentParser:
     status = subparsers.add_parser("status-task")
     add_common(status)
     status.add_argument("--task-id", required=True)
+    status.add_argument("--skip-preflight", action="store_true")
+    status.add_argument("--staged-file-warning-threshold", type=int, default=preflight.STAGED_BROAD_THRESHOLD)
     status.set_defaults(func=status_task)
 
     return parser
