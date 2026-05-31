@@ -17,19 +17,25 @@ be reused:
 ## Audit Steps
 
 1. Confirm path is inside the project, usually under `References/` or `Docs/Skills/`.
-2. Run the local scanner:
+2. Before a broad reference-learning pass, validate the master index:
+
+```bash
+python3 Scripts/reference/check_reference_index.py --strict
+```
+
+3. Run the local scanner:
 
 ```bash
 python3 Scripts/reference/audit_external_repo.py References/AirSim/spear --output Results/audits/spear_audit.json --markdown Results/audits/spear_audit.md
 ```
 
-3. Read project metadata:
+4. Read project metadata:
    - `README*`
    - `LICENSE*`
    - `.uproject`
    - `package.xml`, `CMakeLists.txt`, `pyproject.toml`, `package.json`
    - `Docs/`, `examples/`, `issues` notes if available locally.
-4. Classify usefulness:
+5. Classify usefulness:
 
 ```text
 directly runnable
@@ -44,7 +50,7 @@ documentation only
 not useful
 ```
 
-5. Record migration risk:
+6. Record migration risk:
    - engine version mismatch;
    - binary-only dependency;
    - missing plugin source;

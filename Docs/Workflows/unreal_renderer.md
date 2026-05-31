@@ -40,11 +40,11 @@ MoSim scripts / MCP
 The long-term preferred route is end-to-end MCP automation:
 
 ```text
-mosim_epic_library MCP
+mosim-epic
   -> inspect Epic/Fab/Launcher inventory
   -> choose candidate scene asset
   -> verify local editable project/content
-unreal_engine MCP
+mosim-unreal
   -> open/import/reuse scene in MoSimSceneLibrary
   -> modify scene components when needed
   -> run reversible edit probes
@@ -144,13 +144,13 @@ The inventory separates:
 | `vault_cache_projects` | Old-style VaultCache projects and any discovered `.uproject` |
 | `epic_library_view.py` | Merged human-readable view across account/Fab/Vault sources |
 
-Current verified local-library behavior on 2026-05-24:
+Current verified local-library behavior on 2026-05-26:
 
 ```text
-launcher_item_count: 11
-launcher_install_count: 11
+launcher_item_count: 12
+launcher_install_count: 12
 fab_asset_count: 5
-vault_cache_project_count: 3
+vault_cache_project_count: 8
 account_library_item_count: 17
 ```
 
@@ -177,9 +177,10 @@ surface for whether the Fab route is accepted or the local editable fallback is
 active.
 
 When Codex needs this inventory through MCP, register
-`Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh` as `mosim_epic_library`.
-Keep it separate from `unreal_engine`: library inventory selects candidate
-assets, while `unreal_engine` edits a running UE project.
+`Docs/Skills/Unreal/mosim-epic/wrappers/mosim-epic.sh` as
+`mosim-epic`.
+Keep it separate from `mosim-unreal`: library inventory selects candidate
+assets, while `mosim-unreal` edits a running UE project.
 
 ## Scene Acceptance Gates
 
@@ -195,7 +196,7 @@ For the RflySim-like simulator goal, add two operational gates:
 
 | Gate | Required Evidence |
 |---|---|
-| MCP automation | The selected route can be operated through `mosim_epic_library` and/or `unreal_engine` MCP, or the blocker is documented with an approved fallback |
+| MCP automation | The selected route can be operated through `mosim-epic` and/or `mosim-unreal`, or the blocker is documented with an approved fallback |
 | Manual review | The user confirms the map/animation/video view is visually acceptable before UAV/radar/planning work is layered on top |
 
 If a Fab entry only exposes a binary `manifest` and no editable project/content
@@ -234,8 +235,13 @@ Current local review candidates:
 | Scene | First Review Map | Notes |
 |---|---|---|
 | `DerelictCorridorMegascans` | `/Game/DerelictCorridor/Maps/DerelictCorridor` | Already has renderer load proof and first-pass AABB truth. |
+| `FactoryEnvironmentCollect` | `/Game/Maps/Demonstration` | Best first factory/industrial candidate; still needs renderer reuse and truth export. |
+| `CityParkEnvironmentCollec` | `/Game/CityPark/Maps/Showcase` | Park/open outdoor candidate; still needs renderer reuse and truth export. |
+| `CitySample` | `/Game/Map/Big_City_LVL` | Large city candidate; high load/performance risk, use after smaller scenes. |
 | `DarkRuinsMegascansSample` | `/Game/Main` | Good cave/ruins candidate; still needs renderer reuse and truth export. |
 | `ElectricDreamsEnv` | `/Game/Levels/PCG/ElectricDreams_PCGCloseRange` | Strong forest candidate; plugin/PCG risk is higher. |
+| `MedievalVillageMegascansS` | `/Game/Maps/MedievalVillage_P` | Village/building candidate; still needs renderer reuse and truth export. |
+| `ABoyandHisKite` | `/Game/Maps/GoldenPath/GDC_Landscape_01` | Large outdoor reference; UE 4.x origin may need conversion review. |
 | `FPS-Shooter-Unreal` | `/Game/FirstPerson/Maps/FirstPersonMap` | Lower priority; useful mostly as UE control/template smoke. |
 
 Use the fast planner to produce the exact command without scanning the full
@@ -389,7 +395,7 @@ import evidence; it proves the packet path that triggers
 Use `check_ue_fab_goal_acceptance.py` as the current objective audit. It checks
 the UE/Fab tool goal gate by gate: Epic/Fab inventory visibility, Fab-route
 acceptance, local fallback readiness, truth-artifact validation, UDP
-scene-source selection, live `unreal_engine` edit evidence, minimal Skills /
+scene-source selection, live `mosim-unreal` edit evidence, minimal Skills /
 workflow presence, and visual import/reuse evidence. The default mode reports
 partial progress without failing. Use `--require-complete` only when deciding
 whether the full goal is ready to close.
@@ -447,8 +453,8 @@ editor and rerun; do not record it as a source compile failure.
 Relevant current-phase skills:
 
 ```text
-Docs/Skills/Unreal/mcp/mosim-epic-fab-library/SKILL.md
-Docs/Skills/Unreal/mcp/mosim-unreal-editor-mcp/SKILL.md
+Docs/Skills/Unreal/mosim-epic/SKILL.md
+Docs/Skills/Unreal/mosim-unreal/SKILL.md
 ```
 
 ## First-Pass Manual Review Gate
@@ -477,6 +483,17 @@ Build the project-owned renderer:
 ```bash
 Scripts/UE5/build_unreal_renderer.sh
 ```
+
+The build/open scripts resolve the engine from
+`UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject` instead of hard-coding a UE
+version. Current association is `5.5`, and the verified normal editor path is:
+
+```text
+D:\Program Files\Epic Games\UE_5.5\Engine\Binaries\Win64\UnrealEditor.exe
+```
+
+UE 4.27 scene packs use `UE4Editor.exe` / `UE4Editor-Cmd.exe`; do not report
+4.27 as missing merely because `UnrealEditor.exe` is absent.
 
 Open the editor or standalone game:
 
@@ -508,37 +525,53 @@ Ctrl              slower movement
 Expected MCP server name:
 
 ```text
-unreal_engine
+mosim-unreal
 ```
 
-Current policy: `unreal_engine` is MoSim's own UE automation MCP. It should not
+Current policy: `mosim-unreal` is MoSim's own UE automation MCP. It should not
 be a generic world-building MCP and should not own Epic/Fab downloads.
-`mosim_epic_library` remains the separate read-only inventory MCP.
+`mosim-epic` remains the separate inventory and scene-source readiness MCP.
 
-First-stage `unreal_engine` tools:
+Current `mosim-unreal` tools:
 
 ```text
 ue_health
 project_context
-scene_source_registry
-ue_fab_goal_acceptance
+editor_listener_health
+asset_search
+list_maps
+current_level_summary
+find_level_actors
+reversible_actor_probe
+scene_source_status
 scene_truth_export_plan
+editor_log_summary
+tool_boundary
+```
+
+Current `mosim-epic` tools:
+
+```text
+epic_library_inventory
 epic_scene_library_view
+scene_source_registry
+scene_source_acceptance
+scene_truth_export_plan
 tool_boundary
 ```
 
 Wrapper layout:
 
 ```text
-Docs/Skills/Unreal/unreal-engine-mcp/wrappers/unreal_engine.sh
-  -> Docs/Skills/Unreal/unreal-engine-mcp/wrappers/wsl.sh
-  -> Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py
+Docs/Skills/Unreal/mosim-unreal/wrappers/mosim-unreal.sh
+  -> Docs/Skills/Unreal/mosim-unreal/wrappers/wsl.sh
+  -> Docs/Skills/Unreal/mosim-unreal/mcp/server.py
 ```
 
 Legacy rollback wrapper:
 
 ```text
-Docs/Skills/Unreal/unreal-engine-mcp/wrappers/legacy_flopperam_wsl.sh
+Docs/Skills/Unreal/mosim-unreal/wrappers/legacy_flopperam_wsl.sh
 ```
 
 Do not remove the legacy wrapper until the MoSim-native route has equivalent
@@ -569,22 +602,28 @@ Codex / MCP client
 
 Phase order:
 
-1. Read-only: `ue_health`, `project_context`, `asset_search`,
-   `scene_source_registry`, `scene_truth_export_plan`, `editor_log`.
-2. Controlled writes: reversible actor edit/delete, map open/save, material
-   instance parameter edits, and viewport capture.
+1. Read-only: `ue_health`, `project_context`, `asset_search`, `list_maps`,
+   `current_level_summary`, `find_level_actors`, `editor_listener_health`,
+   `editor_log_summary`, `scene_source_status`, and
+   `scene_truth_export_plan`.
+2. Controlled writes: `reversible_actor_probe` first. It defaults to plan-only;
+   persistent map open/save, material instance parameter edits, and viewport
+   capture remain later tools.
 3. Simulator truth: collision/semantic/occupancy export and validation.
 4. Advanced authoring: minimal Blueprint/material graph edits.
 
 Do not implement arbitrary `python_execution`, Launcher button-clicking, raw
 webcache parsing, OAuth/token reuse, or automatic Fab downloads in
-`unreal_engine`.
+`mosim-unreal`.
 
 Before interactive editor work, run the smallest useful probe. Inventory alone
 is not enough; the editor-side listener must be reachable:
 
 ```bash
-python3 Scripts/UE5/probe_unreal_mcp_listener.py --timeout 1
+Scripts/UE5/build_unreal_renderer.sh
+Scripts/UE5/open_unreal_renderer.sh editor
+python3 Scripts/UE5/probe_unreal_mcp_listener.py --wrapper-route-only --timeout 1
+python3 Docs/Skills/Unreal/mosim-unreal/mcp/server.py dump-level --timeout 2 --limit 5
 ```
 
 If the probe fails, do not keep calling actor/Blueprint tools. Fix the editor
@@ -605,7 +644,7 @@ uv run python Scripts/UE5/probe_linked_scene_source_mcp.py \
   --json-output Results/tmp/linked_scene_source_mcp_probe_latest.json
 ```
 
-This script uses the same UnrealMCP editor socket as the `unreal_engine` MCP
+This script uses the same UnrealMCP editor socket as the `mosim-unreal` MCP
 server. It reads level actors, spawns a temporary uniquely named
 `MoSimMcpProbe_DoNotSave_*` static mesh actor, changes its transform, deletes
 it, and checks cleanup. A passing listener probe alone is not enough to claim
