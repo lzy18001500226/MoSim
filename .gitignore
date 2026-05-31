@@ -126,6 +126,8 @@ References/Agent/Skills/*
 !References/Agent/Skills/andrej-karpathy-skills/**
 !References/Agent/Skills/anthropics-skills/
 !References/Agent/Skills/anthropics-skills/**
+!References/Agent/Skills/HeavySkill/
+!References/Agent/Skills/HeavySkill/**
 !References/Agent/Skills/openai-skills/
 References/Agent/Skills/openai-skills/*
 !References/Agent/Skills/openai-skills/skills/

@@ -1,0 +1,34 @@
+[project]
+name = "heavyskill"
+version = "0.1.0"
+description = "HeavySkill: Heavy Thinking as the Inner Skill in Agentic Harness"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Jianing Wang", email = "lygwjn@gmail.com"},
+]
+keywords = ["llm", "reasoning", "test-time-scaling", "parallel-thinking", "agent"]
+
+dependencies = [
+    "httpx>=0.25.0",
+    "numpy>=1.24.0",
+    "tqdm>=4.65.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/wjn1996/HeavySkill"
+Paper = "https://arxiv.org/abs/2605.02396"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["workflow*"]

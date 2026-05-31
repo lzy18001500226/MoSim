@@ -1,0 +1,14 @@
+[
+  {
+    "query": "Let N be the greatest four-digit positive integer with the property that whenever one of its digits is changed to 1, the resulting number is divisible by 7. Let Q and R be the quotient and remainder, respectively, when N is divided by 1000. Find Q+R.",
+    "target": "699"
+  },
+  {
+    "query": "Consider the paths of length 16 that follow the lines from the lower left corner to the upper right corner on an 8x8 grid. Find the number of such paths that change direction exactly four times.",
+    "target": "294"
+  },
+  {
+    "query": "Find the sum of all integer bases b > 9 for which 17_b is a divisor of 97_b.",
+    "target": "70"
+  }
+]
