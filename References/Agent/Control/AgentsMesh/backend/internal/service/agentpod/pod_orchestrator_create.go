@@ -1,0 +1,192 @@
+package agentpod
+
+import (
+	"context"
+	"errors"
+	"log/slog"
+	"time"
+
+	"github.com/google/uuid"
+
+	agentDomain "github.com/anthropics/agentsmesh/backend/internal/domain/agent"
+	podDomain "github.com/anthropics/agentsmesh/backend/internal/domain/agentpod"
+	otelinit "github.com/anthropics/agentsmesh/backend/internal/infra/otel"
+)
+
+// CreatePod orchestrates the full Pod creation flow:
+// resume handling -> validation -> quota -> DB record -> config build -> dispatch to Runner.
+func (o *PodOrchestrator) CreatePod(ctx context.Context, req *OrchestrateCreatePodRequest) (*OrchestrateCreatePodResult, error) {
+	createStart := time.Now()
+	defer func() {
+		otelinit.PodCreateDuration.Record(ctx, float64(time.Since(createStart).Milliseconds()))
+	}()
+
+	var sourcePod *podDomain.Pod
+	var sessionID string
+	isResumeMode := req.SourcePodKey != ""
+
+	if isResumeMode {
+		var err error
+		sourcePod, sessionID, err = o.handleResumeMode(ctx, req)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		if req.AgentSlug == "" {
+			return nil, ErrMissingAgentSlug
+		}
+		if req.RunnerID == 0 {
+			if o.runnerSelector == nil || o.agentResolver == nil {
+				return nil, ErrMissingRunnerID
+			}
+
+			hints := o.buildAffinityHints(ctx, req)
+			repoHistory := o.fetchRepoHistory(ctx, req.OrganizationID, hints)
+
+			selectedRunner, err := o.runnerSelector.SelectRunnerWithAffinity(
+				ctx, req.OrganizationID, req.UserID, req.AgentSlug, hints, repoHistory,
+			)
+			if err != nil {
+				slog.WarnContext(ctx, "runner auto-selection failed", "org_id", req.OrganizationID, "agent_slug", req.AgentSlug, "error", err)
+				return nil, ErrNoAvailableRunner
+			}
+			req.RunnerID = selectedRunner.ID
+			slog.InfoContext(ctx, "runner auto-selected", "runner_id", selectedRunner.ID, "org_id", req.OrganizationID, "agent_slug", req.AgentSlug)
+		}
+		sessionID = uuid.New().String()
+	}
+
+	// Resolve agent definition once — reused for AgentFile merge and mode validation.
+	var agentDef *agentDomain.Agent
+	if req.AgentSlug != "" && o.agentResolver != nil {
+		var err error
+		agentDef, err = o.agentResolver.GetAgent(ctx, req.AgentSlug)
+		if err != nil {
+			return nil, ErrMissingAgentSlug
+		}
+	}
+
+	// --- AgentFile Layer resolution ---
+	resolved := &agentfileResolved{}
+
+	resumeAgentSession := req.ResumeAgentSession == nil || *req.ResumeAgentSession
+	systemOverrides := newSystemOverrides(sessionID, isResumeMode, resumeAgentSession)
+
+	// AgentFile SSOT: resolve CONFIG values from base AgentFile + optional user Layer.
+	if agentDef != nil && agentDef.AgentfileSource != nil {
+		var userPrefs map[string]interface{}
+		if o.userConfigQuery != nil {
+			userPrefs = o.userConfigQuery.GetUserConfigPrefs(ctx, req.UserID, req.AgentSlug)
+		}
+		if isResumeMode {
+			userPrefs = mergeSourcePodConfigPrefs(userPrefs, sourcePod, agentDef)
+		}
+
+		layerSrc := ""
+		if req.AgentfileLayer != nil {
+			layerSrc = *req.AgentfileLayer
+		}
+
+		result, err := extractFromAgentfileLayer(
+			*agentDef.AgentfileSource, layerSrc,
+			userPrefs, systemOverrides,
+		)
+		if err != nil {
+			return nil, err
+		}
+		resolved.MergedAgentfileSource = result.MergedAgentfileSource
+		resolved.ConfigValues = result.ConfigValues
+		if result.Mode != "" {
+			resolved.InteractionMode = result.Mode
+		}
+		if result.Branch != "" {
+			resolved.BranchName = result.Branch
+		}
+		if result.RepoSlug != "" && o.repoService != nil {
+			repo, repoErr := o.repoService.FindByOrgSlug(ctx, req.OrganizationID, result.RepoSlug)
+			if repoErr == nil && repo != nil {
+				resolved.RepositoryID = &repo.ID
+			}
+		}
+		if result.Prompt != "" {
+			resolved.Prompt = result.Prompt
+		}
+	}
+
+	// Effective Model / PermissionMode come from resolved.ConfigValues — the
+	// single source of truth post-resolve. mergeSourcePodConfigPrefs already
+	// projects legacy Claude columns into userPrefs so they re-emerge here.
+	effectiveInteractionMode := firstNonEmpty(resolved.InteractionMode, podDomain.InteractionModePTY)
+	effectiveModel := resolved.ConfigValues.GetString(agentDomain.ConfigKeyModel)
+	effectivePermissionMode := resolved.ConfigValues.GetString(agentDomain.ConfigKeyPermissionMode)
+	effectiveBranch := firstNonEmptyPtr(resolved.BranchName, req.BranchName) // req.BranchName only from resume
+	effectiveRepoID := firstNonNilInt64(resolved.RepositoryID, req.RepositoryID)
+
+	// Validate interaction mode against agent capabilities
+	if agentDef != nil && !agentDef.SupportsMode(effectiveInteractionMode) {
+		return nil, ErrUnsupportedInteractionMode
+	}
+
+	// Quota check
+	if o.billingService != nil {
+		if err := o.billingService.CheckQuota(ctx, req.OrganizationID, "concurrent_pods", 1); err != nil {
+			slog.WarnContext(ctx, "pod quota check failed", "org_id", req.OrganizationID, "error", err)
+			return nil, err
+		}
+	}
+
+	// Resolve TicketSlug -> TicketID
+	if req.TicketID == nil && req.TicketSlug != nil && *req.TicketSlug != "" && o.ticketService != nil {
+		t, err := o.ticketService.GetTicketBySlug(ctx, req.OrganizationID, *req.TicketSlug)
+		if err == nil && t != nil {
+			req.TicketID = &t.ID
+		} else if err != nil {
+			slog.WarnContext(ctx, "ticket slug resolution failed", "org_id", req.OrganizationID, "ticket_slug", *req.TicketSlug, "error", err)
+		}
+	}
+
+	pod, err := o.podService.CreatePod(ctx, &CreatePodRequest{
+		OrganizationID:  req.OrganizationID,
+		RunnerID:        req.RunnerID,
+		AgentSlug:       req.AgentSlug,
+		RepositoryID:    effectiveRepoID,
+		TicketID:        req.TicketID,
+		CreatedByID:     req.UserID,
+		Prompt:          resolved.Prompt,
+		Alias:           req.Alias,
+		BranchName:      effectiveBranch,
+		Model:           effectiveModel,
+		PermissionMode:  effectivePermissionMode,
+		SessionID:       sessionID,
+		SourcePodKey:    req.SourcePodKey,
+		InteractionMode: effectiveInteractionMode,
+		Perpetual:       req.Perpetual,
+		ResolvedConfig:  resolved.ConfigValues,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	podCmd, err := o.buildPodCommand(ctx, req, pod, sourcePod, isResumeMode, resolved)
+	if err != nil {
+		slog.ErrorContext(ctx, "failed to build pod command", "pod_key", pod.PodKey, "error", err)
+		return nil, errors.Join(ErrConfigBuildFailed, err)
+	}
+
+	if o.podCoordinator != nil {
+		slog.InfoContext(ctx, "dispatching create_pod to runner", "runner_id", req.RunnerID, "pod_key", pod.PodKey, "session_id", sessionID, "resume", isResumeMode)
+		if err := o.podCoordinator.CreatePod(ctx, req.RunnerID, podCmd); err != nil {
+			slog.ErrorContext(ctx, "failed to dispatch create_pod", "pod_key", pod.PodKey, "error", err)
+			if markErr := o.podService.MarkInitFailed(ctx, pod.PodKey, errCodeRunnerUnreachable,
+				"Failed to dispatch pod to runner: "+err.Error()); markErr != nil {
+				slog.ErrorContext(ctx, "failed to mark pod as init failed", "pod_key", pod.PodKey, "error", markErr)
+			}
+			return nil, ErrRunnerDispatchFailed
+		}
+		slog.InfoContext(ctx, "create_pod dispatched", "pod_key", pod.PodKey)
+	} else {
+		slog.WarnContext(ctx, "PodCoordinator is nil, cannot dispatch create_pod", "pod_key", pod.PodKey)
+	}
+
+	return &OrchestrateCreatePodResult{Pod: pod}, nil
+}

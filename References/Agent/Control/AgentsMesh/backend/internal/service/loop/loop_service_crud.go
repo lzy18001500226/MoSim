@@ -1,0 +1,110 @@
+package loop
+
+import (
+	"context"
+	"log/slog"
+	"strings"
+	"time"
+
+	loopDomain "github.com/anthropics/agentsmesh/backend/internal/domain/loop"
+)
+
+func (s *LoopService) Create(ctx context.Context, req *CreateLoopRequest) (*loopDomain.Loop, error) {
+	slug := req.Slug
+	if slug == "" {
+		slug = generateSlug(req.Name)
+	}
+	if !isValidSlug(slug) {
+		return nil, ErrInvalidSlug
+	}
+
+	if req.PermissionMode == "" {
+		req.PermissionMode = "bypassPermissions"
+	}
+	if req.ExecutionMode == "" {
+		req.ExecutionMode = loopDomain.ExecutionModeAutopilot
+	}
+	if req.SandboxStrategy == "" {
+		req.SandboxStrategy = loopDomain.SandboxStrategyPersistent
+	}
+	if req.ConcurrencyPolicy == "" {
+		req.ConcurrencyPolicy = loopDomain.ConcurrencyPolicySkip
+	}
+	if req.MaxConcurrentRuns == 0 {
+		req.MaxConcurrentRuns = 1
+	}
+	if req.TimeoutMinutes == 0 {
+		req.TimeoutMinutes = 60
+	}
+	if req.AutopilotConfig == nil {
+		req.AutopilotConfig = []byte("{}")
+	}
+	if req.ConfigOverrides == nil {
+		req.ConfigOverrides = []byte("{}")
+	}
+	if req.PromptVariables == nil {
+		req.PromptVariables = []byte("{}")
+	}
+
+	if err := validateEnumFields(req.ExecutionMode, req.SandboxStrategy, req.ConcurrencyPolicy); err != nil {
+		return nil, err
+	}
+
+	if req.CallbackURL != nil {
+		if err := validateCallbackURL(*req.CallbackURL); err != nil {
+			return nil, err
+		}
+	}
+
+	var nextRunAt *time.Time
+	if req.CronExpression != nil && *req.CronExpression != "" {
+		schedule, err := cronParser.Parse(*req.CronExpression)
+		if err != nil {
+			return nil, ErrInvalidCron
+		}
+		next := schedule.Next(time.Now())
+		nextRunAt = &next
+	}
+
+	loop := &loopDomain.Loop{
+		OrganizationID:      req.OrganizationID,
+		Name:                req.Name,
+		Slug:                slug,
+		Description:         req.Description,
+		AgentSlug:    req.AgentSlug,
+		PermissionMode:      req.PermissionMode,
+		PromptTemplate:      req.PromptTemplate,
+		PromptVariables:     req.PromptVariables,
+		RepositoryID:        req.RepositoryID,
+		RunnerID:            req.RunnerID,
+		BranchName:          req.BranchName,
+		TicketID:            req.TicketID,
+		UsedEnvBundles:      req.UsedEnvBundles,
+		ConfigOverrides:     req.ConfigOverrides,
+		ExecutionMode:       req.ExecutionMode,
+		CronExpression:      req.CronExpression,
+		AutopilotConfig:     req.AutopilotConfig,
+		CallbackURL:         req.CallbackURL,
+		Status:              loopDomain.StatusEnabled,
+		SandboxStrategy:     req.SandboxStrategy,
+		SessionPersistence:  req.SessionPersistence,
+		ConcurrencyPolicy:   req.ConcurrencyPolicy,
+		MaxConcurrentRuns:   req.MaxConcurrentRuns,
+		MaxRetainedRuns:     req.MaxRetainedRuns,
+		TimeoutMinutes:      req.TimeoutMinutes,
+		IdleTimeoutSec:      req.IdleTimeoutSec,
+		CreatedByID:         req.CreatedByID,
+		NextRunAt:           nextRunAt,
+	}
+
+	if err := s.repo.Create(ctx, loop); err != nil {
+		if strings.Contains(err.Error(), "idx_loops_org_slug") {
+			return nil, ErrDuplicateSlug
+		}
+		slog.ErrorContext(ctx, "failed to create loop", "slug", slug, "org_id", req.OrganizationID, "error", err)
+		return nil, err
+	}
+
+	slog.InfoContext(ctx, "loop created", "loop_id", loop.ID, "slug", slug, "org_id", req.OrganizationID)
+	return loop, nil
+}

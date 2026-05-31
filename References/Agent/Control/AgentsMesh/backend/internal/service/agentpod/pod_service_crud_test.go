@@ -1,0 +1,335 @@
+package agentpod
+
+import (
+	"context"
+	"testing"
+
+	"github.com/anthropics/agentsmesh/backend/internal/domain/agentpod"
+)
+
+func TestCreatePod(t *testing.T) {
+	db := setupTestDB(t)
+	svc := newTestPodService(db)
+	ctx := context.Background()
+
+	tests := []struct {
+		name    string
+		req     *CreatePodRequest
+		wantErr bool
+	}{
+		{
+			name: "basic pod",
+			req: &CreatePodRequest{
+				OrganizationID: 1,
+				RunnerID:       1,
+				CreatedByID:    1,
+				Prompt:         "Test prompt",
+			},
+			wantErr: false,
+		},
+		{
+			name: "pod with all options",
+			req: &CreatePodRequest{
+				OrganizationID: 1,
+				RunnerID:       1,
+				CreatedByID:    1,
+				Prompt:         "Test prompt",
+				Model:          "sonnet",
+				PermissionMode: "default",
+			},
+			wantErr: false,
+		},
+		{
+			name: "pod with ticket",
+			req: &CreatePodRequest{
+				OrganizationID: 1,
+				RunnerID:       1,
+				CreatedByID:    1,
+				TicketID:       intPtr(42),
+				Prompt:         "Working on ticket",
+			},
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			sess, err := svc.CreatePod(ctx, tt.req)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CreatePod() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				if sess == nil {
+					t.Error("Pod is nil")
+					return
+				}
+				if sess.ID == 0 {
+					t.Error("Pod ID should be set")
+				}
+				if sess.PodKey == "" {
+					t.Error("PodKey should not be empty")
+				}
+				if sess.Status != agentpod.StatusInitializing {
+					t.Errorf("Status = %s, want initializing", sess.Status)
+				}
+			}
+		})
+	}
+}
+
+// TestCreatePod_CredentialProfileID was retired by the EnvBundle refactor —
+// the pods table no longer carries a credential_profile_id column, and
+// credential routing now lives entirely in AgentFile USE_ENV_BUNDLE
+// declarations. End-to-end coverage moved to
+// TestPodChain_CredentialFlow in pod_chain_integration_test.go.
+
+func TestCreatePod_Alias(t *testing.T) {
+	db := setupTestDB(t)
+	svc := newTestPodService(db)
+	ctx := context.Background()
+
+	t.Run("stores alias when provided", func(t *testing.T) {
+		alias := "my-feature-pod"
+		pod, err := svc.CreatePod(ctx, &CreatePodRequest{
+			OrganizationID: 1,
+			RunnerID:       1,
+			CreatedByID:    1,
+			Alias:          &alias,
+		})
+		if err != nil {
+			t.Fatalf("CreatePod failed: %v", err)
+		}
+		if pod.Alias == nil {
+			t.Fatal("Alias should not be nil")
+		}
+		if *pod.Alias != "my-feature-pod" {
+			t.Errorf("Alias = %q, want %q", *pod.Alias, "my-feature-pod")
+		}
+
+		// Verify persisted to DB via GetPod
+		fetched, err := svc.GetPod(ctx, pod.PodKey)
+		if err != nil {
+			t.Fatalf("GetPod failed: %v", err)
+		}
+		if fetched.Alias == nil || *fetched.Alias != "my-feature-pod" {
+			t.Errorf("Persisted Alias = %v, want %q", fetched.Alias, "my-feature-pod")
+		}
+	})
+
+	t.Run("stores nil alias when not provided", func(t *testing.T) {
+		pod, err := svc.CreatePod(ctx, &CreatePodRequest{
+			OrganizationID: 1,
+			RunnerID:       1,
+			CreatedByID:    1,
+			Alias:          nil,
+		})
+		if err != nil {
+			t.Fatalf("CreatePod failed: %v", err)
+		}
+		if pod.Alias != nil {
+			t.Errorf("Alias should be nil, got %q", *pod.Alias)
+		}
+	})
+}
+
+func TestCreatePod_DefaultValues(t *testing.T) {
+	db := setupTestDB(t)
+	svc := newTestPodService(db)
+	ctx := context.Background()
+
+	// PodService is agent-agnostic: it persists what callers give it and does
+	// NOT inject any agent-specific defaults. This test verifies that explicit
+	// caller-supplied Model/PermissionMode round-trip correctly.
+	req := &CreatePodRequest{
+		OrganizationID: 1,
+		RunnerID:       1,
+		CreatedByID:    1,
+		AgentSlug:      "claude-code",
+		Model:          "opus",
+		PermissionMode: agentpod.PermissionModeBypass,
+	}
+
+	sess, err := svc.CreatePod(ctx, req)
+	if err != nil {
+		t.Fatalf("CreatePod failed: %v", err)
+	}
+
+	if sess.Model == nil || *sess.Model != "opus" {
+		t.Error("Caller-supplied model should round-trip")
+	}
+	if sess.PermissionMode == nil || *sess.PermissionMode != agentpod.PermissionModeBypass {
+		t.Error("Caller-supplied permission mode should round-trip")
+	}
+}
+
+func TestCreatePod_NoDefaultingByService(t *testing.T) {
+	db := setupTestDB(t)
+	svc := newTestPodService(db)
+	ctx := context.Background()
+
+	// Empty AgentSlug used to trigger Claude defaulting; after Fix #2 it must not.
+	req := &CreatePodRequest{
+		OrganizationID: 1,
+		RunnerID:       1,
+		CreatedByID:    1,
+	}
+
+	sess, err := svc.CreatePod(ctx, req)
+	if err != nil {
+		t.Fatalf("CreatePod failed: %v", err)
+	}
+	if sess.Model != nil {
+		t.Errorf("PodService should not default model for empty agent slug, got %q", *sess.Model)
+	}
+	if sess.PermissionMode != nil {
+		t.Errorf("PodService should not default permission_mode for empty agent slug, got %q", *sess.PermissionMode)
+	}
+}
+
+func TestCreatePod_NonClaudeDoesNotDefaultLegacyFields(t *testing.T) {
+	db := setupTestDB(t)
+	svc := newTestPodService(db)
+	ctx := context.Background()
+
+	pod, err := svc.CreatePod(ctx, &CreatePodRequest{
+		OrganizationID: 1,
+		RunnerID:       1,
+		AgentSlug:      "codex-cli",
+		CreatedByID:    1,
+	})
+	if err != nil {
+		t.Fatalf("CreatePod failed: %v", err)
+	}
+
+	if pod.Model != nil {
+		t.Errorf("non-Claude pod model should not default, got %q", *pod.Model)
+	}
+	if pod.PermissionMode != nil {
+		t.Errorf("non-Claude pod permission_mode should not default, got %q", *pod.PermissionMode)
+	}
+}
+
+func TestGetPod(t *testing.T) {
+	db := setupTestDB(t)
+	svc := newTestPodService(db)
+	ctx := context.Background()
+
+	// Create a pod first
+	req := &CreatePodRequest{
+		OrganizationID: 1,
+		RunnerID:       1,
+		CreatedByID:    1,
+	}
+	created, err := svc.CreatePod(ctx, req)
+	if err != nil {
+		t.Fatalf("Failed to create pod: %v", err)
+	}
+
+	t.Run("existing pod", func(t *testing.T) {
+		sess, err := svc.GetPod(ctx, created.PodKey)
+		if err != nil {
+			t.Errorf("GetPod failed: %v", err)
+		}
+		if sess.ID != created.ID {
+			t.Errorf("Pod ID = %d, want %d", sess.ID, created.ID)
+		}
+	})
+
+	t.Run("non-existent pod", func(t *testing.T) {
+		_, err := svc.GetPod(ctx, "non-existent-key")
+		if err == nil {
+			t.Error("Expected error for non-existent pod")
+		}
+		if err != ErrPodNotFound {
+			t.Errorf("Expected ErrPodNotFound, got %v", err)
+		}
+	})
+}
+
+func TestGetPodByID(t *testing.T) {
+	db := setupTestDB(t)
+	svc := newTestPodService(db)
+	ctx := context.Background()
+
+	// Create a pod first
+	req := &CreatePodRequest{
+		OrganizationID: 1,
+		RunnerID:       1,
+		CreatedByID:    1,
+	}
+	created, _ := svc.CreatePod(ctx, req)
+
+	t.Run("existing pod", func(t *testing.T) {
+		sess, err := svc.GetPodByID(ctx, created.ID)
+		if err != nil {
+			t.Errorf("GetPodByID failed: %v", err)
+		}
+		if sess.PodKey != created.PodKey {
+			t.Errorf("PodKey mismatch")
+		}
+	})
+
+	t.Run("non-existent pod", func(t *testing.T) {
+		_, err := svc.GetPodByID(ctx, 99999)
+		if err == nil {
+			t.Error("Expected error for non-existent pod")
+		}
+	})
+}
+
+func TestGetPodOrganizationAndCreator(t *testing.T) {
+	db := setupTestDB(t)
+	svc := newTestPodService(db)
+	ctx := context.Background()
+
+	// Create a pod first
+	req := &CreatePodRequest{
+		OrganizationID: 42,
+		RunnerID:       1,
+		CreatedByID:    99,
+	}
+	pod, err := svc.CreatePod(ctx, req)
+	if err != nil {
+		t.Fatalf("CreatePod failed: %v", err)
+	}
+
+	tests := []struct {
+		name          string
+		podKey        string
+		wantOrgID     int64
+		wantCreatorID int64
+		wantErr       bool
+	}{
+		{
+			name:          "existing pod",
+			podKey:        pod.PodKey,
+			wantOrgID:     42,
+			wantCreatorID: 99,
+			wantErr:       false,
+		},
+		{
+			name:          "non-existent pod",
+			podKey:        "non-existent-pod-key",
+			wantOrgID:     0,
+			wantCreatorID: 0,
+			wantErr:       true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			orgID, creatorID, err := svc.GetPodOrganizationAndCreator(ctx, tt.podKey)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetPodOrganizationAndCreator() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if orgID != tt.wantOrgID {
+				t.Errorf("orgID = %v, want %v", orgID, tt.wantOrgID)
+			}
+			if creatorID != tt.wantCreatorID {
+				t.Errorf("creatorID = %v, want %v", creatorID, tt.wantCreatorID)
+			}
+		})
+	}
+}

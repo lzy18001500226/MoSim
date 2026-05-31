@@ -1,0 +1,161 @@
+package agent
+
+import (
+	"context"
+	"errors"
+	"log/slog"
+	"os"
+
+	"github.com/anthropics/agentsmesh/backend/internal/domain/agent"
+)
+
+var (
+	ErrAgentNotFound    = errors.New("agent not found")
+	ErrAgentSlugExists  = errors.New("agent slug already exists")
+	ErrAgentHasLoopRefs = errors.New("cannot delete: agent is referenced by one or more loops")
+)
+
+type AgentInfo struct {
+	Slug          string `json:"slug"`
+	Name          string `json:"name"`
+	Executable    string `json:"executable"`
+	LaunchCommand string `json:"launch_command"`
+}
+
+type CreateCustomAgentRequest struct {
+	Slug          string
+	Name          string
+	Description   *string
+	LaunchCommand string
+	DefaultArgs   *string
+	AgentfileSource *string
+}
+
+type AgentService struct {
+	repo agent.AgentRepository
+}
+
+func NewAgentService(repo agent.AgentRepository) *AgentService {
+	return &AgentService{repo: repo}
+}
+
+func (s *AgentService) ListBuiltinAgents(ctx context.Context) ([]*agent.Agent, error) {
+	// dev/e2e backends opt into surfacing internal agents (e2e-echo etc.)
+	// to the user-facing list by exporting AGENTSMESH_INCLUDE_INTERNAL_AGENTS=true
+	// before boot. Production never sets this; the default keeps test
+	// fixtures hidden. See ADR 2026-05-26-test-fixture-isolation.
+	if os.Getenv("AGENTSMESH_INCLUDE_INTERNAL_AGENTS") == "true" {
+		return s.repo.ListBuiltinAll(ctx)
+	}
+	return s.repo.ListBuiltinActive(ctx)
+}
+
+// ListBuiltinAgentsAll returns every active builtin including is_internal=true.
+// Reserved for the runner discovery / admin paths that legitimately need to
+// see fixtures (e.g. runner MCP discovery resolving EXECUTABLE references).
+func (s *AgentService) ListBuiltinAgentsAll(ctx context.Context) ([]*agent.Agent, error) {
+	return s.repo.ListBuiltinAll(ctx)
+}
+
+func (s *AgentService) GetAgentsForRunner() []AgentInfo {
+	types, err := s.repo.ListAllActive(context.Background())
+	if err != nil {
+		return nil
+	}
+
+	result := make([]AgentInfo, 0, len(types))
+	for _, t := range types {
+		result = append(result, AgentInfo{
+			Slug:          t.Slug,
+			Name:          t.Name,
+			Executable:    t.Executable,
+			LaunchCommand: t.LaunchCommand,
+		})
+	}
+	return result
+}
+
+func (s *AgentService) GetBySlug(ctx context.Context, slug string) (*agent.Agent, error) {
+	at, err := s.repo.GetBySlug(ctx, slug)
+	if err != nil {
+		return nil, err
+	}
+	if at == nil {
+		return nil, ErrAgentNotFound
+	}
+	return at, nil
+}
+
+func (s *AgentService) GetAgent(ctx context.Context, slug string) (*agent.Agent, error) {
+	return s.GetBySlug(ctx, slug)
+}
+
+func (s *AgentService) CreateCustomAgent(ctx context.Context, orgID int64, req *CreateCustomAgentRequest) (*agent.CustomAgent, error) {
+	exists, err := s.repo.CustomSlugExists(ctx, orgID, req.Slug)
+	if err != nil {
+		return nil, err
+	}
+	if exists {
+		return nil, ErrAgentSlugExists
+	}
+
+	customAgent := &agent.CustomAgent{
+		OrganizationID: orgID,
+		Slug:           req.Slug,
+		Name:           req.Name,
+		Description:    req.Description,
+		LaunchCommand:  req.LaunchCommand,
+		DefaultArgs:    req.DefaultArgs,
+		AgentfileSource:  req.AgentfileSource,
+		IsActive:       true,
+	}
+
+	if err := s.repo.CreateCustom(ctx, customAgent); err != nil {
+		slog.ErrorContext(ctx, "failed to create custom agent", "org_id", orgID, "slug", req.Slug, "error", err)
+		return nil, err
+	}
+
+	slog.InfoContext(ctx, "custom agent created", "org_id", orgID, "slug", req.Slug)
+	return customAgent, nil
+}
+
+func (s *AgentService) UpdateCustomAgent(ctx context.Context, orgID int64, slug string, updates map[string]interface{}) (*agent.CustomAgent, error) {
+	result, err := s.repo.UpdateCustom(ctx, orgID, slug, updates)
+	if err != nil {
+		slog.ErrorContext(ctx, "failed to update custom agent", "org_id", orgID, "slug", slug, "error", err)
+		return nil, err
+	}
+	slog.InfoContext(ctx, "custom agent updated", "org_id", orgID, "slug", slug)
+	return result, nil
+}
+
+func (s *AgentService) DeleteCustomAgent(ctx context.Context, orgID int64, slug string) error {
+	loopCount, err := s.repo.CountLoopReferences(ctx, orgID, slug)
+	if err != nil {
+		return err
+	}
+	if loopCount > 0 {
+		return ErrAgentHasLoopRefs
+	}
+	if err := s.repo.DeleteCustom(ctx, orgID, slug); err != nil {
+		slog.ErrorContext(ctx, "failed to delete custom agent", "org_id", orgID, "slug", slug, "error", err)
+		return err
+	}
+	slog.InfoContext(ctx, "custom agent deleted", "org_id", orgID, "slug", slug)
+	return nil
+}
+
+func (s *AgentService) ListCustomAgents(ctx context.Context, orgID int64) ([]*agent.CustomAgent, error) {
+	return s.repo.ListCustomByOrg(ctx, orgID)
+}
+
+func (s *AgentService) GetCustomAgent(ctx context.Context, orgID int64, slug string) (*agent.CustomAgent, error) {
+	custom, err := s.repo.GetCustomBySlug(ctx, orgID, slug)
+	if err != nil {
+		return nil, err
+	}
+	if custom == nil {
+		return nil, ErrAgentNotFound
+	}
+	return custom, nil
+}

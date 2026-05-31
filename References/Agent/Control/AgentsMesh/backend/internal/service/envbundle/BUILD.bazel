@@ -1,0 +1,38 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "envbundle",
+    srcs = [
+        "crud.go",
+        "decrypt.go",
+        "effective.go",
+        "service.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/service/envbundle",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/domain/envbundle",
+        "//backend/pkg/crypto",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":envbundle",
+    visibility = ["//backend:__subpackages__"],
+)
+
+go_test(
+    name = "envbundle_test",
+    srcs = ["service_test.go"],
+    embed = [":envbundle"],
+    deps = [
+        "//backend/internal/domain/envbundle",
+        "//backend/internal/infra",
+        "//backend/internal/testkit",
+        "//backend/pkg/crypto",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+        "@io_gorm_gorm//:gorm",
+    ],
+)

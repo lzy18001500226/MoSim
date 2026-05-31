@@ -1,0 +1,63 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "agent",
+    srcs = [
+        "agent_service.go",
+        "config_builder.go",
+        "config_builder_agentfile.go",
+        "config_builder_eval.go",
+        "config_builder_schema.go",
+        "config_builder_types.go",
+        "message_query.go",
+        "message_retry.go",
+        "message_send.go",
+        "message_types.go",
+        "types.go",
+        "user_config_service.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/service/agent",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//agentfile/eval",
+        "//agentfile/extract",
+        "//agentfile/parser",
+        "//backend/internal/domain/agent",
+        "//backend/internal/domain/extension",
+        "//backend/internal/service/envbundle",
+        "//backend/internal/service/extension",
+        "//proto/runner/v1:runner_go_proto",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":agent",
+    visibility = ["//backend:__subpackages__"],
+)
+
+go_test(
+    name = "agent_test",
+    srcs = [
+        "agent_service_test.go",
+        "config_builder_schema_test.go",
+        "custom_agent_test.go",
+        "message_service_delivery_test.go",
+        "message_service_errors_test.go",
+        "message_service_query_test.go",
+        "message_service_test.go",
+        "testhelpers_test.go",
+        "user_config_service_test.go",
+    ],
+    embed = [":agent"],
+    deps = [
+        "//backend/internal/domain/agent",
+        "//backend/internal/infra",
+        "//backend/internal/testkit",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+        "@io_gorm_driver_sqlite//:sqlite",
+        "@io_gorm_gorm//:gorm",
+        "@io_gorm_gorm//logger",
+    ],
+)

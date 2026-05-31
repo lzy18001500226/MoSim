@@ -1,0 +1,128 @@
+package agentpod
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+const baseAgentfileSrc = `AGENT claude
+MODE pty
+PROMPT_POSITION prepend
+CONFIG mcp_enabled BOOL = true
+CONFIG model SELECT("", "sonnet", "opus") = ""
+CONFIG permission_mode SELECT("default", "plan", "acceptEdits", "dontAsk", "bypassPermissions") = "bypassPermissions"
+`
+
+func TestExtractAgentfileOverrides_ModeOverride(t *testing.T) {
+	userLayer := `MODE acp`
+
+	ov, err := extractFromAgentfileLayer(baseAgentfileSrc, userLayer, nil, nil)
+	require.NoError(t, err)
+	assert.Equal(t, "acp", ov.Mode)
+}
+
+func TestExtractAgentfileOverrides_BranchOverride(t *testing.T) {
+	userLayer := `BRANCH "develop"`
+
+	ov, err := extractFromAgentfileLayer(baseAgentfileSrc, userLayer, nil, nil)
+	require.NoError(t, err)
+	assert.Equal(t, "develop", ov.Branch)
+}
+
+func TestExtractAgentfileOverrides_PermissionMode(t *testing.T) {
+	userLayer := `CONFIG permission_mode = "bypassPermissions"`
+
+	ov, err := extractFromAgentfileLayer(baseAgentfileSrc, userLayer, nil, nil)
+	require.NoError(t, err)
+	assert.Equal(t, "bypassPermissions", ov.ConfigValues["permission_mode"])
+}
+
+func TestExtractAgentfileOverrides_ConfigValuesSnapshot(t *testing.T) {
+	userLayer := `CONFIG permission_mode = "plan"`
+	userPrefs := map[string]interface{}{"model": "sonnet"}
+	systemOverrides := map[string]interface{}{
+		"session_id":     "session-1",
+		"resume_enabled": true,
+		"resume_session": "session-1",
+	}
+
+	ov, err := extractFromAgentfileLayer(baseAgentfileSrc, userLayer, userPrefs, systemOverrides)
+	require.NoError(t, err)
+
+	assert.Equal(t, true, ov.ConfigValues["mcp_enabled"])
+	assert.Equal(t, "sonnet", ov.ConfigValues["model"])
+	assert.Equal(t, "plan", ov.ConfigValues["permission_mode"])
+	assert.NotContains(t, ov.ConfigValues, "session_id")
+	assert.NotContains(t, ov.ConfigValues, "resume_enabled")
+	assert.NotContains(t, ov.ConfigValues, "resume_session")
+}
+
+func TestExtractAgentfileOverrides_RepoSlug(t *testing.T) {
+	userLayer := `REPO "dev-org/demo-api"`
+
+	ov, err := extractFromAgentfileLayer(baseAgentfileSrc, userLayer, nil, nil)
+	require.NoError(t, err)
+	assert.Equal(t, "dev-org/demo-api", ov.RepoSlug)
+}
+
+func TestExtractAgentfileOverrides_Prompt(t *testing.T) {
+	userLayer := `PROMPT "fix this bug"`
+
+	ov, err := extractFromAgentfileLayer(baseAgentfileSrc, userLayer, nil, nil)
+	require.NoError(t, err)
+	assert.Equal(t, "fix this bug", ov.Prompt)
+}
+
+func TestExtractAgentfileOverrides_AllOverrides(t *testing.T) {
+	userLayer := `MODE acp
+USE_ENV_BUNDLE "my-profile"
+PROMPT "fix this bug"
+CONFIG permission_mode = "bypassPermissions"
+REPO "dev-org/demo-api"
+BRANCH "develop"
+`
+
+	ov, err := extractFromAgentfileLayer(baseAgentfileSrc, userLayer, nil, nil)
+	require.NoError(t, err)
+	assert.Equal(t, "acp", ov.Mode)
+	assert.Equal(t, "fix this bug", ov.Prompt)
+	assert.Equal(t, "bypassPermissions", ov.ConfigValues["permission_mode"])
+	assert.Equal(t, "dev-org/demo-api", ov.RepoSlug)
+	assert.Equal(t, "develop", ov.Branch)
+}
+
+func TestExtractAgentfileOverrides_InvalidLayer(t *testing.T) {
+	userLayer := `INVALID @@@ not valid syntax`
+
+	ov, err := extractFromAgentfileLayer(baseAgentfileSrc, userLayer, nil, nil)
+	assert.Nil(t, ov)
+	assert.Error(t, err)
+	assert.ErrorIs(t, err, ErrInvalidAgentfileLayer)
+}
+
+func TestExtractAgentfileOverrides_EmptyLayer(t *testing.T) {
+	userLayer := ""
+
+	ov, err := extractFromAgentfileLayer(baseAgentfileSrc, userLayer, nil, nil)
+	require.NoError(t, err)
+	// All overrides should carry the base defaults (MODE pty, permission_mode "bypassPermissions").
+	assert.Equal(t, "pty", ov.Mode)
+	assert.Equal(t, "bypassPermissions", ov.ConfigValues["permission_mode"])
+	// Fields absent in the base AgentFile stay empty.
+	assert.Empty(t, ov.Branch)
+	assert.Empty(t, ov.RepoSlug)
+	assert.Empty(t, ov.Prompt)
+}
+
+func TestExtractAgentfileOverrides_MergeCorrectness(t *testing.T) {
+	// Base has MODE pty, user layer overrides with MODE acp → acp wins.
+	userLayer := `MODE acp`
+
+	ov, err := extractFromAgentfileLayer(baseAgentfileSrc, userLayer, nil, nil)
+	require.NoError(t, err)
+	assert.Equal(t, "acp", ov.Mode, "user layer MODE should override base MODE")
+	// Other base values remain intact.
+	assert.Equal(t, "bypassPermissions", ov.ConfigValues["permission_mode"])
+}

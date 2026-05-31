@@ -1,0 +1,204 @@
+package job
+
+import (
+	"context"
+	"fmt"
+	"log/slog"
+	"time"
+
+	"github.com/anthropics/agentsmesh/backend/internal/config"
+	"github.com/anthropics/agentsmesh/backend/internal/domain/billing"
+	"github.com/anthropics/agentsmesh/backend/internal/service/payment"
+	"gorm.io/gorm"
+)
+
+type SubscriptionRenewJob struct {
+	db             *gorm.DB
+	paymentFactory *payment.Factory
+	logger         *slog.Logger
+}
+
+func NewSubscriptionRenewJob(db *gorm.DB, cfg *config.Config, logger *slog.Logger) *SubscriptionRenewJob {
+	return &SubscriptionRenewJob{
+		db:             db,
+		paymentFactory: payment.NewFactoryWithLicenseRepo(cfg, nil),
+		logger:         logger,
+	}
+}
+
+func (j *SubscriptionRenewJob) Run(ctx context.Context) error {
+	j.logger.Info("starting subscription renewal job")
+
+	subscriptions, err := j.findSubscriptionsForRenewal(ctx)
+	if err != nil {
+		return err
+	}
+
+	j.logger.Info("found subscriptions for renewal", "count", len(subscriptions))
+
+	for _, sub := range subscriptions {
+		if err := j.processRenewal(ctx, &sub); err != nil {
+			j.logger.Error("failed to process subscription renewal",
+				"subscription_id", sub.ID,
+				"organization_id", sub.OrganizationID,
+				"error", err,
+			)
+			continue
+		}
+	}
+
+	j.logger.Info("subscription renewal job completed")
+	return nil
+}
+
+func (j *SubscriptionRenewJob) findSubscriptionsForRenewal(ctx context.Context) ([]billing.Subscription, error) {
+	var subscriptions []billing.Subscription
+	checkTime := time.Now().Add(24 * time.Hour)
+
+	err := j.db.WithContext(ctx).
+		Where("status = ?", billing.SubscriptionStatusActive).
+		Where("auto_renew = ?", true).
+		Where("current_period_end <= ?", checkTime).
+		Where("current_period_end > ?", time.Now()). // Not yet expired
+		Where("(alipay_agreement_no IS NOT NULL AND alipay_agreement_no != '') OR (wechat_contract_id IS NOT NULL AND wechat_contract_id != '')").
+		Find(&subscriptions).Error
+	if err != nil {
+		return nil, fmt.Errorf("failed to find subscriptions for renewal: %w", err)
+	}
+
+	return subscriptions, nil
+}
+
+func (j *SubscriptionRenewJob) processRenewal(ctx context.Context, sub *billing.Subscription) error {
+	j.logger.Info("processing subscription renewal",
+		"subscription_id", sub.ID,
+		"organization_id", sub.OrganizationID,
+		"provider", sub.PaymentProvider,
+	)
+
+	order, currency, err := j.createRenewalOrder(ctx, sub)
+	if err != nil {
+		return err
+	}
+
+	var provider string
+	if sub.PaymentProvider != nil {
+		provider = *sub.PaymentProvider
+	}
+
+	var payErr error
+	switch provider {
+	case billing.PaymentProviderAlipay:
+		payErr = j.executeAlipayAgreementPay(ctx, sub, order)
+	case billing.PaymentProviderWeChat:
+		payErr = j.executeWeChatAgreementPay(ctx, sub, order)
+	default:
+		j.logger.Debug("skipping non-CN subscription renewal", "provider", provider)
+		return nil
+	}
+
+	if payErr != nil {
+		j.db.WithContext(ctx).Model(order).Updates(map[string]interface{}{
+			"status":      billing.OrderStatusFailed,
+			"fail_reason": payErr.Error(),
+		})
+		return payErr
+	}
+
+	_ = currency
+	return nil
+}
+
+func (j *SubscriptionRenewJob) createRenewalOrder(ctx context.Context, sub *billing.Subscription) (*billing.PaymentOrder, string, error) {
+	var plan billing.SubscriptionPlan
+	if err := j.db.WithContext(ctx).First(&plan, sub.PlanID).Error; err != nil {
+		return nil, "", fmt.Errorf("failed to get plan: %w", err)
+	}
+
+	var provider string
+	if sub.PaymentProvider != nil {
+		provider = *sub.PaymentProvider
+	}
+	currency := billing.CurrencyUSD
+	if provider == billing.PaymentProviderAlipay || provider == billing.PaymentProviderWeChat {
+		currency = billing.CurrencyCNY
+	}
+
+	amount, currency := j.calculateRenewalAmount(ctx, sub, &plan, currency)
+
+	orderNo := fmt.Sprintf("RENEW-%d-%d", sub.OrganizationID, time.Now().Unix())
+
+	expiresAt := time.Now().Add(24 * time.Hour)
+	order := &billing.PaymentOrder{
+		OrganizationID:  sub.OrganizationID,
+		OrderNo:         orderNo,
+		OrderType:       billing.OrderTypeRenewal,
+		PaymentProvider: provider,
+		PaymentMethod:   sub.PaymentMethod,
+		Currency:        currency,
+		Amount:          amount,
+		ActualAmount:    amount,
+		Status:          billing.OrderStatusPending,
+		Metadata: map[string]interface{}{
+			"subscription_id": sub.ID,
+			"plan_id":         sub.PlanID,
+			"seat_count":      sub.SeatCount,
+			"billing_cycle":   sub.BillingCycle,
+		},
+		ExpiresAt: &expiresAt,
+	}
+
+	if err := j.db.WithContext(ctx).Create(order).Error; err != nil {
+		return nil, "", fmt.Errorf("failed to create payment order: %w", err)
+	}
+
+	return order, currency, nil
+}
+
+func (j *SubscriptionRenewJob) calculateRenewalAmount(ctx context.Context, sub *billing.Subscription, plan *billing.SubscriptionPlan, currency string) (float64, string) {
+	var planPrice billing.PlanPrice
+	if err := j.db.WithContext(ctx).
+		Where("plan_id = ? AND currency = ?", sub.PlanID, currency).
+		First(&planPrice).Error; err != nil {
+		j.logger.Error("plan price not found",
+			"plan_id", sub.PlanID,
+			"currency", currency,
+			"error", err,
+		)
+		return 0, currency
+	}
+
+	var amount float64
+	if sub.BillingCycle == billing.BillingCycleYearly {
+		amount = planPrice.PriceYearly * float64(sub.SeatCount)
+	} else {
+		amount = planPrice.PriceMonthly * float64(sub.SeatCount)
+	}
+
+	return amount, currency
+}
+
+func (j *SubscriptionRenewJob) extendSubscription(ctx context.Context, sub *billing.Subscription) error {
+	var newPeriodEnd time.Time
+	if sub.BillingCycle == billing.BillingCycleYearly {
+		newPeriodEnd = sub.CurrentPeriodEnd.AddDate(1, 0, 0)
+	} else {
+		newPeriodEnd = sub.CurrentPeriodEnd.AddDate(0, 1, 0)
+	}
+
+	updates := map[string]interface{}{
+		"current_period_start": sub.CurrentPeriodEnd,
+		"current_period_end":   newPeriodEnd,
+	}
+
+	if err := j.db.WithContext(ctx).Model(sub).Updates(updates).Error; err != nil {
+		return fmt.Errorf("failed to extend subscription: %w", err)
+	}
+
+	j.logger.Info("subscription extended",
+		"subscription_id", sub.ID,
+		"new_period_end", newPeriodEnd,
+	)
+
+	return nil
+}
