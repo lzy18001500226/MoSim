@@ -2,15 +2,16 @@
 set -euo pipefail
 
 # Prepare and optionally launch the manual review loop for one accepted UE scene:
-# real rendered map + UAV UDP playback + radar/local-plan overlay + separate
-# point-cloud viewer.
+# real rendered map + UAV UDP playback + radar/local-plan debug overlay. The
+# separate point-cloud/map window is RViz via open_mapping_rviz_ros1.sh, not
+# browser HTML.
 
 PROJECT_ROOT="/mnt/c/Users/HP/Desktop/MoSim"
 SCENE_ID="${1:-factoryenvironmentcollect}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/Results/unreal_scene_mapping}"
 UNREAL_HOST="${UNREAL_HOST:-$(ip route | awk '/^default/ {print $3; exit}')}"
 OPEN_UE="${OPEN_UE:-1}"
-OPEN_POINTCLOUD="${OPEN_POINTCLOUD:-1}"
+OPEN_RVIZ="${OPEN_RVIZ:-0}"
 REGENERATE="${REGENERATE:-0}"
 REVIEW_DRY_RUN="${REVIEW_DRY_RUN:-0}"
 STREAM_FPS="${STREAM_FPS:-12}"
@@ -42,7 +43,6 @@ esac
 
 SCENE_DIR="${OUTPUT_ROOT}/${SCENE_ID}"
 REPLAY_CSV="${SCENE_DIR}/render_replay.csv"
-VIEWER_HTML="${SCENE_DIR}/pointcloud_viewer.html"
 FASTLIO_HANDOFF="${SCENE_DIR}/fastlio_handoff.json"
 LOCAL_KNOWN_MAP="${SCENE_DIR}/local_known_map_frames.jsonl"
 LOCAL_PLAN_FRAMES="${SCENE_DIR}/local_plan_frames.jsonl"
@@ -52,7 +52,7 @@ FASTLIO_ADAPTER_MANIFEST="${SCENE_DIR}/fastlio_adapter_manifest.json"
 PLANNER_SUMMARY="${SCENE_DIR}/planner_summary.json"
 REVIEW_PACKET="${SCENE_DIR}/manual_review_packet.md"
 
-if [[ "${REGENERATE}" == "1" || ! -f "${REPLAY_CSV}" || ! -f "${VIEWER_HTML}" || ! -f "${FASTLIO_HANDOFF}" ]]; then
+if [[ "${REGENERATE}" == "1" || ! -f "${REPLAY_CSV}" || ! -f "${FASTLIO_HANDOFF}" ]]; then
   python3 Scripts/UE5/scene_truth_pipeline.py --scene "${SCENE_ID}" --output-root "${OUTPUT_ROOT}"
 fi
 
@@ -60,7 +60,7 @@ if [[ "${REGENERATE}" == "1" || ! -f "${FASTLIO_REPLAY_DATASET}" || ! -f "${FAST
   python3 Scripts/UE5/prepare_fastlio_replay.py --scene "${SCENE_ID}" --output-root "${OUTPUT_ROOT}"
 fi
 
-for Required in "${REPLAY_CSV}" "${VIEWER_HTML}" "${FASTLIO_HANDOFF}" "${LOCAL_KNOWN_MAP}" "${LOCAL_PLAN_FRAMES}" "${LIDAR_POINT_FRAMES}" "${FASTLIO_REPLAY_DATASET}" "${FASTLIO_ADAPTER_MANIFEST}" "${PLANNER_SUMMARY}"; do
+for Required in "${REPLAY_CSV}" "${FASTLIO_HANDOFF}" "${LOCAL_KNOWN_MAP}" "${LOCAL_PLAN_FRAMES}" "${LIDAR_POINT_FRAMES}" "${FASTLIO_REPLAY_DATASET}" "${FASTLIO_ADAPTER_MANIFEST}" "${PLANNER_SUMMARY}"; do
   if [[ ! -f "${Required}" ]]; then
     echo "Missing required review artifact: ${Required}" >&2
     exit 3
@@ -69,12 +69,12 @@ done
 
 python3 Scripts/UE5/activate_renderer_scene_source.py --scene-source-id "${SCENE_SOURCE_ID}"
 
-python3 - "${SCENE_ID}" "${SCENE_SOURCE_ID}" "${MAP_PACKAGE}" "${REPLAY_CSV}" "${VIEWER_HTML}" "${FASTLIO_HANDOFF}" "${LOCAL_KNOWN_MAP}" "${LOCAL_PLAN_FRAMES}" "${LIDAR_POINT_FRAMES}" "${FASTLIO_ADAPTER_MANIFEST}" "${PLANNER_SUMMARY}" "${REVIEW_PACKET}" <<'PY'
+python3 - "${SCENE_ID}" "${SCENE_SOURCE_ID}" "${MAP_PACKAGE}" "${REPLAY_CSV}" "${FASTLIO_HANDOFF}" "${LOCAL_KNOWN_MAP}" "${LOCAL_PLAN_FRAMES}" "${LIDAR_POINT_FRAMES}" "${FASTLIO_ADAPTER_MANIFEST}" "${PLANNER_SUMMARY}" "${REVIEW_PACKET}" <<'PY'
 import json
 import sys
 from pathlib import Path
 
-scene_id, scene_source_id, map_package, replay_csv, viewer_html, fastlio, local_known_map, local_plan_frames, lidar_point_frames, fastlio_adapter, summary, packet = sys.argv[1:]
+scene_id, scene_source_id, map_package, replay_csv, fastlio, local_known_map, local_plan_frames, lidar_point_frames, fastlio_adapter, summary, packet = sys.argv[1:]
 summary_data = json.loads(Path(summary).read_text(encoding="utf-8"))
 handoff = json.loads(Path(fastlio).read_text(encoding="utf-8"))
 adapter = json.loads(Path(fastlio_adapter).read_text(encoding="utf-8"))
@@ -85,7 +85,6 @@ lines = [
     f"- Scene source: `{scene_source_id}`",
     f"- UE map: `{map_package}`",
     f"- UAV replay CSV: `{replay_csv}`",
-    f"- Point-cloud viewer: `{viewer_html}`",
     f"- FAST-LIO handoff: `{fastlio}`",
     f"- FAST-LIO adapter manifest: `{fastlio_adapter}`",
     f"- Local-known-map replay: `{local_known_map}`",
@@ -94,8 +93,8 @@ lines = [
     "",
     "Expected evidence:",
     "- The UE window shows the accepted real rendered scene, not the old STL/blockout preview.",
-    "- A blue UAV body moves inside the map, with propellers, trajectory trail, radar sector, reference marker, local-plan spline, local-known-map cells, and in-scene LiDAR point cloud.",
-    "- The second browser window still shows the offline LiDAR-derived point cloud and planned path.",
+    "- A blue UAV body moves inside the map, with propellers, trajectory trail, radar sector, reference marker, local-plan spline, and optional local-known-map debug cells.",
+    "- If a separate point-cloud/map window is required, open RViz with `Scripts/UE5/open_mapping_rviz_ros1.sh`; browser HTML is not the primary review route.",
     "- The planner did not receive the global truth map as a prior.",
     "- Collision validation against exported UE truth is true.",
     "",
@@ -115,15 +114,14 @@ lines = [
     "Reject if:",
     "- The scene is black/white/blank, loaded outside the accepted map, or clearly shows the old generated preview map.",
     "- The UAV path starts outside the usable map, visibly clips through walls, or the overlay is absent.",
-    "- The UE in-scene point cloud or the browser point-cloud window has zero/obviously wrong points.",
+    "- The RViz/native point-cloud window has zero/obviously wrong points when native map review is requested.",
 ]
 Path(packet).write_text("\n".join(lines) + "\n", encoding="utf-8")
 print(packet)
 PY
 
-if [[ "${OPEN_POINTCLOUD}" == "1" ]]; then
-  VIEWER_WIN="$(wslpath -w "${VIEWER_HTML}")"
-  powershell.exe -NoProfile -Command "Start-Process -FilePath '${VIEWER_WIN}'" >/dev/null 2>&1 || true
+if [[ "${OPEN_RVIZ}" == "1" ]]; then
+  Scripts/UE5/open_mapping_rviz_ros1.sh "${SCENE_ID}" &
 fi
 
 if [[ "${OPEN_UE}" != "1" ]]; then

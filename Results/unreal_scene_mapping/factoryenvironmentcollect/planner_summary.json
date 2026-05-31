@@ -39,7 +39,6 @@
     "planner_summary_json": "Results/unreal_scene_mapping/factoryenvironmentcollect/planner_summary.json",
     "preview_svg": "Results/unreal_scene_mapping/factoryenvironmentcollect/preview.svg",
     "merged_pointcloud_ply": "Results/unreal_scene_mapping/factoryenvironmentcollect/pointcloud_merged.ply",
-    "viewer_html": "Results/unreal_scene_mapping/factoryenvironmentcollect/pointcloud_viewer.html",
     "fastlio_handoff_json": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_handoff.json",
     "lidar_frames_dir": "Results/unreal_scene_mapping/factoryenvironmentcollect/lidar_frames"
   },

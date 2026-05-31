@@ -975,56 +975,6 @@ def write_svg(
     path.write_text("\n".join(parts) + "\n", encoding="utf-8")
 
 
-def write_viewer_html(path: Path, profile: SceneProfile, grid: OccupancyGrid, path_cells: list[tuple[int, int]], cloud: list[Point3]) -> None:
-    path_points = [
-        [round(grid.cell_to_world(cell, profile.flight_z_m).x, 4), round(grid.cell_to_world(cell, profile.flight_z_m).y, 4)]
-        for cell in path_cells
-    ]
-    cloud_points = [[round(point.x, 4), round(point.y, 4), round(point.z, 4)] for point in cloud[:6000]]
-    payload = {
-        "scene": profile.scene_id,
-        "bounds": [grid.x_min, grid.y_min, grid.x_max, grid.y_max],
-        "path": path_points,
-        "cloud": cloud_points,
-    }
-    body = f"""<!doctype html>
-<html lang="zh-CN">
-<meta charset="utf-8">
-<title>MoSim UE Scene Point Cloud Viewer</title>
-<style>
-body {{ margin:0; font-family:Arial,Microsoft YaHei,sans-serif; background:#f8f8f6; color:#20242a; }}
-canvas {{ display:block; width:100vw; height:100vh; }}
-#hud {{ position:fixed; left:12px; top:10px; background:rgba(255,255,255,.86); padding:8px 10px; border:1px solid #ccc; }}
-</style>
-<canvas id="view"></canvas><div id="hud"></div>
-<script>
-const data = {json.dumps(payload, ensure_ascii=False)};
-const canvas = document.getElementById('view');
-const ctx = canvas.getContext('2d');
-const hud = document.getElementById('hud');
-function resize() {{ canvas.width = innerWidth * devicePixelRatio; canvas.height = innerHeight * devicePixelRatio; draw(); }}
-function sx(x) {{ return 50*devicePixelRatio + (x-data.bounds[0])/(data.bounds[2]-data.bounds[0])*(canvas.width-100*devicePixelRatio); }}
-function sy(y) {{ return canvas.height-50*devicePixelRatio - (y-data.bounds[1])/(data.bounds[3]-data.bounds[1])*(canvas.height-100*devicePixelRatio); }}
-function draw() {{
-  ctx.fillStyle = '#fbfbf8'; ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle = '#199b6b';
-  for (const p of data.cloud) {{ ctx.fillRect(sx(p[0]), sy(p[1]), 2*devicePixelRatio, 2*devicePixelRatio); }}
-  ctx.strokeStyle = '#0b6fba'; ctx.lineWidth = 3*devicePixelRatio; ctx.beginPath();
-  data.path.forEach((p,i) => {{ if (i===0) ctx.moveTo(sx(p[0]), sy(p[1])); else ctx.lineTo(sx(p[0]), sy(p[1])); }});
-  ctx.stroke();
-  if (data.path.length) {{
-    ctx.fillStyle = '#2ca02c'; ctx.beginPath(); ctx.arc(sx(data.path[0][0]), sy(data.path[0][1]), 6*devicePixelRatio, 0, 7); ctx.fill();
-    const g = data.path[data.path.length-1]; ctx.fillStyle = '#ffbf00'; ctx.beginPath(); ctx.arc(sx(g[0]), sy(g[1]), 6*devicePixelRatio, 0, 7); ctx.fill();
-  }}
-  hud.textContent = `${{data.scene}} | path=${{data.path.length}} | cloud=${{data.cloud.length}}`;
-}}
-addEventListener('resize', resize); resize();
-</script>
-"""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(body, encoding="utf-8")
-
-
 def write_fastlio_handoff(path: Path, profile: SceneProfile, outputs: dict[str, Path], planner_report: dict[str, Any]) -> None:
     payload = {
         "schema": "mosim.fastlio_handoff.v1",
@@ -1043,7 +993,6 @@ def write_fastlio_handoff(path: Path, profile: SceneProfile, outputs: dict[str, 
                 "merged_pointcloud_ply",
                 "lidar_frames_dir",
                 "occupancy_json",
-                "viewer_html",
             }
         },
         "fast_lio_reference_repo": "References/Lab/FAST_LIO",
@@ -1087,7 +1036,6 @@ def run_scene(profile: SceneProfile, output_root: Path) -> dict[str, Any]:
         "planner_summary_json": scene_dir / "planner_summary.json",
         "preview_svg": scene_dir / "preview.svg",
         "merged_pointcloud_ply": scene_dir / "pointcloud_merged.ply",
-        "viewer_html": scene_dir / "pointcloud_viewer.html",
         "fastlio_handoff_json": scene_dir / "fastlio_handoff.json",
         "lidar_frames_dir": lidar_dir,
     }
@@ -1099,7 +1047,6 @@ def run_scene(profile: SceneProfile, output_root: Path) -> dict[str, Any]:
     write_lidar_point_frames_jsonl(outputs["lidar_point_frames_jsonl"], profile, grid, path_cells)
     write_ply(outputs["merged_pointcloud_ply"], merged_cloud)
     write_svg(outputs["preview_svg"], profile, grid, start, goal, path_cells, known_occupied, merged_cloud)
-    write_viewer_html(outputs["viewer_html"], profile, grid, path_cells, merged_cloud)
     full_report = {
         "schema": "mosim.ue_scene_mapping_summary.v1",
         "scene_id": profile.scene_id,
@@ -1124,7 +1071,7 @@ def write_run_summary(path: Path, reports: list[dict[str, Any]]) -> None:
         "",
         "This run consumes exported Unreal collision truth and produces file-level mapping/planning artifacts.",
         "",
-        "| Scene | Grid | Path Cells | Replans | Known Occupied / Truth | Lidar Points | Viewer |",
+        "| Scene | Grid | Path Cells | Replans | Known Occupied / Truth | Lidar Points | Point Cloud Artifact |",
         "|---|---:|---:|---:|---:|---:|---|",
     ]
     for report in reports:
@@ -1133,7 +1080,7 @@ def write_run_summary(path: Path, reports: list[dict[str, Any]]) -> None:
             f"| `{report['scene_id']}` | {occ['grid_size'][0]}x{occ['grid_size'][1]} | "
             f"{report['path_cells']} | {report['replan_count']} | "
             f"{report['known_occupied_cells_final']}/{report['truth_occupied_cells']} | "
-            f"{report['merged_lidar_point_count']} | `{report['outputs']['viewer_html']}` |"
+            f"{report['merged_lidar_point_count']} | `{report['outputs']['merged_pointcloud_ply']}` |"
         )
     lines.extend(
         [
@@ -1172,7 +1119,7 @@ def main() -> int:
         profile = default_profile(str(truth["scene_id"]), truth_path)
         report = run_scene(profile, output_root)
         reports.append(report)
-        print(f"{scene_id}: path_cells={report['path_cells']} lidar_points={report['merged_lidar_point_count']} viewer={report['outputs']['viewer_html']}")
+        print(f"{scene_id}: path_cells={report['path_cells']} lidar_points={report['merged_lidar_point_count']} ply={report['outputs']['merged_pointcloud_ply']}")
     write_run_summary(output_root / "RUN_SUMMARY.md", reports)
     print(f"Wrote {rel(output_root / 'RUN_SUMMARY.md')}")
     return 0

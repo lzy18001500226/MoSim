@@ -12,7 +12,6 @@
     "local_plan_jsonl": "Results/unreal_scene_mapping/factoryenvironmentcollect/local_plan_frames.jsonl",
     "lidar_point_frames_jsonl": "Results/unreal_scene_mapping/factoryenvironmentcollect/lidar_point_frames.jsonl",
     "merged_pointcloud_ply": "Results/unreal_scene_mapping/factoryenvironmentcollect/pointcloud_merged.ply",
-    "viewer_html": "Results/unreal_scene_mapping/factoryenvironmentcollect/pointcloud_viewer.html",
     "lidar_frames_dir": "Results/unreal_scene_mapping/factoryenvironmentcollect/lidar_frames"
   },
   "fast_lio_reference_repo": "References/Lab/FAST_LIO",

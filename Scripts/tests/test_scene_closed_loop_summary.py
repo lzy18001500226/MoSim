@@ -45,7 +45,7 @@ def write_jsonl(path: Path, rows: list[dict]) -> None:
 
 def write_fixture_scene(root: Path) -> Path:
     scene_dir = root / "fixture"
-    for name in ["occupancy_grid.json", "pointcloud_merged.ply", "pointcloud_viewer.html"]:
+    for name in ["occupancy_grid.json", "pointcloud_merged.ply"]:
         (scene_dir / name).parent.mkdir(parents=True, exist_ok=True)
         (scene_dir / name).write_text("fixture\n", encoding="utf-8")
     write_csv(scene_dir / "trajectory.csv", ["time", "x", "y", "z"], [{"time": "0", "x": "0", "y": "0", "z": "1"}])

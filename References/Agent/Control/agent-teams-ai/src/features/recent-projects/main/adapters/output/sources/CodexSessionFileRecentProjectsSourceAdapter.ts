@@ -1,0 +1,543 @@
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+
+import { resolveProjectFilesystemState } from '@features/recent-projects/main/infrastructure/filesystem/resolveProjectFilesystemState';
+import { normalizeIdentityPath } from '@features/recent-projects/main/infrastructure/identity/normalizeIdentityPath';
+import { getAppDataPath } from '@main/utils/pathDecoder';
+import { isEphemeralProjectPath } from '@shared/utils/ephemeralProjectPath';
+
+import type { LoggerPort } from '@features/recent-projects/core/application/ports/LoggerPort';
+import type {
+  RecentProjectsSourcePort,
+  RecentProjectsSourceResult,
+} from '@features/recent-projects/core/application/ports/RecentProjectsSourcePort';
+import type { RecentProjectCandidate } from '@features/recent-projects/core/domain/models/RecentProjectCandidate';
+import type { RecentProjectIdentityResolver } from '@features/recent-projects/main/infrastructure/identity/RecentProjectIdentityResolver';
+import type { ServiceContext } from '@main/services';
+
+const CODEX_SESSION_FILE_PARSE_LIMIT = 500;
+const CODEX_PROJECT_CANDIDATE_LIMIT = 40;
+const CODEX_SESSION_FILE_SOURCE_TIMEOUT_MS = 8_000;
+const CODEX_SESSION_FILE_SOFT_BUDGET_MS = 6_500;
+const CODEX_SESSION_FILE_MAX_UNCACHED_READS_PER_RUN = 160;
+const CODEX_SESSION_FILE_READ_BATCH_SIZE = 24;
+const CODEX_SESSION_FILE_READ_TIMEOUT_MS = 700;
+const CODEX_SESSION_METADATA_READ_LIMIT_BYTES = 128 * 1024;
+const CODEX_SESSION_FILE_CACHE_SCHEMA_VERSION = 1;
+const CODEX_SESSION_FILE_CACHE_RELATIVE_PATH = path.join(
+  'recent-projects',
+  'codex-session-files-index.json'
+);
+
+interface CodexSessionFileEntry {
+  filePath: string;
+  mtimeMs: number;
+  size: number;
+}
+
+interface CodexSessionEvent {
+  timestamp?: unknown;
+  payload?: {
+    cwd?: unknown;
+    source?: unknown;
+    timestamp?: unknown;
+    git?: {
+      branch?: unknown;
+    } | null;
+  };
+}
+
+interface CodexSessionProjectSnapshot {
+  cwd: string;
+  source: unknown;
+  lastActivityAt: number;
+  branchName?: string;
+}
+
+interface CodexSessionMetadata {
+  cwd: string;
+  source: unknown;
+  payloadTimestamp?: unknown;
+  eventTimestamp?: unknown;
+  branchName?: string;
+}
+
+interface CodexSessionFileCacheEntry {
+  filePath: string;
+  mtimeMs: number;
+  size: number;
+  snapshot: CodexSessionProjectSnapshot | null;
+}
+
+interface CodexSessionFileCacheFile {
+  schemaVersion: number;
+  entries: Record<string, CodexSessionFileCacheEntry>;
+}
+
+interface CodexSessionSnapshotLoadResult {
+  snapshots: CodexSessionProjectSnapshot[];
+  degraded: boolean;
+  stats: {
+    files: number;
+    cached: number;
+    uncachedReads: number;
+    timedOutReads: number;
+    skippedUncached: number;
+    durationMs: number;
+  };
+}
+
+function emptyCache(): CodexSessionFileCacheFile {
+  return {
+    schemaVersion: CODEX_SESSION_FILE_CACHE_SCHEMA_VERSION,
+    entries: {},
+  };
+}
+
+function isUsableCacheEntry(
+  entry: CodexSessionFileCacheEntry | undefined,
+  file: CodexSessionFileEntry
+): entry is CodexSessionFileCacheEntry {
+  return (
+    !!entry &&
+    entry.filePath === file.filePath &&
+    entry.mtimeMs === file.mtimeMs &&
+    entry.size === file.size
+  );
+}
+
+function isInteractiveSource(source: unknown): boolean {
+  return source === 'vscode' || source === 'cli';
+}
+
+function normalizeTimestamp(value: unknown): number {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value < 1_000_000_000_000 ? value * 1000 : value;
+  }
+
+  if (typeof value === 'string' && value.trim()) {
+    const parsed = Date.parse(value);
+    return Number.isNaN(parsed) ? 0 : parsed;
+  }
+
+  return 0;
+}
+
+function getCodexHome(codexHome?: string): string {
+  return codexHome?.trim() || process.env.CODEX_HOME?.trim() || path.join(os.homedir(), '.codex');
+}
+
+function extractJsonStringField(input: string, fieldName: string): string {
+  const pattern = new RegExp(`"${fieldName}"\\s*:\\s*"((?:\\\\.|[^"\\\\])*)"`);
+  const match = pattern.exec(input);
+  if (!match) return '';
+
+  try {
+    return JSON.parse(`"${match[1]}"`) as string;
+  } catch {
+    return '';
+  }
+}
+
+function parseSessionMetadataPrefix(firstLine: string): CodexSessionMetadata | null {
+  const cwd = extractJsonStringField(firstLine, 'cwd').trim();
+  const source = extractJsonStringField(firstLine, 'source').trim();
+  if (!cwd || !source) return null;
+
+  return {
+    cwd,
+    source,
+    payloadTimestamp: extractJsonStringField(firstLine, 'timestamp'),
+    eventTimestamp: extractJsonStringField(firstLine, 'timestamp'),
+    branchName: extractJsonStringField(firstLine, 'branch').trim() || undefined,
+  };
+}
+
+async function readFirstLine(filePath: string): Promise<string | null> {
+  let handle: fs.FileHandle | null = null;
+  try {
+    handle = await fs.open(filePath, 'r');
+    const buffer = Buffer.allocUnsafe(CODEX_SESSION_METADATA_READ_LIMIT_BYTES);
+    const result = await handle.read(buffer, 0, buffer.length, 0);
+    if (result.bytesRead <= 0) return null;
+
+    const newlineIndex = buffer.subarray(0, result.bytesRead).indexOf(0x0a);
+    const endIndex = newlineIndex >= 0 ? newlineIndex : result.bytesRead;
+    return buffer.toString('utf8', 0, endIndex);
+  } catch {
+    return null;
+  } finally {
+    await handle?.close().catch(() => undefined);
+  }
+}
+
+async function readFirstLineWithTimeout(
+  filePath: string,
+  timeoutMs: number
+): Promise<{ firstLine: string | null; timedOut: boolean }> {
+  if (timeoutMs <= 0) {
+    return {
+      firstLine: null,
+      timedOut: true,
+    };
+  }
+
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  const readPromise = readFirstLine(filePath)
+    .then((firstLine) => ({
+      firstLine,
+      timedOut: false,
+    }))
+    .catch(() => ({
+      firstLine: null,
+      timedOut: false,
+    }));
+  const timeoutPromise = new Promise<{ firstLine: null; timedOut: true }>((resolve) => {
+    timer = setTimeout(
+      () =>
+        resolve({
+          firstLine: null,
+          timedOut: true,
+        }),
+      timeoutMs
+    );
+  });
+
+  const result = await Promise.race([readPromise, timeoutPromise]);
+  if (timer) {
+    clearTimeout(timer);
+  }
+  return result;
+}
+
+async function listJsonlFiles(root: string, maxDepth: number): Promise<CodexSessionFileEntry[]> {
+  async function walk(directory: string, depth: number): Promise<CodexSessionFileEntry[]> {
+    let entries;
+    try {
+      entries = await fs.readdir(directory, { withFileTypes: true, encoding: 'utf8' });
+    } catch {
+      return [];
+    }
+
+    const files = await Promise.all(
+      entries.map(async (entry): Promise<CodexSessionFileEntry[]> => {
+        const entryPath = path.join(directory, entry.name);
+        if (entry.isDirectory()) {
+          return depth < maxDepth ? walk(entryPath, depth + 1) : [];
+        }
+
+        if (!entry.isFile() || !entry.name.endsWith('.jsonl')) {
+          return [];
+        }
+
+        try {
+          const stats = await fs.stat(entryPath);
+          return [
+            {
+              filePath: entryPath,
+              mtimeMs: stats.mtimeMs,
+              size: stats.size,
+            },
+          ];
+        } catch {
+          return [];
+        }
+      })
+    );
+
+    return files.flat();
+  }
+
+  return walk(root, 0);
+}
+
+function parseSessionSnapshot(
+  firstLine: string,
+  mtimeMs: number
+): CodexSessionProjectSnapshot | null {
+  let metadata: CodexSessionMetadata | null = null;
+  try {
+    const event = JSON.parse(firstLine) as CodexSessionEvent;
+    metadata = {
+      cwd: typeof event.payload?.cwd === 'string' ? event.payload.cwd.trim() : '',
+      source: event.payload?.source,
+      payloadTimestamp: event.payload?.timestamp,
+      eventTimestamp: event.timestamp,
+      branchName:
+        typeof event.payload?.git?.branch === 'string' ? event.payload.git.branch.trim() : '',
+    };
+  } catch {
+    metadata = parseSessionMetadataPrefix(firstLine);
+  }
+
+  const cwd = metadata?.cwd ?? '';
+  if (!metadata || !cwd || !isInteractiveSource(metadata.source) || isEphemeralProjectPath(cwd)) {
+    return null;
+  }
+
+  const timestamp =
+    mtimeMs ||
+    normalizeTimestamp(metadata.payloadTimestamp) ||
+    normalizeTimestamp(metadata.eventTimestamp);
+
+  return {
+    cwd,
+    source: metadata.source,
+    lastActivityAt: timestamp,
+    branchName: metadata.branchName || undefined,
+  };
+}
+
+export class CodexSessionFileRecentProjectsSourceAdapter implements RecentProjectsSourcePort {
+  readonly sourceId = 'codex-session-files';
+  readonly timeoutMs = CODEX_SESSION_FILE_SOURCE_TIMEOUT_MS;
+  readonly #codexHome: string;
+  readonly #cachePath: string;
+
+  constructor(
+    private readonly deps: {
+      getActiveContext: () => ServiceContext;
+      getLocalContext: () => ServiceContext | undefined;
+      identityResolver: RecentProjectIdentityResolver;
+      logger: LoggerPort;
+      codexHome?: string;
+      appDataPath?: string;
+    }
+  ) {
+    this.#codexHome = getCodexHome(deps.codexHome);
+    this.#cachePath = path.join(
+      deps.appDataPath ?? getAppDataPath(),
+      CODEX_SESSION_FILE_CACHE_RELATIVE_PATH
+    );
+  }
+
+  async list(): Promise<RecentProjectsSourceResult> {
+    const activeContext = this.deps.getActiveContext();
+    const localContext = this.deps.getLocalContext();
+
+    if (activeContext.type !== 'local' || activeContext.id !== localContext?.id) {
+      return {
+        candidates: [],
+        degraded: false,
+      };
+    }
+
+    try {
+      const snapshotResult = await this.#listRecentSessionSnapshots();
+      const candidates = await Promise.all(
+        snapshotResult.snapshots.map((snapshot) =>
+          this.#toCandidate(snapshot, activeContext.fsProvider)
+        )
+      );
+
+      const validCandidates = candidates.filter(
+        (candidate): candidate is RecentProjectCandidate => candidate !== null
+      );
+
+      this.deps.logger.info('codex session-file recent-projects source loaded', {
+        count: validCandidates.length,
+        codexHome: this.#codexHome,
+        degraded: snapshotResult.degraded,
+        ...snapshotResult.stats,
+      });
+
+      return {
+        candidates: validCandidates,
+        degraded: snapshotResult.degraded,
+      };
+    } catch (error) {
+      this.deps.logger.warn('codex session-file recent-projects source failed', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+
+      return {
+        candidates: [],
+        degraded: true,
+      };
+    }
+  }
+
+  async #listRecentSessionSnapshots(): Promise<CodexSessionSnapshotLoadResult> {
+    const startedAt = Date.now();
+    const deadline = startedAt + CODEX_SESSION_FILE_SOFT_BUDGET_MS;
+    const files = [
+      ...(await listJsonlFiles(path.join(this.#codexHome, 'sessions'), 4)),
+      ...(await listJsonlFiles(path.join(this.#codexHome, 'archived_sessions'), 1)),
+    ].sort((left, right) => right.mtimeMs - left.mtimeMs);
+
+    const snapshotsByCwd = new Map<string, CodexSessionProjectSnapshot>();
+    const candidateFiles = files.slice(0, CODEX_SESSION_FILE_PARSE_LIMIT);
+    const cache = await this.#readCacheSafe();
+    const nextCacheEntries = new Map<string, CodexSessionFileCacheEntry>();
+    let degraded = false;
+    let cached = 0;
+    let uncachedReads = 0;
+    let timedOutReads = 0;
+    let skippedUncached = 0;
+
+    for (
+      let offset = 0;
+      offset < candidateFiles.length && snapshotsByCwd.size < CODEX_PROJECT_CANDIDATE_LIMIT;
+      offset += CODEX_SESSION_FILE_READ_BATCH_SIZE
+    ) {
+      const batch = candidateFiles.slice(offset, offset + CODEX_SESSION_FILE_READ_BATCH_SIZE);
+      const metadata = await Promise.all(
+        batch.map(async (file) => {
+          const cachedEntry = cache.entries[file.filePath];
+          if (isUsableCacheEntry(cachedEntry, file)) {
+            cached += 1;
+            nextCacheEntries.set(file.filePath, cachedEntry);
+            return { snapshot: cachedEntry.snapshot, processed: true };
+          }
+
+          if (
+            Date.now() >= deadline ||
+            uncachedReads >= CODEX_SESSION_FILE_MAX_UNCACHED_READS_PER_RUN
+          ) {
+            degraded = true;
+            skippedUncached += 1;
+            return { snapshot: null, processed: false };
+          }
+
+          uncachedReads += 1;
+          const readResult = await readFirstLineWithTimeout(
+            file.filePath,
+            Math.min(CODEX_SESSION_FILE_READ_TIMEOUT_MS, deadline - Date.now())
+          );
+          if (readResult.timedOut) {
+            degraded = true;
+            timedOutReads += 1;
+            return { snapshot: null, processed: false };
+          }
+
+          const firstLine = readResult.firstLine;
+          const snapshot = firstLine ? parseSessionSnapshot(firstLine, file.mtimeMs) : null;
+          nextCacheEntries.set(file.filePath, {
+            filePath: file.filePath,
+            mtimeMs: file.mtimeMs,
+            size: file.size,
+            snapshot,
+          });
+          return { snapshot, processed: true };
+        })
+      );
+
+      for (const { snapshot, processed } of metadata) {
+        if (!processed || !snapshot) {
+          continue;
+        }
+
+        const previous = snapshotsByCwd.get(snapshot.cwd);
+        if (!previous || snapshot.lastActivityAt > previous.lastActivityAt) {
+          snapshotsByCwd.set(snapshot.cwd, snapshot);
+        }
+
+        if (snapshotsByCwd.size >= CODEX_PROJECT_CANDIDATE_LIMIT) {
+          break;
+        }
+      }
+    }
+
+    for (const file of candidateFiles) {
+      const cachedEntry = cache.entries[file.filePath];
+      if (isUsableCacheEntry(cachedEntry, file) && !nextCacheEntries.has(file.filePath)) {
+        nextCacheEntries.set(file.filePath, cachedEntry);
+      }
+    }
+    await this.#writeCacheSafe(nextCacheEntries);
+
+    const snapshots = Array.from(snapshotsByCwd.values())
+      .sort((left, right) => right.lastActivityAt - left.lastActivityAt)
+      .slice(0, CODEX_PROJECT_CANDIDATE_LIMIT);
+    const durationMs = Date.now() - startedAt;
+    if (degraded) {
+      this.deps.logger.warn('codex session-file recent-projects source partial', {
+        files: candidateFiles.length,
+        cached,
+        uncachedReads,
+        timedOutReads,
+        skippedUncached,
+        candidates: snapshots.length,
+        durationMs,
+      });
+    }
+
+    return {
+      snapshots,
+      degraded,
+      stats: {
+        files: candidateFiles.length,
+        cached,
+        uncachedReads,
+        timedOutReads,
+        skippedUncached,
+        durationMs,
+      },
+    };
+  }
+
+  async #readCacheSafe(): Promise<CodexSessionFileCacheFile> {
+    try {
+      const raw = await fs.readFile(this.#cachePath, 'utf8');
+      const parsed = JSON.parse(raw) as Partial<CodexSessionFileCacheFile>;
+      if (
+        parsed.schemaVersion !== CODEX_SESSION_FILE_CACHE_SCHEMA_VERSION ||
+        !parsed.entries ||
+        typeof parsed.entries !== 'object' ||
+        Array.isArray(parsed.entries)
+      ) {
+        return emptyCache();
+      }
+      return {
+        schemaVersion: CODEX_SESSION_FILE_CACHE_SCHEMA_VERSION,
+        entries: parsed.entries,
+      };
+    } catch {
+      return emptyCache();
+    }
+  }
+
+  async #writeCacheSafe(entries: ReadonlyMap<string, CodexSessionFileCacheEntry>): Promise<void> {
+    let tempPath: string | null = null;
+    try {
+      await fs.mkdir(path.dirname(this.#cachePath), { recursive: true });
+      const cacheFile: CodexSessionFileCacheFile = {
+        schemaVersion: CODEX_SESSION_FILE_CACHE_SCHEMA_VERSION,
+        entries: Object.fromEntries(entries),
+      };
+      tempPath = `${this.#cachePath}.${process.pid}.${Date.now()}.tmp`;
+      await fs.writeFile(tempPath, JSON.stringify(cacheFile), 'utf8');
+      await fs.rename(tempPath, this.#cachePath);
+    } catch {
+      if (tempPath) {
+        await fs.rm(tempPath, { force: true }).catch(() => undefined);
+      }
+      // Cache is an optimization only; never fail recent projects because it is unavailable.
+    }
+  }
+
+  async #toCandidate(
+    snapshot: CodexSessionProjectSnapshot,
+    fsProvider?: ServiceContext['fsProvider']
+  ): Promise<RecentProjectCandidate | null> {
+    const identity = await this.deps.identityResolver.resolve(snapshot.cwd);
+    const displayName = identity?.name ?? path.basename(snapshot.cwd) ?? snapshot.cwd;
+
+    return {
+      identity: identity?.id ?? `path:${normalizeIdentityPath(snapshot.cwd)}`,
+      displayName,
+      primaryPath: snapshot.cwd,
+      associatedPaths: [snapshot.cwd],
+      lastActivityAt: snapshot.lastActivityAt,
+      providerIds: ['codex'],
+      sourceKind: 'codex',
+      openTarget: {
+        type: 'synthetic-path',
+        path: snapshot.cwd,
+      },
+      branchName: snapshot.branchName,
+      filesystemState: await resolveProjectFilesystemState(snapshot.cwd, fsProvider),
+    };
+  }
+}

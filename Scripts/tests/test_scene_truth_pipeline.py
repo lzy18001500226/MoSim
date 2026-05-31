@@ -60,9 +60,14 @@ def test_validated_scenes_produce_unknown_map_planning_handoff() -> None:
             if fastlio["status"] != "offline_simulated_sensor_handoff_ready":
                 raise AssertionError(fastlio)
             generated = fastlio["generated_inputs"]
-            for key in ("trajectory_csv", "render_replay_csv", "local_known_map_jsonl", "local_plan_jsonl", "lidar_point_frames_jsonl", "merged_pointcloud_ply", "viewer_html", "lidar_frames_dir"):
+            for key in ("trajectory_csv", "render_replay_csv", "local_known_map_jsonl", "local_plan_jsonl", "lidar_point_frames_jsonl", "merged_pointcloud_ply", "lidar_frames_dir"):
                 if key not in generated:
                     raise AssertionError(fastlio)
+            if "viewer_html" in generated:
+                raise AssertionError(fastlio)
+            for stale_artifact in ("pointcloud_viewer.html", "viewer_html"):
+                if stale_artifact in json.dumps(fastlio, ensure_ascii=False):
+                    raise AssertionError(f"FAST-LIO handoff leaked stale HTML viewer route: {stale_artifact}")
 
             render_replay = scene_dir / "render_replay.csv"
             with render_replay.open(newline="", encoding="utf-8") as handle:
@@ -109,6 +114,24 @@ def test_validated_scenes_produce_unknown_map_planning_handoff() -> None:
 
         if "FAST-LIO artifacts are input handoff files" not in (output_root / "RUN_SUMMARY.md").read_text(encoding="utf-8"):
             raise AssertionError("run summary missing FAST-LIO policy")
+        if "pointcloud_viewer.html" in (output_root / "RUN_SUMMARY.md").read_text(encoding="utf-8"):
+            raise AssertionError("run summary must not route primary point-cloud review to HTML")
+
+        for packet in (ROOT / "Results" / "unreal_scene_mapping").glob("*/manual_review_packet.md"):
+            packet_text = packet.read_text(encoding="utf-8")
+            stale_phrases = (
+                "pointcloud_viewer.html",
+                "second browser window",
+                "browser point-cloud",
+                "browser HTML is the primary",
+                "in-scene LiDAR point cloud",
+                "UE in-scene point cloud",
+            )
+            for phrase in stale_phrases:
+                if phrase in packet_text:
+                    raise AssertionError(f"{packet} still contains stale HTML review route: {phrase}")
+            if "RViz" not in packet_text and "native point-cloud" not in packet_text:
+                raise AssertionError(f"{packet} does not mention native RViz review route")
     finally:
         if temp_root.exists():
             shutil.rmtree(temp_root)

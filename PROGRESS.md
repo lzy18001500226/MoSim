@@ -10,10 +10,17 @@
   `Scripts/tests/test_scene_truth_pipeline.py`. The pipeline consumes the
   accepted Factory and Derelict collision-truth JSON files, builds flight-height
   occupancy grids, runs an unknown-global-map receding A* planner, simulates
-  LiDAR frames, writes merged point clouds and HTML viewers, writes
+  LiDAR frames, writes merged point clouds, writes
   `fastlio_handoff.json`, writes `render_replay.csv`, and now writes
   per-frame `local_known_map_frames.jsonl`, `local_plan_frames.jsonl`, and
-  `lidar_point_frames.jsonl` for UE runtime replay. Current outputs:
+  `lidar_point_frames.jsonl` for UE runtime replay. Point-cloud review is no
+  longer routed through HTML: the accepted architecture is UE for the rendered
+  scene window and ROS/RViz or equivalent native tooling for PointCloud2,
+  occupancy/grid-map, TF, odometry, and planner-path windows. Added
+  `Config/rviz/mosim_uav_mapping.rviz`,
+  `Scripts/ros/publish_mosim_mapping_replay_ros1.py`, and
+  `Scripts/UE5/open_mapping_rviz_ros1.sh`; current WSL still lacks ROS1/RViz,
+  so only dry-run publisher validation is available here. Current outputs:
   `Results/unreal_scene_mapping/RUN_SUMMARY.md`,
   `Results/unreal_scene_mapping/factoryenvironmentcollect/*`, and
   `Results/unreal_scene_mapping/derelictcorridormegascans/*`. Latest verified
@@ -26,8 +33,9 @@
   `collision_free_against_truth=true`,
   `buffered_collision_free_against_truth=true`. `stream_unreal_udp.py` now sends
   evidence-backed local-known-map cells, local planner frames, and LiDAR point
-  frames to UE. The bridge parses `lidar_points`, and
-  `QuadrotorMworksPlaybackActor` renders an in-scene LiDAR point mesh. Checks
+  frames to UE for optional rendered debug overlays. The primary
+  point-cloud/grid-map review window remains RViz or equivalent native
+  robotics tooling, not UE-internal mesh rendering or browser HTML. Checks
   passed: `python3 Scripts/tests/test_scene_truth_pipeline.py`,
   `python3 Scripts/tests/test_fastlio_replay_adapter.py`,
   `Scripts/UE5/build_unreal_renderer.sh`, and short live review loops for both
@@ -64,6 +72,11 @@
   `Results/unreal_scene_mapping/UE_SCENE_CLOSED_LOOP_STATUS.md/json`; latest
   aggregate status is `ready_smoke_validated_with_blockers`, where the only
   per-scene warning is `fastlio_blocked_missing_ros1_runtime`.
+  Latest live-editor automation probe: `mosim-unreal` can read project context and finds `UE_5.5` plus
+  `UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject`, but editor listener
+  `127.0.0.1:55557` is still refused and no callable WindowsMCP namespace is
+  exposed in this Codex tool surface. Continue file-level/standalone review
+  work until a reversible editor probe passes.
 
 - 2026-06-01 Factory review point correction: user confirmed the review camera
   no longer passes through walls, but the old Factory start point prevented

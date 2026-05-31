@@ -206,6 +206,8 @@ def prepare_scene(scene_dir: Path) -> dict[str, Any]:
             "roslaunch fast_lio mapping_velodyne.launch rviz:=false",
             f"python3 Scripts/UE5/publish_fastlio_replay_ros1.py --dataset {rel(dataset_path)} --dry-run",
             f"python3 Scripts/UE5/publish_fastlio_replay_ros1.py --dataset {rel(dataset_path)}",
+            f"DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh {handoff['scene_id']}",
+            f"Scripts/UE5/open_mapping_rviz_ros1.sh {handoff['scene_id']}",
         ],
         "claim_boundary": [
             "This manifest is a FAST-LIO input adapter, not a completed FAST-LIO localization result.",

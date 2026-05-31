@@ -601,7 +601,6 @@ Results/unreal_scene_mapping/<scene_id>/local_known_map_frames.jsonl
 Results/unreal_scene_mapping/<scene_id>/local_plan_frames.jsonl
 Results/unreal_scene_mapping/<scene_id>/lidar_point_frames.jsonl
 Results/unreal_scene_mapping/<scene_id>/pointcloud_merged.ply
-Results/unreal_scene_mapping/<scene_id>/pointcloud_viewer.html
 Results/unreal_scene_mapping/<scene_id>/fastlio_handoff.json
 Results/unreal_scene_mapping/<scene_id>/fastlio_replay_dataset.jsonl
 Results/unreal_scene_mapping/<scene_id>/fastlio_adapter_manifest.json
@@ -630,9 +629,86 @@ Current verified output on 2026-06-01:
 The `fastlio_handoff.json` and `fastlio_adapter_manifest.json` files are input
 contracts, not completed FAST-LIO localization results. They record
 deterministic offline LiDAR frames, a merged point cloud, occupancy, path,
-point-cloud viewer, per-frame local planner outputs, `render_replay.csv`, and a
-ROS1 replay dataset. The replay dataset includes synthetic finite-difference
-IMU derived from the replay path; it is not measured flight IMU.
+per-frame local planner outputs, `render_replay.csv`, and a ROS1 replay
+dataset. The replay dataset includes synthetic finite-difference IMU derived
+from the replay path; it is not measured flight IMU.
+
+## Native Map and Point-Cloud Windows
+
+Do not use a browser HTML page as the primary point-cloud solution. The product
+architecture follows the common UAV simulation split:
+
+```text
+UE/MoSimSceneLibrary window
+  -> real rendered scene, UAV body, camera view, radar/local-plan debug overlay,
+     trajectory video
+
+ROS/RViz/RViz2 or equivalent native window
+  -> PointCloud2, local occupancy/grid map, TF, odometry, local/global path,
+     FAST-LIO registered cloud and pose output
+```
+
+This matches the observed external and local references:
+
+| Reference | Relevant behavior |
+|---|---|
+| RflySim Vision API docs | `https://rflysim.com/doc/en/RflySimAPIs/8.RflySimVision/PPT.pdf` says the Lidar-UDP ROS route uses RViz visualization for environment point-cloud data; `https://rflysim.com/doc/zh/RflySimAPIs/RflySimSDK/html/md_vision_2md_2VisionComm.html` lists ROS1/ROS2 `PointCloud2` lidar topics |
+| AirSim ROS wrapper | `https://microsoft.github.io/AirSim/airsim_ros_pkgs/` documents `roslaunch airsim_ros_pkgs rviz.launch` and lidar topics as `sensor_msgs::PointCloud2`; `https://microsoft.github.io/AirSimExtensions/airsim_ros_pkgs/` documents the ROS2 `rviz.launch.py` flow |
+| Gazebo + ROS2 | `https://gazebosim.org/docs/harmonic/ros2_integration/` documents the `ros_gz_bridge` ROS/Gazebo message bridge and separate RViz visualization; `https://docs.ros.org/en/ros2_packages/jazzy/api/ros_gz_bridge/index.html` lists `sensor_msgs/msg/PointCloud2` <-> `gz.msgs.PointCloudPacked` bridging |
+| ROS RViz guide | `https://docs.ros.org/en/humble/Tutorials/Intermediate/RViz/RViz-User-Guide/RViz-User-Guide.html` describes RViz as a ROS 3D visualizer and Point Cloud(2) displays for `sensor_msgs/msg/PointCloud2` |
+| Local FAST-LIO | `References/Lab/FAST_LIO/launch/mapping_mid360.launch` starts `fastlio_mapping` and optionally starts `rviz -d loam_livox.rviz`; `References/Lab/FAST_LIO/rviz_cfg/loam_livox.rviz` subscribes to `/cloud_registered`, `/Odometry`, `/path` |
+| Local EGO-Planner/Sunray | `References/Lab/ego-planner/.../default.rviz` and `References/Sunray/.../launch_rviz/*.rviz` show planning markers, point clouds, occupancy/grid maps, robot state, and paths in a separate visualization window |
+
+Project-local native RViz assets:
+
+```text
+Config/rviz/mosim_uav_mapping.rviz
+Scripts/ros/publish_mosim_mapping_replay_ros1.py
+Scripts/UE5/open_mapping_rviz_ros1.sh
+```
+
+Dry-run without ROS:
+
+```bash
+DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
+DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans
+```
+
+When ROS1/RViz is installed and sourced, open the native point-cloud/map window:
+
+```bash
+Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
+Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans
+```
+
+The project publisher uses the same evidence-backed files as UE UDP replay:
+
+```text
+render_replay.csv
+local_known_map_frames.jsonl
+local_plan_frames.jsonl
+lidar_point_frames.jsonl
+```
+
+and publishes:
+
+```text
+/velodyne_points
+/mosim/local_known_map_cloud
+/mosim/local_occupancy_grid
+/mosim/local_plan
+/mosim/uav_path
+TF: ue_world -> base_link
+```
+
+FAST-LIO output remains separate: `/cloud_registered`, `/Odometry`, and
+related FAST-LIO topics are accepted only after the ROS1/FAST-LIO runtime is
+available and has produced runtime logs/pose/map output. Static PLY files and
+offline JSONL frames are handoff evidence, not localization.
+
+HTML output is allowed only for explicitly requested offline report previews,
+not for scene point-cloud review, FAST-LIO evidence, or the RflySim-like
+runtime UI.
 
 Generate and inspect the FAST-LIO replay adapter state with:
 
@@ -749,19 +825,26 @@ python3 Scripts/UE5/stream_unreal_udp.py \
   --dry-run --max-frames 2 --no-sleep
 ```
 
-For the current accepted scenes, use the review loop wrapper:
+For the current accepted scenes, use the UE review loop wrapper:
 
 ```bash
-OPEN_UE=1 OPEN_POINTCLOUD=0 STREAM_LOOP_COUNT=1 STREAM_FPS=12 WAIT_UDP_SECONDS=45 \
+OPEN_UE=1 OPEN_RVIZ=0 STREAM_LOOP_COUNT=1 STREAM_FPS=12 WAIT_UDP_SECONDS=45 \
   Scripts/UE5/review_scene_mapping_loop.sh factoryenvironmentcollect
 
-OPEN_UE=1 OPEN_POINTCLOUD=0 STREAM_LOOP_COUNT=1 STREAM_FPS=12 WAIT_UDP_SECONDS=45 \
+OPEN_UE=1 OPEN_RVIZ=0 STREAM_LOOP_COUNT=1 STREAM_FPS=12 WAIT_UDP_SECONDS=45 \
   Scripts/UE5/review_scene_mapping_loop.sh derelictcorridormegascans
 ```
 
+Use `OPEN_RVIZ=1` only when ROS1/RViz is installed and sourced. Otherwise run
+`DRY_RUN=1 Scripts/UE5/open_mapping_rviz_ros1.sh <scene>` to validate the
+publisher contract without opening a GUI.
+
 The playback actor spawns the UAV body, propellers, reference marker,
-trajectory trail, radar sector, local-plan spline, local-known-map mesh, and
-in-scene LiDAR point mesh from UDP frames. The local-plan spline comes from
+trajectory trail, radar sector, local-plan spline, optional local-known-map
+debug mesh, and optional LiDAR debug mesh from UDP frames. These UE overlays
+are for rendered-scene review and debugging; the primary point-cloud/grid-map
+window remains RViz or an equivalent native robotics visualizer. The local-plan
+spline comes from
 `local_plan_frames.jsonl`, not from a global-truth prior. Latest smoke evidence:
 
 ```text
@@ -770,10 +853,13 @@ Derelict: /Game/DerelictCorridor/Maps/DerelictCorridor, local_map_cells=320, lid
 ```
 
 This proves runtime UDP playback into the standalone UE review window, not live
-editor actor placement. `mosim-unreal` can read project context, but the live UE
-Editor listener remains unavailable in this session; no WindowsMCP callable
-desktop tool surface is exposed. Do not claim editor-side actor placement or
-viewport capture until a reversible editor probe passes.
+editor actor placement. `mosim-unreal` can read project context and detects
+`UE_5.5` plus `UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject`, but the live
+UE Editor listener remains unavailable in this session. The latest
+`ue_health(host=127.0.0.1, port=55557)` probe returned connection refused for
+`127.0.0.1:55557` and a timeout through the WSL gateway, and the current Codex
+tool surface exposes no callable WindowsMCP namespace. Do not claim editor-side
+actor placement or viewport capture until a reversible editor probe passes.
 
 Current blocked or lower-priority candidates:
 

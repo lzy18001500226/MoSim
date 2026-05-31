@@ -39,7 +39,6 @@
     "planner_summary_json": "Results/unreal_scene_mapping/derelictcorridormegascans/planner_summary.json",
     "preview_svg": "Results/unreal_scene_mapping/derelictcorridormegascans/preview.svg",
     "merged_pointcloud_ply": "Results/unreal_scene_mapping/derelictcorridormegascans/pointcloud_merged.ply",
-    "viewer_html": "Results/unreal_scene_mapping/derelictcorridormegascans/pointcloud_viewer.html",
     "fastlio_handoff_json": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_handoff.json",
     "lidar_frames_dir": "Results/unreal_scene_mapping/derelictcorridormegascans/lidar_frames"
   },

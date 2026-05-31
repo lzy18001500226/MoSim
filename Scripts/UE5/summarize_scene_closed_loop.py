@@ -78,7 +78,6 @@ def summarize_scene(scene_dir: Path) -> dict[str, Any]:
         "local_plan_frames": scene_dir / "local_plan_frames.jsonl",
         "lidar_point_frames": scene_dir / "lidar_point_frames.jsonl",
         "pointcloud_merged": scene_dir / "pointcloud_merged.ply",
-        "pointcloud_viewer": scene_dir / "pointcloud_viewer.html",
         "fastlio_replay_dataset": scene_dir / "fastlio_replay_dataset.jsonl",
         "navigation_handoff": handoff_path,
         "control_reference": scene_dir / "control_reference.csv",

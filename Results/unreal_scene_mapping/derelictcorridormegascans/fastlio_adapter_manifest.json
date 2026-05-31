@@ -38,7 +38,9 @@
     "source devel/setup.bash",
     "roslaunch fast_lio mapping_velodyne.launch rviz:=false",
     "python3 Scripts/UE5/publish_fastlio_replay_ros1.py --dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl --dry-run",
-    "python3 Scripts/UE5/publish_fastlio_replay_ros1.py --dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl"
+    "python3 Scripts/UE5/publish_fastlio_replay_ros1.py --dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl",
+    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans",
+    "Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans"
   ],
   "claim_boundary": [
     "This manifest is a FAST-LIO input adapter, not a completed FAST-LIO localization result.",
