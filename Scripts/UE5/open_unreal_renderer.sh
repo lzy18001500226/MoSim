@@ -84,7 +84,7 @@ if [[ "${MODE}" == "editor" ]] && powershell.exe -NoProfile -Command \
   exit 0
 fi
 
-if [[ "${MODE}" == "game" ]] && powershell.exe -NoProfile -Command \
+if [[ "${MODE}" == "game" || "${MODE}" == "review-scene" ]] && powershell.exe -NoProfile -Command \
   "Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MoSimSceneLibrary.uproject*' -and \$_.CommandLine -like '* -game*' } | Select-Object -First 1 | ForEach-Object { exit 0 }; exit 1" >/dev/null 2>&1; then
   if [[ "${RESTART_UNREAL_GAME}" == "1" ]]; then
     echo "Restarting existing MoSimSceneLibrary game window."
@@ -124,6 +124,19 @@ else
   if [[ -n "${UNREAL_EXTRA_ARGS}" ]]; then
     # shellcheck disable=SC2206
     EXTRA_ARGS_WIN=(${UNREAL_EXTRA_ARGS})
+  fi
+  if [[ "${MODE}" == "review-scene" ]] &&
+     [[ " ${EXTRA_ARGS_WIN[*]} " == *" /Game/Maps/Demonstration "* ]] &&
+     [[ " ${EXTRA_ARGS_WIN[*]} " != *" -MoSimReviewCameraX="* ]] &&
+     [[ " ${EXTRA_ARGS_WIN[*]} " != *" -MoSimReviewCameraLocation="* ]]; then
+    EXTRA_ARGS_WIN+=(
+      "-MoSimReviewCameraX=-4750"
+      "-MoSimReviewCameraY=3850"
+      "-MoSimReviewCameraZ=180"
+      "-MoSimReviewCameraPitch=-8"
+      "-MoSimReviewCameraYaw=-34"
+      "-MoSimReviewCameraRoll=0"
+    )
   fi
   ARG_LIST="'${UPROJECT_WIN}'"
   for Arg in "${EXTRA_ARGS[@]}" "${EXTRA_ARGS_WIN[@]}"; do

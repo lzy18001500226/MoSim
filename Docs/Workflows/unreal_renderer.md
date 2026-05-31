@@ -506,7 +506,7 @@ For real scene visual review, use the scene-review launch mode:
 
 ```bash
 RESTART_UNREAL_GAME=1 \
-UNREAL_EXTRA_ARGS="/Game/DerelictCorridor/Maps/DerelictCorridor" \
+UNREAL_EXTRA_ARGS="/Game/Maps/Demonstration" \
 Scripts/UE5/open_unreal_renderer.sh review-scene
 ```
 
@@ -516,6 +516,11 @@ and the default playback actor. Without this flag,
 `AMoSimSceneLibraryGameMode` may overlay the generated MWORKS preview map on
 top of a real imported scene, causing a false visual-review failure.
 
+Factory review must start inside the real factory navigation/review area. The
+launcher and review pawn now provide a Factory-specific default camera for
+`/Game/Maps/Demonstration`; do not work around a bad start point by disabling
+camera collision.
+
 For scenes whose default camera position is wrong or whose interior is too dark
 for review, first use balanced camera and fill-light overrides. Do not enable
 forced exposure as the default review path because it can overexpose the whole
@@ -523,9 +528,9 @@ viewport to pure white.
 
 ```bash
 RESTART_UNREAL_GAME=1 \
-UNREAL_EXTRA_ARGS="/Game/DerelictCorridor/Maps/DerelictCorridor \
-  -MoSimReviewCameraX=2612.8 -MoSimReviewCameraY=-1768.1 -MoSimReviewCameraZ=2983.4 \
-  -MoSimReviewCameraPitch=-22.8 -MoSimReviewCameraYaw=36.9 -MoSimReviewCameraRoll=0 \
+UNREAL_EXTRA_ARGS="/Game/Maps/Demonstration \
+  -MoSimReviewCameraX=-4750 -MoSimReviewCameraY=3850 -MoSimReviewCameraZ=180 \
+  -MoSimReviewCameraPitch=-8 -MoSimReviewCameraYaw=-34 -MoSimReviewCameraRoll=0 \
   -MoSimReviewHeadLightIntensity=8 -MoSimReviewHeadLightRadius=25000 \
   -MoSimReviewSunIntensity=12 -MoSimReviewSkyLightIntensity=3" \
 Scripts/UE5/open_unreal_renderer.sh review-scene

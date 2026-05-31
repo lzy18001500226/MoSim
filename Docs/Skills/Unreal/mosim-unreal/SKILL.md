@@ -120,7 +120,7 @@ scene-review mode:
 
 ```bash
 RESTART_UNREAL_GAME=1 \
-UNREAL_EXTRA_ARGS="/Game/DerelictCorridor/Maps/DerelictCorridor" \
+UNREAL_EXTRA_ARGS="/Game/Maps/Demonstration" \
 Scripts/UE5/open_unreal_renderer.sh review-scene
 ```
 
@@ -129,13 +129,18 @@ This passes `-MoSimSceneReview`. It disables the old generated
 actor, while keeping the review camera and lighting. Use normal `game` mode
 only when intentionally testing MWORKS preview-map playback.
 
+For Factory review, start inside `/Game/Maps/Demonstration` with camera
+collision still enabled. The launcher injects the Factory camera default when no
+manual camera override is supplied; do not use `-MoSimNoReviewCollision` to get
+past an exterior start point.
+
 Manual map review should prefer white/daytime visibility. `review-scene` also
 supports balanced camera/fill-light overrides such as:
 
 ```bash
-UNREAL_EXTRA_ARGS="/Game/DerelictCorridor/Maps/DerelictCorridor \
-  -MoSimReviewCameraX=2612.8 -MoSimReviewCameraY=-1768.1 -MoSimReviewCameraZ=2983.4 \
-  -MoSimReviewCameraPitch=-22.8 -MoSimReviewCameraYaw=36.9 \
+UNREAL_EXTRA_ARGS="/Game/Maps/Demonstration \
+  -MoSimReviewCameraX=-4750 -MoSimReviewCameraY=3850 -MoSimReviewCameraZ=180 \
+  -MoSimReviewCameraPitch=-8 -MoSimReviewCameraYaw=-34 \
   -MoSimReviewHeadLightIntensity=8 -MoSimReviewHeadLightRadius=25000" \
 Scripts/UE5/open_unreal_renderer.sh review-scene
 ```
@@ -145,6 +150,13 @@ overrides, do not promote it as a primary rendered-map scene. Keep it only as a
 special indoor/radar test candidate.
 Do not enable forced exposure by default; use `-MoSimDayReview` only for
 diagnostics because excessive exposure bias can white out the viewport.
+
+Manual review must keep camera collision enabled. The project review pawn uses
+a swept collision sphere so the reviewer cannot fly through walls or scene
+boundaries. `-MoSimNoReviewCollision` is diagnostic only; do not use it for
+map acceptance. For planning work, rendered visibility is insufficient: export
+and validate collision/occupancy truth before accepting a path or UAV route as
+wall-safe.
 
 ## Expected Tools
 
