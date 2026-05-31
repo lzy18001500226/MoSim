@@ -1,0 +1,48 @@
+{
+    "messages": [
+        {
+            "role": "user",
+            "content": "highchart-gantt 10.0版本 禁止拖拽"
+        },
+        {
+            "role": "assistant",
+            "content": "要禁止拖拽，需要设置gantt图中的draggable属性为false。具体代码示例如下：\n\n```\nHighcharts.ganttChart('container', {\n   ...  \n  plotOptions: {\n    series: {\n      draggable: false\n    }\n  },\n  ...\n});\n```\n\n这样就可以禁止gantt图的拖拽了。"
+        },
+        {
+            "role": "user",
+            "content": "highchart-gantt 10.0版本  dragDrop 横向拖拽结束事件"
+        },
+        {
+            "role": "assistant",
+            "content": "Highcharts Gantt 10.0版本提供了两个事件来处理横向拖拽结束事件：\n\n1. `pointDragEnd`事件：当一个数据点（point）的拖拽结束（重新定位）时触发。\n\n2. `chart.updateAfterDrilldown`事件：当用户缩放并导航到下一级别时触发，需要使用钻取（drilldown）功能的代码。\n\n这两个事件都可以帮助你处理拖拽结束事件，具体代码示例如下：\n\n```\nHighcharts.ganttChart('container', {\n  ...  \n  plotOptions: {\n    series: {\n      draggable: true,\n      point: {\n        events: {\n          dragEnd: function () {\n            console.log('point drag end:', this);\n            // 横向拖拽结束时的处理代码\n          }\n        }\n      }\n    }\n  },\n  chart: {\n    events: {\n      updateAfterDrilldown: function (e) {\n        console.log('chart upadte after drilldown:', e);\n        // 横向拖拽结束时的处理代码\n      }\n    }\n  },\n  ...\n});\n```\n\n上述示例中，`pointDragEnd`事件在每个数据点（point）用于处理拖拽结束事件。而`chart.updateAfterDrilldown`事件在钻取（drilldown）功能下用于处理拖拽结束事件。你可以根据你的具体场景来选择使用哪个事件。"
+        },
+        {
+            "role": "assistant",
+            "content": "如在Gantt图中启用拖放后，可以监听`dragEnd`事件来检测横向拖拽结束事件。这个事件会在拖拽操作结束时触发，并返回被拖拽的数据点的信息。\n\n以下是监听`dragEnd`事件的示例代码：\n\n```javascript\nHighcharts.ganttChart('container', {\n  // ... 其它配置项\n  plotOptions: {\n    series: {\n      draggable: true,\n      point: {\n        events: {\n          dragEnd: function() {\n            console.log('drag end', this);\n            // 在此添加需要处理的逻辑\n          }\n        }\n      }\n    }\n  }\n});\n```\n\n在这个示例中，设置了`draggable`属性为`true`，将Gantt图数据列元素启用了拖拽功能，并且在每个数据点的`point`对象中添加了`dragEnd`事件监听函数。当拖拽操作结束时，`dragEnd`事件会被触发，同时在控制台输出该数据点的信息。处理拖拽操作结束事件的逻辑可以在`dragEnd`事件监听函数里面编写。"
+        },
+        {
+            "role": "user",
+            "content": "Highcharts Gantt 10.0版本 draggableX 设置为true ,甘特图拖拽结束后的事件处理，如何写？"
+        },
+        {
+            "role": "assistant",
+            "content": "在 Highcharts Gantt 10.0 版本中，你可以开启 `draggableX` 属性来启用甘特图的横向拖拽功能。拖拽结束后会触发 `series.update` 事件。\n\n你可以在 `series.update` 事件的监听函数中添加需要处理的逻辑，该函数会返回当前被拖拽的数据点对象以及更新后的位置信息。\n\n以下是一个监听 `series.update` 事件的示例代码：\n\n```javascript\nHighcharts.ganttChart('container', {\n  // ... 其它配置项\n  plotOptions: {\n    series: {\n      draggableX: true,\n      point: {\n        events: {\n          dragEnd: function() {\n            console.log('drag end', this);\n            // 在此添加需要处理的逻辑\n          }\n        }\n      }\n    }\n  },\n  series: [{\n    // ... 其它配置项\n    events: {\n      update: function(event) {\n        console.log('update', event);\n        // 在此添加需要处理的逻辑\n      }\n    }\n  }]\n});\n```\n\n在这个示例中，设置了 `draggableX` 属性为 `true`，以启用甘特图的横向拖拽功能。在每个数据点的 `point` 对象中添加了 `dragEnd` 事件监听函数，在拖拽操作结束时会触发。\n\n同时，在甘特图的 `series` 属性中添加了 `update` 事件的监听函数，在拖拽操作结束后会被触发。该函数会返回一个包含当前被拖拽的数据点对象、更新后的位置信息等参数的事件对象。你可以在该函数中添加需要处理的逻辑。\n\n注意，在 `draggableX` 属性设置为 `true` 时，甘特图只支持横向拖拽，因此拖拽操作后只有横坐标信息会被更新。如果你需要处理纵向拖拽事件，可以使用 `draggableY` 属性。"
+        },
+        {
+            "role": "user",
+            "content": "Highcharts Gantt 10.0版本  有哪些拖拽事件？"
+        },
+        {
+            "role": "assistant",
+            "content": "Highcharts Gantt 10.0版本提供了以下拖拽事件：\n\n1. `drag` 事件：当拖拽操作进行时持续触发。\n\n2. `dragStart` 事件：当一个数据点（point）开始被拖拽时触发。\n\n3. `dragEnd` 事件：当一个数据点（point）的拖拽结束（重新定位）时触发。\n\n4. `dragDrop` 事件：当从另一个 Highcharts 联动图表释放数据点（point）时触发。\n\n这些事件涵盖了拖拽过程的各个阶段，并提供了相应的事件处理函数，让你可以对拖拽过程进行更详细的控制。\n\n以下是一个监听拖拽事件的示例代码：\n\n```javascript\nHighcharts.ganttChart('container', {\n  // ... 其它配置项\n  plotOptions: {\n    series: {\n      draggable: true,\n      point: {\n        events: {\n          drag: function() {\n            console.log('drag', this);\n            // 在此添加需要处理的逻辑\n          },\n          dragStart: function() {\n            console.log('drag start', this);\n            // 在此添加需要处理的逻辑\n          },\n          dragEnd: function() {\n            console.log('drag end', this);\n            // 在此添加需要处理的逻辑\n          },\n          dragDrop: function(event) {\n            console.log('drag drop', event);\n            // 在此添加需要处理的逻辑\n          }\n        }\n      }\n    }\n  }\n});\n```\n\n在这个示例中，设置了 `draggable` 属性为 `true`，以启用甘特图的拖拽功能。在每个数据点的 `point` 对象上添加了拖拽事件的监听函数，当拖拽动作触发时，相应的事件处理函数会被执行。\n\n处理函数中的 `this` 关键字代表当前拖拽的数据点对象，部分拖拽事件受操作系统限制（如 `dragDrop`），提供的参数可以获取一些相关信息。\n\n注意，虽然 Highcharts Gantt 支持拖拽功能，但是操作系统和浏览器的限制可能使得这个功能无法正常工作，因此在使用时需要注意每个拖拽事件的限制条件以及浏览器兼容性。"
+        },
+        {
+            "role": "user",
+            "content": "Highcharts Gantt 10.0版本 甘特条拖拽结束时，获取拖拽之前的数据"
+        },
+        {
+            "role": "assistant",
+            "content": "在 Highcharts Gantt 10.0 版本中，你可以监听 `dragEnd` 事件来获取拖拽之前的数据。`dragEnd` 事件会在甘特条拖拽结束时触发，它的回调函数中提供了拖拽之前的数据点对象以及更新后的位置信息。\n\n以下是一个获取拖拽之前数据的示例代码：\n\n```javascript\nHighcharts.ganttChart('container', {\n  // ... 其它配置项\n  plotOptions: {\n    series: {\n      draggable: true,\n      point: {\n        events: {\n          dragEnd: function(event) {\n            console.log('drag end', this);\n            console.log('old value', event.previous);\n            // 在此添加需要处理的逻辑\n          }\n        }\n      }\n    }\n  }\n});\n```\n\n在这个示例中，设置了 `draggable` 属性为 `true`，以启用甘特图的拖拽功能。在每个数据点的 `point` 对象中添加了 `dragEnd` 事件监听函数，在拖拽操作结束时会触发。\n\n`dragEnd` 事件的监听函数会得到一个事件对象作为参数，包含了当前被拖拽的数据点（`this`）以及位置信息等参数。其中 `previous` 属性记录了该数据点拖拽之前的位置信息。你可以在该事件监控函数中通过 `event.previous` 获取到拖拽之前的数据。\n\n需要注意的是，在拖拽之前如果进行了修改操作，那么 `previous` 属性的值将不会是最原始的数据，而是修改后的数据点的值。如果需要获取到最原始的数据，请确保数据在没有被修改之前进行了备份。"
+        }
+    ]
+}
