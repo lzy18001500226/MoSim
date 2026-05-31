@@ -1,0 +1,84 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    open-pull-requests-limit: 6
+    groups:
+      core-runtime:
+        patterns:
+          - '@feathersjs/*'
+          - '@octokit/*'
+          - '@libsql/*'
+          - 'drizzle-*'
+          - 'express'
+          - 'socket.io'
+          - 'socket.io-client'
+          - 'simple-git'
+          - 'postgres'
+          - 'zod'
+        update-types:
+          - 'minor'
+          - 'patch'
+      agent-sdks:
+        patterns:
+          - '@anthropic-ai/*'
+          - '@openai/*'
+          - '@google/*'
+          - '@github/*'
+          - '@opencode-ai/*'
+          - '@modelcontextprotocol/*'
+        update-types:
+          - 'minor'
+          - 'patch'
+      dev-tooling:
+        dependency-type: 'development'
+        update-types:
+          - 'minor'
+          - 'patch'
+      # Catch-all for remaining production minor+patch updates so we get
+      # one batched PR per week instead of one PR per dependency.
+      # Exclude patterns owned by the core-runtime and agent-sdks groups
+      # so that intent is explicit and ordering changes don't reshuffle
+      # which group a package lands in.
+      prod-minor-patch:
+        dependency-type: 'production'
+        update-types:
+          - 'minor'
+          - 'patch'
+        exclude-patterns:
+          - '@feathersjs/*'
+          - '@octokit/*'
+          - '@libsql/*'
+          - 'drizzle-*'
+          - 'express'
+          - 'socket.io'
+          - 'socket.io-client'
+          - 'simple-git'
+          - 'postgres'
+          - 'zod'
+          - '@anthropic-ai/*'
+          - '@openai/*'
+          - '@google/*'
+          - '@github/*'
+          - '@opencode-ai/*'
+          - '@modelcontextprotocol/*'
+    ignore:
+      # agor-live-only deps are managed manually when packaging/releasing
+      - dependency-name: 'md-to-slack'
+      - dependency-name: 'uuidv7'
+
+  # GitHub Actions workflow dependencies
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    open-pull-requests-limit: 3
+    groups:
+      actions:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'

@@ -1,0 +1,23 @@
+// Smoke test fixtures for protoc-gen-amesh-convert. These compile via
+// `buf generate --template testdata/buf.gen.test.yaml` to exercise the
+// plugin on a controlled sample without touching production proto.
+//
+// Test sample.proto declares a minimal annotated message; expected output
+// is `sample_convert.amesh.go` containing `ToProtoSample` / `FromProtoSample`
+// with mirror-field mapping + a rename example.
+
+syntax = "proto3";
+
+package amesh.codegen.test.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/tools/protoc-gen-amesh-convert/testdata/gen;testdata";
+
+// Sample mirrors a hypothetical domain.Sample{ ID, Name, Note } struct.
+message Sample {
+  // ID rename (proto `id` → Go `Id` by protoc-gen-go default; domain uses ID).
+  int64 id = 1;
+  // mirror — proto-gen-go emits `Name`, domain field is also `Name`.
+  string name = 2;
+  // skip — proto-only field not in domain.
+  string display_only = 3;
+}

@@ -1,0 +1,22 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "fixture",
+    srcs = [
+        "auth.go",
+        "env.go",
+        "pod.go",
+        "runner.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/tests/mcp-e2e/fixture",
+    visibility = ["//tests/mcp-e2e:__subpackages__"],
+    deps = [
+        "//tests/mcp-e2e/client",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":fixture",
+    visibility = ["//visibility:public"],
+)

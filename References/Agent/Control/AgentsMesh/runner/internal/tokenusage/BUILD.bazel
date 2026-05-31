@@ -1,0 +1,46 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "tokenusage",
+    srcs = [
+        "collector.go",
+        "parser.go",
+        "parser_optout.go",
+        "parser_registry.go",
+        "time_filter.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/runner/internal/tokenusage",
+    visibility = ["//runner:__subpackages__"],
+    deps = ["//runner/internal/logger"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":tokenusage",
+    visibility = ["//runner:__subpackages__"],
+)
+
+go_test(
+    name = "tokenusage_test",
+    srcs = [
+        "collector_log_test.go",
+        "parser_agents_test.go",
+        "parser_contract_test.go",
+        "parser_registry_test.go",
+        "parser_test.go",
+    ],
+    embed = [":tokenusage"],
+    deps = [
+        "//runner/internal/agents/aider",
+        "//runner/internal/agents/aider/testsupport",
+        "//runner/internal/agents/claude",
+        "//runner/internal/agents/claude/testsupport",
+        "//runner/internal/agents/codex",
+        "//runner/internal/agents/codex/testsupport",
+        "//runner/internal/agents/loopal",
+        "//runner/internal/agents/opencode",
+        "//runner/internal/agents/opencode/testsupport",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)

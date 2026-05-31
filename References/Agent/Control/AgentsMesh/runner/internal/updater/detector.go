@@ -1,0 +1,125 @@
+package updater
+
+import (
+	"context"
+	"fmt"
+	"runtime"
+	"strings"
+	"time"
+
+	"github.com/creativeprojects/go-selfupdate"
+)
+
+// ReleaseInfo represents information about a release.
+type ReleaseInfo struct {
+	Version      string
+	ReleaseNotes string
+	PublishedAt  time.Time
+	AssetURL     string
+	AssetName    string
+}
+
+// ReleaseDetector abstracts the release detection and update logic.
+type ReleaseDetector interface {
+	// DetectLatest finds the latest release.
+	DetectLatest(ctx context.Context) (*ReleaseInfo, bool, error)
+	// DetectVersion finds a specific version.
+	DetectVersion(ctx context.Context, version string) (*ReleaseInfo, bool, error)
+	// UpdateBinary downloads a release and replaces the binary at execPath in-place.
+	UpdateBinary(ctx context.Context, release *ReleaseInfo, execPath string) error
+}
+
+// GitHubReleaseDetector implements ReleaseDetector using GitHub API.
+type GitHubReleaseDetector struct {
+	updater *selfupdate.Updater
+}
+
+// NewGitHubReleaseDetector creates a new GitHubReleaseDetector.
+func NewGitHubReleaseDetector() (*GitHubReleaseDetector, error) {
+	source, err := selfupdate.NewGitHubSource(selfupdate.GitHubConfig{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create GitHub source: %w", err)
+	}
+
+	updater, err := selfupdate.NewUpdater(selfupdate.Config{
+		Source: source,
+		// Filter assets by name, OS, and architecture (regex).
+		// go-selfupdate's Filters replace its default OS/arch suffix matching,
+		// so the regex must include all three dimensions. Without this filter,
+		// the library defaults to the repo name ("AgentsMesh") which doesn't
+		// match our goreleaser archive names ("agentsmesh-runner_*_<os>_<arch>").
+		Filters: []string{fmt.Sprintf(`agentsmesh-runner.*%s.*%s`, runtime.GOOS, runtime.GOARCH)},
+		// Require checksum validation for downloaded binaries.
+		// Release assets must include a "checksums.txt" file.
+		// If missing, update fails safely (ErrValidationAssetNotFound) —
+		// prefer no update over executing an unverified binary.
+		Validator: &selfupdate.ChecksumValidator{UniqueFilename: "checksums.txt"},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create updater: %w", err)
+	}
+
+	return &GitHubReleaseDetector{updater: updater}, nil
+}
+
+// DetectLatest finds the latest release from GitHub.
+func (g *GitHubReleaseDetector) DetectLatest(ctx context.Context) (*ReleaseInfo, bool, error) {
+	release, found, err := g.updater.DetectLatest(ctx, selfupdate.NewRepositorySlug(RepoOwner, RepoName))
+	if err != nil {
+		return nil, false, err
+	}
+	if !found {
+		return nil, false, nil
+	}
+	return &ReleaseInfo{
+		Version:      release.Version(),
+		ReleaseNotes: release.ReleaseNotes,
+		PublishedAt:  release.PublishedAt,
+		AssetURL:     release.AssetURL,
+		AssetName:    release.AssetName,
+	}, true, nil
+}
+
+// DetectVersion finds a specific version from GitHub.
+// The version is normalized to a tag format (e.g., "0.8.2" → "v0.8.2")
+// because go-selfupdate compares it directly against git tag names.
+func (g *GitHubReleaseDetector) DetectVersion(ctx context.Context, version string) (*ReleaseInfo, bool, error) {
+	release, found, err := g.updater.DetectVersion(ctx, selfupdate.NewRepositorySlug(RepoOwner, RepoName), versionToTag(version))
+	if err != nil {
+		return nil, false, err
+	}
+	if !found {
+		return nil, false, nil
+	}
+	return &ReleaseInfo{
+		Version:      release.Version(),
+		ReleaseNotes: release.ReleaseNotes,
+		PublishedAt:  release.PublishedAt,
+		AssetURL:     release.AssetURL,
+		AssetName:    release.AssetName,
+	}, true, nil
+}
+
+// UpdateBinary downloads a release and replaces the binary at execPath in-place.
+// go-selfupdate's UpdateTo handles the atomic replacement internally
+// (rename execPath → .old, write new binary → execPath).
+func (g *GitHubReleaseDetector) UpdateBinary(ctx context.Context, release *ReleaseInfo, execPath string) error {
+	r, found, err := g.updater.DetectVersion(ctx, selfupdate.NewRepositorySlug(RepoOwner, RepoName), versionToTag(release.Version))
+	if err != nil {
+		return err
+	}
+	if !found {
+		return fmt.Errorf("release not found")
+	}
+	return g.updater.UpdateTo(ctx, r, execPath)
+}
+
+// versionToTag ensures a version string has the "v" prefix to match git tag format.
+// go-selfupdate's DetectVersion compares the version directly against tag names,
+// so "0.8.2" must become "v0.8.2" to match the tag "v0.8.2".
+func versionToTag(version string) string {
+	if version != "" && !strings.HasPrefix(version, "v") {
+		return "v" + version
+	}
+	return version
+}

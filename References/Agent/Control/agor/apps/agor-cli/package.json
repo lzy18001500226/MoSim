@@ -1,0 +1,46 @@
+{
+  "name": "@agor/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "agor": "./bin/run.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "NODE_NO_WARNINGS=1 tsx bin/dev.ts",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@agor/core": "workspace:*",
+    "@agor/daemon": "workspace:*",
+    "@agor-live/client": "workspace:*",
+    "@oclif/core": "^4.11.3",
+    "@oclif/plugin-help": "^6.2.49",
+    "chalk": "^5.6.2",
+    "cli-table3": "^0.6.5",
+    "inquirer": "^12.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.0",
+    "glob": "^11.1.0",
+    "oclif": "^4.23.7",
+    "tsup": "^8.5.1",
+    "tsx": "^4.22.3",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.7"
+  },
+  "oclif": {
+    "bin": "agor",
+    "dirname": "agor",
+    "commands": "./dist/commands",
+    "topicSeparator": " ",
+    "helpClass": "./dist/lib/help.js",
+    "hooks": {
+      "command_not_found": "./dist/hooks/command-not-found.js"
+    }
+  }
+}

@@ -1,0 +1,176 @@
+package runner
+
+import (
+	"context"
+	"fmt"
+	"log/slog"
+	"os"
+	"path/filepath"
+
+	runnerv1 "github.com/anthropics/agentsmesh/proto/gen/go/runner/v1"
+	"github.com/anthropics/agentsmesh/runner/internal/cache"
+	"github.com/anthropics/agentsmesh/runner/internal/client"
+	"github.com/anthropics/agentsmesh/runner/internal/fsutil"
+	"github.com/anthropics/agentsmesh/runner/internal/logger"
+	"github.com/anthropics/agentsmesh/runner/internal/workspace"
+)
+
+// setup sets up the sandbox and working directory.
+// Returns (sandboxRoot, workingDir, branchName, error).
+// Uses Strategy Pattern to select the appropriate setup strategy based on SandboxConfig.
+func (b *PodBuilder) setup(ctx context.Context) (string, string, string, error) {
+	// 1. Create sandbox root directory
+	b.sendProgress("preparing", 10, "Creating sandbox directory...")
+	sandboxRoot := filepath.Join(b.deps.Config.WorkspaceRoot, "sandboxes", b.cmd.PodKey)
+	if err := os.MkdirAll(sandboxRoot, 0755); err != nil {
+		return "", "", "", &client.PodError{
+			Code:    client.ErrCodeSandboxCreate,
+			Message: fmt.Sprintf("failed to create sandbox directory: %v", err),
+		}
+	}
+	logger.Pod().DebugContext(ctx, "Sandbox root created", "pod_key", b.cmd.PodKey, "path", sandboxRoot)
+
+	cfg := b.cmd.SandboxConfig
+
+	// 2. Select and execute setup strategy
+	b.sendProgress("preparing", 20, "Setting up working directory...")
+
+	strategy := b.selectSetupStrategy(cfg)
+	logger.Pod().InfoContext(ctx, "Setup strategy selected", "pod_key", b.cmd.PodKey, "strategy", strategy.Name())
+
+	result, err := strategy.Setup(ctx, sandboxRoot, cfg)
+	if err != nil {
+		logger.Pod().ErrorContext(ctx, "Setup strategy failed", "pod_key", b.cmd.PodKey, "strategy", strategy.Name(), "error", err)
+		if rmErr := fsutil.RemoveAll(sandboxRoot); rmErr != nil {
+			slog.WarnContext(ctx, "Failed to clean up sandbox after setup error", "path", sandboxRoot, "error", rmErr)
+		}
+		return "", "", "", err
+	}
+
+	// LocalPathStrategy reuses the source pod's sandbox as sandboxRoot,
+	// so path templates (e.g., {{.sandbox.root_path}}/.mcp.json) resolve
+	// within the correct directory instead of escaping into a new empty sandbox.
+	//
+	// sandboxOwned tracks whether we created the sandbox and are responsible for
+	// cleaning it up on error. When overridden, the source sandbox must NOT be
+	// deleted — it belongs to the source pod.
+	sandboxOwned := true
+	if result.SandboxRoot != "" && result.SandboxRoot != sandboxRoot {
+		_ = fsutil.RemoveAll(sandboxRoot) // Clean up unused new sandbox
+		sandboxRoot = result.SandboxRoot
+		sandboxOwned = false
+	}
+
+	// 2.5. Prepare agent-specific home directories (registered via agentkit.RegisterAgentHome).
+	// Must run before createFiles so that copied user config can be merged with platform config.
+	if err := b.prepareAgentHome(sandboxRoot, result.WorkingDir); err != nil {
+		if sandboxOwned {
+			if rmErr := fsutil.RemoveAll(sandboxRoot); rmErr != nil {
+				slog.WarnContext(ctx, "Failed to clean up sandbox after agent home error", "path", sandboxRoot, "error", rmErr)
+			}
+		}
+		return "", "", "", err
+	}
+
+	// 3. Create files from FilesToCreate
+	if len(b.cmd.FilesToCreate) > 0 {
+		b.sendProgress("preparing", 70, "Creating files...")
+	}
+	if err := b.createFiles(sandboxRoot, result.WorkingDir); err != nil {
+		if sandboxOwned {
+			if rmErr := fsutil.RemoveAll(sandboxRoot); rmErr != nil {
+				slog.WarnContext(ctx, "Failed to clean up sandbox after file creation error", "path", sandboxRoot, "error", rmErr)
+			}
+		}
+		return "", "", "", err
+	}
+
+	// Download skill packages
+	if err := b.downloadResources(ctx, sandboxRoot, result.WorkingDir); err != nil {
+		if sandboxOwned {
+			if rmErr := fsutil.RemoveAll(sandboxRoot); rmErr != nil {
+				slog.WarnContext(ctx, "Failed to clean up sandbox after download error", "path", sandboxRoot, "error", rmErr)
+			}
+		}
+		return "", "", "", fmt.Errorf("failed to download resources: %w", err)
+	}
+
+	logger.Pod().InfoContext(ctx, "Sandbox setup completed",
+		"pod_key", b.cmd.PodKey,
+		"sandbox_root", sandboxRoot,
+		"working_dir", result.WorkingDir,
+		"branch", result.BranchName)
+
+	return sandboxRoot, result.WorkingDir, result.BranchName, nil
+}
+
+// selectSetupStrategy selects the appropriate setup strategy based on configuration.
+// Strategies are tried in order; first matching strategy is used.
+func (b *PodBuilder) selectSetupStrategy(cfg *runnerv1.SandboxConfig) SetupStrategy {
+	for _, strategy := range b.setupStrategies {
+		if strategy.CanHandle(cfg) {
+			return strategy
+		}
+	}
+	// Fallback to empty sandbox (should not reach here if strategies are properly configured)
+	return NewEmptySandboxStrategy(b)
+}
+
+// runPreparationScript executes the preparation script in the workspace.
+func (b *PodBuilder) runPreparationScript(ctx context.Context, cfg *runnerv1.SandboxConfig, workspacePath, branchName string) error {
+	timeout := int(cfg.PreparationTimeout)
+	if timeout <= 0 {
+		timeout = 300 // Default 5 minutes
+	}
+
+	b.sendProgress("preparing", 65, "Running preparation script...")
+
+	preparer := workspace.NewPreparerFromScript(cfg.PreparationScript, timeout)
+	if preparer == nil {
+		return nil
+	}
+
+	prepCtx := &workspace.PreparationContext{
+		PodID:        b.cmd.PodKey,
+		TicketSlug:   cfg.GetTicketSlug(),
+		BranchName:   branchName,
+		WorkspaceDir: workspacePath,
+	}
+
+	if err := preparer.Prepare(ctx, prepCtx); err != nil {
+		return &client.PodError{
+			Code:    client.ErrCodePrepareScript,
+			Message: fmt.Sprintf("preparation script failed: %v", err),
+		}
+	}
+
+	b.sendProgress("preparing", 75, "Preparation script completed")
+	return nil
+}
+
+// downloadResources downloads skill packages and other resources into the sandbox.
+func (b *PodBuilder) downloadResources(ctx context.Context, sandboxRoot, workDir string) error {
+	if len(b.cmd.ResourcesToDownload) == 0 {
+		return nil
+	}
+
+	cacheDir := filepath.Join(b.deps.Config.WorkspaceRoot, "cache", "skills")
+	cacheManager, err := cache.NewSkillCacheManager(cacheDir)
+	if err != nil {
+		return fmt.Errorf("failed to create skill cache manager: %w", err)
+	}
+
+	downloader := cache.NewDownloader(cacheManager)
+	for _, res := range b.cmd.ResourcesToDownload {
+		result, err := downloader.DownloadAndExtract(ctx, res, sandboxRoot, workDir)
+		if err != nil {
+			return fmt.Errorf("failed to download resource %s: %w", res.Sha, err)
+		}
+		if result.CacheHit {
+			slog.InfoContext(ctx, "Resource cache hit", "sha", res.Sha)
+		} else {
+			slog.InfoContext(ctx, "Resource downloaded", "sha", res.Sha, "bytes", result.BytesRead)
+		}
+	}
+	return nil
+}

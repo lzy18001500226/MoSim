@@ -1,0 +1,31 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+# Phase 12 M2: protoc plugin that generates Go domain↔proto converter
+# functions from .proto annotations (see proto/codegen/v1/options.proto).
+#
+# Invoked by buf.gen.yaml or `protoc --amesh-convert_out=...`. Output is
+# `<message>_convert.amesh.go` files placed alongside the connect handlers.
+
+go_library(
+    name = "amesh_convert_lib",
+    srcs = [
+        "annotation.go",
+        "main.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/tools/protoc-gen-amesh-convert",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//proto/codegen/v1:codegen_go_proto",
+        "@org_golang_google_protobuf//compiler/protogen",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+        "@org_golang_google_protobuf//types/descriptorpb",
+        "@org_golang_google_protobuf//types/pluginpb",
+    ],
+)
+
+go_binary(
+    name = "protoc-gen-amesh-convert",
+    embed = [":amesh_convert_lib"],
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,9 @@
+# `rules_swift_package_manager` reads this directory's Package.swift to
+# synthesize Bazel external repos (@swiftpkg_<name>) for each SPM dep.
+exports_files(
+    [
+        "Package.swift",
+        "Package.resolved",
+    ],
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,70 @@
+load("@rules_go//go:def.bzl", "go_test")
+
+# This BUILD is hand-written. The `e2e` target uses glob() + manual tags
+# ("e2e", "manual", "no-sandbox") so it stays out of `bazel test //...`;
+# gazelle can't see those tags from sources, so without `:ignore` it
+# generates a parallel `suites_test` target with the same srcs and
+# conflicts at analysis time.
+# gazelle:ignore
+
+# MCP end-to-end test suites. Tagged "e2e" + "manual" so `bazel test //...`
+# never picks them up — they require a live deploy/dev stack. Run with:
+#   bazel run //deploy/dev:up   # one-time setup
+#   bazel test //tests/mcp-e2e/suites:e2e --test_tag_filters=e2e \
+#     --test_env=BACKEND_HTTP_PORT --test_env=MCP_PORT --test_env=POSTGRES_PORT
+go_test(
+    name = "e2e",
+    srcs = glob(["*_test.go"]),
+    tags = [
+        "e2e",
+        "manual",
+        "no-sandbox",
+    ],
+    deps = [
+        "//tests/mcp-e2e/client",
+        "//tests/mcp-e2e/fixture",
+        "@com_github_google_uuid//:uuid",
+        "@com_github_lib_pq//:pq",
+    ],
+)
+
+go_test(
+    name = "suites_test",
+    srcs = [
+        "binding_cross_user_test.go",
+        "binding_test.go",
+        "block_crud_test.go",
+        "block_errors_test.go",
+        "block_query_test.go",
+        "block_text_field_test.go",
+        "channel_rich_test.go",
+        "channel_test.go",
+        "concurrency_test.go",
+        "cross_org_test.go",
+        "cross_runner_test.go",
+        "discovery_test.go",
+        "indicator_trigger_test.go",
+        "internal_db_test.go",
+        "loop_real_test.go",
+        "loop_test.go",
+        "memory_filters_test.go",
+        "memory_test.go",
+        "pagination_test.go",
+        "parameter_variants_test.go",
+        "pod_interaction_test.go",
+        "pod_test.go",
+        "protocol_oversized_test.go",
+        "protocol_test.go",
+        "ticket_content_test.go",
+        "ticket_test.go",
+        "trigger_fire_test.go",
+        "trigger_webhook_test.go",
+        "workspace_test.go",
+    ],
+    deps = [
+        "//tests/mcp-e2e/client",
+        "//tests/mcp-e2e/fixture",
+        "@com_github_google_uuid//:uuid",
+        "@com_github_lib_pq//:pq",
+    ],
+)

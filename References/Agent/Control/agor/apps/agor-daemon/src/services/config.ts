@@ -1,0 +1,234 @@
+/**
+ * Config Service
+ *
+ * Provides REST + WebSocket API for configuration management.
+ * Wraps @agor/core/config functions for UI access.
+ */
+
+import {
+  type AgorConfig,
+  type ApiKeyName,
+  loadConfig,
+  resolveApiKey,
+  saveConfig,
+} from '@agor/core/config';
+import type { Database } from '@agor/core/db';
+import type { Application } from '@agor/core/feathers';
+import type { AgenticToolName, Params, TaskID, UserID } from '@agor/core/types';
+
+/**
+ * Mask API keys for secure display
+ */
+function maskApiKey(key: string | undefined): string | undefined {
+  if (!key || typeof key !== 'string') return undefined;
+  if (key.length <= 10) return '***';
+  return `${key.substring(0, 10)}...`;
+}
+
+/**
+ * Mask all credentials in config
+ */
+function maskCredentials(config: AgorConfig): AgorConfig {
+  if (!config.credentials) return config;
+
+  return {
+    ...config,
+    credentials: {
+      ANTHROPIC_API_KEY: maskApiKey(config.credentials.ANTHROPIC_API_KEY),
+      ANTHROPIC_AUTH_TOKEN: maskApiKey(config.credentials.ANTHROPIC_AUTH_TOKEN),
+      ANTHROPIC_BASE_URL: config.credentials.ANTHROPIC_BASE_URL,
+      OPENAI_API_KEY: maskApiKey(config.credentials.OPENAI_API_KEY),
+      GEMINI_API_KEY: maskApiKey(config.credentials.GEMINI_API_KEY),
+    },
+  };
+}
+
+/**
+ * Config service class
+ */
+export class ConfigService {
+  private db: Database;
+  /** App reference injected after registration for cross-service calls */
+  app?: Application;
+
+  constructor(db: Database) {
+    this.db = db;
+  }
+
+  /**
+   * Get full config (masked)
+   */
+  async find(_params?: Params): Promise<AgorConfig> {
+    const config = await loadConfig();
+    return maskCredentials(config);
+  }
+
+  /**
+   * Get specific config section or value
+   */
+  async get(id: string, _params?: Params): Promise<unknown> {
+    const config = await loadConfig();
+    const masked = maskCredentials(config);
+
+    // Support dot notation (e.g., "credentials.ANTHROPIC_API_KEY")
+    const parts = id.split('.');
+    let value: unknown = masked;
+
+    for (const part of parts) {
+      if (value && typeof value === 'object' && part in value) {
+        value = (value as Record<string, unknown>)[part];
+      } else {
+        return undefined;
+      }
+    }
+
+    return value;
+  }
+
+  /**
+   * Custom method: Resolve API key for a task
+   *
+   * This allows executors to request API key resolution without direct database access.
+   * The service handles the precedence: user-level > config > env > native auth.
+   *
+   * Called via: client.service('config').resolveApiKey({ taskId, keyName })
+   */
+  async resolveApiKey(data: {
+    taskId: TaskID;
+    keyName: string;
+    /**
+     * Restrict the per-user lookup to this tool's credential bucket. Executors
+     * always pass this; absent it, the resolver falls back to a cross-tool
+     * sweep (legacy behavior preserved for non-SDK callers).
+     */
+    tool?: AgenticToolName;
+  }): Promise<{
+    apiKey: string | null;
+    source: 'user' | 'config' | 'env' | 'native';
+    useNativeAuth: boolean;
+    decryptionFailed?: boolean;
+  }> {
+    const { taskId, keyName, tool } = data;
+
+    // Fetch task to get creator user ID
+    let userId: UserID | undefined;
+    try {
+      const tasksService = this.app?.service('tasks');
+      if (tasksService) {
+        const task = await tasksService.get(taskId, { provider: undefined });
+        userId = task?.created_by;
+      }
+    } catch (err) {
+      console.warn(`[Config.resolveApiKey] Failed to fetch task ${taskId}:`, err);
+    }
+
+    // Use core resolveApiKey with database access
+    const result = await resolveApiKey(keyName as ApiKeyName, {
+      userId,
+      db: this.db,
+      tool,
+    });
+
+    // Map KeyResolutionResult to service response type
+    return {
+      apiKey: result.apiKey ?? null,
+      source: result.source === 'none' ? 'native' : result.source,
+      useNativeAuth: result.useNativeAuth,
+      ...(result.decryptionFailed && { decryptionFailed: true }),
+    };
+  }
+
+  /**
+   * Update config values
+   *
+   * SECURITY: Only allow updating credentials and opencode sections from UI
+   */
+  async patch(_id: null, data: Partial<AgorConfig>, _params?: Params): Promise<AgorConfig> {
+    // Log patch keys without values to avoid leaking secrets
+    const patchSections = Object.keys(data);
+    const credentialKeys = data.credentials ? Object.keys(data.credentials) : [];
+    console.log(
+      `[Config Service] Patch received: sections=[${patchSections}] credential_keys=[${credentialKeys}]`
+    );
+    const config = await loadConfig();
+
+    // Only allow updating credentials section for security
+    if (data.credentials) {
+      // Initialize credentials if not present
+      if (!config.credentials) {
+        config.credentials = {};
+      }
+
+      // Update or delete credential keys
+      for (const [key, value] of Object.entries(data.credentials)) {
+        if (value === undefined || value === null) {
+          // Explicitly delete the key when value is undefined or null
+          delete config.credentials[key as keyof typeof config.credentials];
+        } else {
+          // Set the key
+          (config.credentials as Record<string, string>)[key] = value;
+        }
+      }
+    }
+
+    // Allow updating opencode configuration
+    if (data.opencode) {
+      // Initialize opencode if not present
+      if (!config.opencode) {
+        config.opencode = {};
+      }
+
+      // Update opencode settings
+      if (data.opencode.enabled !== undefined) {
+        config.opencode.enabled = data.opencode.enabled;
+      }
+      if (data.opencode.serverUrl !== undefined) {
+        config.opencode.serverUrl = data.opencode.serverUrl;
+      }
+    }
+
+    // Allow updating onboarding configuration
+    if (data.onboarding) {
+      if (!config.onboarding) {
+        config.onboarding = {};
+      }
+      if (data.onboarding.assistantPending !== undefined) {
+        config.onboarding.assistantPending = data.onboarding.assistantPending;
+      }
+      // Backward compat: also handle legacy field name
+      if (data.onboarding.persistedAgentPending !== undefined) {
+        config.onboarding.assistantPending = data.onboarding.persistedAgentPending;
+      }
+      if (data.onboarding.frameworkRepoUrl !== undefined) {
+        config.onboarding.frameworkRepoUrl = data.onboarding.frameworkRepoUrl;
+      }
+    }
+
+    await saveConfig(config);
+    console.log('[Config Service] Config saved successfully');
+
+    // Propagate credentials to process.env for hot-reload
+    // Precedence rule: config.yaml (UI) > environment variables
+    if (data.credentials) {
+      for (const [key, value] of Object.entries(data.credentials)) {
+        if (value === undefined || value === null) {
+          // Delete from process.env if credential was cleared
+          delete process.env[key];
+        } else {
+          // Update process.env (UI takes precedence)
+          process.env[key] = value;
+        }
+      }
+    }
+
+    // Return masked config
+    return maskCredentials(config);
+  }
+}
+
+/**
+ * Service factory function
+ */
+export function createConfigService(db: Database): ConfigService {
+  return new ConfigService(db);
+}

@@ -1,0 +1,49 @@
+# Dependencies
+node_modules
+**/node_modules
+npm-debug.log
+pnpm-debug.log
+yarn-error.log
+
+# Build outputs
+dist
+**/dist
+build
+**/build
+.turbo
+
+# Development
+.git
+.gitignore
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage
+.nyc_output
+
+# Storybook
+storybook-static
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Agor data (will be mounted as volume)
+.agor
+
+# Claude Code sessions (user-specific)
+.claude
