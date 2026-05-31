@@ -1,0 +1,39 @@
+template_type: context_pack
+template_version: 1
+context_pack_id: CTX-YYYYMMDD-001
+task_id: COAGENT-TASK-YYYYMMDD-001
+target_conversation: ""
+built_at: ""
+built_by: DispatchCenter
+task_charter_path: ""
+context_budget:
+  target_tokens: 0
+  hard_limit_tokens: 0
+layers:
+  task_charter:
+    include: []
+    exclude: []
+  project_constraints:
+    include: []
+    exclude:
+      - secrets
+      - personal_data
+      - paths_outside_project_boundary
+  prior_decisions:
+    include: []
+    superseded_or_excluded: []
+  evidence_map:
+    include: []
+    unknowns: []
+  working_contract:
+    write_scope: []
+    forbidden_actions: []
+    output_contract: ""
+  refresh_trigger:
+    refresh_when: []
+quality_gate:
+  relevance_ok: false
+  freshness_ok: false
+  sufficiency_ok: false
+  boundedness_ok: false
+  reviewer: PMO

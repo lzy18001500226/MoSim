@@ -1,0 +1,19 @@
+template_type: team_trace_eval
+template_version: 1
+trace_eval_id: TRACE-EVAL-YYYYMMDD-001
+task_id: COAGENT-TASK-YYYYMMDD-001
+team_id: TEAM-YYYYMMDD-001
+review_owner: Verification
+metrics:
+  critical_path_time: ""
+  blocked_time: ""
+  fake_parallelism_count: 0
+  serial_collapse_count: 0
+  handoff_failure_count: 0
+  context_pack_size: ""
+  context_refresh_latency: ""
+  rework_count: 0
+  review_escape_count: 0
+  closeout_latency: ""
+findings: []
+decision: needs_review

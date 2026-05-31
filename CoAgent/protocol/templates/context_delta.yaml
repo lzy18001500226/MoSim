@@ -1,0 +1,42 @@
+# CoAgent shared context delta template.
+# Use when accepted task output changes shared context for other conversations.
+
+context_delta_id: ""
+task_id: ""
+source_result_packet: ""
+created_by: ""
+created_at: ""
+
+applies_to:
+  team_id: ""
+  conversations: []
+  capability_templates: []
+
+delta_type: "fact_update"
+# fact_update | decision_update | interface_update | blocker_update |
+# evidence_update | stale_context_notice | lesson_candidate
+
+summary: ""
+
+add:
+  accepted_facts: []
+  decisions: []
+  evidence_paths: []
+  interface_contracts: []
+  risks: []
+
+remove_or_mark_stale:
+  facts: []
+  decisions: []
+  context_pack_paths: []
+  reason: ""
+
+freshness:
+  requires_context_pack_regeneration: false
+  affected_sections: []
+  deadline_or_trigger: ""
+
+review:
+  review_required: true
+  review_owner: ""
+  status: "needs_review"

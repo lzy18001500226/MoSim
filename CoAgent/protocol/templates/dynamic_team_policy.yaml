@@ -1,0 +1,26 @@
+template_type: dynamic_team_policy
+template_version: 1
+policy_id: DYNAMIC-TEAM-POLICY-001
+task_id: COAGENT-TASK-YYYYMMDD-001
+selected_topology: single_scoped_conversation
+spawn_criteria_met: []
+do_not_spawn_reasons: []
+team_size_rule:
+  initial_scoped_conversations: 1
+  max_without_human_review: 3
+  promote_only_when: critical_path_parallelism_is_real
+required_before_spawn:
+  - canonical_task_goal
+  - context_pack
+  - scoped_slice_goal
+  - result_packet_contract
+  - integration_owner
+  - review_gate
+  - close_condition
+decommission_criteria:
+  - result_packet_imported
+  - review_packet_accepted_or_waived
+  - context_delta_promoted_or_rejected
+  - worktree_merged_discarded_or_archived
+  - mailbox_items_closed
+  - board_state_terminal

@@ -1,0 +1,36 @@
+template_type: context_shard_policy
+template_version: 1
+policy_id: CONTEXT-SHARD-POLICY-001
+task_id: COAGENT-TASK-YYYYMMDD-001
+team_id: TEAM-YYYYMMDD-001
+layers:
+  project_baseline:
+    owner: KnowledgeSecretary
+    include: []
+    exclude:
+      - raw_full_transcript
+      - secrets
+      - personal_data
+  task_shared_context:
+    owner: ContextMemory
+    include: []
+    stale_after: ""
+  slice_context:
+    owner: scoped_conversation_owner
+    include: []
+    write_scope: []
+  subagent_context:
+    owner: parent_conversation
+    include: []
+refresh:
+  trigger_sources:
+    - accepted_result_packet
+    - accepted_context_delta
+    - interface_change
+    - blocker_resolution
+  mailbox_message_type: context_refresh
+  acknowledgement_required: true
+budget:
+  target_tokens: 0
+  hard_limit_tokens: 0
+  raw_transcript_allowed: false

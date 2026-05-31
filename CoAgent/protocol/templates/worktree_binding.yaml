@@ -1,0 +1,17 @@
+template_type: worktree_binding
+template_version: 1
+binding_id: WORKTREE-BINDING-YYYYMMDD-001
+task_id: COAGENT-TASK-YYYYMMDD-001
+team_id: TEAM-YYYYMMDD-001
+conversation_id: ""
+git_worktree_path: ""
+runtime_workspace_roots: []
+read_scope: []
+write_scope: []
+merge_owner: DevOps
+review_owner: Verification
+close_owner: DispatchCenter
+conflict_policy: no_same_file_overlap_without_integration_plan
+close_condition: ""
+worktree_required: false
+automatic_worktree_creation_approved: false

@@ -1,0 +1,70 @@
+# CoAgent PX4 parameter identifiability matrix template.
+# Use before estimator implementation or simulator tuning.
+
+template_type: px4_parameter_identifiability_matrix
+template_version: 1
+task_id: ""
+log_artifact_id: ""
+created_by: ""
+created_at: ""
+
+log_inventory:
+  log_path: ""
+  vehicle_id: ""
+  flight_windows: []
+  available_signal_groups:
+    actuator_outputs: false
+    motor_rpm: false
+    imu: false
+    attitude: false
+    angular_rates: false
+    position_velocity: false
+    wind_or_air_data: false
+    battery_voltage_current: false
+    control_setpoints: false
+  missing_required_signals: []
+  unit_conventions: []
+  time_sync_status: unknown
+
+parameter_rows:
+  - parameter_name: ""
+    simulator_target: ""
+    category: non_identifiable
+    # directly_observed | estimated | calibrated | assumed |
+    # behavior_matched | non_identifiable
+    required_signals: []
+    available_signals: []
+    method: ""
+    confidence: unknown
+    # high | medium | low | unknown
+    uncertainty:
+      value: null
+      unit: ""
+      method: ""
+    validation:
+      residual_metric: ""
+      residual_value: null
+      threshold: null
+      pass_fail: unknown
+    assumptions: []
+    additional_data_required: []
+    evidence_paths: []
+
+simulation_mapping:
+  mworks_model_or_component: ""
+  parameter_interface: ""
+  source_label: design_only
+  # MWORKS_MCP | MWORKS_GUI | offline_script | manual_review | design_only
+  mapping_status: draft
+  before_after_metrics: []
+
+review:
+  review_status: needs_review
+  acceptance_state: unknown
+  reviewer: ""
+  rejection_rules:
+    - claim_all_parameters_identifiable_without_signal_support
+    - hide_non_identifiable_parameters
+    - omit_uncertainty_or_residuals_for_estimated_parameters
+    - claim_mworks_evidence_from_offline_script
+  residual_risks: []

@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CoAgentResultPacket",
+  "type": "object",
+  "required": [
+    "task_id",
+    "status",
+    "canonical_status",
+    "task_class",
+    "summary"
+  ],
+  "properties": {
+    "task_id": { "type": "string", "minLength": 1 },
+    "task_class": { "$ref": "#/$defs/task_class" },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "ready",
+        "working",
+        "input_required",
+        "auth_required",
+        "review_required",
+        "blocked",
+        "failed",
+        "completed",
+        "canceled",
+        "rejected",
+        "superseded",
+        "queued",
+        "claimed",
+        "running",
+        "done",
+        "done_with_concerns",
+        "cancelled"
+      ]
+    },
+    "canonical_status": { "$ref": "#/$defs/canonical_status" },
+    "summary": { "type": "string", "minLength": 1 },
+    "project_goal": { "type": "string" },
+    "phase_objective": { "type": "string" },
+    "canonical_task_goal": { "type": "string" },
+    "conversation_objective": { "type": "string" },
+    "owner": { "type": "string" },
+    "role": { "type": "string" },
+    "read_scope": { "type": "array", "items": { "type": "string" } },
+    "write_scope": { "type": "array", "items": { "type": "string" } },
+    "files_changed": { "type": "array", "items": { "type": "string" } },
+    "commands_run": { "type": "array", "items": { "type": "string" } },
+    "evidence": { "type": "array", "items": { "type": "string" } },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "blockers": { "type": "array", "items": { "type": "string" } },
+    "review_status": {
+      "type": "string",
+      "enum": ["not_required", "pending", "accepted", "needs_review", "rejected"]
+    },
+    "acceptance_state": {
+      "type": "string",
+      "enum": ["met", "partially_met", "not_met", "unknown"]
+    },
+    "checkpoint": { "type": "string" },
+    "continue_or_stop": {
+      "type": "string",
+      "enum": ["continue", "stop", "ask_user", "escalate", "review"]
+    },
+    "escalation": { "type": "string" },
+    "residual_risk": { "type": "array", "items": { "type": "string" } },
+    "known_exclusions": { "type": "array", "items": { "type": "string" } },
+    "next_recommended_action": { "type": "string" },
+    "worktree_path": { "type": "string" },
+    "branch_or_base": { "type": "string" },
+    "merge_owner": { "type": "string" },
+    "close_condition": { "type": "string" },
+    "git_status": { "type": "string" },
+    "review_owner": { "type": "string" },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["event_type", "actor", "summary", "timestamp"],
+        "properties": {
+          "event_type": { "type": "string" },
+          "actor": { "type": "string" },
+          "summary": { "type": "string" },
+          "timestamp": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "$defs": {
+    "canonical_status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "ready",
+        "working",
+        "input_required",
+        "auth_required",
+        "review_required",
+        "blocked",
+        "failed",
+        "completed",
+        "canceled",
+        "rejected",
+        "superseded"
+      ]
+    },
+    "task_class": {
+      "type": "string",
+      "enum": [
+        "simple_message",
+        "clear_task",
+        "complicated_task",
+        "complex_task",
+        "chaotic_incident",
+        "disordered_task",
+        "long_running_task"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

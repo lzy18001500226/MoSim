@@ -1,0 +1,30 @@
+template_type: scoped_conversation_packet
+template_version: 1
+task_id: COAGENT-TASK-YYYYMMDD-001
+conversation_title: "MoSim | Scoped Task"
+conversation_objective: ""
+owner_department: ""
+accountable_owner: ""
+read_scope: []
+write_scope: []
+forbidden_actions: []
+context_pack_path: ""
+worktree:
+  required: false
+  path: ""
+stop_conditions:
+  - done_with_result_packet
+  - blocked_with_blocker_packet
+checkpoint_plan:
+  interval: ""
+  required_fields:
+    - state
+    - completed
+    - evidence
+    - next_action
+result_packet_required: true
+result_packet_path: ""
+communication_rules:
+  coordinator_visible_packet_required: true
+  peer_direct_allowed: false
+  goal_change_allowed: false

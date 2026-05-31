@@ -1,0 +1,66 @@
+# CoAgent permanent or conditional agent profile template.
+# Fill one instance per visible durable agent conversation.
+
+agent_id: ""
+conversation_label: ""
+agent_type: "permanent" # permanent | conditional_permanent
+hosted_departments: []
+mission: ""
+accountable_to: ""
+
+input_packets:
+  - ""
+output_packets:
+  - ""
+
+context_requirements:
+  required_sections:
+    - canonical_task_goal
+    - owner_and_role
+    - current_state
+    - evidence_paths
+    - forbidden_actions
+    - review_gate
+  context_budget_chars:
+    preferred_max: 8000
+    warning_max: 14000
+    fail_default_over: 22000
+  freshness_triggers:
+    - canonical_task_goal_changed
+    - owner_changed
+    - write_scope_changed
+    - new_user_decision
+    - new_blocker
+
+allowed_tools: []
+default_read_scope: "/mnt/c/Users/HP/Desktop/MoSim"
+default_write_scope: "none"
+worktree_policy:
+  default: "none"
+  requires_dispatch_record: true
+  merge_owner: ""
+
+forbidden_actions:
+  - silently_change_canonical_task_goal
+  - create_durable_child_conversation_without_dispatch
+  - accept_task_without_result_packet_or_review_note
+  - use_raw_transcript_as_context_pack
+  - exceed_project_path_scope_without_explicit_user_request
+
+escalation_triggers:
+  - missing_owner
+  - stale_context
+  - missing_evidence
+  - external_path_or_secret_risk
+  - irreversible_action
+
+review_gate:
+  required: true
+  owner: ""
+  accepted_states:
+    - accepted
+    - accepted_with_waiver
+    - rejected
+    - needs_review
+
+close_condition: "permanent agent normally remains open"
