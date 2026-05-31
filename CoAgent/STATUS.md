@@ -192,6 +192,17 @@ Current implementation checkpoint:
   `Results/coagent_status/git_batches/COAGENT-IMPL-TRANSPORT-GIT-6H-20260531/split_commit_apply_plan.json`;
   it plans 9 non-empty commits and confirms the live index tree matches the
   dry-run final tree before any real ref write.
+- Guarded split Git apply completed successfully for the same task. It created
+  9 ordinary commits, advanced `main` from
+  `8989c8b0ef207be42b4162f2dbf1194895ac9870` to
+  `650e23fc7a7baeaa0b4856130aee6d7b7f515954`, and pushed
+  `main -> origin/main`. Evidence:
+  `Results/coagent_status/git_batches/COAGENT-IMPL-TRANSPORT-GIT-6H-20260531/split_commit_apply_result.json`.
+- Git recovery note: ordinary `git commit` can hang in this repository when
+  Git LFS hooks are present but unavailable or slow. If a bounded commit attempt
+  leaves a 0-byte `.git/index.lock` and no Git process is active, remove that
+  stale lock and use the already reviewed `commit-tree` + guarded `update-ref`
+  route for the narrow staged set instead of retrying the same hanging command.
 - `CoAgent/runtime/mosim_agent_runtime.py` now redacts `claim_token` and other
   token-like fields in CLI JSON output by default. The claim event records only
   `claim_token_issued=true`; use `claim --show-claim-token` only when an
