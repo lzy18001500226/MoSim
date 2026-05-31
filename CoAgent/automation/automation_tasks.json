@@ -1,0 +1,235 @@
+{
+  "tasks": [
+    {
+      "automation_id": "agent_architecture_learning_daily",
+      "role": "ExternalIntelligenceAgent",
+      "department": "ExternalIntelligenceAgent",
+      "cadence": "daily",
+      "objective": "Run a bounded CoAgent architecture-learning slice across local agent references, agent skills, Anthropic/Claude engineering material, or SDK runtime resources; classify lessons as adopt_now, adapt_later, portable_only, reject, or unknown.",
+      "read_scope": [
+        "CoAgent/docs/research/LEARNING_STRATEGY.md",
+        "CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md",
+        "Docs/Index/external_learning_index.md",
+        "References/Agent"
+      ],
+      "write_scope": [
+        "CoAgent",
+        "Docs/Index/external_learning_index.md",
+        "Docs/Workflows/agent_orchestration.md",
+        "PROGRESS.md"
+      ],
+      "tool_scope": {
+        "allowed": [
+          "coagent_runtime",
+          "coagent_dispatch",
+          "coagent_knowledge",
+          "coagent_learning",
+          "file_read",
+          "file_write_project"
+        ],
+        "denied": [
+          "network",
+          "external_write",
+          "codex_app_private_db_write",
+          "credential_read",
+          "secret_store",
+          "destructive_fs",
+          "git_force"
+        ]
+      },
+      "requires_human_review": true,
+      "acceptance": "A bounded source-slice audit records adopt/adapt/portable/reject/unknown decisions and either patches CoAgent/workflow docs or records no_patch with evidence.",
+      "stop_condition": "done, blocked, or no_patch with evidence"
+    },
+    {
+      "automation_id": "docs_workflow_improvement_daily",
+      "role": "KnowledgeSecretaryAgent",
+      "department": "KnowledgeSecretaryAgent",
+      "cadence": "daily",
+      "objective": "Review recent incidents, local skills, workflow docs, and update durable CoAgent or workflow guidance when a real improvement is justified.",
+      "read_scope": [
+        "CoAgent",
+        "Docs/Workflows",
+        "Docs/Index",
+        "PROGRESS.md"
+      ],
+      "write_scope": [
+        "CoAgent",
+        "Docs/Workflows",
+        "Docs/Index",
+        "PROGRESS.md"
+      ],
+      "tool_scope": {
+        "allowed": [
+          "coagent_runtime",
+          "coagent_dispatch",
+          "coagent_knowledge",
+          "file_read",
+          "file_write_project"
+        ],
+        "denied": [
+          "network",
+          "external_write",
+          "codex_app_private_db_write",
+          "credential_read",
+          "secret_store",
+          "destructive_fs",
+          "git_force"
+        ]
+      },
+      "requires_human_review": true,
+      "acceptance": "A durable patch or explicit no-change review result is recorded.",
+      "stop_condition": "done, blocked, or no_patch with evidence"
+    },
+    {
+      "automation_id": "reference_repo_refresh_daily",
+      "role": "ExternalIntelligenceAgent",
+      "department": "ExternalIntelligenceAgent",
+      "cadence": "daily",
+      "objective": "Check whether tracked reference repositories or indexes need refresh or reclassification, and record the result.",
+      "read_scope": [
+        "References",
+        "CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md",
+        "Docs/Index/external_learning_index.md"
+      ],
+      "write_scope": [
+        "CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md",
+        "Docs/Index/external_learning_index.md",
+        "PROGRESS.md"
+      ],
+      "tool_scope": {
+        "allowed": [
+          "coagent_runtime",
+          "coagent_dispatch",
+          "file_read",
+          "file_write_project"
+        ],
+        "denied": [
+          "network",
+          "external_write",
+          "codex_app_private_db_write",
+          "credential_read",
+          "secret_store",
+          "destructive_fs",
+          "git_force"
+        ]
+      },
+      "requires_human_review": true,
+      "acceptance": "Reference index and refresh decision are recorded.",
+      "stop_condition": "done, blocked, or no_patch with evidence"
+    },
+    {
+      "automation_id": "knowledge_index_refresh_daily",
+      "role": "ContextMemoryAgent",
+      "department": "ContextMemoryAgent",
+      "cadence": "daily",
+      "objective": "Rebuild the CoAgent knowledge index so current rules, workflows, progress, and ledger entries remain searchable.",
+      "read_scope": [
+        "CoAgent",
+        "Docs/Workflows",
+        "Docs/Index",
+        "AGENTS.md",
+        "PROGRESS.md"
+      ],
+      "write_scope": [
+        "Results/coagent_knowledge"
+      ],
+      "tool_scope": {
+        "allowed": [
+          "coagent_runtime",
+          "coagent_dispatch",
+          "coagent_knowledge",
+          "file_read",
+          "file_write_project"
+        ],
+        "denied": [
+          "network",
+          "external_write",
+          "codex_app_private_db_write",
+          "credential_read",
+          "secret_store",
+          "destructive_fs",
+          "git_force"
+        ]
+      },
+      "requires_human_review": false,
+      "acceptance": "Knowledge index rebuild result is recorded.",
+      "stop_condition": "done or blocked"
+    },
+    {
+      "automation_id": "safety_scan_daily",
+      "role": "SafetyComplianceAgent",
+      "department": "SafetyComplianceAgent",
+      "cadence": "daily",
+      "objective": "Run CoAgent and project-local safety preflight to detect path, large-file, or boundary issues.",
+      "read_scope": [
+        "CoAgent",
+        "Scripts/reference",
+        "AGENTS.md",
+        "PROGRESS.md"
+      ],
+      "write_scope": [
+        "PROGRESS.md"
+      ],
+      "tool_scope": {
+        "allowed": [
+          "coagent_runtime",
+          "coagent_dispatch",
+          "coagent_preflight",
+          "file_read",
+          "file_write_project"
+        ],
+        "denied": [
+          "network",
+          "external_write",
+          "codex_app_private_db_write",
+          "credential_read",
+          "secret_store",
+          "destructive_fs",
+          "git_force"
+        ]
+      },
+      "requires_human_review": true,
+      "acceptance": "Safety scan result is recorded with blockers or clean status.",
+      "stop_condition": "done or blocked"
+    },
+    {
+      "automation_id": "git_cadence_daily",
+      "role": "DevOpsReleaseAgent",
+      "department": "DevOpsReleaseAgent",
+      "cadence": "daily",
+      "objective": "Review Git state, large-file risk, and pending clean batches, then record the next Git-safe action.",
+      "read_scope": [
+        ".git",
+        "CoAgent",
+        "Docs/Workflows",
+        "PROGRESS.md"
+      ],
+      "write_scope": [
+        "Docs/Workflows/agent_task_ledger.md",
+        "PROGRESS.md"
+      ],
+      "tool_scope": {
+        "allowed": [
+          "coagent_runtime",
+          "coagent_dispatch",
+          "git_read",
+          "file_read",
+          "file_write_project"
+        ],
+        "denied": [
+          "network",
+          "external_write",
+          "codex_app_private_db_write",
+          "credential_read",
+          "secret_store",
+          "destructive_fs",
+          "git_force"
+        ]
+      },
+      "requires_human_review": true,
+      "acceptance": "Git-safe next action is recorded.",
+      "stop_condition": "done or blocked"
+    }
+  ]
+}

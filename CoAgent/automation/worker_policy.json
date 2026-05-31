@@ -1,0 +1,18 @@
+{
+  "lock_ttl_seconds": 21600,
+  "default_department_concurrency": 1,
+  "max_total_active_locks": 3,
+  "max_active_per_automation": 1,
+  "department_concurrency": {
+    "ContextMemoryAgent": 1,
+    "DevOpsReleaseAgent": 1,
+    "ExternalIntelligenceAgent": 1,
+    "KnowledgeSecretaryAgent": 1,
+    "SafetyComplianceAgent": 1
+  },
+  "notes": [
+    "Automation locks are recoverability evidence, not a durable scheduler.",
+    "Stale locks require explicit reclaim before a new run may reuse the lock id.",
+    "Keep unattended concurrency low until multiple real dispatch cycles are stable."
+  ]
+}
