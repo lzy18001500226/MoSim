@@ -1,0 +1,59 @@
+template_type: task_charter
+template_version: 1
+task_id: COAGENT-MINILOOP-01
+parent_goal: "CoAgent complete-architecture minimum closed loop"
+canonical_task_goal: "Prove a full CoAgent architecture loop with file-level, manually reviewable artifacts before enabling real multi-conversation automation."
+state: planned
+task_class: long_running_task
+accountable_owner: PMO
+integration_owner: DevOps
+request_source:
+  conversation: "MoSim｜四旋翼无人机仿真系统"
+  timestamp: "2026-05-29T16:01:49+08:00"
+non_goals:
+  - "Do not create real Codex conversations."
+  - "Do not create Git worktrees."
+  - "Do not expand runtime, transport, hooks, MCP, email, plugins, or unattended automation."
+definition_of_done:
+  - "A complete artifact chain exists under Results/coagent_miniloop/COAGENT-MINILOOP-01."
+  - "Static check verifies required artifacts and references."
+  - "A human-review packet explains what was proven and what remains blocked."
+acceptance:
+  required_evidence:
+    - "Results/coagent_miniloop/COAGENT-MINILOOP-01/closeout_summary.md"
+    - "CoAgent/docs/decisions/coagent_miniloop_01_human_review.md"
+  review_owner: Verification
+  human_review_required: true
+appetite:
+  max_elapsed: "one focused design/verification pass"
+  max_checkpoints: 2
+  max_retries_per_blocker: 1
+circuit_breaker:
+  stop_when:
+    - "The loop requires real app-server transport."
+    - "The loop requires automatic conversation or worktree creation."
+    - "The user must approve a human-review decision."
+  escalate_when:
+    - "Artifact chain exposes a missing architecture object."
+    - "Static check cannot validate the loop without runtime schema changes."
+topology:
+  selected: "task_team_no_worktrees"
+  reason: "The first proof needs cross-artifact architecture evidence but no file-branch isolation."
+  scoped_conversations:
+    - "COAGENT-MINILOOP-01-SCOPED-ARCHITECTURE"
+context_pack:
+  path: "Results/coagent_miniloop/COAGENT-MINILOOP-01/context_pack.yaml"
+  freshness_requirement: "Built after Dynamic Task Team V2 design."
+worktree:
+  mode: shared_workspace
+  path: "/mnt/c/Users/HP/Desktop/MoSim"
+communication:
+  packet_log: "Results/coagent_miniloop/COAGENT-MINILOOP-01/team_mailbox.yaml"
+  peer_direct_allowed: false
+blockers:
+  known:
+    - "Real multi-conversation transport remains gated."
+  human_intervention_policy: project_packet
+result_contract:
+  result_packet_path: "Results/coagent_miniloop/COAGENT-MINILOOP-01/result_packet.json"
+  closeout_summary_required: true

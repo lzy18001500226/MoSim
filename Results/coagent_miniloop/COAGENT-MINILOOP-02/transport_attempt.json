@@ -1,0 +1,24 @@
+{
+  "task_id": "COAGENT-MINILOOP-02",
+  "attempted_at": "2026-05-29T17:01:00+08:00",
+  "surface": "codex_cli_exec",
+  "session_id": "019e72f7-7584-74d3-8933-c29fede9c384",
+  "command_shape": "timeout 60s node codex.js -C /mnt/c/Users/HP/Desktop/MoSim --ask-for-approval never --sandbox danger-full-access exec <scoped_task_packet>",
+  "timeout_seconds": 60,
+  "input_packet": "Results/coagent_miniloop/COAGENT-MINILOOP-02/scoped_task_packet.md",
+  "result_packet": "Results/coagent_miniloop/COAGENT-MINILOOP-02/worker_result_packet.json",
+  "worker_observed_actions": [
+    "Read Results/coagent_miniloop/COAGENT-MINILOOP-02/context_pack.yaml.",
+    "Read Results/coagent_miniloop/COAGENT-MINILOOP-02/scoped_task_packet.md.",
+    "Wrote Results/coagent_miniloop/COAGENT-MINILOOP-02/worker_result_packet.json.",
+    "Replied: COAGENT-MINILOOP-02 result packet written."
+  ],
+  "forbidden_action_observations": {
+    "git_used": false,
+    "mcp_used": false,
+    "worktree_created": false,
+    "source_files_modified": false
+  },
+  "result": "completed",
+  "limitation": "This proves a separate Codex CLI execution surface. It does not yet prove Codex App visible UI thread delivery."
+}

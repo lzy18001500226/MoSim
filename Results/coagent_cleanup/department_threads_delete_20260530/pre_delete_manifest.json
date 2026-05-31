@@ -1,0 +1,506 @@
+{
+  "generated_at": "2026-05-29T16:32:56.909366+00:00",
+  "canonical_cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+  "threads": [
+    {
+      "department": "DispatchAgent",
+      "thread_name": "MoSim｜调度中台",
+      "thread_id": "019e7400-124f-7890-8ce9-06aba5f990e9",
+      "registry_status": "visible_pending_user_confirmation",
+      "states": {
+        "wsl_main": {
+          "exists": true,
+          "row": {
+            "id": "019e7400-124f-7890-8ce9-06aba5f990e9",
+            "title": "MoSim｜调度中台",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T21-50-22-019e7400-124f-7890-8ce9-06aba5f990e9.jsonl",
+            "preview": "MoSim｜调度中台"
+          }
+        },
+        "wsl_alt": {
+          "exists": true,
+          "row": {
+            "id": "019e7400-124f-7890-8ce9-06aba5f990e9",
+            "title": "MoSim｜调度中台",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T21-50-22-019e7400-124f-7890-8ce9-06aba5f990e9.jsonl",
+            "preview": "MoSim｜调度中台"
+          }
+        },
+        "windows": {
+          "exists": true,
+          "row": {
+            "id": "019e7400-124f-7890-8ce9-06aba5f990e9",
+            "title": "MoSim｜调度中台",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "C:\\Users\\HP\\.codex\\sessions\\2026\\05\\29\\rollout-2026-05-29T21-50-22-019e7400-124f-7890-8ce9-06aba5f990e9.jsonl",
+            "preview": "MoSim｜调度中台"
+          }
+        }
+      }
+    },
+    {
+      "department": "ProductStrategyAgent",
+      "thread_name": "MoSim｜产品发现战略",
+      "thread_id": "019e740e-839b-7ba3-ba57-6aafd2453887",
+      "registry_status": "visible_pending_user_confirmation",
+      "states": {
+        "wsl_main": {
+          "exists": true,
+          "row": {
+            "id": "019e740e-839b-7ba3-ba57-6aafd2453887",
+            "title": "MoSim｜产品发现战略",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-06-08-019e740e-839b-7ba3-ba57-6aafd2453887.jsonl",
+            "preview": "MoSim｜产品发现战略"
+          }
+        },
+        "wsl_alt": {
+          "exists": true,
+          "row": {
+            "id": "019e740e-839b-7ba3-ba57-6aafd2453887",
+            "title": "MoSim｜产品发现战略",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-06-08-019e740e-839b-7ba3-ba57-6aafd2453887.jsonl",
+            "preview": "MoSim｜产品发现战略"
+          }
+        },
+        "windows": {
+          "exists": true,
+          "row": {
+            "id": "019e740e-839b-7ba3-ba57-6aafd2453887",
+            "title": "MoSim｜产品发现战略",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "C:\\Users\\HP\\.codex\\sessions\\2026\\05\\29\\rollout-2026-05-29T22-06-08-019e740e-839b-7ba3-ba57-6aafd2453887.jsonl",
+            "preview": "MoSim｜产品发现战略"
+          }
+        }
+      }
+    },
+    {
+      "department": "RuntimePlatformAgent",
+      "thread_name": "MoSim｜Agent Runtime 平台",
+      "thread_id": "019e740f-4641-7b01-a16b-0a2767fc7d62",
+      "registry_status": "visible_pending_user_confirmation",
+      "states": {
+        "wsl_main": {
+          "exists": true,
+          "row": {
+            "id": "019e740f-4641-7b01-a16b-0a2767fc7d62",
+            "title": "MoSim｜Agent Runtime 平台",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-06-58-019e740f-4641-7b01-a16b-0a2767fc7d62.jsonl",
+            "preview": "MoSim｜Agent Runtime 平台"
+          }
+        },
+        "wsl_alt": {
+          "exists": true,
+          "row": {
+            "id": "019e740f-4641-7b01-a16b-0a2767fc7d62",
+            "title": "MoSim｜Agent Runtime 平台",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-06-58-019e740f-4641-7b01-a16b-0a2767fc7d62.jsonl",
+            "preview": "MoSim｜Agent Runtime 平台"
+          }
+        },
+        "windows": {
+          "exists": true,
+          "row": {
+            "id": "019e740f-4641-7b01-a16b-0a2767fc7d62",
+            "title": "MoSim｜Agent Runtime 平台",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "C:\\Users\\HP\\.codex\\sessions\\2026\\05\\29\\rollout-2026-05-29T22-06-58-019e740f-4641-7b01-a16b-0a2767fc7d62.jsonl",
+            "preview": "MoSim｜Agent Runtime 平台"
+          }
+        }
+      }
+    },
+    {
+      "department": "ContextMemoryAgent",
+      "thread_name": "MoSim｜上下文记忆索引",
+      "thread_id": "019e740f-e82d-77a2-836a-a124a6176584",
+      "registry_status": "visible_pending_user_confirmation",
+      "states": {
+        "wsl_main": {
+          "exists": true,
+          "row": {
+            "id": "019e740f-e82d-77a2-836a-a124a6176584",
+            "title": "MoSim｜上下文记忆索引",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-07-40-019e740f-e82d-77a2-836a-a124a6176584.jsonl",
+            "preview": "MoSim｜上下文记忆索引"
+          }
+        },
+        "wsl_alt": {
+          "exists": true,
+          "row": {
+            "id": "019e740f-e82d-77a2-836a-a124a6176584",
+            "title": "MoSim｜上下文记忆索引",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-07-40-019e740f-e82d-77a2-836a-a124a6176584.jsonl",
+            "preview": "MoSim｜上下文记忆索引"
+          }
+        },
+        "windows": {
+          "exists": true,
+          "row": {
+            "id": "019e740f-e82d-77a2-836a-a124a6176584",
+            "title": "MoSim｜上下文记忆索引",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "C:\\Users\\HP\\.codex\\sessions\\2026\\05\\29\\rollout-2026-05-29T22-07-40-019e740f-e82d-77a2-836a-a124a6176584.jsonl",
+            "preview": "MoSim｜上下文记忆索引"
+          }
+        }
+      }
+    },
+    {
+      "department": "ToolchainMCPAgent",
+      "thread_name": "MoSim｜工具链 MCP",
+      "thread_id": "019e7410-99bd-75e2-81a8-d2a441615298",
+      "registry_status": "visible_pending_user_confirmation",
+      "states": {
+        "wsl_main": {
+          "exists": true,
+          "row": {
+            "id": "019e7410-99bd-75e2-81a8-d2a441615298",
+            "title": "MoSim｜工具链 MCP",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-08-25-019e7410-99bd-75e2-81a8-d2a441615298.jsonl",
+            "preview": "MoSim｜工具链 MCP"
+          }
+        },
+        "wsl_alt": {
+          "exists": true,
+          "row": {
+            "id": "019e7410-99bd-75e2-81a8-d2a441615298",
+            "title": "MoSim｜工具链 MCP",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-08-25-019e7410-99bd-75e2-81a8-d2a441615298.jsonl",
+            "preview": "MoSim｜工具链 MCP"
+          }
+        },
+        "windows": {
+          "exists": true,
+          "row": {
+            "id": "019e7410-99bd-75e2-81a8-d2a441615298",
+            "title": "MoSim｜工具链 MCP",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "C:\\Users\\HP\\.codex\\sessions\\2026\\05\\29\\rollout-2026-05-29T22-08-25-019e7410-99bd-75e2-81a8-d2a441615298.jsonl",
+            "preview": "MoSim｜工具链 MCP"
+          }
+        }
+      }
+    },
+    {
+      "department": "KnowledgeSecretaryAgent",
+      "thread_name": "MoSim｜知识秘书",
+      "thread_id": "019e7411-3c87-7691-92bd-ad8095e823b4",
+      "registry_status": "visible_pending_user_confirmation",
+      "states": {
+        "wsl_main": {
+          "exists": true,
+          "row": {
+            "id": "019e7411-3c87-7691-92bd-ad8095e823b4",
+            "title": "MoSim｜知识秘书",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-09-07-019e7411-3c87-7691-92bd-ad8095e823b4.jsonl",
+            "preview": "MoSim｜知识秘书"
+          }
+        },
+        "wsl_alt": {
+          "exists": true,
+          "row": {
+            "id": "019e7411-3c87-7691-92bd-ad8095e823b4",
+            "title": "MoSim｜知识秘书",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-09-07-019e7411-3c87-7691-92bd-ad8095e823b4.jsonl",
+            "preview": "MoSim｜知识秘书"
+          }
+        },
+        "windows": {
+          "exists": true,
+          "row": {
+            "id": "019e7411-3c87-7691-92bd-ad8095e823b4",
+            "title": "MoSim｜知识秘书",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "C:\\Users\\HP\\.codex\\sessions\\2026\\05\\29\\rollout-2026-05-29T22-09-07-019e7411-3c87-7691-92bd-ad8095e823b4.jsonl",
+            "preview": "MoSim｜知识秘书"
+          }
+        }
+      }
+    },
+    {
+      "department": "VerificationAgent",
+      "thread_name": "MoSim｜验证评测",
+      "thread_id": "019e7411-d47c-71e2-b140-357c649298a3",
+      "registry_status": "visible_pending_user_confirmation",
+      "states": {
+        "wsl_main": {
+          "exists": true,
+          "row": {
+            "id": "019e7411-d47c-71e2-b140-357c649298a3",
+            "title": "MoSim｜验证评测",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-09-46-019e7411-d47c-71e2-b140-357c649298a3.jsonl",
+            "preview": "MoSim｜验证评测"
+          }
+        },
+        "wsl_alt": {
+          "exists": true,
+          "row": {
+            "id": "019e7411-d47c-71e2-b140-357c649298a3",
+            "title": "MoSim｜验证评测",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-09-46-019e7411-d47c-71e2-b140-357c649298a3.jsonl",
+            "preview": "MoSim｜验证评测"
+          }
+        },
+        "windows": {
+          "exists": true,
+          "row": {
+            "id": "019e7411-d47c-71e2-b140-357c649298a3",
+            "title": "MoSim｜验证评测",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "C:\\Users\\HP\\.codex\\sessions\\2026\\05\\29\\rollout-2026-05-29T22-09-46-019e7411-d47c-71e2-b140-357c649298a3.jsonl",
+            "preview": "MoSim｜验证评测"
+          }
+        }
+      }
+    },
+    {
+      "department": "SafetyComplianceAgent",
+      "thread_name": "MoSim｜安全合规",
+      "thread_id": "019e7412-7846-7f40-8207-c6fb969d4601",
+      "registry_status": "visible_pending_user_confirmation",
+      "states": {
+        "wsl_main": {
+          "exists": true,
+          "row": {
+            "id": "019e7412-7846-7f40-8207-c6fb969d4601",
+            "title": "MoSim｜安全合规",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-10-28-019e7412-7846-7f40-8207-c6fb969d4601.jsonl",
+            "preview": "MoSim｜安全合规"
+          }
+        },
+        "wsl_alt": {
+          "exists": true,
+          "row": {
+            "id": "019e7412-7846-7f40-8207-c6fb969d4601",
+            "title": "MoSim｜安全合规",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-10-28-019e7412-7846-7f40-8207-c6fb969d4601.jsonl",
+            "preview": "MoSim｜安全合规"
+          }
+        },
+        "windows": {
+          "exists": true,
+          "row": {
+            "id": "019e7412-7846-7f40-8207-c6fb969d4601",
+            "title": "MoSim｜安全合规",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "C:\\Users\\HP\\.codex\\sessions\\2026\\05\\29\\rollout-2026-05-29T22-10-28-019e7412-7846-7f40-8207-c6fb969d4601.jsonl",
+            "preview": "MoSim｜安全合规"
+          }
+        }
+      }
+    },
+    {
+      "department": "DevOpsReleaseAgent",
+      "thread_name": "MoSim｜DevOps 发布",
+      "thread_id": "019e7413-174c-7391-83eb-2a5228853d1f",
+      "registry_status": "visible_pending_user_confirmation",
+      "states": {
+        "wsl_main": {
+          "exists": true,
+          "row": {
+            "id": "019e7413-174c-7391-83eb-2a5228853d1f",
+            "title": "MoSim｜DevOps 发布",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-11-08-019e7413-174c-7391-83eb-2a5228853d1f.jsonl",
+            "preview": "MoSim｜DevOps 发布"
+          }
+        },
+        "wsl_alt": {
+          "exists": true,
+          "row": {
+            "id": "019e7413-174c-7391-83eb-2a5228853d1f",
+            "title": "MoSim｜DevOps 发布",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-11-08-019e7413-174c-7391-83eb-2a5228853d1f.jsonl",
+            "preview": "MoSim｜DevOps 发布"
+          }
+        },
+        "windows": {
+          "exists": true,
+          "row": {
+            "id": "019e7413-174c-7391-83eb-2a5228853d1f",
+            "title": "MoSim｜DevOps 发布",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "C:\\Users\\HP\\.codex\\sessions\\2026\\05\\29\\rollout-2026-05-29T22-11-08-019e7413-174c-7391-83eb-2a5228853d1f.jsonl",
+            "preview": "MoSim｜DevOps 发布"
+          }
+        }
+      }
+    },
+    {
+      "department": "ExternalIntelligenceAgent",
+      "thread_name": "MoSim｜外部情报进化",
+      "thread_id": "019e7413-b133-7781-a75a-0a4e05de9381",
+      "registry_status": "visible_pending_user_confirmation",
+      "states": {
+        "wsl_main": {
+          "exists": true,
+          "row": {
+            "id": "019e7413-b133-7781-a75a-0a4e05de9381",
+            "title": "MoSim｜外部情报进化",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-11-48-019e7413-b133-7781-a75a-0a4e05de9381.jsonl",
+            "preview": "MoSim｜外部情报进化"
+          }
+        },
+        "wsl_alt": {
+          "exists": true,
+          "row": {
+            "id": "019e7413-b133-7781-a75a-0a4e05de9381",
+            "title": "MoSim｜外部情报进化",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "/home/linux/.codex/sessions/2026/05/29/rollout-2026-05-29T22-11-48-019e7413-b133-7781-a75a-0a4e05de9381.jsonl",
+            "preview": "MoSim｜外部情报进化"
+          }
+        },
+        "windows": {
+          "exists": true,
+          "row": {
+            "id": "019e7413-b133-7781-a75a-0a4e05de9381",
+            "title": "MoSim｜外部情报进化",
+            "source": "vscode",
+            "thread_source": "vscode",
+            "has_user_event": 1,
+            "archived": 0,
+            "cwd": "/mnt/c/Users/HP/Desktop/MoSim",
+            "rollout_path": "C:\\Users\\HP\\.codex\\sessions\\2026\\05\\29\\rollout-2026-05-29T22-11-48-019e7413-b133-7781-a75a-0a4e05de9381.jsonl",
+            "preview": "MoSim｜外部情报进化"
+          }
+        }
+      }
+    }
+  ]
+}

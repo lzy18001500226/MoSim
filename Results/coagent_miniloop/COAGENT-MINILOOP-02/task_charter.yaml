@@ -1,0 +1,63 @@
+template_type: task_charter
+template_version: 1
+task_id: COAGENT-MINILOOP-02
+parent_goal: "CoAgent real visible multi-conversation communication proof"
+canonical_task_goal: "Prove that a scoped task can be sent to a separate real Codex conversation or verifiable CLI conversation and returned as a result packet for main-thread import and review."
+state: planned
+task_class: long_running_task
+accountable_owner: PMO
+integration_owner: DispatchCenter
+request_source:
+  conversation: "MoSim｜四旋翼无人机仿真系统"
+  timestamp: "2026-05-29T16:01:49+08:00"
+non_goals:
+  - "Do not use app-server transport."
+  - "Do not create Git worktrees."
+  - "Do not send email."
+  - "Do not expand hooks, MCP, plugins, runtime schema, or unattended automation."
+definition_of_done:
+  - "A scoped packet is sent to a real separate Codex execution surface."
+  - "The separate execution surface writes a result packet."
+  - "The main thread imports and reviews the result packet."
+  - "Closeout records whether the communication proof is accepted, partial, or blocked."
+acceptance:
+  required_evidence:
+    - "Results/coagent_miniloop/COAGENT-MINILOOP-02/scoped_task_packet.md"
+    - "Results/coagent_miniloop/COAGENT-MINILOOP-02/worker_result_packet.json"
+    - "Results/coagent_miniloop/COAGENT-MINILOOP-02/transport_attempt.json"
+    - "Results/coagent_miniloop/COAGENT-MINILOOP-02/closeout_summary.md"
+  review_owner: Verification
+  human_review_required: true
+appetite:
+  max_elapsed: "60 seconds for each interactive/CLI attempt"
+  max_checkpoints: 2
+  max_retries_per_blocker: 1
+circuit_breaker:
+  stop_when:
+    - "No real result packet is produced within the 60 second command timeout."
+    - "The proof requires app-server transport or automatic worktree creation."
+    - "The separate conversation cannot access the project boundary safely."
+  escalate_when:
+    - "Codex CLI cannot start."
+    - "Codex App/VSCode session state cannot be found."
+topology:
+  selected: "real_visible_scoped_conversation"
+  reason: "The user approved multi-conversation communication after COAGENT-MINILOOP-01."
+  scoped_conversations:
+    - "COAGENT-MINILOOP-02-WORKER"
+context_pack:
+  path: "Results/coagent_miniloop/COAGENT-MINILOOP-02/context_pack.yaml"
+  freshness_requirement: "Built after COAGENT-MINILOOP-01 user approval."
+worktree:
+  mode: shared_workspace
+  path: "/mnt/c/Users/HP/Desktop/MoSim"
+communication:
+  packet_log: "Results/coagent_miniloop/COAGENT-MINILOOP-02/scoped_task_packet.md"
+  peer_direct_allowed: false
+blockers:
+  known:
+    - "Codex App/VSCode live conversation creation may be unstable."
+  human_intervention_policy: project_packet
+result_contract:
+  result_packet_path: "Results/coagent_miniloop/COAGENT-MINILOOP-02/worker_result_packet.json"
+  closeout_summary_required: true

@@ -1,0 +1,26 @@
+template_type: worktree_binding
+template_version: 1
+binding_id: WORKTREE-BINDING-COAGENT-MINILOOP-01
+task_id: COAGENT-MINILOOP-01
+team_id: TEAM-COAGENT-MINILOOP-01
+conversation_id: "COAGENT-MINILOOP-01-SCOPED-ARCHITECTURE"
+git_worktree_path: ""
+runtime_workspace_roots:
+  - "/mnt/c/Users/HP/Desktop/MoSim"
+read_scope:
+  - "CoAgent/"
+  - "Results/coagent_miniloop/COAGENT-MINILOOP-01/"
+write_scope:
+  - "CoAgent/protocol/templates/"
+  - "CoAgent/docs/architecture/coagent_minimal_closed_loop_protocol.md"
+  - "CoAgent/docs/decisions/coagent_miniloop_01_human_review.md"
+  - "CoAgent/doctor/check_miniloop.py"
+  - "CoAgent/tests/test_miniloop_static.py"
+  - "Results/coagent_miniloop/COAGENT-MINILOOP-01/"
+merge_owner: DevOps
+review_owner: Verification
+close_owner: DispatchCenter
+conflict_policy: "No separate worktree in this proof; avoid same-file broad edits."
+close_condition: "Static check passes and human-review packet is ready."
+worktree_required: false
+automatic_worktree_creation_approved: false

@@ -1,0 +1,34 @@
+task_id: COAGENT-MINILOOP-03
+status: superseded_not_visible
+decision: rejected_as_visible_department_proof
+reviewer: MainAgent
+date: 2026-05-29
+summary: >
+  Existing historical TestOwner rollout file received a codex exec resume
+  scoped task packet and wrote the required result packet. The user later
+  clarified that the department conversations had already been deleted from
+  the UI. Therefore this evidence is superseded: it proves only that an old
+  rollout file can be resumed, not that there is a current visible department
+  conversation.
+evidence:
+  - Results/coagent_miniloop/COAGENT-MINILOOP-03/scoped_task_packet.md
+  - Results/coagent_miniloop/COAGENT-MINILOOP-03/worker_result_packet.json
+  - Results/coagent_miniloop/COAGENT-MINILOOP-03/transport_attempt.json
+  - Results/agent_packets/summaries/COAGENT-MINILOOP-03.summary.md
+  - Results/coagent_transport/runs/COAGENT-MINILOOP-03.stderr.log
+diagnostic_claims:
+  - codex exec resume can target a verified existing VSCode-deleted-UI rollout session.
+  - a scoped packet can produce a bounded worker result from that existing department session.
+  - the result router can import the worker result and move the runtime task to done.
+  - the runtime conversation edge can be closed after import.
+rejected_claims:
+  - this is not accepted as proof of current visible department communication.
+  - deleted historical rollout files are not valid dispatch targets.
+reasons:
+  - the user confirmed the old department conversations were deleted from the visible UI.
+  - a department route must be visible to the user before it can be registered as active.
+  - `codex_transport.py` now rejects departments whose registry status is not `active_visible`.
+integration_permission:
+  can_close_task: true
+  can_continue_to_next_priority: true
+  next_priority: create_or_confirm_current_visible_department_conversations

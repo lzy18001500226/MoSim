@@ -1,0 +1,32 @@
+{
+  "task_id": "COAGENT-MINILOOP-03",
+  "result": "superseded_not_visible",
+  "target_department": "TestOwner",
+  "thread_name": "MoSim｜验证测试部",
+  "thread_id": "019e62b1-a1d3-74c2-853c-85c510e41f59",
+  "transport": "codex_exec_resume",
+  "rollout_originator": "codex_vscode",
+  "not_accepted_as": "current_visible_department_communication",
+  "input_packet": "Results/coagent_miniloop/COAGENT-MINILOOP-03/scoped_task_packet.md",
+  "worker_result": "Results/coagent_miniloop/COAGENT-MINILOOP-03/worker_result_packet.json",
+  "transport_run": "Results/coagent_transport/runs/COAGENT-MINILOOP-03.json",
+  "stdout_log": "Results/coagent_transport/runs/COAGENT-MINILOOP-03.stdout.log",
+  "stderr_log": "Results/coagent_transport/runs/COAGENT-MINILOOP-03.stderr.log",
+  "router_summary": "Results/agent_packets/summaries/COAGENT-MINILOOP-03.summary.md",
+  "router_review": "historical_import_superseded",
+  "runtime_state": "done",
+  "conversation_edge_status": "closed",
+  "issue_found": "The initial run-dispatch poll expected the default Results/agent_packets/COAGENT-MINILOOP-03.yaml path, while the scoped packet required Results/coagent_miniloop/COAGENT-MINILOOP-03/worker_result_packet.json.",
+  "fix_applied": "CoAgent/dispatch/codex_transport.py now supports --result-file for custom scoped packets and rejects custom packets without a declared result file or explicit override.",
+  "forbidden_action_observations": {
+    "git_used": false,
+    "mcp_used": false,
+    "worktree_created": false,
+    "source_files_modified_by_worker": false
+  },
+  "limitations": [
+    "This proves only that a historical rollout file could be resumed.",
+    "The user confirmed the department UI conversation had already been deleted, so this is not a valid active department route.",
+    "Current department dispatch requires `department_threads.json` status `active_visible`; deleted departments are `inactive_ui_deleted` and must be rejected before `codex exec resume`."
+  ]
+}

@@ -1,0 +1,40 @@
+context_delta_id: CTX-DELTA-COAGENT-MINILOOP-01
+task_id: COAGENT-MINILOOP-01
+source_result_packet: "Results/coagent_miniloop/COAGENT-MINILOOP-01/result_packet.json"
+created_by: DispatchCenter
+created_at: "2026-05-29T16:01:49+08:00"
+applies_to:
+  team_id: TEAM-COAGENT-MINILOOP-01
+  conversations:
+    - "MoSim｜四旋翼无人机仿真系统"
+  capability_templates:
+    - "DispatchCenter"
+    - "Verification"
+delta_type: "decision_update"
+summary: "The first CoAgent architecture proof should be file-level and manually reviewed before real multi-conversation transport is attempted."
+add:
+  accepted_facts:
+    - "Dynamic Task Team V2 requires board/mailbox/context/worktree/integration/trace artifacts."
+  decisions:
+    - "Do not treat this file-level proof as live multi-conversation proof."
+  evidence_paths:
+    - "Results/coagent_miniloop/COAGENT-MINILOOP-01/closeout_summary.md"
+    - "Results/coagent_miniloop/COAGENT-MINILOOP-01/retrospective.md"
+  interface_contracts:
+    - "Miniloop check validates artifact presence, task id consistency, board terminal state, review decision, and closeout summary."
+  risks:
+    - "Transport and real conversation visibility remain gated."
+remove_or_mark_stale:
+  facts: []
+  decisions: []
+  context_pack_paths: []
+  reason: ""
+freshness:
+  requires_context_pack_regeneration: true
+  affected_sections:
+    - "future dynamic task-team proofs"
+  deadline_or_trigger: "before COAGENT-MINILOOP-02 or real visible conversation proof"
+review:
+  review_required: true
+  review_owner: PMO
+  status: "needs_review"
