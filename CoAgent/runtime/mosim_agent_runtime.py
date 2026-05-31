@@ -71,6 +71,8 @@ VALID_EVENTS = {
     "conversation_closed",
 }
 VALID_EDGE_STATUSES = {"open", "closed"}
+SENSITIVE_OUTPUT_KEYS = {"claim_token", "token", "access_token", "refresh_token", "api_key", "secret", "password"}
+REDACTED = "<redacted>"
 
 
 def canonical_state(state: str) -> str:
@@ -104,6 +106,42 @@ def task_class_for(metadata: dict[str, Any]) -> str:
     if metadata.get("task_conversation") or metadata.get("checkpoint_plan"):
         return "long_running_task"
     return "clear_task"
+
+
+def redact_for_output(value: Any, *, reveal_claim_token: bool = False) -> Any:
+    if isinstance(value, dict):
+        redacted: dict[str, Any] = {}
+        for key, item in value.items():
+            normalized = str(key).lower()
+            if normalized == "claim_token" and reveal_claim_token:
+                redacted[key] = item
+            elif normalized in SENSITIVE_OUTPUT_KEYS or normalized.endswith("_token"):
+                redacted[key] = REDACTED if item else item
+            else:
+                redacted[key] = redact_for_output(item, reveal_claim_token=reveal_claim_token)
+        return redacted
+    if isinstance(value, list):
+        return [redact_for_output(item, reveal_claim_token=reveal_claim_token) for item in value]
+    return value
+
+
+def contains_sensitive_key(value: Any) -> bool:
+    if isinstance(value, dict):
+        for key, item in value.items():
+            normalized = str(key).lower()
+            if normalized in SENSITIVE_OUTPUT_KEYS or normalized.endswith("_token"):
+                if item not in ("", None, REDACTED):
+                    return True
+                continue
+            if contains_sensitive_key(item):
+                return True
+    elif isinstance(value, list):
+        return any(contains_sensitive_key(item) for item in value)
+    return False
+
+
+def redact_event_data(value: Any) -> Any:
+    return redact_for_output(value, reveal_claim_token=False)
 
 
 @dataclass(frozen=True)
@@ -222,6 +260,28 @@ def append_jsonl(path: Path, event: Event) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(asdict(event), ensure_ascii=False, sort_keys=True) + "\n")
+
+
+def load_event_log(path: Path = DEFAULT_EVENTS) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    events: list[dict[str, Any]] = []
+    with path.open("r", encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, start=1):
+            stripped = line.strip()
+            if not stripped:
+                continue
+            try:
+                parsed = json.loads(stripped)
+            except json.JSONDecodeError as exc:
+                events.append({"_invalid": True, "line": line_number, "error": str(exc), "text": stripped[:200]})
+                continue
+            if isinstance(parsed, dict):
+                parsed["_line"] = line_number
+                events.append(parsed)
+            else:
+                events.append({"_invalid": True, "line": line_number, "error": "event is not an object"})
+    return events
 
 
 def record_event(
@@ -346,10 +406,10 @@ def claim_task(args: argparse.Namespace) -> dict[str, Any]:
             actor=args.owner,
             summary=f"claimed by {args.owner}",
             data={
-                "claim_token": token,
                 "force": bool(args.force),
                 "previous_owner": task["owner"],
                 "previous_state": task["state"],
+                "claim_token_issued": True,
             },
             events_path=args.events,
         )
@@ -738,6 +798,170 @@ def status_board(args: argparse.Namespace) -> dict[str, Any]:
     return {"count": len(board), "tasks": board}
 
 
+def audit_event_stream(args: argparse.Namespace) -> dict[str, Any]:
+    with open_db(args.db) as connection:
+        task_rows = connection.execute("SELECT * FROM tasks ORDER BY task_id ASC").fetchall()
+        event_rows = connection.execute("SELECT * FROM events ORDER BY timestamp ASC").fetchall()
+    tasks = {row["task_id"]: row_to_dict(row) for row in task_rows}
+    db_events = [
+        {
+            "event_id": row["event_id"],
+            "task_id": row["task_id"],
+            "timestamp": row["timestamp"],
+            "event_type": row["event_type"],
+            "actor": row["actor"],
+            "summary": row["summary"],
+            "data": json.loads(row["data_json"]),
+        }
+        for row in event_rows
+    ]
+    jsonl_events = load_event_log(args.events)
+    findings: list[dict[str, Any]] = []
+    invalid_jsonl = [event for event in jsonl_events if event.get("_invalid")]
+    for event in invalid_jsonl[:20]:
+        findings.append({"severity": "fail", "reason": "invalid_jsonl_event", "line": event.get("line"), "error": event.get("error")})
+
+    db_event_ids = {event["event_id"] for event in db_events}
+    jsonl_event_ids = {event.get("event_id") for event in jsonl_events if not event.get("_invalid") and event.get("event_id")}
+    missing_in_jsonl = sorted(db_event_ids - jsonl_event_ids)
+    missing_in_db = sorted(jsonl_event_ids - db_event_ids)
+    if missing_in_jsonl:
+        findings.append({"severity": "warning", "reason": "events_missing_in_jsonl", "count": len(missing_in_jsonl), "event_ids": missing_in_jsonl[:20]})
+    if missing_in_db:
+        findings.append({"severity": "warning", "reason": "events_missing_in_db", "count": len(missing_in_db), "event_ids": missing_in_db[:20]})
+
+    sensitive_db_events = [
+        event["event_id"]
+        for event in db_events
+        if contains_sensitive_key(event.get("data", {}))
+    ]
+    sensitive_jsonl_events = [
+        str(event.get("event_id") or f"line:{event.get('_line')}")
+        for event in jsonl_events
+        if not event.get("_invalid") and contains_sensitive_key(event.get("data", {}))
+    ]
+    if sensitive_db_events:
+        findings.append(
+            {
+                "severity": "fail",
+                "reason": "sensitive_event_data_in_db",
+                "count": len(sensitive_db_events),
+                "event_ids": sensitive_db_events[:20],
+            }
+        )
+    if sensitive_jsonl_events:
+        findings.append(
+            {
+                "severity": "fail",
+                "reason": "sensitive_event_data_in_jsonl",
+                "count": len(sensitive_jsonl_events),
+                "event_ids": sensitive_jsonl_events[:20],
+            }
+        )
+
+    unknown_task_events = sorted({event["task_id"] for event in db_events if event["task_id"] not in tasks})
+    if unknown_task_events:
+        findings.append({"severity": "fail", "reason": "db_events_reference_unknown_task", "task_ids": unknown_task_events[:20]})
+
+    events_by_task: dict[str, list[dict[str, Any]]] = {task_id: [] for task_id in tasks}
+    for event in db_events:
+        events_by_task.setdefault(event["task_id"], []).append(event)
+    for task_id, task in tasks.items():
+        task_events = events_by_task.get(task_id, [])
+        if not task_events:
+            findings.append({"severity": "fail", "reason": "task_has_no_events", "task_id": task_id})
+            continue
+        created_count = sum(1 for event in task_events if event["event_type"] == "task_created")
+        if created_count != 1:
+            findings.append({"severity": "warning", "reason": "task_created_event_count_not_one", "task_id": task_id, "count": created_count})
+        latest_timestamp = max(event["timestamp"] for event in task_events)
+        if task["last_event_at"] != latest_timestamp:
+            findings.append(
+                {
+                    "severity": "warning",
+                    "reason": "last_event_at_mismatch",
+                    "task_id": task_id,
+                    "task_last_event_at": task["last_event_at"],
+                    "latest_event_at": latest_timestamp,
+                }
+            )
+    fail_count = sum(1 for item in findings if item["severity"] == "fail")
+    warning_count = sum(1 for item in findings if item["severity"] == "warning")
+    return {
+        "ok": fail_count == 0,
+        "task_count": len(tasks),
+        "db_event_count": len(db_events),
+        "jsonl_event_count": len([event for event in jsonl_events if not event.get("_invalid")]),
+        "invalid_jsonl_count": len(invalid_jsonl),
+        "missing_in_jsonl_count": len(missing_in_jsonl),
+        "missing_in_db_count": len(missing_in_db),
+        "sensitive_db_event_count": len(sensitive_db_events),
+        "sensitive_jsonl_event_count": len(sensitive_jsonl_events),
+        "warning_count": warning_count,
+        "fail_count": fail_count,
+        "findings": findings,
+    }
+
+
+def scrub_sensitive_events(args: argparse.Namespace) -> dict[str, Any]:
+    db = args.db if args.db.is_absolute() else ROOT / args.db
+    events_path = args.events if args.events.is_absolute() else ROOT / args.events
+    if not (db.resolve() == ROOT.resolve() or ROOT.resolve() in db.resolve().parents):
+        raise SystemExit(f"db path is outside MoSim: {args.db}")
+    if not (events_path.resolve() == ROOT.resolve() or ROOT.resolve() in events_path.resolve().parents):
+        raise SystemExit(f"events path is outside MoSim: {args.events}")
+
+    db_scrubbed: list[str] = []
+    with open_db(db) as connection:
+        rows = connection.execute("SELECT event_id, data_json FROM events ORDER BY timestamp ASC").fetchall()
+        for row in rows:
+            try:
+                data = json.loads(row["data_json"])
+            except json.JSONDecodeError:
+                continue
+            if contains_sensitive_key(data):
+                cleaned = redact_event_data(data)
+                db_scrubbed.append(row["event_id"])
+                if not args.dry_run:
+                    connection.execute(
+                        "UPDATE events SET data_json = ? WHERE event_id = ?",
+                        (json.dumps(cleaned, ensure_ascii=False, sort_keys=True), row["event_id"]),
+                    )
+        if not args.dry_run:
+            connection.commit()
+
+    jsonl_scrubbed: list[str] = []
+    if events_path.exists():
+        original_lines = events_path.read_text(encoding="utf-8").splitlines()
+        new_lines: list[str] = []
+        for line_number, line in enumerate(original_lines, start=1):
+            stripped = line.strip()
+            if not stripped:
+                new_lines.append(line)
+                continue
+            try:
+                event = json.loads(stripped)
+            except json.JSONDecodeError:
+                new_lines.append(line)
+                continue
+            if isinstance(event, dict) and contains_sensitive_key(event.get("data", {})):
+                event["data"] = redact_event_data(event.get("data", {}))
+                jsonl_scrubbed.append(str(event.get("event_id") or f"line:{line_number}"))
+                new_lines.append(json.dumps(event, ensure_ascii=False, sort_keys=True))
+            else:
+                new_lines.append(line)
+        if jsonl_scrubbed and not args.dry_run:
+            events_path.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
+    return {
+        "ok": True,
+        "dry_run": bool(args.dry_run),
+        "db_scrubbed_count": len(db_scrubbed),
+        "jsonl_scrubbed_count": len(jsonl_scrubbed),
+        "db_event_ids": db_scrubbed[:20],
+        "jsonl_event_ids": jsonl_scrubbed[:20],
+    }
+
+
 def format_task_packet_text(args: argparse.Namespace) -> dict[str, Any]:
     packet = export_task_packet(args)
     lines = [
@@ -849,6 +1073,7 @@ def build_parser() -> argparse.ArgumentParser:
     claim.add_argument("--task-id", default="")
     claim.add_argument("--owner", required=True)
     claim.add_argument("--force", action="store_true", help="explicitly reclaim a claimed/running task")
+    claim.add_argument("--show-claim-token", action="store_true", help="print the claim token in CLI output for immediate manual capture")
     claim.set_defaults(func=claim_task)
 
     heartbeat = subparsers.add_parser("heartbeat")
@@ -940,6 +1165,15 @@ def build_parser() -> argparse.ArgumentParser:
     board.add_argument("--active-only", action="store_true")
     board.set_defaults(func=status_board)
 
+    audit = subparsers.add_parser("audit-events")
+    add_common(audit)
+    audit.set_defaults(func=audit_event_stream)
+
+    scrub = subparsers.add_parser("scrub-sensitive-events")
+    add_common(scrub)
+    scrub.add_argument("--dry-run", action="store_true")
+    scrub.set_defaults(func=scrub_sensitive_events)
+
     packet_text = subparsers.add_parser("task-packet-text")
     add_common(packet_text)
     packet_text.add_argument("--task-id", required=True)
@@ -990,7 +1224,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command in {"task-packet-text", "result-packet-text"}:
         print(result["text"])
     else:
-        print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+        print(json.dumps(redact_for_output(result, reveal_claim_token=getattr(args, "show_claim_token", False)), ensure_ascii=False, indent=2, sort_keys=True))
     return 0
 
 

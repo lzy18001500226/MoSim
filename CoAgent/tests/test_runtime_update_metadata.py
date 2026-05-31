@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -56,6 +57,11 @@ def main() -> int:
         )
         claimed = runtime.claim_task(ns(db=db, events=events, task_id=task_id, owner="VerificationAgent", force=False))
         token = claimed["claim_token"]
+        shown_after_claim = runtime.show_task(ns(db=db, events=events, task_id=task_id))
+        claim_events = [event for event in shown_after_claim["events"] if event["event_type"] == "task_claimed"]
+        assert claim_events, shown_after_claim
+        assert "claim_token" not in claim_events[-1]["data"], claim_events[-1]
+        assert claim_events[-1]["data"]["claim_token_issued"] is True
 
         try:
             runtime.update_metadata(
@@ -99,6 +105,55 @@ def main() -> int:
         assert result["evidence"] == ["CoAgent/tests/test_runtime_update_metadata.py"]
         assert result["commands_run"] == ["python3 CoAgent/tests/test_runtime_update_metadata.py"]
         assert result["next_recommended_action"] == "review metadata patch smoke"
+
+        cli_show = subprocess.run(
+            [
+                sys.executable,
+                "CoAgent/runtime/mosim_agent_runtime.py",
+                "show",
+                "--db",
+                str(db),
+                "--events",
+                str(events),
+                "--task-id",
+                task_id,
+            ],
+            cwd=ROOT,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=20,
+            check=False,
+        )
+        assert cli_show.returncode == 0, cli_show.stderr
+        cli_payload = json.loads(cli_show.stdout)
+        assert cli_payload["claim_token"] == "<redacted>", cli_payload
+
+        cli_claim = subprocess.run(
+            [
+                sys.executable,
+                "CoAgent/runtime/mosim_agent_runtime.py",
+                "claim",
+                "--db",
+                str(db),
+                "--events",
+                str(events),
+                "--task-id",
+                task_id,
+                "--owner",
+                "VerificationAgent",
+                "--force",
+            ],
+            cwd=ROOT,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=20,
+            check=False,
+        )
+        assert cli_claim.returncode == 0, cli_claim.stderr
+        claim_payload = json.loads(cli_claim.stdout)
+        assert claim_payload["claim_token"] == "<redacted>", claim_payload
 
     print("runtime_update_metadata_smoke ok")
     return 0
