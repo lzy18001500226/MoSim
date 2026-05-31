@@ -6,7 +6,7 @@ public class MoSimSceneLibraryTarget : TargetRules
     public MoSimSceneLibraryTarget(TargetInfo Target) : base(Target)
     {
         Type = TargetType.Game;
-        DefaultBuildSettings = BuildSettingsVersion.V6;
+        DefaultBuildSettings = BuildSettingsVersion.V5;
         IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
         ExtraModuleNames.Add("MoSimSceneLibrary");
     }

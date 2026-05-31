@@ -86,6 +86,32 @@
         ]
       },
       {
+        "display_name": "CityPark4a0303ba7c3fV1",
+        "external_cache_path_count": 1,
+        "external_uproject_path_count": 1,
+        "installed_or_cached": true,
+        "openable_project": true,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "vault_cached_project"
+        ],
+        "versions": []
+      },
+      {
+        "display_name": "CitySample_5.5",
+        "external_cache_path_count": 1,
+        "external_uproject_path_count": 1,
+        "installed_or_cached": true,
+        "openable_project": true,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "vault_cached_project"
+        ],
+        "versions": []
+      },
+      {
         "display_name": "Dark Ruins Megascans Sample",
         "external_cache_path_count": 1,
         "external_uproject_path_count": 0,
@@ -187,6 +213,32 @@
         "versions": []
       },
       {
+        "display_name": "FactoryPbfa035615186V1",
+        "external_cache_path_count": 1,
+        "external_uproject_path_count": 1,
+        "installed_or_cached": true,
+        "openable_project": true,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "vault_cached_project"
+        ],
+        "versions": []
+      },
+      {
+        "display_name": "KiteDemo_4.27",
+        "external_cache_path_count": 1,
+        "external_uproject_path_count": 1,
+        "installed_or_cached": true,
+        "openable_project": true,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "vault_cached_project"
+        ],
+        "versions": []
+      },
+      {
         "display_name": "Landscape Mountains",
         "external_cache_path_count": 0,
         "external_uproject_path_count": 0,
@@ -235,6 +287,19 @@
         "versions": [
           "5.3"
         ]
+      },
+      {
+        "display_name": "MedievalGame426",
+        "external_cache_path_count": 1,
+        "external_uproject_path_count": 1,
+        "installed_or_cached": true,
+        "openable_project": true,
+        "project_local_cache_paths": [],
+        "project_local_uproject_paths": [],
+        "states": [
+          "vault_cached_project"
+        ],
+        "versions": []
       },
       {
         "display_name": "Modular Rural Assets",
@@ -320,17 +385,161 @@
     "library_summary": {
       "account_library_item_count": 17,
       "fab_asset_count": 5,
-      "launcher_install_count": 11,
-      "launcher_item_count": 11,
-      "vault_cache_project_count": 3
+      "launcher_install_count": 12,
+      "launcher_item_count": 12,
+      "vault_cache_project_count": 8
     },
     "reason": "Epic/Fab/Launcher inventory is visible, but no Fab asset is yet proven to be imported into the MoSim UE project, editable through UE MCP, and paired with explicit planner truth.",
     "status": "inventory_visible_not_scene_accepted"
   },
-  "generated_at": "2026-05-24T23:36:31+00:00",
+  "generated_at": "2026-05-26T05:49:46+00:00",
   "local_editable_fallback": {
     "scene_root": "References/UnrealScenes",
     "scene_sources": [
+      {
+        "audit_verdict": "needs_truth_extraction_or_proxy",
+        "editable_candidate": true,
+        "engine_association": "4.27",
+        "imported_into_renderer": false,
+        "name": "ABoyandHisKite",
+        "planning_truth_ready": false,
+        "plugins": [],
+        "project_root": "References/UnrealScenes/ABoyandHisKite",
+        "renderable_candidate": true,
+        "renderer_content_root": "",
+        "renderer_map_asset": "",
+        "renderer_map_package": "",
+        "renderer_reuse_kind": "",
+        "scene_source_id": "local_aboyandhiskite",
+        "source_kind": "local_unreal_project",
+        "status": "needs_truth_extraction_or_proxy",
+        "truth_artifacts": [],
+        "truth_gap": "No explicit planner/collision truth file found; generate occupancy/collision truth from UE assets before planning validation.",
+        "uasset_count": 1592,
+        "uasset_samples": [
+          "References/UnrealScenes/ABoyandHisKite/Content/GDC_Pawn_Audio.uasset",
+          "References/UnrealScenes/ABoyandHisKite/Content/Blueprints/BP_AmbientEffectManager.uasset",
+          "References/UnrealScenes/ABoyandHisKite/Content/Blueprints/BP_CineLighting_Manager_01.uasset",
+          "References/UnrealScenes/ABoyandHisKite/Content/Blueprints/BP_Cine_Lighting_Scene_01.uasset",
+          "References/UnrealScenes/ABoyandHisKite/Content/Blueprints/BP_GDCGameMode.uasset",
+          "References/UnrealScenes/ABoyandHisKite/Content/Blueprints/BP_HoverDrone.uasset",
+          "References/UnrealScenes/ABoyandHisKite/Content/Blueprints/BP_LightFunction_Setup.uasset",
+          "References/UnrealScenes/ABoyandHisKite/Content/Blueprints/CIneDeerSpawner.uasset"
+        ],
+        "umap_count": 52,
+        "umap_samples": [
+          "References/UnrealScenes/ABoyandHisKite/Content/Maps/TutorialMap.umap",
+          "References/UnrealScenes/ABoyandHisKite/Content/Maps/GoldenPath/GDC_Landscape_01.umap",
+          "References/UnrealScenes/ABoyandHisKite/Content/Maps/GoldenPath/Attract_Mode.umap",
+          "References/UnrealScenes/ABoyandHisKite/Content/Maps/GoldenPath/BackgroundLevels.umap",
+          "References/UnrealScenes/ABoyandHisKite/Content/Maps/GoldenPath/Cave_Interior.umap",
+          "References/UnrealScenes/ABoyandHisKite/Content/Maps/GoldenPath/Fauna.umap",
+          "References/UnrealScenes/ABoyandHisKite/Content/Maps/GoldenPath/Forest_and_Lake.umap",
+          "References/UnrealScenes/ABoyandHisKite/Content/Maps/GoldenPath/GDC_KiteCine_Map.umap"
+        ],
+        "uplugin_count": 0,
+        "uproject_path": "References/UnrealScenes/ABoyandHisKite/ABoyandHisKite.uproject"
+      },
+      {
+        "audit_verdict": "needs_truth_extraction_or_proxy",
+        "editable_candidate": true,
+        "engine_association": "5.5",
+        "imported_into_renderer": false,
+        "name": "CityParkEnvironmentCollec",
+        "planning_truth_ready": false,
+        "plugins": [
+          "InstanceTool"
+        ],
+        "project_root": "References/UnrealScenes/CityParkEnvironmentCollec",
+        "renderable_candidate": true,
+        "renderer_content_root": "",
+        "renderer_map_asset": "",
+        "renderer_map_package": "",
+        "renderer_reuse_kind": "",
+        "scene_source_id": "local_cityparkenvironmentcollec",
+        "source_kind": "local_unreal_project",
+        "status": "needs_truth_extraction_or_proxy",
+        "truth_artifacts": [],
+        "truth_gap": "No explicit planner/collision truth file found; generate occupancy/collision truth from UE assets before planning validation.",
+        "uasset_count": 1114,
+        "uasset_samples": [
+          "References/UnrealScenes/CityParkEnvironmentCollec/Content/CityPark/Blueprints/BP_SplineMeshes.uasset",
+          "References/UnrealScenes/CityParkEnvironmentCollec/Content/CityPark/Maps/Showcase_BuiltData.uasset",
+          "References/UnrealScenes/CityParkEnvironmentCollec/Content/CityPark/Maps/Showcase_sharedassets/1_LayerInfo.uasset",
+          "References/UnrealScenes/CityParkEnvironmentCollec/Content/CityPark/Maps/Showcase_sharedassets/2_LayerInfo.uasset",
+          "References/UnrealScenes/CityParkEnvironmentCollec/Content/CityPark/Maps/Showcase_sharedassets/3_LayerInfo.uasset",
+          "References/UnrealScenes/CityParkEnvironmentCollec/Content/CityPark/Maps/Showcase_sharedassets/4_LayerInfo.uasset",
+          "References/UnrealScenes/CityParkEnvironmentCollec/Content/CityPark/Maps/Showcase_sharedassets/5_LayerInfo.uasset",
+          "References/UnrealScenes/CityParkEnvironmentCollec/Content/CityPark/Maps/Showcase_sharedassets/6_LayerInfo.uasset"
+        ],
+        "umap_count": 3,
+        "umap_samples": [
+          "References/UnrealScenes/CityParkEnvironmentCollec/Content/CityPark/Maps/Showcase.umap",
+          "References/UnrealScenes/CityParkEnvironmentCollec/Content/CityPark/Maps/Overview.umap",
+          "References/UnrealScenes/CityParkEnvironmentCollec/Content/CityPark/Maps/Showcase_NotOptimized.umap"
+        ],
+        "uplugin_count": 0,
+        "uproject_path": "References/UnrealScenes/CityParkEnvironmentCollec/CityParkEnvironmentCollec.uproject"
+      },
+      {
+        "audit_verdict": "needs_truth_extraction_or_proxy",
+        "editable_candidate": true,
+        "engine_association": "5.5",
+        "imported_into_renderer": false,
+        "name": "CitySample",
+        "planning_truth_ready": false,
+        "plugins": [
+          "AlembicHairImporter",
+          "AnimToTexture",
+          "AnimationWarping",
+          "AudioModulation",
+          "AutomatedPerfTesting",
+          "ChaosCaching",
+          "ChaosVehiclesPlugin",
+          "CitySampleMassCrowd",
+          "CitySampleSensorGrid",
+          "ColorCorrectRegions",
+          "ContextualAnimation",
+          "ControlRig",
+          "CustomizableSequencerTracks",
+          "D3DExternalGPUStatistics",
+          "EditorDataStorage",
+          "EditorDataStorageFeatures",
+          "ElectraPlayer",
+          "EnhancedInput",
+          "FieldSystemPlugin",
+          "FullBodyIK"
+        ],
+        "project_root": "References/UnrealScenes/CitySample",
+        "renderable_candidate": true,
+        "renderer_content_root": "",
+        "renderer_map_asset": "",
+        "renderer_map_package": "",
+        "renderer_reuse_kind": "",
+        "scene_source_id": "local_citysample",
+        "source_kind": "local_unreal_project",
+        "status": "needs_truth_extraction_or_proxy",
+        "truth_artifacts": [],
+        "truth_gap": "No explicit planner/collision truth file found; generate occupancy/collision truth from UE assets before planning validation.",
+        "uasset_count": 1538,
+        "uasset_samples": [
+          "References/UnrealScenes/CitySample/Content/StartMapTextRender.uasset",
+          "References/UnrealScenes/CitySample/Content/AI/BP_FleeTrigger.uasset",
+          "References/UnrealScenes/CitySample/Content/AI/BP_MassCrowd_TestCharacter.uasset",
+          "References/UnrealScenes/CitySample/Content/AI/CrowdStateTree.uasset",
+          "References/UnrealScenes/CitySample/Content/AI/AgentConfig/BP_MassCrowdSpawner.uasset",
+          "References/UnrealScenes/CitySample/Content/AI/AgentConfig/MassCrowdAgentConfig.uasset",
+          "References/UnrealScenes/CitySample/Content/AI/AgentConfig/MassCrowdAgentConfig_MetaHuman.uasset",
+          "References/UnrealScenes/CitySample/Content/AI/AgentConfig/MassCrowdPuppetConfig.uasset"
+        ],
+        "umap_count": 2,
+        "umap_samples": [
+          "References/UnrealScenes/CitySample/Content/Map/Startup/Startup.umap",
+          "References/UnrealScenes/CitySample/Content/Map/Big_City_LVL.umap"
+        ],
+        "uplugin_count": 0,
+        "uproject_path": "References/UnrealScenes/CitySample/CitySample.uproject"
+      },
       {
         "audit_verdict": "needs_truth_extraction_or_proxy",
         "editable_candidate": true,
@@ -365,16 +574,10 @@
           "References/UnrealScenes/DarkRuinsMegascansSample/Content/AssetZoo/DemoRoom/Materials/MI_TileBlack.uasset",
           "References/UnrealScenes/DarkRuinsMegascansSample/Content/AssetZoo/DemoRoom/Materials/MI_Tile_Ceiling.uasset"
         ],
-        "umap_count": 25,
+        "umap_count": 2,
         "umap_samples": [
           "References/UnrealScenes/DarkRuinsMegascansSample/Content/Main.umap",
-          "References/UnrealScenes/DarkRuinsMegascansSample/Content/CustomAssets/Characters/FallenSoldier/FallenSoldier_ForPreviewer.umap",
-          "References/UnrealScenes/DarkRuinsMegascansSample/Content/CustomAssets/Characters/FallenSoldier/FallenSoldier_Merged.umap",
-          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Maps/AssetZoo.umap",
-          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Maps/MASS/Packed/MASS_NC_Boulders_L_01.umap",
-          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Maps/MASS/Packed/MASS_NC_Boulders_M_02.umap",
-          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Maps/MASS/Packed/MASS_NC_Cliff_M_01.umap",
-          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Maps/MASS/Packed/MASS_NC_Cliff_XL_02.umap"
+          "References/UnrealScenes/DarkRuinsMegascansSample/Content/Maps/AssetZoo.umap"
         ],
         "uplugin_count": 0,
         "uproject_path": "References/UnrealScenes/DarkRuinsMegascansSample/DarkRuins.uproject"
@@ -416,16 +619,9 @@
           "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Assets/Blueprints/ASY_DarkPipe_01.uasset",
           "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Assets/Blueprints/ASY_DarkPipe_02.uasset"
         ],
-        "umap_count": 38,
+        "umap_count": 1,
         "umap_samples": [
-          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/DerelictCorridor.umap",
-          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_BrokenTiles_01.umap",
-          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_BrokenTiles_02.umap",
-          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_Ceiling_01.umap",
-          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_Ceiling_02.umap",
-          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_Ceiling_06.umap",
-          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_Ceiling_07.umap",
-          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/PackedLevels/ASY_DarkPipe_01.umap"
+          "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor/Maps/DerelictCorridor.umap"
         ],
         "uplugin_count": 0,
         "uproject_path": "References/UnrealScenes/DerelictCorridorMegascans/DerelictCorridorMegascans.uproject"
@@ -481,19 +677,58 @@
           "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/BPP_Asmbl_Dracaena_Shrub_01.uasset",
           "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/BPP_Asmbl_Dracaena_Shrub_02.uasset"
         ],
-        "umap_count": 113,
+        "umap_count": 8,
         "umap_samples": [
-          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_Catpalm_Shrub_00.umap",
-          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_CliffWall_00.umap",
-          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_CliffWall_01.umap",
-          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_CliffWall_02.umap",
-          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_CliffWall_03.umap",
-          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_Dracaena_Shrub_00.umap",
-          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_Dracaena_Shrub_01.umap",
-          "References/UnrealScenes/ElectricDreamsEnv/Content/Asmbly/Asmbl_Dracaena_Shrub_02.umap"
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Levels/Startup.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Levels/PCG/ElectricDreams_PCGCloseRange.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Levels/ElectricDreams_Env.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Levels/PCG/ElectricDreams_PCG.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Levels/PCG/Breakdown_Levels/ElectricDreams_PCGDitchAssembly.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Levels/PCG/Breakdown_Levels/ElectricDreams_PCGForest.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Levels/PCG/Breakdown_Levels/ElectricDreams_PCGLargeAssembly.umap",
+          "References/UnrealScenes/ElectricDreamsEnv/Content/Levels/PCG/Breakdown_Levels/ElectricDreams_PCGSplineExample.umap"
         ],
         "uplugin_count": 0,
         "uproject_path": "References/UnrealScenes/ElectricDreamsEnv/ElectricDreamsEnv.uproject"
+      },
+      {
+        "audit_verdict": "needs_truth_extraction_or_proxy",
+        "editable_candidate": true,
+        "engine_association": "5.5",
+        "imported_into_renderer": false,
+        "name": "FactoryEnvironmentCollect",
+        "planning_truth_ready": false,
+        "plugins": [],
+        "project_root": "References/UnrealScenes/FactoryEnvironmentCollect",
+        "renderable_candidate": true,
+        "renderer_content_root": "",
+        "renderer_map_asset": "",
+        "renderer_map_package": "",
+        "renderer_reuse_kind": "",
+        "scene_source_id": "local_factoryenvironmentcollect",
+        "source_kind": "local_unreal_project",
+        "status": "needs_truth_extraction_or_proxy",
+        "truth_artifacts": [],
+        "truth_gap": "No explicit planner/collision truth file found; generate occupancy/collision truth from UE assets before planning validation.",
+        "uasset_count": 1591,
+        "uasset_samples": [
+          "References/UnrealScenes/FactoryEnvironmentCollect/Content/Audio/Cue_AssemblyLine.uasset",
+          "References/UnrealScenes/FactoryEnvironmentCollect/Content/Audio/Cue_CrashZone.uasset",
+          "References/UnrealScenes/FactoryEnvironmentCollect/Content/Audio/Cue_Drone.uasset",
+          "References/UnrealScenes/FactoryEnvironmentCollect/Content/Audio/Cue_MainAmbient.uasset",
+          "References/UnrealScenes/FactoryEnvironmentCollect/Content/Audio/Cue_Office.uasset",
+          "References/UnrealScenes/FactoryEnvironmentCollect/Content/Audio/Cue_Reservoir.uasset",
+          "References/UnrealScenes/FactoryEnvironmentCollect/Content/Audio/Cue_Shower.uasset",
+          "References/UnrealScenes/FactoryEnvironmentCollect/Content/Audio/Cue_Storage.uasset"
+        ],
+        "umap_count": 3,
+        "umap_samples": [
+          "References/UnrealScenes/FactoryEnvironmentCollect/Content/Maps/Demonstration.umap",
+          "References/UnrealScenes/FactoryEnvironmentCollect/Content/Maps/Overview.umap",
+          "References/UnrealScenes/FactoryEnvironmentCollect/Content/Maps/TechArt.umap"
+        ],
+        "uplugin_count": 0,
+        "uproject_path": "References/UnrealScenes/FactoryEnvironmentCollect/FactoryEnvironmentCollect.uproject"
       },
       {
         "audit_verdict": "needs_truth_extraction_or_proxy",
@@ -529,11 +764,72 @@
         ],
         "umap_count": 2,
         "umap_samples": [
-          "References/UnrealScenes/FPS-Shooter-Unreal/Content/mainmap.umap",
-          "References/UnrealScenes/FPS-Shooter-Unreal/Content/FirstPerson/Maps/FirstPersonMap.umap"
+          "References/UnrealScenes/FPS-Shooter-Unreal/Content/FirstPerson/Maps/FirstPersonMap.umap",
+          "References/UnrealScenes/FPS-Shooter-Unreal/Content/mainmap.umap"
         ],
         "uplugin_count": 0,
         "uproject_path": "References/UnrealScenes/FPS-Shooter-Unreal/M2F.uproject"
+      },
+      {
+        "audit_verdict": "needs_truth_extraction_or_proxy",
+        "editable_candidate": true,
+        "engine_association": "4.27",
+        "imported_into_renderer": false,
+        "name": "MedievalVillageMegascansS",
+        "planning_truth_ready": false,
+        "plugins": [
+          "HDRIBackdrop",
+          "Landmass",
+          "LuminPlatformFeatures",
+          "MLSDK",
+          "MagicLeap",
+          "MagicLeapMedia",
+          "MagicLeapPassableWorld",
+          "ModelingToolsEditorMode",
+          "OculusVR",
+          "SteamVR",
+          "Takes",
+          "TemplateActor",
+          "Text3D",
+          "Velocity",
+          "Volumetrics",
+          "Water"
+        ],
+        "project_root": "References/UnrealScenes/MedievalVillageMegascansS",
+        "renderable_candidate": true,
+        "renderer_content_root": "",
+        "renderer_map_asset": "",
+        "renderer_map_package": "",
+        "renderer_reuse_kind": "",
+        "scene_source_id": "local_medievalvillagemegascanss",
+        "source_kind": "local_unreal_project",
+        "status": "needs_truth_extraction_or_proxy",
+        "truth_artifacts": [],
+        "truth_gap": "No explicit planner/collision truth file found; generate occupancy/collision truth from UE assets before planning validation.",
+        "uasset_count": 1575,
+        "uasset_samples": [
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Audio/Aud_Music_Trigger_Scarecrow_01_Blueprint.uasset",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Audio/Ambient_Random/Forest_WindGust_Day_01.uasset",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Audio/Ambient_Random/Forest_WindGust_Day_02.uasset",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Audio/Ambient_Random/Forest_WindGust_Day_03.uasset",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Audio/Ambient_Random/Forest_WindGust_Day_04.uasset",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Audio/Ambient_Random/Forest_WindGust_Day_05.uasset",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Audio/Ambient_Random/Forest_WindGust_Day_06.uasset",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Audio/Ambient_Random/Forest_WindGust_Day_07.uasset"
+        ],
+        "umap_count": 18,
+        "umap_samples": [
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Maps/MedievalVillage_P.umap",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Maps/Athmospherics.umap",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Maps/Atmospherics.umap",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Maps/Audio.umap",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Maps/Cinematics.umap",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Maps/DeveloperCommentary.umap",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Maps/Foliage_Volumes.umap",
+          "References/UnrealScenes/MedievalVillageMegascansS/Content/Maps/Forge.umap"
+        ],
+        "uplugin_count": 0,
+        "uproject_path": "References/UnrealScenes/MedievalVillageMegascansS/MedievalVillageMegascansS.uproject"
       }
     ],
     "status": "active",
