@@ -175,6 +175,13 @@ References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/*
 !References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Italian/**
 !References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Korean/
 !References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Korean/**
+!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/
+!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/
+!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/
+References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/*
+!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/人本-存在主义/
+!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/人本-存在主义/**
+References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/总技能/
 !References/Agent/Skills/awesome-openclaw-skills/
 !References/Agent/Skills/awesome-openclaw-skills/**
 !References/Agent/Skills/awesome-opencode/
