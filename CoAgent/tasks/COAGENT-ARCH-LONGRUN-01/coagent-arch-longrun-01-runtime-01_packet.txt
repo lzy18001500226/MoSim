@@ -1,0 +1,59 @@
+[MoSim Task Packet]
+task_id: COAGENT-ARCH-LONGRUN-01-RUNTIME-01
+task_class: clear_task
+role: RuntimePlatformAgent
+objective: RuntimePlatformAgent 对 COAGENT-ARCH-LONGRUN-01 的可见会话、transport、运行时任务图和 worktree/Git 协议进行只读审查，指出下一步 runtime 实验和风险。
+project_goal: CoAgent 架构设计
+phase_objective: CoAgent 架构设计
+canonical_task_goal: RuntimePlatformAgent 对 COAGENT-ARCH-LONGRUN-01 的可见会话、transport、运行时任务图和 worktree/Git 协议进行只读审查，指出下一步 runtime 实验和风险。
+conversation_objective: 只读审查指定架构材料并写 result packet。
+accountable_owner: RuntimePlatformAgent
+supporting_departments: []
+read_scope: ["CoAgent/dispatch", "CoAgent/docs/status", "CoAgent/runtime", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01", "CoAgent/transport"]
+write_scope: ["Results/agent_packets"]
+acceptance: 返回 schema-valid result packet，包含结论、证据、风险、下一步，不修改项目源文件。
+definition_of_done: 返回 schema-valid result packet，包含结论、证据、风险、下一步，不修改项目源文件。
+non_goals: []
+required_evidence: ["CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/dynamic_team_decision_rules.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/worktree_git_integration_protocol.md", "CoAgent/docs/status/codex_visible_thread_sop.md"]
+stop_condition: 如无法读取上下文、无法写 result packet、或 transport/provider 失败，则返回 blocker 或由主线程记录 blocker。
+appetite: bounded to declared task scope
+circuit_breaker: 如无法读取上下文、无法写 result packet、或 transport/provider 失败，则返回 blocker 或由主线程记录 blocker。
+checkpoint_plan: checkpoint on blocker, scope change, or completion
+escalation_conditions: []
+review_gates: []
+dependencies: []
+allowed_actions: ["read project files", "write one result packet under Results/agent_packets"]
+forbidden_actions: ["modify source docs", "run broad git", "create new conversations", "change canonical goal"]
+required_checks: []
+assumptions: []
+open_questions: []
+worktree_path:
+branch_or_base:
+merge_owner:
+close_condition:
+review_owner: MainAgent
+human_review_points: []
+git_status:
+metadata: {"accountable_owner": "RuntimePlatformAgent", "allowed_actions": ["read project files", "write one result packet under Results/agent_packets"], "canonical_task_goal": "RuntimePlatformAgent 对 COAGENT-ARCH-LONGRUN-01 的可见会话、transport、运行时任务图和 worktree/Git 协议进行只读审查，指出下一步 runtime 实验和风险。", "conversation_objective": "只读审查指定架构材料并写 result packet。", "forbidden_actions": ["modify source docs", "run broad git", "create new conversations", "change canonical goal"], "next_action": "dispatch to active department conversation with 60s bounded transport", "parent_goal": "CoAgent 架构设计", "parent_task_id": "COAGENT-ARCH-LONGRUN-01", "required_evidence": ["CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/dynamic_team_decision_rules.md", "CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/worktree_git_integration_protocol.md", "CoAgent/docs/status/codex_visible_thread_sop.md"], "review_owner": "MainAgent", "task_class": "clear_task"}
+result_file: Results/agent_packets/COAGENT-ARCH-LONGRUN-01-RUNTIME-01.yaml
+
+[Required Output Format]
+Write exactly one result packet to:
+Results/agent_packets/COAGENT-ARCH-LONGRUN-01-RUNTIME-01.yaml
+
+Required fields:
+task_id, status, canonical_status, task_class, summary, owner, role,
+read_scope, write_scope, files_changed, commands_run, evidence, risks,
+blockers, review_status, acceptance_state, next_recommended_action.
+
+[Review Questions]
+1. Are Codex visible conversation, transport, and runtime task graph assumptions coherent?
+2. What should be tested before automatic conversation creation or app-server transport?
+3. What are the top 3 remaining RuntimePlatform risks?
+4. What should be the next architecture action?
+
+[Strict Limits]
+Do not modify project source files.
+Do not create conversations.
+Do not run Git.
+Do not change the canonical parent task goal.
