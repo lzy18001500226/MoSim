@@ -15,6 +15,7 @@ import shutil
 import subprocess
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 from CoAgent.transport.adapter import TransportPlan
 from CoAgent.transport.adapter import TransportRequest
@@ -23,8 +24,8 @@ from CoAgent.transport.adapter import TransportStart
 
 ROOT = Path(__file__).resolve().parents[2]
 TMP_DIR = ROOT / "Results" / "coagent_transport"
-SHADOW_SQLITE_HOME = TMP_DIR / "sqlite_home"
-SHADOW_CODEX_HOME = TMP_DIR / "codex_home"
+SHADOW_SQLITE_ROOT = TMP_DIR / "sqlite_home"
+SHADOW_CODEX_ROOT = TMP_DIR / "codex_home"
 RUNS_DIR = TMP_DIR / "runs"
 
 
@@ -59,15 +60,18 @@ class CodexExecResumeAdapter:
     def __init__(self, *, source_home: Path | None = None) -> None:
         self.source_home = source_home or Path("/home/linux/.codex")
         self._shadow_cache: dict[str, dict[str, Any]] = {}
+        self.shadow_id = f"pid_{os.getpid()}_{uuid4().hex[:8]}"
+        self.shadow_sqlite_home = SHADOW_SQLITE_ROOT / self.shadow_id
+        self.shadow_codex_home = SHADOW_CODEX_ROOT / self.shadow_id
 
     def ensure_dirs(self) -> None:
         TMP_DIR.mkdir(parents=True, exist_ok=True)
         RUNS_DIR.mkdir(parents=True, exist_ok=True)
-        SHADOW_SQLITE_HOME.mkdir(parents=True, exist_ok=True)
-        SHADOW_CODEX_HOME.mkdir(parents=True, exist_ok=True)
+        self.shadow_sqlite_home.mkdir(parents=True, exist_ok=True)
+        self.shadow_codex_home.mkdir(parents=True, exist_ok=True)
 
     def reset_shadow_sessions(self) -> None:
-        sessions = SHADOW_CODEX_HOME / "sessions"
+        sessions = self.shadow_codex_home / "sessions"
         if sessions.exists():
             shutil.rmtree(sessions, ignore_errors=True)
         sessions.mkdir(parents=True, exist_ok=True)
@@ -83,7 +87,7 @@ class CodexExecResumeAdapter:
             "-c",
             "model_reasoning_effort=\"high\"",
             "-c",
-            f"sqlite_home={json.dumps(str(SHADOW_SQLITE_HOME))}",
+            f"sqlite_home={json.dumps(str(self.shadow_sqlite_home))}",
             "--dangerously-bypass-approvals-and-sandbox",
             "--output-last-message",
             str(result_path),
@@ -99,7 +103,7 @@ class CodexExecResumeAdapter:
         for name in ["auth.json", "config.toml", "session_index.jsonl"]:
             src = self.source_home / name
             if src.exists():
-                dst = SHADOW_CODEX_HOME / name
+                dst = self.shadow_codex_home / name
                 dst.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(src, dst)
                 copied.append(project_rel(dst))
@@ -110,17 +114,18 @@ class CodexExecResumeAdapter:
             if not session_meta_matches_thread(src, thread_id):
                 continue
             rel = src.relative_to(self.source_home)
-            dst = SHADOW_CODEX_HOME / rel
+            dst = self.shadow_codex_home / rel
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(src, dst)
             rel_dst = project_rel(dst)
             copied.append(rel_dst)
             session_files.append(rel_dst)
         result = {
-            "shadow_codex_home": project_rel(SHADOW_CODEX_HOME),
-            "shadow_sqlite_home": project_rel(SHADOW_SQLITE_HOME),
+            "shadow_codex_home": project_rel(self.shadow_codex_home),
+            "shadow_sqlite_home": project_rel(self.shadow_sqlite_home),
             "copied_files": copied,
             "session_files": session_files,
+            "shadow_id": self.shadow_id,
         }
         self._shadow_cache[thread_id] = result
         return result
@@ -138,6 +143,7 @@ class CodexExecResumeAdapter:
             "sqlite_home": shadow["shadow_sqlite_home"],
             "copied_files": shadow["copied_files"],
             "session_files": shadow["session_files"],
+            "shadow_id": shadow["shadow_id"],
         }
         return TransportPlan(
             adapter=self.name,

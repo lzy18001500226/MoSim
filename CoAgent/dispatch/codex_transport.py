@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import signal
 import sys
 import time
 from pathlib import Path
@@ -20,6 +21,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 TMP_DIR = ROOT / "Results" / "coagent_transport"
 RUNS_DIR = ROOT / "Results" / "coagent_transport" / "runs"
+DEFAULT_CLEANUP_GRACE_SECONDS = 10.0
 
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -137,11 +139,117 @@ def read_run_meta(task_id: str) -> dict[str, Any]:
 
 
 def process_alive(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    state = process_state(pid)
+    if state == "Z":
+        return False
     try:
         os.kill(pid, 0)
     except OSError:
         return False
     return True
+
+
+def process_state(pid: int) -> str | None:
+    stat_path = Path("/proc") / str(pid) / "stat"
+    try:
+        text = stat_path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    marker = text.rfind(") ")
+    if marker < 0:
+        return None
+    rest = text[marker + 2 :].split()
+    return rest[0] if rest else None
+
+
+def stop_process_group(pid: int, *, grace_seconds: float = 2.0) -> dict[str, Any]:
+    if pid <= 0 or not process_alive(pid):
+        return {"attempted": False, "alive_after": False}
+    result: dict[str, Any] = {"attempted": True, "pid": pid, "signals": [], "state_before": process_state(pid)}
+    for sig in [signal.SIGTERM, signal.SIGKILL]:
+        try:
+            os.killpg(pid, sig)
+            result["signals"].append(sig.name)
+        except OSError:
+            break
+        deadline = time.monotonic() + grace_seconds
+        while time.monotonic() < deadline:
+            if not process_alive(pid):
+                result["alive_after"] = False
+                return result
+            time.sleep(0.1)
+    result["state_after"] = process_state(pid)
+    result["alive_after"] = process_alive(pid)
+    return result
+
+
+def result_packet_text(
+    *,
+    task_id: str,
+    status: str,
+    canonical_status: str,
+    summary: str,
+    owner: str,
+    role: str,
+    blockers: list[str] | None = None,
+    evidence: list[str] | None = None,
+    next_action: str = "",
+    risks: list[str] | None = None,
+) -> str:
+    return "\n".join(
+        [
+            "[MoSim Result Packet]",
+            f"task_id: {task_id}",
+            f"status: {status}",
+            f"canonical_status: {canonical_status}",
+            f"summary: {summary}",
+            f"owner: {owner}",
+            f"role: {role}",
+            "read_scope: []",
+            "write_scope: []",
+            f"evidence: {json.dumps(evidence or [], ensure_ascii=False)}",
+            f"blockers: {json.dumps(blockers or [], ensure_ascii=False)}",
+            f"risks: {json.dumps(risks or [], ensure_ascii=False)}",
+            f"next_recommended_action: {next_action}",
+            "events: []",
+            "",
+        ]
+    )
+
+
+def write_transport_result_packet(
+    *,
+    task_id: str,
+    result_file_rel: str,
+    department: str,
+    status: str,
+    canonical_status: str,
+    summary: str,
+    blockers: list[str],
+    evidence: list[str],
+    next_action: str,
+    risks: list[str] | None = None,
+) -> str:
+    result_file_path = ROOT / result_file_rel
+    result_file_path.parent.mkdir(parents=True, exist_ok=True)
+    result_file_path.write_text(
+        result_packet_text(
+            task_id=task_id,
+            status=status,
+            canonical_status=canonical_status,
+            summary=summary,
+            owner="CoAgentTransport",
+            role=department,
+            blockers=blockers,
+            evidence=evidence,
+            next_action=next_action,
+            risks=risks,
+        ),
+        encoding="utf-8",
+    )
+    return result_file_rel
 
 
 def maybe_import_result(task_id: str, db: Path, events: Path, result_file_rel: str) -> dict[str, Any] | None:
@@ -163,6 +271,25 @@ def maybe_import_result(task_id: str, db: Path, events: Path, result_file_rel: s
     if not imported.get("ok"):
         return imported
     return imported.get("runtime_state", imported)
+
+
+def import_transport_result(args: argparse.Namespace, meta: dict[str, Any], result_file_rel: str) -> dict[str, Any] | None:
+    return maybe_import_result(args.task_id, args.db, args.events, result_file_rel)
+
+
+def imported_runtime_state(imported: dict[str, Any] | None) -> dict[str, Any]:
+    if not imported:
+        return {}
+    runtime_state = imported.get("runtime_state")
+    if isinstance(runtime_state, dict):
+        return runtime_state
+    return imported
+
+
+def cleanup_grace_seconds(timeout: int, requested_grace: float) -> float:
+    if timeout <= 0:
+        return 0.0
+    return min(float(requested_grace), max(1.0, float(timeout) * 0.2))
 
 
 def summary_path(task_id: str) -> Path:
@@ -196,7 +323,9 @@ def write_run_summary(task_id: str, payload: dict[str, Any]) -> str:
 
 def dispatch_run(args: argparse.Namespace) -> dict[str, Any]:
     start = start_dispatch(args)
-    deadline = time.monotonic() + args.timeout
+    cleanup_grace = cleanup_grace_seconds(args.timeout, getattr(args, "cleanup_grace", DEFAULT_CLEANUP_GRACE_SECONDS))
+    wait_budget = max(0.0, float(args.timeout) - cleanup_grace)
+    deadline = time.monotonic() + wait_budget
     last = None
     while time.monotonic() < deadline:
         last = poll_dispatch(args)
@@ -218,6 +347,87 @@ def dispatch_run(args: argparse.Namespace) -> dict[str, Any]:
         "started": start,
         "poll": last,
         "timed_out": True,
+    }
+    if not result.get("ok") and getattr(args, "write_timeout_result", True):
+        meta = read_run_meta(args.task_id)
+        stop = stop_process_group(int(meta.get("pid", 0)))
+        result_file_rel = str(meta.get("result_file") or extract_result_file_rel(args))
+        timeout_packet = write_transport_result_packet(
+            task_id=args.task_id,
+            result_file_rel=result_file_rel,
+            department=str(meta.get("department", args.department)),
+            status="blocked",
+            canonical_status="blocked",
+            summary=(
+                f"dispatch transport timed out after {wait_budget:g} seconds of worker polling "
+                f"within a {args.timeout} second total timeout budget before the department wrote a result packet"
+            ),
+            blockers=["transport_timeout_no_result_packet"],
+            evidence=[
+                str(meta.get("packet_path", "")),
+                str(meta.get("stdout_log", "")),
+                str(meta.get("stderr_log", "")),
+            ],
+            next_action="Harden or rerun dispatch transport before relying on this department for long Git or implementation work.",
+            risks=["department_result_missing"],
+        )
+        imported = import_transport_result(args, meta, timeout_packet)
+        imported_state = imported_runtime_state(imported)
+        last = poll_dispatch(args)
+        result.update(
+            {
+                "mode": "timeout_result_imported" if imported_state else "timeout_result_written",
+                "timeout_result_file": timeout_packet,
+                "wait_budget_seconds": wait_budget,
+                "cleanup_grace_seconds": cleanup_grace,
+                "stop_process": stop,
+                "imported_timeout_runtime_state": imported,
+                "poll": last,
+                "ok": bool(imported_state.get("state") in runtime.TERMINAL_STATES),
+            }
+        )
+    result["summary_path"] = write_run_summary(args.task_id, result)
+    return result
+
+
+def finalize_timeout(args: argparse.Namespace) -> dict[str, Any]:
+    meta = read_run_meta(args.task_id)
+    result_file_rel = str(meta.get("result_file") or extract_result_file_rel(args))
+    stop = stop_process_group(int(meta.get("pid", 0)))
+    timeout_packet = write_transport_result_packet(
+        task_id=args.task_id,
+        result_file_rel=result_file_rel,
+        department=str(meta.get("department", getattr(args, "department", ""))),
+        status="blocked",
+        canonical_status="blocked",
+        summary=str(
+            getattr(args, "summary", "")
+            or "dispatch transport ended without the department writing a result packet"
+        ),
+        blockers=["transport_no_result_packet"],
+        evidence=[
+            str(meta.get("packet_path", "")),
+            str(meta.get("stdout_log", "")),
+            str(meta.get("stderr_log", "")),
+            rel_project_path(summary_path(args.task_id)) if summary_path(args.task_id).exists() else "",
+        ],
+        next_action=str(
+            getattr(args, "next_action", "")
+            or "Rerun or harden dispatch transport before relying on this department for long Git or implementation work."
+        ),
+        risks=["department_result_missing"],
+    )
+    imported = import_transport_result(args, meta, timeout_packet)
+    imported_state = imported_runtime_state(imported)
+    poll = poll_dispatch(args)
+    result = {
+        "ok": bool(imported_state.get("state") in runtime.TERMINAL_STATES),
+        "mode": "timeout_result_finalized",
+        "task_id": args.task_id,
+        "timeout_result_file": timeout_packet,
+        "stop_process": stop,
+        "imported_timeout_runtime_state": imported,
+        "poll": poll,
     }
     result["summary_path"] = write_run_summary(args.task_id, result)
     return result
@@ -264,7 +474,7 @@ def start_dispatch(args: argparse.Namespace) -> dict[str, Any]:
 
     if result_path.exists():
         result_path.unlink()
-    if result_file_path.exists():
+    if result_file_path.exists() and not getattr(args, "keep_existing_result", False):
         result_file_path.unlink()
 
     started = ADAPTER.start(request, plan_obj)
@@ -455,8 +665,10 @@ def build_parser() -> argparse.ArgumentParser:
     run_parser.add_argument("--db", type=Path, default=ROOT / "Results" / "agent_runtime" / "tasks.sqlite3")
     run_parser.add_argument("--events", type=Path, default=ROOT / "Results" / "agent_runtime" / "events.jsonl")
     run_parser.add_argument("--timeout", type=int, default=60)
+    run_parser.add_argument("--cleanup-grace", type=float, default=DEFAULT_CLEANUP_GRACE_SECONDS)
     run_parser.add_argument("--packet-file", type=Path, default=None)
     run_parser.add_argument("--result-file", type=Path, default=None)
+    run_parser.add_argument("--no-timeout-result", dest="write_timeout_result", action="store_false", default=True)
     run_parser.set_defaults(func=dispatch_run)
 
     start_parser = subparsers.add_parser("start-dispatch")
@@ -467,6 +679,7 @@ def build_parser() -> argparse.ArgumentParser:
     start_parser.add_argument("--events", type=Path, default=ROOT / "Results" / "agent_runtime" / "events.jsonl")
     start_parser.add_argument("--packet-file", type=Path, default=None)
     start_parser.add_argument("--result-file", type=Path, default=None)
+    start_parser.add_argument("--keep-existing-result", action="store_true")
     start_parser.set_defaults(func=start_dispatch)
 
     validate_parser = subparsers.add_parser("validate-transport")
@@ -492,6 +705,14 @@ def build_parser() -> argparse.ArgumentParser:
     poll_parser.add_argument("--events", type=Path, default=ROOT / "Results" / "agent_runtime" / "events.jsonl")
     poll_parser.add_argument("--task-id", required=True)
     poll_parser.set_defaults(func=poll_dispatch)
+
+    finalize_parser = subparsers.add_parser("finalize-timeout")
+    finalize_parser.add_argument("--db", type=Path, default=ROOT / "Results" / "agent_runtime" / "tasks.sqlite3")
+    finalize_parser.add_argument("--events", type=Path, default=ROOT / "Results" / "agent_runtime" / "events.jsonl")
+    finalize_parser.add_argument("--task-id", required=True)
+    finalize_parser.add_argument("--summary", default="")
+    finalize_parser.add_argument("--next-action", default="")
+    finalize_parser.set_defaults(func=finalize_timeout)
 
     return parser
 

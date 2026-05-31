@@ -54,6 +54,7 @@ python CoAgent/dispatch/codex_transport.py validate-transport --department Proje
 python CoAgent/dispatch/codex_transport.py start-dispatch --department ProjectOwner --task-id <id>
 python CoAgent/dispatch/codex_transport.py poll-dispatch --task-id <id>
 python CoAgent/dispatch/codex_transport.py run-dispatch --department ProjectOwner --task-id <id>
+python CoAgent/dispatch/codex_transport.py finalize-timeout --task-id <id>
 python CoAgent/dispatch/codex_transport.py reconcile-result --department ProjectOwner --task-id <id>
 python CoAgent/dispatch/codex_session_repair.py diagnose --department TestOwner
 python CoAgent/dispatch/codex_session_repair.py restore --department TestOwner
@@ -116,6 +117,21 @@ timeout 60s script -qfec \
   `start-dispatch` launches the real department-thread job in the background,
   and `poll-dispatch` can later observe the result file and import it back into
   runtime state as `done`.
+- Timeout recovery path:
+  `run-dispatch` defaults to writing a standard blocked MoSim Result Packet
+  when the department conversation does not create the declared result file
+  before `--timeout`. It stops the spawned process group when possible, writes
+  the packet to the task's declared `result_file`, imports it through
+  `result_router`, and closes the conversation edge. It reserves cleanup time
+  before the declared timeout so an outer 60 second operator timeout does not
+  kill the finalizer first. Use `--no-timeout-result` only for a deliberate
+  transport-debug run where a missing packet should remain unmodified.
+- Half-open recovery path:
+  if an outer tool timeout kills `run-dispatch` after the child process exits
+  but before a result packet is imported, use `finalize-timeout --task-id <id>`.
+  It reads the existing run metadata, writes/imports the same standard blocked
+  result packet, and closes the conversation edge. This is the recovery command
+  for `result_file_exists=false`, `alive=false`, and an open dispatch edge.
 - Permanent department bootstrap path:
   `bootstrap_department_threads.py` creates lightweight real Codex sessions for
   the permanent CoAgent departments, then syncs WSL and Windows Codex metadata

@@ -27,6 +27,12 @@ all historical rollouts for text mentions of the target id; main project
 conversations often mention department ids in logs and would otherwise be
 mistaken for the target conversation.
 
+Each adapter instance uses its own shadow Codex home and SQLite home below
+`Results/coagent_transport/`. Do not share one mutable shadow `codex_home`
+between concurrent doctor/status/dispatch checks: one check can reset
+`sessions/` while another is copying rollout files, producing intermittent
+`FileNotFoundError` failures during transport planning.
+
 If no matching rollout exists, transport must fail before starting `codex exec
 resume`. That means the visible registry and the local Codex session store are
 out of sync, and the department thread needs repair before a real lifecycle can
