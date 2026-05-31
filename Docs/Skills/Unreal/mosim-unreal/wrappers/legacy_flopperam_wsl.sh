@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Legacy wrapper for the open-source Flopperam Unreal MCP server.
-# Keep this for rollback while MoSim's own `unreal_engine` MCP is being built.
+# Keep this for rollback while MoSim's own `mosim-unreal` is being built.
 
 PROJECT_ROOT="/mnt/c/Users/HP/Desktop/MoSim"
 MCP_DIR="${PROJECT_ROOT}/Docs/Skills/Unreal/mcp/unreal-engine-mcp/Python"

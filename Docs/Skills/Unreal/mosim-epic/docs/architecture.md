@@ -1,10 +1,11 @@
-# MoSim Unreal MCP Architecture
+# MoSim Epic MCP Architecture
 
 ## Purpose
 
-MoSim needs an Unreal automation surface similar in reliability to the MWORKS
-MCP tools: small, explicit tools; clear project boundaries; repeatable
-diagnostics; and no hidden Launcher or account-side actions.
+MoSim needs a narrow MCP for Epic/Fab/Launcher library visibility and
+scene-source readiness decisions. This server is intentionally separate from
+the live Unreal Editor MCP because account/library concerns and editor object
+graph concerns have different safety boundaries.
 
 ## Current Shape
 
@@ -12,58 +13,39 @@ diagnostics; and no hidden Launcher or account-side actions.
 Codex
   -> stdio MCP wrapper
   -> Python MCP server
-  -> MoSim project scripts and UE listener probes
-  -> UE5/MoSimSceneLibrary
+  -> Epic/Fab inventory scripts and scene-source registry scripts
+  -> UE5/MoSimSceneLibrary/Content/MworksData
 ```
 
 Current tools:
 
 ```text
-ue_health
-project_context
-scene_source_registry
-ue_fab_goal_acceptance
-scene_truth_export_plan
+epic_library_inventory
 epic_scene_library_view
+scene_source_registry
+scene_source_acceptance
+scene_truth_export_plan
 tool_boundary
 ```
 
-## What We Borrow From Reference MCP Projects
+## What This MCP Owns
 
-From the Unreal MCP folders under `Docs/Skills/Unreal/mcp`, adopt ideas rather
-than copying a broad tool surface:
+- sanitized local Epic/Fab/Launcher inventory;
+- account-owned/cache/vault scene candidate classification;
+- scene-source registry refresh and validation;
+- acceptance gates that prove renderable scene plus planning truth;
+- command planning for truth export from already local editable UE scenes.
 
-- explicit tool schemas and narrow responsibilities;
-- editor-side C++/plugin bridge for operations requiring AssetRegistry,
-  Blueprint graph access, package saving, PIE, and game-thread dispatch;
-- read-first workflows before write operations;
-- reversible edit probes;
-- logs and health endpoints before scene mutation.
+## What This MCP Does Not Own
 
-## What We Avoid
+- Epic/Fab login or OAuth;
+- Launcher UI automation or Marketplace downloads;
+- raw webcache/log dumping;
+- live Unreal Editor actor/Blueprint/material/viewport/PIE operations.
 
-- Launcher/Fab account automation inside `unreal_engine`;
-- arbitrary Python execution as a normal editing mechanism;
-- one MCP tool that silently does many unrelated operations;
-- claiming a scene is usable before renderability and planning truth are both
-  verified.
+## Relationship To `mosim-unreal`
 
-## Expansion Plan
+`mosim-epic` answers: "what scene sources do we have and are they accepted?"
 
-1. Keep the Python MCP as the stable orchestration and diagnostic layer.
-2. Add a project-owned UE plugin endpoint when local scene editing needs
-   reliable AssetRegistry, Blueprint, map, and collision-truth operations.
-3. Add tools in this order:
-
-```text
-read-only project/asset/scene query
--> listener health and log readback
--> reversible actor probe
--> scene truth export
--> scene import/link verification
--> controlled map edits
--> simulation playback hooks
-```
-
-4. Keep `mosim_epic_library` separate unless a future explicit tool boundary
-   proves a merged MCP is simpler and safer.
+`mosim-unreal` answers: "what can the currently opened UE Editor project do,
+and can we inspect/edit/export from it?"

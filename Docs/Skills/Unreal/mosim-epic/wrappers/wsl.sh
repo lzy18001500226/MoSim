@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Project-local WSL wrapper for MoSim's own Unreal Engine MCP.  It does not
-# launch Epic Launcher, log in, or download assets.
+# Project-local WSL wrapper for MoSim's Epic/Fab/scene-source MCP.
+# It does not launch Epic Launcher, log in, download assets, or operate UE.
 
 PROJECT_ROOT="${MOSIM_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
 UV_BIN="${UV_BIN:-/home/linux/.local/bin/uv}"
@@ -19,4 +19,4 @@ fi
 cd "${PROJECT_ROOT}"
 export UV_LINK_MODE="${UV_LINK_MODE:-copy}"
 exec "${UV_BIN}" run --with mcp python \
-  Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py serve "$@"
+  Docs/Skills/Unreal/mosim-epic/mcp/server.py serve "$@"
