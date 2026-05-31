@@ -1,0 +1,57 @@
+experiment_id: sunray150_ue_derelictcorridormegascans_linear_mpc_smoke
+scene_id: ue_derelictcorridormegascans
+controller_id: linear_mpc_sysblock
+priority: P1
+active: false
+inactive_reason: Generated controller-interface smoke scenario; use as smoke evidence only, not as a final performance scenario.
+evidence_level: real_sysplorer_mcp_ue_scene_control_smoke
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: QuadrotorExperiments.Sunray150UEDerelictLinearMPCSysblockSmoke
+  model_path_hint: Models/QuadrotorExperiments/Sunray150UEDerelictLinearMPCSysblockSmoke.mo
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  extra_model_files:
+    - Models/QuadrotorExperiments/PlannedQuinticReference.mo
+    - Models/QuadrotorExperiments/PlanningNavigationDisplay.mo
+
+controller:
+  params_file: Config/controllers/linear_mpc_sysblock/default.yaml
+  replacement_component: controller3_2
+  require_baseline_improvement: false
+  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
+  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 39.6
+  step_size_s: 0.05
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: ue_scene_truth_planned_quintic
+  file: Results/unreal_scene_mapping/derelictcorridormegascans/control_reference.csv
+  navigation_handoff: Results/unreal_scene_mapping/derelictcorridormegascans/navigation_control_handoff.json
+  modelica_params: Results/unreal_scene_mapping/derelictcorridormegascans/planned_quintic_reference_params.json
+
+planning_acceptance:
+  require_collision_free: true
+  global_truth_available_to_planner: false
+  planner_policy: unknown_global_map_receding_astar_known_obstacles_only
+  local_plan_frames: Results/unreal_scene_mapping/derelictcorridormegascans/local_plan_frames.jsonl
+  local_known_map_frames: Results/unreal_scene_mapping/derelictcorridormegascans/local_known_map_frames.jsonl
+
+result:
+  raw_file: Results/unreal_scene_mapping/derelictcorridormegascans/mworks_smoke/raw/sunray150_ue_derelictcorridormegascans_linear_mpc_smoke.csv
+  metrics_file: Results/unreal_scene_mapping/derelictcorridormegascans/mworks_smoke/metrics/sunray150_ue_derelictcorridormegascans_linear_mpc_smoke.json
+  figure_dir: Results/unreal_scene_mapping/derelictcorridormegascans/mworks_smoke/figures
+  mcp_log: Results/unreal_scene_mapping/derelictcorridormegascans/mworks_smoke/logs/sysplorer_sunray150_ue_derelictcorridormegascans_linear_mpc_smoke.jsonl
+  variable_overrides:
+    x_ref: planningReference.position_command[1]
+    y_ref: planningReference.position_command[2]
+    z_ref: planningReference.position_command[3]
+  extra_variables:
+    z_ref_rate: planningReference.z_ref_rate
+    yaw_ref: planningReference.yaw_ref

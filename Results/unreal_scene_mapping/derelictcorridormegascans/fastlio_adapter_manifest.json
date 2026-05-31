@@ -1,0 +1,48 @@
+{
+  "schema": "mosim.fastlio_adapter_manifest.v1",
+  "scene_id": "derelictcorridormegascans",
+  "status": "blocked_missing_ros1_runtime",
+  "fast_lio_reference_repo": "References/Lab/FAST_LIO",
+  "fast_lio_repo_exists": true,
+  "ros_environment": {
+    "schema": "mosim.ros_environment.v1",
+    "commands": {
+      "roscore": null,
+      "roslaunch": null,
+      "catkin_make": null,
+      "rostopic": null,
+      "rviz": null
+    },
+    "ros1_ready": false
+  },
+  "generated_outputs": {
+    "fastlio_replay_dataset_jsonl": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl",
+    "fastlio_adapter_manifest_json": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_adapter_manifest.json"
+  },
+  "input_evidence": {
+    "handoff": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_handoff.json",
+    "render_replay_csv": "Results/unreal_scene_mapping/derelictcorridormegascans/render_replay.csv",
+    "lidar_point_frames_jsonl": "Results/unreal_scene_mapping/derelictcorridormegascans/lidar_point_frames.jsonl",
+    "local_known_map_jsonl": "Results/unreal_scene_mapping/derelictcorridormegascans/local_known_map_frames.jsonl",
+    "local_plan_jsonl": "Results/unreal_scene_mapping/derelictcorridormegascans/local_plan_frames.jsonl",
+    "merged_pointcloud_ply": "Results/unreal_scene_mapping/derelictcorridormegascans/pointcloud_merged.ply"
+  },
+  "ros1_topics": {
+    "pointcloud2": "/velodyne_points",
+    "imu": "/imu/data",
+    "lidar_frame_id": "velodyne",
+    "imu_frame_id": "imu"
+  },
+  "run_commands_after_ros_setup": [
+    "catkin_make  # from a ROS1 workspace containing References/Lab/FAST_LIO as package fast_lio",
+    "source devel/setup.bash",
+    "roslaunch fast_lio mapping_velodyne.launch rviz:=false",
+    "python3 Scripts/UE5/publish_fastlio_replay_ros1.py --dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl --dry-run",
+    "python3 Scripts/UE5/publish_fastlio_replay_ros1.py --dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl"
+  ],
+  "claim_boundary": [
+    "This manifest is a FAST-LIO input adapter, not a completed FAST-LIO localization result.",
+    "The IMU channel is synthetic finite-difference data derived from the replay path, not measured flight IMU.",
+    "A completed FAST-LIO claim requires ROS runtime output, pose/map topics, logs, and comparison against replay truth."
+  ]
+}

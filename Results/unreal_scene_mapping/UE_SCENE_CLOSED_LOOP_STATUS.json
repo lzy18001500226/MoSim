@@ -1,0 +1,137 @@
+{
+  "schema": "mosim.ue_scene_closed_loop_status.v1",
+  "claim_boundary": [
+    "This is an aggregate status, not a new simulation result.",
+    "FAST-LIO handoff files are not localization results.",
+    "MWORKS smoke evidence validates the control-interface chain only."
+  ],
+  "scenes": [
+    {
+      "scene_id": "factoryenvironmentcollect",
+      "status": "ready_smoke_validated",
+      "issues": [],
+      "warnings": [
+        "fastlio_blocked_missing_ros1_runtime"
+      ],
+      "artifacts": {
+        "occupancy_grid": "Results/unreal_scene_mapping/factoryenvironmentcollect/occupancy_grid.json",
+        "trajectory_csv": "Results/unreal_scene_mapping/factoryenvironmentcollect/trajectory.csv",
+        "render_replay_csv": "Results/unreal_scene_mapping/factoryenvironmentcollect/render_replay.csv",
+        "local_known_map_frames": "Results/unreal_scene_mapping/factoryenvironmentcollect/local_known_map_frames.jsonl",
+        "local_plan_frames": "Results/unreal_scene_mapping/factoryenvironmentcollect/local_plan_frames.jsonl",
+        "lidar_point_frames": "Results/unreal_scene_mapping/factoryenvironmentcollect/lidar_point_frames.jsonl",
+        "pointcloud_merged": "Results/unreal_scene_mapping/factoryenvironmentcollect/pointcloud_merged.ply",
+        "pointcloud_viewer": "Results/unreal_scene_mapping/factoryenvironmentcollect/pointcloud_viewer.html",
+        "fastlio_replay_dataset": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_replay_dataset.jsonl",
+        "navigation_handoff": "Results/unreal_scene_mapping/factoryenvironmentcollect/navigation_control_handoff.json",
+        "control_reference": "Results/unreal_scene_mapping/factoryenvironmentcollect/control_reference.csv",
+        "planned_quintic_params": "Results/unreal_scene_mapping/factoryenvironmentcollect/planned_quintic_reference_params.json",
+        "mworks_metrics": "Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/metrics/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.json",
+        "mworks_raw": "Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/raw/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.csv",
+        "mworks_collision": "Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/collision/mworks_scene_truth_collision.json"
+      },
+      "mapping": {
+        "path_cells": 34,
+        "replan_count": 11,
+        "lidar_points": 1934,
+        "control_tracking_buffer_cells": 1,
+        "global_truth_available_to_planner": false,
+        "collision_free_against_truth": true,
+        "buffered_collision_free_against_truth": true
+      },
+      "fastlio": {
+        "status": "blocked_missing_ros1_runtime",
+        "ros1_ready": false,
+        "dataset": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_replay_dataset.jsonl"
+      },
+      "control_reference": {
+        "n_segments": 33,
+        "stop_time_s": 31.325825214724777,
+        "reference_velocity_m_s": 0.8,
+        "min_segment_duration_s": 0.9
+      },
+      "mworks_smoke": {
+        "quality_status": "smoke_only",
+        "duration_s": 31.3258,
+        "row_count": 628,
+        "collision_pass": true,
+        "actual_occupied_sample_count": 0,
+        "reference_occupied_sample_count": 0,
+        "min_actual_clearance_m": 0.9500252322572234
+      },
+      "counts": {
+        "trajectory_rows": 34,
+        "render_replay_rows": 34,
+        "local_known_map_frames": 34,
+        "local_plan_frames": 34,
+        "lidar_point_frames": 34,
+        "fastlio_replay_frames": 34,
+        "mworks_rows": 628
+      }
+    },
+    {
+      "scene_id": "derelictcorridormegascans",
+      "status": "ready_smoke_validated",
+      "issues": [],
+      "warnings": [
+        "fastlio_blocked_missing_ros1_runtime"
+      ],
+      "artifacts": {
+        "occupancy_grid": "Results/unreal_scene_mapping/derelictcorridormegascans/occupancy_grid.json",
+        "trajectory_csv": "Results/unreal_scene_mapping/derelictcorridormegascans/trajectory.csv",
+        "render_replay_csv": "Results/unreal_scene_mapping/derelictcorridormegascans/render_replay.csv",
+        "local_known_map_frames": "Results/unreal_scene_mapping/derelictcorridormegascans/local_known_map_frames.jsonl",
+        "local_plan_frames": "Results/unreal_scene_mapping/derelictcorridormegascans/local_plan_frames.jsonl",
+        "lidar_point_frames": "Results/unreal_scene_mapping/derelictcorridormegascans/lidar_point_frames.jsonl",
+        "pointcloud_merged": "Results/unreal_scene_mapping/derelictcorridormegascans/pointcloud_merged.ply",
+        "pointcloud_viewer": "Results/unreal_scene_mapping/derelictcorridormegascans/pointcloud_viewer.html",
+        "fastlio_replay_dataset": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl",
+        "navigation_handoff": "Results/unreal_scene_mapping/derelictcorridormegascans/navigation_control_handoff.json",
+        "control_reference": "Results/unreal_scene_mapping/derelictcorridormegascans/control_reference.csv",
+        "planned_quintic_params": "Results/unreal_scene_mapping/derelictcorridormegascans/planned_quintic_reference_params.json",
+        "mworks_metrics": "Results/unreal_scene_mapping/derelictcorridormegascans/mworks_smoke/metrics/sunray150_ue_derelictcorridormegascans_linear_mpc_smoke.json",
+        "mworks_raw": "Results/unreal_scene_mapping/derelictcorridormegascans/mworks_smoke/raw/sunray150_ue_derelictcorridormegascans_linear_mpc_smoke.csv",
+        "mworks_collision": "Results/unreal_scene_mapping/derelictcorridormegascans/mworks_smoke/collision/mworks_scene_truth_collision.json"
+      },
+      "mapping": {
+        "path_cells": 45,
+        "replan_count": 11,
+        "lidar_points": 2068,
+        "control_tracking_buffer_cells": 2,
+        "global_truth_available_to_planner": false,
+        "collision_free_against_truth": true,
+        "buffered_collision_free_against_truth": true
+      },
+      "fastlio": {
+        "status": "blocked_missing_ros1_runtime",
+        "ros1_ready": false,
+        "dataset": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl"
+      },
+      "control_reference": {
+        "n_segments": 44,
+        "stop_time_s": 39.599999999999966,
+        "reference_velocity_m_s": 0.8,
+        "min_segment_duration_s": 0.9
+      },
+      "mworks_smoke": {
+        "quality_status": "smoke_only",
+        "duration_s": 39.6,
+        "row_count": 793,
+        "collision_pass": true,
+        "actual_occupied_sample_count": 0,
+        "reference_occupied_sample_count": 0,
+        "min_actual_clearance_m": 0.7908527245649519
+      },
+      "counts": {
+        "trajectory_rows": 45,
+        "render_replay_rows": 45,
+        "local_known_map_frames": 45,
+        "local_plan_frames": 45,
+        "lidar_point_frames": 45,
+        "fastlio_replay_frames": 45,
+        "mworks_rows": 793
+      }
+    }
+  ],
+  "overall_status": "ready_smoke_validated_with_blockers"
+}

@@ -145,6 +145,11 @@ void AMworksReviewCameraPawn::ApplySceneDefaultCameraPreset()
         InitialCameraLocation = FVector(-5533.0f, 2423.0f, 190.0f);
         InitialCameraRotation = FRotator(-6.0f, 0.0f, 0.0f);
     }
+    else if (MapName.Contains(TEXT("DerelictCorridor")))
+    {
+        InitialCameraLocation = FVector(8704.0f, -2240.0f, 220.0f);
+        InitialCameraRotation = FRotator(-8.0f, 90.0f, 0.0f);
+    }
 }
 
 void AMworksReviewCameraPawn::ApplyCommandLineOverrides()

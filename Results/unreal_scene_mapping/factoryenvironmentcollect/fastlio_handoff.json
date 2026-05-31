@@ -1,0 +1,38 @@
+{
+  "schema": "mosim.fastlio_handoff.v1",
+  "scene_id": "factoryenvironmentcollect",
+  "status": "offline_simulated_sensor_handoff_ready",
+  "truth_source": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json",
+  "coordinate_frame": "mworks_world_m_z_up",
+  "generated_inputs": {
+    "occupancy_json": "Results/unreal_scene_mapping/factoryenvironmentcollect/occupancy_grid.json",
+    "trajectory_csv": "Results/unreal_scene_mapping/factoryenvironmentcollect/trajectory.csv",
+    "render_replay_csv": "Results/unreal_scene_mapping/factoryenvironmentcollect/render_replay.csv",
+    "local_known_map_jsonl": "Results/unreal_scene_mapping/factoryenvironmentcollect/local_known_map_frames.jsonl",
+    "local_plan_jsonl": "Results/unreal_scene_mapping/factoryenvironmentcollect/local_plan_frames.jsonl",
+    "lidar_point_frames_jsonl": "Results/unreal_scene_mapping/factoryenvironmentcollect/lidar_point_frames.jsonl",
+    "merged_pointcloud_ply": "Results/unreal_scene_mapping/factoryenvironmentcollect/pointcloud_merged.ply",
+    "viewer_html": "Results/unreal_scene_mapping/factoryenvironmentcollect/pointcloud_viewer.html",
+    "lidar_frames_dir": "Results/unreal_scene_mapping/factoryenvironmentcollect/lidar_frames"
+  },
+  "fast_lio_reference_repo": "References/Lab/FAST_LIO",
+  "integration_notes": [
+    "FAST-LIO itself is ROS/Catkin based; this handoff currently provides deterministic offline point clouds and trajectory poses.",
+    "The next runtime adapter should publish PointCloud2 plus IMU/odometry timestamps in the same frame or with a documented TF transform.",
+    "This artifact is not a FAST-LIO localization result yet; it is the input contract for the FAST-LIO integration step."
+  ],
+  "planner_report": {
+    "planner_policy": "unknown_global_map_receding_astar_known_obstacles_only",
+    "global_truth_available_to_planner": false,
+    "goal_known": true,
+    "path_cells": 34,
+    "replan_count": 11,
+    "known_free_cells_final": 848,
+    "known_occupied_cells_final": 1452,
+    "truth_occupied_cells": 16968,
+    "known_occupied_ratio_of_truth": 0.085573,
+    "control_tracking_buffer_cells": 1,
+    "collision_free_against_truth": true,
+    "buffered_collision_free_against_truth": true
+  }
+}

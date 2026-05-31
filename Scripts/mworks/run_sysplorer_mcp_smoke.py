@@ -23,6 +23,10 @@ import time
 from pathlib import Path
 from typing import Any
 
+RESULTS_SCRIPT_DIR = Path(__file__).resolve().parents[1] / "results"
+if str(RESULTS_SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(RESULTS_SCRIPT_DIR))
+
 from calc_metrics import compute_metrics
 
 

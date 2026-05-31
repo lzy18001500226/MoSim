@@ -1,0 +1,27 @@
+{
+  "schema": "mosim.control_interface_package.v1",
+  "scene_id": "derelictcorridormegascans",
+  "status": "ready_for_mworks_reference_model_integration",
+  "claim_boundary": [
+    "This package converts accepted UE navigation output into controller-reference inputs.",
+    "It is not a Sysplorer/MWORKS dynamics simulation result.",
+    "The generated scenario is inactive until a concrete Sysplorer model consumes the PlannedQuinticReference parameters and passes MCP check/simulate gates."
+  ],
+  "generated_outputs": {
+    "control_reference_csv": "Results/unreal_scene_mapping/derelictcorridormegascans/control_reference.csv",
+    "planned_quintic_reference_params_json": "Results/unreal_scene_mapping/derelictcorridormegascans/planned_quintic_reference_params.json",
+    "planned_quintic_reference_constructor": "Results/unreal_scene_mapping/derelictcorridormegascans/planned_quintic_reference_constructor.mo.txt",
+    "scenario_draft_yaml": "Results/unreal_scene_mapping/derelictcorridormegascans/scenario_draft.yaml",
+    "control_interface_package_json": "Results/unreal_scene_mapping/derelictcorridormegascans/control_interface_package.json"
+  },
+  "planned_quintic_reference": {
+    "n_segments": 44,
+    "point_count": 45,
+    "stop_time_s": 39.599999999999966,
+    "reference_velocity_m_s": 0.8,
+    "model_capacity": {
+      "points": 91,
+      "segments": 90
+    }
+  }
+}

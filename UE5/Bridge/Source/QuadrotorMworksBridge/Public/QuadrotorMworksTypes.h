@@ -61,6 +61,30 @@ struct FQuadrotorMworksLocalKnownMap
 };
 
 USTRUCT(BlueprintType)
+struct FQuadrotorMworksLidarPoints
+{
+    GENERATED_BODY()
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
+    FString Schema;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
+    FString CoordinateFrame = TEXT("ue_world_m_z_up");
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
+    TArray<FVector> PointsMeters;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
+    FString Source;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
+    bool bRenderOnly = true;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
+    bool bEvidenceBacked = false;
+};
+
+USTRUCT(BlueprintType)
 struct FQuadrotorMworksStatus
 {
     GENERATED_BODY()
@@ -108,6 +132,9 @@ struct FQuadrotorMworksFrame
     FString MapId;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
+    FString CoordinatePolicy = TEXT("mworks_world_m_z_up");
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
     int32 Sequence = 0;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
@@ -127,6 +154,9 @@ struct FQuadrotorMworksFrame
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
     FQuadrotorMworksLocalKnownMap LocalKnownMap;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
+    FQuadrotorMworksLidarPoints LidarPoints;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
     TArray<FVector> LocalPlanPointsMeters;

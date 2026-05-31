@@ -26,9 +26,10 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
     Super::BeginPlay();
 
     const bool bSceneReviewOnly = FParse::Param(FCommandLine::Get(), TEXT("MoSimSceneReview"));
-    bSceneReviewModeActive = bSceneReviewOnly;
+    const bool bSimulationReview = FParse::Param(FCommandLine::Get(), TEXT("MoSimSimulationReview"));
+    bSceneReviewModeActive = bSceneReviewOnly || bSimulationReview;
     const bool bDisablePreviewMap =
-        bSceneReviewOnly || FParse::Param(FCommandLine::Get(), TEXT("MoSimNoPreviewMap"));
+        bSceneReviewOnly || bSimulationReview || FParse::Param(FCommandLine::Get(), TEXT("MoSimNoPreviewMap"));
     const bool bDisablePlayback =
         bSceneReviewOnly || FParse::Param(FCommandLine::Get(), TEXT("MoSimNoPlayback"));
 
@@ -65,7 +66,7 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
         SpawnDefaultReviewLighting(World, SpawnParameters);
     }
 
-    if (bSceneReviewOnly)
+    if (bSceneReviewModeActive)
     {
         EnforceSceneReviewCamera(World);
     }
@@ -269,7 +270,10 @@ void AMoSimSceneLibraryGameMode::DisableImportedPawnInput(APawn* Pawn, APlayerCo
 
     Pawn->AutoPossessPlayer = EAutoReceiveInput::Disabled;
     Pawn->AutoReceiveInput = EAutoReceiveInput::Disabled;
-    Pawn->DisableInput(PlayerController);
+    if (PlayerController && Pawn->GetController() == PlayerController)
+    {
+        Pawn->DisableInput(PlayerController);
+    }
 }
 
 void AMoSimSceneLibraryGameMode::EnforceSceneReviewCamera(UWorld* World)

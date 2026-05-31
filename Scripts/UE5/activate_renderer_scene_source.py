@@ -11,7 +11,12 @@ World Partition `__ExternalActors__` / `__ExternalObjects__` companion folders.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
+import os
+import shutil
+import subprocess
+import time
 from pathlib import Path
 from typing import Any
 
@@ -25,17 +30,43 @@ from link_renderer_scene_source import (
     rel,
     rel_lexical,
     source_by_id,
+    to_windows_path,
 )
 
 
 SCENE_ROOT = ROOT / "References/UnrealScenes"
 COMPANION_ROOTS = ("__ExternalActors__", "__ExternalObjects__")
+ACTIVE_LINK_MANIFEST = RENDERER_CONTENT / "MworksData" / "active_scene_links.json"
+ACTIVE_LINK_LOCK = RENDERER_CONTENT / "MworksData" / ".active_scene_links.lock"
+ROOT_CONTENT_FILE_SUFFIXES = {".umap", ".uasset"}
 PROTECTED_CONTENT_NAMES = {
     "Collections",
     "Developers",
     "MworksData",
     *COMPANION_ROOTS,
 }
+
+
+def load_active_manifest() -> dict[str, Any]:
+    if not ACTIVE_LINK_MANIFEST.exists():
+        return {}
+    try:
+        data = json.loads(ACTIVE_LINK_MANIFEST.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
+def write_active_manifest(scene_source_id: str, created: list[dict[str, str]], *, dry_run: bool) -> None:
+    if dry_run:
+        return
+    ACTIVE_LINK_MANIFEST.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "schema": "mosim.unreal.active_scene_links.v1",
+        "scene_source_id": scene_source_id,
+        "created": created,
+    }
+    ACTIVE_LINK_MANIFEST.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
 
 
 def path_points_into_scene_root(path: Path) -> bool:
@@ -52,12 +83,83 @@ def path_points_into_scene_root(path: Path) -> bool:
 def remove_link(path: Path, *, dry_run: bool) -> dict[str, str]:
     payload = {"path": rel_lexical(path), "target": str(path.resolve(strict=False)), "action": "remove_link"}
     if not dry_run:
-        path.unlink()
+        try:
+            path.unlink()
+        except FileNotFoundError:
+            payload["action"] = "already_removed"
     return payload
 
 
-def remove_active_scene_links(*, dry_run: bool) -> list[dict[str, str]]:
+@contextlib.contextmanager
+def active_scene_lock(*, dry_run: bool, timeout_seconds: float = 60.0):
+    if dry_run:
+        yield
+        return
+    ACTIVE_LINK_LOCK.parent.mkdir(parents=True, exist_ok=True)
+    deadline = time.monotonic() + timeout_seconds
+    fd: int | None = None
+    while fd is None:
+        try:
+            fd = os.open(str(ACTIVE_LINK_LOCK), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            os.write(fd, str(os.getpid()).encode("ascii", errors="ignore"))
+        except FileExistsError:
+            if time.monotonic() >= deadline:
+                raise TimeoutError(f"timed out waiting for active scene link lock: {rel_lexical(ACTIVE_LINK_LOCK)}")
+            time.sleep(0.2)
+    try:
+        yield
+    finally:
+        if fd is not None:
+            os.close(fd)
+        try:
+            ACTIVE_LINK_LOCK.unlink()
+        except FileNotFoundError:
+            pass
+
+
+def remove_manifest_paths(*, dry_run: bool) -> list[dict[str, str]]:
     removed: list[dict[str, str]] = []
+    manifest = load_active_manifest()
+    entries = manifest.get("created", [])
+    if not isinstance(entries, list):
+        return removed
+
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        raw_path = entry.get("target")
+        if not isinstance(raw_path, str) or not raw_path:
+            continue
+        path = ROOT / raw_path
+        try:
+            path.relative_to(RENDERER_CONTENT)
+        except ValueError:
+            continue
+        if not path.exists() and not path.is_symlink():
+            continue
+        if path.is_dir() and not path.is_symlink():
+            continue
+        payload = {
+            "path": rel_lexical(path),
+            "target": str(path.resolve(strict=False)),
+            "action": "remove_manifest_path",
+        }
+        if not dry_run:
+            try:
+                path.unlink()
+            except FileNotFoundError:
+                payload["action"] = "already_removed"
+        removed.append(payload)
+    if removed and not dry_run:
+        try:
+            ACTIVE_LINK_MANIFEST.unlink()
+        except FileNotFoundError:
+            pass
+    return removed
+
+
+def remove_active_scene_links(*, dry_run: bool) -> list[dict[str, str]]:
+    removed: list[dict[str, str]] = remove_manifest_paths(dry_run=dry_run)
     if not RENDERER_CONTENT.exists():
         return removed
 
@@ -85,16 +187,25 @@ def content_links_for_source(source: dict[str, Any]) -> list[dict[str, Path | st
         raise FileNotFoundError(f"source Content root missing: {rel(source_content)}")
 
     for child in sorted(source_content.iterdir(), key=lambda item: item.name.lower()):
-        if not child.is_dir() or child.name in PROTECTED_CONTENT_NAMES:
+        if child.is_dir() and child.name not in PROTECTED_CONTENT_NAMES:
+            links.append(
+                {
+                    "kind": "content",
+                    "name": child.name,
+                    "source": child,
+                    "target": RENDERER_CONTENT / child.name,
+                }
+            )
             continue
-        links.append(
-            {
-                "kind": "content",
-                "name": child.name,
-                "source": child,
-                "target": RENDERER_CONTENT / child.name,
-            }
-        )
+        if child.is_file() and child.suffix.lower() in ROOT_CONTENT_FILE_SUFFIXES:
+            links.append(
+                {
+                    "kind": "content_file",
+                    "name": child.name,
+                    "source": child,
+                    "target": RENDERER_CONTENT / child.name,
+                }
+            )
 
     for companion_name in COMPANION_ROOTS:
         source_companion_root = source_content / companion_name
@@ -114,6 +225,32 @@ def content_links_for_source(source: dict[str, Any]) -> list[dict[str, Path | st
     return links
 
 
+def create_file_link(source: Path, target: Path, *, dry_run: bool) -> str:
+    if target.exists():
+        try:
+            if target.samefile(source):
+                return "already_exists"
+        except OSError:
+            pass
+        raise RuntimeError(f"refusing to replace existing renderer file: {rel_lexical(target)}")
+    if dry_run:
+        return "dry_run"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if shutil.which("cmd.exe"):
+        result = subprocess.run(
+            ["cmd.exe", "/c", "mklink", "/H", to_windows_path(target), to_windows_path(source)],
+            cwd=ROOT,
+            text=True,
+            encoding="gbk",
+            errors="replace",
+            capture_output=True,
+        )
+        if result.returncode == 0:
+            return "hardlink_created"
+    shutil.copy2(source, target)
+    return "copied"
+
+
 def create_scene_links(links: list[dict[str, Path | str]], *, dry_run: bool) -> list[dict[str, str]]:
     results: list[dict[str, str]] = []
     for link in links:
@@ -122,8 +259,15 @@ def create_scene_links(links: list[dict[str, Path | str]], *, dry_run: bool) -> 
         if not isinstance(source, Path) or not isinstance(target, Path):
             continue
         if target.exists() and not path_points_into_scene_root(target):
-            raise RuntimeError(f"refusing to replace non-scene renderer path: {rel_lexical(target)}")
-        action = create_link(source, target, dry_run=dry_run)
+            try:
+                if not target.is_file() or not target.samefile(source):
+                    raise RuntimeError
+            except Exception as exc:
+                raise RuntimeError(f"refusing to replace non-scene renderer path: {rel_lexical(target)}") from exc
+        if source.is_file():
+            action = create_file_link(source, target, dry_run=dry_run)
+        else:
+            action = create_link(source, target, dry_run=dry_run)
         results.append(
             {
                 "kind": str(link["kind"]),
@@ -146,28 +290,30 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    registry = load_registry(args.registry)
-    source = source_by_id(registry, args.scene_source_id)
-    target = link_target(source)
-    planned_links = content_links_for_source(source)
-    removed = remove_active_scene_links(dry_run=args.dry_run)
-    created = create_scene_links(planned_links, dry_run=args.dry_run)
+    with active_scene_lock(dry_run=args.dry_run):
+        registry = load_registry(args.registry)
+        source = source_by_id(registry, args.scene_source_id)
+        target = link_target(source)
+        planned_links = content_links_for_source(source)
+        removed = remove_active_scene_links(dry_run=args.dry_run)
+        created = create_scene_links(planned_links, dry_run=args.dry_run)
+        write_active_manifest(args.scene_source_id, created, dry_run=args.dry_run)
 
-    errors: list[str] = []
-    target_map = target["target_map"]
-    if isinstance(target_map, Path) and not args.dry_run and not target_map.exists():
-        errors.append(f"renderer map missing after activation: {rel_lexical(target_map)}")
+        errors: list[str] = []
+        target_map = target["target_map"]
+        if isinstance(target_map, Path) and not args.dry_run and not target_map.exists():
+            errors.append(f"renderer map missing after activation: {rel_lexical(target_map)}")
 
-    payload = {
-        "ok": not errors,
-        "scene_source_id": args.scene_source_id,
-        "dry_run": args.dry_run,
-        "renderer_map_package": target["renderer_map_package"],
-        "renderer_map_asset": rel_lexical(target_map) if isinstance(target_map, Path) else "",
-        "removed_links": removed,
-        "created_links": created,
-        "errors": errors,
-    }
+        payload = {
+            "ok": not errors,
+            "scene_source_id": args.scene_source_id,
+            "dry_run": args.dry_run,
+            "renderer_map_package": target["renderer_map_package"],
+            "renderer_map_asset": rel_lexical(target_map) if isinstance(target_map, Path) else "",
+            "removed_links": removed,
+            "created_links": created,
+            "errors": errors,
+        }
     print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
     return 0 if not errors else 1
 

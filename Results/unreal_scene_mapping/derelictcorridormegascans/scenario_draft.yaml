@@ -1,0 +1,45 @@
+experiment_id: sunray150_ue_derelictcorridormegascans_linear_mpc_interface
+scene_id: ue_derelictcorridormegascans
+controller_id: linear_mpc_sysblock
+priority: P1
+active: false
+inactive_reason: UE navigation/control interface package only; not yet integrated into a Sysplorer executable model.
+evidence_level: offline_ue_navigation_control_interface_package
+
+model:
+  source_package: QuadrotorExperiments
+  model_name: TBD.UEAcceptedSceneLinearMPCClosedLoop
+  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  extra_model_files:
+    - Models/QuadrotorExperiments/PlannedQuinticReference.mo
+
+controller:
+  params_file: Config/controllers/linear_mpc_sysblock/default.yaml
+  replacement_component: controller3_2
+  require_baseline_improvement: false
+
+simulation:
+  start_time_s: 0.0
+  stop_time_s: 39.6
+  step_size_s: 0.05
+  solver: Dassl
+  tolerance: 0.0001
+
+reference:
+  type: ue_scene_truth_planned_quintic
+  navigation_handoff: Results/unreal_scene_mapping/derelictcorridormegascans/navigation_control_handoff.json
+  file: Results/unreal_scene_mapping/derelictcorridormegascans/control_reference.csv
+  modelica_params: Results/unreal_scene_mapping/derelictcorridormegascans/planned_quintic_reference_params.json
+  modelica_constructor: Results/unreal_scene_mapping/derelictcorridormegascans/planned_quintic_reference_constructor.mo.txt
+
+planning_acceptance:
+  require_collision_free: true
+  global_truth_available_to_planner: false
+  planner_policy: unknown_global_map_receding_astar_known_obstacles_only
+  local_plan_frames: Results/unreal_scene_mapping/derelictcorridormegascans/local_plan_frames.jsonl
+  local_known_map_frames: Results/unreal_scene_mapping/derelictcorridormegascans/local_known_map_frames.jsonl
+
+result:
+  raw_file: Results/unreal_scene_mapping/derelictcorridormegascans/mworks_smoke/raw/sunray150_ue_derelictcorridormegascans_linear_mpc_interface.csv
+  metrics_file: Results/unreal_scene_mapping/derelictcorridormegascans/mworks_smoke/metrics/sunray150_ue_derelictcorridormegascans_linear_mpc_interface.json
+  mcp_log: Results/unreal_scene_mapping/derelictcorridormegascans/mworks_smoke/logs/sysplorer_sunray150_ue_derelictcorridormegascans_linear_mpc_interface.jsonl

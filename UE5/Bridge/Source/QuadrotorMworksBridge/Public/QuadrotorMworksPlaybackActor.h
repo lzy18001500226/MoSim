@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ProceduralMeshComponent.h"
 #include "QuadrotorMworksPlaybackActor.generated.h"
 
 class UQuadrotorMworksPlaybackComponent;
@@ -56,6 +57,12 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Visualization")
     UProceduralMeshComponent* RadarFarSectorMesh = nullptr;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Visualization")
+    UProceduralMeshComponent* LocalKnownMapMesh = nullptr;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS|Visualization")
+    UProceduralMeshComponent* LidarPointMesh = nullptr;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS")
     UQuadrotorMworksUdpReceiverComponent* Receiver = nullptr;
 
@@ -80,11 +87,26 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
     FLinearColor RadarFarColor = FLinearColor(0.72f, 0.84f, 0.88f, 0.55f);
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
+    FLinearColor LocalKnownFreeColor = FLinearColor(0.10f, 0.80f, 0.32f, 0.45f);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
+    FLinearColor LocalKnownOccupiedColor = FLinearColor(1.0f, 0.15f, 0.08f, 0.82f);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Material")
+    FLinearColor LidarPointColor = FLinearColor(0.0f, 0.95f, 1.0f, 0.95f);
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization")
     bool bUpdateVisualHelpers = true;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization")
     bool bShowRadarSectorMesh = true;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization")
+    bool bShowLocalKnownMapMesh = true;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization")
+    bool bShowLidarPointMesh = true;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization", meta = (ClampMin = "1"))
     int32 MaxSplinePoints = 600;
@@ -94,6 +116,18 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization")
     float RadarSectorHeightOffsetCentimeters = 5.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization")
+    float LocalKnownMapHeightOffsetCentimeters = 8.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization", meta = (ClampMin = "2.0"))
+    float LocalKnownMapCellSizeCentimeters = 38.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization")
+    float LidarPointHeightOffsetCentimeters = 18.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Visualization", meta = (ClampMin = "2.0"))
+    float LidarPointSizeCentimeters = 24.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS|Map")
     AQuadrotorMworksMapActor* MapActor = nullptr;
@@ -111,5 +145,18 @@ private:
     void UpdateMapSelection() const;
     void UpdateSplineFromPoints(USplineComponent* Spline, const TArray<FVector>& Points) const;
     void UpdateRadarSectorMesh() const;
+    void UpdateLocalKnownMapMesh() const;
+    void UpdateLidarPointMesh() const;
+    void AppendCellQuad(
+        TArray<FVector>& Vertices,
+        TArray<int32>& Triangles,
+        TArray<FVector>& Normals,
+        TArray<FVector2D>& UVs,
+        TArray<FLinearColor>& VertexColors,
+        TArray<FProcMeshTangent>& Tangents,
+        const FVector& Center,
+        const FLinearColor& Color,
+        float SizeCentimeters,
+        float HeightOffsetCentimeters) const;
     void BuildSectorMesh(UProceduralMeshComponent* Mesh, float InnerRadiusCm, float OuterRadiusCm, const FLinearColor& Color) const;
 };

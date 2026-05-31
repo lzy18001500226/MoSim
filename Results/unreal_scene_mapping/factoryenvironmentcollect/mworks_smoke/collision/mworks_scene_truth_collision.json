@@ -1,0 +1,53 @@
+{
+  "schema": "mosim.mworks_ue_scene_truth_collision_check.v1",
+  "scene_id": "factoryenvironmentcollect",
+  "source": "MWORKS_MCP",
+  "evidence_level": "real_sysplorer_mcp_ue_scene_control_smoke",
+  "claim_boundary": [
+    "This checks the MWORKS simulated trajectory against UE scene-truth occupancy.",
+    "A pass here is still smoke evidence, not completed autonomous navigation or FAST-LIO localization.",
+    "The global occupancy truth is used only for validation after simulation, not as a planner input."
+  ],
+  "inputs": {
+    "occupancy_grid": "Results/unreal_scene_mapping/factoryenvironmentcollect/occupancy_grid.json",
+    "raw_csv": "Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/raw/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.csv",
+    "metrics_json": "Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/metrics/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.json"
+  },
+  "grid": {
+    "origin_xy_m": [
+      -125.33,
+      -94.23
+    ],
+    "resolution_m": 0.75,
+    "size": [
+      188,
+      188
+    ],
+    "occupied_cell_count": 16968
+  },
+  "actual": {
+    "label": "actual_mworks_position",
+    "row_count": 628,
+    "occupied_sample_count": 0,
+    "occupied_unique_cell_count": 0,
+    "out_of_bounds_sample_count": 0,
+    "out_of_bounds_unique_cell_count": 0,
+    "min_approx_clearance_m": 0.9500252322572234,
+    "collision_free_against_truth": true,
+    "first_occupied_samples": [],
+    "first_out_of_bounds_samples": []
+  },
+  "reference": {
+    "label": "mworks_reference_position",
+    "row_count": 628,
+    "occupied_sample_count": 0,
+    "occupied_unique_cell_count": 0,
+    "out_of_bounds_sample_count": 0,
+    "out_of_bounds_unique_cell_count": 0,
+    "min_approx_clearance_m": 1.1250000000000036,
+    "collision_free_against_truth": true,
+    "first_occupied_samples": [],
+    "first_out_of_bounds_samples": []
+  },
+  "pass": true
+}

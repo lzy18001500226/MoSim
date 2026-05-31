@@ -84,7 +84,7 @@ if [[ "${MODE}" == "editor" ]] && powershell.exe -NoProfile -Command \
   exit 0
 fi
 
-if [[ "${MODE}" == "game" || "${MODE}" == "review-scene" ]] && powershell.exe -NoProfile -Command \
+if [[ "${MODE}" == "game" || "${MODE}" == "review-scene" || "${MODE}" == "simulation-review" ]] && powershell.exe -NoProfile -Command \
   "Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | Where-Object { \$_.CommandLine -like '*MoSimSceneLibrary.uproject*' -and \$_.CommandLine -like '* -game*' } | Select-Object -First 1 | ForEach-Object { exit 0 }; exit 1" >/dev/null 2>&1; then
   if [[ "${RESTART_UNREAL_GAME}" == "1" ]]; then
     echo "Restarting existing MoSimSceneLibrary game window."
@@ -108,8 +108,11 @@ case "${MODE}" in
   review-scene)
     EXTRA_ARGS=("-game" "-windowed" "-ResX=1280" "-ResY=720" "-MoSimSceneReview")
     ;;
+  simulation-review)
+    EXTRA_ARGS=("-game" "-windowed" "-ResX=1280" "-ResY=720" "-MoSimSimulationReview")
+    ;;
   *)
-    echo "Usage: $0 [editor|game|review-scene]" >&2
+    echo "Usage: $0 [editor|game|review-scene|simulation-review]" >&2
     exit 2
     ;;
 esac
@@ -125,14 +128,15 @@ else
     # shellcheck disable=SC2206
     EXTRA_ARGS_WIN=(${UNREAL_EXTRA_ARGS})
   fi
-  if [[ "${MODE}" == "review-scene" ]]; then
+  if [[ "${MODE}" == "review-scene" || "${MODE}" == "simulation-review" ]]; then
     for Index in "${!EXTRA_ARGS_WIN[@]}"; do
-      if [[ "${EXTRA_ARGS_WIN[$Index]}" == "/Game/Maps/Demonstration" ]]; then
-        EXTRA_ARGS_WIN[$Index]="/Game/Maps/Demonstration?game=/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode"
+      if [[ "${EXTRA_ARGS_WIN[$Index]}" == /Game/* ]] &&
+         [[ "${EXTRA_ARGS_WIN[$Index]}" != *"?game="* ]]; then
+        EXTRA_ARGS_WIN[$Index]="${EXTRA_ARGS_WIN[$Index]}?game=/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode"
       fi
     done
   fi
-  if [[ "${MODE}" == "review-scene" ]] &&
+  if [[ "${MODE}" == "review-scene" || "${MODE}" == "simulation-review" ]] &&
      [[ " ${EXTRA_ARGS_WIN[*]} " == *"/Game/Maps/Demonstration"* ]] &&
      [[ " ${EXTRA_ARGS_WIN[*]} " != *" -MoSimReviewCameraX="* ]] &&
      [[ " ${EXTRA_ARGS_WIN[*]} " != *" -MoSimReviewCameraLocation="* ]]; then

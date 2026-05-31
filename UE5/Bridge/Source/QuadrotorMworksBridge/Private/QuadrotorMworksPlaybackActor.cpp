@@ -49,14 +49,20 @@ AQuadrotorMworksPlaybackActor::AQuadrotorMworksPlaybackActor()
     RadarDirectionMarker = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RadarDirectionMarker"));
     RadarNearSectorMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("RadarNearSectorMesh"));
     RadarFarSectorMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("RadarFarSectorMesh"));
+    LocalKnownMapMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("LocalKnownMapMesh"));
+    LidarPointMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("LidarPointMesh"));
     ReferenceMarker->SetupAttachment(SceneRoot);
     RadarDirectionMarker->SetupAttachment(SceneRoot);
     RadarNearSectorMesh->SetupAttachment(SceneRoot);
     RadarFarSectorMesh->SetupAttachment(SceneRoot);
+    LocalKnownMapMesh->SetupAttachment(SceneRoot);
+    LidarPointMesh->SetupAttachment(SceneRoot);
     ReferenceMarker->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     RadarDirectionMarker->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     RadarNearSectorMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     RadarFarSectorMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    LocalKnownMapMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    LidarPointMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     ReferenceMarker->SetUsingAbsoluteLocation(true);
     ReferenceMarker->SetUsingAbsoluteRotation(true);
     ReferenceMarker->SetUsingAbsoluteScale(true);
@@ -69,6 +75,12 @@ AQuadrotorMworksPlaybackActor::AQuadrotorMworksPlaybackActor()
     RadarFarSectorMesh->SetUsingAbsoluteLocation(true);
     RadarFarSectorMesh->SetUsingAbsoluteRotation(true);
     RadarFarSectorMesh->SetUsingAbsoluteScale(true);
+    LocalKnownMapMesh->SetUsingAbsoluteLocation(true);
+    LocalKnownMapMesh->SetUsingAbsoluteRotation(true);
+    LocalKnownMapMesh->SetUsingAbsoluteScale(true);
+    LidarPointMesh->SetUsingAbsoluteLocation(true);
+    LidarPointMesh->SetUsingAbsoluteRotation(true);
+    LidarPointMesh->SetUsingAbsoluteScale(true);
 
     PropellerMesh1->SetRelativeLocation(FVector(32.0, 32.0, 0.0));
     PropellerMesh2->SetRelativeLocation(FVector(32.0, -32.0, 0.0));
@@ -114,18 +126,18 @@ void AQuadrotorMworksPlaybackActor::OnConstruction(const FTransform& Transform)
 
 void AQuadrotorMworksPlaybackActor::ApplyDefaultMaterials()
 {
-    auto ApplyColor = [this](UMeshComponent* Component, const FLinearColor& Color)
+    auto ApplyColor = [this](UMeshComponent* Component, const FLinearColor& Color, int32 MaterialIndex = 0)
     {
         if (!Component || !BaseMaterial)
         {
             return;
         }
-        UMaterialInstanceDynamic* DynamicMaterial = Component->CreateDynamicMaterialInstance(0, BaseMaterial);
+        UMaterialInstanceDynamic* DynamicMaterial = Component->CreateDynamicMaterialInstance(MaterialIndex, BaseMaterial);
         if (DynamicMaterial)
         {
             DynamicMaterial->SetVectorParameterValue(TEXT("Color"), Color);
             DynamicMaterial->SetVectorParameterValue(TEXT("BaseColor"), Color);
-            Component->SetMaterial(0, DynamicMaterial);
+            Component->SetMaterial(MaterialIndex, DynamicMaterial);
         }
     };
 
@@ -138,6 +150,9 @@ void AQuadrotorMworksPlaybackActor::ApplyDefaultMaterials()
     ApplyColor(RadarDirectionMarker, RadarColor);
     ApplyColor(RadarNearSectorMesh, RadarColor);
     ApplyColor(RadarFarSectorMesh, RadarFarColor);
+    ApplyColor(LocalKnownMapMesh, LocalKnownFreeColor);
+    ApplyColor(LocalKnownMapMesh, LocalKnownOccupiedColor, 1);
+    ApplyColor(LidarPointMesh, LidarPointColor);
 }
 
 void AQuadrotorMworksPlaybackActor::Tick(float DeltaSeconds)
@@ -219,6 +234,8 @@ void AQuadrotorMworksPlaybackActor::UpdateVisualHelpers() const
     }
 
     UpdateRadarSectorMesh();
+    UpdateLocalKnownMapMesh();
+    UpdateLidarPointMesh();
 }
 
 void AQuadrotorMworksPlaybackActor::UpdateRadarSectorMesh() const
@@ -247,6 +264,169 @@ void AQuadrotorMworksPlaybackActor::UpdateRadarSectorMesh() const
         Playback->RadarNearRadiusCentimeters,
         Playback->RadarFarRadiusCentimeters,
         RadarFarColor);
+}
+
+void AQuadrotorMworksPlaybackActor::UpdateLocalKnownMapMesh() const
+{
+    if (!LocalKnownMapMesh || !Playback)
+    {
+        return;
+    }
+
+    if (!bShowLocalKnownMapMesh)
+    {
+        LocalKnownMapMesh->ClearAllMeshSections();
+        return;
+    }
+
+    auto BuildCells = [this](const TArray<FVector>& Cells, const FLinearColor& Color, int32 SectionIndex)
+    {
+        TArray<FVector> Vertices;
+        TArray<int32> Triangles;
+        TArray<FVector> Normals;
+        TArray<FVector2D> UVs;
+        TArray<FLinearColor> VertexColors;
+        TArray<FProcMeshTangent> Tangents;
+
+        Vertices.Reserve(Cells.Num() * 4);
+        Triangles.Reserve(Cells.Num() * 6);
+        Normals.Reserve(Cells.Num() * 4);
+        UVs.Reserve(Cells.Num() * 4);
+        VertexColors.Reserve(Cells.Num() * 4);
+        Tangents.Reserve(Cells.Num() * 4);
+
+        for (const FVector& Center : Cells)
+        {
+            AppendCellQuad(
+                Vertices,
+                Triangles,
+                Normals,
+                UVs,
+                VertexColors,
+                Tangents,
+                Center,
+                Color,
+                LocalKnownMapCellSizeCentimeters,
+                LocalKnownMapHeightOffsetCentimeters);
+        }
+
+        if (Vertices.Num() == 0)
+        {
+            LocalKnownMapMesh->ClearMeshSection(SectionIndex);
+            return;
+        }
+
+        LocalKnownMapMesh->CreateMeshSection_LinearColor(
+            SectionIndex,
+            Vertices,
+            Triangles,
+            Normals,
+            UVs,
+            VertexColors,
+            Tangents,
+            false);
+    };
+
+    if (Playback->LocalKnownFreeCellsUnreal.Num() == 0 && Playback->LocalKnownOccupiedCellsUnreal.Num() == 0)
+    {
+        LocalKnownMapMesh->ClearAllMeshSections();
+        return;
+    }
+
+    BuildCells(Playback->LocalKnownFreeCellsUnreal, LocalKnownFreeColor, 0);
+    BuildCells(Playback->LocalKnownOccupiedCellsUnreal, LocalKnownOccupiedColor, 1);
+}
+
+void AQuadrotorMworksPlaybackActor::UpdateLidarPointMesh() const
+{
+    if (!LidarPointMesh || !Playback)
+    {
+        return;
+    }
+
+    if (!bShowLidarPointMesh)
+    {
+        LidarPointMesh->ClearAllMeshSections();
+        return;
+    }
+
+    if (Playback->LidarPointsUnreal.Num() == 0)
+    {
+        LidarPointMesh->ClearAllMeshSections();
+        return;
+    }
+
+    TArray<FVector> Vertices;
+    TArray<int32> Triangles;
+    TArray<FVector> Normals;
+    TArray<FVector2D> UVs;
+    TArray<FLinearColor> VertexColors;
+    TArray<FProcMeshTangent> Tangents;
+
+    Vertices.Reserve(Playback->LidarPointsUnreal.Num() * 4);
+    Triangles.Reserve(Playback->LidarPointsUnreal.Num() * 6);
+    Normals.Reserve(Playback->LidarPointsUnreal.Num() * 4);
+    UVs.Reserve(Playback->LidarPointsUnreal.Num() * 4);
+    VertexColors.Reserve(Playback->LidarPointsUnreal.Num() * 4);
+    Tangents.Reserve(Playback->LidarPointsUnreal.Num() * 4);
+
+    for (const FVector& Point : Playback->LidarPointsUnreal)
+    {
+        AppendCellQuad(
+            Vertices,
+            Triangles,
+            Normals,
+            UVs,
+            VertexColors,
+            Tangents,
+            Point,
+            LidarPointColor,
+            LidarPointSizeCentimeters,
+            LidarPointHeightOffsetCentimeters);
+    }
+
+    LidarPointMesh->CreateMeshSection_LinearColor(
+        0,
+        Vertices,
+        Triangles,
+        Normals,
+        UVs,
+        VertexColors,
+        Tangents,
+        false);
+}
+
+void AQuadrotorMworksPlaybackActor::AppendCellQuad(
+    TArray<FVector>& Vertices,
+    TArray<int32>& Triangles,
+    TArray<FVector>& Normals,
+    TArray<FVector2D>& UVs,
+    TArray<FLinearColor>& VertexColors,
+    TArray<FProcMeshTangent>& Tangents,
+    const FVector& Center,
+    const FLinearColor& Color,
+    float SizeCentimeters,
+    float HeightOffsetCentimeters) const
+{
+    const int32 BaseIndex = Vertices.Num();
+    const float HalfSize = FMath::Max(SizeCentimeters, 2.0f) * 0.5f;
+    const FVector C = Center + FVector(0.0f, 0.0f, HeightOffsetCentimeters);
+    Vertices.Append({
+        C + FVector(-HalfSize, -HalfSize, 0.0f),
+        C + FVector(HalfSize, -HalfSize, 0.0f),
+        C + FVector(HalfSize, HalfSize, 0.0f),
+        C + FVector(-HalfSize, HalfSize, 0.0f),
+    });
+    Triangles.Append({BaseIndex, BaseIndex + 1, BaseIndex + 2, BaseIndex, BaseIndex + 2, BaseIndex + 3});
+    Normals.Append({FVector::UpVector, FVector::UpVector, FVector::UpVector, FVector::UpVector});
+    UVs.Append({FVector2D(0.0f, 0.0f), FVector2D(1.0f, 0.0f), FVector2D(1.0f, 1.0f), FVector2D(0.0f, 1.0f)});
+    VertexColors.Append({Color, Color, Color, Color});
+    Tangents.Append({
+        FProcMeshTangent(1.0f, 0.0f, 0.0f),
+        FProcMeshTangent(1.0f, 0.0f, 0.0f),
+        FProcMeshTangent(1.0f, 0.0f, 0.0f),
+        FProcMeshTangent(1.0f, 0.0f, 0.0f),
+    });
 }
 
 void AQuadrotorMworksPlaybackActor::BuildSectorMesh(

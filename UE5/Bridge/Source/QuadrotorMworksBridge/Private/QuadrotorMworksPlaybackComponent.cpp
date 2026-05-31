@@ -44,6 +44,14 @@ FVector UQuadrotorMworksPlaybackComponent::MworksPositionToUnreal(const FVector&
     return FVector(X, Y, Z);
 }
 
+namespace
+{
+bool UsesUnrealWorldMeters(const FQuadrotorMworksFrame& Frame)
+{
+    return Frame.CoordinatePolicy.Equals(TEXT("ue_world_m_z_up"), ESearchCase::IgnoreCase);
+}
+}
+
 FRotator UQuadrotorMworksPlaybackComponent::MworksRotationToUnreal(const FVector& RollPitchYawRadians) const
 {
     const float RollDeg = FMath::RadiansToDegrees(static_cast<float>(RollPitchYawRadians.X));
@@ -61,20 +69,68 @@ void UQuadrotorMworksPlaybackComponent::ResetTrail()
 void UQuadrotorMworksPlaybackComponent::ApplyFrame(const FQuadrotorMworksFrame& Frame, float DeltaSeconds)
 {
     LatestFrame = Frame;
-    LatestUnrealLocation = MworksPositionToUnreal(Frame.PositionMeters);
-    LatestUnrealRotation = MworksRotationToUnreal(Frame.RotationRadians);
-    ReferenceUnrealLocation = MworksPositionToUnreal(Frame.ReferencePositionMeters);
+    const bool bUseUnrealWorldMeters = UsesUnrealWorldMeters(Frame);
+    const auto ToUnrealPosition = [this, bUseUnrealWorldMeters](const FVector& PositionMeters)
+    {
+        if (bUseUnrealWorldMeters)
+        {
+            return FVector(
+                static_cast<float>(PositionMeters.X) * MetersToCentimeters,
+                static_cast<float>(PositionMeters.Y) * MetersToCentimeters,
+                static_cast<float>(PositionMeters.Z) * MetersToCentimeters);
+        }
+        return MworksPositionToUnreal(PositionMeters);
+    };
+
+    LatestUnrealLocation = ToUnrealPosition(Frame.PositionMeters);
+    LatestUnrealRotation = bUseUnrealWorldMeters
+        ? FRotator(
+            FMath::RadiansToDegrees(static_cast<float>(Frame.RotationRadians.Y)),
+            FMath::RadiansToDegrees(static_cast<float>(Frame.RotationRadians.Z)),
+            FMath::RadiansToDegrees(static_cast<float>(Frame.RotationRadians.X)))
+        : MworksRotationToUnreal(Frame.RotationRadians);
+    ReferenceUnrealLocation = ToUnrealPosition(Frame.ReferencePositionMeters);
 
     LocalPlanPointsUnreal.Reset(Frame.LocalPlanPointsMeters.Num());
     for (const FVector& PointMeters : Frame.LocalPlanPointsMeters)
     {
-        LocalPlanPointsUnreal.Add(MworksPositionToUnreal(PointMeters));
+        LocalPlanPointsUnreal.Add(ToUnrealPosition(PointMeters));
+    }
+
+    LocalKnownFreeCellsUnreal.Reset();
+    LocalKnownOccupiedCellsUnreal.Reset();
+    const FVector LocalMapOriginUnreal = ToUnrealPosition(Frame.LocalKnownMap.OriginMeters);
+    const float LocalMapGridCentimeters = static_cast<float>(Frame.LocalKnownMap.GridMeters) * MetersToCentimeters;
+    for (const FQuadrotorMworksLocalKnownMapCell& Cell : Frame.LocalKnownMap.Cells)
+    {
+        const FVector CellLocationUnreal = LocalMapOriginUnreal + FVector(
+            static_cast<float>(Cell.Offset.X) * LocalMapGridCentimeters,
+            static_cast<float>(Cell.Offset.Y) * LocalMapGridCentimeters,
+            static_cast<float>(Cell.Offset.Z) * LocalMapGridCentimeters);
+        if (Cell.State.Contains(TEXT("occupied"), ESearchCase::IgnoreCase))
+        {
+            LocalKnownOccupiedCellsUnreal.Add(CellLocationUnreal);
+        }
+        else
+        {
+            LocalKnownFreeCellsUnreal.Add(CellLocationUnreal);
+        }
+    }
+
+    LidarPointsUnreal.Reset(Frame.LidarPoints.PointsMeters.Num());
+    const bool bLidarUsesUnrealWorldMeters = Frame.LidarPoints.CoordinateFrame.Equals(TEXT("ue_world_m_z_up"), ESearchCase::IgnoreCase);
+    for (const FVector& PointMeters : Frame.LidarPoints.PointsMeters)
+    {
+        LidarPointsUnreal.Add(bLidarUsesUnrealWorldMeters ? FVector(
+            static_cast<float>(PointMeters.X) * MetersToCentimeters,
+            static_cast<float>(PointMeters.Y) * MetersToCentimeters,
+            static_cast<float>(PointMeters.Z) * MetersToCentimeters) : ToUnrealPosition(PointMeters));
     }
 
     RadarNearRadiusCentimeters = static_cast<float>(Frame.RadarNearRadiusMeters) * MetersToCentimeters;
     RadarFarRadiusCentimeters = static_cast<float>(Frame.RadarFarRadiusMeters) * MetersToCentimeters;
     RadarFovDegrees = static_cast<float>(Frame.RadarFovDegrees);
-    const float YawSign = bConvertMworksYToUnrealNegativeY ? -1.0f : 1.0f;
+    const float YawSign = bUseUnrealWorldMeters ? 1.0f : (bConvertMworksYToUnrealNegativeY ? -1.0f : 1.0f);
     RadarYawDegrees = YawSign * FMath::RadiansToDegrees(static_cast<float>(Frame.RadarYawRadians));
 
     const float TrailMinDistanceCentimeters = TrailMinDistanceMeters * MetersToCentimeters;

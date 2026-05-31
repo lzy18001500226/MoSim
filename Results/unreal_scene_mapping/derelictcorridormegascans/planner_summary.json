@@ -1,0 +1,60 @@
+{
+  "schema": "mosim.ue_scene_mapping_summary.v1",
+  "scene_id": "derelictcorridormegascans",
+  "truth_source": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json",
+  "occupancy": {
+    "roi_bounds_m": [
+      49.04,
+      4.14,
+      112.277,
+      40.02
+    ],
+    "resolution_m": 0.35,
+    "grid_size": [
+      182,
+      104
+    ],
+    "truth_proxy_count": 4753,
+    "flight_relevant_proxy_count": 777,
+    "occupied_cell_count": 8206,
+    "occupied_cell_ratio": 0.433538
+  },
+  "start_m": [
+    87.54,
+    22.34046,
+    2.2
+  ],
+  "goal_m": [
+    83.34,
+    34.940459999999995,
+    2.2
+  ],
+  "outputs": {
+    "occupancy_json": "Results/unreal_scene_mapping/derelictcorridormegascans/occupancy_grid.json",
+    "trajectory_csv": "Results/unreal_scene_mapping/derelictcorridormegascans/trajectory.csv",
+    "render_replay_csv": "Results/unreal_scene_mapping/derelictcorridormegascans/render_replay.csv",
+    "local_known_map_jsonl": "Results/unreal_scene_mapping/derelictcorridormegascans/local_known_map_frames.jsonl",
+    "local_plan_jsonl": "Results/unreal_scene_mapping/derelictcorridormegascans/local_plan_frames.jsonl",
+    "lidar_point_frames_jsonl": "Results/unreal_scene_mapping/derelictcorridormegascans/lidar_point_frames.jsonl",
+    "planner_summary_json": "Results/unreal_scene_mapping/derelictcorridormegascans/planner_summary.json",
+    "preview_svg": "Results/unreal_scene_mapping/derelictcorridormegascans/preview.svg",
+    "merged_pointcloud_ply": "Results/unreal_scene_mapping/derelictcorridormegascans/pointcloud_merged.ply",
+    "viewer_html": "Results/unreal_scene_mapping/derelictcorridormegascans/pointcloud_viewer.html",
+    "fastlio_handoff_json": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_handoff.json",
+    "lidar_frames_dir": "Results/unreal_scene_mapping/derelictcorridormegascans/lidar_frames"
+  },
+  "lidar_frame_count": 12,
+  "merged_lidar_point_count": 2068,
+  "planner_policy": "unknown_global_map_receding_astar_known_obstacles_only",
+  "global_truth_available_to_planner": false,
+  "goal_known": true,
+  "path_cells": 45,
+  "replan_count": 11,
+  "known_free_cells_final": 2795,
+  "known_occupied_cells_final": 1673,
+  "truth_occupied_cells": 8206,
+  "known_occupied_ratio_of_truth": 0.203875,
+  "control_tracking_buffer_cells": 2,
+  "collision_free_against_truth": true,
+  "buffered_collision_free_against_truth": true
+}

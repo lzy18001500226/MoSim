@@ -73,7 +73,7 @@ def content_package_parts(source: dict[str, Any]) -> tuple[list[str], Path]:
             continue
         content_index = parts.index("Content")
         below_content = parts[content_index + 1 :]
-        if len(below_content) >= 2 and path.exists():
+        if len(below_content) >= 1 and path.exists():
             return below_content, path
     raise ValueError(f"{source.get('scene_source_id')} has no existing .umap below Content")
 

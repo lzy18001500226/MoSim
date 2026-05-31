@@ -57,6 +57,57 @@ def read_rows(path: Path) -> tuple[list[str], list[dict[str, float]]]:
     return list(reader.fieldnames), rows
 
 
+def load_local_known_map_frames(path: Path | None) -> dict[int, dict[str, Any]]:
+    if path is None:
+        return {}
+    frames: dict[int, dict[str, Any]] = {}
+    with path.open(encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, start=1):
+            line = line.strip()
+            if not line:
+                continue
+            payload = json.loads(line)
+            if payload.get("schema") != "mosim.local_known_map_frame.v1":
+                raise ValueError(f"unsupported local known map schema at {path}:{line_number}")
+            seq = int(payload.get("seq", len(frames)))
+            frames[seq] = payload
+    return frames
+
+
+def load_lidar_point_frames(path: Path | None) -> dict[int, dict[str, Any]]:
+    if path is None:
+        return {}
+    frames: dict[int, dict[str, Any]] = {}
+    with path.open(encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, start=1):
+            line = line.strip()
+            if not line:
+                continue
+            payload = json.loads(line)
+            if payload.get("schema") != "mosim.lidar_point_frame.v1":
+                raise ValueError(f"unsupported lidar point frame schema at {path}:{line_number}")
+            seq = int(payload.get("seq", len(frames)))
+            frames[seq] = payload
+    return frames
+
+
+def load_local_plan_frames(path: Path | None) -> dict[int, dict[str, Any]]:
+    if path is None:
+        return {}
+    frames: dict[int, dict[str, Any]] = {}
+    with path.open(encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, start=1):
+            line = line.strip()
+            if not line:
+                continue
+            payload = json.loads(line)
+            if payload.get("schema") != "mosim.local_plan_frame.v1":
+                raise ValueError(f"unsupported local plan frame schema at {path}:{line_number}")
+            seq = int(payload.get("seq", len(frames)))
+            frames[seq] = payload
+    return frames
+
+
 def select_rows(
     rows: list[dict[str, float]],
     *,
@@ -95,7 +146,12 @@ def make_frame(
     local_map_grid_m: float,
     local_map_radius_m: float,
     local_map_cells: int,
+    local_known_map_frame: dict[str, Any] | None,
+    local_plan_frame: dict[str, Any] | None,
+    lidar_point_frame: dict[str, Any] | None,
+    lidar_point_limit: int,
     local_plan_source: str,
+    coordinate_policy: str,
 ) -> dict[str, Any]:
     position = [finite(row.get("x")), finite(row.get("y")), finite(row.get("z"))]
     rpy = [finite(row.get(name)) for name in RPY_COLUMNS]
@@ -118,6 +174,70 @@ def make_frame(
                 position[1] + alpha * dy + bend * ny,
                 position[2] + alpha * (reference[2] - position[2]),
             ])
+    if local_plan_frame:
+        local_plan = list(local_plan_frame.get("points_m", local_plan))
+        local_plan_source = str(local_plan_frame.get("source", local_plan_source))
+        local_plan_render_only = bool(local_plan_frame.get("render_only", False))
+        local_plan_evidence_backed = bool(local_plan_frame.get("evidence_backed", True))
+        local_plan_valid = bool(local_plan_frame.get("valid", True))
+    else:
+        local_plan_render_only = local_plan_source == "preview_from_reference"
+        local_plan_evidence_backed = local_plan_source != "preview_from_reference"
+        local_plan_valid = local_plan_source != "preview_from_reference"
+    if local_known_map_frame:
+        local_known_map = {
+            "schema": "quadrotor.local_known_map.v1",
+            "origin_m": local_known_map_frame.get("origin_m", position),
+            "grid_m": float(local_known_map_frame.get("grid_m", local_map_grid_m)),
+            "radius_m": float(local_known_map_frame.get("radius_m", local_map_radius_m)),
+            "cells": list(local_known_map_frame.get("cells", []))[: max(local_map_cells, 0)] if local_map_cells > 0 else list(local_known_map_frame.get("cells", [])),
+            "render_only": bool(local_known_map_frame.get("render_only", False)),
+            "evidence_backed": bool(local_known_map_frame.get("evidence_backed", True)),
+        }
+        local_known_map_flag = "evidence_backed_local_known_map"
+        planner_state = "unknown_map_local_lidar_replay"
+        evidence_level = "scene_truth_pipeline_replay"
+        status_notes = "local_known_map is generated from scene-truth-derived local LiDAR frames; planner still did not receive global truth"
+    else:
+        local_known_map = {
+            "schema": "quadrotor.local_known_map.v1",
+            "origin_m": position,
+            "grid_m": local_map_grid_m,
+            "radius_m": local_map_radius_m,
+            "cells": [
+                {
+                    "offset": [0, 0, 0],
+                    "state": "observed_free",
+                    "source": "render_contract_smoke",
+                }
+            ][: max(local_map_cells, 0)],
+            "render_only": True,
+            "evidence_backed": False,
+        }
+        local_known_map_flag = "render_only_local_known_map"
+        planner_state = "render_contract_smoke"
+        evidence_level = "render_only_preview"
+        status_notes = "local_known_map and preview local_plan are display contracts unless evidence_backed=true"
+    if lidar_point_frame:
+        lidar_points = {
+            "schema": "quadrotor.lidar_points.v1",
+            "coordinate_frame": lidar_point_frame.get("coordinate_frame", coordinate_policy),
+            "points_m": list(lidar_point_frame.get("points_m", []))[: max(lidar_point_limit, 0)] if lidar_point_limit > 0 else list(lidar_point_frame.get("points_m", [])),
+            "render_only": bool(lidar_point_frame.get("render_only", False)),
+            "evidence_backed": bool(lidar_point_frame.get("evidence_backed", True)),
+            "source": lidar_point_frame.get("source", "scene_truth_pipeline_lidar_replay"),
+        }
+        lidar_flag = "evidence_backed_lidar_points"
+    else:
+        lidar_points = {
+            "schema": "quadrotor.lidar_points.v1",
+            "coordinate_frame": coordinate_policy,
+            "points_m": [],
+            "render_only": True,
+            "evidence_backed": False,
+            "source": "no_lidar_points",
+        }
+        lidar_flag = "no_lidar_points"
     return {
         "schema": SCHEMA_VERSION,
         "type": "frame",
@@ -126,6 +246,7 @@ def make_frame(
         "seq": sequence,
         "t": finite(row.get("time")),
         "units": {"position": "m", "angle": "rad", "time": "s"},
+        "coordinate_policy": coordinate_policy,
         "uav": {
             "id": "uav_1",
             "position_m": position,
@@ -155,41 +276,29 @@ def make_frame(
             "far_radius_m": far_radius_m,
             "fov_deg": fov_deg,
         },
-        "local_known_map": {
-            "schema": "quadrotor.local_known_map.v1",
-            "origin_m": position,
-            "grid_m": local_map_grid_m,
-            "radius_m": local_map_radius_m,
-            "cells": [
-                {
-                    "offset": [0, 0, 0],
-                    "state": "observed_free",
-                    "source": "render_contract_smoke",
-                }
-            ][: max(local_map_cells, 0)],
-            "render_only": True,
-            "evidence_backed": False,
-        },
+        "local_known_map": local_known_map,
+        "lidar_points": lidar_points,
         "local_plan": {
             "points_m": local_plan,
             "source": local_plan_source,
-            "render_only": local_plan_source == "preview_from_reference",
-            "evidence_backed": local_plan_source != "preview_from_reference",
-            "valid": local_plan_source != "preview_from_reference",
+            "render_only": local_plan_render_only,
+            "evidence_backed": local_plan_evidence_backed,
+            "valid": local_plan_valid,
         },
         "status": {
             "controller_mode": "unknown",
-            "planner_state": "render_contract_smoke",
+            "planner_state": planner_state,
             "safety_state": "unknown",
-            "evidence_level": "render_only_preview",
-            "notes": "local_known_map and preview local_plan are display contracts unless evidence_backed=true",
+            "evidence_level": evidence_level,
+            "notes": status_notes,
         },
         "overlays": {
             "scene_label": scene_id,
             "map_label": map_id,
             "quality_flags": [
                 "render_only_local_plan" if local_plan_source == "preview_from_reference" else "evidence_backed_local_plan",
-                "render_only_local_known_map",
+                local_known_map_flag,
+                lidar_flag,
             ],
         },
     }
@@ -211,6 +320,9 @@ def send_packet(sock: socket.socket, address: tuple[str, int], payload: dict[str
 
 def stream_rows(args: argparse.Namespace) -> int:
     fieldnames, rows = read_rows(args.raw_csv)
+    local_known_map_frames = load_local_known_map_frames(args.local_known_map_jsonl)
+    local_plan_frames = load_local_plan_frames(args.local_plan_jsonl)
+    lidar_point_frames = load_lidar_point_frames(args.lidar_point_frames_jsonl)
     rows = select_rows(
         rows,
         start_time=args.start_time,
@@ -232,6 +344,7 @@ def stream_rows(args: argparse.Namespace) -> int:
         "frame_count": len(rows),
         "units": {"position": "m", "angle": "rad", "time": "s"},
         "coordinate_policy": "MWORKS meters/radians; Unreal receiver converts to centimeters if needed",
+        "frame_coordinate_policy": args.coordinate_policy,
         "render_only": True,
     }
     goodbye = {
@@ -263,7 +376,12 @@ def stream_rows(args: argparse.Namespace) -> int:
                     local_map_grid_m=args.local_map_grid_m,
                     local_map_radius_m=args.local_map_radius_m,
                     local_map_cells=args.local_map_cells,
+                    local_known_map_frame=local_known_map_frames.get(seq),
+                    local_plan_frame=local_plan_frames.get(seq),
+                    lidar_point_frame=lidar_point_frames.get(seq),
+                    lidar_point_limit=args.lidar_point_limit,
                     local_plan_source=args.local_plan_source,
+                    coordinate_policy=args.coordinate_policy,
                 )
                 if seq > 0 and not args.no_sleep and not args.dry_run:
                     current_t = finite(row.get("time"), previous_t)
@@ -302,8 +420,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--fov-deg", type=float, default=120.0)
     parser.add_argument("--local-map-grid-m", type=float, default=0.6)
     parser.add_argument("--local-map-radius-m", type=float, default=6.0)
-    parser.add_argument("--local-map-cells", type=int, default=1, help="Small dry-run local map cell count placeholder")
+    parser.add_argument("--local-map-cells", type=int, default=320, help="Maximum local map cells per UDP frame; 0 sends all cells")
+    parser.add_argument("--local-known-map-jsonl", type=Path, default=None, help="Evidence-backed local-known-map frames generated by scene_truth_pipeline.py")
+    parser.add_argument("--local-plan-jsonl", type=Path, default=None, help="Evidence-backed local-plan frames generated by scene_truth_pipeline.py")
+    parser.add_argument("--lidar-point-frames-jsonl", type=Path, default=None, help="Evidence-backed per-frame LiDAR point replay generated by scene_truth_pipeline.py")
+    parser.add_argument("--lidar-point-limit", type=int, default=220, help="Maximum LiDAR points per UDP frame; 0 sends all points")
     parser.add_argument("--local-plan-source", default="preview_from_reference")
+    parser.add_argument(
+        "--coordinate-policy",
+        choices=("mworks_world_m_z_up", "ue_world_m_z_up"),
+        default="mworks_world_m_z_up",
+        help="Coordinate convention for position/local-plan vectors in this stream.",
+    )
     parser.add_argument("--loop", action="store_true")
     parser.add_argument("--loop-count", type=int, default=0)
     parser.add_argument("--no-sleep", action="store_true", help="Send as fast as possible")

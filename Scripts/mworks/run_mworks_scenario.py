@@ -203,6 +203,8 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
         command.extend(["--gui-review-native-result-dir", str(gui_review_native_result_dir)])
     if "simulate_false_result_readable" in evidence_level:
         command.append("--allow-readable-result-after-simulate-false")
+    if getattr(args, "allow_readable_result_after_simulate_false", False):
+        command.append("--allow-readable-result-after-simulate-false")
     extra_variables = result.get("extra_variables", {})
     if extra_variables:
         if not isinstance(extra_variables, dict):
@@ -398,6 +400,14 @@ def parse_args() -> argparse.Namespace:
         "--allow-needs-iteration",
         action="store_true",
         help="Keep exit code 0 when the quality gate marks the result as needs_iteration",
+    )
+    parser.add_argument(
+        "--allow-readable-result-after-simulate-false",
+        action="store_true",
+        help=(
+            "Pass through the guarded Sysplorer/MWORKS workaround that exports results only when "
+            "SimulateModel reports false but the official result API verifies readable variables."
+        ),
     )
     parser.add_argument(
         "--min-rmse-improvement-pct",

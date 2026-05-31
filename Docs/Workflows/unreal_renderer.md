@@ -234,15 +234,15 @@ Current local review candidates:
 
 | Scene | First Review Map | Notes |
 |---|---|---|
-| `DerelictCorridorMegascans` | `/Game/DerelictCorridor/Maps/DerelictCorridor` | Already has renderer load proof and first-pass AABB truth. |
-| `FactoryEnvironmentCollect` | `/Game/Maps/Demonstration` | Best first factory/industrial candidate; still needs renderer reuse and truth export. |
-| `CityParkEnvironmentCollec` | `/Game/CityPark/Maps/Showcase` | Park/open outdoor candidate; still needs renderer reuse and truth export. |
-| `CitySample` | `/Game/Map/Big_City_LVL` | Large city candidate; high load/performance risk, use after smaller scenes. |
-| `DarkRuinsMegascansSample` | `/Game/Main` | Good cave/ruins candidate; still needs renderer reuse and truth export. |
-| `ElectricDreamsEnv` | `/Game/Levels/PCG/ElectricDreams_PCGCloseRange` | Strong forest candidate; plugin/PCG risk is higher. |
-| `MedievalVillageMegascansS` | `/Game/Maps/MedievalVillage_P` | Village/building candidate; still needs renderer reuse and truth export. |
-| `ABoyandHisKite` | `/Game/Maps/GoldenPath/GDC_Landscape_01` | Large outdoor reference; UE 4.x origin may need conversion review. |
-| `FPS-Shooter-Unreal` | `/Game/FirstPerson/Maps/FirstPersonMap` | Lower priority; useful mostly as UE control/template smoke. |
+| `DerelictCorridorMegascans` | `/Game/DerelictCorridor/Maps/DerelictCorridor` | Main candidate; passed manual rendered review and validates with 4753 collision proxies. |
+| `FactoryEnvironmentCollect` | `/Game/Maps/Demonstration` | Main candidate; passed manual rendered review and validates with 8658 collision proxies. |
+| `CityParkEnvironmentCollec` | `/Game/CityPark/Maps/Showcase`, `/Game/CityPark/Maps/Showcase_NotOptimized` | Deferred; Overview closed immediately, Showcase variants stayed black while merged park/fence/foliage static meshes built. |
+| `CitySample` | `/Game/Map/Big_City_LVL`, `/Game/Map/Small_City_LVL` | Rejected for immediate linked-content use; both big and small city stayed black, and CitySample-specific C++/plugin classes are missing in `MoSimSceneLibrary`. |
+| `DarkRuinsMegascansSample` | `/Game/Main` | Rejected for main daytime rendered scene use after manual review stayed fully black even with forced review lighting; keep only as a special dark/indoor/radar reference. |
+| `ElectricDreamsEnv` | `/Game/Levels/PCG/ElectricDreams_PCGCloseRange` | Deferred; truth artifact exists, but rendered review stayed black/non-reviewable with PCG/Blueprint compatibility errors. |
+| `MedievalVillageMegascansS` | `/Game/Maps/MedievalVillage_P` | Rejected for immediate main rendered scene use; second manual review stayed fully black and logs show UE 4.27-origin compatibility/static-mesh build issues. |
+| `ABoyandHisKite` | `/Game/Maps/GoldenPath/GDC_Landscape_01`, `/Game/Maps/TutorialMap` | Rejected for immediate linked-content use; GoldenPath stalls with UE 4.27 compatibility issues, TutorialMap loads but is mostly black with only 3D text visible and missing KiteDemo C++ parent classes. |
+| `FPS-Shooter-Unreal` | `/Game/FirstPerson/Maps/FirstPersonMap` | Rejected for formal scene-library use after manual visual review; keep only as a lightweight UE launch/control smoke test. |
 
 Use the fast planner to produce the exact command without scanning the full
 asset tree:
@@ -278,15 +278,14 @@ still needs a truth-extraction or proxy-generation pipeline before it can prove
 mapping/path-planning behavior.
 
 Current audit result: the editable local projects under `References/UnrealScenes`
-are usable visual candidates. `FactoryEnvironmentCollect`,
-`DerelictCorridorMegascans`, and `ElectricDreamsEnv` now have explicit
-collision-truth exports and audit as `ready_for_truth_backed_planning`.
-`FactoryEnvironmentCollect` passed manual visual review on 2026-05-31. The
-active renderer content links can then be switched to the next candidate, such
-as `DerelictCorridorMegascans`, for one-map-at-a-time review. UE assets with
-collision/navigation names are treated only as proxy candidates; they are not
-accepted as planner truth until exported to an explicit
-occupancy/collision/semantic artifact.
+are not uniformly usable through simple linked-content reuse.
+`FactoryEnvironmentCollect` and `DerelictCorridorMegascans` are the current main
+rendered-map set because both passed manual visual review and both validate
+against explicit collision-truth exports. `ElectricDreamsEnv` has a truth
+artifact but failed rendered review, so it is not a current main map. UE assets
+with collision/navigation names are treated only as proxy candidates; they are
+not accepted as planner truth until exported to an explicit
+occupancy/collision/semantic artifact and paired with a visible rendered review.
 
 To promote an editable scene into a truth-backed scene, open it in Unreal Editor
 and run the exporter through Editor Python:
@@ -476,13 +475,12 @@ The probe must report `ok=true`, `loaded_expected_map=true`, and
 A zero exit code from Unreal alone is not enough, because commandlets can return
 success after falling back to an empty temporary map.
 
-Current verified local renderer reuse on 2026-05-31:
+Current verified main local renderer reuse:
 
 | Scene source | Renderer package | Truth artifact | Load proof |
 |---|---|---|---|
 | `local_derelictcorridormegascans` | `/Game/DerelictCorridor/Maps/DerelictCorridor` | `UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json` | `Results/tmp/renderer_map_load_probe_latest.json` |
 | `local_factoryenvironmentcollect` | `/Game/Maps/Demonstration` | `UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json` | `Results/tmp/renderer_map_load_probe_factory_active_20260531.json` |
-| `local_electricdreamsenv` | `/Game/Levels/PCG/ElectricDreams_PCGCloseRange` | `UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/electricdreamsenv_collision_truth.json` | truth OK; full renderer load is a slow first-time Nanite/static-mesh build path |
 
 Factory currently loads with high actor count and valid collision truth, but UE
 reports `PhysXVehicles`-related Blueprint warnings for forklift vehicle assets.
@@ -525,13 +523,20 @@ map-authored `PlayerStart` area at approximately
 `(-5533, 2423, 190) cm`, which corresponds to truth coordinates
 `(-55.33, -24.23, 1.90) m`.
 
+Derelict review must also start inside the exported scene-truth bounds. The
+current `/Game/DerelictCorridor/Maps/DerelictCorridor` default review camera is
+`(8704, -2240, 220) cm` with yaw `90 deg`, chosen from a terrain/floor patch
+near truth coordinates `(~87.04, 22.40, 2.20) m`. Do not use the generic
+`(-3600, -2800, 1450) cm` MoSim preview-camera default for Derelict because it
+is outside the real corridor scene.
+
 Imported maps may carry their own GameMode or Pawn. `review-scene` must force
-`/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode` for Factory so the
-project review camera, no-preview-map flag, no-playback flag, and review
-lighting are active. It must also keep PlayerController possession locked to
-`MworksReviewCameraPawn` and disable imported Pawn input during scene review;
-Factory includes robot/forklift Pawns that can otherwise become the controlled
-subject. In logs, acceptance requires `MWORKS scene-review control enforced`,
+`/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode` for every `/Game/...`
+review map so the project review camera, no-preview-map flag, no-playback flag,
+and review lighting are active. It must also keep PlayerController possession
+locked to `MworksReviewCameraPawn` and disable imported Pawn input during scene
+review; Factory includes robot/forklift Pawns that can otherwise become the
+controlled subject. In logs, acceptance requires `MWORKS scene-review control enforced`,
 `pawn=MworksReviewCameraPawn`, `MWORKS review camera active`, and the
 preview/playback auto-spawn disabled messages.
 
@@ -568,14 +573,218 @@ navigation, or path-planning claim, validate the route against exported
 collision/occupancy truth. A trajectory that intersects a wall is invalid even
 if the renderer camera or debug view can move through the geometry.
 
+## Scene Truth Mapping Pipeline
+
+After Factory and Derelict passed manual visual review, the current file-level
+pipeline is:
+
+```bash
+python3 Scripts/UE5/scene_truth_pipeline.py
+python3 Scripts/tests/test_scene_truth_pipeline.py
+```
+
+This consumes:
+
+```text
+UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json
+UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json
+```
+
+and writes:
+
+```text
+Results/unreal_scene_mapping/RUN_SUMMARY.md
+Results/unreal_scene_mapping/<scene_id>/occupancy_grid.json
+Results/unreal_scene_mapping/<scene_id>/trajectory.csv
+Results/unreal_scene_mapping/<scene_id>/render_replay.csv
+Results/unreal_scene_mapping/<scene_id>/local_known_map_frames.jsonl
+Results/unreal_scene_mapping/<scene_id>/local_plan_frames.jsonl
+Results/unreal_scene_mapping/<scene_id>/lidar_point_frames.jsonl
+Results/unreal_scene_mapping/<scene_id>/pointcloud_merged.ply
+Results/unreal_scene_mapping/<scene_id>/pointcloud_viewer.html
+Results/unreal_scene_mapping/<scene_id>/fastlio_handoff.json
+Results/unreal_scene_mapping/<scene_id>/fastlio_replay_dataset.jsonl
+Results/unreal_scene_mapping/<scene_id>/fastlio_adapter_manifest.json
+Results/unreal_scene_mapping/<scene_id>/navigation_control_handoff.json
+Results/unreal_scene_mapping/<scene_id>/control_reference.csv
+Results/unreal_scene_mapping/<scene_id>/planned_quintic_reference_params.json
+Results/unreal_scene_mapping/<scene_id>/planned_quintic_reference_constructor.mo.txt
+Results/unreal_scene_mapping/<scene_id>/control_interface_package.json
+Results/unreal_scene_mapping/<scene_id>/scenario_draft.yaml
+```
+
+The planner uses `unknown_global_map_receding_astar_known_obstacles_only`.
+The full collision truth is not provided to the planner; it is only used to
+simulate sensing and validate `collision_free_against_truth=true`. The current
+reference generator also applies a controller-tracking buffer before selecting
+start/goal candidates, because the MWORKS smoke controller can otherwise track
+outside a narrow corridor even when the reference itself is collision-free.
+
+Current verified output on 2026-06-01:
+
+| Scene | Path Cells | Replans | Lidar Points | Planner Truth |
+|---|---:|---:|---:|---|
+| `factoryenvironmentcollect` | 34 | 11 | 1934 | `global_truth_available_to_planner=false`, `collision_free_against_truth=true`, `buffered_collision_free_against_truth=true` |
+| `derelictcorridormegascans` | 45 | 11 | 2068 | `global_truth_available_to_planner=false`, `collision_free_against_truth=true`, `buffered_collision_free_against_truth=true` |
+
+The `fastlio_handoff.json` and `fastlio_adapter_manifest.json` files are input
+contracts, not completed FAST-LIO localization results. They record
+deterministic offline LiDAR frames, a merged point cloud, occupancy, path,
+point-cloud viewer, per-frame local planner outputs, `render_replay.csv`, and a
+ROS1 replay dataset. The replay dataset includes synthetic finite-difference
+IMU derived from the replay path; it is not measured flight IMU.
+
+Generate and inspect the FAST-LIO replay adapter state with:
+
+```bash
+python3 Scripts/UE5/prepare_fastlio_replay.py
+python3 Scripts/tests/test_fastlio_replay_adapter.py
+python3 Scripts/UE5/publish_fastlio_replay_ros1.py \
+  --dataset Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_replay_dataset.jsonl \
+  --dry-run --max-frames 2
+```
+
+Current status is recorded in:
+
+```text
+Results/unreal_scene_mapping/FASTLIO_REPLAY_STATUS.md
+```
+
+If a scene reports `blocked_missing_ros1_runtime`, install/source a ROS1 Catkin
+environment with FAST-LIO dependencies before attempting a real FAST-LIO run.
+Do not turn this into a planner input or localization claim until ROS publishes
+runtime PointCloud2/IMU, FAST-LIO returns pose/map output, and the result is
+compared against the replay truth.
+
+Generate the navigation/control handoff after the scene truth and FAST-LIO
+adapter files exist:
+
+```bash
+python3 Scripts/UE5/build_navigation_handoff.py
+python3 Scripts/tests/test_navigation_handoff.py
+```
+
+This writes `NAVIGATION_HANDOFF_STATUS.md` plus per-scene control-interface
+packages. The package converts the accepted UE path into a
+`PlannedQuinticReference` parameter set and a sampled `control_reference.csv`.
+The current reference speed is `0.8 m/s` with `min_segment_duration_s=0.9`;
+raising speed must be followed by a new MWORKS smoke run and strict UE-truth
+collision check. It deliberately writes an inactive `scenario_draft.yaml`; do
+not promote a draft to formal evidence unless a concrete Sysplorer model
+consumes the generated parameters and passes MCP `check_model` and
+`simulate_model`.
+
+Current generated MWORKS smoke models and reference sizes:
+
+| Scene | PlannedQuinticReference Segments | Stop Time | Boundary |
+|---|---:|---:|---|
+| `factoryenvironmentcollect` | 33 | 31.3258252147 s | `QuadrotorExperiments.Sunray150UEFactoryLinearMPCSysblockSmoke`, smoke evidence only |
+| `derelictcorridormegascans` | 44 | 39.6 s | `QuadrotorExperiments.Sunray150UEDerelictLinearMPCSysblockSmoke`, smoke evidence only |
+
+After generating or changing these models, run:
+
+```bash
+python3 Scripts/mworks/run_mworks_scenario.py \
+  Config/scenarios/planning/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.yaml \
+  --no-gui-open --allow-readable-result-after-simulate-false
+python3 Scripts/mworks/run_mworks_scenario.py \
+  Config/scenarios/planning/sunray150_ue_derelictcorridormegascans_linear_mpc_smoke.yaml \
+  --no-gui-open --allow-readable-result-after-simulate-false
+python3 Scripts/UE5/check_mworks_scene_truth_collision.py --fail-on-violation
+python3 Scripts/UE5/build_mworks_ue_scene_smoke.py
+```
+
+Latest 2026-06-01 smoke status: both scenes passed `check_model` and
+`simulate_model`, both metrics report `quality_status=smoke_only`, and strict
+collision validation reports `actual_occupied=0` and `reference_occupied=0`.
+Factory produced 628 result rows with minimum actual clearance about `0.95 m`;
+Derelict produced 793 result rows with minimum actual clearance about `0.79 m`.
+This validates the control-interface and truth-check chain only. It does not
+claim final autonomous navigation, final FAST-LIO localization, or full
+controller performance.
+
+For a one-command status aggregate after any regeneration or smoke run:
+
+```bash
+python3 Scripts/UE5/summarize_scene_closed_loop.py --fail-on-issue
+```
+
+This writes:
+
+```text
+Results/unreal_scene_mapping/UE_SCENE_CLOSED_LOOP_STATUS.json
+Results/unreal_scene_mapping/UE_SCENE_CLOSED_LOOP_STATUS.md
+```
+
+The latest aggregate reports both accepted scenes as
+`ready_smoke_validated`; the remaining warning is
+`fastlio_blocked_missing_ros1_runtime`. Treat that warning as a real blocker
+for FAST-LIO localization claims, not as a failure of the scene-truth or
+MWORKS smoke chain.
+
+The `render_replay.csv` output is directly compatible with the project UDP
+streamer. Use dry-run first:
+
+```bash
+python3 Scripts/UE5/stream_unreal_udp.py \
+  Results/unreal_scene_mapping/factoryenvironmentcollect/render_replay.csv \
+  --scene-id factoryenvironmentcollect_mapping_replay \
+  --map-id local_factoryenvironmentcollect \
+  --coordinate-policy ue_world_m_z_up \
+  --local-plan-source evidence_backed_scene_truth_pipeline \
+  --local-known-map-jsonl Results/unreal_scene_mapping/factoryenvironmentcollect/local_known_map_frames.jsonl \
+  --local-plan-jsonl Results/unreal_scene_mapping/factoryenvironmentcollect/local_plan_frames.jsonl \
+  --lidar-point-frames-jsonl Results/unreal_scene_mapping/factoryenvironmentcollect/lidar_point_frames.jsonl \
+  --dry-run --max-frames 2 --no-sleep
+
+python3 Scripts/UE5/stream_unreal_udp.py \
+  Results/unreal_scene_mapping/derelictcorridormegascans/render_replay.csv \
+  --scene-id derelictcorridormegascans_mapping_replay \
+  --map-id local_derelictcorridormegascans \
+  --coordinate-policy ue_world_m_z_up \
+  --local-plan-source evidence_backed_scene_truth_pipeline \
+  --local-known-map-jsonl Results/unreal_scene_mapping/derelictcorridormegascans/local_known_map_frames.jsonl \
+  --local-plan-jsonl Results/unreal_scene_mapping/derelictcorridormegascans/local_plan_frames.jsonl \
+  --lidar-point-frames-jsonl Results/unreal_scene_mapping/derelictcorridormegascans/lidar_point_frames.jsonl \
+  --dry-run --max-frames 2 --no-sleep
+```
+
+For the current accepted scenes, use the review loop wrapper:
+
+```bash
+OPEN_UE=1 OPEN_POINTCLOUD=0 STREAM_LOOP_COUNT=1 STREAM_FPS=12 WAIT_UDP_SECONDS=45 \
+  Scripts/UE5/review_scene_mapping_loop.sh factoryenvironmentcollect
+
+OPEN_UE=1 OPEN_POINTCLOUD=0 STREAM_LOOP_COUNT=1 STREAM_FPS=12 WAIT_UDP_SECONDS=45 \
+  Scripts/UE5/review_scene_mapping_loop.sh derelictcorridormegascans
+```
+
+The playback actor spawns the UAV body, propellers, reference marker,
+trajectory trail, radar sector, local-plan spline, local-known-map mesh, and
+in-scene LiDAR point mesh from UDP frames. The local-plan spline comes from
+`local_plan_frames.jsonl`, not from a global-truth prior. Latest smoke evidence:
+
+```text
+Factory:  /Game/Maps/Demonstration, local_map_cells=137, lidar_points=176, lidar_evidence=true
+Derelict: /Game/DerelictCorridor/Maps/DerelictCorridor, local_map_cells=320, lidar_points=166, lidar_evidence=true
+```
+
+This proves runtime UDP playback into the standalone UE review window, not live
+editor actor placement. `mosim-unreal` can read project context, but the live UE
+Editor listener remains unavailable in this session; no WindowsMCP callable
+desktop tool surface is exposed. Do not claim editor-side actor placement or
+viewport capture until a reversible editor probe passes.
+
 Current blocked or lower-priority candidates:
 
 | Scene source | Status | Next action |
 |---|---|---|
-| `CityParkEnvironmentCollec` | 60 second truth export timed out while UE was still building static meshes | retry only with a longer approved build/export window or after manual editor warm-up |
-| `DarkRuinsMegascansSample` | `/Game/Main` loads but commandlet only exposes global/camera/postprocess actors; World Partition editor subsystem is unavailable in the tested UE Python route | implement a proper World Partition cell/data-layer truth route or use manual editor-assisted review |
-| `MedievalVillageMegascansS` | UE 4.27 origin; after exporter API compatibility fixes it can be retried, but it is lower priority than Factory/Derelict/Electric | retry only if a village map is needed |
-| `FPS-Shooter-Unreal` | previous partial truth was misleading because required `/Game/AbandonedFactory/...` assets were missing | do not treat as formal scene source without asset repair |
+| `CityParkEnvironmentCollec` | Overview closed immediately; Showcase and Showcase_NotOptimized stayed black while logs built or waited on merged park/fence/foliage static meshes | retry only with a longer approved build/export window or after manual editor warm-up/prebuilt asset cache |
+| `CitySample` | `/Game/Map/Big_City_LVL` and `/Game/Map/Small_City_LVL` stay black in linked-content review and logs show missing `/Script/CitySample...` and `/Script/CitySampleMassCrowd...` classes | retry only through a dedicated plugin/source integration or standalone CitySample-project review pass |
+| `DarkRuinsMegascansSample` | `/Game/Main` can start after root-level `Content/Main.umap` linking, but manual rendered review stayed fully black even with forced daylight/skylight/exposure/headlight settings; commandlet also only exposes global/camera/postprocess actors | do not use for the main daytime rendered map set; keep only as a special dark/indoor/radar reference unless a later dedicated relighting pass is approved |
+| `MedievalVillageMegascansS` | UE 4.27 origin; `/Game/Maps/MedievalVillage_P` starts but manual review stayed fully black and logs show Blueprint/input compatibility warnings, stale navmesh, and long static-mesh builds | retry only with a dedicated conversion/cache warm-up/lighting pass if a village map is needed |
+| `ABoyandHisKite` | UE 4.27 origin; `/Game/Maps/GoldenPath/GDC_Landscape_01` did not reach `Load map complete`, `/Game/Maps/TutorialMap` loads but is mostly black with only 3D text visible, and logs show missing `/Script/KiteDemo...` C++ classes plus stale Blueprint functions/delegates | retry only with a dedicated KiteDemo source/project conversion/cache warm-up pass |
+| `FPS-Shooter-Unreal` | manual visual review rejected the template/shooter map as unsuitable for MoSim scenes; previous partial truth was also misleading because required `/Game/AbandonedFactory/...` assets were missing | do not treat as a formal scene source; use only as a lightweight UE launch/control smoke test |
 
 Binary build gate:
 

@@ -55,6 +55,15 @@ public:
     TArray<FVector> LocalPlanPointsUnreal;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
+    TArray<FVector> LocalKnownFreeCellsUnreal;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
+    TArray<FVector> LocalKnownOccupiedCellsUnreal;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
+    TArray<FVector> LidarPointsUnreal;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")
     TArray<FVector> TrajectoryTrailUnreal;
 
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS Playback")

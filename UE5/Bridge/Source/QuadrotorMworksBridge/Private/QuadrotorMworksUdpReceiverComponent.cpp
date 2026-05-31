@@ -135,11 +135,17 @@ void UQuadrotorMworksUdpReceiverComponent::HandleDatagram(const FArrayReaderPtr&
         UE_LOG(
             LogTemp,
             Display,
-            TEXT("Quadrotor MWORKS UDP first frame: scene=%s map=%s seq=%d t=%.3f"),
+            TEXT("Quadrotor MWORKS UDP first frame: scene=%s map=%s seq=%d t=%.3f local_map_cells=%d local_map_evidence=%s lidar_points=%d lidar_evidence=%s local_plan_points=%d local_plan_evidence=%s"),
             *Frame.SceneId,
             *Frame.MapId,
             Frame.Sequence,
-            Frame.TimeSeconds);
+            Frame.TimeSeconds,
+            Frame.LocalKnownMap.Cells.Num(),
+            Frame.LocalKnownMap.bEvidenceBacked ? TEXT("true") : TEXT("false"),
+            Frame.LidarPoints.PointsMeters.Num(),
+            Frame.LidarPoints.bEvidenceBacked ? TEXT("true") : TEXT("false"),
+            Frame.LocalPlanPointsMeters.Num(),
+            Frame.bLocalPlanEvidenceBacked ? TEXT("true") : TEXT("false"));
     }
 
     AsyncTask(ENamedThreads::GameThread, [this, Frame]()
@@ -199,6 +205,7 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
 
     Root->TryGetStringField(TEXT("scene_id"), OutFrame.SceneId);
     Root->TryGetStringField(TEXT("map_id"), OutFrame.MapId);
+    Root->TryGetStringField(TEXT("coordinate_policy"), OutFrame.CoordinatePolicy);
     OutFrame.Sequence = static_cast<int32>(Root->GetIntegerField(TEXT("seq")));
     OutFrame.TimeSeconds = Root->GetNumberField(TEXT("t"));
 
@@ -274,6 +281,33 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
                 CellObject->TryGetStringField(TEXT("state"), Cell.State);
                 CellObject->TryGetStringField(TEXT("source"), Cell.Source);
                 OutFrame.LocalKnownMap.Cells.Add(Cell);
+            }
+        }
+    }
+
+    const TSharedPtr<FJsonObject>* LidarPoints = nullptr;
+    if (Root->TryGetObjectField(TEXT("lidar_points"), LidarPoints) && LidarPoints && LidarPoints->IsValid())
+    {
+        (*LidarPoints)->TryGetStringField(TEXT("schema"), OutFrame.LidarPoints.Schema);
+        (*LidarPoints)->TryGetStringField(TEXT("coordinate_frame"), OutFrame.LidarPoints.CoordinateFrame);
+        (*LidarPoints)->TryGetStringField(TEXT("source"), OutFrame.LidarPoints.Source);
+        (*LidarPoints)->TryGetBoolField(TEXT("render_only"), OutFrame.LidarPoints.bRenderOnly);
+        (*LidarPoints)->TryGetBoolField(TEXT("evidence_backed"), OutFrame.LidarPoints.bEvidenceBacked);
+
+        const TArray<TSharedPtr<FJsonValue>>* Points = nullptr;
+        if ((*LidarPoints)->TryGetArrayField(TEXT("points_m"), Points) && Points)
+        {
+            OutFrame.LidarPoints.PointsMeters.Reset();
+            for (const TSharedPtr<FJsonValue>& PointValue : *Points)
+            {
+                const TArray<TSharedPtr<FJsonValue>>* PointArray = nullptr;
+                if (PointValue.IsValid() && PointValue->TryGetArray(PointArray) && PointArray && PointArray->Num() >= 3)
+                {
+                    OutFrame.LidarPoints.PointsMeters.Add(FVector(
+                        (*PointArray)[0]->AsNumber(),
+                        (*PointArray)[1]->AsNumber(),
+                        (*PointArray)[2]->AsNumber()));
+                }
             }
         }
     }

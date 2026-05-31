@@ -1,0 +1,1243 @@
+{
+  "schema": "mosim.navigation_control_handoff.v1",
+  "scene_id": "derelictcorridormegascans",
+  "status": "ready_for_mworks_controller_interface_smoke",
+  "truth_policy": {
+    "global_truth_available_to_planner": false,
+    "collision_free_against_truth": true,
+    "buffered_collision_free_against_truth": true,
+    "control_tracking_buffer_cells": 2,
+    "planner_policy": "unknown_global_map_receding_astar_known_obstacles_only"
+  },
+  "start_m": [
+    87.54,
+    22.34046,
+    2.2
+  ],
+  "goal_m": [
+    83.34,
+    34.940459999999995,
+    2.2
+  ],
+  "waypoints": [
+    {
+      "index": 0,
+      "position_m": [
+        87.54,
+        22.34046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        52
+      ]
+    },
+    {
+      "index": 1,
+      "position_m": [
+        87.54,
+        22.690459999999998,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        53
+      ]
+    },
+    {
+      "index": 2,
+      "position_m": [
+        87.54,
+        23.04046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        54
+      ]
+    },
+    {
+      "index": 3,
+      "position_m": [
+        87.54,
+        23.39046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        55
+      ]
+    },
+    {
+      "index": 4,
+      "position_m": [
+        87.54,
+        23.74046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        56
+      ]
+    },
+    {
+      "index": 5,
+      "position_m": [
+        87.54,
+        24.09046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        57
+      ]
+    },
+    {
+      "index": 6,
+      "position_m": [
+        87.54,
+        24.440459999999998,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        58
+      ]
+    },
+    {
+      "index": 7,
+      "position_m": [
+        87.54,
+        24.79046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        59
+      ]
+    },
+    {
+      "index": 8,
+      "position_m": [
+        87.54,
+        25.14046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        60
+      ]
+    },
+    {
+      "index": 9,
+      "position_m": [
+        87.54,
+        25.49046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        61
+      ]
+    },
+    {
+      "index": 10,
+      "position_m": [
+        87.54,
+        25.84046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        62
+      ]
+    },
+    {
+      "index": 11,
+      "position_m": [
+        87.54,
+        26.190459999999998,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        63
+      ]
+    },
+    {
+      "index": 12,
+      "position_m": [
+        87.54,
+        26.54046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        64
+      ]
+    },
+    {
+      "index": 13,
+      "position_m": [
+        87.54,
+        26.89046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        65
+      ]
+    },
+    {
+      "index": 14,
+      "position_m": [
+        87.54,
+        27.24046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        66
+      ]
+    },
+    {
+      "index": 15,
+      "position_m": [
+        87.54,
+        27.59046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        67
+      ]
+    },
+    {
+      "index": 16,
+      "position_m": [
+        87.54,
+        27.940459999999998,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        68
+      ]
+    },
+    {
+      "index": 17,
+      "position_m": [
+        87.54,
+        28.29046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        69
+      ]
+    },
+    {
+      "index": 18,
+      "position_m": [
+        87.54,
+        28.64046,
+        2.2
+      ],
+      "cell_xy": [
+        110,
+        70
+      ]
+    },
+    {
+      "index": 19,
+      "position_m": [
+        87.19,
+        28.99046,
+        2.2
+      ],
+      "cell_xy": [
+        109,
+        71
+      ]
+    },
+    {
+      "index": 20,
+      "position_m": [
+        86.84,
+        29.34046,
+        2.2
+      ],
+      "cell_xy": [
+        108,
+        72
+      ]
+    },
+    {
+      "index": 21,
+      "position_m": [
+        86.49000000000001,
+        29.690459999999998,
+        2.2
+      ],
+      "cell_xy": [
+        107,
+        73
+      ]
+    },
+    {
+      "index": 22,
+      "position_m": [
+        86.49000000000001,
+        30.04046,
+        2.2
+      ],
+      "cell_xy": [
+        107,
+        74
+      ]
+    },
+    {
+      "index": 23,
+      "position_m": [
+        86.14,
+        30.39046,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        75
+      ]
+    },
+    {
+      "index": 24,
+      "position_m": [
+        86.14,
+        30.74046,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        76
+      ]
+    },
+    {
+      "index": 25,
+      "position_m": [
+        86.14,
+        31.09046,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        77
+      ]
+    },
+    {
+      "index": 26,
+      "position_m": [
+        86.14,
+        31.440459999999998,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        78
+      ]
+    },
+    {
+      "index": 27,
+      "position_m": [
+        86.14,
+        31.79046,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        79
+      ]
+    },
+    {
+      "index": 28,
+      "position_m": [
+        86.14,
+        32.14046,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        80
+      ]
+    },
+    {
+      "index": 29,
+      "position_m": [
+        86.14,
+        32.49046,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        81
+      ]
+    },
+    {
+      "index": 30,
+      "position_m": [
+        86.14,
+        32.84046,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        82
+      ]
+    },
+    {
+      "index": 31,
+      "position_m": [
+        86.14,
+        33.190459999999995,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        83
+      ]
+    },
+    {
+      "index": 32,
+      "position_m": [
+        86.14,
+        33.540459999999996,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        84
+      ]
+    },
+    {
+      "index": 33,
+      "position_m": [
+        86.14,
+        33.89046,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        85
+      ]
+    },
+    {
+      "index": 34,
+      "position_m": [
+        86.14,
+        34.24046,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        86
+      ]
+    },
+    {
+      "index": 35,
+      "position_m": [
+        86.14,
+        34.59046,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        87
+      ]
+    },
+    {
+      "index": 36,
+      "position_m": [
+        86.14,
+        34.940459999999995,
+        2.2
+      ],
+      "cell_xy": [
+        106,
+        88
+      ]
+    },
+    {
+      "index": 37,
+      "position_m": [
+        85.79,
+        34.940459999999995,
+        2.2
+      ],
+      "cell_xy": [
+        105,
+        88
+      ]
+    },
+    {
+      "index": 38,
+      "position_m": [
+        85.44,
+        34.940459999999995,
+        2.2
+      ],
+      "cell_xy": [
+        104,
+        88
+      ]
+    },
+    {
+      "index": 39,
+      "position_m": [
+        85.09,
+        34.940459999999995,
+        2.2
+      ],
+      "cell_xy": [
+        103,
+        88
+      ]
+    },
+    {
+      "index": 40,
+      "position_m": [
+        84.74000000000001,
+        34.940459999999995,
+        2.2
+      ],
+      "cell_xy": [
+        102,
+        88
+      ]
+    },
+    {
+      "index": 41,
+      "position_m": [
+        84.39,
+        34.940459999999995,
+        2.2
+      ],
+      "cell_xy": [
+        101,
+        88
+      ]
+    },
+    {
+      "index": 42,
+      "position_m": [
+        84.04,
+        34.940459999999995,
+        2.2
+      ],
+      "cell_xy": [
+        100,
+        88
+      ]
+    },
+    {
+      "index": 43,
+      "position_m": [
+        83.69,
+        34.940459999999995,
+        2.2
+      ],
+      "cell_xy": [
+        99,
+        88
+      ]
+    },
+    {
+      "index": 44,
+      "position_m": [
+        83.34,
+        34.940459999999995,
+        2.2
+      ],
+      "cell_xy": [
+        98,
+        88
+      ]
+    }
+  ],
+  "render_replay_samples": [
+    {
+      "time_s": 0.0,
+      "position_m": [
+        87.54,
+        22.34046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        22.69046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 0.25,
+      "position_m": [
+        87.54,
+        22.69046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        23.04046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 0.5,
+      "position_m": [
+        87.54,
+        23.04046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        23.39046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 0.75,
+      "position_m": [
+        87.54,
+        23.39046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        23.74046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 1.0,
+      "position_m": [
+        87.54,
+        23.74046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        24.09046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 1.25,
+      "position_m": [
+        87.54,
+        24.09046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        24.44046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 1.5,
+      "position_m": [
+        87.54,
+        24.44046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        24.79046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 1.75,
+      "position_m": [
+        87.54,
+        24.79046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        25.14046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 2.0,
+      "position_m": [
+        87.54,
+        25.14046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        25.49046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 2.25,
+      "position_m": [
+        87.54,
+        25.49046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        25.84046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 2.5,
+      "position_m": [
+        87.54,
+        25.84046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        26.19046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 2.75,
+      "position_m": [
+        87.54,
+        26.19046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        26.54046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 3.0,
+      "position_m": [
+        87.54,
+        26.54046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        26.89046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 3.25,
+      "position_m": [
+        87.54,
+        26.89046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        27.24046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 3.5,
+      "position_m": [
+        87.54,
+        27.24046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        27.59046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 3.75,
+      "position_m": [
+        87.54,
+        27.59046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        27.94046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 4.0,
+      "position_m": [
+        87.54,
+        27.94046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        28.29046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 4.25,
+      "position_m": [
+        87.54,
+        28.29046,
+        2.2
+      ],
+      "reference_m": [
+        87.54,
+        28.64046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 4.5,
+      "position_m": [
+        87.54,
+        28.64046,
+        2.2
+      ],
+      "reference_m": [
+        87.19,
+        28.99046,
+        2.2
+      ],
+      "yaw_rad": 2.356194
+    },
+    {
+      "time_s": 4.75,
+      "position_m": [
+        87.19,
+        28.99046,
+        2.2
+      ],
+      "reference_m": [
+        86.84,
+        29.34046,
+        2.2
+      ],
+      "yaw_rad": 2.356194
+    },
+    {
+      "time_s": 5.0,
+      "position_m": [
+        86.84,
+        29.34046,
+        2.2
+      ],
+      "reference_m": [
+        86.49,
+        29.69046,
+        2.2
+      ],
+      "yaw_rad": 2.356194
+    },
+    {
+      "time_s": 5.25,
+      "position_m": [
+        86.49,
+        29.69046,
+        2.2
+      ],
+      "reference_m": [
+        86.49,
+        30.04046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 5.5,
+      "position_m": [
+        86.49,
+        30.04046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        30.39046,
+        2.2
+      ],
+      "yaw_rad": 2.356194
+    },
+    {
+      "time_s": 5.75,
+      "position_m": [
+        86.14,
+        30.39046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        30.74046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 6.0,
+      "position_m": [
+        86.14,
+        30.74046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        31.09046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 6.25,
+      "position_m": [
+        86.14,
+        31.09046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        31.44046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 6.5,
+      "position_m": [
+        86.14,
+        31.44046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        31.79046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 6.75,
+      "position_m": [
+        86.14,
+        31.79046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        32.14046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 7.0,
+      "position_m": [
+        86.14,
+        32.14046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        32.49046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 7.25,
+      "position_m": [
+        86.14,
+        32.49046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        32.84046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 7.5,
+      "position_m": [
+        86.14,
+        32.84046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        33.19046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 7.75,
+      "position_m": [
+        86.14,
+        33.19046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        33.54046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 8.0,
+      "position_m": [
+        86.14,
+        33.54046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        33.89046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 8.25,
+      "position_m": [
+        86.14,
+        33.89046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        34.24046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 8.5,
+      "position_m": [
+        86.14,
+        34.24046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        34.59046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 8.75,
+      "position_m": [
+        86.14,
+        34.59046,
+        2.2
+      ],
+      "reference_m": [
+        86.14,
+        34.94046,
+        2.2
+      ],
+      "yaw_rad": 1.570796
+    },
+    {
+      "time_s": 9.0,
+      "position_m": [
+        86.14,
+        34.94046,
+        2.2
+      ],
+      "reference_m": [
+        85.79,
+        34.94046,
+        2.2
+      ],
+      "yaw_rad": 3.141593
+    },
+    {
+      "time_s": 9.25,
+      "position_m": [
+        85.79,
+        34.94046,
+        2.2
+      ],
+      "reference_m": [
+        85.44,
+        34.94046,
+        2.2
+      ],
+      "yaw_rad": 3.141593
+    },
+    {
+      "time_s": 9.5,
+      "position_m": [
+        85.44,
+        34.94046,
+        2.2
+      ],
+      "reference_m": [
+        85.09,
+        34.94046,
+        2.2
+      ],
+      "yaw_rad": 3.141593
+    },
+    {
+      "time_s": 9.75,
+      "position_m": [
+        85.09,
+        34.94046,
+        2.2
+      ],
+      "reference_m": [
+        84.74,
+        34.94046,
+        2.2
+      ],
+      "yaw_rad": 3.141593
+    },
+    {
+      "time_s": 10.0,
+      "position_m": [
+        84.74,
+        34.94046,
+        2.2
+      ],
+      "reference_m": [
+        84.39,
+        34.94046,
+        2.2
+      ],
+      "yaw_rad": 3.141593
+    },
+    {
+      "time_s": 10.25,
+      "position_m": [
+        84.39,
+        34.94046,
+        2.2
+      ],
+      "reference_m": [
+        84.04,
+        34.94046,
+        2.2
+      ],
+      "yaw_rad": 3.141593
+    },
+    {
+      "time_s": 10.5,
+      "position_m": [
+        84.04,
+        34.94046,
+        2.2
+      ],
+      "reference_m": [
+        83.69,
+        34.94046,
+        2.2
+      ],
+      "yaw_rad": 3.141593
+    },
+    {
+      "time_s": 10.75,
+      "position_m": [
+        83.69,
+        34.94046,
+        2.2
+      ],
+      "reference_m": [
+        83.34,
+        34.94046,
+        2.2
+      ],
+      "yaw_rad": 3.141593
+    },
+    {
+      "time_s": 11.0,
+      "position_m": [
+        83.34,
+        34.94046,
+        2.2
+      ],
+      "reference_m": [
+        83.34,
+        34.94046,
+        2.2
+      ],
+      "yaw_rad": 3.141593
+    }
+  ],
+  "local_plan_frames": {
+    "path": "Results/unreal_scene_mapping/derelictcorridormegascans/local_plan_frames.jsonl",
+    "count": 45,
+    "first_frame_source": "scene_truth_pipeline_unknown_map_receding_astar"
+  },
+  "local_known_map_frames": {
+    "path": "Results/unreal_scene_mapping/derelictcorridormegascans/local_known_map_frames.jsonl",
+    "count": 45
+  },
+  "fastlio_adapter": {
+    "path": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_adapter_manifest.json",
+    "status": "blocked_missing_ros1_runtime",
+    "ros1_ready": false
+  },
+  "controller_interface_notes": [
+    "This handoff is a navigation/planning interface artifact, not a dynamics-controller simulation result.",
+    "MWORKS/Sysplorer control integration should consume waypoints/reference samples through a scenario-specific bridge and then produce native simulation evidence.",
+    "The global occupancy grid must remain validation truth; do not feed it directly into an online planner/controller.",
+    "The generated path must also pass buffered collision validation before MWORKS smoke integration."
+  ],
+  "control_interface": {
+    "schema": "mosim.control_interface_package.v1",
+    "scene_id": "derelictcorridormegascans",
+    "status": "ready_for_mworks_reference_model_integration",
+    "claim_boundary": [
+      "This package converts accepted UE navigation output into controller-reference inputs.",
+      "It is not a Sysplorer/MWORKS dynamics simulation result.",
+      "The generated scenario is inactive until a concrete Sysplorer model consumes the PlannedQuinticReference parameters and passes MCP check/simulate gates."
+    ],
+    "generated_outputs": {
+      "control_reference_csv": "Results/unreal_scene_mapping/derelictcorridormegascans/control_reference.csv",
+      "planned_quintic_reference_params_json": "Results/unreal_scene_mapping/derelictcorridormegascans/planned_quintic_reference_params.json",
+      "planned_quintic_reference_constructor": "Results/unreal_scene_mapping/derelictcorridormegascans/planned_quintic_reference_constructor.mo.txt",
+      "scenario_draft_yaml": "Results/unreal_scene_mapping/derelictcorridormegascans/scenario_draft.yaml",
+      "control_interface_package_json": "Results/unreal_scene_mapping/derelictcorridormegascans/control_interface_package.json"
+    },
+    "planned_quintic_reference": {
+      "n_segments": 44,
+      "point_count": 45,
+      "stop_time_s": 39.599999999999966,
+      "reference_velocity_m_s": 0.8,
+      "model_capacity": {
+        "points": 91,
+        "segments": 90
+      }
+    }
+  }
+}

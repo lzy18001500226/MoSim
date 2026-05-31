@@ -1,0 +1,27 @@
+{
+  "created": [
+    {
+      "action": "junction_created",
+      "kind": "content",
+      "name": "DerelictCorridor",
+      "source": "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor",
+      "target": "UE5/MoSimSceneLibrary/Content/DerelictCorridor"
+    },
+    {
+      "action": "junction_created",
+      "kind": "__ExternalActors__",
+      "name": "DerelictCorridor",
+      "source": "References/UnrealScenes/DerelictCorridorMegascans/Content/__ExternalActors__/DerelictCorridor",
+      "target": "UE5/MoSimSceneLibrary/Content/__ExternalActors__/DerelictCorridor"
+    },
+    {
+      "action": "junction_created",
+      "kind": "__ExternalObjects__",
+      "name": "DerelictCorridor",
+      "source": "References/UnrealScenes/DerelictCorridorMegascans/Content/__ExternalObjects__/DerelictCorridor",
+      "target": "UE5/MoSimSceneLibrary/Content/__ExternalObjects__/DerelictCorridor"
+    }
+  ],
+  "scene_source_id": "local_derelictcorridormegascans",
+  "schema": "mosim.unreal.active_scene_links.v1"
+}
