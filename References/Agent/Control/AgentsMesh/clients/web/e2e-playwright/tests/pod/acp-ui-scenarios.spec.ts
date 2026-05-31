@@ -1,0 +1,54 @@
+import { test, expect } from "../../fixtures/index";
+import { clearAuthRateLimit } from "../../helpers/redis";
+import { terminateAllPods } from "../../helpers/pod-cleanup";
+import { setupAcpScenarioPage } from "../../helpers/acp-spec-setup";
+
+// Scenario coverage for the universal mock agent — one spec per scenario,
+// each one exercises a distinct slice of the ACP UI render path.
+//
+//   streaming_3              StreamingCaret + complete-flag pipeline
+//   thinking_then_answer     ThinkingIndicator spinner + collapse
+//   tool_call_edit           AcpToolCallCard animate-pulse → ✓ icon
+//   permission_request_edit  AcpPermissionDialog full approve flow
+// See acp-ui-echo.spec.ts header — same r6 fix applies.
+test.describe("ACP UI: mock agent scenario matrix", () => {
+  test.beforeEach(async () => { clearAuthRateLimit(); });
+  test.afterEach(async () => { await terminateAllPods(); });
+
+  test("streaming_3 emits three chunks concatenated in the activity stream", async ({ page, api }) => {
+    const ctx = await setupAcpScenarioPage(page, api, {
+      mode: "acp", scenario: "streaming_3", prompt: "hello",
+    });
+
+    await expect(page.getByText(/streaming: hello\s+\(done\)/)).toBeVisible({ timeout: 15_000 });
+    ctx.assertWasmHealthy();
+  });
+
+  test("thinking_then_answer renders ThinkingIndicator and final content", async ({ page, api }) => {
+    const ctx = await setupAcpScenarioPage(page, api, {
+      mode: "acp", scenario: "thinking_then_answer", prompt: "what is 2+2",
+    });
+
+    await expect(page.getByText("Thinking...", { exact: false })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("Answer to: what is 2+2")).toBeVisible({ timeout: 15_000 });
+  });
+
+  test("tool_call_edit renders AcpToolCallCard with completed status", async ({ page, api }) => {
+    const ctx = await setupAcpScenarioPage(page, api, {
+      mode: "acp", scenario: "tool_call_edit", prompt: "edit me",
+    });
+
+    await expect(page.getByText("Edit", { exact: true }).first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("Editing file for: edit me")).toBeVisible({ timeout: 15_000 });
+  });
+
+  test("permission_request_edit shows permission dialog and approval completes the tool", async ({ page, api }) => {
+    const ctx = await setupAcpScenarioPage(page, api, {
+      mode: "acp", scenario: "permission_request_edit", prompt: "edit me carefully",
+    });
+
+    await expect(page.getByText(/Tool: tc-mock-edit-perm-1/)).toBeVisible({ timeout: 15_000 });
+    await page.getByRole("button", { name: /Approve/i }).first().click();
+    await expect(page.getByText(/Tool: tc-mock-edit-perm-1/)).not.toBeVisible({ timeout: 10_000 });
+  });
+});

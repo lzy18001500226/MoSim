@@ -1,0 +1,17 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+# Login flow only — reducer + SwiftUI views. The CoreClient
+# DependencyKey was extracted into the //CoreClient module so business
+# features don't have to depend on AuthFeature just to reach the FFI.
+swift_library(
+    name = "AuthFeature",
+    srcs = glob(["*.swift"]),
+    module_name = "AuthFeature",
+    visibility = ["//clients/ios:__subpackages__"],
+    deps = [
+        "//clients/ios/Packages/AgentsMeshCore",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/CoreClient",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/DesignSystem",
+        "@swiftpkg_swift_composable_architecture//:ComposableArchitecture",
+    ],
+)

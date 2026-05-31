@@ -1,0 +1,21 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+# The @main entry point. Lives in this sub-package because the source
+# file is here; ios_app in the parent package depends on it.
+swift_library(
+    name = "AgentsMesh_entry",
+    srcs = ["AgentsMeshApp.swift"],
+    module_name = "AgentsMeshEntry",
+    visibility = ["//clients/ios:__subpackages__"],
+    deps = [
+        "//clients/ios/Packages/AgentsMeshCore",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/AppFeature",
+        "@swiftpkg_swift_composable_architecture//:ComposableArchitecture",
+    ],
+)
+
+# Info.plist is exported so the ios_app macro in the parent can cite it.
+exports_files(
+    ["Info.plist"],
+    visibility = ["//clients/ios:__subpackages__"],
+)

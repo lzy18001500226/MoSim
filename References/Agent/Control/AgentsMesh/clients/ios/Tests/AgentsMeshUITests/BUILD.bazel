@@ -1,0 +1,16 @@
+load("//build_defs/ios:ios_product.bzl", "ios_e2e_tests")
+
+# XCUITest e2e suite. Drives the full iOS app through XCUIApplication
+# queries against a booted simulator. Mirrors the e2e-playwright/ shape
+# on web/desktop: thin specs over Page Objects, env-configurable API
+# URL, dev-backend talking-to-real-stack approach.
+#
+#   bazel test //clients/ios/Tests/AgentsMeshUITests:AgentsMesh_e2e
+ios_e2e_tests(
+    name = "AgentsMesh_e2e",
+    srcs = glob(["**/*.swift"]),
+    bundle_id = "ai.agentsmesh.ios.e2e",
+    host_application = "//clients/ios:AgentsMesh",
+    minimum_os_version = "16.0",
+    visibility = ["//clients/ios:__subpackages__"],
+)

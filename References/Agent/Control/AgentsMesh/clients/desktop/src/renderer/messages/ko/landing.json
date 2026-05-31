@@ -1,0 +1,455 @@
+{
+  "landing": {
+    "nav": {
+      "features": "기능",
+      "pricing": "요금제",
+      "docs": "문서",
+      "signIn": "로그인",
+      "getStarted": "시작하기",
+      "console": "콘솔",
+      "language": "언어"
+    },
+    "hero": {
+      "badge": "AI 에이전트 워크포스 플랫폼",
+      "title1": "터미널 기반",
+      "title2": "코딩 에이전트",
+      "title3": "협업 플랫폼",
+      "slogan1": "50명의 팀처럼 배포하세요.",
+      "slogan2": "5명의 팀으로.",
+      "tagline": "야심 찬 팀을 위한 AI 에이전트 워크포스 플랫폼",
+      "description": "모든 팀원에게 AI 에이전트 팀을 제공하세요. 작업을 할당하고, 진행 상황을 추적하고, 에이전트들이 협업하게 하세요. 코드는 당신의 인프라에 그대로.",
+      "getStartedFree": "팀 구축 시작",
+      "viewDocs": "실제 동작 보기",
+      "trustedBy": "전 세계 야심 찬 팀이 신뢰합니다",
+      "teams": "성장하는 팀",
+      "pods": "수천 개의 Pod",
+      "openSource": "오픈 소스"
+    },
+    "agentLogos": {
+      "title": "팀이 이미 사용 중인 에이전트와 연동",
+      "descriptions": {
+        "anthropic": "Anthropic",
+        "openai": "OpenAI",
+        "google": "Google",
+        "openSource": "오픈소스",
+        "community": "커뮤니티",
+        "yourOwn": "커스텀"
+      }
+    },
+    "paradigmShift": {
+      "title": "한 사람이 빨라졌다고",
+      "titleHighlight": "팀 전체가 빨라지는 건 아닙니다.",
+      "punchline": "개인 생산성은 한계에 도달했습니다. 다음 단계는 조직 생산성입니다.",
+      "before": {
+        "label": "개인 생산성",
+        "items": {
+          "0": "개인 속도 ×10, 팀 산출량 ×1",
+          "1": "각자 자기 에이전트만 따로 운영",
+          "2": "컨텍스트가 개인 세션에 갇혀 있음",
+          "3": "도구가 늘수록 혼란도 늘어남"
+        }
+      },
+      "after": {
+        "label": "조직 생산성",
+        "items": {
+          "0": "개인 속도 ×10, 팀 산출량 ×50",
+          "1": "각자 에이전트 부대를 이끌며 동기화",
+          "2": "컨텍스트 실시간 공유, 완전한 가시성",
+          "3": "하나의 플랫폼으로 모든 것을 관리"
+        }
+      }
+    },
+    "whyTerminal": {
+      "title": "왜",
+      "titleHighlight": "터미널 기반",
+      "titleEnd": "에이전트인가?",
+      "description": "Cursor나 Copilot 같은 IDE 플러그인과 달리, 터미널 기반 에이전트는 자율 실행과 완전한 개발 기능을 제공합니다.",
+      "benefits": {
+        "autonomous": {
+          "title": "자율 실행",
+          "description": "단순한 코드 완성이 아닙니다. 터미널 에이전트는 복잡한 개발 작업을 처음부터 끝까지 독립적으로 완수합니다."
+        },
+        "fullCapabilities": {
+          "title": "완전한 기능",
+          "description": "파일 읽기/쓰기, 명령 실행, Git 작업, 테스트 실행 — 완전한 풀스택 개발 기능."
+        },
+        "dataControl": {
+          "title": "데이터 제어",
+          "description": "셀프 호스트 Runner로 코드가 인프라를 벗어나지 않습니다. 보안 및 규정 준수 요구 사항을 충족합니다."
+        }
+      },
+      "comparison": {
+        "idePlugins": "IDE 플러그인",
+        "idePluginsSubtitle": "Copilot / Cursor",
+        "terminalBased": "터미널 기반",
+        "terminalBasedSubtitle": "Claude Code / Aider",
+        "autonomy": "자율성",
+        "capabilities": "기능",
+        "environment": "환경",
+        "multiAgent": "멀티 에이전트",
+        "selfHosted": "셀프 호스트",
+        "ide": {
+          "autonomy": "수동적 응답",
+          "capabilities": "코드 완성",
+          "environment": "IDE 샌드박스",
+          "multiAgent": "지원 안 함",
+          "selfHosted": "클라우드만"
+        },
+        "terminal": {
+          "autonomy": "능동적 작업 실행",
+          "capabilities": "풀스택 개발",
+          "environment": "전체 터미널 접근",
+          "multiAgent": "AgentsMesh 지원",
+          "selfHosted": "완전 제어 가능"
+        }
+      }
+    },
+    "coreFeatures": {
+      "title": "코파일럿이 아닙니다.",
+      "titleHighlight": "워크포스입니다.",
+      "description": "AI 에이전트를 단독 도구에서 협업 팀으로 바꾸는 다섯 가지 기능.",
+      "agentpod": {
+        "title": "모든 에이전트에게 전용 데스크를. 몇 초면 준비 완료.",
+        "subtitle": "AgentPod",
+        "description": "온디맨드로 격리된 개발 환경을 생성. 각 에이전트가 자체 워크스페이스를 보유 — Git 리포, 터미널, 전체 개발 도구. 노트북이든 폰이든, 전체 플로어를 한눈에 모니터링.",
+        "highlights": {
+          "0": "30초 셋업 — 제로에서 코딩까지",
+          "1": "브라우저 기반 터미널, 모든 기기에서 동작",
+          "2": "에이전트별 격리된 Git worktree — 충돌 없음",
+          "3": "수십 개의 에이전트를 동시 실행",
+          "4": "작업 완료 시 자동 정리"
+        }
+      },
+      "agentsmesh": {
+        "title": "에이전트끼리 대화합니다. 당신이 전달자가 될 필요 없습니다.",
+        "subtitle": "AgentsMesh",
+        "description": "에이전트는 서로의 작업을 관찰하고, 채널을 통해 컨텍스트를 공유하며, 자율적으로 협업합니다. 팀원을 찾고, 접근 권한을 협상하고, 워크로드가 늘면 지원군을 자동 생성합니다.",
+        "highlights": {
+          "0": "에이전트끼리 실시간으로 터미널을 관찰",
+          "1": "@mention과 컨텍스트 공유를 통한 채널 메시징",
+          "2": "자동 발견 — 에이전트가 피어를 찾아 영입",
+          "3": "모든 에이전트 연결의 라이브 토폴로지 맵",
+          "4": "스코프 기반 권한 — 읽기 전용 관찰 또는 전체 제어"
+        }
+      },
+      "tickets": {
+        "title": "티켓을 쓰면 완료됩니다.",
+        "subtitle": "Tickets",
+        "description": "칸반 보드에 작업을 올리세요. 에이전트가 선점하고, 브랜치를 만들고, 코드를 작성하고, 머지 리퀘스트를 엽니다. 당신은 리뷰하고 배포만 하면 됩니다.",
+        "highlights": {
+          "0": "티켓이 자동으로 에이전트 지시사항으로 변환",
+          "1": "에이전트가 에픽을 서브태스크로 자율 분해",
+          "2": "MR/PR이 티켓에 연결되어 실시간 CI 상태 표시",
+          "3": "백로그부터 배포까지 전체 라이프사이클 추적",
+          "4": "Git webhook이 자동으로 루프를 닫음"
+        }
+      },
+      "runners": {
+        "title": "코드는 절대 밖으로 나가지 않습니다.",
+        "subtitle": "Self-Hosted Runners",
+        "description": "당신의 클라우드, 데이터센터, 혹은 책상 밑에 배포. 당신의 코드, 당신의 인프라, 외부 노출 제로.",
+        "highlights": {
+          "0": "Docker / Kubernetes 지원",
+          "1": "완전한 데이터 주권",
+          "2": "에어갭 환경 지원",
+          "3": "완전한 감사 추적"
+        }
+      },
+      "scheduledTasks": {
+        "title": "코드베이스에 24/7 유지보수 크루를.",
+        "subtitle": "LOOP",
+        "description": "코드 리뷰, 의존성 업데이트, 보안 스캔, 테스트 스위트 — 스케줄링하고 자동 처리. 한 번만 설정하세요. 당신이 퇴근한 뒤에도 에이전트 팀이 코드베이스를 지킵니다.",
+        "highlights": {
+          "0": "모든 에이전트 작업에 Cron 스타일 스케줄링",
+          "1": "자동 브랜치 생성 및 MR 제출",
+          "2": "완료 또는 실패 시 Slack/Webhook 알림",
+          "3": "로그와 diff를 포함한 전체 히스토리",
+          "4": "에이전트를 멀티 스텝 워크플로우로 체이닝"
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "에이전트 팀을",
+      "titleHighlight": "3분",
+      "description": "설치부터 첫 에이전트까지. 지난 스탠드업보다 빠릅니다.",
+      "step1": {
+        "title": "Runner 배포",
+        "description": "어떤 머신이든 설치 가능 — 클라우드든 로컬이든. 명령어 하나면 끝."
+      },
+      "step2": {
+        "title": "작업 할당",
+        "description": "워크스테이션을 만들고, 티켓을 쓰고, 스케줄을 설정. 에이전트가 즉시 작업 시작."
+      },
+      "step3": {
+        "title": "배포를 지켜보세요",
+        "description": "브라우저에서 진행 상황 추적. 머지 리퀘스트를 리뷰. 준비되면 배포."
+      }
+    },
+    "enterprise": {
+      "title": "당신의 에이전트.",
+      "titleHighlight": "당신의 규칙.",
+      "description": "에이전트 워크포스를 대규모로 관리하는 조직을 위한 엔터프라이즈급 보안과 거버넌스.",
+      "features": {
+        "multiTenant": {
+          "title": "멀티 테넌트",
+          "description": "격리된 워크스페이스가 있는 조직 및 팀 계층 구조."
+        },
+        "sso": {
+          "title": "SSO 통합",
+          "description": "엔터프라이즈 인증을 위한 SAML 2.0 및 LDAP 지원.",
+          "comingSoon": true
+        },
+        "auditLogs": {
+          "title": "감사 로그",
+          "description": "규정 준수 및 보안을 위한 완전한 활동 추적."
+        },
+        "rbac": {
+          "title": "RBAC",
+          "description": "팀을 위한 세밀한 역할 기반 접근 제어."
+        },
+        "gitIntegration": {
+          "title": "Git 통합",
+          "description": "GitLab, GitHub, Gitee 기본 지원."
+        },
+        "monitoring": {
+          "title": "모니터링",
+          "description": "Prometheus 메트릭 및 Grafana 대시보드 포함.",
+          "comingSoon": true
+        },
+        "backupDR": {
+          "title": "백업 및 DR",
+          "description": "재해 복구 지원 자동 백업.",
+          "comingSoon": true
+        },
+        "airGapped": {
+          "title": "에어갭",
+          "description": "최대 보안을 위한 완전 오프라인 배포.",
+          "comingSoon": true
+        }
+      }
+    },
+    "pricing": {
+      "title": "팀을 스케일하세요,",
+      "titleHighlight": "예산은 그대로.",
+      "description": "자체 API 키를 가져오세요. 플랫폼 비용만 지불, 토큰 과금 없음. 사용량 제한 없음.",
+      "mostPopular": "가장 인기",
+      "annualDiscount": "20% 할인",
+      "perSeat": "/석",
+      "monthly": "월간",
+      "yearly": "연간",
+      "yearlyDiscount": "17% 할인",
+      "month": "월",
+      "year": "년",
+      "seatMonth": "석/월",
+      "seatYear": "석/년",
+      "based": {
+        "name": "Based",
+        "badge": "30일 무료 체험",
+        "description": "혼자서 시작하세요. 에이전트 하나로 뭘 할 수 있는지 확인하세요.",
+        "features": {
+          "0": "1석 (솔로 모드)",
+          "1": "5 에이전트 동시 실행",
+          "2": "1 Runner",
+          "3": "5 리포지토리",
+          "4": "커뮤니티 지원"
+        },
+        "cta": "무료 체험 시작"
+      },
+      "pro": {
+        "name": "Pro",
+        "description": "첫 에이전트 팀. 최대 5석, 10 에이전트 병렬 실행.",
+        "features": {
+          "0": "최대 5석",
+          "1": "10 에이전트 동시 실행",
+          "2": "10 Runners",
+          "3": "10 리포지토리",
+          "4": "우선 이메일 지원",
+          "5": "멀티 Git 프로바이더 지원"
+        },
+        "cta": "Pro로 업그레이드"
+      },
+      "enterprise": {
+        "name": "Team",
+        "description": "부서 규모. 50석으로 각자의 에이전트 스쿼드를 운영.",
+        "features": {
+          "0": "최대 50석",
+          "1": "50 에이전트 동시 실행",
+          "2": "100 Runners",
+          "3": "무제한 리포지토리",
+          "4": "우선 지원"
+        },
+        "cta": "Team으로 업그레이드"
+      },
+      "onpremise": {
+        "name": "OnPremise",
+        "price": "맞춤",
+        "period": "문의하기",
+        "description": "완전한 프라이빗 배포. 당신의 인프라, 당신의 규칙.",
+        "features": {
+          "0": "무제한 석수",
+          "1": "무제한 에이전트",
+          "2": "무제한 Runners",
+          "3": "에어갭 지원",
+          "4": "전담 지원",
+          "5": "맞춤 SLA",
+          "6": "화이트 글러브 온보딩"
+        },
+        "cta": "영업팀 연락"
+      },
+      "footer": "모든 요금제에 BYOK(Bring Your Own Key) 포함 — 자체 AI API 키를 사용하며, 사용량 제한 없음.",
+      "customPlan": "엔터프라이즈 배포가 필요하신가요?",
+      "contactUs": "문의하기"
+    },
+    "selfHosted": {
+      "title": "완전한",
+      "titleHighlight": "셀프 호스트",
+      "titleEnd": "배포가 필요하신가요?",
+      "description": "코드와 데이터가 인프라를 벗어나지 않습니다. AgentsMesh를 완전히 온프레미스로 배포 — 엄격한 보안 및 규정 준수 요구 사항이 있는 조직에 최적.",
+      "dockerCompose": "Docker Compose",
+      "kubernetesHelm": "Kubernetes Helm (출시 예정)",
+      "airGappedSupport": "에어갭 지원 (출시 예정)",
+      "viewDocs": "배포 문서 보기",
+      "contactSales": "엔터프라이즈 영업팀 연락"
+    },
+    "finalCta": {
+      "title1": "당신의 팀이",
+      "title2": "훨씬 커집니다.",
+      "description": "에이전트 한 명부터 시작해서 50명까지 확장. 무료로 시작하며 신용카드 불필요.",
+      "getStartedFree": "팀 구축하기",
+      "scheduleDemo": "상담하기",
+      "freeTier": "무료 플랜 제공",
+      "noCreditCard": "신용카드 불필요",
+      "selfHostedOption": "셀프 호스트 옵션"
+    },
+    "heroDemo": {
+      "podTopology": "Pod 토폴로지",
+      "live": "실시간",
+      "initializingPod": "Pod 초기화 중...",
+      "typeMessage": "메시지 입력...",
+      "connecting": "AgentsMesh에 연결 중...",
+      "connected": "AgentsMesh 서버에 연결됨",
+      "workspace": "작업 공간: /projects/e-commerce",
+      "monitorPod": "pod beta-dev를 모니터링하고 인증 구현 조정 지원",
+      "bindingPod": "beta-dev에 바인딩하여 관찰 및 조정합니다...",
+      "boundToPod": "beta-dev (Codex CLI)에 바인딩됨",
+      "observingHeader": "beta-dev 관찰 중",
+      "analyzing": "src/auth/handlers.ts 분석 중...",
+      "creatingOAuth": "OAuth2 프로바이더 통합 생성 중",
+      "writingOAuth": "작성 중: src/auth/oauth.ts",
+      "noticedOAuth": "beta-dev가 OAuth를 구현 중인 것을 확인. 속도 제한 추가를 제안합니다...",
+      "messageSent": "「/auth/* 엔드포인트에 속도 제한 추가를 고려하세요」",
+      "receivedSuggestion": "beta-dev: 제안 수신, 속도 제한기 구현 중...",
+      "writingRateLimit": "beta-dev: src/middleware/rateLimit.ts 작성 중",
+      "rateLimitAdded": "beta-dev: 인증 라우트에 속도 제한 추가됨",
+      "reviewChanges": "좋습니다! beta-dev가 속도 제한을 구현했습니다. 변경 사항을 리뷰합니다...",
+      "podInfo": {
+        "initializing": "Pod: alpha-dev | 에이전트: Claude Code | 상태: 초기화 중",
+        "running": "Pod: alpha-dev | 에이전트: Claude Code | 상태: 실행 중",
+        "observing": "Pod: alpha-dev | 에이전트: Claude Code | 관찰 중: beta-dev"
+      }
+    },
+    "coreDemo": {
+      "terminalTitle": "AgentPod 터미널",
+      "podA": "Pod A",
+      "podB": "Pod B",
+      "devChannel": "#dev-channel",
+      "members": "{count}명의 멤버",
+      "kanban": {
+        "backlog": "백로그",
+        "inProgress": "진행 중",
+        "review": "검토",
+        "done": "완료",
+        "authFeature": "인증 기능",
+        "empty": "비어 있음"
+      },
+      "schedule": {
+        "title": "예약 작업",
+        "auto": "자동",
+        "daily": "매일 09:00",
+        "weekly": "월요일 08:00",
+        "friday": "금요일 17:00",
+        "hourly": "매시간",
+        "depUpdate": "의존성 업데이트",
+        "secScan": "보안 스캔",
+        "codeReview": "코드 리뷰",
+        "testSuite": "테스트 스위트",
+        "passed": "통과",
+        "running": "실행 중",
+        "pending": "대기 중",
+        "nextRun": "다음 실행"
+      },
+      "architecture": {
+        "yourInfrastructure": "당신의 인프라",
+        "runner": "Runner",
+        "agent": "에이전트",
+        "websocket": "WebSocket",
+        "agentsmeshCloud": "AgentsMesh 클라우드"
+      }
+    },
+    "demoVideo": {
+      "title": "미래의 팀을",
+      "titleHighlight": "직접 확인하세요",
+      "description": "2분. 티켓에서 머지 리퀘스트까지 — 완전 자율.",
+      "iframeTitle": "AgentsMesh 제품 데모",
+      "highlight1": "전체 라이프사이클 데모",
+      "highlight2": "멀티 에이전트 협업",
+      "highlight3": "자율형 작업 완료"
+    },
+    "footer": {
+      "tagline": "팀이 인원 한계를 넘어 스케일하는 곳.",
+      "copyright": "AgentsMesh. All rights reserved.",
+      "madeWith": "야심 찬 팀을 위해 구축됨",
+      "product": {
+        "title": "제품",
+        "agentpod": "AgentPod",
+        "agentsmesh": "AgentsMesh",
+        "tickets": "티켓",
+        "runners": "Runners",
+        "pricing": "요금제",
+        "enterprise": "엔터프라이즈"
+      },
+      "resources": {
+        "title": "리소스",
+        "documentation": "문서",
+        "apiReference": "API 레퍼런스",
+        "tutorials": "튜토리얼",
+        "github": "GitHub",
+        "changelog": "변경 로그",
+        "status": "상태"
+      },
+      "company": {
+        "title": "회사",
+        "about": "소개",
+        "blog": "블로그",
+        "careers": "채용",
+        "contact": "연락처"
+      },
+      "legal": {
+        "title": "법적 정보",
+        "privacy": "개인정보 처리방침",
+        "terms": "서비스 약관",
+        "security": "보안"
+      }
+    },
+    "demo": {
+      "title": "데모 요청",
+      "subtitle": "AgentsMesh가 팀의 생산성을 어떻게 배가시키는지 확인하세요.",
+      "nameLabel": "이름",
+      "namePlaceholder": "홍길동",
+      "emailLabel": "업무 이메일",
+      "emailPlaceholder": "gildong@company.com",
+      "companyLabel": "회사",
+      "companyPlaceholder": "주식회사 샘플",
+      "referralLabel": "어떻게 알게 되셨나요?",
+      "referralPlaceholder": "예: Twitter, GitHub, 지인 추천...",
+      "messageLabel": "추가 정보 (선택)",
+      "messagePlaceholder": "팀 규모와 사용 사례를 알려주세요...",
+      "submit": "데모 요청",
+      "submitting": "제출 중...",
+      "error": "문제가 발생했습니다. 다시 시도해 주세요.",
+      "thankYou": "감사합니다!",
+      "thankYouDescription": "데모 요청을 접수했습니다. 1영업일 이내에 연락드리겠습니다.",
+      "backToHome": "홈으로 돌아가기"
+    }
+  }
+}

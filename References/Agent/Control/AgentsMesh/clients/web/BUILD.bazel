@@ -1,0 +1,314 @@
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+load("@npm//:next/package_json.bzl", next_bin = "bin")
+load("//build_defs/web:eslint.bzl", "eslint_test")
+load("//build_defs/web:next.bzl", "next_app", "next_standalone_app")
+load("//build_defs/web:next_oci.bzl", "next_oci_image")
+load("//build_defs/web:ts.bzl", "ts_project")
+load("//build_defs/web:vitest.bzl", "vitest_test")
+
+# aspect_rules_js 2.9 emits a per-importer `next/package_json.bzl` that
+# re-exports the `bin` factory from the versioned `@@aspect_rules_js++
+# npm+npm__next__*` repo. Declaring a local `js_binary` via this
+# factory gives `next_app()` a stable label it can feed into
+# `js_run_binary`/`js_run_devserver` without encoding the Next.js
+# version or hash into the BUILD file.
+next_bin.next_binary(
+    name = "next_js_binary",
+    visibility = ["//visibility:public"],
+)
+
+# Cross-package exports: //backend/pkg/slugkit:slugkit_test pulls
+# `reserved.ts` into runfiles to verify the reserved-slug list stays in
+# sync with the Go SSOT. Done at the package root rather than via a
+# nested `clients/web/src/lib/slug/BUILD.bazel` so the `src/**` glob in
+# `:src_files` (consumed by desktop's electron-vite) doesn't get split
+# across a Bazel package boundary.
+exports_files(
+    ["src/lib/slug/reserved.ts"],
+    visibility = ["//backend/pkg/slugkit:__pkg__"],
+)
+
+# TypeScript sources — everything under src/. tsc runs via the pinned
+# TypeScript from MODULE.bazel, not the one in node_modules, so builds
+# stay hermetic. `:src` is a type-check gate (legacy type errors
+# currently prevent it from building, tracked separately); the
+# Next.js build consumes raw .ts/.tsx via `_SRC_FILES` below so the
+# OCI image pipeline isn't blocked on the type-check cleanup.
+ts_project(
+    name = "src",
+    srcs = glob(
+        [
+            "src/**/*.ts",
+            "src/**/*.tsx",
+            "src/**/*.json",
+        ],
+        exclude = [
+            "src/**/*.test.ts",
+            "src/**/*.test.tsx",
+        ],
+    ),
+    allow_js = True,
+    extends = "tsconfig.json",
+    no_emit = True,
+    resolve_json_module = True,
+    tsconfig = "tsconfig.bazel.json",
+    visibility = ["//clients:__subpackages__"],
+    deps = [
+        "//:node_modules",
+        # Bazel-native first-party packages (`@agentsmesh/*` + the
+        # `agentsmesh-wasm` npm wrapper around the Rust→wasm-bindgen
+        # pipeline) aren't in the pnpm-derived `//:node_modules`
+        # aggregate; tsc needs explicit link targets to resolve them.
+        "//:node_modules/@agentsmesh/electron-adapter",
+        "//:node_modules/@agentsmesh/service-interface",
+        "//:node_modules/@agentsmesh/service-runtime",
+        "//:node_modules/@agentsmesh/node-bridge",
+        # `@agentsmesh/proto` ships the generated Connect-RPC TS
+        # modules; `@proto/*` in tsconfig resolves through this mount.
+        "//:node_modules/@agentsmesh/proto",
+        "//:node_modules/agentsmesh-wasm",
+    ],
+)
+
+# Raw source files exposed for downstream bundlers (Desktop's
+# electron-vite renderer cross-imports `@/stores`, `@/lib`, etc.).
+# `:src` is a `no_emit` ts_project — type-check only, doesn't pass
+# the .ts/.tsx files through its DefaultInfo. This `js_library` gives
+# bundlers a cross-package label that resolves to the raw sources;
+# `filegroup` would fail aspect_rules_js's `copy_srcs_to_bin` check
+# when consumed from a different package.
+js_library(
+    name = "src_files",
+    srcs = glob(
+        [
+            "src/**/*.ts",
+            "src/**/*.tsx",
+            "src/**/*.json",
+            "src/**/*.css",
+            "src/**/*.md",
+            "src/**/*.mdx",
+        ],
+        allow_empty = True,
+        exclude = [
+            "src/**/*.test.ts",
+            "src/**/*.test.tsx",
+        ],
+    ),
+    visibility = ["//clients:__subpackages__"],
+)
+
+# Raw source bundle passed to `next build`. Next.js's own compiler
+# (SWC/webpack) handles the actual TypeScript, so tsc is not on the
+# critical path for image builds.
+_SRC_FILES = glob(
+    [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.css",
+        "src/**/*.json",
+        "src/**/*.md",
+        "src/**/*.mdx",
+    ],
+    allow_empty = True,
+    exclude = [
+        "src/**/*.test.ts",
+        "src/**/*.test.tsx",
+    ],
+)
+
+# Runtime data bundle the Next.js build needs: config files, package
+# manifests, linked node_modules. `agentsmesh-wasm` resolves through
+# `//:node_modules/agentsmesh-wasm` → `//clients/core/crates/wasm:wasm_pkg_npm`
+# (Bazel-native rust→wasm-bindgen pipeline; the wasm closure is
+# tokio-free, see clients/core/crates/wasm/BUILD.bazel for the
+# architectural rationale).
+#
+# First-party `@agentsmesh/*` packages are also Bazel-native (no
+# `workspace:*` in root package.json; see build_defs/web/internal_package.bzl).
+# We must list each `npm_link_package` link explicitly because
+# `//:node_modules` only aggregates pnpm-lock.yaml-derived externals.
+# Common build inputs shared between the dev path (`next_app`) and the
+# OCI-image path (`next_standalone_app`). Each macro adds its own config
+# file (.ts vs .bazel.mjs) on top — see comments below.
+_NEXT_DATA_COMMON = [
+    "postcss.config.mjs",
+    "tsconfig.json",
+    "//:node_modules",
+    "//:node_modules/@agentsmesh/electron-adapter",
+    "//:node_modules/@agentsmesh/service-interface",
+    "//:node_modules/@agentsmesh/service-runtime",
+    "//:node_modules/@agentsmesh/node-bridge",
+    "//:node_modules/@agentsmesh/proto",
+    "//:node_modules/agentsmesh-wasm",
+    "//:package_json_bin",
+    # Generated TS proto message classes — `@proto/*` alias resolves
+    # to `../../proto/gen/ts/*` (tsconfig.json paths). Next.js's
+    # webpack pipeline reads the .ts files directly; the alias maps
+    # imports to disk paths inside the Bazel sandbox.
+    "//proto:proto_gen_ts",
+] + glob(
+    ["public/**/*"],
+    allow_empty = True,
+)
+
+# Dev / type-check / vitest path — keeps the existing `next.config.ts`
+# so `bazel run :next_dev` and `bazel run :next_start` work unchanged.
+# This path does NOT enable `output: "standalone"` (the .ts file's
+# legacy BAZEL_BUILD env gate stays off by default).
+#
+# `next_build_out=".next-dev"` keeps this target's outputs from
+# clashing with `:next_image` (which writes the canonical `.next/`).
+# Both targets are analyzed by `bazel build //...`; declaring the
+# same out_dir would trip Bazel's "conflicting actions" check even
+# with `tags=["manual"]`. The matching `distDir` is wired in
+# next.config.ts via process.env.BAZEL_TARGET_NAME.
+next_app(
+    name = "next",
+    srcs = _SRC_FILES,
+    data = _NEXT_DATA_COMMON + ["next.config.ts"],
+    next_build_out = ".next-dev",
+    next_js_binary = ":next_js_binary",
+)
+
+# OCI-image path — uses the standalone build via aspect_rules_js's
+# `nextjs_standalone_build` wrapper, which strips pnpm-symlink
+# `node_modules` trees inside `.next/standalone/` so Bazel's declared
+# output validation passes. Config MUST be `next.config.bazel.mjs`
+# (the wrapper synthesises a `next.config.mjs` of its own; the user's
+# config can't share that name).
+next_standalone_app(
+    name = "next_image",
+    srcs = _SRC_FILES,
+    config = "next.config.bazel.mjs",
+    data = _NEXT_DATA_COMMON,
+    next_js_binary = ":next_js_binary",
+    # NFT misses dynamic-`require` deps; whitelist runtime packages
+    # whose absence at boot would 500 the server. Append here when
+    # smoke tests surface MODULE_NOT_FOUND.
+    # NFT misses dynamic-`require` deps; whitelist runtime packages
+    # whose absence at boot would 500 the server. The 6 next-internal
+    # deps (@next/env / @swc/helpers / baseline-browser-mapping /
+    # caniuse-lite / postcss / styled-jsx) are hoisted into root
+    # package.json so `//:node_modules/<pkg>` labels exist for them.
+    # Append more here when smoke tests surface MODULE_NOT_FOUND.
+    node_modules_runtime = [
+        "//:node_modules/next",
+        "//:node_modules/react",
+        "//:node_modules/react-dom",
+        "//:node_modules/next-intl",
+        "//:node_modules/@next/env",
+        "//:node_modules/@swc/helpers",
+        "//:node_modules/baseline-browser-mapping",
+        "//:node_modules/caniuse-lite",
+        "//:node_modules/postcss",
+        "//:node_modules/styled-jsx",
+        "//:node_modules/@agentsmesh/service-runtime",
+        "//:node_modules/@agentsmesh/service-interface",
+        "//:node_modules/agentsmesh-wasm",
+    ],
+)
+
+next_oci_image(
+    name = "image",
+    app_dir = "/app/clients/web",
+    exposed_ports = ["3000/tcp"],
+    extra_files = [
+        "entrypoint.mjs",
+        "healthcheck.mjs",
+    ],
+    repositories = {
+        "agentsmesh": "registry.agentsmesh.ai/agentsmesh/web",
+        "dockerhub": "agentsmesh/web",
+    },
+    server_dir = ":next_image_server_dir",
+)
+
+# Image-size regression gate. Fails CI if the staged server tree grows
+# past 350 MB. Combined with the deterministic ~170 MB distroless base,
+# the runtime image stays under the 500 MB target. The 2026-05-09
+# disk-full incident saw the legacy image at 7.97 GB; bump only with a
+# justifying commit message.
+sh_test(
+    name = "image_size_gate",
+    srcs = ["//build_defs/web:image_size_gate.sh"],
+    args = [
+        "$(rootpath :next_image_server_dir)",
+        "367001600",
+    ],
+    data = [":next_image_server_dir"],
+)
+
+# `:next` (dev build) and `:next_image` (standalone) both write into
+# `.next/`. Wildcard builds (`bazel build //...`) trigger both → Bazel
+# rejects with "conflicting actions". `:next` carries the `manual` tag
+# via the `next_app` macro so wildcards skip it; explicit invocations
+# (`bazel build //clients/web:next`) and the dev server target remain
+# unaffected. The OCI image pipeline runs through `:next_image`.
+
+# Vitest unit + component tests (132 files / 1510 tests as of last run).
+# `bazel test //clients/web:unit` is equivalent to `pnpm test:run`.
+vitest_test(
+    name = "unit",
+    size = "large",
+    srcs = glob([
+        "src/**/*.test.ts",
+        "src/**/*.test.tsx",
+    ]),
+    config = "vitest.config.ts",
+    data = [
+        "tsconfig.json",
+        "//:node_modules",
+        # First-party Bazel-managed links that vitest needs to resolve
+        # at runtime via Node's `node_modules/<name>` walk.
+        "//:node_modules/@agentsmesh/electron-adapter",
+        "//:node_modules/@agentsmesh/service-interface",
+        "//:node_modules/@agentsmesh/service-runtime",
+        "//:node_modules/agentsmesh-wasm",
+        "//:package_json_bin",
+        # Generated TS proto message classes used by Connect adapters
+        # under src/lib/api/. vitest's `@proto/*` alias resolves to
+        # `../../proto/gen/ts/*` (vitest.config.ts), so the runfiles
+        # must include the generated sources or vite's import-analysis
+        # plugin fails on the alias.
+        "//proto:proto_gen_ts",
+    ] + glob(
+        [
+            "src/**/*.ts",
+            "src/**/*.tsx",
+            "src/**/*.json",
+            "src/**/*.css",
+        ],
+        allow_empty = True,
+        exclude = [
+            "src/**/*.test.ts",
+            "src/**/*.test.tsx",
+        ],
+    ),
+)
+
+# `bazel test //clients/web:lint` — equivalent to running ESLint at
+# the package root. ESLint v9 flat config is at clients/web/eslint.config.mjs;
+# `eslint_test` macro sets chdir = clients/web. The
+# public_hoist_packages declaration in MODULE.bazel surfaces `next`
+# at root node_modules so eslint-config-next's internal
+# `require("next/dist/...")` resolves.
+eslint_test(
+    name = "lint",
+    size = "large",
+    srcs = glob(
+        [
+            "src/**/*.ts",
+            "src/**/*.tsx",
+            "src/**/*.js",
+            "src/**/*.mjs",
+            "e2e-playwright/**/*.ts",
+        ],
+        allow_empty = True,
+        exclude = ["src/**/*.d.ts"],
+    ),
+)
+
+# Playwright e2e suite lives at //clients/web/e2e-playwright:e2e (438 tests
+# including the blockstore subset under tests/blockstore/). Needs Docker dev
+# stack up. Install browsers once: `pnpm exec playwright install chromium`.
+# Run: `bazel test //clients/web/e2e-playwright:e2e`.

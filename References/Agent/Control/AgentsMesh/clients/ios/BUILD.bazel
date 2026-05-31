@@ -1,0 +1,16 @@
+load("//build_defs/ios:ios_product.bzl", "ios_app")
+
+# Assembles the final iOS app binary. Produces both the `.app` target
+# and a `:AgentsMesh_xcodeproj` target for day-to-day development in
+# Xcode (replaces `xcodegen generate`).
+#
+# The swift_library entry point lives in `//clients/ios/App` because
+# the @main source file is there (Bazel sub-package).
+ios_app(
+    name = "AgentsMesh",
+    bundle_id = "ai.agentsmesh.ios",
+    infoplists = ["//clients/ios/App:Info.plist"],
+    minimum_os_version = "16.0",
+    visibility = ["//visibility:public"],
+    deps = ["//clients/ios/App:AgentsMesh_entry"],
+)

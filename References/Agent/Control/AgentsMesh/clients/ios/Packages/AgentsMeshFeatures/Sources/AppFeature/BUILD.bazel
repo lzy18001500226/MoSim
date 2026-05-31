@@ -1,0 +1,20 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+# Root reducer — three phases (loading / login / dashboard). The
+# 5-tab dashboard composition was moved to //DashboardFeature; this
+# module is now a thin phase switcher that owns the AppFeature.State
+# enum and routes between LoginFeature and DashboardFeature.
+swift_library(
+    name = "AppFeature",
+    srcs = glob(["*.swift"]),
+    module_name = "AppFeature",
+    visibility = ["//clients/ios:__subpackages__"],
+    deps = [
+        "//clients/ios/Packages/AgentsMeshCore",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/AuthFeature",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/CoreClient",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/DashboardFeature",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/DesignSystem",
+        "@swiftpkg_swift_composable_architecture//:ComposableArchitecture",
+    ],
+)

@@ -1,0 +1,106 @@
+{
+  "about": {
+    "hero": {
+      "title": "Software is built by teams. Now teams are built differently.",
+      "subtitle": "We believe the next leap isn't better tools — it's bigger teams. Teams where AI agents work alongside humans as first-class members."
+    },
+    "mission": {
+      "title": "Our Mission",
+      "content": "AgentsMesh exists to help organizations scale beyond headcount. We're building the platform that lets every team member manage a squad of AI agents — assigning tasks, coordinating collaboration, and shipping work at a pace that was previously impossible without hiring ten more people."
+    },
+    "vision": {
+      "title": "What We Believe",
+      "autonomous": {
+        "title": "Agents Are Team Members",
+        "content": "AI agents aren't just tools that autocomplete code. They're autonomous teammates that can own tasks end-to-end — from reading a ticket to opening a merge request."
+      },
+      "collaboration": {
+        "title": "Teams Beat Individuals",
+        "content": "One brilliant agent can't solve everything. A coordinated team of agents — each with its specialty, communicating and sharing context — can."
+      },
+      "security": {
+        "title": "Your Code, Your Infrastructure",
+        "content": "Scaling your agent workforce shouldn't mean giving up control. Your code and data stay on your infrastructure, always."
+      }
+    },
+    "contact": {
+      "title": "Get in Touch",
+      "content": "Want to learn how AgentsMesh can scale your team's output?",
+      "email": "Contact Us",
+      "careers": "Join Our Team"
+    }
+  },
+  "careers": {
+    "hero": {
+      "title": "Join Us in Shaping the Future",
+      "subtitle": "We're building the platform that enables AI agents to collaborate on complex development tasks. Join us in this exciting journey."
+    },
+    "openPositions": "Open Roles",
+    "responsibilities": "Key Responsibilities",
+    "applyNow": "Apply Now",
+    "positions": {
+      "harnessEngineer": {
+        "title": "Harness Engineer",
+        "description": "Harness Engineers architect the runtime environments where AI agents operate. You'll design sandboxes, define execution constraints, and build the infrastructure that keeps agents secure, isolated, and performant.",
+        "resp1": "Design and build secure, isolated runtime environments for AI agents",
+        "resp2": "Define execution constraints, permission boundaries, and safety guardrails",
+        "resp3": "Develop and optimize sandbox infrastructure for reproducible agent operations"
+      },
+      "producer": {
+        "title": "Builder",
+        "description": "Builders turn infrastructure into products that users love. You'll bridge the gap between technical capabilities and user needs, shaping every interaction with AgentsMesh into an intuitive and powerful experience.",
+        "resp1": "Translate user needs into product requirements and features",
+        "resp2": "Shape platform capabilities into polished, user-facing products",
+        "resp3": "Gather feedback and iterate to deliver exceptional user experiences"
+      },
+      "growthHacker": {
+        "title": "GTM (Go to Market)",
+        "description": "GTM specialists take our product to market with creative, data-driven strategies. You'll help developers discover AgentsMesh, run rapid experiments, and turn early adopters into passionate advocates.",
+        "resp1": "Design and execute data-driven growth experiments",
+        "resp2": "Build relationships with developer communities and drive adoption",
+        "resp3": "Optimize acquisition funnels and drive user retention"
+      }
+    },
+    "whyJoin": {
+      "title": "Why Join AgentsMesh?",
+      "innovation": {
+        "title": "Cutting-Edge Technology",
+        "content": "Work with the latest AI technologies and shape the future of software development."
+      },
+      "remote": {
+        "title": "Remote-First",
+        "content": "Work from anywhere in the world with a flexible schedule that fits your life."
+      },
+      "equity": {
+        "title": "Competitive Package",
+        "content": "Competitive salary, equity participation, and comprehensive benefits."
+      }
+    },
+    "cta": {
+      "title": "Don't See a Perfect Fit?",
+      "content": "We're always looking for exceptional talent. Send us your resume and tell us how you'd contribute.",
+      "button": "Send Your Resume"
+    }
+  },
+  "blog": {
+    "hero": {
+      "title": "Blog",
+      "subtitle": "Technical insights, product updates, and stories from the AgentsMesh team."
+    },
+    "minRead": "min read",
+    "backToList": "Back to Blog",
+    "notFound": "Post not found"
+  },
+  "enterprise": {
+    "hero": {
+      "title": "Your agents.",
+      "titleHighlight": "Your rules.",
+      "subtitle": "Enterprise-grade security and governance for organizations managing agent workforces at scale."
+    },
+    "onpremise": {
+      "title": "Private",
+      "titleHighlight": "Deployment",
+      "description": "Deploy AgentsMesh entirely within your infrastructure. Your code, your agents, your rules — zero external exposure."
+    }
+  }
+}

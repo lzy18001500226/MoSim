@@ -1,0 +1,15 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+# Pod list + runner status. Entry into the dashboard after login.
+swift_library(
+    name = "WorkspaceFeature",
+    srcs = glob(["*.swift"]),
+    module_name = "WorkspaceFeature",
+    visibility = ["//clients/ios:__subpackages__"],
+    deps = [
+        "//clients/ios/Packages/AgentsMeshCore",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/CoreClient",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/DesignSystem",
+        "@swiftpkg_swift_composable_architecture//:ComposableArchitecture",
+    ],
+)

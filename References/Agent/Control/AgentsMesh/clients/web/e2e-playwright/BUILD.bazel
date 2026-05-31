@@ -1,0 +1,75 @@
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+load("//build_defs/web:playwright.bzl", "playwright_test")
+
+# E2E Playwright suite — sole web e2e target. Tests live under tests/, with
+# tests/blockstore/ holding the block-store specs that need an isolated
+# workspace + JWT-in-localStorage seeding (see fixtures/blockstore.fixture.ts).
+#
+# Runs the full browser-level E2E against the docker-dev stack.
+# Browsers are NOT fetched through rules_playwright (0.5.3's Chromium
+# CDN layout lags the Playwright 1.59 Chrome-for-Testing move, and
+# Playwright 1.59 triggers module-identity checks under
+# aspect_rules_js — we pin to 1.50.1 repo-wide via pnpm overrides).
+#
+# Install browsers once:
+#   pnpm exec playwright install chromium
+# Run:
+#   bazel test //clients/web/e2e-playwright:e2e --test_tag_filters=e2e
+playwright_test(
+    name = "e2e",
+    srcs = glob(
+        [
+            "tests/**/*.spec.ts",
+            "tests/**/*.ts",
+            "helpers/**/*.ts",
+            "fixtures/**/*.ts",
+            "pages/**/*.ts",
+        ],
+        allow_empty = True,
+        exclude = ["node_modules/**"],
+    ),
+    config = "playwright.config.ts",
+    data = [
+        # Pull @playwright/test from the root node_modules link — the
+        # e2e-playwright directory is not a pnpm importer (no
+        # package.json), so node resolves up the tree to
+        # `<runfiles>/_main/node_modules/`.
+        "//:node_modules/@playwright/test",
+        # helpers/connect-client.ts uses @bufbuild/protobuf to build the
+        # typed binary Connect client. CI's hermetic Bazel sandbox doesn't
+        # inherit the workspace symlink that macOS gives free — must declare
+        # explicitly or runfiles miss it (Cannot find module @bufbuild/protobuf).
+        "//:node_modules/@bufbuild/protobuf",
+        # Generated TS proto messages — helpers/connect-client.ts imports
+        # them through a relative path (`../../../../proto/gen/ts/...`),
+        # so the .ts files must be staged in runfiles. copy_to_bin gives
+        # us bazel-out copies which aspect_rules_js requires.
+        "//proto:proto_gen_ts",
+    ],
+    # NOTE: helpers/env.ts walks up from cwd looking for
+    # `deploy/dev/.env` to learn worktree-specific port offsets. Inside
+    # the Bazel sandbox the walk never finds it, so the suite falls
+    # back to the default 10000/3000 ports. Callers MUST forward worktree
+    # ports explicitly:
+    #   bazel test //clients/web/e2e-playwright:e2e \
+    #       --test_env=HTTP_PORT=$(grep ^HTTP_PORT deploy/dev/.env | cut -d= -f2) \
+    #       --test_env=WEB_PORT=$(grep ^WEB_PORT  deploy/dev/.env | cut -d= -f2)
+    # The dev_up convenience script in deploy/dev exports both already,
+    # so a child bazel test sees them via inherit.
+)
+
+# Shared helpers/fixtures consumed by clients/desktop e2e via relative
+# imports (../../../web/e2e-playwright/helpers/env etc.). Expose as a
+# js_library so downstream targets add it to their `data` without
+# re-globbing the same files.
+js_library(
+    name = "shared_fixtures",
+    srcs = glob(
+        [
+            "helpers/**/*.ts",
+            "fixtures/**/*.ts",
+        ],
+        allow_empty = True,
+    ),
+    visibility = ["//visibility:public"],
+)

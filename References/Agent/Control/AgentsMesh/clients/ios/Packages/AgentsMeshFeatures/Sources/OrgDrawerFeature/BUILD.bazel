@@ -1,0 +1,17 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+# Org drawer — Lark-style slide-in drawer (60pt rail + 280pt main + 53pt
+# channel peek dim). Mirrors `design/mobile/pages/ios-org-drawer.pastel`.
+# Triggered from any tab's nav bar avatar tap.
+swift_library(
+    name = "OrgDrawerFeature",
+    srcs = glob(["*.swift"]),
+    module_name = "OrgDrawerFeature",
+    visibility = ["//clients/ios:__subpackages__"],
+    deps = [
+        "//clients/ios/Packages/AgentsMeshCore",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/CoreClient",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/DesignSystem",
+        "@swiftpkg_swift_composable_architecture//:ComposableArchitecture",
+    ],
+)

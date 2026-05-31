@@ -1,0 +1,16 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+# Channels feature — Lark-style messages list + channel detail
+# (rich bubble chat with text/mention/quote/code/tool/file/link variants).
+swift_library(
+    name = "ChannelsFeature",
+    srcs = glob(["*.swift"]),
+    module_name = "ChannelsFeature",
+    visibility = ["//clients/ios:__subpackages__"],
+    deps = [
+        "//clients/ios/Packages/AgentsMeshCore",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/CoreClient",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/DesignSystem",
+        "@swiftpkg_swift_composable_architecture//:ComposableArchitecture",
+    ],
+)

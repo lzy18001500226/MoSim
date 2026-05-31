@@ -1,0 +1,451 @@
+{
+  "agentpod": {
+    "title": "AgentPod",
+    "pods": "Pod",
+    "newPod": "新建 Pod",
+    "runners": "运行节点",
+    "noRunnersOnline": "暂无在线节点",
+    "selectAgent": "选择智能体",
+    "selectRepository": "选择仓库",
+    "prompt": "初始提示",
+    "status": {
+      "initializing": "初始化中",
+      "running": "运行中",
+      "paused": "已暂停",
+      "terminated": "已终止",
+      "error": "错误"
+    }
+  },
+  "pods": {
+    "status": {
+      "initializing": "初始化中",
+      "running": "运行中",
+      "paused": "已暂停",
+      "disconnected": "已断开",
+      "orphaned": "重连中",
+      "completed": "已完成",
+      "terminated": "已终止",
+      "error": "错误",
+      "failed": "失败"
+    }
+  },
+  "mesh": {
+    "title": "智能体网络",
+    "channels": "频道",
+    "newChannel": "新建频道",
+    "topology": "拓扑图",
+    "messages": "消息",
+    "sendMessage": "发送消息...",
+    "page": {
+      "title": "Mesh",
+      "subtitle": "多智能体协作网络拓扑",
+      "activePods": "{count} 个活跃 Pod",
+      "channelsCount": "{count} 个频道",
+      "bindingsCount": "{count} 个绑定",
+      "refresh": "刷新",
+      "dismiss": "关闭",
+      "updating": "更新中..."
+    },
+    "legend": {
+      "title": "图例",
+      "running": "运行中",
+      "initializing": "初始化",
+      "terminated": "已终止",
+      "failed": "失败",
+      "channel": "频道",
+      "activeBinding": "活跃绑定",
+      "pendingBinding": "待处理绑定"
+    },
+    "channelList": {
+      "title": "频道",
+      "showArchived": "显示已归档",
+      "hideArchived": "隐藏已归档",
+      "noChannels": "暂无频道",
+      "archived": "已归档",
+      "archive": "归档",
+      "unarchive": "取消归档"
+    },
+    "messageInput": {
+      "placeholder": "输入消息...",
+      "hint": "按 Enter 发送，Shift+Enter 换行"
+    },
+    "mention": {
+      "members": "成员",
+      "pods": "Pods"
+    },
+    "ticket": "任务",
+    "contextMenu": {
+      "openTerminal": "打开终端",
+      "viewTicket": "查看任务 {slug}",
+      "rename": "重命名",
+      "terminatePod": "终止 Pod",
+      "terminateTitle": "终止 Pod",
+      "terminateDescription": "确定要终止此 Pod 吗？此操作不可撤销。",
+      "terminateConfirm": "终止"
+    },
+    "runnerGroup": {
+      "online": "在线",
+      "offline": "离线",
+      "podCount": "{count} 个 Pod"
+    },
+    "channelPodManager": {
+      "title": "频道 Pod",
+      "description": "管理此频道中的 Pod",
+      "joined": "已加入",
+      "available": "可用",
+      "empty": "暂无活跃的 Pod"
+    }
+  },
+  "tickets": {
+    "title": "任务管理",
+    "newTicket": "新建 Ticket",
+    "board": "看板",
+    "list": {
+      "ticket": "Ticket",
+      "assignees": "负责人",
+      "dueDate": "截止日期",
+      "updated": "更新时间",
+      "noTickets": "未找到 Ticket"
+    },
+    "backlog": "待办池",
+    "todo": "待开始",
+    "inProgress": "进行中",
+    "inReview": "待审核",
+    "done": "已完成",
+    "searchPlaceholder": "搜索 Ticket...",
+    "ticketCount": "个 Ticket",
+    "clear": "清除",
+    "view": "视图",
+    "filters": {
+      "status": "状态",
+      "priority": "优先级",
+      "repository": "仓库",
+      "noRepository": "无仓库",
+      "showMore": "显示更多",
+      "showLess": "收起"
+    },
+    "emptyState": {
+      "title": "暂无 Ticket",
+      "noMatch": "没有匹配的 Ticket",
+      "createFirst": "创建你的第一个 Ticket 开始使用"
+    },
+    "moreTickets": "+{count} 个",
+    "listView": {
+      "id": "ID",
+      "titleColumn": "标题",
+      "status": "状态",
+      "priority": "优先级",
+      "assignee": "负责人",
+      "created": "创建时间",
+      "noTickets": "未找到 Ticket。使用侧边栏筛选或创建新 Ticket。"
+    },
+    "kanban": {
+      "noTickets": "暂无 Ticket",
+      "dropHere": "拖放到这里"
+    },
+    "priority": {
+      "none": "无优先级",
+      "low": "低",
+      "medium": "中",
+      "high": "高",
+      "urgent": "紧急",
+      "unknown": "未知"
+    },
+    "status": {
+      "backlog": "待办池",
+      "todo": "待开始",
+      "in_progress": "进行中",
+      "in_review": "待审核",
+      "done": "已完成",
+      "unknown": "未知"
+    },
+    "createDialog": {
+      "title": "创建 Ticket",
+      "createSubTicket": "创建子 Ticket",
+      "titleLabel": "标题",
+      "titlePlaceholder": "输入 Ticket 标题",
+      "titleRequired": "标题为必填项",
+      "repositoryRequired": "仓库为必填项",
+      "createFailed": "创建 Ticket 失败",
+      "repository": "仓库",
+      "selectRepository": "选择仓库...",
+      "content": "内容",
+      "submit": "创建 Ticket",
+      "moreOptions": "更多选项",
+      "labelsPlaceholder": "添加标签..."
+    },
+    "detail": {
+      "retry": "重试",
+      "notFound": "Ticket 未找到",
+      "content": "内容",
+      "subTickets": "子 Ticket",
+      "related": "关联",
+      "commits": "提交记录",
+      "actions": "操作",
+      "details": "详情",
+      "dueDate": "截止日期",
+      "repository": "仓库",
+      "noRepository": "无仓库",
+      "assignees": "负责人",
+      "noAssignees": "暂无负责人",
+      "timestamps": "时间信息",
+      "created": "创建时间",
+      "updated": "更新时间",
+      "deleteTicket": "删除 Ticket",
+      "deleteConfirmation": "确定要删除 Ticket {slug} 吗？此操作无法撤销。",
+      "labels": "标签",
+      "timeline": "时间线",
+      "started": "开始时间",
+      "completed": "完成时间",
+      "viewFullDetails": "查看完整详情",
+      "comments": "评论",
+      "noComments": "暂无评论",
+      "addComment": "添加评论...",
+      "reply": "回复",
+      "edit": "编辑",
+      "delete": "删除",
+      "deleteCommentConfirm": "确定要删除这条评论吗？",
+      "replyTo": "回复 @{username}",
+      "cancelReply": "取消",
+      "submit": "评论",
+      "edited": "已编辑",
+      "dangerZone": "危险操作",
+      "deleteWarning": "此操作不可撤销。",
+      "linked": "关联项",
+      "noLinkedItems": "暂无关联项。"
+    },
+    "podPanel": {
+      "activeCount": "{count} 个活跃",
+      "newPod": "执行",
+      "createNewPod": "创建新 Pod",
+      "runner": "Runner",
+      "selectRunner": "选择 Runner...",
+      "selectRunnerRequired": "请选择一个 Runner",
+      "model": "模型",
+      "permissionMode": "权限模式",
+      "permissionDefault": "默认",
+      "permissionPlan": "计划模式",
+      "permissionAutoApprove": "自动批准（危险）",
+      "prompt": "初始提示（可选）",
+      "promptPlaceholder": "处理 Ticket：{title}",
+      "creating": "创建中...",
+      "createPod": "创建 Pod",
+      "createFailed": "创建 Pod 失败",
+      "previousPods": "{count} 个历史 Pod",
+      "noPods": "此 Ticket 暂无 Pod",
+      "noRunners": "暂无在线 Runner",
+      "connect": "连接",
+      "openInNewTab": "在新标签页打开",
+      "started": "开始时间"
+    }
+  },
+  "workspace": {
+    "title": "工作区",
+    "searchPlaceholder": "搜索 Pod...",
+    "newPod": "新建 Pod",
+    "noTerminalsOpen": "暂无打开的终端",
+    "noTerminalsDescription": "点击侧边栏中的 Pod 打开其终端，或创建新的 Pod 开始使用。",
+    "createNewPod": "创建新 Pod",
+    "podCreated": "Pod 已创建！等待启动中...",
+    "podOpened": "Pod 已打开",
+    "filters": {
+      "mine": "我创建的",
+      "org": "组织",
+      "completed": "已完成",
+      "error": "错误"
+    },
+    "emptyState": {
+      "title": "暂无 Pod",
+      "description": "创建你的第一个 Pod 开始使用",
+      "createFirst": "创建 Pod",
+      "noMatch": "没有匹配的 Pod",
+      "noFiltered": "没有{filter}的 Pod"
+    },
+    "runners": {
+      "title": "Runner",
+      "online": "在线",
+      "noRunners": "暂无注册的 Runner"
+    },
+    "terminateDialog": {
+      "title": "终止 Pod",
+      "description": "确定要终止这个 Pod 吗？此操作无法撤销，所有正在运行的进程都将被停止。",
+      "cancel": "取消",
+      "confirm": "终止"
+    },
+    "contextMenu": {
+      "rename": "重命名",
+      "terminate": "终止"
+    },
+    "renameDialog": {
+      "title": "重命名 Pod",
+      "placeholder": "输入显示名称",
+      "hint": "留空将使用默认名称。",
+      "cancel": "取消",
+      "confirm": "保存"
+    },
+    "loadMore": "加载更多",
+    "pod": {
+      "status": "状态",
+      "agent": "智能体",
+      "repository": "仓库",
+      "branch": "分支",
+      "created": "创建时间",
+      "duration": "持续时间",
+      "actions": {
+        "open": "打开",
+        "terminate": "终止",
+        "restart": "重启",
+        "logs": "查看日志"
+      }
+    },
+    "modal": {
+      "title": "创建新 Pod",
+      "agent": "智能体",
+      "selectAgent": "选择智能体...",
+      "selectRunner": "选择 Runner...",
+      "repositoryOptional": "仓库（可选）",
+      "selectRepository": "选择仓库...",
+      "branch": "分支",
+      "branchPlaceholder": "输入分支名称（例如：main）",
+      "promptOptional": "初始提示（可选）",
+      "promptPlaceholder": "为智能体输入初始提示...",
+      "creating": "创建中...",
+      "createPod": "创建 Pod"
+    }
+  },
+  "commandPalette": {
+    "placeholder": "输入命令或搜索...",
+    "searching": "搜索中...",
+    "noResults": "未找到结果。",
+    "navigation": "导航",
+    "actions": "操作",
+    "goToWorkspace": "前往工作区",
+    "workspaceDescription": "终端工作区",
+    "goToTickets": "前往任务",
+    "ticketsDescription": "查看和管理任务",
+    "goToMesh": "前往 AgentsMesh",
+    "meshDescription": "网络��扑",
+    "goToChannels": "前往频道",
+    "channelsDescription": "团队协作频道",
+    "goToRepositories": "前往仓库",
+    "repositoriesDescription": "管理仓库",
+    "goToRunners": "前往 Runner",
+    "runnersDescription": "管理计算资源",
+    "goToSettings": "前往设置",
+    "settingsDescription": "组织设置",
+    "createNewPod": "创建新 Pod",
+    "createPodDescription": "启动一个新的智能体 Pod",
+    "createNewTicket": "创建新任务",
+    "createTicketDescription": "创建新的任务或问题",
+    "signOut": "退出登录",
+    "signOutDescription": "退出您的账号",
+    "navigate": "导航",
+    "select": "选择",
+    "toOpen": "打开"
+  },
+  "relayStatus": {
+    "web": "Web",
+    "relay": "Relay",
+    "runner": "Runner",
+    "connected": "已连接",
+    "connecting": "连接中",
+    "disconnected": "已断开",
+    "error": "错误",
+    "unknown": "未知"
+  },
+  "terminalTabs": {
+    "singleView": "单视图",
+    "twoColumns": "两列",
+    "twoRows": "两行",
+    "grid2x2": "2x2 网格",
+    "fullscreen": "全屏"
+  },
+  "terminalToolbar": {
+    "clearScreen": "清屏",
+    "font": "字体",
+    "open": "打开键盘工具栏",
+    "close": "关闭",
+    "fontDecrease": "减小字体",
+    "fontIncrease": "增大字体",
+    "scrollToBottom": "滚动到底部"
+  },
+  "mobile": {
+    "more": "更多",
+    "drawer": {
+      "navigationMenu": "导航菜单",
+      "organization": "组织",
+      "navigation": "导航",
+      "signOut": "退出登录"
+    },
+    "menu": {
+      "gitConnections": "Git 连接",
+      "profile": "个人资料",
+      "theme": "主题",
+      "theme_light": "浅色",
+      "theme_dark": "深色",
+      "theme_solarized_light": "Solarized 浅色",
+      "theme_solarized_dark": "Solarized 深色",
+      "theme_system": "跟随系统"
+    }
+  },
+  "support": {
+    "title": "支持工单",
+    "description": "提交问题反馈并跟踪处理进度",
+    "create": "新建工单",
+    "createDescription": "描述您的问题，我们会尽快回复",
+    "submit": "提交",
+    "submitting": "提交中...",
+    "cancel": "取消",
+    "send": "发送",
+    "sending": "发送中...",
+    "attach": "附件",
+    "replyPlaceholder": "输入回复内容...",
+    "empty": "暂无支持工单",
+    "createFirst": "创建您的第一个工单",
+    "notFound": "工单未找到",
+    "backToList": "返回工单列表",
+    "retry": "重试",
+    "download": "下载",
+    "downloadFailed": "附件下载失败",
+    "fileTooLarge": "文件超出最大限制 ({max})",
+    "filter": {
+      "all": "全部"
+    },
+    "status": {
+      "open": "待处理",
+      "in_progress": "处理中",
+      "resolved": "已解决",
+      "closed": "已关闭"
+    },
+    "category": {
+      "bug": "Bug 反馈",
+      "feature_request": "功能建议",
+      "usage_question": "使用问题",
+      "account": "账号相关",
+      "other": "其他"
+    },
+    "priority": {
+      "low": "低",
+      "medium": "中",
+      "high": "高"
+    },
+    "fields": {
+      "title": "标题",
+      "titlePlaceholder": "简要描述您的问题",
+      "category": "分类",
+      "priority": "优先级",
+      "content": "详细描述",
+      "contentPlaceholder": "请详细描述您遇到的问题...",
+      "attachments": "附件",
+      "addFiles": "添加文件"
+    },
+    "validation": {
+      "required": "标题和描述为必填项"
+    },
+    "error": {
+      "createFailed": "创建工单失败，请重试",
+      "loadFailed": "加载数据失败，请重试",
+      "sendFailed": "发送消息失败，请重试"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+# TCA DependencyKey wrapping the Rust AgentsMeshCore singleton, plus a
+# CoreError → user-facing string mapper. This is the dependency-injection
+# seam that every business feature reaches for; it lives in its own
+# module so features don't have to import AuthFeature just to get a
+# CoreClient.
+swift_library(
+    name = "CoreClient",
+    srcs = glob(["*.swift"]),
+    module_name = "CoreClient",
+    visibility = ["//clients/ios:__subpackages__"],
+    deps = [
+        "//clients/ios/Packages/AgentsMeshCore",
+        "@swiftpkg_swift_composable_architecture//:ComposableArchitecture",
+    ],
+)

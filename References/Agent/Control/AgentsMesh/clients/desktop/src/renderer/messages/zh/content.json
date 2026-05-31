@@ -1,0 +1,106 @@
+{
+  "about": {
+    "hero": {
+      "title": "软件由团队构建。现在，团队有了新的构建方式。",
+      "subtitle": "我们相信下一次飞跃不是更好的工具——而是更大的团队。AI Agent 作为正式成员与人类并肩作战的团队。"
+    },
+    "mission": {
+      "title": "我们的使命",
+      "content": "AgentsMesh 的使命是帮助组织突破人数的产出上限。我们正在构建一个平台，让每个团队成员都能管理一支 AI Agent 团队——分配任务、协调协作、以过去需要多招十个人才能达到的速度交付成果。"
+    },
+    "vision": {
+      "title": "我们的理念",
+      "autonomous": {
+        "title": "Agent 是团队成员",
+        "content": "AI Agent 不只是自动补全代码的工具。它们是能端到端负责任务的自主队友——从读取工单到提交合并请求。"
+      },
+      "collaboration": {
+        "title": "团队胜于个人",
+        "content": "一个再厉害的 Agent 也不能解决所有问题。一支协调有序的 Agent 团队——各有专长、互相沟通、共享上下文——可以。"
+      },
+      "security": {
+        "title": "你的代码，你的基础设施",
+        "content": "扩大 Agent 团队不应意味着放弃控制权。你的代码和数据始终留在你的基础设施上。"
+      }
+    },
+    "contact": {
+      "title": "联系我们",
+      "content": "想了解 AgentsMesh 如何倍增你的团队产出？",
+      "email": "联系我们",
+      "careers": "加入我们"
+    }
+  },
+  "careers": {
+    "hero": {
+      "title": "与我们一起塑造未来",
+      "subtitle": "我们正在构建让 AI 智能体协作完成复杂开发任务的平台。加入我们，共同开启这段激动人心的旅程。"
+    },
+    "openPositions": "开放角色",
+    "responsibilities": "主要职责",
+    "applyNow": "立即申请",
+    "positions": {
+      "harnessEngineer": {
+        "title": "Harness Engineer（线束工程师）",
+        "description": "Harness Engineer 负责构建 AI 智能体运行的基础环境。你将设计沙箱、定义执行约束，构建让智能体安全、隔离且高性能运行的基础设施。",
+        "resp1": "设计和构建安全、隔离的 AI 智能体运行时环境",
+        "resp2": "定义执行约束、权限边界和安全护栏",
+        "resp3": "开发和优化沙箱基础设施，确保智能体操作可复现"
+      },
+      "producer": {
+        "title": "Builder（产品构建者）",
+        "description": "Builder 将基础设施转化为用户喜爱的产品。你将连接技术能力与用户需求，将与 AgentsMesh 的每次交互打磨成直观而强大的体验。",
+        "resp1": "将用户需求转化为产品定义和功能设计",
+        "resp2": "将平台能力塑造为精致的用户级产品",
+        "resp3": "收集反馈并持续迭代，交付卓越的用户体验"
+      },
+      "growthHacker": {
+        "title": "GTM（Go to Market）",
+        "description": "GTM 以创造性的数据驱动策略将产品推向市场。你将帮助开发者发现 AgentsMesh，快速运行增长实验，将早期用户转化为热情的传播者。",
+        "resp1": "设计和执行数据驱动的增长实验",
+        "resp2": "与开发者社区建立关系，推动产品采用",
+        "resp3": "优化获客漏斗，驱动用户留存"
+      }
+    },
+    "whyJoin": {
+      "title": "为什么加入 AgentsMesh？",
+      "innovation": {
+        "title": "前沿技术",
+        "content": "使用最新的 AI 技术，塑造软件开发的未来。"
+      },
+      "remote": {
+        "title": "远程优先",
+        "content": "在世界任何地方工作，灵活的时间安排适应你的生活。"
+      },
+      "equity": {
+        "title": "有竞争力的待遇",
+        "content": "有竞争力的薪资、股权激励和全面的福利。"
+      }
+    },
+    "cta": {
+      "title": "没有找到合适的职位？",
+      "content": "我们始终在寻找优秀的人才。发送你的简历，告诉我们你能如何贡献。",
+      "button": "发送简历"
+    }
+  },
+  "blog": {
+    "hero": {
+      "title": "博客",
+      "subtitle": "来自 AgentsMesh 团队的技术洞察、产品更新和故事。"
+    },
+    "minRead": "分钟阅读",
+    "backToList": "返回博客",
+    "notFound": "文章未找到"
+  },
+  "enterprise": {
+    "hero": {
+      "title": "你的 Agent。",
+      "titleHighlight": "你的规则。",
+      "subtitle": "为大规模管理 Agent 团队的组织提供企业级安全和治理能力。"
+    },
+    "onpremise": {
+      "title": "私有",
+      "titleHighlight": "部署",
+      "description": "在你的基础设施中完整部署 AgentsMesh。你的代码、你的 Agent、你的规则——零外部暴露。"
+    }
+  }
+}

@@ -1,0 +1,166 @@
+# electron-builder configuration for AgentsMesh Desktop.
+#
+# Driven by `bazel build //clients/desktop:dist` via the
+# `electron_builder_app` macro in build_defs/web/electron.bzl. The
+# macro stages out/ + the thin-shell package.json + the runtime
+# node_modules subtree into a sandbox CWD, then invokes electron-builder
+# from there.
+#
+# `package.json` in this directory is intentionally a thin shell — it
+# carries `name`/`version`/`main`/`build` only. electron-builder reads
+# `appId` / target lists from THIS file; binary metadata (productName)
+# is overridden here so we don't have to maintain a duplicate value
+# in package.json.
+
+appId: ai.agentsmesh.desktop
+productName: AgentsMesh
+copyright: Copyright © 2026 AgentsMesh
+
+# Custom URL scheme for OAuth deep-link callbacks. The desktop app
+# launches the system browser for OAuth (so password managers / 2FA
+# extensions / existing GitHub sessions just work), and the backend
+# 302-redirects to `agentsmesh://oauth/callback?token=...` after Apple/
+# GitHub/Google approve. macOS Info.plist (CFBundleURLTypes) and
+# Windows NSIS registry entries are emitted by electron-builder from
+# this section.
+protocols:
+  - name: AgentsMesh OAuth Callback
+    schemes:
+      - agentsmesh
+    role: Viewer
+
+# Pin the Electron runtime version directly. The thin-shell
+# `package.json` has no `devDependencies.electron` (deps are hoisted to
+# the workspace root), so electron-builder can't infer this from
+# `node_modules/electron/package.json` walking up from CWD inside a
+# Bazel sandbox. Bump in lockstep with the workspace root.
+electronVersion: 33.4.11
+
+directories:
+  # `output` is interpreted relative to `projectDir`. The Bazel macro
+  # sets `--projectDir <name>_staging` (a read-only `copy_to_directory`
+  # tree artifact); writing inside it fails with EACCES. `../<dist_dir>`
+  # escapes back to the package-level chdir, where Bazel has allocated
+  # the writable `dist/` tree artifact this rule declares.
+  output: ../dist
+  buildResources: build
+
+files:
+  - out/**/*
+  - package.json
+  - "!**/*.{md,map,ts,tsx}"
+  - "!**/.DS_Store"
+
+# asar packs all renderer/main bundles into one archive. We unpack the
+# native NAPI addon — Electron can't dlopen a `.node` file from inside
+# an asar archive.
+asar: true
+asarUnpack:
+  - "**/@agentsmesh/node-bridge/**/*.node"
+  - "**/*.node"
+
+# We package the native binary ourselves in the staging step; tell
+# electron-builder to skip its electron-rebuild pass.
+npmRebuild: false
+
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+    - target: zip
+      arch:
+        - arm64
+        - x64
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  # `notarize: { teamId: ... }` is required as of electron-builder 25.x
+  # — the older "auto-notarize when APPLE_API_* env is set" behaviour
+  # was removed. Without this block the dmg ships signed but
+  # *un-notarized*, so `spctl --assess` rejects with "Unnotarized
+  # Developer ID" and Gatekeeper shows the "unidentified developer"
+  # prompt on first launch (we hit this in v0.30.4: signing wired
+  # correctly, dmg simply never went through Apple's Notary API).
+  #
+  # `@electron/notarize` reads the API credentials from env:
+  #   APPLE_API_KEY               → file path to the .p8 private key
+  #   APPLE_API_KEY_ID            → key id (10-char alphanumeric)
+  #   APPLE_API_KEY_ISSUER_ID     → issuer uuid
+  # release.yml's "Set up macOS signing keychain" step decodes the .p8
+  # to disk and exposes all three.
+  notarize:
+    teamId: DCK4SSVH2H
+  # codesign + notarization are driven by env vars in CI:
+  #   CSC_LINK / CSC_KEY_PASSWORD              → Developer ID Application cert
+  #   APPLE_API_KEY / APPLE_API_KEY_ID /
+  #   APPLE_API_KEY_ISSUER_ID                  → notarytool API key path
+  # Leave `identity` unset so electron-builder auto-discovers from CSC_LINK
+  # (an explicit `null` here disables signing entirely — the cert env vars
+  # are silently ignored, and the resulting .dmg/.zip won't pass Gatekeeper).
+  # Entitlements default to electron-builder's bundled darwin profile,
+  # which already enables JIT + unsigned-executable-memory for the V8
+  # runtime; override here if/when we need extra capabilities.
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+        - arm64
+  # Authenticode signing wired through CSC_LINK / CSC_KEY_PASSWORD on
+  # Windows runners (release.yml passes WIN_CSC_LINK / WIN_CSC_KEY_PASSWORD
+  # via those env names — electron-builder uses the same variable names
+  # cross-platform). When the secrets are absent the build still produces
+  # an unsigned NSIS — useful for PR-time smoke, but production tags must
+  # have them set.
+  signingHashAlgorithms:
+    - sha256
+
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+        - arm64
+    # arm64 .deb mirrors AppImage so we can ship Linux/arm64 desktop
+    # users a native package without forcing AppImage. AppImage stays
+    # universal-arch; deb is per-arch by convention.
+    - target: deb
+      arch:
+        - x64
+        - arm64
+  category: Development
+
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+
+# Autoupdate metadata: electron-builder generates `latest-mac.yml` /
+# `latest.yml` / `latest-linux.yml` in the dist tree only when a publish
+# provider is configured. The metadata is what electron-updater clients
+# poll for new releases — without it, autoupdate is dead.
+#
+# We name the GitHub repo explicitly because the synthesised package.json
+# (build_defs/web/internal_package.bzl writes only name/version/main, no
+# `repository` field), so electron-builder can't infer it. Publishing
+# itself is driven by release.yml's `gh release upload` step (--clobber
+# attaches dmg + zip + this metadata to the tag's release); electron-
+# builder's own auto-publish never runs because we don't pass a
+# GH_TOKEN to the bazel action — the `gh release upload` shell step is
+# the SSOT for what lands on the release.
+publish:
+  provider: github
+  owner: AgentsMesh
+  repo: AgentsMesh

@@ -1,0 +1,455 @@
+{
+  "landing": {
+    "nav": {
+      "features": "Fonctionnalites",
+      "pricing": "Tarifs",
+      "docs": "Documentation",
+      "signIn": "Connexion",
+      "getStarted": "Commencer",
+      "console": "Console",
+      "language": "Langue"
+    },
+    "hero": {
+      "badge": "La plateforme AI Agent Workforce",
+      "title1": "Plateforme de Collaboration",
+      "title2": "d'Agents de Code",
+      "title3": "Basés sur Terminal",
+      "slogan1": "Livrez comme une équipe de cinquante.",
+      "slogan2": "Avec une équipe de cinq.",
+      "tagline": "La plateforme AI Agent Workforce pour les équipes ambitieuses",
+      "description": "Donnez à chaque membre de l'équipe une équipe d'agents IA. Assignez des tâches, suivez la progression et laissez-les collaborer — pendant que votre code reste sur votre infrastructure.",
+      "getStartedFree": "Construisez Votre Équipe",
+      "viewDocs": "Voir en Action",
+      "trustedBy": "Adopté par des équipes dans le monde entier",
+      "teams": "Équipes en Croissance",
+      "pods": "Des Milliers de Pods",
+      "openSource": "Open Source"
+    },
+    "agentLogos": {
+      "title": "Compatible avec les agents que votre équipe utilise déjà",
+      "descriptions": {
+        "anthropic": "Anthropic",
+        "openai": "OpenAI",
+        "google": "Google",
+        "openSource": "Open Source",
+        "community": "Communauté",
+        "yourOwn": "Le Vôtre"
+      }
+    },
+    "paradigmShift": {
+      "title": "Rendre une personne plus rapide",
+      "titleHighlight": "ne rend pas toute l'équipe plus rapide.",
+      "punchline": "La productivité individuelle a atteint son plafond. La prochaine étape est organisationnelle.",
+      "before": {
+        "label": "Productivité Individuelle",
+        "items": {
+          "0": "Vitesse individuelle ×10, production d'équipe ×1",
+          "1": "Chacun utilise son propre agent, isolé",
+          "2": "Contexte verrouillé dans des sessions personnelles",
+          "3": "Plus d'outils, plus de chaos"
+        }
+      },
+      "after": {
+        "label": "Productivité Organisationnelle",
+        "items": {
+          "0": "Vitesse individuelle ×10, production d'équipe ×50",
+          "1": "Chacun dirige une escouade d'agents, en synergie",
+          "2": "Contexte partagé en temps réel, visibilité totale",
+          "3": "Une plateforme pour tout gérer"
+        }
+      }
+    },
+    "whyTerminal": {
+      "title": "Pourquoi des Agents",
+      "titleHighlight": "Basés sur Terminal",
+      "titleEnd": "?",
+      "description": "Contrairement aux plugins IDE comme Cursor ou Copilot, les agents basés sur terminal offrent une exécution autonome et des capacités de développement complètes.",
+      "benefits": {
+        "autonomous": {
+          "title": "Exécution Autonome",
+          "description": "Pas seulement de la complétion de code. Les agents terminal peuvent accomplir indépendamment des tâches de développement complexes du début à la fin."
+        },
+        "fullCapabilities": {
+          "title": "Capacités Complètes",
+          "description": "Lire/écrire des fichiers, exécuter des commandes, opérations Git, exécuter des tests — des capacités complètes de développement full-stack."
+        },
+        "dataControl": {
+          "title": "Contrôle des Données",
+          "description": "Les runners auto-hébergés signifient que votre code ne quitte jamais votre infrastructure. Répondez aux exigences de sécurité et de conformité."
+        }
+      },
+      "comparison": {
+        "idePlugins": "Plugins IDE",
+        "idePluginsSubtitle": "Copilot / Cursor",
+        "terminalBased": "Basé sur Terminal",
+        "terminalBasedSubtitle": "Claude Code / Aider",
+        "autonomy": "Autonomie",
+        "capabilities": "Capacités",
+        "environment": "Environnement",
+        "multiAgent": "Multi-Agent",
+        "selfHosted": "Auto-hébergé",
+        "ide": {
+          "autonomy": "Réponse passive",
+          "capabilities": "Complétion de code",
+          "environment": "Sandbox IDE",
+          "multiAgent": "Non supporté",
+          "selfHosted": "Cloud uniquement"
+        },
+        "terminal": {
+          "autonomy": "Exécution active de tâches",
+          "capabilities": "Développement full-stack",
+          "environment": "Accès terminal complet",
+          "multiAgent": "Activé par AgentsMesh",
+          "selfHosted": "Entièrement contrôlable"
+        }
+      }
+    },
+    "coreFeatures": {
+      "title": "Pas un copilote.",
+      "titleHighlight": "Une force de travail.",
+      "description": "Cinq capacités qui transforment les agents IA d'outils isolés en une équipe coordonnée.",
+      "agentpod": {
+        "title": "Chaque agent a son bureau. Prêt en secondes.",
+        "subtitle": "AgentPod",
+        "description": "Déployez des environnements de développement isolés à la demande. Chaque agent a son propre espace — dépôt Git, terminal, outils de développement complets. Supervisez tout l'étage depuis votre portable ou votre téléphone.",
+        "highlights": {
+          "0": "Configuration en 30 secondes — de zéro au code",
+          "1": "Terminal dans le navigateur, fonctionne sur n'importe quel appareil",
+          "2": "Git worktree isolé par agent — aucun conflit",
+          "3": "Exécutez des dizaines d'agents simultanément",
+          "4": "Nettoyage automatique quand le travail est terminé"
+        }
+      },
+      "agentsmesh": {
+        "title": "Ils se parlent entre eux. Vous n'êtes plus le messager.",
+        "subtitle": "AgentsMesh",
+        "description": "Les agents observent le travail des autres, partagent le contexte via des canaux et se coordonnent de manière autonome. Ils trouvent des coéquipiers, négocient les accès et déploient des renforts quand la charge l'exige.",
+        "highlights": {
+          "0": "Les agents observent les terminaux des autres en temps réel",
+          "1": "Messagerie de canal avec @mentions et partage de contexte",
+          "2": "Auto-découverte — les agents trouvent et recrutent leurs pairs",
+          "3": "Carte topologique en temps réel de toutes les connexions",
+          "4": "Permissions à périmètre défini — observation seule ou contrôle total"
+        }
+      },
+      "tickets": {
+        "title": "Écrivez un ticket. C'est fait.",
+        "subtitle": "Tickets",
+        "description": "Déposez une tâche sur le tableau kanban. Un agent la prend, crée une branche, écrit le code et ouvre une merge request. Vous relisez et livrez. C'est tout.",
+        "highlights": {
+          "0": "Les tickets deviennent automatiquement des instructions pour les agents",
+          "1": "Les agents décomposent les epics en sous-tâches par eux-mêmes",
+          "2": "MR/PR liée au ticket avec statut CI en direct",
+          "3": "Suivi complet du cycle de vie — du backlog à la livraison",
+          "4": "Les Git webhooks bouclent la boucle automatiquement"
+        }
+      },
+      "runners": {
+        "title": "Le code ne quitte jamais le bâtiment.",
+        "subtitle": "Self-Hosted Runners",
+        "description": "Déployez sur votre cloud, votre datacenter ou sous votre bureau. Votre code, votre infrastructure, zéro exposition externe.",
+        "highlights": {
+          "0": "Docker / Kubernetes prêt à l'emploi",
+          "1": "Souveraineté totale des données",
+          "2": "Support d'environnement air-gapped",
+          "3": "Piste d'audit complète"
+        }
+      },
+      "scheduledTasks": {
+        "title": "Votre codebase a une équipe de maintenance 24h/24.",
+        "subtitle": "LOOP",
+        "description": "Revues de code, mises à jour de dépendances, analyses de sécurité, suites de tests — planifiées et traitées. Configurez une fois. Votre équipe d'agents veille pendant que vous êtes déconnecté.",
+        "highlights": {
+          "0": "Planification Cron pour toute tâche d'agent",
+          "1": "Création automatique de branches et soumission de MR",
+          "2": "Alertes Slack/webhook à la fin ou en cas d'échec",
+          "3": "Historique complet avec logs et diffs",
+          "4": "Enchaînez des agents dans des workflows multi-étapes"
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "Montez votre équipe d'agents en",
+      "titleHighlight": "3 minutes",
+      "description": "De l'installation au premier agent — plus rapide que votre dernier standup.",
+      "step1": {
+        "title": "Déployez un Runner",
+        "description": "Installez sur n'importe quelle machine — cloud ou locale. Une commande, c'est fait."
+      },
+      "step2": {
+        "title": "Assignez le Travail",
+        "description": "Créez des postes de travail, rédigez des tickets, programmez des tâches. Les agents démarrent immédiatement."
+      },
+      "step3": {
+        "title": "Regardez-les Livrer",
+        "description": "Suivez la progression dans votre navigateur. Relisez les merge requests. Livrez quand c'est prêt."
+      }
+    },
+    "enterprise": {
+      "title": "Vos agents.",
+      "titleHighlight": "Vos règles.",
+      "description": "Sécurité et gouvernance de niveau entreprise pour les organisations qui gèrent des flottes d'agents à grande échelle.",
+      "features": {
+        "multiTenant": {
+          "title": "Multi-Tenant",
+          "description": "Hiérarchie d'organisation et d'équipe avec espaces de travail isolés."
+        },
+        "sso": {
+          "title": "Intégration SSO",
+          "description": "Support SAML 2.0 et LDAP pour l'authentification d'entreprise.",
+          "comingSoon": true
+        },
+        "auditLogs": {
+          "title": "Journaux d'Audit",
+          "description": "Suivi complet des activités pour la conformité et la sécurité."
+        },
+        "rbac": {
+          "title": "RBAC",
+          "description": "Contrôle d'accès basé sur les rôles granulaire pour les équipes."
+        },
+        "gitIntegration": {
+          "title": "Intégration Git",
+          "description": "Support GitLab, GitHub et Gitee prêt à l'emploi."
+        },
+        "monitoring": {
+          "title": "Surveillance",
+          "description": "Métriques Prometheus et tableaux de bord Grafana inclus.",
+          "comingSoon": true
+        },
+        "backupDR": {
+          "title": "Sauvegarde et DR",
+          "description": "Sauvegardes automatisées avec support de reprise après sinistre.",
+          "comingSoon": true
+        },
+        "airGapped": {
+          "title": "Air-Gapped",
+          "description": "Déploiement entièrement hors ligne pour une sécurité maximale.",
+          "comingSoon": true
+        }
+      }
+    },
+    "pricing": {
+      "title": "Renforcez votre équipe,",
+      "titleHighlight": "pas votre budget.",
+      "description": "Apportez vos propres clés API. Payez la plateforme, pas le token. Aucune limite d'utilisation.",
+      "mostPopular": "Le Plus Populaire",
+      "annualDiscount": "Économisez 20%",
+      "perSeat": "/siège",
+      "monthly": "Mensuel",
+      "yearly": "Annuel",
+      "yearlyDiscount": "Économisez 17%",
+      "month": "mois",
+      "year": "an",
+      "seatMonth": "siège/mois",
+      "seatYear": "siège/an",
+      "based": {
+        "name": "Based",
+        "badge": "Essai Gratuit de 30 Jours",
+        "description": "Commencez en solo. Voyez ce qu'un seul agent peut accomplir.",
+        "features": {
+          "0": "1 siège (mode solo)",
+          "1": "5 agents simultanés",
+          "2": "1 Runner",
+          "3": "5 dépôts",
+          "4": "Support communautaire"
+        },
+        "cta": "Démarrer l'Essai Gratuit"
+      },
+      "pro": {
+        "name": "Pro",
+        "description": "Votre première équipe d'agents. Jusqu'à 5 sièges, 10 agents en parallèle.",
+        "features": {
+          "0": "Jusqu'à 5 sièges",
+          "1": "10 agents simultanés",
+          "2": "10 Runners",
+          "3": "10 dépôts",
+          "4": "Support email prioritaire",
+          "5": "Support multi-fournisseur Git"
+        },
+        "cta": "Passer au Pro"
+      },
+      "enterprise": {
+        "name": "Team",
+        "description": "Échelle départementale. 50 sièges avec leurs propres escouades d'agents.",
+        "features": {
+          "0": "Jusqu'à 50 sièges",
+          "1": "50 agents simultanés",
+          "2": "100 Runners",
+          "3": "Dépôts illimités",
+          "4": "Support prioritaire"
+        },
+        "cta": "Passer au Team"
+      },
+      "onpremise": {
+        "name": "OnPremise",
+        "price": "Sur mesure",
+        "period": "contactez-nous",
+        "description": "Déploiement entièrement privé. Votre infrastructure, vos règles.",
+        "features": {
+          "0": "Sièges illimités",
+          "1": "Agents illimités",
+          "2": "Runners illimités",
+          "3": "Support air-gapped",
+          "4": "Support dédié",
+          "5": "SLA personnalisé",
+          "6": "Accompagnement premium"
+        },
+        "cta": "Contacter les Ventes"
+      },
+      "footer": "Tous les plans incluent BYOK (Bring Your Own Key) — utilisez vos propres clés API IA sans limites d'utilisation.",
+      "customPlan": "Besoin d'un déploiement entreprise ?",
+      "contactUs": "Contactez-nous"
+    },
+    "selfHosted": {
+      "title": "Besoin d'un Déploiement",
+      "titleHighlight": "Self-Hosted",
+      "titleEnd": "Complet ?",
+      "description": "Votre code et vos données ne quittent jamais votre infrastructure. Déployez AgentsMesh entièrement on-premise — idéal pour les organisations avec des exigences strictes de sécurité et de conformité.",
+      "dockerCompose": "Docker Compose",
+      "kubernetesHelm": "Kubernetes Helm (Bientôt)",
+      "airGappedSupport": "Support Air-gapped (Bientôt)",
+      "viewDocs": "Voir la Documentation de Déploiement",
+      "contactSales": "Contacter les Ventes Enterprise"
+    },
+    "finalCta": {
+      "title1": "Votre équipe est sur le point",
+      "title2": "de s'agrandir considérablement.",
+      "description": "Commencez avec un agent. Montez jusqu'à cinquante. Gratuit pour démarrer, aucune carte de crédit requise.",
+      "getStartedFree": "Construisez Votre Équipe",
+      "scheduleDemo": "Parlons-en",
+      "freeTier": "Offre gratuite disponible",
+      "noCreditCard": "Aucune carte de crédit requise",
+      "selfHostedOption": "Option auto-hébergée"
+    },
+    "heroDemo": {
+      "podTopology": "Topologie des Pods",
+      "live": "En direct",
+      "initializingPod": "Initialisation du pod...",
+      "typeMessage": "Tapez un message...",
+      "connecting": "Connexion à AgentsMesh...",
+      "connected": "Connecté au serveur AgentsMesh",
+      "workspace": "Espace de travail : /projects/e-commerce",
+      "monitorPod": "Surveiller le pod beta-dev et aider à coordonner l'implémentation de l'authentification",
+      "bindingPod": "Je vais me lier au pod beta-dev pour observer et coordonner...",
+      "boundToPod": "Lié à beta-dev (Codex CLI)",
+      "observingHeader": "Observation de beta-dev",
+      "analyzing": "Analyse de src/auth/handlers.ts...",
+      "creatingOAuth": "Création de l'intégration du fournisseur OAuth2",
+      "writingOAuth": "Écriture : src/auth/oauth.ts",
+      "noticedOAuth": "Je remarque que beta-dev implémente OAuth. Je suggère d'ajouter une limitation de débit...",
+      "messageSent": "\"Envisager d'ajouter une limitation de débit aux endpoints /auth/*\"",
+      "receivedSuggestion": "beta-dev : Suggestion reçue, implémentation du limiteur de débit...",
+      "writingRateLimit": "beta-dev : Écriture de src/middleware/rateLimit.ts",
+      "rateLimitAdded": "beta-dev : Limitation de débit ajoutée aux routes d'authentification",
+      "reviewChanges": "Parfait ! beta-dev a implémenté la limitation de débit. Je vais examiner les modifications...",
+      "podInfo": {
+        "initializing": "Pod: alpha-dev | Agent: Claude Code | Statut: Initialisation",
+        "running": "Pod: alpha-dev | Agent: Claude Code | Statut: En cours",
+        "observing": "Pod: alpha-dev | Agent: Claude Code | Observation: beta-dev"
+      }
+    },
+    "coreDemo": {
+      "terminalTitle": "Terminal AgentPod",
+      "podA": "Pod A",
+      "podB": "Pod B",
+      "devChannel": "#dev-channel",
+      "members": "{count} membres",
+      "kanban": {
+        "backlog": "En attente",
+        "inProgress": "En cours",
+        "review": "Révision",
+        "done": "Terminé",
+        "authFeature": "Fonctionnalité d'authentification",
+        "empty": "Vide"
+      },
+      "schedule": {
+        "title": "Tâches Planifiées",
+        "auto": "Auto",
+        "daily": "Quotidien 09:00",
+        "weekly": "Lun 08:00",
+        "friday": "Ven 17:00",
+        "hourly": "Toutes les heures",
+        "depUpdate": "Mise à jour des dépendances",
+        "secScan": "Analyse de sécurité",
+        "codeReview": "Revue de code",
+        "testSuite": "Suite de tests",
+        "passed": "Réussi",
+        "running": "En cours",
+        "pending": "En attente",
+        "nextRun": "Prochaine exécution dans"
+      },
+      "architecture": {
+        "yourInfrastructure": "Votre Infrastructure",
+        "runner": "Runner",
+        "agent": "Agent",
+        "websocket": "WebSocket",
+        "agentsmeshCloud": "AgentsMesh Cloud"
+      }
+    },
+    "demoVideo": {
+      "title": "Voyez votre future équipe",
+      "titleHighlight": "en action",
+      "description": "Deux minutes. Du ticket au merge request — entièrement autonome.",
+      "iframeTitle": "Démo du Produit AgentsMesh",
+      "highlight1": "Démo du cycle complet",
+      "highlight2": "Collaboration multi-agent",
+      "highlight3": "Exécution autonome des tâches"
+    },
+    "footer": {
+      "tagline": "Là où les équipes dépassent les limites de l'effectif.",
+      "copyright": "AgentsMesh. Tous droits réservés.",
+      "madeWith": "Conçu pour les équipes ambitieuses",
+      "product": {
+        "title": "Produit",
+        "agentpod": "AgentPod",
+        "agentsmesh": "AgentsMesh",
+        "tickets": "Tickets",
+        "runners": "Runners",
+        "pricing": "Tarifs",
+        "enterprise": "Entreprise"
+      },
+      "resources": {
+        "title": "Ressources",
+        "documentation": "Documentation",
+        "apiReference": "Référence API",
+        "tutorials": "Tutoriels",
+        "github": "GitHub",
+        "changelog": "Journal des modifications",
+        "status": "Statut"
+      },
+      "company": {
+        "title": "Entreprise",
+        "about": "À propos",
+        "blog": "Blog",
+        "careers": "Carrières",
+        "contact": "Contact"
+      },
+      "legal": {
+        "title": "Juridique",
+        "privacy": "Politique de Confidentialité",
+        "terms": "Conditions d'Utilisation",
+        "security": "Sécurité"
+      }
+    },
+    "demo": {
+      "title": "Demander une Démo",
+      "subtitle": "Découvrez comment AgentsMesh peut décupler la productivité de votre équipe.",
+      "nameLabel": "Nom complet",
+      "namePlaceholder": "Jean Dupont",
+      "emailLabel": "Email professionnel",
+      "emailPlaceholder": "jean@entreprise.fr",
+      "companyLabel": "Entreprise",
+      "companyPlaceholder": "Entreprise SAS",
+      "referralLabel": "Comment avez-vous entendu parler de nous ?",
+      "referralPlaceholder": "ex. Twitter, GitHub, un ami...",
+      "messageLabel": "Autre chose ? (optionnel)",
+      "messagePlaceholder": "Parlez-nous de la taille de votre équipe et de votre cas d'utilisation...",
+      "submit": "Demander une Démo",
+      "submitting": "Envoi en cours...",
+      "error": "Une erreur s'est produite. Veuillez réessayer.",
+      "thankYou": "Merci !",
+      "thankYouDescription": "Nous avons reçu votre demande de démo et vous recontacterons sous 1 jour ouvré.",
+      "backToHome": "Retour à l'accueil"
+    }
+  }
+}

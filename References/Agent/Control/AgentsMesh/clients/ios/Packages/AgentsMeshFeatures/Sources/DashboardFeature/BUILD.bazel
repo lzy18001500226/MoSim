@@ -1,0 +1,23 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+# 5-tab dashboard composer (Pods · Channels · Tickets · Blocks · More)
+# plus terminal cover + drawer overlay. Owned by AppFeature once the
+# user is authenticated; the AppFeature root only handles the
+# loading/login/dashboard phase split.
+swift_library(
+    name = "DashboardFeature",
+    srcs = glob(["*.swift"]),
+    module_name = "DashboardFeature",
+    visibility = ["//clients/ios:__subpackages__"],
+    deps = [
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/BlocksFeature",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/ChannelsFeature",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/DesignSystem",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/MoreFeature",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/OrgDrawerFeature",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/TerminalFeature",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/TicketsFeature",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/WorkspaceFeature",
+        "@swiftpkg_swift_composable_architecture//:ComposableArchitecture",
+    ],
+)

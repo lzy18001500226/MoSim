@@ -1,0 +1,17 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+# Pod terminal feature. Owns the SwiftTerm-backed view, the relay
+# WebSocket actor, and the TCA reducer that coordinates them.
+swift_library(
+    name = "TerminalFeature",
+    srcs = glob(["*.swift"]),
+    module_name = "TerminalFeature",
+    visibility = ["//clients/ios:__subpackages__"],
+    deps = [
+        "//clients/ios/Packages/AgentsMeshCore",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/CoreClient",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/DesignSystem",
+        "@swiftpkg_swift_composable_architecture//:ComposableArchitecture",
+        "@swiftpkg_swiftterm//:SwiftTerm",
+    ],
+)

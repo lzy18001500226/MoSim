@@ -1,0 +1,451 @@
+{
+  "agentpod": {
+    "title": "AgentPod",
+    "pods": "Pods",
+    "newPod": "New Pod",
+    "runners": "Runners",
+    "noRunnersOnline": "No runners online",
+    "selectAgent": "Select Agent",
+    "selectRepository": "Select Repository",
+    "prompt": "Initial Prompt",
+    "status": {
+      "initializing": "Initializing",
+      "running": "Running",
+      "paused": "Paused",
+      "terminated": "Terminated",
+      "error": "Error"
+    }
+  },
+  "pods": {
+    "status": {
+      "initializing": "Initializing",
+      "running": "Running",
+      "paused": "Paused",
+      "disconnected": "Disconnected",
+      "orphaned": "Reconnecting",
+      "completed": "Completed",
+      "terminated": "Terminated",
+      "error": "Error",
+      "failed": "Failed"
+    }
+  },
+  "mesh": {
+    "title": "AgentsMesh",
+    "channels": "Channels",
+    "newChannel": "New Channel",
+    "topology": "Topology",
+    "messages": "Messages",
+    "sendMessage": "Send message...",
+    "page": {
+      "title": "Mesh",
+      "subtitle": "Multi-agent collaboration network topology",
+      "activePods": "{count} active pods",
+      "channelsCount": "{count} channels",
+      "bindingsCount": "{count} bindings",
+      "refresh": "Refresh",
+      "dismiss": "Dismiss",
+      "updating": "Updating..."
+    },
+    "legend": {
+      "title": "Legend",
+      "running": "Running",
+      "initializing": "Initializing",
+      "terminated": "Terminated",
+      "failed": "Failed",
+      "channel": "Channel",
+      "activeBinding": "Active Binding",
+      "pendingBinding": "Pending Binding"
+    },
+    "channelList": {
+      "title": "Channels",
+      "showArchived": "Show Archived",
+      "hideArchived": "Hide Archived",
+      "noChannels": "No channels found",
+      "archived": "Archived",
+      "archive": "Archive",
+      "unarchive": "Unarchive"
+    },
+    "messageInput": {
+      "placeholder": "Type a message...",
+      "hint": "Press Enter to send, Shift+Enter for new line"
+    },
+    "mention": {
+      "members": "Members",
+      "pods": "Pods"
+    },
+    "ticket": "Ticket",
+    "contextMenu": {
+      "openTerminal": "Open Terminal",
+      "viewTicket": "View Ticket {slug}",
+      "rename": "Rename",
+      "terminatePod": "Terminate Pod",
+      "terminateTitle": "Terminate Pod",
+      "terminateDescription": "Are you sure you want to terminate this pod? This action cannot be undone.",
+      "terminateConfirm": "Terminate"
+    },
+    "runnerGroup": {
+      "online": "Online",
+      "offline": "Offline",
+      "podCount": "{count} pods"
+    },
+    "channelPodManager": {
+      "title": "Channel Pods",
+      "description": "Manage pods in this channel",
+      "joined": "Joined",
+      "available": "Available",
+      "empty": "No active pods available"
+    }
+  },
+  "tickets": {
+    "title": "Tickets",
+    "newTicket": "New Ticket",
+    "board": "Board",
+    "list": {
+      "ticket": "Ticket",
+      "assignees": "Assignees",
+      "dueDate": "Due Date",
+      "updated": "Updated",
+      "noTickets": "No tickets found"
+    },
+    "backlog": "Backlog",
+    "todo": "To Do",
+    "inProgress": "In Progress",
+    "inReview": "In Review",
+    "done": "Done",
+    "searchPlaceholder": "Search tickets...",
+    "ticketCount": "tickets",
+    "clear": "Clear",
+    "view": "View",
+    "filters": {
+      "status": "Status",
+      "priority": "Priority",
+      "repository": "Repository",
+      "noRepository": "No repository",
+      "showMore": "Show more",
+      "showLess": "Show less"
+    },
+    "emptyState": {
+      "title": "No tickets yet",
+      "noMatch": "No tickets match filters",
+      "createFirst": "Create your first ticket to get started"
+    },
+    "moreTickets": "+{count} more",
+    "listView": {
+      "id": "ID",
+      "titleColumn": "Title",
+      "status": "Status",
+      "priority": "Priority",
+      "assignee": "Assignee",
+      "created": "Created",
+      "noTickets": "No tickets found. Use sidebar filters or create a new ticket."
+    },
+    "kanban": {
+      "noTickets": "No tickets",
+      "dropHere": "Drop here"
+    },
+    "priority": {
+      "none": "No Priority",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "urgent": "Urgent",
+      "unknown": "Unknown"
+    },
+    "status": {
+      "backlog": "Backlog",
+      "todo": "To Do",
+      "in_progress": "In Progress",
+      "in_review": "In Review",
+      "done": "Done",
+      "unknown": "Unknown"
+    },
+    "createDialog": {
+      "title": "Create Ticket",
+      "createSubTicket": "Create Sub-ticket",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Enter ticket title",
+      "titleRequired": "Title is required",
+      "repositoryRequired": "Repository is required",
+      "createFailed": "Failed to create ticket",
+      "repository": "Repository",
+      "selectRepository": "Select a repository...",
+      "content": "Content",
+      "submit": "Create Ticket",
+      "moreOptions": "More options",
+      "labelsPlaceholder": "Add labels..."
+    },
+    "detail": {
+      "retry": "Retry",
+      "notFound": "Ticket not found",
+      "content": "Content",
+      "subTickets": "Sub-tickets",
+      "related": "Related",
+      "commits": "Commits",
+      "actions": "Actions",
+      "details": "Details",
+      "dueDate": "Due Date",
+      "repository": "Repository",
+      "noRepository": "No repository",
+      "assignees": "Assignees",
+      "noAssignees": "No assignees",
+      "timestamps": "Timestamps",
+      "created": "Created",
+      "updated": "Updated",
+      "deleteTicket": "Delete Ticket",
+      "deleteConfirmation": "Are you sure you want to delete ticket {slug}? This action cannot be undone.",
+      "labels": "Labels",
+      "timeline": "Timeline",
+      "started": "Started",
+      "completed": "Completed",
+      "viewFullDetails": "View Full Details",
+      "comments": "Comments",
+      "noComments": "No comments yet",
+      "addComment": "Add a comment...",
+      "reply": "Reply",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteCommentConfirm": "Are you sure you want to delete this comment?",
+      "replyTo": "Replying to @{username}",
+      "cancelReply": "Cancel",
+      "submit": "Comment",
+      "edited": "edited",
+      "dangerZone": "Danger Zone",
+      "deleteWarning": "This action cannot be undone.",
+      "linked": "Linked",
+      "noLinkedItems": "No linked items yet."
+    },
+    "podPanel": {
+      "activeCount": "{count} active",
+      "newPod": "Execute",
+      "createNewPod": "Create New Pod",
+      "runner": "Runner",
+      "selectRunner": "Select a runner...",
+      "selectRunnerRequired": "Please select a runner",
+      "model": "Model",
+      "permissionMode": "Permission Mode",
+      "permissionDefault": "Default",
+      "permissionPlan": "Plan Mode",
+      "permissionAutoApprove": "Auto-approve (Dangerous)",
+      "prompt": "Initial Prompt (optional)",
+      "promptPlaceholder": "Work on ticket: {title}",
+      "creating": "Creating...",
+      "createPod": "Create Pod",
+      "createFailed": "Failed to create pod",
+      "previousPods": "{count} previous pod(s)",
+      "noPods": "No pods for this ticket yet",
+      "noRunners": "No online runners available",
+      "connect": "Connect",
+      "openInNewTab": "Open in new tab",
+      "started": "Started"
+    }
+  },
+  "workspace": {
+    "title": "Workspace",
+    "searchPlaceholder": "Search pods...",
+    "newPod": "New Pod",
+    "noTerminalsOpen": "No terminals open",
+    "noTerminalsDescription": "Click on a pod in the sidebar to open its terminal, or create a new pod to get started.",
+    "createNewPod": "Create New Pod",
+    "podCreated": "Pod created! Waiting for it to start...",
+    "podOpened": "Pod opened",
+    "filters": {
+      "mine": "Mine",
+      "org": "Org",
+      "completed": "Completed",
+      "error": "Error"
+    },
+    "emptyState": {
+      "title": "No pods yet",
+      "description": "Create your first pod to get started",
+      "createFirst": "Create Pod",
+      "noMatch": "No pods match your search",
+      "noFiltered": "No {filter} pods"
+    },
+    "runners": {
+      "title": "Runners",
+      "online": "online",
+      "noRunners": "No runners registered"
+    },
+    "terminateDialog": {
+      "title": "Terminate Pod",
+      "description": "Are you sure you want to terminate this pod? This action cannot be undone and all running processes will be stopped.",
+      "cancel": "Cancel",
+      "confirm": "Terminate"
+    },
+    "contextMenu": {
+      "rename": "Rename",
+      "terminate": "Terminate"
+    },
+    "renameDialog": {
+      "title": "Rename Pod",
+      "placeholder": "Enter a display name",
+      "hint": "Leave empty to use the default name.",
+      "cancel": "Cancel",
+      "confirm": "Save"
+    },
+    "loadMore": "Load more",
+    "pod": {
+      "status": "Status",
+      "agent": "Agent",
+      "repository": "Repository",
+      "branch": "Branch",
+      "created": "Created",
+      "duration": "Duration",
+      "actions": {
+        "open": "Open",
+        "terminate": "Terminate",
+        "restart": "Restart",
+        "logs": "View Logs"
+      }
+    },
+    "modal": {
+      "title": "Create New Pod",
+      "agent": "Agent",
+      "selectAgent": "Select an agent...",
+      "selectRunner": "Select a runner...",
+      "repositoryOptional": "Repository (optional)",
+      "selectRepository": "Select a repository...",
+      "branch": "Branch",
+      "branchPlaceholder": "Enter branch name (e.g., main)",
+      "promptOptional": "Initial Prompt (optional)",
+      "promptPlaceholder": "Enter an initial prompt for the agent...",
+      "creating": "Creating...",
+      "createPod": "Create Pod"
+    }
+  },
+  "commandPalette": {
+    "placeholder": "Type a command or search...",
+    "searching": "Searching...",
+    "noResults": "No results found.",
+    "navigation": "Navigation",
+    "actions": "Actions",
+    "goToWorkspace": "Go to Workspace",
+    "workspaceDescription": "Terminal workspace",
+    "goToTickets": "Go to Tickets",
+    "ticketsDescription": "View and manage tickets",
+    "goToMesh": "Go to AgentsMesh",
+    "meshDescription": "Network topology",
+    "goToChannels": "Go to Channels",
+    "channelsDescription": "Team collaboration channels",
+    "goToRepositories": "Go to Repositories",
+    "repositoriesDescription": "Manage repositories",
+    "goToRunners": "Go to Runners",
+    "runnersDescription": "Manage compute resources",
+    "goToSettings": "Go to Settings",
+    "settingsDescription": "Organization settings",
+    "createNewPod": "Create New Pod",
+    "createPodDescription": "Start a new agent pod",
+    "createNewTicket": "Create New Ticket",
+    "createTicketDescription": "Create a new task or issue",
+    "signOut": "Sign Out",
+    "signOutDescription": "Log out of your account",
+    "navigate": "Navigate",
+    "select": "Select",
+    "toOpen": "to open"
+  },
+  "relayStatus": {
+    "web": "Web",
+    "relay": "Relay",
+    "runner": "Runner",
+    "connected": "Connected",
+    "connecting": "Connecting",
+    "disconnected": "Disconnected",
+    "error": "Error",
+    "unknown": "Unknown"
+  },
+  "terminalTabs": {
+    "singleView": "Single view",
+    "twoColumns": "Two columns",
+    "twoRows": "Two rows",
+    "grid2x2": "2x2 grid",
+    "fullscreen": "Fullscreen"
+  },
+  "terminalToolbar": {
+    "clearScreen": "Clear screen",
+    "font": "Font",
+    "open": "Open keyboard toolbar",
+    "close": "Close",
+    "fontDecrease": "Decrease font size",
+    "fontIncrease": "Increase font size",
+    "scrollToBottom": "Scroll to bottom"
+  },
+  "mobile": {
+    "more": "More",
+    "drawer": {
+      "navigationMenu": "Navigation Menu",
+      "organization": "Organization",
+      "navigation": "Navigation",
+      "signOut": "Sign Out"
+    },
+    "menu": {
+      "gitConnections": "Git Connections",
+      "profile": "Profile",
+      "theme": "Theme",
+      "theme_light": "Light",
+      "theme_dark": "Dark",
+      "theme_solarized_light": "Solarized Light",
+      "theme_solarized_dark": "Solarized Dark",
+      "theme_system": "System"
+    }
+  },
+  "support": {
+    "title": "Support Tickets",
+    "description": "Submit questions or feedback and track your requests",
+    "create": "New Ticket",
+    "createDescription": "Describe your issue and we'll get back to you",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "cancel": "Cancel",
+    "send": "Send",
+    "sending": "Sending...",
+    "attach": "Attach",
+    "replyPlaceholder": "Type your reply...",
+    "empty": "No support tickets yet",
+    "createFirst": "Create your first ticket",
+    "notFound": "Ticket not found",
+    "backToList": "Back to tickets",
+    "retry": "Retry",
+    "download": "Download",
+    "downloadFailed": "Failed to download attachment",
+    "fileTooLarge": "File exceeds maximum size ({max})",
+    "filter": {
+      "all": "All"
+    },
+    "status": {
+      "open": "Open",
+      "in_progress": "In Progress",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "category": {
+      "bug": "Bug Report",
+      "feature_request": "Feature Request",
+      "usage_question": "Usage Question",
+      "account": "Account",
+      "other": "Other"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "fields": {
+      "title": "Title",
+      "titlePlaceholder": "Brief summary of your issue",
+      "category": "Category",
+      "priority": "Priority",
+      "content": "Description",
+      "contentPlaceholder": "Describe your issue in detail...",
+      "attachments": "Attachments",
+      "addFiles": "Add files"
+    },
+    "validation": {
+      "required": "Title and description are required"
+    },
+    "error": {
+      "createFailed": "Failed to create ticket. Please try again.",
+      "loadFailed": "Failed to load data. Please try again.",
+      "sendFailed": "Failed to send message. Please try again."
+    }
+  }
+}

@@ -1,0 +1,16 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+# Tickets feature — flat list + 5-column Kanban board + detail.
+# segment toggle (List|Board) lives in nav bar top-left; default = Board.
+swift_library(
+    name = "TicketsFeature",
+    srcs = glob(["*.swift"]),
+    module_name = "TicketsFeature",
+    visibility = ["//clients/ios:__subpackages__"],
+    deps = [
+        "//clients/ios/Packages/AgentsMeshCore",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/CoreClient",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/DesignSystem",
+        "@swiftpkg_swift_composable_architecture//:ComposableArchitecture",
+    ],
+)

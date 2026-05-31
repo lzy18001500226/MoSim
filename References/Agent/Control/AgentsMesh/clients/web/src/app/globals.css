@@ -1,0 +1,584 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Light Theme (default) — GitHub-hybrid palette, per design/tokens/colors.pastel (shared across desktop+mobile) */
+:root {
+  --background: #FFFFFF;
+  --foreground: #1F2328;
+  --card: #FFFFFF;
+  --card-foreground: #1F2328;
+  --popover: #FFFFFF;
+  --popover-foreground: #1F2328;
+  --primary: #0969DA;
+  --primary-hover: #0860C8;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F6F8FA;
+  --secondary-foreground: #1F2328;
+  --muted: #F6F8FA;
+  --muted-foreground: #656D76;
+  --accent: #DDF4FF;
+  --accent-foreground: #0550AE;
+  --destructive: #CF222E;
+  --destructive-foreground: #FFFFFF;
+  --success: #1A7F37;
+  --warning: #9A6700;
+  --danger: #CF222E;
+  --border: #D0D7DE;
+  --border-strong: #6E7681;
+  --input: #D0D7DE;
+  --ring: #0969DA;
+
+  /* Terminal colors (VS Code style for light theme) */
+  --terminal-bg: #1e1e1e;
+  --terminal-bg-secondary: #252526;
+  --terminal-bg-hover: #2a2d2e;
+  --terminal-bg-active: #37373d;
+  --terminal-border: #3c3c3c;
+  --terminal-text: #cccccc;
+  --terminal-text-muted: #808080;
+  --terminal-text-active: #ffffff;
+}
+
+/* Dark Theme — GitHub dark palette */
+.dark {
+  --background: #0D1117;
+  --foreground: #C9D1D9;
+  --card: #161B22;
+  --card-foreground: #C9D1D9;
+  --popover: #161B22;
+  --popover-foreground: #C9D1D9;
+  --primary: #2F81F7;
+  --primary-hover: #388BFD;
+  --primary-foreground: #0D1117;
+  --secondary: #161B22;
+  --secondary-foreground: #C9D1D9;
+  --muted: #161B22;
+  --muted-foreground: #8B949E;
+  --accent: #1F3250;
+  --accent-foreground: #79C0FF;
+  --destructive: #F85149;
+  --destructive-foreground: #FFFFFF;
+  --success: #3FB950;
+  --warning: #D29922;
+  --danger: #F85149;
+  --border: #30363D;
+  --border-strong: #6E7681;
+  --input: #30363D;
+  --ring: #2F81F7;
+
+  /* Terminal colors (VS Code style) */
+  --terminal-bg: #1e1e1e;
+  --terminal-bg-secondary: #252526;
+  --terminal-bg-hover: #2a2d2e;
+  --terminal-bg-active: #37373d;
+  --terminal-border: #3c3c3c;
+  --terminal-text: #cccccc;
+  --terminal-text-muted: #808080;
+  --terminal-text-active: #ffffff;
+}
+
+/* Solarized Light Theme */
+.solarized-light {
+  --background: #fdf6e3;
+  --foreground: #657b83;
+  --card: #fdf6e3;
+  --card-foreground: #657b83;
+  --popover: #fdf6e3;
+  --popover-foreground: #657b83;
+  --primary: #268bd2;
+  --primary-foreground: #fdf6e3;
+  --secondary: #eee8d5;
+  --secondary-foreground: #657b83;
+  --muted: #eee8d5;
+  --muted-foreground: #93a1a1;
+  --accent: #eee8d5;
+  --accent-foreground: #657b83;
+  --destructive: #dc322f;
+  --destructive-foreground: #fdf6e3;
+  --border: #eee8d5;
+  --input: #eee8d5;
+  --ring: #268bd2;
+
+  /* Terminal colors (Solarized Dark style for terminal) */
+  --terminal-bg: #002b36;
+  --terminal-bg-secondary: #073642;
+  --terminal-bg-hover: #094858;
+  --terminal-bg-active: #0b5a6e;
+  --terminal-border: #586e75;
+  --terminal-text: #839496;
+  --terminal-text-muted: #586e75;
+  --terminal-text-active: #93a1a1;
+}
+
+/* Solarized Dark Theme */
+.solarized-dark {
+  --background: #002b36;
+  --foreground: #839496;
+  --card: #002b36;
+  --card-foreground: #839496;
+  --popover: #002b36;
+  --popover-foreground: #839496;
+  --primary: #268bd2;
+  --primary-foreground: #002b36;
+  --secondary: #073642;
+  --secondary-foreground: #839496;
+  --muted: #073642;
+  --muted-foreground: #586e75;
+  --accent: #073642;
+  --accent-foreground: #839496;
+  --destructive: #dc322f;
+  --destructive-foreground: #839496;
+  --border: #073642;
+  --input: #073642;
+  --ring: #268bd2;
+
+  /* Terminal colors (Solarized Dark style) */
+  --terminal-bg: #002b36;
+  --terminal-bg-secondary: #073642;
+  --terminal-bg-hover: #094858;
+  --terminal-bg-active: #0b5a6e;
+  --terminal-border: #586e75;
+  --terminal-text: #839496;
+  --terminal-text-muted: #586e75;
+  --terminal-text-active: #93a1a1;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  /* Terminal colors */
+  --color-terminal-bg: var(--terminal-bg);
+  --color-terminal-bg-secondary: var(--terminal-bg-secondary);
+  --color-terminal-bg-hover: var(--terminal-bg-hover);
+  --color-terminal-bg-active: var(--terminal-bg-active);
+  --color-terminal-border: var(--terminal-border);
+  --color-terminal-text: var(--terminal-text);
+  --color-terminal-text-muted: var(--terminal-text-muted);
+  --color-terminal-text-active: var(--terminal-text-active);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  /* Radius ladder per design: 4 / 6 / 8, no xl (Notion/GitHub restraint) */
+  --radius-lg: 8px;
+  --radius-md: 6px;
+  --radius-sm: 4px;
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  min-height: 100%;
+}
+
+/* Typography prose - map to theme CSS variables for all themes */
+.prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--primary);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--muted-foreground);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: var(--border);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-kbd: var(--foreground);
+  --tw-prose-code: var(--primary);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-bg: var(--secondary);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+  --tw-prose-invert-body: var(--foreground);
+  --tw-prose-invert-headings: var(--foreground);
+  --tw-prose-invert-lead: var(--muted-foreground);
+  --tw-prose-invert-links: var(--primary);
+  --tw-prose-invert-bold: var(--foreground);
+  --tw-prose-invert-counters: var(--muted-foreground);
+  --tw-prose-invert-bullets: var(--muted-foreground);
+  --tw-prose-invert-hr: var(--border);
+  --tw-prose-invert-quotes: var(--foreground);
+  --tw-prose-invert-quote-borders: var(--border);
+  --tw-prose-invert-captions: var(--muted-foreground);
+  --tw-prose-invert-kbd: var(--foreground);
+  --tw-prose-invert-code: var(--primary);
+  --tw-prose-invert-pre-code: var(--foreground);
+  --tw-prose-invert-pre-bg: var(--secondary);
+  --tw-prose-invert-th-borders: var(--border);
+  --tw-prose-invert-td-borders: var(--border);
+}
+
+/* App shell layout (IDE/Mobile console) - prevent body scroll */
+html:has(.app-shell),
+body:has(.app-shell) {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Fix for iOS Safari viewport height - only for app shell pages */
+@supports (-webkit-touch-callout: none) {
+  html:has(.app-shell),
+  body:has(.app-shell) {
+    height: -webkit-fill-available;
+  }
+}
+
+/* ============================================================
+ * Azure Futurism — scoped theme for marketing/landing page
+ * Applied via <div class="azure-theme"> on the marketing page only.
+ * Forces dark palette + cyan/mint accents independent of system theme.
+ * Reference: stitch_agentsmesh_modern_landing_page_redesign DESIGN.md
+ * ============================================================ */
+.azure-theme {
+  --background: #0f131c;
+  --foreground: #dfe2ef;
+  --card: #1c1f29;
+  --card-foreground: #dfe2ef;
+  --popover: #1c1f29;
+  --popover-foreground: #dfe2ef;
+  --primary: #00d4ff;
+  --primary-foreground: #001f27;
+  --secondary: #1c1f29;
+  --secondary-foreground: #dfe2ef;
+  --muted: #181b25;
+  --muted-foreground: #bbc9cf;
+  --accent: #262a34;
+  --accent-foreground: #dfe2ef;
+  --destructive: #ffb4ab;
+  --destructive-foreground: #690005;
+  --border: #3c494e;
+  --input: #31353f;
+  --ring: #00d4ff;
+
+  --azure-cyan: #00d4ff;
+  --azure-cyan-soft: #a8e8ff;
+  --azure-mint: #00fcc0;
+  --azure-on-cyan: #001f27;
+  --azure-bg-deeper: #0a0e17;
+  --azure-bg-low: #181b25;
+  --azure-bg-card: #1c1f29;
+  --azure-bg-high: #262a34;
+  --azure-bg-highest: #31353f;
+  --azure-bg-bright: #353943;
+  --azure-outline: #859398;
+  --azure-outline-variant: #3c494e;
+  --azure-text-muted: #bbc9cf;
+
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+.azure-theme .font-headline,
+.azure-theme h1,
+.azure-theme h2,
+.azure-theme h3,
+.azure-theme h4 {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.azure-theme .azure-gradient-text {
+  background: linear-gradient(135deg, #00d4ff 0%, #00fcc0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.azure-theme .azure-gradient-bg {
+  background-image: linear-gradient(135deg, #00d4ff 0%, #00fcc0 100%);
+  color: var(--azure-on-cyan);
+}
+
+.azure-theme .azure-glass {
+  background-color: rgba(28, 31, 41, 0.7);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+
+.azure-theme .azure-glow-cyan {
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.35);
+}
+.azure-theme .azure-glow-cyan-lg {
+  box-shadow: 0 24px 48px rgba(0, 212, 255, 0.12), 0 0 80px rgba(0, 212, 255, 0.08);
+}
+.azure-theme .azure-glow-mint {
+  box-shadow: 0 0 24px rgba(0, 252, 192, 0.3);
+}
+.azure-theme .azure-cta-glow:hover {
+  box-shadow: 0 0 32px rgba(0, 212, 255, 0.5);
+}
+
+.azure-theme .azure-mesh-bg {
+  background-image: radial-gradient(circle at 50% 30%, rgba(0, 212, 255, 0.12) 0%, transparent 60%);
+}
+
+@keyframes azure-orb {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+.azure-theme .azure-orb {
+  animation: azure-orb 6s ease-in-out infinite;
+}
+
+@keyframes mesh-edge-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+@keyframes mesh-node-pulse {
+  0%, 100% { opacity: 0.75; transform: translate(-50%, -50%) scale(0.95); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.25); }
+}
+@keyframes mesh-star-twinkle {
+  0%, 100% { opacity: var(--star-opacity, 0.3); transform: translate(-50%, -50%) scale(0.85); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.25); }
+}
+.azure-theme .mesh-edge {
+  animation: mesh-edge-pulse 5s ease-in-out infinite;
+}
+.azure-theme .mesh-node {
+  animation: mesh-node-pulse 4s ease-in-out infinite;
+}
+.azure-theme .mesh-star {
+  animation: mesh-star-twinkle 3.5s ease-in-out infinite;
+}
+
+/* ============================================================
+ * Azure Futurism — LIGHT variant for docs & reading surfaces.
+ * Inverts the palette: snow-white canvas with cyan/mint accents
+ * and deep navy typography. Applied via <div class="azure-light">.
+ * ============================================================ */
+.azure-light {
+  --background: #f4f8fb;
+  --foreground: #0f131c;
+  --card: #ffffff;
+  --card-foreground: #0f131c;
+  --popover: #ffffff;
+  --popover-foreground: #0f131c;
+  --primary: #0099bf;
+  --primary-foreground: #ffffff;
+  --secondary: #eaf3f7;
+  --secondary-foreground: #0f131c;
+  --muted: #eef3f7;
+  --muted-foreground: #55636a;
+  --accent: #e2eef3;
+  --accent-foreground: #0f131c;
+  --destructive: #ba1a1a;
+  --destructive-foreground: #ffffff;
+  --border: #d6e2e8;
+  --input: #e8eff3;
+  --ring: #00d4ff;
+
+  --azure-light-canvas: #f4f8fb;
+  --azure-light-canvas-low: #eaf2f6;
+  --azure-light-card: #ffffff;
+  --azure-light-surface: #f7fbfd;
+  --azure-light-surface-high: #eaf3f7;
+  --azure-light-ink: #0f131c;
+  --azure-light-ink-muted: #55636a;
+  --azure-light-ink-soft: #7d8890;
+  --azure-light-border: #d6e2e8;
+  --azure-light-border-soft: #e5edf1;
+  --azure-light-cyan: #00d4ff;
+  --azure-light-cyan-ink: #0099bf;
+  --azure-light-mint: #00c49a;
+  --azure-light-mint-soft: rgba(0, 196, 154, 0.12);
+  --azure-light-cyan-soft: rgba(0, 212, 255, 0.12);
+  --azure-light-glow: 0 18px 40px rgba(0, 153, 191, 0.15);
+
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  color-scheme: light;
+}
+
+.azure-light h1,
+.azure-light h2,
+.azure-light h3,
+.azure-light h4 {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  color: var(--azure-light-ink);
+}
+
+.azure-light .azure-light-gradient-text {
+  background: linear-gradient(135deg, #0099bf 0%, #00c49a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.azure-light .azure-light-mesh {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(0, 212, 255, 0.14) 0%, transparent 55%),
+    radial-gradient(circle at 88% 10%, rgba(0, 252, 192, 0.10) 0%, transparent 55%),
+    var(--azure-light-canvas);
+}
+
+.azure-light .azure-light-glass {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(214, 226, 232, 0.6);
+}
+
+.azure-light .azure-light-card {
+  background: var(--azure-light-card);
+  box-shadow: 0 1px 2px rgba(15, 19, 28, 0.03), 0 12px 32px rgba(0, 153, 191, 0.06);
+}
+
+.azure-light .azure-light-card-hover {
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+.azure-light .azure-light-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(15, 19, 28, 0.04), 0 18px 48px rgba(0, 153, 191, 0.14);
+  background: linear-gradient(180deg, #ffffff 0%, #f7fbfd 100%);
+}
+
+.azure-light .azure-light-chip {
+  background: var(--azure-light-cyan-soft);
+  color: var(--azure-light-cyan-ink);
+}
+
+/* Landing page futuristic animations */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes border-glow {
+  0%, 100% { border-color: color-mix(in srgb, var(--primary) 30%, transparent); }
+  50% { border-color: color-mix(in srgb, var(--primary) 60%, transparent); }
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-border-glow {
+  animation: border-glow 3s ease-in-out infinite;
+}
+
+/* Scanline overlay for futuristic cards */
+.scanline-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    transparent 0%,
+    color-mix(in srgb, var(--primary) 3%, transparent) 50%,
+    transparent 100%
+  );
+  height: 200%;
+  animation: scanline 4s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* xterm.js touch scrolling support */
+.xterm-viewport {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.xterm-screen {
+  touch-action: pan-y pinch-zoom;
+}
+
+/* xterm.js mobile optimization */
+.xterm-helper-textarea {
+  /* Remove default mobile styling that can interfere with IME */
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Prevent iOS zoom on input focus */
+  font-size: 16px !important;
+}
+
+@media (max-width: 768px) {
+  .xterm-viewport {
+    /* Prevent overscroll bounce that can conflict with terminal scrolling */
+    overscroll-behavior: contain;
+  }
+
+  .xterm-screen {
+    /* Allow vertical pan and pinch zoom, prevent horizontal scroll */
+    touch-action: pan-y;
+  }
+
+  /* Ensure helper textarea doesn't cause layout issues on mobile */
+  .xterm-helper-textarea {
+    /* Position is managed by JS, ensure it doesn't affect layout */
+    position: absolute !important;
+    z-index: -5;
+  }
+}

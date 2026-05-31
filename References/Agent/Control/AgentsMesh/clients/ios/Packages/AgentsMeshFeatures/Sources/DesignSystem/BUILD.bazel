@@ -1,0 +1,11 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+# Shared design tokens + reusable SwiftUI components (AMColors, AMCard,
+# AMPrimaryButton, …). No business deps; safe for every feature module
+# to import.
+swift_library(
+    name = "DesignSystem",
+    srcs = glob(["*.swift"]),
+    module_name = "DesignSystem",
+    visibility = ["//clients/ios:__subpackages__"],
+)

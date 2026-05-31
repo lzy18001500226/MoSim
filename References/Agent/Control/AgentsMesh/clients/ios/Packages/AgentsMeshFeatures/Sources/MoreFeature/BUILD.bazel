@@ -1,0 +1,16 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+# More feature — bottom-sheet pattern with feature grid (Mesh, Loops,
+# Repos, Runners, Help). Mirrors `design/mobile/pages/ios-more.pastel`.
+swift_library(
+    name = "MoreFeature",
+    srcs = glob(["*.swift"]),
+    module_name = "MoreFeature",
+    visibility = ["//clients/ios:__subpackages__"],
+    deps = [
+        "//clients/ios/Packages/AgentsMeshCore",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/CoreClient",
+        "//clients/ios/Packages/AgentsMeshFeatures/Sources/DesignSystem",
+        "@swiftpkg_swift_composable_architecture//:ComposableArchitecture",
+    ],
+)
