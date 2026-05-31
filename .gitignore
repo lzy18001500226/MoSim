@@ -230,6 +230,8 @@ References/Agent/Skills/openai-skills/skills/.system/*
 !References/Agent/Skills/openai-skills/skills/.system/skill-creator/**
 !References/Agent/Skills/openai-skills/skills/.system/skill-installer/
 !References/Agent/Skills/openai-skills/skills/.system/skill-installer/**
+!References/Agent/Skills/pro-workflow/
+!References/Agent/Skills/pro-workflow/**
 !References/Agent/Skills/SSL/
 !References/Agent/Skills/SSL/**
 !References/Agent/Skills/SR-Agents/
