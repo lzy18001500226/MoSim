@@ -1,0 +1,148 @@
+package agent
+
+import (
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
+	"time"
+)
+
+const (
+	MessageTypeTaskAssignment = "task_assignment"
+	MessageTypeTaskAccepted   = "task_accepted"
+	MessageTypeTaskCompleted  = "task_completed"
+	MessageTypeTaskFailed     = "task_failed"
+
+	MessageTypeProgressUpdate  = "progress_update"
+	MessageTypeStatusRequest   = "status_request"
+	MessageTypeStatusResponse  = "status_response"
+
+	MessageTypeRequirement           = "requirement"
+	MessageTypeClarificationRequest  = "clarification_request"
+	MessageTypeClarificationResponse = "clarification_response"
+
+	MessageTypeHelpRequest    = "help_request"
+	MessageTypeHelpResponse   = "help_response"
+	MessageTypeReport         = "report"
+	MessageTypeSummaryRequest = "summary_request"
+	MessageTypeSummaryResponse = "summary_response"
+
+	MessageTypeBindRequest  = "bind_request"
+	MessageTypeBindAccepted = "bind_accepted"
+	MessageTypeBindRejected = "bind_rejected"
+	MessageTypeBindRevoked  = "bind_revoked"
+)
+
+const (
+	MessageStatusPending    = "pending"     // Waiting to be delivered
+	MessageStatusDelivered  = "delivered"   // Successfully delivered
+	MessageStatusRead       = "read"        // Marked as read by receiver
+	MessageStatusFailed     = "failed"      // Delivery failed (will retry)
+	MessageStatusDeadLetter = "dead_letter" // Max retries exceeded
+)
+
+type MessageContent map[string]interface{}
+
+func (mc *MessageContent) Scan(value interface{}) error {
+	if value == nil {
+		*mc = nil
+		return nil
+	}
+	var data []byte
+	switch v := value.(type) {
+	case []byte:
+		data = v
+	case string:
+		data = []byte(v)
+	default:
+		return errors.New("type assertion to []byte or string failed")
+	}
+	return json.Unmarshal(data, mc)
+}
+
+func (mc MessageContent) Value() (driver.Value, error) {
+	if mc == nil {
+		return nil, nil
+	}
+	return json.Marshal(mc)
+}
+
+type AgentMessage struct {
+	ID int64 `gorm:"primaryKey" json:"id"`
+
+	SenderPod   string `gorm:"size:100;not null;index;column:sender_pod" json:"sender_pod"`
+	ReceiverPod string `gorm:"size:100;not null;index;column:receiver_pod" json:"receiver_pod"`
+
+	MessageType string         `gorm:"size:50;not null" json:"message_type"`
+	Content     MessageContent `gorm:"type:jsonb;not null;default:'{}'" json:"content"`
+
+	Status string `gorm:"size:50;not null;default:'pending'" json:"status"`
+
+	DeliveryAttempts    int        `gorm:"not null;default:0" json:"delivery_attempts"`
+	MaxRetries          int        `gorm:"not null;default:3" json:"max_retries"`
+	LastDeliveryAttempt *time.Time `json:"last_delivery_attempt,omitempty"`
+	NextRetryAt         *time.Time `json:"next_retry_at,omitempty"`
+	DeliveryError       *string    `gorm:"size:500" json:"delivery_error,omitempty"`
+
+	DeliveredAt *time.Time `json:"delivered_at,omitempty"`
+	ReadAt      *time.Time `json:"read_at,omitempty"`
+
+	ParentMessageID *int64  `json:"parent_message_id,omitempty"`
+	CorrelationID   *string `gorm:"size:100;index" json:"correlation_id,omitempty"`
+
+	CreatedAt time.Time `gorm:"not null;default:now()" json:"created_at"`
+	UpdatedAt time.Time `gorm:"not null;default:now()" json:"updated_at"`
+}
+
+func (AgentMessage) TableName() string {
+	return "agent_messages"
+}
+
+func (m *AgentMessage) IsRead() bool {
+	return m.Status == MessageStatusRead
+}
+
+func (m *AgentMessage) IsDelivered() bool {
+	return m.Status == MessageStatusDelivered || m.Status == MessageStatusRead
+}
+
+func (m *AgentMessage) IsPending() bool {
+	return m.Status == MessageStatusPending
+}
+
+func (m *AgentMessage) IsFailed() bool {
+	return m.Status == MessageStatusFailed || m.Status == MessageStatusDeadLetter
+}
+
+func (m *AgentMessage) CanRetry() bool {
+	return m.Status == MessageStatusFailed && m.DeliveryAttempts < m.MaxRetries
+}
+
+// DeadLetterEntry represents a failed message moved to dead letter queue.
+//
+// Lifecycle:
+//  1. Created when a message exceeds MaxRetries (see RecordDeliveryFailure).
+//  2. An admin may replay it via ReplayDeadLetter, which resets the original
+//     message to "pending" and records ReplayedAt + ReplayResult here.
+//  3. Old entries are garbage-collected by the "dlq_cleanup" scheduled task
+//     (TTL default: 30 days). See service/tasks/Manager for registration.
+type DeadLetterEntry struct {
+	ID int64 `gorm:"primaryKey" json:"id"`
+
+	OriginalMessageID int64 `gorm:"not null;uniqueIndex" json:"original_message_id"`
+
+	Reason       string    `gorm:"size:500;not null" json:"reason"`
+	FinalAttempt int       `gorm:"not null" json:"final_attempt"`
+	MovedAt      time.Time `gorm:"not null;default:now()" json:"moved_at"`
+
+	ReplayedAt   *time.Time `json:"replayed_at,omitempty"`
+	ReplayResult *string    `gorm:"size:500" json:"replay_result,omitempty"`
+
+	CreatedAt time.Time `gorm:"not null;default:now()" json:"created_at"`
+
+	OriginalMessage *AgentMessage `gorm:"foreignKey:OriginalMessageID" json:"original_message,omitempty"`
+}
+
+func (DeadLetterEntry) TableName() string {
+	return "agent_message_dead_letters"
+}

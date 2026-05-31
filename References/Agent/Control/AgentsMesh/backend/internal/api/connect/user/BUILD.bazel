@@ -1,0 +1,51 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("//build_defs/protoconv:defs.bzl", "amesh_proto_convert")
+
+amesh_proto_convert(
+    name = "user_convert_amesh",
+    output = "user_convert.amesh.go",
+    proto = "//proto/user/v1:user_proto",
+)
+
+go_library(
+    name = "user",
+    srcs = [
+        "identities.go",
+        "profile.go",
+        "search.go",
+        "server.go",
+        "user_convert_custom.go",
+        ":user_convert_amesh",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/user",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/domain/user",
+        "//backend/internal/middleware",
+        "//backend/internal/service/organization",
+        "//backend/internal/service/user",
+        "//backend/pkg/protoconv",
+        "//proto/user/v1:user_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+go_test(
+    name = "user_test",
+    srcs = ["server_test.go"],
+    embed = [":user"],
+    deps = [
+        "//backend/internal/domain/user",
+        "//backend/internal/middleware",
+        "//proto/user/v1:user_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":user",
+    visibility = ["//backend:__subpackages__"],
+)

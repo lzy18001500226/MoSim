@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--isolated=true",
+        "--",
+        "--disable-features=PasswordLeakDetection",
+        "--disable-save-password-bubble"
+      ]
+    }
+  }
+}

@@ -1,0 +1,86 @@
+###############################################################################
+# Global Bazel config — AgentsMesh
+#
+# Invariant: settings here apply to every command. Use `build:<config>` for
+# opt-in configs invoked via `--config=<name>`. Local overrides live in
+# `.bazelrc.local` (gitignored).
+###############################################################################
+
+# Bzlmod is the single source of truth for external deps.
+common --enable_bzlmod
+
+# Show timestamps + progress so long Bazel actions don't look stuck.
+common --show_timestamps
+build --show_progress_rate_limit=5
+
+# Keep going on errors so a single broken target doesn't mask others.
+build --keep_going
+
+# Performance: persistent caches outside the workspace for faster rebuilds.
+build --disk_cache=~/.cache/bazel-disk
+build --repository_cache=~/.cache/bazel-repo
+
+# Retry transient fetch failures (Docker Hub / GitHub Releases / Maven /
+# crates.io / npm registry — all of them throw 502/503 occasionally,
+# more often on shared-IP CI runners). Default is 0 retries which makes
+# CI miserable; bumping to 5 buys ~30s of retries before giving up.
+common --experimental_repository_downloader_retries=5
+
+# pnpm creates symlink forests inside node_modules/ — Bazel's sandbox has
+# to tolerate those for `aspect_rules_js` to work (Phase 4).
+common --allow_unresolved_symlinks
+
+# Java runtime for Bazel's own build actions (used by some rulesets).
+build --java_runtime_version=remotejdk_21
+
+# Test ergonomics.
+test --test_output=errors
+test --test_summary=detailed
+
+###############################################################################
+# Language-specific configs (populated by subsequent Phases)
+###############################################################################
+
+# Phase 1 (Go) — CGO is ENABLED by default so tests that link against
+# native libraries (go-sqlite3, native-host extensions) still work. Release
+# builds opt into pure mode via `--config=release` for static binaries.
+build:release --@rules_go//go/config:pure
+
+# Forward the developer's Go module proxy to Bazel's fetch actions. When
+# GOPROXY points to a local filesystem cache first (or `direct`), Gazelle's
+# go_repository rule reuses it instead of roundtripping proxy.golang.org
+# every clean build. Required on networks where BCR/proxy.golang.org are
+# flaky — otherwise `bazel build` hangs on TLS timeouts.
+build --action_env=GOPROXY
+build --action_env=GOSUMDB
+build --action_env=GOPRIVATE
+build --action_env=GOMODCACHE
+build --action_env=HOME
+build --repo_env=GOPROXY
+build --repo_env=GOSUMDB
+build --repo_env=GOPRIVATE
+build --repo_env=GOMODCACHE
+build --repo_env=HOME
+
+# Phase 2 (Rust) — release config with thin LTO.
+# build:rust-release --compilation_mode=opt
+# build:rust-release --@rules_rust//:extra_rustc_flags=-Copt-level=3,-Clto=thin
+
+###############################################################################
+# CI
+###############################################################################
+
+build:ci --disk_cache=
+build:ci --repository_cache=/root/.cache/bazel-repo
+build:ci --color=yes
+build:ci --stamp
+
+###############################################################################
+# Platform cross-compile presets (populated in Phase 6)
+###############################################################################
+
+# build:linux_amd64 --platforms=@rules_go//go/toolchain:linux_amd64
+# build:linux_arm64 --platforms=@rules_go//go/toolchain:linux_arm64
+
+# Optional local overrides.
+try-import %workspace%/.bazelrc.local

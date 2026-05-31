@@ -1,0 +1,41 @@
+load("@rules_go//go:def.bzl", "go_library")
+load("//build_defs/protoconv:defs.bzl", "amesh_proto_convert")
+
+amesh_proto_convert(
+    name = "support_ticket_admin_convert_amesh",
+    output = "support_ticket_admin_convert.amesh.go",
+    proto = "//proto/support_ticket/v1:support_ticket_proto",
+    proto_file = "support_ticket_admin.proto",
+)
+
+go_library(
+    name = "support_ticket",
+    srcs = [
+        "audit.go",
+        "handlers_mutations.go",
+        "handlers_query.go",
+        "server.go",
+        "support_ticket_admin_convert_custom.go",
+        ":support_ticket_admin_convert_amesh",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/admin/support_ticket",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/admin",
+        "//backend/internal/domain/supportticket",
+        "//backend/internal/domain/user",
+        "//backend/internal/infra/database",
+        "//backend/internal/service/admin",
+        "//backend/internal/service/supportticket",
+        "//backend/pkg/protoconv",
+        "//proto/support_ticket/v1:support_ticket_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":support_ticket",
+    visibility = ["//backend:__subpackages__"],
+)

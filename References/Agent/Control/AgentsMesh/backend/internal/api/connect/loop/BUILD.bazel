@@ -1,0 +1,41 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "loop",
+    srcs = [
+        "loop.go",
+        "loop_actions.go",
+        "loop_convert.go",
+        "loop_crud.go",
+        "loop_runs.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/loop",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/loop",
+        "//backend/internal/middleware",
+        "//backend/internal/service/loop",
+        "//backend/pkg/protoconv",
+        "//proto/loop/v1:loop_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+go_test(
+    name = "loop_test",
+    srcs = ["loop_test.go"],
+    embed = [":loop"],
+    deps = [
+        "//proto/loop/v1:loop_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":loop",
+    visibility = ["//backend:__subpackages__"],
+)

@@ -1,0 +1,48 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("//build_defs/protoconv:defs.bzl", "amesh_proto_convert")
+
+amesh_proto_convert(
+    name = "agentpod_settings_convert_amesh",
+    output = "agentpod_settings_convert.amesh.go",
+    proto = "//proto/pod/v1:pod_proto",
+    proto_file = "agentpod_settings.proto",
+)
+
+go_library(
+    name = "agentpod_settings",
+    srcs = [
+        "agentpod_settings_convert_custom.go",
+        "handlers.go",
+        "server.go",
+        ":agentpod_settings_convert_amesh",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/agentpod_settings",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/domain/agentpod",
+        "//backend/internal/middleware",
+        "//backend/internal/service/agentpod",
+        "//backend/pkg/protoconv",
+        "//proto/pod/v1:pod_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+go_test(
+    name = "agentpod_settings_test",
+    srcs = ["server_test.go"],
+    embed = [":agentpod_settings"],
+    deps = [
+        "//backend/internal/middleware",
+        "//proto/pod/v1:pod_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":agentpod_settings",
+    visibility = ["//backend:__subpackages__"],
+)

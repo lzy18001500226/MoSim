@@ -1,0 +1,42 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "promocode",
+    srcs = [
+        "promocode.go",
+        "promocode_convert.go",
+        "promocode_handlers.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/promocode",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/promocode",
+        "//backend/internal/middleware",
+        "//backend/internal/service/promocode",
+        "//backend/pkg/protoconv",
+        "//proto/promocode/v1:promocode_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+go_test(
+    name = "promocode_test",
+    srcs = ["promocode_test.go"],
+    embed = [":promocode"],
+    deps = [
+        "//backend/internal/domain/promocode",
+        "//backend/internal/middleware",
+        "//backend/internal/service/promocode",
+        "//proto/promocode/v1:promocode_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":promocode",
+    visibility = ["//backend:__subpackages__"],
+)

@@ -1,0 +1,206 @@
+package rest
+
+import (
+	"log/slog"
+	"strings"
+	"time"
+
+	"github.com/anthropics/agentsmesh/backend/internal/api/rest/internal"
+	"github.com/anthropics/agentsmesh/backend/internal/api/rest/v1"
+	"github.com/anthropics/agentsmesh/backend/internal/api/rest/v1/webhooks"
+	"github.com/anthropics/agentsmesh/backend/internal/config"
+	"github.com/anthropics/agentsmesh/backend/internal/middleware"
+	"github.com/anthropics/agentsmesh/backend/pkg/apierr"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	"gorm.io/gorm"
+)
+
+// NewRouter creates and configures the Gin router
+func NewRouter(cfg *config.Config, svc *v1.Services, db *gorm.DB, logger *slog.Logger, redisClient *redis.Client) *gin.Engine {
+	if !cfg.Server.Debug {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	r := gin.New()
+	r.Use(otelgin.Middleware("agentsmesh-backend"))
+	r.Use(gin.Logger())
+	r.Use(gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
+		slog.ErrorContext(c.Request.Context(), "Panic recovered in handler",
+			"path", c.Request.URL.Path,
+			"method", c.Request.Method,
+			"error", recovered,
+		)
+		c.AbortWithStatusJSON(500, apierr.ErrorResponse{Error: "Internal server error", Code: apierr.INTERNAL_ERROR})
+	}))
+
+	// CORS configuration
+	// gin-contrib/cors does an exact-string match against AllowOrigins, so
+	// the literal "null" origin (sent by Electron renderer when loading
+	// out/renderer/index.html via file://) never matches the configured
+	// host:port allowlist. Use AllowOriginFunc to accept "null" / file://
+	// in addition to the configured allowlist; preserves the prod
+	// allowlist semantics while letting desktop renderers connect.
+	allowed := cfg.Server.CORSAllowedOrigins
+	if len(allowed) == 0 {
+		allowed = []string{"*"}
+	}
+	allowedSet := make(map[string]struct{}, len(allowed))
+	wildcardAll := false
+	for _, o := range allowed {
+		if o == "*" {
+			wildcardAll = true
+		}
+		allowedSet[o] = struct{}{}
+	}
+	corsConfig := cors.Config{
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization", "X-Organization-Slug", "X-API-Key"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			if wildcardAll {
+				return true
+			}
+			if _, ok := allowedSet[origin]; ok {
+				return true
+			}
+			// Electron file:// loader sends Origin: null; some browsers
+			// also send file:// directly. Accept both for desktop.
+			if origin == "null" || strings.HasPrefix(origin, "file://") {
+				return true
+			}
+			return false
+		},
+	}
+	r.Use(cors.New(corsConfig))
+
+	// Health check
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status":  "ok",
+			"service": "agentsmesh-api",
+		})
+	})
+
+	r.GET("/health/ready", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status": "ready",
+		})
+	})
+
+	// API v1
+	apiV1 := r.Group("/api/v1")
+	{
+		// Public OAuth browser-redirect endpoints (no auth required, with
+		// rate limiting). Login / register / refresh / logout / verify /
+		// resend / forgot / reset / sso-discover / sso-ldap moved to
+		// Connect-RPC — see backend/internal/api/connect/auth + connect/sso.
+		authHandler := v1.NewAuthHandler(svc.Auth, cfg)
+		authGroup := apiV1.Group("/auth")
+		authGroup.Use(middleware.IPRateLimiter(redisClient, "auth", 20, time.Minute))
+		authHandler.RegisterRoutes(authGroup)
+
+		// SSO OIDC/SAML browser-redirect endpoints (public, under /auth/sso).
+		// Discover + LDAPAuth migrated to proto.sso.v1.SSOService.
+		if svc.SSO != nil {
+			ssoAuthHandler := v1.NewSSOAuthHandler(svc.SSO, svc.Auth, cfg)
+			ssoAuthHandler.RegisterRoutes(authGroup.Group("/sso"))
+		}
+
+		// Public config routes migrated to
+		// proto.billing.v1.BillingPublicService — marketing pages reach it
+		// over plain-fetch Connect (clients/web/src/lib/public-api.ts).
+
+		// gRPC Runner routes (public, for Runner CLI registration with mTLS)
+		if svc.GRPCRunnerHandler != nil {
+			v1.RegisterGRPCRunnerRoutes(apiV1, svc.GRPCRunnerHandler)
+		}
+
+		// Webhook endpoints (no auth required, use token verification)
+		// Use shared billing service to ensure mock provider sessions are shared
+		// Inject services for MR/Pipeline event processing
+		webhookOpts := []webhooks.WebhookRouterOption{}
+		if svc.Repository != nil {
+			webhookOpts = append(webhookOpts, webhooks.WithRepositoryService(svc.Repository))
+		}
+		if svc.Webhook != nil {
+			webhookOpts = append(webhookOpts, webhooks.WithWebhookService(svc.Webhook))
+		}
+		if svc.MRSync != nil {
+			webhookOpts = append(webhookOpts, webhooks.WithMRSyncService(svc.MRSync))
+		}
+		if svc.Pod != nil {
+			webhookOpts = append(webhookOpts, webhooks.WithPodService(svc.Pod))
+		}
+		if svc.EventBus != nil {
+			webhookOpts = append(webhookOpts, webhooks.WithEventBus(svc.EventBus))
+		}
+		webhookRouter := webhooks.NewWebhookRouterWithBillingSvc(db, cfg, logger, svc.Billing, webhookOpts...)
+		webhookRouter.RegisterRoutes(apiV1.Group("/webhooks"))
+
+		// Invitation routes migrated to proto.invitation.v1.{InvitationService,
+		// InvitationPublicService} — see backend/internal/api/connect/invitation.
+
+		// Protected routes (auth required)
+		protected := apiV1.Group("")
+		protected.Use(middleware.AuthMiddleware(cfg.JWT.Secret))
+		{
+			// User-level routes (no tenant context required).
+			// /me + /me/organizations migrated to proto.user.v1.UserService
+			// + proto.org.v1.OrgService.ListMyOrgs — REST surface removed.
+
+			// Support tickets fully migrated to
+			// proto.support_ticket.v1.SupportTicketService — see
+			// backend/internal/api/connect/support_ticket. Attachment uploads
+			// use the 3-step presign flow (no multipart REST).
+
+			// Organization-scoped routes (require tenant context)
+			// Path changed: /organizations/:slug → /orgs/:slug
+			orgScoped := protected.Group("/orgs/:slug")
+			orgScoped.Use(middleware.TenantMiddleware(svc.Org))
+			{
+				v1.RegisterOrgScopedRoutes(orgScoped, svc)
+
+				// Real-time events migrated to proto.events.v1.EventsService.Subscribe
+				// (Connect server-streaming). Terminal WebSocket moved to Relay
+				// architecture (use GET /pods/:key/relay/connect for URL+token).
+			}
+
+			// Note: /org alias route removed - all org-scoped requests must use /orgs/:slug/*
+		}
+
+		// Note: Runner communication is now via gRPC/mTLS (see internal/api/grpc/)
+		// MCP tool communication has been migrated to gRPC bidirectional stream.
+		// The Pod REST API (/api/v1/orgs/:slug/pod/*) has been removed.
+	}
+
+	// External API (API key authenticated, for third-party service access)
+	if svc.APIKeyAdapter != nil {
+		extScoped := apiV1.Group("/ext/orgs/:slug")
+		extScoped.Use(middleware.APIKeyAuthMiddleware(svc.APIKeyAdapter, svc.Org))
+		{
+			v1.RegisterExtRoutes(extScoped, svc)
+		}
+	}
+
+	// Admin console fully migrated to Connect-RPC — see
+	// backend/internal/api/connect/admin. The admin REST surface no
+	// longer mounts; admin services still flow through serviceContainer
+	// for Connect handlers.
+
+	// Internal API routes (Relay communication)
+	if svc.RelayManager != nil {
+		internal.RegisterRelayRoutes(r.Group("/api/internal/relays"), &internal.RelayRouterDeps{
+			RelayManager:   svc.RelayManager,
+			DNSService:     svc.RelayDNSService,
+			ACMEManager:    svc.RelayACMEManager,
+			GeoResolver:    svc.GeoResolver,
+			InternalSecret: cfg.Server.InternalAPISecret,
+		})
+	}
+
+	return r
+}

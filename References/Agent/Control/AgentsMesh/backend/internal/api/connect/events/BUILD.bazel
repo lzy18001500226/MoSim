@@ -1,0 +1,25 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "events",
+    srcs = [
+        "events.go",
+        "subscribe.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/events",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/infra/eventbus",
+        "//backend/internal/infra/websocket",
+        "//backend/internal/middleware",
+        "//proto/events/v1:events_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":events",
+    visibility = ["//backend:__subpackages__"],
+)

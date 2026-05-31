@@ -1,0 +1,42 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "auth",
+    srcs = [
+        "auth.go",
+        "auth_convert.go",
+        "auth_oauth.go",
+        "auth_password.go",
+        "auth_verification.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/auth",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/config",
+        "//backend/internal/domain/user",
+        "//backend/internal/infra/email",
+        "//backend/internal/service/auth",
+        "//backend/internal/service/user",
+        "//backend/pkg/auth/oauth",
+        "//proto/auth/v1:auth_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+go_test(
+    name = "auth_test",
+    srcs = ["auth_test.go"],
+    embed = [":auth"],
+    deps = [
+        "//proto/auth/v1:auth_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":auth",
+    visibility = ["//backend:__subpackages__"],
+)

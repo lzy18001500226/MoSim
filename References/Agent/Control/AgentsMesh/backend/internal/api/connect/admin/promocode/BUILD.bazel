@@ -1,0 +1,39 @@
+load("@rules_go//go:def.bzl", "go_library")
+load("//build_defs/protoconv:defs.bzl", "amesh_proto_convert")
+
+amesh_proto_convert(
+    name = "promocode_admin_convert_amesh",
+    output = "promocode_admin_convert.amesh.go",
+    proto = "//proto/promocode/v1:promocode_proto",
+    proto_file = "promocode_admin.proto",
+)
+
+go_library(
+    name = "promocode",
+    srcs = [
+        "handlers_query.go",
+        "handlers_write.go",
+        "promocode_admin_convert_custom.go",
+        "server.go",
+        ":promocode_admin_convert_amesh",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/admin/promocode",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/organization",
+        "//backend/internal/domain/promocode",
+        "//backend/internal/domain/user",
+        "//backend/internal/infra/database",
+        "//backend/internal/service/admin",
+        "//backend/pkg/protoconv",
+        "//proto/promocode/v1:promocode_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":promocode",
+    visibility = ["//backend:__subpackages__"],
+)

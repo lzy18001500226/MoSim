@@ -1,0 +1,55 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("//build_defs/protoconv:defs.bzl", "amesh_proto_convert")
+
+# Generated wire↔domain converters. Read by the plugin from
+# proto/binding/v1/binding.proto annotations; output kept in bazel-bin only
+# (not in source tree — see .gitignore for the *_convert.amesh.go rule).
+amesh_proto_convert(
+    name = "binding_convert_amesh",
+    output = "binding_convert.amesh.go",
+    proto = "//proto/binding/v1:binding_proto",
+)
+
+go_library(
+    name = "binding",
+    srcs = [
+        "binding.go",
+        "binding_lifecycle.go",
+        "binding_query.go",
+        "binding_scopes.go",
+        ":binding_convert_amesh",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/binding",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/channel",
+        "//backend/internal/middleware",
+        "//backend/internal/service/binding",
+        "//backend/pkg/protoconv",
+        "//proto/binding/v1:binding_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+go_test(
+    name = "binding_test",
+    srcs = ["binding_test.go"],
+    embed = [":binding"],
+    deps = [
+        "//backend/internal/domain/channel",
+        "//backend/internal/middleware",
+        "//backend/internal/service/binding",
+        "//proto/binding/v1:binding_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_lib_pq//:pq",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":binding",
+    visibility = ["//backend:__subpackages__"],
+)

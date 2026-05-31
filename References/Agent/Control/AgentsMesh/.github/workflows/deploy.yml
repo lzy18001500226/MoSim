@@ -1,0 +1,265 @@
+# Deploy AgentsMesh server-side stack on every push to main.
+#
+# Splits cleanly from .github/workflows/release.yml:
+#  - this file: main-push only — build OCI images, push to dual
+#    registries, deploy to USWest + CN, run pending migrations.
+#  - release.yml: tag-push only — build runner CLI archives, create
+#    GitHub Release, package Desktop installers.
+#
+# Combined into a single file before the v0.30.0 release; two
+# concerns trampling each other (tag pushes redundantly rebuilt OCI
+# images, release jobs added artificial `needs` on build-images) made
+# the desktop-only failure mode hard to read. SRP-split keeps each
+# pipeline focused on one trigger, one set of artifacts.
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+env:
+  DOCKERHUB_REGISTRY: docker.io
+  AGENTSMESH_REGISTRY: registry.agentsmesh.ai
+
+jobs:
+  # ===========================================================================
+  # Detect which services have changed files
+  # ===========================================================================
+
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      web: ${{ steps.filter.outputs.web }}
+      web-admin: ${{ steps.filter.outputs.web-admin }}
+      relay: ${{ steps.filter.outputs.relay }}
+      migrations: ${{ steps.filter.outputs.migrations }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - 'proto/**'
+              - 'agentfile/**'
+              - 'build_defs/docker/**'
+              - 'MODULE.bazel'
+              - 'MODULE.bazel.lock'
+            web:
+              - 'clients/web/**'
+              - 'build_defs/web/**'
+              - 'MODULE.bazel'
+              - 'MODULE.bazel.lock'
+            web-admin:
+              - 'clients/web-admin/**'
+              - 'build_defs/web/**'
+              - 'MODULE.bazel'
+              - 'MODULE.bazel.lock'
+            relay:
+              - 'relay/**'
+              - 'build_defs/docker/**'
+              - 'MODULE.bazel'
+              - 'MODULE.bazel.lock'
+            migrations:
+              - 'backend/migrations/**'
+
+  # ===========================================================================
+  # Compute version tag once — shared by every build-images matrix shard.
+  # On main push, image tag is `sha-<7>` (deduplicates against the always-on
+  # `latest` tag without breaking it).
+  # ===========================================================================
+
+  version:
+    name: Compute Version Tag
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.compute.outputs.version }}
+      minor: ${{ steps.compute.outputs.minor }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: compute
+        run: |
+          set -euo pipefail
+          full="sha-${GITHUB_SHA::7}"
+          minor="latest"
+          echo "version=${full}" >> "$GITHUB_OUTPUT"
+          echo "minor=${minor}" >> "$GITHUB_OUTPUT"
+
+  # ===========================================================================
+  # Build + push Docker images via Bazel rules_oci (dual-registry).
+  # ===========================================================================
+
+  build-images:
+    name: Build ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    needs: version
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: backend
+            target: //backend/cmd/server:image
+          - service: runner
+            target: //runner/cmd/runner:image
+          - service: relay
+            target: //relay/cmd/relay:image
+          - service: web
+            target: //clients/web:image
+          - service: web-admin
+            target: //clients/web-admin:image
+    outputs:
+      version: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.DOCKERHUB_REGISTRY }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Log in to AgentsMesh Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.AGENTSMESH_REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      # rules_oci's oci_push reads ~/.docker/config.json for auth, so
+      # the two `docker login` steps above already provisioned creds.
+      # bazel run invokes the push action which tags via the stamped
+      # build_defs/workspace_status.sh keys.
+      - name: Push to Docker Hub
+        env:
+          IMAGE_VERSION: ${{ needs.version.outputs.version }}
+          IMAGE_MINOR: ${{ needs.version.outputs.minor }}
+        run: |
+          bazel run \
+            --stamp \
+            --workspace_status_command=build_defs/workspace_status.sh \
+            ${{ matrix.target }}_push_dockerhub
+
+      - name: Push to AgentsMesh Registry
+        env:
+          IMAGE_VERSION: ${{ needs.version.outputs.version }}
+          IMAGE_MINOR: ${{ needs.version.outputs.minor }}
+        run: |
+          bazel run \
+            --stamp \
+            --workspace_status_command=build_defs/workspace_status.sh \
+            ${{ matrix.target }}_push_agentsmesh
+
+  # ===========================================================================
+  # Deploy US West production
+  # ===========================================================================
+  # Single full-stack deploy (was 3 per-service jobs running
+  # `./deploy.sh --service <name>`). The previous mode skipped yaml on
+  # every push, so deploy-repo changes (healthcheck, registry, env) sat
+  # latent in git for weeks until somebody happened to run a full
+  # `docker stack deploy` manually — and then a month of accumulated
+  # drift would all hit production at once. The 2026-05-09 us-west-001
+  # disk-full → 2026-05-10 distroless healthcheck mismatch chain came
+  # straight from this drift.
+  #
+  # Now we always run `./deploy.sh <env> --version <sha>` (no
+  # `--service`), which reads base.yml + override.yml and reconciles
+  # every service spec. Stateless services (web / web-admin / backend)
+  # use start-first rolling updates with rollback on failure (see
+  # base.yml in deploy repo); stateful (postgres / redis / traefik)
+  # only restart when their spec actually changed. Net cost: a few
+  # extra `docker service inspect` calls per deploy.
+  #
+  # `git pull --rebase --autostash` makes the host pick up new yaml
+  # before the deploy reads it. autostash protects emergency manual
+  # edits on the host (rare but possible in incidents).
+
+  deploy-uswest:
+    name: Deploy US West
+    needs: [changes, build-images]
+    if: always() && needs.build-images.result == 'success' && (needs.changes.outputs.backend == 'true' || needs.changes.outputs.web == 'true' || needs.changes.outputs.web-admin == 'true')
+    runs-on: [self-hosted, deploy]
+    steps:
+      - run: |
+          VERSION="${{ needs.build-images.outputs.version }}"
+          ssh aliyun-us-west-001 "cd /opt/agentsmesh && git pull --rebase --autostash origin main && ./deploy.sh uswest-prod --version ${VERSION}"
+
+  deploy-uswest-relay-01:
+    name: Deploy US West Relay 01
+    needs: [changes, build-images]
+    if: always() && needs.changes.outputs.relay == 'true' && needs.build-images.result != 'failure'
+    runs-on: [self-hosted, deploy]
+    steps:
+      - run: |
+          ssh aliyun-us-west-relay-001 "cd /opt/agentsmesh/relay && ./deploy.sh uswest-relay-01 --pull"
+
+  deploy-uswest-relay-beijing-02:
+    name: Deploy US West Relay Beijing 02
+    needs: [changes, build-images]
+    if: always() && needs.changes.outputs.relay == 'true' && needs.build-images.result != 'failure'
+    runs-on: [self-hosted, deploy]
+    steps:
+      - run: |
+          ssh aliyun-agentsmesh-us-relay-beijing-002 "cd /opt/agentsmesh/relay && ./deploy.sh uswest-relay-beijing-02 --pull"
+
+  migrate-uswest:
+    name: Migrate US West
+    needs: [changes, deploy-uswest]
+    if: always() && needs.changes.outputs.migrations == 'true' && needs.deploy-uswest.result == 'success'
+    runs-on: [self-hosted, deploy]
+    steps:
+      # Pre-flight: scan for identifier blockers (dirty migration state,
+      # users.username / channels.slug / api_keys.slug / agents.slug
+      # violations). Failing fast here beats partial-state migrate up:
+      # PR #403 shipped 0141..0144 VALIDATE migrations that hit a 0141
+      # failure on both regions because the backfill hadn't run; that
+      # left schema_migrations dirty at 0141 with the CHECK still
+      # NOT VALID. --check exits non-zero with a checklist before any
+      # writes happen, so the operator runs the backfill SQL and retries.
+      - name: Pre-flight check
+        run: ssh aliyun-us-west-001 "cd /opt/agentsmesh && ./migrate.sh uswest-prod --check"
+      - name: Apply migrations
+        run: ssh aliyun-us-west-001 "cd /opt/agentsmesh && ./migrate.sh uswest-prod --direction up"
+
+  # ===========================================================================
+  # Deploy China production — same single-full-stack model as us-west.
+  # ===========================================================================
+
+  deploy-cn:
+    name: Deploy CN
+    needs: [changes, build-images]
+    if: always() && needs.build-images.result == 'success' && (needs.changes.outputs.backend == 'true' || needs.changes.outputs.web == 'true' || needs.changes.outputs.web-admin == 'true')
+    runs-on: [self-hosted, deploy]
+    steps:
+      - run: |
+          VERSION="${{ needs.build-images.outputs.version }}"
+          ssh aliyun-s001 "cd /opt/agentsmesh && git pull --rebase --autostash origin main && ./deploy.sh cn-prod --version ${VERSION}"
+
+  deploy-cn-relay-01:
+    name: Deploy CN Relay 01
+    needs: [changes, build-images]
+    if: always() && needs.changes.outputs.relay == 'true' && needs.build-images.result != 'failure'
+    runs-on: [self-hosted, deploy]
+    steps:
+      - run: |
+          ssh aliyun-cn-relay-01 "cd /opt/agentsmesh/relay && ./deploy.sh cn-relay-01 --pull"
+
+  migrate-cn:
+    name: Migrate CN
+    needs: [changes, deploy-cn]
+    if: always() && needs.changes.outputs.migrations == 'true' && needs.deploy-cn.result == 'success'
+    runs-on: [self-hosted, deploy]
+    steps:
+      - name: Pre-flight check
+        run: ssh aliyun-s001 "cd /opt/agentsmesh && ./migrate.sh cn-prod --check"
+      - name: Apply migrations
+        run: ssh aliyun-s001 "cd /opt/agentsmesh && ./migrate.sh cn-prod --direction up"

@@ -1,0 +1,51 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "billing",
+    srcs = [
+        "billing.go",
+        "billing_checkout.go",
+        "billing_convert.go",
+        "billing_errors.go",
+        "billing_overview.go",
+        "billing_provider.go",
+        "billing_public.go",
+        "billing_seats.go",
+        "billing_subscription.go",
+        "billing_usage.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/billing",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/billing",
+        "//backend/internal/middleware",
+        "//backend/internal/service/billing",
+        "//backend/internal/service/payment",
+        "//backend/pkg/protoconv",
+        "//proto/billing/v1:billing_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_google_uuid//:uuid",
+    ],
+)
+
+go_test(
+    name = "billing_test",
+    srcs = ["billing_test.go"],
+    embed = [":billing"],
+    deps = [
+        "//backend/internal/domain/billing",
+        "//backend/internal/middleware",
+        "//backend/internal/service/billing",
+        "//proto/billing/v1:billing_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":billing",
+    visibility = ["//backend:__subpackages__"],
+)

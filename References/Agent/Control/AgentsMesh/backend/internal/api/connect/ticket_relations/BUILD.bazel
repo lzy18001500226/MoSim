@@ -1,0 +1,44 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "ticket_relations",
+    srcs = [
+        "ticket_relations.go",
+        "ticket_relations_comments.go",
+        "ticket_relations_commits.go",
+        "ticket_relations_convert.go",
+        "ticket_relations_mount.go",
+        "ticket_relations_relations.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/ticket_relations",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/ticket",
+        "//backend/internal/middleware",
+        "//backend/internal/service/ticket",
+        "//backend/pkg/protoconv",
+        "//proto/ticket_relations/v1:ticket_relations_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+go_test(
+    name = "ticket_relations_test",
+    srcs = ["ticket_relations_test.go"],
+    embed = [":ticket_relations"],
+    deps = [
+        "//backend/internal/middleware",
+        "//backend/internal/service/ticket",
+        "//proto/ticket_relations/v1:ticket_relations_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":ticket_relations",
+    visibility = ["//backend:__subpackages__"],
+)

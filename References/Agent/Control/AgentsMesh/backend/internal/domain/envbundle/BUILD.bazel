@@ -1,0 +1,18 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "envbundle",
+    srcs = [
+        "bundle.go",
+        "kind.go",
+        "repository.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/domain/envbundle",
+    visibility = ["//backend:__subpackages__"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":envbundle",
+    visibility = ["//backend:__subpackages__"],
+)

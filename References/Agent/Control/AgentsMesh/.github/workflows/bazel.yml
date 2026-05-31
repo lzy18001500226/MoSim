@@ -1,0 +1,1011 @@
+name: Bazel
+
+# Unified CI workflow — one entry point for everything. Delegates to
+# Bazel targets where they exist (Go tests, Rust tests, buildifier,
+# Vitest) and falls back to pnpm / go / docker CLIs for jobs whose
+# Bazel equivalents aren't wired yet (lint, Next.js build, Docker
+# image verify, Playwright e2e, iOS XCFramework).
+#
+# Legacy ci.yml / e2e.yml / ios.yml are deleted; this file is the only
+# PR gate. release.yml (tag-triggered) is kept separate — it's the
+# deploy pipeline, not a CI gate.
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: bazel-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  GO_VERSION: "1.25"
+  NODE_VERSION: "20"
+  PNPM_VERSION: "9"
+
+jobs:
+  # ===========================================================================
+  # Bazel-native: lives inside the sandbox, uses Bazel remote cache.
+  # ===========================================================================
+
+  smoke:
+    name: Smoke (info + buildifier)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+      - run: bazel info workspace
+      - run: bazel run //:buildifier_check
+      - name: Identifier contract lint
+        run: bash tools/identifier-lint/lint.sh
+      - name: Verify desktop-only crate isolation
+        run: |
+          set -euo pipefail
+          for target in //clients/core/crates/wasm:wasm_lib //clients/core/crates/ffi:ffi; do
+            path=$(bazel query "somepath($target, //clients/core/crates/local-runner:local_runner)" 2>/dev/null)
+            if [[ -n "$path" ]]; then
+              echo "::error::$target depends on local-runner — desktop-only crate must not leak into web/iOS bundles"
+              echo "$path"
+              exit 1
+            fi
+          done
+
+  go:
+    name: Go (tests)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: smoke
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+      # Full Go module graph. CGO is enabled for SQLite-backed testkit
+      # integration tests. Release builds flip to pure Go via
+      # --config=release.
+      # --flaky_test_attempts=3: TestPtyReaderForwardsOutput is a
+      # PTY/TCP-timing test that occasionally hits i/o timeouts under
+      # CI load. The timeout is 2s; local runs are consistently green.
+      - run: bazel test --flaky_test_attempts=3 //backend/... //runner/... //relay/... //agentfile/... //proto/...
+
+      # Integration tests (build tag `integration`) — opt-in targets that
+      # spawn real runner binaries to exercise PodDaemon detach + recovery
+      # end-to-end. Tagged `manual` so they don't run via //runner/...; we
+      # invoke them explicitly here. Failures here mean a real fork/exec
+      # path regressed.
+      - run: bazel test --flaky_test_attempts=2 //runner/internal/poddaemon:poddaemon_integration_test
+
+  rust:
+    name: Rust Core (clients/core)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: smoke
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+      # Every crate under clients/core/crates/... has a Bazel target;
+      # 12 test targets were green on the migration branch.
+      # --build_tests_only: skip building non-test library targets in
+      # the same packages. The ffi xcframework target is a sh_binary
+      # tagged `manual + requires-darwin`, wasm_pkg needs wasm-bindgen —
+      # both get filtered out here and own their own jobs.
+      - run: bazel test --build_tests_only //clients/core/crates/...
+
+  # ===========================================================================
+  # Mixed Bazel / shell — these jobs use Bazel under the hood (lint /
+  # cross-platform tests) but predate full Bazel-native rule coverage
+  # for the upstream tool.
+  # ===========================================================================
+
+  go-lint:
+    name: Go Lint (backend + runner + relay)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: smoke
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [backend, runner, relay]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+      # golangci-lint binary fetched hermetically by rules_multitool
+      # (multitool.lock.json pins v2.11.4 across linux/macOS amd64+arm64).
+      # The macro is `sh_binary` not `sh_test` because golangci-lint
+      # walks the live Go module dep graph (vendored deps, GOMODCACHE)
+      # — putting that under Bazel's test sandbox would mean
+      # re-materializing every transitive Go file as runfiles.
+      - run: bazel run //${{ matrix.module }}:lint
+
+  go-windows:
+    name: Runner Tests (Windows)
+    runs-on: windows-latest
+    timeout-minutes: 25
+    needs: smoke
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+      # `go test ./...` ported to Bazel. rules_go fetches its own
+      # hermetic Go SDK (1.25 — pinned in MODULE.bazel), so we don't need
+      # actions/setup-go anymore.
+      #
+      # `--build_tests_only` filters out non-test targets in `//runner/...`
+      # that have Linux/macOS-only toolchain deps (the `:image` OCI target
+      # pulls aspect_bazel_lib's zstd toolchain; the `:lint` sh_binary
+      # pulls @multitool's golangci-lint, which only has linux/macOS
+      # entries in multitool.lock.json).
+      #
+      # Race detector dropped on Windows: rules_go race instrumentation
+      # requires CGO + a configured C/C++ toolchain, which doesn't auto-
+      # resolve cleanly on windows-latest under Bazel sandboxing. The
+      # Linux Go test job (`go:` above) is the platform that exercises
+      # data-race coverage. This Windows job is platform-coverage smoke.
+      #
+      # --flaky_test_attempts=3 replaces the bash retry loop that worked
+      # around TestPtyReaderForwardsOutput's PTY/TCP-timing flakiness.
+      - run: bazel test //runner/... --build_tests_only --flaky_test_attempts=3
+
+  release-smoke:
+    name: Release Smoke (cross-build + archives + signing)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: smoke
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+
+      # Verify the Bazel-side of the release pipeline survives an ubuntu
+      # CI runner (where multitool fetches linux-amd64 binaries instead of
+      # darwin-arm64). Builds 6 cross-compiled archives + checksums.txt
+      # but stops short of `gh release create` — that's gated on a real
+      # tag in release.yml. This catches regressions in:
+      #   - rules_go cross-compilation (windows/arm64, darwin/arm64)
+      #   - rules_pkg pkg_tar / pkg_zip output naming
+      #   - the release_checksums genrule's sha256sum invocation
+      - name: Build release_assets
+        run: bazel build //runner/cmd/runner:release_assets
+
+      - name: Verify all 6 archives + checksums.txt exist
+        run: |
+          set -euo pipefail
+          cd bazel-bin/runner/cmd/runner
+          expected=(
+            agentsmesh-runner_linux_amd64.tar.gz
+            agentsmesh-runner_linux_arm64.tar.gz
+            agentsmesh-runner_darwin_amd64.tar.gz
+            agentsmesh-runner_darwin_arm64.tar.gz
+            agentsmesh-runner_windows_amd64.zip
+            agentsmesh-runner_windows_arm64.zip
+            checksums.txt
+          )
+          for f in "${expected[@]}"; do
+              if [[ ! -f "$f" ]]; then
+                  echo "::error::Missing release artifact: $f" >&2
+                  exit 1
+              fi
+              size=$(stat -c%s "$f")
+              if [[ "$size" -lt 100 ]]; then
+                  echo "::error::Suspiciously small artifact $f ($size bytes)" >&2
+                  exit 1
+              fi
+              echo "✓ $f ($size bytes)"
+          done
+          echo "--- checksums.txt ---"
+          cat checksums.txt
+
+      # Validate the release.yml staging+rename+sign+repack flow against
+      # a fake tag, exercising the bash plumbing (path joins, sed
+      # pattern, tar -C/-czf invocation) that release.yml depends on.
+      # Signing is skipped here (MACOS_CERTIFICATE secret isn't exposed
+      # to PR jobs by design); the rest of the flow runs end-to-end.
+      - name: Install rcodesign
+        run: |
+          RCODESIGN_VERSION="0.29.0"
+          cd /tmp
+          curl -fsSL "https://github.com/indygreg/apple-platform-rs/releases/download/apple-codesign/${RCODESIGN_VERSION}/apple-codesign-${RCODESIGN_VERSION}-x86_64-unknown-linux-musl.tar.gz" | tar xz
+          sudo cp ./apple-codesign-*/rcodesign /usr/local/bin/
+          rm -rf ./apple-codesign-*
+          rcodesign --version
+
+      - name: Dry-run staging (rename + skip-sign + repack + checksum)
+        env:
+          # MACOS_CERTIFICATE intentionally unset → sign-darwin.sh prints
+          # an error in CI mode. We catch + skip in the loop so the rest
+          # of the flow still validates.
+          ENTITLEMENTS: ${{ github.workspace }}/runner/build/darwin/entitlements.plist
+        run: |
+          set -euo pipefail
+          version="0.0.0-rc.smoke"
+          mkdir -p release-staging
+          sign_script="${GITHUB_WORKSPACE}/runner/build/scripts/sign-darwin.sh"
+
+          for arch in bazel-bin/runner/cmd/runner/agentsmesh-runner_*.tar.gz \
+                     bazel-bin/runner/cmd/runner/agentsmesh-runner_*.zip; do
+              base="$(basename "$arch")"
+              new_name="${base/agentsmesh-runner_/agentsmesh-runner_${version}_}"
+              dest="${GITHUB_WORKSPACE}/release-staging/${new_name}"
+
+              if [[ "$base" == *darwin*.tar.gz ]]; then
+                  tmp="$(mktemp -d)"
+                  tar -xzf "$arch" -C "$tmp"
+                  # In a real release, sign-darwin.sh runs here. PR smoke
+                  # has no cert secret, so we just exercise the unpack/repack.
+                  tar -C "$tmp" -czf "$dest" agentsmesh-runner README.md LICENSE
+                  rm -rf "$tmp"
+              else
+                  cp "$arch" "$dest"
+              fi
+          done
+
+          (
+              cd release-staging
+              sha256sum agentsmesh-runner_*.tar.gz agentsmesh-runner_*.zip > checksums.txt
+          )
+          ls -la release-staging/
+          # Sanity: each renamed file should round-trip through `sha256sum -c`.
+          (cd release-staging && sha256sum -c checksums.txt)
+
+  web:
+    name: Web (lint + type-check + vitest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: smoke
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+      # Lint, type-check + Vitest all run via Bazel.
+      - name: Lint + Type-check + Vitest (Bazel)
+        run: bazel test //clients/web:lint //clients/web:unit && bazel build //clients/web:src //clients/web-admin:src
+
+  web-admin:
+    name: Web-Admin (lint + vitest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: smoke
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+      - name: Lint + Vitest (Bazel)
+        run: bazel test //clients/web-admin:lint //clients/web-admin:unit
+      # `pnpm build` is covered by the docker-verify job
+      # (`bazel build //clients/web-admin:image`) — no duplicate build here.
+
+  docker-verify:
+    name: OCI Image Build (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    # 25-min ceiling absorbs cache-miss cold builds — web image transitively
+    # needs Rust core (wasm), and Rust compile alone can take 8-12 min uncached.
+    # Two consecutive runs (commits f6f24878 and de83b389) hit the previous
+    # 15-min limit exactly when GitHub's cache service was degraded
+    # ("Failed to restore: 400" → bazelisk-cache + disk-cache both miss).
+    # Backend/runner/relay/web-admin don't pull Rust and stay under 15-min,
+    # so this overhead is web-image-specific but the shared matrix budget
+    # has to fit the slowest leg.
+    timeout-minutes: 25
+    needs: smoke
+    if: github.event_name == 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: backend
+            target: //backend/cmd/server:image
+          - service: runner
+            target: //runner/cmd/runner:image
+          - service: relay
+            target: //relay/cmd/relay:image
+          - service: web
+            target: //clients/web:image
+          - service: web-admin
+            target: //clients/web-admin:image
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+      # Replaces the legacy ci/<service>.Dockerfile verify. The rules_oci
+      # target produces the same distroless-based image release.yml pushes
+      # to Docker Hub + registry.agentsmesh.ai on main.
+      - run: bazel build ${{ matrix.target }}
+
+  desktop:
+    name: Desktop (lint + electron-vite + dist smoke)
+    runs-on: macos-14
+    timeout-minutes: 35
+    needs: smoke
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+      - name: Lint
+        run: bazel test //clients/desktop:lint
+      # `:out` runs the electron-vite pipeline (main + preload +
+      # renderer bundles) inside Bazel. Tagged `manual` because the
+      # renderer cross-imports clients/web/src via electron-vite path
+      # aliases — Bazel still tracks the dependency closure but `bazel
+      # build //...` skips it. Explicitly opt in here as the PR gate
+      # for desktop changes.
+      - name: Build :out
+        run: bazel build //clients/desktop:out
+      # `:dist` smoke test — runs electron-builder end-to-end on macOS to
+      # catch config rot in `electron-builder.yml` + the
+      # `electron_builder_app` macro before a release tag triggers
+      # release.yml. Without this gate, `mac.identity: null` style bugs
+      # silently produce unsigned installers in production while CI
+      # stays green. We disable codesign auto-discovery — the secret
+      # certs aren't exposed to PR jobs by design — so this validates
+      # packaging logic only, not signing wiring (release.yml exercises
+      # the latter on tag push).
+      - name: Smoke :dist (unsigned packaging)
+        run: bazel build //clients/desktop:dist --build_tag_filters=electron_builder --action_env=CSC_IDENTITY_AUTO_DISCOVERY
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      - name: Verify dist artifacts
+        run: |
+          set -euo pipefail
+          cd bazel-bin/clients/desktop/dist
+          ls -la
+          # macOS smoke produces dmg + zip per arch + latest-mac.yml.
+          # arm64 + x64 → 2 dmg, 2 zip, 1 yml minimum.
+          dmgs=$(ls AgentsMesh-*.dmg 2>/dev/null | wc -l | tr -d ' ')
+          zips=$(ls AgentsMesh-*.zip 2>/dev/null | wc -l | tr -d ' ')
+          [[ -f latest-mac.yml ]] || { echo "::error::missing latest-mac.yml"; exit 1; }
+          [[ "$dmgs" -ge 2 ]] || { echo "::error::expected ≥2 dmg, got $dmgs"; exit 1; }
+          [[ "$zips" -ge 2 ]] || { echo "::error::expected ≥2 zip, got $zips"; exit 1; }
+          # Native NAPI module must land in app.asar.unpacked, not just on
+          # disk in node_modules. Without this guard a regression that
+          # drops `@agentsmesh/node-bridge` from the synth package.json's
+          # dependencies (clients/desktop/BUILD.bazel) silently produces
+          # a broken installer that throws "Cannot find module" on first
+          # launch — a runtime crash CI never catches because the build
+          # itself succeeds.
+          unpacked="mac-arm64/AgentsMesh.app/Contents/Resources/app.asar.unpacked/node_modules/@agentsmesh/node-bridge"
+          if [[ ! -d "$unpacked" ]]; then
+            echo "::error::node-bridge not unpacked at $unpacked"
+            echo "--- actual Resources/ ---"
+            ls -la mac-arm64/AgentsMesh.app/Contents/Resources/ 2>&1 || true
+            echo "--- app.asar.unpacked tree (if any) ---"
+            find mac-arm64/AgentsMesh.app/Contents/Resources/app.asar.unpacked -maxdepth 4 2>&1 || true
+            echo "--- *.node files anywhere in .app ---"
+            find mac-arm64/AgentsMesh.app -name "*.node" 2>&1 | head -10 || true
+            exit 1
+          fi
+          ls "$unpacked"/*.node >/dev/null 2>&1 || { echo "::error::no .node binary in $unpacked"; exit 1; }
+          echo "✓ $dmgs dmg + $zips zip + latest-mac.yml + node-bridge .node"
+
+  ios-xcframework:
+    name: Build iOS XCFramework + app
+    # macos-26 ships Xcode 26 (Swift 6.2), needed by SwiftPM deps that
+    # declare `swift-tools-version: 6.2` (e.g., swift-collections,
+    # swift-composable-architecture). macos-14 only had Xcode 15.4 /
+    # Swift 5.10, which fails the SPM fetch with `package
+    # 'swift-collections' is using Swift tools version 6.2.0 but the
+    # installed version is 5.10.0`.
+    runs-on: macos-26
+    timeout-minutes: 30
+    needs: smoke
+    steps:
+      - uses: actions/checkout@v6
+      - name: Select Xcode
+        # macos-26 ships Xcode 26 by default at /Applications/Xcode.app.
+        # Pin via xcode-select so any later image revisions stay
+        # deterministic, then echo versions to the build log.
+        run: |
+          for xc in /Applications/Xcode_26*.app; do
+            if [[ -d "$xc" ]]; then
+              sudo xcode-select -s "$xc"
+              break
+            fi
+          done
+          xcrun --version || sudo xcode-select -s /Applications/Xcode.app
+          xcodebuild -version
+          swift --version
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+      # Pure-Bazel XCFramework pipeline: rules_rust supplies the iOS
+      # triples (extra_target_triples in MODULE.bazel), our
+      # rust_xcframework macro (build_defs/ios) transitions the
+      # rust_static_library through three iOS platforms, lipos the
+      # simulator pair, runs uniffi-bindgen, and assembles the tree
+      # artifact. No cargo/rustup setup needed — Bazel handles it.
+      - name: Build XCFramework
+        run: bazel build //clients/core/crates/ffi:AgentsMeshCore //clients/core/crates/ffi:AgentsMeshCore_swift
+      - name: Inspect output
+        run: |
+          ls -la bazel-bin/clients/core/crates/ffi/AgentsMeshCore.xcframework/
+          wc -l bazel-bin/clients/core/crates/ffi/AgentsMeshCore_bindings_out/AgentsMeshCore.swift
+      # Build the full iOS app to gate Swift-side regressions (TCA
+      # reducers, SwiftUI views, CoreClient bindings against the FFI).
+      # Produces the signed `.ipa` consumed by simctl + xcodeproj.
+      - name: Build iOS app
+        run: bazel build //clients/ios:AgentsMesh
+      - name: Package artifact
+        run: |
+          # Stage the bazel-built xcframework next to the Swift glue
+          # (both live under bazel-bin/). Use ditto to preserve the
+          # read-only tree artifact permissions; `zip` chokes on them.
+          #
+          # Re-resolve the bazel-bin path here. The intermediate
+          # `Build iOS app` step builds under a different configuration
+          # (host-tool → ios-arm64), which flips the bazel-bin symlink
+          # to a stale bazel-out/<config>/bin/ root that no longer
+          # contains the xcframework. `bazel cquery --output=files`
+          # gives the exact, configuration-correct path on disk.
+          mkdir -p dist
+          xcframework_path=$(bazel cquery --output=files //clients/core/crates/ffi:AgentsMeshCore | head -1)
+          swift_glue_path=$(bazel cquery --output=files //clients/core/crates/ffi:AgentsMeshCore_bindings_swift | head -1)
+          # cquery on a tree-artifact target returns the directory itself;
+          # for the bindings filegroup it returns the .swift file.
+          ditto "$xcframework_path" dist/AgentsMeshCore.xcframework
+          cp "$swift_glue_path" dist/AgentsMeshCore.swift
+          cd dist && zip -r AgentsMeshCore-xcframework.zip \
+                          AgentsMeshCore.xcframework AgentsMeshCore.swift
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: AgentsMeshCore-xcframework
+          path: dist/AgentsMeshCore-xcframework.zip
+          retention-days: 14
+
+  # ===========================================================================
+  # Playwright e2e — exercises the full stack (backend + runner + relay +
+  # web dev-server / electron renderer). Each job:
+  #   1. brings up Docker dev-stack via `bazel run //deploy/dev:backend_only`
+  #   2. starts the Web Next.js dev-server via `bazel run :next_dev` in
+  #      the background (Web only)
+  #   3. runs the Playwright suite via Bazel.
+  # The e2e-bazel invocation uses `--output_base=/tmp/bazel-e2e` so it
+  # spawns a SECOND Bazel server — without this, `bazel test` would tear
+  # down the running `bazel run :next_dev` (single-server constraint).
+  # ===========================================================================
+
+  web-e2e:
+    name: E2E (Web — Playwright shard ${{ matrix.shard }}/${{ strategy.job-total }})
+    # Default route: self-hosted on server-8t (web-e2e-1, web-e2e-2 — 8 vCPU /
+    # 12 GiB / 300 GB each, GH Actions runner v2.334.0 systemd-managed). Set
+    # repository variable WEB_E2E_RUNNER=hosted to fall back to ubuntu-latest
+    # if the self-hosted pair is offline / under maintenance — sharding still
+    # applies (two shards run on two GH-hosted runners in parallel).
+    # Per-call override: workflow_dispatch input "runner_override".
+    runs-on: ${{ vars.WEB_E2E_RUNNER == 'hosted' && 'ubuntu-latest' || fromJSON('["self-hosted", "web-e2e"]') }}
+    timeout-minutes: 45
+    needs: smoke
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+    # Per-shard compose project namespace. Default worktree.sh slug from a
+    # detached-HEAD CI checkout is the literal string "head", which collapsed
+    # all PR / push e2e jobs onto the same backend + DB + runner. When two
+    # shards landed on the same self-hosted host (or even on separate hosts
+    # but both authenticating as dev@agentsmesh.local on the shared backend
+    # over the network), a `terminateAllPods()` cleanup hook in one shard
+    # would gRPC-send terminate_pod for the other shard's in-flight pod —
+    # which is the 275 ms-after-PTY-start terminate we kept seeing in the
+    # env-bundle-end-to-end spec failure logs.
+    env:
+      AGENTSMESH_WORKTREE_NAME: head-shard${{ matrix.shard }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+
+      # dev.sh requires ibazel for hot reload of host backend / relay.
+      # Install the linux-amd64 release binary; the doctor check in dev.sh
+      # exits 1 if it isn't on PATH. Self-hosted runners already have it under
+      # /usr/local/bin/ibazel — skip the download in that case.
+      - name: Install ibazel
+        run: |
+          if command -v ibazel >/dev/null 2>&1; then
+            ibazel --version 2>&1 | head -1 || ibazel -h | head -1
+            exit 0
+          fi
+          IBAZEL_VERSION="0.29.0"
+          curl -fsSL "https://github.com/bazelbuild/bazel-watcher/releases/download/v${IBAZEL_VERSION}/ibazel_linux_amd64" \
+            -o /usr/local/bin/ibazel
+          sudo chmod +x /usr/local/bin/ibazel
+          ibazel --version || ibazel -h | head -3
+
+      # Self-hosted runners reuse the same VM across CI runs, so docker
+      # volumes from a previous dev-stack invocation linger. Postgres in
+      # particular caches the Backend's mTLS-issued runner certificates,
+      # which the ephemeral CA generated by deploy/dev/generate-dev-certs.sh
+      # on this run does not match — the runner container then loops on
+      # `x509: ECDSA verification failure ... AgentsMesh Dev CA` and
+      # backend-driven pod-create RPCs fail.
+      #
+      # `:clean` is .env-driven and short-circuits when actions/checkout
+      # has wiped that file, so we additionally prune any leftover
+      # `agentsmesh*`-prefixed compose containers + volumes by name.
+      # Both steps are no-ops on hosted runners (nothing to prune).
+      - name: Cleanup any previous dev-stack residue
+        # Self-hosted runners reuse the same VM across CI runs, so docker
+        # volumes from a previous dev-stack invocation linger. Postgres in
+        # particular caches the Backend's mTLS-issued runner certificates,
+        # which the ephemeral CA generated by deploy/dev/generate-dev-certs.sh
+        # on this run does not match — the runner container then loops on
+        # `x509: ECDSA verification failure ... AgentsMesh Dev CA` and
+        # backend-driven pod-create RPCs fail.
+        #
+        # Filter by the exact compose project label so shard 1's cleanup
+        # cannot wipe shard 2's containers when both land on the same
+        # self-hosted host. The label is set automatically by docker-compose
+        # to `com.docker.compose.project=<project_name>` where project_name
+        # comes from worktree.sh — pinned to `agentsmesh-${AGENTSMESH_WORKTREE_NAME}`
+        # by the job-level env above. Both steps are no-ops on hosted
+        # runners (nothing to prune).
+        run: |
+          PROJECT="agentsmesh-${AGENTSMESH_WORKTREE_NAME}"
+          echo "Pruning compose project: ${PROJECT}"
+          docker container ls -a --filter "label=com.docker.compose.project=${PROJECT}" -q \
+            | xargs -r docker rm -f
+          docker volume ls -q --filter "label=com.docker.compose.project=${PROJECT}" \
+            | xargs -r docker volume rm -f
+          bazel run //deploy/dev:clean || true
+
+      - name: Bring up dev backend stack
+        run: |
+          bazel run //deploy/dev:backend_only
+          # `dev.sh` exits 0 once compose is up and migrations + seed have
+          # run. The runner gRPC bidi stream needs a few extra seconds to
+          # register with the backend before pod-creation tests pass.
+          sleep 10
+
+      - name: Resolve worktree-allocated ports
+        id: ports
+        run: |
+          source deploy/dev/.env
+          echo "HTTP_PORT=$HTTP_PORT"           >> $GITHUB_OUTPUT
+          echo "WEB_PORT=$WEB_PORT"             >> $GITHUB_OUTPUT
+          echo "POSTGRES_PORT=$POSTGRES_PORT"   >> $GITHUB_OUTPUT
+          echo "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME" >> $GITHUB_OUTPUT
+
+      - name: Wait for backend health
+        run: |
+          for i in {1..40}; do
+            if curl -sf "http://localhost:${{ steps.ports.outputs.HTTP_PORT }}/health" > /dev/null; then
+              echo "backend ready"; exit 0
+            fi
+            sleep 3
+          done
+          echo "backend never reported healthy"; exit 1
+
+      - name: Install Playwright chromium-headless-shell
+        run: |
+          # `playwright/cli.js` lives under bazel-bin's
+          # `.aspect_rules_js/playwright@<ver>/...` tree, not in
+          # output_base/external. Force-fetch the link target, then grep
+          # the bazel-bin tree.
+          bazel build //:node_modules/@playwright/test
+          PW_CLI=$(find $(bazel info bazel-bin)/node_modules/.aspect_rules_js \
+            -path '*playwright/cli.js' -type f 2>/dev/null | head -1)
+          if [ -z "$PW_CLI" ]; then
+            echo "playwright cli.js not found under bazel-bin"; exit 1
+          fi
+          node "$PW_CLI" install chromium-headless-shell
+
+      - name: Start Web dev-server (background)
+        env:
+          PORT: ${{ steps.ports.outputs.WEB_PORT }}
+          API_PROXY_TARGET: http://localhost:${{ steps.ports.outputs.HTTP_PORT }}
+          # Enable test-only UI surfaces (e.g. e2e-echo credential form) for
+          # e2e specs that drive the Settings flow. Production builds never
+          # see this flag, so the conditional require() in
+          # credentialForms/index.ts is dead-code-eliminated by webpack.
+          NEXT_PUBLIC_E2E: "true"
+        run: |
+          # Background bazel run; disown so the Bazel test step can run
+          # against a separate output_base without killing this server.
+          nohup bazel run //clients/web:next_dev > /tmp/web-dev.log 2>&1 &
+          disown
+          # Cold-cache `bazel run :next_dev` first compiles Rust deps + extracts
+          # npm packages before next-server starts listening. On hosted
+          # ubuntu-latest runners with a warm bazel-disk-cache the next-server
+          # is up in seconds. Cold self-hosted runners (especially behind a
+          # CN-LAN egress where crates.io / npm registry / docker hub round-
+          # trips are slow) can spend 12-18 min in Analyzing+Building before
+          # listen. 600×3s = 30 min upper bound; the loop short-circuits the
+          # moment the port answers, so warm runs still hit on the first iter.
+          for i in {1..600}; do
+            if curl -sf "http://localhost:${{ steps.ports.outputs.WEB_PORT }}" -o /dev/null; then
+              echo "web dev ready"; exit 0
+            fi
+            sleep 3
+          done
+          echo "web dev never came up"; cat /tmp/web-dev.log; exit 1
+
+      - name: Run Web Playwright e2e (shard ${{ matrix.shard }}/${{ strategy.job-total }})
+        env:
+          HTTP_PORT: ${{ steps.ports.outputs.HTTP_PORT }}
+          WEB_PORT: ${{ steps.ports.outputs.WEB_PORT }}
+          POSTGRES_PORT: ${{ steps.ports.outputs.POSTGRES_PORT }}
+          COMPOSE_PROJECT_NAME: ${{ steps.ports.outputs.COMPOSE_PROJECT_NAME }}
+        run: |
+          # `--test_arg=--shard=N/M` forwards to the playwright_test bin's
+          # auto-generated entrypoint (args = ["test", "--config", ...,
+          # "--reporter=line"] then test_arg appended). Sharding splits the
+          # spec set deterministically across N runners — order-independent
+          # tests are required (the suite is already that way).
+          bazel --output_base=/tmp/bazel-e2e test \
+            //clients/web/e2e-playwright:e2e \
+            --test_tag_filters=e2e \
+            --test_output=errors \
+            --test_env=HTTP_PORT \
+            --test_env=WEB_PORT \
+            --test_env=POSTGRES_PORT \
+            --test_env=COMPOSE_PROJECT_NAME \
+            --test_arg=--shard=${{ matrix.shard }}/${{ strategy.job-total }}
+
+      - name: Upload Web e2e artifacts (shard ${{ matrix.shard }})
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: web-e2e-artifacts-shard-${{ matrix.shard }}
+          path: |
+            /tmp/web-dev.log
+            test-results/
+            clients/web/e2e-playwright/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Dump backend logs on failure
+        if: failure()
+        working-directory: deploy/dev
+        run: |
+          docker compose logs --tail=200 backend  || true
+          docker compose logs --tail=200 runner   || true
+
+  mcp-e2e:
+    name: E2E (MCP — agent protocol)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: smoke
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+
+      # Same ibazel dependency as web-e2e: dev.sh refuses to start without it
+      # because the host backend / runner / relay are launched via `ibazel run`.
+      - name: Install ibazel
+        run: |
+          IBAZEL_VERSION="0.29.0"
+          curl -fsSL "https://github.com/bazelbuild/bazel-watcher/releases/download/v${IBAZEL_VERSION}/ibazel_linux_amd64" \
+            -o /usr/local/bin/ibazel
+          sudo chmod +x /usr/local/bin/ibazel
+
+      - name: Bring up dev backend stack
+        run: |
+          bazel run //deploy/dev:backend_only
+          # Two runner containers (dev-runner + dev-runner-2 for cross-runner
+          # spec) need ~10s each to register their gRPC streams. Wait long
+          # enough that DiscoverRunnerByNode("dev-runner-2") succeeds.
+          sleep 20
+
+      - name: Resolve worktree-allocated ports
+        id: ports
+        run: |
+          source deploy/dev/.env
+          echo "HTTP_PORT=$HTTP_PORT"                       >> $GITHUB_OUTPUT
+          echo "BACKEND_HTTP_PORT=$BACKEND_HTTP_PORT"       >> $GITHUB_OUTPUT
+          echo "POSTGRES_PORT=$POSTGRES_PORT"               >> $GITHUB_OUTPUT
+          echo "RUNNER_MCP_PORT=$RUNNER_MCP_PORT"           >> $GITHUB_OUTPUT
+          echo "RUNNER_2_MCP_PORT=$RUNNER_2_MCP_PORT"       >> $GITHUB_OUTPUT
+          echo "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME" >> $GITHUB_OUTPUT
+
+      - name: Wait for backend health
+        run: |
+          for i in {1..40}; do
+            if curl -sf "http://localhost:${{ steps.ports.outputs.HTTP_PORT }}/health" > /dev/null; then
+              echo "backend ready"; exit 0
+            fi
+            sleep 3
+          done
+          echo "backend never reported healthy"; exit 1
+
+      # MCP_PORT (host-exposed) is worktree-scoped via RUNNER_MCP_PORT — at
+      # offset=0 that's 10018, NOT the runner's internal listen port 19000.
+      # Cross-runner spec also needs RUNNER_2_MCP_PORT to reach the second
+      # runner's exposed port.
+      - name: Run MCP E2E suites
+        env:
+          MCP_PORT: ${{ steps.ports.outputs.RUNNER_MCP_PORT }}
+          RUNNER_2_MCP_PORT: ${{ steps.ports.outputs.RUNNER_2_MCP_PORT }}
+          BACKEND_HTTP_PORT: ${{ steps.ports.outputs.BACKEND_HTTP_PORT }}
+          POSTGRES_PORT: ${{ steps.ports.outputs.POSTGRES_PORT }}
+          POSTGRES_USER: agentsmesh
+          POSTGRES_PASSWORD: agentsmesh_dev
+          POSTGRES_DB: agentsmesh
+        run: |
+          bazel --output_base=/tmp/bazel-mcp-e2e test \
+            //tests/mcp-e2e/suites:e2e \
+            --test_tag_filters=e2e \
+            --test_output=errors \
+            --test_env=MCP_PORT \
+            --test_env=RUNNER_2_MCP_PORT \
+            --test_env=BACKEND_HTTP_PORT \
+            --test_env=POSTGRES_PORT \
+            --test_env=POSTGRES_USER \
+            --test_env=POSTGRES_PASSWORD \
+            --test_env=POSTGRES_DB
+
+      - name: Dump runner / backend logs on failure
+        if: failure()
+        working-directory: deploy/dev
+        run: |
+          docker compose logs --tail=300 backend  || true
+          docker compose logs --tail=300 runner   || true
+          tail -n 300 runtime/runner/runner.log   || true
+          tail -n 300 runtime/backend/backend.log || true
+
+      - name: Upload MCP e2e logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: mcp-e2e-logs
+          path: |
+            deploy/dev/runtime/runner/runner.log
+            deploy/dev/runtime/backend/backend.log
+            deploy/dev/runtime/relay/relay.log
+          if-no-files-found: ignore
+          retention-days: 7
+
+  desktop-e2e:
+    name: E2E (Desktop — Electron)
+    # Self-hosted macmini-04 (Intel x86_64, Mac mini 2018, dongzhao user).
+    # Replaces the earlier macmini-03 (M-series) lane because macmini-03
+    # doubles as a GitLab CI runner and a desktop dev box — the shared
+    # bazel server kept losing 55+ min waiting on the GitLab pipeline's
+    # output-base lock, busting the 60-min job timeout. macmini-04 is a
+    # dedicated x64 e2e host. OrbStack provides Docker; Electron launches
+    # natively. Hosted GHA macOS runners can't run Docker (no nested
+    # virt) and ubuntu's Electron-under-xvfb cold-launch is too flaky on
+    # shared CPU, so self-hosted remains the only viable path.
+    #
+    # Side benefit: this lane now exercises the x64 Electron build that
+    # `clients/desktop/electron-builder.yml` ships under `mac.target.x64`,
+    # which the previous arm64-only lane never verified natively.
+    runs-on: [self-hosted, macmini-04]
+    timeout-minutes: 60
+    needs: smoke
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+
+      - name: Verify Docker (OrbStack)
+        run: |
+          docker version
+          docker compose version
+
+      # Same dev.sh prereq as Web E2E. ibazel ships only as GitHub Release
+      # binaries (no homebrew formula for `bazel-watcher`); pick the
+      # darwin slice that matches the runner's arch.
+      #
+      # Version pinning is arch-aware: upstream stopped publishing
+      # `ibazel_darwin_amd64` after v0.28.0 (v0.28.1+ are arm64-only on
+      # macOS), so Intel runners stay on the last release that still
+      # shipped an Intel macOS binary. arm64 stays on 0.29.0.
+      #
+      # Writes to ~/.local/bin so the runner doesn't need sudo (which
+      # would require passwordless-sudo config on the self-hosted host).
+      # That dir is exported to PATH via $GITHUB_PATH for subsequent
+      # steps.
+      - name: Ensure ibazel installed
+        run: |
+          if ! command -v ibazel >/dev/null 2>&1; then
+            case "$(uname -m)" in
+              arm64)  IBAZEL_VERSION="0.29.0"; IBAZEL_ARCH="darwin_arm64" ;;
+              x86_64) IBAZEL_VERSION="0.28.0"; IBAZEL_ARCH="darwin_amd64" ;;
+              *) echo "::error::unsupported arch for ibazel: $(uname -m)"; exit 1 ;;
+            esac
+            mkdir -p "$HOME/.local/bin"
+            curl -fsSL "https://github.com/bazelbuild/bazel-watcher/releases/download/v${IBAZEL_VERSION}/ibazel_${IBAZEL_ARCH}" \
+              -o "$HOME/.local/bin/ibazel"
+            chmod +x "$HOME/.local/bin/ibazel"
+            echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+            export PATH="$HOME/.local/bin:$PATH"
+          fi
+          ibazel -h | head -3 || true
+
+      - name: Isolate bazel server from GitLab CI
+        # macmini-03 is also a GitLab CI runner sharing the same `stone`
+        # user. ~/.bazelrc pins `startup --output_base=/Users/stone/.bazel`,
+        # so both pipelines hit a single bazel server and serialize on its
+        # lock — last observation: a GitLab pipeline held the lock for 55+
+        # min, busting the 60-min job timeout three runs in a row.
+        #
+        # Shim `bazel` ahead of the homebrew binary on PATH so every
+        # invocation in this job (including ibazel-spawned `bazel build`
+        # inside deploy/dev:backend_only) lands on this job's private
+        # output base. The outer `bazel --output_base=...` flags on the
+        # explicit commands are kept as belt-and-suspenders.
+        run: |
+          REAL_BAZEL="$(command -v bazel)"
+          mkdir -p "$HOME/.gha-bin"
+          cat > "$HOME/.gha-bin/bazel" <<EOF
+          #!/usr/bin/env bash
+          exec "$REAL_BAZEL" --output_base="\$HOME/.bazel-github" "\$@"
+          EOF
+          chmod +x "$HOME/.gha-bin/bazel"
+          echo "$HOME/.gha-bin" >> "$GITHUB_PATH"
+
+      - name: Pre-clean lingering host processes
+        # Self-hosted runner: previous failed runs may have left stale
+        # backend/relay binaries holding worktree-allocated ports
+        # (`_launch_ibazel`'s start-time cleanup only kills the recorded
+        # parent PID, not its bazel-spawned children). Run the canonical
+        # cleanup once before bring-up so this run starts on a clean
+        # host. Idempotent on a clean box.
+        #
+        # Order matters: kill detached binaries + the Bazel JVM daemon
+        # FIRST via shell, then let `dev:clean` tear down docker/runtime.
+        # The previous version called `bazel run` first, which paradoxically
+        # spawned a fresh daemon to clean up the prior daemon's residue.
+        #
+        # `--output_base` pins this job to its own bazel server so it
+        # never blocks on the GitLab CI server that shares the default
+        # `/Users/stone/.bazel` output base on macmini-03 (those two
+        # workloads previously serialized through the same lock, burning
+        # 55+ min waiting and busting the 60-min job timeout).
+        run: |
+          # 1. Kill detached backend/relay/runner binaries from prior runs.
+          #    They reparent to init (ppid=1) once ibazel exits, so pkill
+          #    by command-line path is the only reliable identifier.
+          pkill -f "bazel-bin/backend/cmd/server" 2>/dev/null || true
+          pkill -f "bazel-bin/relay/cmd/relay" 2>/dev/null || true
+          pkill -f "bazel-bin/runner/cmd/runner" 2>/dev/null || true
+          # 2. Kill the Bazel JVM daemon pinned to this job's output_base.
+          #    `bazel shutdown` is the polite path, pkill is the hammer.
+          bazel --output_base="$HOME/.bazel-github" shutdown 2>/dev/null || true
+          pkill -f "$HOME/.bazel-github" 2>/dev/null || true
+          sleep 2
+          # 3. Host is clean now — let dev:clean tear down docker volumes
+          #    and runtime/ directory.
+          bazel --output_base="$HOME/.bazel-github" run //deploy/dev:clean || true
+
+      - name: Bring up dev backend stack
+        run: |
+          bazel --output_base="$HOME/.bazel-github" run //deploy/dev:backend_only
+          sleep 10
+
+      - name: Resolve worktree-allocated ports
+        id: ports
+        run: |
+          source deploy/dev/.env
+          echo "HTTP_PORT=$HTTP_PORT"           >> $GITHUB_OUTPUT
+          echo "POSTGRES_PORT=$POSTGRES_PORT"   >> $GITHUB_OUTPUT
+          echo "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME" >> $GITHUB_OUTPUT
+
+      - name: Wait for backend health
+        run: |
+          for i in {1..40}; do
+            if curl -sf "http://localhost:${{ steps.ports.outputs.HTTP_PORT }}/health" > /dev/null; then
+              echo "backend ready"; exit 0
+            fi
+            sleep 3
+          done
+          echo "backend never reported healthy"; exit 1
+
+      - name: Build desktop bundle
+        run: bazel --output_base="$HOME/.bazel-github" build //clients/desktop:out
+
+      - name: Run Desktop Playwright e2e
+        env:
+          HTTP_PORT: ${{ steps.ports.outputs.HTTP_PORT }}
+          POSTGRES_PORT: ${{ steps.ports.outputs.POSTGRES_PORT }}
+          COMPOSE_PROJECT_NAME: ${{ steps.ports.outputs.COMPOSE_PROJECT_NAME }}
+        run: |
+          bazel --output_base="$HOME/.bazel-github" test //clients/desktop:e2e \
+            --test_tag_filters=e2e \
+            --test_output=errors \
+            --test_env=HTTP_PORT \
+            --test_env=POSTGRES_PORT \
+            --test_env=COMPOSE_PROJECT_NAME
+
+      - name: Upload Desktop e2e artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: desktop-e2e-artifacts
+          path: |
+            test-results/
+            clients/desktop/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Dump backend logs on failure
+        if: failure()
+        working-directory: deploy/dev
+        run: |
+          docker compose logs --tail=200 backend  || true
+          docker compose logs --tail=200 runner   || true
+
+      - name: Tear down dev stack
+        # Self-hosted macmini-03 persists state between runs. The previous
+        # `docker compose down -v` only cleaned containers + volumes; it
+        # left the host-side `ibazel` watchers + `bazel run` backend/relay
+        # processes alive, so each rerun stacked another stale backend on
+        # port :BACKEND_HTTP_PORT. After 4-5 reruns the new backend
+        # couldn't bind, the health probe hit the hung old process, and
+        # the wait timed out at exactly 480s every time. `bazel run
+        # //deploy/dev:clean` runs the dev.sh `clean` lifecycle which
+        # calls `stop_host_services` (kills ibazel + group-kills children)
+        # before tearing the docker stack down.
+        #
+        # `bazel shutdown` + the pkill belt-and-suspenders below are the
+        # change that actually evicts the Bazel JVM daemon from the host.
+        # Without these, the daemon (`build --java_runtime_version=remotejdk_21`)
+        # lives for its default 3h idle timeout, accumulates on macmini-04
+        # job-by-job, and pushes load avg to ~8 — which is what was
+        # blowing the Electron `firstWindow` 90s timeout in desktop-e2e.
+        if: always()
+        run: |
+          bazel --output_base="$HOME/.bazel-github" run //deploy/dev:clean || true
+          bazel --output_base="$HOME/.bazel-github" shutdown 2>/dev/null || true
+          # Belt-and-suspenders: `bazel shutdown` occasionally hangs on a
+          # busy host; the pkill guarantees the daemon is gone before the
+          # next job lands on this runner.
+          pkill -f "$HOME/.bazel-github" 2>/dev/null || true
+          pkill -f "bazel-bin/backend/cmd/server" 2>/dev/null || true
+          pkill -f "bazel-bin/relay/cmd/relay" 2>/dev/null || true
+
+  # =========================================================================
+  # TODO: Bazel-native replacements tracked below. Each jobs above
+  # currently uses shell/CLI because the Bazel target isn't ready:
+  # =========================================================================
+
+  # (e2e-playwright was the last shell-driven holdout — now wired above
+  # as `web-e2e` and `desktop-e2e`.)

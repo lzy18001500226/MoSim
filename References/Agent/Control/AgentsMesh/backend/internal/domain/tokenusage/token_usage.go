@@ -1,0 +1,78 @@
+package tokenusage
+
+import "time"
+
+type TokenUsage struct {
+	ID                  int64      `gorm:"primaryKey" json:"id"`
+	OrganizationID      int64      `gorm:"not null" json:"organization_id"`
+	PodID               *int64     `json:"pod_id"`
+	PodKey              string     `gorm:"size:100;not null" json:"pod_key"`
+	UserID              *int64     `json:"user_id"`
+	RunnerID            *int64     `json:"runner_id"`
+	AgentSlug           string     `gorm:"size:50;not null" json:"agent_slug"`
+	Model               string     `gorm:"size:100" json:"model"`
+	InputTokens         int64      `gorm:"not null;default:0" json:"input_tokens"`
+	OutputTokens        int64      `gorm:"not null;default:0" json:"output_tokens"`
+	CacheCreationTokens int64      `gorm:"not null;default:0" json:"cache_creation_tokens"`
+	CacheReadTokens     int64      `gorm:"not null;default:0" json:"cache_read_tokens"`
+	SessionStartedAt    *time.Time `json:"session_started_at,omitempty"`
+	SessionEndedAt      *time.Time `json:"session_ended_at,omitempty"`
+	CreatedAt           time.Time  `gorm:"not null" json:"created_at"`
+}
+
+func (TokenUsage) TableName() string { return "token_usages" }
+
+type AggregationFilter struct {
+	StartTime     time.Time
+	EndTime       time.Time
+	AgentSlug *string
+	UserID        *int64
+	Model         *string
+	Granularity   string // "day", "week", "month"
+	Limit         int    // Max rows for grouped queries (0 = default 100)
+}
+
+type UsageSummary struct {
+	InputTokens         int64 `json:"input_tokens"`
+	OutputTokens        int64 `json:"output_tokens"`
+	CacheCreationTokens int64 `json:"cache_creation_tokens"`
+	CacheReadTokens     int64 `json:"cache_read_tokens"`
+	TotalTokens         int64 `json:"total_tokens"`
+}
+
+type TimeSeriesPoint struct {
+	Period              time.Time `json:"period"`
+	InputTokens         int64     `json:"input_tokens"`
+	OutputTokens        int64     `json:"output_tokens"`
+	CacheCreationTokens int64     `json:"cache_creation_tokens"`
+	CacheReadTokens     int64     `json:"cache_read_tokens"`
+}
+
+type AgentUsage struct {
+	AgentSlug           string `json:"agent_slug"`
+	InputTokens         int64  `json:"input_tokens"`
+	OutputTokens        int64  `json:"output_tokens"`
+	CacheCreationTokens int64  `json:"cache_creation_tokens"`
+	CacheReadTokens     int64  `json:"cache_read_tokens"`
+	TotalTokens         int64  `json:"total_tokens"`
+}
+
+type UserUsage struct {
+	UserID              int64  `json:"user_id"`
+	Username            string `json:"username"`
+	Email               string `json:"email"`
+	InputTokens         int64  `json:"input_tokens"`
+	OutputTokens        int64  `json:"output_tokens"`
+	CacheCreationTokens int64  `json:"cache_creation_tokens"`
+	CacheReadTokens     int64  `json:"cache_read_tokens"`
+	TotalTokens         int64  `json:"total_tokens"`
+}
+
+type ModelUsage struct {
+	Model               string `json:"model"`
+	InputTokens         int64  `json:"input_tokens"`
+	OutputTokens        int64  `json:"output_tokens"`
+	CacheCreationTokens int64  `json:"cache_creation_tokens"`
+	CacheReadTokens     int64  `json:"cache_read_tokens"`
+	TotalTokens         int64  `json:"total_tokens"`
+}

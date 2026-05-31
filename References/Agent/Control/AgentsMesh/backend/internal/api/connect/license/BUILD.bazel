@@ -1,0 +1,50 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("//build_defs/protoconv:defs.bzl", "amesh_proto_convert")
+
+amesh_proto_convert(
+    name = "license_convert_amesh",
+    output = "license_convert.amesh.go",
+    proto = "//proto/license/v1:license_proto",
+)
+
+go_library(
+    name = "license",
+    srcs = [
+        "license.go",
+        "license_convert_custom.go",
+        "license_mutations.go",
+        "license_queries.go",
+        ":license_convert_amesh",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/license",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/domain/billing",
+        "//backend/internal/middleware",
+        "//backend/internal/service/license",
+        "//backend/pkg/protoconv",
+        "//proto/license/v1:license_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+go_test(
+    name = "license_test",
+    srcs = ["license_test.go"],
+    embed = [":license"],
+    deps = [
+        "//backend/internal/domain/billing",
+        "//backend/internal/middleware",
+        "//backend/internal/service/license",
+        "//proto/license/v1:license_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":license",
+    visibility = ["//backend:__subpackages__"],
+)

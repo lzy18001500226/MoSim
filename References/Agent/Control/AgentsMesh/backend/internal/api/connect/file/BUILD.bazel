@@ -1,0 +1,34 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "file",
+    srcs = ["file.go"],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/file",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/middleware",
+        "//backend/internal/service/file",
+        "//proto/file/v1:file_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+go_test(
+    name = "file_test",
+    srcs = ["file_test.go"],
+    embed = [":file"],
+    deps = [
+        "//backend/internal/service/file",
+        "//proto/file/v1:file_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":file",
+    visibility = ["//backend:__subpackages__"],
+)

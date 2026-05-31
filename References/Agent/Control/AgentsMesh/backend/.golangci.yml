@@ -1,0 +1,73 @@
+version: "2"
+
+linters:
+  settings:
+    errcheck:
+      check-type-assertions: false
+      check-blank: false
+
+  exclusions:
+    rules:
+      # Test files: exclude noisy linters for test setup/teardown
+      - path: "_test\\.go"
+        linters:
+          - errcheck
+          - unused
+          - gosimple
+          - staticcheck
+          - ineffassign
+
+      # Cleanup/best-effort operations
+      - text: "Error return value of .*(Close|Remove|Rename)"
+        linters:
+          - errcheck
+
+      # Event publishing and token revocation - fire-and-forget
+      - text: "Error return value of .*(Publish|Revoke)"
+        linters:
+          - errcheck
+
+      # JSON/format scanning and decoding - best-effort parsing
+      - text: "Error return value of .*(Scan|Decode|Read)"
+        linters:
+          - errcheck
+
+      # OAuth token update - best-effort
+      - text: "Error return value of .*UpdateIdentityTokens"
+        linters:
+          - errcheck
+
+      # WebSocket operations - connection may already be closed
+      - text: "Error return value of .*(SetWriteDeadline|WriteMessage|Write)"
+        linters:
+          - errcheck
+
+      # Gin context error reporting - non-actionable
+      - text: "Error return value of .*\\.Error"
+        linters:
+          - errcheck
+
+      # Intentionally empty branches with explanatory comments
+      - text: "SA9003: empty branch"
+        linters:
+          - staticcheck
+
+      # Deprecated AWS SDK endpoint resolver - migration tracked separately
+      - text: "SA1019:.*aws\\."
+        linters:
+          - staticcheck
+
+      # Deprecated AWS config option
+      - text: "SA1019:.*config\\.WithEndpointResolver"
+        linters:
+          - staticcheck
+
+      # Deprecated ACME DNS provider
+      - text: "SA1019:.*dns01\\.GetRecord"
+        linters:
+          - staticcheck
+
+      # Deprecated internal package import (split into smaller files)
+      - text: "SA1019:.*infra/tasks"
+        linters:
+          - staticcheck

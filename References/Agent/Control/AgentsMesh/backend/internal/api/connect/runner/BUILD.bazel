@@ -1,0 +1,59 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("//build_defs/protoconv:defs.bzl", "amesh_proto_convert")
+
+amesh_proto_convert(
+    name = "runner_convert_amesh",
+    output = "runner_convert.amesh.go",
+    proto = "//proto/runner_api/v1:runner_api_proto",
+)
+
+go_library(
+    name = "runner",
+    srcs = [
+        "handlers_auth.go",
+        "handlers_crud.go",
+        "handlers_ops.go",
+        "handlers_tokens.go",
+        "runner_convert_custom.go",
+        "server.go",
+        ":runner_convert_amesh",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/runner",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/runner",
+        "//backend/internal/interfaces",
+        "//backend/internal/middleware",
+        "//backend/internal/service/runner",
+        "//backend/internal/service/runnerlog",
+        "//backend/pkg/policy",
+        "//backend/pkg/protoconv",
+        "//proto/runner_api/v1:runner_api_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_google_uuid//:uuid",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+    ],
+)
+
+go_test(
+    name = "runner_test",
+    srcs = ["server_test.go"],
+    embed = [":runner"],
+    deps = [
+        "//backend/internal/domain/runner",
+        "//backend/internal/middleware",
+        "//backend/internal/service/runner",
+        "//proto/runner_api/v1:runner_api_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":runner",
+    visibility = ["//backend:__subpackages__"],
+)

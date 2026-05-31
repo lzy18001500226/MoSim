@@ -1,0 +1,34 @@
+load("@rules_go//go:def.bzl", "go_library")
+load("//build_defs/protoconv:defs.bzl", "amesh_proto_convert")
+
+amesh_proto_convert(
+    name = "env_bundle_convert_amesh",
+    output = "env_bundle_convert.amesh.go",
+    proto = "//proto/env_bundle/v1:env_bundle_proto",
+)
+
+go_library(
+    name = "env_bundle",
+    srcs = [
+        "crud.go",
+        "env_bundle_convert_custom.go",
+        "server.go",
+        ":env_bundle_convert_amesh",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/env_bundle",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/domain/envbundle",
+        "//backend/internal/middleware",
+        "//backend/internal/service/envbundle",
+        "//backend/pkg/protoconv",
+        "//proto/env_bundle/v1:env_bundle_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":env_bundle",
+    visibility = ["//backend:__subpackages__"],
+)

@@ -1,0 +1,19 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "admin",
+    srcs = ["routes.go"],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/rest/v1/admin",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/service/admin",
+        "//backend/internal/service/auth",
+        "//backend/internal/service/billing",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":admin",
+    visibility = ["//backend:__subpackages__"],
+)

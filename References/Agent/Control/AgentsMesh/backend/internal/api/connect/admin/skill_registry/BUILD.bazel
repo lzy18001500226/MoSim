@@ -1,0 +1,37 @@
+load("@rules_go//go:def.bzl", "go_library")
+load("//build_defs/protoconv:defs.bzl", "amesh_proto_convert")
+
+amesh_proto_convert(
+    name = "skill_registry_admin_convert_amesh",
+    output = "skill_registry_admin_convert.amesh.go",
+    proto = "//proto/extension/v1:extension_proto",
+    proto_file = "skill_registry_admin.proto",
+)
+
+go_library(
+    name = "skill_registry",
+    srcs = [
+        "handlers_mutations.go",
+        "handlers_query.go",
+        "server.go",
+        "skill_registry_admin_convert_custom.go",
+        ":skill_registry_admin_convert_amesh",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/admin/skill_registry",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/extension",
+        "//backend/internal/infra/database",
+        "//backend/internal/service/extension",
+        "//backend/pkg/protoconv",
+        "//proto/extension/v1:extension_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":skill_registry",
+    visibility = ["//backend:__subpackages__"],
+)

@@ -1,0 +1,45 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "grant",
+    srcs = [
+        "grant.go",
+        "grant_convert.go",
+        "grant_errors.go",
+        "grant_handlers.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/grant",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/agentpod",
+        "//backend/internal/domain/gitprovider",
+        "//backend/internal/domain/grant",
+        "//backend/internal/domain/runner",
+        "//backend/internal/middleware",
+        "//backend/internal/service/grant",
+        "//backend/pkg/policy",
+        "//backend/pkg/protoconv",
+        "//proto/grant/v1:grant_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+go_test(
+    name = "grant_test",
+    srcs = ["grant_test.go"],
+    embed = [":grant"],
+    deps = [
+        "//backend/internal/service/grant",
+        "//proto/grant/v1:grant_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":grant",
+    visibility = ["//backend:__subpackages__"],
+)

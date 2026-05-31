@@ -1,0 +1,48 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "invitation",
+    srcs = [
+        "invitation.go",
+        "invitation_convert.go",
+        "invitation_errors.go",
+        "invitation_org.go",
+        "invitation_public.go",
+        "invitation_user.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/invitation",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/invitation",
+        "//backend/internal/middleware",
+        "//backend/internal/service/billing",
+        "//backend/internal/service/invitation",
+        "//backend/internal/service/organization",
+        "//backend/internal/service/user",
+        "//backend/pkg/protoconv",
+        "//proto/invitation/v1:invitation_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+go_test(
+    name = "invitation_test",
+    srcs = ["invitation_test.go"],
+    embed = [":invitation"],
+    deps = [
+        "//backend/internal/middleware",
+        "//backend/internal/service/billing",
+        "//backend/internal/service/invitation",
+        "//proto/invitation/v1:invitation_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":invitation",
+    visibility = ["//backend:__subpackages__"],
+)

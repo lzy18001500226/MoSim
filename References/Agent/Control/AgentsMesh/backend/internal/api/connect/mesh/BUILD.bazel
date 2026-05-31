@@ -1,0 +1,62 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("//build_defs/protoconv:defs.bzl", "amesh_proto_convert")
+
+amesh_proto_convert(
+    name = "mesh_convert_amesh",
+    output = "mesh_convert.amesh.go",
+    proto = "//proto/mesh/v1:mesh_proto",
+)
+
+go_library(
+    name = "mesh",
+    srcs = [
+        "mesh.go",
+        "mesh_convert_custom.go",
+        "mesh_handlers.go",
+        "mesh_message_handlers.go",
+        "message_convert.go",
+        ":mesh_convert_amesh",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/mesh",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/agent",
+        "//backend/internal/domain/agentpod",
+        "//backend/internal/domain/mesh",
+        "//backend/internal/middleware",
+        "//backend/internal/service/agent",
+        "//backend/internal/service/mesh",
+        "//backend/internal/service/ticket",
+        "//backend/pkg/protoconv",
+        "//proto/mesh/v1:mesh_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+go_test(
+    name = "mesh_test",
+    srcs = [
+        "mesh_message_test.go",
+        "mesh_test.go",
+    ],
+    embed = [":mesh"],
+    deps = [
+        "//backend/internal/domain/agent",
+        "//backend/internal/domain/agentpod",
+        "//backend/internal/domain/mesh",
+        "//backend/internal/middleware",
+        "//backend/internal/service/agent",
+        "//backend/internal/service/mesh",
+        "//proto/mesh/v1:mesh_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":mesh",
+    visibility = ["//backend:__subpackages__"],
+)

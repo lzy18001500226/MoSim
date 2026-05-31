@@ -1,0 +1,40 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "token_usage",
+    srcs = [
+        "token_usage.go",
+        "token_usage_convert.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/token_usage",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/tokenusage",
+        "//backend/internal/middleware",
+        "//backend/internal/service/tokenusage",
+        "//backend/pkg/protoconv",
+        "//proto/token_usage/v1:token_usage_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@org_golang_x_sync//errgroup",
+    ],
+)
+
+go_test(
+    name = "token_usage_test",
+    srcs = ["token_usage_test.go"],
+    embed = [":token_usage"],
+    deps = [
+        "//backend/internal/middleware",
+        "//proto/token_usage/v1:token_usage_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":token_usage",
+    visibility = ["//backend:__subpackages__"],
+)

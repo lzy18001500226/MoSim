@@ -1,0 +1,8 @@
+# gazelle-managed root of the `backend` Go module.
+
+load("//build_defs/go:golangci_lint.bzl", "golangci_lint")
+
+golangci_lint(
+    name = "lint",
+    config = ".golangci.yml",
+)

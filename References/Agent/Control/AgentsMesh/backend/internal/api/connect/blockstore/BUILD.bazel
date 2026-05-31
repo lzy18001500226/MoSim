@@ -1,0 +1,47 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "blockstore",
+    srcs = [
+        "blocks_handlers.go",
+        "blockstore.go",
+        "convert.go",
+        "errors.go",
+        "ops_handlers.go",
+        "queries_handlers.go",
+        "search_handlers.go",
+        "workspaces_handlers.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/blockstore",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/blockstore",
+        "//backend/internal/middleware",
+        "//backend/internal/service/blockstore",
+        "//proto/blockstore/v1:blockstore_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_google_uuid//:uuid",
+        "@io_opentelemetry_go_otel_trace//:trace",
+    ],
+)
+
+go_test(
+    name = "blockstore_test",
+    srcs = ["blockstore_test.go"],
+    embed = [":blockstore"],
+    deps = [
+        "//backend/internal/domain/blockstore",
+        "//backend/internal/middleware",
+        "//proto/blockstore/v1:blockstore_go_proto",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":blockstore",
+    visibility = ["//backend:__subpackages__"],
+)

@@ -1,0 +1,100 @@
+package agent
+
+import (
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
+	"strings"
+	"time"
+)
+
+type Agent struct {
+	Slug string `gorm:"size:50;primaryKey" json:"slug"`
+	Name string `gorm:"size:100;not null" json:"name"`
+
+	Description *string `gorm:"type:text" json:"description,omitempty"`
+
+	LaunchCommand string  `gorm:"size:500;not null" json:"launch_command"`
+	Executable    string  `gorm:"size:100" json:"executable,omitempty"`
+	DefaultArgs   *string `gorm:"type:text" json:"default_args,omitempty"`
+
+	AgentfileSource *string `gorm:"type:text;column:agentfile_source" json:"agentfile_source,omitempty"`
+
+	IsBuiltin bool `gorm:"not null;default:false" json:"is_builtin"`
+	IsActive  bool `gorm:"not null;default:true" json:"is_active"`
+
+	// IsInternal marks agents that exist for testing/internal use only.
+	// They stay visible to the runner (so test pods can actually launch)
+	// but are hidden from the user-facing ListBuiltinActive surface, so
+	// the front-end agent picker never offers them. See
+	// .claude/adr/2026-05-26-test-fixture-isolation.md for the policy.
+	IsInternal bool `gorm:"not null;default:false" json:"is_internal"`
+
+	SupportedModes string `gorm:"column:supported_modes;type:varchar(50);default:pty;not null" json:"supported_modes"`
+
+	UsesLegacyColumns bool `gorm:"column:uses_legacy_columns;not null;default:false" json:"uses_legacy_columns"`
+
+	CreatedAt time.Time `gorm:"not null;default:now()" json:"created_at"`
+	UpdatedAt time.Time `gorm:"not null;default:now()" json:"updated_at"`
+}
+
+func (Agent) TableName() string {
+	return "agents"
+}
+
+func (a *Agent) SupportsMode(mode string) bool {
+	for _, m := range strings.Split(a.SupportedModes, ",") {
+		if strings.TrimSpace(m) == mode {
+			return true
+		}
+	}
+	return false
+}
+
+type EncryptedCredentials map[string]string
+
+func (ec *EncryptedCredentials) Scan(value interface{}) error {
+	if value == nil {
+		*ec = nil
+		return nil
+	}
+	var data []byte
+	switch v := value.(type) {
+	case []byte:
+		data = v
+	case string:
+		data = []byte(v)
+	default:
+		return errors.New("type assertion to []byte or string failed")
+	}
+	return json.Unmarshal(data, ec)
+}
+
+func (ec EncryptedCredentials) Value() (driver.Value, error) {
+	if ec == nil {
+		return nil, nil
+	}
+	return json.Marshal(ec)
+}
+
+type CustomAgent struct {
+	OrganizationID int64  `gorm:"primaryKey;autoIncrement:false" json:"organization_id"`
+	Slug           string `gorm:"primaryKey;size:50" json:"slug"`
+	Name           string `gorm:"size:100;not null" json:"name"`
+
+	Description *string `gorm:"type:text" json:"description,omitempty"`
+
+	LaunchCommand string  `gorm:"size:500;not null" json:"launch_command"`
+	DefaultArgs   *string `gorm:"type:text" json:"default_args,omitempty"`
+
+	AgentfileSource *string `gorm:"type:text;column:agentfile_source" json:"agentfile_source,omitempty"`
+
+	IsActive bool `gorm:"not null;default:true" json:"is_active"`
+
+	CreatedAt time.Time `gorm:"not null;default:now()" json:"created_at"`
+	UpdatedAt time.Time `gorm:"not null;default:now()" json:"updated_at"`
+}
+
+func (CustomAgent) TableName() string {
+	return "custom_agents"
+}

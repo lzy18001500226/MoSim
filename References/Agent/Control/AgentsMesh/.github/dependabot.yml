@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  # Single Go module rooted at //:go.mod — covers backend/, runner/,
+  # relay/, agentfile/, proto/ as subpackages. Don't add per-subtree
+  # entries; dependabot would silently fail to find go.mod there.
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /clients/web
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /clients/web-admin
+    schedule:
+      interval: weekly

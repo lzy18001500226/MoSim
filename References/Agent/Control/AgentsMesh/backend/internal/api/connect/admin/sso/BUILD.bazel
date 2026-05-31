@@ -1,0 +1,31 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "sso",
+    srcs = [
+        "audit.go",
+        "convert.go",
+        "handlers_actions.go",
+        "handlers_mutations.go",
+        "handlers_query.go",
+        "server.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/admin/sso",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/admin",
+        "//backend/internal/domain/sso",
+        "//backend/internal/infra/database",
+        "//backend/internal/service/admin",
+        "//backend/internal/service/sso",
+        "//proto/sso/v1:sso_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":sso",
+    visibility = ["//backend:__subpackages__"],
+)

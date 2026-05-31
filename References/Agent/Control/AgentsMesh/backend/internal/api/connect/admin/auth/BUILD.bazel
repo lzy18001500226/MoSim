@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "auth",
+    srcs = ["auth.go"],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/admin/auth",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/config",
+        "//backend/internal/domain/user",
+        "//backend/internal/infra/database",
+        "//backend/internal/service/auth",
+        "//backend/pkg/protoconv",
+        "//proto/admin/v1:admin_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":auth",
+    visibility = ["//backend:__subpackages__"],
+)

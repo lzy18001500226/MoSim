@@ -1,0 +1,614 @@
+# Nightly release: scheduled daily build that ships the same artifacts
+# as `release.yml` but tagged `vX.Y.Z-nightly.YYYYMMDD` and marked
+# `--prerelease`. Stable users (`/releases/latest` consumers — runner
+# self-update, install.sh, install.ps1) ignore prereleases by API spec,
+# so nightlies are strictly additive.
+#
+# Why a separate file (vs. extending release.yml): release.yml stamps
+# `${GITHUB_REF#refs/tags/v}` at every step. Mixing schedule + tag
+# triggers in one file forks every version-deriving expression. SRP
+# split mirrors deploy.yml ↔ release.yml.
+#
+# Job graph:
+#   check-changes → version → runner-release → desktop-package → cleanup-old-nightlies
+#                                  (sequential — desktop attaches to the
+#                                   release runner-release just created)
+#
+# Skip-if-unchanged: the `check-changes` job compares HEAD against the
+# commit pointed to by the most recent `v*-nightly.*` tag. If equal,
+# `should_release=false` and every downstream job no-ops via `if:`.
+
+name: Nightly
+
+on:
+  schedule:
+    # UTC 08:00 = PT 00:00 PST / 01:00 PDT. GitHub Actions cron has no
+    # timezone field — UTC is the only well-defined choice, and 08:00
+    # avoids both peak runner contention (top-of-hour fleet load) and
+    # the US business day.
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Release even if HEAD == last nightly tag's commit (use after a failed run on the same SHA)."
+        type: boolean
+        default: false
+
+# `cancel-in-progress: false` because aborting mid-notarytool leaves a
+# half-uploaded submission on Apple's side that the next run can't
+# reuse. Schedule + manual_dispatch races queue instead.
+concurrency:
+  group: nightly
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  # ===========================================================================
+  # Decide whether to run today. If HEAD == last nightly tag's commit,
+  # there's nothing new to ship — every downstream job no-ops.
+  # ===========================================================================
+
+  check-changes:
+    name: Check for changes since last nightly
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.diff.outputs.should_release }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Tag history is needed both for skip-if-unchanged here and
+          # for last-stable lookup in the version job. `fetch-tags`
+          # was added in checkout@v4; explicit `git fetch --tags`
+          # below is belt-and-braces for action versions that ship
+          # without it.
+          fetch-depth: 0
+          fetch-tags: true
+      - id: diff
+        env:
+          # `inputs.force` is unset on schedule events; default to false.
+          FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force || false }}
+        run: |
+          set -euo pipefail
+          git fetch --tags --force --prune
+
+          if [[ "$FORCE" == "true" ]]; then
+            echo "workflow_dispatch with force=true — bypassing skip-if-unchanged."
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          last_nightly_tag="$(git tag -l 'v*-nightly.*' --sort=-v:refname | head -1)"
+
+          if [[ -z "$last_nightly_tag" ]]; then
+            echo "No prior nightly tag — first run, will release."
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          last_nightly_sha="$(git rev-parse "${last_nightly_tag}^{commit}")"
+          head_sha="$(git rev-parse HEAD)"
+
+          if [[ "$last_nightly_sha" == "$head_sha" ]]; then
+            echo "HEAD ($head_sha) == last nightly ($last_nightly_tag → $last_nightly_sha) — skipping."
+            echo "should_release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "HEAD ($head_sha) differs from last nightly ($last_nightly_tag → $last_nightly_sha) — will release."
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ===========================================================================
+  # Compute nightly version: vX.Y.Z-nightly.YYYYMMDD where X.Y.Z is the
+  # last stable patch+1. UTC date stamp keeps tag sort monotonic.
+  # ===========================================================================
+
+  version:
+    name: Compute nightly version
+    needs: [check-changes]
+    if: needs.check-changes.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.compute.outputs.version }}
+      tag: ${{ steps.compute.outputs.tag }}
+      minor: ${{ steps.compute.outputs.minor }}
+      previous_tag: ${{ steps.compute.outputs.previous_tag }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - id: compute
+        run: |
+          set -euo pipefail
+          git fetch --tags --force --prune
+
+          # Last stable tag — exclude all prerelease suffixes. The
+          # trailing `\.` ensures `-rc` doesn't match a hypothetical
+          # `-rcsomething` tag.
+          last_stable="$(git tag -l 'v*' --sort=-v:refname \
+            | grep -vE -- '-(nightly|alpha|beta|rc)\.' \
+            | head -1 || true)"
+
+          if [[ -z "$last_stable" ]]; then
+            echo "::error::no stable v*.* tag found in repo history" >&2
+            exit 1
+          fi
+
+          ver="${last_stable#v}"
+          IFS='.' read -r major minor patch <<<"$ver"
+          if ! [[ "$major" =~ ^[0-9]+$ && "$minor" =~ ^[0-9]+$ && "$patch" =~ ^[0-9]+$ ]]; then
+            echo "::error::last stable tag '$last_stable' is not vX.Y.Z" >&2
+            exit 1
+          fi
+
+          next_patch=$((patch + 1))
+          date_stamp="$(date -u +%Y%m%d)"
+          nightly_version="${major}.${minor}.${next_patch}-nightly.${date_stamp}"
+          nightly_tag="v${nightly_version}"
+          nightly_minor="${major}.${minor}"
+
+          echo "Last stable:  $last_stable"
+          echo "Nightly tag:  $nightly_tag"
+          echo "Previous tag: $last_stable (used for changelog base)"
+
+          {
+            echo "version=${nightly_version}"
+            echo "tag=${nightly_tag}"
+            echo "minor=${nightly_minor}"
+            echo "previous_tag=${last_stable}"
+          } >> "$GITHUB_OUTPUT"
+
+  # ===========================================================================
+  # Build Runner CLI release archives + create the GitHub Release.
+  # Mirrors `release.yml`'s `release` job, but uses computed nightly
+  # version instead of GITHUB_REF and always passes --prerelease +
+  # --target $sha (so the tag is created server-side from the workflow
+  # SHA — no manual `git tag && git push --tags`).
+  # ===========================================================================
+
+  runner-release:
+    name: Build runner CLI + create release
+    needs: [check-changes, version]
+    if: needs.check-changes.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+
+      - name: Build release assets
+        env:
+          IMAGE_VERSION: ${{ needs.version.outputs.version }}
+          IMAGE_MINOR: ${{ needs.version.outputs.minor }}
+        run: |
+          bazel build \
+            --stamp \
+            --workspace_status_command=build_defs/workspace_status.sh \
+            //runner/cmd/runner:release_assets
+
+      - name: Install rcodesign
+        run: |
+          RCODESIGN_VERSION="0.29.0"
+          cd /tmp
+          curl -fsSL "https://github.com/indygreg/apple-platform-rs/releases/download/apple-codesign/${RCODESIGN_VERSION}/apple-codesign-${RCODESIGN_VERSION}-x86_64-unknown-linux-musl.tar.gz" | tar xz
+          sudo cp ./apple-codesign-*/rcodesign /usr/local/bin/
+          rm -rf ./apple-codesign-*
+
+      - name: Stage + sign release artifacts
+        env:
+          MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_KEY_ISSUER_ID: ${{ secrets.APPLE_API_KEY_ISSUER_ID }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          ENTITLEMENTS: ${{ github.workspace }}/runner/build/darwin/entitlements.plist
+          NIGHTLY_VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          version="$NIGHTLY_VERSION"
+          mkdir -p release-staging
+          sign_script="${GITHUB_WORKSPACE}/runner/build/scripts/sign-darwin.sh"
+
+          for arch in bazel-bin/runner/cmd/runner/agentsmesh-runner_*.tar.gz \
+                     bazel-bin/runner/cmd/runner/agentsmesh-runner_*.zip; do
+              base="$(basename "$arch")"
+              new_name="${base/agentsmesh-runner_/agentsmesh-runner_${version}_}"
+              dest="${GITHUB_WORKSPACE}/release-staging/${new_name}"
+
+              if [[ "$base" == *darwin*.tar.gz ]]; then
+                  tmp="$(mktemp -d)"
+                  tar -xzf "$arch" -C "$tmp"
+                  (cd "$tmp" && "$sign_script" agentsmesh-runner)
+                  tar -C "$tmp" -czf "$dest" agentsmesh-runner README.md LICENSE
+                  rm -rf "$tmp"
+              else
+                  cp "$arch" "$dest"
+              fi
+          done
+
+          (
+              cd release-staging
+              sha256sum agentsmesh-runner_*.tar.gz agentsmesh-runner_*.zip > checksums.txt
+          )
+          ls -la release-staging/
+          cat release-staging/checksums.txt
+
+      - name: Smoke-check stamped binary
+        env:
+          EXPECT_VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          # The whole motivation for nightly is the v0.30.0/v0.30.1
+          # regression where `--stamp` silently dropped and binaries
+          # shipped with `version="dev"`. Catch that exact failure
+          # mode here before the release goes out: extract the linux
+          # archive (no signing dance, fast on ubuntu) and assert
+          # --version contains the expected nightly version string.
+          archive="release-staging/agentsmesh-runner_${EXPECT_VERSION}_linux_amd64.tar.gz"
+          if [[ ! -f "$archive" ]]; then
+            echo "::error::expected staged archive missing: $archive" >&2
+            ls -la release-staging/ >&2
+            exit 1
+          fi
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          tar -xzf "$archive" -C "$tmp"
+          actual="$("$tmp/agentsmesh-runner" --version 2>&1)"
+          echo "Got: $actual"
+          if ! grep -qF "$EXPECT_VERSION" <<<"$actual"; then
+            echo "::error::binary --version output does not contain expected '$EXPECT_VERSION'" >&2
+            echo "::error::This is the v0.30.0/v0.30.1 regression: --stamp likely dropped or workspace_status.sh not feeding STABLE_RUNNER_VERSION." >&2
+            exit 1
+          fi
+          echo "OK: linux/amd64 binary correctly stamped with $EXPECT_VERSION"
+
+      - name: Generate changelog
+        env:
+          NIGHTLY_VERSION: ${{ needs.version.outputs.version }}
+          PREVIOUS_TAG: ${{ needs.version.outputs.previous_tag }}
+        run: |
+          set -euo pipefail
+          version="$NIGHTLY_VERSION"
+          previous_tag="$PREVIOUS_TAG"
+          {
+            echo "## AgentsMesh Runner v${version} (nightly)"
+            echo ""
+            echo "> ⚠️ **Nightly build** — automated build off \`main\` for QA / dogfood."
+            echo "> Not for production use. Stable users on \`/releases/latest\` are not auto-updated to nightlies."
+            echo ""
+            echo "Built from commit \`${GITHUB_SHA}\`."
+            echo ""
+            if [[ -n "$previous_tag" ]]; then
+              echo "### Changes since ${previous_tag}"
+              echo ""
+              for prefix in "feat" "fix" "perf"; do
+                title=""
+                case "$prefix" in
+                  feat) title="### New Features" ;;
+                  fix) title="### Bug Fixes" ;;
+                  perf) title="### Performance" ;;
+                esac
+                entries="$(git log "${previous_tag}..HEAD" --pretty=format:'- %s' | grep -E "^- ${prefix}(\(.+\))?!?:" || true)"
+                if [[ -n "$entries" ]]; then
+                  echo "$title"
+                  echo ""
+                  echo "$entries"
+                  echo ""
+                fi
+              done
+            fi
+          } > release-notes.md
+          cat release-notes.md
+
+      - name: Create GitHub Release (prerelease)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NIGHTLY_TAG: ${{ needs.version.outputs.tag }}
+          NIGHTLY_VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          # Same-day re-runs (cron retry, manual dispatch with force,
+          # or HEAD churn within the same UTC day) hit a tag that
+          # already exists. We delete + recreate rather than `upload
+          # --clobber` because the tag must point at the *current*
+          # GITHUB_SHA, not the previous run's SHA — otherwise the
+          # release tag and its asset bundle disagree on which commit
+          # they describe. Acceptable for nightly (prerelease, short
+          # retention); never do this in release.yml for stable.
+          if gh release view "$NIGHTLY_TAG" >/dev/null 2>&1; then
+            echo "Release $NIGHTLY_TAG already exists — deleting (incl. tag) before recreating at $GITHUB_SHA."
+            gh release delete "$NIGHTLY_TAG" --cleanup-tag --yes
+          fi
+          # `--target $GITHUB_SHA` creates the tag on GitHub side from
+          # the workflow SHA — no manual `git tag && git push --tags`.
+          gh release create "$NIGHTLY_TAG" \
+            --target "$GITHUB_SHA" \
+            --title "AgentsMesh Runner v${NIGHTLY_VERSION} (nightly)" \
+            --notes-file release-notes.md \
+            --prerelease \
+            release-staging/*
+
+  # ===========================================================================
+  # Build Desktop installers and attach to the nightly release.
+  # Same per-OS matrix as release.yml's desktop-package job. Two
+  # deltas vs release.yml:
+  #   1. Sed step uses needs.version.outputs.version (not GITHUB_REF).
+  #   2. Windows installers list excludes `latest.yml` — would pollute
+  #      a future electron-updater stable channel.
+  # ===========================================================================
+
+  desktop-package:
+    name: Desktop ${{ matrix.os.label }}
+    needs: [check-changes, version, runner-release]
+    if: needs.check-changes.outputs.should_release == 'true'
+    runs-on: ${{ matrix.os.runner }}
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - label: macOS
+            runner: macos-14
+            installers: |
+              AgentsMesh-*.dmg
+          - label: Windows
+            runner: windows-latest
+            # No `latest.yml` line — see file header. Stable users'
+            # future electron-updater channel must not see nightly
+            # metadata.
+            installers: |
+              AgentsMesh*.exe
+    steps:
+      - uses: actions/checkout@v6
+      - uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+
+      - name: Stamp desktop version
+        shell: bash
+        env:
+          NIGHTLY_VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          version="$NIGHTLY_VERSION"
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+              sed -i '' -E '/DESKTOP_VERSION_STAMP/{n;s/version = "[^"]+"/version = "'"$version"'"/;}' clients/desktop/BUILD.bazel
+          else
+              sed -i -E '/DESKTOP_VERSION_STAMP/{n;s/version = "[^"]+"/version = "'"$version"'"/;}' clients/desktop/BUILD.bazel
+          fi
+          grep -A1 DESKTOP_VERSION_STAMP clients/desktop/BUILD.bazel
+
+      - name: Set up macOS signing keychain + notarization API key
+        if: matrix.os.runner == 'macos-14'
+        shell: bash
+        env:
+          MACOS_CERT_B64: ${{ secrets.MACOS_CERTIFICATE }}
+          MACOS_CERT_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          APPLE_API_KEY_B64: ${{ secrets.APPLE_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${MACOS_CERT_B64:-}" ]]; then
+            echo "ERROR: MACOS_CERTIFICATE secret not set — desktop dmg/zip would ship ad-hoc-signed." >&2
+            exit 1
+          fi
+          if [[ -z "${MACOS_CERT_PASSWORD:-}" ]]; then
+            echo "ERROR: MACOS_CERTIFICATE_PASSWORD secret not set." >&2
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/apple"
+
+          KEYCHAIN_PATH="$RUNNER_TEMP/apple/build.keychain-db"
+          KEYCHAIN_PASSWORD="$(openssl rand -hex 16)"
+          CERT_PATH="$RUNNER_TEMP/apple/cert.p12"
+
+          echo "$MACOS_CERT_B64" | base64 --decode > "$CERT_PATH"
+          chmod 0600 "$CERT_PATH"
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERT_PATH" -P "$MACOS_CERT_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | xargs)
+          security default-keychain -s "$KEYCHAIN_PATH"
+
+          security find-identity -v -p codesigning "$KEYCHAIN_PATH"
+          if ! security find-identity -v -p codesigning "$KEYCHAIN_PATH" | grep -q "Developer ID Application"; then
+            echo "ERROR: no Developer ID Application identity found after .p12 import." >&2
+            exit 1
+          fi
+
+          if [[ -z "${APPLE_API_KEY_B64:-}" ]]; then
+            echo "WARN: APPLE_API_KEY secret not set — notarization will be skipped." >&2
+            exit 0
+          fi
+          echo "$APPLE_API_KEY_B64" | base64 --decode > "$RUNNER_TEMP/apple/AuthKey.p8"
+          chmod 0600 "$RUNNER_TEMP/apple/AuthKey.p8"
+          echo "APPLE_API_KEY=$RUNNER_TEMP/apple/AuthKey.p8" >> "$GITHUB_ENV"
+
+      - name: Build :dist (macOS)
+        if: matrix.os.runner == 'macos-14'
+        shell: bash
+        run: |
+          bazel build //clients/desktop:dist \
+            --build_tag_filters=electron_builder \
+            --action_env=APPLE_API_KEY \
+            --action_env=APPLE_API_KEY_ID \
+            --action_env=APPLE_API_KEY_ISSUER_ID
+        env:
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_KEY_ISSUER_ID: ${{ secrets.APPLE_API_KEY_ISSUER_ID }}
+
+      - name: Notarize macOS dmg via notarytool
+        if: matrix.os.runner == 'macos-14'
+        shell: bash
+        env:
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_KEY_ISSUER_ID: ${{ secrets.APPLE_API_KEY_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${APPLE_API_KEY:-}" ]]; then
+            echo "::error::APPLE_API_KEY unset — refuse to ship un-notarized dmg." >&2
+            exit 1
+          fi
+
+          DIST="bazel-bin/clients/desktop/dist"
+          STAGE="$RUNNER_TEMP/installers"
+          mkdir -p "$STAGE"
+
+          cp -aR "$DIST"/. "$STAGE"/
+          chmod -R u+w "$STAGE"
+
+          shopt -s nullglob
+          dmgs=("$STAGE"/*.dmg)
+          if (( ${#dmgs[@]} == 0 )); then
+            echo "::error::no .dmg found under $STAGE after staging." >&2
+            exit 1
+          fi
+
+          SIGN_IDENTITY=$(security find-identity -v -p codesigning \
+            | awk -F'"' '/Developer ID Application/ {print $2; exit}')
+          if [[ -z "$SIGN_IDENTITY" ]]; then
+            echo "::error::no Developer ID Application identity in keychain." >&2
+            exit 1
+          fi
+          echo "Signing identity: $SIGN_IDENTITY"
+
+          for dmg in "${dmgs[@]}"; do
+            if codesign --verify "$dmg" >/dev/null 2>&1; then
+              echo "$dmg already signed, skipping codesign."
+            else
+              echo "Signing $dmg with $SIGN_IDENTITY..."
+              codesign --force --sign "$SIGN_IDENTITY" --timestamp "$dmg"
+              codesign --verify --verbose=2 "$dmg"
+            fi
+
+            echo "Submitting $dmg to Apple Notary..."
+            xcrun notarytool submit "$dmg" \
+              --key "$APPLE_API_KEY" \
+              --key-id "$APPLE_API_KEY_ID" \
+              --issuer "$APPLE_API_KEY_ISSUER_ID" \
+              --wait \
+              --timeout 30m
+            echo "Stapling ticket to $dmg..."
+            xcrun stapler staple "$dmg"
+          done
+
+      - name: Verify macOS dmg signing + notarization
+        if: matrix.os.runner == 'macos-14'
+        shell: bash
+        run: |
+          set -euo pipefail
+          STAGE="$RUNNER_TEMP/installers"
+          shopt -s nullglob
+          dmgs=("$STAGE"/*.dmg)
+          if (( ${#dmgs[@]} == 0 )); then
+            echo "::error::no .dmg found under $STAGE." >&2
+            exit 1
+          fi
+          for dmg in "${dmgs[@]}"; do
+            echo "Inspecting $dmg"
+            if ! codesign --verify --verbose=2 "$dmg" 2>&1; then
+              echo "::error::$dmg has no valid signature." >&2
+              exit 1
+            fi
+            if ! xcrun stapler validate "$dmg"; then
+              echo "::error::$dmg has no stapled notarization ticket." >&2
+              exit 1
+            fi
+            if ! spctl -a -t open --context context:primary-signature -v "$dmg"; then
+              echo "::error::spctl --assess rejected $dmg." >&2
+              exit 1
+            fi
+            echo "OK: $dmg is signed + notarized + stapled."
+          done
+
+      - name: Build :dist (Windows)
+        if: matrix.os.runner == 'windows-latest'
+        shell: bash
+        run: |
+          bazel build //clients/desktop:dist \
+            --build_tag_filters=electron_builder \
+            --action_env=CSC_LINK \
+            --action_env=CSC_KEY_PASSWORD
+        env:
+          CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+
+      - name: Upload installers to nightly Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NIGHTLY_TAG: ${{ needs.version.outputs.tag }}
+        working-directory: ${{ matrix.os.runner == 'macos-14' && format('{0}/installers', runner.temp) || 'bazel-bin/clients/desktop/dist' }}
+        run: |
+          set -euo pipefail
+          ls -la
+          files=()
+          while IFS= read -r pattern; do
+              [ -z "$pattern" ] && continue
+              for f in $pattern; do
+                  [ -f "$f" ] && files+=("$f")
+              done
+          done <<< "${{ matrix.os.installers }}"
+          if [ ${#files[@]} -eq 0 ]; then
+              echo "ERROR: no installers matched any pattern; refusing to noop." >&2
+              exit 1
+          fi
+          echo "Uploading: ${files[*]}"
+          gh release upload "$NIGHTLY_TAG" --clobber "${files[@]}"
+
+  # ===========================================================================
+  # Retention: delete nightly releases (and their git tags) older than
+  # KEEP_DAYS. Runs on `always()` so a failed desktop-package run still
+  # ages out yesterday's stale tag — otherwise a string of broken
+  # nightlies would accumulate forever.
+  # ===========================================================================
+
+  cleanup-old-nightlies:
+    name: Cleanup old nightlies
+    needs: [check-changes, desktop-package]
+    if: always() && needs.check-changes.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - name: Delete nightly releases older than 14 days
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          KEEP_DAYS=14
+          cutoff_epoch=$(( $(date -u +%s) - KEEP_DAYS * 86400 ))
+
+          # `gh release list --limit 200` covers ~14 days × 1 nightly
+          # plus headroom for any catch-up backlog.
+          gh release list --limit 200 --json tagName,createdAt \
+            --jq '.[] | select(.tagName | contains("-nightly.")) | [.tagName, .createdAt] | @tsv' \
+            | while IFS=$'\t' read -r tag created; do
+                # GNU date on ubuntu-latest. BSD fallback is defensive
+                # (this job pins ubuntu) but cheap.
+                created_epoch=$(date -u -d "$created" +%s 2>/dev/null \
+                  || date -u -j -f '%Y-%m-%dT%H:%M:%SZ' "$created" +%s)
+                if (( created_epoch < cutoff_epoch )); then
+                  echo "Deleting old nightly $tag (created $created)"
+                  # `--cleanup-tag` removes the underlying git tag too.
+                  gh release delete "$tag" --cleanup-tag --yes
+                fi
+              done

@@ -1,0 +1,50 @@
+load("@rules_go//go:def.bzl", "go_library")
+load("//build_defs/protoconv:defs.bzl", "amesh_proto_convert")
+
+amesh_proto_convert(
+    name = "admin_convert_amesh",
+    output = "admin_convert.amesh.go",
+    proto = "//proto/admin/v1:admin_proto",
+)
+
+go_library(
+    name = "admin",
+    srcs = [
+        "admin_convert_custom.go",
+        "audit.go",
+        "handlers_audit.go",
+        "handlers_dashboard.go",
+        "handlers_dlq.go",
+        "handlers_orgs.go",
+        "handlers_relays.go",
+        "handlers_runners_actions.go",
+        "handlers_runners_query.go",
+        "handlers_users_actions.go",
+        "handlers_users_query.go",
+        "server.go",
+        ":admin_convert_amesh",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/internal/api/connect/admin",
+    visibility = ["//backend:__subpackages__"],
+    deps = [
+        "//backend/internal/api/connect/interceptors",
+        "//backend/internal/domain/admin",
+        "//backend/internal/domain/agent",
+        "//backend/internal/domain/organization",
+        "//backend/internal/domain/runner",
+        "//backend/internal/domain/user",
+        "//backend/internal/infra/database",
+        "//backend/internal/service/admin",
+        "//backend/internal/service/agent",
+        "//backend/internal/service/relay",
+        "//backend/pkg/protoconv",
+        "//proto/admin/v1:admin_go_proto",
+        "@com_connectrpc_connect//:connect",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":admin",
+    visibility = ["//backend:__subpackages__"],
+)
