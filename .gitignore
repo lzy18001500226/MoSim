@@ -136,6 +136,8 @@ References/Agent/Skills/*
 !References/Agent/Skills/claude-plugins-official/**
 !References/Agent/Skills/codex-plugin-cc/
 !References/Agent/Skills/codex-plugin-cc/**
+!References/Agent/Skills/context-engineering-kit/
+!References/Agent/Skills/context-engineering-kit/**
 !References/Agent/Skills/HeavySkill/
 !References/Agent/Skills/HeavySkill/**
 !References/Agent/Skills/MMSkills/
