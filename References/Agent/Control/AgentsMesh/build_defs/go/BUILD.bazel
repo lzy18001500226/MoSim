@@ -1,0 +1,10 @@
+# Bazel macros for Go-related tooling.
+#
+# - golangci_lint.bzl: `golangci_lint_test` runs `golangci-lint run`
+#   over a Go module's sources via `@multitool//tools/golangci-lint`.
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "golangci_lint_runner.sh",
+])

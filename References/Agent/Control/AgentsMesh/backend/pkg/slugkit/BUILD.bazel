@@ -1,0 +1,44 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "slugkit",
+    srcs = [
+        "dns.go",
+        "doc.go",
+        "errors.go",
+        "generator.go",
+        "hook.go",
+        "reserved.go",
+        "rules.go",
+        "sanitize.go",
+        "slug.go",
+        "validator.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/pkg/slugkit",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":slugkit",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "slugkit_test",
+    srcs = [
+        "dns_test.go",
+        "hook_test.go",
+        "reserved_sync_test.go",
+        "slug_newtype_test.go",
+        "slug_test.go",
+    ],
+    # Cross-source sync test reads the frontend reserved.ts + the latest
+    # slug-reserved migration. They have to be in runfiles for the test to
+    # see them under Bazel sandbox.
+    data = [
+        "//backend/migrations:slug_reserved_migrations",
+        "//clients/web:src/lib/slug/reserved.ts",
+    ],
+    embed = [":slugkit"],
+)

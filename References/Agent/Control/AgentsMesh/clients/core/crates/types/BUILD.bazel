@@ -1,0 +1,65 @@
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+
+# Foundational domain types shared across every crate in `clients/core`.
+# Two surfaces coexist here:
+#
+#   1. Legacy serde DTOs (REST dual-track) — `agent.rs`, `auth.rs`, etc.
+#   2. Connect-RPC binary-wire DTOs (prost) — re-exported by `lib.rs` under
+#      `proto_<svc>_v1` modules from the auto-generated `<svc>_proto` crates
+#      produced by `rust_prost_library` (see proto/<svc>/v1/BUILD.bazel).
+#
+# R1a: the hand-written `*_proto.rs` mirrors were retired; the proto schema is
+# now the single source of truth, codegen is hermetic via Bazel.
+
+rust_library(
+    name = "types",
+    srcs = glob(["src/**/*.rs"]),
+    crate_name = "agentsmesh_types",
+    edition = "2021",
+    visibility = ["//clients/core:__subpackages__"],
+    deps = [
+        # Auto-generated prost mirrors (one per proto package). `runner/v1` is
+        # omitted on purpose — it's the internal runner ↔ backend mTLS surface
+        # with no client-side consumer.
+        "//proto/agent/v1:agent_rust_proto",
+        "//proto/apikey/v1:apikey_rust_proto",
+        "//proto/auth/v1:auth_rust_proto",
+        "//proto/autopilot/v1:autopilot_rust_proto",
+        "//proto/billing/v1:billing_rust_proto",
+        "//proto/binding/v1:binding_rust_proto",
+        "//proto/blockstore/v1:blockstore_rust_proto",
+        "//proto/channel/v1:channel_rust_proto",
+        "//proto/channel_state/v1:channel_state_rust_proto",
+        "//proto/env_bundle/v1:env_bundle_rust_proto",
+        "//proto/extension/v1:extension_rust_proto",
+        "//proto/events/v1:events_rust_proto",
+        "//proto/file/v1:file_rust_proto",
+        "//proto/grant/v1:grant_rust_proto",
+        "//proto/invitation/v1:invitation_rust_proto",
+        "//proto/license/v1:license_rust_proto",
+        "//proto/loop/v1:loop_rust_proto",
+        "//proto/mesh/v1:mesh_rust_proto",
+        "//proto/notification/v1:notification_rust_proto",
+        "//proto/org/v1:org_rust_proto",
+        "//proto/pod/v1:pod_rust_proto",
+        "//proto/promocode/v1:promocode_rust_proto",
+        "//proto/repository/v1:repository_rust_proto",
+        "//proto/runner_api/v1:runner_api_rust_proto",
+        "//proto/sso/v1:sso_rust_proto",
+        "//proto/support_ticket/v1:support_ticket_rust_proto",
+        "//proto/ticket/v1:ticket_rust_proto",
+        "//proto/ticket_relations/v1:ticket_relations_rust_proto",
+        "//proto/token_usage/v1:token_usage_rust_proto",
+        "//proto/user/v1:user_rust_proto",
+        "//proto/user_credential/v1:user_credential_rust_proto",
+        "@crates//:prost",
+        "@crates//:serde",
+        "@crates//:serde_json",
+    ],
+)
+
+rust_test(
+    name = "types_test",
+    crate = ":types",
+    edition = "2021",
+)

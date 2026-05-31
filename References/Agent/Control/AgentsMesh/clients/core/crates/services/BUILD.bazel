@@ -1,0 +1,29 @@
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+
+# Business service layer — thin orchestrators over api-client + state.
+# This is the surface that wasm/node-bridge/ffi wrappers re-export.
+rust_library(
+    name = "services",
+    srcs = glob(["src/**/*.rs"]),
+    crate_name = "agentsmesh_services",
+    edition = "2021",
+    visibility = ["//clients/core:__subpackages__"],
+    deps = [
+        "//clients/core/crates/api-client:api_client",
+        "//clients/core/crates/persistence",
+        "//clients/core/crates/state",
+        "//clients/core/crates/types",
+        "@crates//:prost",
+        "@crates//:reqwest",
+        "@crates//:serde",
+        "@crates//:serde_json",
+        "@crates//:thiserror",
+        "@crates//:tracing",
+    ],
+)
+
+rust_test(
+    name = "services_test",
+    crate = ":services",
+    edition = "2021",
+)

@@ -1,0 +1,194 @@
+load("//build_defs/web:electron.bzl", "electron_builder_app", "electron_vite_build")
+load("//build_defs/web:eslint.bzl", "eslint_test")
+load("//build_defs/web:playwright.bzl", "playwright_test")
+load("//build_defs/web:ts.bzl", "ts_project")
+
+# `bazel build //clients/desktop:out` — Bazel-native electron-vite
+# build. Produces `out/main/index.js`, `out/preload/index.js`,
+# `out/renderer/...` as a tree artifact. Consumed by electron-builder
+# downstream (still shell-invoked; rules_electron full-Bazel
+# packaging is a Phase B follow-up).
+#
+# Tagged `manual` because the renderer cross-imports clients/web/src
+# via electron-vite aliases — the build needs both desktop/src AND
+# clients/web/src in its sandbox. We wire that closure below.
+electron_vite_build(
+    name = "out",
+    srcs = glob(
+        [
+            "src/**/*",
+            "shims/**/*",
+        ],
+        allow_empty = True,
+        exclude = ["electron.vite.config.ts"],
+    ) + [
+        "electron.vite.config.ts",
+        "tsconfig.json",
+        # Renderer cross-imports `clients/web/src/...` via electron-vite
+        # path aliases — the sandbox needs the whole web src tree.
+        # `:src` is a `no_emit` ts_project (type-check only, no file
+        # provider); `:src_files` is the matching filegroup that
+        # actually exposes the raw .ts/.tsx/.css to vite.
+        "//clients/web:src_files",
+        # First-party `@agentsmesh/*` packages — Bazel-managed via
+        # `npm_link_package` in root BUILD.bazel. vite resolves them
+        # through `node_modules/@agentsmesh/<name>` walking up from
+        # the sandbox CWD.
+        "//:node_modules/@agentsmesh/electron-adapter",
+        "//:node_modules/@agentsmesh/service-interface",
+        "//:node_modules/@agentsmesh/service-runtime",
+        # Generated TS proto message classes — clients/web/src/lib/api/
+        # imports `@proto/*`, aliased to `../../proto/gen/ts/*` in
+        # electron.vite.config.ts. The sandbox needs the staged .ts
+        # files for rollup's import resolver to succeed.
+        "//proto:proto_gen_ts",
+    ],
+    tags = ["manual"],
+)
+
+# `bazel build //clients/desktop:dist` — produces a tree artifact
+# containing platform installers (.dmg / .exe / .AppImage) under
+# `bazel-bin/clients/desktop/dist/`. Drives `electron-builder` over
+# the `:out` tree from a Bazel sandbox.
+#
+# `tags = ["manual", "electron_builder"]` (set by the macro) keeps
+# this target out of `bazel build //...` because cross-platform
+# packaging requires the matching host (macOS for `.dmg`, Windows
+# for `.exe`, etc.) and pulls in heavy native deps. CI matrix opts
+# in via `--build_tag_filters=electron_builder` per OS runner.
+electron_builder_app(
+    name = "dist",
+    # `agentsmesh` (lowercase, npm-compliant) is the synthesised
+    # package.json `name` field — internal-only. The user-visible
+    # brand "AgentsMesh" lives in electron-builder.yml's `productName`
+    # and propagates to CFBundleName / CFBundleDisplayName / app.getName().
+    package_name = "agentsmesh",
+    out = ":out",
+    config = "electron-builder.yml",
+    # Native-module runtime deps. electron-vite externalises these in
+    # the main bundle (`rollupOptions.external`), and electron-builder
+    # only copies node_modules subtrees referenced from package.json's
+    # `dependencies` into app.asar. Without the entry below the
+    # packaged app throws "Cannot find module '@agentsmesh/node-bridge'"
+    # the moment Electron's main process calls require() on the NAPI
+    # binary at startup. `*` resolves through the workspace-root
+    # node_modules link tree at staging time.
+    dependencies = {
+        "@agentsmesh/node-bridge": "*",
+    },
+    electron_main = "./out/main/index.js",
+    # `build/icon.png` is the source of truth for the macOS .icns,
+    # Windows .ico and Linux PNG icons — electron-builder derives all
+    # three from a single 512×512 PNG when `directories.buildResources`
+    # points at the same `build/` directory. Without this in extra_srcs
+    # the icon never lands in the Bazel staging sandbox and installers
+    # fall back to the generic Electron diamond.
+    extra_srcs = ["build/icon.png"],
+    # release.yml stamps this on tag builds via sed; the marker comment
+    # above lets the sed pattern key off semantics, not the literal
+    # number, so bumping the dev placeholder doesn't break stamping.
+    # DESKTOP_VERSION_STAMP
+    version = "0.1.0",
+)
+
+# Main-process TS (lives in `src/main/`). Produces a Node-loadable
+# bundle; electron-vite handles any esbuild tweaks we need.
+#
+# Tagged `manual` because the desktop renderer aliases `@/stores`,
+# `@/lib`, etc. to clients/web/src via electron.vite.config.ts —
+# tsc by itself can't resolve those without complex path
+# replication. The canonical type-check pipeline runs inside
+# `electron-vite build` (Phase B). These targets stay for ad-hoc
+# `bazel build //clients/desktop:main` invocations.
+ts_project(
+    name = "main",
+    srcs = glob([
+        "src/main/**/*.ts",
+        "src/preload/**/*.ts",
+    ]),
+    declaration = True,
+    tags = ["manual"],
+    tsconfig = "tsconfig.json",
+    deps = ["//:node_modules"],
+)
+
+ts_project(
+    name = "renderer",
+    srcs = glob([
+        "src/renderer/**/*.ts",
+        "src/renderer/**/*.tsx",
+    ]),
+    declaration = True,
+    tags = ["manual"],
+    tsconfig = "tsconfig.json",
+    deps = ["//:node_modules"],
+)
+
+# `bazel test //clients/desktop:lint` — ESLint over main + preload +
+# renderer + e2e sources. eslint.config.mjs reuses Next's preset since
+# the renderer is React + cross-imports clients/web/src.
+eslint_test(
+    name = "lint",
+    size = "medium",
+    srcs = glob(
+        [
+            "src/**/*.ts",
+            "src/**/*.tsx",
+            "e2e/**/*.ts",
+        ],
+        allow_empty = True,
+        exclude = [
+            "src/**/*.d.ts",
+            "e2e/node_modules/**",
+        ],
+    ),
+)
+
+# Desktop Playwright e2e suite (Electron-hosted). Tagged `manual + e2e`
+# so `bazel test //...` skips it; run via:
+#   bazel test //clients/desktop:e2e --test_tag_filters=e2e
+#
+# Depends on `:out` so the Bazel-built electron-vite bundle is in the
+# runfiles tree. Playwright's `_electron.launch()` walks up from CWD
+# to find the bundle and the Electron binary.
+#
+# Note: we DO NOT depend on `:node_modules/@agentsmesh/node-bridge`
+# building from source — the prebuilt `.node` binary is packaged via
+# `:out` (vite copies it into the bundle).
+playwright_test(
+    name = "e2e",
+    srcs = glob(
+        [
+            "e2e/**/*.spec.ts",
+            "e2e/**/*.ts",
+        ],
+        allow_empty = True,
+        exclude = ["e2e/node_modules/**"],
+    ),
+    config = "playwright.config.ts",
+    data = [
+        # Root-linked @playwright/test (single version across the repo
+        # via pnpm overrides — see build_defs/web/playwright.bzl).
+        "//:node_modules/@playwright/test",
+        # Electron binary lives in root node_modules (Phase C hoist).
+        # `_electron.launch()` walks up from CWD to find it.
+        "//:node_modules/electron",
+        # Workspace link to the napi addon.
+        "//:node_modules/@agentsmesh/node-bridge",
+        # Shared connect-client.ts re-exported through shared_fixtures uses
+        # `@bufbuild/protobuf` to build the typed binary client.
+        "//:node_modules/@bufbuild/protobuf",
+        # Shared helpers/fixtures from web/e2e-playwright.
+        "//clients/web/e2e-playwright:shared_fixtures",
+        # Generated TS proto messages — connect-client.ts (re-exported
+        # through shared_fixtures) reaches for them through a relative
+        # `../../../../proto/gen/ts/...` import, so the .ts files must
+        # be staged in runfiles.
+        "//proto:proto_gen_ts",
+        # Bazel-built electron-vite bundle (out/main, out/preload, out/renderer).
+        ":out",
+    ] + glob(
+        [".env*"],
+        allow_empty = True,
+    ),
+)

@@ -1,0 +1,31 @@
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+
+# Persistence layer — Repository pattern. Native uses sqlite (rusqlite);
+# wasm32 uses an in-memory backend (browser persistence is layered above
+# in the JS host). rusqlite must be gated to non-wasm32 — its libsqlite3-sys
+# build script invokes a C compiler that the wasm32 sandbox doesn't have.
+rust_library(
+    name = "persistence",
+    srcs = glob(["src/**/*.rs"]),
+    crate_name = "agentsmesh_persistence",
+    edition = "2021",
+    visibility = ["//clients/core:__subpackages__"],
+    deps = [
+        "//clients/core/crates/types",
+        "@crates//:serde",
+        "@crates//:serde_json",
+        "@crates//:thiserror",
+        "@crates//:tracing",
+    ] + select({
+        "@rules_rust//rust/platform:wasm32-unknown-unknown": [],
+        "//conditions:default": [
+            "@crates//:rusqlite",
+        ],
+    }),
+)
+
+rust_test(
+    name = "persistence_test",
+    crate = ":persistence",
+    edition = "2021",
+)

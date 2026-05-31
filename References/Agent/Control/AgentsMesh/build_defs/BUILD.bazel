@@ -1,0 +1,12 @@
+# Reusable Bazel macros, split by language / domain.
+#
+#   rust/   — rust_wasm_library, napi_rust_library
+#   ios/    — rust_xcframework, ios_app, ios_e2e_tests, swift_clang_module
+#   web/    — next_app, next_oci_image, electron_vite_build,
+#             electron_builder_app, eslint_test, vitest_test, playwright_test,
+#             ts_project
+#   go/     — golangci_lint
+#   docker/ — go_oci_image
+#
+# Each subdirectory carries its own BUILD.bazel so the macros themselves
+# are queryable (`bazel query //build_defs/...`).

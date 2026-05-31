@@ -1,0 +1,11 @@
+-- Moved to deploy/dev/seed/e2e_echo.sql; intentionally empty.
+--
+-- This migration originally inserted the e2e-echo mock agent into the
+-- agents table. The data has been relocated to the dev/e2e seed pipeline
+-- so production deployments never receive test fixtures. The .sql file is
+-- kept (rather than deleted) to preserve the schema_migrations version
+-- ordering on databases that already applied this migration. The follow-up
+-- migration 000155_remove_e2e_echo_from_prod removes the row from any DB
+-- that applied this on its way to the new world.
+--
+-- See: .claude/adr/2026-05-26-test-fixture-isolation.md

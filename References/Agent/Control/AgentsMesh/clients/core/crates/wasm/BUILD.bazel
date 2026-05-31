@@ -1,0 +1,115 @@
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+load("@bazel_skylib//rules:write_file.bzl", "write_file")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_shared_library", "rust_test")
+load("//build_defs/rust:wasm.bzl", "rust_wasm_library")
+
+# Shared dep set — both the rlib (host-side test/lint) and the cdylib
+# (wasm-bindgen input) want exactly the same downstream + crates.io
+# closure. Pull it out so a future dep change touches one place.
+_WASM_DEPS = [
+    "//clients/core/crates/api-client:api_client",
+    "//clients/core/crates/auth",
+    "//clients/core/crates/events",
+    "//clients/core/crates/logging",
+    "//clients/core/crates/persistence",
+    "//clients/core/crates/protocol",
+    "//clients/core/crates/relay",
+    "//clients/core/crates/services",
+    "//clients/core/crates/state",
+    "//clients/core/crates/transport",
+    "//clients/core/crates/types",
+    "@crates//:console_error_panic_hook",
+    "@crates//:futures",
+    "@crates//:js-sys",
+    "@crates//:prost",
+    "@crates//:reqwest",
+    "@crates//:serde",
+    "@crates//:serde_json",
+    "@crates//:wasm-bindgen",
+    "@crates//:wasm-bindgen-futures",
+    "@crates//:web-sys",
+]
+
+# rlib for host-side `rust_test` + downstream `rust_library` consumers
+# that want to import wasm-bindgen-decorated types without going through
+# wasm-pack. Compiled for the host triple.
+rust_library(
+    name = "wasm_lib",
+    srcs = glob(["src/**/*.rs"]),
+    crate_name = "agentsmesh_wasm",
+    edition = "2021",
+    visibility = ["//clients/core:__subpackages__"],
+    deps = _WASM_DEPS,
+)
+
+# cdylib for wasm-bindgen — `rust_wasm_bindgen` checks `crate_info.type`
+# and fails on rlib. Same source set, same deps; the only difference is
+# the rustc `--crate-type=cdylib` flag emitted by rules_rust.
+rust_shared_library(
+    name = "wasm_cdylib",
+    srcs = glob(["src/**/*.rs"]),
+    crate_name = "agentsmesh_wasm",
+    edition = "2021",
+    visibility = ["//clients/core/crates/wasm:__pkg__"],
+    deps = _WASM_DEPS,
+)
+
+rust_test(
+    name = "wasm_lib_test",
+    crate = ":wasm_lib",
+    edition = "2021",
+)
+
+# Phase 3a — produces the ESM `pkg/` directory consumed by `clients/web`
+# via `npm_link_package`. The wasm closure is now tokio-free (auth /
+# api-client / events / relay use futures::lock::Mutex +
+# futures::channel::mpsc + parking_lot::RwLock; time/spawn go through
+# transport's Runtime trait), which lets crate_universe build the entire
+# graph for wasm32 without dragging in mio / rustls / tokio's IO stack.
+rust_wasm_library(
+    name = "wasm_pkg",
+    crate = ":wasm_cdylib",
+    target = "web",
+    visibility = ["//clients/web:__subpackages__"],
+)
+
+# package.json that turns the `wasm_pkg` directory into an importable
+# npm package called `agentsmesh-wasm`. `main`/`types` point at the
+# rust_wasm_bindgen-generated files (named after the target — `wasm_pkg.js`
+# etc.). `sideEffects: ["./snippets/*"]` mirrors the wasm-pack contract:
+# snippets contain wasm-bindgen-generated JS shims that must NOT be
+# tree-shaken away.
+write_file(
+    name = "wasm_pkg_package_json",
+    out = "wasm_pkg/package.json",
+    content = [
+        "{",
+        '  "name": "agentsmesh-wasm",',
+        '  "type": "module",',
+        '  "version": "0.1.0",',
+        '  "main": "wasm_pkg.js",',
+        '  "types": "wasm_pkg.d.ts",',
+        '  "sideEffects": ["./snippets/*"]',
+        "}",
+    ],
+)
+
+# npm-package wrapper: gives downstream `npm_link_package` (root
+# BUILD.bazel) a single label to depend on. The wasm pipeline is now
+# Bazel-native end-to-end — Rust source ↔ wasm-bindgen ↔ npm package
+# ↔ Next.js bundle, with no checked-in artifacts.
+#
+# `root_paths` strips the `wasm_pkg/` prefix so files end up at the npm
+# package root: `wasm_pkg.js` / `wasm_pkg.d.ts` / `wasm_pkg_bg.wasm` /
+# `package.json` (matching what `package.json#main: "wasm_pkg.js"`
+# expects).
+npm_package(
+    name = "wasm_pkg_npm",
+    srcs = [
+        ":wasm_pkg",
+        ":wasm_pkg_package_json",
+    ],
+    package = "agentsmesh-wasm",
+    root_paths = ["clients/core/crates/wasm/wasm_pkg"],
+    visibility = ["//visibility:public"],
+)

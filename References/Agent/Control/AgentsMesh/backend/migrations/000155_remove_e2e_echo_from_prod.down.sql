@@ -1,0 +1,7 @@
+-- 000155_remove_e2e_echo_from_prod.down.sql
+-- No-op: this migration intentionally has no rollback. The forward
+-- direction removes a test fixture that should never have been in
+-- production; rolling it back by re-INSERTing the row would defeat the
+-- purpose. To get the e2e-echo agent back on a dev/e2e DB, run the
+-- seed pipeline (deploy/dev/seed/e2e_echo.sql) rather than reversing
+-- this migration.

@@ -1,0 +1,203 @@
+use std::path::PathBuf;
+use std::sync::Arc;
+use tokio::sync::Mutex;
+use napi_derive::napi;
+
+use agentsmesh_api_client::{ApiClient, AuthTokenStore};
+use agentsmesh_auth::{AuthManager, PersistentStorage};
+use agentsmesh_local_runner::LocalRunnerManager;
+use agentsmesh_services::*;
+use agentsmesh_state::*;
+
+mod file_storage;
+use file_storage::FileStorage;
+
+fn err(e: impl std::fmt::Display) -> napi::Error {
+    napi::Error::from_reason(e.to_string())
+}
+
+#[napi]
+pub struct AppState {
+    auth: Arc<AuthManager>,
+    pod: Arc<Mutex<PodService>>,
+    runner: Arc<Mutex<RunnerService>>,
+    ticket: Arc<Mutex<TicketService>>,
+    channel: Arc<Mutex<ChannelService>>,
+    loop_svc: Arc<Mutex<LoopService>>,
+    autopilot: Arc<Mutex<AutopilotService>>,
+    mesh: Arc<Mutex<MeshService>>,
+    billing: Arc<Mutex<BillingService>>,
+    extension: Arc<Mutex<ExtensionService>>,
+    invitation: Arc<Mutex<InvitationService>>,
+    apikey: Arc<Mutex<ApiKeyService>>,
+    binding: Arc<Mutex<BindingService>>,
+    org: Arc<Mutex<OrgApiService>>,
+    user: Arc<Mutex<UserApiService>>,
+    user_credential: Arc<Mutex<UserCredentialService>>,
+    env_bundle: Arc<Mutex<EnvBundleService>>,
+    agent: Arc<Mutex<AgentService>>,
+    file: Arc<Mutex<FileService>>,
+    support_ticket: Arc<Mutex<SupportTicketService>>,
+    ticket_relations: Arc<Mutex<TicketRelationsService>>,
+    auth_connect: Arc<Mutex<AuthConnectService>>,
+    promocode: Arc<Mutex<PromoCodeService>>,
+    blockstore: Arc<Mutex<BlockstoreService>>,
+    sso: Arc<Mutex<SSOService>>,
+    local_runner: Arc<LocalRunnerManager>,
+    client: Arc<ApiClient>,
+}
+
+#[napi]
+impl AppState {
+    #[napi(constructor)]
+    pub fn new(base_url: String, storage_dir: String) -> napi::Result<Self> {
+        let dir = PathBuf::from(storage_dir);
+        let _ = std::fs::create_dir_all(&dir);
+        let storage: Arc<dyn PersistentStorage> = Arc::new(FileStorage::new(dir));
+        let auth = Arc::new(AuthManager::new(base_url.clone(), storage));
+        let local_runner = Arc::new(LocalRunnerManager::from_default_home(base_url.clone()));
+        let client = Arc::new(ApiClient::new(base_url, auth.clone()));
+        let c = client.clone();
+        Ok(Self {
+            auth,
+            pod: Arc::new(Mutex::new(PodService::new(c.clone(), pod_state::PodState::new()))),
+            runner: Arc::new(Mutex::new(RunnerService::new(c.clone(), runner_state::RunnerState::new()))),
+            ticket: Arc::new(Mutex::new(TicketService::new(c.clone(), ticket_state::TicketState::new()))),
+            channel: Arc::new(Mutex::new(ChannelService::new(c.clone(), channel_state::ChannelState::new()))),
+            loop_svc: Arc::new(Mutex::new(LoopService::new(c.clone(), loop_state::LoopState::new()))),
+            autopilot: Arc::new(Mutex::new(AutopilotService::new(c.clone(), autopilot_state::AutopilotState::new()))),
+            mesh: Arc::new(Mutex::new(MeshService::new(c.clone(), mesh_state::MeshState::new()))),
+            billing: Arc::new(Mutex::new(BillingService::new(c.clone()))),
+            extension: Arc::new(Mutex::new(ExtensionService::new(c.clone()))),
+            invitation: Arc::new(Mutex::new(InvitationService::new(c.clone()))),
+            apikey: Arc::new(Mutex::new(ApiKeyService::new(c.clone()))),
+            binding: Arc::new(Mutex::new(BindingService::new(c.clone()))),
+            org: Arc::new(Mutex::new(OrgApiService::new(c.clone()))),
+            user: Arc::new(Mutex::new(UserApiService::new(c.clone()))),
+            user_credential: Arc::new(Mutex::new(UserCredentialService::new(c.clone()))),
+            env_bundle: Arc::new(Mutex::new(EnvBundleService::new(c.clone()))),
+            agent: Arc::new(Mutex::new(AgentService::new(c.clone()))),
+            file: Arc::new(Mutex::new(FileService::new(c.clone()))),
+            support_ticket: Arc::new(Mutex::new(SupportTicketService::new(c.clone()))),
+            ticket_relations: Arc::new(Mutex::new(TicketRelationsService::new(c.clone()))),
+            auth_connect: Arc::new(Mutex::new(AuthConnectService::new(c.clone()))),
+            promocode: Arc::new(Mutex::new(PromoCodeService::new(c.clone()))),
+            blockstore: Arc::new(Mutex::new(BlockstoreService::new(
+                c.clone(),
+                blockstore_state::BlockstoreState::new(),
+            ))),
+            sso: Arc::new(Mutex::new(SSOService::new(c.clone()))),
+            local_runner,
+            client: c,
+        })
+    }
+
+    #[napi]
+    pub async fn auth_login(&self, email: String, password: String) -> napi::Result<String> {
+        let session = self.auth.login(&email, &password).await.map_err(err)?;
+        serde_json::to_string(&session).map_err(err)
+    }
+
+    #[napi]
+    pub async fn auth_logout(&self) -> napi::Result<()> {
+        self.auth.logout().await.map_err(err)
+    }
+
+    #[napi]
+    pub async fn auth_refresh_token(&self) -> napi::Result<String> {
+        let tokens = self.auth.refresh_token().await.map_err(err)?;
+        serde_json::to_string(&tokens).map_err(err)
+    }
+
+    #[napi]
+    pub async fn auth_fetch_organizations(&self) -> napi::Result<String> {
+        let orgs = self.auth.fetch_organizations().await.map_err(err)?;
+        serde_json::to_string(&orgs).map_err(err)
+    }
+
+    #[napi]
+    pub fn auth_is_authenticated(&self) -> bool {
+        self.auth.is_authenticated()
+    }
+
+    #[napi]
+    pub fn auth_get_expires_at(&self) -> Option<i64> {
+        self.auth.expires_at()
+    }
+
+    #[napi]
+    pub async fn auth_bootstrap(&self) -> napi::Result<String> {
+        let result = self.auth.bootstrap().await;
+        serde_json::to_string(&result).map_err(err)
+    }
+
+    #[napi]
+    pub fn auth_switch_org(&self, slug: String) -> napi::Result<()> {
+        self.auth.switch_org(&slug).map_err(err)
+    }
+
+    #[napi]
+    pub fn auth_get_token(&self) -> Option<String> {
+        AuthTokenStore::get_token(self.auth.as_ref())
+    }
+
+    #[napi]
+    pub fn auth_get_current_user_json(&self) -> Option<String> {
+        self.auth.current_user().map(|u| serde_json::to_string(&u).unwrap_or_default())
+    }
+
+    #[napi]
+    pub fn auth_get_current_org_json(&self) -> Option<String> {
+        self.auth.get_current_org().map(|o| serde_json::to_string(&o).unwrap_or_default())
+    }
+
+    #[napi]
+    pub fn auth_get_organizations_json(&self) -> String {
+        serde_json::to_string(&self.auth.get_organizations()).unwrap_or_default()
+    }
+
+    #[napi]
+    pub fn auth_apply_session(&self, session_json: String) -> napi::Result<()> {
+        let session: agentsmesh_state::auth_types::AuthSession = serde_json::from_str(&session_json).map_err(err)?;
+        self.auth.apply_session(&session);
+        Ok(())
+    }
+
+    #[napi]
+    pub fn auth_set_organizations(&self, orgs_json: String) -> napi::Result<()> {
+        let orgs: Vec<agentsmesh_state::auth_types::Organization> = serde_json::from_str(&orgs_json).map_err(err)?;
+        self.auth.replace_organizations(orgs);
+        Ok(())
+    }
+
+    #[napi]
+    pub fn auth_set_current_org(&self, org_json: String) -> napi::Result<()> {
+        if org_json.is_empty() {
+            self.auth.set_current_org(None);
+        } else {
+            let org: agentsmesh_state::auth_types::Organization = serde_json::from_str(&org_json).map_err(err)?;
+            self.auth.set_current_org(Some(org));
+        }
+        Ok(())
+    }
+
+    #[napi]
+    pub fn auth_clear_session(&self) {
+        self.auth.clear();
+    }
+}
+
+#[napi]
+pub fn init_logger(log_dir: String, level: String) -> napi::Result<()> {
+    agentsmesh_logging::init(agentsmesh_logging::LogConfig::file(log_dir, level))
+        .map_err(err)?;
+    agentsmesh_logging::install_panic_hook();
+    Ok(())
+}
+
+#[napi]
+pub fn log_event(level: String, target: String, msg: String) {
+    agentsmesh_logging::log_event(&level, &target, &msg);
+}
+
+mod commands;

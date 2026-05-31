@@ -1,0 +1,139 @@
+###############################################################################
+# AgentsMesh — root BUILD file.
+#
+# Exports top-level config files so they can be referenced from nested
+# BUILD files (e.g. `//:go.mod`, `//:pnpm-lock.yaml`). Adds workspace-level
+# targets: `buildifier` (formatter), `gazelle` (Go BUILD gen, Phase 1+).
+###############################################################################
+
+load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
+load("@aspect_rules_js//npm:defs.bzl", "npm_link_package")
+load("@buildifier_prebuilt//:rules.bzl", "buildifier")
+load("@gazelle//:def.bzl", "gazelle")
+load("@npm//:defs.bzl", "npm_link_all_packages")
+
+# gazelle:prefix github.com/anthropics/agentsmesh
+# gazelle:proto disable_global
+# gazelle:go_naming_convention import_alias
+# gazelle:resolve go github.com/anthropics/agentsmesh/proto/gen/go/runner/v1 //proto/runner/v1:runner_go_proto
+
+# Workspace-root node_modules link. aspect_rules_js requires this in
+# the root BUILD so that sub-package references like
+# `//clients/web:node_modules/react` resolve back to the shared
+# `.aspect_rules_js/node_modules/react@X.Y.Z` store. Without a root
+# package.json + this target, every workspace TS BUILD fails analysis.
+npm_link_all_packages(name = "node_modules")
+
+# First-party `@agentsmesh/*` packages — Bazel-native, no source-tree
+# package.json + no `workspace:*` entry in root package.json. The
+# `internal_npm_package` macro at each package's BUILD.bazel synthesises
+# the package.json from BUILD attrs; `npm_link_package` here mounts the
+# result at `//:node_modules/@agentsmesh/<name>` so import resolution
+# (Next.js, vite, ts_project) finds it through the same path Node uses.
+npm_link_package(
+    name = "node_modules/@agentsmesh/service-interface",
+    src = "//packages/service-interface:pkg",
+    root_package = "",
+)
+
+npm_link_package(
+    name = "node_modules/@agentsmesh/service-runtime",
+    src = "//packages/service-runtime:pkg",
+    root_package = "",
+)
+
+npm_link_package(
+    name = "node_modules/@agentsmesh/electron-adapter",
+    src = "//packages/electron-adapter:pkg",
+    root_package = "",
+)
+
+npm_link_package(
+    name = "node_modules/@agentsmesh/node-bridge",
+    src = "//clients/core/crates/node-bridge:pkg",
+    root_package = "",
+)
+
+npm_link_package(
+    name = "node_modules/agentsmesh-wasm",
+    src = "//clients/core/crates/wasm:wasm_pkg_npm",
+    root_package = "",
+)
+
+# `@agentsmesh/proto` — generated TS Connect-RPC proto modules. The
+# proto package lives under `//proto:pkg` (`npm_package` over the
+# `gen/ts/**/*.ts` mirror). Mounting at `node_modules/@agentsmesh/proto`
+# lets tsc resolve imports through the normal node-module walk, which
+# is required for `:src` typecheck to keep the .ts files inside the
+# rootDir constraint aspect_rules_ts enforces. The legacy `@proto/*`
+# tsconfig path alias (clients/web/tsconfig.json) is kept as a
+# transitional re-export — see clients/web/tsconfig.json.
+npm_link_package(
+    name = "node_modules/@agentsmesh/proto",
+    src = "//proto:pkg",
+    root_package = "",
+)
+
+# Copy root package.json into bazel-out so sub-packages (clients/web,
+# clients/web-admin) can reference it from their data deps. aspect_rules_js
+# / next_app expect data files to live within the caller's package or
+# come from a `copy_to_bin` wrapper; a bare `//:package.json` label in a
+# nested BUILD triggers the "move copy_to_bin target to //" error.
+copy_to_bin(
+    name = "package_json_bin",
+    srcs = ["package.json"],
+    visibility = ["//visibility:public"],
+)
+
+exports_files(
+    [
+        ".bazelrc",
+        ".bazelignore",
+        "go.mod",
+        "package.json",
+        "README.md",
+        "LICENSE",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+# `bazel run //:gazelle` regenerates BUILD.bazel files for every Go package
+# under backend/, runner/, relay/, agentfile/, proto/.
+gazelle(name = "gazelle")
+
+# rust-project.json is generated via `bazel run //:rust_project`.
+# IDE / rust-analyzer reads the resulting file at workspace root to
+# discover crate roots, deps, and source-set boundaries — Bazel is the
+# Rust SSOT (Cargo.toml workspace files have been removed).
+alias(
+    name = "rust_project",
+    actual = "@rules_rust//tools/rust_analyzer:gen_rust_project",
+)
+
+# Runs buildifier on every BUILD/MODULE/.bzl file. CI enforces this via
+# `bazel run //:buildifier_check`.
+buildifier(
+    name = "buildifier",
+    exclude_patterns = [
+        "./.git/*",
+        "./.claude/*",
+        "./node_modules/*",
+        "./clients/**/node_modules/*",
+        "./**/target/*",
+    ],
+    lint_mode = "fix",
+    mode = "fix",
+)
+
+buildifier(
+    name = "buildifier_check",
+    exclude_patterns = [
+        "./.git/*",
+        "./.claude/*",
+        "./node_modules/*",
+        "./clients/**/node_modules/*",
+        "./**/target/*",
+    ],
+    lint_mode = "warn",
+    mode = "check",
+)

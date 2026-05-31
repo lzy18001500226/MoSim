@@ -1,0 +1,49 @@
+# iOS platforms for Rust → XCFramework transitions.
+#
+# rules_rust declares iOS triples as `config_setting`s but not as
+# `platform`s. `platform_transition_filegroup` (from aspect_bazel_lib)
+# needs an actual platform label to flip `--platforms=…`, so we declare
+# three here — one per iOS rustc triple we care about.
+#
+# The constraint combinations mirror apple_support's `ios_*` platforms
+# so rules_apple/rules_swift would resolve them too, but we keep our
+# own copy because the rules_rust toolchain selection keys off the
+# triple `config_setting`s (cpu_arch + system), which these platforms
+# satisfy directly.
+
+package(default_visibility = ["//visibility:public"])
+
+platform(
+    name = "ios_arm64",
+    constraint_values = [
+        "@platforms//cpu:arm64",
+        "@platforms//os:ios",
+        "@build_bazel_apple_support//constraints:apple",
+        "@build_bazel_apple_support//constraints:device",
+    ],
+)
+
+platform(
+    name = "ios_sim_arm64",
+    constraint_values = [
+        "@platforms//cpu:arm64",
+        "@platforms//os:ios",
+        "@build_bazel_apple_support//constraints:apple",
+        "@build_bazel_apple_support//constraints:simulator",
+    ],
+)
+
+platform(
+    name = "ios_x86_64",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:ios",
+        "@build_bazel_apple_support//constraints:apple",
+        "@build_bazel_apple_support//constraints:simulator",
+    ],
+)
+
+# Helper script that an `ios_app` can wrap with `sh_binary` to install +
+# launch the bundled `.app` on a booted iOS Simulator. Exported so the
+# `ios_simulator_runner` macro in `ios_product.bzl` can reference it.
+exports_files(["sim_runner.sh"])

@@ -1,0 +1,5 @@
+# Bazel macro for amesh_proto_convert — invokes protoc-gen-amesh-convert
+# at build time to generate Go domain↔wire converter files. See
+# `defs.bzl` for usage.
+
+exports_files(["defs.bzl"])

@@ -1,0 +1,40 @@
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+
+# HTTP API client (wraps reqwest + auth-aware request building). The
+# refresh-token serialization Mutex uses futures::lock::Mutex (runtime-
+# agnostic, wasm-friendly) — tokio is no longer needed in this crate.
+rust_library(
+    name = "api_client",
+    srcs = glob(["src/**/*.rs"]),
+    crate_name = "agentsmesh_api_client",
+    edition = "2021",
+    visibility = ["//clients/core:__subpackages__"],
+    deps = [
+        "//clients/core/crates/types",
+        "@crates//:bytes",
+        "@crates//:futures",
+        "@crates//:futures-util",
+        "@crates//:js-sys",
+        "@crates//:prost",
+        "@crates//:reqwest",
+        "@crates//:serde",
+        "@crates//:serde_json",
+        "@crates//:thiserror",
+        "@crates//:tracing",
+        "@crates//:urlencoding",
+        "@crates//:wasm-bindgen",
+        "@crates//:wasm-bindgen-futures",
+        "@crates//:web-sys",
+    ],
+)
+
+rust_test(
+    name = "api_client_test",
+    crate = ":api_client",
+    edition = "2021",
+    deps = [
+        "@crates//:tokio",
+        "@crates//:tokio-test",
+        "@crates//:wiremock",
+    ],
+)

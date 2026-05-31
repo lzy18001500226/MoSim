@@ -1,0 +1,4 @@
+-- Intentionally empty: the e2e-echo data path no longer goes through
+-- migrations. Down is a no-op so rollback past 000127 succeeds without
+-- side effects. To remove the row from a dev/e2e DB use the seed
+-- teardown, not a migration down.

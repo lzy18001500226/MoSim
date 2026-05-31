@@ -1,0 +1,33 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+# `migrations` is a Go package now: it embeds every `*.sql` file via
+# //go:embed so the agentsmesh-backend binary ships its own migration
+# corpus (no /app/migrations mount, no separate `migrate` CLI). The
+# corresponding subcommand lives in //backend/cmd/server:cmd_migrate.go.
+go_library(
+    name = "migrations",
+    srcs = ["embed.go"],
+    embedsrcs = glob(["*.sql"]),
+    importpath = "github.com/anthropics/agentsmesh/backend/migrations",
+    visibility = ["//visibility:public"],
+)
+
+# Slug-reserved migration .sql files exposed to the slugkit unit test for
+# cross-source consistency checks. Independent of the Go library above.
+filegroup(
+    name = "slug_reserved_migrations",
+    srcs = glob(["*slug_reserved*.up.sql"]),
+    visibility = ["//backend/pkg/slugkit:__pkg__"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":migrations",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "migrations_test",
+    srcs = ["embed_test.go"],
+    embed = [":migrations"],
+)

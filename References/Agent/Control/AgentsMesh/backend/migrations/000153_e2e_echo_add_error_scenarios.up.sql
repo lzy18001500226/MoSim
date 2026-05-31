@@ -1,0 +1,2 @@
+-- Moved to deploy/dev/seed/e2e_echo.sql; intentionally empty.
+-- See 000127_add_e2e_echo_agent.up.sql for rationale.

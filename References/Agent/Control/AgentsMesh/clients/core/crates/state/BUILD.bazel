@@ -1,0 +1,30 @@
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+
+# In-memory state stores — replaces the Zustand layer that used to live
+# on the JS side. Shared across web (via wasm), desktop (via node-bridge)
+# and iOS (via FFI).
+rust_library(
+    name = "state",
+    srcs = glob(["src/**/*.rs"]),
+    crate_name = "agentsmesh_state",
+    edition = "2021",
+    visibility = ["//clients/core:__subpackages__"],
+    deps = [
+        "//clients/core/crates/api-client:api_client",
+        "//clients/core/crates/events",
+        "//clients/core/crates/persistence",
+        "//clients/core/crates/protocol",
+        "//clients/core/crates/types",
+        "@crates//:serde",
+        "@crates//:serde_json",
+        "@crates//:thiserror",
+        "@crates//:tracing",
+        "@crates//:web-time",
+    ],
+)
+
+rust_test(
+    name = "state_test",
+    crate = ":state",
+    edition = "2021",
+)

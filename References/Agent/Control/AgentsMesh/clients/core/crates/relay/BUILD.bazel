@@ -1,0 +1,38 @@
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+
+# Relay WebSocket connection pool + terminal session management. Uses
+# futures::channel::mpsc + parking_lot::RwLock; time/spawn go through
+# transport's Runtime abstraction. No direct tokio dep.
+rust_library(
+    name = "relay",
+    srcs = glob(["src/**/*.rs"]),
+    crate_name = "agentsmesh_relay",
+    edition = "2021",
+    visibility = ["//clients/core:__subpackages__"],
+    deps = [
+        "//clients/core/crates/protocol",
+        "//clients/core/crates/transport",
+        "//clients/core/crates/types",
+        "@crates//:futures",
+        "@crates//:futures-channel",
+        "@crates//:getrandom",
+        "@crates//:parking_lot",
+        "@crates//:rand",
+        "@crates//:serde",
+        "@crates//:serde_json",
+        "@crates//:thiserror",
+        "@crates//:tracing",
+        "@crates//:urlencoding",
+        "@crates//:web-time",
+    ],
+)
+
+rust_test(
+    name = "relay_test",
+    crate = ":relay",
+    edition = "2021",
+    deps = [
+        "@crates//:tokio",
+        "@crates//:tokio-test",
+    ],
+)

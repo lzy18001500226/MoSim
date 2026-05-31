@@ -1,0 +1,122 @@
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+load("//build_defs/rust:napi.bzl", "napi_rust_library")
+load("//build_defs/web:internal_package.bzl", "internal_npm_package")
+
+# NAPI layer — Electron's main process loads this as a `.node` addon.
+# The rust_library compiles as a cdylib; napi_rust_library renames
+# the platform-specific dylib suffix (`.dylib`/`.so`/`.dll`) → `.node`.
+rust_library(
+    name = "node_bridge_lib",
+    srcs = glob(["src/**/*.rs"]),
+    crate_name = "agentsmesh_node_bridge",
+    edition = "2021",
+    proc_macro_deps = [
+        "@crates//:napi-derive",
+    ],
+    visibility = ["//clients/core:__subpackages__"],
+    deps = [
+        "//clients/core/crates/api-client:api_client",
+        "//clients/core/crates/auth",
+        "//clients/core/crates/local-runner:local_runner",
+        "//clients/core/crates/logging",
+        "//clients/core/crates/services",
+        "//clients/core/crates/state",
+        "//clients/core/crates/types",
+        "@crates//:dirs",
+        "@crates//:napi",
+        "@crates//:serde",
+        "@crates//:serde_json",
+        "@crates//:tokio",
+    ],
+)
+
+rust_test(
+    name = "node_bridge_test",
+    crate = ":node_bridge_lib",
+    edition = "2021",
+)
+
+napi_rust_library(
+    name = "node_bridge",
+    srcs = glob(["src/**/*.rs"]),
+    binary_name = "agentsmesh-node-bridge",
+    crate_name = "agentsmesh_node_bridge",
+    proc_macro_deps = [
+        "@crates//:napi-derive",
+    ],
+    visibility = ["//clients/desktop:__subpackages__"],
+    deps = [
+        "//clients/core/crates/api-client:api_client",
+        "//clients/core/crates/auth",
+        "//clients/core/crates/local-runner:local_runner",
+        "//clients/core/crates/logging",
+        "//clients/core/crates/services",
+        "//clients/core/crates/state",
+        "//clients/core/crates/types",
+        "@crates//:dirs",
+        "@crates//:napi",
+        "@crates//:serde",
+        "@crates//:serde_json",
+        "@crates//:tokio",
+    ],
+)
+
+# npm package wrapping the .node addon. package.json is synthesised
+# from BUILD.bazel attrs (no source-tree package.json). napi-cli
+# metadata (binaryName, targets) is preserved via `extra` so external
+# napi build tools can still find platform configurations.
+#
+# The `.node` binary is now produced by the Bazel-side `:node_bridge`
+# napi_rust_library target — no pre-committed binary needed. Downstream
+# targets (clients/desktop Electron, e2e) consume this via
+# `:node_modules/@agentsmesh/node-bridge` and pick up Rust source
+# changes on the next `bazel build`.
+internal_npm_package(
+    name = "pkg",
+    package_name = "@agentsmesh/node-bridge",
+    srcs = [
+        "index.d.ts",
+        "index.js",
+        ":node_bridge",
+    ],
+    dev_dependencies = {
+        "@napi-rs/cli": "^3",
+    },
+    extra = {
+        "files": [
+            "index.js",
+            "index.d.ts",
+            "agentsmesh-node-bridge.darwin-arm64.node",
+        ],
+        "napi": {
+            "binaryName": "agentsmesh-node-bridge",
+            "targets": [
+                "aarch64-apple-darwin",
+                "x86_64-apple-darwin",
+                "x86_64-unknown-linux-gnu",
+                "x86_64-pc-windows-msvc",
+            ],
+        },
+        "scripts": {
+            "build": "napi build --platform --release",
+            "build:debug": "napi build --platform",
+        },
+    },
+    main = "index.js",
+    types = "index.d.ts",
+)
+
+# Prebuilt napi artifacts — shipped as Bazel data so downstream targets
+# (e.g. Electron e2e) can consume them. The `.node` binary is produced
+# by the Bazel-side `:node_bridge` napi_rust_library target.
+js_library(
+    name = "prebuilt_addon",
+    srcs = [
+        "index.d.ts",
+        "index.js",
+        ":node_bridge",
+        ":pkg_pkg_json",
+    ],
+    visibility = ["//visibility:public"],
+)

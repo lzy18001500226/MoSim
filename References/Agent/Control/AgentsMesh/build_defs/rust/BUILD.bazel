@@ -1,0 +1,27 @@
+# Rust packaging macros. Loaded by clients/core/crates/wasm and
+# clients/core/crates/node-bridge.
+#   wasm.bzl  → rust_wasm_library  (Rust → wasm-bindgen ESM pkg)
+#   napi.bzl  → napi_rust_library  (Rust → Node N-API .node addon)
+
+# Composite (os, cpu) settings for napi `.node` addon platform selection.
+# Single-OS `@platforms//os:X` constraints can't distinguish arm64 vs
+# x86_64 on macOS, which matters once we host an Intel-mac e2e runner
+# (macmini-04) alongside the M-series one (macmini-03). linux/windows
+# stay single-OS for now because every runner there is x86_64.
+config_setting(
+    name = "darwin_arm64",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:arm64",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "darwin_x86_64",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:x86_64",
+    ],
+    visibility = ["//visibility:public"],
+)

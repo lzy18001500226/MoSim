@@ -1,0 +1,3 @@
+ALTER TABLE pods DROP COLUMN IF EXISTS last_restart_at;
+ALTER TABLE pods DROP COLUMN IF EXISTS restart_count;
+ALTER TABLE pods DROP COLUMN IF EXISTS perpetual;

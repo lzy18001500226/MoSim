@@ -1,0 +1,8 @@
+# Bazel macros that replace `goreleaser` for the runner CLI:
+#
+#   release_bundle.bzl  — top-level `runner_release_bundle` macro
+#   cross_binary.bzl    — `cross_binary` (one go_binary per goos+goarch)
+#   release_archive.bzl — tar.gz / zip archives via rules_pkg
+#   checksums.bzl       — sha256 checksums.txt manifest
+
+package(default_visibility = ["//visibility:public"])

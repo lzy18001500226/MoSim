@@ -1,0 +1,35 @@
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+
+# Auth manager — OAuth2 code exchange, refresh-token rotation, org switch.
+# Refresh-lock uses futures::lock::Mutex; no direct tokio dep.
+rust_library(
+    name = "auth",
+    srcs = glob(["src/**/*.rs"]),
+    crate_name = "agentsmesh_auth",
+    edition = "2021",
+    visibility = ["//clients/core:__subpackages__"],
+    deps = [
+        "//clients/core/crates/api-client:api_client",
+        "//clients/core/crates/state",
+        "//clients/core/crates/types",
+        "@crates//:futures",
+        "@crates//:prost",
+        "@crates//:reqwest",
+        "@crates//:serde",
+        "@crates//:serde_json",
+        "@crates//:thiserror",
+        "@crates//:tracing",
+        "@crates//:web-time",
+    ],
+)
+
+rust_test(
+    name = "auth_test",
+    crate = ":auth",
+    edition = "2021",
+    deps = [
+        "@crates//:tokio",
+        "@crates//:tokio-test",
+        "@crates//:wiremock",
+    ],
+)

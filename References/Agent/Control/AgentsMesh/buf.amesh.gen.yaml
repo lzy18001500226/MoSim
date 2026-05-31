@@ -1,0 +1,31 @@
+# Buf generation template for protoc-gen-amesh-convert plugin.
+#
+# Output: <message>_convert.amesh.go alongside the canonical proto-go
+# bindings under `proto/gen/go/<domain>/v1/`. Same package as the proto
+# types, so the generated convert functions live in the proto module
+# without needing an extra import.
+#
+# Activation: only messages with `(amesh.codegen.v1.go_domain) = {...}` get
+# converters generated; others are skipped silently.
+#
+# Plugin binary: built by
+#   bazel build //tools/protoc-gen-amesh-convert
+# then copied to /tmp (Bazel output dir varies by transition).
+
+version: v2
+plugins:
+  # 1. Go bindings for amesh.codegen.v1 (so the convert plugin can read the
+  #    extension via typed API). Committed mirror under proto/gen/go/codegen/v1.
+  - remote: buf.build/protocolbuffers/go:v1.36.5
+    out: proto/gen/go
+    opt:
+      - paths=source_relative
+  # 2. Our codegen plugin reads the annotations + emits convert.amesh.go.
+  #    `out: .` so the plugin's workspace-relative filenames land where the
+  #    `convert_target.output_dir` annotation declared (e.g.
+  #    `backend/internal/api/connect/binding/binding_convert.amesh.go`).
+  - local: /tmp/protoc-gen-amesh-convert
+    out: .
+    strategy: directory
+inputs:
+  - directory: proto

@@ -1,0 +1,15 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary")
+
+# Helper binary that drives uniffi-bindgen. `clients/ios/` BUILD files
+# invoke this via `bazel run //clients/core/crates/uniffi-bindgen:
+# uniffi-bindgen -- generate --library …` as part of the rust_xcframework
+# pipeline defined in build_defs/ios/rust_xcframework.bzl.
+rust_binary(
+    name = "uniffi-bindgen",
+    srcs = ["src/main.rs"],
+    edition = "2021",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@crates//:uniffi",
+    ],
+)

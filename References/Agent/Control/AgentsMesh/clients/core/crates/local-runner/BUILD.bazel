@@ -1,0 +1,36 @@
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+
+# Desktop-only orchestration of the local agentsmesh-runner binary.
+# Intentionally NOT depended on by //clients/core/crates/wasm or
+# //clients/core/crates/ffi — keeps the web bundle and iOS XCFramework
+# free of process-spawning code (forbidden by their respective sandboxes).
+rust_library(
+    name = "local_runner",
+    srcs = glob(["src/**/*.rs"]),
+    crate_name = "agentsmesh_local_runner",
+    edition = "2021",
+    visibility = ["//clients/core:__subpackages__"],
+    deps = [
+        "@crates//:dirs",
+        "@crates//:flate2",
+        "@crates//:hex",
+        "@crates//:reqwest",
+        "@crates//:serde",
+        "@crates//:serde_json",
+        "@crates//:sha2",
+        "@crates//:tar",
+        "@crates//:thiserror",
+        "@crates//:tokio",
+        "@crates//:tracing",
+        "@crates//:zip",
+    ],
+)
+
+rust_test(
+    name = "local_runner_test",
+    crate = ":local_runner",
+    edition = "2021",
+    deps = [
+        "@crates//:tokio-test",
+    ],
+)

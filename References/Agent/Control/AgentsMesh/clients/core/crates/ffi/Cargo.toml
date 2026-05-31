@@ -1,0 +1,9 @@
+# NOTE: This file exists *only* to satisfy uniffi's `#[uniffi::export]`
+# proc-macro, which reads `package.name` at compile time via
+# `$CARGO_MANIFEST_DIR/Cargo.toml`. Bazel is the SSOT for the actual
+# build graph (deps come from BUILD.bazel, version is irrelevant).
+# Do NOT add dependencies here — they will be silently ignored.
+[package]
+name = "agentsmesh-ffi"
+version = "0.1.0"
+edition = "2021"

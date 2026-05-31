@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+# protoconv — wire-level convert helpers shared across all connect handlers
+# AND code-generated `<message>_convert.amesh.go` files under proto/gen/go.
+# Public because proto-package callers cannot reach into `backend/internal/`.
+
+go_library(
+    name = "protoconv",
+    srcs = [
+        "doc.go",
+        "pointer.go",
+        "slice.go",
+        "time.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/backend/pkg/protoconv",
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_lib_pq//:pq"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":protoconv",
+    visibility = ["//visibility:public"],
+)

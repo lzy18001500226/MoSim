@@ -1,0 +1,79 @@
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_static_library", "rust_test")
+load("//build_defs/ios:rust_xcframework.bzl", "rust_xcframework")
+
+# FFI layer — Rust-facing library + the iOS XCFramework assembly
+# target. The `rust_library` is what the rest of the workspace links
+# against; the sibling `rust_static_library` is what the
+# `rust_xcframework` macro transitions through three iOS rustc triples
+# to produce the per-slice `.a` that lands inside the XCFramework.
+_FFI_DEPS = [
+    "//clients/core/crates/api-client:api_client",
+    "//clients/core/crates/auth",
+    "//clients/core/crates/logging",
+    "//clients/core/crates/protocol",
+    "//clients/core/crates/services",
+    "//clients/core/crates/state",
+    "//clients/core/crates/types",
+    "@crates//:prost",
+    "@crates//:serde",
+    "@crates//:serde_json",
+    "@crates//:thiserror",
+    "@crates//:tokio",
+    "@crates//:uniffi",
+]
+
+rust_library(
+    name = "ffi",
+    srcs = glob(["src/**/*.rs"]),
+    # uniffi's `#[uniffi::export]` proc-macro reads `Cargo.toml` at
+    # `$CARGO_MANIFEST_DIR` to discover the crate name. Stage it as
+    # compile_data so it's visible inside the Bazel sandbox.
+    compile_data = ["Cargo.toml"],
+    crate_features = ["staticlib"],
+    crate_name = "agentsmesh_ffi",
+    edition = "2021",
+    visibility = ["//clients/core:__subpackages__"],
+    deps = _FFI_DEPS,
+)
+
+# Same crate, staticlib crate-type. The XCFramework wants the `.a`, and
+# `platform_transition_filegroup` pivots this target (not the
+# rust_library) through the iOS triples.
+rust_static_library(
+    name = "ffi_staticlib",
+    srcs = glob(["src/**/*.rs"]),
+    compile_data = ["Cargo.toml"],
+    crate_features = ["staticlib"],
+    crate_name = "agentsmesh_ffi",
+    edition = "2021",
+    # Only resolves cleanly against an iOS toolchain — the per-slice
+    # platform transitions supply it; building this on a host toolchain
+    # would drop in a macOS/linux std instead.
+    tags = ["manual"],
+    visibility = ["//visibility:private"],
+    deps = _FFI_DEPS,
+)
+
+rust_test(
+    name = "ffi_test",
+    crate = ":ffi",
+    edition = "2021",
+    # Compiles only on Apple hosts: uniffi's `export` proc-macro emits
+    # platform-specific extern bindings that trip up the Linux Rust
+    # stdlib surface we build against in CI. The iOS-xcframework job
+    # (macOS runner) exercises this crate indirectly via cargo.
+    tags = ["manual"],
+    target_compatible_with = ["@platforms//os:macos"],
+)
+
+# Pure-Bazel XCFramework pipeline: transition :ffi_staticlib through
+# three iOS rustc triples → lipo sim slices → uniffi-bindgen Swift
+# glue → assemble into `AgentsMeshCore.xcframework/` directory tree.
+#   bazel build //clients/core/crates/ffi:AgentsMeshCore
+rust_xcframework(
+    name = "AgentsMeshCore",
+    crate = ":ffi_staticlib",
+    lib_name = "libagentsmesh_ffi.a",
+    module_name = "AgentsMeshCore",
+    visibility = ["//clients/ios:__subpackages__"],
+)
