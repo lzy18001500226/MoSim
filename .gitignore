@@ -124,6 +124,8 @@ References/Agent/Skills/openai-skills/skills/*
 References/Agent/Skills/openai-skills/skills/.curated/*
 !References/Agent/Skills/openai-skills/skills/.curated/aspnet-core/
 !References/Agent/Skills/openai-skills/skills/.curated/aspnet-core/**
+!References/Agent/Skills/openai-skills/skills/.curated/chatgpt-apps/
+!References/Agent/Skills/openai-skills/skills/.curated/chatgpt-apps/**
 References/Agent/**/.git/
 References/Agent/**/__pycache__/
 References/Agent/**/node_modules/
