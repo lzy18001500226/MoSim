@@ -140,7 +140,9 @@ References/Agent/Skills/AutoSkill/data/*
 !References/Agent/Skills/AutoSkill/data/train/
 !References/Agent/Skills/AutoSkill/data/train/**
 References/Agent/Skills/AutoSkill/data/eval/
-References/Agent/Skills/AutoSkill/SkillBank/
+References/Agent/Skills/AutoSkill/SkillBank/*
+!References/Agent/Skills/AutoSkill/SkillBank/Common/
+!References/Agent/Skills/AutoSkill/SkillBank/Common/**
 !References/Agent/Skills/awesome-openclaw-skills/
 !References/Agent/Skills/awesome-openclaw-skills/**
 !References/Agent/Skills/awesome-opencode/
