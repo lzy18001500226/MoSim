@@ -19,11 +19,6 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 SCENE_SOURCE_REGISTRY = ROOT / "UE5/MoSimSceneLibrary/Content/MworksData/scene_source_registry.json"
-DERELICT_TRUTH = (
-    ROOT
-    / "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/"
-    / "derelictcorridormegascans_collision_truth.json"
-)
 UNREAL_SKILL = ROOT / "Docs/Skills/Unreal/mosim-unreal/SKILL.md"
 FAB_SKILL = ROOT / "Docs/Skills/Unreal/mosim-epic/SKILL.md"
 UNREAL_WORKFLOW = ROOT / "Docs/Workflows/unreal_renderer.md"
@@ -31,7 +26,6 @@ EPIC_MCP = ROOT / "Docs/Skills/Unreal/mosim-epic/mcp/server.py"
 EPIC_MCP_WRAPPER = ROOT / "Docs/Skills/Unreal/mosim-epic/wrappers/mosim-epic.sh"
 UNREAL_WRAPPER = ROOT / "Docs/Skills/Unreal/mosim-unreal/wrappers/mosim-unreal.sh"
 EDITOR_PROBE_DIR = ROOT / "Results/tmp"
-RENDERER_MAP_LOAD_PROBE = ROOT / "Results/tmp/renderer_map_load_probe_latest.json"
 
 
 @dataclass
@@ -78,7 +72,7 @@ def source_by_id(registry: dict[str, Any], source_id: str) -> dict[str, Any]:
 
 
 def gate_fab_inventory() -> Gate:
-    ok, output = run_command([sys.executable, "Scripts/UE5/check_epic_library_inventory.py", "--json"], timeout=90)
+    ok, output = run_command([sys.executable, "Scripts/UE5/check_epic_library_inventory.py", "--json"], timeout=60)
     evidence: list[str] = []
     missing: list[str] = []
     if ok:
@@ -150,23 +144,36 @@ def gate_local_fallback(registry: dict[str, Any]) -> Gate:
     )
 
 
-def gate_scene_truth() -> Gate:
+def primary_source(registry: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+    policy = registry.get("policy", {})
+    primary = str(policy.get("primary_scene_source_id", "")) if isinstance(policy, dict) else ""
+    return primary, source_by_id(registry, primary)
+
+
+def gate_scene_truth(registry: dict[str, Any]) -> Gate:
+    primary, source = primary_source(registry)
     evidence: list[str] = []
     missing: list[str] = []
-    if not DERELICT_TRUTH.exists():
-        missing.append(f"Missing truth artifact: {rel(DERELICT_TRUTH)}")
-    else:
+    evidence.append(f"primary_scene_source_id={primary}")
+    truth_artifacts = source.get("truth_artifacts", []) if isinstance(source, dict) else []
+    if not isinstance(truth_artifacts, list) or not truth_artifacts:
+        missing.append("Primary local source has no truth artifacts")
+    for artifact in truth_artifacts if isinstance(truth_artifacts, list) else []:
+        truth_path = ROOT / str(artifact)
+        if not truth_path.exists():
+            missing.append(f"Missing truth artifact: {artifact}")
+            continue
         ok, output = run_command(
-            [sys.executable, "Scripts/UE5/export_unreal_scene_truth.py", "validate", rel(DERELICT_TRUTH)],
-            timeout=90,
+            [sys.executable, "Scripts/UE5/export_unreal_scene_truth.py", "validate", rel(truth_path)],
+            timeout=60,
         )
         if ok:
-            payload = load_json(DERELICT_TRUTH)
-            evidence.append(f"{rel(DERELICT_TRUTH)} validates")
+            payload = load_json(truth_path)
+            evidence.append(f"{rel(truth_path)} validates")
             evidence.append(f"asset_count={len(payload.get('assets', []))}")
             evidence.append(f"collision_proxy_count={len(payload.get('collision_proxies', []))}")
         else:
-            missing.append("Truth artifact validation failed")
+            missing.append(f"Truth artifact validation failed: {artifact}")
             missing.append(output[:1200])
     return Gate(
         "scene_truth_valid",
@@ -178,7 +185,7 @@ def gate_scene_truth() -> Gate:
 
 
 def gate_udp_contract() -> Gate:
-    ok, output = run_command([sys.executable, "Scripts/UE5/check_scene_source_udp_contract.py"], timeout=90)
+    ok, output = run_command([sys.executable, "Scripts/UE5/check_scene_source_udp_contract.py"], timeout=60)
     return Gate(
         "scene_source_udp_contract",
         "MWORKS UDP packets can select the primary scene-source id for UE bridge resolution",
@@ -197,6 +204,33 @@ def latest_editor_probe() -> Path | None:
         key=lambda path: path.stat().st_mtime,
     )
     return probes[-1] if probes else None
+
+
+def matching_renderer_map_load_probe(
+    scene_source_id: str,
+    renderer_map_asset: Any,
+    renderer_map_package: Any,
+) -> Path | None:
+    if not EDITOR_PROBE_DIR.exists():
+        return None
+    candidates = sorted(
+        EDITOR_PROBE_DIR.glob("renderer_map_load_probe*.json"),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+    for candidate in candidates:
+        try:
+            payload = load_json(candidate)
+        except Exception:
+            continue
+        if payload.get("scene_source_id") != scene_source_id:
+            continue
+        if renderer_map_asset and payload.get("renderer_map_asset") != renderer_map_asset:
+            continue
+        if renderer_map_package and payload.get("renderer_map_package") != renderer_map_package:
+            continue
+        return candidate
+    return None
 
 
 def gate_unreal_mcp_edit() -> Gate:
@@ -267,9 +301,7 @@ def gate_skills_and_workflow() -> Gate:
 
 
 def gate_visual_import(registry: dict[str, Any]) -> Gate:
-    policy = registry.get("policy", {})
-    primary = str(policy.get("primary_scene_source_id", "")) if isinstance(policy, dict) else ""
-    source = source_by_id(registry, primary)
+    primary, source = primary_source(registry)
     evidence: list[str] = [f"primary_scene_source_id={primary}"]
     missing: list[str] = []
     imported = source.get("imported_into_renderer") if isinstance(source, dict) else None
@@ -299,13 +331,14 @@ def gate_visual_import(registry: dict[str, Any]) -> Gate:
         evidence.append(f"renderer_map_package={renderer_map_package}")
     else:
         missing.append("No renderer_map_package recorded for the primary scene source")
-    if RENDERER_MAP_LOAD_PROBE.exists():
+    map_probe = matching_renderer_map_load_probe(primary, renderer_map_asset, renderer_map_package)
+    if map_probe is not None:
         try:
-            probe = load_json(RENDERER_MAP_LOAD_PROBE)
+            probe = load_json(map_probe)
         except Exception as exc:
-            missing.append(f"Renderer map-load probe is unreadable: {rel(RENDERER_MAP_LOAD_PROBE)}: {exc}")
+            missing.append(f"Renderer map-load probe is unreadable: {rel(map_probe)}: {exc}")
         else:
-            evidence.append(f"renderer_map_load_probe={rel(RENDERER_MAP_LOAD_PROBE)}")
+            evidence.append(f"renderer_map_load_probe={rel(map_probe)}")
             evidence.append(f"map_load_ok={probe.get('ok')}")
             evidence.append(f"loaded_level={probe.get('level_name')}")
             evidence.append(f"actor_count={probe.get('actor_count')}")
@@ -327,7 +360,10 @@ def gate_visual_import(registry: dict[str, Any]) -> Gate:
             if int(probe.get("actor_count") or 0) <= 0:
                 missing.append("Renderer map-load probe loaded no actors")
     else:
-        missing.append(f"Missing renderer map-load proof: {rel(RENDERER_MAP_LOAD_PROBE)}")
+        missing.append(
+            "Missing renderer map-load proof matching the primary scene source, "
+            "renderer_map_asset, and renderer_map_package"
+        )
     return Gate(
         "scene_visual_import_or_reuse",
         "Selected Fab/local scene is actually imported or reused by the MoSim UE sim project and loadable by the renderer",
@@ -343,7 +379,7 @@ def build_report() -> dict[str, Any]:
         gate_fab_inventory(),
         gate_fab_acceptance(registry),
         gate_local_fallback(registry),
-        gate_scene_truth(),
+        gate_scene_truth(registry),
         gate_udp_contract(),
         gate_unreal_mcp_edit(),
         gate_skills_and_workflow(),
@@ -376,11 +412,11 @@ def build_report() -> dict[str, Any]:
         )
     if not by_id["scene_visual_import_or_reuse"].passed:
         missing_actions.append(
-            "Prove scene_visual_import_or_reuse by linking/importing Derelict or an accepted Fab scene into MoSimSceneLibrary, then run probe_renderer_map_load.py"
+            "Prove scene_visual_import_or_reuse by activating/importing the primary source in MoSimSceneLibrary, then run probe_renderer_map_load.py for that scene_source_id"
         )
     if by_id["scene_visual_import_or_reuse"].passed and by_id["mosim_unreal_edit_authority"].passed:
         missing_actions.append(
-            "Next strengthening gate: run a live UE MCP reversible modification while the linked Derelict map is loaded in the MoSim renderer"
+            "Next strengthening gate: run a live UE MCP reversible modification while the active primary map is loaded in the MoSim renderer"
         )
 
     return {

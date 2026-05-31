@@ -227,9 +227,8 @@ def selected_primary(local_sources: list[dict[str, Any]]) -> str:
         return ""
     active = [source for source in accepted if source.get("imported_into_renderer")]
     if active:
-        return active[0]["scene_source_id"]
-    derelict = [source for source in accepted if "derelict" in source["scene_source_id"]]
-    return (derelict or accepted)[0]["scene_source_id"]
+        return sorted(active, key=lambda source: str(source.get("scene_source_id", "")))[0]["scene_source_id"]
+    return sorted(accepted, key=lambda source: str(source.get("scene_source_id", "")))[0]["scene_source_id"]
 
 
 def build_registry(

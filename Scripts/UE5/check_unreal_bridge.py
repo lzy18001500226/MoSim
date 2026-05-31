@@ -238,8 +238,9 @@ def main() -> int:
         print("[FAIL] scene source registry schema mismatch")
         return 1
     policy = scene_source_registry.get("policy", {})
-    if policy.get("primary_scene_source_id") != "local_derelictcorridormegascans":
-        print("[FAIL] scene source registry primary fallback is not Derelict")
+    primary_scene_source_id = policy.get("primary_scene_source_id")
+    if not isinstance(primary_scene_source_id, str) or not primary_scene_source_id:
+        print("[FAIL] scene source registry primary fallback is empty")
         return 1
     if scene_source_registry.get("fab_route", {}).get("status") != "inventory_visible_not_scene_accepted":
         print("[FAIL] Fab route should not be accepted without import/edit/truth evidence")
@@ -253,13 +254,16 @@ def main() -> int:
         for source in fallback.get("scene_sources", [])
         if isinstance(source, dict)
     }
-    derelict_source = source_by_id.get("local_derelictcorridormegascans", {})
+    primary_source = source_by_id.get(primary_scene_source_id, {})
+    if not primary_source:
+        print(f"[FAIL] primary scene source missing from registry: {primary_scene_source_id}")
+        return 1
     for key in ["editable_candidate", "renderable_candidate", "planning_truth_ready"]:
-        if not derelict_source.get(key):
-            print(f"[FAIL] Derelict source missing true gate: {key}")
+        if not primary_source.get(key):
+            print(f"[FAIL] primary scene source missing true gate: {key}")
             return 1
-    if not derelict_source.get("truth_artifacts"):
-        print("[FAIL] Derelict source missing truth artifacts")
+    if not primary_source.get("truth_artifacts"):
+        print("[FAIL] primary scene source missing truth artifacts")
         return 1
     serialized_registry = json.dumps(scene_source_registry, ensure_ascii=False)
     for forbidden in ["C:/", "C:\\", "/mnt/c/", "ProgramData", "AppData"]:
