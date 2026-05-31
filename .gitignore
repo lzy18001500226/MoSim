@@ -270,7 +270,8 @@ References/Agent/Skills/oh-my-openagent-dev/.github/assets/
 !References/Agent/Skills/oh-my-openagent-dev/src/**
 !References/Agent/Skills/oh-my-openagent-dev/src/features/
 !References/Agent/Skills/oh-my-openagent-dev/src/features/**
-References/Agent/Skills/oh-my-openagent-dev/src/hooks/
+!References/Agent/Skills/oh-my-openagent-dev/src/hooks/
+!References/Agent/Skills/oh-my-openagent-dev/src/hooks/**
 !References/Agent/Skills/oh-my-openagent-dev/src/shared/
 !References/Agent/Skills/oh-my-openagent-dev/src/shared/**
 !References/Agent/Skills/oh-my-openagent-dev/src/tools/
