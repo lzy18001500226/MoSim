@@ -129,6 +129,22 @@ This passes `-MoSimSceneReview`. It disables the old generated
 actor, while keeping the review camera and lighting. Use normal `game` mode
 only when intentionally testing MWORKS preview-map playback.
 
+Manual map review should prefer white/daytime visibility. `review-scene` also
+supports daylight/camera overrides such as:
+
+```bash
+UNREAL_EXTRA_ARGS="/Game/DerelictCorridor/Maps/DerelictCorridor \
+  -MoSimReviewCameraX=2612.8 -MoSimReviewCameraY=-1768.1 -MoSimReviewCameraZ=2983.4 \
+  -MoSimReviewCameraPitch=-22.8 -MoSimReviewCameraYaw=36.9 \
+  -MoSimReviewHeadLightIntensity=80 -MoSimReviewHeadLightRadius=60000 \
+  -MoSimReviewExposureBias=4.0" \
+Scripts/UE5/open_unreal_renderer.sh review-scene
+```
+
+If a candidate remains visually dark or exploration-like after daylight review
+overrides, do not promote it as a primary rendered-map scene. Keep it only as a
+special indoor/radar test candidate.
+
 ## Expected Tools
 
 `mosim-unreal` should expose at least:
