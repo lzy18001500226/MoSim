@@ -1,0 +1,114 @@
+{
+  "threads": [
+    {
+      "department": "MainAgent",
+      "thread_name": "MoSim｜四旋翼无人机仿真系统",
+      "thread_id": "019e0198-a041-77f1-84d0-c5524bfd4b81",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "主线用户沟通、最终集成汇报、人工审核入口。",
+      "accountable_to": "user"
+    },
+    {
+      "department": "DispatchAgent",
+      "thread_name": "MoSim｜调度中台",
+      "thread_id": "019e74ce-6e2e-7e71-902d-f6cee64e8a61",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "维护任务单、分派任务、记录状态、导入结果包，不做业务实现。",
+      "accountable_to": "MainAgent"
+    },
+    {
+      "department": "ProductStrategyAgent",
+      "thread_name": "MoSim｜产品发现战略",
+      "thread_id": "019e74cf-fb50-7d71-912c-f586b4dd5f06",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "判断任务价值、范围、取舍和路线优先级。",
+      "accountable_to": "MainAgent"
+    },
+    {
+      "department": "RuntimePlatformAgent",
+      "thread_name": "MoSim｜Agent Runtime 平台",
+      "thread_id": "019e74d1-72fa-7d33-8783-90584035ae92",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "维护 CoAgent 会话生命周期、registry、transport、可见性和恢复机制。",
+      "accountable_to": "DispatchAgent"
+    },
+    {
+      "department": "ContextMemoryAgent",
+      "thread_name": "MoSim｜上下文记忆索引",
+      "thread_id": "019e74d2-ec4b-7603-a41b-596508ab6982",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "构建上下文包、维护记忆索引、控制上下文预算和新对话前情。",
+      "accountable_to": "DispatchAgent"
+    },
+    {
+      "department": "ToolchainMCPAgent",
+      "thread_name": "MoSim｜工具链 MCP",
+      "thread_id": "019e74d4-619c-7133-b53f-78fbefff780a",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "维护 MCP/工具能力卡、健康探测、最小影响调用和故障降级。",
+      "accountable_to": "DispatchAgent"
+    },
+    {
+      "department": "KnowledgeSecretaryAgent",
+      "thread_name": "MoSim｜知识秘书",
+      "thread_id": "019e74d5-d833-7e41-a65b-2868fd841ea1",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "沉淀已接受决策、文档更新、索引更新和经验推广。",
+      "accountable_to": "DispatchAgent"
+    },
+    {
+      "department": "VerificationAgent",
+      "thread_name": "MoSim｜验证评测",
+      "thread_id": "019e74d7-4d58-70f1-84f7-873641995f9a",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "独立测试、复现实验、证据审核和验收结论。",
+      "accountable_to": "DispatchAgent"
+    },
+    {
+      "department": "SafetyComplianceAgent",
+      "thread_name": "MoSim｜安全合规",
+      "thread_id": "019e74d8-c6fd-76c2-98fe-832dc1fea97b",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "审查外部路径、密钥、许可证、破坏性命令和高风险自动化。",
+      "accountable_to": "MainAgent"
+    },
+    {
+      "department": "DevOpsReleaseAgent",
+      "thread_name": "MoSim｜DevOps 发布",
+      "thread_id": "019e74de-a452-7a50-99e7-ca9a247b32f1",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "负责 Git、分批提交、push、工作树合并、大文件和发布卫生。",
+      "accountable_to": "DispatchAgent"
+    },
+    {
+      "department": "ExternalIntelligenceAgent",
+      "thread_name": "MoSim｜外部情报进化",
+      "thread_id": "019e74de-a83c-7fc2-8987-06c95577a1d3",
+      "surface": "codex_app_or_vscode",
+      "status": "active_visible",
+      "agent_type": "permanent",
+      "mission": "持续学习模型厂商、Agent 框架、开源项目和管理经验，提出采纳建议。",
+      "accountable_to": "ProductStrategyAgent"
+    }
+  ]
+}
