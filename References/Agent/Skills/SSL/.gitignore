@@ -1,0 +1,18 @@
+# Local caches and generated intermediates
+__pycache__/
+*.pyc
+*.pyo
+*.log
+*.pid
+*.tmp
+*.bak
+
+# Large recomputable artifacts not included in the release package
+data/
+*.npy
+*.bin
+*.faiss
+
+# Local secrets
+.env
+*.env

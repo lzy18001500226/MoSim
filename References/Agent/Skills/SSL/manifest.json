@@ -1,0 +1,42 @@
+{
+  "name": "SSL GitHub release package",
+  "created_utc": "2026-05-10T11:12:51.433144+00:00",
+  "dataset_host": "Hugging Face Dataset Hub",
+  "dataset_id": "COOLPKU/SSL",
+  "dataset_url": "https://huggingface.co/datasets/COOLPKU/SSL",
+  "collection_source": {
+    "raw_skill_directories": 6300,
+    "released_ssl_records": 6184,
+    "source_distribution": {
+      "skillnet": 6184
+    },
+    "category_distribution": {
+      "Development": 2973,
+      "Business": 779,
+      "Productivity": 618,
+      "AIGC": 443,
+      "Security": 380,
+      "Research": 335,
+      "Testing": 272,
+      "Lifestyle": 228,
+      "Science": 138,
+      "Other": 18
+    }
+  },
+  "contents": {
+    "docs": "SSL schema, normalizer prompt contract, and benchmark file formats",
+    "annotation_prompt": "Prompt contract aligned with the paper's SSL normalizer appendix",
+    "annotation_code": "Provider-agnostic script for producing SSL records from SKILL.md artifacts",
+    "validator": "Single-record SSL schema validator",
+    "dataset_pointer": "Dataset files are hosted separately on Hugging Face"
+  },
+  "benchmarks": {
+    "skill_discovery": "SSL-SkillDiscovery",
+    "risk_assessment": "SSL-RiskAssessment"
+  },
+  "counts": {
+    "ssl_records": 6184,
+    "skill_discovery_queries": 431,
+    "risk_assessment_skills": 252
+  }
+}
