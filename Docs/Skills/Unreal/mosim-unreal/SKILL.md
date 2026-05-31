@@ -115,6 +115,20 @@ renderer loading can exceed 60 seconds during first-time Nanite/static mesh
 builds. `DarkRuinsMegascansSample` needs a proper World Partition truth route;
 commandlet actor enumeration currently sees only global/postprocess actors.
 
+For manual review of a real linked scene, open the standalone game with the
+scene-review mode:
+
+```bash
+RESTART_UNREAL_GAME=1 \
+UNREAL_EXTRA_ARGS="/Game/DerelictCorridor/Maps/DerelictCorridor" \
+Scripts/UE5/open_unreal_renderer.sh review-scene
+```
+
+This passes `-MoSimSceneReview`. It disables the old generated
+`MworksData/map_open_blocks_render_map.json` preview map and default playback
+actor, while keeping the review camera and lighting. Use normal `game` mode
+only when intentionally testing MWORKS preview-map playback.
+
 ## Expected Tools
 
 `mosim-unreal` should expose at least:
