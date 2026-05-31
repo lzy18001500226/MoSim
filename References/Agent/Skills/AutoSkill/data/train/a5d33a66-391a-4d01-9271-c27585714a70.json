@@ -1,0 +1,532 @@
+{
+    "messages": [
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"5734\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"8492\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"2379\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"6914\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"3156\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"4827\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"5498\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"7361\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"4987\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"2576\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"3431\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"9567\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"1478\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"6724\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"3816\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"8523\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"4265\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"5728\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"9134\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"2856\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"7642\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"5198\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"6437\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"3841\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"7592\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"1427\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"8673\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"5368\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"9821\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"2745\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"7519\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"3894\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"6128\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"4593\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"5837\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"7924\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"2368\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"9147\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"3581\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"7426\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"6593\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"9218\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"3871\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"4953\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"8736\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"5284\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"6791\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"1374\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"8462\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"5937\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"2746\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"9148\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"4365\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"7129\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"3892\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"5647\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"8352\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"9476\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"2583\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"6142\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"9371\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"5735\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"8214\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"4639\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"7893\"}\n```"
+        },
+        {
+            "role": "user",
+            "content": "随机1-1万的一个数字，使用json格式返回，不需要说他们话，只返回json格式。｛数值：'XXX'}"
+        },
+        {
+            "role": "assistant",
+            "content": "```json\n{\"数值\": \"2754\"}\n```"
+        }
+    ]
+}

@@ -1,0 +1,52 @@
+{
+    "messages": [
+        {
+            "role": "user",
+            "content": "完成下列方程式并配平\n氯气与熟石灰反应。"
+        },
+        {
+            "role": "assistant",
+            "content": "2Cl2 + Ca(OH)2 → CaCl2 + 2HCl + H2O"
+        },
+        {
+            "role": "user",
+            "content": "完成下列方程式并配平\n氯酸钾在无催化剂存在时加热分解。"
+        },
+        {
+            "role": "assistant",
+            "content": "2KClO3 → 2KCl + 3O2"
+        },
+        {
+            "role": "user",
+            "content": "完成下列方程式并配平\n氯酸钾在无催化剂存在时加热分解。"
+        },
+        {
+            "role": "assistant",
+            "content": "2KClO3(s) → 2KCl(s) + 3O2(g)"
+        },
+        {
+            "role": "user",
+            "content": "完成下列方程式并配平\nI2 +OH-—"
+        },
+        {
+            "role": "assistant",
+            "content": "I2 + 2OH- → 2I- + H2O"
+        },
+        {
+            "role": "user",
+            "content": "完成下列方程式并配平\nI2 +HClO4(浓)—"
+        },
+        {
+            "role": "assistant",
+            "content": "I2 + 10H+ + 4ClO4- → 2IO4- + 4Cl- + 5H2O"
+        },
+        {
+            "role": "user",
+            "content": "有一种可溶性的白色晶体A(钠盐)，加入无色油壮液体B的浓溶液，可得到一种紫黑色的固体C,C在水中溶解度较小，但可溶于A的溶液而成棕黄色溶液D,D中加入另一种无色钠盐溶液E，则变成无色透明溶液，如在溶液E中加入盐酸，则出现浑浊乳白色，并有刺激性气体F逸出。根据上述实验现象指出A、B、C、D、E、F各是何种物质，并写出有关反应方程式。"
+        },
+        {
+            "role": "assistant",
+            "content": "A为Na2CO3，B为苯酚， C为酚酞，D为NaHCO3，E为Na2SO4，F为CO2。\n反应方程式：\n1. Na2CO3 + HClO4 → 2NaClO4 + H2O + CO2↑\n2. C6H5OH + 2Na2CO3 + O2 → 2Na2C6H4O7 + 3H2O + CO2↑\n3. C6H4(OH)2 + Na2C6H4O7 → NaC20H12O5 + 2H2O \n4. Na2C6H4O7 + NaHCO3 → Na3C6H3O7 + H2O + CO2↑\n5. Na3C6H3O7 + Na2SO4 → 2Na2C6H3O7 + Na2SO4 \n6. Na2C6H3O7 + 2HCl → 2C6H4(OH)COOH + 2NaCl\n分解方程式：\nC6H4(OH)2 → C6H4O4 + H2O + 1/2O2 \nNaHCO3 → Na+ + H2O + CO2↑"
+        }
+    ]
+}

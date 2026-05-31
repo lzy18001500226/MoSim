@@ -1,0 +1,52 @@
+{
+    "messages": [
+        {
+            "role": "user",
+            "content": "我要给朋友拍一个婚礼祝贺视频，请生成一份文案，参考如下：They say that sometimes\n人们常说\nlove starts with a spark,\n爱情的开始是从一束火花开始\nand that might be true,\n也许的确如此\nbut if i were to wish you a love,\n但若我能为你祝福一段爱情\ni wouldn't wish fire for you\n我不会祝你一份燃烧的爱\nyou see fire is powerful,\n你看火是强大的\nit burns bright and it's gone\n它燃烧灿烂，却又很快消逝\nit's beautiful and warm\n它美丽而温暖\nbut it doesn't last long,\n却无法长久存在\nso instead of wishing you a love that burns\n所以我不会祝你一份燃烧的爱情\ni wish you love like a river that twists and turns\n我希望你拥有像河流般蜿蜒流转的爱\nit changes and flows\n它变幻流动\nit is powerful and free,\n它强大而自由\nbut it consistently finds\nits way back to the sea\n却始终会回归大海\nand so like the water,\n就像那流动的水\ni hope your love is ever growing, ever changing,\n我希望你的爱不断成长 不断变化\ni hope your love is powerful and free,\n我希望你的爱强大且自由\nand may you always find each other\n愿你们始终能彼此相遇\nlike the river finds the sea\n就像河流终将汇入大海"
+        },
+        {
+            "role": "assistant",
+            "content": "好的，这里有一份为婚礼祝贺视频特别定制的文案，参考了你提供的风格和内容，希望你喜欢：\n\n---\n\nThey say that love is a journey,  \n人们常说，爱情是一场旅程，  \nfull of highs and lows, twists and turns.  \n充满了高潮与低谷，曲折与转弯。  \n\nBut if I could wish you a love,  \n如果我能为你们许下一份爱情，  \nI wouldn't wish for a journey without challenges.  \n我不会希望你们的旅途没有挑战。  \n\nBecause it’s the challenges that make love strong —  \n正是这些挑战让爱情愈发坚固——  \nlike roots deepening beneath the soil,  \n就像根须扎得更深，  \nholding the tree steady through every storm.  \n让树木在风暴中依然挺立。  \n\nSo I wish you a love like a mighty tree,  \n我祝愿你们的爱如参天大树，  \ngrowing taller with each passing day,  \n随着时间不断成长，  \nweathering every season,  \n经历每一个季节，  \nand always reaching for the sky together.  \n始终一起伸向天空。  \n\nMay your love be patient and kind,  \n愿你们的爱充满耐心与善意，  \nresilient and nurturing,  \n坚韧且滋养彼此，  \nand may you always find comfort in each other’s arms,  \n愿你们永远在彼此怀抱中找到温暖，  \nlike the tree finds strength from the earth.  \n正如大树依靠土地获得力量。  \n\nHere’s to a lifetime of growth,  \n愿你们拥有一生的成长，  \nof love that deepens with time,  \n一段随着时间愈发深厚的爱情，  \nand to your beautifully shared journey ahead.  \n以及你们美好共同的未来旅程。\n\n---\n\n如果需要，我也可以帮你把这段文案改成全中文版本或者更口语化，方便你录制视频。"
+        },
+        {
+            "role": "user",
+            "content": "只需要中文，而且再简短一些"
+        },
+        {
+            "role": "assistant",
+            "content": "当然，下面是一份简短的中文婚礼祝贺文案，灵感来源于你提供的内容：\n\n---\n\n人们常说，爱情像一束火花，  \n它美丽灿烂，却易逝。  \n但我不愿祝你燃烧的爱，  \n因为那只是刹那的光辉。  \n\n我更愿你拥有像河流般的爱，  \n蜿蜒曲折，却永不停息，  \n自由流淌，始终归向大海。  \n\n愿你们的爱，  \n像河水一样宽广、深远、坚定，  \n无论风雨，都能彼此相守，  \n共同走过一生。  \n\n祝你们幸福美满，白头偕老！\n\n---\n\n需要我帮你调整风格或者再简洁些，也可以告诉我！"
+        },
+        {
+            "role": "user",
+            "content": "再简洁一些"
+        },
+        {
+            "role": "assistant",
+            "content": "好的，这是一份更简洁的中文婚礼祝贺文案：\n\n---\n\n爱情不是一时的火花，  \n而是像河流般长久流淌。  \n\n愿你们的爱，  \n自由坚韧，  \n曲折中依然相守，  \n携手共走一生。  \n\n祝幸福美满，白头偕老！  \n\n---\n\n如果还需要更短或者更口语化，随时告诉我！"
+        },
+        {
+            "role": "user",
+            "content": "生成一份新的吧，不参考之前的例子了"
+        },
+        {
+            "role": "assistant",
+            "content": "好的，以下是一份全新的简短中文婚礼祝贺文案：\n\n---\n\n今天你们携手步入新的生活，  \n愿未来的日子阳光灿烂，  \n愿你们相互扶持，彼此珍惜。  \n\n爱情是细水长流，是彼此的守护，  \n愿你们的心永远紧紧相连，  \n携手共创幸福美满的人生。  \n\n祝福你们，新婚快乐，白头偕老！  \n\n---\n\n需要更温馨或者轻松一点的风格，也可以告诉我！"
+        },
+        {
+            "role": "user",
+            "content": "更轻松，幽默，适合拍视频的文案"
+        },
+        {
+            "role": "assistant",
+            "content": "当然，这里有一份轻松幽默、适合拍视频的婚礼祝贺文案：\n\n---\n\n嘿，新郎新娘，你们好！  \n今天终于把单身挂起，挂得漂亮！  \n\n婚姻就是两个人的“超级搭档”计划，  \n有甜有苦，有笑有闹，  \n但千万别忘了，吵架时少说两句，  \n多给对方一个拥抱，别忘了好好“复习”恋爱那课哦！  \n\n祝你们爱情像WiFi，  \n信号满满，永不掉线，  \n生活像美食，天天有惊喜，  \n未来一起萌，一起笑，一起闹，  \n幸福到老，甜甜蜜蜜！  \n\n加油，幸福新婚快乐！  \n\n---\n\n如果想要更短或者加入具体人物元素，也可以告诉我！"
+        },
+        {
+            "role": "user",
+            "content": "鲁迅风格呢？"
+        },
+        {
+            "role": "assistant",
+            "content": "好的，这是一段具有鲁迅风格的婚礼祝贺文案，带有些许犀利与深意，适合拍视频时用：\n\n---\n\n婚姻，不过是两个人的世间相守。  \n有人说它是牢笼，也有人说它是港湾。  \n真实的样子，恐怕既非牢笼，也非港湾，  \n而是生活里琐碎的柴米油盐，  \n是风雨中一句温暖的叹息。  \n\n愿你们在这纷繁复杂的世事中，  \n能握紧彼此的手，  \n守住那一份真诚与坚持，  \n不被浮华蒙蔽，不被苟且折服。  \n\n这条路或许不易，  \n但愿你们有勇气，有智慧，  \n把平凡过成精彩。  \n\n新婚快乐。  \n\n---\n\n如果想要更口语化或者更简洁，告诉我，我可以帮你调整。"
+        }
+    ]
+}

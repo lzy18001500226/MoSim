@@ -1,0 +1,60 @@
+{
+    "messages": [
+        {
+            "role": "user",
+            "content": "现在你是一个图像prompt生成器，你可以生成描述图像的prompt。prompt的框架是:艺术类型+主体+环境+构图+风格+参数。其中艺术类型指的是照片类型，比如水彩画、插画、像素艺术、电影艺术等:主体可以是人，也可以是物体、动物等:环境指的是主体所在的环境，可以是各种自然环境，或者灯光效果等:构图指的是镜头的焦点在哪里，主体的朝向是哪里:风格包含几个方面的元素，比如年代、艺术家:参数主要包含清晰度。按照这个框架来生成prompt，prompt要尽可能简短，并且按照框架顺序来生成，不要在参数面前加上说明性质的词汇。介词短语一定要替换为形容词加名词的形式，者替换为主谓宾结构的短语。每个参数写完后用逗号进行分割。在参数的末尾加上-arxx的形式来输出，其中X代表数字。prompt示例:Oilpaintingayoung womanin alushgardencloseupshotBaroque-ar3:2。请你根据示例来生成prompt，prompt一定要用英文来输出，并换行用中文进行翻译。当我说:帮我xxxx，你才可以进行生成任务。"
+        },
+        {
+            "role": "assistant",
+            "content": "Help me generate a prompt.\n\nIllustration, a cute cat, in a cozy bedroom, sitting on a pile of books, with a vintage style, high resolution - Sketch-ar2:1.\n\n帮我生成一个prompt。\n\n插图，一只可爱的猫，在一个舒适的卧室里，坐在一堆书上，具有复古的风格，高清晰度- Sketch-2:1。"
+        },
+        {
+            "role": "user",
+            "content": "帮我以一个宝宝为主题，生成像素风格绘画，画面中的宝宝是中国人，正在睡觉，画面突出宝宝面容，近照"
+        },
+        {
+            "role": "assistant",
+            "content": "Pixel art, a sleeping Chinese baby, in a cozy crib, highlighting the baby's face, close-up shot, with a retro style - High resolution-ar4:3.\n\n像素艺术，一只正在睡觉的中国宝宝，睡在一个舒适的婴儿床里，突出宝宝面容，近距离拍摄，带有怀旧风格- 高清晰度-4:3。"
+        },
+        {
+            "role": "user",
+            "content": "丰富画面"
+        },
+        {
+            "role": "assistant",
+            "content": "Pixel art, a chubby Chinese baby girl, in a lush garden, surrounded by colorful flowers and butterflies, gazing at a butterfly resting on her tiny hand, in a close-up shot, with a whimsical style - High resolution-ar16:9. \n\n像素艺术，一个圆滚滚的中国宝宝女孩，在一个郁郁葱葱的花园里，环绕着五彩缤纷的花朵和蝴蝶，凝视着停在她小手上的蝴蝶，近距离拍摄，带有奇幻的风格 - 高清分辨率-ar16: 9。"
+        },
+        {
+            "role": "user",
+            "content": "帮我以一个宝宝为主题，生成像素风格绘画，画面中的宝宝是中国人，正在睡觉，画面突出宝宝面容，近照"
+        },
+        {
+            "role": "assistant",
+            "content": "Pixel art, a sleeping Chinese baby boy, in a dimly lit nursery, bundled up in a soft blanket, with tiny hands and feet peeking out, in a close-up shot, with a pastel color palette and a dreamy style - High resolution-ar3:2. \n\n像素艺术，一个正在睡觉的中国宝宝男孩，睡在一个昏暗的婴儿房里，裹在柔软的毯子里，小手小脚露在外面，近距离拍摄，采用粉彩色调和梦幻般的风格 - 高清分辨率-ar3：2。"
+        },
+        {
+            "role": "user",
+            "content": "再生成"
+        },
+        {
+            "role": "assistant",
+            "content": "Watercolor painting, a giggling Chinese toddler, playing with a group of ducklings in a meadow, surrounded by lush trees and bright flowers, with a whimsical and playful style, showcasing the toddler's joy and innocence - Medium resolution-ar4:3.\n\n水彩画，一个咯咯笑的中国幼儿，在一片草地上和一群小鸭子玩耍，周围是郁郁葱葱的树木和鲜艳的花朵，风格奇幻而调皮，展示了幼儿的快乐和天真 - 中等分辨率-ar4：3。"
+        },
+        {
+            "role": "user",
+            "content": "帮我以一个宝宝为主题，生成像素风格绘画，画面中的宝宝是中国人，正在睡觉，画面突出宝宝面容，近照"
+        },
+        {
+            "role": "assistant",
+            "content": "Pixel art, a Chinese baby girl, sleeping peacefully in a cozy and colorful nursery, with a pastel color palette and a delicate style, focusing on the baby's serene and innocent expression - High resolution-ar16:9. \n\n像素艺术，一个正在睡觉的中国宝宝女孩，安静地躺在一个舒适而充满色彩的婴儿房里，使用粉彩色彩并具有精致的风格，聚焦于宝宝安详而无邪的表情 - 高清分辨率-ar16：9。"
+        },
+        {
+            "role": "user",
+            "content": "很好，再生成5个不同场景的画面"
+        },
+        {
+            "role": "assistant",
+            "content": "1. Oil painting, a Chinese baby boy, sitting in a high chair and enjoying a bowl of noodles, with a contemporary style and warm lighting, showcasing the baby's delight and chubby cheeks - High resolution-ar3:2.\n\n油画，一个正在吃面条的中国宝宝男孩，坐在高椅上享受美食，在现代风格和温暖的灯光下展示了宝宝的愉悦和丰满的脸颊 - 高清晰度-ar3：2。\n\n2. Illustration, a curious Chinese toddler, exploring a vibrant and bustling night market with her parents, surrounded by exotic food, colorful lanterns, and lively people, with a lively and colorful style - Medium resolution-ar4:3.\n\n插图，一个好奇的中国幼儿，与父母一起探索一个充满活力和繁华的夜市，周围是异国情调的美食，多彩的灯笼和生气勃勃的人群，采用生动而多彩的风格 - 中等分辨率-ar4:3。\n\n3. Digital painting, a content Chinese baby girl, taking a luxurious bubble bath in a marble bathtub, surrounded by fragrant candles and flower petals, with a serene and elegant style, focusing on the baby's delicate features - High resolution-ar16:9.\n\n数码绘画，一个满足的中国宝宝女孩，在一只大理石浴缸中泡着奢华的泡泡浴，周围有香气四溢的蜡烛和花瓣，采用宁静而优雅的风格，聚焦于宝宝的精致特征 - 高清分辨率-ar16：9。\n\n4. Pixel art, a Chinese toddler, playing in a big pile of colorful leaves in a park, under a bright autumn sun, surrounded by tall trees and birds, with a whimsical and playful style - High resolution-ar3:2.\n\n像素艺术，一个正在公园里玩耍的中国幼儿，玩在一堆五颜六色的落叶中，阳光明媚，周围是高大的树和鸟儿，采用奇幻而调皮的风格 - 高清晰度-ar3：2。\n\n5. Watercolor painting, a happy Chinese baby girl, sitting on her mother's lap and playing with a colorful butterfly that landed on her hand, against a tranquil garden backdrop, with soft and vibrant colors, showcasing the baby's curiosity and joy - Medium resolution-ar4:3.\n\n水彩画，一个快乐的中国宝宝女孩，坐在妈妈的膝盖上，玩着停在手上的五彩缤纷的蝴蝶，背景是宁静的花园，采用柔和而鲜艳的色彩，展示了宝宝的好奇和快乐 - 中等分辨率-ar4：3。"
+        }
+    ]
+}

@@ -26,7 +26,10 @@ SkillBank/DocSkill/vectors/
 SkillBank/DocSkill/Users/
 SkillBank/ConvSkill/chat_message_openai_GLM4.7/
 examples/eval_reports/
-data/
+data/*
+!data/train/
+!data/train/**
+data/eval/
 Psy_markdown/
 AGENTS.md
 SkillBank/DocSkill copy

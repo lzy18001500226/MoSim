@@ -136,7 +136,10 @@ References/Agent/Skills/*
 !References/Agent/Skills/awesome-codex-subagents/**
 !References/Agent/Skills/AutoSkill/
 !References/Agent/Skills/AutoSkill/**
-References/Agent/Skills/AutoSkill/data/
+References/Agent/Skills/AutoSkill/data/*
+!References/Agent/Skills/AutoSkill/data/train/
+!References/Agent/Skills/AutoSkill/data/train/**
+References/Agent/Skills/AutoSkill/data/eval/
 References/Agent/Skills/AutoSkill/SkillBank/
 !References/Agent/Skills/awesome-openclaw-skills/
 !References/Agent/Skills/awesome-openclaw-skills/**

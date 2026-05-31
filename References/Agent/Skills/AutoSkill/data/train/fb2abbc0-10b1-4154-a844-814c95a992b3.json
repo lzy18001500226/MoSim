@@ -1,0 +1,52 @@
+{
+    "messages": [
+        {
+            "role": "user",
+            "content": "請幫我翻譯對話內容, \n若我輸入 C: AAAAAA , 則將 AAAAAA 翻譯成中文\n若我輸入 I: BBBBBB , 則將 BBBBBB 翻譯成英文"
+        },
+        {
+            "role": "assistant",
+            "content": "If I enter C: AAAAAA, then translate AAAAAA into Chinese.\nIf I enter I: BBBBBB, then translate BBBBBB into English."
+        },
+        {
+            "role": "user",
+            "content": "C : I put the terminal in hibernate mode. But we need to understand asap why the web service keep failed. I think that it related to the jpg/png files error."
+        },
+        {
+            "role": "assistant",
+            "content": "C: 我把終端機放入休眠模式了。但我們需要儘快了解為什麼網絡服務一直失敗。我認為這與jpg或png文件錯誤有關。"
+        },
+        {
+            "role": "user",
+            "content": "I : 收到，会请研发继续跟踪排查jpg问题"
+        },
+        {
+            "role": "assistant",
+            "content": "I: Got it. I'll ask the development team to continue tracking and troubleshooting the jpg issue."
+        },
+        {
+            "role": "user",
+            "content": "請幫我翻譯對話內容, \n若我輸入 C: AAAAAA , 則將 AAAAAA 翻譯成中文ZZZ , 輸出格式為 C: ZZZ \n若我輸入 I: BBBBBB , 則將 BBBBBB 翻譯成英文 XXX, 輸出格式為 I: XXX"
+        },
+        {
+            "role": "assistant",
+            "content": "If I enter C: AAAAAA, translate AAAAAA into Chinese \"ZZZ\" and output it in the format of C: ZZZ. \nIf I enter I: BBBBBB, translate BBBBBB into English \"XXX\" and output it in the format of I: XXX."
+        },
+        {
+            "role": "user",
+            "content": "I : 收到，会请研发继续跟踪排查jpg问题"
+        },
+        {
+            "role": "assistant",
+            "content": "I: Got it. I'll ask the development team to continue tracking and troubleshooting the jpg issue. \n\n則輸出結果為 I: Got it. I'll ask the development team to continue tracking and troubleshooting the jpg issue."
+        },
+        {
+            "role": "user",
+            "content": "C : I put the terminal in hibernate mode. But we need to understand asap why the web service keep failed. I think that it related to the jpg/png files error."
+        },
+        {
+            "role": "assistant",
+            "content": "C: 我把终端机放入休眠模式了。但我们需要尽快了解为什么网络服务一直失败。我认为这与jpg或png文件错误有关。\n\n則輸出結果為 C: I put the terminal in hibernate mode. But we need to understand asap why the web service keep failed. I think that it related to the jpg/png files error."
+        }
+    ]
+}

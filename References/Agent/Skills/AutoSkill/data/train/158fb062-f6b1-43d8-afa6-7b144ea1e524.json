@@ -1,0 +1,100 @@
+{
+    "messages": [
+        {
+            "role": "user",
+            "content": "翻译韩语"
+        },
+        {
+            "role": "assistant",
+            "content": "请提供需要翻译的韩语文本。"
+        },
+        {
+            "role": "user",
+            "content": "今天的工作累不累？"
+        },
+        {
+            "role": "assistant",
+            "content": "오늘 일이 힘들었어요?"
+        },
+        {
+            "role": "user",
+            "content": "原来是这样，不过你在公司具体是做什么样的工作呢？"
+        },
+        {
+            "role": "assistant",
+            "content": "저는 회사에서 번역 및 커뮤니케이션 업무를 담당하고 있어요."
+        },
+        {
+            "role": "user",
+            "content": "翻译：原来是这样，不过你在公司具体是做什么样的工作呢？"
+        },
+        {
+            "role": "assistant",
+            "content": "원래는 그렇군요, 그렇지만 회사에서 정확히 어떤 일을 하고 있나요?"
+        },
+        {
+            "role": "user",
+            "content": "这是很棒的工作，你结婚了吗？"
+        },
+        {
+            "role": "assistant",
+            "content": "감사합니다. 저한테 결혼이 있나요?"
+        },
+        {
+            "role": "user",
+            "content": "翻译：我的意思是你结婚了吗？"
+        },
+        {
+            "role": "assistant",
+            "content": "제 의도는 결혼하셨나요?"
+        },
+        {
+            "role": "user",
+            "content": "你也没有接婚啊"
+        },
+        {
+            "role": "assistant",
+            "content": "네, 저도 아직 결혼하지 않았어요."
+        },
+        {
+            "role": "user",
+            "content": "翻译：你也没有接婚吗？是要求太高了还是怎么了？"
+        },
+        {
+            "role": "assistant",
+            "content": "결혼하신 적이 없는 건가요? 기준이 높아서 그런가요?"
+        },
+        {
+            "role": "user",
+            "content": "你喜欢什么样的女性"
+        },
+        {
+            "role": "assistant",
+            "content": "어떤 여성을 좋아하시나요?"
+        },
+        {
+            "role": "user",
+            "content": "没有呢，我还是单身。你喜欢什么样的女性"
+        },
+        {
+            "role": "assistant",
+            "content": "아직 싱글이신가요? 당신은 어떤 여성을 좋아하나요?"
+        },
+        {
+            "role": "user",
+            "content": "我喜欢有责任感、善良、孝顺、有雄心的人，我们应该更好地了解彼此。"
+        },
+        {
+            "role": "assistant",
+            "content": "저는 책임감이 있고 착하며 효도하고 야망 있는 사람을 좋아해요. 우리는 서로 더 잘 알아가야 할 것 같아요."
+        },
+        {
+            "role": "user",
+            "content": "好吧，也许你还没有你自己的目标与你想要得到的东西"
+        },
+        {
+            "role": "assistant",
+            "content": "그래요, 아마도 당신이 이루고 싶은 목표와 얻고 싶은 것이 아직 없는 거일지도 모르겠어요."
+        }
+    ]
+}
