@@ -2,7 +2,7 @@
 
 Date: 2026-05-31
 
-Status: implementation_longrun_active
+Status: implementation_longrun_completed_pending_user_review
 
 Latest implementation task:
 
