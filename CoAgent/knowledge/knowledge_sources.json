@@ -1,0 +1,89 @@
+{
+  "sources": [
+    {
+      "source_id": "project_rules",
+      "path": "AGENTS.md",
+      "category": "policy",
+      "priority": 10
+    },
+    {
+      "source_id": "project_progress",
+      "path": "PROGRESS.md",
+      "category": "progress",
+      "priority": 9
+    },
+    {
+      "source_id": "task_ledger",
+      "path": "Docs/Workflows/agent_task_ledger.md",
+      "category": "ledger",
+      "priority": 9
+    },
+    {
+      "source_id": "coagent_root",
+      "path": "CoAgent",
+      "category": "coagent",
+      "priority": 10
+    },
+    {
+      "source_id": "learning_index",
+      "path": "Results/coagent_learning/learning_index.json",
+      "category": "learning_evidence",
+      "priority": 7
+    },
+    {
+      "source_id": "agent_reference_readmes",
+      "path": "References/Agent",
+      "category": "external_agent_skills",
+      "priority": 5,
+      "include_names": [
+        "README.md",
+        "README.zh.md",
+        "README.zh-CN.md",
+        "SKILL.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "PROJECT_INDEX.md",
+        "KNOWLEDGE.md",
+        "EVALUATION.md",
+        "RULES.md"
+      ],
+      "max_files": 250
+    },
+    {
+      "source_id": "workflow_docs",
+      "path": "Docs/Workflows",
+      "category": "workflow",
+      "priority": 8
+    },
+    {
+      "source_id": "index_docs",
+      "path": "Docs/Index",
+      "category": "index",
+      "priority": 8
+    },
+    {
+      "source_id": "transport_run_summaries",
+      "path": "Results/coagent_transport/runs",
+      "category": "runtime_evidence",
+      "priority": 7
+    },
+    {
+      "source_id": "bootstrap_summaries",
+      "path": "Results/coagent_bootstrap",
+      "category": "runtime_evidence",
+      "priority": 7
+    },
+    {
+      "source_id": "context_packs",
+      "path": "Results/context_packs",
+      "category": "runtime_evidence",
+      "priority": 7
+    },
+    {
+      "source_id": "result_packet_summaries",
+      "path": "Results/agent_packets/summaries",
+      "category": "runtime_evidence",
+      "priority": 7
+    }
+  ]
+}
