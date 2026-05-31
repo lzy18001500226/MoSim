@@ -1,0 +1,240 @@
+// SupportTicketService — user-facing support tickets.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/support_tickets.go
+// per .claude/plans/proto-naming-conventions.md. Conventions enforced:
+//   * package proto.support_ticket.v1 + go_package suffix for dispatch
+//   * service names = <Domain>Service, methods PascalCase verbs
+//   * snake_case fields, no json_name annotations
+//   * timestamps as string ISO-8601 (no google.protobuf.Timestamp)
+//   * list response = {items, total, limit, offset} uniform envelope
+//     (replaces REST `{data, total, page, page_size, total_pages}` — the
+//     adapter remaps to the legacy shape; specialist prompt's "审视后决定
+//     是否归一化到标准 envelope" →归一)
+//   * create/get return entity directly (no {ticket: ...} wrapper)
+//
+// User-scoped service (conventions §3.5 exception #1): the caller is
+// identified by JWT (auth interceptor → UserID); tickets are addressed
+// by their owner's UserID, not by any org. There is no `org_slug`.
+//
+// Attachment uploads now go through a 3-step presigned-URL flow instead of
+// multipart REST:
+//   1. CreateSupportTicket (or AddSupportTicketMessage) → ticket / message id
+//   2. PresignAttachmentUpload(ticket_id, message_id?, filename, ct, size)
+//      → put_url + opaque storage_key (server-generated)
+//   3. Browser PUTs the bytes to put_url, then calls
+//      AssociateAttachments(ticket_id, [{storage_key, filename, mime, size}])
+//      to materialize SupportTicketAttachment DB rows.
+// This eliminates the multipart REST surface entirely; conventions §2.5
+// (all wire is Connect-binary) is now fully enforced for this domain.
+
+syntax = "proto3";
+
+package proto.support_ticket.v1;
+
+import "codegen/v1/options.proto";
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/support_ticket/v1;supportticketv1";
+
+// Convert codegen target — emits support_ticket_convert.amesh.go into the
+// backend user-facing support_ticket connect handler tree so it can reach
+// domain/supportticket (which proto/gen/go packages cannot import under Go's
+// internal-package rule).
+option (amesh.codegen.v1.convert_target) = {
+  output_dir: "backend/internal/api/connect/support_ticket"
+  output_package: "supportticketconnect"
+};
+
+// ============================================================================
+// SupportTicketService — user-scoped (auth-required, no org_slug)
+// ============================================================================
+service SupportTicketService {
+  rpc ListSupportTickets(ListSupportTicketsRequest) returns (ListSupportTicketsResponse);
+  rpc GetSupportTicket(GetSupportTicketRequest) returns (SupportTicketDetail);
+  rpc GetAttachmentUrl(GetAttachmentUrlRequest) returns (GetAttachmentUrlResponse);
+  rpc CreateSupportTicket(CreateSupportTicketRequest) returns (SupportTicket);
+  rpc AddSupportTicketMessage(AddSupportTicketMessageRequest) returns (SupportTicketMessage);
+  rpc PresignAttachmentUpload(PresignAttachmentUploadRequest) returns (PresignAttachmentUploadResponse);
+  rpc AssociateAttachments(AssociateAttachmentsRequest) returns (AssociateAttachmentsResponse);
+}
+
+// ----------------------------------------------------------------------------
+// Entities
+// ----------------------------------------------------------------------------
+
+// SupportTicket mirrors backend/internal/domain/supportticket/SupportTicket
+// minus eager-loaded associations. AssignedAdminID is omitted from the
+// user-facing wire (it's an admin-only detail that the user-side handler
+// never returned anyway).
+message SupportTicket {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/supportticket.SupportTicket"
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  int64 user_id = 2 [(amesh.codegen.v1.field_rename) = "UserID"];
+  string title = 3;
+  // bug / feature_request / usage_question / account / other
+  string category = 4;
+  // open / in_progress / resolved / closed
+  string status = 5;
+  // low / medium / high
+  string priority = 6;
+  string created_at = 7 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  string updated_at = 8 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  optional string resolved_at = 9 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+}
+
+// SupportTicketUser is the trimmed user view embedded in messages —
+// mirrors the REST `*user.User` association serialized by GORM's
+// `json:"user,omitempty"` (only id/name/email/avatar_url surface to the
+// renderer per supportTicketTypes.ts:21).
+message SupportTicketUser {
+  int64 id = 1;
+  optional string name = 2;
+  string email = 3;
+  optional string avatar_url = 4;
+}
+
+// SupportTicketAttachment mirrors the renderer-facing fields of the
+// domain Attachment (storage_key is intentionally hidden — internal).
+message SupportTicketAttachment {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/supportticket.SupportTicketAttachment"
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  int64 ticket_id = 2 [(amesh.codegen.v1.field_rename) = "TicketID"];
+  optional int64 message_id = 3 [(amesh.codegen.v1.field_rename) = "MessageID"];
+  int64 uploader_id = 4 [(amesh.codegen.v1.field_rename) = "UploaderID"];
+  string original_name = 5;
+  string mime_type = 6;
+  int64 size = 7;
+  string created_at = 8 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+}
+
+// SupportTicketMessage mirrors the renderer shape used by the
+// detail page (with eager-loaded User + Attachments).
+message SupportTicketMessage {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/supportticket.SupportTicketMessage"
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  int64 ticket_id = 2 [(amesh.codegen.v1.field_rename) = "TicketID"];
+  int64 user_id = 3 [(amesh.codegen.v1.field_rename) = "UserID"];
+  string content = 4;
+  bool is_admin_reply = 5;
+  string created_at = 6 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  // Trimmed user view (id/email/name/avatar). Custom-mapped because the
+  // domain field is *user.User but the proto wire shape is the smaller
+  // SupportTicketUser.
+  optional SupportTicketUser user = 7 [(amesh.codegen.v1.field_custom) = "messageUserToProto"];
+  // Value-slice on the domain side, pointer-slice on the wire.
+  repeated SupportTicketAttachment attachments = 8 [(amesh.codegen.v1.field_custom) = "messageAttachmentsToProto"];
+}
+
+// ----------------------------------------------------------------------------
+// Requests / Responses
+// ----------------------------------------------------------------------------
+
+message ListSupportTicketsRequest {
+  // Status filter — `open` / `in_progress` / `resolved` / `closed`. Empty
+  // string (or absent) returns all statuses, matching REST behavior.
+  string status = 1;
+  // Offset/limit are the unified envelope (conventions §8). The REST
+  // handler accepted `page` / `page_size`; the adapter translates between
+  // the two surfaces so call-sites can switch one at a time.
+  optional int32 offset = 2;
+  optional int32 limit = 3;
+}
+
+message ListSupportTicketsResponse {
+  repeated SupportTicket items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message GetSupportTicketRequest {
+  int64 id = 1;
+}
+
+// SupportTicketDetail is the GetSupportTicket response — mirrors the
+// REST handler's `{ticket, messages}` shape (which already deviated
+// from gin's typical wrap-in-domain-key style). conventions §9 normally
+// asks Get to return the entity itself; this is the multi-field
+// exception (ticket + messages) called out in §9.
+message SupportTicketDetail {
+  SupportTicket ticket = 1;
+  repeated SupportTicketMessage messages = 2;
+}
+
+message GetAttachmentUrlRequest {
+  int64 attachment_id = 1;
+}
+
+message GetAttachmentUrlResponse {
+  string url = 1;
+}
+
+// ----------------------------------------------------------------------------
+// Create / message-reply (no attachments — handled by presign flow below)
+// ----------------------------------------------------------------------------
+
+message CreateSupportTicketRequest {
+  string title = 1;
+  // bug / feature_request / usage_question / account / other — empty
+  // string defaults to `other` server-side (mirrors REST behavior).
+  string category = 2;
+  string content = 3;
+  // low / medium / high — empty string defaults to `medium`.
+  optional string priority = 4;
+}
+
+message AddSupportTicketMessageRequest {
+  int64 ticket_id = 1;
+  string content = 2;
+}
+
+// ----------------------------------------------------------------------------
+// Attachment presign flow — replaces multipart REST upload
+// ----------------------------------------------------------------------------
+
+// PresignAttachmentUploadRequest carries everything the server needs to
+// (a) authorize the upload against the ticket owner and (b) generate an
+// opaque storage_key. message_id is optional — when null/absent the
+// attachment is bound to the ticket itself (matches REST `Create`
+// semantics where files[] arrived alongside the initial message and were
+// stored against the ticket without a message_id).
+message PresignAttachmentUploadRequest {
+  int64 ticket_id = 1;
+  optional int64 message_id = 2;
+  string filename = 3;
+  string content_type = 4;
+  int64 size = 5;
+}
+
+// PresignAttachmentUploadResponse — opaque storage_key flows back to
+// AssociateAttachments unchanged. Clients MUST treat it as opaque (it is
+// validated server-side via storage.Exists before the DB row is created).
+message PresignAttachmentUploadResponse {
+  string put_url = 1;
+  string storage_key = 2;
+}
+
+message AssociateAttachmentRef {
+  string storage_key = 1;
+  string filename = 2;
+  string content_type = 3;
+  int64 size = 4;
+  optional int64 message_id = 5;
+}
+
+message AssociateAttachmentsRequest {
+  int64 ticket_id = 1;
+  repeated AssociateAttachmentRef attachments = 2;
+}
+
+message AssociateAttachmentsResponse {
+  repeated SupportTicketAttachment items = 1;
+}

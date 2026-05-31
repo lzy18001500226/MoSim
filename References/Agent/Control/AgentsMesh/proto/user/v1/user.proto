@@ -1,0 +1,194 @@
+// UserService — user-scoped profile / identity / search.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/users.go
+// per .claude/plans/proto-naming-conventions.md. Conventions enforced:
+//   * package proto.user.v1 + go_package suffix for dispatch
+//   * service name = <Domain>Service, methods PascalCase verbs
+//   * snake_case fields, no json_name annotations
+//   * USER-SCOPED service: no org_slug = 1 (conventions §3.5 exception #1)
+//     — every method addresses the caller (`/me/...` in REST), the auth
+//     interceptor supplies the user ID. Search is also user-scoped (a
+//     user looking up another user by query).
+//   * timestamps as string ISO-8601 (no google.protobuf.Timestamp)
+//   * list response = {items, total, limit, offset} uniform envelope
+//   * get/update return entity directly (no {user: ...} / {identity: ...} wrapper)
+//
+// Out of scope (handled by sibling services):
+//   * GET /me/organizations — already on proto.org.v1.OrgService.ListMyOrgs
+//   * /me/git-credentials, /me/agent-credentials, /me/repository-providers —
+//     proto.user_credential.v1 (three sub-services)
+//   * /me/agent-configs — proto.agent.v1.UserAgentConfigService
+//   * /me/agentpod/* — proto.pod.v1.AgentPodSettingsService
+//
+// Field set reconciled against three layers (runbook §1.5):
+//   - backend domain/user/user.go (15+ fields on User including
+//     is_email_verified, last_login_at, default_git_credential_id)
+//   - clients/core/crates/types/src/auth.rs User (7 fields surfaced; the
+//     legacy DTO drops last_login_at / is_email_verified — drift signal)
+//   - clients/web/src/lib/api/user.ts UserSummary (6 fields)
+//   - clients/web/src/app/(auth)/auth/callback/page.tsx reads
+//     response.user.{id,email,username,name,avatar_url}
+//
+// User carries every field the backend can emit; private fields
+// (password_hash, email_verification_token, password_reset_token) are
+// stripped server-side by the convert helper (mirrors `json:"-"` on the
+// GORM struct).
+
+syntax = "proto3";
+
+package proto.user.v1;
+
+import "codegen/v1/options.proto";
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/user/v1;userv1";
+
+// Convert codegen target — emits user_convert.amesh.go into the backend
+// connect handler tree so it can reach the domain layer (which proto/gen/go
+// packages cannot import under Go's internal-package rule).
+option (amesh.codegen.v1.convert_target) = {
+  output_dir: "backend/internal/api/connect/user"
+  output_package: "userconnect"
+};
+
+service UserService {
+  // /me — current user profile.
+  rpc GetMe(GetMeRequest) returns (User);
+  rpc UpdateMe(UpdateMeRequest) returns (User);
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+
+  // /me/identities — linked OAuth identities (github/google/gitlab/gitee).
+  rpc ListIdentities(ListIdentitiesRequest) returns (ListIdentitiesResponse);
+  rpc DeleteIdentity(DeleteIdentityRequest) returns (DeleteIdentityResponse);
+
+  // /search — query users by name / email / username.
+  rpc SearchUsers(SearchUsersRequest) returns (SearchUsersResponse);
+}
+
+// User mirrors backend/internal/domain/user/User.
+//
+// SENSITIVE fields intentionally omitted (server-side strip mirrors
+// `json:"-"`): password_hash, email_verification_token,
+// email_verification_expires_at, password_reset_token,
+// password_reset_expires_at.
+//
+// is_system_admin is surfaced (read-only) — REST today omits it from the
+// /me response but the field is always available server-side and the
+// admin console reads it; including it here closes a known drift.
+message User {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/user.User"
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  string email = 2;
+  string username = 3;
+  optional string name = 4 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  optional string avatar_url = 5 [
+    (amesh.codegen.v1.field_rename) = "AvatarURL",
+    (amesh.codegen.v1.field_convert) = "string_ptr"
+  ];
+  bool is_active = 6;
+  bool is_system_admin = 7;
+  bool is_email_verified = 8;
+  optional string last_login_at = 9 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+  // NULL means use Runner local credential (default behavior).
+  optional int64 default_git_credential_id = 10 [(amesh.codegen.v1.field_rename) = "DefaultGitCredentialID"];
+  string created_at = 11 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  string updated_at = 12 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+}
+
+// Identity mirrors backend/internal/domain/user/Identity.
+//
+// SENSITIVE fields intentionally omitted: access_token_encrypted,
+// refresh_token_encrypted.
+message Identity {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/user.Identity"
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  int64 user_id = 2 [(amesh.codegen.v1.field_rename) = "UserID"];
+  // github / google / gitlab / gitee
+  string provider = 3;
+  string provider_user_id = 4 [(amesh.codegen.v1.field_rename) = "ProviderUserID"];
+  optional string provider_username = 5 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  optional string token_expires_at = 6 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+  string created_at = 7 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  string updated_at = 8 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+}
+
+// UserSummary is the search-result shape (subset of User).
+// Mirrors clients/web/src/lib/api/user.ts UserSummary — non-sensitive
+// public-facing user info exposed by /search.
+//
+// No go_domain annotation: this is a wire-only summary type with no domain
+// counterpart (synthesised from User in the convert wrapper). Codegen skips
+// messages without go_domain — toProtoUserSummary stays handwritten.
+message UserSummary {
+  int64 id = 1;
+  string email = 2;
+  string username = 3;
+  optional string name = 4;
+  optional string avatar_url = 5;
+}
+
+// --- /me ---
+
+message GetMeRequest {}
+
+// UpdateMeRequest mirrors UpdateProfileRequest (users.go:45). The REST
+// handler treats empty string as "no change"; we use proto3 `optional` so
+// the client can explicitly send absent to mean "no change" (zero-length
+// string would now be ambiguous).
+message UpdateMeRequest {
+  optional string name = 1;
+  optional string avatar_url = 2;
+}
+
+message ChangePasswordRequest {
+  string current_password = 1;
+  string new_password = 2;
+}
+
+message ChangePasswordResponse {
+  string message = 1;
+}
+
+// --- /me/identities ---
+
+message ListIdentitiesRequest {}
+
+// List envelope per conventions §8. Identities have no inherent pagination
+// today (one row per provider, max 4), but the envelope keeps the surface
+// uniform with every other List* RPC.
+message ListIdentitiesResponse {
+  repeated Identity items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message DeleteIdentityRequest {
+  // Provider slug — github / google / gitlab / gitee.
+  string provider = 1;
+}
+
+message DeleteIdentityResponse {
+  string message = 1;
+}
+
+// --- /search ---
+
+message SearchUsersRequest {
+  // Query string — min 2 characters server-side (mirrors REST binding).
+  string q = 1;
+  // Default 10 server-side when absent; max 50 (mirrors REST binding).
+  optional int32 limit = 2;
+}
+
+message SearchUsersResponse {
+  repeated UserSummary items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}

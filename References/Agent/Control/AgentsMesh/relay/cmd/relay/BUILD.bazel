@@ -1,0 +1,36 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("//build_defs/docker:go_oci_image.bzl", "go_oci_image")
+
+go_library(
+    name = "relay_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/anthropics/agentsmesh/relay/cmd/relay",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//relay/internal/config",
+        "//relay/internal/otel",
+        "//relay/internal/server",
+    ],
+)
+
+go_binary(
+    name = "relay",
+    embed = [":relay_lib"],
+    # CGO_ENABLED=0 — keep the binary statically linked so it can run on
+    # the distroless/static base (no glibc). See
+    # //backend/cmd/server:BUILD.bazel for the full rationale.
+    pure = "on",
+    visibility = ["//visibility:public"],
+)
+
+# Distroless OCI image for the relay daemon. See
+# //build_defs/docker:go_oci_image for the macro.
+go_oci_image(
+    name = "image",
+    binary = ":relay",
+    exposed_ports = ["8090/tcp"],
+    repositories = {
+        "agentsmesh": "registry.agentsmesh.ai/agentsmesh/relay",
+        "dockerhub": "agentsmesh/relay",
+    },
+)

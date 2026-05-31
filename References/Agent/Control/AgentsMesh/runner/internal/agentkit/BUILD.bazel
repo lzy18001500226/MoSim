@@ -1,0 +1,25 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "agentkit",
+    srcs = [
+        "home.go",
+        "input_adapter.go",
+        "process_name.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/runner/internal/agentkit",
+    visibility = ["//runner:__subpackages__"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":agentkit",
+    visibility = ["//runner:__subpackages__"],
+)
+
+go_test(
+    name = "agentkit_test",
+    srcs = ["agentkit_test.go"],
+    embed = [":agentkit"],
+    deps = ["@com_github_stretchr_testify//assert"],
+)

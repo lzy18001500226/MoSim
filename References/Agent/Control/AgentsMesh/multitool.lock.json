@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/bazel-contrib/rules_multitool/main/lockfile.schema.json",
+  "golangci-lint": {
+    "binaries": [
+      {
+        "kind": "archive",
+        "url": "https://github.com/golangci/golangci-lint/releases/download/v2.11.4/golangci-lint-2.11.4-linux-amd64.tar.gz",
+        "sha256": "200c5b7503f67b59a6743ccf32133026c174e272b930ee79aa2aa6f37aca7ef1",
+        "file": "golangci-lint-2.11.4-linux-amd64/golangci-lint",
+        "os": "linux",
+        "cpu": "x86_64"
+      },
+      {
+        "kind": "archive",
+        "url": "https://github.com/golangci/golangci-lint/releases/download/v2.11.4/golangci-lint-2.11.4-linux-arm64.tar.gz",
+        "sha256": "3bcfa2e6f3d32b2bf5cd75eaa876447507025e0303698633f722a05331988db4",
+        "file": "golangci-lint-2.11.4-linux-arm64/golangci-lint",
+        "os": "linux",
+        "cpu": "arm64"
+      },
+      {
+        "kind": "archive",
+        "url": "https://github.com/golangci/golangci-lint/releases/download/v2.11.4/golangci-lint-2.11.4-darwin-amd64.tar.gz",
+        "sha256": "c900d4048db75d1edfd550fd11cf6a9b3008e7caa8e119fcddbc700412d63e60",
+        "file": "golangci-lint-2.11.4-darwin-amd64/golangci-lint",
+        "os": "macos",
+        "cpu": "x86_64"
+      },
+      {
+        "kind": "archive",
+        "url": "https://github.com/golangci/golangci-lint/releases/download/v2.11.4/golangci-lint-2.11.4-darwin-arm64.tar.gz",
+        "sha256": "02db2a2dae8b26812e53b0688a6f617e3ef1f489790e829ea22862cf76945675",
+        "file": "golangci-lint-2.11.4-darwin-arm64/golangci-lint",
+        "os": "macos",
+        "cpu": "arm64"
+      }
+    ]
+  }
+}

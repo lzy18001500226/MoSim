@@ -1,0 +1,525 @@
+// Design Wall — every interaction design in one page.
+// Includes each individual .pastel file (namespaced) and uses its pg_<name>() component.
+// Generated layout groups: Foundation · IA · Flows · Pages.
+
+canvas "design_wall" {
+    width = 4400
+    height = 19000
+    background = #F6F8FA
+}
+
+include "components/button.pastel"
+include "components/card.pastel"
+include "components/empty-state.pastel"
+include "components/breadcrumb.pastel"
+include "components/page-header.pastel"
+include "pages/tokens-preview.pastel"
+include "ia/domain-map.pastel"
+include "ia/sitemap.pastel"
+include "ia/shell-v2.pastel"
+include "flows/flow-onboarding.pastel"
+include "flows/flow-ticket-to-pod.pastel"
+include "pages/tickets-board.pastel"
+include "pages/tickets-detail.pastel"
+include "pages/settings-org.pastel"
+include "pages/settings-personal.pastel"
+include "pages/channels.pastel"
+include "pages/mesh.pastel"
+include "pages/loops.pastel"
+include "pages/workspace-empty.pastel"
+include "pages/command-palette.pastel"
+include "pages/blocks-document.pastel"
+include "pages/blocks-typedef.pastel"
+include "pages/blocks-triggers.pastel"
+include "pages/blocks-memory.pastel"
+
+component tile_label(big, small) {
+    frame {
+        layout = vertical, gap = 2, padding = [0, 0, 8, 0]
+        text big   { size = 16, weight = semibold, color = #1F2328 }
+        text small { size = 12, color = #656D76 }
+    }
+}
+
+component tile_frame() {
+    frame {
+        padding = 20
+        radius  = 12
+        fill    = #FFFFFF
+        stroke  = [1, #D0D7DE]
+        shadow  = [0, 4, 16, #00000014]
+        layout  = vertical
+    }
+}
+
+component section_heading(number, title, note) {
+    frame {
+        width = fill, padding = [0, 0, 16, 0]
+        layout = horizontal, gap = 16, align = start
+
+        frame num_chip {
+            width = 40, height = 40, radius = 20, fill = #0969DA
+            layout = horizontal, justify = center, align = center
+            text number { size = 17, weight = semibold, color = #FFFFFF }
+        }
+        frame text_stack {
+            layout = vertical, gap = 2, padding = [2, 0, 0, 0]
+            text title { size = 28, weight = semibold, color = #FFFFFF }
+            text note  { size = 14, color = #C9D1D9 }
+        }
+    }
+}
+
+frame root {
+    width = 4400
+    padding = 60
+    layout  = vertical
+    gap     = 48
+    fill    = #F6F8FA
+
+    // === Wall header ===
+    frame wall_header {
+        layout = vertical, gap = 8
+        text "AgentsMesh · Design Wall"
+            { size = 40, weight = semibold, color = #1F2328 }
+        text "All interaction designs in one place. Foundation → Information Architecture → Key flows → Pages."
+            { size = 16, color = #656D76 }
+        text "Each tile is the live pastel component of the mockup — edits in source files flow through here."
+            { size = 13, color = #868F99, family = "JetBrains Mono" }
+    }
+
+    shape hr { type = rectangle, width = 4280, height = 2, fill = #D0D7DE }
+
+    // ========================================================
+    //  1. FOUNDATION — tokens + base components
+    // ========================================================
+    use section_heading("1", "Foundation",
+        "Design tokens and core primitives — everything else is built on these.")
+
+    // Row 1a: tokens + button + card
+    frame row_1a {
+        width  = fill
+        layout = horizontal
+        gap    = 56
+        align  = start
+
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Design Tokens", "colors · spacing · radius · typography · shadow")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_tokens_preview()
+            }
+        }
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Buttons", "6 variants × 3 sizes + hover / disabled")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_button()
+            }
+        }
+    }
+
+    // Row 1b: card + empty-state
+    frame row_1b {
+        width  = fill
+        layout = horizontal
+        gap    = 56
+        align  = start
+
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Cards", "default / inset / danger — replaces DIY card patterns")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_card()
+            }
+        }
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Empty States", "compact / default / full — for every blank view")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_empty_state()
+            }
+        }
+    }
+
+    // Row 1c: breadcrumb + page-header
+    frame row_1c {
+        width  = fill
+        layout = horizontal
+        gap    = 56
+        align  = start
+
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Breadcrumb", "4 variants — navigation hint above detail pages")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_breadcrumb()
+            }
+        }
+        frame tile { layout = vertical, gap = 12
+            use tile_label("PageHeader", "list / detail / settings — top of every page")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_page_header()
+            }
+        }
+    }
+
+    shape hr2 { type = rectangle, width = 4280, height = 2, fill = #30363D }
+
+    // ========================================================
+    //  2. INFORMATION ARCHITECTURE
+    // ========================================================
+    use section_heading("2", "Information Architecture",
+        "How the product is organized. Domain model → navigation tree → shell wireframe.")
+
+    // Row 2: domain + sitemap
+    frame row_2 {
+        width  = fill
+        layout = horizontal
+        gap    = 56
+        align  = start
+
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Domain Model", "Pod is the center; all entities by role (context / collab / orch / config)")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_domain_map()
+            }
+        }
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Sitemap (new IA)", "5 main activities + Settings · ex-top-level Runners/Repos/Agents moved into Settings")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_sitemap()
+            }
+        }
+    }
+
+    // Row 2b: shell
+    frame row_2b {
+        width  = fill
+        layout = vertical
+        gap    = 12
+
+        use tile_label("Shell v2 — ActivityBar + Sidebar + Main + BottomPanel",
+            "PTY pane (left) + ACP pane (right) + 5-tab bottom panel · disconnect banner · full pane header toolbars")
+        frame tile_wrap {
+                layout = vertical
+                use pg_shell_v2()
+            }
+    }
+
+    shape hr3 { type = rectangle, width = 4280, height = 2, fill = #30363D }
+
+    // ========================================================
+    //  3. KEY USER FLOWS
+    // ========================================================
+    use section_heading("3", "Key User Flows",
+        "Two core journeys — first-run onboarding + daily Ticket-to-Pod.")
+
+    frame row_3 {
+        width  = fill
+        layout = horizontal
+        gap    = 56
+        align  = start
+
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Cold start (first run)", "signup → email → workspace → runner → first pod · with recovery paths")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_flow_onboarding()
+            }
+        }
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Ticket → finished Pod", "daily journey · 1-click Spawn Pod · stepped progress · auto ticket status")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_flow_ticket_to_pod()
+            }
+        }
+    }
+
+    shape hr4 { type = rectangle, width = 4280, height = 2, fill = #30363D }
+
+    // ========================================================
+    //  4. PAGES (mockups)
+    // ========================================================
+    use section_heading("4", "Pages",
+        "9 key screens — each uses the shell above and the foundation primitives.")
+
+    // Row 4a: Tickets (board + detail)
+    frame row_4a {
+        width  = fill
+        layout = horizontal
+        gap    = 56
+        align  = start
+
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Tickets — Kanban Board", "5 columns · rich ticket cards · sidebar filters")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_tickets_board()
+            }
+        }
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Tickets — Detail", "big [Spawn Pod] · Working Pods sidebar · Sub-tickets · PRs · Activity")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_tickets_detail()
+            }
+        }
+    }
+
+    // Row 4b: Settings (org + personal)
+    frame row_4b {
+        width  = fill
+        layout = horizontal
+        gap    = 56
+        align  = start
+
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Settings — Organization", "Personal/Org tabs · grouped nav · Runners list with 3 states")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_settings_org()
+            }
+        }
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Settings — Personal", "Profile example · Identity / Account / Danger zone cards")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_settings_personal()
+            }
+        }
+    }
+
+    // Row 4c: Channels + Mesh
+    frame row_4c {
+        width  = fill
+        layout = horizontal
+        gap    = 56
+        align  = start
+
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Channels", "Pod + User messages as first-class · tool-call cards · linked ticket/repo rail")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_channels()
+            }
+        }
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Mesh — Runner-grouped topology", "Pods inside Runners · directional R/W arrows · Runner/Status filters")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_mesh()
+            }
+        }
+    }
+
+    // Row 4d: Loops + Workspace empty
+    frame row_4d {
+        width  = fill
+        layout = horizontal
+        gap    = 56
+        align  = start
+
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Loops — Master/Detail", "sidebar loop list + [+ New Loop] · detail: runs / stats / prompt")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_loops()
+            }
+        }
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Workspace — Empty state", "first-run hero · 3 recipe cards · keyboard shortcuts hint")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_workspace_empty()
+            }
+        }
+    }
+
+    // Row 4e: CommandPalette (single, centered)
+    frame row_4e {
+        width  = fill
+        layout = vertical
+        gap    = 12
+
+        use tile_label("Command Palette (⌘K) — cross-resource search overlay",
+            "scope chips · grouped results (Pods/Tickets/Channels/Loops/Actions) · keyboard hints")
+        frame tile_wrap {
+                layout = vertical
+                use pg_command_palette()
+            }
+    }
+
+    shape hr5 { type = rectangle, width = 4280, height = 2, fill = #30363D }
+
+    // ========================================================
+    //  5. BLOCKS — Team status indicators (new capability)
+    // ========================================================
+    use section_heading("5", "Blocks · Team status indicators",
+        "Knowledge graph + indicators. Typed blocks, reactive triggers, semantic memory. Built on an op-log SSOT that reaches humans and agents alike.")
+
+    // Row 5a: Document editor (wide, solo row)
+    frame row_5a {
+        width  = fill
+        layout = vertical
+        gap    = 12
+
+        use tile_label("Blocks — Document editor",
+            "Notion-style page · mixed block types · view/summary/task/embed/mention · slash menu · ⌘K search")
+        frame tile_wrap {
+                layout = vertical
+                use pg_blocks_document()
+            }
+    }
+
+    // Row 5b: Typedef + Triggers
+    frame row_5b {
+        width  = fill
+        layout = horizontal
+        gap    = 56
+        align  = start
+
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Indicator type definition",
+                "team-custom block types (okr, task, incident…) · fields / defaults / linked records")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_blocks_typedef()
+            }
+        }
+        frame tile { layout = vertical, gap = 12
+            use tile_label("Triggers · reactive rules",
+                "WHEN block matches condition → THEN run action chain · firing history · per-trigger toggle")
+            frame tile_wrap {
+                padding = 8
+                radius = 16
+                fill   = #FFFFFF
+                stroke = [3, #6E7681]
+                shadow = [0, 12, 36, #00000040]
+                layout = vertical
+                use pg_blocks_triggers()
+            }
+        }
+    }
+
+    // Row 5c: Memory (wide, solo row since it's a modal)
+    frame row_5c {
+        width  = fill
+        layout = vertical
+        gap    = 12
+
+        use tile_label("Memory retrieve — semantic search overlay",
+            "shared by humans (⌘K) and agents (MCP memory.retrieve) · similarity scores · live pods on same blocks")
+        frame tile_wrap {
+                layout = vertical
+                use pg_blocks_memory()
+            }
+    }
+
+    // Footer
+    frame footer {
+        width = fill, padding = [40, 0, 0, 0]
+        layout = vertical, gap = 4
+        text "Generated from 24 independent .pastel files. Each tile is live — update source → rebuild this wall."
+            { size = 12, color = #8B949E, family = "JetBrains Mono" }
+    }
+}

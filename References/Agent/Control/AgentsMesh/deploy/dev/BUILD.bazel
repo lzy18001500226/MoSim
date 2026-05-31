@@ -1,0 +1,52 @@
+# Dev environment entry points exposed as bazel targets.
+#
+# `bazel run //deploy/dev:up` is the canonical way to start the dev stack.
+# Each target pins one dev.sh flag via `args`, so callers (humans + CI)
+# don't need to remember flag spellings:
+#
+#   bazel run //deploy/dev:up                # full stack
+#   bazel run //deploy/dev:backend_only      # CI E2E (no frontend)
+#   bazel run //deploy/dev:clean             # tear down + drop volumes
+#   bazel run //deploy/dev:reset_runners     # restart host runner+relay
+#   bazel run //deploy/dev:rebuild_runner    # rebuild runner binary + container
+#
+# Implementation: dev_runner.sh cd's into BUILD_WORKSPACE_DIRECTORY/deploy/dev
+# (set by `bazel run`) and exec's dev.sh, so dev.sh's SCRIPT_DIR resolves to
+# the live source tree — required for `.env`, docker compose context, and the
+# bazel-built runner binary copy step.
+#
+# `dev.sh` itself stays directly invokable (`./dev.sh --clean`) for backward
+# compat — these targets are an additional entry point, not a replacement.
+
+DEV_SCRIPTS = [
+    "dev.sh",
+] + glob(["lib/*.sh"])
+
+[
+    sh_binary(
+        name = name,
+        srcs = ["dev_runner.sh"],
+        args = args,
+        data = DEV_SCRIPTS,
+        visibility = ["//visibility:public"],
+    )
+    for name, args in [
+        ("up", []),
+        (
+            "backend_only",
+            ["--backend-only"],
+        ),
+        (
+            "clean",
+            ["--clean"],
+        ),
+        (
+            "reset_runners",
+            ["--reset-runners"],
+        ),
+        (
+            "rebuild_runner",
+            ["--rebuild-runner"],
+        ),
+    ]
+]

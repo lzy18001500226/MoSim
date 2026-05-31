@@ -1,0 +1,45 @@
+// iOS 26 Liquid Glass material tokens.
+// pastel can't render real blur, so glass is approximated with high-alpha fills
+// + soft shadows. The actual SwiftUI implementation will use .ultraThinMaterial
+// (or the new .glass material in iOS 26) — these tokens carry the static
+// fallback values that match closely.
+//
+// Reference: Apple HIG · "Materials" + iOS 26 design language announcement.
+
+token glass {
+    // Light mode
+    light_thick = #FFFFFFE6     // 90% — opaque-ish nav/tab bar
+    light_med   = #FFFFFFD9     // 85% — sheet bg
+    light_thin  = #FFFFFFB3     // 70% — subtle overlay
+
+    // Dark mode
+    dark_thick  = #1F2328E6
+    dark_med    = #1F2328D9
+    dark_thin   = #1F2328B3
+
+    // Edge highlight (1pt inner stroke for floating glass)
+    edge_light  = #FFFFFF40     // 25% white
+    edge_dark   = #00000040     // 25% black
+}
+
+// Floating element shadows (matches iOS 26 system layering)
+token elevation {
+    floating_low    = [0, 4, 12, #00000014]    // tab bar / chip
+    floating_med    = [0, 8, 24, #0000001F]    // sheet / popover
+    floating_high   = [0, 12, 32, #00000029]   // alert / dialog
+    inner_glow      = [0, 1, 0, #FFFFFF66]     // top edge highlight
+}
+
+// Page background (iOS systemGroupedBackground)
+token page_bg {
+    light = #F2F2F7
+    dark  = #000000
+    card  = #FFFFFF
+    card_dark = #1C1C1E
+}
+
+// Semantic dim (drawer / modal backdrop)
+token backdrop {
+    overlay_60 = #00000099   // 60% black — drawer backdrop
+    overlay_40 = #00000066   // 40% black — sheet backdrop
+}

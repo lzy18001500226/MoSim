@@ -1,0 +1,188 @@
+// BindingService — org-scoped pod-to-pod binding lifecycle.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/bindings*.go
+// per .claude/plans/proto-naming-conventions.md. Conventions enforced:
+//   * package proto.binding.v1 + go_package suffix for dispatch
+//   * service name = <Domain>Service, methods PascalCase verbs
+//   * snake_case fields, no json_name annotations
+//   * org_slug at field 1 of every request (no path params on Connect URLs)
+//   * initiator_pod replaces the REST X-Pod-Key header (binary wire has no
+//     extra-protocol headers — the calling pod is part of the message body)
+//   * timestamps as string ISO-8601 (no google.protobuf.Timestamp)
+//   * list response = {items, total, limit, offset} uniform envelope
+//
+// Field set reconciled across three layers (runbook §1.5):
+//   - backend domain/channel/binding_model.go        (12 fields on PodBinding)
+//   - clients/core/crates/types/src/binding.rs       (8 fields — drifted set,
+//     uses source_pod/target_pod naming, missing granted_scopes/pending_scopes
+//     split; fixed in this PR)
+//   - clients/web/src/lib/api/* (no UI call sites today — runner reaches the
+//     domain through MCP-over-gRPC; the REST surface exists for the Desktop
+//     node-bridge + Web wasm bridge that nothing currently invokes)
+//
+// Auth model (DEVIATION from runbook §3.5):
+//   The REST handler authenticates via the X-Pod-Key header instead of
+//   Bearer JWT — binding endpoints are pod-scoped, not user-scoped.
+//   Connect-RPC moves auth back to the standard Bearer + ResolveOrgScope
+//   path (the user is authenticated and scoped to an org; the calling pod
+//   is named explicitly in `initiator_pod`). Pod-membership enforcement
+//   stays at the service layer (the existing binding.Service mutates pods
+//   the caller passes in — it never re-validates pod ownership against
+//   user identity), so this is a parity-preserving move.
+
+syntax = "proto3";
+
+package proto.binding.v1;
+
+import "codegen/v1/options.proto";
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/binding/v1;bindingv1";
+
+// Convert codegen target — emits binding_convert.amesh.go into the backend
+// connect handler tree so it can reach the domain layer (which proto/gen/go
+// packages cannot import under Go's internal-package rule).
+option (amesh.codegen.v1.convert_target) = {
+  output_dir: "backend/internal/api/connect/binding"
+  output_package: "bindingconnect"
+};
+
+service BindingService {
+  rpc RequestBinding(RequestBindingRequest) returns (PodBinding);
+  rpc AcceptBinding(AcceptBindingRequest) returns (PodBinding);
+  rpc RejectBinding(RejectBindingRequest) returns (PodBinding);
+  rpc Unbind(UnbindRequest) returns (UnbindResponse);
+  rpc RequestScopes(RequestScopesRequest) returns (PodBinding);
+  rpc ApproveScopes(ApproveScopesRequest) returns (PodBinding);
+  rpc ListBindings(ListBindingsRequest) returns (ListBindingsResponse);
+  rpc GetPendingBindings(GetPendingBindingsRequest) returns (ListBindingsResponse);
+  rpc GetBoundPods(GetBoundPodsRequest) returns (GetBoundPodsResponse);
+  rpc CheckBinding(CheckBindingRequest) returns (CheckBindingResponse);
+}
+
+message PodBinding {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/channel.PodBinding"
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  int64 organization_id = 2 [(amesh.codegen.v1.field_rename) = "OrganizationID"];
+  string initiator_pod = 3;
+  string target_pod = 4;
+  // pending / active / rejected / inactive / expired.
+  string status = 5;
+  // Scopes already granted to initiator on target. Subset of ValidBindingScopes.
+  repeated string granted_scopes = 6 [(amesh.codegen.v1.field_convert) = "string_slice_cast"];
+  // Scopes requested but not yet approved by target. Empty when fully granted.
+  repeated string pending_scopes = 7 [(amesh.codegen.v1.field_convert) = "string_slice_cast"];
+  // RFC 3339, nullable.
+  optional string requested_at = 8 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+  optional string responded_at = 9 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+  // Expiry only set for pending bindings (24h default).
+  optional string expires_at = 10 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+  // Populated when status = rejected.
+  optional string rejection_reason = 11 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  string created_at = 12 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  string updated_at = 13 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+}
+
+// --- Request creation ---
+
+message RequestBindingRequest {
+  string org_slug = 1;
+  // Calling pod (was X-Pod-Key header on REST).
+  string initiator_pod = 2;
+  string target_pod = 3;
+  // Scopes requested; validated against channel.ValidBindingScopes whitelist.
+  repeated string scopes = 4;
+  // Binding policy: same_user_auto | same_project_auto | explicit_only.
+  // Empty string falls through to the service's default heuristics.
+  optional string policy = 5;
+}
+
+message AcceptBindingRequest {
+  string org_slug = 1;
+  // Approving pod (target of the binding; was X-Pod-Key header on REST).
+  string initiator_pod = 2;
+  int64 binding_id = 3;
+}
+
+message RejectBindingRequest {
+  string org_slug = 1;
+  // Rejecting pod (target of the binding; was X-Pod-Key header on REST).
+  string initiator_pod = 2;
+  int64 binding_id = 3;
+  optional string reason = 4;
+}
+
+message UnbindRequest {
+  string org_slug = 1;
+  // Calling pod (either initiator or target of the binding).
+  string initiator_pod = 2;
+  string target_pod = 3;
+}
+
+message UnbindResponse {
+  bool removed = 1;
+}
+
+// --- Scope requests ---
+
+message RequestScopesRequest {
+  string org_slug = 1;
+  // Calling pod (must be the binding's initiator).
+  string initiator_pod = 2;
+  int64 binding_id = 3;
+  repeated string scopes = 4;
+}
+
+message ApproveScopesRequest {
+  string org_slug = 1;
+  // Approving pod (must be the binding's target).
+  string initiator_pod = 2;
+  int64 binding_id = 3;
+  repeated string scopes = 4;
+}
+
+// --- Queries ---
+
+message ListBindingsRequest {
+  string org_slug = 1;
+  // Calling pod (returns bindings where this pod is initiator or target).
+  string initiator_pod = 2;
+  // pending | active | rejected | inactive | expired. Empty = all statuses.
+  optional string status = 3;
+}
+
+message ListBindingsResponse {
+  repeated PodBinding items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message GetPendingBindingsRequest {
+  string org_slug = 1;
+  // Returns pending bindings where this pod is the target.
+  string initiator_pod = 2;
+}
+
+message GetBoundPodsRequest {
+  string org_slug = 1;
+  string initiator_pod = 2;
+}
+
+message GetBoundPodsResponse {
+  repeated string pods = 1;
+}
+
+message CheckBindingRequest {
+  string org_slug = 1;
+  string initiator_pod = 2;
+  string target_pod = 3;
+}
+
+message CheckBindingResponse {
+  bool is_bound = 1;
+  // Binding metadata when is_bound = true; null otherwise.
+  optional PodBinding binding = 2;
+}

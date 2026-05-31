@@ -1,0 +1,485 @@
+// Shell v2 — wireframe faithful to current Workspace implementation.
+// - ActivityBar (48) + Sidebar (280) + Main (rest)
+// - Main uses SplitTreeRenderer: 2 panes side-by-side (PTY left + ACP right)
+// - Each pane has its own header (title, pod-key, agent status, toolbar)
+// - Bottom panel with 5 tabs preserved (activity/channels/autopilot/delivery/info)
+// - Disconnect banner only when offline
+
+canvas "shell" {
+    width = 2000
+    height = 1120
+    background = #1F2328
+}
+
+// ── ActivityBar icons ───────────────────────────────────────────────
+component sh_nav_icon_active(icon) {
+    frame {
+        width = 36, height = 36, radius = 6
+        fill = #DDF4FF, stroke = [1, #0969DA]
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, weight = medium, color = #0969DA }
+    }
+}
+component sh_nav_icon(icon) {
+    frame {
+        width = 36, height = 36, radius = 6
+        fill = transparent
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, color = #656D76 }
+    }
+}
+component sh_section_divider() {
+    shape { type = rectangle, width = 24, height = 1, fill = #D0D7DE }
+}
+
+// ── Sidebar rows ───────────────────────────────────────────────────
+component pod_row(dot_color, name, sub) {
+    frame {
+        width = 248, padding = [6, 10], radius = 6
+        layout = horizontal, gap = 8, align = center
+        frame dot { width = 8, height = 8, radius = 999, fill = dot_color }
+        frame info { layout = vertical, gap = 1, width = 220
+            text name { size = 13, weight = medium, color = #1F2328 }
+            text sub  { size = 11, color = #868F99, family = "JetBrains Mono" }
+        }
+    }
+}
+component pod_row_active(dot_color, name, sub) {
+    frame {
+        width = 248, padding = [6, 10], radius = 6, fill = #DDF4FF
+        layout = horizontal, gap = 8, align = center
+        frame dot { width = 8, height = 8, radius = 999, fill = dot_color }
+        frame info { layout = vertical, gap = 1, width = 220
+            text name { size = 13, weight = semibold, color = #0550AE }
+            text sub  { size = 11, color = #0969DA, family = "JetBrains Mono" }
+        }
+    }
+}
+
+// ── Pane header toolbar button ─────────────────────────────────────
+component pane_btn(icon) {
+    frame {
+        width = 22, height = 22, radius = 4
+        fill = transparent
+        layout = horizontal, justify = center, align = center
+        text icon { size = 11, color = #8B949E }
+    }
+}
+component pane_btn_close() {
+    frame {
+        width = 22, height = 22, radius = 4
+        fill = transparent
+        layout = horizontal, justify = center, align = center
+        text "✕" { size = 11, color = #8B949E }
+    }
+}
+
+// ── PTY pane header (with all 7 toolbar buttons) ───────────────────
+component pty_pane_header(title, pod_short, agent_status) {
+    frame {
+        width = fill, height = 32
+        fill = #161B22
+        padding = [0, 8]
+        layout = horizontal, justify = space-between, align = center
+        stroke = [1, #30363D]
+
+        frame left {
+            layout = horizontal, gap = 8, align = center
+            frame dot { width = 8, height = 8, radius = 999, fill = #3FB950 }
+            text title       { size = 12, color = #C9D1D9 }
+            text pod_short   { size = 10, color = #6E7681, family = "JetBrains Mono" }
+            frame status_badge {
+                padding = [1, 6], radius = 3, fill = #0D1117, stroke = [1, #30363D]
+                text agent_status { size = 10, weight = medium, color = #8B949E, family = "JetBrains Mono" }
+            }
+        }
+
+        frame toolbar {
+            layout = horizontal, gap = 2, align = center
+            use pane_btn("⤡")    // Sync size
+            use pane_btn("⊡")    // Autopilot (Bot icon stand-in)
+            use pane_btn("◧")    // Split right
+            use pane_btn("◨")    // Split down
+            use pane_btn("↗")    // Popout
+            use pane_btn("⛶")    // Maximize
+            use pane_btn_close()
+        }
+    }
+}
+
+// ── ACP pane header (no Sync/Autopilot buttons) ────────────────────
+component acp_pane_header(title, pod_short, agent_status) {
+    frame {
+        width = fill, height = 32
+        fill = #161B22
+        padding = [0, 8]
+        layout = horizontal, justify = space-between, align = center
+        stroke = [1, #30363D]
+
+        frame left {
+            layout = horizontal, gap = 8, align = center
+            frame dot { width = 8, height = 8, radius = 999, fill = #58A6FF }
+            text title       { size = 12, color = #C9D1D9 }
+            text pod_short   { size = 10, color = #6E7681, family = "JetBrains Mono" }
+            frame status_badge {
+                padding = [1, 6], radius = 3, fill = #0D1117, stroke = [1, #30363D]
+                text agent_status { size = 10, weight = medium, color = #58A6FF, family = "JetBrains Mono" }
+            }
+        }
+
+        frame toolbar {
+            layout = horizontal, gap = 2, align = center
+            use pane_btn("◧")
+            use pane_btn("◨")
+            use pane_btn("↗")
+            use pane_btn("⛶")
+            use pane_btn_close()
+        }
+    }
+}
+
+component pg_shell_v2() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width  = 1920
+    height = 1040
+    fill   = #F6F8FA
+
+    frame app {
+        width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+        // ────── Disconnect banner ──────
+        frame banner {
+            width = fill, height = 32, fill = #FFEBE9
+            padding = [0, 16], layout = horizontal, align = center, gap = 8
+
+            frame dot { width = 8, height = 8, radius = 999, fill = #CF222E }
+            text "Connection lost. Reconnecting... (12s)" { size = 13, color = #CF222E }
+            frame spacer { width = fill }
+            text "Retry now →" { size = 13, weight = medium, color = #CF222E, text-decoration = underline }
+        }
+
+        // ────── 3-column body ──────
+        frame body {
+            width = fill, height = fill, layout = horizontal
+
+            // === ActivityBar 48px ===
+            frame activity_bar {
+                width = 48, height = fill, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                layout = vertical, align = center, padding = [12, 6], gap = 6
+
+                // Org switcher — replaces the previous AgentsMesh logo slot.
+                // Click opens a popover with current org + member orgs + "Create / Join".
+                frame org_switcher {
+                    width = 36, height = 36, radius = 8, fill = #0969DA
+                    layout = horizontal, justify = center, align = center
+                    text "D" { size = 16, weight = semibold, color = #FFFFFF }
+                }
+                frame gap_s { height = 12 }
+
+                use sh_nav_icon("▦")
+                use sh_nav_icon("#")
+                use sh_nav_icon_active(">_")
+                use sh_section_divider()
+                use sh_nav_icon("🎫")
+                use sh_nav_icon("↻")
+                use sh_nav_icon("⚘")
+
+                frame spacer { height = fill }
+                use sh_nav_icon("⌘")
+                use sh_nav_icon("?")
+                use sh_nav_icon("⚙")
+                use sh_nav_icon("👤")
+            }
+
+            // === Sidebar 280px ===
+            frame sidebar {
+                width = 280, height = fill, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = vertical
+
+                // Search + New Pod
+                frame search_area {
+                    width = fill, padding = 12, layout = vertical, gap = 8
+                    frame search {
+                        width = fill, height = 32, padding = [0, 10], radius = 6
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = horizontal, align = center, gap = 8
+                        text "🔍" { size = 13, color = #868F99 }
+                        text "Search — try agent:codex, mode:acp, repo:demo-api" { size = 13, color = #868F99 }
+                    }
+                    frame btn_new {
+                        width = fill, height = 30, radius = 6, fill = #0969DA
+                        layout = horizontal, justify = center, align = center, gap = 6
+                        text "+" { size = 14, weight = medium, color = #FFFFFF }
+                        text "New Pod" { size = 13, weight = medium, color = #FFFFFF }
+                    }
+                }
+
+                // Scope filter tabs — Mine (I created) / Others (visible to me) / Completed (terminal states)
+                frame filter_tabs {
+                    width = fill, padding = [6, 12]
+                    stroke = [1, #D0D7DE]
+                    layout = horizontal, gap = 4, align = center
+
+                    frame tab_mine {
+                        padding = [4, 10], radius = 4, fill = #E4E9EE
+                        layout = horizontal, align = center
+                        text "Mine" { size = 12, weight = medium, color = #1F2328 }
+                    }
+                    frame tab_others {
+                        padding = [4, 10], radius = 4
+                        layout = horizontal, align = center
+                        text "Others" { size = 12, weight = normal, color = #656D76 }
+                    }
+                    frame tab_completed {
+                        padding = [4, 10], radius = 4
+                        layout = horizontal, align = center
+                        text "Completed" { size = 12, weight = normal, color = #656D76 }
+                    }
+                }
+
+                // List (pre-filtered by current tab = Mine; sorted by status priority + recency)
+                frame mine_items {
+                    width = fill, padding = [8, 16], layout = vertical, gap = 2
+                    use pod_row_active(#3FB950, "pod-abc-123", "claude-code · pty · DEV-1")
+                    use pod_row_active(#58A6FF, "pod-def-456", "codex · acp · DEV-2")
+                    use pod_row(#D29922, "pod-ghi-789",       "aider · pty · DEV-3")
+                    use pod_row(#D29922, "pod-jkl-000",       "claude-code · acp · —")
+                    use pod_row(#6E7681, "pod-mno-111",       "codex · pty · DEV-4")
+                }
+
+                frame spacer { height = fill }
+
+                // Sidebar footer — sort + overflow menu (refresh hidden inside)
+                frame sidebar_footer {
+                    width = fill, padding = [10, 12]
+                    stroke = [1, #D0D7DE]
+                    layout = horizontal, align = center, gap = 8
+
+                    text "Sort: recent" { size = 12, color = #656D76 }
+                    frame spacer { width = fill }
+                    frame more_btn {
+                        width = 24, height = 22, radius = 4
+                        layout = horizontal, justify = center, align = center
+                        text "⋯" { size = 14, weight = semibold, color = #656D76 }
+                    }
+                }
+            }
+
+            // === Main area ===
+            frame main {
+                width = fill, height = fill, fill = #0D1117, layout = vertical
+
+                // 2 panes side-by-side (SplitTreeRenderer horizontal split)
+                frame pane_area {
+                    width = fill, height = 720, layout = horizontal
+
+                    // LEFT PANE — PTY mode
+                    frame pane_pty {
+                        width = fill, height = fill, layout = vertical
+
+                        use pty_pane_header("Claude Code · src/auth.ts review", "abc-123", "executing")
+
+                        frame term_body {
+                            width = fill, height = fill, fill = #0D1117
+                            padding = 16, layout = vertical, gap = 4
+
+                            text "$ claude-code review src/auth.ts"
+                                { size = 13, color = #C9D1D9, family = "JetBrains Mono" }
+                            text "→ Analyzing authentication flow..."
+                                { size = 13, color = #8B949E, family = "JetBrains Mono" }
+                            text "→ Found 2 potential issues:"
+                                { size = 13, color = #8B949E, family = "JetBrains Mono" }
+                            text "  1. Missing rate limit on /api/login"
+                                { size = 13, color = #F85149, family = "JetBrains Mono" }
+                            text "  2. JWT secret could be longer (32 → 64 bytes)"
+                                { size = 13, color = #D29922, family = "JetBrains Mono" }
+                            frame cursor_row {
+                                layout = horizontal, gap = 0, align = center
+                                text "$ " { size = 13, color = #C9D1D9, family = "JetBrains Mono" }
+                                frame cursor { width = 8, height = 16, fill = #3FB950 }
+                            }
+                        }
+                    }
+
+                    // Resize handle
+                    frame resize_handle {
+                        width = 4, height = fill, fill = #1C2128
+                    }
+
+                    // RIGHT PANE — ACP mode
+                    frame pane_acp {
+                        width = fill, height = fill, layout = vertical
+
+                        use acp_pane_header("Codex · Design API shape", "def-456", "processing")
+
+                        // Activity stream (chat-style)
+                        frame acp_body {
+                            width = fill, height = fill, fill = #0D1117
+                            padding = 12, layout = vertical, gap = 10
+
+                            // User message
+                            frame msg_user {
+                                layout = vertical, gap = 4, align = end
+                                frame bubble_user {
+                                    padding = [8, 12], radius = 8, fill = #1F6FEB
+                                    text "Design the API shape for /tickets/:id/pods endpoint"
+                                        { size = 12, color = #FFFFFF, wrap = true, width = 340 }
+                                }
+                                text "you · 14:32" { size = 10, color = #6E7681 }
+                            }
+
+                            // Agent tool call card
+                            frame tool_card {
+                                padding = 10, radius = 8, fill = #161B22, stroke = [1, #30363D]
+                                layout = vertical, gap = 6
+
+                                frame header {
+                                    layout = horizontal, gap = 6, align = center
+                                    text "🔧" { size = 12, color = #58A6FF }
+                                    text "read_file" { size = 12, weight = medium, color = #58A6FF, family = "JetBrains Mono" }
+                                    frame badge {
+                                        padding = [1, 6], radius = 3, fill = #0C2D5F
+                                        text "✓ 142 lines" { size = 10, color = #58A6FF, family = "JetBrains Mono" }
+                                    }
+                                }
+                                text "src/api/tickets.ts" { size = 11, color = #8B949E, family = "JetBrains Mono" }
+                            }
+
+                            // Agent message
+                            frame msg_agent {
+                                layout = vertical, gap = 4
+                                frame bubble_agent {
+                                    padding = [8, 12], radius = 8, fill = #161B22, stroke = [1, #30363D]
+                                    text "I'll design a RESTful endpoint. Need: GET (list pods) + POST (spawn pod). Let me draft the request/response..."
+                                        { size = 12, color = #C9D1D9, wrap = true, width = 400 }
+                                }
+                                text "codex · 14:33" { size = 10, color = #6E7681 }
+                            }
+
+                            // Processing indicator
+                            frame processing {
+                                layout = horizontal, gap = 6, align = center
+                                frame dots {
+                                    width = 24, height = 16, layout = horizontal, gap = 4, align = center
+                                    frame d1 { width = 4, height = 4, radius = 999, fill = #58A6FF }
+                                    frame d2 { width = 4, height = 4, radius = 999, fill = #58A6FF }
+                                    frame d3 { width = 4, height = 4, radius = 999, fill = #58A6FF }
+                                }
+                                text "thinking..." { size = 11, color = #8B949E }
+                            }
+                        }
+
+                        // ACP prompt input area (bottom)
+                        frame acp_input {
+                            width = fill, height = 96, fill = #161B22
+                            stroke = [1, #30363D]
+                            padding = 12, layout = vertical, gap = 8
+
+                            frame perm_selector {
+                                layout = horizontal, gap = 6, align = center
+                                text "Permission mode:" { size = 11, color = #8B949E }
+                                frame mode {
+                                    padding = [2, 8], radius = 4, fill = #0C2D5F
+                                    text "ask ⌵" { size = 11, weight = medium, color = #58A6FF }
+                                }
+                                frame spacer { width = fill }
+                                text "⌘⏎ to send" { size = 10, color = #6E7681 }
+                            }
+                            frame input_row {
+                                width = fill, height = 40, radius = 6
+                                fill = #0D1117, stroke = [1, #30363D]
+                                padding = [10, 12], layout = horizontal, align = center, gap = 8
+
+                                text "Send a message..." { size = 12, color = #6E7681 }
+                                frame spacer { width = fill }
+                                frame btn_send {
+                                    width = 28, height = 24, radius = 4, fill = #1F6FEB
+                                    layout = horizontal, justify = center, align = center
+                                    text "↑" { size = 12, weight = semibold, color = #FFFFFF }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Bottom Panel — 5 tabs
+                frame bottom_panel {
+                    width = fill, height = 240, fill = #FFFFFF
+                    stroke = [1, #D0D7DE], layout = vertical
+
+                    frame tabs_bar {
+                        width = fill, height = 40
+                        padding = [0, 16], layout = horizontal, gap = 0, align = center
+                        stroke = [1, #D0D7DE]
+
+                        frame tab_active {
+                            padding = [10, 14]
+                            layout = vertical, align = center, gap = 8
+                            text "Activity" { size = 13, weight = semibold, color = #0969DA }
+                            shape underline { type = rectangle, width = 52, height = 2, fill = #0969DA, radius = 2 }
+                        }
+                        frame tab {
+                            padding = [10, 14]
+                            text "Channels" { size = 13, color = #656D76 }
+                        }
+                        frame tab2 {
+                            padding = [10, 14]
+                            text "Autopilot" { size = 13, color = #656D76 }
+                        }
+                        frame tab3 {
+                            padding = [10, 14]
+                            text "Delivery" { size = 13, color = #656D76 }
+                        }
+                        frame tab4 {
+                            padding = [10, 14]
+                            text "Info" { size = 13, color = #656D76 }
+                        }
+
+                        frame spacer { width = fill }
+                        frame collapse_btn {
+                            width = 28, height = 24, radius = 4
+                            layout = horizontal, justify = center, align = center
+                            text "⌄" { size = 14, color = #656D76 }
+                        }
+                    }
+
+                    frame tab_content {
+                        width = fill, height = fill, padding = 12
+                        layout = vertical, gap = 6
+
+                        text "14:33  pod-abc-123  agent_status: executing → idle"
+                            { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                        text "14:32  pod-def-456  acp.prompt: 'Design the API shape...'"
+                            { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                        text "14:31  pod-abc-123  pod_created · runner-local · sandbox: /tmp/worktrees/abc-123"
+                            { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                        text "14:30  pod-abc-123  pod_reserve · agent: claude-code · mode: pty"
+                            { size = 12, color = #868F99, family = "JetBrains Mono" }
+                    }
+                }
+            }
+        }
+    }
+}
+}
+
+
+component pg_shell_v2_framed() {
+    frame outer {
+        width = 2000
+        height = 1120
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_shell_v2()
+    }
+}
+
+frame root {
+    use pg_shell_v2_framed()
+}

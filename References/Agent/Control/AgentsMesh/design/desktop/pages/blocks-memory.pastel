@@ -1,0 +1,265 @@
+// Blocks — Agent memory retrieval.
+// Semantic search overlay (Cmd+K style) — used by both humans and agents via MCP memory.retrieve.
+// Results grouped by match type (direct hit vs semantic nearest) with similarity scores.
+
+canvas "blocks_memory" {
+    width      = 2000
+    height     = 1000
+    background = #1F2328
+}
+
+// Result block (a single retrieved block with preview + score)
+component result_row(type_chip, type_bg, type_fg, title, snippet, score_pct, score_color, source_tag, is_active) {
+    frame {
+        width = fill, padding = 14, radius = 8
+        fill = is_active, stroke = [1, #D0D7DE]
+        layout = vertical, gap = 6
+
+        frame top {
+            layout = horizontal, gap = 8, align = center
+            frame tp { padding = [1, 8], radius = 999, fill = type_bg
+                text type_chip { size = 10, weight = medium, color = type_fg, family = "JetBrains Mono" }
+            }
+            text title { size = 13, weight = semibold, color = #1F2328, width = fill }
+            frame score_pill { padding = [1, 8], radius = 4, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                text score_pct { size = 10, weight = medium, color = score_color, family = "JetBrains Mono" }
+            }
+        }
+        text snippet { size = 12, color = #656D76, wrap = true, width = 840, line-height = 18 }
+        frame meta_row {
+            layout = horizontal, gap = 12, align = center
+            text source_tag { size = 10, color = #868F99, family = "JetBrains Mono" }
+        }
+    }
+}
+
+component pg_blocks_memory() {
+frame root {
+        width = 1920, height = 920
+        fill   = #3A3F47
+        radius = 12
+        stroke = [2, #6E7681]
+        shadow = [0, 8, 24, #00000080]
+        layout = horizontal, justify = center, align = start
+        padding = [40, 40, 40, 40]
+
+        // Memory panel (centered, no absolute positioning)
+        frame panel {
+            width = 880, radius = 14
+            fill = #FFFFFF
+            stroke = [1, #D0D7DE]
+            shadow = [0, 20, 60, #00000080]
+            layout = vertical
+
+            // Search bar
+            frame sbar {
+                width = fill, padding = 20
+                layout = horizontal, align = center, gap = 14
+
+                text "🔍" { size = 18, color = #868F99 }
+                text "why did the auth migration break staging last quarter" { size = 17, color = #1F2328 }
+                frame cursor { width = 2, height = 22, fill = #0969DA }
+                frame spacer { width = fill }
+                frame esc_chip {
+                    padding = [2, 8], radius = 4, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                    text "ESC" { size = 10, color = #656D76, family = "JetBrains Mono" }
+                }
+            }
+
+            // Mode + scope chips
+            frame scope_row {
+                width = fill, padding = [0, 20, 14, 20]
+                layout = horizontal, gap = 6, align = center
+
+                frame chip_all {
+                    padding = [3, 10], radius = 999, fill = #0969DA
+                    text "Semantic (Memory)" { size = 11, weight = medium, color = #FFFFFF }
+                }
+                frame chip_lex {
+                    padding = [3, 10], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                    text "Exact (lexical)" { size = 11, color = #656D76 }
+                }
+                frame sep_dot { width = 4, height = 4, radius = 999, fill = #D0D7DE }
+
+                frame chip_type_all {
+                    padding = [3, 10], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                    text "All types" { size = 11, color = #656D76 }
+                }
+                frame chip_incident {
+                    padding = [3, 10], radius = 999, fill = #FFEBE9, stroke = [1, #CF222E]
+                    text "type:incident" { size = 11, weight = medium, color = #CF222E, family = "JetBrains Mono" }
+                }
+                frame chip_okr {
+                    padding = [3, 10], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                    text "type:okr" { size = 11, color = #656D76, family = "JetBrains Mono" }
+                }
+                frame chip_task {
+                    padding = [3, 10], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                    text "type:task" { size = 11, color = #656D76, family = "JetBrains Mono" }
+                }
+
+                frame spacer { width = fill }
+
+                text "top-k · 8" { size = 11, color = #868F99, family = "JetBrains Mono" }
+            }
+
+            shape d1 { type = rectangle, width = 880, height = 1, fill = #E4E9EE }
+
+            // Results area
+            frame results {
+                width = fill, padding = [8, 12], layout = vertical, gap = 0
+
+                // Section: semantic matches
+                frame section_head {
+                    width = fill, padding = [10, 12]
+                    layout = horizontal, justify = space-between, align = center
+                    text "SEMANTIC MATCHES · 5" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                    text "similarity ≥ 0.60" { size = 10, color = #868F99, family = "JetBrains Mono" }
+                }
+
+                frame items {
+                    width = fill, padding = [0, 4], layout = vertical, gap = 6
+
+                    use result_row(
+                        "incident", #FFEBE9, #CF222E,
+                        "Staging auth outage · 2026-03-18",
+                        "JWT rotation job raced with the deploy. Root cause: /.well-known/jwks.json cached for 24h on the CDN; old keys dropped before cache expiry. Fix: add 48h grace window, document in runbook.",
+                        "0.91", #1A7F37,
+                        "retrieved by Dev User · just now · block-inc-0318",
+                        #DDF4FF
+                    )
+                    use result_row(
+                        "okr",      #F5F0FF, #8250DF,
+                        "Ship authentication v2",
+                        "Q1 OKR · on track at 85%. Contains rel:retro_of link to incident block (above). Owner Dev User · Progress updated 2h ago.",
+                        "0.82", #1A7F37,
+                        "block-okr-0001 · linked via rel:retro_of → block-inc-0318",
+                        transparent
+                    )
+                    use result_row(
+                        "task",     #DAFBE1, #1A7F37,
+                        "Add 48h grace window to jwks.json publication",
+                        "Follow-up from staging outage. Created by @claude-code · status: done · PR demo-api#142 · closed 2026-03-22.",
+                        "0.76", #D29922,
+                        "block-tsk-0142 · owner claude-code · on pod-abc-123",
+                        transparent
+                    )
+                    use result_row(
+                        "paragraph", #F6F8FA, #656D76,
+                        "Runbook · Rotating JWT keys in production",
+                        "Step 3: announce rotation window in #oncall at T-24h. Step 4: monitor /.well-known/jwks.json 200 rate on Grafana board 'api-latency'. Step 5: only drop old keys after 48h of zero 401s on old kid.",
+                        "0.68", #D29922,
+                        "page: Runbooks › On-call SOP · block-run-jwt",
+                        transparent
+                    )
+                    use result_row(
+                        "incident", #FFEBE9, #CF222E,
+                        "Production auth hiccup · 2025-11-02",
+                        "Brief spike of 401s after monthly key rotation; self-healed in 4min. No user reports. Tagged as precursor / same pattern as 2026-03-18.",
+                        "0.62", #D29922,
+                        "block-inc-1102 · tagged: auth · rotation",
+                        transparent
+                    )
+                }
+
+                shape d2 { type = rectangle, width = 850, height = 1, fill = #E4E9EE }
+
+                // Section: pods currently touching this topic
+                frame section_head_2 {
+                    width = fill, padding = [10, 12]
+                    layout = horizontal, justify = space-between, align = center
+                    text "LIVE · PODS WORKING ON RELATED BLOCKS" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                    text "follows block_refs · rel:working_on" { size = 10, color = #868F99, family = "JetBrains Mono" }
+                }
+
+                frame live_row {
+                    width = fill, padding = [0, 16, 10, 16]
+                    layout = horizontal, gap = 10
+
+                    frame card1 {
+                        width = fill, padding = 10, radius = 8, fill = #FFFFFF, stroke = [1, #E4E9EE]
+                        layout = vertical, gap = 4
+
+                        frame h { layout = horizontal, gap = 6, align = center
+                            frame dot { width = 8, height = 8, radius = 999, fill = #3FB950 }
+                            text "pod-abc-123" { size = 12, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                        }
+                        text "claude-code · drafting patch for rotation race"
+                            { size = 11, color = #656D76, family = "JetBrains Mono", wrap = true, width = 250 }
+                    }
+                    frame card2 {
+                        width = fill, padding = 10, radius = 8, fill = #FFFFFF, stroke = [1, #E4E9EE]
+                        layout = vertical, gap = 4
+
+                        frame h { layout = horizontal, gap = 6, align = center
+                            frame dot { width = 8, height = 8, radius = 999, fill = #58A6FF }
+                            text "pod-def-456" { size = 12, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                        }
+                        text "codex · analyzing Grafana 2026-03-18 spike"
+                            { size = 11, color = #656D76, family = "JetBrains Mono", wrap = true, width = 250 }
+                    }
+                }
+            }
+
+            shape d3 { type = rectangle, width = 880, height = 1, fill = #E4E9EE }
+
+            // Footer: keyboard + MCP hint
+            frame footer {
+                width = fill, padding = [10, 20]
+                layout = horizontal, justify = space-between, align = center
+
+                frame hints { layout = horizontal, gap = 14, align = center
+                    frame h { layout = horizontal, gap = 4, align = center
+                        frame k { padding = [1, 6], radius = 3, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                            text "↑↓" { size = 10, color = #656D76, family = "JetBrains Mono" }
+                        }
+                        text "navigate" { size = 11, color = #868F99 }
+                    }
+                    frame h2 { layout = horizontal, gap = 4, align = center
+                        frame k { padding = [1, 6], radius = 3, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                            text "⏎" { size = 10, color = #656D76, family = "JetBrains Mono" }
+                        }
+                        text "open block" { size = 11, color = #868F99 }
+                    }
+                    frame h3 { layout = horizontal, gap = 4, align = center
+                        frame k { padding = [1, 6], radius = 3, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                            text "⌘⏎" { size = 10, color = #656D76, family = "JetBrains Mono" }
+                        }
+                        text "inject into active pod" { size = 11, color = #868F99 }
+                    }
+                    frame h4 { layout = horizontal, gap = 4, align = center
+                        frame k { padding = [1, 6], radius = 3, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                            text "TAB" { size = 10, color = #656D76, family = "JetBrains Mono" }
+                        }
+                        text "switch scope" { size = 11, color = #868F99 }
+                    }
+                }
+
+                frame mcp_tag {
+                    padding = [3, 10], radius = 999, fill = #DDF4FF, stroke = [1, #0969DA]
+                    layout = horizontal, gap = 6, align = center
+                    text "🤖" { size = 11 }
+                    text "MCP: memory.retrieve" { size = 11, weight = medium, color = #0550AE, family = "JetBrains Mono" }
+                }
+            }
+        }
+    }
+}
+
+
+component pg_blocks_memory_framed() {
+    frame outer {
+        width = 2000
+        height = 1000
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_blocks_memory()
+    }
+}
+
+frame root {
+    use pg_blocks_memory_framed()
+}

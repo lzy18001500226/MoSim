@@ -1,0 +1,72 @@
+// iOS 26 Section Header — softer than legacy iOS (no uppercase, lighter weight).
+// Used inside grouped lists. Spacing 32pt before, 8pt after. Text 13pt #6D6D72.
+
+canvas "ios_section_header" {
+    width = 920
+    height = 540
+    background = #1F2328
+}
+
+component section_hdr(label) {
+    frame {
+        width = fill, height = 32, padding = [4, 16, 8, 16]
+        layout = horizontal, justify = space-between, align = end
+        text label { size = 13, weight = normal, color = #6D6D72, text-transform = uppercase, letter-spacing = 0.5 }
+    }
+}
+
+component section_hdr_with_count(label, count) {
+    frame {
+        width = fill, height = 32, padding = [4, 16, 8, 16]
+        layout = horizontal, justify = space-between, align = end
+        text label { size = 13, weight = normal, color = #6D6D72, text-transform = uppercase, letter-spacing = 0.5 }
+        text count { size = 13, color = #8E8E93 }
+    }
+}
+
+component section_hdr_with_action(label, action_label) {
+    frame {
+        width = fill, height = 32, padding = [4, 16, 8, 16]
+        layout = horizontal, justify = space-between, align = end
+        text label { size = 13, weight = normal, color = #6D6D72, text-transform = uppercase, letter-spacing = 0.5 }
+        text action_label { size = 15, color = #0969DA }
+    }
+}
+
+component label_anno(text_value) {
+    text text_value { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+}
+
+component pg_section_header() {
+frame root {
+    stroke = [2, #6E7681]
+    radius = 16
+    shadow = [0, 8, 24, #00000080]
+    width = 840, height = 480, fill = #F2F2F7
+    padding = 32, layout = vertical, gap = 16
+
+    text "Section Header" { size = 24, weight = semibold, color = #1F2328 }
+    text "32pt height. 13pt uppercase #6D6D72 with 0.5pt letter-spacing. Use 32pt top spacing before each section, 8pt bottom spacing before the cell card."
+        { size = 13, color = #656D76, wrap = true, width = 740 }
+
+    use label_anno("PLAIN")
+    frame w { width = 393, layout = vertical, use section_hdr("Active") }
+
+    use label_anno("WITH COUNT")
+    frame w2 { width = 393, layout = vertical, use section_hdr_with_count("Channels", "8") }
+
+    use label_anno("WITH ACTION")
+    frame w3 { width = 393, layout = vertical, use section_hdr_with_action("Linked", "See All") }
+}
+}
+
+
+component pg_section_header_framed() {
+    frame outer {
+        width = 920, height = 540, fill = #1F2328
+        padding = 40, layout = horizontal, justify = center, align = center
+        use pg_section_header()
+    }
+}
+
+frame root { use pg_section_header_framed() }

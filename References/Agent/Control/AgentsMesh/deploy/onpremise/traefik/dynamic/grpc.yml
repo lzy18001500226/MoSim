@@ -1,0 +1,25 @@
+# =============================================================================
+# gRPC mTLS Passthrough Configuration
+# =============================================================================
+#
+# Configures Traefik to passthrough TLS for gRPC connections.
+# mTLS verification is handled by the backend, not Traefik.
+#
+# Flow: Runner -> Traefik (TLS passthrough) -> Backend (mTLS verification)
+# =============================================================================
+
+tcp:
+  routers:
+    grpc-mtls:
+      entryPoints:
+        - grpc
+      rule: "HostSNI(`*`)"
+      service: backend-grpc
+      tls:
+        passthrough: true  # Pass TLS through to backend for mTLS handling
+
+  services:
+    backend-grpc:
+      loadBalancer:
+        servers:
+          - address: "backend:9090"

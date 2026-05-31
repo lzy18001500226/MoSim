@@ -1,0 +1,530 @@
+// Loops — automated workflow list.
+// Each Loop spawns a Pod on a cron / event trigger, executes a prompt, and optionally iterates via AutopilotController.
+// Key difference from current impl: sidebar has a prominent [+ New Loop] button (fixes missing-creator bug).
+
+canvas "loops" {
+    width = 2000
+    height = 1160
+    background = #1F2328
+}
+
+component lp_nav_icon_active(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = #DDF4FF, stroke = [1, #0969DA]
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, weight = medium, color = #0969DA }
+    }
+}
+component lp_nav_icon(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = transparent
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, color = #656D76 }
+    }
+}
+component lp_section_divider() { shape { type = rectangle, width = 24, height = 1, fill = #D0D7DE } }
+
+// Sidebar row (loop in list)
+component sb_loop(name, slug, last_meta, dot_color) {
+    frame {
+        width = fill, padding = [8, 10], radius = 6
+        layout = horizontal, gap = 8, align = center
+
+        frame dot { width = 8, height = 8, radius = 999, fill = dot_color }
+        frame stack { width = fill, layout = vertical, gap = 2
+            frame line1 {
+                width = fill, layout = horizontal, justify = space-between, align = center, gap = 8
+                text name      { size = 13, color = #1F2328 }
+                text last_meta { size = 10, color = #868F99, family = "JetBrains Mono" }
+            }
+            text slug { size = 11, color = #868F99, family = "JetBrains Mono" }
+        }
+    }
+}
+component sb_loop_active(name, slug, last_meta) {
+    frame {
+        width = fill, padding = [8, 10], radius = 6, fill = #E4E9EE
+        layout = horizontal, gap = 8, align = center
+
+        frame dot { width = 8, height = 8, radius = 999, fill = #3FB950 }
+        frame stack { width = fill, layout = vertical, gap = 2
+            frame line1 {
+                width = fill, layout = horizontal, justify = space-between, align = center, gap = 8
+                text name      { size = 13, weight = semibold, color = #1F2328 }
+                text last_meta { size = 10, color = #656D76, family = "JetBrains Mono" }
+            }
+            text slug { size = 11, color = #656D76, family = "JetBrains Mono" }
+        }
+    }
+}
+
+// Main-row: a Loop card (hybrid table-like row)
+component run_dot(color) {
+    frame { width = 8, height = 8, radius = 999, fill = color }
+}
+
+component pg_loops() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width = 1920, height = 1080, fill = #F6F8FA
+
+    frame app {
+        width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+        frame body {
+            width = fill, height = fill, layout = horizontal
+
+            // --- ActivityBar ---
+            frame activity_bar {
+                width = 48, height = fill, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                layout = vertical, align = center, padding = [12, 6], gap = 6
+
+                frame org_switcher {
+                    width = 36, height = 36, radius = 8, fill = #0969DA
+                    layout = horizontal, justify = center, align = center
+                    text "D" { size = 16, weight = semibold, color = #FFFFFF }
+                }
+                frame gap_s { height = 12 }
+
+                use lp_nav_icon("▦")
+                use lp_nav_icon("#")
+                use lp_nav_icon(">_")
+                use lp_section_divider()
+                use lp_nav_icon("🎫")
+                use lp_nav_icon_active("↻")
+                use lp_nav_icon("⚘")
+
+                frame spacer { height = fill }
+                use lp_nav_icon("⌘")
+                use lp_nav_icon("?")
+                use lp_nav_icon("⚙")
+                use lp_nav_icon("👤")
+            }
+
+            // --- Sidebar: loop list ---
+            frame sidebar {
+                width = 280, height = fill, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = vertical
+
+                // Search + New Loop
+                frame search_area {
+                    width = fill, padding = 12, layout = vertical, gap = 8
+                    frame search {
+                        width = fill, height = 32, padding = [0, 10], radius = 6
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = horizontal, align = center, gap = 8
+                        text "🔍" { size = 13, color = #868F99 }
+                        text "Search loops..." { size = 13, color = #868F99 }
+                    }
+                    frame btn_new {
+                        width = fill, height = 30, radius = 6, fill = #0969DA
+                        layout = horizontal, justify = center, align = center, gap = 6
+                        text "+"         { size = 14, weight = medium, color = #FFFFFF }
+                        text "New Loop"  { size = 13, weight = medium, color = #FFFFFF }
+                    }
+                }
+
+                // Group: Enabled
+                frame group_enabled {
+                    width = fill, padding = [12, 16, 6, 16]
+                    text "ENABLED" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                }
+                frame enabled_items {
+                    width = fill, padding = [0, 8], layout = vertical, gap = 2
+
+                    use sb_loop_active("Daily code review",    "daily-review",  "22h")
+                    use sb_loop       ("Nightly test runner",  "nightly-tests", "6h",        #3FB950)
+                    use sb_loop       ("Doc sync on PR merge", "doc-sync",      "event",     #3FB950)
+                    use sb_loop       ("Release note drafter", "release-notes", "Fri",       #3FB950)
+                }
+
+                // Group: Disabled
+                frame group_disabled {
+                    width = fill, padding = [12, 16, 6, 16]
+                    text "DISABLED" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                }
+                frame disabled_items {
+                    width = fill, padding = [0, 8], layout = vertical, gap = 2
+
+                    use sb_loop("Security audit", "sec-audit",  "paused", #8B949E)
+                    use sb_loop("Perf benchmark", "perf-bench", "paused", #8B949E)
+                }
+
+                // Group: Archived
+                frame group_archived {
+                    width = fill, padding = [12, 16, 6, 16]
+                    text "ARCHIVED" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                }
+                frame archived_items {
+                    width = fill, padding = [0, 8], layout = vertical, gap = 2
+
+                    use sb_loop("Legacy dep updater", "legacy-deps", "—", #B1B7BE)
+                }
+
+                frame spacer { height = fill }
+                frame sidebar_footer {
+                    width = fill, padding = [10, 12], stroke = [1, #D0D7DE]
+                    layout = horizontal, align = center, gap = 8
+                    text "Sort: recently run" { size = 12, color = #656D76 }
+                    frame spacer_r { width = fill }
+                    frame more { width = 24, height = 22, radius = 4
+                        layout = horizontal, justify = center, align = center
+                        text "⋯" { size = 14, weight = semibold, color = #656D76 }
+                    }
+                }
+            }
+
+            // --- Main: selected loop detail (master-detail pattern, like Workspace/Channels) ---
+            frame main {
+                width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+                // Title + big actions — no breadcrumb, sidebar shows which Loop is selected
+                frame header {
+                    width = fill, padding = [18, 32]
+                    stroke = [1, #E4E9EE]
+                    layout = horizontal, justify = space-between, align = start
+
+                    frame left {
+                        layout = vertical, gap = 8, width = 900
+
+                        frame title_row {
+                            layout = horizontal, gap = 10, align = center
+                            frame dot { width = 10, height = 10, radius = 999, fill = #3FB950 }
+                            text "Daily code review"  { size = 20, weight = semibold, color = #1F2328 }
+                            frame pill { padding = [2, 10], radius = 999, fill = #DAFBE1
+                                text "enabled" { size = 11, weight = medium, color = #1A7F37 }
+                            }
+                            frame mode_pill { padding = [2, 10], radius = 999, fill = #DDF4FF
+                                text "autopilot" { size = 11, weight = medium, color = #0550AE }
+                            }
+                        }
+
+                        text "daily-review"     { size = 12, color = #868F99, family = "JetBrains Mono" }
+
+                        // Meta row
+                        frame meta {
+                            layout = horizontal, gap = 20, align = center
+
+                            frame m { layout = horizontal, gap = 6, align = center
+                                text "Schedule" { size = 12, color = #868F99 }
+                                text "every day at 08:00 (UTC+8)" { size = 12, color = #1F2328 }
+                            }
+                            frame m { layout = horizontal, gap = 6, align = center
+                                text "Next"     { size = 12, color = #868F99 }
+                                text "in 22h 8m" { size = 12, weight = medium, color = #1F2328 }
+                            }
+                            frame m { layout = horizontal, gap = 6, align = center
+                                text "Agent"    { size = 12, color = #868F99 }
+                                text "claude-code · pty" { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                            }
+                            frame m { layout = horizontal, gap = 6, align = center
+                                text "Repo"     { size = 12, color = #868F99 }
+                                text "demo-api" { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                            }
+                        }
+                    }
+
+                    // Actions
+                    frame actions {
+                        layout = vertical, gap = 8, align = end, width = 240
+
+                        frame btn_run_now {
+                            width = fill, height = 40, radius = 8, fill = #0969DA
+                            layout = horizontal, justify = center, align = center, gap = 8
+                            shadow = [0, 2, 6, #0969DA40]
+
+                            text "▶"        { size = 13, weight = semibold, color = #FFFFFF }
+                            text "Run now"  { size = 14, weight = semibold, color = #FFFFFF }
+                        }
+                        frame sec_actions {
+                            width = fill, layout = horizontal, gap = 6, justify = end
+                            frame btn_disable {
+                                height = 30, padding = [0, 12], radius = 6
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = horizontal, justify = center, align = center
+                                text "Disable" { size = 13, color = #1F2328 }
+                            }
+                            frame btn_edit {
+                                height = 30, padding = [0, 12], radius = 6
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = horizontal, justify = center, align = center
+                                text "Edit" { size = 13, color = #1F2328 }
+                            }
+                            frame btn_more {
+                                width = 30, height = 30, radius = 6
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = horizontal, justify = center, align = center
+                                text "⋯" { size = 14, color = #656D76 }
+                            }
+                        }
+                    }
+                }
+
+                // Tab bar
+                frame tabs {
+                    width = fill, padding = [0, 32]
+                    layout = horizontal, gap = 0, align = center
+                    stroke = [1, #E4E9EE]
+
+                    frame t_active {
+                        padding = [10, 14]
+                        layout = vertical, align = center, gap = 6
+                        text "Runs"   { size = 13, weight = semibold, color = #1F2328 }
+                        shape u { type = rectangle, width = 36, height = 2, fill = #0969DA, radius = 2 }
+                    }
+                    frame t {
+                        padding = [10, 14]
+                        text "Prompt & config" { size = 13, color = #656D76 }
+                    }
+                    frame t {
+                        padding = [10, 14]
+                        text "Autopilot rules" { size = 13, color = #656D76 }
+                    }
+                    frame t {
+                        padding = [10, 14]
+                        text "History" { size = 13, color = #656D76 }
+                    }
+                    frame t {
+                        padding = [10, 14]
+                        text "Permissions" { size = 13, color = #656D76 }
+                    }
+                }
+
+                // Content: two-column
+                frame content {
+                    width = fill, height = fill, padding = [20, 32]
+                    layout = horizontal, gap = 24
+
+                    // Left: Runs list (recent)
+                    frame runs_col {
+                        width = fill, layout = vertical, gap = 12
+
+                        frame section_head {
+                            width = fill, layout = horizontal, justify = space-between, align = center
+                            text "Recent runs" { size = 14, weight = semibold, color = #1F2328 }
+                            text "Showing last 6 · View all →" { size = 12, color = #0969DA }
+                        }
+
+                        // Run row template — success
+                        frame run_s1 {
+                            width = fill, padding = 12, radius = 8
+                            fill = #FFFFFF, stroke = [1, #E4E9EE]
+                            layout = horizontal, gap = 12, align = center
+
+                            use run_dot(#3FB950)
+                            frame info { layout = vertical, gap = 2, width = 320
+                                text "#142 · completed"             { size = 13, weight = medium, color = #1F2328 }
+                                text "Today 08:00 · 4m 12s · 3 iterations · cron" { size = 11, color = #868F99 }
+                            }
+                            frame pod_link { layout = vertical, gap = 2, width = 200
+                                text "pod-abc-123"    { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                                text "claude-code · pty" { size = 11, color = #868F99, family = "JetBrains Mono" }
+                            }
+                            frame artifact { layout = vertical, gap = 2, width = 240
+                                text "2 PRs reviewed · 1 comment left" { size = 12, color = #1F2328 }
+                                text "demo-api#142 · demo-api#143"     { size = 11, color = #0969DA, family = "JetBrains Mono" }
+                            }
+                            frame spacer { width = fill }
+                            text "Open →" { size = 12, color = #0969DA, weight = medium }
+                        }
+
+                        frame run_s2 {
+                            width = fill, padding = 12, radius = 8
+                            fill = #FFFFFF, stroke = [1, #E4E9EE]
+                            layout = horizontal, gap = 12, align = center
+
+                            use run_dot(#3FB950)
+                            frame info { layout = vertical, gap = 2, width = 320
+                                text "#141 · completed"             { size = 13, weight = medium, color = #1F2328 }
+                                text "Yesterday 08:00 · 3m 47s · 2 iterations · cron" { size = 11, color = #868F99 }
+                            }
+                            frame pod_link { layout = vertical, gap = 2, width = 200
+                                text "pod-zxy-987"    { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                                text "claude-code · pty" { size = 11, color = #868F99, family = "JetBrains Mono" }
+                            }
+                            frame artifact { layout = vertical, gap = 2, width = 240
+                                text "1 PR reviewed · no findings" { size = 12, color = #1F2328 }
+                                text "demo-api#139"                { size = 11, color = #0969DA, family = "JetBrains Mono" }
+                            }
+                            frame spacer { width = fill }
+                            text "Open →" { size = 12, color = #0969DA, weight = medium }
+                        }
+
+                        // Warning run (autopilot paused waiting for approval)
+                        frame run_w {
+                            width = fill, padding = 12, radius = 8
+                            fill = #FFFBEB, stroke = [1, #D29922]
+                            layout = horizontal, gap = 12, align = center
+
+                            use run_dot(#D29922)
+                            frame info { layout = vertical, gap = 2, width = 320
+                                text "#140 · waiting approval"      { size = 13, weight = medium, color = #9A6700 }
+                                text "2 days ago · autopilot paused at iteration 5/10" { size = 11, color = #9A6700 }
+                            }
+                            frame pod_link { layout = vertical, gap = 2, width = 200
+                                text "pod-mkq-555"    { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                                text "claude-code · pty" { size = 11, color = #868F99, family = "JetBrains Mono" }
+                            }
+                            frame artifact { layout = vertical, gap = 2, width = 240
+                                text "Breaker tripped: no-progress" { size = 12, color = #9A6700 }
+                                text "Needs human review"           { size = 11, color = #9A6700 }
+                            }
+                            frame spacer { width = fill }
+                            frame btn_resume {
+                                height = 28, padding = [0, 12], radius = 6, fill = #9A6700
+                                layout = horizontal, justify = center, align = center
+                                text "Review" { size = 12, weight = medium, color = #FFFFFF }
+                            }
+                        }
+
+                        // Error run
+                        frame run_e {
+                            width = fill, padding = 12, radius = 8
+                            fill = #FFFFFF, stroke = [1, #FFEBE9]
+                            layout = horizontal, gap = 12, align = center
+
+                            use run_dot(#CF222E)
+                            frame info { layout = vertical, gap = 2, width = 320
+                                text "#139 · failed"                { size = 13, weight = medium, color = #CF222E }
+                                text "3 days ago · exit code 1 · cron" { size = 11, color = #868F99 }
+                            }
+                            frame pod_link { layout = vertical, gap = 2, width = 200
+                                text "pod-oss-444"    { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                                text "claude-code · pty" { size = 11, color = #868F99, family = "JetBrains Mono" }
+                            }
+                            frame artifact { layout = vertical, gap = 2, width = 240
+                                text "Repo clone failed (auth)"      { size = 12, color = #CF222E }
+                                text "Check Git credential profile"  { size = 11, color = #CF222E }
+                            }
+                            frame spacer { width = fill }
+                            text "Logs →" { size = 12, color = #0969DA, weight = medium }
+                        }
+
+                        frame run_s3 {
+                            width = fill, padding = 12, radius = 8
+                            fill = #FFFFFF, stroke = [1, #E4E9EE]
+                            layout = horizontal, gap = 12, align = center
+
+                            use run_dot(#3FB950)
+                            frame info { layout = vertical, gap = 2, width = 320
+                                text "#138 · completed"             { size = 13, weight = medium, color = #1F2328 }
+                                text "4 days ago · 5m 02s · 4 iterations · manual" { size = 11, color = #868F99 }
+                            }
+                            frame pod_link { layout = vertical, gap = 2, width = 200
+                                text "pod-pqc-112"    { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                                text "claude-code · pty" { size = 11, color = #868F99, family = "JetBrains Mono" }
+                            }
+                            frame artifact { layout = vertical, gap = 2, width = 240
+                                text "3 PRs reviewed · 2 comments"  { size = 12, color = #1F2328 }
+                                text "demo-api#135 ·136 ·137"       { size = 11, color = #0969DA, family = "JetBrains Mono" }
+                            }
+                            frame spacer { width = fill }
+                            text "Open →" { size = 12, color = #0969DA, weight = medium }
+                        }
+                    }
+
+                    // Right: Stats + Prompt preview
+                    frame right_col {
+                        width = 360, layout = vertical, gap = 16
+
+                        // Stats card
+                        frame stats_card {
+                            width = fill, padding = 16, radius = 8
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = vertical, gap = 12
+
+                            text "Last 30 days" { size = 13, weight = semibold, color = #1F2328 }
+
+                            frame kv_row {
+                                width = fill, layout = horizontal, justify = space-between
+                                frame k { layout = vertical, gap = 2, align = start
+                                    text "Runs"        { size = 11, color = #868F99 }
+                                    text "28"          { size = 20, weight = semibold, color = #1F2328 }
+                                }
+                                frame k { layout = vertical, gap = 2, align = start
+                                    text "Success"     { size = 11, color = #868F99 }
+                                    text "25 · 89%"    { size = 20, weight = semibold, color = #1A7F37 }
+                                }
+                                frame k { layout = vertical, gap = 2, align = start
+                                    text "Avg duration" { size = 11, color = #868F99 }
+                                    text "4m 08s"       { size = 20, weight = semibold, color = #1F2328 }
+                                }
+                            }
+
+                            shape hr { type = rectangle, width = 328, height = 1, fill = #E4E9EE }
+
+                            frame breakdown { layout = vertical, gap = 6
+                                frame row { layout = horizontal, justify = space-between
+                                    frame dot_row { layout = horizontal, gap = 6, align = center
+                                        use run_dot(#3FB950)
+                                        text "completed" { size = 12, color = #1F2328 }
+                                    }
+                                    text "25" { size = 12, color = #656D76, family = "JetBrains Mono" }
+                                }
+                                frame row { layout = horizontal, justify = space-between
+                                    frame dot_row { layout = horizontal, gap = 6, align = center
+                                        use run_dot(#D29922)
+                                        text "waiting approval" { size = 12, color = #1F2328 }
+                                    }
+                                    text "2"  { size = 12, color = #656D76, family = "JetBrains Mono" }
+                                }
+                                frame row { layout = horizontal, justify = space-between
+                                    frame dot_row { layout = horizontal, gap = 6, align = center
+                                        use run_dot(#CF222E)
+                                        text "failed" { size = 12, color = #1F2328 }
+                                    }
+                                    text "1"  { size = 12, color = #656D76, family = "JetBrains Mono" }
+                                }
+                            }
+                        }
+
+                        // Prompt preview
+                        frame prompt_card {
+                            width = fill, padding = 16, radius = 8
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = vertical, gap = 10
+
+                            frame head {
+                                layout = horizontal, justify = space-between, align = center
+                                text "Prompt template" { size = 13, weight = semibold, color = #1F2328 }
+                                text "Edit →"          { size = 12, color = #0969DA }
+                            }
+
+                            frame code {
+                                width = fill, padding = 12, radius = 6
+                                fill = #F6F8FA, stroke = [1, #E4E9EE]
+                                layout = vertical, gap = 4
+
+                                text "Review all PRs opened in {{repo}} since {{last_run}}."
+                                    { size = 12, color = #1F2328, family = "JetBrains Mono", wrap = true, width = 304, line-height = 18 }
+                                text "Leave inline review comments for any issues you find."
+                                    { size = 12, color = #1F2328, family = "JetBrains Mono", wrap = true, width = 304, line-height = 18 }
+                                text "Output a one-line summary per PR."
+                                    { size = 12, color = #1F2328, family = "JetBrains Mono", wrap = true, width = 304, line-height = 18 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+}
+
+
+component pg_loops_framed() {
+    frame outer {
+        width = 2000
+        height = 1160
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_loops()
+    }
+}
+
+frame root {
+    use pg_loops_framed()
+}

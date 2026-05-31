@@ -1,0 +1,481 @@
+// Blocks — Trigger management page.
+// Reactive rules on blocks: when <condition on block> → do <actions>.
+// Master-detail: left trigger list + right detail (condition / actions / firing history).
+
+canvas "blocks_triggers" {
+    width      = 2000
+    height     = 1260
+    background = #1F2328
+}
+
+component btr_nav_icon_active(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = #DDF4FF, stroke = [1, #0969DA]
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, weight = medium, color = #0969DA }
+    }
+}
+component btr_nav_icon(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = transparent
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, color = #656D76 }
+    }
+}
+component btr_section_divider() { shape { type = rectangle, width = 24, height = 1, fill = #D0D7DE } }
+
+// Trigger list row (left column)
+component trig_row(name, type_chip, type_bg, type_fg, summary, last_fired, is_active) {
+    frame {
+        width = fill, padding = [10, 14], radius = 8
+        fill = is_active, stroke = [1, #E4E9EE]
+        layout = vertical, gap = 6
+
+        frame top {
+            width = fill, layout = horizontal, justify = space-between, align = center
+            frame left_grp { layout = horizontal, gap = 8, align = center
+                text "⚡" { size = 13, color = #9A6700 }
+                text name { size = 13, weight = semibold, color = #1F2328 }
+            }
+            frame toggle_wrap { width = 28, height = 16, radius = 999, fill = #1A7F37
+                layout = horizontal, justify = end, align = center, padding = [0, 2]
+                frame dot { width = 12, height = 12, radius = 999, fill = #FFFFFF }
+            }
+        }
+        frame chips {
+            layout = horizontal, gap = 6, align = center
+            frame tp { padding = [1, 8], radius = 999, fill = type_bg
+                text type_chip { size = 10, weight = medium, color = type_fg }
+            }
+            text last_fired { size = 10, color = #868F99 }
+        }
+        text summary { size = 11, color = #656D76, wrap = true, line-height = 16, width = 380 }
+    }
+}
+
+component trig_row_disabled(name, type_chip, type_bg, type_fg, summary, last_fired) {
+    frame {
+        width = fill, padding = [10, 14], radius = 8
+        fill = #FAFAFA, stroke = [1, #E4E9EE]
+        layout = vertical, gap = 6
+        opacity = 0.7
+
+        frame top {
+            width = fill, layout = horizontal, justify = space-between, align = center
+            frame left_grp { layout = horizontal, gap = 8, align = center
+                text "⚡" { size = 13, color = #B1B7BE }
+                text name { size = 13, weight = semibold, color = #868F99 }
+            }
+            frame toggle_wrap { width = 28, height = 16, radius = 999, fill = #E4E9EE
+                layout = horizontal, justify = start, align = center, padding = [0, 2]
+                frame dot { width = 12, height = 12, radius = 999, fill = #FFFFFF }
+            }
+        }
+        frame chips {
+            layout = horizontal, gap = 6, align = center
+            frame tp { padding = [1, 8], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                text type_chip { size = 10, weight = medium, color = #656D76 }
+            }
+            text last_fired { size = 10, color = #B1B7BE }
+        }
+        text summary { size = 11, color = #868F99, wrap = true, line-height = 16, width = 380 }
+    }
+}
+
+// Firing history row (right detail)
+component fire_row(when_text, outcome_icon, outcome_color, outcome_text, target_text) {
+    frame {
+        width = fill, padding = [8, 12], radius = 6
+        layout = horizontal, gap = 12, align = center
+        stroke = [1, #E4E9EE]
+
+        text when_text { size = 11, color = #656D76, family = "JetBrains Mono", width = 110 }
+        frame icon_box {
+            width = 20, height = 20, radius = 999, fill = outcome_color
+            layout = horizontal, justify = center, align = center
+            text outcome_icon { size = 11, weight = semibold, color = #FFFFFF }
+        }
+        text outcome_text { size = 12, color = #1F2328, width = 220 }
+        text target_text { size = 11, color = #0969DA, family = "JetBrains Mono", width = fill }
+        text "Open →" { size = 11, color = #0969DA }
+    }
+}
+
+component pg_blocks_triggers() {
+frame root {
+        width = 1920, height = 1180
+        fill   = #FFFFFF
+        radius = 12
+        stroke = [2, #6E7681]
+        shadow = [0, 8, 24, #00000080]
+        layout = vertical
+
+        frame body {
+            width = fill, height = fill, layout = horizontal
+
+            // === ActivityBar ===
+            frame activity_bar {
+                width = 48, height = fill, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                layout = vertical, align = center, padding = [12, 6], gap = 6
+
+                frame org_switcher {
+                    width = 36, height = 36, radius = 8, fill = #0969DA
+                    layout = horizontal, justify = center, align = center
+                    text "D" { size = 16, weight = semibold, color = #FFFFFF }
+                }
+                frame gap_s { height = 12 }
+
+                use btr_nav_icon_active("▦")
+                use btr_nav_icon("#")
+                use btr_nav_icon(">_")
+                use btr_section_divider()
+                use btr_nav_icon("🎫")
+                use btr_nav_icon("↻")
+                use btr_nav_icon("⚘")
+
+                frame spacer { height = fill }
+                use btr_nav_icon("⌘")
+                use btr_nav_icon("?")
+                use btr_nav_icon("⚙")
+                use btr_nav_icon("👤")
+            }
+
+            // === Sidebar (blocks nav, Triggers section expanded) ===
+            frame sidebar {
+                width = 300, height = fill, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = vertical
+
+                frame top_area {
+                    width = fill, padding = 12, layout = vertical, gap = 8
+
+                    frame workspace_chip {
+                        width = fill, padding = [6, 10], radius = 6
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = horizontal, align = center, gap = 8
+
+                        frame avatar { width = 20, height = 20, radius = 4, fill = #0969DA
+                            layout = horizontal, justify = center, align = center
+                            text "D" { size = 10, weight = semibold, color = #FFFFFF }
+                        }
+                        frame stack { layout = vertical, gap = 0, width = fill
+                            text "Dev Workspace"   { size = 12, weight = medium, color = #1F2328 }
+                            text "blocks-default"  { size = 10, color = #868F99, family = "JetBrains Mono" }
+                        }
+                        text "⌵" { size = 11, color = #656D76 }
+                    }
+
+                    frame search {
+                        width = fill, height = 30, padding = [0, 10], radius = 6
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = horizontal, align = center, gap = 8
+                        text "🔍" { size = 12, color = #868F99 }
+                        text "Search blocks · memory · ⌘K" { size = 12, color = #868F99 }
+                    }
+                }
+
+                frame pages_header {
+                    width = fill, padding = [12, 16, 6, 16]
+                    text "PAGES" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                }
+                frame pages_tree {
+                    width = fill, padding = [0, 16], layout = vertical, gap = 4
+
+                    frame p1 { layout = horizontal, gap = 8, align = center
+                        text "📖" { size = 12 }
+                        text "Team Dashboard" { size = 12, color = #1F2328 }
+                    }
+                    frame p2 { layout = horizontal, gap = 8, align = center
+                        text "📘" { size = 12 }
+                        text "Runbooks" { size = 12, color = #1F2328 }
+                    }
+                    frame p3 { layout = horizontal, gap = 8, align = center
+                        text "📗" { size = 12 }
+                        text "Agent memory" { size = 12, color = #1F2328 }
+                    }
+                }
+
+                frame types_header {
+                    width = fill, padding = [16, 16, 6, 16]
+                    text "INDICATOR TYPES" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                }
+                frame types_list {
+                    width = fill, padding = [0, 16], layout = vertical, gap = 4
+
+                    frame r1 { layout = horizontal, gap = 8, align = center
+                        frame dot { width = 8, height = 8, radius = 2, fill = #8250DF }
+                        text "okr" { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                    }
+                    frame r2 { layout = horizontal, gap = 8, align = center
+                        frame dot { width = 8, height = 8, radius = 2, fill = #1A7F37 }
+                        text "task" { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                    }
+                    frame r3 { layout = horizontal, gap = 8, align = center
+                        frame dot { width = 8, height = 8, radius = 2, fill = #D29922 }
+                        text "incident" { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                    }
+                    frame r4 { layout = horizontal, gap = 8, align = center
+                        frame dot { width = 8, height = 8, radius = 2, fill = #0969DA }
+                        text "metric" { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                    }
+                }
+
+                frame spacer { height = fill }
+                // Footer — Triggers is active
+                frame sidebar_footer {
+                    width = fill, padding = [10, 12], radius = 6, fill = #E4E9EE, stroke = [1, #D0D7DE]
+                    layout = horizontal, align = center, gap = 8
+
+                    text "⚡" { size = 12 }
+                    text "Triggers" { size = 12, weight = semibold, color = #1F2328 }
+                    frame spacer_r { width = fill }
+                    text "7 active · 2 off" { size = 11, color = #656D76, family = "JetBrains Mono" }
+                }
+            }
+
+            // === Main: trigger list + selected detail ===
+            frame main {
+                width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+                // Header
+                frame header {
+                    width = fill, padding = [16, 32]
+                    stroke = [1, #E4E9EE]
+                    layout = horizontal, justify = space-between, align = center
+
+                    frame title_stack { layout = vertical, gap = 2
+                        frame t { layout = horizontal, gap = 8, align = center
+                            text "Triggers" { size = 22, weight = semibold, color = #1F2328 }
+                            frame pill_active { padding = [2, 10], radius = 999, fill = #DAFBE1
+                                text "9 total · 7 active" { size = 11, weight = medium, color = #1A7F37 }
+                            }
+                        }
+                    }
+
+                    frame actions { layout = horizontal, gap = 8, align = center
+                        frame btn_docs {
+                            height = 30, padding = [0, 12], radius = 6
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = horizontal, justify = center, align = center
+                            text "Trigger docs" { size = 13, color = #1F2328 }
+                        }
+                        frame btn_new {
+                            height = 30, padding = [0, 14], radius = 6, fill = #0969DA
+                            layout = horizontal, justify = center, align = center, gap = 6
+                            text "+"          { size = 13, weight = medium, color = #FFFFFF }
+                            text "New Trigger" { size = 13, weight = medium, color = #FFFFFF }
+                        }
+                    }
+                }
+
+                // Content: two columns — list + detail
+                frame content {
+                    width = fill, height = fill, layout = horizontal
+
+                    // Left column — trigger list
+                    frame list_col {
+                        width = 500, height = fill, padding = [16, 20]
+                        fill = #FAFBFC, stroke = [1, #E4E9EE]
+                        layout = vertical, gap = 10
+
+                        use trig_row(
+                            "OKR off-track escalation",
+                            "type:okr",      #DDF4FF, #0550AE,
+                            "when progress < 0.3 and status = on_track → set at_risk · mention owner in #standups",
+                            "fired 2h ago",
+                            #E4E9EE
+                        )
+                        use trig_row(
+                            "Quarter retro auto-draft",
+                            "type:okr",      #DDF4FF, #0550AE,
+                            "when quarter ends and status ≠ done → spawn codex pod · create retro block via rel: retro_of",
+                            "fired Dec 31",
+                            transparent
+                        )
+                        use trig_row(
+                            "Critical incident paging",
+                            "type:incident", #FFEBE9, #CF222E,
+                            "when severity = high and created < 5min ago → @page oncall · link to #incidents channel",
+                            "fired 6d ago",
+                            transparent
+                        )
+                        use trig_row(
+                            "Task SLA breach → create incident",
+                            "type:task",     #DAFBE1, #1A7F37,
+                            "when sla_due < now and status ≠ done → create block(type:incident) via rel: triggered_by",
+                            "fired 1d ago",
+                            transparent
+                        )
+                        use trig_row_disabled(
+                            "Metric anomaly email",
+                            "type:metric",
+                            #F6F8FA, #656D76,
+                            "when value > 3σ above 7d moving avg → email stakeholders (disabled — too noisy, revisit 2026-Q1)",
+                            "last fired 14d ago"
+                        )
+                        use trig_row(
+                            "Stale OKR nudge",
+                            "type:okr",      #DDF4FF, #0550AE,
+                            "when updated_at > 7d ago and status ∈ {on_track, at_risk} → mention owner · add comment block",
+                            "fired 4h ago",
+                            transparent
+                        )
+                    }
+
+                    // Right column — selected trigger detail
+                    frame detail_col {
+                        width = fill, height = fill, padding = [20, 28]
+                        layout = vertical, gap = 20
+
+                        // Title + meta
+                        frame head {
+                            layout = vertical, gap = 6
+                            frame t_row { layout = horizontal, gap = 8, align = center
+                                text "⚡" { size = 16, color = #9A6700 }
+                                text "OKR off-track escalation" { size = 20, weight = semibold, color = #1F2328 }
+                                frame badge_active { padding = [2, 10], radius = 999, fill = #DAFBE1
+                                    text "active" { size = 11, weight = medium, color = #1A7F37 }
+                                }
+                            }
+                            text "Created by Dev User · last edited 3 days ago · fired 42 times"
+                                { size = 12, color = #868F99 }
+                        }
+
+                        // Condition card
+                        frame cond_card {
+                            width = fill, padding = 16, radius = 10
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = vertical, gap = 10
+
+                            frame h { layout = horizontal, gap = 8, align = center
+                                text "WHEN" { size = 10, weight = semibold, color = #656D76, text-transform = uppercase, letter-spacing = 1.5 }
+                                frame pill { padding = [1, 8], radius = 4, fill = #DDF4FF
+                                    text "on block update" { size = 11, weight = medium, color = #0550AE, family = "JetBrains Mono" }
+                                }
+                            }
+
+                            frame code_block {
+                                width = fill, padding = 12, radius = 6
+                                fill = #F6F8FA, stroke = [1, #E4E9EE]
+                                layout = vertical, gap = 4
+
+                                text "block.type == \"okr\""             { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                                text "AND block.data.progress < 0.3"     { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                                text "AND block.data.status == \"on_track\"" { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                                text "AND diff.progress != 0"            { size = 12, color = #656D76, family = "JetBrains Mono" }
+                            }
+                        }
+
+                        // Actions card (chain)
+                        frame act_card {
+                            width = fill, padding = 16, radius = 10
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = vertical, gap = 12
+
+                            frame h { layout = horizontal, gap = 8, align = center
+                                text "THEN · action chain" { size = 10, weight = semibold, color = #656D76, text-transform = uppercase, letter-spacing = 1.5 }
+                                frame spacer { width = fill }
+                                text "+ Add action" { size = 11, weight = medium, color = #0969DA }
+                            }
+
+                            frame a1 {
+                                width = fill, layout = horizontal, gap = 12, align = start, padding = [8, 0]
+
+                                frame num { width = 24, height = 24, radius = 999, fill = #0969DA
+                                    layout = horizontal, justify = center, align = center
+                                    text "1" { size = 12, weight = semibold, color = #FFFFFF }
+                                }
+                                frame act_body { layout = vertical, gap = 4, width = fill
+                                    text "update block" { size = 13, weight = medium, color = #1F2328 }
+                                    frame mono {
+                                        padding = [6, 10], radius = 4, fill = #F6F8FA, stroke = [1, #E4E9EE]
+                                        text "set block.data.status = \"at_risk\""
+                                            { size = 11, color = #1F2328, family = "JetBrains Mono" }
+                                    }
+                                }
+                            }
+
+                            shape hr { type = rectangle, width = 900, height = 1, fill = #E4E9EE }
+
+                            frame a2 {
+                                width = fill, layout = horizontal, gap = 12, align = start, padding = [8, 0]
+
+                                frame num { width = 24, height = 24, radius = 999, fill = #0969DA
+                                    layout = horizontal, justify = center, align = center
+                                    text "2" { size = 12, weight = semibold, color = #FFFFFF }
+                                }
+                                frame act_body { layout = vertical, gap = 4, width = fill
+                                    text "post to channel · #standups" { size = 13, weight = medium, color = #1F2328 }
+                                    frame mono {
+                                        padding = [6, 10], radius = 4, fill = #F6F8FA, stroke = [1, #E4E9EE]
+                                        text "message: \"@{owner} OKR {title} is at risk — {progress}%\""
+                                            { size = 11, color = #1F2328, family = "JetBrains Mono" }
+                                    }
+                                }
+                            }
+
+                            shape hr2 { type = rectangle, width = 900, height = 1, fill = #E4E9EE }
+
+                            frame a3 {
+                                width = fill, layout = horizontal, gap = 12, align = start, padding = [8, 0]
+
+                                frame num { width = 24, height = 24, radius = 999, fill = #0969DA
+                                    layout = horizontal, justify = center, align = center
+                                    text "3" { size = 12, weight = semibold, color = #FFFFFF }
+                                }
+                                frame act_body { layout = vertical, gap = 4, width = fill
+                                    frame t_row { layout = horizontal, gap = 6, align = center
+                                        text "spawn Pod · codex · retro assistant" { size = 13, weight = medium, color = #1F2328 }
+                                        frame pill_new { padding = [1, 6], radius = 3, fill = #DDF4FF
+                                            text "conditional" { size = 10, weight = medium, color = #0550AE }
+                                        }
+                                    }
+                                    frame mono {
+                                        padding = [6, 10], radius = 4, fill = #F6F8FA, stroke = [1, #E4E9EE]
+                                        text "only if progress drop > 0.1 in 24h · agent: codex · repo: demo-api"
+                                            { size = 11, color = #1F2328, family = "JetBrains Mono", wrap = true, width = 880 }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Recent firings
+                        frame hist_card {
+                            width = fill, padding = 16, radius = 10
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = vertical, gap = 10
+
+                            frame h { layout = horizontal, gap = 8, align = center
+                                text "RECENT FIRINGS · 42 total" { size = 10, weight = semibold, color = #656D76, text-transform = uppercase, letter-spacing = 1.5 }
+                                frame spacer { width = fill }
+                                text "View all →" { size = 11, color = #0969DA }
+                            }
+
+                            frame list { width = fill, layout = vertical, gap = 2
+                                use fire_row("2h ago",    "✓", #1A7F37, "matched · 3 actions ran",  "okr: Ship auth v2 (block-abc123)")
+                                use fire_row("Yesterday", "✓", #1A7F37, "matched · 3 actions ran",  "okr: Launch Block Store GA (block-def456)")
+                                use fire_row("3d ago",    "⚠", #D29922, "matched · action #3 skipped (condition not met)", "okr: Runner incidents → 0 (block-ghi789)")
+                                use fire_row("5d ago",    "✕", #CF222E, "actor not permitted (agent lacked update scope)", "okr: API throughput (block-jkl012)")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+component pg_blocks_triggers_framed() {
+    frame outer {
+        width = 2000
+        height = 1260
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_blocks_triggers()
+    }
+}
+
+frame root {
+    use pg_blocks_triggers_framed()
+}

@@ -1,0 +1,200 @@
+// Empty State — guidance for blank lists/pages.
+// 3 sizes: compact (inline in sidebar/small panel), default (most pages),
+// full (first-time experience / onboarding).
+//
+// Anatomy: Icon · Title · Description · Optional CTA button
+
+canvas "empty_states" {
+    width = 1480
+    height = 980
+    background = #1F2328
+}
+
+component icon_box_compact() {
+    frame {
+        width  = 32
+        height = 32
+        radius = 8
+        fill   = #F6F8FA
+        stroke = [1, #D0D7DE]
+        layout = horizontal
+        justify = center, align = center
+
+        text "📄" { size = 16, color = #656D76 }
+    }
+}
+
+component icon_box_default() {
+    frame {
+        width  = 48
+        height = 48
+        radius = 10
+        fill   = #F6F8FA
+        stroke = [1, #D0D7DE]
+        layout = horizontal
+        justify = center, align = center
+
+        text "📋" { size = 22, color = #656D76 }
+    }
+}
+
+component icon_box_full() {
+    frame {
+        width  = 72
+        height = 72
+        radius = 12
+        fill   = #DDF4FF
+        stroke = [1, #0969DA]
+        layout = horizontal
+        justify = center, align = center
+
+        text "🚀" { size = 32, color = #0969DA }
+    }
+}
+
+component cta_primary(label) {
+    frame {
+        height  = 32
+        padding = [0, 14]
+        radius  = 6
+        fill    = #0969DA
+        layout  = horizontal
+        justify = center, align = center
+
+        text label { size = 14, weight = medium, color = #FFFFFF }
+    }
+}
+
+component cta_secondary(label) {
+    frame {
+        height  = 32
+        padding = [0, 14]
+        radius  = 6
+        fill    = #F6F8FA
+        stroke  = [1, #D0D7DE]
+        layout  = horizontal
+        justify = center, align = center
+
+        text label { size = 14, weight = medium, color = #1F2328 }
+    }
+}
+
+// Compact variant (inline in sidebar)
+component empty_compact() {
+    frame {
+        width   = 260
+        padding = 16
+        radius  = 8
+        fill    = #F6F8FA
+        stroke-dash = [4, 4]
+        stroke  = [1, #D0D7DE]
+        layout  = vertical
+        align   = center
+        gap     = 8
+
+        use icon_box_compact()
+        text "No tickets yet" { size = 13, weight = medium, color = #1F2328 }
+        text "Create your first ticket to get started."
+            { size = 12, color = #656D76, align = center, wrap = true, width = 220 }
+    }
+}
+
+// Default variant (center of a page)
+component empty_default() {
+    frame {
+        width   = 420
+        padding = 32
+        radius  = 8
+        layout  = vertical
+        align   = center
+        gap     = 12
+
+        use icon_box_default()
+        text "No pods running" { size = 16, weight = semibold, color = #1F2328 }
+        text "Create a pod to spin up an AI agent in an isolated terminal."
+            { size = 13, color = #656D76, align = center, wrap = true, width = 320 }
+        frame actions { layout = horizontal, gap = 8, padding = [8, 0, 0, 0]
+            use cta_primary("New Pod")
+            use cta_secondary("Read docs")
+        }
+    }
+}
+
+// Full variant (onboarding / first-time)
+component empty_full() {
+    frame {
+        width   = 520
+        padding = 48
+        radius  = 12
+        fill    = #FFFFFF
+        stroke  = [1, #D0D7DE]
+        layout  = vertical
+        align   = center
+        gap     = 16
+
+        use icon_box_full()
+        text "Welcome to AgentsMesh" { size = 20, weight = semibold, color = #1F2328 }
+        text "Spin up AI agents in isolated environments, collaborate on tickets, and scale your team beyond headcount. Get started by creating your first runner."
+            { size = 14, color = #656D76, align = center, wrap = true, width = 420, line-height = 22 }
+        frame actions { layout = horizontal, gap = 12, padding = [8, 0, 0, 0]
+            use cta_primary("Set up runner")
+            use cta_secondary("Watch demo · 2 min")
+        }
+    }
+}
+
+component pg_empty_state() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width   = 1400
+    height  = 900
+    fill    = #FFFFFF
+    padding = 40
+    layout  = vertical
+    gap     = 32
+
+    text "Empty States" { size = 24, weight = semibold, color = #1F2328 }
+    text "Three sizes. Every blank view in the app should use one of these instead of a plain message."
+        { size = 13, color = #656D76, wrap = true, width = 700 }
+
+    frame row {
+        width  = fill
+        layout = horizontal
+        gap    = 32
+        align  = start
+
+        frame col1 { layout = vertical, gap = 8
+            text "compact · sidebar" { size = 12, weight = medium, color = #656D76 }
+            use empty_compact()
+        }
+        frame col2 { layout = vertical, gap = 8
+            text "default · page center" { size = 12, weight = medium, color = #656D76 }
+            use empty_default()
+        }
+        frame col3 { layout = vertical, gap = 8
+            text "full · onboarding" { size = 12, weight = medium, color = #656D76 }
+            use empty_full()
+        }
+    }
+}
+}
+
+
+component pg_empty_state_framed() {
+    frame outer {
+        width = 1480
+        height = 980
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_empty_state()
+    }
+}
+
+frame root {
+    use pg_empty_state_framed()
+}

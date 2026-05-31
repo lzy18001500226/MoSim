@@ -1,0 +1,303 @@
+# Docker Compose for AgentsMesh Development
+#
+# Backend / relay run on the developer host via `dev.sh` using
+# `ibazel run //path:target` (hot reload for the services developers
+# touch most). Runner stays in docker — the AI agent processes it spawns
+# need a sandbox boundary, so we trade hot reload for isolation. The
+# runner binary is still produced by Bazel (`//runner/cmd/runner:runner`,
+# linux/amd64 cross-compiled by dev.sh) and COPYed into the dev image
+# at `docker compose build` time.
+#
+# Traefik proxies the host-side backend / relay via `host.docker.internal`
+# (extra_hosts on Linux maps to host-gateway).
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: agentsmesh
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agentsmesh_dev}
+      POSTGRES_DB: agentsmesh
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentsmesh"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis cache
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MinIO object storage (S3 compatible)
+  minio:
+    image: pgsty/minio:latest
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      MINIO_API_CORS_ALLOW_ORIGIN: "*"
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Gitea (lightweight Git server for local development)
+  gitea:
+    image: gitea/gitea:1.22
+    restart: unless-stopped
+    environment:
+      - GITEA__security__INSTALL_LOCK=true
+      - GITEA__server__ROOT_URL=http://gitea:3000/
+      - GITEA__server__SSH_DOMAIN=gitea
+      - GITEA__server__SSH_PORT=22
+      - GITEA__server__DISABLE_SSH=false
+      - GITEA__database__DB_TYPE=sqlite3
+      - GITEA__service__DISABLE_REGISTRATION=true
+      - GITEA__service__REQUIRE_SIGNIN_VIEW=false
+      - GITEA__mailer__ENABLED=false
+    volumes:
+      - gitea_data:/data
+    ports:
+      - "${GITEA_HTTP_PORT:-3001}:3000"
+      - "${GITEA_SSH_PORT:-2222}:22"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/v1/version"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # Adminer (database management UI)
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+      - "${ADMINER_PORT:-8081}:8080"
+    depends_on:
+      - postgres
+
+  # Migration runner — one-shot, invoked by dev.sh via `docker compose run`.
+  # Replaces the old "exec into backend container" approach now that
+  # backend runs on the host. profiles=["tools"] keeps it out of
+  # `docker compose up`.
+  migrate:
+    image: migrate/migrate:v4.18.1
+    profiles: ["tools"]
+    volumes:
+      - ../../backend/migrations:/migrations:ro
+    entrypoint: ["migrate", "-path=/migrations"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    network_mode: "service:postgres"
+
+  # Runner — sandboxes AI agent (Claude Code / Codex / Gemini) processes
+  # away from the developer host. Binary built by Bazel
+  # (//runner/cmd/runner:runner, linux/amd64); image only adds the AI
+  # CLI overlay. Hot reload off — rebuild via `./dev.sh --rebuild-runner`.
+  runner:
+    build:
+      context: .
+      dockerfile: runner.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      traefik:
+        condition: service_started
+    user: "1000:1000"
+    environment:
+      # Reach backend via traefik (host.docker.internal:HTTP_PORT). The
+      # traefik service has `extra_hosts: host.docker.internal:host-gateway`,
+      # so this resolves whether you're on macOS or Linux.
+      - BACKEND_URL=http://traefik:80
+      - GRPC_ENDPOINT=traefik:9443
+      - RELAY_BASE_URL=ws://traefik:80
+      - RUNNER_NODE_ID=dev-runner
+      - RUNNER_ORG_SLUG=dev-org
+      - MAX_CONCURRENT_PODS=10
+      - WORKSPACE=/workspace
+      - SSL_DIR=/app/ssl
+      - DEBUG=true
+      - HOME=/home/runner
+      # Bind MCP HTTP server on all interfaces inside the container so the
+      # `ports:` mapping below can forward host:RUNNER_MCP_PORT → 19000.
+      # Without this the server only listens on 127.0.0.1, invisible to
+      # docker's NAT layer.
+      - AGENTSMESH_MCP_BIND=0.0.0.0
+      # AI CLI keys passed through from .env
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - ANTHROPIC_BASE_URL=${ANTHROPIC_BASE_URL:-https://api.anthropic.com}
+      - ANTHROPIC_AUTH_TOKEN=${ANTHROPIC_AUTH_TOKEN:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_SERVICE_NAME=agentsmesh-runner
+      - OTEL_TRACES_SAMPLER_ARG=1.0
+    volumes:
+      # SSL CA cert/key for the entrypoint to sign a runner client cert
+      - ./ssl:/app/ssl:ro
+      - ./runner-entrypoint.sh:/usr/local/bin/runner-entrypoint.sh:ro
+      # SSH keys for git operations (gitea deploy key)
+      - ./runner-ssh:/home/runner/.ssh:ro
+      # Workspace for sandboxed pod scratch space
+      - runner_workspace:/workspace
+      # AgentsMesh + AI CLI configs (persist across container restarts)
+      - runner_config:/home/runner/.agentsmesh
+      - runner_claude_config:/home/runner/.claude
+      - runner_codex_config:/home/runner/.codex
+      - runner_gemini_config:/home/runner/.gemini
+    ports:
+      # Expose the runner's MCP HTTP server to the host so tests/mcp-e2e/
+      # can drive it. Container always listens on 19000; host port is
+      # worktree-scoped via RUNNER_MCP_PORT to avoid collisions.
+      - "${RUNNER_MCP_PORT:-19000}:19000"
+    extra_hosts:
+      - "host.lan:host-gateway"
+    entrypoint: ["/usr/local/bin/runner-entrypoint.sh"]
+
+  # Runner #2 — used exclusively by tests/mcp-e2e/ to exercise the
+  # cross-runner pod_interaction path. When pod_A on runner_1 asks for
+  # snapshot of pod_B on runner_2, runner_1's LocalPodProvider misses, the
+  # MCP tool falls back to the Backend API, and backend dispatches to
+  # runner_2 via gRPC. This wiring stays dormant until specs explicitly
+  # create pods on `dev-runner-2`. Same image as the primary runner; only
+  # node_id, volumes, and MCP host port differ.
+  runner-2:
+    build:
+      context: .
+      dockerfile: runner.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      traefik:
+        condition: service_started
+    user: "1000:1000"
+    environment:
+      - BACKEND_URL=http://traefik:80
+      - GRPC_ENDPOINT=traefik:9443
+      - RELAY_BASE_URL=ws://traefik:80
+      - RUNNER_NODE_ID=dev-runner-2
+      - RUNNER_ORG_SLUG=dev-org
+      - MAX_CONCURRENT_PODS=10
+      - WORKSPACE=/workspace
+      - SSL_DIR=/app/ssl
+      - DEBUG=true
+      - HOME=/home/runner
+      - AGENTSMESH_MCP_BIND=0.0.0.0
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - ANTHROPIC_BASE_URL=${ANTHROPIC_BASE_URL:-https://api.anthropic.com}
+      - ANTHROPIC_AUTH_TOKEN=${ANTHROPIC_AUTH_TOKEN:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_SERVICE_NAME=agentsmesh-runner
+      - OTEL_TRACES_SAMPLER_ARG=1.0
+    volumes:
+      - ./ssl:/app/ssl:ro
+      - ./runner-entrypoint.sh:/usr/local/bin/runner-entrypoint.sh:ro
+      - ./runner-ssh:/home/runner/.ssh:ro
+      - runner2_workspace:/workspace
+      - runner2_config:/home/runner/.agentsmesh
+      - runner2_claude_config:/home/runner/.claude
+      - runner2_codex_config:/home/runner/.codex
+      - runner2_gemini_config:/home/runner/.gemini
+    ports:
+      # Worktree-scoped host port for runner-2's MCP server. Specs that
+      # need to drive runner-2 directly (rather than via runner-1's fallback
+      # path) connect here; the cross-runner spec only uses runner-1's MCP
+      # but having this exposed lets future specs target runner-2 directly.
+      - "${RUNNER_2_MCP_PORT:-19001}:19000"
+    extra_hosts:
+      - "host.lan:host-gateway"
+    entrypoint: ["/usr/local/bin/runner-entrypoint.sh"]
+
+  # Traefik reverse proxy (unified entry point)
+  traefik:
+    image: traefik:v3.6
+    restart: unless-stopped
+    volumes:
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      # gRPC + mTLS port for Runner connections (TLS passthrough → host backend)
+      - "${GRPC_PORT:-9443}:9443"
+      # Traefik Dashboard (dev only)
+      - "${TRAEFIK_DASHBOARD_PORT:-8080}:8080"
+    # `host.docker.internal` resolves to the host machine. macOS Docker
+    # Desktop provides this automatically; Linux needs the extra_hosts
+    # mapping to host-gateway (Docker 20.10+).
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # OpenTelemetry Collector (receives OTLP from all services)
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.120.0
+    restart: unless-stopped
+    volumes:
+      - ./otelcol/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
+    ports:
+      - "${OTEL_GRPC_PORT:-4317}:4317"
+      - "${OTEL_HTTP_PORT:-4318}:4318"
+    depends_on:
+      - jaeger
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:13133/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Jaeger (distributed tracing UI)
+  jaeger:
+    image: jaegertracing/all-in-one:1.68.0
+    restart: unless-stopped
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "${JAEGER_UI_PORT:-16686}:16686"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:16687/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  gitea_data:
+  runner_workspace:
+  runner_config:
+  runner_claude_config:
+  runner_codex_config:
+  runner_gemini_config:
+  runner2_workspace:
+  runner2_config:
+  runner2_claude_config:
+  runner2_codex_config:
+  runner2_gemini_config:

@@ -1,0 +1,155 @@
+// iOS Status Bar — Dynamic Island variant (iPhone 14 Pro / 15+).
+// Height: 59pt. Drawn at 1× pt (1pt = 1px in pastel render).
+//
+// Use 47pt height for notch devices (12 / 13 / 14 / SE) — variant included below.
+
+canvas "ios_status_bar" {
+    width = 800
+    height = 720
+    background = #1F2328
+}
+
+// Status bar with Dynamic Island (default — iPhone 14 Pro / 15)
+component sb_dynamic_island() {
+    frame {
+        width = 393, height = 59
+        fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center
+        padding = [0, 22]
+
+        // Time on left
+        text "9:41" { size = 17, weight = semibold, color = #1F2328, family = "SF Pro" }
+
+        // Right side icons
+        frame icons {
+            layout = horizontal, gap = 6, align = center
+            text "📶" { size = 14 }
+            text "📡" { size = 14 }
+            frame battery {
+                width = 28, height = 13, radius = 4
+                stroke = [1, #1F2328]
+                padding = 2, layout = horizontal, align = center
+                shape level { type = rectangle, width = 20, height = 7, radius = 1, fill = #1F2328 }
+            }
+        }
+    }
+}
+
+// Dynamic Island overlay — sits centered over status bar at vertical 11pt from top
+component sb_island_overlay() {
+    frame {
+        width = 393, height = 59
+        layout = horizontal, justify = center, align = center
+        padding = [11, 0, 12, 0]
+        frame island {
+            width = 126, height = 36, radius = 18, fill = #000000
+        }
+    }
+}
+
+// Status bar — notch variant (47pt, no island)
+component sb_notch() {
+    frame {
+        width = 393, height = 47
+        fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center
+        padding = [0, 22]
+
+        text "9:41" { size = 17, weight = semibold, color = #1F2328, family = "SF Pro" }
+
+        frame icons {
+            layout = horizontal, gap = 6, align = center
+            text "📶" { size = 14 }
+            text "📡" { size = 14 }
+            frame battery {
+                width = 28, height = 13, radius = 4
+                stroke = [1, #1F2328]
+                padding = 2, layout = horizontal, align = center
+                shape level { type = rectangle, width = 20, height = 7, radius = 1, fill = #1F2328 }
+            }
+        }
+    }
+}
+
+// Dark variant (used on terminal full-screen pages)
+component sb_dynamic_island_dark() {
+    frame {
+        width = 393, height = 59
+        fill = #0D1117
+        layout = horizontal, justify = space-between, align = center
+        padding = [0, 22]
+
+        text "9:41" { size = 17, weight = semibold, color = #C9D1D9, family = "SF Pro" }
+
+        frame icons {
+            layout = horizontal, gap = 6, align = center
+            text "📶" { size = 14, color = #C9D1D9 }
+            text "📡" { size = 14, color = #C9D1D9 }
+            frame battery {
+                width = 28, height = 13, radius = 4
+                stroke = [1, #C9D1D9]
+                padding = 2, layout = horizontal, align = center
+                shape level { type = rectangle, width = 20, height = 7, radius = 1, fill = #C9D1D9 }
+            }
+        }
+    }
+}
+
+component label(text_value) {
+    text text_value { size = 11, weight = medium, color = #6E7681, letter-spacing = 1.5 }
+}
+
+component pg_status_bar() {
+frame root {
+    stroke = [2, #6E7681]
+    radius = 12
+    shadow = [0, 8, 24, #00000080]
+    width = 720, height = 660, fill = #FFFFFF
+    padding = 32, layout = vertical, gap = 24
+
+    text "Status Bar" { size = 24, weight = semibold, color = #1F2328 }
+    text "iOS system surface · 59pt for Dynamic Island devices, 47pt for notch."
+        { size = 13, color = #656D76 }
+
+    // Variant 1 — Dynamic Island (default)
+    frame v1 {
+        layout = vertical, gap = 12
+        use label("DYNAMIC ISLAND · 59pt · iPhone 14 Pro / 15 / 16")
+        frame container { stroke = [1, #D0D7DE], layout = vertical
+            use sb_dynamic_island()
+            use sb_island_overlay()
+        }
+        text "9:41 — 17pt SF Pro semibold · padding 22pt" { size = 12, color = #868F99 }
+    }
+
+    // Variant 2 — Notch
+    frame v2 {
+        layout = vertical, gap = 12
+        use label("NOTCH · 47pt · iPhone 12 / 13 / 14")
+        frame container { stroke = [1, #D0D7DE]
+            use sb_notch()
+        }
+    }
+
+    // Variant 3 — Dark (terminal)
+    frame v3 {
+        layout = vertical, gap = 12
+        use label("DARK VARIANT · used on TerminalView full-screen modal")
+        frame container { stroke = [1, #30363D], layout = vertical
+            use sb_dynamic_island_dark()
+            use sb_island_overlay()
+        }
+    }
+}
+}
+
+
+component pg_status_bar_framed() {
+    frame outer {
+        width = 800, height = 720, fill = #1F2328
+        padding = 40, layout = horizontal, justify = center, align = center
+        use pg_status_bar()
+    }
+}
+
+frame root { use pg_status_bar_framed() }

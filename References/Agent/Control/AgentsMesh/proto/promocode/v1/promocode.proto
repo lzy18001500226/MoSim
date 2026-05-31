@@ -1,0 +1,121 @@
+// PromoCodeService — org-scoped promo code redemption.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/promocode.go
+// per .claude/plans/proto-naming-conventions.md. Conventions enforced:
+//   * package proto.promocode.v1 + go_package suffix for dispatch
+//   * service names = <Domain>Service, methods PascalCase verbs
+//   * snake_case fields, no json_name annotations
+//   * timestamps as string ISO-8601 (no google.protobuf.Timestamp)
+//   * list response = {items, total, limit, offset} uniform envelope
+//   * create/update/get return entity directly (no wrapper)
+//
+// Scope: Web's `getPromoCodeService()` calls. The org-scoped redemption is
+// the surface exposed here (Validate / Redeem / GetRedemptionHistory). The
+// platform-admin CRUD over promo codes (admin/promo_codes*.go) stays on
+// REST during this migration — those are gated by ADMIN middleware, not
+// org middleware, so they migrate as part of the admin/ surface sweep.
+
+syntax = "proto3";
+
+package proto.promocode.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/promocode/v1;promocodev1";
+
+// ============================================================================
+// PromoCodeService — org-scoped (membership for Validate / History, owner for
+// Redeem). Mirrors the REST routes at /api/v1/orgs/:slug/billing/promo-codes/*.
+// ============================================================================
+service PromoCodeService {
+  rpc Validate(ValidatePromoCodeRequest) returns (ValidatePromoCodeResponse);
+  rpc Redeem(RedeemPromoCodeRequest) returns (RedeemPromoCodeResponse);
+  rpc GetRedemptionHistory(GetRedemptionHistoryRequest) returns (GetRedemptionHistoryResponse);
+}
+
+// ----------------------------------------------------------------------------
+// Entities
+// ----------------------------------------------------------------------------
+
+// Redemption mirrors backend/internal/domain/promocode.Redemption fields the
+// REST history endpoint exposes (promocode.go:95). `promo_code` association
+// (the nested PromoCode entity) is intentionally absent from the wire — the
+// REST handler uses GORM's lazy load and ships an empty struct, so callers
+// were never reading it. PR 986a38ca6's wrapper-envelope sweep covered the
+// `redemptions` outer key; that vanishes with conventions §8.
+message Redemption {
+  int64 id = 1;
+  int64 promo_code_id = 2;
+  int64 organization_id = 3;
+  int64 user_id = 4;
+  string plan_name = 5;
+  int32 duration_months = 6;
+  optional string previous_plan_name = 7;
+  optional string previous_period_end = 8;
+  string new_period_end = 9;
+  optional string ip_address = 10;
+  optional string user_agent = 11;
+  string created_at = 12;
+}
+
+// ----------------------------------------------------------------------------
+// Validate — any org member can validate a code before redeeming. The
+// MessageCode field carries the i18n key for error states (promo_code_not_found,
+// promo_code_expired, …); the web layer routes it through next-intl.
+// ----------------------------------------------------------------------------
+
+message ValidatePromoCodeRequest {
+  string org_slug = 1;
+  string code = 2;
+}
+
+message ValidatePromoCodeResponse {
+  bool valid = 1;
+  string code = 2;
+  optional string plan_name = 3;
+  optional string plan_display_name = 4;
+  optional int32 duration_months = 5;
+  optional string expires_at = 6;
+  optional string message_code = 7;
+}
+
+// ----------------------------------------------------------------------------
+// Redeem — owner-only. Returns success=false + message_code when the caller
+// is not owner / code already used / quota hit; returns success=true with
+// the new period end on success. The REST handler used a 400 + extra payload
+// trick (apierr.RespondWithExtra) — Connect collapses that to a typed
+// response: callers read `success` + `message_code`. Genuine server-side
+// failures still surface as connect.CodeInternal.
+// ----------------------------------------------------------------------------
+
+message RedeemPromoCodeRequest {
+  string org_slug = 1;
+  string code = 2;
+}
+
+message RedeemPromoCodeResponse {
+  bool success = 1;
+  optional string plan_name = 2;
+  optional int32 duration_months = 3;
+  optional string new_period_end = 4;
+  optional string message_code = 5;
+}
+
+// ----------------------------------------------------------------------------
+// GetRedemptionHistory — any org member can list past redemptions. The REST
+// handler returns `gin.H{"redemptions": history}`; the proto follows §8's
+// uniform `{items, total, limit, offset}` envelope. limit/offset are echoed
+// from the request for clients that paginate; the service layer currently
+// returns the full list, so total == items.length until pagination is added.
+// ----------------------------------------------------------------------------
+
+message GetRedemptionHistoryRequest {
+  string org_slug = 1;
+  optional int32 offset = 2;
+  optional int32 limit = 3;
+}
+
+message GetRedemptionHistoryResponse {
+  repeated Redemption items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}

@@ -1,0 +1,176 @@
+// proto.channel_state.v1 — client-side cache shape.
+//
+// Distinct from proto.channel.v1 (the wire schema used for Connect-RPC).
+// This package describes the Rust core's in-memory cache that the bridge
+// layer (wasm / UniFFI / NAPI) exposes to UI. The UI receives ready-to-
+// render objects: unread counters, last-message previews, display names,
+// is_own_message flags — all maintained by Rust services as new events
+// arrive, so UI never has to do its own derivation pass.
+//
+// Why a separate package: state shape ≠ wire shape.
+//   * wire is what the server sends (no client-only computed fields).
+//   * state is what UI reads (wire fields + Rust-derived fields).
+//
+// Conventions:
+//   * wire-mirror fields use the same tag numbers as the source wire
+//     message (proto.channel.v1.*); the per-package `package` keeps them
+//     independent at the type-system level so a wire field rename here
+//     doesn't accidentally collide with state evolution.
+//   * client-derived fields use tag 100+ to make the wire/state split
+//     visible to reviewers.
+
+syntax = "proto3";
+
+package proto.channel_state.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/channel_state/v1;channelstatev1";
+
+// ---------------------------------------------------------------------------
+// Channel — UI-ready channel record. Mirrors proto.channel.v1.Channel and
+// adds Rust-maintained business fields.
+// ---------------------------------------------------------------------------
+
+message Channel {
+  // --- wire-mirror fields (tags match proto.channel.v1.Channel) ---
+  int64 id = 1;
+  optional int64 organization_id = 2;
+  string name = 3;
+  optional string description = 4;
+  optional string document = 5;
+  optional int64 repository_id = 6;
+  optional int64 ticket_id = 7;
+  optional string ticket_slug = 8;
+  optional string created_by_pod = 9;
+  optional int64 created_by_user_id = 10;
+  optional string visibility = 11;
+  bool is_archived = 12;
+  bool is_member = 13;
+  optional int64 member_count = 14;
+  optional string created_at = 15;
+  optional string updated_at = 16;
+  // Computed: total joined pods count.
+  optional int64 agent_count = 17;
+
+  // --- client-derived business fields (Rust maintains; UI consumes) ---
+
+  // Unread message count since the user last read this channel. 0 when
+  // the channel is current_channel or has never seen unread traffic.
+  uint32 unread_count = 100;
+
+  // Mentions targeting the current user within unread_count.
+  uint32 mention_count = 101;
+
+  // Preview of the latest message — populated on every new message and
+  // cleared when the channel becomes empty. Used for the sidebar list.
+  optional MessagePreview last_message = 102;
+
+  // Timestamp of `last_message` (or channel's updated_at when no
+  // messages). Drives the sidebar sort.
+  optional string last_activity_at = 103;
+}
+
+// ---------------------------------------------------------------------------
+// ChannelMessage — UI-ready message record. Mirrors
+// proto.channel.v1.ChannelMessage plus client-derived flags.
+// ---------------------------------------------------------------------------
+
+message ChannelMessage {
+  // --- wire-mirror fields ---
+  int64 id = 1;
+  int64 channel_id = 2;
+  optional string sender_pod = 3;
+  optional SenderPodInfo sender_pod_info = 4;
+  optional SenderAgentInfo sender_agent_info = 5;
+  optional int64 sender_user_id = 6;
+  optional SenderUser sender_user = 7;
+  // Plain-text projection (server-derived). Always present.
+  string body = 8;
+  // Opaque rich-content AST (JSON-encoded). Schema is owned by the UI
+  // rendering layer; Rust just carries it through.
+  optional string content_json = 9;
+  // Opaque mentions AST (JSON-encoded). Same ownership rule as content.
+  optional string mentions_json = 10;
+  optional int64 reply_to = 11;
+  optional string message_type = 12;
+  optional string created_at = 13;
+  optional string updated_at = 14;
+
+  // --- legacy / tolerance fields ---
+  // Deprecated: kept to tolerate legacy payloads. Prefer `sender_pod`.
+  optional string pod_key = 15;
+  // Deprecated: moved into `content_json`. Kept for legacy parses.
+  optional string metadata_json = 16;
+  optional string edited_at = 17;
+  optional bool is_deleted = 18;
+
+  // --- client-derived business fields ---
+
+  // True when sender_user_id == current_user_id; UI styles own vs.
+  // others differently.
+  bool is_own_message = 100;
+
+  // Rendered display name for the sender (alias → username → fallback).
+  // Computed once so per-row React renders stay cheap.
+  string sender_display_name = 101;
+}
+
+// ---------------------------------------------------------------------------
+// MessagePreview — sidebar/last-message summary derived from the latest
+// ChannelMessage. Distinct from ChannelMessage because the sidebar
+// doesn't need the full message body — just the snippet.
+// ---------------------------------------------------------------------------
+
+message MessagePreview {
+  int64 message_id = 1;
+  // Display name of the sender (alias → username → "Unknown").
+  string sender_name = 2;
+  // Truncated text snippet (≤ ~80 chars). For non-text messages this is
+  // a placeholder like "[image]" / "[file: ...]".
+  string content_preview = 3;
+  // Message type when distinguishable ("file", "image", ...). Empty for
+  // plain text.
+  optional string message_type = 4;
+  // RFC 3339 timestamp.
+  string timestamp = 5;
+}
+
+// ---------------------------------------------------------------------------
+// Embedded sender views — kept thin (id + name + avatar) so the cache
+// stays lean. Full User / Pod records live in user_state / pod_state.
+// ---------------------------------------------------------------------------
+
+message SenderPodInfo {
+  string pod_key = 1;
+  optional string alias = 2;
+  optional SenderAgentInfo agent = 3;
+}
+
+message SenderAgentInfo {
+  string name = 1;
+  optional string slug = 2;
+  optional string icon_url = 3;
+  optional string color = 4;
+}
+
+message SenderUser {
+  int64 id = 1;
+  optional string name = 2;
+  string username = 3;
+  string email = 4;
+  optional string avatar_url = 5;
+  optional bool is_email_verified = 6;
+}
+
+// ---------------------------------------------------------------------------
+// ChannelMember — membership record (unchanged from wire; here for
+// completeness so all channel-related state lives in one package).
+// ---------------------------------------------------------------------------
+
+message ChannelMember {
+  int64 channel_id = 1;
+  int64 user_id = 2;
+  string role = 3;
+  bool is_muted = 4;
+  string joined_at = 5;
+  optional SenderUser user = 6;
+}

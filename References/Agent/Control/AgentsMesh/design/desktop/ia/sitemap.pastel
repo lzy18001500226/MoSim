@@ -1,0 +1,255 @@
+// New IA sitemap — nav structure (5 main activities + Settings tab split).
+// Key change: Repositories/Runners/Agents/Members moved OUT of top nav INTO Settings > Org.
+
+canvas "sitemap" {
+    width = 1880
+    height = 2080
+    background = #1F2328
+}
+
+component sm_nav_group_label(label) {
+    text label {
+        size = 11, weight = semibold, color = #656D76
+        text-transform = uppercase, letter-spacing = 1.5
+    }
+}
+
+component nav_item(icon, label, route, is_primary) {
+    frame {
+        width   = 280
+        padding = [8, 12]
+        radius  = 6
+        fill    = #F6F8FA
+        stroke  = [1, #D0D7DE]
+        layout  = horizontal
+        align   = center
+        gap     = 10
+
+        text icon  { size = 16, color = #656D76 }
+        frame stack { layout = vertical, gap = 1
+            text label { size = 14, weight = medium, color = #1F2328 }
+            text route { size = 11, color = #868F99, family = "JetBrains Mono" }
+        }
+    }
+}
+
+component sub_item(label, route) {
+    frame {
+        width   = 280
+        padding = [6, 12, 6, 28]
+        layout  = vertical
+        gap     = 1
+
+        text label { size = 13, weight = normal, color = #1F2328 }
+        text route { size = 11, color = #868F99, family = "JetBrains Mono" }
+    }
+}
+
+component col_header(title, subtitle) {
+    frame {
+        layout = vertical, gap = 2, padding = [0, 0, 4, 0]
+        text title    { size = 16, weight = semibold, color = #1F2328 }
+        text subtitle { size = 12, color = #656D76 }
+    }
+}
+
+component pg_sitemap() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width   = 1800
+    height  = 1400
+    fill    = #FFFFFF
+    padding = 48
+    layout  = vertical
+    gap     = 32
+
+    // Header
+    frame header {
+        layout = vertical, gap = 4
+        text "Information Architecture — Sitemap" { size = 24, weight = semibold, color = #1F2328 }
+        text "Top nav = 3 core pillars (Blocks / Channels / Workspace) + 3 orchestration infra (Tickets / Loops / Mesh) + Settings. Blocks = team state + indicators, Channels = collab comms, Workspace = agent execution."
+            { size = 13, color = #656D76, wrap = true, width = 1400 }
+    }
+
+    // Two columns: (left) Top-level nav · (right) Settings tree
+    frame main_layout {
+        width  = fill
+        layout = horizontal
+        gap    = 80
+        align  = start
+
+        // === LEFT COLUMN — ActivityBar + main modules ===
+        frame left_col {
+            layout = vertical
+            gap    = 20
+            width  = 720
+
+            use col_header("Top-level Navigation", "Core three pillars + orchestration infra. Left ActivityBar in main shell.")
+
+            // Core group — the three primary pillars
+            use sm_nav_group_label("Core · three pillars")
+            frame core {
+                layout = vertical, gap = 8
+
+                use nav_item("▦", "Blocks",    "/:org/blocks",    true)
+                frame blk_sub {
+                    layout = vertical, gap = 0, padding = [0, 0, 0, 12]
+                    use sub_item("Document editor (nest tree)",  "/:org/blocks/:page")
+                    use sub_item("Views · Tables · Kanbans",     "inside pages as view blocks")
+                    use sub_item("Indicator definitions",        "block_type_def · team-custom types")
+                    use sub_item("Triggers · reactive rules",    "fire on block change → action chain")
+                    use sub_item("Memory retrieve (semantic)",   "Cmd+K — shared by humans + agents (MCP)")
+                }
+
+                use nav_item("#", "Channels",   "/:org/channels",   true)
+                frame ch_sub {
+                    layout = vertical, gap = 0, padding = [0, 0, 0, 12]
+                    use sub_item("Channel list + chat",   "/:org/channels/:id")
+                    use sub_item("Pod + Human messages",  "first-class senders · tool-call cards")
+                    use sub_item("Invite Pod to channel", "action · inline")
+                }
+
+                use nav_item(">_", "Workspace", "/:org/workspace", true)
+                frame ws_sub {
+                    layout = vertical, gap = 0, padding = [0, 0, 0, 12]
+                    use sub_item("Pod list + terminal panes", "/:org/workspace?pod={key}")
+                    use sub_item("PTY + ACP dual pane",       "terminal + structured agent protocol")
+                    use sub_item("Create Pod modal",          "modal · Cmd+N")
+                }
+            }
+
+            // Orchestration group — supporting infra around the pillars
+            use sm_nav_group_label("Orchestration · supporting infra")
+            frame orch {
+                layout = vertical, gap = 8
+
+                use nav_item("🎫", "Tickets", "/:org/tickets", true)
+                frame tk_sub {
+                    layout = vertical, gap = 0, padding = [0, 0, 0, 12]
+                    use sub_item("Kanban board / List view", "/:org/tickets")
+                    use sub_item("Ticket detail",            "/:org/tickets/:slug")
+                    use sub_item("Spawn Pod (from ticket)",  "button · pre-fills repo/branch")
+                }
+
+                use nav_item("↻", "Loops",   "/:org/loops",   true)
+                frame loop_sub {
+                    layout = vertical, gap = 0, padding = [0, 0, 0, 12]
+                    use sub_item("Loop list + create",         "/:org/loops")
+                    use sub_item("Loop detail + run history",  "/:org/loops/:slug")
+                }
+
+                use nav_item("⚘", "Mesh",    "/:org/mesh",    true)
+                frame mesh_sub {
+                    layout = vertical, gap = 0, padding = [0, 0, 0, 12]
+                    use sub_item("Interactive topology (observability)", "runner-grouped · directional R/W edges")
+                    use sub_item("Click node → Workspace pane",          "click pod → jump to its terminal")
+                }
+            }
+        }
+
+        // === RIGHT COLUMN — Settings tree ===
+        frame right_col {
+            layout = vertical
+            gap    = 20
+            width  = 720
+
+            use col_header("Settings", "Top Tabs split Personal vs Organization (not query param)")
+
+            // Personal
+            use sm_nav_group_label("Personal (always available)")
+            frame personal {
+                layout = vertical, gap = 8
+
+                use nav_item("👤", "Profile",     "/settings/profile",      false)
+                use nav_item("🔑", "Credentials", "/settings/credentials",  false)
+                frame cred_sub {
+                    layout = vertical, gap = 0, padding = [0, 0, 0, 12]
+                    use sub_item("Git providers (GitHub / GitLab OAuth)",   "sub-tab")
+                    use sub_item("Agent credentials (Claude / Aider keys)", "sub-tab")
+                }
+                use nav_item("🔔", "Notifications", "/settings/notifications", false)
+                use nav_item("🎨", "Appearance",    "/settings/appearance",    false)
+                use nav_item("⌘",  "Shortcuts",     "/settings/shortcuts",     false)
+            }
+
+            // Org (shown only to Org Owner/Admin; hidden for Member)
+            use sm_nav_group_label("Organization (Owner / Admin only)")
+            frame org {
+                layout = vertical, gap = 8
+
+                use nav_item("🏢", "General", "/:org/settings/general", false)
+                use nav_item("👥", "People",  "/:org/settings/people",  false)
+                frame people_sub {
+                    layout = vertical, gap = 0, padding = [0, 0, 0, 12]
+                    use sub_item("Members",       "invite / remove / change role")
+                    use sub_item("Invitations",   "pending invites")
+                }
+                use nav_item("🖥", "Infrastructure", "/:org/settings/infra", false)
+                frame infra_sub {
+                    layout = vertical, gap = 0, padding = [0, 0, 0, 12]
+                    use sub_item("Runners",       "register · monitor · delete")
+                    use sub_item("Code (Repos)",  "import Git repos · webhooks")
+                }
+                use nav_item("🤖", "Agents", "/:org/settings/agents", false)
+                frame agent_sub {
+                    layout = vertical, gap = 0, padding = [0, 0, 0, 12]
+                    use sub_item("Built-in agents", "read-only")
+                    use sub_item("Custom agents",   "add / edit / delete")
+                    use sub_item("MCP servers",     "stdio or http/sse")
+                    use sub_item("Skills",          "market / github / upload")
+                }
+                use nav_item("💳", "Billing & Usage", "/:org/settings/billing", false)
+                use nav_item("🔐", "API Keys",        "/:org/settings/api-keys", false)
+                use nav_item("📜", "Audit Log",       "/:org/settings/audit",    false)
+                use nav_item("⚠",  "Danger Zone",     "/:org/settings/danger",   false)
+            }
+        }
+    }
+
+    // Summary / changes row
+    frame changes {
+        width   = fill
+        padding = 24
+        radius  = 8
+        fill    = #FFF8C5
+        layout  = vertical
+        gap     = 8
+
+        text "Key changes vs current IA" { size = 14, weight = semibold, color = #1F2328 }
+        text "· Top nav grouped into 2 tiers: CORE (Blocks / Channels / Workspace — the team's primary interaction surfaces) + ORCHESTRATION (Tickets / Loops / Mesh — supporting infrastructure)"
+            { size = 13, color = #1F2328 }
+        text "· Blocks becomes a top-3 pillar — it is the team's shared state, indicators, and semantic memory (consumed by humans via UI, by agents via MCP memory.retrieve)"
+            { size = 13, color = #1F2328 }
+        text "· Mesh demoted from peer-of-Channels to observability-only orchestration infra — it is a read-only topology view, not a daily-work surface"
+            { size = 13, color = #1F2328 }
+        text "· Runners, Repositories, Members, Agents/MCP/Skills all moved into Settings > Organization (they are config, not daily work)"
+            { size = 13, color = #1F2328 }
+        text "· Loops gets a dedicated top-level slot and a [+ New Loop] button in its sidebar (fixes the missing-creator bug)"
+            { size = 13, color = #1F2328 }
+        text "· Settings splits Personal / Organization via visible Tabs (not hidden query params)"
+            { size = 13, color = #1F2328 }
+        text "· CommandPalette (Cmd+K) indexes every resource and is also the agent-facing memory.retrieve UI — same overlay, two audiences"
+            { size = 13, color = #1F2328 }
+    }
+}
+}
+
+
+component pg_sitemap_framed() {
+    frame outer {
+        width = 1880
+        height = 2080
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_sitemap()
+    }
+}
+
+frame root {
+    use pg_sitemap_framed()
+}

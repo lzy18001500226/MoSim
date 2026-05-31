@@ -1,0 +1,194 @@
+// iOS Tickets — flat List view (web-style table rows).
+// Toggle (List|Board) sits in the nav bar top-left. Default is Board;
+// this is the secondary view. Each row mirrors web TicketListView:
+// slug + status + title + priority + assignees + relative date.
+
+asset search_blue       = image("../assets/lucide-png/search-0969DA.png")
+asset plus_blue         = image("../assets/lucide-png/plus-0969DA.png")
+asset terminal_inactive = image("../assets/lucide-png/terminal-8E8E93.png")
+asset message_inactive  = image("../assets/lucide-png/message-8E8E93.png")
+asset ticket_active     = image("../assets/lucide-png/ticket-filled-0969DA.png")
+asset blocks_inactive   = image("../assets/lucide-png/blocks-8E8E93.png")
+asset more_inactive     = image("../assets/lucide-png/ellipsis-8E8E93.png")
+
+canvas "ios_tickets_list" {
+    width = 1100
+    height = 1100
+    background = #1F2328
+}
+
+component sh_status_bar() {
+    frame {
+        width = fill, height = 59, fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center, padding = [0, 22]
+        text "9:41" { size = 17, weight = semibold, color = #1F2328, family = "SF Pro" }
+        frame sb_icons { layout = horizontal, gap = 6, align = center
+            text "📶" { size = 14 } text "📡" { size = 14 }
+            frame sb_battery { width = 28, height = 13, radius = 4, stroke = [1, #1F2328], padding = 2,
+                layout = horizontal, align = center
+                shape sb_level { type = rectangle, width = 20, height = 7, radius = 1, fill = #1F2328 }
+            }
+        }
+    }
+}
+
+component nav_seg_active(label) {
+    frame nsa_w { padding = [3, 14], radius = 6, fill = #FFFFFF
+        stroke = [1, #00000010], shadow = [0, 1, 1, #00000010]
+        layout = horizontal, justify = center, align = center
+        text label { size = 13, weight = semibold, color = #1F2328 }
+    }
+}
+component nav_seg_inactive(label) {
+    frame nsi_w { padding = [3, 14]
+        layout = horizontal, justify = center, align = center
+        text label { size = 13, weight = medium, color = #1F2328 }
+    }
+}
+
+component sh_nav_bar() {
+    frame {
+        width = fill, height = 44, fill = #FFFFFFE6
+        padding = [0, 12], layout = horizontal, justify = space-between, align = center
+
+        frame nb_seg {
+            width = 140, height = 30, padding = 2, radius = 8, fill = #E9E9EB
+            layout = horizontal, gap = 0, align = center, justify = space-between
+            use nav_seg_active("List")
+            use nav_seg_inactive("Board")
+        }
+
+        frame nb_actions { layout = horizontal, gap = 0, align = center
+            frame nb_search { width = 36, height = 44, layout = horizontal, justify = center, align = center
+                image search_blue { width = 22, height = 22 }
+            }
+            frame nb_add { width = 36, height = 44, layout = horizontal, justify = center, align = center
+                image plus_blue { width = 22, height = 22 }
+            }
+        }
+    }
+}
+
+component sh_floating_tab_bar() {
+    frame {
+        width = 361, height = 56, radius = 28
+        fill = #FFFFFFE6, stroke = [1, #0000000D]
+        shadow = [0, 4, 12, #00000014]
+        padding = [0, 8], layout = horizontal, justify = space-between, align = center
+
+        frame tb1 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image terminal_inactive { width = 24, height = 24 }
+            text "Pods" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+        frame tb2 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image message_inactive { width = 24, height = 24 }
+            text "Channels" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+        frame tb3 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image ticket_active { width = 24, height = 24 }
+            text "Tickets" { size = 10, weight = semibold, color = #0969DA, family = "SF Pro" }
+        }
+        frame tb4 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image blocks_inactive { width = 24, height = 24 }
+            text "Blocks" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+        frame tb5 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image more_inactive { width = 24, height = 24 }
+            text "More" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+    }
+}
+
+// ── List row (flat — no group headers, mirrors web TicketListView) ──
+component list_row(slug, status_text, status_color, title, priority, due, av_letter, av_bg) {
+    frame lr_w {
+        width = fill, padding = [12, 16]
+        fill = #FFFFFF
+        layout = vertical, gap = 6
+
+        frame lr_top {
+            width = fill, layout = horizontal, gap = 8, align = center
+            text slug { size = 12, weight = medium, color = #656D76, family = "SF Mono" }
+            text status_text { size = 12, weight = medium, color = status_color }
+        }
+        text title { size = 15, color = #1F2328, wrap = true, width = 320, line-height = 20 }
+        frame lr_meta {
+            width = fill, layout = horizontal, justify = space-between, align = center
+            frame lr_left { layout = horizontal, gap = 8, align = center
+                text priority { size = 12, color = #8E8E93 }
+                text due { size = 12, color = #8E8E93, family = "SF Mono" }
+            }
+            frame lr_av {
+                width = 22, height = 22, radius = 999, fill = av_bg
+                layout = horizontal, justify = center, align = center
+                text av_letter { size = 10, weight = semibold, color = #FFFFFF }
+            }
+        }
+    }
+}
+
+component sep() {
+    frame sep_w { width = fill, height = 1, padding = [0, 16]
+        layout = horizontal
+        shape sep_line { type = rectangle, width = fill, height = 1, fill = #F2F2F7 }
+    }
+}
+
+component pg_tickets_list() {
+frame root {
+    width = 393, height = 852, fill = #FFFFFF
+    radius = 47, stroke = [3, #1F2328]
+    layout = vertical
+
+    use sh_status_bar()
+    use sh_nav_bar()
+
+    frame list {
+        width = fill, height = fill, fill = #FFFFFF
+        padding = [0, 0, 88, 0], layout = vertical, gap = 0
+
+        use list_row("DEV-1", "In Progress", #9A6700,
+            "Implement JWT-based user authentication", "▲ High", "Apr 30", "M", #0969DA)
+        use sep()
+        use list_row("DEV-2", "In Progress", #9A6700,
+            "Migrate session store to Redis", "● Med", "May 02", "S", #6F42C1)
+        use sep()
+        use list_row("DEV-3", "Todo", #0550AE,
+            "Refactor PTY forwarder cleanup logic", "● Med", "May 04", "D", #1A7F37)
+        use sep()
+        use list_row("DEV-4", "Done", #1A7F37,
+            "Wire up audit log retention policy", "▼ Low", "Apr 26", "M", #0969DA)
+        use sep()
+        use list_row("DEV-5", "In Review", #6F42C1,
+            "Mesh visualization runner grouping", "● Med", "May 06", "A", #D29922)
+        use sep()
+        use list_row("DEV-6", "Backlog", #6E7681,
+            "Add OpenTelemetry tracing to pod runtime", "▼ Low", "—", "T", #CF222E)
+        use sep()
+        use list_row("DEV-7", "In Progress", #9A6700,
+            "Codex ACP fallback to PTY when grant denied", "▲ High", "Apr 29", "X", #0969DA)
+    }
+
+    frame tab_zone {
+        width = fill, height = 88, fill = #FFFFFF
+        layout = vertical, justify = end, align = center, padding = [0, 0, 16, 0]
+        use sh_floating_tab_bar()
+    }
+
+    frame safe_bottom { width = fill, height = 34, fill = #FFFFFF
+        layout = horizontal, justify = center, align = center
+        shape ind { type = rectangle, width = 134, height = 5, radius = 999, fill = #1F2328 }
+    }
+}
+}
+
+
+component pg_tickets_list_framed() {
+    frame outer {
+        width = 1100, height = 1100, fill = #1F2328
+        padding = [60, 80], layout = horizontal, justify = center, align = center
+        use pg_tickets_list()
+    }
+}
+
+frame root { use pg_tickets_list_framed() }

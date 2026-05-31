@@ -1,0 +1,120 @@
+// AgentPodSettingsService — user-scoped agent settings + AI provider
+// credentials. User-scoped (not org-scoped) — handlers expect to read user
+// ID from the auth interceptor, not org_slug from the payload.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/agentpod.go.
+// Per conventions §3.5, user-scoped services skip the `org_slug` requirement
+// — the tenant is the JWT-claim user, not a payload-derived organization.
+//
+// AI provider credentials never leave the server in plaintext — the proto
+// `AIProvider` message has no `encrypted_credentials` field, mirroring the
+// REST handler which scrubs it before responding (agentpod.go:91-93).
+
+syntax = "proto3";
+
+package proto.pod.v1;
+
+import "codegen/v1/options.proto";
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/pod/v1;podv1";
+
+// Convert codegen target — emits agentpod_settings_convert.amesh.go into the
+// handler tree so converters can reach `backend/internal/domain/agentpod`.
+option (amesh.codegen.v1.convert_target) = {
+  output_dir: "backend/internal/api/connect/agentpod_settings"
+  output_package: "agentpodsettingsconnect"
+};
+
+service AgentPodSettingsService {
+  rpc GetSettings(GetSettingsRequest) returns (AgentPodSettings);
+  rpc UpdateSettings(UpdateSettingsRequest) returns (AgentPodSettings);
+  rpc ListProviders(ListProvidersRequest) returns (ListProvidersResponse);
+  rpc CreateProvider(CreateProviderRequest) returns (AIProvider);
+  rpc UpdateProvider(UpdateProviderRequest) returns (AIProvider);
+  rpc DeleteProvider(DeleteProviderRequest) returns (DeleteProviderResponse);
+  rpc SetDefaultProvider(SetDefaultProviderRequest) returns (SetDefaultProviderResponse);
+}
+
+message AgentPodSettings {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/agentpod.UserAgentPodSettings"
+  };
+
+  optional string default_agent_slug = 1;
+  optional string default_model = 2;
+  // default | accept-edits | full-auto
+  optional string default_perm_mode = 3;
+  optional int32 terminal_font_size = 4 [(amesh.codegen.v1.field_convert) = "int_ptr_to_int32"];
+  optional string terminal_theme = 5;
+}
+
+message AIProvider {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/agentpod.UserAIProvider"
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  // claude | gemini | codex | openai
+  string provider_type = 2;
+  string name = 3;
+  bool is_default = 4;
+  bool is_enabled = 5;
+  string created_at = 6 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  string updated_at = 7 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+}
+
+// --- Settings ---
+
+message GetSettingsRequest {}
+
+message UpdateSettingsRequest {
+  optional string default_agent_slug = 1;
+  optional string default_model = 2;
+  optional string default_perm_mode = 3;
+  optional int32 terminal_font_size = 4;
+  optional string terminal_theme = 5;
+}
+
+// --- Providers ---
+
+message ListProvidersRequest {}
+
+message ListProvidersResponse {
+  repeated AIProvider items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message CreateProviderRequest {
+  string provider_type = 1;
+  string name = 2;
+  // Raw credentials map (provider_type-specific schema). Encrypted server-side
+  // before storage; never echoed back on read.
+  map<string, string> credentials = 3;
+  bool is_default = 4;
+}
+
+message UpdateProviderRequest {
+  int64 id = 1;
+  optional string name = 2;
+  map<string, string> credentials = 3;
+  optional bool is_default = 4;
+  optional bool is_enabled = 5;
+}
+
+message DeleteProviderRequest {
+  int64 id = 1;
+}
+
+message DeleteProviderResponse {
+  string message = 1;
+}
+
+message SetDefaultProviderRequest {
+  int64 id = 1;
+}
+
+message SetDefaultProviderResponse {
+  string message = 1;
+}

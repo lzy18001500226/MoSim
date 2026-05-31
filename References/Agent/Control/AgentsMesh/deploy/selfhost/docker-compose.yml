@@ -1,0 +1,233 @@
+# =============================================================================
+# AgentsMesh Self-Hosted Docker Compose
+# =============================================================================
+#
+# Self-hosted deployment using Docker Hub images.
+#
+# Quick Start:
+#   ./scripts/install.sh --host 192.168.1.100
+#
+# Manual Start:
+#   cp .env.example .env  # Edit .env first
+#   docker compose up -d
+#
+# =============================================================================
+
+services:
+  # ===========================================================================
+  # PostgreSQL Database
+  # ===========================================================================
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: agentsmesh
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: agentsmesh
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentsmesh"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===========================================================================
+  # Redis Cache
+  # ===========================================================================
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===========================================================================
+  # MinIO Object Storage (S3 Compatible)
+  # ===========================================================================
+  minio:
+    image: pgsty/minio:latest
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      # CORS: allow browser direct uploads via presigned URLs
+      MINIO_API_CORS_ALLOW_ORIGIN: "*"
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    ports:
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+      - "${MINIO_API_PORT:-9000}:9000"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===========================================================================
+  # Backend API Server
+  # ===========================================================================
+  backend:
+    image: agentsmesh/backend:${VERSION:-latest}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Domain Configuration
+      - PRIMARY_DOMAIN=${PRIMARY_DOMAIN}
+      - USE_HTTPS=false
+      # Database
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=agentsmesh
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=agentsmesh
+      - DB_SSLMODE=disable
+      # Redis
+      - REDIS_URL=redis://redis:6379
+      # Auth
+      - JWT_SECRET=${JWT_SECRET}
+      - INTERNAL_API_SECRET=${INTERNAL_API_SECRET}
+      # Server
+      - SERVER_ADDRESS=:8080
+      - DEBUG=false
+      - CORS_ALLOWED_ORIGINS=*
+      # Logging
+      - LOG_LEVEL=info
+      - LOG_FORMAT=json
+      - LOG_FILE=/dev/stdout
+      # Email
+      - EMAIL_PROVIDER=${EMAIL_PROVIDER:-console}
+      # Storage (MinIO/S3)
+      - STORAGE_ENDPOINT=minio:9000
+      - STORAGE_PUBLIC_ENDPOINT=${SERVER_HOST}:${MINIO_API_PORT:-9000}
+      - STORAGE_REGION=us-east-1
+      - STORAGE_BUCKET=agentsmesh
+      - STORAGE_ACCESS_KEY=minioadmin
+      - STORAGE_SECRET_KEY=${MINIO_ROOT_PASSWORD}
+      - STORAGE_USE_SSL=false
+      - STORAGE_USE_PATH_STYLE=true
+      - STORAGE_MAX_FILE_SIZE=10
+      - STORAGE_ALLOWED_TYPES=image/jpeg,image/png,image/gif,image/webp,application/pdf
+      # PKI for gRPC + mTLS Runner communication
+      - PKI_CA_CERT_FILE=/app/ssl/ca.crt
+      - PKI_CA_KEY_FILE=/app/ssl/ca.key
+      - PKI_VALIDITY_DAYS=365
+      - GRPC_ADDRESS=:9090
+      - GRPC_PUBLIC_ENDPOINT=grpc://${SERVER_HOST}:${GRPC_PORT:-9443}
+      # Admin Console
+      - ADMIN_ENABLED=true
+    volumes:
+      - ./ssl:/app/ssl:ro
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+
+  # ===========================================================================
+  # Web Frontend
+  # ===========================================================================
+  web:
+    image: agentsmesh/web:${VERSION:-latest}
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - PRIMARY_DOMAIN=${PRIMARY_DOMAIN}
+      - USE_HTTPS=false
+      - POSTHOG_KEY=${POSTHOG_KEY:-}
+      - POSTHOG_HOST=${POSTHOG_HOST:-}
+    healthcheck:
+      test: ["CMD", "node", "/app/healthcheck.mjs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ===========================================================================
+  # Web Admin Console
+  # ===========================================================================
+  web-admin:
+    image: agentsmesh/web-admin:${VERSION:-latest}
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - PRIMARY_DOMAIN=${PRIMARY_DOMAIN}
+      - USE_HTTPS=false
+    healthcheck:
+      test: ["CMD", "node", "/app/healthcheck.mjs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ===========================================================================
+  # Relay Server (Terminal Streaming)
+  # ===========================================================================
+  relay:
+    image: agentsmesh/relay:${VERSION:-latest}
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - SERVER_ADDRESS=:8090
+      - WS_READ_BUFFER_SIZE=4096
+      - WS_WRITE_BUFFER_SIZE=4096
+      - JWT_SECRET=${JWT_SECRET}
+      - BACKEND_URL=http://backend:8080
+      - INTERNAL_API_SECRET=${INTERNAL_API_SECRET}
+      - RELAY_ID=selfhost-relay-1
+      - RELAY_REGION=local
+      - RELAY_CAPACITY=1000
+      - PRIMARY_DOMAIN=${PRIMARY_DOMAIN}
+      - USE_HTTPS=false
+      - SESSION_KEEP_ALIVE_DURATION=30s
+      - DEBUG=false
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8090/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  # ===========================================================================
+  # Traefik Reverse Proxy
+  # ===========================================================================
+  traefik:
+    image: traefik:v3.2
+    restart: unless-stopped
+    volumes:
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
+    ports:
+      # HTTP entrypoint
+      - "${HTTP_PORT:-80}:80"
+      # gRPC + mTLS port for Runner connections
+      - "${GRPC_PORT:-9443}:9443"
+    depends_on:
+      - backend
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:

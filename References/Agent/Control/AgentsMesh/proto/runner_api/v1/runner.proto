@@ -1,0 +1,386 @@
+// RunnerService — user-facing runner management API.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/runners*.go
+// per .claude/plans/proto-naming-conventions.md.
+//
+// IMPORTANT: proto package is `proto.runner_api.v1`, NOT `proto.runner.v1`.
+// The latter is already taken by `proto/runner/v1/runner.proto` (the
+// runner ↔ backend gRPC mTLS control plane). This service is the
+// browser/desktop ↔ backend REST replacement — completely different plane.
+//
+// Conventions enforced:
+//   * package proto.runner_api.v1 + go_package suffix for dispatch
+//   * service name = <Domain>Service, methods PascalCase verbs
+//   * snake_case fields, no json_name annotations
+//   * org_slug at field 1 of every org-scoped request
+//   * timestamps as string ISO-8601 (no google.protobuf.Timestamp)
+//   * list response = {items, total, limit, offset} uniform envelope
+//   * create/update return entity directly (no {runner: ...} wrapper)
+//
+// Field set reconciled across three layers (runbook §1.5):
+//   - backend domain/runner/runner.go (Runner struct)
+//   - clients/core/crates/types/src/runner.rs (Runner DTO)
+//   - clients/web/src/lib/api/runnerTypes.ts (RunnerData interface)
+//
+// Drift reconciliation: TS interface declares `last_heartbeat`, Rust DTO
+// also has `last_heartbeat`, Go domain has `LastHeartbeat` (*time.Time).
+// All three match. `RunnerListResponse` carries `latest_runner_version`
+// as a top-level envelope field (NOT a Runner field) — this is the one
+// breaking-shape difference from the uniform §8 envelope, kept because
+// the version is a global hint not a per-runner field. Documented as a
+// DEVIATION in the PR description.
+
+syntax = "proto3";
+
+package proto.runner_api.v1;
+
+import "codegen/v1/options.proto";
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/runner_api/v1;runnerapiv1";
+
+// Convert codegen target — emits runner_convert.amesh.go into the backend
+// connect handler tree so it can reach domain/runner + service/runner.
+option (amesh.codegen.v1.convert_target) = {
+  output_dir: "backend/internal/api/connect/runner"
+  output_package: "runnerconnect"
+};
+
+service RunnerService {
+  // CRUD
+  rpc ListRunners(ListRunnersRequest) returns (ListRunnersResponse);
+  rpc ListAvailableRunners(ListAvailableRunnersRequest) returns (ListAvailableRunnersResponse);
+  rpc GetRunner(GetRunnerRequest) returns (GetRunnerResponse);
+  rpc UpdateRunner(UpdateRunnerRequest) returns (Runner);
+  rpc DeleteRunner(DeleteRunnerRequest) returns (DeleteRunnerResponse);
+
+  // Lifecycle commands
+  rpc UpgradeRunner(UpgradeRunnerRequest) returns (UpgradeRunnerResponse);
+  rpc RequestLogUpload(RequestLogUploadRequest) returns (RequestLogUploadResponse);
+  rpc ListRunnerLogs(ListRunnerLogsRequest) returns (ListRunnerLogsResponse);
+  rpc QuerySandboxes(QuerySandboxesRequest) returns (QuerySandboxesResponse);
+
+  // Registration token (single use grpc tokens)
+  rpc CreateRunnerToken(CreateRunnerTokenRequest) returns (RunnerToken);
+  rpc ListRunnerTokens(ListRunnerTokensRequest) returns (ListRunnerTokensResponse);
+  rpc DeleteRunnerToken(DeleteRunnerTokenRequest) returns (DeleteRunnerTokenResponse);
+
+  // Web-side registration handshake. The runner CLI hits the public REST
+  // bootstrap endpoints (`/runners/grpc/auth-url`, `/runners/grpc/register`,
+  // …) because it cannot embed wasm; the browser-side approval flow that
+  // gates a pending registration on the user's "Authorize" click goes
+  // through these two RPCs.
+  rpc AuthorizeRunner(AuthorizeRunnerRequest) returns (AuthorizeRunnerResponse);
+}
+
+// RunnerPublicService is the public (no-auth) handshake surface for the
+// browser-side registration approval flow. The runner CLI polls auth_key
+// to know when the user has approved the request — same auth_key the
+// CLI received from REST `/runners/grpc/auth-url`. No org_slug — the
+// auth_key is the credential.
+service RunnerPublicService {
+  rpc GetRunnerAuthStatus(GetRunnerAuthStatusRequest) returns (RunnerAuthStatus);
+}
+
+// Runner mirrors the Go domain model (backend/internal/domain/runner/runner.go).
+//
+// `host_info` is a free-form JSON map on the Go side; we encode it as a
+// `string` carrying the JSON payload because protobuf binary already covers
+// the wire and `google.protobuf.Struct` pulls prost-types into the wasm
+// graph (conventions §6 rationale applies to Struct too).
+message Runner {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/runner.Runner"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  string node_id = 2 [(amesh.codegen.v1.field_rename) = "NodeID"];
+  string description = 3;
+  // online / offline / busy / maintenance
+  string status = 4;
+  optional string last_heartbeat = 5 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+  int32 current_pods = 6 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  int32 max_concurrent_pods = 7 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  optional string runner_version = 8 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  bool is_enabled = 9;
+  // organization / private — RBAC scope
+  string visibility = 10;
+  optional int64 registered_by_user_id = 11 [(amesh.codegen.v1.field_rename) = "RegisteredByUserID"];
+  // JSON-encoded host metadata: {os, arch, memory, cpu_cores, hostname, ...}
+  string host_info_json = 12 [
+    (amesh.codegen.v1.field_rename) = "HostInfo",
+    (amesh.codegen.v1.field_custom) = "marshalHostInfo"
+  ];
+  repeated string available_agents = 13 [(amesh.codegen.v1.field_custom) = "stringSliceToProto"];
+  repeated string tags = 14 [(amesh.codegen.v1.field_custom) = "stringSliceToProto"];
+  string created_at = 15 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  string updated_at = 16 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  int64 organization_id = 17 [(amesh.codegen.v1.field_rename) = "OrganizationID"];
+  repeated AgentVersion agent_versions = 18 [(amesh.codegen.v1.field_custom) = "agentVersionsToProto"];
+}
+
+// AgentVersion mirrors domain/runner.AgentVersion — installed agent runtime info.
+message AgentVersion {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/runner.AgentVersion"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  string slug = 1;
+  string version = 2;
+  string path = 3;
+}
+
+// RelayConnectionInfo — per-pod relay state attached to GetRunner.
+// Sourced from PodCoordinator (in-memory, not DB).
+message RelayConnectionInfo {
+  string pod_key = 1;
+  string relay_url = 2;
+  string session_id = 3;
+  bool connected = 4;
+  // Unix milliseconds since epoch (kept as int64 to match runner.proto).
+  int64 connected_at = 5;
+}
+
+// RunnerToken — gRPC mTLS registration token (single/multi use).
+// Mirrors GRPCRegistrationToken in Rust DTO + Go service.
+message RunnerToken {
+  int64 id = 1;
+  optional string name = 2;
+  // The plaintext token is returned ONLY on creation; subsequent list
+  // returns leave this field empty.
+  optional string token = 3;
+  optional int32 max_uses = 4;
+  optional int32 used_count = 5;
+  optional string expires_at = 6;
+  optional string created_at = 7;
+}
+
+// ===================== List / Get =====================
+
+message ListRunnersRequest {
+  string org_slug = 1;
+  optional string status = 2;
+  optional int32 offset = 3;
+  optional int32 limit = 4;
+}
+
+// ListRunnersResponse carries an extra `latest_runner_version` envelope
+// field beyond the uniform §8 envelope. This is documented as a
+// service-level DEVIATION (it's a global hint, not per-runner data).
+message ListRunnersResponse {
+  repeated Runner items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+  optional string latest_runner_version = 5;
+}
+
+message ListAvailableRunnersRequest {
+  string org_slug = 1;
+}
+
+message ListAvailableRunnersResponse {
+  repeated Runner items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message GetRunnerRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+// GetRunnerResponse — entity + side-data that the REST handler bundled.
+// Two extras vs. the bare `Runner` entity: relay_connections (live state
+// from PodCoordinator) and latest_runner_version (global hint). Per
+// conventions §9 exception ("multiple things alongside the entity"),
+// this stays an explicit envelope rather than returning `Runner`.
+message GetRunnerResponse {
+  Runner runner = 1;
+  repeated RelayConnectionInfo relay_connections = 2;
+  optional string latest_runner_version = 3;
+}
+
+// ===================== Update / Delete =====================
+
+message UpdateRunnerRequest {
+  string org_slug = 1;
+  int64 id = 2;
+  optional string description = 3;
+  optional int32 max_concurrent_pods = 4;
+  optional bool is_enabled = 5;
+  optional string visibility = 6;
+  // tags = empty list explicitly clears; tags = absent leaves unchanged.
+  // We use `optional message` semantics via a wrapper because proto3
+  // `repeated` cannot distinguish "no change" from "clear to empty".
+  TagsUpdate tags = 7;
+}
+
+// TagsUpdate wraps a repeated string so its presence is the "should update"
+// signal. If `update` is unset → tags are unchanged; if present → tags are
+// replaced with the contents of `values` (which can be empty).
+message TagsUpdate {
+  repeated string values = 1;
+}
+
+message DeleteRunnerRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message DeleteRunnerResponse {}
+
+// ===================== Upgrade / Logs / Sandboxes =====================
+
+message UpgradeRunnerRequest {
+  string org_slug = 1;
+  int64 id = 2;
+  // Empty string = upgrade to the LatestRunnerVersion constant.
+  string target_version = 3;
+  // Force is accepted for backward compatibility but ignored.
+  // Poddaemon now keeps pods alive across runner restarts. The field is
+  // retained (not reserved) so existing REST clients deserializing the
+  // legacy JSON body continue to round-trip cleanly during dual-track.
+  bool force = 4;
+}
+
+message UpgradeRunnerResponse {
+  // UUID for correlating upgrade_status events from the runner.
+  string request_id = 1;
+  string message = 2;
+}
+
+message RequestLogUploadRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message RequestLogUploadResponse {
+  string request_id = 1;
+  string message = 2;
+}
+
+message ListRunnerLogsRequest {
+  string org_slug = 1;
+  int64 id = 2;
+  optional int32 offset = 3;
+  optional int32 limit = 4;
+}
+
+message ListRunnerLogsResponse {
+  repeated RunnerLog items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+// RunnerLog — diagnostic log upload record (per-runner).
+message RunnerLog {
+  int64 id = 1;
+  int64 runner_id = 2;
+  string request_id = 3;
+  string status = 4;
+  optional string storage_key = 5;
+  int64 size_bytes = 6;
+  optional string error_message = 7;
+  int64 requested_by_id = 8;
+  optional string download_url = 9;
+  optional string created_at = 10;
+  optional string completed_at = 11;
+}
+
+message QuerySandboxesRequest {
+  string org_slug = 1;
+  int64 id = 2;
+  repeated string pod_keys = 3;
+}
+
+message QuerySandboxesResponse {
+  repeated SandboxStatus sandboxes = 1;
+  // Set when the runner reported a fatal error before per-pod results.
+  string error = 2;
+}
+
+// SandboxStatus mirrors the existing TS interface (runnerTypes.ts).
+message SandboxStatus {
+  string pod_key = 1;
+  bool exists = 2;
+  bool can_resume = 3;
+  optional string sandbox_path = 4;
+  optional string repository_url = 5;
+  optional string branch_name = 6;
+  optional string current_commit = 7;
+  optional int64 size_bytes = 8;
+  optional int64 last_modified = 9;
+  optional bool has_uncommitted_changes = 10;
+  optional string error = 11;
+}
+
+// ===================== Tokens =====================
+
+message CreateRunnerTokenRequest {
+  string org_slug = 1;
+  optional string name = 2;
+  repeated string labels = 3;
+  optional int32 max_uses = 4;
+  optional int64 expires_in_days = 5;
+}
+
+message ListRunnerTokensRequest {
+  string org_slug = 1;
+}
+
+message ListRunnerTokensResponse {
+  repeated RunnerToken items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message DeleteRunnerTokenRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message DeleteRunnerTokenResponse {}
+
+// ----------------------------------------------------------------------------
+// Web-side registration approval (browser flow)
+// ----------------------------------------------------------------------------
+
+// RunnerAuthStatus mirrors backend/internal/service/runner.AuthStatusResponse.
+// `certificate`/`private_key`/`ca_certificate` are non-empty only when the
+// runner CLI polls the status AFTER the user authorized the request — they
+// surface so the CLI can finish the mTLS handshake without a second hop.
+message RunnerAuthStatus {
+  // "pending" | "authorized" | "expired"
+  string status = 1;
+  optional string node_id = 2;
+  optional string expires_at = 3;
+  optional int64 runner_id = 4;
+  optional string certificate = 5;
+  optional string private_key = 6;
+  optional string ca_certificate = 7;
+  optional string org_slug = 8;
+  optional string grpc_endpoint = 9;
+}
+
+message GetRunnerAuthStatusRequest {
+  string auth_key = 1;
+}
+
+message AuthorizeRunnerRequest {
+  string org_slug = 1;
+  string auth_key = 2;
+  string node_id = 3;
+}
+
+message AuthorizeRunnerResponse {
+  int64 runner_id = 1;
+  string node_id = 2;
+  string message = 3;
+}

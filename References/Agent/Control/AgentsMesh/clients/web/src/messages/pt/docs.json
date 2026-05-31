@@ -1,0 +1,2178 @@
+{
+  "docs": {
+    "title": "Documentação",
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Próximo"
+    },
+    "nav": {
+      "gettingStarted": "Primeiros passos",
+      "introduction": "Introdução",
+      "quickStart": "Início rápido",
+      "coreConcepts": "Conceitos principais",
+      "concepts": "Conceitos",
+      "features": "Funcionalidades",
+      "agentpod": "AgentPod",
+      "workspace": "Área de trabalho",
+      "channels": "Channels",
+      "meshTopology": "Topologia Mesh",
+      "tickets": "Tickets",
+      "loops": "Loops",
+      "repositories": "Repositórios",
+      "repositoriesGit": "Repositórios e Git",
+      "runners": "Runner",
+      "runnerSetup": "Configuração do Runner",
+      "mcpTools": "Ferramentas MCP",
+      "guides": "Guias",
+      "gitIntegration": "Integração com Git",
+      "teamManagement": "Gestão de equipes",
+      "multiAgentWorkflows": "Fluxos multi-agente",
+      "api": "API",
+      "apiOverview": "Visão geral",
+      "apiAuthentication": "Autenticação",
+      "apiPods": "Pods API",
+      "apiTickets": "Tickets API",
+      "apiChannels": "Channels API",
+      "apiLoops": "Loops API",
+      "apiRunners": "Runners API",
+      "apiRepositories": "Repositories API",
+      "tutorials": "Tutoriais",
+      "tutorialRunnerSetup": "Configurar Runner",
+      "tutorialGitSetup": "Conectar Repos Git",
+      "tutorialMcpSkills": "MCP e Skills",
+      "tutorialFirstPod": "Seu Primeiro Pod",
+      "tutorialTicketWorkflow": "Gestão de Tarefas",
+      "tutorialMultiAgent": "Colaboração Multi-Agente",
+      "tutorialLoops": "Loops Automatizados",
+      "help": "Ajuda",
+      "faq": "Perguntas frequentes",
+      "menu": "Menu"
+    },
+    "intro": {
+      "title": "Introduction",
+      "description": "AgentsMesh é um Centro de Comando de Frota de Agentes IA que permite às equipes orquestrar agentes de codificação IA como Claude Code, Codex CLI, Gemini CLI e Aider em escala. Gerencie estações de trabalho IA remotas (AgentPod), coordene colaboração multi-agente (AgentsMesh) e acompanhe o progresso com gerenciamento de tarefas integrado — tudo a partir de uma única plataforma.",
+      "supportedAgents": "Supported AI Agents:",
+      "customAgents": "Custom agents via MCP protocol"
+    },
+    "architecture": {
+      "title": "Como Funciona",
+      "description": "O AgentsMesh permite que você controle agentes de IA executando em qualquer lugar — no seu notebook, em um servidor ou em uma VM na nuvem — direto do navegador. Comandos são enviados de forma segura por conexões criptografadas, enquanto a saída do terminal é transmitida em tempo real. Seu código nunca sai da sua infraestrutura.",
+      "clientLayer": "Camada do Cliente",
+      "clientSubtitle": "Acesse de qualquer lugar — navegador, celular ou tablet",
+      "cloudLayer": "Nuvem",
+      "cloudDesc": "Orquestração, monitoramento, colaboração e segurança",
+      "cloud": {
+        "orchestration": "Orquestração",
+        "monitoring": "Monitoramento",
+        "collaboration": "Colaboração",
+        "security": "Segurança"
+      },
+      "controlPlane": "Plano de Controle",
+      "controlPlaneDesc": "Ciclo de vida de Pods, comandos de agentes, sincronização de estado",
+      "dataPlane": "Plano de Dados",
+      "dataPlaneDesc": "I/O de terminal, streaming em tempo real",
+      "cluster": "Cluster",
+      "runnerLayer": "Camada de Execução",
+      "selfHostedRunners": "Runners Auto-hospedados",
+      "runnerDesc": "Implante na sua própria infraestrutura — seu código nunca sai do seu ambiente",
+      "runnerMac": "macOS",
+      "runnerLinux": "Linux",
+      "runnerCloud": "VM na Nuvem",
+      "agentLayer": "Camada de Agentes",
+      "agentSubtitle": "Agentes de codificação IA executando em Pods isolados",
+      "securityTitle": "Arquitetura de Segurança — Design de Duplo Caminho",
+      "securityDesc": "Sinais de controle (criação de Pods, comandos de agentes, atualizações de status) trafegam via gRPC protegido com TLS mútuo (mTLS) — cada Runner possui um certificado X.509 único emitido pela PKI da plataforma. Fluxos de dados do terminal (teclas digitadas, saída) passam pelo cluster Relay, mantendo o I/O sensível à latência em um caminho separado e otimizado. Este design de duplo caminho garante que você possa operar agentes de IA com segurança em qualquer máquina, de qualquer dispositivo, em qualquer lugar do mundo."
+    },
+    "whatYouCanDo": {
+      "title": "O Que Você Pode Fazer",
+      "description": "O AgentsMesh dá superpoderes à sua equipe para desenvolvimento impulsionado por IA.",
+      "orchestrate": {
+        "title": "Orquestrar Múltiplos Agentes IA",
+        "description": "Coordene Claude Code, Codex CLI, Gemini CLI, Aider e mais trabalhando juntos através de canais e vinculação de pods."
+      },
+      "remoteWorkstation": {
+        "title": "Estações de Trabalho IA Remotas",
+        "description": "Lance AgentPods — ambientes de desenvolvimento na nuvem com acesso a terminal em tempo real, isolamento de Git worktree e capacidades completas de agentes IA."
+      },
+      "taskDriven": {
+        "title": "Desenvolvimento Orientado a Tarefas",
+        "description": "Crie tickets, vincule-os a AgentPods e acompanhe o progresso em um quadro Kanban. De requisitos à execução e entrega."
+      },
+      "selfHosted": {
+        "title": "Auto-hospedado e Seguro",
+        "description": "Implante runners em sua própria infraestrutura. Seu código e dados nunca saem do seu ambiente. Modelo BYOK para controle total de custos."
+      }
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "quickStart": "Quick Start",
+      "quickStartDesc": "Get up and running in 5 minutes",
+      "agentpodDesc": "Remote AI development workstations",
+      "agentsmeshDesc": "Multi-agent collaboration network",
+      "mcpTools": "MCP Tools",
+      "mcpToolsDesc": "26 tools for AI agents"
+    },
+    "concepts": {
+      "title": "Core Concepts",
+      "description": "Understand the foundational concepts behind AgentsMesh to make the most of the platform.",
+      "architecture": {
+        "title": "Architecture Overview",
+        "description": "AgentsMesh follows a layered architecture where Organizations manage teams, Runners provide compute, and Pods execute AI agents.",
+        "orgTitle": "Organization",
+        "orgDesc": "The top-level entity. Each organization has its own members, settings, runners, and billing. Teams can invite members with different roles.",
+        "runnerTitle": "Runner",
+        "runnerDesc": "A self-hosted daemon that connects to the AgentsMesh backend via gRPC with mTLS. Runners provide the compute environment where Pods execute. You can run multiple Runners across different machines.",
+        "podTitle": "Pod (AgentPod)",
+        "podDesc": "An isolated execution environment where an AI coding agent runs. Each Pod has its own PTY terminal, sandbox, and optional Git worktree. Pods are created on Runners and managed through the web interface.",
+        "channelTitle": "Channel",
+        "channelDesc": "A communication hub where multiple Pods can exchange messages, share documents, and coordinate work. Channels can be associated with projects and tickets.",
+        "ticketTitle": "Ticket",
+        "ticketDesc": "A task management unit with Kanban board support. Tickets can be linked to Pods for automatic context injection and progress tracking."
+      },
+      "byok": {
+        "title": "BYOK (Bring Your Own Key)",
+        "description": "AgentsMesh uses the BYOK model — you provide your own API keys for AI providers (Anthropic, OpenAI, Google, etc.). Your API keys are encrypted at rest and never shared. This means you have full control over costs and model selection."
+      },
+      "mtls": {
+        "title": "mTLS Security",
+        "description": "Runner-to-backend communication is secured with mutual TLS (mTLS). When a Runner registers, it receives a unique X.509 certificate from the platform's PKI. All subsequent gRPC communication is encrypted and mutually authenticated. Certificates are automatically renewed before expiry."
+      },
+      "sandbox": {
+        "title": "Sandbox & Git Worktree Isolation",
+        "description": "Each Pod runs in an isolated sandbox environment. When a repository is linked, the Runner creates a dedicated Git worktree so multiple Pods can work on the same repository simultaneously without conflicts. Worktrees are automatically cleaned up when Pods terminate."
+      },
+      "mcp": {
+        "title": "MCP (Model Context Protocol)",
+        "description": "AgentsMesh provides 26 MCP tools that AI agents can use to discover resources, communicate with other Pods, manage tickets, and control terminals. The MCP server runs on each Runner and is automatically configured for supported agents like Claude Code."
+      },
+      "repositoriesGit": {
+        "title": "Repositórios e Integração com Git",
+        "description": "Conecte seus repositórios Git ao AgentsMesh e configure o acesso ao provedor para fluxos de trabalho de desenvolvimento contínuos com IA.",
+        "overview": {
+          "title": "Visão Geral",
+          "description": "Repositórios vinculam seus projetos Git à plataforma. Quando um Pod é criado com um repositório vinculado, o Runner clona automaticamente o projeto e configura um worktree Git isolado. O AgentsMesh se integra com plataformas populares de hospedagem Git para fornecer acesso contínuo a repositórios para agentes de IA."
+        },
+        "providers": {
+          "title": "Provedores Git Suportados",
+          "github": "GitHub",
+          "githubDesc": "Conecte via Token de Acesso Pessoal (PAT) ou OAuth (se você se cadastrou com o GitHub). Suporta repositórios públicos e privados.",
+          "gitlab": "GitLab",
+          "gitlabDesc": "Conecte via Token de Acesso Pessoal (PAT). Suporta instâncias GitLab auto-hospedadas.",
+          "gitee": "Gitee",
+          "giteeDesc": "Conecte via Token de Acesso Pessoal. Popular na comunidade de desenvolvedores chinesa."
+        },
+        "github": {
+          "title": "Conectando o GitHub",
+          "description": "Existem duas formas de conectar o GitHub, dependendo de como você se cadastrou:",
+          "patTitle": "Opção A: Token de Acesso Pessoal (Recomendado)",
+          "patDesc": "Funciona para todos os usuários, independentemente do método de cadastro:",
+          "step1": "No GitHub, vá em Settings → Developer settings → Personal access tokens → Fine-grained tokens",
+          "step2": "Clique em Generate new token e selecione os repositórios aos quais deseja conceder acesso",
+          "step3": "Conceda permissões de Repositório: Contents (Read-only) e Metadata (Read-only) no mínimo",
+          "step4": "No AgentsMesh, vá em Configurações → Pessoal → Configurações Git",
+          "step5": "Clique em Adicionar Provedor GitHub e cole seu token",
+          "oauthTitle": "Opção B: OAuth (apenas para usuários cadastrados com GitHub)",
+          "oauthDesc": "Se você se cadastrou no AgentsMesh usando sua conta GitHub, a conexão OAuth está disponível:",
+          "oauthStep1": "Vá em Configurações → Pessoal → Configurações Git",
+          "oauthStep2": "Clique em Conectar GitHub — sua conta já está vinculada via OAuth",
+          "oauthStep3": "Selecione quais repositórios conceder acesso",
+          "oauthNote": "O OAuth só está disponível se você se cadastrou com o GitHub. Usuários que se registraram com e-mail devem usar um Token de Acesso Pessoal."
+        },
+        "gitlab": {
+          "title": "Conectando o GitLab",
+          "description": "Conecte o GitLab usando um Token de Acesso Pessoal:",
+          "step1": "No GitLab, vá em Configurações → Tokens de Acesso",
+          "step2": "Crie um novo token com os escopos api e read_repository",
+          "step3": "No AgentsMesh, vá em Configurações → Pessoal → Configurações Git",
+          "step4": "Clique em Adicionar Provedor GitLab e cole seu token",
+          "step5": "Insira a URL da sua instância GitLab (para auto-hospedado)",
+          "selfHosted": "GitLab Auto-Hospedado: Insira a URL completa da sua instância GitLab (ex.: https://gitlab.suaempresa.com)."
+        },
+        "gitee": {
+          "title": "Conectando o Gitee",
+          "description": "Conecte o Gitee usando um Token de Acesso Pessoal:",
+          "step1": "No Gitee, vá em Configurações → Tokens de Acesso Pessoal",
+          "step2": "Crie um novo token com o escopo projects",
+          "step3": "No AgentsMesh, vá em Configurações → Pessoal → Configurações Git",
+          "step4": "Clique em Adicionar Provedor Gitee e cole seu token"
+        },
+        "sshKeys": {
+          "title": "Gerenciamento de Chaves SSH",
+          "description": "Para repositórios acessados via SSH, certifique-se de que seu Runner tenha as chaves SSH corretas configuradas:",
+          "step1": "Gere um par de chaves SSH na máquina do seu Runner",
+          "step2": "Adicione a chave pública ao seu provedor Git (GitHub/GitLab/Gitee)",
+          "step3": "O Runner usará a chave SSH ao clonar repositórios",
+          "dockerNote": "Runners Docker: Monte suas chaves SSH como um volume somente leitura: -v ~/.ssh:/root/.ssh:ro"
+        },
+        "podUsage": {
+          "title": "Usando Repositórios em Pods",
+          "description": "Uma vez que um repositório esteja conectado, você pode vinculá-lo a Pods:",
+          "step1": "Ao criar um novo Pod, selecione um repositório no menu suspenso",
+          "step2": "O Runner clona o repositório e cria um worktree Git isolado",
+          "step3": "O agente de IA inicia no diretório de trabalho do repositório",
+          "step4": "Todas as alterações ficam isoladas no worktree do Pod"
+        },
+        "worktree": {
+          "title": "Isolamento com Git Worktree",
+          "description": "Git worktrees permitem que múltiplos Pods trabalhem no mesmo repositório simultaneamente. Cada Pod opera em seu próprio branch sem afetar os outros. Isso é fundamental para o desenvolvimento paralelo com agentes de IA, onde múltiplos agentes podem modificar a mesma base de código."
+        },
+        "management": {
+          "title": "Gerenciando Repositórios",
+          "addRepo": "Adicionando um Repositório",
+          "addRepoSteps": "Vá em Configurações → Repositórios → Adicionar Repositório. Selecione seu provedor Git, autentique-se e escolha os repositórios para conectar.",
+          "removeRepo": "Removendo um Repositório",
+          "removeRepoSteps": "Remover um repositório o desconecta do AgentsMesh. Pods existentes usando este repositório não serão afetados, mas novos Pods não poderão ser criados com ele."
+        }
+      }
+    },
+    "gettingStarted": {
+      "title": "Início Rápido",
+      "description": "Inicie o AgentsMesh em seis passos. Esta é uma visão geral rápida — cada passo tem um link para um tutorial detalhado com solução de problemas e opções avançadas.",
+      "step1": {
+        "title": "Criar uma conta",
+        "description": "Registre-se na página de cadastro com seu e-mail, nome de usuário e senha. Você receberá um e-mail de verificação. Se não chegar em alguns minutos, verifique a pasta de spam.",
+        "whatYouGet": "Após verificar seu e-mail, o assistente de configuração irá guiá-lo para:",
+        "item1": "Criar um espaço de trabalho pessoal (um clique) ou espaço de equipe",
+        "item2": "Opcionalmente juntar-se a uma organização existente via link de convite"
+      },
+      "step2": {
+        "title": "Configurar um Runner",
+        "description": "Um Runner é um daemon leve que roda na sua máquina e executa agentes de IA em espaços de trabalho isolados chamados Pods. Instale o AgentsMesh Runner na sua máquina de desenvolvimento ou servidor.",
+        "methodToken": "Registrar com um token",
+        "methodLogin": "Registrar com login pelo navegador",
+        "seeSetup": "Consulte {link} para opções de implantação com Docker, pacotes Linux e Kubernetes."
+      },
+      "step3": {
+        "title": "Instalar CLIs de agentes IA",
+        "description": "Instale as ferramentas CLI que deseja usar na máquina Runner e configure as variáveis de ambiente das chaves de API necessárias. O Runner detecta automaticamente CLIs instalados via PATH e reporta agentes disponíveis para a plataforma.",
+        "claudeCode": "Claude Code",
+        "claudeCodeInstall": "npm install -g @anthropic-ai/claude-code",
+        "claudeCodeEnv": "export ANTHROPIC_API_KEY=sk-ant-...",
+        "claudeCodeHint": "Obtenha sua chave API em",
+        "codexCli": "Codex CLI",
+        "codexCliInstall": "npm install -g @openai/codex",
+        "codexCliEnv": "export OPENAI_API_KEY=sk-...",
+        "codexCliHint": "Obtenha sua chave API em",
+        "geminiCli": "Gemini CLI",
+        "geminiCliInstall": "npm install -g @google/gemini-cli",
+        "geminiCliEnv": "export GOOGLE_API_KEY=...",
+        "geminiCliHint": "Obtenha sua chave API em",
+        "tip": "Após a instalação, reinicie o Runner ou aguarde o próximo heartbeat. Os novos agentes disponíveis aparecerão na caixa de diálogo Novo Pod.",
+        "seeSetup": "Consulte {link} para mais detalhes sobre ferramentas MCP e configuração de skills."
+      },
+      "step4": {
+        "title": "Conectar um provedor Git",
+        "description": "Conectar um provedor Git permite que seus Pods clonem repositórios e trabalhem em worktrees Git isoladas. Vá em Configurações → Pessoal → Configurações Git para adicionar um provedor.",
+        "github": "GitHub",
+        "githubDesc": "Adicione um Token de Acesso Pessoal com o escopo repo.",
+        "githubTokenUrl": "github.com/settings/tokens",
+        "gitlab": "GitLab",
+        "gitlabDesc": "Adicione um Token de Acesso Pessoal com escopos api e read_repository. Instâncias auto-hospedadas são suportadas.",
+        "seeGuide": "Consulte {link} para instruções completas de configuração, incluindo chaves SSH e Gitee."
+      },
+      "step5": {
+        "title": "Iniciar um Pod",
+        "description": "Um Pod (AgentPod) é uma estação de trabalho virtual onde um agente de IA executa com seu próprio terminal e espaço de código isolado. Crie o seu primeiro agora!",
+        "item1": "Navegue até Workspace na barra lateral",
+        "item2": "Clique em Novo Pod",
+        "item3": "Selecione um agente IA (Claude Code, Codex CLI, etc.)",
+        "item4": "Escolha um Runner",
+        "item5": "Opcionalmente selecione um repositório e branch — o agente trabalhará em uma cópia isolada (Git worktree) para que sua branch principal fique segura",
+        "item6": "Opcionalmente vincule um ticket para contexto",
+        "item7": "Adicione um prompt inicial descrevendo a tarefa (ex.: \"Adicionar validação de entrada no formulário de login\" ou \"Corrigir o teste falhando em auth.test.ts\")",
+        "item8": "Clique em Criar",
+        "seeSetup": "Consulte {link} para um passo a passo detalhado com solução de problemas."
+      },
+      "step6": {
+        "title": "Interagir com seu agente",
+        "description": "Após a criação, a visualização do terminal abre com uma sessão ao vivo. Seu agente IA começa a executar o prompt inicial ou aguarda entrada caso nenhum tenha sido fornecido.",
+        "item1": "Digite prompts ou comandos de acompanhamento diretamente no terminal",
+        "item2": "Observe o indicador de status do agente — Ocioso (pronto para entrada), Executando (trabalhando na sua tarefa) ou Aguardando (precisa da sua aprovação)",
+        "item3": "O agente trabalha dentro da worktree do repositório se um foi vinculado",
+        "item4": "Encerre o Pod pela barra de ferramentas quando sua tarefa estiver completa"
+      },
+      "tryIt": {
+        "title": "Experimente: Seu Primeiro Pod em 60 Segundos",
+        "description": "Quer ver funcionando agora mesmo? Aqui está o caminho mais rápido — nenhum repositório necessário:",
+        "item1": "Clique em Workspace → Novo Pod",
+        "item2": "Selecione Claude Code (ou qualquer agente instalado) e seu Runner",
+        "item3": "Pule os campos de repositório e ticket",
+        "item4": "Defina o prompt inicial como: \"Diga olá, depois liste os arquivos no diretório atual e explique o que você vê.\"",
+        "item5": "Clique em Criar e observe o agente responder no terminal",
+        "tip": "Isso cria um Pod sem repositório — o agente executa em um diretório temporário. É perfeito para testar sua configuração antes de trabalhar com código real."
+      },
+      "nextSteps": {
+        "title": "Próximos passos",
+        "agentpod": "Saiba mais sobre AgentPod →",
+        "agentpodDesc": "Estações de trabalho remotas de desenvolvimento com IA",
+        "mesh": "Explorar Mesh →",
+        "meshDesc": "Recursos de colaboração multi-agente",
+        "tickets": "Tickets & Kanban →",
+        "ticketsDesc": "Gestão de tarefas vinculada a Pods",
+        "multiAgent": "Workflows multi-agente →",
+        "multiAgentDesc": "Coordenar múltiplos agentes IA"
+      }
+    },
+    "features": {
+      "agentpod": {
+        "title": "AgentPod",
+        "description": "AgentPod provides remote AI development workstations with integrated terminal access. Each Pod runs on a Runner and provides a full development environment with AI assistance.",
+        "overview": {
+          "title": "Overview",
+          "description": "An AgentPod is an isolated development environment where an AI coding agent (like Claude Code) runs with full terminal access. Each Pod includes:",
+          "terminal": "Web Terminal — Real-time terminal access via WebSocket",
+          "worktree": "Git Worktree — Isolated workspace per Pod",
+          "agent": "AI Agent — Your chosen coding assistant",
+          "mcpTools": "MCP Tools — 26 tools for discovery, terminal control, collaboration, and more"
+        },
+        "keyFeatures": {
+          "title": "Key Features",
+          "webTerminal": "Web-based Terminal",
+          "webTerminalDesc": "Full terminal emulation in your browser with WebSocket support for real-time interaction. No local setup required.",
+          "statusMonitoring": "Agent Status Monitoring",
+          "statusMonitoringDesc": "Real-time visibility into what your AI agent is doing: idle, working, waiting for input, or finished.",
+          "worktreeIsolation": "Git Worktree Isolation",
+          "worktreeIsolationDesc": "Each Pod gets its own Git worktree, ensuring complete isolation between concurrent Pods.",
+          "multiplePods": "Multiple Pods",
+          "multiplePodsDesc": "Run multiple AI agent Pods concurrently, each working on different tasks or branches.",
+          "ticketIntegration": "Ticket Integration",
+          "ticketIntegrationDesc": "Link Pods to tickets for automatic context and progress tracking.",
+          "autoCleanup": "Automatic Cleanup",
+          "autoCleanupDesc": "Pods are automatically cleaned up when terminated, freeing resources."
+        },
+        "lifecycle": {
+          "title": "Pod Lifecycle",
+          "initializing": "Initializing",
+          "initializingDesc": "Pod is being created, worktree is being set up, and agent is starting.",
+          "running": "Running",
+          "runningDesc": "Pod is active and ready for interaction.",
+          "paused": "Paused",
+          "pausedDesc": "Pod is temporarily paused (agent not active).",
+          "disconnected": "Disconnected",
+          "disconnectedDesc": "Runner lost connection but Pod may recover.",
+          "completed": "Completed",
+          "completedDesc": "Pod finished successfully.",
+          "terminated": "Terminated",
+          "terminatedDesc": "Pod was manually stopped.",
+          "orphaned": "Reconnecting",
+          "orphanedDesc": "Runner is restarting. Session will resume automatically.",
+          "error": "Error",
+          "errorDesc": "Pod encountered an error during execution."
+        },
+        "agentStatus": {
+          "title": "Agent Status",
+          "description": "Within a running Pod, the AI agent has its own status:",
+          "statusHeader": "Status",
+          "descriptionHeader": "Description",
+          "idle": "Idle",
+          "idleDesc": "Agent is waiting for a task or prompt",
+          "waiting": "Waiting",
+          "waitingDesc": "Agent is waiting for user input or approval",
+          "executing": "Executando",
+          "executingDesc": "O agente está executando uma tarefa ativamente"
+        },
+        "configuration": {
+          "title": "Pod Configuration",
+          "description": "When creating a Pod, you can configure:",
+          "optionHeader": "Option",
+          "descriptionHeader": "Description",
+          "agent": "Agent",
+          "agentDesc": "Claude Code, Codex CLI, Gemini CLI, Aider, or custom",
+          "model": "Model",
+          "modelDesc": "opus, sonnet, or haiku (for Claude)",
+          "permissionMode": "Permission Mode",
+          "permissionModeDesc": "bypassPermissions (auto-approve all, default), default (per-tool approval), acceptEdits (auto-approve file edits), dontAsk (deny unless allowlisted), or plan (read-only planning)",
+          "repository": "Repository",
+          "repositoryDesc": "Link to a Git repository for automatic cloning",
+          "ticket": "Ticket",
+          "ticketDesc": "Link to a ticket for context and tracking",
+          "prompt": "Initial Prompt",
+          "promptDesc": "Starting instructions for the AI agent"
+        }
+      },
+      "workspace": {
+        "title": "Workspace",
+        "description": "The Workspace is your central hub for managing and interacting with all active AgentPods.",
+        "overview": {
+          "title": "Overview",
+          "description": "The Workspace provides a multi-panel view where you can monitor and interact with multiple Pods simultaneously. It's designed for developers who run several AI agents in parallel."
+        },
+        "multiTerminal": {
+          "title": "Multi-Terminal View",
+          "description": "View multiple terminal sessions side by side. Each terminal connects to a different Pod, allowing you to monitor AI agent activity across your projects.",
+          "splitView": "Split View",
+          "splitViewDesc": "Arrange terminals in horizontal or vertical splits to compare output across Pods.",
+          "fullscreen": "Fullscreen Mode",
+          "fullscreenDesc": "Focus on a single terminal in fullscreen for detailed interaction.",
+          "tabbing": "Tab Navigation",
+          "tabbingDesc": "Quickly switch between Pods using keyboard shortcuts or tab clicks."
+        },
+        "podList": {
+          "title": "Pod Management",
+          "description": "The pod list sidebar shows all your Pods with real-time status indicators. Filter by status, agent, or repository to quickly find what you need.",
+          "statusFilters": "Status Filters",
+          "statusFiltersDesc": "Filter Pods by Running, Paused, Completed, or Error states.",
+          "quickActions": "Quick Actions",
+          "quickActionsDesc": "Terminate, pause, or restart Pods directly from the list.",
+          "details": "Pod Details",
+          "detailsDesc": "Click any Pod to view its configuration, linked ticket, and resource usage."
+        },
+        "quickCreate": {
+          "title": "Quick Create",
+          "description": "Launch new Pods quickly from the Workspace with the Quick Create dialog. Select an agent, choose a runner, and optionally link a repository — all in a few clicks.",
+          "steps": "Steps: Choose Agent → Select Runner → (Optional) Link Repository → Create"
+        },
+        "realTime": {
+          "title": "Real-Time Interaction",
+          "description": "All terminal interactions are streamed in real-time via WebSocket. Type commands, provide input to AI agents, and see results instantly — just like a local terminal."
+        }
+      },
+      "channels": {
+        "title": "Channels",
+        "description": "Channels provide communication hubs for AI agents. Multiple Pods can join a channel to collaborate on tasks, share information, and coordinate work.",
+        "overview": {
+          "title": "Overview",
+          "description": "Channels are persistent communication spaces where AI agents can:",
+          "item1": "Send and receive messages",
+          "item2": "Share code snippets and documents",
+          "item3": "Coordinate on complex tasks",
+          "item4": "Maintain context across pods"
+        },
+        "creating": {
+          "title": "Creating Channels",
+          "description": "Channels can be created with optional associations:",
+          "fieldHeader": "Field",
+          "descriptionHeader": "Description",
+          "name": "Name",
+          "nameDesc": "Channel name (required)",
+          "channelDescription": "Description",
+          "channelDescriptionDesc": "Optional description of the channel's purpose",
+          "projectId": "Project ID",
+          "projectIdDesc": "Link to a specific project/repository",
+          "ticketSlug": "Slug do Ticket",
+          "ticketSlugDesc": "Vincular a um ticket específico"
+        },
+        "messageTypes": {
+          "title": "Message Types",
+          "text": "text",
+          "textDesc": "Plain text messages for general communication between agents. This is the default message type.",
+          "system": "system",
+          "systemDesc": "System notifications like Pod joins, leaves, and status updates. Generated automatically by the platform."
+        },
+        "mentions": {
+          "title": "Mentions",
+          "description": "Messages can mention specific Pods to get their attention:",
+          "hint": "Mentioned Pods can filter messages using the {param} parameter when fetching messages."
+        },
+        "sharedDocs": {
+          "title": "Shared Documents",
+          "description": "Each channel has a shared document that agents can collaboratively edit:",
+          "getDoc": "get_channel_document",
+          "getDocDesc": "Retrieve the current shared document content.",
+          "updateDoc": "update_channel_document",
+          "updateDocDesc": "Update the shared document with new content.",
+          "hint": "Use shared documents for collaborative notes, specifications, or any content that needs to persist across messages."
+        },
+        "mcpTools": {
+          "title": "Channel MCP Tools",
+          "toolHeader": "Tool",
+          "descriptionHeader": "Description",
+          "searchChannels": "search_channels",
+          "searchChannelsDesc": "Search for channels by name, project, or ticket",
+          "createChannel": "create_channel",
+          "createChannelDesc": "Create a new channel",
+          "getChannel": "get_channel",
+          "getChannelDesc": "Get channel details",
+          "sendMessage": "send_channel_message",
+          "sendMessageDesc": "Send a message to a channel",
+          "getMessages": "get_channel_messages",
+          "getMessagesDesc": "Retrieve messages from a channel",
+          "getDocument": "get_channel_document",
+          "getDocumentDesc": "Get the shared document",
+          "updateDocument": "update_channel_document",
+          "updateDocumentDesc": "Update the shared document"
+        },
+        "useCases": {
+          "title": "Use Cases",
+          "coordination": "Task Coordination",
+          "coordinationDesc": "Create a channel for a ticket and have multiple agents discuss implementation approach, share findings, and coordinate work.",
+          "designDocs": "Design Documents",
+          "designDocsDesc": "Use the shared document feature to collaboratively write technical specifications or architecture decisions.",
+          "notifications": "Notifications",
+          "notificationsDesc": "Broadcast important updates to all agents working on a project using system messages."
+        },
+        "webUI": {
+          "title": "Using Channels in the Web UI",
+          "description": "You can also manage channels directly from the web interface:",
+          "step1": "Navigate to the Mesh view from the sidebar",
+          "step2": "Open the channel panel on the right side",
+          "step3": "Create new channels or select existing ones",
+          "step4": "View message history and shared documents",
+          "step5": "See which Pods are participating in real-time"
+        }
+      },
+      "mesh": {
+        "title": "Mesh Topology",
+        "description": "Visualize and manage the collaboration network between your AI agent Pods in real-time.",
+        "overview": {
+          "title": "Overview",
+          "description": "The Mesh view provides an interactive topology visualization showing how your Pods are connected and collaborating. It's the central control panel for multi-agent workflows."
+        },
+        "visualization": {
+          "title": "Topology Visualization",
+          "description": "The mesh graph renders Pods as nodes and Bindings as edges. The layout updates in real-time as Pods connect and disconnect.",
+          "nodes": "Nodes represent individual Pods",
+          "edges": "Edges represent active Bindings between Pods",
+          "colors": "Node colors indicate Pod status",
+          "animation": "Animated edges show active data flow"
+        },
+        "nodeStatus": {
+          "title": "Node Colors & Status",
+          "running": "Running",
+          "runningDesc": "Pod is active and ready",
+          "paused": "Paused",
+          "pausedDesc": "Pod is temporarily paused",
+          "disconnected": "Disconnected",
+          "disconnectedDesc": "Runner connection lost",
+          "completed": "Completed",
+          "completedDesc": "Pod finished successfully",
+          "error": "Error",
+          "errorDesc": "Pod encountered an error"
+        },
+        "binding": {
+          "title": "Pod Binding Mechanism",
+          "description": "Bindings establish permission-controlled connections between Pods. A binding allows one Pod to interact with another's terminal or resources.",
+          "scopes": "Binding Scopes",
+          "podRead": "pod:read — Observe another Pod's terminal output",
+          "podWrite": "pod:write — Send input to another Pod's terminal",
+          "flow": "Binding Flow",
+          "flowStep1": "Pod A requests a binding to Pod B with specific scopes",
+          "flowStep2": "Pod B receives the binding request",
+          "flowStep3": "Pod B accepts or rejects the binding",
+          "flowStep4": "If accepted, Pod A can use the granted scopes"
+        },
+        "channelIntegration": {
+          "title": "Channel Integration",
+          "description": "The Mesh view includes a channel panel on the right side where you can view and participate in channel conversations. Select a channel to see messages and shared documents alongside the topology view."
+        },
+        "monitoring": {
+          "title": "Real-Time Monitoring",
+          "description": "The Mesh view updates in real-time via WebSocket connections. You can observe:",
+          "item1": "Pod creation and termination events",
+          "item2": "Binding requests and status changes",
+          "item3": "Channel message activity",
+          "item4": "Agent status transitions (idle → working → waiting → finished)"
+        }
+      },
+      "tickets": {
+        "title": "Tickets",
+        "description": "Integrated task management with Kanban board view. Create tickets, assign them to AgentPods, and track progress through your workflow.",
+        "overview": {
+          "title": "Overview",
+          "description": "AgentsMesh Tickets provide a lightweight issue tracking system designed for AI-driven development. Key features include:",
+          "item1": "Kanban board visualization",
+          "item2": "Ticket ↔ Pod linking for context",
+          "item3": "Git commit and merge request associations",
+          "item4": "Priority and estimation tracking",
+          "item5": "Labels and assignees"
+        },
+        "status": {
+          "title": "Ticket Status",
+          "description": "Tickets flow through these statuses in the Kanban board:",
+          "backlog": "Backlog",
+          "todo": "Todo",
+          "inProgress": "In Progress",
+          "inReview": "In Review",
+          "done": "Done"
+        },
+        "priority": {
+          "title": "Priority Levels",
+          "priorityHeader": "Priority",
+          "descriptionHeader": "Description",
+          "urgent": "Urgent",
+          "urgentDesc": "Critical issues requiring immediate attention",
+          "high": "High",
+          "highDesc": "Important tasks that should be addressed soon",
+          "medium": "Medium",
+          "mediumDesc": "Normal priority work",
+          "low": "Low",
+          "lowDesc": "Nice-to-have items when time permits",
+          "none": "None",
+          "noneDesc": "Priority not yet assigned"
+        },
+        "podIntegration": {
+          "title": "Pod Integration",
+          "description": "Link tickets to AgentPods to:",
+          "context": "Provide context — The AI agent receives ticket details as initial context",
+          "progress": "Track progress — See which Pods are working on which tickets",
+          "autoUpdate": "Auto-update — Pod completion can update ticket status",
+          "history": "View history — See all Pods that worked on a ticket"
+        },
+        "gitIntegration": {
+          "title": "Git Integration",
+          "description": "Tickets can be associated with:",
+          "commits": "Commits",
+          "commitsDesc": "Link commits to tickets by SHA. View commit messages, authors, and links to the source.",
+          "mrs": "Merge Requests / Pull Requests",
+          "mrsDesc": "Track MRs/PRs associated with tickets. See status, pipeline results, and review state."
+        },
+        "storyPoints": {
+          "title": "Story Points",
+          "description": "Estimate effort using Fibonacci story points:"
+        }
+      },
+      "repositories": {
+        "title": "Repositories",
+        "description": "Connect your Git repositories to AgentsMesh for seamless AI-powered development workflows.",
+        "overview": {
+          "title": "Overview",
+          "description": "Repositories link your Git projects to the platform. When a Pod is created with a linked repository, the Runner automatically clones the project and sets up an isolated Git worktree."
+        },
+        "providers": {
+          "title": "Supported Git Providers",
+          "github": "GitHub",
+          "githubDesc": "Connect via OAuth for seamless authorization. Supports public and private repositories.",
+          "gitlab": "GitLab",
+          "gitlabDesc": "Connect via Personal Access Token (PAT). Supports self-hosted GitLab instances.",
+          "gitee": "Gitee",
+          "giteeDesc": "Connect via Personal Access Token. Popular in the Chinese developer community."
+        },
+        "auth": {
+          "title": "Authentication Methods",
+          "oauth": "OAuth",
+          "oauthDesc": "For GitHub — one-click authorization with fine-grained repository access. Tokens are encrypted and stored securely.",
+          "pat": "Personal Access Token (PAT)",
+          "patDesc": "For GitLab and Gitee — generate a token from your provider settings and add it in AgentsMesh. Requires repo read/write scope."
+        },
+        "podAssociation": {
+          "title": "Repository & Pod Association",
+          "description": "When creating a Pod with a repository:",
+          "step1": "The Runner clones the repository (if not already cached)",
+          "step2": "A new Git worktree is created for the Pod",
+          "step3": "The AI agent starts in the worktree directory",
+          "step4": "Changes are isolated from other Pods working on the same repo",
+          "step5": "When the Pod terminates, the worktree is cleaned up"
+        },
+        "worktree": {
+          "title": "Git Worktree Isolation",
+          "description": "Git worktrees allow multiple Pods to work on the same repository simultaneously. Each Pod operates on its own branch without affecting others. This is critical for parallel AI agent development where multiple agents may modify the same codebase."
+        },
+        "management": {
+          "title": "Managing Repositories",
+          "addRepo": "Adding a Repository",
+          "addRepoSteps": "Go to Settings → Repositories → Add Repository. Select your Git provider, authenticate, and choose the repositories to connect.",
+          "removeRepo": "Removing a Repository",
+          "removeRepoSteps": "Removing a repository disconnects it from AgentsMesh. Existing Pods using this repository will not be affected, but new Pods cannot be created with it."
+        }
+      },
+      "loops": {
+        "title": "Loops",
+        "description": "CI/CD para tarefas de agentes IA. Defina tarefas automatizadas repet��veis e acione-as por agendamento ou via API — como cron jobs para seus agentes IA.",
+        "overview": {
+          "title": "Visão geral",
+          "description": "Loops permite definir uma tarefa uma vez e executá-la repetidamente. Cada Loop encapsula um Pod com um template de prompt, configuração de gatilho e política de execução. Funcionalidades principais:",
+          "item1": "Agendamento cron ou execução acionada por API",
+          "item2": "Modos de execução Autopilot (supervisionado) ou Direct (autônomo)",
+          "item3": "Reutilização de sandbox persistente para trabalho incremental",
+          "item4": "Substituição de variáveis em templates de prompt",
+          "item5": "Callbacks webhook para notificações de conclusão de execução",
+          "item6": "Políticas de concorrência (pular, fila ou substituir)"
+        },
+        "executionModes": {
+          "title": "Modos de execução",
+          "autopilot": "Autopilot",
+          "autopilotDesc": "Um Agente de Controle supervisiona a execução. Monitora o progresso, trata erros e decide quando a tarefa está completa. Ideal para workflows complexos com múltiplas etapas.",
+          "direct": "Direct",
+          "directDesc": "O agente executa o prompt de forma autônoma. O Pod é encerrado automaticamente quando o agente termina. Ideal para tarefas simples e bem definidas."
+        },
+        "triggerTypes": {
+          "title": "Tipos de gatilho",
+          "description": "Loops suporta dois mecanismos de gatilho:",
+          "cron": "Agendamento Cron",
+          "cronDesc": "Executar em agenda recorrente usando expressões cron padrão (ex: '0 9 * * *' para diariamente às 9h UTC). O agendador verifica a cada 30 segundos os Loops pendentes.",
+          "api": "Gatilho API",
+          "apiDesc": "Acionar execuções programaticamente via HTTP POST. Passe variáveis em tempo de execução para personalizar cada execução. Ideal para pipelines CI/CD, webhooks e automação baseada em eventos."
+        },
+        "sandboxStrategies": {
+          "title": "Estratégias de sandbox",
+          "description": "Controle como o ambiente de execução é gerenciado entre execuções:",
+          "persistent": "Persistent",
+          "persistentDesc": "Reutiliza o mesmo sandbox entre execuções. Alterações de arquivos, estado git e pacotes instalados são preservados. Usa Pod Resume para restaurar o ambiente anterior.",
+          "fresh": "Fresh",
+          "freshDesc": "Cria um novo sandbox para cada execução. Garante um estado inicial limpo toda vez. Ideal para tarefas que precisam de ambientes reproduzíveis."
+        },
+        "sessionPersistence": {
+          "title": "Persistência de sessão",
+          "description": "Quando ativado, o agente mantém o histórico de conversação entre execuções. O mesmo SessionID é reutilizado, então o agente lembra o contexto de execuções anteriores. Desative para execuções independentes sem contexto histórico."
+        },
+        "concurrency": {
+          "title": "Políticas de concorrência",
+          "description": "Controle o que acontece quando uma nova execu��ão é acionada enquanto outra está ativa:",
+          "skip": "Skip",
+          "skipDesc": "A nova execução é pulada se o máximo de execuções simultâneas for atingido.",
+          "queue": "Queue",
+          "queueDesc": "A nova execução entra na fila e inicia quando um slot estiver disponível.",
+          "replace": "Replace",
+          "replaceDesc": "A execução ativa é cancelada e substituída pela nova."
+        },
+        "promptTemplates": {
+          "title": "Templates de prompt",
+          "description": "Use marcadores {{variable}} no seu prompt. Defina valores padrão ao criar o Loop e substitua-os no momento do acionamento. Exemplo:",
+          "example": "Revise todos os arquivos alterados na branch {{branch}} desde a última revisão. Foque em problemas de {{focus_area}}."
+        },
+        "webhookCallbacks": {
+          "title": "Callbacks webhook",
+          "description": "Configure uma URL de callback para receber notificações HTTP POST quando uma execução for concluída. O payload inclui status da execução, duração, resumo de saída e detalhes de erro. Use para integrar com Slack, PagerDuty ou monitoramento personalizado."
+        },
+        "useCases": {
+          "title": "Casos de uso",
+          "item1": "Revisões de código diárias automáticas",
+          "item2": "Atualizações noturnas de dependências e varredura de segurança",
+          "item3": "Geração de testes acionada por PR",
+          "item4": "Atualizações programadas de documentação",
+          "item5": "Triagem e reprodução de bugs baseada em eventos"
+        }
+      }
+    },
+    "runners": {
+      "setup": {
+        "title": "Runner Setup",
+        "description": "Runners are the execution environments for AI agent Pods. Set up a runner on any machine with Git and your preferred development tools installed.",
+        "requirements": {
+          "title": "System Requirements",
+          "item1": "Linux, macOS, or Windows (WSL2 recommended)",
+          "item2": "Git installed and configured",
+          "item3": "Docker (optional, for containerized agents)",
+          "item4": "Network access to AgentsMesh server",
+          "item5": "At least 4GB RAM (8GB+ recommended for multiple Pods)"
+        },
+        "quickInstall": {
+          "title": "Quick Installation",
+          "oneLineTitle": "One-Line Install (Recommended)",
+          "linuxTitle": "Linux (Package Manager)",
+          "afterInstall": "After Installation",
+          "tokenHint": "Get your registration token from Settings → Runners → Create Token in the AgentsMesh web interface.",
+          "methodToken": "Opção A: Registrar com um token",
+          "methodLogin": "Opção B: Registrar com login pelo navegador"
+        },
+        "docker": {
+          "title": "Docker Installation"
+        },
+        "dockerCompose": {
+          "title": "Docker Compose"
+        },
+        "envVars": {
+          "title": "Environment Variables",
+          "variableHeader": "Variable",
+          "descriptionHeader": "Description",
+          "defaultHeader": "Default",
+          "tokenDesc": "Registration token (required)",
+          "urlDesc": "AgentsMesh server URL",
+          "maxPodsDesc": "Maximum concurrent Pods",
+          "workspaceDirDesc": "Base directory for workspaces",
+          "mcpPortDesc": "MCP server port"
+        },
+        "registrationToken": {
+          "title": "Creating a Registration Token",
+          "step1": "Go to Settings → Runners in the web interface",
+          "step2": "Click Create Token",
+          "step3": "Set an optional description and expiration",
+          "step4": "Copy the generated token",
+          "step5": "Use the token when configuring your runner",
+          "securityNote": "Security Note: Registration tokens are one-time use. Once a runner registers, it receives mTLS certificates for secure communication. You can revoke certificates from the runner settings if needed."
+        },
+        "verifying": {
+          "title": "Verifying Installation",
+          "description": "After starting the runner, verify it's connected:",
+          "step1": "Go to Settings → Runners in the web interface",
+          "step2": "Find your runner in the list — it should show ● Online",
+          "step3": "Try creating an AgentPod using this runner"
+        },
+        "troubleshooting": {
+          "title": "Troubleshooting",
+          "offline": "Runner shows as Offline",
+          "offlineDesc": "Check network connectivity to the AgentsMesh server. Ensure firewalls allow outbound gRPC connections (port 9443 for mTLS).",
+          "podsFail": "Pods fail to start",
+          "podsFailDesc": "Verify Git is installed and configured. Check that the runner has access to clone repositories (SSH keys or tokens configured).",
+          "tokenInvalid": "\"Token invalid\" error",
+          "tokenInvalidDesc": "Registration tokens are single-use. Create a new token from Settings → Runners if the original was already used."
+        }
+      },
+      "mcpTools": {
+        "title": "MCP Tools",
+        "description": "The Runner provides 26 MCP (Model Context Protocol) tools for AI agents to collaborate with other agents. Tools are organized into 7 categories: Discovery, Terminal, Binding, Channel, Ticket, Pod, and Loop.",
+        "overview": {
+          "title": "Overview",
+          "description": "MCP tools are automatically available to AI agents running in AgentPod. The tools are served via HTTP on port 19000 and authenticated using the Pod key.",
+          "autoConfig": "Automatic Configuration: When using Claude Code, the runner automatically generates the MCP configuration file with the correct URL and headers."
+        },
+        "discovery": {
+          "title": "Discovery Tools",
+          "description": "Tools for discovering available resources in the mesh.",
+          "toolHeader": "Tool",
+          "descriptionHeader": "Description",
+          "listPods": "list_available_pods",
+          "listPodsDesc": "List other Pods available for collaboration",
+          "listRunners": "list_runners",
+          "listRunnersDesc": "List available Runners",
+          "listRepos": "list_repositories",
+          "listReposDesc": "List available repositories"
+        },
+        "binding": {
+          "title": "Pod Binding Tools",
+          "toolHeader": "Tool",
+          "descriptionHeader": "Description",
+          "paramsHeader": "Parameters",
+          "bindPod": "bind_pod",
+          "bindPodDesc": "Request binding to another Pod",
+          "bindPodParams": "target_pod, scopes[]",
+          "acceptBinding": "accept_binding",
+          "acceptBindingDesc": "Accept a binding request",
+          "acceptBindingParams": "binding_id",
+          "rejectBinding": "reject_binding",
+          "rejectBindingDesc": "Reject a binding request",
+          "rejectBindingParams": "binding_id, reason?",
+          "unbindPod": "unbind_pod",
+          "unbindPodDesc": "Remove an existing binding",
+          "unbindPodParams": "target_pod",
+          "getBindings": "get_bindings",
+          "getBindingsDesc": "Get all bindings for this Pod",
+          "getBindingsParams": "status?",
+          "getBoundPods": "get_bound_pods",
+          "getBoundPodsDesc": "Get Pods bound to this Pod",
+          "getBoundPodsParams": "-"
+        },
+        "channel": {
+          "title": "Channel Tools",
+          "toolHeader": "Tool",
+          "descriptionHeader": "Description",
+          "paramsHeader": "Parameters",
+          "searchChannels": "search_channels",
+          "searchChannelsDesc": "Search for channels",
+          "searchChannelsParams": "name?, project_id?, ticket_slug?",
+          "createChannel": "create_channel",
+          "createChannelDesc": "Create a new channel",
+          "createChannelParams": "name, description?, project_id?, ticket_slug?",
+          "getChannel": "get_channel",
+          "getChannelDesc": "Get channel details",
+          "getChannelParams": "channel_id",
+          "sendMessage": "send_channel_message",
+          "sendMessageDesc": "Send message to channel",
+          "sendMessageParams": "channel_id, content, message_type?, mentions[]?",
+          "getMessages": "get_channel_messages",
+          "getMessagesDesc": "Get messages from channel",
+          "getMessagesParams": "channel_id, before_time?, after_time?, limit?",
+          "getDocument": "get_channel_document",
+          "getDocumentDesc": "Get shared document",
+          "getDocumentParams": "channel_id",
+          "updateDocument": "update_channel_document",
+          "updateDocumentDesc": "Update shared document",
+          "updateDocumentParams": "channel_id, document"
+        },
+        "ticket": {
+          "title": "Ticket Tools",
+          "toolHeader": "Tool",
+          "descriptionHeader": "Description",
+          "paramsHeader": "Parameters",
+          "searchTickets": "search_tickets",
+          "searchTicketsDesc": "Search tickets",
+          "searchTicketsParams": "product_id?, status?, type?, priority?, query?",
+          "getTicket": "get_ticket",
+          "getTicketDesc": "Get ticket details",
+          "getTicketParams": "ticket_id (number or \"AM-123\")",
+          "createTicket": "create_ticket",
+          "createTicketDesc": "Create a new ticket",
+          "createTicketParams": "product_id, title, type?, priority?",
+          "updateTicket": "update_ticket",
+          "updateTicketDesc": "Update ticket",
+          "updateTicketParams": "ticket_id, title?, status?, priority?, type?"
+        },
+        "loop": {
+          "title": "Ferramentas de Loop",
+          "description": "Ferramentas para gerenciar loops automatizados — tarefas repetíveis que podem ser acionadas manualmente ou via agendamento cron.",
+          "toolHeader": "Ferramenta",
+          "descriptionHeader": "Descrição",
+          "paramsHeader": "Parâmetros",
+          "listLoops": "list_loops",
+          "listLoopsDesc": "Listar loops automatizados na organização",
+          "listLoopsParams": "status?, query?, limit?, offset?",
+          "triggerLoop": "trigger_loop",
+          "triggerLoopDesc": "Acionar manualmente uma execução de loop",
+          "triggerLoopParams": "loop_slug (required), variables?"
+        },
+        "pod": {
+          "title": "Pod Tools",
+          "toolHeader": "Tool",
+          "descriptionHeader": "Description",
+          "paramsHeader": "Parameters",
+          "createPod": "create_pod",
+          "createPodDesc": "Create a new AgentPod",
+          "createPodParams": "agent_slug (required), runner_id?, ticket_slug?, prompt?, model?",
+          "description": "Ferramentas para criar, observar e controlar Pods. Ferramentas de observação e entrada requerem um binding ativo com escopos apropriados.",
+          "getPodSnapshot": "get_pod_snapshot",
+          "getPodSnapshotDesc": "Obter um snapshot da saída do terminal de outro Pod (requer pod:read)",
+          "getPodSnapshotParams": "pod_key, lines?, raw?, include_screen?",
+          "sendPodInput": "send_pod_input",
+          "sendPodInputDesc": "Enviar texto e/ou teclas para outro Pod (requer pod:write)",
+          "sendPodInputParams": "pod_key, text?, keys?",
+          "getPodStatus": "get_pod_status",
+          "getPodStatusDesc": "Obter o status de execução do agente de um Pod (executing/waiting/idle)",
+          "getPodStatusParams": "pod_key"
+        }
+      }
+    },
+    "guides": {
+      "gitIntegration": {
+        "title": "Git Integration",
+        "description": "A complete guide to connecting Git providers and using repositories with AgentsMesh.",
+        "overview": {
+          "title": "Overview",
+          "description": "AgentsMesh integrates with popular Git hosting platforms to provide seamless repository access for AI agents. This guide covers the end-to-end setup process."
+        },
+        "github": {
+          "title": "GitHub (OAuth)",
+          "description": "Connect your GitHub account using OAuth for one-click authorization:",
+          "step1": "Go to Settings → Git Providers",
+          "step2": "Click Connect GitHub",
+          "step3": "Authorize AgentsMesh in the GitHub popup",
+          "step4": "Select which repositories to grant access to",
+          "step5": "Your repositories will appear in Settings → Repositories"
+        },
+        "gitlab": {
+          "title": "GitLab (Personal Access Token)",
+          "description": "Connect GitLab using a Personal Access Token:",
+          "step1": "In GitLab, go to Settings → Access Tokens",
+          "step2": "Create a new token with api and read_repository scopes",
+          "step3": "In AgentsMesh, go to Settings → Git Providers",
+          "step4": "Click Add GitLab Provider and paste your token",
+          "step5": "Enter your GitLab instance URL (for self-hosted)",
+          "selfHosted": "Self-Hosted GitLab: Enter the full URL of your GitLab instance (e.g., https://gitlab.yourcompany.com)."
+        },
+        "gitee": {
+          "title": "Gitee (Personal Access Token)",
+          "description": "Connect Gitee using a Personal Access Token:",
+          "step1": "In Gitee, go to Settings → Personal Access Tokens",
+          "step2": "Create a new token with projects scope",
+          "step3": "In AgentsMesh, go to Settings → Git Providers",
+          "step4": "Click Add Gitee Provider and paste your token"
+        },
+        "sshKeys": {
+          "title": "SSH Key Management",
+          "description": "For repositories accessed via SSH, ensure your Runner has the correct SSH keys configured:",
+          "step1": "Generate an SSH key pair on your Runner machine",
+          "step2": "Add the public key to your Git provider (GitHub/GitLab/Gitee)",
+          "step3": "The Runner will use the SSH key when cloning repositories",
+          "dockerNote": "Docker Runners: Mount your SSH keys as a read-only volume: -v ~/.ssh:/root/.ssh:ro"
+        },
+        "podUsage": {
+          "title": "Using Repositories in Pods",
+          "description": "Once a repository is connected, you can link it to Pods:",
+          "step1": "When creating a new Pod, select a repository from the dropdown",
+          "step2": "The Runner clones the repo and creates an isolated Git worktree",
+          "step3": "The AI agent starts in the repository's working directory",
+          "step4": "All changes are isolated to the Pod's worktree"
+        }
+      },
+      "teamManagement": {
+        "title": "Team Management",
+        "description": "Learn how to set up and manage your team in AgentsMesh.",
+        "overview": {
+          "title": "Overview",
+          "description": "AgentsMesh uses Organizations as the primary unit for team collaboration. Each organization has its own members, runners, repositories, and settings."
+        },
+        "createOrg": {
+          "title": "Creating an Organization",
+          "description": "When you first register, you'll be prompted to create an organization. You can also create additional organizations later:",
+          "step1": "Click your profile menu → Create Organization",
+          "step2": "Enter an organization name and display name",
+          "step3": "Configure initial settings (timezone, default language)",
+          "step4": "Your organization is ready to use"
+        },
+        "inviteMembers": {
+          "title": "Inviting Members",
+          "description": "Invite team members to collaborate in your organization:",
+          "step1": "Go to Settings → Members",
+          "step2": "Click Invite Member",
+          "step3": "Enter the invitee's email address",
+          "step4": "Select a role (Admin or Member)",
+          "step5": "The invitee receives an email with a join link",
+          "note": "Invited users who don't have an AgentsMesh account will be prompted to register first."
+        },
+        "roles": {
+          "title": "Roles & Permissions",
+          "description": "AgentsMesh supports role-based access control (RBAC):",
+          "ownerTitle": "Owner",
+          "ownerDesc": "Full access to all settings, billing, and member management. Can delete the organization.",
+          "adminTitle": "Admin",
+          "adminDesc": "Can manage members, runners, repositories, and settings. Cannot delete the organization or manage billing.",
+          "memberTitle": "Member",
+          "memberDesc": "Can create Pods, use runners, access repositories, and manage tickets. Cannot change organization settings."
+        },
+        "orgSettings": {
+          "title": "Organization Settings",
+          "description": "Configure your organization from Settings:",
+          "general": "General — Organization name, display name, and avatar",
+          "members": "Members — Invite, remove, and manage member roles",
+          "runners": "Runners — View and manage connected runners",
+          "repositories": "Repositories — Connected Git repositories",
+          "providers": "AI Providers — API keys for AI services",
+          "billing": "Billing — Subscription plan and usage"
+        }
+      },
+      "multiAgent": {
+        "title": "Multi-Agent Workflows",
+        "description": "Learn how to orchestrate multiple AI agents to collaborate on complex development tasks.",
+        "overview": {
+          "title": "Overview",
+          "description": "Multi-agent workflows allow you to split complex tasks across multiple AI agents. Each agent runs in its own Pod, and they communicate through Channels and Pod Bindings."
+        },
+        "setup": {
+          "title": "Setting Up a Multi-Agent Workflow",
+          "step1": "Create a Channel for the task (e.g., 'feature-auth-implementation')",
+          "step2": "Launch multiple Pods, each with a different role or focus",
+          "step3": "Link all Pods to the same Channel",
+          "step4": "Each Pod uses MCP tools to communicate and coordinate",
+          "step5": "Monitor progress through the Mesh topology view"
+        },
+        "scenario1": {
+          "title": "Scenario: Code Review Workflow",
+          "description": "Use two agents — one writes code, another reviews it:",
+          "developer": "Developer Pod — Writes code based on ticket requirements",
+          "reviewer": "Reviewer Pod — Observes the developer's terminal output via binding, reviews changes, and provides feedback through the Channel",
+          "flow": "The reviewer can use get_pod_snapshot to watch the developer work, then send feedback via the Channel. The developer reads the feedback and iterates."
+        },
+        "scenario2": {
+          "title": "Scenario: Frontend + Backend Split",
+          "description": "Parallelize full-stack development with two specialized agents:",
+          "frontend": "Frontend Pod — Works on UI components, styles, and client logic",
+          "backend": "Backend Pod — Implements API endpoints, database models, and business logic",
+          "coordination": "Both Pods share a Channel where they coordinate API contracts, data schemas, and integration points. They can use the shared document to maintain an API specification."
+        },
+        "scenario3": {
+          "title": "Scenario: Test & Development in Parallel",
+          "description": "Run testing alongside development for faster iteration:",
+          "devPod": "Development Pod — Implements the feature",
+          "testPod": "Testing Pod — Writes and runs tests for the new code",
+          "process": "The testing Pod monitors the development Pod's progress via Channel messages. When the developer signals completion of a module, the tester writes and executes tests, reporting results back through the Channel."
+        },
+        "bestPractices": {
+          "title": "Best Practices",
+          "tip1": "Start with clear task assignments — Give each Pod a focused initial prompt",
+          "tip2": "Use Channels for coordination — Prefer Channel messages over direct terminal access",
+          "tip3": "Link to tickets — Associate Pods with tickets for automatic context",
+          "tip4": "Monitor via Mesh — Use the topology view to track collaboration status",
+          "tip5": "Clean up — Terminate Pods when tasks are complete to free resources"
+        }
+      }
+    },
+    "api": {
+      "common": {
+        "methodHeader": "Método",
+        "pathHeader": "Caminho",
+        "scopeHeader": "Escopo",
+        "descriptionHeader": "Descrição",
+        "endpointDetails": "Detalhes dos endpoints",
+        "pathParams": "Parâmetros de caminho",
+        "queryParams": "Parâmetros de consulta",
+        "requestBody": "Corpo da requisição",
+        "responseExample": "Exemplo de resposta",
+        "paramHeader": "Parâmetro",
+        "typeHeader": "Tipo",
+        "requiredHeader": "Obrigatório",
+        "defaultHeader": "Padrão",
+        "fieldHeader": "Campo",
+        "optionalBadge": "Opcional",
+        "requiredBadge": "Obrigatório"
+      },
+      "overview": {
+        "title": "Visão geral da API",
+        "description": "Integre serviços de terceiros ao AgentsMesh usando chaves de API no nível da organização. Automatize o gerenciamento de Pods, rastreamento de tickets e mais através da API REST.",
+        "overview": {
+          "title": "Visão geral",
+          "description": "O AgentsMesh fornece chaves de API no nível da organização para integrações de terceiros, pipelines CI/CD e fluxos de trabalho de automação. Com chaves de API você pode:",
+          "item1": "Gerenciar AgentPods programaticamente (criar, listar, encerrar)",
+          "item2": "Automatizar a criação de tickets e atualizações de status",
+          "item3": "Consultar canais e enviar mensagens",
+          "item4": "Monitorar runners e status dos repositórios"
+        },
+        "gettingKey": {
+          "title": "Obter uma chave de API",
+          "description": "As chaves de API são criadas por proprietários ou administradores da organização através da interface web.",
+          "step1": "Vá para Configurações → Organização → Chaves de API",
+          "step2": "Clique em Criar chave de API",
+          "step3": "Insira um nome, data de expiração opcional e selecione os escopos necessários",
+          "step4": "Copie a chave gerada (começa com amk_)",
+          "warning": "Importante: A chave de API é exibida apenas uma vez no momento da criação. Armazene-a com segurança — você não poderá recuperá-la depois."
+        },
+        "basePath": {
+          "title": "URL base e caminho",
+          "description": "Todos os endpoints da API externa seguem este padrão:",
+          "slugNote": "Substitua '{'slug'}' pelo slug da sua organização (encontrado em Configurações → Organização)."
+        }
+      },
+      "authentication": {
+        "title": "Autenticação",
+        "description": "Saiba como autenticar suas solicitações de API usando chaves de API.",
+        "methods": {
+          "title": "Métodos de autenticação",
+          "description": "Inclua sua chave de API em cada solicitação usando um dos seguintes métodos:",
+          "headerMethod": "Cabeçalho X-API-Key",
+          "headerMethodDesc": "Passe a chave diretamente no cabeçalho X-API-Key. Este é o método recomendado.",
+          "bearerMethod": "Authorization Bearer",
+          "bearerMethodDesc": "Alternativamente, passe a chave como token Bearer no cabeçalho Authorization."
+        },
+        "scopes": {
+          "title": "Escopos",
+          "description": "Cada chave de API recebe um ou mais escopos que determinam quais endpoints ela pode acessar. Escopos de escrita incluem implicitamente acesso de leitura para o mesmo recurso.",
+          "scopeHeader": "Escopo",
+          "descriptionHeader": "Descrição",
+          "endpointsHeader": "Endpoints acessíveis",
+          "podsRead": "pods:read",
+          "podsReadDesc": "Acesso somente leitura a Pods",
+          "podsReadEndpoints": "Listar Pods, obter detalhes do Pod",
+          "podsWrite": "pods:write",
+          "podsWriteDesc": "Gerenciamento completo de Pods (inclui leitura)",
+          "podsWriteEndpoints": "Criar Pods, encerrar Pods + todos os endpoints de leitura",
+          "ticketsRead": "tickets:read",
+          "ticketsReadDesc": "Acesso somente leitura a tickets",
+          "ticketsReadEndpoints": "Listar tickets, obter ticket, obter quadro",
+          "ticketsWrite": "tickets:write",
+          "ticketsWriteDesc": "Gerenciamento completo de tickets (inclui leitura)",
+          "ticketsWriteEndpoints": "Criar, atualizar, excluir tickets + todos os endpoints de leitura",
+          "channelsRead": "channels:read",
+          "channelsReadDesc": "Acesso somente leitura a canais",
+          "channelsReadEndpoints": "Listar canais, obter canal, listar mensagens",
+          "channelsWrite": "channels:write",
+          "channelsWriteDesc": "Gerenciamento completo de canais (inclui leitura)",
+          "channelsWriteEndpoints": "Criar/atualizar canais, enviar mensagens + todos os endpoints de leitura",
+          "runnersRead": "runners:read",
+          "runnersReadDesc": "Acesso somente leitura a runners",
+          "runnersReadEndpoints": "Listar runners, obter runner, runners disponíveis, Pods do runner",
+          "reposRead": "repos:read",
+          "reposReadDesc": "Acesso somente leitura a repositórios",
+          "reposReadEndpoints": "Listar repositórios, obter repositório, listar branches, listar merge requests"
+        },
+        "errors": {
+          "title": "Tratamento de erros",
+          "description": "A API retorna códigos de status HTTP padrão. Respostas de erro comuns:",
+          "codeHeader": "Código de status",
+          "descriptionHeader": "Descrição",
+          "badRequest": "Bad Request — Parâmetros ou corpo da solicitação inválidos",
+          "unauthorized": "Unauthorized — Chave de API ausente ou inválida",
+          "forbidden": "Forbidden — A chave de API não possui o escopo necessário para este endpoint",
+          "notFound": "Not Found — O recurso não existe ou o slug da organização é inválido"
+        }
+      },
+      "pods": {
+        "title": "Pods API",
+        "description": "Gerencie AgentPods programaticamente. Crie, liste e encerre Pods através da API REST.",
+        "endpoints": {
+          "title": "Endpoints",
+          "list": "Listar todos os Pods",
+          "get": "Obter detalhes do Pod por chave",
+          "create": "Criar um novo Pod",
+          "terminate": "Encerrar um Pod"
+        },
+        "examples": {
+          "title": "Exemplos de código",
+          "listPods": "Listar todos os Pods em execução",
+          "createPod": "Criar um novo Pod"
+        },
+        "details": {
+          "title": "Detalhes dos endpoints",
+          "listPods": {
+            "title": "GET /pods",
+            "description": "Recuperar uma lista paginada de Pods na organização. Suporta filtragem por status.",
+            "params": {
+              "status": "Filtrar por status do Pod (ex.: running, terminated)",
+              "limit": "Número máximo de resultados a retornar",
+              "offset": "Número de resultados a pular para paginação"
+            }
+          },
+          "getPod": {
+            "title": "GET /pods/:key",
+            "description": "Recuperar informações detalhadas sobre um Pod específico pela sua chave única.",
+            "params": {
+              "key": "O identificador de chave único do Pod"
+            }
+          },
+          "createPod": {
+            "title": "POST /pods",
+            "description": "Criar um novo AgentPod em um runner especificado. O Pod será inicializado com a configuração fornecida e iniciará a execução.",
+            "fields": {
+              "runner_id": "ID do runner onde criar o Pod",
+              "agent_slug": "Identificador do agente (ex.: claude-code, aider)",
+              "prompt": "Prompt ou tarefa inicial para o agente",
+              "repository_id": "Repositório a associar com o Pod",
+              "branch": "Branch Git para trabalhar",
+              "ticket_slug": "Identificador do ticket a vincular (ex.: AM-123)",
+              "channel_id": "Canal a associar com o Pod",
+              "sandbox_type": "Tipo de sandbox: worktree ou tempdir",
+              "environment_variables": "Pares chave-valor de variáveis de ambiente",
+              "custom_agent_command": "Comando personalizado para iniciar o agente",
+              "custom_agent_args": "Argumentos para o comando de agente personalizado",
+              "custom_mcp_config": "Configuração personalizada do servidor MCP (JSON)",
+              "auto_close": "Se o Pod deve fechar automaticamente após a conclusão da tarefa",
+              "auto_close_delay_seconds": "Atraso em segundos antes do fechamento automático",
+              "pod_timeout_minutes": "Tempo de vida máximo do Pod em minutos",
+              "max_turns": "Número máximo de turnos do agente"
+            }
+          },
+          "terminatePod": {
+            "title": "POST /pods/:key/terminate",
+            "description": "Encerrar um Pod em execução. O processo do Pod será parado e os recursos liberados.",
+            "params": {
+              "key": "O identificador de chave único do Pod a encerrar"
+            }
+          }
+        }
+      },
+      "tickets": {
+        "title": "Tickets API",
+        "description": "Automatize o gerenciamento de tickets. Crie, atualize e rastreie tickets através da API REST.",
+        "endpoints": {
+          "title": "Endpoints",
+          "list": "Listar tickets",
+          "board": "Obter visualização do quadro Kanban",
+          "get": "Obter ticket por identificador",
+          "create": "Criar um novo ticket",
+          "update": "Atualizar um ticket",
+          "updateStatus": "Atualizar status do ticket",
+          "delete": "Excluir um ticket"
+        },
+        "examples": {
+          "title": "Exemplos de código",
+          "listTickets": "Listar todos os tickets",
+          "createTicket": "Criar um novo ticket"
+        },
+        "details": {
+          "title": "Detalhes dos endpoints",
+          "listTickets": {
+            "title": "GET /tickets",
+            "description": "Recuperar uma lista paginada de tickets. Suporta filtragem por repositório, status, tipo, responsável e labels.",
+            "params": {
+              "repository_id": "Filtrar por ID do repositório",
+              "status": "Filtrar por status (open, in_progress, resolved, closed)",
+              "assignee_id": "Filtrar por ID do usuário responsável",
+              "labels": "Filtrar por labels (separadas por vírgulas)",
+              "limit": "Número máximo de resultados a retornar",
+              "offset": "Número de resultados a pular para paginação"
+            }
+          },
+          "getBoard": {
+            "title": "GET /tickets/board",
+            "description": "Recuperar a visualização do quadro Kanban com tickets organizados em colunas por status.",
+            "params": {
+              "repository_id": "Filtrar o quadro por ID do repositório"
+            }
+          },
+          "getTicket": {
+            "title": "GET /tickets/:slug",
+            "description": "Recuperar informações detalhadas sobre um ticket específico pelo seu identificador legível.",
+            "params": {
+              "slug": "Identificador do ticket (ex.: AM-123)"
+            }
+          },
+          "createTicket": {
+            "title": "POST /tickets",
+            "description": "Criar um novo ticket. Requer no mínimo um tipo e um título.",
+            "fields": {
+              "title": "Título do ticket (1-500 caracteres)",
+              "priority": "Nível de prioridade: low, medium, high ou critical",
+              "status": "Status inicial (padrão: open)",
+              "assignee_id": "ID do usuário para atribuir o ticket",
+              "repository_id": "Repositório a associar",
+              "labels": "Array de strings de labels",
+              "parent_slug": "Identificador do ticket pai para sub-tarefas"
+            }
+          },
+          "updateTicket": {
+            "title": "PUT /tickets/:slug",
+            "description": "Atualizar um ticket existente. Todos os campos são opcionais — apenas os campos fornecidos serão atualizados.",
+            "params": {
+              "slug": "Identificador do ticket (ex.: AM-123)"
+            },
+            "fields": {
+              "title": "Título do ticket atualizado",
+              "priority": "Nível de prioridade atualizado",
+              "status": "Status atualizado",
+              "assignee_id": "ID do usuário responsável atualizado",
+              "labels": "Array de strings de labels atualizado",
+              "parent_slug": "Identificador do ticket pai atualizado"
+            }
+          },
+          "updateStatus": {
+            "title": "PATCH /tickets/:slug/status",
+            "description": "Atualizar apenas o status de um ticket. Este é um endpoint simplificado para transições de status.",
+            "params": {
+              "slug": "Identificador do ticket (ex.: AM-123)"
+            },
+            "fields": {
+              "status": "Novo status: open, in_progress, resolved ou closed"
+            }
+          },
+          "deleteTicket": {
+            "title": "DELETE /tickets/:slug",
+            "description": "Excluir permanentemente um ticket. Esta ação não pode ser desfeita.",
+            "params": {
+              "slug": "Identificador do ticket (ex.: AM-123)"
+            }
+          }
+        }
+      },
+      "channels": {
+        "title": "Channels API",
+        "description": "Consulte canais e gerencie mensagens. Liste canais, recupere mensagens e envie novas mensagens através da API REST.",
+        "endpoints": {
+          "title": "Endpoints",
+          "list": "Listar canais",
+          "get": "Obter detalhes do canal",
+          "messages": "Listar mensagens do canal",
+          "create": "Criar um novo canal",
+          "update": "Atualizar um canal",
+          "sendMessage": "Enviar uma mensagem no canal"
+        },
+        "details": {
+          "title": "Detalhes dos endpoints",
+          "listChannels": {
+            "title": "GET /channels",
+            "description": "Recuperar uma lista de canais. Suporta filtragem por repositório, ticket e status de arquivamento.",
+            "params": {
+              "repository_id": "Filtrar por ID do repositório",
+              "ticket_slug": "Filtrar por slug do ticket associado",
+              "include_archived": "Incluir canais arquivados (true/false)"
+            }
+          },
+          "getChannel": {
+            "title": "GET /channels/:id",
+            "description": "Recuperar informações detalhadas sobre um canal específico.",
+            "params": {
+              "id": "O ID numérico do canal"
+            }
+          },
+          "getMessages": {
+            "title": "GET /channels/:id/messages",
+            "description": "Recuperar mensagens de um canal, ordenadas da mais recente para a mais antiga.",
+            "params": {
+              "id": "O ID numérico do canal",
+              "limit": "Número máximo de mensagens a retornar (máx. 100)"
+            }
+          },
+          "createChannel": {
+            "title": "POST /channels",
+            "description": "Criar um novo canal para colaboração entre agentes.",
+            "fields": {
+              "name": "Nome do canal (2-100 caracteres)",
+              "description": "Descrição do canal",
+              "repository_id": "Repositório a associar",
+              "ticket_slug": "Identificador do ticket a vincular (ex.: AM-123)",
+              "document": "Documento ou contexto inicial para o canal"
+            }
+          },
+          "updateChannel": {
+            "title": "PUT /channels/:id",
+            "description": "Atualizar um canal existente. Apenas os campos fornecidos serão atualizados.",
+            "params": {
+              "id": "O ID numérico do canal"
+            },
+            "fields": {
+              "name": "Nome do canal atualizado",
+              "description": "Descrição do canal atualizada",
+              "document": "Documento do canal atualizado"
+            }
+          },
+          "sendMessage": {
+            "title": "POST /channels/:id/messages",
+            "description": "Enviar uma nova mensagem em um canal.",
+            "params": {
+              "id": "O ID numérico do canal"
+            },
+            "fields": {
+              "content": "Conteúdo de texto da mensagem",
+              "pod_key": "Chave do Pod a associar com esta mensagem (opcional)"
+            }
+          }
+        }
+      },
+      "runners": {
+        "title": "Runners API",
+        "description": "Monitore o status e a disponibilidade dos runners. Liste runners e verifique seus Pods conectados através da API REST.",
+        "endpoints": {
+          "title": "Endpoints",
+          "list": "Listar todos os runners",
+          "get": "Obter detalhes do runner",
+          "available": "Listar runners disponíveis (online)",
+          "pods": "Listar Pods do runner"
+        },
+        "details": {
+          "title": "Detalhes dos endpoints",
+          "listRunners": {
+            "title": "GET /runners",
+            "description": "Recuperar uma lista de todos os runners registrados na organização."
+          },
+          "getRunner": {
+            "title": "GET /runners/:id",
+            "description": "Recuperar informações detalhadas sobre um runner específico.",
+            "params": {
+              "id": "O ID numérico do runner"
+            }
+          },
+          "availableRunners": {
+            "title": "GET /runners/available",
+            "description": "Recuperar uma lista de runners que estão atualmente online e disponíveis para aceitar novos Pods."
+          },
+          "runnerPods": {
+            "title": "GET /runners/:id/pods",
+            "description": "Recuperar uma lista paginada de Pods executando em um runner específico.",
+            "params": {
+              "id": "O ID numérico do runner",
+              "status": "Filtrar por status do Pod (ex.: running, terminated)",
+              "limit": "Número máximo de resultados a retornar",
+              "offset": "Número de resultados a pular para paginação"
+            }
+          }
+        }
+      },
+      "repositories": {
+        "title": "Repositories API",
+        "description": "Acesse informações de repositórios. Liste repositórios, branches e merge requests através da API REST.",
+        "endpoints": {
+          "title": "Endpoints",
+          "list": "Listar repositórios",
+          "get": "Obter detalhes do repositório",
+          "branches": "Listar branches",
+          "mergeRequests": "Listar merge requests"
+        },
+        "details": {
+          "title": "Detalhes dos endpoints",
+          "listRepos": {
+            "title": "GET /repositories",
+            "description": "Recuperar uma lista de todos os repositórios conectados à organização."
+          },
+          "getRepo": {
+            "title": "GET /repositories/:id",
+            "description": "Recuperar informações detalhadas sobre um repositório específico.",
+            "params": {
+              "id": "O ID numérico do repositório"
+            }
+          },
+          "listBranches": {
+            "title": "GET /repositories/:id/branches",
+            "description": "Recuperar uma lista de branches de um repositório específico. Requer um token de acesso.",
+            "params": {
+              "id": "O ID numérico do repositório",
+              "access_token": "Token de acesso do provedor Git para autenticação"
+            }
+          },
+          "listMergeRequests": {
+            "title": "GET /repositories/:id/merge-requests",
+            "description": "Recuperar merge requests (ou pull requests) de um repositório específico.",
+            "params": {
+              "id": "O ID numérico do repositório",
+              "branch": "Filtrar por nome do branch de origem",
+              "state": "Filtrar por estado: opened, merged, closed ou all"
+            }
+          }
+        }
+      },
+      "loops": {
+        "title": "Loops API",
+        "description": "Gerencie tarefas Loop automatizadas e suas execuções. Crie Loops, configure gatilhos e monitore a execução através da API REST.",
+        "endpoints": {
+          "title": "Endpoints",
+          "list": "List all loops",
+          "create": "Create a new loop",
+          "get": "Get loop by slug",
+          "update": "Update a loop",
+          "delete": "Delete a loop",
+          "enable": "Enable a loop",
+          "disable": "Disable a loop",
+          "trigger": "Manually trigger a run",
+          "listRuns": "List runs for a loop",
+          "getRun": "Get run details",
+          "cancelRun": "Cancel an active run"
+        },
+        "examples": {
+          "title": "Code Examples",
+          "createLoop": "Create a scheduled loop",
+          "triggerRun": "Trigger a run with variables"
+        },
+        "details": {
+          "title": "Endpoint Details",
+          "listLoops": {
+            "title": "GET /loops",
+            "description": "Retrieve all loops in the organization. Returns loops sorted by creation date."
+          },
+          "createLoop": {
+            "title": "POST /loops",
+            "description": "Create a new loop with the specified configuration.",
+            "fields": {
+              "name": "Loop name (required, 1-255 characters)",
+              "description": "Optional description",
+              "agent_slug": "Built-in agent slug to use",
+              "custom_agent_slug": "Custom agent slug (alternative to agent_slug)",
+              "prompt_template": "Task prompt with {{variable}} placeholders (required)",
+              "prompt_variables": "Default values for prompt variables (JSON object)",
+              "repository_id": "Repository to clone into the sandbox",
+              "runner_id": "Preferred runner for execution",
+              "branch_name": "Git branch to check out",
+              "execution_mode": "autopilot or direct (default: autopilot)",
+              "cron_expression": "Cron schedule (e.g., '0 9 * * *'). If set, loop triggers on schedule",
+              "sandbox_strategy": "persistent or fresh (default: persistent)",
+              "session_persistence": "Keep agent session across runs (default: true)",
+              "concurrency_policy": "skip, queue, or replace (default: skip)",
+              "max_concurrent_runs": "Maximum concurrent runs (default: 1)",
+              "timeout_minutes": "Run timeout in minutes (default: 60)",
+              "callback_url": "Webhook URL for run completion notifications",
+              "autopilot_config": "Autopilot parameters (max_iterations, iteration_timeout_sec)"
+            }
+          },
+          "getLoop": {
+            "title": "GET /loops/:slug",
+            "description": "Retrieve detailed information about a specific loop by its slug.",
+            "params": {
+              "slug": "Loop slug (auto-generated from name)"
+            }
+          },
+          "updateLoop": {
+            "title": "PUT /loops/:slug",
+            "description": "Update an existing loop. All fields are optional — only provided fields will be updated.",
+            "params": {
+              "slug": "Loop slug"
+            }
+          },
+          "deleteLoop": {
+            "title": "DELETE /loops/:slug",
+            "description": "Permanently delete a loop and all its run history. This action cannot be undone.",
+            "params": {
+              "slug": "Loop slug"
+            }
+          },
+          "enableLoop": {
+            "title": "POST /loops/:slug/enable",
+            "description": "Enable a disabled loop. Re-enables cron scheduling if configured."
+          },
+          "disableLoop": {
+            "title": "POST /loops/:slug/disable",
+            "description": "Disable a loop. Cron scheduling is paused and manual triggers are blocked."
+          },
+          "triggerLoop": {
+            "title": "POST /loops/:slug/trigger",
+            "description": "Manually trigger a new run. Optionally pass variables to override prompt template defaults.",
+            "fields": {
+              "variables": "Variable overrides for the prompt template (JSON object)"
+            }
+          },
+          "listRuns": {
+            "title": "GET /loops/:slug/runs",
+            "description": "Retrieve the run history for a loop, sorted by most recent first.",
+            "params": {
+              "limit": "Maximum number of results to return",
+              "offset": "Number of results to skip for pagination"
+            }
+          },
+          "getRun": {
+            "title": "GET /loops/:slug/runs/:run_id",
+            "description": "Retrieve detailed information about a specific run.",
+            "params": {
+              "run_id": "Run ID"
+            }
+          },
+          "cancelRun": {
+            "title": "POST /loops/:slug/runs/:run_id/cancel",
+            "description": "Cancel an active run. Terminates the associated Pod and marks the run as cancelled.",
+            "params": {
+              "run_id": "Run ID"
+            }
+          }
+        }
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "description": "Find answers to common questions about using AgentsMesh.",
+      "categories": {
+        "runner": "Runner Issues",
+        "pod": "Pod Issues",
+        "apiKey": "API Key Configuration",
+        "git": "Git Integration",
+        "billing": "Billing & Plans"
+      },
+      "items": {
+        "runnerConnection": {
+          "question": "My Runner shows as 'Offline'. How do I fix it?",
+          "answer": "Check the following: 1) Ensure the Runner process is actually running (agentsmesh-runner run). 2) Verify network connectivity to the AgentsMesh server. 3) Ensure firewalls allow outbound gRPC connections on port 9443. 4) Check Runner logs for certificate errors — you may need to re-register if the certificate has expired."
+        },
+        "runnerMultiple": {
+          "question": "Can I run multiple Runners on the same machine?",
+          "answer": "Yes, but each Runner needs its own registration token and configuration directory. Use the --config flag to specify different config paths. Each Runner can handle multiple Pods concurrently."
+        },
+        "podCreationFail": {
+          "question": "Pod creation fails with 'No available runners'. What should I do?",
+          "answer": "This means no Runner is currently online in your organization. Ensure at least one Runner is running and shows as 'Online' in Settings → Runners. If a Runner is running but shows offline, check its network connectivity."
+        },
+        "podStuck": {
+          "question": "My Pod is stuck in 'Initializing' status. What's happening?",
+          "answer": "This usually means the repository clone is taking a long time, or the Runner is struggling to create the Git worktree. Check the Runner logs for details. For large repositories, the initial clone may take several minutes."
+        },
+        "apiKeyFormat": {
+          "question": "What format should my API keys be in?",
+          "answer": "Anthropic keys start with 'sk-ant-', OpenAI keys start with 'sk-', and Google keys are typically longer alphanumeric strings. Enter the API key exactly as provided by your AI provider. Keys are encrypted at rest."
+        },
+        "apiKeyMultiple": {
+          "question": "Can I use different API keys for different Pods?",
+          "answer": "Currently, API keys are configured at the organization level. All Pods in the organization share the same API keys. This may change in future releases."
+        },
+        "gitCloneFail": {
+          "question": "Git clone fails when creating a Pod. What should I check?",
+          "answer": "Verify: 1) The Git provider is connected in Settings → Git Providers. 2) The repository URL is correct. 3) For SSH access, ensure the Runner machine has the correct SSH keys. 4) For HTTPS, ensure the token has repository read access."
+        },
+        "gitWorktreeConflict": {
+          "question": "Can multiple Pods work on the same repository simultaneously?",
+          "answer": "Yes! Each Pod gets its own Git worktree, so multiple Pods can work on the same repository without conflicts. Each worktree operates on its own branch, and changes are isolated."
+        },
+        "billingBYOK": {
+          "question": "How does the BYOK (Bring Your Own Key) billing model work?",
+          "answer": "You provide your own API keys for AI providers (Anthropic, OpenAI, Google, etc.). You pay the AI providers directly based on your usage. AgentsMesh charges only for platform usage (runners, storage, etc.)."
+        },
+        "billingFree": {
+          "question": "Is there a free tier?",
+          "answer": "Yes, AgentsMesh offers a free tier with limited concurrent Pods and storage. Check the Pricing page for current plan details and limits."
+        }
+      }
+    },
+    "tutorials": {
+      "runnerSetup": {
+        "title": "Tutorial: Configurando um Runner",
+        "difficulty": "Iniciante — 5 minutos",
+        "description": "Aprenda como instalar, registrar e verificar um Runner do AgentsMesh passo a passo. Um Runner é necessário antes de criar Pods.",
+        "prerequisites": {
+          "title": "Pré-requisitos",
+          "description": "Antes de começar, certifique-se de que você tem:",
+          "item1": "Uma conta AgentsMesh (cadastre-se na página de registro)",
+          "item2": "Uma máquina com Linux, macOS ou Windows (WSL2 recomendado)",
+          "item3": "Git instalado e configurado na máquina",
+          "item4": "Acesso de rede ao servidor AgentsMesh"
+        },
+        "step1": {
+          "title": "Instalar o Runner",
+          "description": "Baixe e instale o Runner do AgentsMesh na sua máquina. Escolha o método que funciona melhor para você:",
+          "oneLine": "Instalação em Uma Linha (Recomendado) — Funciona no Linux e macOS:",
+          "linux": "Gerenciador de Pacotes Linux — Disponível para Debian/Ubuntu e RHEL/Fedora",
+          "docker": "Docker — Execute o Runner como um contêiner para fácil isolamento",
+          "tip": "O instalador de uma linha detecta automaticamente seu sistema operacional e arquitetura."
+        },
+        "step2": {
+          "title": "Registrar o Runner",
+          "description": "Após a instalação, registre o Runner na sua instância do AgentsMesh. Você tem duas opções:",
+          "methodToken": "Opção A: Registrar com um token (servidores headless)",
+          "methodTokenDesc": "Obtenha um token de registro em Configurações → Runners → Criar Token na interface web, depois execute o comando de registro com seu token.",
+          "methodLogin": "Opção B: Registrar com login no navegador (máquinas de desenvolvedor)",
+          "methodLoginDesc": "Execute o comando de login — uma janela do navegador será aberta para autenticação. Ideal para máquinas onde você tem um navegador.",
+          "tip": "Os tokens de registro são de uso único. Uma vez registrado, o Runner recebe certificados mTLS para comunicação segura."
+        },
+        "step3": {
+          "title": "Iniciar o Runner",
+          "description": "Após o registro, inicie o daemon do Runner:",
+          "item1": "Execute o comando de início para iniciar o processo do Runner",
+          "item2": "O Runner se conecta ao backend do AgentsMesh via gRPC com mTLS",
+          "item3": "Ele reporta as CLIs de agentes IA disponíveis (Claude Code, Codex, Gemini, etc.) encontradas no PATH",
+          "tip": "Para implantações em produção, instale o Runner como um serviço do sistema para que ele inicie automaticamente na inicialização.",
+          "background": {
+            "title": "Executar em segundo plano",
+            "description": "`agentsmesh-runner run` fica preso ao seu terminal. Escolha um modo em segundo plano se quiser que o Runner sobreviva ao fechar o shell:",
+            "service": {
+              "title": "Serviço do sistema (recomendado)",
+              "description": "Registre o Runner no systemd / launchd / Windows Service Manager — inicia no boot, reinicia em falhas e grava logs no journal do SO.",
+              "startLabel": "Instalar e iniciar",
+              "stopLabel": "Parar ou desinstalar",
+              "note": "No Linux, os logs vão para journalctl -u agentsmesh-runner. No macOS, em ~/Library/Logs/agentsmesh-runner.log. Use --config /path/to/config.yaml se sua configuração não estiver no caminho padrão."
+            },
+            "nohup": {
+              "title": "Segundo plano do shell (nohup)",
+              "description": "Rápido e sem serviço — separe o processo com nohup e registre o PID para conseguir parar depois. Bom para máquinas de dev e hosts temporários.",
+              "startLabel": "Iniciar e acompanhar os logs",
+              "stopLabel": "Parar o processo",
+              "note": "O nohup não reinicia automaticamente em caso de queda ou reboot. Para execuções prolongadas, prefira a opção de serviço do sistema acima."
+            }
+          }
+        },
+        "step4": {
+          "title": "Instalar CLIs de Agentes IA",
+          "description": "Instale os agentes de codificação IA que deseja usar na máquina do Runner:",
+          "item1": "Claude Code — npm install -g @anthropic-ai/claude-code (defina ANTHROPIC_API_KEY)",
+          "item2": "Codex CLI — npm install -g @openai/codex (defina OPENAI_API_KEY)",
+          "item3": "Gemini CLI — npm install -g @google/gemini-cli (defina GOOGLE_API_KEY)",
+          "tip": "Após instalar, reinicie o Runner ou aguarde o próximo heartbeat. Os novos agentes disponíveis aparecerão no diálogo de Novo Pod."
+        },
+        "step5": {
+          "title": "Verificar se o Runner está Online",
+          "description": "Verifique se o seu Runner está conectado e pronto:",
+          "item1": "Vá para Configurações → Runners na interface web",
+          "item2": "Encontre seu Runner na lista — ele deve mostrar o status verde Online",
+          "item3": "Verifique se os agentes disponíveis estão listados corretamente",
+          "item4": "Tente criar um Pod de teste para confirmar que tudo funciona"
+        },
+        "updating": {
+          "title": "Manter o Runner Atualizado",
+          "description": "Novas versões do Runner trazem correções de bugs, patches de segurança e melhorias de protocolo. Escolha o método de atualização que se adequa ao seu deployment:",
+          "ui": {
+            "title": "Pelo Painel Web",
+            "description": "Runners conectados podem ser atualizados remotamente sem acessar a máquina host.",
+            "step1": "Abra Configurações → Runners e localize o card do seu Runner.",
+            "step2": "Clique no selo Atualizar quando uma nova versão estiver disponível.",
+            "step3": "A plataforma envia um comando de atualização assinado via gRPC; o Runner baixa, substitui o binário e reinicia automaticamente.",
+            "note": "O Runner deve estar online e com atualização automática permitida. Pods ativos finalizam graciosamente antes do reinício."
+          },
+          "command": {
+            "title": "Com o Comando update",
+            "description": "Acesse o host do Runner via SSH ou shell e deixe que o Runner se atualize a partir dos GitHub Releases.",
+            "hintInteractive": "Prompt interativo",
+            "hintCheck": "Apenas verificar, não instalar",
+            "hintSilent": "Pular confirmação",
+            "hintVersion": "Fixar em uma versão específica",
+            "note": "Um backup do binário anterior é criado antes da substituição. Se a atualização falhar, o Runner reverte automaticamente."
+          },
+          "reinstall": {
+            "title": "Reinstalar com install.sh",
+            "description": "Se o caminho de autoatualização estiver bloqueado (host isolado, distribuição incomum ou você quer um binário limpo), execute novamente o instalador oficial.",
+            "restartLabel": "Reiniciar após a instalação",
+            "note": "Reinstalar preserva ~/.agentsmesh/config.yaml e os certificados mTLS — você não precisa registrar novamente."
+          }
+        },
+        "troubleshooting": {
+          "title": "Solução de Problemas",
+          "item1": "Runner aparece Offline — Verifique a conectividade de rede e certifique-se de que os firewalls permitem conexões gRPC de saída (porta 9443)",
+          "item2": "Pods falham ao iniciar — Verifique se o Git está instalado e se o Runner tem acesso para clonar repositórios",
+          "item3": "Erro de token inválido — Os tokens de registro são de uso único. Crie um novo token em Configurações → Runners"
+        },
+        "nextSteps": {
+          "title": "Próximos Passos",
+          "description": "Seu Runner está pronto. Continue com o próximo tutorial:",
+          "item1": "Conectar Repositórios Git — Vincule seus repositórios de código para acesso dos Pods",
+          "item2": "Seu Primeiro Pod — Crie e interaja com seu primeiro agente IA"
+        }
+      },
+      "gitSetup": {
+        "title": "Tutorial: Conectar Repositórios Git",
+        "difficulty": "Iniciante — 5 minutos",
+        "description": "Aprenda como conectar seu provedor Git (GitHub, GitLab ou Gitee) ao AgentsMesh para que seus agentes IA possam trabalhar nos seus repositórios de código.",
+        "prerequisites": {
+          "title": "Pré-requisitos",
+          "description": "Antes de começar, certifique-se de que você tem:",
+          "item1": "Uma conta AgentsMesh com um Runner conectado (veja o tutorial Configurar Runner)",
+          "item2": "Uma conta GitHub, GitLab ou Gitee com repositórios que deseja usar"
+        },
+        "step1": {
+          "title": "Abrir Configurações Git",
+          "description": "Navegue até Configurações → Pessoal → Configurações Git. É aqui que você gerencia todas as suas conexões de provedores Git."
+        },
+        "step2": {
+          "title": "Conectar GitHub",
+          "description": "Para o GitHub, você pode usar um Token de Acesso Pessoal (funciona para todos) ou OAuth (apenas se você se cadastrou com o GitHub):",
+          "item1": "Token de Acesso Pessoal: No GitHub, vá em Settings → Developer settings → Personal access tokens → Fine-grained tokens",
+          "item2": "Gere um token com permissões Contents (Read-only) e Metadata (Read-only) para seus repositórios",
+          "item3": "No AgentsMesh, clique em Adicionar Provedor GitHub e cole seu token",
+          "item4": "Seus repositórios aparecerão em Configurações → Repositórios",
+          "tip": "Se você se cadastrou no AgentsMesh com sua conta GitHub, também pode usar o botão Conectar GitHub para OAuth — sua conta já está vinculada. Usuários cadastrados com e-mail devem usar um Token de Acesso Pessoal."
+        },
+        "step3": {
+          "title": "Conectar GitLab (Token de Acesso Pessoal)",
+          "description": "Para o GitLab, use um Token de Acesso Pessoal:",
+          "item1": "No GitLab, vá para Configurações → Tokens de Acesso",
+          "item2": "Crie um novo token com os escopos api e read_repository",
+          "item3": "De volta ao AgentsMesh, clique em Adicionar Provedor GitLab",
+          "item4": "Cole seu token e insira a URL do seu GitLab",
+          "tip": "GitLab auto-hospedado é totalmente suportado. Insira a URL completa da sua instância (ex.: https://gitlab.suaempresa.com)."
+        },
+        "step4": {
+          "title": "Conectar Gitee (Token de Acesso Pessoal)",
+          "description": "Para o Gitee, use um Token de Acesso Pessoal:",
+          "item1": "No Gitee, vá para Configurações → Tokens de Acesso Pessoal",
+          "item2": "Crie um novo token com o escopo projects",
+          "item3": "De volta ao AgentsMesh, clique em Adicionar Provedor Gitee e cole seu token"
+        },
+        "step5": {
+          "title": "Importar Repositórios",
+          "description": "Após conectar um provedor, importe os repositórios que você precisa:",
+          "item1": "Vá para Configurações → Repositórios",
+          "item2": "Clique em Adicionar Repositório e selecione seu provedor",
+          "item3": "Navegue ou pesquise por repositórios para importar",
+          "item4": "Os repositórios selecionados ficam disponíveis ao criar Pods"
+        },
+        "step6": {
+          "title": "Configurar Chaves SSH (Opcional)",
+          "description": "Se seus repositórios usam acesso SSH, configure as chaves SSH no Runner:",
+          "item1": "Gere um par de chaves SSH na máquina do seu Runner",
+          "item2": "Adicione a chave pública ao seu provedor Git",
+          "item3": "O Runner usará a chave SSH ao clonar repositórios",
+          "tip": "Runners Docker: Monte suas chaves SSH como um volume somente leitura: -v ~/.ssh:/root/.ssh:ro"
+        },
+        "step7": {
+          "title": "Verificar Criando um Pod",
+          "description": "Teste sua configuração criando um Pod com um repositório vinculado:",
+          "item1": "Vá para Área de Trabalho e clique em Novo Pod",
+          "item2": "Selecione um agente IA e seu Runner",
+          "item3": "Escolha um dos seus repositórios importados",
+          "item4": "O Pod deve iniciar com o repositório clonado em uma worktree",
+          "tip": "Cada Pod recebe sua própria worktree Git, então múltiplos Pods podem trabalhar no mesmo repositório sem conflitos."
+        },
+        "nextSteps": {
+          "title": "Próximos Passos",
+          "description": "Seus repositórios estão conectados. Continue explorando:",
+          "item1": "Seu Primeiro Pod — Passo a passo completo para criar e interagir com um Pod",
+          "item2": "Gestão de Tarefas — Vincule tickets aos Pods para fluxos de trabalho estruturados"
+        }
+      },
+      "mcpSkills": {
+        "title": "Tutorial: Ferramentas MCP e Skills",
+        "difficulty": "Iniciante — 10 minutos",
+        "description": "Aprenda como estender seus agentes de IA com servidores MCP (Model Context Protocol) e skills. As ferramentas MCP permitem que os agentes colaborem, gerenciem tickets e interajam com serviços externos. Skills adicionam fluxos de trabalho reutilizáveis aos seus agentes.",
+        "whatIsMcp": {
+          "title": "O Que São Ferramentas MCP?",
+          "description": "Ferramentas MCP (Model Context Protocol) são capacidades que agentes de IA podem usar enquanto trabalham dentro de um Pod. O AgentsMesh fornece 26 ferramentas MCP integradas organizadas em 7 categorias:",
+          "item1": "Descoberta — Listar Pods, Runners e repositórios disponíveis",
+          "item2": "Terminal — Observar e controlar terminais de outros Pods",
+          "item3": "Vinculação — Solicitar e gerenciar conexões Pod-a-Pod",
+          "item4": "Canal — Criar canais, enviar mensagens, compartilhar documentos",
+          "item5": "Ticket — Pesquisar, criar e atualizar tickets",
+          "item6": "Pod — Criar novos Pods, obter snapshots, enviar entrada",
+          "item7": "Loop — Listar e acionar loops automatizados",
+          "autoNote": "Essas ferramentas integradas estão automaticamente disponíveis para todos os Pods — nenhuma configuração necessária."
+        },
+        "step1": {
+          "title": "Entenda Servidores MCP Integrados vs Personalizados",
+          "description": "Existem dois tipos de ferramentas MCP disponíveis para seus agentes:",
+          "builtinTitle": "Servidor MCP Integrado do AgentsMesh",
+          "builtinDesc": "Configurado automaticamente para cada Pod. Fornece as 26 ferramentas de colaboração (canais, tickets, vinculações, etc.). Nenhuma configuração necessária.",
+          "customTitle": "Servidores MCP Personalizados",
+          "customDesc": "Servidores MCP adicionais que você instala para capacidades específicas — por exemplo, um servidor MCP de banco de dados, uma integração com Slack ou um conector de API personalizado. Estes são configurados por organização ou por usuário."
+        },
+        "step2": {
+          "title": "Instalar um Servidor MCP Personalizado",
+          "description": "Adicione um servidor MCP personalizado para estender as capacidades dos seus agentes:",
+          "item1": "Vá para Configurações → Extensões → Servidores MCP",
+          "item2": "Clique em Adicionar Servidor MCP",
+          "item3": "Escolha o tipo de transporte: stdio (ferramenta de linha de comando), HTTP ou SSE (Server-Sent Events)",
+          "item4": "Para stdio: Insira o comando e argumentos (ex: npx -y @modelcontextprotocol/server-filesystem /path)",
+          "item5": "Para HTTP/SSE: Insira a URL do servidor e quaisquer cabeçalhos necessários",
+          "item6": "Adicione variáveis de ambiente se necessário (ex: chaves de API)",
+          "item7": "Defina o escopo: Organização (compartilhado com todos os membros) ou Pessoal (apenas seus Pods)",
+          "tip": "Os servidores MCP são iniciados automaticamente quando um Pod é lançado. Agentes Claude Code recebem a configuração via .mcp.json."
+        },
+        "step3": {
+          "title": "Verificar Ferramentas MCP em um Pod",
+          "description": "Após configurar os servidores MCP, verifique se funcionam:",
+          "item1": "Crie um novo Pod com Claude Code",
+          "item2": "No terminal, pergunte ao agente: \"Quais ferramentas MCP você tem disponíveis?\"",
+          "item3": "O agente deve listar tanto as ferramentas integradas do AgentsMesh quanto quaisquer servidores MCP personalizados que você instalou",
+          "item4": "Tente usar uma ferramenta — ex: \"Liste todos os pods disponíveis\" ou \"Pesquise por tickets\""
+        },
+        "whatAreSkills": {
+          "title": "O Que São Skills?",
+          "description": "Skills são fluxos de trabalho reutilizáveis de agentes definidos como arquivos markdown com instruções. Quando instaladas, são injetadas no contexto do seu agente para que ele possa executá-las sob demanda. O AgentsMesh fornece duas skills integradas:",
+          "item1": "am-channel — Permite que agentes verifiquem mensagens, sincronizem status de tarefas e troquem informações com outros agentes via canais",
+          "item2": "am-delegate — Permite que agentes deleguem tarefas a outros Pods, criem sub-Pods para trabalho paralelo e acionem agentes de acompanhamento"
+        },
+        "step4": {
+          "title": "Entenda as Skills Integradas",
+          "description": "As skills integradas estão sempre disponíveis para agentes Claude Code em todos os Pods:",
+          "channelTitle": "Skill am-channel",
+          "channelDesc": "Verifica automaticamente novas mensagens antes de iniciar tarefas, sincroniza atualizações de status nos canais e troca informações com agentes colaboradores. Use quando os agentes precisam se coordenar.",
+          "delegateTitle": "Skill am-delegate",
+          "delegateDesc": "Permite que um agente delegue subtarefas a outros Pods ou ambientes. O agente pode criar Pods filhos, atribuir trabalho e aguardar resultados. Use para tarefas complexas que se beneficiam de execução paralela."
+        },
+        "step5": {
+          "title": "Instalar Skills Personalizadas",
+          "description": "Você pode instalar skills adicionais do marketplace ou criar as suas próprias:",
+          "item1": "Vá para Configurações → Extensões → Skills",
+          "item2": "Navegue pelas skills disponíveis ou clique em Adicionar Skill para instalar a partir de uma URL",
+          "item3": "As skills podem ter escopo de organização ou conta pessoal",
+          "item4": "Skills instaladas são automaticamente injetadas em novos Pods",
+          "tip": "Skills personalizadas são arquivos markdown com frontmatter YAML. Você pode criar as suas próprias definindo quando a skill deve ser acionada e quais instruções o agente deve seguir."
+        },
+        "step6": {
+          "title": "Configurar Servidores MCP Por Repositório",
+          "description": "Para ferramentas específicas de repositório, você pode limitar servidores MCP a repositórios específicos:",
+          "item1": "Ao adicionar um servidor MCP, você pode opcionalmente vinculá-lo a repositórios específicos",
+          "item2": "O servidor MCP estará disponível apenas em Pods que usam esses repositórios",
+          "item3": "Isso é útil para integrações específicas de projeto (ex: uma ferramenta de banco de dados para um projeto específico)",
+          "tip": "Servidores MCP com escopo de organização estão disponíveis para todos os membros. Servidores com escopo de usuário estão disponíveis apenas para seus próprios Pods."
+        },
+        "nextSteps": {
+          "title": "Próximos Passos",
+          "description": "Seus agentes agora estão estendidos com ferramentas MCP e skills. Continue explorando:",
+          "item1": "Seu Primeiro Pod — Crie um Pod e veja as ferramentas MCP em ação",
+          "item2": "Colaboração Multi-Agente — Use ferramentas de canal e vinculação para coordenação de agentes"
+        }
+      },
+      "firstPod": {
+        "title": "Tutorial: Seu Primeiro Pod",
+        "difficulty": "Iniciante — 5 minutos",
+        "description": "Aprenda como criar e interagir com seu primeiro AgentPod passo a passo. Ao final deste tutorial, você terá lançado um agente de codificação IA, conectado a um repositório e concluído uma tarefa.",
+        "prerequisites": {
+          "title": "Pré-requisitos",
+          "description": "Antes de começar, certifique-se de que você tem:",
+          "item1": "Uma conta AgentsMesh (cadastre-se na página de registro)",
+          "item2": "Um Runner instalado e conectado (veja Início Rápido → Passo 2)",
+          "item3": "Pelo menos uma CLI de agente IA instalada no seu Runner (ex.: Claude Code)",
+          "item4": "Um repositório Git conectado (opcional, mas recomendado)"
+        },
+        "step1": {
+          "title": "Abra a Área de Trabalho",
+          "description": "Clique em Área de Trabalho na barra lateral esquerda. É aqui que todos os seus Pods ficam. Você verá uma área de trabalho vazia se esta for sua primeira vez."
+        },
+        "step2": {
+          "title": "Crie um Novo Pod",
+          "description": "Clique no botão Novo Pod no canto superior direito. O diálogo de criação de Pod será aberto com várias opções de configuração.",
+          "fields": "Preencha os seguintes campos:",
+          "field1": "Agente — Selecione o agente IA que deseja usar (ex.: Claude Code)",
+          "field2": "Runner — Escolha qual Runner hospedará este Pod",
+          "field3": "Repositório — Selecione um repositório para o agente trabalhar (opcional)",
+          "field4": "Branch — Escolha a branch para checkout (padrão é a branch principal)",
+          "field5": "Prompt Inicial — Escreva uma descrição da tarefa para o agente, ex.: \"Adicionar validação de entrada no formulário de login\""
+        },
+        "step3": {
+          "title": "Acompanhe a Inicialização do Pod",
+          "description": "Após clicar em Criar, o Pod entra no estado Inicializando. O Runner irá:",
+          "item1": "Criar um worktree Git isolado (se um repositório foi vinculado)",
+          "item2": "Iniciar uma sessão de terminal PTY",
+          "item3": "Lançar o agente IA com seu prompt inicial",
+          "tip": "A visualização do terminal abre automaticamente. Você pode assistir o agente começar a trabalhar em tempo real."
+        },
+        "step4": {
+          "title": "Interaja com Seu Agente",
+          "description": "Uma vez que o Pod esteja em Execução, você pode interagir com o agente IA através do terminal web:",
+          "item1": "Digite instruções adicionais diretamente na entrada do terminal",
+          "item2": "Observe o indicador de Status do Agente — ele mostra Ocioso, Executando ou Aguardando",
+          "item3": "O agente trabalha dentro do worktree Git isolado, então sua branch principal nunca é afetada",
+          "item4": "Use o botão de tela cheia para uma visualização sem distrações"
+        },
+        "step5": {
+          "title": "Revise e Finalize",
+          "description": "Quando o agente concluir sua tarefa:",
+          "item1": "Revise as alterações que o agente fez na saída do terminal",
+          "item2": "O agente pode ter criado commits em uma branch do worktree — verifique o git log",
+          "item3": "Clique em Encerrar na barra de ferramentas do Pod para parar o Pod e limpar o worktree",
+          "item4": "O status do Pod muda para Encerrado e os recursos são liberados"
+        },
+        "troubleshooting": {
+          "title": "Solução de Problemas",
+          "noRunners": "Nenhum Runner no menu suspenso",
+          "noRunnersDesc": "Seu Runner pode estar offline. Vá em Configurações → Runners e verifique o status. Se aparecer Offline, reinicie o processo do Runner e certifique-se de que ele consegue alcançar o servidor AgentsMesh.",
+          "stuckInit": "Pod travado em Inicializando",
+          "stuckInitDesc": "Isso geralmente significa que o repositório é grande e ainda está sendo clonado. Aguarde alguns minutos. Se não resolver, verifique os logs do Runner para erros de clone. Tente criar um Pod sem repositório para testar a funcionalidade básica.",
+          "agentNotResponding": "Agente não responde",
+          "agentNotRespondingDesc": "Verifique se a CLI do agente de IA está instalada no Runner (ex.: execute 'claude --version' na máquina do Runner). Verifique se a variável de ambiente da chave de API está definida corretamente. O agente também pode estar aguardando permissão — procure um prompt de permissão no terminal.",
+          "terminated": "Pod encerra imediatamente",
+          "terminatedDesc": "Isso geralmente significa que a CLI do agente travou na inicialização. Verifique se sua chave de API é válida e não expirou. Tente executar a CLI do agente manualmente no Runner para ver a mensagem de erro."
+        },
+        "nextSteps": {
+          "title": "O Que Devo Fazer Agora?",
+          "description": "Parabéns! Você tem um Pod funcionando. Seu próximo passo depende do que você quer alcançar:",
+          "item1": "Quero rastrear tarefas → Gestão de Tarefas — Use tickets e um quadro Kanban",
+          "item2": "Quero múltiplos agentes trabalhando juntos → Colaboração Multi-Agente",
+          "item3": "Quero automatizar tarefas recorrentes → Loops Automatizados"
+        }
+      },
+      "ticketWorkflow": {
+        "title": "Tutorial: Gerenciando Tarefas com Tickets",
+        "difficulty": "Iniciante — 10 minutos",
+        "description": "Aprenda como usar o sistema de tickets do AgentsMesh para organizar o trabalho, acompanhar o progresso em um quadro Kanban e conectar tickets a AgentPods para injeção automática de contexto.",
+        "step1": {
+          "title": "Navegue até o Quadro de Tickets",
+          "description": "Clique em Tickets na barra lateral esquerda. Você verá um quadro Kanban com colunas para cada status: Backlog, A Fazer, Em Progresso, Em Revisão e Concluído."
+        },
+        "step2": {
+          "title": "Crie um Ticket",
+          "description": "Clique no botão + no topo de qualquer coluna (geralmente Backlog ou A Fazer) para criar um novo ticket.",
+          "fields": "Preencha os detalhes do ticket:",
+          "field1": "Título — Uma descrição clara e concisa da tarefa (ex.: \"Corrigir bug de paginação na lista de usuários\")",
+          "field2": "Descrição — Requisitos detalhados, critérios de aceite ou contexto em Markdown",
+          "field3": "Prioridade — Defina a urgência: Urgente, Alta, Média, Baixa ou Nenhuma",
+          "field4": "Story Points — Estime o esforço usando números de Fibonacci (1, 2, 3, 5, 8, 13, 21)",
+          "field5": "Responsável — Opcionalmente atribua o ticket a um membro da equipe"
+        },
+        "step3": {
+          "title": "Vincule um Ticket a um Pod",
+          "description": "O verdadeiro poder dos tickets está na integração com AgentPods. Ao criar um novo Pod:",
+          "item1": "No diálogo Novo Pod, selecione seu ticket no menu suspenso Ticket",
+          "item2": "O título e a descrição do ticket são automaticamente injetados como contexto para o agente IA",
+          "item3": "O status do ticket muda automaticamente para Em Progresso quando o Pod inicia",
+          "tip": "Você também pode vincular um ticket a um Pod existente no painel de detalhes do Pod."
+        },
+        "step4": {
+          "title": "Acompanhe o Progresso",
+          "description": "Enquanto seu agente IA trabalha na tarefa, você pode acompanhar o progresso de várias formas:",
+          "item1": "Quadro Kanban — O cartão do ticket mostra qual Pod está trabalhando nele e o status atual do agente",
+          "item2": "Detalhe do Ticket — Clique no ticket para ver todos os Pods vinculados, comentários e atividade git",
+          "item3": "Atividade Git — Commits e merge requests feitos pelo Pod são automaticamente vinculados ao ticket",
+          "item4": "Comentários — Adicione notas ou feedback diretamente no ticket"
+        },
+        "step5": {
+          "title": "Avance pelo Fluxo de Trabalho",
+          "description": "Arraste tickets entre colunas para atualizar seu status, ou use o menu suspenso de status na visualização de detalhes do ticket:",
+          "item1": "Backlog → A Fazer — A tarefa está pronta para ser iniciada",
+          "item2": "A Fazer → Em Progresso — Um Pod de agente está trabalhando nela (atualizado automaticamente quando um Pod é vinculado)",
+          "item3": "Em Progresso → Em Revisão — O agente concluiu a tarefa e ela precisa de revisão",
+          "item4": "Em Revisão → Concluído — A tarefa foi revisada e aceita"
+        },
+        "step6": {
+          "title": "Revise a Atividade Git",
+          "description": "Cada ticket rastreia toda a atividade git dos seus Pods vinculados:",
+          "item1": "Veja os commits feitos pelo agente IA na página de detalhes do ticket",
+          "item2": "Veja merge/pull requests criados a partir da branch do worktree do Pod",
+          "item3": "Use essas informações para revisar e fazer merge do trabalho do agente na sua branch principal"
+        },
+        "nextSteps": {
+          "title": "Próximos Passos",
+          "description": "Agora você sabe como gerenciar tarefas com tickets. Continue explorando:",
+          "item1": "Colaboração Multi-Agente — Atribua múltiplos agentes a tickets relacionados",
+          "item2": "Loops Automatizados — Crie Pods automaticamente para tarefas recorrentes"
+        }
+      },
+      "multiAgent": {
+        "title": "Tutorial: Colaboração Multi-Agente",
+        "difficulty": "Intermediário — 15 minutos",
+        "description": "Aprenda como configurar múltiplos agentes IA que se comunicam e colaboram através de channels. Este tutorial apresenta um cenário real onde um agente frontend e um agente backend trabalham juntos em uma funcionalidade.",
+        "scenario": {
+          "title": "Visão Geral do Cenário",
+          "description": "Você está construindo uma nova página de perfil de usuário. Você criará dois Pods — um para o frontend (React) e um para o backend (API) — e fará com que se coordenem através de um channel compartilhado.",
+          "frontend": "Pod Frontend — Constrói os componentes de UI em React",
+          "backend": "Pod Backend — Implementa os endpoints da API"
+        },
+        "step1": {
+          "title": "Crie um Channel",
+          "description": "Channels são o hub de comunicação para fluxos de trabalho multi-agente. Navegue até Channels na barra lateral e clique em Novo Channel.",
+          "fields": "Configure o channel:",
+          "field1": "Nome — Dê um nome descritivo, ex.: \"funcionalidade-perfil-usuario\"",
+          "field2": "Descrição — Explique o propósito: \"Channel de coordenação para a funcionalidade de página de perfil de usuário\"",
+          "field3": "Ticket — Opcionalmente vincule a um ticket para contexto"
+        },
+        "step2": {
+          "title": "Lance o Pod Backend",
+          "description": "Crie o primeiro Pod para o trabalho de backend:",
+          "item1": "Clique em Novo Pod e selecione seu agente (ex.: Claude Code)",
+          "item2": "Selecione o repositório do backend",
+          "item3": "Defina o prompt inicial: \"Implemente endpoints REST API para perfil de usuário: GET /api/users/:id/profile e PUT /api/users/:id/profile. Publique o contrato da API no channel quando terminar.\"",
+          "tip": "O agente terá automaticamente acesso às ferramentas MCP do channel para enviar mensagens."
+        },
+        "step3": {
+          "title": "Lance o Pod Frontend",
+          "description": "Crie o segundo Pod para o trabalho de frontend:",
+          "item1": "Clique em Novo Pod e selecione seu agente",
+          "item2": "Selecione o repositório do frontend",
+          "item3": "Defina o prompt inicial: \"Construa um componente React de página de perfil de usuário. Verifique o channel para o contrato da API do agente backend, então implemente a UI correspondente.\""
+        },
+        "step4": {
+          "title": "Vincule Ambos os Pods ao Channel",
+          "description": "Conecte ambos os Pods ao channel para que possam se comunicar:",
+          "item1": "Abra o painel de detalhes de cada Pod",
+          "item2": "Em Vinculações de Channel, selecione o channel \"funcionalidade-perfil-usuario\"",
+          "item3": "Ambos os Pods agora podem enviar e receber mensagens através do channel",
+          "tip": "Pods também podem ser vinculados a channels durante a criação, se o channel já existir."
+        },
+        "step5": {
+          "title": "Monitore a Comunicação dos Agentes",
+          "description": "Abra a visualização do channel para assistir os agentes colaborarem:",
+          "item1": "O agente backend publica o contrato da API (endpoints, esquemas de requisição/resposta)",
+          "item2": "O agente frontend lê o contrato e implementa as chamadas de API correspondentes",
+          "item3": "Agentes podem usar @menções para direcionar mensagens a Pods específicos",
+          "item4": "O recurso de documento compartilhado permite que os agentes mantenham um documento de design atualizado"
+        },
+        "step6": {
+          "title": "Revise o Resultado Combinado",
+          "description": "Uma vez que ambos os agentes tenham terminado:",
+          "item1": "Verifique o worktree git de cada Pod para os commits realizados",
+          "item2": "Revise o histórico de mensagens do channel para uma linha do tempo das decisões",
+          "item3": "O documento compartilhado contém o contrato final da API acordado",
+          "item4": "Faça merge de ambas as branches na sua branch principal para a funcionalidade completa"
+        },
+        "bestPractices": {
+          "title": "Melhores Práticas",
+          "tip1": "Use prompts iniciais claros que digam a cada agente seu papel e como se coordenar",
+          "tip2": "Crie um documento compartilhado no channel para especificações que ambos os agentes precisam",
+          "tip3": "Use @menções quando um agente precisa de uma resposta específica de outro",
+          "tip4": "Inicie o agente de backend/infraestrutura primeiro para que ele possa publicar contratos para os consumidores",
+          "tip5": "Mantenha as descrições do channel específicas para que os agentes entendam o contexto da colaboração"
+        }
+      },
+      "loops": {
+        "title": "Tutorial: Automatizando com Loops",
+        "difficulty": "Intermediário — 10 minutos",
+        "description": "Aprenda como configurar loops automatizados que criam Pods em um agendamento. Loops são perfeitos para tarefas recorrentes como revisões de código, atualizações de dependências, execuções de testes e monitoramento.",
+        "whatAreLoops": {
+          "title": "O Que São Loops?",
+          "description": "Um Loop é uma automação agendada que periodicamente cria um AgentPod com uma configuração predefinida. Pense nele como um cron job para agentes IA — ele executa seu prompt em um agendamento, criando um Pod novo a cada vez.",
+          "item1": "Revisões de código recorrentes — Verifique problemas de qualidade de código toda manhã",
+          "item2": "Atualizações de dependências — Escaneie e atualize pacotes desatualizados semanalmente",
+          "item3": "Monitoramento de testes — Execute suítes de teste e reporte falhas diariamente",
+          "item4": "Documentação — Gere ou atualize documentação quando o código mudar"
+        },
+        "step1": {
+          "title": "Navegue até Loops",
+          "description": "Clique em Loops na barra lateral esquerda. Você verá uma lista dos seus loops existentes (vazia se esta for sua primeira vez) e um botão para criar um novo."
+        },
+        "step2": {
+          "title": "Crie um Novo Loop",
+          "description": "Clique em Novo Loop e configure a automação:",
+          "fields": "Preencha as configurações do loop:",
+          "field1": "Nome — Um nome descritivo, ex.: \"Revisão de Código Diária\"",
+          "field2": "Agente — O agente IA a ser usado (ex.: Claude Code)",
+          "field3": "Runner — Qual Runner deve executar o loop",
+          "field4": "Repositório — O repositório para o agente trabalhar",
+          "field5": "Branch — A branch para checkout (padrão é main)",
+          "field6": "Prompt — A tarefa para o agente, ex.: \"Revise os commits recentes quanto a problemas de qualidade de código. Verifique vulnerabilidades de segurança, problemas de performance e inconsistências de estilo. Publique um resumo no channel.\"",
+          "field7": "Agendamento — Defina o agendamento cron (ex.: todo dia às 9h, toda segunda-feira)"
+        },
+        "step3": {
+          "title": "Configure o Agendamento",
+          "description": "Loops usam expressões cron para agendamento. Aqui estão padrões comuns:",
+          "pattern1": "Todo dia às 9h — 0 9 * * *",
+          "pattern2": "Toda segunda-feira às 8h — 0 8 * * 1",
+          "pattern3": "A cada 6 horas — 0 */6 * * *",
+          "pattern4": "Dias úteis às 10h — 0 10 * * 1-5",
+          "tip": "O painel do loop mostra o próximo horário de execução agendado para que você possa verificar sua expressão cron."
+        },
+        "step4": {
+          "title": "Monitore as Execuções do Loop",
+          "description": "Após criar um loop, você pode monitorar sua atividade:",
+          "item1": "Painel de Loops — Veja todos os loops com status, última execução e próxima execução agendada",
+          "item2": "Histórico de Execuções — Clique em um loop para ver o histórico de Pods que ele criou",
+          "item3": "Resultados do Pod — Cada execução cria um Pod que você pode inspecionar para saída do terminal e alterações git",
+          "item4": "Notificações — Configure vinculações de channel para receber resultados do loop em um channel"
+        },
+        "step5": {
+          "title": "Gerencie Seus Loops",
+          "description": "Você pode gerenciar loops a partir do painel de Loops:",
+          "item1": "Pausar — Pare temporariamente um loop de criar novos Pods sem excluí-lo",
+          "item2": "Retomar — Reinicie um loop pausado",
+          "item3": "Editar — Atualize o prompt, agendamento ou configuração",
+          "item4": "Executar Agora — Acione uma execução imediata sem esperar pelo próximo agendamento",
+          "item5": "Excluir — Remova permanentemente um loop"
+        },
+        "commonPatterns": {
+          "title": "Padrões Comuns de Loops",
+          "pattern1": {
+            "title": "Revisão de Código Matinal",
+            "description": "Execute diariamente às 9h para revisar os commits do dia anterior. O agente verifica qualidade de código, problemas de segurança e publica um resumo no channel da equipe."
+          },
+          "pattern2": {
+            "title": "Auditoria Semanal de Dependências",
+            "description": "Execute toda segunda-feira para escanear dependências desatualizadas ou vulneráveis. O agente cria um PR com atualizações seguras."
+          },
+          "pattern3": {
+            "title": "Monitor Contínuo de Testes",
+            "description": "Execute a cada 6 horas para executar a suíte de testes. O agente reporta quaisquer falhas ou regressões no channel de monitoramento."
+          }
+        },
+        "nextSteps": {
+          "title": "Próximos Passos",
+          "description": "Você configurou seu primeiro loop automatizado. Explore mais:",
+          "item1": "Colaboração Multi-Agente — Combine loops com channels para pipelines multi-agente automatizados",
+          "item2": "Gestão de Tarefas — Use tickets para rastrear problemas encontrados por loops"
+        }
+      }
+    }
+  }
+}

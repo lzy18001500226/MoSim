@@ -1,0 +1,709 @@
+// AdminService — platform-admin (`is_system_admin=true`) management plane.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/admin/* per
+// .claude/plans/proto-naming-conventions.md. Covers the batch-1 surface:
+//   * Dashboard           — system stats
+//   * Users               — list/get/update/disable/enable/grant/revoke admin
+//                           + verify/unverify email
+//   * Organizations       — list/get/members/delete
+//   * Runners             — list/get/disable/enable/delete (across all orgs)
+//   * AuditLogs           — list with filters
+//   * Relays              — list/get/stats/force-unregister
+//   * SupportTickets      — list/get/stats/list-messages/status/assign/attachment-url
+//                           (Reply with multipart attachments stays on REST)
+//
+// AdminAuthService — admin-console login flow.
+//
+// Mirrors backend/internal/api/rest/v1/admin/auth.go. The login RPC is
+// PUBLIC (no auth interceptor) because the caller does not yet hold a
+// bearer; the handler enforces is_system_admin + is_active server-side.
+// GetMe lives on AdminAuthSessionService (auth-required).
+//
+// Auth model (conventions §3.5 EXCEPTION — platform-admin scoped):
+//   Every RPC requires (1) a valid bearer JWT (standard auth interceptor)
+//   AND (2) the calling user's `is_system_admin = true` AND `is_active =
+//   true` flags. The Connect admin interceptor combines REST's
+//   `AuthMiddleware` + `AdminMiddleware` (backend/internal/middleware/admin.go)
+//   into a single pipeline step. Per conventions §3.5 exception #2, admin
+//   request messages do NOT carry `org_slug` at tag 1; tenant is the whole
+//   platform and is implied by the admin interceptor.
+//
+// Audit-log shape:
+//   REST handlers call `LogAdminAction` from a `gin.Context` to read the
+//   admin user ID + IP + user-agent. The Connect handler reads:
+//     * admin user ID  — from the auth interceptor's TenantContext
+//     * IP address     — from req.Peer().Addr (Connect's transport hook)
+//     * user-agent     — from req.Header().Get("User-Agent")
+//   so audit logging is parity-preserving across both transports.
+
+syntax = "proto3";
+
+package proto.admin.v1;
+
+import "codegen/v1/options.proto";
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/admin/v1;adminv1";
+
+// Convert codegen target — emits admin_convert.amesh.go into the backend
+// connect handler tree so it can reach the admin / organization / user /
+// relay domains.
+option (amesh.codegen.v1.convert_target) = {
+  output_dir: "backend/internal/api/connect/admin"
+  output_package: "adminconnect"
+};
+
+service AdminService {
+  // Dashboard
+  rpc GetDashboardStats(GetDashboardStatsRequest) returns (DashboardStats);
+
+  // Users
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+  rpc GetUser(GetUserRequest) returns (AdminUser);
+  rpc UpdateUser(UpdateUserRequest) returns (AdminUser);
+  rpc DisableUser(DisableUserRequest) returns (AdminUser);
+  rpc EnableUser(EnableUserRequest) returns (AdminUser);
+  rpc GrantAdmin(GrantAdminRequest) returns (AdminUser);
+  rpc RevokeAdmin(RevokeAdminRequest) returns (AdminUser);
+  rpc VerifyUserEmail(VerifyUserEmailRequest) returns (AdminUser);
+  rpc UnverifyUserEmail(UnverifyUserEmailRequest) returns (AdminUser);
+
+  // Organizations
+  rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse);
+  rpc GetOrganization(GetOrganizationRequest) returns (AdminOrganization);
+  rpc GetOrganizationMembers(GetOrganizationMembersRequest) returns (GetOrganizationMembersResponse);
+  rpc DeleteOrganization(DeleteOrganizationRequest) returns (DeleteOrganizationResponse);
+
+  // Runners
+  rpc ListRunners(ListRunnersRequest) returns (ListRunnersResponse);
+  rpc GetRunner(GetRunnerRequest) returns (AdminRunner);
+  rpc DisableRunner(DisableRunnerRequest) returns (AdminRunner);
+  rpc EnableRunner(EnableRunnerRequest) returns (AdminRunner);
+  rpc DeleteRunner(DeleteRunnerRequest) returns (DeleteRunnerResponse);
+
+  // Audit logs
+  rpc ListAuditLogs(ListAuditLogsRequest) returns (ListAuditLogsResponse);
+
+  // Relays (data-plane WS hubs). Mirrors REST /api/v1/admin/relays.
+  // The relay manager keeps an in-memory roster + Redis-mirrored heartbeat;
+  // these RPCs only read from / unregister against that roster (no DB).
+  rpc ListRelays(ListRelaysRequest) returns (ListRelaysResponse);
+  rpc GetRelay(GetRelayRequest) returns (GetRelayResponse);
+  rpc GetRelayStats(GetRelayStatsRequest) returns (RelayStats);
+  rpc ForceUnregisterRelay(ForceUnregisterRelayRequest) returns (ForceUnregisterRelayResponse);
+
+  // Support tickets. Mirrors REST /api/v1/admin/support-tickets except for
+  // POST /:id/reply — that path keeps multipart/form-data on REST because
+  // Connect-RPC has no multipart story (parity with the user-side service).
+  rpc ListSupportTickets(ListSupportTicketsRequest) returns (ListSupportTicketsResponse);
+  rpc GetSupportTicketStats(GetSupportTicketStatsRequest) returns (SupportTicketStats);
+  rpc GetSupportTicket(GetSupportTicketRequest) returns (SupportTicketDetail);
+  rpc ListSupportTicketMessages(ListSupportTicketMessagesRequest) returns (ListSupportTicketMessagesResponse);
+  rpc UpdateSupportTicketStatus(UpdateSupportTicketStatusRequest) returns (UpdateSupportTicketStatusResponse);
+  rpc AssignSupportTicket(AssignSupportTicketRequest) returns (AssignSupportTicketResponse);
+  rpc GetSupportTicketAttachmentUrl(GetSupportTicketAttachmentUrlRequest) returns (GetSupportTicketAttachmentUrlResponse);
+
+  // Dead-letter queue. Mirrors REST /api/v1/orgs/:slug/messages/dlq (the
+  // org_slug in the REST path was vestigial — the DLQ is platform-scoped
+  // ops surface, no tenant filtering). Connect drops the slug entirely.
+  rpc ListDeadLetters(ListDeadLettersRequest) returns (ListDeadLettersResponse);
+  rpc ReplayDeadLetter(ReplayDeadLetterRequest) returns (ReplayDeadLetterResponse);
+}
+
+// AdminAuthService — admin-console login flow. Public (no auth interceptor)
+// — the caller does not yet have a bearer when hitting Login. The handler
+// enforces `is_system_admin = true` + `is_active = true` before issuing a
+// JWT so non-admin accounts can never receive an admin-scoped token.
+service AdminAuthService {
+  rpc Login(AdminLoginRequest) returns (AdminLoginResponse);
+}
+
+// AdminAuthSessionService — authenticated admin session lookups. Mirrors
+// REST GET /api/v1/admin/me. Lives on its own service so AdminAuthService
+// stays free of the auth interceptor.
+service AdminAuthSessionService {
+  rpc GetMe(GetMeRequest) returns (AdminUser);
+}
+
+// --- Dashboard ---
+
+message GetDashboardStatsRequest {}
+
+message DashboardStats {
+  int64 total_users = 1;
+  int64 active_users = 2;
+  int64 total_organizations = 3;
+  int64 total_runners = 4;
+  int64 online_runners = 5;
+  int64 total_pods = 6;
+  int64 active_pods = 7;
+  int64 total_subscriptions = 8;
+  int64 active_subscriptions = 9;
+  int64 new_users_today = 10;
+  int64 new_users_this_week = 11;
+  int64 new_users_this_month = 12;
+}
+
+// --- Common nested types ---
+
+message AdminUser {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/user.User"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  string email = 2;
+  string username = 3;
+  optional string name = 4 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  optional string avatar_url = 5 [
+    (amesh.codegen.v1.field_rename) = "AvatarURL",
+    (amesh.codegen.v1.field_convert) = "string_ptr"
+  ];
+  bool is_active = 6;
+  bool is_system_admin = 7;
+  bool is_email_verified = 8;
+  // RFC 3339 timestamps; nullable last_login_at omitted when never logged in.
+  optional string last_login_at = 9 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+  string created_at = 10 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  string updated_at = 11 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+}
+
+message AdminOrganization {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/organization.Organization"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  string name = 2;
+  string slug = 3;
+  optional string logo_url = 4 [
+    (amesh.codegen.v1.field_rename) = "LogoURL",
+    (amesh.codegen.v1.field_convert) = "string_ptr"
+  ];
+  string subscription_plan = 5;
+  string subscription_status = 6;
+  string created_at = 7 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  string updated_at = 8 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+}
+
+// AdminOrganizationMember mirrors the REST `memberResponse` shape (nested
+// user identity, role, joined_at). The embedded user is optional because
+// `Preload("User")` may fail to load for orphaned memberships.
+message AdminOrganizationMember {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/organization.Member"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  int64 user_id = 2 [(amesh.codegen.v1.field_rename) = "UserID"];
+  int64 org_id = 3 [(amesh.codegen.v1.field_rename) = "OrganizationID"];
+  string role = 4;
+  string joined_at = 5 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  optional AdminUserSummary user = 6 [(amesh.codegen.v1.field_custom) = "userSummaryToProto"];
+}
+
+message AdminUserSummary {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/user.User"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  string email = 2;
+  string username = 3;
+  optional string name = 4 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  optional string avatar_url = 5 [
+    (amesh.codegen.v1.field_rename) = "AvatarURL",
+    (amesh.codegen.v1.field_convert) = "string_ptr"
+  ];
+}
+
+message AdminRunner {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/runner.Runner"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  int64 organization_id = 2 [(amesh.codegen.v1.field_rename) = "OrganizationID"];
+  string node_id = 3 [(amesh.codegen.v1.field_rename) = "NodeID"];
+  // domain Description is plain string (zero = absent); proto is optional.
+  optional string description = 4 [(amesh.codegen.v1.field_custom) = "adminDescriptionToProto"];
+  string status = 5;
+  bool is_enabled = 6;
+  optional string runner_version = 7 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  int32 current_pods = 8 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  int32 max_concurrent_pods = 9 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  repeated string available_agents = 10 [(amesh.codegen.v1.field_custom) = "adminStringSliceToProto"];
+  // Free-form host metadata; JSON-serialized for binary parity with REST.
+  optional string host_info_json = 11 [
+    (amesh.codegen.v1.field_rename) = "HostInfo",
+    (amesh.codegen.v1.field_custom) = "adminHostInfoToProto"
+  ];
+  optional string last_heartbeat = 12 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+  string created_at = 13 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  string updated_at = 14 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  // Optional embedded org summary — composed externally by the call wrapper
+  // because Runner has no Organization preload.
+  optional AdminOrganizationSummary organization = 15 [(amesh.codegen.v1.field_skip) = true];
+}
+
+message AdminOrganizationSummary {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/organization.Organization"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  string name = 2;
+  string slug = 3;
+}
+
+message AdminAuditLog {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/admin.AuditLog"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  int64 admin_user_id = 2 [(amesh.codegen.v1.field_rename) = "AdminUserID"];
+  // Domain stores typed AuditAction (string alias); custom helper casts.
+  string action = 3 [(amesh.codegen.v1.field_custom) = "auditActionToProto"];
+  // Domain stores typed TargetType (string alias); custom helper casts.
+  string target_type = 4 [(amesh.codegen.v1.field_custom) = "targetTypeToProto"];
+  int64 target_id = 5 [(amesh.codegen.v1.field_rename) = "TargetID"];
+  optional string old_data = 6 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  optional string new_data = 7 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  optional string ip_address = 8 [
+    (amesh.codegen.v1.field_rename) = "IPAddress",
+    (amesh.codegen.v1.field_convert) = "string_ptr"
+  ];
+  optional string user_agent = 9 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  string created_at = 10 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  optional AdminUserSummary admin_user = 11 [(amesh.codegen.v1.field_custom) = "userSummaryToProto"];
+}
+
+// --- Users ---
+
+message ListUsersRequest {
+  optional string search = 1;
+  optional bool is_active = 2;
+  optional bool is_admin = 3;
+  optional int32 page = 4;
+  optional int32 page_size = 5;
+}
+
+message ListUsersResponse {
+  repeated AdminUser items = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  int32 total_pages = 5;
+}
+
+message GetUserRequest {
+  int64 user_id = 1;
+}
+
+message UpdateUserRequest {
+  int64 user_id = 1;
+  optional string name = 2;
+  optional string username = 3;
+  optional string email = 4;
+}
+
+message DisableUserRequest {
+  int64 user_id = 1;
+}
+
+message EnableUserRequest {
+  int64 user_id = 1;
+}
+
+message GrantAdminRequest {
+  int64 user_id = 1;
+}
+
+message RevokeAdminRequest {
+  int64 user_id = 1;
+}
+
+message VerifyUserEmailRequest {
+  int64 user_id = 1;
+}
+
+message UnverifyUserEmailRequest {
+  int64 user_id = 1;
+}
+
+// --- Organizations ---
+
+message ListOrganizationsRequest {
+  optional string search = 1;
+  optional int32 page = 2;
+  optional int32 page_size = 3;
+}
+
+message ListOrganizationsResponse {
+  repeated AdminOrganization items = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  int32 total_pages = 5;
+}
+
+message GetOrganizationRequest {
+  int64 org_id = 1;
+}
+
+message GetOrganizationMembersRequest {
+  int64 org_id = 1;
+}
+
+message GetOrganizationMembersResponse {
+  AdminOrganization organization = 1;
+  repeated AdminOrganizationMember members = 2;
+}
+
+message DeleteOrganizationRequest {
+  int64 org_id = 1;
+}
+
+message DeleteOrganizationResponse {
+  string message = 1;
+}
+
+// --- Runners ---
+
+message ListRunnersRequest {
+  optional string search = 1;
+  optional string status = 2;
+  optional int64 org_id = 3;
+  optional int32 page = 4;
+  optional int32 page_size = 5;
+}
+
+message ListRunnersResponse {
+  repeated AdminRunner items = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  int32 total_pages = 5;
+}
+
+message GetRunnerRequest {
+  int64 runner_id = 1;
+}
+
+message DisableRunnerRequest {
+  int64 runner_id = 1;
+}
+
+message EnableRunnerRequest {
+  int64 runner_id = 1;
+}
+
+message DeleteRunnerRequest {
+  int64 runner_id = 1;
+}
+
+message DeleteRunnerResponse {
+  string message = 1;
+}
+
+// --- Audit logs ---
+
+message ListAuditLogsRequest {
+  optional int64 admin_user_id = 1;
+  optional string action = 2;
+  optional string target_type = 3;
+  optional int64 target_id = 4;
+  // RFC 3339 timestamps; empty string = no bound.
+  optional string start_time = 5;
+  optional string end_time = 6;
+  optional int32 page = 7;
+  optional int32 page_size = 8;
+}
+
+message ListAuditLogsResponse {
+  repeated AdminAuditLog items = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  int32 total_pages = 5;
+}
+
+// --- Relays ---
+
+// AdminRelay mirrors backend/internal/service/relay/RelayInfo. Field shape is
+// REST parity (`relay_info.go:11`) — JSON struct tags match the wire names.
+message AdminRelay {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/service/relay.RelayInfo"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  string id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  string url = 2 [(amesh.codegen.v1.field_rename) = "URL"];
+  string region = 3;
+  int32 capacity = 4 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  int32 connections = 5 [
+    (amesh.codegen.v1.field_rename) = "CurrentConnections",
+    (amesh.codegen.v1.field_convert) = "int_to_int32"
+  ];
+  double cpu_usage = 6 [(amesh.codegen.v1.field_rename) = "CPUUsage"];
+  double memory_usage = 7;
+  // RFC 3339 timestamp.
+  string last_heartbeat = 8 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  bool healthy = 9;
+  int32 avg_latency_ms = 10 [
+    (amesh.codegen.v1.field_rename) = "AvgLatencyMs",
+    (amesh.codegen.v1.field_convert) = "int_to_int32"
+  ];
+  double latitude = 11;
+  double longitude = 12;
+}
+
+message RelayStats {
+  int32 total_relays = 1;
+  int32 healthy_relays = 2;
+  int32 total_connections = 3;
+}
+
+message ListRelaysRequest {}
+
+message ListRelaysResponse {
+  repeated AdminRelay items = 1;
+  int32 total = 2;
+}
+
+message GetRelayRequest {
+  string id = 1;
+}
+
+message GetRelayResponse {
+  AdminRelay relay = 1;
+}
+
+message GetRelayStatsRequest {}
+
+message ForceUnregisterRelayRequest {
+  string id = 1;
+}
+
+message ForceUnregisterRelayResponse {
+  string status = 1;
+  string relay_id = 2;
+}
+
+// --- Support tickets ---
+
+message AdminSupportTicketUser {
+  int64 id = 1;
+  optional string name = 2;
+  string email = 3;
+  optional string avatar_url = 4;
+}
+
+message AdminSupportTicket {
+  int64 id = 1;
+  int64 user_id = 2;
+  string title = 3;
+  string category = 4;
+  string status = 5;
+  string priority = 6;
+  optional int64 assigned_admin_id = 7;
+  string created_at = 8;
+  string updated_at = 9;
+  optional string resolved_at = 10;
+  optional AdminSupportTicketUser user = 11;
+  optional AdminSupportTicketUser assigned_admin = 12;
+}
+
+message AdminSupportTicketAttachment {
+  int64 id = 1;
+  int64 ticket_id = 2;
+  optional int64 message_id = 3;
+  int64 uploader_id = 4;
+  string original_name = 5;
+  string mime_type = 6;
+  int64 size = 7;
+  string created_at = 8;
+}
+
+message AdminSupportTicketMessage {
+  int64 id = 1;
+  int64 ticket_id = 2;
+  int64 user_id = 3;
+  string content = 4;
+  bool is_admin_reply = 5;
+  string created_at = 6;
+  optional AdminSupportTicketUser user = 7;
+  repeated AdminSupportTicketAttachment attachments = 8;
+}
+
+message SupportTicketStats {
+  int64 total = 1;
+  int64 open = 2;
+  int64 in_progress = 3;
+  int64 resolved = 4;
+  int64 closed = 5;
+}
+
+message ListSupportTicketsRequest {
+  optional string search = 1;
+  optional string status = 2;
+  optional string category = 3;
+  optional string priority = 4;
+  optional int32 page = 5;
+  optional int32 page_size = 6;
+}
+
+message ListSupportTicketsResponse {
+  repeated AdminSupportTicket items = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  int32 total_pages = 5;
+}
+
+message GetSupportTicketStatsRequest {}
+
+message GetSupportTicketRequest {
+  int64 id = 1;
+}
+
+// SupportTicketDetail mirrors REST `{ticket, messages}` shape — same as
+// the user-side SupportTicketDetail but on the admin envelope so the
+// embedded user identity is the renderer-facing variant.
+message SupportTicketDetail {
+  AdminSupportTicket ticket = 1;
+  repeated AdminSupportTicketMessage messages = 2;
+}
+
+message ListSupportTicketMessagesRequest {
+  int64 id = 1;
+}
+
+message ListSupportTicketMessagesResponse {
+  repeated AdminSupportTicketMessage data = 1;
+}
+
+message UpdateSupportTicketStatusRequest {
+  int64 id = 1;
+  string status = 2;
+}
+
+message UpdateSupportTicketStatusResponse {
+  string message = 1;
+}
+
+message AssignSupportTicketRequest {
+  int64 id = 1;
+  // When unset, the handler assigns the calling admin to the ticket
+  // (mirrors REST behavior at support_ticket_actions.go:155).
+  optional int64 admin_id = 2;
+}
+
+message AssignSupportTicketResponse {
+  string message = 1;
+}
+
+message GetSupportTicketAttachmentUrlRequest {
+  int64 attachment_id = 1;
+}
+
+message GetSupportTicketAttachmentUrlResponse {
+  string url = 1;
+}
+
+// --- Admin auth ---
+
+message AdminLoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message AdminLoginResponse {
+  string token = 1;
+  string refresh_token = 2;
+  AdminUser user = 3;
+}
+
+message GetMeRequest {}
+
+// ----------------------------------------------------------------------------
+// Dead-letter queue (ops surface)
+// ----------------------------------------------------------------------------
+
+// AgentMessage mirrors the GORM AgentMessage subset that the DLQ exposes
+// (REST serializes the whole struct via gin.H{"entries": entries}; here we
+// pick the renderer-relevant fields). Internal-only — admin tooling.
+message AgentMessage {
+  int64 id = 1;
+  string sender_pod = 2;
+  string receiver_pod = 3;
+  string message_type = 4;
+  string status = 5;
+  int32 delivery_attempts = 6;
+  int32 max_retries = 7;
+  optional string last_delivery_attempt = 8;
+  optional string next_retry_at = 9;
+  optional string delivery_error = 10;
+  optional string delivered_at = 11;
+  optional string read_at = 12;
+  optional int64 parent_message_id = 13;
+  optional string correlation_id = 14;
+  string created_at = 15;
+  string updated_at = 16;
+}
+
+// DeadLetterEntry mirrors GORM agent.DeadLetterEntry.
+message DeadLetterEntry {
+  int64 id = 1;
+  int64 original_message_id = 2;
+  string reason = 3;
+  int32 final_attempt = 4;
+  string moved_at = 5;
+  optional string replayed_at = 6;
+  optional string replay_result = 7;
+  string created_at = 8;
+  // Eager-loaded original message (best-effort — may be absent if the
+  // foreign key cascade already removed the source row).
+  optional AgentMessage original_message = 9;
+}
+
+message ListDeadLettersRequest {
+  // Standard {offset, limit} envelope (conventions §8). REST translated
+  // {limit, offset} 1:1 — same here.
+  optional int32 limit = 1;
+  optional int32 offset = 2;
+}
+
+message ListDeadLettersResponse {
+  repeated DeadLetterEntry items = 1;
+  // total counts the returned slice length (REST behavior). A future
+  // schema bump can swap this for a real count(*) when needed.
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message ReplayDeadLetterRequest {
+  int64 entry_id = 1;
+}
+
+message ReplayDeadLetterResponse {
+  string message = 1;
+  AgentMessage replayed_message = 2;
+}

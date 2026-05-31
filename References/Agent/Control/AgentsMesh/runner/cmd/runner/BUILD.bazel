@@ -1,0 +1,82 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
+load("//build_defs/docker:go_oci_image.bzl", "go_oci_image")
+load("//build_defs/release:release_bundle.bzl", "runner_release_bundle")
+
+go_library(
+    name = "runner_lib",
+    srcs = [
+        "cmd_reactivate.go",
+        "cmd_register.go",
+        "cmd_run.go",
+        "cmd_update_endpoint.go",
+        "exec_restart.go",
+        "exec_restart_windows.go",
+        "main.go",
+        "register.go",
+        "service.go",
+        "update.go",
+        "webconsole.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/runner/cmd/runner",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//runner/internal/client",
+        "//runner/internal/config",
+        "//runner/internal/console",
+        "//runner/internal/envpath",
+        "//runner/internal/lifecycle",
+        "//runner/internal/logger",
+        "//runner/internal/mcp",
+        "//runner/internal/otel",
+        "//runner/internal/pidfile",
+        "//runner/internal/poddaemon",
+        "//runner/internal/processmgr",
+        "//runner/internal/runner",
+        "//runner/internal/service",
+        "//runner/internal/updater",
+        "@com_github_kardianos_service//:service",
+        "@in_gopkg_yaml_v3//:yaml_v3",
+    ],
+)
+
+go_binary(
+    name = "runner",
+    embed = [":runner_lib"],
+    # CGO_ENABLED=0 — keep the binary statically linked so it can run on
+    # the distroless/static base (no glibc). See
+    # //backend/cmd/server:BUILD.bazel for the full rationale.
+    pure = "on",
+    visibility = ["//visibility:public"],
+)
+
+# Distroless OCI image for the runner daemon. See
+# //build_defs/docker:go_oci_image for the macro.
+go_oci_image(
+    name = "image",
+    binary = ":runner",
+    repositories = {
+        "agentsmesh": "registry.agentsmesh.ai/agentsmesh/runner",
+        "dockerhub": "agentsmesh/runner",
+    },
+)
+
+# Cross-compiled release bundle (replaces .goreleaser.yml). Builds 6
+# platform-specific binaries + archives + a checksums.txt manifest.
+# `:release_assets` is the filegroup the GitHub Release CI step
+# uploads via `gh release create`.
+runner_release_bundle(
+    name = "release",
+    archive_basename = "agentsmesh-runner",
+    binary_name = "agentsmesh-runner",
+    embed = [":runner_lib"],
+    extra_files = [
+        "//:README.md",
+        "//:LICENSE",
+    ],
+)
+
+go_test(
+    name = "runner_test",
+    srcs = ["service_test.go"],
+    embed = [":runner_lib"],
+)

@@ -1,0 +1,156 @@
+// iOS Avatar — circle (people) and rounded-square (pod / org) variants.
+// 5 sizes following Apple HIG: xs 24 / sm 32 / md 40 / lg 56 / xl 80.
+// Circle = people / users. Rounded-square (radius 8 or 12) = orgs / pods / agents.
+
+canvas "ios_avatar" {
+    width = 920
+    height = 720
+    background = #1F2328
+}
+
+// Circle (user) — single letter
+component avatar_circle_xs(letter, bg) {
+    frame { width = 24, height = 24, radius = 999, fill = bg
+        layout = horizontal, justify = center, align = center
+        text letter { size = 11, weight = semibold, color = #FFFFFF }
+    }
+}
+component avatar_circle_sm(letter, bg) {
+    frame { width = 32, height = 32, radius = 999, fill = bg
+        layout = horizontal, justify = center, align = center
+        text letter { size = 14, weight = semibold, color = #FFFFFF }
+    }
+}
+component avatar_circle_md(letter, bg) {
+    frame { width = 40, height = 40, radius = 999, fill = bg
+        layout = horizontal, justify = center, align = center
+        text letter { size = 17, weight = semibold, color = #FFFFFF }
+    }
+}
+component avatar_circle_lg(letter, bg) {
+    frame { width = 56, height = 56, radius = 999, fill = bg
+        layout = horizontal, justify = center, align = center
+        text letter { size = 24, weight = semibold, color = #FFFFFF }
+    }
+}
+component avatar_circle_xl(letter, bg) {
+    frame { width = 80, height = 80, radius = 999, fill = bg
+        layout = horizontal, justify = center, align = center
+        text letter { size = 34, weight = semibold, color = #FFFFFF }
+    }
+}
+
+// Rounded-square (org / pod / agent) — letter or icon glyph
+component avatar_square_md(letter, bg) {
+    frame { width = 40, height = 40, radius = 10, fill = bg
+        layout = horizontal, justify = center, align = center
+        text letter { size = 17, weight = semibold, color = #FFFFFF, family = "SF Mono" }
+    }
+}
+component avatar_square_lg(letter, bg) {
+    frame { width = 56, height = 56, radius = 12, fill = bg
+        layout = horizontal, justify = center, align = center
+        text letter { size = 22, weight = semibold, color = #FFFFFF, family = "SF Mono" }
+    }
+}
+
+// Avatar with status dot (online / executing / idle)
+component avatar_md_with_status(letter, bg, status_color) {
+    frame { layout = vertical, justify = end, align = end
+        width = 44, height = 44
+        // base avatar
+        frame stack { width = 40, height = 40, radius = 999, fill = bg
+            layout = horizontal, justify = center, align = center
+            text letter { size = 17, weight = semibold, color = #FFFFFF }
+        }
+        // status dot overlay simulated by a second frame just below (pastel cannot overlap)
+    }
+}
+
+component pg_avatar() {
+frame root {
+    stroke = [2, #6E7681]
+    radius = 16
+    shadow = [0, 8, 24, #00000080]
+    width = 840, height = 660, fill = #FFFFFF
+    padding = 32, layout = vertical, gap = 24
+
+    text "Avatar" { size = 24, weight = semibold, color = #1F2328 }
+    text "Circle (people) · radius 999pt. Rounded-square (orgs / pods / agents) · radius 10–12pt. 5 sizes from xs (24) to xl (80)."
+        { size = 13, color = #656D76, wrap = true, width = 740 }
+
+    text "CIRCLE · USERS / MEMBERS" { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+
+    frame circle_row {
+        width = fill, layout = horizontal, gap = 24, align = end
+
+        frame xs_wrap { layout = vertical, gap = 8, align = center
+            use avatar_circle_xs("D", #0969DA)
+            text "xs · 24pt" { size = 11, color = #868F99 }
+        }
+        frame sm_wrap { layout = vertical, gap = 8, align = center
+            use avatar_circle_sm("D", #0969DA)
+            text "sm · 32pt" { size = 11, color = #868F99 }
+        }
+        frame md_wrap { layout = vertical, gap = 8, align = center
+            use avatar_circle_md("D", #0969DA)
+            text "md · 40pt" { size = 11, color = #868F99 }
+        }
+        frame lg_wrap { layout = vertical, gap = 8, align = center
+            use avatar_circle_lg("D", #0969DA)
+            text "lg · 56pt" { size = 11, color = #868F99 }
+        }
+        frame xl_wrap { layout = vertical, gap = 8, align = center
+            use avatar_circle_xl("D", #0969DA)
+            text "xl · 80pt" { size = 11, color = #868F99 }
+        }
+    }
+
+    text "ROUNDED-SQUARE · ORGS / PODS / AGENTS" { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+
+    frame square_row {
+        width = fill, layout = horizontal, gap = 24, align = end
+
+        frame md_wrap { layout = vertical, gap = 8, align = center
+            use avatar_square_md("A", #0969DA)
+            text "md · 40pt · r10" { size = 11, color = #868F99 }
+        }
+        frame md2_wrap { layout = vertical, gap = 8, align = center
+            use avatar_square_md("C", #3FB950)
+            text "claude-code" { size = 11, color = #868F99, family = "SF Mono" }
+        }
+        frame md3_wrap { layout = vertical, gap = 8, align = center
+            use avatar_square_md("X", #58A6FF)
+            text "codex" { size = 11, color = #868F99, family = "SF Mono" }
+        }
+        frame lg_wrap { layout = vertical, gap = 8, align = center
+            use avatar_square_lg("D", #0969DA)
+            text "lg · 56pt · r12" { size = 11, color = #868F99 }
+        }
+    }
+
+    text "USAGE" { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+
+    frame usage {
+        width = fill, padding = 16, radius = 12, fill = #F6F8FA, stroke = [1, #E4E9EE]
+        layout = vertical, gap = 6
+        text "· Nav bar (avatar tap → drawer): md circle (40pt)" { size = 12, color = #1F2328 }
+        text "· List cell — user row: md circle (40pt)" { size = 12, color = #1F2328 }
+        text "· List cell — pod / agent row: md rounded-square (40pt)" { size = 12, color = #1F2328 }
+        text "· Drawer header: xl circle (80pt)" { size = 12, color = #1F2328 }
+        text "· Org rail (drawer): md/lg rounded-square (40 or 56pt)" { size = 12, color = #1F2328 }
+        text "· Inline mention chip: xs circle (24pt)" { size = 12, color = #1F2328 }
+    }
+}
+}
+
+
+component pg_avatar_framed() {
+    frame outer {
+        width = 920, height = 720, fill = #1F2328
+        padding = 40, layout = horizontal, justify = center, align = center
+        use pg_avatar()
+    }
+}
+
+frame root { use pg_avatar_framed() }

@@ -1,0 +1,297 @@
+// Workspace — empty state (no Pods yet, common for new users or fresh day).
+// Same shell structure as shell-v2, but Sidebar shows empty prompt and Main area has a big CTA.
+
+canvas "workspace_empty" {
+    width = 2000
+    height = 1120
+    background = #1F2328
+}
+
+component we_nav_icon_active(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = #DDF4FF, stroke = [1, #0969DA]
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, weight = medium, color = #0969DA }
+    }
+}
+component we_nav_icon(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = transparent
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, color = #656D76 }
+    }
+}
+component we_section_divider() { shape { type = rectangle, width = 24, height = 1, fill = #D0D7DE } }
+
+component pg_workspace_empty() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width = 1920, height = 1040, fill = #F6F8FA
+
+    frame app {
+        width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+        frame body {
+            width = fill, height = fill, layout = horizontal
+
+            // --- ActivityBar ---
+            frame activity_bar {
+                width = 48, height = fill, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                layout = vertical, align = center, padding = [12, 6], gap = 6
+
+                frame org_switcher {
+                    width = 36, height = 36, radius = 8, fill = #0969DA
+                    layout = horizontal, justify = center, align = center
+                    text "D" { size = 16, weight = semibold, color = #FFFFFF }
+                }
+                frame gap_s { height = 12 }
+
+                use we_nav_icon("▦")
+                use we_nav_icon("#")
+                use we_nav_icon_active(">_")
+                use we_section_divider()
+                use we_nav_icon("🎫")
+                use we_nav_icon("↻")
+                use we_nav_icon("⚘")
+
+                frame spacer { height = fill }
+                use we_nav_icon("⌘")
+                use we_nav_icon("?")
+                use we_nav_icon("⚙")
+                use we_nav_icon("👤")
+            }
+
+            // --- Sidebar: empty list ---
+            frame sidebar {
+                width = 280, height = fill, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = vertical
+
+                frame search_area {
+                    width = fill, padding = 12, layout = vertical, gap = 8
+                    frame search {
+                        width = fill, height = 32, padding = [0, 10], radius = 6
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = horizontal, align = center, gap = 8
+                        text "🔍" { size = 13, color = #868F99 }
+                        text "Search — try agent:codex, mode:acp, repo:demo-api" { size = 12, color = #B1B7BE }
+                    }
+                    frame btn_new {
+                        width = fill, height = 30, radius = 6, fill = #0969DA
+                        layout = horizontal, justify = center, align = center, gap = 6
+                        text "+"        { size = 14, weight = medium, color = #FFFFFF }
+                        text "New Pod"  { size = 13, weight = medium, color = #FFFFFF }
+                    }
+                }
+
+                // Scope tabs (still present even when empty, for consistency)
+                frame filter_tabs {
+                    width = fill, padding = [6, 12]
+                    stroke = [1, #D0D7DE]
+                    layout = horizontal, gap = 4, align = center
+
+                    frame tab_mine {
+                        padding = [4, 10], radius = 4, fill = #E4E9EE
+                        text "Mine" { size = 12, weight = medium, color = #1F2328 }
+                    }
+                    frame tab_others {
+                        padding = [4, 10], radius = 4
+                        text "Others" { size = 12, color = #656D76 }
+                    }
+                    frame tab_completed {
+                        padding = [4, 10], radius = 4
+                        text "Completed" { size = 12, color = #656D76 }
+                    }
+                }
+
+                // Sidebar empty state (compact)
+                frame empty_hint {
+                    width = fill, padding = [40, 16], layout = vertical, align = center, gap = 10
+
+                    frame icon_box {
+                        width = 40, height = 40, radius = 10
+                        fill = #F0F3F6, stroke = [1, #D0D7DE]
+                        layout = horizontal, justify = center, align = center
+                        text ">_" { size = 16, color = #868F99, family = "JetBrains Mono" }
+                    }
+                    text "No Pods yet" { size = 13, weight = medium, color = #1F2328 }
+                    text "Pods you create will show up here." { size = 12, color = #868F99, align = center, wrap = true, width = 220 }
+                }
+
+                frame spacer { height = fill }
+                frame sidebar_footer {
+                    width = fill, padding = [10, 12], stroke = [1, #D0D7DE]
+                    layout = horizontal, align = center, gap = 8
+                    text "Sort: recent" { size = 12, color = #B1B7BE }
+                    frame spacer_r { width = fill }
+                    frame more { width = 24, height = 22, radius = 4
+                        layout = horizontal, justify = center, align = center
+                        text "⋯" { size = 14, weight = semibold, color = #B1B7BE }
+                    }
+                }
+            }
+
+            // --- Main: big empty state ---
+            frame main {
+                width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+                // Small hint banner at top (dismissable, new-user nudge)
+                frame hint_banner {
+                    width = fill, padding = [10, 24]
+                    fill = #DDF4FF
+                    layout = horizontal, align = center, gap = 10
+
+                    text "👋" { size = 14 }
+                    text "New to AgentsMesh?" { size = 13, weight = medium, color = #0550AE }
+                    text "Watch the 2-minute intro →" { size = 13, color = #0969DA }
+                    frame spacer { width = fill }
+                    text "✕" { size = 13, color = #0550AE }
+                }
+
+                // Centered empty state
+                frame center {
+                    width = fill, height = fill
+                    layout = vertical, justify = center, align = center, gap = 32
+
+                    // Hero
+                    frame hero {
+                        width = 520, layout = vertical, align = center, gap = 16
+
+                        frame icon_big {
+                            width = 80, height = 80, radius = 16
+                            fill = #DDF4FF, stroke = [1, #0969DA]
+                            layout = horizontal, justify = center, align = center
+                            text ">_" { size = 32, weight = semibold, color = #0969DA, family = "JetBrains Mono" }
+                        }
+
+                        text "Spawn your first Pod" { size = 24, weight = semibold, color = #1F2328, align = center }
+                        text "A Pod is an isolated terminal where an AI agent works on your code. You can watch, intervene, or let it run on autopilot."
+                            { size = 14, color = #656D76, align = center, wrap = true, width = 460, line-height = 22 }
+
+                        frame actions {
+                            padding = [12, 0, 0, 0]
+                            layout = horizontal, gap = 10, align = center
+
+                            frame btn_primary {
+                                height = 40, padding = [0, 20], radius = 8, fill = #0969DA
+                                layout = horizontal, justify = center, align = center, gap = 8
+                                shadow = [0, 2, 6, #0969DA40]
+
+                                text "+" { size = 16, weight = semibold, color = #FFFFFF }
+                                text "New Pod" { size = 14, weight = semibold, color = #FFFFFF }
+                            }
+                            frame btn_sec {
+                                height = 40, padding = [0, 18], radius = 8
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = horizontal, justify = center, align = center, gap = 6
+
+                                text "Browse agents" { size = 14, weight = medium, color = #1F2328 }
+                            }
+                        }
+                    }
+
+                    // Quick-start suggestions
+                    frame suggestions {
+                        width = 720, layout = vertical, gap = 10
+
+                        text "Or start from a recipe" { size = 11, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5, align = center }
+
+                        frame cards {
+                            width = fill, layout = horizontal, gap = 12, align = start
+
+                            // Card 1
+                            frame card1 {
+                                width = fill, padding = 14, radius = 10
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = vertical, gap = 6
+
+                                frame row { layout = horizontal, gap = 8, align = center
+                                    text "🔍" { size = 14 }
+                                    text "Explain this codebase" { size = 13, weight = semibold, color = #1F2328 }
+                                }
+                                text "Claude Code walks through your repo and summarizes architecture." { size = 11, color = #656D76, wrap = true, width = 200, line-height = 16 }
+                                frame meta { layout = horizontal, gap = 6, align = center, padding = [4, 0, 0, 0]
+                                    frame chip { padding = [1, 6], radius = 3, fill = #F6F8FA
+                                        text "claude-code" { size = 10, weight = medium, color = #656D76, family = "JetBrains Mono" }
+                                    }
+                                    text "· 2 min" { size = 10, color = #868F99 }
+                                }
+                            }
+
+                            // Card 2
+                            frame card2 {
+                                width = fill, padding = 14, radius = 10
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = vertical, gap = 6
+
+                                frame row { layout = horizontal, gap = 8, align = center
+                                    text "🧪" { size = 14 }
+                                    text "Run your tests" { size = 13, weight = semibold, color = #1F2328 }
+                                }
+                                text "Claude Code executes the test suite and reports failures." { size = 11, color = #656D76, wrap = true, width = 200, line-height = 16 }
+                                frame meta { layout = horizontal, gap = 6, align = center, padding = [4, 0, 0, 0]
+                                    frame chip { padding = [1, 6], radius = 3, fill = #F6F8FA
+                                        text "claude-code" { size = 10, weight = medium, color = #656D76, family = "JetBrains Mono" }
+                                    }
+                                    text "· 3 min" { size = 10, color = #868F99 }
+                                }
+                            }
+
+                            // Card 3
+                            frame card3 {
+                                width = fill, padding = 14, radius = 10
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = vertical, gap = 6
+
+                                frame row { layout = horizontal, gap = 8, align = center
+                                    text "🐛" { size = 14 }
+                                    text "Fix an open bug" { size = 13, weight = semibold, color = #1F2328 }
+                                }
+                                text "Pick a ticket, spawn a Pod. Agent reads context and proposes a fix." { size = 11, color = #656D76, wrap = true, width = 200, line-height = 16 }
+                                frame meta { layout = horizontal, gap = 6, align = center, padding = [4, 0, 0, 0]
+                                    frame chip { padding = [1, 6], radius = 3, fill = #F6F8FA
+                                        text "codex · acp" { size = 10, weight = medium, color = #656D76, family = "JetBrains Mono" }
+                                    }
+                                    text "· 8 min" { size = 10, color = #868F99 }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Bottom helper
+                frame bottom_help {
+                    width = fill, padding = [16, 24]
+                    stroke = [1, #E4E9EE]
+                    layout = horizontal, justify = space-between, align = center
+
+                    frame left { layout = horizontal, gap = 20, align = center
+                        text "⌘K  to search" { size = 12, color = #868F99, family = "JetBrains Mono" }
+                        text "⌘N  to create pod" { size = 12, color = #868F99, family = "JetBrains Mono" }
+                    }
+                    frame right {
+                        text "Prefer the CLI? agentsmesh pod new →" { size = 12, color = #0969DA }
+                    }
+                }
+            }
+        }
+    }
+}
+}
+
+
+component pg_workspace_empty_framed() {
+    frame outer {
+        width = 2000
+        height = 1120
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_workspace_empty()
+    }
+}
+
+frame root {
+    use pg_workspace_empty_framed()
+}

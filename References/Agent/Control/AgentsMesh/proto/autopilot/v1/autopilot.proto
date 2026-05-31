@@ -1,0 +1,122 @@
+// AutopilotControllerService — autopilot controller lifecycle + control.
+//
+// Migrated from REST handlers in
+//   backend/internal/api/rest/v1/autopilot_controller*.go
+// per .claude/plans/proto-naming-conventions.md.
+//
+// Org-scoped — every request carries `org_slug = 1`. Control actions
+// (pause/resume/stop/approve/takeover/handback) all return ack with
+// `status` + `action`. Create runs an additional gRPC command to the
+// runner (CreateAndStart) so the response is the entity.
+
+syntax = "proto3";
+
+package proto.autopilot.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/autopilot/v1;autopilotv1";
+
+service AutopilotControllerService {
+  rpc ListAutopilotControllers(ListAutopilotControllersRequest) returns (ListAutopilotControllersResponse);
+  rpc GetAutopilotController(GetAutopilotControllerRequest) returns (AutopilotController);
+  rpc CreateAutopilotController(CreateAutopilotControllerRequest) returns (AutopilotController);
+  rpc PauseAutopilotController(ActionRequest) returns (ActionResponse);
+  rpc ResumeAutopilotController(ActionRequest) returns (ActionResponse);
+  rpc StopAutopilotController(ActionRequest) returns (ActionResponse);
+  rpc ApproveAutopilotController(ApproveRequest) returns (ActionResponse);
+  rpc TakeoverAutopilotController(ActionRequest) returns (ActionResponse);
+  rpc HandbackAutopilotController(ActionRequest) returns (ActionResponse);
+  rpc GetIterations(GetIterationsRequest) returns (GetIterationsResponse);
+}
+
+// AutopilotController mirrors backend/internal/domain/agentpod.AutopilotController
+// — the fields the REST handler emits via AutopilotControllerResponse.
+message AutopilotController {
+  int64 id = 1;
+  string autopilot_controller_key = 2;
+  string pod_key = 3;
+  string phase = 4;
+  int32 current_iteration = 5;
+  int32 max_iterations = 6;
+  CircuitBreaker circuit_breaker = 7;
+  bool user_takeover = 8;
+  string prompt = 9;
+  optional string started_at = 10;
+  optional string last_iteration_at = 11;
+  string created_at = 12;
+}
+
+message CircuitBreaker {
+  string state = 1;
+  string reason = 2;
+}
+
+// AutopilotIteration is the audit record of a single iteration.
+message AutopilotIteration {
+  int64 id = 1;
+  string controller_key = 2;
+  int64 iteration_number = 3;
+  string status = 4;
+  string result = 5;
+  optional string started_at = 6;
+  optional string completed_at = 7;
+}
+
+message ListAutopilotControllersRequest {
+  string org_slug = 1;
+}
+
+message ListAutopilotControllersResponse {
+  repeated AutopilotController items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message GetAutopilotControllerRequest {
+  string org_slug = 1;
+  string key = 2;
+}
+
+message CreateAutopilotControllerRequest {
+  string org_slug = 1;
+  string pod_key = 2;
+  string prompt = 3;
+  // All optional config (zero values cause server defaults to apply).
+  int32 max_iterations = 4;
+  int32 iteration_timeout_sec = 5;
+  int32 no_progress_threshold = 6;
+  int32 same_error_threshold = 7;
+  int32 approval_timeout_min = 8;
+  string control_agent_slug = 9;
+  string control_prompt_template = 10;
+  string mcp_config_json = 11;
+}
+
+message ActionRequest {
+  string org_slug = 1;
+  string key = 2;
+}
+
+message ApproveRequest {
+  string org_slug = 1;
+  string key = 2;
+  optional bool continue_execution = 3;
+  int32 additional_iterations = 4;
+}
+
+message ActionResponse {
+  string status = 1;
+  string action = 2;
+}
+
+message GetIterationsRequest {
+  string org_slug = 1;
+  string key = 2;
+}
+
+message GetIterationsResponse {
+  repeated AutopilotIteration items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}

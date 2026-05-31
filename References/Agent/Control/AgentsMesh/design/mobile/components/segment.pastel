@@ -1,0 +1,99 @@
+// iOS Segmented Control — used for List/Board, Mine/Others/Completed, etc.
+// Height: 32pt. Fill: #767680/12% over background. Active segment: white card.
+
+canvas "ios_segment"  {
+    width = 800
+    height = 540
+    background = #1F2328
+}
+
+component seg_inactive(label) {
+    frame {
+        height = 28, padding = [0, 16]
+        layout = horizontal, justify = center, align = center
+        text label { size = 13, weight = medium, color = #1F2328 }
+    }
+}
+component seg_active(label) {
+    frame {
+        height = 28, radius = 7, fill = #FFFFFF, stroke = [1, #00000010]
+        padding = [0, 16]
+        shadow = [0, 1, 1, #00000010]
+        layout = horizontal, justify = center, align = center
+        text label { size = 13, weight = semibold, color = #1F2328 }
+    }
+}
+
+// 2-segment
+component seg_2() {
+    frame {
+        width = 361, height = 32, padding = 2
+        radius = 8, fill = #E9E9EB
+        layout = horizontal, gap = 0, align = center
+        use seg_active("List")
+        use seg_inactive("Board")
+    }
+}
+
+// 3-segment
+component seg_3() {
+    frame {
+        width = 361, height = 32, padding = 2
+        radius = 8, fill = #E9E9EB
+        layout = horizontal, gap = 0, align = center
+        use seg_active("Mine")
+        use seg_inactive("Others")
+        use seg_inactive("Completed")
+    }
+}
+
+// 4-segment compact
+component seg_4() {
+    frame {
+        width = 361, height = 32, padding = 2
+        radius = 8, fill = #E9E9EB
+        layout = horizontal, gap = 0, align = center
+        use seg_active("Recent")
+        use seg_inactive("Pinned")
+        use seg_inactive("Tree")
+        use seg_inactive("Tags")
+    }
+}
+
+component label_anno(text_value) {
+    text text_value { size = 11, weight = medium, color = #6E7681, letter-spacing = 1.5 }
+}
+
+component pg_segment() {
+frame root {
+    stroke = [2, #6E7681]
+    radius = 12
+    shadow = [0, 8, 24, #00000080]
+    width = 720, height = 480, fill = #FFFFFF
+    padding = 32, layout = vertical, gap = 20
+
+    text "Segmented Control" { size = 24, weight = semibold, color = #1F2328 }
+    text "32pt outer, 28pt inner cell. Track #767680@12%, active = white card with hairline + 1pt shadow."
+        { size = 13, color = #656D76 }
+
+    use label_anno("2-WAY · Tickets List/Board")
+    frame wrap2 { width = fill, layout = horizontal, justify = center, use seg_2() }
+
+    use label_anno("3-WAY · Workspace filter (Mine / Others / Completed)")
+    frame wrap3 { width = fill, layout = horizontal, justify = center, use seg_3() }
+
+    use label_anno("4-WAY · Blocks view switch (rare; prefer 2–3)")
+    frame wrap4 { width = fill, layout = horizontal, justify = center, use seg_4() }
+}
+}
+
+
+component pg_segment_framed() {
+    frame outer {
+        width = 800, height = 540, fill = #1F2328
+        padding = 40, layout = horizontal, justify = center, align = center
+        use pg_segment()
+    }
+}
+
+frame root { use pg_segment_framed() }

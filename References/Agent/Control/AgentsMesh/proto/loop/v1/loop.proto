@@ -1,0 +1,223 @@
+// LoopService — scheduled / cron-triggered repeatable task definitions.
+//
+// Migrated from REST handlers in
+//   backend/internal/api/rest/v1/loop_handler*.go
+// per .claude/plans/proto-naming-conventions.md.
+//
+// Org-scoped — every request carries `org_slug = 1`. JSON-typed config
+// fields (autopilot_config, config_overrides, prompt_variables,
+// trigger_params) ship as string payloads (raw JSON) to keep the proto
+// surface stable; renderer + service layer continue to use map types.
+
+syntax = "proto3";
+
+package proto.loop.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/loop/v1;loopv1";
+
+service LoopService {
+  rpc ListLoops(ListLoopsRequest) returns (ListLoopsResponse);
+  rpc GetLoop(GetLoopRequest) returns (Loop);
+  rpc CreateLoop(CreateLoopRequest) returns (Loop);
+  rpc UpdateLoop(UpdateLoopRequest) returns (Loop);
+  rpc DeleteLoop(DeleteLoopRequest) returns (DeleteLoopResponse);
+  rpc EnableLoop(LoopActionRequest) returns (Loop);
+  rpc DisableLoop(LoopActionRequest) returns (Loop);
+  rpc TriggerLoop(TriggerLoopRequest) returns (TriggerLoopResponse);
+
+  rpc ListRuns(ListRunsRequest) returns (ListRunsResponse);
+  rpc CancelRun(CancelRunRequest) returns (CancelRunResponse);
+}
+
+message Loop {
+  int64 id = 1;
+  string slug = 2;
+  string name = 3;
+  optional string description = 4;
+  string agent_slug = 5;
+  string permission_mode = 6;
+  string prompt_template = 7;
+  // JSON-encoded fields ship as raw strings.
+  string config_overrides_json = 8;
+  string prompt_variables_json = 9;
+  string execution_mode = 10;
+  optional string cron_expression = 11;
+  string autopilot_config_json = 12;
+  optional string callback_url = 13;
+  optional int64 repository_id = 14;
+  optional int64 runner_id = 15;
+  optional string branch_name = 16;
+  optional int64 ticket_id = 17;
+  optional int64 credential_profile_id = 18;
+  string status = 19;
+  string sandbox_strategy = 20;
+  bool session_persistence = 21;
+  string concurrency_policy = 22;
+  int32 max_concurrent_runs = 23;
+  int32 max_retained_runs = 24;
+  int32 timeout_minutes = 25;
+  int32 idle_timeout_sec = 26;
+  int64 total_runs = 27;
+  int64 successful_runs = 28;
+  int64 failed_runs = 29;
+  int64 active_run_count = 30;
+  optional double avg_duration_sec = 31;
+  optional string last_run_at = 32;
+  string created_at = 33;
+  string updated_at = 34;
+  // Ordered list of EnvBundle names attached to this Loop (USE_ENV_BUNDLE).
+  repeated string used_env_bundles = 35;
+}
+
+message LoopRun {
+  int64 id = 1;
+  int64 loop_id = 2;
+  int64 run_number = 3;
+  string status = 4;
+  optional string pod_key = 5;
+  optional string started_at = 6;
+  optional string completed_at = 7;
+  optional string error_message = 8;
+  string created_at = 9;
+}
+
+message ListLoopsRequest {
+  string org_slug = 1;
+  string status = 2;
+  string execution_mode = 3;
+  optional bool cron_enabled = 4;
+  string query = 5;
+  optional int32 offset = 6;
+  optional int32 limit = 7;
+}
+
+message ListLoopsResponse {
+  repeated Loop items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message GetLoopRequest {
+  string org_slug = 1;
+  string loop_slug = 2;
+}
+
+message CreateLoopRequest {
+  string org_slug = 1;
+  string name = 2;
+  string slug = 3;
+  string description = 4;
+  string agent_slug = 5;
+  string permission_mode = 6;
+  string prompt_template = 7;
+  // JSON-encoded payloads (raw strings on the wire).
+  string prompt_variables_json = 8;
+  string config_overrides_json = 9;
+  string autopilot_config_json = 10;
+  optional int64 repository_id = 11;
+  optional int64 runner_id = 12;
+  string branch_name = 13;
+  optional int64 ticket_id = 14;
+  optional int64 credential_profile_id = 15;
+  string execution_mode = 16;
+  string cron_expression = 17;
+  string callback_url = 18;
+  string sandbox_strategy = 19;
+  optional bool session_persistence = 20;
+  string concurrency_policy = 21;
+  optional int32 max_concurrent_runs = 22;
+  optional int32 max_retained_runs = 23;
+  optional int32 timeout_minutes = 24;
+  optional int32 idle_timeout_sec = 25;
+  // Ordered list of EnvBundle names to attach (USE_ENV_BUNDLE); nil/empty = none.
+  repeated string used_env_bundles = 26;
+}
+
+message UpdateLoopRequest {
+  string org_slug = 1;
+  string loop_slug = 2;
+  optional string name = 3;
+  optional string description = 4;
+  string agent_slug = 5;
+  optional string permission_mode = 6;
+  optional string prompt_template = 7;
+  string prompt_variables_json = 8;
+  string config_overrides_json = 9;
+  string autopilot_config_json = 10;
+  optional int64 repository_id = 11;
+  optional int64 runner_id = 12;
+  optional string branch_name = 13;
+  optional int64 ticket_id = 14;
+  optional int64 credential_profile_id = 15;
+  optional string execution_mode = 16;
+  optional string cron_expression = 17;
+  optional string callback_url = 18;
+  optional string sandbox_strategy = 19;
+  optional bool session_persistence = 20;
+  optional string concurrency_policy = 21;
+  optional int32 max_concurrent_runs = 22;
+  optional int32 max_retained_runs = 23;
+  optional int32 timeout_minutes = 24;
+  optional int32 idle_timeout_sec = 25;
+  // Bundle list patch: nil leaves binding unchanged; non-nil (including empty list) replaces.
+  optional EnvBundleList used_env_bundles = 26;
+}
+
+// Wrapper enabling tri-state (nil/[]/[...]) over repeated string on proto3.
+message EnvBundleList {
+  repeated string names = 1;
+}
+
+message DeleteLoopRequest {
+  string org_slug = 1;
+  string loop_slug = 2;
+}
+
+message DeleteLoopResponse {
+  string message = 1;
+}
+
+message LoopActionRequest {
+  string org_slug = 1;
+  string loop_slug = 2;
+}
+
+message TriggerLoopRequest {
+  string org_slug = 1;
+  string loop_slug = 2;
+  string variables_json = 3;
+}
+
+message TriggerLoopResponse {
+  // Either the run was created or it was skipped by concurrency policy.
+  // run is present when not skipped; skipped + reason are present when skipped.
+  optional LoopRun run = 1;
+  bool skipped = 2;
+  string reason = 3;
+}
+
+message ListRunsRequest {
+  string org_slug = 1;
+  string loop_slug = 2;
+  string status = 3;
+  optional int32 offset = 4;
+  optional int32 limit = 5;
+}
+
+message ListRunsResponse {
+  repeated LoopRun items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message CancelRunRequest {
+  string org_slug = 1;
+  string loop_slug = 2;
+  int64 run_id = 3;
+}
+
+message CancelRunResponse {
+  string message = 1;
+}

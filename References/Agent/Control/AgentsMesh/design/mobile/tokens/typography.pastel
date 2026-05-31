@@ -1,0 +1,58 @@
+// iOS Typography — Apple HIG type ramp.
+// Values are pt @ 1× (rendering treats 1pt = 1px). Use these literally in pastel.
+//
+// Reference: developer.apple.com/design/human-interface-guidelines/typography
+// iOS uses SF Pro by default; semibold (600) is the heaviest in-app weight here
+// to align with desktop tokens (no bold body in the IDE-style product).
+//
+// Line-height: ratio ~1.29 (HIG). Paragraph spacing: 0.
+
+token ios_fontsize {
+    large_title = 34
+    title_1     = 28
+    title_2     = 22
+    title_3     = 20
+    headline    = 17    // semibold
+    body        = 17    // regular
+    callout     = 16
+    subhead     = 15
+    footnote    = 13
+    caption_1   = 12
+    caption_2   = 11
+}
+
+token ios_leading {
+    large_title = 41
+    title_1     = 34
+    title_2     = 28
+    title_3     = 25
+    headline    = 22
+    body        = 22
+    callout     = 21
+    subhead     = 20
+    footnote    = 18
+    caption_1   = 16
+    caption_2   = 13
+}
+
+// Common combinations (used by mobile components and pages)
+token ios_type {
+    large_title  = { size = 34, weight = semibold, leading = 41 }
+    nav_title    = { size = 17, weight = semibold, leading = 22 }
+    list_title   = { size = 17, weight = normal,   leading = 22 }
+    list_subtitle = { size = 13, weight = normal,  leading = 18 }
+    section_hdr  = { size = 13, weight = normal,   leading = 18, color_key = "muted_foreground" }
+    body         = { size = 17, weight = normal,   leading = 22 }
+    headline     = { size = 17, weight = semibold, leading = 22 }
+    button_label = { size = 17, weight = semibold, leading = 22 }
+    tab_label    = { size = 10, weight = medium,   leading = 12 }   // tab bar caption
+    callout      = { size = 16, weight = normal,   leading = 21 }
+    footnote     = { size = 13, weight = normal,   leading = 18 }
+    caption      = { size = 12, weight = normal,   leading = 16 }
+}
+
+// Font family — system default. Use SF Pro for prose, SF Mono for pod_keys / code.
+token ios_font {
+    sans = "SF Pro"
+    mono = "SF Mono"
+}

@@ -1,0 +1,198 @@
+// PageHeader — the top of every page.
+// Anatomy: [Breadcrumb] · Title · Description · [Actions (buttons)]
+// All page content should start with PageHeader for consistency.
+
+canvas "page_header" {
+    width = 1280
+    height = 780
+    background = #1F2328
+}
+
+component ph_bc_link(label)    { text label { size = 13, color = #656D76 } }
+component ph_bc_current(label) { text label { size = 13, weight = medium, color = #1F2328 } }
+component ph_bc_sep()          { text "›"   { size = 13, color = #AFB8C1 } }
+
+component btn_primary(label) {
+    frame {
+        height  = 32, padding = [0, 14], radius = 6, fill = #0969DA
+        layout  = horizontal, justify = center, align = center
+        text label { size = 14, weight = medium, color = #FFFFFF }
+    }
+}
+
+component btn_outline(label) {
+    frame {
+        height  = 32, padding = [0, 14], radius = 6
+        fill    = #FFFFFF, stroke = [1, #D0D7DE]
+        layout  = horizontal, justify = center, align = center
+        text label { size = 14, weight = medium, color = #1F2328 }
+    }
+}
+
+// Variant 1: List page (no breadcrumb)
+component page_header_list() {
+    frame {
+        width   = 1100
+        padding = [24, 0]
+        layout  = vertical
+        gap     = 4
+
+        frame top {
+            width   = fill
+            layout  = horizontal
+            justify = space-between
+            align   = center
+
+            frame title_block {
+                layout = vertical, gap = 2
+                text "Tickets" { size = 20, weight = semibold, color = #1F2328 }
+                text "Track work items and plan sprints."
+                    { size = 13, color = #656D76 }
+            }
+
+            frame actions {
+                layout = horizontal, gap = 8
+                use btn_outline("Export CSV")
+                use btn_primary("New Ticket")
+            }
+        }
+    }
+}
+
+// Variant 2: Detail page (with breadcrumb)
+component page_header_detail() {
+    frame {
+        width   = 1100
+        padding = [24, 0]
+        layout  = vertical
+        gap     = 8
+
+        frame breadcrumb {
+            layout = horizontal, gap = 8, align = center
+            use ph_bc_link("Tickets")
+            use ph_bc_sep()
+            use ph_bc_current("DEV-1 Implement JWT-based authentication")
+        }
+
+        frame top {
+            width   = fill
+            layout  = horizontal
+            justify = space-between
+            align   = center
+
+            frame title_block {
+                layout = vertical, gap = 2, width = 700
+                text "Implement JWT-based user authentication"
+                    { size = 20, weight = semibold, color = #1F2328, wrap = true, width = 700 }
+                text "Opened 3 days ago by Dev User · 2 linked pods · backlog · medium priority"
+                    { size = 13, color = #656D76 }
+            }
+
+            frame actions {
+                layout = horizontal, gap = 8
+                use btn_outline("Edit")
+                use btn_primary("Spawn Pod")
+            }
+        }
+    }
+}
+
+// Variant 3: Settings page (with scope tabs)
+component page_header_settings() {
+    frame {
+        width   = 1100
+        padding = [24, 0]
+        layout  = vertical
+        gap     = 16
+
+        frame title_block {
+            layout = vertical, gap = 2
+            text "Settings" { size = 20, weight = semibold, color = #1F2328 }
+            text "Manage your account and organization preferences."
+                { size = 13, color = #656D76 }
+        }
+
+        // Tab bar (Personal / Organization)
+        frame tabs {
+            width  = fill
+            layout = horizontal
+            gap    = 0
+            padding = [0, 0, 0, 0]
+
+            frame tab_personal {
+                padding = [10, 16], fill = transparent
+                stroke  = [2, transparent]
+                layout  = horizontal, align = center
+
+                text "Personal" { size = 14, weight = medium, color = #656D76 }
+            }
+
+            frame tab_org_active {
+                padding = [10, 16], fill = transparent
+                layout  = vertical, align = center, gap = 8
+
+                text "Organization" { size = 14, weight = semibold, color = #1F2328 }
+                shape underline { type = rectangle, width = 110, height = 2, fill = #0969DA, radius = 2 }
+            }
+        }
+
+        shape tabs_line { type = rectangle, width = 1100, height = 1, fill = #D0D7DE, top = -1 }
+    }
+}
+
+component pg_page_header() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width   = 1200
+    height  = 700
+    fill    = #FFFFFF
+    padding = 40
+    layout  = vertical
+    gap     = 32
+
+    text "PageHeader" { size = 24, weight = semibold, color = #1F2328 }
+    text "Three variants — List (top-level pages), Detail (with breadcrumb), Settings (with scope tabs)."
+        { size = 13, color = #656D76 }
+
+    frame ex1 { layout = vertical, gap = 8
+        text "list · Tickets, Workspace, Runners, etc." { size = 12, weight = medium, color = #656D76 }
+        frame box { width = 1100, stroke = [1, #D0D7DE], radius = 8, padding = 16
+            use page_header_list()
+        }
+    }
+
+    frame ex2 { layout = vertical, gap = 8
+        text "detail · /:org/tickets/DEV-1" { size = 12, weight = medium, color = #656D76 }
+        frame box2 { width = 1100, stroke = [1, #D0D7DE], radius = 8, padding = 16
+            use page_header_detail()
+        }
+    }
+
+    frame ex3 { layout = vertical, gap = 8
+        text "settings · with scope tabs" { size = 12, weight = medium, color = #656D76 }
+        frame box3 { width = 1100, stroke = [1, #D0D7DE], radius = 8, padding = 16
+            use page_header_settings()
+        }
+    }
+}
+}
+
+
+component pg_page_header_framed() {
+    frame outer {
+        width = 1280
+        height = 780
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_page_header()
+    }
+}
+
+frame root {
+    use pg_page_header_framed()
+}

@@ -1,0 +1,70 @@
+// EventsService — server-streaming real-time event push.
+//
+// Migrated from REST WebSocket handler in
+// backend/internal/api/rest/ws/events.go per the architecture principle
+// that all client ↔ backend network communication goes through the Rust
+// core (Connect-RPC). This finally retires the last non-Connect business
+// channel (`/ws/events`).
+//
+// Conventions enforced:
+//   * package proto.events.v1 + go_package suffix for dispatch
+//   * snake_case fields, no json_name annotations
+//   * server stream returns a stream of Event frames; client cancels by
+//     closing the stream / aborting the request
+//
+// Auth model: standard Bearer JWT via `Authorization` header. The legacy
+// WebSocket handler took the token from `?token=` query string — that
+// leaked into proxy logs. Connect Server Streaming uses HTTP semantics
+// like every other RPC, so the auth interceptor pipeline applies as-is.
+//
+// Heartbeat: HTTP/2 PING frames + stream-idle timeout on the client
+// side. No application-level ping/pong (the legacy `ping`/`pong` event
+// types are dropped — Event payloads now only carry domain events).
+//
+// Payload schema: 35+ heterogeneous event types (pod / channel / ticket
+// / runner / autopilot / mr / pipeline / loop_run / blockstore /
+// notification / system). Modeling each as a typed proto oneof would
+// inflate maintenance cost; the wire keeps `data_json` as a JSON-encoded
+// string and the consumer-side type table (events crate
+// `event_types.rs` + Web `lib/realtime/types.ts`) owns the schema.
+
+syntax = "proto3";
+
+package proto.events.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/events/v1;eventsv1";
+
+service EventsService {
+  // Subscribes to org-scoped real-time events. The stream stays open
+  // until the client cancels or the server closes it (auth failure,
+  // server shutdown, etc.).
+  rpc Subscribe(SubscribeRequest) returns (stream Event);
+}
+
+message SubscribeRequest {
+  string org_slug = 1;
+  // Optional event-type allowlist. Empty (or absent) = all types. The
+  // server MAY ignore this filter for simplicity; it exists for future
+  // bandwidth optimization without a proto bump.
+  repeated string event_types = 2;
+}
+
+// Event mirrors the legacy WebSocket payload shape from
+// backend/internal/infra/eventbus/types.go. `data_json` keeps the
+// per-event-type payload free-form (see header comment).
+message Event {
+  // "pod:status_changed" / "channel:message" / etc. Full enum mirrored
+  // in clients/core/crates/events/src/event_types.rs.
+  string type = 1;
+  // "entity" | "notification" | "system"
+  string category = 2;
+  int64 organization_id = 3;
+  optional int64 target_user_id = 4;
+  repeated int64 target_user_ids = 5;
+  optional string entity_type = 6;
+  optional string entity_id = 7;
+  // JSON-encoded payload — schema depends on `type`.
+  string data_json = 8;
+  // Unix milliseconds.
+  int64 timestamp = 9;
+}

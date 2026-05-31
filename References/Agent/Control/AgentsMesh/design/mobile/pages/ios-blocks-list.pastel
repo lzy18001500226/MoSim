@@ -1,0 +1,223 @@
+// iOS Blocks list — Tab 4 root.
+// Mirrors clients/web BlocksSidebar pages tree exactly:
+//   Search pill → PAGES section header → hierarchical page tree.
+// No Recent/Pinned/Tree segment. Tap any page → navigate to block detail.
+
+asset search_blue       = image("../assets/lucide-png/search-0969DA.png")
+asset plus_blue         = image("../assets/lucide-png/plus-0969DA.png")
+asset terminal_inactive = image("../assets/lucide-png/terminal-8E8E93.png")
+asset message_inactive  = image("../assets/lucide-png/message-8E8E93.png")
+asset ticket_inactive   = image("../assets/lucide-png/ticket-8E8E93.png")
+asset blocks_active     = image("../assets/lucide-png/blocks-filled-0969DA.png")
+asset more_inactive     = image("../assets/lucide-png/ellipsis-8E8E93.png")
+
+canvas "ios_blocks_list" {
+    width = 1100
+    height = 1100
+    background = #1F2328
+}
+
+component sh_status_bar() {
+    frame {
+        width = fill, height = 59, fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center, padding = [0, 22]
+        text "9:41" { size = 17, weight = semibold, color = #1F2328, family = "SF Pro" }
+        frame icons { layout = horizontal, gap = 6, align = center
+            text "📶" { size = 14 } text "📡" { size = 14 }
+            frame battery { width = 28, height = 13, radius = 4, stroke = [1, #1F2328], padding = 2,
+                layout = horizontal, align = center
+                shape level { type = rectangle, width = 20, height = 7, radius = 1, fill = #1F2328 }
+            }
+        }
+    }
+}
+
+component sh_nav_bar() {
+    frame {
+        width = fill, height = 44, fill = #FFFFFFE6
+        padding = [0, 8, 0, 12], layout = horizontal, justify = space-between, align = center
+        frame nav_left { layout = horizontal, gap = 12, align = center
+            frame nav_avatar { width = 40, height = 40, radius = 999, fill = #0969DA
+                layout = horizontal, justify = center, align = center
+                text "S" { size = 17, weight = semibold, color = #FFFFFF }
+            }
+            text "Blocks" { size = 17, weight = semibold, color = #1F2328 }
+        }
+        frame nav_actions { layout = horizontal, gap = 0, align = center
+            frame nav_search { width = 44, height = 44, layout = horizontal, justify = center, align = center
+                image search_blue { width = 22, height = 22 }
+            }
+            frame nav_add { width = 44, height = 44, layout = horizontal, justify = center, align = center
+                image plus_blue { width = 22, height = 22 }
+            }
+        }
+    }
+}
+
+component sh_floating_tab_bar() {
+    frame {
+        width = 361, height = 56, radius = 28
+        fill = #FFFFFFE6, stroke = [1, #0000000D]
+        shadow = [0, 4, 12, #00000014]
+        padding = [0, 8], layout = horizontal, justify = space-between, align = center
+
+        frame t1 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image terminal_inactive { width = 24, height = 24 }
+            text "Pods" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+        frame t2 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image message_inactive { width = 24, height = 24 }
+            text "Channels" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+        frame t3 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image ticket_inactive { width = 24, height = 24 }
+            text "Tickets" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+        frame t4 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image blocks_active { width = 24, height = 24 }
+            text "Blocks" { size = 10, weight = semibold, color = #0969DA, family = "SF Pro" }
+        }
+        frame t5 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image more_inactive { width = 24, height = 24 }
+            text "More" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+    }
+}
+
+// ── Search pill (full-width, mirrors web BlocksSidebar search button) ─
+component sh_search_pill() {
+    frame sp_wrap {
+        width = fill, padding = [10, 16], fill = #FFFFFF
+        layout = horizontal, align = center
+        frame sp_pill {
+            width = fill, height = 36, padding = [0, 12], radius = 10
+            fill = #F2F2F7
+            layout = horizontal, gap = 8, align = center
+            image search_blue { width = 16, height = 16 }
+            text "Search blocks · semantic" { size = 14, color = #8E8E93 }
+        }
+    }
+}
+
+// ── PAGES section header ──────────────────────────────────────────
+component sh_section_header(label) {
+    frame sh_wrap {
+        width = fill, height = 32, padding = [10, 16, 4, 16]
+        fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = end
+        text label { size = 11, weight = semibold, color = #8E8E93, letter-spacing = 1.5 }
+        frame sh_add { width = 24, height = 24, layout = horizontal, justify = center, align = center
+            text "+" { size = 18, color = #8E8E93, weight = medium }
+        }
+    }
+}
+
+// ── Tree row variants (depth 0, 1, 2 — explicit pad-left because pastel
+// doesn't compute padding from a parameter expression). Active variant
+// has muted fill + bolder title. Each component uses unique frame names
+// to dodge the pastel sibling-collision bug.
+component tree_row_d0(icon, title) {
+    frame trd0_wrap {
+        width = fill, height = 36, padding = [0, 16, 0, 12]
+        fill = #FFFFFF
+        layout = horizontal, gap = 6, align = center
+        text "›" { size = 14, color = #8E8E93 }
+        text icon { size = 14 }
+        text title { size = 15, color = #1F2328 }
+    }
+}
+
+component tree_row_d0_active(icon, title) {
+    frame trd0a_wrap {
+        width = fill, height = 36, padding = [0, 16, 0, 12]
+        fill = #F2F2F7, radius = 6
+        layout = horizontal, gap = 6, align = center
+        text "›" { size = 14, color = #8E8E93 }
+        text icon { size = 14 }
+        text title { size = 15, weight = medium, color = #1F2328 }
+    }
+}
+
+component tree_row_d1(icon, title) {
+    frame trd1_wrap {
+        width = fill, height = 36, padding = [0, 16, 0, 28]
+        fill = #FFFFFF
+        layout = horizontal, gap = 6, align = center
+        text "›" { size = 14, color = #8E8E93 }
+        text icon { size = 14 }
+        text title { size = 15, color = #1F2328 }
+    }
+}
+
+component tree_row_d2(icon, title) {
+    frame trd2_wrap {
+        width = fill, height = 36, padding = [0, 16, 0, 44]
+        fill = #FFFFFF
+        layout = horizontal, gap = 6, align = center
+        text "›" { size = 14, color = #8E8E93 }
+        text icon { size = 14 }
+        text title { size = 15, color = #1F2328 }
+    }
+}
+
+component pg_blocks_list() {
+frame root {
+    width = 393, height = 852, fill = #FFFFFF
+    radius = 47, stroke = [3, #1F2328]
+    layout = vertical
+
+    use sh_status_bar()
+    use sh_nav_bar()
+
+    use sh_search_pill()
+
+    use sh_section_header("PAGES")
+
+    // Pages tree — hierarchical, tap any row → block detail
+    frame tree {
+        width = fill, height = fill, fill = #FFFFFF
+        padding = [0, 0, 88, 0], layout = vertical, gap = 0
+
+        use tree_row_d0("📄", "Auth Architecture")
+        use tree_row_d1("📄", "OAuth flow")
+        use tree_row_d1("📄", "Session model")
+        use tree_row_d2("📄", "Refresh policy")
+
+        use tree_row_d0("📄", "API Conventions")
+        use tree_row_d1("📄", "Error format")
+        use tree_row_d1("📄", "Pagination")
+
+        use tree_row_d0_active("📊", "Q2 Roadmap")
+
+        use tree_row_d0("📋", "Sprint 24 — Goals")
+        use tree_row_d1("📋", "W1 retro")
+        use tree_row_d1("📋", "W2 plan")
+
+        use tree_row_d0("🧠", "Memory: Backend invariants")
+        use tree_row_d0("📐", "Indicator: Pod throughput")
+        use tree_row_d0("⚡", "Trigger: Auto-spawn on PR")
+    }
+
+    frame tab_zone {
+        width = fill, height = 88, fill = #FFFFFF
+        layout = vertical, justify = end, align = center, padding = [0, 0, 16, 0]
+        use sh_floating_tab_bar()
+    }
+
+    frame safe_bottom { width = fill, height = 34, fill = #FFFFFF
+        layout = horizontal, justify = center, align = center
+        shape ind { type = rectangle, width = 134, height = 5, radius = 999, fill = #1F2328 }
+    }
+}
+}
+
+
+component pg_blocks_list_framed() {
+    frame outer {
+        width = 1100, height = 1100, fill = #1F2328
+        padding = [60, 80], layout = horizontal, justify = center, align = center
+        use pg_blocks_list()
+    }
+}
+
+frame root { use pg_blocks_list_framed() }

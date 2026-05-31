@@ -1,0 +1,342 @@
+// iOS Tickets — Kanban Board (DEFAULT mobile view).
+// Mirrors web KanbanBoard: 5 columns Backlog→Todo→In Progress→In Review→Done.
+// Toggle (List|Board) sits in the nav bar top-left, not its own row.
+
+asset search_blue       = image("../assets/lucide-png/search-0969DA.png")
+asset plus_blue         = image("../assets/lucide-png/plus-0969DA.png")
+asset terminal_inactive = image("../assets/lucide-png/terminal-8E8E93.png")
+asset message_inactive  = image("../assets/lucide-png/message-8E8E93.png")
+asset ticket_active     = image("../assets/lucide-png/ticket-filled-0969DA.png")
+asset blocks_inactive   = image("../assets/lucide-png/blocks-8E8E93.png")
+asset more_inactive     = image("../assets/lucide-png/ellipsis-8E8E93.png")
+
+canvas "ios_tickets_board" {
+    width = 1100
+    height = 1100
+    background = #1F2328
+}
+
+component sh_status_bar() {
+    frame {
+        width = fill, height = 59, fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center, padding = [0, 22]
+        text "9:41" { size = 17, weight = semibold, color = #1F2328, family = "SF Pro" }
+        frame sb_icons { layout = horizontal, gap = 6, align = center
+            text "📶" { size = 14 } text "📡" { size = 14 }
+            frame sb_battery { width = 28, height = 13, radius = 4, stroke = [1, #1F2328], padding = 2,
+                layout = horizontal, align = center
+                shape sb_level { type = rectangle, width = 20, height = 7, radius = 1, fill = #1F2328 }
+            }
+        }
+    }
+}
+
+// ── Nav bar with List/Board segment top-left + search/add right ────
+component nav_seg_active(label) {
+    frame nsa_w { padding = [3, 14], radius = 6, fill = #FFFFFF
+        stroke = [1, #00000010], shadow = [0, 1, 1, #00000010]
+        layout = horizontal, justify = center, align = center
+        text label { size = 13, weight = semibold, color = #1F2328 }
+    }
+}
+component nav_seg_inactive(label) {
+    frame nsi_w { padding = [3, 14]
+        layout = horizontal, justify = center, align = center
+        text label { size = 13, weight = medium, color = #1F2328 }
+    }
+}
+
+component sh_nav_bar() {
+    frame {
+        width = fill, height = 44, fill = #FFFFFFE6
+        padding = [0, 12], layout = horizontal, justify = space-between, align = center
+
+        frame nb_seg {
+            width = 140, height = 30, padding = 2, radius = 8, fill = #E9E9EB
+            layout = horizontal, gap = 0, align = center, justify = space-between
+            use nav_seg_inactive("List")
+            use nav_seg_active("Board")
+        }
+
+        frame nb_actions { layout = horizontal, gap = 0, align = center
+            frame nb_search { width = 36, height = 44, layout = horizontal, justify = center, align = center
+                image search_blue { width = 22, height = 22 }
+            }
+            frame nb_add { width = 36, height = 44, layout = horizontal, justify = center, align = center
+                image plus_blue { width = 22, height = 22 }
+            }
+        }
+    }
+}
+
+component sh_floating_tab_bar() {
+    frame {
+        width = 361, height = 56, radius = 28
+        fill = #FFFFFFE6, stroke = [1, #0000000D]
+        shadow = [0, 4, 12, #00000014]
+        padding = [0, 8], layout = horizontal, justify = space-between, align = center
+
+        frame tb1 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image terminal_inactive { width = 24, height = 24 }
+            text "Pods" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+        frame tb2 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image message_inactive { width = 24, height = 24 }
+            text "Channels" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+        frame tb3 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image ticket_active { width = 24, height = 24 }
+            text "Tickets" { size = 10, weight = semibold, color = #0969DA, family = "SF Pro" }
+        }
+        frame tb4 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image blocks_inactive { width = 24, height = 24 }
+            text "Blocks" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+        frame tb5 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image more_inactive { width = 24, height = 24 }
+            text "More" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+    }
+}
+
+// ── Kanban card — mirrors web TicketCard with showStatus=false ───
+//   Header: slug (mono 11pt) only — column color carries status
+//   Title: 13pt semibold, 2-line clamp
+//   Labels: tiny color chips (optional)
+//   Divider: 1pt #E4E9EE
+//   Footer: priority icon + due (mono) · avatar stack
+component card_label(text_value, fg, bg) {
+    frame cl_w { padding = [1, 6], radius = 3, fill = bg
+        text text_value { size = 10, weight = medium, color = fg }
+    }
+}
+
+// Avatars and dots are inlined (not via use) per card/column to dodge
+// the pastel sibling-frame name-collision bug — components reused
+// across siblings can drop their fill silently.
+
+component card_basic_M_blue(slug, title, priority, due) {
+    frame cbm_w {
+        width = fill, fill = #FFFFFF, radius = 6
+        stroke = [1, #E4E9EE]
+        padding = [12, 14], layout = vertical, gap = 8
+
+        text slug { size = 11, color = #656D76, family = "SF Mono" }
+        text title { size = 13, weight = semibold, color = #1F2328, wrap = true, width = 200, line-height = 18 }
+
+        frame cbm_div { width = fill, height = 1, fill = #E4E9EE }
+
+        frame cbm_footer {
+            width = fill, layout = horizontal, justify = space-between, align = center
+            frame cbm_meta { layout = horizontal, gap = 8, align = center
+                text priority { size = 11, color = #8E8E93 }
+                text due { size = 11, color = #8E8E93, family = "SF Mono" }
+            }
+            frame cbm_av { width = 20, height = 20, radius = 999, fill = #0969DA
+                layout = horizontal, justify = center, align = center
+                text "M" { size = 9, weight = semibold, color = #FFFFFF }
+            }
+        }
+    }
+}
+
+component card_basic_S_purple(slug, title, priority, due) {
+    frame cbs_w {
+        width = fill, fill = #FFFFFF, radius = 6
+        stroke = [1, #E4E9EE]
+        padding = [12, 14], layout = vertical, gap = 8
+
+        text slug { size = 11, color = #656D76, family = "SF Mono" }
+        text title { size = 13, weight = semibold, color = #1F2328, wrap = true, width = 200, line-height = 18 }
+
+        frame cbs_div { width = fill, height = 1, fill = #E4E9EE }
+
+        frame cbs_footer {
+            width = fill, layout = horizontal, justify = space-between, align = center
+            frame cbs_meta { layout = horizontal, gap = 8, align = center
+                text priority { size = 11, color = #8E8E93 }
+                text due { size = 11, color = #8E8E93, family = "SF Mono" }
+            }
+            frame cbs_av { width = 20, height = 20, radius = 999, fill = #6F42C1
+                layout = horizontal, justify = center, align = center
+                text "S" { size = 9, weight = semibold, color = #FFFFFF }
+            }
+        }
+    }
+}
+
+component card_basic_D_green(slug, title, priority, due) {
+    frame cbd_w {
+        width = fill, fill = #FFFFFF, radius = 6
+        stroke = [1, #E4E9EE]
+        padding = [12, 14], layout = vertical, gap = 8
+
+        text slug { size = 11, color = #656D76, family = "SF Mono" }
+        text title { size = 13, weight = semibold, color = #1F2328, wrap = true, width = 200, line-height = 18 }
+
+        frame cbd_div { width = fill, height = 1, fill = #E4E9EE }
+
+        frame cbd_footer {
+            width = fill, layout = horizontal, justify = space-between, align = center
+            frame cbd_meta { layout = horizontal, gap = 8, align = center
+                text priority { size = 11, color = #8E8E93 }
+                text due { size = 11, color = #8E8E93, family = "SF Mono" }
+            }
+            frame cbd_av { width = 20, height = 20, radius = 999, fill = #1A7F37
+                layout = horizontal, justify = center, align = center
+                text "D" { size = 9, weight = semibold, color = #FFFFFF }
+            }
+        }
+    }
+}
+
+// First card in In Progress includes a label
+component card_with_label_M(slug, title, label_text, priority, due) {
+    frame cwl_w {
+        width = fill, fill = #FFFFFF, radius = 6
+        stroke = [1, #E4E9EE]
+        padding = [12, 14], layout = vertical, gap = 8
+
+        text slug { size = 11, color = #656D76, family = "SF Mono" }
+        text title { size = 13, weight = semibold, color = #1F2328, wrap = true, width = 200, line-height = 18 }
+
+        frame cwl_labels { layout = horizontal, gap = 4, align = center
+            frame cwl_chip { padding = [1, 6], radius = 3, fill = #FFF8C5
+                text label_text { size = 10, weight = medium, color = #9A6700 }
+            }
+        }
+
+        frame cwl_div { width = fill, height = 1, fill = #E4E9EE }
+
+        frame cwl_footer {
+            width = fill, layout = horizontal, justify = space-between, align = center
+            frame cwl_meta { layout = horizontal, gap = 8, align = center
+                text priority { size = 11, color = #8E8E93 }
+                text due { size = 11, color = #8E8E93, family = "SF Mono" }
+            }
+            frame cwl_av { width = 20, height = 20, radius = 999, fill = #0969DA
+                layout = horizontal, justify = center, align = center
+                text "M" { size = 9, weight = semibold, color = #FFFFFF }
+            }
+        }
+    }
+}
+
+// ── Kanban column — colored top stripe + header + cards ──────────
+component col_inprogress() {
+    frame ci_w {
+        width = 268, fill = #F2F2F7, radius = 10
+        layout = vertical, clip = true
+
+        // 3pt colored top stripe — In Progress = yellow
+        frame ci_stripe { width = fill, height = 3, fill = #D29922 }
+
+        frame ci_header {
+            width = fill, padding = [10, 12, 8, 12]
+            layout = horizontal, gap = 6, align = center
+            frame ci_dot { width = 8, height = 8, radius = 999, fill = #D29922 }
+            text "In Progress" { size = 13, weight = semibold, color = #1F2328 }
+            text "2" { size = 11, color = #8E8E93, family = "SF Mono" }
+        }
+
+        frame ci_cards {
+            width = fill, padding = [0, 8, 12, 8], layout = vertical, gap = 6
+            use card_with_label_M("DEV-1",
+                "Implement JWT-based user authentication",
+                "auth", "▲ High", "Apr 30")
+            use card_basic_S_purple("DEV-2",
+                "Migrate session store to Redis",
+                "● Med", "May 02")
+        }
+    }
+}
+
+component col_todo() {
+    frame ct2_w {
+        width = 268, fill = #F2F2F7, radius = 10
+        layout = vertical, clip = true
+
+        frame ct2_stripe { width = fill, height = 3, fill = #58A6FF }
+
+        frame ct2_header {
+            width = fill, padding = [10, 12, 8, 12]
+            layout = horizontal, gap = 6, align = center
+            frame ct2_dot { width = 8, height = 8, radius = 999, fill = #58A6FF }
+            text "Todo" { size = 13, weight = semibold, color = #1F2328 }
+            text "1" { size = 11, color = #8E8E93, family = "SF Mono" }
+        }
+
+        frame ct2_cards {
+            width = fill, padding = [0, 8, 12, 8], layout = vertical, gap = 6
+            use card_basic_D_green("DEV-3",
+                "Refactor PTY forwarder cleanup logic",
+                "● Med", "May 04")
+        }
+    }
+}
+
+component col_done_partial() {
+    frame cd_w {
+        width = 200, fill = #F2F2F7, radius = 10
+        layout = vertical, clip = true
+
+        frame cd_stripe { width = fill, height = 3, fill = #3FB950 }
+
+        frame cd_header {
+            width = fill, padding = [10, 12, 8, 12]
+            layout = horizontal, gap = 6, align = center
+            frame cd_dot { width = 8, height = 8, radius = 999, fill = #3FB950 }
+            text "Done" { size = 13, weight = semibold, color = #1F2328 }
+            text "8" { size = 11, color = #8E8E93, family = "SF Mono" }
+        }
+
+        frame cd_cards {
+            width = fill, padding = [0, 8, 12, 8], layout = vertical, gap = 6
+            use card_basic_M_blue("DEV-4",
+                "Wire up audit log retention policy",
+                "▼ Low", "Apr 26")
+        }
+    }
+}
+
+component pg_tickets_board() {
+frame root {
+    width = 393, height = 852, fill = #FFFFFF
+    radius = 47, stroke = [3, #1F2328], clip = true
+    layout = vertical
+
+    use sh_status_bar()
+    use sh_nav_bar()
+
+    // Horizontal-scrollable kanban — 2 columns visible + edge of 3rd
+    frame board_scroll {
+        width = fill, height = fill, fill = #FFFFFF
+        padding = [12, 12, 88, 12], layout = horizontal, gap = 10, align = start
+        use col_inprogress()
+        use col_todo()
+        use col_done_partial()
+    }
+
+    frame tab_zone {
+        width = fill, height = 88, fill = #FFFFFF
+        layout = vertical, justify = end, align = center, padding = [0, 0, 16, 0]
+        use sh_floating_tab_bar()
+    }
+
+    frame safe_bottom { width = fill, height = 34, fill = #FFFFFF
+        layout = horizontal, justify = center, align = center
+        shape ind { type = rectangle, width = 134, height = 5, radius = 999, fill = #1F2328 }
+    }
+}
+}
+
+
+component pg_tickets_board_framed() {
+    frame outer {
+        width = 1100, height = 1100, fill = #1F2328
+        padding = [60, 80], layout = horizontal, justify = center, align = center
+        use pg_tickets_board()
+    }
+}
+
+frame root { use pg_tickets_board_framed() }

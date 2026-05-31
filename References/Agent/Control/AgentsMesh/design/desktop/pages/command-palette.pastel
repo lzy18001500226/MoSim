@@ -1,0 +1,285 @@
+// CommandPalette — Cmd+K floating modal, cross-resource search.
+// Shown as an overlay on top of any page. Here rendered on a dimmed workspace.
+// Key: scope chips + grouped results + keyboard navigation hints at bottom.
+
+canvas "command_palette" {
+    width = 2000
+    height = 1120
+    background = #1F2328
+}
+
+component cp_nav_icon_active(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = #DDF4FF, stroke = [1, #0969DA]
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, weight = medium, color = #0969DA }
+    }
+}
+component cp_nav_icon(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = transparent
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, color = #656D76 }
+    }
+}
+component cp_section_divider() { shape { type = rectangle, width = 24, height = 1, fill = #D0D7DE } }
+
+// Result row — icon · title · subtitle · badge · shortcut
+component result(icon, title, subtitle, badge_text, badge_bg, badge_fg) {
+    frame {
+        width = fill, padding = [8, 14], radius = 6
+        layout = horizontal, gap = 12, align = center
+
+        text icon { size = 14 }
+        frame stack { width = fill, layout = vertical, gap = 1
+            text title    { size = 13, color = #1F2328 }
+            text subtitle { size = 11, color = #868F99, family = "JetBrains Mono" }
+        }
+        frame badge { padding = [1, 8], radius = 999, fill = badge_bg
+            text badge_text { size = 10, weight = medium, color = badge_fg, family = "JetBrains Mono" }
+        }
+    }
+}
+component result_active(icon, title, subtitle, badge_text, badge_bg, badge_fg) {
+    frame {
+        width = fill, padding = [8, 14], radius = 6, fill = #DDF4FF
+        layout = horizontal, gap = 12, align = center
+
+        text icon { size = 14 }
+        frame stack { width = fill, layout = vertical, gap = 1
+            text title    { size = 13, weight = semibold, color = #0550AE }
+            text subtitle { size = 11, color = #0969DA, family = "JetBrains Mono" }
+        }
+        frame badge { padding = [1, 8], radius = 999, fill = badge_bg
+            text badge_text { size = 10, weight = medium, color = badge_fg, family = "JetBrains Mono" }
+        }
+        text "⏎" { size = 13, color = #0550AE, family = "JetBrains Mono" }
+    }
+}
+
+component cp_group_label(label) {
+    frame {
+        width = fill, padding = [8, 16, 4, 16]
+        text label { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+    }
+}
+
+component pg_command_palette() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width = 1920, height = 1040, fill = #F6F8FA
+
+    // Dimmed page underneath (representational — normally the real shell shows through)
+    frame app_dim {
+        width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+        frame body {
+            width = fill, height = fill, layout = horizontal
+
+            frame activity_bar {
+                width = 48, height = fill, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                layout = vertical, align = center, padding = [12, 6], gap = 6
+
+                frame org_switcher {
+                    width = 36, height = 36, radius = 8, fill = #0969DA
+                    layout = horizontal, justify = center, align = center
+                    text "D" { size = 16, weight = semibold, color = #FFFFFF }
+                }
+                frame gap_s { height = 12 }
+
+                use cp_nav_icon("▦")
+                use cp_nav_icon("#")
+                use cp_nav_icon_active(">_")
+                use cp_section_divider()
+                use cp_nav_icon("🎫")
+                use cp_nav_icon("↻")
+                use cp_nav_icon("⚘")
+
+                frame spacer { height = fill }
+                use cp_nav_icon("⌘")
+                use cp_nav_icon("?")
+                use cp_nav_icon("⚙")
+                use cp_nav_icon("👤")
+            }
+
+            // Placeholder main (ghosted to hint there's content underneath)
+            frame main_placeholder {
+                width = fill, height = fill, fill = #FAFBFC
+            }
+        }
+    }
+
+    // Overlay — dimming layer
+    frame overlay {
+        position = absolute, top = 0, left = 0
+        width = 1920, height = 1040
+        fill = #00000066
+    }
+
+    // Command palette modal
+    frame palette {
+        position = absolute, top = 140, left = 560
+        width = 800, radius = 12
+        fill = #FFFFFF
+        stroke = [1, #D0D7DE]
+        shadow = [0, 10, 40, #00000033]
+        layout = vertical
+
+        // Search input
+        frame search_bar {
+            width = fill, padding = 16
+            layout = horizontal, align = center, gap = 12
+
+            text "🔍" { size = 18, color = #868F99 }
+            text "codex"    { size = 18, color = #1F2328 }
+            frame cursor { width = 2, height = 20, fill = #0969DA }
+            frame spacer { width = fill }
+            frame esc_chip {
+                padding = [2, 8], radius = 4, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                text "ESC" { size = 10, color = #656D76, family = "JetBrains Mono" }
+            }
+        }
+
+        // Scope filter chips
+        frame scope_chips {
+            width = fill, padding = [0, 16, 12, 16]
+            layout = horizontal, gap = 6, align = center
+
+            frame chip_all {
+                padding = [3, 10], radius = 999, fill = #0969DA
+                text "All" { size = 11, weight = medium, color = #FFFFFF }
+            }
+            frame chip_pod {
+                padding = [3, 10], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = horizontal, gap = 5, align = center
+                text ">_"   { size = 10, color = #656D76, family = "JetBrains Mono" }
+                text "Pods" { size = 11, color = #656D76 }
+            }
+            frame chip_ticket {
+                padding = [3, 10], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = horizontal, gap = 5, align = center
+                text "🎫"      { size = 10 }
+                text "Tickets" { size = 11, color = #656D76 }
+            }
+            frame chip_channel {
+                padding = [3, 10], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = horizontal, gap = 5, align = center
+                text "#"         { size = 10, weight = semibold, color = #656D76, family = "JetBrains Mono" }
+                text "Channels"  { size = 11, color = #656D76 }
+            }
+            frame chip_loop {
+                padding = [3, 10], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = horizontal, gap = 5, align = center
+                text "↻"      { size = 10, color = #656D76 }
+                text "Loops"  { size = 11, color = #656D76 }
+            }
+            frame chip_runner {
+                padding = [3, 10], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = horizontal, gap = 5, align = center
+                text "🖥"       { size = 10 }
+                text "Runners"  { size = 11, color = #656D76 }
+            }
+            frame chip_action {
+                padding = [3, 10], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = horizontal, gap = 5, align = center
+                text "⚡"       { size = 10 }
+                text "Actions" { size = 11, color = #656D76 }
+            }
+        }
+
+        shape divider1 { type = rectangle, width = 800, height = 1, fill = #E4E9EE }
+
+        // Results
+        frame results_area {
+            width = fill, padding = [8, 8], layout = vertical, gap = 0
+
+            use cp_group_label("Pods · 3")
+            use result_active(">_", "pod-def-456",
+                "codex · acp · DEV-2 · running · processing",
+                "OPEN", #FFF8C5, #9A6700)
+            use result(">_",   "pod-xxx-789",
+                "codex · pty · DEV-5 · running",
+                "OPEN", #F6F8FA, #656D76)
+            use result(">_",   "pod-yz-555 (initializing)",
+                "codex · acp · DEV-8 · starting",
+                "OPEN", #F6F8FA, #656D76)
+
+            use cp_group_label("Tickets · 2")
+            use result("🎫", "DEV-8  Wire refresh token rotation",
+                "backend · High priority · 2 pods linked",
+                "VIEW", #F6F8FA, #656D76)
+            use result("🎫", "API-5  Journey: Fix Codex agent crash",
+                "demo-api · Medium · 0 pods",
+                "VIEW", #F6F8FA, #656D76)
+
+            use cp_group_label("Channels · 1")
+            use result("#",  "codex-standup",
+                "2 pods · linked to DEV-5 · last msg 3m ago",
+                "JOIN", #F6F8FA, #656D76)
+
+            use cp_group_label("Actions · 2")
+            use result("⚡", "New Pod with codex · pty",
+                "Create a fresh Codex pod on runner-local",
+                "⌘N", #F6F8FA, #656D76)
+            use result("⚡", "Switch agent credentials for codex…",
+                "Settings · Personal · Credentials · codex",
+                "⌘,", #F6F8FA, #656D76)
+        }
+
+        shape divider2 { type = rectangle, width = 800, height = 1, fill = #E4E9EE }
+
+        // Footer shortcut hints
+        frame footer {
+            width = fill, padding = [10, 16]
+            layout = horizontal, justify = space-between, align = center
+
+            frame hints_left { layout = horizontal, gap = 16, align = center
+                frame h1 { layout = horizontal, gap = 4, align = center
+                    frame k { padding = [1, 6], radius = 3, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                        text "↑↓" { size = 10, color = #656D76, family = "JetBrains Mono" }
+                    }
+                    text "navigate" { size = 11, color = #868F99 }
+                }
+                frame h2 { layout = horizontal, gap = 4, align = center
+                    frame k { padding = [1, 6], radius = 3, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                        text "⏎" { size = 10, color = #656D76, family = "JetBrains Mono" }
+                    }
+                    text "select" { size = 11, color = #868F99 }
+                }
+                frame h3 { layout = horizontal, gap = 4, align = center
+                    frame k { padding = [1, 6], radius = 3, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                        text "⌘⏎" { size = 10, color = #656D76, family = "JetBrains Mono" }
+                    }
+                    text "open in new pane" { size = 11, color = #868F99 }
+                }
+                frame h4 { layout = horizontal, gap = 4, align = center
+                    frame k { padding = [1, 6], radius = 3, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                        text "TAB" { size = 10, color = #656D76, family = "JetBrains Mono" }
+                    }
+                    text "cycle scopes" { size = 11, color = #868F99 }
+                }
+            }
+
+            text "7 results in 12ms" { size = 11, color = #868F99, family = "JetBrains Mono" }
+        }
+    }
+}
+}
+
+
+component pg_command_palette_framed() {
+    frame outer {
+        width = 2000
+        height = 1120
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_command_palette()
+    }
+}
+
+frame root {
+    use pg_command_palette_framed()
+}

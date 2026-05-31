@@ -1,0 +1,56 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "codex",
+    srcs = [
+        "handler.go",
+        "home.go",
+        "input_adapter.go",
+        "parser.go",
+        "register.go",
+        "transport.go",
+        "transport_internal.go",
+        "types.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/runner/internal/agents/codex",
+    visibility = ["//runner:__subpackages__"],
+    deps = [
+        "//runner/internal/acp",
+        "//runner/internal/agentkit",
+        "//runner/internal/logger",
+        "//runner/internal/tokenusage",
+        "@com_github_pelletier_go_toml_v2//:go-toml",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":codex",
+    visibility = ["//runner:__subpackages__"],
+)
+
+go_test(
+    name = "codex_test",
+    srcs = [
+        "codex_coverage_test.go",
+        "coverage_test.go",
+        "handler_coverage_test.go",
+        "handler_test.go",
+        "helper_test.go",
+        "home_test.go",
+        "input_adapter_test.go",
+        "integration_test.go",
+        "parser_fixtures_test.go",
+        "parser_test.go",
+        "transport_coverage_test.go",
+        "transport_test.go",
+    ],
+    embed = [":codex"],
+    deps = [
+        "//runner/internal/acp",
+        "//runner/internal/agents/codex/testsupport",
+        "//runner/internal/tokenusage",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)

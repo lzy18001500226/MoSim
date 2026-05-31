@@ -1,0 +1,25 @@
+# =============================================================================
+# Traefik Static Configuration
+# =============================================================================
+
+api:
+  dashboard: false
+  insecure: false
+
+entryPoints:
+  web:
+    address: ":80"
+  grpc:
+    address: ":9443"
+
+providers:
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+log:
+  level: INFO
+  format: json
+
+accessLog:
+  format: json

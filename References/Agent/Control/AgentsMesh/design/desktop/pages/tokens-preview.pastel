@@ -1,0 +1,277 @@
+// Visual preview of all design tokens — color palette + spacing + radius
+// + typography + shadow, in both Light and Dark modes.
+//
+// Render: pastel build design/desktop/pages/tokens-preview.pastel -o design/out/tokens.png
+
+canvas "tokens" {
+    width = 1480
+    height = 1680
+    background = #1F2328
+}
+
+token light {
+    background       = #FFFFFF
+    card             = #FFFFFF
+    muted            = #F6F8FA
+    subtle           = #F0F3F6
+    foreground       = #1F2328
+    muted_foreground = #656D76
+    primary          = #0969DA
+    primary_hover    = #0860C8
+    accent           = #DDF4FF
+    success          = #1A7F37
+    warning          = #9A6700
+    danger           = #CF222E
+    border           = #D0D7DE
+    border_strong    = #AFB8C1
+}
+
+token dark {
+    background       = #0D1117
+    card             = #161B22
+    muted            = #161B22
+    subtle           = #1C2128
+    foreground       = #C9D1D9
+    muted_foreground = #8B949E
+    primary          = #2F81F7
+    primary_hover    = #4493F8
+    accent           = #1F2937
+    success          = #3FB950
+    warning          = #D29922
+    danger           = #F85149
+    border           = #30363D
+    border_strong    = #484F58
+}
+
+component swatch(name, value, label_color) {
+    frame {
+        width   = 180
+        height  = 80
+        radius  = 6
+        fill    = value
+        stroke  = [1, #D0D7DE]
+        layout  = vertical
+        justify = end
+        padding = [8, 12]
+
+        text name  { size = 13, weight = semibold, color = label_color }
+        text value { size = 11, weight = normal,   color = label_color, family = "JetBrains Mono" }
+    }
+}
+
+component section_title(title) {
+    text title {
+        size   = 20
+        weight = semibold
+        color  = #1F2328
+    }
+}
+
+// === Root layout ===
+component pg_tokens_preview() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width   = 1400
+    height  = 1600
+    fill    = #FFFFFF
+    padding = 32
+    layout  = vertical
+    gap     = 32
+
+    // Header
+    frame header {
+        width  = fill
+        layout = vertical
+        gap    = 4
+
+        text "AgentsMesh Design Tokens" { size = 28, weight = semibold, color = #1F2328 }
+        text "Notion + GitHub hybrid — warm neutrals, contained primary, clear borders."
+            { size = 14, color = #656D76 }
+    }
+
+    // === Light colors ===
+    use section_title("Colors — Light")
+    frame light_row1 {
+        width  = fill
+        layout = horizontal
+        gap    = 12
+
+        use swatch("background",  #FFFFFF, #1F2328)
+        use swatch("card",        #FFFFFF, #1F2328)
+        use swatch("muted",       #F6F8FA, #1F2328)
+        use swatch("subtle",      #F0F3F6, #1F2328)
+        use swatch("foreground",  #1F2328, #FFFFFF)
+        use swatch("muted-fg",    #656D76, #FFFFFF)
+        use swatch("border",      #D0D7DE, #1F2328)
+    }
+    frame light_row2 {
+        width  = fill
+        layout = horizontal
+        gap    = 12
+
+        use swatch("primary",     #0969DA, #FFFFFF)
+        use swatch("primary-hover", #0860C8, #FFFFFF)
+        use swatch("accent",      #DDF4FF, #0550AE)
+        use swatch("success",     #1A7F37, #FFFFFF)
+        use swatch("warning",     #9A6700, #FFFFFF)
+        use swatch("danger",      #CF222E, #FFFFFF)
+        use swatch("info",        #0969DA, #FFFFFF)
+    }
+
+    // === Dark colors ===
+    use section_title("Colors — Dark")
+    frame dark_row_wrap {
+        width   = fill
+        padding = 16
+        fill    = #0D1117
+        radius  = 8
+        layout  = vertical
+        gap     = 12
+
+        frame dark_row1 {
+            width  = fill
+            layout = horizontal
+            gap    = 12
+
+            use swatch("background",  #0D1117, #C9D1D9)
+            use swatch("card",        #161B22, #C9D1D9)
+            use swatch("muted",       #161B22, #C9D1D9)
+            use swatch("subtle",      #1C2128, #C9D1D9)
+            use swatch("foreground",  #C9D1D9, #0D1117)
+            use swatch("muted-fg",    #8B949E, #0D1117)
+            use swatch("border",      #30363D, #C9D1D9)
+        }
+        frame dark_row2 {
+            width  = fill
+            layout = horizontal
+            gap    = 12
+
+            use swatch("primary",     #2F81F7, #FFFFFF)
+            use swatch("primary-hover", #4493F8, #FFFFFF)
+            use swatch("accent",      #1F2937, #58A6FF)
+            use swatch("success",     #3FB950, #FFFFFF)
+            use swatch("warning",     #D29922, #FFFFFF)
+            use swatch("danger",      #F85149, #FFFFFF)
+            use swatch("info",        #58A6FF, #FFFFFF)
+        }
+    }
+
+    // === Spacing ===
+    use section_title("Spacing")
+    frame spacing_row {
+        width  = fill
+        layout = horizontal
+        gap    = 24
+        align  = end
+
+        frame s_xs  { width = 4,  height = 24, fill = #0969DA, radius = 2 }
+        frame s_sm  { width = 8,  height = 32, fill = #0969DA, radius = 2 }
+        frame s_md  { width = 12, height = 40, fill = #0969DA, radius = 2 }
+        frame s_lg  { width = 16, height = 48, fill = #0969DA, radius = 2 }
+        frame s_xl  { width = 24, height = 56, fill = #0969DA, radius = 2 }
+        frame s_2xl { width = 32, height = 64, fill = #0969DA, radius = 2 }
+        frame s_3xl { width = 48, height = 72, fill = #0969DA, radius = 2 }
+    }
+    frame spacing_labels {
+        width  = fill
+        layout = horizontal
+        gap    = 24
+
+        text "4 xs"   { size = 12, color = #656D76 }
+        text "8 sm"   { size = 12, color = #656D76 }
+        text "12 md"  { size = 12, color = #656D76 }
+        text "16 lg"  { size = 12, color = #656D76 }
+        text "24 xl"  { size = 12, color = #656D76 }
+        text "32 2xl" { size = 12, color = #656D76 }
+        text "48 3xl" { size = 12, color = #656D76 }
+    }
+
+    // === Radius ===
+    use section_title("Radius")
+    frame radius_row {
+        width  = fill
+        layout = horizontal
+        gap    = 24
+
+        frame r_none { width = 72, height = 72, fill = #DDF4FF, radius = 0,   stroke = [1, #0969DA] }
+        frame r_sm   { width = 72, height = 72, fill = #DDF4FF, radius = 4,   stroke = [1, #0969DA] }
+        frame r_md   { width = 72, height = 72, fill = #DDF4FF, radius = 6,   stroke = [1, #0969DA] }
+        frame r_lg   { width = 72, height = 72, fill = #DDF4FF, radius = 8,   stroke = [1, #0969DA] }
+        frame r_full { width = 72, height = 72, fill = #DDF4FF, radius = 999, stroke = [1, #0969DA] }
+    }
+    frame radius_labels {
+        width  = fill
+        layout = horizontal
+        gap    = 24
+
+        text "0 none" { size = 12, color = #656D76, width = 72, align = center }
+        text "4 sm"   { size = 12, color = #656D76, width = 72, align = center }
+        text "6 md"   { size = 12, color = #656D76, width = 72, align = center }
+        text "8 lg"   { size = 12, color = #656D76, width = 72, align = center }
+        text "999"    { size = 12, color = #656D76, width = 72, align = center }
+    }
+
+    // === Typography ===
+    use section_title("Typography")
+    frame type_stack {
+        width  = fill
+        layout = vertical
+        gap    = 8
+
+        text "20 / semibold — Page title"     { size = 20, weight = semibold, color = #1F2328 }
+        text "16 / semibold — Section title"  { size = 16, weight = semibold, color = #1F2328 }
+        text "14 / medium — Label"            { size = 14, weight = medium,   color = #1F2328 }
+        text "14 / normal — Body"             { size = 14, weight = normal,   color = #1F2328 }
+        text "13 / normal — Small"            { size = 13, weight = normal,   color = #656D76 }
+        text "12 / normal — Caption"          { size = 12, weight = normal,   color = #656D76 }
+    }
+
+    // === Shadows ===
+    use section_title("Shadows")
+    frame shadow_row {
+        width   = fill
+        layout  = horizontal
+        gap     = 32
+        padding = [16, 0]
+
+        frame sh_xs {
+            width = 160, height = 80, fill = #FFFFFF, radius = 8
+            shadow = [0, 1, 2, #0000000D]
+            layout = vertical, justify = center, align = center
+            text "shadow-xs" { size = 13, color = #656D76 }
+        }
+        frame sh_sm {
+            width = 160, height = 80, fill = #FFFFFF, radius = 8
+            shadow = [0, 2, 4, #00000014]
+            layout = vertical, justify = center, align = center
+            text "shadow-sm" { size = 13, color = #656D76 }
+        }
+        frame sh_md {
+            width = 160, height = 80, fill = #FFFFFF, radius = 8
+            shadow = [0, 4, 8, #0000001F]
+            layout = vertical, justify = center, align = center
+            text "shadow-md" { size = 13, color = #656D76 }
+        }
+    }
+}
+}
+
+
+component pg_tokens_preview_framed() {
+    frame outer {
+        width = 1480
+        height = 1680
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_tokens_preview()
+    }
+}
+
+frame root {
+    use pg_tokens_preview_framed()
+}

@@ -1,0 +1,348 @@
+// Settings — Personal scope (Profile sub-page as example).
+// Mirror of settings-org, but:
+//   · Top tabs show Personal as active
+//   · Sidebar shows Personal menu items (not Org)
+//   · Personal settings live under /settings, not tied to a specific org
+
+canvas "settings_personal" {
+    width = 2000
+    height = 1160
+    background = #1F2328
+}
+
+component sp_nav_icon_active(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = #DDF4FF, stroke = [1, #0969DA]
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, weight = medium, color = #0969DA }
+    }
+}
+component sp_nav_icon(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = transparent
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, color = #656D76 }
+    }
+}
+component sp_section_divider() { shape { type = rectangle, width = 24, height = 1, fill = #D0D7DE } }
+
+component sp_nav_row(icon, label, meta) {
+    frame {
+        width = fill, padding = [7, 12], radius = 6
+        layout = horizontal, align = center, gap = 10
+
+        text icon  { size = 13, color = #656D76 }
+        text label { size = 13, color = #1F2328, width = 180 }
+        text meta  { size = 11, color = #868F99 }
+    }
+}
+component sp_nav_row_active(icon, label, meta) {
+    frame {
+        width = fill, padding = [7, 12], radius = 6, fill = #E4E9EE
+        layout = horizontal, align = center, gap = 10
+
+        text icon  { size = 13, color = #1F2328 }
+        text label { size = 13, weight = medium, color = #1F2328, width = 180 }
+        text meta  { size = 11, color = #656D76 }
+    }
+}
+
+component pg_settings_personal() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width = 1920, height = 1080, fill = #F6F8FA
+
+    frame app {
+        width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+        frame body {
+            width = fill, height = fill, layout = horizontal
+
+            // --- ActivityBar ---
+            frame activity_bar {
+                width = 48, height = fill, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                layout = vertical, align = center, padding = [12, 6], gap = 6
+
+                frame org_switcher {
+                    width = 36, height = 36, radius = 8, fill = #0969DA
+                    layout = horizontal, justify = center, align = center
+                    text "D" { size = 16, weight = semibold, color = #FFFFFF }
+                }
+                frame gap_s { height = 12 }
+
+                use sp_nav_icon("▦")
+                use sp_nav_icon("#")
+                use sp_nav_icon(">_")
+                use sp_section_divider()
+                use sp_nav_icon("🎫")
+                use sp_nav_icon("↻")
+                use sp_nav_icon("⚘")
+
+                frame spacer { height = fill }
+                use sp_nav_icon("⌘")
+                use sp_nav_icon("?")
+                use sp_nav_icon_active("⚙")
+                use sp_nav_icon("👤")
+            }
+
+            // --- Settings sidebar ---
+            frame sidebar {
+                width = 280, height = fill, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = vertical
+
+                // Personal / Organization tabs
+                frame scope_tabs {
+                    width = fill, padding = 12
+                    layout = horizontal, gap = 0
+                    stroke = [1, #D0D7DE]
+
+                    frame tab_personal {
+                        width = fill, padding = [8, 0], radius = 6, fill = #FFFFFF
+                        stroke = [1, #D0D7DE]
+                        layout = horizontal, justify = center, align = center, gap = 6
+
+                        text "👤" { size = 12, color = #0969DA }
+                        text "Personal" { size = 13, weight = semibold, color = #1F2328 }
+                    }
+                    frame tab_org {
+                        width = fill, padding = [8, 0], radius = 6
+                        layout = horizontal, justify = center, align = center, gap = 6
+
+                        text "🏢" { size = 12, color = #656D76 }
+                        text "Organization" { size = 13, color = #656D76 }
+                    }
+                }
+
+                frame nav_list {
+                    width = fill, padding = [16, 12], layout = vertical, gap = 6
+
+                    use sp_nav_row_active("👤", "Profile",       "")
+                    use sp_nav_row("🔑", "Credentials", "2")
+                    use sp_nav_row("🔔", "Notifications", "")
+                    use sp_nav_row("🎨", "Appearance",    "dark")
+                    use sp_nav_row("⌘",  "Shortcuts",     "")
+
+                    frame gap1 { height = 8 }
+
+                    use sp_nav_row("⚠", "Danger zone", "")
+                }
+
+                frame spacer { height = fill }
+
+                // Currently-signed-in user chip
+                frame user_chip {
+                    width = fill, padding = 12, stroke = [1, #D0D7DE]
+                    layout = horizontal, align = center, gap = 10
+
+                    frame avatar {
+                        width = 32, height = 32, radius = 999, fill = #0969DA
+                        layout = horizontal, justify = center, align = center
+                        text "D" { size = 13, weight = semibold, color = #FFFFFF }
+                    }
+                    frame stack { layout = vertical, gap = 1
+                        text "Dev User"      { size = 12, weight = medium, color = #1F2328 }
+                        text "dev@example.com" { size = 11, color = #868F99, family = "JetBrains Mono" }
+                    }
+                }
+            }
+
+            // --- Main: Profile form ---
+            frame main {
+                width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+                frame page_header {
+                    width = fill, padding = [14, 32]
+                    stroke = [1, #E4E9EE]
+                    layout = horizontal, justify = space-between, align = center
+
+                    text "Profile" { size = 18, weight = semibold, color = #1F2328 }
+
+                    frame btn_save {
+                        height = 30, padding = [0, 14], radius = 6, fill = #0969DA
+                        layout = horizontal, justify = center, align = center
+                        text "Save changes" { size = 13, weight = medium, color = #FFFFFF }
+                    }
+                }
+
+                frame content {
+                    width = fill, height = fill, padding = [24, 32]
+                    layout = vertical, gap = 24
+
+                    // --- Identity card ---
+                    frame card_identity {
+                        width = 860, padding = 20, radius = 10
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = vertical, gap = 16
+
+                        text "Identity" { size = 14, weight = semibold, color = #1F2328 }
+
+                        // Avatar row
+                        frame avatar_row {
+                            width = fill, layout = horizontal, gap = 20, align = center
+
+                            frame avatar_big {
+                                width = 72, height = 72, radius = 999, fill = #0969DA
+                                layout = horizontal, justify = center, align = center
+                                text "D" { size = 28, weight = semibold, color = #FFFFFF }
+                            }
+
+                            frame actions { layout = vertical, gap = 4
+                                frame btn_upload {
+                                    height = 30, padding = [0, 12], radius = 6
+                                    fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                    layout = horizontal, justify = center, align = center
+                                    text "Upload new avatar" { size = 13, color = #1F2328 }
+                                }
+                                text "PNG or JPG, max 2 MB · or use generated initial" { size = 11, color = #868F99 }
+                            }
+                        }
+
+                        shape hr { type = rectangle, width = 820, height = 1, fill = #E4E9EE }
+
+                        // Name + Username side-by-side
+                        frame row1 {
+                            width = fill, layout = horizontal, gap = 16
+
+                            frame field {
+                                width = fill, layout = vertical, gap = 6
+                                text "Name" { size = 13, weight = medium, color = #1F2328 }
+                                frame input {
+                                    width = fill, height = 34, padding = [0, 12], radius = 6
+                                    fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                    layout = horizontal, align = center
+                                    text "Dev User" { size = 13, color = #1F2328 }
+                                }
+                            }
+                            frame field {
+                                width = fill, layout = vertical, gap = 6
+                                text "Username" { size = 13, weight = medium, color = #1F2328 }
+                                frame input {
+                                    width = fill, height = 34, padding = [0, 12], radius = 6
+                                    fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                    layout = horizontal, align = center
+                                    text "devuser" { size = 13, color = #1F2328, family = "JetBrains Mono" }
+                                }
+                                text "Used in mentions and @-notifications" { size = 11, color = #868F99 }
+                            }
+                        }
+
+                        // Email (read-only for SSO, editable for email/pw users)
+                        frame field_email {
+                            width = fill, layout = vertical, gap = 6
+                            text "Email" { size = 13, weight = medium, color = #1F2328 }
+                            frame input {
+                                width = fill, height = 34, padding = [0, 12], radius = 6
+                                fill = #F6F8FA, stroke = [1, #D0D7DE]
+                                layout = horizontal, align = center, justify = space-between
+                                text "dev@example.com" { size = 13, color = #1F2328, family = "JetBrains Mono" }
+                                frame badge { padding = [1, 8], radius = 999, fill = #DAFBE1
+                                    text "✓ verified" { size = 10, weight = medium, color = #1A7F37 }
+                                }
+                            }
+                            text "Change email requires re-verification" { size = 11, color = #868F99 }
+                        }
+                    }
+
+                    // --- Account card ---
+                    frame card_account {
+                        width = 860, padding = 20, radius = 10
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = vertical, gap = 16
+
+                        text "Account" { size = 14, weight = semibold, color = #1F2328 }
+
+                        frame row_pw {
+                            width = fill, layout = horizontal, justify = space-between, align = center
+
+                            frame left { layout = vertical, gap = 2
+                                text "Password"                          { size = 13, weight = medium, color = #1F2328 }
+                                text "Last changed 4 months ago"         { size = 11, color = #868F99 }
+                            }
+                            frame btn {
+                                height = 30, padding = [0, 12], radius = 6
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = horizontal, justify = center, align = center
+                                text "Change password" { size = 13, color = #1F2328 }
+                            }
+                        }
+
+                        shape hr { type = rectangle, width = 820, height = 1, fill = #E4E9EE }
+
+                        frame row_2fa {
+                            width = fill, layout = horizontal, justify = space-between, align = center
+
+                            frame left { layout = vertical, gap = 2
+                                text "Two-factor authentication"          { size = 13, weight = medium, color = #1F2328 }
+                                text "Not enabled"                         { size = 11, color = #868F99 }
+                            }
+                            frame btn {
+                                height = 30, padding = [0, 12], radius = 6, fill = #0969DA
+                                layout = horizontal, justify = center, align = center
+                                text "Enable 2FA" { size = 13, weight = medium, color = #FFFFFF }
+                            }
+                        }
+
+                        shape hr { type = rectangle, width = 820, height = 1, fill = #E4E9EE }
+
+                        frame row_sessions {
+                            width = fill, layout = horizontal, justify = space-between, align = center
+
+                            frame left { layout = vertical, gap = 2
+                                text "Active sessions"                     { size = 13, weight = medium, color = #1F2328 }
+                                text "3 devices · 1 on macOS (this) · 2 on Electron" { size = 11, color = #868F99 }
+                            }
+                            frame btn {
+                                height = 30, padding = [0, 12], radius = 6
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = horizontal, justify = center, align = center
+                                text "Manage" { size = 13, color = #1F2328 }
+                            }
+                        }
+                    }
+
+                    // --- Danger zone card ---
+                    frame card_danger {
+                        width = 860, padding = 20, radius = 10
+                        fill = #FFFFFF, stroke = [1, #CF222E]
+                        layout = vertical, gap = 12
+
+                        text "Danger zone" { size = 14, weight = semibold, color = #CF222E }
+
+                        frame row {
+                            width = fill, layout = horizontal, justify = space-between, align = center
+
+                            frame left { layout = vertical, gap = 2, width = 600
+                                text "Delete your account"                 { size = 13, weight = medium, color = #1F2328 }
+                                text "All organizations you own will be deleted too. Organizations you're just a member of will keep running." { size = 11, color = #656D76, wrap = true, width = 580, line-height = 16 }
+                            }
+                            frame btn {
+                                height = 30, padding = [0, 12], radius = 6, fill = #CF222E
+                                layout = horizontal, justify = center, align = center
+                                text "Delete account" { size = 13, weight = medium, color = #FFFFFF }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+}
+
+
+component pg_settings_personal_framed() {
+    frame outer {
+        width = 2000
+        height = 1160
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_settings_personal()
+    }
+}
+
+frame root {
+    use pg_settings_personal_framed()
+}

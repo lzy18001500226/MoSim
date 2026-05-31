@@ -1,0 +1,38 @@
+load("//build_defs/web:internal_package.bzl", "internal_npm_package")
+load("//build_defs/web:ts.bzl", "ts_project")
+
+# Electron adapter — thin glue that lets the desktop renderer talk to
+# the N-API addon via typed IPC. Consumed by clients/desktop.
+#
+# `:electron_adapter` is the ts_project type-check gate. It depends on
+# `//:node_modules` for `@agentsmesh/service-interface` types via the
+# Bazel-managed link. To avoid a cycle (`@agentsmesh/electron-adapter`
+# → :pkg → :electron_adapter → //:node_modules → @agentsmesh/electron-adapter),
+# the gate is NOT shipped through :pkg — :pkg only ships raw .ts which
+# Next.js/vite compile themselves.
+ts_project(
+    name = "electron_adapter",
+    srcs = glob(
+        ["src/**/*.ts"],
+        exclude = ["src/**/*.test.ts"],
+    ),
+    declaration = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:node_modules/@agentsmesh/service-interface",
+    ],
+)
+
+internal_npm_package(
+    name = "pkg",
+    package_name = "@agentsmesh/electron-adapter",
+    srcs = glob(
+        ["src/**/*.ts"],
+        exclude = ["src/**/*.test.ts"],
+    ),
+    dependencies = {
+        "@agentsmesh/service-interface": "*",
+    },
+    main = "src/index.ts",
+)

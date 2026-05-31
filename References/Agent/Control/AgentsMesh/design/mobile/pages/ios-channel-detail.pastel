@@ -1,0 +1,462 @@
+// iOS Channel detail — extended message catalog covering common Lark patterns.
+// Phone frame height extended to show ~12 message variants in one scroll view.
+
+asset back_blue = image("../assets/lucide-png/back-0969DA.png")
+asset more_blue = image("../assets/lucide-png/ellipsis-0969DA.png")
+
+canvas "ios_channel_detail" {
+    width = 1100
+    height = 1700
+    background = #1F2328
+}
+
+component sh_status_bar() {
+    frame {
+        width = fill, height = 59, fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center, padding = [0, 22]
+        text "9:41" { size = 17, weight = semibold, color = #1F2328, family = "SF Pro" }
+        frame icons { layout = horizontal, gap = 6, align = center
+            text "📶" { size = 14 } text "📡" { size = 14 }
+            frame battery { width = 28, height = 13, radius = 4, stroke = [1, #1F2328], padding = 2,
+                layout = horizontal, align = center
+                shape level { type = rectangle, width = 20, height = 7, radius = 1, fill = #1F2328 }
+            }
+        }
+    }
+}
+
+component sh_nav_push() {
+    frame {
+        width = fill, height = 56, fill = #FFFFFFE6
+        padding = [0, 8], layout = horizontal, justify = space-between, align = center
+
+        frame back {
+            layout = horizontal, gap = 4, align = center
+            frame back_btn { width = 32, height = 44, layout = horizontal, justify = center, align = center
+                image back_blue { width = 24, height = 24 }
+            }
+            frame unread_count {
+                padding = [2, 8], radius = 999, fill = #F2F2F7
+                layout = horizontal, justify = center, align = center
+                text "3" { size = 13, weight = medium, color = #1F2328 }
+            }
+        }
+        frame title_block { layout = vertical, gap = 0, align = center
+            frame row1 { layout = horizontal, gap = 4, align = baseline
+                text "auth-review" { size = 17, weight = semibold, color = #1F2328 }
+                text "▶" { size = 11, color = #8E8E93 }
+            }
+            text "3 pods · 2 members" { size = 12, color = #8E8E93 }
+        }
+        frame actions { layout = horizontal, gap = 0, align = center
+            frame video_btn { width = 36, height = 44, layout = horizontal, justify = center, align = center
+                text "📹" { size = 18 }
+            }
+            frame more_btn { width = 36, height = 44, layout = horizontal, justify = center, align = center
+                image more_blue { width = 22, height = 22 }
+            }
+        }
+    }
+}
+
+component tab_active(label) {
+    frame { padding = [4, 12], radius = 999, fill = #DDF4FF
+        layout = horizontal, gap = 4, align = center
+        text "💬" { size = 12 }
+        text label { size = 13, weight = medium, color = #0550AE }
+    }
+}
+component tab_inactive(emoji, label) {
+    frame { padding = [4, 12]
+        layout = horizontal, gap = 4, align = center
+        text emoji { size = 12 }
+        text label { size = 13, color = #1F2328 }
+    }
+}
+component sh_top_tabs() {
+    frame {
+        width = fill, height = 40, fill = #FFFFFFE6
+        padding = [4, 16], layout = horizontal, gap = 4, align = center
+        use tab_active("Messages")
+        use tab_inactive("📊", "Docs")
+        use tab_inactive("📁", "Files")
+        use tab_inactive("📌", "Pin")
+        frame plus { padding = [4, 8], layout = horizontal, justify = center, align = center
+            text "+" { size = 16, weight = medium, color = #8E8E93 }
+        }
+    }
+}
+
+component sh_pinned() {
+    frame {
+        width = fill, padding = [10, 16], fill = #FFFFFF
+        layout = horizontal, gap = 10, align = center
+
+        frame box {
+            width = fill, padding = [10, 12], radius = 12, fill = #F2F2F7
+            layout = horizontal, gap = 10, align = center
+
+            frame icon { width = 32, height = 32, radius = 999, fill = #FB923C
+                layout = horizontal, justify = center, align = center
+                text "📌" { size = 16 }
+            }
+            frame body { layout = vertical, gap = 2, width = 240
+                frame title_row { layout = horizontal, gap = 4, align = center
+                    text "Stone.D" { size = 13, weight = semibold, color = #1F2328 }
+                    text ":" { size = 13, color = #8E8E93 }
+                    text "📄 AgentsMesh Strategy & Roadmap" { size = 13, color = #1F2328, wrap = false }
+                }
+                text "Pinned by Stone.D" { size = 11, color = #8E8E93 }
+            }
+            text "✕" { size = 14, color = #8E8E93 }
+        }
+    }
+}
+
+// ── Avatars ─────────────────────────────────────────────────────────
+component av_user(letter, bg) {
+    frame {
+        width = 36, height = 36, radius = 999, fill = bg
+        layout = horizontal, justify = center, align = center
+        text letter { size = 15, weight = semibold, color = #FFFFFF }
+    }
+}
+component av_pod(letter, bg) {
+    frame {
+        width = 36, height = 36, radius = 8, fill = bg
+        layout = horizontal, justify = center, align = center
+        text letter { size = 15, weight = semibold, color = #FFFFFF, family = "SF Mono" }
+    }
+}
+
+// ── Group head — avatar TOP-aligned with sender name ───────────────
+component group_head_user(letter, av_bg, name) {
+    frame {
+        width = fill, padding = [12, 16, 2, 16]
+        layout = horizontal, gap = 10, align = start
+        use av_user(letter, av_bg)
+        frame name_wrap {
+            layout = vertical, padding = [8, 0, 0, 0]
+            text name { size = 13, weight = semibold, color = #1F2328 }
+        }
+    }
+}
+component group_head_pod(letter, av_bg, pod_key, agent) {
+    frame {
+        width = fill, padding = [12, 16, 2, 16]
+        layout = horizontal, gap = 8, align = start
+        use av_pod(letter, av_bg)
+        frame name_wrap {
+            layout = horizontal, gap = 6, padding = [8, 0, 0, 0], align = center
+            text pod_key { size = 13, weight = semibold, color = #1F2328, family = "SF Mono" }
+            frame badge { padding = [1, 6], radius = 4, fill = #F0F3F6
+                text agent { size = 10, weight = medium, color = #656D76, family = "SF Mono" }
+            }
+        }
+    }
+}
+
+// ── Bubble variants ────────────────────────────────────────────────
+
+// Each bubble component uses a UNIQUE frame name prefix to work around a
+// pastel bug where sibling components with identical inner frame names
+// (e.g. all using `frame wrap { frame b }`) corrupt each other's layout
+// and silently lose their fill. See memory: pastel_frame_name_collision.
+
+component bubble_text(content, fill_color) {
+    frame tx_wrap {
+        width = fill, padding = [2, 16, 4, 62]
+        layout = horizontal, align = start
+        frame tx_b {
+            width = 268, fill = fill_color, radius = 16, stroke = [1, #E4E9EE]
+            padding = [10, 14], layout = vertical
+            text content { size = 15, color = #1F2328, wrap = true, width = 240, line-height = 21 }
+        }
+    }
+}
+
+component bubble_mention(content_before, mention_text, content_after, fill_color) {
+    frame mn_wrap {
+        width = fill, padding = [2, 16, 4, 62]
+        layout = horizontal, align = start
+        frame mn_b {
+            width = 268, fill = fill_color, radius = 16, stroke = [1, #E4E9EE]
+            padding = [10, 14], layout = vertical, gap = 4
+            text content_before { size = 15, color = #1F2328, wrap = true, width = 240, line-height = 21 }
+            text mention_text { size = 15, weight = medium, color = #0969DA }
+            text content_after { size = 15, color = #1F2328, wrap = true, width = 240, line-height = 21 }
+        }
+    }
+}
+
+component bubble_quote(quote_who, quote_text, content, fill_color) {
+    frame qt_wrap {
+        width = fill, padding = [2, 16, 4, 62]
+        layout = horizontal, align = start
+        frame qt_b {
+            width = 268, fill = fill_color, radius = 16, stroke = [1, #E4E9EE]
+            padding = [10, 14], layout = vertical, gap = 8
+            frame qt_box {
+                width = fill, padding = [8, 10], radius = 6, fill = #FFFFFF
+                stroke = [1, #E4E9EE]
+                layout = vertical, gap = 2
+                frame qt_head { layout = horizontal, gap = 4, align = baseline
+                    text "|" { size = 12, color = #C7C7CC, weight = semibold }
+                    text quote_who { size = 12, weight = medium, color = #656D76 }
+                    text ":" { size = 12, color = #8E8E93 }
+                }
+                text quote_text { size = 12, color = #8E8E93, wrap = true, width = 220, line-height = 17 }
+            }
+            text content { size = 15, color = #1F2328, wrap = true, width = 240, line-height = 21 }
+        }
+    }
+}
+
+component bubble_code(intro, code, fill_color) {
+    frame cd_wrap {
+        width = fill, padding = [2, 16, 4, 62]
+        layout = horizontal, align = start
+        frame cd_b {
+            width = 268, fill = fill_color, radius = 16, stroke = [1, #E4E9EE]
+            padding = [10, 14], layout = vertical, gap = 8
+            text intro { size = 15, color = #1F2328 }
+            frame cd_box {
+                width = fill, padding = 10, radius = 8, fill = #161B22
+                text code { size = 11, color = #C9D1D9, family = "SF Mono", wrap = true, width = 220, line-height = 16 }
+            }
+        }
+    }
+}
+
+component bubble_tool(tool_name, tool_target) {
+    frame tl_wrap {
+        width = fill, padding = [2, 16, 4, 62]
+        layout = horizontal, align = start
+        frame tl_b {
+            width = 240, fill = #FFFFFF, stroke = [1, #D0D7DE], radius = 16
+            padding = [10, 14], layout = vertical, gap = 4
+            frame tl_head { layout = horizontal, gap = 6, align = center
+                text "🔧" { size = 13 }
+                text tool_name { size = 13, weight = medium, color = #0550AE, family = "SF Mono" }
+            }
+            text tool_target { size = 12, color = #8E8E93, family = "SF Mono" }
+        }
+    }
+}
+
+component bubble_file(filename, file_size, fill_color) {
+    frame fl_wrap {
+        width = fill, padding = [2, 16, 4, 62]
+        layout = horizontal, align = start
+        frame fl_b {
+            width = 244, fill = fill_color, radius = 16, stroke = [1, #E4E9EE]
+            padding = 12, layout = horizontal, gap = 10, align = center
+            frame fl_icon {
+                width = 36, height = 44, radius = 6, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                layout = vertical, justify = center, align = center, gap = 2
+                text "📄" { size = 18 }
+                text "MD" { size = 8, weight = semibold, color = #656D76, family = "SF Mono" }
+            }
+            frame fl_stack { layout = vertical, gap = 2, width = 162
+                text filename { size = 14, weight = medium, color = #1F2328, wrap = false }
+                text file_size { size = 12, color = #8E8E93 }
+            }
+        }
+    }
+}
+
+component bubble_link(intro, link_title, link_desc, fill_color) {
+    frame lk_wrap {
+        width = fill, padding = [2, 16, 4, 62]
+        layout = horizontal, align = start
+        frame lk_b {
+            width = 268, fill = fill_color, radius = 16, stroke = [1, #E4E9EE]
+            padding = [10, 14], layout = vertical, gap = 8
+            text intro { size = 15, color = #0969DA, wrap = true, width = 240 }
+            frame lk_card {
+                width = fill, padding = 10, radius = 8, fill = #FFFFFF, stroke = [1, #E4E9EE]
+                layout = vertical, gap = 4
+                text link_title { size = 13, weight = semibold, color = #1F2328 }
+                text link_desc { size = 11, color = #8E8E93, wrap = true, width = 220, line-height = 15 }
+                text "github.com" { size = 10, color = #8E8E93, family = "SF Mono" }
+            }
+        }
+    }
+}
+
+// Link preview bubble — text + card with title/desc
+// (defined above)
+
+// Reaction row — emoji + count chips below a bubble (indented under bubble)
+component reactions(r1_emoji, r1_count, r2_emoji, r2_count, r3_emoji, r3_count) {
+    frame {
+        width = fill, padding = [4, 16, 4, 62]
+        layout = horizontal, gap = 6, align = start
+
+        frame chip { padding = [2, 8], radius = 999, fill = #F2F2F7, stroke = [1, #E4E9EE]
+            layout = horizontal, gap = 4, align = center
+            text r1_emoji { size = 13 }
+            text r1_count { size = 12, weight = medium, color = #656D76 }
+        }
+        frame chip2 { padding = [2, 8], radius = 999, fill = #DDF4FF, stroke = [1, #0969DA]
+            layout = horizontal, gap = 4, align = center
+            text r2_emoji { size = 13 }
+            text r2_count { size = 12, weight = medium, color = #0550AE }
+        }
+        frame chip3 { padding = [2, 8], radius = 999, fill = #F2F2F7, stroke = [1, #E4E9EE]
+            layout = horizontal, gap = 4, align = center
+            text r3_emoji { size = 13 }
+            text r3_count { size = 12, weight = medium, color = #656D76 }
+        }
+    }
+}
+
+// Typing indicator
+component typing(name) {
+    frame {
+        width = fill, padding = [4, 16], layout = horizontal, gap = 6, align = center
+        text name { size = 12, color = #8E8E93 }
+        frame dots { layout = horizontal, gap = 3, align = center
+            frame d1 { width = 5, height = 5, radius = 999, fill = #B1B7BE }
+            frame d2 { width = 5, height = 5, radius = 999, fill = #B1B7BE }
+            frame d3 { width = 5, height = 5, radius = 999, fill = #B1B7BE }
+        }
+    }
+}
+
+component msg_system(t) {
+    frame { width = fill, padding = [10, 24]
+        layout = horizontal, justify = center, align = center
+        text t { size = 12, color = #8E8E93 }
+    }
+}
+component date_divider(t) {
+    frame { width = fill, padding = [12, 24]
+        layout = horizontal, justify = center, align = center
+        text t { size = 12, weight = medium, color = #8E8E93 }
+    }
+}
+
+component sh_composer() {
+    frame {
+        width = fill, fill = #FFFFFF, padding = [10, 16, 12, 16]
+        layout = vertical, gap = 12
+
+        // Input row — full-width pill, expand icon on the right (no inline send)
+        frame input_row {
+            width = fill, height = 40, padding = [0, 14], radius = 20
+            fill = #F2F2F7
+            layout = horizontal, justify = space-between, align = center
+            text "Send to #auth-review" { size = 15, color = #8E8E93 }
+            text "⤢" { size = 16, color = #8E8E93 }
+        }
+
+        // Toolbar — 6 evenly-spaced action icons + trailing send button (Lark layout)
+        frame toolbar {
+            width = fill, layout = horizontal, justify = space-between, align = center
+
+            frame tools {
+                layout = horizontal, gap = 4, align = center
+                frame t1 { width = 36, height = 36, layout = horizontal, justify = center, align = center
+                    text "😀" { size = 22 }
+                }
+                frame t2 { width = 36, height = 36, layout = horizontal, justify = center, align = center
+                    text "@" { size = 20, color = #1F2328 }
+                }
+                frame t3 { width = 36, height = 36, layout = horizontal, justify = center, align = center
+                    text "🖼" { size = 22 }
+                }
+                frame t4 { width = 36, height = 36, layout = horizontal, justify = center, align = center
+                    text "🎙" { size = 22 }
+                }
+                frame t5 { width = 36, height = 36, layout = horizontal, justify = center, align = center
+                    text "Aa" { size = 15, weight = semibold, color = #1F2328 }
+                }
+                frame t6 { width = 36, height = 36, layout = horizontal, justify = center, align = center
+                    text "+" { size = 24, color = #1F2328 }
+                }
+            }
+            frame send {
+                width = 36, height = 36, radius = 999, fill = #0969DA
+                layout = horizontal, justify = center, align = center
+                text "↑" { size = 17, weight = semibold, color = #FFFFFF }
+            }
+        }
+    }
+}
+
+component pg_channel_detail() {
+frame root {
+    width = 393, height = 1480, fill = #FFFFFF
+    radius = 47, stroke = [3, #1F2328]
+    layout = vertical
+
+    use sh_status_bar()
+    use sh_nav_push()
+
+    frame messages {
+        width = fill, fill = #F2F2F7
+        layout = vertical, gap = 0
+
+        use date_divider("Today, Apr 28")
+
+        // 1. User text bubble (self) — blue
+        use group_head_user("D", #0969DA, "Dev User")
+        use bubble_text("Have claude-code and codex collaborate on DEV-1.", #C2DBFF)
+
+        // 2. Pod group: text → tool call → code → text
+        use group_head_pod("C", #3FB950, "pod-abc-123", "claude-code")
+        use bubble_text("Starting review of src/auth.ts. Will call out the cookie weakness.", #FFFFFF)
+        use bubble_tool("read_file", "src/auth.ts (142 lines)")
+        use bubble_code("Found the issue here:",
+            "function signCookie(token) {\n  return token + random(64); // no HMAC\n}",
+            #FFFFFF)
+        use bubble_text("Recommend JWT + RS256 instead.", #FFFFFF)
+
+        use msg_system("pod-def-456 joined the channel · 10:07")
+
+        // 3. Pod with @mention
+        use group_head_pod("D", #58A6FF, "pod-def-456", "codex")
+        use bubble_mention("Got it — ", "@pod-abc-123", " I'll draft the migration in parallel.", #FFFFFF)
+
+        // 4. User reply with quote
+        use group_head_user("S", #9A6700, "Sam (ops)")
+        use bubble_quote("pod-def-456", "I'll draft the migration in parallel.",
+            "Sounds good. Make sure the rotation table has indexed (key_id, valid_from).", #C2DBFF)
+
+        // 5. File attachment
+        use group_head_pod("D", #58A6FF, "pod-def-456", "codex")
+        use bubble_file("000098_add_jwt_keys.sql", "2.4 KB · uploaded", #FFFFFF)
+
+        // 6. Link preview
+        use bubble_link("https://github.com/demo/api/pull/142",
+            "Auth: switch to JWT (RS256) — PR #142",
+            "Replaces session cookies with JWT. Adds /jwks.json and key rotation logic.",
+            #FFFFFF)
+
+        // 7. Reactions on the last bubble
+        use reactions("👍", "3", "🚀", "1", "👀", "2")
+
+        // 8. Typing indicator
+        use typing("pod-abc-123 is typing")
+    }
+
+    use sh_composer()
+
+    frame safe_bottom { width = fill, height = 34, fill = #FFFFFF
+        layout = horizontal, justify = center, align = center
+        shape ind { type = rectangle, width = 134, height = 5, radius = 999, fill = #1F2328 }
+    }
+}
+}
+
+
+component pg_channel_detail_framed() {
+    frame outer {
+        width = 1100, height = 1700, fill = #1F2328
+        padding = [60, 80], layout = horizontal, justify = center, align = center
+        use pg_channel_detail()
+    }
+}
+
+frame root { use pg_channel_detail_framed() }

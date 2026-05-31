@@ -1,0 +1,174 @@
+// OrgService — organization CRUD + member management.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/organizations*.go
+// per .claude/plans/proto-naming-conventions.md. Conventions enforced:
+//   * package proto.org.v1 + go_package suffix for dispatch
+//   * service name = <Domain>Service, methods PascalCase verbs
+//   * snake_case fields, no json_name annotations
+//   * timestamps as string ISO-8601 (no google.protobuf.Timestamp)
+//   * list response = {items, total, limit, offset} uniform envelope
+//   * create/update/get return entity directly (no {organization: ...} wrapper)
+//
+// Mixed-scope service: org_slug is the route key across the platform, so list-
+// my-orgs / create-org / create-personal-org are USER-scoped (no org_slug —
+// resolved from the auth interceptor), while get/update/delete and member
+// endpoints are ORG-scoped (org_slug as field 1, conventions §3.5).
+//
+// Field set reconciled against three layers (runbook §1.5):
+//   - backend domain/organization/organization.go (9 fields on Organization,
+//     including `role` populated by ListByUser)
+//   - clients/core/crates/types/src/auth.rs Organization (7 fields; created_at +
+//     updated_at missing — drift signal, included here for completeness)
+//   - clients/web/src/lib/api/organizationTypes.ts (9 fields; consumers read
+//     id/name/slug/role/logo_url/subscription_plan/subscription_status)
+//
+// Organization carries every field the backend emits today plus created_at /
+// updated_at (Rust DTO drift PRs would have re-opened otherwise).
+
+syntax = "proto3";
+
+package proto.org.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/org/v1;orgv1";
+
+service OrgService {
+  // User-scoped: returns the caller's organizations. Auth interceptor supplies
+  // the user ID; no org_slug needed.
+  rpc ListMyOrgs(ListMyOrgsRequest) returns (ListMyOrgsResponse);
+
+  // User-scoped: creates a new org owned by the caller.
+  rpc CreateOrg(CreateOrgRequest) returns (Organization);
+
+  // User-scoped: creates a personal workspace (slug derived from username).
+  rpc CreatePersonalOrg(CreatePersonalOrgRequest) returns (Organization);
+
+  // Org-scoped: read / update / delete a specific organization.
+  rpc GetOrg(GetOrgRequest) returns (Organization);
+  rpc UpdateOrg(UpdateOrgRequest) returns (Organization);
+  rpc DeleteOrg(DeleteOrgRequest) returns (DeleteOrgResponse);
+
+  // Org-scoped member management.
+  rpc ListMembers(ListMembersRequest) returns (ListMembersResponse);
+  rpc InviteMember(InviteMemberRequest) returns (InviteMemberResponse);
+  rpc RemoveMember(RemoveMemberRequest) returns (RemoveMemberResponse);
+  rpc UpdateMemberRole(UpdateMemberRoleRequest) returns (UpdateMemberRoleResponse);
+}
+
+message Organization {
+  int64 id = 1;
+  string name = 2;
+  string slug = 3;
+  optional string logo_url = 4;
+  // based / pro / enterprise — present on every org per backend default.
+  string subscription_plan = 5;
+  // trialing / active / past_due / canceled.
+  string subscription_status = 6;
+  // Populated by ListMyOrgs (raw SQL join). Absent on other endpoints.
+  optional string role = 7;
+  string created_at = 8;
+  string updated_at = 9;
+}
+
+message OrganizationMember {
+  int64 id = 1;
+  int64 organization_id = 2;
+  int64 user_id = 3;
+  // owner / admin / member.
+  string role = 4;
+  string joined_at = 5;
+  // Nested user info (joined via repo.ListMembersWithUser).
+  optional MemberUser user = 6;
+}
+
+message MemberUser {
+  int64 id = 1;
+  string email = 2;
+  string username = 3;
+  optional string name = 4;
+  optional string avatar_url = 5;
+}
+
+// --- User-scoped (no org_slug) ---
+
+message ListMyOrgsRequest {}
+
+message ListMyOrgsResponse {
+  repeated Organization items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message CreateOrgRequest {
+  string name = 1;
+  string slug = 2;
+  optional string logo_url = 3;
+}
+
+message CreatePersonalOrgRequest {}
+
+// --- Org-scoped ---
+
+message GetOrgRequest {
+  string org_slug = 1;
+}
+
+message UpdateOrgRequest {
+  string org_slug = 1;
+  optional string name = 2;
+  optional string logo_url = 3;
+}
+
+message DeleteOrgRequest {
+  string org_slug = 1;
+}
+
+message DeleteOrgResponse {
+  string message = 1;
+}
+
+message ListMembersRequest {
+  string org_slug = 1;
+  optional int32 offset = 2;
+  optional int32 limit = 3;
+}
+
+message ListMembersResponse {
+  repeated OrganizationMember items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+// Supports either email-based invite or direct user_id addition. The REST
+// handler accepts both at the same field-set level (organizations_members.go:53-68).
+message InviteMemberRequest {
+  string org_slug = 1;
+  optional string email = 2;
+  optional int64 user_id = 3;
+  // admin / member (owner is implicit on org creation only).
+  string role = 4;
+}
+
+message InviteMemberResponse {
+  string message = 1;
+}
+
+message RemoveMemberRequest {
+  string org_slug = 1;
+  int64 user_id = 2;
+}
+
+message RemoveMemberResponse {
+  string message = 1;
+}
+
+message UpdateMemberRoleRequest {
+  string org_slug = 1;
+  int64 user_id = 2;
+  string role = 3;
+}
+
+message UpdateMemberRoleResponse {
+  string message = 1;
+}

@@ -1,0 +1,627 @@
+###############################################################################
+# AgentsMesh — Bazel root module.
+#
+# Bzlmod-based. Each Phase of the Bazel migration adds its own deps here:
+#   Phase 0: bazel_skylib + buildifier       ← you are here
+#   Phase 1: rules_go + gazelle + go_deps    ← Go services
+#   Phase 2: rules_rust + crate_universe     ← Rust Core crates
+#   Phase 3: rules_rust_wasm_bindgen         ← Rust→WASM
+#   Phase 4: aspect_rules_js + aspect_rules_ts + rules_nodejs  ← TS/pnpm
+#   Phase 5: rules_swift + rules_apple (forked) + rules_swift_package_manager
+#            + rules_xcodeproj                ← iOS
+#   Phase 6: rules_oci + rules_pkg            ← OCI images + on-prem bundle
+#
+# See `.claude/plans/snuggly-spinning-dewdrop.md` for the full migration plan.
+###############################################################################
+
+module(
+    name = "agentsmesh",
+    version = "0.1.0",
+    compatibility_level = 1,
+)
+
+bazel_dep(name = "bazel_skylib", version = "1.8.1")
+
+bazel_dep(name = "buildifier_prebuilt", version = "7.3.1", dev_dependency = True)
+
+bazel_dep(name = "platforms", version = "0.0.11")
+
+###############################################################################
+# Phase 1 — Go services
+###############################################################################
+
+bazel_dep(name = "rules_go", version = "0.59.0")
+bazel_dep(name = "gazelle", version = "0.47.0")
+
+# Bazel-native protobuf codegen for proto/runner/v1 (replaces the legacy
+# buf generate workflow). rules_proto provides the `proto_library` rule;
+# rules_go's `go_proto_library` consumes it via ProtoInfo and runs hermetic
+# protoc + protoc-gen-go-grpc. Already a transitive dep of rules_go but
+# pinned here so the version is explicit and the load() statements work.
+bazel_dep(name = "rules_proto", version = "7.0.2")
+
+# Pin protobuf at root so first-party proto_library targets can depend on
+# `@com_google_protobuf//:descriptor_proto` (needed by codegen/v1/options.proto
+# which extends MessageOptions/FieldOptions to declare amesh codegen
+# annotations). `repo_name` matches the alias rules_proto uses internally so
+# every dependent module agrees on the workspace name.
+bazel_dep(name = "protobuf", version = "29.1", repo_name = "com_google_protobuf")
+
+# Pin the Go toolchain used for all module builds. Matches the `go X.Y` line
+# in each go.mod. Bazel downloads and hermetically reuses this across CI +
+# developer machines so nobody is building against their system Go.
+go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
+go_sdk.download(version = "1.25.0")
+
+# Pull every transitive Go dependency from the root `go.mod`. Gazelle walks
+# its `require` blocks and emits one `go_deps` import per dependency.
+go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
+go_deps.from_file(go_mod = "//:go.mod")
+use_repo(go_deps, "com_connectrpc_connect", "com_github_alicebob_miniredis_v2", "com_github_aws_aws_sdk_go_v2", "com_github_aws_aws_sdk_go_v2_config", "com_github_aws_aws_sdk_go_v2_credentials", "com_github_aws_aws_sdk_go_v2_service_s3", "com_github_coreos_go_oidc_v3", "com_github_creack_pty", "com_github_creativeprojects_go_selfupdate", "com_github_crewjam_saml", "com_github_gin_contrib_cors", "com_github_gin_gonic_gin", "com_github_go_acme_lego_v4", "com_github_go_ldap_ldap_v3", "com_github_golang_jwt_jwt_v5", "com_github_golang_migrate_migrate_v4", "com_github_google_uuid", "com_github_gorilla_websocket", "com_github_kardianos_service", "com_github_lib_pq", "com_github_masterminds_semver_v3", "com_github_mattn_go_runewidth", "com_github_maxmind_mmdbwriter", "com_github_ndolestudio_lemonsqueezy_go", "com_github_oschwald_maxminddb_golang", "com_github_pelletier_go_toml_v2", "com_github_pkg_browser", "com_github_redis_go_redis_extra_redisotel_v9", "com_github_redis_go_redis_v9", "com_github_resend_resend_go_v2", "com_github_robfig_cron_v3", "com_github_smartwalle_alipay_v3", "com_github_spf13_viper", "com_github_stretchr_testify", "com_github_stripe_stripe_go_v76", "com_github_thejerf_suture_v4", "com_github_uptrace_opentelemetry_go_extra_otelgorm", "com_github_userexistserror_conpty", "com_github_wechatpay_apiv3_wechatpay_go", "com_github_yuin_goldmark", "in_gopkg_yaml_v3", "io_gorm_driver_postgres", "io_gorm_driver_sqlite", "io_gorm_gorm", "io_gorm_plugin_dbresolver", "io_opentelemetry_go_contrib_instrumentation_github_com_gin_gonic_gin_otelgin", "io_opentelemetry_go_contrib_instrumentation_google_golang_org_grpc_otelgrpc", "io_opentelemetry_go_contrib_instrumentation_net_http_otelhttp", "io_opentelemetry_go_otel", "io_opentelemetry_go_otel_exporters_otlp_otlpmetric_otlpmetricgrpc", "io_opentelemetry_go_otel_exporters_otlp_otlptrace_otlptracegrpc", "io_opentelemetry_go_otel_exporters_stdout_stdoutmetric", "io_opentelemetry_go_otel_exporters_stdout_stdouttrace", "io_opentelemetry_go_otel_metric", "io_opentelemetry_go_otel_sdk", "io_opentelemetry_go_otel_sdk_metric", "io_opentelemetry_go_otel_trace", "org_golang_google_grpc", "org_golang_google_grpc_security_advancedtls", "org_golang_google_protobuf", "org_golang_x_crypto", "org_golang_x_oauth2", "org_golang_x_sync", "org_golang_x_term", "org_golang_x_time")
+
+###############################################################################
+# Phase 1 — OCI images for Go services (Docker replacement)
+###############################################################################
+
+bazel_dep(name = "rules_oci", version = "2.0.0")
+bazel_dep(name = "rules_pkg", version = "1.0.1")
+bazel_dep(name = "aspect_bazel_lib", version = "2.19.2")
+
+# Base image for all Go services. We use Alpine 3.19 (not distroless)
+# because the swarm stack's healthcheck spec is `wget --spider …`, and
+# distroless/static ships neither wget nor curl. Switching to Alpine
+# restores parity with the legacy GoReleaser/Dockerfile setup
+# (`FROM alpine:3.19`) — `addgroup -g 1000 -S app …` user invariants
+# are now reproduced by `go_oci_image.bzl` (uid 1000 + chown /app
+# /data). Image size is ~7MB heavier than distroless/static but layer
+# sharing absorbs most of it. Multi-arch (amd64 + arm64).
+#
+# The repo is still named `distroless_static` for backward
+# compatibility with `base = "@distroless_static"` callers — only the
+# upstream image identity changed.
+oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
+oci.pull(
+    name = "distroless_static",
+    image = "docker.io/library/alpine",
+    platforms = [
+        "linux/amd64",
+        "linux/arm64/v8",
+    ],
+    tag = "3.19",
+)
+use_repo(
+    oci,
+    "distroless_static",
+    "distroless_static_linux_amd64",
+    "distroless_static_linux_arm64_v8",
+)
+
+# Base image for Next.js services (clients/web + clients/web-admin).
+# Real distroless this time — the previous full `node:20` (~1.2GB) blew
+# up production images to 8GB and contributed to the 2026-05-09
+# us-west-001 disk-full incident. Two design changes made distroless
+# viable:
+#  1. The image pipeline now uses `nextjs_standalone_build` from
+#     aspect_rules_js v2.9.2's `contrib/nextjs/defs.bzl`. The Next.js
+#     standalone tree ships a self-contained `server.js` whose
+#     entrypoint is `node server.js` — no sh launcher, no `js_image_layer`
+#     bash wrapper, no need for /bin/sh in the runtime.
+#  2. The `curl -f http://localhost:3000/` healthcheck moves to a
+#     pure-stdlib Node probe at `/app/healthcheck.mjs`, so the runtime
+#     does not depend on curl/wget being present.
+oci.pull(
+    name = "distroless_nodejs",
+    image = "gcr.io/distroless/nodejs20-debian12",
+    platforms = [
+        "linux/amd64",
+        "linux/arm64/v8",
+    ],
+    tag = "nonroot",
+)
+use_repo(
+    oci,
+    "distroless_nodejs",
+    "distroless_nodejs_linux_amd64",
+    "distroless_nodejs_linux_arm64_v8",
+)
+
+###############################################################################
+# Phase 2 — Rust Core (preview: will replace Cargo workspace)
+###############################################################################
+
+bazel_dep(name = "rules_rust", version = "0.70.0")
+
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(
+    edition = "2021",
+    # iOS triples register a per-target rustc/std slice so the
+    # build_defs/ios:rust_xcframework macro can transition into them
+    # without `rustup target add`. macOS host runners carry the iOS SDK;
+    # Linux workers resolve to the host toolchain only and skip the iOS
+    # jobs via target_compatible_with.
+    extra_target_triples = [
+        "aarch64-apple-ios",
+        "aarch64-apple-ios-sim",
+        "x86_64-apple-ios",
+        # Browser target — `clients/core/crates/wasm:wasm_pkg` compiles
+        # the cdylib here before wasm-bindgen rewrites it into the ESM
+        # `pkg/` directory consumed by `clients/web` via the
+        # `//clients/core/crates/wasm:wasm_pkg_npm` npm-package wrapper.
+        # Building the wasm closure cleanly required eliminating tokio
+        # from the cross-platform business crates (auth/api-client/
+        # events/relay) and routing time/spawn through transport's
+        # Runtime trait — see clients/core/crates/wasm/BUILD.bazel for
+        # the architectural rationale.
+        "wasm32-unknown-unknown",
+    ],
+    versions = ["1.88.0"],
+)
+use_repo(rust, "rust_toolchains")
+
+register_toolchains("@rust_toolchains//:all")
+
+# `crate.spec()` declarations land in Phase 2 once we map the 14 crates under
+# clients/core/crates/ to their external dependency set.
+crate = use_extension("@rules_rust//crate_universe:extensions.bzl", "crate")
+
+# Serialization
+crate.spec(
+    features = ["derive"],
+    package = "serde",
+    version = "1",
+)
+crate.spec(
+    package = "serde_json",
+    version = "1",
+)
+
+# Async runtime — iOS-compatible subset (no process/signal/io-std).
+crate.spec(
+    features = [
+        "rt-multi-thread",
+        "macros",
+        "sync",
+        "time",
+        "net",
+        "io-util",
+        "fs",
+        "parking_lot",
+    ],
+    package = "tokio",
+    version = "1",
+)
+crate.spec(
+    package = "tokio-test",
+    version = "0.4",
+)
+
+# HTTP + TLS (rustls to avoid OpenSSL linking on iOS).
+crate.spec(
+    default_features = False,
+    features = [
+        "json",
+        "rustls-tls",
+        "multipart",
+        "stream",
+    ],
+    package = "reqwest",
+    version = "0.12",
+)
+
+# WebSocket (Relay transport).
+crate.spec(
+    features = ["rustls-tls-webpki-roots"],
+    package = "tokio-tungstenite",
+    version = "0.26",
+)
+crate.spec(
+    package = "futures-util",
+    version = "0.3",
+)
+crate.spec(
+    package = "futures-channel",
+    version = "0.3",
+)
+
+# Sync primitive used by every wasm-eligible crate. Replaces tokio::sync::RwLock
+# in the wasm closure (tokio's `sync` feature alone wouldn't pull mio, but the
+# refactor keeps the wasm closure tokio-free for the same reason it can stay
+# Bazel-buildable: tokio's `[dependencies.mio]` is feature-gated, not
+# target-gated). Held briefly across .read()/.write() — no .await across guards.
+crate.spec(
+    package = "parking_lot",
+    version = "0.12",
+)
+
+# Error handling.
+crate.spec(
+    package = "thiserror",
+    version = "2",
+)
+
+# Binary / byte slices.
+crate.spec(
+    package = "bytes",
+    version = "1",
+)
+
+# FFI — UniFFI generates Swift/Kotlin bindings.
+crate.spec(
+    features = [
+        "cli",
+        "tokio",
+    ],
+    package = "uniffi",
+    version = "0.29",
+)
+
+# Logging.
+crate.spec(
+    package = "tracing",
+    version = "0.1",
+)
+crate.spec(
+    features = [
+        "env-filter",
+        "fmt",
+        "json",
+    ],
+    package = "tracing-subscriber",
+    version = "0.3",
+)
+crate.spec(
+    package = "tracing-appender",
+    version = "0.2",
+)
+
+# WASM-only console sink (gated by BUILD.bazel select).
+crate.spec(
+    package = "tracing-wasm",
+    version = "0.2",
+)
+
+# Testing fixtures.
+crate.spec(
+    package = "wiremock",
+    version = "0.6",
+)
+
+# RNG (used by auth token generation).
+crate.spec(
+    package = "rand",
+    version = "0.9",
+)
+
+# Cross-platform userspace directories (used by node-bridge / desktop storage).
+crate.spec(
+    package = "dirs",
+    version = "6",
+)
+crate.spec(
+    package = "sha2",
+    version = "0.10",
+)
+crate.spec(
+    package = "hex",
+    version = "0.4",
+)
+crate.spec(
+    package = "flate2",
+    version = "1",
+)
+crate.spec(
+    package = "tar",
+    version = "0.4",
+)
+crate.spec(
+    default_features = False,
+    features = ["deflate"],
+    package = "zip",
+    version = "5",
+)
+
+# Base futures crate (distinct from futures-util — needed by api-client SSE).
+crate.spec(
+    package = "futures",
+    version = "0.3",
+)
+
+# getrandom with wasm_js backend — Relay connection IDs must generate in the
+# browser without falling back to OS rand (which panics under wasm32).
+crate.spec(
+    features = ["wasm_js"],
+    package = "getrandom",
+    version = "0.3",
+)
+
+# SQLite — bundled feature so the build does not depend on a system libsqlite3.
+crate.spec(
+    features = ["bundled"],
+    package = "rusqlite",
+    version = "0.32",
+)
+
+# N-API bindings for the Electron desktop native addon (Phase 3c).
+crate.spec(
+    default_features = False,
+    features = [
+        "napi9",
+        "async",
+        "tokio_rt",
+        "serde-json",
+    ],
+    package = "napi",
+    version = "3",
+)
+crate.spec(
+    package = "napi-derive",
+    version = "3",
+)
+crate.spec(
+    package = "napi-build",
+    version = "2",
+)
+
+# URL encoding (used by api-client for query params).
+crate.spec(
+    package = "urlencoding",
+    version = "2",
+)
+
+# WASM glue — consumed by crates/wasm only.
+crate.spec(
+    package = "wasm-bindgen",
+    # Pinned to match the wasm-bindgen-cli that rules_rust_wasm_bindgen 0.70
+    # bundles (WASM_BINDGEN_VERSION="0.2.105" in upstream repositories.bzl).
+    # Schema must agree exactly (`rust Wasm file schema version` ↔
+    # `this binary schema version`); bumping the crate requires a custom
+    # wasm_bindgen_toolchain that injects a newer cli binary.
+    version = "=0.2.105",
+)
+crate.spec(
+    package = "wasm-bindgen-futures",
+    version = "0.4",
+)
+crate.spec(
+    package = "js-sys",
+    version = "0.3",
+)
+crate.spec(
+    features = [
+        "console",
+        "BinaryType",
+        "CloseEvent",
+        "ErrorEvent",
+        "MessageEvent",
+        "Storage",
+        "WebSocket",
+        "Window",
+        # Fetch ReadableStream bridge — used by Phase E wasm Connect
+        # server-stream client in clients/core/crates/api-client/src/
+        # connect_stream_wasm.rs. Without these, the wasm bridge falls
+        # back to a forever-pending stub that prevents realtime events
+        # from reaching the page.
+        "AbortController",
+        "AbortSignal",
+        "Headers",
+        "ReadableStream",
+        "ReadableStreamDefaultReader",
+        "Request",
+        "RequestInit",
+        "Response",
+    ],
+    package = "web-sys",
+    version = "0.3",
+)
+crate.spec(
+    package = "console_error_panic_hook",
+    version = "0.1",
+)
+
+# Cross-platform time — std::time on native, performance.now on wasm32.
+crate.spec(
+    package = "web-time",
+    version = "1",
+)
+
+# Protocol-buffer wire codec for the Rust core. Message .rs files are
+# generated by an out-of-band `protoc + protoc-gen-prost` invocation,
+# committed into the source tree, and consumed via `prost::Message`.
+# This deliberately sidesteps `rules_rust_prost`: pulling that ruleset
+# in would require a third toolchain (its own protoc, tonic,
+# prost-types) and a re-pin against `rules_rust 0.70+`, blocking the
+# migration on an orthogonal Bazel upgrade. The committed-output design
+# is the same SSOT mirror pattern used by `proto/gen/go/runner/v1/` on
+# the Go side.
+crate.spec(
+    default_features = False,
+    features = [
+        "prost-derive",
+        "std",
+    ],
+    package = "prost",
+    version = "0.13",
+)
+
+# Used by tools/rust_prost_toolchain so the custom toolchain can pass
+# `prost_types` from the same `@crates//:` source as the runtime — keeps
+# `prost::Message` a single trait instance across codegen + consumer
+# crates. Without this, rules_rust_prost's vendored prost-types collides
+# with our prost and downstream `impl Message for X` doesn't match.
+crate.spec(
+    package = "prost-types",
+    version = "0.13",
+)
+crate.from_specs(
+    supported_platform_triples = [
+        "aarch64-apple-darwin",
+        "aarch64-apple-ios",
+        "aarch64-apple-ios-sim",
+        "aarch64-unknown-linux-gnu",
+        "wasm32-unknown-unknown",
+        "wasm32-wasip1",
+        "x86_64-apple-darwin",
+        "x86_64-apple-ios",
+        "x86_64-pc-windows-msvc",
+        "x86_64-unknown-linux-gnu",
+        "x86_64-unknown-nixos-gnu",
+    ],
+)
+use_repo(crate, "crates")
+
+###############################################################################
+# Phase 3a — Rust → WASM (consumed by clients/web via npm_link_package)
+###############################################################################
+
+bazel_dep(name = "rules_rust_wasm_bindgen", version = "0.70.0")
+
+# Prost-based Rust protobuf codegen. Same major version as rules_rust +
+# rules_rust_wasm_bindgen so the bazel module graph resolves cleanly.
+# Default toolchain self-registers protoc-gen-prost 0.4.0.
+bazel_dep(name = "rules_rust_prost", version = "0.70.0")
+
+# Override the default prost toolchain to use our own `@crates//:prost`
+# crate instead of the vendored rules_rust_prost copy. Trait coherence
+# (single `prost::Message` across codegen + services) requires the same
+# crate source, not just matching version strings.
+register_toolchains("//tools/rust_prost_toolchain:prost_toolchain")
+
+###############################################################################
+# Phase 4 — TS / pnpm frontends (Next.js web, web-admin; Electron desktop)
+###############################################################################
+
+bazel_dep(name = "aspect_rules_js", version = "2.9.2")
+bazel_dep(name = "aspect_rules_ts", version = "3.8.3")
+bazel_dep(name = "aspect_rules_jest", version = "0.24.2")
+bazel_dep(name = "rules_nodejs", version = "6.3.3")
+
+# rules_playwright gives us `playwright_bin.playwright_test` via the
+# pnpm-linked @playwright/test package — Bazel drives the Playwright CLI
+# the same way aspect_rules_js drives any other npm bin.
+#
+# Browsers themselves are NOT fetched via rules_playwright's
+# `@playwright//:chromium-headless-shell` targets: the 0.5.3 release
+# still points at playwright.azureedge.net with the legacy Chromium URL
+# pattern, which 404s for Playwright 1.59 (now on Chrome-for-Testing via
+# cdn.playwright.dev). Instead we rely on `pnpm exec playwright install`
+# populating `~/Library/Caches/ms-playwright` (or
+# `$PLAYWRIGHT_BROWSERS_PATH` in CI) the same way every other Playwright
+# consumer does — NexusAPI follows the same pattern.
+bazel_dep(name = "rules_playwright", version = "0.5.3")
+
+# TypeScript compiler pin. Matches `clients/*/package.json` devDeps.
+rules_ts_ext = use_extension("@aspect_rules_ts//ts:extensions.bzl", "ext")
+rules_ts_ext.deps(
+    ts_version = "5.7.3",
+)
+use_repo(rules_ts_ext, "npm_typescript")
+
+# Node toolchain pin — this is the Node that Bazel actions run against
+# (test runners, Next.js build), not necessarily the Node the Electron
+# desktop renderer ships with. Keep the major in sync with CI images.
+node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
+node.toolchain(node_version = "22.11.0")
+use_repo(node, "nodejs_toolchains")
+
+register_toolchains("@nodejs_toolchains//:all")
+
+# pnpm workspace → @npm repo. `public_hoist_packages` mirrors what the
+# flat pnpm layout currently needs; adjust if new plugins require
+# additional root-visibility packages.
+npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
+npm.npm_translate_lock(
+    name = "npm",
+    pnpm_lock = "//:pnpm-lock.yaml",
+    # Hoisted packages — exposed at root so `//:node_modules/<pkg>` is a
+    # valid label even when the package is a transitive dep, not a direct
+    # one in `package.json`.
+    #
+    # `next` + `eslint-config-next`: lets eslint-config-next walk up to
+    # the root `node_modules/next/` symlink for its
+    # `require("next/dist/compiled/babel/eslint-parser")` — without this
+    # the pnpm virtual store buries `next` peer-deep and ESLint fails
+    # under Bazel sandboxing.
+    #
+    # Next.js internal deps (`@next/env`, `@swc/helpers`,
+    # `baseline-browser-mapping`, `caniuse-lite`, `postcss`, `styled-jsx`):
+    # consumed at runtime by `next.config.bazel.mjs`'s standalone server
+    # via `next_standalone_app(..., node_modules_runtime = [...])`. NFT
+    # writes them as absolute symlinks the wrapper dereferences, but the
+    # dereferenced server tree no longer sits inside pnpm's virtual
+    # store, so Node module resolution at runtime relies on these labels
+    # being available at the workspace root. Hoisting here keeps root
+    # `package.json` clean.
+    public_hoist_packages = {
+        "next": [""],
+        "eslint-config-next": [""],
+        "@next/env": [""],
+        "@swc/helpers": [""],
+        "baseline-browser-mapping": [""],
+        "caniuse-lite": [""],
+        # postcss has two versions resolved in pnpm-lock.yaml (8.4.31 +
+        # 8.5.10). Next 16 pulls 8.5.10; pin to that explicitly so the
+        # public_hoist_packages disambiguation does not refuse to resolve.
+        "postcss@8.5.10": [""],
+        "styled-jsx": [""],
+    },
+    verify_node_modules_ignored = "//:.bazelignore",
+)
+use_repo(npm, "npm")
+
+###############################################################################
+# Phase 5 — Swift / iOS
+###############################################################################
+
+bazel_dep(name = "rules_xcodeproj", version = "3.3.0")
+bazel_dep(name = "apple_support", version = "1.22.0", repo_name = "build_bazel_apple_support")
+bazel_dep(name = "rules_swift", version = "3.0.2", repo_name = "build_bazel_rules_swift")
+bazel_dep(name = "rules_apple", version = "4.1.1", repo_name = "build_bazel_rules_apple")
+
+# `rules_apple` upstream doesn't yet support `rules_swift@3.0.2` (needed for
+# Swift 6 concurrency on iOS 17). Stone maintains a fork pinned to the same
+# SHA as the AIO project so we don't multiply the maintenance surface.
+archive_override(
+    module_name = "rules_apple",
+    # CDN-cached tarball at a concrete commit. Previously used
+    # git_override(branch="master"), which re-ran `git fetch` on every
+    # build — GitHub's repo endpoint has returned sporadic HTTP 500s
+    # for the fork and tripped random CI jobs. archive_override keeps
+    # the download out of the git protocol entirely.
+    strip_prefix = "rules_apple-44d64ce8c540b60b72f17e87a61099c20d36be6d",
+    urls = ["https://github.com/yishuiliunian/rules_apple/archive/44d64ce8c540b60b72f17e87a61099c20d36be6d.tar.gz"],
+)
+
+# Swift Package Manager bridge for external deps (TCA, SwiftTerm, etc.).
+bazel_dep(name = "rules_swift_package_manager", version = "1.10.0")
+
+swift_deps = use_extension(
+    "@rules_swift_package_manager//:extensions.bzl",
+    "swift_deps",
+)
+swift_deps.from_package(
+    resolved = "//third_party/swift:Package.resolved",
+    swift = "//third_party/swift:Package.swift",
+)
+use_repo(
+    swift_deps,
+    "swift_package",
+    "swiftpkg_swift_composable_architecture",
+    "swiftpkg_swift_navigation",
+    "swiftpkg_swiftterm",
+)
+
+bazel_dep(name = "swiftlint", version = "0.62.2", repo_name = "SwiftLint")
+
+###############################################################################
+# Phase 6 — Hermetic CLI tooling (golangci-lint, etc.)
+###############################################################################
+
+# rules_multitool fetches platform-specific CLI binaries (linux/macOS,
+# amd64/arm64) declared in `multitool.lock.json` and exposes them as
+# `@multitool//tools/<name>` filegroup targets. We use it for tools that
+# don't have a first-class Bazel ruleset — currently golangci-lint.
+bazel_dep(name = "rules_multitool", version = "1.11.1")
+
+multitool = use_extension("@rules_multitool//multitool:extension.bzl", "multitool")
+multitool.hub(lockfile = "//:multitool.lock.json")
+use_repo(multitool, "multitool")

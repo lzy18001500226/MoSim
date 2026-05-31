@@ -1,0 +1,197 @@
+// InvitationService — organization member invitations.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/invitations*.go
+// per .claude/plans/proto-naming-conventions.md. Conventions enforced:
+//   * package proto.invitation.v1 + go_package suffix for dispatch
+//   * service names = <Domain>Service, methods PascalCase verbs
+//   * snake_case fields, no json_name annotations
+//   * timestamps as string ISO-8601 (no google.protobuf.Timestamp)
+//   * list response = {items, total, limit, offset} uniform envelope
+//   * create/update/get return entity directly (no {invitation: ...} wrapper)
+//
+// Three services share this package because they address the same
+// `invitations` data via three orthogonal scopes — splitting them would
+// triple the auth-interceptor wiring without semantic benefit:
+//
+//   * InvitationService          — org-scoped (admin/owner). Manages the
+//                                  org-side of the lifecycle: list pending,
+//                                  send, revoke, resend.
+//   * UserInvitationService      — user-scoped (invitee). Accepts an
+//                                  invitation or lists pending invitations
+//                                  addressed to the caller's email. The
+//                                  invitee owns these endpoints, not the
+//                                  org — conventions §3.5 exception #1.
+//   * PublicInvitationService    — unauthenticated. GetByToken renders the
+//                                  /invite/[token] landing card before the
+//                                  user signs in. No auth, no org_slug —
+//                                  the token IS the auth (single-use).
+
+syntax = "proto3";
+
+package proto.invitation.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/invitation/v1;invitationv1";
+
+// ============================================================================
+// InvitationService — org-scoped (admin/owner)
+// ============================================================================
+service InvitationService {
+  rpc ListInvitations(ListInvitationsRequest) returns (ListInvitationsResponse);
+  rpc CreateInvitation(CreateInvitationRequest) returns (Invitation);
+  rpc RevokeInvitation(RevokeInvitationRequest) returns (RevokeInvitationResponse);
+  rpc ResendInvitation(ResendInvitationRequest) returns (ResendInvitationResponse);
+}
+
+// ============================================================================
+// UserInvitationService — invitee-scoped (no org_slug, conventions §3.5
+// exception #1). Accept/list run against the caller's email or the token,
+// not the org.
+// ============================================================================
+service UserInvitationService {
+  rpc AcceptInvitation(AcceptInvitationRequest) returns (AcceptInvitationResponse);
+  rpc ListPendingInvitations(ListPendingInvitationsRequest) returns (ListPendingInvitationsResponse);
+}
+
+// ============================================================================
+// PublicInvitationService — unauthenticated.
+// ============================================================================
+service PublicInvitationService {
+  rpc GetInvitationByToken(GetInvitationByTokenRequest) returns (InvitationInfo);
+}
+
+// ----------------------------------------------------------------------------
+// Entities
+// ----------------------------------------------------------------------------
+
+// Invitation mirrors backend/internal/domain/invitation/Invitation as exposed
+// by the org-scoped REST list (invitations_org.go:117). Token is intentionally
+// absent — only the invitee receives it via email, never via list APIs.
+message Invitation {
+  int64 id = 1;
+  int64 organization_id = 2;
+  string email = 3;
+  // admin / member
+  string role = 4;
+  int64 invited_by = 5;
+  string expires_at = 6;
+  optional string accepted_at = 7;
+  string created_at = 8;
+  string updated_at = 9;
+}
+
+// InvitationInfo mirrors service/invitation.InvitationInfo. Returned by the
+// public GetInvitationByToken — carries org name + inviter name + computed
+// is_expired flag so the /invite/[token] landing card can render without a
+// follow-up org lookup. Token is omitted from this response too (caller
+// already has it in the URL).
+message InvitationInfo {
+  int64 id = 1;
+  string email = 2;
+  string role = 3;
+  int64 organization_id = 4;
+  string organization_name = 5;
+  string organization_slug = 6;
+  string inviter_name = 7;
+  string expires_at = 8;
+  bool is_expired = 9;
+}
+
+// PendingInvitation mirrors the enriched shape returned by
+// invitations_user.go:80 — joins the invitation with its org metadata and
+// echoes the token back so the invitee can navigate to /invite/[token].
+//
+// Tokens leave the server here because this endpoint is gated on the
+// invitee's authenticated email match (verified by ListPendingByEmail).
+message PendingInvitation {
+  int64 id = 1;
+  int64 organization_id = 2;
+  string organization_name = 3;
+  string organization_slug = 4;
+  string role = 5;
+  string expires_at = 6;
+  string token = 7;
+}
+
+// AcceptedOrgInfo mirrors service/invitation.AcceptOrgInfo — the org the
+// invitee just joined. Returned by AcceptInvitation so the client can route
+// to /<slug> without a follow-up call.
+message AcceptedOrgInfo {
+  int64 id = 1;
+  string name = 2;
+  string slug = 3;
+}
+
+// ----------------------------------------------------------------------------
+// Requests / Responses — org-scoped
+// ----------------------------------------------------------------------------
+
+message ListInvitationsRequest {
+  string org_slug = 1;
+  optional int32 offset = 2;
+  optional int32 limit = 3;
+}
+
+message ListInvitationsResponse {
+  repeated Invitation items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message CreateInvitationRequest {
+  string org_slug = 1;
+  string email = 2;
+  // admin / member (no owner — that's only granted on org creation)
+  string role = 3;
+}
+
+message RevokeInvitationRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message RevokeInvitationResponse {
+  string message = 1;
+}
+
+message ResendInvitationRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message ResendInvitationResponse {
+  string message = 1;
+}
+
+// ----------------------------------------------------------------------------
+// Requests / Responses — user-scoped (no org_slug, conventions §3.5 #1)
+// ----------------------------------------------------------------------------
+
+// AcceptInvitationRequest carries the invitation token as field 1 — there is
+// no org_slug because the invitee may not yet be a member of any org. The
+// caller is identified by the auth interceptor (JWT → UserID).
+message AcceptInvitationRequest {
+  string token = 1;
+}
+
+message AcceptInvitationResponse {
+  string message = 1;
+  AcceptedOrgInfo organization = 2;
+}
+
+message ListPendingInvitationsRequest {}
+
+message ListPendingInvitationsResponse {
+  repeated PendingInvitation items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+// ----------------------------------------------------------------------------
+// Requests / Responses — public (no auth, no org_slug)
+// ----------------------------------------------------------------------------
+
+message GetInvitationByTokenRequest {
+  string token = 1;
+}

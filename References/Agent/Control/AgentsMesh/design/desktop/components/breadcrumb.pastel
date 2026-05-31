@@ -1,0 +1,147 @@
+// Breadcrumb — compact, inline, truncation-friendly.
+// Usage: Detail pages always show breadcrumb above PageHeader.
+// Separator: chevron (›) or slash (/). We pick chevron — feels less code-like.
+
+canvas "breadcrumb" {
+    width = 1180
+    height = 580
+    background = #1F2328
+}
+
+component bc_bc_link(label) {
+    text label { size = 13, weight = normal, color = #656D76 }
+}
+
+component bc_link_hover(label) {
+    text label { size = 13, weight = normal, color = #0969DA, text-decoration = underline }
+}
+
+component bc_bc_current(label) {
+    text label { size = 13, weight = medium, color = #1F2328 }
+}
+
+component bc_bc_sep() {
+    text "›" { size = 13, color = #AFB8C1 }
+}
+
+component bc_row() {
+    frame {
+        layout = horizontal
+        gap    = 8
+        align  = center
+
+        use bc_bc_link("Dev Organization")
+        use bc_bc_sep()
+        use bc_bc_link("Tickets")
+        use bc_bc_sep()
+        use bc_bc_current("DEV-1 Implement JWT-based authentication")
+    }
+}
+
+component bc_row_hover() {
+    frame {
+        layout = horizontal
+        gap    = 8
+        align  = center
+
+        use bc_bc_link("Dev Organization")
+        use bc_bc_sep()
+        use bc_link_hover("Tickets")
+        use bc_bc_sep()
+        use bc_bc_current("DEV-1 Implement JWT-based authentication")
+    }
+}
+
+component bc_row_deep() {
+    frame {
+        layout = horizontal
+        gap    = 8
+        align  = center
+
+        use bc_bc_link("Repositories")
+        use bc_bc_sep()
+        use bc_bc_link("demo-api")
+        use bc_bc_sep()
+        use bc_bc_link("Capabilities")
+        use bc_bc_sep()
+        use bc_bc_current("Add skill")
+    }
+}
+
+component bc_row_with_back() {
+    frame {
+        layout = horizontal
+        gap    = 12
+        align  = center
+
+        frame back_btn {
+            width  = 24, height = 24, radius = 6
+            fill   = #F6F8FA, stroke = [1, #D0D7DE]
+            layout = horizontal, justify = center, align = center
+            text "←" { size = 14, color = #656D76 }
+        }
+
+        frame bc {
+            layout = horizontal, gap = 8, align = center
+            use bc_bc_link("Runners")
+            use bc_bc_sep()
+            use bc_bc_current("runner-local-dev")
+        }
+    }
+}
+
+component pg_breadcrumb() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width   = 1100
+    height  = 500
+    fill    = #FFFFFF
+    padding = 40
+    layout  = vertical
+    gap     = 32
+
+    text "Breadcrumb" { size = 24, weight = semibold, color = #1F2328 }
+    text "Above PageHeader on every detail page. Current item is bold. Chevron separator."
+        { size = 13, color = #656D76, wrap = true, width = 700 }
+
+    frame ex1 { layout = vertical, gap = 8
+        text "default" { size = 12, weight = medium, color = #656D76 }
+        use bc_row()
+    }
+
+    frame ex2 { layout = vertical, gap = 8
+        text "hover state (on middle link)" { size = 12, weight = medium, color = #656D76 }
+        use bc_row_hover()
+    }
+
+    frame ex3 { layout = vertical, gap = 8
+        text "deep (4 levels)" { size = 12, weight = medium, color = #656D76 }
+        use bc_row_deep()
+    }
+
+    frame ex4 { layout = vertical, gap = 8
+        text "with back button (optional, for one-level-deep pages)" { size = 12, weight = medium, color = #656D76 }
+        use bc_row_with_back()
+    }
+}
+}
+
+
+component pg_breadcrumb_framed() {
+    frame outer {
+        width = 1180
+        height = 580
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_breadcrumb()
+    }
+}
+
+frame root {
+    use pg_breadcrumb_framed()
+}

@@ -1,0 +1,197 @@
+// PromoCodeAdminService — platform-admin CRUD over promo codes.
+//
+// Migrated from REST handlers in
+// backend/internal/api/rest/v1/admin/promo_codes*.go. The org-scoped
+// PromoCodeService lives next door in promocode.proto. The split exists
+// because they have different auth surfaces — that one runs through
+// ResolveOrgScope + org membership; this one runs through the
+// system-admin interceptor (TenantContext.UserID + is_system_admin DB
+// lookup), so any drift on the membership check would be a security bug
+// if they shared transport plumbing.
+//
+// Conventions: same as promocode.proto — snake_case, ISO-8601 strings,
+// {items,total,page,page_size,total_pages} list envelope, create/update
+// returns entity directly.
+
+syntax = "proto3";
+
+package proto.promocode.v1;
+
+import "codegen/v1/options.proto";
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/promocode/v1;promocodev1";
+
+// Convert codegen target — emits promocode_admin_convert.amesh.go into the
+// backend admin/promocode connect handler tree so it can reach
+// domain/promocode (which proto/gen/go packages cannot import under Go's
+// internal-package rule).
+option (amesh.codegen.v1.convert_target) = {
+  output_dir: "backend/internal/api/connect/admin/promocode"
+  output_package: "promocodeadminconnect"
+};
+
+// ============================================================================
+// PromoCodeAdminService — platform-admin only. Mirrors REST routes at
+// /api/v1/admin/promo-codes/*.
+// ============================================================================
+service PromoCodeAdminService {
+  rpc ListPromoCodes(ListPromoCodesRequest) returns (ListPromoCodesResponse);
+  rpc GetPromoCode(GetPromoCodeRequest) returns (PromoCode);
+  rpc CreatePromoCode(CreatePromoCodeRequest) returns (PromoCode);
+  rpc UpdatePromoCode(UpdatePromoCodeRequest) returns (PromoCode);
+  rpc ActivatePromoCode(ActivatePromoCodeRequest) returns (ActivatePromoCodeResponse);
+  rpc DeactivatePromoCode(DeactivatePromoCodeRequest) returns (DeactivatePromoCodeResponse);
+  rpc DeletePromoCode(DeletePromoCodeRequest) returns (DeletePromoCodeResponse);
+  rpc ListPromoCodeRedemptions(ListPromoCodeRedemptionsRequest) returns (ListPromoCodeRedemptionsResponse);
+}
+
+// ----------------------------------------------------------------------------
+// PromoCode — mirrors backend/internal/domain/promocode.PromoCode fields
+// the admin REST handler exposes. Times are ISO-8601 strings per §8.
+// ----------------------------------------------------------------------------
+message PromoCode {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/promocode.PromoCode"
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  string code = 2;
+  string name = 3;
+  string description = 4;
+  // promocode.PromoCodeType is a string newtype; codegen needs a custom cast.
+  string type = 5 [(amesh.codegen.v1.field_custom) = "promoTypeToProto"];
+  string plan_name = 6;
+  int32 duration_months = 7 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  optional int32 max_uses = 8 [(amesh.codegen.v1.field_convert) = "int_ptr_to_int32"];
+  int32 used_count = 9 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  int32 max_uses_per_org = 10 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  string starts_at = 11 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  optional string expires_at = 12 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+  bool is_active = 13;
+  optional int64 created_by_id = 14 [(amesh.codegen.v1.field_rename) = "CreatedByID"];
+  string created_at = 15 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  string updated_at = 16 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+}
+
+// RedemptionDetail mirrors admin.RedemptionWithDetails — embedded
+// User and Organization JSON blobs flatten to their primary fields
+// (id + display name); admin UI doesn't read the nested object beyond
+// that, so we avoid wire-marshalling full entity messages.
+message RedemptionDetail {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/service/admin.RedemptionWithDetails"
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  int64 promo_code_id = 2 [(amesh.codegen.v1.field_rename) = "PromoCodeID"];
+  int64 organization_id = 3 [(amesh.codegen.v1.field_rename) = "OrganizationID"];
+  int64 user_id = 4 [(amesh.codegen.v1.field_rename) = "UserID"];
+  string plan_name = 5;
+  int32 duration_months = 6 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  string new_period_end = 7 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  optional string ip_address = 8 [(amesh.codegen.v1.field_rename) = "IPAddress"];
+  string created_at = 9 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  // Derived from embedded *user.User — populated by the alias wrapper after
+  // codegen runs (the domain struct has no flat user_email/user_username
+  // fields, so codegen skips them).
+  optional string user_email = 10 [(amesh.codegen.v1.field_skip) = true];
+  optional string user_username = 11 [(amesh.codegen.v1.field_skip) = true];
+  // Derived from embedded *organization.Organization (same pattern).
+  optional string organization_name = 12 [(amesh.codegen.v1.field_skip) = true];
+  optional string organization_slug = 13 [(amesh.codegen.v1.field_skip) = true];
+}
+
+// ----------------------------------------------------------------------------
+// List
+// ----------------------------------------------------------------------------
+message ListPromoCodesRequest {
+  optional string type = 1;
+  optional string plan_name = 2;
+  optional bool is_active = 3;
+  optional string search = 4;
+  optional int32 page = 5;
+  optional int32 page_size = 6;
+}
+
+message ListPromoCodesResponse {
+  repeated PromoCode data = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  int32 total_pages = 5;
+}
+
+// ----------------------------------------------------------------------------
+// Get / Create / Update / Delete / Activate / Deactivate
+// ----------------------------------------------------------------------------
+message GetPromoCodeRequest {
+  int64 id = 1;
+}
+
+message CreatePromoCodeRequest {
+  string code = 1;
+  string name = 2;
+  string description = 3;
+  string type = 4;
+  string plan_name = 5;
+  int32 duration_months = 6;
+  optional int32 max_uses = 7;
+  int32 max_uses_per_org = 8;
+  optional string starts_at = 9;
+  optional string expires_at = 10;
+}
+
+message UpdatePromoCodeRequest {
+  int64 id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional int32 max_uses = 4;
+  optional int32 max_uses_per_org = 5;
+  // expires_at semantics mirror REST: omitted = unchanged, empty string = clear,
+  // RFC3339 = set. The discriminator field `clear_expires_at` makes the empty
+  // case explicit on the wire (Connect can't distinguish "" vs unset on
+  // optional fields when round-tripping through JSON).
+  optional string expires_at = 6;
+  bool clear_expires_at = 7;
+}
+
+message ActivatePromoCodeRequest {
+  int64 id = 1;
+}
+
+message ActivatePromoCodeResponse {
+  string message = 1;
+}
+
+message DeactivatePromoCodeRequest {
+  int64 id = 1;
+}
+
+message DeactivatePromoCodeResponse {
+  string message = 1;
+}
+
+message DeletePromoCodeRequest {
+  int64 id = 1;
+}
+
+message DeletePromoCodeResponse {
+  string message = 1;
+}
+
+// ----------------------------------------------------------------------------
+// ListPromoCodeRedemptions
+// ----------------------------------------------------------------------------
+message ListPromoCodeRedemptionsRequest {
+  int64 id = 1;
+  optional int32 page = 2;
+  optional int32 page_size = 3;
+}
+
+message ListPromoCodeRedemptionsResponse {
+  repeated RedemptionDetail data = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  int32 total_pages = 5;
+}

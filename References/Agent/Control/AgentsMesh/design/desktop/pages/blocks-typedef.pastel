@@ -1,0 +1,490 @@
+// Blocks — Indicator type definition editor (block_type_def edit page).
+// Shows "indicators as code": team defines a new block type (e.g. `okr`) with fields,
+// triggers, and default views; live preview + JSON; linked records count; apply to existing.
+
+canvas "blocks_typedef" {
+    width      = 2000
+    height     = 1260
+    background = #1F2328
+}
+
+component btd_nav_icon_active(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = #DDF4FF, stroke = [1, #0969DA]
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, weight = medium, color = #0969DA }
+    }
+}
+component btd_nav_icon(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = transparent
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, color = #656D76 }
+    }
+}
+component btd_section_divider() { shape { type = rectangle, width = 24, height = 1, fill = #D0D7DE } }
+
+// Sidebar indicator row (highlighted = this page is editing this type)
+component ind_row(color, name, count, is_active) {
+    frame {
+        width = fill, padding = [7, 12], radius = 6
+        layout = horizontal, align = center, gap = 8
+        fill = is_active
+
+        frame dot { width = 8, height = 8, radius = 2, fill = color }
+        text name  { size = 12, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+        frame spacer { width = fill }
+        text count { size = 11, color = #868F99, family = "JetBrains Mono" }
+    }
+}
+
+// Field row (in the fields table)
+component field_row(key, label, kind, required, default_val) {
+    frame {
+        width = fill, padding = [10, 14], radius = 8
+        fill = #FFFFFF, stroke = [1, #E4E9EE]
+        layout = horizontal, gap = 16, align = center
+
+        frame handle { width = 16
+            text "⋮⋮" { size = 13, color = #868F99 }
+        }
+        frame key_col { width = 180, layout = vertical, gap = 2
+            text key   { size = 12, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+            text label { size = 10, color = #868F99 }
+        }
+        frame kind_col { width = 160
+            frame pill { padding = [1, 8], radius = 4, fill = #DDF4FF
+                text kind { size = 11, weight = medium, color = #0550AE, family = "JetBrains Mono" }
+            }
+        }
+        frame required_col { width = 80
+            text required { size = 11, weight = medium, color = #1F2328 }
+        }
+        text default_val { size = 11, color = #656D76, family = "JetBrains Mono", width = fill }
+        text "⋯" { size = 13, color = #656D76 }
+    }
+}
+
+component pg_blocks_typedef() {
+frame root {
+        width = 1920, height = 1180
+        fill   = #FFFFFF
+        radius = 12
+        stroke = [2, #6E7681]
+        shadow = [0, 8, 24, #00000080]
+        layout = vertical
+
+        frame body {
+            width = fill, height = fill, layout = horizontal
+
+            // === ActivityBar ===
+            frame activity_bar {
+                width = 48, height = fill, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                layout = vertical, align = center, padding = [12, 6], gap = 6
+
+                frame org_switcher {
+                    width = 36, height = 36, radius = 8, fill = #0969DA
+                    layout = horizontal, justify = center, align = center
+                    text "D" { size = 16, weight = semibold, color = #FFFFFF }
+                }
+                frame gap_s { height = 12 }
+
+                use btd_nav_icon_active("▦")
+                use btd_nav_icon("#")
+                use btd_nav_icon(">_")
+                use btd_section_divider()
+                use btd_nav_icon("🎫")
+                use btd_nav_icon("↻")
+                use btd_nav_icon("⚘")
+
+                frame spacer { height = fill }
+                use btd_nav_icon("⌘")
+                use btd_nav_icon("?")
+                use btd_nav_icon("⚙")
+                use btd_nav_icon("👤")
+            }
+
+            // === Sidebar (indicator types list, with `okr` selected) ===
+            frame sidebar {
+                width = 300, height = fill, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = vertical
+
+                frame top_area {
+                    width = fill, padding = 12, layout = vertical, gap = 8
+
+                    frame workspace_chip {
+                        width = fill, padding = [6, 10], radius = 6
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = horizontal, align = center, gap = 8
+
+                        frame avatar { width = 20, height = 20, radius = 4, fill = #0969DA
+                            layout = horizontal, justify = center, align = center
+                            text "D" { size = 10, weight = semibold, color = #FFFFFF }
+                        }
+                        frame stack { layout = vertical, gap = 0, width = fill
+                            text "Dev Workspace"   { size = 12, weight = medium, color = #1F2328 }
+                            text "blocks-default"  { size = 10, color = #868F99, family = "JetBrains Mono" }
+                        }
+                        text "⌵" { size = 11, color = #656D76 }
+                    }
+
+                    frame search {
+                        width = fill, height = 30, padding = [0, 10], radius = 6
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = horizontal, align = center, gap = 8
+                        text "🔍" { size = 12, color = #868F99 }
+                        text "Search blocks · memory · ⌘K" { size = 12, color = #868F99 }
+                    }
+                }
+
+                // Indicator types — this is the active section
+                frame types_header {
+                    width = fill, padding = [12, 16, 6, 16]
+                    layout = horizontal, justify = space-between, align = center
+                    text "INDICATOR TYPES" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                    text "+ New" { size = 11, color = #0969DA }
+                }
+                frame types_list {
+                    width = fill, padding = [0, 8], layout = vertical, gap = 2
+
+                    use ind_row(#8250DF, "okr",      "12 blocks",   #E4E9EE)
+                    use ind_row(#1A7F37, "task",     "48 blocks",   transparent)
+                    use ind_row(#D29922, "incident", "3 blocks",    transparent)
+                    use ind_row(#0969DA, "metric",   "6 blocks",    transparent)
+                    use ind_row(#CF222E, "risk",     "0 blocks",    transparent)
+                }
+
+                frame pages_header {
+                    width = fill, padding = [16, 16, 6, 16]
+                    layout = horizontal, justify = space-between, align = center
+                    text "PAGES" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                    text "+" { size = 14, color = #656D76 }
+                }
+                frame pages_tree {
+                    width = fill, padding = [0, 16], layout = vertical, gap = 4
+
+                    frame p1 { layout = horizontal, gap = 8, align = center
+                        text "📖" { size = 12 }
+                        text "Team Dashboard" { size = 12, color = #1F2328 }
+                    }
+                    frame p2 { layout = horizontal, gap = 8, align = center
+                        text "📘" { size = 12 }
+                        text "Runbooks" { size = 12, color = #1F2328 }
+                    }
+                    frame p3 { layout = horizontal, gap = 8, align = center
+                        text "📗" { size = 12 }
+                        text "Agent memory" { size = 12, color = #1F2328 }
+                    }
+                }
+
+                frame spacer { height = fill }
+                frame sidebar_footer {
+                    width = fill, padding = [10, 12], stroke = [1, #D0D7DE]
+                    layout = horizontal, align = center, gap = 8
+                    text "Triggers · 7 active" { size = 12, color = #656D76 }
+                    frame spacer_r { width = fill }
+                    frame more { width = 24, height = 22, radius = 4
+                        layout = horizontal, justify = center, align = center
+                        text "⋯" { size = 14, weight = semibold, color = #656D76 }
+                    }
+                }
+            }
+
+            // === Main: type_def editor — 2 columns (form + preview) ===
+            frame main {
+                width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+                // Header
+                frame header {
+                    width = fill, padding = [16, 32]
+                    stroke = [1, #E4E9EE]
+                    layout = vertical, gap = 8
+
+                    frame bc {
+                        layout = horizontal, gap = 8, align = center
+                        text "Indicator types"   { size = 12, color = #868F99 }
+                        text "›"                 { size = 12, color = #AFB8C1 }
+                        text "okr"               { size = 12, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                    }
+
+                    frame title_row {
+                        width = fill, layout = horizontal, justify = space-between, align = center
+
+                        frame title_block { layout = horizontal, gap = 10, align = center
+                            frame dot_big { width = 12, height = 12, radius = 3, fill = #8250DF }
+                            text "OKR" { size = 22, weight = semibold, color = #1F2328 }
+                            text "block_type_def" { size = 11, color = #868F99, family = "JetBrains Mono" }
+                            frame pill_applied { padding = [2, 10], radius = 999, fill = #DDF4FF
+                                text "applied to 12 blocks" { size = 11, weight = medium, color = #0550AE }
+                            }
+                        }
+
+                        frame actions { layout = horizontal, gap = 8, align = center
+                            frame btn_preview {
+                                height = 30, padding = [0, 12], radius = 6
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = horizontal, justify = center, align = center
+                                text "New record · ⌘N" { size = 13, color = #1F2328 }
+                            }
+                            frame btn_save {
+                                height = 30, padding = [0, 14], radius = 6, fill = #0969DA
+                                layout = horizontal, justify = center, align = center
+                                text "Save & apply" { size = 13, weight = medium, color = #FFFFFF }
+                            }
+                        }
+                    }
+                }
+
+                // Two-column content
+                frame content {
+                    width = fill, height = fill, layout = horizontal
+
+                    // === Left: form editor ===
+                    frame editor_col {
+                        width = fill, height = fill, padding = [20, 32]
+                        layout = vertical, gap = 20
+
+                        // Identity section
+                        frame sec_identity { layout = vertical, gap = 10
+                            text "IDENTITY" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+
+                            frame row_kv {
+                                width = fill, layout = horizontal, gap = 16
+
+                                frame f { width = fill, layout = vertical, gap = 6
+                                    text "Type key" { size = 12, weight = medium, color = #1F2328 }
+                                    frame input {
+                                        width = fill, height = 32, padding = [0, 12], radius = 6
+                                        fill = #F6F8FA, stroke = [1, #D0D7DE]
+                                        layout = horizontal, align = center
+                                        text "okr" { size = 13, color = #1F2328, family = "JetBrains Mono" }
+                                    }
+                                    text "immutable after first use" { size = 10, color = #868F99 }
+                                }
+                                frame f { width = fill, layout = vertical, gap = 6
+                                    text "Human label" { size = 12, weight = medium, color = #1F2328 }
+                                    frame input {
+                                        width = fill, height = 32, padding = [0, 12], radius = 6
+                                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                        layout = horizontal, align = center
+                                        text "OKR" { size = 13, color = #1F2328 }
+                                    }
+                                }
+                                frame f { width = fill, layout = vertical, gap = 6
+                                    text "Color" { size = 12, weight = medium, color = #1F2328 }
+                                    frame input_color {
+                                        width = fill, height = 32, padding = [0, 10], radius = 6
+                                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                        layout = horizontal, align = center, gap = 8
+                                        frame chip { width = 16, height = 16, radius = 3, fill = #8250DF }
+                                        text "#8250DF" { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Fields section
+                        frame sec_fields { layout = vertical, gap = 10
+
+                            frame header_row {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "FIELDS · 6" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                                text "+ Add field" { size = 12, weight = medium, color = #0969DA }
+                            }
+
+                            // Fields table header
+                            frame fields_thead {
+                                width = fill, padding = [4, 14]
+                                layout = horizontal, gap = 16
+                                text "" { size = 10, width = 16 }
+                                text "KEY · LABEL"     { size = 10, weight = medium, color = #868F99, width = 180 }
+                                text "KIND"            { size = 10, weight = medium, color = #868F99, width = 160 }
+                                text "REQUIRED"        { size = 10, weight = medium, color = #868F99, width = 80 }
+                                text "DEFAULT · RULE"  { size = 10, weight = medium, color = #868F99 }
+                            }
+
+                            frame fields_list { width = fill, layout = vertical, gap = 6
+                                use field_row("title",     "Objective",      "text",      "yes",   "—")
+                                use field_row("owner",     "Owner",          "user_ref",  "yes",   "current_user")
+                                use field_row("quarter",   "Quarter",        "select",    "yes",   "Q1..Q4")
+                                use field_row("progress",  "Progress",       "number",    "yes",   "0..1 · bar")
+                                use field_row("status",    "Status",         "select",    "yes",   "on_track / at_risk / off_track")
+                                use field_row("parent",    "Parent objective","block_ref","no",    "rel: depends_on")
+                            }
+                        }
+
+                        // Triggers section (reactive rules)
+                        frame sec_triggers { layout = vertical, gap = 10
+
+                            frame header_row {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "TRIGGERS · 2" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                                text "+ Add trigger" { size = 12, weight = medium, color = #0969DA }
+                            }
+                            frame trigger_rows { width = fill, layout = vertical, gap = 6
+
+                                frame t1 {
+                                    width = fill, padding = 12, radius = 8
+                                    fill = #FFFFFF, stroke = [1, #E4E9EE]
+                                    layout = vertical, gap = 6
+
+                                    frame h { layout = horizontal, gap = 6, align = center
+                                        text "⚡" { size = 12, color = #9A6700 }
+                                        text "when progress goes below 0.3 and status = on_track"
+                                            { size = 12, color = #1F2328 }
+                                    }
+                                    frame body { padding = [0, 0, 0, 20]
+                                        text "→ set status = at_risk · mention owner in #standups"
+                                            { size = 11, color = #656D76, family = "JetBrains Mono" }
+                                    }
+                                }
+                                frame t2 {
+                                    width = fill, padding = 12, radius = 8
+                                    fill = #FFFFFF, stroke = [1, #E4E9EE]
+                                    layout = vertical, gap = 6
+
+                                    frame h { layout = horizontal, gap = 6, align = center
+                                        text "⚡" { size = 12, color = #9A6700 }
+                                        text "when quarter ends and status ≠ done"
+                                            { size = 12, color = #1F2328 }
+                                    }
+                                    frame body { padding = [0, 0, 0, 20]
+                                        text "→ spawn codex pod · draft retro block · link via rel: retro_of"
+                                            { size = 11, color = #656D76, family = "JetBrains Mono" }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // === Right: preview rail ===
+                    frame right_rail {
+                        width = 480, height = fill
+                        fill = #F6F8FA, stroke = [1, #D0D7DE]
+                        padding = 20, layout = vertical, gap = 20
+
+                        // Live preview (RecordEditor)
+                        frame preview_card {
+                            width = fill, padding = 16, radius = 10
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = vertical, gap = 10
+
+                            frame h { layout = horizontal, justify = space-between, align = center
+                                text "PREVIEW · new OKR record" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                                frame pill { padding = [1, 6], radius = 3, fill = #DDF4FF
+                                    text "live" { size = 10, weight = medium, color = #0550AE, family = "JetBrains Mono" }
+                                }
+                            }
+
+                            frame f1 { layout = vertical, gap = 4
+                                text "Objective *"          { size = 11, weight = medium, color = #1F2328 }
+                                frame inp { width = fill, height = 30, padding = [0, 10], radius = 6, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                    layout = horizontal, align = center
+                                    text "Cut p95 latency to 120ms" { size = 12, color = #1F2328 }
+                                }
+                            }
+                            frame f2 { layout = vertical, gap = 4
+                                text "Owner *"              { size = 11, weight = medium, color = #1F2328 }
+                                frame inp { width = fill, height = 30, padding = [0, 10], radius = 6, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                    layout = horizontal, align = center, gap = 8
+                                    frame av { width = 18, height = 18, radius = 999, fill = #0969DA
+                                        layout = horizontal, justify = center, align = center
+                                        text "D" { size = 9, weight = semibold, color = #FFFFFF }
+                                    }
+                                    text "Dev User" { size = 12, color = #1F2328 }
+                                }
+                            }
+                            frame f3_row { layout = horizontal, gap = 10
+                                frame f3 { width = fill, layout = vertical, gap = 4
+                                    text "Quarter *"        { size = 11, weight = medium, color = #1F2328 }
+                                    frame inp { width = fill, height = 30, padding = [0, 10], radius = 6, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                        layout = horizontal, align = center, justify = space-between
+                                        text "Q4 2026" { size = 12, color = #1F2328 }
+                                        text "⌵" { size = 11, color = #656D76 }
+                                    }
+                                }
+                                frame f4 { width = fill, layout = vertical, gap = 4
+                                    text "Progress *"       { size = 11, weight = medium, color = #1F2328 }
+                                    frame inp { width = fill, height = 30, padding = [0, 10], radius = 6, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                        layout = horizontal, align = center
+                                        text "0.35" { size = 12, color = #1F2328, family = "JetBrains Mono" }
+                                    }
+                                }
+                            }
+                            frame f5 { layout = vertical, gap = 4
+                                text "Status *"            { size = 11, weight = medium, color = #1F2328 }
+                                frame chips { layout = horizontal, gap = 6
+                                    frame c1 { padding = [3, 10], radius = 999, fill = #DAFBE1
+                                        text "on_track" { size = 11, weight = medium, color = #1A7F37 }
+                                    }
+                                    frame c2 { padding = [3, 10], radius = 999, fill = #FFF8C5, stroke = [1, #D29922]
+                                        text "at_risk"  { size = 11, weight = semibold, color = #9A6700 }
+                                    }
+                                    frame c3 { padding = [3, 10], radius = 999, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                        text "off_track" { size = 11, color = #656D76 }
+                                    }
+                                }
+                            }
+                        }
+
+                        // JSON / schema view (raw block_type_def)
+                        frame json_card {
+                            width = fill, padding = 12, radius = 10
+                            fill = #0D1117, stroke = [1, #30363D]
+                            layout = vertical, gap = 6
+
+                            frame h { layout = horizontal, justify = space-between, align = center
+                                text "AS CODE · block_type_def" { size = 10, weight = semibold, color = #8B949E, text-transform = uppercase, letter-spacing = 1.5 }
+                                text "Copy" { size = 11, color = #58A6FF }
+                            }
+                            text "{"                                                  { size = 11, color = #C9D1D9, family = "JetBrains Mono" }
+                            text "  \"type_key\": \"okr\","                           { size = 11, color = #C9D1D9, family = "JetBrains Mono" }
+                            text "  \"label\":    \"OKR\","                           { size = 11, color = #C9D1D9, family = "JetBrains Mono" }
+                            text "  \"color\":    \"#8250DF\","                       { size = 11, color = #C9D1D9, family = "JetBrains Mono" }
+                            text "  \"fields\": ["                                    { size = 11, color = #C9D1D9, family = "JetBrains Mono" }
+                            text "    { key:\"title\",    kind:\"text\",     req:1 }" { size = 11, color = #8B949E, family = "JetBrains Mono" }
+                            text "    { key:\"owner\",    kind:\"user_ref\", req:1 }" { size = 11, color = #8B949E, family = "JetBrains Mono" }
+                            text "    { key:\"quarter\",  kind:\"select\",   req:1 }" { size = 11, color = #8B949E, family = "JetBrains Mono" }
+                            text "    { key:\"progress\", kind:\"number\",   req:1 }" { size = 11, color = #8B949E, family = "JetBrains Mono" }
+                            text "    { key:\"status\",   kind:\"select\",   req:1 }" { size = 11, color = #8B949E, family = "JetBrains Mono" }
+                            text "    { key:\"parent\",   kind:\"block_ref\", req:0 }"{ size = 11, color = #8B949E, family = "JetBrains Mono" }
+                            text "  ],"                                               { size = 11, color = #C9D1D9, family = "JetBrains Mono" }
+                            text "  \"triggers\": [ 2 rules ]"                        { size = 11, color = #8B949E, family = "JetBrains Mono" }
+                            text "}"                                                  { size = 11, color = #C9D1D9, family = "JetBrains Mono" }
+                        }
+
+                        // Footer hint
+                        frame agent_hint {
+                            width = fill, padding = 12, radius = 8
+                            fill = #DDF4FF, stroke = [1, #0969DA]
+                            layout = vertical, gap = 4
+
+                            frame h { layout = horizontal, gap = 6, align = center
+                                text "🤖" { size = 13 }
+                                text "Agents can call this via MCP" { size = 12, weight = medium, color = #0550AE }
+                            }
+                            text "indicator.define / createBlock(type:okr) / updateBlock · changes stream back to every open dashboard."
+                                { size = 11, color = #0550AE, wrap = true, width = 420, line-height = 16 }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+component pg_blocks_typedef_framed() {
+    frame outer {
+        width = 2000
+        height = 1260
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_blocks_typedef()
+    }
+}
+
+frame root {
+    use pg_blocks_typedef_framed()
+}

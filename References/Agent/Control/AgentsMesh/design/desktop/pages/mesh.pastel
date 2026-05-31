@@ -1,0 +1,593 @@
+// Mesh — Runner-grouped topology. Pods + Runners + Bindings only.
+// Channel is a separate product concept (# in the nav); it does NOT belong on the Mesh map.
+// Rules:
+//   · Every Pod lives INSIDE a Runner container — no orphan pods.
+//   · Edges between Pods are directional with clear R/W distinction:
+//       pod:write (control) → solid 2px dark arrow
+//       pod:read  (observe) → dashed 1px light arrow
+
+canvas "mesh" {
+    width = 2000
+    height = 1180
+    background = #1F2328
+}
+
+component ms_nav_icon_active(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = #DDF4FF, stroke = [1, #0969DA]
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, weight = medium, color = #0969DA }
+    }
+}
+component ms_nav_icon(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = transparent
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, color = #656D76 }
+    }
+}
+component ms_section_divider() { shape { type = rectangle, width = 24, height = 1, fill = #D0D7DE } }
+
+component legend_row(dot_color, label) {
+    frame {
+        layout = horizontal, gap = 8, align = center
+        frame dot { width = 10, height = 10, radius = 999, fill = dot_color }
+        text label { size = 12, color = #1F2328 }
+    }
+}
+
+component pg_mesh() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width = 1920, height = 1100, fill = #F6F8FA
+
+    frame app {
+        width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+        frame body {
+            width = fill, height = fill, layout = horizontal
+
+            // --- ActivityBar ---
+            frame activity_bar {
+                width = 48, height = fill, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                layout = vertical, align = center, padding = [12, 6], gap = 6
+
+                frame org_switcher {
+                    width = 36, height = 36, radius = 8, fill = #0969DA
+                    layout = horizontal, justify = center, align = center
+                    text "D" { size = 16, weight = semibold, color = #FFFFFF }
+                }
+                frame gap_s { height = 12 }
+
+                use ms_nav_icon("▦")
+                use ms_nav_icon("#")
+                use ms_nav_icon(">_")
+                use ms_section_divider()
+                use ms_nav_icon("🎫")
+                use ms_nav_icon("↻")
+                use ms_nav_icon_active("⚘")
+
+                frame spacer { height = fill }
+                use ms_nav_icon("⌘")
+                use ms_nav_icon("?")
+                use ms_nav_icon("⚙")
+                use ms_nav_icon("👤")
+            }
+
+            // --- Sidebar ---
+            frame sidebar {
+                width = 280, height = fill, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = vertical, padding = 16, gap = 20
+
+                frame search {
+                    width = fill, height = 32, padding = [0, 10], radius = 6
+                    fill = #FFFFFF, stroke = [1, #D0D7DE]
+                    layout = horizontal, align = center, gap = 8
+                    text "🔍" { size = 13, color = #868F99 }
+                    text "Find pod / runner / channel" { size = 13, color = #868F99 }
+                }
+
+                // Real filter — multi-select toggles. Clicking narrows the canvas.
+                frame filter_runner { layout = vertical, gap = 6
+                    text "RUNNER" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                    frame items { layout = vertical, gap = 4
+                        frame opt1 { layout = horizontal, gap = 8, align = center, padding = [4, 0]
+                            frame box { width = 14, height = 14, radius = 3, fill = #0969DA
+                                layout = horizontal, justify = center, align = center
+                                text "✓" { size = 10, weight = semibold, color = #FFFFFF }
+                            }
+                            frame dot { width = 8, height = 8, radius = 999, fill = #3FB950 }
+                            text "runner-local"     { size = 12, weight = medium, color = #1F2328, width = 150 }
+                            text "5"                { size = 11, color = #868F99, family = "JetBrains Mono" }
+                        }
+                        frame opt2 { layout = horizontal, gap = 8, align = center, padding = [4, 0]
+                            frame box { width = 14, height = 14, radius = 3, fill = #0969DA
+                                layout = horizontal, justify = center, align = center
+                                text "✓" { size = 10, weight = semibold, color = #FFFFFF }
+                            }
+                            frame dot { width = 8, height = 8, radius = 999, fill = #D29922 }
+                            text "runner-cloud-1"   { size = 12, weight = medium, color = #1F2328, width = 150 }
+                            text "4"                { size = 11, color = #868F99, family = "JetBrains Mono" }
+                        }
+                        frame opt3 { layout = horizontal, gap = 8, align = center, padding = [4, 0]
+                            frame box { width = 14, height = 14, radius = 3, fill = #FFFFFF, stroke = [1, #D0D7DE] }
+                            frame dot { width = 8, height = 8, radius = 999, fill = #8B949E }
+                            text "runner-staging"   { size = 12, color = #656D76, width = 150 }
+                            text "0"                { size = 11, color = #B1B7BE, family = "JetBrains Mono" }
+                        }
+                    }
+                }
+
+                frame filter_status { layout = vertical, gap = 6
+                    text "STATUS" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                    frame items { layout = vertical, gap = 4
+                        frame opt1 { layout = horizontal, gap = 8, align = center, padding = [4, 0]
+                            frame box { width = 14, height = 14, radius = 3, fill = #0969DA
+                                layout = horizontal, justify = center, align = center
+                                text "✓" { size = 10, weight = semibold, color = #FFFFFF }
+                            }
+                            frame dot { width = 8, height = 8, radius = 999, fill = #3FB950 }
+                            text "running"           { size = 12, color = #1F2328, width = 150 }
+                            text "7"                 { size = 11, color = #868F99, family = "JetBrains Mono" }
+                        }
+                        frame opt2 { layout = horizontal, gap = 8, align = center, padding = [4, 0]
+                            frame box { width = 14, height = 14, radius = 3, fill = #FFFFFF, stroke = [1, #D0D7DE] }
+                            frame dot { width = 8, height = 8, radius = 999, fill = #8B949E }
+                            text "paused"            { size = 12, color = #656D76, width = 150 }
+                            text "1"                 { size = 11, color = #B1B7BE, family = "JetBrains Mono" }
+                        }
+                        frame opt3 { layout = horizontal, gap = 8, align = center, padding = [4, 0]
+                            frame box { width = 14, height = 14, radius = 3, fill = #0969DA
+                                layout = horizontal, justify = center, align = center
+                                text "✓" { size = 10, weight = semibold, color = #FFFFFF }
+                            }
+                            frame dot { width = 8, height = 8, radius = 999, fill = #F85149 }
+                            text "error"             { size = 12, color = #1F2328, width = 150 }
+                            text "1"                 { size = 11, color = #868F99, family = "JetBrains Mono" }
+                        }
+                    }
+                }
+
+                frame spacer { height = fill }
+
+                // Reset / clear
+                frame footer_row {
+                    width = fill, layout = horizontal, gap = 8
+                    frame btn_reset {
+                        width = fill, height = 28, radius = 6
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = horizontal, justify = center, align = center
+                        text "Reset filters" { size = 12, color = #1F2328 }
+                    }
+                }
+            }
+
+            // --- Main ---
+            frame main {
+                width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+                frame page_header {
+                    width = fill, padding = [14, 24]
+                    stroke = [1, #E4E9EE]
+                    layout = horizontal, justify = space-between, align = center
+
+                    text "Mesh" { size = 18, weight = semibold, color = #1F2328 }
+
+                    frame actions { layout = horizontal, gap = 8, align = center
+                        frame chip_pods {
+                            padding = [4, 10], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                            layout = horizontal, gap = 6, align = center
+                            frame dot { width = 8, height = 8, radius = 999, fill = #3FB950 }
+                            text "9 active pods" { size = 12, weight = medium, color = #1F2328 }
+                        }
+                        frame chip_runners {
+                            padding = [4, 10], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                            layout = horizontal, gap = 6, align = center
+                            text "🖥" { size = 11 }
+                            text "2 of 3 runners online" { size = 12, weight = medium, color = #1F2328 }
+                        }
+
+                        frame gap_sep { width = 8 }
+
+                        frame zoom_group {
+                            padding = 2, radius = 6, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                            layout = horizontal, gap = 0
+
+                            frame btn_out { padding = [4, 10]
+                                text "−" { size = 13, color = #656D76 }
+                            }
+                            frame btn_fit { padding = [4, 10], radius = 4, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                text "Fit" { size = 12, weight = medium, color = #1F2328 }
+                            }
+                            frame btn_in { padding = [4, 10]
+                                text "+" { size = 13, color = #656D76 }
+                            }
+                        }
+                    }
+                }
+
+                frame topo_canvas {
+                    width = fill, height = fill, fill = #FAFBFC
+
+                    frame topology {
+                        position = relative
+                        width = fill, height = fill
+
+                        // ═══════════════════════════════════════════════════════════
+                        //  RUNNER CONTAINERS — dashed border, header + pod children
+                        //  Every Pod MUST live inside a Runner (no orphans).
+                        // ═══════════════════════════════════════════════════════════
+
+                        // ── Runner 1: runner-local (5 pods) ──
+                        frame runner_1 {
+                            position = absolute, top = 40, left = 40
+                            width = 680, height = 620, radius = 12
+                            stroke = [2, #AFB8C1]
+                            stroke-dash = [6, 4]
+                            fill = #FAFBFC
+                            layout = vertical
+
+                            frame header {
+                                width = fill, padding = [12, 16]
+                                layout = horizontal, align = center, gap = 10
+
+                                frame dot { width = 10, height = 10, radius = 999, fill = #3FB950 }
+                                text "runner-local"         { size = 13, weight = semibold, color = #1F2328 }
+                                text "online"               { size = 11, color = #1A7F37 }
+                                frame sep { width = 2, height = 12, fill = #D0D7DE }
+                                text "my-macbook.local"     { size = 11, color = #868F99, family = "JetBrains Mono" }
+
+                                frame spacer { width = fill }
+
+                                frame pod_count { padding = [2, 8], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                                    text "5 / 10 pods" { size = 11, color = #1F2328 }
+                                }
+                            }
+
+                            // Pods inside runner-local (4 visible in the content area)
+                            // We use nested absolute positioning relative to this runner frame.
+                        }
+
+                        // ── Pods inside runner-local ──
+
+                        // pod-abc-123 (selected, executing)
+                        frame node_abc {
+                            position = absolute, top = 100, left = 68
+                            width = 300, padding = 12, radius = 10
+                            fill = #FFFFFF, stroke = [2, #0969DA]
+                            layout = vertical, gap = 6
+
+                            frame top {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "pod-abc-123" { size = 11, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                                frame pill { padding = [1, 8], radius = 999, fill = #DAFBE1
+                                    text "running" { size = 10, weight = medium, color = #1A7F37 }
+                                }
+                            }
+                            frame agent_pill { padding = [1, 6], radius = 3, fill = #FFF8C5
+                                text "⚡ executing" { size = 10, weight = medium, color = #9A6700 }
+                            }
+                            text "Agent   claude-code · pty"        { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Model   sonnet-4-6"               { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Ticket  DEV-1 →"                  { size = 11, weight = medium, color = #0969DA, family = "JetBrains Mono" }
+                            text "10:04:12 · 12m ago"               { size = 10, color = #868F99, family = "JetBrains Mono" }
+                        }
+
+                        // pod-def-456 (processing)
+                        frame node_def {
+                            position = absolute, top = 100, left = 388
+                            width = 300, padding = 12, radius = 10
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = vertical, gap = 6
+
+                            frame top {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "pod-def-456" { size = 11, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                                frame pill { padding = [1, 8], radius = 999, fill = #DAFBE1
+                                    text "running" { size = 10, weight = medium, color = #1A7F37 }
+                                }
+                            }
+                            frame agent_pill { padding = [1, 6], radius = 3, fill = #DDF4FF
+                                text "◎ processing" { size = 10, weight = medium, color = #0550AE }
+                            }
+                            text "Agent   codex · acp"             { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Model   gpt-5-codex"             { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Ticket  DEV-1 →"                 { size = 11, weight = medium, color = #0969DA, family = "JetBrains Mono" }
+                            text "10:07:33 · 9m ago"               { size = 10, color = #868F99, family = "JetBrains Mono" }
+                        }
+
+                        // pod-ghi-789 (idle)
+                        frame node_ghi {
+                            position = absolute, top = 290, left = 68
+                            width = 300, padding = 12, radius = 10
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = vertical, gap = 6
+
+                            frame top {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "pod-ghi-789" { size = 11, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                                frame pill { padding = [1, 8], radius = 999, fill = #DAFBE1
+                                    text "running" { size = 10, weight = medium, color = #1A7F37 }
+                                }
+                            }
+                            frame agent_pill { padding = [1, 6], radius = 3, fill = #FFF8C5
+                                text "○ idle" { size = 10, weight = medium, color = #9A6700 }
+                            }
+                            text "Agent   aider · pty"             { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Model   sonnet-4-6"              { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Ticket  DEV-3 →"                 { size = 11, weight = medium, color = #0969DA, family = "JetBrains Mono" }
+                            text "09:51:08 · 26m ago"              { size = 10, color = #868F99, family = "JetBrains Mono" }
+                        }
+
+                        // pod-pqr-222 (no channel, standalone agent)
+                        frame node_pqr {
+                            position = absolute, top = 290, left = 388
+                            width = 300, padding = 12, radius = 10
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = vertical, gap = 6
+
+                            frame top {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "pod-pqr-222" { size = 11, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                                frame pill { padding = [1, 8], radius = 999, fill = #DAFBE1
+                                    text "running" { size = 10, weight = medium, color = #1A7F37 }
+                                }
+                            }
+                            frame agent_pill { padding = [1, 6], radius = 3, fill = #DDF4FF
+                                text "◎ processing" { size = 10, weight = medium, color = #0550AE }
+                            }
+                            text "Agent   codex · acp"             { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Model   gpt-5-codex"             { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Ticket  (none)"                  { size = 11, color = #B1B7BE, family = "JetBrains Mono" }
+                            text "10:12:01 · 4m ago"               { size = 10, color = #868F99, family = "JetBrains Mono" }
+                        }
+
+                        // pod-stu-333 (error)
+                        frame node_stu {
+                            position = absolute, top = 480, left = 68
+                            width = 300, padding = 12, radius = 10
+                            fill = #FFFFFF, stroke = [2, #CF222E]
+                            layout = vertical, gap = 6
+
+                            frame top {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "pod-stu-333" { size = 11, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                                frame pill { padding = [1, 8], radius = 999, fill = #FFEBE9
+                                    text "error" { size = 10, weight = medium, color = #CF222E }
+                                }
+                            }
+                            frame agent_pill { padding = [1, 6], radius = 3, fill = #FFEBE9
+                                text "⚠ exit code 1" { size = 10, weight = medium, color = #CF222E }
+                            }
+                            text "Agent   aider · pty"              { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Model   sonnet-4-6"               { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Ticket  DEV-7 →"                  { size = 11, weight = medium, color = #0969DA, family = "JetBrains Mono" }
+                            text "10:15:22 · 1m ago"                { size = 10, color = #868F99, family = "JetBrains Mono" }
+                        }
+
+                        // ── Runner 2: runner-cloud-1 (4 pods, at capacity) ──
+                        frame runner_2 {
+                            position = absolute, top = 40, left = 760
+                            width = 680, height = 620, radius = 12
+                            stroke = [2, #D29922]
+                            stroke-dash = [6, 4]
+                            fill = #FFFBEB
+                            layout = vertical
+
+                            frame header {
+                                width = fill, padding = [12, 16]
+                                layout = horizontal, align = center, gap = 10
+
+                                frame dot { width = 10, height = 10, radius = 999, fill = #D29922 }
+                                text "runner-cloud-1"       { size = 13, weight = semibold, color = #1F2328 }
+                                text "at capacity"          { size = 11, color = #9A6700 }
+                                frame sep { width = 2, height = 12, fill = #D0D7DE }
+                                text "ec2-prod-1"           { size = 11, color = #868F99, family = "JetBrains Mono" }
+
+                                frame spacer { width = fill }
+
+                                frame pod_count { padding = [2, 8], radius = 999, fill = #FFF8C5
+                                    text "10 / 10 pods" { size = 11, weight = medium, color = #9A6700 }
+                                }
+                            }
+                        }
+
+                        // ── Pods inside runner-cloud-1 ──
+
+                        // pod-jkl-000 (executing)
+                        frame node_jkl {
+                            position = absolute, top = 100, left = 788
+                            width = 300, padding = 12, radius = 10
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = vertical, gap = 6
+
+                            frame top {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "pod-jkl-000" { size = 11, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                                frame pill { padding = [1, 8], radius = 999, fill = #DAFBE1
+                                    text "running" { size = 10, weight = medium, color = #1A7F37 }
+                                }
+                            }
+                            frame agent_pill { padding = [1, 6], radius = 3, fill = #FFF8C5
+                                text "⚡ executing" { size = 10, weight = medium, color = #9A6700 }
+                            }
+                            text "Agent   claude-code · pty"        { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Model   sonnet-4-6"               { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Ticket  DEV-4 →"                  { size = 11, weight = medium, color = #0969DA, family = "JetBrains Mono" }
+                            text "10:08:49 · 8m ago"                { size = 10, color = #868F99, family = "JetBrains Mono" }
+                        }
+
+                        // pod-mno-111 (idle)
+                        frame node_mno {
+                            position = absolute, top = 100, left = 1108
+                            width = 300, padding = 12, radius = 10
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = vertical, gap = 6
+
+                            frame top {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "pod-mno-111" { size = 11, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                                frame pill { padding = [1, 8], radius = 999, fill = #DAFBE1
+                                    text "running" { size = 10, weight = medium, color = #1A7F37 }
+                                }
+                            }
+                            frame agent_pill { padding = [1, 6], radius = 3, fill = #FFF8C5
+                                text "○ idle" { size = 10, weight = medium, color = #9A6700 }
+                            }
+                            text "Agent   claude-code · pty"        { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Model   sonnet-4-6"               { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Ticket  DEV-5 →"                  { size = 11, weight = medium, color = #0969DA, family = "JetBrains Mono" }
+                            text "09:32:17 · 44m ago"               { size = 10, color = #868F99, family = "JetBrains Mono" }
+                        }
+
+                        // pod-vwx-444 (paused)
+                        frame node_vwx {
+                            position = absolute, top = 290, left = 788
+                            width = 300, padding = 12, radius = 10
+                            fill = #FAFAFA, stroke = [1, #D0D7DE]
+                            layout = vertical, gap = 6
+
+                            frame top {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "pod-vwx-444" { size = 11, weight = medium, color = #868F99, family = "JetBrains Mono" }
+                                frame pill { padding = [1, 8], radius = 999, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                                    text "paused" { size = 10, weight = medium, color = #656D76 }
+                                }
+                            }
+                            frame agent_pill { padding = [1, 6], radius = 3, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                                text "⏸ waiting" { size = 10, weight = medium, color = #656D76 }
+                            }
+                            text "Agent   claude-code · pty"        { size = 11, color = #868F99, family = "JetBrains Mono" }
+                            text "Model   sonnet-4-6"               { size = 11, color = #868F99, family = "JetBrains Mono" }
+                            text "Ticket  (none)"                   { size = 11, color = #B1B7BE, family = "JetBrains Mono" }
+                            text "08:40:00 · 1h 37m"                { size = 10, color = #B1B7BE, family = "JetBrains Mono" }
+                        }
+
+                        // pod-yz-555 (initializing)
+                        frame node_yz {
+                            position = absolute, top = 290, left = 1108
+                            width = 300, padding = 12, radius = 10
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = vertical, gap = 6
+
+                            frame top {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "pod-yz-555" { size = 11, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                                frame pill { padding = [1, 8], radius = 999, fill = #DDF4FF
+                                    text "initializing" { size = 10, weight = medium, color = #0550AE }
+                                }
+                            }
+                            frame agent_pill { padding = [1, 6], radius = 3, fill = #DDF4FF
+                                text "⟳ starting" { size = 10, weight = medium, color = #0550AE }
+                            }
+                            text "Agent   claude-code · pty"        { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Model   sonnet-4-6"               { size = 11, color = #656D76, family = "JetBrains Mono" }
+                            text "Ticket  DEV-8 →"                  { size = 11, weight = medium, color = #0969DA, family = "JetBrains Mono" }
+                            text "10:16:30 · just now"              { size = 10, color = #868F99, family = "JetBrains Mono" }
+                        }
+
+                        // ═══════════════════════════════════════════════════════════
+                        //  DIRECTIONAL EDGES with R/W distinction
+                        //  Arrow convention: solid dark = pod:write, dashed light = pod:read
+                        // ═══════════════════════════════════════════════════════════
+
+                        // WRITE: abc → def (within auth-review channel, same runner)
+                        // Start at right edge of abc (x=368, y=168), end at left edge of def (x=388, y=168)
+                        shape arrow_abc_def {
+                            type = path
+                            path = "M 0 4 L 16 4 M 11 0 L 16 4 L 11 8"
+                            position = absolute, top = 164, left = 370
+                            width = 20, height = 12
+                            stroke = [2, #1F2328]
+                        }
+
+                        // READ: ghi → abc (observe, within same runner)
+                        // ghi top-right corner area up to abc bottom-left area
+                        shape arrow_ghi_abc {
+                            type = path
+                            path = "M 6 90 L 6 6 M 2 11 L 6 6 L 10 11"
+                            position = absolute, top = 220, left = 90
+                            width = 20, height = 100
+                            stroke = [1, #AFB8C1]
+                            stroke-dash = [4, 3]
+                        }
+
+                        // WRITE: def → pqr (control handoff)
+                        shape arrow_def_pqr {
+                            type = path
+                            path = "M 16 6 L 16 90 M 12 85 L 16 90 L 20 85"
+                            position = absolute, top = 220, left = 522
+                            width = 40, height = 100
+                            stroke = [2, #1F2328]
+                        }
+
+                        // WRITE: jkl → mno (within standups)
+                        shape arrow_jkl_mno {
+                            type = path
+                            path = "M 0 4 L 16 4 M 11 0 L 16 4 L 11 8"
+                            position = absolute, top = 164, left = 1090
+                            width = 20, height = 12
+                            stroke = [2, #1F2328]
+                        }
+
+                        // WRITE cross-runner: def → jkl (cross-channel control)
+                        shape arrow_def_jkl {
+                            type = path
+                            path = "M 0 4 L 96 4 M 91 0 L 96 4 L 91 8"
+                            position = absolute, top = 164, left = 690
+                            width = 100, height = 12
+                            stroke = [2, #1F2328]
+                        }
+
+                        // READ: yz → vwx (resume observation; within same runner)
+                        shape arrow_yz_vwx {
+                            type = path
+                            path = "M 16 4 L 0 4 M 5 0 L 0 4 L 5 8"
+                            position = absolute, top = 420, left = 1090
+                            width = 20, height = 12
+                            stroke = [1, #AFB8C1]
+                            stroke-dash = [4, 3]
+                        }
+
+                        // ── Runner 3 footer: runner-staging offline (collapsed, informational) ──
+                        frame runner_3 {
+                            position = absolute, top = 700, left = 40
+                            width = 1400, padding = [12, 16], radius = 10
+                            stroke = [1, #D0D7DE]
+                            stroke-dash = [6, 4]
+                            fill = #FAFAFA
+                            layout = horizontal, align = center, gap = 10
+
+                            frame dot { width = 10, height = 10, radius = 999, fill = #8B949E }
+                            text "runner-staging"    { size = 13, weight = semibold, color = #656D76 }
+                            text "offline · 3d ago"  { size = 11, color = #868F99 }
+                            frame sep { width = 2, height = 12, fill = #D0D7DE }
+                            text "staging-worker"    { size = 11, color = #B1B7BE, family = "JetBrains Mono" }
+                            frame spacer { width = fill }
+                            text "0 pods · Diagnose →" { size = 11, weight = medium, color = #0969DA }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+}
+
+
+component pg_mesh_framed() {
+    frame outer {
+        width = 2000
+        height = 1180
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_mesh()
+    }
+}
+
+frame root {
+    use pg_mesh_framed()
+}

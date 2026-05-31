@@ -1,0 +1,36 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "aider",
+    srcs = [
+        "parser.go",
+        "register.go",
+    ],
+    importpath = "github.com/anthropics/agentsmesh/runner/internal/agents/aider",
+    visibility = ["//runner:__subpackages__"],
+    deps = [
+        "//runner/internal/agentkit",
+        "//runner/internal/logger",
+        "//runner/internal/tokenusage",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":aider",
+    visibility = ["//runner:__subpackages__"],
+)
+
+go_test(
+    name = "aider_test",
+    srcs = [
+        "parser_coverage_test.go",
+        "parser_test.go",
+    ],
+    embed = [":aider"],
+    deps = [
+        "//runner/internal/tokenusage",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)

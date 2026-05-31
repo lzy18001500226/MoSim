@@ -1,0 +1,23 @@
+# pnpm workspace config — only external npm dependency resolution.
+#
+# First-party `@agentsmesh/*` packages are NOT pnpm workspace members
+# anymore; they're managed by Bazel via `internal_npm_package` (see
+# build_defs/web/internal_package.bzl) + `npm_link_package` in the root
+# BUILD.bazel. pnpm only needs to resolve the external npm deps listed
+# in the root package.json.
+overrides:
+  # Next.js 16 pulls in @playwright/test@1.59.1 as a peer dep, which
+  # conflicts with the Bazel `rules_playwright` compatible version
+  # (rules_playwright 0.5.3 targets Playwright 1.50 — 1.59 triggers
+  # module-identity check failures under aspect_rules_js's sandbox).
+  # Force one version across the whole tree.
+  "@playwright/test": "1.50.1"
+  playwright: "1.50.1"
+  playwright-core: "1.50.1"
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver
+onlyBuiltDependencies:
+  - electron
+  - esbuild
+  - "@parcel/watcher"

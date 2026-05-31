@@ -1,0 +1,31 @@
+# =============================================================================
+# Traefik Static Configuration for OnPremise Deployment
+# =============================================================================
+#
+# Uses file-based configuration only (no Docker socket required)
+# More secure and portable across different environments
+#
+# =============================================================================
+
+api:
+  dashboard: false
+  insecure: false
+
+entryPoints:
+  web:
+    address: ":80"
+  grpc:
+    address: ":9443"
+
+providers:
+  # File-based configuration only (no Docker socket needed)
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+log:
+  level: INFO
+  format: json
+
+accessLog:
+  format: json

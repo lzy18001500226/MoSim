@@ -1,0 +1,197 @@
+load("@npm//:next/package_json.bzl", next_bin = "bin")
+load("//build_defs/web:eslint.bzl", "eslint_test")
+load("//build_defs/web:next.bzl", "next_app", "next_standalone_app")
+load("//build_defs/web:next_oci.bzl", "next_oci_image")
+load("//build_defs/web:ts.bzl", "ts_project")
+load("//build_defs/web:vitest.bzl", "vitest_test")
+
+# Per-importer Next.js binary — see clients/web/BUILD.bazel for the full
+# explanation. Same factory pattern, distinct target name so each
+# package's `next_app()` gets its own `js_binary` wrapper.
+next_bin.next_binary(
+    name = "next_js_binary",
+    visibility = ["//visibility:public"],
+)
+
+# Source glob — Next.js's bundler (SWC) compiles the TypeScript itself
+# at `next build` time, so the OCI image target feeds raw .ts/.tsx
+# through. `:src` below runs tsc as a type-check gate but is not used
+# as the build input.
+_SRC_FILES = glob(
+    [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.css",
+        "src/**/*.json",
+    ],
+    allow_empty = True,
+    exclude = [
+        "src/**/*.test.ts",
+        "src/**/*.test.tsx",
+    ],
+)
+
+ts_project(
+    name = "src",
+    srcs = glob(
+        [
+            "src/**/*.ts",
+            "src/**/*.tsx",
+            "src/**/*.json",
+        ],
+        allow_empty = True,
+        exclude = [
+            "src/**/*.test.ts",
+            "src/**/*.test.tsx",
+        ],
+    ),
+    allow_js = True,
+    extends = "tsconfig.json",
+    no_emit = True,
+    resolve_json_module = True,
+    tsconfig = "tsconfig.bazel.json",
+    deps = [
+        "//:node_modules",
+        # Bazel-native first-party package mounting the generated TS
+        # Connect-RPC proto modules. tsc resolves `@proto/<svc>/v1/...`
+        # imports through this node-module walk; the tsconfig path
+        # alias `@proto/*` is a fallback that aspect_rules_ts can't use
+        # because the underlying files sit outside the project rootDir.
+        "//:node_modules/@agentsmesh/proto",
+    ],
+)
+
+# Common build inputs — see clients/web/BUILD.bazel for the rationale.
+_NEXT_DATA_COMMON = [
+    "postcss.config.mjs",
+    "tsconfig.json",
+    "//:node_modules",
+    "//:node_modules/@agentsmesh/service-interface",
+    "//:node_modules/@agentsmesh/service-runtime",
+    "//:node_modules/agentsmesh-wasm",
+    "//:package_json_bin",
+    # Generated TS proto modules — mounted as `@agentsmesh/proto` via
+    # //BUILD.bazel's `npm_link_package`. Next.js's bundler walks the
+    # node_modules resolution chain for `@proto/*` imports (the
+    # tsconfig path alias points there).
+    "//:node_modules/@agentsmesh/proto",
+]
+
+# Dev path — keeps next.config.ts so existing `bazel run :next_dev` works.
+# `next_build_out=".next-dev"` avoids the `.next/` output collision
+# with `:next_image` — see //clients/web for the matching note.
+next_app(
+    name = "next",
+    srcs = _SRC_FILES,
+    data = _NEXT_DATA_COMMON + ["next.config.ts"],
+    next_build_out = ".next-dev",
+    next_js_binary = ":next_js_binary",
+)
+
+# OCI-image path — see clients/web/BUILD.bazel for the rationale.
+next_standalone_app(
+    name = "next_image",
+    srcs = _SRC_FILES,
+    config = "next.config.bazel.mjs",
+    data = _NEXT_DATA_COMMON,
+    next_js_binary = ":next_js_binary",
+    node_modules_runtime = [
+        "//:node_modules/next",
+        "//:node_modules/react",
+        "//:node_modules/react-dom",
+        "//:node_modules/@next/env",
+        "//:node_modules/@swc/helpers",
+        "//:node_modules/baseline-browser-mapping",
+        "//:node_modules/caniuse-lite",
+        "//:node_modules/postcss",
+        "//:node_modules/styled-jsx",
+    ],
+)
+
+next_oci_image(
+    name = "image",
+    app_dir = "/app/clients/web-admin",
+    # Prod swarm stack defines a healthcheck against :3001/admin. Pin
+    # PORT here so the runtime listener and the probe address match.
+    env = {"PORT": "3001"},
+    exposed_ports = ["3001/tcp"],
+    extra_files = [
+        "entrypoint.mjs",
+        "healthcheck.mjs",
+    ],
+    repositories = {
+        "agentsmesh": "registry.agentsmesh.ai/agentsmesh/web-admin",
+        "dockerhub": "agentsmesh/web-admin",
+    },
+    server_dir = ":next_image_server_dir",
+)
+
+# Image-size regression gate. 200 MB ceiling on the server tree (≈370 MB
+# image w/ distroless base). Current size is ~166 MB — most of the
+# weight is Next.js runtime (`node_modules/next/dist/compiled/next-server`,
+# ~50 MB) plus react/react-dom. See clients/web:image_size_gate for context.
+sh_test(
+    name = "image_size_gate",
+    srcs = ["//build_defs/web:image_size_gate.sh"],
+    args = [
+        "$(rootpath :next_image_server_dir)",
+        "209715200",
+    ],
+    data = [":next_image_server_dir"],
+)
+
+# `:next` (dev build) and `:next_image` (standalone) both write into
+# `.next/`. Wildcard builds (`bazel build //...`) trigger both → Bazel
+# rejects with "conflicting actions". `:next` carries the `manual` tag
+# via the `next_app` macro so wildcards skip it. See //clients/web for
+# the matching note.
+
+# `bazel test //clients/web-admin:lint` — see //build_defs/web:eslint.bzl.
+eslint_test(
+    name = "lint",
+    size = "medium",
+    srcs = glob(
+        [
+            "src/**/*.ts",
+            "src/**/*.tsx",
+            "src/**/*.js",
+            "src/**/*.mjs",
+        ],
+        allow_empty = True,
+        exclude = ["src/**/*.d.ts"],
+    ),
+)
+
+# Vitest unit + component tests (13 files as of last run).
+# `bazel test //clients/web-admin:unit` is equivalent to `pnpm --filter web-admin test`.
+vitest_test(
+    name = "unit",
+    size = "medium",
+    srcs = glob([
+        "src/**/*.test.ts",
+        "src/**/*.test.tsx",
+    ]),
+    config = "vitest.config.ts",
+    data = [
+        "tsconfig.json",
+        "//:node_modules",
+        "//:package_json_bin",
+        # Generated TS proto modules — vitest's `@proto/*` alias
+        # (vitest.config.ts) resolves to `../../proto/gen/ts/*`. The
+        # runfiles must contain the generated sources or vite's
+        # import-analysis plugin rejects the alias.
+        "//proto:proto_gen_ts",
+    ] + glob(
+        [
+            "src/**/*.ts",
+            "src/**/*.tsx",
+            "src/**/*.json",
+            "src/**/*.css",
+        ],
+        allow_empty = True,
+        exclude = [
+            "src/**/*.test.ts",
+            "src/**/*.test.tsx",
+        ],
+    ),
+)

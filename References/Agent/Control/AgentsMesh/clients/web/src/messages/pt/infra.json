@@ -1,0 +1,8 @@
+{
+  "infra": {
+    "tabs": {
+      "repositories": "Repositories",
+      "runners": "Runners"
+    }
+  }
+}

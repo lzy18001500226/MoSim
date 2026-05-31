@@ -1,0 +1,166 @@
+// iOS Shell v3 — full integration (Pods active root tab).
+
+asset search_blue       = image("../assets/lucide-png/search-0969DA.png")
+asset plus_blue         = image("../assets/lucide-png/plus-0969DA.png")
+asset terminal_active   = image("../assets/lucide-png/terminal-filled-0969DA.png")
+asset message_inactive  = image("../assets/lucide-png/message-8E8E93.png")
+asset ticket_inactive   = image("../assets/lucide-png/ticket-8E8E93.png")
+asset blocks_inactive   = image("../assets/lucide-png/blocks-8E8E93.png")
+asset more_inactive     = image("../assets/lucide-png/ellipsis-8E8E93.png")
+
+canvas "ios_shell_v3" {
+    width = 1100
+    height = 1100
+    background = #1F2328
+}
+
+component sh_status_bar() {
+    frame {
+        width = fill, height = 59, fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center, padding = [0, 22]
+        text "9:41" { size = 17, weight = semibold, color = #1F2328, family = "SF Pro" }
+        frame icons { layout = horizontal, gap = 6, align = center
+            text "📶" { size = 14 } text "📡" { size = 14 }
+            frame battery { width = 28, height = 13, radius = 4, stroke = [1, #1F2328], padding = 2,
+                layout = horizontal, align = center
+                shape level { type = rectangle, width = 20, height = 7, radius = 1, fill = #1F2328 }
+            }
+        }
+    }
+}
+
+component sh_nav_bar() {
+    frame {
+        width = fill, height = 44, fill = #FFFFFFE6
+        padding = [0, 8, 0, 12], layout = horizontal, justify = space-between, align = center
+        frame left { layout = horizontal, gap = 12, align = center
+            frame avatar { width = 40, height = 40, radius = 999, fill = #0969DA
+                layout = horizontal, justify = center, align = center
+                text "S" { size = 17, weight = semibold, color = #FFFFFF }
+            }
+            text "Pods" { size = 17, weight = semibold, color = #1F2328 }
+        }
+        frame actions { layout = horizontal, gap = 4, align = center
+            frame search_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+                image search_blue { width = 24, height = 24 }
+            }
+            frame plus_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+                image plus_blue { width = 24, height = 24 }
+            }
+        }
+    }
+}
+
+component sh_floating_tab_bar() {
+    frame {
+        width = 361, height = 56, radius = 28
+        fill = #FFFFFFE6, stroke = [1, #0000000D]
+        shadow = [0, 4, 12, #00000014]
+        padding = [0, 8], layout = horizontal, justify = space-between, align = center
+
+        frame t1 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image terminal_active { width = 24, height = 24 }
+            text "Pods" { size = 10, weight = semibold, color = #0969DA, family = "SF Pro" }
+        }
+        frame t2 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image message_inactive { width = 24, height = 24 }
+            text "Channels" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+        frame t3 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image ticket_inactive { width = 24, height = 24 }
+            text "Tickets" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+        frame t4 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image blocks_inactive { width = 24, height = 24 }
+            text "Blocks" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+        frame t5 { width = 64, layout = vertical, gap = 2, align = center, justify = center, padding = [4, 0]
+            image more_inactive { width = 24, height = 24 }
+            text "More" { size = 10, weight = medium, color = #8E8E93, family = "SF Pro" }
+        }
+    }
+}
+
+component pg_ios_shell() {
+frame root {
+    width = 393, height = 852, fill = #FFFFFF
+    radius = 47, stroke = [3, #1F2328]
+    layout = vertical
+
+    use sh_status_bar()
+    use sh_nav_bar()
+
+    frame content {
+        width = fill, height = fill, fill = #F2F2F7
+        layout = vertical, justify = center, align = center, gap = 12
+        text "[ Page content ]" { size = 17, weight = semibold, color = #8E8E93 }
+        text "393 × 689pt scrollable area" { size = 13, color = #8E8E93, family = "SF Mono" }
+    }
+
+    frame tab_zone {
+        width = fill, height = 88, fill = #F2F2F7
+        layout = vertical, justify = end, align = center, padding = [0, 0, 16, 0]
+        use sh_floating_tab_bar()
+    }
+
+    frame safe_bottom { width = fill, height = 34, fill = #F2F2F7
+        layout = horizontal, justify = center, align = center
+        shape indicator { type = rectangle, width = 134, height = 5, radius = 999, fill = #1F2328 }
+    }
+}
+}
+
+
+component anno_label(text_value) {
+    text text_value { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+}
+component anno_value(text_value) {
+    text text_value { size = 12, color = #C9D1D9, wrap = true, width = 200 }
+}
+
+component pg_ios_shell_framed() {
+    frame outer {
+        width = 1100, height = 1100, fill = #1F2328
+        padding = [60, 80]
+        layout = horizontal, justify = space-between, align = center, gap = 60
+
+        frame col_left {
+            layout = vertical, gap = 32, width = 200, align = end
+            frame block { layout = vertical, gap = 4, align = end
+                use anno_label("STATUS BAR")
+                use anno_value("59pt · Dynamic Island")
+            }
+            frame block { layout = vertical, gap = 4, align = end
+                use anno_label("NAV BAR")
+                use anno_value("44pt · avatar (drawer entry) + Pods title + search/plus")
+            }
+            frame block { layout = vertical, gap = 4, align = end
+                use anno_label("CONTENT")
+                use anno_value("689pt · #F2F2F7")
+            }
+        }
+
+        frame center { layout = vertical, justify = center, align = center
+            use pg_ios_shell()
+        }
+
+        frame col_right {
+            layout = vertical, gap = 32, width = 200
+            frame block { layout = vertical, gap = 4
+                use anno_label("DEVICE")
+                use anno_value("iPhone 14 Pro")
+                use anno_value("393×852pt @ 1×")
+            }
+            frame block { layout = vertical, gap = 4
+                use anno_label("FLOATING TAB BAR")
+                use anno_value("361×56pt capsule · r28 · 16pt above safe-bottom · glass #FFFFFFE6")
+            }
+            frame block { layout = vertical, gap = 4
+                use anno_label("HOME INDICATOR")
+                use anno_value("34pt safe-bottom")
+            }
+        }
+    }
+}
+
+frame root { use pg_ios_shell_framed() }

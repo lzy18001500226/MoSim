@@ -1,0 +1,362 @@
+// Settings — Organization scope, Infrastructure → Runners sub-tab (example view).
+// Key changes from current implementation:
+//  1. Personal / Organization split by visible top Tabs (not query param).
+//  2. Organization settings grouped: General / People / Infrastructure / Agents / Billing / API Keys / Audit / Danger.
+//  3. Each sub-page has its own URL (e.g. /[org]/settings/infra/runners), deep-linkable.
+
+canvas "settings_org" {
+    width = 2000
+    height = 1160
+    background = #1F2328
+}
+
+component so_nav_icon_active(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = #DDF4FF, stroke = [1, #0969DA]
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, weight = medium, color = #0969DA }
+    }
+}
+component so_nav_icon(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = transparent
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, color = #656D76 }
+    }
+}
+component so_section_divider() { shape { type = rectangle, width = 24, height = 1, fill = #D0D7DE } }
+
+// Left settings nav item
+component so_nav_row(icon, label, count_text) {
+    frame {
+        width = fill, padding = [7, 12], radius = 6
+        layout = horizontal, align = center, gap = 10
+
+        text icon { size = 13, color = #656D76 }
+        text label { size = 13, color = #1F2328, width = 150 }
+        text count_text { size = 11, color = #868F99, family = "JetBrains Mono" }
+    }
+}
+component so_nav_row_active(icon, label, count_text) {
+    frame {
+        width = fill, padding = [7, 12], radius = 6, fill = #E4E9EE
+        layout = horizontal, align = center, gap = 10
+
+        text icon { size = 13, color = #1F2328 }
+        text label { size = 13, weight = medium, color = #1F2328, width = 150 }
+        text count_text { size = 11, color = #656D76, family = "JetBrains Mono" }
+    }
+}
+component so_nav_group_label(label) {
+    text label {
+        size = 10, weight = semibold, color = #868F99
+        text-transform = uppercase, letter-spacing = 1.5
+    }
+}
+
+component status_dot(color) {
+    frame { width = 8, height = 8, radius = 999, fill = color }
+}
+
+component pg_settings_org() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width = 1920, height = 1080, fill = #F6F8FA
+
+    frame app {
+        width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+        frame body {
+            width = fill, height = fill, layout = horizontal
+
+            // --- ActivityBar ---
+            frame activity_bar {
+                width = 48, height = fill, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                layout = vertical, align = center, padding = [12, 6], gap = 6
+
+                frame org_switcher {
+                    width = 36, height = 36, radius = 8, fill = #0969DA
+                    layout = horizontal, justify = center, align = center
+                    text "D" { size = 16, weight = semibold, color = #FFFFFF }
+                }
+                frame gap_s { height = 12 }
+
+                use so_nav_icon("▦")
+                use so_nav_icon("#")
+                use so_nav_icon(">_")
+                use so_section_divider()
+                use so_nav_icon("🎫")
+                use so_nav_icon("↻")
+                use so_nav_icon("⚘")
+
+                frame spacer { height = fill }
+                use so_nav_icon("⌘")
+                use so_nav_icon("?")
+                use so_nav_icon_active("⚙")
+                use so_nav_icon("👤")
+            }
+
+            // --- Settings sidebar (280px) ---
+            frame sidebar {
+                width = 280, height = fill, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = vertical
+
+                // Scope tabs — Personal | Organization
+                frame scope_tabs {
+                    width = fill, padding = 12
+                    layout = horizontal, gap = 0
+                    stroke = [1, #D0D7DE]
+
+                    frame tab_personal {
+                        width = fill, padding = [8, 0], radius = 6
+                        layout = horizontal, justify = center, align = center, gap = 6
+
+                        text "👤" { size = 12, color = #656D76 }
+                        text "Personal" { size = 13, color = #656D76 }
+                    }
+                    frame tab_org {
+                        width = fill, padding = [8, 0], radius = 6, fill = #FFFFFF
+                        stroke = [1, #D0D7DE]
+                        layout = horizontal, justify = center, align = center, gap = 6
+
+                        text "🏢" { size = 12, color = #0969DA }
+                        text "Organization" { size = 13, weight = semibold, color = #1F2328 }
+                    }
+                }
+
+                // Org nav list
+                frame nav_list {
+                    width = fill, padding = [16, 12], layout = vertical, gap = 6
+
+                    use so_nav_row("🏢", "General", "")
+                    use so_nav_row("👥", "People",  "12")
+
+                    frame gap1 { height = 8 }
+                    use so_nav_group_label("Infrastructure")
+                    use so_nav_row_active("🖥", "Runners", "3")
+                    use so_nav_row("📁", "Code", "5 repos")
+
+                    frame gap2 { height = 8 }
+                    use so_nav_group_label("Extensions")
+                    use so_nav_row("🤖", "Agents", "4")
+                    use so_nav_row("🧩", "MCP servers", "2")
+                    use so_nav_row("🎯", "Skills", "7")
+
+                    frame gap3 { height = 8 }
+                    use so_nav_group_label("Access & Billing")
+                    use so_nav_row("💳", "Billing & Usage", "pro")
+                    use so_nav_row("🔐", "API Keys", "3")
+                    use so_nav_row("📜", "Audit Log", "")
+
+                    frame gap4 { height = 8 }
+                    use so_nav_group_label("")
+                    use so_nav_row("⚠",  "Danger Zone", "")
+                }
+            }
+
+            // --- Main (Runners list as example content) ---
+            frame main {
+                width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+                // PageHeader — title + breadcrumb + action
+                frame page_header {
+                    width = fill, padding = [14, 32]
+                    stroke = [1, #E4E9EE]
+                    layout = vertical, gap = 6
+
+                    frame bc {
+                        layout = horizontal, gap = 8, align = center
+                        text "Settings"         { size = 12, color = #868F99 }
+                        text "›"                { size = 12, color = #AFB8C1 }
+                        text "Organization"     { size = 12, color = #868F99 }
+                        text "›"                { size = 12, color = #AFB8C1 }
+                        text "Infrastructure"   { size = 12, color = #868F99 }
+                        text "›"                { size = 12, color = #AFB8C1 }
+                        text "Runners"          { size = 12, weight = medium, color = #1F2328 }
+                    }
+
+                    frame title_row {
+                        width = fill, layout = horizontal, justify = space-between, align = center
+
+                        text "Runners" { size = 18, weight = semibold, color = #1F2328 }
+
+                        frame actions { layout = horizontal, gap = 8, align = center
+                            frame btn_docs {
+                                height = 30, padding = [0, 12], radius = 6
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = horizontal, justify = center, align = center
+                                text "Install docs" { size = 13, color = #1F2328 }
+                            }
+                            frame btn_register {
+                                height = 30, padding = [0, 14], radius = 6, fill = #0969DA
+                                layout = horizontal, justify = center, align = center, gap = 6
+                                text "+" { size = 13, weight = medium, color = #FFFFFF }
+                                text "Register Runner" { size = 13, weight = medium, color = #FFFFFF }
+                            }
+                        }
+                    }
+                }
+
+                // Runners list (cards)
+                frame content {
+                    width = fill, height = fill, padding = 24, fill = #FFFFFF
+                    layout = vertical, gap = 12
+
+                    // Runner card — online
+                    frame runner_1 {
+                        width = fill, padding = 16, radius = 8
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = horizontal, gap = 16, align = center
+
+                        use status_dot(#1A7F37)
+
+                        frame info { layout = vertical, gap = 2, width = 280
+                            frame name_row {
+                                layout = horizontal, gap = 8, align = center
+                                text "runner-local" { size = 14, weight = semibold, color = #1F2328 }
+                                frame badge { padding = [1, 6], radius = 3, fill = #DAFBE1
+                                    text "online" { size = 11, weight = medium, color = #1A7F37 }
+                                }
+                            }
+                            text "my-macbook.local · macOS 15.2 · arm64" { size = 11, color = #868F99, family = "JetBrains Mono" }
+                        }
+
+                        frame stats { layout = horizontal, gap = 32, width = fill
+                            frame s1 { layout = vertical, gap = 2, align = start
+                                text "Pods"    { size = 11, color = #868F99 }
+                                text "5 / 10"  { size = 14, weight = semibold, color = #1F2328 }
+                            }
+                            frame s2 { layout = vertical, gap = 2, align = start
+                                text "Version" { size = 11, color = #868F99 }
+                                text "v1.8.2"  { size = 13, color = #1F2328, family = "JetBrains Mono" }
+                            }
+                            frame s3 { layout = vertical, gap = 2, align = start
+                                text "Uptime"  { size = 11, color = #868F99 }
+                                text "4h 12m"  { size = 13, color = #1F2328 }
+                            }
+                            frame s4 { layout = vertical, gap = 2, align = start
+                                text "Cert expires" { size = 11, color = #868F99 }
+                                text "in 287 days"  { size = 13, color = #1F2328 }
+                            }
+                        }
+
+                        frame btn_manage {
+                            height = 30, padding = [0, 12], radius = 6
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = horizontal, justify = center, align = center
+                            text "Manage" { size = 13, color = #1F2328 }
+                        }
+                    }
+
+                    // Runner card — online, at capacity
+                    frame runner_2 {
+                        width = fill, padding = 16, radius = 8
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = horizontal, gap = 16, align = center
+
+                        use status_dot(#D29922)
+
+                        frame info { layout = vertical, gap = 2, width = 280
+                            frame name_row {
+                                layout = horizontal, gap = 8, align = center
+                                text "runner-cloud-1" { size = 14, weight = semibold, color = #1F2328 }
+                                frame badge { padding = [1, 6], radius = 3, fill = #FFF8C5
+                                    text "at capacity" { size = 11, weight = medium, color = #9A6700 }
+                                }
+                            }
+                            text "ec2-prod-1 · Amazon Linux · x86_64" { size = 11, color = #868F99, family = "JetBrains Mono" }
+                        }
+
+                        frame stats { layout = horizontal, gap = 32, width = fill
+                            frame s1 { layout = vertical, gap = 2, align = start
+                                text "Pods"    { size = 11, color = #868F99 }
+                                text "10 / 10" { size = 14, weight = semibold, color = #9A6700 }
+                            }
+                            frame s2 { layout = vertical, gap = 2, align = start
+                                text "Version" { size = 11, color = #868F99 }
+                                text "v1.8.2"  { size = 13, color = #1F2328, family = "JetBrains Mono" }
+                            }
+                            frame s3 { layout = vertical, gap = 2, align = start
+                                text "Uptime"  { size = 11, color = #868F99 }
+                                text "12d 3h"  { size = 13, color = #1F2328 }
+                            }
+                            frame s4 { layout = vertical, gap = 2, align = start
+                                text "Cert expires" { size = 11, color = #868F99 }
+                                text "in 41 days"   { size = 13, color = #D29922 }
+                            }
+                        }
+
+                        frame btn_manage {
+                            height = 30, padding = [0, 12], radius = 6
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = horizontal, justify = center, align = center
+                            text "Manage" { size = 13, color = #1F2328 }
+                        }
+                    }
+
+                    // Runner card — offline
+                    frame runner_3 {
+                        width = fill, padding = 16, radius = 8
+                        fill = #FAFAFA, stroke = [1, #E4E9EE]
+                        layout = horizontal, gap = 16, align = center
+
+                        use status_dot(#8B949E)
+
+                        frame info { layout = vertical, gap = 2, width = 280
+                            frame name_row {
+                                layout = horizontal, gap = 8, align = center
+                                text "runner-staging" { size = 14, weight = semibold, color = #656D76 }
+                                frame badge { padding = [1, 6], radius = 3, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                                    text "offline · 3d" { size = 11, weight = medium, color = #656D76 }
+                                }
+                            }
+                            text "staging-worker · Ubuntu 22.04 · arm64" { size = 11, color = #B1B7BE, family = "JetBrains Mono" }
+                        }
+
+                        frame stats { layout = horizontal, gap = 32, width = fill
+                            frame s1 { layout = vertical, gap = 2, align = start
+                                text "Pods"    { size = 11, color = #B1B7BE }
+                                text "0 / 10"  { size = 14, weight = semibold, color = #868F99 }
+                            }
+                            frame s2 { layout = vertical, gap = 2, align = start
+                                text "Version" { size = 11, color = #B1B7BE }
+                                text "v1.7.4"  { size = 13, color = #868F99, family = "JetBrains Mono" }
+                            }
+                            frame s3 { layout = vertical, gap = 2, align = start
+                                text "Last seen"  { size = 11, color = #B1B7BE }
+                                text "3d 7h ago"  { size = 13, color = #868F99 }
+                            }
+                            frame s4 { width = 120 }
+                        }
+
+                        frame btn_diag {
+                            height = 30, padding = [0, 12], radius = 6
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = horizontal, justify = center, align = center
+                            text "Diagnose" { size = 13, weight = medium, color = #0969DA }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+}
+
+
+component pg_settings_org_framed() {
+    frame outer {
+        width = 2000
+        height = 1160
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_settings_org()
+    }
+}
+
+frame root {
+    use pg_settings_org_framed()
+}

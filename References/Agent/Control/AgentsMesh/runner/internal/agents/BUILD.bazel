@@ -1,0 +1,14 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "agents",
+    srcs = ["doc.go"],
+    importpath = "github.com/anthropics/agentsmesh/runner/internal/agents",
+    visibility = ["//runner:__subpackages__"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":agents",
+    visibility = ["//runner:__subpackages__"],
+)

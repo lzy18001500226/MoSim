@@ -1,0 +1,126 @@
+// EnvBundleService — user-scoped named KV bundles referenced from AgentFile
+// via `USE_ENV_BUNDLE "name"`. Migrated from REST handlers in
+// backend/internal/api/rest/v1/env_bundles*.go per
+// .claude/plans/proto-naming-conventions.md.
+//
+// Conventions enforced:
+//   * package proto.env_bundle.v1 + go_package suffix for dispatch
+//   * service name = EnvBundleService, methods PascalCase verbs
+//   * snake_case fields, no json_name annotations
+//   * USER-SCOPED service: no org_slug = 1 (conventions §3.5 exception #1)
+//   * timestamps as string ISO-8601 (no google.protobuf.Timestamp)
+//   * list response = {items, total, limit, offset} uniform envelope
+//
+// SENSITIVE DATA: credential-kind values are encrypted server-side and never
+// echo back on the wire. `configured_fields` lists the key names; values
+// arrive only for non-secret kinds (runtime/shared) via `configured_values`.
+
+syntax = "proto3";
+
+package proto.env_bundle.v1;
+
+import "codegen/v1/options.proto";
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/env_bundle/v1;envbundlev1";
+
+// Convert codegen target — emits env_bundle_convert.amesh.go into the backend
+// connect handler tree so it can reach the domain layer (which proto/gen/go
+// packages cannot import under Go's internal-package rule).
+option (amesh.codegen.v1.convert_target) = {
+  output_dir: "backend/internal/api/connect/env_bundle"
+  output_package: "envbundleconnect"
+};
+
+service EnvBundleService {
+  rpc ListEnvBundles(ListEnvBundlesRequest) returns (ListEnvBundlesResponse);
+  rpc GetEnvBundle(GetEnvBundleRequest) returns (EnvBundle);
+  rpc CreateEnvBundle(CreateEnvBundleRequest) returns (EnvBundle);
+  rpc UpdateEnvBundle(UpdateEnvBundleRequest) returns (EnvBundle);
+  rpc DeleteEnvBundle(DeleteEnvBundleRequest) returns (DeleteEnvBundleResponse);
+  rpc SetPrimaryEnvBundle(SetPrimaryEnvBundleRequest) returns (SetPrimaryEnvBundleResponse);
+}
+
+// EnvBundle mirrors backend/internal/domain/envbundle.EnvBundle.ToResponse().
+// `configured_fields` and `configured_values` are disjoint by construction —
+// secret kinds populate fields only, non-secret kinds populate values only.
+message EnvBundle {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/envbundle.Response"
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  string owner_scope = 2;
+  int64 owner_id = 3 [(amesh.codegen.v1.field_rename) = "OwnerID"];
+  optional string agent_slug = 4 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  string name = 5;
+  optional string description = 6 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  string kind = 7;
+  bool kind_primary = 8;
+  bool is_active = 9;
+  // Field names whose values were stored. Always populated for secret kinds;
+  // for non-secret kinds matches keys(configured_values).
+  repeated string configured_fields = 10;
+  // Plaintext KV map — populated only for non-secret kinds. Empty for
+  // credential kind (values stay server-side).
+  map<string, string> configured_values = 11;
+  string created_at = 12;
+  string updated_at = 13;
+}
+
+message ListEnvBundlesRequest {
+  optional string kind = 1;
+  optional string agent_slug = 2;
+}
+
+message ListEnvBundlesResponse {
+  repeated EnvBundle items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message GetEnvBundleRequest {
+  int64 id = 1;
+}
+
+message CreateEnvBundleRequest {
+  optional string agent_slug = 1;
+  string name = 2;
+  optional string description = 3;
+  string kind = 4;
+  bool kind_primary = 5;
+  // Plaintext KV map. Backend encrypts per-value for credential kind.
+  map<string, string> data = 6;
+}
+
+// `data` has three-state semantics on the wire:
+//   - field absent → nil → "leave data unchanged"
+//   - empty map    → "clear all keys"
+//   - non-empty    → "replace stored values"
+// The optional bool wrapper handles `data`: keep distinguishable from "set to
+// empty map" using a proto3-style `optional` wrapper around the message field.
+message UpdateEnvBundleRequest {
+  int64 id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional string kind = 4;
+  optional bool kind_primary = 5;
+  // `has_data = true` + empty `data` map → clear all keys.
+  // `has_data = false` → leave data unchanged.
+  // `has_data = true` + populated `data` → replace stored values.
+  bool has_data = 6;
+  map<string, string> data = 7;
+  optional bool is_active = 8;
+}
+
+message DeleteEnvBundleRequest {
+  int64 id = 1;
+}
+
+message DeleteEnvBundleResponse {}
+
+message SetPrimaryEnvBundleRequest {
+  int64 id = 1;
+}
+
+message SetPrimaryEnvBundleResponse {}

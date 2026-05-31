@@ -1,0 +1,350 @@
+// iOS Org Drawer — Lark/Slack-inspired slide-in drawer for org switching + account.
+// Layout (left to right within iPhone 14 Pro 393pt):
+//   rail        60pt  — vertical list of orgs (rounded-square icons + label)
+//   main       280pt  — account header + menu list (mirrors web /settings tabs)
+//   peek        53pt  — visible peek of channel page below + dim overlay
+//
+// Menu items map 1:1 to clients/web settings tabs:
+//   Personal: General · Git · Agent Config · Notifications · Support
+//   Org:      General · Members · Extensions · API Keys · Usage · Billing
+
+canvas "ios_org_drawer" {
+    width = 1100
+    height = 1100
+    background = #1F2328
+}
+
+// ── Status bar (white because drawer covers most of screen) ────────
+component sh_status_bar() {
+    frame {
+        width = fill, height = 59, fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center
+        padding = [0, 22]
+        text "9:41" { size = 17, weight = semibold, color = #1F2328, family = "SF Pro" }
+        frame icons { layout = horizontal, gap = 6, align = center
+            text "📶" { size = 14 }
+            text "📡" { size = 14 }
+            frame battery {
+                width = 28, height = 13, radius = 4, stroke = [1, #1F2328]
+                padding = 2, layout = horizontal, align = center
+                shape level { type = rectangle, width = 20, height = 7, radius = 1, fill = #1F2328 }
+            }
+        }
+    }
+}
+
+// ── Org rail items ─────────────────────────────────────────────────
+component rail_org_active(letter, bg, name) {
+    frame {
+        width = fill, padding = [10, 0], layout = vertical, gap = 4, align = center
+        frame indicator_row { width = fill, layout = horizontal, gap = 8, align = center
+            shape indicator { type = rectangle, width = 3, height = 36, radius = 999, fill = #0969DA }
+            frame avatar {
+                width = 40, height = 40, radius = 10, fill = bg
+                layout = horizontal, justify = center, align = center
+                text letter { size = 17, weight = semibold, color = #FFFFFF, family = "SF Mono" }
+            }
+        }
+        text name { size = 9, weight = medium, color = #1F2328, wrap = false }
+    }
+}
+
+component rail_org_inactive(letter, bg, name) {
+    frame {
+        width = fill, padding = [10, 0, 10, 11], layout = vertical, gap = 4, align = center
+        frame avatar {
+            width = 40, height = 40, radius = 10, fill = bg
+            layout = horizontal, justify = center, align = center
+            text letter { size = 17, weight = semibold, color = #FFFFFF, family = "SF Mono" }
+        }
+        text name { size = 9, color = #8E8E93, wrap = false }
+    }
+}
+
+component rail_org_with_dot(letter, bg, name, dot_color) {
+    frame {
+        width = fill, padding = [10, 0, 10, 11], layout = vertical, gap = 4, align = center
+        frame avatar_wrap {
+            layout = horizontal, justify = end, align = start
+            frame avatar {
+                width = 40, height = 40, radius = 10, fill = bg
+                layout = horizontal, justify = center, align = center
+                text letter { size = 17, weight = semibold, color = #FFFFFF, family = "SF Mono" }
+            }
+            frame dot { width = 12, height = 12, radius = 999, fill = dot_color, stroke = [1.5, #FFFFFF] }
+        }
+        text name { size = 9, color = #8E8E93, wrap = false }
+    }
+}
+
+component sh_rail() {
+    frame {
+        width = 60, height = fill, fill = #F2F2F7
+        layout = vertical, gap = 4, padding = [12, 0]
+
+        use rail_org_active("A", #0969DA, "Demo")
+        use rail_org_with_dot("P", #6F42C1, "Personal", #CF222E)
+        use rail_org_inactive("B", #1A7F37, "Beta")
+    }
+}
+
+// ── Menu cells ─────────────────────────────────────────────────────
+component menu_cell(icon, icon_color, label) {
+    frame mc_wrap {
+        width = fill, height = 48, padding = [0, 16]
+        fill = #FFFFFF
+        layout = horizontal, gap = 14, align = center
+
+        frame mc_icon { width = 28, height = 28
+            layout = horizontal, justify = center, align = center
+            text icon { size = 22, color = icon_color }
+        }
+        text label { size = 17, color = #1F2328 }
+        frame mc_spacer { width = fill }
+        text "›" { size = 20, color = #C7C7CC }
+    }
+}
+
+component menu_cell_with_meta(icon, icon_color, label, meta) {
+    frame mcm_wrap {
+        width = fill, height = 48, padding = [0, 16]
+        fill = #FFFFFF
+        layout = horizontal, gap = 14, align = center
+
+        frame mcm_icon { width = 28, height = 28
+            layout = horizontal, justify = center, align = center
+            text icon { size = 22, color = icon_color }
+        }
+        text label { size = 17, color = #1F2328 }
+        frame mcm_spacer { width = fill }
+        text meta { size = 15, color = #8E8E93 }
+        text "›" { size = 20, color = #C7C7CC }
+    }
+}
+
+component menu_cell_destructive(icon, label) {
+    frame mcd_wrap {
+        width = fill, height = 48, padding = [0, 16]
+        fill = #FFFFFF
+        layout = horizontal, gap = 14, align = center
+
+        frame mcd_icon { width = 28, height = 28
+            layout = horizontal, justify = center, align = center
+            text icon { size = 22, color = #CF222E }
+        }
+        text label { size = 17, color = #CF222E }
+    }
+}
+
+component menu_separator() {
+    frame ms_wrap { width = fill, height = 1, padding = [0, 0, 0, 58]
+        layout = horizontal
+        shape ms_line { type = rectangle, width = fill, height = 1, fill = #F2F2F7 }
+    }
+}
+
+component menu_group_gap() {
+    frame mg_wrap { width = fill, height = 12, fill = #F2F2F7 }
+}
+
+// ── Main column (account + menu) ──────────────────────────────────
+component sh_main() {
+    frame {
+        width = 280, height = fill, fill = #FFFFFF
+        layout = vertical
+
+        // Account header
+        frame header {
+            width = fill, padding = [16, 16, 12, 16]
+            layout = vertical, gap = 12
+
+            frame top_row {
+                width = fill, layout = horizontal, justify = space-between, align = center
+                frame avatar {
+                    width = 64, height = 64, radius = 999, fill = #0969DA
+                    layout = horizontal, justify = center, align = center
+                    text "S" { size = 28, weight = semibold, color = #FFFFFF }
+                }
+                frame edit_btn {
+                    width = 32, height = 32, radius = 999, fill = #F2F2F7
+                    layout = horizontal, justify = center, align = center
+                    text "✎" { size = 16, color = #1F2328 }
+                }
+            }
+
+            frame name_stack { layout = vertical, gap = 2
+                text "Stone.D" { size = 22, weight = semibold, color = #1F2328 }
+                text "stone@agentsmesh.dev" { size = 13, color = #8E8E93 }
+            }
+        }
+
+        // Menu list — items match clients/web /settings tabs 1:1
+        frame menu {
+            width = fill, layout = vertical
+            // Personal scope
+            use menu_cell("👤", #0969DA, "Account")
+            use menu_separator()
+            use menu_cell_with_meta("🔔", #CF222E, "Notifications", "On")
+            use menu_separator()
+            use menu_cell("✨", #6F42C1, "Agent Config")
+            use menu_separator()
+            use menu_cell("⎇", #1A7F37, "Git")
+
+            use menu_group_gap()
+
+            // Org scope (current org context — opens /settings?scope=org)
+            use menu_cell("🏢", #0969DA, "Organization")
+
+            use menu_group_gap()
+
+            // Support + session
+            use menu_cell("🛟", #D29922, "Help & Support")
+            use menu_separator()
+            use menu_cell_destructive("⏏", "Sign Out")
+        }
+    }
+}
+
+// ── Channel page peek (visible 53pt strip below dim overlay) ───────
+// Shows the LEFT edge of a channel page peeking through behind the
+// drawer — Lark/Slack pattern. Layered with a 50% black dim overlay.
+component peek_channel() {
+    frame {
+        width = fill, height = fill, fill = #FFFFFF
+        layout = vertical, gap = 0
+
+        // Status bar peek — left edge shows just the "9" of "9:41"
+        frame { width = fill, height = 59, fill = #FFFFFF
+            padding = [0, 0, 0, 14], layout = horizontal, align = center
+            text "9" { size = 17, weight = semibold, color = #1F2328 }
+        }
+
+        // Nav bar peek — channel avatar's left edge
+        frame { width = fill, height = 56, fill = #FFFFFFE6
+            padding = [8, 0, 0, 8], layout = horizontal, align = center
+            frame nav_av { width = 40, height = 40, radius = 999, fill = #58A6FF
+                layout = horizontal, justify = center, align = center
+                text "A" { size = 17, weight = semibold, color = #FFFFFF }
+            }
+        }
+
+        // Date divider strip
+        frame { width = fill, height = 28, fill = #F2F2F7 }
+
+        // Avatar peeks (left edge of group_head rows)
+        frame chat_peek {
+            width = fill, fill = #F2F2F7
+            padding = [12, 0, 12, 8], layout = vertical, gap = 36
+            frame av1 { width = 36, height = 36, radius = 999, fill = #0969DA
+                layout = horizontal, justify = center, align = center
+                text "D" { size = 15, weight = semibold, color = #FFFFFF }
+            }
+            frame av2 { width = 36, height = 36, radius = 8, fill = #3FB950
+                layout = horizontal, justify = center, align = center
+                text "C" { size = 15, weight = semibold, color = #FFFFFF, family = "SF Mono" }
+            }
+            frame av3 { width = 36, height = 36, radius = 999, fill = #9A6700
+                layout = horizontal, justify = center, align = center
+                text "S" { size = 15, weight = semibold, color = #FFFFFF }
+            }
+        }
+
+        // Filler tail
+        frame tail { width = fill, height = fill, fill = #F2F2F7 }
+    }
+}
+
+// Stacked column: channel content + dim overlay on top.
+component sh_peek_with_dim() {
+    frame {
+        width = 53, height = fill
+        layout = stack
+        use peek_channel()
+        // Dim overlay (60% black) — tap to close
+        frame dim_overlay { width = fill, height = fill, fill = #00000099 }
+    }
+}
+
+// ── Phone shell ────────────────────────────────────────────────────
+component pg_org_drawer() {
+frame root {
+    width = 393, height = 852, fill = #FFFFFF
+    radius = 47, stroke = [3, #1F2328]
+    layout = vertical
+
+    use sh_status_bar()
+
+    frame body {
+        width = fill, height = fill
+        layout = horizontal
+
+        use sh_rail()
+        use sh_main()
+        use sh_peek_with_dim()
+    }
+
+    frame safe_bottom {
+        width = fill, height = 34, fill = #FFFFFF
+        layout = horizontal, justify = center, align = center
+        shape indicator { type = rectangle, width = 134, height = 5, radius = 999, fill = #1F2328 }
+    }
+}
+}
+
+
+component anno_label(text_value) {
+    text text_value { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+}
+component anno_value(text_value) {
+    text text_value { size = 12, color = #C9D1D9, wrap = true, width = 200 }
+}
+
+component pg_org_drawer_framed() {
+    frame outer {
+        width = 1100, height = 1100, fill = #1F2328
+        padding = [60, 80]
+        layout = horizontal, justify = space-between, align = center, gap = 60
+
+        frame col_left {
+            layout = vertical, gap = 32, width = 200, align = end
+            frame block { layout = vertical, gap = 4, align = end
+                use anno_label("PATTERN")
+                use anno_value("Lark / Slack multi-workspace drawer")
+            }
+            frame block { layout = vertical, gap = 4, align = end
+                use anno_label("LEFT RAIL · 60pt")
+                use anno_value("orgs vertical list · selected = blue strip + label colored")
+            }
+            frame block { layout = vertical, gap = 4, align = end
+                use anno_label("UNREAD INDICATOR")
+                use anno_value("red dot top-right of org icon")
+            }
+        }
+
+        frame center { layout = vertical, justify = center, align = center
+            use pg_org_drawer()
+        }
+
+        frame col_right {
+            layout = vertical, gap = 32, width = 200
+            frame block { layout = vertical, gap = 4
+                use anno_label("MAIN · 280pt")
+                use anno_value("64pt avatar · edit · name + email · 1:1 mirror of /settings tabs")
+            }
+            frame block { layout = vertical, gap = 4
+                use anno_label("MENU ITEMS")
+                use anno_value("Account · Notifications · Agent Config · Git (=personal scope tabs) · Organization (=org scope) · Help · Sign Out")
+            }
+            frame block { layout = vertical, gap = 4
+                use anno_label("PEEK · 53pt")
+                use anno_value("channel page bg + 60% black dim overlay · tap to close")
+            }
+            frame block { layout = vertical, gap = 4
+                use anno_label("ENTRY POINT")
+                use anno_value("nav-bar avatar tap (any tab root)")
+            }
+        }
+    }
+}
+
+frame root { use pg_org_drawer_framed() }

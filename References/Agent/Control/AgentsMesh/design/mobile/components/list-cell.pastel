@@ -1,0 +1,166 @@
+// iOS 26 List Cell — inset-grouped style with soft separators.
+// 4 cell types covering the major patterns: default / nav (chevron) / detail
+// (label+value) / subtitle / icon+subtitle / avatar+meta. Inset cards group
+// related cells visually; intra-card separators are #F2F2F7 (system fill quaternary).
+
+canvas "ios_list_cell" {
+    width = 920
+    height = 1140
+    background = #1F2328
+}
+
+// V1 — Default cell (44pt, single line)
+component cell_default(label) {
+    frame {
+        width = fill, height = 44, padding = [0, 16]
+        fill = #FFFFFF
+        layout = horizontal, align = center
+        text label { size = 17, color = #1F2328 }
+    }
+}
+
+// V2 — Navigation cell (default + chevron)
+component cell_nav(label) {
+    frame {
+        width = fill, height = 44, padding = [0, 16]
+        fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center
+        text label { size = 17, color = #1F2328 }
+        text "›" { size = 22, color = #C7C7CC }
+    }
+}
+
+// V3 — Detail cell (label + value)
+component cell_detail(label, value) {
+    frame {
+        width = fill, height = 44, padding = [0, 16]
+        fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center
+        text label { size = 17, color = #1F2328 }
+        text value { size = 17, color = #8E8E93 }
+    }
+}
+
+// V4 — With subtitle (60pt)
+component cell_subtitle(title, subtitle) {
+    frame {
+        width = fill, height = 60, padding = [10, 16]
+        fill = #FFFFFF
+        layout = vertical, gap = 2, justify = center
+        text title    { size = 17, color = #1F2328 }
+        text subtitle { size = 13, color = #8E8E93 }
+    }
+}
+
+// V5 — With leading icon + subtitle (60pt)
+component cell_icon_subtitle(icon, icon_bg, title, subtitle) {
+    frame {
+        width = fill, height = 60, padding = [10, 16]
+        fill = #FFFFFF
+        layout = horizontal, gap = 12, align = center
+        frame icon_box {
+            width = 32, height = 32, radius = 8, fill = icon_bg
+            layout = horizontal, justify = center, align = center
+            text icon { size = 17 }
+        }
+        frame stack { layout = vertical, gap = 2, width = 320
+            text title    { size = 17, color = #1F2328 }
+            text subtitle { size = 13, color = #8E8E93 }
+        }
+        text "›" { size = 22, color = #C7C7CC }
+    }
+}
+
+// V6 — With avatar + subtitle + meta (60pt) — Lark-style channel/member row
+component cell_avatar(letter, avatar_bg, title, subtitle, meta) {
+    frame {
+        width = fill, height = 60, padding = [8, 16]
+        fill = #FFFFFF
+        layout = horizontal, gap = 12, align = center
+        frame avatar {
+            width = 40, height = 40, radius = 999, fill = avatar_bg
+            layout = horizontal, justify = center, align = center
+            text letter { size = 17, weight = semibold, color = #FFFFFF }
+        }
+        frame stack { layout = vertical, gap = 2, width = 280
+            text title    { size = 17, color = #1F2328 }
+            text subtitle { size = 13, color = #8E8E93 }
+        }
+        text meta { size = 13, color = #8E8E93 }
+    }
+}
+
+// Soft separator with leading inset
+component sep(inset_l) {
+    frame {
+        width = fill, height = 1, padding = [0, 0, 0, inset_l]
+        layout = horizontal
+        shape line { type = rectangle, width = fill, height = 1, fill = #F2F2F7 }
+    }
+}
+
+component label(text_value) {
+    text text_value { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+}
+
+component pg_list_cell() {
+frame root {
+    stroke = [2, #6E7681]
+    radius = 16
+    shadow = [0, 8, 24, #00000080]
+    width = 840, height = 1080, fill = #F2F2F7
+    padding = 32, layout = vertical, gap = 20
+
+    text "List Cell (iOS 26)" { size = 24, weight = semibold, color = #1F2328 }
+    text "Inset-grouped: cells wrapped in a 12pt-radius card, soft #F2F2F7 separators between rows. Title 17pt body, subtitle 13pt #8E8E93."
+        { size = 13, color = #656D76, wrap = true, width = 740 }
+
+    use label("DEFAULT — single line label")
+    frame g1 { width = 393, radius = 12, fill = #FFFFFF, layout = vertical, layout = vertical
+        use cell_default("General")
+        use sep(16)
+        use cell_default("Notifications")
+    }
+
+    use label("NAVIGATION — push detail")
+    frame g2 { width = 393, radius = 12, fill = #FFFFFF, layout = vertical
+        use cell_nav("Account")
+        use sep(16)
+        use cell_nav("Privacy")
+    }
+
+    use label("DETAIL — label + value")
+    frame g3 { width = 393, radius = 12, fill = #FFFFFF, layout = vertical
+        use cell_detail("Repository", "demo-api")
+        use sep(16)
+        use cell_detail("Branch", "main")
+        use sep(16)
+        use cell_detail("Mode", "PTY")
+    }
+
+    use label("ICON + SUBTITLE — settings / pod row")
+    frame g5 { width = 393, radius = 12, fill = #FFFFFF, layout = vertical
+        use cell_icon_subtitle("⚙", #F0F3F6, "Settings", "general · git · agents")
+        use sep(60)
+        use cell_icon_subtitle("🆘", #FFEBE9, "Support Tickets", "1 open conversation")
+    }
+
+    use label("AVATAR + META — channel / member row (Lark-style)")
+    frame g6 { width = 393, radius = 12, fill = #FFFFFF, layout = vertical
+        use cell_avatar("D", #0969DA, "Dev User", "owner", "now")
+        use sep(60)
+        use cell_avatar("M", #9A6700, "Maria", "member", "2m")
+    }
+}
+}
+
+
+component pg_list_cell_framed() {
+    frame outer {
+        width = 920, height = 1140, fill = #1F2328
+        padding = 40, layout = horizontal, justify = center, align = center
+        use pg_list_cell()
+    }
+}
+
+frame root { use pg_list_cell_framed() }

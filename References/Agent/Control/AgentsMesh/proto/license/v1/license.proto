@@ -1,0 +1,179 @@
+// LicenseService — system-wide OnPremise license management.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/license*.go
+// per .claude/plans/proto-naming-conventions.md. Conventions enforced:
+//   * package proto.license.v1 + go_package suffix for dispatch
+//   * service name = <Domain>Service, methods PascalCase verbs
+//   * snake_case fields, no json_name annotations
+//   * timestamps as string ISO-8601 (no google.protobuf.Timestamp)
+//
+// Auth model (conventions §3.5 EXCEPTION — system-wide, NOT org-scoped):
+//   License is a deployment-wide configuration for OnPremise installations
+//   — there is no per-org license, the whole server runs against ONE
+//   active license at a time. Authentication splits into two surfaces:
+//
+//   1. `LicensePublicService` — unauthenticated. `GetStatus`, `GetLimits`,
+//      `CheckFeature`. The login page hits these before any token exists
+//      (the React app needs to know if the install is over-quota before
+//      it can render the dashboard). Mirrors REST's `GET /api/v1/license/*`
+//      which is also publicly accessible.
+//
+//   2. `LicenseService` — authenticated. `Activate`, `Upload`, `Refresh`,
+//      `Validate`. REST gated these on `tenant.UserRole == "owner"` when
+//      a tenant context existed (i.e., the request flowed through the
+//      org-scoped middleware). Connect handlers re-create that policy by
+//      checking the caller's tenant context — when present, role must be
+//      owner; when absent (initial OnPremise activation before any org
+//      exists), the auth interceptor enforces a valid JWT and that is the
+//      bar to clear.
+//
+// Wire-shape parity:
+//   The REST surface returned `billing.LicenseStatus` from /status; the
+//   proto `LicenseStatus` message mirrors that struct field-for-field.
+//   GetLimits returned `{limits: {...}, plan: ...}` on REST — the proto
+//   `LicenseLimitsResponse` keeps both fields at top level (limits + plan).
+//   ActivateLicense + ValidateLicense returned a 200 envelope `{message,
+//   status}` and `{valid, license_key, ...}` respectively; both proto
+//   messages return the entity directly (`LicenseStatus` for activate /
+//   refresh / upload, `ValidatedLicense` for validate) per conventions §9.
+
+syntax = "proto3";
+
+package proto.license.v1;
+
+import "codegen/v1/options.proto";
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/license/v1;licensev1";
+
+// Convert codegen target — emits license_convert.amesh.go into the backend
+// connect handler tree so it can reach domain/billing + service/license
+// (which proto/gen/go packages cannot import under Go's internal-package rule).
+option (amesh.codegen.v1.convert_target) = {
+  output_dir: "backend/internal/api/connect/license"
+  output_package: "licenseconnect"
+};
+
+// --- Authenticated service (owner-only mutations + validation). ---
+
+service LicenseService {
+  // ActivateLicense parses, verifies (signature), and persists license data
+  // sent as raw bytes. The activation endpoint accepts both license file
+  // contents (raw JSON bytes from disk) and embedded base64. The handler
+  // routes both paths through ParseAndVerify before committing.
+  rpc ActivateLicense(ActivateLicenseRequest) returns (LicenseStatus);
+
+  // RefreshLicense reloads the license from the configured file path on
+  // disk. Used after rotating the license file out-of-band. No-op when
+  // LicenseFilePath is not set; returns FailedPrecondition in that case.
+  rpc RefreshLicense(RefreshLicenseRequest) returns (LicenseStatus);
+
+  // ValidateLicense parses and verifies license data WITHOUT activating —
+  // returns the parsed license info for UI preview before commit.
+  rpc ValidateLicense(ValidateLicenseRequest) returns (ValidatedLicense);
+}
+
+// --- Public service (read-only status / limits / feature checks). ---
+
+service LicensePublicService {
+  rpc GetLicenseStatus(GetLicenseStatusRequest) returns (LicenseStatus);
+  rpc GetLicenseLimits(GetLicenseLimitsRequest) returns (LicenseLimitsResponse);
+  rpc CheckFeature(CheckFeatureRequest) returns (CheckFeatureResponse);
+}
+
+// --- Messages ---
+
+// LicenseStatus mirrors backend/internal/domain/billing/license.go
+// LicenseStatus — the canonical license-status payload the REST handler
+// returned from /status. Field-for-field parity with the legacy JSON
+// surface (snake_case → camelCase getters in TS, prost tags pin order).
+message LicenseStatus {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/billing.LicenseStatus"
+  };
+
+  bool is_active = 1;
+  string license_key = 2;
+  string organization_name = 3;
+  string plan = 4;
+  // RFC 3339, omitted when no license active.
+  optional string expires_at = 5 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+  // -1 represents unlimited (mirrors REST semantics).
+  int32 max_users = 6 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  int32 max_runners = 7 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  int32 max_repositories = 8 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  int32 max_pod_minutes = 9 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  repeated string features = 10;
+  string message = 11;
+}
+
+// ValidatedLicense is the parsed-but-not-activated license preview. Returned
+// by ValidateLicense. Different shape from LicenseStatus on purpose — the
+// preview shows raw plan/limits/features and does NOT carry status flags
+// (the license isn't active yet).
+message ValidatedLicense {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/service/license.LicenseData"
+  };
+
+  // `valid` is derived (not stored in LicenseData) — set by the wrapper.
+  bool valid = 1 [(amesh.codegen.v1.field_skip) = true];
+  string license_key = 2;
+  string organization_name = 3;
+  string contact_email = 4;
+  string plan = 5;
+  // LicenseData embeds LicenseLimits by value; the custom helper boxes/unboxes
+  // around the pointer-shaped proto field.
+  LicenseLimits limits = 6 [(amesh.codegen.v1.field_custom) = "limitsValueToProto"];
+  repeated string features = 7;
+  // RFC 3339.
+  string issued_at = 8 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  string expires_at = 9 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+}
+
+// LicenseLimits mirrors LicenseLimits in backend/internal/service/license/
+// license_types.go. -1 in any field encodes "unlimited".
+message LicenseLimits {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/service/license.LicenseLimits"
+  };
+
+  int32 max_users = 1 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  int32 max_runners = 2 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  int32 max_repositories = 3 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  int32 max_pod_minutes = 4 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+}
+
+// --- Requests ---
+
+message ActivateLicenseRequest {
+  // Raw license bytes (JSON-encoded license payload + signature, as
+  // generated by `cmd/license-gen`). Maps to REST's
+  // ActivateLicenseRequest.LicenseData + the raw-body fallback path.
+  bytes license_data = 1;
+}
+
+message RefreshLicenseRequest {}
+
+message ValidateLicenseRequest {
+  bytes license_data = 1;
+}
+
+message GetLicenseStatusRequest {}
+
+message GetLicenseLimitsRequest {}
+
+message CheckFeatureRequest {
+  string feature = 1;
+}
+
+// --- Responses ---
+
+message LicenseLimitsResponse {
+  LicenseLimits limits = 1;
+  string plan = 2;
+}
+
+message CheckFeatureResponse {
+  string feature = 1;
+  bool enabled = 2;
+}

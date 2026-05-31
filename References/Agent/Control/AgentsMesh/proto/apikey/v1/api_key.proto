@@ -1,0 +1,119 @@
+// ApiKeyService — org-scoped third-party API key management.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/apikeys.go
+// per .claude/plans/proto-naming-conventions.md. Conventions enforced:
+//   * package proto.apikey.v1 + go_package suffix for dispatch
+//   * service name = <Domain>Service, methods PascalCase verbs
+//   * snake_case fields, no json_name annotations
+//   * org_slug at field 1 of every request (no path params on Connect URLs)
+//   * timestamps as string ISO-8601 (no google.protobuf.Timestamp)
+//   * list response = {items, total, limit, offset} uniform envelope
+//
+// Field set reconciled across three layers (runbook §1.5):
+//   - backend domain/apikey/apikey.go         (13 fields, key_hash json:"-")
+//   - clients/core/crates/types/src/apikey.rs (10 fields, drifted on is_enabled)
+//   - clients/web/src/lib/api/apikeyTypes.ts  (11 fields, snake_case)
+//
+// ApiKey reflects the backend wire shape. key_hash is intentionally absent
+// — backend marks `json:"-"` so it never leaves the server.
+//
+// PR #345 fixed `raw_key` being silently dropped through the wasm wrapper.
+// CreateApiKey is the **multi-field exception** per conventions §9: the
+// response message explicitly carries `{api_key, raw_key}` so the secret
+// can never be lost again. List handlers explicitly do NOT expose raw_key.
+
+syntax = "proto3";
+
+package proto.apikey.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/apikey/v1;apikeyv1";
+
+service ApiKeyService {
+  rpc ListApiKeys(ListApiKeysRequest) returns (ListApiKeysResponse);
+  rpc GetApiKey(GetApiKeyRequest) returns (ApiKey);
+  rpc CreateApiKey(CreateApiKeyRequest) returns (CreateApiKeyResponse);
+  rpc UpdateApiKey(UpdateApiKeyRequest) returns (ApiKey);
+  rpc RevokeApiKey(RevokeApiKeyRequest) returns (RevokeApiKeyResponse);
+  rpc DeleteApiKey(DeleteApiKeyRequest) returns (DeleteApiKeyResponse);
+}
+
+message ApiKey {
+  int64 id = 1;
+  int64 organization_id = 2;
+  string name = 3;
+  optional string description = 4;
+  string key_prefix = 5;
+  // Permission scopes, e.g. ["pods:read", "tickets:write"].
+  repeated string scopes = 6;
+  bool is_enabled = 7;
+  // RFC 3339, null = never expires.
+  optional string expires_at = 8;
+  optional string last_used_at = 9;
+  int64 created_by = 10;
+  string created_at = 11;
+  string updated_at = 12;
+}
+
+message ListApiKeysRequest {
+  string org_slug = 1;
+  optional int32 offset = 2;
+  optional int32 limit = 3;
+}
+
+message ListApiKeysResponse {
+  repeated ApiKey items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message GetApiKeyRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message CreateApiKeyRequest {
+  string org_slug = 1;
+  string name = 2;
+  optional string description = 3;
+  // At least one scope required; service-layer validates against
+  // apikey.AllScopes whitelist.
+  repeated string scopes = 4;
+  // Seconds until expiry; absent or null = never expires.
+  // Service-layer validates 300 <= expires_in <= 94608000 (5 min .. 3 years).
+  optional int64 expires_in = 5;
+}
+
+// CreateApiKeyResponse intentionally diverges from the "response is the entity"
+// pattern (conventions §9 exception). raw_key must be returned alongside the
+// ApiKey so the secret can be shown to the user exactly once at creation
+// time — see PR #345 for the bug this design prevents.
+message CreateApiKeyResponse {
+  ApiKey api_key = 1;
+  // The plaintext secret. Returned exactly once at creation; never echoed
+  // by subsequent List/Get calls.
+  string raw_key = 2;
+}
+
+message UpdateApiKeyRequest {
+  string org_slug = 1;
+  int64 id = 2;
+  optional string name = 3;
+  optional string description = 4;
+  repeated string scopes = 5;
+  optional bool is_enabled = 6;
+}
+
+message RevokeApiKeyRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message RevokeApiKeyResponse {}
+
+message DeleteApiKeyRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message DeleteApiKeyResponse {}

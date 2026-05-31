@@ -1,0 +1,20 @@
+# SSH Configuration for AgentsMesh Dev Runner
+
+# Local Gitea Git server (Docker network)
+Host gitea
+    HostName gitea
+    Port 22
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+
+# GitLab corporate server (uses non-standard SSH port)
+Host gitlab.corp.signalrender.com
+    HostName gitlab.corp.signalrender.com
+    Port 2222
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+    StrictHostKeyChecking accept-new

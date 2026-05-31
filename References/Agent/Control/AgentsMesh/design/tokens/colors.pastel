@@ -1,0 +1,87 @@
+// AgentsMesh color palette
+// Notion + GitHub hybrid: warm neutrals, contained primary, clear borders
+// Two separate token groups for Light and Dark so pages can target either.
+
+token light {
+    // Surfaces
+    background       = #FFFFFF
+    card             = #FFFFFF
+    muted            = #F6F8FA
+    subtle           = #F0F3F6
+    overlay          = #00000033
+
+    // Text
+    foreground       = #1F2328
+    muted_foreground = #656D76
+    subtle_foreground = #868F99
+
+    // Primary (GitHub blue)
+    primary          = #0969DA
+    primary_hover    = #0860C8
+    primary_fg       = #FFFFFF
+
+    // Accent (hover background for primary-tinted interactions)
+    accent           = #DDF4FF
+    accent_fg        = #0550AE
+
+    // Status
+    success          = #1A7F37
+    success_bg       = #DAFBE1
+    success_fg       = #FFFFFF
+
+    warning          = #9A6700
+    warning_bg       = #FFF8C5
+    warning_fg       = #FFFFFF
+
+    danger           = #CF222E
+    danger_bg        = #FFEBE9
+    danger_fg        = #FFFFFF
+
+    info             = #0969DA
+    info_bg          = #DDF4FF
+
+    // Borders
+    border           = #D0D7DE
+    border_strong    = #AFB8C1
+    input            = #D0D7DE
+    ring             = #0969DA
+}
+
+token dark {
+    background       = #0D1117
+    card             = #161B22
+    muted            = #161B22
+    subtle           = #1C2128
+    overlay          = #00000099
+
+    foreground       = #C9D1D9
+    muted_foreground = #8B949E
+    subtle_foreground = #6E7681
+
+    primary          = #2F81F7
+    primary_hover    = #4493F8
+    primary_fg       = #FFFFFF
+
+    accent           = #1F2937
+    accent_fg        = #58A6FF
+
+    success          = #3FB950
+    success_bg       = #0F2F1A
+    success_fg       = #FFFFFF
+
+    warning          = #D29922
+    warning_bg       = #2E2106
+    warning_fg       = #FFFFFF
+
+    danger           = #F85149
+    danger_bg        = #3C1618
+    danger_fg        = #FFFFFF
+
+    info             = #58A6FF
+    info_bg          = #0C2D5F
+
+    border           = #30363D
+    border_strong    = #484F58
+    input            = #30363D
+    ring             = #2F81F7
+}

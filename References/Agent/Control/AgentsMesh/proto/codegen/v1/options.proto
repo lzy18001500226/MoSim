@@ -1,0 +1,156 @@
+// AgentsMesh codegen annotations.
+//
+// Marks proto messages with binding metadata so `tools/protoc-gen-amesh-convert`
+// can generate Go domain↔proto convert functions (`*_convert.gen.go`).
+//
+// proto schema is the wire SSOT; this file is meta-schema — annotations
+// declare HOW each message maps to the backend domain layer.
+//
+// Migration target: replace 1741 LOC of hand-written `convert.go` boilerplate
+// across `backend/internal/api/connect/<domain>/` with auto-generated mirror
+// (80% mechanical) + hand-written `*_custom.go` (20% enum/derived).
+//
+// See plan: .claude/plans/goofy-doodling-zebra.md Phase 12
+
+syntax = "proto3";
+
+package amesh.codegen.v1;
+
+import "google/protobuf/descriptor.proto";
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/codegen/v1;codegenv1";
+
+// GoDomain — message-level binding. Declares the Go domain struct this proto
+// message corresponds to, plus codegen direction(s).
+//
+// Example:
+//   message Pod {
+//     option (amesh.codegen.v1.go_domain) = {
+//       type: "github.com/anthropics/agentsmesh/backend/internal/domain/agentpod.Pod"
+//       generate_to_proto: true
+//       generate_from_proto: false
+//     };
+//     ...
+//   }
+message GoDomain {
+  // Fully-qualified Go domain type path (`<import-path>.<TypeName>`).
+  // codegen uses this to locate the struct via `go/packages` and verify
+  // field alignment.
+  string type = 1;
+
+  // Generate `ToProto<Message>(*domain.X) *protov1.Message` function.
+  // Default: true (most domains forward domain→wire on response path).
+  bool generate_to_proto = 2;
+
+  // Generate `FromProto<Message>(*protov1.Message) *domain.X` function.
+  // Default: false. Enable for request path (proto→domain) when handler
+  // wants typed domain struct instead of raw proto.
+  bool generate_from_proto = 3;
+}
+
+// FieldRename — proto field name (camelCase Go) differs from domain field
+// name. The convention is `protoc-gen-go` converts `org_id` → `OrgId`;
+// if domain uses `OrganizationID`, declare rename here.
+//
+// Example:
+//   int64 org_id = 2 [(amesh.codegen.v1.field_rename) = "OrganizationID"];
+//
+// codegen produces: `out.OrgId = p.OrganizationID`.
+
+// FieldConvert — explicit type conversion to bridge proto wire type and
+// domain Go type. Values map to helpers in
+// `backend/internal/api/connect/internal/protoconv`.
+//
+// Example:
+//   string created_at = 12 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+//   optional string requested_at = 8
+//     [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+//   optional string rejection_reason = 11
+//     [(amesh.codegen.v1.field_convert) = "string_ptr"];
+//   repeated string granted_scopes = 6
+//     [(amesh.codegen.v1.field_convert) = "string_slice_cast"];
+//
+// Codegen produces (ToProto):
+//   CreatedAt:       protoconv.RFC3339(d.CreatedAt),
+//   RequestedAt:     protoconv.RFC3339Ptr(d.RequestedAt),
+//   RejectionReason: protoconv.StringPtr(d.RejectionReason),
+//   GrantedScopes:   []string(d.GrantedScopes),
+//
+// Supported values (Phase 12 M3-M4):
+//   - "rfc3339"          : time.Time   → string         (and reverse)
+//   - "rfc3339_ptr"      : *time.Time  → *string        (and reverse)
+//   - "rfc3339_nano"     : time.Time   → string (Nano precision)
+//   - "rfc3339_nano_ptr" : *time.Time  → *string (Nano)
+//   - "string_ptr"       : *string     → *string (no-op shape)
+//   - "string_slice_cast": pq.StringArray → []string
+//   - "int_to_int32"     : int         → int32           (numeric narrowing)
+//   - "int_to_int64"     : int         → int64           (numeric widening)
+//   - "int_ptr_to_int32" : *int        → *int32          (nullable narrowing)
+//   - "int_ptr_to_int64" : *int        → *int64
+
+// FieldEnumMap — proto field is an enum (or string-with-known-values) that
+// needs custom mapping to/from domain. codegen emits a call to the named
+// function, which must be hand-written in `<message>_convert_custom.go`.
+//
+// Example:
+//   PodStatus status = 5 [(amesh.codegen.v1.field_enum_map) = "podStatusToProto"];
+//
+// Codegen produces: `out.Status = podStatusToProto(p.Status)`.
+
+// FieldSkip — domain has no corresponding field (or proto has no
+// corresponding field). codegen omits this field from generated convert.
+//
+// Use case A: proto has field that domain shouldn't see (e.g. derived value):
+//   string display_name = 99 [(amesh.codegen.v1.field_skip) = true];
+//
+// Use case B: domain has internal field that shouldn't go on wire
+// (covered via Go struct tag `protoskip:"true"`, not annotation here —
+// since annotation is on proto schema, not domain struct).
+
+// FieldCustom — both proto and domain have field, but transformation
+// is too complex for codegen (nested struct walk, calculation, etc).
+// codegen emits call to hand-written function in `_custom.go`.
+//
+// Example:
+//   AgentfileSpec spec = 7 [(amesh.codegen.v1.field_custom) = "specToProto"];
+//
+// Codegen produces: `out.Spec = specToProto(p.Spec)`.
+
+extend google.protobuf.MessageOptions {
+  GoDomain go_domain = 50001;
+}
+
+extend google.protobuf.FieldOptions {
+  string field_rename = 50101;
+  string field_enum_map = 50102;
+  bool field_skip = 50103;
+  string field_custom = 50104;
+  string field_convert = 50105;
+}
+
+// ConvertTarget — file-level binding. Tells the codegen plugin where to
+// emit the `<file>_convert.amesh.go` file and what Go package to declare.
+//
+// Required because the convert functions reference the backend domain
+// layer (`backend/internal/...`) which proto/gen/go packages cannot import
+// (Go internal-package rule). The plugin therefore emits into the backend
+// connect handler tree, not next to the .pb.go file.
+//
+// Example:
+//   option (amesh.codegen.v1.convert_target) = {
+//     output_dir: "backend/internal/api/connect/binding"
+//     output_package: "bindingconnect"
+//   };
+message ConvertTarget {
+  // Workspace-relative directory the convert file lands in. Resolved
+  // relative to the protoc plugin's working directory (the workspace root
+  // when invoked via buf or Bazel macro).
+  string output_dir = 1;
+  // Go `package <name>` declaration written at the top of the generated
+  // file. Should match the existing handwritten handler package.
+  string output_package = 2;
+}
+
+extend google.protobuf.FileOptions {
+  ConvertTarget convert_target = 50001;
+}

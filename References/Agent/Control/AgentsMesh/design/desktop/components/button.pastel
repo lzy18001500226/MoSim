@@ -1,0 +1,372 @@
+// Button — 6 variants × 3 sizes + hover/disabled states.
+// Style guide:
+//   - Default (primary): solid blue, white text, hover = darker blue
+//   - Secondary: muted bg, foreground text, hover = subtle darker
+//   - Outline: white bg + border, hover = accent bg
+//   - Ghost: transparent, hover = muted bg
+//   - Destructive: solid red, white text
+//   - Link: primary color text, underline on hover
+//
+// Sizes: sm (28h), md (32h default), lg (40h)
+// Icon button: square (32x32 for md)
+
+canvas "buttons" {
+    width = 1280
+    height = 980
+    background = #1F2328
+}
+
+component btn_primary_md(label) {
+    frame {
+        height  = 32
+        padding = [0, 14]
+        radius  = 6
+        fill    = #0969DA
+        layout  = horizontal
+        justify = center
+        align   = center
+
+        text label { size = 14, weight = medium, color = #FFFFFF }
+    }
+}
+
+component btn_primary_md_hover(label) {
+    frame {
+        height  = 32
+        padding = [0, 14]
+        radius  = 6
+        fill    = #0860C8
+        layout  = horizontal
+        justify = center
+        align   = center
+
+        text label { size = 14, weight = medium, color = #FFFFFF }
+    }
+}
+
+component btn_secondary_md(label) {
+    frame {
+        height  = 32
+        padding = [0, 14]
+        radius  = 6
+        fill    = #F6F8FA
+        stroke  = [1, #D0D7DE]
+        layout  = horizontal
+        justify = center
+        align   = center
+
+        text label { size = 14, weight = medium, color = #1F2328 }
+    }
+}
+
+component btn_secondary_md_hover(label) {
+    frame {
+        height  = 32
+        padding = [0, 14]
+        radius  = 6
+        fill    = #F0F3F6
+        stroke  = [1, #AFB8C1]
+        layout  = horizontal
+        justify = center
+        align   = center
+
+        text label { size = 14, weight = medium, color = #1F2328 }
+    }
+}
+
+component btn_outline_md(label) {
+    frame {
+        height  = 32
+        padding = [0, 14]
+        radius  = 6
+        fill    = #FFFFFF
+        stroke  = [1, #D0D7DE]
+        layout  = horizontal
+        justify = center
+        align   = center
+
+        text label { size = 14, weight = medium, color = #1F2328 }
+    }
+}
+
+component btn_outline_md_hover(label) {
+    frame {
+        height  = 32
+        padding = [0, 14]
+        radius  = 6
+        fill    = #DDF4FF
+        stroke  = [1, #0969DA]
+        layout  = horizontal
+        justify = center
+        align   = center
+
+        text label { size = 14, weight = medium, color = #0550AE }
+    }
+}
+
+component btn_ghost_md(label) {
+    frame {
+        height  = 32
+        padding = [0, 14]
+        radius  = 6
+        fill    = transparent
+        layout  = horizontal
+        justify = center
+        align   = center
+
+        text label { size = 14, weight = medium, color = #1F2328 }
+    }
+}
+
+component btn_ghost_md_hover(label) {
+    frame {
+        height  = 32
+        padding = [0, 14]
+        radius  = 6
+        fill    = #F6F8FA
+        layout  = horizontal
+        justify = center
+        align   = center
+
+        text label { size = 14, weight = medium, color = #1F2328 }
+    }
+}
+
+component btn_destructive_md(label) {
+    frame {
+        height  = 32
+        padding = [0, 14]
+        radius  = 6
+        fill    = #CF222E
+        layout  = horizontal
+        justify = center
+        align   = center
+
+        text label { size = 14, weight = medium, color = #FFFFFF }
+    }
+}
+
+component btn_destructive_md_hover(label) {
+    frame {
+        height  = 32
+        padding = [0, 14]
+        radius  = 6
+        fill    = #B42531
+        layout  = horizontal
+        justify = center
+        align   = center
+
+        text label { size = 14, weight = medium, color = #FFFFFF }
+    }
+}
+
+component btn_link(label) {
+    frame {
+        height  = 32
+        padding = [0, 4]
+        layout  = horizontal
+        align   = center
+
+        text label { size = 14, weight = medium, color = #0969DA, text-decoration = underline }
+    }
+}
+
+component btn_primary_sm(label) {
+    frame {
+        height  = 28
+        padding = [0, 10]
+        radius  = 6
+        fill    = #0969DA
+        layout  = horizontal
+        justify = center
+        align   = center
+
+        text label { size = 13, weight = medium, color = #FFFFFF }
+    }
+}
+
+component btn_primary_lg(label) {
+    frame {
+        height  = 40
+        padding = [0, 18]
+        radius  = 6
+        fill    = #0969DA
+        layout  = horizontal
+        justify = center
+        align   = center
+
+        text label { size = 14, weight = medium, color = #FFFFFF }
+    }
+}
+
+component btn_primary_disabled(label) {
+    frame {
+        height  = 32
+        padding = [0, 14]
+        radius  = 6
+        fill    = #8B949E
+        layout  = horizontal
+        justify = center
+        align   = center
+        opacity = 0.6
+
+        text label { size = 14, weight = medium, color = #FFFFFF }
+    }
+}
+
+component btn_row_label(label) {
+    text label { size = 13, weight = medium, color = #656D76, width = 120 }
+}
+
+component pg_button() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width   = 1200
+    height  = 900
+    fill    = #FFFFFF
+    padding = 32
+    layout  = vertical
+    gap     = 32
+
+    text "Buttons" { size = 24, weight = semibold, color = #1F2328 }
+    text "6 variants × 3 sizes. Default size = md. Hover column shows on-hover state."
+        { size = 13, color = #656D76 }
+
+    // Column headers
+    frame header_row {
+        width  = fill
+        layout = horizontal
+        gap    = 16
+        align  = center
+        padding = [0, 0, 8, 0]
+
+        text ""          { size = 13, width = 120 }
+        text "Default"   { size = 12, weight = medium, color = #656D76, width = 140, align = center }
+        text "Hover"     { size = 12, weight = medium, color = #656D76, width = 140, align = center }
+        text "Disabled"  { size = 12, weight = medium, color = #656D76, width = 140, align = center }
+    }
+
+    // Primary row
+    frame primary_row {
+        width  = fill
+        layout = horizontal
+        gap    = 16
+        align  = center
+
+        use btn_row_label("primary")
+        frame { width = 140, layout = horizontal, justify = center, use btn_primary_md("Save changes") }
+        frame { width = 140, layout = horizontal, justify = center, use btn_primary_md_hover("Save changes") }
+        frame { width = 140, layout = horizontal, justify = center, use btn_primary_disabled("Save changes") }
+    }
+
+    // Secondary row
+    frame secondary_row {
+        width  = fill
+        layout = horizontal
+        gap    = 16
+        align  = center
+
+        use btn_row_label("secondary")
+        frame { width = 140, layout = horizontal, justify = center, use btn_secondary_md("Cancel") }
+        frame { width = 140, layout = horizontal, justify = center, use btn_secondary_md_hover("Cancel") }
+        frame { width = 140 }
+    }
+
+    // Outline row
+    frame outline_row {
+        width  = fill
+        layout = horizontal
+        gap    = 16
+        align  = center
+
+        use btn_row_label("outline")
+        frame { width = 140, layout = horizontal, justify = center, use btn_outline_md("More actions") }
+        frame { width = 140, layout = horizontal, justify = center, use btn_outline_md_hover("More actions") }
+        frame { width = 140 }
+    }
+
+    // Ghost row
+    frame ghost_row {
+        width  = fill
+        layout = horizontal
+        gap    = 16
+        align  = center
+
+        use btn_row_label("ghost")
+        frame { width = 140, layout = horizontal, justify = center, use btn_ghost_md("View details") }
+        frame { width = 140, layout = horizontal, justify = center, use btn_ghost_md_hover("View details") }
+        frame { width = 140 }
+    }
+
+    // Destructive row
+    frame destructive_row {
+        width  = fill
+        layout = horizontal
+        gap    = 16
+        align  = center
+
+        use btn_row_label("destructive")
+        frame { width = 140, layout = horizontal, justify = center, use btn_destructive_md("Delete org") }
+        frame { width = 140, layout = horizontal, justify = center, use btn_destructive_md_hover("Delete org") }
+        frame { width = 140 }
+    }
+
+    // Link row
+    frame link_row {
+        width  = fill
+        layout = horizontal
+        gap    = 16
+        align  = center
+
+        use btn_row_label("link")
+        frame { width = 140, layout = horizontal, justify = center, use btn_link("Learn more") }
+        frame { width = 140 }
+        frame { width = 140 }
+    }
+
+    // Divider
+    shape divider_line { type = rectangle, width = 1100, height = 1, fill = #D0D7DE }
+
+    // Sizes row
+    text "Sizes (primary variant)" { size = 14, weight = semibold, color = #1F2328 }
+    frame sizes_row {
+        width  = fill
+        layout = horizontal
+        gap    = 24
+        align  = center
+
+        frame sm_wrap { layout = vertical, align = center, gap = 8
+            use btn_primary_sm("Small")
+            text "sm · 28h · 13px" { size = 11, color = #868F99 }
+        }
+        frame md_wrap { layout = vertical, align = center, gap = 8
+            use btn_primary_md("Medium (default)")
+            text "md · 32h · 14px" { size = 11, color = #868F99 }
+        }
+        frame lg_wrap { layout = vertical, align = center, gap = 8
+            use btn_primary_lg("Large")
+            text "lg · 40h · 14px" { size = 11, color = #868F99 }
+        }
+    }
+}
+}
+
+
+component pg_button_framed() {
+    frame outer {
+        width = 1280
+        height = 980
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_button()
+    }
+}
+
+frame root {
+    use pg_button_framed()
+}

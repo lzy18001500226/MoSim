@@ -1,0 +1,28 @@
+load("//build_defs/web:internal_package.bzl", "internal_npm_package")
+load("//build_defs/web:ts.bzl", "ts_project")
+
+# Service-interface — TypeScript type declarations that describe every
+# client-side service boundary (web, desktop, test harness). 0 deps.
+ts_project(
+    name = "service_interface",
+    srcs = glob(
+        ["src/**/*.ts"],
+        exclude = ["src/**/*.test.ts"],
+    ),
+    declaration = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//visibility:public"],
+    # No deps — service-interface is pure type declarations with zero
+    # imports of other packages. //:node_modules is unnecessary.
+    deps = [],
+)
+
+internal_npm_package(
+    name = "pkg",
+    package_name = "@agentsmesh/service-interface",
+    srcs = glob(
+        ["src/**/*.ts"],
+        exclude = ["src/**/*.test.ts"],
+    ),
+    main = "src/index.ts",
+)

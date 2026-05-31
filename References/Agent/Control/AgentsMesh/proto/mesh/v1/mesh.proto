@@ -1,0 +1,378 @@
+// MeshService — pod-to-pod topology + ticket-pod lookup.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/mesh.go per
+// .claude/plans/proto-naming-conventions.md. Conventions enforced:
+//   * package proto.mesh.v1 + go_package suffix for dispatch
+//   * service name = <Domain>Service, methods PascalCase verbs
+//   * snake_case fields, no json_name annotations
+//   * org_slug at field 1 of every request (no path params on Connect URLs)
+//   * timestamps as string ISO-8601 (no google.protobuf.Timestamp)
+//   * list response = {items, total, limit, offset} uniform envelope where
+//     pagination applies (GetTopology returns a single object, not a list)
+//
+// Field set reconciled across three layers (runbook §1.5):
+//   - backend domain/mesh/mesh.go              (18 fields on MeshNode incl.
+//     position; ChannelInfo with 6; RunnerInfo with 5)
+//   - clients/core/crates/types/src/mesh.rs    (drifted: MeshNode +agent_slug
+//     missing from Go; Go +position not on Rust; MeshRunnerInfo +pod_keys
+//     not on Go but populated by web at runtime; MeshEdge +binding_status
+//     alias on Rust but absent on Go)
+//   - clients/web/src/stores/mesh.ts           (TS interfaces re-state both
+//     legacy shapes; UI reads pod_key/status/runner_id/ticket_id directly)
+//
+// Tag layout reconciliation: this PR adopts the **union** of the three
+// shapes — every field that any layer reads survives. Drifted aliases
+// collapse to the canonical name (initiator/target on edges; pod_key on
+// nodes; pod_keys on runner info). The reference is .proto SSOT going
+// forward — Rust + Go must mirror its field set exactly.
+//
+// Auth model: standard Bearer + ResolveOrgScope across all RPCs. No
+// pod-scoped auth deviation (cf. binding.proto §"Auth model").
+
+syntax = "proto3";
+
+package proto.mesh.v1;
+
+import "codegen/v1/options.proto";
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/mesh/v1;meshv1";
+
+// Convert codegen target — emits mesh_convert.amesh.go into the backend
+// connect handler tree so it can reach the mesh / agentpod domain layers.
+option (amesh.codegen.v1.convert_target) = {
+  output_dir: "backend/internal/api/connect/mesh"
+  output_package: "meshconnect"
+};
+
+service MeshService {
+  // Topology — aggregate view of active pods + bindings + channels + runners
+  // for the org. Single point of read in the Mesh dashboard.
+  rpc GetMeshTopology(GetMeshTopologyRequest) returns (MeshTopology);
+
+  // Ticket→pod lookup. Migrated from MeshHandler.GetTicketPods (REST
+  // /tickets/:slug/pods). Stayed on REST throughout the ticket migration
+  // because it belongs to MeshService, not TicketService.
+  rpc GetTicketPods(GetTicketPodsRequest) returns (GetTicketPodsResponse);
+
+  // Batch ticket→pod lookup — used by the ticket board's "pods per card"
+  // overlay. Migrated from MeshHandler.BatchGetTicketPods (REST
+  // POST /tickets/batch-pods).
+  rpc BatchGetTicketPods(BatchGetTicketPodsRequest) returns (BatchGetTicketPodsResponse);
+
+  // Pod-for-ticket creation. Migrated from MeshHandler.CreatePodForTicket
+  // (REST POST /tickets/:slug/pods). The created pod returns as a MeshNode
+  // (same projection the topology uses) so callers stay on one shape.
+  rpc CreatePodForTicket(CreatePodForTicketRequest) returns (MeshNode);
+}
+
+// MeshMessageService — pod-to-pod direct messaging (distinct from channel
+// messaging). Migrated from /api/v1/orgs/:slug/messages/* REST surface
+// originally owned by MessageHandler. The REST surface authenticated via
+// the `X-Pod-Key` header; Connect names the calling pod in `pod_key` on
+// every request (parity with binding.proto's initiator_pod pattern —
+// the service trusts the pod identifier alone and never re-validates
+// pod ownership against user identity).
+//
+// DLQ endpoints (GetDeadLetters / Replay) keep their admin/ops semantics
+// — the original REST shape didn't require a pod_key for those because
+// they were operator surfaces. Same here.
+service MeshMessageService {
+  // List messages addressed to (or sent by) the caller pod. `unread_only`
+  // narrows to messages where status != "read". Pagination via offset/limit.
+  rpc ListMeshMessages(ListMeshMessagesRequest) returns (ListMeshMessagesResponse);
+
+  // Count of unread messages addressed to the caller pod.
+  rpc GetMeshUnreadCount(GetMeshUnreadCountRequest) returns (GetMeshUnreadCountResponse);
+
+  // Single message fetch by id. Used for in-conversation deep-links.
+  rpc GetMeshMessage(GetMeshMessageRequest) returns (MeshMessage);
+
+  // Mark every message addressed to the caller pod as read. Returns the
+  // count of messages flipped to MessageStatusRead.
+  rpc MarkAllMeshMessagesRead(MarkAllReadRequest) returns (MarkAllReadResponse);
+
+  // List a conversation by correlation id (request/response chains share
+  // the same correlation id). Limit caps the page size.
+  rpc GetMeshConversation(GetConversationRequest) returns (GetConversationResponse);
+
+  // List messages sent BY the caller pod (the inverse of ListMeshMessages).
+  rpc GetMeshSentMessages(GetSentMessagesRequest) returns (GetSentMessagesResponse);
+
+  // List dead letter entries — ops/admin surface. No pod_key required.
+  rpc GetMeshDeadLetters(GetDeadLettersRequest) returns (GetDeadLettersResponse);
+
+  // Replay a dead letter — flips its original message back to pending and
+  // returns the replayed message. Ops/admin surface, no pod_key required.
+  rpc ReplayMeshDeadLetter(ReplayDeadLetterRequest) returns (ReplayDeadLetterResponse);
+}
+
+// MeshMessage — pod-to-pod direct message projection. Mirrors the REST
+// wire shape from MessageHandler — content travels as a JSON-stringified
+// blob (the domain stores it as map[string]any in jsonb). status maps the
+// agent.AgentMessage statuses (pending/delivered/read/failed/dead_letter)
+// but the renderer only reads `is_read` so the proto exposes it pre-computed.
+message MeshMessage {
+  int64 id = 1;
+  optional string sender_pod = 2;
+  optional string receiver_pod = 3;
+  optional string message_type = 4;
+  // JSON-stringified content blob. Matches the legacy REST shape — the
+  // backend's MessageContent is map[string]any; serializing as a string
+  // keeps the proto stable when content schemas evolve.
+  optional string content = 5;
+  optional string correlation_id = 6;
+  // ParentMessageID on the domain — aliased as `reply_to_id` on the
+  // legacy serde DTO + REST wire. Keeping that name on the proto so the
+  // renderer doesn't have to remap.
+  optional int64 reply_to_id = 7;
+  optional bool is_read = 8;
+  optional string created_at = 9;
+}
+
+// MeshDeadLetterEntry — DLQ projection. The original message is embedded
+// (nullable) so the operator can see what failed without a second fetch.
+message MeshDeadLetterEntry {
+  int64 id = 1;
+  optional MeshMessage message = 2;
+  optional string error = 3;
+  optional string created_at = 4;
+}
+
+// --- Requests / Responses for MeshMessageService ---
+
+message ListMeshMessagesRequest {
+  string org_slug = 1;
+  // Calling pod identity (X-Pod-Key in REST). Required: a message list
+  // without a pod scope would leak every org pod's traffic.
+  string pod_key = 2;
+  optional bool unread_only = 3;
+  optional int32 offset = 4;
+  optional int32 limit = 5;
+}
+
+// MeshMessageListResponse uses the §8 uniform list envelope shape with
+// an extra `unread_count` field — the REST wire carried unread_count
+// alongside total (it's cheap to compute and the inbox UI needs it).
+message ListMeshMessagesResponse {
+  repeated MeshMessage items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+  // Unread count for the caller pod's inbox (cached from
+  // MessageRepository.GetUnreadCount). UI badge.
+  int64 unread_count = 5;
+}
+
+message GetMeshUnreadCountRequest {
+  string org_slug = 1;
+  string pod_key = 2;
+}
+
+message GetMeshUnreadCountResponse {
+  int64 count = 1;
+}
+
+message GetMeshMessageRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message MarkAllReadRequest {
+  string org_slug = 1;
+  string pod_key = 2;
+}
+
+message MarkAllReadResponse {
+  int64 marked_count = 1;
+}
+
+message GetConversationRequest {
+  string org_slug = 1;
+  string correlation_id = 2;
+  optional int32 limit = 3;
+}
+
+// Conversation uses the §8 list envelope shape (no offset — correlation
+// ids are page-1 collections by construction).
+message GetConversationResponse {
+  repeated MeshMessage items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+}
+
+message GetSentMessagesRequest {
+  string org_slug = 1;
+  string pod_key = 2;
+  optional int32 offset = 3;
+  optional int32 limit = 4;
+}
+
+message GetSentMessagesResponse {
+  repeated MeshMessage items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message GetDeadLettersRequest {
+  string org_slug = 1;
+  optional int32 offset = 2;
+  optional int32 limit = 3;
+}
+
+message GetDeadLettersResponse {
+  repeated MeshDeadLetterEntry items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message ReplayDeadLetterRequest {
+  string org_slug = 1;
+  int64 entry_id = 2;
+}
+
+message ReplayDeadLetterResponse {
+  // Server status text — matches the REST shape ("Replayed successfully").
+  // Keep it for parity with the legacy MarkReadResponse renderer mapping.
+  optional string message = 1;
+  optional MeshMessage replayed_message = 2;
+}
+
+// MeshNode — a pod projected for topology display. Mirrors
+// backend/internal/domain/mesh/mesh.go:MeshNode. Field names align with the
+// Rust DTO and the TS store interface; aliases collapsed to the canonical
+// name (pod_key, not key).
+message MeshNode {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/mesh.MeshNode"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  string pod_key = 1;
+  string status = 2;
+  string agent_status = 3;
+  optional string model = 4 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  optional string title = 5 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  optional string alias = 6 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  // Agent slug — proto-only (the topology projection on the Go side
+  // doesn't populate it today; Rust DTO has it for renderer display).
+  string agent_slug = 7 [(amesh.codegen.v1.field_skip) = true];
+  optional int64 ticket_id = 8 [(amesh.codegen.v1.field_rename) = "TicketID"];
+  optional string ticket_slug = 9 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  optional string ticket_title = 10 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  optional int64 repository_id = 11 [(amesh.codegen.v1.field_rename) = "RepositoryID"];
+  // CreatedByID is non-optional on the Go domain (zero is "unknown"). Keep
+  // as required scalar to match REST wire.
+  int64 created_by_id = 12 [(amesh.codegen.v1.field_rename) = "CreatedByID"];
+  // Runner association — set when the pod is scheduled. zero = unassigned.
+  int64 runner_id = 13 [(amesh.codegen.v1.field_rename) = "RunnerID"];
+  // Runner display info (preloaded on the topology projection).
+  string runner_node_id = 14 [(amesh.codegen.v1.field_rename) = "RunnerNodeID"];
+  string runner_status = 15;
+  optional string started_at = 16 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+}
+
+// MeshEdge — a binding edge between two pods. Mirrors
+// backend/internal/domain/mesh/mesh.go:MeshEdge.
+message MeshEdge {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/mesh.MeshEdge"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  string source = 2;
+  string target = 3;
+  repeated string granted_scopes = 4;
+  repeated string pending_scopes = 5;
+  string status = 6;
+}
+
+// ChannelInfo — channel projection for topology display. Mirrors
+// backend/internal/domain/mesh/mesh.go:ChannelInfo.
+message ChannelInfo {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/mesh.ChannelInfo"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  string name = 2;
+  optional string description = 3 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  repeated string pod_keys = 4;
+  int32 message_count = 5 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  bool is_archived = 6;
+}
+
+// RunnerInfo — runner projection for topology display. Mirrors
+// backend/internal/domain/mesh/mesh.go:RunnerInfo. Includes max/current
+// pod counts used by the topology's capacity badges.
+message RunnerInfo {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/mesh.RunnerInfo"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  string node_id = 2 [(amesh.codegen.v1.field_rename) = "NodeID"];
+  string status = 3;
+  int32 max_concurrent_pods = 4 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  int32 current_pods = 5 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+}
+
+// MeshTopology — aggregate response from GetMeshTopology.
+message MeshTopology {
+  repeated MeshNode nodes = 1;
+  repeated MeshEdge edges = 2;
+  repeated ChannelInfo channels = 3;
+  repeated RunnerInfo runners = 4;
+}
+
+// --- Requests ---
+
+message GetMeshTopologyRequest {
+  string org_slug = 1;
+}
+
+message GetTicketPodsRequest {
+  string org_slug = 1;
+  string ticket_slug = 2;
+  // When true, only active pods (status running / creating) are returned.
+  // Mirrors the REST `?active=true` query param.
+  optional bool active_only = 3;
+}
+
+message GetTicketPodsResponse {
+  repeated MeshNode pods = 1;
+}
+
+message BatchGetTicketPodsRequest {
+  string org_slug = 1;
+  // Capped at 100 server-side (mirrors REST limit). Empty rejected.
+  repeated int64 ticket_ids = 2;
+}
+
+// BatchGetTicketPodsResponse — pods grouped by ticket id. Every requested
+// ticket_id is present in `ticket_pods` even if its pod list is empty
+// (parity with REST).
+message BatchGetTicketPodsResponse {
+  map<int64, TicketPodList> ticket_pods = 1;
+}
+
+message TicketPodList {
+  repeated MeshNode pods = 1;
+}
+
+message CreatePodForTicketRequest {
+  string org_slug = 1;
+  string ticket_slug = 2;
+  int64 runner_id = 3;
+  optional string prompt = 4;
+  optional string model = 5;
+  optional string permission_mode = 6;
+}

@@ -1,0 +1,53 @@
+# =============================================================================
+# HTTP Routing Configuration
+# =============================================================================
+
+http:
+  routers:
+    # Backend API
+    api:
+      rule: "PathPrefix(`/api`) || PathPrefix(`/health`)"
+      entryPoints:
+        - web
+      service: backend
+      priority: 100
+
+    # Relay (WebSocket for terminal streaming)
+    relay:
+      rule: "PathPrefix(`/relay`)"
+      entryPoints:
+        - web
+      service: relay
+      middlewares:
+        - relay-strip
+      priority: 90
+
+    # Web Frontend (catch-all)
+    web:
+      rule: "PathPrefix(`/`)"
+      entryPoints:
+        - web
+      service: web
+      priority: 1
+
+  services:
+    backend:
+      loadBalancer:
+        servers:
+          - url: "http://backend:8080"
+
+    relay:
+      loadBalancer:
+        servers:
+          - url: "http://relay:8090"
+
+    web:
+      loadBalancer:
+        servers:
+          - url: "http://web:3000"
+
+  middlewares:
+    relay-strip:
+      stripPrefix:
+        prefixes:
+          - "/relay"

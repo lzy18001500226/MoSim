@@ -1,0 +1,85 @@
+// GrantService — resource grants for pod / runner / repository.
+//
+// Migrated from REST handlers in:
+//   backend/internal/api/rest/v1/pod_grants.go
+//   backend/internal/api/rest/v1/runner_grants.go
+//   backend/internal/api/rest/v1/repository_grants.go
+// per .claude/plans/proto-naming-conventions.md.
+//
+// One service with `resource_type` ("pod" / "runner" / "repository") +
+// `resource_id` (the string-encoded resource key — int64 for runner/repo,
+// pod_key for pod). Matches the existing grant.Repository contract; the
+// per-resource REST splits were policy-checks only — the wire shape was
+// already unified, and the Connect surface stays the same.
+//
+// Per-resource policy enforcement (PodPolicy.AllowWrite,
+// AllowAdmin+RunnerPolicy, AllowAdmin+RepositoryPolicy) stays in the
+// handler so the org-scoped tenant context lookup happens once.
+
+syntax = "proto3";
+
+package proto.grant.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/grant/v1;grantv1";
+
+service GrantService {
+  rpc ListGrants(ListGrantsRequest) returns (ListGrantsResponse);
+  rpc CreateGrant(CreateGrantRequest) returns (ResourceGrant);
+  rpc DeleteGrant(DeleteGrantRequest) returns (DeleteGrantResponse);
+}
+
+// ResourceGrantUser is the trimmed user view embedded in grants —
+// mirrors the eager-loaded `User` / `GrantedByUser` associations.
+message ResourceGrantUser {
+  int64 id = 1;
+  string email = 2;
+  string username = 3;
+  optional string name = 4;
+}
+
+// ResourceGrant mirrors backend/internal/domain/grant.ResourceGrant minus
+// the OrganizationID + GrantedBy raw IDs (the user objects expose them
+// via the eager-loaded associations).
+message ResourceGrant {
+  int64 id = 1;
+  string resource_type = 2;
+  string resource_id = 3;
+  int64 user_id = 4;
+  int64 granted_by = 5;
+  string created_at = 6;
+  optional ResourceGrantUser user = 7;
+  optional ResourceGrantUser granted_by_user = 8;
+}
+
+message ListGrantsRequest {
+  string org_slug = 1;
+  // "pod" / "runner" / "repository". Anything else fails handler validation.
+  string resource_type = 2;
+  // For pod = pod_key (string); for runner/repo = stringified int64.
+  string resource_id = 3;
+}
+
+message ListGrantsResponse {
+  repeated ResourceGrant items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message CreateGrantRequest {
+  string org_slug = 1;
+  string resource_type = 2;
+  string resource_id = 3;
+  int64 user_id = 4;
+}
+
+message DeleteGrantRequest {
+  string org_slug = 1;
+  string resource_type = 2;
+  string resource_id = 3;
+  int64 grant_id = 4;
+}
+
+message DeleteGrantResponse {
+  string message = 1;
+}

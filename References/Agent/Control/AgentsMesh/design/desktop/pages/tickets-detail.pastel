@@ -1,0 +1,409 @@
+// Tickets — Ticket detail page
+// Shell unchanged. Main area: breadcrumb + title + meta + content + right sidebar (Working Pods / Sub-tickets / PRs / Activity).
+// Key change: big [Spawn Pod] button visible at header level, not buried in a modal.
+
+canvas "ticket_detail" {
+    width = 2000
+    height = 1160
+    background = #1F2328
+}
+
+component td_nav_icon_active(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = #DDF4FF, stroke = [1, #0969DA]
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, weight = medium, color = #0969DA }
+    }
+}
+component td_nav_icon(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = transparent
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, color = #656D76 }
+    }
+}
+component td_section_divider() { shape { type = rectangle, width = 24, height = 1, fill = #D0D7DE } }
+
+component td_avatar(letter, bg) {
+    frame { width = 22, height = 22, radius = 999, fill = bg, stroke = [2, #FFFFFF]
+        layout = horizontal, justify = center, align = center
+        text letter { size = 10, weight = semibold, color = #FFFFFF }
+    }
+}
+
+component td_label_chip(text_content, bg, fg) {
+    frame { padding = [2, 8], radius = 4, fill = bg
+        layout = horizontal, align = center
+        text text_content { size = 11, weight = medium, color = fg }
+    }
+}
+
+component td_status_badge(label, bg, fg) {
+    frame { padding = [3, 10], radius = 999, fill = bg
+        layout = horizontal, align = center
+        text label { size = 12, weight = medium, color = fg }
+    }
+}
+
+// Right sidebar section header
+component side_section(title, action_label) {
+    frame {
+        width = fill, padding = [0, 0, 8, 0]
+        layout = horizontal, justify = space-between, align = center
+
+        text title { size = 11, weight = semibold, color = #656D76, text-transform = uppercase, letter-spacing = 1 }
+        text action_label { size = 12, weight = medium, color = #0969DA }
+    }
+}
+
+// Working pod card in right sidebar
+component working_pod(status_color, status_label, pod_key, agent, mode) {
+    frame {
+        width = fill, padding = 10, radius = 6
+        fill = #FFFFFF, stroke = [1, #E4E9EE]
+        layout = vertical, gap = 6
+
+        frame top {
+            width = fill, layout = horizontal, justify = space-between, align = center
+            frame ind { layout = horizontal, gap = 6, align = center
+                frame dot { width = 8, height = 8, radius = 999, fill = status_color }
+                text pod_key { size = 12, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+            }
+            text "Open →" { size = 11, color = #0969DA, weight = medium }
+        }
+        frame meta {
+            layout = horizontal, gap = 8, align = center
+            text agent { size = 11, color = #656D76, family = "JetBrains Mono" }
+            frame mode_badge { padding = [1, 6], radius = 3, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                text mode { size = 10, color = #656D76, family = "JetBrains Mono" }
+            }
+            text status_label { size = 11, color = #656D76 }
+        }
+    }
+}
+
+// Activity timeline item
+component activity_item(icon, color, title, meta) {
+    frame {
+        width = fill, layout = horizontal, gap = 10, align = start
+
+        frame dot {
+            width = 20, height = 20, radius = 999, fill = color
+            layout = horizontal, justify = center, align = center
+            text icon { size = 11, color = #FFFFFF }
+        }
+        frame body { layout = vertical, gap = 2, width = 260
+            text title { size = 12, color = #1F2328, wrap = true, line-height = 18, width = 260 }
+            text meta  { size = 11, color = #868F99 }
+        }
+    }
+}
+
+component pg_tickets_detail() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width = 1920, height = 1080, fill = #F6F8FA
+
+    frame app {
+        width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+        frame body {
+            width = fill, height = fill, layout = horizontal
+
+            // --- ActivityBar ---
+            frame activity_bar {
+                width = 48, height = fill, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                layout = vertical, align = center, padding = [12, 6], gap = 6
+
+                frame org_switcher {
+                    width = 36, height = 36, radius = 8, fill = #0969DA
+                    layout = horizontal, justify = center, align = center
+                    text "D" { size = 16, weight = semibold, color = #FFFFFF }
+                }
+                frame gap_s { height = 12 }
+
+                use td_nav_icon("▦")
+                use td_nav_icon("#")
+                use td_nav_icon(">_")
+                use td_section_divider()
+                use td_nav_icon_active("🎫")
+                use td_nav_icon("↻")
+                use td_nav_icon("⚘")
+
+                frame spacer { height = fill }
+                use td_nav_icon("⌘")
+                use td_nav_icon("?")
+                use td_nav_icon("⚙")
+                use td_nav_icon("👤")
+            }
+
+            // --- Main (no left sidebar — detail pages collapse it by default) ---
+            frame main {
+                width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+                // Thin breadcrumb bar
+                frame breadcrumb_bar {
+                    width = fill, padding = [12, 32]
+                    stroke = [1, #E4E9EE]
+                    layout = horizontal, gap = 8, align = center
+
+                    frame back_btn {
+                        width = 22, height = 22, radius = 4, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                        layout = horizontal, justify = center, align = center
+                        text "←" { size = 13, color = #656D76 }
+                    }
+                    text "Tickets" { size = 13, color = #656D76 }
+                    text "›"       { size = 13, color = #AFB8C1 }
+                    text "DEV-1"   { size = 13, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                }
+
+                // Title row with big actions
+                frame header {
+                    width = fill, padding = [20, 32]
+                    layout = horizontal, justify = space-between, align = start
+                    stroke = [1, #E4E9EE]
+
+                    frame left {
+                        layout = vertical, gap = 10, width = 860
+
+                        frame title_row {
+                            layout = horizontal, gap = 10, align = center
+                            text "DEV-1" { size = 13, color = #868F99, family = "JetBrains Mono" }
+                            use td_status_badge("In Progress", #FFF8C5, #9A6700)
+                        }
+
+                        text "Implement JWT-based user authentication"
+                            { size = 22, weight = semibold, color = #1F2328, wrap = true, width = 860, line-height = 28 }
+
+                        // Meta: reporter · assignees · priority · repo · created
+                        frame meta {
+                            layout = horizontal, gap = 16, align = center
+
+                            frame repo_block { layout = horizontal, gap = 6, align = center
+                                text "Repo"  { size = 12, color = #868F99 }
+                                text "demo-api" { size = 12, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                            }
+                            frame prio_block { layout = horizontal, gap = 6, align = center
+                                text "Priority" { size = 12, color = #868F99 }
+                                text "↑↑ Urgent" { size = 12, weight = medium, color = #CF222E }
+                            }
+                            frame due_block { layout = horizontal, gap = 6, align = center
+                                text "Due" { size = 12, color = #868F99 }
+                                text "Dec 5 (overdue)" { size = 12, weight = medium, color = #CF222E }
+                            }
+                            frame reporter_block { layout = horizontal, gap = 6, align = center
+                                text "Opened" { size = 12, color = #868F99 }
+                                text "3 days ago by Dev User" { size = 12, color = #1F2328 }
+                            }
+                        }
+
+                        // Labels
+                        frame labels {
+                            layout = horizontal, gap = 6
+                            use td_label_chip("backend",  #DDF4FF, #0550AE)
+                            use td_label_chip("security", #FFEBE9, #CF222E)
+                        }
+                    }
+
+                    // Big Spawn Pod button — the key improvement
+                    frame actions {
+                        layout = vertical, gap = 8, align = end, width = 280
+
+                        frame btn_spawn_pod {
+                            width = fill, height = 44, radius = 8, fill = #0969DA
+                            layout = horizontal, justify = center, align = center, gap = 8
+                            shadow = [0, 2, 6, #0969DA40]
+
+                            text ">_" { size = 15, weight = semibold, color = #FFFFFF }
+                            text "Spawn Pod" { size = 14, weight = semibold, color = #FFFFFF }
+                        }
+                        text "Will use demo-api · main · claude-code (last used)"
+                            { size = 11, color = #868F99, align = right, width = 280 }
+
+                        frame secondary_actions {
+                            width = fill, layout = horizontal, gap = 6, justify = end
+
+                            frame btn_edit {
+                                height = 30, padding = [0, 12], radius = 6
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = horizontal, justify = center, align = center
+                                text "Edit" { size = 13, color = #1F2328 }
+                            }
+                            frame btn_mark_done {
+                                height = 30, padding = [0, 12], radius = 6
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = horizontal, justify = center, align = center
+                                text "Mark Done" { size = 13, color = #1F2328 }
+                            }
+                            frame btn_more {
+                                width = 30, height = 30, radius = 6
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = horizontal, justify = center, align = center
+                                text "⋯" { size = 14, color = #656D76 }
+                            }
+                        }
+                    }
+                }
+
+                // Content + right sidebar
+                frame content_area {
+                    width = fill, height = fill, layout = horizontal
+
+                    // Left: Description + activity tab
+                    frame content {
+                        width = fill, height = fill, padding = [24, 32]
+                        layout = vertical, gap = 20
+                        fill = #FFFFFF
+
+                        // Section tabs
+                        frame tabs {
+                            width = fill, layout = horizontal, gap = 0, padding = [0, 0, 0, 0]
+
+                            frame tab_desc {
+                                padding = [8, 14]
+                                layout = vertical, align = center, gap = 6
+                                text "Description" { size = 13, weight = semibold, color = #1F2328 }
+                                shape line { type = rectangle, width = 84, height = 2, fill = #0969DA, radius = 2 }
+                            }
+                            frame tab_comments {
+                                padding = [8, 14]
+                                layout = horizontal, gap = 6, align = center
+                                text "Comments" { size = 13, color = #656D76 }
+                                frame badge { padding = [0, 6], radius = 999, fill = #E4E9EE
+                                    text "4" { size = 10, color = #656D76, family = "JetBrains Mono" }
+                                }
+                            }
+                            frame tab_history {
+                                padding = [8, 14]
+                                text "History" { size = 13, color = #656D76 }
+                            }
+                        }
+
+                        // Description content
+                        frame desc {
+                            layout = vertical, gap = 10, width = 800
+
+                            text "Objective" { size = 14, weight = semibold, color = #1F2328 }
+                            text "Build a secure JWT-based authentication system for the demo-api platform. Token lifetime, refresh strategy, and password reset should follow OWASP guidance."
+                                { size = 14, color = #1F2328, wrap = true, width = 800, line-height = 22 }
+
+                            text "Tasks" { size = 14, weight = semibold, color = #1F2328, padding = [12, 0, 0, 0] }
+                            frame check_list { layout = vertical, gap = 6, width = 800
+                                frame i1 { layout = horizontal, gap = 8, align = center
+                                    frame box { width = 16, height = 16, radius = 3, fill = #1A7F37
+                                        layout = horizontal, justify = center, align = center
+                                        text "✓" { size = 11, weight = semibold, color = #FFFFFF }
+                                    }
+                                    text "Login API endpoint" { size = 13, color = #868F99, text-decoration = strikethrough }
+                                }
+                                frame i2 { layout = horizontal, gap = 8, align = center
+                                    frame box { width = 16, height = 16, radius = 3, fill = #FFFFFF, stroke = [1, #D0D7DE] }
+                                    text "Registration API endpoint" { size = 13, color = #1F2328 }
+                                }
+                                frame i3 { layout = horizontal, gap = 8, align = center
+                                    frame box { width = 16, height = 16, radius = 3, fill = #FFFFFF, stroke = [1, #D0D7DE] }
+                                    text "Token refresh mechanism" { size = 13, color = #1F2328 }
+                                }
+                                frame i4 { layout = horizontal, gap = 8, align = center
+                                    frame box { width = 16, height = 16, radius = 3, fill = #FFFFFF, stroke = [1, #D0D7DE] }
+                                    text "Password reset flow" { size = 13, color = #1F2328 }
+                                }
+                            }
+                        }
+                    }
+
+                    // Right sidebar — Working Pods / Sub-tickets / PRs / Activity
+                    frame right_sidebar {
+                        width = 340, height = fill, fill = #F6F8FA
+                        stroke = [1, #D0D7DE]
+                        padding = 20, layout = vertical, gap = 24
+
+                        // Working Pods
+                        frame section_pods { layout = vertical, gap = 8
+                            use side_section("Working Pods · 2", "+ Add")
+
+                            use working_pod(#3FB950, "running · 12m", "pod-abc-123", "claude-code", "pty")
+                            use working_pod(#58A6FF, "processing · 3m", "pod-def-456", "codex", "acp")
+                        }
+
+                        // Sub-tickets
+                        frame section_sub { layout = vertical, gap = 8
+                            use side_section("Sub-tickets · 3", "+ Add")
+
+                            frame sub_ticket {
+                                width = fill, padding = [6, 10], radius = 4
+                                layout = horizontal, gap = 8, align = center
+
+                                frame box { width = 14, height = 14, radius = 3, fill = #1A7F37
+                                    layout = horizontal, justify = center, align = center
+                                    text "✓" { size = 9, color = #FFFFFF }
+                                }
+                                text "DEV-7" { size = 11, color = #868F99, family = "JetBrains Mono" }
+                                text "Add login schema" { size = 12, color = #868F99, text-decoration = strikethrough }
+                            }
+                            frame sub_ticket_2 {
+                                width = fill, padding = [6, 10], radius = 4
+                                layout = horizontal, gap = 8, align = center
+
+                                frame box { width = 14, height = 14, radius = 3, fill = #FFFFFF, stroke = [1, #D0D7DE] }
+                                text "DEV-8" { size = 11, color = #868F99, family = "JetBrains Mono" }
+                                text "Wire refresh token rotation" { size = 12, color = #1F2328 }
+                            }
+                        }
+
+                        // Linked PRs
+                        frame section_prs { layout = vertical, gap = 8
+                            use side_section("Pull Requests · 1", "Open Git")
+
+                            frame pr_card {
+                                width = fill, padding = 10, radius = 6
+                                fill = #FFFFFF, stroke = [1, #E4E9EE]
+                                layout = vertical, gap = 6
+
+                                frame top {
+                                    layout = horizontal, gap = 6, align = center
+                                    frame pr_badge { padding = [1, 6], radius = 3, fill = #DAFBE1
+                                        text "open" { size = 10, weight = medium, color = #1A7F37 }
+                                    }
+                                    text "#142" { size = 11, color = #868F99, family = "JetBrains Mono" }
+                                }
+                                text "feat: add login + register handlers"
+                                    { size = 12, color = #1F2328, wrap = true, width = 280, line-height = 16 }
+                                text "demo-api · opened by claude-code" { size = 11, color = #868F99 }
+                            }
+                        }
+
+                        // Activity
+                        frame section_activity { layout = vertical, gap = 10
+                            use side_section("Recent Activity", "")
+
+                            use activity_item(">", #0969DA, "Pod pod-abc-123 spawned by Dev User",         "12 min ago")
+                            use activity_item("✎", #656D76, "Priority raised Medium → Urgent by Dev User","1 hour ago")
+                            use activity_item("✓", #1A7F37, "Sub-task DEV-7 marked done",                  "3 hours ago")
+                            use activity_item("+", #8250DF, "Sub-task DEV-8 added",                        "3 hours ago")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+}
+
+
+component pg_tickets_detail_framed() {
+    frame outer {
+        width = 2000
+        height = 1160
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_tickets_detail()
+    }
+}
+
+frame root {
+    use pg_tickets_detail_framed()
+}

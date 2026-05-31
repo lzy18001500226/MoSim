@@ -1,0 +1,300 @@
+// iOS Pods Grid — Chrome iOS Tab Switcher pattern.
+// Uses floating action bar (not tab bar) — only nav bar icons needed.
+
+asset search_blue = image("../assets/lucide-png/search-0969DA.png")
+asset plus_blue   = image("../assets/lucide-png/plus-0969DA.png")
+
+canvas "ios_pods_grid" {
+    width = 1100
+    height = 1100
+    background = #1F2328
+}
+
+component sh_status_bar() {
+    frame {
+        width = fill, height = 59, fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center, padding = [0, 22]
+        text "9:41" { size = 17, weight = semibold, color = #1F2328, family = "SF Pro" }
+        frame icons { layout = horizontal, gap = 6, align = center
+            text "📶" { size = 14 } text "📡" { size = 14 }
+            frame battery { width = 28, height = 13, radius = 4, stroke = [1, #1F2328], padding = 2,
+                layout = horizontal, align = center
+                shape level { type = rectangle, width = 20, height = 7, radius = 1, fill = #1F2328 }
+            }
+        }
+    }
+}
+
+component sh_nav_bar() {
+    frame {
+        width = fill, height = 44, fill = #FFFFFFE6
+        padding = [0, 8, 0, 12], layout = horizontal, justify = space-between, align = center
+        frame left { layout = horizontal, gap = 12, align = center
+            frame avatar { width = 40, height = 40, radius = 999, fill = #0969DA
+                layout = horizontal, justify = center, align = center
+                text "S" { size = 17, weight = semibold, color = #FFFFFF }
+            }
+            text "Pods" { size = 17, weight = semibold, color = #1F2328 }
+        }
+        frame actions { layout = horizontal, gap = 4, align = center
+            frame search_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+                image search_blue { width = 24, height = 24 }
+            }
+            frame plus_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+                image plus_blue { width = 24, height = 24 }
+            }
+        }
+    }
+}
+
+component seg_active(label) {
+    frame { padding = [4, 16], radius = 7, fill = #FFFFFF, stroke = [1, #00000010]
+        shadow = [0, 1, 1, #00000010]
+        layout = horizontal, justify = center, align = center
+        text label { size = 13, weight = semibold, color = #1F2328 }
+    }
+}
+component seg_inactive(label) {
+    frame { padding = [4, 16], layout = horizontal, justify = center, align = center
+        text label { size = 13, weight = medium, color = #1F2328 }
+    }
+}
+component pg_segment() {
+    frame {
+        width = fill, padding = [12, 16, 8, 16], fill = #F2F2F7
+        layout = horizontal, justify = center, align = center
+
+        frame seg {
+            width = 280, height = 32, padding = 2, radius = 8, fill = #E9E9EB
+            layout = horizontal, gap = 0, align = center, justify = space-between
+            use seg_active("Mine")
+            use seg_inactive("Others")
+            use seg_inactive("Completed")
+        }
+    }
+}
+
+component pod_card_header(agent_letter, agent_bg, pod_key) {
+    frame {
+        width = fill, height = 36, padding = [0, 8, 0, 10]
+        fill = #FFFFFF, stroke = [1, #E4E9EE]
+        layout = horizontal, justify = space-between, align = center
+
+        frame left { layout = horizontal, gap = 8, align = center, width = 110
+            frame agent_icon {
+                width = 22, height = 22, radius = 6, fill = agent_bg
+                layout = horizontal, justify = center, align = center
+                text agent_letter { size = 11, weight = semibold, color = #FFFFFF, family = "SF Mono" }
+            }
+            text pod_key { size = 11, weight = medium, color = #1F2328, family = "SF Mono", wrap = false }
+        }
+        frame close_btn {
+            width = 28, height = 28, layout = horizontal, justify = center, align = center
+            text "✕" { size = 14, color = #8E8E93 }
+        }
+    }
+}
+
+component pod_card_terminal_pty() {
+    frame {
+        width = fill, height = fill, fill = #0D1117
+        padding = [10, 12], layout = vertical, gap = 2
+
+        text "$ claude review src/auth.ts" { size = 9, color = #C9D1D9, family = "SF Mono" }
+        text "→ Analyzing..." { size = 9, color = #8B949E, family = "SF Mono" }
+        text "→ Found 2 issues:" { size = 9, color = #8B949E, family = "SF Mono" }
+        text "  · rate limit on /login" { size = 9, color = #F85149, family = "SF Mono" }
+        text "  · JWT secret < 64 bytes" { size = 9, color = #D29922, family = "SF Mono" }
+        text "" { size = 9, color = #8B949E }
+        frame cursor_row {
+            layout = horizontal, gap = 0, align = center
+            text "$ " { size = 9, color = #C9D1D9, family = "SF Mono" }
+            shape cursor { type = rectangle, width = 5, height = 11, fill = #3FB950 }
+        }
+    }
+}
+
+component pod_card_terminal_acp() {
+    frame {
+        width = fill, height = fill, fill = #0D1117
+        padding = [10, 12], layout = vertical, gap = 4
+
+        frame bubble_user {
+            width = fill, layout = horizontal, justify = end
+            frame b { padding = [4, 8], radius = 6, fill = #1F6FEB
+                text "Design API shape..." { size = 9, color = #FFFFFF, wrap = false }
+            }
+        }
+        frame bubble_agent {
+            width = fill, layout = horizontal, justify = start
+            frame b { padding = [4, 8], radius = 6, fill = #161B22, stroke = [1, #30363D]
+                text "I'll plan the routes..." { size = 9, color = #C9D1D9, wrap = false }
+            }
+        }
+        frame thinking {
+            layout = horizontal, gap = 4, align = center, padding = [4, 0]
+            frame d1 { width = 4, height = 4, radius = 999, fill = #58A6FF }
+            frame d2 { width = 4, height = 4, radius = 999, fill = #58A6FF }
+            frame d3 { width = 4, height = 4, radius = 999, fill = #58A6FF }
+            text "thinking" { size = 9, color = #8B949E }
+        }
+    }
+}
+
+component pod_card_terminal_idle() {
+    frame {
+        width = fill, height = fill, fill = #0D1117
+        padding = [10, 12], layout = vertical, gap = 0, justify = center, align = center
+        text "🔘 idle" { size = 13, color = #6E7681, family = "SF Mono" }
+        text "Last action 1h ago" { size = 9, color = #6E7681, family = "SF Mono" }
+    }
+}
+
+component pod_card_terminal_completed() {
+    frame {
+        width = fill, height = fill, fill = #0D1117
+        padding = [10, 12], layout = vertical, gap = 4
+        text "$ npm test" { size = 9, color = #C9D1D9, family = "SF Mono" }
+        text "✓ 142 passed" { size = 9, color = #3FB950, family = "SF Mono" }
+        text "✓ 0 failed" { size = 9, color = #3FB950, family = "SF Mono" }
+        text "" { size = 9, color = #8B949E }
+        text "Process completed" { size = 9, color = #8B949E, family = "SF Mono" }
+    }
+}
+
+component pod_card_footer(status_text, status_bg, status_color, status_dot, time) {
+    frame {
+        width = fill, height = 32, padding = [0, 10]
+        fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center
+
+        frame status_chip {
+            padding = [2, 8], radius = 4, fill = status_bg
+            layout = horizontal, gap = 4, justify = center, align = center
+            frame dot { width = 6, height = 6, radius = 999, fill = status_dot }
+            text status_text { size = 11, weight = medium, color = status_color }
+        }
+        text time { size = 11, color = #8E8E93 }
+    }
+}
+
+component pod_card_running() {
+    frame {
+        width = 172, height = 232, radius = 12, fill = #FFFFFF
+        stroke = [1, #E4E9EE], shadow = [0, 2, 8, #0000000F]
+        layout = vertical
+        use pod_card_header("C", #3FB950, "pod-abc-123")
+        frame body { width = fill, height = 164, layout = vertical, use pod_card_terminal_pty() }
+        use pod_card_footer("running", #DAFBE1, #1A7F37, #3FB950, "2m")
+    }
+}
+component pod_card_executing() {
+    frame {
+        width = 172, height = 232, radius = 12, fill = #FFFFFF
+        stroke = [1, #E4E9EE], shadow = [0, 2, 8, #0000000F]
+        layout = vertical
+        use pod_card_header("X", #58A6FF, "pod-def-456")
+        frame body { width = fill, height = 164, layout = vertical, use pod_card_terminal_acp() }
+        use pod_card_footer("executing", #DDF4FF, #0550AE, #0969DA, "8m")
+    }
+}
+component pod_card_idle() {
+    frame {
+        width = 172, height = 232, radius = 12, fill = #FFFFFF
+        stroke = [1, #E4E9EE], shadow = [0, 2, 8, #0000000F]
+        layout = vertical
+        use pod_card_header("A", #D29922, "pod-ghi-789")
+        frame body { width = fill, height = 164, layout = vertical, use pod_card_terminal_idle() }
+        use pod_card_footer("idle", #F0F3F6, #656D76, #8E8E93, "1h")
+    }
+}
+component pod_card_completed() {
+    frame {
+        width = 172, height = 232, radius = 12, fill = #FFFFFF
+        stroke = [1, #E4E9EE], shadow = [0, 2, 8, #0000000F]
+        layout = vertical
+        use pod_card_header("C", #3FB950, "pod-jkl-000")
+        frame body { width = fill, height = 164, layout = vertical, use pod_card_terminal_completed() }
+        use pod_card_footer("done", #DAFBE1, #1A7F37, #3FB950, "3h")
+    }
+}
+
+component sh_action_bar() {
+    frame {
+        width = 361, height = 56, radius = 28
+        fill = #FFFFFFE6, stroke = [1, #0000000D]
+        shadow = [0, 4, 12, #00000014]
+        padding = [0, 16], layout = horizontal, justify = space-between, align = center
+
+        frame new_btn {
+            layout = horizontal, gap = 6, align = center, padding = [0, 8]
+            frame plus_circle {
+                width = 32, height = 32, radius = 999, fill = #0969DA
+                layout = horizontal, justify = center, align = center
+                text "+" { size = 22, weight = semibold, color = #FFFFFF }
+            }
+            text "New Pod" { size = 15, weight = semibold, color = #0969DA }
+        }
+        frame count {
+            padding = [0, 12], layout = horizontal, gap = 4, align = center
+            text "5" { size = 15, weight = semibold, color = #1F2328, family = "SF Mono" }
+            text "Pods" { size = 13, color = #8E8E93 }
+        }
+        frame done_btn { padding = [0, 16], layout = horizontal, justify = center, align = center
+            text "Done" { size = 17, weight = semibold, color = #0969DA }
+        }
+    }
+}
+
+component pg_pods_grid() {
+frame root {
+    width = 393, height = 852, fill = #FFFFFF
+    radius = 47, stroke = [3, #1F2328]
+    layout = vertical
+
+    use sh_status_bar()
+    use sh_nav_bar()
+
+    frame seg_wrap { fill = #F2F2F7, layout = vertical, use pg_segment() }
+
+    frame scroll {
+        width = fill, height = fill, fill = #F2F2F7
+        padding = [4, 16, 88, 16]
+        layout = vertical, gap = 12
+
+        frame row1 {
+            width = fill, layout = horizontal, gap = 12, justify = space-between
+            use pod_card_running()
+            use pod_card_executing()
+        }
+        frame row2 {
+            width = fill, layout = horizontal, gap = 12, justify = space-between
+            use pod_card_idle()
+            use pod_card_completed()
+        }
+    }
+
+    frame action_zone {
+        width = fill, height = 88, fill = #F2F2F7
+        layout = vertical, justify = end, align = center, padding = [0, 0, 16, 0]
+        use sh_action_bar()
+    }
+
+    frame safe_bottom {
+        width = fill, height = 34, fill = #F2F2F7
+        layout = horizontal, justify = center, align = center
+        shape indicator { type = rectangle, width = 134, height = 5, radius = 999, fill = #1F2328 }
+    }
+}
+}
+
+
+component pg_pods_grid_framed() {
+    frame outer {
+        width = 1100, height = 1100, fill = #1F2328
+        padding = [60, 80], layout = horizontal, justify = center, align = center
+        use pg_pods_grid()
+    }
+}
+
+frame root { use pg_pods_grid_framed() }

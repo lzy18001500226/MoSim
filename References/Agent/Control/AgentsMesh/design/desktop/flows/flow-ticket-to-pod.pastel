@@ -1,0 +1,233 @@
+// User flow — "From Ticket to finished Pod"
+// The most common daily journey: see a ticket → spawn a pod → agent runs → close.
+
+canvas "flow_ticket" {
+    width = 1880
+    height = 1480
+    background = #1F2328
+}
+
+component ft_step_box(number, title, detail) {
+    frame {
+        width   = 260
+        height  = 160
+        radius  = 8
+        fill    = #FFFFFF
+        stroke  = [1, #D0D7DE]
+        layout  = vertical
+        padding = 16
+        gap     = 8
+
+        frame header {
+            layout = horizontal, gap = 8, align = center
+            frame num {
+                width = 24, height = 24, radius = 999, fill = #0969DA
+                layout = horizontal, justify = center, align = center
+                text number { size = 13, weight = semibold, color = #FFFFFF }
+            }
+            text title { size = 14, weight = semibold, color = #1F2328, width = 200, wrap = true }
+        }
+        text detail { size = 12, color = #656D76, wrap = true, line-height = 18, width = 228 }
+    }
+}
+
+component step_box_cta(number, title, detail) {
+    frame {
+        width   = 260
+        height  = 160
+        radius  = 8
+        fill    = #DDF4FF
+        stroke  = [2, #0969DA]
+        layout  = vertical
+        padding = 16
+        gap     = 8
+        shadow  = [0, 2, 6, #0969DA33]
+
+        frame header {
+            layout = horizontal, gap = 8, align = center
+            frame num {
+                width = 24, height = 24, radius = 999, fill = #0969DA
+                layout = horizontal, justify = center, align = center
+                text number { size = 13, weight = semibold, color = #FFFFFF }
+            }
+            text title { size = 14, weight = semibold, color = #0550AE, width = 200, wrap = true }
+        }
+        text detail { size = 12, color = #0550AE, wrap = true, line-height = 18, width = 228 }
+    }
+}
+
+component ft_arrow_right() {
+    frame {
+        width  = 40
+        height = 160
+        layout = horizontal, justify = center, align = center
+        text "→" { size = 24, weight = semibold, color = #AFB8C1 }
+    }
+}
+
+component ft_arrow_down_large() {
+    frame {
+        width  = 260
+        height = 40
+        layout = horizontal, justify = center, align = center
+        text "↓" { size = 24, weight = semibold, color = #AFB8C1 }
+    }
+}
+
+component issue_badge(label, color) {
+    frame {
+        padding = [2, 8]
+        radius  = 999
+        stroke  = [1, color]
+        layout  = horizontal
+        align   = center
+        text label { size = 11, weight = medium, color = color }
+    }
+}
+
+component pg_flow_ticket_to_pod() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width   = 1800
+    height  = 1400
+    fill    = #FFFFFF
+    padding = 40
+    layout  = vertical
+    gap     = 32
+
+    // Header
+    frame header {
+        layout = vertical, gap = 4
+        text "User Flow — Ticket to finished Pod" { size = 24, weight = semibold, color = #1F2328 }
+        text "The most common daily journey. Developer sees a ticket, spawns an agent pod, watches it work, closes the ticket."
+            { size = 13, color = #656D76, wrap = true, width = 1600 }
+    }
+
+    // Row 1 — happy path
+    frame row_1 {
+        width  = fill
+        layout = horizontal
+        gap    = 0
+        align  = start
+
+        use ft_step_box("1", "See ticket",
+            "Open /:org/tickets. Kanban shows DEV-1 in Backlog with 0 pods. Click to open detail.")
+        use ft_arrow_right()
+        use step_box_cta("2", "Spawn Pod (one click)",
+            "In ticket detail, click [Spawn Pod]. Modal pre-fills: repo, default branch, last-used runner & agent. Just confirm.")
+        use ft_arrow_right()
+        use ft_step_box("3", "Pod initializing",
+            "Workspace opens. Progress panel shows: ✓ runner reserved → ⋯ cloning repo → ⋯ starting agent. Takes 5-15s.")
+        use ft_arrow_right()
+        use ft_step_box("4", "Agent running",
+            "Terminal streams. User watches or hands off. Ticket auto-moves to In Progress (optional auto-rule).")
+    }
+
+    // Arrow down to row 2
+    frame arrow_down_row {
+        width  = fill
+        layout = horizontal
+        justify = end
+        padding = [0, 40, 0, 0]
+        use ft_arrow_down_large()
+    }
+
+    // Row 2 — continues (right to left, visually snakes)
+    frame row_2 {
+        width  = fill
+        layout = horizontal
+        gap    = 0
+        align  = start
+
+        use ft_step_box("5", "Agent finishes",
+            "Agent pushes PR to demo-api. Pod reports status=completed. Terminal shows summary.")
+        use ft_arrow_right()
+        use ft_step_box("6", "Review output",
+            "User reads PR link in terminal, clicks to open. Or stays in pod for more iteration.")
+        use ft_arrow_right()
+        use ft_step_box("7", "Update ticket",
+            "Drag DEV-1 to Done, or ticket detail → [Mark Done]. Attach PR link if not auto-linked.")
+        use ft_arrow_right()
+        use ft_step_box("8", "Cleanup pod",
+            "Pod terminates automatically when agent completes (AgentFile MODE). Or user clicks Terminate.")
+    }
+
+    // Improvements section
+    frame improvements {
+        width   = fill
+        padding = 24
+        radius  = 8
+        fill    = #F6F8FA
+        layout  = vertical
+        gap     = 12
+
+        text "Pain points fixed by this flow" { size = 16, weight = semibold, color = #1F2328 }
+
+        frame pain_1 {
+            layout = horizontal, gap = 12, align = start
+            use issue_badge("Fix", #1A7F37)
+            frame txt { layout = vertical, gap = 2, width = 1500
+                text "One-click Pod from Ticket" { size = 13, weight = medium, color = #1F2328 }
+                text "Currently: open Ticket → remember repo slug → go to Workspace → click New Pod → fill modal → select runner → select agent → find repo → type branch → submit. That's ~8 steps."
+                    { size = 12, color = #656D76, wrap = true, width = 1500 }
+                text "New: [Spawn Pod] on the ticket pre-fills everything. 1 click + 1 confirmation."
+                    { size = 12, color = #1A7F37, wrap = true, width = 1500 }
+            }
+        }
+
+        frame pain_2 {
+            layout = horizontal, gap = 12, align = start
+            use issue_badge("Fix", #1A7F37)
+            frame txt { layout = vertical, gap = 2, width = 1500
+                text "Progress visibility during 5-15s init" { size = 13, weight = medium, color = #1F2328 }
+                text "Currently: spinner with no information. Users think it's frozen."
+                    { size = 12, color = #656D76, wrap = true, width = 1500 }
+                text "New: stepped progress (runner → clone → agent). Each step lights up, failure shows which step."
+                    { size = 12, color = #1A7F37, wrap = true, width = 1500 }
+            }
+        }
+
+        frame pain_3 {
+            layout = horizontal, gap = 12, align = start
+            use issue_badge("Fix", #1A7F37)
+            frame txt { layout = vertical, gap = 2, width = 1500
+                text "Ticket ↔ Pod bidirectional link visible" { size = 13, weight = medium, color = #1F2328 }
+                text "Currently: Pod's Ticket association is hidden in a sidebar panel."
+                    { size = 12, color = #656D76, wrap = true, width = 1500 }
+                text "New: pods show ticket badge; tickets show pod count. Either page jumps to the other in 1 click."
+                    { size = 12, color = #1A7F37, wrap = true, width = 1500 }
+            }
+        }
+
+        frame pain_4 {
+            layout = horizontal, gap = 12, align = start
+            use issue_badge("Fix", #1A7F37)
+            frame txt { layout = vertical, gap = 2, width = 1500
+                text "Optional auto-status on ticket" { size = 13, weight = medium, color = #1F2328 }
+                text "New: org admin can enable 'auto-move ticket to In Progress when Pod starts, Done when PR merged'. Eliminates manual state drift."
+                    { size = 12, color = #0550AE, wrap = true, width = 1500 }
+            }
+        }
+    }
+}
+}
+
+
+component pg_flow_ticket_to_pod_framed() {
+    frame outer {
+        width = 1880
+        height = 1480
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_flow_ticket_to_pod()
+    }
+}
+
+frame root {
+    use pg_flow_ticket_to_pod_framed()
+}

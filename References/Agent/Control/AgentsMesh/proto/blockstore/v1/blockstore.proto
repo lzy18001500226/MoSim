@@ -1,0 +1,341 @@
+// BlockstoreService — org-scoped block store (blocks, refs, ops, workspaces,
+// semantic search). Migrated from REST handlers in
+// backend/internal/api/rest/v1/blockstore_*.go per
+// .claude/plans/proto-naming-conventions.md.
+//
+// Wire shape decisions (runbook §1.5 reconciliation):
+//   * Block.data / Block.meta / BlockOp.payload / .forward / .inverse /
+//     .context — opaque structured payloads tied to per-block-type schemas.
+//     Shipped as `string *_json` UTF-8 JSON on the wire to avoid mirroring
+//     200+ blocktype subschemas into protobuf. Same approach the channel
+//     migration uses for rich text (proto/channel/v1/channel.proto §60).
+//   * Block.id / BlockRef.workspace_id / BlockOp.target_block — UUIDs travel
+//     as `string` (RFC 4122 canonical hex). Avoids dragging a UUID well-known
+//     type plus matches the REST JSON shape today.
+//   * ApplyOpsRequest.ops carries the multi-op batch the existing
+//     /blocks/ops endpoint accepted; each OpEnvelope is { kind, payload_json }.
+//   * idempotency_key + parent_op_id preserved (replay-safe batch semantics).
+//   * List responses use `{items, total, limit, offset}` per conventions §8.
+//     StreamOps / Backlinks / TypeDefs already returned envelope-like shapes;
+//     we normalise on the uniform list shape (total=count, no pagination
+//     semantics — server returns all matches up to its hard cap).
+//   * SearchHit.score is `float`; backend uses float32 so wire matches.
+//
+// MemoryRetrieve is an alias of SemanticSearch with agent-friendly defaults.
+// It's preserved as a separate RPC so agent discovery (MCP tool list) sees
+// the explicit "memory_retrieve" surface (matches REST routes_blockstore.go).
+//
+// Field set reconciled across three layers (runbook §1.5):
+//   - backend/internal/domain/blockstore/{entity_block,entity_ref,entity_op,
+//     entity_workspace}.go (canonical Go domain shapes)
+//   - clients/core/crates/types/src/blockstore.rs (15 structs, serde wire)
+//   - clients/web/src/lib/api/blockstoreTypes.ts (~25 type exports)
+// No drift found in the three-way diff except: Rust did not model
+// BlockOp.context (the audit JSONB column added by migration 000118). This
+// proto adds it as `context_json` so any future client consuming op streams
+// has the audit slot available.
+
+syntax = "proto3";
+
+package proto.blockstore.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/blockstore/v1;blockstorev1";
+
+service BlockstoreService {
+  // -- Ops (batch mutation) --
+  rpc ApplyOps(ApplyOpsRequest) returns (ApplyOpsResponse);
+
+  // -- Workspaces --
+  rpc ListWorkspaces(ListWorkspacesRequest) returns (ListWorkspacesResponse);
+  rpc EnsureDefaultWorkspace(EnsureDefaultWorkspaceRequest) returns (Workspace);
+  rpc CreateWorkspace(CreateWorkspaceRequest) returns (Workspace);
+  rpc DeleteWorkspace(DeleteWorkspaceRequest) returns (DeleteWorkspaceResponse);
+
+  // -- Blocks (read) --
+  rpc GetBlock(GetBlockRequest) returns (Block);
+  rpc ListChildren(ListChildrenRequest) returns (ChildrenResult);
+  rpc ListBacklinks(ListBacklinksRequest) returns (ListBacklinksResponse);
+
+  // -- Workspace-scoped queries --
+  rpc GetSubtree(GetSubtreeRequest) returns (ChildrenResult);
+  rpc StreamOps(StreamOpsRequest) returns (StreamOpsResponse);
+  rpc ExportWorkspace(ExportWorkspaceRequest) returns (ExportWorkspaceResponse);
+  rpc ListTypeDefs(ListTypeDefsRequest) returns (ListTypeDefsResponse);
+  rpc GetBlockAt(GetBlockAtRequest) returns (Block);
+
+  // -- Semantic search --
+  rpc SemanticSearch(SemanticSearchRequest) returns (SemanticSearchResponse);
+  rpc MemoryRetrieve(MemoryRetrieveRequest) returns (MemoryRetrieveResponse);
+}
+
+// =============================================================================
+// Entities
+// =============================================================================
+
+// Block — single primitive of the block store. `data` / `meta` ride as opaque
+// UTF-8 JSON strings because the per-blocktype shape is open-ended (chart
+// configs, view specs, indicator schemas …) — mirroring 200+ subschemas in
+// proto would couple every client to every type extension.
+message Block {
+  string id = 1;
+  string workspace_id = 2;
+  // "page" | "paragraph" | "task" | ... see domain/blockstore/type_spec.go.
+  string type = 3;
+  // Serialized JSON of the type-specific data payload. Opaque to proto.
+  string data_json = 4;
+  // Plain-text projection used for FTS / embeddings; nullable per domain.
+  optional string text = 5;
+  // Serialized JSON of meta (acl, tags, …). Opaque.
+  string meta_json = 6;
+  int64 created_by = 7;
+  // RFC 3339 (conventions §6).
+  string created_at = 8;
+  string updated_at = 9;
+  optional string deleted_at = 10;
+}
+
+// BlockRef — relationship primitive. `rel` differentiates semantics
+// (nest / mention / embed / depends_on …). Mirrors entity_ref.go.
+message BlockRef {
+  int64 id = 1;
+  string workspace_id = 2;
+  string from_id = 3;
+  string to_id = 4;
+  string rel = 5;
+  optional string order_key = 6;
+  optional string anchor = 7;
+  // Serialized JSON of meta. Opaque.
+  string meta_json = 8;
+  int64 created_by = 9;
+  string created_at = 10;
+  string updated_at = 11;
+}
+
+// BlockOp — collaboration / audit log entry. payload / forward / inverse /
+// context are JSONB blobs server-side; transit as opaque JSON.
+message BlockOp {
+  int64 id = 1;
+  string workspace_id = 2;
+  optional string idempotency_key = 3;
+  // "user" | "agent" | "system".
+  string actor_type = 4;
+  int64 actor_id = 5;
+  // "createBlock" | "updateBlock" | "deleteBlock" | "addRef" | "removeRef" | "updateRef".
+  string op = 6;
+  optional string target_block = 7;
+  optional int64 target_ref = 8;
+  // Serialized JSON.
+  string payload_json = 9;
+  string forward_json = 10;
+  string inverse_json = 11;
+  // Audit slot (trace_id, request_id, ip, user_agent). Migration 000118.
+  string context_json = 12;
+  optional int64 parent_op_id = 13;
+  string applied_at = 14;
+}
+
+// Workspace — namespace inside an organization.
+message Workspace {
+  string id = 1;
+  int64 organization_id = 2;
+  string slug = 3;
+  string name = 4;
+  optional string root_block_id = 5;
+  string created_at = 6;
+}
+
+// =============================================================================
+// Ops batch
+// =============================================================================
+
+// OpEnvelope — one primitive op inside a batch. `payload_json` is the
+// service-layer Payload map serialised; the backend parses it per Op kind.
+message OpEnvelope {
+  string op = 1;
+  string payload_json = 2;
+}
+
+message ApplyOpsRequest {
+  string org_slug = 1;
+  string workspace_id = 2;
+  repeated OpEnvelope ops = 3;
+  optional string idempotency_key = 4;
+  optional int64 parent_op_id = 5;
+}
+
+message ApplyOpsResponse {
+  repeated int64 op_ids = 1;
+  bool was_replay = 2;
+  optional int64 parent_op_id = 3;
+}
+
+// =============================================================================
+// Workspaces
+// =============================================================================
+
+message ListWorkspacesRequest {
+  string org_slug = 1;
+}
+
+message ListWorkspacesResponse {
+  repeated Workspace items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message EnsureDefaultWorkspaceRequest {
+  string org_slug = 1;
+}
+
+message CreateWorkspaceRequest {
+  string org_slug = 1;
+  string slug = 2;
+  // Empty name defaults to slug server-side.
+  optional string name = 3;
+}
+
+message DeleteWorkspaceRequest {
+  string org_slug = 1;
+  string workspace_id = 2;
+}
+
+message DeleteWorkspaceResponse {}
+
+// =============================================================================
+// Block reads
+// =============================================================================
+
+message GetBlockRequest {
+  string org_slug = 1;
+  string id = 2;
+}
+
+message ListChildrenRequest {
+  string org_slug = 1;
+  string id = 2;
+  // Defaults server-side to "nest".
+  optional string rel = 3;
+}
+
+// Children payload — used by both ListChildren and GetSubtree, shape mirrors
+// service.ListChildrenResult (query.go:11).
+message ChildrenResult {
+  repeated Block blocks = 1;
+  repeated BlockRef refs = 2;
+}
+
+message ListBacklinksRequest {
+  string org_slug = 1;
+  string id = 2;
+}
+
+message ListBacklinksResponse {
+  repeated BlockRef items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+// =============================================================================
+// Workspace-scoped queries
+// =============================================================================
+
+message GetSubtreeRequest {
+  string org_slug = 1;
+  string workspace_id = 2;
+  string root_id = 3;
+  // Defaults server-side to 64. Hard server cap protects against runaway.
+  optional int32 max_depth = 4;
+}
+
+message StreamOpsRequest {
+  string org_slug = 1;
+  string workspace_id = 2;
+  // Fetch ops with id > after. Zero = from start.
+  optional int64 after = 3;
+  // Defaults server-side to 200.
+  optional int32 limit = 4;
+}
+
+message StreamOpsResponse {
+  repeated BlockOp items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+// ExportWorkspaceResponse — service.ExportPayload serialised as JSON. Mirrors
+// REST GET /blocks/workspaces/:ws_id/export which returns the whole dump as a
+// single body. The opaque JSON avoids re-modelling the export schema in proto
+// (it's a backup format, not a UI contract).
+message ExportWorkspaceRequest {
+  string org_slug = 1;
+  string workspace_id = 2;
+}
+
+message ExportWorkspaceResponse {
+  string export_json = 1;
+}
+
+message ListTypeDefsRequest {
+  string org_slug = 1;
+  string workspace_id = 2;
+}
+
+message ListTypeDefsResponse {
+  repeated Block items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message GetBlockAtRequest {
+  string org_slug = 1;
+  string id = 2;
+  // 0 = earliest snapshot.
+  optional int64 op_id = 3;
+}
+
+// =============================================================================
+// Semantic search
+// =============================================================================
+
+message SearchHit {
+  string block_id = 1;
+  // Block type ("page" | "task" | ...).
+  string type = 2;
+  string snippet = 3;
+  float score = 4;
+}
+
+message SemanticSearchRequest {
+  string org_slug = 1;
+  string workspace_id = 2;
+  string query = 3;
+  // Defaults server-side to 10.
+  optional int32 top_k = 4;
+  // Defaults server-side to 0 (keep everything).
+  optional float min_score = 5;
+  // Optional block_type filter.
+  optional string type = 6;
+}
+
+message SemanticSearchResponse {
+  repeated SearchHit hits = 1;
+}
+
+// MemoryRetrieve — agent-tuned alias of SemanticSearch. Same wire as
+// SemanticSearchResponse but kept as separate RPC for MCP tool discovery
+// (matches REST routes_blockstore.go).
+message MemoryRetrieveRequest {
+  string org_slug = 1;
+  string workspace_id = 2;
+  string query = 3;
+  // Defaults server-side to 5.
+  optional int32 k = 4;
+}
+
+message MemoryRetrieveResponse {
+  repeated SearchHit memories = 1;
+}

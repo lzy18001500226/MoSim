@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "autopilot-control": {
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Pod-Key": "worker-123"
+      },
+      "type": "http",
+      "url": "http://127.0.0.1:19000/mcp"
+    }
+  }
+}

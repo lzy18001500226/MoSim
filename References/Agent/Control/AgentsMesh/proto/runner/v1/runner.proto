@@ -1,0 +1,748 @@
+syntax = "proto3";
+
+package runner.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/runner/v1;runnerv1";
+
+// RunnerService 定义 Runner 与 Backend 的双向通信服务
+service RunnerService {
+  // Connect 建立双向流：Runner ↔ Backend 主通信通道
+  // Runner 通过 gRPC metadata 传递 x-org-slug 标识组织
+  // Nginx 通过 gRPC metadata 传递 x-client-cert-cn (node_id) 和 x-client-cert-serial
+  rpc Connect(stream RunnerMessage) returns (stream ServerMessage);
+}
+
+// ==================== Runner -> Backend 消息 ====================
+
+// RunnerMessage 是 Runner 发送给 Backend 的消息封装
+message RunnerMessage {
+  oneof payload {
+    InitializeRequest initialize = 1;
+    InitializedConfirm initialized = 2;
+    HeartbeatData heartbeat = 3;
+    PodCreatedEvent pod_created = 4;
+    PodTerminatedEvent pod_terminated = 5;
+    PodOutputEvent pod_output = 6;
+    AgentStatusEvent agent_status = 7;
+    PodResizedEvent pod_resized = 8;
+    ErrorEvent error = 9;
+    PodInitProgressEvent pod_init_progress = 10;
+    RequestRelayTokenEvent request_relay_token = 11;
+    SandboxesStatusEvent sandboxes_status = 12;
+    OSCNotificationEvent osc_notification = 13;
+    OSCTitleEvent osc_title = 14;
+    // Autopilot 相关事件
+    AutopilotStatusEvent autopilot_status = 16;
+    AutopilotIterationEvent autopilot_iteration = 17;
+    AutopilotCreatedEvent autopilot_created = 18;
+    AutopilotTerminatedEvent autopilot_terminated = 19;
+    AutopilotThinkingEvent autopilot_thinking = 20;
+    // MCP 请求（Runner -> Backend，复用 gRPC 双向流）
+    McpRequest mcp_request = 21;
+    // 下行心跳响应（Runner -> Backend）
+    PongEvent pong = 22;
+    // 升级状态回报（Runner -> Backend）
+    UpgradeStatusEvent upgrade_status = 23;
+    // 日志上传状态回报（Runner -> Backend）
+    LogUploadStatusEvent log_upload_status = 24;
+    // Token 用量报告（Runner -> Backend，Pod 退出时上报）
+    TokenUsageReport token_usage = 25;
+    // Pod 观察结果（Runner -> Backend，响应 ObservePodCommand）
+    ObservePodResult observe_pod_result = 26;
+    // 永续 Pod 重启事件
+    PodRestartingEvent pod_restarting = 31;
+    // 27-30 reserved: previously used for ACP gRPC events, now ACP data flows exclusively via Relay.
+  }
+  reserved 27, 28, 29, 30;
+  int64 timestamp = 15;
+}
+
+// InitializeRequest Runner 初始化请求
+message InitializeRequest {
+  int32 protocol_version = 1;
+  RunnerInfo runner_info = 2;
+}
+
+// RunnerInfo Runner 基本信息
+message RunnerInfo {
+  string version = 1;
+  string node_id = 2;
+  int32 mcp_port = 3;
+  string os = 4;
+  string arch = 5;
+  string hostname = 6;
+}
+
+// InitializedConfirm 初始化完成确认
+message InitializedConfirm {
+  repeated string available_agents = 1;
+  repeated AgentVersionInfo agent_versions = 2;  // Agent version details (backward compatible)
+}
+
+// AgentVersionInfo reports the detected version of an installed agent.
+message AgentVersionInfo {
+  string slug = 1;      // Agent type slug (e.g. "codex-cli")
+  string version = 2;   // Detected version string (e.g. "1.2.3")
+  string path = 3;      // Absolute path to the executable
+}
+
+// HeartbeatData 心跳数据
+message HeartbeatData {
+  string node_id = 1;
+  repeated PodInfo pods = 2;
+  repeated RelayConnectionInfo relay_connections = 3;  // Relay 连接状态
+  repeated AgentVersionInfo agent_versions = 4;        // Only populated when versions changed since last report
+  string local_relay_url = 5;                          // ws://127.0.0.1:<port> from runner's always-on local WS server
+}
+
+// PodInfo Pod 状态信息
+message PodInfo {
+  string pod_key = 1;
+  string status = 2;
+  string agent_status = 3;
+}
+
+// RelayConnectionInfo 单个 Pod 的 Relay 连接信息
+message RelayConnectionInfo {
+  string pod_key = 1;       // Pod 标识
+  string relay_url = 2;     // Relay 服务地址
+  string session_id = 3;    // 会话 ID
+  bool connected = 4;       // 是否已连接
+  int64 connected_at = 5;   // 连接时间（Unix 毫秒）
+}
+
+// PodCreatedEvent Pod 创建完成事件
+message PodCreatedEvent {
+  string pod_key = 1;
+  int32 pid = 2;
+  string sandbox_path = 3;  // Sandbox 根目录路径（用于 Resume 功能）
+  string branch_name = 4;   // 当前分支名
+}
+
+// PodTerminatedEvent Pod 终止事件
+message PodTerminatedEvent {
+  string pod_key = 1;
+  int32 exit_code = 2;
+  string error_message = 3;  // Diagnostic info for display (not used for status decision)
+  string status = 4;         // "completed" or "error" — decided by Runner
+}
+
+// PodRestartingEvent 永续 Pod 重启事件（Runner → Backend）
+message PodRestartingEvent {
+  string pod_key = 1;
+  int32 exit_code = 2;       // 上一次退出的 exit code
+  int32 restart_count = 3;   // 累计重启次数
+  int32 new_pid = 4;         // 新进程 PID
+}
+
+// PodOutputEvent Pod 输出事件
+message PodOutputEvent {
+  string pod_key = 1;
+  bytes data = 2;  // 直接二进制，无需 Base64 编码
+}
+
+// AgentStatusEvent Agent 状态变更事件
+message AgentStatusEvent {
+  string pod_key = 1;
+  string status = 2;
+}
+
+// PodResizedEvent Pod 窗口大小调整事件
+message PodResizedEvent {
+  string pod_key = 1;
+  int32 cols = 2;
+  int32 rows = 3;
+}
+
+// ErrorEvent 错误事件
+message ErrorEvent {
+  string pod_key = 1;
+  string code = 2;
+  string message = 3;
+  map<string, string> details = 4;
+}
+
+// PodInitProgressEvent Pod 初始化进度事件
+message PodInitProgressEvent {
+  string pod_key = 1;
+  string phase = 2;      // pending, cloning, preparing, starting_pty, ready
+  int32 progress = 3;    // 0-100
+  string message = 4;    // Human-readable progress message
+}
+
+// ==================== Backend -> Runner 消息 ====================
+
+// ServerMessage 是 Backend 发送给 Runner 的消息封装
+message ServerMessage {
+  oneof payload {
+    InitializeResult initialize_result = 1;
+    CreatePodCommand create_pod = 2;
+    TerminatePodCommand terminate_pod = 3;
+    PodInputCommand pod_input = 4;
+    PodResizeCommand pod_resize = 5 [deprecated = true];  // Deprecated: resize flows through Relay
+    SendPromptCommand send_prompt = 6;
+    PodRedrawCommand pod_redraw = 7 [deprecated = true];  // Deprecated: redraw flows through Relay snapshots
+    SubscribePodCommand subscribe_pod = 8;
+    UnsubscribePodCommand unsubscribe_pod = 9;
+    QuerySandboxesCommand query_sandboxes = 10;
+    // Autopilot 相关命令
+    CreateAutopilotCommand create_autopilot = 11;
+    AutopilotControlCommand autopilot_control = 12;
+    // MCP 响应（Backend -> Runner，复用 gRPC 双向流）
+    McpResponse mcp_response = 13;
+    // 下行心跳探测（Backend -> Runner）
+    PingCommand ping = 14;
+    // 上行心跳确认（Backend -> Runner）
+    HeartbeatAck heartbeat_ack = 16;
+    // 远程升级命令（Backend -> Runner）
+    UpgradeRunnerCommand upgrade_runner = 17;
+    // 日志上传命令（Backend -> Runner）
+    UploadLogsCommand upload_logs = 18;
+    // Pod 观察命令（Backend -> Runner，代理 MCP observe_pod 请求）
+    ObservePodCommand observe_pod = 19;
+    // Reserved: 原 ACP 特定命令已废弃，控制流走 Relay WebSocket
+    // 20 = acp_send_prompt (使用 send_prompt field 6)
+    // 21 = acp_permission_response (走 Relay)
+    // 22 = acp_cancel_session (走 Relay)
+    // 更新 Pod 永续模式命令（Backend -> Runner）
+    UpdatePodPerpetualCommand update_pod_perpetual = 23;
+  }
+  int64 timestamp = 15;
+}
+
+// InitializeResult 初始化响应
+message InitializeResult {
+  int32 protocol_version = 1;
+  ServerInfo server_info = 2;
+  repeated AgentInfo agents = 3;
+  repeated string features = 4;
+}
+
+// ServerInfo 服务端信息
+message ServerInfo {
+  string version = 1;
+}
+
+// AgentInfo Agent 信息
+message AgentInfo {
+  string slug = 1;
+  string name = 2;
+  string command = 3;
+  repeated string default_args = 4;
+}
+
+// CreatePodCommand 创建 Pod 命令
+// Backend 完成 AgentFile eval（parse+merge+resolve+eval），通过此消息发送最终执行指令。
+// Runner 只需替换路径占位符（{{sandbox_root}}, {{work_dir}}）后直接执行。
+message CreatePodCommand {
+  string pod_key = 1;
+
+  // 执行指令（Backend AgentFile eval 产出）
+  string launch_command = 2;                                 // AGENT 声明的命令（如 "claude"）
+  repeated string launch_args = 3;                           // arg 语句 + MODE args 的最终参数列表
+  map<string, string> env_vars = 4;                          // ENV 声明产出的环境变量
+  repeated FileToCreate files_to_create = 5;                 // file/mkdir 语句产出的文件列表
+  SandboxConfig sandbox_config = 6;                          // 沙箱/Git 配置
+  reserved 7;
+  reserved "initial_prompt";
+  int32 cols = 8;                                            // 终端列数（由浏览器传入）
+  int32 rows = 9;                                            // 终端行数（由浏览器传入）
+  repeated ResourceToDownload resources_to_download = 10;    // Skills 等资源下载
+  string interaction_mode = 11;                              // MODE 声明："pty" 或 "acp"
+
+  // 废弃字段（保留 field number，Runner 不再读取）
+  string agentfile_source = 12 [deprecated = true];            // Deprecated: eval 已在 Backend 完成
+  map<string, string> config_values = 13 [deprecated = true]; // Deprecated: CONFIG 值已 eval 到 launch_args/env_vars/files
+
+  // 运行时上下文（Backend 注入，Runner 直接使用）
+  map<string, string> credentials = 14;    // 解密后的凭证
+  bool is_runner_host = 15;                // 是否使用 Runner 本机凭证
+  int32 mcp_port = 16 [deprecated = true]; // Deprecated: MCP 端口已 eval 到文件内容中
+  string mcp_builtin_json = 17 [deprecated = true];  // Deprecated: MCP 配置已 eval 到 files_to_create
+  string mcp_installed_json = 18 [deprecated = true]; // Deprecated: MCP 配置已 eval 到 files_to_create
+
+  // AgentFile eval 产出的新字段
+  string prompt = 19;                      // PROMPT 声明的初始提示内容
+  string prompt_position = 20;             // PROMPT_POSITION 声明："prepend"/"append"/"none"
+
+  bool perpetual = 21;                     // 永续模式：agent 退出后 Runner 自动重启
+}
+
+// ResourceToDownload 需要下载的资源描述
+message ResourceToDownload {
+  string sha = 1;              // 内容 SHA，用于缓存命中判断
+  string download_url = 2;     // 预签名下载 URL
+  string target_path = 3;      // 目标路径（支持模板变量如 {{.sandbox.root_path}}）
+  string resource_type = 4;    // 资源类型（如 "skill_package"）
+  int64 size_bytes = 5;        // 资源大小（字节）
+}
+
+// FileToCreate 要创建的文件或目录
+message FileToCreate {
+  string path = 1;
+  string content = 2;
+  int32 mode = 3;
+  bool is_directory = 4;  // true 表示创建目录而非文件
+}
+
+// SandboxConfig 沙箱配置（替代原 WorkDirConfig）
+// Runner 始终为每个 Pod 创建隔离的 Sandbox 目录
+// 如果配置了 repository_url，则在 Sandbox 中创建 git worktree
+message SandboxConfig {
+  // Git 仓库配置（可选，为空则创建空 Sandbox）
+  string repository_url = 1 [deprecated = true];      // Deprecated: 使用 http_clone_url / ssh_clone_url
+  string source_branch = 2;       // 要检出的源分支名称
+
+  // Git 认证配置
+  // credential_type 决定如何认证：
+  // - "runner_local": 使用 Runner 本机的 git 配置，无需其他字段
+  // - "oauth" 或 "pat": 使用 git_token
+  // - "ssh_key": 使用 ssh_private_key
+  string credential_type = 3;     // runner_local, oauth, pat, ssh_key
+  string git_token = 4;           // Git HTTPS 认证令牌（oauth/pat 类型使用）
+  string ssh_private_key = 5;     // SSH 私钥内容（ssh_key 类型使用，Runner 写入临时文件）
+
+  // 工单关联
+  string ticket_slug = 6;           // 关联工单 Slug
+
+  // 初始化脚本
+  string preparation_script = 7;  // 工作区初始化脚本
+  int32 preparation_timeout = 8;  // 脚本超时秒数（默认 300）
+
+  // 本地路径模式（预留，未来实现）
+  string local_path = 9;          // 使用已存在的本地目录
+
+  // 分协议克隆 URL（新增，保留 repository_url 向后兼容）
+  string http_clone_url = 10;     // HTTPS 克隆 URL
+  string ssh_clone_url = 11;      // SSH 克隆 URL
+}
+
+// TerminatePodCommand 终止 Pod 命令
+message TerminatePodCommand {
+  string pod_key = 1;
+  bool force = 2;
+}
+
+// PodInputCommand Pod 输入命令
+message PodInputCommand {
+  string pod_key = 1;
+  bytes data = 2;
+}
+
+// PodResizeCommand Pod 窗口调整命令
+message PodResizeCommand {
+  string pod_key = 1;
+  int32 cols = 2;
+  int32 rows = 3;
+}
+
+// SendPromptCommand 发送 Prompt 命令
+message SendPromptCommand {
+  string pod_key = 1;
+  string prompt = 2;
+}
+
+// PodRedrawCommand 请求 Pod 重绘命令
+// 用于服务器重启后恢复终端状态：使用 resize +1/-1 技巧触发终端程序重绘
+// （直接发送 SIGWINCH 对处于空闲状态的程序如 Claude Code 无效）
+// Runner 收到后执行 resize 技巧，不响应 pod_resized 事件（避免循环）
+message PodRedrawCommand {
+  string pod_key = 1;
+}
+
+// ==================== Relay 中继相关命令 ====================
+
+// SubscribePodCommand 订阅 Pod 输出命令
+// Backend 通知 Runner 有观察者要订阅 Pod 输出，Runner 应连接到 Relay
+message SubscribePodCommand {
+  string pod_key = 1;
+  string relay_url = 2;        // Public Relay URL via reverse proxy (e.g. ws://host:port/relay)
+  reserved 3;                  // Was public_relay_url — removed: all runners use the single public URL
+  bool include_snapshot = 4;   // 是否发送快照
+  int32 snapshot_history = 5;  // 快照历史行数
+  string runner_token = 6;     // Runner 认证 Token（JWT）
+  string local_token = 7;      // Per-pod token shared with renderer; runner validates incoming local WS by exact match
+}
+
+// UnsubscribePodCommand 取消订阅 Pod 输出命令
+// Backend 通知 Runner 所有观察者已离开，Runner 应断开与 Relay 的连接
+message UnsubscribePodCommand {
+  string pod_key = 1;
+}
+
+// RequestRelayTokenEvent Runner 请求刷新 Relay Token
+// 当 Relay 连接因 token 过期而重连失败时，Runner 发送此消息请求新 token
+// Backend 收到后会重新发送 SubscribePodCommand 带有新 token
+message RequestRelayTokenEvent {
+  string pod_key = 1;
+  string session_id = 2;     // 当前的 session ID
+  string relay_url = 3;      // 当前的 Relay URL
+}
+
+// ==================== Sandbox 状态查询相关 ====================
+
+// QuerySandboxesCommand 查询指定 Pod 对应的 Sandbox 状态
+// Backend 发送此命令以检查 Sandbox 是否仍然存在，可用于判断是否可以 Resume
+message QuerySandboxesCommand {
+  string request_id = 1;           // 请求 ID，用于关联响应
+  repeated SandboxQuery queries = 2;
+}
+
+// SandboxQuery 单个 Sandbox 查询请求
+message SandboxQuery {
+  string pod_key = 1;              // Pod key 用于定位 Sandbox 目录
+}
+
+// SandboxesStatusEvent Sandbox 状态查询响应
+message SandboxesStatusEvent {
+  string request_id = 1;           // 对应 QuerySandboxesCommand.request_id
+  repeated SandboxStatus sandboxes = 2;
+}
+
+// SandboxStatus 单个 Sandbox 的状态信息
+message SandboxStatus {
+  string pod_key = 1;              // Pod key
+  bool exists = 2;                 // Sandbox 目录是否存在
+  string sandbox_path = 3;         // Sandbox 根目录路径
+  string repository_url = 4;       // 仓库 URL（从 git remote 获取）
+  string branch_name = 5;          // 当前分支名
+  string current_commit = 6;       // 当前 commit SHA
+  int64 size_bytes = 7;            // 目录大小（字节）
+  int64 last_modified = 8;         // 最后修改时间（Unix 时间戳）
+  bool has_uncommitted_changes = 9; // 是否有未提交的更改
+  bool can_resume = 10;            // 是否可以 resume（Sandbox 存在即可）
+  string error = 11;               // 查询错误信息（如有）
+}
+
+// ==================== Pod 观察（observe_pod 代理）====================
+
+// ObservePodCommand Backend 代理 observe_pod 请求到 Runner
+// Runner 从本地 VirtualTerminal 读取状态并返回 ObservePodResult
+message ObservePodCommand {
+  string request_id = 1;      // 请求 ID，用于关联响应
+  string pod_key = 2;         // 目标 Pod
+  int32 lines = 3;            // 获取的行数
+  bool include_screen = 4;    // 是否包含屏幕快照
+}
+
+// ObservePodResult Runner 返回的 Pod 观察结果
+message ObservePodResult {
+  string request_id = 1;      // 对应 ObservePodCommand.request_id
+  string pod_key = 2;
+  string output = 3;          // 终端输出文本
+  string screen = 4;          // 屏幕快照（当 include_screen=true）
+  int32 cursor_x = 5;
+  int32 cursor_y = 6;
+  int32 total_lines = 7;
+  bool has_more = 8;
+  string error = 9;           // 错误信息（如有）
+}
+
+// ==================== OSC 终端通知相关 ====================
+
+// OSCNotificationEvent OSC 通知事件（OSC 777/9）
+// 用于终端向浏览器发送桌面通知
+message OSCNotificationEvent {
+  string pod_key = 1;      // Pod 标识
+  string title = 2;        // 通知标题
+  string body = 3;         // 通知内容
+  int64 timestamp = 4;     // Unix 毫秒时间戳
+}
+
+// OSCTitleEvent OSC 标题变更事件（OSC 0/2）
+// 用于终端设置窗口/标签页标题
+message OSCTitleEvent {
+  string pod_key = 1;      // Pod 标识
+  string title = 2;        // 新标题
+}
+
+// ==================== Autopilot 相关消息 ====================
+
+// AutopilotStatusEvent Autopilot 状态事件 (Runner -> Backend)
+message AutopilotStatusEvent {
+  string autopilot_key = 1;
+  string pod_key = 2;
+  AutopilotStatus status = 3;
+}
+
+// AutopilotStatus Autopilot 当前状态
+message AutopilotStatus {
+  string phase = 1;                      // initializing, running, paused,
+                                         // user_takeover, waiting_approval,
+                                         // completed, failed, stopped
+  int32 current_iteration = 2;
+  int32 max_iterations = 3;
+
+  // 断路器状态
+  string circuit_breaker_state = 4;      // closed, half_open, open
+  string circuit_breaker_reason = 5;
+
+  // Pod 状态
+  string pod_status = 6;                 // executing, waiting, idle
+
+  // 时间
+  int64 started_at = 7;
+  int64 last_iteration_at = 8;
+}
+
+// AutopilotIterationEvent 迭代事件 (Runner -> Backend)
+message AutopilotIterationEvent {
+  string autopilot_key = 1;
+  int32 iteration = 2;
+  string phase = 3;                      // started, control_running,
+                                         // action_sent, completed
+  string summary = 4;                    // Control Process 的决策摘要
+  repeated string files_changed = 5;
+  int64 duration_ms = 6;
+}
+
+// AutopilotControlCommand 用户控制命令 (Backend -> Runner)
+message AutopilotControlCommand {
+  string autopilot_key = 1;
+  oneof action {
+    AutopilotPauseAction pause = 2;
+    AutopilotResumeAction resume = 3;
+    AutopilotStopAction stop = 4;
+    AutopilotApproveAction approve = 5;
+    AutopilotTakeoverAction takeover = 6;    // 用户接管
+    AutopilotHandbackAction handback = 7;    // 交回控制权
+  }
+}
+
+// AutopilotApproveAction 断路器审批操作
+message AutopilotApproveAction {
+  bool continue_execution = 1;           // true=继续, false=停止
+  int32 additional_iterations = 2;       // 追加迭代次数
+}
+
+// AutopilotTakeoverAction 用户接管控制权
+message AutopilotTakeoverAction {}
+
+// AutopilotHandbackAction 用户交回控制权
+message AutopilotHandbackAction {}
+
+// AutopilotPauseAction 暂停 Autopilot
+message AutopilotPauseAction {}
+
+// AutopilotResumeAction 恢复 Autopilot
+message AutopilotResumeAction {}
+
+// AutopilotStopAction 停止 Autopilot
+message AutopilotStopAction {}
+
+// CreateAutopilotCommand 创建 Autopilot 命令 (Backend -> Runner)
+message CreateAutopilotCommand {
+  string autopilot_key = 1;
+
+  // 方式一：绑定已有 Pod
+  string pod_key = 2;
+
+  // 方式二：同时创建 Pod
+  CreatePodCommand pod_config = 3;
+
+  // Autopilot 配置
+  AutopilotConfig config = 4;
+}
+
+// AutopilotConfig Autopilot 配置
+message AutopilotConfig {
+  // 任务
+  string prompt = 1;
+
+  // 迭代控制
+  int32 max_iterations = 2;              // 默认 10
+  int32 iteration_timeout_seconds = 3;   // 单次迭代超时，默认 300
+
+  // 断路器
+  int32 no_progress_threshold = 4;       // 无进展阈值，默认 3
+  int32 same_error_threshold = 5;        // 相同错误阈值，默认 5
+  int32 approval_timeout_minutes = 6;    // 断路器超时，默认 30
+
+  // 控制 Pod
+  string control_agent_slug = 7;         // 默认 "claude"
+  string control_prompt_template = 8;    // 可选，自定义 Control Process 的 system prompt
+
+  // MCP 配置（复用现有机制）
+  string mcp_config_json = 9;            // Control Process 的 mcp.json 内容
+}
+
+// AutopilotCreatedEvent Autopilot 创建完成事件 (Runner -> Backend)
+message AutopilotCreatedEvent {
+  string autopilot_key = 1;
+  string pod_key = 2;
+}
+
+// AutopilotTerminatedEvent Autopilot 终止事件 (Runner -> Backend)
+message AutopilotTerminatedEvent {
+  string autopilot_key = 1;
+  string reason = 2;                     // completed, stopped, failed, max_iterations
+}
+
+// AutopilotThinkingEvent Control Agent 思考过程事件 (Runner -> Backend)
+// 用于向用户透明化展示 Control Agent 的决策过程
+message AutopilotThinkingEvent {
+  string autopilot_key = 1;
+  int32 iteration = 2;
+
+  // Control Agent 的决策信息
+  string decision_type = 3;              // continue, completed, need_help, give_up
+  string reasoning = 4;                  // 决策推理过程
+  double confidence = 5;                 // 决策置信度 (0-1)
+
+  // 采取的行动
+  AutopilotAction action = 6;
+
+  // 任务进度
+  AutopilotProgress progress = 7;
+
+  // 帮助请求（当 decision_type 为 need_help 时）
+  AutopilotHelpRequest help_request = 8;
+}
+
+// AutopilotAction 描述 Control Agent 采取的行动
+message AutopilotAction {
+  string type = 1;                       // observe, send_input, wait, none
+  string content = 2;                    // 行动内容
+  string reason = 3;                     // 行动原因
+}
+
+// AutopilotProgress 任务进度信息
+message AutopilotProgress {
+  string summary = 1;                    // 简要进度摘要
+  repeated string completed_steps = 2;  // 已完成的步骤
+  repeated string remaining_steps = 3;  // 剩余步骤
+  int32 percent = 4;                     // 估计进度百分比 (0-100)
+}
+
+// AutopilotHelpRequest 帮助请求详情
+message AutopilotHelpRequest {
+  string reason = 1;                     // 需要帮助的原因
+  string context = 2;                    // 上下文信息
+  string terminal_excerpt = 3;           // 相关终端输出摘录
+  repeated AutopilotHelpSuggestion suggestions = 4; // 建议的操作
+}
+
+// AutopilotHelpSuggestion 帮助请求的建议操作
+message AutopilotHelpSuggestion {
+  string action = 1;                     // approve, skip, custom 等
+  string label = 2;                      // 显示标签
+}
+
+// ==================== MCP over gRPC 消息 ====================
+// 将 MCP 工具调用统一复用 gRPC 双向流，避免额外的 HTTP REST 通道
+
+// McpRequest Runner 发起的 MCP 请求（Runner -> Backend）
+// 使用通用 JSON payload 避免为每个方法定义独立 message
+message McpRequest {
+  string request_id = 1;  // UUID，关联请求和响应
+  string pod_key = 2;     // 发起请求的 Pod 身份
+  string method = 3;      // 操作方法名，如 "search_channels"
+  bytes payload = 4;      // JSON 编码的请求参数
+}
+
+// McpResponse Backend 返回的 MCP 响应（Backend -> Runner）
+message McpResponse {
+  string request_id = 1;  // 对应 McpRequest.request_id
+  bool success = 2;       // 请求是否成功
+  bytes payload = 3;      // JSON 编码的响应数据
+  McpError error = 4;     // 错误信息（当 success=false 时）
+}
+
+// McpError MCP 请求错误详情
+message McpError {
+  int32 code = 1;         // HTTP 状态码风格的错误码
+  string message = 2;     // 错误描述
+}
+
+// ==================== 下行心跳探测 (Downstream Ping/Pong) ====================
+
+// PingCommand Backend 下行心跳探测（Backend -> Runner）
+// 用于检测下行通路是否可用，Runner 收到后立即回复 PongEvent
+message PingCommand {
+  int64 timestamp = 1;   // Backend 发送时间戳(Unix ms)，用于 RTT 测量
+}
+
+// PongEvent Runner 下行心跳响应（Runner -> Backend）
+// 原样回传 Backend 发送时间戳，用于 RTT 计算和下行通路存活检测
+message PongEvent {
+  int64 ping_timestamp = 1;  // 原样回传 Backend 发送时间戳
+}
+
+// HeartbeatAck Backend 对 Runner 心跳的确认（Backend -> Runner）
+// Runner 收到后确认心跳已到达 Backend，用于上行通路存活检测
+message HeartbeatAck {
+  int64 heartbeat_timestamp = 1;  // 原样回传 Runner 心跳的时间戳
+}
+
+// ==================== Runner 远程升级相关消息 ====================
+
+// UpgradeRunnerCommand 远程升级命令（Backend -> Runner）
+// 指示 Runner 下载并安装新版本，然后重启服务
+message UpgradeRunnerCommand {
+  string request_id = 1;                // UUID，关联状态回报
+  string target_version = 2;            // 目标版本号（空 = 最新版本）
+  bool force = 3 [deprecated = true];   // Poddaemon 后 Pod 跨重启存活，字段保留仅为向后兼容
+}
+
+// UpgradeStatusEvent 升级状态回报（Runner -> Backend）
+// Runner 在升级过程中持续回报各阶段状态
+message UpgradeStatusEvent {
+  string request_id = 1;       // 对应 UpgradeRunnerCommand.request_id
+  string phase = 2;            // checking, downloading, applying, restarting, completed, failed
+  int32 progress = 3;          // 0-100（下载进度）
+  string message = 4;          // 人类可读状态信息
+  string error = 5;            // phase=failed 时的错误信息
+  string current_version = 6;  // 当前运行版本
+  string target_version = 7;   // 目标升级版本
+}
+
+// ==================== Runner 日志上传相关消息 ====================
+
+// UploadLogsCommand 日志上传命令（Backend -> Runner）
+// 指示 Runner 收集日志并上传到 S3 存储
+message UploadLogsCommand {
+  string request_id = 1;       // UUID，关联状态回报
+  string presigned_url = 2;    // S3 预签名 PUT URL
+  int64 url_expires_at = 3;    // URL 过期时间（Unix 秒）
+}
+
+// LogUploadStatusEvent 日志上传状态回报（Runner -> Backend）
+// Runner 在日志上传过程中持续回报各阶段状态
+message LogUploadStatusEvent {
+  string request_id = 1;       // 对应 UploadLogsCommand.request_id
+  string phase = 2;            // collecting, uploading, completed, failed
+  int32 progress = 3;          // 0-100
+  string message = 4;          // 人类可读状态信息
+  string error = 5;            // phase=failed 时的错误信息
+  int64 size_bytes = 6;        // 日志包大小（字节）
+}
+
+// ==================== Token Usage 相关消息 ====================
+
+// TokenUsageReport Pod 退出时上报的 Token 用量（Runner -> Backend）
+// 一个 Pod 可能使用多个模型，因此按模型拆分
+message TokenUsageReport {
+  string pod_key = 1;
+  repeated TokenModelUsage models = 2;
+  // pod_started_at_unix_seconds lets the backend distinguish a transient
+  // empty session (open-then-close in seconds) from a long-running session
+  // that produced 0 tokens — the latter is a parser-regression smell.
+  // Unix 秒，与 url_expires_at 同口径；注意此 proto 大多数时间戳为毫秒。
+  int64 pod_started_at_unix_seconds = 3;
+}
+
+// TokenModelUsage 单个模型的 Token 用量
+message TokenModelUsage {
+  string model = 1;                     // 模型名称（如 "claude-sonnet-4-20250514"）
+  int64 input_tokens = 2;
+  int64 output_tokens = 3;
+  int64 cache_creation_tokens = 4;
+  int64 cache_read_tokens = 5;
+}
+
+// UpdatePodPerpetualCommand 更新 Pod 永续模式命令（Backend -> Runner）
+// 允许在 Pod 运行时动态开启或关闭永续模式
+message UpdatePodPerpetualCommand {
+  string pod_key = 1;
+  bool perpetual = 2;
+}

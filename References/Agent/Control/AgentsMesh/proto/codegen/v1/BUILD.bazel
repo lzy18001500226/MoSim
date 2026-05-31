@@ -1,0 +1,32 @@
+load("@rules_go//proto:def.bzl", "go_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+# Codegen annotation schema — defines amesh.codegen.v1.go_domain + field
+# options consumed by `tools/protoc-gen-amesh-convert`. Phase 12 M2.
+#
+# The plugin reads annotations via the typed extension API
+# (`proto.GetExtension(opts, codegenv1.E_GoDomain)`), so we MUST compile
+# options.proto into Go bindings and register them at the plugin's process
+# init time. The committed mirror at `proto/gen/go/codegen/v1/options.pb.go`
+# is for `golangci-lint typecheck` only — Bazel reads from this
+# `:codegen_go_proto` target.
+
+proto_library(
+    name = "codegen_proto",
+    srcs = ["options.proto"],
+    # Strip the `proto/` workspace prefix so downstream `proto_library`
+    # targets can `import "codegen/v1/options.proto"` (the canonical form
+    # buf v2 + protoc-gen-go both emit). Without this, protoc only sees the
+    # file as `proto/codegen/v1/options.proto`.
+    strip_import_prefix = "/proto",
+    visibility = ["//visibility:public"],
+    deps = ["@com_google_protobuf//:descriptor_proto"],
+)
+
+go_proto_library(
+    name = "codegen_go_proto",
+    compilers = ["@rules_go//proto:go_proto"],
+    importpath = "github.com/anthropics/agentsmesh/proto/gen/go/codegen/v1",
+    proto = ":codegen_proto",
+    visibility = ["//visibility:public"],
+)

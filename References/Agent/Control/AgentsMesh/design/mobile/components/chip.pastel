@@ -1,0 +1,95 @@
+// Chip — small inline labels. Lark-style "official / bot / external", plus
+// status / role variants for AgentsMesh-specific contexts (running / idle /
+// owner / member). Radius 4pt (chip token), 11pt SF Pro medium label.
+
+canvas "ios_chip" {
+    width = 920
+    height = 600
+    background = #1F2328
+}
+
+component chip(text_value, bg, color) {
+    frame {
+        padding = [2, 8], radius = 4, fill = bg
+        layout = horizontal, justify = center, align = center
+        text text_value { size = 11, weight = medium, color = color }
+    }
+}
+
+component chip_with_dot(text_value, bg, color, dot_color) {
+    frame {
+        padding = [2, 8], radius = 4, fill = bg
+        layout = horizontal, gap = 4, justify = center, align = center
+        frame dot { width = 6, height = 6, radius = 999, fill = dot_color }
+        text text_value { size = 11, weight = medium, color = color }
+    }
+}
+
+component pg_chip() {
+frame root {
+    stroke = [2, #6E7681]
+    radius = 16
+    shadow = [0, 8, 24, #00000080]
+    width = 840, height = 540, fill = #FFFFFF
+    padding = 32, layout = vertical, gap = 24
+
+    text "Chip" { size = 24, weight = semibold, color = #1F2328 }
+    text "Small inline labels. 11pt SF Pro medium · radius 4pt · vertical padding 2pt · horizontal padding 8pt."
+        { size = 13, color = #656D76, wrap = true, width = 740 }
+
+    text "ROLE / TYPE — Lark-style metadata chips" { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+    frame role_row {
+        width = fill, layout = horizontal, gap = 8, align = center
+
+        use chip("官方",     #DDF4FF, #0550AE)
+        use chip("机器人",   #FFF8C5, #9A6700)
+        use chip("外部",     #DDF4FF, #0550AE)
+        use chip("Owner",    #DAFBE1, #1A7F37)
+        use chip("Member",   #F0F3F6, #656D76)
+        use chip("Admin",    #F0E6FF, #6F42C1)
+    }
+
+    text "STATUS — pod / agent state" { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+    frame status_row {
+        width = fill, layout = horizontal, gap = 8, align = center
+
+        use chip_with_dot("running",   #DAFBE1, #1A7F37, #3FB950)
+        use chip_with_dot("executing", #DDF4FF, #0550AE, #0969DA)
+        use chip_with_dot("idle",      #F0F3F6, #656D76, #8E8E93)
+        use chip_with_dot("error",     #FFEBE9, #CF222E, #CF222E)
+        use chip_with_dot("waiting",   #FFF8C5, #9A6700, #D29922)
+    }
+
+    text "MODE / AGENT — pod technical metadata" { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+    frame meta_row {
+        width = fill, layout = horizontal, gap = 8, align = center
+
+        use chip("PTY",          #F0F3F6, #656D76)
+        use chip("ACP",          #F0F3F6, #656D76)
+        use chip("claude-code",  #F0F3F6, #656D76)
+        use chip("codex",        #F0F3F6, #656D76)
+        use chip("aider",        #F0F3F6, #656D76)
+    }
+
+    text "USAGE" { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+    frame usage {
+        width = fill, padding = 16, radius = 12, fill = #F6F8FA, stroke = [1, #E4E9EE]
+        layout = vertical, gap = 6
+        text "· Channel cell badges (官方/机器人/外部) — beside the title" { size = 12, color = #1F2328 }
+        text "· Pod card — status chip on the bottom-left of the tile" { size = 12, color = #1F2328 }
+        text "· Pod row — agent + mode chips after pod_key" { size = 12, color = #1F2328 }
+        text "· Drawer member cell — Owner / Member / Admin role chip" { size = 12, color = #1F2328 }
+    }
+}
+}
+
+
+component pg_chip_framed() {
+    frame outer {
+        width = 920, height = 600, fill = #1F2328
+        padding = 40, layout = horizontal, justify = center, align = center
+        use pg_chip()
+    }
+}
+
+frame root { use pg_chip_framed() }

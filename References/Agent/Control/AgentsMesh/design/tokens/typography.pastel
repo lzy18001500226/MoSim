@@ -1,0 +1,44 @@
+// Typography scale — 5 sizes only. Body is 14px (Notion/GitHub tight).
+// Heading levels map to 3 sizes; there is no text-4xl in-app (reserved for landing).
+//
+// Line-height rules:
+//   body sizes (xs/sm/base)  — line-height ≈ 1.5
+//   title sizes (lg/xl)      — line-height ≈ 1.3
+//
+// Weights: normal (400), medium (500), semibold (600). No bold in-app.
+
+token fontsize {
+    xs   = 12
+    sm   = 13
+    base = 14
+    lg   = 16
+    xl   = 20
+}
+
+token leading {
+    tight   = 18    // for xs (12)
+    body    = 20    // for sm/base (13/14)
+    loose   = 22    // for lg (16)
+    heading = 26    // for xl (20)
+}
+
+token weight {
+    normal   = normal
+    medium   = medium
+    semibold = semibold
+}
+
+// Common combinations (used in components/pages)
+token type {
+    caption  = { size = 12, weight = normal, color_key = "muted_foreground" }
+    body     = { size = 14, weight = normal, color_key = "foreground" }
+    body_m   = { size = 14, weight = medium, color_key = "foreground" }
+    label    = { size = 13, weight = medium, color_key = "foreground" }
+    title    = { size = 16, weight = semibold, color_key = "foreground" }
+    page     = { size = 20, weight = semibold, color_key = "foreground" }
+}
+
+token font {
+    sans = "Inter"
+    mono = "JetBrains Mono"
+}

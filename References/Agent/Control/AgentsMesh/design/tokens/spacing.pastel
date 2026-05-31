@@ -1,0 +1,33 @@
+// Spacing scale — 8pt-based ladder, Notion/GitHub style.
+// Forbidden: gap-1 (4), gap-5 (20), gap-7 (28) and other odd values.
+//
+// Usage guide:
+//   xs (4)    — icon + label inline, button inner gap
+//   sm (8)    — list row vertical gap, compact sections
+//   md (12)   — card content gap, related blocks
+//   lg (16)   — card padding, form row gap
+//   xl (24)   — page section gap, card outer margin
+//   2xl (32)  — page-level top padding, hero sections
+//   3xl (48)  — feature separation, rarely used in app
+
+token spacing {
+    xs   = 4
+    sm   = 8
+    md   = 12
+    lg   = 16
+    xl   = 24
+    xxl  = 32
+    xxxl = 48
+}
+
+// Semantic aliases used by layouts and components
+token space {
+    page_x    = 24    // horizontal page padding
+    page_y    = 24    // vertical page padding
+    card_p    = 16    // card internal padding
+    row_gap   = 12    // list row vertical gap
+    field_gap = 16    // form field vertical gap
+    inline    = 8     // inline element gap (icon + label)
+    stack     = 12    // stacked block gap
+    section   = 24    // section-to-section gap
+}

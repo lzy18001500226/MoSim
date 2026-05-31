@@ -1,0 +1,445 @@
+// Tickets — Kanban Board view
+// Same shell structure as Workspace (ActivityBar + Sidebar + Main).
+// Main area is 5-column Kanban. Ticket cards follow current TicketCard anatomy:
+// slug(mono) · status badge · title (2-line clamp) · labels · priority+due · assignees · repo
+
+canvas "tickets_board" {
+    width = 2000
+    height = 1120
+    background = #1F2328
+}
+
+// ── Activity bar icons (reuse shell conventions) ─────────
+component tbd_nav_icon_active(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = #DDF4FF, stroke = [1, #0969DA]
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, weight = medium, color = #0969DA }
+    }
+}
+component tbd_nav_icon(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = transparent
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, color = #656D76 }
+    }
+}
+component tbd_section_divider() { shape { type = rectangle, width = 24, height = 1, fill = #D0D7DE } }
+
+// ── Badges ───────────────────────────────────────────────
+component tbd_status_badge(icon, label, bg, fg) {
+    frame {
+        padding = [2, 8], radius = 999, fill = bg
+        layout = horizontal, gap = 4, align = center
+        text icon  { size = 10, color = fg }
+        text label { size = 11, weight = medium, color = fg }
+    }
+}
+component tbd_label_chip(text_content, bg, fg) {
+    frame {
+        padding = [1, 8], radius = 4, fill = bg
+        layout = horizontal, align = center
+        text text_content { size = 11, weight = medium, color = fg }
+    }
+}
+component tbd_avatar(letter, bg) {
+    frame {
+        width = 22, height = 22, radius = 999, fill = bg
+        stroke = [2, #FFFFFF]
+        layout = horizontal, justify = center, align = center
+        text letter { size = 10, weight = semibold, color = #FFFFFF }
+    }
+}
+component avatar_more(n) {
+    frame {
+        width = 22, height = 22, radius = 999, fill = #E4E9EE
+        stroke = [2, #FFFFFF]
+        layout = horizontal, justify = center, align = center
+        text n { size = 10, weight = medium, color = #656D76 }
+    }
+}
+
+// ── Ticket card ──────────────────────────────────────────
+component ticket_card(slug, status_icon, status_label, status_bg, status_fg,
+                      title, label1_txt, label1_bg, label1_fg,
+                      label2_txt, label2_bg, label2_fg,
+                      priority_icon, priority_color, due, due_color,
+                      repo_name) {
+    frame {
+        width = fill, padding = 14, radius = 8
+        fill = #FFFFFF, stroke = [1, #E4E9EE]
+        layout = vertical, gap = 8
+
+        // Header: slug + status badge
+        frame header {
+            width = fill, layout = horizontal, justify = space-between, align = center
+            text slug { size = 11, color = #868F99, family = "JetBrains Mono", letter-spacing = 0.3 }
+            use tbd_status_badge(status_icon, status_label, status_bg, status_fg)
+        }
+
+        // Title
+        text title { size = 13, weight = semibold, color = #1F2328, wrap = true, line-height = 18, width = 260 }
+
+        // Labels
+        frame labels {
+            layout = horizontal, gap = 4
+            use tbd_label_chip(label1_txt, label1_bg, label1_fg)
+            use tbd_label_chip(label2_txt, label2_bg, label2_fg)
+        }
+
+        // Divider
+        shape hr { type = rectangle, width = 260, height = 1, fill = #E4E9EE }
+
+        // Footer: priority + due · assignees
+        frame footer {
+            width = fill, layout = horizontal, justify = space-between, align = center
+
+            frame meta { layout = horizontal, gap = 8, align = center
+                text priority_icon { size = 12, color = priority_color }
+                text due { size = 11, color = due_color, family = "JetBrains Mono" }
+            }
+            frame assignees { layout = horizontal, gap = 0, align = center
+                use tbd_avatar("S", #0969DA)
+                use tbd_avatar("M", #9A6700)
+                use avatar_more("+2")
+            }
+        }
+
+        // Repository
+        text repo_name { size = 10, color = #B1B7BE, family = "JetBrains Mono" }
+    }
+}
+
+// Simpler card (no labels)
+component ticket_card_min(slug, status_icon, status_label, status_bg, status_fg,
+                          title, priority_icon, priority_color,
+                          assignee_letter, assignee_bg, repo_name) {
+    frame {
+        width = fill, padding = 14, radius = 8
+        fill = #FFFFFF, stroke = [1, #E4E9EE]
+        layout = vertical, gap = 8
+
+        frame header {
+            width = fill, layout = horizontal, justify = space-between, align = center
+            text slug { size = 11, color = #868F99, family = "JetBrains Mono", letter-spacing = 0.3 }
+            use tbd_status_badge(status_icon, status_label, status_bg, status_fg)
+        }
+
+        text title { size = 13, weight = semibold, color = #1F2328, wrap = true, line-height = 18, width = 260 }
+
+        shape hr { type = rectangle, width = 260, height = 1, fill = #E4E9EE }
+
+        frame footer {
+            width = fill, layout = horizontal, justify = space-between, align = center
+            text priority_icon { size = 12, color = priority_color }
+            use tbd_avatar(assignee_letter, assignee_bg)
+        }
+
+        text repo_name { size = 10, color = #B1B7BE, family = "JetBrains Mono" }
+    }
+}
+
+// ── Kanban column ────────────────────────────────────────
+component column_header(dot_color, title, count) {
+    frame {
+        width = fill, padding = [0, 4, 10, 4]
+        layout = horizontal, justify = space-between, align = center
+
+        frame left {
+            layout = horizontal, gap = 8, align = center
+            frame dot { width = 8, height = 8, radius = 999, fill = dot_color }
+            text title { size = 13, weight = semibold, color = #1F2328 }
+            text count { size = 12, color = #868F99, family = "JetBrains Mono" }
+        }
+        text "+" { size = 14, weight = medium, color = #868F99 }
+    }
+}
+
+// ── ROOT ─────────────────────────────────────────────────
+component pg_tickets_board() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width = 1920, height = 1040, fill = #F6F8FA
+
+    frame app {
+        width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+        // === 3-column body ===
+        frame body {
+            width = fill, height = fill, layout = horizontal
+
+            // --- ActivityBar 48 ---
+            frame activity_bar {
+                width = 48, height = fill, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                layout = vertical, align = center, padding = [12, 6], gap = 6
+
+                frame org_switcher {
+                    width = 36, height = 36, radius = 8, fill = #0969DA
+                    layout = horizontal, justify = center, align = center
+                    text "D" { size = 16, weight = semibold, color = #FFFFFF }
+                }
+                frame gap_s { height = 12 }
+
+                use tbd_nav_icon("▦")
+                use tbd_nav_icon("#")
+                use tbd_nav_icon(">_")
+                use tbd_section_divider()
+                use tbd_nav_icon_active("🎫")
+                use tbd_nav_icon("↻")
+                use tbd_nav_icon("⚘")
+
+                frame spacer { height = fill }
+                use tbd_nav_icon("⌘")
+                use tbd_nav_icon("?")
+                use tbd_nav_icon("⚙")
+                use tbd_nav_icon("👤")
+            }
+
+            // --- Sidebar 280 ---
+            frame sidebar {
+                width = 280, height = fill, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = vertical
+
+                // Search + New Ticket
+                frame search_area {
+                    width = fill, padding = 12, layout = vertical, gap = 8
+                    frame search {
+                        width = fill, height = 32, padding = [0, 10], radius = 6
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = horizontal, align = center, gap = 8
+                        text "🔍" { size = 13, color = #868F99 }
+                        text "Search — try priority:high, label:bug, repo:demo-api" { size = 12, color = #868F99 }
+                    }
+                    frame btn_new {
+                        width = fill, height = 30, radius = 6, fill = #0969DA
+                        layout = horizontal, justify = center, align = center, gap = 6
+                        text "+" { size = 14, weight = medium, color = #FFFFFF }
+                        text "New Ticket" { size = 13, weight = medium, color = #FFFFFF }
+                    }
+                }
+
+                // Filter sections — Tickets don't need Mine/Others tabs (team-shared task items).
+                // Status filter is handled visually by Kanban columns; rest of filters go here.
+                frame filters_section {
+                    width = fill, padding = [16, 16, 8, 16], layout = vertical, gap = 16
+                    stroke = [1, #D0D7DE]
+
+                    // By priority
+                    frame g_prio { layout = vertical, gap = 6
+                        text "Priority" { size = 11, weight = semibold, color = #656D76, text-transform = uppercase, letter-spacing = 1 }
+                        frame opts { layout = vertical, gap = 4, padding = [4, 0, 0, 0]
+                            frame o1 { layout = horizontal, gap = 8, align = center
+                                text "↑↑" { size = 11, color = #CF222E, family = "JetBrains Mono" }
+                                text "Urgent · 1" { size = 12, color = #1F2328 }
+                            }
+                            frame o2 { layout = horizontal, gap = 8, align = center
+                                text "↑"  { size = 11, color = #9A6700, family = "JetBrains Mono" }
+                                text "High · 3" { size = 12, color = #1F2328 }
+                            }
+                            frame o3 { layout = horizontal, gap = 8, align = center
+                                text "="  { size = 11, color = #656D76, family = "JetBrains Mono" }
+                                text "Medium · 5" { size = 12, color = #1F2328 }
+                            }
+                        }
+                    }
+
+                    // By repository
+                    frame g_repo { layout = vertical, gap = 6
+                        text "Repository" { size = 11, weight = semibold, color = #656D76, text-transform = uppercase, letter-spacing = 1 }
+                        frame opts { layout = vertical, gap = 4, padding = [4, 0, 0, 0]
+                            text "demo-api · 8" { size = 12, color = #1F2328 }
+                            text "demo-web · 5" { size = 12, color = #1F2328 }
+                            text "(unassigned) · 2" { size = 12, color = #868F99 }
+                        }
+                    }
+
+                    // By label
+                    frame g_label { layout = vertical, gap = 6
+                        text "Labels" { size = 11, weight = semibold, color = #656D76, text-transform = uppercase, letter-spacing = 1 }
+                        frame opts { layout = vertical, gap = 4, padding = [4, 0, 0, 0]
+                            frame l1 { layout = horizontal, gap = 8, align = center
+                                frame chip { padding = [1, 8], radius = 4, fill = #FFEBE9
+                                    text "bug" { size = 11, weight = medium, color = #CF222E }
+                                }
+                                text "4" { size = 12, color = #868F99, family = "JetBrains Mono" }
+                            }
+                            frame l2 { layout = horizontal, gap = 8, align = center
+                                frame chip { padding = [1, 8], radius = 4, fill = #DDF4FF
+                                    text "backend" { size = 11, weight = medium, color = #0550AE }
+                                }
+                                text "6" { size = 12, color = #868F99, family = "JetBrains Mono" }
+                            }
+                            frame l3 { layout = horizontal, gap = 8, align = center
+                                frame chip { padding = [1, 8], radius = 4, fill = #FFF8C5
+                                    text "compliance" { size = 11, weight = medium, color = #9A6700 }
+                                }
+                                text "2" { size = 12, color = #868F99, family = "JetBrains Mono" }
+                            }
+                        }
+                    }
+
+                    // By assignee
+                    frame g_assignee { layout = vertical, gap = 6
+                        text "Assignee" { size = 11, weight = semibold, color = #656D76, text-transform = uppercase, letter-spacing = 1 }
+                        frame opts { layout = vertical, gap = 4, padding = [4, 0, 0, 0]
+                            frame a0 { layout = horizontal, gap = 8, align = center
+                                frame avatar_me { width = 18, height = 18, radius = 999, fill = #0969DA
+                                    layout = horizontal, justify = center, align = center
+                                    text "D" { size = 9, weight = semibold, color = #FFFFFF }
+                                }
+                                text "Dev User (me) · 4" { size = 12, weight = medium, color = #1F2328 }
+                            }
+                            text "Others · 9" { size = 12, color = #1F2328, padding = [0, 0, 0, 26] }
+                            text "Unassigned · 3" { size = 12, color = #868F99, padding = [0, 0, 0, 26] }
+                        }
+                    }
+                }
+
+                frame spacer { height = fill }
+                frame sidebar_footer {
+                    width = fill, padding = [10, 12], stroke = [1, #D0D7DE]
+                    layout = horizontal, align = center, gap = 8
+                    text "Sort: recent" { size = 12, color = #656D76 }
+                    frame spacer_r { width = fill }
+                    frame more { width = 24, height = 22, radius = 4
+                        layout = horizontal, justify = center, align = center
+                        text "⋯" { size = 14, weight = semibold, color = #656D76 }
+                    }
+                }
+            }
+
+            // --- Main area ---
+            frame main {
+                width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+                // PageHeader — title only. No description on list pages
+                // (users who land here already know what Tickets does).
+                frame page_header {
+                    width = fill, padding = [14, 24]
+                    stroke = [1, #D0D7DE]
+                    layout = horizontal, justify = space-between, align = center
+
+                    text "Tickets" { size = 18, weight = semibold, color = #1F2328 }
+
+                    frame actions { layout = horizontal, gap = 8, align = center
+                        // View toggle
+                        frame view_toggle {
+                            padding = 2, radius = 6, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                            layout = horizontal, gap = 0
+
+                            frame v_board {
+                                padding = [4, 10], radius = 4, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                text "Board" { size = 12, weight = medium, color = #1F2328 }
+                            }
+                            frame v_list {
+                                padding = [4, 10], radius = 4
+                                text "List" { size = 12, color = #656D76 }
+                            }
+                        }
+                        frame btn_export {
+                            height = 30, padding = [0, 12], radius = 6
+                            fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = horizontal, justify = center, align = center
+                            text "Export" { size = 13, weight = medium, color = #1F2328 }
+                        }
+                    }
+                }
+
+                // Kanban columns
+                frame board {
+                    width = fill, height = fill, padding = 16, fill = #F6F8FA
+                    layout = horizontal, gap = 12, align = start
+
+                    // Column: Backlog
+                    frame col_backlog {
+                        width = 300, layout = vertical, gap = 8
+                        use column_header(#6E7681, "Backlog", "4")
+
+                        use ticket_card("DEV-5", "○", "backlog", #F6F8FA, #656D76,
+                            "Implement multi-tenant audit log",
+                            "backend", #DDF4FF, #0550AE,
+                            "compliance", #FFF8C5, #9A6700,
+                            "↑", #9A6700, "Dec 12", #656D76,
+                            "demo-api")
+                        use ticket_card_min("DEV-6", "○", "backlog", #F6F8FA, #656D76,
+                            "Deprecate v1 search endpoint",
+                            "=", #656D76, "J", #1A7F37, "demo-api")
+                    }
+
+                    // Column: Todo
+                    frame col_todo {
+                        width = 300, layout = vertical, gap = 8
+                        use column_header(#656D76, "Todo", "2")
+
+                        use ticket_card("DEV-3", "◐", "todo", #F0F3F6, #1F2328,
+                            "Fix slow page load on dashboard",
+                            "bug", #FFEBE9, #CF222E,
+                            "performance", #DDF4FF, #0550AE,
+                            "↑", #9A6700, "Dec 8", #9A6700,
+                            "demo-web")
+                    }
+
+                    // Column: In Progress (active)
+                    frame col_inprogress {
+                        width = 300, layout = vertical, gap = 8
+                        use column_header(#D29922, "In Progress", "3")
+
+                        use ticket_card("DEV-1", "◉", "in progress", #FFF8C5, #9A6700,
+                            "Implement JWT-based user authentication",
+                            "backend", #DDF4FF, #0550AE,
+                            "security", #FFEBE9, #CF222E,
+                            "↑↑", #CF222E, "Dec 5", #CF222E,
+                            "demo-api · 2 pods running")
+                        use ticket_card_min("DEV-2", "◉", "in progress", #FFF8C5, #9A6700,
+                            "Add SSO login option",
+                            "↑", #9A6700, "S", #0969DA, "demo-api · 1 pod running")
+                    }
+
+                    // Column: In Review
+                    frame col_review {
+                        width = 300, layout = vertical, gap = 8
+                        use column_header(#8250DF, "In Review", "1")
+
+                        use ticket_card_min("DEV-4", "◔", "in review", #F5F0FF, #8250DF,
+                            "Redesign navigation sidebar",
+                            "=", #656D76, "M", #9A6700, "demo-web · 1 PR open")
+                    }
+
+                    // Column: Done (collapsed style)
+                    frame col_done {
+                        width = 300, layout = vertical, gap = 8
+                        use column_header(#1A7F37, "Done", "12")
+
+                        frame done_summary {
+                            width = fill, padding = 14, radius = 8
+                            fill = #DAFBE1, stroke = [1, #A0E7AC]
+                            layout = vertical, gap = 6
+
+                            text "12 tickets shipped this month" { size = 13, weight = medium, color = #1A7F37 }
+                            text "View archive →" { size = 12, color = #1A7F37, text-decoration = underline }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+}
+
+
+component pg_tickets_board_framed() {
+    frame outer {
+        width = 2000
+        height = 1120
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_tickets_board()
+    }
+}
+
+frame root {
+    use pg_tickets_board_framed()
+}

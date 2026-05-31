@@ -1,0 +1,191 @@
+// iOS Ticket detail — push view + sticky CTA.
+
+asset back_blue = image("../assets/lucide-png/back-0969DA.png")
+asset more_blue = image("../assets/lucide-png/ellipsis-0969DA.png")
+
+canvas "ios_ticket_detail" {
+    width = 1100
+    height = 1100
+    background = #1F2328
+}
+
+component sh_status_bar() {
+    frame {
+        width = fill, height = 59, fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center, padding = [0, 22]
+        text "9:41" { size = 17, weight = semibold, color = #1F2328, family = "SF Pro" }
+        frame icons { layout = horizontal, gap = 6, align = center
+            text "📶" { size = 14 } text "📡" { size = 14 }
+            frame battery { width = 28, height = 13, radius = 4, stroke = [1, #1F2328], padding = 2,
+                layout = horizontal, align = center
+                shape level { type = rectangle, width = 20, height = 7, radius = 1, fill = #1F2328 }
+            }
+        }
+    }
+}
+
+component sh_nav_push() {
+    frame {
+        width = fill, height = 44, fill = #FFFFFFE6
+        padding = [0, 8], layout = horizontal, justify = space-between, align = center
+
+        frame back { layout = horizontal, gap = 0, align = center
+            frame back_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+                image back_blue { width = 24, height = 24 }
+            }
+            text "Tickets" { size = 17, color = #0969DA }
+        }
+        text "DEV-1" { size = 17, weight = semibold, color = #1F2328, family = "SF Mono" }
+        frame more_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+            image more_blue { width = 24, height = 24 }
+        }
+    }
+}
+
+component inner_tab(label, weight_v, underline_v) {
+    frame {
+        padding = [12, 0], layout = vertical, gap = 6, align = center
+        text label { size = 14, weight = weight_v, color = #1F2328 }
+        shape underline { type = rectangle, width = 60, height = 3, radius = 2, fill = underline_v }
+    }
+}
+
+component section_label(label) {
+    text label { size = 13, color = #6D6D72, text-transform = uppercase, letter-spacing = 0.5 }
+}
+
+component meta_row(label, value) {
+    frame {
+        width = fill, height = 44, padding = [0, 16]
+        fill = #FFFFFF
+        layout = horizontal, justify = space-between, align = center
+        text label { size = 17, color = #1F2328 }
+        text value { size = 17, color = #8E8E93 }
+    }
+}
+
+component sep_full() {
+    frame { width = fill, height = 1, padding = [0, 0, 0, 16]
+        layout = horizontal
+        shape line { type = rectangle, width = fill, height = 1, fill = #F2F2F7 }
+    }
+}
+
+component pod_inset(dot_color, name, agent_text) {
+    frame {
+        width = fill, height = 60, padding = [10, 16]
+        fill = #FFFFFF
+        layout = horizontal, gap = 12, align = center
+
+        frame avatar {
+            width = 40, height = 40, radius = 10, fill = dot_color
+            layout = horizontal, justify = center, align = center
+            text "C" { size = 17, weight = semibold, color = #FFFFFF, family = "SF Mono" }
+        }
+        frame stack { layout = vertical, gap = 2, width = 240
+            text name { size = 17, weight = semibold, color = #1F2328, family = "SF Mono" }
+            text agent_text { size = 13, color = #8E8E93, family = "SF Mono" }
+        }
+        text "›" { size = 22, color = #C7C7CC }
+    }
+}
+
+component pg_ticket_detail() {
+frame root {
+    width = 393, height = 852, fill = #FFFFFF
+    radius = 47, stroke = [3, #1F2328]
+    layout = vertical
+
+    use sh_status_bar()
+    use sh_nav_push()
+
+    frame header {
+        width = fill, padding = [16, 16, 12, 16]
+        fill = #FFFFFF
+        layout = vertical, gap = 12
+
+        frame status_row {
+            width = fill, layout = horizontal, gap = 8, align = center
+            frame status_pill { padding = [3, 10], radius = 4, fill = #FFF8C5
+                text "In Progress" { size = 12, weight = medium, color = #9A6700 }
+            }
+            text "·" { size = 13, color = #C7C7CC }
+            text "Opened 3d ago" { size = 13, color = #8E8E93 }
+        }
+        text "Implement JWT-based user authentication"
+            { size = 22, weight = semibold, color = #1F2328, wrap = true, width = 360, line-height = 28 }
+    }
+
+    frame inner_tabs {
+        width = fill, padding = [0, 16], fill = #FFFFFF
+        layout = horizontal, gap = 32
+
+        use inner_tab("Details", semibold, #0969DA)
+        use inner_tab("Pods", normal, transparent)
+        use inner_tab("Activity", normal, transparent)
+    }
+
+    frame body {
+        width = fill, height = fill, fill = #F2F2F7
+        padding = [16, 16, 100, 16], layout = vertical, gap = 24
+
+        frame desc { layout = vertical, gap = 8
+            use section_label("Description")
+            frame card { width = fill, padding = 16, radius = 12, fill = #FFFFFF
+                text "Replace cookie-based session auth with JWT (access + refresh). Use RS256 + JWKS at /.well-known/jwks.json."
+                    { size = 15, color = #1F2328, wrap = true, width = 320, line-height = 22 }
+            }
+        }
+
+        frame meta { layout = vertical, gap = 8
+            use section_label("Details")
+            frame card { width = fill, radius = 12, fill = #FFFFFF, layout = vertical
+                use meta_row("Repository", "demo-api")
+                use sep_full()
+                use meta_row("Branch", "main")
+                use sep_full()
+                use meta_row("Priority", "P1 · High")
+                use sep_full()
+                use meta_row("Linked Pods", "3")
+            }
+        }
+
+        frame pods { layout = vertical, gap = 8
+            use section_label("Linked Pods")
+            frame card { width = fill, radius = 12, fill = #FFFFFF, layout = vertical
+                use pod_inset(#3FB950, "pod-abc-123", "claude-code · pty · executing")
+                use sep_full()
+                use pod_inset(#58A6FF, "pod-def-456", "codex · acp · idle")
+            }
+        }
+    }
+
+    frame cta_zone {
+        width = fill, padding = [12, 16, 12, 16]
+        fill = #FFFFFFE6, stroke = [1, #E4E9EE]
+        layout = vertical
+        frame btn { width = fill, height = 52, radius = 12, fill = #0969DA
+            shadow = [0, 2, 8, #0969DA40]
+            layout = horizontal, justify = center, align = center, gap = 8
+            text "+" { size = 22, weight = semibold, color = #FFFFFF }
+            text "Spawn Pod" { size = 17, weight = semibold, color = #FFFFFF }
+        }
+    }
+
+    frame safe_bottom { width = fill, height = 34, fill = #FFFFFFE6
+        layout = horizontal, justify = center, align = center
+        shape ind { type = rectangle, width = 134, height = 5, radius = 999, fill = #1F2328 }
+    }
+}
+}
+
+
+component pg_ticket_detail_framed() {
+    frame outer {
+        width = 1100, height = 1100, fill = #1F2328
+        padding = [60, 80], layout = horizontal, justify = center, align = center
+        use pg_ticket_detail()
+    }
+}
+
+frame root { use pg_ticket_detail_framed() }

@@ -1,0 +1,23 @@
+// Shadow scale — subtle only. No more than md in general UI.
+// Format: [x, y, blur, color]
+// Colors include alpha for translucent shadows.
+
+token shadow {
+    xs = [0, 1, 2, #0000000D]    // subtle elevation (cards, inputs)
+    sm = [0, 2, 4, #00000014]    // hover cards, dropdowns
+    md = [0, 4, 8, #0000001F]    // dialogs, popovers
+}
+
+// Dark-mode shadows need stronger alpha since the base is already dark
+token shadow_dark {
+    xs = [0, 1, 2, #00000052]
+    sm = [0, 2, 4, #00000066]
+    md = [0, 4, 12, #00000099]
+}
+
+// Focus ring (not a shadow, but stored here since it's a visual effect)
+token focus {
+    ring_width  = 2
+    ring_offset = 2
+    // ring_color uses colors.primary / dark.primary
+}

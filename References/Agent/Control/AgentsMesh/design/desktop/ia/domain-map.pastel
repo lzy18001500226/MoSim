@@ -1,0 +1,256 @@
+// Domain model map — entities and relationships.
+// Pod is the center. Everything else is either context, collaboration, orchestration, or config.
+
+canvas "domain" {
+    width = 1680
+    height = 1580
+    background = #1F2328
+}
+
+component entity_box(name, sublabel, fill_color, border_color, text_color) {
+    frame {
+        width   = 180
+        height  = 70
+        radius  = 8
+        fill    = fill_color
+        stroke  = [1, border_color]
+        layout  = vertical
+        justify = center
+        align   = center
+        gap     = 2
+
+        text name     { size = 14, weight = semibold, color = text_color }
+        text sublabel { size = 11, color = #656D76 }
+    }
+}
+
+component entity_box_primary(name, sublabel) {
+    frame {
+        width   = 280
+        height  = 90
+        radius  = 10
+        fill    = #0969DA
+        stroke  = [2, #0550AE]
+        layout  = vertical
+        justify = center
+        align   = center
+        gap     = 4
+        shadow  = [0, 4, 12, #0969DA40]
+
+        text name     { size = 18, weight = semibold, color = #FFFFFF }
+        text sublabel { size = 12, color = #DDF4FF, align = center, wrap = true, width = 260 }
+    }
+}
+
+component arrow_down() {
+    frame { width = 180, height = 16, layout = horizontal, justify = center
+        text "↓" { size = 18, color = #AFB8C1 }
+    }
+}
+
+component dm_group_label(label) {
+    text label { size = 11, weight = semibold, color = #656D76, text-transform = uppercase, letter-spacing = 1.5 }
+}
+
+component legend_item(color, label) {
+    frame {
+        layout = horizontal, gap = 8, align = center
+        frame dot { width = 12, height = 12, radius = 3, fill = color }
+        text label { size = 12, color = #1F2328 }
+    }
+}
+
+component pg_domain_map() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width   = 1600
+    height  = 1100
+    fill    = #FFFFFF
+    padding = 40
+    layout  = vertical
+    gap     = 32
+
+    // Header
+    frame header {
+        layout = vertical, gap = 4
+        text "Domain Model" { size = 24, weight = semibold, color = #1F2328 }
+        text "Pod is the center. Everything else is context / collaboration / orchestration / config."
+            { size = 13, color = #656D76 }
+    }
+
+    // Legend
+    frame legend {
+        layout = horizontal, gap = 24, padding = [0, 0, 8, 0]
+        use legend_item(#FFF8C5, "Tenancy")
+        use legend_item(#DDF4FF, "Execution context")
+        use legend_item(#0969DA, "Pod (core)")
+        use legend_item(#DAFBE1, "Collaboration")
+        use legend_item(#F0F3F6, "Orchestration")
+        use legend_item(#FFEBE9, "Configuration")
+    }
+
+    // Row 1 — Tenancy
+    use dm_group_label("Tenancy")
+    frame row_tenancy {
+        width  = fill
+        layout = horizontal
+        justify = center
+
+        use entity_box("Organization", "multi-tenant root", #FFF8C5, #D4AF00, #1F2328)
+    }
+
+    use arrow_down()
+    frame caption_1 {
+        width = fill, layout = horizontal, justify = center
+        text "scopes every resource below" { size = 11, color = #868F99, family = "JetBrains Mono" }
+    }
+
+    // Row 2 — Execution context (what a Pod needs)
+    use dm_group_label("Execution context (attached to Pod)")
+    frame row_context {
+        width  = fill
+        layout = horizontal
+        gap    = 24
+        justify = center
+
+        frame c1 { layout = vertical, align = center, gap = 4
+            use entity_box("Runner", "1:N → Pods", #DDF4FF, #0969DA, #1F2328)
+            text "hosts" { size = 10, color = #868F99 }
+        }
+        frame c2 { layout = vertical, align = center, gap = 4
+            use entity_box("Agent", "Claude / Codex / Aider", #DDF4FF, #0969DA, #1F2328)
+            text "instantiates" { size = 10, color = #868F99 }
+        }
+        frame c3 { layout = vertical, align = center, gap = 4
+            use entity_box("AgentFile", "DSL: ENV/MCP/SKILL", #DDF4FF, #0969DA, #1F2328)
+            text "configures" { size = 10, color = #868F99 }
+        }
+        frame c4 { layout = vertical, align = center, gap = 4
+            use entity_box("Repository", "optional Git source", #DDF4FF, #0969DA, #1F2328)
+            text "clones (optional)" { size = 10, color = #868F99 }
+        }
+        frame c5 { layout = vertical, align = center, gap = 4
+            use entity_box("Ticket", "optional task link", #DDF4FF, #0969DA, #1F2328)
+            text "assigns (optional)" { size = 10, color = #868F99 }
+        }
+    }
+
+    use arrow_down()
+
+    // Row 3 — THE CORE
+    frame row_core {
+        width  = fill
+        layout = vertical
+        gap    = 8
+        align  = center
+
+        use entity_box_primary("Pod", "immutable work unit · PTY terminal · sandbox")
+        frame subtitle {
+            layout = vertical, align = center, gap = 2
+            text "state: initializing → running → paused/completed/terminated/error"
+                { size = 11, color = #656D76, family = "JetBrains Mono" }
+            text "perpetual · resume · single Runner binding"
+                { size = 11, color = #656D76, family = "JetBrains Mono" }
+        }
+    }
+
+    use arrow_down()
+
+    // Row 4 — Collaboration (how Pods interact)
+    use dm_group_label("Collaboration")
+    frame row_collab {
+        width  = fill
+        layout = horizontal
+        gap    = 24
+        justify = center
+
+        frame c1 { layout = vertical, align = center, gap = 4
+            use entity_box("Channel", "N:M — pods join/leave", #DAFBE1, #1A7F37, #1F2328)
+            text "message bus" { size = 10, color = #868F99 }
+        }
+        frame c2 { layout = vertical, align = center, gap = 4
+            use entity_box("PodBinding", "directed A→B, read/write", #DAFBE1, #1A7F37, #1F2328)
+            text "observe / control" { size = 10, color = #868F99 }
+        }
+        frame c3 { layout = vertical, align = center, gap = 4
+            use entity_box("Mesh", "runtime view, not persisted", #DAFBE1, #1A7F37, #1F2328)
+            text "topology map" { size = 10, color = #868F99 }
+        }
+    }
+
+    use arrow_down()
+
+    // Row 5 — Orchestration (how Pods are automated)
+    use dm_group_label("Orchestration")
+    frame row_orch {
+        width  = fill
+        layout = horizontal
+        gap    = 24
+        justify = center
+
+        frame c1 { layout = vertical, align = center, gap = 4
+            use entity_box("Loop", "cron / api / manual trigger", #F0F3F6, #6E7681, #1F2328)
+            text "creates LoopRun → Pod" { size = 10, color = #868F99 }
+        }
+        frame c2 { layout = vertical, align = center, gap = 4
+            use entity_box("AutopilotController", "state machine + breaker", #F0F3F6, #6E7681, #1F2328)
+            text "paired 1:1 with Pod" { size = 10, color = #868F99 }
+        }
+    }
+
+    use arrow_down()
+
+    // Row 6 — Config (what colors a Pod's behavior)
+    use dm_group_label("Config (per user / per org)")
+    frame row_config {
+        width  = fill
+        layout = horizontal
+        gap    = 24
+        justify = center
+
+        frame c1 { layout = vertical, align = center, gap = 4
+            use entity_box("Credential Profile", "per user, per agent", #FFEBE9, #CF222E, #1F2328)
+            text "injects env vars" { size = 10, color = #868F99 }
+        }
+        frame c2 { layout = vertical, align = center, gap = 4
+            use entity_box("MCP Server", "stdio / http-sse", #FFEBE9, #CF222E, #1F2328)
+            text "extra tools" { size = 10, color = #868F99 }
+        }
+        frame c3 { layout = vertical, align = center, gap = 4
+            use entity_box("Skill", "market / github / upload", #FFEBE9, #CF222E, #1F2328)
+            text "extra capability pkg" { size = 10, color = #868F99 }
+        }
+        frame c4 { layout = vertical, align = center, gap = 4
+            use entity_box("Git Provider", "oauth — per user", #FFEBE9, #CF222E, #1F2328)
+            text "clone auth" { size = 10, color = #868F99 }
+        }
+    }
+
+    // Footnote
+    frame footnote {
+        width = fill, padding = [16, 0, 0, 0]
+        text "Metaphor: Org = company · Runner = office · Pod = employee desk · Agent = job function · Ticket = task · Channel = chat group · Mesh = org chart · Loop = recurring workflow"
+            { size = 12, color = #656D76, wrap = true, width = 1500, line-height = 20, align = center }
+    }
+}
+}
+
+
+component pg_domain_map_framed() {
+    frame outer {
+        width = 1680
+        height = 1580
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_domain_map()
+    }
+}
+
+frame root {
+    use pg_domain_map_framed()
+}

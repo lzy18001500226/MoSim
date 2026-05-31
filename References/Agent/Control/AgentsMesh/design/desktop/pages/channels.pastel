@@ -1,0 +1,529 @@
+// Channels — multi-pod + multi-user collaboration space (chat).
+// Shell: ActivityBar + Sidebar (channel list) + Main (messages) + Right sidebar (members).
+
+canvas "channels" {
+    width = 2000
+    height = 1160
+    background = #1F2328
+}
+
+component ch_nav_icon_active(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = #DDF4FF, stroke = [1, #0969DA]
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, weight = medium, color = #0969DA }
+    }
+}
+component ch_nav_icon(icon) {
+    frame { width = 36, height = 36, radius = 6, fill = transparent
+        layout = horizontal, justify = center, align = center
+        text icon { size = 16, color = #656D76 }
+    }
+}
+component ch_section_divider() { shape { type = rectangle, width = 24, height = 1, fill = #D0D7DE } }
+
+component ch_avatar(letter, bg) {
+    frame { width = 28, height = 28, radius = 999, fill = bg
+        layout = horizontal, justify = center, align = center
+        text letter { size = 12, weight = semibold, color = #FFFFFF }
+    }
+}
+
+component avatar_pod(letter, bg) {
+    frame { width = 28, height = 28, radius = 6, fill = bg
+        layout = horizontal, justify = center, align = center
+        text letter { size = 12, weight = semibold, color = #FFFFFF, family = "JetBrains Mono" }
+    }
+}
+
+// Channel list row
+component channel_row(hash, name, last_msg, meta, has_unread) {
+    frame {
+        width = fill, padding = [8, 12], radius = 6
+        layout = horizontal, gap = 10, align = center
+
+        text hash { size = 14, color = #868F99, family = "JetBrains Mono" }
+        frame stack { layout = vertical, gap = 1, width = 180
+            frame row1 {
+                layout = horizontal, justify = space-between
+                text name { size = 13, color = #1F2328 }
+                text meta { size = 10, color = #868F99 }
+            }
+            text last_msg { size = 11, color = #868F99, wrap = false }
+        }
+        frame dot_wrap { width = 8, layout = horizontal, justify = center
+            frame dot { width = 6, height = 6, radius = 999, fill = has_unread }
+        }
+    }
+}
+
+component channel_row_active(hash, name, last_msg, meta) {
+    frame {
+        width = fill, padding = [8, 12], radius = 6, fill = #E4E9EE
+        layout = horizontal, gap = 10, align = center
+
+        text hash { size = 14, weight = semibold, color = #1F2328, family = "JetBrains Mono" }
+        frame stack { layout = vertical, gap = 1, width = 180
+            frame row1 {
+                layout = horizontal, justify = space-between
+                text name { size = 13, weight = semibold, color = #1F2328 }
+                text meta { size = 10, color = #656D76 }
+            }
+            text last_msg { size = 11, color = #656D76, wrap = false }
+        }
+    }
+}
+
+// System message (centered)
+component msg_system(text_content) {
+    frame {
+        width = fill, padding = [4, 0], layout = horizontal, justify = center
+        text text_content { size = 11, color = #868F99 }
+    }
+}
+
+// User message
+component msg_user(letter, avatar_bg, name, role_badge_color, role_badge_text, time, content) {
+    frame {
+        width = fill, padding = [6, 24], layout = horizontal, gap = 12, align = start
+
+        use ch_avatar(letter, avatar_bg)
+        frame body { layout = vertical, gap = 4, width = 900
+            frame header {
+                layout = horizontal, gap = 6, align = center
+                text name { size = 13, weight = semibold, color = #1F2328 }
+                frame badge { padding = [1, 6], radius = 3, fill = role_badge_color
+                    text role_badge_text { size = 10, weight = medium, color = #FFFFFF, family = "JetBrains Mono" }
+                }
+                text time { size = 11, color = #868F99 }
+            }
+            text content { size = 13, color = #1F2328, wrap = true, width = 880, line-height = 20 }
+        }
+    }
+}
+
+// Pod message (agent)
+component msg_pod(letter, avatar_bg, pod_key, agent, time, content) {
+    frame {
+        width = fill, padding = [6, 24], layout = horizontal, gap = 12, align = start
+
+        use avatar_pod(letter, avatar_bg)
+        frame body { layout = vertical, gap = 4, width = 900
+            frame header {
+                layout = horizontal, gap = 6, align = center
+                text pod_key { size = 13, weight = semibold, color = #1F2328, family = "JetBrains Mono" }
+                frame badge { padding = [1, 6], radius = 3, fill = #F0F3F6, stroke = [1, #D0D7DE]
+                    text agent { size = 10, weight = medium, color = #656D76, family = "JetBrains Mono" }
+                }
+                text time { size = 11, color = #868F99 }
+            }
+            text content { size = 13, color = #1F2328, wrap = true, width = 880, line-height = 20 }
+        }
+    }
+}
+
+// Pod tool call card message
+component msg_pod_tool(letter, avatar_bg, pod_key, agent, time, tool_name, tool_target) {
+    frame {
+        width = fill, padding = [6, 24], layout = horizontal, gap = 12, align = start
+
+        use avatar_pod(letter, avatar_bg)
+        frame body { layout = vertical, gap = 6, width = 900
+            frame header {
+                layout = horizontal, gap = 6, align = center
+                text pod_key { size = 13, weight = semibold, color = #1F2328, family = "JetBrains Mono" }
+                frame badge { padding = [1, 6], radius = 3, fill = #F0F3F6, stroke = [1, #D0D7DE]
+                    text agent { size = 10, weight = medium, color = #656D76, family = "JetBrains Mono" }
+                }
+                text time { size = 11, color = #868F99 }
+            }
+            frame tool_card {
+                width = 520, padding = 10, radius = 6
+                fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = vertical, gap = 4
+
+                frame top {
+                    layout = horizontal, gap = 6, align = center
+                    text "🔧"     { size = 11, color = #0969DA }
+                    text tool_name { size = 12, weight = medium, color = #0550AE, family = "JetBrains Mono" }
+                }
+                text tool_target { size = 11, color = #656D76, family = "JetBrains Mono" }
+            }
+        }
+    }
+}
+
+// Member list row
+component member_row(icon_letter, icon_bg, label, sub, is_pod) {
+    frame {
+        width = fill, padding = [6, 10], radius = 6
+        layout = horizontal, gap = 10, align = center
+
+        frame avatar_wrap {
+            use ch_avatar(icon_letter, icon_bg)
+        }
+        frame stack { layout = vertical, gap = 1, width = 220
+            text label { size = 13, weight = medium, color = #1F2328 }
+            text sub   { size = 11, color = #868F99, family = "JetBrains Mono" }
+        }
+        frame dot {
+            width = 8, height = 8, radius = 999, fill = is_pod
+        }
+    }
+}
+
+component pg_channels() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width = 1920, height = 1080, fill = #F6F8FA
+
+    frame app {
+        width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+        frame body {
+            width = fill, height = fill, layout = horizontal
+
+            // --- ActivityBar ---
+            frame activity_bar {
+                width = 48, height = fill, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                layout = vertical, align = center, padding = [12, 6], gap = 6
+
+                frame org_switcher {
+                    width = 36, height = 36, radius = 8, fill = #0969DA
+                    layout = horizontal, justify = center, align = center
+                    text "D" { size = 16, weight = semibold, color = #FFFFFF }
+                }
+                frame gap_s { height = 12 }
+
+                use ch_nav_icon("▦")
+                use ch_nav_icon_active("#")
+                use ch_nav_icon(">_")
+                use ch_section_divider()
+                use ch_nav_icon("🎫")
+                use ch_nav_icon("↻")
+                use ch_nav_icon("⚘")
+
+                frame spacer { height = fill }
+                use ch_nav_icon("⌘")
+                use ch_nav_icon("?")
+                use ch_nav_icon("⚙")
+                use ch_nav_icon("👤")
+            }
+
+            // --- Sidebar: channel list ---
+            frame sidebar {
+                width = 280, height = fill, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = vertical
+
+                frame search_area {
+                    width = fill, padding = 12, layout = vertical, gap = 8
+                    frame search {
+                        width = fill, height = 32, padding = [0, 10], radius = 6
+                        fill = #FFFFFF, stroke = [1, #D0D7DE]
+                        layout = horizontal, align = center, gap = 8
+                        text "🔍" { size = 13, color = #868F99 }
+                        text "Search channels..." { size = 13, color = #868F99 }
+                    }
+                    frame btn_new {
+                        width = fill, height = 30, radius = 6, fill = #0969DA
+                        layout = horizontal, justify = center, align = center, gap = 6
+                        text "+" { size = 14, weight = medium, color = #FFFFFF }
+                        text "New Channel" { size = 13, weight = medium, color = #FFFFFF }
+                    }
+                }
+
+                // Group: Active (has recent activity)
+                frame group_active {
+                    width = fill, padding = [12, 16, 6, 16]
+                    text "Active" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                }
+                frame active_items {
+                    width = fill, padding = [0, 8], layout = vertical, gap = 2
+
+                    use channel_row_active("#", "auth-review", "pod-def-456: I'll design a...", "now")
+                    use channel_row("#", "dev-pair-programming", "You: Can you check the...",  "2m", #CF222E)
+                    use channel_row("#", "ticket-dev-2",         "system: 2 pods joined",       "8m", transparent)
+                }
+
+                // Group: Linked (tied to ticket/repo)
+                frame group_linked {
+                    width = fill, padding = [12, 16, 6, 16]
+                    text "Linked" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                }
+                frame linked_items {
+                    width = fill, padding = [0, 8], layout = vertical, gap = 2
+
+                    use channel_row("#", "demo-api-backend", "Maria: New PR opened on #142", "1h", transparent)
+                    use channel_row("#", "standups",         "Sam: Shipping DEV-4 today",     "3h", transparent)
+                }
+
+                // Group: Quiet
+                frame group_quiet {
+                    width = fill, padding = [12, 16, 6, 16]
+                    text "Quiet" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                }
+                frame quiet_items {
+                    width = fill, padding = [0, 8], layout = vertical, gap = 2
+
+                    use channel_row("#", "design-crits", "no recent messages", "4d", transparent)
+                    use channel_row("#", "ops",          "no recent messages", "1w", transparent)
+                }
+
+                frame spacer { height = fill }
+                frame sidebar_footer {
+                    width = fill, padding = [10, 12], stroke = [1, #D0D7DE]
+                    layout = horizontal, align = center, gap = 8
+                    text "Browse archived →" { size = 12, color = #0969DA }
+                    frame spacer_r { width = fill }
+                    frame more { width = 24, height = 22, radius = 4
+                        layout = horizontal, justify = center, align = center
+                        text "⋯" { size = 14, weight = semibold, color = #656D76 }
+                    }
+                }
+            }
+
+            // --- Main: chat area ---
+            frame main {
+                width = fill, height = fill, fill = #FFFFFF, layout = vertical
+
+                // Channel header
+                frame chan_header {
+                    width = fill, padding = [12, 24]
+                    stroke = [1, #E4E9EE]
+                    layout = horizontal, justify = space-between, align = center
+
+                    frame left { layout = horizontal, gap = 10, align = center
+                        text "#" { size = 20, weight = semibold, color = #868F99, family = "JetBrains Mono" }
+                        frame title_block { layout = vertical, gap = 1
+                            text "auth-review"       { size = 16, weight = semibold, color = #1F2328 }
+                            frame sub {
+                                layout = horizontal, gap = 10, align = center
+                                text "3 pods · 2 members" { size = 11, color = #868F99 }
+                                text "·" { size = 11, color = #D0D7DE }
+                                text "Linked to DEV-1" { size = 11, color = #0969DA }
+                                text "·" { size = 11, color = #D0D7DE }
+                                text "demo-api"      { size = 11, color = #868F99, family = "JetBrains Mono" }
+                            }
+                        }
+                    }
+
+                    // Header actions — search + more. The "⋯" toggles the right
+                    // drawer; member count lives inside the drawer (no duplicate
+                    // pill on the header).
+                    frame actions { layout = horizontal, gap = 6, align = center
+                        frame btn_search {
+                            width = 30, height = 30, radius = 6, fill = #FFFFFF, stroke = [1, #D0D7DE]
+                            layout = horizontal, justify = center, align = center
+                            text "🔍" { size = 13 }
+                        }
+                        frame btn_more {
+                            width = 30, height = 30, radius = 6, fill = #DDF4FF, stroke = [1, #0969DA]
+                            layout = horizontal, justify = center, align = center
+                            text "⋯" { size = 16, color = #0969DA, weight = semibold }
+                        }
+                    }
+                }
+
+                // Chat + right rail
+                frame chat_area {
+                    width = fill, height = fill, layout = horizontal
+
+                    // Messages column
+                    frame messages_col {
+                        width = fill, height = fill, layout = vertical
+
+                        frame messages {
+                            width = fill, height = fill, padding = [12, 0]
+                            layout = vertical, gap = 4
+
+                            use msg_system("— Today, Dec 4 —")
+
+                            use msg_user("D", #0969DA, "Dev User", #0969DA, "owner", "10:02",
+                                "Let's have claude-code and codex collaborate on DEV-1. claude-code — review the current auth setup. codex — propose a new JWT-based design.")
+
+                            use msg_pod("C", #3FB950, "pod-abc-123", "claude-code · pty", "10:03",
+                                "Starting review of src/auth.ts. I'll call out the existing session cookie approach and its weak spots.")
+
+                            use msg_pod_tool("C", #3FB950, "pod-abc-123", "claude-code · pty", "10:04",
+                                "read_file", "src/auth.ts (142 lines)")
+
+                            use msg_pod("C", #3FB950, "pod-abc-123", "claude-code · pty", "10:05",
+                                "Found: cookie uses 64-byte random but no HMAC signing. Anyone with access to DB tokens table can forge a session. Recommend JWT + RS256 so secrets never leave the signer.")
+
+                            use msg_pod("D", #58A6FF, "pod-def-456", "codex · acp", "10:07",
+                                "Agreed. Designing: POST /login issues access (15m) + refresh (30d) JWTs. Refresh token rotation on each use. Public key served via /.well-known/jwks.json.")
+
+                            use msg_system("pod-ghi-789 joined the channel · 10:12")
+
+                            use msg_user("S", #9A6700, "Sam (ops)", #8250DF, "member", "10:15",
+                                "@pod-def-456 please also draft the DB migration — we'll need a `jwt_keys` table with rotation timestamps.")
+
+                            use msg_pod("D", #58A6FF, "pod-def-456", "codex · acp", "10:16",
+                                "Got it. Drafting migration `000098_add_jwt_keys.sql` now.")
+                        }
+
+                        // Message composer
+                        frame composer {
+                            width = fill, padding = 16, stroke = [1, #E4E9EE]
+                            layout = vertical, gap = 8
+
+                            frame input_wrap {
+                                width = fill, padding = [10, 14], radius = 8
+                                fill = #FFFFFF, stroke = [1, #D0D7DE]
+                                layout = vertical, gap = 8
+
+                                text "Message #auth-review — use @ to mention a pod or member, / for commands"
+                                    { size = 13, color = #B1B7BE }
+
+                                frame toolbar {
+                                    width = fill, layout = horizontal, justify = space-between, align = center
+
+                                    frame tools { layout = horizontal, gap = 4, align = center
+                                        frame t1 { width = 26, height = 26, radius = 4
+                                            layout = horizontal, justify = center, align = center
+                                            text "B" { size = 12, weight = semibold, color = #656D76 }
+                                        }
+                                        frame t2 { width = 26, height = 26, radius = 4
+                                            layout = horizontal, justify = center, align = center
+                                            text "‹/›" { size = 11, color = #656D76, family = "JetBrains Mono" }
+                                        }
+                                        frame t3 { width = 26, height = 26, radius = 4
+                                            layout = horizontal, justify = center, align = center
+                                            text "@"   { size = 13, color = #656D76 }
+                                        }
+                                        frame t4 { width = 26, height = 26, radius = 4
+                                            layout = horizontal, justify = center, align = center
+                                            text "/"   { size = 13, color = #656D76 }
+                                        }
+                                        frame t5 { width = 26, height = 26, radius = 4
+                                            layout = horizontal, justify = center, align = center
+                                            text "📎"  { size = 12 }
+                                        }
+                                    }
+
+                                    frame right_group { layout = horizontal, gap = 8, align = center
+                                        text "⌘⏎ to send" { size = 11, color = #868F99 }
+                                        frame btn_send {
+                                            width = 32, height = 28, radius = 6, fill = #0969DA
+                                            layout = horizontal, justify = center, align = center
+                                            text "↑" { size = 14, weight = semibold, color = #FFFFFF }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Right rail: members
+                    frame members_rail {
+                        width = 280, height = fill, fill = #F6F8FA
+                        stroke = [1, #D0D7DE]
+                        padding = 16, layout = vertical, gap = 20
+
+                        // Pods
+                        frame section_pods { layout = vertical, gap = 6
+                            frame header_row {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "PODS · 3" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                                text "+ Invite" { size = 11, color = #0969DA }
+                            }
+
+                            use member_row("C", #3FB950, "pod-abc-123", "claude-code · pty", #3FB950)
+                            use member_row("D", #58A6FF, "pod-def-456", "codex · acp",      #58A6FF)
+                            use member_row("A", #D29922, "pod-ghi-789", "aider · pty",      #D29922)
+                        }
+
+                        // Members
+                        frame section_members { layout = vertical, gap = 6
+                            frame header_row {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "MEMBERS · 2" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                                text "+ Add" { size = 11, color = #0969DA }
+                            }
+
+                            use member_row("D", #0969DA, "Dev User (me)", "owner",  #1A7F37)
+                            use member_row("S", #9A6700, "Sam",           "member", #868F99)
+                        }
+
+                        // Links
+                        frame section_links { layout = vertical, gap = 8
+                            text "LINKED" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+
+                            frame link_ticket {
+                                width = fill, padding = 10, radius = 6
+                                fill = #FFFFFF, stroke = [1, #E4E9EE]
+                                layout = vertical, gap = 4
+
+                                frame top {
+                                    layout = horizontal, gap = 6, align = center
+                                    text "🎫"    { size = 12 }
+                                    text "DEV-1" { size = 11, color = #868F99, family = "JetBrains Mono" }
+                                    frame s { padding = [1, 6], radius = 3, fill = #FFF8C5
+                                        text "In Progress" { size = 10, weight = medium, color = #9A6700 }
+                                    }
+                                }
+                                text "Implement JWT-based user authentication" { size = 12, color = #1F2328, wrap = true, width = 224 }
+                            }
+
+                            frame link_repo {
+                                width = fill, padding = 10, radius = 6
+                                fill = #FFFFFF, stroke = [1, #E4E9EE]
+                                layout = horizontal, gap = 8, align = center
+
+                                text "📁" { size = 12 }
+                                frame stack { layout = vertical, gap = 0
+                                    text "demo-api"              { size = 12, weight = medium, color = #1F2328, family = "JetBrains Mono" }
+                                    text "main · 5 open PRs"     { size = 11, color = #868F99 }
+                                }
+                            }
+                        }
+
+                        // Document — channel.document preview + ⚙ entry to the
+                        // channel settings modal (rename / archive). Lives here
+                        // instead of on the header to keep top-bar minimal.
+                        frame section_document { layout = vertical, gap = 8
+                            frame header_row {
+                                width = fill, layout = horizontal, justify = space-between, align = center
+                                text "DOCUMENT" { size = 10, weight = semibold, color = #868F99, text-transform = uppercase, letter-spacing = 1.5 }
+                                frame btn_settings {
+                                    width = 18, height = 18, radius = 4
+                                    layout = horizontal, justify = center, align = center
+                                    text "⚙" { size = 11, color = #656D76 }
+                                }
+                            }
+                            frame doc_card {
+                                width = fill, padding = 10, radius = 6
+                                fill = #FFFFFF, stroke = [1, #E4E9EE]
+                                layout = horizontal, gap = 8, align = start
+
+                                text "📄" { size = 12 }
+                                text "Owned by backend. Agents follow auth-middleware.md conventions."
+                                    { size = 12, color = #1F2328, wrap = true, width = 212, line-height = 18 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+}
+
+
+component pg_channels_framed() {
+    frame outer {
+        width = 2000
+        height = 1160
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_channels()
+    }
+}
+
+frame root {
+    use pg_channels_framed()
+}

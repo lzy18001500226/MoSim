@@ -1,0 +1,181 @@
+// iOS Create Pod sheet — bottom sheet (medium / large detents).
+// New system: 393×852pt @1× · sheet radius 22pt · sheet header (grabber + Cancel + Title + Save pill).
+
+canvas "ios_create_pod_sheet" {
+    width = 1100
+    height = 1100
+    background = #1F2328
+}
+
+component sh_status_bar_dim() {
+    frame {
+        width = fill, height = 59, fill = #00000080
+        layout = horizontal, justify = space-between, align = center
+        padding = [0, 22]
+        text "9:41" { size = 17, weight = semibold, color = #FFFFFF, family = "SF Pro" }
+        frame icons { layout = horizontal, gap = 6, align = center
+            text "📶" { size = 14, color = #FFFFFF }
+            text "📡" { size = 14, color = #FFFFFF }
+            frame battery { width = 28, height = 13, radius = 4, stroke = [1, #FFFFFF], padding = 2,
+                layout = horizontal, align = center
+                shape level { type = rectangle, width = 20, height = 7, radius = 1, fill = #FFFFFF }
+            }
+        }
+    }
+}
+
+component sheet_grabber() {
+    frame { width = fill, height = 16
+        layout = horizontal, justify = center, align = center
+        shape g { type = rectangle, width = 36, height = 5, radius = 999, fill = #00000033 }
+    }
+}
+
+component sheet_header() {
+    frame {
+        width = fill, fill = #FFFFFF, layout = vertical
+        use sheet_grabber()
+        frame bar {
+            width = fill, height = 44, padding = [0, 16]
+            layout = horizontal, justify = space-between, align = center
+            text "Cancel" { size = 17, color = #0969DA }
+            text "New Pod" { size = 17, weight = semibold, color = #1F2328 }
+            frame save_pill { padding = [8, 16], radius = 999, fill = #0969DA
+                text "Create" { size = 15, weight = semibold, color = #FFFFFF }
+            }
+        }
+    }
+}
+
+component field_label(label) {
+    text label { size = 13, weight = semibold, color = #6D6D72, text-transform = uppercase, letter-spacing = 0.5 }
+}
+
+// Picker row (label + value + chevron) inside an inset card
+component picker_row(icon, icon_bg, label, value) {
+    frame {
+        width = fill, height = 60, padding = [10, 16]
+        fill = #FFFFFF
+        layout = horizontal, gap = 12, align = center
+
+        frame icon_box { width = 32, height = 32, radius = 8, fill = icon_bg
+            layout = horizontal, justify = center, align = center
+            text icon { size = 17 }
+        }
+        frame stack { layout = vertical, gap = 2, width = 220
+            text label { size = 13, color = #8E8E93 }
+            text value { size = 17, weight = medium, color = #1F2328, family = "SF Mono" }
+        }
+        text "›" { size = 20, color = #C7C7CC }
+    }
+}
+
+component sep() {
+    frame { width = fill, height = 1, padding = [0, 0, 0, 60]
+        layout = horizontal
+        shape line { type = rectangle, width = fill, height = 1, fill = #F2F2F7 }
+    }
+}
+
+component seg_active(label) {
+    frame { padding = [6, 16], radius = 7, fill = #FFFFFF
+        stroke = [1, #00000010]
+        shadow = [0, 1, 1, #00000010]
+        layout = horizontal, justify = center, align = center
+        text label { size = 13, weight = semibold, color = #1F2328 }
+    }
+}
+component seg_inactive(label) {
+    frame { padding = [6, 16]
+        layout = horizontal, justify = center, align = center
+        text label { size = 13, weight = medium, color = #1F2328 }
+    }
+}
+
+component pg_create_pod_sheet() {
+frame root {
+    width = 393, height = 852, fill = #00000099
+    radius = 47, stroke = [3, #1F2328]
+    layout = vertical
+
+    use sh_status_bar_dim()
+
+    // Faded parent (Pods grid behind)
+    frame parent_dim {
+        width = fill, height = 240, fill = #00000099
+        layout = vertical, justify = center, align = center
+        text "[ Pods grid behind ]" { size = 13, color = #FFFFFF66, family = "SF Mono" }
+    }
+
+    // Sheet
+    frame sheet {
+        width = fill, height = fill
+        radius = 22, fill = #F2F2F7
+        layout = vertical
+
+        use sheet_header()
+
+        // Body
+        frame body {
+            width = fill, height = fill, fill = #F2F2F7
+            padding = [16, 16, 24, 16], layout = vertical, gap = 24
+
+            // Agent
+            frame agent_section { layout = vertical, gap = 8
+                use field_label("AGENT")
+                frame card { width = fill, radius = 12, fill = #FFFFFF, layout = vertical
+                    use picker_row("🤖", #DDF4FF, "Agent", "claude-code")
+                }
+            }
+
+            // Repo + Branch + Mode
+            frame repo_section { layout = vertical, gap = 8
+                use field_label("REPOSITORY · BRANCH · MODE")
+                frame card { width = fill, radius = 12, fill = #FFFFFF, layout = vertical
+                    use picker_row("📁", #F0F3F6, "Repository", "demo-api")
+                    use sep()
+                    use picker_row("⎇", #F0F3F6, "Branch", "main")
+                }
+            }
+
+            // Mode segment
+            frame mode_section { layout = vertical, gap = 8
+                use field_label("INTERACTION MODE")
+                frame seg_wrap {
+                    width = fill, height = 36, padding = 2, radius = 8, fill = #E9E9EB
+                    layout = horizontal, gap = 0, align = center, justify = space-between
+                    use seg_active("PTY (terminal)")
+                    use seg_inactive("ACP (chat)")
+                }
+            }
+
+            // Prompt
+            frame prompt_section { layout = vertical, gap = 8
+                use field_label("INITIAL PROMPT")
+                frame prompt_box {
+                    width = fill, height = 100, padding = 14, radius = 12, fill = #FFFFFF
+                    layout = vertical, gap = 4
+                    text "Review src/auth.ts for security issues..." { size = 17, color = #1F2328, wrap = true, width = 320 }
+                }
+            }
+        }
+
+        frame safe_bottom { width = fill, height = 34, fill = #F2F2F7
+            layout = horizontal, justify = center, align = center
+            shape ind { type = rectangle, width = 134, height = 5, radius = 999, fill = #1F2328 }
+        }
+    }
+}
+}
+
+
+component pg_create_pod_sheet_framed() {
+    frame outer {
+        width = 1100, height = 1100, fill = #1F2328
+        padding = [60, 80]
+        layout = horizontal, justify = center, align = center
+        use pg_create_pod_sheet()
+    }
+}
+
+frame root { use pg_create_pod_sheet_framed() }

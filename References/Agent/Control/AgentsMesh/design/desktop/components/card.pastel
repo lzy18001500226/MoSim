@@ -1,0 +1,239 @@
+// Card — 3 variants (default, inset, danger) with anatomy demo.
+// Replaces 20+ DIY `border border-border rounded-lg p-X` patterns.
+//
+// Anatomy: Card { CardHeader { CardTitle, CardDescription } CardContent CardFooter }
+
+canvas "cards" {
+    width = 1280
+    height = 980
+    background = #1F2328
+}
+
+component badge_default(label) {
+    frame {
+        padding = [2, 8]
+        fill    = #F6F8FA
+        stroke  = [1, #D0D7DE]
+        radius  = 999
+        layout  = horizontal
+        align   = center
+        text label { size = 12, weight = medium, color = #656D76 }
+    }
+}
+
+component badge_success(label) {
+    frame {
+        padding = [2, 8]
+        fill    = #DAFBE1
+        radius  = 999
+        layout  = horizontal
+        align   = center
+        text label { size = 12, weight = medium, color = #1A7F37 }
+    }
+}
+
+// Default card — standard elevated surface
+component card_default() {
+    frame {
+        width  = 340
+        fill   = #FFFFFF
+        radius = 8
+        stroke = [1, #D0D7DE]
+        layout = vertical
+
+        // Header
+        frame header {
+            width   = fill
+            padding = 16
+            layout  = vertical
+            gap     = 4
+
+            frame title_row {
+                width   = fill
+                layout  = horizontal
+                justify = space-between
+                align   = center
+
+                text "Runner dev-local" { size = 16, weight = semibold, color = #1F2328 }
+                use badge_success("connected")
+            }
+            text "Runs Pods for the Dev organization. Last seen 2m ago."
+                { size = 13, color = #656D76, wrap = true, width = 300 }
+        }
+
+        // Divider
+        shape hr1 { type = rectangle, width = 340, height = 1, fill = #D0D7DE }
+
+        // Content
+        frame body {
+            width   = fill
+            padding = 16
+            layout  = vertical
+            gap     = 12
+
+            frame stat_row {
+                width   = fill
+                layout  = horizontal
+                justify = space-between
+
+                frame stat_a { layout = vertical, gap = 2
+                    text "Pods running" { size = 12, color = #656D76 }
+                    text "3"             { size = 20, weight = semibold, color = #1F2328 }
+                }
+                frame stat_b { layout = vertical, gap = 2
+                    text "Uptime"       { size = 12, color = #656D76 }
+                    text "4h 12m"       { size = 20, weight = semibold, color = #1F2328 }
+                }
+                frame stat_c { layout = vertical, gap = 2
+                    text "Version"      { size = 12, color = #656D76 }
+                    text "v1.8.2"       { size = 20, weight = semibold, color = #1F2328 }
+                }
+            }
+        }
+
+        // Footer
+        shape hr2 { type = rectangle, width = 340, height = 1, fill = #D0D7DE }
+        frame footer {
+            width   = fill
+            padding = 12
+            layout  = horizontal
+            justify = end
+            gap     = 8
+
+            frame btn_secondary {
+                height = 28, padding = [0, 10], radius = 6, fill = #F6F8FA, stroke = [1, #D0D7DE]
+                layout = horizontal, justify = center, align = center
+                text "View logs" { size = 13, weight = medium, color = #1F2328 }
+            }
+            frame btn_primary {
+                height = 28, padding = [0, 10], radius = 6, fill = #0969DA
+                layout = horizontal, justify = center, align = center
+                text "Open" { size = 13, weight = medium, color = #FFFFFF }
+            }
+        }
+    }
+}
+
+// Inset card — on muted background, no shadow, for nested use
+component card_inset() {
+    frame {
+        width  = 340
+        fill   = #F6F8FA
+        radius = 8
+        layout = vertical
+        padding = 16
+        gap    = 12
+
+        frame heading {
+            width   = fill
+            layout  = horizontal
+            justify = space-between
+            align   = center
+
+            text "API Keys" { size = 16, weight = semibold, color = #1F2328 }
+            text "3 active" { size = 12, color = #656D76 }
+        }
+
+        text "Manage tokens that let external tools act on behalf of your organization."
+            { size = 13, color = #656D76, wrap = true, width = 300 }
+
+        frame btn_ghost {
+            height = 28, padding = [0, 10], radius = 6, fill = transparent
+            layout = horizontal, justify = center, align = center
+            text "Manage keys →" { size = 13, weight = medium, color = #0969DA }
+        }
+    }
+}
+
+// Danger card — for destructive sections (delete org, revoke, etc.)
+component card_danger() {
+    frame {
+        width  = 340
+        fill   = #FFFFFF
+        radius = 8
+        stroke = [1, #CF222E]
+        layout = vertical
+
+        frame header {
+            width   = fill
+            padding = 16
+            layout  = vertical
+            gap     = 4
+
+            text "Danger zone" { size = 16, weight = semibold, color = #CF222E }
+            text "Deleting this organization will remove all runners, pods, tickets, and channels. This cannot be undone."
+                { size = 13, color = #656D76, wrap = true, width = 300 }
+        }
+
+        shape hr3 { type = rectangle, width = 340, height = 1, fill = #D0D7DE }
+
+        frame footer {
+            width   = fill
+            padding = 12
+            layout  = horizontal
+            justify = end
+
+            frame btn_destructive {
+                height = 28, padding = [0, 12], radius = 6, fill = #CF222E
+                layout = horizontal, justify = center, align = center
+                text "Delete organization" { size = 13, weight = medium, color = #FFFFFF }
+            }
+        }
+    }
+}
+
+component pg_card() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width   = 1200
+    height  = 900
+    fill    = #F6F8FA
+    padding = 40
+    layout  = vertical
+    gap     = 24
+
+    text "Cards" { size = 24, weight = semibold, color = #1F2328 }
+    text "Default (elevated), Inset (nested), Danger (destructive action). All use 8px radius, 16px padding, border D0D7DE."
+        { size = 13, color = #656D76, wrap = true, width = 700 }
+
+    frame cards_row {
+        width  = fill
+        layout = horizontal
+        gap    = 20
+        align  = start
+
+        frame with_label_1 { layout = vertical, gap = 8
+            text "default" { size = 12, weight = medium, color = #656D76 }
+            use card_default()
+        }
+        frame with_label_2 { layout = vertical, gap = 8
+            text "inset" { size = 12, weight = medium, color = #656D76 }
+            use card_inset()
+        }
+        frame with_label_3 { layout = vertical, gap = 8
+            text "danger" { size = 12, weight = medium, color = #656D76 }
+            use card_danger()
+        }
+    }
+}
+}
+
+
+component pg_card_framed() {
+    frame outer {
+        width = 1280
+        height = 980
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_card()
+    }
+}
+
+frame root {
+    use pg_card_framed()
+}

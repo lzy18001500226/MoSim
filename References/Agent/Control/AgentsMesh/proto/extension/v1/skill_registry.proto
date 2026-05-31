@@ -1,0 +1,129 @@
+// SkillRegistryService — org-scoped skill marketplace catalog.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/extension.go
+// per .claude/plans/proto-naming-conventions.md. Conventions enforced:
+//   * package proto.extension.v1 + go_package suffix for dispatch
+//   * service name = <Domain>Service, methods PascalCase verbs
+//   * snake_case fields, no json_name annotations
+//   * org_slug at field 1 of every request (no path params on Connect URLs)
+//   * timestamps as string ISO-8601 (no google.protobuf.Timestamp)
+//   * list response = {items, total, limit, offset} uniform envelope
+//   * create/sync return entity directly (no {registry: ...} wrapper)
+//
+// Field set reconciled against three layers (runbook §1.5):
+//   - backend domain/extension/skill_registry.go (16 fields)
+//   - clients/core/crates/types/src/extension.rs (PR #341 fix: all 15 fields)
+//   - clients/web/src/lib/api/extensionTypes.ts (12 fields used by UI)
+//
+// SkillRegistry includes every field the backend emits today. auth_credential
+// is intentionally absent — backend marks `json:"-"` so it never leaves the
+// server, and clients have no use for the encrypted blob.
+
+syntax = "proto3";
+
+package proto.extension.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/extension/v1;extensionv1";
+
+service SkillRegistryService {
+  rpc ListSkillRegistries(ListSkillRegistriesRequest) returns (ListSkillRegistriesResponse);
+  rpc CreateSkillRegistry(CreateSkillRegistryRequest) returns (SkillRegistry);
+  rpc SyncSkillRegistry(SyncSkillRegistryRequest) returns (SkillRegistry);
+  rpc DeleteSkillRegistry(DeleteSkillRegistryRequest) returns (DeleteSkillRegistryResponse);
+  rpc TogglePlatformRegistry(TogglePlatformRegistryRequest) returns (TogglePlatformRegistryResponse);
+  rpc ListSkillRegistryOverrides(ListSkillRegistryOverridesRequest) returns (ListSkillRegistryOverridesResponse);
+}
+
+message SkillRegistry {
+  int64 id = 1;
+  // organization_id is null for platform-level registries (visible to all orgs).
+  optional int64 organization_id = 2;
+  string repository_url = 3;
+  string branch = 4;
+  // auto / collection / single — user-declared source flavor.
+  string source_type = 5;
+  // collection / single — detected by importer, may differ from source_type.
+  optional string detected_type = 6;
+  // Agent whitelist, e.g. ["claude-code", "codex"]. Empty = all agents.
+  repeated string compatible_agents = 7;
+  // none / github_pat / gitlab_pat / ssh_key.
+  string auth_type = 8;
+  // RFC 3339, nullable before first sync.
+  optional string last_synced_at = 9;
+  optional string last_commit_sha = 10;
+  // pending / syncing / success / failed.
+  string sync_status = 11;
+  optional string sync_error = 12;
+  int32 skill_count = 13;
+  bool is_active = 14;
+  string created_at = 15;
+  string updated_at = 16;
+}
+
+message SkillRegistryOverride {
+  int64 id = 1;
+  int64 organization_id = 2;
+  int64 registry_id = 3;
+  bool is_disabled = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+message ListSkillRegistriesRequest {
+  string org_slug = 1;
+  optional int32 offset = 2;
+  optional int32 limit = 3;
+}
+
+message ListSkillRegistriesResponse {
+  repeated SkillRegistry items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message CreateSkillRegistryRequest {
+  string org_slug = 1;
+  string repository_url = 2;
+  optional string branch = 3;
+  optional string source_type = 4;
+  repeated string compatible_agents = 5;
+  optional string auth_type = 6;
+  // PAT / SSH key — encrypted at the service layer, never echoed back.
+  optional string auth_credential = 7;
+}
+
+message SyncSkillRegistryRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message DeleteSkillRegistryRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message DeleteSkillRegistryResponse {}
+
+message TogglePlatformRegistryRequest {
+  string org_slug = 1;
+  int64 id = 2;
+  bool disabled = 3;
+}
+
+message TogglePlatformRegistryResponse {
+  // Returns the full override set so clients re-render without a refetch
+  // (mirrors the existing REST handler — see extension.go:206).
+  repeated SkillRegistryOverride overrides = 1;
+}
+
+message ListSkillRegistryOverridesRequest {
+  string org_slug = 1;
+}
+
+message ListSkillRegistryOverridesResponse {
+  repeated SkillRegistryOverride items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}

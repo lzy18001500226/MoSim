@@ -1,0 +1,61 @@
+// iOS Layout tokens — chrome heights, edge insets, list metrics.
+// All values in pt @ 1×. Source: Apple HIG (iPhone 14 Pro reference device).
+
+// Device dimensions
+token ios_device {
+    width  = 393     // iPhone 14 Pro logical width @ 1×
+    height = 852     // iPhone 14 Pro logical height @ 1×
+}
+
+// Chrome heights (top and bottom system surfaces)
+token ios_chrome {
+    status_bar_island = 59     // Dynamic Island devices (14 Pro/Max, 15+)
+    status_bar_notch  = 47     // Pre-Dynamic Island (12/13/14)
+    nav_bar_standard  = 44     // standard navigation bar
+    nav_bar_large     = 96     // navigation bar w/ inline large title
+    tab_bar           = 49     // tab bar visible area
+    safe_bottom       = 34     // home indicator inset
+}
+
+// Edge insets (margins from screen edges)
+token ios_edge {
+    page_x  = 16     // default horizontal page padding
+    page_x_compact = 20   // some Apple apps use 20 for read-mode
+    page_y  = 16     // top/bottom inside content
+    section_gap = 32  // section-to-section
+    inline      = 8
+    stack       = 16
+}
+
+// List metrics
+token ios_list {
+    row_default       = 44   // default cell height
+    row_subtitle      = 60   // cell with subtitle
+    row_avatar        = 60   // cell with avatar
+    section_hdr       = 32   // section header row
+    separator_inset_l = 16   // leading separator inset
+}
+
+// Touch target minimums (HIG rule)
+token ios_touch {
+    min = 44
+}
+
+// Avatar sizes
+token ios_avatar {
+    xs = 24
+    sm = 32
+    md = 40
+    lg = 56
+    xl = 80
+}
+
+// Corner radii
+token ios_radius {
+    cell    = 10     // grouped list cell, inset card
+    sheet   = 10     // bottom-sheet top corners
+    pill    = 999    // status/role pills
+    avatar  = 999    // round avatar
+    button  = 12     // primary action button
+    chip    = 6      // small badge / tag
+}

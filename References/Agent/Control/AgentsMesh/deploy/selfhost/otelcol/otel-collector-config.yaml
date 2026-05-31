@@ -1,0 +1,56 @@
+# OpenTelemetry Collector Configuration for Production
+#
+# Sampling: head-based 10% (SDK) + tail-based 100% for errors/slow
+# Set OTEL_TRACES_SAMPLER_ARG=0.1 on backend/runner/relay services
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 2s
+    send_batch_size: 1024
+
+  tail_sampling:
+    decision_wait: 15s
+    num_traces: 100000
+    policies:
+      - name: errors-always
+        type: status_code
+        status_code:
+          status_codes: [ERROR]
+      - name: slow-requests-always
+        type: latency
+        latency:
+          threshold_ms: 500
+      - name: pass-sampled
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: 100
+
+  memory_limiter:
+    check_interval: 5s
+    limit_mib: 512
+    spike_limit_mib: 128
+
+exporters:
+  otlphttp/jaeger:
+    endpoint: http://jaeger:4318
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, tail_sampling, batch]
+      exporters: [otlphttp/jaeger]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlphttp/jaeger]

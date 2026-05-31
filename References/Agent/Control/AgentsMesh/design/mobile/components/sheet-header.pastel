@@ -1,0 +1,102 @@
+// iOS 26 Bottom Sheet Header — grabber + Cancel + Title + Save.
+// Sheet top corners radius 22pt (sheet token). Header height 60pt + 16pt grabber zone.
+// Grabber: 36×5 rounded bar centered. Title 17pt SF Pro semibold.
+
+canvas "ios_sheet_header"  {
+    width = 920
+    height = 600
+    background = #1F2328
+}
+
+component sheet_grabber() {
+    frame {
+        width = fill, height = 16
+        layout = horizontal, justify = center, align = center
+        shape g { type = rectangle, width = 36, height = 5, radius = 999, fill = #00000033 }
+    }
+}
+
+// Standard 3-up: Cancel · Title · Save
+component sheet_header_standard(title) {
+    frame {
+        width = 393, fill = #FFFFFF, layout = vertical
+        use sheet_grabber()
+        frame bar {
+            width = fill, height = 44, padding = [0, 16]
+            layout = horizontal, justify = space-between, align = center
+            text "Cancel" { size = 17, color = #0969DA }
+            text title { size = 17, weight = semibold, color = #1F2328 }
+            frame save_pill { padding = [8, 16], radius = 999, fill = #0969DA
+                text "Save" { size = 15, weight = semibold, color = #FFFFFF }
+            }
+        }
+    }
+}
+
+// With disabled save (e.g. form invalid)
+component sheet_header_disabled(title) {
+    frame {
+        width = 393, fill = #FFFFFF, layout = vertical
+        use sheet_grabber()
+        frame bar {
+            width = fill, height = 44, padding = [0, 16]
+            layout = horizontal, justify = space-between, align = center
+            text "Cancel" { size = 17, color = #0969DA }
+            text title { size = 17, weight = semibold, color = #1F2328 }
+            text "Save" { size = 17, color = #B1B7BE }
+        }
+    }
+}
+
+// Detail action — only Done button (e.g. picker confirm)
+component sheet_header_done(title) {
+    frame {
+        width = 393, fill = #FFFFFF, layout = vertical
+        use sheet_grabber()
+        frame bar {
+            width = fill, height = 44, padding = [0, 16]
+            layout = horizontal, justify = space-between, align = center
+            frame spacer_l { width = 60 }
+            text title { size = 17, weight = semibold, color = #1F2328 }
+            text "Done" { size = 17, weight = semibold, color = #0969DA }
+        }
+    }
+}
+
+component label(text_value) {
+    text text_value { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+}
+
+component pg_sheet_header() {
+frame root {
+    stroke = [2, #6E7681]
+    radius = 16
+    shadow = [0, 8, 24, #00000080]
+    width = 840, height = 540, fill = #F2F2F7
+    padding = 32, layout = vertical, gap = 20
+
+    text "Sheet Header" { size = 24, weight = semibold, color = #1F2328 }
+    text "Bottom-sheet top: 16pt grabber zone + 44pt action bar. Grabber 36×5 rounded #00000033. Title centered, Cancel left, primary action right (filled pill or text)."
+        { size = 13, color = #656D76, wrap = true, width = 740 }
+
+    use label("STANDARD — Cancel + Title + filled Save pill")
+    frame w1 { width = 393, radius = 22, layout = vertical, use sheet_header_standard("New Pod") }
+
+    use label("DISABLED SAVE — form not yet valid")
+    frame w2 { width = 393, radius = 22, layout = vertical, use sheet_header_disabled("New Pod") }
+
+    use label("DONE-ONLY — picker / detail dismiss")
+    frame w3 { width = 393, radius = 22, layout = vertical, use sheet_header_done("Select Agent") }
+}
+}
+
+
+component pg_sheet_header_framed() {
+    frame outer {
+        width = 920, height = 600, fill = #1F2328
+        padding = 40, layout = horizontal, justify = center, align = center
+        use pg_sheet_header()
+    }
+}
+
+frame root { use pg_sheet_header_framed() }

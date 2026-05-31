@@ -1,0 +1,25 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "gemini",
+    srcs = ["register.go"],
+    importpath = "github.com/anthropics/agentsmesh/runner/internal/agents/gemini",
+    visibility = ["//runner:__subpackages__"],
+    deps = ["//runner/internal/agentkit"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":gemini",
+    visibility = ["//runner:__subpackages__"],
+)
+
+go_test(
+    name = "gemini_test",
+    srcs = ["register_test.go"],
+    embed = [":gemini"],
+    deps = [
+        "//runner/internal/agentkit",
+        "@com_github_stretchr_testify//assert",
+    ],
+)

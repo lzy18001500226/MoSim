@@ -1,0 +1,305 @@
+// PodService — org-scoped AgentPod lifecycle (list / get / create /
+// terminate / alias / perpetual / connection / prompt).
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/pod*.go and
+// agentpod.go per .claude/plans/proto-naming-conventions.md.
+//
+// Streaming endpoints (terminal data plane, pod events) intentionally stay
+// on Relay/WebSocket — this migration is unary RPC only (runbook §"Service-
+// specific deviations").
+//
+// Pod grants (ListPodGrants / GrantPodAccess / RevokePodGrant) belong to
+// the `grant` domain and migrate with that service.
+//
+// Field set reconciled against three layers (runbook §1.5):
+//   - backend domain/agentpod/pod.go — 34 columns
+//   - clients/core/crates/types/src/pod.rs (Pod) — 33 fields, 6 nested sub-objects
+//   - clients/web/src/lib/api/pod.ts (PodData) — 26 fields used by UI
+//
+// CreatePodResponse keeps the {pod, warning} envelope locked by 986a38ca6
+// — quota-near limit returns the created pod plus an advisory warning, and
+// dropping `warning` would regress that flow.
+
+syntax = "proto3";
+
+package proto.pod.v1;
+
+import "codegen/v1/options.proto";
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/pod/v1;podv1";
+
+// Convert codegen target — emits pod_convert.amesh.go into the backend
+// connect handler tree so it can reach the agentpod domain layer.
+option (amesh.codegen.v1.convert_target) = {
+  output_dir: "backend/internal/api/connect/pod"
+  output_package: "podconnect"
+};
+
+service PodService {
+  rpc ListPods(ListPodsRequest) returns (ListPodsResponse);
+  rpc GetPod(GetPodRequest) returns (Pod);
+  rpc CreatePod(CreatePodRequest) returns (CreatePodResponse);
+  rpc TerminatePod(TerminatePodRequest) returns (TerminatePodResponse);
+  rpc UpdatePodAlias(UpdatePodAliasRequest) returns (UpdatePodAliasResponse);
+  rpc UpdatePodPerpetual(UpdatePodPerpetualRequest) returns (UpdatePodPerpetualResponse);
+  rpc GetPodConnection(GetPodConnectionRequest) returns (PodConnectionInfo);
+  rpc SendPodPrompt(SendPodPromptRequest) returns (SendPodPromptResponse);
+  rpc ListPodsByTicket(ListPodsByTicketRequest) returns (ListPodsByTicketResponse);
+}
+
+// Pod nested sub-objects mirror the JSON response shape the REST handler
+// emits today (pod.go reads from these on the TS side). Each is intentionally
+// independent — splitting into messages keeps `Pod` under 30 prost fields
+// and lets the existing serde-DTO continue to consume the same field set.
+
+message PodRunnerInfo {
+  optional int64 id = 1;
+  optional string node_id = 2;
+  optional string status = 3;
+}
+
+message PodAgentInfo {
+  optional string name = 1;
+  optional string slug = 2;
+}
+
+message PodRepositoryInfo {
+  optional int64 id = 1;
+  optional string name = 2;
+  optional string slug = 3;
+  optional string provider_type = 4;
+}
+
+message PodTicketInfo {
+  optional int64 id = 1;
+  optional string slug = 2;
+  optional string title = 3;
+}
+
+message PodLoopInfo {
+  optional int64 id = 1;
+  optional string name = 2;
+  optional string slug = 3;
+}
+
+message PodCreatedByInfo {
+  optional int64 id = 1;
+  optional string username = 2;
+  optional string name = 3;
+}
+
+message Pod {
+  option (amesh.codegen.v1.go_domain) = {
+    type: "github.com/anthropics/agentsmesh/backend/internal/domain/agentpod.Pod"
+    generate_to_proto: true
+    generate_from_proto: false
+  };
+
+  // Core identity
+  int64 id = 1 [(amesh.codegen.v1.field_rename) = "ID"];
+  // pod_key is the cross-system primary key (PTY/WS routing).
+  string pod_key = 2;
+  // Status enum (initializing/running/paused/disconnected/orphaned/completed/terminated/error)
+  string status = 3;
+  string agent_status = 4;
+
+  // Display
+  optional string alias = 5 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  optional string title = 6 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+
+  // Flat fields (carried for legacy callers — TS reads runner_id directly).
+  string agent_slug = 7;
+  // Domain stores RunnerID as int64 (zero = unassigned); proto exposes
+  // *int64 with zero suppression. Custom flips zero → nil.
+  optional int64 runner_id = 8 [
+    (amesh.codegen.v1.field_rename) = "RunnerID",
+    (amesh.codegen.v1.field_custom) = "runnerIDToProto"
+  ];
+  // Domain stores CreatedByID as plain int64; proto wraps in pointer.
+  optional int64 created_by_id = 9 [
+    (amesh.codegen.v1.field_rename) = "CreatedByID",
+    (amesh.codegen.v1.field_custom) = "createdByIDToProto"
+  ];
+
+  // Nested objects mirror REST handler response. Each is sourced from a
+  // preloaded GORM association (Runner, Agent, Repository, Ticket, Loop,
+  // CreatedBy), so the wire shape doesn't correspond to a single Go type.
+  // Custom helpers stay in convert.go.
+  optional PodRunnerInfo runner = 10 [(amesh.codegen.v1.field_custom) = "podRunnerInfoToProto"];
+  optional PodAgentInfo agent = 11 [(amesh.codegen.v1.field_custom) = "podAgentInfoToProto"];
+  optional PodRepositoryInfo repository = 12 [(amesh.codegen.v1.field_custom) = "podRepositoryInfoToProto"];
+  optional PodTicketInfo ticket = 13 [(amesh.codegen.v1.field_custom) = "podTicketInfoToProto"];
+  optional PodLoopInfo loop = 14 [(amesh.codegen.v1.field_custom) = "podLoopInfoToProto"];
+  optional PodCreatedByInfo created_by = 15 [(amesh.codegen.v1.field_custom) = "podCreatedByInfoToProto"];
+
+  // Prompt + sandbox metadata
+  // domain Prompt is a plain string (zero = absent); proto expects pointer.
+  optional string prompt = 16 [(amesh.codegen.v1.field_custom) = "promptToProto"];
+  optional string branch_name = 17 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  optional string sandbox_path = 18 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+
+  // Mode + restart bookkeeping
+  // interaction_mode: pty | acp.
+  string interaction_mode = 19;
+  bool perpetual = 20;
+  int32 restart_count = 21 [(amesh.codegen.v1.field_convert) = "int_to_int32"];
+  optional string last_restart_at = 22 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+
+  // Timestamps — string ISO-8601 (conventions §6, no google.protobuf.Timestamp).
+  optional string started_at = 23 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+  optional string finished_at = 24 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+  optional string last_activity = 25 [(amesh.codegen.v1.field_convert) = "rfc3339_ptr"];
+  string created_at = 26 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+  string updated_at = 27 [(amesh.codegen.v1.field_convert) = "rfc3339"];
+
+  // Error info from Runner (e.g., git clone auth failure).
+  optional string error_code = 28 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+  optional string error_message = 29 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+
+  // Resume linkage — populated when this pod was created via resume.
+  optional string source_pod_key = 30 [(amesh.codegen.v1.field_convert) = "string_ptr"];
+
+  // Session ID for agent session management (Claude Code --session-id).
+  optional string session_id = 31 [
+    (amesh.codegen.v1.field_rename) = "SessionID",
+    (amesh.codegen.v1.field_convert) = "string_ptr"
+  ];
+}
+
+message PodConnectionInfo {
+  string relay_url = 1;
+  string token = 2;
+  string pod_key = 3;
+  // Local relay (CN proxy) — empty string when not in use.
+  string local_relay_url = 4;
+  string local_token = 5;
+  string local_relay_node_id = 6;
+}
+
+// --- List ---
+
+message ListPodsRequest {
+  string org_slug = 1;
+  // Comma-separated status list ("running,paused"). Empty = no filter.
+  optional string status = 2;
+  optional int64 created_by_id = 3;
+  optional int32 limit = 4;
+  optional int32 offset = 5;
+  // Filter by runner ID — replaces the REST GET /runners/:id/pods endpoint.
+  // When unset, no runner-side filter is applied.
+  optional int64 runner_id = 6;
+}
+
+message ListPodsResponse {
+  repeated Pod items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message ListPodsByTicketRequest {
+  string org_slug = 1;
+  int64 ticket_id = 2;
+}
+
+message ListPodsByTicketResponse {
+  repeated Pod items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+// --- Get ---
+
+message GetPodRequest {
+  string org_slug = 1;
+  string pod_key = 2;
+}
+
+message GetPodConnectionRequest {
+  string org_slug = 1;
+  string pod_key = 2;
+}
+
+// --- Create ---
+
+message CreatePodRequest {
+  string org_slug = 1;
+
+  // Required: determines base AgentFile.
+  string agent_slug = 2;
+  // Optional: auto-select if 0.
+  optional int64 runner_id = 3;
+  optional string ticket_slug = 4;
+  optional string alias = 5;
+
+  // AgentFile Layer — SSOT for all pod configuration (MODE, CONFIG, REPO, BRANCH, CREDENTIAL, PROMPT).
+  optional string agentfile_layer = 6;
+
+  // Platform-level ID references (cannot be expressed as AgentFile declarations).
+  optional int64 repository_id = 7;
+  optional int64 credential_profile_id = 8;
+
+  // Terminal size from browser xterm.js.
+  int32 cols = 9;
+  int32 rows = 10;
+
+  // Resume mode.
+  optional string source_pod_key = 11;
+  optional bool resume_agent_session = 12;
+
+  // Perpetual mode: Runner auto-restarts agent on clean exit.
+  optional bool perpetual = 13;
+}
+
+// Multi-field create envelope — locked by 986a38ca6 (PR #340). Quota-near
+// limit returns the created pod plus an advisory warning, and dropping the
+// `warning` field would silently regress the quota toast UX.
+message CreatePodResponse {
+  Pod pod = 1;
+  optional string warning = 2;
+}
+
+// --- Mutations returning a simple ack ---
+
+message TerminatePodRequest {
+  string org_slug = 1;
+  string pod_key = 2;
+}
+
+message TerminatePodResponse {
+  string message = 1;
+}
+
+message UpdatePodAliasRequest {
+  string org_slug = 1;
+  string pod_key = 2;
+  // optional: distinguishes "clear alias" (set field = "") from "no change"
+  // (field absent). Server treats whitespace-only as clear.
+  optional string alias = 3;
+}
+
+message UpdatePodAliasResponse {
+  string message = 1;
+}
+
+message UpdatePodPerpetualRequest {
+  string org_slug = 1;
+  string pod_key = 2;
+  bool perpetual = 3;
+}
+
+message UpdatePodPerpetualResponse {
+  string message = 1;
+}
+
+message SendPodPromptRequest {
+  string org_slug = 1;
+  string pod_key = 2;
+  string prompt = 3;
+}
+
+message SendPodPromptResponse {
+  // "sent" on success — mirrors REST handler.
+  string status = 1;
+}

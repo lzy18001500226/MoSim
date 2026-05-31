@@ -1,0 +1,11 @@
+// Corner radius scale — clean GitHub/Notion style.
+// Forbidden: xl (12+) and 2xl (16+) for general UI — looks bubbly.
+// Only hero images / avatars use 999 (fully rounded).
+
+token radius {
+    none = 0
+    sm   = 4      // subtle chips, inputs
+    md   = 6      // buttons, cards (default)
+    lg   = 8      // dialogs, panels
+    full = 999    // avatars, pills
+}

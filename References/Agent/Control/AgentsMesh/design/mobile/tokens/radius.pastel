@@ -1,0 +1,21 @@
+// iOS 26 corner-radius ladder.
+// iOS 26 emphasizes more generous, "softer" radii than iOS 17/18.
+// Concentric rule: when a child is inset by N, child radius = parent radius − N.
+
+token ios_radius {
+    chip       = 4      // small badge / inline pill
+    button_sm  = 8      // small inline button / chip
+    cell       = 12     // standard list cell (inset card style)
+    card       = 16     // card / large cell / nav-bar action chip
+    sheet      = 22     // bottom sheet top corners
+    capsule    = 28     // floating tab bar / large pill
+    floating_card = 24  // popover / alert dialog
+    full       = 999    // avatar / status dot / org indicator
+}
+
+// Concentric pairs — how to nest without visual breakage
+// container 22 → child inset 6  → child radius 16
+// container 16 → child inset 4  → child radius 12
+// container 12 → child inset 4  → child radius 8
+//
+// When in doubt, child radius ≈ parent radius − inset; never more rounded than parent.

@@ -1,0 +1,130 @@
+// CTA Button — primary / secondary / destructive, sticky-bottom variants.
+// iOS 26 large button: 52pt height, radius 12pt (button_sm token's larger sibling),
+// 17pt SF Pro semibold label. Used for sheet / detail bottom sticky CTAs.
+
+canvas "ios_cta_button" {
+    width = 920
+    height = 720
+    background = #1F2328
+}
+
+// Primary — solid blue
+component cta_primary(label) {
+    frame {
+        width = fill, height = 52, radius = 12, fill = #0969DA
+        shadow = [0, 2, 8, #0969DA40]
+        layout = horizontal, justify = center, align = center, gap = 8
+        text label { size = 17, weight = semibold, color = #FFFFFF }
+    }
+}
+
+// Primary with leading icon (e.g. + Spawn Pod)
+component cta_primary_icon(label) {
+    frame {
+        width = fill, height = 52, radius = 12, fill = #0969DA
+        shadow = [0, 2, 8, #0969DA40]
+        layout = horizontal, justify = center, align = center, gap = 10
+        text "+" { size = 22, weight = semibold, color = #FFFFFF }
+        text label { size = 17, weight = semibold, color = #FFFFFF }
+    }
+}
+
+// Secondary — outline
+component cta_secondary(label) {
+    frame {
+        width = fill, height = 52, radius = 12, fill = #FFFFFF
+        stroke = [1, #D0D7DE]
+        layout = horizontal, justify = center, align = center
+        text label { size = 17, weight = semibold, color = #1F2328 }
+    }
+}
+
+// Destructive — red
+component cta_destructive(label) {
+    frame {
+        width = fill, height = 52, radius = 12, fill = #CF222E
+        shadow = [0, 2, 8, #CF222E40]
+        layout = horizontal, justify = center, align = center
+        text label { size = 17, weight = semibold, color = #FFFFFF }
+    }
+}
+
+// Disabled
+component cta_disabled(label) {
+    frame {
+        width = fill, height = 52, radius = 12, fill = #F0F3F6
+        layout = horizontal, justify = center, align = center
+        text label { size = 17, weight = semibold, color = #B1B7BE }
+    }
+}
+
+// Inline pill (smaller, for nav bar / sheet header trailing)
+component pill_primary(label) {
+    frame {
+        height = 32, padding = [0, 16], radius = 999, fill = #0969DA
+        layout = horizontal, justify = center, align = center
+        text label { size = 15, weight = semibold, color = #FFFFFF }
+    }
+}
+component pill_text(label) {
+    frame {
+        height = 32, padding = [0, 4]
+        layout = horizontal, justify = center, align = center
+        text label { size = 17, color = #0969DA }
+    }
+}
+
+component pg_cta() {
+frame root {
+    stroke = [2, #6E7681]
+    radius = 16
+    shadow = [0, 8, 24, #00000080]
+    width = 840, height = 660, fill = #FFFFFF
+    padding = 32, layout = vertical, gap = 20
+
+    text "CTA Button" { size = 24, weight = semibold, color = #1F2328 }
+    text "Sticky-bottom large button. 52pt height, 12pt radius, 17pt SF Pro semibold. Inline pills 32pt for nav-bar / sheet trailing actions."
+        { size = 13, color = #656D76, wrap = true, width = 740 }
+
+    text "STICKY-BOTTOM CTAs (52pt)" { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+
+    frame block { layout = vertical, gap = 12
+        frame primary_wrap { width = 600, layout = vertical, use cta_primary("Save changes") }
+        frame primary_icon_wrap { width = 600, layout = vertical, use cta_primary_icon("Spawn Pod") }
+        frame secondary_wrap { width = 600, layout = vertical, use cta_secondary("Cancel") }
+        frame destructive_wrap { width = 600, layout = vertical, use cta_destructive("Terminate Pod") }
+        frame disabled_wrap { width = 600, layout = vertical, use cta_disabled("Save changes") }
+    }
+
+    text "INLINE PILL — nav-bar / sheet trailing (32pt)" { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+
+    frame pill_row {
+        width = fill, layout = horizontal, gap = 12, align = center
+        use pill_primary("Create")
+        use pill_primary("Save")
+        use pill_text("Cancel")
+        use pill_text("Done")
+    }
+
+    text "USAGE" { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+    frame usage {
+        width = fill, padding = 16, radius = 12, fill = #F6F8FA, stroke = [1, #E4E9EE]
+        layout = vertical, gap = 6
+        text "· Bottom sheet primary action — sticky CTA above keyboard" { size = 12, color = #1F2328 }
+        text "· Detail page bottom — Spawn Pod / Save / Delete" { size = 12, color = #1F2328 }
+        text "· Sheet header — Cancel (text pill) + Save/Create (filled pill)" { size = 12, color = #1F2328 }
+        text "· Destructive variant — Terminate Pod / Delete account" { size = 12, color = #1F2328 }
+    }
+}
+}
+
+
+component pg_cta_framed() {
+    frame outer {
+        width = 920, height = 720, fill = #1F2328
+        padding = 40, layout = horizontal, justify = center, align = center
+        use pg_cta()
+    }
+}
+
+frame root { use pg_cta_framed() }

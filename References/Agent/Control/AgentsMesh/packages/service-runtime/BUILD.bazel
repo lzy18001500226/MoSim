@@ -1,0 +1,41 @@
+load("//build_defs/web:internal_package.bzl", "internal_npm_package")
+load("//build_defs/web:ts.bzl", "ts_project")
+
+# Service-runtime — browser-side implementation of the service-interface
+# types. Wraps the Rust WASM package so web and desktop renderer code
+# share a single façade.
+ts_project(
+    name = "service_runtime",
+    srcs = glob(
+        ["src/**/*.ts"],
+        exclude = ["src/**/*.test.ts"],
+    ),
+    declaration = True,
+    tsconfig = "tsconfig.json",
+    visibility = ["//visibility:public"],
+    # Specific Bazel-managed link deps (no //:node_modules to avoid a
+    # cycle through @agentsmesh/service-runtime back to here).
+    deps = [
+        "//:node_modules/@agentsmesh/service-interface",
+        "//:node_modules/agentsmesh-wasm",
+    ],
+)
+
+internal_npm_package(
+    name = "pkg",
+    package_name = "@agentsmesh/service-runtime",
+    srcs = glob(
+        ["src/**/*.ts"],
+        exclude = ["src/**/*.test.ts"],
+    ),
+    dependencies = {
+        "@agentsmesh/service-interface": "*",
+        "agentsmesh-wasm": "*",
+    },
+    extra = {
+        "exports": {
+            ".": "./src/index.ts",
+        },
+    },
+    main = "src/index.ts",
+)

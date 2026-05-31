@@ -1,0 +1,255 @@
+// RepositoryService — org-scoped Git repository management.
+//
+// Migrated from REST handlers in backend/internal/api/rest/v1/repositories*.go
+// per .claude/plans/proto-naming-conventions.md. Conventions enforced:
+//   * package proto.repository.v1 + go_package suffix for dispatch
+//   * service name = <Domain>Service, methods PascalCase verbs
+//   * snake_case fields, no json_name annotations
+//   * org_slug at field 1 of every request (no path params on Connect URLs)
+//   * timestamps as string ISO-8601 (no google.protobuf.Timestamp)
+//   * list response = {items, total, limit, offset} uniform envelope
+//   * create/update/sync return entity directly (no {repository: ...} wrapper)
+//
+// Field set reconciled against three layers (runbook §1.5):
+//   - backend domain/gitprovider/gitprovider.go (Repository: 19 fields)
+//   - clients/core/crates/types/src/repository.rs (Repository: 14 fields, drift)
+//   - clients/web/src/lib/api/repositoryTypes.ts (RepositoryData: 16 fields)
+//
+// PR #329 reconciliation: Repository carries every backend field including
+// `imported_by_user_id`, `webhook_config`, `preparation_script`,
+// `preparation_timeout`. The legacy Rust DTO dropped them — fixed here at
+// the .proto SSOT.
+
+syntax = "proto3";
+
+package proto.repository.v1;
+
+option go_package = "github.com/anthropics/agentsmesh/proto/gen/go/repository/v1;repositoryv1";
+
+service RepositoryService {
+  rpc ListRepositories(ListRepositoriesRequest) returns (ListRepositoriesResponse);
+  rpc GetRepository(GetRepositoryRequest) returns (Repository);
+  rpc CreateRepository(CreateRepositoryRequest) returns (Repository);
+  rpc UpdateRepository(UpdateRepositoryRequest) returns (Repository);
+  rpc DeleteRepository(DeleteRepositoryRequest) returns (DeleteRepositoryResponse);
+
+  rpc ListRepositoryBranches(ListRepositoryBranchesRequest) returns (ListRepositoryBranchesResponse);
+  rpc SyncRepositoryBranches(SyncRepositoryBranchesRequest) returns (ListRepositoryBranchesResponse);
+
+  rpc ListRepositoryMergeRequests(ListRepositoryMergeRequestsRequest) returns (ListRepositoryMergeRequestsResponse);
+
+  rpc RegisterRepositoryWebhook(RegisterRepositoryWebhookRequest) returns (RegisterRepositoryWebhookResponse);
+  rpc DeleteRepositoryWebhook(DeleteRepositoryWebhookRequest) returns (DeleteRepositoryWebhookResponse);
+  rpc GetRepositoryWebhookStatus(GetRepositoryWebhookStatusRequest) returns (WebhookStatus);
+  rpc GetRepositoryWebhookSecret(GetRepositoryWebhookSecretRequest) returns (WebhookSecret);
+  rpc MarkRepositoryWebhookConfigured(MarkRepositoryWebhookConfiguredRequest) returns (MarkRepositoryWebhookConfiguredResponse);
+}
+
+// Repository mirrors backend/internal/domain/gitprovider/Repository — every
+// field the JSON handler emits is present. Optional fields use proto3
+// `optional` keyword where zero/empty is semantically distinct from absent.
+message Repository {
+  int64 id = 1;
+  int64 organization_id = 2;
+  // github / gitlab / gitee / ssh / generic
+  string provider_type = 3;
+  // https://github.com, https://gitlab.company.com, ssh://host
+  string provider_base_url = 4;
+  string http_clone_url = 5;
+  string ssh_clone_url = 6;
+  string external_id = 7;
+  string name = 8;
+  string slug = 9;
+  string default_branch = 10;
+  optional string ticket_prefix = 11;
+  // "organization" (all members) or "private" (only importer)
+  string visibility = 12;
+  optional int64 imported_by_user_id = 13;
+  // Workspace preparation script (shell) run after worktree creation.
+  optional string preparation_script = 14;
+  // Script timeout in seconds (default 300).
+  optional int32 preparation_timeout = 15;
+  bool is_active = 16;
+  optional RepositoryWebhookConfig webhook_config = 17;
+  string created_at = 18;
+  string updated_at = 19;
+}
+
+// RepositoryWebhookConfig mirrors the public-facing subset of WebhookConfig
+// — the `secret` field is intentionally absent (backend marks `json:"-"`
+// equivalent, exposed only via GetRepositoryWebhookSecret).
+message RepositoryWebhookConfig {
+  string id = 1;
+  string url = 2;
+  repeated string events = 3;
+  bool is_active = 4;
+  bool needs_manual_setup = 5;
+  optional string last_error = 6;
+  optional string created_at = 7;
+}
+
+message Branch {
+  string name = 1;
+}
+
+message MergeRequest {
+  int64 id = 1;
+  int32 mr_iid = 2;
+  string title = 3;
+  string state = 4;
+  string mr_url = 5;
+  string source_branch = 6;
+  string target_branch = 7;
+  optional string pipeline_status = 8;
+  optional int64 pipeline_id = 9;
+  optional string pipeline_url = 10;
+  optional int64 ticket_id = 11;
+  optional int64 pod_id = 12;
+}
+
+message WebhookStatus {
+  bool registered = 1;
+  optional string webhook_id = 2;
+  optional string webhook_url = 3;
+  repeated string events = 4;
+  bool is_active = 5;
+  bool needs_manual_setup = 6;
+  optional string last_error = 7;
+  optional string registered_at = 8;
+}
+
+message WebhookSecret {
+  string webhook_url = 1;
+  string webhook_secret = 2;
+  repeated string events = 3;
+}
+
+// WebhookResult mirrors service/repository/WebhookService.WebhookResult.
+// Returned by RegisterRepositoryWebhook to surface manual-setup hints.
+message WebhookResult {
+  int64 repo_id = 1;
+  bool registered = 2;
+  optional string webhook_id = 3;
+  bool needs_manual_setup = 4;
+  optional string manual_webhook_url = 5;
+  // Only populated when needs_manual_setup is true.
+  optional string manual_webhook_secret = 6;
+  optional string error_message = 7;
+}
+
+message ListRepositoriesRequest {
+  string org_slug = 1;
+  optional int32 offset = 2;
+  optional int32 limit = 3;
+}
+
+message ListRepositoriesResponse {
+  repeated Repository items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message GetRepositoryRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message CreateRepositoryRequest {
+  string org_slug = 1;
+  string provider_type = 2;
+  string provider_base_url = 3;
+  optional string http_clone_url = 4;
+  optional string ssh_clone_url = 5;
+  string external_id = 6;
+  string name = 7;
+  string slug = 8;
+  optional string default_branch = 9;
+  optional string ticket_prefix = 10;
+  optional string visibility = 11;
+}
+
+message UpdateRepositoryRequest {
+  string org_slug = 1;
+  int64 id = 2;
+  optional string name = 3;
+  optional string default_branch = 4;
+  optional string ticket_prefix = 5;
+  optional bool is_active = 6;
+  optional string http_clone_url = 7;
+  optional string ssh_clone_url = 8;
+}
+
+message DeleteRepositoryRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message DeleteRepositoryResponse {}
+
+message ListRepositoryBranchesRequest {
+  string org_slug = 1;
+  int64 id = 2;
+  string access_token = 3;
+}
+
+message SyncRepositoryBranchesRequest {
+  string org_slug = 1;
+  int64 id = 2;
+  string access_token = 3;
+}
+
+message ListRepositoryBranchesResponse {
+  repeated Branch items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message ListRepositoryMergeRequestsRequest {
+  string org_slug = 1;
+  int64 id = 2;
+  optional string branch = 3;
+  // opened / merged / closed / all (default: all)
+  optional string state = 4;
+}
+
+message ListRepositoryMergeRequestsResponse {
+  repeated MergeRequest items = 1;
+  int64 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message RegisterRepositoryWebhookRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message RegisterRepositoryWebhookResponse {
+  WebhookResult result = 1;
+}
+
+message DeleteRepositoryWebhookRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message DeleteRepositoryWebhookResponse {}
+
+message GetRepositoryWebhookStatusRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message GetRepositoryWebhookSecretRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message MarkRepositoryWebhookConfiguredRequest {
+  string org_slug = 1;
+  int64 id = 2;
+}
+
+message MarkRepositoryWebhookConfiguredResponse {}

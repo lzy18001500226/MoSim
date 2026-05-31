@@ -1,0 +1,96 @@
+version: "2"
+
+linters:
+  enable:
+    - forbidigo
+
+  settings:
+    errcheck:
+      check-type-assertions: false
+      check-blank: false
+
+    forbidigo:
+      # Catch the patterns that historically leaked zombies: Start without a
+      # paired Wait, and os.StartProcess + Release. New long-lived children
+      # must go through processmgr.Start so the manager owns the lifecycle.
+      forbid:
+        - pattern: '^os\.StartProcess$'
+          msg: "use processmgr.Start(processmgr.ModeDaemon) instead of os.StartProcess + Release; the latter leaves zombies on the runner process tree"
+      analyze-types: true
+
+  exclusions:
+    rules:
+      # Test files: exclude noisy linters for test setup/teardown and mock definitions
+      - path: "_test\\.go"
+        linters:
+          - errcheck
+          - unused
+          - gosimple
+
+      # Cleanup/best-effort operations where errors are intentionally not checked
+      - text: "Error return value of .*(Close|Kill|Stop|Remove|Rename|Wait)"
+        linters:
+          - errcheck
+
+      # Network deadline operations - errors are non-actionable
+      - text: "Error return value of .*(SetDeadline|SetReadDeadline|SetWriteDeadline)"
+        linters:
+          - errcheck
+
+      # Debug/diagnostic file logging and terminal operations - non-critical
+      - text: "Error return value of .*(WriteString|WriteRaw|WriteAggregated|Redraw|Resize|Fprintf)"
+        linters:
+          - errcheck
+
+      # HTTP handler response writing - non-actionable in handlers
+      - text: "Error return value of .*Encode"
+        linters:
+          - errcheck
+
+      # Relay/terminal output forwarding - best-effort streaming
+      - text: "Error return value of .*(SendSnapshot|SendOutput|SendPong)"
+        linters:
+          - errcheck
+
+      # Best-effort background operations
+      - text: "Error return value of .*doCheck"
+        linters:
+          - errcheck
+
+      # User input and format scanning - non-critical
+      - text: "Error return value of .*Scan"
+        linters:
+          - errcheck
+
+      # Directory creation - best-effort
+      - text: "Error return value of .*MkdirAll"
+        linters:
+          - errcheck
+
+      # Git command execution in workspace management (best-effort)
+      - path: "internal/workspace/"
+        text: "Error return value of .*\\.Run"
+        linters:
+          - errcheck
+
+      # grpc.Dial deprecation: will be supported throughout 1.x
+      - text: "SA1019: grpc.Dial is deprecated"
+        linters:
+          - staticcheck
+
+      # Intentionally empty branches with explanatory comments
+      - text: "SA9003: empty branch"
+        linters:
+          - staticcheck
+
+      # VT serialization helpers - complete API kept for debugging/testing
+      - path: "internal/terminal/vt/(serialize_handler|vt_snapshot)\\.go"
+        linters:
+          - unused
+
+      # processmgr is the only place allowed to call os.StartProcess directly
+      # (inside the launcher subcommand, which is itself the fix for the
+      # zombie problem). All other packages must go through processmgr.Start.
+      - path: "internal/processmgr/"
+        linters:
+          - forbidigo

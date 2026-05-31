@@ -1,0 +1,227 @@
+// User flow — Cold start / first-run onboarding.
+// From "I just signed up" to "I have a pod running".
+// Goal: eliminate dead ends (Runner timeout, invite-code TODO, etc.)
+
+canvas "flow_onboarding" {
+    width = 1880
+    height = 1580
+    background = #1F2328
+}
+
+component fo_step_box(number, title, detail, state) {
+    frame {
+        width   = 260
+        height  = 180
+        radius  = 8
+        fill    = #FFFFFF
+        stroke  = [1, #D0D7DE]
+        layout  = vertical
+        padding = 16
+        gap     = 8
+
+        frame header {
+            layout = horizontal, gap = 8, align = center
+            frame num {
+                width = 24, height = 24, radius = 999, fill = #0969DA
+                layout = horizontal, justify = center, align = center
+                text number { size = 13, weight = semibold, color = #FFFFFF }
+            }
+            text title { size = 14, weight = semibold, color = #1F2328, width = 200, wrap = true }
+        }
+        text detail { size = 12, color = #656D76, wrap = true, line-height = 18, width = 228 }
+        text state  { size = 11, color = #868F99, family = "JetBrains Mono", wrap = true, width = 228 }
+    }
+}
+
+component fo_arrow_right() {
+    frame {
+        width = 40, height = 180
+        layout = horizontal, justify = center, align = center
+        text "→" { size = 24, weight = semibold, color = #AFB8C1 }
+    }
+}
+
+component fo_arrow_down_large() {
+    frame {
+        width = 260, height = 40
+        layout = horizontal, justify = center, align = center
+        text "↓" { size = 24, weight = semibold, color = #AFB8C1 }
+    }
+}
+
+component error_branch(title, text_content) {
+    frame {
+        width   = 300
+        padding = 14
+        radius  = 8
+        fill    = #FFEBE9
+        stroke  = [1, #CF222E]
+        layout  = vertical
+        gap     = 6
+
+        frame header {
+            layout = horizontal, gap = 6, align = center
+            text "⚠" { size = 14, color = #CF222E }
+            text title { size = 13, weight = semibold, color = #CF222E }
+        }
+        text text_content { size = 12, color = #CF222E, wrap = true, line-height = 18, width = 270 }
+    }
+}
+
+component fix_branch(title, text_content) {
+    frame {
+        width   = 300
+        padding = 14
+        radius  = 8
+        fill    = #DAFBE1
+        stroke  = [1, #1A7F37]
+        layout  = vertical
+        gap     = 6
+
+        frame header {
+            layout = horizontal, gap = 6, align = center
+            text "✓" { size = 14, color = #1A7F37 }
+            text title { size = 13, weight = semibold, color = #1A7F37 }
+        }
+        text text_content { size = 12, color = #1A7F37, wrap = true, line-height = 18, width = 270 }
+    }
+}
+
+component pg_flow_onboarding() {
+frame root {
+        stroke = [2, #6E7681]
+        radius = 12
+        shadow = [0, 8, 24, #00000080]
+    width   = 1800
+    height  = 1500
+    fill    = #FFFFFF
+    padding = 40
+    layout  = vertical
+    gap     = 32
+
+    // Header
+    frame header {
+        layout = vertical, gap = 4
+        text "User Flow — Cold start (first run)" { size = 24, weight = semibold, color = #1F2328 }
+        text "New user from signup to first running Pod. Every step fails loudly with a recovery path — no more silent 10-minute timeouts."
+            { size = 13, color = #656D76, wrap = true, width = 1600 }
+    }
+
+    // Happy path row 1
+    frame row_1 {
+        width  = fill
+        layout = horizontal
+        gap    = 0
+        align  = start
+
+        use fo_step_box("1", "Sign up", "Email + password. Or Continue with GitHub.", "POST /api/v1/auth/register")
+        use fo_arrow_right()
+        use fo_step_box("2", "Verify email", "Click link in email. Token valid 24h. Resend if expired.", "GET /verify-email?token=")
+        use fo_arrow_right()
+        use fo_step_box("3", "Choose workspace", "Two tracks: Quick start (personal) or Create team. Invite code goes here too.", "POST /api/v1/orgs")
+        use fo_arrow_right()
+        use fo_step_box("4", "Set up first Runner", "Local, Cloud, or Skip. Default path: copy-paste one install command.", "register runner via CLI")
+    }
+
+    // Arrow down
+    frame down_1 {
+        width  = fill
+        layout = horizontal
+        justify = end
+        padding = [0, 40, 0, 0]
+        use fo_arrow_down_large()
+    }
+
+    // Happy path row 2
+    frame row_2 {
+        width  = fill
+        layout = horizontal
+        gap    = 0
+        align  = start
+
+        use fo_step_box("5", "Runner connects",
+            "UI polls. Shows: ✓ binary downloaded · ⋯ authorizing · ⋯ gRPC handshake. 10s typical.",
+            "gRPC TLS + auth-status")
+        use fo_arrow_right()
+        use fo_step_box("6", "First Pod wizard",
+            "Sample prompt: 'Explain this codebase'. Picks demo-repo. User just clicks Run.",
+            "POST /pods (preset config)")
+        use fo_arrow_right()
+        use fo_step_box("7", "Welcome tour",
+            "3-slide overlay: where Pods live, how Tickets work, what Mesh is. Skippable.",
+            "client-side, persist dismissed")
+        use fo_arrow_right()
+        use fo_step_box("8", "Workspace opened",
+            "User lands in Workspace with a running sample Pod. Onboarding done.",
+            "goal state")
+    }
+
+    // Recovery branches
+    frame recovery_title {
+        padding = [16, 0, 0, 0]
+        text "Failure recovery paths (what the new onboarding adds)"
+            { size = 16, weight = semibold, color = #1F2328 }
+    }
+
+    frame recovery_row {
+        width  = fill
+        layout = horizontal
+        gap    = 16
+        align  = start
+
+        use error_branch("Runner didn't connect in 2 min",
+            "Show diagnosis: firewall, install dir, Runner log tail. Offer: [View install docs] [Try cloud Runner] [Skip for now].")
+
+        use error_branch("Email verify token expired",
+            "Page auto-detects expired token. Shows [Resend] (primary) + [Sign in to continue later]. Never dead-ends.")
+
+        use error_branch("Invite code wrong / expired",
+            "Clear error: 'Code expired. Ask your admin for a new one.' Link to admin contact. Currently the onboarding says TODO; fix it.")
+
+        use error_branch("No Runner? Skip gracefully",
+            "User chooses Skip. Workspace opens with placeholder + 'You need a Runner to create Pods.' CTA in sidebar always visible.")
+    }
+
+    frame improvement_title {
+        padding = [16, 0, 0, 0]
+        text "Why this beats the current onboarding" { size = 16, weight = semibold, color = #1F2328 }
+    }
+
+    frame improvement_row {
+        width  = fill
+        layout = horizontal
+        gap    = 16
+        align  = start
+
+        use fix_branch("Progress visibility",
+            "Every long-running step (Runner boot, Pod init) shows sub-steps. No spinners of death.")
+
+        use fix_branch("One-click demo",
+            "Step 6 hands the user a working Pod — they see AgentsMesh do real work before any configuration.")
+
+        use fix_branch("Invite code actually works",
+            "Fixes the TODO in current /onboarding page. Invite flow validates code, shows which org, lets user accept.")
+
+        use fix_branch("Skip is never a trap",
+            "Skipping Runner setup doesn't hide the CTA forever. Sidebar always has [Set up your first Runner].")
+    }
+}
+}
+
+
+component pg_flow_onboarding_framed() {
+    frame outer {
+        width = 1880
+        height = 1580
+        fill = #1F2328
+        padding = 40
+        layout = horizontal
+        justify = center
+        align = center
+        use pg_flow_onboarding()
+    }
+}
+
+frame root {
+    use pg_flow_onboarding_framed()
+}

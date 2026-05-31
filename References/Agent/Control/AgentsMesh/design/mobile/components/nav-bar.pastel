@@ -1,0 +1,169 @@
+// iOS Navigation Bar — 4 variants (post-iOS 26 + Lark-inspired drawer entry).
+// Avatar (40pt circle) replaces org-pill — tap opens left drawer (Lark pattern).
+// Action icons are PNG assets (see icon.pastel for rationale).
+
+asset search_blue = image("../assets/lucide-png/search-0969DA.png")
+asset plus_blue   = image("../assets/lucide-png/plus-0969DA.png")
+asset back_blue   = image("../assets/lucide-png/back-0969DA.png")
+asset back_dark   = image("../assets/lucide-png/back-58A6FF.png")
+asset cog_blue    = image("../assets/lucide-png/cog-0969DA.png")
+asset cog_dark    = image("../assets/lucide-png/cog-8B949E.png")
+asset more_blue   = image("../assets/lucide-png/ellipsis-0969DA.png")
+
+canvas "ios_nav_bar" {
+    width = 920
+    height = 1180
+    background = #1F2328
+}
+
+// Avatar — 40pt circle, opens drawer on tap
+component nav_avatar(letter, bg) {
+    frame {
+        width = 40, height = 40, radius = 999, fill = bg
+        layout = horizontal, justify = center, align = center
+        text letter { size = 17, weight = semibold, color = #FFFFFF }
+    }
+}
+
+// Variant A — Standard root tab nav
+component nav_standard(title) {
+    frame {
+        width = 393, height = 44, fill = #FFFFFFE6
+        padding = [0, 8, 0, 12], layout = horizontal, justify = space-between, align = center
+
+        frame left {
+            layout = horizontal, gap = 12, align = center
+            use nav_avatar("D", #0969DA)
+            text title { size = 17, weight = semibold, color = #1F2328 }
+        }
+        frame actions { layout = horizontal, gap = 4, align = center
+            frame search_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+                image search_blue { width = 24, height = 24 }
+            }
+            frame plus_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+                image plus_blue { width = 24, height = 24 }
+            }
+        }
+    }
+}
+
+// Variant B — Large title (44pt compact + 52pt title row)
+component nav_large_title(title) {
+    frame {
+        width = 393, fill = #FFFFFFE6
+        layout = vertical
+
+        frame compact_bar {
+            width = fill, height = 44, padding = [0, 8, 0, 12]
+            layout = horizontal, justify = space-between, align = center
+            use nav_avatar("D", #0969DA)
+            frame actions { layout = horizontal, gap = 4, align = center
+                frame search_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+                    image search_blue { width = 24, height = 24 }
+                }
+                frame plus_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+                    image plus_blue { width = 24, height = 24 }
+                }
+            }
+        }
+        frame title_row {
+            width = fill, height = 52, padding = [0, 16]
+            layout = horizontal, align = center
+            text title { size = 34, weight = semibold, color = #1F2328 }
+        }
+    }
+}
+
+// Variant C — Push detail
+component nav_push(back_label, title) {
+    frame {
+        width = 393, height = 44, fill = #FFFFFFE6
+        padding = [0, 8], layout = horizontal, justify = space-between, align = center
+
+        frame back {
+            layout = horizontal, gap = 0, align = center
+            frame back_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+                image back_blue { width = 24, height = 24 }
+            }
+            text back_label { size = 17, color = #0969DA }
+        }
+        text title { size = 17, weight = semibold, color = #1F2328, family = "SF Mono" }
+        frame more_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+            image more_blue { width = 24, height = 24 }
+        }
+    }
+}
+
+// Variant D — Dark (Terminal full-screen)
+component nav_push_dark(back_label, title) {
+    frame {
+        width = 393, height = 44, fill = #0D1117E6
+        padding = [0, 8], layout = horizontal, justify = space-between, align = center
+
+        frame back {
+            layout = horizontal, gap = 0, align = center
+            frame back_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+                image back_dark { width = 24, height = 24 }
+            }
+            text back_label { size = 17, color = #58A6FF }
+        }
+        text title { size = 17, weight = semibold, color = #C9D1D9, family = "SF Mono" }
+        frame cog_btn { width = 44, height = 44, layout = horizontal, justify = center, align = center
+            image cog_dark { width = 24, height = 24 }
+        }
+    }
+}
+
+component label(text_value) {
+    text text_value { size = 11, weight = semibold, color = #6E7681, letter-spacing = 1.5 }
+}
+
+component pg_nav_bar() {
+frame root {
+    stroke = [2, #6E7681]
+    radius = 16
+    shadow = [0, 8, 24, #00000080]
+    width = 840, height = 1120, fill = #FFFFFF
+    padding = 32, layout = vertical, gap = 24
+
+    text "Navigation Bar" { size = 24, weight = semibold, color = #1F2328 }
+    text "Avatar (40pt circle, left) replaces org-pill — tap opens left drawer (Lark pattern). Title left-aligned next to avatar."
+        { size = 13, color = #656D76, wrap = true, width = 740 }
+
+    frame v1 { layout = vertical, gap = 12
+        use label("A · STANDARD ROOT (44pt)")
+        frame container { stroke = [1, #D0D7DE], layout = vertical
+            use nav_standard("Pods")
+        }
+    }
+    frame v2 { layout = vertical, gap = 12
+        use label("B · LARGE TITLE (96pt)")
+        frame container { stroke = [1, #D0D7DE], layout = vertical
+            use nav_large_title("Settings")
+        }
+    }
+    frame v3 { layout = vertical, gap = 12
+        use label("C · PUSH DETAIL (44pt)")
+        frame container { stroke = [1, #D0D7DE], layout = vertical
+            use nav_push("Pods", "pod-abc-123")
+        }
+    }
+    frame v4 { layout = vertical, gap = 12
+        use label("D · DARK (44pt) — TerminalView")
+        frame container { stroke = [1, #30363D], layout = vertical
+            use nav_push_dark("Back", "pod-abc-123")
+        }
+    }
+}
+}
+
+
+component pg_nav_bar_framed() {
+    frame outer {
+        width = 920, height = 1180, fill = #1F2328
+        padding = 40, layout = horizontal, justify = center, align = center
+        use pg_nav_bar()
+    }
+}
+
+frame root { use pg_nav_bar_framed() }

@@ -1,0 +1,42 @@
+load("@rules_go//proto:def.bzl", "go_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_rust_prost//:defs.bzl", "rust_prost_library", "rust_prost_transform")
+
+# R2: opt into serde derive on every generated message/enum so the same
+# Rust struct doubles as wire DTO + JSON-friendly cache/state type.
+# `=.=` matches all types; `\\,` escapes the comma so protoc-gen-prost
+# doesn't treat it as a flag separator.
+rust_prost_transform(
+    name = "support_ticket_serde_transform",
+    prost_opts = [
+        "type_attribute=.=#[derive(serde::Serialize\\, serde::Deserialize)]",
+        "type_attribute=.=#[serde(default)]",
+    ],
+    deps = ["@crates//:serde"],
+)
+
+proto_library(
+    name = "support_ticket_proto",
+    srcs = [
+        "support_ticket.proto",
+        "support_ticket_admin.proto",
+    ],
+    data = [":support_ticket_serde_transform"],
+    visibility = ["//visibility:public"],
+    deps = ["//proto/codegen/v1:codegen_proto"],
+)
+
+go_proto_library(
+    name = "support_ticket_go_proto",
+    compilers = ["@rules_go//proto:go_proto"],
+    importpath = "github.com/anthropics/agentsmesh/proto/gen/go/support_ticket/v1",
+    proto = ":support_ticket_proto",
+    visibility = ["//visibility:public"],
+    deps = ["//proto/codegen/v1:codegen_go_proto"],
+)
+
+rust_prost_library(
+    name = "support_ticket_rust_proto",
+    proto = ":support_ticket_proto",
+    visibility = ["//visibility:public"],
+)

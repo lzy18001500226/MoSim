@@ -1,0 +1,45 @@
+load("@rules_go//proto:def.bzl", "go_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_rust_prost//:defs.bzl", "rust_prost_library", "rust_prost_transform")
+
+# R2: opt into serde derive on every generated message/enum so the same
+# Rust struct doubles as wire DTO + JSON-friendly cache/state type.
+# `=.=` matches all types; `\\,` escapes the comma so protoc-gen-prost
+# doesn't treat it as a flag separator.
+rust_prost_transform(
+    name = "billing_serde_transform",
+    prost_opts = [
+        "type_attribute=.=#[derive(serde::Serialize\\, serde::Deserialize)]",
+        "type_attribute=.=#[serde(default)]",
+    ],
+    deps = ["@crates//:serde"],
+)
+
+proto_library(
+    name = "billing_proto",
+    # Admin surface lives next door in billing_admin.proto. Same go_package
+    # option so both compile into one generated Go pkg; Bazel groups them into
+    # the same go_proto_library by virtue of the shared srcs entry.
+    srcs = [
+        "billing.proto",
+        "billing_admin.proto",
+    ],
+    data = [":billing_serde_transform"],
+    visibility = ["//visibility:public"],
+    deps = ["//proto/codegen/v1:codegen_proto"],
+)
+
+go_proto_library(
+    name = "billing_go_proto",
+    compilers = ["@rules_go//proto:go_proto"],
+    importpath = "github.com/anthropics/agentsmesh/proto/gen/go/billing/v1",
+    proto = ":billing_proto",
+    visibility = ["//visibility:public"],
+    deps = ["//proto/codegen/v1:codegen_go_proto"],
+)
+
+rust_prost_library(
+    name = "billing_rust_proto",
+    proto = ":billing_proto",
+    visibility = ["//visibility:public"],
+)
