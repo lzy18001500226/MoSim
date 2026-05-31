@@ -5,6 +5,97 @@
 
 ## Current Focus
 
+- 2026-05-31 UE scene integration current state: `FactoryEnvironmentCollect`
+  passed manual visual review, then the active renderer Content links were
+  switched to `DerelictCorridorMegascans` for the next one-map-at-a-time
+  review.
+  `Scripts/UE5/activate_renderer_scene_source.py --scene-source-id
+  <scene_source_id>` switches renderer Content links to the
+  selected source; do not mount all scene projects at once because `/Game/Maps`,
+  `/Game/Meshes`, `/Game/Blueprints`, etc. conflict across samples. Factory
+  truth artifact
+  `UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json`
+  validates with 8658 collision proxies; renderer load proof
+  `Results/tmp/renderer_map_load_probe_factory_active_20260531.json` loaded
+  `/Game/Maps/Demonstration` with 11872 actors inside the MoSim renderer.
+  Derelict is currently linked under
+  `UE5/MoSimSceneLibrary/Content/DerelictCorridor` and launches with
+  `/Game/DerelictCorridor/Maps/DerelictCorridor`.
+  `AMoSimSceneLibraryGameMode` previously auto-spawned the old generated
+  `MworksData/map_open_blocks_render_map.json` preview map on top of every real
+  scene; use `Scripts/UE5/open_unreal_renderer.sh review-scene` or pass
+  `-MoSimSceneReview` for manual map review so the old preview/STL/blockout map
+  and playback actor are disabled. Visual review policy has also tightened:
+  current product maps should be white/daytime visible by default. If a scene
+  only works as a dark/exploration map even after balanced scene-review
+  fill light and corrected camera placement, mark it as a
+  special indoor/radar candidate rather than a main rendered map.
+  `DerelictCorridorMegascans` and `ElectricDreamsEnv` also have truth artifacts;
+  ElectricDreams full renderer load may exceed the 60 second gate during
+  first-time Nanite/static-mesh builds. `CityParkEnvironmentCollec` timed out
+  while still building static meshes. `DarkRuinsMegascansSample` needs a proper
+  World Partition cell/data-layer truth route or manual editor-assisted review.
+  `check_ue_fab_goal_acceptance.py` and `check_unreal_bridge.py` must validate
+  the currently activated source/content link, not hard-coded Derelict.
+  Manual visual review: user confirmed the opened Factory standalone view shows
+  the factory map correctly. The first Derelict review showed a mostly black
+  background with only emissive objects visible; this is not acceptable for the
+  current daytime rendered-map requirement. A too-aggressive forced-exposure
+  retry produced a pure-white viewport, so forced exposure is no longer the
+  default review path. Derelict has been relaunched with corrected review camera
+  placement and balanced camera fill light, and is waiting for user decision:
+  accept only if the scene is now clearly visible and suitable; otherwise
+  downgrade it to special indoor/radar testing and continue with ElectricDreams
+  / CityPark / DarkRuins as each route becomes loadable.
+  Review-camera collision is now required: manual map review must not use a
+  camera that can pass through walls or exterior boundaries. The review pawn
+  uses a collision sphere and swept movement so blocked walls are visible during
+  inspection. This is only a runtime review guard; final UAV motion and path
+  planning still need exported collision/occupancy truth checks so planned
+  trajectories cannot collide with walls.
+
+- 2026-05-31 CoAgent DevOps Git delegation: user manually deleted the old
+  DevOps goal; MainAgent sent one complete visible charter to
+  `MoSim｜DevOps 发布` thread `019e74de-a452-7a50-99e7-ca9a247b32f1` for
+  `COAGENT-DEVOPS-GIT-DIVIDE-20260531`, but the first foreground
+  `timeout 60s codex exec resume ...` delivery killed the worker process after
+  message delivery. Corrected route: start the visible DevOps resume as a
+  background process without an outer 60s kill and record PID/logs under
+  `Results/coagent_transport/runs/`. Current corrected DevOps run started as
+  PID `11167` from
+  `Results/coagent_transport/COAGENT-DEVOPS-GIT-DIVIDE-20260531_visible_background_prompt_20260531_124300.txt`.
+  Do not repeatedly tick the DevOps thread; recover from
+  `Docs/Workflows/agent_task_ledger.md` and collect a flat result packet when a
+  phase ends. The old npm/node16 Codex shim fails with
+  `SyntaxError: Unexpected reserved word`; visible dispatch should use the
+  VSCode extension Codex binary resolved by `command -v codex`.
+
+- 2026-05-30 CoAgent open-source adoption design pass: added
+  `References/Agent/Gateway/cc-connect` as the first Gateway candidate after the
+  user moved the desktop copy into the project. Current design direction:
+  CoAgent should not be built fully from scratch and no mirrored upstream is a
+  complete replacement. Keep CoAgent-owned task ledger, packet contracts,
+  context packs, safety gates, and MoSim evidence rules; selectively reuse or
+  port CodexMonitor for Codex UI/control-plane ideas, OpenMOSS for
+  task/review/patrol model, ClawTeam for inbox/worktree communication,
+  cc-connect for human-intervention Gateway, and Hermes/OpenClaw for
+  memory/skills/hooks/operator patterns. Broad `git status --short` became slow
+  with the large untracked reference tree and was stopped; use path-scoped Git
+  status/diff or the reference index validator for reference-tree checks.
+
+- 2026-05-30 CoAgent implementation miniloop reached human review:
+  `COAGENT-IMPL-MINILOOP-01`. The previous architecture long-run runtime task
+  `COAGENT-ARCH-LONGRUN-01` was cancelled because the user redirected the work
+  from design-only artifacts to approved implementation. Current implemented
+  scope: goal-alignment doctor, runtime `update-metadata`, active-department
+  automation mapping, reference index repair, and doctor health wiring. Latest
+  doctor result: `Results/coagent_doctor/latest.json` reports
+  `overallStatus=ok` with 23 ok checks, 0 warnings, and 0 failures. Still gated:
+  app-server transport, unattended automation, new permanent departments,
+  broad hook rewrites, MCP/tool expansion, external credentials/config, and
+  destructive reference cleanup. Current state: stop for user review before
+  expanding scope.
+
 - Current active goal: design and advance MoSim as an RflySim-like UAV
   simulation product. MWORKS/Sysplorer/Syslab remain the authoritative solver,
   controller, planner, disturbance, metric, and event-log source; UE5 provides
@@ -108,7 +199,7 @@
   and `cwd`, copied the existing WSL rollout files into the Windows Codex App
   session store, and upserted matching App thread rows. Backup before sync:
   `C:\Users\HP\.codex\backups\wsl-department-thread-sync-20260526-130607`.
-  This first ID set was later superseded by the real visible department threads
+  This first ID set was later superseded by the real deleted-UI rollout threads
   listed below.
 - 2026-05-26 Codex App/VSCode visibility correction: the first WSL-origin
   department sync still did not appear in either UI because `codex exec`
@@ -123,8 +214,8 @@
   `codex exec` bootstrap as insufficient for durable department conversations
   and create future department/task threads through a real interactive
   WSL/VSCode Codex conversation before handoff to Codex App.
-- 2026-05-26 visible department communication correction: internal
-  `spawn_agent` calls are not department communication. The visible department
+- 2026-05-26 deleted-UI rollout communication correction: internal
+  `spawn_agent` calls are not department communication. The deleted-UI rollout
   threads currently used by the UI are:
   `019e6335-a2e2-7b92-b9f8-396400f4429e` (`MoSim｜总经办 PMO`),
   `019e6318-4516-72c1-a50a-a36dc2aed215` (`MoSim｜调度中台`),
@@ -133,11 +224,11 @@
   `019e631d-8164-72e3-aac5-4ee3d91e462e` (`MoSim｜验证测试部`),
   `019e631f-406e-7401-af17-8f17e09a50e3` (`MoSim｜安全合规部`), and
   `019e6321-1940-7bc0-8a97-f2720aa8af1b` (`MoSim｜DevOps 发布部`). Dispatch to a
-  visible department by `codex exec resume <thread_id>` plus
+  deleted-UI rollout by `codex exec resume <thread_id>` plus
   `--output-last-message`; do not represent an internal subagent as that
   department. Communication probe `comm-probe-20260526-01` to DevOps returned
   `DEVOPS_COMM_OK｜received_from_main｜task_id=comm-probe-20260526-01`.
-- 2026-05-26 visible department metadata fix: `codex exec resume` failed when
+- 2026-05-26 deleted-UI rollout metadata fix: `codex exec resume` failed when
   WSL-side DevOps thread metadata was normalized to `source=vscode` /
   `thread_source=vscode`, reporting `unknown thread source: vscode`. The
   working split is WSL-side `source=cli`, `thread_source=user` for resume
@@ -278,6 +369,7 @@
 
 | Queue | Owner Role | State | Next Safe Action |
 |---|---|---|---|
+| CoAgent implementation miniloop | `MainAgent` | needs-human-review | Doctor/tests are green; user should review before expanding transport or automation. |
 | Current instruction recovery | `TaskSecretary` / main agent | accepted | User reviewed the task/status table as broadly acceptable; keep future corrections in TaskSecretary intake. |
 | Git integration | `GitFullConvergenceOwner` | done-with-concerns | Use clean branches or `origin/main` for future Git work; do not push old polluted aggregate branches. |
 | Cosys-AirSim smoke | `UEBuildSmokeRunner` | visually-reviewed | UE 5.5 Blocks UBT build passed and user confirmed the opened scene is okay; next task is deciding the control/API/UI integration route. |
@@ -295,6 +387,7 @@
 
 | Queue | Previous Owner Role | State | Reason |
 |---|---|---|---|
+| CoAgent architecture long-run | `DispatchAgent` | cancelled | User redirected away from design-only long-run work to approved implementation miniloop. Do not resume unless explicitly requested. |
 | RflySim scene review | `RflySimSceneReviewer` | superseded | User clarified RflySim maps are no longer the current priority. Do not resume unless explicitly requested. |
 
 ## Mistakes To Avoid
@@ -319,6 +412,12 @@
   `Docs/Workflows/agent_task_ledger.md` and `Results/agent_runs/*/events.jsonl`.
 - Do not treat UE/RflySim/SPEAR/Cosys repositories as equivalent; record exact
   simulator role and evidence before adopting assets.
+- Do not leave stale runtime tasks active after user redirects the goal. Cancel
+  them through `CoAgent/runtime/mosim_agent_runtime.py cancel` and record the
+  replacement task immediately.
+- Do not hand-edit `Results/agent_runtime/tasks.sqlite3` for result packet
+  metadata. Use `mosim_agent_runtime.py update-metadata` so evidence changes
+  have an event trail.
 - Do not say RflySim maps are "directly usable" without the qualifier. They are
   directly viewable in the native RflySim runtime, but not currently directly
   usable as editable UE5 scenes, planner truth, or the base of our simulator.
@@ -330,7 +429,7 @@
 - Do not chase `git/finalize-safe-batches-clean-20260521` as a single aggregate
   push; its content is covered by split branches and GitHub rejected the
   aggregate pack for exceeding 2 GiB.
-- Do not reduce "continue tasks" to only the latest user-visible thread.
+- Do not reduce "continue tasks" to only the latest user-resumable rollout thread.
   Maintain a ledger-backed queue for Git, external learning, simulator bring-up,
   parameter identification, docs review, and mainline implementation.
 - Do not use goal tracking for one-off implementation steps. The goal should
@@ -398,6 +497,10 @@
   `index.lock`, polluted branches, or broad external-reference trees make even
   small commits slow. Delegate Git to `GitIntegrator`; the main agent only sets
   scope, reviews evidence, and keeps the engineering critical path moving.
+- Do not treat repeated failures, user corrections, review escapes, or
+  incidents as handled just because they are mentioned in chat or a status
+  paragraph. Route them through a retrospective closure action with owner,
+  evidence, promotion/rejection/deferral decision, and closeout criteria.
 
 ## Recovery Pointers
 
@@ -409,6 +512,207 @@
 - Clean Docs/workflow recovery branch:
   `git/recovery-docs-workflows-clean-20260521` at
   `c279bf4add5a4efb0cf5699e93172047ad148a20`
+
+## Current CoAgent Design Checkpoints
+
+- 2026-05-29 CST: Added `COAGENT-DESIGN-12` as the current problem-to-solution
+  design landing task. The new baseline is task-oriented rather than
+  department-count oriented: durable user task -> topology selector -> context
+  pack -> scoped conversations/subagents -> evidence packets -> review and
+  knowledge promotion.
+- 2026-05-29 CST: Added the design source files
+  `CoAgent/docs/architecture/coagent_solution_synthesis.md` and
+  `CoAgent/docs/architecture/coagent_user_intervention_ux.md`. These define
+  issue-to-decision mapping, dynamic task-team topology, context quality,
+  packet-first communication, worktree strategy, blocker notification, and
+  email-ready-but-not-sending intervention UX.
+- 2026-05-29 CST: Added design-time templates under
+  `CoAgent/protocol/templates/` for task charters, context packs, scoped
+  conversation packets, blocker notifications, and review packets. These are
+  not runtime schemas yet. App-server transport, automatic conversation
+  creation, automatic email sending, automatic worktree provisioning, new
+  permanent departments, and broad hook/tool expansion remain gated.
+- 2026-05-29 CST: Verified the WSL Codex CLI bootstrap route. The Node 16
+  `codex` wrapper fails on current syntax, but launching the same JS entrypoint
+  with Node 20 works. Recorded the exact command and successful session id in
+  `CoAgent/docs/status/codex_cli_entrypoint.md`.
+- 2026-05-29 CST: Reframed CoAgent departments as portable capability
+  boundaries rather than the old seven-conversation startup set. Added
+  `CoAgent/docs/architecture/coagent_department_capability_model.md`; after
+  rechecking the enterprise-management audits, expanded the model to 20
+  capability departments by adding Product Discovery / Strategy Deployment,
+  Flow Analytics / Operating Metrics, and Continuous Improvement /
+  Retrospective Closure. The old seven-lane model is now marked as a historical
+  startup baseline in
+  `CoAgent/docs/architecture/technical_enterprise_operating_system_closure.md`.
+- 2026-05-29 CST: Added
+  `CoAgent/docs/architecture/coagent_conversation_mapping.md` to map the 20
+  capability departments to concrete UI-deleted rollout conversations. Recommended next
+  deployment is 11 required permanent conversations, 6 conditional permanent
+  conversations, hosted startup capabilities, and task-scoped conversations for
+  high-context temporary work. The first proof should use a smaller 6-7
+  conversation closed loop before scaling.
+- 2026-05-30 CST: During `COAGENT-ARCH-LONGRUN-01`, added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/retrospective_and_improvement_closure_protocol.md`
+  and synchronized P59/B40/ADR-014/NEXT-26. Repeated failures such as goal
+  weakening, Codex visibility drift, transport timeout, invalid packets, or
+  broad external-learning drift now require owned retrospective actions with
+  evidence, closeout, promotion, rejection, or explicit deferral. This is
+  design-only; no automation, notification, dispatch, Git, MCP, skill, or hook
+  mutation is approved by it.
+- 2026-05-30 CST: Added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/retrospective_closure_checker_design.md`
+  and synchronized P59/B53/NEXT-26. Retrospective closure is now specified as
+  a read-only checker contract covering trigger discovery, record presence,
+  ownership, evidence, action targets, close conditions,
+  promotion/rejection/deferral, stale actions, dependency reporting,
+  `RETRO_*` fixtures, and shared validator envelope output. This is
+  design-only; it does not create issues, edit docs or skills, send
+  notifications, dispatch conversations, call MCP/tools, mutate runtime state,
+  stage Git, repair Codex state, inspect account caches, or emit private DB
+  dumps/raw transcripts.
+- 2026-05-30 CST: Added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/worktree_git_recovery_validator_design.md`
+  and synchronized P08/P09/P37/P62/B54/NEXT-04/NEXT-18. Worktree and Git-heavy
+  recovery are now specified as a read-only validator family covering worktree
+  binding, workspace mode, change inventory, path-family classification,
+  integration plans, blockers, role separation, rollback, cleanup, safe
+  decisions, evidence labels, and `GIT_*` fixtures. This is design-only; it
+  does not run Git, create worktrees, stage, commit, push, delete, move, repair
+  locks, edit Git config, call tools, or dispatch DevOps work.
+- 2026-05-30 CST: Added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/human_review_package_checker_design.md`
+  and synchronized P64/B55/NEXT-29. Human review and intervention are now
+  specified as a read-only checker contract covering one-action asks,
+  blocker-specific resume mapping, allowed decisions, dedupe, redaction, last
+  safe state, safe parallel work, manual evidence boundaries, notification
+  readiness, `HREV_*` fixtures, and shared validator envelope output. This is
+  design-only; it does not ask the user automatically, send notifications,
+  open GUIs, call MCP/tools, retry blocked tools, inspect credentials/account
+  caches/private Codex DBs, or mutate runtime/Git/conversation state.
+- 2026-05-30 CST: Added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/tool_capability_health_and_fallback_protocol.md`
+  and synchronized P13/B41/ADR-015/NEXT-27. MWORKS, UE, Fab/manual import,
+  Codex transport, Git, and external-reference routes now require capability
+  cards with health levels, evidence labels, stop/fallback decisions, blocker
+  policies, stale-card criteria, and future `TOOL_*` checker codes before
+  product or dispatch claims can depend on them. This is design-only; no
+  MCP/tool execution, UE map mutation, Fab automation, MWORKS simulation,
+  Codex dispatch, Git staging, automatic repair, or broad tool expansion is
+  approved by it.
+- 2026-05-30 CST: Added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/tool_capability_health_gate_checker_design.md`
+  and synchronized P13/B56/NEXT-27. The future read-only tool capability
+  health checker now has concrete discovery rules, required fields,
+  route/health/evidence vocabulary checks, stale-card policy, health-level
+  claim ceilings, blocker/fallback validation, unsafe probe rejection,
+  route-specific UE/Fab/MWORKS/Codex/Git/external-reference rules,
+  dependency handling, and `TOOL_*` fixtures. This is design-only; it does not
+  open or repair tools, inspect account caches, run simulations, mutate maps,
+  download assets, dispatch Codex conversations, stage Git, or rewrite cards.
+- 2026-05-30 CST: Added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/real_task_execution_walkthroughs.md`
+  and synchronized P21/P22/P63/B57. The abstract CoAgent operating model is
+  now mapped onto two concrete MoSim task families: PX4/Sunray150 parameter
+  identification and UE/Fab/local scene truth. The walkthroughs define
+  canonical goals, invalid weakened goals, initial departments, task-scoped
+  conversations, context pack contents, workflow graphs, mailbox/result packet
+  boundaries, contradiction handling, PMO asks, Git disposition, evidence
+  boundaries, and completion criteria. This is design-only; it does not parse
+  logs, call UE/MWORKS/Fab/MCP, create conversations, mutate maps, create
+  worktrees, stage Git, or run product proofs.
+- 2026-05-30 CST: Added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/implementation_sequence_and_release_plan.md`
+  and synchronized P23/B42/ADR-016. The post-design backlog now has an R0-R8
+  phase ladder: review baseline, validator foundation, packet/blocker atoms,
+  Candidate A preflight, supervised Candidate A proof, communication recovery,
+  product-adjacent proofs, tool-backed product execution, and operating
+  evolution. Each phase has entry evidence, exit evidence, skip rules,
+  approval-packet fields, release milestones, and forbidden claims. This is
+  design-only and does not approve implementation by itself.
+- 2026-05-30 CST: Added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/human_review_intervention_ux_design.md`
+  and synchronized P64/B48/ADR-021/NEXT-29. Human intervention is now designed
+  as a PMO-facing review packet flow with one-action asks, allowed decision
+  values, severity, dedupe/rate-limit, redaction, blocker-specific resume
+  mapping, required MWORKS/UE/Fab/visual/Git/transport cases, audit log, and
+  future checker scope. This remains design-only and does not approve email,
+  desktop notification, GUI automation, credential handling, MCP/tool calls,
+  conversation creation, Git operations, or live dispatch.
+- 2026-05-30 CST: Added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/validator_shared_envelope_design.md`
+  and synchronized P65/B49/ADR-022/NEXT-00. Future validators now have one
+  shared report contract for schema version, target, allowed modes, decisions,
+  dependency reports, findings, evidence paths, side-effect declarations,
+  claim boundaries, report storage, fixtures, and integration rules. This is
+  design-only; it does not implement domain validators or approve live
+  dispatch, MCP/tool calls, GUI automation, credential handling, Git/worktree
+  mutation, notification sending, external fetch, or runtime transport changes.
+- 2026-05-30 CST: Added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/goal_alignment_checker_design.md`
+  and synchronized P66/B50/ADR-023/NEXT-25. Goal alignment is now specified as
+  an L0 checker contract covering user objective, canonical task goal, scoped
+  objective alignment, result goal mutation, checkpoint evidence delta,
+  completion overclaim, recreated-goal scope loss, recovery records, `GOAL_*`
+  fixtures, and shared validator envelope output. This is design-only; it does
+  not create, mutate, complete, or block goals; dispatch conversations; call
+  MCP/tools; create worktrees; stage Git; send notifications; edit Codex state;
+  or rewrite task documents automatically.
+- 2026-05-30 CST: Added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/runbook_readiness_checker_design.md`
+  and synchronized P67/B51/ADR-024/NEXT-30. End-to-end runbook readiness is
+  now specified as a read-only checker contract covering readiness levels,
+  charter, proof path, context, workflow, mailbox, packets, evidence labels,
+  Git disposition, knowledge decision, retrospective triggers, closeout,
+  dependency reports, `RUNBOOK_*` fixtures, and shared validator envelope
+  output. This is design-only; it does not dispatch conversations, create
+  conversations or worktrees, call MCP/tools, stage Git, send notifications,
+  mutate goals, edit Codex state, inspect credentials/account caches, or
+  rewrite task documents automatically.
+- 2026-05-30 CST: Added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/implementation_approval_gate_design.md`
+  and synchronized P68/B52/ADR-025/NEXT-31. Implementation approval is now
+  specified as a read-only gate contract covering explicit slice approval,
+  phase entry evidence, scope, forbidden actions, dependency reports, exit
+  evidence, claim boundaries, `APPROVAL_*` fixtures, and shared validator
+  envelope output. The validator dependency graph now includes runbook
+  readiness and implementation approval as composition gates. This is
+  design-only; it does not approve implementation, mutate runtime state,
+  dispatch conversations, create worktrees, call MCP/tools, stage Git, send
+  notifications, edit Codex state, inspect credentials/account caches, or
+  rewrite task documents automatically.
+- 2026-05-30 CST: Added
+  `CoAgent/tasks/COAGENT-ARCH-LONGRUN-01/task_health_monitoring_and_intervention_design.md`
+  and synchronized P10/P25/P29/P60/P63/P67/B58/NEXT-32. Long-running task
+  health now has a runtime intervention playbook: health states,
+  trigger-to-action table, critical-path owner rule, topology shrink rules,
+  one-action PMO blocker asks, PX4/UE health applications, close-ready
+  criteria, and future read-only task-health checker scope. This is
+  design-only; it does not implement a scheduler, dashboard, live dispatch,
+  automatic task mutation, conversation creation, worktree creation, MCP/tool
+  calls, notification, Git operation, or automatic document edits.
+- 2026-05-30 CST: During verification, `check_department_visibility.py`
+  exposed recurring Codex visible-thread metadata drift across active
+  department rows. The approved `codex_session_repair.py sync-visible --apply`
+  path was rerun for registered active_visible department threads in WSL and
+  Windows Codex homes. Final verification passed with 11 active visible
+  conversations and valid WSL main DB, WSL alternate DB, Windows DB, and index
+  rows. This reinforces P47 as an active reliability risk until the future
+  visibility drift gate/checker exists.
+- 2026-05-30 CST: Clarified CoAgent task cancellation boundary after the current
+  Codex goal could not be edited by available goal tools. Durable task
+  cancellation must use CoAgent runtime lifecycle state, especially
+  `python3 CoAgent/runtime/mosim_agent_runtime.py cancel`, and keep a tombstone
+  audit trail. Codex `/goal clear` or UI goal deletion is only a visible-thread
+  recovery step and must not become the internal task-control plane. Added
+  `CoAgent/docs/decisions/coagent_task_cancellation_policy.md` and linked the
+  rule from protocol and orchestration docs.
+- 2026-05-30 CST: Corrected the above cancellation policy after user challenge:
+  CoAgent runtime cancellation does not imply Codex goal deletion is automated.
+  Current available goal tools cannot clear or edit this paused goal, the
+  documented VSCode Codex binary path is currently missing, and the old Node 16
+  npm entrypoint fails with a syntax error. Automatic Codex goal clearing must
+  remain an explicit future proof requirement, not an assumed dispatch feature.
 
 ## Current Unreal Renderer Checkpoints
 

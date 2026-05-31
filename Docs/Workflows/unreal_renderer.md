@@ -495,6 +495,13 @@ relaunched for manual review with the old generated preview map disabled. This
 does not yet close semantic truth, occupancy-grid, UAV playback, radar overlay,
 or route-planning evidence.
 
+Current visual policy: the main rendered-map pool should be white/daytime
+visible by default. Dark exploration-style maps are not accepted as primary
+rendering scenes only because they load and have collision truth. If a scene is
+usable only after radar-style darkness or emissive-object viewing, keep it as a
+special indoor/radar candidate and continue reviewing brighter outdoor/factory
+maps for the main product path.
+
 For real scene visual review, use the scene-review launch mode:
 
 ```bash
@@ -508,6 +515,39 @@ the old `MworksData/map_open_blocks_render_map.json` preview/STL/blockout map
 and the default playback actor. Without this flag,
 `AMoSimSceneLibraryGameMode` may overlay the generated MWORKS preview map on
 top of a real imported scene, causing a false visual-review failure.
+
+For scenes whose default camera position is wrong or whose interior is too dark
+for review, first use balanced camera and fill-light overrides. Do not enable
+forced exposure as the default review path because it can overexpose the whole
+viewport to pure white.
+
+```bash
+RESTART_UNREAL_GAME=1 \
+UNREAL_EXTRA_ARGS="/Game/DerelictCorridor/Maps/DerelictCorridor \
+  -MoSimReviewCameraX=2612.8 -MoSimReviewCameraY=-1768.1 -MoSimReviewCameraZ=2983.4 \
+  -MoSimReviewCameraPitch=-22.8 -MoSimReviewCameraYaw=36.9 -MoSimReviewCameraRoll=0 \
+  -MoSimReviewHeadLightIntensity=8 -MoSimReviewHeadLightRadius=25000 \
+  -MoSimReviewSunIntensity=12 -MoSimReviewSkyLightIntensity=3" \
+Scripts/UE5/open_unreal_renderer.sh review-scene
+```
+
+These overrides are for manual acceptance only. They do not change the source
+map assets and do not prove final lighting quality. If forced exposure is ever
+needed for diagnostics, use `-MoSimDayReview` deliberately and lower
+`-MoSimReviewExposureBias` first; do not use it for normal visual approval.
+
+The review camera must be collision-constrained. It uses a swept collision
+sphere by default, so manual inspection cannot pass through walls or exterior
+scene boundaries. If a scene can only be judged by disabling camera collision,
+do not promote it as a main simulation map. Use
+`-MoSimReviewCollisionRadius=<cm>` only to tune the reviewer body radius for a
+specific map; `-MoSimNoReviewCollision` is for diagnostics only and must not be
+used for acceptance.
+
+Rendered visual approval is not planner approval. Before any UAV playback,
+navigation, or path-planning claim, validate the route against exported
+collision/occupancy truth. A trajectory that intersects a wall is invalid even
+if the renderer camera or debug view can move through the geometry.
 
 Current blocked or lower-priority candidates:
 
