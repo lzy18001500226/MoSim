@@ -1,0 +1,623 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "VSCODE_Search_and_Replace_Project_Content",
+  "domain": "vs_code",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "search_panel_ready",
+      "state_name": "search_panel_ready",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the `search panel ready` state matches the live screenshot for search and replace project content.",
+      "when_not_to_use": "Do not use this card once the workflow has moved to a different VS Code surface or if the current task belongs to a sibling skill boundary.",
+      "visible_cues": [
+        "The Search view is active with the query field ready and the workspace already loaded.",
+        "A red box highlights the action cue: search field."
+      ],
+      "non_transferable_parts": [
+        "Do not reuse box positions, crop boundaries, exact coordinates, or example file names as fixed values.",
+        "Treat the screenshot as state evidence for the UI structure, not as proof that the same content or labels will appear in the same place.",
+        "Window size, theme, open tabs, sidebar width, and incidental surrounding files can vary across runs."
+      ],
+      "recommended_verification": "After acting on this state, verify the next requested VS Code state appears before continuing.",
+      "highlight_targets": [
+        {
+          "name": "search field",
+          "target_type": "action_target",
+          "annotation_query": "search query field in the VS Code Search view",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "procedure_name": "Inspect workspace search results before editing",
+        "state_id": 1,
+        "state_name": "search_panel_ready",
+        "image_filename": "workspace_search_panel.png",
+        "annotation_note": null,
+        "source_step_num": 10,
+        "source_instruction": "Help me open the \"C#_workspace\" workspace under \"/home/user/workspace\" in VS Code, search for all files containing \"result\", view them in a tree format, and then pin these files in the editor.",
+        "source_domains": "VScode",
+        "source_task_id": "29914a3a-db75-401c-bef8-21c2857b64ea",
+        "source_traj_index": 9,
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/164cd913-6a12-48e2-95b1-a4ada857a34a.png"
+      },
+      "codex_review_notes": "Codex rewrote this state card from the search and replace project content phase3 plan. The boxes are local cues only and are not reusable coordinates.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "search field",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "generic",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "workspace_search_panel_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/workspace_search_panel.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/164cd913-6a12-48e2-95b1-a4ada857a34a.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "search_panel_ready",
+            "color": null
+          },
+          {
+            "view_id": "workspace_search_panel_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/workspace_search_panel_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/runs/codex_exec_domains/ubuntu_4_18_refine_detached/batch_20260418_180103/20260418_180103_vs_code_retry/phase4/vs_code/VSCODE_Search_and_Replace_Project_Content/Images/workspace_search_panel.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "search field",
+            "color": "red",
+            "grounding_query": "the broader working region containing the red boxed search field",
+            "grounding_query_full": "Where is the broader working region containing the red boxed search field? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              188,
+              250,
+              348,
+              890
+            ],
+            "crop_box_pixels": [
+              284,
+              187,
+              745,
+              1044
+            ],
+            "source_box_pixels": [
+              360,
+              270,
+              668,
+              961
+            ],
+            "focus_context_kind": "generic",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "search_results_tree_visible",
+      "state_name": "search_results_tree_visible",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when the `search results tree visible` state matches the live screenshot for search and replace project content.",
+      "when_not_to_use": "Do not use this card once the workflow has moved to a different VS Code surface or if the current task belongs to a sibling skill boundary.",
+      "visible_cues": [
+        "The search panel displays a result tree with the match count and matching files under the query.",
+        "A green box highlights the verification cue: search results tree.",
+        "This state is a completion check and should remain visibly true before the workflow is treated as done."
+      ],
+      "non_transferable_parts": [
+        "Do not reuse box positions, crop boundaries, exact coordinates, or example file names as fixed values.",
+        "Treat the screenshot as state evidence for the UI structure, not as proof that the same content or labels will appear in the same place.",
+        "Window size, theme, open tabs, sidebar width, and incidental surrounding files can vary across runs."
+      ],
+      "recommended_verification": "Confirm the persistent requested result remains visible before ending the task.",
+      "highlight_targets": [
+        {
+          "name": "search results tree",
+          "target_type": "state_signal",
+          "annotation_query": "search results tree showing matching files or lines",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "procedure_name": "Inspect workspace search results before editing",
+        "state_id": 2,
+        "state_name": "search_results_tree_visible",
+        "image_filename": "search_results_tree.png",
+        "annotation_note": null,
+        "source_step_num": 11,
+        "source_instruction": "Help me open the \"C#_workspace\" workspace under \"/home/user/workspace\" in VS Code, search for all files containing \"result\", view them in a tree format, and then pin these files in the editor.",
+        "source_domains": "VScode",
+        "source_task_id": "29914a3a-db75-401c-bef8-21c2857b64ea",
+        "source_traj_index": 10,
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/815a76e3-ee62-43d4-bc25-22d1f261aae0.png"
+      },
+      "codex_review_notes": "Codex rewrote this state card from the search and replace project content phase3 plan. The boxes are local cues only and are not reusable coordinates.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "search results tree",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "panel",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": true,
+          "included": false,
+          "reason": "before skipped because no nearby frame showed a clear visual change in the search window.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "search_results_tree_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/search_results_tree.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/815a76e3-ee62-43d4-bc25-22d1f261aae0.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "search_results_tree_visible",
+            "color": null
+          },
+          {
+            "view_id": "search_results_tree_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/search_results_tree_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/runs/codex_exec_domains/ubuntu_4_18_refine_detached/batch_20260418_180103/20260418_180103_vs_code_retry/phase4/vs_code/VSCODE_Search_and_Replace_Project_Content/Images/search_results_tree.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "search results tree",
+            "color": "green",
+            "grounding_query": "the panel region containing the green boxed search results tree and nearby controls",
+            "grounding_query_full": "Where is the panel region containing the green boxed search results tree and nearby controls? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              188,
+              248,
+              350,
+              884
+            ],
+            "crop_box_pixels": [
+              247,
+              198,
+              785,
+              1022
+            ],
+            "source_box_pixels": [
+              360,
+              267,
+              672,
+              954
+            ],
+            "focus_context_kind": "panel",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "find_widget_populated",
+      "state_name": "find_widget_populated",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the `find widget populated` state matches the live screenshot for search and replace project content.",
+      "when_not_to_use": "Do not use this card once the workflow has moved to a different VS Code surface or if the current task belongs to a sibling skill boundary.",
+      "visible_cues": [
+        "The editor find widget contains the target token and the matching declaration is visible in code.",
+        "A red box highlights the action cue: find field."
+      ],
+      "non_transferable_parts": [
+        "Do not reuse box positions, crop boundaries, exact coordinates, or example file names as fixed values.",
+        "Treat the screenshot as state evidence for the UI structure, not as proof that the same content or labels will appear in the same place.",
+        "Window size, theme, open tabs, sidebar width, and incidental surrounding files can vary across runs."
+      ],
+      "recommended_verification": "After acting on this state, verify the next requested VS Code state appears before continuing.",
+      "highlight_targets": [
+        {
+          "name": "find field",
+          "target_type": "action_target",
+          "annotation_query": "find widget in the editor containing the requested search token",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "procedure_name": "Replace the requested value and verify the final editor state",
+        "state_id": 1,
+        "state_name": "find_widget_populated",
+        "image_filename": "find_widget_populated.png",
+        "annotation_note": null,
+        "source_step_num": 12,
+        "source_instruction": "Launch VS Code, open the `style.css` file on the desktop. Use the search function to find the `bottom` style and set its value to 2. Then save the file.",
+        "source_domains": "VScode",
+        "source_task_id": "23cf45f5-55a1-4c48-9f2c-af86dae75deb",
+        "source_traj_index": 11,
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/96853ca2-2205-4dff-b6ff-59b93a35f25a.png"
+      },
+      "codex_review_notes": "Codex rewrote this state card from the search and replace project content phase3 plan. The boxes are local cues only and are not reusable coordinates.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "find field",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "generic",
+          "grounding_query_role": "target"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "find_widget_populated_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/find_widget_populated.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/96853ca2-2205-4dff-b6ff-59b93a35f25a.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "find_widget_populated",
+            "color": null
+          },
+          {
+            "view_id": "find_widget_populated_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/find_widget_populated_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/runs/codex_exec_domains/ubuntu_4_18_refine_detached/batch_20260418_180103/20260418_180103_vs_code_retry/phase4/vs_code/VSCODE_Search_and_Replace_Project_Content/Images/find_widget_populated.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "find field",
+            "color": "red",
+            "grounding_query": "find widget in the editor containing the requested search token",
+            "grounding_query_full": "Where is find widget in the editor containing the requested search token? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              702,
+              131,
+              921,
+              164
+            ],
+            "crop_box_pixels": [
+              1296,
+              38,
+              1818,
+              280
+            ],
+            "source_box_pixels": [
+              1347,
+              141,
+              1768,
+              177
+            ],
+            "focus_context_kind": "generic",
+            "focus_query_role": "target"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "matched_value_ready_for_overwrite",
+      "state_name": "matched_value_ready_for_overwrite",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the `matched value ready for overwrite` state matches the live screenshot for search and replace project content.",
+      "when_not_to_use": "Do not use this card once the workflow has moved to a different VS Code surface or if the current task belongs to a sibling skill boundary.",
+      "visible_cues": [
+        "The matched declaration is visible in the editor with the current value ready to be overwritten.",
+        "A red box highlights the action cue: bottom declaration line."
+      ],
+      "non_transferable_parts": [
+        "Do not reuse box positions, crop boundaries, exact coordinates, or example file names as fixed values.",
+        "Treat the screenshot as state evidence for the UI structure, not as proof that the same content or labels will appear in the same place.",
+        "Window size, theme, open tabs, sidebar width, and incidental surrounding files can vary across runs."
+      ],
+      "recommended_verification": "After acting on this state, verify the next requested VS Code state appears before continuing.",
+      "highlight_targets": [
+        {
+          "name": "bottom declaration line",
+          "target_type": "action_target",
+          "annotation_query": "CSS declaration line in the editor containing the text bottom: 0; near line 60",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "procedure_name": "Replace the requested value and verify the final editor state",
+        "state_id": 2,
+        "state_name": "matched_value_ready_for_overwrite",
+        "image_filename": "matched_value_ready.png",
+        "annotation_note": null,
+        "source_step_num": 13,
+        "source_instruction": "Launch VS Code, open the `style.css` file on the desktop. Use the search function to find the `bottom` style and set its value to 2. Then save the file.",
+        "source_domains": "VScode",
+        "source_task_id": "23cf45f5-55a1-4c48-9f2c-af86dae75deb",
+        "source_traj_index": 12,
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/0932ce77-0812-4cae-a386-b16d0bf9d504.png"
+      },
+      "codex_review_notes": "Codex rewrote this state card from the search and replace project content phase3 plan. The boxes are local cues only and are not reusable coordinates.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "bottom declaration line",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "generic",
+          "grounding_query_role": "target"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "matched_value_ready_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/matched_value_ready.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/0932ce77-0812-4cae-a386-b16d0bf9d504.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "matched_value_ready_for_overwrite",
+            "color": null
+          },
+          {
+            "view_id": "matched_value_ready_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/matched_value_ready_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/runs/codex_exec_domains/ubuntu_4_18_refine_detached/batch_20260418_180103/20260418_180103_vs_code_retry/phase4/vs_code/VSCODE_Search_and_Replace_Project_Content/Images/matched_value_ready.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "bottom declaration line",
+            "color": "red",
+            "grounding_query": "CSS declaration line in the editor containing the text bottom: 0; near line 60",
+            "grounding_query_full": "Where is CSS declaration line in the editor containing the text bottom: 0; near line 60? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              297,
+              484,
+              361,
+              505
+            ],
+            "crop_box_pixels": [
+              374,
+              412,
+              890,
+              654
+            ],
+            "source_box_pixels": [
+              570,
+              522,
+              693,
+              545
+            ],
+            "focus_context_kind": "generic",
+            "focus_query_role": "target"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "replacement_saved_in_editor",
+      "state_name": "replacement_saved_in_editor",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when the `replacement saved in editor` state matches the live screenshot for search and replace project content.",
+      "when_not_to_use": "Do not use this card once the workflow has moved to a different VS Code surface or if the current task belongs to a sibling skill boundary.",
+      "visible_cues": [
+        "The editor now shows the replaced value in context inside the saved file.",
+        "A green box highlights the verification cue: replaced text.",
+        "This state is a completion check and should remain visibly true before the workflow is treated as done."
+      ],
+      "non_transferable_parts": [
+        "Do not reuse box positions, crop boundaries, exact coordinates, or example file names as fixed values.",
+        "Treat the screenshot as state evidence for the UI structure, not as proof that the same content or labels will appear in the same place.",
+        "Window size, theme, open tabs, sidebar width, and incidental surrounding files can vary across runs."
+      ],
+      "recommended_verification": "Confirm the persistent requested result remains visible before ending the task.",
+      "highlight_targets": [
+        {
+          "name": "replaced text",
+          "target_type": "state_signal",
+          "annotation_query": "editor text showing the requested replacement value",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "procedure_name": "Replace the requested value and verify the final editor state",
+        "state_id": 3,
+        "state_name": "replacement_saved_in_editor",
+        "image_filename": "replacement_saved_result.png",
+        "annotation_note": null,
+        "source_step_num": 18,
+        "source_instruction": "Launch VS Code, open the `style.css` file on the desktop. Use the search function to find the `bottom` style and set its value to 2. Then save the file.",
+        "source_domains": "VScode",
+        "source_task_id": "23cf45f5-55a1-4c48-9f2c-af86dae75deb",
+        "source_traj_index": 17,
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/b9139b3e-73fa-4e15-a0c7-1ad750305193.png"
+      },
+      "codex_review_notes": "Codex rewrote this state card from the search and replace project content phase3 plan. The boxes are local cues only and are not reusable coordinates.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "replaced text",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "generic",
+          "grounding_query_role": "target"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "replacement_saved_result_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/replacement_saved_result.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/b9139b3e-73fa-4e15-a0c7-1ad750305193.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "replacement_saved_in_editor",
+            "color": null
+          },
+          {
+            "view_id": "replacement_saved_result_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/replacement_saved_result_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/runs/codex_exec_domains/ubuntu_4_18_refine_detached/batch_20260418_180103/20260418_180103_vs_code_retry/phase4/vs_code/VSCODE_Search_and_Replace_Project_Content/Images/replacement_saved_result.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "replaced text",
+            "color": "green",
+            "grounding_query": "editor text showing the requested replacement value",
+            "grounding_query_full": "Where is editor text showing the requested replacement value? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              719,
+              140,
+              792,
+              161
+            ],
+            "crop_box_pixels": [
+              1192,
+              41,
+              1708,
+              283
+            ],
+            "source_box_pixels": [
+              1380,
+              151,
+              1520,
+              173
+            ],
+            "focus_context_kind": "generic",
+            "focus_query_role": "target"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": null
+}

@@ -1,0 +1,145 @@
+{
+  "skill_slug": "CHROME_Search_Web_And_Open_Target_Result",
+  "skill_name": "Search Web and Open Target Result",
+  "codex_authored": true,
+  "overview": "Use Google search in Chrome to submit a query, choose the intended result, and verify that the browser has opened the requested destination page instead of a similarly named result. This skill stops at the landing page and does not cover deep in-site browsing or long-page extraction.",
+  "when_to_use": [
+    "Searching the web from Google or the Chrome new-tab surface",
+    "Opening a specific result after the query runs",
+    "Verifying that the target destination page is visibly open"
+  ],
+  "preconditions": [
+    "The target query or destination site is already known.",
+    "Chrome can reach a search surface such as Google homepage or Google results."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "reach_surface",
+      "purpose": "Reach the relevant Chrome surface for search web and open target result",
+      "derived_from_source_skills": [
+        "CHROME_Search_Web_And_Open_Target_Result__ENTRY"
+      ]
+    },
+    {
+      "name": "execute_and_verify",
+      "purpose": "Execute search web and open target result and verify the requested visible result state",
+      "derived_from_source_skills": [
+        "CHROME_Search_Web_And_Open_Target_Result__EXECUTE"
+      ]
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The correct Chrome surface is not open yet.",
+      "choose_capability": "reach_surface",
+      "reason": "Surface errors cause benchmark failures before the core action starts."
+    },
+    {
+      "condition": "The action already ran but completion is still uncertain.",
+      "choose_capability": "execute_and_verify",
+      "reason": "The skill is only complete when the requested visible result state is present."
+    }
+  ],
+  "selected_task_ids": [
+    "0564ddc3-849e-4bbe-89b5-abea972e5065",
+    "04c8f639-cf7e-4b33-af9f-d6f810c5fedf"
+  ],
+  "evidence_quality": "direct_agentnet_with_curated_frames",
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "web_search",
+      "when_to_use": [
+        "Run a query and open the intended result from web search."
+      ],
+      "derived_from_source_skills": [
+        "CHROME_Search_Web_And_Open_Target_Result__ENTRY",
+        "CHROME_Search_Web_And_Open_Target_Result__EXECUTE"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "open_search_surface",
+          "visual_grounding": "The Google homepage or another web-search surface is open with a visible search field.",
+          "trigger_condition": "The query has not been entered yet.",
+          "action": "Focus the visible search field so the query can be typed and submitted.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "",
+          "key_frame": {
+            "source_task_id": "0564ddc3-849e-4bbe-89b5-abea972e5065",
+            "source_step_num": 2,
+            "image_filename": "google_search_box_ready.png",
+            "highlight_targets": [
+              {
+                "name": "Google search box",
+                "target_type": "action_target",
+                "annotation_query": "Google search box below the Google logo on the homepage",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 2,
+          "state_name": "choose_target_result",
+          "visual_grounding": "The search-results page shows candidate results that match the typed query.",
+          "trigger_condition": "The query has already been submitted and the correct result is visible in the results list.",
+          "action": "Click the result title or card that matches the requested destination.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "",
+          "key_frame": {
+            "source_task_id": "0564ddc3-849e-4bbe-89b5-abea972e5065",
+            "source_step_num": 6,
+            "image_filename": "search_result_target_link.png",
+            "highlight_targets": [
+              {
+                "name": "Target search result",
+                "target_type": "action_target",
+                "annotation_query": "search result title \"Prince - Purple Rain (Official Video)\" on the Google results page",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 3,
+          "state_name": "verify_destination_page",
+          "visual_grounding": "The requested destination page or result card is open after selecting the result.",
+          "trigger_condition": "The navigation has already occurred and the destination page should be loaded.",
+          "action": "Verify that the destination page heading or primary result card is visibly open before continuing.",
+          "is_result_state": true,
+          "has_image": true,
+          "text_description": "",
+          "key_frame": {
+            "source_task_id": "04c8f639-cf7e-4b33-af9f-d6f810c5fedf",
+            "source_step_num": 8,
+            "image_filename": "destination_page_open.png",
+            "highlight_targets": [
+              {
+                "name": "Destination page heading",
+                "target_type": "state_signal",
+                "annotation_query": "NVIDIA Corp heading on the Google Finance stock page",
+                "color": "green"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "phase4_status": "grounded_from_codex_authored_phase3",
+  "lineage": {
+    "merged_skill": "CHROME_Search_Web_And_Open_Target_Result",
+    "source_atomic_skills": [
+      "CHROME_Search_Web_And_Open_Target_Result__ENTRY",
+      "CHROME_Search_Web_And_Open_Target_Result__EXECUTE"
+    ]
+  },
+  "common_failure_modes": [
+    "Opening a similarly named result instead of the requested destination.",
+    "Treating a result snippet or knowledge card as completion before the destination page actually opens.",
+    "Using the skill for in-site section hunting after the destination has already loaded."
+  ]
+}

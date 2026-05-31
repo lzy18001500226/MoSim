@@ -1,0 +1,127 @@
+{
+  "schema_version": "2026-04-18.runtime_state_bundles.v5",
+  "skill_slug": "LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents",
+  "domain": "libreoffice_writer",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_writer_repair_20260418",
+  "states": [
+    {
+      "state_id": "save_export_pdf_target",
+      "state_name": "Verify the export filename and file type",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when Writer has already opened a file chooser for export or save confirmation and the task still depends on checking the output name or output format before committing. This image is especially relevant when the requested result is a PDF and the agent needs visual proof that the dialog is set to a PDF target rather than the document's native format.",
+      "when_not_to_use": "Do not use this card while the File menu is still open, while the dedicated template dialog is open, or when the task is a normal save that should keep the document as an editable Writer file. Ignore the literal filename and folder path if the current task asks for different values.",
+      "visible_cues": [
+        "A standard save dialog overlays Writer and shows breadcrumb navigation near the top.",
+        "The name field at the top contains a filename ending in `.pdf` and is outlined in green as a verification cue.",
+        "The file-type control at the lower right is also outlined in green and shows `PDF - Portable Document Format (.pdf)`.",
+        "A green `Save` button appears in the upper-right corner, indicating the dialog is ready to commit the output."
+      ],
+      "verification_cue": "Before clicking Save, verify that the current task's requested filename appears in the name field and that the file-type control shows the requested export format, with PDF selected for PDF-output tasks. If either value is wrong, stay in the chooser and correct it before committing the export.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before skipped because no nearby frame showed a clear visual change in the search window.",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/save_export_pdf_target.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Verify the export filename and file type"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/save_export_pdf_target_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "PDF filename field"
+        }
+      ]
+    },
+    {
+      "state_id": "save_export_save_a_copy",
+      "state_name": "Choose Save a Copy from the File menu",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the current Writer document should be duplicated instead of overwritten and the agent is deciding which File-menu route to open. The image matches the moment when the File menu is already expanded and `Save a Copy...` is visible as the route for creating a separate output file.",
+      "when_not_to_use": "Do not use this card once a save dialog has already opened. Do not use it for export-to-format tasks that need `Export` or `Export As`, and do not use it for template creation because those flows leave the File menu and move into different dialogs.",
+      "visible_cues": [
+        "LibreOffice Writer is in the foreground with the `File` menu dropped down from the top menu bar.",
+        "The `Save a Copy...` menu entry is surrounded by a red box, marking the interaction target.",
+        "Nearby entries such as `Save`, `Save As...`, and `Export...` are visible, which helps distinguish this route from other output actions.",
+        "The document canvas remains visible behind the menu, showing that the agent is still on the main editing surface."
+      ],
+      "verification_cue": "After selecting `Save a Copy...`, expect Writer to open a save dialog for a new output file rather than silently updating the current document in place.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/save_export_save_a_copy.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Choose Save a Copy from the File menu"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/save_export_save_a_copy_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Save a Copy entry"
+        }
+      ]
+    },
+    {
+      "state_id": "save_export_template_dialog",
+      "state_name": "Use the template save dialog for reusable outputs",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the task asks to turn the current Writer document into a reusable template and Writer has already opened the dedicated `Save As Template` modal. This image is useful for recognizing the template-specific surface where the agent must provide a template name before saving.",
+      "when_not_to_use": "Do not use this card for ordinary file saving, PDF export, or copy-saving flows. Ignore it if only the main Writer window or a generic file chooser is visible, because those surfaces do not expose the template-only fields shown here.",
+      "visible_cues": [
+        "A modal dialog titled `Save As Template` sits above the Writer document.",
+        "The label `Enter Template Name:` appears near the top of the modal and the text field below it is outlined in red as the action cue.",
+        "A template-category list is visible in the lower half of the dialog, with categories such as `My Templates` and business-document groupings.",
+        "The `Save` button is present in the lower-right area of the modal and may remain disabled until a valid template name is entered."
+      ],
+      "verification_cue": "Enter or confirm the requested template name in the template-name field, optionally choose a category if the task requires one, and confirm that the dialog is in a savable state before pressing Save.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/save_export_template_dialog.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Use the template save dialog for reusable outputs"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/save_export_template_dialog_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Template name field"
+        }
+      ]
+    }
+  ]
+}

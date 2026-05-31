@@ -1,0 +1,520 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "LIBREOFFICECALC_Sort_and_Filter_Calc_Tables",
+  "domain": "libreoffice_calc",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "data_menu_autofilter",
+      "state_name": "Turn on AutoFilter from the Data menu",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when LibreOffice Calc is already focused on the worksheet table and you still need to begin the AutoFilter flow from the menu bar. It is the pre-menu state: the sheet is visible, the data range is active, and the Data menu label is the next interaction cue before any filter arrows appear in the header row.",
+      "when_not_to_use": "Do not use this card if the Data menu is already open, if header filter dropdown arrows are already visible on the live table, or if you are inside the Standard Filter dialog or another non-worksheet surface.",
+      "visible_cues": [
+        "LibreOffice Calc is on the worksheet with a contiguous table visible and selected.",
+        "The Data menu label in the top menu bar is highlighted as the next place to act.",
+        "The table is still shown in plain worksheet view without visible header filter dropdown controls."
+      ],
+      "non_transferable_parts": [
+        "The workbook title, formula bar contents, and the active cell address belong to the source example only.",
+        "Example data such as city names, years, house-price fields, and volume fields must not be copied into a new task unless the prompt explicitly asks for them.",
+        "The exact selected cells, table extent, and any box positions in the screenshot are not reusable coordinates."
+      ],
+      "recommended_verification": "Before acting, verify that you are still on the worksheet table itself and that enabling AutoFilter has not happened yet on the current range.",
+      "highlight_targets": [
+        {
+          "name": "Data menu label",
+          "target_type": "action_target",
+          "annotation_query": "the Data menu label in the LibreOffice Calc menu bar",
+          "color": "red"
+        },
+        {
+          "name": "Selected worksheet table",
+          "target_type": "state_signal",
+          "annotation_query": "the selected worksheet table that is about to receive AutoFilter",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "plan_procedure_id": 1,
+        "plan_state_id": 1,
+        "source_task_id": "059303e6-0373-4c9a-ac7c-edf8807620da",
+        "source_step_num": 11,
+        "source_traj_index": 10,
+        "source_image_uuid": "8d01ffa8-f896-4c74-a87b-3f4cac52a9d7.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/8d01ffa8-f896-4c74-a87b-3f4cac52a9d7.png",
+        "source_instruction": "Calculate the covariance between the Average house price (yuan/square meter) and the Volume. Add an automatic filter to all the data and sort the \"City\" column in ascending order.",
+        "source_domains": "libreoffice_calc",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the \"Data\" menu in the top menu bar.",
+        "source_code": "pyautogui.click(x=0.238, y=0.072)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.297605+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "Enable AutoFilter and prepare the table for sorting or quick filtering",
+        "state_id": 1,
+        "state_name": "Turn on AutoFilter from the Data menu",
+        "image_filename": "data_menu_autofilter.png"
+      },
+      "codex_review_notes": "This image is best treated as a pre-action entry cue for opening Data. The preserved screenshot does not clearly show the AutoFilter command itself, so the card is authored to match the actual visible state rather than the old scaffold wording.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Selected worksheet table",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "menu",
+          "grounding_query_role": "target"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": true,
+          "included": true,
+          "reason": "Selected the later frame at offset +1 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition.",
+          "selected_offset": 1,
+          "candidate_offsets_considered": [
+            {
+              "offset": 1,
+              "diff": 2.584,
+              "score": 2.584
+            },
+            {
+              "offset": 3,
+              "diff": 2.033,
+              "score": 0.333
+            }
+          ],
+          "grounding_method": "qwen_bbox_grounding",
+          "target_name": "Selected worksheet table"
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "data_menu_autofilter_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/data_menu_autofilter.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/8d01ffa8-f896-4c74-a87b-3f4cac52a9d7.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Turn on AutoFilter from the Data menu",
+            "color": null
+          },
+          {
+            "view_id": "data_menu_autofilter_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/data_menu_autofilter_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_15_codex_skills/ubuntu/libreoffice_calc/LIBREOFFICECALC_Sort_and_Filter_Calc_Tables/Images/data_menu_autofilter.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Selected worksheet table",
+            "color": "green",
+            "grounding_query": "the selected worksheet table that is about to receive AutoFilter",
+            "grounding_query_full": "Where is the selected worksheet table that is about to receive AutoFilter? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              41,
+              192,
+              794,
+              740
+            ],
+            "crop_box_pixels": [
+              0,
+              91,
+              1735,
+              801
+            ],
+            "source_box_pixels": [
+              78,
+              207,
+              1524,
+              799
+            ],
+            "focus_context_kind": "menu",
+            "focus_query_role": "target"
+          },
+          {
+            "view_id": "data_menu_autofilter_after",
+            "view_type": "after",
+            "image_path": "Images/data_menu_autofilter_after.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7600c919-ed6b-49c0-a9e5-32aa9c514c48.png",
+            "source_traj_index": 11,
+            "selected_offset": 1,
+            "candidate_offsets_considered": [
+              {
+                "offset": 1,
+                "diff": 2.584,
+                "score": 2.584
+              },
+              {
+                "offset": 3,
+                "diff": 2.033,
+                "score": 0.333
+              }
+            ],
+            "use_for": "compare_state_transition",
+            "label": "Selected worksheet table",
+            "color": "green",
+            "grounding_query": "the selected worksheet table that is about to receive AutoFilter",
+            "grounding_query_full": "Where is the selected worksheet table that is about to receive AutoFilter? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              37,
+              192,
+              794,
+              739
+            ]
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "header_filter_controls_visible",
+      "state_name": "Verify the table headers now expose filter controls",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the data range is already selected and the Data menu is open, with AutoFilter available to click. This is the actionable menu-open state for turning on header filters before any later sort or row-filtering work.",
+      "when_not_to_use": "Do not use this card if header filter arrows are already active on the worksheet, if the Data menu is closed, or if the current task has already moved on to choosing filter criteria or validating the filtered result.",
+      "visible_cues": [
+        "The Data menu dropdown is open over the worksheet.",
+        "AutoFilter is visible in the menu as the relevant command.",
+        "The selected table or header region remains marked behind the menu, showing which range the command will affect."
+      ],
+      "non_transferable_parts": [
+        "The menu position, table crop, and all box placements are example-specific and must not be reused as coordinates.",
+        "The workbook name, formula text, and the real-estate worksheet contents are source-example details only.",
+        "The exact columns and visible rows behind the menu are not part of the transferable procedure."
+      ],
+      "recommended_verification": "Verify that the open menu is anchored to Data and that AutoFilter is available for the currently selected range before clicking it.",
+      "highlight_targets": [
+        {
+          "name": "AutoFilter menu item",
+          "target_type": "action_target",
+          "annotation_query": "the AutoFilter command inside the open Data menu in LibreOffice Calc",
+          "color": "red"
+        },
+        {
+          "name": "Selected table header area",
+          "target_type": "state_signal",
+          "annotation_query": "the currently selected worksheet table behind the open Data menu",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "plan_procedure_id": 1,
+        "plan_state_id": 2,
+        "source_task_id": "059303e6-0373-4c9a-ac7c-edf8807620da",
+        "source_step_num": 12,
+        "source_traj_index": 11,
+        "source_image_uuid": "7600c919-ed6b-49c0-a9e5-32aa9c514c48.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7600c919-ed6b-49c0-a9e5-32aa9c514c48.png",
+        "source_instruction": "Calculate the covariance between the Average house price (yuan/square meter) and the Volume. Add an automatic filter to all the data and sort the \"City\" column in ascending order.",
+        "source_domains": "libreoffice_calc",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the \"AutoFilter\" option in the Data menu.",
+        "source_code": "pyautogui.click(x=0.252, y=0.159)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.297641+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "Enable AutoFilter and prepare the table for sorting or quick filtering",
+        "state_id": 2,
+        "state_name": "Verify the table headers now expose filter controls",
+        "image_filename": "header_filter_controls_visible.png"
+      },
+      "codex_review_notes": "The filename suggests a post-click header-control state, but the preserved screenshot is visually stronger as a menu-open action state with AutoFilter visible. The card intentionally follows the image content while preserving the plan lineage.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "AutoFilter menu item",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "menu",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": true,
+          "included": true,
+          "reason": "Selected the later frame at offset +2 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition.",
+          "selected_offset": 2,
+          "candidate_offsets_considered": [
+            {
+              "offset": 2,
+              "diff": 4.571,
+              "score": 3.721
+            },
+            {
+              "offset": 1,
+              "diff": 2.649,
+              "score": 2.649
+            },
+            {
+              "offset": 3,
+              "diff": 2.778,
+              "score": 1.078
+            }
+          ],
+          "grounding_method": "qwen_bbox_grounding",
+          "target_name": "Selected table header area"
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "header_filter_controls_visible_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/header_filter_controls_visible.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7600c919-ed6b-49c0-a9e5-32aa9c514c48.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Verify the table headers now expose filter controls",
+            "color": null
+          },
+          {
+            "view_id": "header_filter_controls_visible_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/header_filter_controls_visible_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_15_codex_skills/ubuntu/libreoffice_calc/LIBREOFFICECALC_Sort_and_Filter_Calc_Tables/Images/header_filter_controls_visible.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "AutoFilter menu item",
+            "color": "red",
+            "grounding_query": "the local menu region around the red boxed AutoFilter menu item with nearby menu options",
+            "grounding_query_full": "Where is the local menu region around the red boxed AutoFilter menu item with nearby menu options? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              226,
+              152,
+              376,
+              551
+            ],
+            "crop_box_pixels": [
+              366,
+              80,
+              788,
+              597
+            ],
+            "source_box_pixels": [
+              433,
+              164,
+              721,
+              595
+            ],
+            "focus_context_kind": "menu",
+            "focus_query_role": "region"
+          },
+          {
+            "view_id": "header_filter_controls_visible_after",
+            "view_type": "after",
+            "image_path": "Images/header_filter_controls_visible_after.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/0bb023fe-e2d8-481f-9ced-c12b805dd195.png",
+            "source_traj_index": 13,
+            "selected_offset": 2,
+            "candidate_offsets_considered": [
+              {
+                "offset": 2,
+                "diff": 4.571,
+                "score": 3.721
+              },
+              {
+                "offset": 1,
+                "diff": 2.649,
+                "score": 2.649
+              },
+              {
+                "offset": 3,
+                "diff": 2.778,
+                "score": 1.078
+              }
+            ],
+            "use_for": "compare_state_transition",
+            "label": "Selected table header area",
+            "color": "green",
+            "grounding_query": "the currently selected worksheet table behind the open Data menu",
+            "grounding_query_full": "Where is the currently selected worksheet table behind the open Data menu? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              41,
+              192,
+              794,
+              744
+            ]
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "filtered_table_result",
+      "state_name": "Verify that only the intended rows remain visible after filtering",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card after the filter logic has already been applied and you need to verify the remaining visible rows on the worksheet. It is the post-filter result state, useful before later calculations, charts, or task completion.",
+      "when_not_to_use": "Do not use this card as instructions for choosing criteria, and do not treat a merely shorter table as success. Skip it while a filter dialog is still open or before the requested keep-or-exclude logic has been applied.",
+      "visible_cues": [
+        "LibreOffice Calc has returned to worksheet view rather than a menu or dialog.",
+        "Only a reduced subset of rows remains visible under the header row.",
+        "The visible table region is marked as the result area to inspect."
+      ],
+      "non_transferable_parts": [
+        "The clothing terms, quarter labels, material names, and numeric values shown in the table are example-specific.",
+        "The SUBTOTAL formula text and the emphasized sales column belong to the source example only.",
+        "The exact row numbers and the particular rows that remain visible in the screenshot must not be copied into a new task."
+      ],
+      "recommended_verification": "Check that every still-visible row satisfies the current prompt's requested filter condition and that rows outside the requested subset are hidden before proceeding.",
+      "highlight_targets": [
+        {
+          "name": "Filtered visible rows",
+          "target_type": "state_signal",
+          "annotation_query": "the rows that remain visible after filtering in the LibreOffice Calc worksheet",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "plan_procedure_id": 2,
+        "plan_state_id": 5,
+        "source_task_id": "3ca93ca5-974a-447d-9ed6-df4209a33f37",
+        "source_step_num": 23,
+        "source_traj_index": 22,
+        "source_image_uuid": "5f8f4f92-ee06-4789-9b52-ebd5d6948f87.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/5f8f4f92-ee06-4789-9b52-ebd5d6948f87.png",
+        "source_instruction": "Apply an auto-filter to all the data to filter out items in the Clothing categories that contain \"Autumn\" or \"shirt\", and then calculate the total Sales volume of these filtered data.",
+        "source_domains": "libreoffice_calc",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Press Enter to confirm and execute the SUBTOTAL formula that will calculate the sum of the filtered Sales volume values.",
+        "source_code": "pyautogui.press('enter')",
+        "lineage_resolved_at": "2026-04-15T10:06:43.297673+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "Configure Standard Filter logic and verify the visible rows",
+        "state_id": 5,
+        "state_name": "Verify that only the intended rows remain visible after filtering",
+        "image_filename": "filtered_table_result.png"
+      },
+      "codex_review_notes": "This is the strongest verification image in the package. It transfers well as a 'filtered result visible' cue, but the example criteria, column focus, and formula text must stay example-bound.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Filtered visible rows",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "sheet_region",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "filtered_table_result_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/filtered_table_result.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/5f8f4f92-ee06-4789-9b52-ebd5d6948f87.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Verify that only the intended rows remain visible after filtering",
+            "color": null
+          },
+          {
+            "view_id": "filtered_table_result_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/filtered_table_result_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_15_codex_skills/ubuntu/libreoffice_calc/LIBREOFFICECALC_Sort_and_Filter_Calc_Tables/Images/filtered_table_result.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Filtered visible rows",
+            "color": "green",
+            "grounding_query": "the worksheet area around the green boxed Filtered visible rows with surrounding rows and columns",
+            "grounding_query_full": "Where is the worksheet area around the green boxed Filtered visible rows with surrounding rows and columns? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              128,
+              202,
+              800,
+              762
+            ],
+            "crop_box_pixels": [
+              90,
+              146,
+              1691,
+              895
+            ],
+            "source_box_pixels": [
+              245,
+              218,
+              1536,
+              822
+            ],
+            "focus_context_kind": "sheet_region",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": {
+    "ts": "2026-04-15T10:06:43.297687+00:00",
+    "resolver": "backfill_4_12_state_card_lineage.py",
+    "source_dataset": "opencua_agentnet/agentnet_ubuntu_5k.jsonl",
+    "raw_images_root": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted"
+  }
+}

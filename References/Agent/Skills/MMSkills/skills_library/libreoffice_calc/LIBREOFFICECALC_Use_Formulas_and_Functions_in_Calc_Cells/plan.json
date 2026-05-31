@@ -1,0 +1,48 @@
+{
+  "overview": "Enter direct Calc formulas or wizard-selected functions in the correct target cell, verify the first result, and only then fill the intended range.",
+  "when_to_use": [
+    "The task is mainly a direct worksheet formula or named-function task such as totals, averages, date arithmetic, scaling, rounding, or text concatenation.",
+    "Success is judged by visible worksheet values in a target cell or repeated output range."
+  ],
+  "preconditions": [
+    "The destination cell or first output cell is known before typing.",
+    "The formula relation is local worksheet arithmetic rather than a keyed lookup workflow or business-metric specialist branch."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "Enter the first formula in the correct target cell",
+      "purpose": "Anchor the requested output cell and enter the initial direct formula or named function."
+    },
+    {
+      "name": "Verify the first computed result before propagating",
+      "purpose": "Check target row or column placement, plausible output, and display format before filling the rest of the range."
+    },
+    {
+      "name": "Fill only the intended range",
+      "purpose": "Copy the verified formula through the requested rows or columns without drifting into adjacent data."
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The prompt describes a direct worksheet relation such as sum, average, subtract, multiply, divide, date arithmetic, or concatenation.",
+      "choose_capability": "Enter the first formula in the correct target cell",
+      "reason": "These are standard cell-formula tasks and should stay on the generic formula path."
+    },
+    {
+      "condition": "The first result must be checked before fill-down or fill-across.",
+      "choose_capability": "Verify the first computed result before propagating",
+      "reason": "Most Calc formula failures in this domain come from using the wrong target cell or wrong relative references."
+    },
+    {
+      "condition": "The task explicitly depends on VLOOKUP-style keys or cross-sheet keyed retrieval.",
+      "choose_capability": "switch_skill",
+      "reason": "Those tasks should move to the lookup skill instead of forcing a generic formula workflow."
+    }
+  ],
+  "completion_checks": [
+    "The first formula is entered in the requested destination cell.",
+    "The first visible result is plausible and in the requested target column or row.",
+    "The filled range covers only the intended cells.",
+    "The final visible worksheet state, not just the formula bar, matches the task."
+  ]
+}

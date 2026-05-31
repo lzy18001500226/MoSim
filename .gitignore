@@ -134,6 +134,8 @@ References/Agent/Skills/*
 !References/Agent/Skills/codex-plugin-cc/**
 !References/Agent/Skills/HeavySkill/
 !References/Agent/Skills/HeavySkill/**
+!References/Agent/Skills/MMSkills/
+!References/Agent/Skills/MMSkills/**
 !References/Agent/Skills/mattpocock-skills/
 !References/Agent/Skills/mattpocock-skills/**
 !References/Agent/Skills/openai-skills/

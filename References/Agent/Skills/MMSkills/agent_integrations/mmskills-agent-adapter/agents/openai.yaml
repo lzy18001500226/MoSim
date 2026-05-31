@@ -1,0 +1,4 @@
+interface:
+  display_name: "MMSkills Agent Adapter"
+  short_description: "Search, download, and load MMSkills packages for visual-agent tasks"
+  default_prompt: "Use $mmskills to find relevant MMSkills packages, download them if needed, and read their SKILL.md, runtime states, and visual references for the current GUI-agent task."

@@ -1,0 +1,129 @@
+{
+  "schema_version": "2026-04-17.runtime_state_bundles.v4",
+  "skill_slug": "LIBREOFFICEIMPRESS_Manage_Slide_Structure_Ordering_and_Layouts",
+  "domain": "libreoffice_impress",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "slide_layout_control",
+      "state_name": "open_layout_or_structure_control",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the target slide is already selected in the left navigator and you need a slide-level control such as Layout before changing structure or placeholder arrangement. This image matches the moment where a context menu is open from the selected slide thumbnail and the Layout entry is the next control to use.",
+      "when_not_to_use": "Do not use if the task is only editing text, objects, notes, backgrounds, or save/export settings on the current slide, if you are dragging thumbnails to reorder slides, or if only the right sidebar layouts are visible without a thumbnail context menu anchored to the intended slide.",
+      "visible_cues": [
+        "A single slide thumbnail in the left navigator is selected.",
+        "A context menu is open from that selected thumbnail.",
+        "The Layout row is the red interaction cue inside the menu.",
+        "The selected thumbnail remains the green state cue while the menu is open."
+      ],
+      "verification_cue": "Before choosing a layout or other structural command, verify that the menu belongs to the intended selected thumbnail and that the main canvas still corresponds to that slide. If this task only needed slide targeting, stop after confirming the target and hand off to the content-edit skill.",
+      "failure_recovery_summary": "If the menu is attached to the wrong thumbnail or the canvas no longer matches the selected thumbnail, close the menu and re-establish the target slide before acting.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after skipped because no nearby frame showed a clear visual change in the search window."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/slide_layout_control.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "open_layout_or_structure_control"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/slide_layout_control_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "layout_menu_entry"
+        }
+      ]
+    },
+    {
+      "state_id": "slide_structure_result",
+      "state_name": "verify_slide_structure_result",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use after a layout or other structure-changing action when the main slide canvas should now reflect the requested result. This image is for the verification moment where the selected slide stays active and the canvas layout itself is the primary confirmation signal.",
+      "when_not_to_use": "Do not use before the requested structural action has been attempted. Do not rely on this card alone for delete, insert, or reorder tasks that must also be confirmed in the thumbnail list. Ignore it if the current screenshot does not show the selected slide canvas clearly enough to compare the resulting structure, or if the real task is now an object/text edit inside the already selected slide.",
+      "visible_cues": [
+        "The selected slide remains active in the left navigator.",
+        "The main canvas is outlined as the green verification region.",
+        "The canvas shows a completed slide layout rather than an insertion point or drag operation."
+      ],
+      "verification_cue": "Confirm that the selected slide's canvas now matches the requested structure or placeholder arrangement, and pair this with thumbnail-order or slide-count checks when the task changes slide ordering or slide count.",
+      "failure_recovery_summary": "If the canvas looks right but the navigator order or count is still wrong, keep working on the filmstrip and do not declare completion.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/slide_structure_result.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "verify_slide_structure_result"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/slide_structure_result_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "vertical_placeholder_layout"
+        }
+      ]
+    },
+    {
+      "state_id": "slide_thumbnail_selected",
+      "state_name": "select_target_slide_thumbnail",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use at the start of a slide-level structure task when you must confirm that the intended slide thumbnail is selected before deleting, duplicating, moving, or relayouting it. This image matches a navigator-first state where one thumbnail is clearly selected and the main canvas displays the same slide.",
+      "when_not_to_use": "Do not use if the slide navigator is hidden, if multiple slides are selected, or if the task is focused on editing content inside the current slide rather than changing slide order, count, layout, or navigator visibility.",
+      "visible_cues": [
+        "The left navigator shows a single selected slide thumbnail.",
+        "The red cue marks the selected thumbnail to act on.",
+        "The main canvas shows the same slide as a green state cue.",
+        "Selection is established before any menu or drag action begins."
+      ],
+      "verification_cue": "Before any structural action, verify that the selected thumbnail is the intended target and that the main canvas matches it so the edit is applied to the correct slide. Do not keep this skill active once the task has moved into text, object, or notes editing.",
+      "failure_recovery_summary": "If the wrong slide is selected, correct the selection first instead of compensating later with extra edits.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/slide_thumbnail_selected.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "select_target_slide_thumbnail"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/slide_thumbnail_selected_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "selected_slide_thumbnail"
+        }
+      ]
+    }
+  ]
+}

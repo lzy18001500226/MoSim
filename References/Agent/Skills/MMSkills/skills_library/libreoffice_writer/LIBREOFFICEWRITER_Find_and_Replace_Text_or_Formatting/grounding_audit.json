@@ -1,0 +1,41 @@
+{
+  "skill_slug": "LIBREOFFICEWRITER_Find_and_Replace_Text_or_Formatting",
+  "states": [
+    {
+      "state_id": "find_replace_dialog_entry",
+      "target_name": "Find field",
+      "query": "the Find input field in the Find and Replace dialog",
+      "bbox_2d": [
+        384,
+        349,
+        679,
+        377
+      ],
+      "image": "find_replace_dialog_entry.png"
+    },
+    {
+      "state_id": "find_replace_formatting_confirm",
+      "target_name": "Formatting dialog OK button",
+      "query": "the \"OK\" button in the Replace with formatting dialog",
+      "bbox_2d": [
+        676,
+        781,
+        719,
+        815
+      ],
+      "image": "find_replace_formatting_confirm.png"
+    },
+    {
+      "state_id": "find_replace_success_message",
+      "target_name": "Replace count message",
+      "query": "the replace count message inside the Find and Replace dialog",
+      "bbox_2d": [
+        384,
+        412,
+        481,
+        429
+      ],
+      "image": "find_replace_success_message.png"
+    }
+  ]
+}

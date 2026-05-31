@@ -1,0 +1,33 @@
+[project]
+name = "mmskills"
+version = "0.1.0"
+description = "Multimodal skill integration layer for OSWorld visual agents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+dependencies = [
+  "backoff",
+  "openai",
+  "Pillow",
+  "requests",
+  "tqdm",
+  "wrapt_timeout_decorator",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://github.com/DeepExperience/MMSkills"
+Repository = "https://github.com/DeepExperience/MMSkills"
+Issues = "https://github.com/DeepExperience/MMSkills/issues"
+Paper = "https://arxiv.org/abs/2605.13527"
+
+[tool.setuptools]
+packages = ["mm_agents", "mm_agents.utils"]

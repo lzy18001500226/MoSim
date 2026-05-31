@@ -1,0 +1,134 @@
+{
+  "schema_version": "2026-04-17.runtime_state_bundles.v4",
+  "skill_slug": "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells",
+  "domain": "libreoffice_calc",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "direct_formula_entry_target_cell",
+      "state_name": "Type the direct formula into the active target cell",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when Calc is already on the worksheet, the first destination cell for the current formula task is active, and the next step is to type a direct formula into the cell or formula input line. Match it only at first-entry stage, before the result has been filled through a range.",
+      "when_not_to_use": "Do not use this card for keyed lookup formulas, filled business-metric columns, or after the requested result range is already populated. Ignore the example cell address, workbook title, and sheet labels.",
+      "visible_cues": [
+        "LibreOffice Calc is in normal worksheet view with the formula bar visible.",
+        "The name box shows a target cell address and the green outline marks one empty destination cell in the grid.",
+        "A red box spans the formula input line to the right of the fx button, showing the direct typing surface.",
+        "The selected cell sits under a highlighted column header, indicating where the formula will land."
+      ],
+      "verification_cue": "Before typing, confirm the active cell is under the requested output header or in the requested output row. After entry, verify the formula commits into that exact target cell and that the first visible result is plausible before any fill-down.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/direct_formula_entry_target_cell.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Type the direct formula into the active target cell"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/direct_formula_entry_target_cell_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Formula input line"
+        }
+      ]
+    },
+    {
+      "state_id": "function_result_visible_in_target_cell",
+      "state_name": "Verify the computed result appears in the target cell",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when a named function has already been chosen and its arguments are filled, and you need to verify that the calculation is producing the expected output in the worksheet target cell. The screenshot matches a state where the Function Wizard remains open while the selected sheet cell already shows the computed result.",
+      "when_not_to_use": "Do not use this card to choose a function from the list, to begin direct formula entry from a blank cell, or to validate a filled business-metric or keyed-reference column. Do not transfer the visible function name, argument references, numeric result, or exact destination cell from the example unless the current task explicitly asks for those same values.",
+      "visible_cues": [
+        "The worksheet target cell is selected and already displays a numeric result.",
+        "The formula bar contains a function expression rather than plain text.",
+        "The Function Wizard dialog is open on a specific function with argument fields populated.",
+        "The wizard's preview result and the worksheet cell both show a completed calculation state."
+      ],
+      "verification_cue": "Check that the target worksheet cell now contains the computed value for the current task, that the output still sits in the requested row or column, and that the visible formula or wizard preview is consistent with it. For fill-down tasks, verify the first computed cell before copying the formula farther, and for date tasks confirm the value is not an unexpected serial number.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before skipped because no nearby frame showed a clear visual change in the search window.",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/function_result_visible_in_target_cell.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Verify the computed result appears in the target cell"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/function_result_visible_in_target_cell_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Computed result in the target cell"
+        }
+      ]
+    },
+    {
+      "state_id": "function_wizard_named_function_selection",
+      "state_name": "Select the named function from Function Wizard",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the task calls for a built-in Calc function and the Function Wizard is already open or is the preferred entry path. The screenshot matches the moment after typing a search prefix and before setting arguments, when the correct function still needs to be chosen from the filtered list.",
+      "when_not_to_use": "Do not use this card once the function has already been selected and you are editing parameters, and do not use it for direct formula entry on the sheet. The exact function family, search text, and visible result list are example-specific and should not be copied into unrelated function tasks.",
+      "visible_cues": [
+        "A Function Wizard dialog overlays the sheet and the Functions tab is active.",
+        "The search box contains text that narrows the function list.",
+        "A red box marks one candidate function row inside the filtered results list.",
+        "A green box frames the wizard window as the relevant working surface."
+      ],
+      "verification_cue": "Before moving to argument entry, verify that the intended named function is the one highlighted in the wizard list and that the task really benefits from wizard-based entry. If the task is plain arithmetic, return to direct formula entry instead of forcing a wizard path.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "Selected the later frame at offset +2 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop",
+        "after"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/function_wizard_named_function_selection.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Select the named function from Function Wizard"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/function_wizard_named_function_selection_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Named function row in the results list"
+        },
+        {
+          "view_type": "after",
+          "image_path": "Images/function_wizard_named_function_selection_after.png",
+          "use_for": "compare_state_transition",
+          "label": "Named function row in the results list"
+        }
+      ]
+    }
+  ]
+}

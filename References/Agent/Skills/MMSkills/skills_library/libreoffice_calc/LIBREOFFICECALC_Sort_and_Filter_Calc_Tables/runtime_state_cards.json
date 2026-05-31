@@ -1,0 +1,138 @@
+{
+  "schema_version": "2026-04-17.runtime_state_bundles.v4",
+  "skill_slug": "LIBREOFFICECALC_Sort_and_Filter_Calc_Tables",
+  "domain": "libreoffice_calc",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "data_menu_autofilter",
+      "state_name": "Turn on AutoFilter from the Data menu",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when LibreOffice Calc is already focused on the worksheet table and you still need to begin the AutoFilter flow from the menu bar. It is the pre-menu state: the sheet is visible, the data range is active, and the Data menu label is the next interaction cue before any filter arrows appear in the header row.",
+      "when_not_to_use": "Do not use this card if the Data menu is already open, if header filter dropdown arrows are already visible on the live table, or if you are inside the Standard Filter dialog or another non-worksheet surface.",
+      "visible_cues": [
+        "LibreOffice Calc is on the worksheet with a contiguous table visible and selected.",
+        "The Data menu label in the top menu bar is highlighted as the next place to act.",
+        "The table is still shown in plain worksheet view without visible header filter dropdown controls."
+      ],
+      "verification_cue": "Before acting, verify that you are still on the worksheet table itself and that enabling AutoFilter has not happened yet on the current range.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "Selected the later frame at offset +1 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop",
+        "after"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/data_menu_autofilter.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Turn on AutoFilter from the Data menu"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/data_menu_autofilter_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Selected worksheet table"
+        },
+        {
+          "view_type": "after",
+          "image_path": "Images/data_menu_autofilter_after.png",
+          "use_for": "compare_state_transition",
+          "label": "Selected worksheet table"
+        }
+      ]
+    },
+    {
+      "state_id": "header_filter_controls_visible",
+      "state_name": "Verify the table headers now expose filter controls",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the data range is already selected and the Data menu is open, with AutoFilter available to click. This is the actionable menu-open state for turning on header filters before any later sort or row-filtering work.",
+      "when_not_to_use": "Do not use this card if header filter arrows are already active on the worksheet, if the Data menu is closed, or if the current task has already moved on to choosing filter criteria or validating the filtered result.",
+      "visible_cues": [
+        "The Data menu dropdown is open over the worksheet.",
+        "AutoFilter is visible in the menu as the relevant command.",
+        "The selected table or header region remains marked behind the menu, showing which range the command will affect."
+      ],
+      "verification_cue": "Verify that the open menu is anchored to Data and that AutoFilter is available for the currently selected range before clicking it.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "Selected the later frame at offset +2 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop",
+        "after"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/header_filter_controls_visible.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Verify the table headers now expose filter controls"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/header_filter_controls_visible_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "AutoFilter menu item"
+        },
+        {
+          "view_type": "after",
+          "image_path": "Images/header_filter_controls_visible_after.png",
+          "use_for": "compare_state_transition",
+          "label": "Selected table header area"
+        }
+      ]
+    },
+    {
+      "state_id": "filtered_table_result",
+      "state_name": "Verify that only the intended rows remain visible after filtering",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card after the filter logic has already been applied and you need to verify the remaining visible rows on the worksheet. It is the post-filter result state, useful before later calculations, charts, or task completion.",
+      "when_not_to_use": "Do not use this card as instructions for choosing criteria, and do not treat a merely shorter table as success. Skip it while a filter dialog is still open or before the requested keep-or-exclude logic has been applied.",
+      "visible_cues": [
+        "LibreOffice Calc has returned to worksheet view rather than a menu or dialog.",
+        "Only a reduced subset of rows remains visible under the header row.",
+        "The visible table region is marked as the result area to inspect."
+      ],
+      "verification_cue": "Check that every still-visible row satisfies the current prompt's requested filter condition and that rows outside the requested subset are hidden before proceeding.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/filtered_table_result.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Verify that only the intended rows remain visible after filtering"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/filtered_table_result_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Filtered visible rows"
+        }
+      ]
+    }
+  ]
+}

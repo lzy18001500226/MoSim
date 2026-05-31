@@ -1,0 +1,403 @@
+{
+  "schema_version": "2026-04-18.state_bundles.v5",
+  "skill_slug": "LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents",
+  "domain": "libreoffice_writer",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_writer_repair_20260418",
+  "states": [
+    {
+      "state_id": "save_export_pdf_target",
+      "state_name": "Verify the export filename and file type",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when Writer has already opened a file chooser for export or save confirmation and the task still depends on checking the output name or output format before committing. This image is especially relevant when the requested result is a PDF and the agent needs visual proof that the dialog is set to a PDF target rather than the document's native format.",
+      "when_not_to_use": "Do not use this card while the File menu is still open, while the dedicated template dialog is open, or when the task is a normal save that should keep the document as an editable Writer file. Ignore the literal filename and folder path if the current task asks for different values.",
+      "visible_cues": [
+        "A standard save dialog overlays Writer and shows breadcrumb navigation near the top.",
+        "The name field at the top contains a filename ending in `.pdf` and is outlined in green as a verification cue.",
+        "The file-type control at the lower right is also outlined in green and shows `PDF - Portable Document Format (.pdf)`.",
+        "A green `Save` button appears in the upper-right corner, indicating the dialog is ready to commit the output."
+      ],
+      "non_transferable_parts": [
+        "The example filename `Fitness Method Impact Analysis.pdf` is source-task specific and must be replaced by the current task's requested name.",
+        "The example destination path under `disks > D > Healthy Life > Fitness` is not reusable unless the current task asks for that same location.",
+        "The empty file list in the center of the dialog is incidental and should not be treated as a success condition.",
+        "The green boxes identify state signals only; they do not provide reusable coordinates."
+      ],
+      "recommended_verification": "Before clicking Save, verify that the current task's requested filename appears in the name field and that the file-type control shows the requested export format, with PDF selected for PDF-output tasks. If either value is wrong, stay in the chooser and correct it before committing the export.",
+      "highlight_targets": [
+        {
+          "name": "PDF filename field",
+          "target_type": "state_signal",
+          "annotation_query": "the filename field at the top of the save dialog containing a PDF filename",
+          "color": "green",
+          "fallback_queries": [
+            "the save-dialog name field showing a filename ending with .pdf"
+          ]
+        },
+        {
+          "name": "PDF file-type selector",
+          "target_type": "state_signal",
+          "annotation_query": "the file-type dropdown in the lower-right corner set to PDF - Portable Document Format (.pdf)",
+          "color": "green",
+          "fallback_queries": [
+            "the save-dialog file format field set to PDF"
+          ]
+        }
+      ],
+      "evidence_source": {
+        "source_skill_dir": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/libreoffice_writer/LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents",
+        "source_skill_slug": "LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents",
+        "source_state_id": "save_export_pdf_target",
+        "source_image": "Images/save_export_pdf_target.png",
+        "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/libreoffice_writer/LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents/Images/save_export_pdf_target.png",
+        "source_task_id": "06aff381-03b3-4ca9-86b1-b91f52979475",
+        "source_case_id": null,
+        "source_step_num": 13,
+        "source_instruction": "Please help me create a new document and write an analysis article about the effects of different fitness methods on various parts of the body. After completion, output it as \"Fitness Method Impact Analysis.pdf\" and save it to \"D Drive/Healthy Life/Fitness\"",
+        "source_action": "Click the green \"Save\" button to save the PDF file with the specified name and location.",
+        "raw_source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/93d41d0d-b736-4962-8b72-395de52926b6.png"
+      },
+      "codex_review_notes": "This image is best treated as a verification surface, not an action-target image. The transfer value is the pairing of a requested filename with the PDF file-type control; the document title, example path, and exact text in the name field are non-transferable.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "PDF filename field",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": true,
+          "included": false,
+          "reason": "before skipped because no nearby frame showed a clear visual change in the search window.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "save_export_pdf_target_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/save_export_pdf_target.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/93d41d0d-b736-4962-8b72-395de52926b6.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Verify the export filename and file type",
+            "color": null
+          },
+          {
+            "view_id": "save_export_pdf_target_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/save_export_pdf_target_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/libreoffice_writer/LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents/Images/save_export_pdf_target.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "PDF filename field",
+            "color": "green",
+            "grounding_query": "the main area of the filename field at the top of the save dialog containing the green boxed PDF filename field and the green boxed PDF file-type selector",
+            "grounding_query_full": "Where is the main area of the filename field at the top of the save dialog containing the green boxed PDF filename field and the green boxed PDF file-type selector? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              200,
+              48,
+              838,
+              942
+            ],
+            "crop_box_pixels": [
+              286,
+              0,
+              1706,
+              1080
+            ],
+            "source_box_pixels": [
+              384,
+              51,
+              1608,
+              1017
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "save_export_save_a_copy",
+      "state_name": "Choose Save a Copy from the File menu",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the current Writer document should be duplicated instead of overwritten and the agent is deciding which File-menu route to open. The image matches the moment when the File menu is already expanded and `Save a Copy...` is visible as the route for creating a separate output file.",
+      "when_not_to_use": "Do not use this card once a save dialog has already opened. Do not use it for export-to-format tasks that need `Export` or `Export As`, and do not use it for template creation because those flows leave the File menu and move into different dialogs.",
+      "visible_cues": [
+        "LibreOffice Writer is in the foreground with the `File` menu dropped down from the top menu bar.",
+        "The `Save a Copy...` menu entry is surrounded by a red box, marking the interaction target.",
+        "Nearby entries such as `Save`, `Save As...`, and `Export...` are visible, which helps distinguish this route from other output actions.",
+        "The document canvas remains visible behind the menu, showing that the agent is still on the main editing surface."
+      ],
+      "non_transferable_parts": [
+        "The document title, page text, and formatting visible behind the menu are example-specific and irrelevant to the reusable skill.",
+        "The exact menu position on screen is not reusable across resolutions or themes.",
+        "The red box marks the menu item conceptually; it is not a coordinate to replay.",
+        "This card only transfers the choice of route: use `Save a Copy...` when preserving the original file matters."
+      ],
+      "recommended_verification": "After selecting `Save a Copy...`, expect Writer to open a save dialog for a new output file rather than silently updating the current document in place.",
+      "highlight_targets": [
+        {
+          "name": "Save a Copy entry",
+          "target_type": "action_target",
+          "annotation_query": "the Save a Copy entry in the open File menu",
+          "color": "red",
+          "fallback_queries": [
+            "the File-menu item labeled Save a Copy..."
+          ]
+        }
+      ],
+      "evidence_source": {
+        "source_skill_dir": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/libreoffice_writer/LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents",
+        "source_skill_slug": "LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents",
+        "source_state_id": "save_export_save_a_copy",
+        "source_image": "Images/save_export_save_a_copy.png",
+        "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/libreoffice_writer/LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents/Images/save_export_save_a_copy.png",
+        "source_task_id": "55b78d69-74f5-4d99-ae1d-3a88cb77aabe",
+        "source_case_id": null,
+        "source_step_num": 9,
+        "source_instruction": "Add a portion of bold red content and underline at the end of the current document in Libireoffice, and save it as a copy to the desktop after completion.",
+        "source_action": "Click on the \"Save a Copy...\" option in the File dropdown menu.",
+        "raw_source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/c2e6f5f4-33ff-412d-8bfb-25813467dd44.png"
+      },
+      "codex_review_notes": "The main transferable cue is the File-menu branch for duplicate outputs. Red indicates where to act. The article content behind the menu, including the highlighted text at the bottom of the page, must not leak into the reusable instructions.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Save a Copy entry",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "menu",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "save_export_save_a_copy_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/save_export_save_a_copy.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/c2e6f5f4-33ff-412d-8bfb-25813467dd44.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Choose Save a Copy from the File menu",
+            "color": null
+          },
+          {
+            "view_id": "save_export_save_a_copy_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/save_export_save_a_copy_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/libreoffice_writer/LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents/Images/save_export_save_a_copy.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Save a Copy entry",
+            "color": "red",
+            "grounding_query": "the expanded File menu region containing the red boxed Save a Copy entry",
+            "grounding_query_full": "Where is the expanded File menu region containing the red boxed Save a Copy entry? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              39,
+              57,
+              200,
+              694
+            ],
+            "crop_box_pixels": [
+              18,
+              0,
+              440,
+              826
+            ],
+            "source_box_pixels": [
+              74,
+              61,
+              384,
+              749
+            ],
+            "focus_context_kind": "menu",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "save_export_template_dialog",
+      "state_name": "Use the template save dialog for reusable outputs",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the task asks to turn the current Writer document into a reusable template and Writer has already opened the dedicated `Save As Template` modal. This image is useful for recognizing the template-specific surface where the agent must provide a template name before saving.",
+      "when_not_to_use": "Do not use this card for ordinary file saving, PDF export, or copy-saving flows. Ignore it if only the main Writer window or a generic file chooser is visible, because those surfaces do not expose the template-only fields shown here.",
+      "visible_cues": [
+        "A modal dialog titled `Save As Template` sits above the Writer document.",
+        "The label `Enter Template Name:` appears near the top of the modal and the text field below it is outlined in red as the action cue.",
+        "A template-category list is visible in the lower half of the dialog, with categories such as `My Templates` and business-document groupings.",
+        "The `Save` button is present in the lower-right area of the modal and may remain disabled until a valid template name is entered."
+      ],
+      "non_transferable_parts": [
+        "The example document title, body text, and style choices visible behind the modal are task-specific and should not be reused as part of the template-saving procedure.",
+        "Any category already highlighted in the list is incidental unless the current task explicitly names a category.",
+        "The red box marks the template-name input conceptually and does not provide reusable coordinates.",
+        "Do not infer that a template is saved merely because the dialog is open; this card represents the naming step before confirmation."
+      ],
+      "recommended_verification": "Enter or confirm the requested template name in the template-name field, optionally choose a category if the task requires one, and confirm that the dialog is in a savable state before pressing Save.",
+      "highlight_targets": [
+        {
+          "name": "Template name field",
+          "target_type": "action_target",
+          "annotation_query": "the empty text field below the Enter Template Name label in the Save As Template dialog",
+          "color": "red",
+          "fallback_queries": [
+            "the template name input box in the Save As Template modal"
+          ]
+        }
+      ],
+      "evidence_source": {
+        "source_skill_dir": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/libreoffice_writer/LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents",
+        "source_skill_slug": "LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents",
+        "source_state_id": "save_export_template_dialog",
+        "source_image": "Images/save_export_template_dialog.png",
+        "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/libreoffice_writer/LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents/Images/save_export_template_dialog.png",
+        "source_task_id": "115d7945-0232-47c2-b068-f60c7dfa0427",
+        "source_case_id": null,
+        "source_step_num": 19,
+        "source_instruction": "I often need to write documents and have my own writing habits. I can make a template according to my following requirements: adjust all secondary headings in the article to red font and yellow highlighting, and increase the font size by one size, and then you can save it as my template",
+        "source_action": "Type \"template1\" in the template name field to name the custom template.",
+        "raw_source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/eabd1fe7-e824-4ac2-bbb5-8e2f0f3cf3b4.png"
+      },
+      "codex_review_notes": "This is a template-only operation surface. The transferable part is the presence of the dedicated template modal with a required name field and optional category selection. The formatted heading text behind the dialog is source-task noise.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Template name field",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "save_export_template_dialog_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/save_export_template_dialog.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/eabd1fe7-e824-4ac2-bbb5-8e2f0f3cf3b4.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Use the template save dialog for reusable outputs",
+            "color": null
+          },
+          {
+            "view_id": "save_export_template_dialog_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/save_export_template_dialog_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/libreoffice_writer/LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents/Images/save_export_template_dialog.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Template name field",
+            "color": "red",
+            "grounding_query": "the dialog region around the red boxed Template name field with nearby controls",
+            "grounding_query_full": "Where is the dialog region around the red boxed Template name field with nearby controls? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              431,
+              362,
+              600,
+              733
+            ],
+            "crop_box_pixels": [
+              663,
+              350,
+              1316,
+              831
+            ],
+            "source_box_pixels": [
+              827,
+              390,
+              1152,
+              791
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    }
+  ]
+}

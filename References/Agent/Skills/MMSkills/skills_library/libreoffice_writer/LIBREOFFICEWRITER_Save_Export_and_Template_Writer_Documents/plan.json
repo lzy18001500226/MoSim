@@ -1,0 +1,87 @@
+{
+  "overview": "Use Writer's output surfaces to save a copy, confirm an export target such as PDF, or store the current document as a reusable template.",
+  "when_to_use": [
+    "The document edits are already complete and the remaining work is to use the correct Writer output surface.",
+    "The task explicitly asks to save a copy, export to another format such as PDF, or save the current document as a reusable template."
+  ],
+  "preconditions": [
+    "LibreOffice Writer is open on the target document.",
+    "The requested filename, format, or template name is already known from the task."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "reach_relevant_writer_surface",
+      "purpose": "Reach the Writer surface needed for save, export, and template writer documents."
+    },
+    {
+      "name": "apply_requested_change",
+      "purpose": "Make the requested edit on the visible control or document region."
+    },
+    {
+      "name": "verify_visible_result",
+      "purpose": "Check the live document or dialog state before moving on."
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The task is specifically about save, export, and template writer documents and the matching Writer surface is visible.",
+      "choose_capability": "apply_requested_change",
+      "reason": "This skill assumes the surrounding workflow has already navigated to the relevant surface and now needs the surface-local operation."
+    }
+  ],
+  "selected_task_ids": [
+    "55b78d69-74f5-4d99-ae1d-3a88cb77aabe"
+  ],
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "save export and template writer documents",
+      "when_to_use": [
+        "Use this procedure when the task maps cleanly to save, export, and template writer documents."
+      ],
+      "derived_from_source_skills": [
+        "Save, Export, and Template Writer Documents"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "Choose the correct output route",
+          "visual_grounding": "The File menu or an output dialog is visible and the next action is to commit to save a copy, export, or template flow.",
+          "trigger_condition": "The remaining work is to choose the exact output surface that matches the task.",
+          "action": "Choose the exact route first: save a copy, export to the requested format, or enter the dedicated template flow.",
+          "is_result_state": false,
+          "has_image": false,
+          "text_description": "Use the menu or dialog route that exposes the control family for this skill."
+        },
+        {
+          "state_id": 2,
+          "state_name": "Set the task-specific output values",
+          "visual_grounding": "The correct chooser or template dialog is open and the filename, file type, or template name fields are ready.",
+          "trigger_condition": "The correct output surface is visible and the task-specific value is known.",
+          "action": "Enter or confirm the filename, output format, or template name before committing the action.",
+          "is_result_state": false,
+          "has_image": false,
+          "text_description": "Apply only the specific value or command requested by the task."
+        },
+        {
+          "state_id": 3,
+          "state_name": "Verify the output surface before committing",
+          "visual_grounding": "The chooser or template dialog visibly matches the requested route and values.",
+          "trigger_condition": "The output values have been entered and the final save/export click is imminent.",
+          "action": "Verify the requested filename and format together, or verify that the dedicated template dialog shows the intended template name, before pressing the final save button.",
+          "is_result_state": true,
+          "has_image": false,
+          "text_description": "Verify the result on the live surface rather than relying on memory of the previous click."
+        }
+      ],
+      "common_failure_modes": [
+        "Applying the right operation on the wrong selection or wrong Writer surface.",
+        "Leaving the surface before checking whether the requested state is actually visible."
+      ]
+    }
+  ],
+  "common_failure_modes": [
+    "Using Save when the task required Save a Copy, which can overwrite the source file.",
+    "Clicking Save in the chooser before confirming that the file type matches the requested output format."
+  ]
+}

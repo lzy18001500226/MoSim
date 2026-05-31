@@ -1,0 +1,136 @@
+{
+  "skill": "Save, Export, and Template Writer Documents",
+  "dir_name": "LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents",
+  "boxed_images": 3,
+  "raw_copy_images": 0,
+  "missing_images": 0,
+  "states": [
+    {
+      "procedure_name": "Choose the requested output route and verify it before committing",
+      "state_id": 1,
+      "state_name": "Choose Save a Copy from the File menu",
+      "image_filename": "save_export_save_a_copy.png",
+      "mode": "boxed",
+      "targets": [
+        {
+          "name": "Save a Copy entry",
+          "queries": [
+            {
+              "raw": "the \"Save a Copy...\" entry in the File menu",
+              "grounding_query": "Where is the \"Save a Copy...\" entry in the File menu? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+              "bbox": {
+                "bbox_2d": [
+                  36,
+                  363,
+                  198,
+                  385
+                ]
+              }
+            }
+          ],
+          "bbox": {
+            "bbox_2d": [
+              36,
+              363,
+              198,
+              385
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "procedure_name": "Choose the requested output route and verify it before committing",
+      "state_id": 2,
+      "state_name": "Verify the export filename and file type",
+      "image_filename": "save_export_pdf_target.png",
+      "mode": "boxed",
+      "targets": [
+        {
+          "name": "PDF filename field",
+          "queries": [
+            {
+              "raw": "the filename field containing \"Fitness Method Impact Analysis.pdf\"",
+              "grounding_query": "Where is the filename field containing \"Fitness Method Impact Analysis.pdf? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+              "bbox": {
+                "bbox_2d": [
+                  431,
+                  48,
+                  628,
+                  80
+                ]
+              }
+            }
+          ],
+          "bbox": {
+            "bbox_2d": [
+              431,
+              48,
+              628,
+              80
+            ]
+          }
+        },
+        {
+          "name": "PDF file-type selector",
+          "queries": [
+            {
+              "raw": "the file-type dropdown showing PDF - Portable Document Format (.pdf)",
+              "grounding_query": "Where is the file-type dropdown showing PDF - Portable Document Format (.pdf)? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+              "bbox": {
+                "bbox_2d": [
+                  677,
+                  944,
+                  835,
+                  978
+                ]
+              }
+            }
+          ],
+          "bbox": {
+            "bbox_2d": [
+              677,
+              944,
+              835,
+              978
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "procedure_name": "Choose the requested output route and verify it before committing",
+      "state_id": 3,
+      "state_name": "Use the template save dialog for reusable outputs",
+      "image_filename": "save_export_template_dialog.png",
+      "mode": "boxed",
+      "targets": [
+        {
+          "name": "Template name field",
+          "queries": [
+            {
+              "raw": "the empty template name field in the Save As Template dialog",
+              "grounding_query": "Where is the empty template name field in the Save As Template dialog? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+              "bbox": {
+                "bbox_2d": [
+                  438,
+                  424,
+                  594,
+                  456
+                ]
+              }
+            }
+          ],
+          "bbox": {
+            "bbox_2d": [
+              438,
+              424,
+              594,
+              456
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

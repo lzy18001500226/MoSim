@@ -1,0 +1,127 @@
+{
+  "schema_version": "2026-04-17.runtime_state_bundles.v4",
+  "skill_slug": "OS_Manage_Files_and_Archives_in_Files",
+  "domain": "os",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "os_manage_files_and_archives_in_files_open_target_files_surface",
+      "state_name": "open_the_target_files_surface",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the task still needs Ubuntu Files to be opened or brought into focus before navigating to a folder, Home, or Trash. The screenshot matches a desktop-start state: the user is on the Ubuntu desktop, the Files launcher is visibly marked, and there is no Files window already showing the destination.",
+      "when_not_to_use": "Do not use this card once a Files window is already open on the needed location. Do not use it for a file picker dialog, another file manager, or a state where the task should already be verifying a result inside Files or on the destination surface.",
+      "visible_cues": [
+        "The Ubuntu desktop fills the screen rather than an open Files window.",
+        "The Files launcher icon in the left dock is outlined in red as the interaction cue.",
+        "Several example desktop items are visible, including folders near the top and archive files on the right edge.",
+        "The dock is present, making this a launcher-entry state rather than an in-window action state."
+      ],
+      "verification_cue": "After opening Files, verify that the requested folder, Home surface, or Trash location is actually visible in the Files window before applying any file action.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/os_manage_files_and_archives_in_files_open_target_files_surface.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "open_the_target_files_surface"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/os_manage_files_and_archives_in_files_open_target_files_surface_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Ubuntu dock launcher region"
+        }
+      ]
+    },
+    {
+      "state_id": "os_manage_files_and_archives_in_files_apply_gui_file_action",
+      "state_name": "apply_the_gui_file_action",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when Files is already open on the correct folder and the next step is to apply a file-management command to a selected item. The screenshot shows a reusable mid-workflow state: a Files window is open, one item is selected, and the next action comes from a toolbar control in the top-right area.",
+      "when_not_to_use": "Do not use this card when Files is not open, when nothing relevant is selected, when a context menu or dialog is already covering the window, or when the task has moved on to verifying the final destination result.",
+      "visible_cues": [
+        "A Files window is open on a folder surface, with the sidebar and path bar visible.",
+        "The sidebar highlights `Downloads`, indicating the current example folder.",
+        "One folder item is selected in the content area and the status line reports one selected item.",
+        "A top-right toolbar/menu control is outlined in red as the action cue."
+      ],
+      "verification_cue": "After triggering the file action, verify the resulting state in Files, Trash, or the destination surface before marking the task complete; for archive or move actions, confirm the new item or new location is visible.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/os_manage_files_and_archives_in_files_apply_gui_file_action.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "apply_the_gui_file_action"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/os_manage_files_and_archives_in_files_apply_gui_file_action_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Files item or toolbar control"
+        }
+      ]
+    },
+    {
+      "state_id": "os_manage_files_and_archives_in_files_verify_gui_path_result",
+      "state_name": "verify_the_gui_path_result",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when the file action is already finished and the result must be confirmed on a desktop or Home-like surface rather than inside an actively manipulated Files window. The screenshot matches a verification state where the expected folders or files should now be visible on the desktop and no additional file action is in progress.",
+      "when_not_to_use": "Do not use this card as the instruction to start manipulating files. Do not use it when the result should be verified inside a Files folder view, inside Trash, or in a modal dialog. If the target item is still missing and another file action is required, return to an operation card instead of treating this as success.",
+      "visible_cues": [
+        "The Ubuntu desktop is visible with multiple folders and documents placed directly on the surface.",
+        "A green box marks the Files launcher in the dock as a state cue rather than an action target.",
+        "No Files window is open over the desktop, so the result must be judged from what is visible on the desktop itself.",
+        "The desktop contains example folders and files clustered near the center and left side."
+      ],
+      "verification_cue": "Confirm that the current destination surface shows the requested file, folder, restored item, or emptied state for the live task. Success depends on the requested result being present or absent in the correct place, not on matching the example desktop contents.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/os_manage_files_and_archives_in_files_verify_gui_path_result.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "verify_the_gui_path_result"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/os_manage_files_and_archives_in_files_verify_gui_path_result_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Files destination result cue"
+        }
+      ]
+    }
+  ]
+}

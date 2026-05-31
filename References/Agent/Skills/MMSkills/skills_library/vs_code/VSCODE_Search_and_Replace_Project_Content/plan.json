@@ -1,0 +1,199 @@
+{
+  "skill_slug": "VSCODE_Search_and_Replace_Project_Content",
+  "skill_name": "Search and Replace Project Content",
+  "codex_authored": true,
+  "overview": "Search for the requested text through VS Code's search UI or find widget, then replace only the intended value and verify the post-replacement state rather than stopping at an open search panel. Use this when the search surface itself matters: search panel, results tree, find widget, and replace verification. Do not collapse these flows into generic editor editing.",
+  "when_to_use": [
+    "The task is fundamentally about locating text before editing it.",
+    "The user asks for a find-and-replace operation or for project search results to be inspected."
+  ],
+  "preconditions": [
+    "The target file or project is already open in VS Code."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "inspect_search_results",
+      "purpose": "Open the search surface, enter the query, and verify relevant matches are visible.",
+      "derived_from_source_skills": [
+        "Open the search surface and review matches"
+      ]
+    },
+    {
+      "name": "apply_targeted_replacement",
+      "purpose": "Enter the replacement value and verify the requested text changed in the final editor or search result state.",
+      "derived_from_source_skills": [
+        "Replace the requested token in the relevant scope"
+      ]
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The task wants a search overview first.",
+      "choose_capability": "inspect_search_results",
+      "reason": "You need the result tree or match list before changing content."
+    },
+    {
+      "condition": "The task explicitly asks to replace a token with a new value.",
+      "choose_capability": "apply_targeted_replacement",
+      "reason": "The task is complete only once the replacement is visible."
+    },
+    {
+      "condition": "The instruction includes cues like search panel, replace, find widget, results tree.",
+      "choose_capability": "inspect_search_results",
+      "reason": "These cues indicate the task should stay on this skill boundary instead of drifting into a sibling VS Code workflow."
+    }
+  ],
+  "common_failure_modes": [
+    "Stopping after opening the search panel without confirming the correct matches.",
+    "Failing to verify the final edited state after the replace action.",
+    "Stopping after opening the Search view without verifying a changed value in the editor or results tree."
+  ],
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "Inspect workspace search results before editing",
+      "when_to_use": [
+        "The task depends on project-wide matches or search navigation."
+      ],
+      "derived_from_source_skills": [
+        "Open the search surface and review matches"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "search_panel_ready",
+          "visual_grounding": "The Search view is active with the query field ready and the workspace already loaded.",
+          "trigger_condition": "The task requires locating files or lines that contain a specific term.",
+          "action": "Type the search term into the search box and wait for the result list to populate.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "State `search_panel_ready` belongs to search and replace project content in VS Code and should be used as reusable state evidence rather than a fixed coordinate recipe.",
+          "key_frame": {
+            "source_task_id": "29914a3a-db75-401c-bef8-21c2857b64ea",
+            "source_step_num": 10,
+            "image_filename": "workspace_search_panel.png",
+            "highlight_targets": [
+              {
+                "name": "search field",
+                "target_type": "action_target",
+                "annotation_query": "search query field in the VS Code Search view",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 2,
+          "state_name": "search_results_tree_visible",
+          "visual_grounding": "The search panel displays a result tree with the match count and matching files under the query.",
+          "trigger_condition": "The search term has been entered and the agent needs to confirm the right results appeared.",
+          "action": "Review the result tree and open or pin the relevant files only after the match set looks correct.",
+          "is_result_state": true,
+          "has_image": true,
+          "text_description": "State `search_results_tree_visible` belongs to search and replace project content in VS Code and should be used as reusable state evidence rather than a fixed coordinate recipe.",
+          "key_frame": {
+            "source_task_id": "29914a3a-db75-401c-bef8-21c2857b64ea",
+            "source_step_num": 11,
+            "image_filename": "search_results_tree.png",
+            "highlight_targets": [
+              {
+                "name": "search results tree",
+                "target_type": "state_signal",
+                "annotation_query": "search results tree showing matching files or lines",
+                "color": "green"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "procedure_id": 2,
+      "procedure_name": "Replace the requested value and verify the final editor state",
+      "when_to_use": [
+        "The task is a direct find-and-replace operation."
+      ],
+      "derived_from_source_skills": [
+        "Replace the requested token in the relevant scope"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "find_widget_populated",
+          "visual_grounding": "The editor find widget contains the target token and the matching declaration is visible in code.",
+          "trigger_condition": "The relevant file is open and the target text still needs to be located.",
+          "action": "Use the find field to anchor the correct occurrence before editing it.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "State `find_widget_populated` belongs to search and replace project content in VS Code and should be used as reusable state evidence rather than a fixed coordinate recipe.",
+          "key_frame": {
+            "source_task_id": "23cf45f5-55a1-4c48-9f2c-af86dae75deb",
+            "source_step_num": 12,
+            "image_filename": "find_widget_populated.png",
+            "highlight_targets": [
+              {
+                "name": "find field",
+                "target_type": "action_target",
+                "annotation_query": "find widget in the editor containing the requested search token",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 2,
+          "state_name": "matched_value_ready_for_overwrite",
+          "visual_grounding": "The matched declaration is visible in the editor with the current value ready to be overwritten.",
+          "trigger_condition": "The requested search term has already located the correct declaration in the open file.",
+          "action": "Overwrite only the matched value in that declaration with the requested replacement.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "State `matched_value_ready_for_overwrite` belongs to search and replace project content in VS Code and should be used as reusable state evidence rather than a fixed coordinate recipe.",
+          "key_frame": {
+            "source_task_id": "23cf45f5-55a1-4c48-9f2c-af86dae75deb",
+            "source_step_num": 13,
+            "image_filename": "matched_value_ready.png",
+            "highlight_targets": [
+              {
+                "name": "bottom declaration line",
+                "target_type": "action_target",
+                "annotation_query": "CSS declaration line in the editor containing the text bottom: 0; near line 60",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 3,
+          "state_name": "replacement_saved_in_editor",
+          "visual_grounding": "The editor now shows the replaced value in context inside the saved file.",
+          "trigger_condition": "The replacement has been applied and the file has been saved.",
+          "action": "Confirm the new text appears in the correct line before stopping.",
+          "is_result_state": true,
+          "has_image": true,
+          "text_description": "State `replacement_saved_in_editor` belongs to search and replace project content in VS Code and should be used as reusable state evidence rather than a fixed coordinate recipe.",
+          "key_frame": {
+            "source_task_id": "23cf45f5-55a1-4c48-9f2c-af86dae75deb",
+            "source_step_num": 18,
+            "image_filename": "replacement_saved_result.png",
+            "highlight_targets": [
+              {
+                "name": "replaced text",
+                "target_type": "state_signal",
+                "annotation_query": "editor text showing the requested replacement value",
+                "color": "green"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "selected_task_ids": [
+    "29914a3a-db75-401c-bef8-21c2857b64ea",
+    "23cf45f5-55a1-4c48-9f2c-af86dae75deb"
+  ],
+  "codex_authored_phase3": true,
+  "source_reference": "/home/admin/datasets/mm_skill_creator/4_5_superset_codex_skills/ubuntu/vscode/VSCODE_Search_and_Replace_Project_Content/plan.json",
+  "phase3_rewrite_note": "Codex rewrote the phase3 text plan while reusing only the step lineage and full-frame image references from the older VS Code library."
+}

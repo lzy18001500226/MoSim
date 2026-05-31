@@ -1,0 +1,6 @@
+backoff
+openai
+Pillow
+requests
+tqdm
+wrapt_timeout_decorator

@@ -1,0 +1,411 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "VLC_Open_Local_Media_And_Verify_Playback_Surface",
+  "domain": "vlc",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_direct_multiview_vlc_refine_2026_04_18",
+  "states": [
+    {
+      "state_id": "open_local_media_picker",
+      "state_name": "open_local_media_picker",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when VLC is already open and the next step is to reach the local file chooser from the Media menu.",
+      "when_not_to_use": "Do not use after the file chooser is already open, after playback has already started, or when a stray modal should be dismissed before reopening anything.",
+      "visible_cues": [
+        "The VLC cone placeholder is visible in the main player window.",
+        "The `Media` menu is expanded with local open commands such as `Open File...` and `Open Directory...`.",
+        "The stored frame is about reaching the chooser, not about confirming a selected file yet."
+      ],
+      "non_transferable_parts": [
+        "Treat the highlighted region as visual evidence, not a reusable click coordinate.",
+        "Example filenames, titles, and nearby rows can differ in another run.",
+        "Window size, theme, and surrounding controls are context clues only unless the task explicitly asks for them."
+      ],
+      "recommended_verification": "After using this state, verify that the correct local chooser opened; if a non-local modal appears while the requested media is already playing, dismiss it and return to verification.",
+      "highlight_targets": [
+        {
+          "name": "Open File menu item",
+          "target_type": "action_target",
+          "annotation_query": "Open File menu item in the VLC Media menu",
+          "color": "red",
+          "fallback_queries": [
+            "Open File option in the VLC Media dropdown",
+            "Ctrl+O menu entry in the VLC Media menu"
+          ]
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "open_local_media_and_verify_playback_surface",
+        "state_id": "open_local_media_picker",
+        "state_name": "open_local_media_picker",
+        "image_file": "Images/open_local_media_picker.png",
+        "local_image_review": "Codex reviewed the frame and confirmed it is a reusable VLC state for open a local file or folder in vlc and verify that the requested media reaches the playback surface..",
+        "source_task_id": "606c832a-90cd-498f-93c8-46c77604e36d",
+        "source_step_num": 3,
+        "source_traj_index": 2,
+        "source_image_uuid": "437be8d7-453c-49ad-8fa5-66702424609a.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/437be8d7-453c-49ad-8fa5-66702424609a.png",
+        "source_instruction": "Please help me open and play the video \"Green\" on the desktop using VLC. After it starts playing, enable the video recording function.  ",
+        "source_domains": "VLC",
+        "source_applications": null,
+        "source_websites": null,
+        "source_verify_feedback": {
+          "quality": "good"
+        }
+      },
+      "codex_review_notes": "Codex selected this grounded target because it captures the local operating region with enough surrounding UI context to recognize the VLC state.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Codex selected this grounded target because it captures the local operating region with enough surrounding UI context to recognize the VLC state.",
+          "target_name": "Open File menu item",
+          "grounding_method": "qwen_bbox_grounding"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "Codex intentionally omitted before-view images for this VLC state because the current frame plus focus crop carries the needed evidence.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "Codex intentionally omitted after-view images for this VLC state because the current frame plus focus crop carries the needed evidence.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 0,
+        "design_intent": "This VLC bundle uses explicit Codex-authored state frames and adds a focus crop only when it improves state recognition or verification."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "open_local_media_picker",
+            "view_type": "full_frame",
+            "image_path": "Images/open_local_media_picker.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/437be8d7-453c-49ad-8fa5-66702424609a.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "open_local_media_picker",
+            "color": null
+          },
+          {
+            "view_id": "open_local_media_picker_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/open_local_media_picker_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/runs/codex_exec_domains/ubuntu_4_18_refine_detached/batch_20260418_180103/20260418_180103_vlc/phase4/skills/VLC_Open_Local_Media_And_Verify_Playback_Surface/Images/open_local_media_picker.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Open File menu item",
+            "color": "red",
+            "grounding_query": "Open File menu item in the VLC Media menu",
+            "grounding_query_full": "Where is Open File menu item in the VLC Media menu? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              41,
+              81,
+              256,
+              104
+            ],
+            "source_box_pixels": [
+              78,
+              87,
+              491,
+              112
+            ],
+            "crop_box_pixels": [
+              0,
+              13,
+              785,
+              186
+            ],
+            "focus_context_kind": "menu",
+            "focus_query_role": "target"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall VLC surface and decide whether this stored state matches the live task.",
+          "Use `focus_crop` when you need the local menu, dialog, control row, or artifact region without losing surrounding UI context."
+        ]
+      }
+    },
+    {
+      "state_id": "select_requested_local_source",
+      "state_name": "select_requested_local_source",
+      "stage": "operation_state",
+      "image_role": "action_cue",
+      "when_to_use": "Use when the Ubuntu file chooser is open and the task still needs the exact local file selected.",
+      "when_not_to_use": "Do not use when the chooser is still on the wrong folder, when playback is already active in VLC, or when repeated blind clicks have not changed the selected row.",
+      "visible_cues": [
+        "The chooser title indicates VLC is selecting one or more files to open.",
+        "The main file list shows media files such as `green.mp4` in the current directory.",
+        "The left sidebar and current path bar confirm this is the file chooser rather than the playlist view."
+      ],
+      "non_transferable_parts": [
+        "Treat the highlighted region as visual evidence, not a reusable click coordinate.",
+        "Example filenames, titles, and nearby rows can differ in another run.",
+        "Window size, theme, and surrounding controls are context clues only unless the task explicitly asks for them."
+      ],
+      "recommended_verification": "Confirm the requested file row or exact filename field is selected before accepting the chooser; if the chooser keeps stale text or the wrong folder, correct that once before trying to open again.",
+      "highlight_targets": [
+        {
+          "name": "Requested file row",
+          "target_type": "action_target",
+          "annotation_query": "green.mp4 row in the Select one or more files to open dialog",
+          "color": "red",
+          "fallback_queries": [
+            "requested media file row in the Ubuntu file chooser",
+            "green.mp4 file row in the VLC file chooser"
+          ]
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "open_local_media_and_verify_playback_surface",
+        "state_id": "select_requested_local_source",
+        "state_name": "select_requested_local_source",
+        "image_file": "Images/select_requested_local_source.png",
+        "local_image_review": "Codex reviewed the frame and confirmed it is a reusable VLC state for open a local file or folder in vlc and verify that the requested media reaches the playback surface..",
+        "source_task_id": "606c832a-90cd-498f-93c8-46c77604e36d",
+        "source_step_num": 4,
+        "source_traj_index": 3,
+        "source_image_uuid": "67e6f443-cef4-4029-b89a-8f1301928232.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/67e6f443-cef4-4029-b89a-8f1301928232.png",
+        "source_instruction": "Please help me open and play the video \"Green\" on the desktop using VLC. After it starts playing, enable the video recording function.  ",
+        "source_domains": "VLC",
+        "source_applications": null,
+        "source_websites": null,
+        "source_verify_feedback": {
+          "quality": "good"
+        }
+      },
+      "codex_review_notes": "Codex selected this grounded target because it captures the local operating region with enough surrounding UI context to recognize the VLC state.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Codex selected this grounded target because it captures the local operating region with enough surrounding UI context to recognize the VLC state.",
+          "target_name": "Requested file row",
+          "grounding_method": "qwen_bbox_grounding"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "Codex intentionally omitted before-view images for this VLC state because the current frame plus focus crop carries the needed evidence.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "Codex intentionally omitted after-view images for this VLC state because the current frame plus focus crop carries the needed evidence.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 0,
+        "design_intent": "This VLC bundle uses explicit Codex-authored state frames and adds a focus crop only when it improves state recognition or verification."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "select_requested_local_source",
+            "view_type": "full_frame",
+            "image_path": "Images/select_requested_local_source.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/67e6f443-cef4-4029-b89a-8f1301928232.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "select_requested_local_source",
+            "color": null
+          },
+          {
+            "view_id": "select_requested_local_source_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/select_requested_local_source_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/runs/codex_exec_domains/ubuntu_4_18_refine_detached/batch_20260418_180103/20260418_180103_vlc/phase4/skills/VLC_Open_Local_Media_And_Verify_Playback_Surface/Images/select_requested_local_source.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Requested file row",
+            "color": "red",
+            "grounding_query": "green.mp4 row in the Select one or more files to open dialog",
+            "grounding_query_full": "Where is green.mp4 row in the Select one or more files to open dialog? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              286,
+              262,
+              831,
+              282
+            ],
+            "source_box_pixels": [
+              549,
+              282,
+              1595,
+              304
+            ],
+            "crop_box_pixels": [
+              205,
+              164,
+              1920,
+              423
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "target"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall VLC surface and decide whether this stored state matches the live task.",
+          "Use `focus_crop` when you need the local menu, dialog, control row, or artifact region without losing surrounding UI context."
+        ]
+      }
+    },
+    {
+      "state_id": "playback_surface_shows_requested_media",
+      "state_name": "playback_surface_shows_requested_media",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use when the local file has already been opened and you need proof that VLC is now on the requested playback surface.",
+      "when_not_to_use": "Do not use while the file chooser is still open or when VLC is still showing the empty cone placeholder.",
+      "visible_cues": [
+        "The VLC title bar and the paused player both show `Zhejiang.mp4`.",
+        "A real video frame is present instead of the empty default VLC surface.",
+        "Playback controls and a nonzero timeline are visible at the bottom of VLC."
+      ],
+      "non_transferable_parts": [
+        "Treat the highlighted region as visual evidence, not a reusable click coordinate.",
+        "Example filenames, titles, and nearby rows can differ in another run.",
+        "Window size, theme, and surrounding controls are context clues only unless the task explicitly asks for them."
+      ],
+      "recommended_verification": "Mark the local-open workflow complete only when the visible VLC title, real media frame, or nonzero timeline matches the requested media; if a menu or modal blocks a playing surface, dismiss it instead of reopening the file.",
+      "highlight_targets": [
+        {
+          "name": "Local media title on playback surface",
+          "target_type": "result_signal",
+          "annotation_query": "Zhejiang.mp4 title in the VLC title bar",
+          "color": "green",
+          "fallback_queries": [
+            "Zhejiang.mp4 overlay title in the VLC player",
+            "active VLC playback surface showing Zhejiang.mp4"
+          ]
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "open_local_media_and_verify_playback_surface",
+        "state_id": "playback_surface_shows_requested_media",
+        "state_name": "playback_surface_shows_requested_media",
+        "image_file": "Images/playback_surface_shows_requested_media.png",
+        "local_image_review": "Codex reviewed the frame and confirmed it is a reusable VLC state for open a local file or folder in vlc and verify that the requested media reaches the playback surface..",
+        "source_task_id": "310eb3bf-5dd9-4964-9549-d961c55e5eb9",
+        "source_step_num": 8,
+        "source_traj_index": 7,
+        "source_image_uuid": "8a62908b-06e2-44ba-a226-927f2db9027b.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/8a62908b-06e2-44ba-a226-927f2db9027b.png",
+        "source_instruction": "Play two videos from the desktop folder 'Daily Videos' using VCL.",
+        "source_domains": "VLC",
+        "source_applications": null,
+        "source_websites": null,
+        "source_verify_feedback": {
+          "quality": "good"
+        }
+      },
+      "codex_review_notes": "Codex selected this grounded target because it captures the local operating region with enough surrounding UI context to recognize the VLC state.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Codex selected this grounded target because it captures the local operating region with enough surrounding UI context to recognize the VLC state.",
+          "target_name": "Local media title on playback surface",
+          "grounding_method": "qwen_bbox_grounding"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "Codex intentionally omitted before-view images for this VLC state because the current frame plus focus crop carries the needed evidence.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "Codex intentionally omitted after-view images for this VLC state because the current frame plus focus crop carries the needed evidence.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 0,
+        "design_intent": "This VLC bundle uses explicit Codex-authored state frames and adds a focus crop only when it improves state recognition or verification."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "playback_surface_shows_requested_media",
+            "view_type": "full_frame",
+            "image_path": "Images/playback_surface_shows_requested_media.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/8a62908b-06e2-44ba-a226-927f2db9027b.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "playback_surface_shows_requested_media",
+            "color": null
+          },
+          {
+            "view_id": "playback_surface_shows_requested_media_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/playback_surface_shows_requested_media_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/runs/codex_exec_domains/ubuntu_4_18_refine_detached/batch_20260418_180103/20260418_180103_vlc/phase4/skills/VLC_Open_Local_Media_And_Verify_Playback_Surface/Images/playback_surface_shows_requested_media.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Local media title on playback surface",
+            "color": "green",
+            "grounding_query": "Zhejiang.mp4 title in the VLC title bar",
+            "grounding_query_full": "Where is Zhejiang.mp4 title in the VLC title bar? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              455,
+              34,
+              569,
+              52
+            ],
+            "source_box_pixels": [
+              873,
+              36,
+              1092,
+              56
+            ],
+            "crop_box_pixels": [
+              598,
+              0,
+              1366,
+              302
+            ],
+            "focus_context_kind": "player_surface",
+            "focus_query_role": "target"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall VLC surface and decide whether this stored state matches the live task.",
+          "Use `focus_crop` when you need the local menu, dialog, control row, or artifact region without losing surrounding UI context."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": {
+    "legacy_domain_root": "/home/admin/datasets/mm_skill_creator/4_5_superset_codex_skills/ubuntu/vlc",
+    "legacy_source_skills": [
+      "VLC_Open_Local_Media_And_Verify_Playback_Surface"
+    ],
+    "phase0_cluster_file": "/home/admin/datasets/mm_skill_creator/runs/ubuntu_parallel_full_20260326/vlc/phase0/task_clusters_vlc.json",
+    "phase0_manifest_file": "/home/admin/datasets/mm_skill_creator/runs/ubuntu_parallel_full_20260326/vlc/phase0/task_embedding_manifest_vlc.json"
+  }
+}

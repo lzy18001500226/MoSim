@@ -1,0 +1,611 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts",
+  "domain": "chrome",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "bookmark_save_control",
+      "state_name": "open_bookmark_or_shortcut_surface",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the current Chrome tab is already on the page that should be saved and the workflow still needs to open Chrome's bookmark/save surface from the toolbar.",
+      "when_not_to_use": "Do not use once a bookmark popover or Edit bookmark dialog is already open, when the task is only verifying a completed save, or when the active tab is not yet the page that should be saved.",
+      "visible_cues": [
+        "The browser is showing a normal webpage with no modal dialog or bookmark popover covering the page.",
+        "An outlined bookmark star is visible at the far right of the address-bar row, and the red box marks that toolbar control.",
+        "The main page remains fully visible and interactive, so this is still the pre-save state rather than a folder-selection or verification state."
+      ],
+      "non_transferable_parts": [
+        "The site content, tab title, URL, category labels, and product imagery in the page are example background details, not reusable task instructions.",
+        "The red box is an interaction cue for the bookmark star concept and must not be treated as a reusable coordinate.",
+        "Window size, toolbar spacing, and exact icon placement can change across Chromium builds and layouts."
+      ],
+      "recommended_verification": "After activating the toolbar save control, expect Chrome to open either the compact bookmark popover or the fuller Edit bookmark dialog. Continue until the destination is chosen and a saved-state cue is visible.",
+      "highlight_targets": [
+        {
+          "name": "Bookmark save control",
+          "target_type": "action_target",
+          "annotation_query": "Bookmark star or save control in the Chrome toolbar",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "bookmarks",
+        "state_id": 1,
+        "state_name": "open_bookmark_or_shortcut_surface",
+        "plan_image_filename": "bookmark_save_control.png",
+        "source_task_id": "10ef0c9d-57e7-46eb-b9a2-4dd4fa349637",
+        "source_step_num": 5,
+        "source_traj_index": 4,
+        "source_image_uuid": "c5ebbf86-6643-40e1-ae7f-dfd178fa8626.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/c5ebbf86-6643-40e1-ae7f-dfd178fa8626.png",
+        "source_instruction": "Open Chrome, add a bookmark for www.ebay.com, place it in the \"Accessories\" folder (create if it doesn't exist), and then search for \"Watches\" on eBay.",
+        "source_domains": "Chrome",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the star-shaped bookmark icon in the browser toolbar to create a bookmark for the current eBay page.",
+        "source_code": "pyautogui.click(x=0.914, y=0.12)",
+        "lineage_resolved_at": "2026-04-15T10:07:52.685524+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "image_filename": "bookmark_save_control.png",
+        "annotation_note": "Open the bookmark save surface from the current page."
+      },
+      "codex_review_notes": "This screenshot is the clean entry state before any bookmark UI opens. The only reusable signal is that the toolbar star/save control is available on the current page.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Bookmark save control",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "toolbar",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "bookmark_save_control_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/bookmark_save_control.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/c5ebbf86-6643-40e1-ae7f-dfd178fa8626.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "open_bookmark_or_shortcut_surface",
+            "color": null
+          },
+          {
+            "view_id": "bookmark_save_control_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/bookmark_save_control_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/chrome/CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts/Images/bookmark_save_control.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Bookmark save control",
+            "color": "red",
+            "grounding_query": "the broader toolbar band around the red boxed Bookmark save control",
+            "grounding_query_full": "Where is the broader toolbar band around the red boxed Bookmark save control? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              39,
+              99,
+              1000,
+              139
+            ],
+            "crop_box_pixels": [
+              0,
+              42,
+              1920,
+              215
+            ],
+            "source_box_pixels": [
+              74,
+              106,
+              1920,
+              150
+            ],
+            "focus_context_kind": "toolbar",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "edit_bookmark_dialog",
+      "state_name": "choose_destination",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when Chrome has already opened the compact \"Bookmark added\" popover and the next step is to choose an existing destination folder or open the fuller chooser.",
+      "when_not_to_use": "Do not use on the plain webpage before saving, in the larger centered Edit bookmark dialog with the folder tree, or after the saved state has already been confirmed.",
+      "visible_cues": [
+        "A small \"Bookmark added\" popover is anchored near the top-right toolbar area rather than centered on the page.",
+        "Inside the popover, the Folder field is open as a dropdown list that shows existing folders plus a \"Choose another folder...\" option.",
+        "The red box surrounds the popover and dropdown menu, indicating the folder-selection area rather than the page content behind it."
+      ],
+      "non_transferable_parts": [
+        "Folder names shown in the dropdown are example contents and must be replaced by the destination required by the current task.",
+        "The page behind the popover, the current site, and the bookmarked page title are incidental background evidence, not reusable values.",
+        "The red box identifies the folder-selection surface and must not be reused as a fixed click position."
+      ],
+      "recommended_verification": "Choose the requested folder if it is already listed. If the destination is missing or needs nesting, open the fuller chooser from this popover, then save and verify the bookmark result on the active page.",
+      "highlight_targets": [
+        {
+          "name": "Edit bookmark dialog",
+          "target_type": "action_target",
+          "annotation_query": "Edit bookmark dialog with folder selector",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "bookmarks",
+        "state_id": 2,
+        "state_name": "choose_destination",
+        "plan_image_filename": "edit_bookmark_dialog.png",
+        "source_task_id": "10ef0c9d-57e7-46eb-b9a2-4dd4fa349637",
+        "source_step_num": 7,
+        "source_traj_index": 6,
+        "source_image_uuid": "7e308aad-13d3-4e92-a50c-9e6b17188b85.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7e308aad-13d3-4e92-a50c-9e6b17188b85.png",
+        "source_instruction": "Open Chrome, add a bookmark for www.ebay.com, place it in the \"Accessories\" folder (create if it doesn't exist), and then search for \"Watches\" on eBay.",
+        "source_domains": "Chrome",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the \"Choose another folder...\" option at the bottom of the bookmark folder dropdown menu.",
+        "source_code": "pyautogui.click(x=0.853, y=0.447)",
+        "lineage_resolved_at": "2026-04-15T10:07:52.685564+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "image_filename": "edit_bookmark_dialog.png",
+        "annotation_note": "Choose the correct bookmark destination."
+      },
+      "codex_review_notes": "This image captures the lightweight folder-selection step. The presence of the dropdown and the \"Choose another folder...\" row is the key cue that the workflow is deciding destination, not verifying completion.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Edit bookmark dialog",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "menu",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "edit_bookmark_dialog_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/edit_bookmark_dialog.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7e308aad-13d3-4e92-a50c-9e6b17188b85.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "choose_destination",
+            "color": null
+          },
+          {
+            "view_id": "edit_bookmark_dialog_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/edit_bookmark_dialog_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/chrome/CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts/Images/edit_bookmark_dialog.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Edit bookmark dialog",
+            "color": "red",
+            "grounding_query": "the local menu region around the red boxed Edit bookmark dialog with nearby menu options",
+            "grounding_query_full": "Where is the local menu region around the red boxed Edit bookmark dialog with nearby menu options? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              692,
+              131,
+              928,
+              348
+            ],
+            "crop_box_pixels": [
+              1282,
+              95,
+              1826,
+              376
+            ],
+            "source_box_pixels": [
+              1328,
+              141,
+              1781,
+              375
+            ],
+            "focus_context_kind": "menu",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "bookmark_folder_creation",
+      "state_name": "save_item",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when Chrome is showing the expanded centered \"Edit bookmark\" dialog and the workflow needs to create a folder, pick a nested folder, or confirm the final bookmark destination before saving.",
+      "when_not_to_use": "Do not use for the compact top-right popover, for the initial toolbar-star state before the save UI opens, or for the post-save verification state after the bookmark has already been committed.",
+      "visible_cues": [
+        "A large centered \"Edit bookmark\" dialog dims the page behind it.",
+        "Name and URL fields appear at the top, with a folder tree underneath that includes top-level bookmark locations and nested folders.",
+        "An inline new-folder text field is active in the tree, and the red box encloses the tree area where folder creation or selection is happening."
+      ],
+      "non_transferable_parts": [
+        "Existing folder names, the inline draft folder text, the bookmarked page title, and the URL shown in the fields are example details from the source capture.",
+        "The dimmed webpage behind the dialog is only background context and should not be copied into task instructions.",
+        "The red box is an interaction cue for the folder tree region and must not be treated as a reusable coordinate."
+      ],
+      "recommended_verification": "After creating or selecting the requested destination, confirm with Save and then verify that the current page is bookmarked. If the task cares about folder placement, verify that destination separately rather than relying on the star alone.",
+      "highlight_targets": [
+        {
+          "name": "New bookmark folder control",
+          "target_type": "action_target",
+          "annotation_query": "Bookmark dialog control for creating or confirming the target folder",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "bookmarks",
+        "state_id": 3,
+        "state_name": "save_item",
+        "plan_image_filename": "bookmark_folder_creation.png",
+        "source_task_id": "10ef0c9d-57e7-46eb-b9a2-4dd4fa349637",
+        "source_step_num": 10,
+        "source_traj_index": 9,
+        "source_image_uuid": "4ac8b4b8-b5a7-434f-9345-bd2ec6f83442.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/4ac8b4b8-b5a7-434f-9345-bd2ec6f83442.png",
+        "source_instruction": "Open Chrome, add a bookmark for www.ebay.com, place it in the \"Accessories\" folder (create if it doesn't exist), and then search for \"Watches\" on eBay.",
+        "source_domains": "Chrome",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Type \"accessories\" in the new folder name input field to create the Accessories folder for storing the eBay bookmark.",
+        "source_code": "pyautogui.write(message='accessories')",
+        "lineage_resolved_at": "2026-04-15T10:07:52.685597+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "image_filename": "bookmark_folder_creation.png",
+        "annotation_note": "Create or confirm the requested bookmark folder."
+      },
+      "codex_review_notes": "This is the full destination-management state. The important reusable signal is the centered Edit bookmark dialog with an expanded folder tree and an active new-folder field.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "New bookmark folder control",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "bookmark_folder_creation_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/bookmark_folder_creation.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/4ac8b4b8-b5a7-434f-9345-bd2ec6f83442.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "save_item",
+            "color": null
+          },
+          {
+            "view_id": "bookmark_folder_creation_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/bookmark_folder_creation_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/chrome/CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts/Images/bookmark_folder_creation.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "New bookmark folder control",
+            "color": "red",
+            "grounding_query": "the dialog region around the red boxed New bookmark folder control with nearby controls",
+            "grounding_query_full": "Where is the dialog region around the red boxed New bookmark folder control with nearby controls? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              341,
+              135,
+              694,
+              662
+            ],
+            "crop_box_pixels": [
+              600,
+              88,
+              1386,
+              771
+            ],
+            "source_box_pixels": [
+              654,
+              145,
+              1332,
+              714
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "bookmark_result_state",
+      "state_name": "verify_saved_item",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use after the bookmark action has already been executed and the current question is whether the active page shows Chrome's saved-bookmark result cue.",
+      "when_not_to_use": "Do not use as guidance for opening the save UI, choosing a folder, or performing a follow-up search. Do not treat it as complete verification if the task specifically requires checking the bookmark's folder placement.",
+      "visible_cues": [
+        "The bookmark star at the top-right of the toolbar is filled and marked with a green box.",
+        "The rest of the page stays on the same site while unrelated content, such as a search suggestion panel, may still be open.",
+        "No bookmark dialog is visible, so this frame is about confirming the result state on the page itself."
+      ],
+      "non_transferable_parts": [
+        "Typed text in the page search box, autocomplete suggestions, site content, and the visible URL are incidental example details from the capture.",
+        "The green box is a state cue for successful bookmarking and must not be treated as a click target.",
+        "A filled star confirms the current page is bookmarked, but it does not by itself prove that a requested custom folder was used."
+      ],
+      "recommended_verification": "Confirm that the active tab is the page the task asked to save and that the star is active. If the task also cares about folder selection, verify that destination through the bookmark UI or manager before finishing.",
+      "highlight_targets": [
+        {
+          "name": "Saved bookmark state",
+          "target_type": "result_signal",
+          "annotation_query": "Visible page or bookmark state indicating the bookmark action completed",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "bookmarks",
+        "state_id": 4,
+        "state_name": "verify_saved_item",
+        "plan_image_filename": "bookmark_result_state.png",
+        "source_task_id": "10ef0c9d-57e7-46eb-b9a2-4dd4fa349637",
+        "source_step_num": 16,
+        "source_traj_index": 15,
+        "source_image_uuid": "26759183-4ef2-4443-a0f8-cb6ec6d25ddb.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/26759183-4ef2-4443-a0f8-cb6ec6d25ddb.png",
+        "source_instruction": "Open Chrome, add a bookmark for www.ebay.com, place it in the \"Accessories\" folder (create if it doesn't exist), and then search for \"Watches\" on eBay.",
+        "source_domains": "Chrome",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the blue \"Search\" button located to the right of the search input field to execute the search for \"Watches\" on eBay.",
+        "source_code": "pyautogui.click(x=0.9, y=0.209)",
+        "lineage_resolved_at": "2026-04-15T10:07:52.685631+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "image_filename": "bookmark_result_state.png",
+        "annotation_note": "Verify the saved-state outcome after bookmarking."
+      },
+      "codex_review_notes": "This screenshot is the verification state. The reusable evidence is the active bookmark star; the open search suggestion list is incidental and should not affect matching.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Saved bookmark state",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "toolbar",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": true,
+          "included": true,
+          "reason": "Selected the earlier frame at offset -3 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition.",
+          "selected_offset": -3,
+          "candidate_offsets_considered": [
+            {
+              "offset": -3,
+              "diff": 54.934,
+              "score": 53.234
+            },
+            {
+              "offset": -1,
+              "diff": 35.486,
+              "score": 35.486
+            },
+            {
+              "offset": -4,
+              "diff": 36.62,
+              "score": 34.07
+            },
+            {
+              "offset": -2,
+              "diff": 29.74,
+              "score": 28.89
+            }
+          ],
+          "grounding_method": "qwen_bbox_grounding",
+          "target_name": "Saved bookmark state"
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "bookmark_result_state_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/bookmark_result_state.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/26759183-4ef2-4443-a0f8-cb6ec6d25ddb.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "verify_saved_item",
+            "color": null
+          },
+          {
+            "view_id": "bookmark_result_state_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/bookmark_result_state_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/chrome/CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts/Images/bookmark_result_state.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Saved bookmark state",
+            "color": "green",
+            "grounding_query": "the broader toolbar band around the green boxed Saved bookmark state",
+            "grounding_query_full": "Where is the broader toolbar band around the green boxed Saved bookmark state? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              36,
+              97,
+              999,
+              139
+            ],
+            "crop_box_pixels": [
+              0,
+              40,
+              1920,
+              213
+            ],
+            "source_box_pixels": [
+              69,
+              104,
+              1918,
+              150
+            ],
+            "focus_context_kind": "toolbar",
+            "focus_query_role": "region"
+          },
+          {
+            "view_id": "bookmark_result_state_before",
+            "view_type": "before",
+            "image_path": "Images/bookmark_result_state_before.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/f74a0cb9-b0a3-410d-b62b-6ee903cf3e48.png",
+            "source_traj_index": 12,
+            "selected_offset": -3,
+            "candidate_offsets_considered": [
+              {
+                "offset": -3,
+                "diff": 54.934,
+                "score": 53.234
+              },
+              {
+                "offset": -1,
+                "diff": 35.486,
+                "score": 35.486
+              },
+              {
+                "offset": -4,
+                "diff": 36.62,
+                "score": 34.07
+              },
+              {
+                "offset": -2,
+                "diff": 29.74,
+                "score": 28.89
+              }
+            ],
+            "use_for": "compare_state_transition",
+            "label": "Saved bookmark state",
+            "color": "green",
+            "grounding_query": "Visible page or bookmark state indicating the bookmark action completed",
+            "grounding_query_full": "Where is Visible page or bookmark state indicating the bookmark action completed? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              908,
+              103,
+              924,
+              133
+            ]
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": {
+    "ts": "2026-04-15T10:07:52.685644+00:00",
+    "resolver": "backfill_4_12_state_card_lineage.py",
+    "source_dataset": "opencua_agentnet/agentnet_ubuntu_5k.jsonl",
+    "raw_images_root": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted"
+  }
+}

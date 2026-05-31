@@ -1,0 +1,412 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "CHROME_Search_Web_And_Open_Target_Result",
+  "domain": "chrome",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_refine_20260418",
+  "states": [
+    {
+      "state_id": "google_search_box_ready",
+      "state_name": "open_search_surface",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when Chrome is on a Google start surface and the next action is to begin a fresh web search from the page itself. The screenshot should still be at the blank search surface stage, before the query has been submitted.",
+      "when_not_to_use": "Do not use this card after results are already visible, when a destination site is already open, or when the task is being performed from a different search engine or a browser field that does not look like the centered Google page search box shown here.",
+      "visible_cues": [
+        "Chrome is on a Google new-tab or homepage style surface rather than a results list.",
+        "A large Google wordmark is centered on the page.",
+        "A wide rounded search field sits directly under the logo and is marked with a red box.",
+        "The page is otherwise mostly blank, with shortcut tiles below the search field."
+      ],
+      "non_transferable_parts": [
+        "The exact Chrome new-tab layout, shortcut tiles, update banner, and top-right links are example-specific and may differ.",
+        "The red box shows the reusable interaction object type, not a reusable click coordinate.",
+        "Do not infer any required query wording, URL, or destination from this image because it is only the pre-search state."
+      ],
+      "recommended_verification": "After typing and submitting the query, verify that the blank Google start surface is replaced by search results or another search response for the requested query.",
+      "highlight_targets": [
+        {
+          "name": "Google page search box",
+          "target_type": "action_target",
+          "annotation_query": "centered Google search field on the start page below the Google logo",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "0564ddc3-849e-4bbe-89b5-abea972e5065",
+        "source_step_num": 2,
+        "source_image": "Images/google_search_box_ready.png",
+        "source_traj_index": 1,
+        "source_image_uuid": "5dbd7cca-1bb9-48c1-a069-7702c8c8b387.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/5dbd7cca-1bb9-48c1-a069-7702c8c8b387.png",
+        "source_instruction": "I want to watch Prince's Purple Rain live performance video. Could you search for it on Google and copy the sharing link for me?",
+        "source_domains": "Chrome",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the Google search field in the center of the page to focus it and prepare for typing the search query.",
+        "source_code": "pyautogui.click(x=0.405, y=0.375)",
+        "lineage_resolved_at": "2026-04-15T10:07:52.692089+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "web_search",
+        "state_id": 1,
+        "state_name": "open_search_surface",
+        "image_filename": "google_search_box_ready.png"
+      },
+      "codex_review_notes": "Reusable entry cue: the page-level Google search field is visible and ready for text entry. The image should guide state recognition, not force use of the exact new-tab decorations from the example.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Google page search box",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "generic",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "google_search_box_ready_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/google_search_box_ready.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/5dbd7cca-1bb9-48c1-a069-7702c8c8b387.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "open_search_surface",
+            "color": null
+          },
+          {
+            "view_id": "google_search_box_ready_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/google_search_box_ready_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/chrome/CHROME_Search_Web_And_Open_Target_Result/Images/google_search_box_ready.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Google page search box",
+            "color": "red",
+            "grounding_query": "the broader working region containing the red boxed Google page search box",
+            "grounding_query_full": "Where is the broader working region containing the red boxed Google page search box? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              321,
+              344,
+              714,
+              394
+            ],
+            "crop_box_pixels": [
+              526,
+              290,
+              1461,
+              506
+            ],
+            "source_box_pixels": [
+              616,
+              371,
+              1370,
+              425
+            ],
+            "focus_context_kind": "generic",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "search_result_target_link",
+      "state_name": "choose_target_result",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card after the query has been submitted and the Google results page is open with the intended destination visibly listed. The next action is to choose the correct result from the results surface.",
+      "when_not_to_use": "Do not use this card before any search has been run, when the intended result is not yet visible and more scrolling or query refinement is needed, or when the browser has already navigated away from the results page.",
+      "visible_cues": [
+        "The Google results page is open and the query is shown in the top search bar.",
+        "A vertical list of candidate results is visible in the main column.",
+        "One clickable result title in the list is marked with a red box.",
+        "Supplementary modules, previews, or side panels may appear beside the result list."
+      ],
+      "non_transferable_parts": [
+        "The specific query text, video title, ranking order, side panel content, and media thumbnails belong to the source example only.",
+        "The red box identifies the type of object to click, not a reusable bounding box or screen coordinate.",
+        "Google may show ads, cards, or different result layouts, so transfer the selection rule rather than the exact page composition."
+      ],
+      "recommended_verification": "After clicking the chosen result, verify that Chrome opens the requested destination page or result card instead of remaining on the search results page or opening a similarly named but incorrect result.",
+      "highlight_targets": [
+        {
+          "name": "Target search result title",
+          "target_type": "action_target",
+          "annotation_query": "clickable result title in the Google results list that matches the requested destination",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "0564ddc3-849e-4bbe-89b5-abea972e5065",
+        "source_step_num": 6,
+        "source_image": "Images/search_result_target_link.png",
+        "source_traj_index": 5,
+        "source_image_uuid": "1a99a225-3b4f-4ac8-b4a6-4a7ab2b2c57c.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/1a99a225-3b4f-4ac8-b4a6-4a7ab2b2c57c.png",
+        "source_instruction": "I want to watch Prince's Purple Rain live performance video. Could you search for it on Google and copy the sharing link for me?",
+        "source_domains": "Chrome",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the title \"Prince - Purple Rain (Official Video)\" to open the video page on YouTube.",
+        "source_code": "pyautogui.click(x=0.269, y=0.306)",
+        "lineage_resolved_at": "2026-04-15T10:07:52.692126+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "web_search",
+        "state_id": 2,
+        "state_name": "choose_target_result",
+        "image_filename": "search_result_target_link.png"
+      },
+      "codex_review_notes": "This card should steer selection toward the result whose title, source, or snippet matches the current task. The literal result text in the example is not reusable task content.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Target search result title",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "panel",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "search_result_target_link_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/search_result_target_link.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/1a99a225-3b4f-4ac8-b4a6-4a7ab2b2c57c.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "choose_target_result",
+            "color": null
+          },
+          {
+            "view_id": "search_result_target_link_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/search_result_target_link_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/chrome/CHROME_Search_Web_And_Open_Target_Result/Images/search_result_target_link.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Target search result title",
+            "color": "red",
+            "grounding_query": "the panel region containing the red boxed Target search result title and nearby controls",
+            "grounding_query_full": "Where is the panel region containing the red boxed Target search result title and nearby controls? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              146,
+              246,
+              527,
+              420
+            ],
+            "crop_box_pixels": [
+              207,
+              218,
+              1084,
+              499
+            ],
+            "source_box_pixels": [
+              280,
+              265,
+              1011,
+              453
+            ],
+            "focus_context_kind": "panel",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "destination_page_open",
+      "state_name": "verify_destination_page",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card after a result has been opened and the task needs confirmation that the destination page or primary result view is actually visible. The browser should already be past the search-results stage.",
+      "when_not_to_use": "Do not use this card while still choosing among search results, while a page is still obviously loading without a stable title or primary content area, or when the visible page does not yet show a destination-specific heading, card, or main module.",
+      "visible_cues": [
+        "The browser is on a destination-specific page rather than a generic Google results list.",
+        "A prominent page heading near the upper left is boxed in green as the verification signal.",
+        "The page body contains destination-specific content modules, such as a chart and metrics in this example.",
+        "The page layout is stable enough to verify content, not just a transient navigation state."
+      ],
+      "non_transferable_parts": [
+        "The site identity, company name, price values, chart shape, and finance-specific modules are source-example details and are not reusable targets.",
+        "The green box marks the kind of state signal to verify, not a reusable coordinate.",
+        "Do not treat any related page as success; the visible heading or primary card must match the requested destination for the current task."
+      ],
+      "recommended_verification": "Confirm that the browser has left the search-results surface and that the open page shows a stable heading, title, or primary module matching the requested destination rather than a similarly named result.",
+      "highlight_targets": [
+        {
+          "name": "Destination page heading",
+          "target_type": "state_signal",
+          "annotation_query": "destination page title or heading near the top of the opened result page",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "04c8f639-cf7e-4b33-af9f-d6f810c5fedf",
+        "source_step_num": 8,
+        "source_image": "Images/destination_page_open.png",
+        "source_traj_index": 7,
+        "source_image_uuid": "2dc3c35d-59cc-4f2c-894c-dc7c88131f60.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/2dc3c35d-59cc-4f2c-894c-dc7c88131f60.png",
+        "source_instruction": "Want to know yesterday's Closing Price and annual volatility of NVIDIA? Search for it in Google Chrome.",
+        "source_domains": "Chrome",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Terminate the session as the task has been successfully completed.",
+        "source_code": "computer.terminate(status='success')",
+        "lineage_resolved_at": "2026-04-15T10:07:52.692159+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "web_search",
+        "state_id": 3,
+        "state_name": "verify_destination_page",
+        "image_filename": "destination_page_open.png"
+      },
+      "codex_review_notes": "Reusable completion cue: a destination-specific heading or main result card is visibly open after navigation. The example's finance content is only one instance of that broader verified-open state.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Destination page heading",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "document_region",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "destination_page_open_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/destination_page_open.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/2dc3c35d-59cc-4f2c-894c-dc7c88131f60.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "verify_destination_page",
+            "color": null
+          },
+          {
+            "view_id": "destination_page_open_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/destination_page_open_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/chrome/CHROME_Search_Web_And_Open_Target_Result/Images/destination_page_open.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Destination page heading",
+            "color": "green",
+            "grounding_query": "the broader working region containing the green boxed Destination page heading",
+            "grounding_query_full": "Where is the broader working region containing the green boxed Destination page heading? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              242,
+              269,
+              778,
+              999
+            ],
+            "crop_box_pixels": [
+              340,
+              103,
+              1616,
+              1080
+            ],
+            "source_box_pixels": [
+              464,
+              290,
+              1493,
+              1078
+            ],
+            "focus_context_kind": "document_region",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": {
+    "ts": "2026-04-15T10:07:52.692171+00:00",
+    "resolver": "backfill_4_12_state_card_lineage.py",
+    "source_dataset": "opencua_agentnet/agentnet_ubuntu_5k.jsonl",
+    "raw_images_root": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted"
+  }
+}

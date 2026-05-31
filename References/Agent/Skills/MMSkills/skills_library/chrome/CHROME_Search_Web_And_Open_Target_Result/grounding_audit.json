@@ -1,0 +1,91 @@
+{
+  "skill": "Search Web and Open Target Result",
+  "dir_name": "CHROME_Search_Web_And_Open_Target_Result",
+  "boxed_images": 3,
+  "partial_grounded_images": 0,
+  "raw_copy_images": 0,
+  "missing_images": 0,
+  "states": [
+    {
+      "procedure_name": "web_search",
+      "state_id": 1,
+      "state_name": "open_search_surface",
+      "mode": "boxed",
+      "source_task_id": "0564ddc3-849e-4bbe-89b5-abea972e5065",
+      "source_step_num": 2,
+      "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/5dbd7cca-1bb9-48c1-a069-7702c8c8b387.png",
+      "image_filename": "google_search_box_ready.png",
+      "targets": [
+        {
+          "name": "Google search box",
+          "target_type": "action_target",
+          "annotation_query": "Google search box below the Google logo on the homepage",
+          "grounding_query": "Where is Google search box below the Google logo on the homepage? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+          "color": "red",
+          "bbox": {
+            "bbox_2d": [
+              322,
+              345,
+              713,
+              393
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "procedure_name": "web_search",
+      "state_id": 2,
+      "state_name": "choose_target_result",
+      "mode": "boxed",
+      "source_task_id": "0564ddc3-849e-4bbe-89b5-abea972e5065",
+      "source_step_num": 6,
+      "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/1a99a225-3b4f-4ac8-b4a6-4a7ab2b2c57c.png",
+      "image_filename": "search_result_target_link.png",
+      "targets": [
+        {
+          "name": "Target search result",
+          "target_type": "action_target",
+          "annotation_query": "search result title \"Prince - Purple Rain (Official Video)\" on the Google results page",
+          "grounding_query": "Where is search result title \"Prince - Purple Rain (Official Video)\" on the Google results page? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+          "color": "red",
+          "bbox": {
+            "bbox_2d": [
+              155,
+              298,
+              318,
+              319
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "procedure_name": "web_search",
+      "state_id": 3,
+      "state_name": "verify_destination_page",
+      "mode": "boxed",
+      "source_task_id": "04c8f639-cf7e-4b33-af9f-d6f810c5fedf",
+      "source_step_num": 8,
+      "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/2dc3c35d-59cc-4f2c-894c-dc7c88131f60.png",
+      "image_filename": "destination_page_open.png",
+      "targets": [
+        {
+          "name": "Destination page heading",
+          "target_type": "state_signal",
+          "annotation_query": "NVIDIA Corp heading on the Google Finance stock page",
+          "grounding_query": "Where is NVIDIA Corp heading on the Google Finance stock page? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+          "color": "green",
+          "bbox": {
+            "bbox_2d": [
+              246,
+              295,
+              317,
+              322
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

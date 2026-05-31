@@ -1,0 +1,243 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "CHROME_Configure_Default_Search_Engine_And_Search_Preferences",
+  "domain": "chrome",
+  "source_state_cards": "state_cards.json",
+  "generation_method": "codex_strict_refine_20260418",
+  "states": [
+    {
+      "state_id": "search_engine_settings_surface",
+      "state_name": "open_search_engine_surface",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when Chrome is on the main Settings surface and the workflow still needs to enter the Search engine section. The matching live view should show the left settings sidebar, a search box near the top of the page, and the Search engine sidebar item visible as the next navigation step.",
+      "when_not_to_use": "Do not use this card after the Search engine page is already open, while a provider-selection dialog is on screen, or on a search results page. The red box is only an interaction cue for the matching sidebar item in this state, not a reusable coordinate.",
+      "visible_cues": [
+        "Chromium is open to chrome://settings with the general Settings home surface visible.",
+        "A large Search settings field sits near the top of the main pane.",
+        "The left sidebar lists categories including You and Google, Autofill and passwords, Privacy and security, Appearance, and Search engine.",
+        "A red box surrounds the Search engine item in the left sidebar."
+      ],
+      "verification_cue": "After selecting Search engine from the sidebar, verify that the main pane changes to the dedicated Search engine settings page with the default-provider area and manage-search-engines row visible before using later cards.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/search_engine_settings_surface.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "open_search_engine_surface"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/search_engine_settings_surface_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Search engine sidebar item"
+        }
+      ]
+    },
+    {
+      "state_id": "search_engine_selection_dialog",
+      "state_name": "set_provider_or_engine_list",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the Search engine selection modal is already open over Chrome Settings and the task requires confirming a newly selected default provider. The matching live state should show a provider list with radio buttons and a Set as default button at the bottom of the dialog.",
+      "when_not_to_use": "Do not use this card before opening the change dialog, after the dialog has closed, or when the task is about managing custom engine entries from the separate management list. Do not activate the highlighted button until the provider named in the current task is selected in the live dialog.",
+      "visible_cues": [
+        "The Search engine settings page is dimmed behind a centered modal titled Search engine.",
+        "The modal lists several providers with radio buttons, and one provider is currently selected.",
+        "Cancel and Set as default buttons appear along the bottom edge of the dialog.",
+        "A red box marks the Set as default button."
+      ],
+      "verification_cue": "After selecting the requested provider and confirming with Set as default, verify that the dialog closes and that the Search engine settings page shows the requested provider in the default search engine row before moving on.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/search_engine_selection_dialog.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "set_provider_or_engine_list"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/search_engine_selection_dialog_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Set as default button"
+        }
+      ]
+    },
+    {
+      "state_id": "manage_search_engines_page",
+      "state_name": "apply_result_preference",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when Chrome is already on Settings > Search engine and the next step is to open the management surface for search engines and site search. The matching live view should show the Search engine section selected in the sidebar and the Manage search engines and site search row visible in the main card.",
+      "when_not_to_use": "Do not use this card while the provider-selection modal is open, after the management list itself has already opened, or on an unrelated settings page or web results page. The red box marks the row to enter in this state only; it is not a reusable click location.",
+      "visible_cues": [
+        "Chrome is on the Search engine settings page, with Search engine highlighted in the left sidebar.",
+        "The main card shows the current default search engine row with a Change button.",
+        "Below that row is a Manage search engines and site search row ending with a chevron.",
+        "A red box frames the Manage search engines and site search row."
+      ],
+      "verification_cue": "After opening the Manage search engines and site search row, verify that the dedicated management list appears before deleting, editing, or inspecting entries. For default-provider work, continue until the requested provider is visibly set in the Search engine settings page.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/manage_search_engines_page.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "apply_result_preference"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/manage_search_engines_page_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Manage search engines and site search row"
+        }
+      ]
+    },
+    {
+      "state_id": "search_preference_filter_applied",
+      "state_name": "verify_provider_or_filter_state",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when the task includes verifying a downstream search-result preference after changing the provider and the live browser is on a matching results page. In this preserved example, the verification target is the Date filter control on a Bing Images results page after the provider change has already been completed.",
+      "when_not_to_use": "Do not use this card to perform the provider change itself, to choose a query, or to assume that the example search term or filter value should be reused. The green box is a verification cue for a visible filter control in this image, not a reusable interaction coordinate.",
+      "visible_cues": [
+        "The browser is on a Microsoft Bing Images results page with an image query already loaded.",
+        "An images-specific filter bar appears below the search field, including controls such as Image size, Color, Type, Layout, People, Date, and License.",
+        "A green box marks the Date filter control in the filter bar.",
+        "Image thumbnails fill the rest of the page beneath the filter controls."
+      ],
+      "verification_cue": "Confirm that the search is being handled by the requested provider and that the requested result preference is active. If the chosen filter value is not directly visible on the bar, open the relevant filter menu or inspect the selected state before marking the task complete.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before skipped because the nearby frames changed, but none produced a reliable fresh grounding.",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/search_preference_filter_applied.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "verify_provider_or_filter_state"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/search_preference_filter_applied_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Date filter control"
+        }
+      ]
+    },
+    {
+      "state_id": "google_search_more_settings_menu",
+      "state_name": "open_google_search_settings_entry",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the browser is already on Google search results, the Search Settings menu is open, and the task is about Google Search display preferences rather than Chrome's default provider.",
+      "when_not_to_use": "Do not use this card on Chrome Settings pages, provider-selection dialogs, or on a Google Search settings page that is already open.",
+      "visible_cues": [
+        "The browser is on a Google search results page rather than on `chrome://settings`.",
+        "A right-side Search Settings menu is open with cards such as SafeSearch, Language, and More settings.",
+        "The `More settings` tile is visible in the lower-left area of that menu.",
+        "The red box marks the `More settings` tile as the entry point into the deeper Google Search settings pages."
+      ],
+      "verification_cue": "After selecting More settings, verify that a dedicated Google Search settings page opens before deciding whether the requested preference is actually available there.",
+      "visual_evidence_chain": {
+        "focus_crop": "Codex authored a direct grounding query and kept a context-preserving focus crop around the operative region.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/google_search_more_settings_menu.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "open_google_search_settings_entry"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/google_search_more_settings_menu_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "More settings tile"
+        }
+      ]
+    },
+    {
+      "state_id": "google_search_other_settings_surface",
+      "state_name": "inspect_google_other_settings_surface",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the browser is already on Google Search Settings > Other settings and the task is about search-display behavior, especially when you need to verify whether the requested control exists on the visible page.",
+      "when_not_to_use": "Do not use this card as proof that classic `results per page` or `continuous scrolling` controls are available. This example only shows the controls that are visibly present on the captured Other settings page.",
+      "visible_cues": [
+        "The page heading is Google Search settings, not Chrome Settings.",
+        "The left sidebar shows `Other settings` selected.",
+        "The visible desktop controls include `Dark theme`, `Results in a new window`, `Spoken answers`, and `Autocomplete with trending searches`.",
+        "The red box marks the `Results in a new window` toggle as one example of a real visible control on this page."
+      ],
+      "verification_cue": "If the requested preference is not visibly present on the page, do not fabricate success. Continue to another visible settings subsection or record the missing control as an environment blocker.",
+      "visual_evidence_chain": {
+        "focus_crop": "Codex authored a direct grounding query and kept a context-preserving focus crop around the operative region.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/google_search_other_settings_surface.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "inspect_google_other_settings_surface"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/google_search_other_settings_surface_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Results in a new window toggle"
+        }
+      ]
+    }
+  ]
+}

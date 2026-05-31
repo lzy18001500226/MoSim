@@ -1,0 +1,161 @@
+{
+  "skill_slug": "CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts",
+  "skill_name": "Manage Bookmarks Reading List And Shortcuts",
+  "codex_authored": true,
+  "overview": "Use bookmark dialogs, bookmark folders, reading-list entries, and shortcut editing surfaces to save pages and verify that the bookmark or reading-list result is visible.",
+  "when_to_use": [
+    "Saving a page into bookmarks or reading list",
+    "Choosing or creating a bookmark folder",
+    "Verifying that the bookmark or reading-list entry is present"
+  ],
+  "preconditions": [
+    "Chrome is on the page that should be saved."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "reach_surface",
+      "purpose": "Reach the relevant Chrome surface for manage bookmarks reading list and shortcuts",
+      "derived_from_source_skills": [
+        "CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts__ENTRY"
+      ]
+    },
+    {
+      "name": "execute_and_verify",
+      "purpose": "Execute manage bookmarks reading list and shortcuts and verify the requested result state",
+      "derived_from_source_skills": [
+        "CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts__EXECUTE"
+      ]
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The correct Chrome surface is not open yet.",
+      "choose_capability": "reach_surface",
+      "reason": "Surface errors cause benchmark failures before the core action can start."
+    },
+    {
+      "condition": "The main interaction already ran but completion is still uncertain.",
+      "choose_capability": "execute_and_verify",
+      "reason": "This skill is only complete when the requested visible result state is present."
+    }
+  ],
+  "selected_task_ids": [
+    "10ef0c9d-57e7-46eb-b9a2-4dd4fa349637"
+  ],
+  "evidence_quality": "direct_agentnet_with_curated_frames",
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "bookmarks",
+      "when_to_use": [
+        "save pages into bookmarks or reading list, choose folders, and verify the saved item or shortcut target"
+      ],
+      "derived_from_source_skills": [
+        "CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts__ENTRY",
+        "CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts__EXECUTE"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "open_bookmark_or_shortcut_surface",
+          "visual_grounding": "Relevant controls on bookmark dialogs, reading list entries, bookmark folders, and shortcut editing surfaces",
+          "trigger_condition": "The workflow still needs to save pages into bookmarks or reading list, choose folders, and verify the saved item or shortcut target",
+          "action": "Advance Chrome through the `open_bookmark_or_shortcut_surface` subgoal until the bookmark, folder, reading-list item, or shortcut tile is visibly present.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "State `open_bookmark_or_shortcut_surface` belongs to the Chrome workflow for save pages into bookmarks or reading list, choose folders, and verify the saved item or shortcut target.",
+          "key_frame": {
+            "source_task_id": "10ef0c9d-57e7-46eb-b9a2-4dd4fa349637",
+            "source_step_num": 5,
+            "source_image": "d9ca3df9-eb5a-4fdd-b0ec-0ec5dc131ecc.png",
+            "image_filename": "bookmark_save_control.png",
+            "annotation_note": "Open the bookmark save surface from the current page.",
+            "highlight_targets": [
+              {
+                "name": "Bookmark save control",
+                "target_type": "action_target",
+                "annotation_query": "Bookmark star or save control in the Chrome toolbar",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 2,
+          "state_name": "choose_destination",
+          "visual_grounding": "Relevant controls on bookmark dialogs, reading list entries, bookmark folders, and shortcut editing surfaces",
+          "trigger_condition": "The workflow still needs to save pages into bookmarks or reading list, choose folders, and verify the saved item or shortcut target",
+          "action": "Advance Chrome through the `choose_destination` subgoal until the bookmark, folder, reading-list item, or shortcut tile is visibly present.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "State `choose_destination` belongs to the Chrome workflow for save pages into bookmarks or reading list, choose folders, and verify the saved item or shortcut target.",
+          "key_frame": {
+            "source_task_id": "10ef0c9d-57e7-46eb-b9a2-4dd4fa349637",
+            "source_step_num": 7,
+            "source_image": "ba712621-bb68-4419-ad85-dd3615e00021.png",
+            "image_filename": "edit_bookmark_dialog.png",
+            "annotation_note": "Choose the correct bookmark destination.",
+            "highlight_targets": [
+              {
+                "name": "Edit bookmark dialog",
+                "target_type": "action_target",
+                "annotation_query": "Edit bookmark dialog with folder selector",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 3,
+          "state_name": "save_item",
+          "visual_grounding": "Relevant controls on bookmark dialogs, reading list entries, bookmark folders, and shortcut editing surfaces",
+          "trigger_condition": "The workflow still needs to save pages into bookmarks or reading list, choose folders, and verify the saved item or shortcut target",
+          "action": "Advance Chrome through the `save_item` subgoal until the bookmark, folder, reading-list item, or shortcut tile is visibly present.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "State `save_item` belongs to the Chrome workflow for save pages into bookmarks or reading list, choose folders, and verify the saved item or shortcut target.",
+          "key_frame": {
+            "source_task_id": "10ef0c9d-57e7-46eb-b9a2-4dd4fa349637",
+            "source_step_num": 10,
+            "source_image": "606478b1-101d-4869-97c6-8eb8907f3c81.png",
+            "image_filename": "bookmark_folder_creation.png",
+            "annotation_note": "Create or confirm the requested bookmark folder.",
+            "highlight_targets": [
+              {
+                "name": "New bookmark folder control",
+                "target_type": "action_target",
+                "annotation_query": "Bookmark dialog control for creating or confirming the target folder",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 4,
+          "state_name": "verify_saved_item",
+          "visual_grounding": "Relevant controls on bookmark dialogs, reading list entries, bookmark folders, and shortcut editing surfaces",
+          "trigger_condition": "The workflow still needs to save pages into bookmarks or reading list, choose folders, and verify the saved item or shortcut target",
+          "action": "Advance Chrome through the `verify_saved_item` subgoal until the bookmark, folder, reading-list item, or shortcut tile is visibly present.",
+          "is_result_state": true,
+          "has_image": true,
+          "text_description": "State `verify_saved_item` belongs to the Chrome workflow for save pages into bookmarks or reading list, choose folders, and verify the saved item or shortcut target.",
+          "key_frame": {
+            "source_task_id": "10ef0c9d-57e7-46eb-b9a2-4dd4fa349637",
+            "source_step_num": 16,
+            "source_image": "0a06ca69-e9c8-41df-b1ec-72784ecaafa4.png",
+            "image_filename": "bookmark_result_state.png",
+            "annotation_note": "Verify the saved-state outcome after bookmarking.",
+            "highlight_targets": [
+              {
+                "name": "Saved bookmark state",
+                "target_type": "result_signal",
+                "annotation_query": "Visible page or bookmark state indicating the bookmark action completed",
+                "color": "green"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

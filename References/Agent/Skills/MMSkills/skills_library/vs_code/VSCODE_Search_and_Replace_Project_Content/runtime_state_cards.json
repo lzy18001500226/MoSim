@@ -1,0 +1,197 @@
+{
+  "schema_version": "2026-04-17.runtime_state_bundles.v4",
+  "skill_slug": "VSCODE_Search_and_Replace_Project_Content",
+  "domain": "vs_code",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "search_panel_ready",
+      "state_name": "search_panel_ready",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the `search panel ready` state matches the live screenshot for search and replace project content.",
+      "when_not_to_use": "Do not use this card once the workflow has moved to a different VS Code surface or if the current task belongs to a sibling skill boundary.",
+      "visible_cues": [
+        "The Search view is active with the query field ready and the workspace already loaded.",
+        "A red box highlights the action cue: search field."
+      ],
+      "verification_cue": "After acting on this state, verify the next requested VS Code state appears before continuing.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/workspace_search_panel.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "search_panel_ready"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/workspace_search_panel_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "search field"
+        }
+      ]
+    },
+    {
+      "state_id": "search_results_tree_visible",
+      "state_name": "search_results_tree_visible",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when the `search results tree visible` state matches the live screenshot for search and replace project content.",
+      "when_not_to_use": "Do not use this card once the workflow has moved to a different VS Code surface or if the current task belongs to a sibling skill boundary.",
+      "visible_cues": [
+        "The search panel displays a result tree with the match count and matching files under the query.",
+        "A green box highlights the verification cue: search results tree.",
+        "This state is a completion check and should remain visibly true before the workflow is treated as done."
+      ],
+      "verification_cue": "Confirm the persistent requested result remains visible before ending the task.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before skipped because no nearby frame showed a clear visual change in the search window.",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/search_results_tree.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "search_results_tree_visible"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/search_results_tree_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "search results tree"
+        }
+      ]
+    },
+    {
+      "state_id": "find_widget_populated",
+      "state_name": "find_widget_populated",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the `find widget populated` state matches the live screenshot for search and replace project content.",
+      "when_not_to_use": "Do not use this card once the workflow has moved to a different VS Code surface or if the current task belongs to a sibling skill boundary.",
+      "visible_cues": [
+        "The editor find widget contains the target token and the matching declaration is visible in code.",
+        "A red box highlights the action cue: find field."
+      ],
+      "verification_cue": "After acting on this state, verify the next requested VS Code state appears before continuing.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/find_widget_populated.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "find_widget_populated"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/find_widget_populated_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "find field"
+        }
+      ]
+    },
+    {
+      "state_id": "matched_value_ready_for_overwrite",
+      "state_name": "matched_value_ready_for_overwrite",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the `matched value ready for overwrite` state matches the live screenshot for search and replace project content.",
+      "when_not_to_use": "Do not use this card once the workflow has moved to a different VS Code surface or if the current task belongs to a sibling skill boundary.",
+      "visible_cues": [
+        "The matched declaration is visible in the editor with the current value ready to be overwritten.",
+        "A red box highlights the action cue: bottom declaration line."
+      ],
+      "verification_cue": "After acting on this state, verify the next requested VS Code state appears before continuing.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/matched_value_ready.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "matched_value_ready_for_overwrite"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/matched_value_ready_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "bottom declaration line"
+        }
+      ]
+    },
+    {
+      "state_id": "replacement_saved_in_editor",
+      "state_name": "replacement_saved_in_editor",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when the `replacement saved in editor` state matches the live screenshot for search and replace project content.",
+      "when_not_to_use": "Do not use this card once the workflow has moved to a different VS Code surface or if the current task belongs to a sibling skill boundary.",
+      "visible_cues": [
+        "The editor now shows the replaced value in context inside the saved file.",
+        "A green box highlights the verification cue: replaced text.",
+        "This state is a completion check and should remain visibly true before the workflow is treated as done."
+      ],
+      "verification_cue": "Confirm the persistent requested result remains visible before ending the task.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/replacement_saved_result.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "replacement_saved_in_editor"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/replacement_saved_result_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "replaced text"
+        }
+      ]
+    }
+  ]
+}

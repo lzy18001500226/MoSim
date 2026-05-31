@@ -1,0 +1,128 @@
+{
+  "chrome": {
+    "bb5e4c0d-f964-439c-97b6-bdb9747de3f4": [
+      "CHROME_Configure_Default_Search_Engine_And_Search_Preferences"
+    ],
+    "35253b65-1c19-4304-8aa4-6884b8218fc0": [
+      "CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts"
+    ],
+    "2ad9387a-65d8-4e33-ad5b-7580065a27ca": [
+      "CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts"
+    ],
+    "7a5a7856-f1b6-42a4-ade9-1ca81ca0f263": [
+      "CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts"
+    ],
+    "ae78f875-5b98-4907-bbb5-9c737fc68c03": [
+      "CHROME_Configure_Default_Search_Engine_And_Search_Preferences"
+    ]
+  },
+  "libreoffice_calc": {
+    "357ef137-7eeb-4c80-a3bb-0951f26a8aff": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "42e0a640-4f19-4b28-973d-729602b5a4a7": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "12382c62-0cd1-4bf2-bdc8-1d20bf9b2371": [
+      "LIBREOFFICECALC_Create_Chart_on_Target_Sheet_with_Exact_Title_and_Type"
+    ],
+    "f9584479-3d0d-4c79-affa-9ad7afdd8850": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "4f07fbe9-70de-4927-a4d5-bb28bc12c52c": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "04d9aeaf-7bed-4024-bedb-e10e6f00eb7f": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "0bf05a7d-b28b-44d2-955a-50b41e24012a": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "abed40dc-063f-4598-8ba5-9fe749c0615d": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "26a8440e-c166-4c50-aef4-bfb77314b46b": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "035f41ba-6653-43ab-aa63-c86d449d62e5": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "51b11269-2ca8-4b2a-9163-f21758420e78": [
+      "LIBREOFFICECALC_Sort_and_Filter_Calc_Tables"
+    ],
+    "0326d92d-d218-48a8-9ca1-981cd6d064c7": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "0a2e43bf-b26c-4631-a966-af9dfa12c9e5": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "347ef137-7eeb-4c80-a3bb-0951f26a8aff": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "4e6fcf72-daf3-439f-a232-c434ce416af6": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "21df9241-f8d7-4509-b7f1-37e501a823f7": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "4de54231-e4b5-49e3-b2ba-61a0bec721c0": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "4172ea6e-6b77-4edb-a9cc-c0014bd1603b": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ],
+    "3a7c8185-25c1-4941-bd7b-96e823c9f21f": [
+      "LIBREOFFICECALC_Sort_and_Filter_Calc_Tables"
+    ],
+    "21ab7b40-77c2-4ae6-8321-e00d3a086c73": [
+      "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells"
+    ]
+  },
+  "libreoffice_impress": {
+    "c59742c0-4323-4b9d-8a02-723c251deaa0": [
+      "LIBREOFFICEIMPRESS_Insert_and_Configure_Images_Audio_and_Interactive_Media"
+    ],
+    "ef9d12bd-bcee-4ba0-a40e-918400f43ddf": [
+      "LIBREOFFICEIMPRESS_Manage_Slide_Structure_Ordering_and_Layouts"
+    ],
+    "9ec204e4-f0a3-42f8-8458-b772a6797cab": [
+      "LIBREOFFICEIMPRESS_Manage_Slide_Structure_Ordering_and_Layouts"
+    ],
+    "bf4e9888-f10f-47af-8dba-76413038b73c": [
+      "LIBREOFFICEIMPRESS_Manage_Slide_Structure_Ordering_and_Layouts",
+      "LIBREOFFICEIMPRESS_Insert_and_Configure_Images_Audio_and_Interactive_Media"
+    ],
+    "c82632a4-56b6-4db4-9dd1-3820ee3388e4": [
+      "LIBREOFFICEIMPRESS_Insert_and_Configure_Images_Audio_and_Interactive_Media"
+    ]
+  },
+  "libreoffice_writer": {
+    "4bcb1253-a636-4df4-8cb0-a35c04dfef31": [
+      "LIBREOFFICEWRITER_Save_Export_and_Template_Writer_Documents"
+    ],
+    "e246f6d8-78d7-44ac-b668-fcf47946cb50": [
+      "LIBREOFFICEWRITER_Find_and_Replace_Text_or_Formatting"
+    ]
+  },
+  "os": {
+    "28cc3b7e-b194-4bc9-8353-d04c0f4d56d2": [
+      "OS_Query_System_State_in_Terminal"
+    ],
+    "e0df059f-28a6-4169-924f-b9623e7184cc": [
+      "OS_Manage_Files_and_Archives_in_Files"
+    ],
+    "c288e301-e626-4b98-a1ab-159dcb162af5": [
+      "OS_Query_System_State_in_Terminal"
+    ]
+  },
+  "vlc": {
+    "59f21cfb-0120-4326-b255-a5b827b38967": [
+      "VLC_Open_Local_Media_And_Verify_Playback_Surface"
+    ]
+  },
+  "vs_code": {
+    "0ed39f63-6049-43d4-ba4d-5fa2fe04a951": [
+      "VSCODE_Search_and_Replace_Project_Content"
+    ]
+  }
+}

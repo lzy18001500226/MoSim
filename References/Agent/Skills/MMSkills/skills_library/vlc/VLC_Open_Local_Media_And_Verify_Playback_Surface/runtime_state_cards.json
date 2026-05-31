@@ -1,0 +1,124 @@
+{
+  "schema_version": "2026-04-17.runtime_state_bundles.v4",
+  "skill_slug": "VLC_Open_Local_Media_And_Verify_Playback_Surface",
+  "domain": "vlc",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_direct_multiview_vlc_refine_2026_04_18",
+  "states": [
+    {
+      "state_id": "open_local_media_picker",
+      "state_name": "open_local_media_picker",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when VLC is already open and the next step is to reach the local file chooser from the Media menu.",
+      "when_not_to_use": "Do not use after the file chooser is already open, after playback has already started, or when a stray modal should be dismissed before reopening anything.",
+      "visible_cues": [
+        "The VLC cone placeholder is visible in the main player window.",
+        "The `Media` menu is expanded with local open commands such as `Open File...` and `Open Directory...`.",
+        "The stored frame is about reaching the chooser, not about confirming a selected file yet."
+      ],
+      "verification_cue": "After using this state, verify that the correct local chooser opened; if a non-local modal appears while the requested media is already playing, dismiss it and return to verification.",
+      "visual_evidence_chain": {
+        "focus_crop": "Codex selected this grounded target because it captures the local operating region with enough surrounding UI context to recognize the VLC state.",
+        "before": "Codex intentionally omitted before-view images for this VLC state because the current frame plus focus crop carries the needed evidence.",
+        "after": "Codex intentionally omitted after-view images for this VLC state because the current frame plus focus crop carries the needed evidence."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/open_local_media_picker.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "open_local_media_picker"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/open_local_media_picker_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Open File menu item"
+        }
+      ]
+    },
+    {
+      "state_id": "select_requested_local_source",
+      "state_name": "select_requested_local_source",
+      "stage": "operation_state",
+      "image_role": "action_cue",
+      "when_to_use": "Use when the Ubuntu file chooser is open and the task still needs the exact local file selected.",
+      "when_not_to_use": "Do not use when the chooser is still on the wrong folder, when playback is already active in VLC, or when repeated blind clicks have not changed the selected row.",
+      "visible_cues": [
+        "The chooser title indicates VLC is selecting one or more files to open.",
+        "The main file list shows media files such as `green.mp4` in the current directory.",
+        "The left sidebar and current path bar confirm this is the file chooser rather than the playlist view."
+      ],
+      "verification_cue": "Confirm the requested file row or exact filename field is selected before accepting the chooser; if the chooser keeps stale text or the wrong folder, correct that once before trying to open again.",
+      "visual_evidence_chain": {
+        "focus_crop": "Codex selected this grounded target because it captures the local operating region with enough surrounding UI context to recognize the VLC state.",
+        "before": "Codex intentionally omitted before-view images for this VLC state because the current frame plus focus crop carries the needed evidence.",
+        "after": "Codex intentionally omitted after-view images for this VLC state because the current frame plus focus crop carries the needed evidence."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/select_requested_local_source.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "select_requested_local_source"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/select_requested_local_source_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Requested file row"
+        }
+      ]
+    },
+    {
+      "state_id": "playback_surface_shows_requested_media",
+      "state_name": "playback_surface_shows_requested_media",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use when the local file has already been opened and you need proof that VLC is now on the requested playback surface.",
+      "when_not_to_use": "Do not use while the file chooser is still open or when VLC is still showing the empty cone placeholder.",
+      "visible_cues": [
+        "The VLC title bar and the paused player both show `Zhejiang.mp4`.",
+        "A real video frame is present instead of the empty default VLC surface.",
+        "Playback controls and a nonzero timeline are visible at the bottom of VLC."
+      ],
+      "verification_cue": "Mark the local-open workflow complete only when the visible VLC title, real media frame, or nonzero timeline matches the requested media; if a menu or modal blocks a playing surface, dismiss it instead of reopening the file.",
+      "visual_evidence_chain": {
+        "focus_crop": "Codex selected this grounded target because it captures the local operating region with enough surrounding UI context to recognize the VLC state.",
+        "before": "Codex intentionally omitted before-view images for this VLC state because the current frame plus focus crop carries the needed evidence.",
+        "after": "Codex intentionally omitted after-view images for this VLC state because the current frame plus focus crop carries the needed evidence."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/playback_surface_shows_requested_media.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "playback_surface_shows_requested_media"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/playback_surface_shows_requested_media_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Local media title on playback surface"
+        }
+      ]
+    }
+  ]
+}

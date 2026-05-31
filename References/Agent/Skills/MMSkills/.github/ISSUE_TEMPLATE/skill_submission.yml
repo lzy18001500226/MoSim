@@ -1,0 +1,115 @@
+name: MMSkill submission
+description: Submit a new MMSkill package or domain for community review.
+title: "[Skill Submission] "
+labels:
+  - enhancement
+assignees:
+  - zkangning
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing to the MMSkills community.
+
+        Please provide a downloadable package link or drag a ZIP archive into the package field below. Maintainers will review the package before it is added to the public MMSkills library.
+
+        Required package shape:
+
+        ```text
+        <package>/<domain>/<skill>/
+        ├── SKILL.md
+        ├── runtime_state_cards.json
+        └── Images/
+        ```
+
+        Recommended extras: `plan.json`, `state_cards.json`, evaluation notes, and a short demo or trajectory excerpt.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Target package or environment
+      description: Choose the closest existing environment, or select Other for a new domain.
+      options:
+        - ubuntu
+        - mac
+        - vab_minecraft
+        - mario
+        - autonomous_driving
+        - robotics
+        - web
+        - mobile
+        - other
+    validations:
+      required: true
+  - type: input
+    id: domain
+    attributes:
+      label: Domain name
+      description: "Example: chrome, productivity, autonomous_driving_lane_change, warehouse_robotics."
+      placeholder: autonomous_driving
+    validations:
+      required: true
+  - type: input
+    id: skill_name
+    attributes:
+      label: Skill package name
+      description: Use a stable directory-style name.
+      placeholder: AUTODRIVE_Verify_Lane_Change_Gap_And_Merge
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: What does this skill do?
+      description: Summarize the reusable procedure, task surface, and expected verification state.
+      placeholder: This skill helps an agent detect a valid merge gap, initiate lane change, and verify that the vehicle is centered in the target lane.
+    validations:
+      required: true
+  - type: textarea
+    id: package_link
+    attributes:
+      label: Package link or attachment
+      description: Paste a GitHub/Hugging Face/Drive link, or drag a ZIP archive into this field so GitHub uploads it as an attachment.
+      placeholder: https://huggingface.co/datasets/<user>/<dataset> or https://github.com/<user>/<repo>/tree/main/<skill-path>
+    validations:
+      required: true
+  - type: textarea
+    id: package_structure
+    attributes:
+      label: Package structure
+      description: Paste the file tree of your package.
+      render: text
+      placeholder: |
+        autonomous_driving/lane_change/AUTODRIVE_Verify_Lane_Change_Gap_And_Merge/
+        ├── SKILL.md
+        ├── runtime_state_cards.json
+        └── Images/
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation evidence
+      description: Explain how you tested the skill or why the examples are reusable.
+      placeholder: Include benchmark names, task IDs, screenshots, logs, or trajectory excerpts if available.
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Contributor checklist
+      options:
+        - label: "The package contains no API keys, credentials, private user data, or non-redistributable assets."
+          required: true
+        - label: "I have permission to release the submitted text, images, and metadata under the repository license."
+          required: true
+        - label: "The skill describes reusable procedure knowledge rather than a single private task trace."
+          required: true
+        - label: "`runtime_state_cards.json` references only images included in the package or reachable from the provided link."
+          required: true
+  - type: textarea
+    id: contact
+    attributes:
+      label: Contact or notes
+      description: Optional contact information or notes for maintainers during review.
+    validations:
+      required: false

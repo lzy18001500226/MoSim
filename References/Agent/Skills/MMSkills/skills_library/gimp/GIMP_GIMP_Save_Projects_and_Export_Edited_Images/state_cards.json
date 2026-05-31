@@ -1,0 +1,310 @@
+{
+  "schema_version": "2026-04-18.state_bundles.v5",
+  "skill_slug": "GIMP_GIMP_Save_Projects_and_Export_Edited_Images",
+  "domain": "gimp",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_strict_refine_builder_20260418",
+  "states": [
+    {
+      "state_id": "save_image_dialog_open",
+      "state_name": "Save Image Dialog Open",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the user needs to keep the current GIMP edit as an editable project or other source-preserving file. The matching state is the Save Image dialog before the final name is entered or finalized, with the filename field visible at the top of the modal file chooser.",
+      "when_not_to_use": "Do not use this card for export-to-delivery workflows, for screens that already show a typed requested filename ready to confirm, or for plain canvas views without the Save Image dialog.",
+      "visible_cues": [
+        "A centered modal titled Save Image is open over the GIMP workspace.",
+        "The whole dialog is outlined in green to mark the relevant state.",
+        "The filename entry near the top is boxed in red and contains an example project name.",
+        "The dialog includes a folder chooser, file list, and a Save button in the lower-right."
+      ],
+      "non_transferable_parts": [
+        "The example filename already visible in the name field is specific to the source example and must not be copied unless the new task asks for that exact name.",
+        "The shown folder path and the files listed in the chooser reflect the example environment and are not part of the reusable procedure.",
+        "The imported image title and layer or canvas content behind the dialog are incidental screenshot details, not part of the save rule.",
+        "The red box marks the field to edit and the green box marks the dialog state; they are cues for matching UI elements, not coordinates."
+      ],
+      "recommended_verification": "Before entering a working filename, verify that the dialog title says Save Image and that the flow is for an editable project save rather than an export format conversion.",
+      "highlight_targets": [
+        {
+          "name": "Save Image dialog",
+          "target_type": "state_signal",
+          "annotation_query": "The centered GIMP Save Image dialog window.",
+          "color": "green"
+        },
+        {
+          "name": "Working filename field",
+          "target_type": "action_target",
+          "annotation_query": "The filename input near the top of the Save Image dialog.",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "059e23d7-c3c0-4beb-9cd7-1c3bf48fcf5c",
+        "source_step_num": 9,
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/a5c7defe-5ba5-4f0e-93f1-31d08b89456c.png",
+        "source_traj_index": 8,
+        "source_image_uuid": "a5c7defe-5ba5-4f0e-93f1-31d08b89456c.png",
+        "source_instruction": "Open GIMP. Perform chin slimming on the person in the current image to make the person's face look more delicate and petite. After that, save the image as \"small.xcf\".",
+        "source_domains": "Gimp",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Type \"small\" in the filename field to name the file \"small.xcf\".",
+        "source_code": "pyautogui.write(message='small')",
+        "lineage_resolved_at": "2026-04-15T10:06:43.272079+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "Save A Working File",
+        "state_id": 1,
+        "state_name": "Save Image Dialog Open",
+        "image_filename": "save_image_dialog_open.png"
+      },
+      "codex_review_notes": [
+        "This image distinguishes the save-project flow from export by dialog title and button labels.",
+        "Use the card to recognize the correct dialog before typing, not to reuse the sample filename."
+      ],
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Working filename field",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": true,
+          "included": false,
+          "reason": "after skipped because the nearby frames changed, but none produced a reliable fresh grounding.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [
+            {
+              "offset": 2,
+              "diff": 18.177,
+              "score": 17.327
+            }
+          ],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "save_image_dialog_open_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/save_image_dialog_open.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/a5c7defe-5ba5-4f0e-93f1-31d08b89456c.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Save Image Dialog Open",
+            "color": null
+          },
+          {
+            "view_id": "save_image_dialog_open_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/save_image_dialog_open_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/gimp/GIMP_GIMP_Save_Projects_and_Export_Edited_Images/Images/save_image_dialog_open.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Working filename field",
+            "color": "red",
+            "grounding_query": "the full Save Image dialog window",
+            "grounding_query_full": "Where is the full Save Image dialog window? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              91,
+              129,
+              620,
+              933
+            ],
+            "crop_box_pixels": [
+              92,
+              38,
+              1271,
+              1080
+            ],
+            "source_box_pixels": [
+              174,
+              139,
+              1190,
+              1007
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "working_filename_entered",
+      "state_name": "Working Filename Entered",
+      "stage": "expected_after_action",
+      "image_role": "expected_after_action",
+      "when_to_use": "Use this card after the requested working filename has been typed into the Save Image dialog and you want to verify the save is ready to confirm. The dialog should still be open, the target filename should be visible in the name field, and the Save button should be available for the final click.",
+      "when_not_to_use": "Do not use this card before entering the requested filename, for export dialogs, or as evidence that the file has already been written. Do not treat the example filename in the field as a reusable default.",
+      "visible_cues": [
+        "The Save Image dialog remains open in front of the workspace.",
+        "The red box highlights the populated filename field, showing that text has been entered.",
+        "The Save button in the lower-right is outlined in green as the next confirmation point.",
+        "The file chooser and folder list remain visible behind the active name field."
+      ],
+      "non_transferable_parts": [
+        "The exact filename shown in the field is an example from the source task and should be replaced with whatever filename the new task requests.",
+        "The selected folder and the file list entries shown in the chooser are environment-specific and should not be copied.",
+        "The background image, imported file title, and any hidden save settings outside the visible dialog are not reusable parts of the skill.",
+        "The highlight boxes show the entered-name state and the confirm button, but they do not encode fixed pointer positions."
+      ],
+      "recommended_verification": "Confirm that the name field contains the requested working filename and that the Save button is available before finalizing the project save.",
+      "highlight_targets": [
+        {
+          "name": "Entered working filename",
+          "target_type": "state_signal",
+          "annotation_query": "The populated filename field near the top of the Save Image dialog.",
+          "color": "red"
+        },
+        {
+          "name": "Save confirmation button",
+          "target_type": "action_target",
+          "annotation_query": "The Save button at the lower-right of the Save Image dialog.",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "059e23d7-c3c0-4beb-9cd7-1c3bf48fcf5c",
+        "source_step_num": 10,
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/d5e8acbb-4e53-4b5b-8af9-3ec7cbb1fd3b.png",
+        "source_traj_index": 9,
+        "source_image_uuid": "d5e8acbb-4e53-4b5b-8af9-3ec7cbb1fd3b.png",
+        "source_instruction": "Open GIMP. Perform chin slimming on the person in the current image to make the person's face look more delicate and petite. After that, save the image as \"small.xcf\".",
+        "source_domains": "Gimp",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click the \"Save\" button in the bottom right corner of the Save Image dialog to save the file with the name \"small.xcf\".",
+        "source_code": "pyautogui.click(x=0.59, y=0.894)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.272106+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "Save A Working File",
+        "state_id": 2,
+        "state_name": "Working Filename Entered",
+        "image_filename": "working_filename_entered.png"
+      },
+      "codex_review_notes": [
+        "This state is useful as a pre-confirmation check that the requested working filename has been entered.",
+        "The green button cue is a next-action marker, while the typed text is the main state evidence."
+      ],
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Entered working filename",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": true,
+          "included": false,
+          "reason": "after skipped because the nearby frames changed, but none produced a reliable fresh grounding.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [
+            {
+              "offset": 1,
+              "diff": 18.167,
+              "score": 18.167
+            }
+          ],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "working_filename_entered_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/working_filename_entered.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/d5e8acbb-4e53-4b5b-8af9-3ec7cbb1fd3b.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Working Filename Entered",
+            "color": null
+          },
+          {
+            "view_id": "working_filename_entered_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/working_filename_entered_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/gimp/GIMP_GIMP_Save_Projects_and_Export_Edited_Images/Images/working_filename_entered.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Entered working filename",
+            "color": "red",
+            "grounding_query": "the full Save Image dialog window",
+            "grounding_query_full": "Where is the full Save Image dialog window? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              93,
+              129,
+              618,
+              922
+            ],
+            "crop_box_pixels": [
+              98,
+              53,
+              1267,
+              1080
+            ],
+            "source_box_pixels": [
+              178,
+              139,
+              1186,
+              995
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": {
+    "ts": "2026-04-15T10:06:43.272118+00:00",
+    "resolver": "backfill_4_12_state_card_lineage.py",
+    "source_dataset": "opencua_agentnet/agentnet_ubuntu_5k.jsonl",
+    "raw_images_root": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted"
+  }
+}

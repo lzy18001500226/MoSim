@@ -1,0 +1,495 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "LIBREOFFICECALC_Create_Chart_on_Target_Sheet_with_Exact_Title_and_Type",
+  "domain": "libreoffice_calc",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "chart_exact_title_entry",
+      "state_name": "Type the exact chart title in Chart Elements",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the chart type has already been chosen and LibreOffice Calc is still in the chart wizard, specifically on the Chart Elements step where the exact chart title must be entered or confirmed before finishing.",
+      "when_not_to_use": "Do not use when you are still choosing the chart family or subtype, when the wizard is already closed, or when the live screen does not show the Chart Elements page with editable title and legend controls.",
+      "visible_cues": [
+        "A modal titled Chart Elements is open on top of the worksheet.",
+        "The Title input field is boxed in red and already contains example text.",
+        "Legend position options are visible on the right side of the dialog.",
+        "Bottom legend placement is boxed in green as the state cue."
+      ],
+      "non_transferable_parts": [
+        "The literal title text shown in the red box is example-specific and must be replaced with the current task's required title.",
+        "The legend placement shown here only transfers when the current task asks for the same placement.",
+        "The workbook title, worksheet contents, dates, and numeric values behind the dialog are evidence only and are not instructions.",
+        "Red and green boxes are interaction and verification cues for this screenshot, not reusable coordinates."
+      ],
+      "recommended_verification": "Before clicking Finish, confirm the live Title field contains the exact requested string and that any requested legend or grid settings match the task rather than the example screenshot.",
+      "highlight_targets": [
+        {
+          "name": "Chart title input field",
+          "target_type": "action_target",
+          "annotation_query": "the Title input field in the Chart Elements dialog",
+          "color": "red"
+        },
+        {
+          "name": "Selected bottom legend placement",
+          "target_type": "state_signal",
+          "annotation_query": "the Bottom legend placement option selected in the Chart Elements dialog",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "Set exact chart text and verify the final chart on the target sheet",
+        "state_id": 3,
+        "image_origin": "key_frame",
+        "source_task_id": "07b105d0-1d19-4de8-8d9a-53626b9b3966",
+        "source_step_num": 15,
+        "source_traj_index": 14,
+        "source_image_uuid": "af25c746-be6f-4b37-b209-7f18691ea037.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/af25c746-be6f-4b37-b209-7f18691ea037.png",
+        "source_instruction": "Open the file 'test' on the desktop, summarize the total amount for each date at F2: F5, and fill the background color with blue. Then draw a region chart for F2: F5, set the chart title to 'Daily Total Flow', and place the legend at the bottom.",
+        "source_domains": "libreoffice_calc",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the \"Bottom\" radio button in the legend positioning options to set the legend position to bottom.",
+        "source_code": "pyautogui.click(x=0.7, y=0.483)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.291046+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "state_name": "Type the exact chart title in Chart Elements",
+        "image_filename": "chart_exact_title_entry.png"
+      },
+      "codex_review_notes": "This card is reusable because it captures the Chart Elements state itself: title entry is still editable and finishing controls remain visible. The example title string and worksheet contents are intentionally treated as non-transferable.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Chart title input field",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": true,
+          "included": false,
+          "reason": "after skipped because the nearby frames changed, but none produced a reliable fresh grounding.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [
+            {
+              "offset": 2,
+              "diff": 59.009,
+              "score": 58.159
+            }
+          ],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "chart_exact_title_entry_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/chart_exact_title_entry.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/af25c746-be6f-4b37-b209-7f18691ea037.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Type the exact chart title in Chart Elements",
+            "color": null
+          },
+          {
+            "view_id": "chart_exact_title_entry_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/chart_exact_title_entry_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_15_codex_skills/ubuntu/libreoffice_calc/LIBREOFFICECALC_Create_Chart_on_Target_Sheet_with_Exact_Title_and_Type/Images/chart_exact_title_entry.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Chart title input field",
+            "color": "red",
+            "grounding_query": "the full Chart Elements dialog window",
+            "grounding_query_full": "Where is the full Chart Elements dialog window? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              271,
+              293,
+              765,
+              732
+            ],
+            "crop_box_pixels": [
+              444,
+              268,
+              1544,
+              837
+            ],
+            "source_box_pixels": [
+              520,
+              316,
+              1468,
+              790
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "chart_subtype_selected_on_target_sheet",
+      "state_name": "Choose the exact chart subtype while the correct sheet tab is active",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the chart workflow is already on the intended destination sheet and you still need to choose the exact chart subtype before advancing or finishing.",
+      "when_not_to_use": "Do not use when the task is already at title entry or final verification, or when the live screenshot does not let you confirm both an active sheet tab and the chart type selection surface.",
+      "visible_cues": [
+        "The Chart Type dialog is open with a chart family list on the left.",
+        "A subtype tile in the top row is boxed in red as the interaction target.",
+        "The active worksheet tab at the bottom is boxed in green.",
+        "A chart object and Properties sidebar remain visible behind and beside the dialog."
+      ],
+      "non_transferable_parts": [
+        "The workbook name, worksheet label, category labels, and table values shown in the screenshot are example evidence and should not be copied into a new task.",
+        "The specific subtype pictured in the red box is only reusable when the current task asks for that exact subtype.",
+        "The selected chart family in the sidebar is a cue for where subtype selection happens, not a universal default.",
+        "Red and green boxes indicate what to act on and what to verify in this screenshot; they are not reusable coordinates."
+      ],
+      "recommended_verification": "Before moving on, confirm the live workbook is still on the requested destination sheet and that the chosen subtype matches the prompt exactly rather than a nearby variant in the same chart family.",
+      "highlight_targets": [
+        {
+          "name": "Exact chart subtype tile",
+          "target_type": "action_target",
+          "annotation_query": "the exact chart subtype tile in the top row of the Chart Type dialog",
+          "color": "red"
+        },
+        {
+          "name": "Active destination worksheet tab",
+          "target_type": "state_signal",
+          "annotation_query": "the active worksheet tab at the bottom of LibreOffice Calc",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "Anchor chart creation to the requested worksheet and subtype",
+        "state_id": 1,
+        "image_origin": "key_frame",
+        "source_task_id": "4d9752b7-3f2a-4ac4-925d-b741db7c09c0",
+        "source_step_num": 10,
+        "source_traj_index": 9,
+        "source_image_uuid": "9b9af7d6-0a69-4a1c-b742-52b595e43ae1.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/9b9af7d6-0a69-4a1c-b742-52b595e43ae1.png",
+        "source_instruction": "Open the spreadsheet \"1234.xlsx\" on the desktop. Copy the data in cells A2:C6 and paste it into the newly created worksheet \"Sheet2\". Based on the data in A1:C5 of worksheet \"Sheet2\", insert a \"Column\" chart of the \"Percent Stacked\" type. Then, save the spreadsheet to the C drive with the name \"2s21sd\".",
+        "source_domains": "libreoffice_calc",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the rightmost column chart subtype option to select the percent stacked column chart variant.",
+        "source_code": "pyautogui.click(x=0.652, y=0.406)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.291088+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "state_name": "Choose the exact chart subtype while the correct sheet tab is active",
+        "image_filename": "chart_subtype_selected_on_target_sheet.png"
+      },
+      "codex_review_notes": "The transferable signal here is the combination of two states: the exact subtype chooser is visible and the destination worksheet can still be verified. The shown sheet name and subtype instance are examples, not defaults.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Exact chart subtype tile",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": true,
+          "included": true,
+          "reason": "Selected the later frame at offset +2 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition.",
+          "selected_offset": 2,
+          "candidate_offsets_considered": [
+            {
+              "offset": 2,
+              "diff": 59.371,
+              "score": 58.521
+            },
+            {
+              "offset": 3,
+              "diff": 59.508,
+              "score": 57.808
+            },
+            {
+              "offset": 4,
+              "diff": 35.277,
+              "score": 32.727
+            }
+          ],
+          "grounding_method": "qwen_bbox_grounding",
+          "target_name": "Exact chart subtype tile"
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "chart_subtype_selected_on_target_sheet_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/chart_subtype_selected_on_target_sheet.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/9b9af7d6-0a69-4a1c-b742-52b595e43ae1.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Choose the exact chart subtype while the correct sheet tab is active",
+            "color": null
+          },
+          {
+            "view_id": "chart_subtype_selected_on_target_sheet_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/chart_subtype_selected_on_target_sheet_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_15_codex_skills/ubuntu/libreoffice_calc/LIBREOFFICECALC_Create_Chart_on_Target_Sheet_with_Exact_Title_and_Type/Images/chart_subtype_selected_on_target_sheet.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Exact chart subtype tile",
+            "color": "red",
+            "grounding_query": "the full Chart Type dialog window",
+            "grounding_query_full": "Where is the full Chart Type dialog window? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              270,
+              292,
+              766,
+              733
+            ],
+            "crop_box_pixels": [
+              442,
+              268,
+              1546,
+              839
+            ],
+            "source_box_pixels": [
+              518,
+              315,
+              1470,
+              791
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "region"
+          },
+          {
+            "view_id": "chart_subtype_selected_on_target_sheet_after",
+            "view_type": "after",
+            "image_path": "Images/chart_subtype_selected_on_target_sheet_after.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/0596c4d5-7d3d-4ad5-bd90-e7012dbbf95e.png",
+            "source_traj_index": 11,
+            "selected_offset": 2,
+            "candidate_offsets_considered": [
+              {
+                "offset": 2,
+                "diff": 59.371,
+                "score": 58.521
+              },
+              {
+                "offset": 3,
+                "diff": 59.508,
+                "score": 57.808
+              },
+              {
+                "offset": 4,
+                "diff": 35.277,
+                "score": 32.727
+              }
+            ],
+            "use_for": "compare_state_transition",
+            "label": "Exact chart subtype tile",
+            "color": "red",
+            "grounding_query": "the exact chart subtype tile in the top row of the Chart Type dialog",
+            "grounding_query_full": "Where is the exact chart subtype tile in the top row of the Chart Type dialog? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              915,
+              205,
+              969,
+              270
+            ]
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "finished_chart_visible_on_target_sheet",
+      "state_name": "Verify the finished chart remains on the requested sheet",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use when chart creation is complete or nearly complete and you need to verify that the finished chart object is visible on the requested worksheet before saving or ending the task.",
+      "when_not_to_use": "Do not use while the Chart Type or Chart Elements dialog is still open, and do not rely on this card alone when the prompt requires exact title text that is not visible in the current worksheet view.",
+      "visible_cues": [
+        "LibreOffice Calc has returned to the worksheet grid and the chart object is selected.",
+        "A green outline encloses the finished chart object on the sheet.",
+        "The active worksheet tab at the bottom is boxed in green.",
+        "The chart shows a completed stacked column-style result with a legend visible inside the object."
+      ],
+      "non_transferable_parts": [
+        "The workbook name, sheet label, series labels, category names, and chart proportions in the screenshot are example-specific.",
+        "The visible chart appearance only transfers when the live task asks for the same family or subtype.",
+        "This screenshot does not prove an exact title unless the title is visible in the live state; verify title text separately when needed.",
+        "The green boxes are verification cues for this screenshot, not reusable coordinates."
+      ],
+      "recommended_verification": "Confirm the finished chart object is on the requested worksheet, the visible chart form matches the requested family or subtype, and any required title text is present or otherwise verifiable before ending the task.",
+      "highlight_targets": [
+        {
+          "name": "Finished chart object on worksheet",
+          "target_type": "state_signal",
+          "annotation_query": "the finished chart object visible on the worksheet",
+          "color": "green"
+        },
+        {
+          "name": "Active destination worksheet tab",
+          "target_type": "state_signal",
+          "annotation_query": "the active worksheet tab at the bottom of LibreOffice Calc",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "Set exact chart text and verify the final chart on the target sheet",
+        "state_id": 4,
+        "image_origin": "key_frame",
+        "source_task_id": "4d9752b7-3f2a-4ac4-925d-b741db7c09c0",
+        "source_step_num": 12,
+        "source_traj_index": 11,
+        "source_image_uuid": "0596c4d5-7d3d-4ad5-bd90-e7012dbbf95e.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/0596c4d5-7d3d-4ad5-bd90-e7012dbbf95e.png",
+        "source_instruction": "Open the spreadsheet \"1234.xlsx\" on the desktop. Copy the data in cells A2:C6 and paste it into the newly created worksheet \"Sheet2\". Based on the data in A1:C5 of worksheet \"Sheet2\", insert a \"Column\" chart of the \"Percent Stacked\" type. Then, save the spreadsheet to the C drive with the name \"2s21sd\".",
+        "source_domains": "libreoffice_calc",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the \"File\" menu option in the top menu bar to open the file operations dropdown menu.",
+        "source_code": "pyautogui.click(x=0.051, y=0.072)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.291121+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "state_name": "Verify the finished chart remains on the requested sheet",
+        "image_filename": "finished_chart_visible_on_target_sheet.png"
+      },
+      "codex_review_notes": "This image is strongest for end-state verification of worksheet placement and chart form. It is intentionally not treated as sufficient proof of title correctness because the title is not visibly legible here.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Finished chart object on worksheet",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "sheet_region",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "finished_chart_visible_on_target_sheet_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/finished_chart_visible_on_target_sheet.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/0596c4d5-7d3d-4ad5-bd90-e7012dbbf95e.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Verify the finished chart remains on the requested sheet",
+            "color": null
+          },
+          {
+            "view_id": "finished_chart_visible_on_target_sheet_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/finished_chart_visible_on_target_sheet_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_15_codex_skills/ubuntu/libreoffice_calc/LIBREOFFICECALC_Create_Chart_on_Target_Sheet_with_Exact_Title_and_Type/Images/finished_chart_visible_on_target_sheet.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Finished chart object on worksheet",
+            "color": "green",
+            "grounding_query": "the local worksheet block around the green boxed Finished chart object on worksheet with nearby cells for context",
+            "grounding_query_full": "Where is the local worksheet block around the green boxed Finished chart object on worksheet with nearby cells for context? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              181,
+              167,
+              492,
+              496
+            ],
+            "crop_box_pixels": [
+              276,
+              138,
+              1016,
+              578
+            ],
+            "source_box_pixels": [
+              347,
+              180,
+              944,
+              535
+            ],
+            "focus_context_kind": "sheet_region",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": {
+    "ts": "2026-04-15T10:06:43.291136+00:00",
+    "resolver": "backfill_4_12_state_card_lineage.py",
+    "source_dataset": "opencua_agentnet/agentnet_ubuntu_5k.jsonl",
+    "raw_images_root": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted"
+  }
+}

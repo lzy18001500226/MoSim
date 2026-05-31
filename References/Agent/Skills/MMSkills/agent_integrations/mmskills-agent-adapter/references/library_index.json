@@ -1,0 +1,20 @@
+{
+  "name": "MMSkills",
+  "dataset": "zhangkangning/mmskills",
+  "dataset_url": "https://huggingface.co/datasets/zhangkangning/mmskills",
+  "paper_url": "https://huggingface.co/papers/2605.13527",
+  "project_url": "https://deepexperience.github.io/MMSkills/skills.html",
+  "config": "skills_preview",
+  "split": "train",
+  "records": 515,
+  "package_counts": {
+    "ubuntu": 247,
+    "mac": 234,
+    "vab_minecraft": 24,
+    "mario": 10
+  },
+  "summary_url": "https://huggingface.co/datasets/zhangkangning/mmskills/resolve/main/viewer/skills_preview_summary.json",
+  "rows_api": "https://datasets-server.huggingface.co/rows?dataset=zhangkangning/mmskills&config=skills_preview&split=train",
+  "tree_api": "https://huggingface.co/api/datasets/zhangkangning/mmskills/tree/main",
+  "raw_base": "https://huggingface.co/datasets/zhangkangning/mmskills/resolve/main"
+}

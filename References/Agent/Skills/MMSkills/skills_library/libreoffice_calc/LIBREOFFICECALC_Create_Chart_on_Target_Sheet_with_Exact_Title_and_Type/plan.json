@@ -1,0 +1,89 @@
+{
+  "overview": "Create a chart on the requested destination sheet while honoring an exact chart title and chart family.",
+  "when_to_use": [
+    "Use when the task explicitly names both a target sheet and a required chart title or exact chart type.",
+    "Use when the chart placement and final title are first-class requirements rather than incidental details."
+  ],
+  "preconditions": [
+    "The destination worksheet or chart sheet is known.",
+    "The exact chart title text is available from the instruction."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "Place the chart on the right sheet",
+      "purpose": "Keep chart creation attached to the requested destination surface."
+    },
+    {
+      "name": "Match the exact title and type",
+      "purpose": "Confirm the final chart identity instead of stopping at a generic chart."
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The task names a destination worksheet.",
+      "choose_capability": "Place the chart on the right sheet",
+      "reason": "Chart placement is part of the evaluator-visible result."
+    },
+    {
+      "condition": "The task names the title text or exact chart family.",
+      "choose_capability": "Match the exact title and type",
+      "reason": "The final chart must match those literal requirements."
+    }
+  ],
+  "selected_task_ids": [
+    "07b105d0-1d19-4de8-8d9a-53626b9b3966"
+  ],
+  "completion_checks": [
+    "The current Calc surface matches the intended skill family.",
+    "The requested operation lands on the intended target range, element, or dialog.",
+    "The final visible result satisfies the task rather than stopping at an intermediate state."
+  ],
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "create chart on target sheet with exact title and type",
+      "when_to_use": [
+        "Use when the task explicitly names both a target sheet and a required chart title or exact chart type."
+      ],
+      "derived_from_source_skills": [
+        "Create Chart on Target Sheet with Exact Title and Type"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "Identify the right Calc surface for this skill",
+          "visual_grounding": "The visible worksheet, menu, dialog, or chart state should match this skill's category before acting.",
+          "trigger_condition": "Use when the task explicitly names both a target sheet and a required chart title or exact chart type.",
+          "action": "Use when the task explicitly names both a target sheet and a required chart title or exact chart type.",
+          "is_result_state": false,
+          "has_image": false,
+          "text_description": "Create a chart on the requested destination sheet while honoring an exact chart title and chart family."
+        },
+        {
+          "state_id": 2,
+          "state_name": "Apply the requested operation on the intended target",
+          "visual_grounding": "The intended target range, dialog, or chart element is active and ready for the requested operation.",
+          "trigger_condition": "The correct target has been identified.",
+          "action": "Chart placement is part of the evaluator-visible result.",
+          "is_result_state": false,
+          "has_image": false,
+          "text_description": "Keep the operation scoped to the target that the task actually named."
+        },
+        {
+          "state_id": 3,
+          "state_name": "Verify the final visible result",
+          "visual_grounding": "The worksheet, dialog, or chart shows the requested result rather than only a partially completed intermediate state.",
+          "trigger_condition": "The operation has been applied and needs visible confirmation.",
+          "action": "Check the final visible Calc state and confirm the task-specific result is actually present.",
+          "is_result_state": true,
+          "has_image": false,
+          "text_description": "Use worksheet or dialog evidence to confirm completion instead of relying on a remembered click path."
+        }
+      ]
+    }
+  ],
+  "common_failure_modes": [
+    "Creating the chart on the current sheet when the task named another sheet.",
+    "Leaving a placeholder title or wrong chart family in place."
+  ]
+}

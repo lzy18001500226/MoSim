@@ -1,0 +1,435 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "LIBREOFFICEIMPRESS_Manage_Slide_Structure_Ordering_and_Layouts",
+  "domain": "libreoffice_impress",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "slide_layout_control",
+      "state_name": "open_layout_or_structure_control",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the target slide is already selected in the left navigator and you need a slide-level control such as Layout before changing structure or placeholder arrangement. This image matches the moment where a context menu is open from the selected slide thumbnail and the Layout entry is the next control to use.",
+      "when_not_to_use": "Do not use if the task is only editing text, objects, notes, backgrounds, or save/export settings on the current slide, if you are dragging thumbnails to reorder slides, or if only the right sidebar layouts are visible without a thumbnail context menu anchored to the intended slide.",
+      "visible_cues": [
+        "A single slide thumbnail in the left navigator is selected.",
+        "A context menu is open from that selected thumbnail.",
+        "The Layout row is the red interaction cue inside the menu.",
+        "The selected thumbnail remains the green state cue while the menu is open."
+      ],
+      "non_transferable_parts": [
+        "The parchment theme, ribbon graphic, and empty title/text placeholders belong to the example slide and are not required for other tasks.",
+        "The exact slide index, menu position, and annotation box coordinates are example-specific and must not be reused.",
+        "Menu wording may vary by locale or LibreOffice version; use the equivalent slide-level layout or structure command, not the literal screenshot text."
+      ],
+      "recommended_verification": "Before choosing a layout or other structural command, verify that the menu belongs to the intended selected thumbnail and that the main canvas still corresponds to that slide. If this task only needed slide targeting, stop after confirming the target and hand off to the content-edit skill.",
+      "failure_recovery_summary": "If the menu is attached to the wrong thumbnail or the canvas no longer matches the selected thumbnail, close the menu and re-establish the target slide before acting.",
+      "highlight_targets": [
+        {
+          "name": "layout_menu_entry",
+          "annotation_query": "Layout entry in the selected slide context menu",
+          "color": "red",
+          "target_type": "action_target"
+        },
+        {
+          "name": "selected_slide_for_layout",
+          "annotation_query": "Selected slide thumbnail in the navigator",
+          "color": "green",
+          "target_type": "state_signal"
+        }
+      ],
+      "evidence_source": {
+        "plan_procedure": "change_slide_structure_or_layout",
+        "plan_state_id": 2,
+        "plan_state_name": "open_layout_or_structure_control",
+        "source_task_id": "4300f901-9e42-4ecd-8f19-122c473c5b2e",
+        "source_step_num": 8,
+        "source_image": "slide_layout_control.png",
+        "source_traj_index": 7,
+        "source_image_uuid": "4a8dca19-7be8-46ac-a51d-bde1fab53389.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/4a8dca19-7be8-46ac-a51d-bde1fab53389.png",
+        "source_instruction": "I'm going to make a PPT for tomorrow and have already opened LibreOffice Impress. First, create two slides using two different templates respectively. Then, change the title and content of the third slide to vertical format. ",
+        "source_domains": "libreoffice_impress",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the \"Layout\" option in the context menu that appeared after right-clicking on Slide 2.",
+        "source_code": "pyautogui.click(x=0.124, y=0.609)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.294697+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "change_slide_structure_or_layout",
+        "state_id": 2,
+        "state_name": "open_layout_or_structure_control",
+        "image_filename": "slide_layout_control.png"
+      },
+      "codex_review_notes": "This card is reusable for slide-level context-menu operations because the transferable signal is the selected thumbnail plus its open menu. Treat the red box as the actionable control and the green box as confirmation that the menu was opened on the correct slide.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "layout_menu_entry",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "menu",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": true,
+          "included": false,
+          "reason": "after skipped because no nearby frame showed a clear visual change in the search window.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "slide_layout_control_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/slide_layout_control.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/4a8dca19-7be8-46ac-a51d-bde1fab53389.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "open_layout_or_structure_control",
+            "color": null
+          },
+          {
+            "view_id": "slide_layout_control_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/slide_layout_control_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_18_codex_skills/ubuntu/libreoffice_impress/LIBREOFFICEIMPRESS_Manage_Slide_Structure_Ordering_and_Layouts/Images/slide_layout_control.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "layout_menu_entry",
+            "color": "red",
+            "grounding_query": "the expanded A context menu region containing the red boxed layout_menu_entry",
+            "grounding_query_full": "Where is the expanded A context menu region containing the red boxed layout_menu_entry? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              69,
+              407,
+              165,
+              697
+            ],
+            "crop_box_pixels": [
+              13,
+              377,
+              435,
+              753
+            ],
+            "source_box_pixels": [
+              132,
+              439,
+              316,
+              752
+            ],
+            "focus_context_kind": "menu",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "slide_structure_result",
+      "state_name": "verify_slide_structure_result",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use after a layout or other structure-changing action when the main slide canvas should now reflect the requested result. This image is for the verification moment where the selected slide stays active and the canvas layout itself is the primary confirmation signal.",
+      "when_not_to_use": "Do not use before the requested structural action has been attempted. Do not rely on this card alone for delete, insert, or reorder tasks that must also be confirmed in the thumbnail list. Ignore it if the current screenshot does not show the selected slide canvas clearly enough to compare the resulting structure, or if the real task is now an object/text edit inside the already selected slide.",
+      "visible_cues": [
+        "The selected slide remains active in the left navigator.",
+        "The main canvas is outlined as the green verification region.",
+        "The canvas shows a completed slide layout rather than an insertion point or drag operation."
+      ],
+      "non_transferable_parts": [
+        "The parchment-style background, bookmark graphic, and empty placeholder wording are example-specific slide content.",
+        "The currently open submenu and its listed layout names are not themselves the reusable result; the transferable part is the canvas structure after the change.",
+        "Do not transfer annotation coordinates or assume the same placeholder geometry is correct unless the task asks for that layout family."
+      ],
+      "recommended_verification": "Confirm that the selected slide's canvas now matches the requested structure or placeholder arrangement, and pair this with thumbnail-order or slide-count checks when the task changes slide ordering or slide count.",
+      "failure_recovery_summary": "If the canvas looks right but the navigator order or count is still wrong, keep working on the filmstrip and do not declare completion.",
+      "highlight_targets": [
+        {
+          "name": "vertical_placeholder_layout",
+          "annotation_query": "Slide canvas showing the selected vertical layout",
+          "color": "green",
+          "target_type": "state_signal"
+        }
+      ],
+      "evidence_source": {
+        "plan_procedure": "change_slide_structure_or_layout",
+        "plan_state_id": 3,
+        "plan_state_name": "verify_slide_structure_result",
+        "source_task_id": "4300f901-9e42-4ecd-8f19-122c473c5b2e",
+        "source_step_num": 9,
+        "source_image": "slide_structure_result.png",
+        "source_traj_index": 8,
+        "source_image_uuid": "7066fa5c-58a3-462e-a639-56868977977e.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7066fa5c-58a3-462e-a639-56868977977e.png",
+        "source_instruction": "I'm going to make a PPT for tomorrow and have already opened LibreOffice Impress. First, create two slides using two different templates respectively. Then, change the title and content of the third slide to vertical format. ",
+        "source_domains": "libreoffice_impress",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the \"Vertical Title, Vertical Text\" option in the Layout submenu to apply this layout template to Slide 2.",
+        "source_code": "pyautogui.click(x=0.247, y=0.889)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.294738+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "change_slide_structure_or_layout",
+        "state_id": 3,
+        "state_name": "verify_slide_structure_result",
+        "image_filename": "slide_structure_result.png"
+      },
+      "codex_review_notes": "The green box covers the main verification surface. The card should be matched by the post-action canvas state, not by the example theme or exact placeholder text shown in the screenshot.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "vertical_placeholder_layout",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "canvas_region",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "slide_structure_result_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/slide_structure_result.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7066fa5c-58a3-462e-a639-56868977977e.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "verify_slide_structure_result",
+            "color": null
+          },
+          {
+            "view_id": "slide_structure_result_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/slide_structure_result_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_18_codex_skills/ubuntu/libreoffice_impress/LIBREOFFICEIMPRESS_Manage_Slide_Structure_Ordering_and_Layouts/Images/slide_structure_result.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "vertical_placeholder_layout",
+            "color": "green",
+            "grounding_query": "the slide canvas area around the green boxed vertical_placeholder_layout with surrounding slide content",
+            "grounding_query_full": "Where is the slide canvas area around the green boxed vertical_placeholder_layout with surrounding slide content? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              148,
+              235,
+              755,
+              846
+            ],
+            "crop_box_pixels": [
+              168,
+              187,
+              1566,
+              979
+            ],
+            "source_box_pixels": [
+              284,
+              253,
+              1449,
+              913
+            ],
+            "focus_context_kind": "canvas_region",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "slide_thumbnail_selected",
+      "state_name": "select_target_slide_thumbnail",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use at the start of a slide-level structure task when you must confirm that the intended slide thumbnail is selected before deleting, duplicating, moving, or relayouting it. This image matches a navigator-first state where one thumbnail is clearly selected and the main canvas displays the same slide.",
+      "when_not_to_use": "Do not use if the slide navigator is hidden, if multiple slides are selected, or if the task is focused on editing content inside the current slide rather than changing slide order, count, layout, or navigator visibility.",
+      "visible_cues": [
+        "The left navigator shows a single selected slide thumbnail.",
+        "The red cue marks the selected thumbnail to act on.",
+        "The main canvas shows the same slide as a green state cue.",
+        "Selection is established before any menu or drag action begins."
+      ],
+      "non_transferable_parts": [
+        "The example slide number, green background, table cells, and placeholder letters are not reusable requirements.",
+        "The exact size and position of the selected thumbnail and canvas annotation boxes are screenshot-specific.",
+        "Do not copy the example's slide ordering; transfer only the relationship between the selected thumbnail and the matching active canvas."
+      ],
+      "recommended_verification": "Before any structural action, verify that the selected thumbnail is the intended target and that the main canvas matches it so the edit is applied to the correct slide. Do not keep this skill active once the task has moved into text, object, or notes editing.",
+      "failure_recovery_summary": "If the wrong slide is selected, correct the selection first instead of compensating later with extra edits.",
+      "highlight_targets": [
+        {
+          "name": "selected_slide_thumbnail",
+          "annotation_query": "Selected slide thumbnail in the left navigator",
+          "color": "red",
+          "target_type": "action_target"
+        },
+        {
+          "name": "active_slide_canvas",
+          "annotation_query": "Active slide canvas matching the selected thumbnail",
+          "color": "green",
+          "target_type": "state_signal"
+        }
+      ],
+      "evidence_source": {
+        "plan_procedure": "change_slide_structure_or_layout",
+        "plan_state_id": 1,
+        "plan_state_name": "select_target_slide_thumbnail",
+        "source_task_id": "2ab54aba-2ff1-45b2-a537-04e62d2dd873",
+        "source_step_num": 1,
+        "source_image": "slide_thumbnail_selected.png",
+        "source_traj_index": 0,
+        "source_image_uuid": "0819690c-54a9-46fd-91a8-c7dc3b9385a6.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/0819690c-54a9-46fd-91a8-c7dc3b9385a6.png",
+        "source_instruction": "Delete the title texts of the first three slides, and then delete the entire last slide.",
+        "source_domains": "libreoffice_impress",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on Slide 1 in the slide panel to select it and make it the active slide",
+        "source_code": "pyautogui.click(x=0.154, y=0.237)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.294780+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "change_slide_structure_or_layout",
+        "state_id": 1,
+        "state_name": "select_target_slide_thumbnail",
+        "image_filename": "slide_thumbnail_selected.png"
+      },
+      "codex_review_notes": "This card is the entry check for navigator-driven actions. The transferable cue is not the slide content itself; it is the fact that the selected thumbnail and the main canvas are synchronized on the same target slide.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "selected_slide_thumbnail",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "canvas_region",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "slide_thumbnail_selected_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/slide_thumbnail_selected.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/0819690c-54a9-46fd-91a8-c7dc3b9385a6.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "select_target_slide_thumbnail",
+            "color": null
+          },
+          {
+            "view_id": "slide_thumbnail_selected_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/slide_thumbnail_selected_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_18_codex_skills/ubuntu/libreoffice_impress/LIBREOFFICEIMPRESS_Manage_Slide_Structure_Ordering_and_Layouts/Images/slide_thumbnail_selected.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "selected_slide_thumbnail",
+            "color": "red",
+            "grounding_query": "the local slide region around the red boxed selected_slide_thumbnail",
+            "grounding_query_full": "Where is the local slide region around the red boxed selected_slide_thumbnail? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              39,
+              568,
+              180,
+              712
+            ],
+            "crop_box_pixels": [
+              0,
+              540,
+              576,
+              842
+            ],
+            "source_box_pixels": [
+              74,
+              613,
+              345,
+              768
+            ],
+            "focus_context_kind": "canvas_region",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": {
+    "ts": "2026-04-15T10:06:43.294793+00:00",
+    "resolver": "backfill_4_12_state_card_lineage.py",
+    "source_dataset": "opencua_agentnet/agentnet_ubuntu_5k.jsonl",
+    "raw_images_root": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted"
+  }
+}

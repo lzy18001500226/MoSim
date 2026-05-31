@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: OSWorld upstream
+    url: https://github.com/xlang-ai/OSWorld
+    about: Use OSWorld upstream for issues unrelated to the MMSkills integration layer.

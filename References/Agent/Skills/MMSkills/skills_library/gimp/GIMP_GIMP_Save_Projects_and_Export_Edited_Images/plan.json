@@ -1,0 +1,78 @@
+{
+  "overview": "Save editable GIMP workfiles and preserve layered project state before handing off to export when needed.",
+  "when_to_use": [
+    "Use when the task explicitly asks to save the project, keep layers, or write an XCF workfile.",
+    "Use when overwrite confirmation or project-save routing matters more than raster export options."
+  ],
+  "preconditions": [
+    "The current edit is ready to save.",
+    "The destination name or folder is known."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "Open Save Image Surface",
+      "purpose": "Reach the save surface that preserves an editable GIMP workfile.",
+      "derived_from_source_skills": [
+        "Save Image dialog"
+      ]
+    },
+    {
+      "name": "Confirm Workfile Name And Save",
+      "purpose": "Set the workfile name and confirm the save while preserving editable state.",
+      "derived_from_source_skills": [
+        "Working filename entered"
+      ]
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The task requires preserving layers or saving as XCF.",
+      "choose_capability": "Confirm Workfile Name And Save",
+      "reason": "Editable workfiles belong to the save family, not the raster export family."
+    }
+  ],
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "Save Editable GIMP Workfiles",
+      "when_to_use": [
+        "Use when the task explicitly asks to save the project, keep layers, or write an XCF workfile.",
+        "Use when overwrite confirmation or project-save routing matters more than raster export options."
+      ],
+      "derived_from_source_skills": [
+        "Save Image dialog",
+        "Working filename entered"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "Save Image Dialog Open",
+          "visual_grounding": "The Save Image dialog is open rather than the generic export flow.",
+          "trigger_condition": "The task is to preserve the editable project state.",
+          "action": "Verify that the workflow is in the save surface, not the export surface.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "Use the save surface when the task needs editable project preservation."
+        },
+        {
+          "state_id": 2,
+          "state_name": "Working Filename Entered",
+          "visual_grounding": "The workfile name field is set in the save dialog.",
+          "trigger_condition": "The save surface is already open.",
+          "action": "Set the requested workfile name and confirm the save.",
+          "is_result_state": true,
+          "has_image": true,
+          "text_description": "The save flow is ready to finish once the requested workfile name is visible."
+        }
+      ]
+    }
+  ],
+  "common_failure_modes": [
+    "Using an export-only workflow when the task requires preserving editable state.",
+    "Treating a format-options dialog as proof that the XCF save already succeeded."
+  ],
+  "selected_task_ids": [
+    "800c3122-b456-4696-8750-937394d3b3be",
+    "0f228c14-e7ee-41e5-850c-1331726eb6fa"
+  ]
+}

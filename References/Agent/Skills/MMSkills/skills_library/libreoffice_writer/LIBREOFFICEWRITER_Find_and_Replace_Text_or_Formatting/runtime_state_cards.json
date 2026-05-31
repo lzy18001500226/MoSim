@@ -1,0 +1,124 @@
+{
+  "schema_version": "2026-04-18.runtime_state_bundles.v5",
+  "skill_slug": "LIBREOFFICEWRITER_Find_and_Replace_Text_or_Formatting",
+  "domain": "libreoffice_writer",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_writer_repair_20260418",
+  "states": [
+    {
+      "state_id": "find_replace_dialog_entry",
+      "state_name": "Start from the main Find and Replace dialog",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this state when the Find and Replace dialog is open and the next step is to fill the Find field or confirm the search scope.",
+      "when_not_to_use": "Do not use it on the document canvas or when the replacement-formatting subdialog has already replaced the main dialog.",
+      "visible_cues": [
+        "The main Find and Replace dialog is centered over the document.",
+        "The Find field is visible near the top of the dialog.",
+        "The dialog still expects the search target to be entered or confirmed."
+      ],
+      "verification_cue": "Before moving to replacement actions, confirm the Find field and scope match the current task.",
+      "visual_evidence_chain": {
+        "focus_crop": "The focus crop expands around the grounded cue so the agent can keep nearby context while ignoring unrelated screen regions.",
+        "before": "No extra before view was needed for this state.",
+        "after": "No extra after view was needed for this state."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/find_replace_dialog_entry.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Start from the main Find and Replace dialog"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/find_replace_dialog_entry_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Find field"
+        }
+      ]
+    },
+    {
+      "state_id": "find_replace_formatting_confirm",
+      "state_name": "Confirm the replacement formatting dialog",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this state when the replacement-formatting dialog is open and the next step is to confirm the chosen font effect or formatting setting.",
+      "when_not_to_use": "Do not use it when the main Find and Replace dialog is still waiting for the initial search text.",
+      "visible_cues": [
+        "The replacement-formatting dialog is open on top of the document.",
+        "The requested formatting values have been chosen in the dialog.",
+        "The next actionable control is the confirmation button that commits the formatting choice."
+      ],
+      "verification_cue": "After confirming the formatting dialog, return to the main Find and Replace window and verify the replacement summary reflects the intended formatting.",
+      "visual_evidence_chain": {
+        "focus_crop": "The focus crop expands around the grounded cue so the agent can keep nearby context while ignoring unrelated screen regions.",
+        "before": "No extra before view was needed for this state.",
+        "after": "No extra after view was needed for this state."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/find_replace_formatting_confirm.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Confirm the replacement formatting dialog"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/find_replace_formatting_confirm_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Formatting dialog OK button"
+        }
+      ]
+    },
+    {
+      "state_id": "find_replace_success_message",
+      "state_name": "Verify the replace-count message before closing",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this state immediately after Replace or Replace All runs and the dialog reports how many matches changed.",
+      "when_not_to_use": "Do not use it before the replace action has executed or after the dialog has already been closed.",
+      "visible_cues": [
+        "The main Find and Replace dialog is still open.",
+        "A replace-count message is visible inside the dialog.",
+        "The message confirms the batch edit actually changed document content."
+      ],
+      "verification_cue": "Confirm the dialog reports successful replacements, then verify the visible document state still matches the task. If the replace count is zero, unexpectedly small, or the page content did not change as intended, stay in the dialog and correct the find text, scope, or replacement settings before closing it.",
+      "visual_evidence_chain": {
+        "focus_crop": "The focus crop expands around the grounded cue so the agent can keep nearby context while ignoring unrelated screen regions.",
+        "before": "No extra before view was needed for this state.",
+        "after": "No extra after view was needed for this state."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/find_replace_success_message.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Verify the replace-count message before closing"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/find_replace_success_message_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Replace count message"
+        }
+      ]
+    }
+  ]
+}

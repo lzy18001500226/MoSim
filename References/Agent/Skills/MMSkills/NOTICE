@@ -1,0 +1,7 @@
+MMSkills
+
+This repository contains an anonymous release of the MMSkills project.
+
+Portions of the OSWorld integration files under `mm_agents/` and
+`osworld_integration/` are derived from OSWorld and are distributed under the
+Apache License, Version 2.0.

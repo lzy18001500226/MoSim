@@ -1,0 +1,127 @@
+{
+  "schema_version": "2026-04-17.runtime_state_bundles.v4",
+  "skill_slug": "CHROME_Search_Web_And_Open_Target_Result",
+  "domain": "chrome",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_refine_20260418",
+  "states": [
+    {
+      "state_id": "google_search_box_ready",
+      "state_name": "open_search_surface",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when Chrome is on a Google start surface and the next action is to begin a fresh web search from the page itself. The screenshot should still be at the blank search surface stage, before the query has been submitted.",
+      "when_not_to_use": "Do not use this card after results are already visible, when a destination site is already open, or when the task is being performed from a different search engine or a browser field that does not look like the centered Google page search box shown here.",
+      "visible_cues": [
+        "Chrome is on a Google new-tab or homepage style surface rather than a results list.",
+        "A large Google wordmark is centered on the page.",
+        "A wide rounded search field sits directly under the logo and is marked with a red box.",
+        "The page is otherwise mostly blank, with shortcut tiles below the search field."
+      ],
+      "verification_cue": "After typing and submitting the query, verify that the blank Google start surface is replaced by search results or another search response for the requested query.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the examples as state evidence only; do not transfer literal coordinates or example-specific values.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/google_search_box_ready.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "open_search_surface"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/google_search_box_ready_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Google page search box"
+        }
+      ]
+    },
+    {
+      "state_id": "search_result_target_link",
+      "state_name": "choose_target_result",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card after the query has been submitted and the Google results page is open with the intended destination visibly listed. The next action is to choose the correct result from the results surface.",
+      "when_not_to_use": "Do not use this card before any search has been run, when the intended result is not yet visible and more scrolling or query refinement is needed, or when the browser has already navigated away from the results page.",
+      "visible_cues": [
+        "The Google results page is open and the query is shown in the top search bar.",
+        "A vertical list of candidate results is visible in the main column.",
+        "One clickable result title in the list is marked with a red box.",
+        "Supplementary modules, previews, or side panels may appear beside the result list."
+      ],
+      "verification_cue": "After clicking the chosen result, verify that Chrome opens the requested destination page or result card instead of remaining on the search results page or opening a similarly named but incorrect result.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the examples as state evidence only; do not transfer literal coordinates or example-specific values.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/search_result_target_link.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "choose_target_result"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/search_result_target_link_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Target search result title"
+        }
+      ]
+    },
+    {
+      "state_id": "destination_page_open",
+      "state_name": "verify_destination_page",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card after a result has been opened and the task needs confirmation that the destination page or primary result view is actually visible. The browser should already be past the search-results stage.",
+      "when_not_to_use": "Do not use this card while still choosing among search results, while a page is still obviously loading without a stable title or primary content area, or when the visible page does not yet show a destination-specific heading, card, or main module.",
+      "visible_cues": [
+        "The browser is on a destination-specific page rather than a generic Google results list.",
+        "A prominent page heading near the upper left is boxed in green as the verification signal.",
+        "The page body contains destination-specific content modules, such as a chart and metrics in this example.",
+        "The page layout is stable enough to verify content, not just a transient navigation state."
+      ],
+      "verification_cue": "Confirm that the browser has left the search-results surface and that the open page shows a stable heading, title, or primary module matching the requested destination rather than a similarly named result.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the examples as state evidence only; do not transfer literal coordinates or example-specific values.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/destination_page_open.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "verify_destination_page"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/destination_page_open_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Destination page heading"
+        }
+      ]
+    }
+  ]
+}

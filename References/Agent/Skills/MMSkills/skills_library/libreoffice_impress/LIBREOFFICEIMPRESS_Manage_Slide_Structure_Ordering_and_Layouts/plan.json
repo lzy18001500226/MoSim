@@ -1,0 +1,246 @@
+{
+  "overview": "Work from the slide navigator first, perform the structural action on the intended slide or slide range, and verify the resulting slide canvas or thumbnail order before continuing.",
+  "when_to_use": [
+    "The task changes slide ordering, duplication, deletion, insertion, layout assignment, or related navigator-driven structure.",
+    "The workflow is about slide-level structure rather than text formatting or object insertion."
+  ],
+  "preconditions": [
+    "The slide navigator is visible or can be restored.",
+    "The target slide or slide range can be identified before the structural edit is made."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "Insert Delete Duplicate and Reorder Slides",
+      "purpose": "Change slide count or order.",
+      "derived_from_source_skills": [
+        "Insert Delete Duplicate and Reorder Slides",
+        "Apply Slide Layout Variants"
+      ]
+    },
+    {
+      "name": "Apply Slide Layout Variants",
+      "purpose": "Apply a target layout to a slide.",
+      "derived_from_source_skills": [
+        "Insert Delete Duplicate and Reorder Slides",
+        "Apply Slide Layout Variants"
+      ]
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The task changes slide count or order",
+      "choose_capability": "Insert Delete Duplicate and Reorder Slides",
+      "reason": "Operate from slide thumbnails."
+    },
+    {
+      "condition": "The task changes placeholder arrangement",
+      "choose_capability": "Apply Slide Layout Variants",
+      "reason": "Use the layout menu and verify the canvas result."
+    }
+  ],
+  "selected_task_ids": [
+    "2ab54aba-2ff1-45b2-a537-04e62d2dd873",
+    "4300f901-9e42-4ecd-8f19-122c473c5b2e"
+  ],
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "change_slide_structure_or_layout",
+      "when_to_use": [
+        "A slide-level structure or layout change is requested."
+      ],
+      "derived_from_source_skills": [
+        "Insert Delete Duplicate and Reorder Slides",
+        "Apply Slide Layout Variants"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "select_target_slide_thumbnail",
+          "visual_grounding": "The correct slide thumbnail is selected in the navigator.",
+          "trigger_condition": "Any structural change needs the right target slide first.",
+          "action": "Select the target slide.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "The correct slide thumbnail is selected in the navigator.",
+          "key_frame": {
+            "source_task_id": "2ab54aba-2ff1-45b2-a537-04e62d2dd873",
+            "source_step_num": 1,
+            "image_filename": "slide_thumbnail_selected.png",
+            "highlight_targets": [
+              {
+                "name": "selected_slide_thumbnail",
+                "annotation_query": "Selected slide thumbnail in the left navigator",
+                "color": "red",
+                "target_type": "action_target"
+              },
+              {
+                "name": "active_slide_canvas",
+                "annotation_query": "Active slide canvas matching the selected thumbnail",
+                "color": "green",
+                "target_type": "state_signal"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 2,
+          "state_name": "open_layout_or_structure_control",
+          "visual_grounding": "The slide context menu is open and layout controls are visible.",
+          "trigger_condition": "The target slide now needs a structure or layout change.",
+          "action": "Open the relevant slide control.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "The slide context menu is open and layout controls are visible.",
+          "key_frame": {
+            "source_task_id": "4300f901-9e42-4ecd-8f19-122c473c5b2e",
+            "source_step_num": 8,
+            "image_filename": "slide_layout_control.png",
+            "highlight_targets": [
+              {
+                "name": "layout_menu_entry",
+                "annotation_query": "Layout entry in the selected slide context menu",
+                "color": "red",
+                "target_type": "action_target"
+              },
+              {
+                "name": "selected_slide_for_layout",
+                "annotation_query": "Selected slide thumbnail in the navigator",
+                "color": "green",
+                "target_type": "state_signal"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 3,
+          "state_name": "verify_slide_structure_result",
+          "visual_grounding": "The slide canvas shows the final layout or structural result.",
+          "trigger_condition": "Verify the finished slide structure.",
+          "action": "Confirm the requested result is visible before leaving this surface.",
+          "is_result_state": true,
+          "has_image": true,
+          "text_description": "The slide canvas shows the final layout or structural result.",
+          "key_frame": {
+            "source_task_id": "4300f901-9e42-4ecd-8f19-122c473c5b2e",
+            "source_step_num": 9,
+            "image_filename": "slide_structure_result.png",
+            "highlight_targets": [
+              {
+                "name": "vertical_placeholder_layout",
+                "annotation_query": "Slide canvas showing the selected vertical layout",
+                "color": "green",
+                "target_type": "state_signal"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "common_failure_modes": [
+    "Applying a structural change to the wrong slide because the wrong thumbnail was selected.",
+    "Changing local content when the task actually requires a slide-level layout or ordering action.",
+    "Leaving before verifying the new slide order, layout, or slide count."
+  ],
+  "coverage_summary": {
+    "covered_task_count": 91,
+    "covered_task_ids": [
+      "026209bf-43ff-4046-a2f7-e8ab34847b73",
+      "08847c8b-964f-48b1-9fd9-8a0ff3edc8f9",
+      "098eee6c-8842-454b-8995-b2b69960ecba",
+      "0aead262-13a4-4b94-8b79-b89d8485f8dd",
+      "0e51d415-9dcf-4f3c-b068-0c011f34f317",
+      "1399e723-fe06-4e04-8040-63fefd9dbc62",
+      "1529a854-75f9-477e-90ed-ef61c91f1ab5",
+      "16655d11-64f1-47dd-abad-dba5c8238f6f",
+      "16b67ffa-502e-4fac-a953-761ff07ace09",
+      "18184023-db5d-4dd2-9e93-c020153719e7",
+      "18e568ad-8491-4f68-b042-19a329371587",
+      "270a465e-fca3-4dff-bc85-ce711d2eec0c",
+      "280cade7-36a5-4a4b-939e-b1ab9ed3b9d9",
+      "29f6b588-4333-46a6-8ccf-235db637924f",
+      "2ab54aba-2ff1-45b2-a537-04e62d2dd873",
+      "2ce00c9d-a8a9-425f-99ce-bee4676bfdfd",
+      "3e7c0c68-f179-4890-83f9-803de684e758",
+      "3f2e087d-798a-410f-919e-f7504ea6af66",
+      "3f975a4e-6201-42a9-8b39-a3b218033a32",
+      "419bc2a0-9b75-4672-a70a-14c43212a83d",
+      "4300f901-9e42-4ecd-8f19-122c473c5b2e",
+      "473571f3-e182-433a-8e0d-556347fd706e",
+      "4f8efe4d-5ad8-4ead-a255-4fd19a69801e",
+      "5563c1e9-9864-4fc9-9ab8-eee61be9b626",
+      "593d909f-cb28-4de4-a5fb-3e30e1150583",
+      "5d3deb32-71f2-4aec-a0c5-58e0c312aca7",
+      "5eb4672f-c79e-4988-8b7f-ce9db93a59a2",
+      "5f93a129-2b90-489f-bceb-9b08a06cc926",
+      "609f057c-846c-49b6-94de-70b6a5567717",
+      "60c6d383-19f0-4734-8d8c-2d281edd302a",
+      "62d86722-a8ba-421a-b019-742a35e29d5f",
+      "64c70c52-5b52-4502-875c-31a31d017d7a",
+      "682aab21-aa32-4720-b070-865711a0e700",
+      "6d48db8e-c831-4423-b1f0-64ac06cc95aa",
+      "7339dc96-fa5a-4291-bb21-b0c50f14beec",
+      "74acb9f8-67e1-473c-ac94-1de88ad40d3d",
+      "7a9f0a76-8a6b-4c15-b0b2-e5e11e2caa59",
+      "7b6c544f-7e73-4911-bffd-99ce2ecd8433",
+      "7cc88ade-b896-4713-8e1b-f2a212b9bd6c",
+      "7cfe1e7b-bac4-40e3-9f08-0e21e6182b2e",
+      "7edb2b0a-cd06-45d1-8a3f-0a714537b81a",
+      "81e061dd-71cf-441f-bdf0-aaac869605d3",
+      "856c73a6-8300-4ff1-8dee-eaaa36b71778",
+      "8864958a-35eb-4fad-a00e-54dc942ff77c",
+      "8d870fef-854e-4119-802e-b093e43c73e5",
+      "8eb53474-7ee1-45c4-8b57-30dd18eaceb0",
+      "90d685e4-1d1a-4fd7-886a-e30bc20fa1d6",
+      "9132181d-71b1-4f3c-b332-2cb4416da83d",
+      "92c04881-2fd3-426d-a4c6-7dad0df08313",
+      "936850c7-8dd0-4ed0-9003-fdd59e3c95c6",
+      "96c95d64-8b98-4702-8fca-f9986775de99",
+      "995c57e6-878a-41e9-b9d0-1552805c448b",
+      "9ce31534-ed0c-4d8c-9c24-a76f90e33e75",
+      "9d2f870b-8401-4089-ac46-340b9ef3384e",
+      "a2d7d6d9-8e4e-4507-a72f-a0fbfc14bfad",
+      "a38ea692-028e-4616-b506-9488c6645a36",
+      "a442777f-f1b6-4071-b1c3-8d1243073cf6",
+      "a83d101c-7df8-4839-9fb4-192cb093d4b2",
+      "ab18fa54-e622-4369-b13d-dd58b22d5e13",
+      "ac059640-0967-4ea7-b707-2aca5efaf235",
+      "aec8e638-eb4d-4a34-98c4-fa68c4e8cbd5",
+      "b067224f-556a-4191-ad17-4e8796a42f85",
+      "b45eeaec-4aa4-409a-a6c3-d269e7344bb2",
+      "bdc51a00-a3c5-4140-9e80-daefad8f3024",
+      "c14b8264-6436-4085-820e-cadba4334115",
+      "c1faf56b-3e38-430c-b940-c988501946d7",
+      "c2c5324f-c93c-4353-af55-5914313335b1",
+      "c5318b3b-b238-417d-a889-08012c6933f5",
+      "c993afa3-165f-4bf2-85ed-5945716f9681",
+      "c9a077e5-ecf4-4b84-99cd-815c07ed3073",
+      "c9f58f7f-425a-4a69-9da0-61f2949063aa",
+      "ca51b42d-5b83-42d7-9360-214875e18896",
+      "d37b5152-2a64-40d0-8269-ec8a9bcc7439",
+      "d5d0b155-c433-47fa-ad5b-2b58ab5d85cb",
+      "d6f3d6ba-eb99-4103-a520-fa4ee6094dc4",
+      "da2ff0fe-5d77-4dcd-884d-581279ff75a9",
+      "dc60b433-db7e-4646-804c-a11efb6b070e",
+      "dd681722-e929-44f4-8290-6f8f6afd2000",
+      "ddd582ba-a062-4de8-aaf2-bc07630a6476",
+      "e0e4aea6-dd69-4747-ba9d-445262c53729",
+      "e1089ce7-bc0a-4ee0-b560-ffe5a0d38a41",
+      "e97b3e5f-ca2c-42c8-9321-40a727b974d2",
+      "ebed8861-bbd2-46a0-a77c-effc23940a83",
+      "eea74d00-4bc8-41e4-a24f-6de6f1f6060f",
+      "ef6f02c5-b24a-4f5a-b2b7-bbafd01092c9",
+      "f14c710e-449e-415f-9401-effded82201f",
+      "f3400998-3034-427b-84c3-98c426c7882a",
+      "f3a22707-e3cf-4904-a504-3c6614ce05e9",
+      "f477a335-f3de-4d7f-a30c-a27d451f53b7",
+      "fd1fab42-f183-47f6-8dc0-e8342fee6db6",
+      "fdaa72fe-1788-4d41-a985-a3a602434326"
+    ]
+  },
+  "source_skill_names": [
+    "Insert Delete Duplicate and Reorder Slides",
+    "Apply Slide Layout Variants"
+  ]
+}

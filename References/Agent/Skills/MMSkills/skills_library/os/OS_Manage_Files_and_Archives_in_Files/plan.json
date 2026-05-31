@@ -1,0 +1,125 @@
+{
+  "overview": "Use Ubuntu Files to organize items, create folders, move content, archive items, or inspect Trash-related preferences, then verify the exact item path or folder state.",
+  "when_to_use": [
+    "When the task uses Ubuntu Files or Trash to manipulate visible items and verify a GUI path result."
+  ],
+  "preconditions": [
+    "The requested folder, Trash entry, or destination location is explicit."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "open_target_files_surface",
+      "purpose": "Reach the correct folder or Trash surface in Ubuntu Files.",
+      "derived_from_source_skills": [
+        "OS_Manage_Files_and_Archives_in_Files"
+      ]
+    },
+    {
+      "name": "apply_gui_file_action",
+      "purpose": "Use the visible `Files item or preference control` to complete the requested GUI file action.",
+      "derived_from_source_skills": [
+        "OS_Manage_Files_and_Archives_in_Files"
+      ]
+    },
+    {
+      "name": "verify_gui_path_result",
+      "purpose": "Confirm the visible `Files destination result` in the requested location.",
+      "derived_from_source_skills": [
+        "OS_Manage_Files_and_Archives_in_Files"
+      ]
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The move, restore, or archive action already happened.",
+      "choose_capability": "verify_gui_path_result",
+      "reason": "The destination path result must be visible after the action."
+    }
+  ],
+  "selected_task_ids": [
+    "2480f52f-1d0c-4074-adf6-4b3fc9bdded1",
+    "d88a6991-8b17-4267-8beb-d645ba3671f2",
+    "cc40ca2c-dcbd-42a9-9ad4-5b5d7445bea3",
+    "3b049eba-d02f-477c-9547-e8dd3b6680d6"
+  ],
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "apply_the_files_workflow",
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "open_the_target_files_surface",
+          "visual_grounding": "Ubuntu Files is focused on the requested folder or Trash surface.",
+          "trigger_condition": "The correct Files location is not yet open.",
+          "action": "Open Files and navigate to the correct folder or Trash surface.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "The requested Files surface is visible.",
+          "key_frame": {
+            "source_task_id": "2480f52f-1d0c-4074-adf6-4b3fc9bdded1",
+            "source_step_num": 1,
+            "image_filename": "os_manage_files_and_archives_in_files_open_target_files_surface.png",
+            "highlight_targets": [
+              {
+                "name": "Files item or preference control",
+                "target_type": "action_target",
+                "annotation_query": "the Files item or preference control in Files",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 2,
+          "state_name": "apply_the_gui_file_action",
+          "visual_grounding": "The relevant file item, folder, or restore action is visible and ready.",
+          "trigger_condition": "The correct Files surface is open and the action has not been completed.",
+          "action": "Use the visible `Files item or preference control` to complete the requested file action.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "The requested GUI file action is in progress.",
+          "key_frame": {
+            "source_task_id": "2480f52f-1d0c-4074-adf6-4b3fc9bdded1",
+            "source_step_num": 15,
+            "image_filename": "os_manage_files_and_archives_in_files_apply_gui_file_action.png",
+            "highlight_targets": [
+              {
+                "name": "Files item or preference control",
+                "target_type": "action_target",
+                "annotation_query": "the Files item or preference control in Files",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 3,
+          "state_name": "verify_the_gui_path_result",
+          "visual_grounding": "The final Files location shows the requested item or restored path result.",
+          "trigger_condition": "The GUI file action already completed.",
+          "action": "Confirm the visible `Files destination result` in the requested destination.",
+          "is_result_state": true,
+          "has_image": true,
+          "text_description": "The final GUI path result is visible.",
+          "key_frame": {
+            "source_task_id": "3b049eba-d02f-477c-9547-e8dd3b6680d6",
+            "source_step_num": 11,
+            "image_filename": "os_manage_files_and_archives_in_files_verify_gui_path_result.png",
+            "highlight_targets": [
+              {
+                "name": "Files destination result",
+                "target_type": "state_signal",
+                "annotation_query": "the visible Files destination result proving the requested file result in Files",
+                "color": "green"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "common_failure_modes": [
+    "Completing the action but not opening the final folder or restored path to confirm the result."
+  ]
+}

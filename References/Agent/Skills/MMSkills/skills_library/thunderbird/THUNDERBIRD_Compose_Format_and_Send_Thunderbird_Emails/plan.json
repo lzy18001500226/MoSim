@@ -1,0 +1,170 @@
+{
+  "codex_authored": true,
+  "overview": "Handle the standard new-message workflow in Thunderbird: open a fresh composer, fill the headers and body, apply visible formatting when required, and send the message.",
+  "when_to_use": [
+    "Use this skill for fresh outgoing emails rather than replies, forwards, or draft edits.",
+    "This skill ends when the compose window is ready to send or the send action is executed."
+  ],
+  "preconditions": [
+    "Thunderbird is open on the Mail surface or can be returned to from the current window.",
+    "The requested mailbox, account, sender, recipient, or folder name from the task is already known."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "open_new_message",
+      "purpose": "Open a fresh compose window and fill the message headers.",
+      "derived_from_source_skills": [
+        "Compose New Email"
+      ]
+    },
+    {
+      "name": "format_body",
+      "purpose": "Apply visible compose formatting before sending.",
+      "derived_from_source_skills": [
+        "Format Email Body"
+      ]
+    },
+    {
+      "name": "send_message",
+      "purpose": "Send the prepared Thunderbird message.",
+      "derived_from_source_skills": [
+        "Send or Save Composed Message"
+      ]
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "no compose window is open yet",
+      "choose_capability": "open_new_message",
+      "reason": "Start from the Mail toolbar so the new composer is opened on the intended account surface."
+    },
+    {
+      "condition": "the body already exists and only visual formatting must change",
+      "choose_capability": "format_body",
+      "reason": "Work from the active compose window and verify the formatting in the visible editor before sending."
+    }
+  ],
+  "selected_task_ids": [
+    "0cdc6d27-dd71-4c83-a432-d2d3aec7c303",
+    "22f1b0aa-c5a1-410b-91cc-96fbe09f0d49",
+    "2931ebc7-aeec-4a28-9c94-7d8bc5b9f60b",
+    "9242623a-e732-41bd-9ebc-ba51a78e9822"
+  ],
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "Open a new message, fill content, and send it",
+      "when_to_use": [
+        "The task starts from a fresh outgoing message rather than a reply or draft."
+      ],
+      "derived_from_source_skills": [
+        "Compose New Email",
+        "Format Email Body",
+        "Send or Save Composed Message"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "new_message_entry",
+          "visual_grounding": "Thunderbird Mail shows the New Message control that opens a fresh composer.",
+          "trigger_condition": "A new outgoing message is required and no compose window is open yet.",
+          "action": "Click New Message to open the composer on the current mail account.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "Thunderbird Mail shows the New Message control that opens a fresh composer.",
+          "key_frame": {
+            "source_task_id": "0cdc6d27-dd71-4c83-a432-d2d3aec7c303",
+            "source_step_num": 1,
+            "image_filename": "new_message_entry.png",
+            "highlight_targets": [
+              {
+                "name": "New Message button",
+                "target_type": "action_target",
+                "annotation_query": "New Message button in Thunderbird mail toolbar",
+                "color": "red"
+              },
+              {
+                "name": "mail toolbar",
+                "target_type": "state_signal",
+                "annotation_query": "Thunderbird mail toolbar visible",
+                "color": "green"
+              }
+            ],
+            "generated_image_filename": "new_message_entry.png",
+            "generated_image_relative_path": "Images/new_message_entry.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/c2ea1e8c-2084-43af-853e-9d7d25fedfe0.png"
+          }
+        },
+        {
+          "state_id": 2,
+          "state_name": "headers_ready_for_edit",
+          "visual_grounding": "The compose window shows the recipient and subject fields ready for the requested message content.",
+          "trigger_condition": "The compose window is already open and ready for the main message text.",
+          "action": "Fill the To and Subject fields, then enter the requested body content and visible formatting.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "The compose window shows the recipient and subject fields ready for the requested message content.",
+          "key_frame": {
+            "source_task_id": "0cdc6d27-dd71-4c83-a432-d2d3aec7c303",
+            "source_step_num": 4,
+            "image_filename": "headers_ready_for_edit.png",
+            "highlight_targets": [
+              {
+                "name": "Subject field",
+                "target_type": "action_target",
+                "annotation_query": "Subject field in Thunderbird compose window",
+                "color": "red"
+              },
+              {
+                "name": "recipient field",
+                "target_type": "state_signal",
+                "annotation_query": "recipient field populated in Thunderbird compose window",
+                "color": "green"
+              }
+            ],
+            "generated_image_filename": "headers_ready_for_edit.png",
+            "generated_image_relative_path": "Images/headers_ready_for_edit.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/ad86280a-4616-4579-bb52-f1f5a9ea1ac5.png"
+          }
+        },
+        {
+          "state_id": 3,
+          "state_name": "send_ready_with_visible_content",
+          "visual_grounding": "The compose toolbar shows Send while the requested content and formatting are already visible in the editor.",
+          "trigger_condition": "All requested content and formatting have already been entered.",
+          "action": "Send the email only after the compose window visibly matches the requested message content.",
+          "is_result_state": true,
+          "has_image": true,
+          "text_description": "The compose toolbar shows Send while the requested content and formatting are already visible in the editor.",
+          "key_frame": {
+            "source_task_id": "22f1b0aa-c5a1-410b-91cc-96fbe09f0d49",
+            "source_step_num": 14,
+            "image_filename": "send_ready_with_visible_content.png",
+            "highlight_targets": [
+              {
+                "name": "Send button",
+                "target_type": "action_target",
+                "annotation_query": "Send button in Thunderbird compose toolbar",
+                "color": "red"
+              },
+              {
+                "name": "formatted message body",
+                "target_type": "state_signal",
+                "annotation_query": "formatted message body in Thunderbird compose window",
+                "color": "green"
+              }
+            ],
+            "generated_image_filename": "send_ready_with_visible_content.png",
+            "generated_image_relative_path": "Images/send_ready_with_visible_content.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/af697496-006e-40f9-91c7-d985e2cdaa31.png"
+          }
+        }
+      ]
+    }
+  ],
+  "common_failure_modes": [
+    "Opening a reply or draft flow instead of a fresh message window.",
+    "Sending before the visible body formatting matches the task."
+  ],
+  "codex_rewrite_note": "Retained from the existing Codex-authored Thunderbird source library for the 2026-04-18 Codex refinement pass."
+}

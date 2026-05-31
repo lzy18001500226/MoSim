@@ -1,0 +1,88 @@
+{
+  "schema_version": "2026-04-18.runtime_state_bundles.v5",
+  "skill_slug": "GIMP_GIMP_Save_Projects_and_Export_Edited_Images",
+  "domain": "gimp",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_strict_refine_builder_20260418",
+  "states": [
+    {
+      "state_id": "save_image_dialog_open",
+      "state_name": "Save Image Dialog Open",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the user needs to keep the current GIMP edit as an editable project or other source-preserving file. The matching state is the Save Image dialog before the final name is entered or finalized, with the filename field visible at the top of the modal file chooser.",
+      "when_not_to_use": "Do not use this card for export-to-delivery workflows, for screens that already show a typed requested filename ready to confirm, or for plain canvas views without the Save Image dialog.",
+      "visible_cues": [
+        "A centered modal titled Save Image is open over the GIMP workspace.",
+        "The whole dialog is outlined in green to mark the relevant state.",
+        "The filename entry near the top is boxed in red and contains an example project name.",
+        "The dialog includes a folder chooser, file list, and a Save button in the lower-right."
+      ],
+      "verification_cue": "Before entering a working filename, verify that the dialog title says Save Image and that the flow is for an editable project save rather than an export format conversion.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after skipped because the nearby frames changed, but none produced a reliable fresh grounding."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/save_image_dialog_open.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Save Image Dialog Open"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/save_image_dialog_open_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Working filename field"
+        }
+      ]
+    },
+    {
+      "state_id": "working_filename_entered",
+      "state_name": "Working Filename Entered",
+      "stage": "expected_after_action",
+      "image_role": "expected_after_action",
+      "when_to_use": "Use this card after the requested working filename has been typed into the Save Image dialog and you want to verify the save is ready to confirm. The dialog should still be open, the target filename should be visible in the name field, and the Save button should be available for the final click.",
+      "when_not_to_use": "Do not use this card before entering the requested filename, for export dialogs, or as evidence that the file has already been written. Do not treat the example filename in the field as a reusable default.",
+      "visible_cues": [
+        "The Save Image dialog remains open in front of the workspace.",
+        "The red box highlights the populated filename field, showing that text has been entered.",
+        "The Save button in the lower-right is outlined in green as the next confirmation point.",
+        "The file chooser and folder list remain visible behind the active name field."
+      ],
+      "verification_cue": "Confirm that the name field contains the requested working filename and that the Save button is available before finalizing the project save.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after skipped because the nearby frames changed, but none produced a reliable fresh grounding."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/working_filename_entered.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Working Filename Entered"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/working_filename_entered_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Entered working filename"
+        }
+      ]
+    }
+  ]
+}

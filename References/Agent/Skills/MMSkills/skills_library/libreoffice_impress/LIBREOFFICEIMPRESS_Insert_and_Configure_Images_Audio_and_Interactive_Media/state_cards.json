@@ -1,0 +1,478 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "LIBREOFFICEIMPRESS_Insert_and_Configure_Images_Audio_and_Interactive_Media",
+  "domain": "libreoffice_impress",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "media_insert_surface",
+      "state_name": "activate_media_insert_surface",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the target slide is already open in LibreOffice Impress and the next step is to begin inserting an image from an empty content placeholder. This card matches a normal slide-editing surface before any chooser dialog or interaction modal has appeared.",
+      "when_not_to_use": "Do not use once a system file picker or Interaction dialog is already open. Do not use if the selected slide is wrong, if the placeholder already contains media, or if the task starts from an existing object instead of an empty content layout.",
+      "visible_cues": [
+        "The selected slide thumbnail is outlined in the left Slides pane.",
+        "The main canvas shows a title-and-content style layout with an empty content region.",
+        "The red cue sits on the small image insert icon inside the content placeholder.",
+        "The Properties sidebar is visible on the right, confirming standard slide-edit mode."
+      ],
+      "non_transferable_parts": [
+        "The example slide number, title text, body copy, and theme colors are incidental and must not be copied.",
+        "The placeholder's exact size and position do not transfer to other decks or layouts.",
+        "Red and green cues identify relevant controls and state only; they are not reusable coordinates.",
+        "Any example media filename from the source tasks is task-specific and should only be reused if the current task explicitly asks for it."
+      ],
+      "recommended_verification": "Before acting, confirm that the intended slide is the one selected in the thumbnail pane and that the content placeholder still shows the image insert control rather than an already placed object.",
+      "highlight_targets": [
+        {
+          "name": "content_placeholder_image_icon",
+          "annotation_query": "image insert icon inside the active content placeholder on the selected slide",
+          "color": "red",
+          "target_type": "action_target"
+        },
+        {
+          "name": "selected_slide_thumbnail",
+          "annotation_query": "currently selected slide thumbnail in the left Slides pane",
+          "color": "green",
+          "target_type": "state_signal"
+        }
+      ],
+      "evidence_source": {
+        "plan_reference": "plan.json",
+        "image_reference": "Images/media_insert_surface.png",
+        "review_basis": "local screenshot inspection against the packaged media-insertion workflow",
+        "source_task_id": "026209bf-43ff-4046-a2f7-e8ab34847b73",
+        "source_step_num": 3,
+        "source_traj_index": 2,
+        "source_image_uuid": "6629bd4d-c58c-4ca2-a133-86b694b9c1bb.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/6629bd4d-c58c-4ca2-a133-86b694b9c1bb.png",
+        "source_instruction": "In the opened LibreOffice presentation slides, adjust the layout of the 9th page PPT to have content and title only, and insert the image of \"opi_C.jpg\" at the position of the picture.",
+        "source_domains": "libreoffice_impress",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the image icon in the middle section of the slide where it discusses social media features and \"shop now\" buttons.",
+        "source_code": "pyautogui.click(x=0.444, y=0.569)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.293472+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "insert_and_configure_media",
+        "state_id": 1,
+        "state_name": "activate_media_insert_surface",
+        "image_filename": "media_insert_surface.png"
+      },
+      "codex_review_notes": "This is a reliable entry cue for starting image insertion from a content layout. The reusable signal is the empty placeholder on the selected slide, not the sample deck text.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "content_placeholder_image_icon",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "canvas_region",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "media_insert_surface_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/media_insert_surface.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/6629bd4d-c58c-4ca2-a133-86b694b9c1bb.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "activate_media_insert_surface",
+            "color": null
+          },
+          {
+            "view_id": "media_insert_surface_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/media_insert_surface_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_18_codex_skills/ubuntu/libreoffice_impress/LIBREOFFICEIMPRESS_Insert_and_Configure_Images_Audio_and_Interactive_Media/Images/media_insert_surface.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "content_placeholder_image_icon",
+            "color": "red",
+            "grounding_query": "the slide canvas area around the red boxed content_placeholder_image_icon with surrounding slide content",
+            "grounding_query_full": "Where is the slide canvas area around the red boxed content_placeholder_image_icon with surrounding slide content? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              141,
+              236,
+              752,
+              857
+            ],
+            "crop_box_pixels": [
+              152,
+              187,
+              1560,
+              992
+            ],
+            "source_box_pixels": [
+              270,
+              254,
+              1443,
+              925
+            ],
+            "focus_context_kind": "canvas_region",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "media_interaction_controls",
+      "state_name": "set_media_click_interaction",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when a media object already exists on the slide and the task requires mouse-click behavior, hyperlink-style interaction, or another click-triggered action. This card matches the moment when the Interaction dialog is already open and ready for the action selection.",
+      "when_not_to_use": "Do not use before the media object has been inserted and selected. Do not use if only the sidebar is visible without the Interaction modal, or if the task is only about placing media with no click behavior to configure.",
+      "visible_cues": [
+        "A centered modal titled Interaction is open and framed as the active window.",
+        "The label Action at mouse click appears near the top of the dialog.",
+        "The red cue surrounds the action dropdown, which currently shows No action.",
+        "The dimmed background still shows the right sidebar with Media Playback and Position and Size panels."
+      ],
+      "non_transferable_parts": [
+        "The current dropdown value No action is only the example starting state and should not be copied unless the task asks for that exact value.",
+        "The visible slide artwork, object position, and 4.00 cm size values are example-specific.",
+        "The cue marks the control to edit, not a reusable click coordinate.",
+        "Any example media filename or destination implied by the source tasks is non-transferable unless the current task explicitly requests it."
+      ],
+      "recommended_verification": "Verify that the Interaction dialog is active for the selected media object, then confirm the dropdown value matches the requested click action before accepting the dialog.",
+      "highlight_targets": [
+        {
+          "name": "interaction_action_dropdown",
+          "annotation_query": "Action at mouse click dropdown in the open Interaction dialog",
+          "color": "red",
+          "target_type": "action_target"
+        },
+        {
+          "name": "interaction_dialog",
+          "annotation_query": "open Interaction dialog for the selected media object",
+          "color": "green",
+          "target_type": "state_signal"
+        }
+      ],
+      "evidence_source": {
+        "plan_reference": "plan.json",
+        "image_reference": "Images/media_interaction_controls.png",
+        "review_basis": "local screenshot inspection against the packaged click-interaction workflow",
+        "source_task_id": "301554c8-ae1f-47d4-9bd4-882761bbe8d6",
+        "source_step_num": 14,
+        "source_traj_index": 13,
+        "source_image_uuid": "7ea56ab1-434d-4f73-93aa-29c996602829.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7ea56ab1-434d-4f73-93aa-29c996602829.png",
+        "source_instruction": "How can I add the audio from“20250410-174032.mp4”to the PPT,display the audio icon at 4×4 cm,and set it to move to the next page when clicked with the mouse?",
+        "source_domains": "libreoffice_impress",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the \"Go to next slide\" option in the dropdown menu of the Interaction dialog box.",
+        "source_code": "pyautogui.click(x=0.468, y=0.348)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.293523+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "insert_and_configure_media",
+        "state_id": 2,
+        "state_name": "set_media_click_interaction",
+        "image_filename": "media_interaction_controls.png"
+      },
+      "codex_review_notes": "This is a strong operation-state cue for click-action configuration. The dialog state transfers cleanly, but the actual action to choose must come from the task text.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "interaction_action_dropdown",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": true,
+          "included": true,
+          "reason": "Selected the later frame at offset +2 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition.",
+          "selected_offset": 2,
+          "candidate_offsets_considered": [
+            {
+              "offset": 2,
+              "diff": 43.323,
+              "score": 42.473
+            }
+          ],
+          "grounding_method": "qwen_bbox_grounding",
+          "target_name": "interaction_dialog"
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "media_interaction_controls_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/media_interaction_controls.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7ea56ab1-434d-4f73-93aa-29c996602829.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "set_media_click_interaction",
+            "color": null
+          },
+          {
+            "view_id": "media_interaction_controls_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/media_interaction_controls_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_18_codex_skills/ubuntu/libreoffice_impress/LIBREOFFICEIMPRESS_Insert_and_Configure_Images_Audio_and_Interactive_Media/Images/media_interaction_controls.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "interaction_action_dropdown",
+            "color": "red",
+            "grounding_query": "the full Interaction dialog window",
+            "grounding_query_full": "Where is the full Interaction dialog window? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              314,
+              194,
+              620,
+              665
+            ],
+            "crop_box_pixels": [
+              555,
+              158,
+              1237,
+              769
+            ],
+            "source_box_pixels": [
+              602,
+              209,
+              1190,
+              718
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "region"
+          },
+          {
+            "view_id": "media_interaction_controls_after",
+            "view_type": "after",
+            "image_path": "Images/media_interaction_controls_after.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/ad155c01-f11f-4de8-a658-4e44d44aaaec.png",
+            "source_traj_index": 15,
+            "selected_offset": 2,
+            "candidate_offsets_considered": [
+              {
+                "offset": 2,
+                "diff": 43.323,
+                "score": 42.473
+              }
+            ],
+            "use_for": "compare_state_transition",
+            "label": "interaction_dialog",
+            "color": "green",
+            "grounding_query": "open Interaction dialog for the selected media object",
+            "grounding_query_full": "Where is open Interaction dialog for the selected media object? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              877,
+              397,
+              894,
+              432
+            ]
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "media_result_state",
+      "state_name": "verify_inserted_media_result",
+      "stage": "expected_after_action",
+      "image_role": "expected_after_action",
+      "when_to_use": "Use immediately after opening the image-insert path when LibreOffice hands control to the system file chooser. This card matches the chooser state where the next step is to select the requested image file and confirm it with Open.",
+      "when_not_to_use": "Do not use as proof that insertion is complete because the media is not yet placed on the slide. Do not use for audio or video pickers that present a different chooser state, and do not use if the Insert Image dialog is absent.",
+      "visible_cues": [
+        "A system dialog titled Insert Image is open over LibreOffice Impress.",
+        "The left navigation highlights Downloads and the main pane lists files and folders.",
+        "One image filename row is selected in orange in the file list.",
+        "The Open button is visible in the upper-right corner of the dialog."
+      ],
+      "non_transferable_parts": [
+        "The selected filename opi_C.jpg is example-specific and must not be copied unless the current task asks for that exact file.",
+        "The current folder, file ordering, and filter setting are not stable across tasks or machines.",
+        "This screenshot is an insertion checkpoint, not a final result state, even though the filename suggests otherwise.",
+        "Dialog geometry and theme colors vary by desktop environment; use the chooser structure rather than exact placement."
+      ],
+      "recommended_verification": "Confirm that the chooser is for the correct media type, that the intended file row is selected, and that pressing Open will return focus to the target slide for placement.",
+      "highlight_targets": [
+        {
+          "name": "selected_media_file_row",
+          "annotation_query": "currently selected media file row in the Insert Image dialog file list",
+          "color": "red",
+          "target_type": "action_target"
+        },
+        {
+          "name": "insert_image_dialog",
+          "annotation_query": "open Insert Image file chooser dialog over LibreOffice Impress",
+          "color": "green",
+          "target_type": "state_signal"
+        }
+      ],
+      "evidence_source": {
+        "plan_reference": "plan.json",
+        "image_reference": "Images/media_result_state.png",
+        "review_basis": "local screenshot inspection of the packaged chooser checkpoint",
+        "source_task_id": "026209bf-43ff-4046-a2f7-e8ab34847b73",
+        "source_step_num": 5,
+        "source_traj_index": 4,
+        "source_image_uuid": "0efcf9eb-5954-4e96-95b0-2422f2d4c0fd.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/0efcf9eb-5954-4e96-95b0-2422f2d4c0fd.png",
+        "source_instruction": "In the opened LibreOffice presentation slides, adjust the layout of the 9th page PPT to have content and title only, and insert the image of \"opi_C.jpg\" at the position of the picture.",
+        "source_domains": "libreoffice_impress",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click the \"Open\" button in the top-right corner of the Insert Image dialog to insert the selected image file into the slide.",
+        "source_code": "pyautogui.click(x=0.816, y=0.064)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.293561+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "insert_and_configure_media",
+        "state_id": 3,
+        "state_name": "verify_inserted_media_result",
+        "image_filename": "media_result_state.png"
+      },
+      "codex_review_notes": "The filename is misleading: the screenshot is a file-picker checkpoint after starting insertion, not a completed on-slide result. The card is authored to the observed UI state so runtime matching stays faithful to the image.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "selected_media_file_row",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": true,
+          "included": false,
+          "reason": "after skipped because the nearby frames changed, but none produced a reliable fresh grounding.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [
+            {
+              "offset": 1,
+              "diff": 41.837,
+              "score": 41.837
+            }
+          ],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "media_result_state_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/media_result_state.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/0efcf9eb-5954-4e96-95b0-2422f2d4c0fd.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "verify_inserted_media_result",
+            "color": null
+          },
+          {
+            "view_id": "media_result_state_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/media_result_state_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_18_codex_skills/ubuntu/libreoffice_impress/LIBREOFFICEIMPRESS_Insert_and_Configure_Images_Audio_and_Interactive_Media/Images/media_result_state.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "selected_media_file_row",
+            "color": "red",
+            "grounding_query": "the full Insert Image dialog window",
+            "grounding_query_full": "Where is the full Insert Image dialog window? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              196,
+              44,
+              839,
+              985
+            ],
+            "crop_box_pixels": [
+              278,
+              0,
+              1709,
+              1080
+            ],
+            "source_box_pixels": [
+              376,
+              47,
+              1610,
+              1063
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": {
+    "ts": "2026-04-15T10:06:43.293575+00:00",
+    "resolver": "backfill_4_12_state_card_lineage.py",
+    "source_dataset": "opencua_agentnet/agentnet_ubuntu_5k.jsonl",
+    "raw_images_root": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted"
+  }
+}

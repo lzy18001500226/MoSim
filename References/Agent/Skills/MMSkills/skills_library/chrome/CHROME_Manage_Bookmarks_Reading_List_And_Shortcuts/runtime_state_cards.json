@@ -1,0 +1,169 @@
+{
+  "schema_version": "2026-04-17.runtime_state_bundles.v4",
+  "skill_slug": "CHROME_Manage_Bookmarks_Reading_List_And_Shortcuts",
+  "domain": "chrome",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "bookmark_save_control",
+      "state_name": "open_bookmark_or_shortcut_surface",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the current Chrome tab is already on the page that should be saved and the workflow still needs to open Chrome's bookmark/save surface from the toolbar.",
+      "when_not_to_use": "Do not use once a bookmark popover or Edit bookmark dialog is already open, when the task is only verifying a completed save, or when the active tab is not yet the page that should be saved.",
+      "visible_cues": [
+        "The browser is showing a normal webpage with no modal dialog or bookmark popover covering the page.",
+        "An outlined bookmark star is visible at the far right of the address-bar row, and the red box marks that toolbar control.",
+        "The main page remains fully visible and interactive, so this is still the pre-save state rather than a folder-selection or verification state."
+      ],
+      "verification_cue": "After activating the toolbar save control, expect Chrome to open either the compact bookmark popover or the fuller Edit bookmark dialog. Continue until the destination is chosen and a saved-state cue is visible.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/bookmark_save_control.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "open_bookmark_or_shortcut_surface"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/bookmark_save_control_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Bookmark save control"
+        }
+      ]
+    },
+    {
+      "state_id": "edit_bookmark_dialog",
+      "state_name": "choose_destination",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when Chrome has already opened the compact \"Bookmark added\" popover and the next step is to choose an existing destination folder or open the fuller chooser.",
+      "when_not_to_use": "Do not use on the plain webpage before saving, in the larger centered Edit bookmark dialog with the folder tree, or after the saved state has already been confirmed.",
+      "visible_cues": [
+        "A small \"Bookmark added\" popover is anchored near the top-right toolbar area rather than centered on the page.",
+        "Inside the popover, the Folder field is open as a dropdown list that shows existing folders plus a \"Choose another folder...\" option.",
+        "The red box surrounds the popover and dropdown menu, indicating the folder-selection area rather than the page content behind it."
+      ],
+      "verification_cue": "Choose the requested folder if it is already listed. If the destination is missing or needs nesting, open the fuller chooser from this popover, then save and verify the bookmark result on the active page.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/edit_bookmark_dialog.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "choose_destination"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/edit_bookmark_dialog_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Edit bookmark dialog"
+        }
+      ]
+    },
+    {
+      "state_id": "bookmark_folder_creation",
+      "state_name": "save_item",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when Chrome is showing the expanded centered \"Edit bookmark\" dialog and the workflow needs to create a folder, pick a nested folder, or confirm the final bookmark destination before saving.",
+      "when_not_to_use": "Do not use for the compact top-right popover, for the initial toolbar-star state before the save UI opens, or for the post-save verification state after the bookmark has already been committed.",
+      "visible_cues": [
+        "A large centered \"Edit bookmark\" dialog dims the page behind it.",
+        "Name and URL fields appear at the top, with a folder tree underneath that includes top-level bookmark locations and nested folders.",
+        "An inline new-folder text field is active in the tree, and the red box encloses the tree area where folder creation or selection is happening."
+      ],
+      "verification_cue": "After creating or selecting the requested destination, confirm with Save and then verify that the current page is bookmarked. If the task cares about folder placement, verify that destination separately rather than relying on the star alone.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/bookmark_folder_creation.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "save_item"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/bookmark_folder_creation_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "New bookmark folder control"
+        }
+      ]
+    },
+    {
+      "state_id": "bookmark_result_state",
+      "state_name": "verify_saved_item",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use after the bookmark action has already been executed and the current question is whether the active page shows Chrome's saved-bookmark result cue.",
+      "when_not_to_use": "Do not use as guidance for opening the save UI, choosing a folder, or performing a follow-up search. Do not treat it as complete verification if the task specifically requires checking the bookmark's folder placement.",
+      "visible_cues": [
+        "The bookmark star at the top-right of the toolbar is filled and marked with a green box.",
+        "The rest of the page stays on the same site while unrelated content, such as a search suggestion panel, may still be open.",
+        "No bookmark dialog is visible, so this frame is about confirming the result state on the page itself."
+      ],
+      "verification_cue": "Confirm that the active tab is the page the task asked to save and that the star is active. If the task also cares about folder selection, verify that destination through the bookmark UI or manager before finishing.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "Selected the earlier frame at offset -3 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition.",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop",
+        "before"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/bookmark_result_state.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "verify_saved_item"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/bookmark_result_state_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Saved bookmark state"
+        },
+        {
+          "view_type": "before",
+          "image_path": "Images/bookmark_result_state_before.png",
+          "use_for": "compare_state_transition",
+          "label": "Saved bookmark state"
+        }
+      ]
+    }
+  ]
+}

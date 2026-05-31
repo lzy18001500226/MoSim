@@ -1,0 +1,134 @@
+{
+  "schema_version": "2026-04-17.runtime_state_bundles.v4",
+  "skill_slug": "LIBREOFFICECALC_Create_Chart_on_Target_Sheet_with_Exact_Title_and_Type",
+  "domain": "libreoffice_calc",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "chart_exact_title_entry",
+      "state_name": "Type the exact chart title in Chart Elements",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the chart type has already been chosen and LibreOffice Calc is still in the chart wizard, specifically on the Chart Elements step where the exact chart title must be entered or confirmed before finishing.",
+      "when_not_to_use": "Do not use when you are still choosing the chart family or subtype, when the wizard is already closed, or when the live screen does not show the Chart Elements page with editable title and legend controls.",
+      "visible_cues": [
+        "A modal titled Chart Elements is open on top of the worksheet.",
+        "The Title input field is boxed in red and already contains example text.",
+        "Legend position options are visible on the right side of the dialog.",
+        "Bottom legend placement is boxed in green as the state cue."
+      ],
+      "verification_cue": "Before clicking Finish, confirm the live Title field contains the exact requested string and that any requested legend or grid settings match the task rather than the example screenshot.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after skipped because the nearby frames changed, but none produced a reliable fresh grounding."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/chart_exact_title_entry.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Type the exact chart title in Chart Elements"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/chart_exact_title_entry_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Chart title input field"
+        }
+      ]
+    },
+    {
+      "state_id": "chart_subtype_selected_on_target_sheet",
+      "state_name": "Choose the exact chart subtype while the correct sheet tab is active",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the chart workflow is already on the intended destination sheet and you still need to choose the exact chart subtype before advancing or finishing.",
+      "when_not_to_use": "Do not use when the task is already at title entry or final verification, or when the live screenshot does not let you confirm both an active sheet tab and the chart type selection surface.",
+      "visible_cues": [
+        "The Chart Type dialog is open with a chart family list on the left.",
+        "A subtype tile in the top row is boxed in red as the interaction target.",
+        "The active worksheet tab at the bottom is boxed in green.",
+        "A chart object and Properties sidebar remain visible behind and beside the dialog."
+      ],
+      "verification_cue": "Before moving on, confirm the live workbook is still on the requested destination sheet and that the chosen subtype matches the prompt exactly rather than a nearby variant in the same chart family.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "Selected the later frame at offset +2 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop",
+        "after"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/chart_subtype_selected_on_target_sheet.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Choose the exact chart subtype while the correct sheet tab is active"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/chart_subtype_selected_on_target_sheet_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Exact chart subtype tile"
+        },
+        {
+          "view_type": "after",
+          "image_path": "Images/chart_subtype_selected_on_target_sheet_after.png",
+          "use_for": "compare_state_transition",
+          "label": "Exact chart subtype tile"
+        }
+      ]
+    },
+    {
+      "state_id": "finished_chart_visible_on_target_sheet",
+      "state_name": "Verify the finished chart remains on the requested sheet",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use when chart creation is complete or nearly complete and you need to verify that the finished chart object is visible on the requested worksheet before saving or ending the task.",
+      "when_not_to_use": "Do not use while the Chart Type or Chart Elements dialog is still open, and do not rely on this card alone when the prompt requires exact title text that is not visible in the current worksheet view.",
+      "visible_cues": [
+        "LibreOffice Calc has returned to the worksheet grid and the chart object is selected.",
+        "A green outline encloses the finished chart object on the sheet.",
+        "The active worksheet tab at the bottom is boxed in green.",
+        "The chart shows a completed stacked column-style result with a legend visible inside the object."
+      ],
+      "verification_cue": "Confirm the finished chart object is on the requested worksheet, the visible chart form matches the requested family or subtype, and any required title text is present or otherwise verifiable before ending the task.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/finished_chart_visible_on_target_sheet.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "Verify the finished chart remains on the requested sheet"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/finished_chart_visible_on_target_sheet_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Finished chart object on worksheet"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+[
+  {
+    "state_id": "open_local_media_picker",
+    "state_name": "open_local_media_picker",
+    "source_task_id": "606c832a-90cd-498f-93c8-46c77604e36d",
+    "source_step_num": 3,
+    "raw_image_uuid": "437be8d7-453c-49ad-8fa5-66702424609a.png",
+    "targets": [
+      {
+        "target": {
+          "name": "Open File menu item",
+          "target_type": "action_target",
+          "annotation_query": "Open File menu item in the VLC Media menu",
+          "color": "red",
+          "fallback_queries": [
+            "Open File option in the VLC Media dropdown",
+            "Ctrl+O menu entry in the VLC Media menu"
+          ]
+        },
+        "bbox": [
+          41,
+          81,
+          256,
+          104
+        ],
+        "query_text": "Open File menu item in the VLC Media menu",
+        "query_full": "Where is Open File menu item in the VLC Media menu? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+        "attempts": [
+          {
+            "query_text": "Open File menu item in the VLC Media menu",
+            "query_full": "Where is Open File menu item in the VLC Media menu? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "bbox": [
+              41,
+              81,
+              256,
+              104
+            ],
+            "accepted": true
+          }
+        ],
+        "method": "qwen_bbox_grounding"
+      }
+    ],
+    "focus_crop_included": true
+  },
+  {
+    "state_id": "select_requested_local_source",
+    "state_name": "select_requested_local_source",
+    "source_task_id": "606c832a-90cd-498f-93c8-46c77604e36d",
+    "source_step_num": 4,
+    "raw_image_uuid": "67e6f443-cef4-4029-b89a-8f1301928232.png",
+    "targets": [
+      {
+        "target": {
+          "name": "Requested file row",
+          "target_type": "action_target",
+          "annotation_query": "green.mp4 row in the Select one or more files to open dialog",
+          "color": "red",
+          "fallback_queries": [
+            "requested media file row in the Ubuntu file chooser",
+            "green.mp4 file row in the VLC file chooser"
+          ]
+        },
+        "bbox": [
+          286,
+          262,
+          831,
+          282
+        ],
+        "query_text": "green.mp4 row in the Select one or more files to open dialog",
+        "query_full": "Where is green.mp4 row in the Select one or more files to open dialog? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+        "attempts": [
+          {
+            "query_text": "green.mp4 row in the Select one or more files to open dialog",
+            "query_full": "Where is green.mp4 row in the Select one or more files to open dialog? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "bbox": [
+              286,
+              262,
+              831,
+              282
+            ],
+            "accepted": true
+          }
+        ],
+        "method": "qwen_bbox_grounding"
+      }
+    ],
+    "focus_crop_included": true
+  },
+  {
+    "state_id": "playback_surface_shows_requested_media",
+    "state_name": "playback_surface_shows_requested_media",
+    "source_task_id": "310eb3bf-5dd9-4964-9549-d961c55e5eb9",
+    "source_step_num": 8,
+    "raw_image_uuid": "8a62908b-06e2-44ba-a226-927f2db9027b.png",
+    "targets": [
+      {
+        "target": {
+          "name": "Local media title on playback surface",
+          "target_type": "result_signal",
+          "annotation_query": "Zhejiang.mp4 title in the VLC title bar",
+          "color": "green",
+          "fallback_queries": [
+            "Zhejiang.mp4 overlay title in the VLC player",
+            "active VLC playback surface showing Zhejiang.mp4"
+          ]
+        },
+        "bbox": [
+          455,
+          34,
+          569,
+          52
+        ],
+        "query_text": "Zhejiang.mp4 title in the VLC title bar",
+        "query_full": "Where is Zhejiang.mp4 title in the VLC title bar? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+        "attempts": [
+          {
+            "query_text": "Zhejiang.mp4 title in the VLC title bar",
+            "query_full": "Where is Zhejiang.mp4 title in the VLC title bar? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "bbox": [
+              455,
+              34,
+              569,
+              52
+            ],
+            "accepted": true
+          }
+        ],
+        "method": "qwen_bbox_grounding"
+      }
+    ],
+    "focus_crop_included": true
+  }
+]

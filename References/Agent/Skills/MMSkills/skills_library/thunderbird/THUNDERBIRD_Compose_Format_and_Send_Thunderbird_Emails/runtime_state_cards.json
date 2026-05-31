@@ -1,0 +1,135 @@
+{
+  "schema_version": "2026-04-17.runtime_state_bundles.v4",
+  "skill_slug": "THUNDERBIRD_Compose_Format_and_Send_Thunderbird_Emails",
+  "domain": "thunderbird",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "new_message_entry",
+      "state_name": "new_message_entry",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when A new outgoing message is required and no compose window is open yet.",
+      "when_not_to_use": "Do not use this card if the current Thunderbird surface does not match the visible cues or if the task is already past this state.",
+      "visible_cues": [
+        "New Message button in Thunderbird mail toolbar",
+        "Thunderbird mail toolbar visible"
+      ],
+      "verification_cue": "Click New Message to open the composer on the current mail account.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "Selected the later frame at offset +1 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop",
+        "after"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/new_message_entry.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "new_message_entry"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/new_message_entry_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "New Message button"
+        },
+        {
+          "view_type": "after",
+          "image_path": "Images/new_message_entry_after.png",
+          "use_for": "compare_state_transition",
+          "label": "mail toolbar"
+        }
+      ]
+    },
+    {
+      "state_id": "headers_ready_for_edit",
+      "state_name": "headers_ready_for_edit",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when The compose window is already open and ready for the main message text.",
+      "when_not_to_use": "Do not use this card if the current Thunderbird surface does not match the visible cues or if the task is already past this state.",
+      "visible_cues": [
+        "Subject field in Thunderbird compose window",
+        "recipient field populated in Thunderbird compose window"
+      ],
+      "verification_cue": "Fill the To and Subject fields, then enter the requested body content and visible formatting.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/headers_ready_for_edit.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "headers_ready_for_edit"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/headers_ready_for_edit_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Subject field"
+        }
+      ]
+    },
+    {
+      "state_id": "send_ready_with_visible_content",
+      "state_name": "send_ready_with_visible_content",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when All requested content and formatting have already been entered.",
+      "when_not_to_use": "Do not use this card if the current Thunderbird surface does not match the visible cues or if the task is already past this state.",
+      "visible_cues": [
+        "Send button in Thunderbird compose toolbar",
+        "formatted message body in Thunderbird compose window"
+      ],
+      "verification_cue": "Send the email only after the compose window visibly matches the requested message content.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "Selected the earlier frame at offset -2 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition.",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop",
+        "before"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/send_ready_with_visible_content.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "send_ready_with_visible_content"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/send_ready_with_visible_content_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "formatted message body"
+        },
+        {
+          "view_type": "before",
+          "image_path": "Images/send_ready_with_visible_content_before.png",
+          "use_for": "compare_state_transition",
+          "label": "Send button"
+        }
+      ]
+    }
+  ]
+}

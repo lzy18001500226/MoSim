@@ -1,0 +1,127 @@
+{
+  "schema_version": "2026-04-17.runtime_state_bundles.v4",
+  "skill_slug": "OS_Query_System_State_in_Terminal",
+  "domain": "os",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "os_query_system_state_in_terminal_prepare_terminal_context",
+      "state_name": "prepare_the_terminal_context",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card only when the current Ubuntu desktop is visible and Terminal is not yet on screen. The stored image shows the desktop wallpaper, the left dock, and the Terminal launcher highlighted as the next place to focus before any system-query command is typed.",
+      "when_not_to_use": "Do not use this card once a terminal window is already open, once a command line is visible, or when the current screen is a different app. This card is for reaching Terminal from the desktop, not for deciding what command text to enter.",
+      "visible_cues": [
+        "Full Ubuntu desktop is visible with no terminal window open.",
+        "The left dock is present and the Terminal icon is the interaction cue.",
+        "Desktop files and folders are visible behind the dock, confirming this is a launcher state rather than an active shell.",
+        "The top bar and wallpaper dominate the screen, so there is no terminal output to verify yet."
+      ],
+      "verification_cue": "After acting from this state, verify that an actual terminal window or prompt is visible before running any diagnostic command. A desktop-only view does not satisfy the task.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/os_query_system_state_in_terminal_prepare_terminal_context.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "prepare_the_terminal_context"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/os_query_system_state_in_terminal_prepare_terminal_context_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Terminal launcher on the dock"
+        }
+      ]
+    },
+    {
+      "state_id": "os_query_system_state_in_terminal_run_requested_command",
+      "state_name": "run_the_requested_command",
+      "stage": "failure_cue",
+      "image_role": "failure_cue",
+      "when_to_use": "Use this card as a negative-match cue when deciding whether a screenshot really belongs to the terminal command-entry step. The stored image shows the Ubuntu Settings app on the Mouse & Touchpad page, so it signals that the current screen is not ready for typing or running a terminal system-query command.",
+      "when_not_to_use": "Do not use this card to guide terminal typing, command selection, or command verification. Do not treat the Settings controls, slider positions, or page title as transferable parts of a terminal workflow.",
+      "visible_cues": [
+        "A Settings window is open instead of Terminal.",
+        "The sidebar lists Settings sections and highlights Mouse & Touchpad.",
+        "The main panel shows Primary Button, Mouse Speed, and Natural Scrolling controls.",
+        "No shell prompt, terminal cursor, or command output is visible anywhere on screen."
+      ],
+      "verification_cue": "Before running a diagnostic command, confirm that the active window is Terminal and that a live prompt or editable command line is visible. If the screen still looks like this Settings page, the skill is in the wrong app state.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/os_query_system_state_in_terminal_run_requested_command.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "run_the_requested_command"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/os_query_system_state_in_terminal_run_requested_command_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Settings window region"
+        }
+      ]
+    },
+    {
+      "state_id": "os_query_system_state_in_terminal_verify_terminal_result",
+      "state_name": "verify_the_terminal_result",
+      "stage": "failure_cue",
+      "image_role": "failure_cue",
+      "when_to_use": "Use this card as a negative-match cue when deciding whether the requested terminal result is actually visible. The stored image is another Settings > Mouse & Touchpad screenshot, so it indicates that the workflow is not in a terminal result state and that no shell output should be accepted from this view.",
+      "when_not_to_use": "Do not use this card to mark the task complete. Do not infer any system-query result from the Settings controls shown here, and do not reuse the slider, toggle, or button positions as evidence for terminal verification.",
+      "visible_cues": [
+        "The screen is occupied by the Settings window rather than a terminal session.",
+        "Mouse & Touchpad is selected in the sidebar.",
+        "The content area contains mouse button and speed controls, not text output lines.",
+        "There is no command prompt, no finished command, and no printed diagnostic result."
+      ],
+      "verification_cue": "Finish the skill only after the active window is Terminal and the requested output string, version, path, package state, or system-status line is visibly present on screen. A Settings screenshot like this is explicit evidence that verification has not happened yet.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/os_query_system_state_in_terminal_verify_terminal_result.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "verify_the_terminal_result"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/os_query_system_state_in_terminal_verify_terminal_result_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "Settings window region"
+        }
+      ]
+    }
+  ]
+}

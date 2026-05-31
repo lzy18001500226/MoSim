@@ -1,0 +1,821 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "CHROME_Configure_Default_Search_Engine_And_Search_Preferences",
+  "domain": "chrome",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_strict_refine_20260418",
+  "states": [
+    {
+      "state_id": "search_engine_settings_surface",
+      "state_name": "open_search_engine_surface",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when Chrome is on the main Settings surface and the workflow still needs to enter the Search engine section. The matching live view should show the left settings sidebar, a search box near the top of the page, and the Search engine sidebar item visible as the next navigation step.",
+      "when_not_to_use": "Do not use this card after the Search engine page is already open, while a provider-selection dialog is on screen, or on a search results page. The red box is only an interaction cue for the matching sidebar item in this state, not a reusable coordinate.",
+      "visible_cues": [
+        "Chromium is open to chrome://settings with the general Settings home surface visible.",
+        "A large Search settings field sits near the top of the main pane.",
+        "The left sidebar lists categories including You and Google, Autofill and passwords, Privacy and security, Appearance, and Search engine.",
+        "A red box surrounds the Search engine item in the left sidebar."
+      ],
+      "non_transferable_parts": [
+        "The signed-in profile name shown on the page is example-specific and not part of the reusable skill.",
+        "The exact sidebar spacing, window size, and current landing section can differ across environments.",
+        "Do not infer any target provider, search query, or result filter from this entry image.",
+        "The red outline marks the relevant navigation item only; it does not encode screen coordinates."
+      ],
+      "recommended_verification": "After selecting Search engine from the sidebar, verify that the main pane changes to the dedicated Search engine settings page with the default-provider area and manage-search-engines row visible before using later cards.",
+      "highlight_targets": [
+        {
+          "name": "Search engine sidebar item",
+          "target_type": "action_target",
+          "annotation_query": "Search engine item in the Chromium Settings left sidebar",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "search_engine",
+        "state_id": 1,
+        "state_name": "open_search_engine_surface",
+        "image_filename": "search_engine_settings_surface.png",
+        "annotation_note": "Open the Search engine section from the Settings sidebar.",
+        "source_task_id": "2dcf2ec2-353a-4f5d-9e45-575694e7d58d",
+        "source_step_num": 5,
+        "source_traj_index": 4,
+        "source_image_uuid": "1255f0c1-3901-470d-876e-865e1e4db04a.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/1255f0c1-3901-470d-876e-865e1e4db04a.png",
+        "source_instruction": "Change my Google Chrome default search engine to \"Microsoft Bing\", search for \"lion\" on the new tab, find the image category, select the time as \"Past 24 hours\", and save one of the images to the desktop.",
+        "source_domains": "Chrome",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the \"Search engine\" option in the left sidebar of the Chrome Settings page.",
+        "source_code": "pyautogui.click(x=0.103, y=0.437)",
+        "lineage_resolved_at": "2026-04-15T10:07:52.681877+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1"
+      },
+      "codex_review_notes": "This card is grounded in the preserved screenshot of the general Chrome Settings surface. The red annotation is treated as a state-specific cue for the sidebar item, and reusable guidance stays at the level of recognizing and entering the Search engine section.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Search engine sidebar item",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "sidebar",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "search_engine_settings_surface_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/search_engine_settings_surface.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/1255f0c1-3901-470d-876e-865e1e4db04a.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "open_search_engine_surface",
+            "color": null
+          },
+          {
+            "view_id": "search_engine_settings_surface_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/search_engine_settings_surface_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/chrome/CHROME_Configure_Default_Search_Engine_And_Search_Preferences/Images/search_engine_settings_surface.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Search engine sidebar item",
+            "color": "red",
+            "grounding_query": "the sidebar region containing the red boxed Search engine sidebar item and nearby options",
+            "grounding_query_full": "Where is the sidebar region containing the red boxed Search engine sidebar item and nearby options? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              43,
+              146,
+              173,
+              788
+            ],
+            "crop_box_pixels": [
+              4,
+              88,
+              426,
+              921
+            ],
+            "source_box_pixels": [
+              82,
+              157,
+              332,
+              851
+            ],
+            "focus_context_kind": "sidebar",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "search_engine_selection_dialog",
+      "state_name": "set_provider_or_engine_list",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the Search engine selection modal is already open over Chrome Settings and the task requires confirming a newly selected default provider. The matching live state should show a provider list with radio buttons and a Set as default button at the bottom of the dialog.",
+      "when_not_to_use": "Do not use this card before opening the change dialog, after the dialog has closed, or when the task is about managing custom engine entries from the separate management list. Do not activate the highlighted button until the provider named in the current task is selected in the live dialog.",
+      "visible_cues": [
+        "The Search engine settings page is dimmed behind a centered modal titled Search engine.",
+        "The modal lists several providers with radio buttons, and one provider is currently selected.",
+        "Cancel and Set as default buttons appear along the bottom edge of the dialog.",
+        "A red box marks the Set as default button."
+      ],
+      "non_transferable_parts": [
+        "The provider names and their order in the example dialog are environment-specific and should not be assumed.",
+        "The currently selected provider shown in the screenshot is not automatically the right target for another task.",
+        "The live environment may include more or fewer providers than the example image.",
+        "The red outline identifies the confirmation control in this dialog state and is not a coordinate template."
+      ],
+      "recommended_verification": "After selecting the requested provider and confirming with Set as default, verify that the dialog closes and that the Search engine settings page shows the requested provider in the default search engine row before moving on.",
+      "highlight_targets": [
+        {
+          "name": "Set as default button",
+          "target_type": "action_target",
+          "annotation_query": "Set as default button in the Search engine dialog",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "search_engine",
+        "state_id": 2,
+        "state_name": "set_provider_or_engine_list",
+        "image_filename": "search_engine_selection_dialog.png",
+        "annotation_note": "Select the requested default provider.",
+        "source_task_id": "2dcf2ec2-353a-4f5d-9e45-575694e7d58d",
+        "source_step_num": 8,
+        "source_traj_index": 7,
+        "source_image_uuid": "200c4da7-7582-4f4c-8d32-757076a26a73.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/200c4da7-7582-4f4c-8d32-757076a26a73.png",
+        "source_instruction": "Change my Google Chrome default search engine to \"Microsoft Bing\", search for \"lion\" on the new tab, find the image category, select the time as \"Past 24 hours\", and save one of the images to the desktop.",
+        "source_domains": "Chrome",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the radio button next to Microsoft Bing to select it as the preferred search engine option.",
+        "source_code": "pyautogui.click(x=0.627, y=0.481)",
+        "lineage_resolved_at": "2026-04-15T10:07:52.681917+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1"
+      },
+      "codex_review_notes": "This card keeps the provider choice task-dependent and uses the screenshot only to recognize the modal state and its confirmation step. The red box is an action cue for the dialog button, while provider labels must be read from the live UI.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Set as default button",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "search_engine_selection_dialog_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/search_engine_selection_dialog.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/200c4da7-7582-4f4c-8d32-757076a26a73.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "set_provider_or_engine_list",
+            "color": null
+          },
+          {
+            "view_id": "search_engine_selection_dialog_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/search_engine_selection_dialog_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/chrome/CHROME_Configure_Default_Search_Engine_And_Search_Preferences/Images/search_engine_selection_dialog.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Set as default button",
+            "color": "red",
+            "grounding_query": "the dialog region around the red boxed Set as default button with nearby controls",
+            "grounding_query_full": "Where is the dialog region around the red boxed Set as default button with nearby controls? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              385,
+              381,
+              652,
+              760
+            ],
+            "crop_box_pixels": [
+              668,
+              370,
+              1321,
+              861
+            ],
+            "source_box_pixels": [
+              739,
+              411,
+              1251,
+              820
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "manage_search_engines_page",
+      "state_name": "apply_result_preference",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when Chrome is already on Settings > Search engine and the next step is to open the management surface for search engines and site search. The matching live view should show the Search engine section selected in the sidebar and the Manage search engines and site search row visible in the main card.",
+      "when_not_to_use": "Do not use this card while the provider-selection modal is open, after the management list itself has already opened, or on an unrelated settings page or web results page. The red box marks the row to enter in this state only; it is not a reusable click location.",
+      "visible_cues": [
+        "Chrome is on the Search engine settings page, with Search engine highlighted in the left sidebar.",
+        "The main card shows the current default search engine row with a Change button.",
+        "Below that row is a Manage search engines and site search row ending with a chevron.",
+        "A red box frames the Manage search engines and site search row."
+      ],
+      "non_transferable_parts": [
+        "The example default provider shown above the row is not itself a reusable instruction.",
+        "The exact row position, sidebar spacing, and browser window dimensions can change across environments.",
+        "This screenshot does not specify which search-engine entries should be removed or edited; those actions depend on the current task and the live list.",
+        "The red annotation is only a state-specific interaction cue, not a general coordinate."
+      ],
+      "recommended_verification": "After opening the Manage search engines and site search row, verify that the dedicated management list appears before deleting, editing, or inspecting entries. For default-provider work, continue until the requested provider is visibly set in the Search engine settings page.",
+      "highlight_targets": [
+        {
+          "name": "Manage search engines and site search row",
+          "target_type": "action_target",
+          "annotation_query": "Manage search engines and site search row in Chromium Search engine settings",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "search_engine",
+        "state_id": 3,
+        "state_name": "apply_result_preference",
+        "image_filename": "manage_search_engines_page.png",
+        "annotation_note": "Open the manage-search-engines surface from Search engine settings.",
+        "source_task_id": "2e96628d-52ae-4af9-a5af-5384d29888ca",
+        "source_step_num": 7,
+        "source_traj_index": 6,
+        "source_image_uuid": "dcea25c4-b65e-4727-961a-6987614345db.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/dcea25c4-b65e-4727-961a-6987614345db.png",
+        "source_instruction": "Set Microsoft Bing as the default web search engine for my Chrome browser, then delete other search engines, and help me enable the 'Copied to clip confirmations' feature in accessibility",
+        "source_domains": "Chrome",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the \"Manage search engines and site search\" option to access the detailed search engine management interface.",
+        "source_code": "pyautogui.click(x=0.568, y=0.359)",
+        "lineage_resolved_at": "2026-04-15T10:07:52.681954+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1"
+      },
+      "codex_review_notes": "This image is used as an operation-state cue for entering the search-engine management list. The screenshot is specific to the Search engine settings card with the manage row visible, and the guidance avoids copying any example provider or any later task-specific preference.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Manage search engines and site search row",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "settings_region",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "manage_search_engines_page_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/manage_search_engines_page.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/dcea25c4-b65e-4727-961a-6987614345db.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "apply_result_preference",
+            "color": null
+          },
+          {
+            "view_id": "manage_search_engines_page_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/manage_search_engines_page_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/chrome/CHROME_Configure_Default_Search_Engine_And_Search_Preferences/Images/manage_search_engines_page.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Manage search engines and site search row",
+            "color": "red",
+            "grounding_query": "the settings content region around the red boxed Manage search engines and site search row with the nearby preference rows",
+            "grounding_query_full": "Where is the settings content region around the red boxed Manage search engines and site search row with the nearby preference rows? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              354,
+              238,
+              679,
+              381
+            ],
+            "crop_box_pixels": [
+              616,
+              183,
+              1365,
+              485
+            ],
+            "source_box_pixels": [
+              679,
+              257,
+              1303,
+              411
+            ],
+            "focus_context_kind": "settings_region",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "search_preference_filter_applied",
+      "state_name": "verify_provider_or_filter_state",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when the task includes verifying a downstream search-result preference after changing the provider and the live browser is on a matching results page. In this preserved example, the verification target is the Date filter control on a Bing Images results page after the provider change has already been completed.",
+      "when_not_to_use": "Do not use this card to perform the provider change itself, to choose a query, or to assume that the example search term or filter value should be reused. The green box is a verification cue for a visible filter control in this image, not a reusable interaction coordinate.",
+      "visible_cues": [
+        "The browser is on a Microsoft Bing Images results page with an image query already loaded.",
+        "An images-specific filter bar appears below the search field, including controls such as Image size, Color, Type, Layout, People, Date, and License.",
+        "A green box marks the Date filter control in the filter bar.",
+        "Image thumbnails fill the rest of the page beneath the filter controls."
+      ],
+      "non_transferable_parts": [
+        "The example query text, image results, product panel, language, and provider branding are evidence from one source task and not reusable instructions.",
+        "The exact filter value requested in a live task may differ from the example and may not be visible until the filter menu is opened.",
+        "Page layout, ads, and result ordering vary over time and across environments.",
+        "The green annotation marks a state or verification cue rather than a click coordinate."
+      ],
+      "recommended_verification": "Confirm that the search is being handled by the requested provider and that the requested result preference is active. If the chosen filter value is not directly visible on the bar, open the relevant filter menu or inspect the selected state before marking the task complete.",
+      "highlight_targets": [
+        {
+          "name": "Date filter control",
+          "target_type": "result_signal",
+          "annotation_query": "Date filter control in the Bing Images results filter bar",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_plan": "plan.json",
+        "procedure_name": "search_engine",
+        "state_id": 4,
+        "state_name": "verify_provider_or_filter_state",
+        "image_filename": "search_preference_filter_applied.png",
+        "annotation_note": "Verify the downstream search-result preference is applied.",
+        "source_task_id": "2dcf2ec2-353a-4f5d-9e45-575694e7d58d",
+        "source_step_num": 16,
+        "source_traj_index": 15,
+        "source_image_uuid": "7fddb17a-c4d7-4f26-bd10-b8e42da6b718.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7fddb17a-c4d7-4f26-bd10-b8e42da6b718.png",
+        "source_instruction": "Change my Google Chrome default search engine to \"Microsoft Bing\", search for \"lion\" on the new tab, find the image category, select the time as \"Past 24 hours\", and save one of the images to the desktop.",
+        "source_domains": "Chrome",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the \"Date\" filter button in the filtering toolbar to access time-based filtering options for the lion image search results.",
+        "source_code": "pyautogui.click(x=0.347, y=0.269)",
+        "lineage_resolved_at": "2026-04-15T10:07:52.681987+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1"
+      },
+      "codex_review_notes": "This card is anchored to the preserved Bing Images verification screenshot. The green box is interpreted as a state cue for checking a result-filter control, while all query text, result content, and provider-specific examples remain non-transferable unless the live task explicitly matches them.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Date filter control",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "browser_region",
+          "grounding_query_role": "target"
+        },
+        "before": {
+          "needed": true,
+          "included": false,
+          "reason": "before skipped because the nearby frames changed, but none produced a reliable fresh grounding.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [
+            {
+              "offset": -4,
+              "diff": 86.356,
+              "score": 83.806
+            },
+            {
+              "offset": -3,
+              "diff": 73.045,
+              "score": 71.345
+            },
+            {
+              "offset": -2,
+              "diff": 70.338,
+              "score": 69.488
+            },
+            {
+              "offset": -1,
+              "diff": 65.489,
+              "score": 65.489
+            }
+          ],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "search_preference_filter_applied_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/search_preference_filter_applied.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7fddb17a-c4d7-4f26-bd10-b8e42da6b718.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "verify_provider_or_filter_state",
+            "color": null
+          },
+          {
+            "view_id": "search_preference_filter_applied_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/search_preference_filter_applied_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/chrome/CHROME_Configure_Default_Search_Engine_And_Search_Preferences/Images/search_preference_filter_applied.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Date filter control",
+            "color": "green",
+            "grounding_query": "Date filter control in the Bing Images results filter bar",
+            "grounding_query_full": "Where is Date filter control in the Bing Images results filter bar? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              325,
+              258,
+              357,
+              281
+            ],
+            "crop_box_pixels": [
+              289,
+              121,
+              1020,
+              460
+            ],
+            "source_box_pixels": [
+              624,
+              278,
+              685,
+              303
+            ],
+            "focus_context_kind": "browser_region",
+            "focus_query_role": "target"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "google_search_more_settings_menu",
+      "state_name": "open_google_search_settings_entry",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the browser is already on Google search results, the Search Settings menu is open, and the task is about Google Search display preferences rather than Chrome's default provider.",
+      "when_not_to_use": "Do not use this card on Chrome Settings pages, provider-selection dialogs, or on a Google Search settings page that is already open.",
+      "visible_cues": [
+        "The browser is on a Google search results page rather than on `chrome://settings`.",
+        "A right-side Search Settings menu is open with cards such as SafeSearch, Language, and More settings.",
+        "The `More settings` tile is visible in the lower-left area of that menu.",
+        "The red box marks the `More settings` tile as the entry point into the deeper Google Search settings pages."
+      ],
+      "non_transferable_parts": [
+        "The specific search query and result snippets in the screenshot are incidental context.",
+        "Google Search menu layout can vary slightly by sign-in state or experiment bucket.",
+        "The red box marks the tile to enter deeper settings, not a coordinate template.",
+        "This card is not evidence that the requested result-count or scrolling control will exist on the next page."
+      ],
+      "recommended_verification": "After selecting More settings, verify that a dedicated Google Search settings page opens before deciding whether the requested preference is actually available there.",
+      "highlight_targets": [
+        {
+          "name": "More settings tile",
+          "target_type": "action_target",
+          "annotation_query": "More settings tile in the Google Search settings menu on the results page",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "type": "osworld_trajectory_supplement",
+        "source_plan": "plan.json",
+        "procedure_name": "search_engine",
+        "state_id": 5,
+        "state_name": "open_google_search_settings_entry",
+        "image_filename": "google_search_more_settings_menu.png",
+        "source_task_id": "ae78f875-5b98-4907-bbb5-9c737fc68c03",
+        "source_step_num": 8,
+        "source_traj_index": 7,
+        "source_image_uuid": "step_8_20260417@222715774624.png",
+        "source_image_path": "/home/admin/datasets/mm_skill_creator/mm_skills_4_18_full_trajectory/4_18_full_trajectory/chrome/ae78f875-5b98-4907-bbb5-9c737fc68c03/step_8_20260417@222715774624.png",
+        "source_instruction": "Change the number of Google search results shown on one page to 50.",
+        "source_domains": "Chrome",
+        "source_action": "Open More settings from the Google search results settings menu.",
+        "lineage_resolution_method": "osworld_step_capture",
+        "annotation_note": "Use the Google results-page Search Settings menu only when the task is about Google Search preferences."
+      },
+      "codex_review_notes": "Strict refine supplement: this card distinguishes Google Search Settings from Chrome Search engine settings so the planner stops treating them as one surface.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Codex authored a direct grounding query and kept a context-preserving focus crop around the operative region.",
+          "target_name": "More settings tile",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "menu",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 0,
+        "design_intent": "The bundle keeps the operative Chrome region legible without turning into a screenshot dump."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "google_search_more_settings_menu_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/google_search_more_settings_menu.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/mm_skills_4_18_full_trajectory/4_18_full_trajectory/chrome/ae78f875-5b98-4907-bbb5-9c737fc68c03/step_8_20260417@222715774624.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "open_google_search_settings_entry",
+            "color": null
+          },
+          {
+            "view_id": "google_search_more_settings_menu_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/google_search_more_settings_menu_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_18_codex_skills/ubuntu/chrome/CHROME_Configure_Default_Search_Engine_And_Search_Preferences/Images/google_search_more_settings_menu.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "More settings tile",
+            "color": "red",
+            "grounding_query": "More settings tile in the Google Search settings menu on the results page",
+            "grounding_query_full": "Where is More settings tile in the Google Search settings menu on the results page? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              765,
+              461,
+              862,
+              508
+            ],
+            "crop_box_pixels": [
+              1225,
+              411,
+              1898,
+              634
+            ],
+            "focus_context_kind": "menu",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall browser state.",
+          "Use `focus_crop` when you need the local working region with enough surrounding UI context to interpret the control correctly.",
+          "Reuse the state meaning, not the literal coordinates or example values from the stored screenshot."
+        ]
+      }
+    },
+    {
+      "state_id": "google_search_other_settings_surface",
+      "state_name": "inspect_google_other_settings_surface",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the browser is already on Google Search Settings > Other settings and the task is about search-display behavior, especially when you need to verify whether the requested control exists on the visible page.",
+      "when_not_to_use": "Do not use this card as proof that classic `results per page` or `continuous scrolling` controls are available. This example only shows the controls that are visibly present on the captured Other settings page.",
+      "visible_cues": [
+        "The page heading is Google Search settings, not Chrome Settings.",
+        "The left sidebar shows `Other settings` selected.",
+        "The visible desktop controls include `Dark theme`, `Results in a new window`, `Spoken answers`, and `Autocomplete with trending searches`.",
+        "The red box marks the `Results in a new window` toggle as one example of a real visible control on this page."
+      ],
+      "non_transferable_parts": [
+        "The presence of `Results in a new window` does not imply that a result-count control is on the same page.",
+        "Google Search settings layout can vary by account, rollout, and locale.",
+        "The red box marks one visible toggle, not the entire search-preference space.",
+        "Do not claim success for absent controls just because this settings page opened."
+      ],
+      "recommended_verification": "If the requested preference is not visibly present on the page, do not fabricate success. Continue to another visible settings subsection or record the missing control as an environment blocker.",
+      "highlight_targets": [
+        {
+          "name": "Results in a new window toggle",
+          "target_type": "action_target",
+          "annotation_query": "Results in a new window toggle on the Google Search settings Other settings page",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "type": "osworld_trajectory_supplement",
+        "source_plan": "plan.json",
+        "procedure_name": "search_engine",
+        "state_id": 6,
+        "state_name": "inspect_google_other_settings_surface",
+        "image_filename": "google_search_other_settings_surface.png",
+        "source_task_id": "ae78f875-5b98-4907-bbb5-9c737fc68c03",
+        "source_step_num": 10,
+        "source_traj_index": 9,
+        "source_image_uuid": "step_10_20260417@222749846513.png",
+        "source_image_path": "/home/admin/datasets/mm_skill_creator/mm_skills_4_18_full_trajectory/4_18_full_trajectory/chrome/ae78f875-5b98-4907-bbb5-9c737fc68c03/step_10_20260417@222749846513.png",
+        "source_instruction": "Change the number of Google search results shown on one page to 50.",
+        "source_domains": "Chrome",
+        "source_action": "Inspect the visible Google Search settings controls on the Other settings page.",
+        "lineage_resolution_method": "osworld_step_capture",
+        "annotation_note": "Use the visible Google Search settings controls exactly as displayed instead of inferring absent legacy controls."
+      },
+      "codex_review_notes": "This card intentionally records the visible absence of a classic results-per-page control in the captured Other settings page so the library does not teach a false completion path.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Codex authored a direct grounding query and kept a context-preserving focus crop around the operative region.",
+          "target_name": "Results in a new window toggle",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "settings_panel",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 0,
+        "design_intent": "The bundle keeps the operative Chrome region legible without turning into a screenshot dump."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "google_search_other_settings_surface_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/google_search_other_settings_surface.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/mm_skills_4_18_full_trajectory/4_18_full_trajectory/chrome/ae78f875-5b98-4907-bbb5-9c737fc68c03/step_10_20260417@222749846513.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "inspect_google_other_settings_surface",
+            "color": null
+          },
+          {
+            "view_id": "google_search_other_settings_surface_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/google_search_other_settings_surface_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_18_codex_skills/ubuntu/chrome/CHROME_Configure_Default_Search_Engine_And_Search_Preferences/Images/google_search_other_settings_surface.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Results in a new window toggle",
+            "color": "red",
+            "grounding_query": "Results in a new window toggle on the Google Search settings Other settings page",
+            "grounding_query_full": "Where is Results in a new window toggle on the Google Search settings Other settings page? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              209,
+              552,
+              483,
+              604
+            ],
+            "crop_box_pixels": [
+              0,
+              510,
+              1610,
+              738
+            ],
+            "focus_context_kind": "settings_panel",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall browser state.",
+          "Use `focus_crop` when you need the local working region with enough surrounding UI context to interpret the control correctly.",
+          "Reuse the state meaning, not the literal coordinates or example values from the stored screenshot."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": {
+    "ts": "2026-04-15T10:07:52.681999+00:00",
+    "resolver": "backfill_4_12_state_card_lineage.py",
+    "source_dataset": "opencua_agentnet/agentnet_ubuntu_5k.jsonl",
+    "raw_images_root": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted"
+  }
+}

@@ -1,0 +1,215 @@
+{
+  "skill_slug": "CHROME_Configure_Default_Search_Engine_And_Search_Preferences",
+  "skill_name": "Configure Default Search Engine And Search Preferences",
+  "codex_authored": true,
+  "overview": "Use Chrome Search engine settings and Google Search Settings surfaces to change providers or inspect search-display preferences without inventing controls that are not visible.",
+  "when_to_use": [
+    "Change the default search provider inside Chrome settings.",
+    "Inspect or modify search-engine entries and related provider management surfaces.",
+    "Open Google Search Settings surfaces when the task is about search-display behavior such as result layout or similar preferences."
+  ],
+  "preconditions": [
+    "Chrome can open the Search engine settings surface."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "reach_surface",
+      "purpose": "Reach the relevant Chrome surface for configure default search engine and search preferences",
+      "derived_from_source_skills": [
+        "CHROME_Configure_Default_Search_Engine_And_Search_Preferences__ENTRY"
+      ]
+    },
+    {
+      "name": "execute_and_verify",
+      "purpose": "Execute configure default search engine and search preferences and verify the requested result state",
+      "derived_from_source_skills": [
+        "CHROME_Configure_Default_Search_Engine_And_Search_Preferences__EXECUTE"
+      ]
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The correct Chrome surface is not open yet.",
+      "choose_capability": "reach_surface",
+      "reason": "Surface errors cause benchmark failures before the core action can start."
+    },
+    {
+      "condition": "The main interaction already ran but completion is still uncertain.",
+      "choose_capability": "execute_and_verify",
+      "reason": "This skill is only complete when the requested visible result state is present."
+    }
+  ],
+  "selected_task_ids": [
+    "2dcf2ec2-353a-4f5d-9e45-575694e7d58d",
+    "2e96628d-52ae-4af9-a5af-5384d29888ca"
+  ],
+  "evidence_quality": "direct_agentnet_with_curated_frames",
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "search_engine",
+      "when_to_use": [
+        "change the default provider, manage search-engine entries, or inspect Google Search Settings surfaces when the task is about search-display behavior"
+      ],
+      "derived_from_source_skills": [
+        "CHROME_Configure_Default_Search_Engine_And_Search_Preferences__ENTRY",
+        "CHROME_Configure_Default_Search_Engine_And_Search_Preferences__EXECUTE"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "open_search_engine_surface",
+          "visual_grounding": "Relevant controls on Chrome Search engine settings and the downstream search-result page",
+          "trigger_condition": "The workflow still needs to change the default provider, optionally delete extra engines, and verify downstream search preferences",
+          "action": "Advance Chrome through the `open_search_engine_surface` subgoal until the requested search provider and preference filter are visibly active.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "State `open_search_engine_surface` belongs to the Chrome workflow for change the default provider, optionally delete extra engines, and verify downstream search preferences.",
+          "key_frame": {
+            "source_task_id": "2dcf2ec2-353a-4f5d-9e45-575694e7d58d",
+            "source_step_num": 5,
+            "source_image": "ec34f6fa-20e4-4956-811f-39e175614e40.png",
+            "image_filename": "search_engine_settings_surface.png",
+            "annotation_note": "Open the Search engine section from the Settings sidebar.",
+            "highlight_targets": [
+              {
+                "name": "Search engine sidebar item",
+                "target_type": "action_target",
+                "annotation_query": "Search engine item in the Chromium Settings left sidebar",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 2,
+          "state_name": "set_provider_or_engine_list",
+          "visual_grounding": "Relevant controls on Chrome Search engine settings and the downstream search-result page",
+          "trigger_condition": "The workflow still needs to change the default provider, optionally delete extra engines, and verify downstream search preferences",
+          "action": "Advance Chrome through the `set_provider_or_engine_list` subgoal until the requested search provider and preference filter are visibly active.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "State `set_provider_or_engine_list` belongs to the Chrome workflow for change the default provider, optionally delete extra engines, and verify downstream search preferences.",
+          "key_frame": {
+            "source_task_id": "2dcf2ec2-353a-4f5d-9e45-575694e7d58d",
+            "source_step_num": 8,
+            "source_image": "5899c180-49cd-4b7b-bb0d-c984f3008c70.png",
+            "image_filename": "search_engine_selection_dialog.png",
+            "annotation_note": "Select the requested default provider.",
+            "highlight_targets": [
+              {
+                "name": "Set as default button",
+                "target_type": "action_target",
+                "annotation_query": "Set as default button in the Search engine dialog",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 3,
+          "state_name": "apply_result_preference",
+          "visual_grounding": "Relevant controls on Chrome Search engine settings and the downstream search-result page",
+          "trigger_condition": "The workflow still needs to change the default provider, optionally delete extra engines, and verify downstream search preferences",
+          "action": "Advance Chrome through the `apply_result_preference` subgoal until the requested search provider and preference filter are visibly active.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "State `apply_result_preference` belongs to the Chrome workflow for change the default provider, optionally delete extra engines, and verify downstream search preferences.",
+          "key_frame": {
+            "source_task_id": "2e96628d-52ae-4af9-a5af-5384d29888ca",
+            "source_step_num": 7,
+            "source_image": "73ed9a82-a548-44a3-98c3-50479a21ece0.png",
+            "image_filename": "manage_search_engines_page.png",
+            "annotation_note": "Open the manage-search-engines surface from Search engine settings.",
+            "highlight_targets": [
+              {
+                "name": "Manage search engines row",
+                "target_type": "action_target",
+                "annotation_query": "Manage search engines and site search row in Chromium Search engine settings",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 4,
+          "state_name": "verify_provider_or_filter_state",
+          "visual_grounding": "Relevant controls on Chrome Search engine settings and the downstream search-result page",
+          "trigger_condition": "The workflow still needs to change the default provider, optionally delete extra engines, and verify downstream search preferences",
+          "action": "Advance Chrome through the `verify_provider_or_filter_state` subgoal until the requested search provider and preference filter are visibly active.",
+          "is_result_state": true,
+          "has_image": true,
+          "text_description": "State `verify_provider_or_filter_state` belongs to the Chrome workflow for change the default provider, optionally delete extra engines, and verify downstream search preferences.",
+          "key_frame": {
+            "source_task_id": "2dcf2ec2-353a-4f5d-9e45-575694e7d58d",
+            "source_step_num": 16,
+            "source_image": "dbd51ec0-3528-4af4-a3ff-8e501fb29e71.png",
+            "image_filename": "search_preference_filter_applied.png",
+            "annotation_note": "Verify the downstream search-result preference is applied.",
+            "highlight_targets": [
+              {
+                "name": "Date filter showing Past 24 hours",
+                "target_type": "result_signal",
+                "annotation_query": "Past 24 hours option in the Date dropdown on Bing Images results",
+                "color": "green"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 5,
+          "state_name": "open_google_search_settings_entry",
+          "visual_grounding": "Google search results page with the Search Settings menu open",
+          "trigger_condition": "The task is about Google Search display preferences rather than Chrome's default provider and the results page is already visible.",
+          "action": "Use the open Search Settings menu to enter the more detailed Google Search settings surface.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "State `open_google_search_settings_entry` identifies the Search Settings menu path from live Google results.",
+          "key_frame": {
+            "source_task_id": "ae78f875-5b98-4907-bbb5-9c737fc68c03",
+            "source_step_num": 8,
+            "source_image": "step_8_20260417@222715774624.png",
+            "image_filename": "google_search_more_settings_menu.png",
+            "annotation_note": "Open the deeper Google Search settings surface from the results-page menu.",
+            "highlight_targets": [
+              {
+                "name": "More settings tile",
+                "target_type": "action_target",
+                "annotation_query": "More settings tile in the Google Search settings menu on the results page",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 6,
+          "state_name": "inspect_google_other_settings_surface",
+          "visual_grounding": "Google Search settings Other settings page with desktop toggles",
+          "trigger_condition": "The task has already reached Google Search Settings and needs to inspect the currently visible desktop preference controls before claiming success.",
+          "action": "Inspect the visible Google Search settings controls and confirm whether the requested preference is actually present before toggling anything or marking the task complete.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "State `inspect_google_other_settings_surface` is the cautionary surface for Google Search settings when the requested control may be absent from the visible page.",
+          "key_frame": {
+            "source_task_id": "ae78f875-5b98-4907-bbb5-9c737fc68c03",
+            "source_step_num": 10,
+            "source_image": "step_10_20260417@222749846513.png",
+            "image_filename": "google_search_other_settings_surface.png",
+            "annotation_note": "Inspect the actual controls visible on the Other settings page instead of inventing absent ones.",
+            "highlight_targets": [
+              {
+                "name": "Results in a new window toggle",
+                "target_type": "action_target",
+                "annotation_query": "Results in a new window toggle on the Google Search settings Other settings page",
+                "color": "red"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "supplemental_osworld_task_ids": [
+    "ae78f875-5b98-4907-bbb5-9c737fc68c03"
+  ]
+}

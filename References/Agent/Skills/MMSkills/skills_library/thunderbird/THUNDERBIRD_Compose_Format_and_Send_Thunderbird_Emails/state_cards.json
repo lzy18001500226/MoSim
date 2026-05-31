@@ -1,0 +1,523 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "THUNDERBIRD_Compose_Format_and_Send_Thunderbird_Emails",
+  "domain": "thunderbird",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "new_message_entry",
+      "state_name": "new_message_entry",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when A new outgoing message is required and no compose window is open yet.",
+      "when_not_to_use": "Do not use this card if the current Thunderbird surface does not match the visible cues or if the task is already past this state.",
+      "visible_cues": [
+        "New Message button in Thunderbird mail toolbar",
+        "Thunderbird mail toolbar visible"
+      ],
+      "non_transferable_parts": [
+        "Treat the image as Thunderbird state evidence, not as a reusable coordinate template.",
+        "Do not transfer example-specific account names, message content, or window spacing unless the live task shows the same state."
+      ],
+      "recommended_verification": "Click New Message to open the composer on the current mail account.",
+      "highlight_targets": [
+        {
+          "name": "New Message button",
+          "target_type": "action_target",
+          "annotation_query": "New Message button in Thunderbird mail toolbar",
+          "color": "red"
+        },
+        {
+          "name": "mail toolbar",
+          "target_type": "state_signal",
+          "annotation_query": "Thunderbird mail toolbar visible",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "0cdc6d27-dd71-4c83-a432-d2d3aec7c303",
+        "source_step_num": 1,
+        "source_image": "new_message_entry.png",
+        "source_traj_index": 0,
+        "source_image_uuid": "c2ea1e8c-2084-43af-853e-9d7d25fedfe0.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/c2ea1e8c-2084-43af-853e-9d7d25fedfe0.png",
+        "source_instruction": "In Thunderbird, use my Gmail account to send an email with the subject \"Big Data Conference\" to wu. The content is: \"A big data conference will be held this Friday. Please attend on time.\"",
+        "source_domains": "Thunderbird",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the \"New Message\" button in the blue toolbar to start composing a new email.",
+        "source_code": "pyautogui.click(x=0.269, y=0.151)",
+        "procedure_name": "Open a new message, fill content, and send it",
+        "state_id": 1,
+        "state_name": "new_message_entry",
+        "image_filename": "new_message_entry.png"
+      },
+      "codex_review_notes": "This single-card state will be upgraded into a multiview bundle. The current image should already be treated as task-state evidence, not a one-off screenshot.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "New Message button",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "toolbar",
+          "grounding_query_role": "target"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": true,
+          "included": true,
+          "reason": "Selected the later frame at offset +1 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition.",
+          "selected_offset": 1,
+          "candidate_offsets_considered": [
+            {
+              "offset": 1,
+              "diff": 30.316,
+              "score": 30.316
+            },
+            {
+              "offset": 2,
+              "diff": 30.03,
+              "score": 29.18
+            },
+            {
+              "offset": 3,
+              "diff": 30.187,
+              "score": 28.487
+            },
+            {
+              "offset": 4,
+              "diff": 30.194,
+              "score": 27.644
+            }
+          ],
+          "grounding_method": "qwen_bbox_grounding",
+          "target_name": "mail toolbar"
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "new_message_entry_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/new_message_entry.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/c2ea1e8c-2084-43af-853e-9d7d25fedfe0.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "new_message_entry",
+            "color": null
+          },
+          {
+            "view_id": "new_message_entry_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/new_message_entry_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_18_codex_skills/ubuntu/thunderbird/THUNDERBIRD_Compose_Format_and_Send_Thunderbird_Emails/Images/new_message_entry.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "New Message button",
+            "color": "red",
+            "grounding_query": "New Message button in Thunderbird mail toolbar",
+            "grounding_query_full": "Where is New Message button in Thunderbird mail toolbar? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              243,
+              142,
+              314,
+              171
+            ],
+            "crop_box_pixels": [
+              212,
+              72,
+              857,
+              266
+            ],
+            "source_box_pixels": [
+              466,
+              153,
+              602,
+              184
+            ],
+            "focus_context_kind": "toolbar",
+            "focus_query_role": "target"
+          },
+          {
+            "view_id": "new_message_entry_after",
+            "view_type": "after",
+            "image_path": "Images/new_message_entry_after.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/91c0fdab-fc6f-45dd-8813-4a7501281d0a.png",
+            "source_traj_index": 1,
+            "selected_offset": 1,
+            "candidate_offsets_considered": [
+              {
+                "offset": 1,
+                "diff": 30.316,
+                "score": 30.316
+              },
+              {
+                "offset": 2,
+                "diff": 30.03,
+                "score": 29.18
+              },
+              {
+                "offset": 3,
+                "diff": 30.187,
+                "score": 28.487
+              },
+              {
+                "offset": 4,
+                "diff": 30.194,
+                "score": 27.644
+              }
+            ],
+            "use_for": "compare_state_transition",
+            "label": "mail toolbar",
+            "color": "green",
+            "grounding_query": "Thunderbird mail toolbar visible",
+            "grounding_query_full": "Where is Thunderbird mail toolbar visible? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              36,
+              88,
+              483,
+              115
+            ]
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "headers_ready_for_edit",
+      "state_name": "headers_ready_for_edit",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when The compose window is already open and ready for the main message text.",
+      "when_not_to_use": "Do not use this card if the current Thunderbird surface does not match the visible cues or if the task is already past this state.",
+      "visible_cues": [
+        "Subject field in Thunderbird compose window",
+        "recipient field populated in Thunderbird compose window"
+      ],
+      "non_transferable_parts": [
+        "Treat the image as Thunderbird state evidence, not as a reusable coordinate template.",
+        "Do not transfer example-specific account names, message content, or window spacing unless the live task shows the same state."
+      ],
+      "recommended_verification": "Fill the To and Subject fields, then enter the requested body content and visible formatting.",
+      "highlight_targets": [
+        {
+          "name": "Subject field",
+          "target_type": "action_target",
+          "annotation_query": "Subject field in Thunderbird compose window",
+          "color": "red"
+        },
+        {
+          "name": "recipient field",
+          "target_type": "state_signal",
+          "annotation_query": "recipient field populated in Thunderbird compose window",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "0cdc6d27-dd71-4c83-a432-d2d3aec7c303",
+        "source_step_num": 4,
+        "source_image": "headers_ready_for_edit.png",
+        "source_traj_index": 3,
+        "source_image_uuid": "ad86280a-4616-4579-bb52-f1f5a9ea1ac5.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/ad86280a-4616-4579-bb52-f1f5a9ea1ac5.png",
+        "source_instruction": "In Thunderbird, use my Gmail account to send an email with the subject \"Big Data Conference\" to wu. The content is: \"A big data conference will be held this Friday. Please attend on time.\"",
+        "source_domains": "Thunderbird",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Type \"Big Data Conference\" in the Subject field.",
+        "source_code": "pyautogui.write(message='Big Data Conference')",
+        "procedure_name": "Open a new message, fill content, and send it",
+        "state_id": 2,
+        "state_name": "headers_ready_for_edit",
+        "image_filename": "headers_ready_for_edit.png"
+      },
+      "codex_review_notes": "This single-card state will be upgraded into a multiview bundle. The current image should already be treated as task-state evidence, not a one-off screenshot.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Subject field",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "document_region",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "headers_ready_for_edit_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/headers_ready_for_edit.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/ad86280a-4616-4579-bb52-f1f5a9ea1ac5.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "headers_ready_for_edit",
+            "color": null
+          },
+          {
+            "view_id": "headers_ready_for_edit_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/headers_ready_for_edit_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_18_codex_skills/ubuntu/thunderbird/THUNDERBIRD_Compose_Format_and_Send_Thunderbird_Emails/Images/headers_ready_for_edit.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Subject field",
+            "color": "red",
+            "grounding_query": "the broader working region containing the red boxed Subject field",
+            "grounding_query_full": "Where is the broader working region containing the red boxed Subject field? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              123,
+              121,
+              483,
+              279
+            ],
+            "crop_box_pixels": [
+              153,
+              86,
+              1010,
+              345
+            ],
+            "source_box_pixels": [
+              236,
+              130,
+              927,
+              301
+            ],
+            "focus_context_kind": "document_region",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "send_ready_with_visible_content",
+      "state_name": "send_ready_with_visible_content",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when All requested content and formatting have already been entered.",
+      "when_not_to_use": "Do not use this card if the current Thunderbird surface does not match the visible cues or if the task is already past this state.",
+      "visible_cues": [
+        "Send button in Thunderbird compose toolbar",
+        "formatted message body in Thunderbird compose window"
+      ],
+      "non_transferable_parts": [
+        "Treat the image as Thunderbird state evidence, not as a reusable coordinate template.",
+        "Do not transfer example-specific account names, message content, or window spacing unless the live task shows the same state."
+      ],
+      "recommended_verification": "Send the email only after the compose window visibly matches the requested message content.",
+      "highlight_targets": [
+        {
+          "name": "Send button",
+          "target_type": "action_target",
+          "annotation_query": "Send button in Thunderbird compose toolbar",
+          "color": "red"
+        },
+        {
+          "name": "formatted message body",
+          "target_type": "state_signal",
+          "annotation_query": "formatted message body in Thunderbird compose window",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "22f1b0aa-c5a1-410b-91cc-96fbe09f0d49",
+        "source_step_num": 14,
+        "source_image": "send_ready_with_visible_content.png",
+        "source_traj_index": 13,
+        "source_image_uuid": "af697496-006e-40f9-91c7-d985e2cdaa31.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/af697496-006e-40f9-91c7-d985e2cdaa31.png",
+        "source_instruction": "Compose an email to vivi in NTR font, colour ‘#c8fcfd’, praising him for his excellent work in the recent past.",
+        "source_domains": "Thunderbird",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the \"Send\" button in the top toolbar of the email composition window to send the completed email to vivi.",
+        "source_code": "pyautogui.click(x=0.059, y=0.103)",
+        "procedure_name": "Open a new message, fill content, and send it",
+        "state_id": 3,
+        "state_name": "send_ready_with_visible_content",
+        "image_filename": "send_ready_with_visible_content.png"
+      },
+      "codex_review_notes": "This single-card state will be upgraded into a multiview bundle. The current image should already be treated as task-state evidence, not a one-off screenshot.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "formatted message body",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "toolbar",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": true,
+          "included": true,
+          "reason": "Selected the earlier frame at offset -2 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition.",
+          "selected_offset": -2,
+          "candidate_offsets_considered": [
+            {
+              "offset": -2,
+              "diff": 24.539,
+              "score": 23.689
+            },
+            {
+              "offset": -3,
+              "diff": 24.521,
+              "score": 22.821
+            },
+            {
+              "offset": -4,
+              "diff": 24.683,
+              "score": 22.133
+            }
+          ],
+          "grounding_method": "qwen_bbox_grounding",
+          "target_name": "Send button"
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "send_ready_with_visible_content_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/send_ready_with_visible_content.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/af697496-006e-40f9-91c7-d985e2cdaa31.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "send_ready_with_visible_content",
+            "color": null
+          },
+          {
+            "view_id": "send_ready_with_visible_content_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/send_ready_with_visible_content_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_18_codex_skills/ubuntu/thunderbird/THUNDERBIRD_Compose_Format_and_Send_Thunderbird_Emails/Images/send_ready_with_visible_content.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "formatted message body",
+            "color": "green",
+            "grounding_query": "the toolbar region containing the green boxed formatted message body and adjacent controls",
+            "grounding_query_full": "Where is the toolbar region containing the green boxed formatted message body and adjacent controls? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              35,
+              259,
+              485,
+              480
+            ],
+            "crop_box_pixels": [
+              0,
+              246,
+              1037,
+              552
+            ],
+            "source_box_pixels": [
+              67,
+              279,
+              931,
+              518
+            ],
+            "focus_context_kind": "toolbar",
+            "focus_query_role": "region"
+          },
+          {
+            "view_id": "send_ready_with_visible_content_before",
+            "view_type": "before",
+            "image_path": "Images/send_ready_with_visible_content_before.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/8a61782a-56e6-4a4e-92ea-783cb32b26a0.png",
+            "source_traj_index": 11,
+            "selected_offset": -2,
+            "candidate_offsets_considered": [
+              {
+                "offset": -2,
+                "diff": 24.539,
+                "score": 23.689
+              },
+              {
+                "offset": -3,
+                "diff": 24.521,
+                "score": 22.821
+              },
+              {
+                "offset": -4,
+                "diff": 24.683,
+                "score": 22.133
+              }
+            ],
+            "use_for": "compare_state_transition",
+            "label": "Send button",
+            "color": "red",
+            "grounding_query": "Send button in Thunderbird compose toolbar",
+            "grounding_query_full": "Where is Send button in Thunderbird compose toolbar? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              43,
+              92,
+              75,
+              113
+            ]
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": null
+}

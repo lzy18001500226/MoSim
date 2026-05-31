@@ -1,0 +1,269 @@
+{
+  "overview": "Insert the requested media object onto the intended slide, open any needed interaction or playback control, and verify both the placed object and its configured behavior before leaving the workflow.",
+  "when_to_use": [
+    "The task inserts images, audio, video, or click-driven media interactions such as hyperlinks or action settings.",
+    "The workflow needs a real media object placed on the slide rather than a drawn shape."
+  ],
+  "preconditions": [
+    "The target slide is selected and the source media file is accessible if the task names one.",
+    "The task is about inserting or configuring media rather than editing the geometry of an already correct object."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "Insert and Position Images",
+      "purpose": "Insert and position an image.",
+      "derived_from_source_skills": [
+        "Insert and Position Images",
+        "Insert Audio Video and Click Actions"
+      ]
+    },
+    {
+      "name": "Insert Audio Video and Click Actions",
+      "purpose": "Insert media and configure click behavior.",
+      "derived_from_source_skills": [
+        "Insert and Position Images",
+        "Insert Audio Video and Click Actions"
+      ]
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The task is mainly about an image on the slide",
+      "choose_capability": "Insert and Position Images",
+      "reason": "Start from the correct placeholder or insert dialog."
+    },
+    {
+      "condition": "The task also needs click behavior",
+      "choose_capability": "Insert Audio Video and Click Actions",
+      "reason": "Open the interaction dialog only after selecting the media object."
+    }
+  ],
+  "selected_task_ids": [
+    "026209bf-43ff-4046-a2f7-e8ab34847b73",
+    "301554c8-ae1f-47d4-9bd4-882761bbe8d6"
+  ],
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "insert_and_configure_media",
+      "when_to_use": [
+        "A media object must be inserted or bound to a click action."
+      ],
+      "derived_from_source_skills": [
+        "Insert and Position Images",
+        "Insert Audio Video and Click Actions"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "activate_media_insert_surface",
+          "visual_grounding": "The target placeholder or media insert surface is visible on the selected slide.",
+          "trigger_condition": "A new media object must be inserted.",
+          "action": "Open the placeholder or insert path.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "The target placeholder or media insert surface is visible on the selected slide.",
+          "key_frame": {
+            "source_task_id": "026209bf-43ff-4046-a2f7-e8ab34847b73",
+            "source_step_num": 3,
+            "image_filename": "media_insert_surface.png",
+            "highlight_targets": [
+              {
+                "name": "image_placeholder_icon",
+                "annotation_query": "Image placeholder icon in the content area of slide 9",
+                "color": "red",
+                "target_type": "action_target"
+              },
+              {
+                "name": "selected_slide_thumbnail",
+                "annotation_query": "Selected slide 9 thumbnail in the navigator",
+                "color": "green",
+                "target_type": "state_signal"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 2,
+          "state_name": "set_media_click_interaction",
+          "visual_grounding": "The Interaction dialog is open for the selected media object.",
+          "trigger_condition": "The media object exists and still needs click behavior.",
+          "action": "Set the requested mouse-click action.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "The Interaction dialog is open for the selected media object.",
+          "key_frame": {
+            "source_task_id": "301554c8-ae1f-47d4-9bd4-882761bbe8d6",
+            "source_step_num": 14,
+            "image_filename": "media_interaction_controls.png",
+            "highlight_targets": [
+              {
+                "name": "interaction_action_dropdown",
+                "annotation_query": "Action at mouse click dropdown in the Interaction dialog",
+                "color": "red",
+                "target_type": "action_target"
+              },
+              {
+                "name": "interaction_dialog",
+                "annotation_query": "Interaction dialog for the selected media object",
+                "color": "green",
+                "target_type": "state_signal"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 3,
+          "state_name": "verify_inserted_media_result",
+          "visual_grounding": "The target media object is visible on the intended slide.",
+          "trigger_condition": "Verify the final media object on the slide.",
+          "action": "Confirm the requested result is visible before leaving this surface.",
+          "is_result_state": true,
+          "has_image": true,
+          "text_description": "The target media object is visible on the intended slide.",
+          "key_frame": {
+            "source_task_id": "026209bf-43ff-4046-a2f7-e8ab34847b73",
+            "source_step_num": 5,
+            "image_filename": "media_result_state.png",
+            "highlight_targets": [
+              {
+                "name": "inserted_image",
+                "annotation_query": "Inserted image on the slide content area",
+                "color": "green",
+                "target_type": "state_signal"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "common_failure_modes": [
+    "Placing the media on the wrong slide or in the wrong placeholder.",
+    "Inserting the media but forgetting to configure the requested click behavior or interaction dialog.",
+    "Leaving before verifying that the inserted media object is visible and, when required, linked to the intended action."
+  ],
+  "coverage_summary": {
+    "covered_task_count": 114,
+    "covered_task_ids": [
+      "026209bf-43ff-4046-a2f7-e8ab34847b73",
+      "067ce29c-0504-43bc-9013-3876cd56be0e",
+      "08847c8b-964f-48b1-9fd9-8a0ff3edc8f9",
+      "08b1621b-11e8-4a2d-804a-ac15848ef76a",
+      "12c4d47e-8bfc-4122-9647-afb0a6c48de5",
+      "1403c89b-9fe6-439a-8c65-1c124f2535d5",
+      "1555fa25-6e79-4b24-86ff-615e81c24240",
+      "16b67ffa-502e-4fac-a953-761ff07ace09",
+      "176e811e-7a7a-4837-a7e3-6e62a4cc4e44",
+      "18e568ad-8491-4f68-b042-19a329371587",
+      "19443e00-a12d-4e5b-823b-39b2d05bda5d",
+      "1b36c633-81d6-4288-9928-d4652efa8322",
+      "1cb54409-48c5-4713-ba86-6dbd8292e41b",
+      "1cd0eadf-fe5f-4751-aeb8-07e860f6b691",
+      "20009320-9550-4cc0-a321-2912769b5627",
+      "21a10422-7f6e-4ef0-9705-961e23bb304b",
+      "27ab528a-2f09-4674-8e5b-5f66c64b06ec",
+      "29f6b588-4333-46a6-8ccf-235db637924f",
+      "301554c8-ae1f-47d4-9bd4-882761bbe8d6",
+      "301d4305-b276-4eba-83ca-8440b4330fe7",
+      "376946c0-7acc-4673-ae6c-8e2d3b4efb78",
+      "38dd85b2-353b-430b-9a42-e32af8bf8cbd",
+      "39980002-e4b4-4996-924c-1e59dda1feef",
+      "3a2929e5-4b41-4f6f-86c7-c3cc03bc1fd5",
+      "3b0063b7-e115-4bee-92cf-0a9a822df1d4",
+      "3c817e70-fb07-4edc-a560-1e5fced8f935",
+      "40324fef-bcb7-469b-a66b-5b461ec25b37",
+      "42b03714-4a20-494d-aae6-adb6970f199b",
+      "44452cc4-fa91-4c55-86b6-0afa32d29563",
+      "473571f3-e182-433a-8e0d-556347fd706e",
+      "4853494a-c7e5-4c9e-957f-bbf331363d00",
+      "4935a679-169c-4a04-b9e9-6db36dbe15bf",
+      "4a6e800e-8784-45db-b446-91619f68cd84",
+      "4b9dd964-ebbe-4133-9b6d-cbc3c71e677a",
+      "4cbff189-9de6-44f1-95e6-804bed02eb05",
+      "4cf1f669-725d-42f3-9ab5-67eeefbdb21d",
+      "4d6c1033-fd3d-485c-af6d-0506e7d6f957",
+      "4f8efe4d-5ad8-4ead-a255-4fd19a69801e",
+      "5563c1e9-9864-4fc9-9ab8-eee61be9b626",
+      "5921293a-923c-482b-b66d-8d18bc881431",
+      "5f93a129-2b90-489f-bceb-9b08a06cc926",
+      "60051d95-a946-4226-ae6e-fedcdd9c8167",
+      "609f057c-846c-49b6-94de-70b6a5567717",
+      "64c70c52-5b52-4502-875c-31a31d017d7a",
+      "6b4ce990-6d1e-43de-9b85-12b50e9b8ab1",
+      "6cdd5ec8-a47a-4ff4-9d3a-ec9f67f6b3cd",
+      "6eb44162-9e05-40f5-b39c-4970926bc7d1",
+      "6ecbfb22-0d5e-49a7-baa8-4c13c338afb3",
+      "7231110d-d42c-429e-8c48-1dc9944c10b2",
+      "7339dc96-fa5a-4291-bb21-b0c50f14beec",
+      "737304e0-5717-4bdf-9e42-5a61b77be205",
+      "74acb9f8-67e1-473c-ac94-1de88ad40d3d",
+      "782a8373-8f91-4b4a-b833-4da3174da22b",
+      "7936b029-d8b2-4096-99b9-88121a6811c6",
+      "7a9f0a76-8a6b-4c15-b0b2-e5e11e2caa59",
+      "81e061dd-71cf-441f-bdf0-aaac869605d3",
+      "8602df10-24b0-42ab-8a7e-337a6842408d",
+      "87a75d22-d4e9-4ee9-bd44-33ea8b2e3bf6",
+      "87ecd097-5b42-4d91-89b1-3f0573b44539",
+      "8864958a-35eb-4fad-a00e-54dc942ff77c",
+      "890582b0-075f-437b-a02a-c73dfd8d98e9",
+      "892987e7-cdb1-436a-a285-079eb07384c2",
+      "8cdeda74-9edb-4834-8f41-83b360b35e5d",
+      "8f2b13db-c850-4025-87a8-647608d1fa10",
+      "90f37d36-44ef-4e9e-9411-db5ef0766fd5",
+      "995c57e6-878a-41e9-b9d0-1552805c448b",
+      "9b4454f1-4191-45c8-922c-825aa43a276f",
+      "9ba85ea0-4566-4bcb-95ba-658580c477ae",
+      "9c0131ff-5ba1-42a7-a3fb-3f0bb186f416",
+      "a2d7d6d9-8e4e-4507-a72f-a0fbfc14bfad",
+      "a6e79ec5-53c3-40bc-9b28-f0a8b6e33a72",
+      "a8b5541c-9dfd-4de9-bc22-63310ce852e0",
+      "ac059640-0967-4ea7-b707-2aca5efaf235",
+      "ac47abf5-4f7e-4d70-8405-35e4ea68c7bd",
+      "af6a0949-7801-4b6a-a486-bf3a66a554ab",
+      "b08fcbd4-6b0e-4bd8-b240-56fbb1c622a7",
+      "b5cd1427-a993-4ae3-aeb4-0b5d19af2f80",
+      "b9b50b9d-48f9-4290-a982-1144ddae668c",
+      "b9dff8b1-6902-4674-8c42-8d6a30a8d60f",
+      "b9f70b49-e2b6-457c-8d49-8e94c0e76d67",
+      "bf6384bc-f1fe-4b06-a3ec-ca8cedc8b1f9",
+      "c8d66ec3-a2aa-4cad-b756-7e7e7e9371d6",
+      "c993afa3-165f-4bf2-85ed-5945716f9681",
+      "c9d45bb1-3d86-415f-b89c-1668dc32f0b5",
+      "c9f58f7f-425a-4a69-9da0-61f2949063aa",
+      "ce9dd537-d9d3-4a8e-9af6-260827f02e13",
+      "cecbca95-0e72-4a26-a144-d46dd07bf687",
+      "d3fb904f-ad29-47fd-8a8c-7a8ecd946ea2",
+      "d470a36a-3435-439c-8f5c-f916b3acb29e",
+      "d4e4658a-6bd5-457a-9ac7-8cc6d0a2ac50",
+      "d601b365-0810-48ef-8e33-e34dafabb51d",
+      "d6f3d6ba-eb99-4103-a520-fa4ee6094dc4",
+      "d917d154-aade-45ca-91e2-adfdfc694fc5",
+      "da1347c0-9d88-4b78-bd5e-1c579dcc61d2",
+      "da2ff0fe-5d77-4dcd-884d-581279ff75a9",
+      "db9e6c08-3403-483e-b90c-5922225b1bdb",
+      "dcda6958-f78a-4e35-9445-a98434382d7e",
+      "e2e59020-8bcc-44d7-8ca0-809613dee619",
+      "e4ec9254-5855-4912-bb1e-0051c60d2029",
+      "e59ae21f-dc72-4276-868f-aa1bc08b8e6b",
+      "e7202d89-6cfd-4c86-9ee4-fddd005f9e82",
+      "eae13a03-e279-42a7-8084-bf3eb2361568",
+      "eea74d00-4bc8-41e4-a24f-6de6f1f6060f",
+      "ef1c5d7f-5d47-42e7-bece-24163317deae",
+      "ef6f02c5-b24a-4f5a-b2b7-bbafd01092c9",
+      "f0bc6e9d-cb68-49b2-b180-4a74a8dc77d7",
+      "f14c710e-449e-415f-9401-effded82201f",
+      "f3a22707-e3cf-4904-a504-3c6614ce05e9",
+      "f6108537-1598-40a9-959e-d34093d95abc",
+      "f8dbe3de-ce7f-464f-9081-ae0146354001",
+      "fa7377a4-02e1-4aee-b3f8-c71260464631",
+      "fcdbd42e-16dc-4e4e-ae63-6f551b671a49",
+      "ff116208-1ba5-4f4a-9524-7893dd391166",
+      "ff2c60e9-1c6f-4f65-a698-3a4b9778428a"
+    ]
+  },
+  "source_skill_names": [
+    "Insert and Position Images",
+    "Insert Audio Video and Click Actions"
+  ]
+}

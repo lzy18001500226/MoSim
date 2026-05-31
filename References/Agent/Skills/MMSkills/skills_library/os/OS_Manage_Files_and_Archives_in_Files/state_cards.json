@@ -1,0 +1,433 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "OS_Manage_Files_and_Archives_in_Files",
+  "domain": "os",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "os_manage_files_and_archives_in_files_open_target_files_surface",
+      "state_name": "open_the_target_files_surface",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the task still needs Ubuntu Files to be opened or brought into focus before navigating to a folder, Home, or Trash. The screenshot matches a desktop-start state: the user is on the Ubuntu desktop, the Files launcher is visibly marked, and there is no Files window already showing the destination.",
+      "when_not_to_use": "Do not use this card once a Files window is already open on the needed location. Do not use it for a file picker dialog, another file manager, or a state where the task should already be verifying a result inside Files or on the destination surface.",
+      "visible_cues": [
+        "The Ubuntu desktop fills the screen rather than an open Files window.",
+        "The Files launcher icon in the left dock is outlined in red as the interaction cue.",
+        "Several example desktop items are visible, including folders near the top and archive files on the right edge.",
+        "The dock is present, making this a launcher-entry state rather than an in-window action state."
+      ],
+      "non_transferable_parts": [
+        "The wallpaper, dock order, and the exact desktop layout are example-specific.",
+        "Visible item names such as `Shoe 5.jpg`, `family gathering.png`, `picture`, `1`, `2`, `picture.tar.gz`, and `3.tar.gz` are source-example content and must not be copied into reusable instructions.",
+        "The red box marks the launcher to use, not a reusable screen coordinate.",
+        "Do not assume the requested destination is the desktop shown here; this image only teaches the pre-open launcher state."
+      ],
+      "recommended_verification": "After opening Files, verify that the requested folder, Home surface, or Trash location is actually visible in the Files window before applying any file action.",
+      "highlight_targets": [
+        {
+          "name": "Files launcher icon",
+          "target_type": "action_target",
+          "annotation_query": "the Files launcher icon in the Ubuntu dock",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "plan_procedure": "apply_the_files_workflow",
+        "plan_state_id": 1,
+        "plan_state_name": "open_the_target_files_surface",
+        "source_task_id": "2480f52f-1d0c-4074-adf6-4b3fc9bdded1",
+        "source_step_num": 1,
+        "source_image": "Images/os_manage_files_and_archives_in_files_open_target_files_surface.png",
+        "source_traj_index": 0,
+        "source_image_uuid": "096c1956-6fe1-4504-8d05-c13ee55d3a3c.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/096c1956-6fe1-4504-8d05-c13ee55d3a3c.png",
+        "source_instruction": "Help me find the Download directory. Then create a folder named \"1\" in it. Copy the last file in the Download directory into the folder \"1\", and then compress it. ",
+        "source_domains": "OS",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the file explorer/manager icon in the dock on the left side of the screen to open the file manager.",
+        "source_code": "pyautogui.click(x=0.021, y=0.136)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.296144+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "apply_the_files_workflow",
+        "state_id": 1,
+        "state_name": "open_the_target_files_surface",
+        "image_filename": "os_manage_files_and_archives_in_files_open_target_files_surface.png"
+      },
+      "codex_review_notes": [
+        "The screenshot depicts a desktop-launch state, so this card is grounded to opening Files from the dock rather than assuming the destination folder is already open.",
+        "This card should transfer only the launcher-entry pattern, not the example desktop contents."
+      ],
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Ubuntu dock launcher region",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dock_region",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "os_manage_files_and_archives_in_files_open_target_files_surface_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/os_manage_files_and_archives_in_files_open_target_files_surface.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/096c1956-6fe1-4504-8d05-c13ee55d3a3c.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "open_the_target_files_surface",
+            "color": null
+          },
+          {
+            "view_id": "os_manage_files_and_archives_in_files_open_target_files_surface_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/os_manage_files_and_archives_in_files_open_target_files_surface_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/os/OS_Manage_Files_and_Archives_in_Files/Images/os_manage_files_and_archives_in_files_open_target_files_surface.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Ubuntu dock launcher region",
+            "color": "red",
+            "grounding_query": "the left Ubuntu dock region with the relevant launcher icon and nearby app icons",
+            "grounding_query_full": "Where is the left Ubuntu dock region with the relevant launcher icon and nearby app icons? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              0,
+              0,
+              40,
+              1000
+            ],
+            "crop_box_pixels": [
+              0,
+              0,
+              230,
+              1080
+            ],
+            "source_box_pixels": [
+              0,
+              0,
+              76,
+              1080
+            ],
+            "focus_context_kind": "dock_region",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "os_manage_files_and_archives_in_files_apply_gui_file_action",
+      "state_name": "apply_the_gui_file_action",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when Files is already open on the correct folder and the next step is to apply a file-management command to a selected item. The screenshot shows a reusable mid-workflow state: a Files window is open, one item is selected, and the next action comes from a toolbar control in the top-right area.",
+      "when_not_to_use": "Do not use this card when Files is not open, when nothing relevant is selected, when a context menu or dialog is already covering the window, or when the task has moved on to verifying the final destination result.",
+      "visible_cues": [
+        "A Files window is open on a folder surface, with the sidebar and path bar visible.",
+        "The sidebar highlights `Downloads`, indicating the current example folder.",
+        "One folder item is selected in the content area and the status line reports one selected item.",
+        "A top-right toolbar/menu control is outlined in red as the action cue."
+      ],
+      "non_transferable_parts": [
+        "The exact folder path `Downloads`, the selected folder name `1`, and the visible filenames in the grid are example-only and must not be copied.",
+        "The red box indicates the relevant GUI control in this screenshot, not a fixed coordinate or the only valid way to trigger the action.",
+        "The grid layout, sort order, and which item is selected are not transferable beyond the general pattern of selecting the correct item before acting.",
+        "Do not reuse the example's literal archive or document names when applying move, compress, restore, or Trash actions for a new task."
+      ],
+      "recommended_verification": "After triggering the file action, verify the resulting state in Files, Trash, or the destination surface before marking the task complete; for archive or move actions, confirm the new item or new location is visible.",
+      "highlight_targets": [
+        {
+          "name": "Files item or toolbar control",
+          "target_type": "action_target",
+          "annotation_query": "the visible Files control used to apply the selected file action",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "plan_procedure": "apply_the_files_workflow",
+        "plan_state_id": 2,
+        "plan_state_name": "apply_the_gui_file_action",
+        "source_task_id": "2480f52f-1d0c-4074-adf6-4b3fc9bdded1",
+        "source_step_num": 15,
+        "source_image": "Images/os_manage_files_and_archives_in_files_apply_gui_file_action.png",
+        "source_traj_index": 14,
+        "source_image_uuid": "a8a92c77-2dc3-41f8-b550-2b05cbf2ffbf.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/a8a92c77-2dc3-41f8-b550-2b05cbf2ffbf.png",
+        "source_instruction": "Help me find the Download directory. Then create a folder named \"1\" in it. Copy the last file in the Download directory into the folder \"1\", and then compress it. ",
+        "source_domains": "OS",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Terminate the task with success status.",
+        "source_code": "computer.terminate(status='success')",
+        "lineage_resolved_at": "2026-04-15T10:06:43.296181+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "apply_the_files_workflow",
+        "state_id": 2,
+        "state_name": "apply_the_gui_file_action",
+        "image_filename": "os_manage_files_and_archives_in_files_apply_gui_file_action.png"
+      },
+      "codex_review_notes": [
+        "The selected item state is the key transferable cue here: the correct folder is open, the relevant item is selected, and a Files command is about to be applied.",
+        "The red annotation sits on a toolbar control, so the card teaches readiness for an action, not the specific command label from the example."
+      ],
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Files item or toolbar control",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "sidebar",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "os_manage_files_and_archives_in_files_apply_gui_file_action_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/os_manage_files_and_archives_in_files_apply_gui_file_action.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/a8a92c77-2dc3-41f8-b550-2b05cbf2ffbf.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "apply_the_gui_file_action",
+            "color": null
+          },
+          {
+            "view_id": "os_manage_files_and_archives_in_files_apply_gui_file_action_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/os_manage_files_and_archives_in_files_apply_gui_file_action_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/os/OS_Manage_Files_and_Archives_in_Files/Images/os_manage_files_and_archives_in_files_apply_gui_file_action.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Files item or toolbar control",
+            "color": "red",
+            "grounding_query": "the broader working region containing the red boxed Files item or toolbar control",
+            "grounding_query_full": "Where is the broader working region containing the red boxed Files item or toolbar control? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              54,
+              180,
+              519,
+              692
+            ],
+            "crop_box_pixels": [
+              52,
+              138,
+              1088,
+              802
+            ],
+            "source_box_pixels": [
+              103,
+              194,
+              996,
+              747
+            ],
+            "focus_context_kind": "sidebar",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "os_manage_files_and_archives_in_files_verify_gui_path_result",
+      "state_name": "verify_the_gui_path_result",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when the file action is already finished and the result must be confirmed on a desktop or Home-like surface rather than inside an actively manipulated Files window. The screenshot matches a verification state where the expected folders or files should now be visible on the desktop and no additional file action is in progress.",
+      "when_not_to_use": "Do not use this card as the instruction to start manipulating files. Do not use it when the result should be verified inside a Files folder view, inside Trash, or in a modal dialog. If the target item is still missing and another file action is required, return to an operation card instead of treating this as success.",
+      "visible_cues": [
+        "The Ubuntu desktop is visible with multiple folders and documents placed directly on the surface.",
+        "A green box marks the Files launcher in the dock as a state cue rather than an action target.",
+        "No Files window is open over the desktop, so the result must be judged from what is visible on the desktop itself.",
+        "The desktop contains example folders and files clustered near the center and left side."
+      ],
+      "non_transferable_parts": [
+        "The example desktop items, including names such as `Now`, `Text`, `one`, `README.md`, `example.json`, and the Office documents on the left, are not reusable target values.",
+        "The green box is only a verification cue that the file-management surface is relevant; it is not a coordinate to click.",
+        "Do not assume every task should verify on the desktop just because this image does; only transfer the idea of checking the actual destination surface.",
+        "The exact icon positions and desktop arrangement are example-specific."
+      ],
+      "recommended_verification": "Confirm that the current destination surface shows the requested file, folder, restored item, or emptied state for the live task. Success depends on the requested result being present or absent in the correct place, not on matching the example desktop contents.",
+      "highlight_targets": [
+        {
+          "name": "Files destination result cue",
+          "target_type": "state_signal",
+          "annotation_query": "the visible state cue indicating the final file-management surface for result verification",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "plan_procedure": "apply_the_files_workflow",
+        "plan_state_id": 3,
+        "plan_state_name": "verify_the_gui_path_result",
+        "source_task_id": "3b049eba-d02f-477c-9547-e8dd3b6680d6",
+        "source_step_num": 11,
+        "source_image": "Images/os_manage_files_and_archives_in_files_verify_gui_path_result.png",
+        "source_traj_index": 10,
+        "source_image_uuid": "c3b4c44e-7229-4cd2-874e-09a481c3aa27.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/c3b4c44e-7229-4cd2-874e-09a481c3aa27.png",
+        "source_instruction": "Help me to modify the system settings, cancel the display of file history, enable automatic deletion of temporary files, and then change sending error reports to never. Finally, close the settings page.",
+        "source_domains": "OS",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Terminate the computer interaction with a success status as all requested system settings modifications have been completed successfully.",
+        "source_code": "computer.terminate(status='success')",
+        "lineage_resolved_at": "2026-04-15T10:06:43.296214+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "apply_the_files_workflow",
+        "state_id": 3,
+        "state_name": "verify_the_gui_path_result",
+        "image_filename": "os_manage_files_and_archives_in_files_verify_gui_path_result.png"
+      },
+      "codex_review_notes": [
+        "This screenshot verifies from the destination surface itself rather than from an open Files folder view, so the card is written around desktop-level result checking.",
+        "The green annotation surrounds the Files launcher, but the true transferable check is whether the requested result is visible on the current destination surface."
+      ],
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Files destination result cue",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dock_region",
+          "grounding_query_role": "target"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "os_manage_files_and_archives_in_files_verify_gui_path_result_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/os_manage_files_and_archives_in_files_verify_gui_path_result.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/c3b4c44e-7229-4cd2-874e-09a481c3aa27.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "verify_the_gui_path_result",
+            "color": null
+          },
+          {
+            "view_id": "os_manage_files_and_archives_in_files_verify_gui_path_result_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/os_manage_files_and_archives_in_files_verify_gui_path_result_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/os/OS_Manage_Files_and_Archives_in_Files/Images/os_manage_files_and_archives_in_files_verify_gui_path_result.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Files destination result cue",
+            "color": "green",
+            "grounding_query": "the visible state cue indicating the final file-management surface for result verification",
+            "grounding_query_full": "Where is the visible state cue indicating the final file-management surface for result verification? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              53,
+              246,
+              88,
+              329
+            ],
+            "crop_box_pixels": [
+              6,
+              56,
+              264,
+              564
+            ],
+            "source_box_pixels": [
+              101,
+              265,
+              168,
+              355
+            ],
+            "focus_context_kind": "dock_region",
+            "focus_query_role": "target"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": {
+    "ts": "2026-04-15T10:06:43.296229+00:00",
+    "resolver": "backfill_4_12_state_card_lineage.py",
+    "source_dataset": "opencua_agentnet/agentnet_ubuntu_5k.jsonl",
+    "raw_images_root": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "overview": "Apply sorts, auto-filters, and range filters to Calc tables and verify the visible filtered rows or ordering on the sheet.",
+  "when_to_use": [
+    "Use when the task asks to sort, filter, or exclude values from a table.",
+    "Use when the main result is the visible ordering or filtered subset of a worksheet table."
+  ],
+  "preconditions": [
+    "The target table is visible or selected.",
+    "The requested sort key or filter values are known."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "Open the sort or filter surface",
+      "purpose": "Reach the appropriate table-filtering control for the selected range."
+    },
+    {
+      "name": "Verify the visible filtered result",
+      "purpose": "Check the visible rows and order after the filter or sort is applied."
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The task names ascending, descending, filter out, auto-filter, or exclude values.",
+      "choose_capability": "Open the sort or filter surface",
+      "reason": "These are table-filtering tasks."
+    },
+    {
+      "condition": "The instruction names a final visible subset or order.",
+      "choose_capability": "Verify the visible filtered result",
+      "reason": "The result table itself is the completion gate."
+    }
+  ],
+  "selected_task_ids": [
+    "059303e6-0373-4c9a-ac7c-edf8807620da",
+    "11f0dd9e-4442-4fc3-bda9-17d2a06f9407",
+    "1480fc4b-4034-4a3a-a720-2ab0ec8f3271"
+  ],
+  "completion_checks": [
+    "The current Calc surface matches the intended skill family.",
+    "The requested operation lands on the intended target range, element, or dialog.",
+    "The final visible result satisfies the task rather than stopping at an intermediate state."
+  ],
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "sort and filter calc tables",
+      "when_to_use": [
+        "Use when the task asks to sort, filter, or exclude values from a table."
+      ],
+      "derived_from_source_skills": [
+        "Sort and Filter Calc Tables"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "Identify the right Calc surface for this skill",
+          "visual_grounding": "The visible worksheet, menu, dialog, or chart state should match this skill's category before acting.",
+          "trigger_condition": "Use when the task asks to sort, filter, or exclude values from a table.",
+          "action": "Use when the task asks to sort, filter, or exclude values from a table.",
+          "is_result_state": false,
+          "has_image": false,
+          "text_description": "Apply sorts, auto-filters, and range filters to Calc tables and verify the visible filtered rows or ordering on the sheet."
+        },
+        {
+          "state_id": 2,
+          "state_name": "Apply the requested operation on the intended target",
+          "visual_grounding": "The intended target range, dialog, or chart element is active and ready for the requested operation.",
+          "trigger_condition": "The correct target has been identified.",
+          "action": "These are table-filtering tasks.",
+          "is_result_state": false,
+          "has_image": false,
+          "text_description": "Keep the operation scoped to the target that the task actually named."
+        },
+        {
+          "state_id": 3,
+          "state_name": "Verify the final visible result",
+          "visual_grounding": "The worksheet, dialog, or chart shows the requested result rather than only a partially completed intermediate state.",
+          "trigger_condition": "The operation has been applied and needs visible confirmation.",
+          "action": "Check the final visible Calc state and confirm the task-specific result is actually present.",
+          "is_result_state": true,
+          "has_image": false,
+          "text_description": "Use worksheet or dialog evidence to confirm completion instead of relying on a remembered click path."
+        }
+      ]
+    }
+  ],
+  "common_failure_modes": [
+    "Filtering the wrong range or wrong column.",
+    "Assuming the filter was applied without checking the visible table subset."
+  ]
+}

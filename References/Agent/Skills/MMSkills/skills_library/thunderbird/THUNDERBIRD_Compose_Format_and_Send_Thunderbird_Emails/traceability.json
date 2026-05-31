@@ -1,0 +1,56 @@
+{
+  "skill_name": "Compose Format and Send Thunderbird Emails",
+  "selected_task_ids": [
+    "0cdc6d27-dd71-4c83-a432-d2d3aec7c303",
+    "22f1b0aa-c5a1-410b-91cc-96fbe09f0d49",
+    "2931ebc7-aeec-4a28-9c94-7d8bc5b9f60b",
+    "9242623a-e732-41bd-9ebc-ba51a78e9822"
+  ],
+  "source_task_ids": [
+    "0cdc6d27-dd71-4c83-a432-d2d3aec7c303",
+    "22f1b0aa-c5a1-410b-91cc-96fbe09f0d49",
+    "2931ebc7-aeec-4a28-9c94-7d8bc5b9f60b",
+    "9242623a-e732-41bd-9ebc-ba51a78e9822"
+  ],
+  "records": [
+    {
+      "skill_name": "Compose Format and Send Thunderbird Emails",
+      "procedure_name": "Open a new message, fill content, and send it",
+      "state_id": 1,
+      "state_name": "new_message_entry",
+      "mode": "image",
+      "grounding_status": "boxed",
+      "source_task_id": "0cdc6d27-dd71-4c83-a432-d2d3aec7c303",
+      "source_step_num": 1,
+      "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/c2ea1e8c-2084-43af-853e-9d7d25fedfe0.png",
+      "generated_image_filename": "new_message_entry.png",
+      "generated_image_relative_path": "Images/new_message_entry.png"
+    },
+    {
+      "skill_name": "Compose Format and Send Thunderbird Emails",
+      "procedure_name": "Open a new message, fill content, and send it",
+      "state_id": 2,
+      "state_name": "headers_ready_for_edit",
+      "mode": "image",
+      "grounding_status": "boxed",
+      "source_task_id": "0cdc6d27-dd71-4c83-a432-d2d3aec7c303",
+      "source_step_num": 4,
+      "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/ad86280a-4616-4579-bb52-f1f5a9ea1ac5.png",
+      "generated_image_filename": "headers_ready_for_edit.png",
+      "generated_image_relative_path": "Images/headers_ready_for_edit.png"
+    },
+    {
+      "skill_name": "Compose Format and Send Thunderbird Emails",
+      "procedure_name": "Open a new message, fill content, and send it",
+      "state_id": 3,
+      "state_name": "send_ready_with_visible_content",
+      "mode": "image",
+      "grounding_status": "boxed",
+      "source_task_id": "22f1b0aa-c5a1-410b-91cc-96fbe09f0d49",
+      "source_step_num": 14,
+      "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/af697496-006e-40f9-91c7-d985e2cdaa31.png",
+      "generated_image_filename": "send_ready_with_visible_content.png",
+      "generated_image_relative_path": "Images/send_ready_with_visible_content.png"
+    }
+  ]
+}

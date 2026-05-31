@@ -1,0 +1,164 @@
+{
+  "skill_slug": "VLC_Open_Local_Media_And_Verify_Playback_Surface",
+  "skill_name": "Open Local Media And Verify Playback Surface",
+  "codex_authored": true,
+  "overview": "Use VLC's shortest local-open path to bring a local file onto the playback surface, then verify by visible title, frame, or timeline instead of drifting into settings or unrelated dialogs.",
+  "when_to_use": [
+    "Open a video or audio file from the desktop, Downloads, or another local folder.",
+    "Pick one requested file from the VLC system chooser.",
+    "Verify that the requested local title or real media frame is the one playing or paused in VLC.",
+    "Recover from a mistaken open dialog when the requested local media is already visible."
+  ],
+  "preconditions": [
+    "VLC is open and the requested local media is reachable from the Ubuntu filesystem."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "reach_surface",
+      "purpose": "Reach the correct VLC surface for open a local file or folder in vlc and verify that the requested media reaches the playback surface.",
+      "derived_from_source_skills": [
+        "VLC_Open_Local_Media_And_Verify_Playback_Surface"
+      ]
+    },
+    {
+      "name": "execute_and_verify",
+      "purpose": "Execute open a local file or folder in vlc and verify that the requested media reaches the playback surface. and verify the visible result state",
+      "derived_from_source_skills": [
+        "VLC_Open_Local_Media_And_Verify_Playback_Surface"
+      ]
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The correct VLC surface is not open yet.",
+      "choose_capability": "reach_surface",
+      "reason": "Opening the wrong panel or menu causes most VLC benchmark failures before the requested edit can start."
+    },
+    {
+      "condition": "The requested VLC change may already be present but needs confirmation.",
+      "choose_capability": "execute_and_verify",
+      "reason": "This skill is complete only when the visible VLC state or saved artifact matches the ask."
+    },
+    {
+      "condition": "The requested file already appears to be loaded and a leftover menu or modal is blocking the surface.",
+      "choose_capability": "execute_and_verify",
+      "reason": "Verification is cheaper and safer than reopening the file or drifting into another open flow."
+    }
+  ],
+  "selected_task_ids": [
+    "606c832a-90cd-498f-93c8-46c77604e36d",
+    "310eb3bf-5dd9-4964-9549-d961c55e5eb9",
+    "010eba25-dffc-43ce-8be6-0e0b878aee42",
+    "0814e9d7-1cbd-4351-b74c-57b3b7f98f49",
+    "0887a26a-54ce-4367-a5bb-2958a60b5bc5"
+  ],
+  "evidence_quality": "direct_opencua_with_codex_curated_multiview_states",
+  "common_failure_modes": [
+    "Mistaking already playing media plus a leftover menu or modal for an unopened file.",
+    "Opening `Open URL` or another non-local dialog and continuing there instead of returning to the local-file path.",
+    "Stopping after the chooser closes without checking that the requested title, frame, or timeline is visible in VLC."
+  ],
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "open_local_media_and_verify_playback_surface",
+      "when_to_use": [
+        "Open a video or audio file from the desktop, Downloads, or another local folder.",
+        "Pick one requested file from the VLC system chooser.",
+        "Verify that the requested local title is the one playing or paused in VLC."
+      ],
+      "derived_from_source_skills": [
+        "VLC_Open_Local_Media_And_Verify_Playback_Surface"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "open_local_media_picker",
+          "visual_grounding": "Open File menu item",
+          "trigger_condition": "Use when VLC is already open and the next step is to reach the local file chooser from the Media menu.",
+          "action": "Reach the target VLC surface before acting.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "State `open_local_media_picker` belongs to the VLC workflow for open a local file or folder in vlc and verify that the requested media reaches the playback surface.",
+          "key_frame": {
+            "source_task_id": "606c832a-90cd-498f-93c8-46c77604e36d",
+            "source_step_num": 3,
+            "source_image": "437be8d7-453c-49ad-8fa5-66702424609a.png",
+            "image_filename": "open_local_media_picker.png",
+            "annotation_note": "Reach VLC's local file chooser from the Media menu.",
+            "highlight_targets": [
+              {
+                "name": "Open File menu item",
+                "target_type": "action_target",
+                "annotation_query": "Open File menu item in the VLC Media menu",
+                "color": "red",
+                "fallback_queries": [
+                  "Open File option in the VLC Media dropdown",
+                  "Ctrl+O menu entry in the VLC Media menu"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 2,
+          "state_name": "select_requested_local_source",
+          "visual_grounding": "Requested file row",
+          "trigger_condition": "Use when the Ubuntu file chooser is open and the task still needs the exact local file selected.",
+          "action": "Apply the requested VLC change inside the visible working region.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "State `select_requested_local_source` belongs to the VLC workflow for open a local file or folder in vlc and verify that the requested media reaches the playback surface.",
+          "key_frame": {
+            "source_task_id": "606c832a-90cd-498f-93c8-46c77604e36d",
+            "source_step_num": 4,
+            "source_image": "67e6f443-cef4-4029-b89a-8f1301928232.png",
+            "image_filename": "select_requested_local_source.png",
+            "annotation_note": "Select the requested local media row in the chooser.",
+            "highlight_targets": [
+              {
+                "name": "Requested file row",
+                "target_type": "action_target",
+                "annotation_query": "green.mp4 row in the Select one or more files to open dialog",
+                "color": "red",
+                "fallback_queries": [
+                  "requested media file row in the Ubuntu file chooser",
+                  "green.mp4 file row in the VLC file chooser"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 3,
+          "state_name": "playback_surface_shows_requested_media",
+          "visual_grounding": "Local media title on playback surface",
+          "trigger_condition": "Use when the local file has already been opened and you need proof that VLC is now on the requested playback surface.",
+          "action": "Verify the requested VLC result is visibly present before stopping.",
+          "is_result_state": true,
+          "has_image": true,
+          "text_description": "State `playback_surface_shows_requested_media` belongs to the VLC workflow for open a local file or folder in vlc and verify that the requested media reaches the playback surface.",
+          "key_frame": {
+            "source_task_id": "310eb3bf-5dd9-4964-9549-d961c55e5eb9",
+            "source_step_num": 8,
+            "source_image": "8a62908b-06e2-44ba-a226-927f2db9027b.png",
+            "image_filename": "playback_surface_shows_requested_media.png",
+            "annotation_note": "Verify that VLC is now showing the requested local media title.",
+            "highlight_targets": [
+              {
+                "name": "Local media title on playback surface",
+                "target_type": "result_signal",
+                "annotation_query": "Zhejiang.mp4 title in the VLC title bar",
+                "color": "green",
+                "fallback_queries": [
+                  "Zhejiang.mp4 overlay title in the VLC player",
+                  "active VLC playback surface showing Zhejiang.mp4"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

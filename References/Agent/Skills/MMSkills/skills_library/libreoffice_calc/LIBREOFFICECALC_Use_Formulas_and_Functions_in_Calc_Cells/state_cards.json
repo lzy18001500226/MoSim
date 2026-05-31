@@ -1,0 +1,469 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells",
+  "domain": "libreoffice_calc",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "direct_formula_entry_target_cell",
+      "state_name": "Type the direct formula into the active target cell",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when Calc is already on the worksheet, the first destination cell for the current formula task is active, and the next step is to type a direct formula into the cell or formula input line. Match it only at first-entry stage, before the result has been filled through a range.",
+      "when_not_to_use": "Do not use this card for keyed lookup formulas, filled business-metric columns, or after the requested result range is already populated. Ignore the example cell address, workbook title, and sheet labels.",
+      "visible_cues": [
+        "LibreOffice Calc is in normal worksheet view with the formula bar visible.",
+        "The name box shows a target cell address and the green outline marks one empty destination cell in the grid.",
+        "A red box spans the formula input line to the right of the fx button, showing the direct typing surface.",
+        "The selected cell sits under a highlighted column header, indicating where the formula will land."
+      ],
+      "non_transferable_parts": [
+        "The workbook title, desktop icons, sheet content, and headers shown in the screenshot are example-specific and should not be copied into another task.",
+        "The selected address and surrounding labels are not reusable instructions; use the target cell named in the current task instead of the example location.",
+        "The red box identifies the formula input line as an interaction cue, not a reusable click coordinate or drag region.",
+        "The green box identifies the active destination cell as a state cue, not a promise that the current task uses the same row or column."
+      ],
+      "recommended_verification": "Before typing, confirm the active cell is under the requested output header or in the requested output row. After entry, verify the formula commits into that exact target cell and that the first visible result is plausible before any fill-down.",
+      "highlight_targets": [
+        {
+          "name": "Formula input line",
+          "target_type": "action_target",
+          "annotation_query": "the long formula input line to the right of the fx button in LibreOffice Calc",
+          "color": "red"
+        },
+        {
+          "name": "Active destination cell",
+          "target_type": "state_signal",
+          "annotation_query": "the currently selected empty destination cell outlined in the worksheet grid",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_plan_state": "procedure_1_state_1",
+        "source_task_id": "97cfc1dd-23ca-4bf1-ab5d-33d506560c92",
+        "source_step_num": 3,
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/9160a635-df41-4433-8eab-b5fab6d1ccae.png",
+        "source_traj_index": 2,
+        "source_image_uuid": "9160a635-df41-4433-8eab-b5fab6d1ccae.png",
+        "source_instruction": "Open the desktop file \"T-1\", Calculate the average and variance of the values in columns C and D in E2 and F2, express the values in columns C, D, and E as fractions, accurate to the denominator of 125, and express the values in column F as percentages, retaining two decimal places. Merge E1 and F1, enter the content \"Calculate\", and freeze the first row of the table",
+        "source_domains": "libreoffice_calc",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Type the formula \"=AVERAGE(C2:D2)\" into the selected cell E2 to calculate the average of the values in cells C2 and D2.",
+        "source_code": "pyautogui.write(message='=AVERAGE(C2:D2)')",
+        "lineage_resolved_at": "2026-04-15T10:06:43.297983+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "Enter a direct formula and propagate it when the pattern repeats",
+        "state_id": 1,
+        "state_name": "Type the direct formula into the active target cell",
+        "image_filename": "direct_formula_entry_target_cell.png"
+      },
+      "codex_review_notes": [
+        "This image is only reliable for recognizing direct formula entry readiness, not result completion.",
+        "The screenshot clearly separates the action surface from the state surface, which makes it useful for the moment before typing."
+      ],
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Formula input line",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "sheet_region",
+          "grounding_query_role": "target"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "direct_formula_entry_target_cell_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/direct_formula_entry_target_cell.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/9160a635-df41-4433-8eab-b5fab6d1ccae.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Type the direct formula into the active target cell",
+            "color": null
+          },
+          {
+            "view_id": "direct_formula_entry_target_cell_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/direct_formula_entry_target_cell_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_15_codex_skills/ubuntu/libreoffice_calc/LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells/Images/direct_formula_entry_target_cell.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Formula input line",
+            "color": "red",
+            "grounding_query": "the long formula input line to the right of the fx button in LibreOffice Calc",
+            "grounding_query_full": "Where is the long formula input line to the right of the fx button in LibreOffice Calc? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              176,
+              236,
+              797,
+              264
+            ],
+            "crop_box_pixels": [
+              194,
+              124,
+              1673,
+              414
+            ],
+            "source_box_pixels": [
+              337,
+              254,
+              1530,
+              285
+            ],
+            "focus_context_kind": "sheet_region",
+            "focus_query_role": "target"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "function_result_visible_in_target_cell",
+      "state_name": "Verify the computed result appears in the target cell",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this card when a named function has already been chosen and its arguments are filled, and you need to verify that the calculation is producing the expected output in the worksheet target cell. The screenshot matches a state where the Function Wizard remains open while the selected sheet cell already shows the computed result.",
+      "when_not_to_use": "Do not use this card to choose a function from the list, to begin direct formula entry from a blank cell, or to validate a filled business-metric or keyed-reference column. Do not transfer the visible function name, argument references, numeric result, or exact destination cell from the example unless the current task explicitly asks for those same values.",
+      "visible_cues": [
+        "The worksheet target cell is selected and already displays a numeric result.",
+        "The formula bar contains a function expression rather than plain text.",
+        "The Function Wizard dialog is open on a specific function with argument fields populated.",
+        "The wizard's preview result and the worksheet cell both show a completed calculation state."
+      ],
+      "non_transferable_parts": [
+        "The shown function name, argument cells, base value, worksheet headers, and resulting number belong to the example task only.",
+        "The highlighted destination cell is a verification cue for a completed calculation, not a reusable address for later tasks.",
+        "The green box marks where the result became visible in this screenshot; it is not a coordinate to replay in a different workbook.",
+        "The presence of the wizard in the screenshot does not mean every task should stay inside the wizard at completion; use the current UI state."
+      ],
+      "recommended_verification": "Check that the target worksheet cell now contains the computed value for the current task, that the output still sits in the requested row or column, and that the visible formula or wizard preview is consistent with it. For fill-down tasks, verify the first computed cell before copying the formula farther, and for date tasks confirm the value is not an unexpected serial number.",
+      "highlight_targets": [
+        {
+          "name": "Computed result in the target cell",
+          "target_type": "state_signal",
+          "annotation_query": "the selected worksheet cell that already shows the computed function result",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_plan_state": "procedure_2_state_5",
+        "source_task_id": "07535386-97a3-4b81-93ea-884b6ce6f373",
+        "source_step_num": 10,
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/d6446899-326c-409f-801b-53af2c7ac83a.png",
+        "source_traj_index": 9,
+        "source_image_uuid": "d6446899-326c-409f-801b-53af2c7ac83a.png",
+        "source_instruction": "Calculate the logarithm of the data in cell H2 with base 8, output the result to cell J2, and apply criss-cross borders to the answer with the border color set to blue from the standard color chart.",
+        "source_domains": "libreoffice_calc",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the OK button in the Function Wizard dialog to apply the logarithm formula to cell J2.",
+        "source_code": "pyautogui.click(x=0.673, y=0.811)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.298023+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "Use Function Wizard for named functions and verify the final result cell",
+        "state_id": 5,
+        "state_name": "Verify the computed result appears in the target cell",
+        "image_filename": "function_result_visible_in_target_cell.png"
+      },
+      "codex_review_notes": [
+        "This screenshot is stronger as a verification card than as an action card because the critical transferable signal is the visible result cell.",
+        "The open wizard is secondary context; the reusable lesson is that the output cell already reflects the configured function."
+      ],
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Computed result in the target cell",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": true,
+          "included": false,
+          "reason": "before skipped because no nearby frame showed a clear visual change in the search window.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "function_result_visible_in_target_cell_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/function_result_visible_in_target_cell.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/d6446899-326c-409f-801b-53af2c7ac83a.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Verify the computed result appears in the target cell",
+            "color": null
+          },
+          {
+            "view_id": "function_result_visible_in_target_cell_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/function_result_visible_in_target_cell_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_15_codex_skills/ubuntu/libreoffice_calc/LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells/Images/function_result_visible_in_target_cell.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Computed result in the target cell",
+            "color": "green",
+            "grounding_query": "the full Function Wizard dialog window",
+            "grounding_query_full": "Where is the full Function Wizard dialog window? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              320,
+              252,
+              712,
+              840
+            ],
+            "crop_box_pixels": [
+              554,
+              208,
+              1427,
+              970
+            ],
+            "source_box_pixels": [
+              614,
+              272,
+              1367,
+              907
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "function_wizard_named_function_selection",
+      "state_name": "Select the named function from Function Wizard",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card when the task calls for a built-in Calc function and the Function Wizard is already open or is the preferred entry path. The screenshot matches the moment after typing a search prefix and before setting arguments, when the correct function still needs to be chosen from the filtered list.",
+      "when_not_to_use": "Do not use this card once the function has already been selected and you are editing parameters, and do not use it for direct formula entry on the sheet. The exact function family, search text, and visible result list are example-specific and should not be copied into unrelated function tasks.",
+      "visible_cues": [
+        "A Function Wizard dialog overlays the sheet and the Functions tab is active.",
+        "The search box contains text that narrows the function list.",
+        "A red box marks one candidate function row inside the filtered results list.",
+        "A green box frames the wizard window as the relevant working surface."
+      ],
+      "non_transferable_parts": [
+        "The function name shown in the example list is not a reusable instruction; pick the function named by the current task, even if it is different.",
+        "The search text, category setting, and worksheet content behind the dialog are all example-bound details.",
+        "The red box marks the row to inspect or click in this screenshot, not a reusable coordinate inside the wizard.",
+        "The green box marks the dialog surface that confirms you are in function-selection mode, not a command to click the dialog border."
+      ],
+      "recommended_verification": "Before moving to argument entry, verify that the intended named function is the one highlighted in the wizard list and that the task really benefits from wizard-based entry. If the task is plain arithmetic, return to direct formula entry instead of forcing a wizard path.",
+      "highlight_targets": [
+        {
+          "name": "Named function row in the results list",
+          "target_type": "action_target",
+          "annotation_query": "the requested function row within the filtered Function Wizard results list",
+          "color": "red"
+        },
+        {
+          "name": "Function Wizard dialog",
+          "target_type": "state_signal",
+          "annotation_query": "the Function Wizard dialog showing a filtered function search and results list",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_plan_state": "procedure_2_state_3",
+        "source_task_id": "07535386-97a3-4b81-93ea-884b6ce6f373",
+        "source_step_num": 4,
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/d78969fa-d62c-48e2-90d5-2d42b35fa5b8.png",
+        "source_traj_index": 3,
+        "source_image_uuid": "d78969fa-d62c-48e2-90d5-2d42b35fa5b8.png",
+        "source_instruction": "Calculate the logarithm of the data in cell H2 with base 8, output the result to cell J2, and apply criss-cross borders to the answer with the border color set to blue from the standard color chart.",
+        "source_domains": "libreoffice_calc",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Double-click on the LOG function in the filtered function list to select it and proceed to the parameter configuration step.",
+        "source_code": "pyautogui.doubleClick(x=0.343, y=0.548)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.298053+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "Use Function Wizard for named functions and verify the final result cell",
+        "state_id": 3,
+        "state_name": "Select the named function from Function Wizard",
+        "image_filename": "function_wizard_named_function_selection.png"
+      },
+      "codex_review_notes": [
+        "This card is useful only for the function-selection stage and should hand off to text instructions or a different card once argument fields are in focus.",
+        "The screenshot is a good discriminator because the dialog is filtered but not yet configured with final parameters."
+      ],
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Named function row in the results list",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": true,
+          "included": true,
+          "reason": "Selected the later frame at offset +2 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition.",
+          "selected_offset": 2,
+          "candidate_offsets_considered": [
+            {
+              "offset": 2,
+              "diff": 2.446,
+              "score": 1.596
+            }
+          ],
+          "grounding_method": "qwen_bbox_grounding",
+          "target_name": "Named function row in the results list"
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "function_wizard_named_function_selection_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/function_wizard_named_function_selection.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/d78969fa-d62c-48e2-90d5-2d42b35fa5b8.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Select the named function from Function Wizard",
+            "color": null
+          },
+          {
+            "view_id": "function_wizard_named_function_selection_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/function_wizard_named_function_selection_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_15_codex_skills/ubuntu/libreoffice_calc/LIBREOFFICECALC_Use_Formulas_and_Functions_in_Calc_Cells/Images/function_wizard_named_function_selection.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Named function row in the results list",
+            "color": "red",
+            "grounding_query": "the full Function Wizard dialog window",
+            "grounding_query_full": "Where is the full Function Wizard dialog window? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              319,
+              254,
+              712,
+              836
+            ],
+            "crop_box_pixels": [
+              552,
+              211,
+              1428,
+              965
+            ],
+            "source_box_pixels": [
+              612,
+              274,
+              1367,
+              902
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "region"
+          },
+          {
+            "view_id": "function_wizard_named_function_selection_after",
+            "view_type": "after",
+            "image_path": "Images/function_wizard_named_function_selection_after.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7f16e708-6d9b-4697-a283-edc911702165.png",
+            "source_traj_index": 5,
+            "selected_offset": 2,
+            "candidate_offsets_considered": [
+              {
+                "offset": 2,
+                "diff": 2.446,
+                "score": 1.596
+              }
+            ],
+            "use_for": "compare_state_transition",
+            "label": "Named function row in the results list",
+            "color": "red",
+            "grounding_query": "the requested function row within the filtered Function Wizard results list",
+            "grounding_query_full": "Where is the requested function row within the filtered Function Wizard results list? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              328,
+              475,
+              446,
+              498
+            ]
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall LibreOffice surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": {
+    "ts": "2026-04-15T10:06:43.298066+00:00",
+    "resolver": "backfill_4_12_state_card_lineage.py",
+    "source_dataset": "opencua_agentnet/agentnet_ubuntu_5k.jsonl",
+    "raw_images_root": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted"
+  }
+}

@@ -1,0 +1,412 @@
+{
+  "schema_version": "2026-04-17.state_bundles.v4",
+  "skill_slug": "OS_Query_System_State_in_Terminal",
+  "domain": "os",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "os_query_system_state_in_terminal_prepare_terminal_context",
+      "state_name": "prepare_the_terminal_context",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this card only when the current Ubuntu desktop is visible and Terminal is not yet on screen. The stored image shows the desktop wallpaper, the left dock, and the Terminal launcher highlighted as the next place to focus before any system-query command is typed.",
+      "when_not_to_use": "Do not use this card once a terminal window is already open, once a command line is visible, or when the current screen is a different app. This card is for reaching Terminal from the desktop, not for deciding what command text to enter.",
+      "visible_cues": [
+        "Full Ubuntu desktop is visible with no terminal window open.",
+        "The left dock is present and the Terminal icon is the interaction cue.",
+        "Desktop files and folders are visible behind the dock, confirming this is a launcher state rather than an active shell.",
+        "The top bar and wallpaper dominate the screen, so there is no terminal output to verify yet."
+      ],
+      "non_transferable_parts": [
+        "The wallpaper, desktop filenames, clock value, and exact dock ordering belong to the example machine and are not reusable requirements.",
+        "The red outline indicates the general launcher to use; it is not a reusable coordinate or pixel location.",
+        "Do not infer that Terminal must be closed first on every task. Transfer only the idea that Terminal may need to be opened or focused from the desktop."
+      ],
+      "recommended_verification": "After acting from this state, verify that an actual terminal window or prompt is visible before running any diagnostic command. A desktop-only view does not satisfy the task.",
+      "highlight_targets": [
+        {
+          "name": "Terminal launcher on the dock",
+          "target_type": "action_target",
+          "annotation_query": "the Terminal application icon on the left Ubuntu dock",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "6cd63038-73bb-40da-8b7f-aeba477781a6",
+        "source_step_num": 1,
+        "source_image": "Images/os_query_system_state_in_terminal_prepare_terminal_context.png",
+        "source_traj_index": 0,
+        "source_image_uuid": "8c91f507-a7f0-4972-b9fc-96e5ebffba6b.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/8c91f507-a7f0-4972-b9fc-96e5ebffba6b.png",
+        "source_instruction": "Could you use the terminal to help me check the current Shell and list the available Shells, then close the terminal, open the Settings, turn off the Do Not Disturb mode for notifications, and finally increase the mouse agility a little",
+        "source_domains": "OS",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "Click on the terminal icon in the left sidebar to open the terminal application.",
+        "source_code": "pyautogui.click(x=0.026, y=0.392)",
+        "lineage_resolved_at": "2026-04-15T10:06:43.298769+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "run_the_terminal_workflow",
+        "state_id": 1,
+        "state_name": "prepare_the_terminal_context",
+        "image_filename": "os_query_system_state_in_terminal_prepare_terminal_context.png"
+      },
+      "codex_review_notes": "The stored image does not show a terminal prompt; it only supports the optional desktop-to-Terminal entry step. This card should be treated as a narrow launcher cue, not as proof that terminal context is ready.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Terminal launcher on the dock",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dock_region",
+          "grounding_query_role": "target"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "os_query_system_state_in_terminal_prepare_terminal_context_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/os_query_system_state_in_terminal_prepare_terminal_context.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/8c91f507-a7f0-4972-b9fc-96e5ebffba6b.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "prepare_the_terminal_context",
+            "color": null
+          },
+          {
+            "view_id": "os_query_system_state_in_terminal_prepare_terminal_context_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/os_query_system_state_in_terminal_prepare_terminal_context_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/os/OS_Query_System_State_in_Terminal/Images/os_query_system_state_in_terminal_prepare_terminal_context.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Terminal launcher on the dock",
+            "color": "red",
+            "grounding_query": "the Terminal application icon on the left Ubuntu dock",
+            "grounding_query_full": "Where is the Terminal application icon on the left Ubuntu dock? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              5,
+              365,
+              29,
+              411
+            ],
+            "crop_box_pixels": [
+              0,
+              164,
+              258,
+              672
+            ],
+            "source_box_pixels": [
+              9,
+              394,
+              55,
+              443
+            ],
+            "focus_context_kind": "dock_region",
+            "focus_query_role": "target"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "os_query_system_state_in_terminal_run_requested_command",
+      "state_name": "run_the_requested_command",
+      "stage": "failure_cue",
+      "image_role": "failure_cue",
+      "when_to_use": "Use this card as a negative-match cue when deciding whether a screenshot really belongs to the terminal command-entry step. The stored image shows the Ubuntu Settings app on the Mouse & Touchpad page, so it signals that the current screen is not ready for typing or running a terminal system-query command.",
+      "when_not_to_use": "Do not use this card to guide terminal typing, command selection, or command verification. Do not treat the Settings controls, slider positions, or page title as transferable parts of a terminal workflow.",
+      "visible_cues": [
+        "A Settings window is open instead of Terminal.",
+        "The sidebar lists Settings sections and highlights Mouse & Touchpad.",
+        "The main panel shows Primary Button, Mouse Speed, and Natural Scrolling controls.",
+        "No shell prompt, terminal cursor, or command output is visible anywhere on screen."
+      ],
+      "non_transferable_parts": [
+        "The Settings page title, slider position, and toggle states come from the source example's unrelated follow-up task and must not leak into reusable terminal guidance.",
+        "Even if the task later visits Settings, this image does not represent the command-entry state for querying system status in Terminal.",
+        "Any red or green annotations from the source should be interpreted only as local visual cues, never as reusable coordinates."
+      ],
+      "recommended_verification": "Before running a diagnostic command, confirm that the active window is Terminal and that a live prompt or editable command line is visible. If the screen still looks like this Settings page, the skill is in the wrong app state.",
+      "highlight_targets": [
+        {
+          "name": "Settings window showing Mouse & Touchpad",
+          "target_type": "state_signal",
+          "annotation_query": "the Settings window open to the Mouse & Touchpad section",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "6cd63038-73bb-40da-8b7f-aeba477781a6",
+        "source_step_num": 13,
+        "source_image": "Images/os_query_system_state_in_terminal_run_requested_command.png",
+        "source_traj_index": 12,
+        "source_image_uuid": "73f0a011-f097-45e9-882e-8d77694278ef.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/73f0a011-f097-45e9-882e-8d77694278ef.png",
+        "source_instruction": "Could you use the terminal to help me check the current Shell and list the available Shells, then close the terminal, open the Settings, turn off the Do Not Disturb mode for notifications, and finally increase the mouse agility a little",
+        "source_domains": "OS",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "With all requested tasks completed ahead of schedule, we can now conclude the process successfully.",
+        "source_code": "computer.terminate(status='success')",
+        "lineage_resolved_at": "2026-04-15T10:06:43.298802+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "run_the_terminal_workflow",
+        "state_id": 2,
+        "state_name": "run_the_requested_command",
+        "image_filename": "os_query_system_state_in_terminal_run_requested_command.png"
+      },
+      "codex_review_notes": "This file is visually mismatched with the intended terminal step and is identical to the verification image in this package. It is still preserved and documented as a failure cue so runtime loading can reject non-terminal screens instead of hallucinating a command-entry match.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Settings window region",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "settings_region",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "os_query_system_state_in_terminal_run_requested_command_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/os_query_system_state_in_terminal_run_requested_command.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/73f0a011-f097-45e9-882e-8d77694278ef.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "run_the_requested_command",
+            "color": null
+          },
+          {
+            "view_id": "os_query_system_state_in_terminal_run_requested_command_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/os_query_system_state_in_terminal_run_requested_command_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/os/OS_Query_System_State_in_Terminal/Images/os_query_system_state_in_terminal_run_requested_command.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Settings window region",
+            "color": "red",
+            "grounding_query": "the open Settings window with the sidebar and main content area",
+            "grounding_query_full": "Where is the open Settings window with the sidebar and main content area? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              259,
+              128,
+              771,
+              888
+            ],
+            "crop_box_pixels": [
+              398,
+              56,
+              1578,
+              1041
+            ],
+            "source_box_pixels": [
+              497,
+              138,
+              1480,
+              959
+            ],
+            "focus_context_kind": "settings_region",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    },
+    {
+      "state_id": "os_query_system_state_in_terminal_verify_terminal_result",
+      "state_name": "verify_the_terminal_result",
+      "stage": "failure_cue",
+      "image_role": "failure_cue",
+      "when_to_use": "Use this card as a negative-match cue when deciding whether the requested terminal result is actually visible. The stored image is another Settings > Mouse & Touchpad screenshot, so it indicates that the workflow is not in a terminal result state and that no shell output should be accepted from this view.",
+      "when_not_to_use": "Do not use this card to mark the task complete. Do not infer any system-query result from the Settings controls shown here, and do not reuse the slider, toggle, or button positions as evidence for terminal verification.",
+      "visible_cues": [
+        "The screen is occupied by the Settings window rather than a terminal session.",
+        "Mouse & Touchpad is selected in the sidebar.",
+        "The content area contains mouse button and speed controls, not text output lines.",
+        "There is no command prompt, no finished command, and no printed diagnostic result."
+      ],
+      "non_transferable_parts": [
+        "This screenshot reflects unrelated Settings content from the source task and should not be copied into terminal-result instructions.",
+        "The green-style verification idea transfers only as a concept: verification must come from a stable, visible result signal in the correct app, not from this specific screen.",
+        "Treat all box locations, widget positions, and example values as non-transferable."
+      ],
+      "recommended_verification": "Finish the skill only after the active window is Terminal and the requested output string, version, path, package state, or system-status line is visibly present on screen. A Settings screenshot like this is explicit evidence that verification has not happened yet.",
+      "highlight_targets": [
+        {
+          "name": "Mouse & Touchpad settings page",
+          "target_type": "state_signal",
+          "annotation_query": "the Settings app page titled Mouse & Touchpad",
+          "color": "green"
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "6cd63038-73bb-40da-8b7f-aeba477781a6",
+        "source_step_num": 13,
+        "source_image": "Images/os_query_system_state_in_terminal_verify_terminal_result.png",
+        "source_traj_index": 12,
+        "source_image_uuid": "73f0a011-f097-45e9-882e-8d77694278ef.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/73f0a011-f097-45e9-882e-8d77694278ef.png",
+        "source_instruction": "Could you use the terminal to help me check the current Shell and list the available Shells, then close the terminal, open the Settings, turn off the Do Not Disturb mode for notifications, and finally increase the mouse agility a little",
+        "source_domains": "OS",
+        "source_applications": null,
+        "source_websites": null,
+        "source_action": "With all requested tasks completed ahead of schedule, we can now conclude the process successfully.",
+        "source_code": "computer.terminate(status='success')",
+        "lineage_resolved_at": "2026-04-15T10:06:43.298828+00:00",
+        "lineage_resolver": "backfill_4_12_state_card_lineage.py",
+        "lineage_resolution_method": "exact_step_num_minus_1",
+        "procedure_name": "run_the_terminal_workflow",
+        "state_id": 3,
+        "state_name": "verify_the_terminal_result",
+        "image_filename": "os_query_system_state_in_terminal_verify_terminal_result.png"
+      },
+      "codex_review_notes": "Although the filename suggests terminal verification, the stored image is not a terminal result screenshot. Keeping it as a failure cue is more reliable than pretending it verifies success.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+          "target_name": "Settings window region",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "settings_region",
+          "grounding_query_role": "region"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "before not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "after not needed for this state",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 4,
+        "design_intent": "The bundle only includes extra views when they add evidence that the global screenshot cannot express cleanly on its own."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "os_query_system_state_in_terminal_verify_terminal_result_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/os_query_system_state_in_terminal_verify_terminal_result.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/73f0a011-f097-45e9-882e-8d77694278ef.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "verify_the_terminal_result",
+            "color": null
+          },
+          {
+            "view_id": "os_query_system_state_in_terminal_verify_terminal_result_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/os_query_system_state_in_terminal_verify_terminal_result_focus_crop.png",
+            "source_image_path": "/home/admin/datasets/mm_skill_creator/4_17_codex_skills/ubuntu/os/OS_Query_System_State_in_Terminal/Images/os_query_system_state_in_terminal_verify_terminal_result.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Settings window region",
+            "color": "red",
+            "grounding_query": "the open Settings window with the sidebar and main content area",
+            "grounding_query_full": "Where is the open Settings window with the sidebar and main content area? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              259,
+              130,
+              771,
+              889
+            ],
+            "crop_box_pixels": [
+              398,
+              58,
+              1578,
+              1042
+            ],
+            "source_box_pixels": [
+              497,
+              140,
+              1480,
+              960
+            ],
+            "focus_context_kind": "settings_region",
+            "focus_query_role": "region"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to recognize the overall application surface and decide whether this state actually matches the current task.",
+          "Use `focus_crop` when you need the operating region with enough nearby UI context to understand where attention should concentrate.",
+          "Use `before` or `after` only when you need a visual contrast for the same state region rather than a generic step-by-step replay."
+        ]
+      }
+    }
+  ],
+  "lineage_backfill": {
+    "ts": "2026-04-15T10:06:43.298841+00:00",
+    "resolver": "backfill_4_12_state_card_lineage.py",
+    "source_dataset": "opencua_agentnet/agentnet_ubuntu_5k.jsonl",
+    "raw_images_root": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted"
+  }
+}

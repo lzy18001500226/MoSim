@@ -1,0 +1,134 @@
+{
+  "schema_version": "2026-04-17.runtime_state_bundles.v4",
+  "skill_slug": "LIBREOFFICEIMPRESS_Insert_and_Configure_Images_Audio_and_Interactive_Media",
+  "domain": "libreoffice_impress",
+  "source_state_cards": "state_cards.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_multiview_builder_v4",
+  "states": [
+    {
+      "state_id": "media_insert_surface",
+      "state_name": "activate_media_insert_surface",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when the target slide is already open in LibreOffice Impress and the next step is to begin inserting an image from an empty content placeholder. This card matches a normal slide-editing surface before any chooser dialog or interaction modal has appeared.",
+      "when_not_to_use": "Do not use once a system file picker or Interaction dialog is already open. Do not use if the selected slide is wrong, if the placeholder already contains media, or if the task starts from an existing object instead of an empty content layout.",
+      "visible_cues": [
+        "The selected slide thumbnail is outlined in the left Slides pane.",
+        "The main canvas shows a title-and-content style layout with an empty content region.",
+        "The red cue sits on the small image insert icon inside the content placeholder.",
+        "The Properties sidebar is visible on the right, confirming standard slide-edit mode."
+      ],
+      "verification_cue": "Before acting, confirm that the intended slide is the one selected in the thumbnail pane and that the content placeholder still shows the image insert control rather than an already placed object.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after not needed for this state"
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/media_insert_surface.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "activate_media_insert_surface"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/media_insert_surface_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "content_placeholder_image_icon"
+        }
+      ]
+    },
+    {
+      "state_id": "media_interaction_controls",
+      "state_name": "set_media_click_interaction",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use when a media object already exists on the slide and the task requires mouse-click behavior, hyperlink-style interaction, or another click-triggered action. This card matches the moment when the Interaction dialog is already open and ready for the action selection.",
+      "when_not_to_use": "Do not use before the media object has been inserted and selected. Do not use if only the sidebar is visible without the Interaction modal, or if the task is only about placing media with no click behavior to configure.",
+      "visible_cues": [
+        "A centered modal titled Interaction is open and framed as the active window.",
+        "The label Action at mouse click appears near the top of the dialog.",
+        "The red cue surrounds the action dropdown, which currently shows No action.",
+        "The dimmed background still shows the right sidebar with Media Playback and Position and Size panels."
+      ],
+      "verification_cue": "Verify that the Interaction dialog is active for the selected media object, then confirm the dropdown value matches the requested click action before accepting the dialog.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "Selected the later frame at offset +2 because it kept a reliable grounding on the same state region while also showing the clearest nearby transition."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop",
+        "after"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/media_interaction_controls.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "set_media_click_interaction"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/media_interaction_controls_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "interaction_action_dropdown"
+        },
+        {
+          "view_type": "after",
+          "image_path": "Images/media_interaction_controls_after.png",
+          "use_for": "compare_state_transition",
+          "label": "interaction_dialog"
+        }
+      ]
+    },
+    {
+      "state_id": "media_result_state",
+      "state_name": "verify_inserted_media_result",
+      "stage": "expected_after_action",
+      "image_role": "expected_after_action",
+      "when_to_use": "Use immediately after opening the image-insert path when LibreOffice hands control to the system file chooser. This card matches the chooser state where the next step is to select the requested image file and confirm it with Open.",
+      "when_not_to_use": "Do not use as proof that insertion is complete because the media is not yet placed on the slide. Do not use for audio or video pickers that present a different chooser state, and do not use if the Insert Image dialog is absent.",
+      "visible_cues": [
+        "A system dialog titled Insert Image is open over LibreOffice Impress.",
+        "The left navigation highlights Downloads and the main pane lists files and folders.",
+        "One image filename row is selected in orange in the file list.",
+        "The Open button is visible in the upper-right corner of the dialog."
+      ],
+      "verification_cue": "Confirm that the chooser is for the correct media type, that the intended file row is selected, and that pressing Open will return focus to the target slide for placement.",
+      "visual_evidence_chain": {
+        "focus_crop": "Qwen grounded a broader working region so the focus view preserves the local operating area and enough surrounding UI context.",
+        "before": "before not needed for this state",
+        "after": "after skipped because the nearby frames changed, but none produced a reliable fresh grounding."
+      },
+      "visual_risk": "Treat the example as state evidence only. Do not transfer literal coordinates, example values, or example-specific content.",
+      "preferred_view_order": [
+        "full_frame",
+        "focus_crop"
+      ],
+      "available_views": [
+        {
+          "view_type": "full_frame",
+          "image_path": "Images/media_result_state.png",
+          "use_for": "recognize_global_ui_state",
+          "label": "verify_inserted_media_result"
+        },
+        {
+          "view_type": "focus_crop",
+          "image_path": "Images/media_result_state_focus_crop.png",
+          "use_for": "inspect_contextual_work_region",
+          "label": "selected_media_file_row"
+        }
+      ]
+    }
+  ]
+}

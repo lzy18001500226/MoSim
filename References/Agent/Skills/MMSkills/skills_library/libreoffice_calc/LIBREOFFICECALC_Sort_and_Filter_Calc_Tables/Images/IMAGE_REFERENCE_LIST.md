@@ -1,0 +1,26 @@
+# Image Reference List
+
+- `Images/data_menu_autofilter.png`
+  - use_for: `recognize_global_ui_state`
+  - source_image_path: `/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/8d01ffa8-f896-4c74-a87b-3f4cac52a9d7.png`
+- `Images/data_menu_autofilter_focus_crop.png`
+  - use_for: `inspect_contextual_work_region`
+  - source_image_path: `/home/admin/datasets/mm_skill_creator/4_15_codex_skills/ubuntu/libreoffice_calc/LIBREOFFICECALC_Sort_and_Filter_Calc_Tables/Images/data_menu_autofilter.png`
+- `Images/data_menu_autofilter_after.png`
+  - use_for: `compare_state_transition`
+  - source_image_path: `/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7600c919-ed6b-49c0-a9e5-32aa9c514c48.png`
+- `Images/header_filter_controls_visible.png`
+  - use_for: `recognize_global_ui_state`
+  - source_image_path: `/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/7600c919-ed6b-49c0-a9e5-32aa9c514c48.png`
+- `Images/header_filter_controls_visible_focus_crop.png`
+  - use_for: `inspect_contextual_work_region`
+  - source_image_path: `/home/admin/datasets/mm_skill_creator/4_15_codex_skills/ubuntu/libreoffice_calc/LIBREOFFICECALC_Sort_and_Filter_Calc_Tables/Images/header_filter_controls_visible.png`
+- `Images/header_filter_controls_visible_after.png`
+  - use_for: `compare_state_transition`
+  - source_image_path: `/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/0bb023fe-e2d8-481f-9ced-c12b805dd195.png`
+- `Images/filtered_table_result.png`
+  - use_for: `recognize_global_ui_state`
+  - source_image_path: `/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/5f8f4f92-ee06-4789-9b52-ebd5d6948f87.png`
+- `Images/filtered_table_result_focus_crop.png`
+  - use_for: `inspect_contextual_work_region`
+  - source_image_path: `/home/admin/datasets/mm_skill_creator/4_15_codex_skills/ubuntu/libreoffice_calc/LIBREOFFICECALC_Sort_and_Filter_Calc_Tables/Images/filtered_table_result.png`

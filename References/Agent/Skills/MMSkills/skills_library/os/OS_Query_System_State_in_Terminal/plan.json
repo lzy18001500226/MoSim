@@ -1,0 +1,135 @@
+{
+  "overview": "Inspect Ubuntu system state such as shell, release, versions, installed Python environment, resource usage, or device/module status and verify the exact terminal output requested.",
+  "when_to_use": [
+    "When the task is primarily a Terminal workflow covered by `Query System State in Terminal`.",
+    "When the completion condition must be verified from visible terminal output rather than inferred from a command alone."
+  ],
+  "preconditions": [
+    "Terminal is open or can be opened directly.",
+    "The task names a concrete path, package, account, pattern, or result that can be checked on screen."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "prepare_terminal_context",
+      "purpose": "Reach the correct working context before running the core command.",
+      "derived_from_source_skills": [
+        "OS_Query_System_State_in_Terminal"
+      ]
+    },
+    {
+      "name": "run_requested_command",
+      "purpose": "Run the exact `diagnostic terminal command` needed for the task.",
+      "derived_from_source_skills": [
+        "OS_Query_System_State_in_Terminal"
+      ]
+    },
+    {
+      "name": "verify_terminal_result",
+      "purpose": "Confirm the visible `diagnostic output` after the command finishes.",
+      "derived_from_source_skills": [
+        "OS_Query_System_State_in_Terminal"
+      ]
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The working directory, package name, account name, or target path is still ambiguous.",
+      "choose_capability": "prepare_terminal_context",
+      "reason": "Wrong context is the main source of terminal regressions."
+    },
+    {
+      "condition": "The command has been typed but not executed yet.",
+      "choose_capability": "run_requested_command",
+      "reason": "Use the exact named command instead of a nearby approximation."
+    },
+    {
+      "condition": "The command already ran.",
+      "choose_capability": "verify_terminal_result",
+      "reason": "The visible output is the benchmark-facing completion signal."
+    }
+  ],
+  "selected_task_ids": [
+    "6cd63038-73bb-40da-8b7f-aeba477781a6"
+  ],
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "run_the_terminal_workflow",
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "prepare_the_terminal_context",
+          "visual_grounding": "A visible terminal prompt is ready for the next command.",
+          "trigger_condition": "Terminal is open but the correct working context is not yet confirmed.",
+          "action": "Focus Terminal and confirm the correct working context before the main command.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "Terminal is ready for the workflow.",
+          "key_frame": {
+            "source_task_id": "6cd63038-73bb-40da-8b7f-aeba477781a6",
+            "source_step_num": 1,
+            "image_filename": "os_query_system_state_in_terminal_prepare_terminal_context.png",
+            "highlight_targets": [
+              {
+                "name": "terminal prompt",
+                "target_type": "action_target",
+                "annotation_query": "the active shell prompt on the bottom input line in the Terminal window",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 2,
+          "state_name": "run_the_requested_command",
+          "visual_grounding": "The terminal command line shows the requested `diagnostic terminal command`.",
+          "trigger_condition": "The target context is ready and the main command has not been executed yet.",
+          "action": "Run the exact `diagnostic terminal command` needed for the task.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "The `diagnostic terminal command` is visible in Terminal.",
+          "key_frame": {
+            "source_task_id": "6cd63038-73bb-40da-8b7f-aeba477781a6",
+            "source_step_num": 13,
+            "image_filename": "os_query_system_state_in_terminal_run_requested_command.png",
+            "highlight_targets": [
+              {
+                "name": "diagnostic terminal command",
+                "target_type": "action_target",
+                "annotation_query": "the typed system query command on the current input line near the bottom of the Terminal window",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 3,
+          "state_name": "verify_the_terminal_result",
+          "visual_grounding": "The terminal output shows the `diagnostic output`.",
+          "trigger_condition": "The requested command has already completed.",
+          "action": "Confirm the visible `diagnostic output` before finishing.",
+          "is_result_state": true,
+          "has_image": true,
+          "text_description": "The `diagnostic output` is visible in Terminal output.",
+          "key_frame": {
+            "source_task_id": "6cd63038-73bb-40da-8b7f-aeba477781a6",
+            "source_step_num": 13,
+            "image_filename": "os_query_system_state_in_terminal_verify_terminal_result.png",
+            "highlight_targets": [
+              {
+                "name": "diagnostic output",
+                "target_type": "state_signal",
+                "annotation_query": "the terminal output line showing the requested system state",
+                "color": "green"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "common_failure_modes": [
+    "Running a plausible command in the wrong directory or against the wrong target name.",
+    "Stopping after command execution without checking the exact terminal result that proves success or the expected failure state."
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "overview": "Use the Find and Replace dialog for literal repeated-match edits or replacement formatting, then verify both the replace count and the resulting document state before moving on.",
+  "when_to_use": [
+    "The task explicitly needs repeated literal replacements or replacement formatting through Writer's Find and Replace surface.",
+    "The current surface is the Find and Replace dialog, the replacement-formatting subdialog, or the replace-count confirmation message."
+  ],
+  "preconditions": [
+    "The target document is already open.",
+    "If the task later requires saving or exporting, perform the replacement first and then switch to the save or export skill."
+  ],
+  "atomic_capabilities": [
+    {
+      "name": "open_find_replace",
+      "purpose": "Reach the main Find and Replace dialog and target the correct search field."
+    },
+    {
+      "name": "configure_replacement",
+      "purpose": "Set replacement text or replacement formatting in the dialog flow."
+    },
+    {
+      "name": "verify_replace_result",
+      "purpose": "Use the replace-count message or updated page state as the completion check."
+    }
+  ],
+  "decision_guide": [
+    {
+      "condition": "The task is a literal replacement or a formatting replacement with one clear search target.",
+      "choose_capability": "configure_replacement",
+      "reason": "This skill is the direct batch-edit path when regex-specific classification is not required."
+    }
+  ],
+  "selected_task_ids": [
+    "3035418d-c61a-4f16-a1bd-6793f291fef8",
+    "39ace38f-cfa0-497e-9ef9-f3937a51d57c",
+    "34d800e5-d5a1-4c7e-94f8-b80f94a303ad"
+  ],
+  "procedures": [
+    {
+      "procedure_id": 1,
+      "procedure_name": "find and replace text or formatting",
+      "when_to_use": [
+        "The task names Find and Replace directly or requires a straightforward batch replacement without regular-expression branching."
+      ],
+      "derived_from_source_skills": [
+        "Find and Replace Text or Formatting"
+      ],
+      "states": [
+        {
+          "state_id": 1,
+          "state_name": "Start from the main Find and Replace dialog",
+          "visual_grounding": "The main Find and Replace dialog is centered over the document. The Find field is visible near the top of the dialog. The dialog still expects the search target to be entered or confirmed.",
+          "trigger_condition": "Use this state when the Find and Replace dialog is open and the next step is to fill the Find field or confirm the search scope.",
+          "action": "Use this state when the Find and Replace dialog is open and the next step is to fill the Find field or confirm the search scope.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "The repair keeps the clean literal replace entry state and leaves regex-heavy classification to its own split skill.",
+          "key_frame": {
+            "source_task_id": "3035418d-c61a-4f16-a1bd-6793f291fef8",
+            "source_case_id": null,
+            "source_step_num": 1,
+            "image_filename": "find_replace_dialog_entry.png",
+            "highlight_targets": [
+              {
+                "name": "Find field",
+                "target_type": "action_target",
+                "annotation_query": "the Find input field in the Find and Replace dialog",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 2,
+          "state_name": "Confirm the replacement formatting dialog",
+          "visual_grounding": "The replacement-formatting dialog is open on top of the document. The requested formatting values have been chosen in the dialog. The next actionable control is the confirmation button that commits the formatting choice.",
+          "trigger_condition": "Use this state when the replacement-formatting dialog is open and the next step is to confirm the chosen font effect or formatting setting.",
+          "action": "Use this state when the replacement-formatting dialog is open and the next step is to confirm the chosen font effect or formatting setting.",
+          "is_result_state": false,
+          "has_image": true,
+          "text_description": "This state gives the split skill a concrete formatting-commit cue instead of overloading the main dialog screenshot with too many responsibilities.",
+          "key_frame": {
+            "source_task_id": "3035418d-c61a-4f16-a1bd-6793f291fef8",
+            "source_case_id": null,
+            "source_step_num": 10,
+            "image_filename": "find_replace_formatting_confirm.png",
+            "highlight_targets": [
+              {
+                "name": "Formatting dialog OK button",
+                "target_type": "action_target",
+                "annotation_query": "the \"OK\" button in the Replace with formatting dialog",
+                "color": "red"
+              }
+            ]
+          }
+        },
+        {
+          "state_id": 3,
+          "state_name": "Verify the replace-count message before closing",
+          "visual_grounding": "The main Find and Replace dialog is still open. A replace-count message is visible inside the dialog. The message confirms the batch edit actually changed document content.",
+          "trigger_condition": "Use this state immediately after Replace or Replace All runs and the dialog reports how many matches changed.",
+          "action": "Confirm the dialog reports successful replacements, then close the dialog and only then move to the next workflow step.",
+          "is_result_state": true,
+          "has_image": true,
+          "text_description": "The repair uses the replace-count message as the primary completion cue because it is a stronger, more reusable signal than any one example sentence in the document.",
+          "key_frame": {
+            "source_task_id": "3035418d-c61a-4f16-a1bd-6793f291fef8",
+            "source_case_id": null,
+            "source_step_num": 12,
+            "image_filename": "find_replace_success_message.png",
+            "highlight_targets": [
+              {
+                "name": "Replace count message",
+                "target_type": "state_signal",
+                "annotation_query": "the replace count message inside the Find and Replace dialog",
+                "color": "green",
+                "fallback_queries": [
+                  "the message showing how many matches were replaced in the dialog"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "common_failure_modes": [
+    "Running Replace All with the wrong scope because a stale option such as selection-only or match-case was left enabled.",
+    "Trusting the replace-count message alone when the task also requires visible verification on the document canvas."
+  ]
+}

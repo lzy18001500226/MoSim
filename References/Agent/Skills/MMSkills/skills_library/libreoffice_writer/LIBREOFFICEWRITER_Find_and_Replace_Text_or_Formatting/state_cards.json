@@ -1,0 +1,367 @@
+{
+  "schema_version": "2026-04-18.state_bundles.v5",
+  "skill_slug": "LIBREOFFICEWRITER_Find_and_Replace_Text_or_Formatting",
+  "domain": "libreoffice_writer",
+  "source_plan": "plan.json",
+  "card_granularity": "one_state_many_views",
+  "generation_method": "codex_writer_repair_20260418",
+  "states": [
+    {
+      "state_id": "find_replace_dialog_entry",
+      "state_name": "Start from the main Find and Replace dialog",
+      "stage": "entry_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this state when the Find and Replace dialog is open and the next step is to fill the Find field or confirm the search scope.",
+      "when_not_to_use": "Do not use it on the document canvas or when the replacement-formatting subdialog has already replaced the main dialog.",
+      "visible_cues": [
+        "The main Find and Replace dialog is centered over the document.",
+        "The Find field is visible near the top of the dialog.",
+        "The dialog still expects the search target to be entered or confirmed."
+      ],
+      "non_transferable_parts": [
+        "The example search string is task-specific.",
+        "Checkbox settings in the example are not universal defaults."
+      ],
+      "recommended_verification": "Before moving to replacement actions, confirm the Find field and scope match the current task.",
+      "highlight_targets": [
+        {
+          "name": "Find field",
+          "target_type": "action_target",
+          "annotation_query": "the Find input field in the Find and Replace dialog",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "3035418d-c61a-4f16-a1bd-6793f291fef8",
+        "source_case_id": null,
+        "source_step_num": 1,
+        "source_image": "Images/find_replace_dialog_entry.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/0a0ec74c-97af-41b8-b938-4c4f4e1a2c24.png",
+        "source_instruction": "Hello, please use the find and replace function in the current document to locate the letter \"is\" in the article and set them to red font. Then name the document \"ashdha\" and export it as a PDF to the desktop.",
+        "source_action": "Type \"is\" in the Find field to search for all instances of these characters in the document.",
+        "image_filename": "find_replace_dialog_entry.png"
+      },
+      "codex_review_notes": "The repair keeps the clean literal replace entry state and leaves regex-heavy classification to its own split skill.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "The focus crop expands around the grounded cue so the agent can keep nearby context while ignoring unrelated screen regions.",
+          "target_name": "Find field",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "target"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "No extra before view was needed for this state.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "No extra after view was needed for this state.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 0,
+        "design_intent": "This repair pass prioritizes one strong full-frame cue plus one context-preserving local crop for the same state."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "find_replace_dialog_entry_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/find_replace_dialog_entry.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/0a0ec74c-97af-41b8-b938-4c4f4e1a2c24.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Start from the main Find and Replace dialog",
+            "color": null
+          },
+          {
+            "view_id": "find_replace_dialog_entry_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/find_replace_dialog_entry_focus_crop.png",
+            "source_image_path": "Images/find_replace_dialog_entry.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Find field",
+            "color": "red",
+            "grounding_query": "the Find input field in the Find and Replace dialog",
+            "grounding_query_full": "Where is the Find input field in the Find and Replace dialog? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              384,
+              349,
+              679,
+              377
+            ],
+            "crop_box_pixels": [
+              675,
+              229,
+              1366,
+              553
+            ],
+            "source_box_pixels": [
+              737,
+              376,
+              1303,
+              407
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "target"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to confirm the overall Writer surface matches the state.",
+          "Use `focus_crop` when you need the local control or document region with enough surrounding context to remain interpretable."
+        ]
+      }
+    },
+    {
+      "state_id": "find_replace_formatting_confirm",
+      "state_name": "Confirm the replacement formatting dialog",
+      "stage": "operation_state",
+      "image_role": "state_cue",
+      "when_to_use": "Use this state when the replacement-formatting dialog is open and the next step is to confirm the chosen font effect or formatting setting.",
+      "when_not_to_use": "Do not use it when the main Find and Replace dialog is still waiting for the initial search text.",
+      "visible_cues": [
+        "The replacement-formatting dialog is open on top of the document.",
+        "The requested formatting values have been chosen in the dialog.",
+        "The next actionable control is the confirmation button that commits the formatting choice."
+      ],
+      "non_transferable_parts": [
+        "The example color or style values are specific to the source task.",
+        "Exact dialog tab placement is not reusable."
+      ],
+      "recommended_verification": "After confirming the formatting dialog, return to the main Find and Replace window and verify the replacement summary reflects the intended formatting.",
+      "highlight_targets": [
+        {
+          "name": "Formatting dialog OK button",
+          "target_type": "action_target",
+          "annotation_query": "the \"OK\" button in the Replace with formatting dialog",
+          "color": "red"
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "3035418d-c61a-4f16-a1bd-6793f291fef8",
+        "source_case_id": null,
+        "source_step_num": 10,
+        "source_image": "Images/find_replace_formatting_confirm.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/cfcc5666-0de6-4389-a230-de3220903094.png",
+        "source_instruction": "Hello, please use the find and replace function in the current document to locate the letter \"is\" in the article and set them to red font. Then name the document \"ashdha\" and export it as a PDF to the desktop.",
+        "source_action": "Click the OK button in the Replace with formatting dialog to confirm the red font color selection.",
+        "image_filename": "find_replace_formatting_confirm.png"
+      },
+      "codex_review_notes": "This state gives the split skill a concrete formatting-commit cue instead of overloading the main dialog screenshot with too many responsibilities.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "The focus crop expands around the grounded cue so the agent can keep nearby context while ignoring unrelated screen regions.",
+          "target_name": "Formatting dialog OK button",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "target"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "No extra before view was needed for this state.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "No extra after view was needed for this state.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 0,
+        "design_intent": "This repair pass prioritizes one strong full-frame cue plus one context-preserving local crop for the same state."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "find_replace_formatting_confirm_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/find_replace_formatting_confirm.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/cfcc5666-0de6-4389-a230-de3220903094.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Confirm the replacement formatting dialog",
+            "color": null
+          },
+          {
+            "view_id": "find_replace_formatting_confirm_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/find_replace_formatting_confirm_focus_crop.png",
+            "source_image_path": "Images/find_replace_formatting_confirm.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Formatting dialog OK button",
+            "color": "red",
+            "grounding_query": "the \"OK\" button in the Replace with formatting dialog",
+            "grounding_query_full": "Where is the \"OK\" button in the Replace with formatting dialog? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              676,
+              781,
+              719,
+              815
+            ],
+            "crop_box_pixels": [
+              993,
+              699,
+              1684,
+              1023
+            ],
+            "source_box_pixels": [
+              1297,
+              843,
+              1380,
+              880
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "target"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to confirm the overall Writer surface matches the state.",
+          "Use `focus_crop` when you need the local control or document region with enough surrounding context to remain interpretable."
+        ]
+      }
+    },
+    {
+      "state_id": "find_replace_success_message",
+      "state_name": "Verify the replace-count message before closing",
+      "stage": "verification_state",
+      "image_role": "verification_cue",
+      "when_to_use": "Use this state immediately after Replace or Replace All runs and the dialog reports how many matches changed.",
+      "when_not_to_use": "Do not use it before the replace action has executed or after the dialog has already been closed.",
+      "visible_cues": [
+        "The main Find and Replace dialog is still open.",
+        "A replace-count message is visible inside the dialog.",
+        "The message confirms the batch edit actually changed document content."
+      ],
+      "non_transferable_parts": [
+        "The exact number of replacements is task-specific.",
+        "The example search term and formatting summary may differ across tasks."
+      ],
+      "recommended_verification": "Confirm the dialog reports successful replacements, then verify the visible document state still matches the task. If the replace count is zero, unexpectedly small, or the page content did not change as intended, stay in the dialog and correct the find text, scope, or replacement settings before closing it.",
+      "highlight_targets": [
+        {
+          "name": "Replace count message",
+          "target_type": "state_signal",
+          "annotation_query": "the replace count message inside the Find and Replace dialog",
+          "color": "green",
+          "fallback_queries": [
+            "the message showing how many matches were replaced in the dialog"
+          ]
+        }
+      ],
+      "evidence_source": {
+        "source_task_id": "3035418d-c61a-4f16-a1bd-6793f291fef8",
+        "source_case_id": null,
+        "source_step_num": 12,
+        "source_image": "Images/find_replace_success_message.png",
+        "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/627d806e-9b0b-4f1b-bc4c-dccceb622983.png",
+        "source_instruction": "Hello, please use the find and replace function in the current document to locate the letter \"is\" in the article and set them to red font. Then name the document \"ashdha\" and export it as a PDF to the desktop.",
+        "source_action": "Click the Close button at the bottom right of the Find and Replace dialog to dismiss it and return to the main document.",
+        "image_filename": "find_replace_success_message.png"
+      },
+      "codex_review_notes": "The repair uses the replace-count message as the primary completion cue because it is a stronger, more reusable signal than any one example sentence in the document.",
+      "bundle_decision": {
+        "focus_crop": {
+          "needed": true,
+          "included": true,
+          "reason": "The focus crop expands around the grounded cue so the agent can keep nearby context while ignoring unrelated screen regions.",
+          "target_name": "Replace count message",
+          "grounding_method": "qwen_bbox_grounding",
+          "focus_context_kind": "dialog",
+          "grounding_query_role": "target"
+        },
+        "before": {
+          "needed": false,
+          "included": false,
+          "reason": "No extra before view was needed for this state.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "after": {
+          "needed": false,
+          "included": false,
+          "reason": "No extra after view was needed for this state.",
+          "selected_offset": null,
+          "candidate_offsets_considered": [],
+          "grounding_method": null,
+          "target_name": null
+        },
+        "search_window": 0,
+        "design_intent": "This repair pass prioritizes one strong full-frame cue plus one context-preserving local crop for the same state."
+      },
+      "view_bundle": {
+        "default_view": "full_frame",
+        "available_views": [
+          {
+            "view_id": "find_replace_success_message_full_frame",
+            "view_type": "full_frame",
+            "image_path": "Images/find_replace_success_message.png",
+            "source_image_path": "/home/admin/datasets/opencua_agentnet/ubuntu_images/extracted/627d806e-9b0b-4f1b-bc4c-dccceb622983.png",
+            "use_for": "recognize_global_ui_state",
+            "label": "Verify the replace-count message before closing",
+            "color": null
+          },
+          {
+            "view_id": "find_replace_success_message_focus_crop",
+            "view_type": "focus_crop",
+            "image_path": "Images/find_replace_success_message_focus_crop.png",
+            "source_image_path": "Images/find_replace_success_message.png",
+            "use_for": "inspect_contextual_work_region",
+            "label": "Replace count message",
+            "color": "green",
+            "grounding_query": "the replace count message inside the Find and Replace dialog",
+            "grounding_query_full": "Where is the replace count message inside the Find and Replace dialog? Return its bounding box as {\"bbox_2d\": [x1, y1, x2, y2]} in 0-1000 relative coordinates.",
+            "grounding_method": "qwen_bbox_grounding",
+            "bbox_2d": [
+              384,
+              412,
+              481,
+              429
+            ],
+            "crop_box_pixels": [
+              485,
+              291,
+              1176,
+              615
+            ],
+            "source_box_pixels": [
+              737,
+              444,
+              923,
+              463
+            ],
+            "focus_context_kind": "dialog",
+            "focus_query_role": "target"
+          }
+        ],
+        "selection_guidance": [
+          "Use `full_frame` first to confirm the overall Writer surface matches the state.",
+          "Use `focus_crop` when you need the local control or document region with enough surrounding context to remain interpretable."
+        ]
+      }
+    }
+  ]
+}
