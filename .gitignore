@@ -120,6 +120,8 @@ References/Agent/Skills/*
 !References/Agent/Skills/agent-skills/**
 !References/Agent/Skills/Awesome-Agent-Skills/
 !References/Agent/Skills/Awesome-Agent-Skills/**
+!References/Agent/Skills/anthropics-skills/
+!References/Agent/Skills/anthropics-skills/**
 !References/Agent/Skills/openai-skills/
 References/Agent/Skills/openai-skills/*
 !References/Agent/Skills/openai-skills/skills/
