@@ -232,6 +232,8 @@ References/Agent/Skills/openai-skills/skills/.system/*
 !References/Agent/Skills/openai-skills/skills/.system/skill-installer/**
 !References/Agent/Skills/SSL/
 !References/Agent/Skills/SSL/**
+!References/Agent/Skills/SR-Agents/
+!References/Agent/Skills/SR-Agents/**
 !References/Agent/Skills/SkillRouter/
 !References/Agent/Skills/SkillRouter/**
 References/Agent/**/.git/
