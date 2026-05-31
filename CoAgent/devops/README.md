@@ -76,6 +76,9 @@ for non-empty batches with `git commit-tree`, then performs one guarded
 `git update-ref` from the original HEAD to the final split commit. It does not
 mutate the live index or worktree. Do not run `--apply` unless the current
 batch lists, split-index check, sequential dry-run, and full doctor are fresh.
+Plan mode may return `commit_count=0` after the staged surface has already been
+integrated; that is a valid clean planning state. Real `--apply` still refuses
+to run when there are no non-empty batches.
 
 Avoid running split dry-run/apply-plan commands in parallel with other live
 Git commands. They are designed not to write refs, the live index, or the

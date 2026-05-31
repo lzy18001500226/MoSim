@@ -141,7 +141,7 @@ def build_commit_plan(batch_list_dir: Path, *, output: Path | None = None) -> di
         )
         parent = f"<commit:{batch}>"
     result = {
-        "ok": bool(dry_run_result["ok"] and live_index_matches and commits),
+        "ok": bool(dry_run_result["ok"] and live_index_matches),
         "mode": "split_commit_apply_plan",
         "apply": False,
         "branch_ref": branch_ref,
@@ -151,6 +151,7 @@ def build_commit_plan(batch_list_dir: Path, *, output: Path | None = None) -> di
         "live_index_matches_dry_run_final_tree": live_index_matches,
         "batch_list_dir": rel(project_path(batch_list_dir)),
         "commit_count": len(commits),
+        "has_commits": bool(commits),
         "commits": commits,
         "dry_run_summary": {
             "batch_count": dry_run_result["batch_count"],

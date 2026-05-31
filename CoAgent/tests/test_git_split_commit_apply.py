@@ -28,8 +28,10 @@ def main() -> int:
         )
         assert result["mode"] == "split_commit_apply_plan"
         assert result["apply"] is False
+        assert result["ok"], result
         assert result["live_index_matches_dry_run_final_tree"], result
-        assert result["commit_count"] >= 1, result
+        assert isinstance(result["commit_count"], int), result
+        assert result["has_commits"] == (result["commit_count"] >= 1), result
         assert result["output"].startswith("Results/tmp/")
     print("git_split_commit_apply_plan_smoke ok")
     return 0

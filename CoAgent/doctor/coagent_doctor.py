@@ -745,7 +745,7 @@ def check_plan(args: argparse.Namespace) -> list:
         check_automation_plan,
         check_knowledge_search,
     ]
-    full_only_checks = [
+    standard_full_checks = [
         check_thread_graph_smoke,
         check_runtime_event_audit_smoke,
         check_memory_context_smoke,
@@ -762,20 +762,24 @@ def check_plan(args: argparse.Namespace) -> list:
         check_git_batch_plan_smoke,
         check_git_handoff_packet_smoke,
         check_git_split_index_smoke,
-        check_git_split_commit_dry_run_smoke,
-        check_git_split_commit_apply_smoke,
         check_evidence_refresh_commands_smoke,
         check_evidence_manifest_smoke,
-        check_review_package_smoke,
         check_protocol_compliance_smoke,
         check_goal_alignment_smoke,
         check_lifecycle_smoke,
         check_task_bootstrap_smoke,
         check_automation_dispatch_plan_smoke,
     ]
+    heavy_full_checks = [
+        check_git_split_commit_dry_run_smoke,
+        check_git_split_commit_apply_smoke,
+        check_review_package_smoke,
+    ]
     checks = list(quick_checks)
     if args.mode == "full":
-        checks.extend(full_only_checks)
+        checks.extend(standard_full_checks)
+        if getattr(args, "include_heavy", False):
+            checks.extend(heavy_full_checks)
     if not getattr(args, "skip_status_export", False):
         if args.mode == "full":
             checks.insert(20, check_status_export_smoke)
@@ -839,6 +843,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--skip-status-export",
         action="store_true",
         help="skip status-export smoke test when doctor is called from status export",
+    )
+    parser.add_argument(
+        "--include-heavy",
+        action="store_true",
+        help="include slower packaging/Git integration smoke tests in full mode",
     )
     return parser
 

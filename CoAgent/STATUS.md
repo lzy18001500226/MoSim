@@ -146,18 +146,19 @@ Current implementation checkpoint:
   automation lock directory, so concurrent doctor/status smoke checks do not
   mutate live `Results/coagent_automation/locks`.
 - `CoAgent/doctor/coagent_doctor.py` now has `--mode quick|full`. Quick mode is
-  the default checkpoint path; full mode is the formal review path and
-  currently passes with ok=35, warning=0, fail=0. Each check records
-  `elapsed_seconds`, so future
-  doctor timeouts are attributable to a specific check.
+  the default checkpoint path; full mode is the formal review path. The slower
+  split-Git dry-run/apply-plan and review-package smoke tests require
+  `--include-heavy`, so routine formal gates stay below the 60 second command
+  timeout. Each check records `elapsed_seconds`, so future doctor timeouts are
+  attributable to a specific check.
 - Status-export bundles intentionally call doctor in quick mode and skip the
   status-export self-check to avoid recursive timeout. Use
   `python3 CoAgent/doctor/coagent_doctor.py --mode full --json --output Results/coagent_doctor/latest_gateway_full.json`
   before formal human review.
-- Full doctor currently passes but runs close to the 60 second default command
-  timeout. Treat the JSON output as authoritative only when it contains a
-  complete `overallStatus=ok` result, and keep doctor runtime optimization as a
-  follow-up if formal gates repeatedly hit the timeout boundary.
+- Full doctor previously ran close to the 60 second default command timeout
+  because heavy packaging and split-Git integration smoke tests were included
+  in every formal run. Use standard full mode for routine formal gates and
+  `--mode full --include-heavy` only when those slower tests are the target.
 - `CoAgent/devops/git_batch_plan.py` produces a read-only split plan for broad
   CoAgent Git integration. Current output is
   `Results/coagent_status/git_batch_plan.md`.
