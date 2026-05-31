@@ -24,12 +24,12 @@ DERELICT_TRUTH = (
     / "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/"
     / "derelictcorridormegascans_collision_truth.json"
 )
-UNREAL_SKILL = ROOT / "Docs/Skills/Unreal/mosim-unreal-editor-mcp/SKILL.md"
-FAB_SKILL = ROOT / "Docs/Skills/Unreal/mosim-epic-fab-library/SKILL.md"
+UNREAL_SKILL = ROOT / "Docs/Skills/Unreal/mosim-unreal/SKILL.md"
+FAB_SKILL = ROOT / "Docs/Skills/Unreal/mosim-epic/SKILL.md"
 UNREAL_WORKFLOW = ROOT / "Docs/Workflows/unreal_renderer.md"
-EPIC_MCP = ROOT / "Scripts/UE5/mosim_epic_library_mcp.py"
-EPIC_MCP_WRAPPER = ROOT / "Scripts/UE5/mosim_epic_library_mcp_wsl_wrapper.sh"
-UNREAL_WRAPPER = ROOT / "Scripts/UE5/unreal_mcp_wsl_wrapper.sh"
+EPIC_MCP = ROOT / "Docs/Skills/Unreal/mosim-epic/mcp/server.py"
+EPIC_MCP_WRAPPER = ROOT / "Docs/Skills/Unreal/mosim-epic/wrappers/mosim-epic.sh"
+UNREAL_WRAPPER = ROOT / "Docs/Skills/Unreal/mosim-unreal/wrappers/mosim-unreal.sh"
 EDITOR_PROBE_DIR = ROOT / "Results/tmp"
 RENDERER_MAP_LOAD_PROBE = ROOT / "Results/tmp/renderer_map_load_probe_latest.json"
 
@@ -94,7 +94,7 @@ def gate_fab_inventory() -> Gate:
         missing.append(output[:1200])
     return Gate(
         "fab_inventory_visible",
-        "mosim_epic_library can read sanitized Epic/Fab/Launcher inventory",
+        "mosim-epic can read sanitized Epic/Fab/Launcher inventory",
         "passed" if ok and not missing else "missing",
         evidence,
         missing,
@@ -230,8 +230,8 @@ def gate_unreal_mcp_edit() -> Gate:
                 if not isinstance(scene_source, dict) or not scene_source.get("renderer_map_asset"):
                     missing.append("Linked scene-source MCP probe missing renderer_map_asset evidence")
     return Gate(
-        "unreal_engine_edit_authority",
-        "unreal_engine MCP can modify a running UE project through reversible actor edit/delete, preferably with linked scene-source context",
+        "mosim_unreal_edit_authority",
+        "mosim-unreal MCP can modify a running UE project through reversible actor edit/delete, preferably with linked scene-source context",
         "passed" if not missing else "missing",
         evidence,
         missing,
@@ -249,12 +249,12 @@ def gate_skills_and_workflow() -> Gate:
             missing.append(f"Missing required workflow/tool file: {rel(path)}")
     if FAB_SKILL.exists():
         text = FAB_SKILL.read_text(encoding="utf-8")
-        for token in ["mosim_epic_library", "editable Unreal content", "planning truth"]:
+        for token in ["mosim-epic", "editable Unreal content", "planning truth"]:
             if token not in text:
                 missing.append(f"Fab skill missing token: {token}")
     if UNREAL_SKILL.exists():
         text = UNREAL_SKILL.read_text(encoding="utf-8")
-        for token in ["unreal_engine", "probe_unreal_editor_mcp_tools.py", "export_unreal_scene_truth.py"]:
+        for token in ["mosim-unreal", "reversible_actor_probe", "scene_source_status"]:
             if token not in text:
                 missing.append(f"Unreal MCP skill missing token: {token}")
     return Gate(
@@ -359,7 +359,7 @@ def build_report() -> dict[str, Any]:
             "local_fallback_ready",
             "scene_truth_valid",
             "scene_source_udp_contract",
-            "unreal_engine_edit_authority",
+            "mosim_unreal_edit_authority",
             "skills_workflow_defined",
             "scene_visual_import_or_reuse",
         ]
@@ -378,7 +378,7 @@ def build_report() -> dict[str, Any]:
         missing_actions.append(
             "Prove scene_visual_import_or_reuse by linking/importing Derelict or an accepted Fab scene into MoSimSceneLibrary, then run probe_renderer_map_load.py"
         )
-    if by_id["scene_visual_import_or_reuse"].passed and by_id["unreal_engine_edit_authority"].passed:
+    if by_id["scene_visual_import_or_reuse"].passed and by_id["mosim_unreal_edit_authority"].passed:
         missing_actions.append(
             "Next strengthening gate: run a live UE MCP reversible modification while the linked Derelict map is loaded in the MoSim renderer"
         )

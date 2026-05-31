@@ -25,6 +25,7 @@ FAMILIES_WITH_CHILD_PROJECTS = {
 AGENT_CATEGORY_DIRS = {
     "Platforms",
     "Control",
+    "Gateway",
     "Workflow",
     "Frameworks",
     "Skills",

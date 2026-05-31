@@ -61,18 +61,35 @@ def resolve_editor_cmd(uproject_path: Path, engine_root: Path | None, editor_cmd
     if env_cmd:
         candidates.append(Path(env_cmd))
     if engine_root:
-        candidates.append(engine_root / "Engine/Binaries/Win64/UnrealEditor-Cmd.exe")
+        candidates.extend(
+            [
+                engine_root / "Engine/Binaries/Win64/UnrealEditor-Cmd.exe",
+                engine_root / "Engine/Binaries/Win64/UE4Editor-Cmd.exe",
+            ]
+        )
     env_root = os.environ.get("UE_ROOT")
     if env_root:
-        candidates.append(Path(env_root) / "Engine/Binaries/Win64/UnrealEditor-Cmd.exe")
-    candidates.append(
-        ENGINE_ROOT_BY_VERSION[engine_version_for_project(uproject_path)]
-        / "Engine/Binaries/Win64/UnrealEditor-Cmd.exe"
+        env_root_path = Path(env_root)
+        candidates.extend(
+            [
+                env_root_path / "Engine/Binaries/Win64/UnrealEditor-Cmd.exe",
+                env_root_path / "Engine/Binaries/Win64/UE4Editor-Cmd.exe",
+            ]
+        )
+    version_root = ENGINE_ROOT_BY_VERSION[engine_version_for_project(uproject_path)]
+    candidates.extend(
+        [
+            version_root / "Engine/Binaries/Win64/UnrealEditor-Cmd.exe",
+            version_root / "Engine/Binaries/Win64/UE4Editor-Cmd.exe",
+        ]
     )
     for candidate in candidates:
         if candidate.exists():
             return candidate
-    raise FileNotFoundError("UnrealEditor-Cmd.exe not found. Checked: " + ", ".join(map(str, candidates)))
+    raise FileNotFoundError(
+        "Unreal Editor commandlet executable not found. Checked: "
+        + ", ".join(map(str, candidates))
+    )
 
 
 def write_batch_script(plan: dict[str, str], script_path: Path, map_package: str | None = None) -> None:
@@ -158,7 +175,11 @@ def main() -> int:
     parser.add_argument("--editor-cmd", type=Path, default=None)
     parser.add_argument("--map-package", default="", help="Optional UE package path, e.g. /Game/DerelictCorridor/Maps/DerelictCorridor.")
     parser.add_argument("--batch-script", type=Path, default=ROOT / "Results/tmp/unreal_scene_truth_export.py")
-    parser.add_argument("--run", action="store_true", help="Actually launch UnrealEditor-Cmd. Default is dry-run.")
+    parser.add_argument(
+        "--run",
+        action="store_true",
+        help="Actually launch the Unreal Editor commandlet. Default is dry-run.",
+    )
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
 

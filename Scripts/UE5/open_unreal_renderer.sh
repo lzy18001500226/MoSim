@@ -4,15 +4,56 @@ set -euo pipefail
 # Open the project-owned Unreal renderer from WSL without editing global config.
 
 PROJECT_ROOT="/mnt/c/Users/HP/Desktop/MoSim"
-UE_EDITOR="${UE_EDITOR:-/mnt/d/Program Files/Epic Games/UE_5.7/Engine/Binaries/Win64/UnrealEditor.exe}"
 UPROJECT="${PROJECT_ROOT}/UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject"
 MODE="${1:-editor}"
 RESTART_UNREAL_GAME="${RESTART_UNREAL_GAME:-0}"
 UNREAL_EXTRA_ARGS="${UNREAL_EXTRA_ARGS:-}"
 
+engine_association() {
+  python3 - <<'PY'
+import json
+from pathlib import Path
+project = Path("/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject")
+try:
+    print(json.loads(project.read_text(encoding="utf-8")).get("EngineAssociation", ""))
+except Exception:
+    print("")
+PY
+}
+
+resolve_unreal_editor() {
+  if [[ -n "${UE_EDITOR:-}" ]]; then
+    printf '%s\n' "${UE_EDITOR}"
+    return
+  fi
+  local association
+  association="$(engine_association)"
+  local candidates=()
+  if [[ -n "${association}" ]]; then
+    candidates+=("/mnt/d/Program Files/Epic Games/UE_${association}/Engine/Binaries/Win64/UnrealEditor.exe")
+    candidates+=("/mnt/d/Program Files/Epic Games/UE_${association}/Engine/Binaries/Win64/UE4Editor.exe")
+  fi
+  candidates+=(
+    "/mnt/d/Program Files/Epic Games/UE_5.5/Engine/Binaries/Win64/UnrealEditor.exe"
+    "/mnt/d/Program Files/Epic Games/UE_5.7/Engine/Binaries/Win64/UnrealEditor.exe"
+    "/mnt/d/Program Files/Epic Games/UE_5.4/Engine/Binaries/Win64/UnrealEditor.exe"
+    "/mnt/d/Program Files/Epic Games/UE_4.27/Engine/Binaries/Win64/UE4Editor.exe"
+  )
+  local candidate
+  for candidate in "${candidates[@]}"; do
+    if [[ -f "${candidate}" ]]; then
+      printf '%s\n' "${candidate}"
+      return
+    fi
+  done
+  return 1
+}
+
+UE_EDITOR="$(resolve_unreal_editor || true)"
+
 if [[ ! -f "${UE_EDITOR}" ]]; then
-  echo "UnrealEditor.exe not found: ${UE_EDITOR}" >&2
-  echo "Set UE_EDITOR to the installed UnrealEditor.exe path." >&2
+  echo "Unreal editor executable not found for ${UPROJECT}." >&2
+  echo "Set UE_EDITOR to the installed UnrealEditor.exe or UE4Editor.exe path." >&2
   exit 2
 fi
 

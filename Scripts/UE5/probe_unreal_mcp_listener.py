@@ -2,7 +2,7 @@
 """Probe whether the Unreal Editor-side MCP TCP listener is reachable.
 
 This checks only the editor plugin socket, not the stdio MCP wrapper. It is
-useful when `/mcp` lists `unreal_engine` tools but actor/Blueprint operations
+useful when `/mcp` lists `mosim-unreal` tools but actor/Blueprint operations
 timeout because the Unreal Editor plugin is not listening on the expected host
 and port.
 """
@@ -68,7 +68,7 @@ def wrapper_route_host(explicit_host: str | None) -> str | None:
 
 
 def windows_unreal_processes() -> tuple[list[dict[str, object]], str]:
-    """Return project-owned UnrealEditor processes visible from WSL."""
+    """Return project-owned Unreal Editor processes visible from WSL."""
 
     command = [
         "powershell.exe",
@@ -76,9 +76,10 @@ def windows_unreal_processes() -> tuple[list[dict[str, object]], str]:
         "-Command",
         (
             "$ErrorActionPreference='SilentlyContinue';"
-            "$items = Get-CimInstance Win32_Process -Filter \"name = 'UnrealEditor.exe'\" | "
-            "Where-Object { $_.CommandLine -like '*MoSimSceneLibrary.uproject*' } | "
-            "Select-Object ProcessId,CommandLine;"
+            "$items = Get-CimInstance Win32_Process | "
+            "Where-Object { ($_.Name -eq 'UnrealEditor.exe' -or $_.Name -eq 'UE4Editor.exe') -and "
+            "($_.CommandLine -like '*MoSimSceneLibrary.uproject*') } | "
+            "Select-Object ProcessId,Name,CommandLine;"
             "if ($items) { $items | ConvertTo-Json -Compress }"
         ),
     ]
@@ -107,7 +108,7 @@ def process_mode(command_line: str) -> str:
     lowered = command_line.lower()
     if " -game" in lowered:
         return "standalone-game"
-    if "mworksunrealrenderer.uproject" in lowered:
+    if "mosimscenelibrary.uproject" in lowered or "mworksunrealrenderer.uproject" in lowered:
         return "editor-or-launcher"
     return "unknown"
 
@@ -118,18 +119,19 @@ def print_process_diagnostics() -> None:
         print(f"[INFO] Unable to query Windows UnrealEditor processes: {error}")
         return
     if not processes:
-        print("[INFO] No project-owned UnrealEditor.exe process found for MoSimSceneLibrary.uproject.")
+        print("[INFO] No project-owned Unreal Editor process found for MoSimSceneLibrary.uproject.")
         return
 
-    print("[INFO] Project-owned UnrealEditor.exe processes:")
+    print("[INFO] Project-owned Unreal Editor processes:")
     for item in processes:
         pid = item.get("ProcessId", "<unknown>")
+        name = item.get("Name", "<unknown>")
         command_line = str(item.get("CommandLine", ""))
         mode = process_mode(command_line)
         preview = command_line.replace("\r", " ").replace("\n", " ")
         if len(preview) > 220:
             preview = preview[:217] + "..."
-        print(f"[INFO]   pid={pid} mode={mode} cmd={preview}")
+        print(f"[INFO]   pid={pid} exe={name} mode={mode} cmd={preview}")
     if all(process_mode(str(item.get("CommandLine", ""))) == "standalone-game" for item in processes):
         print("[INFO] Only standalone -game process(es) were found; those do not expose the editor MCP listener.")
 
@@ -146,7 +148,7 @@ def main() -> int:
     parser.add_argument(
         "--wrapper-route-only",
         action="store_true",
-        help="Probe only the host that Scripts/UE5/unreal_mcp_wsl_wrapper.sh will use.",
+        help="Probe only the host that Docs/Skills/Unreal/mosim-unreal/wrappers/mosim-unreal.sh will use.",
     )
     parser.add_argument(
         "--no-process-diagnostics",
