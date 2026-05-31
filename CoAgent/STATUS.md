@@ -11,6 +11,28 @@ COAGENT-IMPL-TRANSPORT-GIT-6H-20260531
 Results/agent_runtime/tasks.sqlite3
 ```
 
+Current correction on 2026-05-31:
+
+```text
+Git was already pushed and synchronized (`origin/main...HEAD` was `0 0` at
+HEAD `6f762994f2`), but the DevOps department conversation did not show a new
+front-end-visible message. Root cause: the DevOps dispatch path used shadow
+Codex homes under `Results/coagent_transport/`, so project-local result packets
+and logs existed but the real WSL/Windows Codex conversation stores were not
+updated for the user's front end.
+
+Visible DevOps ping was repaired through the real WSL Codex session:
+DevOps 可见通信测试 2026-05-31 收到。
+
+Then `codex_session_repair.py sync-visible --apply` synced DevOps metadata and
+rollout state to `/home/linux/.codex` and `/mnt/c/Users/HP/.codex`.
+
+Rule update: local-only packet transport cannot be described as visible
+department communication. If a department is expected to communicate visibly,
+use the real Codex home resume path and sync both Codex homes, or explicitly
+tell the user the fallback is local-only.
+```
+
 Goal:
 
 ```text

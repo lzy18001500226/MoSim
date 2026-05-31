@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import shlex
 import subprocess
 import sys
@@ -24,7 +25,8 @@ ROOT = Path(__file__).resolve().parents[2]
 CODEX = Path(
     os.environ.get(
         "COAGENT_CODEX_BIN",
-        "/mnt/c/Users/HP/.vscode/extensions/openai.chatgpt-26.519.32039-win32-x64/bin/linux-x86_64/codex",
+        shutil.which("codex")
+        or "/mnt/c/Users/HP/.vscode/extensions/openai.chatgpt-26.527.31454-win32-x64/bin/linux-x86_64/codex",
     )
 )
 WSL_CODEX_HOME = Path("/home/linux/.codex")

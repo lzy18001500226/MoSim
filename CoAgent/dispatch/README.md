@@ -75,6 +75,12 @@ Current transport rule:
   under `Results/coagent_transport/`. With that redirect, a real department
   thread wrote a project-local result packet file that CoAgent successfully
   imported back into runtime state.
+- Visibility limitation found on 2026-05-31:
+  shadow `CODEX_HOME` dispatch can create valid result-packet evidence without
+  updating the user's visible DevOps/department conversation. Treat this as
+  local-only packet transport unless a real Codex home resume is performed and
+  `sync-visible --apply` has synced the updated rollout to WSL and Windows
+  Codex homes.
 - Remaining limitation:
   `run-dispatch` can still return non-clean CLI stderr/noisy timeout behavior,
   or be killed by the outer timeout, even when the department thread already
@@ -117,6 +123,12 @@ timeout 60s script -qfec \
   `start-dispatch` launches the real department-thread job in the background,
   and `poll-dispatch` can later observe the result file and import it back into
   runtime state as `done`.
+- Visible status path:
+  for a department message the user must see, run a bounded real
+  `codex exec resume <thread_id>` against the true WSL Codex home, then run
+  `codex_session_repair.py sync-visible --apply` for both WSL and Windows
+  Codex homes. Do this before saying the visible department received the
+  update.
 - Timeout recovery path:
   `run-dispatch` defaults to writing a standard blocked MoSim Result Packet
   when the department conversation does not create the declared result file

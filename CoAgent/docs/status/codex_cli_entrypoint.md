@@ -9,13 +9,19 @@ Status: verified in WSL for project-local CoAgent conversation bootstrap.
 Current preferred entrypoint:
 
 ```bash
-/mnt/c/Users/HP/.vscode/extensions/openai.chatgpt-26.519.32039-win32-x64/bin/linux-x86_64/codex
+codex
 ```
 
-On 2026-05-30, `command -v codex` resolved to that binary and reported:
+On 2026-05-31, `command -v codex` resolved to:
+
+```bash
+/mnt/c/Users/HP/.vscode/extensions/openai.chatgpt-26.527.31454-win32-x64/bin/linux-x86_64/codex
+```
+
+It reported:
 
 ```text
-codex-cli 0.133.0-alpha.1
+codex-cli 0.135.0-alpha.1
 ```
 
 When creating visible test or department conversations, pass provider overrides
@@ -74,14 +80,17 @@ response: 你好，我在 `/mnt/c/Users/HP/Desktop/MoSim` 项目目录内待命�
 - `/usr/bin/node` is Node v12.22.9 and is not suitable for this entrypoint.
 - `/home/linux/.nvm/versions/node/v16.20.2/bin/codex --version` fails because
   the shebang resolves to an incompatible Node runtime.
-- The VSCode extension also ships a Codex binary:
+- The VSCode extension also ships a Codex binary. On 2026-05-31 the current
+  binary is:
 
 ```bash
-/mnt/c/Users/HP/.vscode/extensions/openai.chatgpt-26.519.32039-win32-x64/bin/linux-x86_64/codex
+/mnt/c/Users/HP/.vscode/extensions/openai.chatgpt-26.527.31454-win32-x64/bin/linux-x86_64/codex
 ```
 
-It reported `codex-cli 0.133.0-alpha.1` during the same check, but the
-verified command above used `codex-cli 0.134.0`.
+The previously recorded extension path under
+`openai.chatgpt-26.519.32039-win32-x64` no longer exists. Prefer `codex` from
+`PATH` or `COAGENT_CODEX_BIN` instead of hard-coding a versioned extension
+directory.
 
 ## Known Warnings
 

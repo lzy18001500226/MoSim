@@ -177,6 +177,8 @@ Treat communication as failed when:
 
 - the target conversation is not visible or recoverable,
 - no task packet was delivered,
+- the packet was delivered only through a shadow/local Codex home while the
+  user expected a front-end-visible department message,
 - no result packet can be found,
 - the worker result exists only in chat,
 - the task id or canonical goal does not match,
@@ -191,6 +193,12 @@ record blocker
 repair registry or context pack
 retry only with a fresh packet or explicit recovery note
 ```
+
+If the accountable owner falls back to local execution after department
+transport fails, the fallback must be reported as a coordination failure, not
+as successful department execution. A visible department status message should
+be sent and synced before claiming that the department conversation has been
+updated.
 
 ## V1 Constraint
 

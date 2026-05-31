@@ -11,14 +11,23 @@ Use a real WSL Codex TUI session. Do not use `codex exec` for conversations that
 Current verified Codex binary:
 
 ```bash
-/mnt/c/Users/HP/.vscode/extensions/openai.chatgpt-26.519.32039-win32-x64/bin/linux-x86_64/codex
+codex
 ```
 
-The plain `codex` on this WSL shell also resolves to that binary on 2026-05-30:
+The plain `codex` on this WSL shell resolved to the current VSCode extension
+binary on 2026-05-31:
+
+```bash
+/mnt/c/Users/HP/.vscode/extensions/openai.chatgpt-26.527.31454-win32-x64/bin/linux-x86_64/codex
+```
 
 ```text
-codex-cli 0.133.0-alpha.1
+codex-cli 0.135.0-alpha.1
 ```
+
+The older recorded path under `openai.chatgpt-26.519.32039-win32-x64` no longer
+exists. Bootstrap code should prefer `COAGENT_CODEX_BIN`, then `codex` from
+`PATH`, and only then a known fallback path.
 
 Because `/home/linux/.codex/config.toml` currently sets `model_provider = "Anthropic"` while only `OpenAI` is configured, pass provider overrides on the command line instead of editing global config:
 
@@ -67,6 +76,9 @@ Run the project doctor after sync:
 python3 CoAgent/doctor/check_department_visibility.py
 ```
 
+If the doctor reports a missing index entry after a successful resume, rerun
+`sync-visible --apply` for the exact thread id and both Codex homes.
+
 For department bootstrap, create or register one department at a time when
 recovering from a timeout:
 
@@ -80,6 +92,38 @@ session creation can complete while the outer command times out; the bootstrap
 tool must save `department_threads.json` after each department, and a failed
 batch should be resumed by inspecting existing bootstrap rollouts rather than
 recreating old deleted ids.
+
+## 2026-05-31 DevOps Visibility Correction
+
+The DevOps Git dispatch result existed in project artifacts, but the user did
+not see a new DevOps message because `codex_exec_resume` used a shadow
+`CODEX_HOME` under `Results/coagent_transport/`. That proves a worker can write
+a result packet, but it does not guarantee the front-end-visible Codex
+conversation was updated.
+
+Validated visible message path:
+
+```bash
+printf '%s\n' '<short DevOps prompt>' | timeout 60s codex exec resume \
+  019e74de-a452-7a50-99e7-ca9a247b32f1 \
+  -m gpt-5.5 \
+  -c 'model_provider="OpenAI"' \
+  -c 'model_reasoning_effort="high"' \
+  --dangerously-bypass-approvals-and-sandbox \
+  --output-last-message Results/coagent_transport/devops_visible_ping_20260531_result.txt \
+  -
+```
+
+Verified reply:
+
+```text
+DevOps 可见通信测试 2026-05-31 收到。
+```
+
+After the resume, run `sync-visible --apply` for WSL and Windows Codex homes.
+Do not claim a department received a user-visible message unless the real Codex
+home rollout is updated and synced, or the user explicitly accepts local-only
+packet transport.
 
 ## 2026-05-30 Proof
 

@@ -14,6 +14,11 @@ adapter logs live.
 |---|---|---|
 | `codex_exec_resume` | `codex_exec.py` | Uses project-local shadow Codex state and `codex exec resume` to send a packet to an existing visible Codex thread. |
 
+Important limitation: this adapter writes through a shadow `CODEX_HOME` below
+`Results/coagent_transport/`. It can prove project-local result-packet
+production and runtime import, but it does not by itself prove that the user's
+Codex App or VSCode Codex front end shows a new department message.
+
 ## Boundary
 
 Adapters must not treat Codex App private storage as the durable source of
@@ -37,6 +42,19 @@ If no matching rollout exists, transport must fail before starting `codex exec
 resume`. That means the visible registry and the local Codex session store are
 out of sync, and the department thread needs repair before a real lifecycle can
 be claimed.
+
+For work where the user expects to see the department conversation update,
+dispatch must either:
+
+- use the real WSL Codex home and then run `sync-visible --apply` to the
+  Windows Codex home, or
+- explicitly label the run as local-only packet transport and avoid claiming
+  visible department communication.
+
+2026-05-31 incident: DevOps Git work was completed and pushed by MainAgent
+after shadow transport attempts blocked. The project artifacts and Git history
+were valid, but the DevOps front-end conversation did not receive a visible
+status message until a real `codex exec resume` ping was sent and synced.
 
 Future adapters should implement the interface in `adapter.py` instead of
 adding more process/session code to `CoAgent/dispatch/codex_transport.py`.
