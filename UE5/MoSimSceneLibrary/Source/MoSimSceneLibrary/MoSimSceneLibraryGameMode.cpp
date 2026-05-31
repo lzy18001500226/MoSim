@@ -3,8 +3,12 @@
 #include "Components/LightComponent.h"
 #include "Components/SkyLightComponent.h"
 #include "Engine/DirectionalLight.h"
+#include "Engine/PostProcessVolume.h"
 #include "Engine/SkyLight.h"
 #include "Engine/World.h"
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/Pawn.h"
+#include "Kismet/GameplayStatics.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
 #include "MworksReviewCameraPawn.h"
@@ -13,6 +17,7 @@
 
 AMoSimSceneLibraryGameMode::AMoSimSceneLibraryGameMode()
 {
+    PrimaryActorTick.bCanEverTick = true;
     DefaultPawnClass = AMworksReviewCameraPawn::StaticClass();
 }
 
@@ -21,6 +26,7 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
     Super::BeginPlay();
 
     const bool bSceneReviewOnly = FParse::Param(FCommandLine::Get(), TEXT("MoSimSceneReview"));
+    bSceneReviewModeActive = bSceneReviewOnly;
     const bool bDisablePreviewMap =
         bSceneReviewOnly || FParse::Param(FCommandLine::Get(), TEXT("MoSimNoPreviewMap"));
     const bool bDisablePlayback =
@@ -44,7 +50,24 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
 
     if (bSpawnDefaultReviewLighting)
     {
+        if (FParse::Param(FCommandLine::Get(), TEXT("MoSimDayReview")))
+        {
+            bForceDaylightReviewExposure = !FParse::Param(FCommandLine::Get(), TEXT("MoSimNoDayReviewExposure"));
+            FParse::Value(FCommandLine::Get(), TEXT("MoSimReviewSunIntensity="), ReviewSunIntensity);
+            FParse::Value(FCommandLine::Get(), TEXT("MoSimReviewSkyLightIntensity="), ReviewSkyLightIntensity);
+            FParse::Value(FCommandLine::Get(), TEXT("MoSimReviewExposureBias="), ReviewExposureBias);
+        }
+        else
+        {
+            FParse::Value(FCommandLine::Get(), TEXT("MoSimReviewSunIntensity="), ReviewSunIntensity);
+            FParse::Value(FCommandLine::Get(), TEXT("MoSimReviewSkyLightIntensity="), ReviewSkyLightIntensity);
+        }
         SpawnDefaultReviewLighting(World, SpawnParameters);
+    }
+
+    if (bSceneReviewOnly)
+    {
+        EnforceSceneReviewCamera(World);
     }
 
     if (bDisablePreviewMap)
@@ -101,6 +124,16 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
     }
 }
 
+void AMoSimSceneLibraryGameMode::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+
+    if (bSceneReviewModeActive)
+    {
+        EnforceSceneReviewCamera(GetWorld());
+    }
+}
+
 void AMoSimSceneLibraryGameMode::SpawnDefaultReviewLighting(UWorld* World, const FActorSpawnParameters& SpawnParameters)
 {
     if (!World)
@@ -149,4 +182,145 @@ void AMoSimSceneLibraryGameMode::SpawnDefaultReviewLighting(UWorld* World, const
         TEXT("MWORKS renderer spawned default review lighting: sun=%s sky=%s"),
         SpawnedReviewSunLight ? TEXT("true") : TEXT("false"),
         SpawnedReviewSkyLight ? TEXT("true") : TEXT("false"));
+
+    if (bForceDaylightReviewExposure)
+    {
+        SpawnedReviewPostProcessVolume = World->SpawnActor<APostProcessVolume>(
+            APostProcessVolume::StaticClass(),
+            FVector::ZeroVector,
+            FRotator::ZeroRotator,
+            SpawnParameters);
+
+        if (SpawnedReviewPostProcessVolume)
+        {
+            SpawnedReviewPostProcessVolume->SetActorLabel(TEXT("MWORKS_Review_Daylight_PostProcess"));
+            SpawnedReviewPostProcessVolume->bUnbound = true;
+            SpawnedReviewPostProcessVolume->BlendWeight = 1.0f;
+            SpawnedReviewPostProcessVolume->Priority = 10000.0f;
+            FPostProcessSettings& Settings = SpawnedReviewPostProcessVolume->Settings;
+            Settings.bOverride_AutoExposureMinBrightness = true;
+            Settings.bOverride_AutoExposureMaxBrightness = true;
+            Settings.bOverride_AutoExposureBias = true;
+            Settings.AutoExposureMinBrightness = 2.0f;
+            Settings.AutoExposureMaxBrightness = 2.0f;
+            Settings.AutoExposureBias = ReviewExposureBias;
+            Settings.bOverride_MotionBlurAmount = true;
+            Settings.MotionBlurAmount = 0.0f;
+
+            UE_LOG(
+                LogTemp,
+                Display,
+                TEXT("MWORKS renderer forced daylight review exposure: bias=%.2f"),
+                ReviewExposureBias);
+        }
+    }
+}
+
+AMworksReviewCameraPawn* AMoSimSceneLibraryGameMode::FindOrSpawnReviewCamera(
+    UWorld* World,
+    const FActorSpawnParameters& SpawnParameters)
+{
+    if (!World)
+    {
+        return nullptr;
+    }
+
+    if (IsValid(ActiveReviewCameraPawn))
+    {
+        return ActiveReviewCameraPawn;
+    }
+
+    TArray<AActor*> ExistingReviewPawns;
+    UGameplayStatics::GetAllActorsOfClass(World, AMworksReviewCameraPawn::StaticClass(), ExistingReviewPawns);
+    for (AActor* Actor : ExistingReviewPawns)
+    {
+        if (AMworksReviewCameraPawn* ReviewPawn = Cast<AMworksReviewCameraPawn>(Actor))
+        {
+            ActiveReviewCameraPawn = ReviewPawn;
+            return ActiveReviewCameraPawn;
+        }
+    }
+
+    ActiveReviewCameraPawn = World->SpawnActor<AMworksReviewCameraPawn>(
+        AMworksReviewCameraPawn::StaticClass(),
+        FVector::ZeroVector,
+        FRotator::ZeroRotator,
+        SpawnParameters);
+
+    if (ActiveReviewCameraPawn)
+    {
+        ActiveReviewCameraPawn->SetActorLabel(TEXT("MWORKS_Review_Camera"));
+        UE_LOG(LogTemp, Display, TEXT("MWORKS scene-review spawned missing review camera pawn."));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("MWORKS scene-review failed to spawn review camera pawn."));
+    }
+
+    return ActiveReviewCameraPawn;
+}
+
+void AMoSimSceneLibraryGameMode::DisableImportedPawnInput(APawn* Pawn, APlayerController* PlayerController) const
+{
+    if (!Pawn || Pawn == ActiveReviewCameraPawn)
+    {
+        return;
+    }
+
+    Pawn->AutoPossessPlayer = EAutoReceiveInput::Disabled;
+    Pawn->AutoReceiveInput = EAutoReceiveInput::Disabled;
+    Pawn->DisableInput(PlayerController);
+}
+
+void AMoSimSceneLibraryGameMode::EnforceSceneReviewCamera(UWorld* World)
+{
+    if (!World)
+    {
+        return;
+    }
+
+    FActorSpawnParameters SpawnParameters;
+    SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+    AMworksReviewCameraPawn* ReviewPawn = FindOrSpawnReviewCamera(World, SpawnParameters);
+    APlayerController* PlayerController = UGameplayStatics::GetPlayerController(World, 0);
+
+    if (!ReviewPawn || !PlayerController)
+    {
+        return;
+    }
+
+    TArray<AActor*> Pawns;
+    UGameplayStatics::GetAllActorsOfClass(World, APawn::StaticClass(), Pawns);
+    int32 DisabledPawnCount = 0;
+    for (AActor* Actor : Pawns)
+    {
+        APawn* Pawn = Cast<APawn>(Actor);
+        if (Pawn && Pawn != ReviewPawn)
+        {
+            DisableImportedPawnInput(Pawn, PlayerController);
+            ++DisabledPawnCount;
+        }
+    }
+
+    const bool bNeedsPossess = PlayerController->GetPawn() != ReviewPawn;
+    if (bNeedsPossess)
+    {
+        PlayerController->Possess(ReviewPawn);
+    }
+    ReviewPawn->ApplyReviewInputMode(PlayerController);
+
+    const double NowSeconds = World->GetTimeSeconds();
+    if (bNeedsPossess || NowSeconds - LastReviewCameraPossessLogTimeSeconds > 5.0)
+    {
+        LastReviewCameraPossessLogTimeSeconds = NowSeconds;
+        const APawn* CurrentPawn = PlayerController->GetPawn();
+        const FString PawnName = CurrentPawn ? CurrentPawn->GetName() : TEXT("<none>");
+        UE_LOG(
+            LogTemp,
+            Display,
+            TEXT("MWORKS scene-review control enforced: pawn=%s review_pawn=%s disabled_imported_pawns=%d"),
+            *PawnName,
+            *ReviewPawn->GetName(),
+            DisabledPawnCount);
+    }
 }

@@ -519,7 +519,21 @@ top of a real imported scene, causing a false visual-review failure.
 Factory review must start inside the real factory navigation/review area. The
 launcher and review pawn now provide a Factory-specific default camera for
 `/Game/Maps/Demonstration`; do not work around a bad start point by disabling
-camera collision.
+camera collision. The previous `(-4750, 3850, 180) cm` review point was inside
+a CargoCar collision proxy, so the default Factory point now follows the
+map-authored `PlayerStart` area at approximately
+`(-5533, 2423, 190) cm`, which corresponds to truth coordinates
+`(-55.33, -24.23, 1.90) m`.
+
+Imported maps may carry their own GameMode or Pawn. `review-scene` must force
+`/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode` for Factory so the
+project review camera, no-preview-map flag, no-playback flag, and review
+lighting are active. It must also keep PlayerController possession locked to
+`MworksReviewCameraPawn` and disable imported Pawn input during scene review;
+Factory includes robot/forklift Pawns that can otherwise become the controlled
+subject. In logs, acceptance requires `MWORKS scene-review control enforced`,
+`pawn=MworksReviewCameraPawn`, `MWORKS review camera active`, and the
+preview/playback auto-spawn disabled messages.
 
 For scenes whose default camera position is wrong or whose interior is too dark
 for review, first use balanced camera and fill-light overrides. Do not enable
@@ -529,8 +543,8 @@ viewport to pure white.
 ```bash
 RESTART_UNREAL_GAME=1 \
 UNREAL_EXTRA_ARGS="/Game/Maps/Demonstration \
-  -MoSimReviewCameraX=-4750 -MoSimReviewCameraY=3850 -MoSimReviewCameraZ=180 \
-  -MoSimReviewCameraPitch=-8 -MoSimReviewCameraYaw=-34 -MoSimReviewCameraRoll=0 \
+  -MoSimReviewCameraX=-5533 -MoSimReviewCameraY=2423 -MoSimReviewCameraZ=190 \
+  -MoSimReviewCameraPitch=-6 -MoSimReviewCameraYaw=0 -MoSimReviewCameraRoll=0 \
   -MoSimReviewHeadLightIntensity=8 -MoSimReviewHeadLightRadius=25000 \
   -MoSimReviewSunIntensity=12 -MoSimReviewSkyLightIntensity=3" \
 Scripts/UE5/open_unreal_renderer.sh review-scene

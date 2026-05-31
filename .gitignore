@@ -113,6 +113,13 @@ Docs/Skills/Unreal/mcp/**/Content/**/*.umap
 # default, then temporarily unignore one reviewed batch when committing it.
 References/Agent/
 Docs/Skills/Unreal/
+!Docs/Skills/Unreal/
+Docs/Skills/Unreal/*
+!Docs/Skills/Unreal/mosim-epic/
+!Docs/Skills/Unreal/mosim-epic/**
+!Docs/Skills/Unreal/mosim-unreal/
+!Docs/Skills/Unreal/mosim-unreal/**
+Docs/Skills/Unreal/**/__pycache__/
 References/Log/
 References/Sunray/
 References/Lab/Fast-Racing/src/thirdparty/MavLinkCom/MavLinkComGenerator/obj/

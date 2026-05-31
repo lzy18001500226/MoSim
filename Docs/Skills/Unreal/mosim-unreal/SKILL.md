@@ -132,15 +132,28 @@ only when intentionally testing MWORKS preview-map playback.
 For Factory review, start inside `/Game/Maps/Demonstration` with camera
 collision still enabled. The launcher injects the Factory camera default when no
 manual camera override is supplied; do not use `-MoSimNoReviewCollision` to get
-past an exterior start point.
+past an exterior start point. The current Factory default is the map-authored
+`PlayerStart` area, approximately `(-5533, 2423, 190) cm` in Unreal coordinates
+or `(-55.33, -24.23, 1.90) m` in exported truth coordinates. Do not restore the
+older `(-4750, 3850, 180) cm` point because it intersects a CargoCar collision
+proxy and blocks entry.
+
+For imported maps that define their own GameMode, `review-scene` must force
+`/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode`; otherwise the map may
+spawn its own Pawn and bypass the MoSim review camera/collision/log contract.
+For maps with authored robot/vehicle Pawns, review mode must also keep
+PlayerController possession on `MworksReviewCameraPawn` and disable imported
+Pawn input. Treat `MWORKS scene-review control enforced:
+pawn=MworksReviewCameraPawn... disabled_imported_pawns=N` as the log evidence
+that map-local Pawns are not controlling the review session.
 
 Manual map review should prefer white/daytime visibility. `review-scene` also
 supports balanced camera/fill-light overrides such as:
 
 ```bash
 UNREAL_EXTRA_ARGS="/Game/Maps/Demonstration \
-  -MoSimReviewCameraX=-4750 -MoSimReviewCameraY=3850 -MoSimReviewCameraZ=180 \
-  -MoSimReviewCameraPitch=-8 -MoSimReviewCameraYaw=-34 \
+  -MoSimReviewCameraX=-5533 -MoSimReviewCameraY=2423 -MoSimReviewCameraZ=190 \
+  -MoSimReviewCameraPitch=-6 -MoSimReviewCameraYaw=0 \
   -MoSimReviewHeadLightIntensity=8 -MoSimReviewHeadLightRadius=25000" \
 Scripts/UE5/open_unreal_renderer.sh review-scene
 ```

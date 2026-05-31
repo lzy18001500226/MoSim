@@ -65,7 +65,7 @@ void AMworksReviewCameraPawn::BeginPlay()
 
     if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
     {
-        SetReviewInputMode(PlayerController);
+        ApplyReviewInputMode(PlayerController);
     }
 
     UE_LOG(
@@ -95,7 +95,7 @@ void AMworksReviewCameraPawn::PossessedBy(AController* NewController)
 
     if (APlayerController* PlayerController = Cast<APlayerController>(NewController))
     {
-        SetReviewInputMode(PlayerController);
+        ApplyReviewInputMode(PlayerController);
     }
 }
 
@@ -105,7 +105,7 @@ void AMworksReviewCameraPawn::PawnClientRestart()
 
     if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
     {
-        SetReviewInputMode(PlayerController);
+        ApplyReviewInputMode(PlayerController);
     }
 }
 
@@ -142,8 +142,8 @@ void AMworksReviewCameraPawn::ApplySceneDefaultCameraPreset()
     const FString MapName = World->GetMapName();
     if (MapName.Contains(TEXT("Demonstration")))
     {
-        InitialCameraLocation = FVector(-4750.0f, 3850.0f, 180.0f);
-        InitialCameraRotation = FRotator(-8.0f, -34.0f, 0.0f);
+        InitialCameraLocation = FVector(-5533.0f, 2423.0f, 190.0f);
+        InitialCameraRotation = FRotator(-6.0f, 0.0f, 0.0f);
     }
 }
 
@@ -401,7 +401,7 @@ void AMworksReviewCameraPawn::ApplyReviewInput(float DeltaSeconds)
     LogReviewCameraMotionIfNeeded(bMoved, bRotated);
 }
 
-void AMworksReviewCameraPawn::SetReviewInputMode(APlayerController* PlayerController)
+void AMworksReviewCameraPawn::ApplyReviewInputMode(APlayerController* PlayerController)
 {
     if (!PlayerController)
     {

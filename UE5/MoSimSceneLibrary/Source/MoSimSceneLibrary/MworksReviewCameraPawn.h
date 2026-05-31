@@ -22,6 +22,7 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     virtual void PossessedBy(AController* NewController) override;
     virtual void PawnClientRestart() override;
+    void ApplyReviewInputMode(class APlayerController* PlayerController);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera")
     FVector InitialCameraLocation = FVector(-3600.0, -2800.0, 1450.0);
@@ -81,7 +82,6 @@ private:
     void ApplyReviewInput(float DeltaSeconds);
     float AxisFromKeys(class APlayerController* PlayerController, const FKey& PositiveKey, const FKey& NegativeKey) const;
     bool ComputeCollisionConstrainedDelta(const FVector& DesiredDelta, FVector& SafeDelta, FHitResult& BlockingHit);
-    void SetReviewInputMode(class APlayerController* PlayerController);
     void MoveForward(float Value);
     void MoveRight(float Value);
     void MoveUp(float Value);

@@ -125,16 +125,23 @@ else
     # shellcheck disable=SC2206
     EXTRA_ARGS_WIN=(${UNREAL_EXTRA_ARGS})
   fi
+  if [[ "${MODE}" == "review-scene" ]]; then
+    for Index in "${!EXTRA_ARGS_WIN[@]}"; do
+      if [[ "${EXTRA_ARGS_WIN[$Index]}" == "/Game/Maps/Demonstration" ]]; then
+        EXTRA_ARGS_WIN[$Index]="/Game/Maps/Demonstration?game=/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode"
+      fi
+    done
+  fi
   if [[ "${MODE}" == "review-scene" ]] &&
-     [[ " ${EXTRA_ARGS_WIN[*]} " == *" /Game/Maps/Demonstration "* ]] &&
+     [[ " ${EXTRA_ARGS_WIN[*]} " == *"/Game/Maps/Demonstration"* ]] &&
      [[ " ${EXTRA_ARGS_WIN[*]} " != *" -MoSimReviewCameraX="* ]] &&
      [[ " ${EXTRA_ARGS_WIN[*]} " != *" -MoSimReviewCameraLocation="* ]]; then
     EXTRA_ARGS_WIN+=(
-      "-MoSimReviewCameraX=-4750"
-      "-MoSimReviewCameraY=3850"
-      "-MoSimReviewCameraZ=180"
-      "-MoSimReviewCameraPitch=-8"
-      "-MoSimReviewCameraYaw=-34"
+      "-MoSimReviewCameraX=-5533"
+      "-MoSimReviewCameraY=2423"
+      "-MoSimReviewCameraZ=190"
+      "-MoSimReviewCameraPitch=-6"
+      "-MoSimReviewCameraYaw=0"
       "-MoSimReviewCameraRoll=0"
     )
   fi
