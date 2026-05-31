@@ -1,0 +1,351 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@/test/test-utils";
+import * as ticketConnect from "@/lib/api/facade/ticketConnect";
+
+// Mock useBreakpoint
+const mockUseBreakpoint = vi.fn();
+vi.mock("@/components/layout/useBreakpoint", () => ({
+  useBreakpoint: (...args: unknown[]) => mockUseBreakpoint(...args),
+}));
+
+vi.mock("@/lib/wasm-getters", async () => {
+  const wasmCore = await vi.importMock<typeof import("@/lib/wasm-core")>("@/lib/wasm-core");
+  return { ...wasmCore };
+});
+
+vi.mock("@/lib/api/facade/ticketConnect", () => ({
+  createTicket: vi.fn(),
+}));
+
+// Mock BlockEditor (lazy loaded)
+vi.mock("@/components/ui/block-editor", () => ({
+  default: ({
+    editable,
+  }: {
+    onChange?: (v: string) => void;
+    editable?: boolean;
+  }) => (
+    <div data-testid="block-editor" data-editable={editable}>
+      Mock Editor
+    </div>
+  ),
+}));
+
+// Mock RepositorySelect
+const mockRepositorySelectOnChange = vi.fn();
+vi.mock("@/components/common/RepositorySelect", () => ({
+  RepositorySelect: ({
+    value,
+    onChange,
+    placeholder,
+  }: {
+    value: number | null;
+    onChange: (v: number | null) => void;
+    placeholder?: string;
+  }) => {
+    mockRepositorySelectOnChange.mockImplementation(onChange);
+    return (
+      <select
+        data-testid="repository-select"
+        value={value ?? ""}
+        onChange={(e) =>
+          onChange(e.target.value ? Number(e.target.value) : null)
+        }
+      >
+        <option value="">{placeholder || "Select..."}</option>
+        <option value="1">my-repo</option>
+      </select>
+    );
+  },
+}));
+
+import { TicketCreateDialog } from "../TicketCreateDialog";
+
+function setMobile() {
+  mockUseBreakpoint.mockReturnValue({
+    breakpoint: "mobile",
+    isMobile: true,
+    isTablet: false,
+    isDesktop: false,
+    width: 375,
+  });
+}
+
+function setDesktop() {
+  mockUseBreakpoint.mockReturnValue({
+    breakpoint: "desktop",
+    isMobile: false,
+    isTablet: false,
+    isDesktop: true,
+    width: 1280,
+  });
+}
+
+describe("TicketCreateDialog", () => {
+  const defaultProps = {
+    open: true,
+    onOpenChange: vi.fn(),
+    onCreated: vi.fn(),
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    setDesktop();
+    vi.mocked(ticketConnect.createTicket).mockResolvedValue({
+      id: 1,
+      number: 1,
+      slug: "TICKET-1",
+      title: "Test Ticket",
+      content: "",
+      status: "todo" as const,
+      priority: "medium" as const,
+    });
+  });
+
+  describe("Rendering", () => {
+    it("renders all form fields when open", async () => {
+      render(<TicketCreateDialog {...defaultProps} />);
+
+      expect(
+        screen.getByPlaceholderText("Enter ticket title")
+      ).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(screen.getByTestId("block-editor")).toBeInTheDocument();
+      });
+    });
+
+    it("does not render when closed", () => {
+      render(<TicketCreateDialog {...defaultProps} open={false} />);
+
+      expect(
+        screen.queryByPlaceholderText("Enter ticket title")
+      ).not.toBeInTheDocument();
+    });
+
+    it("renders dialog title", () => {
+      render(<TicketCreateDialog {...defaultProps} />);
+
+      expect(
+        screen.getByRole("heading", { name: "Create Ticket" })
+      ).toBeInTheDocument();
+    });
+
+    it("renders sub-ticket title when parentTicketSlug is provided", () => {
+      render(<TicketCreateDialog {...defaultProps} parentTicketSlug="PROJ-42" />);
+
+      expect(screen.getByText("Create Sub-ticket")).toBeInTheDocument();
+    });
+  });
+
+  describe("Form validation", () => {
+    it("shows error when submitting without title", async () => {
+      render(<TicketCreateDialog {...defaultProps} />);
+
+      const submitButton = screen.getByRole("button", {
+        name: "Create Ticket",
+      });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("Title is required")).toBeInTheDocument();
+      });
+      expect(ticketConnect.createTicket).not.toHaveBeenCalled();
+    });
+
+    it("shows error when submitting without repository", async () => {
+      render(<TicketCreateDialog {...defaultProps} />);
+
+      const titleInput = screen.getByPlaceholderText("Enter ticket title");
+      fireEvent.change(titleInput, { target: { value: "Test Ticket" } });
+
+      const submitButton = screen.getByRole("button", {
+        name: "Create Ticket",
+      });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText("Repository is required")
+        ).toBeInTheDocument();
+      });
+      expect(ticketConnect.createTicket).not.toHaveBeenCalled();
+    });
+
+    it("clears error when user starts typing", async () => {
+      render(<TicketCreateDialog {...defaultProps} />);
+
+      const submitButton = screen.getByRole("button", {
+        name: "Create Ticket",
+      });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("Title is required")).toBeInTheDocument();
+      });
+
+      const titleInput = screen.getByPlaceholderText("Enter ticket title");
+      fireEvent.change(titleInput, { target: { value: "A" } });
+
+      expect(screen.queryByText("Title is required")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("Form submission", () => {
+    it("submits form with valid data", async () => {
+      render(<TicketCreateDialog {...defaultProps} />);
+
+      const titleInput = screen.getByPlaceholderText("Enter ticket title");
+      fireEvent.change(titleInput, { target: { value: "Test Ticket" } });
+
+      const repoSelect = screen.getByTestId("repository-select");
+      fireEvent.change(repoSelect, { target: { value: "1" } });
+
+      const submitButton = screen.getByRole("button", {
+        name: "Create Ticket",
+      });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(ticketConnect.createTicket).toHaveBeenCalledTimes(1);
+      });
+
+      const callArgs = vi.mocked(ticketConnect.createTicket).mock.calls[0];
+      const input = callArgs[1];
+      expect(input).toEqual(
+        expect.objectContaining({
+          title: "Test Ticket",
+          repository_id: 1,
+          priority: "medium",
+        })
+      );
+    });
+
+    it("calls onCreated callback after successful creation", async () => {
+      const onCreated = vi.fn();
+      render(<TicketCreateDialog {...defaultProps} onCreated={onCreated} />);
+
+      const titleInput = screen.getByPlaceholderText("Enter ticket title");
+      fireEvent.change(titleInput, { target: { value: "Test Ticket" } });
+
+      const repoSelect = screen.getByTestId("repository-select");
+      fireEvent.change(repoSelect, { target: { value: "1" } });
+
+      const submitButton = screen.getByRole("button", {
+        name: "Create Ticket",
+      });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(onCreated).toHaveBeenCalledWith(1, "TICKET-1");
+      });
+    });
+
+    it("includes parentSlug in API call for sub-tickets", async () => {
+      render(<TicketCreateDialog {...defaultProps} parentTicketSlug="PROJ-42" />);
+
+      const titleInput = screen.getByPlaceholderText("Enter ticket title");
+      fireEvent.change(titleInput, { target: { value: "Sub-task" } });
+
+      const repoSelect = screen.getByTestId("repository-select");
+      fireEvent.change(repoSelect, { target: { value: "1" } });
+
+      const submitButton = screen.getByRole("button", {
+        name: "Create Ticket",
+      });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(ticketConnect.createTicket).toHaveBeenCalledTimes(1);
+      });
+
+      const callArgs = vi.mocked(ticketConnect.createTicket).mock.calls[0];
+      const input = callArgs[1];
+      expect(input).toEqual(
+        expect.objectContaining({
+          title: "Sub-task",
+          parent_ticket_slug: "PROJ-42",
+        })
+      );
+    });
+
+    it("shows error message on API failure", async () => {
+      vi.mocked(ticketConnect.createTicket).mockRejectedValue(
+        new Error("Network error")
+      );
+
+      render(<TicketCreateDialog {...defaultProps} />);
+
+      const titleInput = screen.getByPlaceholderText("Enter ticket title");
+      fireEvent.change(titleInput, { target: { value: "Test Ticket" } });
+
+      const repoSelect = screen.getByTestId("repository-select");
+      fireEvent.change(repoSelect, { target: { value: "1" } });
+
+      const submitButton = screen.getByRole("button", {
+        name: "Create Ticket",
+      });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("Network error")).toBeInTheDocument();
+      });
+    });
+
+    it("closes dialog after successful creation", async () => {
+      const onOpenChange = vi.fn();
+      render(
+        <TicketCreateDialog {...defaultProps} onOpenChange={onOpenChange} />
+      );
+
+      const titleInput = screen.getByPlaceholderText("Enter ticket title");
+      fireEvent.change(titleInput, { target: { value: "Test Ticket" } });
+
+      const repoSelect = screen.getByTestId("repository-select");
+      fireEvent.change(repoSelect, { target: { value: "1" } });
+
+      const submitButton = screen.getByRole("button", {
+        name: "Create Ticket",
+      });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(onOpenChange).toHaveBeenCalledWith(false);
+      });
+    });
+  });
+
+  describe("Mobile responsive", () => {
+    beforeEach(() => {
+      setMobile();
+    });
+
+    it("uses compact min-height for block editor on mobile", () => {
+      render(<TicketCreateDialog {...defaultProps} />);
+
+      const editorWrapper = screen.getByTestId("block-editor").parentElement!;
+      expect(editorWrapper.className).toContain("min-h-[100px]");
+      expect(editorWrapper.className).not.toContain("min-h-[150px]");
+    });
+
+    it("title input is visible and accessible in mobile mode", () => {
+      render(<TicketCreateDialog {...defaultProps} />);
+
+      const titleInput = screen.getByPlaceholderText("Enter ticket title");
+      expect(titleInput).toBeInTheDocument();
+      expect(titleInput).toBeVisible();
+    });
+
+    it("uses full-width buttons on mobile", () => {
+      render(<TicketCreateDialog {...defaultProps} />);
+
+      const cancelButton = screen.getByRole("button", { name: "Cancel" });
+      const submitButton = screen.getByRole("button", {
+        name: "Create Ticket",
+      });
+
+      expect(cancelButton.className).toContain("w-full");
+      expect(submitButton.className).toContain("w-full");
+    });
+  });
+});

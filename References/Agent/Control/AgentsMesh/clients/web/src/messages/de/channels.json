@@ -1,0 +1,63 @@
+{
+  "channels": {
+    "emptyState": "Wähle einen Kanal, um zu chatten",
+    "emptyStateHint": "Wähle einen Kanal aus der Seitenleiste, um Nachrichten anzuzeigen und mit deinem Team zusammenzuarbeiten",
+    "sidebar": {
+      "searchPlaceholder": "Kanäle suchen...",
+      "createChannel": "Neuer Kanal",
+      "refresh": "Aktualisieren",
+      "showArchived": "Archivierte anzeigen",
+      "hideArchived": "Archivierte ausblenden",
+      "noChannels": "Noch keine Kanäle",
+      "noMatch": "Keine Kanäle gefunden",
+      "podsCount": "{count} Pods"
+    },
+    "createDialog": {
+      "title": "Kanal erstellen",
+      "name": "Kanalname",
+      "namePlaceholder": "Z.B. feature-auth, bug-fix-login",
+      "nameRequired": "Kanalname ist erforderlich",
+      "description": "Beschreibung",
+      "descriptionPlaceholder": "Worum geht es in diesem Kanal?",
+      "descriptionHint": "Optional",
+      "visibility": "Sichtbarkeit",
+      "failed": "Kanal konnte nicht erstellt werden"
+    },
+    "visibility": {
+      "public": "Öffentlich",
+      "private": "Privat"
+    },
+    "actions": {
+      "join": "Beitreten",
+      "leave": "Verlassen",
+      "joinToParticipate": "Treten Sie diesem Kanal bei, um Nachrichten anzuzeigen und teilzunehmen"
+    },
+    "members": {
+      "title": "Kanalmitglieder",
+      "current": "Mitglieder",
+      "available": "Mitglieder hinzufügen",
+      "searchPlaceholder": "Mitglieder suchen...",
+      "empty": "Keine Mitglieder"
+    },
+    "messages": {
+      "today": "Heute",
+      "yesterday": "Gestern",
+      "loadOlder": "Ältere Nachrichten laden",
+      "loading": "Laden...",
+      "noMessages": "Noch keine Nachrichten",
+      "startConversation": "Starte die Unterhaltung!",
+      "copyMessage": "Kopieren",
+      "editMessage": "Bearbeiten",
+      "deleteMessage": "Löschen",
+      "metadata": "Metadaten",
+      "edited": "bearbeitet",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "editHint": "Enter zum Speichern, Esc zum Abbrechen",
+      "deleteConfirmTitle": "Nachricht löschen",
+      "deleteConfirmDescription": "Möchten Sie diese Nachricht wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "delete": "Löschen",
+      "moreActions": "Mehr"
+    }
+  }
+}

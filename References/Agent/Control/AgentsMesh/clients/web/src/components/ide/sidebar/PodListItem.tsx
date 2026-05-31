@@ -1,0 +1,108 @@
+"use client";
+
+import { cn } from "@/lib/utils";
+import { getPodDisplayName } from "@/lib/pod-display-name";
+import { Pod } from "@/stores/pod";
+import { AgentStatusBadge } from "@/components/shared/AgentStatusBadge";
+import {
+  Square,
+  Terminal,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Loader2,
+  RefreshCw,
+} from "lucide-react";
+import { SidebarPodContextMenu } from "./SidebarPodContextMenu";
+
+const statusColors: Record<string, { bg: string; text: string; dot: string }> = {
+  initializing: { bg: "bg-yellow-500/10", text: "text-yellow-600 dark:text-yellow-400", dot: "bg-yellow-500" },
+  running: { bg: "bg-blue-500/10", text: "text-blue-600 dark:text-blue-400", dot: "bg-blue-500" },
+  paused: { bg: "bg-orange-500/10", text: "text-orange-600 dark:text-orange-400", dot: "bg-orange-500" },
+  disconnected: { bg: "bg-gray-500/10", text: "text-gray-600 dark:text-gray-400", dot: "bg-gray-500" },
+  orphaned: { bg: "bg-amber-500/10", text: "text-amber-600 dark:text-amber-400", dot: "bg-amber-500" },
+  completed: { bg: "bg-green-500/10", text: "text-green-600 dark:text-green-400", dot: "bg-green-500" },
+  terminated: { bg: "bg-gray-500/10", text: "text-gray-600 dark:text-gray-400", dot: "bg-gray-500" },
+  error: { bg: "bg-red-500/10", text: "text-red-600 dark:text-red-400", dot: "bg-red-500" },
+  failed: { bg: "bg-red-500/10", text: "text-red-600 dark:text-red-400", dot: "bg-red-500" },
+};
+
+function getStatusIcon(status: string) {
+  switch (status) {
+    case "initializing":
+      return <Clock className="w-3 h-3" />;
+    case "running":
+      return <Loader2 className="w-3 h-3 animate-spin" />;
+    case "orphaned":
+      return <RefreshCw className="w-3 h-3 animate-spin" />;
+    case "paused":
+      return <Square className="w-3 h-3" />;
+    case "terminated":
+      return <CheckCircle className="w-3 h-3" />;
+    case "failed":
+      return <XCircle className="w-3 h-3" />;
+    default:
+      return <Square className="w-3 h-3" />;
+  }
+}
+
+interface PodListItemProps {
+  pod: Pod;
+  isOpen: boolean;
+  onClick: () => void;
+  onTerminate: () => void;
+  onRename: () => void;
+  onShare: () => void;
+  onTogglePerpetual: (perpetual: boolean) => void;
+}
+
+export function PodListItem({ pod, isOpen, onClick, onTerminate, onRename, onShare, onTogglePerpetual }: PodListItemProps) {
+  const status = statusColors[pod.status] || statusColors.terminated;
+
+  return (
+    <SidebarPodContextMenu
+      pod={pod}
+      onRename={onRename}
+      onShare={onShare}
+      onTerminate={onTerminate}
+      onTogglePerpetual={onTogglePerpetual}
+    >
+      <div
+        data-testid="pod-list-item"
+        data-pod-key={pod.pod_key}
+        className={cn(
+          "group flex items-center gap-2 px-3 py-2 hover:bg-muted/50 cursor-pointer",
+          isOpen && "bg-muted/30"
+        )}
+        onClick={onClick}
+      >
+        <div className={cn("flex items-center justify-center", status.text)}>
+          {getStatusIcon(pod.status)}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm truncate font-mono">
+              {getPodDisplayName(pod)}
+            </span>
+            <AgentStatusBadge
+              agentStatus={pod.agent_status ?? ''}
+              podStatus={pod.status}
+              variant="dot"
+            />
+            {isOpen && (
+              <Terminal className="w-3 h-3 text-primary flex-shrink-0" />
+            )}
+          </div>
+          {pod.created_by?.name && (
+            <p className="text-xs text-muted-foreground truncate">
+              {pod.created_by.name}
+            </p>
+          )}
+        </div>
+      </div>
+    </SidebarPodContextMenu>
+  );
+}
+
+export { statusColors };

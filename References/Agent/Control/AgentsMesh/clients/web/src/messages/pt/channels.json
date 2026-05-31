@@ -1,0 +1,63 @@
+{
+  "channels": {
+    "emptyState": "Selecione um canal para começar a conversar",
+    "emptyStateHint": "Escolha um canal na barra lateral para ver mensagens e colaborar com sua equipe",
+    "sidebar": {
+      "searchPlaceholder": "Pesquisar canais...",
+      "createChannel": "Novo canal",
+      "refresh": "Atualizar",
+      "showArchived": "Mostrar arquivados",
+      "hideArchived": "Ocultar arquivados",
+      "noChannels": "Nenhum canal ainda",
+      "noMatch": "Nenhum canal encontrado",
+      "podsCount": "{count} pods"
+    },
+    "createDialog": {
+      "title": "Criar canal",
+      "name": "Nome do canal",
+      "namePlaceholder": "Ex: feature-auth, bug-fix-login",
+      "nameRequired": "O nome do canal é obrigatório",
+      "description": "Descrição",
+      "descriptionPlaceholder": "Sobre o que é este canal?",
+      "descriptionHint": "Opcional",
+      "visibility": "Visibilidade",
+      "failed": "Falha ao criar canal"
+    },
+    "visibility": {
+      "public": "Público",
+      "private": "Privado"
+    },
+    "actions": {
+      "join": "Entrar",
+      "leave": "Sair",
+      "joinToParticipate": "Entre neste canal para ver mensagens e participar"
+    },
+    "members": {
+      "title": "Membros do canal",
+      "current": "Membros",
+      "available": "Adicionar membros",
+      "searchPlaceholder": "Pesquisar membros...",
+      "empty": "Sem membros"
+    },
+    "messages": {
+      "today": "Hoje",
+      "yesterday": "Ontem",
+      "loadOlder": "Carregar mensagens anteriores",
+      "loading": "Carregando...",
+      "noMessages": "Nenhuma mensagem ainda",
+      "startConversation": "Inicie a conversa!",
+      "copyMessage": "Copiar",
+      "editMessage": "Editar",
+      "deleteMessage": "Excluir",
+      "metadata": "Metadados",
+      "edited": "editado",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "editHint": "Enter para salvar, Esc para cancelar",
+      "deleteConfirmTitle": "Excluir mensagem",
+      "deleteConfirmDescription": "Tem certeza de que deseja excluir esta mensagem? Esta ação não pode ser desfeita.",
+      "delete": "Excluir",
+      "moreActions": "Mais"
+    }
+  }
+}

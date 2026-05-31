@@ -1,0 +1,434 @@
+{
+  "agentpod": {
+    "title": "AgentPod",
+    "pods": "Pod",
+    "newPod": "新規Pod",
+    "runners": "ランナー",
+    "noRunnersOnline": "オンラインのランナーがありません",
+    "selectAgent": "エージェントを選択",
+    "selectRepository": "リポジトリを選択",
+    "prompt": "初期プロンプト",
+    "status": {
+      "initializing": "初期化中",
+      "running": "実行中",
+      "paused": "一時停止",
+      "terminated": "終了",
+      "error": "エラー"
+    }
+  },
+  "pods": {
+    "status": {
+      "initializing": "Initializing",
+      "running": "Running",
+      "paused": "Paused",
+      "disconnected": "Disconnected",
+      "orphaned": "Reconnecting",
+      "completed": "Completed",
+      "terminated": "Terminated",
+      "error": "Error",
+      "failed": "Failed"
+    }
+  },
+  "mesh": {
+    "title": "AgentsMesh",
+    "channels": "チャンネル",
+    "newChannel": "新規チャンネル",
+    "topology": "トポロジー",
+    "messages": "メッセージ",
+    "sendMessage": "メッセージを送信...",
+    "page": {
+      "title": "Mesh",
+      "subtitle": "マルチエージェント協調ネットワークトポロジー",
+      "activePods": "{count}個のアクティブPod",
+      "channelsCount": "{count}個のチャンネル",
+      "bindingsCount": "{count}個のバインディング",
+      "refresh": "更新",
+      "dismiss": "閉じる",
+      "updating": "更新中..."
+    },
+    "legend": {
+      "title": "凡例",
+      "running": "実行中",
+      "initializing": "初期化中",
+      "terminated": "終了",
+      "failed": "失敗",
+      "channel": "チャンネル",
+      "activeBinding": "アクティブバインディング",
+      "pendingBinding": "保留中バインディング"
+    },
+    "channelList": {
+      "title": "チャンネル",
+      "showArchived": "アーカイブを表示",
+      "hideArchived": "アーカイブを非表示",
+      "noChannels": "チャンネルが見つかりません",
+      "archived": "アーカイブ済み",
+      "archive": "アーカイブ",
+      "unarchive": "アーカイブ解除"
+    },
+    "messageInput": {
+      "placeholder": "メッセージを入力...",
+      "hint": "Enterで送信、Shift+Enterで改行"
+    },
+    "mention": {
+      "members": "メンバー",
+      "pods": "Pods"
+    },
+    "ticket": "チケット",
+    "contextMenu": {
+      "openTerminal": "ターミナルを開く",
+      "viewTicket": "チケット {slug} を表示",
+      "rename": "名前を変更",
+      "terminatePod": "Pod を終了",
+      "terminateTitle": "Pod を終了",
+      "terminateDescription": "この Pod を終了してもよろしいですか？この操作は取り消せません。",
+      "terminateConfirm": "終了"
+    },
+    "runnerGroup": {
+      "online": "オンライン",
+      "offline": "オフライン",
+      "podCount": "{count} Pod"
+    },
+    "channelPodManager": {
+      "title": "チャンネル Pod",
+      "description": "このチャンネルの Pod を管理",
+      "joined": "参加済み",
+      "available": "利用可能",
+      "empty": "アクティブな Pod がありません"
+    }
+  },
+  "tickets": {
+    "title": "チケット",
+    "newTicket": "新規チケット",
+    "board": "ボード",
+    "list": "リスト",
+    "backlog": "バックログ",
+    "todo": "To Do",
+    "inProgress": "進行中",
+    "inReview": "レビュー中",
+    "done": "完了",
+    "searchPlaceholder": "チケットを検索...",
+    "ticketCount": "件のチケット",
+    "clear": "クリア",
+    "view": "表示",
+    "filters": {
+      "status": "ステータス",
+      "priority": "優先度",
+      "repository": "リポジトリ",
+      "noRepository": "リポジトリなし",
+      "showMore": "もっと見る",
+      "showLess": "折りたたむ"
+    },
+    "emptyState": {
+      "title": "チケットがありません",
+      "noMatch": "フィルターに一致するチケットがありません",
+      "createFirst": "最初のチケットを作成して始めましょう"
+    },
+    "moreTickets": "+{count}件",
+    "listView": {
+      "id": "ID",
+      "titleColumn": "タイトル",
+      "status": "ステータス",
+      "priority": "優先度",
+      "assignee": "担当者",
+      "created": "作成日",
+      "noTickets": "チケットが見つかりません。サイドバーのフィルターを使用するか、新しいチケットを作成してください。"
+    },
+    "kanban": {
+      "noTickets": "チケットなし",
+      "dropHere": "ここにドロップ"
+    },
+    "priority": {
+      "none": "優先度なし",
+      "low": "低",
+      "medium": "中",
+      "high": "高",
+      "urgent": "緊急",
+      "unknown": "不明"
+    },
+    "status": {
+      "backlog": "バックログ",
+      "todo": "To Do",
+      "in_progress": "進行中",
+      "in_review": "レビュー中",
+      "done": "完了",
+      "unknown": "不明"
+    },
+    "createDialog": {
+      "title": "Create Ticket",
+      "createSubTicket": "Create Sub-ticket",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Enter ticket title",
+      "titleRequired": "Title is required",
+      "repositoryRequired": "Repository is required",
+      "createFailed": "Failed to create ticket",
+      "repository": "Repository",
+      "selectRepository": "Select a repository...",
+      "content": "Content",
+      "submit": "Create Ticket",
+      "moreOptions": "その他のオプション",
+      "labelsPlaceholder": "ラベルを追加..."
+    },
+    "detail": {
+      "retry": "Retry",
+      "notFound": "Ticket not found",
+      "content": "Content",
+      "subTickets": "Sub-tickets",
+      "related": "Related",
+      "commits": "Commits",
+      "actions": "Actions",
+      "details": "Details",
+      "dueDate": "Due Date",
+      "repository": "Repository",
+      "noRepository": "リポジトリなし",
+      "assignees": "Assignees",
+      "noAssignees": "No assignees",
+      "timestamps": "Timestamps",
+      "created": "Created",
+      "updated": "Updated",
+      "deleteTicket": "Delete Ticket",
+      "deleteConfirmation": "Are you sure you want to delete ticket {slug}? This action cannot be undone.",
+      "labels": "Labels",
+      "timeline": "Timeline",
+      "started": "Started",
+      "completed": "Completed",
+      "viewFullDetails": "View Full Details",
+      "dangerZone": "危険ゾーン",
+      "deleteWarning": "この操作は取り消せません。",
+      "linked": "リンク済み",
+      "noLinkedItems": "リンクされた項目はまだありません。"
+    },
+    "podPanel": {
+      "activeCount": "{count} active",
+      "newPod": "実行",
+      "createNewPod": "Create New Pod",
+      "runner": "Runner",
+      "selectRunner": "Select a runner...",
+      "selectRunnerRequired": "Please select a runner",
+      "model": "Model",
+      "permissionMode": "Permission Mode",
+      "permissionDefault": "Default",
+      "permissionPlan": "Plan Mode",
+      "permissionAutoApprove": "Auto-approve (Dangerous)",
+      "prompt": "Initial Prompt (optional)",
+      "promptPlaceholder": "Work on ticket: {title}",
+      "creating": "Creating...",
+      "createPod": "Create Pod",
+      "createFailed": "Failed to create pod",
+      "previousPods": "{count} previous pod(s)",
+      "noPods": "No pods for this ticket yet",
+      "noRunners": "No online runners available",
+      "connect": "Connect",
+      "openInNewTab": "Open in new tab",
+      "started": "Started"
+    }
+  },
+  "workspace": {
+    "title": "ワークスペース",
+    "searchPlaceholder": "Podを検索...",
+    "newPod": "新規Pod",
+    "noTerminalsOpen": "No terminals open",
+    "noTerminalsDescription": "Click on a pod in the sidebar to open its terminal, or create a new pod to get started.",
+    "createNewPod": "Create New Pod",
+    "podCreated": "Pod created! Waiting for it to start...",
+    "podOpened": "Pod opened",
+    "filters": {
+      "mine": "自分の",
+      "org": "組織",
+      "completed": "完了",
+      "error": "エラー"
+    },
+    "emptyState": {
+      "title": "Podがありません",
+      "description": "最初のPodを作成して始めましょう",
+      "createFirst": "Podを作成",
+      "noMatch": "検索に一致するPodがありません",
+      "noFiltered": "{filter}のPodがありません"
+    },
+    "runners": {
+      "title": "Runner",
+      "online": "オンライン",
+      "noRunners": "登録されたRunnerがありません"
+    },
+    "terminateDialog": {
+      "title": "Podを終了",
+      "description": "このPodを終了してもよろしいですか？この操作は取り消せません。実行中のすべてのプロセスが停止されます。",
+      "cancel": "キャンセル",
+      "confirm": "終了"
+    },
+    "contextMenu": {
+      "rename": "名前を変更",
+      "terminate": "終了",
+      "enablePerpetual": "永続モードを有効にする",
+      "disablePerpetual": "永続モードを無効にする"
+    },
+    "renameDialog": {
+      "title": "Pod の名前を変更",
+      "placeholder": "表示名を入力",
+      "hint": "空にするとデフォルト名が使用されます。",
+      "cancel": "キャンセル",
+      "confirm": "保存"
+    },
+    "loadMore": "さらに読み込む",
+    "pod": {
+      "status": "ステータス",
+      "agent": "エージェント",
+      "repository": "リポジトリ",
+      "branch": "ブランチ",
+      "created": "作成日時",
+      "duration": "期間",
+      "actions": {
+        "open": "開く",
+        "terminate": "終了",
+        "restart": "再起動",
+        "logs": "ログを表示"
+      }
+    },
+    "modal": {
+      "title": "Create New Pod",
+      "agent": "Agent",
+      "selectAgent": "Select an agent...",
+      "selectRunner": "Select a runner...",
+      "repositoryOptional": "Repository (optional)",
+      "selectRepository": "Select a repository...",
+      "branch": "Branch",
+      "branchPlaceholder": "Enter branch name (e.g., main)",
+      "promptOptional": "Initial Prompt (optional)",
+      "promptPlaceholder": "Enter an initial prompt for the agent...",
+      "creating": "Creating...",
+      "createPod": "Create Pod"
+    }
+  },
+  "commandPalette": {
+    "placeholder": "コマンドまたは検索を入力...",
+    "searching": "検索中...",
+    "noResults": "結果が見つかりません。",
+    "navigation": "ナビゲーション",
+    "actions": "アクション",
+    "goToWorkspace": "ワークスペースへ移動",
+    "workspaceDescription": "ターミナルワークスペース",
+    "goToTickets": "チケットへ移動",
+    "ticketsDescription": "チケットの表示と管理",
+    "goToMesh": "AgentsMeshへ移動",
+    "meshDescription": "ネットワークトポロジー",
+    "goToChannels": "Go to Channels",
+    "channelsDescription": "Team collaboration channels",
+    "goToRepositories": "リポジトリへ移動",
+    "repositoriesDescription": "リポジトリの管理",
+    "goToRunners": "Runnerへ移動",
+    "runnersDescription": "コンピュートリソースの管理",
+    "goToSettings": "設定へ移動",
+    "settingsDescription": "組織設定",
+    "createNewPod": "新しいPodを作成",
+    "createPodDescription": "新しいエージェントPodを開始",
+    "createNewTicket": "新しいチケットを作成",
+    "createTicketDescription": "新しいタスクまたは課題を作成",
+    "signOut": "ログアウト",
+    "signOutDescription": "アカウントからログアウト",
+    "navigate": "移動",
+    "select": "選択",
+    "toOpen": "で開く"
+  },
+  "relayStatus": {
+    "web": "Web",
+    "relay": "Relay",
+    "runner": "Runner",
+    "connected": "接続済み",
+    "connecting": "接続中",
+    "disconnected": "切断",
+    "error": "エラー",
+    "unknown": "不明"
+  },
+  "terminalTabs": {
+    "singleView": "シングルビュー",
+    "twoColumns": "2列",
+    "twoRows": "2行",
+    "grid2x2": "2x2グリッド",
+    "fullscreen": "フルスクリーン"
+  },
+  "terminalToolbar": {
+    "clearScreen": "画面クリア",
+    "font": "フォント",
+    "open": "Open keyboard toolbar",
+    "close": "Close",
+    "fontDecrease": "Decrease font size",
+    "fontIncrease": "Increase font size",
+    "scrollToBottom": "最下部にスクロール"
+  },
+  "mobile": {
+    "more": "その他",
+    "drawer": {
+      "navigationMenu": "ナビゲーションメニュー",
+      "organization": "組織",
+      "navigation": "ナビゲーション",
+      "signOut": "サインアウト"
+    },
+    "menu": {
+      "gitConnections": "Git 接続",
+      "profile": "プロフィール",
+      "theme": "テーマ",
+      "theme_light": "ライト",
+      "theme_dark": "ダーク",
+      "theme_solarized_light": "Solarized ライト",
+      "theme_solarized_dark": "Solarized ダーク",
+      "theme_system": "システム"
+    }
+  },
+  "support": {
+    "title": "サポートチケット",
+    "description": "質問やフィードバックを送信し、リクエストを追跡します",
+    "create": "新規チケット",
+    "createDescription": "問題を説明してください。折り返しご連絡いたします",
+    "submit": "送��",
+    "submitting": "送信中...",
+    "cancel": "キャンセル",
+    "send": "送信",
+    "sending": "送信中...",
+    "attach": "添付",
+    "replyPlaceholder": "返信を入力...",
+    "empty": "サ���ートチケットはまだありません",
+    "createFirst": "最初のチケットを作成",
+    "notFound": "チケットが見つかりません",
+    "backToList": "チケット一覧に戻る",
+    "retry": "再試行",
+    "download": "ダウン��ード",
+    "downloadFailed": "添付ファイルのダウンロードに失��しました",
+    "fileTooLarge": "ファイルが最大サイズ ({max}) を超えています",
+    "filter": {
+      "all": "すべて"
+    },
+    "status": {
+      "open": "未対応",
+      "in_progress": "対応中",
+      "resolved": "解決済み",
+      "closed": "クローズ"
+    },
+    "category": {
+      "bug": "バグ報告",
+      "feature_request": "機能リクエスト",
+      "usage_question": "使い方の質問",
+      "account": "アカウント",
+      "other": "その他"
+    },
+    "priority": {
+      "low": "���",
+      "medium": "中",
+      "high": "高"
+    },
+    "fields": {
+      "title": "タイトル",
+      "titlePlaceholder": "問��の概要を簡潔に",
+      "category": "カテゴリ",
+      "priority": "優先���",
+      "content": "説明",
+      "contentPlaceholder": "問題を詳しく説明してください...",
+      "attachments": "添付ファイル",
+      "addFiles": "ファイルを追加"
+    },
+    "validation": {
+      "required": "タイトルと説明は必須です"
+    },
+    "error": {
+      "createFailed": "チケットの作成に失敗し��した。もう一度お試しください。"
+    }
+  }
+}

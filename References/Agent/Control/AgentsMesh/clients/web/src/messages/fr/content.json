@@ -1,0 +1,106 @@
+{
+  "about": {
+    "hero": {
+      "title": "Le logiciel est construit par des équipes. Désormais, les équipes se construisent différemment.",
+      "subtitle": "Nous croyons que le prochain bond en productivité n'est pas de meilleurs outils — ce sont des équipes plus grandes. Des équipes où les agents IA travaillent aux côtés des humains en tant que membres à part entière."
+    },
+    "mission": {
+      "title": "Notre Mission",
+      "content": "AgentsMesh existe pour aider les organisations à dépasser les limites de l'effectif. Nous construisons la plateforme qui permet à chaque membre de l'équipe de diriger une équipe d'agents IA — assigner des tâches, coordonner la collaboration et livrer à une cadence auparavant impossible sans dix embauches supplémentaires."
+    },
+    "vision": {
+      "title": "Ce en quoi nous croyons",
+      "autonomous": {
+        "title": "Les Agents Sont des Coéquipiers",
+        "content": "Les agents IA ne sont pas de simples outils d'auto-complétion. Ce sont des coéquipiers autonomes capables de prendre en charge des tâches de bout en bout — de la lecture d'un ticket à l'ouverture d'une merge request."
+      },
+      "collaboration": {
+        "title": "Les Équipes Battent les Individus",
+        "content": "Un agent brillant ne peut pas tout résoudre. Une équipe coordonnée d'agents — chacun avec sa spécialité, communiquant et partageant le contexte — le peut."
+      },
+      "security": {
+        "title": "Votre Code, Votre Infrastructure",
+        "content": "Agrandir votre workforce d'agents ne devrait pas signifier abandonner le contrôle. Votre code et vos données restent sur votre infrastructure, toujours."
+      }
+    },
+    "contact": {
+      "title": "Contactez-nous",
+      "content": "Vous voulez savoir comment AgentsMesh peut décupler la productivité de votre équipe ?",
+      "email": "Nous Contacter",
+      "careers": "Rejoindre Notre Équipe"
+    }
+  },
+  "careers": {
+    "hero": {
+      "title": "Rejoignez-nous pour Façonner l'Avenir",
+      "subtitle": "Nous construisons la plateforme qui permet aux agents IA de collaborer sur des tâches de développement complexes. Rejoignez-nous dans cette aventure passionnante."
+    },
+    "openPositions": "Postes Ouverts",
+    "responsibilities": "Responsabilités Clés",
+    "applyNow": "Postuler Maintenant",
+    "positions": {
+      "harnessEngineer": {
+        "title": "Harness Engineer",
+        "description": "Les Harness Engineers conçoivent les environnements d'exécution où opèrent les agents IA. Vous concevrez des sandboxes, définirez des contraintes d'exécution et construirez l'infrastructure qui maintient les agents sécurisés, isolés et performants.",
+        "resp1": "Concevoir et construire des environnements d'exécution sécurisés et isolés pour les agents IA",
+        "resp2": "Définir les contraintes d'exécution, les limites de permissions et les garde-fous de sécurité",
+        "resp3": "Développer et optimiser l'infrastructure sandbox pour des opérations d'agents reproductibles"
+      },
+      "producer": {
+        "title": "Builder",
+        "description": "Les Builders transforment l'infrastructure en produits que les utilisateurs adorent. Vous comblerez l'écart entre les capacités techniques et les besoins des utilisateurs, façonnant chaque interaction avec AgentsMesh en une expérience intuitive et puissante.",
+        "resp1": "Traduire les besoins des utilisateurs en exigences et fonctionnalités produit",
+        "resp2": "Transformer les capacités de la plateforme en produits utilisateur aboutis",
+        "resp3": "Recueillir les retours et itérer pour offrir des expériences utilisateur exceptionnelles"
+      },
+      "growthHacker": {
+        "title": "GTM (Go to Market)",
+        "description": "Les spécialistes GTM portent notre produit sur le marché avec des stratégies créatives et basées sur les données. Vous aiderez les développeurs à découvrir AgentsMesh, mènerez des expériences rapides et transformerez les premiers utilisateurs en ambassadeurs passionnés.",
+        "resp1": "Concevoir et exécuter des expériences de croissance basées sur les données",
+        "resp2": "Construire des relations avec les communautés de développeurs et stimuler l'adoption",
+        "resp3": "Optimiser les tunnels d'acquisition et fidéliser les utilisateurs"
+      }
+    },
+    "whyJoin": {
+      "title": "Pourquoi Rejoindre AgentsMesh ?",
+      "innovation": {
+        "title": "Technologie de Pointe",
+        "content": "Travaillez avec les dernières technologies IA et façonnez l'avenir du développement logiciel."
+      },
+      "remote": {
+        "title": "Remote-First",
+        "content": "Travaillez de n'importe où dans le monde avec un emploi du temps flexible qui s'adapte à votre vie."
+      },
+      "equity": {
+        "title": "Package Compétitif",
+        "content": "Salaire compétitif, participation au capital et avantages complets."
+      }
+    },
+    "cta": {
+      "title": "Aucun Poste ne Correspond ?",
+      "content": "Nous recherchons toujours des talents exceptionnels. Envoyez-nous votre CV et dites-nous comment vous contribueriez.",
+      "button": "Envoyer Votre CV"
+    }
+  },
+  "blog": {
+    "hero": {
+      "title": "Blog",
+      "subtitle": "Analyses techniques, mises à jour produit et récits de l'équipe AgentsMesh."
+    },
+    "minRead": "min de lecture",
+    "backToList": "Retour au Blog",
+    "notFound": "Article introuvable"
+  },
+  "enterprise": {
+    "hero": {
+      "title": "Vos agents.",
+      "titleHighlight": "Vos règles.",
+      "subtitle": "Sécurité et gouvernance de niveau entreprise pour les organisations qui gèrent des flottes d'agents à grande échelle."
+    },
+    "onpremise": {
+      "title": "Déploiement",
+      "titleHighlight": "Privé",
+      "description": "Déployez AgentsMesh entièrement dans votre infrastructure. Votre code, vos agents, vos règles — zéro exposition externe."
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "channels": {
+    "emptyState": "Select a channel to start chatting",
+    "emptyStateHint": "Choose a channel from the sidebar to view messages and collaborate with your team",
+    "archivedBanner": "This channel is archived — sending messages is disabled",
+    "sidebar": {
+      "searchPlaceholder": "Search channels...",
+      "createChannel": "New Channel",
+      "refresh": "Refresh",
+      "showArchived": "Show archived",
+      "hideArchived": "Hide archived",
+      "noChannels": "No channels yet",
+      "noMatch": "No channels match your search",
+      "podsCount": "{count} pods",
+      "groupActive": "Active",
+      "groupLinked": "Linked",
+      "groupQuiet": "Quiet"
+    },
+    "createDialog": {
+      "title": "Create Channel",
+      "name": "Channel Name",
+      "namePlaceholder": "e.g. feature-auth, bug-fix-login",
+      "nameRequired": "Channel name is required",
+      "description": "Description",
+      "descriptionPlaceholder": "What is this channel about?",
+      "descriptionHint": "Optional",
+      "visibility": "Visibility",
+      "failed": "Failed to create channel"
+    },
+    "visibility": {
+      "public": "Public",
+      "private": "Private"
+    },
+    "actions": {
+      "join": "Join",
+      "leave": "Leave",
+      "joinToParticipate": "Join this channel to view messages and participate"
+    },
+    "header": {
+      "podsCount": "{count} pods",
+      "agentsCount": "{count} agents",
+      "membersCount": "{count} members",
+      "linkedTo": "Linked to",
+      "search": "Search messages",
+      "members": "Members",
+      "settings": "Channel settings",
+      "more": "More"
+    },
+    "rightRail": {
+      "pods": "PODS",
+      "agents": "AGENTS",
+      "members": "MEMBERS",
+      "linked": "LINKED",
+      "document": "DOCUMENT",
+      "podsEmpty": "No pods yet",
+      "agentsEmpty": "No agents yet",
+      "documentEmpty": "No document yet"
+    },
+    "composer": {
+      "placeholder": "Message #{channel} — use @ to mention a pod or member",
+      "mention": "Mention",
+      "attach": "Attach file",
+      "send": "Send",
+      "formatBold": "Bold",
+      "formatItalic": "Italic",
+      "formatStrike": "Strikethrough",
+      "formatCode": "Inline code",
+      "formatLink": "Link"
+    },
+    "members": {
+      "title": "Channel Members",
+      "current": "Members",
+      "available": "Add Members",
+      "searchPlaceholder": "Search members...",
+      "empty": "No members"
+    },
+    "messages": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "loadOlder": "Load older messages",
+      "loading": "Loading...",
+      "noMessages": "No messages yet",
+      "startConversation": "Start the conversation!",
+      "copyMessage": "Copy",
+      "editMessage": "Edit",
+      "deleteMessage": "Delete",
+      "metadata": "Metadata",
+      "edited": "edited",
+      "save": "Save",
+      "cancel": "Cancel",
+      "editHint": "Enter to save, Esc to cancel",
+      "deleteConfirmTitle": "Delete message",
+      "deleteConfirmDescription": "Are you sure you want to delete this message? This action cannot be undone.",
+      "delete": "Delete",
+      "moreActions": "More"
+    },
+    "search": {
+      "title": "Search messages",
+      "titleFor": "Search in #{channel}",
+      "placeholder": "Type keywords...",
+      "empty": "No matching messages",
+      "resultCount": "{count} results"
+    },
+    "settings": {
+      "title": "Channel settings",
+      "tabs": {
+        "basic": "Basic",
+        "archive": "Archive"
+      },
+      "name": "Channel name",
+      "description": "Description",
+      "descriptionPlaceholder": "What is this channel about?",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saved": "Saved",
+      "saveFailed": "Failed to save",
+      "archive": "Archive channel",
+      "unarchive": "Unarchive channel",
+      "archiveHint": "Archiving hides the channel from members but preserves all messages.",
+      "unarchiveHint": "This channel is currently archived. Unarchiving restores member access.",
+      "archived": "Archived",
+      "unarchived": "Unarchived",
+      "archiveFailed": "Archive operation failed"
+    },
+    "attachment": {
+      "download": "Download attachment",
+      "preview": "Preview attachment"
+    }
+  }
+}
