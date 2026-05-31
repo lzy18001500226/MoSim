@@ -132,6 +132,9 @@ References/Agent/Skills/*
 !References/Agent/Skills/awesome-codex-subagents/**
 !References/Agent/Skills/awesome-openclaw-skills/
 !References/Agent/Skills/awesome-openclaw-skills/**
+!References/Agent/Skills/awesome-opencode/
+!References/Agent/Skills/awesome-opencode/**
+References/Agent/Skills/awesome-opencode/dist/
 !References/Agent/Skills/claude-plugins-official/
 !References/Agent/Skills/claude-plugins-official/**
 !References/Agent/Skills/codex-plugin-cc/

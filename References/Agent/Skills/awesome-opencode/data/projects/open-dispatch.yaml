@@ -1,0 +1,4 @@
+name: Open Dispatch
+repo: https://github.com/bobum/open-dispatch
+tagline: Control OpenCode from Slack or Microsoft Teams
+description: Bridge app connecting chat platforms (Slack/Teams) to AI coding assistants. Start sessions on desktop, guide them from your phone. Supports 75+ AI providers via OpenCode integration with session persistence and smart message routing.
