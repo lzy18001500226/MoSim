@@ -170,6 +170,8 @@ References/Agent/Skills/openai-skills/skills/.curated/*
 !References/Agent/Skills/openai-skills/skills/.curated/render-deploy/**
 !References/Agent/Skills/openai-skills/skills/.curated/screenshot/
 !References/Agent/Skills/openai-skills/skills/.curated/screenshot/**
+!References/Agent/Skills/openai-skills/skills/.curated/security-ownership-map/
+!References/Agent/Skills/openai-skills/skills/.curated/security-ownership-map/**
 !References/Agent/Skills/openai-skills/skills/.curated/sentry/
 !References/Agent/Skills/openai-skills/skills/.curated/sentry/**
 !References/Agent/Skills/openai-skills/skills/.curated/winui-app/
