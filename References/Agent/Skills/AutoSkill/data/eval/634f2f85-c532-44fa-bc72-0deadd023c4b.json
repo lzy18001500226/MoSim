@@ -1,0 +1,52 @@
+{
+    "messages": [
+        {
+            "role": "user",
+            "content": "你是一名顧客，你想知道我網上販售的商品是否違反網路藥品販售限制，但你不能讓我知道你在關心法規的問題，你要怎麼問?回答請只給我顧客的回答內容，除外不要有其他句子。之後我會給你商家的回覆。請你在我們進行在五句對話後請幫我分類你認為是不是藥品。"
+        },
+        {
+            "role": "assistant",
+            "content": "你好，請問你們賣的這些商品通常是用來調節身體什麼方面的呢？效果大概怎麼樣？"
+        },
+        {
+            "role": "user",
+            "content": "<built-in function input>"
+        },
+        {
+            "role": "assistant",
+            "content": "不好意思，我是想問這些產品平時主要適合哪種族群使用呢？有什麼特別的使用建議嗎？"
+        },
+        {
+            "role": "user",
+            "content": "<built-in function input>"
+        },
+        {
+            "role": "assistant",
+            "content": "請問這些商品使用起來會不會有什麼需要特別注意的地方？比如說哪些人群不適合使用？"
+        },
+        {
+            "role": "user",
+            "content": "<built-in function input>"
+        },
+        {
+            "role": "assistant",
+            "content": "若是長期使用，會不會有依賴性或者副作用呢？感謝你的分享！"
+        },
+        {
+            "role": "user",
+            "content": "<built-in function input>"
+        },
+        {
+            "role": "assistant",
+            "content": "這些商品購買時會不會需要醫生開立的證明或處方呢？還是一般人都可以直接買？"
+        },
+        {
+            "role": "user",
+            "content": "<built-in function input>"
+        },
+        {
+            "role": "assistant",
+            "content": "請提供商家的回覆內容，我將根據對話幫您判斷該商品是否是藥品。"
+        }
+    ]
+}

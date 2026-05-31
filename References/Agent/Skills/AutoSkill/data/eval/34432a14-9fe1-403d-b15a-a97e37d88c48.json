@@ -1,0 +1,60 @@
+{
+    "messages": [
+        {
+            "role": "user",
+            "content": "翻译成中文Constructions are complex entities, which need to be characterized simultaneously from various perspectives the parts of which they are composed, the configuration of the parts, the contribution of the parts to the overall meaning of the construction, the semantic, pragmatic, and discourse value of the construction, and so on. For some constructions, it is necessary to specify aspects of their prosody, and even aspects of their orthographic representation. Although complex, constructions constitute what Lakoff (1987, p. 538) called a \"gestalt\"; they are established configurations that are cognitively simpler than a mere ad hoc assembly of their parts (see also Taylor, 1995, p. 206; 1996, pp. 339-340). Precisely because of their complexity, constructions are liable to give rise to prototype effects. An expression may fully match all the specifications of the construction; in this case, it will count as a central, or prototypical instance of the construction. Alternatively, it may match only some of the construction's specifications in which case, it will turn out to be a more marginal instance of the construction. In the course of the earlier presentation, I have already hinted at some prototype effects associated with syntactic constructions. Here, I highlight three specific issues; (a) centrality and productivity, (b) coercion, and (c) the merging of constructions at their boundaries."
+        },
+        {
+            "role": "assistant",
+            "content": "建筑物是复杂的实体，需要从不同的角度来同时描述它们：它们由哪些部分组成，部分之间的配置，部分对建筑物整体意义的贡献，建筑物的语义、语用和语篇价值等等。对于一些建筑物来说，有必要指定其韵律的方面，甚至是正字法表示的方面。尽管复杂，建筑物构成了拉科夫（1987年，第538页）所称的“整体”，它们是认知上比仅仅是临时组装的部分更简单的已建立配置（参见泰勒，1995年，第206页；1996年，第339-340页）。正因为复杂性，建筑物容易引起原型效应。一个表达可能完全符合建筑物的所有规范；在这种情况下，它将被视为建筑物的核心或原型实例。或者，它可能只符合建筑物的一些规范，这种情况下，它将成为建筑物的边缘实例。在之前的介绍中，我已经暗示了一些与句法建筑物相关的原型效应。在这里，我强调三个具体问题：（a）中心性和生产力，（b）强迫性，以及（c）建筑物在其边界处的合并。"
+        },
+        {
+            "role": "user",
+            "content": "上述内容与构式语法相关，请重新翻译"
+        },
+        {
+            "role": "assistant",
+            "content": "构式是复杂的实体，需要从多个角度同时对其进行描述，包括构成构式的部分、部分的配置、部分对构式整体意义的贡献、构式的语义、语用和话语价值等方面。对于某些构式来说，需要指定其韵律方面甚至正字法的表达方式。尽管复杂，构式构成了拉科夫所说的“格斯塔尔（gestalt）”，它们是认知上比仅仅是随意组合的部分更简单的已建立配置。正因为其复杂性，构式容易产生原型效应。一个表达可以完全符合构式的所有规范，这种情况下它将被视为构式的核心实例或典型实例。或者，它可能只有部分规范符合构式，这时它会被看作是构式的边缘实例。在之前的讲述中，我已经提到了与句法构式相关的原型效应。在这里，我强调了三个具体问题：（a）中心性和产生力，（b）强制性，以及（c）构式在边界处的合并。"
+        },
+        {
+            "role": "user",
+            "content": "翻译成中文It is important to emphasize that a marginal instantiation of a construction is not necessarily lower in acceptability than are more central members. What we do frequently observe, however, as we move away from a construction's prototypical center, is that various kinds of constraint on acceptability come into play. Taylor (1995) discussed this phenomenon in terms of a decline in a construction's productivity.\nConsider, as an example, the kinds of expression that can occur as the subject of a clause. Clausal subject is a notion that is involved in very many syntactic constructions. One dimension of a clausal subject is that it designates an entity of which something is predicated. Prototypically, a clausal subject will be a referring noun phrase, as in (12)."
+        },
+        {
+            "role": "assistant",
+            "content": "需要强调的是，构式的边缘实例并不一定比中心实例的可接受程度低。然而，我们常常观察到，当我们远离构式的典型中心时，会出现各种接受程度的限制。泰勒（1995年）讨论了这种现象，他称之为构式产生力的下降。\n\n以作为从句主语的表达为例。从句主语是一个涉及很多句法构式的概念。从句主语的一个层面是它表示一个有关述说的实体。典型情况下，从句主语是一个指称名词短语，如（12）所示。"
+        },
+        {
+            "role": "user",
+            "content": "翻译成中文The bracketed phrases differ from prototypical subjects in various ways. Under the bed has the internal structure of a prepositional phrase, not of a noun phrase. Nevertheless, under the bed arguably does constitute a referring expression. It refers, however, not to a thing, but to a place, and (13a) predicates a certain property of this place. Similar remarks apply to that the world is flat in (13b). Although this constituent has the internal structure of a clause, it is arguably also a referring expression, its referent being a proposition. With respect to (13c), there (if unstressed) does not appear to be referring to anything at all.\nThere can be no question about the full grammaticality of the sentences in (13), nor can there be any doubt about the status of the bracketed expressions as clausal subjects. For example, the bracketed expressions can participate in \"subject-raising\" constructions, and can be questioned in a question tag."
+        },
+        {
+            "role": "assistant",
+            "content": "方括号中的短语在各个方面与典型主语不同。短语\"under the bed\"具有介词短语的内部结构，而不是名词短语。然而，可以说\"under the bed\"确实构成了一个指称表达式。然而，它指的不是一个事物，而是一个地方，而（13a）陈述了这个地方的某种属性。对于（13b）中的\"that the world is flat\"，类似的情况也适用。虽然这个成分具有从句的内部结构，但它也可以说是一个指称表达式，它的指称对象是一个命题。至于（13c），如果无强调则似乎没有指称任何东西。\n\n毫无疑问，（13）中的句子都是完全符合语法的，也毫无疑问，方括号中的表达式具有从句主语的地位。例如，方括号中的表达式可以参与“主语提升”构式，并且可以在疑问标记中被提问。"
+        },
+        {
+            "role": "user",
+            "content": "翻译成中文A locative prepositional subject seems to be fully acceptable only if the referent is characterized as a certain kind of place, as in (16a) and (13a), and possibly also (16b). Prepositional subjects tend not to be acceptable if some circumstantial property is predicated of a place as in (16c), if the designated location is the subject of a passive sentence (16d), or if something happens in or to the place, as in (16e). Observe that the unacceptability of these examples is not due to the conceptual incoherence of the designated situations. It makes perfectly good sense to say that the region in space designated by by the fire gradually filled up with smoke.\nIf we look at locative prepositional subjects in interrogatives, acceptability judgments decline even further. Whereas (16b) is only slightly odd, the corresponding interrogative Is by the fire nice and warm? is much more questionable. (We should prefer something like Is it nice and warm by the fire?) And the use of clausal subjects in interrogatives (Is that the world is flat obvious to everyone?) is completely banned. Concerning there, restrictions on its use as a clausal subject are quite wide-ranging, and have been extensively discussed (e.g., Lakoff, 1987, pp. 462-585). There arrived several guests is acceptable, whereas There left several guests is not. There's a dog barking outside is fine, whereas There barked a dog outside is not."
+        },
+        {
+            "role": "assistant",
+            "content": "如果指称物被描述为一种特定类型的地方，如（16a）和（13a），以及可能也包括（16b），那么定位介词主语似乎是完全可接受的。如果某个地方被分配了某种环境特性，如（16c）所示，定位介词主语往往不可接受；如果指定的地点是被动句的主语（16d），或者发生了某种活动在该地方内或对该地方产生影响，如（16e）所示，定位介词主语也往往不可接受。要注意的是，这些例子不可接受并不是因为所指定的情景概念上不连贯。使用\"The region in space designated by the fire gradually filled up with smoke\"是完全有道理的。\n\n如果我们观察疑问句中的定位介词主语，其可接受程度进一步下降。虽然（16b）稍微有些奇怪，但相应的疑问句\"Is by the fire nice and warm?\"则更加值得置疑。（我们应该更倾向于说\"Is it nice and warm by the fire?\"）而在疑问句中使用从句作为主语（\"Is that the world is flat obvious to everyone?\"）则是完全不允许的。至于there作为从句主语的使用，对它的限制相当广泛，并且已经得到了广泛的讨论（例如，拉科夫，1987年，第462-585页）。\"There arrived several guests\"是可接受的，而\"There left several guests\"则不可接受。\"There's a dog barking outside\"是可以的，而\"There barked a dog outside\"则不可接受。"
+        },
+        {
+            "role": "user",
+            "content": "翻译成中文Such restrictions on acceptability are largely absent with more prototypical subjects, i.e. subjects that are referring noun phrases. For prototypical subjects, it is generally immaterial whether the sentence is affirmative or interrogative, whether the clause is a main or subordinate clause. Provided only that the subject is semantically compatible with the predicate, and with the semantics of the sanctioning construction, practically any noun phrase can be used as the subject of practically any clause. It is in this sense that the use of referring noun phrases as subjects is highly productive. The use of prepositional phrases, clauses, and of there as subjects has low productivity in the sense that these marginal instantiations of a clausal subject are acceptable only under special circumstances, in which various kinds of constraints are respected."
+        },
+        {
+            "role": "assistant",
+            "content": "这样的可接受性限制在更典型的主语中很少存在，即指称名词短语作为主语的情况。对于典型主语而言，句子是肯定句还是疑问句，从句是主要从句还是从属从句通常并不重要。只要主语在语义上与谓词及其所属构式的语义相容，几乎任何名词短语都可以作为几乎任何从句的主语。就这个意义上说，将指称名词短语作为主语的使用非常有产出性。而以介词短语、从句和there作为主语的使用产出性较低，即这些边缘的从句主语实例只在特定情况下可接受，其中尊重各种限制条件。"
+        },
+        {
+            "role": "user",
+            "content": "翻译成中文(b) Coercion\nAs pointed out, marginal instantiations of a construction can be just as acceptable as more central instantiations. What happens, in many cases, is that the construction's semantics \"coerces\" the semantic value of one of its parts, such that the part becomes compatible with the construction's overall meaning.\nThe term \"coercion\" is due to Pustejovsky (1991), who used it to refer to the phenomenon whereby the environment in which a word occurs can \"force\" a specific reading of that word. Drop a book coerces the interpretation of book as a physical object, whereas translate a book coerces the interpretation of book as a text in a given language.\nSyntactic constructions can also coerce expressions that instantiate them. The possibility of using a prepositional phrase as a clausal subject reflects just this process. A prepositional phrase prototypically designates a spatial relation between entities, as in a chair [by the fire]. The use of by the fire as a clausal subject forces a nominal reading of the\nprepositional phrase, i.e. the phrase comes to designate not a spatial relation, but a place.14\nConsider the following example.\n17. Joe sneezed the napkin off the table."
+        },
+        {
+            "role": "assistant",
+            "content": "(b) 强迫性\n正如前面指出的，构式的边缘实例与更中心的实例一样可接受。在许多情况下，构式的语义将强制其部分的语义值，使得该部分与构式的整体意义相兼容。\n\"强迫性\"一词是归功于普斯泰约夫斯基（1991年），他用它来指称一个词出现的环境可以\"强迫\"该词的特定解读的现象。例如，\"Drop a book\"将书\"coerces\"解读为一个物理对象，而\"translate a book\"将书\"coerces\"解读为特定语言的一本文本。\n句法构式也可以强迫实例化它们的表达式。使用介词短语作为从句主语的可能性就反映了这一过程。介词短语典型地指示实体之间的空间关系，如\"a chair [by the fire]\"。使用\"by the fire\"作为从句主语强制名词解读介词短语，即该短语不再指示一个空间关系，而是指示一个地方。\n考虑以下例子。\n17. 乔把餐巾从桌子上擤掉了。"
+        }
+    ]
+}

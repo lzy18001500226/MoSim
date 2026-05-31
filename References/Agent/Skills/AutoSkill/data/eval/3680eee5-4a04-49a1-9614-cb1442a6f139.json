@@ -1,0 +1,92 @@
+{
+    "messages": [
+        {
+            "role": "user",
+            "content": "Write it using Chinese characters: Nǐ hǎo, Jones xia̅nsheng. Wǒ shì Wáng Lín. Hěn ga̅oxìng jiàndào nǐ."
+        },
+        {
+            "role": "assistant",
+            "content": "你好，Jones先生。我是王琳。很高兴见到你。"
+        },
+        {
+            "role": "user",
+            "content": "Shì de. Wǒ shì David Jones."
+        },
+        {
+            "role": "assistant",
+            "content": "是的。我是David Jones。"
+        },
+        {
+            "role": "user",
+            "content": "Nǐ hǎo, Wáng xia̅nsheng. Wǒ yě hěn ga̅oxìng jiàndào nǐ."
+        },
+        {
+            "role": "assistant",
+            "content": "你好，王先生。我也很高兴见到你。"
+        },
+        {
+            "role": "user",
+            "content": "Qǐng jiào wǒ Lǎo Wáng."
+        },
+        {
+            "role": "assistant",
+            "content": "请叫我老王。"
+        },
+        {
+            "role": "user",
+            "content": "Hǎo de, Lǎo Wáng. Jiào wǒ David ba."
+        },
+        {
+            "role": "assistant",
+            "content": "好的，老王。叫我David吧。"
+        },
+        {
+            "role": "user",
+            "content": "Hua̅nyíng nǐ lái Zho̅ngguó, David."
+        },
+        {
+            "role": "assistant",
+            "content": "欢迎你来中国，David。"
+        },
+        {
+            "role": "user",
+            "content": "Write it in hiragana: Jikoshōkai shimasu"
+        },
+        {
+            "role": "assistant",
+            "content": "じこしょうかいします"
+        },
+        {
+            "role": "user",
+            "content": "Watashi wa Honda desu"
+        },
+        {
+            "role": "assistant",
+            "content": "わたしはホンダです。"
+        },
+        {
+            "role": "user",
+            "content": "(Watashi wa) Nihon-jin desu."
+        },
+        {
+            "role": "assistant",
+            "content": "（わたしは）にほんじんです。"
+        },
+        {
+            "role": "user",
+            "content": "(Watashi wa) Daigakusei desu"
+        },
+        {
+            "role": "assistant",
+            "content": "（わたしは）だいがくせいです。"
+        },
+        {
+            "role": "user",
+            "content": "Do̅zo yoroshiku. ohayo̅ gozaimasu. konnichiwa. konbanwa."
+        },
+        {
+            "role": "assistant",
+            "content": "どうぞよろしく。おはようございます。こんにちは。こんばんは。"
+        }
+    ]
+}
