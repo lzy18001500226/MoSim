@@ -25,8 +25,7 @@ UE5/Bridge/Binaries/
 # runtime renderer shell. Track project code/config plus MworksData truth files,
 # but never commit imported Marketplace assets unless a reviewed asset batch
 # explicitly unignores them.
-UE5/MoSimSceneLibrary/Content/
-!UE5/MoSimSceneLibrary/Content/
+UE5/MoSimSceneLibrary/Content/*
 !UE5/MoSimSceneLibrary/Content/MworksData/
 !UE5/MoSimSceneLibrary/Content/MworksData/**
 UE5/MoSimSceneLibrary/Plugins/
@@ -57,6 +56,16 @@ Docs/Mworks/raw/
 Results/tmp/
 Results/cache/
 Results/native_result_cache/
+Results/coagent_transport/
+Results/coagent_automation/
+Results/coagent_doctor/
+Results/coagent_gateway/
+Results/coagent_bootstrap/
+Results/coagent_knowledge/knowledge_index.json
+Results/coagent_learning/learning_index.json
+Results/agent_packets/
+Results/agent_runtime/
+Results/context_packs/
 Results/logs/*.log
 Results/replay_html/
 Results/**/native_result/
