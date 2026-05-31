@@ -116,6 +116,8 @@ References/Agent/
 References/Agent/*
 !References/Agent/Skills/
 References/Agent/Skills/*
+!References/Agent/Skills/agent-skills/
+!References/Agent/Skills/agent-skills/**
 !References/Agent/Skills/openai-skills/
 References/Agent/Skills/openai-skills/*
 !References/Agent/Skills/openai-skills/skills/
