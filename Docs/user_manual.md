@@ -11,7 +11,7 @@ Python 3.10+
 MWORKS.Sysplorer 2026
 MWORKS.Sysblock 2026
 MWORKS.Syslab 2026
-Codex MCP: syslab, sysplorer, unreal_engine
+Codex MCP: syslab, sysplorer, mosim-epic, mosim-unreal
 ```
 
 可选环境：

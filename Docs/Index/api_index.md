@@ -127,40 +127,52 @@ evaluate_julia_code
 Configured server names:
 
 ```text
-unreal_engine
-mosim_epic_library
+mosim-unreal
+mosim-epic
 ```
 
-`unreal_engine` is MoSim's UE automation boundary. It currently points to the
-project-specific MCP wrapper:
+`mosim-unreal` is MoSim's live UE Editor automation boundary. It should point
+to the project-specific MCP wrapper:
 
 ```text
-Docs/Skills/Unreal/unreal-engine-mcp/wrappers/unreal_engine.sh
-  -> Docs/Skills/Unreal/unreal-engine-mcp/wrappers/wsl.sh
-  -> Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py
+Docs/Skills/Unreal/mosim-unreal/wrappers/mosim-unreal.sh
+  -> Docs/Skills/Unreal/mosim-unreal/wrappers/wsl.sh
+  -> Docs/Skills/Unreal/mosim-unreal/mcp/server.py
 ```
 
 The old open-source Flopperam wrapper is retained only for rollback:
 
 ```text
-Docs/Skills/Unreal/unreal-engine-mcp/wrappers/legacy_flopperam_wsl.sh
+Docs/Skills/Unreal/mosim-unreal/wrappers/legacy_flopperam_wsl.sh
 ```
 
-Current MoSim-native `unreal_engine` tools:
+Current MoSim-native `mosim-unreal` tools:
 
 | Tool Group | Examples | Use |
 |---|---|---|
 | Health/context | `ue_health`, `project_context` | Check project files, installed engines, enabled plugins, and listener reachability |
+| Listener | `editor_listener_health` | Check WSL reachability of the UE Editor-side listener |
+| Local Content | `asset_search`, `list_maps` | Search project-local `.uasset` / `.umap` files without requiring a live editor |
+| Live read-only scene | `current_level_summary`, `find_level_actors` | Inspect current level and actors through the editor listener without modifying the map |
+| Controlled edit probe | `reversible_actor_probe` | Plan by default, or explicitly execute a temporary spawn/move/delete actor round trip without saving |
+| Diagnostics | `editor_log_summary` | Return a bounded, redacted tail of the latest UE project log |
+| Scene truth planning | `scene_source_status`, `scene_truth_export_plan` | Audit local scene sources with compact default output and produce truth-export command plans |
+| Boundary | `tool_boundary` | Explain the split between UE automation and Epic/Fab inventory |
+
+Current MoSim-native `mosim-epic` tools:
+
+| Tool Group | Examples | Use |
+|---|---|---|
+| Library inventory | `epic_library_inventory`, `epic_scene_library_view` | Read sanitized Epic/Fab/Launcher scene inventory |
 | Scene source | `scene_source_registry`, `scene_truth_export_plan` | Read scene-source contract and plan collision/planning-truth export |
-| Acceptance gates | `ue_fab_goal_acceptance` | Distinguish tool health from scene import/truth readiness |
-| Library convenience | `epic_scene_library_view` | Read sanitized Epic/Fab scene inventory without Launcher automation |
+| Acceptance gates | `scene_source_acceptance` | Distinguish inventory visibility from scene import/truth readiness |
 | Boundary | `tool_boundary` | Explain the split between UE automation and Epic/Fab inventory |
 
 Important boundary:
 
 ```text
-unreal_engine owns UE project/editor/listener/truth workflow.
-mosim_epic_library owns sanitized Epic/Fab/Launcher inventory.
+mosim-unreal owns live UE project/editor/listener operations.
+mosim-epic owns sanitized Epic/Fab/Launcher inventory and scene-source gates.
 Neither MCP logs in to Epic, clicks Launcher buttons, downloads Fab assets, or
 claims an account-owned asset is editable before it is imported/linked locally.
 ```
@@ -168,11 +180,24 @@ claims an account-owned asset is editable before it is imported/linked locally.
 Command-line checks:
 
 ```bash
-python3 Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py dump-tools
-python3 Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py dump-context
-python3 Docs/Skills/Unreal/unreal-engine-mcp/mcp/server.py dump-boundary
+Scripts/UE5/build_unreal_renderer.sh
+Scripts/UE5/open_unreal_renderer.sh editor
+python3 Docs/Skills/Unreal/mosim-unreal/mcp/server.py dump-tools
+python3 Docs/Skills/Unreal/mosim-unreal/mcp/server.py dump-context
+python3 Docs/Skills/Unreal/mosim-unreal/mcp/server.py dump-assets --limit 5
+python3 Docs/Skills/Unreal/mosim-unreal/mcp/server.py dump-maps --limit 5
+python3 Docs/Skills/Unreal/mosim-unreal/mcp/server.py dump-level --timeout 0.5 --limit 5
+python3 Docs/Skills/Unreal/mosim-unreal/mcp/server.py dump-reversible-probe
+python3 Docs/Skills/Unreal/mosim-unreal/mcp/server.py dump-scene-sources --limit 1 --map-limit 2
+python3 Docs/Skills/Unreal/mosim-unreal/mcp/server.py dump-log --lines 20
+python3 Docs/Skills/Unreal/mosim-unreal/mcp/server.py dump-boundary
+python3 Docs/Skills/Unreal/mosim-epic/mcp/server.py dump-tools
+python3 Docs/Skills/Unreal/mosim-epic/mcp/server.py dump-boundary
 python3 Scripts/UE5/check_epic_library_inventory.py --json
 ```
+
+Current renderer engine association is UE `5.5`. UE 4.27 local scene projects
+use `UE4Editor.exe` / `UE4Editor-Cmd.exe`, not the UE5 executable names.
 
 Before write operations, prove an editor-side listener and map source first.
 Avoid switching back to broad generic scene-generation tools to bypass

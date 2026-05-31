@@ -86,6 +86,19 @@ def link_target(source: dict[str, Any]) -> dict[str, Any]:
     target_content_root = RENDERER_CONTENT / top_level
     target_map = target_content_root.joinpath(*below_content[1:])
     package = "/Game/" + "/".join(Path(*below_content).with_suffix("").parts)
+    companion_links: list[dict[str, Path | str]] = []
+    for companion_root_name in ("__ExternalActors__", "__ExternalObjects__"):
+        source_companion_top = source_project_root / "Content" / companion_root_name / top_level
+        if not source_companion_top.exists():
+            continue
+        target_companion_top = RENDERER_CONTENT / companion_root_name / top_level
+        companion_links.append(
+            {
+                "kind": companion_root_name,
+                "source_content_root": source_companion_top,
+                "target_content_root": target_companion_top,
+            }
+        )
     return {
         "top_level": top_level,
         "source_content_root": source_content_root,
@@ -93,6 +106,7 @@ def link_target(source: dict[str, Any]) -> dict[str, Any]:
         "source_map": source_map,
         "target_map": target_map,
         "renderer_map_package": package,
+        "companion_links": companion_links,
     }
 
 
@@ -166,6 +180,10 @@ def verify_link(target: dict[str, Any]) -> list[str]:
         errors.append(f"renderer content root missing: {rel(target['target_content_root'])}")
     if not target["target_map"].exists():
         errors.append(f"renderer map missing: {rel(target['target_map'])}")
+    for companion in target.get("companion_links", []):
+        target_root = companion["target_content_root"]
+        if isinstance(target_root, Path) and not target_root.exists():
+            errors.append(f"renderer companion root missing: {rel(target_root)}")
     return errors
 
 
@@ -201,10 +219,26 @@ def main() -> int:
         return 1
 
     action = create_link(target["source_content_root"], target["target_content_root"], dry_run=args.dry_run)
+    companion_results = []
+    for companion in target.get("companion_links", []):
+        source_root = companion["source_content_root"]
+        target_root = companion["target_content_root"]
+        if not isinstance(source_root, Path) or not isinstance(target_root, Path):
+            continue
+        companion_action = create_link(source_root, target_root, dry_run=args.dry_run)
+        companion_results.append(
+            {
+                "kind": companion["kind"],
+                "action": companion_action,
+                "source_content_root": rel(source_root),
+                "renderer_content_root": rel_lexical(target_root),
+            }
+        )
     errors = verify_link(target) if not args.dry_run else []
     payload = {
         "scene_source_id": args.scene_source_id,
         "action": action,
+        "companion_links": companion_results,
         "source_content_root": rel(target["source_content_root"]),
         "renderer_content_root": rel_lexical(target["target_content_root"]),
         "renderer_map_asset": rel_lexical(target["target_map"]),

@@ -34,6 +34,7 @@ Current safe layout:
 References/Agent/
   Platforms/
   Control/
+  Gateway/
   Workflow/
   Skills/
   Memory/
@@ -60,6 +61,7 @@ Use these category directory names for study queues and migration planning.
 |---|---|
 | `Platforms` | Full coding-agent or multi-agent products/runtimes that may contain reusable code |
 | `Control` | Team orchestration, task boards, worktrees, inboxes, dispatch, and visible-agent coordination |
+| `Gateway` | External communication gateways, IM/chat adapters, notification bridges, and human-intervention channels |
 | `Workflow` | Durable state, checkpoints, specs, workflow engines, WAL/replay, task lifecycle |
 | `Frameworks` | General multi-agent frameworks to learn from, not import wholesale |
 | `Skills` | Skills, hooks, commands, plugins, rules, role packs, and operator methods |
@@ -95,6 +97,7 @@ they are candidates for direct adaptation.
 | `AgentsMesh` | `Control` | Control-plane/data-plane split, AgentPods, distributed runner model |
 | `codex` | `Platforms` | Codex runtime, app-server, thread store, session/rollout, exec policy |
 | `bifrost` | `Platforms` | AI gateway, provider routing, failover, monitoring, and MCP gateway ideas |
+| `cc-connect` | `Gateway` | WeChat/IM gateway, hooks, bridge protocol, management API, and human-intervention notification path |
 
 ### P0: Architecture Foundations
 
@@ -180,6 +183,17 @@ execution semantics.
 | `harness` | Harness/runtime reference; needs deeper review |
 | `okwinds` | WAL, task graph, runtime and review patterns |
 | `mlflow` | AI/ML lifecycle, tracing, eval, prompt management |
+
+### Gateway
+
+External communication gateways, IM/chat adapters, notification bridges, and
+human-intervention channels. Gateway projects are not the task source of truth.
+They receive CoAgent blocker, review, and result packets and deliver concise
+messages to the user or operators.
+
+| Project | Notes |
+|---|---|
+| `cc-connect` | Multi-channel bridge for WeChat personal account, WeCom, Feishu, DingTalk, Telegram, Slack, Discord, QQ, hooks, Web UI, Management API, and Bridge WebSocket protocol. First candidate for CoAgent human-intervention notification experiments. |
 
 ### Frameworks
 
@@ -345,6 +359,7 @@ Use these folders and move in Git-safe batches:
 References/Agent/
   Platforms/
   Control/
+  Gateway/
   Workflow/
   Skills/
   Memory/
@@ -357,16 +372,17 @@ References/Agent/
 
 Current count by primary category:
 
-- `Platforms`: 13
-- `Control`: 13
-- `Workflow`: 10
-- `Frameworks`: 12
-- `Skills`: 25
-- `Memory`: 12
-- `Security`: 11
-- `UI`: 9
+- `Platforms`: 32
+- `Control`: 15
+- `Gateway`: 13
+- `Workflow`: 18
+- `Frameworks`: 18
+- `Skills`: 27
+- `Memory`: 26
+- `Security`: 12
+- `UI`: 13
 - `SDK`: 6
-- `Domain`: 4
+- `Domain`: 7
 - `ReviewLater`: 2
 
 Before any physical move:
@@ -383,18 +399,39 @@ After each move, update:
 - any `CoAgent/learning/audits/*` path references,
 - scripts or docs discovered by `rg`.
 
+## 2026-05-31 High-Star Import Batch
+
+This batch was imported from `C:\Users\HP\Desktop\新建文件夹` after checking that the high-value crawl list had no obvious remaining gaps. Directory suffixes `-main` and `-master` were removed before moving. `lobehub-canary` was skipped because `References/Agent/UI/lobehub-canary` already existed.
+
+| Category | Newly Added Projects | Why This Category |
+|---|---|---|
+| `Platforms` | `Agent-S`, `aider`, `AutoGPT`, `babyagi`, `cline`, `continue`, `gemini-cli`, `goose`, `open-interpreter`, `open-swe`, `OpenAgents`, `opencode-dev`, `openwork-dev`, `plandex`, `qwen-code`, `Roo-Code`, `SuperAGI`, `SWE-agent`, `tabby` | complete coding-agent or multi-agent products/runtimes |
+| `Control` | `agency-swarm`, `trae-agent` | multi-agent coordination and task-control references |
+| `Frameworks` | `agent-framework`, `agents`, `agno`, `pydantic-ai`, `semantic-kernel`, `smolagents` | general agent frameworks |
+| `Memory` | `agentmemory`, `cognee`, `git-mcp`, `graphiti`, `khoj`, `letta`, `llama_index`, `mem0`, `onyx`, `OpenViking`, `quivr`, `repomix`, `supermemory`, `zep` | memory, context, repo understanding, graph/RAG references |
+| `Gateway` | `awesome-mcp-servers`, `browser-use`, `composio-next`, `cua`, `daytona`, `E2B`, `firecrawl`, `inspector`, `mcp-use`, `playwright-mcp`, `servers`, `toolhive` | tool/MCP/browser/sandbox/human gateway references |
+| `Workflow` | `agentops`, `dify`, `Flowise`, `helicone`, `langflow`, `langfuse`, `n8n`, `phoenix` | durable workflow, observability, eval, and automation references |
+| `Security` | `agent-scan` | agent/MCP/security/eval references |
+| `Skills` | `awesome-opencode`, `oh-my-openagent-dev` | skills, hooks, commands, plugins, and operator methods |
+| `UI` | `open-webui`, `openchamber`, `opencode.nvim`, `superset` | desktop/web/editor UI surfaces |
+| `Domain` | `fara`, `OpenCodeInterpreter`, `UFO` | domain-specific agent examples |
+
 ## Current Recommendation
 
 Use this document as the routing map. The next implementation step should reuse
 existing projects selectively:
 
-1. inspect `Platforms/openclaw`, `Control/CodexMonitor`, and
-   `Control/agent-teams-ai` for frontend/control-plane reuse;
+1. inspect `Control/CodexMonitor`, `Control/OpenMOSS`, and
+   `Control/agent-teams-ai` for frontend/control-plane and task-board reuse;
 2. inspect `Control/ClawTeam`, `Control/AgentsMesh`, and `Control/OpenMOSS`
    for multi-agent control plane/task-board patterns;
-3. inspect `Skills/AutoSkill`, `Skills/ECC`, and
+3. inspect `Gateway/cc-connect` before hand-building notification, WeChat,
+   or human-intervention gateway code;
+4. inspect `Platforms/openclaw` and `Platforms/hermes-agent` for gateway,
+   memory, scheduler, skill, hook, and operator-experience patterns;
+5. inspect `Skills/AutoSkill`, `Skills/ECC`, and
    `Agent-Skills-for-Context-Engineering` for skill lifecycle and
    context-management migration;
-4. inspect `Security/AI-Infra-Guard`, `Security/promptfoo`, and
+6. inspect `Security/AI-Infra-Guard`, `Security/promptfoo`, and
    `Security/rogue` before enabling any
    unattended automation or MCP/tool expansion.

@@ -30,6 +30,16 @@ SEMANTIC_KEYWORDS = {
     "sensor": ("lidar", "radar", "camera", "sensor"),
     "marker": ("marker", "start", "goal", "target"),
 }
+SKIP_PRIMITIVE_CLASS_KEYWORDS = (
+    "arrow",
+    "audio",
+    "billboard",
+    "camera",
+    "light",
+    "sky",
+    "sprite",
+    "visualization",
+)
 
 
 def slug(value: str, fallback: str = "item") -> str:
@@ -158,6 +168,57 @@ def unreal_world_name(world: Any) -> str:
     return str(world)
 
 
+def editor_world_and_actors(unreal_module: Any) -> tuple[Any, list[Any]]:
+    """Return the current editor world and actors across UE Python API variants."""
+    world = None
+    actors: list[Any] = []
+
+    unreal_editor_subsystem_class = getattr(unreal_module, "UnrealEditorSubsystem", None)
+    get_editor_subsystem = getattr(unreal_module, "get_editor_subsystem", None)
+    if unreal_editor_subsystem_class is not None and callable(get_editor_subsystem):
+        try:
+            subsystem = get_editor_subsystem(unreal_editor_subsystem_class)
+            get_world = getattr(subsystem, "get_editor_world", None)
+            if callable(get_world):
+                world = get_world()
+        except Exception:
+            world = None
+
+    editor_actor_subsystem_class = getattr(unreal_module, "EditorActorSubsystem", None)
+    if editor_actor_subsystem_class is not None and callable(get_editor_subsystem):
+        try:
+            subsystem = get_editor_subsystem(editor_actor_subsystem_class)
+            get_actors = getattr(subsystem, "get_all_level_actors", None)
+            if callable(get_actors):
+                actors = list(get_actors())
+        except Exception:
+            actors = []
+
+    editor_level_library = getattr(unreal_module, "EditorLevelLibrary", None)
+    if editor_level_library is not None:
+        if world is None:
+            get_world = getattr(editor_level_library, "get_editor_world", None)
+            if callable(get_world):
+                try:
+                    world = get_world()
+                except Exception:
+                    world = None
+        if not actors:
+            get_actors = getattr(editor_level_library, "get_all_level_actors", None)
+            if callable(get_actors):
+                try:
+                    actors = list(get_actors())
+                except Exception:
+                    actors = []
+
+    if world is None or not actors:
+        raise RuntimeError(
+            "Unable to access editor world actors. Enable Editor Scripting Utilities "
+            "or run with a UE version exposing EditorActorSubsystem/EditorLevelLibrary."
+        )
+    return world, actors
+
+
 def component_or_actor_bounds(component: Any, actor: Any) -> tuple[Any, Any, Any]:
     for owner in (component, actor):
         method = getattr(owner, "get_component_bounds", None)
@@ -176,16 +237,66 @@ def component_or_actor_bounds(component: Any, actor: Any) -> tuple[Any, Any, Any
     raise AttributeError(f"Unable to read bounds for component {component} on actor {actor}")
 
 
+def unreal_class_name(value: Any) -> str:
+    cls = value.get_class() if hasattr(value, "get_class") else None
+    if cls and hasattr(cls, "get_name"):
+        try:
+            return str(cls.get_name())
+        except Exception:
+            pass
+    return type(value).__name__
+
+
+def primitive_components(unreal_module: Any, actor: Any) -> list[Any]:
+    """Return collidable geometry components broad enough for scene truth.
+
+    Static mesh-only export misses landscapes, brushes, and several instanced
+    geometry components used by Fab/sample maps.  PrimitiveComponent is the
+    broadest useful UE base class for first-pass collision AABBs.
+    """
+    primitive_class = getattr(unreal_module, "PrimitiveComponent", None)
+    if primitive_class is not None:
+        try:
+            return list(actor.get_components_by_class(primitive_class))
+        except Exception:
+            pass
+    static_mesh_class = getattr(unreal_module, "StaticMeshComponent", None)
+    if static_mesh_class is not None:
+        return list(actor.get_components_by_class(static_mesh_class))
+    return []
+
+
+def should_skip_component(component: Any) -> bool:
+    class_name = unreal_class_name(component).lower()
+    return any(keyword in class_name for keyword in SKIP_PRIMITIVE_CLASS_KEYWORDS)
+
+
+def component_asset_path(component: Any) -> str:
+    for attr in ("static_mesh", "mesh", "landscape_material"):
+        try:
+            value = getattr(component, attr)
+        except Exception:
+            continue
+        if value:
+            method = getattr(value, "get_path_name", None)
+            if callable(method):
+                try:
+                    return str(method())
+                except Exception:
+                    pass
+            return str(value)
+    return ""
+
+
 def export_from_unreal(scene_id: str, map_id: str, output: Path, include_no_collision: bool = False) -> dict[str, Any]:
     try:
         import unreal  # type: ignore
     except ImportError as exc:
         raise RuntimeError("The export command must run inside Unreal Editor Python.") from exc
 
-    world = unreal.EditorLevelLibrary.get_editor_world()
+    world, actors = editor_world_and_actors(unreal)
     level_name = unreal_world_name(world)
     project_path = unreal.Paths.project_dir()
-    actors = unreal.EditorLevelLibrary.get_all_level_actors()
     assets: list[dict[str, Any]] = []
     proxies: list[dict[str, Any]] = []
 
@@ -193,16 +304,17 @@ def export_from_unreal(scene_id: str, map_id: str, output: Path, include_no_coll
         actor_label = actor.get_actor_label()
         actor_name = actor.get_name()
         tags = [str(tag) for tag in getattr(actor, "tags", [])]
-        components = actor.get_components_by_class(unreal.StaticMeshComponent)
+        components = primitive_components(unreal, actor)
         for component in components:
+            if should_skip_component(component):
+                continue
             try:
                 collision_enabled = str(component.get_collision_enabled())
             except Exception:
                 collision_enabled = str(component.get_editor_property("collision_enabled"))
             if (not include_no_collision) and "NO_COLLISION" in collision_enabled.upper():
                 continue
-            mesh = component.static_mesh
-            mesh_path = mesh.get_path_name() if mesh else ""
+            mesh_path = component_asset_path(component)
             origin, extent, _ = component_or_actor_bounds(component, actor)
             center_m = unreal_vector_to_mworks_m(origin)
             size_m = unreal_extent_to_size_m(extent)

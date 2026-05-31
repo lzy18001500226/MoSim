@@ -14,7 +14,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from run_scene_truth_export import ENGINE_ROOT_BY_VERSION, quote, resolve_editor_cmd, to_windows_path
+from run_scene_truth_export import ENGINE_ROOT_BY_VERSION, quote, resolve_editor_cmd, tail_lines, to_windows_path
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -49,6 +49,7 @@ import unreal
 
 scene_source_id = {scene_source_id!r}
 map_package = {map_package!r}
+expected_level_token = map_package.rsplit("/", 1)[-1]
 output_path = Path({to_windows_path(output_path)!r})
 
 ok = bool(unreal.EditorLevelLibrary.load_level(map_package))
@@ -65,7 +66,7 @@ if world:
             except Exception:
                 pass
 actors = unreal.EditorLevelLibrary.get_all_level_actors() if world else []
-loaded_expected_map = "DerelictCorridor" in level_name
+loaded_expected_map = expected_level_token in level_name or map_package in level_name
 has_scene_content = len(actors) > 0
 payload = {{
     "ok": ok and loaded_expected_map and has_scene_content,
@@ -103,6 +104,14 @@ def build_command(editor_cmd: Path, script_path: Path, map_package: str) -> list
     ]
 
 
+def output_text(value: str | bytes | None) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scene-source-id", default="local_derelictcorridormegascans")
@@ -111,6 +120,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--editor-cmd", type=Path, default=None)
     parser.add_argument("--script-path", type=Path, default=ROOT / "Results/tmp/renderer_map_load_probe.py")
     parser.add_argument("--json-output", type=Path, default=ROOT / "Results/tmp/renderer_map_load_probe_latest.json")
+    parser.add_argument("--log-output", type=Path, default=None)
+    parser.add_argument("--timeout-seconds", type=float, default=None)
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()
 
@@ -145,12 +156,31 @@ def main() -> int:
     if args.dry_run:
         print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
-    completed = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
-    if completed.stdout:
-        print(completed.stdout)
-    if completed.stderr:
-        print(completed.stderr)
+    try:
+        completed = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, timeout=args.timeout_seconds)
+    except subprocess.TimeoutExpired as exc:
+        if args.log_output:
+            log_path = args.log_output if args.log_output.is_absolute() else ROOT / args.log_output
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            log_path.write_text(output_text(exc.stdout) + output_text(exc.stderr), encoding="utf-8", errors="replace")
+            payload["log_output"] = rel(log_path)
+            payload["tail"] = tail_lines(log_path, 80)
+        payload.update({"ok": False, "reason": "timeout", "timeout_seconds": args.timeout_seconds})
+        print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+        return 124
+    if args.log_output:
+        log_path = args.log_output if args.log_output.is_absolute() else ROOT / args.log_output
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        log_path.write_text((completed.stdout or "") + (completed.stderr or ""), encoding="utf-8", errors="replace")
+        payload["log_output"] = rel(log_path)
+    else:
+        if completed.stdout:
+            print(completed.stdout)
+        if completed.stderr:
+            print(completed.stderr)
     if completed.returncode != 0:
+        if args.log_output:
+            payload["tail"] = tail_lines(log_path, 120)
         print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
         return completed.returncode
     evidence = load_json(output_path)

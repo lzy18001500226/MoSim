@@ -109,8 +109,56 @@ def truth_artifacts(row: dict[str, Any]) -> list[str]:
     return sorted({str(path) for path in candidates if str(path).endswith(".json")})
 
 
-def renderer_reuse_metadata(row: dict[str, Any]) -> dict[str, Any]:
-    samples = [str(value) for value in row.get("umap_samples", [])]
+def truth_level_package(artifacts: list[str]) -> str:
+    for artifact in artifacts:
+        path = ROOT / artifact
+        if not path.exists():
+            continue
+        try:
+            payload = load_json(path)
+        except Exception:
+            continue
+        level_name = str(payload.get("source", {}).get("level_name", ""))
+        if level_name.startswith("/Game/"):
+            return level_name.split(".", 1)[0]
+    return ""
+
+
+def map_sample_from_package(row: dict[str, Any], package: str) -> str:
+    if not package.startswith("/Game/"):
+        return ""
+    target_suffix = package.removeprefix("/Game/") + ".umap"
+    project_root = ROOT / str(row.get("project_root", ""))
+    candidate = project_root / "Content" / target_suffix
+    if candidate.exists():
+        return rel(candidate)
+    return ""
+
+
+def preferred_map_samples(row: dict[str, Any], artifacts: list[str]) -> list[str]:
+    samples: list[str] = []
+    truth_package = truth_level_package(artifacts)
+    truth_sample = map_sample_from_package(row, truth_package)
+    if truth_sample:
+        samples.append(truth_sample)
+    for record in row.get("recommended_review_maps", []):
+        if not isinstance(record, dict):
+            continue
+        path = str(record.get("path", ""))
+        if path:
+            samples.append(path)
+    samples.extend(str(value) for value in row.get("umap_samples", []))
+    result: list[str] = []
+    seen: set[str] = set()
+    for sample in samples:
+        if sample and sample not in seen:
+            seen.add(sample)
+            result.append(sample)
+    return result
+
+
+def renderer_reuse_metadata(row: dict[str, Any], artifacts: list[str]) -> dict[str, Any]:
+    samples = preferred_map_samples(row, artifacts)
     for sample in samples:
         parts = list(Path(sample).parts)
         if "Content" not in parts:
@@ -143,6 +191,7 @@ def renderer_reuse_metadata(row: dict[str, Any]) -> dict[str, Any]:
 def compact_scene_entry(row: dict[str, Any]) -> dict[str, Any]:
     scene_id = f"local_{slug(str(row.get('name', 'scene')))}"
     artifacts = truth_artifacts(row)
+    preferred_samples = preferred_map_samples(row, artifacts)
     ready = bool(row.get("editable_candidate") and row.get("renderable_candidate") and row.get("planning_truth_ready"))
     status = "accepted_local_truth_fallback" if ready else "needs_truth_extraction_or_proxy"
     if not row.get("editable_candidate") or not row.get("renderable_candidate"):
@@ -160,7 +209,7 @@ def compact_scene_entry(row: dict[str, Any]) -> dict[str, Any]:
         "planning_truth_ready": bool(row.get("planning_truth_ready")),
         "truth_artifacts": artifacts,
         "umap_count": int(row.get("umap_count", 0)),
-        "umap_samples": trim_list(row.get("umap_samples", []), 8),
+        "umap_samples": trim_list(preferred_samples, 8),
         "uasset_count": int(row.get("uasset_count", 0)),
         "uasset_samples": trim_list(row.get("uasset_samples", []), 8),
         "uplugin_count": int(row.get("uplugin_count", 0)),
@@ -168,7 +217,7 @@ def compact_scene_entry(row: dict[str, Any]) -> dict[str, Any]:
         "audit_verdict": row.get("verdict", ""),
         "truth_gap": row.get("truth", {}).get("truth_gap", ""),
     }
-    entry.update(renderer_reuse_metadata(row))
+    entry.update(renderer_reuse_metadata(row, artifacts))
     return entry
 
 
@@ -176,6 +225,9 @@ def selected_primary(local_sources: list[dict[str, Any]]) -> str:
     accepted = [source for source in local_sources if source["status"] == "accepted_local_truth_fallback"]
     if not accepted:
         return ""
+    active = [source for source in accepted if source.get("imported_into_renderer")]
+    if active:
+        return active[0]["scene_source_id"]
     derelict = [source for source in accepted if "derelict" in source["scene_source_id"]]
     return (derelict or accepted)[0]["scene_source_id"]
 

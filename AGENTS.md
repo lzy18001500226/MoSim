@@ -105,6 +105,13 @@ Rules:
 
 Default behavior is to continue working automatically until the requested task is complete.
 
+Current CoAgent exception: before changing `CoAgent/` runtime, transport,
+automation, task-state schema, task/result packet schema, permanent department
+conversation design, or tool/MCP surfaces, read `CoAgent/STATUS.md`. Current
+approval allows only `COAGENT-IMPL-MINILOOP-01`; later app-server transport, unattended
+automation, new permanent departments, broad hook rewrites, and tool/MCP
+expansion remain gated until their own approved task exists.
+
 Do not stop only to ask whether to continue when the next step is clear. Continue through:
 
 - file inspection,
@@ -126,6 +133,14 @@ Stop and ask for user intervention only when one of the following occurs:
 5. A license, copyright, privacy, or secret-management concern appears.
 
 Waiting for a long-running command, simulation, MCP response, Git operation, or file conversion is not a reason to stop. Poll until completion or timeout, then continue.
+
+Default timeout rule: interactive commands, GUI/MCP probes, Codex conversation bootstrap commands, and any operation with unclear progress must use a 60 second timeout by default. If there is no useful response within 60 seconds, stop that attempt, clean up any clearly identifiable child process, record the partial state, and report the blocker. Use a longer timeout only when the task has an explicit known runtime and the user has approved waiting.
+
+Immediate documentation rule: when a task reveals a reusable command,
+successful recovery route, workflow correction, or new operating constraint,
+record it in the appropriate project document before reporting completion. Do
+not end with "record later" or leave the knowledge only in chat. If the write is
+blocked, report the exact target document and blocker.
 
 ### 3.3 Git Automation Rule
 
@@ -193,25 +208,35 @@ Coordinator rules:
 
 1. The main agent is the orchestrator. It owns task graph, ledger updates,
    integration, verification, and final report.
-2. Spawn sub-agents with concrete objective, read scope, write set, stop
-   condition, expected output, and forbidden actions.
+2. Treat Codex sub-agents as short-lived capability calls, not durable
+   departments. Use them for bounded research, review, or execution slices that
+   can return one structured result. Do not rely on them for long-running Git,
+   review, test, or supervision queues.
 3. Project sub-agent spawn calls should request `model=gpt-5.5` and
    `reasoning_effort=high` when the current runtime accepts those parameters;
    otherwise record the runtime limitation and continue with the configured
    default.
-4. Keep research/review agents read-only by default. Use at most one
-   write-capable Git/quality owner.
-5. Split large task types by content family or model/result ownership.
-6. Record long-running tasks in `Docs/Workflows/agent_task_ledger.md`; recover from
+4. Spawn sub-agents only with concrete objective, read scope, write set, stop
+   condition, expected output, and forbidden actions.
+5. Keep research/review sub-agents read-only by default. For durable Git,
+   testing, review, secretary, and security roles, route through the project
+   task queue/runtime when available instead of leaving a Codex sub-agent
+   waiting for follow-up instructions.
+6. Split large task types by content family or model/result ownership.
+7. Record long-running tasks in `Docs/Workflows/agent_task_ledger.md`; recover from
    ledger/WAL, not chat memory.
-7. Accept sub-agent results only with evidence, inference, unknowns, risks, and
+8. Accept sub-agent results only with evidence, inference, unknowns, risks, and
    next validation.
-8. Use `Docs/Workflows/agent_orchestration.md` for contracts, queues, nested
+9. Use `Docs/Workflows/agent_orchestration.md` for contracts, queues, nested
    delegation, WAL, worktrees, reviewers, and external-repo audit routing.
-9. Use `PROGRESS.md` for current status and repeated mistakes.
-10. For long or volatile sessions, keep a `TaskSecretary` intake record so new
+10. Use `PROGRESS.md` for current status and repeated mistakes.
+11. For long or volatile sessions, keep a `TaskSecretary` intake record so new
     user instructions, corrections, sub-agent returns, and manual-review
     decisions become recoverable tasks instead of chat-only memory.
+12. Treat the current WSL-backed VSCode Codex conversation as the primary
+    project conversation unless the user explicitly switches. Codex App is a
+    review/front-end surface for this project and for extra conversations; do
+    not rely on App/VSCode live session sync as the durable task ledger.
 
 ### 3.4 MCP Minimal-Impact Rule
 
@@ -236,7 +261,7 @@ Rules:
 15. If automation cannot open a generated `.msr`, do not ask the user to open it manually. Diagnose the result binding path first. In particular, check whether Sysplorer wrote the current run to a suffixed folder such as `{ModelName}-1` while the opener targets stale `{ModelName}/Result.msr`; fix the cleanup/path logic and rerun.
 16. When Sysplorer/Syslab MCP tools are healthy, interactive model loading, checking, simulation, plotting, animation, and GUI review must go through MCP directly. Project scripts remain for batch runs, result export, metrics, summaries, and regression automation.
 17. Never call Sysplorer `ClearAll`, `ChangeDirectory`, or equivalent broad workspace-reset APIs from MCP automation. Use targeted `model_manager` load/unload/reload operations and explicit absolute project paths instead.
-18. Before any task that touches Sysplorer, Syslab, Sysblock, or Unreal Editor, check MCP availability first with the smallest useful probe. Expected MCP server names are `sysplorer`, `syslab`, and `unreal_engine`. If a required MCP server is missing, has `Tools: (none)`, or an editor-side read-only probe fails, stop the interactive operation and report the exact failing server, command, and error before falling back.
+18. Before any task that touches Sysplorer, Syslab, Sysblock, Epic/Fab inventory, or Unreal Editor, check MCP availability first with the smallest useful probe. Expected MCP server names are `sysplorer`, `syslab`, `mosim-epic`, and `mosim-unreal`. If a required MCP server is missing, has `Tools: (none)`, or an editor-side read-only probe fails, stop the interactive operation and report the exact failing server, command, and error before falling back.
 19. Do not use command-line scripts as a substitute for healthy MCP during interactive model work. Command-line tools are allowed for Git, file inspection, documentation, batch export, metrics, tests, and MCP wrapper diagnostics.
 
 ### 3.5 Sysplorer / Sysblock Modeling Modality Rule

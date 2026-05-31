@@ -427,16 +427,38 @@ bridge, not a committed copy of third-party assets. On WSL/Windows, this must
 be a Windows directory junction, not a Linux symlink. A WSL symlink can pass
 Python `exists()` checks while Unreal cannot load the `.umap`.
 
+`mosim-unreal` asset/map search must also follow those Content junctions and
+keep package paths renderer-local. For example, Factory's linked
+`UE5/MoSimSceneLibrary/Content/Maps/Demonstration.umap` must report
+`/Game/Maps/Demonstration`, not the resolved source-project path under
+`References/UnrealScenes`.
+
 Verify that the renderer can actually load the linked package:
 
 ```bash
 uv run python Scripts/UE5/probe_renderer_map_load.py
+uv run python Scripts/UE5/probe_renderer_map_load.py \
+  --scene-source-id local_factoryenvironmentcollect \
+  --engine-version 5.5 \
+  --json-output Results/tmp/renderer_map_load_probe_factory_<date>.json
 ```
 
 The probe must report `ok=true`, `loaded_expected_map=true`, and
-`actor_count>0` for `/Game/DerelictCorridor/Maps/DerelictCorridor`. A zero exit
-code from Unreal alone is not enough, because commandlets can return success
-after falling back to an empty temporary map.
+`actor_count>0` for the selected source's recorded `renderer_map_package`.
+A zero exit code from Unreal alone is not enough, because commandlets can return
+success after falling back to an empty temporary map.
+
+Current verified local renderer reuse on 2026-05-31:
+
+| Scene source | Renderer package | Truth artifact | Load proof |
+|---|---|---|---|
+| `local_derelictcorridormegascans` | `/Game/DerelictCorridor/Maps/DerelictCorridor` | `UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json` | `Results/tmp/renderer_map_load_probe_latest.json` |
+| `local_factoryenvironmentcollect` | `/Game/Maps/Demonstration` | `UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json` | `Results/tmp/renderer_map_load_probe_factory_20260531.json` |
+
+Factory currently loads with high actor count and valid collision truth, but UE
+reports `PhysXVehicles`-related Blueprint warnings for forklift vehicle assets.
+Treat those as vehicle/Blueprint compatibility debt, not as a blocker for
+static scene truth and map planning.
 
 Binary build gate:
 
