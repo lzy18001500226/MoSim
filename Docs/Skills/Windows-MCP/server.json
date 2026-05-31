@@ -1,0 +1,22 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "name": "io.github.CursorTouch/Windows-MCP",
+  "description": "An MCP Server for computer-use in Windows OS",
+  "status": "active",
+  "repository": {
+    "url": "https://github.com/CursorTouch/Windows-MCP",
+    "source": "github"
+  },
+  "version": "1.0.1",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "windows-mcp",
+      "version": "0.8.1",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
