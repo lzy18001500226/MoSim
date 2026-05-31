@@ -278,11 +278,14 @@ still needs a truth-extraction or proxy-generation pipeline before it can prove
 mapping/path-planning behavior.
 
 Current audit result: the editable local projects under `References/UnrealScenes`
-are usable visual candidates. `DerelictCorridorMegascans` now has an explicit
-collision-truth export and audits as `ready_for_truth_backed_planning`; the
-other local candidates still need truth extraction before planner validation.
-UE assets with collision/navigation names are treated only as proxy candidates;
-they are not accepted as planner truth until exported to an explicit
+are usable visual candidates. `FactoryEnvironmentCollect`,
+`DerelictCorridorMegascans`, and `ElectricDreamsEnv` now have explicit
+collision-truth exports and audit as `ready_for_truth_backed_planning`.
+`FactoryEnvironmentCollect` passed manual visual review on 2026-05-31. The
+active renderer content links can then be switched to the next candidate, such
+as `DerelictCorridorMegascans`, for one-map-at-a-time review. UE assets with
+collision/navigation names are treated only as proxy candidates; they are not
+accepted as planner truth until exported to an explicit
 occupancy/collision/semantic artifact.
 
 To promote an editable scene into a truth-backed scene, open it in Unreal Editor
@@ -340,7 +343,7 @@ uv run python Scripts/UE5/export_unreal_scene_truth.py validate \
 uv run python Scripts/UE5/audit_scene_source.py
 ```
 
-Evidence from the latest run: UE 5.5 commandlet loaded
+Validated Derelict example: UE 5.5 commandlet loaded
 `/Game/DerelictCorridor/Maps/DerelictCorridor` and wrote
 `derelictcorridormegascans_collision_truth.json` with 4753 assets and 4753
 collision proxies. The scene-source audit then marked
@@ -348,18 +351,32 @@ collision proxies. The scene-source audit then marked
 the local editable scene has an explicit first-pass planner-truth route; it
 does not mean semantic labels or high-fidelity voxel occupancy are complete.
 
+Validated Factory example: UE 5.5 commandlet loaded `/Game/Maps/Demonstration`
+and wrote `factoryenvironmentcollect_collision_truth.json` with 8658 assets and
+8658 collision proxies. The project-owned renderer commandlet then loaded the
+same map as `/Game/Maps/Demonstration` with 11872 actors. Factory is the active
+primary scene for the current integration round.
+
+Validated ElectricDreams example: UE 5.5 commandlet wrote
+`electricdreamsenv_collision_truth.json` with 247 assets and 247 collision
+proxies. Full renderer load can exceed the default 60 second gate because UE is
+building Nanite/static-mesh data on first use. Treat this as a slow path, not a
+failed scene, until a longer approved load window or manual editor review says
+otherwise.
+
 Current scene-source registry state:
 
 ```text
 fab_route.status: inventory_visible_not_scene_accepted
 local_editable_fallback.status: active
-primary_scene_source_id: local_derelictcorridormegascans
+primary_scene_source_id: local_factoryenvironmentcollect
 ```
 
 Interpretation: Fab/Epic library entries are visible and useful for selecting
 assets, but none is accepted yet as a MoSim scene source until it is imported or
 reused in the MoSim UE sim project, editable through UE tooling, and paired with
-planning truth. `DerelictCorridorMegascans` is the current validated fallback.
+planning truth. `FactoryEnvironmentCollect` is the current validated local
+fallback and active renderer scene.
 
 `AQuadrotorMworksMapActor` consumes this registry through:
 
@@ -368,12 +385,12 @@ SceneSourceRegistryJson = MworksData/scene_source_registry.json
 ResolveSceneSourceId(<scene_source_id>)
 ```
 
-When the incoming frame `map_id` is `local_derelictcorridormegascans`, the map
+When the incoming frame `map_id` is `local_factoryenvironmentcollect`, the map
 actor now records the editable project path, `.uproject` path, truth artifact
 list, acceptance gates, renderer-local content root, renderer map asset, and
-renderer package name from the registry. For the current Derelict fallback it
+renderer package name from the registry. For the current Factory fallback it
 sets `bCurrentSceneImportedIntoRenderer=true` because the scene is reused inside
-the MoSim renderer through a local content junction rather than copied into Git.
+the MoSim renderer through local content junctions rather than copied into Git.
 
 Source-level gate:
 
@@ -385,9 +402,9 @@ uv run python Scripts/UE5/check_ue_fab_goal_acceptance.py
 
 This check verifies that the C++ bridge exposes the scene-source registry fields
 and that the committed registry does not contain external Launcher/Fab absolute
-paths. The scene-source UDP contract check generates one dry-run frame with
-`map_id=local_derelictcorridormegascans` and verifies that this selected source
-matches the registry primary scene id, carries truth artifacts, and keeps
+paths. The scene-source UDP contract check generates one dry-run frame with the
+registry primary `map_id` and verifies that this selected source matches the
+registry primary scene id, carries truth artifacts, and keeps
 `local_known_map` / preview `local_plan` marked as render-only. It is not visual
 import evidence; it proves the packet path that triggers
 `ResolveSceneSourceId`.
@@ -400,32 +417,43 @@ workflow presence, and visual import/reuse evidence. The default mode reports
 partial progress without failing. Use `--require-complete` only when deciding
 whether the full goal is ready to close.
 
-Current expected status before visual import work:
+Current expected status after local fallback activation:
 
 ```text
-7/8 gates passed after local content-link reuse and renderer map-load proof
+ok=true through the local editable fallback after scene activation and renderer map-load proof
 fab_route_acceptance: partial
 scene_visual_import_or_reuse: passed
 ```
 
-This means the local Derelict fallback has truth, packet-level selection, and a
-renderer-local content link at `UE5/MoSimSceneLibrary/Content/DerelictCorridor`.
+This means the active local fallback has truth, packet-level selection, and
+renderer-local content links under `UE5/MoSimSceneLibrary/Content/`.
 Fab remains unaccepted until one Fab asset is created/imported with edit access
 and planning truth. The local fallback route still satisfies the current goal
 branch because the goal explicitly allows switching to `References/UnrealScenes`
 when Fab cannot prove import/edit/truth.
 
-The local fallback content link is created or verified with:
+The local fallback scene is activated with:
 
 ```bash
-uv run python Scripts/UE5/link_renderer_scene_source.py
+python3 Scripts/UE5/activate_renderer_scene_source.py \
+  --scene-source-id local_factoryenvironmentcollect
 uv run python Scripts/UE5/build_scene_source_registry.py --write
 ```
 
-`References/UnrealScenes` stays ignored. The link is a local runtime/editor
-bridge, not a committed copy of third-party assets. On WSL/Windows, this must
-be a Windows directory junction, not a Linux symlink. A WSL symlink can pass
-Python `exists()` checks while Unreal cannot load the `.umap`.
+`MoSimSceneLibrary` is a unified shell, not a permanent mount of every scene
+project at once. Many Marketplace/Fab/sample projects use conflicting hard-coded
+packages such as `/Game/Blueprints`, `/Game/Meshes`, `/Game/Maps`, and
+`/Game/Materials`. Keep only one local scene source active at a time. The
+activation script removes renderer Content links that point into
+`References/UnrealScenes`, preserves project-owned roots such as `MworksData`,
+and then creates links for all top-level `Content` folders in the selected
+source. World Partition companion folders under `Content/__ExternalActors__` and
+`Content/__ExternalObjects__` are linked with the same top-level package names.
+
+`References/UnrealScenes` stays ignored. These links are local runtime/editor
+bridges, not committed copies of third-party assets. On WSL/Windows, links must
+be Windows directory junctions when available, not Linux symlinks. A WSL symlink
+can pass Python `exists()` checks while Unreal cannot load the `.umap`.
 
 `mosim-unreal` asset/map search must also follow those Content junctions and
 keep package paths renderer-local. For example, Factory's linked
@@ -453,12 +481,42 @@ Current verified local renderer reuse on 2026-05-31:
 | Scene source | Renderer package | Truth artifact | Load proof |
 |---|---|---|---|
 | `local_derelictcorridormegascans` | `/Game/DerelictCorridor/Maps/DerelictCorridor` | `UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json` | `Results/tmp/renderer_map_load_probe_latest.json` |
-| `local_factoryenvironmentcollect` | `/Game/Maps/Demonstration` | `UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json` | `Results/tmp/renderer_map_load_probe_factory_20260531.json` |
+| `local_factoryenvironmentcollect` | `/Game/Maps/Demonstration` | `UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json` | `Results/tmp/renderer_map_load_probe_factory_active_20260531.json` |
+| `local_electricdreamsenv` | `/Game/Levels/PCG/ElectricDreams_PCGCloseRange` | `UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/electricdreamsenv_collision_truth.json` | truth OK; full renderer load is a slow first-time Nanite/static-mesh build path |
 
 Factory currently loads with high actor count and valid collision truth, but UE
 reports `PhysXVehicles`-related Blueprint warnings for forklift vehicle assets.
 Treat those as vehicle/Blueprint compatibility debt, not as a blocker for
 static scene truth and map planning.
+
+Manual visual review: on 2026-05-31 the user confirmed the standalone
+`MoSimSceneLibrary` view opened the Factory map correctly. Derelict was then
+relaunched for manual review with the old generated preview map disabled. This
+does not yet close semantic truth, occupancy-grid, UAV playback, radar overlay,
+or route-planning evidence.
+
+For real scene visual review, use the scene-review launch mode:
+
+```bash
+RESTART_UNREAL_GAME=1 \
+UNREAL_EXTRA_ARGS="/Game/DerelictCorridor/Maps/DerelictCorridor" \
+Scripts/UE5/open_unreal_renderer.sh review-scene
+```
+
+`review-scene` passes `-MoSimSceneReview`, which disables automatic spawning of
+the old `MworksData/map_open_blocks_render_map.json` preview/STL/blockout map
+and the default playback actor. Without this flag,
+`AMoSimSceneLibraryGameMode` may overlay the generated MWORKS preview map on
+top of a real imported scene, causing a false visual-review failure.
+
+Current blocked or lower-priority candidates:
+
+| Scene source | Status | Next action |
+|---|---|---|
+| `CityParkEnvironmentCollec` | 60 second truth export timed out while UE was still building static meshes | retry only with a longer approved build/export window or after manual editor warm-up |
+| `DarkRuinsMegascansSample` | `/Game/Main` loads but commandlet only exposes global/camera/postprocess actors; World Partition editor subsystem is unavailable in the tested UE Python route | implement a proper World Partition cell/data-layer truth route or use manual editor-assisted review |
+| `MedievalVillageMegascansS` | UE 4.27 origin; after exporter API compatibility fixes it can be retried, but it is lower priority than Factory/Derelict/Electric | retry only if a village map is needed |
+| `FPS-Shooter-Unreal` | previous partial truth was misleading because required `/Game/AbandonedFactory/...` assets were missing | do not treat as formal scene source without asset repair |
 
 Binary build gate:
 

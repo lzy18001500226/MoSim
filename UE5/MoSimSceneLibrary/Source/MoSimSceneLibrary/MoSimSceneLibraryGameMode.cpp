@@ -5,6 +5,8 @@
 #include "Engine/DirectionalLight.h"
 #include "Engine/SkyLight.h"
 #include "Engine/World.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "MworksReviewCameraPawn.h"
 #include "QuadrotorMworksMapActor.h"
 #include "QuadrotorMworksPlaybackActor.h"
@@ -17,6 +19,12 @@ AMoSimSceneLibraryGameMode::AMoSimSceneLibraryGameMode()
 void AMoSimSceneLibraryGameMode::BeginPlay()
 {
     Super::BeginPlay();
+
+    const bool bSceneReviewOnly = FParse::Param(FCommandLine::Get(), TEXT("MoSimSceneReview"));
+    const bool bDisablePreviewMap =
+        bSceneReviewOnly || FParse::Param(FCommandLine::Get(), TEXT("MoSimNoPreviewMap"));
+    const bool bDisablePlayback =
+        bSceneReviewOnly || FParse::Param(FCommandLine::Get(), TEXT("MoSimNoPlayback"));
 
     if (!bSpawnDefaultRendererActors)
     {
@@ -39,39 +47,57 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
         SpawnDefaultReviewLighting(World, SpawnParameters);
     }
 
-    SpawnedMapActor = World->SpawnActor<AQuadrotorMworksMapActor>(
-        AQuadrotorMworksMapActor::StaticClass(),
-        MapActorLocation,
-        FRotator::ZeroRotator,
-        SpawnParameters);
-
-    if (SpawnedMapActor)
+    if (bDisablePreviewMap)
     {
-        SpawnedMapActor->SetActorLabel(TEXT("MWORKS_Render_Map"));
-        SpawnedMapActor->RenderMapJson = DefaultRenderMapJson;
-        SpawnedMapActor->LoadRenderMapSummary();
-        UE_LOG(LogTemp, Display, TEXT("MWORKS renderer spawned map actor with map json: %s"), *DefaultRenderMapJson);
+        UE_LOG(LogTemp, Display, TEXT("MWORKS preview map auto-spawn disabled by command line."));
+    }
+    else if (DefaultRenderMapJson.IsEmpty())
+    {
+        UE_LOG(LogTemp, Display, TEXT("MWORKS preview map auto-spawn skipped because DefaultRenderMapJson is empty."));
     }
     else
     {
-        UE_LOG(LogTemp, Error, TEXT("MWORKS renderer failed to spawn map actor."));
+        SpawnedMapActor = World->SpawnActor<AQuadrotorMworksMapActor>(
+            AQuadrotorMworksMapActor::StaticClass(),
+            MapActorLocation,
+            FRotator::ZeroRotator,
+            SpawnParameters);
+
+        if (SpawnedMapActor)
+        {
+            SpawnedMapActor->SetActorLabel(TEXT("MWORKS_Render_Map"));
+            SpawnedMapActor->RenderMapJson = DefaultRenderMapJson;
+            SpawnedMapActor->LoadRenderMapSummary();
+            UE_LOG(LogTemp, Display, TEXT("MWORKS renderer spawned map actor with map json: %s"), *DefaultRenderMapJson);
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("MWORKS renderer failed to spawn map actor."));
+        }
     }
 
-    SpawnedPlaybackActor = World->SpawnActor<AQuadrotorMworksPlaybackActor>(
-        AQuadrotorMworksPlaybackActor::StaticClass(),
-        PlaybackActorLocation,
-        FRotator::ZeroRotator,
-        SpawnParameters);
-
-    if (SpawnedPlaybackActor)
+    if (bDisablePlayback)
     {
-        SpawnedPlaybackActor->SetActorLabel(TEXT("MWORKS_Quadrotor_Playback"));
-        SpawnedPlaybackActor->MapActor = SpawnedMapActor;
-        UE_LOG(LogTemp, Display, TEXT("MWORKS renderer spawned playback actor and linked map actor."));
+        UE_LOG(LogTemp, Display, TEXT("MWORKS playback actor auto-spawn disabled by command line."));
     }
     else
     {
-        UE_LOG(LogTemp, Error, TEXT("MWORKS renderer failed to spawn playback actor."));
+        SpawnedPlaybackActor = World->SpawnActor<AQuadrotorMworksPlaybackActor>(
+            AQuadrotorMworksPlaybackActor::StaticClass(),
+            PlaybackActorLocation,
+            FRotator::ZeroRotator,
+            SpawnParameters);
+
+        if (SpawnedPlaybackActor)
+        {
+            SpawnedPlaybackActor->SetActorLabel(TEXT("MWORKS_Quadrotor_Playback"));
+            SpawnedPlaybackActor->MapActor = SpawnedMapActor;
+            UE_LOG(LogTemp, Display, TEXT("MWORKS renderer spawned playback actor and linked map actor."));
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("MWORKS renderer failed to spawn playback actor."));
+        }
     }
 }
 

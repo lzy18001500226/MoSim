@@ -105,8 +105,11 @@ case "${MODE}" in
   game)
     EXTRA_ARGS=("-game" "-windowed" "-ResX=1280" "-ResY=720")
     ;;
+  review-scene)
+    EXTRA_ARGS=("-game" "-windowed" "-ResX=1280" "-ResY=720" "-MoSimSceneReview")
+    ;;
   *)
-    echo "Usage: $0 [editor|game]" >&2
+    echo "Usage: $0 [editor|game|review-scene]" >&2
     exit 2
     ;;
 esac
@@ -122,8 +125,8 @@ else
     # shellcheck disable=SC2206
     EXTRA_ARGS_WIN=(${UNREAL_EXTRA_ARGS})
   fi
-  ARG_LIST="'${UPROJECT_WIN}', '-game', '-windowed', '-ResX=1280', '-ResY=720'"
-  for Arg in "${EXTRA_ARGS_WIN[@]}"; do
+  ARG_LIST="'${UPROJECT_WIN}'"
+  for Arg in "${EXTRA_ARGS[@]}" "${EXTRA_ARGS_WIN[@]}"; do
     ARG_LIST="${ARG_LIST}, '${Arg}'"
   done
   powershell.exe -NoProfile -Command \
