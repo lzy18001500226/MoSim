@@ -1,0 +1,127 @@
+{
+  "nav": {
+    "features": "المميزات",
+    "screenshots": "لقطات الشاشة",
+    "docs": "التوثيق",
+    "comparison": "المقارنة",
+    "download": "تحميل",
+    "pricing": "مجاني",
+    "faq": "الأسئلة الشائعة",
+    "viewOnGithub": "View on GitHub"
+  },
+  "hero": {
+    "badge": "Agent Teams",
+    "downloadNow": "حمّل الآن",
+    "ctaPrimary": "تحميل لـ {platform}",
+    "ctaSecondary": "مقارنة",
+    "ctaDocs": "التوثيق",
+    "preview": "معاينة المنتج",
+    "trust": {
+      "agentTeams": "فرق الوكلاء",
+      "kanban": "لوحة كانبان",
+      "openSource": "مفتوح المصدر"
+    },
+    "watchDemo": "شاهد العرض",
+    "videoUnavailable": "الفيديو غير متوفر"
+  },
+  "download": {
+    "title": "تحميل",
+    "detected": "تم الكشف",
+    "systemRequirements": "متطلبات النظام",
+    "version": "الإصدار {version}"
+  },
+  "theme": {
+    "dark": "داكن",
+    "light": "فاتح"
+  },
+  "language": {
+    "label": "اللغة",
+    "search": "ابحث عن لغة…"
+  },
+  "features": {
+    "sectionTitle": "كل ما تحتاجه لتنسيق وكلاء الذكاء الاصطناعي",
+    "sectionSubtitle": "أدوات قوية تجعل التعاون متعدد الوكلاء يعمل فعلاً."
+  },
+  "pricing": {
+    "sectionTitle": "التثبيت مجاني. نموذج مجاني مضمّن.",
+    "sectionSubtitle": "ابدأ فوراً بنموذج مجاني بدون مصادقة - بدون حساب أو مفتاح API أو بطاقة. وصّل Claude أو Codex أو OpenCode/OpenRouter أو مزودين آخرين فقط عندما تحتاج نماذج إضافية.",
+    "getStarted": "حمّل الآن",
+    "popular": "مجاني",
+    "freeModelCallout": "نموذج مجاني بدون مصادقة مضمّن",
+    "note": "لا يملك Agent Teams أي خطة مدفوعة. النموذج المجاني بدون مصادقة يتيح التجربة فوراً؛ استخدام المزودين المدفوعين اختياري ويتبع المزود الذي تختاره."
+  },
+  "testimonials": {
+    "sectionTitle": "ماذا يقول المطورون",
+    "sectionSubtitle": "آراء حقيقية من مطورين حقيقيين",
+    "showMore": "عرض المزيد",
+    "showLess": "عرض أقل",
+    "feedbackCta": "تريد مشاركة تجربتك؟ افتح issue على"
+  },
+  "faq": {
+    "sectionTitle": "لديك أسئلة؟ لدينا إجابات",
+    "subtitle": "كل ما تحتاج معرفته عن Agent Teams"
+  },
+  "comparison": {
+    "sectionTitle": "كيف نقارن",
+    "sectionSubtitle": "مقارنة تفصيلية للمميزات مع أدوات البرمجة بالذكاء الاصطناعي الأخرى.",
+    "feature": "الميزة",
+    "robotBubble": "احكم بنفسك",
+    "features": {
+      "crossTeam": "التواصل بين الفرق",
+      "agentMessaging": "مراسلة بين الوكلاء",
+      "linkedTasks": "مهام مرتبطة",
+      "sessionAnalysis": "تحليل الجلسات",
+      "taskAttachments": "مرفقات المهام",
+      "hunkReview": "مراجعة على مستوى الكتلة",
+      "codeEditor": "محرر كود مدمج",
+      "fullAutonomy": "استقلالية كاملة",
+      "taskDeps": "تبعيات المهام",
+      "reviewWorkflow": "سير عمل المراجعة",
+      "zeroSetup": "بدون إعداد",
+      "kanban": "لوحة كانبان",
+      "execLog": "سجلات التنفيذ",
+      "liveProcesses": "عمليات مباشرة",
+      "runtimeLoad": "CPU/RAM لكل زميل",
+      "perTaskReview": "مراجعة كود لكل مهمة",
+      "flexAutonomy": "استقلالية مرنة",
+      "worktree": "عزل Git worktree",
+      "multiAgent": "زملاء AI مختلطون",
+      "liveWorkGraph": "خريطة فريق حية",
+      "liveTeam": "زملاء مباشرين",
+      "teamWorkspace": "مساحة عمل الفريق",
+      "launchProof": "حالة تشغيل الزملاء",
+      "orgGovernance": "الهيكل التنظيمي / الحوكمة",
+      "budgetControls": "ضوابط الميزانية",
+      "price": "السعر"
+    }
+  },
+  "screenshots": {
+    "sectionTitle": "شاهده أثناء العمل",
+    "sectionSubtitle": "لقطات شاشة حقيقية من التطبيق — لوحة كانبان، مراجعة الكود، فرق الوكلاء، والمزيد."
+  },
+  "common": {
+    "learnMore": "اعرف المزيد"
+  },
+  "footer": {
+    "copyright": "© {year} Agent Teams",
+    "tagline": "تنسيق وكلاء الذكاء الاصطناعي للمطورين",
+    "robotBubble": "أنا أنتظر",
+    "links": {
+      "github": "GitHub",
+      "docs": "التوثيق"
+    }
+  },
+  "meta": {
+    "homeTitle": "Agent Teams - تنسيق وكلاء الذكاء الاصطناعي للمطورين",
+    "homeDescription": "تطبيق سطح مكتب مجاني ومفتوح المصدر لفرق وكلاء الذكاء الاصطناعي. ابدأ بنموذج مجاني بدون مصادقة، ثم وصّل Claude أو Codex أو OpenCode عند الحاجة.",
+    "downloadTitle": "تنزيل Agent Teams لنظام macOS وWindows وLinux",
+    "downloadDescription": "نزّل Agent Teams لنظام macOS وWindows وLinux. تطبيق سطح مكتب مجاني ومفتوح المصدر لفرق وكلاء Claude وCodex وOpenCode."
+  },
+  "error": {
+    "notFoundTitle": "الصفحة غير موجودة",
+    "notFoundDescription": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+    "genericTitle": "حدث خطأ ما",
+    "genericDescription": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى لاحقاً.",
+    "goHome": "العودة للرئيسية"
+  }
+}

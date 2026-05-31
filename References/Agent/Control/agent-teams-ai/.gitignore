@@ -1,0 +1,70 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-electron/
+dist-standalone/
+out/
+release/
+coverage/
+electron.vite.config.*.mjs
+
+# Runtime release artifacts are downloaded during dev/release builds.
+# Keep only the placeholder directory in git.
+.runtime-download/
+resources/runtime/*
+!resources/runtime/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# TypeScript
+*.tsbuildinfo
+
+.pnpm-store/
+/package-lock.json
+notification_example/
+temp/
+.claude/
+
+
+eslint-fix/
+.eslintcache
+.eslintcache-fast
+remotion/*
+
+.home/
+.board-task-log-freshness/
+
+.serena/
+.playwright-mcp/
+
+# Local release operator notes
+/ORCHESTRATOR_RELEASE_RUNBOOK.local.md
+
+# Local reference captures
+/agent-teams-reference-fix-*.png
+/.tmp-*

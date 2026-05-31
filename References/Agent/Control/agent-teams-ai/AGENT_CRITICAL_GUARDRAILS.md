@@ -1,0 +1,14 @@
+# Agent Critical Guardrails
+
+These are the hard rules to keep agent work predictable and safe in this repo.
+
+- Read `CLAUDE.md` first, then follow `docs/FEATURE_ARCHITECTURE_STANDARD.md` for new medium and large features.
+- Use `pnpm` for project commands. Do not switch to `npm` or `yarn`.
+- Use the desktop Electron app (`pnpm dev`) for normal local development and smoke checks unless browser-mode internals are explicitly requested.
+- Do not run `pnpm lint:fix` unless the user explicitly asks for broad formatting changes.
+- Keep main, preload, renderer, and shared responsibilities separate.
+- Use `wrapAgentBlock(text)` instead of manually concatenating agent block markers.
+- Preserve task/subagent filtering, structured task refs, and message parsing semantics.
+- Validate IPC and other main-process inputs defensively and fail gracefully.
+- Treat `docs/team-management/debugging-agent-teams.md` as the first stop for team launch hangs, bootstrap issues, or missing teammate replies.
+- Do not revert unrelated user changes or other agents' edits.

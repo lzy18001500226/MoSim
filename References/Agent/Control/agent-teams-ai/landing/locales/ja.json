@@ -1,0 +1,127 @@
+{
+  "nav": {
+    "features": "機能",
+    "screenshots": "スクリーンショット",
+    "docs": "ドキュメント",
+    "comparison": "比較",
+    "download": "ダウンロード",
+    "pricing": "無料",
+    "faq": "FAQ",
+    "viewOnGithub": "View on GitHub"
+  },
+  "hero": {
+    "badge": "Agent Teams",
+    "downloadNow": "ダウンロード",
+    "ctaPrimary": "{platform}版をダウンロード",
+    "ctaSecondary": "比較する",
+    "ctaDocs": "ドキュメント",
+    "preview": "製品プレビュー",
+    "trust": {
+      "agentTeams": "エージェントチーム",
+      "kanban": "カンバンボード",
+      "openSource": "オープンソース"
+    },
+    "watchDemo": "デモを見る",
+    "videoUnavailable": "動画は利用できません"
+  },
+  "download": {
+    "title": "ダウンロード",
+    "detected": "検出済み",
+    "systemRequirements": "動作環境",
+    "version": "バージョン {version}"
+  },
+  "theme": {
+    "dark": "ダーク",
+    "light": "ライト"
+  },
+  "language": {
+    "label": "言語",
+    "search": "言語を検索…"
+  },
+  "features": {
+    "sectionTitle": "AIエージェントオーケストレーションに必要なすべて",
+    "sectionSubtitle": "マルチエージェント連携を実現する強力なツール。"
+  },
+  "pricing": {
+    "sectionTitle": "インストール無料。無料モデル付き。",
+    "sectionSubtitle": "認証なしの無料モデルですぐに開始できます - アカウント、APIキー、クレジットカードは不要。追加モデルが必要な時だけ Claude、Codex、OpenCode/OpenRouter などを接続できます。",
+    "getStarted": "ダウンロード",
+    "popular": "無料",
+    "freeModelCallout": "認証なしの無料モデルが含まれています",
+    "note": "Agent Teams 自体に有料プランはありません。認証なしの無料モデルですぐに試せます。有料 provider の利用は任意で、選択した provider の条件に従います。"
+  },
+  "testimonials": {
+    "sectionTitle": "開発者の声",
+    "sectionSubtitle": "実際の開発者からのリアルなフィードバック",
+    "showMore": "もっと見る",
+    "showLess": "折りたたむ",
+    "feedbackCta": "体験を共有しませんか？issueを作成してください："
+  },
+  "faq": {
+    "sectionTitle": "よくある質問",
+    "subtitle": "Agent Teamsについて知っておくべきこと"
+  },
+  "comparison": {
+    "sectionTitle": "他ツールとの比較",
+    "sectionSubtitle": "他のAIコーディングツールとの機能比較。",
+    "feature": "機能",
+    "robotBubble": "自分で判断して",
+    "features": {
+      "crossTeam": "チーム間コミュニケーション",
+      "agentMessaging": "エージェント間メッセージング",
+      "linkedTasks": "タスクリンク",
+      "sessionAnalysis": "セッション分析",
+      "taskAttachments": "タスク添付ファイル",
+      "hunkReview": "ハンクレベルレビュー",
+      "codeEditor": "組み込みコードエディタ",
+      "fullAutonomy": "完全自律",
+      "taskDeps": "タスク依存関係",
+      "reviewWorkflow": "レビューワークフロー",
+      "zeroSetup": "ゼロ設定",
+      "kanban": "カンバンボード",
+      "execLog": "実行ログ",
+      "liveProcesses": "ライブプロセス",
+      "runtimeLoad": "チームメイトごとのCPU/RAM",
+      "perTaskReview": "タスク別コードレビュー",
+      "flexAutonomy": "柔軟な自律性",
+      "worktree": "Git worktree分離",
+      "multiAgent": "混在AIチームメイト",
+      "liveWorkGraph": "ライブチームマップ",
+      "liveTeam": "ライブチームメイト",
+      "teamWorkspace": "チームワークスペース",
+      "launchProof": "チームメイトの起動状態",
+      "orgGovernance": "組織図 / ガバナンス",
+      "budgetControls": "予算管理",
+      "price": "価格"
+    }
+  },
+  "screenshots": {
+    "sectionTitle": "実際の画面",
+    "sectionSubtitle": "アプリの実際のスクリーンショット — カンバンボード、コードレビュー、エージェントチームなど。"
+  },
+  "common": {
+    "learnMore": "詳細"
+  },
+  "footer": {
+    "copyright": "© {year} Agent Teams",
+    "tagline": "開発者向けAIエージェントオーケストレーション",
+    "robotBubble": "待ってるよ",
+    "links": {
+      "github": "GitHub",
+      "docs": "ドキュメント"
+    }
+  },
+  "meta": {
+    "homeTitle": "Agent Teams - 開発者向けAIエージェントオーケストレーション",
+    "homeDescription": "AIエージェントチーム向けの無料オープンソースデスクトップアプリ。認証なしの無料モデルから始め、必要に応じて Claude、Codex、OpenCode を接続できます。",
+    "downloadTitle": "macOS、Windows、Linux向けAgent Teamsをダウンロード",
+    "downloadDescription": "macOS、Windows、Linux向けAgent Teamsをダウンロード。Claude、Codex、OpenCodeエージェントチーム用の無料オープンソースデスクトップアプリ。"
+  },
+  "error": {
+    "notFoundTitle": "ページが見つかりません",
+    "notFoundDescription": "お探しのページは存在しないか、移動された可能性があります。",
+    "genericTitle": "エラーが発生しました",
+    "genericDescription": "予期しないエラーが発生しました。後でもう一度お試しください。",
+    "goHome": "ホームに戻る"
+  }
+}

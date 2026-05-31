@@ -1,0 +1,127 @@
+{
+  "nav": {
+    "features": "Recursos",
+    "screenshots": "Capturas",
+    "docs": "Documentação",
+    "comparison": "Comparar",
+    "download": "Baixar",
+    "pricing": "Grátis",
+    "faq": "FAQ",
+    "viewOnGithub": "View on GitHub"
+  },
+  "hero": {
+    "badge": "Agent Teams",
+    "downloadNow": "Baixar agora",
+    "ctaPrimary": "Baixar para {platform}",
+    "ctaSecondary": "Comparar",
+    "ctaDocs": "Documentação",
+    "preview": "Prévia do produto",
+    "trust": {
+      "agentTeams": "Equipes de agentes",
+      "kanban": "Quadro Kanban",
+      "openSource": "Open Source"
+    },
+    "watchDemo": "Ver demo",
+    "videoUnavailable": "Vídeo indisponível"
+  },
+  "download": {
+    "title": "Baixar",
+    "detected": "Detectado",
+    "systemRequirements": "Requisitos do sistema",
+    "version": "Versão {version}"
+  },
+  "theme": {
+    "dark": "Escuro",
+    "light": "Claro"
+  },
+  "language": {
+    "label": "Idioma",
+    "search": "Pesquisar idioma…"
+  },
+  "features": {
+    "sectionTitle": "Tudo para orquestração de agentes IA",
+    "sectionSubtitle": "Ferramentas poderosas que fazem a colaboração multi-agente realmente funcionar."
+  },
+  "pricing": {
+    "sectionTitle": "Grátis para instalar. Modelo grátis incluído.",
+    "sectionSubtitle": "Comece na hora com um modelo gratuito sem autenticação - sem conta, chave de API ou cartão. Conecte Claude, Codex, OpenCode/OpenRouter ou outros provedores só quando quiser mais modelos.",
+    "getStarted": "Baixar agora",
+    "popular": "Grátis",
+    "freeModelCallout": "Modelo gratuito sem autenticação incluído",
+    "note": "Agent Teams não tem plano pago próprio. O modelo gratuito sem autenticação permite testar imediatamente; uso de provedores pagos é opcional e depende do provedor escolhido."
+  },
+  "testimonials": {
+    "sectionTitle": "O que os desenvolvedores dizem",
+    "sectionSubtitle": "Feedback real de desenvolvedores reais",
+    "showMore": "Mostrar mais",
+    "showLess": "Mostrar menos",
+    "feedbackCta": "Quer compartilhar sua experiência? Abra uma issue no"
+  },
+  "faq": {
+    "sectionTitle": "Tem perguntas? Temos respostas",
+    "subtitle": "Tudo sobre o Agent Teams"
+  },
+  "comparison": {
+    "sectionTitle": "Como nos comparamos",
+    "sectionSubtitle": "Comparação detalhada de recursos com outras ferramentas de programação com IA.",
+    "feature": "Recurso",
+    "robotBubble": "Julgue você",
+    "features": {
+      "crossTeam": "Comunicação entre equipes",
+      "agentMessaging": "Mensagens entre agentes",
+      "linkedTasks": "Tarefas vinculadas",
+      "sessionAnalysis": "Análise de sessões",
+      "taskAttachments": "Anexos de tarefas",
+      "hunkReview": "Revisão por hunk",
+      "codeEditor": "Editor de código integrado",
+      "fullAutonomy": "Autonomia total",
+      "taskDeps": "Dependências de tarefas",
+      "reviewWorkflow": "Fluxo de revisão",
+      "zeroSetup": "Sem configuração",
+      "kanban": "Quadro Kanban",
+      "execLog": "Logs de execução",
+      "liveProcesses": "Processos ao vivo",
+      "runtimeLoad": "CPU/RAM por colega",
+      "perTaskReview": "Revisão de código por tarefa",
+      "flexAutonomy": "Autonomia flexível",
+      "worktree": "Isolamento Git worktree",
+      "multiAgent": "Colegas de IA mistos",
+      "liveWorkGraph": "Mapa da equipe ao vivo",
+      "liveTeam": "Colegas ao vivo",
+      "teamWorkspace": "Espaço de trabalho da equipe",
+      "launchProof": "Status de início dos colegas",
+      "orgGovernance": "Organograma / governança",
+      "budgetControls": "Controles de orçamento",
+      "price": "Preço"
+    }
+  },
+  "screenshots": {
+    "sectionTitle": "Veja em ação",
+    "sectionSubtitle": "Capturas reais do app — quadro kanban, revisão de código, equipes de agentes e mais."
+  },
+  "common": {
+    "learnMore": "Saiba mais"
+  },
+  "footer": {
+    "copyright": "© {year} Agent Teams",
+    "tagline": "Orquestração de agentes IA para desenvolvedores",
+    "robotBubble": "Estou esperando",
+    "links": {
+      "github": "GitHub",
+      "docs": "Documentação"
+    }
+  },
+  "meta": {
+    "homeTitle": "Agent Teams - Orquestração de agentes IA para desenvolvedores",
+    "homeDescription": "App desktop gratuito e open source para equipes de agentes IA. Comece com um modelo gratuito sem autenticação, depois conecte Claude, Codex ou OpenCode quando precisar.",
+    "downloadTitle": "Baixar Agent Teams para macOS, Windows e Linux",
+    "downloadDescription": "Baixe o Agent Teams para macOS, Windows e Linux. App desktop gratuito e open source para equipes de agentes Claude, Codex e OpenCode."
+  },
+  "error": {
+    "notFoundTitle": "Página não encontrada",
+    "notFoundDescription": "A página que você procura não existe ou foi movida.",
+    "genericTitle": "Algo deu errado",
+    "genericDescription": "Ocorreu um erro inesperado. Tente novamente mais tarde.",
+    "goHome": "Ir para o início"
+  }
+}

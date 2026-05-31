@@ -1,0 +1,127 @@
+---
+title: "Agent Swarm TUI"
+description: "Start the terminal UI with the main npx launcher, then expand optional sections only if you need them."
+icon: "terminal"
+---
+
+Agent Swarm TUI is the terminal UI for Agency Swarm.
+
+Use it when you want to build or test your Agency Swarm project in the terminal.
+
+## Start the TUI
+
+For most users, the right way to start is:
+
+```bash
+npx @vrsen/agentswarm
+```
+
+This is the main launch path. It handles first-run setup, then connects the terminal UI to your Agency Swarm server.
+
+Run it from your project root. If you are starting fresh, run it in a new empty folder.
+
+You do not need to install the TUI globally first.
+
+![Agent Swarm TUI startup screen](/images/agent-swarm-cli-preview.png)
+
+## Before You Start
+
+Make sure you have:
+
+- Node.js installed so `npx` is available
+- Python 3.12 or newer available for Agency Swarm projects
+- a model provider credential if you want to send prompts right away, or you can add it later with `/auth`
+- an existing agency project, or a starting point from [From Scratch](/welcome/getting-started/from-scratch) or the [Starter Template](/welcome/getting-started/starter-template)
+
+## What Happens on First Launch
+
+On first launch, you will usually see this flow:
+
+<Steps>
+  <Step title="Start the launcher">
+    Start with `npx @vrsen/agentswarm`.
+  </Step>
+  <Step title="Point the launcher at an agency">
+    The launcher can reuse the current Agency Swarm project, create a starter project, or connect to an agency that is already running.
+  </Step>
+  <Step title="Set up the project environment">
+    The launcher checks for a project `.venv`. If it needs to create one, it asks first and then installs the project dependencies before opening the TUI.
+  </Step>
+  <Step title="Open the TUI and add auth if needed">
+    The TUI opens connected to your agency. If you do not already have a usable model provider configured, use `/auth`.
+  </Step>
+</Steps>
+
+This is the path we recommend for onboarding, videos, and first-time users.
+
+## What You Can Do in the TUI
+
+Once the TUI is running, you get:
+
+- a keyboard-first terminal workflow
+- session history, export, undo, redo, and `/compact`
+- `/agents` to switch between top-level agents
+- `@AgentName` mentions to route a prompt to a specific top-level agent
+- `@` file and resource references to attach local or MCP context in the same prompt flow
+- `Tab` autocomplete for both agent mentions and file and resource references
+- direct access to local project files for prompt context
+
+![Agent Swarm TUI agent picker](/images/agent-swarm-cli-agent-selection.png)
+
+## Optional Paths
+
+If this is your first run, you can ignore everything below.
+
+<Accordion title="Connect to a running agency (optional)" defaultOpen={false}>
+Use the same `npx @vrsen/agentswarm` command, then choose **Connect to a running agency** during onboarding.
+
+This is the optional `/connect` path.
+
+The launcher asks for:
+
+1. the Agency Swarm base URL
+2. whether the server needs a bearer token
+3. the agency id, if automatic discovery does not already find it
+
+Use it when:
+
+- a local Agency Swarm server is already running
+- you want to connect to a remote Agency Swarm server
+- the server is protected and needs a bearer token
+
+Current limitations for this path:
+
+- `/models` does not switch the models configured inside your Agency Swarm backend yet
+- local file tools are not available; if you want the TUI to work directly on project files, start with `npx @vrsen/agentswarm` from that project directory instead
+
+Use your Python config to choose backend models and providers.
+</Accordion>
+
+<Accordion title="Alternative: Launch from Python with agency.tui()" defaultOpen={false}>
+If your project already launches from Python, `agency.tui()` still works as the secondary entrypoint.
+
+```python
+agency.tui()
+```
+
+Then start your project the usual way:
+
+```bash
+python agency.py
+```
+
+This path stays bound to the exact `Agency` instance you passed in Python. It starts the local bridge for that agency, then opens the TUI connected to it.
+
+Use it when your team already starts the project from Python and you want a quick TUI test path without switching directories or changing entrypoints.
+</Accordion>
+
+`tui(show_reasoning=False)` is not supported in the new TUI yet.
+
+## Related Pages
+
+- [Installation](/welcome/installation)
+- [From Scratch](/welcome/getting-started/from-scratch)
+- [Third-Party Models](/additional-features/third-party-models)
+- [Running an Agency](/core-framework/agencies/running-agency)
+- [FastAPI Integration](/additional-features/fastapi-integration)
+- [API Reference](/references/api)

@@ -1,0 +1,502 @@
+"""Regression tests for LiteLLM/Chat Completions placeholder IDs in stream persistence.
+
+These tests verify that the Python object id() based matching works correctly
+with LiteLLM's placeholder IDs (FAKE_RESPONSES_ID).
+"""
+
+from collections import deque
+from unittest.mock import patch
+
+from agents.items import ToolCallItem, ToolCallOutputItem
+from agents.models.fake_id import FAKE_RESPONSES_ID
+from openai.types.responses import ResponseFunctionToolCall
+
+from agency_swarm import Agent
+from agency_swarm.agent.core import AgencyContext
+from agency_swarm.agent.execution_stream_persistence import (
+    StreamMetadataStore,
+    _compute_content_hash,
+    _persist_streamed_items,
+)
+from agency_swarm.messages import MessageFormatter
+
+
+class _DummyThreadManager:
+    def __init__(self, messages: list[dict] | None = None) -> None:
+        self._messages: list[dict] = list(messages or [])
+
+    def get_all_messages(self) -> list[dict]:
+        return list(self._messages)
+
+    def get_conversation_history(self, agent: str, caller_agent: str | None = None) -> list[dict]:
+        if caller_agent is None:
+            return [message for message in self._messages if message.get("callerAgent") is None]
+        return [
+            message
+            for message in self._messages
+            if (message.get("agent") == agent and message.get("callerAgent") == caller_agent)
+            or (message.get("agent") == caller_agent and message.get("callerAgent") == agent)
+        ]
+
+    def add_messages(self, messages: list[dict]) -> None:
+        self._messages.extend(messages)
+
+    def replace_messages(self, messages: list[dict]) -> None:
+        self._messages = list(messages)
+
+    def persist(self) -> None:  # pragma: no cover - side-effect boundary
+        return
+
+
+class _DummyStreamResult:
+    def __init__(self, new_items: list, input_list: list[dict] | None = None) -> None:
+        self.new_items = new_items
+        self._input_list = input_list if input_list is not None else [item.to_input_item() for item in new_items]
+
+    def to_input_list(self) -> list[dict]:
+        return list(self._input_list)
+
+
+class _FakeRunItem:
+    def __init__(self, item: dict) -> None:
+        self.raw_item = item
+        self.type = item.get("type")
+        self.id = item.get("id")
+        self.call_id = item.get("call_id")
+
+    def to_input_item(self) -> dict:
+        return dict(self.raw_item)
+
+
+def test_persist_streamed_items_keeps_structured_file_input_for_follow_up_replay() -> None:
+    """Streaming final persistence must not drop the initiating structured attachment message."""
+    file_part = {
+        "type": "input_file",
+        "filename": "proof.pdf",
+        "file_data": "data:application/pdf;base64,JVBERi0xLjQ=",
+    }
+    user_message = {
+        "type": "message",
+        "role": "user",
+        "content": [{"type": "input_text", "text": "Read phrase two."}, file_part],
+        "agent": "AttachmentReader",
+        "callerAgent": None,
+        "agent_run_id": "agent_run_attachment",
+        "history_protocol": MessageFormatter.HISTORY_PROTOCOL_RESPONSES,
+        "timestamp": 1,
+    }
+    assistant_item = _FakeRunItem(
+        {
+            "type": "message",
+            "id": "msg_attachment_answer",
+            "role": "assistant",
+            "content": [{"type": "output_text", "text": "silver compass"}],
+        }
+    )
+
+    thread_manager = _DummyThreadManager(messages=[user_message])
+    agency_context = AgencyContext(agency_instance=None, thread_manager=thread_manager)
+    agent = Agent(name="AttachmentReader", instructions="noop")
+
+    _persist_streamed_items(
+        streaming_result=_DummyStreamResult([assistant_item]),
+        metadata_store=StreamMetadataStore(
+            by_item={id(assistant_item): ("AttachmentReader", "agent_run_attachment", None, 2)}
+        ),
+        collected_items=[assistant_item],
+        agent=agent,
+        sender_name=None,
+        parent_run_id=None,
+        run_trace_id="trace",
+        fallback_agent_run_id="agent_run_attachment",
+        agency_context=agency_context,
+        initial_saved_count=0,
+    )
+
+    persisted = thread_manager.get_all_messages()
+    persisted_user = next(message for message in persisted if message.get("role") == "user")
+    assert persisted_user["content"][1] == file_part
+
+    follow_up_history = MessageFormatter.prepare_history_for_runner(
+        [{"role": "user", "content": "What follows phrase one?"}],
+        agent,
+        None,
+        agency_context,
+        agent_run_id="agent_run_follow_up",
+        run_trace_id="trace_follow_up",
+    )
+
+    replayed_user = next(
+        message
+        for message in follow_up_history
+        if message.get("role") == "user"
+        and isinstance(message.get("content"), list)
+        and any(part.get("type") == "input_file" for part in message["content"])
+    )
+    assert replayed_user["content"][1] == file_part
+
+
+def test_persist_streamed_items_uses_collected_items_when_final_new_items_empty() -> None:
+    """Empty final new_items should still commit collected streamed output without dropping file input."""
+    file_part = {
+        "type": "input_file",
+        "filename": "proof.pdf",
+        "file_data": "data:application/pdf;base64,JVBERi0xLjQ=",
+    }
+    user_message = {
+        "type": "message",
+        "role": "user",
+        "content": [{"type": "input_text", "text": "Read phrase two."}, file_part],
+        "agent": "AttachmentReader",
+        "callerAgent": None,
+        "agent_run_id": "agent_run_attachment",
+        "history_protocol": MessageFormatter.HISTORY_PROTOCOL_RESPONSES,
+        "timestamp": 1,
+    }
+    assistant_item = _FakeRunItem(
+        {
+            "type": "message",
+            "id": "msg_attachment_answer",
+            "role": "assistant",
+            "content": [{"type": "output_text", "text": "silver compass"}],
+        }
+    )
+
+    thread_manager = _DummyThreadManager(messages=[user_message])
+    agency_context = AgencyContext(agency_instance=None, thread_manager=thread_manager)
+    agent = Agent(name="AttachmentReader", instructions="noop")
+
+    _persist_streamed_items(
+        streaming_result=_DummyStreamResult([]),
+        metadata_store=StreamMetadataStore(
+            by_item={id(assistant_item): ("AttachmentReader", "agent_run_attachment", None, 2)}
+        ),
+        collected_items=[assistant_item],
+        agent=agent,
+        sender_name=None,
+        parent_run_id=None,
+        run_trace_id="trace",
+        fallback_agent_run_id="agent_run_attachment",
+        agency_context=agency_context,
+        initial_saved_count=0,
+    )
+
+    persisted = thread_manager.get_all_messages()
+    assert any(message.get("role") == "assistant" for message in persisted)
+    persisted_user = next(message for message in persisted if message.get("role") == "user")
+    assert persisted_user["content"][1] == file_part
+
+    follow_up_history = MessageFormatter.prepare_history_for_runner(
+        [{"role": "user", "content": "What follows phrase one?"}],
+        agent,
+        None,
+        agency_context,
+        agent_run_id="agent_run_follow_up",
+        run_trace_id="trace_follow_up",
+    )
+
+    replayed_user = next(
+        message
+        for message in follow_up_history
+        if message.get("role") == "user"
+        and isinstance(message.get("content"), list)
+        and any(part.get("type") == "input_file" for part in message["content"])
+    )
+    assert replayed_user["content"][1] == file_part
+
+
+def test_persist_streamed_items_excludes_guardrail_retry_control_messages() -> None:
+    """Final persistence should keep initiating user input but drop same-run guardrail retry prompts."""
+    run_id = "agent_run_guardrail_retry"
+    user_message = {
+        "type": "message",
+        "role": "user",
+        "content": "Use only approved phrasing.",
+        "agent": "GuardedAgent",
+        "callerAgent": None,
+        "agent_run_id": run_id,
+        "history_protocol": MessageFormatter.HISTORY_PROTOCOL_RESPONSES,
+        "timestamp": 1,
+    }
+    guardrail_message = {
+        "type": "message",
+        "role": "system",
+        "content": "Rewrite the answer to satisfy the output guardrail.",
+        "message_origin": "output_guardrail_error",
+        "agent": "GuardedAgent",
+        "callerAgent": None,
+        "agent_run_id": run_id,
+        "history_protocol": MessageFormatter.HISTORY_PROTOCOL_RESPONSES,
+        "timestamp": 2,
+    }
+    assistant_item = _FakeRunItem(
+        {
+            "type": "message",
+            "id": "msg_guardrail_success",
+            "role": "assistant",
+            "content": [{"type": "output_text", "text": "approved answer"}],
+        }
+    )
+
+    thread_manager = _DummyThreadManager(messages=[user_message, guardrail_message])
+    agency_context = AgencyContext(agency_instance=None, thread_manager=thread_manager)
+    agent = Agent(name="GuardedAgent", instructions="noop")
+
+    _persist_streamed_items(
+        streaming_result=_DummyStreamResult([assistant_item]),
+        metadata_store=StreamMetadataStore(by_item={id(assistant_item): ("GuardedAgent", run_id, None, 3)}),
+        collected_items=[assistant_item],
+        agent=agent,
+        sender_name=None,
+        parent_run_id=None,
+        run_trace_id="trace",
+        fallback_agent_run_id=run_id,
+        agency_context=agency_context,
+        initial_saved_count=0,
+    )
+
+    persisted = thread_manager.get_all_messages()
+    assert user_message in persisted
+    assert not any(message.get("message_origin") == "output_guardrail_error" for message in persisted)
+
+
+@patch(
+    "agency_swarm.agent.execution_stream_persistence.MessageFilter.remove_orphaned_messages",
+    side_effect=lambda x: x,
+)
+@patch("agency_swarm.agent.execution_stream_persistence.MessageFilter.should_filter", return_value=False)
+@patch("agency_swarm.agent.execution_stream_persistence.MessageFormatter.extract_hosted_tool_results", return_value=[])
+def test_persist_streamed_items_maps_by_python_object_id_with_fake_ids(mock_extract, mock_filter, mock_orphan) -> None:
+    """Distinct tool calls sharing FAKE_RESPONSES_ID are correctly matched via Python object id()."""
+    agent_a = Agent(name="AgentA", instructions="noop")
+    agent_b = Agent(name="AgentB", instructions="noop")
+
+    tool_call_a = ResponseFunctionToolCall(
+        arguments="{}",
+        call_id="call_a",
+        name="tool_a",
+        type="function_call",
+        id=FAKE_RESPONSES_ID,
+        status="in_progress",
+    )
+    tool_call_b = ResponseFunctionToolCall(
+        arguments="{}",
+        call_id="call_b",
+        name="tool_b",
+        type="function_call",
+        id=FAKE_RESPONSES_ID,
+        status="in_progress",
+    )
+
+    tool_item_a = ToolCallItem(agent=agent_a, raw_item=tool_call_a)
+    tool_item_b = ToolCallItem(agent=agent_b, raw_item=tool_call_b)
+
+    # Metadata tracked by Python object id() during streaming
+    # 4-tuple: (agent_name, agent_run_id, caller_name, timestamp)
+    metadata_store = StreamMetadataStore(
+        by_item={
+            id(tool_item_a): (agent_a.name, "agent_run_a", None, 1000000),
+            id(tool_item_b): (agent_b.name, "agent_run_b", None, 2000000),
+        }
+    )
+
+    thread_manager = _DummyThreadManager()
+    agency_context = AgencyContext(agency_instance=None, thread_manager=thread_manager)
+
+    _persist_streamed_items(
+        streaming_result=_DummyStreamResult([tool_item_a, tool_item_b]),
+        metadata_store=metadata_store,
+        collected_items=[tool_item_a, tool_item_b],
+        agent=Agent(name="Runner", instructions="noop"),
+        sender_name="Manager",
+        parent_run_id=None,
+        run_trace_id="trace",
+        fallback_agent_run_id="agent_run_runner",
+        agency_context=agency_context,
+        initial_saved_count=0,
+    )
+
+    persisted = thread_manager.get_all_messages()
+    by_call_id = {m.get("call_id"): m for m in persisted if isinstance(m, dict)}
+
+    assert by_call_id["call_a"]["agent"] == "AgentA"
+    assert by_call_id["call_a"]["agent_run_id"] == "agent_run_a"
+    assert by_call_id["call_b"]["agent"] == "AgentB"
+    assert by_call_id["call_b"]["agent_run_id"] == "agent_run_b"
+
+
+def test_persist_streamed_items_does_not_drop_unrelated_placeholder_id_items() -> None:
+    """Replacing one placeholder-id item must not delete all other placeholder-id items."""
+    existing = [
+        {"id": FAKE_RESPONSES_ID, "type": "function_call", "call_id": "call_a", "agent_run_id": "run_a"},
+        {
+            "id": FAKE_RESPONSES_ID,
+            "type": "function_call_output",
+            "call_id": "call_a",
+            "output": "old",
+            "agent_run_id": "run_a",
+        },
+        {"id": FAKE_RESPONSES_ID, "type": "function_call", "call_id": "call_b", "agent_run_id": "run_b_old"},
+        {
+            "id": FAKE_RESPONSES_ID,
+            "type": "function_call_output",
+            "call_id": "call_b",
+            "output": "old",
+            "agent_run_id": "run_b_old",
+        },
+    ]
+
+    thread_manager = _DummyThreadManager(messages=existing)
+    agency_context = AgencyContext(agency_instance=None, thread_manager=thread_manager)
+
+    # Create a ToolCallItem and ToolCallOutputItem for call_b update
+    agent = Agent(name="Runner", instructions="noop")
+    tool_call_b = ResponseFunctionToolCall(
+        arguments="{}",
+        call_id="call_b",
+        name="tool_b",
+        type="function_call",
+        id=FAKE_RESPONSES_ID,
+        status="in_progress",
+    )
+    tool_item_b = ToolCallItem(agent=agent, raw_item=tool_call_b)
+    tool_output_b = ToolCallOutputItem(
+        agent=agent,
+        raw_item={
+            "id": FAKE_RESPONSES_ID,
+            "type": "function_call_output",
+            "call_id": "call_b",
+            "output": "new",
+        },
+        output="new",
+    )
+
+    _persist_streamed_items(
+        streaming_result=_DummyStreamResult([tool_item_b, tool_output_b]),
+        metadata_store=StreamMetadataStore(),  # No metadata tracked - use fallback
+        collected_items=[],
+        agent=agent,
+        sender_name="Manager",
+        parent_run_id=None,
+        run_trace_id="trace",
+        fallback_agent_run_id="agent_run_runner",
+        agency_context=agency_context,
+        initial_saved_count=0,
+    )
+
+    persisted = thread_manager.get_all_messages()
+    call_ids = [(m.get("call_id"), m.get("type")) for m in persisted]
+
+    assert ("call_a", "function_call") in call_ids
+    assert ("call_a", "function_call_output") in call_ids
+    assert ("call_b", "function_call") in call_ids
+    assert ("call_b", "function_call_output") in call_ids
+
+
+@patch(
+    "agency_swarm.agent.execution_stream_persistence.MessageFilter.remove_orphaned_messages",
+    side_effect=lambda x: x,
+)
+@patch("agency_swarm.agent.execution_stream_persistence.MessageFilter.should_filter", return_value=False)
+@patch("agency_swarm.agent.execution_stream_persistence.MessageFormatter.extract_hosted_tool_results", return_value=[])
+def test_persist_streamed_items_hash_collision_is_fifo(mock_extract, mock_filter, mock_orphan) -> None:
+    """Hash-based fallback matching consumes metadata FIFO to avoid collisions overwriting prior items."""
+
+    class _RawItem:
+        def __init__(self, output: str) -> None:
+            self.output = output
+
+    class _HashOnlyItem:
+        def __init__(self, item_type: str, output: str) -> None:
+            self.type = item_type
+            self.id = FAKE_RESPONSES_ID
+            self.call_id = None
+            self.raw_item = _RawItem(output)
+
+        def to_input_item(self) -> dict:
+            return {"id": self.id, "type": self.type, "output": self.raw_item.output}
+
+    item_type = "handoff_output_item"
+    run_item_1 = _HashOnlyItem(item_type=item_type, output="same")
+    run_item_2 = _HashOnlyItem(item_type=item_type, output="same")
+
+    content_hash = _compute_content_hash(run_item_1)
+    assert isinstance(content_hash, str)
+
+    metadata_store = StreamMetadataStore(
+        hash_queues={
+            (content_hash, item_type): deque(
+                [
+                    ("Agent1", "run_1", "Caller1", 1000000),
+                    ("Agent2", "run_2", "Caller2", 2000000),
+                ]
+            )
+        }
+    )
+
+    thread_manager = _DummyThreadManager()
+    agency_context = AgencyContext(agency_instance=None, thread_manager=thread_manager)
+
+    _persist_streamed_items(
+        streaming_result=_DummyStreamResult([run_item_1, run_item_2]),
+        metadata_store=metadata_store,
+        collected_items=[],
+        agent=Agent(name="Runner", instructions="noop"),
+        sender_name="Manager",
+        parent_run_id=None,
+        run_trace_id="trace",
+        fallback_agent_run_id="agent_run_runner",
+        agency_context=agency_context,
+        initial_saved_count=0,
+    )
+
+    persisted = thread_manager.get_all_messages()
+
+    assert persisted[0]["agent"] == "Agent1"
+    assert persisted[0]["agent_run_id"] == "run_1"
+    assert persisted[0]["callerAgent"] == "Caller1"
+    assert persisted[1]["agent"] == "Agent2"
+    assert persisted[1]["agent_run_id"] == "run_2"
+    assert persisted[1]["callerAgent"] == "Caller2"
+
+
+@patch(
+    "agency_swarm.agent.execution_stream_persistence.MessageFilter.remove_orphaned_messages",
+    side_effect=lambda x: x,
+)
+@patch("agency_swarm.agent.execution_stream_persistence.MessageFilter.should_filter", return_value=False)
+@patch("agency_swarm.agent.execution_stream_persistence.MessageFormatter.extract_hosted_tool_results", return_value=[])
+def test_persist_streamed_items_normalizes_placeholder_tool_ids(mock_extract, mock_filter, mock_orphan) -> None:
+    """Streamed tool call items should persist with stable ids instead of FAKE_RESPONSES_ID."""
+    agent = Agent(name="Runner", instructions="noop")
+    tool_call = ResponseFunctionToolCall(
+        arguments="{}",
+        call_id="call_x",
+        name="tool",
+        type="function_call",
+        id=FAKE_RESPONSES_ID,
+        status="in_progress",
+    )
+    tool_item = ToolCallItem(agent=agent, raw_item=tool_call)
+
+    thread_manager = _DummyThreadManager()
+    agency_context = AgencyContext(agency_instance=None, thread_manager=thread_manager)
+
+    _persist_streamed_items(
+        streaming_result=_DummyStreamResult([tool_item]),
+        metadata_store=StreamMetadataStore(),
+        collected_items=[tool_item],
+        agent=agent,
+        sender_name="Manager",
+        parent_run_id=None,
+        run_trace_id="trace",
+        fallback_agent_run_id="agent_run_runner",
+        agency_context=agency_context,
+        initial_saved_count=0,
+    )
+
+    persisted = thread_manager.get_all_messages()
+    assert persisted, "Expected at least one persisted message"
+    assert persisted[0]["call_id"] == "call_x"
+    assert persisted[0]["id"] == "call_x"
+    assert persisted[0]["id"] != FAKE_RESPONSES_ID

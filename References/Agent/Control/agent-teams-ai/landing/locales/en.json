@@ -1,0 +1,127 @@
+{
+  "nav": {
+    "features": "Features",
+    "screenshots": "Screenshots",
+    "docs": "Documentation",
+    "comparison": "Compare",
+    "download": "Download",
+    "pricing": "Free",
+    "faq": "FAQ",
+    "viewOnGithub": "View on GitHub"
+  },
+  "hero": {
+    "badge": "Agent Teams",
+    "downloadNow": "Download Now",
+    "ctaPrimary": "Download for {platform}",
+    "ctaSecondary": "Compare",
+    "ctaDocs": "Documentation",
+    "preview": "Product preview",
+    "trust": {
+      "agentTeams": "Agent Teams",
+      "kanban": "Kanban Board",
+      "openSource": "Open Source"
+    },
+    "watchDemo": "Watch Demo",
+    "videoUnavailable": "Video unavailable"
+  },
+  "download": {
+    "title": "Download",
+    "detected": "Detected",
+    "systemRequirements": "System requirements",
+    "version": "Version {version}"
+  },
+  "theme": {
+    "dark": "Dark",
+    "light": "Light"
+  },
+  "language": {
+    "label": "Language",
+    "search": "Search language…"
+  },
+  "features": {
+    "sectionTitle": "Everything you need for AI agent orchestration",
+    "sectionSubtitle": "Powerful tools that make multi-agent collaboration actually work."
+  },
+  "pricing": {
+    "sectionTitle": "Free to install. Free model included.",
+    "sectionSubtitle": "Start immediately with a free model with no auth - no account, API key, or credit card. Connect Claude, Codex, OpenCode/OpenRouter, or other provider access only when you want more models.",
+    "getStarted": "Download Now",
+    "popular": "Free",
+    "freeModelCallout": "Free model with no auth included",
+    "note": "Agent Teams has no paid tier. The free model with no auth lets you try it right away; paid provider usage is optional and controlled by the provider you choose."
+  },
+  "testimonials": {
+    "sectionTitle": "What developers say",
+    "sectionSubtitle": "Real feedback from real builders",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "feedbackCta": "Want to share your experience? Open an issue on"
+  },
+  "faq": {
+    "sectionTitle": "Got questions? We've got answers",
+    "subtitle": "Everything you need to know about Agent Teams"
+  },
+  "comparison": {
+    "sectionTitle": "How we compare",
+    "sectionSubtitle": "Feature-by-feature comparison with other AI coding tools.",
+    "feature": "Feature",
+    "robotBubble": "Judge for yourself",
+    "features": {
+      "crossTeam": "Cross-team communication",
+      "agentMessaging": "Agent-to-agent messaging",
+      "linkedTasks": "Linked tasks",
+      "sessionAnalysis": "Session analysis",
+      "taskAttachments": "Task attachments",
+      "hunkReview": "Hunk-level review",
+      "codeEditor": "Built-in code editor",
+      "fullAutonomy": "Full autonomy",
+      "taskDeps": "Task dependencies",
+      "reviewWorkflow": "Review workflow",
+      "zeroSetup": "Zero setup",
+      "kanban": "Kanban board",
+      "execLog": "Execution logs",
+      "liveProcesses": "Live processes",
+      "runtimeLoad": "CPU/RAM per teammate",
+      "perTaskReview": "Per-task code review",
+      "flexAutonomy": "Flexible autonomy",
+      "worktree": "Git worktree isolation",
+      "multiAgent": "Mixed AI teammates",
+      "liveWorkGraph": "Live team map",
+      "liveTeam": "Live teammates",
+      "teamWorkspace": "Team workspace",
+      "launchProof": "Teammate launch status",
+      "orgGovernance": "Org chart / governance",
+      "budgetControls": "Budget controls",
+      "price": "Price"
+    }
+  },
+  "screenshots": {
+    "sectionTitle": "See it in action",
+    "sectionSubtitle": "Real screenshots from the app — kanban board, code review, agent teams, and more."
+  },
+  "common": {
+    "learnMore": "Learn more"
+  },
+  "footer": {
+    "copyright": "© {year} Agent Teams",
+    "tagline": "AI agent orchestration for developers",
+    "robotBubble": "I'm waiting",
+    "links": {
+      "github": "GitHub",
+      "docs": "Documentation"
+    }
+  },
+  "meta": {
+    "homeTitle": "Agent Teams - AI Agent Orchestration for Developers",
+    "homeDescription": "Free, open-source desktop app for AI agent teams. Start with a free model with no auth, then connect Claude, Codex, or OpenCode when you need more models.",
+    "downloadTitle": "Download Agent Teams for macOS, Windows, and Linux",
+    "downloadDescription": "Download Agent Teams for macOS, Windows, and Linux. Free open-source desktop app for Claude, Codex, and OpenCode agent teams."
+  },
+  "error": {
+    "notFoundTitle": "Page not found",
+    "notFoundDescription": "The page you are looking for does not exist or has been moved.",
+    "genericTitle": "Something went wrong",
+    "genericDescription": "An unexpected error occurred. Please try again later.",
+    "goHome": "Go to homepage"
+  }
+}

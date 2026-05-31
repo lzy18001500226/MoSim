@@ -1,0 +1,127 @@
+{
+  "nav": {
+    "features": "功能",
+    "screenshots": "截图",
+    "docs": "文档",
+    "comparison": "对比",
+    "download": "下载",
+    "pricing": "免费",
+    "faq": "常见问题",
+    "viewOnGithub": "View on GitHub"
+  },
+  "hero": {
+    "badge": "Agent Teams",
+    "downloadNow": "立即下载",
+    "ctaPrimary": "下载 {platform} 版",
+    "ctaSecondary": "对比",
+    "ctaDocs": "文档",
+    "preview": "产品预览",
+    "trust": {
+      "agentTeams": "智能体团队",
+      "kanban": "看板",
+      "openSource": "开源"
+    },
+    "watchDemo": "观看演示",
+    "videoUnavailable": "视频不可用"
+  },
+  "download": {
+    "title": "下载",
+    "detected": "已检测",
+    "systemRequirements": "系统要求",
+    "version": "版本 {version}"
+  },
+  "theme": {
+    "dark": "深色",
+    "light": "浅色"
+  },
+  "language": {
+    "label": "语言",
+    "search": "搜索语言…"
+  },
+  "features": {
+    "sectionTitle": "AI 智能体编排所需的一切",
+    "sectionSubtitle": "强大的工具，让多智能体协作真正有效。"
+  },
+  "pricing": {
+    "sectionTitle": "免费安装。内置免费模型。",
+    "sectionSubtitle": "可立即使用无需认证的免费模型 - 无需账号、API 密钥或信用卡。只有在需要更多模型时，才连接 Claude、Codex、OpenCode/OpenRouter 或其他提供商。",
+    "getStarted": "立即下载",
+    "popular": "免费",
+    "freeModelCallout": "已包含无需认证的免费模型",
+    "note": "Agent Teams 没有自己的付费套餐。无需认证的免费模型可让你立即试用；付费提供商的使用是可选的，并由你选择的提供商控制。"
+  },
+  "testimonials": {
+    "sectionTitle": "开发者怎么说",
+    "sectionSubtitle": "来自真实开发者的真实反馈",
+    "showMore": "显示更多",
+    "showLess": "收起",
+    "feedbackCta": "想分享您的体验？请在以下平台提交 issue"
+  },
+  "faq": {
+    "sectionTitle": "有问题？我们有答案",
+    "subtitle": "关于 Agent Teams 的一切"
+  },
+  "comparison": {
+    "sectionTitle": "功能对比",
+    "sectionSubtitle": "与其他 AI 编程工具的逐项功能对比。",
+    "feature": "功能",
+    "robotBubble": "你来判断",
+    "features": {
+      "crossTeam": "跨团队通信",
+      "agentMessaging": "智能体间消息",
+      "linkedTasks": "关联任务",
+      "sessionAnalysis": "会话分析",
+      "taskAttachments": "任务附件",
+      "hunkReview": "代码块级审查",
+      "codeEditor": "内置代码编辑器",
+      "fullAutonomy": "完全自主",
+      "taskDeps": "任务依赖",
+      "reviewWorkflow": "审查流程",
+      "zeroSetup": "零配置",
+      "kanban": "看板",
+      "execLog": "执行日志",
+      "liveProcesses": "实时进程",
+      "runtimeLoad": "每个队友的 CPU/RAM",
+      "perTaskReview": "按任务代码审查",
+      "flexAutonomy": "灵活自主",
+      "worktree": "Git worktree 隔离",
+      "multiAgent": "混合 AI 队友",
+      "liveWorkGraph": "实时团队地图",
+      "liveTeam": "实时队友",
+      "teamWorkspace": "团队工作区",
+      "launchProof": "队友启动状态",
+      "orgGovernance": "组织架构 / 治理",
+      "budgetControls": "预算控制",
+      "price": "价格"
+    }
+  },
+  "screenshots": {
+    "sectionTitle": "实际效果展示",
+    "sectionSubtitle": "应用的真实截图——看板、代码审查、智能体团队等等。"
+  },
+  "common": {
+    "learnMore": "了解更多"
+  },
+  "footer": {
+    "copyright": "© {year} Agent Teams",
+    "tagline": "面向开发者的 AI 智能体编排",
+    "robotBubble": "我在等你",
+    "links": {
+      "github": "GitHub",
+      "docs": "文档"
+    }
+  },
+  "meta": {
+    "homeTitle": "Agent Teams - 面向开发者的 AI 智能体编排",
+    "homeDescription": "面向 AI 智能体团队的免费开源桌面应用。先使用无需认证的免费模型，需要更多模型时再连接 Claude、Codex 或 OpenCode。",
+    "downloadTitle": "下载适用于 macOS、Windows 和 Linux 的 Agent Teams",
+    "downloadDescription": "下载适用于 macOS、Windows 和 Linux 的 Agent Teams。面向 Claude、Codex 和 OpenCode 智能体团队的免费开源桌面应用。"
+  },
+  "error": {
+    "notFoundTitle": "页面未找到",
+    "notFoundDescription": "您要查找的页面不存在或已被移动。",
+    "genericTitle": "出了点问题",
+    "genericDescription": "发生了意外错误。请稍后重试。",
+    "goHome": "返回首页"
+  }
+}
