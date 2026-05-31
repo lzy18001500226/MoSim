@@ -112,7 +112,6 @@ Docs/Skills/Unreal/mcp/**/Content/**/*.umap
 # Large reference families are staged deliberately. Keep them ignored by
 # default, then temporarily unignore one reviewed batch when committing it.
 References/Agent/
-Docs/Skills/Windows-MCP/
 Docs/Skills/Unreal/
 References/Log/
 References/Sunray/
