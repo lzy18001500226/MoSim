@@ -3,6 +3,80 @@
 > Use this when a task is large enough that sub-agents, long Git work, or
 > reference-repository audits could continue across user turns.
 
+## 0. Canonical CoAgent Protocol
+
+The current approved protocol entry is `CoAgent/protocol/README.md`. New task
+packets, result packets, context packs, and workflow text must use that
+vocabulary unless they explicitly document a temporary runtime alias.
+
+Canonical interaction classes:
+
+```text
+simple_message
+durable_task
+long_running_task
+checkpoint
+result
+```
+
+Canonical task-intake classes:
+
+```text
+simple_message
+clear_task
+complicated_task
+complex_task
+chaotic_incident
+disordered_task
+long_running_task
+```
+
+Canonical states:
+
+```text
+planned
+ready
+working
+input_required
+auth_required
+review_required
+blocked
+failed
+completed
+canceled
+rejected
+superseded
+```
+
+Goal hierarchy:
+
+```text
+Project Goal -> Canonical Task Goal -> Conversation Objective -> Subagent Objective
+```
+
+Task/worktree/review surface selection is defined in
+`CoAgent/docs/architecture/coagent_task_surface_model.md`. Use that document before
+deciding whether work stays in the main thread, moves to a department
+conversation, becomes a task team with scoped task conversations, or needs an
+isolated worktree.
+
+Review acceptance, merge ownership, and worktree closeout are further defined
+in `CoAgent/docs/architecture/coagent_review_merge_protocol.md`.
+
+Multi-conversation task-team architecture is defined in
+`CoAgent/docs/architecture/coagent_task_team_architecture.md`. Use it before splitting
+one long task across several conversations or worktrees.
+
+V1 maximum durable nesting:
+
+```text
+PMO/main -> DispatchCenter -> department or task team -> scoped task conversation -> short-lived subagent
+```
+
+No department-internal durable agent swarms, peer-to-peer worker state,
+app-server transport, or unattended write automation are allowed in V1 without
+a later approved task.
+
 ## 1. Task Graph First
 
 Planning is mandatory before execution. For any non-trivial task, the main
@@ -68,13 +142,25 @@ source; chat memory is not the work source. A task is ready only when it has:
 
 ```text
 task_id:
+task_class:
+project_goal:
+canonical_task_goal:
+conversation_objective:
 objective:
 read scope:
 write set:
 owner role:
+accountable_owner:
 dependencies:
 acceptance check:
+definition_of_done:
+non_goals:
+required_evidence:
 reviewer role:
+appetite:
+circuit_breaker:
+checkpoint_plan:
+escalation_conditions:
 next task on success:
 next task on blocker:
 ```
@@ -197,15 +283,20 @@ help inspect or execute one queue item, but the queue and state machine are not
 owned by the subagent runtime.
 
 The first project-local implementation is
-`Scripts/agent/mosim_agent_runtime.py`. It is deliberately a local state tool:
+`CoAgent/runtime/mosim_agent_runtime.py`. It is deliberately a local state tool:
 SQLite task queue plus JSONL event stream. It does not call model APIs, does not
 spawn Codex, and does not open GUI tools. Use it to make long work recoverable
 before assigning one-shot Codex subagents or manual workers.
 
+Project-owned architecture and migration status live under `CoAgent/`.
+Use `CoAgent/docs/architecture/ARCHITECTURE.md` for the layered design, and
+`CoAgent/docs/research/REFERENCE_PROJECT_INDEX.md` before scanning large external repos under
+`References/`.
+
 Minimum runtime commands:
 
 ```bash
-python Scripts/agent/mosim_agent_runtime.py create \
+python CoAgent/runtime/mosim_agent_runtime.py create \
   --objective "Review current UE MCP design" \
   --role ArchitectureReviewer \
   --read-scope Docs/Skills/Unreal \
@@ -213,10 +304,15 @@ python Scripts/agent/mosim_agent_runtime.py create \
   --acceptance "structured review event recorded" \
   --stop-condition "done, blocked, or failed with evidence"
 
-python Scripts/agent/mosim_agent_runtime.py claim --owner ArchitectureReviewer
-python Scripts/agent/mosim_agent_runtime.py checkpoint --task-id <id> --actor ArchitectureReviewer --summary "read first slice"
-python Scripts/agent/mosim_agent_runtime.py complete --task-id <id> --actor ArchitectureReviewer --summary "review complete"
+python CoAgent/runtime/mosim_agent_runtime.py claim --owner ArchitectureReviewer
+python CoAgent/runtime/mosim_agent_runtime.py checkpoint --task-id <id> --actor ArchitectureReviewer --summary "read first slice"
+python CoAgent/runtime/mosim_agent_runtime.py complete --task-id <id> --actor ArchitectureReviewer --summary "review complete"
 ```
+
+Runtime state aliases exist during migration. Treat `queued` as `ready`,
+`claimed`/`running` as `working`, `done` as `completed`,
+`done_with_concerns` as `review_required`, and `cancelled` as `canceled`.
+New documentation should use the canonical state names.
 
 User-facing task UI:
 
@@ -234,10 +330,11 @@ Conversation classes:
 |---|---|---|---|
 | Primary conversation | MainAgent | User dialogue, goal, integration, final decisions | current WSL-backed project thread |
 | Department conversation | Department owner | Recurring work inside one broad responsibility | `MoSim｜DevOps 发布部`, `MoSim｜验证测试部` |
-| Dedicated task conversation | Parent department + DispatchCenter | Long-running high-context task with repeated review | `Sunray150 参数识别`, `UE Fab 场景导入` |
+| Task team | Parent department + DispatchCenter | One long-running task containing multiple scoped visible conversations with shared canonical goal | `Sunray150 参数识别`, `UE Fab 场景导入` |
+| Scoped task conversation | Task team owner | One bounded slice inside a long-running task team | log audit, estimator implementation, verification slice |
 | One-shot subagent | MainAgent or parent owner | Bounded research/review/execution slice returning one result | one repo audit slice, one doc review |
 
-Use a dedicated task conversation instead of a one-shot subagent when the task:
+Use a task team instead of a one-shot subagent when the task:
 
 ```text
 will take multiple turns or manual review cycles
@@ -248,10 +345,56 @@ would fail if treated as a single disposable subagent call
 ```
 
 The PX4-log-based Sunray150 parameter identification task is the canonical
-example: it should be a dedicated task conversation under the Project
-Department, not a one-shot subagent, because it needs literature/code audit,
-log-field requirements, user-provided data, estimator design, and MWORKS
-parameter mapping across multiple turns.
+example: it should be a task team under the Project Department, not a one-shot
+subagent, because it needs literature/code audit, log-field requirements,
+user-provided data, estimator design, MWORKS parameter mapping, and
+verification across multiple visible conversations.
+
+Each scoped task conversation inside a task team must start from a compact
+context pack rather than raw accumulated chat. Use
+`CoAgent/docs/research/LEARNING_STRATEGY.md` for the current context-pack fields. At minimum,
+include:
+
+```text
+task_id:
+parent_goal:
+owner_department:
+objective:
+read_scope:
+write_scope:
+current_state:
+relevant_decisions:
+known_blockers:
+required_tools:
+acceptance:
+stop_condition:
+result_packet_path:
+knowledge_search_queries:
+```
+
+After the task returns a result packet, summarize useful context into runtime
+events, run summaries, knowledge sources, workflows, or progress notes, then
+release the task-specific conversation context. Do not let an old transcript
+become the only memory of why a technical decision was made.
+
+Current CoAgent implementation is frozen at the design-review boundary. Before
+adding new runtime, transport, automation, department, or packet-schema work,
+confirm the checklist in
+`CoAgent/docs/decisions/coagent_design_discussion_packet.md`. Use
+`CoAgent/docs/research/THREE_ROUND_STUDY_AND_DISCUSSION.md` as the supporting
+evidence packet.
+
+Generate the current project-owned format with:
+
+```bash
+python CoAgent/context/context_pack.py --task-id <id>
+```
+
+For a recoverable handoff, write it under `Results/context_packs/`:
+
+```bash
+python CoAgent/context/context_pack.py --task-id <id> --output Results/context_packs/<id>.md
+```
 
 Conversation communication protocol:
 
@@ -306,19 +449,71 @@ return_format:
   next_recommended_action:
 ```
 
+Current local runtime export command:
+
+```bash
+python CoAgent/runtime/mosim_agent_runtime.py task-packet --task-id <id>
+```
+
+Or build a department-ready dispatch envelope with:
+
+```bash
+python CoAgent/dispatch/dispatch_helper.py dispatch-envelope \
+  --department ProjectOwner \
+  --task-id <id>
+```
+
+For a copy-paste department assignment message, use:
+
+```bash
+python CoAgent/dispatch/dispatch_helper.py department-task-text \
+  --department ProjectOwner \
+  --task-id <id>
+```
+
 Result packet requirements:
 
 ```text
 [MoSim Result Packet]
 task_id:
-status: done | done_with_concerns | blocked | failed
+status: completed | review_required | input_required | auth_required | blocked | failed | canceled | rejected | superseded
+canonical_status:
+task_class:
+canonical_task_goal:
+conversation_objective:
 summary:
 files_changed:
 commands_run:
 evidence:
 risks:
 blockers:
+review_status:
+acceptance_state:
+continue_or_stop:
 next_recommended_action:
+```
+
+Older runtime packets may still say `done`, `done_with_concerns`, or
+`cancelled`; importers should map those aliases to `completed`,
+`review_required`, and `canceled`.
+
+Current local runtime export command:
+
+```bash
+python CoAgent/runtime/mosim_agent_runtime.py result-packet --task-id <id>
+```
+
+To import a returned packet into runtime state:
+
+```bash
+python CoAgent/dispatch/dispatch_helper.py import-result \
+  --packet /abs/path/result_packet.json
+```
+
+For a human review handoff, use:
+
+```bash
+python CoAgent/dispatch/dispatch_helper.py review-brief --task-id <id>
 ```
 
 Do not rely on a side conversation's memory as project state. A conversation is
@@ -344,6 +539,18 @@ last_checkpoint:
 evidence:
 review_status:
 git_status:
+```
+
+Current local runtime snapshot command:
+
+```bash
+python CoAgent/runtime/mosim_agent_runtime.py status-board
+```
+
+Before wide-scope CoAgent runtime or dispatch work, run:
+
+```bash
+python CoAgent/hooks/preflight.py
 ```
 
 Daily/recurring Codex App automations may be used only after their behavior is
@@ -425,6 +632,27 @@ large, but Codex subagents are not the replacement for a real worker pool. The
 director should update durable state, enqueue bounded items, review returned
 evidence, and use Codex subagents only as disposable specialists until a
 MoSim-owned runtime worker exists.
+
+For visible department conversations, the director must not operate the
+department as a synchronous sub-process by sending repeated step-by-step
+``continue`` ticks. Send one complete department charter instead: objective,
+context pack, allowed scope, forbidden actions, evidence format, result packet
+path, checkpoint cadence, and stop conditions. The department conversation owns
+its own goal, plan, execution, checkpoints, and result packet. The director only
+does visible dispatch, periodic status collection, integration review, and
+human escalation. If a visible department times out on a command, send at most
+one corrective charter that changes operating policy, then let the department
+continue autonomously or return a blocker.
+
+Current Codex CLI limitation: a foreground `timeout 60s codex exec resume ...`
+is only a bounded visible message/probe. If the command is killed by the outer
+timeout, the department is not continuing autonomously in the background. For
+real long-running department work, pair the visible charter with the
+project-owned background dispatch runner (`CoAgent/dispatch/codex_transport.py
+start-dispatch`) and recover through `poll-dispatch` or `finalize-timeout`.
+Until app-server transport is explicitly approved, treat this as two surfaces:
+visible thread for user/auditor visibility, and background runner/result packet
+for execution evidence.
 
 The TaskSecretary is not an implementation worker. It should:
 
@@ -651,6 +879,15 @@ through the available goal tools, do not let it block execution. Reset/delete
 the bad goal record and recreate only the durable total objective. Single
 implementation steps belong in this ledger or the active task queue, not in the
 top-level goal.
+
+Codex thread goals are display and recovery metadata for one visible
+conversation. They are not the CoAgent task-control plane. For project tasks,
+record cancellation through `CoAgent/runtime/mosim_agent_runtime.py cancel` or
+through a validated result packet with status `canceled`; keep the tombstone and
+audit history. Ask the user to clear a Codex goal only when the visible
+conversation itself is blocked by stale UI goal state. Do not assume another
+conversation can clear its own Codex goal automatically; that requires a
+separate proven app-server or CLI primitive and visible-front-end verification.
 
 ## 2.5 Git Owner Stop Condition
 
@@ -1008,6 +1245,30 @@ Do not solve a large import by repeatedly retrying one aggregate branch. The
 correct recovery is to ignore the aggregate, reopen one reviewed slice, and
 push slice-by-slice. If the batch is important but too large for Git, keep it
 ignored under `References/` and commit only a manifest plus usage notes.
+
+For ten-thousand to hundred-thousand file surfaces, treat chat output, shell
+argument length, hook scans, and GitHub limits as first-class constraints:
+
+```text
+1. Do not print full path lists to chat. Write reviewed path lists under
+   Results/coagent_status/git_batches/<task>/.
+2. Stage from files with `git add --pathspec-from-file=<paths-file>` or an
+   equivalent path-limited command instead of reconstructing huge pathspecs in
+   the shell.
+3. Keep each batch well under 1000 files unless a prior dry-run proves the
+   repo, hooks, and transport handle that specific slice.
+4. Scan every opened batch for files at or above GitHub's 100 MiB hard limit.
+   Use Git LFS only for approved binary assets that genuinely belong in the
+   project; otherwise keep large assets ignored and commit a manifest.
+5. If a giant tree is already tracked, `.gitignore` alone will not remove it
+   from Git. First stop new generated/untracked mass with ignore rules, then
+   decide whether the tracked tree should remain, be split by future commits,
+   move to manifest-only/LFS, or be removed through an explicit reviewed task.
+6. For local performance, consider Git's large-repo features only as bounded
+   helpers: sparse checkout or partial clone for fresh analysis clones, and
+   split-index/untracked-cache/fsmonitor only after recording the local config
+   change and confirming it does not hide files from the release audit.
+```
 
 Known local Git incident pattern:
 

@@ -60,6 +60,7 @@ Results/coagent_transport/
 Results/coagent_automation/
 Results/coagent_doctor/
 Results/coagent_gateway/
+Results/coagent_status/
 Results/coagent_bootstrap/
 Results/coagent_knowledge/knowledge_index.json
 Results/coagent_learning/learning_index.json

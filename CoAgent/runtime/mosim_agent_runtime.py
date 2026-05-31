@@ -964,6 +964,35 @@ def scrub_sensitive_events(args: argparse.Namespace) -> dict[str, Any]:
 
 def format_task_packet_text(args: argparse.Namespace) -> dict[str, Any]:
     packet = export_task_packet(args)
+    result_template = [
+        "[MoSim Result Packet]",
+        f"task_id: {packet['task_id']}",
+        "status: completed",
+        "canonical_status: completed",
+        f"task_class: {packet['task_class']}",
+        f"canonical_task_goal: {packet['canonical_task_goal']}",
+        f"conversation_objective: {packet['conversation_objective']}",
+        "summary: one-line outcome summary",
+        f"owner: {packet['accountable_owner']}",
+        f"role: {packet['role']}",
+        f"read_scope: {json.dumps(packet['read_scope'], ensure_ascii=False)}",
+        f"write_scope: {json.dumps(packet['write_scope'], ensure_ascii=False)}",
+        "files_changed: []",
+        "commands_run: []",
+        "evidence: []",
+        "risks: []",
+        "blockers: []",
+        "review_status: accepted",
+        f"review_owner: {packet['review_owner']}",
+        f"worktree_path: {packet['worktree_path']}",
+        f"branch_or_base: {packet['branch_or_base']}",
+        f"merge_owner: {packet['merge_owner']}",
+        f"close_condition: {packet['close_condition']}",
+        "git_status: not_checked",
+        "continue_or_stop: stop",
+        "next_recommended_action: none",
+        "events: []",
+    ]
     lines = [
         "[MoSim Task Packet]",
         f"task_id: {packet['task_id']}",
@@ -1003,6 +1032,10 @@ def format_task_packet_text(args: argparse.Namespace) -> dict[str, Any]:
         f"git_status: {packet['git_status']}",
         f"metadata: {json.dumps(packet['metadata'], ensure_ascii=False, sort_keys=True)}",
         f"result_file: {packet['result_file']}",
+        "",
+        "[Required Result Packet Format]",
+        "Write exactly this flat key-value packet shape to result_file. Do not return nested YAML as the only result packet; nested details must be summarized into JSON arrays on evidence, risks, blockers, commands_run, files_changed, or events.",
+        *result_template,
     ]
     return {"task_id": packet["task_id"], "text": "\n".join(lines)}
 

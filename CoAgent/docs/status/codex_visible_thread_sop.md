@@ -114,6 +114,45 @@ printf '%s\n' '<short DevOps prompt>' | timeout 60s codex exec resume \
   -
 ```
 
+On 2026-05-31, `/home/linux/.nvm/versions/node/v16.20.2/bin/codex`
+failed with:
+
+```text
+SyntaxError: Unexpected reserved word
+```
+
+For WSL-backed VSCode sessions, the currently validated CLI is the VSCode
+extension binary exposed by `command -v codex`:
+
+```text
+/mnt/c/Users/HP/.vscode/extensions/openai.chatgpt-26.527.31454-win32-x64/bin/linux-x86_64/codex
+```
+
+Use that binary, or `codex` when `command -v codex` resolves to it. Do not use
+the old npm/node16 shim for visible conversation dispatch.
+
+For long-running visible department work, do not wrap the whole `codex exec
+resume` process in `timeout 60s`. That delivers the message and then kills the
+worker, which makes the department appear to have stopped. Start a background
+process, record PID/stdout/stderr/last-message paths, and let the department
+return a result packet:
+
+```bash
+nohup "$(command -v codex)" exec resume <thread_id> \
+  -m gpt-5.5 \
+  -c 'model_provider="OpenAI"' \
+  -c 'model_reasoning_effort="high"' \
+  --dangerously-bypass-approvals-and-sandbox \
+  --output-last-message Results/coagent_transport/<task>_last.txt \
+  - < Results/coagent_transport/<task>_prompt.txt \
+  > Results/coagent_transport/runs/<task>.stdout.log \
+  2> Results/coagent_transport/runs/<task>.stderr.log &
+```
+
+Then write a metadata JSON with the PID and log paths. Use 60 second timeouts
+inside the worker's Git/tool commands, not around the whole visible department
+process.
+
 Verified reply:
 
 ```text
