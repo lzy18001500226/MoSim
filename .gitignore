@@ -113,10 +113,15 @@ Docs/Skills/Unreal/mcp/**/Content/**/*.umap
 # default, then temporarily unignore one reviewed batch when committing it.
 References/Agent/
 !References/Agent/
+References/Agent/*
 !References/Agent/Skills/
+References/Agent/Skills/*
 !References/Agent/Skills/openai-skills/
+References/Agent/Skills/openai-skills/*
 !References/Agent/Skills/openai-skills/skills/
+References/Agent/Skills/openai-skills/skills/*
 !References/Agent/Skills/openai-skills/skills/.curated/
+References/Agent/Skills/openai-skills/skills/.curated/*
 !References/Agent/Skills/openai-skills/skills/.curated/aspnet-core/
 !References/Agent/Skills/openai-skills/skills/.curated/aspnet-core/**
 References/Agent/**/.git/
