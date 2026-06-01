@@ -1,0 +1,5 @@
+packages:
+  - "packages/*"
+  - "charts/*"
+  - "operator"
+  - "docs"
