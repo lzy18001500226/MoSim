@@ -1,0 +1,103 @@
+# Copyright Daytona Platforms Inc.
+# SPDX-License-Identifier: AGPL-3.0
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore(deps)"
+
+  - package-ecosystem: github-actions
+    directory: /.github/actions/setup-toolchain
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore(deps)"
+
+  - package-ecosystem: docker
+    directories:
+      - "/apps/api"
+      - "/apps/proxy"
+      - "/apps/runner"
+      - "/apps/snapshot-manager"
+      - "/apps/ssh-gateway"
+      - "/apps/otel-collector"
+      - "/apps/docs"
+      - "/images/sandbox"
+      - "/images/sandbox-slim"
+      - "/images/sandbox-gpu"
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      docker-base-images:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "docker"
+      docker-engine:
+        patterns:
+          - "docker"
+    ignore:
+      # docker: dind major bumps need Sysbox compatibility review first
+      - dependency-name: "docker"
+        update-types:
+          - "version-update:semver-major"
+      # node: pin to LTS lines; majors land manually after they reach Active LTS
+      - dependency-name: "node"
+        update-types:
+          - "version-update:semver-major"
+      # python: sandbox-slim runs user code; minor jumps need lifecycle validation
+      - dependency-name: "python"
+        update-types:
+          - "version-update:semver-major"
+    commit-message:
+      prefix: "chore(deps)"
+
+  # npm: scope to production manifests only.
+  # NOTE: This config controls Dependabot PR creation, NOT GitHub Advisory
+  # Database alert recurrence. Alerts in guides/ and runtime-tests/ paths
+  # are dismissed in GitHub directly (see scripts/dependabot-dismiss.sh
+  # for the auditable dismissal manifest and rationale).
+  - package-ecosystem: npm
+    directories:
+      - "/"
+      - "/libs/sdk-typescript"
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      npm-prod:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore(deps)"
+
+  - package-ecosystem: pip
+    directories:
+      - "/libs/sdk-python"
+      - "/libs/api-client-python"
+      - "/libs/api-client-python-async"
+      - "/libs/toolbox-api-client-python"
+      - "/libs/toolbox-api-client-python-async"
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      pip-prod:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore(deps)"
