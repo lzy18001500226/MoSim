@@ -148,6 +148,19 @@ compatible port exists locally, keep the MoSim replay publishers on ROS2 and
 record FAST-LIO as blocked or degraded until a ROS2-compatible package is added
 or a containerized ROS1 bridge route is explicitly approved.
 
+The local FAST-LIO-family compatibility scan is:
+
+```bash
+source /opt/ros/humble/setup.bash
+python3 Scripts/UE5/check_fastlio_family_compatibility.py --write
+```
+
+Latest local evidence is saved at
+`Results/unreal_scene_mapping/FASTLIO_FAMILY_COMPATIBILITY.md/json` and reports
+`ros2_candidate_count=0`, `ros1_catkin_only_count=3`, and
+`can_claim_fastlio_ros2_runtime=false` for `FAST_LIO`, `FAST-LIVO2`, and
+`Point-LIO-point-lio-with-grid-map`.
+
 Do not fabricate FAST-LIO output topics. `/cloud_registered`, `/Odometry`, and
 `/path` must come from a real FAST-LIO-family runtime before localization is
 claimed. `/mosim/replay_odometry` is only replay reference pose for RViz2 review

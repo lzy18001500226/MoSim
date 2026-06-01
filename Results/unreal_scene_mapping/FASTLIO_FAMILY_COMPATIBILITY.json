@@ -1,0 +1,374 @@
+{
+  "schema": "mosim.fastlio_family_compatibility.v1",
+  "can_claim_fastlio_ros2_runtime": false,
+  "ros2_candidate_count": 0,
+  "ros1_catkin_only_count": 3,
+  "mixed_candidate_count": 0,
+  "degradation": [
+    "no_local_ros2_fastlio_family_source",
+    "local_fastlio_family_sources_are_ros1_catkin"
+  ],
+  "candidates": [
+    {
+      "path": "References/Lab/FAST_LIO",
+      "exists": true,
+      "package": {
+        "exists": true,
+        "name": "fast_lio",
+        "buildtool_depends": [
+          "catkin"
+        ],
+        "depends": [
+          "geometry_msgs",
+          "livox_ros_driver",
+          "message_generation",
+          "message_runtime",
+          "nav_msgs",
+          "pcl_ros",
+          "roscpp",
+          "rospy",
+          "sensor_msgs",
+          "std_msgs",
+          "tf"
+        ],
+        "parse_error": null
+      },
+      "files": {
+        "package_xml": [
+          "References/Lab/FAST_LIO/package.xml"
+        ],
+        "cmake": [
+          "References/Lab/FAST_LIO/CMakeLists.txt"
+        ],
+        "launch_xml": [
+          "References/Lab/FAST_LIO/launch/gdb_debug_example.launch",
+          "References/Lab/FAST_LIO/launch/mapping_avia.launch",
+          "References/Lab/FAST_LIO/launch/mapping_horizon.launch",
+          "References/Lab/FAST_LIO/launch/mapping_marsim.launch",
+          "References/Lab/FAST_LIO/launch/mapping_mid360.launch",
+          "References/Lab/FAST_LIO/launch/mapping_ouster64.launch",
+          "References/Lab/FAST_LIO/launch/mapping_velodyne.launch"
+        ],
+        "launch_py": [],
+        "rviz": [
+          "References/Lab/FAST_LIO/rviz_cfg/loam_livox.rviz"
+        ]
+      },
+      "markers": {
+        "has_catkin": true,
+        "has_ament": false,
+        "has_rclcpp": false,
+        "has_ros1_launch_xml": true,
+        "has_ros2_launch_py": false
+      },
+      "topics_found": {
+        "/Laser_map": [
+          "References/Lab/FAST_LIO/rviz_cfg/loam_livox.rviz",
+          "References/Lab/FAST_LIO/src/laserMapping.cpp"
+        ],
+        "/Odometry": [
+          "References/Lab/FAST_LIO/include/common_lib.h",
+          "References/Lab/FAST_LIO/rviz_cfg/loam_livox.rviz",
+          "References/Lab/FAST_LIO/src/IMU_Processing.hpp",
+          "References/Lab/FAST_LIO/src/laserMapping.cpp"
+        ],
+        "/cloud_registered": [
+          "References/Lab/FAST_LIO/rviz_cfg/loam_livox.rviz",
+          "References/Lab/FAST_LIO/src/laserMapping.cpp"
+        ],
+        "/imu/data": [
+          "References/Lab/FAST_LIO/config/velodyne.yaml"
+        ],
+        "/livox/imu": [
+          "References/Lab/FAST_LIO/config/avia.yaml",
+          "References/Lab/FAST_LIO/config/horizon.yaml",
+          "References/Lab/FAST_LIO/config/mid360.yaml",
+          "References/Lab/FAST_LIO/launch/gdb_debug_example.launch",
+          "References/Lab/FAST_LIO/src/laserMapping.cpp"
+        ],
+        "/livox/lidar": [
+          "References/Lab/FAST_LIO/config/avia.yaml",
+          "References/Lab/FAST_LIO/config/horizon.yaml",
+          "References/Lab/FAST_LIO/config/mid360.yaml",
+          "References/Lab/FAST_LIO/src/laserMapping.cpp"
+        ],
+        "/path": [
+          "References/Lab/FAST_LIO/rviz_cfg/loam_livox.rviz",
+          "References/Lab/FAST_LIO/src/laserMapping.cpp"
+        ],
+        "/velodyne_points": [
+          "References/Lab/FAST_LIO/config/velodyne.yaml"
+        ]
+      },
+      "text_evidence": {
+        "find_package_catkin": [
+          "References/Lab/FAST_LIO/CMakeLists.txt"
+        ],
+        "find_package_ament_cmake": [],
+        "ament_package": [],
+        "roscpp_include_or_depend": [
+          "References/Lab/FAST_LIO/CMakeLists.txt",
+          "References/Lab/FAST_LIO/package.xml",
+          "References/Lab/FAST_LIO/src/IMU_Processing.hpp",
+          "References/Lab/FAST_LIO/src/laserMapping.cpp",
+          "References/Lab/FAST_LIO/src/preprocess.h"
+        ],
+        "rclcpp_include_or_depend": []
+      },
+      "verdict": "ros1_catkin_only",
+      "blockers": [
+        "catkin_buildtool",
+        "roscpp_rospy_tf_dependencies",
+        "ros1_launch_files"
+      ],
+      "ros2_runtime_visibility": {
+        "visible": false,
+        "path": null,
+        "error": "not a ROS2 candidate"
+      }
+    },
+    {
+      "path": "References/Lab/FAST-LIVO2",
+      "exists": true,
+      "package": {
+        "exists": true,
+        "name": "fast_livo",
+        "buildtool_depends": [
+          "catkin"
+        ],
+        "depends": [
+          "cv_bridge",
+          "geometry_msgs",
+          "image_transport",
+          "message_generation",
+          "message_runtime",
+          "nav_msgs",
+          "pcl_ros",
+          "roscpp",
+          "rospy",
+          "sensor_msgs",
+          "std_msgs",
+          "tf",
+          "vikit_common",
+          "vikit_ros"
+        ],
+        "parse_error": null
+      },
+      "files": {
+        "package_xml": [
+          "References/Lab/FAST-LIVO2/package.xml"
+        ],
+        "cmake": [
+          "References/Lab/FAST-LIVO2/CMakeLists.txt"
+        ],
+        "launch_xml": [
+          "References/Lab/FAST-LIVO2/launch/mapping_avia.launch",
+          "References/Lab/FAST-LIVO2/launch/mapping_avia_marslvig.launch",
+          "References/Lab/FAST-LIVO2/launch/mapping_hesaixt32_hilti22.launch",
+          "References/Lab/FAST-LIVO2/launch/mapping_ouster_ntu.launch"
+        ],
+        "launch_py": [],
+        "rviz": [
+          "References/Lab/FAST-LIVO2/rviz_cfg/M300.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/fast_livo2.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/hilti.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/ntu_viral.rviz"
+        ]
+      },
+      "markers": {
+        "has_catkin": true,
+        "has_ament": false,
+        "has_rclcpp": false,
+        "has_ros1_launch_xml": true,
+        "has_ros2_launch_py": false
+      },
+      "topics_found": {
+        "/Laser_map": [
+          "References/Lab/FAST-LIVO2/src/LIVMapper.cpp"
+        ],
+        "/Odometry": [
+          "References/Lab/FAST-LIVO2/include/IMU_Processing.h",
+          "References/Lab/FAST-LIVO2/rviz_cfg/M300.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/fast_livo2.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/hilti.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/ntu_viral.rviz"
+        ],
+        "/cloud_registered": [
+          "References/Lab/FAST-LIVO2/rviz_cfg/M300.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/fast_livo2.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/hilti.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/ntu_viral.rviz",
+          "References/Lab/FAST-LIVO2/src/LIVMapper.cpp"
+        ],
+        "/livox/imu": [
+          "References/Lab/FAST-LIVO2/config/MARS_LVIG.yaml",
+          "References/Lab/FAST-LIVO2/config/avia.yaml",
+          "References/Lab/FAST-LIVO2/src/LIVMapper.cpp"
+        ],
+        "/livox/lidar": [
+          "References/Lab/FAST-LIVO2/config/MARS_LVIG.yaml",
+          "References/Lab/FAST-LIVO2/config/avia.yaml",
+          "References/Lab/FAST-LIVO2/src/LIVMapper.cpp"
+        ],
+        "/path": [
+          "References/Lab/FAST-LIVO2/rviz_cfg/M300.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/fast_livo2.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/hilti.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/ntu_viral.rviz",
+          "References/Lab/FAST-LIVO2/src/LIVMapper.cpp"
+        ]
+      },
+      "text_evidence": {
+        "find_package_catkin": [
+          "References/Lab/FAST-LIVO2/CMakeLists.txt"
+        ],
+        "find_package_ament_cmake": [],
+        "ament_package": [],
+        "roscpp_include_or_depend": [
+          "References/Lab/FAST-LIVO2/CMakeLists.txt",
+          "References/Lab/FAST-LIVO2/include/livox_ros_driver/CustomMsg.h",
+          "References/Lab/FAST-LIVO2/include/livox_ros_driver/CustomPoint.h",
+          "References/Lab/FAST-LIVO2/include/voxel_map.h",
+          "References/Lab/FAST-LIVO2/package.xml"
+        ],
+        "rclcpp_include_or_depend": []
+      },
+      "verdict": "ros1_catkin_only",
+      "blockers": [
+        "catkin_buildtool",
+        "roscpp_rospy_tf_dependencies",
+        "ros1_launch_files"
+      ],
+      "ros2_runtime_visibility": {
+        "visible": false,
+        "path": null,
+        "error": "not a ROS2 candidate"
+      }
+    },
+    {
+      "path": "References/Lab/Point-LIO-point-lio-with-grid-map",
+      "exists": true,
+      "package": {
+        "exists": true,
+        "name": "point_lio",
+        "buildtool_depends": [
+          "catkin"
+        ],
+        "depends": [
+          "geometry_msgs",
+          "livox_ros_driver",
+          "message_generation",
+          "message_runtime",
+          "nav_msgs",
+          "pcl_ros",
+          "roscpp",
+          "rospy",
+          "sensor_msgs",
+          "std_msgs",
+          "tf"
+        ],
+        "parse_error": null
+      },
+      "files": {
+        "package_xml": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/package.xml"
+        ],
+        "cmake": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/CMakeLists.txt"
+        ],
+        "launch_xml": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/launch/gdb_debug_example.launch",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/launch/mapping_avia.launch",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/launch/mapping_horizon.launch",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/launch/mapping_ouster64.launch",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/launch/mapping_velody16.launch"
+        ],
+        "launch_py": [],
+        "rviz": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/rviz_cfg/loam_livox.rviz"
+        ]
+      },
+      "markers": {
+        "has_catkin": true,
+        "has_ament": false,
+        "has_rclcpp": false,
+        "has_ros1_launch_xml": true,
+        "has_ros2_launch_py": false
+      },
+      "topics_found": {
+        "/Laser_map": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/rviz_cfg/loam_livox.rviz",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/laserMapping.cpp"
+        ],
+        "/Odometry": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/include/common_lib.h",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/rviz_cfg/loam_livox.rviz",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/IMU_Processing.h",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/laserMapping.cpp"
+        ],
+        "/cloud_registered": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/rviz_cfg/loam_livox.rviz",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/laserMapping.cpp"
+        ],
+        "/imu/data": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/config/velody16.yaml"
+        ],
+        "/livox/imu": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/config/avia.yaml",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/config/horizon.yaml",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/parameters.cpp"
+        ],
+        "/livox/lidar": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/config/avia.yaml",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/config/horizon.yaml",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/parameters.cpp"
+        ],
+        "/path": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/rviz_cfg/loam_livox.rviz",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/laserMapping.cpp",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/parameters.cpp"
+        ],
+        "/velodyne_points": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/config/velody16.yaml"
+        ]
+      },
+      "text_evidence": {
+        "find_package_catkin": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/CMakeLists.txt"
+        ],
+        "find_package_ament_cmake": [],
+        "ament_package": [],
+        "roscpp_include_or_depend": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/CMakeLists.txt",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/package.xml",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/IMU_Processing.h",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/laserMapping.cpp",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/parameters.h",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/preprocess.h"
+        ],
+        "rclcpp_include_or_depend": []
+      },
+      "verdict": "ros1_catkin_only",
+      "blockers": [
+        "catkin_buildtool",
+        "roscpp_rospy_tf_dependencies",
+        "ros1_launch_files"
+      ],
+      "ros2_runtime_visibility": {
+        "visible": false,
+        "path": null,
+        "error": "not a ROS2 candidate"
+      }
+    }
+  ],
+  "claim_boundary": [
+    "This scan only inspects local source metadata and ROS2 package visibility.",
+    "It does not build FAST-LIO, launch ROS, record topics, or evaluate localization.",
+    "FAST-LIO localization remains unclaimed until a real runtime publishes /cloud_registered and /Odometry and is recorded/evaluated."
+  ],
+  "recommended_next_actions": [
+    "Keep ROS2/RViz2 replay as the primary Ubuntu 22.04 map-review route.",
+    "Add or review a ROS2 Humble FAST-LIO-family package before enabling START_FASTLIO=1 in the ROS2 wrapper.",
+    "If using the current local ROS1/Catkin sources, use an explicitly approved ROS1 bridge/container route and record equivalent output topics."
+  ]
+}

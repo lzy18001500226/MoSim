@@ -156,3 +156,9 @@ The current WSL session has ROS2/RViz2 replay readiness. The local
 `References/Lab/FAST_LIO` package is still ROS1/Catkin-oriented, so completed
 FAST-LIO localization remains unclaimed until a ROS2 FAST-LIO-family package or
 approved ROS1 bridge publishes output topics.
+
+Use `Scripts/UE5/check_fastlio_family_compatibility.py --write` after changing
+or adding FAST-LIO-family sources. Current scan evidence classifies
+`References/Lab/FAST_LIO`, `References/Lab/FAST-LIVO2`, and
+`References/Lab/Point-LIO-point-lio-with-grid-map` as `ros1_catkin_only` and
+sets `can_claim_fastlio_ros2_runtime=false`.

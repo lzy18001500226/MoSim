@@ -9,6 +9,7 @@ native mapping window can be treated as runtime evidence.
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
 import shutil
@@ -127,6 +128,16 @@ def ros_generation(ros_distro: str | None) -> str:
     return "unknown"
 
 
+def load_fastlio_compatibility_module() -> Any:
+    path = ROOT / "Scripts/UE5/check_fastlio_family_compatibility.py"
+    spec = importlib.util.spec_from_file_location("check_fastlio_family_compatibility", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
     commands = command_map()
     commands["rospack"] = shutil.which("rospack")
@@ -156,6 +167,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         for name in ("rviz2", "sensor_msgs", "nav_msgs", "geometry_msgs", "tf2_ros")
     }
     ros2_packages_ready = all(payload["visible"] for payload in ros2_packages.values())
+    fastlio_module = load_fastlio_compatibility_module()
+    fastlio_compatibility = fastlio_module.build_report(list(fastlio_module.DEFAULT_CANDIDATES))
     ros1_ready = ros1_commands_ready and catkin_ready and fast_lio_pkg["visible"]
     ros2_replay_ready = ros2_commands_ready and ros2_packages_ready
     blockers: list[str] = []
@@ -179,6 +192,10 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         blockers.append("missing_fast_lio_reference_repo")
     if not fast_lio_pkg["visible"]:
         degraded.append(f"fast_lio_ros1_package_not_visible:{args.fast_lio_package}")
+    if fastlio_compatibility["ros2_candidate_count"] == 0:
+        degraded.append("no_local_ros2_fastlio_family_source")
+    elif not fastlio_compatibility["can_claim_fastlio_ros2_runtime"]:
+        degraded.append("ros2_fastlio_candidates_not_built_or_not_sourced")
     if not project_rviz_config.exists():
         degraded.append("missing_mosim_rviz_config")
     if not project_rviz_grid_config.exists():
@@ -205,6 +222,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "degraded": degraded,
         "ros_generation": generation,
         "ros2_replay_ready": ros2_replay_ready,
+        "fastlio_ros2_runtime_claimable": fastlio_compatibility["can_claim_fastlio_ros2_runtime"],
         "ros1_fastlio_reference_ready": ros1_ready,
         "environment": {
             "ROS_DISTRO": ros_distro,
@@ -217,6 +235,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             args.fast_lio_package: fast_lio_pkg,
             "ros2": ros2_packages,
         },
+        "fastlio_family_compatibility": fastlio_compatibility,
         "project_assets": {
             "fast_lio_reference_package_xml": {
                 "path": rel(fast_lio_reference),
@@ -271,6 +290,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "Run RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene> for native RViz2 input/map review.",
             "Run Scripts/UE5/run_fastlio_rviz_replay_ros2.sh <scene> for ROS2 input replay; keep START_FASTLIO=0 unless a real ROS2 FAST-LIO launch command is configured.",
             "Run Scripts/UE5/check_fastlio_ros2_topics.sh during the live ROS2 run.",
+            "Run Scripts/UE5/check_fastlio_family_compatibility.py --write after adding or changing FAST-LIO-family sources.",
             "Treat local References/Lab/FAST_LIO as ROS1-only until a ROS2 FAST-LIO/FAST-LIO2 package is added or a containerized ROS1 bridge route is approved.",
         ],
         "claim_boundary": [
@@ -292,6 +312,7 @@ def write_markdown(path: Path, report: dict[str, Any]) -> None:
         f"- degraded: {', '.join(f'`{item}`' for item in report.get('degraded', [])) or 'none'}",
         f"- ros_generation: `{report['ros_generation']}`",
         f"- ros2_replay_ready: `{str(report['ros2_replay_ready']).lower()}`",
+        f"- fastlio_ros2_runtime_claimable: `{str(report['fastlio_ros2_runtime_claimable']).lower()}`",
         f"- ROS_DISTRO: `{report['environment']['ROS_DISTRO']}`",
         f"- ROS_MASTER_URI: `{report['environment']['ROS_MASTER_URI']}`",
         "",

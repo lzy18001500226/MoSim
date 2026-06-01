@@ -43,6 +43,14 @@ def test_env_report_contract() -> None:
         raise AssertionError(report)
     if "ros2_replay_ready" not in report:
         raise AssertionError(report)
+    if "fastlio_ros2_runtime_claimable" not in report:
+        raise AssertionError(report)
+    if report["fastlio_ros2_runtime_claimable"]:
+        raise AssertionError(report)
+    if "fastlio_family_compatibility" not in report:
+        raise AssertionError(report)
+    if report["fastlio_family_compatibility"]["schema"] != "mosim.fastlio_family_compatibility.v1":
+        raise AssertionError(report)
     if "ros2" not in report["packages"]:
         raise AssertionError(report)
     if "rviz_config" not in report["project_assets"]:
@@ -74,9 +82,11 @@ def test_env_report_contract() -> None:
             "ready_for_native_mapping_runtime",
             "ros_generation",
             "ros2_replay_ready",
+            "fastlio_ros2_runtime_claimable",
             "Recommended setup sequence",
             "Claim boundary",
             "HTML is not an accepted active point-cloud/map review window",
+            "check_fastlio_family_compatibility.py",
             "open_mapping_rviz_ros2.sh",
         ):
             if phrase not in text:

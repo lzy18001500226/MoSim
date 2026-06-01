@@ -847,6 +847,25 @@ Current status is recorded in:
 Results/unreal_scene_mapping/FASTLIO_REPLAY_STATUS.md
 ```
 
+Generate and inspect local FAST-LIO-family ROS compatibility with:
+
+```bash
+source /opt/ros/humble/setup.bash
+python3 Scripts/UE5/check_fastlio_family_compatibility.py --write
+python3 Scripts/tests/test_fastlio_family_compatibility.py
+```
+
+Current status is recorded in:
+
+```text
+Results/unreal_scene_mapping/FASTLIO_FAMILY_COMPATIBILITY.md
+```
+
+Current evidence reports no local ROS2 FAST-LIO-family candidate. `FAST_LIO`,
+`FAST-LIVO2`, and `Point-LIO-point-lio-with-grid-map` are all
+`ros1_catkin_only`, so `START_FASTLIO=1` must remain disabled for the ROS2
+wrapper until a ROS2 package or an approved bridge route exists.
+
 If a scene reports `blocked_missing_ros1_runtime`, install/source a ROS1 Catkin
 environment with FAST-LIO dependencies before attempting a real FAST-LIO run.
 When ROS1 is already installed but FAST-LIO is not visible to `rospack`, use:

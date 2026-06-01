@@ -56,6 +56,13 @@
   replay publisher, planning RViz2 window, overview RViz2 window, and input-side
   topic smoke check. This topic is only replay/reference pose for operator
   review; it must not be counted as FAST-LIO `/Odometry`.
+  Added `Scripts/UE5/check_fastlio_family_compatibility.py` and
+  `Scripts/tests/test_fastlio_family_compatibility.py`; latest evidence
+  `Results/unreal_scene_mapping/FASTLIO_FAMILY_COMPATIBILITY.md/json` reports
+  `FAST_LIO`, `FAST-LIVO2`, and `Point-LIO-point-lio-with-grid-map` are all
+  `ros1_catkin_only`, `ros2_candidate_count=0`, and
+  `fastlio_ros2_runtime_claimable=false`. Keep `START_FASTLIO=0` on the ROS2
+  wrapper until a ROS2 FAST-LIO-family package or approved bridge route exists.
 
 - 2026-06-01 mapping-window correction: user rejected HTML point-cloud review.
   The project policy is now explicit in `Docs/Workflows/unreal_renderer.md`:
