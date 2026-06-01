@@ -1,0 +1,26 @@
+version: 1
+swarm:
+  name: "Multi-Directory Example"
+  main: fullstack_dev
+  instances:
+    fullstack_dev:
+      description: "Full-stack developer with access to multiple project directories"
+      directory: [./frontend, ./backend, ./shared, ./docs]
+      model: opus
+      connections: [frontend_specialist, backend_specialist]
+      allowed_tools: [Read, Edit, Write, Bash, WebSearch]
+      prompt: "You are a full-stack developer with access to frontend, backend, shared code, and documentation directories"
+
+    frontend_specialist:
+      description: "Frontend developer focused on React components"
+      directory: ./frontend
+      model: sonnet
+      allowed_tools: [Read, Edit, Write, Bash]
+      prompt: "You specialize in React and frontend development"
+
+    backend_specialist:
+      description: "Backend developer focused on API development"
+      directory: ./backend
+      model: sonnet
+      allowed_tools: [Read, Edit, Write, Bash]
+      prompt: "You specialize in backend API development"

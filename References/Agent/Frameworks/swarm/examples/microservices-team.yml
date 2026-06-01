@@ -1,0 +1,293 @@
+version: 1
+swarm:
+  name: "Multi-Codebase Product Development Team"
+  main: cto
+  instances:
+    # Leadership & Coordination
+    cto:
+      description: "CTO overseeing all technical teams and architectural decisions"
+      directory: ~/projects
+      model: opus
+      connections: [architect, product_manager, qa_lead, security_lead]
+      prompt: "You are the CTO coordinating multiple development teams across different codebases. Focus on high-level architecture, team coordination, and technical strategy."
+      allowed_tools:
+        - Read
+        - WebSearch
+        - Edit
+
+    architect:
+      description: "Principal architect designing system-wide solutions and ensuring consistency"
+      directory: ~/projects
+      model: opus
+      connections: [frontend_lead, backend_lead, mobile_lead, devops_lead, data_lead]
+      prompt: "You design cross-cutting solutions and ensure architectural consistency across all services."
+      allowed_tools:
+        - Read
+        - Edit
+        - WebSearch
+
+    product_manager:
+      description: "Product manager translating business requirements into technical specifications"
+      directory: ~/projects/docs/requirements
+      model: opus
+      connections: [cto, frontend_lead, backend_lead, mobile_lead]
+      prompt: "You translate business requirements into technical specifications and user stories."
+      allowed_tools:
+        - Read
+        - Edit
+        - Write
+
+    # Frontend Team
+    frontend_lead:
+      description: "Frontend team lead managing React web application development"
+      directory: ~/projects/web-frontend
+      model: opus
+      connections: [react_senior, ui_designer, frontend_qa]
+      prompt: "You lead the web frontend team, ensuring React best practices and coordinating with other teams."
+      allowed_tools:
+        - Read
+        - Edit
+        - Bash
+
+    react_senior:
+      description: "Senior React developer building complex UI components and state management"
+      directory: ~/projects/web-frontend/src
+      model: opus
+      connections: [frontend_lead]
+      prompt: "You build React components, manage Redux state, and handle complex frontend logic."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    ui_designer:
+      description: "UI/UX specialist creating responsive designs and managing design system"
+      directory: ~/projects/design-system
+      model: sonnet
+      connections: [frontend_lead, mobile_lead]
+      prompt: "You maintain the design system and ensure consistent UI/UX across platforms."
+      allowed_tools:
+        - Edit
+        - Write
+        - Read
+
+    # Backend Services Team
+    backend_lead:
+      description: "Backend team lead coordinating microservices development"
+      directory: ~/projects/backend
+      model: opus
+      connections: [auth_dev, api_gateway_dev, core_service_dev, shared_lib_dev]
+      prompt: "You coordinate backend microservices development and ensure API consistency."
+      allowed_tools:
+        - Read
+        - Edit
+        - Bash
+
+    auth_dev:
+      description: "Authentication service developer managing user auth and OAuth"
+      directory: ~/projects/backend/auth-service
+      model: opus
+      prompt: "You develop and maintain the authentication service with OAuth2, JWT, and user management."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    api_gateway_dev:
+      description: "API gateway developer managing request routing and rate limiting"
+      directory: ~/projects/backend/api-gateway
+      model: opus
+      prompt: "You maintain the API gateway handling routing, rate limiting, and request transformation."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    core_service_dev:
+      description: "Core business logic service developer"
+      directory: ~/projects/backend/core-service
+      model: opus
+      prompt: "You develop the core business logic service handling main application features."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    shared_lib_dev:
+      description: "Shared libraries developer maintaining common code across services"
+      directory: ~/projects/shared-libs
+      model: sonnet
+      connections: [backend_lead]
+      prompt: "You maintain shared libraries used across all backend services."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    # Mobile Team
+    mobile_lead:
+      description: "Mobile team lead coordinating iOS and Android development"
+      directory: ~/projects/mobile
+      model: opus
+      connections: [ios_senior, android_senior, mobile_qa]
+      prompt: "You coordinate mobile development ensuring feature parity between platforms."
+      allowed_tools:
+        - Read
+        - Edit
+
+    ios_senior:
+      description: "Senior iOS developer building native Swift applications"
+      directory: ~/projects/mobile/ios-app
+      model: opus
+      prompt: "You develop the iOS app using Swift, SwiftUI, and native iOS frameworks."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    android_senior:
+      description: "Senior Android developer creating Kotlin applications"
+      directory: ~/projects/mobile/android-app
+      model: opus
+      prompt: "You develop the Android app using Kotlin, Jetpack Compose, and Android SDK."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    # Data Team
+    data_lead:
+      description: "Data team lead managing analytics, ML models, and data pipelines"
+      directory: ~/projects/data-platform
+      model: opus
+      connections: [data_engineer, ml_engineer, analytics_dev]
+      prompt: "You lead the data team handling analytics, ML, and data infrastructure."
+      allowed_tools:
+        - Read
+        - Edit
+        - Bash
+
+    data_engineer:
+      description: "Data engineer building ETL pipelines and data warehouse"
+      directory: ~/projects/data-platform/pipelines
+      model: opus
+      prompt: "You build and maintain ETL pipelines, data warehouse, and streaming infrastructure."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    ml_engineer:
+      description: "ML engineer developing and deploying machine learning models"
+      directory: ~/projects/data-platform/ml-models
+      model: opus
+      prompt: "You develop, train, and deploy ML models for recommendation and prediction features."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    analytics_dev:
+      description: "Analytics developer creating dashboards and reports"
+      directory: ~/projects/data-platform/analytics
+      model: sonnet
+      prompt: "You build analytics dashboards and create business intelligence reports."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    # DevOps & Infrastructure
+    devops_lead:
+      description: "DevOps lead managing CI/CD, infrastructure, and platform reliability"
+      directory: ~/projects/infrastructure
+      model: opus
+      connections: [sre_engineer, platform_engineer, cloud_architect]
+      prompt: "You lead DevOps ensuring reliable deployments and infrastructure."
+      allowed_tools:
+        - Read
+        - Edit
+        - Bash
+
+    sre_engineer:
+      description: "SRE engineer ensuring system reliability and incident response"
+      directory: ~/projects/infrastructure/monitoring
+      model: opus
+      prompt: "You ensure system reliability, manage monitoring, and handle incident response."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    platform_engineer:
+      description: "Platform engineer managing Kubernetes and container infrastructure"
+      directory: ~/projects/infrastructure/k8s
+      model: opus
+      prompt: "You manage Kubernetes clusters, service mesh, and container orchestration."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    cloud_architect:
+      description: "Cloud architect managing AWS/GCP infrastructure and costs"
+      directory: ~/projects/infrastructure/terraform
+      model: opus
+      prompt: "You design and manage cloud infrastructure, optimize costs, and ensure security."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    # Quality & Security
+    qa_lead:
+      description: "QA lead coordinating testing strategy across all platforms"
+      directory: ~/projects/qa
+      model: opus
+      connections: [frontend_qa, backend_qa, mobile_qa]
+      prompt: "You coordinate QA efforts ensuring comprehensive test coverage across all platforms."
+      allowed_tools:
+        - Read
+        - Edit
+        - Bash
+
+    frontend_qa:
+      description: "Frontend QA engineer writing E2E tests and visual regression tests"
+      directory: ~/projects/qa/frontend-tests
+      model: sonnet
+      prompt: "You write and maintain E2E tests for the web frontend using Cypress and Playwright."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    backend_qa:
+      description: "Backend QA engineer creating API tests and integration tests"
+      directory: ~/projects/qa/backend-tests
+      model: sonnet
+      prompt: "You create comprehensive API tests and integration tests for all backend services."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    mobile_qa:
+      description: "Mobile QA engineer testing iOS and Android applications"
+      directory: ~/projects/qa/mobile-tests
+      model: sonnet
+      prompt: "You test mobile applications using automated and manual testing approaches."
+      allowed_tools:
+        - Edit
+        - Write
+        - Bash
+
+    security_lead:
+      description: "Security lead ensuring application and infrastructure security"
+      directory: ~/projects/security
+      model: opus
+      connections: [cto]
+      prompt: "You ensure security best practices, conduct audits, and manage security incidents."
+      allowed_tools:
+        - Read
+        - Edit
+        - Bash

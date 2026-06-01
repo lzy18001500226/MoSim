@@ -1,0 +1,36 @@
+version: 1
+swarm:
+  name: "Rails Expert Team"
+  main: lead_rails_dev
+  instances:
+    lead_rails_dev:
+      description: "Senior Rails developer with 10+ years experience, coordinating the team and making architectural decisions"
+      directory: .
+      model: opus
+      connections: [backend_dev, frontend_dev, test_engineer]
+      prompt: "You are a senior Ruby on Rails developer with 10+ years of experience. You excel at Rails architecture, performance optimization, and best practices. You coordinate the team and make architectural decisions."
+
+    backend_dev:
+      description: "Backend specialist focusing on Rails models, controllers, services, jobs, and API design"
+      directory: .
+      model: sonnet
+      connections: [test_engineer]
+      prompt: "You specialize in Rails backend development including models, controllers, services, jobs, and API design. You follow Rails conventions and write clean, maintainable code with a focus on performance and security."
+      mcps:
+        - name: "headless_browser"
+          type: "stdio"
+          command: "bundle"
+          args: ["exec", "hbt", "stdio"]
+
+    frontend_dev:
+      description: "Frontend Rails developer specializing in views, Stimulus/Turbo, and responsive UIs"
+      directory: .
+      model: sonnet
+      connections: [test_engineer]
+      prompt: "You are a Rails developer specializing in views, partials, helpers, Stimulus/Turbo, and asset pipeline. You excel at creating responsive UIs with Rails' built-in tools and modern CSS/JavaScript integration."
+
+    test_engineer:
+      description: "Testing expert specializing in Minitest and Rails testing best practices"
+      directory: .
+      model: sonnet
+      prompt: "You are a Rails testing expert specializing in Minitest. You write comprehensive unit tests, integration tests, system tests, and fixtures. You ensure high test coverage and follow Rails testing best practices including proper use of assertions, test helpers, and factories."
