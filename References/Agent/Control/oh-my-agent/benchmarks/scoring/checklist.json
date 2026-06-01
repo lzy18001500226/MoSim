@@ -1,0 +1,106 @@
+{
+  "meta": {
+    "prompt": "benchmarks/prompt.md",
+    "version": "1.1",
+    "max_score": 100,
+    "model": "claude-opus-4-6",
+    "effort": "max",
+    "prompt-requires-tests": false
+  },
+  "categories": [
+    {
+      "id": "setup",
+      "name": "Project Setup",
+      "weight": 10,
+      "items": [
+        { "id": "setup-nextjs",   "desc": "Next.js + TypeScript project configured", "auto": true,  "max": 2.5 },
+        { "id": "setup-tailwind", "desc": "Tailwind CSS configured",                  "auto": true,  "max": 2.5 },
+        { "id": "setup-r3f",      "desc": "React Three Fiber + Drei dependencies",    "auto": true,  "max": 2.5 },
+        { "id": "setup-build",    "desc": "Build succeeds (npm run build)",           "auto": true,  "max": 2.5 }
+      ]
+    },
+    {
+      "id": "world-builder",
+      "name": "3D World Builder",
+      "weight": 20,
+      "items": [
+        { "id": "3d-canvas",        "desc": "Three.js Canvas rendering",          "auto": false, "max": 5 },
+        { "id": "3d-place",         "desc": "Object placement",                   "auto": false, "max": 5 },
+        { "id": "3d-move-rotate",   "desc": "Move / rotate / scale controls",     "auto": false, "max": 5 },
+        { "id": "3d-color-texture", "desc": "Color / texture modification",       "auto": false, "max": 5 },
+        { "id": "3d-env-theme",     "desc": "Environment theme selection",        "auto": false, "max": 5 },
+        { "id": "3d-animation",     "desc": "Simple animation / interaction",     "auto": false, "max": 5 }
+      ]
+    },
+    {
+      "id": "ai-partner",
+      "name": "AI Creative Partner",
+      "weight": 15,
+      "items": [
+        { "id": "ai-panel",  "desc": "AI sidebar / guide UI exists",  "auto": false, "max": 5 },
+        { "id": "ai-prompt", "desc": "Idea prompting capability",     "auto": false, "max": 5 },
+        { "id": "ai-whatif", "desc": "What-if question generation",   "auto": false, "max": 5 },
+        { "id": "ai-api",    "desc": "OpenAI API integration code",   "auto": true,  "max": 5 }
+      ]
+    },
+    {
+      "id": "onboarding",
+      "name": "Child Onboarding",
+      "weight": 10,
+      "items": [
+        { "id": "onboard-flow",   "desc": "Onboarding screen / flow exists",   "auto": false, "max": 5 },
+        { "id": "onboard-simple", "desc": "Startable within 1 minute UX",      "auto": false, "max": 5 }
+      ]
+    },
+    {
+      "id": "play",
+      "name": "Play / Explore Mode",
+      "weight": 10,
+      "items": [
+        { "id": "play-enter",    "desc": "Explore created world mode",            "auto": false, "max": 5 },
+        { "id": "play-interact", "desc": "Object click reactions / animations",   "auto": false, "max": 5 }
+      ]
+    },
+    {
+      "id": "save-gallery",
+      "name": "Save / Gallery",
+      "weight": 10,
+      "items": [
+        { "id": "save-load",    "desc": "Project save / load",   "auto": false, "max": 5 },
+        { "id": "gallery-view", "desc": "Gallery screen exists", "auto": false, "max": 5 }
+      ]
+    },
+    {
+      "id": "ux-quality",
+      "name": "UX Quality",
+      "weight": 15,
+      "items": [
+        { "id": "ux-child",        "desc": "Child-friendly design (big buttons, minimal text)", "auto": false, "max": 5 },
+        { "id": "ux-responsive",   "desc": "Desktop / tablet responsive",                       "auto": false, "max": 5 },
+        { "id": "ux-no-clutter",   "desc": "Clean UI (no clutter)",                             "auto": false, "max": 5 },
+        { "id": "ux-visual-guide", "desc": "Visual guidance / icon-driven",                     "auto": false, "max": 5 }
+      ]
+    },
+    {
+      "id": "code-quality",
+      "name": "Code Quality",
+      "weight": 5,
+      "items": [
+        { "id": "lint-clean",      "desc": "Lint script passes (no warnings/errors)", "auto": true, "max": 2.5 },
+        { "id": "ts-clean",        "desc": "TypeScript compiles with no errors",      "auto": true, "max": 2.5 }
+      ]
+    },
+    {
+      "id": "testing",
+      "name": "Testing (only when prompt requests)",
+      "weight": 10,
+      "conditional_on": "prompt-requires-tests",
+      "items": [
+        { "id": "test-exists",     "desc": "Test files exist (*.test.*, *.spec.*)", "auto": true,  "max": 2.5 },
+        { "id": "test-pass",       "desc": "Tests pass (<pm> test)",                "auto": true,  "max": 2.5 },
+        { "id": "test-coverage",   "desc": "Coverage for key components",           "auto": true,  "max": 2.5 },
+        { "id": "test-meaningful", "desc": "Meaningful tests (not just snapshots)", "auto": false, "max": 2.5 }
+      ]
+    }
+  ]
+}

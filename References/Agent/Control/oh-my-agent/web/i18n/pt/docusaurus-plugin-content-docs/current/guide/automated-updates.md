@@ -1,0 +1,286 @@
+---
+title: "Guia: Atualizações Automatizadas"
+description: "Documentação completa da GitHub Action do oh-my-agent — setup, todos os inputs e outputs, exemplos detalhados e como funciona por baixo dos panos."
+---
+
+# Guia: Atualizações Automatizadas
+
+## Visão geral
+
+A GitHub Action do oh-my-agent (`first-fluke/oma-update-action@v1`) atualiza automaticamente as skills de agentes do seu projeto executando `oma update` no CI. Suporta dois modos: criar um pull request para revisão, ou commitar diretamente em uma branch.
+
+---
+
+## Setup rápido
+
+Adicione este arquivo ao seu projeto como `.github/workflows/update-oh-my-agent.yml`:
+
+```yaml
+name: Update oh-my-agent
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Toda segunda-feira às 9am UTC
+  workflow_dispatch:        # Permitir trigger manual
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: first-fluke/oma-update-action@v1
+```
+
+Essa é a configuração mínima. Cria um PR com configurações padrão quando uma nova versão está disponível.
+
+---
+
+## Todos os inputs da action
+
+| Input | Tipo | Obrigatório | Padrão | Descrição |
+|:------|:-----|:-----------|:-------|:-----------|
+| `mode` | string | Não | `"pr"` | Como aplicar mudanças. `"pr"` cria um pull request. `"commit"` faz push direto para a branch base. |
+| `base-branch` | string | Não | `"main"` | Branch base para o PR (no modo `pr`) ou branch alvo para commits diretos (no modo `commit`). |
+| `force` | string | Não | `"false"` | Passa `--force` para `oma update`. Quando `"true"`, sobrescreve arquivos de config customizados (`oma-config.yaml`, `mcp.json`) e diretórios `stack/`. Normalmente estes são preservados. |
+| `pr-title` | string | Não | `"chore(deps): update oh-my-agent skills"` | Título customizado para o pull request. Usado apenas no modo `pr`. |
+| `pr-labels` | string | Não | `"dependencies,automated"` | Labels separadas por vírgula para adicionar ao PR. Usado apenas no modo `pr`. |
+| `commit-message` | string | Não | `"chore(deps): update oh-my-agent skills"` | Mensagem de commit customizada. Usada em ambos os modos. |
+| `token` | string | Não | `${{ github.token }}` | Token do GitHub para criar PRs. Use um Personal Access Token (PAT) se precisar que o PR acione outros workflows. |
+
+---
+
+## Todos os outputs da action
+
+| Output | Tipo | Descrição | Disponível |
+|:-------|:-----|:----------|:---------|
+| `updated` | string | `"true"` se mudanças foram detectadas após executar `oma update`. `"false"` se já está atualizado. | Sempre |
+| `version` | string | A versão do oh-my-agent após a atualização. Lida de `.agents/skills/_version.json`. | Quando `updated` é `"true"` |
+| `pr-number` | string | O número do pull request. | Apenas no modo `pr` quando PR é criado |
+| `pr-url` | string | A URL completa do pull request criado. | Apenas no modo `pr` quando PR é criado |
+
+---
+
+## Exemplos detalhados
+
+### Exemplo 1: modo PR padrão
+
+O setup mais comum. Cria um PR toda segunda se atualizações estão disponíveis.
+
+```yaml
+name: Update oh-my-agent
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: first-fluke/oma-update-action@v1
+        id: update
+
+      - name: Summary
+        if: steps.update.outputs.updated == 'true'
+        run: |
+          echo "Updated to version ${{ steps.update.outputs.version }}"
+          echo "PR: ${{ steps.update.outputs.pr-url }}"
+```
+
+**O que acontece:**
+- Faz checkout do repositório.
+- Instala o Bun e em seguida o oh-my-agent globalmente.
+- Executa `oma update --ci`.
+- Verifica se `.agents/` ou `.claude/` têm mudanças.
+- Se houver mudanças, usa `peter-evans/create-pull-request@v8` para criar um PR na branch `chore/update-oh-my-agent`.
+- O PR recebe as labels `dependencies,automated` e inclui o novo número de versão no corpo.
+
+### Exemplo 2: modo commit direto com PAT
+
+Para equipes que querem atualizações aplicadas imediatamente sem etapa de revisão via PR.
+
+```yaml
+name: Update oh-my-agent (Direct)
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Diariamente às 6am UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.OH_MY_AGENT_PAT }}
+
+      - uses: first-fluke/oma-update-action@v1
+        with:
+          mode: commit
+          token: ${{ secrets.OH_MY_AGENT_PAT }}
+          commit-message: "chore: auto-update oh-my-agent skills"
+          base-branch: develop
+```
+
+**O que acontece:**
+- Faz checkout da branch `develop` usando um PAT.
+- Executa `oma update --ci`.
+- Se houver mudanças, configura o git como `github-actions[bot]` e commita diretamente em `develop`.
+- O PAT garante que o commit aciona quaisquer workflows que escutam pushes em `develop`.
+
+**Importante:** Use `secrets.OH_MY_AGENT_PAT` (um Fine-Grained PAT com permissão Contents: Write) em vez de `github.token`. O `GITHUB_TOKEN` padrão cria commits que não acionam outros workflows, o que pode quebrar pipelines de CI que esperam eventos de push.
+
+### Exemplo 3: notificação condicional
+
+Atualizar com notificação Slack quando nova versão está disponível.
+
+```yaml
+name: Update oh-my-agent
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: first-fluke/oma-update-action@v1
+        id: update
+
+      - name: Notify Slack
+        if: steps.update.outputs.updated == 'true'
+        uses: slackapi/slack-github-action@v2
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "oh-my-agent updated to v${{ steps.update.outputs.version }}. PR: ${{ steps.update.outputs.pr-url }}"
+            }
+
+      - name: Skip notification
+        if: steps.update.outputs.updated == 'false'
+        run: echo "Already up to date, no notification needed."
+```
+
+**Padrão-chave:** Use `steps.update.outputs.updated == 'true'` para executar condicionalmente etapas downstream apenas quando uma atualização real ocorreu. Isso evita ruído de execuções "sem mudanças".
+
+### Exemplo 4: modo force com labels customizadas
+
+Para projetos que querem resetar todos os arquivos de config para padrões na atualização.
+
+```yaml
+name: Update oh-my-agent (Force)
+
+on:
+  workflow_dispatch:  # Apenas trigger manual para atualizações force
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: first-fluke/oma-update-action@v1
+        with:
+          force: 'true'
+          pr-title: "chore(deps): force-update oh-my-agent skills (reset configs)"
+          pr-labels: "dependencies,automated,force-update"
+          commit-message: "chore(deps): force-update oh-my-agent skills"
+```
+
+**Aviso:** Modo force sobrescreve `oma-config.yaml`, `mcp.json` e diretórios `stack/`. Use apenas quando quiser resetar todas as customizações para padrões. Para atualizações regulares, omita o input `force`.
+
+---
+
+## Como funciona por baixo dos panos
+
+A action é uma [composite action](https://docs.github.com/en/actions/creating-actions/creating-a-composite-action) definida em `action/action.yml`. Executa 4 etapas:
+
+### Step 1: setup Bun
+
+```yaml
+- uses: oven-sh/setup-bun@v2
+```
+
+Instala o runtime Bun, necessário para executar o CLI oh-my-agent.
+
+### Step 2: instalar oh-my-agent
+
+```bash
+bun install -g oh-my-agent
+```
+
+Instala a CLI globalmente do registry npm. Isso disponibiliza o comando `oma`.
+
+### Step 3: executar oma update
+
+```bash
+FLAGS="--ci"
+if [ "${{ inputs.force }}" = "true" ]; then
+  FLAGS="$FLAGS --force"
+fi
+oma update $FLAGS
+```
+
+A flag `--ci` executa a atualização em modo não-interativo (pula todos os prompts, gera texto puro em vez de animações de spinner). A flag `--force`, quando habilitada, sobrescreve arquivos de config customizados pelo usuário.
+
+O que `oma update --ci` faz internamente:
+
+1. Busca `prompt-manifest.json` da branch main para obter o número da versão mais recente.
+2. Compara com a versão local em `.agents/skills/_version.json`.
+3. Se versões correspondem, sai com "Already up to date."
+4. Se nova versão disponível, baixa e extrai o tarball mais recente.
+5. Preserva arquivos customizados pelo usuário (a menos que `--force`): `oma-config.yaml`, `mcp.json`, diretórios `stack/`.
+6. Copia novos arquivos sobre o diretório `.agents/` existente.
+7. Restaura arquivos preservados.
+8. Atualiza adaptações de vendor (hooks, settings, definições de agente) para todos os vendors.
+9. Atualiza symlinks da CLI.
+
+### Step 4: verificar mudanças
+
+```bash
+if [ -n "$(git status --porcelain .agents/ .claude/ 2>/dev/null)" ]; then
+  echo "updated=true" >> "$GITHUB_OUTPUT"
+  VERSION=$(jq -r '.version' .agents/skills/_version.json)
+  echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+else
+  echo "updated=false" >> "$GITHUB_OUTPUT"
+fi
+```
+
+Verifica se `oma update` realmente alterou arquivos em `.agents/` ou `.claude/`. Define os outputs `updated` e `version` adequadamente.
+
+Após isso, dependendo do input `mode`:
+
+- **Modo `pr`:** Usa `peter-evans/create-pull-request@v8` para criar um PR na branch `chore/update-oh-my-agent`. O PR inclui o novo número de versão, um link para o repo do oh-my-agent e as labels configuradas. Se a branch já existe (de um PR anterior não fechado), atualiza o PR existente.
+
+- **Modo `commit`:** Configura o git como `github-actions[bot]`, faz staging de `.agents/` e `.claude/`, commita com a mensagem configurada e faz push para a branch base.

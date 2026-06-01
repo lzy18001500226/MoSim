@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    // Environment setup & latest features
+    "lib": ["ESNext"],
+    "target": "ES2022",
+    "module": "Preserve",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "allowJs": true,
+
+    // Path aliases (TS 5+ resolves paths relative to tsconfig.json without baseUrl)
+    "paths": {
+      "@cli/*": ["./cli/*"]
+    },
+
+    // Bundler mode
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+
+    // Best practices
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+
+    // Some stricter flags (disabled by default)
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noPropertyAccessFromIndexSignature": false,
+
+    "typeRoots": ["./cli/node_modules/@types"],
+    "types": ["node"]
+  },
+  "include": ["cli/**/*.ts", "cli/**/*.tsx"],
+  "exclude": [
+    "web/**",
+    "node_modules",
+    "cli/coverage/**",
+    "cli/node_modules/**"
+  ]
+}

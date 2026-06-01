@@ -1,0 +1,73 @@
+{
+  "version": "1.0",
+  "total_max": 100,
+  "model": "claude-opus-4-6",
+  "judge_model": "claude-opus-4-6",
+  "axes": {
+    "functional": {
+      "weight": 35,
+      "description": "Can a user actually use the product?",
+      "items": [
+        { "id": "build-pass",       "max": 5,  "type": "auto",  "desc": "Build succeeds (pm install + pm run build)" },
+        { "id": "boot-pass",        "max": 5,  "type": "auto",  "desc": "Dev server boots (HTTP 200 within 30s)" },
+        { "id": "journey-onboard",  "max": 3,  "type": "judge", "desc": "Onboarding flow reachable" },
+        { "id": "journey-builder",  "max": 4,  "type": "judge", "desc": "Builder page renders Three.js canvas" },
+        { "id": "journey-ai",       "max": 3,  "type": "judge", "desc": "AI panel responds to user input (with or without API key)" },
+        { "id": "journey-save",     "max": 3,  "type": "judge", "desc": "Save and reload preserves state" },
+        { "id": "journey-gallery",  "max": 2,  "type": "judge", "desc": "Gallery displays saved worlds" },
+        { "id": "lint-clean",       "max": 5,  "type": "auto",  "desc": "Lint passes (skipped if deprecated next-lint without config)" },
+        { "id": "ts-clean",         "max": 5,  "type": "auto",  "desc": "TypeScript compiles with no errors" }
+      ]
+    },
+    "spec": {
+      "weight": 15,
+      "description": "How completely does the output cover the prompt's 13 requested outputs?",
+      "items": [
+        { "id": "spec-product-concept",  "max": 1, "type": "judge", "desc": "Product concept summary documented" },
+        { "id": "spec-personas",         "max": 1, "type": "judge", "desc": "User personas documented" },
+        { "id": "spec-journeys",         "max": 1, "type": "judge", "desc": "Core user journeys documented" },
+        { "id": "spec-feature-list",     "max": 1, "type": "judge", "desc": "MVP feature list with priorities" },
+        { "id": "spec-ia",               "max": 1, "type": "judge", "desc": "Information architecture documented" },
+        { "id": "spec-ui-direction",     "max": 1, "type": "judge", "desc": "UX/UI design direction documented" },
+        { "id": "spec-tech-arch",        "max": 1, "type": "judge", "desc": "Technical architecture documented" },
+        { "id": "spec-db-schema",        "max": 1, "type": "judge", "desc": "Database schema proposal documented" },
+        { "id": "spec-ai-prompts",       "max": 1, "type": "judge", "desc": "AI prompt system design documented" },
+        { "id": "spec-safety",           "max": 1, "type": "judge", "desc": "Safety/moderation considerations for children documented" },
+        { "id": "spec-impl-plan",        "max": 1, "type": "judge", "desc": "Step-by-step implementation plan documented" },
+        { "id": "spec-starter-code",     "max": 1, "type": "judge", "desc": "Starter code structure for MVP" },
+        { "id": "spec-priority-screens", "max": 1, "type": "judge", "desc": "Screens / components prioritized" },
+        { "id": "spec-real-api-bonus",   "max": 2, "type": "auto",  "desc": "Bonus: real OpenAI/Anthropic/Gemini API call coded with env-key config" }
+      ]
+    },
+    "visual": {
+      "weight": 20,
+      "description": "Vision-based UX quality from rendered screenshots",
+      "items": [
+        { "id": "visual-anti-patterns",  "max": 5, "type": "judge", "desc": "Avoids design anti-patterns (purple-blue gradient bg, gradient orbs, body text < 16px on mobile)" },
+        { "id": "visual-child-friendly", "max": 5, "type": "judge", "desc": "Child-friendly design (large click targets, minimal text, friendly colors)" },
+        { "id": "visual-consistency",    "max": 5, "type": "judge", "desc": "Design system consistency across pages (typography, spacing, color)" },
+        { "id": "visual-accessibility",  "max": 5, "type": "judge", "desc": "Accessibility hints (contrast, focus rings, semantic structure)" }
+      ]
+    },
+    "engineering": {
+      "weight": 20,
+      "description": "Code quality and engineering practices",
+      "items": [
+        { "id": "eng-breadth",       "max": 4, "type": "auto", "desc": "Code breadth (routes count + components count, normalized)" },
+        { "id": "eng-type-safety",   "max": 4, "type": "auto", "desc": "Type safety (strict mode + low any usage)" },
+        { "id": "eng-modularity",    "max": 4, "type": "auto", "desc": "Modular structure (folder depth, no oversize files)" },
+        { "id": "eng-transparency",  "max": 4, "type": "auto", "desc": "Honest deferred markers (TODO/MVP/replace-with-API comments where appropriate)" },
+        { "id": "eng-env-safety",    "max": 4, "type": "auto", "desc": "No hardcoded API keys; env-var-based config" }
+      ]
+    },
+    "efficiency": {
+      "weight": 10,
+      "description": "Cost efficiency and convergence speed",
+      "items": [
+        { "id": "eff-turns",   "max": 4, "type": "auto", "desc": "Turns to completion (lower better, normalized to baseline)" },
+        { "id": "eff-time",    "max": 3, "type": "auto", "desc": "Wall-clock duration (lower better)" },
+        { "id": "eff-cost",    "max": 3, "type": "auto", "desc": "Cost per file produced (lower better)" }
+      ]
+    }
+  }
+}

@@ -1,0 +1,215 @@
+---
+title: "Guide: Per-Agent Model Configuration"
+description: Configure which AI model each agent uses via model_preset in oma-config.yaml. Covers built-in presets, per-agent overrides, inline model definitions, custom presets with extends, oma doctor --profile, and migration from legacy agent_cli_mapping.
+---
+
+# Guide: Per-Agent Model Configuration
+
+## Overview
+
+`model_preset` is the single concept that controls which model every agent uses. Pick one of the built-in presets and every agent (pm, backend, frontend, qa, …) is wired to an appropriate model for that vendor stack. Override individual agents as needed. Define additional presets when your team has a non-standard mix.
+
+All configuration lives in one file: `.agents/oma-config.yaml`.
+
+This page covers:
+
+1. The built-in presets
+2. Overriding individual agents with the `agents:` map
+3. Inlining custom model slugs with `models:`
+4. Defining custom presets with `custom_presets:` and `extends:`
+5. Inspecting resolved configuration with `oma doctor --profile`
+6. Migration from legacy `agent_cli_mapping`
+
+---
+
+## Built-in presets
+
+Set `model_preset` to one of the built-in keys:
+
+```yaml
+# .agents/oma-config.yaml
+language: en
+model_preset: antigravity
+```
+
+| Key | Description | Best for |
+|:----|:-----------|:---------|
+| `antigravity` | All agents use Antigravity CLI (`agy`): Gemini 3.1 Pro for impl/architecture, Gemini 3.5 Flash for orchestration and retrieval. Model selection is config-driven inside `agy` — no `--model` or `--thinking-budget` flags are exposed. | Antigravity CLI users |
+| `claude` | All agents use Claude (Sonnet/Opus) | Claude Max subscription holders |
+| `codex` | All agents use OpenAI Codex (GPT-5.x) with effort levels | ChatGPT Plus/Pro users |
+| `gemini` | All agents use Gemini CLI, thinking enabled for implementation roles | Google AI Pro users |
+| `qwen` | All agents routed external via Qwen Code; binary thinking (no effort levels) | Local / self-hosted inference |
+| `cursor` | All agents use Cursor `composer-2.5` (`composer-2.5-fast` for orchestrator/qa/pm/docs/retrieval) | Cursor Pro / Pro Student users |
+| `mixed` | Mixed: impl roles use Codex, architecture/qa/pm use Claude, retrieval uses Gemini | Cross-vendor strengths without managing per-agent config |
+
+Built-in presets ship inside the CLI package and update automatically when you upgrade `oh-my-agent`. No local file to maintain.
+
+---
+
+## Overriding individual agents
+
+Use the `agents:` map to override specific agents on top of the active preset. Only agents you list are affected; the rest stay on the preset defaults.
+
+```yaml
+# .agents/oma-config.yaml
+language: en
+model_preset: antigravity
+
+agents:
+  backend: { model: openai/gpt-5.5, effort: high }
+  qa:      { model: anthropic/claude-sonnet-4-6 }
+```
+
+Each entry is an `AgentSpec` object:
+
+| Field | Type | Required | Description |
+|:------|:-----|:---------|:-----------|
+| `model` | string | Yes | Model slug (built-in or user-defined) |
+| `effort` | `low` \| `medium` \| `high` | No | Reasoning effort (ignored on models that do not support it) |
+| `thinking` | boolean | No | Enable extended thinking (model-specific) |
+| `memory` | `user` \| `project` \| `local` | No | Memory scope for the agent |
+
+Valid agent IDs: `orchestrator`, `architecture`, `qa`, `pm`, `backend`, `frontend`, `mobile`, `db`, `debug`, `tf-infra`, `retrieval`.
+
+The merge is shallow: each field in your override replaces the preset value for that field. Fields you omit keep their preset value.
+
+---
+
+## Inlining model slugs
+
+Register model slugs that are not yet in the built-in registry under `models:`. Once registered, use the slug anywhere in `agents:` or `custom_presets:`.
+
+```yaml
+# .agents/oma-config.yaml
+models:
+  my-fast-model:
+    cli: gemini
+    cli_model: gemini-3-flash
+    supports:
+      native_dispatch_from: [gemini]
+      thinking: true
+```
+
+> If a user-defined slug collides with a built-in slug, the user definition wins and a warning is emitted.
+
+---
+
+## Custom presets
+
+Define additional presets in `custom_presets:`. Use `extends:` to inherit all agent defaults from a built-in preset and override only the agents you care about.
+
+```yaml
+# .agents/oma-config.yaml
+language: en
+model_preset: my-team
+
+custom_presets:
+  my-team:
+    extends: claude              # base preset — partial merge
+    description: "Team A — sonnet base, codex for implementation"
+    agent_defaults:
+      backend: { model: openai/gpt-5.5, effort: high }
+      db:      { model: openai/gpt-5.5, effort: high }
+      # all other agents inherited from claude
+```
+
+Without `extends:`, you must provide `agent_defaults` for all 11 agent roles. With `extends:`, only the entries you list are overridden; the rest are inherited from the base preset.
+
+---
+
+## `oma doctor --profile`
+
+Run `oma doctor --profile` to inspect the fully resolved model matrix after preset defaults, `custom_presets`, and `agents:` overrides are merged.
+
+```bash
+oma doctor --profile
+```
+
+**Sample output:**
+
+```
+oh-my-agent — Profile Health (preset=mixed)
+
+┌──────────────┬──────────────────────────────┬──────────┬──────────────────┬──────────┐
+│ Role         │ Model                        │ CLI      │ Auth Status      │ Source   │
+├──────────────┼──────────────────────────────┼──────────┼──────────────────┼──────────┤
+│ orchestrator │ anthropic/claude-sonnet-4-6  │ claude   │ ✓ logged in      │ (preset) │
+│ architecture │ anthropic/claude-opus-4-7    │ claude   │ ✓ logged in      │ (preset) │
+│ qa           │ anthropic/claude-sonnet-4-6  │ claude   │ ✓ logged in      │ (preset) │
+│ backend      │ openai/gpt-5.5         │ codex    │ ✗ not logged in  │ (override)│
+│ retrieval    │ google/gemini-3.1-flash-lite │ gemini   │ ✗ not logged in  │ (preset) │
+└──────────────┴──────────────────────────────┴──────────┴──────────────────┴──────────┘
+```
+
+Each row shows the resolved model slug and which source applied it (`(preset)` or `(override)`). Use this whenever a subagent picks an unexpected vendor.
+
+---
+
+## Migration from legacy `agent_cli_mapping`
+
+Migration 008 runs automatically on `oma install` and `oma update`. It converts legacy projects in place:
+
+| Legacy config | Result after migration 008 |
+|:-------------|:--------------------------|
+| All entries same vendor (e.g. all `gemini`) | `model_preset: gemini`, no `agents:` |
+| Mixed vendors | Most-frequent vendor → `model_preset`; others → `agents:` overrides |
+| `AgentSpec` object values | Moved to `agents:` as-is |
+| `models.yaml` content | Inlined into `oma-config.yaml.models` |
+| Customized `defaults.yaml` | Preserved as `custom_presets.user-customized` with a warning |
+
+Originals are backed up to `.agents/.backup-pre-008-{timestamp}/` before any changes. The migration is idempotent. If `model_preset` is already present, it skips.
+
+After migration, `.agents/config/defaults.yaml`, `.agents/config/models.yaml`, and the `.agents/config/` directory are removed.
+
+---
+
+## Session quota cap
+
+`session.quota_cap` is unchanged. Add it to `oma-config.yaml` to bound runaway subagent spawning:
+
+```yaml
+session:
+  quota_cap:
+    tokens: 2_000_000
+    spawn_count: 40
+    per_vendor:
+      claude: 1_200_000
+      openai: 600_000
+      google: 200_000
+```
+
+When a cap is reached, the orchestrator refuses further spawns and surfaces a `QUOTA_EXCEEDED` status.
+
+---
+
+## Full example
+
+```yaml
+# .agents/oma-config.yaml
+language: en
+model_preset: my-team
+
+agents:
+  frontend: { model: anthropic/claude-sonnet-4-6 }
+
+models:
+  my-fast-model:
+    cli: gemini
+    cli_model: gemini-3-flash
+    supports: { native_dispatch_from: [gemini], thinking: true }
+
+custom_presets:
+  my-team:
+    extends: claude
+    description: "Sonnet base, Codex for backend/db"
+    agent_defaults:
+      backend: { model: openai/gpt-5.5, effort: high }
+      db:      { model: openai/gpt-5.5, effort: high }
+
+session:
+  quota_cap:
+    tokens: 2_000_000
+    spawn_count: 40
+```
+
+Run `oma doctor --profile` to confirm resolution, then start a workflow as usual.

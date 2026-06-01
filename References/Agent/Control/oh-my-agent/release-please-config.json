@@ -1,0 +1,67 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "include-component-in-tag": true,
+  "include-v-in-tag": true,
+  "tag-separator": "-",
+  "separate-pull-requests": true,
+  "packages": {
+    ".": {
+      "component": "cli",
+      "package-name": "oh-my-agent",
+      "release-type": "node",
+      "changelog-path": "cli/CHANGELOG.md",
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": true,
+      "exclude-paths": ["web", "action", "prompt-manifest.json"],
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "cli/package.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
+          "path": ".agents/skills/_version.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
+          "path": ".claude-plugin/plugin.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
+          "path": ".cursor-plugin/plugin.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "generic",
+          "path": "CITATION.cff"
+        }
+      ]
+    },
+    "action": {
+      "component": "action",
+      "package-name": "oh-my-agent-action",
+      "release-type": "node",
+      "changelog-path": "action/CHANGELOG.md",
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": true,
+      "include-paths": ["action"]
+    },
+    "web": {
+      "component": "web",
+      "package-name": "oh-my-agent-web",
+      "release-type": "node",
+      "changelog-path": "web/CHANGELOG.md",
+      "include-paths": ["web"]
+    }
+  },
+  "changelog-sections": [
+    { "type": "feat", "section": "Features" },
+    { "type": "fix", "section": "Bug Fixes" },
+    { "type": "perf", "section": "Performance" },
+    { "type": "refactor", "section": "Refactoring" },
+    { "type": "docs", "section": "Documentation" }
+  ]
+}

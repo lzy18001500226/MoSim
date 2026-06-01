@@ -1,0 +1,30 @@
+{
+  "harness": "",
+  "scorer": "",
+  "date": "",
+  "model": "claude-opus-4-6",
+  "scores": {
+    "3d-canvas":        { "score": 0, "max": 5, "note": "" },
+    "3d-place":         { "score": 0, "max": 5, "note": "" },
+    "3d-move-rotate":   { "score": 0, "max": 5, "note": "" },
+    "3d-color-texture": { "score": 0, "max": 5, "note": "" },
+    "3d-env-theme":     { "score": 0, "max": 5, "note": "" },
+    "3d-animation":     { "score": 0, "max": 5, "note": "" },
+    "ai-panel":         { "score": 0, "max": 5, "note": "" },
+    "ai-prompt":        { "score": 0, "max": 5, "note": "" },
+    "ai-whatif":        { "score": 0, "max": 5, "note": "" },
+    "onboard-flow":     { "score": 0, "max": 5, "note": "" },
+    "onboard-simple":   { "score": 0, "max": 5, "note": "" },
+    "play-enter":       { "score": 0, "max": 5, "note": "" },
+    "play-interact":    { "score": 0, "max": 5, "note": "" },
+    "save-load":        { "score": 0, "max": 5, "note": "" },
+    "gallery-view":     { "score": 0, "max": 5, "note": "" },
+    "ux-child":         { "score": 0, "max": 5, "note": "" },
+    "ux-responsive":    { "score": 0, "max": 5, "note": "" },
+    "ux-no-clutter":    { "score": 0, "max": 5, "note": "" },
+    "ux-visual-guide":  { "score": 0, "max": 5, "note": "" },
+    "test-meaningful":  { "score": 0, "max": 2.5, "note": "" }
+  },
+  "screenshots": [],
+  "overall_impression": ""
+}

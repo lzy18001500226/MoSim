@@ -1,0 +1,569 @@
+---
+title: Workflow
+description: Kompletna referencja wszystkich 16 workflow oh-my-agent — komendy slash, tryby trwałe i nietrwałe, słowa kluczowe wyzwalające w 11 językach, fazy i kroki, odczytywane i zapisywane pliki, mechanika automatycznego wykrywania przez triggers.json i keyword-detector.ts, filtrowanie wzorców informacyjnych oraz zarządzanie stanem trybu trwałego.
+---
+
+# Workflow
+
+Workflow to ustrukturyzowane, wielokrokowe procesy wyzwalane komendami slash lub słowami kluczowymi w języku naturalnym. Definiują sposób współpracy agentów nad zadaniami — od jednofazowych narzędzi po złożone 5-fazowe bramki jakości.
+
+Jest 16 workflow, z których 4 są trwałe (utrzymują stan i nie mogą być przypadkowo przerwane).
+
+---
+
+## Trwałe workflow
+
+Trwałe workflow działają do momentu zakończenia wszystkich zadań. Utrzymują stan w `.agents/state/` i reiniekują kontekst `[OMA PERSISTENT MODE: ...]` przy każdej wiadomości użytkownika aż do jawnej dezaktywacji.
+
+### /orchestrate
+
+**Opis:** Automatyczne równoległe wykonanie agentów oparte na CLI. Uruchamia subagentów przez CLI, koordynuje przez pamięć MCP, monitoruje postęp i wykonuje pętle weryfikacyjne.
+
+**Trwały:** Tak. Plik stanu: `.agents/state/orchestrate-state.json`.
+
+**Słowa kluczowe wyzwalające:**
+| Język | Słowa kluczowe |
+|----------|----------|
+| Uniwersalne | "orchestrate" |
+| Angielski | "parallel", "do everything", "run everything" |
+| Koreański | "자동 실행", "병렬 실행", "전부 실행", "전부 해" |
+| Japoński | "オーケストレート", "並列実行", "自動実行" |
+| Chiński | "编排", "并行执行", "自动执行" |
+| Hiszpański | "orquestar", "paralelo", "ejecutar todo" |
+| Francuski | "orchestrer", "parallèle", "tout exécuter" |
+| Niemiecki | "orchestrieren", "parallel", "alles ausführen" |
+| Portugalski | "orquestrar", "paralelo", "executar tudo" |
+| Rosyjski | "оркестровать", "параллельно", "выполнить всё" |
+| Holenderski | "orkestreren", "parallel", "alles uitvoeren" |
+| Polski | "orkiestrować", "równolegle", "wykonaj wszystko" |
+
+**Wzorce regex wyzwalające** (intencja + lista dozwolonych rzeczowników, zob. [Automatyczne wykrywanie: pole Pattern](#pattern-field-raw-regex)):
+| Sekcja | Wzorzec | Przykłady, które wyzwalają |
+|---------|---------|----------------------|
+| `*` (uniwersalne) | `(build\|create\|make\|develop\|implement\|scaffold) + (a\|an\|the) + [modifier]{0,3} + <noun>` | "Build a TODO app with user authentication", "Create an awesome web service", "Develop a backend with PostgreSQL" |
+| `*` (uniwersalne) | `i want a/an + <noun>` | "I want a CLI for parsing logs" |
+| `ko` | `<noun> + (을\|를\|이\|가)? + (만들어\|구현해\|개발해 + 변형)` | "TODO 앱 만들어줘", "REST API 구현해", "백엔드를 개발해주세요" |
+
+Lista dozwolonych rzeczowników (15): app, api, service, server, cli, tool, website, dashboard, system, feature, backend, frontend, prototype, mvp, bot.
+
+**Kroki:**
+1. **Krok 0 — Przygotowanie:** Odczytaj skill koordynacji, przewodnik ładowania kontekstu, protokół pamięci. Wykryj dostawcę.
+2. **Krok 1 — Załaduj/Utwórz plan:** Sprawdź `.agents/results/plan-{sessionId}.json`. Jeśli brak, poproś użytkownika o uruchomienie `/plan` najpierw.
+3. **Krok 2 — Inicjalizacja sesji:** Załaduj `oma-config.yaml`, wyświetl tabelę mapowania CLI, wygeneruj ID sesji (`session-YYYYMMDD-HHMMSS`), utwórz `orchestrator-session.md` i `task-board.md` w pamięci.
+4. **Krok 3 — Uruchom agentów:** Dla każdego poziomu priorytetów (najpierw P0, potem P1...), uruchom agentów używając metody właściwej dla dostawcy (narzędzie Agent dla Claude Code, `oma agent:spawn` dla Gemini/Antigravity, mediowane przez model dla Codex). Nigdy nie przekraczaj MAX_PARALLEL.
+5. **Krok 4 — Monitoruj:** Odpytuj pliki `progress-{agent}.md`, aktualizuj `task-board.md`. Obserwuj zakończenia, niepowodzenia, awarie.
+6. **Krok 5 — Weryfikuj:** Uruchom `verify.sh {agent-type} {workspace}` per zakończony agent. Przy niepowodzeniu, ponownie uruchom z kontekstem błędu (maks. 2 ponowienia). Po 2 ponowieniach, aktywuj Pętlę eksploracji: wygeneruj 2-3 hipotezy, uruchom równoległe eksperymenty, oceń, zachowaj najlepszy.
+7. **Krok 6 — Zbierz:** Odczytaj wszystkie pliki `result-{agent}.md`, skompiluj podsumowanie.
+8. **Krok 7 — Raport końcowy:** Przedstaw podsumowanie sesji. Jeśli mierzono Quality Score, dołącz podsumowanie Experiment Ledger i automatycznie wygeneruj wnioski.
+
+**Odczytywane pliki:** `.agents/results/plan-{sessionId}.json`, `.agents/oma-config.yaml`, `progress-{agent}.md`, `result-{agent}.md`.
+**Zapisywane pliki:** `orchestrator-session.md`, `task-board.md` (pamięć), raport końcowy.
+
+**Kiedy używać:** Duże projekty wymagające maksymalnej równoległości z automatyczną koordynacją.
+
+---
+
+### /work
+
+**Opis:** Krokowa koordynacja wielodomenowa. PM planuje najpierw, następnie agenci wykonują z potwierdzeniem użytkownika przy każdej bramce, po czym następuje przegląd QA i pętla naprawy problemów.
+
+**Trwały:** Tak. Plik stanu: `.agents/state/work-state.json`.
+
+**Słowa kluczowe wyzwalające:**
+| Język | Słowa kluczowe |
+|----------|----------|
+| Uniwersalne | "work", "step by step" |
+| Koreański | "코디네이트", "단계별" |
+| Japoński | "コーディネート", "ステップバイステップ" |
+| Chiński | "协调", "逐步" |
+| Hiszpański | "coordinar", "paso a paso" |
+| Francuski | "coordonner", "étape par étape" |
+| Niemiecki | "koordinieren", "schritt für schritt" |
+
+**Kroki:**
+1. **Krok 0 — Przygotowanie:** Odczytaj skill, ładowanie kontekstu, protokół pamięci. Zarejestruj start sesji.
+2. **Krok 1 — Analiza wymagań:** Zidentyfikuj zaangażowane domeny. Jeśli jedna domena, zasugeruj bezpośrednie użycie agenta.
+3. **Krok 2 — Planowanie PM:** PM rozkłada wymagania, definiuje kontrakty API, tworzy priorytetyzowany rozkład zadań, zapisuje do `.agents/results/plan-{sessionId}.json`.
+4. **Krok 3 — Przegląd planu:** Przedstaw plan użytkownikowi. **Wymagane potwierdzenie przed kontynuacją.**
+5. **Krok 4 — Uruchom agentów:** Uruchom według poziomu priorytetów, równolegle w ramach tego samego poziomu, oddzielne przestrzenie robocze.
+6. **Krok 5 — Monitoruj:** Odpytuj pliki postępu, weryfikuj zgodność kontraktów API między agentami.
+7. **Krok 6 — Przegląd QA:** Uruchom agenta QA do bezpieczeństwa (OWASP), wydajności, dostępności, jakości kodu.
+8. **Krok 6.1 — Quality Score** (warunkowy): Zmierz i zarejestruj linię bazową.
+9. **Krok 7 — Iteruj:** Jeśli znaleziono problemy CRITICAL/HIGH, ponownie uruchom odpowiedzialnych agentów. Jeśli ten sam problem utrzymuje się po 2 próbach, aktywuj Pętlę eksploracji.
+
+**Kiedy używać:** Funkcjonalności obejmujące wiele domen, gdzie chcesz krokowej kontroli i zatwierdzenia użytkownika przy każdej bramce.
+
+---
+
+### /ultrawork
+
+**Opis:** Workflow obsesyjnie dbający o jakość. 5 faz, 17 kroków łącznie, z czego 11 to kroki przeglądu. Każda faza ma bramkę, która musi przejść przed kontynuacją.
+
+**Trwały:** Tak. Plik stanu: `.agents/state/ultrawork-state.json`.
+
+**Słowa kluczowe wyzwalające:**
+| Język | Słowa kluczowe |
+|----------|----------|
+| Uniwersalne | "ultrawork", "ulw" |
+
+**Fazy i kroki:**
+
+| Faza | Kroki | Agent | Perspektywa przeglądu |
+|-------|-------|-------|-------------------|
+| **PLAN** | 1-4 | Agent PM (inline) | Kompletność, Meta-przegląd, Nadmierna inżynieria/Prostota |
+| **IMPL** | 5 | Agenci Dev (uruchamiani) | Implementacja |
+| **VERIFY** | 6-8 | Agent QA (uruchamiany) | Zgodność, Bezpieczeństwo (OWASP), Zapobieganie regresji |
+| **REFINE** | 9-13 | Agent Debug (uruchamiany) | Dzielenie plików, Ponowne użycie, Wpływ kaskadowy, Spójność, Martwy kod |
+| **SHIP** | 14-17 | Agent QA (uruchamiany) | Jakość kodu (lint/pokrycie), Przepływ UX, Powiązane problemy, Gotowość do wdrożenia |
+
+**Definicje bramek:**
+- **PLAN_GATE:** Plan udokumentowany, założenia wymienione, alternatywy rozważone, przegląd nadmiernej inżynierii wykonany, potwierdzenie użytkownika.
+- **IMPL_GATE:** Build przechodzi, testy przechodzą, zmodyfikowano tylko zaplanowane pliki, bazowy Quality Score zarejestrowany (jeśli mierzony).
+- **VERIFY_GATE:** Implementacja pasuje do wymagań, zero CRITICAL, zero HIGH, brak regresji, Quality Score >= 75 (jeśli mierzony).
+- **REFINE_GATE:** Brak dużych plików/funkcji (> 500 linii / > 50 linii), możliwości integracji wychwycone, efekty uboczne zweryfikowane, kod wyczyszczony, Quality Score nie spadł.
+- **SHIP_GATE:** Sprawdzenia jakości przechodzą, UX zweryfikowany, powiązane problemy rozwiązane, lista kontrolna wdrożenia kompletna, końcowy Quality Score >= 75 z nieujemną deltą, końcowe zatwierdzenie użytkownika.
+
+**Zachowanie przy niepowodzeniu bramki:**
+- Pierwsze niepowodzenie: powrót do odpowiedniego kroku, naprawa i ponowna próba.
+- Drugie niepowodzenie na tym samym problemie: aktywacja Pętli eksploracji (wygeneruj 2-3 hipotezy, przetestuj każdą eksperymentem, oceń, zachowaj najlepszą).
+
+**Warunkowe ulepszenia:** Pomiar Quality Score, decyzje Keep/Discard, Experiment Ledger, Eksploracja hipotez, Auto-uczenie (wnioski z odrzuconych eksperymentów).
+
+**Warunek pominięcia REFINE:** Proste zadania poniżej 50 linii.
+
+**Kiedy używać:** Maksymalna jakość dostarczenia. Gdy kod musi być gotowy do produkcji z kompleksowym przeglądem.
+
+---
+
+### /ralph
+
+**Opis:** Trwała, samoodwołująca się pętla wykonania. Opakowuje ultrawork niezależnym weryfikatorem, który po każdej iteracji sprawdza kryteria ukończenia. Iteruje do momentu, aż wszystkie kryteria przejdą lub zadziałają zabezpieczenia.
+
+**Trwały:** Tak. Plik stanu: `.agents/state/ralph-state.json`.
+
+**Słowa kluczowe wyzwalające:**
+| Język | Słowa kluczowe |
+|----------|----------|
+| Uniwersalne | "ralph" |
+| Angielski | "don't stop", "until done", "keep going", "finish everything", "run to completion" |
+| Koreański | "랄프", "멈추지마", "끝까지", "완료될때까지", "끝장내" |
+| Japoński | "止まるな", "完了まで", "最後まで", "全部終わらせて" |
+| Chiński | "不要停", "直到完成", "全部完成", "做完为止" |
+| Hiszpański | "no pares", "hasta completar", "termina todo" |
+| Francuski | "n'arrête pas", "jusqu'à complétion", "termine tout" |
+| Niemiecki | "hör nicht auf", "bis zur fertigstellung", "alles fertigstellen" |
+
+**Fazy:**
+1. **Faza 0 — INIT:** Załaduj wymagania wstępne (context-loading, protokół pamięci, protokół judge). Zdefiniuj weryfikowalne kryteria ukończenia (każde musi być mechanicznie weryfikowalne — testy przechodzą, build się udaje, plik istnieje). Przedstaw kryteria do potwierdzenia przez użytkownika. Zainicjuj sesję z `max_iterations: 5`.
+2. **Faza 1 — WORK:** Wykonaj ultrawork (PLAN → IMPL → VERIFY → REFINE → SHIP) jako jedną iterację.
+3. **Faza 2 — JUDGE:** Niezależny weryfikator sprawdza każde kryterium ukończenia wobec rzeczywistego stanu projektu (uruchamia testy, sprawdza buildy, weryfikuje istnienie plików). Każde kryterium oceniane jako PASS/FAIL z dowodami.
+4. **Faza 3 — DECIDE:** Jeśli wszystkie kryteria PASS → zakończ pętlę, wygeneruj raport końcowy. Jeśli którekolwiek FAIL → zwiększ licznik iteracji, przekaż kontekst porażki, wróć do Fazy 1.
+5. **Zabezpieczenia:** Pętla zatrzymuje się, gdy `current_iteration >= max_iterations` (domyślnie 5) lub gdy to samo kryterium zawiedzie 3 razy z rzędu z tej samej przyczyny (wykrycie utknięcia).
+
+**Kluczowa różnica w stosunku do /ultrawork:** Ultrawork to jednokrotny workflow 5-fazowy. Ralph opakowuje ultrawork w pętlę ponawiania z niezależnym judge, który obiektywnie weryfikuje ukończenie — działa dalej, aż praca będzie faktycznie zakończona, a nie tylko „zrecenzowana”.
+
+**Czytane pliki:** `.agents/workflows/ralph/resources/judge-protocol.md`, wszystkie pliki ultrawork.
+**Zapisywane pliki:** `session-ralph.md` (pamięć), logi iteracji, raport końcowy.
+
+**Kiedy używać:** Gdy potrzebne jest gwarantowane ukończenie — agent musi pracować, aż weryfikowalne kryteria przejdą, a nie tylko wykonać jedno przejście i zaraportować.
+
+---
+
+## Nietrwałe workflow
+
+### /plan
+
+**Opis:** Rozkład zadań sterowany przez PM. Analizuje wymagania, wybiera stos technologiczny, rozkłada na priorytetyzowane zadania z zależnościami, definiuje kontrakty API.
+
+**Słowa kluczowe wyzwalające:**
+| Język | Słowa kluczowe |
+|----------|----------|
+| Uniwersalne | "task breakdown" |
+| Angielski | "plan" |
+| Koreański | "계획", "요구사항 분석", "스펙 분석" |
+| Japoński | "計画", "要件分析", "タスク分解" |
+| Chiński | "计划", "需求分析", "任务分解" |
+
+**Kroki:** Zbieranie wymagań -> Analiza wykonalności technicznej (analiza kodu MCP) -> Definicja kontraktów API -> Dekompozycja na zadania -> Przegląd z użytkownikiem -> Zapis planu.
+
+**Wyjście:** `.agents/results/plan-{sessionId}.json`, zapis do pamięci, opcjonalnie `docs/exec-plans/active/` dla złożonych planów.
+
+**Wykonanie:** Inline (bez uruchamiania subagentów). Konsumowane przez `/orchestrate` lub `/work`.
+
+---
+
+### /exec-plan
+
+**Opis:** Tworzy, zarządza i śledzi plany wykonawcze jako artefakty repozytorium w `docs/exec-plans/`.
+
+**Słowa kluczowe wyzwalające:** Brak (wykluczony z automatycznego wykrywania, wymaga jawnego wywołania).
+
+**Kroki:** Przygotowanie -> Analiza zakresu (ocena złożoności: Prosta/Średnia/Złożona) -> Tworzenie planu wykonawczego (markdown w `docs/exec-plans/active/`) -> Definicja kontraktów API (jeśli międzydomenowe) -> Przegląd z użytkownikiem -> Wykonanie (przekazanie do `/orchestrate` lub `/work`) -> Zakończenie (przeniesienie do `completed/`).
+
+**Wyjście:** `docs/exec-plans/active/{nazwa-planu}.md` z tabelą zadań, logiem decyzji, notatkami o postępie.
+
+**Kiedy używać:** Po `/plan` dla złożonych funkcjonalności wymagających śledzonego wykonania z logowaniem decyzji.
+
+---
+
+### /brainstorm
+
+**Opis:** Ideacja z priorytetem projektowania. Eksploruje intencje, wyjaśnia ograniczenia, proponuje podejścia, tworzy zatwierdzony dokument projektowy przed planowaniem.
+
+**Słowa kluczowe wyzwalające:**
+| Język | Słowa kluczowe |
+|----------|----------|
+| Uniwersalne | "brainstorm" |
+| Angielski | "ideate", "explore design" |
+| Koreański | "브레인스토밍", "아이디어", "설계 탐색" |
+| Japoński | "ブレインストーミング", "アイデア", "設計探索" |
+| Chiński | "头脑风暴", "创意", "设计探索" |
+
+**Kroki:** Eksploracja kontekstu projektu (analiza MCP) -> Pytania wyjaśniające (jedno na raz) -> Propozycja 2-3 podejść z kompromisami -> Prezentacja projektu sekcja po sekcji (z zatwierdzeniem użytkownika na każdym kroku) -> Zapis dokumentu projektowego do `docs/plans/` -> Przejście: sugestia `/plan`.
+
+**Reguły:** Żadnej implementacji ani planowania przed zatwierdzeniem projektu. Żadnego kodu na wyjściu. YAGNI.
+
+---
+
+### /architecture
+
+**Opis:** Workflow architektury oprogramowania — diagnozuje problemy architektoniczne, wybiera odpowiednią metodę analizy (routing diagnostyczny / design-twice / ATAM / CBAM / ADR), porównuje opcje, syntetyzuje wkład interesariuszy i produkuje rekomendację, przegląd lub ADR.
+
+**Słowa kluczowe wyzwalające:**
+| Język | Słowa kluczowe |
+|----------|----------|
+| Uniwersalne | "architecture", "ADR", "ATAM", "CBAM" |
+| Angielski | "architecture review", "architectural tradeoff" |
+| Koreański | "아키텍처", "설계 검토" |
+| Japoński | "アーキテクチャ" |
+| Chiński | "架构" |
+
+**Kroki:** Zaramkowanie decyzji (nowa architektura / przegląd / analiza kompromisów / priorytetyzacja inwestycji / pisanie ADR) -> Wybór metodologii przez routing diagnostyczny -> Analiza obecnej architektury przez analizę kodu MCP (`get_symbols_overview`, `find_symbol`, `find_referencing_symbols`) -> Synteza wkładu interesariuszy (tylko gdy decyzja jest na tyle przekrojowa, by uzasadnić koszt) -> Wyprodukowanie rekomendacji z jawnymi założeniami, kompromisami, ryzykami, krokami walidacji -> Przekazanie do `/plan`, gdy wymagane jest wdrożenie.
+
+**Reguły:** NIE pisz kodu wdrożeniowego ani planów zadań w tym workflow. Przekaż do `/plan` po decyzji architektonicznej. Używaj narzędzi MCP konsekwentnie; nie zastępuj surowym odczytem plików ani grep.
+
+**Kiedy używać:** Wybory architektury systemu, decyzje o granicach modułów/usług/własności, priorytetyzacja refaktoryzacji, pisanie ADR, badanie bólu architektonicznego (wzmocnienie zmian, ukryte zależności, niewygodne API).
+
+---
+
+### /deepinit
+
+**Opis:** Pełna inicjalizacja projektu. Analizuje istniejącą bazę kodu, generuje AGENTS.md, ARCHITECTURE.md i ustrukturyzowaną bazę wiedzy `docs/`.
+
+**Słowa kluczowe wyzwalające:**
+| Język | Słowa kluczowe |
+|----------|----------|
+| Uniwersalne | "deepinit" |
+| Koreański | "프로젝트 초기화" |
+| Japoński | "プロジェクト初期化" |
+| Chiński | "项目初始化" |
+
+**Kroki:** Przygotowanie -> Analiza bazy kodu (typ projektu, architektura, niejawne reguły, domeny, granice) -> Generacja ARCHITECTURE.md (mapa domen, poniżej 200 linii) -> Generacja bazy wiedzy `docs/` (design-docs/, exec-plans/, generated/, product-specs/, references/, dokumenty domenowe) -> Generacja głównego AGENTS.md (~100 linii, spis treści) -> Generacja granicznych plików AGENTS.md (pakiety monorepo, poniżej 50 linii każdy) -> Aktualizacja istniejącej infrastruktury (jeśli ponowne uruchomienie) -> Walidacja (brak martwych linków, limity linii).
+
+**Wyjście:** AGENTS.md, ARCHITECTURE.md, docs/design-docs/, docs/exec-plans/, docs/PLANS.md, docs/QUALITY-SCORE.md, docs/CODE-REVIEW.md, oraz dokumenty domenowe według odkryć.
+
+---
+
+### /review
+
+**Opis:** Pełny pipeline przeglądu QA. Audyt bezpieczeństwa (OWASP Top 10), analiza wydajności, sprawdzenie dostępności (WCAG 2.1 AA) i przegląd jakości kodu.
+
+**Słowa kluczowe wyzwalające:**
+| Język | Słowa kluczowe |
+|----------|----------|
+| Uniwersalne | "code review", "security audit", "security review" |
+| Angielski | "review" |
+| Koreański | "리뷰", "코드 검토", "보안 검토" |
+| Japoński | "レビュー", "コードレビュー", "セキュリティ監査" |
+| Chiński | "审查", "代码审查", "安全审计" |
+
+**Kroki:** Identyfikacja zakresu przeglądu -> Automatyczne sprawdzenia bezpieczeństwa (npm audit, bandit) -> Ręczny przegląd bezpieczeństwa (OWASP Top 10) -> Analiza wydajności -> Przegląd dostępności (WCAG 2.1 AA) -> Przegląd jakości kodu -> Generacja raportu QA.
+
+**Opcjonalna pętla napraw-weryfikuj** (z `--fix`): Po raporcie QA, uruchom agentów domenowych do naprawy problemów CRITICAL/HIGH, ponowny przegląd QA, powtórz do 3 razy.
+
+**Delegacja:** Dla dużych zakresów, deleguje Kroki 2-7 do uruchomionego subagenta QA.
+
+---
+
+### /deepsec
+
+**Opis:** Prowadzi skill `oma-deepsec` od początku do końca. Instaluje `.deepsec/`, kalibruje koszt, uruchamia przebiegi scan/process/triage/revalidate/export, blokuje PR-y poprzez `process --diff`, tworzy własne matchery i kieruje znaleziska do agentów specjalistycznych. Wykonanie inline (bez uruchamiania subagentów).
+
+**Słowa kluczowe wyzwalające:**
+| Język | Słowa kluczowe |
+|----------|----------|
+| Uniwersalne | "/deepsec", "deepsec workflow" |
+| Angielski | "run deepsec", "deepsec scan this repo", "scan repo with deepsec", "deepsec pr review", "deepsec ci gate", "deepsec triage", "deepsec matchers" |
+
+**Kroki:**
+1. **Krok 1, Załaduj skill:** Przeczytaj `.agents/skills/oma-deepsec/SKILL.md`, a następnie załaduj wyłącznie pliki zasobów odpowiadające rozpoznanej intencji (`setup.md`, `scanning.md`, `pr-review.md`, `matchers.md`, `triage.md`, `config.md`). Jeśli `.deepsec/` już istnieje w korzeniu repozytorium, traktuj uruchomienie jako inkrementalne i nigdy ponownie nie wykonuj `init`.
+2. **Krok 2, Klasyfikuj intencję:** Rozstrzygnij ją na dokładnie jedną z: `setup`, `scan`, `pr-review`, `matchers`, `triage`, `config`, `troubleshoot`. Wieloinwencyjne prompty wykonuj sekwencyjnie. Wstaw `setup` przed dowolną intencją wymagającą wywołań AI, jeśli brakuje `.deepsec/`.
+3. **Krok 3, Potwierdź wybór agenta:** Przed jakimkolwiek płatnym wywołaniem potwierdź `claude` (najsilniejsze rozumowanie, najdroższy) vs `codex` (sandbox tylko do odczytu, tańszy). Pomiń, jeśli użytkownik wskazał jednego, `deepsec.config.ts` ustawia `defaultAgent` lub użytkownik delegował wybór.
+4. **Krok 4, Wykonaj rozpoznaną intencję:**
+   - **4A `setup`:** `bunx deepsec init`, `bun install`, edycja `.env.local`, weryfikacja przez `scan --limit 20` + `process --limit 5`, następnie utworzenie `data/<id>/INFO.md` (50-100 linii, specyficzne dla projektu). **Wymaga potwierdzenia użytkownika dla `INFO.md`.**
+   - **4B `scan`:** Scan -> kalibracja `--limit 50 --concurrency 5` -> raport ekstrapolacji kosztu (wymaga jawnej zgody użytkownika) -> pełny `process` -> `triage --severity HIGH` + `revalidate --min-severity HIGH` -> `export --format md-dir` + `metrics`.
+   - **4C `pr-review`:** Tryb bezpośredni `process --diff origin/${BASE_REF} --comment-out comment.md`. Emituj wzorzec CI z dwoma zadaniami (`analyze` bez `pull-requests: write`, `comment` korzysta tylko z oczyszczonego artefaktu). Wyjście `1` = co najmniej jedno nowe znalezisko.
+   - **4D `matchers`:** Przejdź `data/<id>/files/` w poszukiwaniu braków punktów wejścia, zapisz matchery per slug do `.deepsec/matchers/<slug>.ts` na odpowiednim poziomie szumu (`precise` / `normal` / `noisy`), podłącz je przez `.deepsec/deepsec.config.ts` i zweryfikuj `scan --matchers`.
+   - **4E `triage`:** `triage --severity HIGH` -> `revalidate --min-severity HIGH` -> filtruj eksport tylko do `true-positive` / `uncertain`. Odnotuj powracające kształty FP do następnej rewizji `INFO.md`.
+   - **4F `config` / `troubleshoot`:** Zastosuj tabelę objawów z `resources/config.md`.
+5. **Krok 5, Podsumuj i kieruj:** Wytwórz podsumowanie uruchomienia (project id, typ przebiegu, agent/model, przeskanowane pliki, znaleziska, TP po revalidate, koszt, czas zegarowy, warunki zatrzymania). Kieruj kolejne działania według **warstwy podatnego pliku** (backend -> `oma-backend`, frontend -> `oma-frontend`, mobile -> `oma-mobile`, IaC -> `oma-tf-infra`, DB -> `oma-db`, CI -> `oma-dev-workflow`, dryf dokumentacji -> `oma-docs`, brak punktu wejścia -> ponowne wejście do kroku 4D). Niejasna warstwa lub `revalidation.verdict === "uncertain"` -> najpierw `oma-debug` jako etap triage.
+6. **Krok 6, Warunki zatrzymania:** Zakończ przy ukończonej intencji + podsumowanie z kroku 5, blokujący warunek wstępny (brakujące poświadczenie, odrzucone `INFO.md`) lub stop kwotowy z bezpiecznym poleceniem wznowienia.
+
+**Czytane pliki:** `.agents/skills/oma-deepsec/SKILL.md`, `.agents/skills/oma-deepsec/resources/*.md` (zakres wg intencji), `data/<id>/INFO.md`, `data/<id>/files/`, `deepsec.config.ts`.
+**Zapisywane pliki:** `.deepsec/` (przy `setup`), `.env.local` (gitignored), `data/<id>/INFO.md`, `.deepsec/matchers/<slug>.ts`, `findings/` (przy `export`), `comment.md` (przy `pr-review`).
+
+**Zasady:** W tym workflow nie modyfikuj kodu źródłowego produktu (przekazuj specjalistom). Nie wypisuj ani nie commituj poświadczeń (`vck_…`, `sk-ant-…`, tokenów OIDC). Nie nadawaj `pull-requests: write` żadnemu jobowi CI uruchamiającemu kod sterowany PR-em. Wznawiaj, nie resetuj: po przerwaniu uruchom ponownie to samo polecenie; nigdy `rm -rf data/<id>/` bez wyraźnej instrukcji użytkownika.
+
+**Kiedy używać:** Skanowanie podatności repozytorium przez agentów, gatowanie bezpieczeństwa CI/PR poprzez `process --diff`, tworzenie specyficznych dla projektu matcherów dla pokrycia punktów wejścia, triage istniejących znalezisk w celu redukcji FP.
+
+---
+
+### /debug
+
+**Opis:** Ustrukturyzowana diagnoza i naprawa błędów z pisaniem testów regresji i skanowaniem podobnych wzorców.
+
+**Słowa kluczowe wyzwalające:**
+| Język | Słowa kluczowe |
+|----------|----------|
+| Uniwersalne | "debug" |
+| Angielski | "fix bug", "fix error", "fix crash" |
+| Koreański | "디버그", "버그 수정", "에러 수정", "버그 찾아", "버그 고쳐" |
+| Japoński | "デバッグ", "バグ修正", "エラー修正" |
+| Chiński | "调试", "修复 bug", "修复错误" |
+
+**Kroki:** Zbieranie informacji o błędzie -> Reprodukcja (MCP `search_for_pattern`, `find_symbol`) -> Diagnoza przyczyny źródłowej (MCP `find_referencing_symbols` do śledzenia ścieżki wykonania) -> Propozycja minimalnej poprawki (wymagane potwierdzenie użytkownika) -> Zastosowanie poprawki + napisanie testu regresji -> Skanowanie podobnych wzorców (może uruchomić subagenta debug-investigator jeśli zakres > 10 plików) -> Dokumentacja błędu w pamięci.
+
+**Kryteria uruchomienia subagenta:** Błąd obejmuje wiele domen, zakres skanowania > 10 plików, lub potrzebne głębokie śledzenie zależności.
+
+---
+
+### /design
+
+**Opis:** 7-fazowy workflow projektowy produkujący DESIGN.md z tokenami, wzorcami komponentów i regułami dostępności.
+
+**Słowa kluczowe wyzwalające:**
+| Język | Słowa kluczowe |
+|----------|----------|
+| Uniwersalne | "design system", "DESIGN.md", "design token" |
+| Angielski | "design", "landing page", "ui design", "color palette", "typography", "dark theme", "responsive design", "glassmorphism" |
+| Koreański | "디자인", "랜딩페이지", "디자인 시스템", "UI 디자인" |
+| Japoński | "デザイン", "ランディングページ", "デザインシステム" |
+| Chiński | "设计", "着陆页", "设计系统" |
+
+**Fazy:** SETUP (zbieranie kontekstu, `.design-context.md`) -> EXTRACT (opcjonalnie, z URL referencyjnych/Stitch) -> ENHANCE (augmentacja niejasnych promptów) -> PROPOSE (2-3 kierunki projektowe z kolorem, typografią, układem, ruchem, komponentami) -> GENERATE (DESIGN.md + tokeny CSS/Tailwind/shadcn) -> AUDIT (responsywność, WCAG 2.2, heurystyki Nielsena, sprawdzanie AI slop) -> HANDOFF (zapis, informacja dla użytkownika).
+
+**Obowiązkowe:** Wszystkie wyjścia responsive-first (mobile 320-639px, tablet 768px+, desktop 1024px+).
+
+---
+
+### /scm
+
+**Opis:** Generuje Conventional Commits z automatycznym dzieleniem według funkcjonalności.
+
+**Słowa kluczowe wyzwalające:** Brak (wykluczony z automatycznego wykrywania).
+
+**Kroki:** Analiza zmian (git status, git diff) -> Oddzielenie funkcjonalności (jeśli > 5 plików obejmujących różne zakresy/typy) -> Określenie typu (feat/fix/refactor/docs/test/chore/style/perf) -> Określenie zakresu (zmieniony moduł) -> Napisanie opisu (tryb rozkazujący, < 72 znaki) -> Natychmiastowe wykonanie commita (bez promptu potwierdzenia).
+
+**Reguły:** Nigdy `git add -A`. Nigdy nie commituj sekretów. HEREDOC dla wieloliniowych wiadomości. Co-Author: `First Fluke <our.first.fluke@gmail.com>`.
+
+---
+
+### /tools
+
+**Opis:** Zarządzanie widocznością i ograniczeniami narzędzi MCP.
+
+**Słowa kluczowe wyzwalające:** Brak (wykluczony z automatycznego wykrywania).
+
+**Funkcje:** Pokazanie bieżącego stanu narzędzi MCP, włączanie/wyłączanie grup narzędzi (memory, code-analysis, code-edit, file-ops), zmiany stałe lub tymczasowe (`--temp`), parsowanie języka naturalnego ("memory tools only", "disable code edit").
+
+**Grupy narzędzi:**
+- memory: read_memory, write_memory, edit_memory, list_memories, delete_memory
+- code-analysis: get_symbols_overview, find_symbol, find_referencing_symbols, search_for_pattern
+- code-edit: replace_symbol_body, insert_after_symbol, insert_before_symbol, rename_symbol
+- file-ops: list_dir, find_file
+
+---
+
+### /pdf
+
+**Opis:** Konwertuje PDF do Markdown przy użyciu `opendataloader-pdf` — wyodrębnia tekst, tabele, nagłówki i obrazy w poprawnej kolejności czytania.
+
+**Słowa kluczowe wyzwalające:** Brak (wywoływane jawnie ze ścieżką pliku wejściowego).
+
+**Kroki:** Walidacja wejścia (potwierdzenie istnienia pliku) -> Ustalenie lokalizacji wyjścia (określonej przez użytkownika lub tego samego katalogu co wejście) -> Uruchom `uvx opendataloader-pdf` (nie wymaga instalacji) -> Dla zeskanowanych PDF-ów użyj trybu hybrydowego z OCR -> Normalizacja wyjścia za pomocą `uvx mdformat` -> Walidacja czytelności i struktury -> Zgłaszanie problemów z konwersją (brakujące tabele, zniekształcony tekst).
+
+**Reguły:** Domyślna lokalizacja wyjścia to ten sam katalog co wejściowy PDF. Nigdy nie pomijaj kroków. Język odpowiedzi zgodny z `.agents/oma-config.yaml`.
+
+**Kiedy używać:** Konwersja dokumentów PDF do Markdown dla kontekstu LLM lub ingestu RAG, wyodrębnianie ustrukturyzowanej zawartości (tabele, nagłówki, listy) z PDF-ów.
+
+---
+
+### /stack-set
+
+**Opis:** Automatyczne wykrywanie stosu technologicznego projektu i generowanie referencji specyficznych dla języka dla skill backendu.
+
+**Słowa kluczowe wyzwalające:** Brak (wykluczony z automatycznego wykrywania).
+
+**Kroki:** Wykryj (skanuj manifesty: pyproject.toml, package.json, Cargo.toml, pom.xml, go.mod, mix.exs, Gemfile, *.csproj) -> Potwierdź (wyświetl wykryty stos, uzyskaj potwierdzenie użytkownika) -> Wygeneruj (`stack/stack.yaml`, `stack/tech-stack.md`, `stack/snippets.md` z 8 obowiązkowymi wzorcami, `stack/api-template.*`) -> Zweryfikuj.
+
+**Wyjście:** Pliki w `.agents/skills/oma-backend/stack/`. Nie modyfikuje SKILL.md ani `resources/`.
+
+---
+
+## Umiejętności vs workflow
+
+| Aspekt | Umiejętności | Workflow |
+|--------|--------|-----------|
+| **Czym są** | Kompetencje agenta (co agent wie) | Zorkiestrowane procesy (jak agenci współpracują) |
+| **Lokalizacja** | `.agents/skills/oma-{nazwa}/` | `.agents/workflows/{nazwa}.md` |
+| **Aktywacja** | Automatyczna przez słowa kluczowe routingu | Komendy slash lub słowa kluczowe wyzwalające |
+| **Zakres** | Wykonanie w jednej domenie | Wielokrokowe, często wieloagentowe |
+| **Przykłady** | "Build a React component" | "Plan the feature -> build -> review -> commit" |
+
+---
+
+## Automatyczne wykrywanie: jak to działa
+
+### System hooków
+
+oh-my-agent używa hooka `UserPromptSubmit`, który uruchamia się przed przetworzeniem każdej wiadomości użytkownika. System hooków składa się z:
+
+1. **`triggers.json`** (`.claude/hooks/triggers.json`): Definiuje mapowania słów kluczowych na workflow dla wszystkich 11 obsługiwanych języków (angielski, koreański, japoński, chiński, hiszpański, francuski, niemiecki, portugalski, rosyjski, holenderski, polski).
+
+2. **`keyword-detector.ts`** (`.claude/hooks/keyword-detector.ts`): Logika TypeScript skanująca dane wejściowe użytkownika względem słów kluczowych wyzwalających, respektująca dopasowanie specyficzne dla języka i wstrzykująca kontekst aktywacji workflow.
+
+3. **`persistent-mode.ts`** (`.claude/hooks/persistent-mode.ts`): Wymusza wykonanie trwałego workflow sprawdzając aktywne pliki stanu i reiniekując kontekst workflow.
+
+### Przepływ wykrywania
+
+1. Użytkownik wprowadza dane wejściowe w języku naturalnym.
+2. Hook sprawdza, czy obecna jest jawna `/komenda` (jeśli tak, wykrywanie zostaje pominięte w celu uniknięcia duplikacji).
+3. Hook sanityzuje dane wejściowe (usuwa bloki kodu, ciągi w cudzysłowach oraz wklejone bloki echa systemowego), a następnie skanuje je względem `.agents/hooks/core/triggers.json` — zarówno listy słów kluczowych (literalne frazy), jak i `patterns` (surowe regex). Zabezpieczenie wzmocnienia tłumi ponowne wyzwolenia, jeśli ten sam workflow uruchomił się 2 lub więcej razy w ciągu ostatnich 60 sekund.
+4. Jeżeli znaleziono dopasowanie, system sprawdza, czy dane wejściowe odpowiadają wzorcom informacyjnym.
+5. Jeżeli mają charakter informacyjny (np. "what is orchestrate?"), zostają odfiltrowane — żaden workflow nie jest wyzwalany.
+6. Jeżeli mają charakter akcyjny, do kontekstu wstrzykiwany jest tag `[OMA WORKFLOW: {nazwa-workflow}]`.
+7. Agent odczytuje wstrzyknięty tag i ładuje odpowiedni plik workflow z `.agents/workflows/`.
+
+### Konwencja sekcji językowych
+
+`.agents/hooks/core/triggers.json` używa struktury sekcji per język dla `keywords`, `patterns` i `informationalPatterns`:
+
+| Sekcja | Zachowanie |
+|---------|----------|
+| `*` | Uniwersalna — zawsze ładowana niezależnie od ustawienia `language` w `.agents/oma-config.yaml`. Stosuj dla treści angielskiej (lingua franca) i tokenów rzeczywiście międzyjęzykowych (np. nazwa workflow `"orchestrate"`). |
+| `en` | Angielska — ładowana dla zachowania kompatybilności wstecznej. Funkcjonalnie równoważna `*`. Nową zawartość angielską należy umieszczać w `*`. |
+| `ko`, `ja`, `zh`, `es`, `fr`, `de`, `pt`, `ru`, `nl`, `pl` | Specyficzne dla języka — ładowane tylko gdy w `.agents/oma-config.yaml` ustawiono `language: <lang>`. |
+
+**Konsekwencja**: Jeśli ustawisz `language: en` w `.agents/oma-config.yaml`, załadowane zostaną wyłącznie wzorce z `*` i `en`. Wyzwalacze w języku naturalnym dla koreańskiego/japońskiego/itd. nie zadziałają, nawet jeśli użytkownik pisze w tych językach. Aby włączyć język inny niż angielski, ustaw odpowiednio `language: <kod>`. Angielski fallback w `*` pozostaje zawsze aktywny.
+
+### Pole Pattern (surowe regex)
+
+Oprócz literalnych `keywords`, każdy workflow może deklarować `patterns` — surowe ciągi regex kompilowane z flagami `iu`. Wzorce umożliwiają dopasowanie intencji obejmujące wiele tokenów, które w przeciwnym razie wymagałyby kombinatorycznych list słów kluczowych.
+
+```jsonc
+{
+  "workflows": {
+    "orchestrate": {
+      "persistent": true,
+      "keywords": { "*": ["orchestrate"], "en": ["parallel", ...] },
+      "patterns": {
+        "*": ["\\b(build|create|make)\\s+(?:an?|the)\\s+...\\b"],
+        "ko": ["(앱|API|...)\\s*(?:을|를)?\\s*(?:만들어\\s*(?:주세요|줘)?|...)"]
+      }
+    }
+  }
+}
+```
+
+Reguły autorstwa:
+- Ciągi są kompilowane bezpośrednio — escape’uj backslashe raz dla JSON, raz dla regex (`\\b`, `\\s+`)
+- Brak automatycznego owijania granicami słów — autorzy wzorców samodzielnie obsługują `\b`
+- Niepoprawny regex jest po cichu pomijany w czasie wykonania (widoczne w czasie edycji konfiguracji przez niepowodzenia testów)
+
+### Filtrowanie wzorców informacyjnych
+
+Sekcja `informationalPatterns` w `.agents/hooks/core/triggers.json` definiuje frazy wskazujące na pytania zamiast poleceń. Sprawdzane w oknie 60 znaków wokół każdego potencjalnego dopasowania workflow:
+
+| Sekcja | Przykłady wzorców |
+|---------|----------------------|
+| `*` (uniwersalna angielska) | "what is", "what are", "how to", "how does", "how do", "should we", "should i", "could we", "would you", "what if", "what about", "why build", "false positive", "trigger when", "auto-trigger" |
+| `ko` | "뭐야", "무엇", "어떻게", "설명해", "알려줘", "트리거", "발동", "메타", "왜 만들", "어떻게 만들", "어떨까", "한다면", "할까요" |
+| `ja` | "とは", "って何", "どうやって", "説明して" |
+| `zh` | "是什么", "什么是", "怎么", "解释" |
+
+Jeśli dane wejściowe pasują zarówno do wyzwalacza workflow, jak i do wzorca informacyjnego, wzorzec informacyjny ma priorytet i żaden workflow nie jest wyzwalany. To właśnie blokuje prompty takie jak:
+- `"How do you build a TODO app?"` — `how do` w `*` blokuje regex intencji orchestrate
+- `"orchestrate 트리거 해주면 되나요?"` (przy `language: ko`) — `트리거` w `ko` blokuje słowo kluczowe orchestrate
+
+### Wykluczane workflow
+
+Następujące workflow są wykluczone z automatycznego wykrywania i muszą być wywoływane jawną `/komendą`:
+- `/scm`
+- `/tools`
+- `/stack-set`
+- `/exec-plan`
+- `/pdf`
+
+---
+
+## Mechanika trybu trwałego
+
+### Pliki stanu
+
+Trwałe workflow (orchestrate, ultrawork, work) tworzą pliki stanu w `.agents/state/`:
+
+```
+.agents/state/
+├── orchestrate-state.json
+├── ultrawork-state.json
+└── work-state.json
+```
+
+Te pliki zawierają: nazwę workflow, bieżącą fazę/krok, ID sesji, znacznik czasu i oczekujący stan.
+
+### Wzmocnienie
+
+Gdy trwały workflow jest aktywny, hook `persistent-mode.ts` wstrzykuje `[OMA PERSISTENT MODE: {nazwa-workflow}]` do każdej wiadomości użytkownika. To zapewnia kontynuację wykonania workflow nawet między turami konwersacji.
+
+### Dezaktywacja
+
+Aby dezaktywować trwały workflow, użytkownik mówi "workflow done" (lub odpowiednik w swoim skonfigurowanym języku). To:
+1. Usuwa plik stanu z `.agents/state/`
+2. Zatrzymuje wstrzykiwanie kontekstu trybu trwałego
+3. Powraca do normalnego działania
+
+Workflow może też zakończyć się naturalnie gdy wszystkie kroki zostaną ukończone i końcowa bramka przejdzie.
+
+---
+
+## Typowe sekwencje workflow
+
+### Szybka funkcjonalność
+```
+/plan → przegląd wyjścia → /exec-plan
+```
+
+### Złożony projekt wielodomenowy
+```
+/work → PM planuje → użytkownik potwierdza → agenci uruchomieni → QA przegląda → naprawa problemów → wysyłka
+```
+
+### Maksymalna jakość dostarczenia
+```
+/ultrawork → PLAN (4 kroki przeglądu) → IMPL → VERIFY (3 kroki przeglądu) → REFINE (5 kroków przeglądu) → SHIP (4 kroki przeglądu)
+```
+
+### Śledztwo w sprawie błędu
+```
+/debug → reprodukcja → przyczyna źródłowa → minimalna poprawka → test regresji → skan podobnych wzorców
+```
+
+### Pipeline od projektu do implementacji
+```
+/brainstorm → dokument projektowy → /plan → rozkład zadań → /orchestrate → równoległa implementacja → /review → /scm
+```
+
+### Konfiguracja nowej bazy kodu
+```
+/deepinit → AGENTS.md + ARCHITECTURE.md + docs/
+```
