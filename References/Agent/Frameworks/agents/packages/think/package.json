@@ -1,0 +1,97 @@
+{
+  "name": "@cloudflare/think",
+  "description": "Opinionated chat agent with agentic loop, stream resumption, client tools, and extensions",
+  "keywords": [
+    "cloudflare",
+    "agents",
+    "ai",
+    "assistant",
+    "tools"
+  ],
+  "type": "module",
+  "version": "0.7.3",
+  "license": "MIT",
+  "repository": {
+    "directory": "packages/think",
+    "type": "git",
+    "url": "git+https://github.com/cloudflare/agents.git"
+  },
+  "author": "Cloudflare Inc.",
+  "bugs": {
+    "url": "https://github.com/cloudflare/agents/issues"
+  },
+  "dependencies": {
+    "@cloudflare/codemode": ">=0.3.4 <1.0.0",
+    "@cloudflare/shell": ">=0.3.4 <1.0.0",
+    "chat": "^4.29.0",
+    "just-bash": "^3.0.1"
+  },
+  "devDependencies": {
+    "@chat-adapter/telegram": "^4.29.0",
+    "ai": "^6.0.185",
+    "zod": "^4.4.3"
+  },
+  "peerDependencies": {
+    "@chat-adapter/telegram": "^4.29.0",
+    "agents": ">=0.13.2 <1.0.0",
+    "ai": "^6.0.182",
+    "zod": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@chat-adapter/telegram": {
+      "optional": true
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/think.d.ts",
+      "import": "./dist/think.js"
+    },
+    "./extensions": {
+      "types": "./dist/extensions/index.d.ts",
+      "import": "./dist/extensions/index.js"
+    },
+    "./workflows": {
+      "types": "./dist/workflows.d.ts",
+      "import": "./dist/workflows.js"
+    },
+    "./messengers": {
+      "types": "./dist/messengers/index.d.ts",
+      "import": "./dist/messengers/index.js"
+    },
+    "./messengers/telegram": {
+      "types": "./dist/messengers/telegram.d.ts",
+      "import": "./dist/messengers/telegram.js"
+    },
+    "./tools/workspace": {
+      "types": "./dist/tools/workspace.d.ts",
+      "import": "./dist/tools/workspace.js"
+    },
+    "./tools/execute": {
+      "types": "./dist/tools/execute.d.ts",
+      "import": "./dist/tools/execute.js"
+    },
+    "./tools/extensions": {
+      "types": "./dist/tools/extensions.d.ts",
+      "import": "./dist/tools/extensions.js"
+    },
+    "./tools/browser": {
+      "types": "./dist/tools/browser.d.ts",
+      "import": "./dist/tools/browser.js"
+    },
+    "./tools/sandbox": {
+      "types": "./dist/tools/sandbox.d.ts",
+      "import": "./dist/tools/sandbox.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsx ./scripts/build.ts",
+    "test": "vitest --run -c src/tests/vitest.config.ts",
+    "test:workers": "vitest --run -c src/tests/vitest.config.ts",
+    "test:e2e": "vitest --run -c src/e2e-tests/vitest.config.ts"
+  }
+}

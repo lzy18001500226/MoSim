@@ -1,0 +1,48 @@
+{
+  "name": "think-e2e-test",
+  "main": "worker.ts",
+  "compatibility_date": "2026-01-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "ai": { "binding": "AI", "remote": true },
+  "define": {
+    "__filename": "'index.ts'"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "TestAssistant",
+        "class_name": "TestAssistant"
+      },
+      {
+        "name": "ThinkRecoveryE2EAgent",
+        "class_name": "ThinkRecoveryE2EAgent"
+      },
+      {
+        "name": "ThinkRecoveryHelperParent",
+        "class_name": "ThinkRecoveryHelperParent"
+      },
+      // Test-harness-only binding: production only needs to export this
+      // facet class, but vitest-pool-workers needs it here for ctx.exports.
+      {
+        "name": "ThinkRecoveryHelperAgent",
+        "class_name": "ThinkRecoveryHelperAgent"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "TestAssistant",
+        "ThinkRecoveryE2EAgent",
+        "ThinkRecoveryHelperParent"
+      ]
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "think-e2e-test-workspace"
+    }
+  ]
+}
