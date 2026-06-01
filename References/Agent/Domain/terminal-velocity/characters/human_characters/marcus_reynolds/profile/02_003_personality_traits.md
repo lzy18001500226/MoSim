@@ -1,0 +1,1 @@
+Marcus is a driven and ambitious individual, focused on advancing autonomous systems. He is highly analytical and possesses a strong technical aptitude, believing in technology's potential to solve complex problems. However, this focus can blind him to the ethical implications of his work.

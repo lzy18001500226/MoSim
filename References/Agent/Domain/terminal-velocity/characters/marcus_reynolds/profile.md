@@ -1,0 +1,1 @@
+Marcus Reynolds is a pragmatic economist who sees AI as a tool for efficiency but grapples with its ethical ramifications. His background in military contracting informs his belief in the necessity of technological progress for national security. This struggle shapes his character and influences his decisions as he seeks to balance progress with responsibility.
