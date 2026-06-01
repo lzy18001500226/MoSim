@@ -264,6 +264,34 @@ Rules:
 18. Before any task that touches Sysplorer, Syslab, Sysblock, Epic/Fab inventory, or Unreal Editor, check MCP availability first with the smallest useful probe. Expected MCP server names are `sysplorer`, `syslab`, `mosim-epic`, and `mosim-unreal`. If a required MCP server is missing, has `Tools: (none)`, or an editor-side read-only probe fails, stop the interactive operation and report the exact failing server, command, and error before falling back.
 19. Do not use command-line scripts as a substitute for healthy MCP during interactive model work. Command-line tools are allowed for Git, file inspection, documentation, batch export, metrics, tests, and MCP wrapper diagnostics.
 
+### 3.4.1 Unreal Mapping Window Rule
+
+For UE scene simulation work, keep the rendered-world window and the robotics
+state window separate.
+
+Rules:
+
+1. Unreal / `UE5/MoSimSceneLibrary` is the high-fidelity scene-rendering
+   window: map appearance, UAV body, camera view, scene movement, trajectory
+   video, and optional local debug overlays.
+2. Point cloud, occupancy/grid map, TF, odometry, FAST-LIO output, and planner
+   state must be reviewed in RViz/RViz2 or an equivalent native robotics
+   visualization window.
+   Default UE scene review should use separate native windows when possible:
+   one RViz planning/grid window for occupancy and local planning, and one
+   RViz point-cloud/FAST-LIO window for LiDAR, registered cloud, odometry, and
+   path. A combined RViz overview is acceptable for smoke tests.
+3. Browser HTML is not an accepted active point-cloud/map review surface. It is
+   allowed only as an explicitly requested offline report preview.
+4. UE debug overlays and local mesh previews do not replace RViz/RViz2 evidence.
+   FAST-LIO/localization claims require ROS runtime topics and recorded
+   comparison evidence.
+5. Global UE collision/occupancy truth is a validation oracle only. It must not
+   be fed to the planner as a known global map.
+6. Current scene-rendering workflow details live in
+   `Docs/Workflows/unreal_renderer.md`; keep that file updated whenever this
+   window split, topic contract, or evidence boundary changes.
+
 ### 3.5 Sysplorer / Sysblock Modeling Modality Rule
 
 Use the official Sysplorer skill rules as the hard boundary between modeling modes:

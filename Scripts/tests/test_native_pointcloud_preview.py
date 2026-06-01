@@ -32,7 +32,10 @@ def test_workflow_records_two_window_policy() -> None:
         "RViz / RViz2 or equivalent native robotics viewer",
         "HTML report preview",
         "never the active point-cloud/map review surface",
-        "separate native windows for 2D grid/local-plan and 3D point-cloud/FAST-LIO",
+        "The operator-facing default is split RViz windows",
+        "RViz planning/grid window",
+        "RViz point-cloud/FAST-LIO window",
+        "RVIZ_PROFILE=split",
         "Hard implementation constraints",
         "Global scene truth stays hidden from the planner",
     )

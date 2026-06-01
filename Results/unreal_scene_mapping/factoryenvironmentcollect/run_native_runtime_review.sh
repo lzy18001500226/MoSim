@@ -6,6 +6,7 @@ cd "${PROJECT_ROOT}"
 
 # This wrapper opens native runtime review surfaces only.
 # UE is the rendered-scene window; RViz is the point-cloud/map window.
+# RVIZ_PROFILE=split opens separate planning-grid and point-cloud RViz windows.
 # Browser HTML is not used.
 
 SCENE_ID=factoryenvironmentcollect
@@ -32,7 +33,7 @@ if [[ "${START_UE}" == "1" ]]; then
 fi
 
 if [[ "${START_RVIZ}" == "1" ]]; then
-  Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect &
+  RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect &
   PIDS+=("$!")
 fi
 

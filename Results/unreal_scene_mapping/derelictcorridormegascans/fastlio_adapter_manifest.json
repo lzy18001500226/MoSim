@@ -40,11 +40,19 @@
     "python3 Scripts/UE5/publish_fastlio_replay_ros1.py --dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl --dry-run",
     "python3 Scripts/UE5/publish_fastlio_replay_ros1.py --dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl",
     "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans",
-    "Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans"
+    "Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans",
+    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh derelictcorridormegascans",
+    "Scripts/UE5/run_fastlio_rviz_replay_ros1.sh derelictcorridormegascans",
+    "Scripts/UE5/check_fastlio_ros1_topics.sh",
+    "python3 Scripts/UE5/record_fastlio_ros1_runtime.py --scene-id derelictcorridormegascans --output-dir Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime --duration-seconds 20",
+    "python3 Scripts/UE5/evaluate_fastlio_runtime.py --scene-id derelictcorridormegascans --truth-dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl --odometry-jsonl Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime/fastlio_odometry.jsonl --output-json Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime/FASTLIO_RUNTIME_EVALUATION.json --output-md Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime/FASTLIO_RUNTIME_EVALUATION.md --fail-on-threshold"
   ],
   "claim_boundary": [
     "This manifest is a FAST-LIO input adapter, not a completed FAST-LIO localization result.",
     "The IMU channel is synthetic finite-difference data derived from the replay path, not measured flight IMU.",
-    "A completed FAST-LIO claim requires ROS runtime output, pose/map topics, logs, and comparison against replay truth."
+    "A completed FAST-LIO claim requires ROS runtime output, pose/map topics, logs, and comparison against replay truth.",
+    "Use record_fastlio_ros1_runtime.py plus evaluate_fastlio_runtime.py to turn runtime topics into acceptance evidence.",
+    "Active point-cloud/map review must use RViz/RViz2 or an equivalent native robotics window, not browser HTML.",
+    "Global scene truth remains hidden from the planner and is used only as validation oracle evidence."
   ]
 }

@@ -94,6 +94,7 @@ def test_runtime_readiness_separates_file_loop_from_runtime_blockers() -> None:
             "mapping_window",
             "html_active_pointcloud_window: `false`",
             "global_truth_used_by_planner: `false`",
+            "RVIZ_PROFILE=split",
             "bootstrap_fastlio_ros1_workspace.sh",
             "open_unreal_editor_mcp_listener.sh",
         ):

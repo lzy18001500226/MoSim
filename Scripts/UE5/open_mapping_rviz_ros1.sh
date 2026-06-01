@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Open the native ROS/RViz map and point-cloud review window for an accepted UE
+# Open native ROS/RViz map and point-cloud review windows for an accepted UE
 # scene. This is the primary point-cloud visualization route; browser HTML is
 # not part of this workflow.
 
 PROJECT_ROOT="/mnt/c/Users/HP/Desktop/MoSim"
 SCENE_ID="${1:-factoryenvironmentcollect}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/Results/unreal_scene_mapping}"
+RVIZ_PROFILE="${RVIZ_PROFILE:-overview}"
 RVIZ_CONFIG="${RVIZ_CONFIG:-${PROJECT_ROOT}/Config/rviz/mosim_uav_mapping.rviz}"
+RVIZ_GRID_CONFIG="${RVIZ_GRID_CONFIG:-${PROJECT_ROOT}/Config/rviz/mosim_uav_planning_grid.rviz}"
+RVIZ_POINTCLOUD_CONFIG="${RVIZ_POINTCLOUD_CONFIG:-${PROJECT_ROOT}/Config/rviz/mosim_uav_fastlio_pointcloud.rviz}"
 FPS="${FPS:-10}"
 MAX_FRAMES="${MAX_FRAMES:-0}"
 LOOP="${LOOP:-1}"
@@ -36,7 +39,27 @@ LOCAL_KNOWN_MAP="${SCENE_DIR}/local_known_map_frames.jsonl"
 LOCAL_PLAN_FRAMES="${SCENE_DIR}/local_plan_frames.jsonl"
 LIDAR_POINT_FRAMES="${SCENE_DIR}/lidar_point_frames.jsonl"
 
-for required in "${REPLAY_CSV}" "${LOCAL_KNOWN_MAP}" "${LOCAL_PLAN_FRAMES}" "${LIDAR_POINT_FRAMES}" "${RVIZ_CONFIG}"; do
+case "${RVIZ_PROFILE}" in
+  overview)
+    RVIZ_CONFIGS=("${RVIZ_CONFIG}")
+    ;;
+  planning_grid)
+    RVIZ_CONFIGS=("${RVIZ_GRID_CONFIG}")
+    ;;
+  fastlio_pointcloud)
+    RVIZ_CONFIGS=("${RVIZ_POINTCLOUD_CONFIG}")
+    ;;
+  split)
+    RVIZ_CONFIGS=("${RVIZ_GRID_CONFIG}" "${RVIZ_POINTCLOUD_CONFIG}")
+    ;;
+  *)
+    echo "Unsupported RVIZ_PROFILE: ${RVIZ_PROFILE}" >&2
+    echo "Use overview, planning_grid, fastlio_pointcloud, or split." >&2
+    exit 2
+    ;;
+esac
+
+for required in "${REPLAY_CSV}" "${LOCAL_KNOWN_MAP}" "${LOCAL_PLAN_FRAMES}" "${LIDAR_POINT_FRAMES}" "${RVIZ_CONFIGS[@]}"; do
   if [[ ! -f "${required}" ]]; then
     echo "Missing required RViz artifact: ${required}" >&2
     exit 3
@@ -59,11 +82,27 @@ if [[ "${LOOP}" == "1" ]]; then
 fi
 
 if [[ "${DRY_RUN}" == "1" ]]; then
+  RVIZ_CONFIGS_JSON=""
+  for config in "${RVIZ_CONFIGS[@]}"; do
+    if [[ -n "${RVIZ_CONFIGS_JSON}" ]]; then
+      RVIZ_CONFIGS_JSON+=","
+    fi
+    RVIZ_CONFIGS_JSON+="\"${config}\""
+  done
+  python3 - <<PY
+import json
+print(json.dumps({
+  "schema": "mosim.rviz_window_contract_dryrun.v1",
+  "scene_id": "${SCENE_ID}",
+  "rviz_profile": "${RVIZ_PROFILE}",
+  "rviz_configs": [${RVIZ_CONFIGS_JSON}],
+}, indent=2))
+PY
   python3 Scripts/ros/publish_mosim_mapping_replay_ros1.py "${PUBLISH_ARGS[@]}" --dry-run
   exit 0
 fi
 
-for command_name in roscore rviz python3; do
+for command_name in roscore rostopic rviz python3; do
   if ! command -v "${command_name}" >/dev/null 2>&1; then
     echo "Missing ${command_name}. Source/install ROS1 before opening the native point-cloud window." >&2
     exit 4
@@ -79,11 +118,16 @@ if ! rostopic list >/dev/null 2>&1; then
   sleep 3
 fi
 
-rviz -d "${RVIZ_CONFIG}" &
-RVIZ_PID=$!
+RVIZ_PIDS=()
+for config in "${RVIZ_CONFIGS[@]}"; do
+  rviz -d "${config}" &
+  RVIZ_PIDS+=("$!")
+done
 python3 Scripts/ros/publish_mosim_mapping_replay_ros1.py "${PUBLISH_ARGS[@]}"
 
-wait "${RVIZ_PID}" || true
+for pid in "${RVIZ_PIDS[@]}"; do
+  wait "${pid}" || true
+done
 if [[ "${ROSCORE_STARTED}" == "1" ]]; then
   kill "${ROSCORE_PID}" >/dev/null 2>&1 || true
 fi

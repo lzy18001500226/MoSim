@@ -108,6 +108,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     ros_master_uri = os.environ.get("ROS_MASTER_URI")
     fast_lio_reference = ROOT / "References/Lab/FAST_LIO/package.xml"
     project_rviz_config = ROOT / "Config/rviz/mosim_uav_mapping.rviz"
+    project_rviz_grid_config = ROOT / "Config/rviz/mosim_uav_planning_grid.rviz"
+    project_rviz_pointcloud_config = ROOT / "Config/rviz/mosim_uav_fastlio_pointcloud.rviz"
     bootstrap_script = ROOT / "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh"
     ros1_command_set = ("roscore", "roslaunch", "rostopic", "rosnode", "rosparam", "rviz", "python3")
     ros1_commands_ready = all(commands.get(name) for name in ros1_command_set)
@@ -128,6 +130,10 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         blockers.append(f"fast_lio_package_not_visible:{args.fast_lio_package}")
     if not project_rviz_config.exists():
         blockers.append("missing_mosim_rviz_config")
+    if not project_rviz_grid_config.exists():
+        blockers.append("missing_mosim_rviz_grid_config")
+    if not project_rviz_pointcloud_config.exists():
+        blockers.append("missing_mosim_rviz_pointcloud_config")
 
     return {
         "schema": "mosim.ros_mapping_runtime_env.v1",
@@ -151,6 +157,14 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "rviz_config": {
                 "path": rel(project_rviz_config),
                 "exists": project_rviz_config.exists(),
+            },
+            "rviz_planning_grid_config": {
+                "path": rel(project_rviz_grid_config),
+                "exists": project_rviz_grid_config.exists(),
+            },
+            "rviz_fastlio_pointcloud_config": {
+                "path": rel(project_rviz_pointcloud_config),
+                "exists": project_rviz_pointcloud_config.exists(),
             },
             "fastlio_workspace_bootstrap": {
                 "path": rel(bootstrap_script),

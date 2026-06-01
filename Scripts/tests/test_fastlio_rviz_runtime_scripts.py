@@ -45,6 +45,27 @@ def test_fastlio_rviz_replay_wrapper_dry_run() -> None:
             raise AssertionError(result.stdout)
         if "browser" in result.stdout.lower() or "html" in result.stdout.lower():
             raise AssertionError(result.stdout)
+        if "RVIZ_PROFILE=fastlio_pointcloud" not in result.stdout:
+            raise AssertionError(result.stdout)
+
+
+def test_mapping_rviz_split_window_dry_run() -> None:
+    result = run(
+        [
+            "bash",
+            "Scripts/UE5/open_mapping_rviz_ros1.sh",
+            "factoryenvironmentcollect",
+        ],
+        env={"DRY_RUN": "1", "MAX_FRAMES": "2", "LOOP": "0", "RVIZ_PROFILE": "split"},
+    )
+    if "mosim.rviz_window_contract_dryrun.v1" not in result.stdout:
+        raise AssertionError(result.stdout)
+    if "mosim_uav_planning_grid.rviz" not in result.stdout:
+        raise AssertionError(result.stdout)
+    if "mosim_uav_fastlio_pointcloud.rviz" not in result.stdout:
+        raise AssertionError(result.stdout)
+    if "mosim.ros1_mapping_replay_dryrun.v1" not in result.stdout:
+        raise AssertionError(result.stdout)
 
 
 def test_fastlio_topic_checker_dry_run_contract() -> None:
@@ -75,6 +96,7 @@ def test_fastlio_workspace_bootstrap_dry_run_contract() -> None:
 
 def main() -> int:
     test_fastlio_rviz_replay_wrapper_dry_run()
+    test_mapping_rviz_split_window_dry_run()
     test_fastlio_topic_checker_dry_run_contract()
     test_fastlio_workspace_bootstrap_dry_run_contract()
     print("[OK] FAST-LIO/RViz runtime script regression")

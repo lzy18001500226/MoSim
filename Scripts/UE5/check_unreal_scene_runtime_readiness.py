@@ -170,6 +170,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     ue_project = ROOT / "UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject"
     bridge = ROOT / "UE5/Bridge/QuadrotorMworksBridge.uplugin"
     rviz_config = ROOT / "Config/rviz/mosim_uav_mapping.rviz"
+    rviz_grid_config = ROOT / "Config/rviz/mosim_uav_planning_grid.rviz"
+    rviz_pointcloud_config = ROOT / "Config/rviz/mosim_uav_fastlio_pointcloud.rviz"
     fastlio_bootstrap = ROOT / "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh"
     fastlio_rviz_runner = ROOT / "Scripts/UE5/run_fastlio_rviz_replay_ros1.sh"
     fastlio_topic_checker = ROOT / "Scripts/UE5/check_fastlio_ros1_topics.sh"
@@ -219,6 +221,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "ue_project": file_status(ue_project),
             "bridge_plugin": file_status(bridge),
             "rviz_config": file_status(rviz_config),
+            "rviz_planning_grid_config": file_status(rviz_grid_config),
+            "rviz_fastlio_pointcloud_config": file_status(rviz_pointcloud_config),
             "fastlio_workspace_bootstrap": file_status(fastlio_bootstrap),
             "fastlio_rviz_runner": file_status(fastlio_rviz_runner),
             "fastlio_topic_checker": file_status(fastlio_topic_checker),
@@ -237,6 +241,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "python3 Scripts/UE5/summarize_scene_closed_loop.py --fail-on-issue",
             "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect",
             "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans",
+            "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect",
+            "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans",
             "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect",
             "DRY_RUN=1 Scripts/UE5/check_fastlio_ros1_topics.sh",
             "DRY_RUN=1 Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh",
@@ -244,7 +250,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "python3 Scripts/UE5/check_ros_mapping_runtime_env.py --write",
             "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh  # only after ROS1/Catkin is installed and sourced",
             "Scripts/UE5/open_unreal_editor_mcp_listener.sh  # opens UE Editor and waits up to 60s for UnrealMCP listener",
-            "Scripts/UE5/open_mapping_rviz_ros1.sh <scene>  # only after ROS1/RViz is installed and sourced",
+            "RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh <scene>  # opens separate planning-grid and point-cloud RViz windows after ROS1/RViz is installed",
             "Scripts/UE5/run_fastlio_rviz_replay_ros1.sh <scene>  # only after ROS1/Catkin/FAST-LIO is installed and sourced",
             "Scripts/UE5/check_fastlio_ros1_topics.sh  # only during a live ROS1/FAST-LIO run",
         ],

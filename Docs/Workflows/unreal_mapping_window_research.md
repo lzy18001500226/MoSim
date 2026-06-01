@@ -55,10 +55,19 @@ Accepted runtime surfaces:
 | RViz/RViz2/native robotics viewer | Active point cloud, local occupancy/grid map, TF, odometry, FAST-LIO registered cloud, planner path. |
 | QGroundControl or control UI, when used | Flight mode, mission command, arming and telemetry supervision. |
 
-The mapping surface can be one RViz/RViz2 window with multiple displays, or
-multiple native RViz/RViz2 windows when that is more readable. For example, a
-2D `OccupancyGrid`/local planning view and a 3D `PointCloud2`/FAST-LIO view may
-be split. Both are still native robotics windows; neither is browser HTML.
+The default operator-facing route should be split when screen space allows:
+
+```text
+RViz planning/grid window
+  -> /mosim/local_occupancy_grid, /mosim/local_known_map_cloud,
+     /mosim/local_plan, /mosim/uav_path, TF
+
+RViz point-cloud/FAST-LIO window
+  -> /velodyne_points, /cloud_registered, /Odometry, /path, TF
+```
+
+A single overview RViz window with all displays is acceptable for smoke tests
+or constrained displays. Browser HTML is never an active runtime map window.
 
 Accepted ROS topic contract for the current ROS1 path:
 
@@ -104,6 +113,8 @@ Current project implementation should continue from these native-window assets:
 
 ```text
 Config/rviz/mosim_uav_mapping.rviz
+Config/rviz/mosim_uav_planning_grid.rviz
+Config/rviz/mosim_uav_fastlio_pointcloud.rviz
 Scripts/ros/publish_mosim_mapping_replay_ros1.py
 Scripts/UE5/check_ros_mapping_runtime_env.py
 Scripts/UE5/open_mapping_rviz_ros1.sh
@@ -118,6 +129,7 @@ Dry-run contracts, valid even without ROS installed:
 ```bash
 DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
 DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans
+DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
 DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect
 DRY_RUN=1 Scripts/UE5/check_fastlio_ros1_topics.sh
 ```
@@ -126,10 +138,15 @@ Real runtime commands, only after ROS1/RViz/Catkin/FAST-LIO are installed and
 sourced:
 
 ```bash
-Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
+RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect
 Scripts/UE5/check_fastlio_ros1_topics.sh
 ```
+
+`RVIZ_PROFILE=overview` opens the combined smoke-test view,
+`RVIZ_PROFILE=planning_grid` opens only the 2D grid/local-plan view,
+`RVIZ_PROFILE=fastlio_pointcloud` opens only the 3D point-cloud/FAST-LIO view,
+and `RVIZ_PROFILE=split` opens the two specialized RViz windows together.
 
 The current WSL session still reports missing ROS/RViz/Catkin runtime. Until
 that is fixed, the scene loop can be file-loop and MWORKS-smoke ready, but it

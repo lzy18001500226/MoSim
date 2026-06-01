@@ -71,22 +71,39 @@ Therefore, MoSim evidence must be separated as follows:
 | Offline `.ply`, JSONL, CSV handoff files | Input/replay artifacts only; not runtime localization evidence |
 | HTML report preview | Optional report artifact only; never the active point-cloud/map review surface |
 
-The mapping review may use one RViz/RViz2 window with multiple displays, or
-separate native windows for 2D grid/local-plan and 3D point-cloud/FAST-LIO
-state. Both choices satisfy the contract; a browser-based point-cloud window
-does not.
+The operator-facing default is split RViz windows:
+
+```text
+RViz planning/grid window
+  -> local occupancy/grid map, local known map cloud, local plan, UAV path, TF
+
+RViz point-cloud/FAST-LIO window
+  -> raw LiDAR PointCloud2, FAST-LIO registered cloud, odometry, path, TF
+```
+
+One combined RViz/RViz2 overview window is acceptable for smoke tests or small
+screens, but active point-cloud/map review must still be a native robotics
+window. A browser-based point-cloud window does not satisfy the runtime
+evidence contract.
 
 Project commands for the native mapping window:
 
 ```bash
 DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
 DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans
+DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
 
 # After ROS1/RViz is installed and sourced:
-Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
+RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect
 Scripts/UE5/check_fastlio_ros1_topics.sh
 ```
+
+`RVIZ_PROFILE=overview` opens `Config/rviz/mosim_uav_mapping.rviz`.
+`RVIZ_PROFILE=planning_grid` opens
+`Config/rviz/mosim_uav_planning_grid.rviz`. `RVIZ_PROFILE=fastlio_pointcloud`
+opens `Config/rviz/mosim_uav_fastlio_pointcloud.rviz`.
+`RVIZ_PROFILE=split` opens both specialized windows.
 
 `Scripts/UE5/open_native_pointcloud_preview.sh` is only a Windows-native manual
 preview fallback for file artifacts when ROS/RViz is missing. It is not RViz,
@@ -743,6 +760,8 @@ Project-local native RViz assets:
 
 ```text
 Config/rviz/mosim_uav_mapping.rviz
+Config/rviz/mosim_uav_planning_grid.rviz
+Config/rviz/mosim_uav_fastlio_pointcloud.rviz
 Scripts/ros/publish_mosim_mapping_replay_ros1.py
 Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh
 Scripts/UE5/check_ros_mapping_runtime_env.py
@@ -757,13 +776,14 @@ Dry-run without ROS:
 ```bash
 DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
 DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans
+DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
 ```
 
 When ROS1/RViz is installed and sourced, open the native point-cloud/map window:
 
 ```bash
-Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
-Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans
+RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
+RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans
 ```
 
 The project publisher uses the same evidence-backed files as UE UDP replay:

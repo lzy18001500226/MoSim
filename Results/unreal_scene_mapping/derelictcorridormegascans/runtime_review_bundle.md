@@ -12,7 +12,9 @@ Commands:
 - `unreal_editor_mcp_listener`: `Scripts/UE5/open_unreal_editor_mcp_listener.sh`
 - `ue_rendered_scene_review`: `OPEN_UE=1 OPEN_RVIZ=0 STREAM_LOOP_COUNT=1 STREAM_FPS=12 WAIT_UDP_SECONDS=45 Scripts/UE5/review_scene_mapping_loop.sh derelictcorridormegascans`
 - `fastlio_ros1_workspace_bootstrap`: `Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh`
-- `rviz_mapping_window`: `Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans`
+- `rviz_mapping_window`: `RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans`
+- `rviz_planning_grid_window`: `RVIZ_PROFILE=planning_grid Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans`
+- `rviz_fastlio_pointcloud_window`: `RVIZ_PROFILE=fastlio_pointcloud Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans`
 - `fastlio_rviz_runtime`: `Scripts/UE5/run_fastlio_rviz_replay_ros1.sh derelictcorridormegascans`
 - `fastlio_topic_check`: `Scripts/UE5/check_fastlio_ros1_topics.sh`
 - `fastlio_runtime_record`: `python3 Scripts/UE5/record_fastlio_ros1_runtime.py --scene-id derelictcorridormegascans --output-dir Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime --duration-seconds 20`
@@ -21,7 +23,7 @@ Commands:
 Manual acceptance:
 - UE window shows the accepted real rendered scene, not a blockout/STL/blank map.
 - UAV body follows the replay inside valid scene bounds without wall penetration.
-- RViz/RViz2 shows PointCloud2, local occupancy/grid map, TF, local plan, and UAV path.
+- RViz/RViz2 split windows show local occupancy/grid plus local plan, and point cloud plus FAST-LIO state.
 - FAST-LIO outputs /cloud_registered and /Odometry during a live ROS runtime run.
 - evaluate_fastlio_runtime.py passes against replay truth before any localization claim.
 - Planner has no access to global truth; exported truth is used only for validation.

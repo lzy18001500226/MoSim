@@ -131,7 +131,9 @@ def build_scene_bundle(output_root: Path, scene_id: str) -> dict[str, Any]:
         "OPEN_UE=1 OPEN_RVIZ=0 STREAM_LOOP_COUNT=1 STREAM_FPS=12 WAIT_UDP_SECONDS=45 "
         f"Scripts/UE5/review_scene_mapping_loop.sh {scene_key}"
     )
-    rviz_review_command = f"Scripts/UE5/open_mapping_rviz_ros1.sh {scene_key}"
+    rviz_review_command = f"RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh {scene_key}"
+    rviz_grid_review_command = f"RVIZ_PROFILE=planning_grid Scripts/UE5/open_mapping_rviz_ros1.sh {scene_key}"
+    rviz_pointcloud_review_command = f"RVIZ_PROFILE=fastlio_pointcloud Scripts/UE5/open_mapping_rviz_ros1.sh {scene_key}"
     fastlio_command = f"Scripts/UE5/run_fastlio_rviz_replay_ros1.sh {scene_key}"
     fastlio_bootstrap_command = "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh"
     unreal_mcp_command = "Scripts/UE5/open_unreal_editor_mcp_listener.sh"
@@ -192,6 +194,8 @@ def build_scene_bundle(output_root: Path, scene_id: str) -> dict[str, Any]:
             "ue_rendered_scene_review": ue_review_command,
             "fastlio_ros1_workspace_bootstrap": fastlio_bootstrap_command,
             "rviz_mapping_window": rviz_review_command,
+            "rviz_planning_grid_window": rviz_grid_review_command,
+            "rviz_fastlio_pointcloud_window": rviz_pointcloud_review_command,
             "fastlio_rviz_runtime": fastlio_command,
             "fastlio_topic_check": "Scripts/UE5/check_fastlio_ros1_topics.sh",
             "fastlio_runtime_record": record_command,
@@ -200,7 +204,7 @@ def build_scene_bundle(output_root: Path, scene_id: str) -> dict[str, Any]:
         "manual_acceptance": [
             "UE window shows the accepted real rendered scene, not a blockout/STL/blank map.",
             "UAV body follows the replay inside valid scene bounds without wall penetration.",
-            "RViz/RViz2 shows PointCloud2, local occupancy/grid map, TF, local plan, and UAV path.",
+            "RViz/RViz2 split windows show local occupancy/grid plus local plan, and point cloud plus FAST-LIO state.",
             "FAST-LIO outputs /cloud_registered and /Odometry during a live ROS runtime run.",
             "evaluate_fastlio_runtime.py passes against replay truth before any localization claim.",
             "Planner has no access to global truth; exported truth is used only for validation.",
@@ -252,6 +256,7 @@ def write_wrapper(scene_dir: Path, bundle: dict[str, Any]) -> None:
         "",
         "# This wrapper opens native runtime review surfaces only.",
         "# UE is the rendered-scene window; RViz is the point-cloud/map window.",
+        "# RVIZ_PROFILE=split opens separate planning-grid and point-cloud RViz windows.",
         "# Browser HTML is not used.",
         "",
         f"SCENE_ID={shlex.quote(bundle['scene_id'])}",

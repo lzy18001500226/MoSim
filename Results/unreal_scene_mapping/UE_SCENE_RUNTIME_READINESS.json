@@ -44,6 +44,16 @@
       "exists": true,
       "bytes": 5670
     },
+    "rviz_planning_grid_config": {
+      "path": "Config/rviz/mosim_uav_planning_grid.rviz",
+      "exists": true,
+      "bytes": 3519
+    },
+    "rviz_fastlio_pointcloud_config": {
+      "path": "Config/rviz/mosim_uav_fastlio_pointcloud.rviz",
+      "exists": true,
+      "bytes": 3932
+    },
     "fastlio_workspace_bootstrap": {
       "path": "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh",
       "exists": true,
@@ -52,7 +62,7 @@
     "fastlio_rviz_runner": {
       "path": "Scripts/UE5/run_fastlio_rviz_replay_ros1.sh",
       "exists": true,
-      "bytes": 3811
+      "bytes": 4644
     },
     "fastlio_topic_checker": {
       "path": "Scripts/UE5/check_fastlio_ros1_topics.sh",
@@ -126,6 +136,14 @@
         },
         "rviz_config": {
           "path": "Config/rviz/mosim_uav_mapping.rviz",
+          "exists": true
+        },
+        "rviz_planning_grid_config": {
+          "path": "Config/rviz/mosim_uav_planning_grid.rviz",
+          "exists": true
+        },
+        "rviz_fastlio_pointcloud_config": {
+          "path": "Config/rviz/mosim_uav_fastlio_pointcloud.rviz",
           "exists": true
         },
         "fastlio_workspace_bootstrap": {
@@ -321,6 +339,8 @@
     "python3 Scripts/UE5/summarize_scene_closed_loop.py --fail-on-issue",
     "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect",
     "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans",
+    "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect",
+    "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans",
     "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect",
     "DRY_RUN=1 Scripts/UE5/check_fastlio_ros1_topics.sh",
     "DRY_RUN=1 Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh",
@@ -328,7 +348,7 @@
     "python3 Scripts/UE5/check_ros_mapping_runtime_env.py --write",
     "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh  # only after ROS1/Catkin is installed and sourced",
     "Scripts/UE5/open_unreal_editor_mcp_listener.sh  # opens UE Editor and waits up to 60s for UnrealMCP listener",
-    "Scripts/UE5/open_mapping_rviz_ros1.sh <scene>  # only after ROS1/RViz is installed and sourced",
+    "RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh <scene>  # opens separate planning-grid and point-cloud RViz windows after ROS1/RViz is installed",
     "Scripts/UE5/run_fastlio_rviz_replay_ros1.sh <scene>  # only after ROS1/Catkin/FAST-LIO is installed and sourced",
     "Scripts/UE5/check_fastlio_ros1_topics.sh  # only during a live ROS1/FAST-LIO run"
   ]

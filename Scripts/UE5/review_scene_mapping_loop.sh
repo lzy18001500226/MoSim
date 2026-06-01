@@ -3,8 +3,9 @@ set -euo pipefail
 
 # Prepare and optionally launch the manual review loop for one accepted UE scene:
 # real rendered map + UAV UDP playback + radar/local-plan debug overlay. The
-# separate point-cloud/map window is RViz via open_mapping_rviz_ros1.sh, not
-# browser HTML.
+# separate point-cloud/map windows are RViz via open_mapping_rviz_ros1.sh, not
+# browser HTML. Use RVIZ_PROFILE=split to open grid/planning and point-cloud
+# views as separate RViz windows.
 
 PROJECT_ROOT="/mnt/c/Users/HP/Desktop/MoSim"
 SCENE_ID="${1:-factoryenvironmentcollect}"
@@ -94,7 +95,7 @@ lines = [
     "Expected evidence:",
     "- The UE window shows the accepted real rendered scene, not the old STL/blockout preview.",
     "- A blue UAV body moves inside the map, with propellers, trajectory trail, radar sector, reference marker, local-plan spline, and optional local-known-map debug cells.",
-    "- If a separate point-cloud/map window is required, open RViz with `Scripts/UE5/open_mapping_rviz_ros1.sh`; browser HTML is not the primary review route.",
+    "- If separate map windows are required, open RViz with `RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh`; browser HTML is not the primary review route.",
     "- The planner did not receive the global truth map as a prior.",
     "- Collision validation against exported UE truth is true.",
     "",
@@ -121,7 +122,7 @@ print(packet)
 PY
 
 if [[ "${OPEN_RVIZ}" == "1" ]]; then
-  Scripts/UE5/open_mapping_rviz_ros1.sh "${SCENE_ID}" &
+  RVIZ_PROFILE="${RVIZ_PROFILE:-split}" Scripts/UE5/open_mapping_rviz_ros1.sh "${SCENE_ID}" &
 fi
 
 if [[ "${OPEN_UE}" != "1" ]]; then

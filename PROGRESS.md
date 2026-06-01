@@ -14,7 +14,10 @@
   the checked RflySim, AirSim, PX4/Gazebo, Gazebo ROS, FAST-LIO, and FAST-LIVO2
   patterns. The mapping surface may be one RViz/RViz2 window with multiple
   displays or separate native windows for 2D grid/local-plan and 3D
-  point-cloud/FAST-LIO review; it is still not browser HTML. Until
+  point-cloud/FAST-LIO review; the operator-facing default is now
+  `RVIZ_PROFILE=split`, which opens `mosim_uav_planning_grid.rviz` and
+  `mosim_uav_fastlio_pointcloud.rviz` as separate native RViz windows. It is
+  still not browser HTML. Until
   ROS/RViz/Catkin are available, any WPF/native preview script is only a manual
   file-artifact fallback and cannot close FAST-LIO localization evidence.
   Supporting research and local-source evidence are now separated into
@@ -33,6 +36,8 @@
   scene window and ROS/RViz or equivalent native tooling for PointCloud2,
   occupancy/grid-map, TF, odometry, and planner-path windows. Added
   `Config/rviz/mosim_uav_mapping.rviz`,
+  `Config/rviz/mosim_uav_planning_grid.rviz`,
+  `Config/rviz/mosim_uav_fastlio_pointcloud.rviz`,
   `Scripts/ros/publish_mosim_mapping_replay_ros1.py`, and
   `Scripts/UE5/open_mapping_rviz_ros1.sh`; current WSL still lacks ROS1/RViz,
   so only dry-run publisher validation is available here. Current outputs:

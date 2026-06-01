@@ -44,6 +44,14 @@
       "path": "Config/rviz/mosim_uav_mapping.rviz",
       "exists": true
     },
+    "rviz_planning_grid_config": {
+      "path": "Config/rviz/mosim_uav_planning_grid.rviz",
+      "exists": true
+    },
+    "rviz_fastlio_pointcloud_config": {
+      "path": "Config/rviz/mosim_uav_fastlio_pointcloud.rviz",
+      "exists": true
+    },
     "fastlio_workspace_bootstrap": {
       "path": "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh",
       "exists": true

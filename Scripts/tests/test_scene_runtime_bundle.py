@@ -110,6 +110,8 @@ def test_runtime_bundle_contract() -> None:
                 "ue_rendered_scene_review",
                 "fastlio_ros1_workspace_bootstrap",
                 "rviz_mapping_window",
+                "rviz_planning_grid_window",
+                "rviz_fastlio_pointcloud_window",
                 "fastlio_rviz_runtime",
                 "fastlio_runtime_record",
                 "fastlio_runtime_evaluate",
@@ -117,6 +119,12 @@ def test_runtime_bundle_contract() -> None:
                 if command_name not in bundle["commands"]:
                     raise AssertionError(bundle)
             if "open_mapping_rviz_ros1.sh" not in bundle["commands"]["rviz_mapping_window"]:
+                raise AssertionError(bundle)
+            if "RVIZ_PROFILE=split" not in bundle["commands"]["rviz_mapping_window"]:
+                raise AssertionError(bundle)
+            if "RVIZ_PROFILE=planning_grid" not in bundle["commands"]["rviz_planning_grid_window"]:
+                raise AssertionError(bundle)
+            if "RVIZ_PROFILE=fastlio_pointcloud" not in bundle["commands"]["rviz_fastlio_pointcloud_window"]:
                 raise AssertionError(bundle)
             if "run_fastlio_rviz_replay_ros1.sh" not in bundle["commands"]["fastlio_rviz_runtime"]:
                 raise AssertionError(bundle)
@@ -130,6 +138,8 @@ def test_runtime_bundle_contract() -> None:
                 raise AssertionError(md)
             wrapper = (scene_dir / "run_native_runtime_review.sh").read_text(encoding="utf-8")
             if "Browser HTML is not used" not in wrapper:
+                raise AssertionError(wrapper)
+            if "RVIZ_PROFILE=split" not in wrapper:
                 raise AssertionError(wrapper)
             if "PIDS=()" not in wrapper or "wait_for_background" not in wrapper:
                 raise AssertionError(wrapper)

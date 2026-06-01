@@ -41,6 +41,11 @@ def test_env_report_contract() -> None:
         raise AssertionError(report)
     if "rviz_config" not in report["project_assets"]:
         raise AssertionError(report)
+    for asset_name in ("rviz_planning_grid_config", "rviz_fastlio_pointcloud_config"):
+        if asset_name not in report["project_assets"]:
+            raise AssertionError(report)
+        if not report["project_assets"][asset_name]["exists"]:
+            raise AssertionError(report)
 
     temp_root = ROOT / "Results" / "tmp" / "ros_mapping_runtime_env_test"
     if temp_root.exists():
