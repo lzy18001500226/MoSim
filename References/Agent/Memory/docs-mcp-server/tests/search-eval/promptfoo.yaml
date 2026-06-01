@@ -1,0 +1,56 @@
+# Search-quality benchmark configuration.
+#
+# Don't run promptfoo against this file directly — use `npm run evaluate:search`,
+# which validates the judge model against the allowlist (tests/search-eval/judges.ts),
+# sets DOCS_EVAL_JUDGE_RESOLVED, and runs the comparator afterwards.
+
+description: docs-mcp-server search benchmark
+
+prompts: ["{{query}}"]
+
+# Provider is selected by run.ts via DOCS_EVAL_PROVIDER (default: local).
+# Set via env vars so we can switch between providers without maintaining
+# parallel config files. See tests/search-eval/run.ts.
+providers:
+  - id: "{{env.DOCS_EVAL_PROMPTFOO_PROVIDER}}"
+    label: "{{env.DOCS_EVAL_PROMPTFOO_LABEL}}"
+
+# Default for model-graded assertions: pinned judge, temperature 0.
+# DOCS_EVAL_JUDGE_RESOLVED is set by run.ts after allowlist validation.
+defaultTest:
+  options:
+    provider:
+      id: "{{env.DOCS_EVAL_JUDGE_RESOLVED}}"
+      config:
+        temperature: 0
+  assert:
+    # Deterministic IR metrics (MRR, Recall@k, nDCG@k, Hit@k) — headline numbers.
+    - type: javascript
+      value: file://assertions/ir-metrics.cjs
+      metric: ir
+
+    # Deterministic structural checks on returned chunks.
+    - type: javascript
+      value: file://assertions/structural.cjs
+      metric: structural
+
+    # LLM-judged: is each chunk a self-contained readable unit?
+    - type: llm-rubric
+      value: file://rubrics/chunk-coherence.txt
+      metric: chunk_coherence
+
+    # LLM-judged: are chunks faithful to their source (no hallucinated edits)?
+    - type: llm-rubric
+      value: file://rubrics/content-faithfulness.txt
+      metric: content_faithfulness
+
+    # LLM-judged: could a downstream LLM answer the query from these chunks alone?
+    - type: llm-rubric
+      value: file://rubrics/answerability.txt
+      metric: answerability
+
+# tests is set to a flat-array dataset emitted by run.ts on each invocation
+# (the source-of-truth dataset.yaml uses a wrapped form for status/notes).
+tests: results/dataset.flat.yaml
+
+outputPath: results/promptfoo-raw.json
