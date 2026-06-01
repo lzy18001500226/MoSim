@@ -24,6 +24,86 @@ The map must first pass manual visual review as a believable physical-world
 scene. Only after that should we reconnect quadrotor playback, radar overlays,
 trajectory trails, MWORKS UDP streaming, planning truth, and video recording.
 
+## Native Mapping Window Policy
+
+Point-cloud, grid-map, localization, and planner-state review must use a
+separate native robotics visualization window. Do not route this review through
+browser HTML.
+
+The supporting research and local-source evidence live in
+`Docs/Workflows/unreal_mapping_window_research.md`. Treat that file as the
+source of truth for the UE/RViz window split, ROS topic contract, and evidence
+boundary.
+
+The accepted runtime layout is:
+
+| Window | Role | Typical Content |
+|---|---|---|
+| Unreal / `MoSimSceneLibrary` | High-fidelity rendered scene and UAV review | real map, UAV model, camera view, optional trajectory/local debug overlays |
+| RViz / RViz2 or equivalent native robotics viewer | Mapping, localization, and planning review | `PointCloud2`, `OccupancyGrid`, TF, odometry, FAST-LIO registered cloud, local plan |
+| QGroundControl or controller UI, when needed | Flight-control and mission supervision | mode, arming state, mission/command monitor |
+
+This matches the common UAV simulation architecture:
+
+- RflySim keeps Unreal/RflySim3D as the 3D engine and sends LiDAR data by
+  shared memory or UDP; its LiDAR workflow explicitly uses ROS/RViz
+  visualization for point clouds.
+- AirSim runs the simulator separately from `airsim_ros_pkgs`; its documented
+  ROS route launches `airsim_node.launch` and a separate `rviz.launch`, and the
+  LiDAR publisher uses `sensor_msgs/PointCloud2`.
+- PX4's Gazebo SITL path keeps Gazebo as the simulation environment and uses
+  ROS 2/DDS integration for vehicle state and tooling; PX4 documentation calls
+  out RViz visualizers for state review.
+- Gazebo Sim keeps Gazebo as the simulation window and exposes LiDAR/depth
+  point clouds to ROS as `sensor_msgs/msg/PointCloud2` through `ros_gz_bridge`
+  or `ros_gz_point_cloud`, then RViz2 consumes the ROS topics.
+- Local FAST-LIO and FAST-LIVO2 references under `References/Lab/` also launch
+  RViz from their mapping launch files and publish/consume ROS point-cloud,
+  odometry, and path topics.
+
+Therefore, MoSim evidence must be separated as follows:
+
+| Evidence | Accepted Claim |
+|---|---|
+| UE rendered window | Map looks correct, UAV/camera/review movement works, scene is visually accepted |
+| RViz/RViz2 live topics | LiDAR/local map/planner/FAST-LIO state is visible in a native robotics window |
+| FAST-LIO topics `/velodyne_points`, `/imu/data`, `/cloud_registered`, `/Odometry`, `/path` | FAST-LIO runtime localization can be evaluated |
+| Offline `.ply`, JSONL, CSV handoff files | Input/replay artifacts only; not runtime localization evidence |
+| HTML report preview | Optional report artifact only; never the active point-cloud/map review surface |
+
+The mapping review may use one RViz/RViz2 window with multiple displays, or
+separate native windows for 2D grid/local-plan and 3D point-cloud/FAST-LIO
+state. Both choices satisfy the contract; a browser-based point-cloud window
+does not.
+
+Project commands for the native mapping window:
+
+```bash
+DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
+DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans
+
+# After ROS1/RViz is installed and sourced:
+Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
+Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect
+Scripts/UE5/check_fastlio_ros1_topics.sh
+```
+
+`Scripts/UE5/open_native_pointcloud_preview.sh` is only a Windows-native manual
+preview fallback for file artifacts when ROS/RViz is missing. It is not RViz,
+not FAST-LIO runtime evidence, and must not be used to close localization or
+navigation claims.
+
+External references checked:
+
+- RflySim Vision PPT:
+  `https://rflysim.com/doc/en/RflySimAPIs/8.RflySimVision/PPT.pdf`
+- RflySim system overview:
+  `https://rflysim.com/doc/en/1/Intro.html`
+- AirSim ROS wrapper:
+  `https://microsoft.github.io/AirSim/airsim_ros_pkgs/`
+- Gazebo ROS/Gazebo Sim demos:
+  `https://docs.ros.org/en/rolling/p/ros_gz_sim_demos/index.html`
+
 The current practical route separates manual Fab/Launcher actions from
 project-local automation:
 
@@ -664,7 +744,12 @@ Project-local native RViz assets:
 ```text
 Config/rviz/mosim_uav_mapping.rviz
 Scripts/ros/publish_mosim_mapping_replay_ros1.py
+Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh
+Scripts/UE5/check_ros_mapping_runtime_env.py
+Scripts/UE5/open_unreal_editor_mcp_listener.sh
 Scripts/UE5/open_mapping_rviz_ros1.sh
+Scripts/UE5/run_fastlio_rviz_replay_ros1.sh
+Scripts/UE5/check_fastlio_ros1_topics.sh
 ```
 
 Dry-run without ROS:
@@ -710,6 +795,19 @@ HTML output is allowed only for explicitly requested offline report previews,
 not for scene point-cloud review, FAST-LIO evidence, or the RflySim-like
 runtime UI.
 
+Hard implementation constraints:
+
+1. Do not add a browser/HTML point-cloud viewer to the active runtime path.
+2. Do not describe UE debug overlays, WPF previews, static `.ply` inspection, or
+   report previews as completed mapping/localization evidence.
+3. Any script that claims active point-cloud/map review must launch or prepare a
+   native RViz/RViz2/equivalent robotics viewer and publish/consume ROS topics.
+4. FAST-LIO acceptance requires `/velodyne_points` plus `/imu/data` input,
+   `/cloud_registered` plus `/Odometry` output, a runtime recording, and
+   `evaluate_fastlio_runtime.py` comparison against replay truth.
+5. Global scene truth stays hidden from the planner and is used only for
+   collision/safety validation and evaluator oracle checks.
+
 Generate and inspect the FAST-LIO replay adapter state with:
 
 ```bash
@@ -728,9 +826,96 @@ Results/unreal_scene_mapping/FASTLIO_REPLAY_STATUS.md
 
 If a scene reports `blocked_missing_ros1_runtime`, install/source a ROS1 Catkin
 environment with FAST-LIO dependencies before attempting a real FAST-LIO run.
+When ROS1 is already installed but FAST-LIO is not visible to `rospack`, use:
+
+```bash
+source /opt/ros/noetic/setup.bash
+Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh
+source Results/tmp/fastlio_ros1_ws/devel/setup.bash
+python3 Scripts/UE5/check_ros_mapping_runtime_env.py --write
+```
+
+`bootstrap_fastlio_ros1_workspace.sh` creates only generated workspace files
+under ignored `Results/tmp/fastlio_ros1_ws` and symlinks the project-local
+`References/Lab/FAST_LIO` package. A dry-run validates the contract without
+creating files:
+
+```bash
+DRY_RUN=1 BUILD=0 Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh
+```
+
 Do not turn this into a planner input or localization claim until ROS publishes
 runtime PointCloud2/IMU, FAST-LIO returns pose/map output, and the result is
 compared against the replay truth.
+
+When ROS1/Catkin/FAST-LIO is installed and sourced, run the integrated native
+runtime wrapper:
+
+```bash
+Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect
+Scripts/UE5/run_fastlio_rviz_replay_ros1.sh derelictcorridormegascans
+```
+
+The wrapper starts or reuses `roscore`, launches `fast_lio
+mapping_velodyne.launch rviz:=false`, opens RViz with
+`Config/rviz/mosim_uav_mapping.rviz`, publishes MoSim mapping replay topics,
+and publishes FAST-LIO replay PointCloud2/IMU topics. Validate a real run with:
+
+```bash
+Scripts/UE5/check_fastlio_ros1_topics.sh
+```
+
+The topic check requires `/velodyne_points`, `/imu/data`,
+`/mosim/local_occupancy_grid`, `/mosim/local_plan`, `/cloud_registered`, and
+`/Odometry` to exist and produce at least one message. A dry-run only validates
+the command contract:
+
+```bash
+DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect
+DRY_RUN=1 Scripts/UE5/check_fastlio_ros1_topics.sh
+```
+
+Do not run `prepare_fastlio_replay.py` concurrently with any publisher or
+dry-run reader for the same scene. It rewrites `fastlio_replay_dataset.jsonl`
+and `fastlio_adapter_manifest.json`; concurrent readers can see a partial JSONL
+line and report a false decode error.
+
+Use the runtime readiness preflight whenever the boundary between file-level
+evidence and real runtime evidence is unclear:
+
+```bash
+python3 Scripts/UE5/check_ros_mapping_runtime_env.py --write
+python3 Scripts/UE5/check_unreal_scene_runtime_readiness.py --write
+```
+
+For interactive Unreal MCP work, the editor-side listener must be reachable
+before actor/map modification claims. Use the project entrypoint instead of
+guessing a running process:
+
+```bash
+DRY_RUN=1 Scripts/UE5/open_unreal_editor_mcp_listener.sh
+Scripts/UE5/open_unreal_editor_mcp_listener.sh
+```
+
+The real command opens `UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject` in
+Editor mode and polls the UnrealMCP listener for up to 60 seconds. If it times
+out, continue with file-level work or request GUI/plugin review; do not claim
+editor-side modification.
+
+This writes:
+
+```text
+Results/unreal_scene_mapping/UE_SCENE_RUNTIME_READINESS.json
+Results/unreal_scene_mapping/UE_SCENE_RUNTIME_READINESS.md
+Results/unreal_scene_mapping/ROS_MAPPING_RUNTIME_ENV.json
+Results/unreal_scene_mapping/ROS_MAPPING_RUNTIME_ENV.md
+```
+
+`file_loop_ready=true` means required artifacts, path validation, handoff
+files, review packets, and smoke collision outputs exist. `runtime_ready=true`
+additionally requires the native ROS1/RViz/Catkin path and the live UE editor
+listener when editor-side automation is needed. The primary map/point-cloud
+review route remains a native ROS/RViz window, not browser HTML.
 
 Generate the navigation/control handoff after the scene truth and FAST-LIO
 adapter files exist:
@@ -797,6 +982,38 @@ The latest aggregate reports both accepted scenes as
 `fastlio_blocked_missing_ros1_runtime`. Treat that warning as a real blocker
 for FAST-LIO localization claims, not as a failure of the scene-truth or
 MWORKS smoke chain.
+
+Generate the native runtime review bundles after readiness and handoff files
+exist:
+
+```bash
+python3 Scripts/UE5/check_unreal_scene_runtime_readiness.py --write
+python3 Scripts/UE5/build_scene_runtime_bundle.py
+python3 Scripts/tests/test_scene_runtime_bundle.py
+```
+
+This writes:
+
+```text
+Results/unreal_scene_mapping/UE_SCENE_RUNTIME_BUNDLE_STATUS.md
+Results/unreal_scene_mapping/<scene_id>/runtime_review_bundle.json
+Results/unreal_scene_mapping/<scene_id>/runtime_review_bundle.md
+Results/unreal_scene_mapping/<scene_id>/run_native_runtime_review.sh
+```
+
+The bundle is an execution contract, not runtime evidence. It gathers the UE
+rendered-scene command, RViz mapping-window command, FAST-LIO runtime command,
+FAST-LIO recording/evaluation commands, truth-policy flags, and manual
+acceptance gates. On the current WSL session both accepted scenes correctly
+report `blocked_runtime_dependencies` because ROS1/RViz/Catkin are unavailable
+and the UE editor listener is not reachable. Once those dependencies are
+available, the per-scene wrapper can run the native surfaces without adding a
+browser point-cloud path:
+
+```bash
+Results/unreal_scene_mapping/factoryenvironmentcollect/run_native_runtime_review.sh
+Results/unreal_scene_mapping/derelictcorridormegascans/run_native_runtime_review.sh
+```
 
 The `render_replay.csv` output is directly compatible with the project UDP
 streamer. Use dry-run first:

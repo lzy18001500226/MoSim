@@ -1,0 +1,335 @@
+{
+  "schema": "mosim.unreal_scene_runtime_readiness.v1",
+  "window_policy": {
+    "rendered_scene_window": "Unreal/MoSimSceneLibrary",
+    "mapping_window": "RViz/RViz2 or equivalent native robotics viewer",
+    "html_role": "offline_report_preview_only",
+    "html_allowed_as_active_pointcloud_window": false,
+    "ue_overlay_replaces_rviz": false,
+    "global_truth_used_by_planner": false
+  },
+  "claim_boundary": [
+    "This is a preflight report, not a new simulation result.",
+    "file_loop_ready=true means required artifacts and validation gates exist.",
+    "The primary point-cloud/map review route is a native ROS/RViz window, not browser HTML.",
+    "UE rendered overlays and file previews do not replace RViz/RViz2 mapping evidence.",
+    "Global scene truth is a validation oracle only and is not a planner input.",
+    "runtime_ready=true additionally requires ROS/RViz/FAST-LIO runtime and live UE editor listener when interactive editor automation is needed."
+  ],
+  "overall": {
+    "file_loop_ready": true,
+    "runtime_ready": false,
+    "runtime_blockers": [
+      "missing_ros1_rviz_catkin_runtime",
+      "ros_env:missing_ros1_commands:roscore,roslaunch,rostopic,rosnode,rosparam,rviz",
+      "ros_env:missing_catkin_build_tool",
+      "ros_env:ros_environment_not_sourced",
+      "ros_env:fast_lio_package_not_visible:fast_lio",
+      "unreal_editor_listener_unavailable"
+    ]
+  },
+  "project": {
+    "ue_project": {
+      "path": "UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject",
+      "exists": true,
+      "bytes": 908
+    },
+    "bridge_plugin": {
+      "path": "UE5/Bridge/QuadrotorMworksBridge.uplugin",
+      "exists": true,
+      "bytes": 575
+    },
+    "rviz_config": {
+      "path": "Config/rviz/mosim_uav_mapping.rviz",
+      "exists": true,
+      "bytes": 5670
+    },
+    "fastlio_workspace_bootstrap": {
+      "path": "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh",
+      "exists": true,
+      "bytes": 1848
+    },
+    "fastlio_rviz_runner": {
+      "path": "Scripts/UE5/run_fastlio_rviz_replay_ros1.sh",
+      "exists": true,
+      "bytes": 3811
+    },
+    "fastlio_topic_checker": {
+      "path": "Scripts/UE5/check_fastlio_ros1_topics.sh",
+      "exists": true,
+      "bytes": 1584
+    },
+    "unreal_editor_mcp_listener_opener": {
+      "path": "Scripts/UE5/open_unreal_editor_mcp_listener.sh",
+      "exists": true,
+      "bytes": 1480
+    },
+    "fast_lio_reference_package": {
+      "path": "References/Lab/FAST_LIO/package.xml",
+      "exists": true,
+      "bytes": 1465
+    }
+  },
+  "runtime": {
+    "commands": {
+      "roscore": null,
+      "roslaunch": null,
+      "rostopic": null,
+      "rviz": null,
+      "rviz2": null,
+      "catkin_make": null,
+      "colcon": null
+    },
+    "ros1_ready": false,
+    "ros2_ready": false,
+    "ros_mapping_runtime_env": {
+      "schema": "mosim.ros_mapping_runtime_env.v1",
+      "ready_for_native_mapping_runtime": false,
+      "blockers": [
+        "missing_ros1_commands:roscore,roslaunch,rostopic,rosnode,rosparam,rviz",
+        "missing_catkin_build_tool",
+        "ros_environment_not_sourced",
+        "fast_lio_package_not_visible:fast_lio"
+      ],
+      "environment": {
+        "ROS_DISTRO": null,
+        "ROS_MASTER_URI": null,
+        "ROS_PACKAGE_PATH_set": false,
+        "ROS_PACKAGE_PATH_preview": null
+      },
+      "commands": {
+        "roscore": null,
+        "roslaunch": null,
+        "rostopic": null,
+        "rosnode": null,
+        "rosparam": null,
+        "rviz": null,
+        "rviz2": null,
+        "catkin_make": null,
+        "catkin": null,
+        "colcon": null,
+        "python3": "/usr/bin/python3",
+        "rospack": null
+      },
+      "packages": {
+        "fast_lio": {
+          "package": "fast_lio",
+          "visible": false,
+          "path": null,
+          "error": "missing rospack; source ROS1 setup.bash first"
+        }
+      },
+      "project_assets": {
+        "fast_lio_reference_package_xml": {
+          "path": "References/Lab/FAST_LIO/package.xml",
+          "exists": true
+        },
+        "rviz_config": {
+          "path": "Config/rviz/mosim_uav_mapping.rviz",
+          "exists": true
+        },
+        "fastlio_workspace_bootstrap": {
+          "path": "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh",
+          "exists": true
+        }
+      },
+      "recommended_setup_sequence": [
+        "Install or open a WSL environment with ROS1 Noetic-compatible tools.",
+        "source /opt/ros/noetic/setup.bash",
+        "Run Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh to wire References/Lab/FAST_LIO into Results/tmp/fastlio_ros1_ws and build it.",
+        "source Results/tmp/fastlio_ros1_ws/devel/setup.bash",
+        "Run Scripts/UE5/check_ros_mapping_runtime_env.py --write again.",
+        "Run Scripts/UE5/run_fastlio_rviz_replay_ros1.sh <scene>.",
+        "Run Scripts/UE5/check_fastlio_ros1_topics.sh during the live run."
+      ],
+      "claim_boundary": [
+        "This is only an environment preflight; it does not prove mapping runtime evidence.",
+        "Runtime evidence still requires live ROS topics, RViz visibility, recording, and FAST-LIO evaluation.",
+        "HTML is not an accepted active point-cloud/map review window."
+      ]
+    },
+    "editor_listener": {
+      "host": "127.0.0.1",
+      "port": 55557,
+      "ok": false,
+      "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    }
+  },
+  "scenes": [
+    {
+      "scene_id": "factoryenvironmentcollect",
+      "file_loop_ready": true,
+      "issues": [],
+      "planner": {
+        "path_cells": 34,
+        "replans": 11,
+        "lidar_points": 1934,
+        "global_truth_available_to_planner": false,
+        "buffered_collision_free_against_truth": true
+      },
+      "fastlio": {
+        "status": "blocked_missing_ros1_runtime",
+        "ros1_ready": false
+      },
+      "counts": {
+        "render_replay_rows": 34,
+        "local_known_map_frames": 34,
+        "local_plan_frames": 34,
+        "lidar_point_frames": 34,
+        "fastlio_replay_frames": 34
+      },
+      "artifacts": {
+        "planner_summary": {
+          "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/planner_summary.json",
+          "exists": true,
+          "bytes": 2350
+        },
+        "render_replay_csv": {
+          "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/render_replay.csv",
+          "exists": true,
+          "bytes": 2400
+        },
+        "local_known_map_frames": {
+          "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/local_known_map_frames.jsonl",
+          "exists": true,
+          "bytes": 425345
+        },
+        "local_plan_frames": {
+          "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/local_plan_frames.jsonl",
+          "exists": true,
+          "bytes": 15777
+        },
+        "lidar_point_frames": {
+          "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/lidar_point_frames.jsonl",
+          "exists": true,
+          "bytes": 117543
+        },
+        "pointcloud_merged": {
+          "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/pointcloud_merged.ply",
+          "exists": true,
+          "bytes": 54255
+        },
+        "fastlio_replay_dataset": {
+          "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_replay_dataset.jsonl",
+          "exists": true,
+          "bytes": 104196
+        },
+        "fastlio_manifest": {
+          "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_adapter_manifest.json",
+          "exists": true,
+          "bytes": 3950
+        },
+        "navigation_handoff": {
+          "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/navigation_control_handoff.json",
+          "exists": true,
+          "bytes": 16023
+        },
+        "manual_review_packet": {
+          "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/manual_review_packet.md",
+          "exists": true,
+          "bytes": 2266
+        },
+        "mworks_collision": {
+          "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/collision/mworks_scene_truth_collision.json",
+          "exists": true,
+          "bytes": 1928
+        }
+      }
+    },
+    {
+      "scene_id": "derelictcorridormegascans",
+      "file_loop_ready": true,
+      "issues": [],
+      "planner": {
+        "path_cells": 45,
+        "replans": 11,
+        "lidar_points": 2068,
+        "global_truth_available_to_planner": false,
+        "buffered_collision_free_against_truth": true
+      },
+      "fastlio": {
+        "status": "blocked_missing_ros1_runtime",
+        "ros1_ready": false
+      },
+      "counts": {
+        "render_replay_rows": 45,
+        "local_known_map_frames": 45,
+        "local_plan_frames": 45,
+        "lidar_point_frames": 45,
+        "fastlio_replay_frames": 45
+      },
+      "artifacts": {
+        "planner_summary": {
+          "path": "Results/unreal_scene_mapping/derelictcorridormegascans/planner_summary.json",
+          "exists": true,
+          "bytes": 2333
+        },
+        "render_replay_csv": {
+          "path": "Results/unreal_scene_mapping/derelictcorridormegascans/render_replay.csv",
+          "exists": true,
+          "bytes": 3458
+        },
+        "local_known_map_frames": {
+          "path": "Results/unreal_scene_mapping/derelictcorridormegascans/local_known_map_frames.jsonl",
+          "exists": true,
+          "bytes": 1302638
+        },
+        "local_plan_frames": {
+          "path": "Results/unreal_scene_mapping/derelictcorridormegascans/local_plan_frames.jsonl",
+          "exists": true,
+          "bytes": 21491
+        },
+        "lidar_point_frames": {
+          "path": "Results/unreal_scene_mapping/derelictcorridormegascans/lidar_point_frames.jsonl",
+          "exists": true,
+          "bytes": 173663
+        },
+        "pointcloud_merged": {
+          "path": "Results/unreal_scene_mapping/derelictcorridormegascans/pointcloud_merged.ply",
+          "exists": true,
+          "bytes": 53871
+        },
+        "fastlio_replay_dataset": {
+          "path": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl",
+          "exists": true,
+          "bytes": 152149
+        },
+        "fastlio_manifest": {
+          "path": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_adapter_manifest.json",
+          "exists": true,
+          "bytes": 3950
+        },
+        "navigation_handoff": {
+          "path": "Results/unreal_scene_mapping/derelictcorridormegascans/navigation_control_handoff.json",
+          "exists": true,
+          "bytes": 20139
+        },
+        "manual_review_packet": {
+          "path": "Results/unreal_scene_mapping/derelictcorridormegascans/manual_review_packet.md",
+          "exists": true,
+          "bytes": 2286
+        },
+        "mworks_collision": {
+          "path": "Results/unreal_scene_mapping/derelictcorridormegascans/mworks_smoke/collision/mworks_scene_truth_collision.json",
+          "exists": true,
+          "bytes": 1926
+        }
+      }
+    }
+  ],
+  "next_commands": [
+    "python3 Scripts/UE5/summarize_scene_closed_loop.py --fail-on-issue",
+    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect",
+    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans",
+    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect",
+    "DRY_RUN=1 Scripts/UE5/check_fastlio_ros1_topics.sh",
+    "DRY_RUN=1 Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh",
+    "DRY_RUN=1 Scripts/UE5/open_unreal_editor_mcp_listener.sh",
+    "python3 Scripts/UE5/check_ros_mapping_runtime_env.py --write",
+    "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh  # only after ROS1/Catkin is installed and sourced",
+    "Scripts/UE5/open_unreal_editor_mcp_listener.sh  # opens UE Editor and waits up to 60s for UnrealMCP listener",
+    "Scripts/UE5/open_mapping_rviz_ros1.sh <scene>  # only after ROS1/RViz is installed and sourced",
+    "Scripts/UE5/run_fastlio_rviz_replay_ros1.sh <scene>  # only after ROS1/Catkin/FAST-LIO is installed and sourced",
+    "Scripts/UE5/check_fastlio_ros1_topics.sh  # only during a live ROS1/FAST-LIO run"
+  ]
+}

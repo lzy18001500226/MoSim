@@ -1,0 +1,136 @@
+# UE Mapping Window Research
+
+> Last updated: 2026-06-01. Purpose: prevent the MoSim UE scene loop from
+> confusing report previews with runtime mapping evidence.
+
+## Conclusion
+
+MoSim should use a two-window robotics simulation layout:
+
+```text
+UE / MoSimSceneLibrary
+  -> rendered map, UAV body, camera, trajectory/local debug overlays
+
+ROS RViz / RViz2 or equivalent native robotics viewer
+  -> PointCloud2, OccupancyGrid or grid map, TF, odometry, path, FAST-LIO map
+```
+
+Browser HTML is not an accepted active point-cloud, occupancy-map, FAST-LIO, or
+planner-state review surface. HTML can only be an explicitly requested offline
+report preview.
+
+## Why
+
+The common UAV/robotics simulator pattern separates the high-fidelity simulator
+window from the robotics-data visualization window:
+
+| System | Observed Pattern | Source |
+|---|---|---|
+| RflySim | RflySim3D/Unreal provides the scene; LiDAR UDP/ROS workflows use RViz for point-cloud visualization. | `https://rflysim.com/doc/en/RflySimAPIs/8.RflySimVision/PPT.pdf`, `https://rflysim.com/doc/en/RflySimAPIs/8.RflySimVision/Index.pdf` |
+| AirSim | AirSim runs separately; ROS wrapper starts `airsim_node.launch` and `rviz.launch`; LiDAR is published as `sensor_msgs::PointCloud2`. | `https://microsoft.github.io/AirSim/airsim_ros_pkgs/`, local `References/AirSim/AirSim/docs/airsim_ros_pkgs.md` |
+| AirSim tutorials | Tutorial packages start RViz with TF, depth-derived point cloud, and LiDAR point cloud. | `https://microsoft.github.io/AirSim/airsim_tutorial_pkgs/`, local `References/AirSim/AirSim/docs/airsim_tutorial_pkgs.md` |
+| PX4 + Gazebo | PX4 uses Gazebo as the SITL/rendered simulation environment and bridges state/data through ROS 2/uXRCE-DDS; PX4 docs explicitly mention RViz visualizers for vehicle state. | `https://docs.px4.io/main/en/sim_gazebo_gz/`, `https://docs.px4.io/main/en/ros2/user_guide` |
+| Gazebo / Gazebo Sim | Gazebo remains the simulation window; ROS integration uses bridge packages, then RViz/RViz2 visualizes robot model, topics, maps, and point clouds. | `https://gazebosim.org/docs/garden/ros2_integration/`, `https://docs.ros.org/en/iron/p/ros_gz_sim_demos/` |
+| ROS 2 + Gazebo lidar tutorial | Gazebo launches the simulation world, then ROS 2 configures and visualizes lidar data separately. | `https://docs.ros.org/en/iron/Tutorials/Advanced/Simulators/Gazebo/Gazebo.html` |
+| ROS RViz | RViz is the native ROS 3D visualizer and has built-in displays for `Map` / `nav_msgs/msg/OccupancyGrid`, `Point Cloud(2)` / `sensor_msgs/msg/PointCloud2`, TF, odometry, and paths. | `https://docs.ros.org/en/rolling/Tutorials/Intermediate/RViz/RViz-User-Guide/RViz-User-Guide.html` |
+
+Local project references match the same architecture:
+
+| Local Source | Evidence |
+|---|---|
+| `References/Lab/FAST_LIO/launch/mapping_mid360.launch` and other FAST-LIO launch files | `rviz` is an optional launch arg and starts `rviz -d .../loam_livox.rviz`. |
+| `References/Lab/FAST_LIO/rviz_cfg/loam_livox.rviz` | Displays `/cloud_registered`, `/Odometry`, `/path`, and PointCloud2 data. |
+| `References/Lab/FAST-LIVO2/rviz_cfg/*.rviz` | Uses RViz configs for LiDAR-inertial-visual odometry review. |
+| `References/AirSim/AirSim/ros/src/airsim_ros_pkgs/launch/rviz.launch` | Starts RViz from the AirSim ROS wrapper. |
+| `References/AirSim/AirSim/ros/src/airsim_ros_pkgs/src/airsim_ros_wrapper.cpp` | Publishes LiDAR as `sensor_msgs::PointCloud2`. |
+| `References/Sunray/.../*.rviz` and `References/Sunray/.../launch/*rviz*` | Planning, point clouds, robot state, trajectories, and maps are reviewed in RViz/RViz2-style windows. |
+
+## MoSim Runtime Contract
+
+Accepted runtime surfaces:
+
+| Surface | Required Role |
+|---|---|
+| UE standalone/editor window | Visual map acceptance, UAV body/camera, wall/collision review, trajectory video, optional local debug overlays. |
+| RViz/RViz2/native robotics viewer | Active point cloud, local occupancy/grid map, TF, odometry, FAST-LIO registered cloud, planner path. |
+| QGroundControl or control UI, when used | Flight mode, mission command, arming and telemetry supervision. |
+
+The mapping surface can be one RViz/RViz2 window with multiple displays, or
+multiple native RViz/RViz2 windows when that is more readable. For example, a
+2D `OccupancyGrid`/local planning view and a 3D `PointCloud2`/FAST-LIO view may
+be split. Both are still native robotics windows; neither is browser HTML.
+
+Accepted ROS topic contract for the current ROS1 path:
+
+```text
+/velodyne_points             # simulated LiDAR input, sensor_msgs/PointCloud2
+/imu/data                    # IMU input
+/mosim/local_occupancy_grid  # planner-known local map, nav_msgs/OccupancyGrid
+/mosim/local_plan            # local planner path
+/mosim/uav_path              # replay/path visualization
+/cloud_registered            # FAST-LIO registered cloud output
+/Odometry                    # FAST-LIO odometry output
+/path                        # FAST-LIO or planner path output, when available
+TF: ue_world/map -> base_link -> lidar
+```
+
+## Evidence Boundary
+
+Do not claim runtime mapping, localization, or planning completion from:
+
+- HTML files;
+- static `.ply`, `.pcd`, CSV, or JSONL files;
+- UE debug meshes or overlays;
+- WPF/native file-preview helpers;
+- offline scene-truth simulation outputs alone.
+
+Those artifacts are useful handoff or report assets. They become runtime
+evidence only after a native robotics viewer consumes live/replayed ROS topics
+and FAST-LIO/planner outputs are recorded and evaluated.
+
+FAST-LIO acceptance requires all of the following:
+
+```text
+ROS runtime publishes /velodyne_points and /imu/data
+FAST-LIO publishes /cloud_registered and /Odometry
+RViz/RViz2 shows the input and output topics in a native window
+record_fastlio_ros1_runtime.py records the runtime output
+evaluate_fastlio_runtime.py compares output against replay truth
+```
+
+## Current MoSim Assets
+
+Current project implementation should continue from these native-window assets:
+
+```text
+Config/rviz/mosim_uav_mapping.rviz
+Scripts/ros/publish_mosim_mapping_replay_ros1.py
+Scripts/UE5/check_ros_mapping_runtime_env.py
+Scripts/UE5/open_mapping_rviz_ros1.sh
+Scripts/UE5/run_fastlio_rviz_replay_ros1.sh
+Scripts/UE5/check_fastlio_ros1_topics.sh
+Scripts/UE5/record_fastlio_ros1_runtime.py
+Scripts/UE5/evaluate_fastlio_runtime.py
+```
+
+Dry-run contracts, valid even without ROS installed:
+
+```bash
+DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
+DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans
+DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect
+DRY_RUN=1 Scripts/UE5/check_fastlio_ros1_topics.sh
+```
+
+Real runtime commands, only after ROS1/RViz/Catkin/FAST-LIO are installed and
+sourced:
+
+```bash
+Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
+Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect
+Scripts/UE5/check_fastlio_ros1_topics.sh
+```
+
+The current WSL session still reports missing ROS/RViz/Catkin runtime. Until
+that is fixed, the scene loop can be file-loop and MWORKS-smoke ready, but it
+must not be reported as completed FAST-LIO/RViz runtime evidence.
