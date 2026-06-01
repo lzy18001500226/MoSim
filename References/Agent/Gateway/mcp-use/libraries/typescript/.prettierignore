@@ -1,0 +1,24 @@
+# Ignore markdown files
+*.md
+
+# Ignore JSON files
+*.json
+
+# Build outputs
+**/dist/**
+**/build/**
+**/.next/**
+**/coverage/**
+**/.turbo/**
+**/.tsup/**
+**/.vite/**
+**/.mcp-use/**
+
+
+# Dependencies
+**/node_modules/**
+
+# Lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
