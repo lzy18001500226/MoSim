@@ -1,0 +1,8 @@
+{
+  "title": "Authenticating users",
+  "pages": [
+    "in-chat-authentication",
+    "manually-authenticating",
+    "shared-connections"
+  ]
+}
