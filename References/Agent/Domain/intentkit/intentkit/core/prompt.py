@@ -1,0 +1,438 @@
+from datetime import datetime, timezone
+
+from eth_utils.address import is_address
+
+from intentkit.abstracts.graph import AgentContext
+from intentkit.config.config import config
+from intentkit.models.agent import Agent
+from intentkit.models.agent_data import AgentData
+from intentkit.models.chat import AuthorType
+from intentkit.models.user import User
+
+# ============================================================================
+# CONSTANTS AND CONFIGURATION
+# ============================================================================
+
+# Base system prompt components
+INTENTKIT_PROMPT = """You are an AI agent created with IntentKit.
+Your tools are called 'skills'.
+"""
+
+# ============================================================================
+# CORE PROMPT BUILDING FUNCTIONS
+# ============================================================================
+
+
+def _build_system_header(agent: Agent) -> str:
+    """Build the system prompt header."""
+    prompt = "# SYSTEM PROMPT\n\n"
+    prompt += f"Your agent id is {agent.id}. "  # better for cache by agent
+    if config.intentkit_prompt:
+        prompt += config.intentkit_prompt + "\n\n"
+    else:
+        prompt += INTENTKIT_PROMPT + "\n\n"
+    if config.system_prompt:
+        prompt += config.system_prompt + "\n\n"
+    return prompt
+
+
+def build_system_skills_section(agent: Agent, context: AgentContext) -> str:
+    """Build system skills guide section if running in private context."""
+    if not context.is_private:
+        return ""
+
+    lines = [
+        "## System Skills Guide\n\n",
+        "You have access to several system skills for internal operations:\n",
+    ]
+
+    if agent.is_post_enabled:
+        lines.append(
+            "- create_post: Publish long-form content or articles.\n"
+            "- get_post: Get the full content of a post by its ID.\n"
+            "- recent_posts: Retrieve your recent posts (titles and excerpts only).\n"
+        )
+    if agent.is_activity_enabled:
+        lines.append(
+            "- create_activity: Publish an activity to your public timeline. ONLY use when user explicitly requests it.\n"
+            "- recent_activities: Retrieve your recent activities to maintain context.\n"
+        )
+    if agent.enable_long_term_memory:
+        lines.append(
+            "- update_memory: Add or update your long-term memory with new information.\n"
+        )
+
+    cautions = []
+    if agent.is_post_enabled:
+        cautions.append("create_post")
+    if agent.is_activity_enabled:
+        cautions.append("create_activity")
+    if cautions:
+        lines.append(
+            f"\nCRITICAL RULE: NEVER use {' or '.join(cautions)} unless the user EXPLICITLY asks you to create/publish. "
+            f"Do NOT use them proactively, even to log, summarize, or report what you did. "
+            f"Violation of this rule is a serious error.\n\n"
+        )
+    else:
+        lines.append("\n")
+
+    return "".join(lines)
+
+
+async def build_sub_agents_section(agent: Agent, context: AgentContext) -> str:
+    """Build sub-agents section listing available sub-agents and their purposes."""
+    if not agent.sub_agents or not context.is_private:
+        return ""
+
+    from intentkit.core.agent.queries import get_agent_by_id_or_slug
+
+    lines = [
+        "## Sub-Agents\n\n",
+        "You **only** can use the `call_agent` skill to call the following sub-agents:\n\n",
+    ]
+
+    for agent_ref in agent.sub_agents:
+        target = await get_agent_by_id_or_slug(agent_ref)
+        if target and target.purpose:
+            lines.append(f"- {agent_ref}: {target.purpose}\n")
+
+    lines.append("\n")
+
+    if agent.sub_agent_prompt:
+        lines.append(agent.sub_agent_prompt + "\n\n")
+
+    return "".join(lines)
+
+
+def _build_agent_identity_section(agent: Agent) -> str:
+    """Build agent identity information section."""
+    identity_parts = []
+
+    if agent.name:
+        identity_parts.append(f"Your name is {agent.name}.")
+    if agent.ticker:
+        identity_parts.append(f"Your ticker symbol is {agent.ticker}.")
+
+    return "\n".join(identity_parts) + ("\n" if identity_parts else "")
+
+
+def _build_social_accounts_section(agent: Agent, agent_data: AgentData) -> str:
+    """Build social accounts information section."""
+
+    social_parts = []
+
+    # Twitter info - only include if twitter skill is enabled
+    twitter_enabled = (
+        agent.skills
+        and "twitter" in agent.skills
+        and agent.skills["twitter"].get("enabled") is True
+    )
+
+    if twitter_enabled and agent_data.twitter_id:
+        social_parts.append(
+            f"Your twitter id is {agent_data.twitter_id}, never reply or retweet yourself."
+        )
+        if agent_data.twitter_username:
+            social_parts.append(
+                f"Your twitter username is {agent_data.twitter_username}."
+            )
+        if agent_data.twitter_name:
+            social_parts.append(f"Your twitter name is {agent_data.twitter_name}.")
+
+        # Twitter verification status
+        if agent_data.twitter_is_verified:
+            social_parts.append("Your twitter account is verified.")
+        else:
+            social_parts.append("Your twitter account is not verified.")
+
+    # Telegram info
+    if agent.telegram_entrypoint_enabled:
+        if agent_data.telegram_id:
+            social_parts.append(f"Your telegram bot id is {agent_data.telegram_id}.")
+        if agent_data.telegram_username:
+            social_parts.append(
+                f"Your telegram bot username is {agent_data.telegram_username}."
+            )
+        if agent_data.telegram_name:
+            social_parts.append(
+                f"Your telegram bot name is {agent_data.telegram_name}."
+            )
+
+    return "\n".join(social_parts) + ("\n" if social_parts else "")
+
+
+def _build_wallet_section(agent: Agent, agent_data: AgentData) -> str:
+    """Build wallet information section."""
+
+    wallet_parts = []
+    network_id = agent.network_id
+
+    if agent_data.evm_wallet_address and network_id != "solana":
+        wallet_parts.append(
+            f"Your EVM wallet address is {agent_data.evm_wallet_address}."
+            f"You are now in {network_id} network."
+        )
+    if agent_data.solana_wallet_address and network_id == "solana":
+        wallet_parts.append(
+            f"Your Solana wallet address is {agent_data.solana_wallet_address}."
+            f"You are now in {network_id} network."
+        )
+
+    return "\n".join(wallet_parts) + ("\n" if wallet_parts else "")
+
+
+def _build_agent_characteristics_section(agent: Agent) -> str:
+    """Build agent characteristics section (purpose, personality, principles, etc.)."""
+    sections = []
+
+    if agent.purpose:
+        sections.append(f"## Purpose\n\n{agent.purpose}")
+    if agent.personality:
+        sections.append(f"## Personality\n\n{agent.personality}")
+    if agent.principles:
+        sections.append(f"## Principles\n\n{agent.principles}")
+    if agent.prompt:
+        sections.append(f"## Initial Rules\n\n{agent.prompt}")
+
+    return "\n\n".join(sections) + ("\n\n" if sections else "")
+
+
+async def _build_user_info_section(context: AgentContext) -> str:
+    """Build user information section when user_id is a valid EVM wallet address."""
+    if not context.user_id:
+        return ""
+
+    user = await User.get(context.user_id)
+
+    prompt_array = []
+
+    evm_wallet_address = ""
+    if user and user.evm_wallet_address:
+        evm_wallet_address = user.evm_wallet_address
+    elif is_address(context.user_id):
+        evm_wallet_address = context.user_id
+
+    if evm_wallet_address:
+        prompt_array.append(
+            f"The user you are talking to has EVM wallet address: {evm_wallet_address}\n"
+        )
+
+    if user:
+        if user.email:
+            prompt_array.append(f"User Email: {user.email}\n")
+        if user.x_username:
+            prompt_array.append(f"User X Username: {user.x_username}\n")
+        if user.telegram_username:
+            prompt_array.append(f"User Telegram Username: {user.telegram_username}\n")
+
+    if prompt_array:
+        prompt_array.append("\n")
+        return "## User Info\n\n" + "".join(prompt_array)
+
+    return ""
+
+
+def build_agent_prompt(
+    agent: Agent, agent_data: AgentData, context: AgentContext
+) -> str:
+    """
+    Build the complete agent system prompt.
+
+    This function orchestrates the building of different prompt sections:
+    - System header and base prompt
+    - Agent identity (name, ticker)
+    - Social accounts (Twitter, Telegram)
+    - Wallet information
+    - Agent characteristics (purpose, personality, principles)
+    - Skills-specific guides
+    - Extra prompt from template
+
+    Args:
+        agent: The agent configuration
+        agent_data: The agent's runtime data
+
+    Returns:
+        str: The complete system prompt
+    """
+    prompt_sections = [
+        _build_system_header(agent),
+        build_system_skills_section(agent, context),
+        _build_agent_identity_section(agent),
+        _build_agent_characteristics_section(agent),
+        _build_social_accounts_section(agent, agent_data),
+        _build_wallet_section(agent, agent_data),
+        "\n",  # Add spacing before characteristics
+    ]
+
+    base_prompt = "".join(section for section in prompt_sections if section)
+
+    # Add extra_prompt from template if present
+    if agent.extra_prompt:
+        base_prompt += f"## Task Details\n\n{agent.extra_prompt}\n\n"
+
+    return base_prompt
+
+
+# ============================================================================
+# ENTRYPOINT PROCESSING FUNCTIONS
+# ============================================================================
+
+
+def _build_autonomous_task_prompt(agent: Agent, context: AgentContext) -> str:
+    """Build prompt for autonomous task entrypoint."""
+    task_id = context.chat_id.removeprefix("autonomous-")
+
+    # Find the autonomous task by task_id
+    autonomous_task = None
+    if agent.autonomous:
+        for task in agent.autonomous:
+            if task.id == task_id:
+                autonomous_task = task
+                break
+
+    if not autonomous_task:
+        # Fallback if task not found
+        return f"You are running an autonomous task. The task id is {task_id}. "
+
+    # Build detailed task info - always include task_id
+    if autonomous_task.name:
+        task_info = f"You are running an autonomous task '{autonomous_task.name}' (ID: {task_id})"
+    else:
+        task_info = f"You are running an autonomous task (ID: {task_id})"
+
+    # Add description if available
+    if autonomous_task.description:
+        task_info += f": {autonomous_task.description}"
+
+    # Add schedule info (minutes field is deprecated)
+    if autonomous_task.cron:
+        task_info += f". This task runs on schedule: {autonomous_task.cron}"
+
+    # Add current time
+    current_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    task_info += f". Current time is {current_time}"
+
+    # Add autonomous task guidelines
+    task_info += (
+        ". In autonomous task, you cannot ask the user for clarification or input. "
+        "You must make all decisions on your own. "
+        "If an error prevents the task from proceeding, you may use create_activity to report the error only"
+    )
+
+    return f"{task_info}. "
+
+
+async def build_entrypoint_prompt(agent: Agent, context: AgentContext) -> str | None:
+    """
+    Build entrypoint-specific prompt based on context.
+
+    Supports different entrypoint types:
+    - Telegram: Uses agent.telegram_entrypoint_prompt
+    - Autonomous tasks: Builds task-specific prompt with scheduling info
+
+    Args:
+        agent: The agent configuration
+        context: The agent context containing entrypoint information
+
+    Returns:
+        str | None: The entrypoint-specific prompt, or None if no entrypoint
+    """
+    if not context.entrypoint:
+        return None
+
+    entrypoint = context.entrypoint
+    entrypoint_prompt = None
+
+    # Handle social media entrypoints
+    # Append both system-level and agent-level prompts when both are set,
+    # rather than letting the agent-level prompt silently overwrite the system one.
+    def _append(existing: str | None, addition: str) -> str:
+        return (existing or "") + "\n\n" + addition
+
+    if entrypoint == AuthorType.TELEGRAM.value:
+        if config.tg_system_prompt:
+            entrypoint_prompt = _append(entrypoint_prompt, config.tg_system_prompt)
+        if agent.telegram_entrypoint_prompt:
+            entrypoint_prompt = _append(
+                entrypoint_prompt, agent.telegram_entrypoint_prompt
+            )
+    elif entrypoint == AuthorType.XMTP.value:
+        if config.xmtp_system_prompt:
+            entrypoint_prompt = _append(entrypoint_prompt, config.xmtp_system_prompt)
+        if agent.xmtp_entrypoint_prompt:
+            entrypoint_prompt = _append(entrypoint_prompt, agent.xmtp_entrypoint_prompt)
+    elif entrypoint == AuthorType.WECHAT.value:
+        wechat_hardcoded = (
+            "WeChat only supports plain text and emoji. Do not use markdown formatting. "
+            "WeChat does not support rendering UI components. Do not call ui_ skills."
+        )
+        entrypoint_prompt = _append(entrypoint_prompt, wechat_hardcoded)
+        if config.wechat_system_prompt:
+            entrypoint_prompt = _append(entrypoint_prompt, config.wechat_system_prompt)
+        if agent.wechat_entrypoint_prompt:
+            entrypoint_prompt = _append(
+                entrypoint_prompt, agent.wechat_entrypoint_prompt
+            )
+    elif entrypoint == AuthorType.TRIGGER.value:
+        entrypoint_prompt = "\n\n" + _build_autonomous_task_prompt(agent, context)
+
+    return entrypoint_prompt
+
+
+def build_internal_info_prompt(context: AgentContext) -> str:
+    """Build internal info prompt with context information."""
+    internal_info = "## Internal Info\n\n"
+    internal_info += "These are for your internal use. You can use them when querying or storing data, "
+    internal_info += "but please do not directly share this information with users.\n\n"
+    internal_info += f"chat_id: {context.chat_id}\n\n"
+    if context.user_id:
+        internal_info += f"user_id: {context.user_id}\n\n"
+    return internal_info
+
+
+# ============================================================================
+# MAIN PROMPT FACTORY FUNCTION
+# ============================================================================
+
+
+async def build_system_prompt(
+    agent: Agent, agent_data: AgentData, context: AgentContext
+) -> str:
+    """Construct the final system prompt for an agent run."""
+
+    base_prompt = build_agent_prompt(agent, agent_data, context)
+    final_system_prompt = base_prompt
+
+    sub_agents_section = await build_sub_agents_section(agent, context)
+    if sub_agents_section:
+        final_system_prompt = f"{final_system_prompt}{sub_agents_section}"
+
+    entrypoint_prompt = await build_entrypoint_prompt(agent, context)
+    if entrypoint_prompt:
+        final_system_prompt = (
+            f"{final_system_prompt}## Entrypoint rules{entrypoint_prompt}\n\n"
+        )
+
+    # Skip user info section for autonomous tasks
+    if context.entrypoint != AuthorType.TRIGGER.value:
+        user_info = await _build_user_info_section(context)
+        if user_info:
+            final_system_prompt = f"{final_system_prompt}{user_info}"
+
+    internal_info = build_internal_info_prompt(context)
+    final_system_prompt = f"{final_system_prompt}{internal_info}"
+
+    if agent.enable_long_term_memory:
+        memory_section = "## Memory\n\n"
+        memory_section += "If you want to add or update your memory, call the update_memory skill.\n\n"
+        memory_section += "Here is your current memory:\n\n"
+        if agent_data.long_term_memory:
+            memory_section += agent_data.long_term_memory + "\n\n"
+        final_system_prompt = f"{final_system_prompt}{memory_section}"
+
+    if agent.prompt_append:
+        final_system_prompt = (
+            f"{final_system_prompt}## Additional Instructions\n\n{agent.prompt_append}"
+        )
+
+    return final_system_prompt

@@ -1,0 +1,231 @@
+volumes:
+  postgres_data:
+  rustfs_data:
+  redis_data:
+  caddy_data:
+  caddy_config:
+
+services:
+  db:
+    image: postgres:18.1-trixie
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: intentkit
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  caddy:
+    image: caddy:2-alpine
+    depends_on:
+      api:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+    environment:
+      - APP_DOMAIN=${APP_DOMAIN}
+      - TLS_EMAIL=${TLS_EMAIL}
+      - BASIC_AUTH_USER=${BASIC_AUTH_USER}
+      - BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD}
+    entrypoint: /entrypoint.sh
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy-entrypoint.sh:/entrypoint.sh
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+
+  rustfs:
+    image: rustfs/rustfs:latest
+    environment:
+      - RUSTFS_ACCESS_KEY=minioadmin
+      - RUSTFS_SECRET_KEY=minioadmin
+      - RUSTFS_CONSOLE_ENABLE=true
+    volumes:
+      - rustfs_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  redis:
+    image: redis:8.4-bookworm
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    image: ghcr.io/crestalnetwork/intentkit:latest
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=intentkit
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - AWS_S3_ENDPOINT_URL=http://rustfs:9000
+      - AWS_S3_ACCESS_KEY_ID=minioadmin
+      - AWS_S3_SECRET_ACCESS_KEY=minioadmin
+      - AWS_S3_BUCKET=static
+      - AWS_S3_REGION_NAME=us-east-1
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import requests; requests.get('http://localhost:8000/health').raise_for_status()",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    command: uvicorn app.api:app --host 0.0.0.0 --port 8000
+
+  autonomous:
+    image: ghcr.io/crestalnetwork/intentkit:latest
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=intentkit
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - AWS_S3_ENDPOINT_URL=http://rustfs:9000
+      - AWS_S3_ACCESS_KEY_ID=minioadmin
+      - AWS_S3_SECRET_ACCESS_KEY=minioadmin
+      - AWS_S3_BUCKET=static
+      - AWS_S3_REGION_NAME=us-east-1
+      - INTERNAL_BASE_URL=http://api:8000
+    healthcheck:
+      test: ["CMD", "python", "scripts/check_heartbeat.py", "autonomous"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    command: python -m app.autonomous
+
+  scheduler:
+    image: ghcr.io/crestalnetwork/intentkit:latest
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=intentkit
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - AWS_S3_ENDPOINT_URL=http://rustfs:9000
+      - AWS_S3_ACCESS_KEY_ID=minioadmin
+      - AWS_S3_SECRET_ACCESS_KEY=minioadmin
+      - AWS_S3_BUCKET=static
+      - AWS_S3_REGION_NAME=us-east-1
+    healthcheck:
+      test: ["CMD", "python", "scripts/check_heartbeat.py", "scheduler"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    command: python -m app.scheduler
+
+  frontend:
+    image: ghcr.io/crestalnetwork/intentkit-frontend:latest
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  telegram:
+    image: ghcr.io/crestalnetwork/intentkit-telegram:latest
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=intentkit
+      - REDIS_HOST=redis
+      - INTERNAL_BASE_URL=http://api:8000
+      - TG_NEW_AGENT_POLL_INTERVAL=10
+    healthcheck:
+      test: ["CMD", "find", "/tmp/healthy", "-mmin", "-2"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  wechat:
+    image: ghcr.io/crestalnetwork/intentkit-wechat:latest
+    depends_on:
+      db:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=intentkit
+      - INTERNAL_BASE_URL=http://api:8000
+      - WX_NEW_CHANNEL_POLL_INTERVAL=10
+    healthcheck:
+      test: ["CMD", "find", "/tmp/healthy", "-mmin", "-2"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped

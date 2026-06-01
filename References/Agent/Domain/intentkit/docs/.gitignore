@@ -1,0 +1,6 @@
+public/
+resources/
+.hugo_build.lock
+node_modules/
+npm-debug.log*
+yarn-error.log*

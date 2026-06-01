@@ -1,0 +1,868 @@
+import logging
+from datetime import UTC, datetime
+from decimal import ROUND_HALF_UP, Decimal
+from typing import Annotated, Any, ClassVar
+
+from epyxid import XID
+from pydantic import BaseModel, ConfigDict, Field, field_serializer, field_validator
+from sqlalchemy import (
+    DateTime,
+    Index,
+    Numeric,
+    String,
+    func,
+    select,
+    update,
+)
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Mapped, mapped_column
+
+from intentkit.config.base import Base
+from intentkit.config.db import get_session
+from intentkit.models.app_setting import AppSetting
+
+# Import from other modules in the package
+from intentkit.models.credit.base import (
+    DEFAULT_PLATFORM_ACCOUNT_REFILL,
+    FOURPLACES,
+    CreditType,
+    OwnerType,
+)
+from intentkit.models.credit.event import (
+    CreditEventTable,
+    Direction,
+    EventType,
+    UpstreamType,
+)
+from intentkit.models.credit.transaction import (
+    CreditDebit,
+    CreditTransactionTable,
+    TransactionType,
+)
+from intentkit.utils.error import IntentKitAPIError
+
+logger = logging.getLogger(__name__)
+
+
+class CreditAccountTable(Base):
+    """Credit account database table model."""
+
+    __tablename__: str = "credit_accounts"
+    __table_args__: Any = (Index("ix_credit_accounts_owner", "owner_type", "owner_id"),)
+
+    id: Mapped[str] = mapped_column(
+        String,
+        primary_key=True,
+    )
+    owner_type: Mapped[str] = mapped_column(
+        String,
+        nullable=False,
+    )
+    owner_id: Mapped[str] = mapped_column(
+        String,
+        nullable=False,
+    )
+    free_quota: Mapped[Decimal] = mapped_column(
+        Numeric(22, 4),
+        default=0,
+        nullable=False,
+    )
+    refill_amount: Mapped[Decimal] = mapped_column(
+        Numeric(22, 4),
+        default=0,
+        nullable=False,
+    )
+    free_credits: Mapped[Decimal] = mapped_column(
+        Numeric(22, 4),
+        default=0,
+        nullable=False,
+    )
+    reward_credits: Mapped[Decimal] = mapped_column(
+        Numeric(22, 4),
+        default=0,
+        nullable=False,
+    )
+    credits: Mapped[Decimal] = mapped_column(
+        Numeric(22, 4),
+        default=0,
+        nullable=False,
+    )
+    income_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    expense_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    last_event_id: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+    # Total statistics fields
+    total_income: Mapped[Decimal] = mapped_column(
+        Numeric(22, 4),
+        default=0,
+        nullable=False,
+    )
+    total_free_income: Mapped[Decimal] = mapped_column(
+        Numeric(22, 4),
+        default=0,
+        nullable=False,
+    )
+    total_reward_income: Mapped[Decimal] = mapped_column(
+        Numeric(22, 4),
+        default=0,
+        nullable=False,
+    )
+    total_permanent_income: Mapped[Decimal] = mapped_column(
+        Numeric(22, 4),
+        default=0,
+        nullable=False,
+    )
+    total_expense: Mapped[Decimal] = mapped_column(
+        Numeric(22, 4),
+        default=0,
+        nullable=False,
+    )
+    total_free_expense: Mapped[Decimal] = mapped_column(
+        Numeric(22, 4),
+        default=0,
+        nullable=False,
+    )
+    total_reward_expense: Mapped[Decimal] = mapped_column(
+        Numeric(22, 4),
+        default=0,
+        nullable=False,
+    )
+    total_permanent_expense: Mapped[Decimal] = mapped_column(
+        Numeric(22, 4),
+        default=0,
+        nullable=False,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=lambda: datetime.now(UTC),
+    )
+
+
+class CreditAccount(BaseModel):
+    """Credit account model with all fields."""
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(
+        use_enum_values=True,
+        from_attributes=True,
+    )
+
+    id: Annotated[
+        str,
+        Field(
+            default_factory=lambda: str(XID()),
+            description="Unique identifier for the credit account",
+        ),
+    ]
+    owner_type: Annotated[OwnerType, Field(description="Type of the account owner")]
+    owner_id: Annotated[str, Field(description="ID of the account owner")]
+    free_quota: Annotated[
+        Decimal,
+        Field(
+            default=Decimal("0"), description="Daily credit quota that resets each day"
+        ),
+    ]
+    refill_amount: Annotated[
+        Decimal,
+        Field(
+            default=Decimal("0"),
+            description="Amount to refill daily, not exceeding free_quota",
+        ),
+    ]
+    free_credits: Annotated[
+        Decimal,
+        Field(default=Decimal("0"), description="Current available daily credits"),
+    ]
+    reward_credits: Annotated[
+        Decimal,
+        Field(
+            default=Decimal("0"), description="Reward credits earned through rewards"
+        ),
+    ]
+    credits: Annotated[
+        Decimal,
+        Field(default=Decimal("0"), description="Credits added through top-ups"),
+    ]
+    income_at: Annotated[
+        datetime | None,
+        Field(None, description="Timestamp of the last income transaction"),
+    ]
+    expense_at: Annotated[
+        datetime | None,
+        Field(None, description="Timestamp of the last expense transaction"),
+    ]
+    last_event_id: Annotated[
+        str | None,
+        Field(None, description="ID of the last event that modified this account"),
+    ]
+    # Total statistics fields
+    total_income: Annotated[
+        Decimal,
+        Field(
+            default=Decimal("0"),
+            description="Total income from all credit transactions",
+        ),
+    ]
+    total_free_income: Annotated[
+        Decimal,
+        Field(
+            default=Decimal("0"),
+            description="Total income from free credit transactions",
+        ),
+    ]
+    total_reward_income: Annotated[
+        Decimal,
+        Field(
+            default=Decimal("0"),
+            description="Total income from reward credit transactions",
+        ),
+    ]
+    total_permanent_income: Annotated[
+        Decimal,
+        Field(
+            default=Decimal("0"),
+            description="Total income from permanent credit transactions",
+        ),
+    ]
+    total_expense: Annotated[
+        Decimal,
+        Field(
+            default=Decimal("0"),
+            description="Total expense from all credit transactions",
+        ),
+    ]
+    total_free_expense: Annotated[
+        Decimal,
+        Field(
+            default=Decimal("0"),
+            description="Total expense from free credit transactions",
+        ),
+    ]
+    total_reward_expense: Annotated[
+        Decimal,
+        Field(
+            default=Decimal("0"),
+            description="Total expense from reward credit transactions",
+        ),
+    ]
+    total_permanent_expense: Annotated[
+        Decimal,
+        Field(
+            default=Decimal("0"),
+            description="Total expense from permanent credit transactions",
+        ),
+    ]
+    created_at: Annotated[
+        datetime, Field(description="Timestamp when this account was created")
+    ]
+    updated_at: Annotated[
+        datetime, Field(description="Timestamp when this account was last updated")
+    ]
+
+    @field_serializer("income_at", "expense_at", "created_at", "updated_at")
+    @classmethod
+    def serialize_datetime(cls, v: datetime | None) -> str | None:
+        if v is None:
+            return None
+        return v.isoformat(timespec="milliseconds")
+
+    @field_validator(
+        "free_quota",
+        "refill_amount",
+        "free_credits",
+        "reward_credits",
+        "credits",
+        "total_income",
+        "total_free_income",
+        "total_reward_income",
+        "total_permanent_income",
+        "total_expense",
+        "total_free_expense",
+        "total_reward_expense",
+        "total_permanent_expense",
+    )
+    @classmethod
+    def round_decimal(cls, v: Any) -> Decimal:
+        """Round decimal values to 4 decimal places."""
+        if isinstance(v, Decimal):
+            return v.quantize(Decimal("0.0001"), rounding=ROUND_HALF_UP)
+        elif isinstance(v, int | float):
+            return Decimal(str(v)).quantize(Decimal("0.0001"), rounding=ROUND_HALF_UP)
+        return v
+
+    @property
+    def balance(self) -> Decimal:
+        """Return the total balance of the account."""
+        return self.free_credits + self.reward_credits + self.credits
+
+    @classmethod
+    async def get_in_session(
+        cls,
+        session: AsyncSession,
+        owner_type: OwnerType,
+        owner_id: str,
+    ) -> "CreditAccount":
+        """Get a credit account by owner type and ID.
+
+        Args:
+            session: Async session to use for database queries
+            owner_type: Type of the owner
+            owner_id: ID of the owner
+
+        Returns:
+            CreditAccount if found, None otherwise
+        """
+        stmt = select(CreditAccountTable).where(
+            CreditAccountTable.owner_type == owner_type,
+            CreditAccountTable.owner_id == owner_id,
+        )
+        result = await session.scalar(stmt)
+        if not result:
+            raise IntentKitAPIError(
+                status_code=404,
+                key="CreditAccountNotFound",
+                message="Credit account not found",
+            )
+        return cls.model_validate(result)
+
+    @classmethod
+    async def get_or_create_in_session(
+        cls,
+        session: AsyncSession,
+        owner_type: OwnerType,
+        owner_id: str,
+        for_update: bool = False,
+    ) -> "CreditAccount":
+        """Get a credit account by owner type and ID.
+
+        Args:
+            session: Async session to use for database queries
+            owner_type: Type of the owner
+            owner_id: ID of the owner
+
+        Returns:
+            CreditAccount if found, None otherwise
+        """
+        stmt = select(CreditAccountTable).where(
+            CreditAccountTable.owner_type == owner_type,
+            CreditAccountTable.owner_id == owner_id,
+        )
+        if for_update:
+            stmt = stmt.with_for_update()
+        result = await session.scalar(stmt)
+        if not result:
+            account = await cls.create_in_session(session, owner_type, owner_id)
+        else:
+            account = cls.model_validate(result)
+
+        return account
+
+    @classmethod
+    async def get_or_create(
+        cls, owner_type: OwnerType, owner_id: str
+    ) -> "CreditAccount":
+        """Get a credit account by owner type and ID.
+
+        Args:
+            owner_type: Type of the owner
+            owner_id: ID of the owner
+
+        Returns:
+            CreditAccount if found, None otherwise
+        """
+        async with get_session() as session:
+            account = await cls.get_or_create_in_session(session, owner_type, owner_id)
+            await session.commit()
+            return account
+
+    @classmethod
+    async def deduction_in_session(
+        cls,
+        session: AsyncSession,
+        owner_type: OwnerType,
+        owner_id: str,
+        credit_type: CreditType,
+        amount: Decimal,
+        event_id: str | None = None,
+    ) -> "CreditAccount":
+        """Deduct credits from an account. Not checking balance"""
+        # check first, create if not exists
+        _ = await cls.get_or_create_in_session(session, owner_type, owner_id)
+
+        # Quantize the amount to ensure proper precision
+        quantized_amount = amount.quantize(FOURPLACES, rounding=ROUND_HALF_UP)
+        values_dict: dict[str, Any] = {
+            credit_type.value: getattr(CreditAccountTable, credit_type.value)
+            - quantized_amount,
+            "expense_at": datetime.now(UTC),
+            # Update total expense statistics
+            "total_expense": CreditAccountTable.total_expense + quantized_amount,
+        }
+        if event_id:
+            values_dict["last_event_id"] = event_id
+
+        # Update corresponding statistics fields based on credit type
+        if credit_type == CreditType.FREE:
+            values_dict["total_free_expense"] = (
+                CreditAccountTable.total_free_expense + quantized_amount
+            )
+        elif credit_type == CreditType.REWARD:
+            values_dict["total_reward_expense"] = (
+                CreditAccountTable.total_reward_expense + quantized_amount
+            )
+        elif credit_type == CreditType.PERMANENT:
+            values_dict["total_permanent_expense"] = (
+                CreditAccountTable.total_permanent_expense + quantized_amount
+            )
+
+        stmt = (
+            update(CreditAccountTable)
+            .where(
+                CreditAccountTable.owner_type == owner_type,
+                CreditAccountTable.owner_id == owner_id,
+            )
+            .values(values_dict)
+            .returning(CreditAccountTable)
+        )
+        res = await session.scalar(stmt)
+        if not res:
+            raise IntentKitAPIError(
+                status_code=500,
+                key="CreditExpenseFailed",
+                message="Failed to expense credits",
+            )
+        return cls.model_validate(res)
+
+    @classmethod
+    async def expense_in_session(
+        cls,
+        session: AsyncSession,
+        owner_type: OwnerType,
+        owner_id: str,
+        amount: Decimal,
+        event_id: str | None = None,
+    ) -> tuple["CreditAccount", dict[CreditType, Decimal]]:
+        """Expense credits and return account and credit type.
+        We are not checking balance here, since a conversation may have
+        multiple expenses, we can't interrupt the conversation.
+        """
+        # check first
+        account = await cls.get_or_create_in_session(session, owner_type, owner_id)
+
+        # expense
+        details = {}
+
+        amount_left = amount
+
+        if amount_left <= account.free_credits:
+            details[CreditType.FREE] = amount_left
+            amount_left = Decimal("0")
+        else:
+            if account.free_credits > 0:
+                details[CreditType.FREE] = account.free_credits
+                amount_left = (amount_left - account.free_credits).quantize(
+                    FOURPLACES, rounding=ROUND_HALF_UP
+                )
+            if amount_left <= account.reward_credits:
+                details[CreditType.REWARD] = amount_left
+                amount_left = Decimal("0")
+            else:
+                if account.reward_credits > 0:
+                    details[CreditType.REWARD] = account.reward_credits
+                    amount_left = (amount_left - account.reward_credits).quantize(
+                        FOURPLACES, rounding=ROUND_HALF_UP
+                    )
+                details[CreditType.PERMANENT] = amount_left
+
+        # Create values dict based on what's in details, defaulting to 0 for missing keys
+        values_dict: dict[str, Any] = {
+            "expense_at": datetime.now(UTC),
+        }
+        if event_id:
+            values_dict["last_event_id"] = event_id
+
+        # Calculate total expense for statistics
+        total_expense_amount = Decimal("0")
+
+        # Add credit type values only if they exist in details
+        for credit_type in [CreditType.FREE, CreditType.REWARD, CreditType.PERMANENT]:
+            if credit_type in details:
+                # Quantize the amount to ensure proper precision
+                quantized_amount = details[credit_type].quantize(
+                    FOURPLACES, rounding=ROUND_HALF_UP
+                )
+                values_dict[credit_type.value] = (
+                    getattr(CreditAccountTable, credit_type.value) - quantized_amount
+                )
+
+                # Update corresponding statistics fields
+                total_expense_amount += quantized_amount
+                if credit_type == CreditType.FREE:
+                    values_dict["total_free_expense"] = (
+                        CreditAccountTable.total_free_expense + quantized_amount
+                    )
+                elif credit_type == CreditType.REWARD:
+                    values_dict["total_reward_expense"] = (
+                        CreditAccountTable.total_reward_expense + quantized_amount
+                    )
+                elif credit_type == CreditType.PERMANENT:
+                    values_dict["total_permanent_expense"] = (
+                        CreditAccountTable.total_permanent_expense + quantized_amount
+                    )
+
+        # Update total expense if there was any expense
+        if total_expense_amount > 0:
+            values_dict["total_expense"] = (
+                CreditAccountTable.total_expense + total_expense_amount
+            )
+
+        stmt = (
+            update(CreditAccountTable)
+            .where(
+                CreditAccountTable.owner_type == owner_type,
+                CreditAccountTable.owner_id == owner_id,
+            )
+            .values(values_dict)
+            .returning(CreditAccountTable)
+        )
+        res = await session.scalar(stmt)
+        if not res:
+            raise IntentKitAPIError(
+                status_code=500,
+                key="CreditExpenseFailed",
+                message="Failed to expense credits",
+            )
+        return cls.model_validate(res), details
+
+    def has_sufficient_credits(self, amount: Decimal) -> bool:
+        """Check if the account has enough credits to cover the specified amount.
+
+        Args:
+            amount: The amount of credits to check against
+
+        Returns:
+            bool: True if there are enough credits, False otherwise
+        """
+        return amount <= self.free_credits + self.reward_credits + self.credits
+
+    @classmethod
+    async def income_in_session(
+        cls,
+        session: AsyncSession,
+        owner_type: OwnerType,
+        owner_id: str,
+        amount_details: dict[CreditType, Decimal],
+        event_id: str | None = None,
+    ) -> "CreditAccount":
+        # check first, create if not exists
+        _ = await cls.get_or_create_in_session(session, owner_type, owner_id)
+        # income
+        values_dict: dict[str, Any] = {
+            "income_at": datetime.now(UTC),
+        }
+        if event_id:
+            values_dict["last_event_id"] = event_id
+
+        # Calculate total income for statistics
+        total_income_amount = Decimal("0")
+
+        # Add credit type values based on amount_details
+        for credit_type, amount in amount_details.items():
+            if amount > 0:
+                # Quantize the amount to ensure 4 decimal places precision
+                quantized_amount = amount.quantize(FOURPLACES, rounding=ROUND_HALF_UP)
+                values_dict[credit_type.value] = (
+                    getattr(CreditAccountTable, credit_type.value) + quantized_amount
+                )
+
+                # Update corresponding statistics fields
+                total_income_amount += quantized_amount
+                if credit_type == CreditType.FREE:
+                    values_dict["total_free_income"] = (
+                        CreditAccountTable.total_free_income + quantized_amount
+                    )
+                elif credit_type == CreditType.REWARD:
+                    values_dict["total_reward_income"] = (
+                        CreditAccountTable.total_reward_income + quantized_amount
+                    )
+                elif credit_type == CreditType.PERMANENT:
+                    values_dict["total_permanent_income"] = (
+                        CreditAccountTable.total_permanent_income + quantized_amount
+                    )
+
+        # Update total income if there was any income
+        if total_income_amount > 0:
+            values_dict["total_income"] = (
+                CreditAccountTable.total_income + total_income_amount
+            )
+
+        stmt = (
+            update(CreditAccountTable)
+            .where(
+                CreditAccountTable.owner_type == owner_type,
+                CreditAccountTable.owner_id == owner_id,
+            )
+            .values(values_dict)
+            .returning(CreditAccountTable)
+        )
+        res = await session.scalar(stmt)
+        if not res:
+            raise IntentKitAPIError(
+                status_code=500,
+                key="CreditIncomeFailed",
+                message="Failed to income credits",
+            )
+        return cls.model_validate(res)
+
+    @classmethod
+    async def create_in_session(
+        cls,
+        session: AsyncSession,
+        owner_type: OwnerType,
+        owner_id: str,
+        free_quota: Decimal | None = None,
+        refill_amount: Decimal | None = None,
+    ) -> "CreditAccount":
+        """Get an existing credit account or create a new one if it doesn't exist.
+
+        This is useful for silent creation of accounts when they're first accessed.
+
+        Args:
+            session: Async session to use for database queries
+            owner_type: Type of the owner
+            owner_id: ID of the owner
+            free_quota: Daily quota for a new account if created (if None, reads from payment settings)
+            refill_amount: Daily refill amount (if None, reads from payment settings)
+
+        Returns:
+            CreditAccount: The existing or newly created credit account
+        """
+        # Get quota values from team plan or payment settings
+        if free_quota is None or refill_amount is None:
+            if owner_type == OwnerType.TEAM:
+                from intentkit.models.team import PLAN_CONFIGS, TeamPlan, TeamTable
+
+                team_record = await session.get(TeamTable, owner_id)
+                if team_record:
+                    plan_value = team_record.plan
+                    # Handle legacy data where str(TeamPlan.NONE) was stored
+                    if plan_value.startswith("TeamPlan."):
+                        plan_value = plan_value.removeprefix("TeamPlan.").lower()
+                    plan = TeamPlan(plan_value)
+                else:
+                    plan = TeamPlan.NONE
+                plan_config = PLAN_CONFIGS[plan]
+                if free_quota is None:
+                    free_quota = plan_config.free_quota
+                if refill_amount is None:
+                    refill_amount = plan_config.refill_amount
+            else:
+                payment_settings = await AppSetting.payment()
+                if free_quota is None:
+                    free_quota = payment_settings.free_quota
+                if refill_amount is None:
+                    refill_amount = payment_settings.refill_amount
+
+        if owner_type not in (OwnerType.USER, OwnerType.TEAM):
+            # only users and teams can have daily quota
+            free_quota = Decimal("0.0")
+            refill_amount = Decimal("0.0")
+        # Create event_id at the beginning for consistency
+        event_id = str(XID())
+
+        account = CreditAccountTable(
+            id=str(XID()),
+            owner_type=owner_type,
+            owner_id=owner_id,
+            free_quota=free_quota,
+            refill_amount=refill_amount,
+            free_credits=free_quota,
+            reward_credits=Decimal("0"),
+            credits=Decimal("0"),
+            income_at=datetime.now(UTC),
+            expense_at=None,
+            last_event_id=event_id
+            if owner_type in (OwnerType.USER, OwnerType.TEAM)
+            else None,
+            # Initialize new statistics fields
+            # For USER/TEAM accounts, initial free_quota counts as income
+            total_income=free_quota,
+            total_free_income=free_quota,
+            total_reward_income=Decimal("0"),
+            total_permanent_income=Decimal("0"),
+            total_expense=Decimal("0"),
+            total_free_expense=Decimal("0"),
+            total_reward_expense=Decimal("0"),
+            total_permanent_expense=Decimal("0"),
+        )
+        # Platform virtual accounts have fixed IDs, same as owner_id
+        if owner_type == OwnerType.PLATFORM:
+            account.id = owner_id
+        session.add(account)
+        await session.flush()
+        await session.refresh(account)
+        # User and team accounts can have first refill
+        if owner_type in (OwnerType.USER, OwnerType.TEAM) and free_quota > 0:
+            # First refill account
+            _ = await cls.deduction_in_session(
+                session,
+                OwnerType.PLATFORM,
+                DEFAULT_PLATFORM_ACCOUNT_REFILL,
+                CreditType.FREE,
+                free_quota,
+                event_id,
+            )
+            # Create refill event record
+            event = CreditEventTable(
+                id=event_id,
+                event_type=EventType.REFILL,
+                user_id=owner_id if owner_type == OwnerType.USER else None,
+                team_id=owner_id if owner_type == OwnerType.TEAM else None,
+                upstream_type=UpstreamType.INITIALIZER,
+                upstream_tx_id=account.id,
+                direction=Direction.INCOME,
+                account_id=account.id,
+                credit_type=CreditType.FREE,
+                credit_types=[CreditType.FREE],
+                total_amount=free_quota,
+                balance_after=free_quota,
+                base_amount=free_quota,
+                base_original_amount=free_quota,
+                base_free_amount=free_quota,
+                free_amount=free_quota,  # Set free_amount since this is a free credit refill
+                reward_amount=Decimal("0"),  # No reward credits involved
+                permanent_amount=Decimal("0"),  # No permanent credits involved
+                agent_wallet_address=None,  # No agent involved in initial refill
+                note="Initial refill",
+            )
+            session.add(event)
+            await session.flush()
+
+            # Create credit transaction records
+            # 1. Owner account transaction (credit)
+            owner_tx = CreditTransactionTable(
+                id=str(XID()),
+                account_id=account.id,
+                event_id=event_id,
+                tx_type=TransactionType.REFILL,
+                credit_debit=CreditDebit.CREDIT,
+                change_amount=free_quota,
+                credit_type=CreditType.FREE,
+                free_amount=free_quota,
+                reward_amount=Decimal("0"),
+                permanent_amount=Decimal("0"),
+            )
+            session.add(owner_tx)
+
+            # 2. Platform refill account transaction (debit)
+            platform_tx = CreditTransactionTable(
+                id=str(XID()),
+                account_id=DEFAULT_PLATFORM_ACCOUNT_REFILL,
+                event_id=event_id,
+                tx_type=TransactionType.REFILL,
+                credit_debit=CreditDebit.DEBIT,
+                change_amount=free_quota,
+                credit_type=CreditType.FREE,
+                free_amount=free_quota,
+                reward_amount=Decimal("0"),
+                permanent_amount=Decimal("0"),
+            )
+            session.add(platform_tx)
+
+        return cls.model_validate(account)
+
+    @classmethod
+    async def update_daily_quota(
+        cls,
+        session: AsyncSession,
+        user_id: str,
+        free_quota: Decimal | None = None,
+        refill_amount: Decimal | None = None,
+        upstream_tx_id: str = "",
+        note: str = "",
+    ) -> "CreditAccount":
+        """
+        Update the daily quota and refill amount of a user's credit account.
+
+        Args:
+            session: Async session to use for database operations
+            user_id: ID of the user to update
+            free_quota: Optional new daily quota value
+            refill_amount: Optional amount to refill daily, not exceeding free_quota
+            upstream_tx_id: ID of the upstream transaction (for logging purposes)
+            note: Explanation for changing the daily quota
+
+        Returns:
+            Updated user credit account
+        """
+        # Log the upstream_tx_id for record keeping
+        logger.info(
+            f"Updating quota settings for user {user_id} with upstream_tx_id: {upstream_tx_id}"
+        )
+
+        # Check that at least one parameter is provided
+        if free_quota is None and refill_amount is None:
+            raise ValueError(
+                "At least one of free_quota or refill_amount must be provided"
+            )
+
+        # Get current account to check existing values and validate
+        user_account = await cls.get_or_create_in_session(
+            session, OwnerType.USER, user_id, for_update=True
+        )
+
+        # Use existing values if not provided
+        if free_quota is None:
+            free_quota = user_account.free_quota
+        elif free_quota <= Decimal("0"):
+            raise ValueError("Daily quota must be positive")
+
+        if refill_amount is None:
+            refill_amount = user_account.refill_amount
+        elif refill_amount < Decimal("0"):
+            raise ValueError("Refill amount cannot be negative")
+
+        # Ensure refill_amount doesn't exceed free_quota
+        if refill_amount > free_quota:
+            raise ValueError("Refill amount cannot exceed daily quota")
+
+        if not note:
+            raise ValueError("Quota update requires a note explaining the reason")
+
+        # Quantize values to ensure proper precision (4 decimal places)
+        free_quota = free_quota.quantize(FOURPLACES, rounding=ROUND_HALF_UP)
+        refill_amount = refill_amount.quantize(FOURPLACES, rounding=ROUND_HALF_UP)
+
+        # Update the free_quota field
+        stmt = (
+            update(CreditAccountTable)
+            .where(
+                CreditAccountTable.owner_type == OwnerType.USER,
+                CreditAccountTable.owner_id == user_id,
+            )
+            .values(free_quota=free_quota, refill_amount=refill_amount)
+            .returning(CreditAccountTable)
+        )
+        result = await session.scalar(stmt)
+        if not result:
+            raise ValueError("Failed to update user account")
+
+        user_account = cls.model_validate(result)
+
+        # No credit event needed for updating account settings
+
+        return user_account

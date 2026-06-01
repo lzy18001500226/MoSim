@@ -1,0 +1,523 @@
+import logging
+from datetime import UTC, datetime
+from decimal import ROUND_HALF_UP, Decimal
+from typing import Annotated, Any, ClassVar, TypeVar, cast
+
+from pydantic import BaseModel, ConfigDict, Field, field_serializer
+from sqlalchemy import DateTime, Index, Integer, String, func, select
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Mapped, mapped_column
+
+from intentkit.config.base import Base
+from intentkit.config.db import get_session
+from intentkit.models.credit import CreditAccount
+from intentkit.models.team import TeamMemberTable, TeamRole
+
+logger = logging.getLogger(__name__)
+
+# TypeVar for User model constraint
+UserModelType = TypeVar("UserModelType", bound="User")
+UserTableType = TypeVar("UserTableType", bound="UserTable")
+
+
+class UserRegistry:
+    """Registry for extended model classes."""
+
+    def __init__(self):
+        self._user_table_class: type["UserTable"] | None = None
+        self._user_model_class: type["User"] | None = None
+
+    def register_user_table(self, user_table_class: type["UserTable"]) -> None:
+        """Register extended UserTable class.
+
+        Args:
+            user_table_class: A class that inherits from UserTable
+        """
+        self._user_table_class = user_table_class
+
+    def get_user_table_class(self) -> type["UserTable"]:
+        """Get registered UserTable class or default."""
+        return self._user_table_class or UserTable
+
+    def register_user_model(self, user_model_class: type["User"]) -> None:
+        """Register extended UserModel class.
+
+        Args:
+            user_model_class: A class that inherits from User
+        """
+        self._user_model_class = user_model_class
+
+    def get_user_model_class(self) -> type["User"]:
+        """Get registered UserModel class or default."""
+        return self._user_model_class or User
+
+
+# Global registry instance
+user_model_registry = UserRegistry()
+
+
+class UserTable(Base):
+    """User database table model."""
+
+    __tablename__: str = "users"
+    __table_args__: Any = (
+        Index("ix_users_x_username", "x_username"),
+        Index("ix_users_telegram_username", "telegram_username"),
+        Index("ix_users_telegram_id", "telegram_id"),
+        Index("ix_users_wechat_id", "wechat_id"),
+    )
+
+    id: Mapped[str] = mapped_column(
+        String,
+        primary_key=True,
+    )
+    nft_count: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        nullable=False,
+    )
+    name: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+    avatar: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+    email: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+    x_username: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+    github_username: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+    telegram_username: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+    telegram_id: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+    wechat_id: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+    extra: Mapped[dict[str, object] | None] = mapped_column(
+        JSONB(),
+        nullable=True,
+    )
+    evm_wallet_address: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+    solana_wallet_address: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+    server_wallet_address: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+    linked_accounts: Mapped[dict[str, object] | None] = mapped_column(
+        JSONB(),
+        nullable=True,
+    )
+    current_team_id: Mapped[str | None] = mapped_column(
+        String,
+        nullable=True,
+    )
+    synced_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=lambda: datetime.now(UTC),
+    )
+
+
+class UserUpdate(BaseModel):
+    """User update model without id and timestamps."""
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(
+        from_attributes=True,
+    )
+
+    nft_count: Annotated[
+        int, Field(default=0, description="Number of NFTs owned by the user")
+    ]
+    name: Annotated[str | None, Field(None, description="User's display name")]
+    avatar: Annotated[
+        str | None, Field(None, description="User's avatar image path or URL")
+    ]
+    email: Annotated[str | None, Field(None, description="User's email address")]
+    x_username: Annotated[
+        str | None, Field(None, description="User's X (Twitter) username")
+    ]
+    github_username: Annotated[
+        str | None, Field(None, description="User's GitHub username")
+    ]
+    telegram_username: Annotated[
+        str | None, Field(None, description="User's Telegram username")
+    ]
+    telegram_id: Annotated[
+        str | None, Field(None, description="User's Telegram numeric ID")
+    ]
+    wechat_id: Annotated[
+        str | None, Field(None, description="User's WeChat ID (e.g. xxxxx@im.wechat)")
+    ]
+    extra: Annotated[
+        dict[str, object] | None, Field(None, description="Additional user information")
+    ]
+    evm_wallet_address: Annotated[
+        str | None, Field(None, description="User's EVM wallet address")
+    ]
+    solana_wallet_address: Annotated[
+        str | None, Field(None, description="User's Solana wallet address")
+    ]
+    server_wallet_address: Annotated[
+        str | None,
+        Field(None, description="User's server wallet address (Safe smart account)"),
+    ]
+    linked_accounts: Annotated[
+        dict[str, object] | None,
+        Field(None, description="User's linked accounts information"),
+    ]
+    current_team_id: Annotated[
+        str | None, Field(None, description="User's currently active team ID")
+    ]
+    synced_at: Annotated[
+        datetime | None,
+        Field(None, description="Last time user profile was synced from auth provider"),
+    ]
+
+    async def _update_quota_for_nft_count(
+        self, db: AsyncSession, id: str, new_nft_count: int
+    ) -> None:
+        """Update user's daily quota based on NFT count.
+
+        Args:
+            db: Database session
+            id: User ID
+            new_nft_count: Current NFT count
+        """
+        # Generate upstream_tx_id
+        timestamp = datetime.now(UTC).strftime("%Y%m%d%H%M%S")
+        upstream_tx_id = f"nft_{id}_{timestamp}"
+
+        # Calculate new quota values based on nft_count
+        FOURPLACES = Decimal("0.0001")
+        free_quota = Decimal(480 + 48 * new_nft_count).quantize(
+            FOURPLACES, rounding=ROUND_HALF_UP
+        )
+        refill_amount = Decimal(20 + 2 * new_nft_count).quantize(
+            FOURPLACES, rounding=ROUND_HALF_UP
+        )
+        note = f"NFT count changed to {new_nft_count}"
+
+        # Update daily quota
+        logger.info(
+            f"Updating daily quota for user {id} due to NFT count change to {new_nft_count}"
+        )
+        _ = await CreditAccount.update_daily_quota(
+            db,
+            id,
+            free_quota=free_quota,
+            refill_amount=refill_amount,
+            upstream_tx_id=upstream_tx_id,
+            note=note,
+        )
+
+    async def patch(self, id: str) -> "User":
+        """Update only the provided fields of a user in the database.
+        If the user doesn't exist, create a new one with the provided ID and fields.
+        If nft_count changes, update the daily quota accordingly.
+
+        Args:
+            id: ID of the user to update or create
+
+        Returns:
+            Updated or newly created User model
+        """
+        user_model_class = user_model_registry.get_user_model_class()
+        assert issubclass(user_model_class, User)
+        user_table_class = user_model_registry.get_user_table_class()
+        assert issubclass(user_table_class, UserTable)
+        async with get_session() as db:
+            db_user = await db.get(user_table_class, id)
+            old_nft_count = 0  # Default for new users
+
+            if not db_user:
+                # Create new user if it doesn't exist
+                db_user = user_table_class(id=id)
+                db.add(db_user)
+            else:
+                old_nft_count = db_user.nft_count
+
+            # Update only the fields that were provided
+            update_data = self.model_dump(exclude_unset=True)
+            for key, value in update_data.items():
+                setattr(db_user, key, value)
+
+            # Check if nft_count has changed and is in the update data
+            if "nft_count" in update_data and old_nft_count != update_data["nft_count"]:
+                await self._update_quota_for_nft_count(db, id, update_data["nft_count"])
+
+            await db.commit()
+            await db.refresh(db_user)
+
+            return cast(Any, user_model_class.model_validate(db_user))
+
+    async def put(self, id: str) -> "User":
+        """Replace all fields of a user in the database with the provided values.
+        If the user doesn't exist, create a new one with the provided ID and fields.
+        If nft_count changes, update the daily quota accordingly.
+
+        Args:
+            id: ID of the user to update or create
+
+        Returns:
+            Updated or newly created User model
+        """
+        user_model_class = user_model_registry.get_user_model_class()
+        assert issubclass(user_model_class, User)
+        user_table_class = user_model_registry.get_user_table_class()
+        assert issubclass(user_table_class, UserTable)
+        async with get_session() as db:
+            db_user = await db.get(user_table_class, id)
+            old_nft_count = 0  # Default for new users
+
+            if not db_user:
+                # Create new user if it doesn't exist
+                db_user = user_table_class(id=id)
+                db.add(db_user)
+            else:
+                old_nft_count = db_user.nft_count
+
+            # Replace all fields with the provided values
+            for key, value in self.model_dump().items():
+                setattr(db_user, key, value)
+
+            # Check if nft_count has changed
+            if old_nft_count != self.nft_count:
+                await self._update_quota_for_nft_count(db, id, self.nft_count)
+
+            await db.commit()
+            await db.refresh(db_user)
+
+            return cast(Any, user_model_class.model_validate(db_user))
+
+
+class User(UserUpdate):
+    """User model with all fields including id and timestamps."""
+
+    id: Annotated[
+        str,
+        Field(description="Unique identifier for the user"),
+    ]
+    created_at: Annotated[
+        datetime, Field(description="Timestamp when this user was created")
+    ]
+    updated_at: Annotated[
+        datetime, Field(description="Timestamp when this user was last updated")
+    ]
+
+    @field_serializer("created_at", "updated_at", "synced_at")
+    @classmethod
+    def serialize_datetime(cls, v: datetime | None) -> str | None:
+        if v is None:
+            return None
+        return v.isoformat(timespec="milliseconds")
+
+    @classmethod
+    async def get(cls, user_id: str) -> "User | None":
+        """Get a user by ID.
+
+        Args:
+            user_id: ID of the user to get
+
+        Returns:
+            User model or None if not found
+        """
+        async with get_session() as session:
+            return await cls.get_in_session(session, user_id)
+
+    @classmethod
+    async def get_in_session(cls, session: AsyncSession, user_id: str) -> "User | None":
+        """Get a user by ID using the provided session.
+
+        Args:
+            session: Database session
+            user_id: ID of the user to get
+
+        Returns:
+            User model or None if not found
+        """
+        user_model_class = user_model_registry.get_user_model_class()
+        assert issubclass(user_model_class, User)
+        user_table_class = user_model_registry.get_user_table_class()
+        assert issubclass(user_table_class, UserTable)
+        result = await session.execute(
+            select(user_table_class).where(user_table_class.id == user_id)
+        )
+        user = result.scalars().first()
+        if user is None:
+            return None
+        return cast(Any, user_model_class.model_validate(user))
+
+    @classmethod
+    async def get_by_tg(cls, telegram_username: str) -> "User | None":
+        """Get a user by telegram username.
+
+        Args:
+            telegram_username: Telegram username of the user to get
+
+        Returns:
+            User model or None if not found
+        """
+        user_model_class = user_model_registry.get_user_model_class()
+        assert issubclass(user_model_class, User)
+        user_table_class = user_model_registry.get_user_table_class()
+        assert issubclass(user_table_class, UserTable)
+
+        async with get_session() as session:
+            result = await session.execute(
+                select(user_table_class).where(
+                    user_table_class.telegram_username == telegram_username
+                )
+            )
+            user = result.scalars().first()
+            if user is None:
+                return None
+            return cast(Any, user_model_class.model_validate(user))
+
+    @classmethod
+    async def get_by_telegram_id(cls, telegram_id: str) -> "User | None":
+        """Get a user by Telegram numeric ID.
+
+        Args:
+            telegram_id: Telegram user ID (numeric string)
+
+        Returns:
+            User model or None if not found
+        """
+        user_model_class = user_model_registry.get_user_model_class()
+        assert issubclass(user_model_class, User)
+        user_table_class = user_model_registry.get_user_table_class()
+        assert issubclass(user_table_class, UserTable)
+
+        async with get_session() as session:
+            result = await session.execute(
+                select(user_table_class).where(
+                    user_table_class.telegram_id == telegram_id
+                )
+            )
+            user = result.scalars().first()
+            if user is None:
+                return None
+            return cast(Any, user_model_class.model_validate(user))
+
+    @classmethod
+    async def get_by_wechat_id(cls, wechat_id: str) -> "User | None":
+        """Get a user by WeChat ID.
+
+        Args:
+            wechat_id: WeChat user ID (e.g. xxxxx@im.wechat)
+
+        Returns:
+            User model or None if not found
+        """
+        user_model_class = user_model_registry.get_user_model_class()
+        assert issubclass(user_model_class, User)
+        user_table_class = user_model_registry.get_user_table_class()
+        assert issubclass(user_table_class, UserTable)
+
+        async with get_session() as session:
+            result = await session.execute(
+                select(user_table_class).where(user_table_class.wechat_id == wechat_id)
+            )
+            user = result.scalars().first()
+            if user is None:
+                return None
+            return cast(Any, user_model_class.model_validate(user))
+
+    @classmethod
+    async def count_owned_teams(cls, user_id: str) -> int:
+        """Count teams where user is the owner.
+
+        Args:
+            user_id: The user ID.
+
+        Returns:
+            Number of teams owned by this user.
+        """
+        async with get_session() as session:
+            stmt = (
+                select(func.count())
+                .select_from(TeamMemberTable)
+                .where(
+                    TeamMemberTable.user_id == user_id,
+                    TeamMemberTable.role == TeamRole.OWNER,
+                )
+            )
+            result = await session.scalar(stmt)
+            return result or 0
+
+    @classmethod
+    async def get_first_owned_team_id(cls, user_id: str) -> str | None:
+        """Get the first team the user created (by joined_at order).
+
+        Args:
+            user_id: The user ID.
+
+        Returns:
+            Team ID of the first owned team, or None.
+        """
+        async with get_session() as session:
+            stmt = (
+                select(TeamMemberTable.team_id)
+                .where(
+                    TeamMemberTable.user_id == user_id,
+                    TeamMemberTable.role == TeamRole.OWNER,
+                )
+                .order_by(TeamMemberTable.joined_at.asc())
+                .limit(1)
+            )
+            return await session.scalar(stmt)
+
+    @classmethod
+    async def get_by_evm_wallet(cls, evm_wallet_address: str) -> "User | None":
+        """Get a user by EVM wallet address or matching ID."""
+        user_model_class = user_model_registry.get_user_model_class()
+        assert issubclass(user_model_class, User)
+        user_table_class = user_model_registry.get_user_table_class()
+        assert issubclass(user_table_class, UserTable)
+
+        async with get_session() as session:
+            result = await session.execute(
+                select(user_table_class).where(
+                    user_table_class.evm_wallet_address == evm_wallet_address
+                )
+            )
+            user = result.scalars().first()
+            if user is not None:
+                return cast(Any, user_model_class.model_validate(user))
+
+            fallback_user = await session.get(user_table_class, evm_wallet_address)
+            if fallback_user is None:
+                return None
+            return cast(Any, user_model_class.model_validate(fallback_user))

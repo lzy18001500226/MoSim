@@ -1,0 +1,215 @@
+name: Build Docker Image and Deploy
+
+on:
+  release:
+    types: [prereleased, released]
+
+jobs:
+  publish-package:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'release' }}
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${{ github.event.release.tag_name }}
+          VERSION_NO_V=${VERSION#v}
+          echo "version=${VERSION_NO_V}" >> $GITHUB_OUTPUT
+
+      - name: Update version in pyproject.toml
+        run: |
+          sed -i 's/version = ".*"/version = "${{ steps.version.outputs.version }}"/' pyproject.toml
+
+      - name: Update version in __init__.py
+        run: |
+          cd intentkit
+          sed -i 's/__version__ = ".*"/__version__ = "${{ steps.version.outputs.version }}"/' __init__.py
+
+      - name: Build package
+        run: |
+          uv build
+
+      - name: Publish to PyPI
+        run: |
+          uv publish --token ${{ secrets.UV_PUBLISH_TOKEN }} dist/*
+
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            crestal/intentkit
+            ghcr.io/${{ github.repository }}
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=dev,enable=${{ github.event_name == 'release' && github.event.action == 'prereleased' }}
+            type=raw,value=prod,enable=${{ github.event_name == 'release' && github.event.action == 'released' }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@6524bf65af31da8d45b59e8c27de4bd072b392f5
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
+        with:
+          username: crestal
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@48aba3b46d1b1fec4febb7c5d0c644b249a11355
+        with:
+          build-args: |
+            RELEASE=${{ github.event.release.tag_name || 'latest'}}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=intentkit
+          cache-to: type=gha,mode=max,scope=intentkit
+
+      - name: Docker meta for Frontend
+        id: meta-frontend
+        uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}-frontend
+          tags: |
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=dev,enable=${{ github.event_name == 'release' && github.event.action == 'prereleased' }}
+            type=raw,value=prod,enable=${{ github.event_name == 'release' && github.event.action == 'released' }}
+
+      - name: Build and push Frontend
+        uses: docker/build-push-action@48aba3b46d1b1fec4febb7c5d0c644b249a11355
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          build-args: |
+            NEXT_PUBLIC_VERSION=${{ github.event.release.tag_name || 'dev' }}
+          push: true
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+          labels: ${{ steps.meta-frontend.outputs.labels }}
+          cache-from: type=gha,scope=intentkit-frontend
+          cache-to: type=gha,mode=max,scope=intentkit-frontend
+
+      - name: Docker meta for Telegram Integration
+        id: meta-telegram
+        uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}-telegram
+          tags: |
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=dev,enable=${{ github.event_name == 'release' && github.event.action == 'prereleased' }}
+            type=raw,value=prod,enable=${{ github.event_name == 'release' && github.event.action == 'released' }}
+
+      - name: Build and push Telegram Integration
+        uses: docker/build-push-action@48aba3b46d1b1fec4febb7c5d0c644b249a11355
+        with:
+          context: ./integrations
+          file: ./integrations/Dockerfile.telegram
+          build-args: |
+            RELEASE=${{ github.event.release.tag_name || 'latest'}}
+          push: true
+          tags: ${{ steps.meta-telegram.outputs.tags }}
+          labels: ${{ steps.meta-telegram.outputs.labels }}
+          cache-from: type=gha,scope=intentkit-telegram
+          cache-to: type=gha,mode=max,scope=intentkit-telegram
+
+      - name: Docker meta for WeChat Integration
+        id: meta-wechat
+        uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}-wechat
+          tags: |
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=dev,enable=${{ github.event_name == 'release' && github.event.action == 'prereleased' }}
+            type=raw,value=prod,enable=${{ github.event_name == 'release' && github.event.action == 'released' }}
+
+      - name: Build and push WeChat Integration
+        uses: docker/build-push-action@48aba3b46d1b1fec4febb7c5d0c644b249a11355
+        with:
+          context: ./integrations
+          file: ./integrations/Dockerfile.wechat
+          build-args: |
+            RELEASE=${{ github.event.release.tag_name || 'latest'}}
+          push: true
+          tags: ${{ steps.meta-wechat.outputs.tags }}
+          labels: ${{ steps.meta-wechat.outputs.labels }}
+          cache-from: type=gha,scope=intentkit-wechat
+          cache-to: type=gha,mode=max,scope=intentkit-wechat
+
+      - name: Build Success Notification
+        if: ${{ success() }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          format: markdown
+          disable_web_page_preview: true
+          message: |
+            ✅ *Build Succeeded*
+            *Repository:* `${{ github.repository }}`
+            *Status:* Completed
+            *Branch:* `${{ github.ref }}`
+            *Author:* ${{ github.actor }}
+            *Image:* [Docker Hub](https://hub.docker.com/r/crestal/intentkit/tags)
+
+      - name: Build Failure Notification
+        if: ${{ failure() }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          format: markdown
+          disable_web_page_preview: true
+          message: |
+            ❌ *Build Failed*
+            *Repository:* `${{ github.repository }}`
+            *Status:* Failed
+            *Branch:* `${{ github.ref }}`
+            *Author:* ${{ github.actor }}
+            *Action:* [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})

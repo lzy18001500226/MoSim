@@ -1,0 +1,757 @@
+from __future__ import annotations
+
+import logging
+from datetime import UTC, datetime
+from decimal import Decimal
+from typing import Annotated, Any, ClassVar
+
+from pydantic import BaseModel, ConfigDict
+from pydantic import Field as PydanticField
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    DateTime,
+    Numeric,
+    String,
+    func,
+    update,
+)
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Mapped, mapped_column
+
+from intentkit.config.base import Base
+from intentkit.config.db import get_session
+from intentkit.utils.error import IntentKitAPIError
+
+logger = logging.getLogger(__name__)
+
+
+class AgentDataTable(Base):
+    """Agent data model for database storage of additional data related to the agent."""
+
+    __tablename__: str = "agent_data"
+
+    id: Mapped[str] = mapped_column(
+        String, primary_key=True, comment="Same as Agent.id"
+    )
+    evm_wallet_address: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="EVM wallet address"
+    )
+    solana_wallet_address: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Solana wallet address"
+    )
+    cdp_wallet_data: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="CDP wallet data"
+    )
+    privy_wallet_data: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Privy wallet data"
+    )
+    native_wallet_data: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Native wallet data (encrypted private key)"
+    )
+    twitter_id: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Twitter user ID"
+    )
+    twitter_username: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Twitter username"
+    )
+    twitter_name: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Twitter display name"
+    )
+    twitter_access_token: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Twitter access token"
+    )
+    twitter_access_token_expires_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+        comment="Twitter access token expiration time",
+    )
+    twitter_refresh_token: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Twitter refresh token"
+    )
+    twitter_self_key_refreshed_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+        comment="Twitter self-key userinfo last refresh time",
+    )
+    twitter_is_verified: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=False,
+        comment="Whether the Twitter account is verified",
+    )
+    telegram_id: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Telegram user ID"
+    )
+    telegram_username: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Telegram username"
+    )
+    telegram_name: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Telegram display name"
+    )
+    discord_id: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Discord user ID"
+    )
+    discord_username: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Discord username"
+    )
+    discord_name: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Discord display name"
+    )
+    long_term_memory: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Long-term memory content"
+    )
+    error_message: Mapped[str | None] = mapped_column(
+        String, nullable=True, comment="Last error message"
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        comment="Timestamp when the agent data was created",
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=lambda: datetime.now(UTC),
+        comment="Timestamp when the agent data was last updated",
+    )
+
+
+class AgentData(BaseModel):
+    """Agent data model for storing additional data related to the agent."""
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)
+
+    id: Annotated[
+        str,
+        PydanticField(
+            description="Same as Agent.id",
+        ),
+    ]
+    evm_wallet_address: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="EVM wallet address",
+        ),
+    ] = None
+    solana_wallet_address: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Solana wallet address",
+        ),
+    ] = None
+    cdp_wallet_data: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="CDP wallet data",
+        ),
+    ] = None
+    privy_wallet_data: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Privy wallet data",
+        ),
+    ] = None
+    native_wallet_data: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Native wallet data (encrypted private key)",
+        ),
+    ] = None
+    twitter_id: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Twitter user ID",
+        ),
+    ] = None
+    twitter_username: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Twitter username",
+        ),
+    ] = None
+    twitter_name: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Twitter display name",
+        ),
+    ] = None
+    twitter_access_token: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Twitter access token",
+        ),
+    ] = None
+    twitter_access_token_expires_at: Annotated[
+        datetime | None,
+        PydanticField(
+            default=None,
+            description="Twitter access token expiration time",
+        ),
+    ] = None
+    twitter_refresh_token: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Twitter refresh token",
+        ),
+    ] = None
+    twitter_self_key_refreshed_at: Annotated[
+        datetime | None,
+        PydanticField(
+            default=None,
+            description="Twitter self-key userinfo last refresh time",
+        ),
+    ] = None
+    twitter_is_verified: Annotated[
+        bool,
+        PydanticField(
+            default=False,
+            description="Whether the Twitter account is verified",
+        ),
+    ] = False
+    telegram_id: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Telegram user ID",
+        ),
+    ] = None
+    telegram_username: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Telegram username",
+        ),
+    ] = None
+    telegram_name: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Telegram display name",
+        ),
+    ] = None
+    discord_id: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Discord user ID",
+        ),
+    ] = None
+    discord_username: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Discord username",
+        ),
+    ] = None
+    discord_name: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Discord display name",
+        ),
+    ] = None
+    long_term_memory: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Long-term memory content",
+        ),
+    ] = None
+    error_message: Annotated[
+        str | None,
+        PydanticField(
+            default=None,
+            description="Last error message",
+        ),
+    ] = None
+    created_at: Annotated[
+        datetime,
+        PydanticField(
+            default_factory=lambda: datetime.now(UTC),
+            description="Timestamp when the agent data was created",
+        ),
+    ]
+    updated_at: Annotated[
+        datetime,
+        PydanticField(
+            default_factory=lambda: datetime.now(UTC),
+            description="Timestamp when the agent data was last updated",
+        ),
+    ]
+
+    @classmethod
+    async def get(cls, agent_id: str) -> "AgentData":
+        """Get agent data by ID.
+
+        Args:
+            agent_id: Agent ID
+
+        Returns:
+            AgentData if found, None otherwise
+
+        Raises:
+            HTTPException: If there are database errors
+        """
+        async with get_session() as db:
+            item = await db.get(AgentDataTable, agent_id)
+            if item:
+                return cls.model_validate(item)
+            return cls.model_construct(id=agent_id)
+
+    async def save(self) -> None:
+        """Save or update agent data.
+
+        Raises:
+            HTTPException: If there are database errors
+        """
+        async with get_session() as db:
+            existing = await db.get(AgentDataTable, self.id)
+            if existing:
+                # Update existing record
+                for field, value in self.model_dump(exclude_unset=True).items():
+                    setattr(existing, field, value)
+                db.add(existing)
+            else:
+                # Create new record
+                db_agent_data = AgentDataTable(**self.model_dump())
+                db.add(db_agent_data)
+
+            await db.commit()
+
+    @staticmethod
+    async def patch(id: str, data: dict[str, Any]) -> "AgentData":
+        """Update agent data.
+
+        Args:
+            id: ID of the agent
+            data: Dictionary containing fields to update
+
+        Returns:
+            Updated agent data
+
+        Raises:
+            HTTPException: If there are database errors
+        """
+        async with get_session() as db:
+            agent_data = await db.get(AgentDataTable, id)
+            if not agent_data:
+                agent_data = AgentDataTable(id=id, **data)
+                db.add(agent_data)
+            else:
+                for key, value in data.items():
+                    setattr(agent_data, key, value)
+            await db.commit()
+            await db.refresh(agent_data)
+            return AgentData.model_validate(agent_data)
+
+
+class AgentQuotaTable(Base):
+    """AgentQuota database table model."""
+
+    __tablename__: str = "agent_quotas"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    plan: Mapped[str] = mapped_column(String, default="self-hosted")
+    message_count_total: Mapped[int] = mapped_column(BigInteger, default=0)
+    message_limit_total: Mapped[int] = mapped_column(BigInteger, default=99999999)
+    message_count_monthly: Mapped[int] = mapped_column(BigInteger, default=0)
+    message_limit_monthly: Mapped[int] = mapped_column(BigInteger, default=99999999)
+    message_count_daily: Mapped[int] = mapped_column(BigInteger, default=0)
+    message_limit_daily: Mapped[int] = mapped_column(BigInteger, default=99999999)
+    last_message_time: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), default=None, nullable=True
+    )
+    autonomous_count_total: Mapped[int] = mapped_column(BigInteger, default=0)
+    autonomous_limit_total: Mapped[int] = mapped_column(BigInteger, default=99999999)
+    autonomous_count_monthly: Mapped[int] = mapped_column(BigInteger, default=0)
+    autonomous_limit_monthly: Mapped[int] = mapped_column(BigInteger, default=99999999)
+    last_autonomous_time: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), default=None, nullable=True
+    )
+    twitter_count_total: Mapped[int] = mapped_column(BigInteger, default=0)
+    twitter_limit_total: Mapped[int] = mapped_column(BigInteger, default=99999999)
+    twitter_count_monthly: Mapped[int] = mapped_column(BigInteger, default=0)
+    twitter_limit_monthly: Mapped[int] = mapped_column(BigInteger, default=99999999)
+    twitter_count_daily: Mapped[int] = mapped_column(BigInteger, default=0)
+    twitter_limit_daily: Mapped[int] = mapped_column(BigInteger, default=99999999)
+    last_twitter_time: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), default=None, nullable=True
+    )
+    free_income_daily: Mapped[Decimal] = mapped_column(Numeric(22, 4), default=0)
+    avg_action_cost: Mapped[Decimal] = mapped_column(Numeric(22, 4), default=0)
+    min_action_cost: Mapped[Decimal] = mapped_column(Numeric(22, 4), default=0)
+    max_action_cost: Mapped[Decimal] = mapped_column(Numeric(22, 4), default=0)
+    low_action_cost: Mapped[Decimal] = mapped_column(Numeric(22, 4), default=0)
+    medium_action_cost: Mapped[Decimal] = mapped_column(Numeric(22, 4), default=0)
+    high_action_cost: Mapped[Decimal] = mapped_column(Numeric(22, 4), default=0)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=lambda: datetime.now(UTC),
+    )
+
+
+class AgentQuota(BaseModel):
+    """AgentQuota model."""
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)
+
+    id: Annotated[
+        str, PydanticField(description="ID of the agent this quota belongs to")
+    ]
+    plan: Annotated[
+        str, PydanticField(default="self-hosted", description="Agent plan name")
+    ]
+    message_count_total: Annotated[
+        int, PydanticField(default=0, description="Total message count")
+    ]
+    message_limit_total: Annotated[
+        int, PydanticField(default=99999999, description="Total message limit")
+    ]
+    message_count_monthly: Annotated[
+        int, PydanticField(default=0, description="Monthly message count")
+    ]
+    message_limit_monthly: Annotated[
+        int, PydanticField(default=99999999, description="Monthly message limit")
+    ]
+    message_count_daily: Annotated[
+        int, PydanticField(default=0, description="Daily message count")
+    ]
+    message_limit_daily: Annotated[
+        int, PydanticField(default=99999999, description="Daily message limit")
+    ]
+    last_message_time: Annotated[
+        datetime | None,
+        PydanticField(default=None, description="Last message timestamp"),
+    ]
+    autonomous_count_total: Annotated[
+        int, PydanticField(default=0, description="Total autonomous operations count")
+    ]
+    autonomous_limit_total: Annotated[
+        int,
+        PydanticField(
+            default=99999999, description="Total autonomous operations limit"
+        ),
+    ]
+    autonomous_count_monthly: Annotated[
+        int, PydanticField(default=0, description="Monthly autonomous operations count")
+    ]
+    autonomous_limit_monthly: Annotated[
+        int,
+        PydanticField(
+            default=99999999, description="Monthly autonomous operations limit"
+        ),
+    ]
+    autonomous_count_daily: Annotated[
+        int, PydanticField(default=0, description="Daily autonomous operations count")
+    ]
+    autonomous_limit_daily: Annotated[
+        int,
+        PydanticField(
+            default=99999999, description="Daily autonomous operations limit"
+        ),
+    ]
+    last_autonomous_time: Annotated[
+        datetime | None,
+        PydanticField(default=None, description="Last autonomous operation timestamp"),
+    ]
+    twitter_count_total: Annotated[
+        int, PydanticField(default=0, description="Total Twitter operations count")
+    ]
+    twitter_limit_total: Annotated[
+        int,
+        PydanticField(default=99999999, description="Total Twitter operations limit"),
+    ]
+    twitter_count_monthly: Annotated[
+        int, PydanticField(default=0, description="Monthly Twitter operations count")
+    ]
+    twitter_limit_monthly: Annotated[
+        int,
+        PydanticField(default=99999999, description="Monthly Twitter operations limit"),
+    ]
+    twitter_count_daily: Annotated[
+        int, PydanticField(default=0, description="Daily Twitter operations count")
+    ]
+    twitter_limit_daily: Annotated[
+        int,
+        PydanticField(default=99999999, description="Daily Twitter operations limit"),
+    ]
+    last_twitter_time: Annotated[
+        datetime | None,
+        PydanticField(default=None, description="Last Twitter operation timestamp"),
+    ]
+    free_income_daily: Annotated[
+        Decimal,
+        PydanticField(default=0, description="Daily free income amount"),
+    ]
+    avg_action_cost: Annotated[
+        Decimal,
+        PydanticField(default=0, description="Average cost per action"),
+    ]
+    max_action_cost: Annotated[
+        Decimal,
+        PydanticField(default=0, description="Maximum cost per action"),
+    ]
+    min_action_cost: Annotated[
+        Decimal,
+        PydanticField(default=0, description="Minimum cost per action"),
+    ]
+    high_action_cost: Annotated[
+        Decimal,
+        PydanticField(default=0, description="High expected action cost"),
+    ]
+    medium_action_cost: Annotated[
+        Decimal,
+        PydanticField(default=0, description="Medium expected action cost"),
+    ]
+    low_action_cost: Annotated[
+        Decimal,
+        PydanticField(default=0, description="Low expected action cost"),
+    ]
+    created_at: Annotated[
+        datetime,
+        PydanticField(
+            description="Timestamp when this quota was created",
+            default_factory=lambda: datetime.now(UTC),
+        ),
+    ]
+    updated_at: Annotated[
+        datetime,
+        PydanticField(
+            description="Timestamp when this quota was last updated",
+            default_factory=lambda: datetime.now(UTC),
+        ),
+    ]
+
+    @classmethod
+    async def get(cls, agent_id: str) -> "AgentQuota":
+        """Get agent quota by id, if not exists, create a new one.
+
+        Args:
+            agent_id: Agent ID
+
+        Returns:
+            AgentQuota: The agent's quota object
+
+        Raises:
+            HTTPException: If there are database errors
+        """
+        async with get_session() as db:
+            quota_record = await db.get(AgentQuotaTable, agent_id)
+            if not quota_record:
+                # Create new record
+                quota_record = AgentQuotaTable(
+                    id=agent_id,
+                )
+                db.add(quota_record)
+                await db.commit()
+                await db.refresh(quota_record)
+
+            return cls.model_validate(quota_record)
+
+    def has_message_quota(self) -> bool:
+        """Check if the agent has message quota.
+
+        Returns:
+            bool: True if the agent has quota, False otherwise
+        """
+        # Check total limit
+        if self.message_count_total >= self.message_limit_total:
+            return False
+        # Check monthly limit
+        if self.message_count_monthly >= self.message_limit_monthly:
+            return False
+        # Check daily limit
+        if self.message_count_daily >= self.message_limit_daily:
+            return False
+        return True
+
+    def has_autonomous_quota(self) -> bool:
+        """Check if the agent has autonomous quota.
+
+        Returns:
+            bool: True if the agent has quota, False otherwise
+        """
+        # Check total limit
+        if self.autonomous_count_total >= self.autonomous_limit_total:
+            return False
+        # Check monthly limit
+        if self.autonomous_count_monthly >= self.autonomous_limit_monthly:
+            return False
+        return True
+
+    def has_twitter_quota(self) -> bool:
+        """Check if the agent has twitter quota.
+
+        Returns:
+            bool: True if the agent has quota, False otherwise
+        """
+        # Check total limit
+        if self.twitter_count_total >= self.twitter_limit_total:
+            return False
+        # Check daily limit
+        if self.twitter_count_daily >= self.twitter_limit_daily:
+            return False
+        return True
+
+    @staticmethod
+    async def add_free_income_in_session(
+        session: AsyncSession, id: str, amount: Decimal
+    ) -> None:
+        """Add free income to an agent's quota directly in the database.
+
+        Args:
+            session: SQLAlchemy session
+            id: Agent ID
+            amount: Amount to add to free_income_daily
+
+        Raises:
+            HTTPException: If there are database errors
+        """
+        try:
+            # Check if the record exists using session.get
+            quota_record = await session.get(AgentQuotaTable, id)
+
+            if not quota_record:
+                # Create new record if it doesn't exist
+                quota_record = AgentQuotaTable(id=id, free_income_daily=amount)
+                session.add(quota_record)
+            else:
+                # Use update statement with func to directly add the amount
+                stmt = update(AgentQuotaTable).where(AgentQuotaTable.id == id)
+                stmt = stmt.values(
+                    free_income_daily=func.coalesce(
+                        AgentQuotaTable.free_income_daily, 0
+                    )
+                    + amount
+                )
+                _ = await session.execute(stmt)
+        except Exception as e:
+            logger.error("Error adding free income: %s", e)
+            raise IntentKitAPIError(
+                status_code=500,
+                key="DatabaseError",
+                message=f"Database error: {str(e)}",
+            )
+
+    async def add_message(self) -> None:
+        """Add a message to the agent's message count."""
+        async with get_session() as db:
+            # Use server-side SQL expressions to avoid read-modify-write race conditions
+            stmt = (
+                update(AgentQuotaTable)
+                .where(AgentQuotaTable.id == self.id)
+                .values(
+                    message_count_total=AgentQuotaTable.message_count_total + 1,
+                    message_count_monthly=AgentQuotaTable.message_count_monthly + 1,
+                    message_count_daily=AgentQuotaTable.message_count_daily + 1,
+                    last_message_time=func.now(),
+                )
+            )
+            await db.execute(stmt)
+            await db.commit()
+
+            # Refresh from DB to get the updated values
+            quota_record = await db.get(AgentQuotaTable, self.id)
+            if quota_record:
+                self.message_count_total = quota_record.message_count_total
+                self.message_count_monthly = quota_record.message_count_monthly
+                self.message_count_daily = quota_record.message_count_daily
+                self.last_message_time = quota_record.last_message_time
+                self.updated_at = quota_record.updated_at
+
+    async def add_autonomous(self) -> None:
+        """Add an autonomous operation to the agent's autonomous count."""
+        async with get_session() as db:
+            # Use server-side SQL expressions to avoid read-modify-write race conditions
+            stmt = (
+                update(AgentQuotaTable)
+                .where(AgentQuotaTable.id == self.id)
+                .values(
+                    autonomous_count_total=AgentQuotaTable.autonomous_count_total + 1,
+                    autonomous_count_monthly=AgentQuotaTable.autonomous_count_monthly
+                    + 1,
+                    last_autonomous_time=func.now(),
+                )
+            )
+            await db.execute(stmt)
+            await db.commit()
+
+            quota_record = await db.get(AgentQuotaTable, self.id)
+            if quota_record:
+                self.autonomous_count_total = quota_record.autonomous_count_total
+                self.autonomous_count_monthly = quota_record.autonomous_count_monthly
+                self.last_autonomous_time = quota_record.last_autonomous_time
+                self.updated_at = quota_record.updated_at
+
+    async def add_twitter_message(self) -> None:
+        """Add a twitter message to the agent's twitter count.
+
+        Raises:
+            HTTPException: If there are database errors
+        """
+        async with get_session() as db:
+            # Use server-side SQL expressions to avoid read-modify-write race conditions
+            stmt = (
+                update(AgentQuotaTable)
+                .where(AgentQuotaTable.id == self.id)
+                .values(
+                    twitter_count_total=AgentQuotaTable.twitter_count_total + 1,
+                    twitter_count_daily=AgentQuotaTable.twitter_count_daily + 1,
+                    last_twitter_time=func.now(),
+                )
+            )
+            await db.execute(stmt)
+            await db.commit()
+
+            quota_record = await db.get(AgentQuotaTable, self.id)
+            if quota_record:
+                self.twitter_count_total = quota_record.twitter_count_total
+                self.twitter_count_daily = quota_record.twitter_count_daily
+                self.last_twitter_time = quota_record.last_twitter_time
+                self.updated_at = quota_record.updated_at
+
+    @staticmethod
+    async def reset_daily_quotas():
+        """Reset daily quotas for all agents at UTC 00:00.
+        Resets message_count_daily and twitter_count_daily to 0.
+        """
+        async with get_session() as session:
+            stmt = update(AgentQuotaTable).values(
+                message_count_daily=0,
+                twitter_count_daily=0,
+                free_income_daily=0,
+            )
+            _ = await session.execute(stmt)
+            await session.commit()
+
+    @staticmethod
+    async def reset_monthly_quotas():
+        """Reset monthly quotas for all agents at the start of each month.
+        Resets message_count_monthly and autonomous_count_monthly to 0.
+        """
+        async with get_session() as session:
+            stmt = update(AgentQuotaTable).values(
+                message_count_monthly=0, autonomous_count_monthly=0
+            )
+            _ = await session.execute(stmt)
+            await session.commit()

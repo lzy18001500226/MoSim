@@ -1,0 +1,96 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { AgentResponse } from "@/types/agent";
+import { getImageUrl } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Bot, Cpu } from "lucide-react";
+import Link from "next/link";
+
+interface AgentCardProps {
+  agent: AgentResponse;
+}
+
+export function AgentCard({ agent }: AgentCardProps) {
+  const displayName = agent.name || agent.id;
+  const displayDescription = agent.description || agent.purpose || "No description available";
+  const resolvedImage = getImageUrl(agent.picture);
+
+  // Extract active skills
+  const activeSkills = agent.skills
+    ? Object.entries(agent.skills)
+      .filter(([, config]) => (config as { enabled: boolean }).enabled)
+      .map(([category]) => category)
+    : [];
+
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    if (!resolvedImage) return;
+    const target = event.currentTarget;
+    const currentRetry = Number(target.dataset.retry ?? "0");
+    if (currentRetry < 1) {
+      const separator = resolvedImage.includes("?") ? "&" : "?";
+      target.dataset.retry = String(currentRetry + 1);
+      target.src = `${resolvedImage}${separator}ts=${Date.now()}`;
+    }
+  };
+
+  return (
+    <Link href={`/agent/${agent.slug || agent.id}`} className="block h-full group">
+      <Card className="flex flex-col h-full transition-colors hover:bg-muted/50 hover:border-primary/50">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-9 w-9">
+              {resolvedImage ? (
+                <AvatarImage
+                  src={resolvedImage}
+                  alt={displayName}
+                  className="object-cover"
+                  onError={handleImageError}
+                />
+              ) : null}
+              <AvatarFallback className="bg-primary/10">
+                <Bot className="h-5 w-5 text-primary" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 flex-1">
+              <CardTitle className="text-base font-semibold truncate leading-none">
+                {displayName}
+              </CardTitle>
+              <div className="flex items-center gap-2 mt-1.5 text-[10px] text-muted-foreground font-mono">
+                <span className="shrink-0" title={agent.slug || agent.id}>
+                  #{agent.slug || agent.id.slice(0, 8)}
+                </span>
+                <span className="w-px h-3 bg-border shrink-0" />
+                <span className="flex items-center gap-1 truncate">
+                  <Cpu className="h-3 w-3 shrink-0" />
+                  {agent.model.includes("/") ? agent.model.split("/").pop() : agent.model}
+                </span>
+              </div>
+            </div>
+          </div>
+          <CardDescription className="line-clamp-3 min-h-[3rem] mt-3 text-xs break-words">
+            {displayDescription}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex-1 pt-0">
+          {activeSkills.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-auto">
+              {activeSkills.map((skill) => (
+                <span
+                  key={skill}
+                  className="inline-flex items-center rounded-md bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-secondary-foreground ring-1 ring-inset ring-gray-500/10"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </Link>
+  );
+}

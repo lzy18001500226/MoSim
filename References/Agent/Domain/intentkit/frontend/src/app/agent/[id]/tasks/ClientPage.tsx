@@ -1,0 +1,460 @@
+"use client";
+
+import { useState, useCallback } from "react";
+import { useParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import {
+  Bot,
+  Pencil,
+  MoreVertical,
+  Archive,
+  Plus,
+  MoreHorizontal,
+  Trash,
+  Power,
+} from "lucide-react";
+import Link from "next/link";
+import { ChatSidebar } from "@/components/features/ChatSidebar";
+import { getImageUrl } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import cronstrue from "cronstrue";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { agentApi, chatApi, autonomousApi, AutonomousTask } from "@/lib/api";
+import { useAgentSlugRewrite } from "@/hooks/useAgentSlugRewrite";
+import { TaskDialog } from "./TaskDialog";
+import { buildChatThreadPath, buildTaskLogsPath } from "@/lib/autonomousChat";
+import { TaskBadgeActions } from "./TaskBadgeActions";
+
+export default function AgentTasksPage() {
+  const params = useParams();
+  const agentId = params.id as string;
+
+  // Fetch agent data
+  const { data: agent, isLoading: isLoadingAgent } = useQuery({
+    queryKey: ["agent", agentId],
+    queryFn: () => agentApi.getById(agentId),
+    enabled: !!agentId,
+  });
+
+  useAgentSlugRewrite(agentId, agent?.slug);
+
+  // The real agent ID for API calls (agentId from params may be a slug after URL rewrite)
+  const resolvedId = agent?.id;
+
+  // Fetch autonomous tasks
+  const {
+    data: tasks = [],
+    isLoading: isLoadingTasks,
+    refetch: refetchTasks,
+  } = useQuery({
+    queryKey: ["tasks", resolvedId],
+    queryFn: () => autonomousApi.listTasks(resolvedId!),
+    enabled: !!resolvedId,
+  });
+
+  const [actionTask, setActionTask] = useState<{
+    task: AutonomousTask;
+    type: "toggle" | "delete";
+  } | null>(null);
+
+  const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<AutonomousTask | null>(null);
+
+  const handleCreateTask = () => {
+    setEditingTask(null);
+    setIsTaskDialogOpen(true);
+  };
+
+  const handleEditTask = (task: AutonomousTask) => {
+    setEditingTask(task);
+    setIsTaskDialogOpen(true);
+  };
+
+  const handleSaveTask = async (taskData: Partial<AutonomousTask>) => {
+    if (!resolvedId) return;
+    try {
+      if (editingTask) {
+        await autonomousApi.updateTask(resolvedId, editingTask.id, taskData);
+      } else {
+        // Ensure prompt and cron are present for creation
+        if (!taskData.prompt || !taskData.cron) {
+          throw new Error("Prompt and Cron are required");
+        }
+        await autonomousApi.createTask(resolvedId, {
+          prompt: taskData.prompt,
+          cron: taskData.cron,
+          name: taskData.name,
+          description: taskData.description,
+          enabled: taskData.enabled ?? false,
+          has_memory: taskData.has_memory ?? true,
+        });
+      }
+      refetchTasks();
+    } catch (error) {
+      console.error("Failed to save task:", error);
+      throw error; // Re-throw to be caught by dialog
+    }
+  };
+
+  const handleConfirmAction = async () => {
+    if (!actionTask || !resolvedId) return;
+    try {
+      if (actionTask.type === "toggle") {
+        await autonomousApi.updateTask(resolvedId, actionTask.task.id, {
+          enabled: !actionTask.task.enabled,
+        });
+      } else if (actionTask.type === "delete") {
+        await autonomousApi.deleteTask(resolvedId, actionTask.task.id);
+      }
+      refetchTasks();
+    } catch (error) {
+      console.error("Failed to perform action:", error);
+    } finally {
+      setActionTask(null);
+    }
+  };
+
+  // Fetch thread list for sidebar
+  const {
+    data: threads = [],
+    isLoading: isLoadingThreads,
+    refetch: refetchThreads,
+  } = useQuery({
+    queryKey: ["chats", resolvedId],
+    queryFn: () => chatApi.listChats(resolvedId!),
+    enabled: !!resolvedId,
+  });
+
+  // Thread actions
+  const handleSelectThread = useCallback(
+    (threadId: string) => {
+      window.location.href = buildChatThreadPath(agentId, threadId);
+    },
+    [agentId],
+  );
+
+  const handleNewThread = useCallback(() => {
+    window.location.href = buildChatThreadPath(agentId, null);
+  }, [agentId]);
+
+  const handleUpdateTitle = useCallback(
+    async (threadId: string, title: string) => {
+      if (!resolvedId) return;
+      await chatApi.updateChatSummary(resolvedId, threadId, title);
+      await refetchThreads();
+    },
+    [resolvedId, refetchThreads],
+  );
+
+  const handleDeleteThread = useCallback(
+    async (threadId: string) => {
+      if (!resolvedId) return;
+      await chatApi.deleteChat(resolvedId, threadId);
+      await refetchThreads();
+    },
+    [resolvedId, refetchThreads],
+  );
+
+  const displayName = agent?.name || agent?.id || agentId;
+  const canEdit = !agent?.owner || agent.owner === "system";
+
+  if (isLoadingAgent) {
+    return (
+      <div className="flex h-[calc(100vh-3.5rem)]">
+        <div className="w-64 border-r bg-muted/30 animate-pulse" />
+        <div className="flex-1 p-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 w-1/3 bg-muted rounded" />
+            <div className="h-[500px] bg-muted rounded" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-[calc(100vh-3.5rem)]">
+      {/* Sidebar */}
+      <ChatSidebar
+        agentId={agentId}
+        activeTab="tasks"
+        threads={threads}
+        currentThreadId={null}
+        isNewThread={false}
+        onSelectThread={handleSelectThread}
+        onNewThread={handleNewThread}
+        onUpdateTitle={handleUpdateTitle}
+        onDeleteThread={handleDeleteThread}
+        isLoading={isLoadingThreads}
+        enableActivity={agent?.enable_activity !== false || agent?.enable_post !== false}
+        enablePost={agent?.enable_post !== false}
+      />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col p-6 overflow-hidden">
+        {/* Header */}
+        <div className="mb-4 flex items-center justify-between">
+          <Link
+            href={`/agent/${agentId}/activities`}
+            className="flex items-center gap-3"
+          >
+            {agent?.picture ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={getImageUrl(agent.picture) ?? undefined}
+                alt={displayName}
+                className="h-10 w-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                <Bot className="h-5 w-5 text-primary" />
+              </div>
+            )}
+            <div>
+              <h1 className="text-xl font-bold">
+                {displayName}
+                {agent?.visibility != null && agent.visibility >= 20 && (
+                  <Badge variant="secondary" className="ml-2 text-xs font-normal align-middle">Public</Badge>
+                )}
+              </h1>
+              <p className="text-sm text-muted-foreground line-clamp-1">
+                {agent?.purpose || "No description"}
+              </p>
+            </div>
+          </Link>
+          {canEdit && (
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" asChild>
+                <Link href={`/agent/${agentId}/edit`}>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Edit
+                </Link>
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon" className="h-9 w-9">
+                    <MoreVertical className="h-4 w-4" />
+                    <span className="sr-only">More actions</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem className="text-destructive focus:text-destructive">
+                    <Archive className="mr-2 h-4 w-4" />
+                    Archive
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
+        </div>
+
+        {/* Page Title */}
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-bold tracking-tight">
+              Autonomous Tasks
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              Manage autonomous scheduled tasks for this agent.
+            </p>
+          </div>
+          {canEdit && (
+            <Button size="sm" onClick={handleCreateTask}>
+              <Plus className="mr-2 h-4 w-4" />
+              New
+            </Button>
+          )}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto">
+          {isLoadingTasks ? (
+            <div className="space-y-4">
+              {[...Array(3)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-32 bg-muted animate-pulse rounded-md"
+                />
+              ))}
+            </div>
+          ) : tasks.length === 0 ? (
+            <div className="text-center text-muted-foreground p-8">
+              No autonomous tasks configured for this agent.
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {tasks.map((task: AutonomousTask) => (
+                <Card key={task.id} className="w-full">
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <div className="space-y-1">
+                        <CardTitle className="text-lg">
+                          {task.name || "Untitled Task"}
+                        </CardTitle>
+                        <CardDescription>
+                          {task.description || "No description provided"}
+                        </CardDescription>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {task.has_memory && (
+                          <Badge
+                            variant="secondary"
+                            className="bg-blue-100 text-blue-800 hover:bg-blue-100"
+                          >
+                            Memory
+                          </Badge>
+                        )}
+                        <TaskBadgeActions
+                          enabled={task.enabled}
+                          logsHref={buildTaskLogsPath(agentId, task.id)}
+                          onToggle={() =>
+                            setActionTask({ task, type: "toggle" })}
+                          readOnly={!canEdit}
+                        />
+
+                        {canEdit && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  setActionTask({ task, type: "toggle" })
+                                }
+                              >
+                                <Power className="mr-2 h-4 w-4" />
+                                {task.enabled ? "Disable" : "Enable"}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleEditTask(task)}
+                              >
+                                <Pencil className="mr-2 h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onClick={() =>
+                                  setActionTask({ task, type: "delete" })
+                                }
+                              >
+                                <Trash className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mt-2">
+                      <div>
+                        <span className="font-semibold text-muted-foreground">
+                          Schedule:{" "}
+                        </span>
+                        {task.cron ? (
+                          <div className="flex flex-col">
+                            <span>
+                              {(() => {
+                                try {
+                                  return cronstrue.toString(task.cron);
+                                } catch (e) {
+                                  return task.cron;
+                                }
+                              })()}
+                            </span>
+                            <span className="text-xs text-muted-foreground font-mono mt-0.5">
+                              {task.cron}
+                            </span>
+                          </div>
+                        ) : (
+                          `Every ${task.minutes} minutes`
+                        )}
+                      </div>
+                      <div>
+                        <span className="font-semibold text-muted-foreground">
+                          Next Run:{" "}
+                        </span>
+                        {task.next_run_time
+                          ? new Date(task.next_run_time).toLocaleString()
+                          : "Not scheduled"}
+                      </div>
+                    </div>
+                    {task.prompt && (
+                      <div className="mt-4">
+                        <div className="text-xs font-semibold text-muted-foreground mb-1">
+                          Prompt:
+                        </div>
+                        <div className="p-3 bg-muted/50 rounded-md font-mono text-xs whitespace-pre-wrap max-h-40 overflow-y-auto">
+                          {task.prompt}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <AlertDialog
+        open={!!actionTask}
+        onOpenChange={(open) => !open && setActionTask(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {actionTask &&
+                (actionTask.type === "toggle"
+                  ? `This will ${actionTask.task.enabled ? "disable" : "enable"
+                  } the task "${actionTask.task.name ?? "Untitled"}".`
+                  : `This will permanently delete the task "${actionTask.task.name ?? "Untitled"}". This action cannot be undone.`)}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmAction}>
+              {actionTask?.type === "delete" ? "Delete" : "Confirm"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <TaskDialog
+        open={isTaskDialogOpen}
+        onOpenChange={setIsTaskDialogOpen}
+        task={editingTask}
+        onSave={handleSaveTask}
+      />
+    </div>
+  );
+}

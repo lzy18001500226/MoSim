@@ -1,0 +1,435 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent",
+  "description": "Agent model",
+  "type": "object",
+  "x-groups": [
+    {
+      "id": "basic",
+      "title": "Basic",
+      "order": 1
+    },
+    {
+      "id": "skills",
+      "title": "Skills",
+      "order": 2
+    },
+    {
+      "id": "llm",
+      "title": "LLM",
+      "order": 3
+    },
+    {
+      "id": "onchain",
+      "title": "On-Chain",
+      "order": 4
+    },
+    {
+      "id": "examples",
+      "title": "Quick Actions",
+      "order": 5
+    },
+    {
+      "id": "entrypoint",
+      "title": "Communication Channels",
+      "order": 6
+    },
+    {
+      "id": "autonomous",
+      "title": "Autonomous",
+      "order": 7
+    },
+    {
+      "id": "experimental",
+      "title": "Experimental",
+      "order": 8
+    },
+    {
+      "id": "deprecated",
+      "title": "Deprecated",
+      "order": 9
+    },
+    {
+      "id": "internal",
+      "title": "Internal",
+      "order": 10
+    }
+  ],
+  "required": ["name"],
+  "properties": {
+    "name": {
+      "title": "Agent Name",
+      "type": "string",
+      "description": "Display name of the agent",
+      "maxLength": 50,
+      "x-group": "basic",
+      "x-placeholder": "Enter agent name"
+    },
+    "slug": {
+      "title": "Slug",
+      "type": "string",
+      "description": "URL-friendly identifier. Must start with a letter. Lowercase letters, numbers, and hyphens only. Cannot be changed once set.",
+      "minLength": 3,
+      "maxLength": 20,
+      "pattern": "^[a-z]([a-z0-9-]*[a-z0-9])?$",
+      "x-group": "basic",
+      "x-placeholder": "e.g. my-agent"
+    },
+    "picture": {
+      "title": "Picture",
+      "type": "string",
+      "description": "Picture of the agent",
+      "x-group": "basic",
+      "x-component": "picture-upload"
+    },
+    "model": {
+      "title": "AI Model",
+      "type": "string",
+      "description": "Select the LLM for your agent. Note that each LLM has its specific advantages, behaviour and cost.",
+      "x-component": "category-select",
+      "x-group": "llm"
+    },
+    "purpose": {
+      "title": "Purpose",
+      "type": "string",
+      "description": "Tell the agent what's its purpose and what needs should it serve.",
+      "maxLength": 20000,
+      "pattern": "^(([^#].*)|#[^# ].*|#{3,}[ ].*|$)(\n(([^#].*)|#[^# ].*|#{3,}[ ].*|$))*$",
+      "errorMessage": {
+        "pattern": "Level 1 and 2 headings (# and ##) are not allowed. Please use level 3+ headings (###, ####, etc.) instead."
+      },
+      "x-group": "llm",
+      "x-str-type": "prompt",
+      "x-placeholder": "Enter agent purpose"
+    },
+    "personality": {
+      "title": "Personality",
+      "type": "string",
+      "description": "Tell the agent what personality it should have and how it should communicate with the users.",
+      "maxLength": 20000,
+      "pattern": "^(([^#].*)|#[^# ].*|#{3,}[ ].*|$)(\n(([^#].*)|#[^# ].*|#{3,}[ ].*|$))*$",
+      "errorMessage": {
+        "pattern": "Level 1 and 2 headings (# and ##) are not allowed. Please use level 3+ headings (###, ####, etc.) instead."
+      },
+      "x-group": "llm",
+      "x-str-type": "prompt",
+      "x-placeholder": "Enter agent personality"
+    },
+    "principles": {
+      "title": "Principles",
+      "type": "string",
+      "description": "Tell the agents what it should and shouldn't do when it interacts with users or skills.",
+      "maxLength": 20000,
+      "pattern": "^(([^#].*)|#[^# ].*|#{3,}[ ].*|$)(\n(([^#].*)|#[^# ].*|#{3,}[ ].*|$))*$",
+      "errorMessage": {
+        "pattern": "Level 1 and 2 headings (# and ##) are not allowed. Please use level 3+ headings (###, ####, etc.) instead."
+      },
+      "x-group": "llm",
+      "x-str-type": "prompt",
+      "x-placeholder": "Enter agent principles"
+    },
+    "prompt": {
+      "title": "Knowledge Base",
+      "type": "string",
+      "description": "Give the agent any additional knowledge. Text only.",
+      "maxLength": 20000,
+      "pattern": "^(([^#].*)|#[^# ].*|#{3,}[ ].*|$)(\n(([^#].*)|#[^# ].*|#{3,}[ ].*|$))*$",
+      "errorMessage": {
+        "pattern": "Level 1 and 2 headings (# and ##) are not allowed. Please use level 3+ headings (###, ####, etc.) instead."
+      },
+      "x-str-type": "prompt",
+      "x-group": "llm"
+    },
+    "prompt_append": {
+      "title": "Advanced",
+      "type": "string",
+      "description": "Additional system prompt that has higher priority than initial system prompt, only some models support this, if not supported, this part will append to the end of initial system prompt",
+      "maxLength": 20000,
+      "pattern": "^(([^#].*)|#[^# ].*|#{3,}[ ].*|$)(\n(([^#].*)|#[^# ].*|#{3,}[ ].*|$))*$",
+      "errorMessage": {
+        "pattern": "Level 1 and 2 headings (# and ##) are not allowed. Please use level 3+ headings (###, ####, etc.) instead."
+      },
+      "x-str-type": "prompt",
+      "x-group": "llm"
+    },
+    "temperature": {
+      "title": "Temperature",
+      "type": "number",
+      "description": "Controls creativity: higher values are more creative, lower values are more precise. CHANGING THIS SETTING MAY INTRODUCE UNEXPECTED BEHAVIOR. USE WITH CAUTION.",
+      "default": 0.7,
+      "minimum": 0.0,
+      "maximum": 1.5,
+      "x-group": "llm",
+      "x-step": 0.1,
+      "x-advanced": true
+    },
+    "frequency_penalty": {
+      "title": "Frequency Penalty",
+      "type": "number",
+      "description": "Adjusts repetition: higher values encourage new topics, lower values allow repetition.",
+      "default": 0.0,
+      "minimum": -2.0,
+      "maximum": 2.0,
+      "x-group": "llm",
+      "x-step": 0.1,
+      "x-advanced": true
+    },
+    "presence_penalty": {
+      "title": "Presence Penalty",
+      "type": "number",
+      "description": "Controls topic focus: higher values promote diversity, lower values stay closely on topic.",
+      "default": 0.0,
+      "minimum": -2.0,
+      "maximum": 2.0,
+      "x-group": "llm",
+      "x-step": 0.1,
+      "x-advanced": true
+    },
+    "telegram_entrypoint_enabled": {
+      "title": "Enable Telegram Communication",
+      "type": "boolean",
+      "description": "Allow agent to respond to Telegram messages",
+      "default": false,
+      "x-group": "entrypoint"
+    },
+    "telegram_entrypoint_prompt": {
+      "title": "Telegram Entry Prompt",
+      "type": "string",
+      "description": "Extra prompt for telegram entrypoint",
+      "maxLength": 10000,
+      "x-str-type": "prompt",
+      "x-group": "entrypoint"
+    },
+    "telegram_config": {
+      "title": "Telegram Configuration",
+      "type": "object",
+      "description": "Configure your Telegram integration settings",
+      "x-group": "entrypoint",
+      "properties": {
+        "token": {
+          "title": "Bot Token",
+          "type": "string",
+          "description": "Telegram bot token obtained from BotFather"
+        },
+        "owner": {
+          "title": "Owner Username",
+          "type": "string",
+          "description": "Owner of the bot, if set, you can receive notifications from the bot"
+        },
+        "group_memory_public": {
+          "title": "Group Memory Public",
+          "type": "boolean",
+          "description": "Whether group memory is public"
+        },
+        "whitelist_chat_ids": {
+          "title": "Whitelist Chat IDs",
+          "type": "array",
+          "description": "List of chat IDs that are allowed to interact with the bot",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "greeting_group": {
+          "title": "Group Greeting",
+          "type": "string",
+          "description": "Custom greeting message for groups"
+        },
+        "greeting_user": {
+          "title": "User Greeting",
+          "type": "string",
+          "description": "Custom greeting message for individual users"
+        }
+      }
+    },
+    "search_internet": {
+      "title": "Internet Search",
+      "type": "boolean",
+      "description": "Enable LLM native internet search for this agent",
+      "default": true,
+      "x-group": "llm"
+    },
+    "super_mode": {
+      "title": "Super Mode",
+      "type": "boolean",
+      "description": "Enable super mode with higher recursion limit for this agent",
+      "default": false,
+      "x-group": "llm"
+    },
+    "enable_todo": {
+      "title": "Todo List",
+      "type": "boolean",
+      "description": "Enable todo list for task planning and tracking in complex multi-step tasks",
+      "default": false,
+      "x-group": "llm"
+    },
+    "enable_activity": {
+      "title": "Activity Publishing",
+      "type": "boolean",
+      "description": "Enable activity skills (create activity, recent activities)",
+      "default": true,
+      "x-group": "llm"
+    },
+    "enable_post": {
+      "title": "Post Publishing",
+      "type": "boolean",
+      "description": "Enable post skills (create post, get post, recent posts)",
+      "default": true,
+      "x-group": "llm"
+    },
+    "enable_long_term_memory": {
+      "title": "Long-Term Memory",
+      "type": "boolean",
+      "description": "Enable long-term memory that persists across conversations",
+      "default": false,
+      "x-group": "llm"
+    },
+    "sub_agents": {
+      "title": "Sub-Agents",
+      "type": "array",
+      "description": "List of sub-agent IDs or slugs that this agent can call using the call_agent skill. Only listed agents can be called.",
+      "items": {
+        "type": "string"
+      },
+      "x-group": "skills"
+    },
+    "sub_agent_prompt": {
+      "title": "Sub-Agent Instructions",
+      "type": "string",
+      "description": "Additional instructions for how the agent should use its sub-agents",
+      "maxLength": 20000,
+      "pattern": "^(([^#].*)|#[^# ].*|#{3,}[ ].*|$)(\n(([^#].*)|#[^# ].*|#{3,}[ ].*|$))*$",
+      "errorMessage": {
+        "pattern": "Level 1 and 2 headings (# and ##) are not allowed. Please use level 3+ headings (###, ####, etc.) instead."
+      },
+      "x-str-type": "prompt",
+      "x-group": "skills"
+    },
+    "skills": {
+      "title": "Skills",
+      "type": "object",
+      "description": "Please choose the Agent's skills carefully. Excessive skills will pollute the context and reduce the Agent's intelligence. Only select the necessary skills, and it is best not to exceed 10.",
+      "x-group": "skills",
+      "x-inline": true,
+      "properties": {}
+    },
+    "autonomous": {
+      "title": "Autonomous",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "ID",
+            "type": "string",
+            "description": "Unique identifier for the autonomous configuration",
+            "minLength": 1,
+            "maxLength": 20,
+            "pattern": "^[a-z0-9-]+$",
+            "readOnly": true,
+            "x-group": "internal"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string",
+            "description": "Name for this automated task",
+            "maxLength": 50,
+            "x-group": "autonomous"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string",
+            "description": "Briefly describe what this automation does",
+            "maxLength": 200,
+            "x-group": "autonomous"
+          },
+          "minutes": {
+            "title": "Frequency in Minutes",
+            "type": "integer",
+            "description": "How often to run (in minutes)",
+            "x-group": "autonomous"
+          },
+          "cron": {
+            "title": "Schedule",
+            "type": "string",
+            "description": "Advanced scheduling (cron format), mutually exclusive with minutes",
+            "x-group": "autonomous"
+          },
+          "prompt": {
+            "title": "Task Prompt",
+            "type": "string",
+            "description": "Prompt the agent will execute on schedule",
+            "maxLength": 20000,
+            "x-str-type": "prompt",
+            "x-group": "autonomous"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean",
+            "description": "Turn automation on/off",
+            "default": false,
+            "x-group": "autonomous"
+          },
+          "has_memory": {
+            "title": "Has Memory",
+            "type": "boolean",
+            "description": "Whether to retain conversation memory between autonomous runs. If disabled, thread memory is cleared before each run.",
+            "default": true,
+            "x-group": "autonomous"
+          }
+        },
+        "required": ["name", "prompt"]
+      },
+      "description": "Set automated prompts and schedules for your agent.",
+      "x-group": "autonomous",
+      "x-inline": true
+    },
+    "wallet_provider": {
+      "title": "Wallet Provider",
+      "type": "string",
+      "description": "Provider of the agent's wallet, choose cdp if you want the agent to have it's own wallet.",
+      "enum": ["none", "native", "cdp", "privy", "safe", "readonly"],
+      "x-enum-title": ["None", "Native Wallet", "Coinbase Server Wallet V2", "Privy Wallet", "Safe Wallet", "Readonly Wallet"],
+      "default": "none",
+      "x-group": "onchain",
+      "x-advanced": true
+    },
+    "network_id": {
+      "title": "Default Network",
+      "type": "string",
+      "description": "Default Network, please note that some CDP Wallet native skills like swap only support the base network.",
+      "default": "base-mainnet",
+      "enum": [
+        "base-mainnet",
+        "ethereum-mainnet",
+        "polygon-mainnet",
+        "arbitrum-mainnet",
+        "optimism-mainnet",
+        "bnb-mainnet",
+        "base-sepolia"
+      ],
+      "x-group": "onchain",
+      "x-advanced": true
+    }
+  },
+  "if": {
+    "properties": {
+      "wallet_provider": {
+        "const": "readonly"
+      }
+    }
+  },
+  "then": {
+    "properties": {
+      "readonly_wallet_address": {
+        "title": "Readonly Wallet Address",
+        "type": "string",
+        "description": "Set the wallet address as agent wallet, then it can only be analyzed by the agent.",
+        "maxLength": 100,
+        "x-group": "onchain",
+        "x-advanced": true
+      }
+    },
+    "required": ["readonly_wallet_address"]
+  },
+  "additionalProperties": true
+}

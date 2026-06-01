@@ -1,0 +1,18 @@
+root = "."
+tmp_dir = "tmp/wechat"
+
+[build]
+  cmd = "go build -o ./tmp/wechat/intent-wechat ./cmd/wechat"
+  bin = "./tmp/wechat/intent-wechat"
+  delay = 1000
+  exclude_dir = ["tmp"]
+  exclude_regex = ["_test\\.go"]
+  include_ext = ["go", "mod", "sum"]
+  poll = true
+  poll_interval = 2000
+
+[log]
+  time = false
+
+[misc]
+  clean_on_exit = true
