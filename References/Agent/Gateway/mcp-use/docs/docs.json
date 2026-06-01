@@ -1,0 +1,917 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "almond",
+  "name": "mcp-use",
+  "colors": {
+    "primary": "#0C0C0C",
+    "light": "#ffffff",
+    "dark": "#0C0C0C"
+  },
+  "background": {
+    "decoration": "grid",
+    "color": {
+      "light": "#ffffff",
+      "dark": "#0C0C0C"
+    }
+  },
+  "favicon": "/favicon.svg",
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "feedback": {
+    "thumbsRating": true,
+    "suggestEdit": true,
+    "raiseIssue": true
+  },
+  "navigation": {
+    "anchors": [
+      {
+        "anchor": "python/getting-started/quickstart",
+        "icon": "rocket"
+      }
+    ],
+    "products": [
+      {
+        "product": "Home",
+        "description": "Home",
+        "icon": "/images/mcp_use.svg",
+        "groups": [
+          {
+            "group": "Welcome",
+            "pages": [
+              "home/index"
+            ]
+          },
+          {
+            "group": "MCP Apps",
+            "icon": "app-window-mac",
+            "pages": [
+              "typescript/server/mcp-apps",
+              "typescript/server/creating-mcp-apps-server",
+              "guides/chatgpt-apps-flow"
+            ]
+          },
+          {
+            "group": "Templates",
+            "icon": "layout-template",
+            "pages": [
+              "home/templates"
+            ]
+          },
+          {
+            "group": "Dev Tools",
+            "icon": "wrench",
+            "expanded": false,
+            "pages": [
+              {
+                "group": "Inspector",
+                "icon": "bug-play",
+                "pages": [
+                  "inspector/index",
+                  "inspector/cli",
+                  "inspector/connection-settings",
+                  "inspector/url-parameters",
+                  "inspector/keyboard-shortcuts",
+                  "inspector/command-palette",
+                  "inspector/rpc-logging",
+                  "inspector/integration",
+                  "inspector/debugging-chatgpt-apps",
+                  "inspector/self-hosting",
+                  "inspector/development",
+                  "inspector/changelog"
+                ]
+              },
+              "typescript/server/cli-reference",
+              "tunneling/index"
+            ]
+          },
+          {
+            "group": "Concepts",
+            "icon": "brain",
+            "pages": [
+              "home/mcp101"
+            ]
+          },
+          {
+            "group": "Libraries",
+            "icon": "library",
+            "pages": [
+              "home/redirects/python",
+              "home/redirects/typescript"
+            ]
+          }
+        ]
+      },
+      {
+        "product": "Python SDK",
+        "description": "Python SDK description",
+        "icon": "/images/pythonlogo.svg",
+        "tabs": [
+          {
+            "tab": "Docs",
+            "icon": "book",
+            "groups": [
+              {
+                "group": "Get Started",
+                "pages": [
+                  "python/getting-started/welcome",
+                  "python/getting-started/quickstart",
+                  "python/getting-started/installation"
+                ]
+              },
+              {
+                "group": "MCP Server",
+                "icon": "server",
+                "pages": [
+                  "python/server/index",
+                  {
+                    "group": "Overview",
+                    "icon": "globe",
+                    "pages": [
+                      "python/server/compatibility",
+                      "python/server/running",
+                      "python/server/sessions",
+                      "python/server/fastapi_mount"
+                    ]
+                  },
+                  {
+                    "group": "Features",
+                    "icon": "list-plus",
+                    "pages": [
+                      "python/server/tools",
+                      "python/server/resources",
+                      "python/server/prompts",
+                      "python/server/sampling",
+                      "python/server/elicitation",
+                      "python/server/roots",
+                      "python/server/notifications"
+                    ]
+                  },
+                  {
+                    "group": "Authentication",
+                    "icon": "shield",
+                    "pages": [
+                      "python/server/auth/bearer"
+                    ]
+                  },
+                  "python/server/middleware",
+                  "python/server/router",
+                  "python/server/inspector",
+                  "python/server/logging",
+                  "python/server/openmcp"
+                ]
+              },
+              {
+                "group": "MCP Client",
+                "icon": "router",
+                "pages": [
+                  {
+                    "group": "Overview",
+                    "icon": "globe",
+                    "pages": [
+                      "python/client/client-configuration",
+                      "python/client/connection-types",
+                      "python/client/sandbox",
+                      "python/client/direct-tool-calls"
+                    ]
+                  },
+                  {
+                    "group": "Core Features",
+                    "icon": "list-plus",
+                    "pages": [
+                      "python/client/multi-server-setup",
+                      "python/client/tools",
+                      "python/client/resources",
+                      "python/client/prompts"
+                    ]
+                  },
+                  {
+                    "group": "Advanced Features",
+                    "icon": "sparkle",
+                    "pages": [
+                      "python/client/middleware",
+                      "python/client/sampling",
+                      "python/client/elicitation",
+                      "python/client/roots",
+                      "python/client/notifications",
+                      "python/client/logging"
+                    ]
+                  },
+                  {
+                    "group": "Authentication",
+                    "icon": "key",
+                    "pages": [
+                      "python/client/authentication/index",
+                      "python/client/authentication/oauth",
+                      "python/client/authentication/bearer",
+                      "python/client/authentication/custom"
+                    ]
+                  },
+                  "python/client/code-mode"
+                ]
+              },
+              {
+                "group": "MCP Agents",
+                "icon": "brain",
+                "pages": [
+                  {
+                    "group": "Overview",
+                    "icon": "globe",
+                    "pages": [
+                      "python/agent/agent-configuration",
+                      "python/agent/llm-integration"
+                    ]
+                  },
+                  {
+                    "group": "Core Features",
+                    "icon": "list-plus",
+                    "pages": [
+                      "python/agent/memory-management",
+                      "python/agent/structured-output",
+                      "python/agent/streaming",
+                      "python/agent/interactive-chat-patterns"
+                    ]
+                  },
+                  {
+                    "group": "LLM Adapters",
+                    "icon": "plug-2",
+                    "pages": [
+                      "python/integration/langchain",
+                      "python/integration/openai",
+                      "python/integration/anthropic",
+                      "python/integration/google"
+                    ]
+                  },
+                  "python/agent/server-manager",
+                  "python/agent/building-custom-agents",
+                  "python/agent/observability"
+                ]
+              },
+              {
+                "group": "Development",
+                "icon": "sparkle",
+                "pages": [
+                  "python/development/development",
+                  "python/development/logging",
+                  "python/development/security",
+                  "python/development/telemetry",
+                  "tunneling/index"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "API Reference",
+            "icon": "terminal",
+            "groups": [
+              {
+                "group": "Agents",
+                "icon": "code",
+                "pages": [
+                  {
+                    "group": "Adapters",
+                    "icon": "plug-2",
+                    "pages": [
+                      "python/api-reference/mcp_use_agents_adapters_anthropic",
+                      "python/api-reference/mcp_use_agents_adapters_base",
+                      "python/api-reference/mcp_use_agents_adapters_google",
+                      "python/api-reference/mcp_use_agents_adapters_langchain_adapter",
+                      "python/api-reference/mcp_use_agents_adapters_openai"
+                    ]
+                  },
+                  "python/api-reference/mcp_use_agents_base",
+                  "python/api-reference/mcp_use_agents_display",
+                  {
+                    "group": "Managers",
+                    "icon": "users",
+                    "pages": [
+                      "python/api-reference/mcp_use_agents_managers_base",
+                      "python/api-reference/mcp_use_agents_managers_server_manager",
+                      "python/api-reference/mcp_use_agents_managers_tools_base_tool",
+                      "python/api-reference/mcp_use_agents_managers_tools_connect_server",
+                      "python/api-reference/mcp_use_agents_managers_tools_disconnect_server",
+                      "python/api-reference/mcp_use_agents_managers_tools_get_active_server",
+                      "python/api-reference/mcp_use_agents_managers_tools_list_servers_tool",
+                      "python/api-reference/mcp_use_agents_managers_tools_search_tools"
+                    ]
+                  },
+                  "python/api-reference/mcp_use_agents_mcpagent",
+                  "python/api-reference/mcp_use_agents_middleware_tool_error_middleware",
+                  {
+                    "group": "Observability",
+                    "icon": "eye",
+                    "pages": [
+                      "python/api-reference/mcp_use_agents_observability_callbacks_manager",
+                      "python/api-reference/mcp_use_agents_observability_laminar",
+                      "python/api-reference/mcp_use_agents_observability_langfuse"
+                    ]
+                  },
+                  {
+                    "group": "Prompts",
+                    "icon": "volume-2",
+                    "pages": [
+                      "python/api-reference/mcp_use_agents_prompts_system_prompt_builder",
+                      "python/api-reference/mcp_use_agents_prompts_templates"
+                    ]
+                  },
+                  "python/api-reference/mcp_use_agents_remote"
+                ]
+              },
+              {
+                "group": "Client",
+                "icon": "router",
+                "pages": [
+                  {
+                    "group": "Auth",
+                    "icon": "key",
+                    "pages": [
+                      "python/api-reference/mcp_use_client_auth_bearer",
+                      "python/api-reference/mcp_use_client_auth_oauth",
+                      "python/api-reference/mcp_use_client_auth_oauth_callback"
+                    ]
+                  },
+                  "python/api-reference/mcp_use_client_client",
+                  "python/api-reference/mcp_use_client_code_executor",
+                  "python/api-reference/mcp_use_client_config",
+                  {
+                    "group": "Connectors",
+                    "icon": "cable",
+                    "pages": [
+                      "python/api-reference/mcp_use_client_connectors_base",
+                      "python/api-reference/mcp_use_client_connectors_code_mode",
+                      "python/api-reference/mcp_use_client_connectors_http",
+                      "python/api-reference/mcp_use_client_connectors_sandbox",
+                      "python/api-reference/mcp_use_client_connectors_stdio",
+                      "python/api-reference/mcp_use_client_connectors_utils",
+                      "python/api-reference/mcp_use_client_connectors_websocket"
+                    ]
+                  },
+                  "python/api-reference/mcp_use_client_exceptions",
+                  {
+                    "group": "Middleware",
+                    "icon": "layers",
+                    "pages": [
+                      "python/api-reference/mcp_use_client_middleware_logging",
+                      "python/api-reference/mcp_use_client_middleware_metrics",
+                      "python/api-reference/mcp_use_client_middleware_middleware"
+                    ]
+                  },
+                  "python/api-reference/mcp_use_client_prompts",
+                  "python/api-reference/mcp_use_client_session",
+                  {
+                    "group": "Task Managers",
+                    "icon": "tasks",
+                    "pages": [
+                      "python/api-reference/mcp_use_client_task_managers_base",
+                      "python/api-reference/mcp_use_client_task_managers_sse",
+                      "python/api-reference/mcp_use_client_task_managers_stdio",
+                      "python/api-reference/mcp_use_client_task_managers_streamable_http",
+                      "python/api-reference/mcp_use_client_task_managers_websocket"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Core",
+                "icon": "package",
+                "pages": [
+                  "python/api-reference/mcp_use_client",
+                  "python/api-reference/mcp_use_logging",
+                  "python/api-reference/mcp_use_utils"
+                ]
+              },
+              {
+                "group": "Errors",
+                "icon": "triangle-alert",
+                "pages": [
+                  "python/api-reference/mcp_use_errors_error_formatting"
+                ]
+              },
+              {
+                "group": "Server",
+                "icon": "server",
+                "pages": [
+                  {
+                    "group": "Auth",
+                    "icon": "key",
+                    "pages": [
+                      "python/api-reference/mcp_use_server_auth_bearer",
+                      "python/api-reference/mcp_use_server_auth_dependencies",
+                      "python/api-reference/mcp_use_server_auth_middleware",
+                      "python/api-reference/mcp_use_server_auth_models"
+                    ]
+                  },
+                  "python/api-reference/mcp_use_server_context",
+                  {
+                    "group": "Logging",
+                    "icon": "logs",
+                    "pages": [
+                      "python/api-reference/mcp_use_server_logging_config",
+                      "python/api-reference/mcp_use_server_logging_formatters",
+                      "python/api-reference/mcp_use_server_logging_middleware",
+                      "python/api-reference/mcp_use_server_logging_startup",
+                      "python/api-reference/mcp_use_server_logging_state"
+                    ]
+                  },
+                  {
+                    "group": "Middleware",
+                    "icon": "layers",
+                    "pages": [
+                      "python/api-reference/mcp_use_server_middleware_middleware",
+                      "python/api-reference/mcp_use_server_middleware_server_session"
+                    ]
+                  },
+                  "python/api-reference/mcp_use_server_router",
+                  "python/api-reference/mcp_use_server_runner",
+                  "python/api-reference/mcp_use_server_server",
+                  "python/api-reference/mcp_use_server_templates_cli",
+                  "python/api-reference/mcp_use_server_types",
+                  {
+                    "group": "Utils",
+                    "icon": "tool",
+                    "pages": [
+                      "python/api-reference/mcp_use_server_utils_inspector",
+                      "python/api-reference/mcp_use_server_utils_json_schema",
+                      "python/api-reference/mcp_use_server_utils_openmcp",
+                      "python/api-reference/mcp_use_server_utils_routes",
+                      "python/api-reference/mcp_use_server_utils_utils"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Changelog",
+            "icon": "history",
+            "groups": [
+              {
+                "group": "Changelog",
+                "pages": [
+                  "python/changelog/changelog"
+                ]
+              },
+              {
+                "group": "Versions",
+                "pages": [
+                  "python/changelog/1_7_0",
+                  "python/changelog/1_6_0",
+                  "python/changelog/1_5_2",
+                  "python/changelog/1_5_0",
+                  "python/changelog/1_4_1",
+                  "python/changelog/1_4_0",
+                  "python/changelog/1_3_13",
+                  "python/changelog/1_3_12",
+                  "python/changelog/1_3_11"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Community",
+            "icon": "users",
+            "groups": [
+              {
+                "group": "Community",
+                "pages": [
+                  "python/community/showcase"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "product": "TypeScript SDK",
+        "description": "TypeScript SDK description",
+        "icon": "/images/typescriptlogo.svg",
+        "tabs": [
+          {
+            "tab": "Docs",
+            "icon": "book",
+            "groups": [
+              {
+                "group": "Get Started",
+                "pages": [
+                  "typescript/getting-started/welcome",
+                  "typescript/getting-started/quickstart",
+                  "typescript/getting-started/installation",
+                  "typescript/changelog/changelog"
+                ]
+              },
+              {
+                "group": "MCP Server",
+                "icon": "server",
+                "pages": [
+                  "typescript/server/index",
+                  "typescript/server/configuration",
+                  "typescript/server/cli-reference",
+                  "typescript/server/examples",
+                  {
+                    "group": "Core Components",
+                    "icon": "box",
+                    "pages": [
+                      "typescript/server/tools",
+                      "typescript/server/resources",
+                      "typescript/server/prompts"
+                    ]
+                  },
+                  "typescript/server/response-helpers",
+                  {
+                    "group": "MCP Apps",
+                    "icon": "app-window-mac",
+                    "pages": [
+                      "typescript/server/mcp-apps",
+                      "typescript/server/creating-mcp-apps-server",
+                      "typescript/server/content-security-policy",
+                      "typescript/server/widget-components/usewidget",
+                      "typescript/server/widget-components/usecalltool",
+                      "typescript/server/widget-components/mcpuseprovider",
+                      "typescript/server/widget-components/widgetcontrols",
+                      "typescript/server/widget-components/errorboundary",
+                      "typescript/server/widget-components/image",
+                      "typescript/server/widget-components/themeprovider",
+                      "typescript/server/widget-components/modelcontext",
+                      "typescript/server/widget-components/usefiles"
+                    ]
+                  },
+                  {
+                    "group": "Session Management",
+                    "icon": "key-round",
+                    "pages": [
+                      "typescript/server/session-management",
+                      "typescript/server/session-management/memory-storage",
+                      "typescript/server/session-management/filesystem-storage",
+                      "typescript/server/session-management/redis-storage"
+                    ]
+                  },
+                  {
+                    "group": "Advanced Features",
+                    "icon": "sparkle",
+                    "pages": [
+                      "typescript/server/middleware",
+                      "typescript/server/proxy",
+                      "typescript/server/elicitation",
+                      "typescript/server/sampling",
+                      "typescript/server/subscriptions",
+                      "typescript/server/notifications",
+                      "typescript/server/logging",
+                      "typescript/server/nextjs-drop-in"
+                    ]
+                  },
+                  {
+                    "group": "Authentication",
+                    "icon": "shield",
+                    "pages": [
+                      "typescript/server/authentication/index",
+                      "typescript/server/authentication/user-context",
+                      {
+                        "group": "OAuth Providers",
+                        "icon": "plug",
+                        "pages": [
+                          "typescript/server/authentication/providers/auth0",
+                          "typescript/server/authentication/providers/better-auth",
+                          "typescript/server/authentication/providers/clerk",
+                          "typescript/server/authentication/providers/keycloak",
+                          "typescript/server/authentication/providers/supabase",
+                          "typescript/server/authentication/providers/workos",
+                          "typescript/server/authentication/providers/oauth-proxy",
+                          "typescript/server/authentication/providers/custom"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Deployment",
+                    "icon": "rocket",
+                    "pages": [
+                      "typescript/server/deployment/mcp-use",
+                      "typescript/server/deployment/supabase",
+                      "typescript/server/deployment/google"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "MCP Client",
+                "icon": "router",
+                "pages": [
+                  "typescript/client/index",
+                  "typescript/client/client-configuration",
+                  "typescript/client/environments",
+                  {
+                    "group": "Core Components",
+                    "icon": "box",
+                    "pages": [
+                      "typescript/client/tools",
+                      "typescript/client/resources",
+                      "typescript/client/prompts"
+                    ]
+                  },
+                  {
+                    "group": "Advanced Features",
+                    "icon": "sparkle",
+                    "pages": [
+                      "typescript/client/cli",
+                      "typescript/client/server-manager",
+                      "typescript/client/sampling",
+                      "typescript/client/elicitation",
+                      "typescript/client/completion",
+                      "typescript/client/notifications",
+                      "typescript/client/logging"
+                    ]
+                  },
+                  "typescript/client/authentication",
+                  "typescript/client/usemcp",
+                  "typescript/client/code-mode"
+                ]
+              },
+              {
+                "group": "MCP Agent",
+                "icon": "brain",
+                "pages": [
+                  "typescript/agent/index",
+                  "typescript/agent/agent-configuration",
+                  {
+                    "group": "Core Concepts",
+                    "icon": "box",
+                    "pages": [
+                      "typescript/agent/llm-integration",
+                      "typescript/agent/memory-management",
+                      "typescript/agent/server-manager",
+                      "typescript/agent/structured-output",
+                      "typescript/agent/streaming"
+                    ]
+                  },
+                  "typescript/agent/observability"
+                ]
+              },
+              {
+                "group": "Development",
+                "icon": "folder-code",
+                "pages": [
+                  "/inspector/index",
+                  "tunneling/index"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Changelog",
+            "icon": "history",
+            "groups": [
+              {
+                "group": "Changelog",
+                "pages": [
+                  "typescript/changelog/changelog"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "product": "Inspector",
+        "description": "Debug and test MCP Apps & Servers",
+        "icon": "/images/inspector-logo.svg",
+        "groups": [
+          {
+            "group": "Inspector",
+            "pages": [
+              "inspector/index",
+              "inspector/cli",
+              "inspector/connection-settings",
+              "inspector/keyboard-shortcuts",
+              "inspector/command-palette",
+              "inspector/rpc-logging",
+              "inspector/integration",
+              "inspector/debugging-chatgpt-apps",
+              "inspector/self-hosting",
+              "inspector/development",
+              "inspector/changelog"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "redirects": [
+    {
+      "source": "/typescript/getting-started",
+      "destination": "/typescript/getting-started/quickstart"
+    },
+    {
+      "source": "/changelog",
+      "destination": "/python/changelog/changelog"
+    },
+    {
+      "source": "/typescript/server/ui-widgets",
+      "destination": "/typescript/server/mcp-apps"
+    },
+    {
+      "source": "/typescript/server/mcp-ui-resources",
+      "destination": "/typescript/server/mcp-apps"
+    },
+    {
+      "source": "/typescript/server/comparison-with-other-implementations",
+      "destination": "/typescript/server/index"
+    },
+    {
+      "source": "/typescript/server/api-reference",
+      "destination": "/typescript/server/index"
+    },
+    {
+      "source": "/typescript/development/security",
+      "destination": "/python/development/security"
+    },
+    {
+      "source": "/python/blog/middleware",
+      "destination": "/python/server/middleware"
+    },
+    {
+      "source": "/python/server/auth",
+      "destination": "/python/server/auth/bearer"
+    },
+    {
+      "source": "/typescript/blog/client-vs-sdk",
+      "destination": "/typescript/client/index"
+    },
+    {
+      "source": "/typescript/blog/client_side",
+      "destination": "/inspector/index"
+    }
+  ],
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://mcp-use.com/docs"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Examples",
+        "href": "https://github.com/mcp-use/mcp-use/tree/main/examples"
+      },
+      {
+        "label": "Blog",
+        "href": "https://mcp-use.com/blog"
+      },
+      {
+        "label": "Discord",
+        "icon": "discord",
+        "href": "https://discord.gg/XkNkSkMz3V"
+      },
+      {
+        "label": "",
+        "icon": "x-twitter",
+        "href": "https://x.com/manufact"
+      }
+    ],
+    "primary": {
+      "type": "github",
+      "label": "Github",
+      "href": "https://github.com/mcp-use/mcp-use"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/manufact",
+      "linkedin": "https://www.linkedin.com/company/mcp-use",
+      "github": "https://github.com/mcp-use",
+      "discord": "https://discord.gg/XkNkSkMz3V"
+    },
+    "links": [
+      {
+        "header": "Linktree",
+        "items": [
+          {
+            "label": "Website",
+            "href": "https://mcp-use.com"
+          },
+          {
+            "label": "Manufact Cloud",
+            "href": "https://manufact.com"
+          },
+          {
+            "label": "GitHub",
+            "href": "https://github.com/mcp-use"
+          }
+        ]
+      },
+      {
+        "header": "Resources",
+        "items": [
+          {
+            "label": "TypeScript Docs",
+            "href": "https://mcp-use.com/docs/typescript/server/index"
+          },
+          {
+            "label": "Python Docs",
+            "href": "https://mcp-use.com/docs/python/getting-started/quickstart"
+          },
+          {
+            "label": "Examples",
+            "href": "https://github.com/mcp-use/mcp-use/tree/main/examples"
+          },
+          {
+            "label": "Blog",
+            "href": "https://manufact.com/blog"
+          }
+        ]
+      },
+      {
+        "header": "Community",
+        "items": [
+          {
+            "label": "GitHub Discussions",
+            "href": "https://github.com/mcp-use/mcp-use/discussions"
+          },
+          {
+            "label": "Issues",
+            "href": "https://github.com/mcp-use/mcp-use/issues"
+          },
+          {
+            "label": "Contribute",
+            "href": "https://github.com/mcp-use/mcp-use/blob/main/CONTRIBUTING.md"
+          },
+          {
+            "label": "Discord",
+            "href": "https://discord.gg/XkNkSkMz3V"
+          }
+        ]
+      }
+    ]
+  },
+  "integrations": {
+    "posthog": {
+      "apiKey": "phc_lyTtbYwvkdSbrcMQNPiKiiRWrrM1seyKIMjycSvItEI",
+      "apiHost": "https://eu.i.posthog.com",
+      "sessionRecording": true
+    }
+  },
+  "seo": {
+    "metatags": {
+      "charset": "UTF-8",
+      "viewport": "width=device-width, initial-scale=1.0",
+      "description": "The fullstack MCP framework to develop MCP Apps for ChatGPT / Claude and MCP Servers for AI Agents.",
+      "keywords": "MCP, Model Context Protocol, LLM, AI agents, open source, API integration, Claude, ChatGPT, artificial intelligence, tool access",
+      "author": "Manufact Team",
+      "robots": "index, follow",
+      "googlebot": "index, follow",
+      "google": "notranslate",
+      "google-site-verification": "verification_token_here",
+      "generator": "mcp-use",
+      "theme-color": "#1a1a1a",
+      "color-scheme": "light dark",
+      "format-detection": "telephone=no",
+      "referrer": "origin",
+      "language": "en",
+      "copyright": "Copyright 2026 Manufact",
+      "reply-to": "dev@manufact.com",
+      "distribution": "global",
+      "coverage": "Worldwide",
+      "category": "Technology",
+      "target": "developers",
+      "HandheldFriendly": "True",
+      "MobileOptimized": "320",
+      "apple-mobile-web-app-capable": "yes",
+      "apple-mobile-web-app-status-bar-style": "black-translucent",
+      "apple-mobile-web-app-title": "mcp-use",
+      "application-name": "mcp-use",
+      "msapplication-TileColor": "#1a1a1a",
+      "msapplication-TileImage": "/images/mstile-144x144.png",
+      "msapplication-config": "/browserconfig.xml",
+      "og:title": "mcp-use - The fullstack MCP framework to develop MCP Apps for ChatGPT / Claude and MCP Servers for AI Agents.",
+      "og:type": "website",
+      "og:url": "https://mcp-use.com",
+      "og:image": "https://raw.githubusercontent.com/mcp-use/mcp-use/refs/heads/main/static/og_image_docs.jpg",
+      "og:description": "The fullstack MCP framework to develop MCP Apps for ChatGPT / Claude and MCP Servers for AI Agents.",
+      "og:site_name": "mcp-use",
+      "og:locale": "en_US",
+      "twitter:card": "summary_large_image",
+      "twitter:site": "@manufact",
+      "twitter:creator": "@manufact",
+      "twitter:title": "mcp-use - The fullstack MCP framework to develop MCP Apps for ChatGPT / Claude and MCP Servers for AI Agents.",
+      "twitter:description": "The fullstack MCP framework to develop MCP Apps for ChatGPT / Claude and MCP Servers for AI Agents.",
+      "twitter:image": "https://raw.githubusercontent.com/mcp-use/mcp-use/refs/heads/main/static/og_image_docs.jpg",
+      "twitter:image:alt": "mcp-use logo and interface showing MCP Apps for ChatGPT / Claude and MCP Servers for AI Agents.",
+      "article:published_time": "2024-12-01T00:00:00+00:00",
+      "article:modified_time": "2026-05-14T00:00:00+00:00",
+      "article:author": "Manufact Team",
+      "article:section": "Technology",
+      "article:tag": "MCP, MCP Servers, MCP Apps, ChatGPT, Claude, AI Agents, open source, developers, API"
+    }
+  }
+}

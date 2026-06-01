@@ -1,0 +1,187 @@
+---
+title: "Streaming"
+description: "Real-time streaming of agent responses"
+icon: "arrow-up-down"
+---
+
+Streaming enables real-time output from your agents, providing immediate feedback as the agent works through tasks. This creates responsive user experiences and allows you to show progress indicators, tool calls, and partial results as they happen.
+
+
+
+## Streaming Methods
+
+The MCPAgent provides different streaming approaches for different use cases.
+
+```typescript
+import { ChatOpenAI } from '@langchain/openai'
+import { MCPAgent, MCPClient } from 'mcp-use'
+
+async function stepStreamingExample() {
+    // Setup agent
+    const config = {
+        mcpServers: {
+            playwright: {
+                command: 'npx',
+                args: ['@playwright/mcp@latest']
+            }
+        }
+    }
+
+    const client = new MCPClient(config)
+    const llm = new ChatOpenAI({ model: "gpt-5.5" })
+    const agent = new MCPAgent({ llm, client })
+
+    // Stream the agent's steps
+    console.log('🤖 Agent is working...')
+    console.log('-'.repeat(50))
+
+    for await (const step of agent.stream('Search for the latest Python news and summarize it')) {
+        console.log(`\n🔧 Tool: ${step.action.tool}`)
+        console.log(`📝 Input: ${JSON.stringify(step.action.toolInput)}`)
+        // Note: step.observation is empty when the step is yielded
+        // Tool results are tracked internally but not included in the step object
+    }
+
+    console.log('\n🎉 Done!')
+    await client.closeAllSessions()
+}
+
+stepStreamingExample().catch(console.error)
+```
+
+
+## Low-Level Event Streaming
+
+For more granular control, use the `streamEvents()` method to get real-time output events:
+
+```typescript
+import { ChatOpenAI } from '@langchain/openai'
+import { MCPAgent, MCPClient } from 'mcp-use'
+
+async function basicStreamingExample() {
+    // Setup agent
+    const config = {
+        mcpServers: {
+            playwright: {
+                command: 'npx',
+                args: ['@playwright/mcp@latest']
+            }
+        }
+    }
+
+    const client = new MCPClient(config)
+    const llm = new ChatOpenAI({ model: "gpt-5.5" })
+    const agent = new MCPAgent({ llm, client })
+
+    // Stream the agent's response
+    console.log('Agent is working...')
+
+    for await (const event of agent.streamEvents('Search for the latest Python news and summarize it')) {
+        if (event.event === 'on_chat_model_stream') {
+            // Stream LLM output token by token
+            // Note: chunk property may be 'text' or 'content' depending on LLM provider
+            const text = event.data?.chunk?.text || event.data?.chunk?.content
+            if (text) {
+                process.stdout.write(text)
+            }
+        }
+    }
+
+    console.log('\n\nDone!')
+    await client.closeAllSessions()
+}
+
+basicStreamingExample().catch(console.error)
+```
+
+<Note>
+**Event Property**: The event chunk property may be `text` or `content` depending on the LangChain version and LLM provider. Check both properties for compatibility:
+```typescript
+const text = event.data?.chunk?.text || event.data?.chunk?.content
+```
+</Note>
+
+<Tip>
+The streaming API is based on LangChain's `streamEvents` method. For more details on event types and data structure, check the [LangChain JavaScript streaming documentation](https://js.langchain.com/docs/how_to/streaming/).
+</Tip>
+
+## Pretty Stream Events
+
+The `prettyStreamEvents()` method provides beautifully formatted, syntax-highlighted output for streaming agent execution. Perfect for CLI tools and development environments where you want human-readable output.
+
+<video alt="Code Mode Streaming Example" style={{maxWidth: '600px', borderRadius: '8px', marginBottom: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.08)'}} muted autoPlay loop>
+  <source src="/images/code_mode.mp4" type="video/mp4" />
+</video>
+
+```typescript
+import { MCPAgent } from 'mcp-use'
+
+async function prettyStreamExample() {
+    const agent = new MCPAgent({
+        llm: 'openai/gpt-5.5',
+        mcpServers: {
+            filesystem: {
+                command: 'npx',
+                args: ['-y', '@modelcontextprotocol/server-filesystem', './']
+            }
+        }
+    })
+
+    // Pretty streaming with automatic formatting and colors
+    for await (const _ of agent.prettyStreamEvents({
+        prompt: 'List all TypeScript files and count the total lines of code',
+        maxSteps: 20
+    })) {
+        // Just iterate - formatting is handled automatically
+    }
+
+    await agent.close()
+}
+
+prettyStreamExample().catch(console.error)
+```
+
+### Features
+
+The `prettyStreamEvents()` method automatically handles:
+
+- **Syntax highlighting**: JSON and code are highlighted with colors
+- **Tool call formatting**: Clear display of tool names and inputs
+- **Progress indicators**: Visual feedback during execution
+- **Token streaming**: Real-time LLM output display
+- **Error formatting**: Clear error messages with context
+
+<Note>
+**Terminal Compatibility**: The pretty output uses ANSI color codes and works best in modern terminals. For environments without color support, the output gracefully degrades to plain text.
+</Note>
+
+### Options Syntax
+
+Like other agent methods, `prettyStreamEvents()` accepts an options object:
+
+```typescript
+for await (const _ of agent.prettyStreamEvents({
+    prompt: 'Your query here',
+    maxSteps: 10,
+    schema: MyZodSchema  // Optional: for structured output
+})) {
+    // Pretty formatted output to console
+}
+```
+
+## Examples
+
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Agent Configuration" icon="cog" href="/typescript/agent/agent-configuration">
+    Learn more about configuring agents for optimal streaming performance
+  </Card>
+  <Card title="Multi-Server Setup" icon="server" href="/typescript/client/server-manager">
+    Stream output from agents using multiple MCP servers
+  </Card>
+  <Card title="Structured Output" icon="braces" href="/typescript/agent/structured-output">
+    Use structured output with streaming for type-safe responses
+  </Card>
+</CardGroup>
