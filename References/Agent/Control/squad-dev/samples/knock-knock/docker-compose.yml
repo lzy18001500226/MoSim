@@ -1,0 +1,9 @@
+services:
+  knock-knock:
+    build:
+      context: ../..
+      dockerfile: samples/knock-knock/Dockerfile
+    container_name: squad-knock-knock
+    restart: unless-stopped
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}

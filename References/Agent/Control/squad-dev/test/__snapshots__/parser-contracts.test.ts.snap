@@ -1,0 +1,151 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Snapshot tests > snapshot: parseCharterMarkdown against canonical charter 1`] = `
+{
+  "boundaries": "Do not modify test files or CI configuration.",
+  "collaboration": "Coordinate with Fenster on implementation, Hockney on test plans.",
+  "fullContent": "# Keaton
+
+## Identity
+
+**Name:** Keaton
+**Role:** Lead
+**Expertise:** Architecture, system design, coordination
+**Style:** Decisive and structured
+
+## What I Own
+
+- docs/proposals/
+- .squad/decisions.md
+
+## Boundaries
+
+Do not modify test files or CI configuration.
+
+## Model
+
+**Preferred:** claude-opus-4.5
+
+## Collaboration
+
+Coordinate with Fenster on implementation, Hockney on test plans.
+",
+  "identity": {
+    "expertise": [
+      "Architecture",
+      "system design",
+      "coordination",
+    ],
+    "name": "Keaton",
+    "role": "Lead",
+    "style": "Decisive and structured",
+  },
+  "modelPreference": "claude-opus-4.5",
+  "ownership": "- docs/proposals/
+- .squad/decisions.md",
+}
+`;
+
+exports[`Snapshot tests > snapshot: parseRoutingMarkdown against canonical routing.md 1`] = `
+{
+  "governance": {
+    "allowRecursiveSpawn": false,
+    "eagerByDefault": true,
+    "scribeAutoRuns": false,
+  },
+  "rules": [
+    {
+      "agents": [
+        "Keaton",
+      ],
+      "confidence": "high",
+      "examples": [
+        "System design",
+        "proposals",
+      ],
+      "workType": "architecture",
+    },
+    {
+      "agents": [
+        "Fenster",
+      ],
+      "confidence": "high",
+      "examples": [
+        "New features",
+        "refactoring",
+      ],
+      "workType": "feature-dev",
+    },
+    {
+      "agents": [
+        "Hockney",
+      ],
+      "confidence": "high",
+      "examples": [
+        "Unit tests",
+        "integration tests",
+      ],
+      "workType": "testing",
+    },
+    {
+      "agents": [
+        "Fenster",
+        "Hockney",
+      ],
+      "confidence": "high",
+      "examples": [
+        "Bug fixes",
+        "regressions",
+      ],
+      "workType": "bug-fix",
+    },
+  ],
+}
+`;
+
+exports[`Snapshot tests > snapshot: parseTeamMarkdown against canonical team.md 1`] = `
+{
+  "agents": [
+    {
+      "aliases": undefined,
+      "autoAssign": undefined,
+      "model": "claude-opus-4.5",
+      "name": "keaton",
+      "role": "Lead",
+      "skills": [
+        "architecture",
+        "design",
+        "planning",
+      ],
+      "status": undefined,
+    },
+    {
+      "aliases": undefined,
+      "autoAssign": undefined,
+      "model": "claude-sonnet-4.5",
+      "name": "fenster",
+      "role": "Core Dev",
+      "skills": [
+        "typescript",
+        "node",
+        "testing",
+      ],
+      "status": undefined,
+    },
+    {
+      "aliases": undefined,
+      "autoAssign": undefined,
+      "model": "claude-sonnet-4.5",
+      "name": "hockney",
+      "role": "Tester",
+      "skills": [
+        "testing",
+        "edge-cases",
+        "vitest",
+      ],
+      "status": undefined,
+    },
+  ],
+  "warnings": [],
+}
+`;

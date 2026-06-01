@@ -1,0 +1,28 @@
+{
+  "name": "@squad-samples/azure-function-squad",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Azure Function + Content Review Squad — Squad SDK sample",
+  "type": "module",
+  "main": "dist/functions/squad-prompt.js",
+  "scripts": {
+    "build": "tsc",
+    "build:check": "tsc --noEmit",
+    "start": "npm run build && func start",
+    "start:func": "func start",
+    "prestart:func": "npm run build",
+    "test": "npx tsx src/functions/squad-prompt.ts --dry-run"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.0.0",
+    "@bradygaster/squad-sdk": "file:../../packages/squad-sdk"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
