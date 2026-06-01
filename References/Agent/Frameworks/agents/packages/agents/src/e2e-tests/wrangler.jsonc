@@ -1,0 +1,30 @@
+{
+  "name": "fiber-e2e-test",
+  "main": "worker.ts",
+  "compatibility_date": "2026-01-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "RunFiberTestAgent",
+        "class_name": "RunFiberTestAgent"
+      },
+      {
+        "name": "SubAgentFiberParent",
+        "class_name": "SubAgentFiberParent"
+      },
+      // Test-harness-only binding: production only needs to export this
+      // facet class, but vitest-pool-workers needs it here for ctx.exports.
+      {
+        "name": "SubAgentFiberChild",
+        "class_name": "SubAgentFiberChild"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["RunFiberTestAgent", "SubAgentFiberParent"]
+    }
+  ]
+}
