@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://squad.dev/sitemap-index.xml

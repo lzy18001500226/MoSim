@@ -1,0 +1,12 @@
+# Rate-limited or auth-gated URLs
+https://github.com/.*/edit/.*
+https://dev.azure.com/.*
+https://.*\.visualstudio\.com/.*
+# Localhost references in examples
+localhost
+127\.0\.0\.1
+# Template/placeholder URLs
+https://example\.com
+https://your-.*
+# npm registry (rate limits)
+https://www.npmjs.com/package/.*

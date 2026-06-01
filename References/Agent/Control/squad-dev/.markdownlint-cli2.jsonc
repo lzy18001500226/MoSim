@@ -1,0 +1,28 @@
+{
+  "config": {
+    "default": true,
+    "MD013": false,           // Line length — docs are prose, not code
+    "MD033": false,           // Inline HTML — Astro components use HTML in markdown
+    "MD041": false,           // First line heading — some docs don't start with heading
+    "MD024": false,           // Duplicate headings — OK in long docs
+    "MD025": { "front_matter_title": "" }, // Single H1
+    "MD009": false,           // Trailing spaces — can conflict with intentional formatting
+    "MD012": false,           // Multiple blank lines — common in docs for readability
+    "MD028": false,           // Blank line inside blockquote — blog frontmatter
+    "MD060": false,           // Table column style — existing blog tables
+    "MD049": false,           // Emphasis style — existing blog content uses mixed styles
+    "MD032": false,           // Lists surrounded by blank lines — existing docs
+    "MD031": false,           // Fenced code blocks surrounded by blank lines
+    "MD040": false,           // Fenced code language — not all code blocks need lang
+    "MD022": false,           // Headings surrounded by blank lines — blog posts
+    "MD029": false,           // Ordered list item prefix — intentional restarts
+    "MD036": false,           // Emphasis as heading — blog/guide formatting
+    "MD014": false,           // Dollar signs before commands — code examples
+    "MD034": false,           // Bare URLs — many existing bare URLs in docs
+    "MD004": false,           // Unordered list style — mixed styles in docs
+    "MD026": false,           // Trailing punctuation in heading — existing style
+    "MD051": false            // Link fragments — will be caught by link validation test
+  },
+  "globs": ["docs/src/content/**/*.md", "README.md"],
+  "ignores": ["node_modules", "docs/dist", "docs/node_modules", ".squad"]
+}

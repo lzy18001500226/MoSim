@@ -1,0 +1,1217 @@
+/**
+ * Tool Registry — Custom Tools API (PRD 2)
+ *
+ * Defines Squad's custom tools registered with the SDK via defineTool().
+ * Tools provide agents with typed, validated orchestration primitives:
+ *   - squad_route:  Route work to another agent via session pool
+ *   - squad_decide: Write a typed decision to the inbox drop-box
+ *   - squad_memory: Append to agent history (learnings, updates)
+ *   - squad_status: Query session pool state
+ *   - squad_skill:  Read/write agent skills
+ */
+
+import * as path from 'node:path';
+import { randomUUID } from 'node:crypto';
+import type { SquadTool, SquadToolResult } from '../adapter/types.js';
+import { trace, SpanStatusCode } from '../runtime/otel-api.js';
+import type { StorageProvider } from '../storage/storage-provider.js';
+import { FSStorageProvider } from '../storage/fs-storage-provider.js';
+import type { SquadState } from '../state/squad-state.js';
+import { validateStateKey } from '../state-backend.js';
+import { spawnParallel, type FanOutDependencies } from '../coordinator/fan-out.js';
+import { LocalMemoryStore, type CopilotMemoryProviderClient, type MemoryClass } from '../memory/index.js';
+
+const tracer = trace.getTracer('squad-sdk');
+
+// --- Argument Sanitization ---
+
+/** Sensitive field patterns — strip before recording as span attributes. */
+const SENSITIVE_PATTERNS = /^(content|query)$|token|secret|password|key|auth/i;
+
+/**
+ * Sanitize tool arguments for OTel span attributes.
+ * Strips any field whose name matches sensitive patterns (case-insensitive).
+ * Returns JSON string truncated to 1024 chars.
+ */
+export function sanitizeArgs(args: unknown): string {
+  if (args == null || typeof args !== 'object') {
+    return JSON.stringify(args ?? null).slice(0, 1024);
+  }
+  const sanitized: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(args as Record<string, unknown>)) {
+    sanitized[k] = SENSITIVE_PATTERNS.test(k) ? '[REDACTED]' : v;
+  }
+  return JSON.stringify(sanitized).slice(0, 1024);
+}
+
+// --- Tool Types ---
+
+export interface ToolResult {
+  success: boolean;
+  message: string;
+  data?: unknown;
+}
+
+export interface RouteRequest {
+  /** Target agent name */
+  targetAgent: string;
+  /** Task description for the target agent */
+  task: string;
+  /** Priority level */
+  priority?: 'low' | 'normal' | 'high' | 'critical';
+  /** Context to pass to the target session */
+  context?: string;
+}
+
+export interface DecisionRecord {
+  /** Decision author (agent name) */
+  author: string;
+  /** Decision summary */
+  summary: string;
+  /** Full decision body */
+  body: string;
+  /** Related agents or PRDs */
+  references?: string[];
+}
+
+/** Map tool-facing section names to valid HistorySection values. */
+const SECTION_MAP: Record<string, 'Learnings' | 'Decisions' | 'Context'> = {
+  learnings: 'Learnings',
+  updates: 'Decisions',
+  sessions: 'Context',
+};
+
+export interface MemoryEntry {
+  /** Agent name */
+  agent: string;
+  /** Section to append to (learnings, updates, sessions) */
+  section: 'learnings' | 'updates' | 'sessions';
+  /** Content to append */
+  content: string;
+}
+
+export interface StateReadRequest {
+  key: string;
+}
+
+export interface StateWriteRequest {
+  key: string;
+  content: string;
+}
+
+export interface StateAppendRequest {
+  key: string;
+  content: string;
+}
+
+export interface StateDeleteRequest {
+  key: string;
+}
+
+export interface StateListRequest {
+  dir?: string;
+}
+
+export interface StatusQuery {
+  /** Filter by agent name */
+  agentName?: string;
+  /** Filter by session status */
+  status?: string;
+  /** Include detailed session metadata */
+  verbose?: boolean;
+}
+
+export interface SkillRequest {
+  /** Skill name (maps to .copilot/skills/{name}/SKILL.md) */
+  skillName: string;
+  /** Operation: read the skill or write/update it */
+  operation: 'read' | 'write';
+  /** Skill content (required for write) */
+  content?: string;
+  /** Confidence level (required for write) */
+  confidence?: 'low' | 'medium' | 'high';
+}
+
+export interface GovernedMemoryRequest {
+  content: string;
+  title?: string;
+  author?: string;
+  class?: MemoryClass;
+  approved?: boolean;
+}
+
+export interface GovernedMemorySearchRequest {
+  query: string;
+}
+
+export interface GovernedMemoryDeleteRequest {
+  id: string;
+  actor?: string;
+}
+
+export interface GovernedMemoryPromoteRequest {
+  id: string;
+  targetClass: Exclude<MemoryClass, 'FORBIDDEN' | 'TRANSIENT'>;
+  actor?: string;
+}
+
+// --- Tool Definition Helper ---
+
+/**
+ * Define a typed Squad tool with JSON schema parameters.
+ * Creates a SquadTool object compatible with the adapter layer.
+ */
+export function defineTool<TArgs = unknown>(config: {
+  name: string;
+  description: string;
+  parameters: Record<string, unknown>;
+  handler: (args: TArgs) => Promise<SquadToolResult> | SquadToolResult;
+  /** Optional agent name for span attribution */
+  agentName?: string;
+}): SquadTool<TArgs> {
+  return {
+    name: config.name,
+    description: config.description,
+    parameters: config.parameters,
+    // TODO: Parent span context propagation — tool spans should be children of
+    // agent.work spans once the agent work span lifecycle is complete.
+    handler: async (args: TArgs) => {
+      const span = tracer.startSpan('squad.tool.call', {
+        attributes: {
+          'tool.name': config.name,
+          ...(config.agentName ? { 'agent.name': config.agentName } : {}),
+          'tool.args': sanitizeArgs(args),
+        },
+      });
+      const startTime = Date.now();
+      try {
+        const result = await config.handler(args);
+        const durationMs = Date.now() - startTime;
+        const resultType = typeof result === 'string' ? 'unknown' : (result.resultType ?? 'unknown');
+        const resultText = typeof result === 'string' ? result : (result.textResultForLlm ?? '');
+        span.addEvent('squad.tool.result', {
+          'result.type': resultType,
+          'result.length': resultText.length,
+          'duration_ms': durationMs,
+          'success': resultType !== 'failure',
+        });
+        return result;
+      } catch (err) {
+        const durationMs = Date.now() - startTime;
+        span.setStatus({ code: SpanStatusCode.ERROR, message: err instanceof Error ? err.message : String(err) });
+        span.addEvent('squad.tool.error', {
+          'error.type': err instanceof Error ? err.constructor.name : 'unknown',
+          'error.message': err instanceof Error ? err.message : String(err),
+          'duration_ms': durationMs,
+        });
+        span.recordException(err instanceof Error ? err : new Error(String(err)));
+        throw err;
+      } finally {
+        span.end();
+      }
+    },
+  };
+}
+
+// --- Validation ---
+
+/** Agent name format: alphanumeric, hyphens, underscores. Same rule as squad_decide/squad_memory. */
+const AGENT_NAME_RE = /^[a-zA-Z0-9_-]+$/;
+
+// --- Error Sanitization ---
+
+/**
+ * Sanitize error messages before sending to LLM.
+ * Strips absolute filesystem paths by replacing the squadRoot prefix with [team-root],
+ * and collapses multi-line errors to prevent stack trace leakage.
+ */
+function sanitizeErrorForLlm(error: unknown, squadRoot: string): string {
+  const raw = error instanceof Error ? error.message : String(error);
+  const stripped = raw.replace(new RegExp(squadRoot.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '[team-root]');
+  // Collapse to first line to avoid leaking stack-like multi-line details
+  const firstLine = stripped.split('\n')[0] ?? stripped;
+  return firstLine.slice(0, 512);
+}
+
+function normalizeStateToolKey(key: string): string {
+  const normalized = key
+    .replace(/\\/g, '/')
+    .replace(/^\/+/, '')
+    .replace(/^\.squad(?:\/|$)/, '')
+    .replace(/\/+$/, '');
+  validateStateKey(normalized);
+  return normalized;
+}
+
+function normalizeStateToolDir(dir?: string): string {
+  const normalized = (dir ?? '')
+    .replace(/\\/g, '/')
+    .replace(/^\/+/, '')
+    .replace(/^\.squad(?:\/|$)/, '')
+    .replace(/\/+$/, '');
+  if (normalized.length > 0) {
+    validateStateKey(normalized);
+  }
+  return normalized;
+}
+
+function validateMutableStateToolKey(key: string): void {
+  const isMutable =
+    key === 'decisions.md' ||
+    key.startsWith('decisions/inbox/') ||
+    /^agents\/[a-zA-Z0-9_-]+\/history\.md$/.test(key) ||
+    key.startsWith('log/') ||
+    key.startsWith('orchestration-log/') ||
+    key.startsWith('sessions/') ||
+    key.startsWith('.scratch/');
+
+  if (!isMutable) {
+    throw new Error(
+      'State mutations are limited to mutable runtime state (decisions, inbox, logs, sessions, scratch files, and agent history). Static config such as config.json, team.md, routing.md, charters, templates, and skills must not be changed with state tools.',
+    );
+  }
+}
+
+// --- Tool Registry ---
+
+export class ToolRegistry {
+  private tools: Map<string, SquadTool<any>> = new Map();
+  private squadRoot: string;
+  private sessionPoolGetter?: () => any;
+  private storage: StorageProvider;
+  private state?: SquadState;
+  private fanOutDepsGetter?: () => FanOutDependencies | undefined;
+  private memoryStore: LocalMemoryStore;
+
+  constructor(
+    squadRoot = '.squad',
+    sessionPoolGetter?: () => any,
+    storage: StorageProvider = new FSStorageProvider(),
+    state?: SquadState,
+    fanOutDepsGetter?: () => FanOutDependencies | undefined,
+    hostInjectedCopilotAdapterClient?: CopilotMemoryProviderClient,
+  ) {
+    this.squadRoot = squadRoot;
+    this.sessionPoolGetter = sessionPoolGetter;
+    this.storage = storage;
+    this.state = state;
+    this.fanOutDepsGetter = fanOutDepsGetter;
+    this.memoryStore = new LocalMemoryStore(storage, squadRoot, {
+      rootKind: 'squad',
+      hostInjectedCopilotAdapterClient,
+    });
+    this.registerSquadTools();
+  }
+
+  private registerSquadTools(): void {
+    // squad_route: Route work to another agent
+    const squadRoute = defineTool<RouteRequest>({
+      name: 'squad_route',
+      description: 'Route a task to another agent in the squad. Creates a new session for the target agent with the specified task and context.',
+      parameters: {
+        type: 'object',
+        properties: {
+          targetAgent: {
+            type: 'string',
+            description: 'Name of the agent to route the task to',
+          },
+          task: {
+            type: 'string',
+            description: 'Description of the task for the target agent',
+          },
+          priority: {
+            type: 'string',
+            enum: ['low', 'normal', 'high', 'critical'],
+            description: 'Priority level for the routed task',
+            default: 'normal',
+          },
+          context: {
+            type: 'string',
+            description: 'Additional context to pass to the target session',
+          },
+        },
+        required: ['targetAgent', 'task'],
+      },
+      handler: async (args) => {
+        // Normalize + validate target agent name (lowercase to match charter loading convention)
+        const targetAgent = (args.targetAgent ?? '').trim().toLowerCase();
+        if (!targetAgent) {
+          return {
+            textResultForLlm: 'Error: Target agent name is required',
+            resultType: 'failure',
+            error: 'Invalid target agent',
+          };
+        }
+        if (!AGENT_NAME_RE.test(targetAgent)) {
+          return {
+            textResultForLlm: 'Invalid target agent name: must contain only letters, numbers, hyphens, and underscores',
+            resultType: 'failure',
+            error: 'invalid-agent-name',
+          };
+        }
+
+        // Roster check: verify the agent exists when state is available
+        if (this.state) {
+          try {
+            const handle = this.state.agents.get(targetAgent);
+            await handle.charter();
+          } catch (err: unknown) {
+            // Distinguish "not found" from infrastructure errors (I/O, permissions)
+            const isNotFound =
+              err instanceof Error && (err.constructor.name === 'NotFoundError' || err.message.includes('not found'));
+            if (isNotFound) {
+              return {
+                textResultForLlm: `Agent '${targetAgent}' not found in the team roster. Check .squad/agents/ for available agents.`,
+                resultType: 'failure',
+                error: 'agent-not-in-roster',
+              };
+            }
+            return {
+              textResultForLlm: `Roster check failed for '${targetAgent}': ${sanitizeErrorForLlm(err, this.squadRoot)}`,
+              resultType: 'failure',
+              error: 'roster-check-failed',
+            };
+          }
+        }
+
+        const priority = args.priority || 'normal';
+        const routeRequest: RouteRequest = {
+          targetAgent,
+          task: args.task,
+          priority,
+          context: args.context,
+        };
+
+        // Resolve fan-out dependencies. Without them, the SDK cannot create
+        // sessions on behalf of the LLM. Returning fake-success here would
+        // cause the coordinator to claim work it never did (#1029).
+        let fanOutDeps: ReturnType<NonNullable<typeof this.fanOutDepsGetter>>;
+        try {
+          fanOutDeps = this.fanOutDepsGetter?.();
+        } catch (error) {
+          return {
+            textResultForLlm: `Cannot route to ${targetAgent}: ${sanitizeErrorForLlm(error, this.squadRoot)}`,
+            resultType: 'failure',
+            error: 'fan-out-deps-unavailable',
+            toolTelemetry: { routeRequest },
+          };
+        }
+        if (!fanOutDeps) {
+          return {
+            textResultForLlm:
+              `Cannot route to ${targetAgent}: fan-out dependencies are not configured. ` +
+              `Wire a fanOutDepsGetter into ToolRegistry, or intercept squad_route via SquadSessionHooks.onPreToolUse.`,
+            resultType: 'failure',
+            error: 'fan-out-deps-unavailable',
+            toolTelemetry: { routeRequest },
+          };
+        }
+
+        // Spawn the target agent via the production fan-out path.
+        // spawnParallel with a single config matches CLI Path A behavior
+        // (charter compile → model resolve → createSession → initial message).
+        try {
+          const results = await spawnParallel(
+            [{
+              agentName: targetAgent,
+              task: args.task,
+              priority,
+              context: args.context,
+            }],
+            fanOutDeps,
+          );
+          const result = results[0];
+
+          if (!result || result.status !== 'success') {
+            return {
+              textResultForLlm: `Failed to route to ${targetAgent}: ${sanitizeErrorForLlm(result?.error ?? 'unknown error', this.squadRoot)}`,
+              resultType: 'failure',
+              error: 'spawn-failed',
+              toolTelemetry: { routeRequest, agentName: targetAgent },
+            };
+          }
+
+          return {
+            textResultForLlm: `Spawned session ${result.sessionId} for ${targetAgent} with priority ${priority}.`,
+            resultType: 'success',
+            toolTelemetry: { routeRequest, sessionId: result.sessionId },
+          };
+        } catch (error) {
+          return {
+            textResultForLlm: `Failed to route to ${targetAgent}: ${sanitizeErrorForLlm(error, this.squadRoot)}`,
+            resultType: 'failure',
+            error: 'spawn-exception',
+            toolTelemetry: { routeRequest },
+          };
+        }
+      },
+    });
+
+    // squad_decide: Write a decision to the inbox
+    const squadDecide = defineTool<DecisionRecord>({
+      name: 'squad_decide',
+      description: 'Write a decision to the team decision inbox. Decisions are stored in .squad/decisions/inbox/ for team review.',
+      parameters: {
+        type: 'object',
+        properties: {
+          author: {
+            type: 'string',
+            description: 'Agent name making the decision',
+          },
+          summary: {
+            type: 'string',
+            description: 'Brief summary of the decision',
+          },
+          body: {
+            type: 'string',
+            description: 'Full decision details and rationale',
+          },
+          references: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Related agents, PRDs, or issues',
+          },
+        },
+        required: ['author', 'summary', 'body'],
+      },
+      handler: async (args) => {
+        if (!/^[a-zA-Z0-9_-]+$/.test(args.author)) {
+          return { textResultForLlm: 'Invalid author name: must contain only letters, numbers, hyphens, and underscores', resultType: 'failure', error: 'Invalid author' };
+        }
+        try {
+          const inboxDir = path.join(this.squadRoot, 'decisions', 'inbox');
+
+          const decisionId = randomUUID();
+          const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+          const slug = args.summary
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '')
+            .slice(0, 50);
+          const filename = path.join(inboxDir, `${args.author}-${slug}.md`);
+
+          const content = [
+            `### ${timestamp}: ${args.summary}`,
+            '',
+            `**By:** ${args.author}`,
+            `**What:** ${args.summary}`,
+            args.references && args.references.length > 0
+              ? `**References:** ${args.references.join(', ')}`
+              : '',
+            '',
+            `**Why:** ${args.body}`,
+            '',
+          ].filter(Boolean).join('\n');
+
+          this.storage.writeSync(filename, content);
+
+          return {
+            textResultForLlm: `Decision written: ${args.author}-${slug}.md (ID: ${decisionId})`,
+            resultType: 'success',
+            toolTelemetry: { decisionId, filename, slug },
+          };
+        } catch (error) {
+          return {
+            textResultForLlm: `Failed to write decision: ${sanitizeErrorForLlm(error, this.squadRoot)}`,
+            resultType: 'failure',
+            error: String(error),
+          };
+        }
+      },
+    });
+
+    // squad_memory: Append to agent history
+    const squadMemory = defineTool<MemoryEntry>({
+      name: 'squad_memory',
+      description: 'Append an entry to an agent\'s history file. Used to record learnings, updates, or session notes.',
+      parameters: {
+        type: 'object',
+        properties: {
+          agent: {
+            type: 'string',
+            description: 'Agent name whose history to update',
+          },
+          section: {
+            type: 'string',
+            enum: ['learnings', 'updates', 'sessions'],
+            description: 'Section to append to',
+          },
+          content: {
+            type: 'string',
+            description: 'Content to append to the section',
+          },
+        },
+        required: ['agent', 'section', 'content'],
+      },
+      handler: async (args) => {
+        if (!/^[a-zA-Z0-9_-]+$/.test(args.agent)) {
+          return { textResultForLlm: 'Invalid agent name: must contain only letters, numbers, hyphens, and underscores', resultType: 'failure', error: 'Invalid agent name' };
+        }
+        try {
+          // Use SquadState agents collection when available
+          if (this.state) {
+            const handle = this.state.agents.get(args.agent);
+            // Verify the agent exists by attempting to read charter
+            try {
+              await handle.charter();
+            } catch {
+              return {
+                textResultForLlm: `Agent history file not found: agents/${args.agent}/history.md`,
+                resultType: 'failure',
+                error: 'History file does not exist',
+              };
+            }
+            const sectionName = SECTION_MAP[args.section] ?? 'Learnings';
+            const timestamp = new Date().toISOString().slice(0, 10);
+            await handle.appendHistory(
+              sectionName,
+              { section: sectionName, content: args.content, timestamp },
+            );
+            return {
+              textResultForLlm: `Appended to ${args.agent} history (${args.section})`,
+              resultType: 'success',
+              toolTelemetry: { agent: args.agent, section: args.section },
+            };
+          }
+
+          // Fallback: raw StorageProvider
+          const historyFile = path.join(this.squadRoot, 'agents', args.agent, 'history.md');
+
+          if (!this.storage.existsSync(historyFile)) {
+            return {
+              textResultForLlm: `Agent history file not found: agents/${args.agent}/history.md`,
+              resultType: 'failure',
+              error: 'History file does not exist',
+            };
+          }
+
+          const sectionHeader = `## ${SECTION_MAP[args.section] ?? 'Learnings'}`;
+          const timestamp = new Date().toISOString().slice(0, 10);
+          const entry = `\n### ${timestamp}\n${args.content}\n`;
+
+          let content = this.storage.readSync(historyFile);
+          if (content === undefined) {
+            return {
+              textResultForLlm: `Agent history file not readable: agents/${args.agent}/history.md`,
+              resultType: 'failure',
+              error: 'History file could not be read',
+            };
+          }
+
+          // Find section and append
+          const sectionIndex = content.indexOf(sectionHeader);
+          if (sectionIndex !== -1) {
+            // Find next section or end of file
+            const nextSectionIndex = content.indexOf('\n## ', sectionIndex + sectionHeader.length);
+            const insertIndex = nextSectionIndex === -1 ? content.length : nextSectionIndex;
+            content = content.slice(0, insertIndex) + entry + content.slice(insertIndex);
+          } else {
+            // Section doesn't exist, append at end
+            content += `\n${sectionHeader}\n${entry}`;
+          }
+
+          this.storage.writeSync(historyFile, content);
+
+          return {
+            textResultForLlm: `Appended to ${args.agent} history (${args.section})`,
+            resultType: 'success',
+            toolTelemetry: { agent: args.agent, section: args.section },
+          };
+        } catch (error) {
+          return {
+            textResultForLlm: `Failed to update agent memory: ${sanitizeErrorForLlm(error, this.squadRoot)}`,
+            resultType: 'failure',
+            error: String(error),
+          };
+        }
+      },
+    });
+
+    const stateRead = defineTool<StateReadRequest>({
+      name: 'squad_state_read',
+      description: 'Read mutable Squad state by key through the configured state backend. Keys are relative to .squad/; do not use shell git or direct file reads for mutable state.',
+      parameters: {
+        type: 'object',
+        properties: {
+          key: { type: 'string', description: 'State key relative to .squad/, for example decisions.md or agents/data/history.md' },
+        },
+        required: ['key'],
+      },
+      handler: async (args) => {
+        try {
+          const key = normalizeStateToolKey(args.key);
+          const content = this.storage.readSync(path.join(this.squadRoot, key));
+          if (content === undefined) {
+            return {
+              textResultForLlm: `State key not found: ${key}`,
+              resultType: 'failure',
+              error: 'State key does not exist',
+            };
+          }
+          return {
+            textResultForLlm: content,
+            resultType: 'success',
+            toolTelemetry: { key },
+          };
+        } catch (error) {
+          return {
+            textResultForLlm: `Failed to read state: ${sanitizeErrorForLlm(error, this.squadRoot)}`,
+            resultType: 'failure',
+            error: String(error),
+          };
+        }
+      },
+    });
+
+    const stateWrite = defineTool<StateWriteRequest>({
+      name: 'squad_state_write',
+      description: 'Write mutable Squad state through the configured state backend. Always use this tool for mutable state when available. Keys are relative to .squad/; static config such as config.json, team.md, routing.md, charters, templates, and skills is not mutable state.',
+      parameters: {
+        type: 'object',
+        properties: {
+          key: { type: 'string', description: 'State key relative to .squad/' },
+          content: { type: 'string', description: 'Complete content to store at the key' },
+        },
+        required: ['key', 'content'],
+      },
+      handler: async (args) => {
+        try {
+          const key = normalizeStateToolKey(args.key);
+          validateMutableStateToolKey(key);
+          this.storage.writeSync(path.join(this.squadRoot, key), args.content);
+          return {
+            textResultForLlm: `State written: ${key}`,
+            resultType: 'success',
+            toolTelemetry: { key },
+          };
+        } catch (error) {
+          return {
+            textResultForLlm: `Failed to write state: ${sanitizeErrorForLlm(error, this.squadRoot)}`,
+            resultType: 'failure',
+            error: String(error),
+          };
+        }
+      },
+    });
+
+    const stateAppend = defineTool<StateAppendRequest>({
+      name: 'squad_state_append',
+      description: 'Append to mutable Squad state through the configured state backend. Always use this tool for mutable state when available. Keys are relative to .squad/; static config cannot be mutated through this tool.',
+      parameters: {
+        type: 'object',
+        properties: {
+          key: { type: 'string', description: 'State key relative to .squad/' },
+          content: { type: 'string', description: 'Content to append' },
+        },
+        required: ['key', 'content'],
+      },
+      handler: async (args) => {
+        try {
+          const key = normalizeStateToolKey(args.key);
+          validateMutableStateToolKey(key);
+          this.storage.appendSync(path.join(this.squadRoot, key), args.content);
+          return {
+            textResultForLlm: `State appended: ${key}`,
+            resultType: 'success',
+            toolTelemetry: { key },
+          };
+        } catch (error) {
+          return {
+            textResultForLlm: `Failed to append state: ${sanitizeErrorForLlm(error, this.squadRoot)}`,
+            resultType: 'failure',
+            error: String(error),
+          };
+        }
+      },
+    });
+
+    const stateDelete = defineTool<StateDeleteRequest>({
+      name: 'squad_state_delete',
+      description: 'Delete mutable Squad state through the configured state backend. Always use this tool for mutable state when available. Keys are relative to .squad/; static config cannot be deleted through this tool.',
+      parameters: {
+        type: 'object',
+        properties: {
+          key: { type: 'string', description: 'State key relative to .squad/' },
+        },
+        required: ['key'],
+      },
+      handler: async (args) => {
+        try {
+          const key = normalizeStateToolKey(args.key);
+          validateMutableStateToolKey(key);
+          this.storage.deleteSync(path.join(this.squadRoot, key));
+          return {
+            textResultForLlm: `State deleted: ${key}`,
+            resultType: 'success',
+            toolTelemetry: { key },
+          };
+        } catch (error) {
+          return {
+            textResultForLlm: `Failed to delete state: ${sanitizeErrorForLlm(error, this.squadRoot)}`,
+            resultType: 'failure',
+            error: String(error),
+          };
+        }
+      },
+    });
+
+    const stateList = defineTool<StateListRequest>({
+      name: 'squad_state_list',
+      description: 'List mutable Squad state entries through the configured state backend. Directories are relative to .squad/.',
+      parameters: {
+        type: 'object',
+        properties: {
+          dir: { type: 'string', description: 'Directory relative to .squad/; omit for root' },
+        },
+      },
+      handler: async (args) => {
+        try {
+          const dir = normalizeStateToolDir(args.dir);
+          const entries = this.storage.listSync(path.join(this.squadRoot, dir));
+          return {
+            textResultForLlm: entries.length > 0 ? entries.join('\n') : '(empty)',
+            resultType: 'success',
+            toolTelemetry: { dir },
+          };
+        } catch (error) {
+          return {
+            textResultForLlm: `Failed to list state: ${sanitizeErrorForLlm(error, this.squadRoot)}`,
+            resultType: 'failure',
+            error: String(error),
+          };
+        }
+      },
+    });
+
+    const stateHealth = defineTool<Record<string, never>>({
+      name: 'squad_state_health',
+      description: 'Report the active Squad state storage layer so agents can verify they are using runtime-owned state instead of manual git/file choreography.',
+      parameters: { type: 'object', properties: {} },
+      handler: async () => ({
+        textResultForLlm: `State backend storage: ${this.storage.constructor.name}`,
+        resultType: 'success',
+        toolTelemetry: { storage: this.storage.constructor.name },
+      }),
+    });
+
+    const memoryClassify = defineTool<GovernedMemoryRequest>({
+      name: 'memory.classify',
+      description: 'Classify proposed memory with Squad governance policy without persisting content.',
+      parameters: {
+        type: 'object',
+        properties: {
+          content: { type: 'string', description: 'Memory content to classify' },
+          class: {
+            type: 'string',
+            enum: ['TRANSIENT', 'LOCAL', 'DECISION', 'POLICY', 'COPILOT_MEMORY', 'FORBIDDEN'],
+            description: 'Optional requested memory class',
+          },
+        },
+        required: ['content'],
+      },
+      handler: async (args) => {
+        const classification = await this.memoryStore.classify({
+          content: args.content,
+          requestedClass: args.class,
+        }, {
+          audit: true,
+          actor: args.author,
+          title: args.title,
+        });
+        return {
+          textResultForLlm: `${classification.class}: ${classification.reason}`,
+          resultType: classification.allowed ? 'success' : 'failure',
+          toolTelemetry: { classification },
+        };
+      },
+    });
+
+    const memoryWrite = defineTool<GovernedMemoryRequest>({
+      name: 'memory.write',
+      description: 'Classify and write governed local Squad memory. External semantic memory requires an explicit configured bridge.',
+      parameters: {
+        type: 'object',
+        properties: {
+          content: { type: 'string', description: 'Memory content to persist' },
+          title: { type: 'string', description: 'Short memory title' },
+          author: { type: 'string', description: 'Actor requesting the write' },
+          class: {
+            type: 'string',
+            enum: ['TRANSIENT', 'LOCAL', 'DECISION', 'POLICY', 'COPILOT_MEMORY', 'FORBIDDEN'],
+            description: 'Optional requested memory class',
+          },
+          approved: { type: 'boolean', description: 'Whether the write has explicit approval' },
+        },
+        required: ['content'],
+      },
+      handler: async (args) => {
+        const result = await this.memoryStore.write({
+          content: args.content,
+          title: args.title,
+          author: args.author,
+          requestedClass: args.class,
+          approved: args.approved,
+        });
+        return {
+          textResultForLlm: result.stored
+            ? `Stored ${result.classification.class} memory ${result.id} at ${result.path}`
+            : `Rejected ${result.classification.class} memory: ${result.classification.reason}`,
+          resultType: result.stored ? 'success' : 'failure',
+          toolTelemetry: {
+            id: result.id,
+            class: result.classification.class,
+            path: result.path,
+            stored: result.stored,
+          },
+        };
+      },
+    });
+
+    const memorySearch = defineTool<GovernedMemorySearchRequest>({
+      name: 'memory.search',
+      description: 'Search governed local Squad memory entries.',
+      parameters: {
+        type: 'object',
+        properties: {
+          query: { type: 'string', description: 'Search query' },
+        },
+        required: ['query'],
+      },
+      handler: async (args) => {
+        const results = await this.memoryStore.search(args.query);
+        const telemetryResults = results.map(({ id, class: memoryClass, title, path }) => ({
+          id,
+          class: memoryClass,
+          title,
+          path,
+        }));
+        return {
+          textResultForLlm: results.length === 0
+            ? 'No governed memory entries matched.'
+            : results.map(r => `${r.id} [${r.class}] ${r.title}: ${r.snippet}`).join('\n'),
+          resultType: 'success',
+          toolTelemetry: { count: results.length, results: telemetryResults },
+        };
+      },
+    });
+
+    const memoryPromote = defineTool<GovernedMemoryPromoteRequest>({
+      name: 'memory.promote',
+      description: 'Promote an existing governed memory entry to LOCAL, DECISION, POLICY, or approved semantic memory.',
+      parameters: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', description: 'Memory ID to promote' },
+          targetClass: {
+            type: 'string',
+            enum: ['LOCAL', 'DECISION', 'POLICY', 'COPILOT_MEMORY'],
+            description: 'Target memory class',
+          },
+          actor: { type: 'string', description: 'Actor requesting promotion' },
+        },
+        required: ['id', 'targetClass'],
+      },
+      handler: async (args) => {
+        const result = await this.memoryStore.promote(args.id, args.targetClass, args.actor);
+        return {
+          textResultForLlm: result.stored
+            ? `Promoted memory ${args.id} to ${args.targetClass} as ${result.id}`
+            : `Promotion rejected: ${result.classification.reason}`,
+          resultType: result.stored ? 'success' : 'failure',
+          toolTelemetry: { sourceId: args.id, targetId: result.id, stored: result.stored },
+        };
+      },
+    });
+
+    const memoryDelete = defineTool<GovernedMemoryDeleteRequest>({
+      name: 'memory.delete',
+      description: 'Delete a governed local memory entry and write an audit tombstone.',
+      parameters: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', description: 'Memory ID to delete' },
+          actor: { type: 'string', description: 'Actor requesting deletion' },
+        },
+        required: ['id'],
+      },
+      handler: async (args) => {
+        const deleted = await this.memoryStore.delete(args.id, args.actor);
+        return {
+          textResultForLlm: deleted ? `Deleted memory ${args.id}` : `Memory ${args.id} not found`,
+          resultType: deleted ? 'success' : 'failure',
+          toolTelemetry: { id: args.id, deleted },
+        };
+      },
+    });
+
+    const memoryAudit = defineTool<Record<string, never>>({
+      name: 'memory.audit',
+      description: 'Return the governed memory audit log. Audit records do not include memory content.',
+      parameters: { type: 'object', properties: {} },
+      handler: async () => {
+        const records = await this.memoryStore.auditLog();
+        return {
+          textResultForLlm: records.length === 0
+            ? 'No governed memory audit records.'
+            : records.map(r => `${r.timestamp} ${r.action} ${r.class ?? ''} ${r.id ?? ''} ${r.title ?? ''} ${r.reason ?? ''}`.trim()).join('\n'),
+          resultType: 'success',
+          toolTelemetry: { count: records.length, records },
+        };
+      },
+    });
+
+    // squad_status: Query session pool state
+    const squadStatus = defineTool<StatusQuery>({
+      name: 'squad_status',
+      description: 'Query the status of active sessions in the pool. Returns session metadata and current state.',
+      parameters: {
+        type: 'object',
+        properties: {
+          agentName: {
+            type: 'string',
+            description: 'Filter by agent name',
+          },
+          status: {
+            type: 'string',
+            description: 'Filter by session status (active, idle, completed)',
+          },
+          verbose: {
+            type: 'boolean',
+            description: 'Include detailed session metadata',
+            default: false,
+          },
+        },
+      },
+      handler: async (args) => {
+        const pool = this.sessionPoolGetter?.();
+
+        if (!pool) {
+          return {
+            textResultForLlm: 'Session pool not available. Pool size: 0, Active sessions: 0',
+            resultType: 'success',
+            toolTelemetry: {
+              poolAvailable: false,
+              totalSessions: 0,
+              activeSessions: 0,
+            },
+          };
+        }
+
+        const allSessions = Array.from((pool as any).sessions?.values() || []);
+        let filteredSessions = allSessions;
+
+        // Apply agent name filter
+        if (args.agentName) {
+          filteredSessions = filteredSessions.filter(
+            (s: any) => s.agentName === args.agentName
+          );
+        }
+
+        // Apply status filter
+        if (args.status) {
+          filteredSessions = filteredSessions.filter(
+            (s: any) => s.status === args.status
+          );
+        }
+
+        const poolInfo = {
+          poolSize: pool.size,
+          capacity: (pool as any).config?.maxConcurrent || 0,
+          atCapacity: pool.atCapacity,
+          activeSessions: pool.active().length,
+          totalSessions: allSessions.length,
+          filteredCount: filteredSessions.length,
+        };
+
+        // Build response
+        const sessionsByAgent: Record<string, number> = {};
+        const sessionsByStatus: Record<string, number> = {};
+
+        for (const session of allSessions) {
+          const s = session as any;
+          sessionsByAgent[s.agentName] = (sessionsByAgent[s.agentName] || 0) + 1;
+          sessionsByStatus[s.status] = (sessionsByStatus[s.status] || 0) + 1;
+        }
+
+        let textResult = `Pool status: ${poolInfo.poolSize}/${poolInfo.capacity} sessions (${poolInfo.activeSessions} active)`;
+
+        if (args.agentName || args.status) {
+          textResult += `\nFiltered results: ${poolInfo.filteredCount} sessions`;
+        }
+
+        if (args.verbose && filteredSessions.length > 0) {
+          textResult += '\n\nSessions:';
+          for (const session of filteredSessions) {
+            const s = session as any;
+            const uptime = s.createdAt ? Math.floor((Date.now() - s.createdAt.getTime()) / 1000) : 0;
+            textResult += `\n- ${s.id.slice(0, 8)}: ${s.agentName} (${s.status}, ${uptime}s uptime)`;
+          }
+        }
+
+        return {
+          textResultForLlm: textResult,
+          resultType: 'success',
+          toolTelemetry: {
+            poolInfo,
+            sessionsByAgent,
+            sessionsByStatus,
+            filters: {
+              agentName: args.agentName,
+              status: args.status,
+              verbose: args.verbose || false,
+            },
+          },
+        };
+      },
+    });
+
+    // squad_skill: Read/write agent skills
+    const squadSkill = defineTool<SkillRequest>({
+      name: 'squad_skill',
+      description: 'Read or write agent skill definitions. Skills are stored in .copilot/skills/{name}/SKILL.md.',
+      parameters: {
+        type: 'object',
+        properties: {
+          skillName: {
+            type: 'string',
+            description: 'Skill name (maps to directory name)',
+          },
+          operation: {
+            type: 'string',
+            enum: ['read', 'write'],
+            description: 'Operation to perform',
+          },
+          content: {
+            type: 'string',
+            description: 'Skill content (required for write)',
+          },
+          confidence: {
+            type: 'string',
+            enum: ['low', 'medium', 'high'],
+            description: 'Confidence level (required for write)',
+          },
+        },
+        required: ['skillName', 'operation'],
+      },
+      handler: async (args) => {
+        if (!/^[a-zA-Z0-9_-]+$/.test(args.skillName)) {
+          return { textResultForLlm: 'Invalid skill name: must contain only letters, numbers, hyphens, and underscores', resultType: 'failure', error: 'Invalid skillName' };
+        }
+        try {
+          const projectRoot = path.dirname(this.squadRoot);
+          const legacySkillDir = path.join(this.squadRoot, 'skills', args.skillName);
+          const copilotSkillDir = path.join(projectRoot, '.copilot', 'skills', args.skillName);
+          const skillDir = args.operation === 'write'
+            ? copilotSkillDir
+            : this.storage.existsSync(path.join(copilotSkillDir, 'SKILL.md'))
+              ? copilotSkillDir
+              : legacySkillDir;
+          const skillFile = path.join(skillDir, 'SKILL.md');
+
+          if (args.operation === 'read') {
+            const content = this.storage.readSync(skillFile);
+            if (content === undefined) {
+              return {
+                textResultForLlm: `Skill not found: ${args.skillName}`,
+                resultType: 'failure',
+                error: 'Skill file does not exist',
+              };
+            }
+
+            return {
+              textResultForLlm: `Skill: ${args.skillName}\n\n${content}`,
+              resultType: 'success',
+              toolTelemetry: { skillName: args.skillName, operation: 'read' },
+            };
+          } else {
+            // write operation
+            if (!args.content) {
+              return {
+                textResultForLlm: 'Error: content is required for write operation',
+                resultType: 'failure',
+                error: 'Missing required field: content',
+              };
+            }
+
+            const skillContent = [
+              `# ${args.skillName}`,
+              '',
+              `**Confidence:** ${args.confidence || 'medium'}`,
+              `**Updated:** ${new Date().toISOString()}`,
+              '',
+              args.content,
+            ].join('\n');
+
+            this.storage.writeSync(skillFile, skillContent);
+
+            return {
+              textResultForLlm: `Skill written: ${args.skillName} (.copilot/skills/${args.skillName}/SKILL.md)`,
+              resultType: 'success',
+              toolTelemetry: { skillName: args.skillName, operation: 'write', confidence: args.confidence },
+            };
+          }
+        } catch (error) {
+          return {
+            textResultForLlm: `Failed to ${args.operation} skill: ${sanitizeErrorForLlm(error, this.squadRoot)}`,
+            resultType: 'failure',
+            error: String(error),
+          };
+        }
+      },
+    });
+
+    // Register all tools
+    this.tools.set('squad_route', squadRoute);
+    this.tools.set('squad_decide', squadDecide);
+    this.tools.set('squad_memory', squadMemory);
+    this.tools.set('squad_state_read', stateRead);
+    this.tools.set('squad_state_write', stateWrite);
+    this.tools.set('squad_state_append', stateAppend);
+    this.tools.set('squad_state_delete', stateDelete);
+    this.tools.set('squad_state_list', stateList);
+    this.tools.set('squad_state_health', stateHealth);
+    this.tools.set('memory.classify', memoryClassify);
+    this.tools.set('memory.write', memoryWrite);
+    this.tools.set('memory.search', memorySearch);
+    this.tools.set('memory.promote', memoryPromote);
+    this.tools.set('memory.delete', memoryDelete);
+    this.tools.set('memory.audit', memoryAudit);
+    this.tools.set('squad_status', squadStatus);
+    this.tools.set('squad_skill', squadSkill);
+  }
+
+  /** Get all registered tools for session config */
+  getTools(): SquadTool<any>[] {
+    return Array.from(this.tools.values());
+  }
+
+  /** Get tools filtered by agent's allowed tool list */
+  getToolsForAgent(allowedTools?: string[]): SquadTool<any>[] {
+    if (!allowedTools) return this.getTools();
+    return allowedTools
+      .map(name => this.tools.get(name))
+      .filter((t): t is NonNullable<typeof t> => t != null);
+  }
+
+  /** Get a specific tool by name */
+  getTool(name: string): SquadTool<any> | undefined {
+    return this.tools.get(name);
+  }
+
+  /**
+   * Replace built-in tool handlers with skill-backed versions.
+   * Called post-construction after SkillScriptLoader has resolved handlers.
+   * Only replaces tools that already exist — unknown tool names are silently ignored.
+   * Once applied, handlers are immutable for the session.
+   *
+   * Skill handlers are already OTel-wrapped by SkillScriptLoader.load() — no re-wrapping here.
+   */
+  applySkillHandlers(tools: SquadTool<any>[]): void {
+    for (const tool of tools) {
+      if (this.tools.has(tool.name)) {
+        this.tools.set(tool.name, tool);
+      }
+      // Unknown tool names silently ignored — skills cannot introduce new tools
+    }
+  }
+}

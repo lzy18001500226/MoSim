@@ -1,0 +1,44 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const base = import.meta.env.BASE_URL;
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+function extractTitle(id: string): string {
+  return id
+    .replace(/^\d+[a-z]?-/, '')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+const title = entry.data.title || extractTitle(entry.id);
+---
+
+<BaseLayout title={title} description={entry.data.description}>
+  <Header />
+  <main class="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+    <a href={`${base}blog/`} class="inline-flex items-center gap-1 text-sm text-squad-600 dark:text-squad-400 hover:text-squad-700 dark:hover:text-squad-300 mb-6 transition-colors">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+      </svg>
+      Back to Blog
+    </a>
+    <article class="prose" data-pagefind-body data-pagefind-meta="section:Blog">
+      <Content />
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>
