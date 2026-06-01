@@ -1,0 +1,841 @@
+import { Spinner } from "@/client/components/ui/spinner";
+import { TooltipProvider } from "@/client/components/ui/tooltip";
+import {
+  useInspector,
+  type EmbeddedConfig,
+  type TabType,
+} from "@/client/context/InspectorContext";
+import { useAutoConnect } from "@/client/hooks/useAutoConnect";
+import { useKeyboardShortcuts } from "@/client/hooks/useKeyboardShortcuts";
+import { useSavedRequests } from "@/client/hooks/useSavedRequests";
+import {
+  MCPCommandPaletteOpenEvent,
+  MCPTabNavigationEvent,
+  MCPSessionDurationEvent,
+  Telemetry,
+} from "@/client/telemetry";
+import {
+  getStoredConnectionConfig,
+  isAliasOnlyConnectionUpdate,
+  type EditableConnectionConfig,
+  type OAuthStaticConfig,
+} from "@/client/utils/connectionUpdates";
+import { useMcpClient, type McpServer } from "mcp-use/react";
+import type { ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+import { toast } from "sonner";
+import { CommandPalette } from "./CommandPalette";
+import { LayoutContent } from "./LayoutContent";
+import { LayoutHeader } from "./LayoutHeader";
+import { ServerConnectionModal } from "./ServerConnectionModal";
+
+interface LayoutProps {
+  children: ReactNode;
+}
+
+/**
+ * Render the application layout that orchestrates header, main content, command palette, and server connection modal.
+ *
+ * This component wires MCP client and inspector state, synchronizes URL query parameters (server, tab, tunnelUrl, embedded),
+ * manages keyboard shortcuts, auto-connect flow, aggregated tool/prompt/resource lists, and provides adapters for legacy
+ * connection APIs while preserving backward compatibility.
+ *
+ * @param children - The main content to render within the layout's content area.
+ * @returns The React element representing the application layout.
+ */
+export function Layout({ children }: LayoutProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const {
+    servers: connections,
+    addServer,
+    removeServer: removeConnection,
+    updateServerMetadata,
+    updateServer,
+    storageLoaded: configLoaded,
+  } = useMcpClient();
+
+  // Adapter functions for backward compatibility
+  const addConnection = useCallback(
+    (
+      url: string,
+      name?: string,
+      proxyConfig?: any,
+      transportType?: "http" | "sse",
+      oauth?: OAuthStaticConfig
+    ) => {
+      addServer(url, {
+        url,
+        name,
+        proxyConfig,
+        transportType,
+        preventAutoAuth: true,
+        useRedirectFlow: true,
+        clientOptions: {
+          capabilities: {
+            extensions: {
+              "io.modelcontextprotocol/ui": {
+                mimeTypes: ["text/html;profile=mcp-app"],
+              },
+            },
+          },
+        },
+        ...(oauth ? { oauth } : {}),
+      });
+    },
+    [addServer]
+  );
+
+  const updateConnectionConfig = useCallback(
+    async (id: string, config: any) => {
+      try {
+        await updateServer(id, config);
+      } catch (error) {
+        console.error(`[Layout] Failed to update connection ${id}:`, error);
+      }
+    },
+    [updateServer]
+  );
+
+  const updateConnectionMetadata = useCallback(
+    async (id: string, metadata: { name: string }) => {
+      try {
+        await updateServerMetadata(id, metadata);
+      } catch (error) {
+        console.error(
+          `[Layout] Failed to update connection metadata for ${id}:`,
+          error
+        );
+      }
+    },
+    [updateServerMetadata]
+  );
+  const {
+    selectedServerId,
+    setSelectedServerId,
+    activeTab,
+    setActiveTab,
+    navigateToItem,
+    setTunnelUrl,
+    tunnelUrl,
+    isEmbedded,
+    embeddedConfig,
+    setEmbeddedMode,
+  } = useInspector();
+
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [editingConnectionId, setEditingConnectionId] = useState<string | null>(
+    null
+  );
+  const savedRequests = useSavedRequests();
+
+  // Initialize embedded mode from URL params once on mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const embedded = urlParams.get("embedded") === "true";
+    const embeddedConfigParam = urlParams.get("embeddedConfig");
+
+    if (embedded) {
+      let config: EmbeddedConfig = {};
+      if (embeddedConfigParam) {
+        try {
+          config = JSON.parse(embeddedConfigParam);
+        } catch (error) {
+          console.error("Failed to parse embeddedConfig:", error);
+        }
+      }
+      setEmbeddedMode(true, config);
+
+      // Apply defaultTab from embeddedConfig (overrides ?tab= param)
+      if (config.defaultTab) {
+        setActiveTab(config.defaultTab);
+      }
+    }
+  }, []); // Only run once on mount
+
+  // Read tunnelUrl from query parameters and store in context
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const tunnelUrl = urlParams.get("tunnelUrl");
+    setTunnelUrl(tunnelUrl);
+  }, [location.search, setTunnelUrl]);
+
+  // Read tab from query parameters and set active tab
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const tab = urlParams.get("tab");
+    if (tab) {
+      // Validate that tab is a valid TabType
+      const validTabs: TabType[] = [
+        "tools",
+        "prompts",
+        "resources",
+        "chat",
+        "sampling",
+        "elicitation",
+        "notifications",
+      ];
+      if (validTabs.includes(tab as TabType)) {
+        setActiveTab(tab as TabType);
+      }
+    }
+  }, [location.search, setActiveTab]);
+
+  // Tab navigation telemetry
+  const previousTabRef = useRef<string | null>(null);
+
+  // Session duration tracking
+  const sessionStartRef = useRef<number>(Date.now());
+  const tabsVisitedRef = useRef<Set<string>>(new Set());
+  const toolsExecutedRef = useRef<number>(0);
+
+  useEffect(() => {
+    const handler = () => {
+      toolsExecutedRef.current++;
+    };
+    window.addEventListener("mcp-tool-executed", handler);
+    return () => window.removeEventListener("mcp-tool-executed", handler);
+  }, []);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      try {
+        const durationSeconds = Math.round(
+          (Date.now() - sessionStartRef.current) / 1000
+        );
+        Telemetry.getInstance()
+          .capture(
+            new MCPSessionDurationEvent({
+              durationSeconds,
+              tabsVisited: tabsVisitedRef.current.size,
+              toolsExecuted: toolsExecutedRef.current,
+            })
+          )
+          .catch(() => {});
+      } catch {
+        // ignore telemetry errors
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []);
+
+  // Sync the URL ?tab= param whenever the active tab changes
+  const handleTabChange = useCallback(
+    (tab: TabType) => {
+      try {
+        Telemetry.getInstance()
+          .capture(
+            new MCPTabNavigationEvent({
+              tab,
+              previousTab: previousTabRef.current,
+            })
+          )
+          .catch(() => {});
+      } catch {
+        // ignore telemetry errors
+      }
+      previousTabRef.current = tab;
+      tabsVisitedRef.current.add(tab);
+
+      setActiveTab(tab);
+      const params = new URLSearchParams(location.search);
+      params.set("tab", tab);
+      navigate(`/?${params.toString()}`, { replace: true });
+    },
+    [setActiveTab, navigate, location.search]
+  );
+
+  // Listen for custom navigation events from toast (for sampling and elicitation requests)
+  useEffect(() => {
+    const handleNavigateToSampling = (event: globalThis.Event) => {
+      const customEvent = event as globalThis.CustomEvent<{
+        requestId: string;
+      }>;
+      const requestId = customEvent.detail.requestId;
+
+      // Switch to sampling tab and auto-select the request
+      if (selectedServerId) {
+        navigateToItem(selectedServerId, "sampling", requestId);
+      }
+    };
+
+    const handleNavigateToElicitation = (event: globalThis.Event) => {
+      const customEvent = event as globalThis.CustomEvent<{
+        requestId: string;
+      }>;
+      const requestId = customEvent.detail.requestId;
+
+      // Switch to elicitation tab and auto-select the request
+      if (selectedServerId) {
+        navigateToItem(selectedServerId, "elicitation", requestId);
+      }
+    };
+
+    const handleNavigateToToolResult = (event: globalThis.Event) => {
+      const customEvent = event as globalThis.CustomEvent<{
+        toolName: string | null;
+      }>;
+      const toolName = customEvent.detail.toolName;
+
+      // Switch to tools tab and auto-select the tool
+      if (selectedServerId && toolName) {
+        navigateToItem(selectedServerId, "tools", toolName);
+      } else if (selectedServerId) {
+        // If no toolName, just switch to tools tab
+        handleTabChange("tools");
+      }
+    };
+
+    window.addEventListener("navigate-to-sampling", handleNavigateToSampling);
+    window.addEventListener(
+      "navigate-to-elicitation",
+      handleNavigateToElicitation
+    );
+    window.addEventListener(
+      "navigate-to-tool-result",
+      handleNavigateToToolResult
+    );
+
+    return () => {
+      window.removeEventListener(
+        "navigate-to-sampling",
+        handleNavigateToSampling
+      );
+      window.removeEventListener(
+        "navigate-to-elicitation",
+        handleNavigateToElicitation
+      );
+      window.removeEventListener(
+        "navigate-to-tool-result",
+        handleNavigateToToolResult
+      );
+    };
+  }, [selectedServerId, handleTabChange, navigateToItem]);
+
+  // Refs for search inputs in tabs
+  const toolsSearchRef = useRef<{
+    focusSearch: () => void;
+    blurSearch: () => void;
+  } | null>(null);
+  const promptsSearchRef = useRef<{
+    focusSearch: () => void;
+    blurSearch: () => void;
+  } | null>(null);
+  const resourcesSearchRef = useRef<{
+    focusSearch: () => void;
+    blurSearch: () => void;
+  } | null>(null);
+
+  // Auto-connect handling extracted to custom hook
+  const { isAutoConnecting } = useAutoConnect({
+    connections,
+    addConnection,
+    removeConnection,
+    configLoaded,
+    embedded: isEmbedded,
+  });
+
+  // Track command palette open
+  const handleCommandPaletteOpen = useCallback(
+    (trigger: "keyboard" | "button") => {
+      const telemetry = Telemetry.getInstance();
+      telemetry
+        .capture(
+          new MCPCommandPaletteOpenEvent({
+            trigger,
+          })
+        )
+        .catch(() => {
+          // Silently fail - telemetry should not break the application
+        });
+      setIsCommandPaletteOpen(true);
+    },
+    []
+  );
+
+  const handleServerSelect = (serverId: string) => {
+    const server = connections.find((c) => c.id === serverId);
+    if (!server || server.state !== "ready") {
+      toast.error("Server is not connected and cannot be inspected");
+      return;
+    }
+    setSelectedServerId(serverId);
+    // Preserve tunnelUrl and tab parameters if present
+    const urlParams = new URLSearchParams(location.search);
+    const tunnelUrl = urlParams.get("tunnelUrl");
+    const tab = urlParams.get("tab");
+    const params = new URLSearchParams();
+    params.set("server", serverId);
+    if (tunnelUrl) params.set("tunnelUrl", tunnelUrl);
+    if (tab) params.set("tab", tab);
+    navigate(`/?${params.toString()}`);
+  };
+
+  const handleOpenConnectionOptions = useCallback(
+    (connectionId: string | null) => {
+      setEditingConnectionId(connectionId);
+    },
+    []
+  );
+
+  const handleUpdateConnection = useCallback(
+    (config: EditableConnectionConfig) => {
+      if (!editingConnectionId) return;
+
+      const currentConnection =
+        getStoredConnectionConfig<EditableConnectionConfig>(
+          editingConnectionId
+        ) ||
+        connections.find(
+          (connection: McpServer) => connection.id === editingConnectionId
+        );
+
+      // If the URL changed, we need to remove the old one and add a new one
+      if (config.url !== editingConnectionId) {
+        removeConnection(editingConnectionId);
+        addConnection(
+          config.url,
+          config.name,
+          config.proxyConfig,
+          config.transportType,
+          config.oauth
+        );
+      } else if (
+        currentConnection &&
+        isAliasOnlyConnectionUpdate(currentConnection, config)
+      ) {
+        updateConnectionMetadata(editingConnectionId, {
+          name: config.name || config.url,
+        });
+      } else {
+        // Otherwise just update the existing connection
+        updateConnectionConfig(editingConnectionId, {
+          name: config.name,
+          proxyConfig: config.proxyConfig,
+          transportType: config.transportType,
+          oauth: config.oauth,
+        });
+      }
+
+      // Close the modal
+      setEditingConnectionId(null);
+
+      toast.success("Connection settings updated");
+    },
+    [
+      editingConnectionId,
+      connections,
+      removeConnection,
+      addConnection,
+      updateConnectionMetadata,
+      updateConnectionConfig,
+    ]
+  );
+
+  const handleCommandPaletteNavigate = (
+    tab: "tools" | "prompts" | "resources",
+    itemName?: string,
+    serverId?: string
+  ) => {
+    console.warn("[Layout] handleCommandPaletteNavigate called:", {
+      tab,
+      itemName,
+      serverId,
+    });
+
+    // If a serverId is provided, navigate to that server
+    if (serverId) {
+      const server = connections.find((c) => c.id === serverId);
+      console.warn("[Layout] Server lookup:", {
+        serverId,
+        serverFound: !!server,
+        serverState: server?.state,
+      });
+
+      if (!server || server.state !== "ready") {
+        console.warn("[Layout] Server not ready, showing error");
+        toast.error("Server is not connected and cannot be inspected");
+        return;
+      }
+
+      console.warn("[Layout] Calling navigateToItem:", {
+        serverId,
+        tab,
+        itemName,
+      });
+      // Use the context's navigateToItem to set all state atomically
+      navigateToItem(serverId, tab, itemName);
+      // Navigate using query params
+      // Preserve tunnelUrl and tab parameters if present
+      const urlParams = new URLSearchParams(location.search);
+      const tunnelUrl = urlParams.get("tunnelUrl");
+      const existingTab = urlParams.get("tab");
+      const params = new URLSearchParams();
+      params.set("server", serverId);
+      if (tunnelUrl) params.set("tunnelUrl", tunnelUrl);
+      // Use the tab from the function parameter, or preserve existing tab if not changing
+      if (tab) params.set("tab", tab);
+      else if (existingTab) params.set("tab", existingTab);
+      const newUrl = `/?${params.toString()}`;
+      console.warn("[Layout] Navigating to:", newUrl);
+      navigate(newUrl);
+    } else {
+      console.warn("[Layout] No serverId, just updating tab to:", tab);
+      // No serverId provided, just update the tab for the current server
+      handleTabChange(tab);
+    }
+  };
+
+  const selectedServer = connections.find((c) => c.id === selectedServerId);
+
+  // Aggregate tools, prompts, and resources from all connected servers
+  // When a server is selected, use only that server's items
+  // When no server is selected, aggregate from all ready servers and add server metadata
+  const aggregatedTools = selectedServer
+    ? selectedServer.tools.map((tool) => ({
+        ...tool,
+        _serverId: selectedServer.id,
+      }))
+    : connections.flatMap((conn) =>
+        conn.state === "ready"
+          ? conn.tools.map((tool) => ({
+              ...tool,
+              _serverId: conn.id,
+              _serverName: conn.name,
+            }))
+          : []
+      );
+
+  const aggregatedPrompts = selectedServer
+    ? selectedServer.prompts.map((prompt) => ({
+        ...prompt,
+        _serverId: selectedServer.id,
+      }))
+    : connections.flatMap((conn) =>
+        conn.state === "ready"
+          ? conn.prompts.map((prompt) => ({
+              ...prompt,
+              _serverId: conn.id,
+              _serverName: conn.name,
+            }))
+          : []
+      );
+
+  const aggregatedResources = selectedServer
+    ? selectedServer.resources.map((resource) => ({
+        ...resource,
+        _serverId: selectedServer.id,
+      }))
+    : connections.flatMap((conn) =>
+        conn.state === "ready"
+          ? conn.resources.map((resource) => ({
+              ...resource,
+              _serverId: conn.id,
+              _serverName: conn.name,
+            }))
+          : []
+      );
+
+  // Sync URL query params with selected server state
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    // Note: searchParams.get() already URL-decodes, no need for decodeURIComponent
+    const serverId = searchParams.get("server");
+
+    // If server= is a URL and no matching connection exists, treat it as autoConnect=
+    if (
+      serverId &&
+      (serverId.startsWith("http://") || serverId.startsWith("https://"))
+    ) {
+      const existingConnection = connections.find(
+        (conn) => conn.id === serverId
+      );
+
+      if (!existingConnection) {
+        // Redirect to use autoConnect= parameter instead
+        const params = new URLSearchParams(searchParams);
+        params.delete("server");
+        params.set("autoConnect", serverId);
+        navigate(`/?${params.toString()}`, { replace: true });
+        return;
+      }
+    }
+
+    // Update selected server if changed
+    if (serverId !== selectedServerId) {
+      setSelectedServerId(serverId);
+    }
+  }, [
+    location.search,
+    selectedServerId,
+    setSelectedServerId,
+    connections,
+    navigate,
+  ]);
+
+  // Handle failed server connections - redirect to home
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const serverId = searchParams.get("server");
+    if (!serverId) {
+      return;
+    }
+
+    // Note: searchParams.get() already URL-decodes, no need for decodeURIComponent
+    const serverConnection = connections.find((conn) => conn.id === serverId);
+
+    // No connection found - wait for auto-connect, then redirect
+    if (!serverConnection) {
+      const timeoutId = setTimeout(() => navigate("/"), 3000);
+      return () => clearTimeout(timeoutId);
+    }
+
+    // Connection failed - redirect after short delay
+    if (serverConnection.state === "failed") {
+      const timeoutId = setTimeout(() => navigate("/"), 2000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [location.search, navigate, connections]);
+
+  // Handle mcp-inspector:connect_servers postMessage from parent frame.
+  // Allows a host page to securely pass server configs (incl. auth) without
+  // putting tokens in the URL.
+  useEffect(() => {
+    if (!isEmbedded) return;
+
+    const handleMessage = (event: MessageEvent) => {
+      if (!event.data || typeof event.data !== "object") return;
+      if (event.data.type !== "mcp-inspector:connect_servers") return;
+
+      const serverList = event.data.servers;
+      if (!Array.isArray(serverList) || serverList.length === 0) return;
+
+      let firstServerId: string | null = null;
+      for (const srv of serverList) {
+        if (!srv.url || typeof srv.url !== "string") continue;
+
+        const url: string = srv.url;
+        const name: string = srv.name ?? "Server";
+        const transportType: "http" | "sse" = srv.transportType ?? "http";
+
+        // Build custom headers from auth config (same logic as useAutoConnect)
+        const customHeaders: Record<string, string> = {
+          ...(srv.headers ?? {}),
+        };
+        if (srv.auth?.access_token) {
+          const tokenType = srv.auth.token_type || "bearer";
+          const formatted =
+            tokenType.charAt(0).toUpperCase() + tokenType.slice(1);
+          customHeaders.Authorization = `${formatted} ${srv.auth.access_token}`;
+        }
+
+        const proxyConfig: {
+          proxyAddress: string;
+          headers?: Record<string, string>;
+        } = {
+          proxyAddress: `${window.location.origin}/inspector/api/proxy`,
+          ...(Object.keys(customHeaders).length > 0 && {
+            headers: customHeaders,
+          }),
+        };
+
+        // Avoid duplicates
+        const existing = connections.find((c) => c.url === url);
+        if (!existing) {
+          addConnection(url, name, proxyConfig, transportType);
+        }
+
+        if (!firstServerId) {
+          firstServerId = url;
+        }
+      }
+
+      // Confirm back to parent
+      if (window.parent !== window) {
+        window.parent.postMessage(
+          {
+            type: "mcp-inspector:servers_connected",
+            count: serverList.length,
+          },
+          "*"
+        );
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [isEmbedded, connections, addConnection]);
+
+  // Auto-select the first ready server when new servers connect via postMessage.
+  // This handles the case where connect_servers adds servers and we need to
+  // navigate to one of them once it's ready.
+  const postMessageAutoSelectRef = useRef(false);
+  useEffect(() => {
+    if (!isEmbedded || postMessageAutoSelectRef.current) return;
+    if (selectedServerId) return;
+
+    const readyServer = connections.find((c) => c.state === "ready");
+    if (readyServer) {
+      postMessageAutoSelectRef.current = true;
+      setSelectedServerId(readyServer.id);
+      const params = new URLSearchParams(location.search);
+      params.set("server", readyServer.id);
+      navigate(`/?${params.toString()}`, { replace: true });
+    }
+  }, [
+    isEmbedded,
+    connections,
+    selectedServerId,
+    setSelectedServerId,
+    navigate,
+    location.search,
+  ]);
+
+  // Centralized keyboard shortcuts
+  useKeyboardShortcuts({
+    onCommandPalette: () => handleCommandPaletteOpen("keyboard"),
+    onToolsTab: () => {
+      if (selectedServer) {
+        handleTabChange("tools");
+      }
+    },
+    onPromptsTab: () => {
+      if (selectedServer) {
+        handleTabChange("prompts");
+      }
+    },
+    onResourcesTab: () => {
+      if (selectedServer) {
+        handleTabChange("resources");
+      }
+    },
+    onChatTab: () => {
+      if (selectedServer) {
+        handleTabChange("chat");
+      }
+    },
+    onHome: () => {
+      navigate("/");
+    },
+    onFocusSearch: () => {
+      // Focus the search bar based on the active tab
+      if (activeTab === "tools" && toolsSearchRef.current) {
+        toolsSearchRef.current.focusSearch();
+      } else if (activeTab === "prompts" && promptsSearchRef.current) {
+        promptsSearchRef.current.focusSearch();
+      } else if (activeTab === "resources" && resourcesSearchRef.current) {
+        resourcesSearchRef.current.focusSearch();
+      }
+    },
+    onBlurSearch: () => {
+      // Blur the search bar based on the active tab
+      if (activeTab === "tools" && toolsSearchRef.current) {
+        toolsSearchRef.current.blurSearch();
+      } else if (activeTab === "prompts" && promptsSearchRef.current) {
+        promptsSearchRef.current.blurSearch();
+      } else if (activeTab === "resources" && resourcesSearchRef.current) {
+        resourcesSearchRef.current.blurSearch();
+      }
+    },
+  });
+
+  // Show loading spinner during auto-connection
+  if (isAutoConnecting) {
+    return (
+      <div className="h-screen bg-white dark:bg-zinc-900 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Spinner className="h-8 w-8 text-zinc-600 dark:text-zinc-400" />
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            Connecting to MCP server...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Apply embedded styling
+  const isSingleTab = isEmbedded && embeddedConfig.singleTab;
+
+  const containerStyle: React.CSSProperties = isEmbedded
+    ? {
+        backgroundColor: embeddedConfig.backgroundColor || "#f3f3f3",
+        padding: isSingleTab ? "0" : embeddedConfig.padding || "0.5rem",
+      }
+    : {};
+
+  const containerClassName = isEmbedded
+    ? isSingleTab
+      ? "h-screen flex flex-col"
+      : "h-screen flex flex-col gap-2 sm:gap-4"
+    : "h-screen bg-[#f3f3f3] dark:bg-black flex flex-col px-2 py-2 sm:px-4 sm:py-4 gap-2 sm:gap-4";
+
+  const mainClassName = isSingleTab
+    ? "flex-1 w-full bg-white dark:bg-black p-0 overflow-auto"
+    : "flex-1 w-full mx-auto bg-white dark:bg-black rounded-2xl border border-zinc-200 dark:border-zinc-700 p-0 overflow-auto";
+
+  return (
+    <TooltipProvider>
+      <div className={containerClassName} style={containerStyle}>
+        {/* Header - hidden in single-tab mode */}
+        {!isSingleTab && (
+          <LayoutHeader
+            connections={connections}
+            selectedServer={selectedServer}
+            activeTab={activeTab}
+            onServerSelect={handleServerSelect}
+            onTabChange={handleTabChange}
+            onCommandPaletteOpen={() => handleCommandPaletteOpen("button")}
+            onOpenConnectionOptions={handleOpenConnectionOptions}
+            embedded={isEmbedded}
+          />
+        )}
+
+        {/* Main Content */}
+        <main className={mainClassName}>
+          <LayoutContent
+            selectedServer={selectedServer}
+            activeTab={activeTab}
+            toolsSearchRef={toolsSearchRef}
+            promptsSearchRef={promptsSearchRef}
+            resourcesSearchRef={resourcesSearchRef}
+          >
+            {children}
+          </LayoutContent>
+        </main>
+
+        {/* Command Palette */}
+        <CommandPalette
+          isOpen={isCommandPaletteOpen}
+          onOpenChange={setIsCommandPaletteOpen}
+          tools={aggregatedTools}
+          prompts={aggregatedPrompts}
+          resources={aggregatedResources}
+          savedRequests={savedRequests}
+          connections={connections}
+          selectedServer={selectedServer}
+          tunnelUrl={tunnelUrl}
+          onNavigate={handleCommandPaletteNavigate}
+          onServerSelect={handleServerSelect}
+        />
+
+        {/* Connection Options Dialog */}
+        <ServerConnectionModal
+          connection={
+            editingConnectionId
+              ? connections.find((c) => c.id === editingConnectionId) || null
+              : null
+          }
+          open={editingConnectionId !== null}
+          onOpenChange={(open) => {
+            if (!open) {
+              setEditingConnectionId(null);
+            }
+          }}
+          onConnect={handleUpdateConnection}
+        />
+      </div>
+    </TooltipProvider>
+  );
+}
