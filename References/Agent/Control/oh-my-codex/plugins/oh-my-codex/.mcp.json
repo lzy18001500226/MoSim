@@ -1,0 +1,52 @@
+{
+  "mcpServers": {
+    "omx_state": {
+      "command": "omx",
+      "args": [
+        "mcp-serve",
+        "state"
+      ],
+      "enabled": false
+    },
+    "omx_memory": {
+      "command": "omx",
+      "args": [
+        "mcp-serve",
+        "memory"
+      ],
+      "enabled": false
+    },
+    "omx_code_intel": {
+      "command": "omx",
+      "args": [
+        "mcp-serve",
+        "code-intel"
+      ],
+      "enabled": false
+    },
+    "omx_trace": {
+      "command": "omx",
+      "args": [
+        "mcp-serve",
+        "trace"
+      ],
+      "enabled": false
+    },
+    "omx_wiki": {
+      "command": "omx",
+      "args": [
+        "mcp-serve",
+        "wiki"
+      ],
+      "enabled": false
+    },
+    "omx_hermes": {
+      "command": "omx",
+      "args": [
+        "mcp-serve",
+        "hermes"
+      ],
+      "enabled": false
+    }
+  }
+}

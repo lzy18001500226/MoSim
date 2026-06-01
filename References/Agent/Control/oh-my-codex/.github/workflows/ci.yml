@@ -1,0 +1,626 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev, experimental/dev]
+  pull_request:
+    branches: [main, dev, experimental/dev]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect CI lanes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      full_suite: ${{ steps.classify.outputs.full_suite }}
+      docs_changed: ${{ steps.classify.outputs.docs_changed }}
+      docs_only: ${{ steps.classify.outputs.docs_only }}
+      ts_changed: ${{ steps.classify.outputs.ts_changed }}
+      rust_changed: ${{ steps.classify.outputs.rust_changed }}
+      native_changed: ${{ steps.classify.outputs.native_changed }}
+      shared_config_changed: ${{ steps.classify.outputs.shared_config_changed }}
+      reason: ${{ steps.classify.outputs.reason }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Classify changed paths
+        id: classify
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          PR_BASE_REF: ${{ github.event.pull_request.base.ref || '' }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || '' }}
+          PUSH_BEFORE_SHA: ${{ github.event.before || '' }}
+          PUSH_AFTER_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          full_suite=false
+          reason=targeted
+          base_sha=""
+          head_sha="$PUSH_AFTER_SHA"
+
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            base_sha="$PR_BASE_SHA"
+            head_sha="$PR_HEAD_SHA"
+            if [[ "$PR_BASE_REF" == "main" ]]; then
+              full_suite=true
+              reason="pull request targets main"
+            fi
+          elif [[ "$EVENT_NAME" == "push" ]]; then
+            base_sha="$PUSH_BEFORE_SHA"
+            head_sha="$PUSH_AFTER_SHA"
+            if [[ "$REF_NAME" == "main" ]]; then
+              full_suite=true
+              reason="push to main"
+            fi
+          else
+            full_suite=true
+            reason="unknown event: $EVENT_NAME"
+          fi
+
+          if [[ -z "$base_sha" || "$base_sha" =~ ^0+$ || -z "$head_sha" ]]; then
+            full_suite=true
+            reason="missing or first-push base sha"
+          fi
+
+          : > changed-files.tsv
+          if [[ "$full_suite" == "false" ]]; then
+            if ! git cat-file -e "$base_sha^{commit}" || ! git cat-file -e "$head_sha^{commit}"; then
+              full_suite=true
+              reason="unable to resolve diff commits"
+            else
+              git diff --name-status "$base_sha" "$head_sha" > changed-files.tsv
+            fi
+          fi
+
+          export full_suite reason
+
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          const lines = fs.readFileSync('changed-files.tsv', 'utf8')
+            .split(/\r?\n/)
+            .map((line) => line.trim())
+            .filter(Boolean);
+
+          const out = {
+            full_suite: process.env.full_suite === 'true',
+            docs_changed: false,
+            docs_only: false,
+            ts_changed: false,
+            rust_changed: false,
+            native_changed: false,
+            shared_config_changed: false,
+            reason: process.env.reason || 'targeted',
+          };
+
+          function addOutput(key, value) {
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `${key}=${value}\n`);
+          }
+
+          function pathsFromNameStatus(line) {
+            const parts = line.split(/\t+/);
+            const status = parts[0] || '';
+            if (/^[RC]/.test(status)) return parts.slice(1, 3).filter(Boolean);
+            return parts.slice(1, 2).filter(Boolean);
+          }
+
+          function isDocs(path) {
+            return /^docs\//.test(path)
+              || /^missions\//.test(path)
+              || /^\.github\/(ISSUE_TEMPLATE\/|PULL_REQUEST_TEMPLATE\.md$)/.test(path)
+              || /^(README|CHANGELOG|CONTRIBUTING|COVERAGE|DEMO|RELEASE_BODY|RELEASE_PROTOCOL)\.md$/.test(path);
+          }
+
+          function isTs(path) {
+            return /^src\/.*\.(ts|tsx|mts|cts)$/.test(path)
+              || /^playground\/.*\.(ts|tsx|js|mjs|cjs|json)$/.test(path);
+          }
+
+          function isRust(path) {
+            return /^crates\//.test(path) || path === 'Cargo.lock' || path === 'Cargo.toml';
+          }
+
+          function isNative(path) {
+            return path === 'dist-workspace.toml'
+              || /^crates\/omx-(api|explore|mux|runtime-core|runtime|sparkshell)\//.test(path);
+          }
+
+          function isSharedConfig(path) {
+            return /^\.github\//.test(path)
+              || /^templates\//.test(path)
+              || /^prompts\//.test(path)
+              || /^skills\//.test(path)
+              || /^plugins\//.test(path)
+              || /^biome\.json$/.test(path)
+              || /^tsconfig.*\.json$/.test(path)
+              || /^package(-lock)?\.json$/.test(path)
+              || path === 'Cargo.lock'
+              || path === 'Cargo.toml'
+              || path === 'dist-workspace.toml';
+          }
+
+          const paths = lines.flatMap(pathsFromNameStatus);
+          if (paths.length === 0 && !out.full_suite) {
+            out.full_suite = true;
+            out.reason = 'empty diff or classifier uncertainty';
+          }
+
+          for (const path of paths) {
+            if (isDocs(path)) out.docs_changed = true;
+            if (isTs(path)) out.ts_changed = true;
+            if (isRust(path)) out.rust_changed = true;
+            if (isNative(path)) out.native_changed = true;
+            if (isSharedConfig(path)) out.shared_config_changed = true;
+          }
+
+          const allDocs = paths.length > 0 && paths.every(isDocs);
+          out.docs_only = allDocs;
+
+          // Fail closed for shared config, workflow, version, lockfile, native packaging, or ambiguous repo assets.
+          const known = (path) => isDocs(path) || isTs(path) || isRust(path) || isNative(path) || isSharedConfig(path);
+          const unknown = paths.filter((path) => !known(path));
+          if (out.shared_config_changed || unknown.length > 0) {
+            out.full_suite = true;
+            out.reason = out.shared_config_changed
+              ? 'shared config, workflow, manifest, lockfile, or packaging change'
+              : `unclassified path(s): ${unknown.join(', ')}`;
+          }
+
+          for (const [key, value] of Object.entries(out)) addOutput(key, value);
+          NODE
+      - name: Summarize lane decision
+        run: |
+          {
+            echo '## CI lane decision'
+            echo ''
+            echo '- full_suite: `${{ steps.classify.outputs.full_suite }}`'
+            echo '- docs_changed: `${{ steps.classify.outputs.docs_changed }}`'
+            echo '- docs_only: `${{ steps.classify.outputs.docs_only }}`'
+            echo '- ts_changed: `${{ steps.classify.outputs.ts_changed }}`'
+            echo '- rust_changed: `${{ steps.classify.outputs.rust_changed }}`'
+            echo '- native_changed: `${{ steps.classify.outputs.native_changed }}`'
+            echo '- shared_config_changed: `${{ steps.classify.outputs.shared_config_changed }}`'
+            echo '- reason: `${{ steps.classify.outputs.reason }}`'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  docs-check:
+    name: Docs Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [changes]
+    if: ${{ needs.changes.outputs.full_suite == 'true' || needs.changes.outputs.docs_changed == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check documentation whitespace
+        run: git diff --check HEAD~1..HEAD || git diff --check
+
+  rustfmt:
+    name: Rust Format
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [changes]
+    if: ${{ needs.changes.outputs.full_suite == 'true' || needs.changes.outputs.rust_changed == 'true' || needs.changes.outputs.native_changed == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: stable
+          components: rustfmt
+      - name: Check Rust formatting
+        run: cargo fmt --all --check
+
+  clippy:
+    name: Rust Clippy
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [changes]
+    if: ${{ needs.changes.outputs.full_suite == 'true' || needs.changes.outputs.rust_changed == 'true' || needs.changes.outputs.native_changed == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: stable
+          components: clippy
+      - name: Restore Rust build cache
+        uses: Swatinem/rust-cache@v2
+      - name: Run clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+  rust-tests:
+    name: Rust Tests + Coverage Signal
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: [changes]
+    if: ${{ needs.changes.outputs.full_suite == 'true' || needs.changes.outputs.rust_changed == 'true' || needs.changes.outputs.native_changed == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: stable
+          components: llvm-tools-preview
+      - name: Restore Rust build cache
+        uses: Swatinem/rust-cache@v2
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+      - name: Run Rust tests with coverage summaries
+        shell: bash
+        run: |
+          mkdir -p coverage/rust
+
+          cargo llvm-cov --workspace --summary-only | tee coverage/rust/workspace-summary.txt
+          cargo llvm-cov --manifest-path crates/omx-sparkshell/Cargo.toml --summary-only | tee coverage/rust/omx-sparkshell-summary.txt
+      - name: Add Rust coverage summary to job summary
+        shell: bash
+        run: |
+          {
+            echo '## Rust Test Coverage Summary'
+            echo ''
+            echo '### Workspace'
+            echo '```text'
+            cat coverage/rust/workspace-summary.txt
+            echo '```'
+            echo ''
+            echo '### omx-sparkshell manifest'
+            echo '```text'
+            cat coverage/rust/omx-sparkshell-summary.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [changes]
+    if: ${{ needs.changes.outputs.full_suite == 'true' || needs.changes.outputs.ts_changed == 'true' || needs.changes.outputs.shared_config_changed == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: [changes]
+    if: ${{ needs.changes.outputs.full_suite == 'true' || needs.changes.outputs.ts_changed == 'true' || needs.changes.outputs.shared_config_changed == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run check:no-unused
+
+  build-dist:
+    name: Build dist artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: [changes]
+    if: ${{ needs.changes.outputs.full_suite == 'true' || needs.changes.outputs.ts_changed == 'true' || needs.changes.outputs.rust_changed == 'true' || needs.changes.outputs.native_changed == 'true' || needs.changes.outputs.shared_config_changed == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Upload prebuilt dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-dist-node20
+          path: dist/
+          if-no-files-found: error
+
+  test:
+    name: Test (Node ${{ matrix.node-version }} / ${{ matrix.lane }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [changes, build-dist]
+    if: ${{ needs.changes.outputs.full_suite == 'true' || needs.changes.outputs.ts_changed == 'true' || needs.changes.outputs.shared_config_changed == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - node-version: 20
+            lane: team-state-runtime
+            test-roots: >-
+              dist/team/__tests__
+              dist/state/__tests__
+              dist/ralph/__tests__
+              dist/ralplan/__tests__
+              dist/runtime/__tests__
+            catalog-check: false
+          - node-version: 20
+            lane: hooks-notify-platform
+            test-roots: >-
+              dist/hooks/__tests__
+              dist/hooks/code-simplifier/__tests__
+              dist/hooks/extensibility/__tests__
+              dist/notifications/__tests__
+              dist/mcp/__tests__
+              dist/hud/__tests__
+              dist/verification/__tests__
+              dist/openclaw/__tests__
+            catalog-check: false
+          - node-version: 20
+            lane: cli-core-rest
+            test-roots: >-
+              dist/cli/__tests__
+              dist/agents/__tests__
+              dist/autoresearch/__tests__
+              dist/catalog/__tests__
+              dist/compat/__tests__
+              dist/config/__tests__
+              dist/modes/__tests__
+              dist/pipeline/__tests__
+              dist/planning/__tests__
+              dist/scripts/__tests__
+              dist/session-history/__tests__
+              dist/subagents/__tests__
+              dist/utils/__tests__
+              dist/visual/__tests__
+            catalog-check: true
+          - node-version: 22
+            lane: smoke
+            catalog-check: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: npm ci
+      - name: Download prebuilt dist artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: ci-dist-node20
+          path: dist
+      - name: Run grouped full-suite lane
+        if: matrix.lane != 'smoke'
+        env:
+          # The team-state-runtime lane exercises tmux/process supervision. On
+          # hosted runners, leaked child handles can leave Node's test process
+          # alive after all tests have reported. Force exit only after the test
+          # runner finishes so successful suites do not hang indefinitely.
+          OMX_NODE_TEST_FORCE_EXIT: ${{ matrix.lane == 'team-state-runtime' && '1' || '' }}
+        run: |
+          node dist/scripts/run-test-files.js ${{ matrix.test-roots }}
+      - name: Verify generated catalog docs
+        if: matrix.catalog-check == true
+        run: node dist/scripts/generate-catalog-docs.js --check
+      - name: Run cross-rebase smoke command
+        if: matrix.lane == 'smoke'
+        run: npm run test:team:cross-rebase-smoke:compiled
+      - name: Run remaining smoke suite
+        if: matrix.lane == 'smoke'
+        run: |
+          node --test \
+            dist/cli/__tests__/packaged-script-resolution.test.js \
+            dist/cli/__tests__/package-bin-contract.test.js \
+            dist/cli/__tests__/explore.test.js \
+            dist/cli/__tests__/sparkshell-cli.test.js \
+            dist/hooks/__tests__/explore-routing.test.js \
+            dist/hooks/__tests__/explore-sparkshell-guidance-contract.test.js \
+            dist/scripts/__tests__/smoke-packed-install.test.js \
+            dist/verification/__tests__/explore-harness-release-workflow.test.js \
+            dist/compat/__tests__/*.test.js
+
+  coverage-team-critical:
+    name: Coverage Gate (Team Critical)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: [changes, build-dist]
+    if: ${{ needs.changes.outputs.full_suite == 'true' || needs.changes.outputs.ts_changed == 'true' || needs.changes.outputs.shared_config_changed == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Download prebuilt dist artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: ci-dist-node20
+          path: dist
+      - name: Run team/state coverage gate
+        run: npm run coverage:team-critical:compiled
+      - name: Add coverage summary to job summary
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            const summary = JSON.parse(fs.readFileSync("coverage/team/coverage-summary.json", "utf8"));
+            const total = summary.total;
+            const lines = [
+              "## Team/State Coverage Summary",
+              "",
+              "| Metric | Pct | Covered / Total |",
+              "|---|---:|---:|",
+              `| Lines | ${total.lines.pct}% | ${total.lines.covered} / ${total.lines.total} |`,
+              `| Functions | ${total.functions.pct}% | ${total.functions.covered} / ${total.functions.total} |`,
+              `| Branches | ${total.branches.pct}% | ${total.branches.covered} / ${total.branches.total} |`,
+              `| Statements | ${total.statements.pct}% | ${total.statements.covered} / ${total.statements.total} |`
+            ];
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join("\n")}\n`);
+          '
+      - name: Upload team coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: team-critical-coverage
+          path: coverage/team/
+
+  ralph-persistence-gate:
+    name: Ralph Persistence Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [changes, build-dist]
+    if: ${{ needs.changes.outputs.full_suite == 'true' || needs.changes.outputs.ts_changed == 'true' || needs.changes.outputs.shared_config_changed == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Download prebuilt dist artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: ci-dist-node20
+          path: dist
+      - name: Run Ralph persistence verification matrix
+        run: npm run test:ralph-persistence:compiled
+
+  build:
+    name: Build (Full Source Build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: [changes, build-dist]
+    if: ${{ needs.changes.outputs.full_suite == 'true' || needs.changes.outputs.rust_changed == 'true' || needs.changes.outputs.native_changed == 'true' || needs.changes.outputs.shared_config_changed == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: stable
+      - name: Restore Rust build cache
+        uses: Swatinem/rust-cache@v2
+      - run: npm ci
+      - name: Download prebuilt dist artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: ci-dist-node20
+          path: dist
+      - run: npm run build:explore:release
+      - run: npm run build:sparkshell
+      - run: npm run build:api
+
+  ci-status:
+    name: CI Status
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [changes, docs-check, rustfmt, clippy, rust-tests, lint, typecheck, build-dist, test, coverage-team-critical, ralph-persistence-gate, build]
+    steps:
+      - name: Check required job results
+        shell: bash
+        env:
+          FULL_SUITE: ${{ needs.changes.outputs.full_suite }}
+          DOCS_CHANGED: ${{ needs.changes.outputs.docs_changed }}
+          TS_CHANGED: ${{ needs.changes.outputs.ts_changed }}
+          RUST_CHANGED: ${{ needs.changes.outputs.rust_changed }}
+          NATIVE_CHANGED: ${{ needs.changes.outputs.native_changed }}
+          SHARED_CONFIG_CHANGED: ${{ needs.changes.outputs.shared_config_changed }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          DOCS_CHECK_RESULT: ${{ needs.docs-check.result }}
+          RUSTFMT_RESULT: ${{ needs.rustfmt.result }}
+          CLIPPY_RESULT: ${{ needs.clippy.result }}
+          RUST_TESTS_RESULT: ${{ needs.rust-tests.result }}
+          LINT_RESULT: ${{ needs.lint.result }}
+          TYPECHECK_RESULT: ${{ needs.typecheck.result }}
+          BUILD_DIST_RESULT: ${{ needs.build-dist.result }}
+          TEST_RESULT: ${{ needs.test.result }}
+          COVERAGE_TEAM_CRITICAL_RESULT: ${{ needs.coverage-team-critical.result }}
+          RALPH_PERSISTENCE_GATE_RESULT: ${{ needs.ralph-persistence-gate.result }}
+          BUILD_RESULT: ${{ needs.build.result }}
+          REASON: ${{ needs.changes.outputs.reason }}
+        run: |
+          set -euo pipefail
+
+          failures=0
+          bool_any() {
+            for value in "$@"; do
+              [[ "$value" == "true" ]] && return 0
+            done
+            return 1
+          }
+
+          check_job() {
+            local name="$1"
+            local result="$2"
+            local active="$3"
+            if [[ "$active" == "true" ]]; then
+              if [[ "$result" != "success" ]]; then
+                echo "::error::$name must succeed when active, got $result"
+                failures=$((failures + 1))
+              fi
+            else
+              if [[ "$result" != "success" && "$result" != "skipped" ]]; then
+                echo "::error::$name inactive lane should be success or skipped, got $result"
+                failures=$((failures + 1))
+              fi
+            fi
+          }
+
+          echo "CI lane reason: ${REASON:-unknown}"
+          echo "  full_suite: $FULL_SUITE"
+          echo "  docs_changed: $DOCS_CHANGED"
+          echo "  ts_changed: $TS_CHANGED"
+          echo "  rust_changed: $RUST_CHANGED"
+          echo "  native_changed: $NATIVE_CHANGED"
+          echo "  shared_config_changed: $SHARED_CONFIG_CHANGED"
+          echo "  changes: $CHANGES_RESULT"
+          echo "  docs-check: $DOCS_CHECK_RESULT"
+          echo "  rustfmt: $RUSTFMT_RESULT"
+          echo "  clippy: $CLIPPY_RESULT"
+          echo "  rust-tests: $RUST_TESTS_RESULT"
+          echo "  lint: $LINT_RESULT"
+          echo "  typecheck: $TYPECHECK_RESULT"
+          echo "  build-dist: $BUILD_DIST_RESULT"
+          echo "  test: $TEST_RESULT"
+          echo "  coverage-team-critical: $COVERAGE_TEAM_CRITICAL_RESULT"
+          echo "  ralph-persistence-gate: $RALPH_PERSISTENCE_GATE_RESULT"
+          echo "  build: $BUILD_RESULT"
+
+          check_job changes "$CHANGES_RESULT" true
+
+          docs_active=false
+          rust_active=false
+          ts_active=false
+          dist_active=false
+          build_active=false
+          if [[ "$FULL_SUITE" == "true" ]] || [[ "$DOCS_CHANGED" == "true" ]]; then docs_active=true; fi
+          if [[ "$FULL_SUITE" == "true" ]] || bool_any "$RUST_CHANGED" "$NATIVE_CHANGED"; then rust_active=true; fi
+          if [[ "$FULL_SUITE" == "true" ]] || bool_any "$TS_CHANGED" "$SHARED_CONFIG_CHANGED"; then ts_active=true; fi
+          if [[ "$FULL_SUITE" == "true" ]] || bool_any "$TS_CHANGED" "$RUST_CHANGED" "$NATIVE_CHANGED" "$SHARED_CONFIG_CHANGED"; then dist_active=true; fi
+          if [[ "$FULL_SUITE" == "true" ]] || bool_any "$RUST_CHANGED" "$NATIVE_CHANGED" "$SHARED_CONFIG_CHANGED"; then build_active=true; fi
+
+          check_job docs-check "$DOCS_CHECK_RESULT" "$docs_active"
+          check_job rustfmt "$RUSTFMT_RESULT" "$rust_active"
+          check_job clippy "$CLIPPY_RESULT" "$rust_active"
+          check_job rust-tests "$RUST_TESTS_RESULT" "$rust_active"
+          check_job lint "$LINT_RESULT" "$ts_active"
+          check_job typecheck "$TYPECHECK_RESULT" "$ts_active"
+          check_job build-dist "$BUILD_DIST_RESULT" "$dist_active"
+          check_job test "$TEST_RESULT" "$ts_active"
+          check_job coverage-team-critical "$COVERAGE_TEAM_CRITICAL_RESULT" "$ts_active"
+          check_job ralph-persistence-gate "$RALPH_PERSISTENCE_GATE_RESULT" "$ts_active"
+          check_job build "$BUILD_RESULT" "$build_active"
+
+          if (( failures > 0 )); then
+            echo "::error::$failures CI status requirement(s) failed"
+            exit 1
+          fi
+          echo "All required CI checks passed for active lanes"
