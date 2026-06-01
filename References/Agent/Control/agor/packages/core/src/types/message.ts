@@ -1,0 +1,306 @@
+/**
+ * Message Type
+ *
+ * Represents a single message in a conversation between user and agent.
+ * Messages are stored in a normalized table and referenced by tasks via message_range.
+ */
+
+import type { MessageID, SessionID, TaskID } from './id';
+import type { WidgetMessageMetadata } from './widget';
+
+/**
+ * Message role - who is speaking
+ */
+export enum MessageRole {
+  USER = 'user',
+  ASSISTANT = 'assistant',
+  SYSTEM = 'system',
+}
+
+/**
+ * Message source - where the message originated
+ * - 'gateway': Message came from external platform (Slack, Discord, etc.)
+ * - 'agor': Message originated from Agor UI
+ * - 'cli-repl': Message originated from a Claude Code CLI REPL turn that
+ *   the user typed directly into the embedded xterm (not via Agor's
+ *   textarea / /prompt route). Written by the JSONL watcher.
+ */
+export type MessageSource = 'gateway' | 'agor' | 'cli-repl';
+
+/**
+ * Message type
+ * Distinguishes conversation messages from meta/synthetic messages
+ */
+export type MessageType =
+  | 'user'
+  | 'assistant'
+  | 'system'
+  | 'file-history-snapshot'
+  | 'permission_request'
+  | 'input_request'
+  | 'daemon_restart'
+  | 'daemon_crash'
+  | 'widget_request';
+
+/**
+ * Content block (for multi-modal messages)
+ */
+export interface ContentBlock {
+  type:
+    | 'text'
+    | 'image'
+    | 'tool_use'
+    | 'tool_result'
+    | 'thinking'
+    | 'system_status'
+    | 'system_complete'
+    | 'rate_limit'
+    | 'api_wait'
+    | 'sdk_event';
+  [key: string]: unknown; // Additional type-specific fields
+}
+
+/**
+ * A single hunk from a structuredPatch diff computation.
+ * Used by executor diff enrichment and the UI diff viewer.
+ */
+export interface StructuredPatchHunk {
+  oldStart: number;
+  oldLines: number;
+  newStart: number;
+  newLines: number;
+  lines: string[];
+}
+
+/**
+ * Per-file diff data for multi-file tools (e.g. Codex edit_files).
+ */
+export interface FileDiff {
+  path: string;
+  kind: 'add' | 'update' | 'delete';
+  structuredPatch: StructuredPatchHunk[];
+}
+
+/**
+ * Diff enrichment data attached to tool_result content blocks.
+ * Computed best-effort by the executor for Edit/Write tool results.
+ *
+ * Single-file tools (Edit, Write) use `structuredPatch`.
+ * Multi-file tools (edit_files) use `files`.
+ */
+export interface DiffEnrichment {
+  structuredPatch: StructuredPatchHunk[];
+  /** Per-file diffs for multi-file tools like Codex edit_files */
+  files?: FileDiff[];
+}
+
+/**
+ * Tool use in a message
+ */
+export interface ToolUse {
+  id: string;
+  name: string;
+  input: Record<string, unknown>;
+}
+
+/**
+ * Permission scope - how long a permission grant lasts
+ * Maps to SDK's PermissionUpdateDestination
+ */
+export enum PermissionScope {
+  ONCE = 'once', // Just this one request (no updatedPermissions)
+  PROJECT = 'project', // For this entire project (SDK destination: 'projectSettings')
+  USER = 'user', // For all sessions globally (SDK destination: 'userSettings')
+  LOCAL = 'local', // For this project, gitignored (SDK destination: 'localSettings')
+}
+
+/**
+ * Permission request status
+ */
+export enum PermissionStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  DENIED = 'denied',
+  TIMED_OUT = 'timed_out',
+}
+
+/**
+ * Permission request content
+ * Used when type === 'permission_request'
+ */
+export interface PermissionRequestContent {
+  request_id: string;
+  task_id?: TaskID; // Required for daemon to route permission_resolved event back to executor (optional for backward compat with legacy messages)
+  tool_name: string;
+  tool_input: Record<string, unknown>;
+  tool_use_id?: string;
+  status: PermissionStatus;
+  scope?: PermissionScope; // Set when approved
+  approved_by?: string; // User ID who approved/denied
+  approved_at?: string; // Timestamp of decision
+}
+
+/**
+ * Input request status (legacy / pre-#1177).
+ *
+ * The `AskUserQuestion` tool was disallowed at the SDK layer in #1177
+ * because it hung the executor in gateway channels. New sessions never
+ * produce `input_request` messages; this enum is kept so historical rows
+ * still type-check when read from the DB.
+ */
+export enum InputRequestStatus {
+  PENDING = 'pending',
+  ANSWERED = 'answered',
+  TIMED_OUT = 'timed_out',
+}
+
+/** Input request question option (legacy / pre-#1177, see `InputRequestStatus`). */
+export interface InputRequestOption {
+  label: string;
+  description: string;
+  markdown?: string;
+}
+
+/** Input request question (legacy / pre-#1177, see `InputRequestStatus`). */
+export interface InputRequestQuestion {
+  question: string;
+  header: string;
+  options: InputRequestOption[];
+  multiSelect: boolean;
+}
+
+/** Input request content (legacy / pre-#1177, see `InputRequestStatus`). */
+export interface InputRequestContent {
+  request_id: string;
+  task_id?: TaskID;
+  questions: InputRequestQuestion[];
+  status: InputRequestStatus;
+  answers?: Record<string, string>;
+  annotations?: Record<string, { markdown?: string; notes?: string }>;
+  answered_by?: string;
+  answered_at?: string;
+}
+
+/**
+ * Message
+ *
+ * Represents a single turn in the conversation.
+ */
+export interface Message {
+  /** Unique message identifier (UUIDv7) */
+  message_id: MessageID;
+
+  /** Session this message belongs to */
+  session_id: SessionID;
+
+  /** Task this message belongs to (optional - messages may exist before task assignment) */
+  task_id?: TaskID;
+
+  /** Message type (from transcript) */
+  type: MessageType;
+
+  /** Message role */
+  role: MessageRole;
+
+  /** Index in conversation (0-based, used for message_range queries) */
+  index: number;
+
+  /** When message was created */
+  timestamp: string;
+
+  /** Content preview (first 200 chars for list views) */
+  content_preview: string;
+
+  /** Full message content (type depends on message type) */
+  content: string | ContentBlock[] | PermissionRequestContent | InputRequestContent;
+
+  /** Tool uses in this message (for assistant messages) */
+  tool_uses?: ToolUse[];
+
+  /**
+   * Parent tool use ID (from Claude Agent SDK)
+   * When a tool spawns nested operations (e.g., Task tool spawning Read/Grep),
+   * child operations have this set to the parent tool's ID.
+   * This enables grouping nested tool calls under their parent in the UI.
+   */
+  parent_tool_use_id?: string | null;
+
+  // NOTE: queueing moved off `messages` and onto `tasks.status='queued'` as
+  // of migration sqlite/0040 (postgres/0030). The `status` and `queue_position`
+  // fields are gone — see `Task.queue_position` instead.
+
+  /** Agent-specific metadata */
+  metadata?: {
+    /** Model used for this message */
+    model?: string;
+
+    /** Token counts */
+    tokens?: {
+      input: number;
+      output: number;
+    };
+
+    /** Original agent message ID (e.g., Claude's UUID) */
+    original_id?: string;
+
+    /** Parent message ID in agent's system */
+    parent_id?: string;
+
+    /** Whether this is a meta/synthetic message */
+    is_meta?: boolean;
+
+    /**
+     * Message source - where the message originated
+     * - 'gateway': Message came from external platform (Slack, Discord, etc.)
+     * - 'agor': Message originated from Agor UI
+     * - undefined: Legacy message or source not tracked
+     */
+    source?: MessageSource;
+
+    /**
+     * Widget request state. Only populated on `type === 'widget_request'`
+     * messages. Discriminated by `widget_type`; see `types/widget.ts`.
+     */
+    widget?: WidgetMessageMetadata;
+
+    /**
+     * Marks the user-role message / task as having been authored by the
+     * daemon on behalf of the user, rather than typed by a human.
+     * Used by widget auto-resume prompts (see `widget_id`) and other
+     * system-injected prompts so the UI can label them appropriately.
+     */
+    system_authored?: boolean;
+
+    /**
+     * For system-authored tasks queued in response to widget resolution,
+     * the widget message that triggered them. Lets the UI link the queued
+     * prompt back to the originating widget for audit / debugging.
+     */
+    widget_id?: MessageID;
+
+    /** Additional agent-specific fields */
+    [key: string]: unknown;
+  };
+}
+
+/**
+ * Message creation input (without generated fields)
+ */
+export type MessageCreate = Omit<Message, 'message_id'> & {
+  message_id?: MessageID;
+};
+
+/**
+ * Streaming event types
+ *
+ * These events are broadcast by the executor to the daemon via /messages/streaming
+ * and relayed to connected clients via Socket.io for real-time message updates.
+ */
+export type StreamingEventType =
+  | 'streaming:start'
+  | 'streaming:chunk'
+  | 'streaming:end'
+  | 'streaming:error'
+  | 'thinking:start'
+  | 'thinking:chunk'
+  | 'thinking:end';

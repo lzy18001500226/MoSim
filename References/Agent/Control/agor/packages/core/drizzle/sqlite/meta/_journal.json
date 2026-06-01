@@ -1,0 +1,321 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1762029611425,
+      "tag": "0000_pretty_mac_gargan",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1762119844225,
+      "tag": "0001_organic_stick",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1762123603619,
+      "tag": "0002_clammy_captain_flint",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1762126122238,
+      "tag": "0003_tough_iron_lad",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1762129000000,
+      "tag": "0004_add_static_urls",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1762562246854,
+      "tag": "0005_clammy_mole_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1762747715738,
+      "tag": "0008_stale_marauders",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1762752013031,
+      "tag": "0009_reconcile-missing-columns",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1762817237696,
+      "tag": "0010_add_archive_columns",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1763450776445,
+      "tag": "0011_curious_felicia_hardy",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1763608073117,
+      "tag": "0012_superb_cyclops",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1763955808642,
+      "tag": "0013_sturdy_spot",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1764126200704,
+      "tag": "0014_graceful_ben_grimm",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "6",
+      "when": 1764210800737,
+      "tag": "0015_sturdy_daredevil",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "6",
+      "when": 1763973169728,
+      "tag": "0016_gorgeous_talkback",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "6",
+      "when": 1763974000000,
+      "tag": "0017_backfill_worktree_owners",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "6",
+      "when": 1764659127577,
+      "tag": "0018_fantastic_bruce_banner",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1764659200000,
+      "tag": "0019_backfill_session_unix_username",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "6",
+      "when": 1765328000000,
+      "tag": "0020_add_repos_unix_group",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "6",
+      "when": 1765652347175,
+      "tag": "0021_flawless_butterfly",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "6",
+      "when": 1770054869625,
+      "tag": "0022_backfill_worktree_others_can",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "6",
+      "when": 1770540102819,
+      "tag": "0023_tough_hercules",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "6",
+      "when": 1770580573574,
+      "tag": "0024_nice_the_renegades",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "6",
+      "when": 1770584533766,
+      "tag": "0025_sticky_karnak",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "6",
+      "when": 1770625490438,
+      "tag": "0026_fix_thread_session_map_fk_cascade",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "6",
+      "when": 1770923022274,
+      "tag": "0027_jittery_trauma",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "6",
+      "when": 1774200105425,
+      "tag": "0028_abnormal_micromacro",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "6",
+      "when": 1775200000000,
+      "tag": "0029_rename_owner_to_superadmin",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "6",
+      "when": 1775200100000,
+      "tag": "0030_flat_mantis",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "6",
+      "when": 1775200200000,
+      "tag": "0031_breezy_speed_demon",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "6",
+      "when": 1775300000000,
+      "tag": "0032_add_user_api_keys",
+      "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "6",
+      "when": 1775441036373,
+      "tag": "0033_dapper_thing",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "6",
+      "when": 1775876000000,
+      "tag": "0034_add_session_to_others_can_check",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "6",
+      "when": 1776000000000,
+      "tag": "0035_add_serialized_sessions",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "6",
+      "when": 1776500000000,
+      "tag": "0036_add_session_env_selections",
+      "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "6",
+      "when": 1776600000000,
+      "tag": "0037_env_command_variants",
+      "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "6",
+      "when": 1777000000000,
+      "tag": "0038_mcp_oauth_token_refresh",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "6",
+      "when": 1777200000000,
+      "tag": "0039_queued_tasks",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "6",
+      "when": 1777200100000,
+      "tag": "0040_migrate_queued_messages",
+      "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "6",
+      "when": 1777300000000,
+      "tag": "0041_restructure_agentic_tool_config",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "6",
+      "when": 1777400000000,
+      "tag": "0042_artifacts_format_refactor",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "6",
+      "when": 1778500000000,
+      "tag": "0043_artifacts_agor_runtime",
+      "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "6",
+      "when": 1779840000000,
+      "tag": "0044_add_worktree_storage_mode",
+      "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "6",
+      "when": 1780100000000,
+      "tag": "0045_rename_worktree_to_branch",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "6",
+      "when": 1780300000000,
+      "tag": "0046_schedules_table",
+      "breakpoints": true
+    }
+  ]
+}

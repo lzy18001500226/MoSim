@@ -1,0 +1,224 @@
+/**
+ * Repo Reference Parser
+ *
+ * Handles parsing and resolution of repo references in three formats:
+ * 1. Absolute path: /Users/max/code/agor
+ * 2. Agor-managed slug: anthropics/agor
+ * 3. Slug + branch: anthropics/agor:feat-auth
+ */
+
+import type { BranchName, RepoSlug, UUID } from '../types';
+
+/**
+ * Parsed repo reference
+ */
+export interface RepoReference {
+  /** Reference type */
+  type: 'path' | 'managed' | 'managed-branch';
+
+  /** Absolute path (for type='path') */
+  path?: string;
+
+  /** Repository slug (for type='managed' or 'managed-branch') */
+  slug?: RepoSlug;
+
+  /** Branch name (for type='managed-branch') */
+  branch?: BranchName;
+}
+
+/**
+ * Parse a repo reference string
+ *
+ * @param ref - Repo reference (path | slug | slug:branch)
+ * @returns Parsed reference
+ *
+ * @example
+ * parseRepoReference('/Users/max/code/agor')
+ * // => { type: 'path', path: '/Users/max/code/agor' }
+ *
+ * @example
+ * parseRepoReference('anthropics/agor')
+ * // => { type: 'managed', slug: 'anthropics/agor' }
+ *
+ * @example
+ * parseRepoReference('anthropics/agor:main')
+ * // => { type: 'managed-branch', slug: 'anthropics/agor', branch: 'main' }
+ */
+export function parseRepoReference(ref: string): RepoReference {
+  // Check if it's an absolute path
+  if (ref.startsWith('/') || /^[A-Z]:\\/.test(ref)) {
+    return { type: 'path', path: ref };
+  }
+
+  // Check for branch separator
+  if (ref.includes(':')) {
+    const [slug, branch] = ref.split(':', 2);
+    return { type: 'managed-branch', slug: slug as RepoSlug, branch: branch as BranchName };
+  }
+
+  // Plain slug (Agor-managed)
+  return { type: 'managed', slug: ref as RepoSlug };
+}
+
+/**
+ * Extract slug from git URL
+ *
+ * @param url - Git remote URL
+ * @returns Repository slug (org/name)
+ *
+ * @example
+ * extractSlugFromUrl('https://github.com/preset-io/agor.git')
+ * // => 'preset-io/agor'
+ *
+ * @example
+ * extractSlugFromUrl('git@github.com:apache/superset.git')
+ * // => 'apache/superset'
+ */
+export function extractSlugFromUrl(url: string): RepoSlug {
+  // Remove .git suffix if present
+  const cleanUrl = url.endsWith('.git') ? url.slice(0, -4) : url;
+
+  // Handle SSH format: git@github.com:org/repo
+  if (cleanUrl.includes('@')) {
+    const match = cleanUrl.match(/:([^/]+\/[^/]+)$/);
+    if (match) {
+      return match[1] as RepoSlug;
+    }
+  }
+
+  // Handle HTTPS format: https://github.com/org/repo
+  const match = cleanUrl.match(/[:/]([^/]+\/[^/]+)$/);
+  if (match) {
+    return match[1] as RepoSlug;
+  }
+
+  // Fallback: use last two path segments
+  const segments = cleanUrl.split('/').filter(Boolean);
+  if (segments.length >= 2) {
+    return `${segments[segments.length - 2]}/${segments[segments.length - 1]}` as RepoSlug;
+  }
+
+  throw new Error(`Could not extract slug from URL: ${url}`);
+}
+
+/**
+ * Validate slug format (org/name)
+ *
+ * @param slug - Repository slug to validate
+ * @returns True if valid
+ */
+/**
+ * Regex for valid repo slugs (org/name format matching GitHub naming rules).
+ * Supports: alphanumeric, hyphens, underscores, dots. Safe for filesystem paths.
+ *
+ * Shared across repo-reference validation and config resource schemas.
+ */
+export const REPO_SLUG_PATTERN = /^[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/;
+
+export function isValidSlug(slug: string): boolean {
+  return REPO_SLUG_PATTERN.test(slug);
+}
+
+/**
+ * Normalize a repo URL for comparison.
+ *
+ * Strips trailing slash(es) and a trailing `.git` suffix so that
+ * `https://github.com/foo/bar.git`, `https://github.com/foo/bar/`, and
+ * `https://github.com/foo/bar` all compare equal. Intended for equality
+ * checks between user-entered URLs and URLs already stored on a cloned
+ * repo — NOT a full URL parser.
+ *
+ * Shared canonical form so UI and daemon cannot drift.
+ *
+ * @example
+ * normalizeRepoUrl('https://github.com/preset-io/agor.git/')
+ * // => 'https://github.com/preset-io/agor'
+ */
+export function normalizeRepoUrl(url: string): string {
+  return url.replace(/\/+$/, '').replace(/\.git$/, '');
+}
+
+/**
+ * Validate git URL format
+ *
+ * @param url - Git URL to validate
+ * @returns True if valid git URL
+ *
+ * @example
+ * isValidGitUrl('git@github.com:apache/superset.git') // => true
+ * isValidGitUrl('https://github.com/apache/superset.git') // => true
+ * isValidGitUrl('https://github.com/apache/superset') // => true (page URL is valid)
+ */
+export function isValidGitUrl(url: string): boolean {
+  // SSH format: git@host:path or ssh://git@host/path
+  const sshPattern = /^(ssh:\/\/)?git@[\w.-]+(:\d+)?[:/][\w./-]+$/;
+
+  // HTTP(S) format: https://host/path
+  const httpsPattern = /^https?:\/\/[\w.-]+(:\d+)?\/[\w./-]+$/;
+
+  return sshPattern.test(url) || httpsPattern.test(url);
+}
+
+/**
+ * Resolve repo reference to SessionRepoContext
+ *
+ * Note: This function requires database access and should be called from
+ * CLI commands or services that have access to the database instance.
+ * The actual implementation is in the CLI/daemon layer.
+ *
+ * @param ref - Repo reference string
+ * @returns Promise resolving to SessionRepoContext
+ *
+ * @throws Error if repo not found or path doesn't exist
+ *
+ * @example
+ * // In CLI command with database access:
+ * const context = await resolveRepoReference('anthropics/agor:main', db);
+ */
+export async function resolveRepoReference(ref: string): Promise<{
+  repo_id?: UUID;
+  repo_slug?: RepoSlug;
+  branch_name?: BranchName;
+  cwd: string;
+  managed_branch: boolean;
+}> {
+  // Parse the reference
+  const parsed = parseRepoReference(ref);
+
+  if (parsed.type === 'path') {
+    // User-managed repo - use path directly
+    return {
+      cwd: parsed.path as string,
+      managed_branch: false,
+    };
+  }
+
+  // For managed repos, caller must implement database lookup
+  // This is a stub that will be replaced with actual implementation in CLI/daemon
+  throw new Error(
+    `Repository lookup not implemented in this context. ` +
+      `Parsed reference: ${JSON.stringify(parsed)}`
+  );
+}
+
+/**
+ * Format repo reference for display
+ *
+ * @param slug - Repository slug
+ * @param branchName - Optional branch name
+ * @returns Formatted reference string
+ *
+ * @example
+ * formatRepoReference('anthropics/agor', 'main')
+ * // => 'anthropics/agor:main'
+ *
+ * @example
+ * formatRepoReference('anthropics/agor')
+ * // => 'anthropics/agor'
+ */
+export function formatRepoReference(slug: RepoSlug, branchName?: BranchName): string {
+  if (branchName) {
+    return `${slug}:${branchName}`;
+  }
+  return slug;
+}

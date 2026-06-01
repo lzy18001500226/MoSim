@@ -1,0 +1,37 @@
+{
+  "name": "@agor/executor",
+  "version": "0.1.0",
+  "description": "Agor executor process - isolated execution environment",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "agor-executor": "./bin/agor-executor"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@agor/core": "workspace:*",
+    "@cursor/sdk": "^1.0.13",
+    "@github/copilot-sdk": "^0.2.2",
+    "@opencode-ai/sdk": "^1.2.20",
+    "diff": "^7.0.0",
+    "node-pty": "^1.2.0-beta.12",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/diff": "^6.0.0",
+    "@types/node": "^24.6.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.7"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ]
+}

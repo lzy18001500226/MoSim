@@ -1,0 +1,312 @@
+import type { AgenticToolName } from './agentic-tool';
+import type { CardID } from './card';
+import type { ArtifactID, BoardID, BranchID } from './id';
+
+/**
+ * Canvas position (x/y coordinates in board space)
+ */
+export type BoardPosition = { x: number; y: number };
+
+/**
+ * Board object types for canvas annotations
+ */
+export type BoardObjectType = 'text' | 'zone' | 'markdown' | 'app' | 'artifact';
+
+/**
+ * Entity type discriminator for board objects
+ */
+export type BoardEntityType = 'branch' | 'card';
+
+/**
+ * Positioned entity on a board (branch or card)
+ *
+ * Polymorphic placement: exactly one of branch_id or card_id is set.
+ * The entity_type field indicates which one.
+ */
+export interface BoardEntityObject {
+  /** Unique object identifier */
+  object_id: string;
+
+  /** Board this entity belongs to */
+  board_id: BoardID;
+
+  /** Branch reference (set when entity_type === 'branch') */
+  branch_id?: BranchID;
+
+  /** Card reference (set when entity_type === 'card') */
+  card_id?: CardID;
+
+  /** Computed entity type discriminator */
+  entity_type: BoardEntityType;
+
+  /** Position on canvas */
+  position: BoardPosition;
+
+  /** Zone this entity is pinned to (optional) */
+  zone_id?: string;
+
+  /** When this entity was added to the board */
+  created_at: string;
+}
+
+/**
+ * Text annotation object
+ */
+export interface TextBoardObject {
+  type: 'text';
+  x: number;
+  y: number;
+  width?: number;
+  height?: number;
+  content: string;
+  fontSize?: number;
+  color?: string;
+  background?: string;
+}
+
+/**
+ * Zone trigger behavior modes for branch drops
+ */
+export type ZoneTriggerBehavior = 'always_new' | 'show_picker';
+
+/**
+ * Zone trigger configuration for branch drops
+ *
+ * When a branch is dropped on a zone with a trigger:
+ * - 'always_new': Automatically create new root session and apply trigger
+ * - 'show_picker': Open modal to select existing session or create new one
+ */
+export interface ZoneTrigger {
+  /** Handlebars template for the prompt */
+  template: string;
+  /** Trigger behavior mode (default: 'show_picker') */
+  behavior: ZoneTriggerBehavior;
+  /** Preferred agent for auto-created sessions (default: 'claude-code') */
+  agent?: AgenticToolName;
+}
+
+/**
+ * Zone rectangle object (for organizing sessions visually)
+ */
+export interface ZoneBoardObject {
+  type: 'zone';
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  label: string;
+  /** Border color (supports alpha) - falls back to `color` for backwards compatibility */
+  borderColor?: string;
+  /** Background color (supports alpha) - falls back to derived from `color` for backwards compatibility */
+  backgroundColor?: string;
+  /** @deprecated Use borderColor instead. Kept for backwards compatibility */
+  color?: string;
+  status?: string;
+  /** Lock zone to prevent dragging/resizing */
+  locked?: boolean;
+  /** Trigger configuration for sessions dropped into this zone */
+  trigger?: ZoneTrigger;
+}
+
+/**
+ * Markdown note annotation object
+ * Rich text notes with markdown rendering, user-selected width, auto-expanding height
+ */
+export interface MarkdownBoardObject {
+  type: 'markdown';
+  x: number;
+  y: number;
+  width: number; // User-selected width (300-800px)
+  content: string; // Markdown text
+  // Optional future enhancements:
+  fontSize?: number; // Font size multiplier (default: 1.0)
+  backgroundColor?: string; // Background color with alpha (default: card background)
+}
+
+/**
+ * Sandpack template options for app board objects
+ */
+export type SandpackTemplate =
+  | 'react'
+  | 'react-ts'
+  | 'vanilla'
+  | 'vanilla-ts'
+  | 'vue'
+  | 'vue3'
+  | 'svelte'
+  | 'solid'
+  | 'angular';
+
+/**
+ * Live web application rendered via Sandpack (in-browser bundler)
+ *
+ * Apps render as interactive iframes on the board canvas.
+ * Agents can create/update apps via MCP tools.
+ */
+export interface AppBoardObject {
+  type: 'app';
+  x: number;
+  y: number;
+  width: number; // Default: 600, min: 300
+  height: number; // Default: 400, min: 200
+  /** App title shown in the card header */
+  title: string;
+  /** Optional description */
+  description?: string;
+  /** Sandpack template (default: 'react') */
+  template: SandpackTemplate;
+  /** File map: path -> code content */
+  files: Record<string, string>;
+  /** NPM dependencies beyond template defaults */
+  dependencies?: Record<string, string>;
+  /** Entry file path (default: determined by template) */
+  entryFile?: string;
+  /** Whether to show the code editor alongside preview */
+  showEditor?: boolean;
+  /** Whether to show the console output */
+  showConsole?: boolean;
+}
+
+/**
+ * Artifact board object - thin reference to an Artifact entity
+ *
+ * Unlike AppBoardObject (which inlines all code), this stores only the
+ * artifact_id. The frontend fetches the payload from the daemon REST API.
+ */
+export interface ArtifactBoardObject {
+  type: 'artifact';
+  x: number;
+  y: number;
+  width: number; // Default: 600, min: 300
+  height: number; // Default: 400, min: 200
+  /** Reference to the artifact entity */
+  artifact_id: ArtifactID;
+}
+
+/**
+ * Union type for all board objects
+ */
+export type BoardObject =
+  | TextBoardObject
+  | ZoneBoardObject
+  | MarkdownBoardObject
+  | AppBoardObject
+  | ArtifactBoardObject;
+
+export interface Board {
+  /** Unique board identifier (UUIDv7) */
+  board_id: BoardID;
+
+  name: string;
+
+  /**
+   * Optional URL-friendly slug for board
+   *
+   * Examples: "main", "experiments", "bug-fixes"
+   *
+   * Allows CLI commands like:
+   *   agor session list --board experiments
+   * instead of:
+   *   agor session list --board 01933e4a
+   */
+  slug?: string;
+
+  description?: string;
+
+  /**
+   * DEPRECATED: Sessions and layout are now tracked in board_objects table
+   *
+   * Query board entities via:
+   * - boardObjectsService.find({ query: { board_id } })
+   *
+   * Old fields removed:
+   * - sessions: SessionID[]
+   * - layout: { [sessionId: string]: { x, y, parentId? } }
+   */
+
+  /**
+   * Canvas annotation objects (text labels, zones, etc.)
+   *
+   * Keys are object IDs (e.g., "text-123", "zone-456")
+   * Use atomic backend methods: upsertBoardObject(), removeBoardObject()
+   *
+   * IMPORTANT: Do NOT directly replace this entire object from client.
+   * Use atomic operations to prevent concurrent write conflicts.
+   */
+  objects?: {
+    [objectId: string]: BoardObject;
+  };
+
+  created_at: string;
+  last_updated: string;
+
+  /** User ID of the user who created this board */
+  created_by: string;
+
+  /** Hex color for visual distinction */
+  color?: string;
+
+  /** Optional emoji/icon */
+  icon?: string;
+
+  /** Background color for the board canvas */
+  background_color?: string;
+
+  /**
+   * Custom CSS for the board canvas (rendered in a scoped <style> tag).
+   * Supports @keyframes, animation, background-size, and other CSS that
+   * can't be expressed as inline styles. Sanitized before rendering.
+   */
+  custom_css?: string;
+
+  /**
+   * Custom context for Handlebars templates (board-level)
+   * Example: { "team": "Backend", "sprint": 42, "deadline": "2025-03-15" }
+   * Access in templates: {{ board.context.team }}
+   */
+  custom_context?: Record<string, unknown>;
+
+  /**
+   * External/user-facing URL for viewing this board in the UI.
+   *
+   * Computed property added by the repository layer.
+   * Format: `{baseUrl}/ui/b/{slug-or-shortId}/`
+   * Prefers the board's slug when set; falls back to the canonical
+   * short ID.
+   */
+  url: string;
+
+  /** Whether this board is archived (soft deleted) */
+  archived: boolean;
+
+  /** ISO 8601 timestamp when the board was archived */
+  archived_at?: string;
+
+  /** User ID of the user who archived this board */
+  archived_by?: string;
+}
+
+/**
+ * Portable board export format (shell only)
+ *
+ * Contains board metadata and annotations, but no branches or sessions.
+ * Can be serialized to YAML/JSON for sharing or archival.
+ */
+export interface BoardExportBlob {
+  // Core metadata
+  name: string;
+  slug?: string;
+  description?: string;
+  icon?: string;
+  color?: string;
+  background_color?: string;
+  custom_css?: string;
+
+  // Annotations (zones, text, markdown)
+  objects?: {
+    [objectId: string]: BoardObject;
+  };
+
+  // Custom context for templates
+  custom_context?: Record<string, unknown>;
+}

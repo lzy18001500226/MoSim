@@ -1,0 +1,1593 @@
+/**
+ * PostgreSQL Schema Definition
+ *
+ * Uses type factory helpers for the 3 differing types (timestamp, boolean, json).
+ * All other types (text, varchar, index, foreign keys) are identical to SQLite schema.
+ */
+
+import type {
+  AgorGrants,
+  AgorRuntimeConfig,
+  CodexApprovalPolicy,
+  CodexSandboxMode,
+  EffortLevel,
+  Message,
+  PermissionMode,
+  SandpackConfig,
+  Session,
+  Task,
+} from '@agor/core/types';
+import { BRANCH_PERMISSION_LEVELS } from '@agor/core/types';
+import { relations, sql } from 'drizzle-orm';
+import {
+  bigint,
+  boolean,
+  customType,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+  uniqueIndex,
+  varchar,
+} from 'drizzle-orm/pg-core';
+
+// PostgreSQL bytea column mapped to Node.js Buffer
+const bytea = customType<{ data: Buffer | null; driverData: Buffer | null }>({
+  dataType() {
+    return 'bytea';
+  },
+});
+
+// PostgreSQL-specific type helpers (inline to avoid factory pattern type issues)
+const t = {
+  timestamp: (name: string) => timestamp(name, { mode: 'date', withTimezone: true }),
+  bool: (name: string) => boolean(name),
+  json: <T>(name: string) => jsonb(name).$type<T>(),
+} as const;
+
+/**
+ * Sessions table - Core primitive for all agentic tool interactions
+ *
+ * Hybrid schema strategy:
+ * - Materialize columns we filter/join by (status, genealogy, agentic_tool, board)
+ * - JSON blob for nested/rarely-queried data (git_state, repo config, etc.)
+ */
+export const sessions = pgTable(
+  'sessions',
+  {
+    // Primary identity
+    session_id: varchar('session_id', { length: 36 }).primaryKey(),
+    created_at: t.timestamp('created_at').notNull(),
+    updated_at: t.timestamp('updated_at'),
+
+    // User attribution
+    created_by: varchar('created_by', { length: 36 }).notNull(),
+
+    // Unix username for SDK impersonation (immutable once set)
+    // Set from creator's unix_username at session creation time
+    // NEVER changes, even if user's unix_username changes later
+    // This ensures SDK session data remains accessible in the original home directory
+    unix_username: text('unix_username'),
+
+    // Materialized for filtering/joins (cross-DB compatible)
+    status: text('status', {
+      enum: [
+        'idle',
+        'running',
+        'stopping',
+        'awaiting_permission',
+        'awaiting_input',
+        'timed_out',
+        'completed',
+        'failed',
+      ],
+    }).notNull(),
+    agentic_tool: text('agentic_tool', {
+      enum: ['claude-code', 'claude-code-cli', 'codex', 'gemini', 'opencode', 'copilot', 'cursor'],
+    }).notNull(),
+    board_id: varchar('board_id', { length: 36 }), // NULL = no board
+
+    // Genealogy (materialized for tree queries)
+    parent_session_id: varchar('parent_session_id', { length: 36 }),
+    forked_from_session_id: varchar('forked_from_session_id', { length: 36 }),
+
+    // Branch reference (REQUIRED: all sessions must have a branch)
+    branch_id: varchar('branch_id', { length: 36 })
+      .notNull()
+      .references(() => branches.branch_id, {
+        onDelete: 'cascade', // Cascade delete sessions when branch is deleted
+      }),
+
+    // Scheduler tracking (materialized for deduplication and retention cleanup)
+    scheduled_run_at: bigint('scheduled_run_at', { mode: 'number' }), // Unix timestamp (ms) - authoritative run ID - bigint to support dates beyond 2038
+    scheduled_from_branch: t.bool('scheduled_from_branch').notNull().default(false),
+    // FK to schedules.schedule_id, ON DELETE SET NULL. Defined here (not
+    // just in the migration) so drizzle-kit / db introspection sees the
+    // constraint and so future schema diffs don't lose it.
+    schedule_id: varchar('schedule_id', { length: 36 }).references(
+      (): import('drizzle-orm/pg-core').AnyPgColumn => schedules.schedule_id,
+      { onDelete: 'set null' }
+    ),
+
+    // UI state (materialized for efficient highlighting queries)
+    ready_for_prompt: t.bool('ready_for_prompt').notNull().default(false),
+
+    // Archive state (cascaded from branch archive)
+    archived: t.bool('archived').notNull().default(false),
+    archived_reason: text('archived_reason', {
+      enum: ['branch_archived', 'manual', 'btw_completed'],
+    }),
+
+    // JSON blob for everything else (cross-DB via json() type)
+    data: t
+      .json<unknown>('data')
+      .$type<{
+        agentic_tool_version?: string;
+        sdk_session_id?: string; // SDK session ID for conversation continuity (Claude Agent SDK, Codex SDK, etc.)
+        mcp_token?: string; // MCP authentication token for Agor self-access
+        title?: string; // Session title (user-provided or auto-generated)
+        description?: string; // Legacy field, may contain first prompt
+
+        // Git state
+        git_state: Session['git_state'];
+
+        // Genealogy details (children array, fork/spawn points)
+        genealogy: {
+          fork_point_task_id?: string;
+          fork_point_message_index?: number;
+          spawn_point_task_id?: string;
+          spawn_point_message_index?: number;
+          children: string[];
+        };
+
+        // Context
+        contextFiles: string[];
+        tasks: string[];
+
+        // Note: message_count was removed — computed dynamically via COUNT(*) where needed
+
+        // Permission config (session-level permission settings)
+        permission_config?: {
+          mode?: PermissionMode; // For Claude/Gemini (SDK handles tool-level permissions)
+          codex?: {
+            sandboxMode: CodexSandboxMode;
+            approvalPolicy: CodexApprovalPolicy;
+          };
+        };
+
+        // Model config (session-level model selection)
+        model_config?: Session['model_config'];
+
+        // Callback config (child/remote session completion notifications)
+        callback_config?: Session['callback_config'];
+
+        // Fork origin tracking (set to 'btw' for ephemeral btw forks)
+        fork_origin?: 'btw';
+
+        // Context window tracking (cumulative usage from latest task)
+        current_context_usage?: number; // Tokens currently in context
+        context_window_limit?: number; // Model's max context (e.g., 200K)
+        last_context_update_at?: string; // ISO 8601 timestamp
+
+        // Custom context for Handlebars templates
+        custom_context?: Record<string, unknown> & {
+          // Scheduled run metadata (populated by scheduler)
+          scheduled_run?: {
+            rendered_prompt: string; // Template after Handlebars rendering
+            run_index: number; // 1st, 2nd, 3rd run for this schedule
+            schedule_config_snapshot?: {
+              cron: string;
+              timezone: string;
+              retention: number;
+            };
+          };
+        };
+
+        // Claude Code CLI adapter state (only set when agentic_tool === 'claude-code-cli').
+        // Persisted so the daemon can re-instantiate the JSONL watcher across
+        // daemon restarts without losing offset. See
+        // apps/agor-daemon/src/services/claude-cli-watcher.ts and
+        // docs/internal/claude-code-cli-integration-analysis-2026-05-14.md.
+        cli_state?: {
+          watcher_offset?: number;
+          last_event_ts?: string;
+          last_event_uuid?: string;
+          slug?: string;
+          jsonl_path?: string;
+          zellij_pane_id?: string;
+          zellij_tab_name?: string;
+          active_turn?: {
+            task_id: string;
+            user_message_index: number;
+            started_at_ms: number;
+          } | null;
+        };
+
+        // Billing model for this session.
+        // - 'subscription': running against the user's Claude Pro/Max
+        //   subscription's interactive limits (CLI adapter, default).
+        // - 'api-key': ANTHROPIC_API_KEY was set at spawn → per-token billing.
+        // - 'unknown': legacy rows or pre-flag detection.
+        billing_mode?: 'subscription' | 'api-key' | 'unknown';
+      }>()
+      .notNull(),
+  },
+  (table) => ({
+    statusIdx: index('sessions_status_idx').on(table.status),
+    agenticToolIdx: index('sessions_agentic_tool_idx').on(table.agentic_tool),
+    boardIdx: index('sessions_board_idx').on(table.board_id),
+    branchIdx: index('sessions_branch_idx').on(table.branch_id),
+    createdIdx: index('sessions_created_idx').on(table.created_at),
+    parentIdx: index('sessions_parent_idx').on(table.parent_session_id),
+    forkedIdx: index('sessions_forked_idx').on(table.forked_from_session_id),
+    // Scheduler indexes — including the partial unique index below.
+    scheduledFromBranchIdx: index('sessions_scheduled_flag_idx').on(table.scheduled_from_branch),
+    // Partial unique index — covering for the scheduler's dedup lookup
+    // AND serves as the DB-level guard against check-then-create races
+    // in spawnScheduledSession.
+    scheduleRunUnique: uniqueIndex('sessions_schedule_run_unique')
+      .on(table.schedule_id, table.scheduled_run_at)
+      // Both columns must be non-null — see SQLite mirror.
+      .where(sql`${table.schedule_id} IS NOT NULL AND ${table.scheduled_run_at} IS NOT NULL`),
+  })
+);
+
+/**
+ * Tasks table - Granular work units within sessions
+ */
+export const tasks = pgTable(
+  'tasks',
+  {
+    task_id: varchar('task_id', { length: 36 }).primaryKey(),
+    session_id: varchar('session_id', { length: 36 })
+      .notNull()
+      .references(() => sessions.session_id, { onDelete: 'cascade' }),
+    created_at: t.timestamp('created_at').notNull(),
+    started_at: t.timestamp('started_at'),
+    completed_at: t.timestamp('completed_at'),
+    status: text('status', {
+      enum: [
+        'queued',
+        'created',
+        'running',
+        'stopping',
+        'awaiting_permission',
+        'awaiting_input',
+        'timed_out',
+        'completed',
+        'failed',
+        'stopped',
+      ],
+    }).notNull(),
+
+    // Queue position (lower drains first); only populated for status='queued'
+    queue_position: integer('queue_position'),
+
+    // User attribution
+    created_by: varchar('created_by', { length: 36 }).notNull(),
+
+    // MD5 of SDK session file at task completion (only populated when stateless_fs_mode is enabled)
+    session_md5: text('session_md5'),
+
+    data: t
+      .json<unknown>('data')
+      .$type<{
+        full_prompt: string;
+
+        message_range: Task['message_range'];
+        git_state: Task['git_state'];
+
+        model: string;
+        tool_use_count: number;
+
+        duration_ms?: number;
+        agent_session_id?: string;
+
+        // Populated when a task transitions to `failed` so the cause is
+        // preserved instead of the session silently sitting idle.
+        error_message?: string;
+
+        // Raw SDK response - single source of truth for token accounting
+        raw_sdk_response?: Task['raw_sdk_response'];
+
+        // Normalized SDK response - computed from raw_sdk_response by executor
+        // Stored so UI doesn't need SDK-specific normalization logic
+        normalized_sdk_response?: Task['normalized_sdk_response'];
+
+        // Computed context window (cumulative tokens)
+        computed_context_window?: Task['computed_context_window'];
+
+        report?: Task['report'];
+        permission_request?: Task['permission_request'];
+
+        // Generic metadata (e.g., is_agor_callback, source, child_session_id)
+        metadata?: Task['metadata'];
+      }>()
+      .notNull(),
+  },
+  (table) => ({
+    sessionIdx: index('tasks_session_idx').on(table.session_id),
+    statusIdx: index('tasks_status_idx').on(table.status),
+    createdIdx: index('tasks_created_idx').on(table.created_at),
+    queueIdx: index('tasks_queue_idx').on(table.session_id, table.status, table.queue_position),
+    // Partial unique index — defense-in-depth for `tasks.createPending` race
+    // serialization. Only QUEUED rows are constrained; CREATED/RUNNING/done
+    // rows have NULL queue_position and are unaffected.
+    queuedPositionUnique: uniqueIndex('tasks_queued_position_unique')
+      .on(table.session_id, table.queue_position)
+      .where(sql`${table.status} = 'queued'`),
+  })
+);
+
+/**
+ * Serialized Sessions table - SDK session file snapshots for stateless_fs_mode
+ */
+export const serializedSessions = pgTable(
+  'serialized_sessions',
+  {
+    id: varchar('id', { length: 36 }).primaryKey(),
+    session_id: varchar('session_id', { length: 36 })
+      .notNull()
+      .references(() => sessions.session_id, { onDelete: 'cascade' }),
+    branch_id: varchar('branch_id', { length: 36 })
+      .notNull()
+      .references(() => branches.branch_id, { onDelete: 'cascade' }),
+    task_id: varchar('task_id', { length: 36 }).references(() => tasks.task_id, {
+      onDelete: 'set null',
+    }),
+    turn_index: integer('turn_index').notNull().default(0),
+    created_at: t.timestamp('created_at').notNull(),
+    md5: text('md5').notNull(),
+    status: text('status').notNull(), // 'processing' | 'done' — validated at app layer
+    payload: bytea('payload'), // gzipped; NULL while status='processing'
+  },
+  (table) => ({
+    sessionTurnIdx: index('serialized_sessions_session_turn_idx').on(
+      table.session_id,
+      table.turn_index
+    ),
+    branchIdx: index('serialized_sessions_branch_idx').on(table.branch_id),
+  })
+);
+
+/**
+ * Messages table - Conversation messages within sessions
+ *
+ * Stores individual messages (user, assistant, system) for full conversation replay.
+ * Messages are indexed by session_id, task_id, and position (index) for efficient queries.
+ */
+export const messages = pgTable(
+  'messages',
+  {
+    // Primary identity
+    message_id: varchar('message_id', { length: 36 }).primaryKey(),
+    created_at: t.timestamp('created_at').notNull(),
+
+    // Foreign keys (materialized for indexes)
+    session_id: varchar('session_id', { length: 36 })
+      .notNull()
+      .references(() => sessions.session_id, { onDelete: 'cascade' }),
+    task_id: varchar('task_id', { length: 36 }).references(() => tasks.task_id, {
+      onDelete: 'set null',
+    }),
+
+    // Materialized for queries
+    type: text('type', {
+      enum: [
+        'user',
+        'assistant',
+        'system',
+        'file-history-snapshot',
+        'permission_request',
+        'input_request',
+        'daemon_restart',
+        'daemon_crash',
+        'widget_request',
+      ],
+    }).notNull(),
+    role: text('role', {
+      enum: ['user', 'assistant', 'system'],
+    }).notNull(),
+    index: integer('index').notNull(), // Position in conversation (0-based)
+    timestamp: t.timestamp('timestamp').notNull(),
+    content_preview: text('content_preview'), // First 200 chars for list views
+
+    // Parent tool use ID (for nested tool calls - e.g., Task tool spawning Read/Grep)
+    parent_tool_use_id: text('parent_tool_use_id'),
+
+    // NOTE: queueing moved off `messages` and onto `tasks.status='queued'` as
+    // of migration sqlite/0040 (postgres/0030). The legacy `status` and
+    // `queue_position` columns are gone — see `tasks.queue_position` instead.
+
+    // Full data (JSON blob)
+    data: t
+      .json<unknown>('data')
+      .$type<{
+        content: Message['content'];
+        tool_uses?: Message['tool_uses'];
+        metadata?: Message['metadata'];
+      }>()
+      .notNull(),
+  },
+  (table) => ({
+    // Indexes for efficient lookups
+    sessionIdx: index('messages_session_id_idx').on(table.session_id),
+    taskIdx: index('messages_task_id_idx').on(table.task_id),
+    sessionIndexIdx: index('messages_session_index_idx').on(table.session_id, table.index),
+  })
+);
+
+/**
+ * Boards table - Organizational primitive for grouping sessions
+ */
+export const boards = pgTable(
+  'boards',
+  {
+    board_id: varchar('board_id', { length: 36 }).primaryKey(),
+    created_at: t.timestamp('created_at').notNull(),
+    updated_at: t.timestamp('updated_at'),
+
+    // User attribution
+    created_by: varchar('created_by', { length: 36 }).notNull(),
+
+    // Materialized for lookups
+    name: text('name').notNull(),
+    slug: text('slug').unique(),
+
+    // JSON blob for the rest
+    data: t
+      .json<unknown>('data')
+      .$type<{
+        description?: string;
+        color?: string;
+        icon?: string;
+        background_color?: string; // Background color for the board canvas
+        custom_css?: string; // Custom CSS for animations, keyframes, etc. (rendered in scoped <style> tag)
+        objects?: Record<string, import('@agor/core/types').BoardObject>; // Board objects (text, zone)
+        custom_context?: Record<string, unknown>; // Custom context for Handlebars templates
+      }>()
+      .notNull(),
+
+    // Archive state (for soft deletes)
+    archived: t.bool('archived').notNull().default(false),
+    archived_at: t.timestamp('archived_at'),
+    archived_by: varchar('archived_by', { length: 36 }),
+  },
+  (table) => ({
+    nameIdx: index('boards_name_idx').on(table.name),
+    slugIdx: index('boards_slug_idx').on(table.slug),
+  })
+);
+
+/**
+ * Repos table - Git repositories managed by Agor
+ *
+ * All repos are cloned to ~/.agor/repos/{slug}
+ */
+export const repos = pgTable(
+  'repos',
+  {
+    repo_id: varchar('repo_id', { length: 36 }).primaryKey(),
+    created_at: t.timestamp('created_at').notNull(),
+    updated_at: t.timestamp('updated_at'),
+
+    // Materialized for querying
+    slug: text('slug').notNull().unique(),
+    repo_type: text('repo_type', { enum: ['remote', 'local'] })
+      .notNull()
+      .default('remote'),
+
+    // Unix group for repo-level git access (agor_rp_<short-id>)
+    // Users who have access to ANY branch in this repo get added to this group.
+    // Applied to repo Unix-group-managed paths:
+    // - repo root (non-recursive) for traversal into .git/worktrees/<name>
+    // - .git (recursive) for shared git objects/refs and git operations
+    unix_group: text('unix_group'),
+
+    data: t
+      .json<unknown>('data')
+      .$type<{
+        name: string;
+        remote_url?: string;
+        local_path: string; // Absolute path to base repository
+        default_branch?: string;
+        // Async clone lifecycle: 'cloning' → 'ready' | 'failed'. Undefined for
+        // legacy rows and for local-type repos. See packages/core/src/types/repo.ts.
+        clone_status?: 'cloning' | 'ready' | 'failed';
+        clone_error?: {
+          exit_code: number;
+          category: 'auth_failed' | 'not_found' | 'network' | 'unknown';
+          message: string;
+        };
+        // v2 environment config — source of truth. Named variants + optional
+        // deployment-local template_overrides. See RepoEnvironment in
+        // packages/core/src/types/branch.ts.
+        environment?: {
+          version: 2;
+          default: string;
+          variants: Record<
+            string,
+            {
+              description?: string;
+              extends?: string;
+              // start/stop are optional on the raw variant (may be inherited
+              // via `extends`); the parser validates that the resolved
+              // variant has both.
+              start?: string;
+              stop?: string;
+              nuke?: string;
+              logs?: string;
+              health?: string;
+              app?: string;
+            }
+          >;
+          template_overrides?: Record<string, unknown>;
+        };
+        // Legacy v1 view kept in sync for UI back-compat.
+        // Derived from environment.variants[default] on write.
+        environment_config?: {
+          up_command: string;
+          down_command: string;
+          nuke_command?: string;
+          health_check?: {
+            type: 'http' | 'tcp' | 'process';
+            url_template?: string;
+          };
+          app_url_template?: string;
+          logs_command?: string;
+        };
+      }>()
+      .notNull(),
+  },
+  (table) => ({
+    slugIdx: index('repos_slug_idx').on(table.slug),
+  })
+);
+
+/**
+ * Branches table - Git branches for isolated development contexts
+ *
+ * First-class entities for managing work contexts across sessions.
+ * Each branch is an isolated git working directory with its own branch,
+ * environment configuration, and persistent work state.
+ */
+export const branches = pgTable(
+  'branches',
+  {
+    // Primary identity
+    branch_id: varchar('branch_id', { length: 36 }).primaryKey(),
+    repo_id: varchar('repo_id', { length: 36 })
+      .notNull()
+      .references(() => repos.repo_id, { onDelete: 'cascade' }),
+    created_at: t.timestamp('created_at').notNull(),
+    updated_at: t.timestamp('updated_at'),
+
+    // User attribution
+    created_by: varchar('created_by', { length: 36 }).notNull(),
+
+    // Materialized for queries
+    name: text('name').notNull(), // "feat-auth", "main"
+    ref: text('ref').notNull(), // Current branch/tag/commit
+    ref_type: text('ref_type', { enum: ['branch', 'tag'] }), // Type of ref (branch or tag)
+    branch_unique_id: integer('branch_unique_id').notNull(), // Auto-assigned sequential ID for templates
+
+    // Environment configuration (static, initialized from templates, then user-editable)
+    start_command: text('start_command'), // Start command (initialized from repo's up_command template)
+    stop_command: text('stop_command'), // Stop command (initialized from repo's down_command template)
+    nuke_command: text('nuke_command'), // Nuke command (initialized from repo's nuke_command template)
+    health_check_url: text('health_check_url'), // Health check URL (initialized from repo's health_check.url_template)
+    app_url: text('app_url'), // Application URL (initialized from repo's app_url_template)
+    logs_command: text('logs_command'), // Logs command (initialized from repo's logs_command template)
+    // Name of the environment variant currently rendered into the command fields above.
+    // References a key under repo.environment.variants. Null for pre-v2 branches.
+    environment_variant: text('environment_variant'),
+
+    // Board relationship (nullable - branches can exist without boards)
+    board_id: varchar('board_id', { length: 36 }).references(() => boards.board_id, {
+      onDelete: 'set null', // If board is deleted, branch remains but loses board association
+    }),
+
+    // UI state (materialized for efficient highlighting queries)
+    needs_attention: t.bool('needs_attention').notNull().default(true), // Default true for new branches
+
+    // Archive state (for soft deletes)
+    archived: t.bool('archived').notNull().default(false),
+    archived_at: t.timestamp('archived_at'),
+    archived_by: varchar('archived_by', { length: 36 }),
+    filesystem_status: text('filesystem_status', {
+      enum: ['creating', 'ready', 'failed', 'preserved', 'cleaned', 'deleted'],
+    }),
+
+    // RBAC: App-layer permissions (rbac.md)
+    others_can: text('others_can', {
+      enum: [...BRANCH_PERMISSION_LEVELS],
+    }).default('view'),
+
+    // RBAC: OS-layer permissions (unix-user-modes.md)
+    unix_group: text('unix_group'), // e.g., 'agor_wt_abc123'
+    others_fs_access: text('others_fs_access', {
+      enum: ['none', 'read', 'write'],
+    })
+      .$type<'none' | 'read' | 'write'>()
+      .default('read'),
+
+    // Branch storage model — see context/explorations/clone-redesign.md.
+    // 'worktree' = native `git worktree add` (shared base .git/config — legacy default).
+    // 'clone'    = self-standing `git clone` (own .git/ — closes cross-branch leak vectors).
+    //
+    // No DB-side CHECK: enum is validated at the Drizzle/TS/Zod/service
+    // layer to stay symmetric with the SQLite mirror (which can't easily
+    // alter CHECK constraints in place).
+    storage_mode: text('storage_mode', { enum: ['worktree', 'clone'] })
+      .notNull()
+      .default('worktree'),
+    // Only meaningful when storage_mode='clone'. NULL = full clone, positive
+    // integer = `git clone --depth N` (shallow). The service layer rejects
+    // a non-null clone_depth on worktree-mode rows.
+    clone_depth: integer('clone_depth'),
+
+    // JSON blob for everything else
+    data: t
+      .json<unknown>('data')
+      .$type<{
+        // File system
+        path: string; // Absolute path to branch directory
+
+        // Git state (current)
+        base_ref?: string; // Branch this diverged from (e.g., "main")
+        base_sha?: string; // SHA at branch creation
+        last_commit_sha?: string; // Latest commit
+        tracking_branch?: string; // Remote tracking branch
+        new_branch: boolean; // Created by Agor?
+
+        // Work context (persistent across sessions)
+        issue_url?: string; // GitHub/GitLab issue
+        pull_request_url?: string; // PR link
+        notes?: string; // Freeform user notes
+        error_message?: string; // Error details when filesystem_status is 'failed'
+
+        // Environment instance (runtime state only, no variables)
+        environment_instance?: {
+          status: 'stopped' | 'starting' | 'running' | 'stopping' | 'error';
+          process?: {
+            pid?: number;
+            started_at?: string;
+            uptime?: string;
+          };
+          last_health_check?: {
+            timestamp: string;
+            status: 'healthy' | 'unhealthy' | 'unknown';
+            message?: string;
+          };
+          access_urls?: Array<{
+            name: string;
+            url: string;
+          }>;
+          logs?: string[];
+        };
+
+        last_used: string; // ISO timestamp
+
+        // Custom context for templates (accessible as {{custom.*}})
+        custom_context?: Record<string, unknown>;
+
+        // Default MCP servers for new sessions in this branch
+        mcp_server_ids?: string[];
+
+        // DANGEROUS: opt-in to legacy session-spawn identity borrowing.
+        // When true, agor_sessions_spawn / agor_sessions_prompt(mode:"fork"|"subsession")
+        // attribute the new child session to the parent owner instead of the
+        // MCP-authenticated caller. See packages/core/src/types/branch.ts.
+        dangerously_allow_session_sharing?: boolean;
+      }>()
+      .notNull(),
+  },
+  (table) => ({
+    repoIdx: index('branches_repo_idx').on(table.repo_id),
+    nameIdx: index('branches_name_idx').on(table.name),
+    refIdx: index('branches_ref_idx').on(table.ref),
+    boardIdx: index('branches_board_idx').on(table.board_id),
+    createdIdx: index('branches_created_idx').on(table.created_at),
+    updatedIdx: index('branches_updated_idx').on(table.updated_at),
+    // Composite unique constraint (repo + name)
+    uniqueRepoName: index('branches_repo_name_unique').on(table.repo_id, table.name),
+  })
+);
+
+/**
+ * Branch Owners - RBAC junction table
+ *
+ * Many-to-many relationship between users and branches.
+ * Owners have implicit 'all' permission regardless of others_can setting.
+ */
+export const branchOwners = pgTable(
+  'branch_owners',
+  {
+    branch_id: varchar('branch_id', { length: 36 })
+      .notNull()
+      .references(() => branches.branch_id, { onDelete: 'cascade' }),
+    user_id: varchar('user_id', { length: 36 })
+      .notNull()
+      .references(() => users.user_id, { onDelete: 'cascade' }),
+    created_at: t.timestamp('created_at').defaultNow(),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.branch_id, table.user_id] }),
+  })
+);
+
+/**
+ * Schedules table - First-class scheduled prompts per branch.
+ *
+ * Multiple schedules per branch (e.g. hourly heartbeat + daily summary).
+ * Replaces the four `branches.schedule_*` columns and `branches.data.schedule`
+ * blob; sessions backlink via `sessions.schedule_id`.
+ *
+ * Enums (`timezone_mode`) are validated at the app layer (no DB CHECK
+ * constraint) to stay symmetric with the SQLite mirror.
+ */
+export const schedules = pgTable(
+  'schedules',
+  {
+    schedule_id: varchar('schedule_id', { length: 36 }).primaryKey(),
+    branch_id: varchar('branch_id', { length: 36 })
+      .notNull()
+      .references(() => branches.branch_id, { onDelete: 'cascade' }),
+
+    name: text('name').notNull(),
+    description: text('description'),
+
+    cron_expression: text('cron_expression').notNull(),
+    timezone_mode: text('timezone_mode', { enum: ['local', 'utc'] })
+      .notNull()
+      .default('local'),
+    timezone: text('timezone'),
+
+    prompt: text('prompt').notNull(),
+
+    agentic_tool_config: t.json<unknown>('agentic_tool_config').notNull(),
+
+    enabled: t.bool('enabled').notNull().default(true),
+    allow_concurrent_runs: t.bool('allow_concurrent_runs').notNull().default(false),
+    retention: integer('retention').notNull().default(5),
+
+    last_run_at: bigint('last_run_at', { mode: 'number' }),
+    last_run_session_id: varchar('last_run_session_id', { length: 36 }).references(
+      () => sessions.session_id,
+      { onDelete: 'set null' }
+    ),
+    next_run_at: bigint('next_run_at', { mode: 'number' }),
+
+    created_at: t.timestamp('created_at').notNull(),
+    updated_at: t.timestamp('updated_at').notNull(),
+    created_by: varchar('created_by', { length: 36 })
+      .notNull()
+      .references(() => users.user_id),
+  },
+  (table) => ({
+    enabledNextRunIdx: index('schedules_enabled_next_run_idx').on(table.enabled, table.next_run_at),
+    branchIdx: index('schedules_branch_idx').on(table.branch_id),
+    createdByIdx: index('schedules_created_by_idx').on(table.created_by),
+  })
+);
+
+/**
+ * Users table - Authentication and authorization
+ *
+ * Authentication is required for every endpoint; on first daemon start with an
+ * empty users table, a default admin is auto-created (see `bootstrapFirstRunAdmin`).
+ */
+export const users = pgTable(
+  'users',
+  {
+    // Primary identity
+    user_id: varchar('user_id', { length: 36 }).primaryKey(),
+    created_at: t.timestamp('created_at').notNull(),
+    updated_at: t.timestamp('updated_at'),
+
+    // Materialized for auth lookups
+    email: text('email').unique().notNull(),
+    password: text('password').notNull(), // bcrypt hashed
+
+    // Basic profile (materialized for display)
+    name: text('name'),
+    emoji: text('emoji'),
+    role: text('role', {
+      enum: ['superadmin', 'admin', 'member', 'viewer'], // 'owner' is deprecated alias for 'superadmin'
+    })
+      .notNull()
+      .default('member'),
+
+    // Unix username for process impersonation (optional, app-enforced uniqueness)
+    unix_username: text('unix_username'),
+
+    // Onboarding state
+    onboarding_completed: t.bool('onboarding_completed').notNull().default(false),
+
+    // Force password change flag (admin-settable, auto-cleared on password change)
+    must_change_password: t.bool('must_change_password').notNull().default(false),
+
+    // JSON blob for profile/preferences
+    data: t
+      .json<unknown>('data')
+      .$type<{
+        avatar?: string;
+        preferences?: Record<string, unknown>;
+        // Per-tool credentials and auth-adjacent config.
+        //
+        // Each entry is keyed by AgenticToolName and holds env-var-named fields
+        // (e.g. `ANTHROPIC_API_KEY`, `ANTHROPIC_BASE_URL`). All values are
+        // encrypted at rest (AES-256-GCM, hex-encoded) for shape uniformity —
+        // the runtime decrypts on read; the UI controls plain-vs-password
+        // rendering based on per-field config.
+        //
+        // Field name = env var name. The session executor exports these as
+        // env vars to the SDK CLI, scoped to the session's agentic_tool
+        // (i.e. claude-code's keys never reach codex sessions).
+        //
+        // See `context/concepts/agentic-tool-config.md` (TODO).
+        agentic_tools?: {
+          'claude-code'?: {
+            ANTHROPIC_API_KEY?: string;
+            CLAUDE_CODE_OAUTH_TOKEN?: string;
+            ANTHROPIC_AUTH_TOKEN?: string;
+            ANTHROPIC_BASE_URL?: string;
+          };
+          'claude-code-cli'?: {
+            // Mirrors 'claude-code' — the CLI accepts the same Anthropic env
+            // vars on the api-key path. Subscription auth reads
+            // ~/.claude/.credentials.json, not these env vars.
+            ANTHROPIC_API_KEY?: string;
+            CLAUDE_CODE_OAUTH_TOKEN?: string;
+            ANTHROPIC_AUTH_TOKEN?: string;
+            ANTHROPIC_BASE_URL?: string;
+          };
+          codex?: {
+            OPENAI_API_KEY?: string;
+            OPENAI_BASE_URL?: string;
+          };
+          gemini?: {
+            GEMINI_API_KEY?: string;
+          };
+          copilot?: {
+            COPILOT_GITHUB_TOKEN?: string;
+          };
+          opencode?: Record<string, never>;
+        };
+        // Encrypted environment variables with scope metadata.
+        //
+        // Two stored value shapes are tolerated on read:
+        //   - Legacy: `"GITHUB_TOKEN": "enc:..."` (plain encrypted string → scope='global')
+        //   - v0.5+:  `"GITHUB_TOKEN": { value_encrypted: "enc:...", scope: 'global'|'session', ... }`
+        //
+        // Writes always produce the object form. Scope validation lives in the app
+        // layer — no SQL CHECK constraint — so adding future scope values stays
+        // schema-free. See `context/explorations/env-var-access.md`.
+        env_vars?: Record<
+          string,
+          | string // legacy
+          | {
+              value_encrypted: string;
+              scope: string;
+              resource_id?: string | null;
+              extra_config?: Record<string, unknown> | null;
+            }
+        >;
+        // Default agentic tool configuration (prepopulates session creation forms)
+        default_agentic_config?: {
+          'claude-code'?: {
+            modelConfig?: {
+              mode?: 'alias' | 'exact';
+              model?: string;
+              effort?: EffortLevel;
+            };
+            permissionMode?: string;
+            mcpServerIds?: string[];
+          };
+          'claude-code-cli'?: {
+            modelConfig?: {
+              mode?: 'alias' | 'exact';
+              model?: string;
+              effort?: EffortLevel;
+            };
+            permissionMode?: string;
+            mcpServerIds?: string[];
+          };
+          codex?: {
+            modelConfig?: {
+              mode?: 'alias' | 'exact';
+              model?: string;
+              effort?: EffortLevel;
+            };
+            permissionMode?: string;
+            mcpServerIds?: string[];
+            codexSandboxMode?: string;
+            codexApprovalPolicy?: string;
+            codexNetworkAccess?: boolean;
+          };
+          gemini?: {
+            modelConfig?: {
+              mode?: 'alias' | 'exact';
+              model?: string;
+              effort?: EffortLevel;
+            };
+            permissionMode?: string;
+            mcpServerIds?: string[];
+          };
+          opencode?: {
+            modelConfig?: {
+              mode?: 'alias' | 'exact';
+              model?: string;
+            };
+            permissionMode?: string;
+            serverUrl?: string;
+          };
+          copilot?: {
+            modelConfig?: {
+              mode?: 'alias' | 'exact';
+              model?: string;
+              effort?: EffortLevel;
+            };
+            permissionMode?: string;
+            mcpServerIds?: string[];
+          };
+        };
+      }>()
+      .notNull(),
+  },
+  (table) => ({
+    emailIdx: index('users_email_idx').on(table.email),
+  })
+);
+
+/**
+ * User API Keys table - Personal API keys for programmatic access
+ *
+ * Stores bcrypt-hashed API keys with a prefix for identification.
+ * The raw key is shown once at creation time and never stored.
+ */
+export const userApiKeys = pgTable(
+  'user_api_keys',
+  {
+    id: varchar('id', { length: 36 }).primaryKey(),
+    user_id: varchar('user_id', { length: 36 })
+      .notNull()
+      .references(() => users.user_id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    prefix: text('prefix').notNull(), // first 12 chars: 'agor_sk_XXXX' for identification
+    key_hash: text('key_hash').notNull(), // bcrypt hash of full key
+    created_at: t.timestamp('created_at').notNull(),
+    last_used_at: t.timestamp('last_used_at'),
+  },
+  (table) => ({
+    userIdx: index('user_api_keys_user_idx').on(table.user_id),
+    prefixIdx: index('user_api_keys_prefix_idx').on(table.prefix),
+  })
+);
+
+/**
+ * MCP Servers table - MCP server configurations
+ *
+ * Stores MCP (Model Context Protocol) server configurations that can be attached to sessions.
+ * Supports stdio, HTTP, and SSE transports with scoped access control.
+ */
+export const mcpServers = pgTable(
+  'mcp_servers',
+  {
+    // Primary identity
+    mcp_server_id: varchar('mcp_server_id', { length: 36 }).primaryKey(),
+    created_at: t.timestamp('created_at').notNull(),
+    updated_at: t.timestamp('updated_at'),
+
+    // Materialized for filtering
+    name: text('name').notNull(), // e.g., "filesystem", "sentry"
+    transport: text('transport', {
+      enum: ['stdio', 'http', 'sse'],
+    }).notNull(),
+    scope: text('scope', {
+      enum: ['global', 'session'],
+    }).notNull(),
+    enabled: t.bool('enabled').notNull().default(true),
+
+    // Scope foreign key
+    // For 'global' scope: which user owns this server
+    // For 'session' scope: use session_mcp_servers junction table (many-to-many)
+    owner_user_id: varchar('owner_user_id', { length: 36 }),
+
+    // Source tracking (materialized for queries)
+    source: text('source', {
+      enum: ['user', 'imported', 'agor'],
+    }).notNull(),
+
+    // JSON blob for configuration and capabilities
+    data: t
+      .json<unknown>('data')
+      .$type<{
+        display_name?: string;
+        description?: string;
+        import_path?: string;
+
+        // Transport config
+        command?: string;
+        args?: string[];
+        url?: string;
+        env?: Record<string, string>;
+
+        // Authentication config (for HTTP/SSE transports)
+        auth?: {
+          type: 'none' | 'bearer' | 'jwt' | 'oauth';
+          // Bearer token
+          token?: string;
+          // JWT config
+          api_url?: string;
+          api_token?: string;
+          api_secret?: string;
+          // OAuth 2.0 config
+          oauth_token_url?: string;
+          oauth_client_id?: string;
+          oauth_client_secret?: string;
+          oauth_scope?: string;
+          oauth_grant_type?: string;
+          // OAuth 2.1 runtime tokens (obtained via browser flow)
+          oauth_access_token?: string;
+          oauth_token_expires_at?: number; // Unix timestamp in milliseconds
+          oauth_refresh_token?: string;
+          // OAuth mode: 'per_user' stores tokens per-user, 'shared' uses single token for all users
+          oauth_mode?: 'per_user' | 'shared';
+          // Common
+          insecure?: boolean;
+        };
+
+        // Discovered capabilities
+        tools?: Array<{
+          name: string;
+          description: string;
+          input_schema: Record<string, unknown>;
+        }>;
+        resources?: Array<{
+          uri: string;
+          name: string;
+          mimeType?: string;
+        }>;
+        prompts?: Array<{
+          name: string;
+          description: string;
+          arguments?: Array<{
+            name: string;
+            description: string;
+            required?: boolean;
+          }>;
+        }>;
+      }>()
+      .notNull(),
+  },
+  (table) => ({
+    nameIdx: index('mcp_servers_name_idx').on(table.name),
+    scopeIdx: index('mcp_servers_scope_idx').on(table.scope),
+    ownerIdx: index('mcp_servers_owner_idx').on(table.owner_user_id),
+    enabledIdx: index('mcp_servers_enabled_idx').on(table.enabled),
+  })
+);
+
+/**
+ * Card Types table - Global card type definitions
+ *
+ * CardTypes are org-level templates that define a category of cards
+ * with default emoji, color, and optional JSON Schema for data validation.
+ */
+export const cardTypes = pgTable(
+  'card_types',
+  {
+    card_type_id: varchar('card_type_id', { length: 36 }).primaryKey(),
+    name: text('name').notNull(),
+    emoji: text('emoji'),
+    color: text('color'),
+    json_schema: text('json_schema'), // JSON string of JSON Schema
+    created_by: varchar('created_by', { length: 36 }),
+    created_at: t.timestamp('created_at').notNull(),
+    updated_at: t.timestamp('updated_at').notNull(),
+  },
+  (table) => ({
+    nameIdx: index('card_types_name_idx').on(table.name),
+  })
+);
+
+/**
+ * Cards table - Generic entities on boards
+ *
+ * Cards are visual work items managed by agents via MCP tools.
+ * They live on boards alongside branches and can be placed in zones.
+ */
+export const cards = pgTable(
+  'cards',
+  {
+    card_id: varchar('card_id', { length: 36 }).primaryKey(),
+    board_id: varchar('board_id', { length: 36 })
+      .notNull()
+      .references(() => boards.board_id, { onDelete: 'cascade' }),
+    card_type_id: varchar('card_type_id', { length: 36 }).references(() => cardTypes.card_type_id, {
+      onDelete: 'set null',
+    }),
+    title: text('title').notNull(),
+    url: text('url'),
+    description: text('description'),
+    note: text('note'),
+    data: text('data'), // JSON blob validated against CardType.json_schema if present
+    color_override: text('color_override'),
+    emoji_override: text('emoji_override'),
+    created_by: varchar('created_by', { length: 36 }),
+    created_at: t.timestamp('created_at').notNull(),
+    updated_at: t.timestamp('updated_at').notNull(),
+    archived: t.bool('archived').notNull().default(false),
+    archived_at: t.timestamp('archived_at'),
+  },
+  (table) => ({
+    boardIdx: index('cards_board_idx').on(table.board_id),
+    cardTypeIdx: index('cards_card_type_idx').on(table.card_type_id),
+    titleIdx: index('cards_title_idx').on(table.title),
+    archivedIdx: index('cards_archived_idx').on(table.archived),
+    createdIdx: index('cards_created_idx').on(table.created_at),
+  })
+);
+
+/**
+ * Artifacts table - Live web applications rendered via Sandpack
+ *
+ * Artifacts are board-scoped, DB-backed objects. The filesystem folder is a
+ * transient staging area that agents write to; on publish, the daemon serializes
+ * folder contents into the `files` JSONB column. Serving reads from DB only.
+ */
+export const artifacts = pgTable(
+  'artifacts',
+  {
+    artifact_id: varchar('artifact_id', { length: 36 }).primaryKey(),
+    branch_id: varchar('branch_id', { length: 36 }).references(() => branches.branch_id, {
+      onDelete: 'set null',
+    }),
+    board_id: varchar('board_id', { length: 36 })
+      .notNull()
+      .references(() => boards.board_id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    description: text('description'),
+    path: text('path'), // provenance only — where files were read from
+    template: text('template').notNull().default('react'),
+    build_status: text('build_status').notNull().default('unknown'),
+    build_errors: t.json<string[]>('build_errors'),
+    content_hash: text('content_hash'),
+    files: t.json<Record<string, string>>('files'),
+    dependencies: t.json<Record<string, string>>('dependencies'),
+    entry: text('entry'), // denormalized cache of the Sandpack entry file
+    sandpack_config: t.json<SandpackConfig>('sandpack_config'),
+    required_env_vars: t.json<string[]>('required_env_vars'),
+    agor_grants: t.json<AgorGrants>('agor_grants'),
+    agor_runtime: t.json<AgorRuntimeConfig>('agor_runtime'),
+    public: t.bool('public').notNull().default(true),
+    created_by: varchar('created_by', { length: 36 }),
+    created_at: t.timestamp('created_at').notNull(),
+    updated_at: t.timestamp('updated_at').notNull(),
+    archived: t.bool('archived').notNull().default(false),
+    archived_at: t.timestamp('archived_at'),
+  },
+  (table) => ({
+    branchIdx: index('artifacts_branch_idx').on(table.branch_id),
+    boardIdx: index('artifacts_board_idx').on(table.board_id),
+    archivedIdx: index('artifacts_archived_idx').on(table.archived),
+    publicIdx: index('artifacts_public_idx').on(table.public),
+  })
+);
+
+export type ArtifactRow = typeof artifacts.$inferSelect;
+export type ArtifactInsert = typeof artifacts.$inferInsert;
+
+/**
+ * Per-viewer trust grants for artifact secret/grant injection.
+ * See the matching SQLite definition for full docs.
+ */
+export const artifactTrustGrants = pgTable(
+  'artifact_trust_grants',
+  {
+    grant_id: varchar('grant_id', { length: 36 }).primaryKey(),
+    user_id: varchar('user_id', { length: 36 }).notNull(),
+    scope_type: text('scope_type').notNull(),
+    scope_value: text('scope_value'),
+    env_vars_set: t.json<string[]>('env_vars_set').notNull(),
+    agor_grants_set: t.json<AgorGrants>('agor_grants_set').notNull(),
+    granted_at: t.timestamp('granted_at').notNull(),
+    revoked_at: t.timestamp('revoked_at'),
+  },
+  (table) => ({
+    userIdx: index('artifact_trust_grants_user_idx').on(table.user_id),
+    scopeIdx: index('artifact_trust_grants_scope_idx').on(table.scope_type, table.scope_value),
+  })
+);
+
+export type ArtifactTrustGrantRow = typeof artifactTrustGrants.$inferSelect;
+export type ArtifactTrustGrantInsert = typeof artifactTrustGrants.$inferInsert;
+
+/**
+ * Board Objects table - Positioned entities (branches and cards) on boards
+ *
+ * Polymorphic placement: exactly one of branch_id or card_id must be set.
+ * Enforced in application layer.
+ */
+export const boardObjects = pgTable(
+  'board_objects',
+  {
+    // Primary identity
+    object_id: varchar('object_id', { length: 36 }).primaryKey(),
+    board_id: varchar('board_id', { length: 36 })
+      .notNull()
+      .references(() => boards.board_id, { onDelete: 'cascade' }),
+    created_at: t.timestamp('created_at').notNull(),
+
+    // Polymorphic entity reference (exactly one must be set)
+    branch_id: varchar('branch_id', { length: 36 }).references(() => branches.branch_id, {
+      onDelete: 'cascade',
+    }),
+    card_id: varchar('card_id', { length: 36 }).references(() => cards.card_id, {
+      onDelete: 'cascade',
+    }),
+
+    // Position data (JSON)
+    data: t
+      .json<unknown>('data')
+      .$type<{
+        position: { x: number; y: number };
+        zone_id?: string; // Optional zone pinning
+      }>()
+      .notNull(),
+  },
+  (table) => ({
+    boardIdx: index('board_objects_board_idx').on(table.board_id),
+    branchIdx: index('board_objects_branch_idx').on(table.branch_id),
+    cardIdx: index('board_objects_card_idx').on(table.card_id),
+  })
+);
+
+/**
+ * Session-MCP Servers relationship table
+ *
+ * Many-to-many relationship between sessions and MCP servers.
+ * Tracks which MCP servers are enabled for each session.
+ */
+export const sessionMcpServers = pgTable(
+  'session_mcp_servers',
+  {
+    session_id: varchar('session_id', { length: 36 })
+      .notNull()
+      .references(() => sessions.session_id, { onDelete: 'cascade' }),
+    mcp_server_id: varchar('mcp_server_id', { length: 36 })
+      .notNull()
+      .references(() => mcpServers.mcp_server_id, { onDelete: 'cascade' }),
+    enabled: t.bool('enabled').notNull().default(true),
+    added_at: t.timestamp('added_at').notNull(),
+  },
+  (table) => ({
+    // Composite primary key
+    pk: index('session_mcp_servers_pk').on(table.session_id, table.mcp_server_id),
+    // Indexes for queries
+    sessionIdx: index('session_mcp_servers_session_idx').on(table.session_id),
+    serverIdx: index('session_mcp_servers_server_idx').on(table.mcp_server_id),
+    enabledIdx: index('session_mcp_servers_enabled_idx').on(table.session_id, table.enabled),
+  })
+);
+
+/**
+ * MCP OAuth Tokens table - OAuth 2.1 tokens for MCP servers
+ *
+ * Holds BOTH per-user and shared-mode tokens:
+ *   - `user_id` set  → per-user token (oauth_mode: 'per_user')
+ *   - `user_id` NULL → shared token for this MCP server (oauth_mode: 'shared')
+ *
+ * `oauth_client_id`/`oauth_client_secret` are co-located because the
+ * refresh_token is bound to the client credentials that were used when
+ * it was issued (often via RFC 7591 Dynamic Client Registration).
+ */
+export const userMcpOauthTokens = pgTable(
+  'user_mcp_oauth_tokens',
+  {
+    // NULL = shared-mode token (one per mcp_server_id)
+    user_id: varchar('user_id', { length: 36 }).references(() => users.user_id, {
+      onDelete: 'cascade',
+    }),
+    mcp_server_id: varchar('mcp_server_id', { length: 36 })
+      .notNull()
+      .references(() => mcpServers.mcp_server_id, { onDelete: 'cascade' }),
+    oauth_access_token: text('oauth_access_token').notNull(),
+    oauth_token_expires_at: t.timestamp('oauth_token_expires_at'), // Unix timestamp in milliseconds
+    oauth_refresh_token: text('oauth_refresh_token'),
+    // DCR / registered client credentials this grant was issued under.
+    // Must be preserved across refreshes.
+    oauth_client_id: text('oauth_client_id'),
+    oauth_client_secret: text('oauth_client_secret'),
+    created_at: t.timestamp('created_at').notNull(),
+    updated_at: t.timestamp('updated_at'),
+  },
+  (table) => ({
+    // Composite lookup indexes. Uniqueness enforced via partial unique indexes
+    // created in the migration (one for per-user rows, one for the shared row).
+    pk: index('user_mcp_oauth_tokens_pk').on(table.user_id, table.mcp_server_id),
+    userIdx: index('user_mcp_oauth_tokens_user_idx').on(table.user_id),
+    serverIdx: index('user_mcp_oauth_tokens_server_idx').on(table.mcp_server_id),
+  })
+);
+
+/**
+ * Board Comments table - Human-to-human conversations and collaboration
+ *
+ * Flexible attachment strategy:
+ * - Board-level: General conversations (no attachment foreign keys)
+ * - Object-level: Attached to sessions, tasks, messages, or branches
+ * - Spatial: Positioned on canvas (absolute or relative to objects)
+ *
+ * Supports threading, mentions, and resolve/unresolve workflows.
+ */
+export const boardComments = pgTable(
+  'board_comments',
+  {
+    // Primary identity
+    comment_id: varchar('comment_id', { length: 36 }).primaryKey(),
+    created_at: t.timestamp('created_at').notNull(),
+    updated_at: t.timestamp('updated_at'),
+
+    // Scoping & authorship
+    board_id: varchar('board_id', { length: 36 })
+      .notNull()
+      .references(() => boards.board_id, { onDelete: 'cascade' }),
+    created_by: varchar('created_by', { length: 36 }).notNull(),
+
+    // FLEXIBLE ATTACHMENTS (all optional)
+    // Phase 1: board-level only (all NULL)
+    // Phase 2: object attachments (session, task, message, branch)
+    // Phase 3: spatial positioning
+    session_id: varchar('session_id', { length: 36 }).references(() => sessions.session_id, {
+      onDelete: 'set null',
+    }),
+    task_id: varchar('task_id', { length: 36 }).references(() => tasks.task_id, {
+      onDelete: 'set null',
+    }),
+    message_id: varchar('message_id', { length: 36 }).references(() => messages.message_id, {
+      onDelete: 'set null',
+    }),
+    branch_id: varchar('branch_id', { length: 36 }).references(() => branches.branch_id, {
+      onDelete: 'cascade',
+    }),
+
+    // Content (materialized for display)
+    content: text('content').notNull(), // Markdown-supported text
+    content_preview: text('content_preview').notNull(), // First 200 chars
+
+    // Thread support (optional)
+    parent_comment_id: varchar('parent_comment_id', { length: 36 }),
+
+    // Metadata (materialized for filtering)
+    resolved: t.bool('resolved').notNull().default(false),
+    edited: t.bool('edited').notNull().default(false),
+
+    // Reactions (for BOTH thread roots and replies)
+    // Stored as JSON array: [{ user_id: "abc", emoji: "👍" }, ...]
+    // Display grouped by emoji: { "👍": ["alice", "bob"], "🎉": ["charlie"] }
+    reactions: t
+      .json<unknown>('reactions')
+      .$type<Array<{ user_id: string; emoji: string }>>()
+      .notNull()
+      .default(sql`'[]'`),
+
+    // JSON blob for advanced features
+    data: t
+      .json<unknown>('data')
+      .$type<{
+        // Spatial positioning (Phase 3)
+        position?: {
+          // Absolute board coordinates (React Flow coordinates)
+          absolute?: { x: number; y: number };
+          // OR relative to session/zone/branch (follows parent when it moves)
+          relative?: {
+            parent_id: string; // Can be session_id, zone object ID, or branch_id
+            parent_type: 'session' | 'zone' | 'branch';
+            offset_x: number;
+            offset_y: number;
+          };
+        };
+        // Mentions (Phase 4)
+        mentions?: string[]; // Array of user IDs
+      }>()
+      .notNull(),
+  },
+  (table) => ({
+    boardIdx: index('board_comments_board_idx').on(table.board_id),
+    sessionIdx: index('board_comments_session_idx').on(table.session_id),
+    taskIdx: index('board_comments_task_idx').on(table.task_id),
+    messageIdx: index('board_comments_message_idx').on(table.message_id),
+    branchIdx: index('board_comments_branch_idx').on(table.branch_id),
+    createdByIdx: index('board_comments_created_by_idx').on(table.created_by),
+    parentIdx: index('board_comments_parent_idx').on(table.parent_comment_id),
+    createdIdx: index('board_comments_created_idx').on(table.created_at),
+    resolvedIdx: index('board_comments_resolved_idx').on(table.resolved),
+  })
+);
+
+/**
+ * Gateway Channels table - Registered messaging platform integrations
+ *
+ * Users create channels to connect messaging platforms (Slack, Discord, etc.)
+ * to Agor. Each channel targets a specific branch and routes messages
+ * to/from sessions within that branch.
+ */
+export const gatewayChannels = pgTable(
+  'gateway_channels',
+  {
+    // Primary identity
+    id: varchar('id', { length: 36 }).primaryKey(),
+    created_at: t.timestamp('created_at').notNull(),
+    updated_at: t.timestamp('updated_at').notNull(),
+
+    // User attribution
+    created_by: varchar('created_by', { length: 36 }).notNull(),
+
+    // Materialized for queries
+    name: text('name').notNull(),
+    channel_type: text('channel_type', {
+      enum: ['slack', 'discord', 'whatsapp', 'telegram', 'github'],
+    }).notNull(),
+    target_branch_id: varchar('target_branch_id', { length: 36 })
+      .notNull()
+      .references(() => branches.branch_id, { onDelete: 'cascade' }),
+    agor_user_id: varchar('agor_user_id', { length: 36 }).notNull(),
+    channel_key: text('channel_key').notNull().unique(),
+    enabled: t.bool('enabled').notNull().default(true),
+    last_message_at: t.timestamp('last_message_at'),
+
+    // JSON blob for platform credentials (encrypted at rest)
+    config: t.json<Record<string, unknown>>('config').notNull(),
+
+    // JSON blob for agentic tool configuration (agent, model, permission mode, etc.)
+    agentic_config: t.json<Record<string, unknown> | null>('agentic_config'),
+  },
+  (table) => ({
+    channelKeyIdx: index('idx_gateway_channel_key').on(table.channel_key),
+    enabledTypeIdx: index('idx_gateway_enabled_type').on(table.enabled, table.channel_type),
+  })
+);
+
+/**
+ * Thread-Session Map table - Links platform threads to Agor sessions
+ *
+ * Each thread in a messaging platform maps 1:1 to an Agor session.
+ * The gateway service manages these mappings for routing.
+ */
+export const threadSessionMap = pgTable(
+  'thread_session_map',
+  {
+    // Primary identity
+    id: varchar('id', { length: 36 }).primaryKey(),
+    created_at: t.timestamp('created_at').notNull(),
+    last_message_at: t.timestamp('last_message_at').notNull(),
+
+    // Foreign keys
+    channel_id: varchar('channel_id', { length: 36 })
+      .notNull()
+      .references(() => gatewayChannels.id, { onDelete: 'cascade' }),
+    thread_id: text('thread_id').notNull(),
+    session_id: varchar('session_id', { length: 36 })
+      .notNull()
+      .references(() => sessions.session_id, { onDelete: 'cascade' }),
+    branch_id: varchar('branch_id', { length: 36 })
+      .notNull()
+      .references(() => branches.branch_id),
+
+    // Materialized for queries
+    status: text('status', {
+      enum: ['active', 'archived', 'paused'],
+    })
+      .notNull()
+      .default('active'),
+
+    // JSON blob for extra metadata
+    metadata: t.json<Record<string, unknown>>('metadata'),
+  },
+  (table) => ({
+    uniqueChannelThread: uniqueIndex('uniq_thread_map_channel_thread').on(
+      table.channel_id,
+      table.thread_id
+    ),
+    sessionIdx: index('idx_thread_map_session_id').on(table.session_id),
+    threadIdx: index('idx_thread_map_thread_id').on(table.thread_id),
+    channelStatusIdx: index('idx_thread_map_channel_status').on(table.channel_id, table.status),
+  })
+);
+
+/**
+ * Session Env Selections - Many-to-many between sessions and session-scope env vars.
+ *
+ * See the matching sqlite definition for full docs.
+ */
+export const sessionEnvSelections = pgTable(
+  'session_env_selections',
+  {
+    session_id: varchar('session_id', { length: 36 })
+      .notNull()
+      .references(() => sessions.session_id, { onDelete: 'cascade' }),
+    env_var_name: text('env_var_name').notNull(),
+    created_at: t.timestamp('created_at').notNull(),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.session_id, table.env_var_name] }),
+    sessionIdx: index('session_env_selections_session_idx').on(table.session_id),
+  })
+);
+
+/**
+ * Type exports for use with Drizzle ORM
+ */
+export type SessionRow = typeof sessions.$inferSelect;
+export type SessionInsert = typeof sessions.$inferInsert;
+export type TaskRow = typeof tasks.$inferSelect;
+export type TaskInsert = typeof tasks.$inferInsert;
+export type MessageRow = typeof messages.$inferSelect;
+export type MessageInsert = typeof messages.$inferInsert;
+export type BoardRow = typeof boards.$inferSelect;
+export type BoardInsert = typeof boards.$inferInsert;
+export type RepoRow = typeof repos.$inferSelect;
+export type RepoInsert = typeof repos.$inferInsert;
+export type BranchRow = typeof branches.$inferSelect;
+export type BranchInsert = typeof branches.$inferInsert;
+export type ScheduleRow = typeof schedules.$inferSelect;
+export type ScheduleInsert = typeof schedules.$inferInsert;
+export type UserRow = typeof users.$inferSelect;
+export type UserInsert = typeof users.$inferInsert;
+export type MCPServerRow = typeof mcpServers.$inferSelect;
+export type MCPServerInsert = typeof mcpServers.$inferInsert;
+export type SessionMCPServerRow = typeof sessionMcpServers.$inferSelect;
+export type SessionMCPServerInsert = typeof sessionMcpServers.$inferInsert;
+export type SessionEnvSelectionRow = typeof sessionEnvSelections.$inferSelect;
+export type SessionEnvSelectionInsert = typeof sessionEnvSelections.$inferInsert;
+export type UserMCPOAuthTokenRow = typeof userMcpOauthTokens.$inferSelect;
+export type UserMCPOAuthTokenInsert = typeof userMcpOauthTokens.$inferInsert;
+export type CardTypeRow = typeof cardTypes.$inferSelect;
+export type CardTypeInsert = typeof cardTypes.$inferInsert;
+export type CardRow = typeof cards.$inferSelect;
+export type CardInsert = typeof cards.$inferInsert;
+export type BoardObjectRow = typeof boardObjects.$inferSelect;
+export type BoardObjectInsert = typeof boardObjects.$inferInsert;
+export type BoardCommentRow = typeof boardComments.$inferSelect;
+export type BoardCommentInsert = typeof boardComments.$inferInsert;
+export type GatewayChannelRow = typeof gatewayChannels.$inferSelect;
+export type GatewayChannelInsert = typeof gatewayChannels.$inferInsert;
+export type ThreadSessionMapRow = typeof threadSessionMap.$inferSelect;
+export type ThreadSessionMapInsert = typeof threadSessionMap.$inferInsert;
+export type SerializedSessionRow = typeof serializedSessions.$inferSelect;
+export type SerializedSessionInsert = typeof serializedSessions.$inferInsert;
+
+/**
+ * Drizzle Relations for Relational Queries
+ *
+ * These enable automatic JOINs using db.query.sessions.findFirst({ with: { branch: true } })
+ */
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  branch: one(branches, {
+    fields: [sessions.branch_id],
+    references: [branches.branch_id],
+  }),
+  schedule: one(schedules, {
+    fields: [sessions.schedule_id],
+    references: [schedules.schedule_id],
+  }),
+}));
+
+export const branchesRelations = relations(branches, ({ many }) => ({
+  sessions: many(sessions),
+  schedules: many(schedules),
+}));
+
+export const schedulesRelations = relations(schedules, ({ one, many }) => ({
+  branch: one(branches, {
+    fields: [schedules.branch_id],
+    references: [branches.branch_id],
+  }),
+  sessions: many(sessions),
+}));

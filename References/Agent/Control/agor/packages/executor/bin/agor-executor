@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+
+/**
+ * Agor Executor - Standalone executable
+ * Spawned by daemon to execute agent SDKs in isolated context
+ *
+ * This bin script delegates to cli.js which handles all argument parsing
+ * and supports the Feathers/WebSocket architecture.
+ */
+
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+import { existsSync } from 'node:fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Delegate to cli.js which handles all modes and arguments
+// Try dist/cli.js first (production), fall back to src/cli.ts (development)
+const distPath = join(__dirname, '..', 'dist', 'cli.js');
+const srcPath = join(__dirname, '..', 'src', 'cli.ts');
+
+try {
+  if (existsSync(distPath)) {
+    // Load compiled version (production)
+    await import(distPath);
+  } else if (existsSync(srcPath)) {
+    // Fall back to TypeScript (development) - tsx loader will handle it
+    console.error('ERROR: Executor not built. Run "pnpm build" in packages/executor first');
+    console.error('Trying tsx fallback...');
+    await import(srcPath);
+  } else {
+    console.error('ERROR: Could not find executor CLI at:');
+    console.error(`  - ${distPath}`);
+    console.error(`  - ${srcPath}`);
+    process.exit(1);
+  }
+} catch (error) {
+  console.error('ERROR: Could not load executor CLI');
+  console.error('Details:', error);
+  process.exit(1);
+}

@@ -1,0 +1,250 @@
+/**
+ * ITool - Base interface for agentic coding tool integrations
+ *
+ * Single unified interface for all tool interactions.
+ * Methods are optional based on tool capabilities.
+ *
+ * Design philosophy:
+ * - Functionality-oriented (what you can DO)
+ * - Optional methods based on capabilities
+ * - Start simple, expand as we learn from multiple tools
+ * - Don't split into Client/Session unless runtime separation is clear
+ */
+
+import type { AuthCheckResult, Message } from '@agor/core/types';
+import type { NormalizedSdkResponse, RawSdkResponse } from '../../types/sdk-response.js';
+import type {
+  CreateSessionConfig,
+  ImportOptions,
+  MessageRange,
+  SessionData,
+  SessionHandle,
+  SessionMetadata,
+  StreamingCallbacks,
+  TaskResult,
+  ToolCapabilities,
+  ToolType,
+} from './types.js';
+
+export interface ITool {
+  // ============================================================
+  // Identity
+  // ============================================================
+
+  /** Tool type identifier */
+  readonly toolType: ToolType;
+
+  /** Human-readable tool name */
+  readonly name: string;
+
+  // ============================================================
+  // Capabilities & Installation
+  // ============================================================
+
+  /**
+   * Get tool capabilities (feature flags)
+   */
+  getCapabilities(): ToolCapabilities;
+
+  /**
+   * Check if tool is installed and accessible
+   */
+  checkInstalled(): Promise<boolean>;
+
+  // ============================================================
+  // Session Import (if supportsSessionImport)
+  // ============================================================
+
+  /**
+   * Import existing session from tool's storage
+   *
+   * Example: Load Claude Code session from ~/.claude/projects/
+   *
+   * @param sessionId - Tool's session identifier
+   * @param options - Import options (e.g., project directory)
+   * @returns Rich session data with messages and metadata
+   */
+  importSession?(sessionId: string, options?: ImportOptions): Promise<SessionData>;
+
+  // ============================================================
+  // Session Creation (if supportsSessionCreate)
+  // ============================================================
+
+  /**
+   * Create new session via SDK/API
+   *
+   * @param config - Session configuration
+   * @returns Session handle (minimal identifier)
+   */
+  createSession?(config: CreateSessionConfig): Promise<SessionHandle>;
+
+  // ============================================================
+  // Live Execution (if supportsLiveExecution)
+  // ============================================================
+
+  /**
+   * Execute task (send prompt) in existing session
+   *
+   * CONTRACT:
+   * - MANDATORY: Must call messagesService.create() with complete message when done
+   * - MANDATORY: Complete message automatically broadcasts via FeathersJS
+   * - OPTIONAL: If supportsStreaming=true, may call streamingCallbacks during execution
+   *
+   * STREAMING:
+   * - If streamingCallbacks provided AND supportsStreaming=true:
+   *   - Call onStreamStart() before generating
+   *   - Call onStreamChunk() for each 3-10 word chunk
+   *   - Call onStreamEnd() after generating
+   *   - Then create complete message in DB
+   * - If streamingCallbacks not provided OR supportsStreaming=false:
+   *   - Execute synchronously
+   *   - Create complete message in DB
+   *   - User sees loading spinner, then full message
+   *
+   * @param sessionId - Session identifier
+   * @param prompt - User prompt
+   * @param taskId - Task identifier (for linking messages)
+   * @param streamingCallbacks - Optional callbacks for real-time streaming (ignored if !supportsStreaming)
+   * @returns Task result with message IDs
+   */
+  executeTask?(
+    sessionId: string,
+    prompt: string,
+    taskId?: string,
+    streamingCallbacks?: StreamingCallbacks
+  ): Promise<TaskResult>;
+
+  // ============================================================
+  // Session Operations (if supported)
+  // ============================================================
+
+  /**
+   * Get session metadata
+   */
+  getSessionMetadata?(sessionId: string): Promise<SessionMetadata>;
+
+  /**
+   * Get messages from session
+   */
+  getSessionMessages?(sessionId: string, range?: MessageRange): Promise<Message[]>;
+
+  /**
+   * List all available sessions
+   */
+  listSessions?(): Promise<SessionMetadata[]>;
+
+  // ============================================================
+  // Advanced Features (if supported)
+  // ============================================================
+
+  /**
+   * Fork session at specific message index
+   *
+   * Creates divergent exploration path
+   */
+  forkSession?(sessionId: string, atMessageIndex?: number): Promise<SessionHandle>;
+
+  /**
+   * Spawn child session for subsession
+   *
+   * Creates focused subsession session with minimal context
+   */
+  spawnChildSession?(parentSessionId: string, prompt: string): Promise<SessionHandle>;
+
+  // ============================================================
+  // Task Lifecycle Control (if supportsLiveExecution)
+  // ============================================================
+
+  /**
+   * Stop currently executing task in session
+   *
+   * Gracefully terminates the agent's current execution.
+   * Implementation varies by SDK:
+   * - Claude Agent SDK: Call interrupt() on Query object
+   * - Gemini SDK: Call abort() on AbortController
+   * - Codex SDK: Set stop flag and break event loop
+   *
+   * @param sessionId - Session identifier
+   * @param taskId - Optional task ID to stop (if multiple tasks running)
+   * @returns Success status and partial results if available
+   */
+  stopTask?(
+    sessionId: string,
+    taskId?: string
+  ): Promise<{
+    success: boolean;
+    partialResult?: Partial<TaskResult>;
+    reason?: string;
+  }>;
+
+  // ============================================================
+  // Token Accounting (Required for all tools)
+  // ============================================================
+
+  /**
+   * Normalize raw SDK response to common format
+   *
+   * Converts tool-specific SDK response into a normalized structure
+   * with consistent field names and types across all agentic tools.
+   *
+   * This enables:
+   * - Consistent UI display
+   * - Cross-tool token accounting
+   * - Easier debugging
+   *
+   * @param rawResponse - Raw SDK response from executeTask/executePrompt
+   * @returns Normalized response with common structure
+   */
+  normalizedSdkResponse(rawResponse: RawSdkResponse): NormalizedSdkResponse;
+
+  // ============================================================
+  // Auth Check (optional — implement for pre-session validation)
+  // ============================================================
+
+  /**
+   * Check whether the tool's credentials are valid without spawning a session.
+   *
+   * Implementations should use the cheapest available mechanism:
+   * - API-key tools: lightweight models-list HTTP call against the provider
+   * - OAuth/CLI tools: CLI auth status check (e.g. `claude auth status`)
+   * - Server-based tools (OpenCode): connectivity check
+   *
+   * Optional — tools that don't implement this return undefined.
+   *
+   * @param apiKey - Raw API key to validate. When omitted the implementation
+   *   should use credentials already available in its environment.
+   */
+  isAuthenticated?(apiKey?: string): Promise<AuthCheckResult>;
+
+  /**
+   * Compute current context-window occupancy for a session.
+   *
+   * This is the **fallback** path. The authoritative path is the
+   * `rawContextUsage` snapshot returned by `executePromptWithStreaming` —
+   * when that snapshot is present, `base-executor` writes it straight to
+   * `Task.computed_context_window` and never calls this method. Implement
+   * this for tools that don't surface a per-turn authoritative snapshot, or
+   * to provide a best-effort estimate when the snapshot is missing.
+   *
+   * Per-tool strategies:
+   * - **Claude Code**: Sums input/output tokens across tasks, resets on
+   *   compaction events.
+   * - **Codex**: Returns `last_token_usage.total_tokens` if `currentRawSdkResponse`
+   *   happens to be a token_count event, else per-turn `input_tokens` as an
+   *   approximate proxy (under-counts on tool-heavy turns).
+   * - **Gemini**: Cumulative from finished events.
+   *
+   * @param sessionId - Session ID to compute context for
+   * @param currentTaskId - Current task ID (to exclude from computation, as it's not complete yet)
+   * @param currentRawSdkResponse - Raw SDK response from the current turn,
+   *   passed by base-executor during task completion. Required to avoid a
+   *   DB read-after-write deadlock; implementations must NOT query the
+   *   tasks table for the current task when this argument is provided.
+   * @returns Promise resolving to context-window occupancy in tokens
+   */
+  computeContextWindow?(
+    sessionId: string,
+    currentTaskId?: string,
+    currentRawSdkResponse?: unknown
+  ): Promise<number>;
+}

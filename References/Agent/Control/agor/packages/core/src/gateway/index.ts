@@ -1,0 +1,14 @@
+/**
+ * Gateway connector layer
+ *
+ * Platform-specific connectors for sending/receiving messages
+ * through messaging platforms (Slack, Discord, etc.)
+ */
+
+export type { GatewayConnector, InboundMessage, OutboundPayload } from './connector';
+export { normalizeOutbound } from './connector';
+export { getConnector, hasConnector, registerConnector } from './connector-registry';
+export { GitHubConnector, parseThreadId as parseGitHubThreadId } from './connectors/github';
+export { SlackConnector } from './connectors/slack';
+export type { GatewayContext } from './context';
+export { formatGatewayContext } from './context';
