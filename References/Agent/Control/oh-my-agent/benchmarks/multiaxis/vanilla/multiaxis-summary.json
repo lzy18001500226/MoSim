@@ -1,0 +1,14 @@
+{
+  "harness": "vanilla",
+  "package_manager": "npm",
+  "judge_runs_spec_visual": 3,
+  "total": 70.7,
+  "max": 100.0,
+  "by_axis": {
+    "functional": 28.5,
+    "spec": 11.67,
+    "visual": 12,
+    "engineering": 12.5,
+    "efficiency": 6
+  }
+}

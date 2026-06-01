@@ -1,0 +1,12 @@
+{
+  "harness": "ecc",
+  "install_status": "failed",
+  "install_log": "SKIPPED: ecc is not benchmarked in this run.\n\nReason: ecc's install.sh writes to the user-level ~/.claude/ directory.\nBecause claude requires the real HOME to authenticate via OAuth on macOS,\nrunning ecc's installer here would mutate the operator's actual config.\nRun ecc standalone in a disposable VM/container to benchmark it.",
+  "run_status": "skipped",
+  "duration_seconds": 0,
+  "exit_code": -1,
+  "project_dir": "/tmp/oma-benchmark-20260504-171703/projects/ecc",
+  "home_dir": "/tmp/oma-benchmark-20260504-171703/homes/ecc",
+  "claude_output_file": "/tmp/oma-benchmark-20260504-171703/results/ecc.json",
+  "claude_stderr_file": "/tmp/oma-benchmark-20260504-171703/results/ecc.stderr"
+}

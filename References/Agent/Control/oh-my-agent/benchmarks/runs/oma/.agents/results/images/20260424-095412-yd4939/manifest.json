@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-04-24T09:54:12+10:00",
+  "options": {
+    "size": "1024x1024",
+    "quality": "auto",
+    "count": 1
+  },
+  "cost_estimate_usd": 0.04,
+  "runs": [
+    {
+      "vendor": "gemini",
+      "model": "unknown",
+      "strategy": "unknown",
+      "strategy_attempts": [],
+      "files": [],
+      "duration_ms": 400,
+      "status": "failed",
+      "error": {
+        "kind": "other",
+        "message": "HTTP 404: {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/nano-banana-2 is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n"
+      }
+    }
+  ],
+  "prompt": "a simple red apple on plain white background"
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-04-24T11:22:33+10:00",
+  "options": {
+    "size": "1024x1024",
+    "quality": "auto",
+    "count": 1
+  },
+  "cost_estimate_usd": 0,
+  "runs": [
+    {
+      "vendor": "pollinations",
+      "model": "flux",
+      "strategy": "pollinations-api",
+      "strategy_attempts": [
+        {
+          "strategy": "pollinations-api",
+          "status": "ok",
+          "duration_ms": 4534
+        }
+      ],
+      "files": [
+        "/Users/gracefullight/workspace/oh-my-agent/.agents/results/images/20260424-112233-eh1ga4/pollinations-flux.jpg"
+      ],
+      "duration_ms": 4534,
+      "status": "ok"
+    }
+  ],
+  "prompt": "a red apple on white background"
+}

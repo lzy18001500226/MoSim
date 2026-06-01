@@ -1,0 +1,12 @@
+{
+  "harness": "superpowers",
+  "install_status": "success",
+  "install_log": "Cloning into '/tmp/oma-benchmark-20260504-171703/plugins/superpowers'...\n=== ls -la /tmp/oma-benchmark-20260504-171703/projects/superpowers ===\ntotal 0\ndrwxr-xr-x@ 3 gracefullight  wheel   96 May  4 17:17 .\ndrwxr-xr-x@ 7 gracefullight  wheel  224 May  4 17:17 ..\ndrwxr-xr-x@ 9 gracefullight  wheel  288 May  4 17:17 .git\n\n=== du -sh /tmp/oma-benchmark-20260504-171703/homes/superpowers ===\n112K\t/tmp/oma-benchmark-20260504-171703/homes/superpowers\nfatal: destination path '/tmp/oma-benchmark-20260504-171703/plugins/superpowers' already exists and is not an empty directory.\nCloning into '/tmp/oma-benchmark-20260504-171703/plugins/superpowers'...",
+  "run_status": "success",
+  "duration_seconds": 53,
+  "exit_code": 0,
+  "project_dir": "/tmp/oma-benchmark-20260504-171703/projects/superpowers",
+  "home_dir": "/tmp/oma-benchmark-20260504-171703/homes/superpowers",
+  "claude_output_file": "/tmp/oma-benchmark-20260504-171703/results/superpowers.json",
+  "claude_stderr_file": "/tmp/oma-benchmark-20260504-171703/results/superpowers.stderr"
+}

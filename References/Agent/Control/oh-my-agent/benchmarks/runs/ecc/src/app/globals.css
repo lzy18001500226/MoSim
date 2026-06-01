@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+:root {
+  --color-sky: oklch(85% 0.12 230);
+  --color-grass: oklch(78% 0.15 145);
+  --color-sun: oklch(88% 0.18 85);
+  --color-coral: oklch(75% 0.16 25);
+  --color-lavender: oklch(80% 0.1 290);
+  --color-cloud: oklch(97% 0.005 250);
+  --color-night: oklch(25% 0.05 260);
+
+  --color-surface: oklch(98% 0.005 250);
+  --color-surface-raised: oklch(100% 0 0);
+  --color-text: oklch(25% 0.02 260);
+  --color-text-muted: oklch(55% 0.02 260);
+
+  --radius-soft: 1rem;
+  --radius-round: 9999px;
+
+  --space-section: clamp(3rem, 2rem + 4vw, 8rem);
+
+  --text-hero: clamp(2.5rem, 1rem + 5vw, 5rem);
+  --text-heading: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  --text-body: clamp(1rem, 0.9rem + 0.3vw, 1.25rem);
+
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@theme inline {
+  --color-sky: var(--color-sky);
+  --color-grass: var(--color-grass);
+  --color-sun: var(--color-sun);
+  --color-coral: var(--color-coral);
+  --color-lavender: var(--color-lavender);
+  --color-cloud: var(--color-cloud);
+  --color-night: var(--color-night);
+  --color-surface: var(--color-surface);
+  --color-surface-raised: var(--color-surface-raised);
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 2s ease-in-out infinite;
+}

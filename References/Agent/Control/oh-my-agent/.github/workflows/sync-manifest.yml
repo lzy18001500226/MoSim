@@ -1,0 +1,58 @@
+name: Sync Manifest
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".agents/**"
+      - "cli/generate-manifest.ts"
+      - ".release-please-manifest.json"
+
+concurrency:
+  group: sync-manifest-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync-manifest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Sync prompt-manifest.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+
+            VERSION=$(jq -r '.["."]' .release-please-manifest.json)
+            bunx tsx cli/generate-manifest.ts "$VERSION"
+
+            if git diff --quiet prompt-manifest.json; then
+              echo "prompt-manifest.json already up to date"
+              exit 0
+            fi
+
+            git add prompt-manifest.json
+            git commit -m "ci: sync prompt-manifest.json [skip ci]"
+
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt $attempt"
+              exit 0
+            fi
+
+            echo "Push failed on attempt $attempt, retrying..."
+            sleep $((attempt * 5))
+          done
+
+          echo "Failed to sync prompt-manifest.json after 3 attempts"
+          exit 1

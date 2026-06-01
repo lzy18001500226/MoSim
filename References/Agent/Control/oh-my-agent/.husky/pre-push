@@ -1,0 +1,4 @@
+bun run typecheck
+# Mirror GitHub Actions, which sets CI=true automatically. Catches tests
+# that behave differently under non-interactive yes-mode (install.ts).
+CI=true bun run test

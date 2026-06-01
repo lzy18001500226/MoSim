@@ -1,0 +1,9 @@
+{
+  "harness": "omc",
+  "items": {
+    "visual-anti-patterns":  { "score": 4, "max": 5, "notes": "One anti-pattern: builder panel labels (Shapes/Nature/Build/Friends, object names, AI suggestion chips) appear below 16px at tablet scale; no gradient backgrounds, orbs, nested cards, or dashboard clutter observed." },
+    "visual-child-friendly": { "score": 4, "max": 5, "notes": "Playful tone with emojis, friendly Creative Buddy AI character, simple language, and large CTA buttons; minor deduction for small category-tab and object-label tap targets in the builder panel." },
+    "visual-consistency":    { "score": 4, "max": 5, "notes": "Unified purple/indigo primary color, consistent card radii, button styles, and font family across landing, builder, gallery, and theme-change views; slight nav-bar density shift between landing and builder is contextually appropriate." },
+    "visual-accessibility":  { "score": 3, "max": 5, "notes": "Good text-on-background contrast throughout and most interactive elements carry text labels; two icon-only toggle buttons in builder toolbar lack visible labels, no focus rings captured in any screenshot, and responsiveness is unverifiable from desktop-only captures." }
+  }
+}

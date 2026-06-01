@@ -1,0 +1,7 @@
+{
+  "journey-onboard":  {"score": 3,   "max": 3, "evidence": "Landing page shows a clearly visible 'Start Creating! 🚀' button without scrolling, linking to /onboarding."},
+  "journey-builder":  {"score": 4,   "max": 4, "evidence": "Three.js Canvas renders at 1472x1096 with a floor/grid, and a sidebar shows object/shape pickers (Shapes, Nature, Build, Friends categories with Box, Ball, Pillar, Cone items)."},
+  "journey-ai":       {"score": 3,   "max": 3, "evidence": "Creative Buddy AI panel found in right sidebar; typing 'help me' and clicking Send returned a non-empty response: 'Let's build something amazing! What's the first thing you'd put in your world?'"},
+  "journey-save":     {"score": 1.5, "max": 3, "evidence": "Save button exists and persists world data to localStorage, but reloading the page redirects to /onboarding instead of restoring the builder with the saved state."},
+  "journey-gallery":  {"score": 2,   "max": 2, "evidence": "Gallery at /gallery renders a 'My Worlds' grid showing the saved 'Test World' card with object count, environment name, and Open/Delete actions."}
+}

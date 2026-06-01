@@ -1,0 +1,9 @@
+{
+  "harness": "superpowers",
+  "items": {
+    "visual-anti-patterns":  { "score": 4, "max": 5, "notes": "Soft pink-to-blue gradient background visible on landing and gallery pages counts as one anti-pattern; no orbs, no nested cards, no clutter, text sizes adequate." },
+    "visual-child-friendly": { "score": 4, "max": 5, "notes": "Emoji-based object palette, friendly Sparky AI buddy, big colorful buttons, and minimal text density are well-suited for children; small icon-only undo/redo buttons slightly reduce the score." },
+    "visual-consistency":    { "score": 3, "max": 5, "notes": "Purple/magenta heading color and rounded card radii are consistent, but button styles drift across pages (pink gradient on landing, solid purple on gallery, green on builder toolbar)." },
+    "visual-accessibility":  { "score": 3, "max": 5, "notes": "Good text-on-white contrast and visible selection rings on theme picker, but undo/redo and close buttons are icon-only without labels and no responsive-width evidence is shown." }
+  }
+}

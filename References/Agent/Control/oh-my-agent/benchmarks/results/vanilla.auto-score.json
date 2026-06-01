@@ -1,0 +1,74 @@
+{
+  "harness": "vanilla",
+  "project_dir": "/tmp/oma-benchmark-20260504-171703/projects/vanilla",
+  "timestamp": "2026-05-04T13:35:42Z",
+  "package_manager": "npm",
+  "prompt_requires_tests": false,
+  "checks": {
+    "setup-nextjs": {
+      "pass": true,
+      "score": 2.5,
+      "max": 2.5,
+      "evidence": "next@16.2.4"
+    },
+    "setup-tailwind": {
+      "pass": true,
+      "score": 2.5,
+      "max": 2.5,
+      "evidence": "tailwindcss@^4"
+    },
+    "setup-r3f": {
+      "pass": true,
+      "score": 2.5,
+      "max": 2.5,
+      "evidence": "@react-three/fiber@^9.6.1 @react-three/drei@^10.7.7"
+    },
+    "setup-build": {
+      "pass": true,
+      "score": 2.5,
+      "max": 2.5,
+      "evidence": "exit 0 in 11s"
+    },
+    "ai-api": {
+      "pass": false,
+      "score": 0,
+      "max": 5,
+      "evidence": "no AI integration or deferred stub"
+    },
+    "lint-clean": {
+      "pass": false,
+      "score": 0,
+      "max": 2.5,
+      "evidence": "exit 1"
+    },
+    "ts-clean": {
+      "pass": true,
+      "score": 2.5,
+      "max": 2.5,
+      "evidence": "exit 0"
+    },
+    "test-exists": {
+      "pass": true,
+      "score": 0,
+      "max": 0,
+      "evidence": "n/a (prompt did not request tests)"
+    },
+    "test-pass": {
+      "pass": true,
+      "score": 0,
+      "max": 0,
+      "evidence": "n/a (prompt did not request tests)"
+    },
+    "test-coverage": {
+      "pass": true,
+      "score": 0,
+      "max": 0,
+      "evidence": "n/a (prompt did not request tests)"
+    }
+  },
+  "auto_score_total": 12.5,
+  "auto_score_max": 20.0,
+  "errors": [
+    ""
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "journey-onboard":  {"score": 3,   "max": 3, "evidence": "Landing page shows a clearly visible '🎨 Start Creating' link without scrolling, linking to /create."},
+  "journey-builder":  {"score": 4,   "max": 4, "evidence": "Three.js canvas renders at 1536x1252 and sidebar shows object pickers (Shapes, Nature, Build, Animals, People, Props) with individual items like Box, Ball, Tube, Cone."},
+  "journey-ai":       {"score": 3,   "max": 3, "evidence": "AI Creative Buddy panel is visible with text input; typing 'help me' returned a non-empty response: 'That's okay! There's no wrong way to build. Try placing any object and see how it feels.'"},
+  "journey-save":     {"score": 1.5, "max": 3, "evidence": "Save button exists and persists data to localStorage, but after reloading /create the builder shows 0 objects instead of restoring the saved Box object."},
+  "journey-gallery":  {"score": 2,   "max": 2, "evidence": "Gallery at /gallery renders a 'My Gallery' heading with a card showing the saved 'My World' with 1 object, author, and date."}
+}

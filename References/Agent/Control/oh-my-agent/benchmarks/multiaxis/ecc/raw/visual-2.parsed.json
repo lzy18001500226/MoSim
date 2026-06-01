@@ -1,0 +1,9 @@
+{
+  "harness": "ecc",
+  "items": {
+    "visual-anti-patterns":  { "score": 3, "max": 5, "notes": "Purple-to-blue gradient covers entire landing hero; some UI labels (environment pills, gallery metadata) appear below 16px" },
+    "visual-child-friendly": { "score": 4, "max": 5, "notes": "Large emoji-labeled object tiles, playful AI Buddy tone, suggestion chips, and colorful theme pills are clearly child-oriented; minor complexity from multi-panel builder layout" },
+    "visual-consistency":    { "score": 3, "max": 5, "notes": "Landing, builder, and gallery share brand colors and rounded style, but save-after-reload variant has a different layout structure, button palette, and missing AI panel" },
+    "visual-accessibility":  { "score": 3, "max": 5, "notes": "Object tiles and nav buttons have text labels; selected states visible on categories and environment pills; white-on-purple hero contrast is borderline; no keyboard focus rings observed" }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "journey-onboard":  {"score": 3,   "max": 3, "evidence": "A clear 'Start Creating ✨' link is visible on the landing page without scrolling, linking to /onboarding."},
+  "journey-builder":  {"score": 4,   "max": 4, "evidence": "Three.js Canvas renders (2352×1456) with a sidebar containing 8 object pickers (Box, Ball, Tube, Cone, Ring, Tree, House, Star) plus theme and color controls."},
+  "journey-ai":       {"score": 1.5, "max": 3, "evidence": "AI companion 'Spark' panel opens with input field and prompt suggestions, but submitting 'help me' returned only a fallback error ('Hmm, I got confused for a moment. Try again!'), not a meaningful AI response."},
+  "journey-save":     {"score": 1.5, "max": 3, "evidence": "Save button exists and profile name persists after reload ('TestKid's World'), but localStorage contains only child-profile with no world/object data, so placed objects would not survive a reload."},
+  "journey-gallery":  {"score": 2,   "max": 2, "evidence": "Gallery page renders with My Worlds / Sample Worlds tabs and three sample world cards (Ocean Discovery, Space Station, Enchanted Forest) with links to explore each."}
+}

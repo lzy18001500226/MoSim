@@ -1,0 +1,34 @@
+{
+  "sessions": {
+    "17f3b33c-9fac-40cf-8bc0-6c929ead6f14": {
+      "injected": [
+        ".agents/skills/oma-frontend/SKILL.md"
+      ],
+      "timestamp": 1778025688729
+    },
+    "c1be4fd5-e416-4dcb-9a47-17351e3389eb": {
+      "injected": [
+        ".agents/skills/oma-frontend/SKILL.md"
+      ],
+      "timestamp": 1778027292622
+    },
+    "8a34134f-4ac7-409a-a81a-65bed1c88a0b": {
+      "injected": [
+        ".agents/skills/oma-frontend/SKILL.md"
+      ],
+      "timestamp": 1778027543485
+    },
+    "ab3f020c-164e-481c-a5bc-9ff454e2be74": {
+      "injected": [
+        ".agents/skills/oma-frontend/SKILL.md"
+      ],
+      "timestamp": 1778027619072
+    },
+    "b9ba7bd1-ce98-49d5-9189-8aae51f8ce39": {
+      "injected": [
+        ".agents/skills/oma-frontend/SKILL.md"
+      ],
+      "timestamp": 1778027762351
+    }
+  }
+}

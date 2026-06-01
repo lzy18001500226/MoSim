@@ -1,0 +1,14 @@
+{
+  "harness": "superpowers",
+  "package_manager": "npm",
+  "judge_runs_spec_visual": 3,
+  "total": 72.9,
+  "max": 100.0,
+  "by_axis": {
+    "functional": 30,
+    "spec": 9.34,
+    "visual": 11.600000000000001,
+    "engineering": 14,
+    "efficiency": 8
+  }
+}

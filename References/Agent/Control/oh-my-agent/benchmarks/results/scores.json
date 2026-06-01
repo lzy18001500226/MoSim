@@ -1,0 +1,1257 @@
+[18:25:23] INFO  Aggregating scores for harness: vanilla
+[18:25:23] INFO  Aggregating scores for harness: oma
+[18:25:23] INFO  Aggregating scores for harness: omc
+[18:25:23] INFO  Aggregating scores for harness: ecc
+[18:25:23] INFO  Aggregating scores for harness: superpowers
+{
+  "meta": {
+    "base_dir": "/tmp/oma-benchmark-20260504-171703",
+    "model": "claude-opus-4-6",
+    "generated_at": "2026-05-04T08:25:23Z",
+    "checklist_version": "1.0"
+  },
+  "harnesses": {
+    "vanilla": {
+      "install_status": "success",
+      "run_status": "success",
+      "duration_seconds": 539,
+      "tokens": {
+        "input": 88,
+        "output": 30865
+      },
+      "cost_usd": 2.3701027499999996,
+      "claude_duration_ms": 536415,
+      "categories": {
+        "setup": {
+          "score": 10,
+          "max": 10
+        },
+        "world-builder": {
+          "score": 0,
+          "max": 20
+        },
+        "ai-partner": {
+          "score": 0,
+          "max": 15
+        },
+        "onboarding": {
+          "score": 0,
+          "max": 10
+        },
+        "play": {
+          "score": 0,
+          "max": 10
+        },
+        "save-gallery": {
+          "score": 0,
+          "max": 10
+        },
+        "ux-quality": {
+          "score": 0,
+          "max": 15
+        },
+        "testing": {
+          "score": 0,
+          "max": 10
+        }
+      },
+      "items": {
+        "setup-nextjs": {
+          "score": 2.5,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "next@16.2.4"
+        },
+        "setup-tailwind": {
+          "score": 2.5,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "tailwindcss@^4"
+        },
+        "setup-r3f": {
+          "score": 2.5,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "@react-three/fiber@^9.6.1 @react-three/drei@^10.7.7"
+        },
+        "setup-build": {
+          "score": 2.5,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "exit 0 in 8s"
+        },
+        "3d-canvas": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-place": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-move-rotate": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-color-texture": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-env-theme": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-animation": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-panel": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-prompt": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-whatif": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-api": {
+          "score": 0,
+          "max": 5,
+          "source": "auto",
+          "evidence": "not found"
+        },
+        "onboard-flow": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "onboard-simple": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "play-enter": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "play-interact": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "save-load": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "gallery-view": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-child": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-responsive": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-no-clutter": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-visual-guide": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "test-exists": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "0 test files found"
+        },
+        "test-pass": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "exit 1 in 1s"
+        },
+        "test-coverage": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "exit 1 — coverage run failed"
+        },
+        "test-meaningful": {
+          "score": 0,
+          "max": 2.5,
+          "source": "manual",
+          "pending_human_review": true
+        }
+      },
+      "total_score": 10,
+      "total_max": 100,
+      "screenshots": [
+        "scoring/vanilla/screenshots/01-landing.png",
+        "scoring/vanilla/screenshots/02-world-builder-with-object.png",
+        "scoring/vanilla/screenshots/02-world-builder.png",
+        "scoring/vanilla/screenshots/02b-env-change.png",
+        "scoring/vanilla/screenshots/03-ai-panel.png",
+        "scoring/vanilla/screenshots/04-gallery.png",
+        "scoring/vanilla/screenshots/05-env-theme.png"
+      ],
+      "pending_manual": [
+        "3d-canvas",
+        "3d-place",
+        "3d-move-rotate",
+        "3d-color-texture",
+        "3d-env-theme",
+        "3d-animation",
+        "ai-panel",
+        "ai-prompt",
+        "ai-whatif",
+        "onboard-flow",
+        "onboard-simple",
+        "play-enter",
+        "play-interact",
+        "save-load",
+        "gallery-view",
+        "ux-child",
+        "ux-responsive",
+        "ux-no-clutter",
+        "ux-visual-guide",
+        "test-meaningful"
+      ]
+    },
+    "oma": {
+      "install_status": "success",
+      "run_status": "success",
+      "duration_seconds": 740,
+      "tokens": {
+        "input": 72,
+        "output": 52684
+      },
+      "cost_usd": 2.05605175,
+      "claude_duration_ms": 736669,
+      "categories": {
+        "setup": {
+          "score": 10,
+          "max": 10
+        },
+        "world-builder": {
+          "score": 0,
+          "max": 20
+        },
+        "ai-partner": {
+          "score": 3.75,
+          "max": 15
+        },
+        "onboarding": {
+          "score": 0,
+          "max": 10
+        },
+        "play": {
+          "score": 0,
+          "max": 10
+        },
+        "save-gallery": {
+          "score": 0,
+          "max": 10
+        },
+        "ux-quality": {
+          "score": 0,
+          "max": 15
+        },
+        "testing": {
+          "score": 0,
+          "max": 10
+        }
+      },
+      "items": {
+        "setup-nextjs": {
+          "score": 2.5,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "next@14.2.20"
+        },
+        "setup-tailwind": {
+          "score": 2.5,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "tailwindcss@^3.4.16"
+        },
+        "setup-r3f": {
+          "score": 2.5,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "@react-three/fiber@^8.17.10 @react-three/drei@^9.117.3"
+        },
+        "setup-build": {
+          "score": 2.5,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "exit 0 in 10s"
+        },
+        "3d-canvas": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-place": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-move-rotate": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-color-texture": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-env-theme": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-animation": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-panel": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-prompt": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-whatif": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-api": {
+          "score": 5,
+          "max": 5,
+          "source": "auto",
+          "evidence": "found in src/app/api/ai/route.ts"
+        },
+        "onboard-flow": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "onboard-simple": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "play-enter": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "play-interact": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "save-load": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "gallery-view": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-child": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-responsive": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-no-clutter": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-visual-guide": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "test-exists": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "0 test files found"
+        },
+        "test-pass": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "exit 1 in 0s"
+        },
+        "test-coverage": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "exit 1 — coverage run failed"
+        },
+        "test-meaningful": {
+          "score": 0,
+          "max": 2.5,
+          "source": "manual",
+          "pending_human_review": true
+        }
+      },
+      "total_score": 13.75,
+      "total_max": 100,
+      "screenshots": [
+        "scoring/oma/screenshots/01-landing.png",
+        "scoring/oma/screenshots/02-env-change.png",
+        "scoring/oma/screenshots/02-world-builder-with-object.png",
+        "scoring/oma/screenshots/02-world-builder.png",
+        "scoring/oma/screenshots/03-ai-panel.png",
+        "scoring/oma/screenshots/04-gallery.png"
+      ],
+      "pending_manual": [
+        "3d-canvas",
+        "3d-place",
+        "3d-move-rotate",
+        "3d-color-texture",
+        "3d-env-theme",
+        "3d-animation",
+        "ai-panel",
+        "ai-prompt",
+        "ai-whatif",
+        "onboard-flow",
+        "onboard-simple",
+        "play-enter",
+        "play-interact",
+        "save-load",
+        "gallery-view",
+        "ux-child",
+        "ux-responsive",
+        "ux-no-clutter",
+        "ux-visual-guide",
+        "test-meaningful"
+      ]
+    },
+    "omc": {
+      "install_status": "success",
+      "run_status": "success",
+      "duration_seconds": 546,
+      "tokens": {
+        "input": 360,
+        "output": 27743
+      },
+      "cost_usd": 1.9190407500000004,
+      "claude_duration_ms": 542925,
+      "categories": {
+        "setup": {
+          "score": 10,
+          "max": 10
+        },
+        "world-builder": {
+          "score": 0,
+          "max": 20
+        },
+        "ai-partner": {
+          "score": 3.75,
+          "max": 15
+        },
+        "onboarding": {
+          "score": 0,
+          "max": 10
+        },
+        "play": {
+          "score": 0,
+          "max": 10
+        },
+        "save-gallery": {
+          "score": 0,
+          "max": 10
+        },
+        "ux-quality": {
+          "score": 0,
+          "max": 15
+        },
+        "testing": {
+          "score": 0,
+          "max": 10
+        }
+      },
+      "items": {
+        "setup-nextjs": {
+          "score": 2.5,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "next@16.2.4"
+        },
+        "setup-tailwind": {
+          "score": 2.5,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "tailwindcss@^4"
+        },
+        "setup-r3f": {
+          "score": 2.5,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "@react-three/fiber@^9.6.1 @react-three/drei@^10.7.7"
+        },
+        "setup-build": {
+          "score": 2.5,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "exit 0 in 7s"
+        },
+        "3d-canvas": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-place": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-move-rotate": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-color-texture": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-env-theme": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-animation": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-panel": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-prompt": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-whatif": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-api": {
+          "score": 5,
+          "max": 5,
+          "source": "auto",
+          "evidence": "found in src/app/api/ai/route.ts"
+        },
+        "onboard-flow": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "onboard-simple": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "play-enter": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "play-interact": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "save-load": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "gallery-view": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-child": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-responsive": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-no-clutter": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-visual-guide": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "test-exists": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "0 test files found"
+        },
+        "test-pass": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "exit 1 in 0s"
+        },
+        "test-coverage": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "exit 1 — coverage run failed"
+        },
+        "test-meaningful": {
+          "score": 0,
+          "max": 2.5,
+          "source": "manual",
+          "pending_human_review": true
+        }
+      },
+      "total_score": 13.75,
+      "total_max": 100,
+      "screenshots": [
+        "scoring/omc/screenshots/01-landing.png",
+        "scoring/omc/screenshots/02-world-builder.png",
+        "scoring/omc/screenshots/03-ai-panel.png",
+        "scoring/omc/screenshots/04-gallery.png"
+      ],
+      "pending_manual": [
+        "3d-canvas",
+        "3d-place",
+        "3d-move-rotate",
+        "3d-color-texture",
+        "3d-env-theme",
+        "3d-animation",
+        "ai-panel",
+        "ai-prompt",
+        "ai-whatif",
+        "onboard-flow",
+        "onboard-simple",
+        "play-enter",
+        "play-interact",
+        "save-load",
+        "gallery-view",
+        "ux-child",
+        "ux-responsive",
+        "ux-no-clutter",
+        "ux-visual-guide",
+        "test-meaningful"
+      ]
+    },
+    "ecc": {
+      "install_status": "failed",
+      "run_status": "skipped",
+      "duration_seconds": 0,
+      "tokens": {
+        "input": 0,
+        "output": 0
+      },
+      "cost_usd": 0,
+      "claude_duration_ms": 0,
+      "categories": {
+        "setup": {
+          "score": 0,
+          "max": 10
+        },
+        "world-builder": {
+          "score": 0,
+          "max": 20
+        },
+        "ai-partner": {
+          "score": 0,
+          "max": 15
+        },
+        "onboarding": {
+          "score": 0,
+          "max": 10
+        },
+        "play": {
+          "score": 0,
+          "max": 10
+        },
+        "save-gallery": {
+          "score": 0,
+          "max": 10
+        },
+        "ux-quality": {
+          "score": 0,
+          "max": 15
+        },
+        "testing": {
+          "score": 0,
+          "max": 10
+        }
+      },
+      "items": {
+        "setup-nextjs": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "setup-tailwind": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "setup-r3f": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "setup-build": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "3d-canvas": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-place": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-move-rotate": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-color-texture": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-env-theme": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-animation": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-panel": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-prompt": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-whatif": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-api": {
+          "score": 0,
+          "max": 5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "onboard-flow": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "onboard-simple": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "play-enter": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "play-interact": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "save-load": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "gallery-view": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-child": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-responsive": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-no-clutter": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-visual-guide": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "test-exists": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "test-pass": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "test-coverage": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "test-meaningful": {
+          "score": 0,
+          "max": 2.5,
+          "source": "manual",
+          "pending_human_review": true
+        }
+      },
+      "total_score": 0,
+      "total_max": 100,
+      "screenshots": [],
+      "pending_manual": [
+        "3d-canvas",
+        "3d-place",
+        "3d-move-rotate",
+        "3d-color-texture",
+        "3d-env-theme",
+        "3d-animation",
+        "ai-panel",
+        "ai-prompt",
+        "ai-whatif",
+        "onboard-flow",
+        "onboard-simple",
+        "play-enter",
+        "play-interact",
+        "save-load",
+        "gallery-view",
+        "ux-child",
+        "ux-responsive",
+        "ux-no-clutter",
+        "ux-visual-guide",
+        "test-meaningful"
+      ]
+    },
+    "superpowers": {
+      "install_status": "success",
+      "run_status": "success",
+      "duration_seconds": 53,
+      "tokens": {
+        "input": 33,
+        "output": 1617
+      },
+      "cost_usd": 0.18141825,
+      "claude_duration_ms": 50280,
+      "categories": {
+        "setup": {
+          "score": 0,
+          "max": 10
+        },
+        "world-builder": {
+          "score": 0,
+          "max": 20
+        },
+        "ai-partner": {
+          "score": 0,
+          "max": 15
+        },
+        "onboarding": {
+          "score": 0,
+          "max": 10
+        },
+        "play": {
+          "score": 0,
+          "max": 10
+        },
+        "save-gallery": {
+          "score": 0,
+          "max": 10
+        },
+        "ux-quality": {
+          "score": 0,
+          "max": 15
+        },
+        "testing": {
+          "score": 0,
+          "max": 10
+        }
+      },
+      "items": {
+        "setup-nextjs": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "setup-tailwind": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "setup-r3f": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "setup-build": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "3d-canvas": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-place": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-move-rotate": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-color-texture": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-env-theme": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "3d-animation": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-panel": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-prompt": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-whatif": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ai-api": {
+          "score": 0,
+          "max": 5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "onboard-flow": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "onboard-simple": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "play-enter": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "play-interact": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "save-load": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "gallery-view": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-child": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-responsive": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-no-clutter": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "ux-visual-guide": {
+          "score": 0,
+          "max": 5,
+          "source": "visual",
+          "pending_human_review": true
+        },
+        "test-exists": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "test-pass": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "test-coverage": {
+          "score": 0,
+          "max": 2.5,
+          "source": "auto",
+          "evidence": "package.json not found"
+        },
+        "test-meaningful": {
+          "score": 0,
+          "max": 2.5,
+          "source": "manual",
+          "pending_human_review": true
+        }
+      },
+      "total_score": 0,
+      "total_max": 100,
+      "screenshots": [],
+      "pending_manual": [
+        "3d-canvas",
+        "3d-place",
+        "3d-move-rotate",
+        "3d-color-texture",
+        "3d-env-theme",
+        "3d-animation",
+        "ai-panel",
+        "ai-prompt",
+        "ai-whatif",
+        "onboard-flow",
+        "onboard-simple",
+        "play-enter",
+        "play-interact",
+        "save-load",
+        "gallery-view",
+        "ux-child",
+        "ux-responsive",
+        "ux-no-clutter",
+        "ux-visual-guide",
+        "test-meaningful"
+      ]
+    }
+  },
+  "ranking": [
+    {
+      "harness": "oma",
+      "score": 13.75
+    },
+    {
+      "harness": "omc",
+      "score": 13.75
+    },
+    {
+      "harness": "vanilla",
+      "score": 10
+    },
+    {
+      "harness": "ecc",
+      "score": 0
+    },
+    {
+      "harness": "superpowers",
+      "score": 0
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "id": "plan-benchmark",
+  "title": "AI Harness Benchmark Framework",
+  "designDoc": "benchmarks/design.md",
+  "status": "approved",
+  "createdAt": "2026-04-11",
+  "controlVariables": {
+    "model": "claude-opus-4-6",
+    "effort": "max",
+    "context": "1M",
+    "initialState": "empty directory + git init",
+    "isolation": "$HOME override",
+    "promptDelivery": "identical raw prompt via -p mode",
+    "permissions": "--dangerously-skip-permissions",
+    "maxBudgetPerRun": 20,
+    "timeLimitMinutes": 60,
+    "openaiApiKey": "TBD (provide or skip)"
+  },
+  "harnesses": [
+    { "id": "vanilla", "name": "Claude Code (bare)", "install": "none" },
+    { "id": "oma", "name": "oh-my-agent", "install": "bunx oh-my-agent@latest" },
+    { "id": "omc", "name": "oh-my-claudecode", "install": "plugin install (Yeachan-Heo/oh-my-claudecode)" },
+    { "id": "ecc", "name": "everything-claude-code", "install": "git clone + ./install.sh --profile full" },
+    { "id": "superpowers", "name": "superpowers", "install": "plugin install (obra/superpowers)" }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Create scoring/checklist.json",
+      "agent": "pm",
+      "priority": "P0",
+      "dependencies": [],
+      "effort": "S",
+      "acceptance": "JSON file with 8 categories, 24 items, weights totaling 100"
+    },
+    {
+      "id": "T2",
+      "title": "Create scoring/manual-score.template.json",
+      "agent": "pm",
+      "priority": "P0",
+      "dependencies": [],
+      "effort": "S",
+      "acceptance": "Template JSON with all manual-scored items, 1-5 scale, notes field"
+    },
+    {
+      "id": "T3",
+      "title": "Implement scoring/auto-score.sh",
+      "agent": "backend",
+      "priority": "P0",
+      "dependencies": ["T1"],
+      "effort": "S",
+      "acceptance": "Script runs against a project dir, outputs JSON with pass/fail and counts for all auto items"
+    },
+    {
+      "id": "T4",
+      "title": "Implement run.sh (environment setup + harness install + unattended execution)",
+      "agent": "backend",
+      "priority": "P0",
+      "dependencies": [],
+      "effort": "L",
+      "acceptance": "Script creates isolated $HOME per harness, installs each harness, runs claude -p with all control flags, saves output JSON per harness",
+      "notes": [
+        "Plugin install automation for omc/superpowers needs validation",
+        "ECC requires git clone + install.sh",
+        "Must pass ANTHROPIC_API_KEY and optionally OPENAI_API_KEY"
+      ]
+    },
+    {
+      "id": "T5",
+      "title": "Create scoring/score-prompt.md (Chrome DevTools MCP visual scoring prompt)",
+      "agent": "pm",
+      "priority": "P0",
+      "dependencies": [],
+      "effort": "S",
+      "acceptance": "Prompt instructs Claude to: start dev server, detect port, navigate with Chrome MCP, screenshot 4 pages, score UX 1-5, output JSON"
+    },
+    {
+      "id": "T6",
+      "title": "Implement scoring/visual-score.sh (Chrome DevTools MCP screenshot + AI scoring)",
+      "agent": "backend",
+      "priority": "P0",
+      "dependencies": ["T5"],
+      "effort": "S",
+      "acceptance": "Script runs claude -p with Chrome MCP config against each harness project, captures screenshots, outputs visual-score JSON"
+    },
+    {
+      "id": "T7",
+      "title": "Implement collect.sh (aggregate scores + generate report.md)",
+      "agent": "backend",
+      "priority": "P1",
+      "dependencies": ["T1", "T3", "T6"],
+      "effort": "M",
+      "acceptance": "Script merges auto-score + visual-score + manual-score JSONs into scores.json, generates report.md with comparison tables and screenshot grid"
+    },
+    {
+      "id": "T8",
+      "title": "Update benchmark.design.md (reflect automation changes)",
+      "agent": "pm",
+      "priority": "P1",
+      "dependencies": ["T4"],
+      "effort": "S",
+      "acceptance": "Design doc matches final automated pipeline: -p mode, Chrome MCP, $HOME isolation, --effort flag, port detection, budget estimate"
+    },
+    {
+      "id": "T9",
+      "title": "Dry run: validate full pipeline with vanilla only",
+      "agent": "qa",
+      "priority": "P1",
+      "dependencies": ["T4", "T6", "T7"],
+      "effort": "S",
+      "acceptance": "run.sh executes vanilla successfully, auto-score + visual-score produce valid JSON, collect.sh generates report.md"
+    },
+    {
+      "id": "T10",
+      "title": "Full benchmark execution (5 harnesses)",
+      "agent": "automated",
+      "priority": "P1",
+      "dependencies": ["T9"],
+      "effort": "automated",
+      "acceptance": "All 5 harnesses complete, results in benchmarks/runs/, scores in benchmarks/results/"
+    },
+    {
+      "id": "T11",
+      "title": "Human final review + report.md adjustments",
+      "agent": "human",
+      "priority": "P2",
+      "dependencies": ["T10"],
+      "effort": "S",
+      "acceptance": "Report reviewed, screenshots verified, ready for public posting"
+    }
+  ],
+  "dependencyGraph": {
+    "T1": [],
+    "T2": [],
+    "T3": ["T1"],
+    "T4": [],
+    "T5": [],
+    "T6": ["T5"],
+    "T7": ["T1", "T3", "T6"],
+    "T8": ["T4"],
+    "T9": ["T4", "T6", "T7"],
+    "T10": ["T9"],
+    "T11": ["T10"]
+  },
+  "parallelGroups": [
+    { "group": 1, "tasks": ["T1", "T2", "T4", "T5"], "description": "Independent foundation tasks" },
+    { "group": 2, "tasks": ["T3", "T6", "T8"], "description": "Depends on group 1 outputs" },
+    { "group": 3, "tasks": ["T7"], "description": "Aggregation" },
+    { "group": 4, "tasks": ["T9"], "description": "Validation" },
+    { "group": 5, "tasks": ["T10"], "description": "Execution" },
+    { "group": 6, "tasks": ["T11"], "description": "Human review" }
+  ],
+  "budgetEstimate": {
+    "perHarnessRun": "$20 max",
+    "totalRuns": "$100 (5 harnesses)",
+    "visualScoring": "$10 (5 sessions)",
+    "dryRun": "$5",
+    "total": "~$120"
+  }
+}

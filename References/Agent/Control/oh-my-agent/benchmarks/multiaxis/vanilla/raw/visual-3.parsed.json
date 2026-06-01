@@ -1,0 +1,9 @@
+{
+  "harness": "vanilla",
+  "items": {
+    "visual-anti-patterns":  { "score": 3, "max": 5, "notes": "Purple-to-blue gradient background dominates the landing hero; body text in gallery metadata and environment labels appears below 16px" },
+    "visual-child-friendly": { "score": 4, "max": 5, "notes": "Large tappable object tiles, playful emoji-rich tone, AI buddy with simple suggestion chips; builder has moderate panel density that could overwhelm younger children" },
+    "visual-consistency":    { "score": 3, "max": 5, "notes": "Typography and card radii are consistent, but button colors drift across pages (orange landing CTA, purple gallery CTA, dark Save, orange Send) and gallery background differs from builder" },
+    "visual-accessibility":  { "score": 3, "max": 5, "notes": "Good text-on-light contrast throughout, visible selection rings on object tiles and active environment chips, text labels on most buttons; undo/redo nav icons lack text labels, no responsive/mobile evidence" }
+  }
+}

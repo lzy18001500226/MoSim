@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-04-24T00:55:35+10:00",
+  "options": {
+    "size": "1024x1024",
+    "quality": "auto",
+    "count": 1
+  },
+  "cost_estimate_usd": 0.03,
+  "runs": [
+    {
+      "vendor": "codex",
+      "model": "gpt-image-2",
+      "strategy": "codex-exec-oauth",
+      "strategy_attempts": [
+        {
+          "strategy": "codex-exec-oauth",
+          "status": "ok",
+          "duration_ms": 73782
+        }
+      ],
+      "files": [
+        "/Users/gracefullight/workspace/oh-my-agent/.agents/results/images/20260424-005535-sn3ksn/codex-gpt-image-2.png"
+      ],
+      "duration_ms": 73786,
+      "status": "ok"
+    }
+  ],
+  "prompt": "a simple red apple on plain white background"
+}

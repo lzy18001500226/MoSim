@@ -1,0 +1,44 @@
+{
+  "triggers": {
+    "ralph": {
+      "lastTriggeredAt": "2026-05-04T06:50:04.000Z",
+      "count": 1
+    },
+    "debug": {
+      "lastTriggeredAt": "2026-04-30T02:54:21.040Z",
+      "count": 1
+    },
+    "review": {
+      "lastTriggeredAt": "2026-05-05T15:34:09.138Z",
+      "count": 1
+    },
+    "plan": {
+      "lastTriggeredAt": "2026-05-03T12:43:08.508Z",
+      "count": 1
+    },
+    "deepinit": {
+      "lastTriggeredAt": "2026-04-28T00:51:12.147Z",
+      "count": 1
+    },
+    "scm": {
+      "lastTriggeredAt": "2026-04-30T03:41:35.099Z",
+      "count": 1
+    },
+    "architecture": {
+      "lastTriggeredAt": "2026-05-06T00:36:02.349Z",
+      "count": 1
+    },
+    "design": {
+      "lastTriggeredAt": "2026-05-05T15:24:31.273Z",
+      "count": 1
+    },
+    "brainstorm": {
+      "lastTriggeredAt": "2026-05-05T09:39:49.612Z",
+      "count": 1
+    },
+    "orchestrate": {
+      "lastTriggeredAt": "2026-05-04T06:48:26.200Z",
+      "count": 1
+    }
+  }
+}

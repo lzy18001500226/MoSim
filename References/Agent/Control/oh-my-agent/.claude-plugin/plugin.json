@@ -1,0 +1,24 @@
+{
+  "name": "oma",
+  "version": "8.10.2",
+  "description": "Portable, vendor-agnostic agent harness for project-specific skills, workflows, and agent teams aligned with your codebase, conventions, and engineering standards.",
+  "author": {
+    "name": "First Fluke",
+    "email": "our.first.fluke@gmail.com",
+    "url": "https://github.com/first-fluke"
+  },
+  "homepage": "https://github.com/first-fluke/oh-my-agent",
+  "repository": "https://github.com/first-fluke/oh-my-agent",
+  "license": "MIT",
+  "keywords": [
+    "multi-agent",
+    "orchestrator",
+    "skills",
+    "workflows",
+    "claude-code",
+    "codex",
+    "gemini"
+  ],
+  "skills": ".agents/skills/",
+  "agents": ".agents/agents/"
+}

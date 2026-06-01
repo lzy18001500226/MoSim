@@ -1,0 +1,14 @@
+{
+  "harness": "omc",
+  "package_manager": "npm",
+  "judge_runs_spec_visual": 3,
+  "total": 74.1,
+  "max": 100.0,
+  "by_axis": {
+    "functional": 33.5,
+    "spec": 6.67,
+    "visual": 14.399999999999999,
+    "engineering": 14.5,
+    "efficiency": 5
+  }
+}

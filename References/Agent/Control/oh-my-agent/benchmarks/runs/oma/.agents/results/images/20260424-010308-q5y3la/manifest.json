@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-04-24T01:03:08+10:00",
+  "options": {
+    "size": "1024x1024",
+    "quality": "auto",
+    "count": 1
+  },
+  "cost_estimate_usd": 0.04,
+  "runs": [
+    {
+      "vendor": "gemini",
+      "model": "unknown",
+      "strategy": "unknown",
+      "strategy_attempts": [],
+      "files": [],
+      "duration_ms": 8639,
+      "status": "failed",
+      "error": {
+        "kind": "network",
+        "message": "network error (retryable)"
+      }
+    }
+  ],
+  "prompt": "a simple red apple on plain white background"
+}

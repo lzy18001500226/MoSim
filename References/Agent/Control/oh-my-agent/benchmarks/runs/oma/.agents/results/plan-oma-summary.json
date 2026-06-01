@@ -1,0 +1,281 @@
+{
+  "id": "plan-oma-summary",
+  "title": "oma summary — AI Tool Conversation History Analyzer",
+  "status": "approved",
+  "createdAt": "2026-04-13",
+  "designDoc": "docs/plans/oma-summary-design.md",
+  "phases": [
+    {
+      "id": "phase-1",
+      "title": "CLI Core + Parsers + SKILL.md",
+      "effort": "M",
+      "tasks": [
+        {
+          "id": "T1",
+          "title": "Extract time-window.ts from retro.ts",
+          "agent": "backend",
+          "priority": "P0",
+          "depends": [],
+          "batch": 1,
+          "acceptance": [
+            "parseTimeWindow(), getCompareWindows(), TimeWindow type moved to cli/lib/time-window.ts",
+            "retro.ts imports from time-window.ts",
+            "bun run test passes with no behavior change"
+          ]
+        },
+        {
+          "id": "T2",
+          "title": "Create Zod normalization schema",
+          "agent": "backend",
+          "priority": "P0",
+          "depends": ["T1"],
+          "batch": 1,
+          "acceptance": [
+            "cli/lib/summary/schema.ts defines NormalizedEntry, SummaryOutput, toolNames",
+            "Imports TimeWindow from time-window.ts",
+            "All timestamp fields use Unix ms"
+          ]
+        },
+        {
+          "id": "T3",
+          "title": "Create Parser Registry",
+          "agent": "backend",
+          "priority": "P0",
+          "depends": ["T2"],
+          "batch": 1,
+          "acceptance": [
+            "cli/lib/summary/registry.ts defines HistoryParser interface",
+            "Exports filterParsers(tools?) and getAvailableParsers()",
+            "New parser = add file + push to array"
+          ]
+        },
+        {
+          "id": "T4",
+          "title": "Claude history parser",
+          "agent": "backend",
+          "priority": "P0",
+          "depends": ["T3"],
+          "batch": 2,
+          "acceptance": [
+            "Parses ~/.claude/history.jsonl",
+            "JSONL streaming, Unix ms timestamps",
+            "Maps display → prompt, project, sessionId",
+            "Graceful handling of missing/empty file"
+          ]
+        },
+        {
+          "id": "T5",
+          "title": "Codex history parser",
+          "agent": "backend",
+          "priority": "P0",
+          "depends": ["T3"],
+          "batch": 2,
+          "acceptance": [
+            "Parses ~/.codex/history.jsonl",
+            "Converts ts (Unix sec) → ms",
+            "Maps text → prompt, session_id → sessionId",
+            "Graceful handling of missing/empty file"
+          ]
+        },
+        {
+          "id": "T6",
+          "title": "Gemini history parser",
+          "agent": "backend",
+          "priority": "P1",
+          "depends": ["T3"],
+          "batch": 2,
+          "acceptance": [
+            "Glob pattern: ~/.gemini/tmp/*/chats/session-*.json",
+            "Parses JSON per session, extracts user messages only",
+            "ISO 8601 → Unix ms conversion",
+            "Graceful handling of missing directory"
+          ]
+        },
+        {
+          "id": "T7",
+          "title": "Qwen history parser",
+          "agent": "backend",
+          "priority": "P1",
+          "depends": ["T3"],
+          "batch": 2,
+          "acceptance": [
+            "Glob pattern: ~/.qwen/projects/*/chats/*.jsonl",
+            "ISO 8601 → Unix ms, user type messages only",
+            "Maps message.parts → prompt, includes gitBranch in metadata",
+            "Graceful handling of missing directory"
+          ]
+        },
+        {
+          "id": "T8",
+          "title": "Cursor history parser",
+          "agent": "backend",
+          "priority": "P1",
+          "depends": ["T3"],
+          "batch": 2,
+          "acceptance": [
+            "Add better-sqlite3 to package.json dependencies",
+            "Glob pattern: ~/.cursor/chats/*/*/store.db",
+            "Query SQLite for prompts with timestamps",
+            "Graceful skip if better-sqlite3 unavailable or DB missing"
+          ]
+        },
+        {
+          "id": "T9",
+          "title": "Summary orchestration",
+          "agent": "backend",
+          "priority": "P0",
+          "depends": ["T4", "T5", "T6", "T7", "T8"],
+          "batch": 3,
+          "acceptance": [
+            "cli/lib/summary/index.ts orchestrates: parsers → normalize → sort → stats",
+            "Handles --tool filter, --top N, --sort (count|duration)",
+            "Returns validated SummaryOutput",
+            "Max 30d window enforcement with warning"
+          ]
+        },
+        {
+          "id": "T10",
+          "title": "Terminal formatter",
+          "agent": "backend",
+          "priority": "P1",
+          "depends": ["T9"],
+          "batch": 3,
+          "acceptance": [
+            "Uses @clack/prompts + picocolors",
+            "Tool-specific colors (Claude: orange, Gemini: blue, Codex: green, Qwen: purple, Cursor: gray)",
+            "Time-grouped display with project/topic summary",
+            "Top projects table"
+          ]
+        },
+        {
+          "id": "T11",
+          "title": "JSON formatter",
+          "agent": "backend",
+          "priority": "P0",
+          "depends": ["T9"],
+          "batch": 3,
+          "acceptance": [
+            "Outputs SummaryOutput as JSON.stringify with indent",
+            "Supports --json flag via resolveJsonMode()"
+          ]
+        },
+        {
+          "id": "T12",
+          "title": "Command registration in cli.ts",
+          "agent": "backend",
+          "priority": "P0",
+          "depends": ["T9", "T10", "T11"],
+          "batch": 3,
+          "acceptance": [
+            "cli/commands/summary.ts exports summary function",
+            "Registered in cli.ts with addOutputOptions pattern",
+            "Options: --window, --date, --tool, --top, --sort, --json, --mermaid, --graph",
+            "Default --window 1d, max 30d with warning"
+          ]
+        },
+        {
+          "id": "T13",
+          "title": "Refactor retro.ts to use time-window.ts",
+          "agent": "backend",
+          "priority": "P2",
+          "depends": ["T1"],
+          "batch": 4,
+          "acceptance": [
+            "retro.ts removes local TimeWindow/parseTimeWindow/getCompareWindows",
+            "Imports from ../time-window.js",
+            "bun run test passes, no behavior change"
+          ]
+        },
+        {
+          "id": "T14",
+          "title": "Create oma-summary SKILL.md",
+          "agent": "backend",
+          "priority": "P1",
+          "depends": ["T12"],
+          "batch": 4,
+          "acceptance": [
+            ".agents/skills/oma-summary/SKILL.md with frontmatter (name, description)",
+            "Execution flow: oma summary --json → AI analysis → themed summary",
+            "Fallback path: inline jq for Claude history if CLI unavailable",
+            "Cross-tool workflow analysis instructions"
+          ]
+        },
+        {
+          "id": "T15",
+          "title": "Tests",
+          "agent": "qa",
+          "priority": "P1",
+          "depends": ["T1", "T4", "T5", "T6", "T7", "T8", "T9", "T12"],
+          "batch": 4,
+          "acceptance": [
+            "time-window.ts unit tests (parse, edge cases, max cap)",
+            "Each parser unit test with mocked fs/sqlite",
+            "Summary orchestration integration test",
+            "bun run test passes, bun run lint passes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "title": "Mermaid Formatter",
+      "effort": "S",
+      "tasks": [
+        {
+          "id": "T16",
+          "title": "Mermaid gantt formatter",
+          "agent": "backend",
+          "priority": "P1",
+          "depends": ["T12"],
+          "batch": 5,
+          "acceptance": [
+            "cli/lib/summary/formatters/mermaid.ts generates Mermaid gantt syntax",
+            "--mermaid flag outputs gantt chart with tool sections",
+            "Time ranges calculated from session timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "title": "Interactive Graph Visualization",
+      "effort": "M",
+      "tasks": [
+        {
+          "id": "T17",
+          "title": "Graph data handler",
+          "agent": "backend",
+          "priority": "P2",
+          "depends": ["T12"],
+          "batch": 6,
+          "acceptance": [
+            "cli/lib/summary/graph.ts generates node/edge JSON for D3.js",
+            "Nodes: projects/topics, Edges: tool transitions",
+            "Supports --top N filtering"
+          ]
+        },
+        {
+          "id": "T18",
+          "title": "Dashboard web route + D3.js frontend",
+          "agent": "frontend",
+          "priority": "P2",
+          "depends": ["T17"],
+          "batch": 6,
+          "acceptance": [
+            "GET /summary route in dashboard:web",
+            "D3.js force-directed graph rendering",
+            "Node color by tool, size by activity, zoom/pan support"
+          ]
+        }
+      ]
+    }
+  ],
+  "executionOrder": [
+    { "batch": 1, "mode": "sequential", "tasks": ["T1", "T2", "T3"] },
+    { "batch": 2, "mode": "parallel", "tasks": ["T4", "T5", "T6", "T7", "T8"] },
+    { "batch": 3, "mode": "sequential", "tasks": ["T9", "T11", "T10", "T12"] },
+    { "batch": 4, "mode": "parallel", "tasks": ["T13", "T14", "T15"] },
+    { "batch": 5, "mode": "sequential", "tasks": ["T16"] },
+    { "batch": 6, "mode": "sequential", "tasks": ["T17", "T18"] }
+  ]
+}

@@ -1,0 +1,328 @@
+{
+  "plan_id": "oma-image-20260424-000236",
+  "skill": "oma-image",
+  "design_doc": "docs/plans/oma-image-design.md",
+  "memory": "designs/oma-image",
+  "difficulty": "Complex",
+  "total_tasks": 25,
+  "priority_breakdown": {
+    "P0_mvp": 15,
+    "P1_enhancement": 6,
+    "P2_polish": 4,
+    "P3_deferred": 4
+  },
+  "agent_breakdown": {
+    "backend": 19,
+    "qa": 6
+  },
+  "critical_path": [
+    "1", "2", "6", "7", "8", "9", "10", "11", "12"
+  ],
+  "tasks": [
+    {
+      "id": "1",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "Scaffold cli/commands/image/ package",
+      "depends_on": [],
+      "acceptance": "Directory layout created, registerImageCommand exported from index.ts, registered in cli/cli.ts. `oma image --help` shows placeholder subcommands.",
+      "files": [
+        "cli/commands/image/index.ts",
+        "cli/cli.ts"
+      ]
+    },
+    {
+      "id": "2",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "types.ts + registry.ts (VendorProvider interface + parallel health)",
+      "depends_on": ["1"],
+      "acceptance": "VendorProvider interface per design §3.1. registry.register/list/listHealthy work. Unit test registers dummy provider and confirms health() dispatch.",
+      "files": [
+        "cli/commands/image/types.ts",
+        "cli/commands/image/registry.ts",
+        "cli/commands/image/registry.test.ts"
+      ]
+    },
+    {
+      "id": "3",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "Config loader (image-config.yaml + env var override)",
+      "depends_on": ["1"],
+      "acceptance": "YAML parsed, env precedence config<env<flag. Schema validation rejects invalid values. .agents/skills/oma-image/config/image-config.yaml created with defaults.",
+      "files": [
+        "cli/commands/image/config.ts",
+        "cli/commands/image/config.test.ts",
+        ".agents/skills/oma-image/config/image-config.yaml"
+      ]
+    },
+    {
+      "id": "4",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "Naming utility + manifest writer",
+      "depends_on": ["1"],
+      "acceptance": "timestamp+nanoid(6) suffix pattern. writeManifest() writes manifest.json matching schema §6 of design doc. Unit test with mocked Date+nanoid.",
+      "files": [
+        "cli/commands/image/naming.ts",
+        "cli/commands/image/manifest.ts",
+        "cli/commands/image/manifest.test.ts"
+      ]
+    },
+    {
+      "id": "5",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "Path validation + --allow-external-out guard",
+      "depends_on": ["3"],
+      "acceptance": "Canonicalize --out. Reject paths outside $PWD unless --allow-external-out. Reject symlink traversal. Unit tests for ../, absolute, symlink cases.",
+      "files": [
+        "cli/commands/image/path-guard.ts",
+        "cli/commands/image/path-guard.test.ts"
+      ]
+    },
+    {
+      "id": "6",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "Codex provider (codex exec OAuth + image copy)",
+      "depends_on": ["2", "3", "4"],
+      "acceptance": "`codex login status` detection for health(). `codex exec` invocation, copy from ~/.codex/generated_images/<session>/ig_*.png to outDir. VendorError classification for not-installed/not-authenticated/timeout/safety/network.",
+      "files": [
+        "cli/commands/image/providers/codex.provider.ts",
+        "cli/commands/image/providers/codex.provider.test.ts"
+      ]
+    },
+    {
+      "id": "7",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "Gemini stream strategy (β)",
+      "depends_on": ["2", "3"],
+      "acceptance": "Invoke `gemini -p --output-format stream-json`. Parse stream for inlineData image parts, decode base64 → Buffer. Handle auth errors, rate-limit (429).",
+      "files": [
+        "cli/commands/image/strategies/gemini-stream.ts",
+        "cli/commands/image/strategies/gemini-stream.test.ts"
+      ]
+    },
+    {
+      "id": "8",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "Gemini provider (strategy escalation runner)",
+      "depends_on": ["7"],
+      "acceptance": "Executes mcp→stream→api in order with precheck skip. strategy_attempts recorded as objects {strategy,status,reason?,duration_ms}. Non-retryable errors short-circuit.",
+      "files": [
+        "cli/commands/image/providers/gemini.provider.ts",
+        "cli/commands/image/providers/gemini.provider.test.ts"
+      ]
+    },
+    {
+      "id": "9",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "Orchestrator generate.ts (vendor selection + parallel dispatch + exit codes)",
+      "depends_on": ["2", "6", "8"],
+      "acceptance": "--vendor auto|codex|gemini|all. auto=best-effort, all=strict. Promise.allSettled for parallel. Exit codes 0,1,2,3,4,5,6 per design §7.",
+      "files": [
+        "cli/commands/image/generate.ts"
+      ]
+    },
+    {
+      "id": "10",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "Cost guardrail (cost.ts + confirm prompt)",
+      "depends_on": ["9"],
+      "acceptance": "Estimate from config.cost_guardrail.per_image_usd × n × vendor count. Prompt stdin y/n when ≥ threshold. --yes / OMA_IMAGE_YES bypass. --dry-run always displays estimate.",
+      "files": [
+        "cli/commands/image/cost.ts",
+        "cli/commands/image/cost.test.ts"
+      ]
+    },
+    {
+      "id": "11",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "AbortSignal + SIGINT/SIGTERM propagation",
+      "depends_on": ["9"],
+      "acceptance": "Orchestrator installs process.on('SIGINT') → controller.abort(). Every provider accepts signal and propagates to subprocess spawn/HTTP. Cassette test simulates mid-flight abort.",
+      "files": [
+        "cli/commands/image/generate.ts",
+        "cli/commands/image/providers/codex.provider.ts",
+        "cli/commands/image/providers/gemini.provider.ts"
+      ]
+    },
+    {
+      "id": "12",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "oma image doctor subcommand",
+      "depends_on": ["2", "6", "8"],
+      "acceptance": "Invokes health() on all registered providers. Outputs per-vendor status + recovery command hint (`codex login`, `gemini auth`, `GEMINI_API_KEY`).",
+      "files": [
+        "cli/commands/image/doctor.ts"
+      ]
+    },
+    {
+      "id": "13",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "oma image list-vendors subcommand",
+      "depends_on": ["2"],
+      "acceptance": "Lists registered providers with name, enabled flag, default model, supportedModels (from health() cache or static). Tabular output.",
+      "files": [
+        "cli/commands/image/list-vendors.ts"
+      ]
+    },
+    {
+      "id": "14",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "SKILL.md + resources (.agents/skills/oma-image/)",
+      "depends_on": ["3"],
+      "acceptance": "SKILL.md matches skeleton in design §11. resources/: execution-protocol.md, vendor-matrix.md, prompt-tips.md, checklist.md. i18n rules honored.",
+      "files": [
+        ".agents/skills/oma-image/SKILL.md",
+        ".agents/skills/oma-image/resources/execution-protocol.md",
+        ".agents/skills/oma-image/resources/vendor-matrix.md",
+        ".agents/skills/oma-image/resources/prompt-tips.md",
+        ".agents/skills/oma-image/resources/checklist.md"
+      ]
+    },
+    {
+      "id": "15",
+      "priority": "P0",
+      "agent": "backend",
+      "title": "Claude Code skill proxy (.claude/skills/oma-image/)",
+      "depends_on": ["14"],
+      "acceptance": "Thin SKILL.md pointer per oma-search convention: frontmatter + 'Read .agents/skills/oma-image/SKILL.md' delegation.",
+      "files": [
+        ".claude/skills/oma-image/SKILL.md"
+      ]
+    },
+    {
+      "id": "16",
+      "priority": "P1",
+      "agent": "backend",
+      "title": "Gemini MCP strategy (α)",
+      "depends_on": ["8"],
+      "acceptance": "Precheck for mcp-genmedia installation. If present, dispatch via MCP tool call. If absent, return skipped with reason='not-installed'.",
+      "files": [
+        "cli/commands/image/strategies/gemini-mcp.ts",
+        "cli/commands/image/strategies/gemini-mcp.test.ts"
+      ]
+    },
+    {
+      "id": "17",
+      "priority": "P1",
+      "agent": "backend",
+      "title": "Gemini API strategy (γ) via @google/genai",
+      "depends_on": ["8"],
+      "acceptance": "Uses GEMINI_API_KEY env. If unset, return skipped with reason='api-key-required'. Supports nano-banana-2 / gemini-3-pro-image.",
+      "files": [
+        "cli/commands/image/strategies/gemini-api.ts",
+        "cli/commands/image/strategies/gemini-api.test.ts"
+      ]
+    },
+    {
+      "id": "18",
+      "priority": "P1",
+      "agent": "backend",
+      "title": "Progress heartbeat (5s stderr)",
+      "depends_on": ["9", "11"],
+      "acceptance": "setInterval 5s writes `[oma image] <vendor> generating... <Xs>` to stderr. Cleared on completion or abort.",
+      "files": [
+        "cli/commands/image/heartbeat.ts"
+      ]
+    },
+    {
+      "id": "19",
+      "priority": "P1",
+      "agent": "backend",
+      "title": "oma doctor integration (Image vendors: section)",
+      "depends_on": ["12"],
+      "acceptance": "New check registered in cli/commands/doctor/. Invokes oma-image health. Output rendered within oma doctor report.",
+      "files": [
+        "cli/commands/doctor/checks/image-vendors.check.ts",
+        "cli/commands/doctor/command.ts"
+      ]
+    },
+    {
+      "id": "20",
+      "priority": "P1",
+      "agent": "qa",
+      "title": "Orchestrator unit tests",
+      "depends_on": ["9", "10", "11"],
+      "acceptance": "vitest coverage: registry resolution, strategy escalation ordering, partial failure exit codes (6 codes), cost bypass paths, abort propagation.",
+      "files": [
+        "cli/commands/image/generate.test.ts"
+      ]
+    },
+    {
+      "id": "21",
+      "priority": "P1",
+      "agent": "qa",
+      "title": "Provider cassette tests",
+      "depends_on": ["6", "7", "8"],
+      "acceptance": "Fixtures for codex exec stdout + gemini stream-json. Byte-level comparison replaced with SHA256 hash check. No golden image comparison.",
+      "files": [
+        "cli/commands/image/__tests__/fixtures/codex-exec.txt",
+        "cli/commands/image/__tests__/fixtures/gemini-stream.jsonl"
+      ]
+    },
+    {
+      "id": "22",
+      "priority": "P2",
+      "agent": "backend",
+      "title": "i18n message rendering",
+      "depends_on": ["9"],
+      "acceptance": "Reads language from oma-config.yaml. Emits ko/en variants. Technical terms (OAuth, API key, stream-json, MCP) stay English per i18n-guide.",
+      "files": [
+        "cli/commands/image/messages.ts",
+        "cli/commands/image/messages.ko.ts",
+        "cli/commands/image/messages.en.ts"
+      ]
+    },
+    {
+      "id": "23",
+      "priority": "P2",
+      "agent": "backend",
+      "title": "--no-prompt-in-manifest + SHA256 replacement",
+      "depends_on": ["4"],
+      "acceptance": "Flag replaces manifest.prompt with prompt_sha256 hex. Unit test confirms original prompt absent from manifest when flag set.",
+      "files": [
+        "cli/commands/image/manifest.ts"
+      ]
+    },
+    {
+      "id": "24",
+      "priority": "P2",
+      "agent": "qa",
+      "title": "--format json contract test",
+      "depends_on": ["9"],
+      "acceptance": "Parse stdout JSON from mocked run. Validate against manifest schema + exitCode/manifestPath additions.",
+      "files": [
+        "cli/commands/image/__tests__/contract.test.ts"
+      ]
+    },
+    {
+      "id": "25",
+      "priority": "P2",
+      "agent": "qa",
+      "title": "CLI smoke test via bun run test",
+      "depends_on": ["9"],
+      "acceptance": "End-to-end --dry-run against mocked providers. Confirms args parsing, cost estimate output, no side effects.",
+      "files": [
+        "cli/commands/image/__tests__/smoke.test.ts"
+      ]
+    }
+  ],
+  "deferred": [
+    {"id": "T3-1", "title": "Golden image tests", "reason": "non-deterministic generation"},
+    {"id": "T3-2", "title": "oma-observability interop", "reason": "awaiting target skill interface stabilization"},
+    {"id": "T3-3", "title": "HTML compare report", "reason": "separate oma image report <folder> subcommand candidate"},
+    {"id": "T3-4", "title": "--skip-git-repo-check safety audit", "reason": "inherit upstream behavior until concrete issue"}
+  ]
+}

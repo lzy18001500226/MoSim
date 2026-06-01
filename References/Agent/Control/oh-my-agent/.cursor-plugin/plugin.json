@@ -1,0 +1,16 @@
+{
+  "name": "oma",
+  "version": "8.10.2",
+  "description": "Portable, vendor-agnostic agent harness for project-specific skills, workflows, and agent teams aligned with your codebase, conventions, and engineering standards.",
+  "author": {
+    "name": "First Fluke",
+    "email": "our.first.fluke@gmail.com"
+  },
+  "repository": "https://github.com/first-fluke/oh-my-agent",
+  "license": "MIT",
+  "skills": ".cursor/skills",
+  "agents": ".cursor/agents",
+  "rules": ".cursor/rules",
+  "hooks": ".cursor/hooks/hooks.json",
+  "mcpServers": ".cursor/mcp.json"
+}

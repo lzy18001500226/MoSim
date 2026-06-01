@@ -1,0 +1,9 @@
+{
+  "harness": "ecc",
+  "items": {
+    "visual-anti-patterns":  { "score": 4, "max": 5, "notes": "Purple-to-blue gradient covers the entire landing hero section" },
+    "visual-child-friendly": { "score": 4, "max": 5, "notes": "Playful emoji icons, friendly AI buddy with suggestion chips, and large CTA buttons; builder has moderate UI complexity for young children" },
+    "visual-consistency":    { "score": 2, "max": 5, "notes": "Main builder views are internally consistent, but save-after-reload shows a completely different layout, object set, and navigation structure; gallery also drifts in background color and card style" },
+    "visual-accessibility":  { "score": 3, "max": 5, "notes": "Focus ring visible on selected objects, text labels accompany most icons, good contrast in builder/gallery; landing page white-on-gradient contrast is borderline and no responsive layout evidence" }
+  }
+}

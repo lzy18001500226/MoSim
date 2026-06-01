@@ -1,0 +1,173 @@
+name: Stargazers Daily
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # 00:00 UTC = 09:00 KST
+  workflow_dispatch:
+
+concurrency:
+  group: stargazers-daily
+  cancel-in-progress: false
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Track stargazers on orphan branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          DATA_BRANCH="stargazers-data"
+          FILE="STARGAZERS.md"
+          TODAY=$(date -u +%Y-%m-%d)
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 1. Switch to data branch (create as orphan on first run)
+          if git ls-remote --exit-code --heads origin "$DATA_BRANCH" >/dev/null 2>&1; then
+            git fetch origin "$DATA_BRANCH"
+            git checkout -B "$DATA_BRANCH" "origin/$DATA_BRANCH"
+          else
+            git checkout --orphan "$DATA_BRANCH"
+            git rm -rf . >/dev/null 2>&1 || true
+            git clean -fdx >/dev/null 2>&1 || true
+          fi
+
+          # 2. Seed STARGAZERS.md if missing
+          if [ ! -f "$FILE" ]; then
+            {
+              echo "# Stargazers"
+              echo ""
+              echo "Daily snapshot tracked by \`.github/workflows/stargazers-daily.yml\` on main."
+              echo "Only commits when the list changes. Unstargazer entries include profile"
+              echo "summaries to spot which persona is churning."
+              echo ""
+              echo "<!-- unstars-start -->"
+              echo "<!-- unstars-end -->"
+              echo ""
+              echo "<!-- current-start -->"
+              echo "## Current (0)"
+              echo ""
+              echo "<!-- current-end -->"
+            } > "$FILE"
+          fi
+
+          # 3. Fetch current stargazers
+          gh api -H "Accept: application/vnd.github.star+json" \
+            "/repos/$REPO/stargazers" --paginate \
+            --jq '.[] | "\(.user.login)\t\(.starred_at)"' \
+            | sort -f > /tmp/current.tsv
+
+          cut -f1 /tmp/current.tsv | tr '[:upper:]' '[:lower:]' | sort -u > /tmp/current.logins
+
+          # 4. Extract previous logins from current section
+          awk '/<!-- current-start -->/{flag=1; next} /<!-- current-end -->/{flag=0} flag' "$FILE" \
+            | grep -oE '@[A-Za-z0-9-]+' \
+            | sed 's/^@//' \
+            | tr '[:upper:]' '[:lower:]' \
+            | sort -u > /tmp/prev.logins || true
+
+          # 5. Diff
+          comm -23 /tmp/prev.logins /tmp/current.logins > /tmp/removed.logins
+          comm -13 /tmp/prev.logins /tmp/current.logins > /tmp/added.logins
+
+          ADDED_COUNT=$(wc -l < /tmp/added.logins | tr -d ' ')
+          REMOVED_COUNT=$(wc -l < /tmp/removed.logins | tr -d ' ')
+          TOTAL=$(wc -l < /tmp/current.logins | tr -d ' ')
+
+          echo "added=$ADDED_COUNT removed=$REMOVED_COUNT total=$TOTAL"
+
+          if [ "$ADDED_COUNT" = "0" ] && [ "$REMOVED_COUNT" = "0" ]; then
+            echo "No changes — exiting."
+            exit 0
+          fi
+
+          # 6. Build current section
+          {
+            echo "## Current ($TOTAL)"
+            echo ""
+            while IFS=$'\t' read -r login starred_at; do
+              [ -z "$login" ] && continue
+              echo "- @$login — ${starred_at%%T*}"
+            done < /tmp/current.tsv
+          } > /tmp/current.section
+
+          # 7. Build unstars section (only when someone left)
+          if [ "$REMOVED_COUNT" != "0" ]; then
+            {
+              echo "## $TODAY · $REMOVED_COUNT unstarred"
+              echo ""
+              while read -r login; do
+                [ -z "$login" ] && continue
+                profile=$(gh api "/users/$login" 2>/dev/null) || profile='{}'
+                name=$(echo "$profile" | jq -r '.name // ""')
+                bio=$(echo "$profile" | jq -r '.bio // ""' | tr -d '\n')
+                location=$(echo "$profile" | jq -r '.location // ""')
+                company=$(echo "$profile" | jq -r '.company // ""')
+                repos=$(echo "$profile" | jq -r '.public_repos // 0')
+                followers=$(echo "$profile" | jq -r '.followers // 0')
+
+                line="- **@$login**"
+                [ -n "$name" ] && line="$line · $name"
+                [ -n "$location" ] && line="$line · $location"
+                [ -n "$company" ] && line="$line · $company"
+                line="$line · ${repos} repos · ${followers} followers"
+                echo "$line"
+                [ -n "$bio" ] && echo "  - $bio"
+              done < /tmp/removed.logins
+            } > /tmp/unstars.section
+          fi
+
+          # 8. Rewrite sections
+          rewrite() {
+            local start="$1" end="$2" cf="$3" target="$4"
+            awk -v start="$start" -v end="$end" -v cf="$cf" '
+              index($0, start) { print; while ((getline line < cf) > 0) print line; close(cf); skip=1; next }
+              index($0, end)   { skip=0; print; next }
+              skip             { next }
+                               { print }
+            ' "$target" > "$target.tmp" && mv "$target.tmp" "$target"
+          }
+
+          rewrite "<!-- current-start -->" "<!-- current-end -->" /tmp/current.section "$FILE"
+          if [ -f /tmp/unstars.section ]; then
+            rewrite "<!-- unstars-start -->" "<!-- unstars-end -->" /tmp/unstars.section "$FILE"
+          fi
+
+          # 9. Commit + push to orphan branch
+          git add "$FILE"
+          if git diff --cached --quiet; then
+            echo "No file changes — exiting."
+            exit 0
+          fi
+
+          if [ "$REMOVED_COUNT" != "0" ]; then
+            MSG="chore(stargazers): -$REMOVED_COUNT unstarred on $TODAY"
+          else
+            MSG="chore(stargazers): +$ADDED_COUNT on $TODAY"
+          fi
+
+          git commit -m "$MSG" -m "added: $ADDED_COUNT · removed: $REMOVED_COUNT · total: $TOTAL"
+
+          for attempt in 1 2 3; do
+            if git push origin "HEAD:$DATA_BRANCH"; then
+              echo "Pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "Push failed on attempt $attempt — fetching + rebasing"
+            git fetch origin "$DATA_BRANCH" || true
+            git rebase "origin/$DATA_BRANCH" || git rebase --abort || true
+            sleep $((attempt * 5))
+          done
+
+          echo "Failed to push after 3 attempts"
+          exit 1

@@ -1,0 +1,74 @@
+{
+  "harness": "ecc",
+  "project_dir": "/tmp/oma-benchmark-20260504-171703/projects/ecc",
+  "timestamp": "2026-05-04T13:36:33Z",
+  "package_manager": "pnpm",
+  "prompt_requires_tests": false,
+  "checks": {
+    "setup-nextjs": {
+      "pass": true,
+      "score": 2.5,
+      "max": 2.5,
+      "evidence": "next@16.2.4"
+    },
+    "setup-tailwind": {
+      "pass": true,
+      "score": 2.5,
+      "max": 2.5,
+      "evidence": "tailwindcss@^4"
+    },
+    "setup-r3f": {
+      "pass": true,
+      "score": 2.5,
+      "max": 2.5,
+      "evidence": "@react-three/fiber@^9.6.1 @react-three/drei@^10.7.7"
+    },
+    "setup-build": {
+      "pass": true,
+      "score": 2.5,
+      "max": 2.5,
+      "evidence": "exit 0 in 15s"
+    },
+    "ai-api": {
+      "pass": true,
+      "score": 5,
+      "max": 5,
+      "evidence": "real SDK + env config in src/app/api/ai/route.ts"
+    },
+    "lint-clean": {
+      "pass": false,
+      "score": 0,
+      "max": 2.5,
+      "evidence": "exit 1"
+    },
+    "ts-clean": {
+      "pass": true,
+      "score": 2.5,
+      "max": 2.5,
+      "evidence": "exit 0"
+    },
+    "test-exists": {
+      "pass": true,
+      "score": 0,
+      "max": 0,
+      "evidence": "n/a (prompt did not request tests)"
+    },
+    "test-pass": {
+      "pass": true,
+      "score": 0,
+      "max": 0,
+      "evidence": "n/a (prompt did not request tests)"
+    },
+    "test-coverage": {
+      "pass": true,
+      "score": 0,
+      "max": 0,
+      "evidence": "n/a (prompt did not request tests)"
+    }
+  },
+  "auto_score_total": 17.5,
+  "auto_score_max": 20.0,
+  "errors": [
+    ""
+  ]
+}

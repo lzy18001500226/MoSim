@@ -1,0 +1,124 @@
+name: Release Please
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "prompt-manifest.json"
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      force_cli_publish:
+        description: Force publish the current CLI release and artifacts
+        required: false
+        default: false
+        type: boolean
+      cli_tag_name:
+        description: Existing CLI release tag to publish to (for example cli-v2.0.1)
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      cli_release_created: ${{ steps.release.outputs.release_created }}
+      cli_tag_name: ${{ steps.release.outputs.tag_name }}
+      cli_version: ${{ steps.release.outputs.version }}
+      web_release_created: ${{ steps.release.outputs['web--release_created'] }}
+      web_tag_name: ${{ steps.release.outputs['web--tag_name'] }}
+      web_version: ${{ steps.release.outputs['web--version'] }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          include-component-in-tag: true
+
+  publish-artifacts:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.cli_release_created == 'true' || inputs.force_cli_publish }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Resolve release tag
+        id: release_tag
+        env:
+          MANUAL_TAG: ${{ inputs.cli_tag_name }}
+        run: |
+          if [ -n "$MANUAL_TAG" ]; then
+            echo "value=$MANUAL_TAG" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=cli-v$(node -p "require('./cli/package.json').version")" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Regenerate prompt-manifest.json
+        run: |
+          VERSION=$(jq -r '.["."]' .release-please-manifest.json)
+          bunx tsx cli/generate-manifest.ts "$VERSION"
+
+      - name: Create tarball
+        run: |
+          tar -czvf agent-skills.tar.gz .agents/
+          sha256sum agent-skills.tar.gz > agent-skills.tar.gz.sha256
+
+      - name: Upload release artifacts
+        env:
+          RELEASE_TAG: ${{ steps.release_tag.outputs.value }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          files: |
+            prompt-manifest.json
+            agent-skills.tar.gz
+            agent-skills.tar.gz.sha256
+
+  publish-npm:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.cli_release_created == 'true' || inputs.force_cli_publish }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build CLI
+        run: bun run --cwd cli build
+
+      - name: Publish primary NPM package
+        run: cd cli && bun publish --access public
+        env:
+          # actions/setup-node writes an .npmrc whose _authToken placeholder is
+          # ${NODE_AUTH_TOKEN}. Bun publish also reads NPM_CONFIG_TOKEN directly.
+          # Set both so neither code path silently authenticates as anonymous,
+          # which surfaces as a 404 from the registry on PUT.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}

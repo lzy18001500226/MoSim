@@ -1,0 +1,259 @@
+{
+  "sessionId": "model-preset-20260425-045630",
+  "feature": "model-preset",
+  "createdAt": "2026-04-25T04:56:30Z",
+  "designDoc": "docs/plans/model-preset-design.md",
+  "memoryRef": "designs/model-preset",
+  "releaseStrategy": "single PR (big-bang merge)",
+  "graceWindow": "none — immediate removal of legacy agent_cli_mapping",
+  "owners": ["backend", "qa", "debug"],
+  "tasks": [
+    {
+      "id": "T1",
+      "priority": "P0",
+      "owner": "backend",
+      "title": "Add cli/platform/built-in-presets.ts",
+      "deps": [],
+      "acceptance": [
+        "5 presets defined: claude-only, codex-only, gemini-only, qwen-only, antigravity",
+        "Each preset has all 11 agent_defaults (orchestrator, architecture, qa, pm, backend, frontend, mobile, db, debug, tf-infra, retrieval)",
+        "BUILT_IN_PRESET_ALIASES exported (initially empty)",
+        "assertPresetIntegrity() runs at module import in production",
+        "Every preset model slug resolves via registry"
+      ]
+    },
+    {
+      "id": "T2",
+      "priority": "P0",
+      "owner": "backend",
+      "title": "Refactor types in agent-config.ts and utils/config.ts",
+      "deps": [],
+      "acceptance": [
+        "OmaConfig, AgentSpec (object only), ModelPreset (with optional extends), AgentId union exported",
+        "agent_cli_mapping schema deleted",
+        "Parser rejects string vendor values in agents map",
+        "All consumers compile against the new types"
+      ]
+    },
+    {
+      "id": "T3",
+      "priority": "P0",
+      "owner": "backend",
+      "title": "Update getModelSpec signature in model-registry.ts",
+      "deps": [],
+      "acceptance": [
+        "getModelSpec(slug, userModels?) accepts inline user models",
+        "User slug overrides built-in with WARN",
+        "Public API documented in JSDoc"
+      ]
+    },
+    {
+      "id": "T4",
+      "priority": "P0",
+      "owner": "backend",
+      "title": "Rewrite resolveAgentPlanFromConfig in cli/io/runtime-dispatch.ts",
+      "deps": ["T1", "T2", "T3"],
+      "acceptance": [
+        "4-step resolver per design pseudo-code",
+        "Built-in preset, alias redirect, custom_presets with extends partial-merge supported",
+        "Spec selection uses shallow merge (override over preset)",
+        "Cycle detection in extends chain",
+        "loadDefaultsConfig and legacyVendorToProfileKey removed",
+        "Single file I/O (oma-config.yaml only)"
+      ]
+    },
+    {
+      "id": "T5",
+      "priority": "P0",
+      "owner": "backend",
+      "title": "Update doctor --profile matrix",
+      "deps": ["T4"],
+      "acceptance": [
+        "Each row marked (override) or (preset)",
+        "Summary line when no overrides: 'All from preset (<key>)'",
+        "Missing/unknown preset shows actionable error row but matrix still prints"
+      ]
+    },
+    {
+      "id": "T6",
+      "priority": "P0",
+      "owner": "backend",
+      "title": "Write migration 008-model-preset.ts",
+      "deps": ["T2"],
+      "acceptance": [
+        "Single-vendor agent_cli_mapping converts to model_preset: <vendor>-only",
+        "Mixed-vendor converts to most-frequent preset + agents overrides",
+        "AgentSpec object values preserved into agents map",
+        "models.yaml inlined into oma-config.yaml.models",
+        "Customized defaults.yaml preserved as custom_presets.user-customized with WARN",
+        "Backup written to .agents/.backup-pre-008-${timestamp}-${pid}/",
+        "Failure marker prevents infinite retry; manual intervention required",
+        "Idempotent: skips if model_preset already present",
+        ".agents/config/ removed when empty"
+      ]
+    },
+    {
+      "id": "T7",
+      "priority": "P0",
+      "owner": "backend",
+      "title": "Register 008 in cli/commands/migrations/index.ts",
+      "deps": ["T6"],
+      "acceptance": [
+        "008 runs after 007 on oma install and oma update",
+        "Migration order test passes"
+      ]
+    },
+    {
+      "id": "T8",
+      "priority": "P0",
+      "owner": "backend",
+      "title": "Rewrite oma install preset selector",
+      "deps": ["T1", "T2"],
+      "acceptance": [
+        "Interactive prompt selects one of 5 built-in presets",
+        "Writes only oma-config.yaml; no defaults.yaml or models.yaml created",
+        "--update-defaults flag and option definition removed",
+        "Re-run on existing project preserves user fields"
+      ]
+    },
+    {
+      "id": "T9",
+      "priority": "P0",
+      "owner": "debug",
+      "title": "Delete legacy code paths",
+      "deps": ["T4", "T8"],
+      "acceptance": [
+        "cli/platform/defaults-version.test.ts removed",
+        "defaults-version logic removed from skills-installer.ts",
+        "legacyVendorToProfileKey removed",
+        "--update-defaults flag removed",
+        "All agent_cli_mapping references removed from code (docs handled separately)",
+        "TypeScript build passes with zero errors"
+      ]
+    },
+    {
+      "id": "T10",
+      "priority": "P0",
+      "owner": "debug",
+      "title": "Update prompt-manifest.json",
+      "deps": ["T9"],
+      "acceptance": [
+        ".agents/config/defaults.yaml entry removed",
+        "No manifest entry references deleted files",
+        "oma install dry-run shows only expected files"
+      ]
+    },
+    {
+      "id": "T11",
+      "priority": "P1",
+      "owner": "qa",
+      "title": "New built-in-presets.test.ts",
+      "deps": ["T1"],
+      "acceptance": [
+        "Asserts 5 presets exist",
+        "Asserts each preset has all 11 agents",
+        "Asserts every model slug resolves",
+        "Asserts BUILT_IN_PRESET_ALIASES redirects to canonical keys"
+      ]
+    },
+    {
+      "id": "T12",
+      "priority": "P1",
+      "owner": "qa",
+      "title": "Migration 008 table-driven tests",
+      "deps": ["T6"],
+      "acceptance": [
+        "≥ 12 fixtures covering: single-vendor (per built-in), mixed-vendor, AgentSpec, customized defaults, empty oma-config, idempotent re-run, failure marker behavior, models.yaml inline, .agents/config rmdir, alias detection",
+        "Backup directory uses unique timestamp+pid",
+        "All assertions pass"
+      ]
+    },
+    {
+      "id": "T13",
+      "priority": "P1",
+      "owner": "qa",
+      "title": "Update existing test suites",
+      "deps": ["T4", "T5", "T9"],
+      "acceptance": [
+        "agent-config.test.ts, runtime-dispatch.test.ts, resolve-agent-plan.test.ts updated",
+        "doctor/profile.test.ts and profile-subdir.test.ts updated",
+        "spawn-status.test.ts, session-cost-config.test.ts, install.test.ts updated",
+        "Dual-format and legacy fixtures dropped",
+        "All suites green: bun run test passes"
+      ]
+    },
+    {
+      "id": "T14",
+      "priority": "P1",
+      "owner": "qa",
+      "title": "Rewrite per-agent-models.md (en)",
+      "deps": ["T4"],
+      "acceptance": [
+        "model_preset, agents partial override, custom_presets.extends documented",
+        "defaults.yaml and --update-defaults references removed",
+        "Migration note added"
+      ]
+    },
+    {
+      "id": "T15",
+      "priority": "P1",
+      "owner": "qa",
+      "title": "Update installation/usage/commands docs (en)",
+      "deps": ["T14"],
+      "acceptance": [
+        "installation.md, parallel-execution.md, agents.md, project-structure.md, multi-agent-project.md, usage.md, commands.md, options.md updated",
+        "Zero stale agent_cli_mapping references in current-version docs"
+      ]
+    },
+    {
+      "id": "T16",
+      "priority": "P1",
+      "owner": "qa",
+      "title": "Sync ja/pl/vi i18n docs",
+      "deps": ["T14", "T15"],
+      "acceptance": [
+        "All four locales aligned with en",
+        "Glossary entry for model_preset"
+      ]
+    },
+    {
+      "id": "T17",
+      "priority": "P1",
+      "owner": "qa",
+      "title": "CHANGELOG breaking-change entries",
+      "deps": ["T9"],
+      "acceptance": [
+        "cli/CHANGELOG.md documents BREAKING change, auto-migration, removed --update-defaults",
+        "web/web/CHANGELOG.md documents docs restructure"
+      ]
+    },
+    {
+      "id": "T18",
+      "priority": "P2",
+      "owner": "debug",
+      "title": "YAML line numbers in errors + getModelSpec call-site audit",
+      "deps": ["T3", "T4"],
+      "acceptance": [
+        "All config-load errors include file:line:col",
+        "All getModelSpec callers pass user models from in-scope config"
+      ]
+    },
+    {
+      "id": "T19",
+      "priority": "P2",
+      "owner": "debug",
+      "title": "SECURITY note for inline vendors/models",
+      "deps": ["T8"],
+      "acceptance": [
+        "README or SECURITY.md adds caveat about user-edited config invoking arbitrary binaries",
+        "Doctor surfaces a one-line reminder when vendors block has custom binaries"
+      ]
+    }
+  ],
+  "criticalPath": ["T2", "T4", "T9", "T13"],
+  "estimatedEffort": {
+    "P0": "L (3-5d)",
+    "P1": "M (2-3d)",
+    "P2": "S (0.5d)"
+  }
+}

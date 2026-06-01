@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-04-24T11:22:58+10:00",
+  "options": {
+    "size": "1024x1024",
+    "quality": "auto",
+    "count": 1
+  },
+  "cost_estimate_usd": 0,
+  "runs": [
+    {
+      "vendor": "pollinations",
+      "model": "unknown",
+      "strategy": "unknown",
+      "strategy_attempts": [],
+      "files": [],
+      "duration_ms": 959,
+      "status": "failed",
+      "error": {
+        "kind": "invalid-input",
+        "message": "model: qwen-image requires Pollinations pollen credits. Try model=flux or model=zimage (free)."
+      }
+    }
+  ],
+  "prompt": "test"
+}

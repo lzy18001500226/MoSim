@@ -1,0 +1,9 @@
+{
+  "harness": "superpowers",
+  "items": {
+    "visual-anti-patterns":  { "score": 3, "max": 5, "notes": "Purple-to-blue gradient covers the entire landing hero; some secondary text (gallery byline, category pills) appears below 16px" },
+    "visual-child-friendly": { "score": 4, "max": 5, "notes": "Playful emoji-rich UI with suggestion chips, themed environments, and friendly AI buddy tone; some category tabs and object tiles are compact for small fingers" },
+    "visual-consistency":    { "score": 2, "max": 5, "notes": "Main flow (landing, builder, gallery) shares purple/orange accents and rounded shapes, but save-after-reload page diverges sharply with different color scheme, layout, AI buddy name, and button styles" },
+    "visual-accessibility":  { "score": 2, "max": 5, "notes": "Focus/selection rings visible on object tiles and theme chips; most items have text labels; but undo/redo are icon-only, landing gradient undermines text contrast, and no evidence of responsive narrow-width layout" }
+  }
+}

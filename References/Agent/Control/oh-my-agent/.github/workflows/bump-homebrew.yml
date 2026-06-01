@@ -1,0 +1,24 @@
+name: Bump Homebrew Formula
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: CLI version to bump (e.g. 2.10.0)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  bump-homebrew:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mislav/bump-homebrew-formula-action@v3
+        with:
+          formula-name: oh-my-agent
+          homebrew-tap: Homebrew/homebrew-core
+          download-url: https://registry.npmjs.org/oh-my-agent/-/oh-my-agent-${{ inputs.version }}.tgz
+        env:
+          COMMITTER_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}

@@ -1,0 +1,7 @@
+{
+  "journey-onboard":  {"score": 3, "max": 3, "evidence": "Landing page shows 'Welcome to WonderWorld!' with a name input and 'Let's Go!' button visible without scrolling."},
+  "journey-builder":  {"score": 4, "max": 4, "evidence": "Three.js canvas renders at 1504x1050 and a sidebar offers 12 shape/object pickers (Block, Ball, Pillar, Cone, Ring, Tree, House, Person, Rock, Flower, Cloud, Star)."},
+  "journey-ai":       {"score": 3, "max": 3, "evidence": "AI buddy 'Sparky' is present as a floating panel; typing 'help me' returns 'Your world is waiting! What do you want to add first?'"},
+  "journey-save":     {"score": 3, "max": 3, "evidence": "After clicking Save and reloading, the dashboard shows 'My Worlds (1)' with 'TestUser's World' listing 1 object, and re-opening loads the world with its name preserved."},
+  "journey-gallery":  {"score": 2, "max": 2, "evidence": "The /gallery route renders a 'My Worlds' page displaying a card for 'TestUser's World' with object count and date."}
+}

@@ -1,0 +1,9 @@
+{
+  "harness": "ecc",
+  "items": {
+    "visual-anti-patterns":  { "score": 3, "max": 5, "notes": "Gradient orbs/blobs floating on the landing page (yellow circle, pink square, purple circle, green square); feature card body text on landing page appears smaller than 16px" },
+    "visual-child-friendly": { "score": 4, "max": 5, "notes": "Large tappable emoji-labeled objects, playful tone in AI buddy, calm pastel palette, minimal text density; sidebar items could be slightly larger" },
+    "visual-consistency":    { "score": 4, "max": 5, "notes": "Consistent type ramp, card radii, and color palette across pages; minor drift in button accent colors between builder (green Save) and landing/gallery (coral primary)" },
+    "visual-accessibility":  { "score": 2, "max": 5, "notes": "Good dark-on-light text contrast on most surfaces and text labels on nearly all buttons; no visible focus rings anywhere, no responsive/narrow-width evidence, and some light-colored button text (Open, suggestion chips) with questionable contrast" }
+  }
+}

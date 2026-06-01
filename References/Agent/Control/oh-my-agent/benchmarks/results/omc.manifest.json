@@ -1,0 +1,12 @@
+{
+  "harness": "omc",
+  "install_status": "success",
+  "install_log": "Cloning into '/tmp/oma-benchmark-20260504-171703/plugins/omc'...\n=== ls -la /tmp/oma-benchmark-20260504-171703/projects/omc ===\ntotal 0\ndrwxr-xr-x@ 3 gracefullight  wheel   96 May  4 17:17 .\ndrwxr-xr-x@ 7 gracefullight  wheel  224 May  4 17:17 ..\ndrwxr-xr-x@ 9 gracefullight  wheel  288 May  4 17:17 .git\n\n=== du -sh /tmp/oma-benchmark-20260504-171703/homes/omc ===\n112K\t/tmp/oma-benchmark-20260504-171703/homes/omc\nfatal: destination path '/tmp/oma-benchmark-20260504-171703/plugins/omc' already exists and is not an empty directory.\nCloning into '/tmp/oma-benchmark-20260504-171703/plugins/omc'...",
+  "run_status": "success",
+  "duration_seconds": 546,
+  "exit_code": 0,
+  "project_dir": "/tmp/oma-benchmark-20260504-171703/projects/omc",
+  "home_dir": "/tmp/oma-benchmark-20260504-171703/homes/omc",
+  "claude_output_file": "/tmp/oma-benchmark-20260504-171703/results/omc.json",
+  "claude_stderr_file": "/tmp/oma-benchmark-20260504-171703/results/omc.stderr"
+}

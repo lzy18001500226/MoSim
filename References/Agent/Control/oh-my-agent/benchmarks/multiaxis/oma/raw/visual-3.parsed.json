@@ -1,0 +1,9 @@
+{
+  "harness": "oma",
+  "items": {
+    "visual-anti-patterns":  { "score": 4, "max": 5, "notes": "One anti-pattern: card description text and builder sidebar labels appear below 16px. No purple-to-blue gradient backgrounds, no gradient orbs, no nested cards, no cluttered dashboards." },
+    "visual-child-friendly": { "score": 4, "max": 5, "notes": "Large emoji-labeled object buttons, playful theme names, simple vocabulary, and low text density; some secondary controls (theme chips, nav buttons) are smaller than ideal 44px tap targets." },
+    "visual-consistency":    { "score": 4, "max": 5, "notes": "Consistent purple accent, pill-shaped buttons, rounded card radii, and sans-serif type ramp across all pages; minor drift between plain-white landing cards and gradient-preview gallery cards." },
+    "visual-accessibility":  { "score": 3, "max": 5, "notes": "Good text-on-white contrast throughout and text labels on most buttons; however the sparkle FAB is icon-only with no label, no keyboard focus rings are visible, and responsive narrow-width behavior is not demonstrated." }
+  }
+}

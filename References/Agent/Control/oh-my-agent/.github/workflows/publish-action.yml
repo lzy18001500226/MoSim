@@ -1,0 +1,57 @@
+name: Publish Action
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    if: startsWith(github.event.release.tag_name, 'action-v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Update major version tag
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          VERSION="${TAG#action-}"
+          MAJOR="${VERSION%%.*}"
+          git tag -f "$MAJOR" "$TAG"
+          git push origin "$MAJOR" --force
+
+      - name: Sync to marketplace repo
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+          GH_TOKEN: ${{ secrets.ACTION_SYNC_TOKEN }}
+        run: |
+          VERSION="${TAG#action-}"
+          MAJOR="${VERSION%%.*}"
+          SYNC_REPO="first-fluke/oma-update-action"
+
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/${SYNC_REPO}.git" /tmp/sync-repo
+          cd /tmp/sync-repo
+
+          # Clear existing files and copy from action/
+          git rm -rf . 2>/dev/null || true
+          cp -r "${GITHUB_WORKSPACE}/action/." .
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: sync from oh-my-agent ${TAG}" || exit 0
+
+          git tag -f "$VERSION"
+          git tag -f "$MAJOR"
+          git push origin main --force
+          git push origin "$VERSION" --force
+          git push origin "$MAJOR" --force
+
+          gh release create "$VERSION" \
+            --repo "$SYNC_REPO" \
+            --title "oh-my-agent update action ${VERSION}" \
+            --notes "Synced from [oh-my-agent ${TAG}](https://github.com/first-fluke/oh-my-agent/releases/tag/${TAG})"

@@ -1,0 +1,9 @@
+{
+  "harness": "omc",
+  "items": {
+    "visual-anti-patterns":  { "score": 4, "max": 5, "notes": "One anti-pattern: object palette labels and AI suggestion chip text in the builder appear below 16px; no gradient backgrounds, orbs, nested cards, or cluttered dashboards observed" },
+    "visual-child-friendly": { "score": 4, "max": 5, "notes": "Playful tone with emojis, friendly AI buddy, large CTA buttons, calm lavender palette, but category tabs and suggestion chips in the builder are slightly small for young fingers" },
+    "visual-consistency":    { "score": 4, "max": 5, "notes": "Consistent purple accent, rounded corners, button styles, and type ramp across all pages; minor drift with two unlabeled icon buttons in the builder toolbar" },
+    "visual-accessibility":  { "score": 3, "max": 5, "notes": "Good primary text contrast and text labels on most controls, but no visible focus rings in any screenshot, two icon-only buttons lack labels, and gray subtitle text appears borderline on contrast" }
+  }
+}

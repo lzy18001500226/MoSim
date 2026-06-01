@@ -1,0 +1,9 @@
+{
+  "harness": "vanilla",
+  "items": {
+    "visual-anti-patterns":  { "score": 3, "max": 5, "notes": "Purple-to-blue gradient covers entire landing hero; some secondary text (gallery metadata, category chips) appears below 16px" },
+    "visual-child-friendly": { "score": 4, "max": 5, "notes": "Playful tone with emojis, big CTAs, friendly AI buddy prompts, and calm 3D viewport; minor density in the builder's multi-panel layout" },
+    "visual-consistency":    { "score": 3, "max": 5, "notes": "Logo and card radii are consistent but button colors drift across pages (orange/teal on landing, purple on gallery, orange/dark on builder)" },
+    "visual-accessibility":  { "score": 3, "max": 5, "notes": "Good text-on-white contrast, visible selection ring on objects, text labels on most buttons; undo/redo toolbar icons lack labels, responsive behavior unverifiable from desktop shots" }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "harness": "vanilla",
+  "install_status": "success",
+  "install_log": "vanilla: no install needed",
+  "run_status": "success",
+  "duration_seconds": 539,
+  "exit_code": 0,
+  "project_dir": "/tmp/oma-benchmark-20260504-171703/projects/vanilla",
+  "home_dir": "/tmp/oma-benchmark-20260504-171703/homes/vanilla",
+  "claude_output_file": "/tmp/oma-benchmark-20260504-171703/results/vanilla.json",
+  "claude_stderr_file": "/tmp/oma-benchmark-20260504-171703/results/vanilla.stderr"
+}

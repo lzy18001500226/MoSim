@@ -1,0 +1,9 @@
+{
+  "harness": "omc",
+  "items": {
+    "visual-anti-patterns":  { "score": 3, "max": 5, "notes": "Two anti-patterns: some AI suggestion-chip and metadata text appears below 16px equivalent; builder page shows >6 distinct UI groups simultaneously (top bar, category tabs, object grid, 3D canvas, AI header, chat messages, suggestion chips, chat input)." },
+    "visual-child-friendly": { "score": 4, "max": 5, "notes": "Playful emoji-rich UI with friendly AI persona, large CTA buttons, and low text density; the builder's AI panel suggestion chips are slightly small for young children." },
+    "visual-consistency":    { "score": 4, "max": 5, "notes": "Consistent purple primary color, pill-shaped buttons, and rounded cards across all pages; minor drift in page backgrounds (solid lavender vs purple-to-mint gradient on the save modal)." },
+    "visual-accessibility":  { "score": 2, "max": 5, "notes": "Good dark-purple-on-white text contrast and text labels on most buttons (Shapes, Explore, Save); however no visible focus rings anywhere, the gallery trash button is icon-only, and no narrow-width/responsive evidence." }
+  }
+}

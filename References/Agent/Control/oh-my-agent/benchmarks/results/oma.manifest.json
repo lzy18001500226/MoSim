@@ -1,0 +1,12 @@
+{
+  "harness": "oma",
+  "install_status": "success",
+  "install_log": "Resolving dependencies\nResolved, downloaded and extracted [2]\nSaved lockfile\n┌  \u001b[45m\u001b[37m 🛸 oh-my-agent \u001b[39m\u001b[49m\n\u001b[?25l│\n◒  Downloading...\n\u001b[1G\u001b[J◇  Downloaded!\n\u001b[?25h\u001b[?25l│\n◆  Response language?\n│  ● English\n│  ○ Deutsch\n│  ○ Español\n│  ○ Français\n│  ○ 日本語\n│  ○ 한국어\n│  ○ Nederlands\n│  ○ Polski\n│  ○ Português\n│  ○ Русский\n│  ○ th\n│  ○ Tiếng Việt\n│  ○ 中文\n└",
+  "run_status": "success",
+  "duration_seconds": 740,
+  "exit_code": 0,
+  "project_dir": "/tmp/oma-benchmark-20260504-171703/projects/oma",
+  "home_dir": "/tmp/oma-benchmark-20260504-171703/homes/oma",
+  "claude_output_file": "/tmp/oma-benchmark-20260504-171703/results/oma.json",
+  "claude_stderr_file": "/tmp/oma-benchmark-20260504-171703/results/oma.stderr"
+}

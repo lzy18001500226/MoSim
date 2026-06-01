@@ -1,0 +1,249 @@
+{
+  "harness": "oma",
+  "package_manager": "npm",
+  "judge_runs_spec_visual": 3,
+  "axes": {
+    "functional": {
+      "items": {
+        "build-pass": {
+          "pass": 1,
+          "score": 5,
+          "max": 5,
+          "evidence": "exit 0"
+        },
+        "boot-pass": {
+          "pass": 1,
+          "score": 5,
+          "max": 5,
+          "evidence": "HTTP 200 within 45s"
+        },
+        "journey-onboard": {
+          "pass": 1,
+          "score": 3,
+          "max": 3,
+          "evidence": "A clear 'Start Creating ✨' link is visible on the landing page without scrolling, linking to /onboarding."
+        },
+        "journey-builder": {
+          "pass": 1,
+          "score": 4,
+          "max": 4,
+          "evidence": "Three.js Canvas renders (2352×1456) with a sidebar containing 8 object pickers (Box, Ball, Tube, Cone, Ring, Tree, House, Star) plus theme and color controls."
+        },
+        "journey-ai": {
+          "pass": 1,
+          "score": 1.5,
+          "max": 3,
+          "evidence": "AI companion 'Spark' panel opens with input field and prompt suggestions, but submitting 'help me' returned only a fallback error ('Hmm, I got confused for a moment. Try again!'), not a meaningful AI response."
+        },
+        "journey-save": {
+          "pass": 1,
+          "score": 1.5,
+          "max": 3,
+          "evidence": "Save button exists and profile name persists after reload ('TestKid's World'), but localStorage contains only child-profile with no world/object data, so placed objects would not survive a reload."
+        },
+        "journey-gallery": {
+          "pass": 1,
+          "score": 2,
+          "max": 2,
+          "evidence": "Gallery page renders with My Worlds / Sample Worlds tabs and three sample world cards (Ocean Discovery, Space Station, Enchanted Forest) with links to explore each."
+        },
+        "lint-clean": {
+          "pass": 1,
+          "score": 5,
+          "max": 5,
+          "evidence": "n/a (deprecated next lint without config) — credited to avoid penalizing legitimate Next 15 setup"
+        },
+        "ts-clean": {
+          "pass": 1,
+          "score": 5,
+          "max": 5,
+          "evidence": "exit 0"
+        }
+      },
+      "total": 32,
+      "max": 35
+    },
+    "spec": {
+      "items": {
+        "spec-product-concept": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-personas": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-journeys": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-feature-list": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-ia": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-ui-direction": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-tech-arch": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-db-schema": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-ai-prompts": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-safety": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-impl-plan": {
+          "pass": 0,
+          "score": 0.00,
+          "max": 1,
+          "evidence": "pass_votes=000 (0/3 rounds)"
+        },
+        "spec-starter-code": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-priority-screens": {
+          "pass": 0,
+          "score": 0.33,
+          "max": 1,
+          "evidence": "pass_votes=010 (1/3 rounds)"
+        },
+        "spec-real-api-bonus": {
+          "pass": true,
+          "score": 2,
+          "max": 2,
+          "evidence": "real SDK/endpoint + env config"
+        }
+      },
+      "total": 13.33,
+      "max": 15
+    },
+    "visual": {
+      "items": {
+        "visual-anti-patterns": {
+          "pass": 1,
+          "score": 4.3,
+          "max": 5,
+          "evidence": "scores=[ 4 5 4 ] mean=4.3 (over 3 rounds)"
+        },
+        "visual-child-friendly": {
+          "pass": 1,
+          "score": 4.0,
+          "max": 5,
+          "evidence": "scores=[ 4 4 4 ] mean=4.0 (over 3 rounds)"
+        },
+        "visual-consistency": {
+          "pass": 1,
+          "score": 4.0,
+          "max": 5,
+          "evidence": "scores=[ 4 4 4 ] mean=4.0 (over 3 rounds)"
+        },
+        "visual-accessibility": {
+          "pass": 1,
+          "score": 3.0,
+          "max": 5,
+          "evidence": "scores=[ 3 3 3 ] mean=3.0 (over 3 rounds)"
+        }
+      },
+      "total": 15.3,
+      "max": 20
+    },
+    "engineering": {
+      "items": {
+        "eng-breadth": {
+          "pass": true,
+          "score": 3.0,
+          "max": 4,
+          "evidence": "routes=5 components=11"
+        },
+        "eng-type-safety": {
+          "pass": true,
+          "score": 4.0,
+          "max": 4,
+          "evidence": "strict=true any_count=0"
+        },
+        "eng-modularity": {
+          "pass": true,
+          "score": 4.0,
+          "max": 4,
+          "evidence": "max_depth=9 max_file_lines=164"
+        },
+        "eng-transparency": {
+          "pass": false,
+          "score": 0.0,
+          "max": 4,
+          "evidence": "deferred_markers=0"
+        },
+        "eng-env-safety": {
+          "pass": true,
+          "score": 4,
+          "max": 4,
+          "evidence": "env config present, no hardcoded keys"
+        }
+      },
+      "total": 15,
+      "max": 20
+    },
+    "efficiency": {
+      "items": {
+        "eff-turns": {
+          "pass": true,
+          "score": 3,
+          "max": 4,
+          "evidence": "31 turns"
+        },
+        "eff-time": {
+          "pass": false,
+          "score": 0,
+          "max": 3,
+          "evidence": "956s"
+        },
+        "eff-cost": {
+          "pass": true,
+          "score": 2,
+          "max": 3,
+          "evidence": "$0.122/file (4.0385401 USD / 33 files)"
+        }
+      },
+      "total": 5,
+      "max": 10
+    }
+  },
+  "total": 80.6,
+  "max": 100.0
+}

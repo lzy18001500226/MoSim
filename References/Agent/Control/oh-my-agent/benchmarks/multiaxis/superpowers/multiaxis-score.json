@@ -1,0 +1,249 @@
+{
+  "harness": "superpowers",
+  "package_manager": "npm",
+  "judge_runs_spec_visual": 3,
+  "axes": {
+    "functional": {
+      "items": {
+        "build-pass": {
+          "pass": 1,
+          "score": 5,
+          "max": 5,
+          "evidence": "exit 0"
+        },
+        "boot-pass": {
+          "pass": 1,
+          "score": 5,
+          "max": 5,
+          "evidence": "HTTP 200 within 45s"
+        },
+        "journey-onboard": {
+          "pass": 1,
+          "score": 3,
+          "max": 3,
+          "evidence": "Landing page shows 'Welcome to WonderWorld!' with a name input and 'Let's Go!' button visible without scrolling."
+        },
+        "journey-builder": {
+          "pass": 1,
+          "score": 4,
+          "max": 4,
+          "evidence": "Three.js canvas renders at 1504x1050 and a sidebar offers 12 shape/object pickers (Block, Ball, Pillar, Cone, Ring, Tree, House, Person, Rock, Flower, Cloud, Star)."
+        },
+        "journey-ai": {
+          "pass": 1,
+          "score": 3,
+          "max": 3,
+          "evidence": "AI buddy 'Sparky' is present as a floating panel; typing 'help me' returns 'Your world is waiting! What do you want to add first?'"
+        },
+        "journey-save": {
+          "pass": 1,
+          "score": 3,
+          "max": 3,
+          "evidence": "After clicking Save and reloading, the dashboard shows 'My Worlds (1)' with 'TestUser's World' listing 1 object, and re-opening loads the world with its name preserved."
+        },
+        "journey-gallery": {
+          "pass": 1,
+          "score": 2,
+          "max": 2,
+          "evidence": "The /gallery route renders a 'My Worlds' page displaying a card for 'TestUser's World' with object count and date."
+        },
+        "lint-clean": {
+          "pass": 0,
+          "score": 0,
+          "max": 5,
+          "evidence": "exit 1"
+        },
+        "ts-clean": {
+          "pass": 1,
+          "score": 5,
+          "max": 5,
+          "evidence": "exit 0"
+        }
+      },
+      "total": 30,
+      "max": 35
+    },
+    "spec": {
+      "items": {
+        "spec-product-concept": {
+          "pass": 1,
+          "score": 0.67,
+          "max": 1,
+          "evidence": "pass_votes=011 (2/3 rounds)"
+        },
+        "spec-personas": {
+          "pass": 0,
+          "score": 0.00,
+          "max": 1,
+          "evidence": "pass_votes=000 (0/3 rounds)"
+        },
+        "spec-journeys": {
+          "pass": 0,
+          "score": 0.00,
+          "max": 1,
+          "evidence": "pass_votes=000 (0/3 rounds)"
+        },
+        "spec-feature-list": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-ia": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-ui-direction": {
+          "pass": 0,
+          "score": 0.00,
+          "max": 1,
+          "evidence": "pass_votes=000 (0/3 rounds)"
+        },
+        "spec-tech-arch": {
+          "pass": 1,
+          "score": 0.67,
+          "max": 1,
+          "evidence": "pass_votes=011 (2/3 rounds)"
+        },
+        "spec-db-schema": {
+          "pass": 0,
+          "score": 0.33,
+          "max": 1,
+          "evidence": "pass_votes=100 (1/3 rounds)"
+        },
+        "spec-ai-prompts": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-safety": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-impl-plan": {
+          "pass": 0,
+          "score": 0.00,
+          "max": 1,
+          "evidence": "pass_votes=000 (0/3 rounds)"
+        },
+        "spec-starter-code": {
+          "pass": 1,
+          "score": 1.00,
+          "max": 1,
+          "evidence": "pass_votes=111 (3/3 rounds)"
+        },
+        "spec-priority-screens": {
+          "pass": 1,
+          "score": 0.67,
+          "max": 1,
+          "evidence": "pass_votes=011 (2/3 rounds)"
+        },
+        "spec-real-api-bonus": {
+          "pass": true,
+          "score": 2,
+          "max": 2,
+          "evidence": "real SDK/endpoint + env config"
+        }
+      },
+      "total": 9.34,
+      "max": 15
+    },
+    "visual": {
+      "items": {
+        "visual-anti-patterns": {
+          "pass": 1,
+          "score": 3.0,
+          "max": 5,
+          "evidence": "scores=[ 4 3 2 ] mean=3.0 (over 3 rounds)"
+        },
+        "visual-child-friendly": {
+          "pass": 1,
+          "score": 4.0,
+          "max": 5,
+          "evidence": "scores=[ 4 4 4 ] mean=4.0 (over 3 rounds)"
+        },
+        "visual-consistency": {
+          "pass": 0,
+          "score": 2.3,
+          "max": 5,
+          "evidence": "scores=[ 3 2 2 ] mean=2.3 (over 3 rounds)"
+        },
+        "visual-accessibility": {
+          "pass": 0,
+          "score": 2.3,
+          "max": 5,
+          "evidence": "scores=[ 3 2 2 ] mean=2.3 (over 3 rounds)"
+        }
+      },
+      "total": 11.600000000000001,
+      "max": 20
+    },
+    "engineering": {
+      "items": {
+        "eng-breadth": {
+          "pass": true,
+          "score": 2.5,
+          "max": 4,
+          "evidence": "routes=4 components=9"
+        },
+        "eng-type-safety": {
+          "pass": true,
+          "score": 4.0,
+          "max": 4,
+          "evidence": "strict=true any_count=0"
+        },
+        "eng-modularity": {
+          "pass": true,
+          "score": 3.5,
+          "max": 4,
+          "evidence": "max_depth=8 max_file_lines=258"
+        },
+        "eng-transparency": {
+          "pass": false,
+          "score": 0.0,
+          "max": 4,
+          "evidence": "deferred_markers=0"
+        },
+        "eng-env-safety": {
+          "pass": true,
+          "score": 4,
+          "max": 4,
+          "evidence": "env config present, no hardcoded keys"
+        }
+      },
+      "total": 14,
+      "max": 20
+    },
+    "efficiency": {
+      "items": {
+        "eff-turns": {
+          "pass": true,
+          "score": 3,
+          "max": 4,
+          "evidence": "39 turns"
+        },
+        "eff-time": {
+          "pass": true,
+          "score": 2,
+          "max": 3,
+          "evidence": "493s"
+        },
+        "eff-cost": {
+          "pass": true,
+          "score": 3,
+          "max": 3,
+          "evidence": "$0.067/file (1.28248425 USD / 19 files)"
+        }
+      },
+      "total": 8,
+      "max": 10
+    }
+  },
+  "total": 72.9,
+  "max": 100.0
+}

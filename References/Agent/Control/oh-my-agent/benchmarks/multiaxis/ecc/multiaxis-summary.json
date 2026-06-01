@@ -1,0 +1,14 @@
+{
+  "harness": "ecc",
+  "package_manager": "pnpm",
+  "judge_runs_spec_visual": 3,
+  "total": 70.2,
+  "max": 100.0,
+  "by_axis": {
+    "functional": 28.5,
+    "spec": 9.67,
+    "visual": 13,
+    "engineering": 15,
+    "efficiency": 4
+  }
+}

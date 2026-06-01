@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-04-24T11:22:54+10:00",
+  "options": {
+    "size": "1024x1024",
+    "quality": "auto",
+    "count": 1
+  },
+  "cost_estimate_usd": 0,
+  "runs": [
+    {
+      "vendor": "pollinations",
+      "model": "zimage",
+      "strategy": "pollinations-api",
+      "strategy_attempts": [
+        {
+          "strategy": "pollinations-api",
+          "status": "ok",
+          "duration_ms": 3881
+        }
+      ],
+      "files": [
+        "/Users/gracefullight/workspace/oh-my-agent/.agents/results/images/20260424-112254-97qn84/pollinations-zimage.jpg"
+      ],
+      "duration_ms": 3881,
+      "status": "ok"
+    }
+  ],
+  "prompt": "a simple red apple on plain white background"
+}

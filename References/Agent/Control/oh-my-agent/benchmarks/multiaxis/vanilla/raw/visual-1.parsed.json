@@ -1,0 +1,9 @@
+{
+  "harness": "vanilla",
+  "items": {
+    "visual-anti-patterns":  { "score": 1, "max": 5, "notes": "Purple-to-blue gradient hero on landing page; body/metadata text appears sub-16px in several places (gallery byline, category tabs, environment labels); gallery shows card-inside-card nesting (thumbnail container within outer card); builder shows 7 distinct UI groups at once (nav, object categories, object grid, 3D canvas, environment bar, AI panel, chat input)" },
+    "visual-child-friendly": { "score": 4, "max": 5, "notes": "Playful tone throughout with emoji, friendly AI buddy with suggestion chips, big CTA buttons on landing, whimsical environment names; slightly dense builder UI with small category tabs prevents a 5" },
+    "visual-consistency":    { "score": 3, "max": 5, "notes": "DreamWorld branding and rounded card shapes are consistent, but button styles drift across pages (orange/teal on landing, purple on gallery, mixed in builder) and the landing gradient aesthetic clashes with the builder's clean white style" },
+    "visual-accessibility":  { "score": 2, "max": 5, "notes": "Most text areas show adequate contrast and inputs have visible focus borders; text labels accompany most interactive elements, but some top-bar icons lack labels and no evidence of responsive layout adaptation" }
+  }
+}

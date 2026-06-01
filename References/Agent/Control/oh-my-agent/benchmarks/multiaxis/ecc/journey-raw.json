@@ -1,0 +1,7 @@
+{
+  "journey-onboard":  {"score": 3, "max": 3, "evidence": "Landing page shows a clearly visible 'Start Creating' button linked to /onboarding without scrolling."},
+  "journey-builder":  {"score": 4, "max": 4, "evidence": "Three.js canvas renders at 2064x1028 and a sidebar displays 10 object pickers (Box, Ball, Pillar, Cone, Donut, Tree, House, Star, Cloud, Rock)."},
+  "journey-ai":       {"score": 3, "max": 3, "evidence": "AI companion panel opens with input field; typing 'help me' returns a non-empty response about placing objects in the world."},
+  "journey-save":     {"score": 1.5, "max": 3, "evidence": "Save button exists and persists world to gallery, but reloading /builder resets the world name to 'My World' instead of restoring saved state."},
+  "journey-gallery":  {"score": 2, "max": 2, "evidence": "Gallery at /gallery renders a 'My Worlds' heading with a saved world card showing name, object count, and date."}
+}

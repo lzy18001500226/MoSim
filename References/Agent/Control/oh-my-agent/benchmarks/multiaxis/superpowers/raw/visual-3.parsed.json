@@ -1,0 +1,9 @@
+{
+  "harness": "superpowers",
+  "items": {
+    "visual-anti-patterns":  { "score": 2, "max": 5, "notes": "Purple-to-blue gradient covers the entire landing hero; sidebar labels and gallery metadata text appear below 16px; world builder shows 8+ distinct UI groups simultaneously (nav, categories, object grid, 3D viewport, AI header, AI chat, AI input, environment bar)" },
+    "visual-child-friendly": { "score": 4, "max": 5, "notes": "Playful tone with emojis, friendly AI buddy with suggestion chips, and themed environments are clearly child-oriented, though the world builder packs moderate information density and category pills are small tap targets" },
+    "visual-consistency":    { "score": 2, "max": 5, "notes": "Landing, builder, and gallery share a coherent orange/purple palette, but save-after-reload shows a completely different design language (magenta Sparky header, green accent, 3-col emoji grid, different typography and button styles) — looks like a different product" },
+    "visual-accessibility":  { "score": 2, "max": 5, "notes": "Selection borders visible on object tiles and theme chips, most buttons have text labels, but white text on purple gradient hero has questionable contrast, undo/redo icons lack text labels, and no evidence of responsive narrow-width layouts" }
+  }
+}

@@ -1,0 +1,409 @@
+{
+  "plan_id": "oma-observability-20260421-174219",
+  "skill": "oma-observability",
+  "design_doc": "docs/plans/oma-observability-design.md",
+  "memory": "designs/oma-observability",
+  "total_files": 33,
+  "total_weeks": 3,
+  "rollout_phases": {
+    "P0_week1": 12,
+    "P1_week2": 13,
+    "P2_week3": 8
+  },
+  "scaffolding_policy": "F3 anti-patterns, F4 checklist, F5 examples get Day-1 scaffolds (ToC only). Incremental append from every other file as written. Week 3 dedupe/polish.",
+  "no_stub_final": true,
+  "tasks": [
+    {
+      "id": "A1",
+      "file": "resources/standards.md",
+      "priority": "P0",
+      "week": 1,
+      "agent": "architecture",
+      "reviewer": "backend",
+      "depends_on": [],
+      "acceptance": "OTel 1.x + W3C Trace Context L1/L2 + W3C Baggage + ISO/IEC 25010 indirect mapping (Analysability/Accountability/Faultlessness) + OSI boundary decision (L1/L2/L5/L6 explicit out-of-scope) + NTP/clock sync section documented with primary sources cited"
+    },
+    {
+      "id": "A2",
+      "file": "resources/matrix.md",
+      "priority": "P0",
+      "week": 1,
+      "agent": "architecture",
+      "reviewer": "backend",
+      "depends_on": ["A1"],
+      "acceptance": "4 Layers × 4 Boundaries × 7 Signals (112 cells) with explicit N/A markers for invalid combinations; cross-references to each layer/boundary/signal file"
+    },
+    {
+      "id": "A3",
+      "file": "SKILL.md",
+      "priority": "P0",
+      "week": 1,
+      "agent": "architecture",
+      "reviewer": "pm",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "Router definition + 'When to use' + 'When NOT to use' + Out-of-scope (external tools only, no future oma-X names) + Integrations with OMA ecosystem + Versioning & deprecation policy sections"
+    },
+    {
+      "id": "A4",
+      "file": "resources/execution-protocol.md",
+      "priority": "P0",
+      "week": 1,
+      "agent": "backend",
+      "reviewer": "pm",
+      "depends_on": ["A3"],
+      "acceptance": "7-step protocol following oma-search pattern: Parse → Classify → Route → Collect → Score → Present + references to matrix.md"
+    },
+    {
+      "id": "A5",
+      "file": "resources/intent-rules.md",
+      "priority": "P0",
+      "week": 1,
+      "agent": "backend",
+      "reviewer": "pm",
+      "depends_on": ["A3"],
+      "acceptance": "Intent categories (setup/migrate/investigate/alert/trace/tune/route) with keyword triggers (Korean + English) and category routing"
+    },
+    {
+      "id": "A6",
+      "file": "resources/incident-forensics.md",
+      "priority": "P0",
+      "week": 1,
+      "agent": "debug",
+      "reviewer": "backend",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "MRA (Minimum Required Attributes) list + 6-dimension narrowing flow (code/service/layer/host/region/infra) + 3 walkthrough scenarios + vendor-specific query examples"
+    },
+    {
+      "id": "A7",
+      "file": "resources/meta-observability.md",
+      "priority": "P0",
+      "week": 1,
+      "agent": "backend",
+      "reviewer": "tf-infra",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "Pipeline self-health (Collector otelcol_* metrics) + Clock skew/NTP discipline + Cardinality guardrails (labels ≤ N) + Retention matrix (per-signal raw/aggregated/archive)"
+    },
+    {
+      "id": "B1",
+      "file": "resources/transport/udp-statsd-mtu.md",
+      "priority": "P0",
+      "week": 1,
+      "agent": "tf-infra",
+      "reviewer": "backend",
+      "depends_on": [],
+      "acceptance": "Payload size table (IPv4 1472 / IPv6 1452 / VPN 1432 / UDS 8192 / loopback 16K) + fragmentation risks + PMTUD verification (`ping -M do`) + Wireshark guide"
+    },
+    {
+      "id": "B2",
+      "file": "resources/transport/otlp-grpc-vs-http.md",
+      "priority": "P0",
+      "week": 1,
+      "agent": "tf-infra",
+      "reviewer": "backend",
+      "depends_on": [],
+      "acceptance": "Decision tree gRPC 4317 vs HTTP 4318 (browser/proxy/k8s/firewall axes) + tuning (max_recv_msg_size, memory_limiter, batch, sending_queue, exponential backoff)"
+    },
+    {
+      "id": "B3",
+      "file": "resources/transport/collector-topology.md",
+      "priority": "P0",
+      "week": 1,
+      "agent": "tf-infra",
+      "reviewer": "backend",
+      "depends_on": [],
+      "acceptance": "Two-tier k8s default (DaemonSet + Deployment) + Fargate/Cloud Run sidecar exception + containerd/CRI-O runtime metrics + OTel Operator v1beta1 4 modes"
+    },
+    {
+      "id": "B4",
+      "file": "resources/transport/sampling-recipes.md",
+      "priority": "P0",
+      "week": 1,
+      "agent": "tf-infra",
+      "reviewer": "backend",
+      "depends_on": [],
+      "acceptance": "Tail-based (100% error + 100% cost>$0.50 + 5-10% tail) + cost-aware + tenant-aware; routing_connector (alpha) caveat"
+    },
+    {
+      "id": "F2",
+      "file": "resources/vendor-categories.md",
+      "priority": "P0",
+      "week": 1,
+      "agent": "architecture",
+      "reviewer": "qa",
+      "depends_on": [],
+      "acceptance": "Category taxonomy (OSS full-stack / commercial SaaS / high-cardinality / profiling / SIEM / FinOps / feature-flags / log-pipeline / TSDB) + 2-5 example vendors per category with `as-of 2026-Q2` timestamp + feature micro-matrix + How to choose + Delegation target. NO standalone vendor registry. CNCF landscape referenced as authoritative"
+    },
+    {
+      "id": "F3_scaffold",
+      "file": "resources/anti-patterns.md",
+      "priority": "P0-scaffold",
+      "week": 1,
+      "agent": "qa",
+      "reviewer": "backend",
+      "depends_on": [],
+      "acceptance": "Day-1 scaffold with category headers only (Security/Carding/Pipeline/Release/etc). Incremental append from every subsequent file. Final dedupe Week 3."
+    },
+    {
+      "id": "F4_scaffold",
+      "file": "resources/checklist.md",
+      "priority": "P0-scaffold",
+      "week": 1,
+      "agent": "qa",
+      "reviewer": "backend",
+      "depends_on": [],
+      "acceptance": "Day-1 scaffold with section headers (Setup / Pre-prod / Prod / Recovery). Incremental append. Final Week 3."
+    },
+    {
+      "id": "F5_scaffold",
+      "file": "resources/examples.md",
+      "priority": "P0-scaffold",
+      "week": 1,
+      "agent": "backend",
+      "reviewer": "frontend,mobile",
+      "depends_on": [],
+      "acceptance": "Day-1 scaffold with walkthrough placeholders. Each file author contributes. Week 3 re-structure into coherent walkthroughs."
+    },
+    {
+      "id": "C1",
+      "file": "resources/layers/L3-network.md",
+      "priority": "P1",
+      "week": 2,
+      "agent": "tf-infra",
+      "reviewer": "backend",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "VPC flow logs + PMTUD + ICMP + BGP/BMP advanced subsection (OpenBMP/pmacct, RPKI, hijack detection) + Cloudflare Radar reference"
+    },
+    {
+      "id": "C2",
+      "file": "resources/layers/L4-transport.md",
+      "priority": "P1",
+      "week": 2,
+      "agent": "tf-infra",
+      "reviewer": "backend",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "TCP retransmits/RTT + eBPF (Beyla/Pixie/Parca intro) + connection lifecycle + QUIC/HTTP3 transport semantics"
+    },
+    {
+      "id": "C3",
+      "file": "resources/layers/mesh.md",
+      "priority": "P1",
+      "week": 2,
+      "agent": "tf-infra",
+      "reviewer": "backend",
+      "depends_on": ["A1", "A2", "C2"],
+      "acceptance": "Istio 1.22+ Envoy 1.29+ OTLP/HTTP direct export + Linkerd propagator headers + W3C Trace Context for cross-mesh + OTel Operator Instrumentation CR"
+    },
+    {
+      "id": "C4",
+      "file": "resources/layers/L7-application/web-rum.md",
+      "priority": "P1",
+      "week": 2,
+      "agent": "frontend",
+      "reviewer": "backend",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "Core Web Vitals 2024 (INP replacing FID) + Browser OTel SDK experimental notice + Sentry Browser + Faro + DD RUM + Synthetic § (Checkly/k6/Blackbox) + 3rd-party script CSP § + Client↔server error correlation"
+    },
+    {
+      "id": "C5",
+      "file": "resources/layers/L7-application/mobile-rum.md",
+      "priority": "P1",
+      "week": 2,
+      "agent": "mobile",
+      "reviewer": "backend",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "Offline-first telemetry queuing + battery impact + app lifecycle events + iOS/Android SDK comparison + W3C traceparent propagation to backend"
+    },
+    {
+      "id": "C6",
+      "file": "resources/layers/L7-application/crash-analytics.md",
+      "priority": "P1",
+      "week": 2,
+      "agent": "mobile",
+      "reviewer": "qa",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "Crash-Free Rate + symbolication pipelines (dSYM/ProGuard/NDK/RN/Flutter) + release tracking (service.version marker) + vendor comparison matrix (Crashlytics/Sentry/Bugsnag/Embrace/DD)"
+    },
+    {
+      "id": "D1",
+      "file": "resources/signals/metrics.md",
+      "priority": "P1",
+      "week": 2,
+      "agent": "backend",
+      "reviewer": "tf-infra",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "Metric instruments (counter/gauge/histogram/summary) + SLI/healthcheck + hostmetrics receiver + Prometheus format + OpenCost metric surface"
+    },
+    {
+      "id": "D2",
+      "file": "resources/signals/logs.md",
+      "priority": "P1",
+      "week": 2,
+      "agent": "backend",
+      "reviewer": "tf-infra",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "LogRecord + Events as LogRecords § + systemd journal integration + Fluent Bit/OTel Collector input + structured logging with trace_id"
+    },
+    {
+      "id": "D3",
+      "file": "resources/signals/traces.md",
+      "priority": "P1",
+      "week": 2,
+      "agent": "backend",
+      "reviewer": "tf-infra",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "SpanKind + db.* semconv (N+1 detection, slow query, pool exhaustion patterns) + messaging.* (Kafka/Flink/Spark stage + DLQ) + W3C trace context propagation"
+    },
+    {
+      "id": "D4",
+      "file": "resources/signals/profiles.md",
+      "priority": "P1",
+      "week": 2,
+      "agent": "backend",
+      "reviewer": "tf-infra",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "OTEP 0239 experimental badge + Parca (CNCF Sandbox) + Pyroscope (Grafana) + Polar Signals + JVM/Python/Go language-specific profilers + sampling overhead <1% CPU typical"
+    },
+    {
+      "id": "D5",
+      "file": "resources/signals/cost.md",
+      "priority": "P1",
+      "week": 2,
+      "agent": "tf-infra",
+      "reviewer": "backend",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "OpenCost (CNCF Incubating) + unit economics + per-tenant cost attribution (cross-ref multi-tenant.md) + FinOps boundary (out of this skill's full strategy scope)"
+    },
+    {
+      "id": "D6",
+      "file": "resources/signals/audit.md",
+      "priority": "P1",
+      "week": 2,
+      "agent": "qa",
+      "reviewer": "backend",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "SOC2/ISO controls + immutable WORM storage + hash chain tamper evidence + Falco (CNCF Graduated) integration + 7-year retention policy example"
+    },
+    {
+      "id": "D7",
+      "file": "resources/signals/privacy.md",
+      "priority": "P1",
+      "week": 2,
+      "agent": "qa",
+      "reviewer": "backend",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "GDPR/PIPA + anonymization vs pseudonymization distinction + OTel attributes/redaction/transform processors + TLS context attrs (L6 Development) + Post-storage RBAC on observability backend"
+    },
+    {
+      "id": "E1",
+      "file": "resources/boundaries/multi-tenant.md",
+      "priority": "P2",
+      "week": 3,
+      "agent": "backend",
+      "reviewer": "architecture",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "4-tier isolation (soft/routing/dedicated-collector/dedicated-backend) + per-tenant sampling + per-tenant retention + cost attribution (cross-ref cost.md) + residency (GDPR/KR) routing"
+    },
+    {
+      "id": "E2",
+      "file": "resources/boundaries/cross-application.md",
+      "priority": "P2",
+      "week": 3,
+      "agent": "backend",
+      "reviewer": "architecture",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "4-layer correlation (trace_id/request_id/causation_id/baggage) + Propagator matrix (W3C/B3/AWS X-Ray/GCP/Datadog/Cloudflare/Linkerd) + DDD service.namespace § + baggage PII rules"
+    },
+    {
+      "id": "E3",
+      "file": "resources/boundaries/slo.md",
+      "priority": "P2",
+      "week": 3,
+      "agent": "qa",
+      "reviewer": "backend",
+      "depends_on": ["A1", "A2"],
+      "acceptance": "OpenSLO spec + Sloth/Pyrra implementations + Grafana SLO + SLO burn-rate alert design (fast 2%/1h + slow 5%/6h multi-window)"
+    },
+    {
+      "id": "E4",
+      "file": "resources/boundaries/release.md",
+      "priority": "P2",
+      "week": 3,
+      "agent": "qa",
+      "reviewer": "backend",
+      "depends_on": ["A1", "A2", "E3"],
+      "acceptance": "Flagger (CNCF Graduated) canary analysis + Argo Rollouts + OpenFeature (CNCF Incubating) feature flags + GitOps engines (Argo CD/Flux) reconcile metrics + K8s operator reconcile loop"
+    },
+    {
+      "id": "F1",
+      "file": "resources/observability-as-code.md",
+      "priority": "P2",
+      "week": 3,
+      "agent": "tf-infra",
+      "reviewer": "qa",
+      "depends_on": ["E3"],
+      "acceptance": "Grafana Jsonnet/Grafonnet + Perses (CNCF Sandbox) + PrometheusRule CRD + Alertmanager YAML + Terraform Grafana provider + OpenSLO YAML + OTel Collector via OTel Operator CRD + GitOps integration"
+    },
+    {
+      "id": "F3_polish",
+      "file": "resources/anti-patterns.md",
+      "priority": "P2",
+      "week": 3,
+      "agent": "qa",
+      "reviewer": "backend",
+      "depends_on": ["all prior"],
+      "acceptance": "Dedupe + reorder by severity + cross-reference matrix + minimum 18 items (PII/cardinality/sidecar-abuse/BGP-hijack-unmonitored/3rd-party CSP/NTP-drift/etc.)"
+    },
+    {
+      "id": "F4_polish",
+      "file": "resources/checklist.md",
+      "priority": "P2",
+      "week": 3,
+      "agent": "qa",
+      "reviewer": "backend",
+      "depends_on": ["all prior"],
+      "acceptance": "Dedupe + structured sections (Setup / Pre-prod / Prod / Recovery) + Recovery § consolidated from former error-playbook"
+    },
+    {
+      "id": "F5_polish",
+      "file": "resources/examples.md",
+      "priority": "P2",
+      "week": 3,
+      "agent": "backend",
+      "reviewer": "frontend,mobile",
+      "depends_on": ["all prior"],
+      "acceptance": "Restructure into 3+ coherent walkthroughs (OSS full-stack setup + incident forensics scenario + multi-tenant cost attribution) + cross-ref vendor-categories"
+    }
+  ],
+  "critical_path": [
+    "Day 1-2: A1 standards → A2 matrix (foundation)",
+    "Day 3-4: A3 SKILL + A4 protocol + A5 intent + A6 forensics + A7 meta + F2 vendor-categories",
+    "Day 1-4 parallel: B1-B4 transport (independent)",
+    "Day 1 Day-1 scaffolds: F3 anti-patterns, F4 checklist, F5 examples",
+    "Week 2: C + D (most can parallel)",
+    "Week 3: E + F1 + F3/F4/F5 polish"
+  ],
+  "gates": {
+    "phase_1a_complete": "All 12 P0 files complete + 3 scaffolds seeded",
+    "phase_1b_complete": "All 13 P1 files complete; F3/F4/F5 incrementally appended",
+    "phase_1c_complete": "All 8 P2 files complete; F3/F4/F5 dedupe done"
+  },
+  "out_of_scope": {
+    "v1_5_candidates": [
+      "Vendor migration (Honeycomb↔Datadog exit strategy)",
+      "Dev-time local observability",
+      "CI/test observability (may merge into oma-qa)",
+      "HIPAA/PCI DSS specific adaptations",
+      "eBPF security specifics (Tetragon vs Falco)"
+    ],
+    "not_this_skill": [
+      "LLM ops (Langfuse/Arize/LangSmith externally)",
+      "Data pipeline lineage (OpenLineage+Marquez externally)",
+      "IoT/hardware (DCIM tools externally)",
+      "Chaos engineering (Chaos Mesh/Litmus externally)",
+      "GPU/TPU infrastructure (NVIDIA DCGM externally)",
+      "Supply chain (sigstore/in-toto/SLSA externally)",
+      "Incident response workflow (PagerDuty/OpsGenie externally)"
+    ],
+    "explicit_rule": "Do NOT pre-declare future OMA skill names inside skill files; point to existing external tools only"
+  }
+}

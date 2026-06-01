@@ -1,0 +1,127 @@
+name: "oh-my-agent update"
+description: "Automatically update oh-my-agent skills in your repository"
+branding:
+  icon: "refresh-cw"
+  color: "purple"
+
+inputs:
+  mode:
+    description: "How to apply changes: 'pr' creates a pull request, 'commit' pushes directly"
+    required: false
+    default: "pr"
+  base-branch:
+    description: "Base branch for PR or direct commit target"
+    required: false
+    default: "main"
+  force:
+    description: "Pass --force to oma update (overwrites user config files)"
+    required: false
+    default: "false"
+  pr-title:
+    description: "Custom PR title"
+    required: false
+    default: "chore(deps): update oh-my-agent skills"
+  pr-labels:
+    description: "Comma-separated labels to add to the PR"
+    required: false
+    default: "dependencies,automated"
+  commit-message:
+    description: "Custom commit message"
+    required: false
+    default: "chore(deps): update oh-my-agent skills"
+  token:
+    description: "GitHub token for creating PRs (use a PAT for fork repos)"
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  updated:
+    description: "'true' if changes were detected after oma update"
+    value: ${{ steps.changes.outputs.updated }}
+  version:
+    description: "The oh-my-agent version after update"
+    value: ${{ steps.changes.outputs.version }}
+  pr-number:
+    description: "PR number (only in pr mode)"
+    value: ${{ steps.create-pr.outputs.pull-request-number }}
+  pr-url:
+    description: "PR URL (only in pr mode)"
+    value: ${{ steps.create-pr.outputs.pull-request-url }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Validate inputs
+      shell: bash
+      env:
+        MODE: ${{ inputs.mode }}
+      run: |
+        case "$MODE" in
+          pr|commit) ;;
+          *)
+            echo "::error::mode must be 'pr' or 'commit'"
+            exit 1
+            ;;
+        esac
+
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+
+    - name: Install oh-my-agent
+      shell: bash
+      run: bun install -g oh-my-agent
+
+    - name: Run oma update
+      shell: bash
+      env:
+        FORCE: ${{ inputs.force }}
+      run: |
+        FLAGS="--ci"
+        if [ "$FORCE" = "true" ]; then
+          FLAGS="$FLAGS --force"
+        fi
+        oma update $FLAGS # word-splitting intentional: passes separate args
+
+    - name: Check for changes
+      id: changes
+      shell: bash
+      run: |
+        if [ -n "$(git status --porcelain .agents/ .claude/ 2>/dev/null)" ]; then
+          echo "updated=true" >> "$GITHUB_OUTPUT"
+          if [ -f ".agents/skills/_version.json" ]; then
+            VERSION=$(jq -r '.version' .agents/skills/_version.json)
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          fi
+        else
+          echo "updated=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Create Pull Request
+      id: create-pr
+      if: steps.changes.outputs.updated == 'true' && inputs.mode == 'pr'
+      uses: peter-evans/create-pull-request@v8
+      with:
+        token: ${{ inputs.token }}
+        branch: chore/update-oh-my-agent
+        base: ${{ inputs.base-branch }}
+        title: ${{ inputs.pr-title }}
+        commit-message: ${{ inputs.commit-message }}
+        body: |
+          Automated oh-my-agent skills update to v${{ steps.changes.outputs.version }}.
+
+          This PR was created by the [oh-my-agent update action](https://github.com/first-fluke/oh-my-agent).
+        labels: ${{ inputs.pr-labels }}
+        delete-branch: true
+
+    - name: Commit and push
+      if: steps.changes.outputs.updated == 'true' && inputs.mode == 'commit'
+      shell: bash
+      env:
+        COMMIT_MSG: ${{ inputs.commit-message }}
+        BASE_BRANCH: ${{ inputs.base-branch }}
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add .agents/ .claude/
+        git commit -m "$COMMIT_MSG"
+        git push origin HEAD:"$BASE_BRANCH"
