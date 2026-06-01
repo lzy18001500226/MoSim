@@ -7,38 +7,40 @@ Global scene truth is a validation oracle only and is not a planner input.
 
 - file_loop_ready: `true`
 - runtime_ready: `false`
-- runtime_blockers: `missing_ros1_rviz_catkin_runtime`, `ros_env:missing_ros1_commands:roscore,roslaunch,rostopic,rosnode,rosparam,rviz`, `ros_env:missing_catkin_build_tool`, `ros_env:ros_environment_not_sourced`, `ros_env:fast_lio_package_not_visible:fast_lio`, `unreal_editor_listener_unavailable`
+- runtime_blockers: `unreal_editor_listener_unavailable`
+- runtime_degraded: `missing_ros1_commands:roscore,roslaunch,rostopic,rosnode,rosparam,rviz`, `missing_catkin_build_tool`, `fast_lio_ros1_package_not_visible:fast_lio`, `missing_ros1_rviz_catkin_runtime`
 - mapping_window: `RViz/RViz2 or equivalent native robotics viewer`
 - html_active_pointcloud_window: `false`
 - global_truth_used_by_planner: `false`
 
 | Scene | File Loop | Path Cells | LiDAR Points | FAST-LIO | Frames | Issues |
 |---|---|---:|---:|---|---:|---|
-| `factoryenvironmentcollect` | `true` | 34 | 1934 | `blocked_missing_ros1_runtime` | 34 |  |
-| `derelictcorridormegascans` | `true` | 45 | 2068 | `blocked_missing_ros1_runtime` | 45 |  |
+| `factoryenvironmentcollect` | `true` | 34 | 1934 | `ready_for_ros2_replay` | 34 |  |
+| `derelictcorridormegascans` | `true` | 45 | 2068 | `ready_for_ros2_replay` | 45 |  |
 
 Runtime commands:
+- `ros2`: `/opt/ros/humble/bin/ros2`
 - `roscore`: `None`
 - `roslaunch`: `None`
 - `rostopic`: `None`
 - `rviz`: `None`
-- `rviz2`: `None`
+- `rviz2`: `/opt/ros/humble/bin/rviz2`
 - `catkin_make`: `None`
-- `colcon`: `None`
+- `colcon`: `/usr/bin/colcon`
 
 Next commands:
 - `python3 Scripts/UE5/summarize_scene_closed_loop.py --fail-on-issue`
-- `DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect`
-- `DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans`
-- `DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect`
-- `DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans`
-- `DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect`
-- `DRY_RUN=1 Scripts/UE5/check_fastlio_ros1_topics.sh`
+- `DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect`
+- `DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans`
+- `DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect`
+- `DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans`
+- `DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect`
+- `DRY_RUN=1 Scripts/UE5/check_fastlio_ros2_topics.sh`
 - `DRY_RUN=1 Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh`
 - `DRY_RUN=1 Scripts/UE5/open_unreal_editor_mcp_listener.sh`
 - `python3 Scripts/UE5/check_ros_mapping_runtime_env.py --write`
-- `Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh  # only after ROS1/Catkin is installed and sourced`
+- `source /opt/ros/humble/setup.bash`
 - `Scripts/UE5/open_unreal_editor_mcp_listener.sh  # opens UE Editor and waits up to 60s for UnrealMCP listener`
-- `RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh <scene>  # opens separate planning-grid and point-cloud RViz windows after ROS1/RViz is installed`
-- `Scripts/UE5/run_fastlio_rviz_replay_ros1.sh <scene>  # only after ROS1/Catkin/FAST-LIO is installed and sourced`
-- `Scripts/UE5/check_fastlio_ros1_topics.sh  # only during a live ROS1/FAST-LIO run`
+- `RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene>  # opens separate planning-grid and point-cloud RViz2 windows`
+- `Scripts/UE5/run_fastlio_rviz_replay_ros2.sh <scene>  # publishes ROS2 replay inputs; START_FASTLIO=0 until a ROS2 FAST-LIO launch is configured`
+- `Scripts/UE5/check_fastlio_ros2_topics.sh  # during a live ROS2 replay; REQUIRE_FASTLIO_OUTPUTS=0 checks replay inputs only`

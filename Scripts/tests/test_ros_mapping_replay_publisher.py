@@ -25,9 +25,9 @@ def load_scene_pipeline():
     return module
 
 
-def test_ros_mapping_replay_dryrun_contract() -> None:
+def run_mapping_publisher_dryrun(script_name: str) -> dict:
     scene_pipeline = load_scene_pipeline()
-    temp_root = ROOT / "Results" / "tmp" / "ros_mapping_replay_publisher_test"
+    temp_root = ROOT / "Results" / "tmp" / f"ros_mapping_replay_publisher_test_{script_name}"
     if temp_root.exists():
         shutil.rmtree(temp_root)
     output_root = temp_root / "scene_mapping"
@@ -42,7 +42,7 @@ def test_ros_mapping_replay_dryrun_contract() -> None:
         result = subprocess.run(
             [
                 sys.executable,
-                str(ROOT / "Scripts" / "ros" / "publish_mosim_mapping_replay_ros1.py"),
+                str(ROOT / "Scripts" / "ros" / script_name),
                 "--render-replay-csv",
                 str(scene_dir / "render_replay.csv"),
                 "--local-known-map-jsonl",
@@ -60,29 +60,55 @@ def test_ros_mapping_replay_dryrun_contract() -> None:
             text=True,
             capture_output=True,
         )
-        payload = json.loads(result.stdout)
-        if payload["claim"] != "dry-run only; no ROS messages were published":
-            raise AssertionError(payload)
-        if payload["frames"] != 2:
-            raise AssertionError(payload)
-        if payload["lidar_points"] <= 0:
-            raise AssertionError(payload)
-        expected_topics = {
-            "lidar",
-            "local_known_map_cloud",
-            "local_occupancy_grid",
-            "local_plan",
-            "uav_path",
-        }
-        if set(payload["topics"]) != expected_topics:
-            raise AssertionError(payload)
+        return json.loads(result.stdout)
     finally:
         if temp_root.exists():
             shutil.rmtree(temp_root)
 
 
+def assert_mapping_payload(payload: dict, expected_schema: str, expected_claim: str) -> None:
+    if payload["schema"] != expected_schema:
+        raise AssertionError(payload)
+    if payload["claim"] != expected_claim:
+        raise AssertionError(payload)
+    if payload["frames"] != 2:
+        raise AssertionError(payload)
+    if payload["lidar_points"] <= 0:
+        raise AssertionError(payload)
+    expected_topics = {
+        "lidar",
+        "local_known_map_cloud",
+        "local_occupancy_grid",
+        "local_plan",
+        "uav_path",
+    }
+    if not expected_topics.issubset(set(payload["topics"])):
+        raise AssertionError(payload)
+
+
+def test_ros_mapping_replay_dryrun_contract() -> None:
+    payload = run_mapping_publisher_dryrun("publish_mosim_mapping_replay_ros1.py")
+    assert_mapping_payload(
+        payload,
+        "mosim.ros1_mapping_replay_dryrun.v1",
+        "dry-run only; no ROS messages were published",
+    )
+
+
+def test_ros2_mapping_replay_dryrun_contract() -> None:
+    payload = run_mapping_publisher_dryrun("publish_mosim_mapping_replay_ros2.py")
+    assert_mapping_payload(
+        payload,
+        "mosim.ros2_mapping_replay_dryrun.v1",
+        "dry-run only; no ROS2 messages were published",
+    )
+    if payload["topics"].get("tf") != "/tf":
+        raise AssertionError(payload)
+
+
 def main() -> int:
     test_ros_mapping_replay_dryrun_contract()
+    test_ros2_mapping_replay_dryrun_contract()
     print("[OK] ROS/RViz mapping replay publisher regression")
     return 0
 

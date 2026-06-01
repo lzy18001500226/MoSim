@@ -117,24 +117,27 @@ def build_scene_bundle(output_root: Path, scene_id: str) -> dict[str, Any]:
         raise ValueError(f"truth/planning policy is not safe for {scene_key}")
 
     runtime_blockers = list(readiness.get("overall", {}).get("runtime_blockers", []))
+    runtime_degraded = list(readiness.get("overall", {}).get("runtime_degraded", []))
     runtime_blockers.extend(
         blocker
         for blocker in (
-            "blocked_missing_ros1_runtime"
-            if fastlio_manifest.get("status") == "blocked_missing_ros1_runtime"
+            "blocked_missing_ros2_runtime"
+            if fastlio_manifest.get("status") == "blocked_missing_ros2_runtime"
             else None,
         )
         if blocker and blocker not in runtime_blockers
     )
+    if fastlio_manifest.get("ros_environment", {}).get("ros1_ready") is not True:
+        runtime_degraded.append("ros1_fastlio_compat_runtime_unavailable")
 
     ue_review_command = (
         "OPEN_UE=1 OPEN_RVIZ=0 STREAM_LOOP_COUNT=1 STREAM_FPS=12 WAIT_UDP_SECONDS=45 "
         f"Scripts/UE5/review_scene_mapping_loop.sh {scene_key}"
     )
-    rviz_review_command = f"RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh {scene_key}"
-    rviz_grid_review_command = f"RVIZ_PROFILE=planning_grid Scripts/UE5/open_mapping_rviz_ros1.sh {scene_key}"
-    rviz_pointcloud_review_command = f"RVIZ_PROFILE=fastlio_pointcloud Scripts/UE5/open_mapping_rviz_ros1.sh {scene_key}"
-    fastlio_command = f"Scripts/UE5/run_fastlio_rviz_replay_ros1.sh {scene_key}"
+    rviz_review_command = f"RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh {scene_key}"
+    rviz_grid_review_command = f"RVIZ_PROFILE=planning_grid Scripts/UE5/open_mapping_rviz_ros2.sh {scene_key}"
+    rviz_pointcloud_review_command = f"RVIZ_PROFILE=fastlio_pointcloud Scripts/UE5/open_mapping_rviz_ros2.sh {scene_key}"
+    fastlio_command = f"Scripts/UE5/run_fastlio_rviz_replay_ros2.sh {scene_key}"
     fastlio_bootstrap_command = "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh"
     unreal_mcp_command = "Scripts/UE5/open_unreal_editor_mcp_listener.sh"
     record_command = (
@@ -159,6 +162,7 @@ def build_scene_bundle(output_root: Path, scene_id: str) -> dict[str, Any]:
         "accepted_scene_label": info["accepted_scene_label"],
         "status": "blocked_runtime_dependencies" if runtime_blockers else "ready_for_native_runtime_review",
         "runtime_blockers": runtime_blockers,
+        "runtime_degraded": runtime_degraded,
         "window_policy": {
             "rendered_scene_window": "Unreal/MoSimSceneLibrary",
             "mapping_window": "RViz/RViz2 or equivalent native robotics viewer",
@@ -197,22 +201,23 @@ def build_scene_bundle(output_root: Path, scene_id: str) -> dict[str, Any]:
             "rviz_planning_grid_window": rviz_grid_review_command,
             "rviz_fastlio_pointcloud_window": rviz_pointcloud_review_command,
             "fastlio_rviz_runtime": fastlio_command,
-            "fastlio_topic_check": "Scripts/UE5/check_fastlio_ros1_topics.sh",
+            "fastlio_topic_check": "Scripts/UE5/check_fastlio_ros2_topics.sh",
+            "fastlio_input_topic_check": "REQUIRE_FASTLIO_OUTPUTS=0 Scripts/UE5/check_fastlio_ros2_topics.sh",
             "fastlio_runtime_record": record_command,
             "fastlio_runtime_evaluate": evaluate_command,
         },
         "manual_acceptance": [
             "UE window shows the accepted real rendered scene, not a blockout/STL/blank map.",
             "UAV body follows the replay inside valid scene bounds without wall penetration.",
-            "RViz/RViz2 split windows show local occupancy/grid plus local plan, and point cloud plus FAST-LIO state.",
-            "FAST-LIO outputs /cloud_registered and /Odometry during a live ROS runtime run.",
+            "RViz2 split windows show local occupancy/grid plus local plan, and point cloud plus FAST-LIO state.",
+            "FAST-LIO outputs /cloud_registered and /Odometry during a live ROS runtime run before localization is accepted.",
             "evaluate_fastlio_runtime.py passes against replay truth before any localization claim.",
             "Planner has no access to global truth; exported truth is used only for validation.",
         ],
         "claim_boundary": [
             "This bundle is an execution contract and launch package, not proof that runtime already ran.",
             "HTML is not an accepted active point-cloud/map window.",
-            "FAST-LIO localization remains unclaimed until ROS runtime topics are recorded and evaluated.",
+            "FAST-LIO localization remains unclaimed until a real FAST-LIO-family runtime publishes output topics that are recorded and evaluated.",
             "MWORKS dynamics/control evidence remains separate from UE/RViz visual runtime evidence.",
         ],
     }
@@ -227,6 +232,7 @@ def write_scene_markdown(scene_dir: Path, bundle: dict[str, Any]) -> None:
         "",
         f"- status: `{bundle['status']}`",
         f"- runtime_blockers: {', '.join(f'`{item}`' for item in bundle['runtime_blockers']) or 'none'}",
+        f"- runtime_degraded: {', '.join(f'`{item}`' for item in bundle.get('runtime_degraded', [])) or 'none'}",
         f"- rendered_scene_window: `{bundle['window_policy']['rendered_scene_window']}`",
         f"- mapping_window: `{bundle['window_policy']['mapping_window']}`",
         f"- html_active_pointcloud_window: `{str(bundle['window_policy']['html_allowed_as_active_pointcloud_window']).lower()}`",
@@ -255,8 +261,8 @@ def write_wrapper(scene_dir: Path, bundle: dict[str, Any]) -> None:
         "cd \"${PROJECT_ROOT}\"",
         "",
         "# This wrapper opens native runtime review surfaces only.",
-        "# UE is the rendered-scene window; RViz is the point-cloud/map window.",
-        "# RVIZ_PROFILE=split opens separate planning-grid and point-cloud RViz windows.",
+        "# UE is the rendered-scene window; RViz2 is the point-cloud/map window.",
+        "# RVIZ_PROFILE=split opens separate planning-grid and point-cloud RViz2 windows.",
         "# Browser HTML is not used.",
         "",
         f"SCENE_ID={shlex.quote(bundle['scene_id'])}",
@@ -293,6 +299,7 @@ def write_wrapper(scene_dir: Path, bundle: dict[str, Any]) -> None:
         "fi",
         "",
         "if [[ \"${RECORD_FASTLIO}\" == \"1\" ]]; then",
+        "  echo \"FAST-LIO recording/evaluation is only valid after a real FAST-LIO runtime publishes output topics.\" >&2",
         f"  {bundle['commands']['fastlio_runtime_record']}",
         f"  {bundle['commands']['fastlio_runtime_evaluate']}",
         "fi",
@@ -309,21 +316,22 @@ def write_summary(output_root: Path, bundles: list[dict[str, Any]]) -> None:
     lines = [
         "# UE Scene Runtime Bundle Status",
         "",
-        "| Scene | Status | Frames | LiDAR Points | Runtime Blockers | Mapping Window |",
-        "|---|---|---:|---:|---|---|",
+        "| Scene | Status | Frames | LiDAR Points | Runtime Blockers | Runtime Degraded | Mapping Window |",
+        "|---|---|---:|---:|---|---|---|",
     ]
     for bundle in bundles:
         blockers = "<br>".join(f"`{item}`" for item in bundle["runtime_blockers"]) or "none"
+        degraded = "<br>".join(f"`{item}`" for item in bundle.get("runtime_degraded", [])) or "none"
         lines.append(
             f"| `{bundle['scene_id']}` | `{bundle['status']}` | "
             f"{bundle['counts']['render_replay_frames']} | {bundle['counts']['lidar_points']} | "
-            f"{blockers} | `{bundle['window_policy']['mapping_window']}` |"
+            f"{blockers} | {degraded} | `{bundle['window_policy']['mapping_window']}` |"
         )
     lines.extend(
         [
             "",
             "This status file is an execution contract summary, not runtime evidence.",
-            "Runtime evidence requires native UE/RViz windows plus FAST-LIO topic recording/evaluation.",
+            "Runtime evidence requires native UE/RViz2 windows plus FAST-LIO topic recording/evaluation.",
         ]
     )
     (output_root / "UE_SCENE_RUNTIME_BUNDLE_STATUS.md").write_text("\n".join(lines) + "\n", encoding="utf-8")

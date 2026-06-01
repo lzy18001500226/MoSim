@@ -107,12 +107,15 @@ def summarize_scene(scene_dir: Path) -> dict[str, Any]:
     if planner_truth.get("buffered_collision_free_against_truth") is not True:
         issues.append("handoff_buffered_reference_not_collision_free")
 
-    ros_ready = bool(fastlio.get("ros_environment", {}).get("ros1_ready"))
+    ros2_ready = bool(fastlio.get("ros_environment", {}).get("ros2_replay_ready"))
+    ros1_ready = bool(fastlio.get("ros_environment", {}).get("ros1_ready"))
     fastlio_status = str(fastlio.get("status", "missing"))
-    if not ros_ready:
-        warnings.append("fastlio_blocked_missing_ros1_runtime")
-    elif fastlio_status != "ready_for_ros1_replay":
+    if not ros2_ready:
+        warnings.append("fastlio_blocked_missing_ros2_runtime")
+    elif fastlio_status != "ready_for_ros2_replay":
         warnings.append(f"fastlio_status:{fastlio_status}")
+    if not ros1_ready:
+        warnings.append("fastlio_ros1_compat_unavailable")
 
     quality_status = str(metrics.get("quality_status", "missing"))
     if quality_status != "smoke_only":
@@ -158,7 +161,8 @@ def summarize_scene(scene_dir: Path) -> dict[str, Any]:
         },
         "fastlio": {
             "status": fastlio_status,
-            "ros1_ready": ros_ready,
+            "ros2_replay_ready": ros2_ready,
+            "ros1_ready": ros1_ready,
             "dataset": rel(scene_dir / "fastlio_replay_dataset.jsonl"),
         },
         "control_reference": {
@@ -185,7 +189,7 @@ def write_markdown(path: Path, reports: list[dict[str, Any]]) -> None:
         "# UE Scene Closed Loop Status",
         "",
         "This aggregates the accepted scene truth, mapping, FAST-LIO handoff, MWORKS smoke, and UE-truth collision gates.",
-        "FAST-LIO replay handoff files are not localization results until ROS1/FAST-LIO produces runtime output.",
+        "FAST-LIO replay handoff files are not localization results until a real FAST-LIO-family runtime produces output topics.",
         "",
         "| Scene | Status | Path Cells | LiDAR Points | MWORKS Quality | Collision | FAST-LIO | Blockers |",
         "|---|---|---:|---:|---|---|---|---|",
@@ -205,7 +209,9 @@ def write_markdown(path: Path, reports: list[dict[str, Any]]) -> None:
         "Acceptance boundary:",
         "- `ready_smoke_validated` means the scene has file-level truth/mapping artifacts, controller-interface MWORKS smoke evidence, and post-simulation UE-truth collision validation.",
         "- `smoke_only` is not a final controller-performance claim.",
-        "- `blocked_missing_ros1_runtime` means ROS1/Catkin/FAST-LIO runtime must be installed or sourced before localization can be claimed.",
+        "- `blocked_missing_ros2_runtime` means ROS2/RViz2 replay runtime must be installed or sourced before native map review can run.",
+        "- `fastlio_ros1_compat_unavailable` means the local ROS1/Catkin FAST_LIO package is not usable in this Ubuntu 22.04 session; it is a compatibility warning, not a blocker for ROS2 replay input review.",
+        "- FAST-LIO localization still requires a real ROS2 FAST-LIO-family package or approved ROS1 bridge publishing `/cloud_registered` and `/Odometry`.",
         "- Global UE occupancy truth is used as a validation oracle only, not as planner input.",
     ])
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -229,6 +235,7 @@ def main() -> int:
         "claim_boundary": [
             "This is an aggregate status, not a new simulation result.",
             "FAST-LIO handoff files are not localization results.",
+            "ROS2/RViz2 replay readiness is separate from completed FAST-LIO localization.",
             "MWORKS smoke evidence validates the control-interface chain only.",
         ],
         "scenes": reports,

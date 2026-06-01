@@ -32,8 +32,11 @@ def write_fake_readiness(output_root: Path) -> None:
             "file_loop_ready": True,
             "runtime_ready": False,
             "runtime_blockers": [
-                "missing_ros1_rviz_catkin_runtime",
+                "missing_ros2_rviz2_runtime",
                 "unreal_editor_listener_unavailable",
+            ],
+            "runtime_degraded": [
+                "missing_ros1_rviz_catkin_runtime",
             ],
         },
         "window_policy": {
@@ -95,9 +98,11 @@ def test_runtime_bundle_contract() -> None:
                 raise AssertionError(bundle)
             if bundle["window_policy"]["global_truth_used_by_planner"] is not False:
                 raise AssertionError(bundle)
-            if "missing_ros1_rviz_catkin_runtime" not in bundle["runtime_blockers"]:
+            if "missing_ros2_rviz2_runtime" not in bundle["runtime_blockers"]:
                 raise AssertionError(bundle)
             if "unreal_editor_listener_unavailable" not in bundle["runtime_blockers"]:
+                raise AssertionError(bundle)
+            if "missing_ros1_rviz_catkin_runtime" not in bundle.get("runtime_degraded", []):
                 raise AssertionError(bundle)
             if bundle["status"] != "blocked_runtime_dependencies":
                 raise AssertionError(bundle)
@@ -118,7 +123,7 @@ def test_runtime_bundle_contract() -> None:
             ):
                 if command_name not in bundle["commands"]:
                     raise AssertionError(bundle)
-            if "open_mapping_rviz_ros1.sh" not in bundle["commands"]["rviz_mapping_window"]:
+            if "open_mapping_rviz_ros2.sh" not in bundle["commands"]["rviz_mapping_window"]:
                 raise AssertionError(bundle)
             if "RVIZ_PROFILE=split" not in bundle["commands"]["rviz_mapping_window"]:
                 raise AssertionError(bundle)
@@ -126,7 +131,7 @@ def test_runtime_bundle_contract() -> None:
                 raise AssertionError(bundle)
             if "RVIZ_PROFILE=fastlio_pointcloud" not in bundle["commands"]["rviz_fastlio_pointcloud_window"]:
                 raise AssertionError(bundle)
-            if "run_fastlio_rviz_replay_ros1.sh" not in bundle["commands"]["fastlio_rviz_runtime"]:
+            if "run_fastlio_rviz_replay_ros2.sh" not in bundle["commands"]["fastlio_rviz_runtime"]:
                 raise AssertionError(bundle)
             if "bootstrap_fastlio_ros1_workspace.sh" not in bundle["commands"]["fastlio_ros1_workspace_bootstrap"]:
                 raise AssertionError(bundle)

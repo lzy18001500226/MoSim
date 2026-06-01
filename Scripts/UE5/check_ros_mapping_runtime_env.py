@@ -40,6 +40,7 @@ def rel(path: Path) -> str:
 
 def command_map() -> dict[str, str | None]:
     names = (
+        "ros2",
         "roscore",
         "roslaunch",
         "rostopic",
@@ -100,45 +101,111 @@ def package_query(package_name: str, commands: dict[str, str | None]) -> dict[st
     }
 
 
+def ros2_package_query(package_name: str, commands: dict[str, str | None]) -> dict[str, Any]:
+    ros2 = commands.get("ros2")
+    if not ros2:
+        return {
+            "package": package_name,
+            "visible": False,
+            "path": None,
+            "error": "missing ros2; source ROS2 setup.bash first",
+        }
+    result = run_quiet([ros2, "pkg", "prefix", package_name])
+    return {
+        "package": package_name,
+        "visible": bool(result.get("ok")),
+        "path": result.get("stdout") if result.get("ok") else None,
+        "error": None if result.get("ok") else result.get("stderr") or result.get("error"),
+    }
+
+
+def ros_generation(ros_distro: str | None) -> str:
+    if ros_distro in {"humble", "iron", "jazzy", "kilted", "rolling"}:
+        return "ros2"
+    if ros_distro in {"melodic", "noetic"}:
+        return "ros1"
+    return "unknown"
+
+
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
     commands = command_map()
     commands["rospack"] = shutil.which("rospack")
     ros_distro = os.environ.get("ROS_DISTRO")
+    generation = ros_generation(ros_distro)
     ros_package_path = os.environ.get("ROS_PACKAGE_PATH")
     ros_master_uri = os.environ.get("ROS_MASTER_URI")
     fast_lio_reference = ROOT / "References/Lab/FAST_LIO/package.xml"
     project_rviz_config = ROOT / "Config/rviz/mosim_uav_mapping.rviz"
     project_rviz_grid_config = ROOT / "Config/rviz/mosim_uav_planning_grid.rviz"
     project_rviz_pointcloud_config = ROOT / "Config/rviz/mosim_uav_fastlio_pointcloud.rviz"
+    project_rviz2_config = ROOT / "Config/rviz2/mosim_uav_mapping.rviz"
+    project_rviz2_grid_config = ROOT / "Config/rviz2/mosim_uav_planning_grid.rviz"
+    project_rviz2_pointcloud_config = ROOT / "Config/rviz2/mosim_uav_fastlio_pointcloud.rviz"
     bootstrap_script = ROOT / "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh"
+    open_rviz2_script = ROOT / "Scripts/UE5/open_mapping_rviz_ros2.sh"
+    run_fastlio_ros2_script = ROOT / "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh"
+    check_fastlio_ros2_script = ROOT / "Scripts/UE5/check_fastlio_ros2_topics.sh"
     ros1_command_set = ("roscore", "roslaunch", "rostopic", "rosnode", "rosparam", "rviz", "python3")
     ros1_commands_ready = all(commands.get(name) for name in ros1_command_set)
+    ros2_command_set = ("ros2", "rviz2", "colcon", "python3")
+    ros2_commands_ready = all(commands.get(name) for name in ros2_command_set)
     catkin_ready = bool(commands.get("catkin_make") or commands.get("catkin"))
     fast_lio_pkg = package_query(args.fast_lio_package, commands)
+    ros2_packages = {
+        name: ros2_package_query(name, commands)
+        for name in ("rviz2", "sensor_msgs", "nav_msgs", "geometry_msgs", "tf2_ros")
+    }
+    ros2_packages_ready = all(payload["visible"] for payload in ros2_packages.values())
     ros1_ready = ros1_commands_ready and catkin_ready and fast_lio_pkg["visible"]
+    ros2_replay_ready = ros2_commands_ready and ros2_packages_ready
     blockers: list[str] = []
+    degraded: list[str] = []
     if not ros1_commands_ready:
         missing = [name for name in ros1_command_set if not commands.get(name)]
-        blockers.append("missing_ros1_commands:" + ",".join(missing))
+        degraded.append("missing_ros1_commands:" + ",".join(missing))
     if not catkin_ready:
-        blockers.append("missing_catkin_build_tool")
+        degraded.append("missing_catkin_build_tool")
     if not ros_distro:
         blockers.append("ros_environment_not_sourced")
+    if generation == "ros1":
+        blockers.append(f"unsupported_primary_ros_generation_for_ubuntu_2204:{ros_distro}")
+    if not ros2_commands_ready:
+        missing = [name for name in ros2_command_set if not commands.get(name)]
+        blockers.append("missing_ros2_commands:" + ",".join(missing))
+    if not ros2_packages_ready:
+        missing = [name for name, payload in ros2_packages.items() if not payload["visible"]]
+        blockers.append("missing_ros2_packages:" + ",".join(missing))
     if not fast_lio_reference.exists():
         blockers.append("missing_fast_lio_reference_repo")
     if not fast_lio_pkg["visible"]:
-        blockers.append(f"fast_lio_package_not_visible:{args.fast_lio_package}")
+        degraded.append(f"fast_lio_ros1_package_not_visible:{args.fast_lio_package}")
     if not project_rviz_config.exists():
-        blockers.append("missing_mosim_rviz_config")
+        degraded.append("missing_mosim_rviz_config")
     if not project_rviz_grid_config.exists():
-        blockers.append("missing_mosim_rviz_grid_config")
+        degraded.append("missing_mosim_rviz_grid_config")
     if not project_rviz_pointcloud_config.exists():
-        blockers.append("missing_mosim_rviz_pointcloud_config")
+        degraded.append("missing_mosim_rviz_pointcloud_config")
+    if not project_rviz2_config.exists():
+        blockers.append("missing_mosim_rviz2_config")
+    if not project_rviz2_grid_config.exists():
+        blockers.append("missing_mosim_rviz2_grid_config")
+    if not project_rviz2_pointcloud_config.exists():
+        blockers.append("missing_mosim_rviz2_pointcloud_config")
+    if not open_rviz2_script.exists():
+        blockers.append("missing_open_mapping_rviz_ros2_script")
+    if not run_fastlio_ros2_script.exists():
+        blockers.append("missing_run_fastlio_rviz_replay_ros2_script")
+    if not check_fastlio_ros2_script.exists():
+        blockers.append("missing_check_fastlio_ros2_topics_script")
 
     return {
         "schema": "mosim.ros_mapping_runtime_env.v1",
         "ready_for_native_mapping_runtime": not blockers,
         "blockers": blockers,
+        "degraded": degraded,
+        "ros_generation": generation,
+        "ros2_replay_ready": ros2_replay_ready,
+        "ros1_fastlio_reference_ready": ros1_ready,
         "environment": {
             "ROS_DISTRO": ros_distro,
             "ROS_MASTER_URI": ros_master_uri,
@@ -148,6 +215,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "commands": commands,
         "packages": {
             args.fast_lio_package: fast_lio_pkg,
+            "ros2": ros2_packages,
         },
         "project_assets": {
             "fast_lio_reference_package_xml": {
@@ -166,24 +234,51 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                 "path": rel(project_rviz_pointcloud_config),
                 "exists": project_rviz_pointcloud_config.exists(),
             },
+            "rviz2_config": {
+                "path": rel(project_rviz2_config),
+                "exists": project_rviz2_config.exists(),
+            },
+            "rviz2_planning_grid_config": {
+                "path": rel(project_rviz2_grid_config),
+                "exists": project_rviz2_grid_config.exists(),
+            },
+            "rviz2_fastlio_pointcloud_config": {
+                "path": rel(project_rviz2_pointcloud_config),
+                "exists": project_rviz2_pointcloud_config.exists(),
+            },
             "fastlio_workspace_bootstrap": {
                 "path": rel(bootstrap_script),
                 "exists": bootstrap_script.exists(),
             },
+            "open_mapping_rviz_ros2": {
+                "path": rel(open_rviz2_script),
+                "exists": open_rviz2_script.exists(),
+            },
+            "run_fastlio_rviz_replay_ros2": {
+                "path": rel(run_fastlio_ros2_script),
+                "exists": run_fastlio_ros2_script.exists(),
+            },
+            "check_fastlio_ros2_topics": {
+                "path": rel(check_fastlio_ros2_script),
+                "exists": check_fastlio_ros2_script.exists(),
+            },
         },
         "recommended_setup_sequence": [
-            "Install or open a WSL environment with ROS1 Noetic-compatible tools.",
-            "source /opt/ros/noetic/setup.bash",
-            "Run Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh to wire References/Lab/FAST_LIO into Results/tmp/fastlio_ros1_ws and build it.",
-            "source Results/tmp/fastlio_ros1_ws/devel/setup.bash",
+            "Use Ubuntu 22.04 with ROS2 Humble as the primary runtime.",
+            "source /opt/ros/humble/setup.bash",
             "Run Scripts/UE5/check_ros_mapping_runtime_env.py --write again.",
-            "Run Scripts/UE5/run_fastlio_rviz_replay_ros1.sh <scene>.",
-            "Run Scripts/UE5/check_fastlio_ros1_topics.sh during the live run.",
+            "Run DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene>.",
+            "Run RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene> for native RViz2 input/map review.",
+            "Run Scripts/UE5/run_fastlio_rviz_replay_ros2.sh <scene> for ROS2 input replay; keep START_FASTLIO=0 unless a real ROS2 FAST-LIO launch command is configured.",
+            "Run Scripts/UE5/check_fastlio_ros2_topics.sh during the live ROS2 run.",
+            "Treat local References/Lab/FAST_LIO as ROS1-only until a ROS2 FAST-LIO/FAST-LIO2 package is added or a containerized ROS1 bridge route is approved.",
         ],
         "claim_boundary": [
             "This is only an environment preflight; it does not prove mapping runtime evidence.",
             "Runtime evidence still requires live ROS topics, RViz visibility, recording, and FAST-LIO evaluation.",
             "HTML is not an accepted active point-cloud/map review window.",
+            "On Ubuntu 22.04, ROS2/RViz2 is the primary runtime. ROS1/Catkin FAST-LIO blockers are degraded compatibility blockers, not blockers for ROS2 replay input review.",
+            "Do not claim FAST-LIO localization until a real ROS2 FAST-LIO-family package publishes /cloud_registered and /Odometry, or an approved ROS1 bridge route records equivalent outputs.",
         ],
     }
 
@@ -194,6 +289,9 @@ def write_markdown(path: Path, report: dict[str, Any]) -> None:
         "",
         f"- ready_for_native_mapping_runtime: `{str(report['ready_for_native_mapping_runtime']).lower()}`",
         f"- blockers: {', '.join(f'`{item}`' for item in report['blockers']) or 'none'}",
+        f"- degraded: {', '.join(f'`{item}`' for item in report.get('degraded', [])) or 'none'}",
+        f"- ros_generation: `{report['ros_generation']}`",
+        f"- ros2_replay_ready: `{str(report['ros2_replay_ready']).lower()}`",
         f"- ROS_DISTRO: `{report['environment']['ROS_DISTRO']}`",
         f"- ROS_MASTER_URI: `{report['environment']['ROS_MASTER_URI']}`",
         "",
@@ -203,6 +301,15 @@ def write_markdown(path: Path, report: dict[str, Any]) -> None:
         lines.append(f"- `{name}`: `{value}`")
     lines.extend(["", "Packages:"])
     for name, payload in report["packages"].items():
+        if name == "ros2":
+            for package_name, ros2_payload in payload.items():
+                lines.append(
+                    f"- `ros2:{package_name}`: visible=`{str(ros2_payload['visible']).lower()}`, "
+                    f"path=`{ros2_payload['path']}`"
+                )
+                if ros2_payload.get("error"):
+                    lines.append(f"  error: `{ros2_payload['error']}`")
+            continue
         lines.append(f"- `{name}`: visible=`{str(payload['visible']).lower()}`, path=`{payload['path']}`")
         if payload.get("error"):
             lines.append(f"  error: `{payload['error']}`")

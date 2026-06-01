@@ -49,6 +49,28 @@ def test_fastlio_rviz_replay_wrapper_dry_run() -> None:
             raise AssertionError(result.stdout)
 
 
+def test_fastlio_rviz2_replay_wrapper_dry_run() -> None:
+    for scene_id in ("factoryenvironmentcollect", "derelictcorridormegascans"):
+        result = run(
+            [
+                "bash",
+                "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh",
+                scene_id,
+            ],
+            env={"DRY_RUN": "1", "MAX_FRAMES": "2", "LOOP": "0", "START_RVIZ": "0"},
+        )
+        if "mosim.fastlio_ros2_publish_dryrun.v1" not in result.stdout:
+            raise AssertionError(result.stdout)
+        if "mosim.ros2_mapping_replay_dryrun.v1" not in result.stdout:
+            raise AssertionError(result.stdout)
+        if "browser" in result.stdout.lower() or "html" in result.stdout.lower():
+            raise AssertionError(result.stdout)
+        if "RVIZ_PROFILE=fastlio_pointcloud" not in result.stdout:
+            raise AssertionError(result.stdout)
+        if '"/cloud_registered"' not in result.stdout or '"/Odometry"' not in result.stdout:
+            raise AssertionError(result.stdout)
+
+
 def test_mapping_rviz_split_window_dry_run() -> None:
     result = run(
         [
@@ -68,6 +90,25 @@ def test_mapping_rviz_split_window_dry_run() -> None:
         raise AssertionError(result.stdout)
 
 
+def test_mapping_rviz2_split_window_dry_run() -> None:
+    result = run(
+        [
+            "bash",
+            "Scripts/UE5/open_mapping_rviz_ros2.sh",
+            "factoryenvironmentcollect",
+        ],
+        env={"DRY_RUN": "1", "MAX_FRAMES": "2", "LOOP": "0", "RVIZ_PROFILE": "split"},
+    )
+    if "mosim.rviz2_window_contract_dryrun.v1" not in result.stdout:
+        raise AssertionError(result.stdout)
+    if "Config/rviz2/mosim_uav_planning_grid.rviz" not in result.stdout:
+        raise AssertionError(result.stdout)
+    if "Config/rviz2/mosim_uav_fastlio_pointcloud.rviz" not in result.stdout:
+        raise AssertionError(result.stdout)
+    if "mosim.ros2_mapping_replay_dryrun.v1" not in result.stdout:
+        raise AssertionError(result.stdout)
+
+
 def test_fastlio_topic_checker_dry_run_contract() -> None:
     result = run(
         ["bash", "Scripts/UE5/check_fastlio_ros1_topics.sh"],
@@ -78,6 +119,27 @@ def test_fastlio_topic_checker_dry_run_contract() -> None:
     for topic in ("/velodyne_points", "/imu/data", "/cloud_registered", "/Odometry"):
         if topic not in required:
             raise AssertionError(payload)
+
+
+def test_fastlio_ros2_topic_checker_dry_run_contract() -> None:
+    result = run(
+        ["bash", "Scripts/UE5/check_fastlio_ros2_topics.sh"],
+        env={"DRY_RUN": "1"},
+    )
+    payload = json.loads(result.stdout)
+    if payload.get("schema") != "mosim.fastlio_ros2_topic_check_dryrun.v1":
+        raise AssertionError(payload)
+    required = set(payload["required_topics"])
+    for topic in ("/velodyne_points", "/imu/data", "/cloud_registered", "/Odometry"):
+        if topic not in required:
+            raise AssertionError(payload)
+    result_inputs_only = run(
+        ["bash", "Scripts/UE5/check_fastlio_ros2_topics.sh"],
+        env={"DRY_RUN": "1", "REQUIRE_FASTLIO_OUTPUTS": "0"},
+    )
+    payload_inputs_only = json.loads(result_inputs_only.stdout)
+    if "/cloud_registered" in set(payload_inputs_only["required_topics"]):
+        raise AssertionError(payload_inputs_only)
 
 
 def test_fastlio_workspace_bootstrap_dry_run_contract() -> None:
@@ -96,8 +158,11 @@ def test_fastlio_workspace_bootstrap_dry_run_contract() -> None:
 
 def main() -> int:
     test_fastlio_rviz_replay_wrapper_dry_run()
+    test_fastlio_rviz2_replay_wrapper_dry_run()
     test_mapping_rviz_split_window_dry_run()
+    test_mapping_rviz2_split_window_dry_run()
     test_fastlio_topic_checker_dry_run_contract()
+    test_fastlio_ros2_topic_checker_dry_run_contract()
     test_fastlio_workspace_bootstrap_dry_run_contract()
     print("[OK] FAST-LIO/RViz runtime script regression")
     return 0

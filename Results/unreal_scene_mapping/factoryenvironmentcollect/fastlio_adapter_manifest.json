@@ -1,19 +1,24 @@
 {
   "schema": "mosim.fastlio_adapter_manifest.v1",
   "scene_id": "factoryenvironmentcollect",
-  "status": "blocked_missing_ros1_runtime",
+  "status": "ready_for_ros2_replay",
   "fast_lio_reference_repo": "References/Lab/FAST_LIO",
   "fast_lio_repo_exists": true,
   "ros_environment": {
     "schema": "mosim.ros_environment.v1",
     "commands": {
+      "ros2": "/opt/ros/humble/bin/ros2",
+      "rviz2": "/opt/ros/humble/bin/rviz2",
+      "colcon": "/usr/bin/colcon",
       "roscore": null,
       "roslaunch": null,
       "catkin_make": null,
       "rostopic": null,
       "rviz": null
     },
-    "ros1_ready": false
+    "ros2_replay_ready": true,
+    "ros1_ready": false,
+    "primary_runtime": "ros2_humble"
   },
   "generated_outputs": {
     "fastlio_replay_dataset_jsonl": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_replay_dataset.jsonl",
@@ -33,7 +38,30 @@
     "lidar_frame_id": "velodyne",
     "imu_frame_id": "imu"
   },
+  "ros2_topics": {
+    "pointcloud2": "/velodyne_points",
+    "imu": "/imu/data",
+    "lidar_frame_id": "velodyne",
+    "imu_frame_id": "imu",
+    "local_occupancy_grid": "/mosim/local_occupancy_grid",
+    "local_plan": "/mosim/local_plan",
+    "uav_path": "/mosim/uav_path",
+    "fastlio_outputs_required_for_localization_claim": [
+      "/cloud_registered",
+      "/Odometry",
+      "/path"
+    ]
+  },
   "run_commands_after_ros_setup": [
+    "source /opt/ros/humble/setup.bash",
+    "python3 Scripts/UE5/publish_fastlio_replay_ros2.py --dataset Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_replay_dataset.jsonl --dry-run",
+    "python3 Scripts/UE5/publish_fastlio_replay_ros2.py --dataset Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_replay_dataset.jsonl",
+    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect",
+    "Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect",
+    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect",
+    "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect",
+    "Scripts/UE5/check_fastlio_ros2_topics.sh",
+    "Optional ROS1 compatibility route for local References/Lab/FAST_LIO:",
     "catkin_make  # from a ROS1 workspace containing References/Lab/FAST_LIO as package fast_lio",
     "source devel/setup.bash",
     "roslaunch fast_lio mapping_velodyne.launch rviz:=false",
@@ -51,7 +79,8 @@
     "This manifest is a FAST-LIO input adapter, not a completed FAST-LIO localization result.",
     "The IMU channel is synthetic finite-difference data derived from the replay path, not measured flight IMU.",
     "A completed FAST-LIO claim requires ROS runtime output, pose/map topics, logs, and comparison against replay truth.",
-    "Use record_fastlio_ros1_runtime.py plus evaluate_fastlio_runtime.py to turn runtime topics into acceptance evidence.",
+    "On Ubuntu 22.04, ROS2/RViz2 is the primary live point-cloud/map review path.",
+    "Use record/evaluate tooling only after a real FAST-LIO-family runtime publishes odometry and registered-cloud output.",
     "Active point-cloud/map review must use RViz/RViz2 or an equivalent native robotics window, not browser HTML.",
     "Global scene truth remains hidden from the planner and is used only as validation oracle evidence."
   ]

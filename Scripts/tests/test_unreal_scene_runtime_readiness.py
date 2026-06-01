@@ -95,7 +95,9 @@ def test_runtime_readiness_separates_file_loop_from_runtime_blockers() -> None:
             "html_active_pointcloud_window: `false`",
             "global_truth_used_by_planner: `false`",
             "RVIZ_PROFILE=split",
-            "bootstrap_fastlio_ros1_workspace.sh",
+            "open_mapping_rviz_ros2.sh",
+            "run_fastlio_rviz_replay_ros2.sh",
+            "check_fastlio_ros2_topics.sh",
             "open_unreal_editor_mcp_listener.sh",
         ):
             if phrase not in text:

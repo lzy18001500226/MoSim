@@ -69,7 +69,7 @@ RViz point-cloud/FAST-LIO window
 A single overview RViz window with all displays is acceptable for smoke tests
 or constrained displays. Browser HTML is never an active runtime map window.
 
-Accepted ROS topic contract for the current ROS1 path:
+Accepted ROS topic contract for the current Ubuntu 22.04 ROS2/RViz2 path:
 
 ```text
 /velodyne_points             # simulated LiDAR input, sensor_msgs/PointCloud2
@@ -103,7 +103,7 @@ FAST-LIO acceptance requires all of the following:
 ROS runtime publishes /velodyne_points and /imu/data
 FAST-LIO publishes /cloud_registered and /Odometry
 RViz/RViz2 shows the input and output topics in a native window
-record_fastlio_ros1_runtime.py records the runtime output
+record/evaluate tooling records the runtime output
 evaluate_fastlio_runtime.py compares output against replay truth
 ```
 
@@ -112,14 +112,14 @@ evaluate_fastlio_runtime.py compares output against replay truth
 Current project implementation should continue from these native-window assets:
 
 ```text
-Config/rviz/mosim_uav_mapping.rviz
-Config/rviz/mosim_uav_planning_grid.rviz
-Config/rviz/mosim_uav_fastlio_pointcloud.rviz
-Scripts/ros/publish_mosim_mapping_replay_ros1.py
+Config/rviz2/mosim_uav_mapping.rviz
+Config/rviz2/mosim_uav_planning_grid.rviz
+Config/rviz2/mosim_uav_fastlio_pointcloud.rviz
+Scripts/ros/publish_mosim_mapping_replay_ros2.py
 Scripts/UE5/check_ros_mapping_runtime_env.py
-Scripts/UE5/open_mapping_rviz_ros1.sh
-Scripts/UE5/run_fastlio_rviz_replay_ros1.sh
-Scripts/UE5/check_fastlio_ros1_topics.sh
+Scripts/UE5/open_mapping_rviz_ros2.sh
+Scripts/UE5/run_fastlio_rviz_replay_ros2.sh
+Scripts/UE5/check_fastlio_ros2_topics.sh
 Scripts/UE5/record_fastlio_ros1_runtime.py
 Scripts/UE5/evaluate_fastlio_runtime.py
 ```
@@ -127,20 +127,19 @@ Scripts/UE5/evaluate_fastlio_runtime.py
 Dry-run contracts, valid even without ROS installed:
 
 ```bash
-DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
-DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans
-DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
-DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect
-DRY_RUN=1 Scripts/UE5/check_fastlio_ros1_topics.sh
+DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect
+DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans
+DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect
+DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect
+DRY_RUN=1 Scripts/UE5/check_fastlio_ros2_topics.sh
 ```
 
-Real runtime commands, only after ROS1/RViz/Catkin/FAST-LIO are installed and
-sourced:
+Real runtime commands after ROS2 Humble is installed and sourced:
 
 ```bash
-RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect
-Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect
-Scripts/UE5/check_fastlio_ros1_topics.sh
+RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect
+Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect
+REQUIRE_FASTLIO_OUTPUTS=0 Scripts/UE5/check_fastlio_ros2_topics.sh
 ```
 
 `RVIZ_PROFILE=overview` opens the combined smoke-test view,
@@ -148,6 +147,7 @@ Scripts/UE5/check_fastlio_ros1_topics.sh
 `RVIZ_PROFILE=fastlio_pointcloud` opens only the 3D point-cloud/FAST-LIO view,
 and `RVIZ_PROFILE=split` opens the two specialized RViz windows together.
 
-The current WSL session still reports missing ROS/RViz/Catkin runtime. Until
-that is fixed, the scene loop can be file-loop and MWORKS-smoke ready, but it
-must not be reported as completed FAST-LIO/RViz runtime evidence.
+The current WSL session has ROS2/RViz2 replay readiness. The local
+`References/Lab/FAST_LIO` package is still ROS1/Catkin-oriented, so completed
+FAST-LIO localization remains unclaimed until a ROS2 FAST-LIO-family package or
+approved ROS1 bridge publishes output topics.

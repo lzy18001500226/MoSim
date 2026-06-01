@@ -39,9 +39,24 @@ def test_env_report_contract() -> None:
         raise AssertionError(report)
     if "fast_lio" not in report["packages"]:
         raise AssertionError(report)
+    if report.get("ros_generation") not in ("ros2", "ros1", "unknown"):
+        raise AssertionError(report)
+    if "ros2_replay_ready" not in report:
+        raise AssertionError(report)
+    if "ros2" not in report["packages"]:
+        raise AssertionError(report)
     if "rviz_config" not in report["project_assets"]:
         raise AssertionError(report)
-    for asset_name in ("rviz_planning_grid_config", "rviz_fastlio_pointcloud_config"):
+    for asset_name in (
+        "rviz_planning_grid_config",
+        "rviz_fastlio_pointcloud_config",
+        "rviz2_config",
+        "rviz2_planning_grid_config",
+        "rviz2_fastlio_pointcloud_config",
+        "open_mapping_rviz_ros2",
+        "run_fastlio_rviz_replay_ros2",
+        "check_fastlio_ros2_topics",
+    ):
         if asset_name not in report["project_assets"]:
             raise AssertionError(report)
         if not report["project_assets"][asset_name]["exists"]:
@@ -57,9 +72,12 @@ def test_env_report_contract() -> None:
         text = md_path.read_text(encoding="utf-8")
         for phrase in (
             "ready_for_native_mapping_runtime",
+            "ros_generation",
+            "ros2_replay_ready",
             "Recommended setup sequence",
             "Claim boundary",
             "HTML is not an accepted active point-cloud/map review window",
+            "open_mapping_rviz_ros2.sh",
         ):
             if phrase not in text:
                 raise AssertionError(text)

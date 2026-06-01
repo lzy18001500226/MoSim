@@ -5,8 +5,8 @@ PROJECT_ROOT="/mnt/c/Users/HP/Desktop/MoSim"
 cd "${PROJECT_ROOT}"
 
 # This wrapper opens native runtime review surfaces only.
-# UE is the rendered-scene window; RViz is the point-cloud/map window.
-# RVIZ_PROFILE=split opens separate planning-grid and point-cloud RViz windows.
+# UE is the rendered-scene window; RViz2 is the point-cloud/map window.
+# RVIZ_PROFILE=split opens separate planning-grid and point-cloud RViz2 windows.
 # Browser HTML is not used.
 
 SCENE_ID=derelictcorridormegascans
@@ -33,16 +33,17 @@ if [[ "${START_UE}" == "1" ]]; then
 fi
 
 if [[ "${START_RVIZ}" == "1" ]]; then
-  RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans &
+  RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans &
   PIDS+=("$!")
 fi
 
 if [[ "${START_FASTLIO}" == "1" ]]; then
-  Scripts/UE5/run_fastlio_rviz_replay_ros1.sh derelictcorridormegascans &
+  Scripts/UE5/run_fastlio_rviz_replay_ros2.sh derelictcorridormegascans &
   PIDS+=("$!")
 fi
 
 if [[ "${RECORD_FASTLIO}" == "1" ]]; then
+  echo "FAST-LIO recording/evaluation is only valid after a real FAST-LIO runtime publishes output topics." >&2
   python3 Scripts/UE5/record_fastlio_ros1_runtime.py --scene-id derelictcorridormegascans --output-dir Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime --duration-seconds 20
   python3 Scripts/UE5/evaluate_fastlio_runtime.py --scene-id derelictcorridormegascans --truth-dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl --odometry-jsonl Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime/fastlio_odometry.jsonl --output-json Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime/FASTLIO_RUNTIME_EVALUATION.json --output-md Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime/FASTLIO_RUNTIME_EVALUATION.md --fail-on-threshold
 fi

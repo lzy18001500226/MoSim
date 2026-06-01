@@ -79,8 +79,8 @@ def write_fixture_scene(root: Path) -> Path:
     write_json(
         scene_dir / "fastlio_adapter_manifest.json",
         {
-            "status": "blocked_missing_ros1_runtime",
-            "ros_environment": {"ros1_ready": False},
+            "status": "ready_for_ros2_replay",
+            "ros_environment": {"ros2_replay_ready": True, "ros1_ready": False},
         },
     )
     write_json(
@@ -124,13 +124,13 @@ def test_closed_loop_summary_keeps_fastlio_as_blocker_not_failure() -> None:
             raise AssertionError(report)
         if report["issues"]:
             raise AssertionError(report)
-        if "fastlio_blocked_missing_ros1_runtime" not in report["warnings"]:
+        if "fastlio_ros1_compat_unavailable" not in report["warnings"]:
             raise AssertionError(report)
         if report["mworks_smoke"]["quality_status"] != "smoke_only":
             raise AssertionError(report)
         module.write_markdown(temp_root / "UE_SCENE_CLOSED_LOOP_STATUS.md", [report])
         status = (temp_root / "UE_SCENE_CLOSED_LOOP_STATUS.md").read_text(encoding="utf-8")
-        if "blocked_missing_ros1_runtime" not in status:
+        if "fastlio_ros1_compat_unavailable" not in status:
             raise AssertionError(status)
     finally:
         if temp_root.exists():

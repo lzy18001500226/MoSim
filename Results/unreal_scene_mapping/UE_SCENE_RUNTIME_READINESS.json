@@ -14,18 +14,20 @@
     "The primary point-cloud/map review route is a native ROS/RViz window, not browser HTML.",
     "UE rendered overlays and file previews do not replace RViz/RViz2 mapping evidence.",
     "Global scene truth is a validation oracle only and is not a planner input.",
-    "runtime_ready=true additionally requires ROS/RViz/FAST-LIO runtime and live UE editor listener when interactive editor automation is needed."
+    "runtime_ready=true additionally requires ROS2/RViz2 runtime and live UE editor listener when interactive editor automation is needed.",
+    "FAST-LIO localization remains unclaimed until a real ROS2 FAST-LIO-family package or approved ROS1 bridge publishes /cloud_registered and /Odometry."
   ],
   "overall": {
     "file_loop_ready": true,
     "runtime_ready": false,
     "runtime_blockers": [
-      "missing_ros1_rviz_catkin_runtime",
-      "ros_env:missing_ros1_commands:roscore,roslaunch,rostopic,rosnode,rosparam,rviz",
-      "ros_env:missing_catkin_build_tool",
-      "ros_env:ros_environment_not_sourced",
-      "ros_env:fast_lio_package_not_visible:fast_lio",
       "unreal_editor_listener_unavailable"
+    ],
+    "runtime_degraded": [
+      "missing_ros1_commands:roscore,roslaunch,rostopic,rosnode,rosparam,rviz",
+      "missing_catkin_build_tool",
+      "fast_lio_ros1_package_not_visible:fast_lio",
+      "missing_ros1_rviz_catkin_runtime"
     ]
   },
   "project": {
@@ -54,6 +56,21 @@
       "exists": true,
       "bytes": 3932
     },
+    "rviz2_config": {
+      "path": "Config/rviz2/mosim_uav_mapping.rviz",
+      "exists": true,
+      "bytes": 6937
+    },
+    "rviz2_planning_grid_config": {
+      "path": "Config/rviz2/mosim_uav_planning_grid.rviz",
+      "exists": true,
+      "bytes": 4331
+    },
+    "rviz2_fastlio_pointcloud_config": {
+      "path": "Config/rviz2/mosim_uav_fastlio_pointcloud.rviz",
+      "exists": true,
+      "bytes": 4724
+    },
     "fastlio_workspace_bootstrap": {
       "path": "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh",
       "exists": true,
@@ -69,6 +86,21 @@
       "exists": true,
       "bytes": 1584
     },
+    "rviz2_opener": {
+      "path": "Scripts/UE5/open_mapping_rviz_ros2.sh",
+      "exists": true,
+      "bytes": 3982
+    },
+    "fastlio_rviz2_runner": {
+      "path": "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh",
+      "exists": true,
+      "bytes": 4686
+    },
+    "fastlio_ros2_topic_checker": {
+      "path": "Scripts/UE5/check_fastlio_ros2_topics.sh",
+      "exists": true,
+      "bytes": 2129
+    },
     "unreal_editor_mcp_listener_opener": {
       "path": "Scripts/UE5/open_unreal_editor_mcp_listener.sh",
       "exists": true,
@@ -82,42 +114,47 @@
   },
   "runtime": {
     "commands": {
+      "ros2": "/opt/ros/humble/bin/ros2",
       "roscore": null,
       "roslaunch": null,
       "rostopic": null,
       "rviz": null,
-      "rviz2": null,
+      "rviz2": "/opt/ros/humble/bin/rviz2",
       "catkin_make": null,
-      "colcon": null
+      "colcon": "/usr/bin/colcon"
     },
     "ros1_ready": false,
-    "ros2_ready": false,
+    "ros2_ready": true,
     "ros_mapping_runtime_env": {
       "schema": "mosim.ros_mapping_runtime_env.v1",
-      "ready_for_native_mapping_runtime": false,
-      "blockers": [
+      "ready_for_native_mapping_runtime": true,
+      "blockers": [],
+      "degraded": [
         "missing_ros1_commands:roscore,roslaunch,rostopic,rosnode,rosparam,rviz",
         "missing_catkin_build_tool",
-        "ros_environment_not_sourced",
-        "fast_lio_package_not_visible:fast_lio"
+        "fast_lio_ros1_package_not_visible:fast_lio"
       ],
+      "ros_generation": "ros2",
+      "ros2_replay_ready": true,
+      "ros1_fastlio_reference_ready": false,
       "environment": {
-        "ROS_DISTRO": null,
+        "ROS_DISTRO": "humble",
         "ROS_MASTER_URI": null,
         "ROS_PACKAGE_PATH_set": false,
         "ROS_PACKAGE_PATH_preview": null
       },
       "commands": {
+        "ros2": "/opt/ros/humble/bin/ros2",
         "roscore": null,
         "roslaunch": null,
         "rostopic": null,
         "rosnode": null,
         "rosparam": null,
         "rviz": null,
-        "rviz2": null,
+        "rviz2": "/opt/ros/humble/bin/rviz2",
         "catkin_make": null,
         "catkin": null,
-        "colcon": null,
+        "colcon": "/usr/bin/colcon",
         "python3": "/usr/bin/python3",
         "rospack": null
       },
@@ -127,6 +164,38 @@
           "visible": false,
           "path": null,
           "error": "missing rospack; source ROS1 setup.bash first"
+        },
+        "ros2": {
+          "rviz2": {
+            "package": "rviz2",
+            "visible": true,
+            "path": "/opt/ros/humble",
+            "error": null
+          },
+          "sensor_msgs": {
+            "package": "sensor_msgs",
+            "visible": true,
+            "path": "/opt/ros/humble",
+            "error": null
+          },
+          "nav_msgs": {
+            "package": "nav_msgs",
+            "visible": true,
+            "path": "/opt/ros/humble",
+            "error": null
+          },
+          "geometry_msgs": {
+            "package": "geometry_msgs",
+            "visible": true,
+            "path": "/opt/ros/humble",
+            "error": null
+          },
+          "tf2_ros": {
+            "package": "tf2_ros",
+            "visible": true,
+            "path": "/opt/ros/humble",
+            "error": null
+          }
         }
       },
       "project_assets": {
@@ -146,24 +215,51 @@
           "path": "Config/rviz/mosim_uav_fastlio_pointcloud.rviz",
           "exists": true
         },
+        "rviz2_config": {
+          "path": "Config/rviz2/mosim_uav_mapping.rviz",
+          "exists": true
+        },
+        "rviz2_planning_grid_config": {
+          "path": "Config/rviz2/mosim_uav_planning_grid.rviz",
+          "exists": true
+        },
+        "rviz2_fastlio_pointcloud_config": {
+          "path": "Config/rviz2/mosim_uav_fastlio_pointcloud.rviz",
+          "exists": true
+        },
         "fastlio_workspace_bootstrap": {
           "path": "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh",
+          "exists": true
+        },
+        "open_mapping_rviz_ros2": {
+          "path": "Scripts/UE5/open_mapping_rviz_ros2.sh",
+          "exists": true
+        },
+        "run_fastlio_rviz_replay_ros2": {
+          "path": "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh",
+          "exists": true
+        },
+        "check_fastlio_ros2_topics": {
+          "path": "Scripts/UE5/check_fastlio_ros2_topics.sh",
           "exists": true
         }
       },
       "recommended_setup_sequence": [
-        "Install or open a WSL environment with ROS1 Noetic-compatible tools.",
-        "source /opt/ros/noetic/setup.bash",
-        "Run Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh to wire References/Lab/FAST_LIO into Results/tmp/fastlio_ros1_ws and build it.",
-        "source Results/tmp/fastlio_ros1_ws/devel/setup.bash",
+        "Use Ubuntu 22.04 with ROS2 Humble as the primary runtime.",
+        "source /opt/ros/humble/setup.bash",
         "Run Scripts/UE5/check_ros_mapping_runtime_env.py --write again.",
-        "Run Scripts/UE5/run_fastlio_rviz_replay_ros1.sh <scene>.",
-        "Run Scripts/UE5/check_fastlio_ros1_topics.sh during the live run."
+        "Run DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene>.",
+        "Run RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene> for native RViz2 input/map review.",
+        "Run Scripts/UE5/run_fastlio_rviz_replay_ros2.sh <scene> for ROS2 input replay; keep START_FASTLIO=0 unless a real ROS2 FAST-LIO launch command is configured.",
+        "Run Scripts/UE5/check_fastlio_ros2_topics.sh during the live ROS2 run.",
+        "Treat local References/Lab/FAST_LIO as ROS1-only until a ROS2 FAST-LIO/FAST-LIO2 package is added or a containerized ROS1 bridge route is approved."
       ],
       "claim_boundary": [
         "This is only an environment preflight; it does not prove mapping runtime evidence.",
         "Runtime evidence still requires live ROS topics, RViz visibility, recording, and FAST-LIO evaluation.",
-        "HTML is not an accepted active point-cloud/map review window."
+        "HTML is not an accepted active point-cloud/map review window.",
+        "On Ubuntu 22.04, ROS2/RViz2 is the primary runtime. ROS1/Catkin FAST-LIO blockers are degraded compatibility blockers, not blockers for ROS2 replay input review.",
+        "Do not claim FAST-LIO localization until a real ROS2 FAST-LIO-family package publishes /cloud_registered and /Odometry, or an approved ROS1 bridge route records equivalent outputs."
       ]
     },
     "editor_listener": {
@@ -186,8 +282,9 @@
         "buffered_collision_free_against_truth": true
       },
       "fastlio": {
-        "status": "blocked_missing_ros1_runtime",
-        "ros1_ready": false
+        "status": "ready_for_ros2_replay",
+        "ros1_ready": false,
+        "ros2_replay_ready": true
       },
       "counts": {
         "render_replay_rows": 34,
@@ -235,7 +332,7 @@
         "fastlio_manifest": {
           "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_adapter_manifest.json",
           "exists": true,
-          "bytes": 3950
+          "bytes": 5443
         },
         "navigation_handoff": {
           "path": "Results/unreal_scene_mapping/factoryenvironmentcollect/navigation_control_handoff.json",
@@ -266,8 +363,9 @@
         "buffered_collision_free_against_truth": true
       },
       "fastlio": {
-        "status": "blocked_missing_ros1_runtime",
-        "ros1_ready": false
+        "status": "ready_for_ros2_replay",
+        "ros1_ready": false,
+        "ros2_replay_ready": true
       },
       "counts": {
         "render_replay_rows": 45,
@@ -315,7 +413,7 @@
         "fastlio_manifest": {
           "path": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_adapter_manifest.json",
           "exists": true,
-          "bytes": 3950
+          "bytes": 5443
         },
         "navigation_handoff": {
           "path": "Results/unreal_scene_mapping/derelictcorridormegascans/navigation_control_handoff.json",
@@ -337,19 +435,19 @@
   ],
   "next_commands": [
     "python3 Scripts/UE5/summarize_scene_closed_loop.py --fail-on-issue",
-    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect",
-    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans",
-    "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect",
-    "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans",
-    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect",
-    "DRY_RUN=1 Scripts/UE5/check_fastlio_ros1_topics.sh",
+    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect",
+    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans",
+    "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect",
+    "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans",
+    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect",
+    "DRY_RUN=1 Scripts/UE5/check_fastlio_ros2_topics.sh",
     "DRY_RUN=1 Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh",
     "DRY_RUN=1 Scripts/UE5/open_unreal_editor_mcp_listener.sh",
     "python3 Scripts/UE5/check_ros_mapping_runtime_env.py --write",
-    "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh  # only after ROS1/Catkin is installed and sourced",
+    "source /opt/ros/humble/setup.bash",
     "Scripts/UE5/open_unreal_editor_mcp_listener.sh  # opens UE Editor and waits up to 60s for UnrealMCP listener",
-    "RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh <scene>  # opens separate planning-grid and point-cloud RViz windows after ROS1/RViz is installed",
-    "Scripts/UE5/run_fastlio_rviz_replay_ros1.sh <scene>  # only after ROS1/Catkin/FAST-LIO is installed and sourced",
-    "Scripts/UE5/check_fastlio_ros1_topics.sh  # only during a live ROS1/FAST-LIO run"
+    "RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene>  # opens separate planning-grid and point-cloud RViz2 windows",
+    "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh <scene>  # publishes ROS2 replay inputs; START_FASTLIO=0 until a ROS2 FAST-LIO launch is configured",
+    "Scripts/UE5/check_fastlio_ros2_topics.sh  # during a live ROS2 replay; REQUIRE_FASTLIO_OUTPUTS=0 checks replay inputs only"
   ]
 }

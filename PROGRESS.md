@@ -5,6 +5,54 @@
 
 ## Current Focus
 
+- 2026-06-01 Windows-native Codex CLI is installed for explicit Windows shell
+  use. The installed launcher is `C:\Users\HP\.codex\bin\codex.cmd` pointing to
+  `C:\Users\HP\.codex\bin\codex.exe`, copied from the VSCode extension
+  `windows-x86_64` binary, and the Windows user PATH includes that bin
+  directory. Windows config was generated from `/home/linux/.codex/config.toml`
+  with path conversion: MoSim project paths are `C:\...`, Sysplorer/Syslab MCP
+  use Windows-native MWORKS executables, and WSL-only MCP wrappers are launched
+  through `C:\Windows\System32\wsl.exe -d Ubuntu-22.04 --exec ...`. Verification
+  passed with `codex --version` (`codex-cli 0.135.0-alpha.1`), `codex mcp list`
+  showing 8 servers, and `codex doctor` loading config/auth/provider/MCP
+  successfully. Remaining doctor warnings are non-fatal: missing Windows
+  `rg.exe`, stale historical rollout index rows, unrestricted sandbox, and an
+  update probe timeout. Detailed route:
+  `Docs/Workflows/debug_mcp.md#51-install-windows-native-codex-cli-from-wsl-config`.
+
+- 2026-06-01 VSCode Codex plugin load failure root cause: the extension was
+  launching the Windows Codex runtime against `C:\Users\HP\.codex`, whose
+  `state_5.sqlite` migration checksums were written by the WSL/Linux Codex
+  runtime. The fatal log was `migration 1 was previously applied but has been
+  modified`, so the webview could not load. The minimal fix was to back up VS
+  Code `settings.json` and set
+  `chatgpt.runCodexInWindowsSubsystemForLinux=true`, matching the project
+  policy that VSCode Codex runs WSL-backed. After reload, logs showed
+  `Spawning codex process inside WSL` and `app routes mounted`; remaining
+  warnings are non-fatal auth/plugin-sync, old-workspace watcher, or MCP
+  resource-list compatibility messages. Do not delete Codex `state_5.sqlite`
+  for this issue without a backup; it contains visible thread metadata and
+  token counters. Detailed recovery is in
+  `Docs/Workflows/debug_mcp.md#41-vscode-codex-fails-on-sqlite-migration-checksum`.
+
+- 2026-06-01 ROS2 runtime setup: current host is Ubuntu 22.04.5 WSL2, so the
+  UE mapping/runtime branch must use ROS2 Humble/RViz2 rather than trying to
+  install ROS1 Noetic directly. FishROS was inspected and its public bootstrap
+  delegates to an interactive installer; project automation will use the
+  official ROS2 Humble apt route, with FishROS kept as a manual fallback. The
+  setup and evidence boundary are recorded in
+  `Docs/Workflows/ros2_runtime_setup.md`. Installation touches external system
+  paths such as `/etc/apt`, `/opt/ros/humble`, and apt caches as an explicit
+  project-infrastructure exception. Current ROS2 status: Humble/RViz2/colcon
+  are installed and project preflight reports `ros_generation=ros2`,
+  `ros2_replay_ready=true`, and no ROS2 blockers. The local
+  `References/Lab/FAST_LIO` package remains ROS1/Catkin-only, so FAST-LIO
+  localization is still unclaimed until a ROS2 FAST-LIO-family package or an
+  approved ROS1 bridge publishes `/cloud_registered` and `/Odometry`. Headless
+  ROS2 runtime smoke passed for Factory input topics using
+  `run_fastlio_rviz_replay_ros2.sh` with `START_RVIZ=0 START_FASTLIO=0` and
+  `check_fastlio_ros2_topics.sh` with `REQUIRE_FASTLIO_OUTPUTS=0`.
+
 - 2026-06-01 mapping-window correction: user rejected HTML point-cloud review.
   The project policy is now explicit in `Docs/Workflows/unreal_renderer.md`:
   UE/MoSimSceneLibrary is the rendered-scene window; RViz/RViz2 or equivalent
@@ -15,11 +63,10 @@
   patterns. The mapping surface may be one RViz/RViz2 window with multiple
   displays or separate native windows for 2D grid/local-plan and 3D
   point-cloud/FAST-LIO review; the operator-facing default is now
-  `RVIZ_PROFILE=split`, which opens `mosim_uav_planning_grid.rviz` and
-  `mosim_uav_fastlio_pointcloud.rviz` as separate native RViz windows. It is
-  still not browser HTML. Until
-  ROS/RViz/Catkin are available, any WPF/native preview script is only a manual
-  file-artifact fallback and cannot close FAST-LIO localization evidence.
+  `RVIZ_PROFILE=split`, which opens `Config/rviz2/mosim_uav_planning_grid.rviz`
+  and `Config/rviz2/mosim_uav_fastlio_pointcloud.rviz` as separate native RViz2
+  windows. It is still not browser HTML. ROS2 replay inputs are available, but
+  FAST-LIO output evidence still requires a real FAST-LIO-family runtime.
   Supporting research and local-source evidence are now separated into
   `Docs/Workflows/unreal_mapping_window_research.md`.
 
@@ -35,12 +82,11 @@
   longer routed through HTML: the accepted architecture is UE for the rendered
   scene window and ROS/RViz or equivalent native tooling for PointCloud2,
   occupancy/grid-map, TF, odometry, and planner-path windows. Added
-  `Config/rviz/mosim_uav_mapping.rviz`,
-  `Config/rviz/mosim_uav_planning_grid.rviz`,
-  `Config/rviz/mosim_uav_fastlio_pointcloud.rviz`,
-  `Scripts/ros/publish_mosim_mapping_replay_ros1.py`, and
-  `Scripts/UE5/open_mapping_rviz_ros1.sh`; current WSL still lacks ROS1/RViz,
-  so only dry-run publisher validation is available here. Current outputs:
+  `Config/rviz2/mosim_uav_mapping.rviz`,
+  `Config/rviz2/mosim_uav_planning_grid.rviz`,
+  `Config/rviz2/mosim_uav_fastlio_pointcloud.rviz`,
+  `Scripts/ros/publish_mosim_mapping_replay_ros2.py`, and
+  `Scripts/UE5/open_mapping_rviz_ros2.sh`. Current outputs:
   `Results/unreal_scene_mapping/RUN_SUMMARY.md`,
   `Results/unreal_scene_mapping/factoryenvironmentcollect/*`, and
   `Results/unreal_scene_mapping/derelictcorridormegascans/*`. Latest verified
@@ -63,16 +109,16 @@
   `local_map_cells=137`, `lidar_points=176`, `local_map_evidence=true`,
   `lidar_evidence=true`; Derelict first frame has `local_map_cells=320`,
   `lidar_points=166`, `local_map_evidence=true`, `lidar_evidence=true`.
-  FAST-LIO adapter outputs are generated, but current status is
-  `blocked_missing_ros1_runtime` because this WSL session has no `roscore`,
-  `roslaunch`, or `catkin_make`; do not claim completed FAST-LIO localization.
+  FAST-LIO adapter outputs are generated and current status is
+  `ready_for_ros2_replay`; do not claim completed FAST-LIO localization because
+  the runtime output topics still require a real FAST-LIO-family package.
   Runtime readiness is now checked by
   `Scripts/UE5/check_unreal_scene_runtime_readiness.py --write`, which writes
   `Results/unreal_scene_mapping/UE_SCENE_RUNTIME_READINESS.md/json`. Latest
   preflight reports `file_loop_ready=true` for both accepted scenes and
-  `runtime_ready=false` with blockers
-  `missing_ros1_rviz_catkin_runtime` and
-  `unreal_editor_listener_unavailable`. Treat that report as the current guard
+  `runtime_ready=false` only because `unreal_editor_listener_unavailable`.
+  ROS1/Catkin/FAST_LIO is now a degraded compatibility warning, not a ROS2
+  replay blocker. Treat that report as the current guard
   against confusing offline/file artifacts with native RViz/FAST-LIO runtime
   evidence.
   Added `Scripts/UE5/run_fastlio_rviz_replay_ros1.sh` and
@@ -102,16 +148,17 @@
   rendered-scene review, RViz mapping-window review, FAST-LIO runtime launch,
   FAST-LIO recording/evaluation, truth-policy flags, and manual acceptance
   gates. Current bundle status is
-  `blocked_runtime_dependencies` for both accepted scenes because ROS1/RViz/
-  Catkin remain unavailable and the UE editor listener is unreachable. Added
+  `blocked_runtime_dependencies` for both accepted scenes only because the UE
+  editor listener is unreachable; the ROS2/RViz2 replay path is ready. Added
   `Scripts/UE5/check_ros_mapping_runtime_env.py` and
   `Scripts/tests/test_ros_mapping_runtime_env.py`; latest report
-  `Results/unreal_scene_mapping/ROS_MAPPING_RUNTIME_ENV.md/json` narrows the
-  runtime blockers to missing ROS1 commands
-  (`roscore`, `roslaunch`, `rostopic`, `rosnode`, `rosparam`, `rviz`), missing
-  Catkin build tool, unsourced ROS environment, and `fast_lio` package not
-  visible through `rospack`. This is deliberate: it prevents treating file
-  artifacts, UE overlays, or HTML as completed FAST-LIO/RViz runtime evidence.
+  `Results/unreal_scene_mapping/ROS_MAPPING_RUNTIME_ENV.md/json` reports
+  `ready_for_native_mapping_runtime=true`, `ros_generation=ros2`, and
+  `ros2_replay_ready=true`. Missing ROS1/RViz/Catkin tools and local
+  `fast_lio` package visibility are now degraded compatibility warnings, not
+  blockers for ROS2 replay input review. This is deliberate: it prevents
+  treating file artifacts, UE overlays, or HTML as completed FAST-LIO/RViz
+  runtime evidence while allowing RViz2 input/map review to proceed.
   Follow-up control-interface packaging is now generated by
   `Scripts/UE5/build_navigation_handoff.py` and guarded by
   `Scripts/tests/test_navigation_handoff.py`. Each accepted scene now has
@@ -136,8 +183,9 @@
   or full performance evidence. `Scripts/UE5/summarize_scene_closed_loop.py`
   now aggregates this state into
   `Results/unreal_scene_mapping/UE_SCENE_CLOSED_LOOP_STATUS.md/json`; latest
-  aggregate status is `ready_smoke_validated_with_blockers`, where the only
-  per-scene warning is `fastlio_blocked_missing_ros1_runtime`.
+  aggregate status is `ready_smoke_validated`; current per-scene warning is
+  `fastlio_ros1_compat_unavailable`, while ROS2 replay status is
+  `ready_for_ros2_replay`.
   Latest live-editor automation probe: `mosim-unreal` can read project context and finds `UE_5.5` plus
   `UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject`, but editor listener
   `127.0.0.1:55557` is still refused and no callable WindowsMCP namespace is

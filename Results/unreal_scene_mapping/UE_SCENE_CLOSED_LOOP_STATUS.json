@@ -3,6 +3,7 @@
   "claim_boundary": [
     "This is an aggregate status, not a new simulation result.",
     "FAST-LIO handoff files are not localization results.",
+    "ROS2/RViz2 replay readiness is separate from completed FAST-LIO localization.",
     "MWORKS smoke evidence validates the control-interface chain only."
   ],
   "scenes": [
@@ -11,7 +12,7 @@
       "status": "ready_smoke_validated",
       "issues": [],
       "warnings": [
-        "fastlio_blocked_missing_ros1_runtime"
+        "fastlio_ros1_compat_unavailable"
       ],
       "artifacts": {
         "occupancy_grid": "Results/unreal_scene_mapping/factoryenvironmentcollect/occupancy_grid.json",
@@ -39,7 +40,8 @@
         "buffered_collision_free_against_truth": true
       },
       "fastlio": {
-        "status": "blocked_missing_ros1_runtime",
+        "status": "ready_for_ros2_replay",
+        "ros2_replay_ready": true,
         "ros1_ready": false,
         "dataset": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_replay_dataset.jsonl"
       },
@@ -73,7 +75,7 @@
       "status": "ready_smoke_validated",
       "issues": [],
       "warnings": [
-        "fastlio_blocked_missing_ros1_runtime"
+        "fastlio_ros1_compat_unavailable"
       ],
       "artifacts": {
         "occupancy_grid": "Results/unreal_scene_mapping/derelictcorridormegascans/occupancy_grid.json",
@@ -101,7 +103,8 @@
         "buffered_collision_free_against_truth": true
       },
       "fastlio": {
-        "status": "blocked_missing_ros1_runtime",
+        "status": "ready_for_ros2_replay",
+        "ros2_replay_ready": true,
         "ros1_ready": false,
         "dataset": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl"
       },

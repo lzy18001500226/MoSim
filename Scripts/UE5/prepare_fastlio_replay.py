@@ -3,7 +3,9 @@
 
 This does not run FAST-LIO. It validates the scene-truth pipeline handoff,
 converts world-frame simulated LiDAR hits into a body/LiDAR replay frame, and
-writes a manifest that says whether the local ROS1/FAST-LIO runtime is ready.
+writes a manifest that says whether the local ROS2/RViz2 replay runtime is
+ready. The local FAST_LIO reference is ROS1/Catkin and remains a degraded
+compatibility path on Ubuntu 22.04.
 """
 
 from __future__ import annotations
@@ -84,16 +86,23 @@ def derivative(current: float, previous: float, dt: float) -> float:
 
 def ros_environment() -> dict[str, Any]:
     commands = {
+        "ros2": shutil.which("ros2"),
+        "rviz2": shutil.which("rviz2"),
+        "colcon": shutil.which("colcon"),
         "roscore": shutil.which("roscore"),
         "roslaunch": shutil.which("roslaunch"),
         "catkin_make": shutil.which("catkin_make"),
         "rostopic": shutil.which("rostopic"),
         "rviz": shutil.which("rviz"),
     }
+    ros2_ready = all(commands[name] for name in ("ros2", "rviz2", "colcon"))
+    ros1_ready = all(commands[name] for name in ("roscore", "roslaunch", "catkin_make"))
     return {
         "schema": "mosim.ros_environment.v1",
         "commands": commands,
-        "ros1_ready": all(commands[name] for name in ("roscore", "roslaunch", "catkin_make")),
+        "ros2_replay_ready": ros2_ready,
+        "ros1_ready": ros1_ready,
+        "primary_runtime": "ros2_humble",
     }
 
 
@@ -173,7 +182,7 @@ def prepare_scene(scene_dir: Path) -> dict[str, Any]:
             previous_time = t
 
     env = ros_environment()
-    status = "ros1_runtime_ready" if env["ros1_ready"] else "blocked_missing_ros1_runtime"
+    status = "ready_for_ros2_replay" if env["ros2_replay_ready"] else "blocked_missing_ros2_runtime"
     manifest_path = scene_dir / "fastlio_adapter_manifest.json"
     manifest = {
         "schema": "mosim.fastlio_adapter_manifest.v1",
@@ -200,7 +209,26 @@ def prepare_scene(scene_dir: Path) -> dict[str, Any]:
             "lidar_frame_id": "velodyne",
             "imu_frame_id": "imu",
         },
+        "ros2_topics": {
+            "pointcloud2": "/velodyne_points",
+            "imu": "/imu/data",
+            "lidar_frame_id": "velodyne",
+            "imu_frame_id": "imu",
+            "local_occupancy_grid": "/mosim/local_occupancy_grid",
+            "local_plan": "/mosim/local_plan",
+            "uav_path": "/mosim/uav_path",
+            "fastlio_outputs_required_for_localization_claim": ["/cloud_registered", "/Odometry", "/path"],
+        },
         "run_commands_after_ros_setup": [
+            "source /opt/ros/humble/setup.bash",
+            f"python3 Scripts/UE5/publish_fastlio_replay_ros2.py --dataset {rel(dataset_path)} --dry-run",
+            f"python3 Scripts/UE5/publish_fastlio_replay_ros2.py --dataset {rel(dataset_path)}",
+            f"DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh {handoff['scene_id']}",
+            f"Scripts/UE5/open_mapping_rviz_ros2.sh {handoff['scene_id']}",
+            f"DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh {handoff['scene_id']}",
+            f"Scripts/UE5/run_fastlio_rviz_replay_ros2.sh {handoff['scene_id']}",
+            "Scripts/UE5/check_fastlio_ros2_topics.sh",
+            "Optional ROS1 compatibility route for local References/Lab/FAST_LIO:",
             "catkin_make  # from a ROS1 workspace containing References/Lab/FAST_LIO as package fast_lio",
             "source devel/setup.bash",
             "roslaunch fast_lio mapping_velodyne.launch rviz:=false",
@@ -208,11 +236,33 @@ def prepare_scene(scene_dir: Path) -> dict[str, Any]:
             f"python3 Scripts/UE5/publish_fastlio_replay_ros1.py --dataset {rel(dataset_path)}",
             f"DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh {handoff['scene_id']}",
             f"Scripts/UE5/open_mapping_rviz_ros1.sh {handoff['scene_id']}",
+            f"DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh {handoff['scene_id']}",
+            f"Scripts/UE5/run_fastlio_rviz_replay_ros1.sh {handoff['scene_id']}",
+            "Scripts/UE5/check_fastlio_ros1_topics.sh",
+            (
+                "python3 Scripts/UE5/record_fastlio_ros1_runtime.py "
+                f"--scene-id {handoff['scene_id']} "
+                f"--output-dir Results/unreal_scene_mapping/{handoff['scene_id']}/fastlio_runtime "
+                "--duration-seconds 20"
+            ),
+            (
+                "python3 Scripts/UE5/evaluate_fastlio_runtime.py "
+                f"--scene-id {handoff['scene_id']} "
+                f"--truth-dataset {rel(dataset_path)} "
+                f"--odometry-jsonl Results/unreal_scene_mapping/{handoff['scene_id']}/fastlio_runtime/fastlio_odometry.jsonl "
+                f"--output-json Results/unreal_scene_mapping/{handoff['scene_id']}/fastlio_runtime/FASTLIO_RUNTIME_EVALUATION.json "
+                f"--output-md Results/unreal_scene_mapping/{handoff['scene_id']}/fastlio_runtime/FASTLIO_RUNTIME_EVALUATION.md "
+                "--fail-on-threshold"
+            ),
         ],
         "claim_boundary": [
             "This manifest is a FAST-LIO input adapter, not a completed FAST-LIO localization result.",
             "The IMU channel is synthetic finite-difference data derived from the replay path, not measured flight IMU.",
             "A completed FAST-LIO claim requires ROS runtime output, pose/map topics, logs, and comparison against replay truth.",
+            "On Ubuntu 22.04, ROS2/RViz2 is the primary live point-cloud/map review path.",
+            "Use record/evaluate tooling only after a real FAST-LIO-family runtime publishes odometry and registered-cloud output.",
+            "Active point-cloud/map review must use RViz/RViz2 or an equivalent native robotics window, not browser HTML.",
+            "Global scene truth remains hidden from the planner and is used only as validation oracle evidence.",
         ],
     }
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -226,19 +276,22 @@ def write_status_markdown(path: Path, manifests: list[dict[str, Any]]) -> None:
         "This file records the current bridge between UE scene-truth mapping outputs and FAST-LIO.",
         "It is not a FAST-LIO localization result.",
         "",
-        "| Scene | Status | Dataset | ROS1 Ready |",
+        "| Scene | Status | Dataset | ROS2 Replay Ready | ROS1 Compat Ready |",
         "|---|---|---|---:|",
     ]
     for manifest in manifests:
         lines.append(
             f"| `{manifest['scene_id']}` | `{manifest['status']}` | "
             f"`{manifest['generated_outputs']['fastlio_replay_dataset_jsonl']}` | "
+            f"{manifest['ros_environment']['ros2_replay_ready']} | "
             f"{manifest['ros_environment']['ros1_ready']} |"
         )
     lines.extend([
         "",
-        "Current blocker if status is `blocked_missing_ros1_runtime`: install/source a ROS1 Catkin environment with FAST-LIO dependencies before running the publisher.",
+        "Current primary runtime blocker if status is `blocked_missing_ros2_runtime`: source/install ROS2 Humble with RViz2 and colcon before running the publisher.",
+        "The local `References/Lab/FAST_LIO` package is ROS1/Catkin-oriented. Treat ROS1 blockers as compatibility blockers unless an approved ROS1 bridge route is being used.",
         "Do not feed the planner global occupancy truth; FAST-LIO replay inputs come from per-frame LiDAR observations and synthetic IMU derived from the replay trajectory.",
+        "Do not use browser HTML as the active point-cloud/map window; use RViz/RViz2 or an equivalent native robotics viewer.",
     ])
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -247,7 +300,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scene", action="append", default=[], help="Scene id. Default: accepted Factory and Derelict scenes.")
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
-    parser.add_argument("--require-ros", action="store_true", help="Return nonzero if ROS1 runtime commands are missing.")
+    parser.add_argument("--require-ros", action="store_true", help="Return nonzero if ROS2 replay runtime commands are missing.")
     return parser.parse_args()
 
 
@@ -261,7 +314,7 @@ def main() -> int:
         manifests.append(manifest)
         print(f"{scene_id}: {manifest['status']} dataset={manifest['generated_outputs']['fastlio_replay_dataset_jsonl']}")
     write_status_markdown(output_root / "FASTLIO_REPLAY_STATUS.md", manifests)
-    if args.require_ros and any(not manifest["ros_environment"]["ros1_ready"] for manifest in manifests):
+    if args.require_ros and any(not manifest["ros_environment"]["ros2_replay_ready"] for manifest in manifests):
         return 2
     return 0
 

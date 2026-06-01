@@ -55,8 +55,12 @@ def test_fastlio_replay_adapter_outputs() -> None:
         for manifest in manifests:
             if "FAST-LIO input adapter" not in " ".join(manifest["claim_boundary"]):
                 raise AssertionError(manifest)
-            if manifest["status"] not in {"ros1_runtime_ready", "blocked_missing_ros1_runtime"}:
+            if manifest["status"] not in {"ready_for_ros2_replay", "blocked_missing_ros2_runtime"}:
                 raise AssertionError(manifest["status"])
+            if "ros2_replay_ready" not in manifest["ros_environment"]:
+                raise AssertionError(manifest)
+            if "ros2_topics" not in manifest:
+                raise AssertionError(manifest)
             dataset_path = ROOT / manifest["generated_outputs"]["fastlio_replay_dataset_jsonl"]
             if not dataset_path.exists():
                 dataset_path = output_root / manifest["generated_outputs"]["fastlio_replay_dataset_jsonl"].split("/")[-1]
@@ -71,7 +75,7 @@ def test_fastlio_replay_adapter_outputs() -> None:
             result = subprocess.run(
                 [
                     sys.executable,
-                    str(ROOT / "Scripts" / "UE5" / "publish_fastlio_replay_ros1.py"),
+                    str(ROOT / "Scripts" / "UE5" / "publish_fastlio_replay_ros2.py"),
                     "--dataset",
                     str(dataset_path),
                     "--dry-run",
@@ -84,9 +88,13 @@ def test_fastlio_replay_adapter_outputs() -> None:
                 capture_output=True,
             )
             dryrun = json.loads(result.stdout)
-            if dryrun["claim"] != "dry-run only; no ROS messages were published":
+            if dryrun["schema"] != "mosim.fastlio_ros2_publish_dryrun.v1":
+                raise AssertionError(dryrun)
+            if dryrun["claim"] != "dry-run only; no ROS2 messages were published":
                 raise AssertionError(dryrun)
             if dryrun["frames"] != 2 or dryrun["points"] <= 0:
+                raise AssertionError(dryrun)
+            if "/cloud_registered" not in dryrun.get("not_published", []):
                 raise AssertionError(dryrun)
 
         status_text = (output_root / "FASTLIO_REPLAY_STATUS.md").read_text(encoding="utf-8")

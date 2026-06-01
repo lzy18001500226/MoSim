@@ -60,7 +60,7 @@ def count_jsonl_rows(path: Path) -> int:
 def command_map() -> dict[str, str | None]:
     return {
         name: shutil.which(name)
-        for name in ("roscore", "roslaunch", "rostopic", "rviz", "rviz2", "catkin_make", "colcon")
+        for name in ("ros2", "roscore", "roslaunch", "rostopic", "rviz", "rviz2", "catkin_make", "colcon")
     }
 
 
@@ -150,6 +150,7 @@ def scene_status(output_root: Path, scene_id: str) -> dict[str, Any]:
         "fastlio": {
             "status": fastlio.get("status", "missing"),
             "ros1_ready": bool(fastlio.get("ros_environment", {}).get("ros1_ready")),
+            "ros2_replay_ready": bool(fastlio.get("ros_environment", {}).get("ros2_replay_ready")),
         },
         "counts": {
             "render_replay_rows": count_csv_rows(scene_dir / "render_replay.csv"),
@@ -166,22 +167,31 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     output_root = project_path(args.output_root)
     commands = command_map()
     ros1_ready = all(commands[name] for name in ("roscore", "roslaunch", "rostopic", "rviz", "catkin_make"))
-    ros2_ready = all(commands[name] for name in ("rviz2", "colcon"))
+    ros2_ready = all(commands[name] for name in ("ros2", "rviz2", "colcon"))
     ue_project = ROOT / "UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject"
     bridge = ROOT / "UE5/Bridge/QuadrotorMworksBridge.uplugin"
     rviz_config = ROOT / "Config/rviz/mosim_uav_mapping.rviz"
     rviz_grid_config = ROOT / "Config/rviz/mosim_uav_planning_grid.rviz"
     rviz_pointcloud_config = ROOT / "Config/rviz/mosim_uav_fastlio_pointcloud.rviz"
+    rviz2_config = ROOT / "Config/rviz2/mosim_uav_mapping.rviz"
+    rviz2_grid_config = ROOT / "Config/rviz2/mosim_uav_planning_grid.rviz"
+    rviz2_pointcloud_config = ROOT / "Config/rviz2/mosim_uav_fastlio_pointcloud.rviz"
     fastlio_bootstrap = ROOT / "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh"
     fastlio_rviz_runner = ROOT / "Scripts/UE5/run_fastlio_rviz_replay_ros1.sh"
     fastlio_topic_checker = ROOT / "Scripts/UE5/check_fastlio_ros1_topics.sh"
+    fastlio_rviz2_runner = ROOT / "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh"
+    fastlio_ros2_topic_checker = ROOT / "Scripts/UE5/check_fastlio_ros2_topics.sh"
+    rviz2_opener = ROOT / "Scripts/UE5/open_mapping_rviz_ros2.sh"
     unreal_mcp_opener = ROOT / "Scripts/UE5/open_unreal_editor_mcp_listener.sh"
     fast_lio_repo = ROOT / "References/Lab/FAST_LIO/package.xml"
     ros_env = ros_mapping_runtime_env()
     scene_reports = [scene_status(output_root, scene.lower()) for scene in args.scene]
     runtime_blockers: list[str] = []
+    runtime_degraded = list(ros_env.get("degraded", []))
+    if not ros2_ready:
+        runtime_blockers.append("missing_ros2_rviz2_runtime")
     if not ros1_ready:
-        runtime_blockers.append("missing_ros1_rviz_catkin_runtime")
+        runtime_degraded.append("missing_ros1_rviz_catkin_runtime")
     for blocker in ros_env.get("blockers", []):
         prefixed = f"ros_env:{blocker}"
         if prefixed not in runtime_blockers:
@@ -210,12 +220,14 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "The primary point-cloud/map review route is a native ROS/RViz window, not browser HTML.",
             "UE rendered overlays and file previews do not replace RViz/RViz2 mapping evidence.",
             "Global scene truth is a validation oracle only and is not a planner input.",
-            "runtime_ready=true additionally requires ROS/RViz/FAST-LIO runtime and live UE editor listener when interactive editor automation is needed.",
+            "runtime_ready=true additionally requires ROS2/RViz2 runtime and live UE editor listener when interactive editor automation is needed.",
+            "FAST-LIO localization remains unclaimed until a real ROS2 FAST-LIO-family package or approved ROS1 bridge publishes /cloud_registered and /Odometry.",
         ],
         "overall": {
             "file_loop_ready": all(scene["file_loop_ready"] for scene in scene_reports),
             "runtime_ready": not runtime_blockers,
             "runtime_blockers": runtime_blockers,
+            "runtime_degraded": runtime_degraded,
         },
         "project": {
             "ue_project": file_status(ue_project),
@@ -223,9 +235,15 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "rviz_config": file_status(rviz_config),
             "rviz_planning_grid_config": file_status(rviz_grid_config),
             "rviz_fastlio_pointcloud_config": file_status(rviz_pointcloud_config),
+            "rviz2_config": file_status(rviz2_config),
+            "rviz2_planning_grid_config": file_status(rviz2_grid_config),
+            "rviz2_fastlio_pointcloud_config": file_status(rviz2_pointcloud_config),
             "fastlio_workspace_bootstrap": file_status(fastlio_bootstrap),
             "fastlio_rviz_runner": file_status(fastlio_rviz_runner),
             "fastlio_topic_checker": file_status(fastlio_topic_checker),
+            "rviz2_opener": file_status(rviz2_opener),
+            "fastlio_rviz2_runner": file_status(fastlio_rviz2_runner),
+            "fastlio_ros2_topic_checker": file_status(fastlio_ros2_topic_checker),
             "unreal_editor_mcp_listener_opener": file_status(unreal_mcp_opener),
             "fast_lio_reference_package": file_status(fast_lio_repo),
         },
@@ -239,20 +257,20 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "scenes": scene_reports,
         "next_commands": [
             "python3 Scripts/UE5/summarize_scene_closed_loop.py --fail-on-issue",
-            "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect",
-            "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans",
-            "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh factoryenvironmentcollect",
-            "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans",
-            "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect",
-            "DRY_RUN=1 Scripts/UE5/check_fastlio_ros1_topics.sh",
+            "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect",
+            "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans",
+            "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect",
+            "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans",
+            "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect",
+            "DRY_RUN=1 Scripts/UE5/check_fastlio_ros2_topics.sh",
             "DRY_RUN=1 Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh",
             "DRY_RUN=1 Scripts/UE5/open_unreal_editor_mcp_listener.sh",
             "python3 Scripts/UE5/check_ros_mapping_runtime_env.py --write",
-            "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh  # only after ROS1/Catkin is installed and sourced",
+            "source /opt/ros/humble/setup.bash",
             "Scripts/UE5/open_unreal_editor_mcp_listener.sh  # opens UE Editor and waits up to 60s for UnrealMCP listener",
-            "RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros1.sh <scene>  # opens separate planning-grid and point-cloud RViz windows after ROS1/RViz is installed",
-            "Scripts/UE5/run_fastlio_rviz_replay_ros1.sh <scene>  # only after ROS1/Catkin/FAST-LIO is installed and sourced",
-            "Scripts/UE5/check_fastlio_ros1_topics.sh  # only during a live ROS1/FAST-LIO run",
+            "RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene>  # opens separate planning-grid and point-cloud RViz2 windows",
+            "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh <scene>  # publishes ROS2 replay inputs; START_FASTLIO=0 until a ROS2 FAST-LIO launch is configured",
+            "Scripts/UE5/check_fastlio_ros2_topics.sh  # during a live ROS2 replay; REQUIRE_FASTLIO_OUTPUTS=0 checks replay inputs only",
         ],
     }
 
@@ -269,6 +287,7 @@ def write_markdown(path: Path, report: dict[str, Any]) -> None:
         f"- file_loop_ready: `{str(report['overall']['file_loop_ready']).lower()}`",
         f"- runtime_ready: `{str(report['overall']['runtime_ready']).lower()}`",
         f"- runtime_blockers: {', '.join(f'`{item}`' for item in report['overall']['runtime_blockers']) or 'none'}",
+        f"- runtime_degraded: {', '.join(f'`{item}`' for item in report['overall'].get('runtime_degraded', [])) or 'none'}",
         f"- mapping_window: `{report['window_policy']['mapping_window']}`",
         f"- html_active_pointcloud_window: `{str(report['window_policy']['html_allowed_as_active_pointcloud_window']).lower()}`",
         f"- global_truth_used_by_planner: `{str(report['window_policy']['global_truth_used_by_planner']).lower()}`",
