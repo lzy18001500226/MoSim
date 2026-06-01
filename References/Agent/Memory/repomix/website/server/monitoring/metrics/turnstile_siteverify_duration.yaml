@@ -1,0 +1,28 @@
+# Log-based distribution metric for Turnstile siteverify call latency.
+# Captures both success and failure outcomes (the field is attached to all
+# reject branches in turnstileMiddleware), so the distribution covers
+# steady-state performance and Cloudflare-incident timeouts uniformly.
+description: Turnstile siteverify call duration in milliseconds (success + failure paths)
+filter: |
+  resource.type="cloud_run_revision"
+  resource.labels.service_name="repomix-server-us"
+  jsonPayload.event=("turnstile_siteverify" OR "pack_completed")
+  jsonPayload.siteverifyDurationMs!=""
+valueExtractor: EXTRACT(jsonPayload.siteverifyDurationMs)
+metricDescriptor:
+  metricKind: DELTA
+  valueType: DISTRIBUTION
+  unit: ms
+bucketOptions:
+  # Exponential buckets tuned for the 100ms-1s SLO band where decisions
+  # actually get made. growthFactor=2 (doubling) only places ~3 boundaries
+  # between 100ms and 1s, leaving p99 reads ±100% of bucket width when
+  # the alert threshold sits at 1s. growthFactor=1.5 with scale=10 places
+  # boundaries at roughly 10, 15, 23, 34, 51, 76, 114, 171, 256, 384,
+  # 577, 865, 1297, 1946ms (8 boundaries inside 100ms-1s). 18 finite
+  # buckets cover 10ms to ~9.85s, comfortably above the 5s siteverify
+  # timeout so timeout cases stay out of overflow.
+  exponentialBuckets:
+    numFiniteBuckets: 18
+    growthFactor: 1.5
+    scale: 10.0

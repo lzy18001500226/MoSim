@@ -1,0 +1,25 @@
+# Log-based counter metric for Turnstile siteverify outcomes.
+# Filters on `siteverifyDurationMs` field presence so both the success log
+# (`event=turnstile_siteverify`) and the rejected paths (`event=pack_completed`,
+# `outcome=turnstile_failed`) are captured uniformly. The `outcome` label
+# distinguishes success vs failure; `reason` further breaks down failures
+# (siteverify_unavailable, siteverify_rejected, action_mismatch,
+# hostname_mismatch — empty for success).
+description: Turnstile siteverify outcomes — success vs failure reasons
+filter: |
+  resource.type="cloud_run_revision"
+  resource.labels.service_name="repomix-server-us"
+  jsonPayload.event=("turnstile_siteverify" OR "pack_completed")
+  jsonPayload.siteverifyDurationMs!=""
+labelExtractors:
+  outcome: EXTRACT(jsonPayload.outcome)
+  reason: EXTRACT(jsonPayload.reason)
+metricDescriptor:
+  metricKind: DELTA
+  valueType: INT64
+  unit: "1"
+  labels:
+    - key: outcome
+      valueType: STRING
+    - key: reason
+      valueType: STRING
