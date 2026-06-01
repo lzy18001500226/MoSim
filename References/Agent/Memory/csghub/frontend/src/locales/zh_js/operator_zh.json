@@ -1,0 +1,1908 @@
+{
+    "chinese_convert_mapper": {
+        "name": "汉字转换",
+        "description": "用于在繁体中文、简体中文和日文汉字之间进行转换。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "这是几个简体字，会被转换为繁体字",
+            "after": "這是幾個簡體字，會被轉換爲繁體字"
+        },
+        "params": [
+            {
+                "name": "转换模式",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "s2t",
+                        "label": "简体转繁体"
+                    },
+                    {
+                        "key": "t2s",
+                        "label": "繁体转简体"
+                    },
+                    {
+                        "key": "s2tw",
+                        "label": "简体转台湾正体"
+                    },
+                    {
+                        "key": "tw2s",
+                        "label": "台湾正体转简体"
+                    },
+                    {
+                        "key": "s2hk",
+                        "label": "简体转香港繁体"
+                    },
+                    {
+                        "key": "hk2s",
+                        "label": "香港繁体转简体"
+                    },
+                    {
+                        "key": "s2twp",
+                        "label": "简体转台湾正体（带标点符号）"
+                    },
+                    {
+                        "key": "tw2sp",
+                        "label": "台湾正体转简体（带标点符号）"
+                    },
+                    {
+                        "key": "t2tw",
+                        "label": "繁体转台湾正体"
+                    },
+                    {
+                        "key": "tw2t",
+                        "label": "台湾正体转繁体"
+                    },
+                    {
+                        "key": "hk2t",
+                        "label": "香港繁体转繁体"
+                    },
+                    {
+                        "key": "t2hk",
+                        "label": "繁体转香港繁体"
+                    },
+                    {
+                        "key": "t2jp",
+                        "label": "繁体转日文汉字"
+                    },
+                    {
+                        "key": "jp2t",
+                        "label": "日文汉字转繁体"
+                    }
+                ],
+                "value": "t2s"
+            }
+        ]
+    },
+    "clean_copyright_mapper": {
+        "name": "版权信息清理",
+        "description": "用于删除文本样本开头的版权声明。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "这是一段 /* 多行注释\n注释内容copyright\n*/ 的文本。另外还有一些 // 单行注释。",
+            "after": "这是一段  的文本。另外还有一些 // 单行注释。"
+        },
+        "params": [
+            {
+                "name": "匹配规则",
+                "type": "LIST",
+                "option_values": null,
+                "value": ""
+            }
+        ]
+    },
+    "clean_email_mapper": {
+        "name": "邮箱后缀清理",
+        "description": "用于删除文本样本中的电子邮件地址。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "happy day euqdh@cjqi.com",
+            "after": "happy day "
+        },
+        "params": []
+    },
+    "clean_html_mapper": {
+        "name": "HTML代码清理",
+        "description": "用于删除文本样本中的HTML代码。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "<a href='https://www.example.com/file.html?;name=Test' rel='noopener noreferrer' target='_blank'>Test</a>",
+            "after": "Test"
+        },
+        "params": []
+    },
+    "clean_ip_mapper": {
+        "name": "IP地址清理",
+        "description": "用于删除文本样本中的ipv4和ipv6地址。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "ftp://example.com/188.46.244.216my-page.html",
+            "after": "ftp://example.com/my-page.html"
+        },
+        "params": []
+    },
+    "clean_links_mapper": {
+        "name": "链接地址清理",
+        "description": "用于删除文本样本中的http/https/ftp等链接。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "这是个测试,https://example.com/my-page.html?param1=value1&param2=value2",
+            "after": "这是个测试,"
+        },
+        "params": []
+    },
+    "expand_macro_mapper": {
+        "name": "宏定义扩展",
+        "description": "用于扩展LaTeX文档中定义的宏。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "\\documentclass{article}\n% Recommended, but optional, packages for figures and better typesetting:\n\\usepackage{microtype}\n\\usepackage{graphicx}\n\n% Attempt to make hyperref and algorithmic work together better:\n\\newcommand{\\theHalgorithm}{\\arabic{algorithm}}\n% For theorems and such\n\\usepackage{amsmath}\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n% THEOREMS\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\\theoremstyle{plain}\n\\newtheorem{lemma}[theorem]{Lemma}\n\\newtheorem{corollary}[theorem]{Corollary}\n\\theoremstyle{definition}\n\n\\usepackage[textsize=small]{todonotes}\n\\setuptodonotes{inline}\n\n\\usepackage{makecell}\n\\newcommand{\\cmark}{\\ding{51}\\xspace}%\n\\newcommand{\\xmark}{\\ding{55}\\xspace}%\n\n\\def \\alambic {\\includegraphics[height=1.52ex]{img/alembic-crop.pdf}\\xspace}\n\n\\newcommand\\binke[1]{{\\color{blue} \\footnote{\\color{blue}binke: #1}} }\n\\newcommand\\Zerocost{Zero-cost}\n\\newcommand\\imagenet{ImageNet}\n\n\\begin{document}\n\n\\begin{abstract}\nThe wide\n\\end{abstract}\n\\section{Introduction}\n\\label{introduction}\nThe main contributions are summarized as follows:\n\\section{Background and Related Work}\\label{background}\n\\subsection{One-Shot NAS} In one-shot NAS\n\\section{PreNAS}\\label{method}In this\n\\subsection{One-Shot NAS with Preferred Learning}\nIn the specialization stage, the optimal architectures under given  resource constraints can be directly obtained:\n\\begin{equation}\n\\widetilde{\\mathcal{A}}^* = \\widetilde{\\mathcal{A}} .\n\\end{equation}\n\\subsection{Zero-Cost Transformer Selector}\\label{sub:layerNorm}\n\\subsection{Performance Balancing} We discuss\n\\section{Experiments}\\label{experiments}\n\\subsection{Setup}\n\\subsection{Main Results}\\label{sec:sota}\n\\subsection{Analysis and Ablation study}\\label{ablation}\n\\begin{figure}[t]\n\\vskip 0.1in\n    \\centering\n    \\subfigure[Search spaces]{\\includegraphics[width=0.36\\linewidth]{img/search_space.pdf}\\label{fg:search_space:a}}%\n    \\hfil%\n    \\subfigure[Error distributions]{\\includegraphics[width=0.58\\linewidth]{img/cumulation.pdf}\\label{fg:search_space:b}}\n    \\caption{Model quality}\n\\vskip -0.1in\n\\end{figure}\n\\paragraph{Effect of Performance Balancing} During\n\\subsection{Transfer Learning Results}\n\\subsection{CNN Results} in terms of similar FLOPs.\n\\FloatBarrier\n\\section{Conclusion}\\label{conclusion} In this\n% Acknowledgements should only appear in the accepted version.\n\\bibliography{ref}\n\\bibliographystyle{icml2023}\n\\clearpage\n\\appendix\n\\onecolumn\n\\section{Statistical}\n\\label{appendix:snipAnalysis} We analyze\n\\section{The Greedy Algorithm}\n\\label{appendix:greedy}\n\\section{Regularization \\& Data Augmentation}\\label{appendix:aug}\n\\renewcommand{\\arraystretch}{1.2}\n\\end{document}\n",
+            "after": "\\documentclass{article}\n% Recommended, but optional, packages for figures and better typesetting:\n\\usepackage{microtype}\n\\usepackage{graphicx}\n\n% Attempt to make hyperref and algorithmic work together better:\n\\newcommand{\\arabic{algorithm}}{\\arabic{algorithm}}\n% For theorems and such\n\\usepackage{amsmath}\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n% THEOREMS\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\\theoremstyle{plain}\n\\newtheorem{lemma}[theorem]{Lemma}\n\\newtheorem{corollary}[theorem]{Corollary}\n\\theoremstyle{definition}\n\n\\usepackage[textsize=small]{todonotes}\n\\setuptodonotes{inline}\n\n\\usepackage{makecell}\n\\newcommand{\\cmark}{\\ding{51}\\xspace}%\n\\newcommand{\\xmark}{\\ding{55}\\xspace}%\n\n\\def \\includegraphics[height=1.52ex]{img/alembic-crop.pdf}\\xspace {\\includegraphics[height=1.52ex]{img/alembic-crop.pdf}\\xspace}\n\n\\newcommand\\binke[1]{{\\color{blue} \\footnote{\\color{blue}binke: #1}} }\n\\newcommand\\Zerocost{Zero-cost}\n\\newcommand\\imagenet{ImageNet}\n\n\\begin{document}\n\n\\begin{abstract}\nThe wide\n\\end{abstract}\n\\section{Introduction}\n\\label{introduction}\nThe main contributions are summarized as follows:\n\\section{Background and Related Work}\\label{background}\n\\subsection{One-Shot NAS} In one-shot NAS\n\\section{PreNAS}\\label{method}In this\n\\subsection{One-Shot NAS with Preferred Learning}\nIn the specialization stage, the optimal architectures under given  resource constraints can be directly obtained:\n\\begin{equation}\n\\widetilde{\\mathcal{A}}^* = \\widetilde{\\mathcal{A}} .\n\\end{equation}\n\\subsection{Zero-Cost Transformer Selector}\\label{sub:layerNorm}\n\\subsection{Performance Balancing} We discuss\n\\section{Experiments}\\label{experiments}\n\\subsection{Setup}\n\\subsection{Main Results}\\label{sec:sota}\n\\subsection{Analysis and Ablation study}\\label{ablation}\n\\begin{figure}[t]\n\\vskip 0.1in\n    \\centering\n    \\subfigure[Search spaces]{\\includegraphics[width=0.36\\linewidth]{img/search_space.pdf}\\label{fg:search_space:a}}%\n    \\hfil%\n    \\subfigure[Error distributions]{\\includegraphics[width=0.58\\linewidth]{img/cumulation.pdf}\\label{fg:search_space:b}}\n    \\caption{Model quality}\n\\vskip -0.1in\n\\end{figure}\n\\paragraph{Effect of Performance Balancing} During\n\\subsection{Transfer Learning Results}\n\\subsection{CNN Results} in terms of similar FLOPs.\n\\FloatBarrier\n\\section{Conclusion}\\label{conclusion} In this\n% Acknowledgements should only appear in the accepted version.\n\\bibliography{ref}\n\\bibliographystyle{icml2023}\n\\clearpage\n\\appendix\n\\onecolumn\n\\section{Statistical}\n\\label{appendix:snipAnalysis} We analyze\n\\section{The Greedy Algorithm}\n\\label{appendix:greedy}\n\\section{Regularization \\& Data Augmentation}\\label{appendix:aug}\n\\renewcommand{\\arraystretch}{1.2}\n\\end{document}\n"
+        },
+        "params": []
+    },
+    "generate_code_qa_pair_mapper": {
+        "name": "代码转换成QA对数据集",
+        "description": "基于代码生成新的指令数据的转换器\n    ",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "def hello_world():\n    print(\"Hello, World!\")\nhello_world()",
+            "after": "message:[{\"input\": \"create hello word function by python\", \"response\": \"def hello_world():\n    print(\"Hello, World!\")\nhello_world()\" }]"
+        },
+        "data_lines": 0,
+        "data": {},
+        "params": [
+            {
+                "name": "模型名称",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "AIWizards/Llama2-Chinese-7b-Chat",
+                        "label": "AIWizards/Llama2-Chinese-7b-Chat"
+                    }
+                ],
+                "value": "AIWizards/Llama2-Chinese-7b-Chat"
+            },
+            {
+                "name": "模型地址",
+                "type": "LIST",
+                "option_values": null,
+                "value": "https://www.sophnet.com/api/open-apis/v1/chat/completions"
+            },
+            {
+                "name": "授权令牌",
+                "type": "LIST",
+                "option_values": null,
+                "value": ""
+            }
+        ]
+    },
+    "extract_qa_mapper": {
+        "name": "问答对提取",
+        "description": "\n    用于从文本样本中提取问答对。\n    推荐的模型列表： [\n        'alibaba-pai/pai-llama3-8b-doc2qa',\n        'alibaba-pai/pai-baichuan2-7b-doc2qa',\n        'alibaba-pai/pai-qwen1_5-4b-doc2qa',\n        'alibaba-pai/pai-qwen1_5-7b-doc2qa',\n        'alibaba-pai/pai-qwen1_5-1b8-doc2qa',\n        'alibaba-pai/pai-qwen1_5-0b5-doc2qa'\n    ]\n    这些推荐的模型均使用中文数据进行训练，适用于中文场景。\n    ",
+        "operator_description": "将一段文字转换成json格式的问答对，如：[\r\n    {\r\n      \"messages\": [\r\n        {\"role\": \"user\", \"content\": \"问题1\"},\r\n        {\"role\": \"assistant\", \"content\": \"答案1\"}\r\n      ]\r\n    }\r\n  ]",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "蒙古国的首都是乌兰巴托（Ulaanbaatar）",
+            "after": "Human: 请问蒙古国的首都是哪里？Assistant: 你好，根据提供的信息，蒙古国的首都是乌兰巴托（Ulaanbaatar）"
+        },
+        "params": [
+            {
+                "name": "模型名称",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "alibaba-pai/pai-qwen1_5-7b-doc2qa",
+                        "label": "alibaba-pai/pai-qwen1_5-7b-doc2qa"
+                    }
+                ],
+                "value": "alibaba-pai/pai-qwen1_5-7b-doc2qa",
+                "config_description": "模型名称"
+            },
+            {
+                "name": "模型地址",
+                "type": "LIST",
+                "option_values": null,
+                "value": "https://api.deepseek.com/chat/completions",
+                "config_description": "模型的远程调用地址"
+            },
+            {
+                "name": "授权令牌",
+                "type": "LIST",
+                "option_values": null,
+                "value": "",
+                "config_description": "模型的使用令牌"
+            }
+        ]
+    },
+    "fix_unicode_mapper": {
+        "name": "Unicode错误修正",
+        "description": "用于修正文本样本中Unicode错误。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "The Mona Lisa doesnÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢t have eyebrows.",
+            "after": "The Mona Lisa doesn't have eyebrows."
+        },
+        "params": [
+            {
+                "name": "标准化",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "NFC",
+                        "label": "组合规范化形式"
+                    },
+                    {
+                        "key": "NFKC",
+                        "label": "兼容性组合规范化形式"
+                    },
+                    {
+                        "key": "NFD",
+                        "label": "分解规范化形式"
+                    },
+                    {
+                        "key": "NFKD",
+                        "label": "兼容性分解规范化形式"
+                    }
+                ],
+                "value": "NFC"
+            }
+        ]
+    },
+    "nlpaug_en_mapper": {
+        "name": "英文语义增强",
+        "description": "使用nlpaug库对英语文本进行简单增强。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "I am going to the park.",
+            "after": "I am proceeding to the park."
+        },
+        "params": [
+            {
+                "name": "随机删除单词",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "随机交换单词位置",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "单词拼写错误",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "随机拆分单词",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "键盘输入错误字符",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "光学字符识别错误",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "随机删除字符",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "随机交换字符位置",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "随机插入字符",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            }
+        ]
+    },
+    "nlpcda_zh_mapper": {
+        "name": "汉语语义增强",
+        "description": "使用nlpcda库对中文文本进行简单增强。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "这里一共有5种不同的数据增强方法",
+            "after": "这里一共有伍种不同的数据增强方法"
+        },
+        "params": [
+            {
+                "name": "替换相似单词",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "随机交换单词位置",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "随机删除字符",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "随机交换字符位置",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "替换等效数字",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            }
+        ]
+    },
+    "optimize_instruction_mapper": {
+        "name": "优化Instruction",
+        "description": "用于优化指令",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "鱼香肉丝怎么做？",
+            "after": "请提供一份完整的“鱼香肉丝”食谱，包括以下详细信息：所需材料清单：请列出所有必要的主料和辅料，包括肉的种类和处理方式，以及所有蔬菜和调味料的具体量。准备工作指南：描述准备工作的具体步骤，如肉丝的腌制过程、蔬菜的切割技巧等。详细烹饪步骤：请按照烹饪的逻辑顺序，逐步解释如何将材料炒制成鱼香肉丝，包括火候控制、调味料添加的时机等详细操作。盛盘和陈设建议：给出如何将完成的鱼香肉丝装盘摆放，以及可以搭配的其他菜品或饭类推荐，以便提升整体用餐体验。附加小贴士：如有任何专业小窍门或注意事项，例如如何切肉更易入味，或特定调味料的选择建议等，也请一并提供。"
+        },
+        "params": [
+            {
+                "name": "模型名称",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "alibaba-pai/Qwen2-7B-Instruct-Refine",
+                        "label": "alibaba-pai/Qwen2-7B-Instruct-Refine"
+                    }
+                ],
+                "value": "alibaba-pai/Qwen2-7B-Instruct-Refine"
+            },
+            {
+                "name": "模型地址",
+                "type": "LIST",
+                "option_values": null,
+                "value": "https://api.deepseek.com/chat/completions"
+            },
+            {
+                "name": "授权令牌",
+                "type": "LIST",
+                "option_values": null,
+                "value": ""
+            }
+        ]
+    },
+    "punctuation_normalization_mapper": {
+        "name": "Unicode标点规范化",
+        "description": "用于将文本样本中的Unicode标点符号标准化为英文标点符号。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "，。、„”“«»１」「《》´∶：？！（）；–—．～’…━〈〉【】％►",
+            "after": ",.,\"\"\"\"\"\"\"\"\"\"'::?!();- - . ~'...-<>[]%-"
+        },
+        "params": []
+    },
+    "remove_bibliography_mapper": {
+        "name": "移除参考书目信息",
+        "description": "用于删除LaTeX文档末尾的参考文献。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "%%\n%% This is file `sample-sigconf.tex\\clearpage\n\\bibliographystyle{ACM-Reference-Format}\n\\bibliography{sample-base}\n\\end{document}\n\\endinput\n%%\n%% End of file `sample-sigconf.tex'.\n",
+            "after": "%%\n%% This is file `sample-sigconf.tex\\clearpage\n\\bibliographystyle{ACM-Reference-Format}\n"
+        },
+        "params": []
+    },
+    "remove_comments_mapper": {
+        "name": "移除评论信息",
+        "description": "\n    用于删除不同类型文档中的注释。目前仅支持'tex'格式。\n    ",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "%%\n%% This is file `sample-sigconf.tex',\n%% The first command in your LaTeX source must be the \\documentclass command.\n\\documentclass[sigconf,review,anonymous]{acmart}\n%% NOTE that a single column version is required for \n%% submission and peer review. This can be done by changing\n\\input{math_commands.tex}\n%% end of the preamble, start of the body of the document source.\n\\begin{document}\n%% The \"title\" command has an optional parameter,\n\\title{Hierarchical Cross Contrastive Learning of Visual Representations}\n%%\n%% The \"author\" command and its associated commands are used to define\n%% the authors and their affiliations.\n\\author{Hesen Chen}\n\\affiliation{%\n  \\institution{Alibaba Group}\n  \\city{Beijing}\n  \\country{China}}\n\\email{hesen.chs@alibaba-inc.com}\n%% By default, the full list of authors will be used in the page\n\\begin{abstract}The rapid\n\\end{abstract}\n\\begin{CCSXML}\n\\ccsdesc[500]{Computing methodologies~Image representations}\n%% Keywords. The author(s) should pick words that accurately describe\n\\keywords{self-supervised,  ontrastive Learning, hierarchical projection, cross-level}\n%% page.\n\\begin{teaserfigure}\n\\end{teaserfigure}\n%% This command processes the author and affiliation and title\n\\maketitle\n\\section{Introduction}\n\\begin{itemize}\n\\end{itemize}\n\\section{Related Work}\n\\label{gen_inst} Self-supervised\n\\section{Method}\n\\label{method}In this section,\n\\subsection{Framework} kkk\n\\subsection{Cross Contrastive Loss}\nSince $\\sZ^n$ are extracted\n\\subsection{Implementation details}\n\\textbf{Image augmentations} We use\n\\textbf{Architecture} We use\n\\textbf{Optimization} We adapt \n\\section{Experiments}\n\\label{experiments}In this section\n\\subsection{Linear and Semi-Supervised Evaluations on ImageNet}\n\\textbf{Linear evaluation on ImageNet} We firs\n\\textbf{Semi-supervised learning on ImageNet} We simply\n\\subsection{Transfer to other datasets and tasks}\n\\textbf{Image classification with fixed features} We follow\n\\section{Ablations} We present\n\\subsection{Influence of hierarchical projection head and cross contrastive loss} get out\n\\subsection{Levels and depth of projector network}\n\\end{center}\n\\caption{\\label{figure3} \\textbf{Different way of cross-correlation on 3 level hierarchical projection head.} '=' denotes stop gradient.}\n\\end{figure}\n\\subsection{Analyze of} In this\n\\textbf{Similarity between} Using SimSiam\n\\textbf{Feature similarity} We extracted\n\\section{Conclusion}\nWe propose HCCL\n\\clearpage\n\\bibliographystyle{ACM-Reference-Format}\n\\bibliography{sample-base}\n\\end{document}\n\\endinput\n%%\n%% End of file `sample-sigconf.tex'.\n",
+            "after": "\\documentclass[sigconf,review,anonymous]{acmart}\n\\input{math_commands.tex}\n\\begin{document}\n\\title{Hierarchical Cross Contrastive Learning of Visual Representations}\n\\author{Hesen Chen}\n\\affiliation{%\n  \\institution{Alibaba Group}\n  \\city{Beijing}\n  \\country{China}}\n\\email{hesen.chs@alibaba-inc.com}\n\\begin{abstract}The rapid\n\\end{abstract}\n\\begin{CCSXML}\n\\ccsdesc[500]{Computing methodologies~Image representations}\n\\keywords{self-supervised,  ontrastive Learning, hierarchical projection, cross-level}\n\\begin{teaserfigure}\n\\end{teaserfigure}\n\\maketitle\n\\section{Introduction}\n\\begin{itemize}\n\\end{itemize}\n\\section{Related Work}\n\\label{gen_inst} Self-supervised\n\\section{Method}\n\\label{method}In this section,\n\\subsection{Framework} kkk\n\\subsection{Cross Contrastive Loss}\nSince $\\sZ^n$ are extracted\n\\subsection{Implementation details}\n\\textbf{Image augmentations} We use\n\\textbf{Architecture} We use\n\\textbf{Optimization} We adapt \n\\section{Experiments}\n\\label{experiments}In this section\n\\subsection{Linear and Semi-Supervised Evaluations on ImageNet}\n\\textbf{Linear evaluation on ImageNet} We firs\n\\textbf{Semi-supervised learning on ImageNet} We simply\n\\subsection{Transfer to other datasets and tasks}\n\\textbf{Image classification with fixed features} We follow\n\\section{Ablations} We present\n\\subsection{Influence of hierarchical projection head and cross contrastive loss} get out\n\\subsection{Levels and depth of projector network}\n\\end{center}\n\\caption{\\label{figure3} \\textbf{Different way of cross-correlation on 3 level hierarchical projection head.} '=' denotes stop gradient.}\n\\end{figure}\n\\subsection{Analyze of} In this\n\\textbf{Similarity between} Using SimSiam\n\\textbf{Feature similarity} We extracted\n\\section{Conclusion}\nWe propose HCCL\n\\clearpage\n\\bibliographystyle{ACM-Reference-Format}\n\\bibliography{sample-base}\n\\end{document}\n\\endinput\n"
+        },
+        "params": [
+            {
+                "name": "内联",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true
+            },
+            {
+                "name": "多行",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true
+            }
+        ]
+    },
+    "remove_header_mapper": {
+        "name": "移除文件头",
+        "description": "用于移除LaTeX文档开头的标题。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "%%\n%% This is file `sample-sigconf.tex',\n%% The first command in your LaTeX source must be the \\documentclass command.\n\\documentclass[sigconf,review,anonymous]{acmart}\n%% NOTE that a single column version is required for \n%% submission and peer review. This can be done by changing\n\\input{math_commands.tex}\n%% end of the preamble, start of the body of the document source.\n\\begin{document}\n%% The \"title\" command has an optional parameter,\n\\title{Hierarchical Cross Contrastive Learning of Visual Representations}\n%%\n%% The \"author\" command and its associated commands are used to define\n%% the authors and their affiliations.\n\\author{Hesen Chen}\n\\affiliation{%\n  \\institution{Alibaba Group}\n  \\city{Beijing}\n  \\country{China}}\n\\email{hesen.chs@alibaba-inc.com}\n%% By default, the full list of authors will be used in the page\n\\begin{abstract}The rapid\n\\end{abstract}\n\\begin{CCSXML}\n\\ccsdesc[500]{Computing methodologies~Image representations}\n%% Keywords. The author(s) should pick words that accurately describe\n\\keywords{self-supervised,  ontrastive Learning, hierarchical projection, cross-level}\n%% page.\n\\begin{teaserfigure}\n\\end{teaserfigure}\n%% This command processes the author and affiliation and title\n\\maketitle\n\\section{Introduction}\n\\begin{itemize}\n\\end{itemize}\n\\section{Related Work}\n\\label{gen_inst} Self-supervised\n\\section{Method}\n\\label{method}In this section,\n\\subsection{Framework} kkk\n\\subsection{Cross Contrastive Loss}\nSince $\\sZ^n$ are extracted\n\\subsection{Implementation details}\n\\textbf{Image augmentations} We use\n\\textbf{Architecture} We use\n\\textbf{Optimization} We adapt \n\\section{Experiments}\n\\label{experiments}In this section\n\\subsection{Linear and Semi-Supervised Evaluations on ImageNet}\n\\textbf{Linear evaluation on ImageNet} We firs\n\\textbf{Semi-supervised learning on ImageNet} We simply\n\\subsection{Transfer to other datasets and tasks}\n\\textbf{Image classification with fixed features} We follow\n\\section{Ablations} We present\n\\subsection{Influence of hierarchical projection head and cross contrastive loss} get out\n\\subsection{Levels and depth of projector network}\n\\end{center}\n\\caption{\\label{figure3} \\textbf{Different way of cross-correlation on 3 level hierarchical projection head.} '=' denotes stop gradient.}\n\\end{figure}\n\\subsection{Analyze of} In this\n\\textbf{Similarity between} Using SimSiam\n\\textbf{Feature similarity} We extracted\n\\section{Conclusion}\nWe propose HCCL\n\\clearpage\n\\bibliographystyle{ACM-Reference-Format}\n\\bibliography{sample-base}\n\\end{document}\n\\endinput\n%%\n%% End of file `sample-sigconf.tex'.\n",
+            "after": "\\section{Introduction}\n\\begin{itemize}\n\\end{itemize}\n\\section{Related Work}\n\\label{gen_inst} Self-supervised\n\\section{Method}\n\\label{method}In this section,\n\\subsection{Framework} kkk\n\\subsection{Cross Contrastive Loss}\nSince $\\sZ^n$ are extracted\n\\subsection{Implementation details}\n\\textbf{Image augmentations} We use\n\\textbf{Architecture} We use\n\\textbf{Optimization} We adapt \n\\section{Experiments}\n\\label{experiments}In this section\n\\subsection{Linear and Semi-Supervised Evaluations on ImageNet}\n\\textbf{Linear evaluation on ImageNet} We firs\n\\textbf{Semi-supervised learning on ImageNet} We simply\n\\subsection{Transfer to other datasets and tasks}\n\\textbf{Image classification with fixed features} We follow\n\\section{Ablations} We present\n\\subsection{Influence of hierarchical projection head and cross contrastive loss} get out\n\\subsection{Levels and depth of projector network}\n\\end{center}\n\\caption{\\label{figure3} \\textbf{Different way of cross-correlation on 3 level hierarchical projection head.} '=' denotes stop gradient.}\n\\end{figure}\n\\subsection{Analyze of} In this\n\\textbf{Similarity between} Using SimSiam\n\\textbf{Feature similarity} We extracted\n\\section{Conclusion}\nWe propose HCCL\n\\clearpage\n\\bibliographystyle{ACM-Reference-Format}\n\\bibliography{sample-base}\n\\end{document}\n\\endinput\n%%\n%% End of file `sample-sigconf.tex'.\n"
+        },
+        "params": [
+            {
+                "name": "删除无标题部分",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true
+            }
+        ]
+    },
+    "remove_long_words_mapper": {
+        "name": "移除长字符串",
+        "description": "用于删除长度超出指定范围的单词。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "This paper a novel eqeqweqwewqeqwe121e1 method on LLM pretrain.",
+            "after": "This paper novel method LLM pretrain."
+        },
+        "params": [
+            {
+                "name": "最小长度",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 1
+            },
+            {
+                "name": "最大长度",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 9999999
+            }
+        ]
+    },
+    "remove_non_chinese_character_mapper": {
+        "name": "移除非中文字符",
+        "description": "用于删除文本样本中的非中文字符。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "👊    所有的非汉字a44sh都12@46h会被*&……*qb^4525去掉",
+            "after": "所有的非汉字都会被去掉"
+        },
+        "params": [
+            {
+                "name": "保留字母",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true
+            },
+            {
+                "name": "保留数字",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true
+            },
+            {
+                "name": "保留标点符号",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true
+            }
+        ]
+    },
+    "remove_repeat_sentences_mapper": {
+        "name": "句子去重",
+        "description": "用于删除文本样本中重复的句子。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "今天天气真不错，阳光明媚，适合出去散步。小明说：“今天天气真不错，我们去海边吧。” 小红回答说：“好主意！” 但是，小李觉得：“今天天气真不错，我们去爬山吧。” 今天天气真不错，阳光明媚，适合出去散步。昨天下了一整天的雨，今天终于放晴了。昨天下了一整天的雨，今天终于放晴了。",
+            "after": "今天天气真不错，阳光明媚，适合出去散步。小明说：“今天天气真不错，我们去海边吧。” 小红回答说：“好主意！” 但是，小李觉得：“今天天气真不错，我们去爬山吧。”昨天下了一整天的雨，今天终于放晴了。"
+        },
+        "params": [
+            {
+                "name": "小写",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "忽略特殊字符",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "最小重复句子长度",
+                "type": "INTEGER",
+                "option_values": null,
+                "value": 2
+            }
+        ]
+    },
+    "remove_specific_chars_mapper": {
+        "name": "特殊字符清理",
+        "description": "用于删除文本样本中的特定字符。现在支持的字符有：◆●■►▼▲▴∆▻▷❖♡□",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "多个●■►▼这样的特殊字符可以►▼▲▴∆吗？",
+            "after": "多个这样的特殊字符可以吗？"
+        },
+        "params": [
+            {
+                "name": "需要移除的字符",
+                "type": "LIST",
+                "option_values": null,
+                "value": [
+                    "◆●■►▼▲▴∆▻▷❖♡□"
+                ]
+            }
+        ]
+    },
+    "remove_table_text_mapper": {
+        "name": "表格内容清理",
+        "description": "\n    用于从文本样本中删除表格内容。\n\n    使用正则表达式在表格列数范围内删除表格。\n    ",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "This is a table:\n编号 分行 营运资金1 营运资金2 营运资金3 营运资金4 营运资金5\n① 北京分行 495,000,000.00 200,000,000.00 295,000,000.00 - 495,000,000.00\n② 大连分行 440,000,000.00 100,000,000.00 340,000,000.00 - 440,000,000.00\n③ 重庆分行 500,000,000.00 100,000,000.00 400,000,000.00 - 500,000,000.00\n④ 南京分行 430,000,000.00 100,000,000.00 330,000,000.00 - 430,000,000.00\n⑤ 青岛分行 500,000,000.00 - 100,159,277.60 399,840,722.40 500,000,000.00\nThe end of the table.",
+            "after": "This is a table:\nThe end of the table."
+        },
+        "params": [
+            {
+                "name": "最小列数",
+                "type": "from_2_to_20",
+                "option_values": null,
+                "value": 2
+            },
+            {
+                "name": "最大列数",
+                "type": "from_2_to_20",
+                "option_values": null,
+                "value": 20
+            }
+        ]
+    },
+    "remove_words_with_incorrect_substrings_mapper": {
+        "name": "子字符串清理",
+        "description": "用于删除包含错误子字符串的单词。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "请用百度www.baidu.com进行搜索",
+            "after": "请用百度www.baidu进行搜索"
+        },
+        "params": [
+            {
+                "name": "语言",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "en",
+                        "label": "英文"
+                    },
+                    {
+                        "key": "zh",
+                        "label": "中文"
+                    }
+                ],
+                "value": "en"
+            },
+            {
+                "name": "分词",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "子字符串",
+                "type": "LIST",
+                "option_values": null,
+                "value": [
+                    "http",
+                    "www",
+                    ".com",
+                    "href",
+                    "//"
+                ]
+            }
+        ]
+    },
+    "replace_content_mapper": {
+        "name": "文本替换",
+        "description": "用于将文本中与特定正则表达式模式匹配的所有内容替换为指定替换字符串。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "多个●■►▼这样的特殊字符可以►▼▲▴∆吗？",
+            "after": "多个<SPEC>►▼这样的特殊字符可以►▼▲▴∆吗？"
+        },
+        "params": [
+            {
+                "name": "正则表达式模式列表",
+                "type": "LIST",
+                "option_values": null,
+                "value": []
+            },
+            {
+                "name": "替换字符串",
+                "type": "LIST",
+                "option_values": null,
+                "value": []
+            }
+        ]
+    },
+    "sentence_split_mapper": {
+        "name": "句子分割",
+        "description": "用于将文本样本拆分为句子。",
+        "operator_description": "将一段文字拆成多段句子",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "Smithfield employs 3,700 people at its plant in Sioux Falls, South Dakota. The plant slaughters 19,500 pigs a day — 5 percent of U.S. pork.",
+            "after": "Smithfield employs 3,700 people at its plant in Sioux Falls, South Dakota.\nThe plant slaughters 19,500 pigs a day — 5 percent of U.S. pork."
+        },
+        "params": [
+            {
+                "name": "语言",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "en",
+                        "label": "英文"
+                    },
+                    {
+                        "key": "zh",
+                        "label": "中文"
+                    }
+                ],
+                "value": "en",
+                "config_description": "文本语言，选项：'en'（英文）、'zh'（中文）"
+            }
+        ]
+    },
+    "whitespace_normalization_mapper": {
+        "name": "空白规范化",
+        "description": "\n    用于将文本样本中不同类型的空白字符标准化为空格字符' '（0x20）。\n\n    不同类型的空白字符可以在以下网页中找到：\n    https://en.wikipedia.org/wiki/Whitespace_character\n    ",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "hello world",
+            "after": "world hello"
+        },
+        "params": []
+    },
+    "alphanumeric_filter": {
+        "name": "字母/数字占比过滤",
+        "description": "用于保留字母/数字比例在特定范围内的样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "emoji表情测试下😊，😸31231\n",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "分词",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "最小比例",
+                "type": "FLOAT",
+                "option_values": null,
+                "value": 0.1
+            },
+            {
+                "name": "最大比例",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 999999
+            }
+        ]
+    },
+    "average_line_length_filter": {
+        "name": "平均行长度范围过滤",
+        "description": "用于保留平均行长度在特定范围内的样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "short",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "最小长度",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 10
+            },
+            {
+                "name": "最大长度",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 1200
+            }
+        ]
+    },
+    "character_repetition_filter": {
+        "name": "字符级重复率范围过滤",
+        "description": "用于保留字符级n-gram重复率在特定范围内的样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "Today is Sund Sund Sund Sund Sund Sunda and it's a happy day!",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "重复长度",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 10
+            },
+            {
+                "name": "最小比例",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": 0
+            },
+            {
+                "name": "最大比例",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": 0.6
+            }
+        ]
+    },
+    "flagged_words_filter": {
+        "name": "标记词比例过滤",
+        "description": "用于保留标记词汇比例小于指定最大值的样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "基于前一步结果，除掉骂人、脏字等污秽数据和敏感词",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "语言",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "en",
+                        "label": "英文"
+                    },
+                    {
+                        "key": "zh",
+                        "label": "中文"
+                    }
+                ],
+                "value": "zh"
+            },
+            {
+                "name": "分词",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true
+            },
+            {
+                "name": "最大比例",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": 0.001
+            },
+            {
+                "name": "词汇增强",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true
+            }
+        ]
+    },
+    "language_id_score_filter": {
+        "name": "特定语言置信度过滤",
+        "description": "\n    用于保留特定语言且语言置信度评分大于指定最小值的样本。\n    ",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "Today is Sund Sund Sund Sunda and it's a happy day!\nYou know",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "语言",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "zh",
+                        "label": "中文"
+                    },
+                    {
+                        "key": "en",
+                        "label": "英文"
+                    },
+                    {
+                        "key": "fr",
+                        "label": "法语"
+                    },
+                    {
+                        "key": "de",
+                        "label": "德语"
+                    }
+                ],
+                "value": "zh"
+            },
+            {
+                "name": "最小分数",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": 0.8
+            }
+        ]
+    },
+    "maximum_line_length_filter": {
+        "name": "最大行长度范围过滤",
+        "description": "用于保留最大行长度在特定范围内的样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "Today is Sund Sund Sund Sunda and it's a happy day!\nYou know",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "最小长度",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 10
+            },
+            {
+                "name": "最大长度",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 7328
+            }
+        ]
+    },
+    "perplexity_filter": {
+        "name": "困惑度范围过滤",
+        "description": "用于保留困惑度评分小于指定最大值的样本。",
+        "operator_description": "删除质量差的文本",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "Today is Sund Sund Sund Sunda and it's a happy day!\nYou know",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "语言",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "en",
+                        "label": "英文"
+                    },
+                    {
+                        "key": "zh",
+                        "label": "中文"
+                    }
+                ],
+                "value": "en",
+                "config_description": "困惑度计算的语言，选项：'en'（英文）、'zh'（中文）"
+            },
+            {
+                "name": "最大困惑度",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 8000,
+                "config_description": "最大困惑度阈值；超过此阈值的样本将被过滤"
+            },
+            {
+                "name": "模型",
+                "type": "LIST",
+                "option_values": null,
+                "value": ""
+            },
+            {
+                "name": "身份验证令牌",
+                "type": "LIST",
+                "option_values": null,
+                "value": ""
+            }
+        ]
+    },
+    "special_characters_filter": {
+        "name": "特殊字符比例过滤",
+        "description": "用于保留特殊字符比例在特定范围内的样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "emoji表情测试下😊，😸31231",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "最小比例",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": 0
+            },
+            {
+                "name": "最大比例",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": 0.842
+            }
+        ]
+    },
+    "specified_field_filter": {
+        "name": "字段信息过滤",
+        "description": "\n    基于指定字段信息进行过滤。如果样本中的指定字段信息不在设定的目标值范围内，该样本将被过滤。\n    ",
+        "operator_description": "根据数据的某个字段值来筛选",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "{'text': '中文也是一个字算一个长度','meta': {    'suffix': '.txt',    'star': 100}}",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "字段名称",
+                "type": "STRING",
+                "option_values": null,
+                "value": "",
+                "config_description": "要过滤的字段名称；多级字段用点号分隔（例如：'meta.suffix'）"
+            },
+            {
+                "name": "目标值",
+                "type": "LIST",
+                "option_values": null,
+                "value": [],
+                "config_description": "目标值列表；只有字段值在此列表中的样本才会被保留"
+            }
+        ]
+    },
+    "specified_numeric_field_filter": {
+        "name": "数值字段范围过滤",
+        "description": "\n    基于指定的数值字段信息进行过滤。如果样本中的指定数值信息不在设定的范围内，该样本将被过滤。\n    ",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "{'text': '中文也是一个字算一个长度','meta': {    'suffix': '.txt',    'star': 100}}",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "字段名称",
+                "type": "STRING",
+                "option_values": null,
+                "value": ""
+            },
+            {
+                "name": "最小值",
+                "type": "FLOAT",
+                "option_values": null,
+                "value": -999999
+            },
+            {
+                "name": "最大值",
+                "type": "FLOAT",
+                "option_values": null,
+                "value": 999999
+            }
+        ]
+    },
+    "stopwords_filter": {
+        "name": "停用词比例过滤",
+        "description": "用于保留停用词比例大于指定最小值的样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "?",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "语言",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "en",
+                        "label": "英文"
+                    },
+                    {
+                        "key": "zh",
+                        "label": "中文"
+                    }
+                ],
+                "value": "zh"
+            },
+            {
+                "name": "分词",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            },
+            {
+                "name": "最小比例",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": 0.3
+            },
+            {
+                "name": "词汇增强",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            }
+        ]
+    },
+    "suffix_filter": {
+        "name": "特殊后缀过滤",
+        "description": "用于保留具有指定后缀的样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "{'text': '中文也是一个字算一个长度',Fields.suffix: '.txt'}",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "后缀",
+                "type": "LIST",
+                "option_values": null,
+                "value": []
+            }
+        ]
+    },
+    "text_action_filter": {
+        "name": "动作文本过滤",
+        "description": "用于保留包含动作的文本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "我有一只猫，它是一只猫",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "语言",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "zh",
+                        "label": "中文"
+                    },
+                    {
+                        "key": "en",
+                        "label": "英文"
+                    }
+                ],
+                "value": "zh"
+            },
+            {
+                "name": "最小动作数量",
+                "type": "INTEGER",
+                "option_values": null,
+                "value": 1
+            },
+            {
+                "name": "模型",
+                "type": "LIST",
+                "option_values": null,
+                "value": ""
+            },
+            {
+                "name": "身份验证令牌",
+                "type": "LIST",
+                "option_values": null,
+                "value": ""
+            }
+        ]
+    },
+    "text_entity_dependency_filter": {
+        "name": "实体文本过滤",
+        "description": "\n    识别文本中独立的实体，并对其进行过滤。不包含实体的文本将被忽略。\n    ",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "上上下下左左右右",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "语言",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "zh",
+                        "label": "中文"
+                    },
+                    {
+                        "key": "en",
+                        "label": "英文"
+                    }
+                ],
+                "value": "zh"
+            },
+            {
+                "name": "最小依赖数量",
+                "type": "INTEGER",
+                "option_values": null,
+                "value": 1
+            },
+            {
+                "name": "任意或全部",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "all",
+                        "label": "全部"
+                    },
+                    {
+                        "key": "any",
+                        "label": "任意"
+                    }
+                ],
+                "value": "all"
+            },
+            {
+                "name": "模型",
+                "type": "LIST",
+                "option_values": null,
+                "value": ""
+            },
+            {
+                "name": "身份验证令牌",
+                "type": "LIST",
+                "option_values": null,
+                "value": ""
+            }
+        ]
+    },
+    "text_length_filter": {
+        "name": "文本长度范围过滤",
+        "description": "用于保留总文本长度在特定范围内的样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "Today is Sund Sund Sund Sund Sund Sunda and it's a happy day!",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "最小长度",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 10
+            },
+            {
+                "name": "最大长度",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 136028
+            }
+        ]
+    },
+    "token_num_filter": {
+        "name": "token数量范围过滤",
+        "description": "用于保留token数量在特定范围内的样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "Today is Sund Sund Sund Sund Sund Sunda and it's a happy day!",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "分词器模型",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "EleutherAI/pythia-6.9b-deduped",
+                        "label": "EleutherAI/pythia-6.9b-deduped"
+                    }
+                ],
+                "value": "EleutherAI/pythia-6.9b-deduped"
+            },
+            {
+                "name": "最小数量",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 10
+            },
+            {
+                "name": "最大数量",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 999999
+            }
+        ]
+    },
+    "word_repetition_filter": {
+        "name": "词级重复率范围过滤",
+        "description": "用于保留单词级n-gram重复比率在特定范围内的样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "根据算子使用使用使用使用安装方案确定",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "语言",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "zh",
+                        "label": "中文"
+                    },
+                    {
+                        "key": "en",
+                        "label": "英文"
+                    }
+                ],
+                "value": "en"
+            },
+            {
+                "name": "分词",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true
+            },
+            {
+                "name": "重复长度",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 10
+            },
+            {
+                "name": "最小比例",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": 0
+            },
+            {
+                "name": "最大比例",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": 0.5981
+            }
+        ]
+    },
+    "words_num_filter": {
+        "name": "单词数量范围过滤",
+        "description": "用于保留总词数在特定范围内的样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "根据算子使用使用使用使用安装方案确定",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "语言",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "zh",
+                        "label": "中文"
+                    },
+                    {
+                        "key": "en",
+                        "label": "英文"
+                    }
+                ],
+                "value": "en"
+            },
+            {
+                "name": "分词",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true
+            },
+            {
+                "name": "最小数量",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 20
+            },
+            {
+                "name": "最大数量",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 23305
+            }
+        ]
+    },
+    "document_deduplicator": {
+        "name": "文档去重（MD5）",
+        "description": "\n    用于通过精确匹配在文档级别对样本去重。使用MD5哈希值进行样本去重。\n    ",
+        "operator_description": "基于MD5计算并删除相同的文档。",
+        "type": "Deduplicator",
+        "group": "",
+        "samples": {
+            "before": "{    'text':    'This paper proposed a novel method on LLM pretraining.'},{    'text':    'This paper proposed a novel method on LLM pretraining.'}",
+            "after": "{    'text':    'This paper proposed a novel method on LLM pretraining.'},"
+        },
+        "params": [
+            {
+                "name": "小写",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true,
+                "config_description": "在计算哈希值之前，是否应该将示例文本转换为小写？"
+            },
+            {
+                "name": "忽略非字符",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true,
+                "config_description": "是否应忽略非字母字符（包括空格、数字和标点符号）？"
+            }
+        ]
+    },
+    "document_minhash_deduplicator": {
+        "name": "文档去重（MinHashLSH）",
+        "description": "\n    用于通过MinHashLSH在文档级对样本去重。与SimHash不同，MinHash以字节形式存储，因此不会保留在最终数据集中。\n    ",
+        "operator_description": "擅长删除多语言混合的相似文档",
+        "type": "Deduplicator",
+        "group": "",
+        "samples": {
+            "before": "",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "分词",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "space",
+                        "label": "空格"
+                    },
+                    {
+                        "key": "punctuation",
+                        "label": "标点符号"
+                    },
+                    {
+                        "key": "character",
+                        "label": "字符"
+                    },
+                    {
+                        "key": "sentencepiece",
+                        "label": "句子片段"
+                    }
+                ],
+                "value": "character",
+                "config_description": "分词方法，选项：'space'（空格）、'punctuation'（标点符号）、'character'（字符）、'sentencepiece'（句子片段）"
+            },
+            {
+                "name": "窗口大小",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 5,
+                "config_description": "滑动窗口大小"
+            },
+            {
+                "name": "小写",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true,
+                "config_description": "是否应转换为小写？"
+            },
+            {
+                "name": "忽略模式",
+                "type": "STRING",
+                "option_values": null,
+                "value": null,
+                "config_description": "忽略特定模式的子字符串（正则表达式）"
+            },
+            {
+                "name": "排列数量",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 256,
+                "config_description": "MinHash 排列数：数字越大，准确度越高，但计算越慢"
+            },
+            {
+                "name": "jaccard 阈值",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": 0.7,
+                "config_description": "Jaccard 相似度阈值 (0-1)：值大于或等于此阈值的样本被视为相似"
+            },
+            {
+                "name": "频带数量",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": null,
+                "config_description": "LSH 中的波段数（自动计算）"
+            },
+            {
+                "name": "每个频带的行数",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": null,
+                "config_description": "每个波段的行数（自动计算）"
+            },
+            {
+                "name": "分词模型",
+                "type": "STRING",
+                "option_values": null,
+                "value": null,
+                "config_description": "SentencePiece 模型路径（使用 sentencepiece 进行分词时必需）"
+            }
+        ]
+    },
+    "document_simhash_deduplicator": {
+        "name": "文档去重（SimHash）",
+        "description": "用于在文档级别使用SimHash对样本进行去重。",
+        "operator_description": "删除内容相似但不完全相同的文档",
+        "type": "Deduplicator",
+        "group": "",
+        "samples": {
+            "before": "",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "分词",
+                "type": "STRING",
+                "option_values": [
+                    {
+                        "key": "space",
+                        "label": "空格"
+                    },
+                    {
+                        "key": "punctuation",
+                        "label": "标点符号"
+                    },
+                    {
+                        "key": "character",
+                        "label": "字符"
+                    }
+                ],
+                "value": "character",
+                "config_description": "分词方法，可选值：'space'（空格分词）、'punctuation'（标点符号分词）、'character'（字符级分词）"
+            },
+            {
+                "name": "窗口大小",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 4,
+                "config_description": "滑动窗口大小，用于生成 Shingles"
+            },
+            {
+                "name": "小写",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true,
+                "config_description": "是否应将文本转换为小写？"
+            },
+            {
+                "name": "忽略模式",
+                "type": "STRING",
+                "option_values": null,
+                "value": "\\p{P}",
+                "config_description": "忽略特定模式的子字符串（正则表达式）"
+            },
+            {
+                "name": "块数量",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 10,
+                "config_description": "SimHash 计算中的块数"
+            },
+            {
+                "name": "汉明距离",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 8,
+                "config_description": "汉明距离阈值：汉明距离小于或等于此值的样本被视为相似（必须小于 num_blocks）"
+            }
+        ]
+    },
+    "frequency_specified_field_selector": {
+        "name": "排序频率选择器",
+        "description": "用于根据指定字段的排序频率选择样本。",
+        "type": "Selector",
+        "group": "",
+        "samples": {
+            "before": "{'text': '，。、„”“«»１」「《》´∶：？！','count': None,'meta': {    'suffix': '.html',    'key1': {        'key2': {            'count': 18        },        'count': 48    }}}",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "字段名称",
+                "type": "STRING",
+                "option_values": null,
+                "value": ""
+            },
+            {
+                "name": "前n%比率",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": null
+            },
+            {
+                "name": "前k个",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": null
+            },
+            {
+                "name": "反向排序",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true
+            }
+        ]
+    },
+    "random_selector": {
+        "name": "随机样本选择器",
+        "description": "用于随机对样本进行选择。",
+        "operator_description": "从数据中随机挑选一部分",
+        "type": "Selector",
+        "group": "",
+        "samples": {
+            "before": "{'text': '，。、„”“«»１」「《》´∶：？！','count': None,'meta': {    'suffix': '.html',    'key1': {        'key2': {            'count': 18        },        'count': 48    }}}",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "选择比率",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": null,
+                "config_description": "选择比例 (0-1)；例如，0.1 表示选择 10% 的样本"
+            },
+            {
+                "name": "选择数量",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": null,
+                "config_description": "选择的样本数量"
+            }
+        ]
+    },
+    "range_specified_field_selector": {
+        "name": "排序范围选择器",
+        "description": "用于根据指定字段值从小到大的排序范围选择样本。",
+        "type": "Selector",
+        "group": "",
+        "samples": {
+            "before": "{'text': '，。、„”“«»１」「《》´∶：？！','count': None,'meta': {    'suffix': '.html',    'key1': {        'key2': {            'count': 18        },        'count': 48    }}}",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "字段名称",
+                "type": "STRING",
+                "option_values": null,
+                "value": ""
+            },
+            {
+                "name": "下百分位",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": null
+            },
+            {
+                "name": "上百分位",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": null
+            },
+            {
+                "name": "下限排名",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": null
+            },
+            {
+                "name": "上限排名",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": null
+            }
+        ]
+    },
+    "topk_specified_field_selector": {
+        "name": "前部样本的选择器",
+        "description": "根据排序后的指定字段值选择前几名样本。",
+        "type": "Selector",
+        "group": "",
+        "samples": {
+            "before": "{'text': '，。、„”“«»１」「《》´∶：？！','count': None,'meta': {    'suffix': '.html',    'key1': {        'key2': {            'count': 18        },        'count': 48    }}}",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "字段名称",
+                "type": "STRING",
+                "option_values": null,
+                "value": ""
+            },
+            {
+                "name": "前n%比率",
+                "type": "ClosedUnitInterval",
+                "option_values": null,
+                "value": null
+            },
+            {
+                "name": "前k个",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": null
+            },
+            {
+                "name": "反向排序",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": true
+            }
+        ]
+    },
+    "text_high_score_filter": {
+        "name": "打分数据筛选",
+        "description": "根据指定字段中的得分值范围过滤文本样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "分数字段",
+                "type": "LIST",
+                "option_values": null,
+                "value": "score"
+            },
+            {
+                "name": "最低分",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 0.6
+            },
+            {
+                "name": "最高分",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 2
+            }
+        ]
+    },
+    "text_bloom_filter": {
+        "name": "数据Bloom过滤去重",
+        "description": "使用Bloom过滤以删除重复样本。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "包含重复文本的数据集，如多次出现的相同句子",
+            "after": "去重后的数据集，只保留每个唯一文本的一个实例"
+        },
+        "params": [
+            {
+                "name": "哈希函数",
+                "type": "LIST",
+                "option_values": null,
+                "value": "md5"
+            },
+            {
+                "name": "初始容量",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 100
+            }
+        ]
+    },
+    "make_cosmopedia_mapper": {
+        "name": "风格数据合成",
+        "description": "Mapper从种子文本示例生成合成教程数据。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "How to Train Your Dog to Sit",
+            "after": "Training your dog to sit is one of the most fundamental commands..."
+        },
+        "params": [
+            {
+                "name": "网页文本最大长度",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 800
+            }
+        ]
+    },
+    "gather_generated_data": {
+        "name": "数据聚合生成",
+        "description": "滤波器用于收集和处理生成的数据。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "基于前一步结果，除掉 || 与 <|im_end|> 字符并且过滤 出 content 为空的数据",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "是否过滤",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            }
+        ]
+    },
+    "encode_and_get_nearest_mapper": {
+        "name": "数据样本向量编码搜索",
+        "description": "滤波器用于收集和处理生成的数据。",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "数据集包含first_prompt字段的文本数据，如['What is artificial intelligence?', 'How does machine learning work?']",
+            "after": "数据集增加了embedding、nn_indices和nn_scores字段，包含文本的向量表示和最近邻信息"
+        },
+        "params": []
+    },
+    "gather_generated_data_filter": {
+        "name": "数据聚合生成",
+        "description": "用于收集和处理生成数据的过滤器。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "基于前一步结果，除掉 || 与 <|im_end|> 字符并且过滤 出 content 为空的数据",
+            "after": ""
+        },
+        "params": []
+    },
+    "annotate_edu_train_bert_scorer_mapper": {
+        "name": "教学评估打分",
+        "description": "注释Edu火车BERT记分器。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "Here is a more concise translation of the provided sentence:'Score a field and add a _score field for the result.'",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "身份验证令牌",
+                "type": "LIST",
+                "option_values": null,
+                "value": ""
+            },
+            {
+                "name": "模型名称",
+                "type": "LIST",
+                "option_values": null,
+                "value": "text-embedding-v4"
+            },
+            {
+                "name": "尺寸",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": "1024"
+            },
+            {
+                "name": "模型网址",
+                "type": "LIST",
+                "option_values": null,
+                "value": "https://dashscope.aliyuncs.com/compatible-mode/v1"
+            },
+            {
+                "name": "查询文本",
+                "type": "LIST",
+                "option_values": null,
+                "value": "What is Deep Learning?"
+            }
+        ]
+    },
+    "dedup_and_save_deduplicator": {
+        "name": "多轮对话生成",
+        "description": "基于图连接性的去重器。它通过连接相似度得分高于阈值的样本来构建相似度图，然后从每个连接的组件中只保留一个样本（具有最小索引）。适用于具有预先计算的最近邻相似性信息的数据集。",
+        "operator_description": "基于已经计算相似度的数据去重，并将一些大字段（比如向量、文本）移到统计信息里，节省空间",
+        "type": "Deduplicator",
+        "group": "",
+        "samples": {
+            "before": "",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "相似阈值",
+                "type": "PositiveFloat",
+                "option_values": null,
+                "value": 0.5,
+                "config_description": "相似度阈值 (0-1)：值大于或等于此阈值的样本将被连接"
+            }
+        ]
+    },
+    "pipeline_magpie_zh_mapper": {
+        "name": "相似去重",
+        "description": "使用deepseek-v2.5或qwen2.5模型，根据手动设计的与多个任务对应的system_prompt生成多轮对话数据",
+        "type": "Mapper",
+        "group": "",
+        "samples": {
+            "before": "",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "模型名称",
+                "type": "LIST",
+                "option_values": null,
+                "value": "qwen-plus"
+            },
+            {
+                "name": "身份验证令牌",
+                "type": "LIST",
+                "option_values": null,
+                "value": ""
+            },
+            {
+                "name": "模型网址",
+                "type": "LIST",
+                "option_values": null,
+                "value": "https://dashscope.aliyuncs.com/compatible-mode/v1"
+            }
+        ]
+    },
+    "multi_keyword_filter": {
+        "name": "关键字过滤",
+        "description": "支持在匹配任何关键字时删除数据记录。",
+        "type": "Filter",
+        "group": "",
+        "samples": {
+            "before": "",
+            "after": ""
+        },
+        "params": [
+            {
+                "name": "关键字",
+                "type": "LIST",
+                "option_values": null,
+                "value": "危险,help,Text"
+            },
+            {
+                "name": "区分大小写",
+                "type": "BOOLEAN",
+                "option_values": null,
+                "value": false
+            }
+        ]
+    }
+}
