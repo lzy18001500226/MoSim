@@ -1,0 +1,21 @@
+[project]
+name = "composio-langgraph"
+version = "0.13.1"
+description = "Use Composio to get array of tools with LangGraph Agent Workflows."
+readme = "README.md"
+requires-python = ">=3.9,<4"
+authors = [
+    { name = "Composio", email = "tech@composio.dev" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "langgraph",
+    "composio",
+]
+
+[project.urls]
+Homepage = "https://github.com/ComposioHQ/composio"
