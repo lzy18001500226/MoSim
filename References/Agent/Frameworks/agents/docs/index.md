@@ -1,0 +1,118 @@
+# Agents Documentation
+
+## Getting Started
+
+- [Getting Started](./getting-started.md) - Quick start guide for new users
+- [Adding to an Existing Project](./adding-to-existing-project.md) - Integrate agents into your app
+- [Understanding the Agent Class](./agent-class.md) - Deep dive into the Agent class architecture
+
+## Core Concepts
+
+- [State Management](./state.md) - Managing agent state with `setState()`, `initialState`, and `onStateChanged()`
+- [Routing](./routing.md) - How `routeAgentRequest()` and agent naming works
+- [Sub-agents](./sub-agents.md) - Parent/child DO composition via facets, nested routing, and direct child connections
+- [HTTP & WebSockets](./http-websockets.md) - Request handling and real-time connections
+- [Callable Methods](./callable-methods.md) - The `@callable` decorator and client-server method calls
+- [Readonly Connections](./readonly-connections.md) - Restricting which connections can modify state
+- [getCurrentAgent()](./get-current-agent.md) - Accessing agent context across async calls
+
+## Client SDK
+
+- [Client SDK](./client-sdk.md) - Connecting from React (`useAgent`) and vanilla JS (`AgentClient`), state sync, and RPC calls
+
+## Communication Channels
+
+- [Email Service](./email.md) - Sending, receiving, and replying to emails
+- [Webhooks](./webhooks.md) - Receiving and sending webhook events
+- [Push Notifications](./push-notifications.md) - Browser push notifications via Web Push API and scheduled delivery
+- TODO: [SMS](./sms.md) - Text message integration (Twilio, etc.)
+- [Voice Agents](./voice.md) - Build voice agents with real-time speech-to-text, text-to-speech, and conversation persistence
+- [Chat SDK State](./chat-sdk.md) - Store Chat SDK subscriptions, locks, queues, and history in Agents sub-agents
+- TODO: [Messengers](./messengers.md) - Slack, Discord, Telegram, and other chat platforms
+
+## Background Processing
+
+- [Queue](./queue.md) - Immediate background task execution
+- [Scheduling](./scheduling.md) - Delayed, scheduled, and cron-based tasks
+- [Retries](./retries.md) - Automatic retries with exponential backoff and jitter
+- [Durable Execution](./durable-execution.md) - `runFiber()`, `startFiber()`, `stash()`, and crash recovery for long tasks
+- [Workflows](./workflows.md) - Durable multi-step processing with Cloudflare Workflows
+- [Human in the Loop](./human-in-the-loop.md) - Approval flows and manual intervention
+
+## AI Integration
+
+- TODO: [AI SDK Integration](./ai-sdk.md) - Using Vercel AI SDK with agents
+- TODO: [TanStack Integration](./tanstack.md) - Using TanStack AI with agents
+- [Chat Agents](./chat-agents.md) - `AIChatAgent` class and `useAgentChat` React hook
+- [Chat & Fiber Recovery](./chat-agents.md#stream-recovery) - Recover LLM turns after Durable Object eviction
+- [Agent Tools](./agent-tools.md) - Run chat-capable sub-agents as tools with streaming child timelines
+- [Server-Driven Messages](./server-driven-messages.md) - Autonomous agent workflows: scheduled follow-ups, queue processing, webhooks, chained reasoning
+- TODO: [Using AI Models](./using-ai-models.md) - OpenAI, Anthropic, Workers AI, and other providers
+- TODO: [RAG (Retrieval Augmented Generation)](./rag.md) - Vector search with Vectorize
+- [Sessions (Experimental)](./sessions.md) - Persistent conversation storage with tree-structured messages, context blocks, compaction, and search
+- [Workspace (Experimental)](./workspace.md) - Durable virtual filesystem backed by SQLite + R2
+- [Codemode (Experimental)](./codemode.md) - LLM-generated executable code for tool orchestration
+- [Client Tools Continuation](./client-tools-continuation.md) - Handling tool calls across client/server
+- [Resumable Streaming](./resumable-streaming.md) - Automatic stream resumption on client disconnect
+
+## Think (Experimental)
+
+- [Overview](./think/index.md) - Opinionated chat agent with built-in memory, tools, and streaming
+- [Getting Started](./think/getting-started.md) - Build your first Think agent step by step
+- [Lifecycle Hooks](./think/lifecycle-hooks.md) - `beforeTurn`, `onStepFinish`, `onChunk`, `onChatResponse`, and more
+- [Tools](./think/tools.md) - Workspace tools, code execution, extensions
+- [Messengers](./think/messengers.md) - Receive and reply to Chat SDK messenger webhooks from Think
+- [Client Tools](./think/client-tools.md) - Browser-side tools, approvals, and concurrency
+- [Sub-agents and Programmatic Turns](./think/sub-agents.md) - RPC streaming, `saveMessages`, recovery
+- [Programmatic Submissions](./think/programmatic-submissions.md) - Durable Think turn admission for webhooks and RPC callers
+
+## MCP (Model Context Protocol)
+
+- [Creating MCP Servers](./mcp-servers.md) - Build MCP servers with `McpAgent`
+- [Securing MCP Servers](./securing-mcp-servers.md) - OAuth and authentication for MCP
+- [Connecting to MCP Servers](./mcp-client.md) - `addMcpServer()` and consuming external MCP tools
+- [MCP Transports](./mcp-transports.md) - Transport options: Streamable HTTP, SSE, and RPC
+
+## Authentication & Security
+
+- TODO: [Securing your Agents](./securing-agents.md) - Authentication, authorization, and access control
+- [Cross-Domain Authentication](./cross-domain-authentication.md) - Auth across different domains
+
+## Observability & Debugging
+
+- [Observability](./observability.md) - Monitoring and tracing agent activity
+- TODO: [Testing](./testing.md) - Unit tests, integration tests, mocking agents
+- TODO: [Evals](./evals.md) - Evaluating AI agent quality and behavior
+
+## Agent Studio
+
+- TODO: [Agent Studio](./agent-studio.md) - Local dev tool for inspecting and interacting with agent instances
+
+## Compute Environments
+
+- [Browse the Web (Experimental)](./browse-the-web.md) - Full CDP access for web inspection, scraping, and debugging
+- TODO: [Cloudflare Sandboxes](./sandboxes.md) - Isolated environments for coding agents, ffmpeg, and heavy compute
+
+## Advanced Topics
+
+- [Long-Running Agents](./long-running-agents.md) - Building agents that persist for weeks or months: lifecycle, recovery, async operations, and planning
+- TODO: [SQL API](./sql.md) - Using `this.sql` for direct database queries
+- TODO: [Memory & Persistence](./memory.md) - Long-term storage patterns
+- [Configuration](./configuration.md) - wrangler.jsonc setup, types, secrets, and deployment
+
+## Migration Guides
+
+- [Migration to AI SDK v5](./migration-to-ai-sdk-v5.md)
+- [Migration to AI SDK v6](./migration-to-ai-sdk-v6.md)
+
+## Reference
+
+- TODO: [API Reference](./api-reference.md) - Complete API documentation
+- TODO: [FAQ / How is this different from Durable Objects?](./faq.md)
+- TODO: [Resources & Further Reading](./resources.md)
+
+---
+
+## Contributing
+
+Found something missing? Documentation contributions are welcome!
