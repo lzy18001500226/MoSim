@@ -1,0 +1,217 @@
+import { spawnSync } from 'node:child_process';
+import { mkdirSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+
+function runCompiledRunner(root: string, envOverrides: Record<string, string> = {}, timeoutMs = 5_000) {
+  return spawnSync(process.execPath, ['dist/scripts/run-test-files.js', root], {
+    cwd: process.cwd(),
+    encoding: 'utf-8',
+    env: {
+      ...process.env,
+      ...envOverrides,
+    },
+    timeout: timeoutMs,
+  });
+}
+
+describe('run-test-files diagnostics', () => {
+  it('applies a bounded node --test timeout so hanging tests fail with file context', () => {
+    const wd = mkdtempSync(join(tmpdir(), 'omx-run-test-files-'));
+    try {
+      const testsDir = join(wd, '__tests__');
+      mkdirSync(testsDir, { recursive: true });
+      const testPath = join(testsDir, 'hang.test.js');
+      writeFileSync(
+        testPath,
+        [
+          "import { test } from 'node:test';",
+          "test('never resolves', async () => { await new Promise(() => setInterval(() => {}, 1_000)); });",
+          '',
+        ].join('\n'),
+      );
+
+      const result = runCompiledRunner(wd, {
+        OMX_NODE_TEST_TIMEOUT_MS: '250',
+        OMX_NODE_TEST_RUNNER_TIMEOUT_MS: '750',
+      });
+
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /per-test timeout 250ms/);
+      assert.match(result.stderr, /node --test did not exit normally|runner timeout 750ms/);
+      assert.match(`${result.stdout}\n${result.stderr}`, /hang\.test\.js|never resolves|cancelled/i);
+    } finally {
+      rmSync(wd, { recursive: true, force: true });
+    }
+  });
+
+
+  it('can force-exit Node test runner after successful CI tests to avoid leaked-handle hangs', () => {
+    const wd = mkdtempSync(join(tmpdir(), 'omx-run-test-files-'));
+    try {
+      const testsDir = join(wd, '__tests__');
+      mkdirSync(testsDir, { recursive: true });
+      writeFileSync(
+        join(testsDir, 'leaky-pass.test.js'),
+        [
+          "import { test } from 'node:test';",
+          "test('passes but leaves an interval', () => { setInterval(() => {}, 1_000); });",
+          '',
+        ].join('\n'),
+      );
+
+      const withoutForceExit = runCompiledRunner(wd, { OMX_NODE_TEST_RUNNER_TIMEOUT_MS: '750' }, 2_000);
+      assert.notEqual(withoutForceExit.status, 0);
+      assert.match(withoutForceExit.stderr, /force exit disabled/);
+      assert.match(withoutForceExit.stderr, /did not exit normally|runner timeout 750ms/);
+
+      const withForceExit = runCompiledRunner(
+        wd,
+        { OMX_NODE_TEST_RUNNER_TIMEOUT_MS: '750', OMX_NODE_TEST_FORCE_EXIT: '1' },
+        2_000,
+      );
+      assert.equal(withForceExit.status, 0, withForceExit.stderr || withForceExit.stdout);
+      assert.match(withForceExit.stderr, /force exit enabled/);
+    } finally {
+      rmSync(wd, { recursive: true, force: true });
+    }
+  });
+
+  it('logs that per-test timeout is disabled by default', () => {
+    const wd = mkdtempSync(join(tmpdir(), 'omx-run-test-files-'));
+    try {
+      const testsDir = join(wd, '__tests__');
+      mkdirSync(testsDir, { recursive: true });
+      writeFileSync(
+        join(testsDir, 'pass.test.js'),
+        [
+          "import { test } from 'node:test';",
+          "test('passes', () => {});",
+          '',
+        ].join('\n'),
+      );
+
+      const result = runCompiledRunner(wd);
+
+      assert.equal(result.status, 0, result.stderr || result.stdout);
+      assert.match(result.stderr, /per-test timeout disabled/);
+    } finally {
+      rmSync(wd, { recursive: true, force: true });
+    }
+  });
+
+  it('serializes test files by default in CI to avoid cross-file child-process leaks', () => {
+    const wd = mkdtempSync(join(tmpdir(), 'omx-run-test-files-'));
+    try {
+      const testsDir = join(wd, '__tests__');
+      mkdirSync(testsDir, { recursive: true });
+      writeFileSync(
+        join(testsDir, 'pass.test.js'),
+        [
+          "import { test } from 'node:test';",
+          "test('passes', () => {});",
+          '',
+        ].join('\n'),
+      );
+
+      const result = runCompiledRunner(wd, { CI: 'true' });
+
+      assert.equal(result.status, 0, result.stderr || result.stdout);
+      assert.match(result.stderr, /test concurrency 1/);
+    } finally {
+      rmSync(wd, { recursive: true, force: true });
+    }
+  });
+
+  it('honors an explicit test concurrency override in CI', () => {
+    const wd = mkdtempSync(join(tmpdir(), 'omx-run-test-files-'));
+    try {
+      const testsDir = join(wd, '__tests__');
+      mkdirSync(testsDir, { recursive: true });
+      writeFileSync(
+        join(testsDir, 'pass.test.js'),
+        [
+          "import { test } from 'node:test';",
+          "test('passes', () => {});",
+          '',
+        ].join('\n'),
+      );
+
+      const result = runCompiledRunner(wd, { CI: 'true', OMX_NODE_TEST_CONCURRENCY: '2' });
+
+      assert.equal(result.status, 0, result.stderr || result.stdout);
+      assert.match(result.stderr, /test concurrency 2/);
+    } finally {
+      rmSync(wd, { recursive: true, force: true });
+    }
+  });
+
+  it('sanitizes live OMX runtime state env from child test processes by default', () => {
+    const wd = mkdtempSync(join(tmpdir(), 'omx-run-test-files-'));
+    try {
+      const testsDir = join(wd, '__tests__');
+      mkdirSync(testsDir, { recursive: true });
+      writeFileSync(
+        join(testsDir, 'env-clean.test.js'),
+        [
+          "import { test } from 'node:test';",
+          "import assert from 'node:assert/strict';",
+          "test('runtime env is clean', () => {",
+          "  assert.equal(process.env.OMX_ROOT, undefined);",
+          "  assert.equal(process.env.OMX_STATE_ROOT, undefined);",
+          "  assert.equal(process.env.OMX_TEAM_STATE_ROOT, undefined);",
+          "  assert.equal(process.env.OMX_SESSION_ID, undefined);",
+          "  assert.equal(process.env.CODEX_SESSION_ID, undefined);",
+          "  assert.equal(process.env.SESSION_ID, undefined);",
+          "});",
+          '',
+        ].join('\n'),
+      );
+
+      const result = runCompiledRunner(wd, {
+        OMX_ROOT: '/tmp/live-omx-root',
+        OMX_STATE_ROOT: '/tmp/live-omx-state-root',
+        OMX_TEAM_STATE_ROOT: '/tmp/live-team-state-root',
+        OMX_SESSION_ID: 'live-omx-session',
+        CODEX_SESSION_ID: 'live-codex-session',
+        SESSION_ID: 'live-shell-session',
+      });
+
+      assert.equal(result.status, 0, result.stderr || result.stdout);
+    } finally {
+      rmSync(wd, { recursive: true, force: true });
+    }
+  });
+
+  it('can preserve live OMX runtime state env for explicit diagnostics', () => {
+    const wd = mkdtempSync(join(tmpdir(), 'omx-run-test-files-'));
+    try {
+      const testsDir = join(wd, '__tests__');
+      mkdirSync(testsDir, { recursive: true });
+      writeFileSync(
+        join(testsDir, 'env-preserve.test.js'),
+        [
+          "import { test } from 'node:test';",
+          "import assert from 'node:assert/strict';",
+          "test('runtime env is preserved', () => {",
+          "  assert.equal(process.env.OMX_ROOT, '/tmp/live-omx-root');",
+          "  assert.equal(process.env.OMX_SESSION_ID, 'live-omx-session');",
+          "});",
+          '',
+        ].join('\n'),
+      );
+
+      const result = runCompiledRunner(wd, {
+        OMX_NODE_TEST_PRESERVE_RUNTIME_ENV: '1',
+        OMX_ROOT: '/tmp/live-omx-root',
+        OMX_SESSION_ID: 'live-omx-session',
+      });
+
+      assert.equal(result.status, 0, result.stderr || result.stdout);
+    } finally {
+      rmSync(wd, { recursive: true, force: true });
+    }
+  });
+});
