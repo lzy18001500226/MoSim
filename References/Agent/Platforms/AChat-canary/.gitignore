@@ -1,0 +1,24 @@
+config.yaml
+
+prisma/client/
+
+.env
+config.json
+apps/server/.env
+
+# IDE
+.vscode/
+.idea/
+
+**/.next/
+**/.vscode/
+**/.idea/
+**/.next/
+**/dist/
+# Turbopack
+.turbo
+
+**/node_modules/
+
+# Env
+apps/server/.env
