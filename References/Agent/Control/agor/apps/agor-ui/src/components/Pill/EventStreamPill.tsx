@@ -1,0 +1,80 @@
+/**
+ * EventStreamPill - Reusable clickable ID pill for event stream
+ *
+ * Displays short IDs with copy-to-clipboard functionality
+ * Optionally wraps in Popover for rich metadata display
+ */
+
+import { shortId } from '@agor-live/client';
+import type { AntdIconProps } from '@ant-design/icons/lib/components/AntdIcon';
+import { Popover } from 'antd';
+import type React from 'react';
+import { copyToClipboard } from '../../utils/clipboard';
+import { useThemedMessage } from '../../utils/message';
+import { Tag } from '../Tag';
+
+export interface EventStreamPillProps {
+  /** Full ID to copy to clipboard */
+  id: string;
+  /** Display label for the pill (defaults to short ID) */
+  label?: string;
+  /** Ant Design icon component */
+  icon: React.ComponentType<Partial<AntdIconProps>>;
+  /** Tag color (e.g., 'cyan', 'geekblue') */
+  color: string;
+  /** Human-readable label for copy notification */
+  copyLabel: string;
+  /** Optional metadata card to show in popover on hover */
+  metadataCard?: React.ReactNode;
+}
+
+export const EventStreamPill = ({
+  id,
+  label,
+  icon: Icon,
+  color,
+  copyLabel,
+  metadataCard,
+}: EventStreamPillProps): React.JSX.Element => {
+  const { showSuccess, showError } = useThemedMessage();
+
+  // If metadata card provided, don't copy on click - just show popover
+  // Otherwise, copy to clipboard on click
+  const handleClick = metadataCard
+    ? undefined
+    : async () => {
+        const ok = await copyToClipboard(id);
+        if (ok) {
+          showSuccess(`${copyLabel} copied: ${id}`);
+        } else {
+          showError('Failed to copy to clipboard');
+        }
+      };
+
+  const pill = (
+    <Tag
+      icon={<Icon />}
+      color={color}
+      style={{
+        margin: 0,
+        fontSize: 10,
+        cursor: 'pointer',
+        fontFamily: 'monospace',
+      }}
+      onClick={handleClick}
+    >
+      {label ?? shortId(id)}
+    </Tag>
+  );
+
+  // If metadata card provided, wrap in popover
+  if (metadataCard) {
+    return (
+      <Popover content={metadataCard} title={null} trigger="click" placement="left">
+        {pill}
+      </Popover>
+    );
+  }
+
+  return pill;
+};

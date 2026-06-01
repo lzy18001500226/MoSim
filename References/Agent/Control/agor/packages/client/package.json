@@ -1,0 +1,76 @@
+{
+  "name": "@agor-live/client",
+  "version": "0.20.0",
+  "description": "TypeScript client for connecting to the Agor daemon",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js",
+      "require": "./dist/config.cjs"
+    },
+    "./yaml": {
+      "types": "./dist/yaml.d.ts",
+      "import": "./dist/yaml.js",
+      "require": "./dist/yaml.cjs"
+    },
+    "./jwt": {
+      "types": "./dist/jwt.d.ts",
+      "import": "./dist/jwt.js",
+      "require": "./dist/jwt.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup && node scripts/patch-dts.mjs",
+    "check:pack": "node scripts/validate-pack-artifact.mjs",
+    "dev": "tsup --watch",
+    "prepublishOnly": "pnpm build && pnpm check:pack",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@feathersjs/authentication-client": "^5.0.44",
+    "@feathersjs/feathers": "^5.0.44",
+    "@feathersjs/rest-client": "^5.0.44",
+    "@feathersjs/socketio-client": "^5.0.44",
+    "js-yaml": "^4.1.1",
+    "socket.io-client": "^4.8.3"
+  },
+  "devDependencies": {
+    "@agor/core": "workspace:*",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^24.6.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "keywords": [
+    "agor",
+    "client",
+    "ai",
+    "agents",
+    "orchestration"
+  ],
+  "author": "Maxime Beauchemin <maximebeauchemin@gmail.com>",
+  "license": "BUSL-1.1",
+  "homepage": "https://agor.live",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/preset-io/agor.git",
+    "directory": "packages/client"
+  },
+  "bugs": {
+    "url": "https://github.com/preset-io/agor/issues"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

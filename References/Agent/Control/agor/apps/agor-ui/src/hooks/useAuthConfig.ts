@@ -1,0 +1,122 @@
+/**
+ * useAuthConfig - Fetch daemon authentication and instance configuration
+ *
+ * Retrieves auth config and instance info from the daemon's health endpoint.
+ * Used on app startup to determine if login page should be shown and display instance label.
+ */
+
+import type { DaemonServicesConfig } from '@agor-live/client';
+import { useEffect, useState } from 'react';
+import { getDaemonUrl } from '../config/daemon';
+
+interface AuthConfig {
+  requireAuth: boolean;
+}
+
+interface InstanceConfig {
+  label?: string;
+  description?: string;
+}
+
+interface SystemCredentials {
+  ANTHROPIC_API_KEY?: boolean;
+  OPENAI_API_KEY?: boolean;
+  GEMINI_API_KEY?: boolean;
+  CURSOR_API_KEY?: boolean;
+}
+
+interface OnboardingConfig {
+  assistantPending?: boolean;
+  /** @deprecated Use assistantPending instead */
+  persistedAgentPending?: boolean;
+  frameworkRepoUrl?: string;
+  systemCredentials?: SystemCredentials;
+}
+
+interface FeaturesConfig {
+  /**
+   * Whether the web terminal is enabled for members (execution.allow_web_terminal).
+   * Defaults to true when the daemon config key is unset.
+   */
+  webTerminal?: boolean;
+  /**
+   * Minimum role required to trigger managed environment commands
+   * (start/stop/nuke/logs). Value: 'none' | 'viewer' | 'member' | 'admin' |
+   * 'superadmin'. UI uses this to disable trigger buttons with a tooltip for
+   * users below the threshold. Server-side enforcement in
+   * services/branches.ts is the source of truth. Defaults to 'member'.
+   */
+  managedEnvsMinimumRole?: 'none' | 'viewer' | 'member' | 'admin' | 'superadmin';
+  /**
+   * True when the daemon runs in a multi-user Unix isolation mode
+   * (insulated/strict). The UI uses this to hide "trust everyone on this
+   * instance" surfaces (e.g. the `instance` scope option in the artifact
+   * consent modal). Server-side gates are the source of truth.
+   */
+  multiUser?: boolean;
+  /** Experimental Cursor SDK provider enabled on the daemon. */
+  cursorSdk?: boolean;
+}
+
+interface HealthResponse {
+  status: string;
+  timestamp: number;
+  version: string;
+  database: string;
+  auth: AuthConfig;
+  instance?: InstanceConfig;
+  onboarding?: OnboardingConfig;
+  services?: DaemonServicesConfig;
+  features?: FeaturesConfig;
+}
+
+export function useAuthConfig() {
+  const [config, setConfig] = useState<AuthConfig | null>(null);
+  const [instanceConfig, setInstanceConfig] = useState<InstanceConfig | null>(null);
+  const [onboardingConfig, setOnboardingConfig] = useState<OnboardingConfig | null>(null);
+  const [servicesConfig, setServicesConfig] = useState<DaemonServicesConfig | undefined>(undefined);
+  const [featuresConfig, setFeaturesConfig] = useState<FeaturesConfig | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    async function fetchAuthConfig() {
+      try {
+        const response = await fetch(`${getDaemonUrl()}/health`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch auth config: ${response.statusText}`);
+        }
+
+        const health: HealthResponse = await response.json();
+        setConfig(health.auth);
+        setInstanceConfig(health.instance ?? null);
+        setOnboardingConfig(health.onboarding ?? null);
+        setServicesConfig(health.services);
+        setFeaturesConfig(health.features);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error(String(err)));
+        // Default to requiring auth on error (secure by default)
+        setConfig({ requireAuth: true });
+        setInstanceConfig(null);
+        setOnboardingConfig(null);
+        setServicesConfig(undefined);
+        setFeaturesConfig(undefined);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchAuthConfig();
+  }, []);
+
+  return {
+    config,
+    instanceConfig,
+    onboardingConfig,
+    servicesConfig,
+    featuresConfig,
+    loading,
+    error,
+  };
+}

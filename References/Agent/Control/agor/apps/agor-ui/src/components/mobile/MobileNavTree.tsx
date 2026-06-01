@@ -1,0 +1,243 @@
+import type { Board, BoardComment, Branch, Session } from '@agor-live/client';
+import { CommentOutlined, DownOutlined } from '@ant-design/icons';
+import { Badge, Button, Collapse, Space, Typography, theme } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { mapToArray } from '@/utils/mapHelpers';
+import { getSessionDisplayTitle } from '@/utils/sessionTitle';
+import { BoardCollapse } from '../BoardCollapse';
+
+const { Text } = Typography;
+
+interface MobileNavTreeProps {
+  boardById: Map<string, Board>;
+  branchById: Map<string, Branch>;
+  sessionsByBranch: Map<string, Session[]>; // O(1) branch filtering
+  commentById: Map<string, BoardComment>;
+  onNavigate?: () => void;
+}
+
+export const MobileNavTree: React.FC<MobileNavTreeProps> = ({
+  boardById,
+  branchById,
+  sessionsByBranch,
+  commentById,
+  onNavigate,
+}) => {
+  const navigate = useNavigate();
+  const { token } = theme.useToken();
+
+  const handleSessionClick = (sessionId: string) => {
+    navigate(`/m/session/${sessionId}`);
+    onNavigate?.();
+  };
+
+  const handleCommentsClick = (boardId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent board collapse toggle
+    navigate(`/m/comments/${boardId}`);
+    onNavigate?.();
+  };
+
+  // Count active comments per board (unresolved)
+  const getActiveCommentCount = (boardId: string): number => {
+    return mapToArray(commentById).filter(
+      (c: BoardComment) => c.board_id === boardId && !c.resolved && !c.parent_comment_id
+    ).length;
+  };
+
+  // Group branches by board
+  const branchesByBoard = {} as Record<string, Branch[]>;
+  for (const branch of branchById.values()) {
+    const boardId = branch.board_id || 'unassigned';
+    if (!branchesByBoard[boardId]) {
+      branchesByBoard[boardId] = [];
+    }
+    branchesByBoard[boardId].push(branch);
+  }
+
+  // Sort sessions within each branch by last_updated (most recent first)
+  // Convert Map to sorted Map for consistent rendering
+  const sortedSessionsByBranch = new Map(
+    Array.from(sessionsByBranch.entries()).map(([branchId, branchSessions]) => [
+      branchId,
+      [...branchSessions].sort((a, b) => {
+        const aTime = new Date(a.last_updated).getTime();
+        const bTime = new Date(b.last_updated).getTime();
+        return bTime - aTime; // DESC (most recent first)
+      }),
+    ])
+  );
+
+  // Get session title with mobile-friendly 50-char limit
+  const getSessionTitle = (session: Session): string => {
+    return getSessionDisplayTitle(session, {
+      fallbackChars: 50,
+      includeIdFallback: true,
+    });
+  };
+
+  // Get session status icon
+  const getSessionStatusIcon = (session: Session): string => {
+    if (session.status === 'running') return '▶️';
+    if (session.status === 'completed') return '✅';
+    if (session.status === 'failed') return '❌';
+    return '⏸️';
+  };
+
+  const boards = mapToArray(boardById);
+
+  return (
+    <div
+      style={{
+        overflowY: 'auto',
+        height: 'calc(100vh - 64px)',
+      }}
+    >
+      <BoardCollapse
+        items={boards.map((board: Board) => {
+          const boardBranches = branchesByBoard[board.board_id] || [];
+          const activeComments = getActiveCommentCount(board.board_id);
+
+          return {
+            key: board.board_id,
+            board,
+            badge: (
+              <Space size={8}>
+                <Badge
+                  count={boardBranches.length}
+                  style={{ backgroundColor: token.colorPrimaryBg }}
+                  showZero
+                />
+                <Badge
+                  count={activeComments}
+                  offset={[-6, 6]}
+                  styles={{
+                    indicator: {
+                      backgroundColor: `${token.colorPrimary}80`, // 0.5 opacity (80 in hex = 128/255 ≈ 0.5)
+                      boxShadow: '0 0 0 2px rgba(0, 0, 0, 0.5)',
+                    },
+                  }}
+                >
+                  <Button
+                    type="text"
+                    icon={<CommentOutlined style={{ fontSize: 18 }} />}
+                    onClick={(e) => handleCommentsClick(board.board_id, e)}
+                    style={{
+                      padding: '6px 10px',
+                      height: 'auto',
+                      color: activeComments > 0 ? token.colorPrimary : token.colorTextSecondary,
+                    }}
+                  />
+                </Badge>
+              </Space>
+            ),
+            children:
+              boardBranches.length === 0 ? (
+                <Text type="secondary">No branches on this board</Text>
+              ) : (
+                <Collapse
+                  defaultActiveKey={[]}
+                  ghost
+                  expandIcon={({ isActive }) => <DownOutlined rotate={isActive ? 180 : 0} />}
+                  items={boardBranches
+                    .sort((a, b) => {
+                      // Sort branches by most recent session activity
+                      const aMaxActivity = Math.max(
+                        ...(sortedSessionsByBranch.get(a.branch_id) || []).map((s) =>
+                          new Date(s.last_updated).getTime()
+                        ),
+                        0
+                      );
+                      const bMaxActivity = Math.max(
+                        ...(sortedSessionsByBranch.get(b.branch_id) || []).map((s) =>
+                          new Date(s.last_updated).getTime()
+                        ),
+                        0
+                      );
+                      return bMaxActivity - aMaxActivity; // DESC (most recent first)
+                    })
+                    .map((branch) => {
+                      const branchSessions = sortedSessionsByBranch.get(branch.branch_id) || [];
+
+                      return {
+                        key: branch.branch_id,
+                        label: (
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: 2,
+                              padding: '2px 0',
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <span>🌳</span>
+                              <Text strong>{branch.name}</Text>
+                            </div>
+                            <Text type="secondary" style={{ fontSize: 12, paddingLeft: 28 }}>
+                              {branchSessions.length} sessions
+                            </Text>
+                          </div>
+                        ),
+                        children:
+                          branchSessions.length === 0 ? (
+                            <Text
+                              type="secondary"
+                              style={{ padding: '8px 0 8px 28px', display: 'block' }}
+                            >
+                              No sessions yet
+                            </Text>
+                          ) : (
+                            <div>
+                              {branchSessions.map((session) => (
+                                <div
+                                  key={session.session_id}
+                                  onClick={() => handleSessionClick(session.session_id)}
+                                  style={{
+                                    cursor: 'pointer',
+                                    padding: '6px 8px 6px 28px',
+                                    borderRadius: 4,
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    (e.currentTarget as HTMLElement).style.background =
+                                      'rgba(255, 255, 255, 0.04)';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    (e.currentTarget as HTMLElement).style.background =
+                                      'transparent';
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      flexDirection: 'column',
+                                      gap: 2,
+                                      width: '100%',
+                                    }}
+                                  >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                      <span>{getSessionStatusIcon(session)}</span>
+                                      <Text>{getSessionTitle(session)}</Text>
+                                    </div>
+                                    <Text
+                                      type="secondary"
+                                      style={{ fontSize: 11, paddingLeft: 28 }}
+                                    >
+                                      {session.agentic_tool}
+                                      {session.model_config?.model &&
+                                        ` • ${session.model_config.model}`}
+                                    </Text>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ),
+                      };
+                    })}
+                />
+              ),
+          };
+        })}
+      />
+    </div>
+  );
+};

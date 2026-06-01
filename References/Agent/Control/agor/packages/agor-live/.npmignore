@@ -1,0 +1,21 @@
+# Only publish bin/ and dist/ directories
+# Everything else is excluded by default with "files" in package.json
+
+# Build script (not needed in published package)
+build.sh
+
+# Development files
+*.md
+!README.md
+
+# Node modules: NOT ignored here because package.json "files" field
+# explicitly includes "node_modules/@agor" for bundled @agor/core
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo

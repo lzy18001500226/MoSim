@@ -1,0 +1,471 @@
+/**
+ * Hook for managing board objects (text labels, zones, etc.)
+ */
+
+import type {
+  AgorClient,
+  Board,
+  BoardEntityObject,
+  BoardObject,
+  Branch,
+  Session,
+} from '@agor-live/client';
+import { useCallback, useMemo, useRef } from 'react';
+import type { Node } from 'reactflow';
+import { mapToArray } from '@/utils/mapHelpers';
+
+interface UseBoardObjectsProps {
+  board: Board | null;
+  client: AgorClient | null;
+  sessionsByBranch: Map<string, Session[]>; // O(1) branch filtering
+  branches: Branch[];
+  boardObjectById: Map<string, BoardEntityObject>; // Map-based board object storage
+  setNodes: React.Dispatch<React.SetStateAction<Node[]>>;
+  deletedObjectsRef: React.MutableRefObject<Set<string>>;
+  eraserMode?: boolean;
+  selectedSessionId?: string | null;
+  /** Artifact ID currently targeted by an `/a/<…>/` deep link. Used to
+   *  flag the matching ArtifactNode so it can render the dashed
+   *  "selected" outline. */
+  activeUrlTargetArtifactId?: string | null;
+  onEditMarkdown?: (objectId: string, content: string, width: number) => void;
+}
+
+export const useBoardObjects = ({
+  board,
+  client,
+  sessionsByBranch,
+  branches,
+  boardObjectById,
+  setNodes,
+  deletedObjectsRef,
+  eraserMode = false,
+  selectedSessionId,
+  activeUrlTargetArtifactId,
+  onEditMarkdown,
+}: UseBoardObjectsProps) => {
+  // Use ref to avoid recreating callbacks when board changes
+  const boardRef = useRef(board);
+  boardRef.current = board;
+
+  // Stabilize board.objects reference using deep equality comparison
+  // This prevents unnecessary re-renders when board object changes but content is identical
+  const boardObjectsJson = board?.objects ? JSON.stringify(board.objects) : null;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Intentionally using JSON serialization for deep equality
+  const boardObjects = useMemo(() => board?.objects, [boardObjectsJson]);
+
+  // Get session IDs for this board (branch-centric model)
+  const _boardSessionIds = useMemo(() => {
+    if (!board) return [];
+    const boardBranchIds = branches
+      .filter((w) => w.board_id === board.board_id)
+      .map((w) => w.branch_id);
+
+    // Use O(1) Map lookups to get sessions for each branch
+    return boardBranchIds
+      .flatMap((branchId) => sessionsByBranch.get(branchId) || [])
+      .map((s) => s.session_id);
+  }, [board, branches, sessionsByBranch]);
+
+  /**
+   * Update an existing board object
+   */
+  const handleUpdateObject = useCallback(
+    async (objectId: string, objectData: BoardObject) => {
+      const currentBoard = boardRef.current;
+      if (!currentBoard || !client) return;
+
+      try {
+        await client.service('boards').patch(currentBoard.board_id, {
+          _action: 'upsertObject',
+          objectId,
+          objectData,
+        } as unknown as Partial<Board>);
+      } catch (error) {
+        console.error('Failed to update object:', error);
+      }
+    },
+    [client] // Only depend on client, not board
+  );
+
+  /**
+   * Delete a zone (branch-centric: zones can pin branches)
+   */
+  const deleteZone = useCallback(
+    async (objectId: string, _deleteAssociatedSessions: boolean) => {
+      if (!board || !client) return;
+
+      // Mark as deleted to prevent re-appearance during WebSocket updates
+      deletedObjectsRef.current.add(objectId);
+
+      // Find branches and cards pinned to this zone (via board_objects.zone_id)
+      const affectedObjectIds: string[] = [];
+      for (const boardObj of mapToArray(boardObjectById)) {
+        if (boardObj.zone_id === objectId && (boardObj.branch_id || boardObj.card_id)) {
+          affectedObjectIds.push(boardObj.object_id);
+        }
+      }
+
+      // Optimistic removal of zone (just the zone node, entities remain but unpinned)
+      setNodes((nodes) => nodes.filter((n) => n.id !== objectId));
+
+      try {
+        // IMPORTANT: Unpin entities FIRST before deleting the zone
+        // This prevents a race condition where entities have parentId pointing to a deleted zone
+        for (const objId of affectedObjectIds) {
+          await client.service('board-objects').patch(objId, {
+            zone_id: null,
+          });
+        }
+
+        // Now delete the zone after all branches are unpinned
+        await client.service('boards').patch(board.board_id, {
+          _action: 'deleteZone',
+          objectId,
+        } as unknown as Partial<Board>);
+
+        // After successful deletion, we can remove from the tracking set
+        setTimeout(() => {
+          deletedObjectsRef.current.delete(objectId);
+        }, 1000);
+      } catch (error) {
+        console.error('Failed to delete zone:', error);
+        // Rollback: remove from deleted set
+        deletedObjectsRef.current.delete(objectId);
+        // Note: WebSocket update should restore the actual state
+      }
+    },
+    [board, client, setNodes, deletedObjectsRef, boardObjectById]
+  );
+
+  /**
+   * Delete a board object
+   */
+  const deleteObject = useCallback(
+    async (objectId: string) => {
+      const currentBoard = boardRef.current;
+      if (!currentBoard || !client) return;
+
+      // Mark as deleted to prevent re-appearance during WebSocket updates
+      deletedObjectsRef.current.add(objectId);
+
+      // Optimistic removal
+      setNodes((nodes) => nodes.filter((n) => n.id !== objectId));
+
+      try {
+        await client.service('boards').patch(currentBoard.board_id, {
+          _action: 'removeObject',
+          objectId,
+        } as unknown as Partial<Board>);
+
+        // After successful deletion, we can remove from the tracking set
+        // (the object will no longer exist in board.objects)
+        setTimeout(() => {
+          deletedObjectsRef.current.delete(objectId);
+        }, 1000);
+      } catch (error) {
+        console.error('Failed to delete object:', error);
+        // Rollback: remove from deleted set
+        deletedObjectsRef.current.delete(objectId);
+      }
+    },
+    [client, setNodes, deletedObjectsRef] // Removed board dependency
+  );
+
+  /**
+   * Delete an artifact entity (filesystem + board object + DB record).
+   * Uses the artifacts service's lifecycle-safe remove method.
+   */
+  const deleteArtifact = useCallback(
+    async (objectId: string, artifactId: string) => {
+      if (!client) return;
+
+      // Mark as deleted to prevent re-appearance during WebSocket updates
+      deletedObjectsRef.current.add(objectId);
+
+      // Optimistic removal
+      setNodes((nodes) => nodes.filter((n) => n.id !== objectId));
+
+      try {
+        // Lifecycle-safe: removes filesystem + board object + DB record
+        await client.service('artifacts').remove(artifactId);
+
+        setTimeout(() => {
+          deletedObjectsRef.current.delete(objectId);
+        }, 1000);
+      } catch (error) {
+        console.error('Failed to delete artifact:', error);
+        deletedObjectsRef.current.delete(objectId);
+      }
+    },
+    [client, setNodes, deletedObjectsRef]
+  );
+
+  /**
+   * Convert board.objects to React Flow nodes
+   */
+  const getBoardObjectNodes = useCallback((): Node[] => {
+    if (!boardObjects) return [];
+
+    return Object.entries(boardObjects)
+      .filter(([, objectData]) => {
+        // Filter out objects with invalid positions (prevents NaN errors in React Flow)
+        const hasValidPosition =
+          typeof objectData.x === 'number' &&
+          typeof objectData.y === 'number' &&
+          !Number.isNaN(objectData.x) &&
+          !Number.isNaN(objectData.y);
+
+        if (!hasValidPosition) {
+          console.warn(`Skipping board object with invalid position:`, objectData);
+        }
+
+        return hasValidPosition;
+      })
+      .map(([objectId, objectData]) => {
+        // App node (live Sandpack preview)
+        if (objectData.type === 'app') {
+          return {
+            id: objectId,
+            type: 'appNode',
+            position: { x: objectData.x, y: objectData.y },
+            // draggable inherits from canvas-level nodesDraggable (mutationGate.canMutate)
+            selectable: true,
+            zIndex: 400, // Above markdown (300), below branches (500)
+            className: eraserMode ? 'eraser-mode' : undefined,
+            data: {
+              objectId,
+              title: objectData.title,
+              description: objectData.description,
+              template: objectData.template,
+              files: objectData.files,
+              dependencies: objectData.dependencies,
+              entryFile: objectData.entryFile,
+              showEditor: objectData.showEditor,
+              showConsole: objectData.showConsole,
+              width: objectData.width,
+              height: objectData.height,
+              onUpdate: handleUpdateObject,
+              onDelete: deleteObject,
+            },
+          };
+        }
+
+        // Artifact node (filesystem-backed Sandpack preview)
+        if (objectData.type === 'artifact') {
+          return {
+            id: objectId,
+            type: 'artifactNode',
+            position: { x: objectData.x, y: objectData.y },
+            // draggable inherits from canvas-level nodesDraggable (mutationGate.canMutate)
+            selectable: true,
+            zIndex: 400,
+            className: eraserMode ? 'eraser-mode' : undefined,
+            data: {
+              objectId,
+              artifactId: objectData.artifact_id,
+              width: objectData.width,
+              height: objectData.height,
+              isActiveUrlTarget: objectData.artifact_id === activeUrlTargetArtifactId,
+              onUpdate: handleUpdateObject,
+              onDeleteArtifact: deleteArtifact,
+            },
+          };
+        }
+
+        // Markdown note node
+        if (objectData.type === 'markdown') {
+          return {
+            id: objectId,
+            type: 'markdown',
+            position: { x: objectData.x, y: objectData.y },
+            // draggable inherits from canvas-level nodesDraggable (mutationGate.canMutate)
+            selectable: true,
+            zIndex: 300, // Above zones (100), below branches (500)
+            className: eraserMode ? 'eraser-mode' : undefined,
+            data: {
+              objectId,
+              content: objectData.content,
+              width: objectData.width,
+              onUpdate: handleUpdateObject,
+              onEdit: onEditMarkdown,
+            },
+          };
+        }
+
+        // Calculate branch count for this zone (branch-centric model)
+        let sessionCount = 0;
+        if (objectData.type === 'zone') {
+          // Count branches pinned to this zone via board_objects.zone_id
+          for (const boardObj of mapToArray(boardObjectById)) {
+            if (boardObj.zone_id === objectId) {
+              // Count sessions in this branch using O(1) Map lookup
+              const branchSessions = boardObj.branch_id
+                ? sessionsByBranch.get(boardObj.branch_id) || []
+                : [];
+              sessionCount += branchSessions.length;
+            }
+          }
+        }
+
+        // Zone node
+        const isLocked = objectData.type === 'zone' ? objectData.locked : false;
+        return {
+          id: objectId,
+          type: 'zone',
+          position: { x: objectData.x, y: objectData.y },
+          // Locked zones are never draggable. Unlocked zones inherit from
+          // canvas-level nodesDraggable (mutationGate.canMutate).
+          ...(isLocked ? { draggable: false } : {}),
+          zIndex: 100, // Zones behind branches and comments
+          className: eraserMode ? 'eraser-mode' : undefined,
+          // Set dimensions both as direct props (for collision detection) and style (for rendering)
+          width: objectData.width,
+          height: objectData.height,
+          style: {
+            width: objectData.width,
+            height: objectData.height,
+          },
+          data: {
+            objectId,
+            label: objectData.type === 'zone' ? objectData.label : '',
+            width: objectData.width,
+            height: objectData.height,
+            borderColor: objectData.type === 'zone' ? objectData.borderColor : undefined,
+            backgroundColor: objectData.type === 'zone' ? objectData.backgroundColor : undefined,
+            color: objectData.color, // Backwards compatibility
+            status: objectData.type === 'zone' ? objectData.status : undefined,
+            locked: isLocked,
+            x: objectData.x, // Include position in data for updates
+            y: objectData.y,
+            trigger: objectData.type === 'zone' ? objectData.trigger : undefined,
+            sessionCount,
+            onUpdate: handleUpdateObject,
+            onDelete: deleteZone,
+          },
+        };
+      });
+  }, [
+    boardObjects, // Use stabilized boardObjects instead of board?.objects
+    boardObjectById,
+    sessionsByBranch,
+    handleUpdateObject,
+    deleteZone,
+    deleteObject,
+    deleteArtifact,
+    eraserMode,
+    activeUrlTargetArtifactId,
+    onEditMarkdown,
+  ]);
+
+  /**
+   * Add a zone node at the specified position
+   */
+  const addZoneNode = useCallback(
+    async (x: number, y: number) => {
+      const currentBoard = boardRef.current;
+      if (!currentBoard || !client) return;
+
+      const objectId = `zone-${Date.now()}`;
+      const width = 400;
+      const height = 600;
+
+      // Optimistic update
+      setNodes((nodes) => [
+        ...nodes,
+        {
+          id: objectId,
+          type: 'zone',
+          position: { x, y },
+          // draggable inherits from canvas-level nodesDraggable (mutationGate.canMutate)
+          zIndex: 100, // Zones behind branches and comments
+          style: {
+            width,
+            height,
+          },
+          data: {
+            objectId,
+            label: 'New Zone',
+            width,
+            height,
+            color: undefined, // Will use theme default (colorBorder)
+            onUpdate: handleUpdateObject,
+          },
+        },
+      ]);
+
+      // Persist atomically
+      try {
+        await client.service('boards').patch(currentBoard.board_id, {
+          _action: 'upsertObject',
+          objectId,
+          objectData: {
+            type: 'zone',
+            x,
+            y,
+            width,
+            height,
+            label: 'New Zone',
+            // No color specified - will use theme default
+          },
+        } as unknown as Partial<Board>);
+      } catch (error) {
+        console.error('Failed to add zone node:', error);
+        // Rollback
+        setNodes((nodes) => nodes.filter((n) => n.id !== objectId));
+      }
+    },
+    [client, setNodes, handleUpdateObject] // Removed board dependency
+  );
+
+  /**
+   * Batch update positions for board objects after drag
+   */
+  const batchUpdateObjectPositions = useCallback(
+    async (updates: Record<string, { x: number; y: number }>) => {
+      const currentBoard = boardRef.current;
+      if (!currentBoard || !client || Object.keys(updates).length === 0) return;
+
+      try {
+        // Build objects payload with full object data + new positions
+        const objects: Record<string, BoardObject> = {};
+
+        for (const [objectId, position] of Object.entries(updates)) {
+          // Skip objects that have been deleted locally
+          if (deletedObjectsRef.current.has(objectId)) {
+            continue;
+          }
+
+          const existingObject = currentBoard.objects?.[objectId];
+          if (!existingObject) continue;
+
+          objects[objectId] = {
+            ...existingObject,
+            x: position.x,
+            y: position.y,
+          };
+        }
+
+        if (Object.keys(objects).length === 0) {
+          return;
+        }
+
+        await client.service('boards').patch(currentBoard.board_id, {
+          _action: 'batchUpsertObjects',
+          objects,
+        } as unknown as Partial<Board>);
+      } catch (error) {
+        console.error('Failed to persist object positions:', error);
+      }
+    },
+    [client, deletedObjectsRef] // Removed board dependency
+  );
+
+  return {
+    getBoardObjectNodes,
+    addZoneNode,
+    deleteObject,
+    deleteZone,
+    batchUpdateObjectPositions,
+  };
+};

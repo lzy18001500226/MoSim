@@ -1,0 +1,18 @@
+# robots.txt for agor.live
+User-agent: *
+Allow: /
+Crawl-delay: 1
+
+# Block internal/build paths
+Disallow: /_next/
+Disallow: /404
+
+# Sitemap
+Sitemap: https://agor.live/sitemap.xml
+
+# LLM metadata
+# See https://agor.live/llms.txt for LLM-optimized content
+
+# Block aggressive crawlers
+User-agent: Bytespider
+Disallow: /

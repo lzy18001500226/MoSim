@@ -1,0 +1,75 @@
+/* Agor Documentation Custom Styles */
+
+:root {
+  --agor-teal: #2e9a92;
+  --agor-teal-light: #3db4aa;
+  --agor-teal-dark: #236e68;
+  --agor-gradient: linear-gradient(90deg, #2e9a92 0%, #7fe8df 50%, #a8f5ed 100%);
+}
+
+/* Gradient text utility class for brand consistency */
+.gradient-text {
+  background: var(--agor-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+/* Custom link color for brand consistency */
+.dark a {
+  color: var(--agor-teal-light);
+}
+
+.dark a:hover {
+  color: var(--agor-teal);
+}
+
+/* Code blocks with brand accent */
+.dark pre {
+  border-left: 3px solid var(--agor-teal);
+}
+
+/* Inline code styling */
+.dark code {
+  background: rgba(46, 154, 146, 0.1);
+  border: 1px solid rgba(46, 154, 146, 0.2);
+}
+
+/* Callout boxes with brand colors */
+.dark .nx-callout {
+  border-left-color: var(--agor-teal);
+}
+
+/* Table styling */
+.dark table thead {
+  background: rgba(46, 154, 146, 0.1);
+}
+
+/* Search highlight */
+.dark mark {
+  background: rgba(46, 154, 146, 0.3);
+  color: white;
+}
+
+/* Custom scrollbar */
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--agor-teal-dark);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--agor-teal);
+}
+
+/* Main content area - solid background over particles */
+.dark main {
+  background-color: #111111;
+  position: relative;
+  z-index: 1;
+}
+
+main {
+  background-color: #ffffff;
+  position: relative;
+  z-index: 1;
+}

@@ -1,0 +1,114 @@
+---
+title: WebSocket Events
+description: Real-time WebSocket event documentation for agor. Socket.io event reference for sessions, tasks, messages, and multiplayer presence updates.
+---
+
+# WebSocket Events
+
+Real-time events broadcast via Socket.io.
+
+## Connection
+
+```javascript
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3030');
+
+socket.on('connect', () => {
+  console.log('Connected to Agor daemon');
+});
+```
+
+## Events
+
+### `cursor-moved`
+
+Broadcast when a user moves their cursor on the board.
+
+**Payload:**
+
+```typescript
+{
+  userId: string;
+  boardId: string;
+  x: number;
+  y: number;
+  timestamp: number;
+}
+```
+
+**Example:**
+
+```javascript
+socket.on('cursor-moved', data => {
+  console.log(`User ${data.userId} moved to (${data.x}, ${data.y})`);
+});
+```
+
+---
+
+### `session-created`
+
+Broadcast when a new session is created.
+
+**Payload:**
+
+```typescript
+{
+  session_id: string;
+  agent: string;
+  status: string;
+  created_at: number;
+}
+```
+
+---
+
+### `session-updated`
+
+Broadcast when a session is updated.
+
+**Payload:**
+
+```typescript
+{
+  session_id: string;
+  changes: { ... };
+  updated_at: number;
+}
+```
+
+---
+
+### `board-updated`
+
+Broadcast when a board layout changes.
+
+**Payload:**
+
+```typescript
+{
+  board_id: string;
+  sessions: Array<{ session_id: string; position: { x: number; y: number } }>;
+  zones: Array<{ ... }>;
+}
+```
+
+---
+
+## Service Events
+
+Each FeathersJS service emits standard events:
+
+- `<service> created` - Resource created
+- `<service> updated` - Resource updated
+- `<service> patched` - Resource patched
+- `<service> removed` - Resource deleted
+
+**Example:**
+
+```javascript
+socket.on('sessions created', session => {
+  console.log('New session:', session);
+});
+```

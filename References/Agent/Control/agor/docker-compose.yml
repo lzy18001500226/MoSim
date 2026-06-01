@@ -1,0 +1,218 @@
+# Agor Development Environment
+#
+# This Docker Compose setup supports:
+# - Multiple branches running simultaneously (via -p flag)
+# - Both SQLite (default) and PostgreSQL databases
+# - Isolated environments per branch (separate volumes, ports, node_modules)
+#
+# ==============================================================================
+# Quick Start
+# ==============================================================================
+#
+# Single branch (SQLite):
+#   docker compose up
+#
+# Multiple branches (recommended - see .agor.yml):
+#   docker compose -p agor-postgres-support up -d
+#   docker compose -p agor-main up -d
+#
+# PostgreSQL (optional - for multi-user or production-like setup):
+#   docker compose --profile postgres up
+#
+# Or set in .env file:
+#   COMPOSE_PROFILES=postgres
+#   docker compose up
+#
+# ==============================================================================
+# Multi-Branch Isolation
+# ==============================================================================
+#
+# The -p (project name) flag creates completely isolated environments:
+# - SHARED Docker image (all projects use agor-dev:latest - saves disk space!)
+# - Separate volumes (database, config) - isolated per project
+# - Separate networks and containers
+# - Separate ports (using unique_id offset in .agor.yml)
+#
+# Dependencies are baked into the Docker image:
+# - node_modules preserved via anonymous volumes (shadows bind mount)
+# - No pnpm install at runtime - instant container startup!
+# - Rebuild image when pnpm-lock.yaml changes: docker compose up --build
+#
+# ==============================================================================
+# Database Modes
+# ==============================================================================
+#
+# 1. SQLite Mode (default):
+#    - No PostgreSQL container runs
+#    - Database stored in ~/.agor/agor.db (inside container volume)
+#    - Lightweight, perfect for single-user development
+#
+# 2. PostgreSQL Mode (with --profile postgres):
+#    - PostgreSQL container runs automatically
+#    - Database in postgres-data volume
+#    - Better for multi-user scenarios or testing production setup
+#    - Set DATABASE_URL or it auto-connects to postgres:5432
+#
+# ==============================================================================
+# Configuration
+# ==============================================================================
+#
+# Copy .env.example to .env and customize:
+#   cp .env.example .env
+#
+# Key environment variables:
+#   AGOR_DB_DIALECT              - 'sqlite' (default) or 'postgresql'
+#   DATABASE_URL                 - Full PostgreSQL connection URL (when using PostgreSQL)
+#   POSTGRES_DB                  - Database name (default: agor)
+#   POSTGRES_USER                - Database user (default: agor)
+#   POSTGRES_PASSWORD            - Database password (default: agor_dev_secret)
+#
+#
+# ==============================================================================
+
+services:
+  agor-dev:
+    # Use fixed image name - all projects share the same base image
+    # Only volumes are isolated per project (via -p flag)
+    # This saves disk space and build time!
+    image: agor-dev:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: development
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    # Ensure we run as the 'agor' user (defined in Dockerfile)
+    # This is critical for sudo access and permission handling in entrypoint
+    user: agor
+    # No container_name - allows multiple instances via docker compose -p flag
+    ports:
+      # Expose daemon port (so browser can connect) - configurable via DAEMON_PORT
+      - '${DAEMON_PORT:-3030}:${DAEMON_PORT:-3030}'
+      # Expose UI port (configurable via UI_PORT env var)
+      - '${UI_PORT:-5173}:${UI_PORT:-5173}'
+    # Add host.docker.internal mapping for Linux compatibility
+    # On Mac/Windows, Docker Desktop provides this automatically
+    # On Linux, we need to explicitly map it to the Docker host gateway
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      # Daemon configuration
+      - NODE_ENV=development
+      - DAEMON_PORT=${DAEMON_PORT:-3030}
+      - DAEMON_HOST=${DAEMON_HOST:-0.0.0.0}
+      - CORS_ORIGIN=${CORS_ORIGIN:-*}
+
+      # UI configuration
+      - UI_PORT=${UI_PORT:-5173}
+      # UI connects to daemon via localhost (inside container)
+      - VITE_DAEMON_PORT=${DAEMON_PORT:-3030}
+
+      # Database configuration
+      # AUTO-DETECT: If postgres container is running, use PostgreSQL; otherwise SQLite
+      # This allows `docker compose --profile postgres up` to just work!
+      - AGOR_DB_DIALECT=${AGOR_DB_DIALECT:-sqlite}
+      - DATABASE_URL=${DATABASE_URL:-}
+
+      # Seed development fixtures (optional, set SEED=true to populate test data)
+      # Creates: Agor repo (https://github.com/preset-io/agor.git) + test-branch
+      - SEED=${SEED:-false}
+
+      # Pass through API keys from host (if set)
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+
+      # Executor Unix user isolation (set AGOR_USE_EXECUTOR=true to enable)
+      # When enabled, executors run as separate Unix user via sudo
+      - AGOR_USE_EXECUTOR=${AGOR_USE_EXECUTOR:-false}
+      - AGOR_EXECUTOR_USERNAME=${AGOR_EXECUTOR_USERNAME:-agor_executor}
+
+      # Branch RBAC + Unix isolation tier (written into ~/.agor/config.yaml
+      # by the entrypoint before the daemon boots). Both are optional — when
+      # unset the existing config.yaml values are left alone.
+      #   AGOR_RBAC_ENABLED=true         → execution.branch_rbac: true
+      #   AGOR_UNIX_USER_MODE=insulated  → execution.unix_user_mode: insulated
+      #                                    (simple | insulated | strict)
+      - AGOR_RBAC_ENABLED=${AGOR_RBAC_ENABLED:-}
+      - AGOR_UNIX_USER_MODE=${AGOR_UNIX_USER_MODE:-}
+
+      # Instance identification (optional - displayed in UI navbar)
+      - INSTANCE_LABEL=${INSTANCE_LABEL:-}
+
+      # Version-sync banner: SHA captured on the host (where git can resolve
+      # the branch's gitdir) and forwarded into the container. Without this,
+      # loadBuildInfo() falls all the way through to 'dev' because the
+      # in-container git can't follow the /app/.git pointer to the host-side
+      # branch metadata. See .agor.yml start commands for the capture.
+      - AGOR_BUILD_SHA=${AGOR_BUILD_SHA:-}
+      - AGOR_BUILT_AT=${AGOR_BUILT_AT:-}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: false # Optional dependency - only needed when postgres profile is active
+    volumes:
+      # Mount entire repo for hot-reload (source code only)
+      - .:/app
+      # Anonymous volume shadows bind mount, preserving Docker-built node_modules
+      # This uses the node_modules from the IMAGE (with correct platform binaries)
+      # No pnpm install needed at runtime - deps are baked into the image!
+      # pnpm workspace symlinks (packages/*/node_modules) point into this directory
+      - /app/node_modules
+      # Shadow package-level node_modules too (they contain symlinks into root)
+      - /app/packages/core/node_modules
+      - /app/packages/executor/node_modules
+      - /app/packages/client/node_modules
+      - /app/apps/agor-daemon/node_modules
+      - /app/apps/agor-cli/node_modules
+      - /app/apps/agor-ui/node_modules
+      # Persist entire home directory (database, config, agent auth tokens, etc.)
+      - agor-home:/home/agor
+      # Mount SSH keys for git authentication (dev only)
+      - ~/.ssh:/home/agor/.ssh:ro
+    stdin_open: true
+    tty: true
+
+  # PostgreSQL database (ONLY active with --profile postgres)
+  # Usage: docker-compose --profile postgres up
+  postgres:
+    profiles: ['postgres'] # Optional service - only runs when profile is specified
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-agor}
+      POSTGRES_USER: ${POSTGRES_USER:-agor}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agor_dev_secret}
+      # Performance tuning for development
+      POSTGRES_INITDB_ARGS: '-E UTF8 --locale=C'
+    # NOTE: No external port exposure - postgres is only accessed via Docker internal network
+    # The agor-dev container connects to postgres:5432 (internal Docker DNS)
+    # This avoids port conflicts when running multiple docker-compose instances
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      # Init script to grant permissions (runs only on first startup)
+      - ./docker/postgres-init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready -U ${POSTGRES_USER:-agor} -d ${POSTGRES_DB:-agor} && psql -U ${POSTGRES_USER:-agor} -d ${POSTGRES_DB:-agor} -tAc "SELECT 1 FROM information_schema.schemata WHERE schema_name=''drizzle''" | grep -q 1',
+        ]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+      start_period: 15s
+    restart: unless-stopped
+
+volumes:
+  # Named volume - unique per docker-compose project (via -p flag)
+  # Each branch gets its own isolated volume for:
+  # - Database (~/.agor/agor.db)
+  # - Config (~/.agor/config.yaml)
+  # - Agent auth tokens
+  # - Caches, etc.
+  agor-home:
+
+  # PostgreSQL data (only created when postgres profile is active)
+  postgres-data:

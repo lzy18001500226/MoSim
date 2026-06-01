@@ -1,0 +1,22 @@
+# Dependencies
+node_modules
+
+# Next.js build output
+.next
+out
+
+# Generated CLI docs
+pages/cli/*.mdx
+!pages/cli/index.mdx
+
+# Environment variables
+.env*.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store

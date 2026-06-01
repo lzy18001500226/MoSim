@@ -1,0 +1,118 @@
+{
+  "name": "agor-live",
+  "version": "0.20.0",
+  "description": "Team command center for all things agentic — shared canvas for coding agents and assistants on isolated git branches, with real-time multiplayer and an MCP surface agents drive themselves.",
+  "type": "module",
+  "bin": {
+    "agor": "./bin/agor.js",
+    "agor-daemon": "./bin/agor-daemon.js"
+  },
+  "files": [
+    "bin/",
+    "dist/",
+    "scripts/",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "imports": {
+    "@agor/core": "./dist/core/index.js",
+    "@agor/core/*": "./dist/core/*"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "keywords": [
+    "ai",
+    "claude",
+    "codex",
+    "gemini",
+    "multiplayer",
+    "collaboration",
+    "git",
+    "workflow"
+  ],
+  "author": "Maxime Beauchemin <maximebeauchemin@gmail.com>",
+  "license": "BUSL-1.1",
+  "homepage": "https://agor.live",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/preset-io/agor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/preset-io/agor/issues"
+  },
+  "dependencies": {
+    "@agor-live/client": "workspace:*",
+    "@anthropic-ai/claude-agent-sdk": "^0.2.132",
+    "@cursor/sdk": "^1.0.13",
+    "@feathersjs/authentication": "^5.0.44",
+    "@feathersjs/authentication-client": "^5.0.44",
+    "@feathersjs/authentication-local": "^5.0.44",
+    "@feathersjs/errors": "^5.0.44",
+    "@feathersjs/express": "^5.0.44",
+    "@feathersjs/feathers": "^5.0.44",
+    "@feathersjs/rest-client": "^5.0.44",
+    "@feathersjs/schema": "^5.0.44",
+    "@feathersjs/socketio": "^5.0.44",
+    "@feathersjs/socketio-client": "^5.0.44",
+    "@feathersjs/typebox": "^5.0.44",
+    "@github/copilot-sdk": "^0.2.2",
+    "@google/gemini-cli-core": "^0.31.0",
+    "@google/genai": "^1.43.0",
+    "@libsql/client": "^0.17.3",
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@oclif/core": "^4.11.3",
+    "@oclif/plugin-help": "^6.2.49",
+    "@octokit/auth-app": "^8.2.0",
+    "@octokit/rest": "^22.0.1",
+    "@openai/codex-sdk": "^0.133.0",
+    "@opencode-ai/sdk": "^1.2.20",
+    "@slack/socket-mode": "^2.0.7",
+    "@slack/types": "^2.21.1",
+    "@slack/web-api": "^7.16.0",
+    "bcryptjs": "^2.4.3",
+    "chalk": "^5.6.2",
+    "cli-table3": "^0.6.5",
+    "compression": "^1.8.1",
+    "cors": "^2.8.6",
+    "cron-parser": "^5.5.0",
+    "cronstrue": "^3.14.0",
+    "diff": "^7.0.0",
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
+    "express": "^5.2.0",
+    "express-rate-limit": "^8.5.2",
+    "express-static-gzip": "^3.0.1",
+    "feathers-swagger": "^3.0.0",
+    "handlebars": "^4.7.8",
+    "inquirer": "^12.10.0",
+    "js-yaml": "^4.1.1",
+    "jsonwebtoken": "^9.0.3",
+    "md-to-slack": "^1.1.7",
+    "multer": "^2.1.1",
+    "node-pty": "^1.2.0-beta.12",
+    "open": "^11.0.0",
+    "postgres": "^3.4.9",
+    "simple-git": "^3.36.0",
+    "slackify-markdown": "^5.0.0",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
+    "swagger-ui-dist": "^5.32.6",
+    "uuid": "^14.0.0",
+    "uuidv7": "^1.1.0",
+    "zod": "^4.4.3"
+  },
+  "oclif": {
+    "bin": "agor",
+    "dirname": "agor",
+    "commands": "./dist/cli/commands",
+    "topicSeparator": " ",
+    "helpClass": "./dist/cli/lib/help.js",
+    "hooks": {
+      "command_not_found": "./dist/cli/hooks/command-not-found.js"
+    }
+  }
+}

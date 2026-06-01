@@ -1,0 +1,470 @@
+/**
+ * Modal for handling zone triggers on branch drops
+ * Flow:
+ * 1. Primary choice: Create new session OR Reuse existing session
+ * 2. If reuse: Select session and choose action (Prompt/Fork/Spawn)
+ */
+
+import type {
+  AgenticToolName,
+  AgorClient,
+  Branch,
+  BranchID,
+  MCPServer,
+  PermissionMode,
+  Session,
+  User,
+  ZoneTrigger,
+} from '@agor-live/client';
+// Canonical zone-trigger context shape (branch.context / board.context /
+// zone / session). Shared with the daemon's fire-zone-trigger route and the
+// MCP `agor_branches_set_zone` path so all three render against the same
+// shape.
+import { buildZoneTriggerContext } from '@agor-live/client';
+import { DownOutlined } from '@ant-design/icons';
+import { Alert, Collapse, Form, Input, Modal, Radio, Select, Space, Spin, Typography } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
+import type { AgenticToolOption } from '../../../types';
+import { getSessionDisplayTitle } from '../../../utils/sessionTitle';
+// Async server-side renderer — keeps Handlebars out of the browser bundle so
+// the page doesn't need CSP `script-src 'unsafe-eval'`.
+import { renderTemplate } from '../../../utils/templates';
+import { AgenticToolConfigForm } from '../../AgenticToolConfigForm';
+import { AgentSelectionGrid } from '../../AgentSelectionGrid';
+import type { ModelConfig } from '../../ModelSelector';
+
+interface ZoneTriggerModalProps {
+  open: boolean;
+  onCancel: () => void;
+  client: AgorClient | null;
+  branchId: BranchID;
+  branch: Branch | undefined;
+  sessionsByBranch: Map<string, Session[]>; // O(1) branch filtering
+  zoneName: string;
+  trigger: ZoneTrigger;
+  boardName?: string;
+  boardDescription?: string;
+  boardCustomContext?: Record<string, unknown>;
+  availableAgents: AgenticToolOption[];
+  mcpServerById: Map<string, MCPServer>;
+  currentUser?: User | null; // Optional - current user for default settings
+  onExecute: (params: {
+    sessionId: string | 'new';
+    action: 'prompt' | 'fork' | 'spawn';
+    renderedTemplate: string;
+    // New session config (only when sessionId === 'new')
+    agent?: string;
+    modelConfig?: ModelConfig;
+    permissionMode?: PermissionMode;
+    mcpServerIds?: string[];
+  }) => Promise<void>;
+}
+
+export const ZoneTriggerModal = ({
+  open,
+  onCancel,
+  client,
+  branchId,
+  branch,
+  sessionsByBranch,
+  zoneName,
+  trigger,
+  boardName,
+  boardDescription,
+  boardCustomContext,
+  availableAgents,
+  mcpServerById,
+  currentUser,
+  onExecute,
+}: ZoneTriggerModalProps) => {
+  const [form] = Form.useForm();
+
+  // Primary mode: create new or reuse existing
+  const [mode, setMode] = useState<'create_new' | 'reuse_existing'>('create_new');
+
+  // Agent selection (only for create_new mode)
+  const [selectedAgent, setSelectedAgent] = useState<string>('claude-code');
+
+  // Session selection (only for reuse mode)
+  const [selectedSessionId, setSelectedSessionId] = useState<string>('');
+
+  // Action selection (only for reuse mode)
+  const [selectedAction, setSelectedAction] = useState<'prompt' | 'fork' | 'spawn'>('prompt');
+
+  // Editable rendered template (user can modify before executing)
+  const [editableTemplate, setEditableTemplate] = useState<string>('');
+
+  // Drives a Spin overlay so the user doesn't see the raw `{{...}}` flash
+  // before the daemon's rendered content arrives.
+  const [isRendering, setIsRendering] = useState<boolean>(true);
+
+  // Explicit state for session config (survives form mount/unmount cycles)
+  const [sessionConfig, setSessionConfig] = useState<{
+    modelConfig?: ModelConfig;
+    permissionMode?: PermissionMode;
+    mcpServerIds?: string[];
+  }>({});
+
+  // Filter sessions for this branch using O(1) Map lookup
+  const branchSessions = useMemo(() => {
+    return sessionsByBranch.get(branchId) || [];
+  }, [sessionsByBranch, branchId]);
+
+  // Smart default: Most recent active/completed session
+  const smartDefaultSession = useMemo(() => {
+    if (branchSessions.length === 0) return '';
+
+    // Prioritize running sessions
+    const runningSessions = branchSessions.filter((s) => s.status === 'running');
+    if (runningSessions.length > 0) {
+      // Most recently updated running session
+      return runningSessions.sort(
+        (a, b) =>
+          new Date(b.last_updated || b.created_at).getTime() -
+          new Date(a.last_updated || a.created_at).getTime()
+      )[0].session_id;
+    }
+
+    // Otherwise most recent session
+    return branchSessions.sort(
+      (a, b) =>
+        new Date(b.last_updated || b.created_at).getTime() -
+        new Date(a.last_updated || a.created_at).getTime()
+    )[0].session_id;
+  }, [branchSessions]);
+
+  // Get the currently selected session (for pre-populating form on reuse)
+  const selectedSession = useMemo(() => {
+    return branchSessions.find((s) => s.session_id === selectedSessionId);
+  }, [selectedSessionId, branchSessions]);
+
+  // Reset to defaults when modal opens
+  useEffect(() => {
+    if (open) {
+      // Default to 'reuse_existing' if sessions are available, otherwise 'create_new'
+      setMode(branchSessions.length > 0 ? 'reuse_existing' : 'create_new');
+      setSelectedSessionId(smartDefaultSession);
+      setSelectedAction('prompt');
+      form.resetFields();
+      setSessionConfig({}); // Clear session config state
+    }
+  }, [open, smartDefaultSession, form, branchSessions.length]);
+
+  // Pre-populate form AND state when creating new session
+  // Priority: Most recent session > User defaults > System defaults
+  useEffect(() => {
+    if (mode === 'create_new' && selectedAgent) {
+      // Find the most recent session for this branch (create a copy to avoid mutating the array)
+      const mostRecentSession =
+        branchSessions.length > 0
+          ? [...branchSessions].sort(
+              (a, b) =>
+                new Date(b.last_updated || b.created_at).getTime() -
+                new Date(a.last_updated || a.created_at).getTime()
+            )[0]
+          : null;
+
+      // Get user defaults for this agent as fallback
+      const agentDefaults = currentUser?.default_agentic_config?.[selectedAgent as AgenticToolName];
+
+      // MCP inheritance: branch config > user defaults
+      const effectiveMcpServerIds =
+        branch?.mcp_server_ids && branch.mcp_server_ids.length > 0
+          ? branch.mcp_server_ids
+          : agentDefaults?.mcpServerIds || [];
+
+      // Calculate config values (priority: most recent session > user defaults)
+      const configValues = {
+        permissionMode: mostRecentSession?.permission_config?.mode || agentDefaults?.permissionMode,
+        modelConfig:
+          mostRecentSession?.model_config ||
+          (agentDefaults?.modelConfig as ModelConfig | undefined),
+        mcpServerIds: effectiveMcpServerIds,
+      };
+
+      // Store in both form (for UI) AND component state (for execution)
+      form.setFieldsValue(configValues);
+      setSessionConfig(configValues);
+    }
+  }, [mode, selectedAgent, currentUser, branchSessions, form, branch?.mcp_server_ids]);
+
+  // Pre-populate form with selected session's config when reusing
+  useEffect(() => {
+    if (mode === 'reuse_existing' && selectedSession) {
+      // Pre-populate with session's current config
+      form.setFieldsValue({
+        agent: selectedSession.agentic_tool,
+        permissionMode: selectedSession.permission_config?.mode,
+        modelConfig: selectedSession.model_config,
+        // Note: mcpServerIds would need to be fetched separately if we want to show them
+      });
+    }
+  }, [mode, selectedSession, form]);
+
+  // Render template preview (server-side via daemon /templates).
+  // We fetch on every dependency change; consecutive renders share the
+  // socket.io connection, and stale responses are dropped via the cancelled
+  // flag. For the user-facing preview we want the raw template (with
+  // unresolved `{{...}}`) on failure rather than a silently-blank textarea.
+  useEffect(() => {
+    let cancelled = false;
+    if (!client) {
+      setEditableTemplate(trigger.template);
+      setIsRendering(false);
+      return;
+    }
+    const selectedSessionForCtx =
+      mode === 'reuse_existing' && selectedSessionId
+        ? branchSessions.find((s) => s.session_id === selectedSessionId)
+        : undefined;
+    const context = buildZoneTriggerContext({
+      branch,
+      board: {
+        name: boardName,
+        description: boardDescription,
+        custom_context: boardCustomContext,
+      },
+      zone: { label: zoneName },
+      session: selectedSessionForCtx
+        ? {
+            description: selectedSessionForCtx.description,
+            custom_context: selectedSessionForCtx.custom_context,
+          }
+        : undefined,
+    });
+
+    setIsRendering(true);
+    renderTemplate(client, trigger.template, context, 'raw').then((rendered) => {
+      if (!cancelled) {
+        setEditableTemplate(rendered);
+        setIsRendering(false);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    client,
+    trigger.template,
+    branch,
+    boardName,
+    boardDescription,
+    boardCustomContext,
+    zoneName,
+    mode,
+    selectedSessionId,
+    branchSessions,
+  ]);
+
+  const handleExecute = async () => {
+    if (mode === 'create_new') {
+      // Use component state which is guaranteed to have the correct values
+      // regardless of whether the form fields are mounted/visible
+      await onExecute({
+        sessionId: 'new',
+        action: 'prompt',
+        renderedTemplate: editableTemplate,
+        agent: selectedAgent,
+        modelConfig: sessionConfig.modelConfig,
+        permissionMode: sessionConfig.permissionMode,
+        mcpServerIds: sessionConfig.mcpServerIds,
+      });
+    } else {
+      // Reuse existing session
+      const formValues = form.getFieldsValue(true);
+
+      // IMPORTANT: Always include permissionMode for all actions
+      // The backend executor needs this to override the session's default permission mode
+      const params: Parameters<typeof onExecute>[0] = {
+        sessionId: selectedSessionId,
+        action: selectedAction,
+        renderedTemplate: editableTemplate,
+        // Use form value, or fallback to session's current mode
+        permissionMode: formValues.permissionMode || selectedSession?.permission_config?.mode,
+      };
+
+      if (selectedAction === 'fork' || selectedAction === 'spawn') {
+        // Include additional config for fork/spawn (eventual support for changing config)
+        params.agent = formValues.agent || selectedSession?.agentic_tool;
+        params.modelConfig = formValues.modelConfig;
+        params.mcpServerIds = formValues.mcpServerIds;
+      }
+
+      await onExecute(params);
+    }
+  };
+
+  return (
+    <Modal
+      title={`Zone Trigger: ${zoneName}`}
+      open={open}
+      onCancel={onCancel}
+      onOk={handleExecute}
+      okText="Execute Trigger"
+      okButtonProps={{ disabled: isRendering }}
+      cancelText="Cancel"
+      width={700}
+    >
+      <Space orientation="vertical" size="large" style={{ width: '100%' }}>
+        {/* Primary Choice: Create New or Reuse */}
+        <div>
+          <Radio.Group
+            value={mode}
+            onChange={(e) => setMode(e.target.value)}
+            style={{ width: '100%' }}
+          >
+            <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
+              <Radio value="create_new">Create a new session</Radio>
+              <Radio value="reuse_existing" disabled={branchSessions.length === 0}>
+                Reuse a session
+              </Radio>
+            </Space>
+          </Radio.Group>
+          {branchSessions.length === 0 && (
+            <Alert
+              title="No existing sessions in this branch"
+              type="info"
+              showIcon
+              style={{ marginTop: 12 }}
+            />
+          )}
+        </div>
+
+        {/* Session & Action Selection (only for reuse mode) */}
+        {mode === 'reuse_existing' && (
+          <Form form={form} layout="vertical">
+            <div>
+              <Typography.Text strong style={{ display: 'block', marginBottom: 8 }}>
+                Select Session
+              </Typography.Text>
+              <Select
+                value={selectedSessionId}
+                onChange={setSelectedSessionId}
+                style={{ width: '100%' }}
+                size="large"
+                options={branchSessions.map((session) => ({
+                  value: session.session_id,
+                  label: (
+                    <span>
+                      {getSessionDisplayTitle(session, {
+                        fallbackChars: 50,
+                        includeIdFallback: true,
+                      })}{' '}
+                      ({session.status})
+                    </span>
+                  ),
+                }))}
+              />
+            </div>
+
+            <div style={{ marginTop: 24 }}>
+              <Typography.Text strong style={{ display: 'block', marginBottom: 8 }}>
+                Choose Action
+              </Typography.Text>
+              <Radio.Group
+                value={selectedAction}
+                onChange={(e) => setSelectedAction(e.target.value)}
+                style={{ width: '100%' }}
+              >
+                <Space orientation="vertical" style={{ width: '100%' }}>
+                  <Radio value="prompt">Prompt - Send message to selected session</Radio>
+                  <Radio value="fork">Fork - Fork selected session and send message</Radio>
+                  <Radio value="spawn">Spawn - Spawn child session and send message</Radio>
+                </Space>
+              </Radio.Group>
+            </div>
+          </Form>
+        )}
+
+        {/* Agent Configuration - Always shown (collapsed for reuse, expanded for create_new) */}
+        <Form
+          form={form}
+          layout="vertical"
+          onValuesChange={(changedValues) => {
+            // Sync form changes to component state (only in create_new mode)
+            if (mode === 'create_new') {
+              setSessionConfig((prev) => ({ ...prev, ...changedValues }));
+            }
+          }}
+        >
+          {mode === 'create_new' && (
+            <div>
+              <Typography.Text strong style={{ display: 'block', marginBottom: 8 }}>
+                Select Agent
+              </Typography.Text>
+              <AgentSelectionGrid
+                agents={availableAgents}
+                selectedAgentId={selectedAgent}
+                onSelect={setSelectedAgent}
+                columns={2}
+                showHelperText={false}
+                showComparisonLink={false}
+              />
+            </div>
+          )}
+
+          <Collapse
+            ghost
+            destroyOnHidden={false}
+            defaultActiveKey={[]}
+            expandIcon={({ isActive }) => <DownOutlined rotate={isActive ? 180 : 0} />}
+            items={[
+              {
+                key: 'agentic-tool-config',
+                label: (
+                  <Typography.Text strong>
+                    {mode === 'create_new'
+                      ? 'Agentic Tool Configuration (optional)'
+                      : `Session Configuration (${selectedSession?.agentic_tool || 'unknown'})`}
+                  </Typography.Text>
+                ),
+                children: (
+                  <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
+                    {mode === 'reuse_existing' && (
+                      <Alert
+                        title="Showing current configuration. These settings are for reference."
+                        type="info"
+                        showIcon
+                      />
+                    )}
+                    <AgenticToolConfigForm
+                      agenticTool={
+                        (mode === 'create_new'
+                          ? (selectedAgent as AgenticToolName)
+                          : (selectedSession?.agentic_tool as AgenticToolName)) || 'claude-code'
+                      }
+                      mcpServerById={mcpServerById}
+                      showHelpText={true}
+                    />
+                  </Space>
+                ),
+              },
+            ]}
+            style={{ marginTop: 16 }}
+          />
+        </Form>
+
+        {/* Editable Template */}
+        <div>
+          <Typography.Text strong style={{ display: 'block', marginBottom: 8 }}>
+            Prompt (editable)
+          </Typography.Text>
+          <Spin spinning={isRendering} delay={200} description="Rendering template…">
+            <Input.TextArea
+              value={editableTemplate}
+              onChange={(e) => setEditableTemplate(e.target.value)}
+              rows={8}
+              style={{
+                fontFamily: 'monospace',
+                fontSize: '13px',
+                lineHeight: '1.5',
+              }}
+              placeholder="Edit the rendered prompt before executing..."
+            />
+          </Spin>
+        </div>
+      </Space>
+    </Modal>
+  );
+};

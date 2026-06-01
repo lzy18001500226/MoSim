@@ -1,0 +1,61 @@
+// Agor Default Zellij Configuration
+// Optimized for embedded terminal usage with xterm.js frontend
+
+// Disable pane frames for cleaner embedded look
+pane_frames false
+
+// Disable mouse support to allow terminal copy/paste
+// When enabled, mouse mode interferes with text selection and copy/paste in the browser
+mouse_mode false
+
+// Disable Zellij's clipboard handling - let the browser handle copy/paste natively
+// This allows users to use standard browser shortcuts (Ctrl+C, Ctrl+V) without interference
+copy_on_select false
+
+// Scrollback buffer (10,000 lines)
+scroll_buffer_size 10000
+
+// Simplified UI (no extra decorations)
+simplified_ui false
+
+// Default layout - use "default" which has no plugin dependencies
+// "compact" requires the compact-bar plugin which may not be available
+default_layout "default"
+
+// Session serialization enables terminal persistence across daemon restarts
+// Set to false if you don't want session persistence (tabs won't survive restarts)
+session_serialization true
+
+// Auto-layout on creation
+auto_layout true
+
+// Prefer default shell
+default_shell "bash"
+
+// Terminal colors support
+on_force_close "quit"
+
+// Disable startup tips banner
+show_startup_tips false
+
+// Disable release notes banner
+show_release_notes false
+
+// UI configuration
+ui {
+    pane_frames {
+        rounded_corners false
+    }
+}
+
+// Keybindings - minimal to avoid conflicts with xterm.js
+keybinds {
+    normal {
+        // Disable default keybindings that might conflict
+        // We'll manage tabs programmatically via CLI actions
+    }
+
+    locked {
+        // Locked mode - pass all keys through to shell
+    }
+}

@@ -1,0 +1,1086 @@
+import type {
+  AgorClient,
+  Message,
+  Session,
+  SessionPromptOptions,
+  SessionPromptResult,
+  Task,
+} from '@agor/core/client';
+
+export type TaskHydrationMode = 'none' | 'lazy' | 'eager';
+
+export interface ReactiveSessionOptions {
+  /**
+   * Message hydration policy:
+   * - none: do not auto-load task messages
+   * - lazy: load messages per task via loadTaskMessages() (default)
+   * - eager: load all session messages during bootstrap
+   */
+  taskHydration?: TaskHydrationMode;
+}
+
+export interface StreamingMessageState {
+  message_id: string;
+  session_id: string;
+  task_id?: string;
+  role: 'assistant';
+  content: string;
+  thinkingContent?: string;
+  timestamp: string;
+  isStreaming: boolean;
+  isThinking?: boolean;
+  error?: string;
+}
+
+export interface ToolExecutionState {
+  toolUseId: string;
+  toolName: string;
+  status: 'executing' | 'complete';
+}
+
+/**
+ * Named collection aliases improve IntelliSense discoverability for nested session state.
+ */
+export type ReactiveMessagesByTask = Map<string, Message[]>;
+export type ReactiveStreamingMessagesById = Map<string, StreamingMessageState>;
+export type ReactiveToolsByTask = Map<string, ToolExecutionState[]>;
+export type ReactiveLoadedTaskIds = Set<string>;
+
+export interface ReactiveSessionState {
+  sessionId: string;
+  session: Session | null;
+  tasks: Task[];
+  messagesByTask: ReactiveMessagesByTask;
+  /**
+   * Queued tasks (status='queued'), ordered by queue_position ascending.
+   * As of never-lose-prompt §C the queue lives on tasks instead of messages,
+   * so this collection holds Task — not Message — and the wire format is the
+   * `/sessions/:id/tasks/queue` endpoint.
+   */
+  queuedTasks: Task[];
+  streamingMessages: ReactiveStreamingMessagesById;
+  toolsByTask: ReactiveToolsByTask;
+  loadedTaskIds: ReactiveLoadedTaskIds;
+  connected: boolean;
+  loading: boolean;
+  error: string | null;
+  /**
+   * `true` when `error` represents a non-recoverable condition for this
+   * session. Set when:
+   *
+   * - The server emits a `removed` event for this session (deleted /
+   *   archived out of view).
+   * - `resync()` fails with an HTTP **403** (forbidden — the user lost
+   *   access) or **404** (not found — session no longer exists from this
+   *   user's perspective).
+   *
+   * Callers driving auto-retry (visibilitychange, token refresh, manual
+   * Reload) MUST check this flag before calling `resync()` again,
+   * otherwise they will hammer a doomed endpoint on every focus change.
+   *
+   * Other failures — transient 401 (around-hook will refresh), 5xx, network
+   * drops — leave this `false` so the standard retry paths can heal them.
+   */
+  terminal: boolean;
+  lastSyncedAt: string | null;
+}
+
+type Listener = () => void;
+
+interface QueueFindResult {
+  data?: Task[];
+}
+
+interface ToolStartEvent {
+  task_id: string;
+  session_id: string;
+  tool_use_id: string;
+  tool_name: string;
+}
+
+interface ToolCompleteEvent {
+  task_id: string;
+  session_id: string;
+  tool_use_id: string;
+}
+
+interface StreamingStartEvent {
+  message_id: string;
+  session_id: string;
+  task_id?: string;
+  role: 'assistant';
+  timestamp: string;
+}
+
+interface StreamingChunkEvent {
+  message_id: string;
+  session_id: string;
+  chunk: string;
+}
+
+interface StreamingEndEvent {
+  message_id: string;
+  session_id: string;
+}
+
+interface StreamingErrorEvent {
+  message_id: string;
+  session_id: string;
+  error: string;
+}
+
+interface ThinkingStartEvent {
+  message_id: string;
+  session_id: string;
+  task_id?: string;
+  timestamp: string;
+}
+
+interface ThinkingChunkEvent {
+  message_id: string;
+  session_id: string;
+  chunk: string;
+}
+
+interface ThinkingEndEvent {
+  message_id: string;
+  session_id: string;
+}
+
+export class ReactiveSessionHandle {
+  private readonly client: AgorClient;
+  private readonly options: Required<ReactiveSessionOptions>;
+  private readonly listeners = new Set<Listener>();
+  private readonly disposeCallbacks: Array<() => void> = [];
+  private readyPromise: Promise<void>;
+  private disposed = false;
+
+  private stateSnapshot: ReactiveSessionState;
+
+  constructor(client: AgorClient, sessionId: string, options?: ReactiveSessionOptions) {
+    this.client = client;
+    this.options = {
+      taskHydration: options?.taskHydration ?? 'lazy',
+    };
+    this.stateSnapshot = {
+      sessionId,
+      session: null,
+      tasks: [],
+      messagesByTask: new Map(),
+      queuedTasks: [],
+      streamingMessages: new Map(),
+      toolsByTask: new Map(),
+      loadedTaskIds: new Set(),
+      connected: !!client.io?.connected,
+      loading: true,
+      error: null,
+      terminal: false,
+      lastSyncedAt: null,
+    };
+
+    this.attachListeners();
+    this.readyPromise = this.bootstrap();
+  }
+
+  get sessionId(): string {
+    return this.stateSnapshot.sessionId;
+  }
+
+  get state(): ReactiveSessionState {
+    return this.stateSnapshot;
+  }
+
+  /**
+   * Returns the task model for a task id if currently known in state.
+   */
+  getTask(taskId: string): Task | undefined {
+    return this.stateSnapshot.tasks.find((task) => task.task_id === taskId);
+  }
+
+  /**
+   * Returns task messages currently cached in reactive state.
+   * This does not trigger hydration. Use loadTaskMessages() first in lazy mode.
+   */
+  getTaskMessages(taskId: string): readonly Message[] {
+    return this.stateSnapshot.messagesByTask.get(taskId) || [];
+  }
+
+  /**
+   * Returns whether a task's messages are currently hydrated in state.
+   */
+  isTaskLoaded(taskId: string): boolean {
+    return this.stateSnapshot.loadedTaskIds.has(taskId);
+  }
+
+  /**
+   * Returns tool executions currently tracked for a task.
+   */
+  getTaskTools(taskId: string): readonly ToolExecutionState[] {
+    return this.stateSnapshot.toolsByTask.get(taskId) || [];
+  }
+
+  /**
+   * Returns one streaming message by message id, if present.
+   */
+  getStreamingMessage(messageId: string): StreamingMessageState | undefined {
+    return this.stateSnapshot.streamingMessages.get(messageId);
+  }
+
+  /**
+   * Returns currently tracked streaming messages. Optionally filter by task.
+   */
+  getStreamingMessages(taskId?: string): StreamingMessageState[] {
+    const messages = Array.from(this.stateSnapshot.streamingMessages.values());
+    return taskId ? messages.filter((message) => message.task_id === taskId) : messages;
+  }
+
+  subscribe(listener: Listener): () => void {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  }
+
+  async ready(): Promise<void> {
+    await this.readyPromise;
+  }
+
+  async prompt(prompt: string, options?: SessionPromptOptions): Promise<SessionPromptResult> {
+    return this.client.sessions.prompt(this.sessionId, prompt, options);
+  }
+
+  async loadTaskMessages(taskId: string): Promise<Message[]> {
+    this.assertNotDisposed();
+    const messages = await this.client.service('messages').findAll({
+      query: {
+        task_id: taskId,
+        $sort: { index: 1 },
+      },
+    });
+    this.updateState((prev) => {
+      const nextByTask = new Map(prev.messagesByTask);
+      nextByTask.set(taskId, sortMessagesByIndex(messages));
+      const nextLoaded = new Set(prev.loadedTaskIds);
+      nextLoaded.add(taskId);
+      return {
+        ...prev,
+        messagesByTask: nextByTask,
+        loadedTaskIds: nextLoaded,
+        lastSyncedAt: new Date().toISOString(),
+      };
+    });
+    return messages;
+  }
+
+  unloadTaskMessages(taskId: string): void {
+    this.assertNotDisposed();
+    this.updateState((prev) => {
+      if (!prev.loadedTaskIds.has(taskId) && !prev.messagesByTask.has(taskId)) {
+        return prev;
+      }
+      const nextByTask = new Map(prev.messagesByTask);
+      nextByTask.delete(taskId);
+      const nextLoaded = new Set(prev.loadedTaskIds);
+      nextLoaded.delete(taskId);
+      return {
+        ...prev,
+        messagesByTask: nextByTask,
+        loadedTaskIds: nextLoaded,
+      };
+    });
+  }
+
+  dispose(): void {
+    if (this.disposed) return;
+    this.disposed = true;
+    for (const cleanup of this.disposeCallbacks) {
+      cleanup();
+    }
+    this.disposeCallbacks.length = 0;
+    this.listeners.clear();
+  }
+
+  private assertNotDisposed(): void {
+    if (this.disposed) {
+      throw new Error(`Reactive session ${this.sessionId} is disposed`);
+    }
+  }
+
+  private notify(): void {
+    for (const listener of this.listeners) {
+      listener();
+    }
+  }
+
+  private updateState(
+    updater: (previous: ReactiveSessionState) => ReactiveSessionState
+  ): ReactiveSessionState {
+    const next = updater(this.stateSnapshot);
+    this.stateSnapshot = next;
+    this.notify();
+    return next;
+  }
+
+  private async bootstrap(): Promise<void> {
+    try {
+      const [session, tasks, queueResult] = await Promise.all([
+        this.client.service('sessions').get(this.sessionId),
+        this.client.service('tasks').findAll({
+          query: {
+            session_id: this.sessionId,
+            $sort: { created_at: 1 },
+          },
+        }),
+        this.client
+          .service(`/sessions/${this.sessionId}/tasks/queue`)
+          .find()
+          .catch(() => ({ data: [] }) as QueueFindResult),
+      ]);
+
+      let messagesByTask = new Map<string, Message[]>();
+      let loadedTaskIds = new Set<string>();
+
+      if (this.options.taskHydration === 'eager') {
+        const allMessages = await this.client.service('messages').findAll({
+          query: {
+            session_id: this.sessionId,
+            $sort: { index: 1 },
+          },
+        });
+        messagesByTask = groupMessagesByTask(allMessages);
+        loadedTaskIds = new Set(messagesByTask.keys());
+      }
+
+      this.updateState((prev) => ({
+        ...prev,
+        session,
+        tasks,
+        messagesByTask,
+        loadedTaskIds,
+        queuedTasks: sortTasksByQueuePosition((queueResult as QueueFindResult).data || []),
+        loading: false,
+        error: null,
+        lastSyncedAt: new Date().toISOString(),
+      }));
+    } catch (error) {
+      // Mirror doResync()'s terminal classification — a 403/404 on the
+      // initial mount is just as "doomed to retry" as on reconnect, and
+      // without this the UI's auto-retry loop would keep poking a deleted/
+      // forbidden session on every focus change until the component
+      // remounts.
+      const status = errorStatusCode(error);
+      const terminal = status === 403 || status === 404;
+      this.updateState((prev) => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to bootstrap reactive session',
+        terminal: prev.terminal || terminal,
+      }));
+    }
+  }
+
+  private attachListeners(): void {
+    const sessionsService = this.client.service('sessions');
+    const tasksService = this.client.service('tasks');
+    const messagesService = this.client.service('messages');
+
+    const onSocketConnect = () => {
+      if (this.disposed) return;
+      this.updateState((prev) => ({ ...prev, connected: true }));
+      this.readyPromise = this.resync();
+    };
+    const onSocketDisconnect = () => {
+      if (this.disposed) return;
+      this.updateState((prev) => ({ ...prev, connected: false }));
+    };
+    this.client.io.on('connect', onSocketConnect);
+    this.client.io.on('disconnect', onSocketDisconnect);
+    this.disposeCallbacks.push(() => this.client.io.off('connect', onSocketConnect));
+    this.disposeCallbacks.push(() => this.client.io.off('disconnect', onSocketDisconnect));
+
+    const onSessionPatched = (session: Session) => {
+      if (session.session_id !== this.sessionId) return;
+      this.updateState((prev) => ({
+        ...prev,
+        session,
+        lastSyncedAt: new Date().toISOString(),
+      }));
+    };
+    const onSessionRemoved = (session: Session) => {
+      if (session.session_id !== this.sessionId) return;
+      this.updateState((prev) => ({
+        ...prev,
+        session: null,
+        error: 'Session was removed',
+        terminal: true,
+        lastSyncedAt: new Date().toISOString(),
+      }));
+    };
+    sessionsService.on('patched', onSessionPatched);
+    sessionsService.on('updated', onSessionPatched);
+    sessionsService.on('removed', onSessionRemoved);
+    this.disposeCallbacks.push(() => sessionsService.removeListener('patched', onSessionPatched));
+    this.disposeCallbacks.push(() => sessionsService.removeListener('updated', onSessionPatched));
+    this.disposeCallbacks.push(() => sessionsService.removeListener('removed', onSessionRemoved));
+
+    const onTaskCreated = (task: Task) => {
+      if (task.session_id !== this.sessionId) return;
+      this.updateState((prev) => {
+        const tasks = prev.tasks.some((t) => t.task_id === task.task_id)
+          ? prev.tasks
+          : [...prev.tasks, task];
+        // Tasks can be born QUEUED (e.g. when the daemon auto-queues a prompt
+        // because the session is busy) — track them in queuedTasks too.
+        const queuedTasks =
+          task.status === 'queued' && !prev.queuedTasks.some((t) => t.task_id === task.task_id)
+            ? sortTasksByQueuePosition([...prev.queuedTasks, task])
+            : prev.queuedTasks;
+        return {
+          ...prev,
+          tasks,
+          queuedTasks,
+          lastSyncedAt: new Date().toISOString(),
+        };
+      });
+    };
+    const onTaskPatched = (task: Task) => {
+      if (task.session_id !== this.sessionId) return;
+      this.updateState((prev) => {
+        const index = prev.tasks.findIndex((t) => t.task_id === task.task_id);
+        const nextTasks = index === -1 ? [...prev.tasks, task] : [...prev.tasks];
+        if (index !== -1) {
+          nextTasks[index] = task;
+        }
+
+        // Maintain queuedTasks: in if status='queued', out otherwise.
+        const isQueued = task.status === 'queued';
+        const inQueue = prev.queuedTasks.some((t) => t.task_id === task.task_id);
+        let nextQueuedTasks = prev.queuedTasks;
+        if (isQueued) {
+          nextQueuedTasks = inQueue
+            ? sortTasksByQueuePosition(
+                prev.queuedTasks.map((t) => (t.task_id === task.task_id ? task : t))
+              )
+            : sortTasksByQueuePosition([...prev.queuedTasks, task]);
+        } else if (inQueue) {
+          nextQueuedTasks = prev.queuedTasks.filter((t) => t.task_id !== task.task_id);
+        }
+
+        return {
+          ...prev,
+          tasks: nextTasks,
+          queuedTasks: nextQueuedTasks,
+          lastSyncedAt: new Date().toISOString(),
+        };
+      });
+    };
+    const onTaskRemoved = (task: Task) => {
+      if (task.session_id !== this.sessionId) return;
+      this.updateState((prev) => {
+        const nextByTask = new Map(prev.messagesByTask);
+        nextByTask.delete(task.task_id);
+        const nextLoaded = new Set(prev.loadedTaskIds);
+        nextLoaded.delete(task.task_id);
+        const nextTools = new Map(prev.toolsByTask);
+        nextTools.delete(task.task_id);
+        return {
+          ...prev,
+          tasks: prev.tasks.filter((t) => t.task_id !== task.task_id),
+          queuedTasks: prev.queuedTasks.filter((t) => t.task_id !== task.task_id),
+          messagesByTask: nextByTask,
+          loadedTaskIds: nextLoaded,
+          toolsByTask: nextTools,
+          lastSyncedAt: new Date().toISOString(),
+        };
+      });
+    };
+    // The daemon emits a custom 'queued' event in addition to the standard
+    // 'created' event, so subscribers can distinguish "task entered the queue"
+    // from "task was created but is already running". onTaskCreated handles
+    // the queued state too as a safety net for clients that miss the event.
+    const onTaskQueued = (task: Task) => onTaskCreated(task);
+
+    tasksService.on('created', onTaskCreated);
+    tasksService.on('patched', onTaskPatched);
+    tasksService.on('updated', onTaskPatched);
+    tasksService.on('removed', onTaskRemoved);
+    tasksService.on('queued', onTaskQueued as (...args: unknown[]) => void);
+    this.disposeCallbacks.push(() => tasksService.removeListener('created', onTaskCreated));
+    this.disposeCallbacks.push(() => tasksService.removeListener('patched', onTaskPatched));
+    this.disposeCallbacks.push(() => tasksService.removeListener('updated', onTaskPatched));
+    this.disposeCallbacks.push(() => tasksService.removeListener('removed', onTaskRemoved));
+    this.disposeCallbacks.push(() =>
+      tasksService.removeListener('queued', onTaskQueued as (...args: unknown[]) => void)
+    );
+
+    const onToolStart = (event: ToolStartEvent) => {
+      if (event.session_id !== this.sessionId) return;
+      this.updateState((prev) => {
+        const existing = prev.toolsByTask.get(event.task_id) || [];
+        if (existing.some((t) => t.toolUseId === event.tool_use_id)) return prev;
+        const nextTools = new Map(prev.toolsByTask);
+        nextTools.set(event.task_id, [
+          ...existing,
+          {
+            toolUseId: event.tool_use_id,
+            toolName: event.tool_name,
+            status: 'executing',
+          },
+        ]);
+        return {
+          ...prev,
+          toolsByTask: nextTools,
+        };
+      });
+    };
+    const onToolComplete = (event: ToolCompleteEvent) => {
+      if (event.session_id !== this.sessionId) return;
+      this.updateState((prev) => {
+        const existing = prev.toolsByTask.get(event.task_id) || [];
+        if (existing.length === 0) return prev;
+        const nextTools = new Map(prev.toolsByTask);
+        nextTools.set(
+          event.task_id,
+          existing.map((tool) =>
+            tool.toolUseId === event.tool_use_id ? { ...tool, status: 'complete' as const } : tool
+          )
+        );
+        return {
+          ...prev,
+          toolsByTask: nextTools,
+        };
+      });
+    };
+    tasksService.on('tool:start', onToolStart as (...args: unknown[]) => void);
+    tasksService.on('tool:complete', onToolComplete as (...args: unknown[]) => void);
+    this.disposeCallbacks.push(() =>
+      tasksService.removeListener('tool:start', onToolStart as (...args: unknown[]) => void)
+    );
+    this.disposeCallbacks.push(() =>
+      tasksService.removeListener('tool:complete', onToolComplete as (...args: unknown[]) => void)
+    );
+
+    const onMessageCreated = (message: Message) => {
+      if (message.session_id !== this.sessionId) return;
+      this.updateState((prev) => {
+        const nextStreaming = new Map(prev.streamingMessages);
+        nextStreaming.delete(message.message_id);
+        if (!message.task_id) {
+          return {
+            ...prev,
+            streamingMessages: nextStreaming,
+            lastSyncedAt: new Date().toISOString(),
+          };
+        }
+
+        const shouldTrackMessages =
+          this.options.taskHydration === 'eager' || prev.loadedTaskIds.has(message.task_id);
+
+        if (!shouldTrackMessages) {
+          return {
+            ...prev,
+            streamingMessages: nextStreaming,
+            lastSyncedAt: new Date().toISOString(),
+          };
+        }
+
+        const nextByTask = new Map(prev.messagesByTask);
+        const current = nextByTask.get(message.task_id) || [];
+        if (!current.some((m) => m.message_id === message.message_id)) {
+          nextByTask.set(message.task_id, sortMessagesByIndex([...current, message]));
+        }
+
+        return {
+          ...prev,
+          messagesByTask: nextByTask,
+          streamingMessages: nextStreaming,
+          lastSyncedAt: new Date().toISOString(),
+        };
+      });
+    };
+
+    const onMessagePatched = (message: Message) => {
+      const taskId = message.task_id;
+      if (message.session_id !== this.sessionId || !taskId) return;
+      this.updateState((prev) => {
+        const current = prev.messagesByTask.get(taskId);
+        if (!current) return prev;
+        const index = current.findIndex((m) => m.message_id === message.message_id);
+        if (index === -1) return prev;
+        const nextByTask = new Map(prev.messagesByTask);
+        const nextMessages = [...current];
+        nextMessages[index] = message;
+        nextByTask.set(taskId, nextMessages);
+        return {
+          ...prev,
+          messagesByTask: nextByTask,
+          lastSyncedAt: new Date().toISOString(),
+        };
+      });
+    };
+
+    const onMessageRemoved = (message: Message) => {
+      if (message.session_id !== this.sessionId) return;
+      const taskId = message.task_id;
+      this.updateState((prev) => {
+        const nextStreaming = new Map(prev.streamingMessages);
+        nextStreaming.delete(message.message_id);
+        if (!taskId) {
+          return {
+            ...prev,
+            streamingMessages: nextStreaming,
+            lastSyncedAt: new Date().toISOString(),
+          };
+        }
+        const current = prev.messagesByTask.get(taskId) || [];
+        const nextByTask = new Map(prev.messagesByTask);
+        nextByTask.set(
+          taskId,
+          current.filter((m) => m.message_id !== message.message_id)
+        );
+        return {
+          ...prev,
+          streamingMessages: nextStreaming,
+          messagesByTask: nextByTask,
+          lastSyncedAt: new Date().toISOString(),
+        };
+      });
+    };
+
+    const onStreamingStart = (event: StreamingStartEvent) => {
+      if (event.session_id !== this.sessionId) return;
+      this.updateState((prev) => {
+        const nextStreaming = new Map(prev.streamingMessages);
+        nextStreaming.set(event.message_id, {
+          message_id: event.message_id,
+          session_id: event.session_id,
+          task_id: event.task_id,
+          role: event.role,
+          content: '',
+          thinkingContent: '',
+          timestamp: event.timestamp,
+          isStreaming: true,
+        });
+        return {
+          ...prev,
+          streamingMessages: nextStreaming,
+        };
+      });
+    };
+
+    const onStreamingChunk = (event: StreamingChunkEvent) => {
+      if (event.session_id !== this.sessionId) return;
+      this.updateState((prev) => {
+        const current = prev.streamingMessages.get(event.message_id);
+        if (!current) return prev;
+        const nextStreaming = new Map(prev.streamingMessages);
+        nextStreaming.set(event.message_id, {
+          ...current,
+          content: current.content + event.chunk,
+        });
+        return {
+          ...prev,
+          streamingMessages: nextStreaming,
+        };
+      });
+    };
+
+    const onStreamingEnd = (event: StreamingEndEvent) => {
+      if (event.session_id !== this.sessionId) return;
+      this.updateState((prev) => {
+        const current = prev.streamingMessages.get(event.message_id);
+        if (!current) return prev;
+        const nextStreaming = new Map(prev.streamingMessages);
+        nextStreaming.set(event.message_id, {
+          ...current,
+          isStreaming: false,
+        });
+        return {
+          ...prev,
+          streamingMessages: nextStreaming,
+        };
+      });
+    };
+
+    const onStreamingError = (event: StreamingErrorEvent) => {
+      if (event.session_id !== this.sessionId) return;
+      this.updateState((prev) => {
+        const current = prev.streamingMessages.get(event.message_id);
+        if (!current) return prev;
+        const nextStreaming = new Map(prev.streamingMessages);
+        nextStreaming.set(event.message_id, {
+          ...current,
+          error: event.error,
+          isStreaming: false,
+        });
+        return {
+          ...prev,
+          streamingMessages: nextStreaming,
+        };
+      });
+    };
+
+    const onThinkingStart = (event: ThinkingStartEvent) => {
+      if (event.session_id !== this.sessionId) return;
+      this.updateState((prev) => {
+        const nextStreaming = new Map(prev.streamingMessages);
+        const existing = nextStreaming.get(event.message_id);
+        nextStreaming.set(event.message_id, {
+          message_id: event.message_id,
+          session_id: event.session_id,
+          task_id: event.task_id ?? existing?.task_id,
+          role: 'assistant',
+          content: existing?.content || '',
+          thinkingContent: existing?.thinkingContent || '',
+          timestamp: existing?.timestamp || event.timestamp,
+          isStreaming: true,
+          isThinking: true,
+        });
+        return {
+          ...prev,
+          streamingMessages: nextStreaming,
+        };
+      });
+    };
+
+    const onThinkingChunk = (event: ThinkingChunkEvent) => {
+      if (event.session_id !== this.sessionId) return;
+      this.updateState((prev) => {
+        const current = prev.streamingMessages.get(event.message_id);
+        if (!current) return prev;
+        const nextStreaming = new Map(prev.streamingMessages);
+        nextStreaming.set(event.message_id, {
+          ...current,
+          isThinking: true,
+          thinkingContent: (current.thinkingContent || '') + event.chunk,
+        });
+        return {
+          ...prev,
+          streamingMessages: nextStreaming,
+        };
+      });
+    };
+
+    const onThinkingEnd = (event: ThinkingEndEvent) => {
+      if (event.session_id !== this.sessionId) return;
+      this.updateState((prev) => {
+        const current = prev.streamingMessages.get(event.message_id);
+        if (!current) return prev;
+        const nextStreaming = new Map(prev.streamingMessages);
+        nextStreaming.set(event.message_id, {
+          ...current,
+          isThinking: false,
+        });
+        return {
+          ...prev,
+          streamingMessages: nextStreaming,
+        };
+      });
+    };
+
+    messagesService.on('created', onMessageCreated);
+    messagesService.on('patched', onMessagePatched);
+    messagesService.on('updated', onMessagePatched);
+    messagesService.on('removed', onMessageRemoved);
+    messagesService.on('streaming:start', onStreamingStart as (...args: unknown[]) => void);
+    messagesService.on('streaming:chunk', onStreamingChunk as (...args: unknown[]) => void);
+    messagesService.on('streaming:end', onStreamingEnd as (...args: unknown[]) => void);
+    messagesService.on('streaming:error', onStreamingError as (...args: unknown[]) => void);
+    messagesService.on('thinking:start', onThinkingStart as (...args: unknown[]) => void);
+    messagesService.on('thinking:chunk', onThinkingChunk as (...args: unknown[]) => void);
+    messagesService.on('thinking:end', onThinkingEnd as (...args: unknown[]) => void);
+
+    this.disposeCallbacks.push(() => messagesService.removeListener('created', onMessageCreated));
+    this.disposeCallbacks.push(() => messagesService.removeListener('patched', onMessagePatched));
+    this.disposeCallbacks.push(() => messagesService.removeListener('updated', onMessagePatched));
+    this.disposeCallbacks.push(() => messagesService.removeListener('removed', onMessageRemoved));
+    this.disposeCallbacks.push(() =>
+      messagesService.removeListener(
+        'streaming:start',
+        onStreamingStart as (...args: unknown[]) => void
+      )
+    );
+    this.disposeCallbacks.push(() =>
+      messagesService.removeListener(
+        'streaming:chunk',
+        onStreamingChunk as (...args: unknown[]) => void
+      )
+    );
+    this.disposeCallbacks.push(() =>
+      messagesService.removeListener(
+        'streaming:end',
+        onStreamingEnd as (...args: unknown[]) => void
+      )
+    );
+    this.disposeCallbacks.push(() =>
+      messagesService.removeListener(
+        'streaming:error',
+        onStreamingError as (...args: unknown[]) => void
+      )
+    );
+    this.disposeCallbacks.push(() =>
+      messagesService.removeListener(
+        'thinking:start',
+        onThinkingStart as (...args: unknown[]) => void
+      )
+    );
+    this.disposeCallbacks.push(() =>
+      messagesService.removeListener(
+        'thinking:chunk',
+        onThinkingChunk as (...args: unknown[]) => void
+      )
+    );
+    this.disposeCallbacks.push(() =>
+      messagesService.removeListener('thinking:end', onThinkingEnd as (...args: unknown[]) => void)
+    );
+  }
+
+  /**
+   * In-flight `resync()` promise, if any. Used to single-flight overlapping
+   * callers (socket `connect`, visibilitychange, manual Reload) so a slow
+   * failure cannot stomp on a later success and re-stamp a stale error.
+   */
+  private resyncInflight: Promise<void> | null = null;
+
+  /**
+   * Re-fetch session/tasks/queue (and loaded message buckets) from the daemon.
+   *
+   * Called automatically on socket `connect` events (see {@link attachListeners})
+   * so a reconnect after sleep / network drop pulls fresh DB state. Also
+   * exposed publicly so the UI can re-trigger hydration manually — e.g. a
+   * "Reload" button on the conversation panel's error banner, or a
+   * `visibilitychange` / token-refresh listener that wants to recover from a
+   * sticky error without forcing the user to refresh the tab.
+   *
+   * Errors land in `state.error`; success clears it.
+   *
+   * Single-flighted: concurrent callers join the same in-flight promise rather
+   * than racing one another. Without this, a slow failing fetch could land
+   * after a faster successful fetch and overwrite the cleared error with a
+   * stale one. Callers should still check `state.terminal` before re-calling
+   * after a failure — see {@link ReactiveSessionState.terminal}.
+   */
+  async resync(): Promise<void> {
+    if (this.disposed) return;
+    if (this.resyncInflight) return this.resyncInflight;
+    const promise = this.doResync();
+    this.resyncInflight = promise;
+    try {
+      await promise;
+    } finally {
+      if (this.resyncInflight === promise) {
+        this.resyncInflight = null;
+      }
+    }
+  }
+
+  private async doResync(): Promise<void> {
+    try {
+      const [session, tasks, queueResult] = await Promise.all([
+        this.client.service('sessions').get(this.sessionId),
+        this.client.service('tasks').findAll({
+          query: {
+            session_id: this.sessionId,
+            $sort: { created_at: 1 },
+          },
+        }),
+        this.client
+          .service(`/sessions/${this.sessionId}/tasks/queue`)
+          .find()
+          .catch(() => ({ data: [] }) as QueueFindResult),
+      ]);
+
+      let messagesByTask = this.stateSnapshot.messagesByTask;
+      let loadedTaskIds = this.stateSnapshot.loadedTaskIds;
+
+      if (this.options.taskHydration === 'eager') {
+        const allMessages = await this.client.service('messages').findAll({
+          query: {
+            session_id: this.sessionId,
+            $sort: { index: 1 },
+          },
+        });
+        messagesByTask = groupMessagesByTask(allMessages);
+        loadedTaskIds = new Set(messagesByTask.keys());
+      } else if (this.stateSnapshot.loadedTaskIds.size > 0) {
+        const refreshedByTask = new Map<string, Message[]>();
+        for (const taskId of this.stateSnapshot.loadedTaskIds) {
+          const taskMessages = await this.client.service('messages').findAll({
+            query: {
+              task_id: taskId,
+              $sort: { index: 1 },
+            },
+          });
+          refreshedByTask.set(taskId, sortMessagesByIndex(taskMessages));
+        }
+        messagesByTask = refreshedByTask;
+        loadedTaskIds = new Set(refreshedByTask.keys());
+      }
+
+      if (this.disposed) return;
+      this.updateState((prev) => ({
+        ...prev,
+        session,
+        tasks,
+        queuedTasks: sortTasksByQueuePosition((queueResult as QueueFindResult).data || []),
+        messagesByTask,
+        loadedTaskIds,
+        error: null,
+        terminal: false,
+        lastSyncedAt: new Date().toISOString(),
+      }));
+    } catch (error) {
+      if (this.disposed) return;
+      const status = errorStatusCode(error);
+      // 403 (forbidden) and 404 (not found) mean this session is gone
+      // from the user's perspective — retrying will keep failing. Mark
+      // terminal so the UI stops auto-refetching on every focus change.
+      // 401 is intentionally NOT terminal: the around-hook on the socket
+      // client will refresh and the next retry can succeed.
+      const terminal = status === 403 || status === 404;
+      this.updateState((prev) => ({
+        ...prev,
+        error: error instanceof Error ? error.message : 'Failed to resync reactive session',
+        terminal: prev.terminal || terminal,
+      }));
+    }
+  }
+}
+
+/**
+ * Best-effort HTTP status extraction for arbitrary errors thrown by the
+ * Feathers client / fetch / socket transport. Mirrors the field-soup that
+ * `apps/agor-ui`'s `authErrors.ts` walks, but inlined here to avoid a UI →
+ * client cross-package dependency for what is just three property reads.
+ */
+function errorStatusCode(err: unknown): number | undefined {
+  if (!err || typeof err !== 'object') return undefined;
+  const e = err as { code?: unknown; statusCode?: unknown; status?: unknown };
+  if (typeof e.code === 'number') return e.code;
+  if (typeof e.statusCode === 'number') return e.statusCode;
+  if (typeof e.status === 'number') return e.status;
+  return undefined;
+}
+
+export interface ReactiveAgorClient extends AgorClient {
+  session(sessionId: string, options?: ReactiveSessionOptions): ReactiveSessionHandle;
+}
+
+export function attachReactiveSessionApi(client: AgorClient): ReactiveAgorClient {
+  const reactiveClient = client as ReactiveAgorClient;
+  const target = reactiveClient as ReactiveAgorClient & {
+    session?: (sessionId: string, options?: ReactiveSessionOptions) => ReactiveSessionHandle;
+  };
+
+  if (typeof target.session === 'function') {
+    return reactiveClient;
+  }
+
+  target.session = (sessionId: string, options?: ReactiveSessionOptions) => {
+    return new ReactiveSessionHandle(client, sessionId, options);
+  };
+
+  return reactiveClient;
+}
+
+interface SharedReactiveSessionEntry {
+  handle: ReactiveSessionHandle;
+  refCount: number;
+}
+
+const SHARED_REACTIVE_SESSIONS = new WeakMap<AgorClient, Map<string, SharedReactiveSessionEntry>>();
+
+function normalizeReactiveSessionOptions(
+  options?: ReactiveSessionOptions
+): Required<ReactiveSessionOptions> {
+  return {
+    taskHydration: options?.taskHydration ?? 'lazy',
+  };
+}
+
+function getSharedSessionKey(sessionId: string, options: Required<ReactiveSessionOptions>): string {
+  return `${sessionId}:${options.taskHydration}`;
+}
+
+/**
+ * Retain a shared reactive session handle for a given client/session/options tuple.
+ * The handle is reference-counted and disposed when the last caller releases it.
+ */
+export function retainReactiveSession(
+  client: AgorClient,
+  sessionId: string,
+  options?: ReactiveSessionOptions
+): ReactiveSessionHandle {
+  const normalizedOptions = normalizeReactiveSessionOptions(options);
+  const cacheKey = getSharedSessionKey(sessionId, normalizedOptions);
+
+  let clientSessions = SHARED_REACTIVE_SESSIONS.get(client);
+  if (!clientSessions) {
+    clientSessions = new Map();
+    SHARED_REACTIVE_SESSIONS.set(client, clientSessions);
+  }
+
+  const existing = clientSessions.get(cacheKey);
+  if (existing) {
+    existing.refCount += 1;
+    return existing.handle;
+  }
+
+  const handle = new ReactiveSessionHandle(client, sessionId, normalizedOptions);
+  clientSessions.set(cacheKey, { handle, refCount: 1 });
+  return handle;
+}
+
+/**
+ * Release a retained shared reactive session handle.
+ * Disposes the underlying handle when ref count reaches zero.
+ */
+export function releaseReactiveSession(
+  client: AgorClient,
+  sessionId: string,
+  options?: ReactiveSessionOptions
+): void {
+  const normalizedOptions = normalizeReactiveSessionOptions(options);
+  const cacheKey = getSharedSessionKey(sessionId, normalizedOptions);
+  const clientSessions = SHARED_REACTIVE_SESSIONS.get(client);
+  if (!clientSessions) {
+    return;
+  }
+
+  const entry = clientSessions.get(cacheKey);
+  if (!entry) {
+    return;
+  }
+
+  entry.refCount -= 1;
+  if (entry.refCount <= 0) {
+    entry.handle.dispose();
+    clientSessions.delete(cacheKey);
+  }
+
+  if (clientSessions.size === 0) {
+    SHARED_REACTIVE_SESSIONS.delete(client);
+  }
+}
+
+function sortMessagesByIndex(messages: Message[]): Message[] {
+  return [...messages].sort((a, b) => a.index - b.index);
+}
+
+function sortTasksByQueuePosition(tasks: Task[]): Task[] {
+  return [...tasks].sort((a, b) => (a.queue_position || 0) - (b.queue_position || 0));
+}
+
+function groupMessagesByTask(messages: Message[]): Map<string, Message[]> {
+  const grouped = new Map<string, Message[]>();
+  for (const message of messages) {
+    if (!message.task_id) continue;
+    const current = grouped.get(message.task_id) || [];
+    current.push(message);
+    grouped.set(message.task_id, current);
+  }
+  for (const [taskId, taskMessages] of grouped.entries()) {
+    grouped.set(taskId, sortMessagesByIndex(taskMessages));
+  }
+  return grouped;
+}

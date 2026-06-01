@@ -1,0 +1,954 @@
+import type {
+  AgorClient,
+  BoardComment,
+  BoardObject,
+  Branch,
+  CommentReaction,
+  ReactionSummary,
+  User,
+} from '@agor-live/client';
+import { groupReactions, isThreadRoot } from '@agor-live/client';
+import {
+  AppstoreOutlined,
+  BranchesOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  CommentOutlined,
+  DeleteOutlined,
+  SendOutlined,
+  SmileOutlined,
+  UndoOutlined,
+} from '@ant-design/icons';
+import {
+  Badge,
+  Button,
+  Collapse,
+  Popover,
+  Space,
+  Spin,
+  Tag,
+  Tooltip,
+  Typography,
+  theme,
+} from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useMutationGate } from '../../contexts/ConnectionContext';
+import { AgorAvatar } from '../AgorAvatar';
+import { AutocompleteTextarea } from '../AutocompleteTextarea';
+import { AgorEmojiPicker } from '../EmojiPickerInput';
+import { MarkdownRenderer } from '../MarkdownRenderer';
+import { MetaRow } from '../MetaRow';
+import { ZONE_CONTENT_OPACITY } from '../SessionCanvas/canvas/BoardObjectNodes';
+
+const { Text, Title } = Typography;
+
+export interface CommentsPanelProps {
+  client: AgorClient | null;
+  boardId: string;
+  comments: BoardComment[];
+  userById: Map<string, User>;
+  currentUserId: string;
+  boardObjects?: Record<string, BoardObject>; // For zone names
+  branchById?: Map<string, Branch>; // For branch names
+  loading?: boolean;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
+  onSendComment: (content: string) => void;
+  onReplyComment?: (parentId: string, content: string) => void;
+  onResolveComment?: (commentId: string) => void;
+  onToggleReaction?: (commentId: string, emoji: string) => void;
+  onDeleteComment?: (commentId: string) => void;
+  hoveredCommentId?: string | null;
+  selectedCommentId?: string | null;
+}
+
+type FilterMode = 'all' | 'active';
+
+/**
+ * Reaction display component - shows existing reactions as pills
+ */
+const ReactionDisplay: React.FC<{
+  reactions: CommentReaction[];
+  currentUserId: string;
+  userById: Map<string, User>;
+  onToggle: (emoji: string) => void;
+}> = ({ reactions, currentUserId, userById, onToggle }) => {
+  const { token } = theme.useToken();
+  const grouped: ReactionSummary = groupReactions(reactions);
+
+  if (Object.keys(grouped).length === 0) {
+    return null;
+  }
+
+  return (
+    <Space size={token.sizeUnit}>
+      {Object.entries(grouped).map(([emoji, userIds]) => {
+        const hasReacted = userIds.includes(currentUserId);
+
+        // Build tooltip content with list of users who reacted
+        const reactedUsers = userIds
+          .map((userId) => userById.get(userId))
+          .filter(Boolean)
+          .map((user) => user!.name || user!.email.split('@')[0]);
+
+        const tooltipContent =
+          reactedUsers.length > 0 ? reactedUsers.join(', ') : 'Anonymous users';
+
+        return (
+          <Tooltip key={emoji} title={tooltipContent}>
+            <Button
+              size="small"
+              onClick={() => onToggle(emoji)}
+              style={{
+                borderRadius: 12,
+                height: 24,
+                padding: '0 8px',
+                fontSize: 12,
+                backgroundColor: hasReacted ? token.colorPrimaryBg : 'transparent',
+                borderColor: token.colorBorder,
+                color: token.colorText,
+                transition: 'background-color 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = token.colorPrimaryBgHover;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = hasReacted
+                  ? token.colorPrimaryBg
+                  : 'transparent';
+              }}
+            >
+              {emoji} {userIds.length}
+            </Button>
+          </Tooltip>
+        );
+      })}
+    </Space>
+  );
+};
+
+/**
+ * Emoji picker button component
+ */
+const EmojiPickerButton: React.FC<{
+  onToggle: (emoji: string) => void;
+}> = ({ onToggle }) => {
+  const { token } = theme.useToken();
+  const [pickerOpen, setPickerOpen] = useState(false);
+
+  return (
+    <Popover
+      content={
+        <AgorEmojiPicker
+          onEmojiClick={(emojiData) => {
+            onToggle(emojiData.emoji);
+            setPickerOpen(false);
+          }}
+        />
+      }
+      trigger="click"
+      open={pickerOpen}
+      onOpenChange={setPickerOpen}
+      placement="right"
+    >
+      <Button
+        type="text"
+        size="small"
+        icon={<SmileOutlined />}
+        title="Add reaction"
+        style={{ color: token.colorTextSecondary }}
+      />
+    </Popover>
+  );
+};
+
+/**
+ * Individual reply component
+ */
+const ReplyItem: React.FC<{
+  reply: BoardComment;
+  userById: Map<string, User>;
+  currentUserId: string;
+  onToggleReaction?: (commentId: string, emoji: string) => void;
+  onDelete?: (commentId: string) => void;
+}> = ({ reply, userById, currentUserId, onToggleReaction, onDelete }) => {
+  const { token } = theme.useToken();
+  const [replyHovered, setReplyHovered] = useState(false);
+  const replyUser = userById.get(reply.created_by);
+  const isReplyCurrentUser = reply.created_by === currentUserId;
+
+  return (
+    <div
+      style={{
+        padding: '4px 0',
+      }}
+    >
+      <div
+        style={{ width: '100%', position: 'relative' }}
+        onMouseEnter={() => setReplyHovered(true)}
+        onMouseLeave={() => setReplyHovered(false)}
+      >
+        <MetaRow
+          avatar={<AgorAvatar>{replyUser?.emoji || '👤'}</AgorAvatar>}
+          title={
+            <Space size={4}>
+              <Text strong style={{ fontSize: token.fontSizeSM }}>
+                {replyUser?.name || 'Anonymous'}
+              </Text>
+              <Text type="secondary" style={{ fontSize: token.fontSizeSM }}>
+                {new Date(reply.created_at).toLocaleTimeString()}
+              </Text>
+            </Space>
+          }
+          description={
+            <>
+              <div style={{ marginTop: 2 }}>
+                <MarkdownRenderer content={reply.content} style={{ fontSize: token.fontSizeSM }} />
+              </div>
+              {/* Reactions Row (always visible if reactions exist) */}
+              {onToggleReaction && (reply.reactions || []).length > 0 && (
+                <div style={{ marginTop: 4 }}>
+                  <ReactionDisplay
+                    reactions={reply.reactions || []}
+                    currentUserId={currentUserId}
+                    userById={userById}
+                    onToggle={(emoji) => onToggleReaction(reply.comment_id, emoji)}
+                  />
+                </div>
+              )}
+            </>
+          }
+        />
+
+        {/* Action buttons overlay (visible on hover) */}
+        {replyHovered && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 4,
+              right: 0,
+              backgroundColor: token.colorBgContainer,
+              borderRadius: 4,
+              padding: '2px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+            }}
+          >
+            <Space size="small">
+              {onToggleReaction && (
+                <EmojiPickerButton
+                  onToggle={(emoji) => onToggleReaction(reply.comment_id, emoji)}
+                />
+              )}
+              {onDelete && isReplyCurrentUser && (
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<DeleteOutlined />}
+                  onClick={() => onDelete(reply.comment_id)}
+                  title="Delete"
+                  danger
+                  style={{ color: token.colorTextSecondary }}
+                />
+              )}
+            </Space>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Individual comment thread component (root + nested replies)
+ */
+const CommentThread: React.FC<{
+  comment: BoardComment;
+  replies: BoardComment[];
+  userById: Map<string, User>;
+  currentUserId: string;
+  onReply?: (parentId: string, content: string) => void;
+  onResolve?: (commentId: string) => void;
+  onToggleReaction?: (commentId: string, emoji: string) => void;
+  onDelete?: (commentId: string) => void;
+  isHighlighted?: boolean;
+  scrollRef?: React.RefObject<HTMLDivElement>;
+  client: AgorClient | null;
+}> = ({
+  comment,
+  replies,
+  userById,
+  currentUserId,
+  onReply,
+  onResolve,
+  onToggleReaction,
+  onDelete,
+  isHighlighted,
+  scrollRef,
+  client,
+}) => {
+  const { token } = theme.useToken();
+  const [showReplyInput, setShowReplyInput] = useState(false);
+  const [replyValue, setReplyValue] = useState('');
+  const [isHovered, setIsHovered] = useState(false);
+  const user = userById.get(comment.created_by);
+  const isCurrentUser = comment.created_by === currentUserId;
+
+  return (
+    <div
+      ref={scrollRef}
+      style={{
+        borderBottom: `1px solid ${token.colorBorder}`,
+        padding: isHighlighted ? `${token.paddingXS}px` : '8px 0',
+        border: `2px solid ${isHighlighted ? token.colorPrimary : 'transparent'}`,
+        borderRadius: token.borderRadiusLG,
+        marginBottom: '4px',
+        transition: 'all 0.2s ease',
+      }}
+    >
+      <div
+        style={{ width: '100%', position: 'relative' }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Thread Root */}
+        <MetaRow
+          avatar={<AgorAvatar>{user?.emoji || '👤'}</AgorAvatar>}
+          title={
+            <Space size={4}>
+              <Text strong style={{ fontSize: token.fontSizeSM }}>
+                {user?.name || 'Anonymous'}
+              </Text>
+              <Text type="secondary" style={{ fontSize: token.fontSizeSM }}>
+                {new Date(comment.created_at).toLocaleTimeString()}
+              </Text>
+              {comment.edited && (
+                <Text type="secondary" style={{ fontSize: token.fontSizeSM, fontStyle: 'italic' }}>
+                  (edited)
+                </Text>
+              )}
+              {comment.resolved && (
+                <Tag
+                  color="success"
+                  style={{ fontSize: token.fontSizeSM, lineHeight: '16px', margin: 0 }}
+                >
+                  Resolved
+                </Tag>
+              )}
+            </Space>
+          }
+          description={
+            <>
+              <div style={{ marginTop: 4 }}>
+                <MarkdownRenderer
+                  content={comment.content}
+                  style={{ fontSize: token.fontSizeSM }}
+                />
+              </div>
+              {/* Reactions Row (always visible if reactions exist) */}
+              {onToggleReaction && (comment.reactions || []).length > 0 && (
+                <div style={{ marginTop: 4 }}>
+                  <ReactionDisplay
+                    reactions={comment.reactions || []}
+                    currentUserId={currentUserId}
+                    userById={userById}
+                    onToggle={(emoji) => onToggleReaction(comment.comment_id, emoji)}
+                  />
+                </div>
+              )}
+            </>
+          }
+        />
+
+        {/* Action buttons overlay (visible on hover) */}
+        {isHovered && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 4,
+              right: 0,
+              backgroundColor: token.colorBgContainer,
+              borderRadius: 4,
+              padding: '2px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+            }}
+          >
+            <Space size="small">
+              {onToggleReaction && (
+                <EmojiPickerButton
+                  onToggle={(emoji) => onToggleReaction(comment.comment_id, emoji)}
+                />
+              )}
+              {onReply && (
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<CommentOutlined />}
+                  onClick={() => setShowReplyInput(!showReplyInput)}
+                  title="Reply"
+                  style={{ color: token.colorTextSecondary }}
+                />
+              )}
+              {onResolve && !comment.resolved && (
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<CheckOutlined />}
+                  onClick={() => onResolve(comment.comment_id)}
+                  title="Resolve"
+                  style={{ color: token.colorTextSecondary }}
+                />
+              )}
+              {onResolve && comment.resolved && (
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<UndoOutlined />}
+                  onClick={() => onResolve(comment.comment_id)}
+                  title="Reopen"
+                  style={{ color: token.colorTextSecondary }}
+                />
+              )}
+              {onDelete && isCurrentUser && (
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<DeleteOutlined />}
+                  onClick={() => onDelete(comment.comment_id)}
+                  title="Delete"
+                  danger
+                  style={{ color: token.colorTextSecondary }}
+                />
+              )}
+            </Space>
+          </div>
+        )}
+
+        {/* Nested Replies (1 level deep) */}
+        {replies.length > 0 && (
+          <div
+            style={{
+              marginLeft: 16,
+              marginTop: 8,
+              borderLeft: `2px solid ${token.colorBorder}`,
+              paddingLeft: 8,
+            }}
+          >
+            {replies.map((reply) => (
+              <ReplyItem
+                key={reply.comment_id}
+                reply={reply}
+                userById={userById}
+                currentUserId={currentUserId}
+                onToggleReaction={onToggleReaction}
+                onDelete={onDelete}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Reply Input */}
+        {showReplyInput && onReply && (
+          <div
+            style={{
+              marginLeft: 32,
+              marginTop: 8,
+              display: 'flex',
+              gap: 8,
+              alignItems: 'flex-end',
+            }}
+          >
+            <div style={{ flex: 1 }}>
+              <AutocompleteTextarea
+                value={replyValue}
+                onChange={setReplyValue}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (replyValue.trim()) {
+                      onReply(comment.comment_id, replyValue);
+                      setReplyValue('');
+                      setShowReplyInput(false);
+                    }
+                  }
+                }}
+                placeholder="Reply... (type @ for autocomplete)"
+                autoSize={{ minRows: 1, maxRows: 4 }}
+                client={client}
+                sessionId={null}
+                userById={userById}
+              />
+            </div>
+            <Button
+              type="primary"
+              icon={<SendOutlined />}
+              onClick={() => {
+                if (replyValue.trim()) {
+                  onReply(comment.comment_id, replyValue);
+                  setReplyValue('');
+                  setShowReplyInput(false);
+                }
+              }}
+              disabled={!replyValue.trim()}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Escape special regex characters in a string
+ */
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Check if comment content mentions a user by name or email.
+ * Uses word boundary matching to avoid false positives (e.g., @ann matching @anna).
+ */
+function checkMentionsUser(content: string, userName?: string, userEmail?: string): boolean {
+  if (!userName && !userEmail) return false;
+
+  const patterns: RegExp[] = [];
+
+  if (userName) {
+    // @name not followed by word char (avoids @ann matching @anna)
+    patterns.push(new RegExp(`@${escapeRegex(userName)}(?![\\w])`, 'i'));
+    // @"name" quoted form
+    patterns.push(new RegExp(`@"${escapeRegex(userName)}"`, 'i'));
+  }
+
+  if (userEmail) {
+    // @email not followed by word char
+    patterns.push(new RegExp(`@${escapeRegex(userEmail)}(?![\\w])`, 'i'));
+    // @"email" quoted form
+    patterns.push(new RegExp(`@"${escapeRegex(userEmail)}"`, 'i'));
+  }
+
+  return patterns.some((pattern) => pattern.test(content));
+}
+
+/**
+ * Main CommentsPanel component - permanent left sidebar with threading and reactions
+ */
+export const CommentsPanel: React.FC<CommentsPanelProps> = ({
+  client,
+  boardId,
+  comments,
+  userById,
+  currentUserId,
+  boardObjects = {},
+  branchById,
+  loading = false,
+  collapsed = false,
+  onToggleCollapse,
+  onSendComment,
+  onReplyComment,
+  onResolveComment,
+  onToggleReaction,
+  onDeleteComment,
+  hoveredCommentId,
+  selectedCommentId,
+}) => {
+  const { token } = theme.useToken();
+  const [filter, setFilter] = useState<FilterMode>('active');
+  const [commentInputValue, setCommentInputValue] = useState('');
+
+  // Chokepoint: every comment mutation flows through these wrapped callbacks
+  // so we can short-circuit during disconnect / reconnect-grace / out-of-sync
+  // without sprinkling `disabled` checks across every nested button. The bottom
+  // send button still also flips `disabled` for visible feedback; threaded
+  // action buttons rely on the navbar/footer connection indicator.
+  const mutationGate = useMutationGate();
+  // Wrap a callback so it no-ops when the mutation gate is closed. Preserves
+  // `undefined` when the underlying optional callback wasn't supplied.
+  function guarded<Args extends unknown[]>(fn: (...args: Args) => void): (...args: Args) => void;
+  function guarded<Args extends unknown[]>(
+    fn: ((...args: Args) => void) | undefined
+  ): ((...args: Args) => void) | undefined;
+  function guarded<Args extends unknown[]>(fn: ((...args: Args) => void) | undefined) {
+    if (!fn) return undefined;
+    return (...args: Args) => {
+      if (!mutationGate.canMutate) return;
+      fn(...args);
+    };
+  }
+  const sendComment = guarded(onSendComment);
+  const replyComment = guarded(onReplyComment);
+  const resolveComment = guarded(onResolveComment);
+  const toggleReaction = guarded(onToggleReaction);
+  const deleteComment = guarded(onDeleteComment);
+
+  // Get current user's name and email for mention detection
+  const currentUser = currentUserId ? userById.get(currentUserId) : undefined;
+  const currentUserName = currentUser?.name;
+  const currentUserEmail = currentUser?.email;
+
+  // Create refs for scroll-to-view
+  const commentRefs = React.useRef<Record<string, React.RefObject<HTMLDivElement>>>({});
+
+  // Separate thread roots from replies
+  const threadRoots = useMemo(() => comments.filter((c) => isThreadRoot(c)), [comments]);
+
+  const allReplies = useMemo(() => comments.filter((c) => !isThreadRoot(c)), [comments]);
+
+  // Group replies by parent
+  const repliesByParent = useMemo(() => {
+    const grouped: Record<string, BoardComment[]> = {};
+    for (const reply of allReplies) {
+      if (reply.parent_comment_id) {
+        if (!grouped[reply.parent_comment_id]) {
+          grouped[reply.parent_comment_id] = [];
+        }
+        grouped[reply.parent_comment_id].push(reply);
+      }
+    }
+    return grouped;
+  }, [allReplies]);
+
+  // Check if a thread (including its replies) mentions the current user
+  const threadMentionsUser = useMemo(() => {
+    return (thread: BoardComment) => {
+      // Check thread root
+      if (checkMentionsUser(thread.content, currentUserName, currentUserEmail)) {
+        return true;
+      }
+      // Check replies
+      const replies = repliesByParent[thread.comment_id] || [];
+      return replies.some((r) => checkMentionsUser(r.content, currentUserName, currentUserEmail));
+    };
+  }, [repliesByParent, currentUserName, currentUserEmail]);
+
+  // Apply filters to thread roots only
+  const filteredThreads = useMemo(() => {
+    return threadRoots
+      .filter((thread) => {
+        if (filter === 'active' && thread.resolved) return false;
+        return true;
+      })
+      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+  }, [threadRoots, filter]);
+
+  // Group filtered threads by scope (zone, branch, or board-level)
+  const groupedThreads = useMemo(() => {
+    const groups: Record<
+      string,
+      {
+        type: 'zone' | 'branch' | 'board';
+        label: string;
+        color?: string;
+        threads: BoardComment[];
+      }
+    > = {};
+
+    for (const thread of filteredThreads) {
+      let groupKey = 'board';
+      let groupLabel = 'Board';
+      let groupType: 'zone' | 'branch' | 'board' = 'board';
+      let groupColor: string | undefined;
+
+      // Check if comment has relative positioning (pinned to zone/branch)
+      if (thread.position?.relative) {
+        const { parent_id, parent_type } = thread.position.relative;
+
+        if (parent_type === 'zone') {
+          groupKey = `zone-${parent_id}`;
+          const zone = boardObjects?.[`zone-${parent_id}`]; // Zone keys have 'zone-' prefix
+          // Zone objects have a label field and color
+          groupLabel = zone && 'label' in zone ? zone.label : 'Zone';
+          groupColor = zone && 'color' in zone ? zone.color : undefined;
+          groupType = 'zone';
+        } else if (parent_type === 'branch') {
+          groupKey = `branch-${parent_id}`;
+          const branch = branchById?.get(parent_id);
+          groupLabel = branch ? branch.name : 'Unknown Branch';
+          groupType = 'branch';
+        }
+      } else if (thread.branch_id) {
+        // Check for FK-based branch attachment
+        groupKey = `branch-${thread.branch_id}`;
+        const branch = branchById?.get(thread.branch_id);
+        groupLabel = branch ? branch.name : 'Unknown Branch';
+        groupType = 'branch';
+      }
+
+      if (!groups[groupKey]) {
+        groups[groupKey] = {
+          type: groupType,
+          label: groupLabel,
+          color: groupColor,
+          threads: [],
+        };
+      }
+
+      groups[groupKey].threads.push(thread);
+    }
+
+    return groups;
+  }, [filteredThreads, boardObjects, branchById]);
+
+  // Sort groups by scope hierarchy: Board → Zones → Branches (larger to smaller)
+  const sortedGroupEntries = useMemo(() => {
+    const entries = Object.entries(groupedThreads);
+
+    return entries.sort(([, a], [, b]) => {
+      // Type priority: board (0) < zone (1) < branch (2)
+      const typeOrder = { board: 0, zone: 1, branch: 2 };
+      const aOrder = typeOrder[a.type];
+      const bOrder = typeOrder[b.type];
+
+      if (aOrder !== bOrder) {
+        return aOrder - bOrder;
+      }
+
+      // Within same type, sort alphabetically by label
+      return a.label.localeCompare(b.label);
+    });
+  }, [groupedThreads]);
+
+  // Scroll to selected comment when it changes
+  useEffect(() => {
+    if (selectedCommentId && commentRefs.current[selectedCommentId]) {
+      commentRefs.current[selectedCommentId]?.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  }, [selectedCommentId]);
+
+  // When collapsed, don't render anything
+  if (collapsed) {
+    return null;
+  }
+
+  // Expanded state - full panel
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        backgroundColor: token.colorBgContainer,
+        borderRight: `1px solid ${token.colorBorder}`,
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          padding: 12,
+          borderBottom: `1px solid ${token.colorBorder}`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Space>
+          <CommentOutlined />
+          <Title level={5} style={{ margin: 0 }}>
+            Comments
+          </Title>
+          <Badge
+            count={filteredThreads.length}
+            showZero={false}
+            style={{
+              backgroundColor: filteredThreads.some(threadMentionsUser)
+                ? token.colorError
+                : token.colorPrimaryBgHover,
+            }}
+          />
+        </Space>
+        {onToggleCollapse && (
+          <Button
+            type="text"
+            size="small"
+            icon={<CloseOutlined />}
+            onClick={onToggleCollapse}
+            danger
+          />
+        )}
+      </div>
+
+      {/* Filter Tabs */}
+      <div
+        style={{
+          padding: 12,
+          borderBottom: `1px solid ${token.colorBorder}`,
+          backgroundColor: token.colorBgContainer,
+        }}
+      >
+        <Space>
+          <Button
+            type={filter === 'active' ? 'primary' : 'default'}
+            size="small"
+            onClick={() => setFilter('active')}
+          >
+            Active
+          </Button>
+          <Button
+            type={filter === 'all' ? 'primary' : 'default'}
+            size="small"
+            onClick={() => setFilter('all')}
+          >
+            All
+          </Button>
+        </Space>
+      </div>
+
+      {/* Thread List */}
+      <div
+        style={{
+          flex: 1,
+          overflow: 'auto',
+          backgroundColor: token.colorBgLayout,
+        }}
+      >
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: 32 }}>
+            <Spin description="Loading comments..." />
+          </div>
+        ) : Object.keys(groupedThreads).length === 0 ? (
+          <div
+            style={{
+              textAlign: 'center',
+              padding: 32,
+              color: token.colorTextSecondary,
+            }}
+          >
+            <CommentOutlined style={{ fontSize: 48, marginBottom: 16, opacity: 0.3 }} />
+            <div>No comments yet</div>
+            <div style={{ fontSize: 12, marginTop: 8 }}>Start a conversation about this board</div>
+          </div>
+        ) : (
+          <Collapse
+            defaultActiveKey={Object.keys(groupedThreads)}
+            style={{ border: 'none', backgroundColor: 'transparent' }}
+            items={sortedGroupEntries.map(([groupKey, group]) => ({
+              key: groupKey,
+              label: (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {group.type === 'board' && (
+                    <AppstoreOutlined style={{ fontSize: 14, color: token.colorPrimary }} />
+                  )}
+                  {group.type === 'zone' && group.color && (
+                    <div
+                      style={{
+                        width: 12,
+                        height: 12,
+                        // Transparent fill matching zone background
+                        backgroundColor: `${group.color}${Math.round(ZONE_CONTENT_OPACITY * 255)
+                          .toString(16)
+                          .padStart(2, '0')}`,
+                        // Solid border in zone color
+                        border: `1px solid ${group.color}`,
+                        borderRadius: 2,
+                      }}
+                    />
+                  )}
+                  {group.type === 'branch' && (
+                    <BranchesOutlined style={{ fontSize: 14, color: token.colorPrimary }} />
+                  )}
+                  <Text strong>{group.label}</Text>
+                  <Badge
+                    count={group.threads.length}
+                    style={{
+                      backgroundColor: group.threads.some(threadMentionsUser)
+                        ? token.colorError
+                        : token.colorPrimaryBg,
+                    }}
+                  />
+                </div>
+              ),
+              children: (
+                <>
+                  {group.threads.map((thread) => {
+                    // Create or get ref for this thread
+                    if (!commentRefs.current[thread.comment_id]) {
+                      commentRefs.current[thread.comment_id] = React.createRef<HTMLDivElement>();
+                    }
+
+                    const isHighlighted =
+                      thread.comment_id === hoveredCommentId ||
+                      thread.comment_id === selectedCommentId;
+
+                    return (
+                      <CommentThread
+                        key={thread.comment_id}
+                        comment={thread}
+                        replies={repliesByParent[thread.comment_id] || []}
+                        userById={userById}
+                        currentUserId={currentUserId}
+                        onReply={replyComment}
+                        onResolve={resolveComment}
+                        onToggleReaction={toggleReaction}
+                        onDelete={deleteComment}
+                        isHighlighted={isHighlighted}
+                        scrollRef={commentRefs.current[thread.comment_id]}
+                        client={client}
+                      />
+                    );
+                  })}
+                </>
+              ),
+            }))}
+          />
+        )}
+      </div>
+
+      {/* Input Box for new top-level comment */}
+      <div
+        style={{
+          padding: 12,
+          borderTop: `1px solid ${token.colorBorder}`,
+          backgroundColor: token.colorBgContainer,
+          display: 'flex',
+          gap: 8,
+          alignItems: 'flex-end',
+        }}
+      >
+        <div style={{ flex: 1 }}>
+          <AutocompleteTextarea
+            value={commentInputValue}
+            onChange={setCommentInputValue}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (commentInputValue.trim() && mutationGate.canMutate) {
+                  sendComment(commentInputValue);
+                  setCommentInputValue('');
+                }
+              }
+            }}
+            placeholder={
+              mutationGate.canMutate
+                ? 'Add a comment... (type @ for autocomplete)'
+                : (mutationGate.message ?? 'Add a comment...')
+            }
+            autoSize={{ minRows: 1, maxRows: 4 }}
+            client={client}
+            sessionId={null}
+            userById={userById}
+          />
+        </div>
+        <Tooltip
+          title={mutationGate.canMutate ? '' : (mutationGate.message ?? '')}
+          placement="topRight"
+        >
+          <Button
+            type="primary"
+            icon={<SendOutlined />}
+            onClick={() => {
+              if (commentInputValue.trim()) {
+                sendComment(commentInputValue);
+                setCommentInputValue('');
+              }
+            }}
+            disabled={!commentInputValue.trim() || !mutationGate.canMutate}
+          />
+        </Tooltip>
+      </div>
+    </div>
+  );
+};

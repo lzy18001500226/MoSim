@@ -1,0 +1,516 @@
+/**
+ * ConversationView - Task-centric conversation interface
+ *
+ * Displays conversation as collapsible task sections with:
+ * - Tasks as primary organization unit
+ * - Messages grouped within each task
+ * - Tool use blocks properly rendered
+ * - Latest task expanded by default
+ * - Progressive disclosure for older tasks
+ * - Auto-scrolling to latest content
+ */
+
+import type {
+  AgorClient,
+  Message,
+  MessageID,
+  PermissionScope,
+  SessionID,
+  StreamingMessageState,
+  User,
+} from '@agor-live/client';
+import { shortId, TaskStatus } from '@agor-live/client';
+import { BranchesOutlined, CopyOutlined, ForkOutlined } from '@ant-design/icons';
+import { Alert, Button, Spin, Typography, theme } from 'antd';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useSharedReactiveSession } from '../../hooks/useSharedReactiveSession';
+import { useCopyToClipboard } from '../../utils/clipboard';
+import { TaskBlock } from '../TaskBlock';
+
+const { Text } = Typography;
+const EMPTY_STREAMING_MESSAGES = new Map();
+// Shared empty-array sentinel so TaskBlock's `taskMessages` prop keeps a stable
+// reference for tasks whose messages haven't been loaded — otherwise `|| []`
+// would mint a fresh array on every render and thrash TaskBlock's React.memo.
+const EMPTY_MESSAGES: Message[] = [];
+
+/**
+ * Check if two Maps are equal (same keys and same content)
+ * Used to maintain stable Map references for React memoization
+ */
+function mapsAreEqual<K, V>(map1: Map<K, V>, map2: Map<K, V>): boolean {
+  if (map1.size !== map2.size) return false;
+
+  for (const [key, value1] of map1.entries()) {
+    const value2 = map2.get(key);
+    // For StreamingMessage objects, compare by reference (they're immutable updates)
+    if (value1 !== value2) return false;
+  }
+
+  return true;
+}
+
+export interface ConversationViewProps {
+  /**
+   * Agor client for fetching messages
+   */
+  client: AgorClient | null;
+
+  /**
+   * Session ID to fetch messages for
+   */
+  sessionId: SessionID | null;
+
+  /**
+   * Agentic tool name for showing tool icon
+   */
+  agentic_tool?: string;
+
+  /**
+   * Session's default model (to hide redundant model pills)
+   */
+  sessionModel?: string;
+
+  /**
+   * All users for emoji avatars (Map-based)
+   */
+  userById?: Map<string, User>;
+
+  /**
+   * Current user ID for showing emoji
+   */
+  currentUserId?: string;
+
+  /**
+   * Callback to expose scroll functions to parent
+   */
+  onScrollRef?: (scrollToBottom: () => void, scrollToTop: () => void) => void;
+
+  /**
+   * Permission decision handler
+   */
+  onPermissionDecision?: (
+    sessionId: string,
+    requestId: string,
+    taskId: string,
+    allow: boolean,
+    scope: PermissionScope
+  ) => void;
+
+  /**
+   * Branch name for hiding redundant branch names
+   */
+  branchName?: string;
+
+  /**
+   * Whether this session was created by the scheduler
+   */
+  scheduledFromBranch?: boolean;
+
+  /**
+   * Unix timestamp (ms) of when the session was scheduled to run
+   */
+  scheduledRunAt?: number;
+
+  /**
+   * Custom empty state message (for mobile vs desktop contexts)
+   */
+  emptyStateMessage?: string;
+
+  /**
+   * Whether the view is currently visible/active (pauses sockets when false)
+   */
+  isActive?: boolean;
+
+  /**
+   * Session genealogy for showing fork/spawn origin
+   */
+  genealogy?: {
+    forked_from_session_id?: string;
+    fork_point_task_id?: string;
+    fork_point_message_index?: number;
+    parent_session_id?: string;
+    spawn_point_task_id?: string;
+    spawn_point_message_index?: number;
+  };
+
+  /**
+   * Emoji override for assistant avatar in message bubbles
+   */
+  assistantEmoji?: string;
+}
+
+export const ConversationView = React.memo<ConversationViewProps>(
+  ({
+    client,
+    sessionId,
+    agentic_tool,
+    sessionModel,
+    userById = new Map(),
+    currentUserId,
+    onScrollRef,
+    onPermissionDecision,
+    branchName,
+    scheduledFromBranch,
+    scheduledRunAt,
+    emptyStateMessage = 'No messages yet. Send a prompt to start the conversation.',
+    isActive = true,
+    genealogy,
+    assistantEmoji,
+  }) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { token } = theme.useToken();
+    const [copied, copy] = useCopyToClipboard();
+
+    // Check if user is scrolled near the bottom (within 100px)
+    const isNearBottom = useCallback(() => {
+      if (!containerRef.current) return true;
+      const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+      return scrollHeight - scrollTop - clientHeight < 100;
+    }, []);
+
+    // Scroll to bottom function (wrapped in useCallback to avoid re-renders)
+    const scrollToBottom = useCallback(() => {
+      if (containerRef.current) {
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+      }
+    }, []);
+
+    // Scroll to top function
+    const scrollToTop = useCallback(() => {
+      if (containerRef.current) {
+        containerRef.current.scrollTop = 0;
+      }
+    }, []);
+
+    // Expose scroll functions to parent
+    useEffect(() => {
+      if (onScrollRef) {
+        onScrollRef(scrollToBottom, scrollToTop);
+      }
+    }, [onScrollRef, scrollToBottom, scrollToTop]);
+
+    const { handle: reactiveSession, state: reactiveState } = useSharedReactiveSession(
+      client,
+      sessionId,
+      {
+        enabled: isActive,
+        reactiveOptions: { taskHydration: 'lazy' },
+      }
+    );
+
+    // Queued tasks belong to the queue drawer, not the conversation. They
+    // haven't run yet — there's no message_range, no user-message row, no
+    // assistant output to render — so showing them here as TaskBlocks just
+    // duplicates what the queue panel already shows.
+    //
+    // Memoized so the filtered array's identity is stable across re-renders
+    // when the underlying reactive `tasks` list hasn't changed. Without this,
+    // every streaming chunk produced a fresh array → every downstream useMemo
+    // depending on `tasks` would invalidate and rebuild.
+    const tasks = useMemo(
+      () => (reactiveState?.tasks || []).filter((t) => t.status !== TaskStatus.QUEUED),
+      [reactiveState?.tasks]
+    );
+    const allStreamingMessages = reactiveState?.streamingMessages || EMPTY_STREAMING_MESSAGES;
+    const loading = reactiveState ? reactiveState.loading : !!sessionId;
+    const error = reactiveState?.error || null;
+    const isTerminalError = !!reactiveState?.terminal;
+    const [isReloading, setIsReloading] = useState(false);
+
+    // Store previous task maps to maintain stable references
+    const prevTaskMapsRef = useRef<Map<string, Map<MessageID, StreamingMessageState>>>(new Map());
+
+    // Create stable Map references per task to avoid unnecessary re-renders
+    // Only return new Map objects when the actual messages for that task change
+    const streamingMessagesByTask = useMemo(() => {
+      const result = new Map<string, Map<MessageID, StreamingMessageState>>();
+      const prevMaps = prevTaskMapsRef.current;
+
+      // Group messages by task_id
+      const tempByTask = new Map<string, Map<MessageID, StreamingMessageState>>();
+      for (const [msgId, streamingMsg] of allStreamingMessages.entries()) {
+        if (streamingMsg.task_id) {
+          if (!tempByTask.has(streamingMsg.task_id)) {
+            tempByTask.set(streamingMsg.task_id, new Map());
+          }
+          tempByTask.get(streamingMsg.task_id)!.set(msgId, streamingMsg);
+        }
+      }
+
+      // For each task, reuse previous Map if content is identical
+      for (const [taskId, newTaskMap] of tempByTask.entries()) {
+        const prevTaskMap = prevMaps.get(taskId);
+
+        // Check if maps are equal (same keys and values)
+        if (prevTaskMap && mapsAreEqual(prevTaskMap, newTaskMap)) {
+          // Reuse the previous Map reference (stable reference = no re-render)
+          result.set(taskId, prevTaskMap);
+        } else {
+          // Content changed, use new Map
+          result.set(taskId, newTaskMap);
+        }
+      }
+
+      // Update ref for next render
+      prevTaskMapsRef.current = result;
+
+      return result;
+    }, [allStreamingMessages]);
+
+    // Track which tasks are expanded (default: last task expanded)
+    const [expandedTaskIds, setExpandedTaskIds] = useState<Set<string>>(() => {
+      if (tasks.length > 0) {
+        return new Set([tasks[tasks.length - 1].task_id]);
+      }
+      return new Set();
+    });
+
+    // When a new task arrives (i.e. the *last* task id changes), collapse
+    // whatever was open and expand the new one. We deliberately depend on
+    // `lastTaskId` rather than `tasks` so that:
+    //   1. unrelated re-renders don't fire this effect (`tasks` still gets
+    //      a new reference whenever any task patch lands — the useMemo bails
+    //      out only when the *upstream* `reactiveState.tasks` array is
+    //      identity-stable), and
+    //   2. if the user collapses the current last task, we don't immediately
+    //      re-open it — that "auto re-expand on empty" behavior fought the
+    //      user and showed up as a flicker.
+    const lastTaskId = tasks.length > 0 ? tasks[tasks.length - 1].task_id : null;
+    useEffect(() => {
+      if (!lastTaskId) return;
+      setExpandedTaskIds((prev) => {
+        if (prev.has(lastTaskId)) return prev;
+        requestAnimationFrame(() => {
+          scrollToBottom();
+        });
+        return new Set([lastTaskId]);
+      });
+    }, [lastTaskId, scrollToBottom]);
+
+    // Handle task expand/collapse. Single stable callback shared by every
+    // TaskBlock — the callback takes `taskId` so we don't need to mint a
+    // per-task closure (which previously rebuilt on every render and broke
+    // TaskBlock's React.memo for the entire task list).
+    const handleTaskExpandChange = useCallback((taskId: string, expanded: boolean) => {
+      setExpandedTaskIds((prev) => {
+        const next = new Set(prev);
+        if (expanded) {
+          next.add(taskId);
+        } else {
+          next.delete(taskId);
+        }
+        return next;
+      });
+    }, []);
+
+    // Stable load/unload callbacks. The previous inline arrows were minted on
+    // every ConversationView render → every TaskBlock saw new `onLoadTaskMessages`
+    // / `onUnloadTaskMessages` refs → memo bailout failed for every TaskBlock,
+    // including ones whose messages weren't changing.
+    const handleLoadTaskMessages = useCallback(
+      (taskId: string) => {
+        if (!reactiveSession) return;
+        return reactiveSession.loadTaskMessages(taskId).then(() => undefined);
+      },
+      [reactiveSession]
+    );
+
+    const handleUnloadTaskMessages = useCallback(
+      (taskId: string) => {
+        if (!reactiveSession) return;
+        reactiveSession.unloadTaskMessages(taskId);
+      },
+      [reactiveSession]
+    );
+
+    // Auto-scroll to bottom when streaming messages arrive (only if user is already at bottom)
+    // biome-ignore lint/correctness/useExhaustiveDependencies: We want to scroll on streaming change
+    useEffect(() => {
+      if (isNearBottom()) {
+        scrollToBottom();
+      }
+    }, [allStreamingMessages, tasks]);
+
+    if (error) {
+      // Deterministic escape hatch when auto-recovery (socket-reconnect resync,
+      // TOKENS_REFRESHED_EVENT listener, visibility-change listener in
+      // useSharedReactiveSession) didn't catch the error — e.g. the user
+      // returns hours later and the only signal we'd otherwise act on was the
+      // socket `connect` event that already happened with stale auth.
+      return (
+        <Alert
+          type="error"
+          title="Failed to load conversation"
+          description={error}
+          showIcon
+          action={
+            reactiveSession && !isTerminalError ? (
+              <Button
+                size="small"
+                loading={isReloading}
+                onClick={async () => {
+                  setIsReloading(true);
+                  try {
+                    await reactiveSession.resync();
+                  } finally {
+                    setIsReloading(false);
+                  }
+                }}
+              >
+                Reload
+              </Button>
+            ) : undefined
+          }
+        />
+      );
+    }
+
+    if (loading && tasks.length === 0) {
+      return (
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '2rem',
+          }}
+        >
+          <Spin />
+        </div>
+      );
+    }
+
+    if (tasks.length === 0) {
+      return (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+            padding: '2rem',
+            flexDirection: 'column',
+            gap: '24px',
+          }}
+        >
+          <img
+            src={`${import.meta.env.BASE_URL}favicon.png`}
+            alt="Agor"
+            style={{
+              width: 160,
+              height: 160,
+              opacity: 0.5,
+              borderRadius: '50%',
+            }}
+          />
+          <Text type="secondary">{emptyStateMessage}</Text>
+        </div>
+      );
+    }
+
+    // Genealogy banner component
+    const isForked = !!genealogy?.forked_from_session_id;
+    const isSpawned = !!genealogy?.parent_session_id;
+
+    const GenealogyBanner = () => {
+      if (!isForked && !isSpawned) return null;
+
+      const sessionId = isForked ? genealogy?.forked_from_session_id : genealogy?.parent_session_id;
+      const messageIndex = isForked
+        ? genealogy?.fork_point_message_index
+        : genealogy?.spawn_point_message_index;
+      const icon = isForked ? <ForkOutlined /> : <BranchesOutlined />;
+      const actionText = isForked ? 'Forked' : 'Spawned';
+      const idShort = sessionId ? shortId(sessionId) : undefined;
+
+      return (
+        <div
+          style={{
+            margin: '12px 0',
+            padding: `${token.sizeUnit * 3}px ${token.sizeUnit * 4}px`,
+            background: isForked ? token.colorInfoBg : token.colorPrimaryBg,
+            border: `1px solid ${isForked ? token.colorInfoBorder : token.colorPrimaryBorder}`,
+            borderRadius: token.borderRadiusLG,
+            display: 'flex',
+            alignItems: 'center',
+            gap: token.sizeUnit * 3,
+          }}
+        >
+          <span style={{ fontSize: 20, color: token.colorTextSecondary }}>{icon}</span>
+          <div style={{ flex: 1 }}>
+            <Text style={{ fontSize: token.fontSizeLG }}>
+              {actionText} from session{' '}
+              <Text code strong style={{ fontSize: token.fontSizeLG }}>
+                {idShort}
+              </Text>
+              {messageIndex !== undefined && (
+                <>
+                  {' '}
+                  as of message{' '}
+                  <Text code strong style={{ fontSize: token.fontSizeLG }}>
+                    {messageIndex}
+                  </Text>
+                </>
+              )}
+            </Text>
+          </div>
+          <CopyOutlined
+            onClick={() => sessionId && copy(sessionId)}
+            style={{
+              cursor: 'pointer',
+              fontSize: 16,
+              color: copied ? token.colorSuccess : token.colorTextSecondary,
+            }}
+            title={copied ? 'Copied!' : 'Copy session ID'}
+          />
+        </div>
+      );
+    };
+
+    return (
+      <div
+        ref={containerRef}
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '12px 0',
+          minHeight: 0,
+        }}
+      >
+        {/* Genealogy Banner */}
+        <GenealogyBanner />
+
+        {/* Task-organized conversation */}
+        {tasks.map((task, taskIndex) => (
+          <TaskBlock
+            key={task.task_id}
+            task={task}
+            agentic_tool={agentic_tool}
+            sessionModel={sessionModel}
+            userById={userById}
+            currentUserId={currentUserId}
+            isExpanded={expandedTaskIds.has(task.task_id)}
+            onExpandChange={handleTaskExpandChange}
+            sessionId={sessionId}
+            onPermissionDecision={onPermissionDecision}
+            branchName={branchName}
+            scheduledFromBranch={scheduledFromBranch}
+            scheduledRunAt={scheduledRunAt}
+            streamingMessages={streamingMessagesByTask.get(task.task_id)}
+            taskMessages={reactiveState?.messagesByTask.get(task.task_id) || EMPTY_MESSAGES}
+            taskMessagesLoaded={!!reactiveState?.loadedTaskIds.has(task.task_id)}
+            onLoadTaskMessages={handleLoadTaskMessages}
+            onUnloadTaskMessages={handleUnloadTaskMessages}
+            assistantEmoji={assistantEmoji}
+            isLatestTask={taskIndex === tasks.length - 1}
+            client={client}
+          />
+        ))}
+      </div>
+    );
+  }
+);
+
+ConversationView.displayName = 'ConversationView';

@@ -1,0 +1,106 @@
+---
+title: 'Agor: A Multiplayer-ready, Spatial Layer for Agentic Coding'
+description: 'Agent orchestration across Claude Code, Codex, and Gemini on a real-time spatial board with session trees, zone triggers, and per-worktree environments.'
+date: 2025-10-26
+image: '/images/blog/announcement.png'
+---
+
+# Agor: A Multiplayer-ready, Spatial Layer for Agentic Coding
+
+The pace of development has accelerated, but the process hasn't kept up. Days waiting for reviews. Constant branch switching. Environment juggling. Juggling as many terminal windows as agents you can handle—even when tmux shortcuts are muscle memory. Coordination over Slack. "Oh, before you push..." "Can you pull latest?" "Docker isn't running." The SDLC is bottlenecked by handoffs and waiting, not by the coding itself.
+
+Just as Figma transformed design from a solo, file-based workflow into real-time spatial collaboration, Agor does the same for software development. A multiplayer canvas where every feature lives in its own worktree with a running environment. Where code reviews happen on a board backed by live dev servers, with a swarm of AIs a click away—not in Slack threads. Where you see what your teammates (and their AI agents) are building in real-time, without asking for status updates. The development workflow, rebuilt for the speed we code at now.
+
+import { GifGallery } from '../../components/GifGallery';
+
+<GifGallery />
+
+## Why this matters
+
+Agents are a superpower. Everything around them can still be a buzzkill: linear chats, clumsy handoffs, zero visibility, envs that work “on my machine” and nowhere else. We’ve all juggled a dozen tabs and terminal panes.
+
+Agor flips that into a multiplayer canvas. See all the work at once. Fork without trashing context. Spawn clean subsessions for focused tasks. Share running environments without port roulette. Less juggling; more shipping.
+
+## What you can do
+
+- Spatial canvas: Arrange sessions on a 2D board. Presence shows who’s where. Your brain remembers places better than scrollback.
+- Session trees: Fork to parallelize, spawn to delegate. Fresh, clean context when you need it; shared context when you don’t.
+- Worktrees + envs: Each worktree gets its own dev server and ports. Parallel features without stepping on toes.
+- Zone triggers: Drag a card into "Needs Tests" or "Ready for Review" and a templated prompt fires with live board/worktree/session context.
+- SDK‑first orchestration: Coordinate Claude Code, Codex, and Gemini via SDKs (MCP baked in). No brittle CLI scraping.
+
+## Demo
+
+13-minute walkthrough showing Agor's key features in action:
+
+<div style={{ margin: '2rem 0', maxWidth: '100%' }}>
+  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
+    <iframe
+      src="https://www.youtube.com/embed/3in0qh7ZH0g"
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        borderRadius: '8px',
+      }}
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+    />
+  </div>
+</div>
+
+You'll see:
+
+- Spatial canvas with worktrees and session trees
+- Zone triggers firing templated prompts
+- Per-worktree environments with auto-assigned ports
+- Real-time multiplayer presence and cursors
+
+## Quick start
+
+Run locally with Docker:
+
+```bash
+docker compose up
+# Visit http://localhost:5173 → Login: admin@agor.live / admin
+```
+
+More details: [Getting Started](/guide/getting-started), [Docker Guide](/guide/docker), [Development Guide](/guide/development)
+
+## How Agor is different
+
+Not another chat or CLI wrapper. Agor is the layer above your tools that makes them work together.
+
+- Multiplayer‑first: presence, comments, real‑time updates
+- Spatial by design: location‑as‑memory beats endless scrollback
+- Agent‑native: SDK‑first with session‑scoped MCP (no brittle CLI parsing)
+
+## Who it’s for
+
+- Solo builders plate‑spinning across Claude Code/Codex/Gemini
+- Teams that want async handoffs, shared running envs, and live visibility
+
+## Roadmap highlights
+
+**[Full roadmap](https://github.com/preset-io/agor/issues?q=is%3Aissue%20state%3Aopen%20label%3Aroadmap)**
+
+- Close the gap with native CLIs via SDKs
+- Bring‑your‑own IDE (connect VSCode/Cursor to Agor‑managed worktrees)
+- Unix user integration for true multi-tenancy
+
+## Learn more and get involved
+
+- Repo: https://github.com/preset-io/agor
+- Docs: https://agor.live
+- Discussions: https://github.com/preset-io/agor/discussions
+- Related reads:
+  - Making of Agor: /blog/making-of-agor
+  - Claudette for Superset: https://preset.io/blog/introducing-claudette-cli-supercharge-your-apache-superset-development/
+  - Adopting Claude Code: https://preset.io/blog/adopting-claude-code-riding-the-software-economics-singularity/
+  - Apache Superset: https://github.com/apache/superset
+  - Apache Airflow: https://github.com/apache/airflow
+
+> “git tracks code; Agor tracks the conversations that produced it.”
