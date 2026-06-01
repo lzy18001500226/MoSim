@@ -802,6 +802,7 @@ and publishes:
 /mosim/local_known_map_cloud
 /mosim/local_occupancy_grid
 /mosim/local_plan
+/mosim/replay_odometry
 /mosim/uav_path
 TF: ue_world -> base_link
 ```
@@ -810,6 +811,8 @@ FAST-LIO output remains separate: `/cloud_registered`, `/Odometry`, and
 related FAST-LIO topics are accepted only after the ROS1/FAST-LIO runtime is
 available and has produced runtime logs/pose/map output. Static PLY files and
 offline JSONL frames are handoff evidence, not localization.
+`/mosim/replay_odometry` is replay/reference pose for RViz2 review only; it is
+not a substitute for FAST-LIO `/Odometry`.
 
 HTML output is allowed only for explicitly requested offline report previews,
 not for scene point-cloud review, FAST-LIO evidence, or the RflySim-like

@@ -110,6 +110,7 @@ def dry_run(args: argparse.Namespace) -> int:
                     "local_known_map_cloud": args.local_known_cloud_topic,
                     "local_occupancy_grid": args.local_occupancy_topic,
                     "local_plan": args.local_plan_topic,
+                    "replay_odometry": args.replay_odometry_topic,
                     "uav_path": args.uav_path_topic,
                     "tf": "/tf",
                 },
@@ -127,7 +128,7 @@ def publish_ros2(args: argparse.Namespace) -> int:
         import rclpy  # type: ignore
         from builtin_interfaces.msg import Time  # type: ignore
         from geometry_msgs.msg import PoseStamped, TransformStamped  # type: ignore
-        from nav_msgs.msg import OccupancyGrid, Path as RosPath  # type: ignore
+        from nav_msgs.msg import OccupancyGrid, Odometry, Path as RosPath  # type: ignore
         from rclpy.qos import DurabilityPolicy, HistoryPolicy, QoSProfile, ReliabilityPolicy  # type: ignore
         from sensor_msgs.msg import PointCloud2, PointField  # type: ignore
         from std_msgs.msg import Header  # type: ignore
@@ -158,6 +159,7 @@ def publish_ros2(args: argparse.Namespace) -> int:
     known_pub = node.create_publisher(PointCloud2, args.local_known_cloud_topic, qos)
     occ_pub = node.create_publisher(OccupancyGrid, args.local_occupancy_topic, qos)
     plan_pub = node.create_publisher(RosPath, args.local_plan_topic, qos)
+    replay_odom_pub = node.create_publisher(Odometry, args.replay_odometry_topic, qos)
     uav_path_pub = node.create_publisher(RosPath, args.uav_path_topic, qos)
     uav_path = RosPath()
     uav_path.header.frame_id = args.world_frame
@@ -208,6 +210,13 @@ def publish_ros2(args: argparse.Namespace) -> int:
         pose.pose.orientation.z = math.sin(yaw * 0.5)
         pose.pose.orientation.w = math.cos(yaw * 0.5)
         return pose
+
+    def make_replay_odometry(row: dict[str, float], stamp: Any) -> Any:
+        odom = Odometry()
+        odom.header = make_header(stamp, args.world_frame)
+        odom.child_frame_id = args.body_frame
+        odom.pose.pose = make_pose(row, stamp).pose
+        return odom
 
     def publish_tf(row: dict[str, float], stamp: Any) -> None:
         transform = TransformStamped()
@@ -281,6 +290,7 @@ def publish_ros2(args: argparse.Namespace) -> int:
                 known_pub.publish(make_cloud(free_points + occupied_points, stamp, args.world_frame, intensity=80.0))
                 occ_pub.publish(make_occupancy(local_known[index], stamp))
                 plan_pub.publish(make_plan(local_plan[index].get("points_m", []), stamp))
+                replay_odom_pub.publish(make_replay_odometry(row, stamp))
                 uav_path_pub.publish(uav_path)
                 rclpy.spin_once(node, timeout_sec=0.0)
                 time.sleep(period_s)
@@ -304,6 +314,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--local-known-cloud-topic", default="/mosim/local_known_map_cloud")
     parser.add_argument("--local-occupancy-topic", default="/mosim/local_occupancy_grid")
     parser.add_argument("--local-plan-topic", default="/mosim/local_plan")
+    parser.add_argument("--replay-odometry-topic", default="/mosim/replay_odometry")
     parser.add_argument("--uav-path-topic", default="/mosim/uav_path")
     parser.add_argument("--fps", type=float, default=10.0)
     parser.add_argument("--max-frames", type=int, default=0)

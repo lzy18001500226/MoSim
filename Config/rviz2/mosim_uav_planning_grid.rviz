@@ -121,6 +121,25 @@ Visualization Manager:
             Reliability Policy: Reliable
             Value: /mosim/uav_path
           Value: true
+        - Angle Tolerance: 0.1
+          Class: rviz_default_plugins/Odometry
+          Enabled: true
+          Keep: 50
+          Name: Replay reference odometry
+          Position Tolerance: 0.1
+          Shape:
+            Alpha: 1
+            Axes Length: 0.55
+            Axes Radius: 0.055
+            Color: 25; 160; 255
+            Value: Axes
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /mosim/replay_odometry
+          Value: true
       Enabled: true
       Name: Planning Grid
   Enabled: true

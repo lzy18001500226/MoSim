@@ -14,6 +14,7 @@ INPUT_TOPICS=(
   "/imu/data"
   "/mosim/local_occupancy_grid"
   "/mosim/local_plan"
+  "/mosim/replay_odometry"
 )
 FASTLIO_OUTPUT_TOPICS=(
   "/cloud_registered"

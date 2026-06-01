@@ -76,6 +76,7 @@ Accepted ROS topic contract for the current Ubuntu 22.04 ROS2/RViz2 path:
 /imu/data                    # IMU input
 /mosim/local_occupancy_grid  # planner-known local map, nav_msgs/OccupancyGrid
 /mosim/local_plan            # local planner path
+/mosim/replay_odometry       # replay reference pose, nav_msgs/Odometry
 /mosim/uav_path              # replay/path visualization
 /cloud_registered            # FAST-LIO registered cloud output
 /Odometry                    # FAST-LIO odometry output
@@ -106,6 +107,10 @@ RViz/RViz2 shows the input and output topics in a native window
 record/evaluate tooling records the runtime output
 evaluate_fastlio_runtime.py compares output against replay truth
 ```
+
+`/mosim/replay_odometry` is allowed in mapping/planning RViz2 windows as a
+reference trajectory marker. It does not satisfy the FAST-LIO `/Odometry`
+requirement.
 
 ## Current MoSim Assets
 

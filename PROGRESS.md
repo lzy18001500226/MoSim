@@ -52,6 +52,10 @@
   ROS2 runtime smoke passed for Factory input topics using
   `run_fastlio_rviz_replay_ros2.sh` with `START_RVIZ=0 START_FASTLIO=0` and
   `check_fastlio_ros2_topics.sh` with `REQUIRE_FASTLIO_OUTPUTS=0`.
+  Follow-up topic-boundary update added `/mosim/replay_odometry` to the ROS2
+  replay publisher, planning RViz2 window, overview RViz2 window, and input-side
+  topic smoke check. This topic is only replay/reference pose for operator
+  review; it must not be counted as FAST-LIO `/Odometry`.
 
 - 2026-06-01 mapping-window correction: user rejected HTML point-cloud review.
   The project policy is now explicit in `Docs/Workflows/unreal_renderer.md`:

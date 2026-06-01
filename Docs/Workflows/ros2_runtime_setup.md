@@ -112,7 +112,8 @@ Headless smoke evidence already passed for Factory:
 
 - short ROS2 mapping publisher run created `/velodyne_points`,
   `/mosim/local_known_map_cloud`, `/mosim/local_occupancy_grid`,
-  `/mosim/local_plan`, `/mosim/uav_path`, and `/tf`;
+  `/mosim/local_plan`, `/mosim/replay_odometry`, `/mosim/uav_path`, and
+  `/tf`;
 - `START_RVIZ=0 START_FASTLIO=0 LOOP=1 MAX_FRAMES=20 FPS=2
   Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect`
   plus `REQUIRE_FASTLIO_OUTPUTS=0 Scripts/UE5/check_fastlio_ros2_topics.sh`
@@ -133,7 +134,7 @@ UE / MoSimSceneLibrary
 
 RViz2 planning/grid window
   -> /mosim/local_occupancy_grid, /mosim/local_known_map_cloud,
-     /mosim/local_plan, /mosim/uav_path, TF
+     /mosim/local_plan, /mosim/replay_odometry, /mosim/uav_path, TF
 
 RViz2 point-cloud/FAST-LIO window
   -> /velodyne_points, /cloud_registered, /Odometry, /path, TF
@@ -149,7 +150,8 @@ or a containerized ROS1 bridge route is explicitly approved.
 
 Do not fabricate FAST-LIO output topics. `/cloud_registered`, `/Odometry`, and
 `/path` must come from a real FAST-LIO-family runtime before localization is
-claimed.
+claimed. `/mosim/replay_odometry` is only replay reference pose for RViz2 review
+and must not be counted as FAST-LIO localization output.
 
 ## References
 

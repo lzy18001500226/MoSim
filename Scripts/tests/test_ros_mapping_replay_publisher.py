@@ -66,7 +66,12 @@ def run_mapping_publisher_dryrun(script_name: str) -> dict:
             shutil.rmtree(temp_root)
 
 
-def assert_mapping_payload(payload: dict, expected_schema: str, expected_claim: str) -> None:
+def assert_mapping_payload(
+    payload: dict,
+    expected_schema: str,
+    expected_claim: str,
+    extra_topics: set[str] | None = None,
+) -> None:
     if payload["schema"] != expected_schema:
         raise AssertionError(payload)
     if payload["claim"] != expected_claim:
@@ -82,6 +87,8 @@ def assert_mapping_payload(payload: dict, expected_schema: str, expected_claim: 
         "local_plan",
         "uav_path",
     }
+    if extra_topics:
+        expected_topics.update(extra_topics)
     if not expected_topics.issubset(set(payload["topics"])):
         raise AssertionError(payload)
 
@@ -101,6 +108,7 @@ def test_ros2_mapping_replay_dryrun_contract() -> None:
         payload,
         "mosim.ros2_mapping_replay_dryrun.v1",
         "dry-run only; no ROS2 messages were published",
+        extra_topics={"replay_odometry"},
     )
     if payload["topics"].get("tf") != "/tf":
         raise AssertionError(payload)
