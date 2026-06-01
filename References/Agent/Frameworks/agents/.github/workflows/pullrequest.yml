@@ -1,0 +1,61 @@
+name: Pull Request
+
+on:
+  pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "design/**"
+      - "*.md"
+      - ".changeset/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+
+jobs:
+  ci:
+    timeout-minutes: 20
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
+      - uses: ./.github/actions/install
+
+      - uses: nrwl/nx-set-shas@v5
+
+      - name: Cache Nx
+        uses: actions/cache@v5
+        with:
+          path: .nx/cache
+          key: ${{ runner.os }}-nx-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-nx-${{ hashFiles('package-lock.json') }}-
+            ${{ runner.os }}-nx-
+
+      - run: npm run build
+      - run: npm run check
+
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "version=$(jq -r '.packages["node_modules/playwright"].version' package-lock.json)" >> $GITHUB_OUTPUT
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v5
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - run: CI=true npx nx affected -t test
+
+      - run: npx pkg-pr-new publish --peerDeps ./packages/*

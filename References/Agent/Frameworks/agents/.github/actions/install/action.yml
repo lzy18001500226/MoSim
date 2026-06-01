@@ -1,0 +1,21 @@
+name: Install
+description: Set up Node and install dependencies with npm's package cache.
+
+inputs:
+  registry-url:
+    description: Registry URL for setup-node (set this when publishing).
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v6
+      with:
+        node-version: 24
+        registry-url: ${{ inputs.registry-url }}
+        cache: npm
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
