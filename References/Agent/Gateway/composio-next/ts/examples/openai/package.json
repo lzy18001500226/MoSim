@@ -1,0 +1,36 @@
+{
+  "name": "openai-example",
+  "private": true,
+  "version": "0.1.10-alpha.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "git clean -xdf node_modules",
+    "start": "bun src/index.ts",
+    "start:chat-completion": "bun src/chat-completions.ts",
+    "start:assistant": "bun src/assistants.ts",
+    "start:agents": "bun src/agents-api/index.ts",
+    "examples": "bun src/examples.ts",
+    "start:mcp": "bun src/mcp.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.0",
+  "dependencies": {
+    "@composio/core": "workspace:*",
+    "@composio/openai": "workspace:*",
+    "@composio/openai-agents": "workspace:*",
+    "@modelcontextprotocol/sdk": "catalog:",
+    "@openai/agents": "^0.1.4",
+    "dotenv": "^16.4.1",
+    "openai": "catalog:",
+    "zod": "catalog:",
+    "zod-to-json-schema": "catalog:"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.9",
+    "typescript": "catalog:"
+  }
+}

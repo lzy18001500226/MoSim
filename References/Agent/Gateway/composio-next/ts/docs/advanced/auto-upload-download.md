@@ -1,0 +1,272 @@
+# Auto Upload and Download Files
+
+Composio SDK includes an automatic file handling system that manages file uploads and downloads when executing tools. This guide explains how the system works, how to configure it, and how to handle files manually when auto-handling is disabled.
+
+## Overview
+
+The file handling system in Composio SDK is:
+
+- **Opt-in**: Disabled by default. Set `dangerouslyAllowAutoUploadDownloadFiles: true` to enable.
+- **Automatic** (when enabled): Handles file uploads and downloads transparently.
+- **Allowlisted**: Even when enabled, local upload paths must resolve inside one of the directories listed in `fileUploadDirs` (default `[~/.composio/temp]`). See [Restricting upload paths with `fileUploadDirs`](#restricting-upload-paths-with-fileuploaddirs) below.
+- **Configurable**: Manual handling via `composio.files.upload()` / `composio.files.download()` is always available and is **not** subject to `fileUploadDirs`.
+- **Sensitive path protection (Node)**: Local string paths used for upload are checked by default against a denylist of path segments and file names (see below).
+
+## Security: sensitive local paths
+
+Auto-upload reads local files and sends them to Composio storage. That is powerful for agents, but it also means a model or caller could pass a path that points at **secrets on disk** (API keys, SSH private keys, cloud CLI config). To reduce accidental exfiltration:
+
+- **`sensitiveFileUploadProtection`** (default `true`) — Before reading a file, the SDK resolves the path and checks it against a built-in list of path *components* (for example `.ssh`, `.aws`, `.claude`, `.kube`) and patterns for credential-like basenames (for example `.env`, default SSH private key names, a file named `credentials`). If the path matches, upload fails with `ComposioSensitiveFilePathBlockedError` unless you disable protection.
+- **`fileUploadPathDenySegments`** — Optional extra path component names (single directory or file name) merged with the built-in list, anywhere in the resolved path.
+- **`beforeFileUpload`** — Not a constructor option. Pass it as part of the **third argument** to `composio.tools.execute` (with `beforeExecute` / `afterExecute`). The hook receives `{ path, toolSlug, toolkitSlug }` for each `file_uploadable` value. Return a string path to upload instead, `false` to abort (`ComposioFileUploadAbortedError`), or throw.
+
+**Not path-checked the same way:** HTTP/HTTPS URLs and `File` objects do not go through the local path denylist logic in the same manner as string paths that refer to the local filesystem.
+
+**Disabling protection:** `sensitiveFileUploadProtection: false` turns off the denylist checks. Only use this if you understand the risk and have another control (for example a strict allowlist in `beforeFileUpload`).
+
+```typescript
+import { Composio } from '@composio/core';
+
+const composio = new Composio({
+  apiKey: process.env.COMPOSIO_API_KEY!,
+  sensitiveFileUploadProtection: true,
+  fileUploadPathDenySegments: ['my-team-secrets'],
+});
+
+await composio.tools.execute(
+  'YOUR_TOOL',
+  { userId: 'u', arguments: { file: '/safe/path/doc.pdf' }, dangerouslySkipVersionCheck: true },
+  {
+    beforeFileUpload: async ({ path }) => path,
+  }
+);
+```
+
+## How It Works
+
+### File Upload
+
+When a tool's input parameter is marked with `file_uploadable: true`, the SDK will:
+
+1. Automatically detect file paths in the input
+2. Upload the file to Composio's secure storage
+3. Replace the file path with file metadata in the tool execution
+
+Example tool schema with file upload:
+
+```typescript
+const toolSchema = {
+  inputParameters: {
+    type: 'object',
+    properties: {
+      file: {
+        type: 'string',
+        file_uploadable: true
+      }
+    }
+  }
+}
+```
+
+When executing a tool with file upload (auto-handling enabled):
+
+```typescript
+// Requires `dangerouslyAllowAutoUploadDownloadFiles: true` AND a path inside `fileUploadDirs`
+const result = await composio.tools.execute('your-tool', {
+  arguments: {
+    file: '/path/to/local/file.txt'  // Local file path
+    // or
+    file: 'https://example.com/file.txt'  // Remote URL
+  }
+});
+
+// The SDK automatically:
+// 1. Reads the file content
+// 2. Uploads it to S3
+// 3. Replaces the path with metadata:
+// {
+//   name: string;      // The original filename
+//   mimetype: string;  // The file's mime type
+//   s3key: string;     // The S3 key for the uploaded file
+// }
+```
+
+### File Download
+
+When a tool's output contains an S3 URL and mimetype, the SDK will:
+
+1. Automatically detect file URLs in the response
+2. Download the file to a local temporary directory
+3. Replace the S3 URL with local file information
+
+Example tool response with file download:
+
+```typescript
+// Original response from tool
+{
+  data: {
+    file: {
+      s3url: 'https://s3.example.com/file.txt',
+      mimetype: 'text/plain'
+    }
+  }
+}
+
+// After auto-download
+{
+  data: {
+    file: {
+      uri: '/path/to/local/file.txt',
+      file_downloaded: true,
+      s3url: 'https://s3.example.com/file.txt',
+      mimeType: 'text/plain'
+    }
+  }
+}
+```
+
+## Default: auto file handling is off
+
+Automatic file upload/download during tool execution is **disabled** unless you pass `dangerouslyAllowAutoUploadDownloadFiles: true` to the `Composio` constructor.
+
+## Restricting upload paths with `fileUploadDirs`
+
+When auto-handling is on, the SDK only reads local files from directories you have explicitly allowlisted via `fileUploadDirs`. Anything outside the list is rejected with `ComposioFileUploadPathNotAllowedError` before the file is read.
+
+| `fileUploadDirs` value | Effective allowlist |
+| ---------------------- | ------------------- |
+| omitted / `undefined`  | `[~/.composio/temp]` (default staging dir) |
+| `false`                | `[]` — **all** local paths rejected (URLs and `File`/`Blob` still work) |
+| `[]`                   | `[]` — same as `false`; explicit "no local paths" |
+| `[<dir1>, <dir2>, …]`  | exactly those directories. `~` is expanded; entries are `realpath`-resolved; comparison is on a path-component boundary (`/tmp/foo` allows `/tmp/foo/bar` but **not** `/tmp/foo-bar`) |
+
+URLs (`http://…` / `https://…`) and JavaScript `File` / `Blob` objects are not subject to the allowlist — only local string paths are. The denylist (`sensitiveFileUploadProtection`) still runs in addition to the allowlist; both must accept the path.
+
+```typescript
+import { Composio } from '@composio/core';
+
+// Widen the allowlist to the directories your code actually reads from.
+const composio = new Composio({
+  apiKey: process.env.COMPOSIO_API_KEY!,
+  dangerouslyAllowAutoUploadDownloadFiles: true,
+  // Replaces the default `[~/.composio/temp]`. Include it explicitly if you
+  // still want the default staging dir to keep working.
+  fileUploadDirs: ['/srv/agent/uploads', '~/.composio/temp'],
+});
+
+// Reject every local path; only URLs and File/Blob objects work.
+const composioStrict = new Composio({
+  apiKey: process.env.COMPOSIO_API_KEY!,
+  dangerouslyAllowAutoUploadDownloadFiles: true,
+  fileUploadDirs: false,
+});
+```
+
+If you want to upload from arbitrary paths without widening the allowlist, use the manual `composio.files.upload(...)` API below — it bypasses `fileUploadDirs` by design (the caller is expected to control the path).
+
+## Manual File Handling
+
+When auto file handling is not enabled, you'll need to handle the file operations yourself using the `composio.files` API:
+
+### Manual Upload
+
+When auto-upload is disabled, you need to handle file uploads manually:
+
+```typescript
+// Upload file manually
+const fileData = await composio.files.upload({
+  filePath: '/path/to/file.txt',  // Local path or URL
+  toolSlug: 'your-tool',          // Tool slug
+  toolkitSlug: 'your-toolkit'     // Toolkit slug
+});
+
+// Execute tool with file data
+const result = await composio.tools.execute('your-tool', {
+  arguments: {
+    file: fileData  // Contains name, mimetype, and s3key
+  }
+});
+```
+
+### Manual Download
+
+When auto-download is disabled, you'll need to handle file downloads manually:
+
+```typescript
+// Execute tool
+const result = await composio.tools.execute('your-tool', {
+  arguments: {
+    // your arguments
+  }
+});
+
+// Download file manually if response contains S3 URL
+if (result.data.file?.s3url) {
+  const downloadedFile = await composio.files.download({
+    s3Url: result.data.file.s3url,
+    toolSlug: 'your-tool',
+    mimeType: result.data.file.mimetype || 'application/txt'
+  });
+
+  // downloadedFile contains:
+  // {
+  //   name: string;       // Generated filename (toolSlug_timestamp.ext)
+  //   mimeType: string;   // The file's mime type
+  //   s3Url: string;      // The original S3 URL
+  //   filePath: string;   // Local path to the downloaded file
+  // }
+}
+```
+
+## File Storage Location
+
+Downloaded files are stored in:
+
+- **Default**: `~/.composio/files/` (user's home directory).
+- **Custom**: pass `fileDownloadDir: '/some/abs/path'` to the `Composio` constructor.
+- Files are named using the pattern: `{toolSlug}_{timestamp}.{extension}` (server-synthesized; the S3 URL never affects the local filename).
+- The directory is created automatically when needed.
+- File extensions are derived from the MIME type.
+
+## Error Handling
+
+The SDK includes specific error types for file operations:
+
+```typescript
+import {
+  ComposioFileUploadError,
+  ComposioSensitiveFilePathBlockedError,
+  ComposioFileUploadAbortedError,
+  ComposioFileUploadPathNotAllowedError,
+} from '@composio/core';
+
+try {
+  await composio.tools.execute('your-tool', {
+    userId: 'u',
+    arguments: {
+      file: '/path/to/file.txt',
+    },
+    dangerouslySkipVersionCheck: true,
+  });
+} catch (error) {
+  if (error instanceof ComposioFileUploadPathNotAllowedError) {
+    console.error('Path is outside fileUploadDirs:', error.message);
+  } else if (error instanceof ComposioSensitiveFilePathBlockedError) {
+    console.error('Blocked sensitive path:', error.message);
+  } else if (error instanceof ComposioFileUploadAbortedError) {
+    console.error('Upload aborted by beforeFileUpload:', error.message);
+  } else if (error instanceof ComposioFileUploadError) {
+    console.error('File upload failed:', error.message);
+    // Possible fixes may be included in error.possibleFixes
+  }
+  throw error;
+}
+```
+
+## Additional Features
+
+- **URL Support**: The file upload system supports both local file paths and URLs
+- **MIME Type Detection**: Automatically detects MIME types from files and URLs
+- **Automatic Directory Creation**: Creates necessary directories for file storage
+- **Error Recovery**: Provides graceful error handling with helpful error messages
+- **MD5 Checksum**: Generates MD5 checksums for file integrity verification

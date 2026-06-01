@@ -1,0 +1,24 @@
+{
+  "name": "connected-accounts-example",
+  "private": true,
+  "version": "0.1.10-alpha.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "git clean -xdf node_modules",
+    "start": "bun src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.0",
+  "dependencies": {
+    "@composio/core": "workspace:*",
+    "openai": "catalog:"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.9",
+    "typescript": "catalog:"
+  }
+}
