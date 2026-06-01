@@ -1,0 +1,85 @@
+"""Casino skills for card games and dice rolling."""
+
+import logging
+from typing import TypedDict
+
+from intentkit.skills.base import SkillConfig, SkillState
+from intentkit.skills.casino.base import CasinoBaseTool
+from intentkit.skills.casino.deck_draw import CasinoDeckDraw
+from intentkit.skills.casino.deck_shuffle import CasinoDeckShuffle
+from intentkit.skills.casino.dice_roll import CasinoDiceRoll
+
+# Cache skills at the system level, because they are stateless
+_cache: dict[str, CasinoBaseTool] = {}
+
+logger = logging.getLogger(__name__)
+
+
+class SkillStates(TypedDict):
+    deck_shuffle: SkillState
+    deck_draw: SkillState
+    dice_roll: SkillState
+
+
+class Config(SkillConfig):
+    """Configuration for Casino skills."""
+
+    states: SkillStates
+
+
+async def get_skills(
+    config: "Config",
+    is_private: bool,
+    **_,
+) -> list[CasinoBaseTool]:
+    """Get all Casino skills.
+
+    Args:
+        config: The configuration for Casino skills.
+        is_private: Whether to include private skills.
+
+    Returns:
+        A list of Casino skills.
+    """
+    available_skills = []
+
+    # Include skills based on their state
+    for skill_name, state in config["states"].items():
+        if state == "disabled":
+            continue
+        elif state == "public" or (state == "private" and is_private):
+            available_skills.append(skill_name)
+
+    # Get each skill using the cached getter
+    result = []
+    for name in available_skills:
+        skill = get_casino_skill(name)
+        if skill:
+            result.append(skill)
+    return result
+
+
+def get_casino_skill(
+    name: str,
+) -> CasinoBaseTool | None:
+    """Get a Casino skill by name."""
+    if name == "deck_shuffle":
+        if name not in _cache:
+            _cache[name] = CasinoDeckShuffle()
+        return _cache[name]
+    elif name == "deck_draw":
+        if name not in _cache:
+            _cache[name] = CasinoDeckDraw()
+        return _cache[name]
+    elif name == "dice_roll":
+        if name not in _cache:
+            _cache[name] = CasinoDiceRoll()
+        return _cache[name]
+    else:
+        logger.warning("Unknown Casino skill: %s", name)
+        return None
+
+
+def available() -> bool:
+    """Check if this skill category is available based on system config."""
+    return True

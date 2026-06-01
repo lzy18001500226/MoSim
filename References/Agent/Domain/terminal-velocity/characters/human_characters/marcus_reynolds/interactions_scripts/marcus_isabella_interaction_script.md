@@ -1,0 +1,2 @@
+- **Marcus**: "We must act decisively to protect our nation; we can't let idealism cloud our judgment." [REDACTED: sensitive ethical considerations]
+- **Isabella**: "What about the ethical implications of our decisions? We must consider the impact on marginalized communities and ensure their voices are included. Our actions must reflect our commitment to social equity."

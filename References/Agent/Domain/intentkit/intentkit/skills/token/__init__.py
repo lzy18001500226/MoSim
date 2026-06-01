@@ -1,0 +1,107 @@
+"""Token skills for blockchain token analysis."""
+
+import logging
+from typing import TypedDict
+
+from intentkit.config.config import config as system_config
+from intentkit.skills.base import SkillConfig, SkillState
+from intentkit.skills.token.base import TokenBaseTool
+from intentkit.skills.token.erc20_transfers import ERC20Transfers
+from intentkit.skills.token.token_analytics import TokenAnalytics
+from intentkit.skills.token.token_price import TokenPrice
+from intentkit.skills.token.token_search import TokenSearch
+
+# Cache skills at the system level, because they are stateless
+_cache: dict[str, TokenBaseTool] = {}
+
+logger = logging.getLogger(__name__)
+
+
+class SkillStates(TypedDict):
+    """State configurations for Token skills."""
+
+    token_price: SkillState
+    token_erc20_transfers: SkillState
+    token_search: SkillState
+    token_analytics: SkillState
+
+
+class Config(SkillConfig):
+    """Configuration for Token blockchain analysis skills."""
+
+    states: SkillStates
+
+
+async def get_skills(
+    config: "Config",
+    is_private: bool,
+    **_,
+) -> list[TokenBaseTool]:
+    """Get all Token blockchain analysis skills.
+
+    Args:
+        config: The configuration for Token skills.
+        is_private: Whether to include private skills.
+
+    Returns:
+        A list of Token blockchain analysis skills.
+    """
+    if "states" not in config:
+        logger.error("No 'states' field in config")  # pyright: ignore[reportUnreachable]
+        return []
+
+    available_skills = []
+
+    # Include skills based on their state
+    for skill_name, state in config["states"].items():
+        if state == "disabled":
+            continue
+        elif state == "public" or (state == "private" and is_private):
+            available_skills.append(skill_name)
+
+    # Get each skill using the cached getter
+    result = []
+    for name in available_skills:
+        skill = get_token_skill(name)
+        if skill:
+            result.append(skill)
+
+    return result
+
+
+def get_token_skill(
+    name: str,
+) -> TokenBaseTool | None:
+    """Get a Token blockchain analysis skill by name.
+
+    Args:
+        name: The name of the skill to get
+
+    Returns:
+        The requested Token blockchain analysis skill
+    """
+    if name in _cache:
+        return _cache[name]
+
+    skill = None
+    if name == "token_price":
+        skill = TokenPrice()
+    elif name == "token_erc20_transfers":
+        skill = ERC20Transfers()
+    elif name == "token_search":
+        skill = TokenSearch()
+    elif name == "token_analytics":
+        skill = TokenAnalytics()
+    else:
+        logger.warning("Unknown Token skill: %s", name)
+        return None
+
+    if skill:
+        _cache[name] = skill
+
+    return skill
+
+
+def available() -> bool:
+    """Check if this skill category is available based on system config."""
+    return bool(system_config.moralis_api_key)

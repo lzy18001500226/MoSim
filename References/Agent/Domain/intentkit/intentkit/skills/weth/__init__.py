@@ -1,0 +1,62 @@
+"""WETH wrapping/unwrapping skills."""
+
+from typing import TypedDict
+
+from intentkit.skills.base import SkillConfig, SkillState
+from intentkit.skills.weth.base import WethBaseTool
+from intentkit.skills.weth.unwrap_eth import WETHUnwrapEth
+from intentkit.skills.weth.wrap_eth import WETHWrapEth
+
+
+class SkillStates(TypedDict):
+    weth_wrap_eth: SkillState
+    weth_unwrap_eth: SkillState
+
+
+class Config(SkillConfig):
+    """Configuration for WETH skills."""
+
+    states: SkillStates
+
+
+# Cache for skill instances
+_cache: dict[str, WethBaseTool] = {
+    "weth_wrap_eth": WETHWrapEth(),
+    "weth_unwrap_eth": WETHUnwrapEth(),
+}
+
+
+async def get_skills(
+    config: Config,
+    is_private: bool,
+    **_,
+) -> list[WethBaseTool]:
+    """Get all enabled WETH skills.
+
+    Args:
+        config: The configuration for WETH skills.
+        is_private: Whether to include private skills.
+
+    Returns:
+        A list of enabled WETH skills.
+    """
+    tools: list[WethBaseTool] = []
+
+    for skill_name, state in config["states"].items():
+        if state == "disabled":
+            continue
+        if state == "public" or (state == "private" and is_private):
+            # Check cache first
+            if skill_name in _cache:
+                tools.append(_cache[skill_name])
+
+    return tools
+
+
+def available() -> bool:
+    """Check if this skill category is available based on system config.
+
+    WETH skills are available for any EVM-compatible wallet (CDP, Safe/Privy)
+    on networks that have WETH deployed.
+    """
+    return True

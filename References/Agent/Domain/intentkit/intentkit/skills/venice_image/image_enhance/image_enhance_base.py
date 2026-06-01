@@ -1,0 +1,24 @@
+# Import the generic base and shared input
+from langchain_core.tools import ArgsSchema
+from pydantic import Field
+
+from intentkit.skills.venice_image.base import VeniceImageBaseTool
+from intentkit.skills.venice_image.image_enhance.image_enhance_input import (
+    VeniceImageEnhanceInput,
+)
+
+
+class VeniceImageEnhanceBaseTool(VeniceImageBaseTool):
+    """
+    Base class for Venice AI *Image Enchanching* tools.
+    Inherits from VeniceAIBaseTool and handles specifics of the
+    /image/upscale endpoint
+    """
+
+    args_schema: ArgsSchema | None = VeniceImageEnhanceInput
+    name: str = Field(
+        default="", description="The unique name of the image Enchanching tool."
+    )
+    description: str = Field(
+        default="", description="A description of what the image Enchanching tool does."
+    )

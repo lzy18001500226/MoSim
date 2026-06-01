@@ -1,0 +1,116 @@
+"""Trending tokens skill for Elfa AI API."""
+
+from decimal import Decimal
+from typing import Any
+
+from langchain_core.tools import ArgsSchema
+from pydantic import BaseModel, Field
+
+from .base import ElfaBaseTool
+from .utils import make_elfa_request
+
+
+class ElfaGetTrendingTokensInput(BaseModel):
+    """Input parameters for trending tokens."""
+
+    timeWindow: str | None = Field(
+        "7d", description="Time window (e.g., '1h', '7d', '30d')"
+    )
+    page: int | None = Field(1, description="Page number")
+    pageSize: int | None = Field(50, description="Items per page")
+    minMentions: int | None = Field(5, description="Minimum mentions required")
+
+
+class TrendingToken(BaseModel):
+    """Individual trending token data."""
+
+    token: str | None = None
+    current_count: int | None = None
+    previous_count: int | None = None
+    change_percent: float | None = None
+
+
+class ElfaGetTrendingTokensOutput(BaseModel):
+    """Output structure for trending tokens response."""
+
+    success: bool
+    data: list[TrendingToken] | None = None
+    metadata: dict[str, Any] | None = None
+
+
+class ElfaGetTrendingTokens(ElfaBaseTool):
+    """
+    Get trending tokens based on smart mentions count.
+
+    This tool ranks the most discussed tokens based on smart mentions count for a given period,
+    with updates every 5 minutes via the Elfa API. Smart mentions provide a more sophisticated
+    measure of discussion volume than simple keyword counts.
+
+    Use Cases:
+    - Identify trending tokens: Quickly see which tokens are gaining traction in online discussions
+    - Gauge market sentiment: Track changes in smart mention counts to understand shifts in market opinion
+    - Research potential investments: Use the ranking as a starting point for further due diligence
+    """
+
+    name: str = "elfa_get_trending_tokens"
+    description: str = (
+        "Get trending tokens ranked by smart mentions count. Updated every 5 minutes."
+    )
+    price: Decimal = Decimal("15")
+    args_schema: ArgsSchema | None = ElfaGetTrendingTokensInput
+
+    async def _arun(
+        self,
+        timeWindow: str = "7d",
+        page: int = 1,
+        pageSize: int = 50,
+        minMentions: int = 5,
+        **kwargs,
+    ) -> ElfaGetTrendingTokensOutput:
+        """
+        Execute the trending tokens request.
+
+        Args:
+            timeWindow: Time window for analysis (default: 7d)
+            page: Page number for pagination (default: 1)
+            pageSize: Items per page (default: 50)
+            minMentions: Minimum mentions required (default: 5)
+            config: LangChain runnable configuration
+            **kwargs: Additional parameters
+
+        Returns:
+            ElfaGetTrendingTokensOutput: Structured response with trending tokens
+
+        Raises:
+            ValueError: If API key is not found
+            ToolException: If there's an error with the API request
+        """
+        api_key = self.get_api_key()
+
+        # Prepare parameters according to API spec
+        params = {
+            "timeWindow": timeWindow,
+            "page": page,
+            "pageSize": pageSize,
+            "minMentions": minMentions,
+        }
+
+        # Make API request using shared utility
+        response = await make_elfa_request(
+            endpoint="aggregations/trending-tokens", api_key=api_key, params=params
+        )
+
+        # Parse response data into TrendingToken objects
+        trending_tokens = []
+        if response.data:
+            if isinstance(response.data, list):
+                trending_tokens = [TrendingToken(**item) for item in response.data]
+            elif isinstance(response.data, dict) and "data" in response.data:
+                # Handle nested data structure if present
+                trending_tokens = [
+                    TrendingToken(**item) for item in response.data["data"]
+                ]
+
+        return ElfaGetTrendingTokensOutput(
+            success=response.success, data=trending_tokens, metadata=response.metadata
+        )

@@ -1,0 +1,85 @@
+"""Tool for fetching chain historical TVL via DeFiLlama API."""
+
+from langchain_core.tools import ArgsSchema
+from langchain_core.tools.base import ToolException
+from pydantic import BaseModel, Field
+
+from intentkit.skills.defillama.api import fetch_chain_historical_tvl
+from intentkit.skills.defillama.base import DefiLlamaBaseTool
+
+FETCH_HISTORICAL_TVL_PROMPT = (
+    """Fetch historical TVL for a specific chain via DefiLlama."""
+)
+
+
+class HistoricalTVLDataPoint(BaseModel):
+    """Model representing a single TVL data point."""
+
+    date: int = Field(..., description="Unix timestamp")
+    tvl: float = Field(..., description="TVL in USD")
+
+
+class FetchChainHistoricalTVLInput(BaseModel):
+    """Input schema for fetching chain-specific historical TVL data."""
+
+    chain: str = Field(..., description="Chain name (e.g. 'ethereum')")
+
+
+class FetchChainHistoricalTVLResponse(BaseModel):
+    """Response schema for chain-specific historical TVL data."""
+
+    chain: str = Field(..., description="Chain name")
+    data: list[HistoricalTVLDataPoint] = Field(
+        default_factory=list, description="TVL data points"
+    )
+    error: str | None = Field(default=None, description="Error message")
+
+
+class DefiLlamaFetchChainHistoricalTvl(DefiLlamaBaseTool):
+    """Tool for fetching historical TVL data for a specific blockchain.
+
+    This tool fetches the complete Total Value Locked (TVL) history for a given
+    blockchain using the DeFiLlama API. It includes rate limiting and chain
+    validation to ensure reliable data retrieval.
+
+    Example:
+        tvl_tool = DefiLlamaFetchChainHistoricalTvl(
+            ,
+            agent_id="agent_123",
+            agent=agent
+        )
+        result = await tvl_tool._arun(chain="ethereum")
+    """
+
+    name: str = "defillama_fetch_chain_historical_tvl"
+    description: str = FETCH_HISTORICAL_TVL_PROMPT
+    args_schema: ArgsSchema | None = FetchChainHistoricalTVLInput
+
+    async def _arun(self, chain: str) -> FetchChainHistoricalTVLResponse:
+        """Fetch historical TVL data for the given chain.
+
+        Args:
+            config: Runnable configuration
+            chain: Blockchain name (e.g., "ethereum", "solana")
+
+        Returns:
+            FetchChainHistoricalTVLResponse containing chain name, TVL history or error
+        """
+        # Check rate limiting
+        context = self.get_context()
+        is_rate_limited, error_msg = await self.check_rate_limit(context)
+        if is_rate_limited:
+            raise ToolException(error_msg)
+
+        # Validate chain parameter
+        is_valid, normalized_chain = await self.validate_chain(chain)
+        if not is_valid or normalized_chain is None:
+            raise ToolException(f"Invalid chain: {chain}")
+
+        # Fetch TVL history from API
+        result = await fetch_chain_historical_tvl(normalized_chain)
+
+        # Parse response into our schema
+        data_points = [HistoricalTVLDataPoint(**point) for point in result]
+
+        return FetchChainHistoricalTVLResponse(chain=normalized_chain, data=data_points)

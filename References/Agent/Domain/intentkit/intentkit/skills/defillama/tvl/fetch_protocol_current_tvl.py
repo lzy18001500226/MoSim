@@ -1,0 +1,70 @@
+"""Tool for fetching protocol TVL via DeFiLlama API."""
+
+from langchain_core.tools import ArgsSchema
+from langchain_core.tools.base import ToolException
+from pydantic import BaseModel, Field
+
+from intentkit.skills.defillama.api import fetch_protocol_current_tvl
+from intentkit.skills.defillama.base import DefiLlamaBaseTool
+
+FETCH_TVL_PROMPT = """Fetch current TVL for a DeFi protocol via DefiLlama. Provide protocol slug (e.g. 'aave')."""
+
+
+class FetchProtocolCurrentTVLInput(BaseModel):
+    """Input schema for fetching current protocol TVL."""
+
+    protocol: str = Field(..., description="Protocol slug (e.g. 'aave')")
+
+
+class FetchProtocolCurrentTVLResponse(BaseModel):
+    """Response schema for current protocol TVL."""
+
+    protocol: str = Field(..., description="Protocol slug")
+    tvl: float = Field(..., description="TVL in USD")
+    error: str | None = Field(default=None, description="Error message")
+
+
+class DefiLlamaFetchProtocolCurrentTvl(DefiLlamaBaseTool):
+    """Tool for fetching current TVL of a specific DeFi protocol.
+
+    This tool fetches the current Total Value Locked (TVL) for a given protocol
+    using the DeFiLlama API. It includes rate limiting to avoid API abuse.
+
+    Example:
+        tvl_tool = DefiLlamaFetchProtocolCurrentTvl(
+            ,
+            agent_id="agent_123",
+            agent=agent
+        )
+        result = await tvl_tool._arun(protocol="aave")
+    """
+
+    name: str = "defillama_fetch_protocol_tvl"
+    description: str = FETCH_TVL_PROMPT
+    args_schema: ArgsSchema | None = FetchProtocolCurrentTVLInput
+
+    async def _arun(self, protocol: str) -> FetchProtocolCurrentTVLResponse:
+        """Fetch current TVL for the given protocol.
+
+        Args:
+            config: Runnable configuration
+            protocol: DeFi protocol slug (e.g., "aave", "curve")
+
+        Returns:
+            FetchProtocolCurrentTVLResponse containing protocol name, TVL value or error
+        """
+        # Check rate limiting
+        context = self.get_context()
+        is_rate_limited, error_msg = await self.check_rate_limit(context)
+        if is_rate_limited:
+            raise ToolException(error_msg)
+
+        # Normalize protocol slug
+        normalized_protocol = protocol.lower().replace(" ", "-")
+
+        # Fetch TVL from API
+        result = await fetch_protocol_current_tvl(normalized_protocol)
+
+        return FetchProtocolCurrentTVLResponse(
+            protocol=normalized_protocol, tvl=float(result)
+        )

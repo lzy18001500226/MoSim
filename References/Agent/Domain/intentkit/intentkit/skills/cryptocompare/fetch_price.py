@@ -1,0 +1,86 @@
+"""Tool for fetching cryptocurrency prices via CryptoCompare API."""
+
+import logging
+
+from langchain_core.tools import ArgsSchema
+from langchain_core.tools.base import ToolException
+from pydantic import BaseModel, Field
+
+from intentkit.skills.cryptocompare.base import CryptoCompareBaseTool, CryptoPrice
+
+logger = logging.getLogger(__name__)
+
+
+class CryptoCompareFetchPriceInput(BaseModel):
+    """Input for CryptoCompareFetchPrice tool."""
+
+    from_symbol: str = Field(
+        ...,
+        description="Base crypto symbol (e.g., BTC, ETH)",
+    )
+    to_symbols: list[str] = Field(
+        ...,
+        description="Target currency symbols (e.g., [USD, EUR])",
+    )
+
+
+class CryptoCompareFetchPrice(CryptoCompareBaseTool):
+    """Tool for fetching cryptocurrency prices from CryptoCompare."""
+
+    name: str = "cryptocompare_fetch_price"
+    description: str = "Fetch real-time crypto prices in multiple currencies."
+    args_schema: ArgsSchema | None = CryptoCompareFetchPriceInput
+
+    async def _arun(
+        self,
+        from_symbol: str,
+        to_symbols: list[str],
+        **kwargs,
+    ) -> list[CryptoPrice]:
+        """Async implementation of the tool to fetch cryptocurrency prices.
+
+        Args:
+            from_symbol: Base cryptocurrency symbol to get prices for (e.g., 'BTC', 'ETH')
+            to_symbols: List of target currencies (fiat or crypto) (e.g., ['USD', 'EUR', 'JPY'])
+            config: The configuration for the runnable, containing agent context.
+
+        Returns:
+            list[CryptoPrice]: A list of cryptocurrency prices for each target currency.
+
+        Raises:
+            Exception: If there's an error accessing the CryptoCompare API.
+        """
+        try:
+            self.get_context()
+
+            # Check rate limit
+            await self.check_rate_limit(max_requests=10, interval=60)
+
+            # Get API key from platform config
+            api_key = self.get_api_key()
+
+            # Fetch price data directly
+            price_data = await self.fetch_price(api_key, from_symbol, to_symbols)
+
+            # Check for errors
+            if "error" in price_data:
+                raise ToolException(price_data["error"])
+
+            # Convert to list of CryptoPrice objects
+            result = []
+            for to_symbol, price in price_data.items():
+                result.append(
+                    CryptoPrice(
+                        from_symbol=from_symbol,
+                        to_symbol=to_symbol,
+                        price=price,
+                    )
+                )
+
+            return result
+
+        except ToolException:
+            raise
+        except Exception as e:
+            logger.error("Error fetching price: %s", e)
+            raise ToolException(f"Failed to fetch price: {e!s}")

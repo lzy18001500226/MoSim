@@ -1,0 +1,81 @@
+"""Allora skill module."""
+
+import logging
+from typing import TypedDict
+
+from intentkit.config.config import config as system_config
+from intentkit.skills.allora.base import AlloraBaseTool
+from intentkit.skills.allora.price import AlloraGetPrice
+from intentkit.skills.base import SkillConfig, SkillState
+
+# Cache skills at the system level, because they are stateless
+_cache: dict[str, AlloraBaseTool] = {}
+
+logger = logging.getLogger(__name__)
+
+
+class SkillStates(TypedDict):
+    get_price_prediction: SkillState
+
+
+class Config(SkillConfig):
+    """Configuration for Allora skills."""
+
+    states: SkillStates
+
+
+async def get_skills(
+    config: "Config",
+    is_private: bool,
+    **_,
+) -> list[AlloraBaseTool]:
+    """Get all Allora skills.
+
+    Args:
+        config: The configuration for Allora skills.
+        is_private: Whether to include private skills.
+
+    Returns:
+        A list of Allora skills.
+    """
+    available_skills = []
+
+    # Include skills based on their state
+    for skill_name, state in config["states"].items():
+        if state == "disabled":
+            continue
+        elif state == "public" or (state == "private" and is_private):
+            available_skills.append(skill_name)
+
+    # Get each skill using the cached getter
+    result = []
+    for name in available_skills:
+        skill = get_allora_skill(name)
+        if skill:
+            result.append(skill)
+    return result
+
+
+def get_allora_skill(
+    name: str,
+) -> AlloraBaseTool | None:
+    """Get an Allora skill by name.
+
+    Args:
+        name: The name of the skill to get
+
+    Returns:
+        The requested Allora skill
+    """
+    if name == "get_price_prediction":
+        if name not in _cache:
+            _cache[name] = AlloraGetPrice()
+        return _cache[name]
+    else:
+        logger.warning("Unknown Allora skill: %s", name)
+        return None
+
+
+def available() -> bool:
+    """Check if this skill category is available based on system config."""
+    return bool(system_config.allora_api_key)

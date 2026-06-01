@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "WETH",
+  "description": "Wrap and unwrap ETH to/from WETH (Wrapped ETH)",
+  "x-icon": "/skills/weth/weth.svg",
+  "x-tags": [
+    "Crypto",
+    "DeFi"
+  ],
+  "properties": {
+    "enabled": {
+      "type": "boolean",
+      "title": "Enabled",
+      "description": "Whether this skill is enabled",
+      "default": false
+    },
+    "states": {
+      "type": "object",
+      "properties": {
+        "weth_wrap_eth": {
+          "type": "string",
+          "title": "Wrap ETH",
+          "enum": [
+            "disabled",
+            "public",
+            "private"
+          ],
+          "x-enum-title": [
+            "Disabled",
+            "Agent Owner + All Users",
+            "Agent Owner Only"
+          ],
+          "description": "Wrap native ETH to WETH (ERC20 token)",
+          "default": "disabled"
+        },
+        "weth_unwrap_eth": {
+          "type": "string",
+          "title": "Unwrap WETH",
+          "enum": [
+            "disabled",
+            "public",
+            "private"
+          ],
+          "x-enum-title": [
+            "Disabled",
+            "Agent Owner + All Users",
+            "Agent Owner Only"
+          ],
+          "description": "Unwrap WETH back to native ETH",
+          "default": "disabled"
+        }
+      },
+      "description": "States for each WETH skill (disabled, public, or private)"
+    }
+  },
+  "required": [
+    "states",
+    "enabled"
+  ],
+  "additionalProperties": true
+}

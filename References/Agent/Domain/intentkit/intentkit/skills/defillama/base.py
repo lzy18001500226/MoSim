@@ -1,0 +1,83 @@
+"""Base class for all DeFi Llama tools."""
+
+from datetime import UTC, datetime, timedelta
+
+from intentkit.abstracts.graph import AgentContext
+from intentkit.skills.base import IntentKitSkill
+from intentkit.skills.defillama.config.chains import (
+    get_chain_from_alias,
+)
+
+
+class DefiLlamaBaseTool(IntentKitSkill):
+    """Base class for DeFi Llama tools.
+
+    This class provides common functionality for all DeFi Llama API tools:
+    - Rate limiting
+    - State management
+    - Chain validation
+    """
+
+    category: str = "defillama"
+
+    async def check_rate_limit(
+        self, context: AgentContext, max_requests: int = 30, interval: int = 5
+    ) -> tuple[bool, str | None]:
+        """Check if the rate limit has been exceeded.
+
+        Args:
+            context: Skill context
+            max_requests: Maximum requests allowed in the interval (default: 30)
+            interval: Time interval in minutes (default: 5)
+
+        Returns:
+            Rate limit status and error message if limited
+        """
+        rate_limit = await self.get_agent_skill_data("rate_limit")
+        current_time = datetime.now(tz=UTC)
+
+        if (
+            rate_limit
+            and rate_limit.get("reset_time")
+            and rate_limit.get("count") is not None
+            and datetime.fromisoformat(rate_limit["reset_time"]) > current_time
+        ):
+            if rate_limit["count"] >= max_requests:
+                return True, "Rate limit exceeded"
+
+            rate_limit["count"] += 1
+            await self.save_agent_skill_data("rate_limit", rate_limit)
+            return False, None
+
+        new_rate_limit = {
+            "count": 1,
+            "reset_time": (current_time + timedelta(minutes=interval)).isoformat(),
+        }
+        await self.save_agent_skill_data("rate_limit", new_rate_limit)
+        return False, None
+
+    async def validate_chain(self, chain: str | None) -> tuple[bool, str | None]:
+        """Validate and normalize chain parameter.
+
+        Args:
+            chain: Chain name to validate
+
+        Returns:
+            Tuple of (is_valid, normalized_chain_name)
+        """
+        if chain is None:
+            return True, None
+
+        normalized_chain = get_chain_from_alias(chain)
+        if normalized_chain is None:
+            return False, None
+
+        return True, normalized_chain
+
+    def get_current_timestamp(self) -> int:
+        """Get current timestamp in UTC.
+
+        Returns:
+            Current Unix timestamp
+        """
+        return int(datetime.now(tz=UTC).timestamp())

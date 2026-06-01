@@ -1,0 +1,192 @@
+from typing import Any
+
+import httpx
+from langchain_core.tools import ArgsSchema
+from langchain_core.tools.base import ToolException
+from pydantic import BaseModel, Field
+
+from intentkit.skills.lifi.base import LiFiBaseTool
+from intentkit.skills.lifi.utils import (
+    LIFI_API_URL,
+    build_quote_params,
+    format_duration,
+    format_fees_and_gas,
+    format_quote_basic_info,
+    format_route_info,
+    handle_api_response,
+    validate_inputs,
+)
+
+
+class TokenQuoteInput(BaseModel):
+    """Input for the TokenQuote skill."""
+
+    from_chain: str = Field(
+        description="Source chain (e.g. 'ETH', 'POL', 'ARB'). Chain ID or key."
+    )
+    to_chain: str = Field(
+        description="Destination chain (e.g. 'ETH', 'POL', 'ARB'). Chain ID or key."
+    )
+    from_token: str = Field(
+        description="Token to send (e.g. 'USDC', 'ETH'). Address or symbol."
+    )
+    to_token: str = Field(
+        description="Token to receive (e.g. 'USDC', 'ETH'). Address or symbol."
+    )
+    from_amount: str = Field(
+        description="Amount in smallest unit (e.g. '1000000' for 1 USDC)."
+    )
+    slippage: float = Field(
+        default=0.03,
+        description="Max slippage as decimal (e.g. 0.03 for 3%).",
+    )
+
+
+class TokenQuote(LiFiBaseTool):
+    """Tool for getting token transfer quotes across chains using LiFi.
+
+    This tool provides quotes for token transfers and swaps without executing transactions.
+    """
+
+    name: str = "lifi_token_quote"
+    description: str = (
+        "Get a quote for cross-chain token transfers or same-chain swaps via LiFi. "
+        "Returns rates, fees, and estimated time without executing."
+    )
+    args_schema: ArgsSchema | None = TokenQuoteInput
+    api_url: str = LIFI_API_URL
+
+    # Configuration options
+    default_slippage: float = 0.03
+    allowed_chains: list[str] | None = None
+
+    def __init__(
+        self,
+        default_slippage: float = 0.03,
+        allowed_chains: list[str] | None = None,
+    ) -> None:
+        """Initialize the TokenQuote skill with configuration options."""
+        super().__init__()  # pyright: ignore[reportCallIssue]
+        self.default_slippage = default_slippage
+        self.allowed_chains = allowed_chains
+
+    async def _arun(
+        self,
+        from_chain: str,
+        to_chain: str,
+        from_token: str,
+        to_token: str,
+        from_amount: str,
+        slippage: float | None = None,
+        **kwargs,
+    ) -> str:
+        """Get a quote for token transfer."""
+        try:
+            # Use provided slippage or default
+            if slippage is None:
+                slippage = self.default_slippage
+
+            # Validate all inputs (raises ToolException on invalid)
+            validate_inputs(
+                from_chain,
+                to_chain,
+                from_token,
+                to_token,
+                from_amount,
+                slippage,
+                self.allowed_chains,
+            )
+
+            self.logger.info(
+                f"Requesting LiFi quote: {from_amount} {from_token} on {from_chain} -> {to_token} on {to_chain}"
+            )
+
+            # Build API parameters
+            api_params = build_quote_params(
+                from_chain, to_chain, from_token, to_token, from_amount, slippage
+            )
+
+            # Make API request
+            async with httpx.AsyncClient() as client:
+                try:
+                    response = await client.get(
+                        f"{self.api_url}/quote",
+                        params=api_params,
+                        timeout=30.0,
+                    )
+                except httpx.TimeoutException:
+                    return "Request timed out. The LiFi service might be temporarily unavailable. Please try again."
+                except httpx.ConnectError:
+                    raise ToolException(
+                        "Connection error. Unable to reach LiFi service. Please check your internet connection."
+                    )
+                except Exception as e:
+                    self.logger.error("LiFi_API_Error: %s", str(e))
+                    raise ToolException(f"Error making API request: {e!s}")
+                # Handle response
+                data, error = handle_api_response(
+                    response, from_token, from_chain, to_token, to_chain
+                )
+                if error:
+                    self.logger.error("LiFi_API_Error: %s", error)
+                    raise ToolException(error)
+
+                # Format the quote result
+                if data is None:
+                    raise ToolException("No data returned from LiFi API")
+                return self.format_quote_result(data)
+
+        except ToolException:
+            raise
+        except Exception as e:
+            self.logger.error("LiFi_Error: %s", str(e))
+            raise ToolException(f"An unexpected error occurred: {e!s}")
+
+    def format_quote_result(self, data: dict[str, Any]) -> str:
+        """Format quote result into human-readable text."""
+        try:
+            # Get basic info
+            info = format_quote_basic_info(data)
+
+            # Build result string
+            result = "### Token Transfer Quote\n\n"
+            result += f"**From:** {info['from_amount']} {info['from_token']} on {info['from_chain']}\n"
+            result += f"**To:** {info['to_amount']} {info['to_token']} on {info['to_chain']}\n"
+            result += (
+                f"**Minimum Received:** {info['to_amount_min']} {info['to_token']}\n"
+            )
+            result += f"**Bridge/Exchange:** {info['tool']}\n\n"
+
+            # Add USD values if available
+            if info["from_amount_usd"] and info["to_amount_usd"]:
+                result += f"**Value:** ${info['from_amount_usd']} → ${info['to_amount_usd']}\n\n"
+
+            # Add execution time estimate
+            if info["execution_duration"]:
+                time_str = format_duration(info["execution_duration"])
+                result += f"**Estimated Time:** {time_str}\n\n"
+
+            # Add fees and gas costs
+            fees_text, gas_text = format_fees_and_gas(data)
+            if fees_text:
+                result += fees_text + "\n"
+            if gas_text:
+                result += gas_text + "\n"
+
+            # Add route information
+            route_text = format_route_info(data)
+            if route_text:
+                result += route_text + "\n"
+
+            result += "---\n"
+            result += (
+                "*Use token_execute to perform this transfer with your CDP wallet*"
+            )
+
+            return result
+
+        except Exception as e:
+            self.logger.error("Format_Error: %s", str(e))
+            raise ToolException(
+                f"Quote received but formatting failed: {e!s}\nRaw data: {str(data)[:500]}..."
+            )

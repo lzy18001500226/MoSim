@@ -1,0 +1,138 @@
+"""Tool for fetching DEX overview data via DeFi Llama API."""
+
+from typing import Any
+
+from langchain_core.tools import ArgsSchema
+from langchain_core.tools.base import ToolException
+from pydantic import BaseModel, Field
+
+from intentkit.skills.base import NoArgsSchema
+from intentkit.skills.defillama.api import fetch_dex_overview
+from intentkit.skills.defillama.base import DefiLlamaBaseTool
+
+FETCH_DEX_OVERVIEW_PROMPT = """Fetch DEX volume overview from DefiLlama with totals, changes, and per-protocol data."""
+
+
+class MethodologyInfo(BaseModel):
+    """Model representing methodology information."""
+
+    UserFees: str | None = Field(None, description="User fees")
+    Fees: str | None = Field(None, description="Fees")
+    Revenue: str | None = Field(None, description="Revenue")
+    ProtocolRevenue: str | None = Field(None, description="Protocol revenue")
+    HoldersRevenue: str | None = Field(None, description="Holder revenue")
+    SupplySideRevenue: str | None = Field(None, description="Supply side revenue")
+
+
+class ProtocolInfo(BaseModel):
+    """Model representing individual protocol data."""
+
+    total24h: float | None = Field(None, description="24h total")
+    total48hto24h: float | None = Field(None, description="48h-24h total")
+    total7d: float | None = Field(None, description="7d total")
+    total14dto7d: float | None = Field(None, description="14d-7d total")
+    total60dto30d: float | None = Field(None, description="60d-30d total")
+    total30d: float | None = Field(None, description="30d total")
+    total1y: float | None = Field(None, description="1y total")
+    totalAllTime: float | None = Field(None, description="All-time total")
+    average1y: float | None = Field(None, description="1y avg")
+    change_1d: float | None = Field(None, description="1d change %")
+    change_7d: float | None = Field(None, description="7d change %")
+    change_1m: float | None = Field(None, description="1m change %")
+    change_7dover7d: float | None = Field(None, description="7d/7d change %")
+    change_30dover30d: float | None = Field(None, description="30d/30d change %")
+    breakdown24h: dict[str, dict[str, float]] | None = Field(
+        None, description="24h by chain"
+    )
+    breakdown30d: dict[str, dict[str, float]] | None = Field(
+        None, description="30d by chain"
+    )
+    total7DaysAgo: float | None = Field(None, description="7d ago total")
+    total30DaysAgo: float | None = Field(None, description="30d ago total")
+    defillamaId: str | None = Field(None, description="DefiLlama ID")
+    name: str = Field(..., description="Name")
+    displayName: str = Field(..., description="Display name")
+    module: str = Field(..., description="Module")
+    category: str = Field(..., description="Category")
+    logo: str | None = Field(None, description="Logo URL")
+    chains: list[str] = Field(..., description="Chains")
+    protocolType: str = Field(..., description="Type")
+    methodologyURL: str | None = Field(None, description="Methodology URL")
+    methodology: MethodologyInfo | None = Field(None, description="Methodology")
+    latestFetchIsOk: bool = Field(..., description="Fetch OK")
+    disabled: bool | None = Field(None, description="Disabled")
+    parentProtocol: str | None = Field(None, description="Parent protocol")
+    slug: str = Field(..., description="Slug")
+    linkedProtocols: list[str] | None = Field(None, description="Linked protocols")
+    id: str = Field(..., description="ID")
+
+
+class FetchDexOverviewResponse(BaseModel):
+    """Response schema for DEX overview data."""
+
+    totalDataChart: list[Any] = Field(default_factory=list, description="Chart data")
+    totalDataChartBreakdown: list[Any] = Field(
+        default_factory=list, description="Chart breakdown"
+    )
+    breakdown24h: dict[str, dict[str, float]] | None = Field(
+        None, description="24h by chain"
+    )
+    breakdown30d: dict[str, dict[str, float]] | None = Field(
+        None, description="30d by chain"
+    )
+    chain: str | None = Field(None, description="Chain")
+    allChains: list[str] = Field(..., description="All chains")
+    total24h: float = Field(..., description="24h total")
+    total48hto24h: float = Field(..., description="48h-24h total")
+    total7d: float = Field(..., description="7d total")
+    total14dto7d: float = Field(..., description="14d-7d total")
+    total60dto30d: float = Field(..., description="60d-30d total")
+    total30d: float = Field(..., description="30d total")
+    total1y: float = Field(..., description="1y total")
+    change_1d: float = Field(..., description="1d change %")
+    change_7d: float = Field(..., description="7d change %")
+    change_1m: float = Field(..., description="1m change %")
+    change_7dover7d: float = Field(..., description="7d/7d change %")
+    change_30dover30d: float = Field(..., description="30d/30d change %")
+    total7DaysAgo: float = Field(..., description="7d ago total")
+    total30DaysAgo: float = Field(..., description="30d ago total")
+    protocols: list[ProtocolInfo] = Field(..., description="Protocols")
+    error: str | None = Field(default=None, description="Error message")
+
+
+class DefiLlamaFetchDexOverview(DefiLlamaBaseTool):
+    """Tool for fetching DEX overview data from DeFi Llama.
+
+    This tool retrieves comprehensive data about DEX protocols, including
+    volumes, metrics, and chain breakdowns.
+
+    Example:
+        overview_tool = DefiLlamaFetchDexOverview(
+            ,
+            agent_id="agent_123",
+            agent=agent
+        )
+        result = await overview_tool._arun()
+    """
+
+    name: str = "defillama_fetch_dex_overview"
+    description: str = FETCH_DEX_OVERVIEW_PROMPT
+    args_schema: ArgsSchema | None = NoArgsSchema  # No input parameters needed
+
+    async def _arun(self, **kwargs) -> FetchDexOverviewResponse:
+        """Fetch DEX overview data.
+
+        Returns:
+            FetchDexOverviewResponse containing overview data or error
+        """
+        # Check rate limiting
+        context = self.get_context()
+        is_rate_limited, error_msg = await self.check_rate_limit(context)
+        if is_rate_limited:
+            raise ToolException(error_msg)
+
+        # Fetch overview data from API
+        result = await fetch_dex_overview()
+
+        # Return the response matching the API structure
+        return FetchDexOverviewResponse(**result)

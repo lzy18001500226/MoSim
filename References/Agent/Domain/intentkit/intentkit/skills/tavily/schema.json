@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Tavily Search and Extract",
+  "description": "Web search and content extraction capabilities using Tavily",
+  "x-icon": "/skills/tavily/tavily.jpg",
+  "x-tags": [
+    "Knowledge Base",
+    "Search"
+  ],
+  "x-nft-requirement": 1,
+  "properties": {
+    "enabled": {
+      "type": "boolean",
+      "title": "Enabled",
+      "description": "Whether this skill is enabled",
+      "default": false
+    },
+    "states": {
+      "type": "object",
+      "properties": {
+        "tavily_search": {
+          "type": "string",
+          "title": "Tavily Search",
+          "enum": [
+            "disabled",
+            "public",
+            "private"
+          ],
+          "x-enum-title": [
+            "Disabled",
+            "Agent Owner + All Users",
+            "Agent Owner Only"
+          ],
+          "description": "Search the web for real-time information and recent content using Tavily",
+          "default": "disabled"
+        },
+        "tavily_extract": {
+          "type": "string",
+          "title": "Tavily Extract",
+          "enum": [
+            "disabled",
+            "public",
+            "private"
+          ],
+          "x-enum-title": [
+            "Disabled",
+            "Agent Owner + All Users",
+            "Agent Owner Only"
+          ],
+          "description": "Extract full content from web pages using Tavily Extract API",
+          "default": "disabled"
+        }
+      },
+      "description": "States for each Tavily skill (disabled, public, or private)"
+    },
+    "rate_limit_number": {
+      "type": "integer",
+      "title": "Rate Limit Number",
+      "description": "Number of requests allowed per time window"
+    },
+    "rate_limit_minutes": {
+      "type": "integer",
+      "title": "Rate Limit Minutes",
+      "description": "Time window in minutes for rate limiting"
+    }
+  },
+  "required": [
+    "states",
+    "enabled"
+  ],
+  "additionalProperties": true
+}

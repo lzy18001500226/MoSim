@@ -1,0 +1,147 @@
+import logging
+from decimal import Decimal
+
+from langchain_core.tools import ArgsSchema
+from langchain_core.tools.base import ToolException
+from pydantic import BaseModel, Field
+
+from intentkit.skills.web_scraper.base import WebScraperBaseTool
+from intentkit.skills.web_scraper.utils import (
+    DocumentProcessor,
+    MetadataManager,
+    ResponseFormatter,
+    VectorStoreManager,
+    index_documents,
+)
+
+logger = logging.getLogger(__name__)
+
+
+class DocumentIndexerInput(BaseModel):
+    """Input for DocumentIndexer tool."""
+
+    text_content: str = Field(
+        description="Text content to index.",
+        min_length=10,
+        max_length=100000,
+    )
+    title: str = Field(
+        description="Title for this content.",
+        max_length=200,
+    )
+    source: str = Field(
+        description="Content source (e.g., Google Doc, Notion).",
+        default="Manual Entry",
+        max_length=100,
+    )
+    chunk_size: int = Field(
+        description="Text chunk size for indexing.",
+        default=1000,
+        ge=100,
+        le=4000,
+    )
+    chunk_overlap: int = Field(
+        description="Overlap between chunks.",
+        default=200,
+        ge=0,
+        le=1000,
+    )
+    tags: str = Field(
+        description="Comma-separated tags for categorization.",
+        default="",
+        max_length=500,
+    )
+
+
+class DocumentIndexer(WebScraperBaseTool):
+    """Tool for importing and indexing document content to the vector database.
+
+    This tool allows users to copy and paste document content from various sources
+    (like Google Docs, Notion, PDFs, etc.) and index it directly into the vector store
+    for later querying and retrieval.
+    """
+
+    name: str = "web_scraper_document_indexer"
+    description: str = (
+        "Index document content into the vector database for later querying."
+    )
+    price: Decimal = Decimal("200")
+    args_schema: ArgsSchema | None = DocumentIndexerInput
+
+    async def _arun(
+        self,
+        text_content: str,
+        title: str,
+        source: str = "Manual Entry",
+        chunk_size: int = 1000,
+        chunk_overlap: int = 200,
+        tags: str = "",
+        **kwargs,
+    ) -> str:
+        """Add text content to the vector database."""
+        # Get agent context - throw error if not available
+        # Configuration is always available in new runtime
+        pass
+
+        context = self.get_context()
+        if not context or not context.agent_id:
+            raise ToolException("Agent ID is required but not found in configuration")
+
+        agent_id = context.agent_id
+
+        logger.info("[%s] Starting document indexing for title: '%s'", agent_id, title)
+
+        # Validate content
+        if not DocumentProcessor.validate_content(text_content):
+            logger.error("[%s] Content validation failed - too short", agent_id)
+            raise ToolException(
+                "Error: Text content is too short. Please provide at least 10 characters of content."
+            )
+        # Create document with metadata
+        document = DocumentProcessor.create_document(
+            text_content,
+            title,
+            source,
+            tags,
+            extra_metadata={"source_type": "document_indexer"},
+        )
+
+        logger.info(
+            "[%s] Document created, length: %s chars",
+            agent_id,
+            len(document.page_content),
+        )
+
+        embedding_api_key = self.get_openai_api_key()
+        vector_manager = VectorStoreManager(embedding_api_key)
+
+        # Index the document
+        total_chunks, was_merged = await index_documents(
+            [document], agent_id, vector_manager, chunk_size, chunk_overlap
+        )
+
+        # Get current storage size for response
+        current_size = await vector_manager.get_content_size(agent_id)
+
+        # Update metadata
+        metadata_manager = MetadataManager(vector_manager)
+        new_metadata = metadata_manager.create_document_metadata(
+            title, source, tags, [document], len(text_content)
+        )
+        await metadata_manager.update_metadata(agent_id, new_metadata)
+
+        logger.info("[%s] Document indexing completed successfully", agent_id)
+
+        # Format response
+        response = ResponseFormatter.format_indexing_response(
+            "indexed",
+            f"Document: {title}",
+            total_chunks,
+            chunk_size,
+            chunk_overlap,
+            was_merged,
+            current_size_bytes=current_size,
+        )
+
+        logger.info("[%s] Document indexing completed successfully", agent_id)
+        return response

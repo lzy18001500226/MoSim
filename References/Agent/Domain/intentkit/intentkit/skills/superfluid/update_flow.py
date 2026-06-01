@@ -1,0 +1,93 @@
+"""Superfluid update_flow skill - Update an existing money stream."""
+
+from langchain_core.tools import ArgsSchema
+from langchain_core.tools.base import ToolException
+from pydantic import BaseModel, Field
+from web3 import Web3
+
+from intentkit.skills.superfluid.base import SuperfluidBaseTool
+from intentkit.skills.superfluid.constants import (
+    SUPERFLUID_HOST_ADDRESS,
+    UPDATE_FLOW_ABI,
+)
+
+
+class UpdateFlowInput(BaseModel):
+    """Input schema for update_flow."""
+
+    token_address: str = Field(..., description="Super Token contract address")
+    recipient: str = Field(..., description="Recipient wallet address")
+    new_flow_rate: str = Field(
+        ...,
+        description="New flow rate in wei/second (whole number, no decimals)",
+    )
+
+
+class SuperfluidUpdateFlow(SuperfluidBaseTool):
+    """Update an existing money stream using Superfluid.
+
+    This tool updates the flow rate of an existing token stream
+    to a recipient address using the Superfluid protocol.
+    """
+
+    name: str = "superfluid_update_flow"
+    description: str = "Update the flow rate of an existing Superfluid stream. Rate in wei/second (no decimals). Stream must already exist."
+    args_schema: ArgsSchema | None = UpdateFlowInput
+
+    async def _arun(
+        self,
+        token_address: str,
+        recipient: str,
+        new_flow_rate: str,
+    ) -> str:
+        """Update an existing money stream using Superfluid.
+
+        Args:
+            token_address: The Super token contract address.
+            recipient: The address receiving the stream.
+            new_flow_rate: The new flowrate in wei per second.
+
+        Returns:
+            A message containing the result or error details.
+        """
+        try:
+            # Get the unified wallet
+            wallet = await self.get_unified_wallet()
+
+            w3 = Web3()
+            checksum_token = w3.to_checksum_address(token_address)
+            checksum_recipient = w3.to_checksum_address(recipient)
+            checksum_host = w3.to_checksum_address(SUPERFLUID_HOST_ADDRESS)
+
+            # Encode updateFlow function
+            contract = w3.eth.contract(address=checksum_host, abi=UPDATE_FLOW_ABI)
+            data = contract.encode_abi(
+                "updateFlow",
+                [
+                    checksum_token,
+                    wallet.address,  # sender
+                    checksum_recipient,
+                    int(new_flow_rate),
+                    b"",  # userData
+                ],
+            )
+
+            # Send transaction
+            tx_hash = await wallet.send_transaction(
+                to=checksum_host,
+                data=data,
+            )
+
+            # Wait for receipt
+            await wallet.wait_for_transaction_receipt(tx_hash)  # pyright: ignore[reportAttributeAccessIssue]
+
+            return (
+                f"Flow updated successfully.\n"
+                f"Token: {token_address}\n"
+                f"Recipient: {recipient}\n"
+                f"New flow rate: {new_flow_rate} wei/second\n"
+                f"Transaction hash: {tx_hash}"
+            )
+
+        except Exception as e:
+            raise ToolException(f"Error updating flow: {e!s}")

@@ -1,0 +1,81 @@
+"""Tool for fetching token prices via DeFi Llama API."""
+
+from langchain_core.tools import ArgsSchema
+from langchain_core.tools.base import ToolException
+from pydantic import BaseModel, Field
+
+from intentkit.skills.defillama.api import fetch_current_prices
+from intentkit.skills.defillama.base import DefiLlamaBaseTool
+
+FETCH_PRICES_PROMPT = """Fetch current token prices via DefiLlama. Token format: 'chain:address' or 'coingecko:id'."""
+
+
+class TokenPrice(BaseModel):
+    """Model representing token price data."""
+
+    price: float = Field(..., description="Price in USD")
+    symbol: str = Field(..., description="Symbol")
+    timestamp: int = Field(..., description="Last update timestamp")
+    confidence: float = Field(..., description="Confidence score")
+    decimals: int | None = Field(None, description="Token decimals")
+
+
+class FetchCurrentPricesInput(BaseModel):
+    """Input schema for fetching current token prices with a 4-hour search window."""
+
+    coins: list[str] = Field(
+        ..., description="Token IDs, e.g. 'ethereum:0x...' or 'coingecko:bitcoin'"
+    )
+
+
+class FetchCurrentPricesResponse(BaseModel):
+    """Response schema for current token prices."""
+
+    coins: dict[str, TokenPrice] = Field(
+        default_factory=dict, description="Prices by token ID"
+    )
+    error: str | None = Field(default=None, description="Error message")
+
+
+class DefiLlamaFetchCurrentPrices(DefiLlamaBaseTool):
+    """Tool for fetching current token prices from DeFi Llama.
+
+    This tool retrieves current prices for multiple tokens in a single request,
+    using a 4-hour search window to ensure fresh data.
+
+    Example:
+        prices_tool = DefiLlamaFetchCurrentPrices(
+            ,
+            agent_id="agent_123",
+            agent=agent
+        )
+        result = await prices_tool._arun(
+            coins=["ethereum:0x...", "coingecko:bitcoin"]
+        )
+    """
+
+    name: str = "defillama_fetch_current_prices"
+    description: str = FETCH_PRICES_PROMPT
+    args_schema: ArgsSchema | None = FetchCurrentPricesInput
+
+    async def _arun(self, coins: list[str]) -> FetchCurrentPricesResponse:
+        """Fetch current prices for the given tokens.
+
+        Args:
+            config: Runnable configuration
+            coins: List of token identifiers to fetch prices for
+
+        Returns:
+            FetchCurrentPricesResponse containing token prices or error
+        """
+        # Check rate limiting
+        context = self.get_context()
+        is_rate_limited, error_msg = await self.check_rate_limit(context)
+        if is_rate_limited:
+            raise ToolException(error_msg)
+
+        # Fetch prices from API
+        result = await fetch_current_prices(coins=coins)
+
+        # Return the response matching the API structure
+        return FetchCurrentPricesResponse(coins=result["coins"])

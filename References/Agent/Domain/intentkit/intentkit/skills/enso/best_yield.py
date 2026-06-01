@@ -1,0 +1,271 @@
+from typing import Any
+
+import httpx
+from langchain_core.tools import ArgsSchema
+from langchain_core.tools.base import ToolException
+from pydantic import BaseModel, Field
+
+from intentkit.skills.enso.base import EnsoBaseTool, base_url
+
+
+class EnsoGetBestYieldInput(BaseModel):
+    """Input for finding the best yield for a token on a specific chain."""
+
+    token_symbol: str = Field(
+        "USDC",
+        description="Token symbol, e.g. 'USDC', 'ETH'",
+    )
+    chain_id: int | None = Field(
+        None,
+        description="Chain ID (defaults to agent network)",
+    )
+    top_n: int = Field(
+        5,
+        description="Number of top results to return",
+    )
+
+
+class YieldOption(BaseModel):
+    """Represents a yield option for a token."""
+
+    protocol_name: str | None = Field(None, description="Protocol name")
+    protocol_slug: str | None = Field(None, description="Protocol slug")
+    token_name: str | None = Field(None, description="Yield token name")
+    token_symbol: str | None = Field(None, description="Yield token symbol")
+    token_address: str | None = Field(None, description="Yield token address")
+    primary_address: str | None = Field(None, description="Protocol contract address")
+    apy: float | None = Field(None, description="APY")
+    tvl: float | None = Field(None, description="TVL")
+    underlying_tokens: list[str] = Field([], description="Underlying token symbols")
+
+
+class EnsoGetBestYieldOutput(BaseModel):
+    """Output containing the best yield options."""
+
+    best_options: list[YieldOption] = Field(
+        [], description="Yield options sorted by APY descending"
+    )
+    token_symbol: str | None = Field(None, description="Token searched")
+    chain_id: int | None = Field(None, description="Chain ID")
+    chain_name: str | None = Field(None, description="Chain name")
+
+
+class EnsoGetBestYield(EnsoBaseTool):
+    """
+    Tool for finding the best yield options for a specific token across all protocols on a blockchain network.
+    This tool analyzes yield data from various DeFi protocols and returns the top options sorted by APY.
+    """
+
+    name: str = "enso_get_best_yield"
+    description: str = (
+        "Find best yield options for a token across DeFi protocols, sorted by APY."
+    )
+    args_schema: ArgsSchema | None = EnsoGetBestYieldInput
+
+    async def _arun(
+        self,
+        token_symbol: str = "USDC",
+        chain_id: int | None = None,
+        top_n: int = 5,
+        **kwargs,
+    ) -> EnsoGetBestYieldOutput:
+        """
+        Run the tool to find the best yield options.
+
+        Args:
+            token_symbol (str): Symbol of the token to find the best yield for (default: USDC)
+            chain_id (int | None): The chain id of the network. Defaults to the agent's configured network.
+            top_n (int): Number of top yield options to return
+
+        Returns:
+            EnsoGetBestYieldOutput: A structured output containing the top yield options.
+
+        Raises:
+            ToolException: If there's an error accessing the Enso API.
+        """
+        context = self.get_context()
+        resolved_chain_id = self.resolve_chain_id(context, chain_id)
+        api_token = self.get_api_token(context)
+
+        if not api_token:
+            raise ToolException("No API token found for Enso Finance")
+
+        # Get the chain name for the given chain ID
+        chain_name = await self._get_chain_name(api_token, resolved_chain_id)
+
+        # Get all protocols on the specified chain
+        protocols = await self._get_protocols(api_token, resolved_chain_id)
+
+        # Collect all yield options from all protocols
+        all_yield_options = []
+
+        for protocol in protocols:
+            protocol_slug = protocol.get("slug")
+            protocol_name = protocol.get("name")
+
+            # Get yield-bearing tokens for this protocol
+            tokens = await self._get_protocol_tokens(
+                api_token, resolved_chain_id, protocol_slug, token_symbol
+            )
+
+            # Process tokens to extract yield options
+            for token in tokens:
+                # Skip tokens without APY information
+                if token.get("apy") is None:
+                    continue
+
+                # Check if the token has USDC as an underlying token
+                has_target_token = False
+                underlying_token_symbols = []
+
+                if token.get("underlyingTokens"):
+                    for underlying in token.get("underlyingTokens", []):
+                        underlying_symbol = underlying.get("symbol")
+                        underlying_token_symbols.append(underlying_symbol)
+                        if (
+                            underlying_symbol
+                            and underlying_symbol.upper() == token_symbol.upper()
+                        ):
+                            has_target_token = True
+
+                # Skip if the token doesn't have the target token as underlying
+                if not has_target_token and token.get("symbol") != token_symbol.upper():
+                    continue
+
+                # Create a yield option
+                yield_option = YieldOption(
+                    protocol_name=protocol_name,
+                    protocol_slug=protocol_slug,
+                    token_name=token.get("name"),
+                    token_symbol=token.get("symbol"),
+                    token_address=token.get("address"),
+                    primary_address=token.get("primaryAddress"),
+                    apy=token.get("apy"),
+                    tvl=token.get("tvl"),
+                    underlying_tokens=underlying_token_symbols,
+                )
+
+                all_yield_options.append(yield_option)
+
+        # Sort yield options by APY (descending)
+        sorted_options = sorted(
+            all_yield_options, key=lambda x: x.apy or 0.0, reverse=True
+        )
+
+        # Take the top N options
+        top_options = sorted_options[:top_n]
+
+        return EnsoGetBestYieldOutput(
+            best_options=top_options,
+            token_symbol=token_symbol,
+            chain_id=resolved_chain_id,
+            chain_name=chain_name,
+        )
+
+    async def _get_chain_name(self, api_token: str, chain_id: int) -> str:
+        """
+        Get the name of a chain by its ID.
+
+        Args:
+            api_token (str): The Enso API token
+            chain_id (int): The chain ID to look up
+
+        Returns:
+            str: The name of the chain, or "Unknown" if not found
+        """
+        url = f"{base_url}/api/v1/networks"
+
+        headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {api_token}",
+        }
+
+        async with httpx.AsyncClient() as client:
+            try:
+                response = await client.get(url, headers=headers)
+                response.raise_for_status()
+                networks = response.json()
+
+                for network in networks:
+                    if network.get("id") == chain_id:
+                        return network.get("name", "Unknown")
+
+                return "Unknown"
+            except Exception:
+                return "Unknown"
+
+    async def _get_protocols(self, api_token: str, chain_id: int) -> list[Any]:
+        """
+        Get all protocols available on a specific chain.
+
+        Args:
+            api_token (str): The Enso API token
+            chain_id (int): Chain ID to filter protocols by
+
+        Returns:
+            list: List of protocol data
+        """
+        url = f"{base_url}/api/v1/protocols"
+
+        headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {api_token}",
+        }
+
+        params = {"chainId": chain_id}
+
+        async with httpx.AsyncClient() as client:
+            try:
+                response = await client.get(url, headers=headers, params=params)
+                response.raise_for_status()
+                return response.json()
+            except httpx.RequestError as req_err:
+                raise ToolException(
+                    f"Request error from Enso API: {req_err}"
+                ) from req_err
+            except httpx.HTTPStatusError as http_err:
+                raise ToolException(
+                    f"HTTP error from Enso API: {http_err}"
+                ) from http_err
+            except Exception as e:
+                raise ToolException(f"Error from Enso API: {e}") from e
+
+    async def _get_protocol_tokens(
+        self, api_token: str, chain_id: int, protocol_slug: str, token_symbol: str
+    ) -> list[Any]:
+        """
+        Get tokens for a specific protocol that involve the target token.
+
+        Args:
+            api_token (str): The Enso API token
+            chain_id (int): Chain ID for the tokens
+            protocol_slug (str): Protocol slug to filter tokens by
+            token_symbol (str): Symbol of the token to search for
+
+        Returns:
+            list: List of token data
+        """
+        url = f"{base_url}/api/v1/tokens"
+
+        headers = {
+            "accept": "application/json",
+            "Authorization": f"Bearer {api_token}",
+        }
+
+        params = {
+            "chainId": chain_id,
+            "protocolSlug": protocol_slug,
+            "includeMetadata": True,
+        }
+
+        async with httpx.AsyncClient() as client:
+            try:
+                response = await client.get(url, headers=headers, params=params)
+                response.raise_for_status()
+                return response.json().get("data", [])
+            except httpx.RequestError:
+                return []
+            except httpx.HTTPStatusError:
+                return []
+            except Exception:
+                return []

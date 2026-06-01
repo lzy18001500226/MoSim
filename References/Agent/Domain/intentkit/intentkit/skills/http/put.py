@@ -1,0 +1,113 @@
+import logging
+from typing import Any
+
+import httpx
+from langchain_core.tools import ArgsSchema, ToolException
+from pydantic import BaseModel, Field
+
+from intentkit.skills.http.base import HttpBaseTool, truncate_response, validate_url
+
+logger = logging.getLogger(__name__)
+
+
+class HttpPutInput(BaseModel):
+    """Input for HTTP PUT request."""
+
+    url: str = Field(description="Target URL.")
+    data: dict[str, Any] | str | None = Field(
+        description="Request body. Dict sends as JSON, string as raw.",
+        default=None,
+    )
+    headers: dict[str, str] | None = Field(
+        description="Request headers.",
+        default=None,
+    )
+    params: dict[str, Any] | None = Field(
+        description="Query parameters.",
+        default=None,
+    )
+    timeout: float | None = Field(
+        description="Timeout in seconds.",
+        default=30.0,
+    )
+
+
+class HttpPut(HttpBaseTool):
+    """Tool for making HTTP PUT requests.
+
+    This tool allows you to make HTTP PUT requests to any URL with optional
+    headers, query parameters, and request body data. It returns the response content as a string.
+
+    Attributes:
+        name: The name of the tool.
+        description: A description of what the tool does.
+        args_schema: The schema for the tool's input arguments.
+    """
+
+    name: str = "http_put"
+    description: str = (
+        "Make an HTTP PUT request to a URL. Returns the response as text."
+    )
+    args_schema: ArgsSchema | None = HttpPutInput
+
+    async def _arun(
+        self,
+        url: str,
+        data: dict[str, Any] | str | None = None,
+        headers: dict[str, str] | None = None,
+        params: dict[str, Any] | None = None,
+        timeout: float = 30.0,
+        **kwargs,
+    ) -> str:
+        """Implementation of the HTTP PUT request.
+
+        Args:
+            url: The URL to send the PUT request to.
+            data: The data to send in the request body.
+            headers: Optional headers to include in the request.
+            params: Optional query parameters to include in the request.
+            timeout: Request timeout in seconds.
+            config: The runnable config (unused but required by interface).
+
+        Returns:
+            str: The response content as text, or error message if request fails.
+        """
+        try:
+            validate_url(url)
+            # Prepare headers
+            request_headers = headers or {}
+
+            # If data is a dictionary, send as JSON
+            if isinstance(data, dict):
+                if "content-type" not in {k.lower() for k in request_headers.keys()}:
+                    request_headers["Content-Type"] = "application/json"
+
+            async with httpx.AsyncClient() as client:
+                response = await client.put(
+                    url=url,
+                    json=data if isinstance(data, dict) else None,
+                    content=data if isinstance(data, str) else None,
+                    headers=request_headers,
+                    params=params,
+                    timeout=timeout,
+                )
+
+                # Raise an exception for bad status codes
+                response.raise_for_status()
+
+                # Return response content
+                return f"Status: {response.status_code}\nContent: {truncate_response(response.text)}"
+
+        except httpx.TimeoutException as exc:
+            raise ToolException(
+                f"Request to {url} timed out after {timeout} seconds"
+            ) from exc
+        except httpx.HTTPStatusError as exc:
+            raise ToolException(
+                f"HTTP {exc.response.status_code} - {truncate_response(exc.response.text)}"
+            ) from exc
+        except httpx.RequestError as exc:
+            raise ToolException(f"Failed to connect to {url} - {str(exc)}") from exc
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Unexpected error in HTTP PUT request", exc_info=exc)
+            raise ToolException(f"Unexpected error occurred - {str(exc)}") from exc

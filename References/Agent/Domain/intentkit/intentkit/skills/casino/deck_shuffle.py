@@ -1,0 +1,113 @@
+"""Deck shuffling skill using Deck of Cards API."""
+
+import logging
+from typing import Any
+
+from langchain_core.tools import ArgsSchema
+
+try:
+    import httpx
+except ImportError:
+    raise ImportError(
+        "httpx is required for Casino skills. Install it with: pip install httpx"
+    )
+from pydantic import BaseModel, Field
+
+from intentkit.skills.casino.base import CasinoBaseTool
+from intentkit.skills.casino.utils import (
+    CURRENT_DECK_KEY,
+    DECK_STORAGE_KEY,
+    ENDPOINTS,
+    RATE_LIMITS,
+    validate_deck_count,
+)
+
+NAME = "casino_deck_shuffle"
+PROMPT = "Create and shuffle a new card deck."
+
+logger = logging.getLogger(__name__)
+
+
+class CasinoDeckShuffleInput(BaseModel):
+    """Input for CasinoDeckShuffle tool."""
+
+    deck_count: int = Field(default=1, description="Number of decks (1-6).")
+    jokers_enabled: bool = Field(default=False, description="Include jokers.")
+
+
+class CasinoDeckShuffle(CasinoBaseTool):
+    """Tool for creating and shuffling card decks.
+
+    This tool uses the Deck of Cards API to create new shuffled decks.
+
+    Attributes:
+        name: The name of the tool.
+        description: A description of what the tool does.
+        args_schema: The schema for the tool's input arguments.
+    """
+
+    name: str = NAME
+    description: str = PROMPT
+    args_schema: ArgsSchema | None = CasinoDeckShuffleInput
+
+    async def _arun(
+        self, deck_count: int = 1, jokers_enabled: bool = False, **kwargs
+    ) -> dict[str, Any]:
+        context = self.get_context()
+        try:
+            # Apply rate limit using built-in user_rate_limit method
+            rate_config = RATE_LIMITS["deck_shuffle"]
+            await self.user_rate_limit(
+                rate_config["max_requests"],
+                rate_config["interval"],
+                "deck_shuffle",
+            )
+
+            # Validate deck count
+            deck_count = validate_deck_count(deck_count)
+
+            # Build API URL and parameters
+            url = ENDPOINTS["deck_new_shuffle"]
+            params: dict[str, Any] = {"deck_count": deck_count}
+
+            if jokers_enabled:
+                params["jokers_enabled"] = "true"
+
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url, params=params)
+
+                if response.status_code == 200:
+                    data = response.json()
+
+                    # Store deck info for the agent
+                    deck_info = {
+                        "deck_id": data["deck_id"],
+                        "deck_count": deck_count,
+                        "jokers_enabled": jokers_enabled,
+                        "remaining": data["remaining"],
+                        "shuffled": data["shuffled"],
+                    }
+
+                    await self.save_agent_skill_data_raw(
+                        DECK_STORAGE_KEY,
+                        CURRENT_DECK_KEY,
+                        deck_info,
+                    )
+
+                    return {
+                        "success": True,
+                        "deck_id": data["deck_id"],
+                        "deck_count": deck_count,
+                        "jokers_enabled": jokers_enabled,
+                        "remaining_cards": data["remaining"],
+                        "message": f"Created and shuffled {'a new deck' if deck_count == 1 else f'{deck_count} decks'} "
+                        f"with {data['remaining']} cards"
+                        + (" (including jokers)" if jokers_enabled else ""),
+                    }
+                else:
+                    logger.error("Deck API error: %s", response.status_code)
+                    return {"success": False, "error": "Failed to create deck"}
+
+        except Exception as e:
+            logger.error("Error shuffling deck: %s", e)
+            raise type(e)(f"[agent:{context.agent_id}]: {e}") from e

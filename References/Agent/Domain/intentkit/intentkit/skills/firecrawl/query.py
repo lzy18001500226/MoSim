@@ -1,0 +1,111 @@
+import logging
+
+from langchain_core.tools import ArgsSchema
+from langchain_core.tools.base import ToolException
+from pydantic import BaseModel, Field
+
+from intentkit.skills.firecrawl.base import FirecrawlBaseTool
+
+logger = logging.getLogger(__name__)
+
+
+class FirecrawlQueryInput(BaseModel):
+    """Input for Firecrawl query tool."""
+
+    query: str = Field(
+        description="Search query for indexed content.",
+        min_length=1,
+        max_length=500,
+    )
+    max_results: int = Field(
+        description="Max relevant documents to return.",
+        default=4,
+        ge=1,
+        le=10,
+    )
+
+
+class FirecrawlQueryIndexedContent(FirecrawlBaseTool):
+    """Tool for querying previously indexed Firecrawl content.
+
+    This tool searches through content that was previously scraped and indexed
+    using the firecrawl_scrape or firecrawl_crawl tools to answer questions or find relevant information.
+    """
+
+    name: str = "firecrawl_query_indexed_content"
+    description: str = (
+        "Search previously indexed Firecrawl content to find relevant information."
+    )
+    args_schema: ArgsSchema | None = FirecrawlQueryInput
+
+    async def _arun(
+        self,
+        query: str,
+        max_results: int = 4,
+        **kwargs,
+    ) -> str:
+        """Query the indexed Firecrawl content."""
+        try:
+            context = self.get_context()
+            if not context or not context.agent_id:
+                raise ToolException(
+                    "Agent ID is required but not found in configuration"
+                )
+
+            agent_id = context.agent_id
+
+            logger.info(
+                "[%s] Starting Firecrawl query operation: '%s'", agent_id, query
+            )
+
+            # Import query utilities from firecrawl utils
+            from intentkit.skills.firecrawl.utils import (
+                FirecrawlDocumentProcessor,
+                FirecrawlVectorStoreManager,
+                query_indexed_content,
+            )
+
+            # Query the indexed content
+            vector_manager = FirecrawlVectorStoreManager()
+            docs = await query_indexed_content(
+                query, agent_id, vector_manager, max_results
+            )
+
+            if not docs:
+                logger.info("[%s] No relevant documents found for query", agent_id)
+                return f"No relevant information found for your query: '{query}'. The indexed content may not contain information related to your search."
+
+            # Format results
+            results = []
+            for i, doc in enumerate(docs, 1):
+                # Sanitize content to prevent database storage errors
+                content = FirecrawlDocumentProcessor.sanitize_for_database(
+                    doc.page_content.strip()
+                )
+                source = doc.metadata.get("source", "Unknown")
+                source_type = doc.metadata.get("source_type", "unknown")
+
+                # Add source type indicator for Firecrawl content
+                if source_type.startswith("firecrawl"):
+                    source_indicator = (
+                        f"[Firecrawl {source_type.replace('firecrawl_', '').title()}]"
+                    )
+                else:
+                    source_indicator = ""
+
+                results.append(
+                    f"**Source {i}:** {source} {source_indicator}\n{content}"
+                )
+
+            response = "\n\n".join(results)
+            logger.info(
+                f"[{agent_id}] Firecrawl query completed successfully, returning {len(response)} chars"
+            )
+
+            return response
+
+        except ToolException:
+            raise
+        except Exception as e:
+            logger.error("Error in FirecrawlQueryIndexedContent: %s", e, exc_info=True)
+            raise ToolException(f"Failed to query indexed content: {e!s}")

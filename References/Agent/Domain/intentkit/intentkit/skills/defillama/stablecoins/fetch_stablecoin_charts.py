@@ -1,0 +1,98 @@
+"""Tool for fetching stablecoin charts via DeFi Llama API."""
+
+from langchain_core.tools import ArgsSchema
+from langchain_core.tools.base import ToolException
+from pydantic import BaseModel, Field
+
+from intentkit.skills.defillama.api import fetch_stablecoin_charts
+from intentkit.skills.defillama.base import DefiLlamaBaseTool
+
+FETCH_STABLECOIN_CHARTS_PROMPT = """Fetch historical circulating supply for a stablecoin via DefiLlama. Optionally filter by chain."""
+
+
+class CirculatingSupply(BaseModel):
+    """Model representing circulating supply amounts."""
+
+    peggedUSD: float = Field(..., description="USD pegged amount")
+
+
+class StablecoinDataPoint(BaseModel):
+    """Model representing a single historical data point."""
+
+    date: str = Field(..., description="Unix timestamp")
+    totalCirculating: CirculatingSupply = Field(..., description="Circulating supply")
+    totalCirculatingUSD: CirculatingSupply = Field(
+        ..., description="Circulating in USD"
+    )
+
+
+class FetchStablecoinChartsInput(BaseModel):
+    """Input schema for fetching stablecoin chart data."""
+
+    stablecoin_id: str = Field(..., description="Stablecoin ID")
+    chain: str | None = Field(None, description="Optional chain filter")
+
+
+class FetchStablecoinChartsResponse(BaseModel):
+    """Response schema for stablecoin chart data."""
+
+    data: list[StablecoinDataPoint] = Field(
+        default_factory=list, description="Historical data points"
+    )
+    chain: str | None = Field(None, description="Chain filter applied")
+    error: str | None = Field(default=None, description="Error message")
+
+
+class DefiLlamaFetchStablecoinCharts(DefiLlamaBaseTool):
+    """Tool for fetching stablecoin chart data from DeFi Llama.
+
+    This tool retrieves historical circulating supply data for a specific stablecoin,
+    optionally filtered by chain.
+
+    Example:
+        charts_tool = DefiLlamaFetchStablecoinCharts(
+            ,
+            agent_id="agent_123",
+            agent=agent
+        )
+        # Get all chains data
+        result = await charts_tool._arun(stablecoin_id="1")
+        # Get chain-specific data
+        result = await charts_tool._arun(stablecoin_id="1", chain="ethereum")
+    """
+
+    name: str = "defillama_fetch_stablecoin_charts"
+    description: str = FETCH_STABLECOIN_CHARTS_PROMPT
+    args_schema: ArgsSchema | None = FetchStablecoinChartsInput
+
+    async def _arun(
+        self, stablecoin_id: str, chain: str | None = None
+    ) -> FetchStablecoinChartsResponse:
+        """Fetch historical chart data for the given stablecoin.
+
+        Args:
+            config: Runnable configuration
+            stablecoin_id: ID of the stablecoin to fetch data for
+            chain: Optional chain name for chain-specific data
+
+        Returns:
+            FetchStablecoinChartsResponse containing historical data or error
+        """
+        # Validate chain if provided
+        if chain:
+            is_valid, normalized_chain = await self.validate_chain(chain)
+            if not is_valid:
+                raise ToolException(f"Invalid chain: {chain}")
+            chain = normalized_chain
+
+        # Check rate limiting
+        context = self.get_context()
+        is_rate_limited, error_msg = await self.check_rate_limit(context)
+        if is_rate_limited:
+            raise ToolException(error_msg)
+
+        # Fetch chart data from API
+        result = await fetch_stablecoin_charts(stablecoin_id=stablecoin_id, chain=chain)
+
+        # Parse response data
+        return FetchStablecoinChartsResponse(data=result, chain=chain)

@@ -1,0 +1,205 @@
+"""Mention-related skills for Elfa AI API."""
+
+from decimal import Decimal
+from typing import Any
+
+from langchain_core.tools import ArgsSchema
+from langchain_core.tools.base import ToolException
+from pydantic import BaseModel, Field
+
+from .base import ElfaBaseTool
+from .utils import MentionData, make_elfa_request
+
+
+class ElfaGetTopMentionsInput(BaseModel):
+    """Input parameters for top mentions."""
+
+    ticker: str = Field(description="Ticker symbol (e.g., ETH, BTC)")
+    timeWindow: str | None = Field(
+        "1h", description="Time window (e.g., '1h', '24h', '7d')"
+    )
+    page: int | None = Field(1, description="Page number")
+    pageSize: int | None = Field(10, description="Items per page")
+
+
+class ElfaGetTopMentionsOutput(BaseModel):
+    """Output structure for top mentions response."""
+
+    success: bool
+    data: list[MentionData] | None = None
+    metadata: dict[str, Any] | None = None
+
+
+class ElfaGetTopMentions(ElfaBaseTool):
+    """
+    Get top mentions for a specific ticker.
+
+    This tool uses the Elfa API to query tweets mentioning a specific stock ticker.
+    The tweets are ranked by view count, providing insight into the most visible and
+    potentially influential discussions surrounding the stock. Results are updated hourly.
+
+    Use Cases:
+    - Real-time sentiment analysis: Track changes in public opinion about a stock
+    - News monitoring: Identify trending news and discussions related to a specific ticker
+    - Investor insights: Monitor conversations and opinions of investors and traders
+    """
+
+    name: str = "elfa_get_top_mentions"
+    description: str = "Get top mentions for a ticker ranked by view count. Updated hourly with engagement metrics."
+    price: Decimal = Decimal("15")
+    args_schema: ArgsSchema | None = ElfaGetTopMentionsInput
+
+    async def _arun(
+        self,
+        ticker: str,
+        timeWindow: str = "1h",
+        page: int = 1,
+        pageSize: int = 10,
+        **kwargs,
+    ) -> ElfaGetTopMentionsOutput:
+        """
+        Execute the top mentions request.
+
+        Args:
+            ticker: Stock ticker symbol
+            timeWindow: Time window for mentions (default: 1h)
+            page: Page number for pagination (default: 1)
+            pageSize: Items per page (default: 10)
+            config: LangChain runnable configuration
+            **kwargs: Additional parameters
+
+        Returns:
+            ElfaGetTopMentionsOutput: Structured response with top mentions
+
+        Raises:
+            ValueError: If API key is not found
+            ToolException: If there's an error with the API request
+        """
+        api_key = self.get_api_key()
+
+        # Prepare parameters according to API spec
+        params = {
+            "ticker": ticker,
+            "timeWindow": timeWindow,
+            "page": page,
+            "pageSize": pageSize,
+        }
+
+        # Make API request using shared utility
+        response = await make_elfa_request(
+            endpoint="data/top-mentions", api_key=api_key, params=params
+        )
+
+        # Parse response data into MentionData objects
+        mentions = []
+        if response.data and isinstance(response.data, list):
+            mentions = [MentionData(**item) for item in response.data]
+
+        return ElfaGetTopMentionsOutput(
+            success=response.success, data=mentions, metadata=response.metadata
+        )
+
+
+class ElfaSearchMentionsInput(BaseModel):
+    """Input parameters for search mentions."""
+
+    keywords: str | None = Field(None, description="Up to 5 comma-separated keywords")
+    accountName: str | None = Field(None, description="Account username filter")
+    timeWindow: str | None = Field("7d", description="Time window (e.g., '7d')")
+    limit: int | None = Field(20, description="Results to return (max 30)")
+    searchType: str | None = Field("or", description="Search type: 'and' or 'or'")
+    cursor: str | None = Field(None, description="Pagination cursor")
+
+
+class ElfaSearchMentionsOutput(BaseModel):
+    """Output structure for search mentions response."""
+
+    success: bool
+    data: list[MentionData] | None = None
+    metadata: dict[str, Any] | None = None
+
+
+class ElfaSearchMentions(ElfaBaseTool):
+    """
+    Search mentions by keywords or account name.
+
+    This tool uses the Elfa API to search tweets mentioning up to five keywords or from specific accounts.
+    It can search within the past 30 days of data (updated every 5 minutes) or access historical data.
+    Returns sanitized engagement metrics and sentiment data.
+
+    Use Cases:
+    - Market research: Track conversations and sentiment around specific products or industries
+    - Brand monitoring: Monitor mentions of your brand and identify potential PR issues
+    - Public opinion tracking: Analyze public opinion on various topics
+    - Competitive analysis: See what people are saying about your competitors
+    """
+
+    name: str = "elfa_search_mentions"
+    description: str = "Search tweets by keywords or account name with engagement and sentiment data. Updated every 5 minutes."
+    price: Decimal = Decimal("15")
+    args_schema: ArgsSchema | None = ElfaSearchMentionsInput
+
+    async def _arun(
+        self,
+        keywords: str | None = None,
+        accountName: str | None = None,
+        timeWindow: str = "7d",
+        limit: int = 20,
+        searchType: str = "or",
+        cursor: str | None = None,
+        **kwargs,
+    ) -> ElfaSearchMentionsOutput:
+        """
+        Execute the search mentions request.
+
+        Args:
+            keywords: Keywords to search for (optional if accountName provided)
+            accountName: Account username to filter by (optional if keywords provided)
+            timeWindow: Time window for search (default: 7d)
+            limit: Number of results to return (default: 20, max 30)
+            searchType: Type of search - 'and' or 'or' (default: 'or')
+            cursor: Pagination cursor (optional)
+            config: LangChain runnable configuration
+            **kwargs: Additional parameters
+
+        Returns:
+            ElfaSearchMentionsOutput: Structured response with matching mentions
+
+        Raises:
+            ValueError: If API key is not found or neither keywords nor accountName provided
+            ToolException: If there's an error with the API request
+        """
+        api_key = self.get_api_key()
+
+        # Validate that at least one search criteria is provided
+        if not keywords and not accountName:
+            raise ToolException("Either keywords or accountName must be provided")
+
+        # Prepare parameters according to API spec
+        params = {
+            "timeWindow": timeWindow,
+            "limit": min(limit, 30),  # API max is 30
+            "searchType": searchType,
+        }
+
+        # Add optional parameters
+        if keywords:
+            params["keywords"] = keywords
+        if accountName:
+            params["accountName"] = accountName
+        if cursor:
+            params["cursor"] = cursor
+
+        # Make API request using shared utility
+        response = await make_elfa_request(
+            endpoint="data/keyword-mentions", api_key=api_key, params=params
+        )
+
+        # Parse response data into MentionData objects
+        mentions = []
+        if response.data and isinstance(response.data, list):
+            mentions = [MentionData(**item) for item in response.data]
+
+        return ElfaSearchMentionsOutput(
+            success=response.success, data=mentions, metadata=response.metadata
+        )

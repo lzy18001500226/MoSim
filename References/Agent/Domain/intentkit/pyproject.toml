@@ -1,0 +1,187 @@
+[project]
+name = "intentkit"
+version = "0.0.0"
+description = "Intent-based AI Agent Platform - Core Package"
+authors = [
+    { name = "Ruihua", email = "ruihua@crestal.network" },
+]
+requires-python = "==3.13.*"
+readme = "intentkit/README.md"
+license = { file = "intentkit/LICENSE" }
+dependencies = [
+    # AWS
+    "aws-secretsmanager-caching>=1.1.3",
+    "boto3>=1.37.23,<2.0.0",
+    "botocore>=1.35.97",
+    "mypy-boto3-s3>=1.37.24,<2.0.0",
+    # Web framework
+    "fastapi>=0.115.8",
+    "starlette>=0.47.1",
+    "uvicorn>=0.34.0,<1.0.0",
+    "httpx>=0.28.1",
+    "aiohttp>=3.11.16",
+    # Database
+    "psycopg>=3.2.9",
+    "psycopg-pool>=3.2.4",
+    "asyncpg>=0.30.0",
+    "aiosqlite>=0.21.0",
+    "sqlalchemy[asyncio]>=2.0.37",
+    "redis>=5.2.1,<8.0.0",
+    "supabase>=2.16.0",
+    # LangChain & LLM
+    "langchain>=0.3.25",
+    "langchain-community>=0.3.19",
+    "langchain-core>=0.3.43",
+    "langchain-openai>=0.3.8",
+    "langchain-text-splitters>=0.3.8",
+    "langchain-xai>=0.2.1",
+    "langchain-deepseek>=0.1.4",
+    "langchain-google-genai>=3.2.0",
+    "langchain-anthropic>=0.3.12",
+    "langchain-openrouter>=0.2.1",
+    "openrouter>=0.9.0",
+    "langgraph>=0.6.1",
+    "langgraph-checkpoint>=2.0.18",
+    "langgraph-checkpoint-postgres>=2.0.16",
+    "langgraph-prebuilt>=0.6.1",
+    "openai>=1.59.6",
+    # Blockchain / Web3
+    "cdp-sdk>=1.31.1",
+    "web3>=7.10.0",
+    "eth-abi>=5.0.0",
+    "eth-keys>=0.4.0",
+    "eth-utils>=2.1.0",
+    "x402>=2.0.0",
+    # Social platforms
+    "slack-sdk>=3.34.0",
+    "tweepy[async]>=4.15.0",
+    # Utilities
+    "cron-validator>=1.0.8,<2.0.0",
+    "epyxid>=0.3.3",
+    "filetype>=1.2.0,<2.0.0",
+    "jsonref>=1.1.0",
+    "pillow>=11.1.0,<13.0.0",
+    "pydantic>=2.10.6",
+    "python-dotenv>=1.0.1",
+    "pytz>=2025.1",
+    "pyyaml>=6.0.2",
+    "requests>=2.32.3",
+    "requests-oauthlib>=2.0.0",
+    "tenacity>=9.1.2",
+    # MCP (Model Context Protocol)
+    "mcp>=1.0.0",
+]
+keywords = ["ai", "agent", "intent", "blockchain", "crypto"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://github.com/crestalnetwork/intentkit"
+Repository = "https://github.com/crestalnetwork/intentkit"
+Documentation = "https://github.com/crestalnetwork/intentkit/tree/main/docs"
+"Bug Tracker" = "https://github.com/crestalnetwork/intentkit/issues"
+
+[dependency-groups]
+# App runtime dependencies (app/ folder needs these beyond intentkit)
+app = [
+    "aiogram>=3.17.0",
+    "APScheduler>=3.11.0",
+    "discord.py>=2.3.2",
+    "gunicorn>=23.0.0",
+    "pydantic-settings>=2.8.1",
+    "python-multipart>=0.0.20",
+    "sentry-sdk[fastapi]>=2.20.0",
+    "telegramify-markdown>=0.5.0,<0.6.0",
+    # PDF generation
+    "weasyprint>=63.0",
+    "markdown>=3.7",
+    "pymdown-extensions>=10.0",
+]
+# Development-only dependencies (testing, linting, local dev tools)
+dev = [
+    # Include app dependencies for local development
+    { include-group = "app" },
+    # Testing
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.2.0",
+    "testing.postgresql",
+    # Linting and code quality
+    "ruff>=0.11.9",
+    "deptry>=0.23.0",
+    # Database migrations
+    "alembic>=1.14.0",
+    # Local LLM testing
+    "langchain-ollama>=0.2.0",
+    "jsonschema>=4.26.0",
+]
+
+[tool.uv]
+package = true
+default-groups = ["dev"]
+
+# Override bcl to >=3.0.0 because 2.x lacks Linux ARM64 (aarch64) wheels,
+# causing source builds to fail on Python 3.13 (pkgutil.ImpImporter removed).
+# bcl 3.0.0 has manylinux_2_17_aarch64 wheels that work on ARM64 Docker builds.
+override-dependencies = ["bcl>=3.0.0"]
+
+
+[tool.basedpyright]
+reportAny = false
+reportExplicitAny = false
+reportMissingTypeStubs = false
+reportCallInDefaultInitializer = false
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+reportUnknownArgumentType = false
+reportImplicitStringConcatenation = false
+reportUnusedCallResult = false
+reportMissingParameterType = false
+reportUnknownParameterType = false
+reportImplicitOverride = false
+reportUnusedParameter = false
+reportUnannotatedClassAttribute = false
+reportUnknownLambdaType = false
+reportMissingTypeArgument = false
+reportUnnecessaryIsInstance = false
+reportUnnecessaryComparison = false
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["intentkit"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "intentkit",
+    "pyproject.toml",
+]
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.ruff.lint.isort]
+force-single-line = false
+known-first-party = ["intentkit"]
+known-local-folder = ["app"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+
+[tool.deptry]
+known_first_party = ["intentkit"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+markers = [
+    "bdd: mark test as BDD integration test",
+]
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"

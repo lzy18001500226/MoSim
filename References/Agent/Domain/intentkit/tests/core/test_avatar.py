@@ -1,0 +1,577 @@
+import base64
+import io
+from types import SimpleNamespace
+from typing import Any
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+from PIL import Image
+
+from intentkit.core.avatar import (
+    OPENROUTER_IMAGE_MODEL,
+    _extract_openrouter_image_url,
+    _normalize_avatar,
+    build_agent_profile,
+    generate_avatar,
+    generate_image_google,
+    generate_image_openai,
+    generate_image_openrouter,
+    generate_image_xai,
+    select_model_and_generate,
+)
+
+
+def _make_openrouter_response(
+    *,
+    images: list[str] | None = None,
+    content_parts: list[dict] | None = None,
+    content: str | None = None,
+) -> SimpleNamespace:
+    """Build an SDK-shaped ChatResult stand-in for tests."""
+    message_kwargs: dict = {"role": "assistant"}
+    if images is not None:
+        message_kwargs["images"] = [
+            SimpleNamespace(image_url=SimpleNamespace(url=url)) for url in images
+        ]
+    if content_parts is not None:
+        message_kwargs["content"] = [
+            SimpleNamespace(
+                type=part["type"],
+                image_url=SimpleNamespace(url=part["image_url"]["url"])
+                if part.get("image_url")
+                else None,
+            )
+            for part in content_parts
+        ]
+    elif content is not None:
+        message_kwargs["content"] = content
+    message = SimpleNamespace(**message_kwargs)
+    return SimpleNamespace(choices=[SimpleNamespace(message=message)])
+
+
+def _make_png(width: int, height: int) -> bytes:
+    """Create a minimal PNG image of given size."""
+    img = Image.new("RGB", (width, height), color="red")
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return buf.getvalue()
+
+
+@pytest.fixture
+def mock_config():
+    with patch("intentkit.core.avatar.config") as mock:
+        mock.openrouter_api_key = None
+        mock.google_api_key = None
+        mock.openai_api_key = None
+        mock.xai_api_key = None
+        mock.env = "test"
+        mock.aws_s3_cdn_url = "https://cdn.example.com"
+        yield mock
+
+
+@pytest.fixture
+def mock_agent():
+    agent = MagicMock()
+    agent.id = "test-agent-123"
+    agent.name = "Test Agent"
+    agent.description = "A helpful test agent"
+    agent.purpose = "Testing avatar generation"
+    agent.personality = "Friendly and precise"
+    agent.principles = "Always be accurate"
+    agent.prompt = "You are a test agent."
+    agent.prompt_append = None
+    agent.extra_prompt = None
+    return agent
+
+
+class TestBuildAgentProfile:
+    def test_builds_profile_from_all_fields(self, mock_agent):
+        profile = build_agent_profile("test-agent-123", mock_agent)
+        assert "### Name" in profile
+        assert "Test Agent" in profile
+        assert "### Description" in profile
+        assert "### Purpose" in profile
+        assert "### Personality" in profile
+        assert "### Principles" in profile
+        assert "### System Prompt" in profile
+
+    def test_skips_none_fields(self, mock_agent):
+        mock_agent.purpose = None
+        mock_agent.personality = None
+        mock_agent.principles = None
+        mock_agent.prompt = None
+        profile = build_agent_profile("test-agent-123", mock_agent)
+        assert "### Purpose" not in profile
+        assert "### Personality" not in profile
+        assert "### Name" in profile
+
+    def test_skips_empty_string_fields(self, mock_agent):
+        mock_agent.purpose = "   "
+        profile = build_agent_profile("test-agent-123", mock_agent)
+        assert "### Purpose" not in profile
+
+    def test_fallback_to_agent_id(self):
+        agent = MagicMock()
+        agent.name = None
+        agent.description = None
+        agent.purpose = None
+        agent.personality = None
+        agent.principles = None
+        agent.prompt = None
+        agent.prompt_append = None
+        agent.extra_prompt = None
+        profile = build_agent_profile("fallback-id", agent)
+        assert "fallback-id" in profile
+
+    def test_handles_missing_attributes(self):
+        """Agent-like objects that don't have all fields (e.g. AgentUpdate)."""
+
+        class MinimalAgent:
+            name = "Minimal"
+
+        agent = MinimalAgent()
+        profile = build_agent_profile("minimal-id", agent)
+        assert "### Name" in profile
+        assert "Minimal" in profile
+
+
+class TestNormalizeAvatar:
+    def test_square_image_resized(self):
+        png = _make_png(1024, 1024)
+        result = _normalize_avatar(png)
+        img = Image.open(io.BytesIO(result))
+        assert img.size == (512, 512)
+
+    def test_landscape_image_cropped_and_resized(self):
+        png = _make_png(800, 400)
+        result = _normalize_avatar(png)
+        img = Image.open(io.BytesIO(result))
+        assert img.size == (512, 512)
+
+    def test_portrait_image_cropped_and_resized(self):
+        png = _make_png(400, 800)
+        result = _normalize_avatar(png)
+        img = Image.open(io.BytesIO(result))
+        assert img.size == (512, 512)
+
+    def test_already_512(self):
+        png = _make_png(512, 512)
+        result = _normalize_avatar(png)
+        img = Image.open(io.BytesIO(result))
+        assert img.size == (512, 512)
+
+    def test_output_is_png(self):
+        png = _make_png(1024, 768)
+        result = _normalize_avatar(png)
+        img = Image.open(io.BytesIO(result))
+        assert img.format == "PNG"
+
+
+class TestSelectModelAndGenerate:
+    @pytest.mark.asyncio
+    async def test_tries_openrouter_first(self, mock_config):
+        mock_config.openrouter_api_key = "or-key"
+        fake_bytes = b"fake-image-data"
+
+        with patch(
+            "intentkit.core.avatar.generate_image_openrouter",
+            new_callable=AsyncMock,
+            return_value=fake_bytes,
+        ) as mock_or:
+            result = await select_model_and_generate("test prompt")
+            assert result == fake_bytes
+            mock_or.assert_called_once_with("test prompt")
+
+    @pytest.mark.asyncio
+    async def test_falls_through_to_google(self, mock_config):
+        mock_config.openrouter_api_key = None
+        mock_config.google_api_key = "google-key"
+        fake_bytes = b"google-image"
+
+        with patch(
+            "intentkit.core.avatar.generate_image_google",
+            new_callable=AsyncMock,
+            return_value=fake_bytes,
+        ) as mock_google:
+            result = await select_model_and_generate("test prompt")
+            assert result == fake_bytes
+            mock_google.assert_called_once_with("test prompt")
+
+    @pytest.mark.asyncio
+    async def test_falls_through_to_openai(self, mock_config):
+        mock_config.openrouter_api_key = None
+        mock_config.google_api_key = None
+        mock_config.openai_api_key = "openai-key"
+        fake_bytes = b"openai-image"
+
+        with patch(
+            "intentkit.core.avatar.generate_image_openai",
+            new_callable=AsyncMock,
+            return_value=fake_bytes,
+        ) as mock_openai:
+            result = await select_model_and_generate("test prompt")
+            assert result == fake_bytes
+            mock_openai.assert_called_once_with("test prompt")
+
+    @pytest.mark.asyncio
+    async def test_falls_through_to_xai(self, mock_config):
+        mock_config.openrouter_api_key = None
+        mock_config.google_api_key = None
+        mock_config.openai_api_key = None
+        mock_config.xai_api_key = "xai-key"
+        fake_bytes = b"xai-image"
+
+        with patch(
+            "intentkit.core.avatar.generate_image_xai",
+            new_callable=AsyncMock,
+            return_value=fake_bytes,
+        ) as mock_xai:
+            result = await select_model_and_generate("test prompt")
+            assert result == fake_bytes
+            mock_xai.assert_called_once_with("test prompt")
+
+    @pytest.mark.asyncio
+    async def test_returns_none_when_no_keys(self, mock_config):
+        result = await select_model_and_generate("test prompt")
+        assert result is None
+
+    @pytest.mark.asyncio
+    async def test_falls_through_on_failure(self, mock_config):
+        mock_config.openrouter_api_key = "or-key"
+        mock_config.google_api_key = "google-key"
+        fake_bytes = b"google-image"
+
+        with (
+            patch(
+                "intentkit.core.avatar.generate_image_openrouter",
+                new_callable=AsyncMock,
+                return_value=None,
+            ),
+            patch(
+                "intentkit.core.avatar.generate_image_google",
+                new_callable=AsyncMock,
+                return_value=fake_bytes,
+            ),
+        ):
+            result = await select_model_and_generate("test prompt")
+            assert result == fake_bytes
+
+
+class TestGenerateAvatar:
+    @pytest.mark.asyncio
+    async def test_generate_avatar_success(self, mock_config, mock_agent):
+        mock_config.openrouter_api_key = "or-key"
+        mock_config.aws_s3_cdn_url = "https://cdn.example.com"
+
+        fake_image = _make_png(1024, 768)
+
+        with (
+            patch(
+                "intentkit.core.avatar._generate_image_prompt",
+                new_callable=AsyncMock,
+                return_value="a cool avatar prompt",
+            ),
+            patch(
+                "intentkit.core.avatar.select_model_and_generate",
+                new_callable=AsyncMock,
+                return_value=fake_image,
+            ),
+            patch(
+                "intentkit.core.avatar.store_image_bytes",
+                new_callable=AsyncMock,
+                return_value="test/avatars/test-agent-123/abc.png",
+            ) as mock_store,
+        ):
+            path = await generate_avatar("test-agent-123", mock_agent)
+
+            mock_store.assert_called_once()
+            call_args = mock_store.call_args
+            # Verify the stored image is normalized to 512x512
+            stored_bytes = call_args[0][0]
+            stored_img = Image.open(io.BytesIO(stored_bytes))
+            assert stored_img.size == (512, 512)
+            assert "avatars/test-agent-123/" in call_args[0][1]
+            assert call_args[1]["content_type"] == "image/png"
+
+            assert path == "test/avatars/test-agent-123/abc.png"
+
+    @pytest.mark.asyncio
+    async def test_generate_avatar_returns_none_on_image_failure(
+        self, mock_config, mock_agent
+    ):
+        with (
+            patch(
+                "intentkit.core.avatar._generate_image_prompt",
+                new_callable=AsyncMock,
+                return_value="a prompt",
+            ),
+            patch(
+                "intentkit.core.avatar.select_model_and_generate",
+                new_callable=AsyncMock,
+                return_value=None,
+            ),
+        ):
+            path = await generate_avatar("test-agent-123", mock_agent)
+            assert path is None
+
+    @pytest.mark.asyncio
+    async def test_generate_avatar_returns_none_on_s3_failure(
+        self, mock_config, mock_agent
+    ):
+        mock_config.openrouter_api_key = "or-key"
+
+        with (
+            patch(
+                "intentkit.core.avatar._generate_image_prompt",
+                new_callable=AsyncMock,
+                return_value="a prompt",
+            ),
+            patch(
+                "intentkit.core.avatar.select_model_and_generate",
+                new_callable=AsyncMock,
+                return_value=_make_png(256, 256),
+            ),
+            patch(
+                "intentkit.core.avatar.store_image_bytes",
+                new_callable=AsyncMock,
+                side_effect=Exception("S3 is down"),
+            ),
+        ):
+            path = await generate_avatar("test-agent-123", mock_agent)
+            assert path is None
+
+
+class TestExtractOpenrouterImageUrl:
+    def test_returns_url_from_images_field(self):
+        resp = _make_openrouter_response(images=["data:image/png;base64,xyz"])
+        assert _extract_openrouter_image_url(resp) == "data:image/png;base64,xyz"
+
+    def test_returns_url_from_content_part(self):
+        resp = _make_openrouter_response(
+            content_parts=[
+                {"type": "image_url", "image_url": {"url": "http://x/y.png"}}
+            ]
+        )
+        assert _extract_openrouter_image_url(resp) == "http://x/y.png"
+
+    def test_returns_none_when_no_choices(self):
+        assert _extract_openrouter_image_url(SimpleNamespace(choices=[])) is None
+        assert _extract_openrouter_image_url(SimpleNamespace()) is None
+
+    def test_returns_none_when_no_images_or_content(self):
+        resp = _make_openrouter_response()
+        assert _extract_openrouter_image_url(resp) is None
+
+    def test_returns_none_when_content_is_string(self):
+        resp = _make_openrouter_response(content="just a string")
+        assert _extract_openrouter_image_url(resp) is None
+
+
+class TestProviderFunctions:
+    @staticmethod
+    def _patch_openrouter_sdk(
+        response: Any | None = None,
+        *,
+        send_side_effect: BaseException | None = None,
+    ) -> tuple[Any, AsyncMock]:
+        """Patch ``openrouter.OpenRouter`` as seen by intentkit.core.avatar.
+
+        Returns ``(patch_ctx, mock_send)``. The mock client returned by the
+        patched constructor has ``.chat.send_async`` set to ``mock_send``.
+        """
+        mock_send = AsyncMock()
+        if send_side_effect is not None:
+            mock_send.side_effect = send_side_effect
+        else:
+            mock_send.return_value = response
+
+        mock_chat = MagicMock()
+        mock_chat.send_async = mock_send
+        mock_client = MagicMock(chat=mock_chat)
+
+        patch_ctx = patch(
+            "intentkit.core.avatar.openrouter.OpenRouter", return_value=mock_client
+        )
+        return patch_ctx, mock_send
+
+    @pytest.mark.asyncio
+    async def test_openrouter_with_data_url_response(self):
+        fake_b64 = base64.b64encode(b"image-data").decode()
+        response = _make_openrouter_response(
+            images=[f"data:image/png;base64,{fake_b64}"]
+        )
+        patch_ctx, mock_send = self._patch_openrouter_sdk(response)
+
+        with patch("intentkit.core.avatar.config") as mock_config:
+            mock_config.openrouter_api_key = "test-key"
+            with patch_ctx:
+                result = await generate_image_openrouter("test prompt")
+
+                assert result == b"image-data"
+                mock_send.assert_called_once()
+                call_kwargs = mock_send.call_args.kwargs
+                assert call_kwargs["model"] == OPENROUTER_IMAGE_MODEL
+                assert call_kwargs["modalities"] == ["image"]
+                assert call_kwargs["messages"][0]["content"] == "test prompt"
+
+    @pytest.mark.asyncio
+    async def test_openrouter_with_plain_url_response(self):
+        response = _make_openrouter_response(images=["https://example.com/image.png"])
+        patch_ctx, _ = self._patch_openrouter_sdk(response)
+
+        with patch("intentkit.core.avatar.config") as mock_config:
+            mock_config.openrouter_api_key = "test-key"
+            with (
+                patch_ctx,
+                patch(
+                    "intentkit.core.avatar._download_image",
+                    new_callable=AsyncMock,
+                    return_value=b"downloaded-image",
+                ) as mock_download,
+            ):
+                result = await generate_image_openrouter("test prompt")
+
+                assert result == b"downloaded-image"
+                mock_download.assert_called_once_with("https://example.com/image.png")
+
+    @pytest.mark.asyncio
+    async def test_openrouter_returns_none_when_no_images(self):
+        response = _make_openrouter_response(images=[])
+        patch_ctx, _ = self._patch_openrouter_sdk(response)
+
+        with patch("intentkit.core.avatar.config") as mock_config:
+            mock_config.openrouter_api_key = "test-key"
+            with patch_ctx:
+                result = await generate_image_openrouter("test prompt")
+                assert result is None
+
+    @pytest.mark.asyncio
+    async def test_openrouter_falls_back_to_content_part(self):
+        """Some OpenRouter models return the image as an `image_url` content
+        part instead of `message.images`; the extractor must handle both."""
+        fake_b64 = base64.b64encode(b"content-part-image").decode()
+        response = _make_openrouter_response(
+            content_parts=[
+                {
+                    "type": "image_url",
+                    "image_url": {"url": f"data:image/png;base64,{fake_b64}"},
+                }
+            ]
+        )
+        patch_ctx, _ = self._patch_openrouter_sdk(response)
+
+        with patch("intentkit.core.avatar.config") as mock_config:
+            mock_config.openrouter_api_key = "test-key"
+            with patch_ctx:
+                result = await generate_image_openrouter("test prompt")
+                assert result == b"content-part-image"
+
+    @pytest.mark.asyncio
+    async def test_openrouter_returns_none_on_sdk_error(self):
+        patch_ctx, _ = self._patch_openrouter_sdk(send_side_effect=RuntimeError("boom"))
+
+        with patch("intentkit.core.avatar.config") as mock_config:
+            mock_config.openrouter_api_key = "test-key"
+            with patch_ctx:
+                result = await generate_image_openrouter("test prompt")
+                assert result is None
+
+    @pytest.mark.asyncio
+    async def test_google_extracts_inline_data(self):
+        mock_part = MagicMock()
+        mock_part.inline_data.mime_type = "image/png"
+        mock_part.inline_data.data = b"google-image-bytes"
+
+        mock_candidate = MagicMock()
+        mock_candidate.content.parts = [mock_part]
+
+        mock_response = MagicMock()
+        mock_response.candidates = [mock_candidate]
+
+        with patch("intentkit.core.avatar.config") as mock_config:
+            mock_config.google_api_key = "google-key"
+            with patch("intentkit.core.avatar.genai") as mock_genai:
+                mock_client = MagicMock()
+                mock_genai.Client.return_value = mock_client
+                mock_client.aio.models.generate_content = AsyncMock(
+                    return_value=mock_response
+                )
+
+                result = await generate_image_google("test prompt")
+                assert result == b"google-image-bytes"
+
+    @pytest.mark.asyncio
+    async def test_google_returns_none_on_no_image(self):
+        mock_part = MagicMock()
+        mock_part.inline_data = None
+
+        mock_candidate = MagicMock()
+        mock_candidate.content.parts = [mock_part]
+
+        mock_response = MagicMock()
+        mock_response.candidates = [mock_candidate]
+
+        with patch("intentkit.core.avatar.config") as mock_config:
+            mock_config.google_api_key = "google-key"
+            with patch("intentkit.core.avatar.genai") as mock_genai:
+                mock_client = MagicMock()
+                mock_genai.Client.return_value = mock_client
+                mock_client.aio.models.generate_content = AsyncMock(
+                    return_value=mock_response
+                )
+
+                result = await generate_image_google("test prompt")
+                assert result is None
+
+    @pytest.mark.asyncio
+    async def test_openai_with_b64_response(self):
+        import base64
+
+        fake_b64 = base64.b64encode(b"openai-image").decode()
+        mock_data = MagicMock()
+        mock_data.b64_json = fake_b64
+        mock_data.url = None
+
+        mock_response = MagicMock()
+        mock_response.data = [mock_data]
+
+        with patch("intentkit.core.avatar.config") as mock_config:
+            mock_config.openai_api_key = "openai-key"
+            with patch("intentkit.core.avatar.AsyncOpenAI") as mock_openai_cls:
+                mock_client = AsyncMock()
+                mock_openai_cls.return_value = mock_client
+                mock_client.images.generate.return_value = mock_response
+
+                result = await generate_image_openai("test prompt")
+                assert result == b"openai-image"
+                mock_openai_cls.assert_called_once_with(api_key="openai-key")
+                call_kwargs = mock_client.images.generate.call_args[1]
+                assert call_kwargs["model"] == "gpt-image-1-mini"
+                assert call_kwargs["size"] == "1024x1024"
+                assert call_kwargs["quality"] == "low"
+
+    @pytest.mark.asyncio
+    async def test_xai_with_b64_response(self):
+        import base64
+
+        fake_b64 = base64.b64encode(b"xai-image").decode()
+        mock_data = MagicMock()
+        mock_data.b64_json = fake_b64
+        mock_data.url = None
+
+        mock_response = MagicMock()
+        mock_response.data = [mock_data]
+
+        with patch("intentkit.core.avatar.config") as mock_config:
+            mock_config.xai_api_key = "xai-key"
+            with patch("intentkit.core.avatar.AsyncOpenAI") as mock_openai_cls:
+                mock_client = AsyncMock()
+                mock_openai_cls.return_value = mock_client
+                mock_client.images.generate.return_value = mock_response
+
+                result = await generate_image_xai("test prompt")
+                assert result == b"xai-image"
+                mock_openai_cls.assert_called_once_with(
+                    api_key="xai-key",
+                    base_url="https://api.x.ai/v1",
+                )

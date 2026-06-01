@@ -1,0 +1,67 @@
+"""Tool for fetching stablecoin prices via DeFi Llama API."""
+
+from langchain_core.tools import ArgsSchema
+from langchain_core.tools.base import ToolException
+from pydantic import BaseModel, Field
+
+from intentkit.skills.base import NoArgsSchema
+from intentkit.skills.defillama.api import fetch_stablecoin_prices
+from intentkit.skills.defillama.base import DefiLlamaBaseTool
+
+FETCH_STABLECOIN_PRICES_PROMPT = """Fetch current stablecoin prices via DefiLlama."""
+
+
+class PriceDataPoint(BaseModel):
+    """Model representing a price data point."""
+
+    date: str = Field(..., description="Unix timestamp")
+    prices: dict[str, float] = Field(..., description="Prices by stablecoin ID")
+
+
+class FetchStablecoinPricesResponse(BaseModel):
+    """Response schema for stablecoin prices data."""
+
+    data: list[PriceDataPoint] = Field(
+        default_factory=list, description="Price data points"
+    )
+    error: str | None = Field(default=None, description="Error message")
+
+
+class DefiLlamaFetchStablecoinPrices(DefiLlamaBaseTool):
+    """Tool for fetching stablecoin prices from DeFi Llama.
+
+    This tool retrieves current price data for stablecoins, including historical
+    price points and their timestamps.
+
+    Example:
+        prices_tool = DefiLlamaFetchStablecoinPrices(
+            ,
+            agent_id="agent_123",
+            agent=agent
+        )
+        result = await prices_tool._arun()
+    """
+
+    name: str = "defillama_fetch_stablecoin_prices"
+    description: str = FETCH_STABLECOIN_PRICES_PROMPT
+    args_schema: ArgsSchema | None = NoArgsSchema  # No input parameters needed
+
+    async def _arun(self, **kwargs) -> FetchStablecoinPricesResponse:
+        """Fetch stablecoin price data.
+
+        Returns:
+            FetchStablecoinPricesResponse containing price data or error
+        """
+        # Check rate limiting
+        context = self.get_context()
+        is_rate_limited, error_msg = await self.check_rate_limit(context)
+        if is_rate_limited:
+            raise ToolException(error_msg)
+
+        # Fetch price data from API
+        result = await fetch_stablecoin_prices()
+
+        # Parse results into models
+        data_points = [PriceDataPoint(**point) for point in result]  # pyright: ignore[reportCallIssue]
+
+        return FetchStablecoinPricesResponse(data=data_points)
