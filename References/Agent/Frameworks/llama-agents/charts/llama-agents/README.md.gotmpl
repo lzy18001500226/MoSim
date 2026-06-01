@@ -1,0 +1,151 @@
+{{ template "chart.header" . }}
+
+{{ template "chart.description" . }}
+
+## Architecture
+
+This chart deploys two components:
+
+- **Control plane** — API server for managing deployments, builds, and backups
+- **Operator** — Kubernetes controller that reconciles `LlamaDeployment` custom resources into running pods
+
+CRDs (`LlamaDeployment`, `LlamaDeploymentTemplate`) are included in the chart's `crds/` directory and installed automatically on first `helm install`. They are **not** modified on upgrade or removed on uninstall (standard Helm CRD behavior).
+
+For managed CRD upgrades, use the companion [`llama-agents-crds`](../llama-agents-crds/) chart. Each release of `llama-agents` pins the compatible CRD chart version in `crds.version` (see the values table below) — use that version when installing or upgrading the CRD chart.
+
+## Prerequisites
+
+- Kubernetes 1.26+
+- Helm 3.x
+- S3-compatible object storage (for build artifacts and backups)
+
+## Installation
+
+### Fresh install
+
+```bash
+helm install llama-agents oci://docker.io/llamaindex/llama-agents \
+  --set controlPlane.objectStorage.s3.bucket=my-bucket \
+  --set controlPlane.objectStorage.s3.region=us-east-1
+```
+
+CRDs are installed automatically from the `crds/` directory.
+
+### With separate CRD management
+
+If you prefer explicit CRD lifecycle management (recommended for production):
+
+```bash
+# Install CRD chart first — pin to the compatible version from `crds.version` below
+helm install llama-agents-crds oci://docker.io/llamaindex/llama-agents-crds --version <crds.version>
+
+# Install main chart, skipping bundled CRDs
+helm install llama-agents oci://docker.io/llamaindex/llama-agents --skip-crds \
+  --set controlPlane.objectStorage.s3.bucket=my-bucket
+```
+
+## Upgrading
+
+```bash
+# If CRD schema has changed, upgrade CRDs first — pin to `crds.version` from the values table
+helm upgrade --install llama-agents-crds oci://docker.io/llamaindex/llama-agents-crds --version <crds.version>
+
+# Then upgrade the main chart
+helm upgrade llama-agents oci://docker.io/llamaindex/llama-agents
+```
+
+## Apps namespace
+
+Set `apps.namespace` to isolate `LlamaDeployment` CRs and their child resources
+in a separate namespace. The operator + control plane stay in the release
+namespace and target the apps namespace for all app resources.
+
+```bash
+kubectl create namespace llama-agents-apps
+helm install llama-agents oci://docker.io/llamaindex/llama-agents \
+  --namespace llama-agents \
+  --set apps.namespace=llama-agents-apps \
+  --set controlPlane.objectStorage.s3.bucket=my-bucket
+```
+
+`imagePullSecrets` are not mirrored — provision them in the apps namespace
+yourself, or use node-level pull credentials. Switching modes on an existing
+install requires draining and recreating `LlamaDeployment` CRs.
+
+## Non-S3 object storage
+
+Set `s3proxy.enabled=true` to run an
+[s3proxy](https://github.com/gaul/s3proxy) sidecar alongside the control
+plane. When enabled, `S3_ENDPOINT_URL` points at the sidecar on localhost and
+`S3_UNSIGNED` defaults to `true`; explicit overrides still win.
+
+Credentials take one of two forms:
+
+```yaml
+# Inline — chart renders llama-agents-s3proxy Secret
+s3proxy:
+  enabled: true
+  config:
+    JCLOUDS_PROVIDER: <provider>
+    JCLOUDS_IDENTITY: <id>
+    JCLOUDS_CREDENTIAL: <secret>
+    # ...any other JCLOUDS_* vars the backend needs
+```
+
+```yaml
+# BYO — point at an existing Secret whose keys are the sidecar env vars
+s3proxy:
+  enabled: true
+  secret: my-existing-s3proxy-secret
+```
+
+Pick `JCLOUDS_*` vars from the
+[s3proxy storage-backend examples](https://github.com/gaul/s3proxy/wiki/Storage-backend-examples).
+If both `config` and `secret` are set, `secret` wins.
+
+## Control plane S3 credentials
+
+Three mutually-exclusive forms, listed in precedence order:
+
+```yaml
+# BYO — envFroms an existing Secret (keys: S3_ACCESS_KEY, S3_SECRET_KEY)
+controlPlane:
+  objectStorage:
+    s3:
+      bucket: my-bucket
+      secret: my-s3-creds
+```
+
+```yaml
+# Inline — chart renders llama-agents-controlplane-s3 Secret
+controlPlane:
+  objectStorage:
+    s3:
+      bucket: my-bucket
+      accessKey: AKIA...
+      secretKey: ...
+```
+
+```yaml
+# Neither — control plane relies on IRSA / workload identity
+controlPlane:
+  objectStorage:
+    s3:
+      bucket: my-bucket
+```
+
+Partial inline (one of `accessKey`/`secretKey` set) is a template error.
+
+{{ template "chart.valuesSection" . }}
+
+## Uninstalling
+
+```bash
+helm uninstall llama-agents
+```
+
+CRDs are **not** removed on uninstall. To remove them (this deletes all LlamaDeployment resources):
+
+```bash
+kubectl delete crd llamadeployments.deploy.llamaindex.ai llamadeploymenttemplates.deploy.llamaindex.ai
+```
