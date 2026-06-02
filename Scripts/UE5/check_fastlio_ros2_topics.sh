@@ -6,23 +6,29 @@ set -euo pipefail
 
 PROJECT_ROOT="/mnt/c/Users/HP/Desktop/MoSim"
 ROS_SETUP="${ROS_SETUP:-/opt/ros/humble/setup.bash}"
+ROS_LOG_DIR="${ROS_LOG_DIR:-${PROJECT_ROOT}/Results/tmp/ros_logs}"
 DRY_RUN="${DRY_RUN:-0}"
 TIMEOUT_SECONDS="${TIMEOUT_SECONDS:-5}"
 REQUIRE_FASTLIO_OUTPUTS="${REQUIRE_FASTLIO_OUTPUTS:-1}"
-FASTLIO_ODOMETRY_TOPIC="${FASTLIO_ODOMETRY_TOPIC:-/Odometry}"
+FASTLIO_LIDAR_TOPIC="${FASTLIO_LIDAR_TOPIC:-/velodyne_points}"
+FASTLIO_IMU_TOPIC="${FASTLIO_IMU_TOPIC:-/imu/data}"
+FASTLIO_CLOUD_TOPIC="${FASTLIO_CLOUD_TOPIC:-/cloud_registered}"
+FASTLIO_ODOMETRY_TOPIC="${FASTLIO_ODOMETRY_TOPIC:-/odometry}"
+FASTLIO_PATH_TOPIC="${FASTLIO_PATH_TOPIC:-/path}"
 INPUT_TOPICS=(
-  "/velodyne_points"
-  "/imu/data"
-  "/mosim/local_occupancy_grid"
-  "/mosim/local_plan"
-  "/mosim/replay_odometry"
+  "${FASTLIO_LIDAR_TOPIC}"
+  "${FASTLIO_IMU_TOPIC}"
+  "/tf"
 )
 FASTLIO_OUTPUT_TOPICS=(
-  "/cloud_registered"
+  "${FASTLIO_CLOUD_TOPIC}"
   "${FASTLIO_ODOMETRY_TOPIC}"
+  "${FASTLIO_PATH_TOPIC}"
 )
 
 cd "${PROJECT_ROOT}"
+mkdir -p "${ROS_LOG_DIR}"
+export ROS_LOG_DIR
 
 REQUIRED_TOPICS=("${INPUT_TOPICS[@]}")
 if [[ "${REQUIRE_FASTLIO_OUTPUTS}" == "1" ]]; then

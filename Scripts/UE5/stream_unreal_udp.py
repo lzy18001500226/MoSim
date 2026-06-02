@@ -133,6 +133,42 @@ def select_rows(
     return selected
 
 
+def resample_rows(rows: list[dict[str, float]], output_hz: float | None) -> list[dict[str, float]]:
+    if output_hz is None or output_hz <= 0 or len(rows) < 2:
+        return rows
+
+    start_time = finite(rows[0].get("time"))
+    end_time = finite(rows[-1].get("time"), start_time)
+    if end_time <= start_time:
+        return rows
+
+    step = 1.0 / output_hz
+    resampled: list[dict[str, float]] = []
+    source_index = 0
+    t = start_time
+    while t < end_time:
+        while source_index + 1 < len(rows) and finite(rows[source_index + 1].get("time"), t) < t:
+            source_index += 1
+        left = rows[source_index]
+        right = rows[min(source_index + 1, len(rows) - 1)]
+        left_t = finite(left.get("time"), t)
+        right_t = finite(right.get("time"), left_t)
+        alpha = 0.0 if right_t <= left_t else max(0.0, min(1.0, (t - left_t) / (right_t - left_t)))
+        row: dict[str, float] = {}
+        for name, left_value in left.items():
+            right_value = right.get(name, left_value)
+            if name == "time":
+                row[name] = t
+            elif math.isfinite(left_value) and math.isfinite(right_value):
+                row[name] = left_value + alpha * (right_value - left_value)
+            else:
+                row[name] = left_value if alpha < 0.5 else right_value
+        resampled.append(row)
+        t += step
+    resampled.append(dict(rows[-1]))
+    return resampled
+
+
 def make_frame(
     row: dict[str, float],
     *,
@@ -152,6 +188,7 @@ def make_frame(
     lidar_point_limit: int,
     local_plan_source: str,
     coordinate_policy: str,
+    visual_helpers_enabled: bool,
 ) -> dict[str, Any]:
     position = [finite(row.get("x")), finite(row.get("y")), finite(row.get("z"))]
     rpy = [finite(row.get(name)) for name in RPY_COLUMNS]
@@ -174,6 +211,8 @@ def make_frame(
                 position[1] + alpha * dy + bend * ny,
                 position[2] + alpha * (reference[2] - position[2]),
             ])
+    if not visual_helpers_enabled:
+        local_plan = []
     if local_plan_frame:
         local_plan = list(local_plan_frame.get("points_m", local_plan))
         local_plan_source = str(local_plan_frame.get("source", local_plan_source))
@@ -190,7 +229,7 @@ def make_frame(
             "origin_m": local_known_map_frame.get("origin_m", position),
             "grid_m": float(local_known_map_frame.get("grid_m", local_map_grid_m)),
             "radius_m": float(local_known_map_frame.get("radius_m", local_map_radius_m)),
-            "cells": list(local_known_map_frame.get("cells", []))[: max(local_map_cells, 0)] if local_map_cells > 0 else list(local_known_map_frame.get("cells", [])),
+            "cells": [] if not visual_helpers_enabled else list(local_known_map_frame.get("cells", []))[: max(local_map_cells, 0)] if local_map_cells > 0 else list(local_known_map_frame.get("cells", [])),
             "render_only": bool(local_known_map_frame.get("render_only", False)),
             "evidence_backed": bool(local_known_map_frame.get("evidence_backed", True)),
         }
@@ -204,7 +243,7 @@ def make_frame(
             "origin_m": position,
             "grid_m": local_map_grid_m,
             "radius_m": local_map_radius_m,
-            "cells": [
+            "cells": [] if not visual_helpers_enabled else [
                 {
                     "offset": [0, 0, 0],
                     "state": "observed_free",
@@ -222,7 +261,7 @@ def make_frame(
         lidar_points = {
             "schema": "quadrotor.lidar_points.v1",
             "coordinate_frame": lidar_point_frame.get("coordinate_frame", coordinate_policy),
-            "points_m": list(lidar_point_frame.get("points_m", []))[: max(lidar_point_limit, 0)] if lidar_point_limit > 0 else list(lidar_point_frame.get("points_m", [])),
+            "points_m": [] if not visual_helpers_enabled else list(lidar_point_frame.get("points_m", []))[: max(lidar_point_limit, 0)] if lidar_point_limit > 0 else list(lidar_point_frame.get("points_m", [])),
             "render_only": bool(lidar_point_frame.get("render_only", False)),
             "evidence_backed": bool(lidar_point_frame.get("evidence_backed", True)),
             "source": lidar_point_frame.get("source", "scene_truth_pipeline_lidar_replay"),
@@ -272,9 +311,9 @@ def make_frame(
         "perception": {
             "radar_origin_m": position,
             "yaw_rad": yaw,
-            "near_radius_m": near_radius_m,
-            "far_radius_m": far_radius_m,
-            "fov_deg": fov_deg,
+            "near_radius_m": near_radius_m if visual_helpers_enabled else 0.0,
+            "far_radius_m": far_radius_m if visual_helpers_enabled else 0.0,
+            "fov_deg": fov_deg if visual_helpers_enabled else 0.0,
         },
         "local_known_map": local_known_map,
         "lidar_points": lidar_points,
@@ -330,6 +369,7 @@ def stream_rows(args: argparse.Namespace) -> int:
         stride=args.stride,
         max_frames=args.max_frames,
     )
+    rows = resample_rows(rows, args.resample_hz)
     scene_id = args.scene_id or args.raw_csv.stem
     address = (args.host, args.port)
     interval_override = 1.0 / args.fps if args.fps and args.fps > 0 else None
@@ -382,6 +422,7 @@ def stream_rows(args: argparse.Namespace) -> int:
                     lidar_point_limit=args.lidar_point_limit,
                     local_plan_source=args.local_plan_source,
                     coordinate_policy=args.coordinate_policy,
+                    visual_helpers_enabled=not args.disable_visual_helpers,
                 )
                 if seq > 0 and not args.no_sleep and not args.dry_run:
                     current_t = finite(row.get("time"), previous_t)
@@ -414,6 +455,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--stride", type=int, default=1)
     parser.add_argument("--max-frames", type=int, default=None)
     parser.add_argument("--fps", type=float, default=None, help="Override CSV time spacing with a fixed send FPS")
+    parser.add_argument("--resample-hz", type=float, default=None, help="Linearly resample CSV state rows before streaming; use 60 Hz for render-frame playback and keep controller evidence separate.")
     parser.add_argument("--replay-speed", type=float, default=1.0, help="1.0 real time, 2.0 twice as fast")
     parser.add_argument("--near-radius-m", type=float, default=6.0)
     parser.add_argument("--far-radius-m", type=float, default=9.0)
@@ -426,6 +468,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lidar-point-frames-jsonl", type=Path, default=None, help="Evidence-backed per-frame LiDAR point replay generated by scene_truth_pipeline.py")
     parser.add_argument("--lidar-point-limit", type=int, default=220, help="Maximum LiDAR points per UDP frame; 0 sends all points")
     parser.add_argument("--local-plan-source", default="preview_from_reference")
+    parser.add_argument("--disable-visual-helpers", action="store_true", help="Send only UAV pose/reference data; hide render-only radar/map/lidar/local-plan helpers.")
     parser.add_argument(
         "--coordinate-policy",
         choices=("mworks_world_m_z_up", "ue_world_m_z_up"),

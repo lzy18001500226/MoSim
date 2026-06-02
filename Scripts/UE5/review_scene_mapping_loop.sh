@@ -3,9 +3,9 @@ set -euo pipefail
 
 # Prepare and optionally launch the manual review loop for one accepted UE scene:
 # real rendered map + UAV UDP playback + radar/local-plan debug overlay. The
-# separate point-cloud/map windows are RViz2 via open_mapping_rviz_ros2.sh, not
-# browser HTML. Use RVIZ_PROFILE=split to open grid/planning and point-cloud
-# views as separate RViz2 windows.
+# separate point-cloud window is RViz2 with the FAST-LIO point-cloud config,
+# not browser HTML. Keyboard/mouse controls are view controls only; they must
+# not drive UAV pose.
 
 PROJECT_ROOT="/mnt/c/Users/HP/Desktop/MoSim"
 SCENE_ID="${1:-factoryenvironmentcollect}"
@@ -95,7 +95,8 @@ lines = [
     "Expected evidence:",
     "- The UE window shows the accepted real rendered scene, not the old STL/blockout preview.",
     "- A blue UAV body moves inside the map, with propellers, trajectory trail, radar sector, reference marker, local-plan spline, and optional local-known-map debug cells.",
-    "- If separate map windows are required, open RViz2 with `RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh`; browser HTML is not the primary review route.",
+    "- If a separate point-cloud window is required, open `rviz2 -d Config/rviz2/mosim_uav_fastlio_pointcloud.rviz`; browser HTML is not the primary review route.",
+    "- Keyboard/mouse controls move only the UE/RViz view, not the UAV pose or MWORKS truth.",
     "- The planner did not receive the global truth map as a prior.",
     "- Collision validation against exported UE truth is true.",
     "",
@@ -122,7 +123,7 @@ print(packet)
 PY
 
 if [[ "${OPEN_RVIZ}" == "1" ]]; then
-  RVIZ_PROFILE="${RVIZ_PROFILE:-split}" Scripts/UE5/open_mapping_rviz_ros2.sh "${SCENE_ID}" &
+  rviz2 -d Config/rviz2/mosim_uav_fastlio_pointcloud.rviz &
 fi
 
 if [[ "${OPEN_UE}" != "1" ]]; then

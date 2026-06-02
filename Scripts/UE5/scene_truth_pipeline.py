@@ -752,10 +752,13 @@ def write_render_replay_csv(
     z: float,
     *,
     step_seconds: float = DEFAULT_REPLAY_STEP_SECONDS,
+    first_point_override: Point3 | None = None,
 ) -> None:
     points = [grid.cell_to_world(cell, z) for cell in cells]
     if not points:
         raise ValueError("cannot write render replay with an empty path")
+    if first_point_override is not None:
+        points[0] = first_point_override
 
     rows: list[dict[str, Any]] = []
     yaw = 0.0
@@ -1041,7 +1044,13 @@ def run_scene(profile: SceneProfile, output_root: Path) -> dict[str, Any]:
     }
     write_occupancy_json(outputs["occupancy_json"], profile, grid, selected, occ_summary)
     write_path_csv(outputs["trajectory_csv"], grid, path_cells, profile.flight_z_m)
-    write_render_replay_csv(outputs["render_replay_csv"], grid, path_cells, profile.flight_z_m)
+    write_render_replay_csv(
+        outputs["render_replay_csv"],
+        grid,
+        path_cells,
+        profile.flight_z_m,
+        first_point_override=profile.preferred_start,
+    )
     write_local_known_map_frames_jsonl(outputs["local_known_map_jsonl"], profile, grid, path_cells, profile.flight_z_m)
     write_local_plan_frames_jsonl(outputs["local_plan_jsonl"], profile, grid, path_cells, profile.flight_z_m)
     write_lidar_point_frames_jsonl(outputs["lidar_point_frames_jsonl"], profile, grid, path_cells)
