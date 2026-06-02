@@ -139,8 +139,6 @@ References/Agent/Skills/*
 !References/Agent/Skills/awesome-codex-skills/**
 !References/Agent/Skills/awesome-codex-skills/composio-skills/
 !References/Agent/Skills/awesome-codex-skills/composio-skills/**
-!References/Agent/Skills/awesome-codex-subagents/
-!References/Agent/Skills/awesome-codex-subagents/**
 !References/Agent/Skills/AutoSkill/
 !References/Agent/Skills/AutoSkill/**
 References/Agent/Skills/AutoSkill/data/*
