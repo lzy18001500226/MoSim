@@ -4,9 +4,9 @@ decision: continue_with_tiny_rule_family_batches
 summary: >-
   This task converts the temporary large-tree `.gitignore` split-routing block
   into a steady-state policy in very small batches. The latest completed batch
-  removes only the temporary `!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Turkish/`
-  and `!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Turkish/**`
-  lines after confirming that subtree has 8 tracked files and no untracked
+  removes only the temporary `!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/French/`
+  and `!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/French/**`
+  lines after confirming that subtree has 23 tracked files and no untracked
   spill. Earlier this session completed the current `oh-my-openagent-dev`
   drain chain. Earlier batches removed only
   similarly tiny, path-limited temporary split-routing pairs. The first batch removed only
@@ -625,6 +625,20 @@ proposed_batches:
   - "batch_88_compare_candidate_file_count=133"
   - "batch_88_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Turkish/"
   - "batch_88_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Turkish/**"
+  - "batch_89_candidate=References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/French"
+  - "batch_89_head_vs_upstream_before=88 0"
+  - "batch_89_index_lock=absent"
+  - "batch_89_candidate_file_count=23"
+  - "batch_89_candidate_tracked_files=23"
+  - "batch_89_candidate_untracked_files=0"
+  - "batch_89_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Spanish"
+  - "batch_89_compare_candidate_file_count=33"
+  - "batch_89_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/人本-存在主义"
+  - "batch_89_compare_candidate_file_count=133"
+  - "batch_89_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/后现代主义"
+  - "batch_89_compare_candidate_file_count=231"
+  - "batch_89_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/French/"
+  - "batch_89_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/French/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -633,7 +647,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this eighty-eighth `.gitignore` drain batch together with the ledger
+  Commit this eighty-ninth `.gitignore` drain batch together with the ledger
   and result packet, then re-scan `.gitignore` for the next smallest remaining
   temporary split-routing pair and continue the drain without widening scope.
 needs_human: false
