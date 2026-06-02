@@ -131,8 +131,6 @@ References/Agent/
 References/Agent/*
 !References/Agent/Skills/
 References/Agent/Skills/*
-!References/Agent/Skills/anthropics-skills/
-!References/Agent/Skills/anthropics-skills/**
 !References/Agent/Skills/awesome-codex-skills/
 !References/Agent/Skills/awesome-codex-skills/**
 !References/Agent/Skills/awesome-codex-skills/composio-skills/
