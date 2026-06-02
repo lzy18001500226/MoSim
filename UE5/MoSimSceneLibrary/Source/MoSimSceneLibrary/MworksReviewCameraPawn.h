@@ -23,6 +23,7 @@ public:
     virtual void PossessedBy(AController* NewController) override;
     virtual void PawnClientRestart() override;
     void ApplyReviewInputMode(class APlayerController* PlayerController);
+    void SetFollowTarget(AActor* NewFollowTarget);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera")
     FVector InitialCameraLocation = FVector(-3600.0, -2800.0, 1450.0);
@@ -66,6 +67,30 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Collision")
     float ReviewCollisionStopPaddingCm = 5.0f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
+    bool bFollowTarget = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
+    FVector FollowOffsetCm = FVector(-80.0f, -20.0f, 40.0f);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
+    float FollowPitchDeg = -16.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
+    float FollowLocationInterpSpeed = 0.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
+    float FollowRotationInterpSpeed = 0.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
+    float FollowOrbitDegPerSec = 70.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
+    float FollowMinElevationDeg = -80.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
+    float FollowMaxElevationDeg = 80.0f;
+
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS Review Camera")
     TObjectPtr<USphereComponent> CollisionRoot;
@@ -80,6 +105,8 @@ private:
     void ApplySceneDefaultCameraPreset();
     void ApplyCommandLineOverrides();
     void ApplyReviewInput(float DeltaSeconds);
+    void ApplyFollowTarget(float DeltaSeconds);
+    void ApplyFollowOrbitInput(float DeltaSeconds);
     float AxisFromKeys(class APlayerController* PlayerController, const FKey& PositiveKey, const FKey& NegativeKey) const;
     bool ComputeCollisionConstrainedDelta(const FVector& DesiredDelta, FVector& SafeDelta, FHitResult& BlockingHit);
     void MoveForward(float Value);
@@ -101,4 +128,9 @@ private:
     float MouseLookUpAxis = 0.0f;
     double LastMotionLogTimeSeconds = -1000.0;
     double LastCollisionLogTimeSeconds = -1000.0;
+    double LastFollowLogTimeSeconds = -1000.0;
+    double LastFollowOrbitLogTimeSeconds = -1000.0;
+
+    UPROPERTY()
+    TObjectPtr<AActor> FollowTarget = nullptr;
 };
