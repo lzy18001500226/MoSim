@@ -28,6 +28,21 @@ public:
     bool bApplyActorTransform = true;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback")
+    bool bAutoApplyReceiverFrameInComponentTick = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback")
+    bool bInterpolateActorTransform = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback", meta = (ClampMin = "1.0"))
+    float NominalControlRateHz = 20.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback", meta = (ClampMin = "1.0"))
+    float MinimumDisplayRateHz = 60.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback", meta = (ClampMin = "0.01"))
+    float MaxInterpolationDurationSeconds = 0.25f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback")
     bool bConvertMworksYToUnrealNegativeY = true;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback")
@@ -96,4 +111,17 @@ public:
 protected:
     virtual void BeginPlay() override;
     virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+private:
+    bool bHasInterpolationTarget = false;
+    bool bHasDisplayedTransform = false;
+    int32 LastInterpolatedSequence = TNumericLimits<int32>::Min();
+    double LastInterpolatedFrameTimeSeconds = -1.0;
+    double LastInterpolatedArrivalTimeSeconds = -1.0;
+    float InterpolationElapsedSeconds = 0.0f;
+    float InterpolationDurationSeconds = 0.05f;
+    FVector InterpolationStartLocation = FVector::ZeroVector;
+    FVector InterpolationTargetLocation = FVector::ZeroVector;
+    FRotator InterpolationStartRotation = FRotator::ZeroRotator;
+    FRotator InterpolationTargetRotation = FRotator::ZeroRotator;
 };
