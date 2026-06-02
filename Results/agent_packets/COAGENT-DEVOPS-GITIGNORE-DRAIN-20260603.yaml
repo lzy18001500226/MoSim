@@ -348,7 +348,8 @@ proposed_batches:
   - "Observed correction: the dedicated `.system/<leaf>` rules had already been drained in earlier batches; only the `.system/` container rules remain, so later drain rounds should continue on still-explicit leaf pairs rather than deleting the container block."
   - "Completed batch 60: remove only the `openai-skills/skills/.curated/security-ownership-map` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 61: remove only the `openai-skills/skills/.curated/security-best-practices` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: continue probing the next bounded explicit leaf after the security set, staying path-limited instead of widening to the whole family."
+  - "Completed batch 62: remove only the `openai-skills/skills/.curated/playwright-interactive` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: continue probing the next bounded explicit leaf `openai-skills/.curated/playwright`, staying path-limited instead of widening to the whole family."
   - "batch_57_candidate=References/Agent/Skills/openai-skills/skills/.curated/winui-app"
   - "batch_57_candidate_file_count=21"
   - "batch_57_candidate_tracked_files=21"
@@ -379,6 +380,13 @@ proposed_batches:
   - "batch_61_candidate_untracked_files=0"
   - "batch_61_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/security-best-practices/"
   - "batch_61_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/security-best-practices/**"
+  - "batch_62_candidate=References/Agent/Skills/openai-skills/skills/.curated/playwright-interactive"
+  - "batch_62_candidate_file_count=6"
+  - "batch_62_candidate_tracked_files=6"
+  - "batch_62_candidate_untracked_files=0"
+  - "batch_62_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/playwright-interactive/"
+  - "batch_62_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/playwright-interactive/**"
+  - "batch_62_note=prior broad staging attempts hit whitespace-style issues in subtree content, but this drain batch only updates the temporary ignore rule pair and tracking docs."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -387,7 +395,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this sixty-first `.gitignore` drain batch together with the ledger
+  Commit this sixty-second `.gitignore` drain batch together with the ledger
   and result packet, then continue with another tiny rule-family removal in a
   later round.
 needs_human: false
