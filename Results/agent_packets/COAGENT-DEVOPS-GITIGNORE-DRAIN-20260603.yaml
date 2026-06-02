@@ -91,7 +91,10 @@ summary: >-
   subtree has 36 tracked files and no untracked spill. The twenty-fifth batch
   removes only the temporary `!References/Agent/Skills/ECC/tests/` and
   `!References/Agent/Skills/ECC/tests/**` lines after confirming that subtree
-  has 149 tracked files and no untracked spill.
+  has 149 tracked files and no untracked spill. The twenty-sixth batch removes
+  only the temporary `!References/Agent/Skills/awesome-opencode/dist/` and
+  `!References/Agent/Skills/awesome-opencode/dist/**` lines after confirming
+  that subtree has 1 tracked file and no untracked spill.
 evidence:
   - "goal=drain_temporary_gitignore_rules_gradually"
   - "batch_1_scope=.gitignore:124-132_before_edit"
@@ -259,6 +262,12 @@ evidence:
   - "batch_25_recheck_candidate_untracked_files=0"
   - "batch_25_removed_rule=!References/Agent/Skills/ECC/tests/"
   - "batch_25_removed_rule=!References/Agent/Skills/ECC/tests/**"
+  - "batch_26_candidate=References/Agent/Skills/awesome-opencode/dist"
+  - "batch_26_candidate_file_count=1"
+  - "batch_26_candidate_tracked_files=1"
+  - "batch_26_candidate_untracked_files=0"
+  - "batch_26_removed_rule=!References/Agent/Skills/awesome-opencode/dist/"
+  - "batch_26_removed_rule=!References/Agent/Skills/awesome-opencode/dist/**"
   - "git_diff_check=passed"
 risks:
   - "The remaining `References/Agent` split-routing chain is still large and must be drained in additional tiny batches."
@@ -293,7 +302,8 @@ proposed_batches:
   - "Completed batch 23: remove only the `awesome-codex-skills/composio-skills` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 24: remove only the `ECC/assets` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 25: remove only the `ECC/tests` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill; `awesome-opencode/dist` has recovered to zero untracked spill and can be reconsidered, while `openai-skills` remains deferred as a much larger family."
+  - "Completed batch 26: remove only the `awesome-opencode/dist` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill; remaining `ECC` or `AutoSkill` sub-branches should be reconsidered before the much larger `openai-skills` family."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -302,7 +312,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this twenty-fifth `.gitignore` drain batch together with the ledger and
+  Commit this twenty-sixth `.gitignore` drain batch together with the ledger and
   result packet, then continue with another tiny rule-family removal in a later
   round.
 needs_human: false
