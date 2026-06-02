@@ -134,17 +134,21 @@ def build_scene_bundle(output_root: Path, scene_id: str) -> dict[str, Any]:
         "OPEN_UE=1 OPEN_RVIZ=0 STREAM_LOOP_COUNT=1 STREAM_FPS=12 WAIT_UDP_SECONDS=45 "
         f"Scripts/UE5/review_scene_mapping_loop.sh {scene_key}"
     )
-    rviz_review_command = f"RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh {scene_key}"
-    rviz_grid_review_command = f"RVIZ_PROFILE=planning_grid Scripts/UE5/open_mapping_rviz_ros2.sh {scene_key}"
-    rviz_pointcloud_review_command = f"RVIZ_PROFILE=fastlio_pointcloud Scripts/UE5/open_mapping_rviz_ros2.sh {scene_key}"
-    fastlio_command = f"Scripts/UE5/run_fastlio_rviz_replay_ros2.sh {scene_key}"
-    fastlio_bootstrap_command = "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh"
+    rviz_pointcloud_review_command = "rviz2 -d Config/rviz2/mosim_uav_fastlio_pointcloud.rviz"
+    fastlio_command = (
+        "SCENE_ID=factoryenvironmentcollect Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh"
+        if scene_key == "factoryenvironmentcollect"
+        else "blocked: Factory FAST-LIO headless gate is not wired for this scene yet"
+    )
     unreal_mcp_command = "Scripts/UE5/open_unreal_editor_mcp_listener.sh"
     record_command = (
-        "python3 Scripts/UE5/record_fastlio_ros1_runtime.py "
+        "python3 Scripts/UE5/record_fastlio_ros2_runtime.py "
         f"--scene-id {scene_key} "
         f"--output-dir Results/unreal_scene_mapping/{scene_key}/fastlio_runtime "
-        "--duration-seconds 20"
+        "--duration-seconds 20 "
+        "--odom-topic /odometry "
+        "--path-topic /path "
+        "--cloud-topic /cloud_registered"
     )
     evaluate_command = (
         "python3 Scripts/UE5/evaluate_fastlio_runtime.py "
@@ -196,11 +200,8 @@ def build_scene_bundle(output_root: Path, scene_id: str) -> dict[str, Any]:
             "dry_run_ue_review": f"OPEN_UE=0 REVIEW_DRY_RUN=1 Scripts/UE5/review_scene_mapping_loop.sh {scene_key}",
             "unreal_editor_mcp_listener": unreal_mcp_command,
             "ue_rendered_scene_review": ue_review_command,
-            "fastlio_ros1_workspace_bootstrap": fastlio_bootstrap_command,
-            "rviz_mapping_window": rviz_review_command,
-            "rviz_planning_grid_window": rviz_grid_review_command,
             "rviz_fastlio_pointcloud_window": rviz_pointcloud_review_command,
-            "fastlio_rviz_runtime": fastlio_command,
+            "factory_fastlio_mid360_headless": fastlio_command,
             "fastlio_topic_check": "Scripts/UE5/check_fastlio_ros2_topics.sh",
             "fastlio_input_topic_check": "REQUIRE_FASTLIO_OUTPUTS=0 Scripts/UE5/check_fastlio_ros2_topics.sh",
             "fastlio_runtime_record": record_command,
@@ -209,8 +210,9 @@ def build_scene_bundle(output_root: Path, scene_id: str) -> dict[str, Any]:
         "manual_acceptance": [
             "UE window shows the accepted real rendered scene, not a blockout/STL/blank map.",
             "UAV body follows the replay inside valid scene bounds without wall penetration.",
-            "RViz2 split windows show local occupancy/grid plus local plan, and point cloud plus FAST-LIO state.",
-            "FAST-LIO outputs /cloud_registered and /Odometry during a live ROS runtime run before localization is accepted.",
+            "Keyboard/mouse input controls only the UE/RViz view, not UAV pose or MWORKS truth.",
+            "RViz2 FAST-LIO window shows raw LiDAR, registered cloud, odometry, path, and TF when runtime topics are live.",
+            "FAST-LIO outputs /cloud_registered and /odometry during a live ROS runtime run before localization is accepted.",
             "evaluate_fastlio_runtime.py passes against replay truth before any localization claim.",
             "Planner has no access to global truth; exported truth is used only for validation.",
         ],
@@ -261,8 +263,8 @@ def write_wrapper(scene_dir: Path, bundle: dict[str, Any]) -> None:
         "cd \"${PROJECT_ROOT}\"",
         "",
         "# This wrapper opens native runtime review surfaces only.",
-        "# UE is the rendered-scene window; RViz2 is the point-cloud/map window.",
-        "# RVIZ_PROFILE=split opens separate planning-grid and point-cloud RViz2 windows.",
+        "# UE is the rendered-scene window; RViz2 is the FAST-LIO point-cloud window.",
+        "# Keyboard/mouse controls are view controls only; they must not drive UAV pose.",
         "# Browser HTML is not used.",
         "",
         f"SCENE_ID={shlex.quote(bundle['scene_id'])}",
@@ -289,12 +291,12 @@ def write_wrapper(scene_dir: Path, bundle: dict[str, Any]) -> None:
         "fi",
         "",
         "if [[ \"${START_RVIZ}\" == \"1\" ]]; then",
-        f"  {bundle['commands']['rviz_mapping_window']} &",
+        f"  {bundle['commands']['rviz_fastlio_pointcloud_window']} &",
         "  PIDS+=(\"$!\")",
         "fi",
         "",
         "if [[ \"${START_FASTLIO}\" == \"1\" ]]; then",
-        f"  {bundle['commands']['fastlio_rviz_runtime']} &",
+        f"  {bundle['commands']['factory_fastlio_mid360_headless']} &",
         "  PIDS+=(\"$!\")",
         "fi",
         "",

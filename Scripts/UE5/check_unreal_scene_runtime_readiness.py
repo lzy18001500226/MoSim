@@ -170,18 +170,14 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     ros2_ready = all(commands[name] for name in ("ros2", "rviz2", "colcon"))
     ue_project = ROOT / "UE5/MoSimSceneLibrary/MoSimSceneLibrary.uproject"
     bridge = ROOT / "UE5/Bridge/QuadrotorMworksBridge.uplugin"
-    rviz_config = ROOT / "Config/rviz/mosim_uav_mapping.rviz"
-    rviz_grid_config = ROOT / "Config/rviz/mosim_uav_planning_grid.rviz"
     rviz_pointcloud_config = ROOT / "Config/rviz/mosim_uav_fastlio_pointcloud.rviz"
-    rviz2_config = ROOT / "Config/rviz2/mosim_uav_mapping.rviz"
-    rviz2_grid_config = ROOT / "Config/rviz2/mosim_uav_planning_grid.rviz"
     rviz2_pointcloud_config = ROOT / "Config/rviz2/mosim_uav_fastlio_pointcloud.rviz"
     fastlio_bootstrap = ROOT / "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh"
     fastlio_rviz_runner = ROOT / "Scripts/UE5/run_fastlio_rviz_replay_ros1.sh"
     fastlio_topic_checker = ROOT / "Scripts/UE5/check_fastlio_ros1_topics.sh"
-    fastlio_rviz2_runner = ROOT / "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh"
+    factory_headless_runner = ROOT / "Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh"
     fastlio_ros2_topic_checker = ROOT / "Scripts/UE5/check_fastlio_ros2_topics.sh"
-    rviz2_opener = ROOT / "Scripts/UE5/open_mapping_rviz_ros2.sh"
+    mworks_uav_bridge = ROOT / "Scripts/ros/publish_mworks_uav_state_ros2.py"
     unreal_mcp_opener = ROOT / "Scripts/UE5/open_unreal_editor_mcp_listener.sh"
     fast_lio_repo = ROOT / "References/Lab/FAST_LIO/package.xml"
     ros_env = ros_mapping_runtime_env()
@@ -220,6 +216,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "The primary point-cloud/map review route is a native ROS/RViz window, not browser HTML.",
             "UE rendered overlays and file previews do not replace RViz/RViz2 mapping evidence.",
             "Global scene truth is a validation oracle only and is not a planner input.",
+            "Keyboard/mouse controls are for UE/RViz view movement only; UAV pose must come from MWORKS/controller state.",
             "runtime_ready=true additionally requires ROS2/RViz2 runtime and live UE editor listener when interactive editor automation is needed.",
             "FAST-LIO localization remains unclaimed until a real ROS2 FAST-LIO-family package or approved ROS1 bridge publishes /cloud_registered and /Odometry.",
         ],
@@ -232,17 +229,13 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "project": {
             "ue_project": file_status(ue_project),
             "bridge_plugin": file_status(bridge),
-            "rviz_config": file_status(rviz_config),
-            "rviz_planning_grid_config": file_status(rviz_grid_config),
             "rviz_fastlio_pointcloud_config": file_status(rviz_pointcloud_config),
-            "rviz2_config": file_status(rviz2_config),
-            "rviz2_planning_grid_config": file_status(rviz2_grid_config),
             "rviz2_fastlio_pointcloud_config": file_status(rviz2_pointcloud_config),
             "fastlio_workspace_bootstrap": file_status(fastlio_bootstrap),
             "fastlio_rviz_runner": file_status(fastlio_rviz_runner),
             "fastlio_topic_checker": file_status(fastlio_topic_checker),
-            "rviz2_opener": file_status(rviz2_opener),
-            "fastlio_rviz2_runner": file_status(fastlio_rviz2_runner),
+            "factory_fastlio_mid360_headless_runner": file_status(factory_headless_runner),
+            "mworks_uav_state_ros2_bridge": file_status(mworks_uav_bridge),
             "fastlio_ros2_topic_checker": file_status(fastlio_ros2_topic_checker),
             "unreal_editor_mcp_listener_opener": file_status(unreal_mcp_opener),
             "fast_lio_reference_package": file_status(fast_lio_repo),
@@ -257,20 +250,17 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "scenes": scene_reports,
         "next_commands": [
             "python3 Scripts/UE5/summarize_scene_closed_loop.py --fail-on-issue",
-            "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect",
-            "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans",
-            "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect",
-            "DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans",
-            "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect",
+            "python3 Scripts/ros/publish_mworks_uav_state_ros2.py --dry-run --mworks-raw-csv Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/raw/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.csv --lidar-point-frames-jsonl Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body.jsonl --max-frames 2",
+            "DRY_RUN=1 Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh",
             "DRY_RUN=1 Scripts/UE5/check_fastlio_ros2_topics.sh",
             "DRY_RUN=1 Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh",
             "DRY_RUN=1 Scripts/UE5/open_unreal_editor_mcp_listener.sh",
             "python3 Scripts/UE5/check_ros_mapping_runtime_env.py --write",
             "source /opt/ros/humble/setup.bash",
             "Scripts/UE5/open_unreal_editor_mcp_listener.sh  # opens UE Editor and waits up to 60s for UnrealMCP listener",
-            "RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene>  # opens separate planning-grid and point-cloud RViz2 windows",
-            "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh <scene>  # publishes ROS2 replay inputs; START_FASTLIO=0 until a ROS2 FAST-LIO launch is configured",
-            "Scripts/UE5/check_fastlio_ros2_topics.sh  # during a live ROS2 replay; REQUIRE_FASTLIO_OUTPUTS=0 checks replay inputs only",
+            "rviz2 -d Config/rviz2/mosim_uav_fastlio_pointcloud.rviz  # view/camera controls only; UAV motion is not keyboard-driven",
+            "Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh  # Factory MWORKS/Livox/FAST-LIO headless gate",
+            "Scripts/UE5/check_fastlio_ros2_topics.sh  # during a live ROS2 run; REQUIRE_FASTLIO_OUTPUTS=0 checks inputs only",
         ],
     }
 
@@ -283,6 +273,7 @@ def write_markdown(path: Path, report: dict[str, Any]) -> None:
         "The primary point-cloud/map review route is a native ROS/RViz window, not browser HTML.",
         "UE overlays and native file previews do not replace RViz/RViz2 evidence.",
         "Global scene truth is a validation oracle only and is not a planner input.",
+        "Keyboard/mouse controls are view controls only; they must not drive UAV pose.",
         "",
         f"- file_loop_ready: `{str(report['overall']['file_loop_ready']).lower()}`",
         f"- runtime_ready: `{str(report['overall']['runtime_ready']).lower()}`",
