@@ -334,7 +334,8 @@ proposed_batches:
   - "Completed batch 46: remove only the `openai-skills/skills/.curated/linear` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 47: remove only the `openai-skills/skills/.curated/gh-address-comments` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 48: remove only the `openai-skills/skills/.curated/gh-fix-ci` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: continue probing the next bounded non-figma `openai-skills` curated leaves such as `jupyter-notebook`, `hatch-pet`, or `migrate-to-codex`, staying path-limited instead of widening to the whole family."
+  - "Completed batch 49: remove only the `openai-skills/skills/.curated/jupyter-notebook` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: continue probing the next bounded non-figma `openai-skills` curated leaves such as `hatch-pet` or `migrate-to-codex`, staying path-limited instead of widening to the whole family."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -343,7 +344,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this forty-eighth `.gitignore` drain batch together with the ledger and
+  Commit this forty-ninth `.gitignore` drain batch together with the ledger and
   result packet, then continue with another tiny rule-family removal in a later
   round.
 needs_human: false
