@@ -29,7 +29,7 @@ void UQuadrotorMworksPlaybackComponent::TickComponent(
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-    if (Receiver && Receiver->HasFrame())
+    if (bAutoApplyReceiverFrameInComponentTick && Receiver && Receiver->HasFrame())
     {
         ApplyFrame(Receiver->GetLatestFrame(), DeltaTime);
     }
@@ -82,13 +82,71 @@ void UQuadrotorMworksPlaybackComponent::ApplyFrame(const FQuadrotorMworksFrame& 
         return MworksPositionToUnreal(PositionMeters);
     };
 
-    LatestUnrealLocation = ToUnrealPosition(Frame.PositionMeters);
-    LatestUnrealRotation = bUseUnrealWorldMeters
+    const FVector TargetUnrealLocation = ToUnrealPosition(Frame.PositionMeters);
+    const FRotator TargetUnrealRotation = bUseUnrealWorldMeters
         ? FRotator(
             FMath::RadiansToDegrees(static_cast<float>(Frame.RotationRadians.Y)),
             FMath::RadiansToDegrees(static_cast<float>(Frame.RotationRadians.Z)),
             FMath::RadiansToDegrees(static_cast<float>(Frame.RotationRadians.X)))
         : MworksRotationToUnreal(Frame.RotationRadians);
+
+    const bool bNewInterpolationFrame =
+        !bHasInterpolationTarget
+        || LastInterpolatedSequence != Frame.Sequence
+        || !FMath::IsNearlyEqual(LastInterpolatedFrameTimeSeconds, Frame.TimeSeconds, 1.0e-6);
+
+    if (!bApplyActorTransform || !bInterpolateActorTransform)
+    {
+        LatestUnrealLocation = TargetUnrealLocation;
+        LatestUnrealRotation = TargetUnrealRotation;
+        bHasDisplayedTransform = true;
+    }
+    else
+    {
+        if (bNewInterpolationFrame)
+        {
+            UWorld* World = GetWorld();
+            const double CurrentArrivalTimeSeconds = World ? World->GetTimeSeconds() : -1.0;
+            const float NominalDurationSeconds = 1.0f / FMath::Max(1.0f, NominalControlRateHz);
+            const float MinimumDurationSeconds = 1.0f / FMath::Max(1.0f, MinimumDisplayRateHz);
+            float CandidateDurationSeconds = NominalDurationSeconds;
+
+            if (LastInterpolatedFrameTimeSeconds >= 0.0 && Frame.TimeSeconds > LastInterpolatedFrameTimeSeconds)
+            {
+                CandidateDurationSeconds = static_cast<float>(Frame.TimeSeconds - LastInterpolatedFrameTimeSeconds);
+            }
+            if (LastInterpolatedArrivalTimeSeconds >= 0.0 && CurrentArrivalTimeSeconds > LastInterpolatedArrivalTimeSeconds)
+            {
+                const float ArrivalDurationSeconds = static_cast<float>(CurrentArrivalTimeSeconds - LastInterpolatedArrivalTimeSeconds);
+                CandidateDurationSeconds = FMath::Min(CandidateDurationSeconds, ArrivalDurationSeconds);
+            }
+
+            InterpolationDurationSeconds = FMath::Clamp(
+                CandidateDurationSeconds,
+                MinimumDurationSeconds,
+                FMath::Max(MinimumDurationSeconds, MaxInterpolationDurationSeconds));
+            InterpolationElapsedSeconds = 0.0f;
+            InterpolationStartLocation = bHasDisplayedTransform ? LatestUnrealLocation : TargetUnrealLocation;
+            InterpolationStartRotation = bHasDisplayedTransform ? LatestUnrealRotation : TargetUnrealRotation;
+            InterpolationTargetLocation = TargetUnrealLocation;
+            InterpolationTargetRotation = TargetUnrealRotation;
+            bHasInterpolationTarget = true;
+            LastInterpolatedSequence = Frame.Sequence;
+            LastInterpolatedFrameTimeSeconds = Frame.TimeSeconds;
+            LastInterpolatedArrivalTimeSeconds = CurrentArrivalTimeSeconds;
+        }
+
+        InterpolationElapsedSeconds += DeltaSeconds;
+        const float Alpha = InterpolationDurationSeconds <= 0.0f
+            ? 1.0f
+            : FMath::Clamp(InterpolationElapsedSeconds / InterpolationDurationSeconds, 0.0f, 1.0f);
+        LatestUnrealLocation = FMath::Lerp(InterpolationStartLocation, InterpolationTargetLocation, Alpha);
+        LatestUnrealRotation = FQuat::Slerp(
+            InterpolationStartRotation.Quaternion(),
+            InterpolationTargetRotation.Quaternion(),
+            Alpha).Rotator();
+        bHasDisplayedTransform = true;
+    }
     ReferenceUnrealLocation = ToUnrealPosition(Frame.ReferencePositionMeters);
 
     LocalPlanPointsUnreal.Reset(Frame.LocalPlanPointsMeters.Num());
