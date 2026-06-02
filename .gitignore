@@ -239,8 +239,6 @@ References/Agent/Skills/openai-skills/skills/.curated/*
 !References/Agent/Skills/openai-skills/skills/.curated/playwright-interactive/**
 !References/Agent/Skills/openai-skills/skills/.curated/render-deploy/
 !References/Agent/Skills/openai-skills/skills/.curated/render-deploy/**
-!References/Agent/Skills/openai-skills/skills/.curated/screenshot/
-!References/Agent/Skills/openai-skills/skills/.curated/screenshot/**
 !References/Agent/Skills/openai-skills/skills/.curated/security-best-practices/
 !References/Agent/Skills/openai-skills/skills/.curated/security-best-practices/**
 !References/Agent/Skills/openai-skills/skills/.curated/security-ownership-map/
