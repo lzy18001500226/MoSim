@@ -33,7 +33,10 @@ summary: >-
   has 24 tracked files and no untracked spill. The ninth batch removes only
   the temporary `!References/Agent/Skills/mattpocock-skills/` and
   `!References/Agent/Skills/mattpocock-skills/**` lines after confirming that
-  subtree has 67 tracked files and no untracked spill.
+  subtree has 67 tracked files and no untracked spill. The tenth batch removes
+  only the temporary `!References/Agent/Skills/MMSkills/` and
+  `!References/Agent/Skills/MMSkills/**` lines after confirming that subtree
+  has 251 tracked files and no untracked spill.
 evidence:
   - "goal=drain_temporary_gitignore_rules_gradually"
   - "batch_1_scope=.gitignore:124-132_before_edit"
@@ -93,6 +96,12 @@ evidence:
   - "batch_9_candidate_untracked_files=0"
   - "batch_9_removed_rule=!References/Agent/Skills/mattpocock-skills/"
   - "batch_9_removed_rule=!References/Agent/Skills/mattpocock-skills/**"
+  - "batch_10_candidate=References/Agent/Skills/MMSkills"
+  - "batch_10_candidate_file_count=251"
+  - "batch_10_candidate_tracked_files=251"
+  - "batch_10_candidate_untracked_files=0"
+  - "batch_10_removed_rule=!References/Agent/Skills/MMSkills/"
+  - "batch_10_removed_rule=!References/Agent/Skills/MMSkills/**"
   - "git_diff_check=passed"
 risks:
   - "The remaining `References/Agent` split-routing chain is still large and must be drained in additional tiny batches."
@@ -111,7 +120,8 @@ proposed_batches:
   - "Completed batch 7: remove only the `SR-Agents` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 8: remove only the `HeavySkill` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 9: remove only the `mattpocock-skills` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill, for example `MMSkills` or `SkillX` after probes."
+  - "Completed batch 10: remove only the `MMSkills` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill, for example `SkillX` or `SuperClaude_Framework` after probes."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -120,7 +130,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this ninth `.gitignore` drain batch together with the ledger and
+  Commit this tenth `.gitignore` drain batch together with the ledger and
   result packet, then continue with another tiny rule-family removal in a later
   round.
 needs_human: false
