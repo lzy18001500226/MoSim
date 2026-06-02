@@ -445,6 +445,12 @@ proposed_batches:
   - "batch_71_candidate_untracked_files=0"
   - "batch_71_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/figma/"
   - "batch_71_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/figma/**"
+  - "batch_72_candidate=References/Agent/Skills/openai-skills/skills/.curated/openai-docs"
+  - "batch_72_candidate_file_count=9"
+  - "batch_72_candidate_tracked_files=9"
+  - "batch_72_candidate_untracked_files=0"
+  - "batch_72_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/openai-docs/"
+  - "batch_72_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/openai-docs/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -453,8 +459,8 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this seventy-first `.gitignore` drain batch together with the ledger
-  and result packet, then continue with `References/Agent/Skills/openai-skills/skills/.curated/openai-docs`
+  Commit this seventy-second `.gitignore` drain batch together with the ledger
+  and result packet, then continue with `References/Agent/Skills/openai-skills/skills/.curated/chatgpt-apps`
   as the next bounded candidate in a later round.
 needs_human: false
 blocked_reason: ""
