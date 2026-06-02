@@ -7,6 +7,9 @@
   "ros_setup": "/opt/ros/humble/setup.bash",
   "candidate_dir": "Results/tmp/fastlio_ros2_candidates/spark-fast-lio",
   "package_dir": "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio",
+  "livox_msg_pkg": "Scripts/ros/livox_ros_driver2",
+  "mosim_scene_replay_pkg": "Scripts/ros/mosim_scene_replay",
+  "mosim_dense_lidar_cpp_pkg": "Scripts/ros/mosim_dense_lidar_cpp",
   "workspace": "Results/tmp/spark_fast_lio_ros2_ws",
   "apt_deb_dir": "Results/tmp/apt_debs",
   "apt_overlay_dir": "Results/tmp/ros2_overlay_pcl_ros",
@@ -25,8 +28,9 @@
     "preflight_without_overlay": "AUTO_APT_OVERLAY=0 Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh",
     "build": "BUILD=1 Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh",
     "clean_build": "CLEAN_BUILD=1 BUILD=1 Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh",
+    "patch_readiness": "python3 Scripts/UE5/check_spark_fastlio_livox_patch_readiness.py --write",
     "source_overlay_after_download": "export AMENT_PREFIX_PATH=Results/tmp/ros2_overlay_pcl_ros/opt/ros/humble:${AMENT_PREFIX_PATH}; export CMAKE_PREFIX_PATH=Results/tmp/ros2_overlay_pcl_ros/opt/ros/humble:${CMAKE_PREFIX_PATH:-${AMENT_PREFIX_PATH}}; export LD_LIBRARY_PATH=Results/tmp/ros2_overlay_pcl_ros/opt/ros/humble/lib:${LD_LIBRARY_PATH}",
-    "launch_after_build": "source Results/tmp/spark_fast_lio_ros2_ws/install/setup.bash && FASTLIO_ROS2_LAUNCH_CMD='ros2 launch spark_fast_lio mapping_mit_campus.launch.yaml start_rviz:=false scene_id:=mosim robot_name:=base_link base_frame:=base_link map_frame:=ue_world' START_FASTLIO=1 START_RVIZ=0 Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect"
+    "launch_after_build": "FASTLIO_ROS2_LAUNCH_CMD='set +u; source /opt/ros/humble/setup.bash; source Results/tmp/spark_fast_lio_ros2_ws/install/setup.bash; ros2 launch spark_fast_lio mapping_mit_campus.launch.yaml start_rviz:=false scene_id:=mosim robot_name:=base base_frame:=base map_frame:=ue_world' START_FASTLIO=1 START_RVIZ=0 MAX_FRAMES=120 LOOP=1 FPS=10 FASTLIO_LIDAR_TOPIC=/mosim/livox/lidar FASTLIO_POINTCLOUD_TOPIC=/mosim/lidar_points FASTLIO_IMU_TOPIC=/mosim/forward/imu FASTLIO_LIDAR_FRAME=base/velodyne_link FASTLIO_IMU_FRAME=base/forward_imu_optical_frame Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect"
   },
   "claim_boundary": [
     "This prepares a ROS2 FAST-LIO2-family candidate only.",
