@@ -82,6 +82,12 @@ Results/codegen_probe/
 Results/unreal_scene_mapping/**/livox_like_lidar_frames.jsonl
 Results/unreal_scene_mapping/**/livox_like_lidar_manifest.json
 !Results/unreal_scene_mapping/**/livox_like_lidar_manifest.json
+Results/unreal_scene_mapping/**/fastlio_runtime/
+Results/unreal_scene_mapping/**/fastlio_runtime_*/
+Results/unreal_scene_mapping/**/fastlio_gdb_startup/
+Results/unreal_scene_mapping/**/fastlio_mworks_truth_dataset.jsonl
+Results/unreal_scene_mapping/**/fastlio_mworks_truth_dataset_smoke.jsonl
+Results/unreal_scene_mapping/**/livox_like_lidar_frames_mworks_body*.jsonl
 *_backup/
 
 # Large binary outputs
