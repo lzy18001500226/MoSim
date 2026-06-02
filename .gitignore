@@ -110,6 +110,13 @@ References/UnrealScenes/
 # fixtures from cloned references.
 Docs/Skills/Unreal/mcp/**/Content/**/*.uasset
 Docs/Skills/Unreal/mcp/**/Content/**/*.umap
+# Unreal MCP reference repositories also produce local editor/build artifacts.
+# Keep them isolated by default so generated headers and build residue do not
+# keep re-entering the Git surface.
+Docs/Skills/Unreal/mcp/**/Intermediate/
+Docs/Skills/Unreal/mcp/**/Binaries/
+Docs/Skills/Unreal/mcp/**/Saved/
+Docs/Skills/Unreal/mcp/**/DerivedDataCache/
 
 # AirSim-family external references: keep source/Docs/configs, exclude local
 # clones, build outputs, generated caches, and large compiled artifacts.

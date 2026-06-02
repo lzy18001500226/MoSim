@@ -1,0 +1,35 @@
+task_id: COAGENT-DEVOPS-GIT-DIVIDE-20260531
+status: planned
+decision: isolate_unreal_generated_outputs_and_continue_path_limited_reference_probes
+summary: "This phase stopped using broad path scans and confirmed that the known ROS-MCP example families (`3_limo_mobile_robot`, `4_unitree_go2`, `7_cursor`, `8_images`, `9_turtlebot3`, and `Docs/Skills/ROS-MCP/docs/images`) no longer show local diff in the targeted checks. A narrower probe then found five tracked UnrealHeaderTool generated files under `Docs/Skills/Unreal/mcp/unreal-engine-mcp/FlopperamUnrealMCP/Plugins/UnrealMCP/Intermediate/Build/Win64/UnrealEditor/Inc/UnrealMCP/UHT/` still modified; they are generated build outputs and should be isolated from future batches. No commit or push was performed in this phase."
+evidence:
+  - "branch=main"
+  - "upstream_ahead_behind=57 0"
+  - "index_lock_absent=true"
+  - "core_excludesfile=unset"
+  - "ros_mcp_known_families_clean=true"
+  - "unreal_generated_files_modified=5"
+  - "unreal_generated_files=Docs/Skills/Unreal/mcp/unreal-engine-mcp/FlopperamUnrealMCP/Plugins/UnrealMCP/Intermediate/Build/Win64/UnrealEditor/Inc/UnrealMCP/UHT/EpicUnrealMCPBridge.gen.cpp; Docs/Skills/Unreal/mcp/unreal-engine-mcp/FlopperamUnrealMCP/Plugins/UnrealMCP/Intermediate/Build/Win64/UnrealEditor/Inc/UnrealMCP/UHT/EpicUnrealMCPBridge.generated.h; Docs/Skills/Unreal/mcp/unreal-engine-mcp/FlopperamUnrealMCP/Plugins/UnrealMCP/Intermediate/Build/Win64/UnrealEditor/Inc/UnrealMCP/UHT/Timestamp; Docs/Skills/Unreal/mcp/unreal-engine-mcp/FlopperamUnrealMCP/Plugins/UnrealMCP/Intermediate/Build/Win64/UnrealEditor/Inc/UnrealMCP/UHT/UnrealMCP.init.gen.cpp; Docs/Skills/Unreal/mcp/unreal-engine-mcp/FlopperamUnrealMCP/Plugins/UnrealMCP/Intermediate/Build/Win64/UnrealEditor/Inc/UnrealMCP/UHT/UnrealMCPClasses.h"
+  - "unreal_generated_files_are_not_ignored_yet=true"
+  - "reference_broad_queries_timed_out=true"
+  - "no_commit_or_push_this_phase=true"
+risks:
+  - "The `References/Agent` tree still resists broad diff queries and must remain on narrow file-family probes."
+  - "Tracked Unreal generated files may continue to churn unless `Docs/Skills/Unreal/mcp/**/Intermediate/` and related build directories are isolated."
+  - "A broad `git status` or broad add remains the wrong tool for the remaining surfaces."
+ignore_first_strategy: "Keep `Docs/Skills/Unreal/mcp/**/Intermediate/`, `Binaries/`, `Saved/`, and `DerivedDataCache/` isolated by default; open only the reviewed source/docs slices that are meant to stay versioned."
+proposed_batches:
+  - "Treat the five UnrealHeaderTool files as a separate generated-output batch, or exclude the whole `Docs/Skills/Unreal/mcp/**/Intermediate/` subtree so it stops reappearing."
+  - "Continue `References/Agent` only by single subfamily probes, not by broad parent-directory diffs."
+  - "If any remaining reference subtree is safe, stage it as one small reviewed slice with path-limited diff and large-file check."
+forbidden_actions:
+  - "no broad git status"
+  - "no git add -A"
+  - "no git clean"
+  - "no reset --hard"
+  - "no force push"
+  - "no staging batches over 1000 files"
+  - "no files >=100MB"
+next_action: "Decide whether the five Unreal generated files should be ignored as local build residue or handled as a tiny generated-file cleanup batch, then keep probing `References/Agent` only through narrow subfamily paths."
+needs_human: false
+blocked_reason: ""
