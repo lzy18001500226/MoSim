@@ -213,8 +213,6 @@ References/Agent/Skills/openai-skills/skills/*
 References/Agent/Skills/openai-skills/skills/.curated/*
 !References/Agent/Skills/openai-skills/skills/.curated/cloudflare-deploy/
 !References/Agent/Skills/openai-skills/skills/.curated/cloudflare-deploy/**
-!References/Agent/Skills/openai-skills/skills/.curated/notion-knowledge-capture/
-!References/Agent/Skills/openai-skills/skills/.curated/notion-knowledge-capture/**
 !References/Agent/Skills/openai-skills/skills/.curated/notion-meeting-intelligence/
 !References/Agent/Skills/openai-skills/skills/.curated/notion-meeting-intelligence/**
 !References/Agent/Skills/openai-skills/skills/.curated/notion-research-documentation/
