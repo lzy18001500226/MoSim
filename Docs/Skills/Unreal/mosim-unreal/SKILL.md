@@ -138,9 +138,15 @@ or `(-55.33, -24.23, 1.90) m` in exported truth coordinates. Do not restore the
 older `(-4750, 3850, 180) cm` point because it intersects a CargoCar collision
 proxy and blocks entry.
 
+For Derelict review, start inside `/Game/DerelictCorridor/Maps/DerelictCorridor`
+at approximately `(8704, -2240, 220) cm`, yaw `90 deg`. This is derived from
+the exported truth bounds and replaces the generic MoSim preview-camera default,
+which is outside the real corridor.
+
 For imported maps that define their own GameMode, `review-scene` must force
-`/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode`; otherwise the map may
-spawn its own Pawn and bypass the MoSim review camera/collision/log contract.
+`/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode` for every reviewed
+`/Game/...` map; otherwise the map may spawn its own Pawn and bypass the MoSim
+review camera/collision/log contract.
 For maps with authored robot/vehicle Pawns, review mode must also keep
 PlayerController possession on `MworksReviewCameraPawn` and disable imported
 Pawn input. Treat `MWORKS scene-review control enforced:
