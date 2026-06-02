@@ -60,7 +60,11 @@ summary: >-
   subtree has 61 tracked files and no untracked spill. The seventeenth batch
   removes only the temporary `!References/Agent/Skills/context-engineering-kit/`
   and `!References/Agent/Skills/context-engineering-kit/**` lines after
-  confirming that subtree has 299 tracked files and no untracked spill.
+  confirming that subtree has 299 tracked files and no untracked spill. The
+  eighteenth batch removes only the temporary
+  `!References/Agent/Skills/claude-plugins-official/` and
+  `!References/Agent/Skills/claude-plugins-official/**` lines after confirming
+  that subtree has 373 tracked files and no untracked spill.
 evidence:
   - "goal=drain_temporary_gitignore_rules_gradually"
   - "batch_1_scope=.gitignore:124-132_before_edit"
@@ -174,6 +178,12 @@ evidence:
   - "batch_17_candidate_untracked_files=0"
   - "batch_17_removed_rule=!References/Agent/Skills/context-engineering-kit/"
   - "batch_17_removed_rule=!References/Agent/Skills/context-engineering-kit/**"
+  - "batch_18_candidate=References/Agent/Skills/claude-plugins-official"
+  - "batch_18_candidate_file_count=373"
+  - "batch_18_candidate_tracked_files=373"
+  - "batch_18_candidate_untracked_files=0"
+  - "batch_18_removed_rule=!References/Agent/Skills/claude-plugins-official/"
+  - "batch_18_removed_rule=!References/Agent/Skills/claude-plugins-official/**"
   - "git_diff_check=passed"
 risks:
   - "The remaining `References/Agent` split-routing chain is still large and must be drained in additional tiny batches."
@@ -200,7 +210,8 @@ proposed_batches:
   - "Completed batch 15: remove only the `awesome-openclaw-skills` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 16: remove only the `codex-plugin-cc` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 17: remove only the `context-engineering-kit` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill; `claude-plugins-official` is a nearby verified candidate, while `openai-skills` remains deferred as a much larger family."
+  - "Completed batch 18: remove only the `claude-plugins-official` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill; `openai-skills` remains a much larger deferred family and any next move should prefer a smaller remaining branch if available."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -209,7 +220,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this seventeenth `.gitignore` drain batch together with the ledger and
+  Commit this eighteenth `.gitignore` drain batch together with the ledger and
   result packet, then continue with another tiny rule-family removal in a later
   round.
 needs_human: false
