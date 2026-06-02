@@ -451,6 +451,14 @@ proposed_batches:
   - "batch_72_candidate_untracked_files=0"
   - "batch_72_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/openai-docs/"
   - "batch_72_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/openai-docs/**"
+  - "batch_73_candidate=References/Agent/Skills/openai-skills/skills/.curated/chatgpt-apps"
+  - "batch_73_head_vs_upstream_before=72 0"
+  - "batch_73_index_lock=absent"
+  - "batch_73_candidate_file_count=11"
+  - "batch_73_candidate_tracked_files=11"
+  - "batch_73_candidate_untracked_files=0"
+  - "batch_73_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/chatgpt-apps/"
+  - "batch_73_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/chatgpt-apps/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -459,8 +467,8 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this seventy-second `.gitignore` drain batch together with the ledger
-  and result packet, then continue with `References/Agent/Skills/openai-skills/skills/.curated/chatgpt-apps`
+  Commit this seventy-third `.gitignore` drain batch together with the ledger
+  and result packet, then continue with `References/Agent/Skills/openai-skills/skills/.curated/aspnet-core`
   as the next bounded candidate in a later round.
 needs_human: false
 blocked_reason: ""
