@@ -3,25 +3,67 @@
     {
       "action": "junction_created",
       "kind": "content",
-      "name": "DerelictCorridor",
-      "source": "References/UnrealScenes/DerelictCorridorMegascans/Content/DerelictCorridor",
-      "target": "UE5/MoSimSceneLibrary/Content/DerelictCorridor"
+      "name": "Audio",
+      "source": "References/UnrealScenes/FactoryEnvironmentCollect/Content/Audio",
+      "target": "UE5/MoSimSceneLibrary/Content/Audio"
     },
     {
       "action": "junction_created",
-      "kind": "__ExternalActors__",
-      "name": "DerelictCorridor",
-      "source": "References/UnrealScenes/DerelictCorridorMegascans/Content/__ExternalActors__/DerelictCorridor",
-      "target": "UE5/MoSimSceneLibrary/Content/__ExternalActors__/DerelictCorridor"
+      "kind": "content",
+      "name": "Blueprints",
+      "source": "References/UnrealScenes/FactoryEnvironmentCollect/Content/Blueprints",
+      "target": "UE5/MoSimSceneLibrary/Content/Blueprints"
     },
     {
       "action": "junction_created",
-      "kind": "__ExternalObjects__",
-      "name": "DerelictCorridor",
-      "source": "References/UnrealScenes/DerelictCorridorMegascans/Content/__ExternalObjects__/DerelictCorridor",
-      "target": "UE5/MoSimSceneLibrary/Content/__ExternalObjects__/DerelictCorridor"
+      "kind": "content",
+      "name": "Fx",
+      "source": "References/UnrealScenes/FactoryEnvironmentCollect/Content/Fx",
+      "target": "UE5/MoSimSceneLibrary/Content/Fx"
+    },
+    {
+      "action": "junction_created",
+      "kind": "content",
+      "name": "Maps",
+      "source": "References/UnrealScenes/FactoryEnvironmentCollect/Content/Maps",
+      "target": "UE5/MoSimSceneLibrary/Content/Maps"
+    },
+    {
+      "action": "junction_created",
+      "kind": "content",
+      "name": "Materials",
+      "source": "References/UnrealScenes/FactoryEnvironmentCollect/Content/Materials",
+      "target": "UE5/MoSimSceneLibrary/Content/Materials"
+    },
+    {
+      "action": "junction_created",
+      "kind": "content",
+      "name": "Meshes",
+      "source": "References/UnrealScenes/FactoryEnvironmentCollect/Content/Meshes",
+      "target": "UE5/MoSimSceneLibrary/Content/Meshes"
+    },
+    {
+      "action": "junction_created",
+      "kind": "content",
+      "name": "Sequences",
+      "source": "References/UnrealScenes/FactoryEnvironmentCollect/Content/Sequences",
+      "target": "UE5/MoSimSceneLibrary/Content/Sequences"
+    },
+    {
+      "action": "junction_created",
+      "kind": "content",
+      "name": "Textures",
+      "source": "References/UnrealScenes/FactoryEnvironmentCollect/Content/Textures",
+      "target": "UE5/MoSimSceneLibrary/Content/Textures"
+    },
+    {
+      "action": "junction_created",
+      "kind": "content",
+      "name": "ThirdPerson",
+      "source": "References/UnrealScenes/FactoryEnvironmentCollect/Content/ThirdPerson",
+      "target": "UE5/MoSimSceneLibrary/Content/ThirdPerson"
     }
   ],
-  "scene_source_id": "local_derelictcorridormegascans",
+  "scene_source_id": "local_factoryenvironmentcollect",
   "schema": "mosim.unreal.active_scene_links.v1"
 }
