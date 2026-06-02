@@ -746,7 +746,7 @@ def build_parser() -> argparse.ArgumentParser:
     notify_parser.add_argument("--no-metadata-update", action="store_true")
     notify_parser.add_argument("--send-weixin", action="store_true")
     notify_parser.add_argument("--weixin-session", default="")
-    notify_parser.add_argument("--weixin-project", default="mosim-weixin-smoke")
+    notify_parser.add_argument("--weixin-project", default=cc_connect_weixin.DEFAULT_PROJECT)
     notify_parser.add_argument("--weixin-data-dir", type=Path, default=cc_connect_weixin.DEFAULT_DATA_DIR)
     notify_parser.add_argument("--weixin-cc-bin", type=Path, default=cc_connect_weixin.DEFAULT_BIN)
     notify_parser.add_argument("--weixin-config", type=Path, default=cc_connect_weixin.DEFAULT_CONFIG)

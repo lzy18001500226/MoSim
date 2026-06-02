@@ -278,7 +278,7 @@ def maybe_notify_weixin(args: argparse.Namespace, payload: dict[str, Any], revie
     packet_path = write_notification_packet(payload, review, review_path, summary_path)
     namespace = argparse.Namespace(
         packet=ROOT / packet_path,
-        project=getattr(args, "weixin_project", "mosim-weixin-smoke"),
+        project=getattr(args, "weixin_project", cc_connect_weixin.DEFAULT_PROJECT),
         session=getattr(args, "weixin_session", ""),
         data_dir=getattr(args, "weixin_data_dir", cc_connect_weixin.DEFAULT_DATA_DIR),
         cc_bin=getattr(args, "weixin_cc_bin", cc_connect_weixin.DEFAULT_BIN),
@@ -486,8 +486,8 @@ def build_parser() -> argparse.ArgumentParser:
     import_parser.add_argument("--archive-invalid", action="store_true")
     import_parser.add_argument("--notify-weixin", action="store_true", help="dry-run or send a Weixin review notification when human review is required")
     import_parser.add_argument("--send-weixin", action="store_true", help="actually send the Weixin notification; otherwise notification is a dry run")
-    import_parser.add_argument("--weixin-session", default="", help="cc-connect session id; required with --send-weixin")
-    import_parser.add_argument("--weixin-project", default="mosim-weixin-smoke")
+    import_parser.add_argument("--weixin-session", default="", help="cc-connect session id or alias; omitted uses the first active session")
+    import_parser.add_argument("--weixin-project", default=cc_connect_weixin.DEFAULT_PROJECT)
     import_parser.add_argument("--weixin-data-dir", type=Path, default=cc_connect_weixin.DEFAULT_DATA_DIR)
     import_parser.add_argument("--weixin-cc-bin", type=Path, default=cc_connect_weixin.DEFAULT_BIN)
     import_parser.add_argument("--weixin-config", type=Path, default=cc_connect_weixin.DEFAULT_CONFIG)

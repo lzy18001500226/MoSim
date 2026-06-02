@@ -60,10 +60,13 @@ def main() -> int:
                 config=tmp_root / "config.toml",
                 audit=audit,
                 dedupe=dedupe,
+                recovery_dir=tmp_root / "recovery",
                 max_chars=1500,
                 timeout=1,
+                recovery_timeout=1,
                 send=False,
                 force=False,
+                recover_on_failure=True,
                 omit_message_in_audit=False,
             )
         )
@@ -109,6 +112,167 @@ def main() -> int:
         review_plan = cc_connect_weixin.build_plan(review)
         assert review_plan.ok, review_plan
         assert "审核请求" in review_plan.message
+
+        data_dir = tmp_root / "data"
+        sessions_dir = data_dir / "sessions"
+        sessions_dir.mkdir(parents=True)
+        session_file = sessions_dir / "MoSim｜微信通知网关_abc123.json"
+        platform_key = "weixin:dm:user@im.wechat"
+        session_file.write_text(
+            json.dumps(
+                {
+                    "sessions": {"s1": {"id": "s1", "name": "default"}},
+                    "active_session": {platform_key: "s1"},
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        assert (
+            cc_connect_weixin.resolve_session_key(
+                "s1",
+                data_dir=data_dir,
+                project="MoSim｜微信通知网关",
+            )
+            == platform_key
+        )
+        assert (
+            cc_connect_weixin.resolve_session_key(
+                "MoSim｜微信通知网关",
+                data_dir=data_dir,
+                project="MoSim｜微信通知网关",
+            )
+            == platform_key
+        )
+        assert (
+            cc_connect_weixin.resolve_session_key(
+                "",
+                data_dir=data_dir,
+                project="MoSim｜微信通知网关",
+            )
+            == platform_key
+        )
+        assert (
+            cc_connect_weixin.resolve_session_key(
+                str(session_file),
+                data_dir=data_dir,
+                project="MoSim｜微信通知网关",
+            )
+            == platform_key
+        )
+        assert (
+            cc_connect_weixin.resolve_session_key(
+                platform_key,
+                data_dir=data_dir,
+                project="MoSim｜微信通知网关",
+            )
+            == platform_key
+        )
+
+        failures = [
+            {"ok": False, "timeout": False, "stdout": "", "stderr": "Error: weixin: sendMessage: ret=-2 errcode=0"},
+            {"ok": False, "timeout": False, "stdout": "", "stderr": "weixin: missing context_token for peer"},
+            {"ok": False, "timeout": False, "stdout": "", "stderr": "Error: no active session found"},
+            {"ok": False, "timeout": True, "stdout": "", "stderr": ""},
+        ]
+        assert [cc_connect_weixin.classify_send_failure(item) for item in failures] == [
+            "weixin_ret_minus_2",
+            "missing_context_token",
+            "no_active_session",
+            "timeout",
+        ]
+
+        original_send = cc_connect_weixin.send_message
+        original_restart = cc_connect_weixin.restart_cc_connect
+        try:
+            calls = {"send": 0, "restart": 0}
+
+            def fake_send(message, *, cc_bin, data_dir, project, session, timeout):
+                calls["send"] += 1
+                if calls["send"] == 1:
+                    return {
+                        "ok": False,
+                        "timeout": False,
+                        "returncode": 1,
+                        "stdout": "",
+                        "stderr": "Error: weixin: sendMessage: ret=-2 errcode=0",
+                        "command": [],
+                    }
+                return {
+                    "ok": True,
+                    "timeout": False,
+                    "returncode": 0,
+                    "stdout": "Message sent successfully.",
+                    "stderr": "",
+                    "command": [],
+                }
+
+            def fake_restart(**kwargs):
+                calls["restart"] += 1
+                return {"ok": True, "api_socket_exists": True}
+
+            cc_connect_weixin.send_message = fake_send
+            cc_connect_weixin.restart_cc_connect = fake_restart
+            recovered = cc_connect_weixin.notify(
+                argparse.Namespace(
+                    packet=blocker,
+                    project="MoSim｜微信通知网关",
+                    session="s1",
+                    data_dir=data_dir,
+                    cc_bin=tmp_root / "cc-connect",
+                    config=tmp_root / "config.toml",
+                    audit=tmp_root / "recover_audit.jsonl",
+                    dedupe=tmp_root / "recover_dedupe.json",
+                    recovery_dir=tmp_root / "recovery",
+                    max_chars=1500,
+                    timeout=1,
+                    recovery_timeout=1,
+                    send=True,
+                    force=True,
+                    recover_on_failure=True,
+                    omit_message_in_audit=True,
+                )
+            )
+            assert recovered["ok"], recovered
+            assert calls == {"send": 2, "restart": 1}
+
+            def always_fail(message, *, cc_bin, data_dir, project, session, timeout):
+                return {
+                    "ok": False,
+                    "timeout": False,
+                    "returncode": 1,
+                    "stdout": "",
+                    "stderr": "Error: weixin: sendMessage: ret=-2 errcode=0",
+                    "command": [],
+                }
+
+            cc_connect_weixin.send_message = always_fail
+            failed = cc_connect_weixin.notify(
+                argparse.Namespace(
+                    packet=blocker,
+                    project="MoSim｜微信通知网关",
+                    session="s1",
+                    data_dir=data_dir,
+                    cc_bin=tmp_root / "cc-connect",
+                    config=tmp_root / "config.toml",
+                    audit=tmp_root / "failed_audit.jsonl",
+                    dedupe=tmp_root / "failed_dedupe.json",
+                    recovery_dir=tmp_root / "recovery",
+                    max_chars=1500,
+                    timeout=1,
+                    recovery_timeout=1,
+                    send=True,
+                    force=True,
+                    recover_on_failure=True,
+                    omit_message_in_audit=True,
+                )
+            )
+            assert not failed["ok"], failed
+            recovery_packets = sorted((tmp_root / "recovery").glob("weixin_recovery_required_*.json"))
+            assert recovery_packets, "expected recovery packet when retry still fails"
+        finally:
+            cc_connect_weixin.send_message = original_send
+            cc_connect_weixin.restart_cc_connect = original_restart
 
     print("gateway_weixin_smoke ok")
     return 0
