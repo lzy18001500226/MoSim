@@ -342,7 +342,14 @@ proposed_batches:
   - "Completed batch 54: remove only the `openai-skills/skills/.curated/netlify-deploy` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 55: remove only the `openai-skills/skills/.curated/screenshot` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 56: remove only the `openai-skills/skills/.curated/render-deploy` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: continue probing the next bounded `openai-skills` curated leaf `winui-app`, staying path-limited instead of widening to the whole family."
+  - "Completed batch 57: remove only the `openai-skills/skills/.curated/winui-app` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: continue probing the next bounded `openai-skills` curated leaf `vercel-deploy`, staying path-limited instead of widening to the whole family."
+  - "batch_57_candidate=References/Agent/Skills/openai-skills/skills/.curated/winui-app"
+  - "batch_57_candidate_file_count=21"
+  - "batch_57_candidate_tracked_files=21"
+  - "batch_57_candidate_untracked_files=0"
+  - "batch_57_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/winui-app/"
+  - "batch_57_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/winui-app/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -351,8 +358,8 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this fifty-sixth `.gitignore` drain batch together with the ledger and
-  result packet, then continue with another tiny rule-family removal in a later
-  round.
+  Commit this fifty-seventh `.gitignore` drain batch together with the ledger
+  and result packet, then continue with another tiny rule-family removal in a
+  later round.
 needs_human: false
 blocked_reason: ""
