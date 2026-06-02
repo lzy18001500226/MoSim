@@ -3,7 +3,12 @@ status: running
 decision: continue_with_tiny_rule_family_batches
 summary: >-
   This task converts the temporary large-tree `.gitignore` split-routing block
-  into a steady-state policy in very small batches. The first batch removed only
+  into a steady-state policy in very small batches. The latest completed batch
+  removes only the top-level temporary `!References/Agent/Skills/oh-my-openagent-dev/`
+  and `!References/Agent/Skills/oh-my-openagent-dev/**` lines after confirming
+  that subtree has 2771 tracked files and no untracked spill, which completes
+  the current `oh-my-openagent-dev` drain chain. Earlier batches removed only
+  similarly tiny, path-limited temporary split-routing pairs. The first batch removed only
   the temporary `Docs/Skills/Unreal/mcp` reference-repository rules that had
   been added for staged Git divide work: the `Content/**/*.uasset`,
   `Content/**/*.umap`, `Intermediate/`, `Binaries/`, `Saved/`, and
@@ -527,6 +532,14 @@ proposed_batches:
   - "batch_81_compare_parent_file_count=2771"
   - "batch_81_removed_rule=!References/Agent/Skills/oh-my-openagent-dev/src/"
   - "batch_81_removed_rule=!References/Agent/Skills/oh-my-openagent-dev/src/**"
+  - "batch_82_candidate=References/Agent/Skills/oh-my-openagent-dev"
+  - "batch_82_head_vs_upstream_before=81 0"
+  - "batch_82_index_lock=absent"
+  - "batch_82_candidate_file_count=2771"
+  - "batch_82_candidate_tracked_files=2771"
+  - "batch_82_candidate_untracked_files=0"
+  - "batch_82_removed_rule=!References/Agent/Skills/oh-my-openagent-dev/"
+  - "batch_82_removed_rule=!References/Agent/Skills/oh-my-openagent-dev/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -535,9 +548,8 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this eighty-first `.gitignore` drain batch together with the ledger
-  and result packet, then continue with the remaining top-level
-  `References/Agent/Skills/oh-my-openagent-dev` rule pair as the next bounded
-  drain step.
+  Commit this eighty-second `.gitignore` drain batch together with the ledger
+  and result packet, then re-scan `.gitignore` for the next smallest remaining
+  temporary split-routing pair and continue the drain without widening scope.
 needs_human: false
 blocked_reason: ""
