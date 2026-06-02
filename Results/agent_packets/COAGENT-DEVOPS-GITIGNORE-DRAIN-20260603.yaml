@@ -80,7 +80,11 @@ summary: >-
   The twenty-second batch removes only the temporary
   `!References/Agent/Skills/anthropics-skills/` and
   `!References/Agent/Skills/anthropics-skills/**` lines after confirming that
-  subtree has 394 tracked files and no untracked spill.
+  subtree has 394 tracked files and no untracked spill. The twenty-third batch
+  removes only the temporary
+  `!References/Agent/Skills/awesome-codex-skills/composio-skills/` and
+  `!References/Agent/Skills/awesome-codex-skills/composio-skills/**` lines
+  after confirming that subtree has 833 tracked files and no untracked spill.
 evidence:
   - "goal=drain_temporary_gitignore_rules_gradually"
   - "batch_1_scope=.gitignore:124-132_before_edit"
@@ -226,6 +230,12 @@ evidence:
   - "batch_22_candidate_untracked_files=0"
   - "batch_22_removed_rule=!References/Agent/Skills/anthropics-skills/"
   - "batch_22_removed_rule=!References/Agent/Skills/anthropics-skills/**"
+  - "batch_23_candidate=References/Agent/Skills/awesome-codex-skills/composio-skills"
+  - "batch_23_candidate_file_count=833"
+  - "batch_23_candidate_tracked_files=833"
+  - "batch_23_candidate_untracked_files=0"
+  - "batch_23_removed_rule=!References/Agent/Skills/awesome-codex-skills/composio-skills/"
+  - "batch_23_removed_rule=!References/Agent/Skills/awesome-codex-skills/composio-skills/**"
   - "git_diff_check=passed"
 risks:
   - "The remaining `References/Agent` split-routing chain is still large and must be drained in additional tiny batches."
@@ -257,7 +267,8 @@ proposed_batches:
   - "Completed batch 20: remove only the `awesome-codex-subagents` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 21: remove only the `Agent-Skills-for-Context-Engineering` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 22: remove only the `anthropics-skills` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill; `awesome-codex-skills/composio-skills` remains a separate verified branch, while `openai-skills` is still deferred as a much larger family."
+  - "Completed batch 23: remove only the `awesome-codex-skills/composio-skills` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill; `openai-skills` remains deferred as a much larger family, and the remaining `awesome-codex-skills` top-level pair should be reconsidered separately."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -266,7 +277,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this twenty-second `.gitignore` drain batch together with the ledger and
+  Commit this twenty-third `.gitignore` drain batch together with the ledger and
   result packet, then continue with another tiny rule-family removal in a later
   round.
 needs_human: false
