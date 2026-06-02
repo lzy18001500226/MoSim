@@ -50,7 +50,10 @@ summary: >-
   `pro-workflow` candidate. The fourteenth batch removes only the temporary
   `!References/Agent/Skills/pro-workflow/` and
   `!References/Agent/Skills/pro-workflow/**` lines after confirming that
-  subtree has 189 tracked files and no untracked spill.
+  subtree has 189 tracked files and no untracked spill. The fifteenth batch
+  removes only the temporary `!References/Agent/Skills/awesome-openclaw-skills/`
+  and `!References/Agent/Skills/awesome-openclaw-skills/**` lines after
+  confirming that subtree has 35 tracked files and no untracked spill.
 evidence:
   - "goal=drain_temporary_gitignore_rules_gradually"
   - "batch_1_scope=.gitignore:124-132_before_edit"
@@ -144,6 +147,14 @@ evidence:
   - "batch_14_candidate_untracked_files=0"
   - "batch_14_removed_rule=!References/Agent/Skills/pro-workflow/"
   - "batch_14_removed_rule=!References/Agent/Skills/pro-workflow/**"
+  - "batch_15_candidate=References/Agent/Skills/awesome-openclaw-skills"
+  - "batch_15_candidate_file_count=35"
+  - "batch_15_candidate_tracked_files=35"
+  - "batch_15_candidate_untracked_files=0"
+  - "batch_15_deferred_candidate=References/Agent/Skills/codex-plugin-cc"
+  - "batch_15_deferred_candidate_file_count=61"
+  - "batch_15_removed_rule=!References/Agent/Skills/awesome-openclaw-skills/"
+  - "batch_15_removed_rule=!References/Agent/Skills/awesome-openclaw-skills/**"
   - "git_diff_check=passed"
 risks:
   - "The remaining `References/Agent` split-routing chain is still large and must be drained in additional tiny batches."
@@ -167,7 +178,8 @@ proposed_batches:
   - "Completed batch 12: remove only the `SuperClaude_Framework` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 13: remove only the `superpowers` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 14: remove only the `pro-workflow` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill; `openai-skills` remains a larger nearby candidate and should still be deferred behind smaller families."
+  - "Completed batch 15: remove only the `awesome-openclaw-skills` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill; `codex-plugin-cc` is the smallest nearby verified candidate, while `openai-skills` remains deferred as a much larger family."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -176,7 +188,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this fourteenth `.gitignore` drain batch together with the ledger and
+  Commit this fifteenth `.gitignore` drain batch together with the ledger and
   result packet, then continue with another tiny rule-family removal in a later
   round.
 needs_human: false
