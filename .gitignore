@@ -215,8 +215,6 @@ References/Agent/Skills/awesome-opencode/dist/
 !References/Agent/Skills/ECC/scripts/**
 !References/Agent/Skills/ECC/skills/
 !References/Agent/Skills/ECC/skills/**
-!References/Agent/Skills/ECC/tests/
-!References/Agent/Skills/ECC/tests/**
 !References/Agent/Skills/openai-skills/
 References/Agent/Skills/openai-skills/*
 !References/Agent/Skills/openai-skills/skills/
