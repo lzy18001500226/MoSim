@@ -225,8 +225,6 @@ References/Agent/Skills/openai-skills/skills/.curated/*
 !References/Agent/Skills/openai-skills/skills/.curated/figma/**
 !References/Agent/Skills/openai-skills/skills/.curated/openai-docs/
 !References/Agent/Skills/openai-skills/skills/.curated/openai-docs/**
-!References/Agent/Skills/openai-skills/skills/.curated/figma-generate-library/
-!References/Agent/Skills/openai-skills/skills/.curated/figma-generate-library/**
 !References/Agent/Skills/openai-skills/skills/.curated/figma-use/
 !References/Agent/Skills/openai-skills/skills/.curated/figma-use/**
 !References/Agent/Skills/openai-skills/skills/.curated/gh-address-comments/

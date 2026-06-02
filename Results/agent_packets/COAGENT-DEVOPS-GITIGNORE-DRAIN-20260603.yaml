@@ -329,7 +329,8 @@ proposed_batches:
   - "Completed batch 41: remove only the `openai-skills/skills/.curated/figma-generate-design` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 42: remove only the `openai-skills/skills/.curated/figma-code-connect-components` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 43: remove only the `openai-skills/skills/.curated/figma-create-design-system-rules` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: continue probing the remaining larger figma leaves such as `figma-generate-library` or `figma-use`, staying path-limited instead of widening to the whole family."
+  - "Completed batch 44: remove only the `openai-skills/skills/.curated/figma-generate-library` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: continue probing the remaining larger figma leaf `figma-use`, staying path-limited instead of widening to the whole family."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -338,7 +339,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this forty-third `.gitignore` drain batch together with the ledger and
+  Commit this forty-fourth `.gitignore` drain batch together with the ledger and
   result packet, then continue with another tiny rule-family removal in a later
   round.
 needs_human: false
