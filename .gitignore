@@ -357,8 +357,6 @@ References/Agent/Skills/openai-skills/skills/.system/*
 !References/Agent/Skills/pro-workflow/**
 !References/Agent/Skills/SR-Agents/
 !References/Agent/Skills/SR-Agents/**
-!References/Agent/Skills/SkillRouter/
-!References/Agent/Skills/SkillRouter/**
 !References/Agent/Skills/SkillX/
 !References/Agent/Skills/SkillX/**
 !References/Agent/Skills/SuperClaude_Framework/
