@@ -213,8 +213,6 @@ References/Agent/Skills/openai-skills/skills/*
 References/Agent/Skills/openai-skills/skills/.curated/*
 !References/Agent/Skills/openai-skills/skills/.curated/cloudflare-deploy/
 !References/Agent/Skills/openai-skills/skills/.curated/cloudflare-deploy/**
-!References/Agent/Skills/openai-skills/skills/.curated/notion-spec-to-implementation/
-!References/Agent/Skills/openai-skills/skills/.curated/notion-spec-to-implementation/**
 !References/Agent/Skills/openai-skills/skills/.system/
 References/Agent/Skills/openai-skills/skills/.system/*
 !References/Agent/Skills/oh-my-openagent-dev/

@@ -491,6 +491,14 @@ proposed_batches:
   - "batch_77_candidate_untracked_files=0"
   - "batch_77_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/notion-research-documentation/"
   - "batch_77_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/notion-research-documentation/**"
+  - "batch_78_candidate=References/Agent/Skills/openai-skills/skills/.curated/notion-spec-to-implementation"
+  - "batch_78_head_vs_upstream_before=77 0"
+  - "batch_78_index_lock=absent"
+  - "batch_78_candidate_file_count=19"
+  - "batch_78_candidate_tracked_files=19"
+  - "batch_78_candidate_untracked_files=0"
+  - "batch_78_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/notion-spec-to-implementation/"
+  - "batch_78_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/notion-spec-to-implementation/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -499,8 +507,9 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this seventy-seventh `.gitignore` drain batch together with the ledger
-  and result packet, then continue with `References/Agent/Skills/openai-skills/skills/.curated/notion-spec-to-implementation`
-  as the next bounded candidate in a later round.
+  Commit this seventy-eighth `.gitignore` drain batch together with the ledger
+  and result packet, then re-scan the remaining explicit
+  `References/Agent/Skills/openai-skills/skills/.curated/*` leaf rules before
+  considering any broader container-rule drain.
 needs_human: false
 blocked_reason: ""
