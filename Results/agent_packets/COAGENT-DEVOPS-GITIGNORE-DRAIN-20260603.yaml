@@ -344,7 +344,9 @@ proposed_batches:
   - "Completed batch 56: remove only the `openai-skills/skills/.curated/render-deploy` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 57: remove only the `openai-skills/skills/.curated/winui-app` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 58: remove only the `openai-skills/skills/.curated/vercel-deploy` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: continue probing the next bounded remaining `openai-skills` leaf set under `.system/`, staying path-limited instead of widening to the whole family."
+  - "Completed batch 59: remove only the `openai-skills/skills/.curated/security-threat-model` temporary unignore pair under `References/Agent/Skills/`."
+  - "Observed correction: the dedicated `.system/<leaf>` rules had already been drained in earlier batches; only the `.system/` container rules remain, so later drain rounds should continue on still-explicit leaf pairs rather than deleting the container block."
+  - "Next candidate batch: continue probing the next bounded remaining `openai-skills` security leaf `security-ownership-map`, staying path-limited instead of widening to the whole family."
   - "batch_57_candidate=References/Agent/Skills/openai-skills/skills/.curated/winui-app"
   - "batch_57_candidate_file_count=21"
   - "batch_57_candidate_tracked_files=21"
@@ -357,6 +359,12 @@ proposed_batches:
   - "batch_58_candidate_untracked_files=0"
   - "batch_58_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/vercel-deploy/"
   - "batch_58_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/vercel-deploy/**"
+  - "batch_59_candidate=References/Agent/Skills/openai-skills/skills/.curated/security-threat-model"
+  - "batch_59_candidate_file_count=5"
+  - "batch_59_candidate_tracked_files=5"
+  - "batch_59_candidate_untracked_files=0"
+  - "batch_59_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/security-threat-model/"
+  - "batch_59_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/security-threat-model/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -365,7 +373,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this fifty-eighth `.gitignore` drain batch together with the ledger
+  Commit this fifty-ninth `.gitignore` drain batch together with the ledger
   and result packet, then continue with another tiny rule-family removal in a
   later round.
 needs_human: false
