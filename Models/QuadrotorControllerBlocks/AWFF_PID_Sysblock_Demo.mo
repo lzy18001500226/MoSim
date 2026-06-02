@@ -2,8 +2,7 @@ model AWFF_PID_Sysblock_Demo "MWORKS.Sysblock AWFF PID altitude-loop demo"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
-  import AWFF_PID_Sysblock_Demo.DataDic.*;
-  annotation(__MWORKS(version="2025a",modelType=Control,PortArrangement(Left(z_error), Right(thrust_cmd)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01),SysblockVersion="1.0"),Icon(coordinateSystem(preserveAspectRatio=false)),experiment(DoublePrecision=false,Algorithm=Euler,InlineIntegrator=false,InlineStepSize=false,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=1,Tolerance=0.0001),Diagram(coordinateSystem(extent={{-240,-100},{120,100}},grid={2,2})));
+  annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(z_error), Right(thrust_cmd)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0",CodeGeneration(Config = {"code_placement":{"mode":"Compact"},"code_replacement":{"standard_c_library":"C99"},"custom_code":{"code":{"function_declare":{"head":"","item_head":"","item_tail":"","tail":""},"function_define":{"head":"","item_head":"","item_tail":"","tail":""},"global_variable_declare":{"head":"","item_head":"","item_tail":"","tail":""},"global_variable_define":{"head":"","item_head":"","item_tail":"","tail":""},"include":{"head":"","item_head":"","item_tail":"","tail":""},"macro":{"head":"","item_head":"","item_tail":"","tail":""},"type":{"head":"","item_head":"","item_tail":"","tail":""}},"code_protection":{"integer_division_by_zero":false,"overflow":false}},"data_type":{"real_as_float":true},"experiment":{"task_and_sample":{"muti_task_mode":false,"whether_to_use_prefix":false}},"hardware_platform":{"largest_atomic_size":{"floating_point":"32","integer":"32"}},"identifier":{"max_length":32,"style":{"function":"camelCase","local_variable":"camelCase","macro":"camelCase","mem_var":"camelCase","type":"camelCase"}},"interface":{"function_name":{"initialize":"Init","step":"Step"}},"is_expand":{"is_expand":false},"optimization":{"array_loop_threshold":5,"logical_operator":"logical"}}, Sim_seting = {"sim_seting":{"output":"C:\\Users\\HP\\Desktop\\MoSim\\Results\\codegen_probe\\AWFF_PID_Sysblock_Demo_api"}})),Icon(coordinateSystem(preserveAspectRatio=false)),experiment(DoublePrecision=false,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.03,StoreEventValue=0),Diagram(coordinateSystem(extent={{-240,-100},{120,100}},grid={2,2})));
 
   SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator ki_integrator(externalResetType=SysplorerEmbeddedCoder.Discrete.DiscreteTimeIntegrator.ExternalResetType.None,gain=6.0,initCond=0)
     annotation (Placement(transformation(origin={-72,34},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(SampleTime(auto=true,group="D1")=0.01,Instance(u1(Type(ref="double") ,Dimension=1) ,y(Type(ref="double") ,Dimension=1) ,gain(Type(ref="double") ,Dimension=1) ,initCond(Type(ref="double") ,Dimension=1))),PortLabels(labelType="CustomType",labels(label(text="",instance="u1"),label(text="",instance="u2"),label(text="x0",instance="u3")))));
@@ -30,16 +29,7 @@ model AWFF_PID_Sysblock_Demo "MWORKS.Sysblock AWFF PID altitude-loop demo"
     annotation(__MWORKS(hide = true,BlockSystem(blockKind=BlockKind.modelWorkspace)));
   end ModelWorkspace;
 
-  package DataDic
-    annotation(__MWORKS(hide=true,BlockSystem(blockKind=BlockKind.dataDictionary)));
-    constant Auto Kp_z=8.0 annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,DataDictionary(dataKind = DataDictKind.parm, dataType = "double", storageType = "Auto"))));
-    constant Auto Ki_z=6.0 annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,DataDictionary(dataKind = DataDictKind.parm, dataType = "double", storageType = "Auto"))));
-    constant Auto Kd_z=4.0 annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,DataDictionary(dataKind = DataDictKind.parm, dataType = "double", storageType = "Auto"))));
-    constant Auto Kff_z=0.35 annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,DataDictionary(dataKind = DataDictKind.parm, dataType = "double", storageType = "Auto"))));
-    constant Auto Ts=0.01 annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,DataDictionary(dataKind = DataDictKind.parm, dataType = "double", storageType = "Auto"))));
-  end DataDic;
-
-equation
+  equation
   connect(z_error, ki_integrator.u1)
   annotation(Line(origin={-148,34},points={{-62,0},{64.2,0}},color={0,0,0}));
   connect(kp_gain.y, cmd_sum.u1)
