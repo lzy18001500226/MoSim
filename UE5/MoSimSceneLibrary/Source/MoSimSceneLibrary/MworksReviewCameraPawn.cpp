@@ -112,7 +112,14 @@ void AMworksReviewCameraPawn::PawnClientRestart()
 void AMworksReviewCameraPawn::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-    ApplyReviewInput(DeltaSeconds);
+    if (bFollowTarget && FollowTarget)
+    {
+        ApplyFollowTarget(DeltaSeconds);
+    }
+    else
+    {
+        ApplyReviewInput(DeltaSeconds);
+    }
 }
 
 void AMworksReviewCameraPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -142,8 +149,8 @@ void AMworksReviewCameraPawn::ApplySceneDefaultCameraPreset()
     const FString MapName = World->GetMapName();
     if (MapName.Contains(TEXT("Demonstration")))
     {
-        InitialCameraLocation = FVector(-5533.0f, 2423.0f, 190.0f);
-        InitialCameraRotation = FRotator(-6.0f, 0.0f, 0.0f);
+        InitialCameraLocation = FVector(-5733.0f, 2423.0f, 280.0f);
+        InitialCameraRotation = FRotator(-12.0f, 0.0f, 0.0f);
     }
     else if (MapName.Contains(TEXT("DerelictCorridor")))
     {
@@ -243,6 +250,47 @@ void AMworksReviewCameraPawn::ApplyCommandLineOverrides()
     {
         ReviewCollisionStopPaddingCm = FMath::Max(0.0f, ParsedStopPadding);
     }
+
+    bFollowTarget = bFollowTarget || FParse::Param(FCommandLine::Get(), TEXT("MoSimFollowPlaybackCamera"));
+
+    FString ParsedFollowOffsetText;
+    if (FParse::Value(FCommandLine::Get(), TEXT("MoSimFollowCameraOffset="), ParsedFollowOffsetText))
+    {
+        ParsedFollowOffsetText.ReplaceInline(TEXT(","), TEXT(" "));
+        FVector ParsedOffset = FollowOffsetCm;
+        if (ParsedOffset.InitFromString(ParsedFollowOffsetText))
+        {
+            FollowOffsetCm = ParsedOffset;
+        }
+    }
+    if (FParse::Value(FCommandLine::Get(), TEXT("MoSimFollowCameraBackCm="), ParsedFloat))
+    {
+        FollowOffsetCm.X = -FMath::Max(20.0f, ParsedFloat);
+    }
+    if (FParse::Value(FCommandLine::Get(), TEXT("MoSimFollowCameraRightCm="), ParsedFloat))
+    {
+        FollowOffsetCm.Y = ParsedFloat;
+    }
+    if (FParse::Value(FCommandLine::Get(), TEXT("MoSimFollowCameraUpCm="), ParsedFloat))
+    {
+        FollowOffsetCm.Z = FMath::Max(10.0f, ParsedFloat);
+    }
+    if (FParse::Value(FCommandLine::Get(), TEXT("MoSimFollowCameraPitch="), ParsedFloat))
+    {
+        FollowPitchDeg = FMath::Clamp(ParsedFloat, -89.0f, 10.0f);
+    }
+    if (FParse::Value(FCommandLine::Get(), TEXT("MoSimFollowCameraLocationInterpSpeed="), ParsedFloat))
+    {
+        FollowLocationInterpSpeed = FMath::Max(0.0f, ParsedFloat);
+    }
+    if (FParse::Value(FCommandLine::Get(), TEXT("MoSimFollowCameraRotationInterpSpeed="), ParsedFloat))
+    {
+        FollowRotationInterpSpeed = FMath::Max(0.0f, ParsedFloat);
+    }
+    if (FParse::Value(FCommandLine::Get(), TEXT("MoSimFollowCameraOrbitSpeed="), ParsedFloat))
+    {
+        FollowOrbitDegPerSec = FMath::Max(1.0f, ParsedFloat);
+    }
 }
 
 float AMworksReviewCameraPawn::AxisFromKeys(APlayerController* PlayerController, const FKey& PositiveKey, const FKey& NegativeKey) const
@@ -320,6 +368,121 @@ bool AMworksReviewCameraPawn::ComputeCollisionConstrainedDelta(const FVector& De
     const float AllowedDistance = FMath::Max(0.0f, BlockingHit.Distance - ReviewCollisionStopPaddingCm);
     SafeDelta = DesiredDelta.GetSafeNormal() * FMath::Min(DesiredDistance, AllowedDistance);
     return true;
+}
+
+void AMworksReviewCameraPawn::SetFollowTarget(AActor* NewFollowTarget)
+{
+    FollowTarget = NewFollowTarget;
+    bFollowTarget = FollowTarget != nullptr;
+    LastFollowLogTimeSeconds = -1000.0;
+}
+
+void AMworksReviewCameraPawn::ApplyFollowTarget(float DeltaSeconds)
+{
+    if (!FollowTarget)
+    {
+        return;
+    }
+
+    ApplyFollowOrbitInput(DeltaSeconds);
+
+    const FVector TargetLocation = FollowTarget->GetActorLocation();
+    const FRotator TargetRotation = FollowTarget->GetActorRotation();
+    const FRotator FollowYawRotation(0.0f, TargetRotation.Yaw, 0.0f);
+    const FVector DesiredLocation = TargetLocation + FollowYawRotation.RotateVector(FollowOffsetCm);
+    const FRotator DesiredRotation = (TargetLocation - DesiredLocation).Rotation();
+
+    const FVector NewLocation = FollowLocationInterpSpeed <= 0.0f
+        ? DesiredLocation
+        : FMath::VInterpTo(GetActorLocation(), DesiredLocation, DeltaSeconds, FollowLocationInterpSpeed);
+    const FRotator NewRotation = FollowRotationInterpSpeed <= 0.0f
+        ? DesiredRotation
+        : FMath::RInterpTo(GetActorRotation(), DesiredRotation, DeltaSeconds, FollowRotationInterpSpeed);
+
+    SetActorLocationAndRotation(NewLocation, NewRotation);
+
+    if (UWorld* World = GetWorld())
+    {
+        const double NowSeconds = World->GetTimeSeconds();
+        if (NowSeconds - LastFollowLogTimeSeconds > 2.0)
+        {
+            LastFollowLogTimeSeconds = NowSeconds;
+            UE_LOG(
+                LogTemp,
+                Display,
+                TEXT("MWORKS review camera following playback target=%s target_location=%s target_yaw=%.2f offset=%s camera_location=%s camera_rotation=%s"),
+                *FollowTarget->GetName(),
+                *TargetLocation.ToCompactString(),
+                TargetRotation.Yaw,
+                *FollowOffsetCm.ToCompactString(),
+                *NewLocation.ToCompactString(),
+                *NewRotation.ToCompactString());
+        }
+    }
+}
+
+void AMworksReviewCameraPawn::ApplyFollowOrbitInput(float DeltaSeconds)
+{
+    APlayerController* PlayerController = Cast<APlayerController>(GetController());
+    if (!PlayerController || FollowOffsetCm.IsNearlyZero())
+    {
+        return;
+    }
+
+    float SpeedScale = 1.0f;
+    if (PlayerController->IsInputKeyDown(EKeys::LeftShift) || PlayerController->IsInputKeyDown(EKeys::RightShift))
+    {
+        SpeedScale *= FastMoveMultiplier;
+    }
+    if (PlayerController->IsInputKeyDown(EKeys::LeftControl) || PlayerController->IsInputKeyDown(EKeys::RightControl))
+    {
+        SpeedScale *= SlowMoveMultiplier;
+    }
+
+    const float PolledTurnAxis = AxisFromKeys(PlayerController, EKeys::Right, EKeys::Left);
+    const float PolledLookUpAxis = AxisFromKeys(PlayerController, EKeys::Up, EKeys::Down);
+    const float OrbitYawAxis = FMath::Abs(TurnKeyboardAxis) > KINDA_SMALL_NUMBER ? TurnKeyboardAxis : PolledTurnAxis;
+    const float OrbitElevationAxis = FMath::Abs(LookUpKeyboardAxis) > KINDA_SMALL_NUMBER ? LookUpKeyboardAxis : PolledLookUpAxis;
+    if (FMath::Abs(OrbitYawAxis) <= KINDA_SMALL_NUMBER && FMath::Abs(OrbitElevationAxis) <= KINDA_SMALL_NUMBER)
+    {
+        return;
+    }
+
+    const float Radius = FollowOffsetCm.Size();
+    const float HorizontalRadius = FVector2D(FollowOffsetCm.X, FollowOffsetCm.Y).Size();
+    float AzimuthDeg = FMath::RadiansToDegrees(FMath::Atan2(FollowOffsetCm.Y, FollowOffsetCm.X));
+    float ElevationDeg = FMath::RadiansToDegrees(FMath::Atan2(FollowOffsetCm.Z, HorizontalRadius));
+
+    AzimuthDeg -= OrbitYawAxis * FollowOrbitDegPerSec * SpeedScale * DeltaSeconds;
+    ElevationDeg = FMath::Clamp(
+        ElevationDeg + OrbitElevationAxis * FollowOrbitDegPerSec * SpeedScale * DeltaSeconds,
+        FollowMinElevationDeg,
+        FollowMaxElevationDeg);
+
+    const float AzimuthRad = FMath::DegreesToRadians(AzimuthDeg);
+    const float ElevationRad = FMath::DegreesToRadians(ElevationDeg);
+    const float NewHorizontalRadius = Radius * FMath::Cos(ElevationRad);
+    FollowOffsetCm = FVector(
+        NewHorizontalRadius * FMath::Cos(AzimuthRad),
+        NewHorizontalRadius * FMath::Sin(AzimuthRad),
+        Radius * FMath::Sin(ElevationRad));
+
+    if (UWorld* World = GetWorld())
+    {
+        const double NowSeconds = World->GetTimeSeconds();
+        if (NowSeconds - LastFollowOrbitLogTimeSeconds > 0.75)
+        {
+            LastFollowOrbitLogTimeSeconds = NowSeconds;
+            UE_LOG(
+                LogTemp,
+                Display,
+                TEXT("MWORKS review camera follow orbit input yaw_axis=%.1f elevation_axis=%.1f radius_cm=%.2f offset=%s"),
+                OrbitYawAxis,
+                OrbitElevationAxis,
+                Radius,
+                *FollowOffsetCm.ToCompactString());
+        }
+    }
 }
 
 void AMworksReviewCameraPawn::ApplyReviewInput(float DeltaSeconds)
