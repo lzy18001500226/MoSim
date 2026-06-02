@@ -359,8 +359,6 @@ References/Agent/Skills/openai-skills/skills/.system/*
 !References/Agent/Skills/oh-my-openagent-dev/src/tools/**
 !References/Agent/Skills/pro-workflow/
 !References/Agent/Skills/pro-workflow/**
-!References/Agent/Skills/SSL/
-!References/Agent/Skills/SSL/**
 !References/Agent/Skills/SR-Agents/
 !References/Agent/Skills/SR-Agents/**
 !References/Agent/Skills/SkillRouter/

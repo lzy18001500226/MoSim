@@ -12,6 +12,10 @@ summary: >-
   and `!References/Agent/Skills/Awesome-Agent-Skills/**` lines. Path-limited
   follow-up checks did not surface new untracked files under either
   `Docs/Skills/Unreal/mcp` or `References/Agent/Skills/Awesome-Agent-Skills`.
+  The third batch removes only the temporary
+  `!References/Agent/Skills/SSL/` and `!References/Agent/Skills/SSL/**`
+  lines after confirming that subtree has 9 tracked files and no untracked
+  spill.
 evidence:
   - "goal=drain_temporary_gitignore_rules_gradually"
   - "batch_1_scope=.gitignore:124-132_before_edit"
@@ -29,6 +33,12 @@ evidence:
   - "batch_2_candidate_untracked_files=0"
   - "batch_2_removed_rule=!References/Agent/Skills/Awesome-Agent-Skills/"
   - "batch_2_removed_rule=!References/Agent/Skills/Awesome-Agent-Skills/**"
+  - "batch_3_candidate=References/Agent/Skills/SSL"
+  - "batch_3_candidate_file_count=9"
+  - "batch_3_candidate_tracked_files=9"
+  - "batch_3_candidate_untracked_files=0"
+  - "batch_3_removed_rule=!References/Agent/Skills/SSL/"
+  - "batch_3_removed_rule=!References/Agent/Skills/SSL/**"
   - "git_diff_check=passed"
 risks:
   - "The remaining `References/Agent` split-routing chain is still large and must be drained in additional tiny batches."
@@ -40,7 +50,8 @@ ignore_first_strategy: >-
 proposed_batches:
   - "Completed batch 1: remove only the `Docs/Skills/Unreal/mcp` temporary reference-repo rules."
   - "Completed batch 2: remove only the `Awesome-Agent-Skills` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: another tiny `References/Agent/Skills/*` family with low file count and no untracked spill, for example `SSL` or `andrej-karpathy-skills` after bounded probes."
+  - "Completed batch 3: remove only the `SSL` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: another tiny `References/Agent/Skills/*` family with low file count and no untracked spill, for example `andrej-karpathy-skills` after bounded probes."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -49,7 +60,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this second `.gitignore` drain batch together with the ledger and
+  Commit this third `.gitignore` drain batch together with the ledger and
   result packet, then continue with another tiny rule-family removal in a later
   round.
 needs_human: false
