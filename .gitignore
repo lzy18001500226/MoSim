@@ -237,8 +237,6 @@ References/Agent/Skills/openai-skills/skills/.curated/*
 References/Agent/Skills/openai-skills/skills/.system/*
 !References/Agent/Skills/oh-my-openagent-dev/
 !References/Agent/Skills/oh-my-openagent-dev/**
-!References/Agent/Skills/oh-my-openagent-dev/.github/assets/
-!References/Agent/Skills/oh-my-openagent-dev/.github/assets/**
 !References/Agent/Skills/oh-my-openagent-dev/src/
 !References/Agent/Skills/oh-my-openagent-dev/src/**
 !References/Agent/Skills/oh-my-openagent-dev/src/features/
