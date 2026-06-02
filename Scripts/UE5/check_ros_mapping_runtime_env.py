@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check ROS/RViz/FAST-LIO runtime environment for UE scene mapping.
+"""Check ROS/RViz/FAST-LIO runtime environment for the UE UAV platform.
 
 This check is non-invasive: it does not install packages, start roscore,
 launch RViz, or run FAST-LIO. It reports what must be sourced/fixed before the
@@ -146,19 +146,15 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     ros_package_path = os.environ.get("ROS_PACKAGE_PATH")
     ros_master_uri = os.environ.get("ROS_MASTER_URI")
     fast_lio_reference = ROOT / "References/Lab/FAST_LIO/package.xml"
-    project_rviz_config = ROOT / "Config/rviz/mosim_uav_mapping.rviz"
-    project_rviz_grid_config = ROOT / "Config/rviz/mosim_uav_planning_grid.rviz"
     project_rviz_pointcloud_config = ROOT / "Config/rviz/mosim_uav_fastlio_pointcloud.rviz"
-    project_rviz2_config = ROOT / "Config/rviz2/mosim_uav_mapping.rviz"
-    project_rviz2_grid_config = ROOT / "Config/rviz2/mosim_uav_planning_grid.rviz"
     project_rviz2_pointcloud_config = ROOT / "Config/rviz2/mosim_uav_fastlio_pointcloud.rviz"
     bootstrap_script = ROOT / "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh"
-    open_rviz2_script = ROOT / "Scripts/UE5/open_mapping_rviz_ros2.sh"
-    run_fastlio_ros2_script = ROOT / "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh"
+    factory_headless_script = ROOT / "Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh"
     run_launch_ros2_script = ROOT / "Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh"
     launch_package_xml = ROOT / "Scripts/ros/mosim_scene_replay/package.xml"
     launch_file = ROOT / "Scripts/ros/mosim_scene_replay/launch/mosim_scene_replay.launch.py"
     check_fastlio_ros2_script = ROOT / "Scripts/UE5/check_fastlio_ros2_topics.sh"
+    mworks_uav_bridge = ROOT / "Scripts/ros/publish_mworks_uav_state_ros2.py"
     ros1_command_set = ("roscore", "roslaunch", "rostopic", "rosnode", "rosparam", "rviz", "python3")
     ros1_commands_ready = all(commands.get(name) for name in ros1_command_set)
     ros2_command_set = ("ros2", "rviz2", "colcon", "python3")
@@ -199,22 +195,14 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         degraded.append("no_local_ros2_fastlio_family_source")
     elif not fastlio_compatibility["can_claim_fastlio_ros2_runtime"]:
         degraded.append("ros2_fastlio_candidates_not_built_or_not_sourced")
-    if not project_rviz_config.exists():
-        degraded.append("missing_mosim_rviz_config")
-    if not project_rviz_grid_config.exists():
-        degraded.append("missing_mosim_rviz_grid_config")
     if not project_rviz_pointcloud_config.exists():
         degraded.append("missing_mosim_rviz_pointcloud_config")
-    if not project_rviz2_config.exists():
-        blockers.append("missing_mosim_rviz2_config")
-    if not project_rviz2_grid_config.exists():
-        blockers.append("missing_mosim_rviz2_grid_config")
     if not project_rviz2_pointcloud_config.exists():
         blockers.append("missing_mosim_rviz2_pointcloud_config")
-    if not open_rviz2_script.exists():
-        blockers.append("missing_open_mapping_rviz_ros2_script")
-    if not run_fastlio_ros2_script.exists():
-        blockers.append("missing_run_fastlio_rviz_replay_ros2_script")
+    if not factory_headless_script.exists():
+        blockers.append("missing_factory_fastlio_mid360_headless_ros2_script")
+    if not mworks_uav_bridge.exists():
+        blockers.append("missing_mworks_uav_state_ros2_bridge")
     if not run_launch_ros2_script.exists():
         blockers.append("missing_run_mosim_scene_replay_launch_ros2_script")
     if not launch_package_xml.exists():
@@ -225,7 +213,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         blockers.append("missing_check_fastlio_ros2_topics_script")
 
     return {
-        "schema": "mosim.ros_mapping_runtime_env.v1",
+        "schema": "mosim.ros_fastlio_platform_runtime_env.v1",
+        "ready_for_native_fastlio_platform_runtime": not blockers,
         "ready_for_native_mapping_runtime": not blockers,
         "blockers": blockers,
         "degraded": degraded,
@@ -250,25 +239,9 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                 "path": rel(fast_lio_reference),
                 "exists": fast_lio_reference.exists(),
             },
-            "rviz_config": {
-                "path": rel(project_rviz_config),
-                "exists": project_rviz_config.exists(),
-            },
-            "rviz_planning_grid_config": {
-                "path": rel(project_rviz_grid_config),
-                "exists": project_rviz_grid_config.exists(),
-            },
             "rviz_fastlio_pointcloud_config": {
                 "path": rel(project_rviz_pointcloud_config),
                 "exists": project_rviz_pointcloud_config.exists(),
-            },
-            "rviz2_config": {
-                "path": rel(project_rviz2_config),
-                "exists": project_rviz2_config.exists(),
-            },
-            "rviz2_planning_grid_config": {
-                "path": rel(project_rviz2_grid_config),
-                "exists": project_rviz2_grid_config.exists(),
             },
             "rviz2_fastlio_pointcloud_config": {
                 "path": rel(project_rviz2_pointcloud_config),
@@ -278,13 +251,13 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                 "path": rel(bootstrap_script),
                 "exists": bootstrap_script.exists(),
             },
-            "open_mapping_rviz_ros2": {
-                "path": rel(open_rviz2_script),
-                "exists": open_rviz2_script.exists(),
+            "factory_fastlio_mid360_headless_ros2": {
+                "path": rel(factory_headless_script),
+                "exists": factory_headless_script.exists(),
             },
-            "run_fastlio_rviz_replay_ros2": {
-                "path": rel(run_fastlio_ros2_script),
-                "exists": run_fastlio_ros2_script.exists(),
+            "mworks_uav_state_ros2_bridge": {
+                "path": rel(mworks_uav_bridge),
+                "exists": mworks_uav_bridge.exists(),
             },
             "run_mosim_scene_replay_launch_ros2": {
                 "path": rel(run_launch_ros2_script),
@@ -307,18 +280,18 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "Use Ubuntu 22.04 with ROS2 Humble as the primary runtime.",
             "source /opt/ros/humble/setup.bash",
             "Run Scripts/UE5/check_ros_mapping_runtime_env.py --write again.",
-            "Run DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene>.",
-            "Run RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene> for native RViz2 input/map review.",
-            "Run Scripts/UE5/run_fastlio_rviz_replay_ros2.sh <scene> for ROS2 input replay; keep START_FASTLIO=0 unless a real ROS2 FAST-LIO launch command is configured.",
-            "Run Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh <scene> to validate the package-style ROS2 launch path.",
+            "Run python3 Scripts/ros/publish_mworks_uav_state_ros2.py --dry-run with the Factory MWORKS raw CSV and Livox-like frames.",
+            "Run DRY_RUN=1 Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh for the Factory FAST-LIO headless gate.",
+            "Run Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect to validate the package-style ROS2 launch path.",
             "Run Scripts/UE5/check_fastlio_ros2_topics.sh during the live ROS2 run.",
             "Run Scripts/UE5/check_fastlio_family_compatibility.py --write after adding or changing FAST-LIO-family sources.",
             "Treat local References/Lab/FAST_LIO as ROS1-only until a ROS2 FAST-LIO/FAST-LIO2 package is added or a containerized ROS1 bridge route is approved.",
         ],
         "claim_boundary": [
-            "This is only an environment preflight; it does not prove mapping runtime evidence.",
+            "This is only an environment preflight; it does not prove FAST-LIO runtime evidence.",
             "Runtime evidence still requires live ROS topics, RViz visibility, recording, and FAST-LIO evaluation.",
             "HTML is not an accepted active point-cloud/map review window.",
+            "Keyboard/mouse input is accepted only for UE/RViz view control; it must not drive UAV pose.",
             "On Ubuntu 22.04, ROS2/RViz2 is the primary runtime. ROS1/Catkin FAST-LIO blockers are degraded compatibility blockers, not blockers for ROS2 replay input review.",
             "Do not claim FAST-LIO localization until a real ROS2 FAST-LIO-family package publishes /cloud_registered and /Odometry, or an approved ROS1 bridge route records equivalent outputs.",
         ],
@@ -327,9 +300,9 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
 
 def write_markdown(path: Path, report: dict[str, Any]) -> None:
     lines = [
-        "# ROS Mapping Runtime Environment",
+        "# ROS FAST-LIO Platform Runtime Environment",
         "",
-        f"- ready_for_native_mapping_runtime: `{str(report['ready_for_native_mapping_runtime']).lower()}`",
+        f"- ready_for_native_fastlio_platform_runtime: `{str(report['ready_for_native_fastlio_platform_runtime']).lower()}`",
         f"- blockers: {', '.join(f'`{item}`' for item in report['blockers']) or 'none'}",
         f"- degraded: {', '.join(f'`{item}`' for item in report.get('degraded', [])) or 'none'}",
         f"- ros_generation: `{report['ros_generation']}`",

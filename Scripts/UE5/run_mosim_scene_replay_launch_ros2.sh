@@ -6,19 +6,31 @@ set -euo pipefail
 
 PROJECT_ROOT="/mnt/c/Users/HP/Desktop/MoSim"
 ROS_SETUP="${ROS_SETUP:-/opt/ros/humble/setup.bash}"
+ROS_LOG_DIR="${ROS_LOG_DIR:-${PROJECT_ROOT}/Results/tmp/ros_logs}"
 WORKSPACE_ENV="${WORKSPACE:-}"
 SCENE_ID="${1:-factoryenvironmentcollect}"
 RVIZ_PROFILE="${RVIZ_PROFILE:-split}"
 START_RVIZ="${START_RVIZ:-1}"
 START_FASTLIO="${START_FASTLIO:-0}"
 FASTLIO_ROS2_LAUNCH_CMD="${FASTLIO_ROS2_LAUNCH_CMD:-}"
+FASTLIO_LIDAR_TOPIC="${FASTLIO_LIDAR_TOPIC:-/mosim/livox/lidar}"
+FASTLIO_POINTCLOUD_TOPIC="${FASTLIO_POINTCLOUD_TOPIC:-/mosim/lidar_points}"
+FASTLIO_IMU_TOPIC="${FASTLIO_IMU_TOPIC:-/mosim/forward/imu}"
+FASTLIO_LIDAR_FRAME="${FASTLIO_LIDAR_FRAME:-base/mid360_link}"
+FASTLIO_IMU_FRAME="${FASTLIO_IMU_FRAME:-base/forward_imu_optical_frame}"
 FPS="${FPS:-10}"
+SCAN_DURATION_S="${SCAN_DURATION_S:-0}"
+IMU_SUBSTEPS_PER_FRAME="${IMU_SUBSTEPS_PER_FRAME:-10}"
+IMU_SPAN_S="${IMU_SPAN_S:-0}"
+IMU_LEAD_SLEEP_S="${IMU_LEAD_SLEEP_S:-0.005}"
 MAX_FRAMES="${MAX_FRAMES:-0}"
 LOOP="${LOOP:-1}"
 WALL_TIME="${WALL_TIME:-1}"
 DRY_RUN="${DRY_RUN:-0}"
 
 cd "${PROJECT_ROOT}"
+mkdir -p "${ROS_LOG_DIR}"
+export ROS_LOG_DIR
 
 case "${SCENE_ID}" in
   factoryenvironmentcollect|FactoryEnvironmentCollect|factory)
@@ -79,9 +91,18 @@ LAUNCH_ARGS=(
   "start_rviz:=${START_RVIZ_ARG}"
   "start_fastlio:=${START_FASTLIO_ARG}"
   "fps:=${FPS}"
+  "scan_duration_s:=${SCAN_DURATION_S}"
+  "imu_substeps_per_frame:=${IMU_SUBSTEPS_PER_FRAME}"
+  "imu_span_s:=${IMU_SPAN_S}"
+  "imu_lead_sleep_s:=${IMU_LEAD_SLEEP_S}"
   "max_frames:=${MAX_FRAMES}"
   "loop:=${LOOP_ARG}"
   "wall_time:=${WALL_TIME_ARG}"
+  "fastlio_lidar_topic:=${FASTLIO_LIDAR_TOPIC}"
+  "fastlio_pointcloud_topic:=${FASTLIO_POINTCLOUD_TOPIC}"
+  "fastlio_imu_topic:=${FASTLIO_IMU_TOPIC}"
+  "fastlio_lidar_frame:=${FASTLIO_LIDAR_FRAME}"
+  "fastlio_imu_frame:=${FASTLIO_IMU_FRAME}"
 )
 if [[ -n "${FASTLIO_ROS2_LAUNCH_CMD}" ]]; then
   LAUNCH_ARGS+=("fastlio_launch_cmd:=${FASTLIO_ROS2_LAUNCH_CMD}")
@@ -103,6 +124,15 @@ print(json.dumps({
   "rviz_profile": "${RVIZ_PROFILE}",
   "start_rviz": "${START_RVIZ_JSON}" == "true",
   "start_fastlio": "${START_FASTLIO_JSON}" == "true",
+  "fastlio_lidar_topic": "${FASTLIO_LIDAR_TOPIC}",
+  "fastlio_pointcloud_topic": "${FASTLIO_POINTCLOUD_TOPIC}",
+  "fastlio_imu_topic": "${FASTLIO_IMU_TOPIC}",
+  "fastlio_lidar_frame": "${FASTLIO_LIDAR_FRAME}",
+  "fastlio_imu_frame": "${FASTLIO_IMU_FRAME}",
+  "imu_substeps_per_frame": ${IMU_SUBSTEPS_PER_FRAME},
+  "scan_duration_s": ${SCAN_DURATION_S},
+  "imu_span_s": ${IMU_SPAN_S},
+  "imu_lead_sleep_s": ${IMU_LEAD_SLEEP_S},
   "claim": "dry-run only; no workspace files were created and no ROS2 process was launched"
 }, indent=2))
 PY

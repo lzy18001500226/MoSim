@@ -13,6 +13,9 @@ CANDIDATE_ROOT="${CANDIDATE_ROOT:-${PROJECT_ROOT}/Results/tmp/fastlio_ros2_candi
 CANDIDATE_DIR="${CANDIDATE_DIR:-${CANDIDATE_ROOT}/spark-fast-lio}"
 PACKAGE_DIR="${PACKAGE_DIR:-${CANDIDATE_DIR}/spark_fast_lio}"
 WORKSPACE="${WORKSPACE:-${PROJECT_ROOT}/Results/tmp/spark_fast_lio_ros2_ws}"
+LIVOX_MSG_PKG="${LIVOX_MSG_PKG:-${PROJECT_ROOT}/Scripts/ros/livox_ros_driver2}"
+MOSIM_SCENE_REPLAY_PKG="${MOSIM_SCENE_REPLAY_PKG:-${PROJECT_ROOT}/Scripts/ros/mosim_scene_replay}"
+MOSIM_DENSE_LIDAR_CPP_PKG="${MOSIM_DENSE_LIDAR_CPP_PKG:-${PROJECT_ROOT}/Scripts/ros/mosim_dense_lidar_cpp}"
 STATUS_JSON="${STATUS_JSON:-${PROJECT_ROOT}/Results/unreal_scene_mapping/SPARK_FASTLIO_ROS2_CANDIDATE.json}"
 STATUS_MD="${STATUS_MD:-${PROJECT_ROOT}/Results/unreal_scene_mapping/SPARK_FASTLIO_ROS2_CANDIDATE.md}"
 APT_DEB_DIR="${APT_DEB_DIR:-${PROJECT_ROOT}/Results/tmp/apt_debs}"
@@ -23,6 +26,7 @@ UPDATE="${UPDATE:-1}"
 CLEAN_BUILD="${CLEAN_BUILD:-0}"
 DRY_RUN="${DRY_RUN:-0}"
 OVERLAY_USED="${OVERLAY_USED:-0}"
+WRITE_STATUS="${WRITE_STATUS:-1}"
 
 cd "${PROJECT_ROOT}"
 
@@ -116,7 +120,7 @@ write_status() {
   export RESULT="${result}"
   export MISSING_PACKAGES="${missing_packages}"
   export STATUS_NOTE="${note}"
-  export PROJECT_ROOT ROS_SETUP REPO_URL REPO_REF CANDIDATE_DIR PACKAGE_DIR WORKSPACE STATUS_JSON STATUS_MD BUILD UPDATE CLEAN_BUILD DRY_RUN
+  export PROJECT_ROOT ROS_SETUP REPO_URL REPO_REF CANDIDATE_DIR PACKAGE_DIR LIVOX_MSG_PKG MOSIM_SCENE_REPLAY_PKG MOSIM_DENSE_LIDAR_CPP_PKG WORKSPACE STATUS_JSON STATUS_MD BUILD UPDATE CLEAN_BUILD DRY_RUN WRITE_STATUS
   export APT_DEB_DIR APT_OVERLAY_DIR AUTO_APT_OVERLAY OVERLAY_USED
   python3 - <<'PY'
 import json
@@ -144,6 +148,9 @@ payload = {
     "ros_setup": os.environ["ROS_SETUP"],
     "candidate_dir": str(Path(os.environ["CANDIDATE_DIR"]).relative_to(root)),
     "package_dir": str(Path(os.environ["PACKAGE_DIR"]).relative_to(root)),
+    "livox_msg_pkg": str(Path(os.environ["LIVOX_MSG_PKG"]).relative_to(root)),
+    "mosim_scene_replay_pkg": str(Path(os.environ["MOSIM_SCENE_REPLAY_PKG"]).relative_to(root)),
+    "mosim_dense_lidar_cpp_pkg": str(Path(os.environ["MOSIM_DENSE_LIDAR_CPP_PKG"]).relative_to(root)),
     "workspace": str(Path(os.environ["WORKSPACE"]).relative_to(root)),
     "apt_deb_dir": str(Path(os.environ["APT_DEB_DIR"]).relative_to(root)),
     "apt_overlay_dir": str(Path(os.environ["APT_OVERLAY_DIR"]).relative_to(root)),
@@ -162,17 +169,25 @@ payload = {
         "preflight_without_overlay": "AUTO_APT_OVERLAY=0 Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh",
         "build": "BUILD=1 Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh",
         "clean_build": "CLEAN_BUILD=1 BUILD=1 Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh",
+        "patch_readiness": "python3 Scripts/UE5/check_spark_fastlio_livox_patch_readiness.py --write",
         "source_overlay_after_download": (
             "export AMENT_PREFIX_PATH=Results/tmp/ros2_overlay_pcl_ros/opt/ros/humble:${AMENT_PREFIX_PATH}; "
             "export CMAKE_PREFIX_PATH=Results/tmp/ros2_overlay_pcl_ros/opt/ros/humble:${CMAKE_PREFIX_PATH:-${AMENT_PREFIX_PATH}}; "
             "export LD_LIBRARY_PATH=Results/tmp/ros2_overlay_pcl_ros/opt/ros/humble/lib:${LD_LIBRARY_PATH}"
         ),
         "launch_after_build": (
-            "source Results/tmp/spark_fast_lio_ros2_ws/install/setup.bash && "
-            "FASTLIO_ROS2_LAUNCH_CMD='ros2 launch spark_fast_lio mapping_mit_campus.launch.yaml "
-            "start_rviz:=false scene_id:=mosim robot_name:=base_link "
-            "base_frame:=base_link map_frame:=ue_world' "
-            "START_FASTLIO=1 START_RVIZ=0 Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect"
+            "FASTLIO_ROS2_LAUNCH_CMD='set +u; source /opt/ros/humble/setup.bash; "
+            "source Results/tmp/spark_fast_lio_ros2_ws/install/setup.bash; "
+            "ros2 launch spark_fast_lio mapping_mit_campus.launch.yaml "
+            "start_rviz:=false scene_id:=mosim robot_name:=base "
+            "base_frame:=base map_frame:=ue_world' "
+            "START_FASTLIO=1 START_RVIZ=0 MAX_FRAMES=120 LOOP=1 FPS=10 "
+            "FASTLIO_LIDAR_TOPIC=/mosim/livox/lidar "
+            "FASTLIO_POINTCLOUD_TOPIC=/mosim/lidar_points "
+            "FASTLIO_IMU_TOPIC=/mosim/forward/imu "
+            "FASTLIO_LIDAR_FRAME=base/velodyne_link "
+            "FASTLIO_IMU_FRAME=base/forward_imu_optical_frame "
+            "Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect"
         ),
     },
     "claim_boundary": [
@@ -183,8 +198,7 @@ payload = {
         "spark_fast_lio publishes odometry on relative topic odometry, so MoSim checks must account for /odometry or remap/namespace policy before claiming /Odometry.",
     ],
 }
-status_json.parent.mkdir(parents=True, exist_ok=True)
-status_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+write_status_files = os.environ.get("WRITE_STATUS", "1") in {"1", "true", "TRUE", "yes", "YES", "on", "ON"}
 lines = [
     "# SPARK FAST-LIO ROS2 Candidate",
     "",
@@ -192,6 +206,9 @@ lines = [
     f"- phase: `{payload['phase']}`",
     f"- repo: `{payload['repo_url']}` @ `{payload['repo_ref']}`",
     f"- package_dir: `{payload['package_dir']}`",
+    f"- livox_msg_pkg: `{payload['livox_msg_pkg']}`",
+    f"- mosim_scene_replay_pkg: `{payload['mosim_scene_replay_pkg']}`",
+    f"- mosim_dense_lidar_cpp_pkg: `{payload['mosim_dense_lidar_cpp_pkg']}`",
     f"- workspace: `{payload['workspace']}`",
     f"- apt_overlay_dir: `{payload['apt_overlay_dir']}`",
     f"- overlay_used: `{str(payload['overlay_used']).lower()}`",
@@ -210,12 +227,17 @@ for item in payload["claim_boundary"]:
     lines.append(f"- {item}")
 if payload["note"]:
     lines.extend(["", "## Note", "", payload["note"]])
-status_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
+if write_status_files:
+    status_json.parent.mkdir(parents=True, exist_ok=True)
+    status_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    status_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
 print(json.dumps(payload, ensure_ascii=False, indent=2))
 PY
 }
 
 if [[ "${DRY_RUN}" == "1" ]]; then
+  WRITE_STATUS="${DRY_RUN_WRITE_STATUS:-0}"
+  export WRITE_STATUS
   write_status "dry_run" "not_started" "" "Dry-run only; no repository clone, dependency query, or build was executed."
   exit 0
 fi
@@ -254,6 +276,26 @@ if [[ ! -f "${PACKAGE_DIR}/package.xml" ]]; then
   exit 5
 fi
 
+if [[ ! -f "${LIVOX_MSG_PKG}/package.xml" ]]; then
+  write_status "preflight" "blocked_missing_livox_msg_package" "" "Expected project-local livox_ros_driver2 package at ${LIVOX_MSG_PKG}"
+  echo "Missing project-local livox_ros_driver2 package under ${LIVOX_MSG_PKG}" >&2
+  exit 5
+fi
+
+if [[ ! -f "${MOSIM_SCENE_REPLAY_PKG}/package.xml" ]]; then
+  write_status "preflight" "blocked_missing_mosim_scene_replay_package" "" "Expected project-local mosim_scene_replay package at ${MOSIM_SCENE_REPLAY_PKG}"
+  echo "Missing project-local mosim_scene_replay package under ${MOSIM_SCENE_REPLAY_PKG}" >&2
+  exit 5
+fi
+
+if [[ ! -f "${MOSIM_DENSE_LIDAR_CPP_PKG}/package.xml" ]]; then
+  write_status "preflight" "blocked_missing_mosim_dense_lidar_cpp_package" "" "Expected project-local mosim_dense_lidar_cpp package at ${MOSIM_DENSE_LIDAR_CPP_PKG}"
+  echo "Missing project-local mosim_dense_lidar_cpp package under ${MOSIM_DENSE_LIDAR_CPP_PKG}" >&2
+  exit 5
+fi
+
+python3 Scripts/UE5/patch_spark_fastlio_livox_ros2.py --candidate "${PACKAGE_DIR}" >/dev/null
+
 missing_joined="$(find_missing_ros2_deps)"
 missing=()
 if [[ -n "${missing_joined}" ]]; then
@@ -288,18 +330,25 @@ write_status "build" "building" "" "colcon build has started. If the process is 
 
 mkdir -p "${WORKSPACE}/src"
 ln -sfn "${PACKAGE_DIR}" "${WORKSPACE}/src/spark_fast_lio"
+ln -sfn "${LIVOX_MSG_PKG}" "${WORKSPACE}/src/livox_ros_driver2"
+ln -sfn "${MOSIM_SCENE_REPLAY_PKG}" "${WORKSPACE}/src/mosim_scene_replay"
+ln -sfn "${MOSIM_DENSE_LIDAR_CPP_PKG}" "${WORKSPACE}/src/mosim_dense_lidar_cpp"
 if [[ "${CLEAN_BUILD}" == "1" ]]; then
   rm -rf \
     "${WORKSPACE}/build/spark_fast_lio" \
     "${WORKSPACE}/install/spark_fast_lio" \
+    "${WORKSPACE}/build/mosim_scene_replay" \
+    "${WORKSPACE}/install/mosim_scene_replay" \
+    "${WORKSPACE}/build/mosim_dense_lidar_cpp" \
+    "${WORKSPACE}/install/mosim_dense_lidar_cpp" \
     "${WORKSPACE}/log/latest_build/spark_fast_lio" \
     "${WORKSPACE}/log/latest/spark_fast_lio"
 fi
 
 colcon --log-base "${WORKSPACE}/log" build \
-  --base-paths "${WORKSPACE}/src/spark_fast_lio" \
+  --base-paths "${WORKSPACE}/src/spark_fast_lio" "${WORKSPACE}/src/livox_ros_driver2" "${WORKSPACE}/src/mosim_scene_replay" "${WORKSPACE}/src/mosim_dense_lidar_cpp" \
   --build-base "${WORKSPACE}/build" \
   --install-base "${WORKSPACE}/install" \
-  --packages-select spark_fast_lio
+  --packages-select livox_ros_driver2 spark_fast_lio mosim_scene_replay mosim_dense_lidar_cpp
 
 write_status "build" "built" "" "colcon build completed. Runtime still needs live topic recording before FAST-LIO localization can be claimed."

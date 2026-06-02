@@ -65,6 +65,28 @@ def load_odometry(path: Path) -> list[dict[str, Any]]:
     return rows
 
 
+def odometry_time_diagnostics(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    times = [float(row["time"]) for row in rows]
+    nonmonotonic_pairs = sum(1 for previous, current in zip(times, times[1:]) if current < previous)
+    return {
+        "raw_samples": len(rows),
+        "unique_timestamps": len(set(times)),
+        "nonmonotonic_pairs": nonmonotonic_pairs,
+        "first_time_s": round(times[0], 6),
+        "last_time_s": round(times[-1], 6),
+        "min_time_s": round(min(times), 6),
+        "max_time_s": round(max(times), 6),
+    }
+
+
+def normalize_odometry_by_time(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return odometry sorted by stamp, keeping the last sample per timestamp."""
+    by_time: dict[float, dict[str, Any]] = {}
+    for row in rows:
+        by_time[float(row["time"])] = row
+    return [by_time[time_value] for time_value in sorted(by_time)]
+
+
 def nearest_truth(truth: list[dict[str, Any]], times: list[float], time_value: float) -> dict[str, Any]:
     index = bisect_left(times, time_value)
     candidates = []
@@ -84,14 +106,37 @@ def angle_error(a: float, b: float) -> float:
     return value
 
 
+def vector_subtract(a: list[float], b: list[float]) -> list[float]:
+    return [a[index] - b[index] for index in range(3)]
+
+
+def rotate_xy(position: list[float], yaw_rad: float) -> list[float]:
+    cos_yaw = math.cos(yaw_rad)
+    sin_yaw = math.sin(yaw_rad)
+    return [
+        position[0] * cos_yaw - position[1] * sin_yaw,
+        position[0] * sin_yaw + position[1] * cos_yaw,
+        position[2],
+    ]
+
+
 def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     truth_path = project_path(args.truth_dataset)
     odom_path = project_path(args.odometry_jsonl)
     truth = load_truth(truth_path)
-    odom = load_odometry(odom_path)
+    odom_raw = load_odometry(odom_path)
+    odom_time_quality = odometry_time_diagnostics(odom_raw)
+    odom = normalize_odometry_by_time(odom_raw)
     truth_times = [float(row["time"]) for row in truth]
     odom_times_raw = [float(row["time"]) for row in odom]
     time_offset = odom_times_raw[0] - truth_times[0] if args.align_start_time else 0.0
+    first_truth = truth[0]
+    first_odom_position = [float(value) for value in odom[0]["position_m"]]
+    first_truth_position = [float(value) for value in first_truth["pose_world_m"]]
+    first_odom_yaw = float(odom[0].get("yaw_rad", 0.0))
+    first_truth_yaw = float(first_truth.get("rpy_rad", [0.0, 0.0, 0.0])[2])
+    yaw_offset = angle_error(first_truth_yaw, first_odom_yaw) if args.align_start_yaw else 0.0
+    position_offset = vector_subtract(first_odom_position, first_truth_position) if args.align_start_position else [0.0, 0.0, 0.0]
     samples: list[dict[str, Any]] = []
     for index, row in enumerate(odom):
         odom_time = float(row["time"])
@@ -103,9 +148,18 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
             continue
         odom_position = [float(value) for value in row["position_m"]]
         truth_position = [float(value) for value in match["pose_world_m"]]
-        error_xyz = [odom_position[axis] - truth_position[axis] for axis in range(3)]
+        if args.align_start_position:
+            odom_delta = vector_subtract(odom_position, first_odom_position)
+            rotated_delta = rotate_xy(odom_delta, yaw_offset)
+            aligned_odom_position = [
+                first_truth_position[axis] + rotated_delta[axis] for axis in range(3)
+            ]
+        else:
+            aligned_odom_position = rotate_xy(odom_position, yaw_offset)
+        error_xyz = [aligned_odom_position[axis] - truth_position[axis] for axis in range(3)]
         position_error = math.sqrt(sum(value * value for value in error_xyz))
-        yaw_error = angle_error(float(row.get("yaw_rad", 0.0)), float(match.get("rpy_rad", [0.0, 0.0, 0.0])[2]))
+        aligned_odom_yaw = float(row.get("yaw_rad", 0.0)) + yaw_offset
+        yaw_error = angle_error(aligned_odom_yaw, float(match.get("rpy_rad", [0.0, 0.0, 0.0])[2]))
         samples.append(
             {
                 "odom_seq": row.get("seq", index),
@@ -136,6 +190,10 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         "odometry_jsonl": rel(odom_path),
         "align_start_time": args.align_start_time,
         "time_offset_s": round(time_offset, 6),
+        "align_start_position": args.align_start_position,
+        "position_offset_m": [round(value, 6) for value in position_offset],
+        "align_start_yaw": args.align_start_yaw,
+        "yaw_offset_rad": round(yaw_offset, 6),
         "thresholds": {
             "max_time_delta_s": args.max_time_delta,
             "max_position_rmse_m": args.max_position_rmse,
@@ -143,15 +201,19 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         },
         "metrics": {
             "truth_frames": len(truth),
-            "odometry_samples": len(odom),
+            "odometry_samples": len(odom_raw),
+            "odometry_samples_after_time_sort": len(odom),
             "aligned_samples": len(samples),
             "position_rmse_m": round(rmse, 6) if rmse is not None else None,
             "max_position_error_m": round(max_error, 6) if max_error is not None else None,
             "yaw_rmse_rad": round(yaw_rmse, 6) if yaw_rmse is not None else None,
         },
+        "odometry_time_quality": odom_time_quality,
         "sample_errors": samples[: args.max_samples_reported],
         "claim_boundary": [
             "This evaluates recorded FAST-LIO ROS runtime odometry against replay truth.",
+            "Start-position alignment is allowed because FAST-LIO odometry is commonly local-map relative while replay truth is in UE world coordinates.",
+            "Start-yaw alignment is allowed because FAST-LIO local map axes can differ from UE world axes by an initial heading rotation.",
             "A pass requires separately recorded runtime topics; synthetic replay files alone are insufficient.",
             "The global occupancy truth remains a validation oracle and is not a planner input.",
         ],
@@ -166,6 +228,10 @@ def write_markdown(path: Path, report: dict[str, Any]) -> None:
         f"- status: `{report['status']}`",
         f"- truth_dataset: `{report['truth_dataset']}`",
         f"- odometry_jsonl: `{report['odometry_jsonl']}`",
+        f"- align_start_position: `{report['align_start_position']}`",
+        f"- position_offset_m: `{report['position_offset_m']}`",
+        f"- align_start_yaw: `{report['align_start_yaw']}`",
+        f"- yaw_offset_rad: `{report['yaw_offset_rad']}`",
         f"- aligned_samples: `{report['metrics']['aligned_samples']}`",
         f"- position_rmse_m: `{report['metrics']['position_rmse_m']}`",
         f"- max_position_error_m: `{report['metrics']['max_position_error_m']}`",
@@ -185,6 +251,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-md", type=Path)
     parser.add_argument("--align-start-time", action="store_true", default=True)
     parser.add_argument("--no-align-start-time", dest="align_start_time", action="store_false")
+    parser.add_argument("--align-start-position", action="store_true", default=True)
+    parser.add_argument("--no-align-start-position", dest="align_start_position", action="store_false")
+    parser.add_argument("--align-start-yaw", action="store_true", default=True)
+    parser.add_argument("--no-align-start-yaw", dest="align_start_yaw", action="store_false")
     parser.add_argument("--max-time-delta", type=float, default=0.2)
     parser.add_argument("--max-position-rmse", type=float, default=1.0)
     parser.add_argument("--max-position-error", type=float, default=3.0)

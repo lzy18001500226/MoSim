@@ -13,6 +13,7 @@ import csv
 import importlib.util
 import json
 import math
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -57,6 +58,10 @@ def rel(path: Path) -> str:
         return str(path)
 
 
+def atomic_jsonl_path(path: Path) -> Path:
+    return path.with_name(f".{path.name}.tmp.{os.getpid()}")
+
+
 def read_pose_csv(path: Path) -> list[dict[str, float]]:
     with path.open(newline="", encoding="utf-8") as handle:
         rows = [
@@ -65,10 +70,18 @@ def read_pose_csv(path: Path) -> list[dict[str, float]]:
         ]
     if not rows:
         raise ValueError(f"empty pose CSV: {path}")
-    required = {"time", "x", "y", "z"}
-    missing = required - set(rows[0])
+    if {"time", "x", "y", "z"}.issubset(rows[0]):
+        return rows
+    ref_required = {"time", "x_ref", "y_ref", "z_ref"}
+    missing = ref_required - set(rows[0])
     if missing:
         raise ValueError(f"pose CSV missing columns {sorted(missing)}: {path}")
+    for row in rows:
+        row["x"] = row["x_ref"]
+        row["y"] = row["y_ref"]
+        row["z"] = row["z_ref"]
+        if "yaw" not in row and "yaw_ref" in row:
+            row["yaw"] = row["yaw_ref"]
     return rows
 
 
@@ -147,6 +160,20 @@ def rotate_body_to_world(direction: tuple[float, float, float], yaw: float) -> t
     )
 
 
+def world_point_to_body(point: list[float], pose: dict[str, float]) -> list[float]:
+    yaw = pose.get("yaw", 0.0)
+    dx = float(point[0]) - pose["x"]
+    dy = float(point[1]) - pose["y"]
+    dz = float(point[2]) - pose["z"]
+    c = math.cos(yaw)
+    s = math.sin(yaw)
+    return [
+        round(c * dx + s * dy, 5),
+        round(-s * dx + c * dy, 5),
+        round(dz, 5),
+    ]
+
+
 def ray_direction(azimuth: float, zenith: float) -> tuple[float, float, float]:
     horizontal = math.cos(zenith)
     return (
@@ -204,6 +231,41 @@ def cast_scan(
     return points, attrs
 
 
+def write_truth_dataset(path: Path, scene_id: str, poses: list[dict[str, float]]) -> None:
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        for seq, pose in enumerate(poses):
+            payload = {
+                "schema": "mosim.fastlio_replay_frame.v1",
+                "scene_id": scene_id,
+                "seq": seq,
+                "time": round(float(pose.get("time", seq * 0.1)), 6),
+                "world_frame_id": "ue_world",
+                "body_frame_id": "base_link",
+                "lidar_frame_id": "base/mid360_link",
+                "pose_world_m": [
+                    round(float(pose.get("x", 0.0)), 5),
+                    round(float(pose.get("y", 0.0)), 5),
+                    round(float(pose.get("z", 0.0)), 5),
+                ],
+                "rpy_rad": [
+                    round(float(pose.get("roll", 0.0)), 6),
+                    round(float(pose.get("pitch", 0.0)), 6),
+                    round(float(pose.get("yaw", 0.0)), 6),
+                ],
+                "points_lidar_m": [],
+                "synthetic_imu": {
+                    "source": "mworks_raw_pose_truth_only",
+                    "is_measured_imu": False,
+                },
+                "input_trace": {
+                    "pose_source": "mworks_raw_csv",
+                    "lidar_source": "not_used_for_truth_evaluation",
+                    "fixed_yaw_for_fastlio_input": False,
+                },
+            }
+            handle.write(json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n")
+
+
 def generate_scene(args: argparse.Namespace, scene_id: str) -> dict[str, Any]:
     truth_path = scene_truth.scene_truth_path(scene_id, project_path(args.truth_dir))
     truth = scene_truth.load_truth(truth_path)
@@ -217,6 +279,10 @@ def generate_scene(args: argparse.Namespace, scene_id: str) -> dict[str, Any]:
         else DEFAULT_OUTPUT_ROOT / scene_id / "render_replay.csv"
     )
     poses = read_pose_csv(pose_csv)
+    if args.pose_start_index > 0:
+        poses = poses[args.pose_start_index :]
+    if args.pose_stride > 1:
+        poses = poses[:: args.pose_stride]
     if args.max_frames > 0:
         poses = poses[: args.max_frames]
     rays = read_scan_mode(project_path(args.scan_mode), limit=args.points_per_frame, start=args.scan_start_index)
@@ -224,7 +290,8 @@ def generate_scene(args: argparse.Namespace, scene_id: str) -> dict[str, Any]:
     output_dir.mkdir(parents=True, exist_ok=True)
     jsonl_path = output_dir / args.output_name
     counts: list[int] = []
-    with jsonl_path.open("w", encoding="utf-8", newline="\n") as handle:
+    tmp_jsonl_path = atomic_jsonl_path(jsonl_path)
+    with tmp_jsonl_path.open("w", encoding="utf-8", newline="\n") as handle:
         for seq, pose in enumerate(poses):
             points, attrs = cast_scan(
                 pose=pose,
@@ -238,22 +305,34 @@ def generate_scene(args: argparse.Namespace, scene_id: str) -> dict[str, Any]:
                 reflectivity=args.reflectivity,
             )
             counts.append(len(points))
+            output_points = points
+            coordinate_frame = "ue_world_m_z_up"
+            if args.points_frame == "body":
+                output_points = [world_point_to_body(point, pose) for point in points]
+                coordinate_frame = "body_lidar_m_z_up"
             payload = {
                 "schema": "mosim.livox_like_lidar_frame.v1",
                 "scene_id": profile.scene_id,
                 "seq": seq,
                 "time": round(float(pose.get("time", seq / args.lidar_rate_hz)), 6),
-                "coordinate_frame": "ue_world_m_z_up",
+                "coordinate_frame": coordinate_frame,
                 "source": "sunray_mid360_scan_mode_plus_ue_collision_truth_replay",
                 "render_only": False,
                 "evidence_backed": True,
                 "scan_mode_csv": rel(project_path(args.scan_mode)),
                 "lidar_rate_hz": args.lidar_rate_hz,
                 "point_rate_hz": args.point_rate_hz,
-                "points_m": points,
+                "points_m": output_points,
                 "point_attributes": attrs,
             }
             handle.write(json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n")
+    tmp_jsonl_path.replace(jsonl_path)
+    truth_dataset_path: Path | None = None
+    if args.truth_dataset_name:
+        truth_dataset_path = output_dir / args.truth_dataset_name
+        tmp_truth_dataset_path = atomic_jsonl_path(truth_dataset_path)
+        write_truth_dataset(tmp_truth_dataset_path, profile.scene_id, poses)
+        tmp_truth_dataset_path.replace(truth_dataset_path)
     manifest = {
         "schema": "mosim.livox_like_lidar_replay_manifest.v1",
         "scene_id": profile.scene_id,
@@ -261,7 +340,11 @@ def generate_scene(args: argparse.Namespace, scene_id: str) -> dict[str, Any]:
         "pose_csv": rel(pose_csv),
         "scan_mode_csv": rel(project_path(args.scan_mode)),
         "output_jsonl": rel(jsonl_path),
+        "truth_dataset_jsonl": rel(truth_dataset_path) if truth_dataset_path else None,
         "frame_count": len(poses),
+        "pose_start_index": args.pose_start_index,
+        "pose_stride": args.pose_stride,
+        "points_frame": args.points_frame,
         "points_per_frame_requested": args.points_per_frame,
         "points_per_frame_min": min(counts) if counts else 0,
         "points_per_frame_max": max(counts) if counts else 0,
@@ -293,8 +376,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--vertical-span-m", type=float, default=8.0)
     parser.add_argument("--reflectivity", type=int, default=100)
     parser.add_argument("--max-frames", type=int, default=0)
+    parser.add_argument("--pose-start-index", type=int, default=0)
+    parser.add_argument("--pose-stride", type=int, default=1)
+    parser.add_argument("--points-frame", choices=("world", "body"), default="world")
     parser.add_argument("--output-name", default="livox_like_lidar_frames.jsonl")
     parser.add_argument("--manifest-name", default="livox_like_lidar_manifest.json")
+    parser.add_argument("--truth-dataset-name", default="")
     return parser.parse_args()
 
 
@@ -306,6 +393,10 @@ def main() -> int:
         raise ValueError("rates must be positive")
     if args.max_range_m <= args.min_range_m:
         raise ValueError("--max-range-m must be greater than --min-range-m")
+    if args.pose_stride <= 0:
+        raise ValueError("--pose-stride must be positive")
+    if args.pose_start_index < 0:
+        raise ValueError("--pose-start-index must be non-negative")
     scene_ids = args.scene or ["factoryenvironmentcollect"]
     reports = [generate_scene(args, scene_id.lower()) for scene_id in scene_ids]
     print(json.dumps({"schema": "mosim.livox_like_lidar_replay_run.v1", "reports": reports}, ensure_ascii=False, indent=2))
