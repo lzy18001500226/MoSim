@@ -131,8 +131,6 @@ References/Agent/
 References/Agent/*
 !References/Agent/Skills/
 References/Agent/Skills/*
-!References/Agent/Skills/agent-skills/
-!References/Agent/Skills/agent-skills/**
 !References/Agent/Skills/Agent-Skills-for-Context-Engineering/
 !References/Agent/Skills/Agent-Skills-for-Context-Engineering/**
 !References/Agent/Skills/anthropics-skills/
