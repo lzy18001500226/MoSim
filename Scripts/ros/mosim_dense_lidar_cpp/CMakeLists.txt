@@ -9,11 +9,27 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(livox_ros_driver2 REQUIRED)
 
 add_executable(dense_lidar_replay_node src/dense_lidar_replay_node.cpp)
 target_compile_features(dense_lidar_replay_node PUBLIC cxx_std_17)
-ament_target_dependencies(dense_lidar_replay_node rclcpp sensor_msgs std_msgs)
+ament_target_dependencies(dense_lidar_replay_node rclcpp sensor_msgs std_msgs livox_ros_driver2)
 
-install(TARGETS dense_lidar_replay_node DESTINATION lib/${PROJECT_NAME})
+add_executable(dense_lidar_subscriber_probe_node src/dense_lidar_subscriber_probe_node.cpp)
+target_compile_features(dense_lidar_subscriber_probe_node PUBLIC cxx_std_17)
+ament_target_dependencies(dense_lidar_subscriber_probe_node rclcpp sensor_msgs)
+
+add_executable(mworks_state_imu_replay_node src/mworks_state_imu_replay_node.cpp)
+target_compile_features(mworks_state_imu_replay_node PUBLIC cxx_std_17)
+ament_target_dependencies(mworks_state_imu_replay_node rclcpp sensor_msgs nav_msgs geometry_msgs tf2_ros)
+
+add_executable(livox_imu_probe_node src/livox_imu_probe_node.cpp)
+target_compile_features(livox_imu_probe_node PUBLIC cxx_std_17)
+ament_target_dependencies(livox_imu_probe_node rclcpp sensor_msgs livox_ros_driver2)
+
+install(TARGETS dense_lidar_replay_node dense_lidar_subscriber_probe_node mworks_state_imu_replay_node livox_imu_probe_node DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

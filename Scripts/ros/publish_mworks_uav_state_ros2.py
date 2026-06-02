@@ -144,21 +144,42 @@ def interpolate_rows(rows: list[dict[str, float]], index: int, alpha: float) -> 
     }
 
 
-def pack_livox_like_cloud(points: list[list[float]], scan_duration_s: float, scan_lines: int, intensity: float) -> bytes:
+def pack_livox_like_cloud(
+    points: list[list[float]],
+    scan_duration_s: float,
+    scan_lines: int,
+    intensity: float,
+    attrs: list[dict[str, Any]] | None = None,
+) -> bytes:
     data = bytearray()
     count = max(len(points) - 1, 1)
+    attr_offsets = [
+        int(attr.get("offset_time_ns", 0))
+        for attr in (attrs or [])
+        if isinstance(attr, dict) and "offset_time_ns" in attr
+    ]
+    attr_span = max(attr_offsets) if attr_offsets else 0
+    target_span_ns = max(1, int(round(scan_duration_s * 1_000_000_000.0)))
     for index, point in enumerate(points):
-        point_time_us = float(index) / float(count) * scan_duration_s * 1_000_000.0
-        ring = int(index % scan_lines)
+        attr = attrs[index] if attrs and index < len(attrs) else {}
+        if "offset_time_ns" in attr and attr_span > 0:
+            offset_time = int(round(int(attr["offset_time_ns"]) / float(attr_span) * target_span_ns))
+        else:
+            offset_time = int(round(float(index) / float(count) * target_span_ns))
+        offset_time = max(0, min(offset_time, 4_294_967_295))
+        line = int(attr.get("line", index % scan_lines))
+        tag = int(attr.get("tag", 16))
+        reflectivity = float(attr.get("reflectivity", intensity))
         data.extend(
             struct.pack(
-                "<fffffHxx",
+                "<IffffBB",
+                offset_time,
                 float(point[0]),
                 float(point[1]),
                 float(point[2]),
-                float(intensity),
-                point_time_us,
-                ring,
+                reflectivity,
+                tag,
+                line,
             )
         )
     return bytes(data)
@@ -170,15 +191,53 @@ def selected_count(total: int, max_frames: int) -> int:
     return total
 
 
+def rate_summary(rows: list[dict[str, float]], count: int) -> dict[str, Any]:
+    selected = rows[:count]
+    deltas = [selected[i + 1]["time"] - selected[i]["time"] for i in range(len(selected) - 1)]
+    positive = [delta for delta in deltas if delta > 0.0]
+    nominal_hz = 1.0 / (sum(positive) / len(positive)) if positive else 0.0
+    return {
+        "sample_count": count,
+        "monotonic": len(positive) == len(deltas),
+        "nominal_hz": round(nominal_hz, 6),
+        "min_dt_s": round(min(deltas), 9) if deltas else 0.0,
+        "max_dt_s": round(max(deltas), 9) if deltas else 0.0,
+    }
+
+
+def pose_continuity_summary(rows: list[dict[str, float]], count: int) -> dict[str, Any]:
+    selected = rows[:count]
+    distances: list[float] = []
+    for left, right in zip(selected, selected[1:]):
+        distances.append(
+            math.sqrt(
+                (right["x"] - left["x"]) ** 2
+                + (right["y"] - left["y"]) ** 2
+                + (right["z"] - left["z"]) ** 2
+            )
+        )
+    return {
+        "max_step_m": round(max(distances), 6) if distances else 0.0,
+        "mean_step_m": round(sum(distances) / len(distances), 6) if distances else 0.0,
+        "cell_step_motion": False,
+    }
+
+
 def dry_run(args: argparse.Namespace) -> int:
     rows = read_mworks_raw(project_path(args.mworks_raw_csv))
     lidar = read_jsonl(project_path(args.lidar_point_frames_jsonl), SUPPORTED_LIDAR_SCHEMAS)
     count = selected_count(min(len(rows), len(lidar)), args.max_frames)
     duration = rows[count - 1]["time"] - rows[0]["time"] if count > 1 else 0.0
-    source_dt = [rows[i + 1]["time"] - rows[i]["time"] for i in range(min(count - 1, 20))]
-    nominal_source_hz = 1.0 / (sum(source_dt) / len(source_dt)) if source_dt else 0.0
+    source_rate = rate_summary(rows, count)
+    lidar_counts = [len(frame.get("points_m", [])) for frame in lidar[:count]]
     imu_rate = args.imu_rate_hz
     lidar_rate = args.lidar_rate_hz
+    source_hz = float(source_rate["nominal_hz"])
+    resampling = {
+        "truth_odometry": "direct_or_rate_declared",
+        "imu": "resampled_from_mworks_state" if abs(source_hz - imu_rate) > 1e-6 else "source_rate",
+        "lidar": "from_lidar_frame_jsonl",
+    }
     print(
         json.dumps(
             {
@@ -186,7 +245,22 @@ def dry_run(args: argparse.Namespace) -> int:
                 "frames": count,
                 "source": "MWORKS_MCP_raw_replay",
                 "source_duration_s": round(duration, 6),
-                "nominal_source_hz": round(nominal_source_hz, 6),
+                "source_rate": source_rate,
+                "nominal_source_hz": source_hz,
+                "resampling": resampling,
+                "timestamp_policy": {
+                    "monotonic_source_time": source_rate["monotonic"],
+                    "wall_time_mode": bool(args.wall_time),
+                    "imu_substeps": max(1, int(round(args.imu_rate_hz / max(args.truth_rate_hz, 1e-9)))),
+                },
+                "odometry_continuity": pose_continuity_summary(rows, count),
+                "lidar_input": {
+                    "schema": lidar[0].get("schema"),
+                    "min_points_per_frame": min(lidar_counts) if lidar_counts else 0,
+                    "max_points_per_frame": max(lidar_counts) if lidar_counts else 0,
+                    "mean_points_per_frame": round(sum(lidar_counts) / len(lidar_counts), 3) if lidar_counts else 0.0,
+                    "mid360_density_claimable": bool(lidar_counts and min(lidar_counts) >= 10000),
+                },
                 "target_rates_hz": {
                     "truth_odometry": args.truth_rate_hz,
                     "imu": imu_rate,
@@ -197,9 +271,17 @@ def dry_run(args: argparse.Namespace) -> int:
                     "truth_odometry": args.truth_odom_topic,
                     "imu": args.imu_topic,
                     "lidar": args.lidar_topic,
+                    "livox_custom": args.livox_custom_topic if args.publish_livox_custom else "",
                     "tf": "/tf",
                 },
-                "pointcloud2_fields": ["x", "y", "z", "intensity", "time", "ring"],
+                "tf_contract": f"{args.world_frame}->{args.body_frame}; {args.body_frame}->{args.imu_frame}/{args.lidar_frame} static extrinsics pending",
+                "pointcloud2_fields": ["offset_time", "x", "y", "z", "intensity", "tag", "line"],
+                "livox_custom_msg": {
+                    "enabled": bool(args.publish_livox_custom),
+                    "package": "livox_ros_driver2",
+                    "message": "livox_ros_driver2/msg/CustomMsg",
+                    "fields": ["timebase", "point_num", "lidar_id", "offset_time", "x", "y", "z", "reflectivity", "tag", "line"],
+                },
                 "scan_lines": args.scan_lines,
                 "scan_duration_s": args.scan_duration_s,
                 "rate_note": (
@@ -227,16 +309,25 @@ def publish_ros2(args: argparse.Namespace) -> int:
         from sensor_msgs.msg import Imu, PointCloud2, PointField  # type: ignore
         from std_msgs.msg import Header  # type: ignore
         from tf2_ros import TransformBroadcaster  # type: ignore
+        if args.publish_livox_custom:
+            from livox_ros_driver2.msg import CustomMsg, CustomPoint  # type: ignore
+        else:
+            CustomMsg = None  # type: ignore
+            CustomPoint = None  # type: ignore
     except ImportError as exc:
         print("ROS2 Python modules are unavailable. Source /opt/ros/humble/setup.bash first.", file=sys.stderr)
         print(str(exc), file=sys.stderr)
         return 2
 
     rows = read_mworks_raw(project_path(args.mworks_raw_csv))
-    lidar = read_jsonl(project_path(args.lidar_point_frames_jsonl), SUPPORTED_LIDAR_SCHEMAS)
-    frame_count = selected_count(min(len(rows), len(lidar)), args.max_frames)
+    if args.disable_lidar:
+        lidar: list[dict[str, Any]] = []
+        frame_count = selected_count(len(rows), args.max_frames)
+    else:
+        lidar = read_jsonl(project_path(args.lidar_point_frames_jsonl), SUPPORTED_LIDAR_SCHEMAS)
+        frame_count = selected_count(min(len(rows), len(lidar)), args.max_frames)
     rows = rows[:frame_count]
-    lidar = lidar[:frame_count]
+    lidar = lidar[:frame_count] if lidar else []
 
     qos = QoSProfile(
         history=HistoryPolicy.KEEP_LAST,
@@ -250,6 +341,11 @@ def publish_ros2(args: argparse.Namespace) -> int:
     odom_pub = node.create_publisher(Odometry, args.truth_odom_topic, qos)
     imu_pub = node.create_publisher(Imu, args.imu_topic, qos)
     lidar_pub = node.create_publisher(PointCloud2, args.lidar_topic, qos)
+    livox_pub = (
+        node.create_publisher(CustomMsg, args.livox_custom_topic, qos)
+        if args.publish_livox_custom
+        else None
+    )
 
     def stamp_from_seconds(seconds: float) -> Any:
         msg = Time()
@@ -333,18 +429,61 @@ def publish_ros2(args: argparse.Namespace) -> int:
         msg.height = 1
         msg.width = len(points)
         msg.fields = [
-            PointField(name="x", offset=0, datatype=PointField.FLOAT32, count=1),
-            PointField(name="y", offset=4, datatype=PointField.FLOAT32, count=1),
-            PointField(name="z", offset=8, datatype=PointField.FLOAT32, count=1),
-            PointField(name="intensity", offset=12, datatype=PointField.FLOAT32, count=1),
-            PointField(name="time", offset=16, datatype=PointField.FLOAT32, count=1),
-            PointField(name="ring", offset=20, datatype=PointField.UINT16, count=1),
+            PointField(name="offset_time", offset=0, datatype=PointField.UINT32, count=1),
+            PointField(name="x", offset=4, datatype=PointField.FLOAT32, count=1),
+            PointField(name="y", offset=8, datatype=PointField.FLOAT32, count=1),
+            PointField(name="z", offset=12, datatype=PointField.FLOAT32, count=1),
+            PointField(name="intensity", offset=16, datatype=PointField.FLOAT32, count=1),
+            PointField(name="tag", offset=20, datatype=PointField.UINT8, count=1),
+            PointField(name="line", offset=21, datatype=PointField.UINT8, count=1),
         ]
         msg.is_bigendian = False
-        msg.point_step = 24
+        msg.point_step = 22
         msg.row_step = msg.point_step * msg.width
-        msg.data = pack_livox_like_cloud(points, args.scan_duration_s, args.scan_lines, args.intensity)
+        msg.data = pack_livox_like_cloud(
+            points,
+            args.scan_duration_s,
+            args.scan_lines,
+            args.intensity,
+            frame.get("point_attributes"),
+        )
         msg.is_dense = True
+        return msg
+
+    def make_livox_custom(frame: dict[str, Any], stamp: Any) -> Any:
+        if CustomMsg is None or CustomPoint is None:
+            raise RuntimeError("livox_ros_driver2 CustomMsg is unavailable")
+        points = frame.get("points_m", [])
+        attrs = frame.get("point_attributes") or []
+        count = max(len(points) - 1, 1)
+        attr_offsets = [
+            int(attr.get("offset_time_ns", 0))
+            for attr in attrs
+            if isinstance(attr, dict) and "offset_time_ns" in attr
+        ]
+        attr_span = max(attr_offsets) if attr_offsets else 0
+        target_span_us = max(1, int(round(args.scan_duration_s * 1_000_000.0)))
+        msg = CustomMsg()
+        msg.header = header(stamp, args.lidar_frame)
+        msg.timebase = int(stamp.sec) * 1_000_000_000 + int(stamp.nanosec)
+        msg.point_num = len(points)
+        msg.lidar_id = args.livox_lidar_id
+        msg.rsvd = [0, 0, 0]
+        msg.points = []
+        for point_index, point in enumerate(points):
+            attr = attrs[point_index] if point_index < len(attrs) else {}
+            custom_point = CustomPoint()
+            if "offset_time_ns" in attr and attr_span > 0:
+                custom_point.offset_time = int(round(int(attr["offset_time_ns"]) / float(attr_span) * target_span_us))
+            else:
+                custom_point.offset_time = int(round(float(point_index) / float(count) * target_span_us))
+            custom_point.x = float(point[0])
+            custom_point.y = float(point[1])
+            custom_point.z = float(point[2])
+            custom_point.reflectivity = int(attr.get("reflectivity", int(args.intensity))) & 0xFF
+            custom_point.tag = int(attr.get("tag", 16)) & 0xFF
+            custom_point.line = int(attr.get("line", point_index % args.scan_lines)) & 0xFF
+            msg.points.append(custom_point)
         return msg
 
     imu_period_s = 1.0 / args.imu_rate_hz
@@ -370,9 +509,12 @@ def publish_ros2(args: argparse.Namespace) -> int:
                     if step == 0:
                         publish_tf(row, stamp)
                         odom_pub.publish(make_odom(row, index, stamp))
-                        if (truth_sequence % lidar_truth_stride) == 0:
+                        if (not args.disable_lidar) and (truth_sequence % lidar_truth_stride) == 0:
                             lidar_index = min(index, len(lidar) - 1)
-                            lidar_pub.publish(make_cloud(lidar[lidar_index], stamp))
+                            frame = lidar[lidar_index]
+                            lidar_pub.publish(make_cloud(frame, stamp))
+                            if livox_pub is not None:
+                                livox_pub.publish(make_livox_custom(frame, stamp))
                         truth_sequence += 1
                     imu_pub.publish(make_imu(row, index, stamp))
                     rclpy.spin_once(node, timeout_sec=0.0)
@@ -403,6 +545,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--truth-odom-topic", default="/mosim/truth/odometry")
     parser.add_argument("--imu-topic", default="/mosim/imu")
     parser.add_argument("--lidar-topic", default="/mosim/lidar_points")
+    parser.add_argument("--livox-custom-topic", default="/mosim/livox/lidar")
     parser.add_argument("--truth-rate-hz", type=float, default=20.0)
     parser.add_argument("--imu-rate-hz", type=float, default=200.0)
     parser.add_argument("--lidar-rate-hz", type=float, default=10.0)
@@ -410,6 +553,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--scan-duration-s", type=float, default=0.09)
     parser.add_argument("--scan-lines", type=int, default=4)
     parser.add_argument("--intensity", type=float, default=50.0)
+    parser.add_argument("--livox-lidar-id", type=int, default=1)
+    parser.add_argument("--publish-livox-custom", action="store_true")
+    parser.add_argument("--disable-lidar", action="store_true")
     parser.add_argument("--max-frames", type=int, default=0)
     parser.add_argument("--loop", action="store_true")
     parser.add_argument("--wall-time", action="store_true")

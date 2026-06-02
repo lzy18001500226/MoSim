@@ -1,61 +1,41 @@
 task_id: COAGENT-DEVOPS-GIT-DIVIDE-20260531
-status: running
-decision: continue_path_limited_inventory_with_openclaw_as_current_noise_source
-summary: "Current checkpoint refreshed to the latest safe evidence. `main` remains the active branch and upstream is `59 0`. The transient lock residue was cleared again after reappearing. Bounded current-HEAD probes show `References/Agent/Platforms/open-interpreter`, `OpenHands`, and `qwen-code` do not currently report local diff at the tested path scopes, while `References/Agent/Platforms/openclaw/docs`, `.github`, and `apps` also returned clean or warning-only results. `openclaw/extensions` remains the current noise source; within it, `openai`, `codex`, `slack`, and `qwen` were narrowed, but `test-support` and `codex/src/app-server/sandbox-exec-server` remain empty-at-this-scope or timeout-only. A fresh switch to `AChat-canary`, `tinyagi`, `codex/codex-rs` core subdirectories, child-project sweeps over `Memory`, `Security`, and `ReviewLater`, and `Skills` subdirectory probes (`agent-skills/skills`, `AutoSkill/AutoSkill4Doc`, `AutoSkill/AutoSkill4OpenClaw`, `awesome-codex-skills/composio-skills`, `awesome-codex-skills/agent-deep-links`) did not surface any nonempty batch candidate; `Workflow` child sweep timed out before producing a candidate. `Flowise` remains the best remaining family to revisit, but its package-level probes (`packages/{api-documentation,components,observe,server,ui,agentflow}`), current non-package probes (`docker`, `metrics`, `assets`, `images`), and deeper `docker/worker/healthcheck` / `assets` checks were empty at the tested scope, so the next search must move to file-level checks or another unconsumed family. A push attempt on `main` timed out at 60s after the stale `.git/index.lock` had been removed; local `HEAD` stayed at `75f3fcce61c619b69a7a0df700bff41fc85cd21c` and `origin/main` still resolves to `472999d8d168838f68c104d02e9f9d937f4d87ef`, so the remote did not advance in this checkpoint."
-summary: "Current checkpoint refreshed to the latest safe evidence. `main` remains the active branch and upstream is `59 0`. The transient lock residue was cleared again after reappearing. Bounded current-HEAD probes show `References/Agent/Platforms/open-interpreter`, `OpenHands`, and `qwen-code` do not currently report local diff at the tested path scopes, while `References/Agent/Platforms/openclaw/docs`, `.github`, and `apps` also returned clean or warning-only results. `openclaw/extensions` remains the current noise source; within it, `openai`, `codex`, `slack`, and `qwen` were narrowed, but `test-support` and `codex/src/app-server/sandbox-exec-server` remain empty-at-this-scope or timeout-only. A fresh switch to `AChat-canary`, `tinyagi`, `codex/codex-rs` core subdirectories, child-project sweeps over `Memory`, `Security`, and `ReviewLater`, and `Skills` subdirectory probes (`agent-skills/skills`, `AutoSkill/AutoSkill4Doc`, `AutoSkill/AutoSkill4OpenClaw`, `awesome-codex-skills/composio-skills`, `awesome-codex-skills/agent-deep-links`) did not surface any nonempty batch candidate; `Workflow` child sweep timed out before producing a candidate. `Flowise` remains the best remaining family to revisit, but its package-level probes (`packages/{api-documentation,components,observe,server,ui,agentflow}`), current non-package probes (`docker`, `metrics`, `assets`, `images`), and deeper `docker/worker/healthcheck` / `assets` checks were empty at the tested scope, so the next search must move to file-level checks or another unconsumed family. A push attempt on `main` timed out at 60s after the stale `.git/index.lock` had been removed; local `HEAD` stayed at `75f3fcce61c619b69a7a0df700bff41fc85cd21c` and `origin/main` still resolves to `75f3fcce61c619b69a7a0df700bff41fc85cd21c`, so the remote did advance by the end of the checkpoint. `References/Agent/Control/agor/.env.postgres` was inspected and contains a clear database URL with an embedded development secret-style password, so it remains an explicit credential/env blocker and is not a safe submission candidate."
+status: planned
+decision: continue_with_next_small_family
+summary: >-
+  The current checkpoint is now focused on the ROS/FAST-LIO bridge slice.
+  Safety probes confirmed `main` is still the active branch, `HEAD...@{upstream}`
+  is `1 0`, `.git/index.lock` is absent, and `core.excludesfile` remains
+  unset. The bounded current batch is the four-file `Scripts/ros` family:
+  `publish_mworks_uav_state_ros2.py`,
+  `mosim_dense_lidar_cpp/CMakeLists.txt`,
+  `mosim_dense_lidar_cpp/src/dense_lidar_replay_node.cpp`, and
+  `mosim_scene_replay/launch/mosim_scene_replay.launch.py`. The slice totals
+  about 44.9 KB and `git diff --check` passed. The diff introduces
+  Livox-compatible point packing, optional Livox `CustomMsg` publishing,
+  and launch wiring for MWORKS state, IMU, and FAST-LIO/RViz2 inputs.
 evidence:
   - "branch=main"
-  - "upstream_ahead_behind=59 0"
-  - "index_lock_present=true"
-  - "stale_index_lock_removed=true"
+  - "upstream_ahead_behind=1 0"
+  - "index_lock_present=false"
   - "core_excludesfile=unset"
-  - "push_attempt_timed_out_60s=true"
-  - "push_completed_after_background_retry=true"
-  - "local_head=75f3fcce61c619b69a7a0df700bff41fc85cd21c"
-  - "origin_main=75f3fcce61c619b69a7a0df700bff41fc85cd21c"
-  - "control_agor_env_postgres_contains_secret_url=true"
-  - "control_agor_env_postgres_is_ignored_by_top_level_rule=true"
-  - "open_interpreter_name_only_diff=false"
-  - "openhands_name_only_diff=false"
-  - "qwen_code_name_only_diff=false"
-  - "openclaw_docs_name_only_diff=false"
-  - "openclaw_github_name_only_diff=false"
-  - "openclaw_apps_warning_only=crlf_rewrite_notice"
-  - "openclaw_extensions_diff_timeout=true"
-  - "openclaw_test_support_timeout=true"
-  - "openclaw_sandbox_exec_server_empty=false"
-  - "achat_canary_top_level_empty=true"
-  - "tinyagi_top_level_empty=true"
-  - "codex_core_subdirs_empty=true"
-  - "memory_child_sweep_empty=true"
-  - "security_child_sweep_empty=true"
-  - "reviewlater_child_sweep_empty=true"
-  - "skills_subdir_probes_empty=true"
-  - "workflow_child_sweep_timeout=true"
-  - "flowise_revisit_recommended=true"
-  - "flowise_packages_empty=true"
-  - "flowise_nonpackage_probes_empty=true"
-  - "flowise_docker_worker_empty=true"
-  - "flowise_assets_deeper_empty=true"
-  - "no_commit_or_push_this_checkpoint=true"
+  - "scripts_ros_batch_total_bytes=44910"
+  - "git_diff_check_passed=true"
+  - "batch_files=4"
+  - "livox_custom_msg_enabled=true"
+  - "mworks_fastlio_launch_wiring_enabled=true"
 risks:
-  - "The `References/Agent/Platforms/openclaw/extensions/test-support` subtree is empty at the tested scope and `codex/src/app-server/sandbox-exec-server` stayed empty at the tested scope; neither is a useful batch candidate."
-  - "`AChat-canary` and `tinyagi` top-level diffs were empty at the tested scope, `codex/codex-rs` core subdirectories were empty too, and the `Memory`/`Security`/`ReviewLater` child sweeps did not surface a batch candidate."
-  - "`Skills` subdirectory probes did not surface a batch candidate."
-  - "`Flowise` remains the best remaining family to revisit because it has already produced real batches; however, the package-level probes, the first non-package probes, and the deeper `docker/worker/healthcheck` / `assets` checks were empty, so the next viable search target is file-level checks or another unconsumed family."
-  - "`References/Agent/Control/agor/.env.postgres` is an explicit credential/env blocker and is already ignored by the top-level `References/Agent/*` rule plus `agor/.gitignore` env patterns; it is not a safe direct submission candidate and should not be counted as remaining work."
-  - "`Workflow` child sweep timed out before it could produce a candidate, so that family is still not usable as a safe batch source yet."
-  - "The transient `.git/index.lock` residue can mislead later Git operations unless rechecked before the next batch."
-  - "The first foreground `git push` attempt timed out at the 60 second gate, but the follow-up background push completed and advanced `origin/main` to match local `HEAD`."
-  - "Git hooks `post-commit` and `pre-push` call `git-lfs`, and `git-lfs` is not present on the current PATH, so ordinary commit/push operations can hang or fail at hook time unless LFS is available or the hook path is bypassed."
-  - "This checkpoint therefore stops at evidence collection for the two-doc-file refresh; the attempted ordinary `git commit` and the subsequent `git commit --no-verify` both exceeded the 60 second gate and did not finish, so the submission is still not landed."
-  - "A later plumbing-based commit-tree path completed successfully and pushed `origin/main` to the same commit as local `HEAD`."
-  - "Broad `git status` and broad `git diff --name-only` remain unsuitable for the remaining `References/Agent` surface."
-ignore_first_strategy: "Keep generated/runtime surfaces isolated first, especially `Results/`, `UE5/`, build artifacts, caches, and any large external trees. Continue opening only one platform subfamily or one small docs/app slice at a time."
+  - "The worktree still contains many large families, so future batches must remain path-limited."
+  - "A broader `git status` has already timed out earlier in the task, so only bounded probes remain safe."
+  - "The next step must still recheck cached diff and upstream alignment before commit/push."
+ignore_first_strategy: >-
+  Keep runtime and generated noise isolated before opening the next slice.
+  The existing ignore-first rules should continue suppressing results,
+  UE5/runtime outputs, and other large external trees so later inventory
+  stays small and reviewable.
 proposed_batches:
-  - "Split `References/Agent/Platforms/openclaw/extensions` into smaller extension families and probe them one by one."
-  - "If `openclaw` stays noisy, switch to another `Platforms` family with a smaller current-HEAD delta."
-  - "Only stage a batch after a path-limited diff, file-size check, and whitespace/check-ignore review."
+  - "Batch 1 candidate: `Scripts/ros` bridge slice now under review for commit."
+  - "Batch 2 candidate: the next smallest current-HEAD family after the ROS bridge slice, selected only after a path-limited diff and 100MB scan."
+  - "Batch 3 candidate: if the next family is noisy, first isolate its generated/runtime subtree instead of forcing it into the next commit."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -63,7 +43,10 @@ forbidden_actions:
   - "no reset --hard"
   - "no force push"
   - "no staging batches over 1000 files"
-  - "no files >=100MB"
-next_action: "Continue with the next bounded file-level inventory family only if it still advances the Git split goal; do not reopen broad status."
+  - "no commit of files at or above 100MB"
+  - "no unreviewed unignore of runtime/generated trees"
+next_action: >-
+  Commit the reviewed ROS slice only after a cached diff check and then
+  re-evaluate upstream alignment before moving to the next family.
 needs_human: false
 blocked_reason: ""

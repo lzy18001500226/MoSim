@@ -1,12 +1,17 @@
 #include <chrono>
+#include <algorithm>
+#include <array>
 #include <cstdint>
 #include <fstream>
+#include <iostream>
 #include <memory>
 #include <regex>
 #include <string>
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
+#include "livox_ros_driver2/msg/custom_msg.hpp"
+#include "livox_ros_driver2/msg/custom_point.hpp"
 #include "sensor_msgs/msg/point_cloud2.hpp"
 #include "sensor_msgs/msg/point_field.hpp"
 #include "std_msgs/msg/header.hpp"
@@ -14,8 +19,9 @@
 namespace {
 
 struct Frame {
-  std::vector<std::array<float, 6>> points;
+  std::vector<std::array<float, 4>> points;
   sensor_msgs::msg::PointCloud2 message;
+  livox_ros_driver2::msg::CustomMsg livox_message;
 };
 
 std::vector<Frame> read_frames(const std::string& path, const int max_frames) {
@@ -44,8 +50,7 @@ std::vector<Frame> read_frames(const std::string& path, const int max_frames) {
       const float x = std::stof(match[1].str());
       const float y = std::stof(match[2].str());
       const float z = std::stof(match[3].str());
-      const float index = static_cast<float>(frame.points.size());
-      frame.points.push_back({x, y, z, 100.0F, index, std::fmod(index, 4.0F)});
+      frame.points.push_back({x, y, z, 100.0F});
     }
     frames.push_back(std::move(frame));
     if (max_frames > 0 && static_cast<int>(frames.size()) >= max_frames) {
@@ -63,6 +68,15 @@ void append_float(std::vector<uint8_t>& data, const float value) {
   data.insert(data.end(), bytes, bytes + sizeof(float));
 }
 
+void append_uint32(std::vector<uint8_t>& data, const uint32_t value) {
+  const auto* bytes = reinterpret_cast<const uint8_t*>(&value);
+  data.insert(data.end(), bytes, bytes + sizeof(uint32_t));
+}
+
+void append_uint8(std::vector<uint8_t>& data, const uint8_t value) {
+  data.push_back(value);
+}
+
 sensor_msgs::msg::PointCloud2 make_cloud_template(const Frame& frame, const std::string& frame_id) {
   sensor_msgs::msg::PointCloud2 msg;
   msg.header.frame_id = frame_id;
@@ -70,21 +84,79 @@ sensor_msgs::msg::PointCloud2 make_cloud_template(const Frame& frame, const std:
   msg.width = static_cast<uint32_t>(frame.points.size());
   msg.is_bigendian = false;
   msg.is_dense = true;
-  msg.point_step = 24;
+  msg.point_step = 22;
   msg.row_step = msg.point_step * msg.width;
-  msg.fields.resize(6);
-  const std::array<std::string, 6> names = {"x", "y", "z", "intensity", "time", "ring"};
-  for (size_t i = 0; i < names.size(); ++i) {
-    msg.fields[i].name = names[i];
-    msg.fields[i].offset = static_cast<uint32_t>(i * 4);
-    msg.fields[i].datatype = sensor_msgs::msg::PointField::FLOAT32;
-    msg.fields[i].count = 1;
-  }
+  msg.fields.resize(7);
+  msg.fields[0].name = "offset_time";
+  msg.fields[0].offset = 0;
+  msg.fields[0].datatype = sensor_msgs::msg::PointField::UINT32;
+  msg.fields[0].count = 1;
+  msg.fields[1].name = "x";
+  msg.fields[1].offset = 4;
+  msg.fields[1].datatype = sensor_msgs::msg::PointField::FLOAT32;
+  msg.fields[1].count = 1;
+  msg.fields[2].name = "y";
+  msg.fields[2].offset = 8;
+  msg.fields[2].datatype = sensor_msgs::msg::PointField::FLOAT32;
+  msg.fields[2].count = 1;
+  msg.fields[3].name = "z";
+  msg.fields[3].offset = 12;
+  msg.fields[3].datatype = sensor_msgs::msg::PointField::FLOAT32;
+  msg.fields[3].count = 1;
+  msg.fields[4].name = "intensity";
+  msg.fields[4].offset = 16;
+  msg.fields[4].datatype = sensor_msgs::msg::PointField::FLOAT32;
+  msg.fields[4].count = 1;
+  msg.fields[5].name = "tag";
+  msg.fields[5].offset = 20;
+  msg.fields[5].datatype = sensor_msgs::msg::PointField::UINT8;
+  msg.fields[5].count = 1;
+  msg.fields[6].name = "line";
+  msg.fields[6].offset = 21;
+  msg.fields[6].datatype = sensor_msgs::msg::PointField::UINT8;
+  msg.fields[6].count = 1;
   msg.data.reserve(static_cast<size_t>(msg.row_step));
-  for (const auto& point : frame.points) {
-    for (float value : point) {
-      append_float(msg.data, value);
-    }
+  const size_t count = std::max<size_t>(frame.points.size(), 1);
+  for (size_t i = 0; i < frame.points.size(); ++i) {
+    const auto& point = frame.points[i];
+    const uint32_t offset_time = static_cast<uint32_t>(
+      std::min<double>(4294967295.0, (static_cast<double>(i) / static_cast<double>(count)) * 100000000.0));
+    append_uint32(msg.data, offset_time);
+    append_float(msg.data, point[0]);
+    append_float(msg.data, point[1]);
+    append_float(msg.data, point[2]);
+    append_float(msg.data, point[3]);
+    append_uint8(msg.data, 0x10);
+    append_uint8(msg.data, static_cast<uint8_t>(i % 4));
+  }
+  return msg;
+}
+
+livox_ros_driver2::msg::CustomMsg make_livox_template(
+    const Frame& frame,
+    const std::string& frame_id,
+    const double scan_duration_s,
+    const uint8_t lidar_id) {
+  livox_ros_driver2::msg::CustomMsg msg;
+  msg.header.frame_id = frame_id;
+  msg.lidar_id = lidar_id;
+  msg.point_num = static_cast<uint32_t>(frame.points.size());
+  msg.rsvd = {0, 0, 0};
+  msg.points.reserve(frame.points.size());
+  const size_t count = std::max<size_t>(frame.points.size(), 1);
+  const double scan_duration_us = std::max(1.0, scan_duration_s * 1.0e6);
+  for (size_t i = 0; i < frame.points.size(); ++i) {
+    const auto& point = frame.points[i];
+    livox_ros_driver2::msg::CustomPoint out;
+    out.offset_time = static_cast<uint32_t>(
+      std::min<double>(4294967295.0, (static_cast<double>(i) / static_cast<double>(count)) * scan_duration_us));
+    out.x = point[0];
+    out.y = point[1];
+    out.z = point[2];
+    out.reflectivity = static_cast<uint8_t>(std::max<float>(0.0F, std::min<float>(255.0F, point[3])));
+    out.tag = 0x10;
+    out.line = static_cast<uint8_t>(i % 4);
+    msg.points.push_back(out);
   }
   return msg;
 }
@@ -96,8 +168,11 @@ class DenseLidarReplayNode final : public rclcpp::Node {
   DenseLidarReplayNode() : Node("mosim_dense_lidar_replay_node") {
     const std::string lidar_jsonl = declare_parameter<std::string>("lidar_jsonl", "");
     topic_ = declare_parameter<std::string>("topic", "/mosim/lidar_points");
+    livox_topic_ = declare_parameter<std::string>("livox_topic", "");
     frame_id_ = declare_parameter<std::string>("frame_id", "base/velodyne_link");
     rate_hz_ = declare_parameter<double>("rate_hz", 10.0);
+    scan_duration_s_ = declare_parameter<double>("scan_duration_s", 0.1);
+    const int lidar_id = declare_parameter<int>("livox_lidar_id", 1);
     stats_interval_s_ = declare_parameter<double>("stats_interval_s", 5.0);
     const int max_frames = declare_parameter<int>("max_frames", 0);
     if (lidar_jsonl.empty()) {
@@ -106,19 +181,40 @@ class DenseLidarReplayNode final : public rclcpp::Node {
     if (rate_hz_ <= 0.0) {
       throw std::runtime_error("rate_hz must be positive");
     }
+    if (scan_duration_s_ <= 0.0) {
+      throw std::runtime_error("scan_duration_s must be positive");
+    }
     frames_ = read_frames(lidar_jsonl, max_frames);
     for (auto& frame : frames_) {
       frame.message = make_cloud_template(frame, frame_id_);
+      frame.livox_message = make_livox_template(
+        frame,
+        frame_id_,
+        scan_duration_s_,
+        static_cast<uint8_t>(std::max(0, std::min(255, lidar_id))));
     }
     publisher_ = create_publisher<sensor_msgs::msg::PointCloud2>(topic_, rclcpp::SensorDataQoS());
+    if (!livox_topic_.empty()) {
+      livox_publisher_ = create_publisher<livox_ros_driver2::msg::CustomMsg>(
+        livox_topic_,
+        rclcpp::QoS(rclcpp::KeepLast(20)).reliable());
+    }
     const auto period = std::chrono::duration<double>(1.0 / rate_hz_);
     stats_start_ = std::chrono::steady_clock::now();
     timer_ = create_wall_timer(std::chrono::duration_cast<std::chrono::nanoseconds>(period), [this]() {
       const Frame& frame = frames_[index_ % frames_.size()];
       auto msg = frame.message;
       msg.header.stamp = now();
+      auto livox_msg = frame.livox_message;
+      livox_msg.header.stamp = msg.header.stamp;
+      livox_msg.timebase =
+        static_cast<uint64_t>(livox_msg.header.stamp.sec) * 1000000000ULL
+        + static_cast<uint64_t>(livox_msg.header.stamp.nanosec);
       const auto before = std::chrono::steady_clock::now();
       publisher_->publish(msg);
+      if (livox_publisher_) {
+        livox_publisher_->publish(livox_msg);
+      }
       const auto after = std::chrono::steady_clock::now();
       publish_count_++;
       publish_time_total_us_ += std::chrono::duration<double, std::micro>(after - before).count();
@@ -132,6 +228,9 @@ class DenseLidarReplayNode final : public rclcpp::Node {
       topic_.c_str(),
       rate_hz_,
       frames_.front().points.size());
+    if (livox_publisher_) {
+      RCLCPP_INFO(get_logger(), "also publishing Livox CustomMsg to %s", livox_topic_.c_str());
+    }
   }
 
  private:
@@ -158,8 +257,10 @@ class DenseLidarReplayNode final : public rclcpp::Node {
   }
 
   std::string topic_;
+  std::string livox_topic_;
   std::string frame_id_;
   double rate_hz_{10.0};
+  double scan_duration_s_{0.1};
   double stats_interval_s_{5.0};
   size_t index_{0};
   size_t publish_count_{0};
@@ -167,6 +268,7 @@ class DenseLidarReplayNode final : public rclcpp::Node {
   std::chrono::steady_clock::time_point stats_start_;
   std::vector<Frame> frames_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr publisher_;
+  rclcpp::Publisher<livox_ros_driver2::msg::CustomMsg>::SharedPtr livox_publisher_;
   rclcpp::TimerBase::SharedPtr timer_;
 };
 
