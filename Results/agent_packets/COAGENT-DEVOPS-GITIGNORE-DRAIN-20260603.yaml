@@ -409,6 +409,12 @@ proposed_batches:
   - "batch_65_candidate_untracked_files=0"
   - "batch_65_removed_rule=!References/Agent/Skills/oh-my-openagent-dev/src/tools/"
   - "batch_65_removed_rule=!References/Agent/Skills/oh-my-openagent-dev/src/tools/**"
+  - "batch_66_candidate=References/Agent/Skills/oh-my-openagent-dev/src/shared"
+  - "batch_66_candidate_file_count=289"
+  - "batch_66_candidate_tracked_files=289"
+  - "batch_66_candidate_untracked_files=0"
+  - "batch_66_removed_rule=!References/Agent/Skills/oh-my-openagent-dev/src/shared/"
+  - "batch_66_removed_rule=!References/Agent/Skills/oh-my-openagent-dev/src/shared/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -417,8 +423,8 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this sixty-fifth `.gitignore` drain batch together with the ledger
-  and result packet, then continue with `References/Agent/Skills/oh-my-openagent-dev/src/shared`
+  Commit this sixty-sixth `.gitignore` drain batch together with the ledger
+  and result packet, then continue with `References/Agent/Skills/oh-my-openagent-dev/src/features`
   as the next bounded candidate in a later round.
 needs_human: false
 blocked_reason: ""
