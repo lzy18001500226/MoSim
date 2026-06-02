@@ -141,10 +141,10 @@ else
      [[ " ${EXTRA_ARGS_WIN[*]} " != *" -MoSimReviewCameraX="* ]] &&
      [[ " ${EXTRA_ARGS_WIN[*]} " != *" -MoSimReviewCameraLocation="* ]]; then
     EXTRA_ARGS_WIN+=(
-      "-MoSimReviewCameraX=-5533"
+      "-MoSimReviewCameraX=-5733"
       "-MoSimReviewCameraY=2423"
-      "-MoSimReviewCameraZ=190"
-      "-MoSimReviewCameraPitch=-6"
+      "-MoSimReviewCameraZ=280"
+      "-MoSimReviewCameraPitch=-12"
       "-MoSimReviewCameraYaw=0"
       "-MoSimReviewCameraRoll=0"
     )
