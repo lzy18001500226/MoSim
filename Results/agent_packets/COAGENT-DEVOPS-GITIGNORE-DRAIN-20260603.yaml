@@ -4,9 +4,9 @@ decision: continue_with_tiny_rule_family_batches
 summary: >-
   This task converts the temporary large-tree `.gitignore` split-routing block
   into a steady-state policy in very small batches. The latest completed batch
-  removes only the temporary `!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Korean/`
-  and `!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Korean/**`
-  lines after confirming that subtree has 5 tracked files and no untracked
+  removes only the temporary `!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Italian/`
+  and `!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Italian/**`
+  lines after confirming that subtree has 6 tracked files and no untracked
   spill. Earlier this session completed the current `oh-my-openagent-dev`
   drain chain. Earlier batches removed only
   similarly tiny, path-limited temporary split-routing pairs. The first batch removed only
@@ -597,6 +597,20 @@ proposed_batches:
   - "batch_86_compare_candidate_file_count=23"
   - "batch_86_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Korean/"
   - "batch_86_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Korean/**"
+  - "batch_87_candidate=References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Italian"
+  - "batch_87_head_vs_upstream_before=86 0"
+  - "batch_87_index_lock=absent"
+  - "batch_87_candidate_file_count=6"
+  - "batch_87_candidate_tracked_files=6"
+  - "batch_87_candidate_untracked_files=0"
+  - "batch_87_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Turkish"
+  - "batch_87_compare_candidate_file_count=8"
+  - "batch_87_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/French"
+  - "batch_87_compare_candidate_file_count=23"
+  - "batch_87_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Spanish"
+  - "batch_87_compare_candidate_file_count=33"
+  - "batch_87_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Italian/"
+  - "batch_87_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/Italian/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -605,7 +619,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this eighty-sixth `.gitignore` drain batch together with the ledger
+  Commit this eighty-seventh `.gitignore` drain batch together with the ledger
   and result packet, then re-scan `.gitignore` for the next smallest remaining
   temporary split-routing pair and continue the drain without widening scope.
 needs_human: false
