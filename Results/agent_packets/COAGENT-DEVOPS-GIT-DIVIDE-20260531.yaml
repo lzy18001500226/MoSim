@@ -1,41 +1,66 @@
 task_id: COAGENT-DEVOPS-GIT-DIVIDE-20260531
 status: running
-decision: continue_with_single_file_tail
+decision: continue_with_small_safe_slices
 summary: >-
-  Safety probe for the long Git split task is still clean: branch is `main`,
-  `HEAD...@{upstream}` is `0 0`, `.git/index.lock` is absent, and
-  `core.excludesfile` is unset. Path-limited inventory of the remaining UE5
-  tail shows that only `Scripts/UE5/publish_fastlio_replay_ros2.py` is still
-  present as an uncommitted tracked delta in this lane. The file is a safe
-  single-file continuation: it stays inside MoSim, is far below the 100MB
-  ceiling, and `git diff --check` on that file passes.
+  The long Git split task remains active. Safety probes are still clean on the
+  current branch surface: `main` is active, `.git/index.lock` was a stale
+  residue and was removed only after verifying no active Git writer was running,
+  and `HEAD...@{upstream}` is now `8 0` after eight reviewed single-file batches.
+  The completed batches are the obsolete `Config/rviz2/mosim_uav_planning_grid.rviz`
+  deletion, the `Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo`
+  normalization, the `Scripts/tests/test_fastlio_runtime_evaluation.py`
+  regression expansion, the UE5 `MworksReviewCameraPawn.cpp` follow-mode
+  refinement, the UE5 bridge playback component implementation, the UE5 bridge
+  playback component header controls, the UE5 review camera header controls,
+  and the UE5 bridge actor visual controls. Path-limited inventory still shows
+  a true large-tree surface: directory-level diff probes for `Config`, `Models`,
+  `Scripts`, `UE5`, `Docs/Skills/Unreal`, `References/Agent`, `CoAgent`,
+  `Docs/Workflows`, and `Results` have timed out at 60s in prior checks, so the
+  remaining work must stay file-limited.
 evidence:
   - "branch=main"
-  - "upstream_ahead_behind=0 0"
-  - "index_lock_present=false"
+  - "upstream_ahead_behind=8 0"
+  - "index_lock_present=false_after_cleanup"
   - "core_excludesfile=unset"
-  - "single_file_tail=Scripts/UE5/publish_fastlio_replay_ros2.py"
-  - "single_file_diff_check_passed=true"
-  - "file_size_bytes=13518"
-  - "working_tree_probe=path_limited_only"
+  - "bounded_path_probe=Config/rviz2/mosim_uav_planning_grid.rviz"
+  - "bounded_path_probe=Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo"
+  - "bounded_path_probe=Scripts/tests/test_fastlio_runtime_evaluation.py"
+  - "bounded_path_probe=UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.cpp"
+  - "bounded_path_probe=UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackComponent.cpp"
+  - "bounded_path_probe=UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackComponent.h"
+  - "bounded_path_probe=UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.h"
+  - "bounded_path_probe=UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackActor.h"
+  - "batch_files=1_then_1_then_1_then_1_then_1_then_1_then_1_then_1"
+  - "cached_diff_check_passed=true"
+  - "commit_plumbing_used=true"
+  - "commit_batch_1=ac49eba36294ec66945cba17d005a870bea828da"
+  - "commit_batch_2=0bca6f20ab56c55f7c739371dc9e584ecbedc9d1"
+  - "commit_batch_3=9dbea0933001a7a85898c42e786cb5f574f6fb30"
+  - "commit_batch_4=9fec96732e8a013f7738da7b1df9edfac77cef52"
+  - "commit_batch_5=be03e862ae0c51f7ec8e80afbc4c1faa4179fae2"
+  - "commit_batch_6=8a2cac7ea6180eaf3441e62e4759a5466d9daa23"
+  - "commit_batch_7=ab4129b40d61269e508957ca7e86e18850bde0df"
+  - "commit_batch_8=422d5f49f902d5f38b25da9f8b79540c69b631a6"
+  - "status_probe_timeout=true_for_directory_level_paths"
 risks:
-  - "Earlier broad `git status` attempts on the large tree timed out, so only bounded probes remain safe."
-  - "Do not mix the remaining UE5 single-file tail with the larger new-tool family in one batch."
-  - "Keep the existing ignore-first rules in place for runtime outputs, generated assets, and large external trees."
+  - "Directory-level diff/status over the large working tree still times out at 60s, so broad porcelain Git remains unsafe."
+  - "A stale `.git/index.lock` can appear after interrupted Git operations; verify active Git processes before removing it."
+  - "Large families like `UE5`, `References/Agent`, and `Scripts/UE5` still need further file-level splitting before any new batch."
 ignore_first_strategy: >-
-  Continue suppressing runtime and generated noise first, then open only the
-  smallest reviewed slice. The current ignore-first rules already cover
-  `Results/**`, UE5/runtime outputs, `*.msr`, secrets, and other large trees,
-  so later inventory stays small and reviewable.
+  Keep runtime/generated noise isolated first, then open only the smallest
+  reviewed slice. Existing ignore-first coverage should continue to suppress
+  `Results/**`, UE5 runtime outputs, `*.msr`, secrets, and other large trees,
+  while the remaining visible work is handled file by file.
 proposed_batches:
-  - "Batch 1 completed: `Scripts/ros` bridge runtime and adapter slice."
-  - "Batch 2 completed: `Docs/Workflows/debug_mcp.md` and `Docs/Workflows/ros2_runtime_setup.md`."
-  - "Batch 3 completed: `Docs/Workflows/unreal_renderer.md` as its own isolated doc batch."
-  - "Batch 4 completed: UE5 playback/helper batch."
-  - "Batch 5 completed: UE5 FAST-LIO runtime plumbing batch."
-  - "Batch 6 completed: UE5 runtime bundle batch."
-  - "Batch 7 completed: legacy RViz replay launcher removal."
-  - "Batch 8 candidate: `Scripts/UE5/publish_fastlio_replay_ros2.py` as a single-file tail."
+  - "Completed: `Config/rviz2/mosim_uav_planning_grid.rviz` deletion batch."
+  - "Completed: `Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo` metadata/model normalization batch."
+  - "Completed: `Scripts/tests/test_fastlio_runtime_evaluation.py` regression expansion batch."
+  - "Completed: `UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.cpp` follow-mode refinement batch."
+  - "Completed: `UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackComponent.cpp` playback interpolation batch."
+  - "Completed: `UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackComponent.h` playback controls batch."
+  - "Completed: `UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.h` follow controls batch."
+  - "Completed: `UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackActor.h` Sunray visual controls batch."
+  - "Next candidate: another isolated single file or a tiny safe `References/Agent` leaf file."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -46,8 +71,7 @@ forbidden_actions:
   - "no commit of files at or above 100MB"
   - "no unreviewed unignore of runtime/generated trees"
 next_action: >-
-  Stage and review only `Scripts/UE5/publish_fastlio_replay_ros2.py` as the
-  next tiny batch, then recheck upstream alignment before opening the new-tool
-  family.
+  Continue with the next smallest safe slice, preferably another isolated single
+  file, or stop if another stale lock or path-level timeout appears.
 needs_human: false
 blocked_reason: ""
