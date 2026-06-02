@@ -191,16 +191,14 @@ blue glass just because it is physically near the dome.
 
 2026-06-02 correction: the current MWORKS `sunray150_mid360_body.stl` has only
 geometry and a single STL attribute value, so it cannot carry the DAE material
-groups directly. The short-term UE review visual therefore keeps the blue
-MID-360 optical cue as a small independent dome component and colors the STL
-MID360_PROTECT_ARC region dark grey/black. Do not broaden the blue section over
-the arc bounds. The longer-term correct route is to import or parse the DAE as
-named material sections rather than continuing to tune a single merged STL.
+groups directly. Do not continue tuning broad STL position heuristics for the
+MID-360. The durable route is to compose the vehicle from the Sunray SDF source
+models, with named material sections and the standalone Livox scanner mesh.
 
 2026-06-02 Blender/DAE asset route: Blender MCP is available, but Blender 5.0
 in this environment does not expose the Collada/DAE import operator. Do not
 retry `bpy.ops.wm.collada_import`; it fails because the operator is missing.
-The durable local route is:
+The earlier local route was:
 
 ```text
 Scripts/UE5/assets/build_sunray150_blender_asset.py
@@ -209,6 +207,11 @@ Scripts/UE5/assets/build_sunray150_blender_asset.py
   groups them by physical role/material cue
   writes a Blender/FBX/glTF asset bundle
 ```
+
+Treat this generated asset as a historical diagnostic artifact, not a final
+vehicle source. It parsed only the UAV `150.dae` file and added supplemental
+MID-360 base/dome proxy geometry, which the user rejected because the radar
+base was not source-faithful.
 
 Generated review/import assets:
 
@@ -240,58 +243,126 @@ English node name `Principled BSDF`. In the Chinese UI it is named
 `node.type == "BSDF_PRINCIPLED"` before setting Base Color, Roughness,
 Metallic, and Alpha.
 
-DAE limitation: the local DAE carries MID-360 bracket geometry, but the blue
-optical dome cue parses as a near-flat strip. The generated asset therefore
-adds two explicitly documented supplemental review meshes:
+Raw DAE audit correction: do not treat
+`sunray150_with_mid360/meshes/150.dae` as the complete vehicle + MID-360 visual
+asset. The source SDF mounts the scanner through:
 
 ```text
-Sunray150_Mid360BaseSupplement: grey MID-360 body/base
-Sunray150_Mid360DomeSupplement: blue transparent MID-360 optical dome
+References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/sunray150_with_mid360.sdf
+  include model://livox_mid360
+  pose 0.036 -0.0155 0.075 0 0 0
+
+References/Sunray/simulation/sunray_simulator/models/sensor_models/livox_mid360/livox_mid360.sdf
+  mesh model://livox_mid360/meshes/test2.dae
+  scale 1.2 1.2 1.2
+  visual pose 0 0 0 1.57 0 3.14159
 ```
 
-This supplement is allowed for visual review because it preserves the physical
-bracket as black/dark grey and records the reason in the manifest. It should be
-replaced only if a manufacturer-textured or fully valid DAE/FBX asset is
-obtained.
+The raw source audit scene is:
+
+```text
+Scripts/UE5/assets/build_sunray_dae_source_audit_scene.py
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_DAE_Source_Audit.blend
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_DAE_Source_Audit_manifest.json
+```
+
+In that audit scene, the left model is raw `150.dae`; the right model is raw
+`livox_mid360/meshes/test2.dae`; no supplemental MID-360 proxy geometry is
+added. The next valid asset route must compose the UAV body/brackets from the
+Sunray body source with the standalone `livox_mid360/test2.dae` scanner using
+the SDF pose/scale above.
 
 The body STL visual orientation and the rotor physical translations are
 separate. If the user reports that the camera looks forward while the UAV nose
 points right, the body visual yaw offset is missing or overwritten. If the user
 reports propeller positions are wrong after adding the body yaw offset, do not
-rotate `Dronefixed1..4`; preserve the raw MWORKS translations and adjust only
-propeller mesh orientation/spin.
+rotate `Dronefixed1..4`.
 
-Current accepted rule for the procedural UE visual is to reproduce the MWORKS
-MultiBody visual chain directly:
+Propeller placement is a mechanical assembly problem, not a visual tuning
+problem. Final propeller placement must be solved by matching the propeller
+mounting holes to the motor-top screw locations or mating faces. Manual yaw, Z,
+or XY offsets are allowed only as temporary diagnostic values during a review
+session; they must not be recorded as final runtime parameters unless a
+hole-to-screw or face-to-face assembly check explains the value.
+
+Current source-of-truth rule for the UE vehicle visual is SDF-first. Do not use
+the MWORKS runtime transparent body/propeller STL as the placement authority for
+new Sunray/UE asset work. Those STL files may be used only as historical
+diagnostic references when explicitly comparing against the old MWORKS
+animation.
 
 ```text
 Actor/root frame = UAV body state frame
-body STL:
-  shapeType = sunray150_mid360_body.stl
-  r_shape = {0,0,0.0525} -> UE component location Z = +5.25 cm
-  length/width/height = 0.03 m -> UE mesh scale = 3.0 cm/unit
-  lengthDirection={0,-1,0}, widthDirection={1,0,0} -> UE visual yaw offset -90 deg
-propeller STL:
-  shapeType = sunray150_mid360_propeller.stl
-  Dronefixed*.r = {+/-0.065,+/-0.065,-0.025}
-    -> UE component locations = (+/-6.5,+/-6.5,-2.5) cm
-  length/width/height = 0.00125 m -> UE mesh scale = 0.125 cm/unit
-  lengthDirection={1,0,0}, widthDirection={0,1,0}
-    -> no body yaw offset and no SDF roll offset on the propeller mesh
+SDF/Jinja:
+  References/Sunray/.../sunray150_with_mid360/sunray150_with_mid360.sdf
+  References/Sunray/.../sunray150_with_mid360/sunray150_with_mid360.sdf.jinja
+body visual:
+  mesh model://sunray150_with_mid360/meshes/sunray.stl
+  pose 0 0 0.0525 0 0 -1.57
+  scale 0.03 0.03 0.03
+rotor links:
+  rotor_0 pose  0.065 -0.065 -0.025 0 0 0
+  rotor_1 pose -0.065  0.065 -0.025 0 0 0
+  rotor_2 pose  0.065  0.065 -0.025 0 0 0
+  rotor_3 pose -0.065 -0.065 -0.025 0 0 0
+rotor visual:
+  SDF URI model://sunray150/meshes/sunray_cw.stl
+  user-selected current review file:
+    References/Sunray/.../sunray150_with_mid360/meshes/sunray_cw.stl
+  visual pose 0 0 0 1.57 0 0
+  scale 0.03 0.03 0.03
+front camera:
+  pose 0.12 0 0.025 0 0 0
+down camera:
+  pose -0.01 0 -0.02 0 1.5707963 3.14
+MID-360:
+  include pose 0.036 -0.0155 0.075 0 0 0
+  visual pose in livox_mid360.sdf 0 0 0 1.57 0 3.14159
 ```
 
-The earlier `-7.75 cm` estimate subtracted the body `r_shape` from the rotor
-translation and treated propeller placement as relative to the body visual
-center. That is not the MWORKS visual chain: body and propeller visuals are
-separate components attached to the same body state frame through their own
-shape translations. The earlier compact Gazebo/Sunray `sunray_cw.stl` fallback
-also changed mesh origin, scale, and orientation, so it is not accepted for this
-MWORKS-parity visual gate.
+The SDF source above contains no 45 degree camera or vehicle pose. The visible
+45 degree issue reported during review is therefore not a reason to patch the
+SDF/Jinja directly. First check the review camera, Blender axis conversion,
+FBX/glTF export transform, and UE import/component transform. Audit cameras are
+review aids only and must never be copied into runtime UAV pose or camera-mount
+parameters.
 
-MWORKS fixed translations are the primary position source for the current UE
-procedural visual because MWORKS animation was known-good. SDF remains a source
-for mesh references and future imported assets, but it must not override a
-manual visual result from the MWORKS model without another review.
+Current SDF runtime audit files:
+
+```text
+Scripts/UE5/assets/build_sunray_sdf_runtime_audit_scene.py
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_SDF_Runtime_Audit.blend
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_SDF_Runtime_Audit_manifest.json
+```
+
+The audit scene's active camera is a top orthographic camera named
+`SDF_Audit_Top_Camera_No_Model_Rotation` so review-camera obliqueness cannot be
+mistaken for model yaw.
+
+Current propeller assembly audit files:
+
+```text
+Scripts/UE5/assets/build_sunray_propeller_assembly_audit_scene.py
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_Propeller_Assembly_Audit.blend
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/Sunray_Propeller_Assembly_Audit_manifest.json
+```
+
+The propeller assembly audit scene uses the DAE source to preserve part
+semantics:
+
+```text
+gold = DAE `SCREW_BUTTON_HEAD_M2_8MM` candidate propeller screws
+blue = DAE `PROPELLER_*` semantic propeller parts
+red = DAE `CircPattern*` possible full propeller / blade pattern parts
+magenta = historical MWORKS runtime STL propeller hole centers
+green = candidate hole-to-screw assembly constraints
+```
+
+If the magenta MWORKS hole markers do not align with the gold DAE screw
+centers, do not compensate by eye in UE. First decide which SDF/Sunray asset
+chain is the runtime source of truth and regenerate the UE asset from that
+source. Keep historical MWORKS STL comparisons out of the runtime transform
+unless the user explicitly asks for MWORKS parity.
 
 For the Factory visual placement gate, neutralize only the first-frame yaw to
 `0 rad`. This is a manual body/propeller/heading review pose, not a controller
