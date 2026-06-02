@@ -213,8 +213,6 @@ References/Agent/Skills/openai-skills/skills/*
 References/Agent/Skills/openai-skills/skills/.curated/*
 !References/Agent/Skills/oh-my-openagent-dev/
 !References/Agent/Skills/oh-my-openagent-dev/**
-!References/Agent/Skills/oh-my-openagent-dev/src/
-!References/Agent/Skills/oh-my-openagent-dev/src/**
 References/Agent/**/.git/
 References/Agent/**/__pycache__/
 References/Agent/**/node_modules/

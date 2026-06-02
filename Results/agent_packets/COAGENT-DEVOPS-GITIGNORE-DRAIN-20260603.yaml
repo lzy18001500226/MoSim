@@ -518,6 +518,15 @@ proposed_batches:
   - "batch_80_compare_oh_my_openagent_dev_src_file_count=2164"
   - "batch_80_removed_rule=!References/Agent/Skills/openai-skills/skills/.system/"
   - "batch_80_removed_rule=References/Agent/Skills/openai-skills/skills/.system/*"
+  - "batch_81_candidate=References/Agent/Skills/oh-my-openagent-dev/src"
+  - "batch_81_head_vs_upstream_before=80 0"
+  - "batch_81_index_lock=absent"
+  - "batch_81_candidate_file_count=2164"
+  - "batch_81_candidate_tracked_files=2164"
+  - "batch_81_candidate_untracked_files=0"
+  - "batch_81_compare_parent_file_count=2771"
+  - "batch_81_removed_rule=!References/Agent/Skills/oh-my-openagent-dev/src/"
+  - "batch_81_removed_rule=!References/Agent/Skills/oh-my-openagent-dev/src/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -526,9 +535,9 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this eightieth `.gitignore` drain batch together with the ledger and
-  result packet, then compare `References/Agent/Skills/oh-my-openagent-dev/`
-  against `References/Agent/Skills/oh-my-openagent-dev/src/` again and drain
-  the smaller remaining rule pair next.
+  Commit this eighty-first `.gitignore` drain batch together with the ledger
+  and result packet, then continue with the remaining top-level
+  `References/Agent/Skills/oh-my-openagent-dev` rule pair as the next bounded
+  drain step.
 needs_human: false
 blocked_reason: ""
