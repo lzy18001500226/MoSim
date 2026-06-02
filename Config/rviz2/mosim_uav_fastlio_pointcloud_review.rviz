@@ -1,16 +1,4 @@
-Panels:
-  - Class: rviz_common/Displays
-    Name: Displays
-    Property Tree Widget:
-      Expanded:
-        - /Global Options1
-        - /Point Cloud And FAST-LIO1
-      Splitter Ratio: 0.22
-  - Class: rviz_common/Time
-    Experimental: false
-    Name: Time
-    SyncMode: 0
-    SyncSource: LiDAR points
+Panels: ~
 Visualization Manager:
   Class: ""
   Displays:
@@ -66,7 +54,7 @@ Visualization Manager:
             Durability Policy: Volatile
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /mosim/lidar_points
+            Value: /velodyne_points
           Use Fixed Frame: true
           Use rainbow: true
           Value: true
@@ -142,7 +130,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 30; 30; 34
-    Fixed Frame: camera_init
+    Fixed Frame: ue_world
     Frame Rate: 30
   Name: root
   Tools:
