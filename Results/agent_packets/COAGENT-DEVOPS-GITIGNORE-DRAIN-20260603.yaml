@@ -318,7 +318,8 @@ proposed_batches:
   - "Completed batch 30: remove only the `ECC/docs/ja-JP` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 31: remove only the `openai-skills/skills/.curated/pdf` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 32: remove only the `openai-skills/skills/.system/plugin-creator` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: stay inside `openai-skills` leaf rules and continue with another tiny verified leaf such as `.curated/transcribe` or `.system/skill-creator`, instead of widening to the whole family."
+  - "Completed batch 33: remove only the `openai-skills/skills/.curated/transcribe` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: stay inside `openai-skills` leaf rules and continue with another tiny verified leaf such as `.system/skill-creator` or `.system/skill-installer`, instead of widening to the whole family."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -327,7 +328,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this thirty-second `.gitignore` drain batch together with the ledger and
+  Commit this thirty-third `.gitignore` drain batch together with the ledger and
   result packet, then continue with another tiny rule-family removal in a later
   round.
 needs_human: false

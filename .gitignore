@@ -227,8 +227,6 @@ References/Agent/Skills/openai-skills/skills/.curated/*
 !References/Agent/Skills/openai-skills/skills/.curated/openai-docs/**
 !References/Agent/Skills/openai-skills/skills/.curated/speech/
 !References/Agent/Skills/openai-skills/skills/.curated/speech/**
-!References/Agent/Skills/openai-skills/skills/.curated/transcribe/
-!References/Agent/Skills/openai-skills/skills/.curated/transcribe/**
 !References/Agent/Skills/openai-skills/skills/.curated/figma-code-connect-components/
 !References/Agent/Skills/openai-skills/skills/.curated/figma-code-connect-components/**
 !References/Agent/Skills/openai-skills/skills/.curated/figma-create-design-system-rules/
