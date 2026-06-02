@@ -233,8 +233,6 @@ References/Agent/Skills/openai-skills/skills/.curated/*
 !References/Agent/Skills/openai-skills/skills/.curated/hatch-pet/**
 !References/Agent/Skills/openai-skills/skills/.curated/jupyter-notebook/
 !References/Agent/Skills/openai-skills/skills/.curated/jupyter-notebook/**
-!References/Agent/Skills/openai-skills/skills/.curated/linear/
-!References/Agent/Skills/openai-skills/skills/.curated/linear/**
 !References/Agent/Skills/openai-skills/skills/.curated/migrate-to-codex/
 !References/Agent/Skills/openai-skills/skills/.curated/migrate-to-codex/**
 !References/Agent/Skills/openai-skills/skills/.curated/netlify-deploy/
