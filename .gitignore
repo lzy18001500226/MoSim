@@ -347,8 +347,6 @@ References/Agent/Skills/openai-skills/skills/.system/*
 !References/Agent/Skills/oh-my-openagent-dev/src/shared/**
 !References/Agent/Skills/oh-my-openagent-dev/src/tools/
 !References/Agent/Skills/oh-my-openagent-dev/src/tools/**
-!References/Agent/Skills/pro-workflow/
-!References/Agent/Skills/pro-workflow/**
 References/Agent/**/.git/
 References/Agent/**/__pycache__/
 References/Agent/**/node_modules/

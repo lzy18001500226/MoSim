@@ -47,7 +47,10 @@ summary: >-
   the temporary `!References/Agent/Skills/superpowers/` and
   `!References/Agent/Skills/superpowers/**` lines after confirming that subtree
   has 147 tracked files, no untracked spill, and is smaller than the nearby
-  `pro-workflow` candidate.
+  `pro-workflow` candidate. The fourteenth batch removes only the temporary
+  `!References/Agent/Skills/pro-workflow/` and
+  `!References/Agent/Skills/pro-workflow/**` lines after confirming that
+  subtree has 189 tracked files and no untracked spill.
 evidence:
   - "goal=drain_temporary_gitignore_rules_gradually"
   - "batch_1_scope=.gitignore:124-132_before_edit"
@@ -135,6 +138,12 @@ evidence:
   - "batch_13_deferred_larger_candidate_file_count=189"
   - "batch_13_removed_rule=!References/Agent/Skills/superpowers/"
   - "batch_13_removed_rule=!References/Agent/Skills/superpowers/**"
+  - "batch_14_candidate=References/Agent/Skills/pro-workflow"
+  - "batch_14_candidate_file_count=189"
+  - "batch_14_candidate_tracked_files=189"
+  - "batch_14_candidate_untracked_files=0"
+  - "batch_14_removed_rule=!References/Agent/Skills/pro-workflow/"
+  - "batch_14_removed_rule=!References/Agent/Skills/pro-workflow/**"
   - "git_diff_check=passed"
 risks:
   - "The remaining `References/Agent` split-routing chain is still large and must be drained in additional tiny batches."
@@ -157,7 +166,8 @@ proposed_batches:
   - "Completed batch 11: remove only the `SkillX` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 12: remove only the `SuperClaude_Framework` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 13: remove only the `superpowers` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill, with `pro-workflow` currently the smaller nearby candidate and `openai-skills` still deferred as larger."
+  - "Completed batch 14: remove only the `pro-workflow` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill; `openai-skills` remains a larger nearby candidate and should still be deferred behind smaller families."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -166,7 +176,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this thirteenth `.gitignore` drain batch together with the ledger and
+  Commit this fourteenth `.gitignore` drain batch together with the ledger and
   result packet, then continue with another tiny rule-family removal in a later
   round.
 needs_human: false
