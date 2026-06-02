@@ -30,7 +30,10 @@ summary: >-
   has 77 tracked files and no untracked spill. The eighth batch removes only
   the temporary `!References/Agent/Skills/HeavySkill/` and
   `!References/Agent/Skills/HeavySkill/**` lines after confirming that subtree
-  has 24 tracked files and no untracked spill.
+  has 24 tracked files and no untracked spill. The ninth batch removes only
+  the temporary `!References/Agent/Skills/mattpocock-skills/` and
+  `!References/Agent/Skills/mattpocock-skills/**` lines after confirming that
+  subtree has 67 tracked files and no untracked spill.
 evidence:
   - "goal=drain_temporary_gitignore_rules_gradually"
   - "batch_1_scope=.gitignore:124-132_before_edit"
@@ -84,6 +87,12 @@ evidence:
   - "batch_8_candidate_untracked_files=0"
   - "batch_8_removed_rule=!References/Agent/Skills/HeavySkill/"
   - "batch_8_removed_rule=!References/Agent/Skills/HeavySkill/**"
+  - "batch_9_candidate=References/Agent/Skills/mattpocock-skills"
+  - "batch_9_candidate_file_count=67"
+  - "batch_9_candidate_tracked_files=67"
+  - "batch_9_candidate_untracked_files=0"
+  - "batch_9_removed_rule=!References/Agent/Skills/mattpocock-skills/"
+  - "batch_9_removed_rule=!References/Agent/Skills/mattpocock-skills/**"
   - "git_diff_check=passed"
 risks:
   - "The remaining `References/Agent` split-routing chain is still large and must be drained in additional tiny batches."
@@ -101,6 +110,7 @@ proposed_batches:
   - "Completed batch 6: remove only the `SkillRouter` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 7: remove only the `SR-Agents` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 8: remove only the `HeavySkill` temporary unignore pair under `References/Agent/Skills/`."
+  - "Completed batch 9: remove only the `mattpocock-skills` temporary unignore pair under `References/Agent/Skills/`."
   - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill, for example `MMSkills` or `SkillX` after probes."
 forbidden_actions:
   - "no broad git status"
@@ -110,7 +120,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this eighth `.gitignore` drain batch together with the ledger and
+  Commit this ninth `.gitignore` drain batch together with the ledger and
   result packet, then continue with another tiny rule-family removal in a later
   round.
 needs_human: false
