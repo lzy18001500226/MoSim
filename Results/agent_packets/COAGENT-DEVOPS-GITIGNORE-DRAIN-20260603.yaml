@@ -483,6 +483,14 @@ proposed_batches:
   - "batch_76_candidate_untracked_files=0"
   - "batch_76_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/notion-meeting-intelligence/"
   - "batch_76_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/notion-meeting-intelligence/**"
+  - "batch_77_candidate=References/Agent/Skills/openai-skills/skills/.curated/notion-research-documentation"
+  - "batch_77_head_vs_upstream_before=76 0"
+  - "batch_77_index_lock=absent"
+  - "batch_77_candidate_file_count=23"
+  - "batch_77_candidate_tracked_files=23"
+  - "batch_77_candidate_untracked_files=0"
+  - "batch_77_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/notion-research-documentation/"
+  - "batch_77_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/notion-research-documentation/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -491,8 +499,8 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this seventy-sixth `.gitignore` drain batch together with the ledger
-  and result packet, then continue with `References/Agent/Skills/openai-skills/skills/.curated/notion-research-documentation`
+  Commit this seventy-seventh `.gitignore` drain batch together with the ledger
+  and result packet, then continue with `References/Agent/Skills/openai-skills/skills/.curated/notion-spec-to-implementation`
   as the next bounded candidate in a later round.
 needs_human: false
 blocked_reason: ""
