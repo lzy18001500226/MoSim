@@ -336,7 +336,8 @@ proposed_batches:
   - "Completed batch 48: remove only the `openai-skills/skills/.curated/gh-fix-ci` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 49: remove only the `openai-skills/skills/.curated/jupyter-notebook` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 50: remove only the `openai-skills/skills/.curated/hatch-pet` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: continue probing the next bounded non-figma `openai-skills` curated leaves such as `migrate-to-codex`, staying path-limited instead of widening to the whole family."
+  - "Completed batch 51: remove only the `openai-skills/skills/.curated/migrate-to-codex` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: continue probing the next bounded `openai-skills` curated leaves such as `netlify-deploy`, `render-deploy`, `screenshot`, `sentry`, `winui-app`, or `yeet`, staying path-limited instead of widening to the whole family."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -345,7 +346,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this fiftieth `.gitignore` drain batch together with the ledger and
+  Commit this fifty-first `.gitignore` drain batch together with the ledger and
   result packet, then continue with another tiny rule-family removal in a later
   round.
 needs_human: false
