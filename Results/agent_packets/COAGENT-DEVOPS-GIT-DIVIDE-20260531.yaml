@@ -49,6 +49,7 @@ risks:
   - "The first foreground `git push` attempt timed out at the 60 second gate, but the follow-up background push completed and advanced `origin/main` to match local `HEAD`."
   - "Git hooks `post-commit` and `pre-push` call `git-lfs`, and `git-lfs` is not present on the current PATH, so ordinary commit/push operations can hang or fail at hook time unless LFS is available or the hook path is bypassed."
   - "This checkpoint therefore stops at evidence collection for the two-doc-file refresh; the attempted ordinary `git commit` and the subsequent `git commit --no-verify` both exceeded the 60 second gate and did not finish, so the submission is still not landed."
+  - "A later plumbing-based commit-tree path completed successfully and pushed `origin/main` to the same commit as local `HEAD`."
   - "Broad `git status` and broad `git diff --name-only` remain unsuitable for the remaining `References/Agent` surface."
 ignore_first_strategy: "Keep generated/runtime surfaces isolated first, especially `Results/`, `UE5/`, build artifacts, caches, and any large external trees. Continue opening only one platform subfamily or one small docs/app slice at a time."
 proposed_batches:
