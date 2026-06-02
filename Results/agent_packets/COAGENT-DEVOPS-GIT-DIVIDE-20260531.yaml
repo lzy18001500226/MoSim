@@ -5,18 +5,19 @@ summary: >-
   The long Git split task remains active. Safety probes are still clean on the
   current branch surface: `main` is active, `.git/index.lock` was a stale
   residue and was removed only after verifying no active Git writer was running,
-  and `HEAD...@{upstream}` is now `8 0` after eight reviewed single-file batches.
-  The completed batches are the obsolete `Config/rviz2/mosim_uav_planning_grid.rviz`
+  and `HEAD...@{upstream}` is now `10 0` after ten reviewed small batches. The
+  completed batches are the obsolete `Config/rviz2/mosim_uav_planning_grid.rviz`
   deletion, the `Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo`
   normalization, the `Scripts/tests/test_fastlio_runtime_evaluation.py`
   regression expansion, the UE5 `MworksReviewCameraPawn.cpp` follow-mode
   refinement, the UE5 bridge playback component implementation, the UE5 bridge
   playback component header controls, the UE5 review camera header controls,
-  and the UE5 bridge actor visual controls. Path-limited inventory still shows
-  a true large-tree surface: directory-level diff probes for `Config`, `Models`,
-  `Scripts`, `UE5`, `Docs/Skills/Unreal`, `References/Agent`, `CoAgent`,
-  `Docs/Workflows`, and `Results` have timed out at 60s in prior checks, so the
-  remaining work must stay file-limited.
+  the UE5 bridge actor visual controls, the `Results/agent_packets`/ledger
+  coordination update, and the tracked `UE5/MoSimSceneLibrary/Content/MworksData/active_scene_links.json`
+  leaf. Path-limited inventory still shows a true large-tree surface: directory-level
+  diff probes for `Config`, `Models`, `Scripts`, `UE5`, `Docs/Skills/Unreal`,
+  `References/Agent`, `CoAgent`, `Docs/Workflows`, and `Results` have timed out
+  at 60s in prior checks, so the remaining work must stay file-limited.
 evidence:
   - "branch=main"
   - "upstream_ahead_behind=8 0"
