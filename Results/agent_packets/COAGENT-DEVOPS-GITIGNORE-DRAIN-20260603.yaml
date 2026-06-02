@@ -439,6 +439,12 @@ proposed_batches:
   - "batch_70_candidate_untracked_files=0"
   - "batch_70_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/cli-creator/"
   - "batch_70_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/cli-creator/**"
+  - "batch_71_candidate=References/Agent/Skills/openai-skills/skills/.curated/figma"
+  - "batch_71_candidate_file_count=8"
+  - "batch_71_candidate_tracked_files=8"
+  - "batch_71_candidate_untracked_files=0"
+  - "batch_71_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/figma/"
+  - "batch_71_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/figma/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -447,8 +453,8 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this seventieth `.gitignore` drain batch together with the ledger
-  and result packet, then continue with `References/Agent/Skills/openai-skills/skills/.curated/figma`
+  Commit this seventy-first `.gitignore` drain batch together with the ledger
+  and result packet, then continue with `References/Agent/Skills/openai-skills/skills/.curated/openai-docs`
   as the next bounded candidate in a later round.
 needs_human: false
 blocked_reason: ""
