@@ -225,8 +225,6 @@ References/Agent/Skills/openai-skills/skills/.curated/*
 !References/Agent/Skills/openai-skills/skills/.curated/figma/**
 !References/Agent/Skills/openai-skills/skills/.curated/openai-docs/
 !References/Agent/Skills/openai-skills/skills/.curated/openai-docs/**
-!References/Agent/Skills/openai-skills/skills/.curated/netlify-deploy/
-!References/Agent/Skills/openai-skills/skills/.curated/netlify-deploy/**
 !References/Agent/Skills/openai-skills/skills/.curated/notion-knowledge-capture/
 !References/Agent/Skills/openai-skills/skills/.curated/notion-knowledge-capture/**
 !References/Agent/Skills/openai-skills/skills/.curated/notion-meeting-intelligence/
