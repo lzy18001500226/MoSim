@@ -1,1 +1,0 @@
-export { invokeBridge } from './invoke';

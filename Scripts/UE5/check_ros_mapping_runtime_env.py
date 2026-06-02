@@ -155,6 +155,9 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     bootstrap_script = ROOT / "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh"
     open_rviz2_script = ROOT / "Scripts/UE5/open_mapping_rviz_ros2.sh"
     run_fastlio_ros2_script = ROOT / "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh"
+    run_launch_ros2_script = ROOT / "Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh"
+    launch_package_xml = ROOT / "Scripts/ros/mosim_scene_replay/package.xml"
+    launch_file = ROOT / "Scripts/ros/mosim_scene_replay/launch/mosim_scene_replay.launch.py"
     check_fastlio_ros2_script = ROOT / "Scripts/UE5/check_fastlio_ros2_topics.sh"
     ros1_command_set = ("roscore", "roslaunch", "rostopic", "rosnode", "rosparam", "rviz", "python3")
     ros1_commands_ready = all(commands.get(name) for name in ros1_command_set)
@@ -212,6 +215,12 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         blockers.append("missing_open_mapping_rviz_ros2_script")
     if not run_fastlio_ros2_script.exists():
         blockers.append("missing_run_fastlio_rviz_replay_ros2_script")
+    if not run_launch_ros2_script.exists():
+        blockers.append("missing_run_mosim_scene_replay_launch_ros2_script")
+    if not launch_package_xml.exists():
+        blockers.append("missing_mosim_scene_replay_ros2_package")
+    if not launch_file.exists():
+        blockers.append("missing_mosim_scene_replay_launch_file")
     if not check_fastlio_ros2_script.exists():
         blockers.append("missing_check_fastlio_ros2_topics_script")
 
@@ -277,6 +286,18 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                 "path": rel(run_fastlio_ros2_script),
                 "exists": run_fastlio_ros2_script.exists(),
             },
+            "run_mosim_scene_replay_launch_ros2": {
+                "path": rel(run_launch_ros2_script),
+                "exists": run_launch_ros2_script.exists(),
+            },
+            "mosim_scene_replay_ros2_package": {
+                "path": rel(launch_package_xml),
+                "exists": launch_package_xml.exists(),
+            },
+            "mosim_scene_replay_launch_file": {
+                "path": rel(launch_file),
+                "exists": launch_file.exists(),
+            },
             "check_fastlio_ros2_topics": {
                 "path": rel(check_fastlio_ros2_script),
                 "exists": check_fastlio_ros2_script.exists(),
@@ -289,6 +310,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "Run DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene>.",
             "Run RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene> for native RViz2 input/map review.",
             "Run Scripts/UE5/run_fastlio_rviz_replay_ros2.sh <scene> for ROS2 input replay; keep START_FASTLIO=0 unless a real ROS2 FAST-LIO launch command is configured.",
+            "Run Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh <scene> to validate the package-style ROS2 launch path.",
             "Run Scripts/UE5/check_fastlio_ros2_topics.sh during the live ROS2 run.",
             "Run Scripts/UE5/check_fastlio_family_compatibility.py --write after adding or changing FAST-LIO-family sources.",
             "Treat local References/Lab/FAST_LIO as ROS1-only until a ROS2 FAST-LIO/FAST-LIO2 package is added or a containerized ROS1 bridge route is approved.",

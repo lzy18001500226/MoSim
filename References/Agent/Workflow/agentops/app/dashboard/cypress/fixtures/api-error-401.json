@@ -1,5 +1,0 @@
-{
-    "message": "Unauthorized",
-    "error": "Invalid or missing authentication token.",
-    "statusCode": 401
-}

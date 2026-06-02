@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>mosim_dense_lidar_cpp</name>
+  <version>0.1.0</version>
+  <description>MoSim dense LiDAR replay publisher for ROS2 PointCloud2 timing tests.</description>
+  <maintainer email="devnull@example.com">MoSim</maintainer>
+  <license>Proprietary</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

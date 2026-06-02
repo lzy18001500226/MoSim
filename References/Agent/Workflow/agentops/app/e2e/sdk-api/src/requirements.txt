@@ -1,2 +1,0 @@
-agentops @ https://github.com/AgentOps-AI/agentops/archive/main.tar.gz
-openai==1.12.0

@@ -70,6 +70,11 @@ Results/context_packs/
 Results/logs/*.log
 Results/replay_html/
 Results/**/native_result/
+# Dense UE/LiDAR replay artifacts are regenerated from scripts and can become
+# large; keep manifests/results local unless an explicit evidence batch reviews
+# and promotes a small subset.
+Results/unreal_scene_mapping/**/livox_like_lidar_frames.jsonl
+Results/unreal_scene_mapping/**/livox_like_lidar_manifest.json
 *_backup/
 
 # Large binary outputs

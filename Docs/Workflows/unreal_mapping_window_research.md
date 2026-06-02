@@ -124,6 +124,7 @@ Scripts/ros/publish_mosim_mapping_replay_ros2.py
 Scripts/UE5/check_ros_mapping_runtime_env.py
 Scripts/UE5/open_mapping_rviz_ros2.sh
 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh
+Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh
 Scripts/UE5/check_fastlio_ros2_topics.sh
 Scripts/UE5/record_fastlio_ros1_runtime.py
 Scripts/UE5/evaluate_fastlio_runtime.py
@@ -136,6 +137,7 @@ DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentc
 DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans
 DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect
 DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect
+DRY_RUN=1 MAX_FRAMES=2 START_RVIZ=0 Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect
 DRY_RUN=1 Scripts/UE5/check_fastlio_ros2_topics.sh
 ```
 
@@ -143,6 +145,7 @@ Real runtime commands after ROS2 Humble is installed and sourced:
 
 ```bash
 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect
+START_RVIZ=0 START_FASTLIO=0 MAX_FRAMES=3 LOOP=0 Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect
 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect
 REQUIRE_FASTLIO_OUTPUTS=0 Scripts/UE5/check_fastlio_ros2_topics.sh
 ```

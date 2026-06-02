@@ -63,6 +63,9 @@ def test_env_report_contract() -> None:
         "rviz2_fastlio_pointcloud_config",
         "open_mapping_rviz_ros2",
         "run_fastlio_rviz_replay_ros2",
+        "run_mosim_scene_replay_launch_ros2",
+        "mosim_scene_replay_ros2_package",
+        "mosim_scene_replay_launch_file",
         "check_fastlio_ros2_topics",
     ):
         if asset_name not in report["project_assets"]:
@@ -87,6 +90,7 @@ def test_env_report_contract() -> None:
             "Claim boundary",
             "HTML is not an accepted active point-cloud/map review window",
             "check_fastlio_family_compatibility.py",
+            "run_mosim_scene_replay_launch_ros2.sh",
             "open_mapping_rviz_ros2.sh",
         ):
             if phrase not in text:

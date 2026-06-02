@@ -1,8 +1,0 @@
-{
-  "title": "Modify tool behavior",
-  "pages": [
-    "schema-modifiers",
-    "before-execution-modifiers",
-    "after-execution-modifiers"
-  ]
-}

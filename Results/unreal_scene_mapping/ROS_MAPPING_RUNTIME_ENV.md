@@ -40,6 +40,7 @@ Recommended setup sequence:
 - Run DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene>.
 - Run RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh <scene> for native RViz2 input/map review.
 - Run Scripts/UE5/run_fastlio_rviz_replay_ros2.sh <scene> for ROS2 input replay; keep START_FASTLIO=0 unless a real ROS2 FAST-LIO launch command is configured.
+- Run Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh <scene> to validate the package-style ROS2 launch path.
 - Run Scripts/UE5/check_fastlio_ros2_topics.sh during the live ROS2 run.
 - Run Scripts/UE5/check_fastlio_family_compatibility.py --write after adding or changing FAST-LIO-family sources.
 - Treat local References/Lab/FAST_LIO as ROS1-only until a ROS2 FAST-LIO/FAST-LIO2 package is added or a containerized ROS1 bridge route is approved.

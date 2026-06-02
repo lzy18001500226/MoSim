@@ -105,6 +105,7 @@ Current validated project commands:
 DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh factoryenvironmentcollect
 DRY_RUN=1 MAX_FRAMES=2 RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans
 DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect
+DRY_RUN=1 MAX_FRAMES=2 START_RVIZ=0 Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect
 DRY_RUN=1 Scripts/UE5/check_fastlio_ros2_topics.sh
 ```
 
@@ -114,6 +115,11 @@ Headless smoke evidence already passed for Factory:
   `/mosim/local_known_map_cloud`, `/mosim/local_occupancy_grid`,
   `/mosim/local_plan`, `/mosim/replay_odometry`, `/mosim/uav_path`, and
   `/tf`;
+- short ROS2 launch workflow run using
+  `Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh` built the generated
+  scene-specific `Results/tmp/mosim_scene_replay_ros2_ws_<scene>` package and
+  launched both replay publishers with `START_RVIZ=0`, `START_FASTLIO=0`,
+  `MAX_FRAMES=3`, `LOOP=0`;
 - `START_RVIZ=0 START_FASTLIO=0 LOOP=1 MAX_FRAMES=20 FPS=2
   Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect`
   plus `REQUIRE_FASTLIO_OUTPUTS=0 Scripts/UE5/check_fastlio_ros2_topics.sh`
@@ -165,6 +171,63 @@ Do not fabricate FAST-LIO output topics. `/cloud_registered`, `/Odometry`, and
 `/path` must come from a real FAST-LIO-family runtime before localization is
 claimed. `/mosim/replay_odometry` is only replay reference pose for RViz2 review
 and must not be counted as FAST-LIO localization output.
+
+## ROS2 FAST-LIO2 Candidate
+
+Current candidate for the native ROS2 route is MIT SPARK `spark-fast-lio`, a
+ROS2 / `ament_cmake` FAST-LIO2-family package. Keep it under ignored
+`Results/tmp`, not tracked source, until it is reviewed as a formal dependency.
+
+Preflight without installing packages:
+
+```bash
+Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh
+```
+
+Current preflight result is saved at
+`Results/unreal_scene_mapping/SPARK_FASTLIO_ROS2_CANDIDATE.md/json`. Without a
+local overlay it reports missing `pcl_ros`. The script can avoid sudo by
+downloading the `ros-humble-pcl-ros` deb and extracting it under ignored
+`Results/tmp/ros2_overlay_pcl_ros`; this makes `pcl_ros` visible only for the
+current project workflow. The system install equivalent is:
+
+```bash
+sudo apt install -y ros-humble-pcl-ros
+```
+
+After that dependency is available, or after the local overlay has been
+prepared, build the candidate:
+
+```bash
+BUILD=1 Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh
+```
+
+The build can take longer than the default 60 second interactive timeout
+because PCL/OpenNI CMake discovery is slow on WSL. The script writes a
+`building` status before invoking `colcon`, keeps the build directory by
+default, and supports resumed attempts. Use `CLEAN_BUILD=1` only when a full
+reconfigure is needed.
+
+Then source the generated workspace before running MoSim with FAST-LIO enabled:
+
+```bash
+source Results/tmp/spark_fast_lio_ros2_ws/install/setup.bash
+FASTLIO_ROS2_LAUNCH_CMD='ros2 launch spark_fast_lio mapping_mit_campus.launch.yaml start_rviz:=false scene_id:=mosim robot_name:=base_link base_frame:=base_link map_frame:=ue_world' \
+  START_FASTLIO=1 START_RVIZ=0 \
+  Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect
+```
+
+Important topic detail: `spark_fast_lio` publishes odometry on the relative
+topic `odometry`, which appears as `/odometry` without a namespace. The older
+FAST-LIO ROS1 examples commonly use `/Odometry`. When validating this candidate,
+use:
+
+```bash
+FASTLIO_ODOMETRY_TOPIC=/odometry Scripts/UE5/check_fastlio_ros2_topics.sh
+```
+
+Keep `runtime_claimable=false` until a live run records FAST-LIO output topics,
+not only replay input topics.
 
 ## References
 

@@ -1,8 +1,0 @@
----
-description:
-globs:
-alwaysApply: true
----
-## Exclusions
-
-No need to run the app. It's already up. i.e. no `bun dev` or `bun run build`

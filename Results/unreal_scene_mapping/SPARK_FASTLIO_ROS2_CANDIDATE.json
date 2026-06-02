@@ -1,0 +1,38 @@
+{
+  "schema": "mosim.spark_fastlio_ros2_candidate.v1",
+  "phase": "build",
+  "result": "building",
+  "repo_url": "https://github.com/MIT-SPARK/spark-fast-lio.git",
+  "repo_ref": "main",
+  "ros_setup": "/opt/ros/humble/setup.bash",
+  "candidate_dir": "Results/tmp/fastlio_ros2_candidates/spark-fast-lio",
+  "package_dir": "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio",
+  "workspace": "Results/tmp/spark_fast_lio_ros2_ws",
+  "apt_deb_dir": "Results/tmp/apt_debs",
+  "apt_overlay_dir": "Results/tmp/ros2_overlay_pcl_ros",
+  "auto_apt_overlay": true,
+  "overlay_used": true,
+  "build_requested": true,
+  "clean_build": false,
+  "missing_ros2_packages": [],
+  "manual_apt_packages": [],
+  "ready_to_build": true,
+  "runtime_claimable": false,
+  "note": "colcon build has started. If the process is interrupted, inspect Results/tmp/spark_fast_lio_ros2_ws/log/latest_build.",
+  "commands": {
+    "dry_run": "DRY_RUN=1 Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh",
+    "preflight": "Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh",
+    "preflight_without_overlay": "AUTO_APT_OVERLAY=0 Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh",
+    "build": "BUILD=1 Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh",
+    "clean_build": "CLEAN_BUILD=1 BUILD=1 Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh",
+    "source_overlay_after_download": "export AMENT_PREFIX_PATH=Results/tmp/ros2_overlay_pcl_ros/opt/ros/humble:${AMENT_PREFIX_PATH}; export CMAKE_PREFIX_PATH=Results/tmp/ros2_overlay_pcl_ros/opt/ros/humble:${CMAKE_PREFIX_PATH:-${AMENT_PREFIX_PATH}}; export LD_LIBRARY_PATH=Results/tmp/ros2_overlay_pcl_ros/opt/ros/humble/lib:${LD_LIBRARY_PATH}",
+    "launch_after_build": "source Results/tmp/spark_fast_lio_ros2_ws/install/setup.bash && FASTLIO_ROS2_LAUNCH_CMD='ros2 launch spark_fast_lio mapping_mit_campus.launch.yaml start_rviz:=false scene_id:=mosim robot_name:=base_link base_frame:=base_link map_frame:=ue_world' START_FASTLIO=1 START_RVIZ=0 Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect"
+  },
+  "claim_boundary": [
+    "This prepares a ROS2 FAST-LIO2-family candidate only.",
+    "It does not install apt packages into the system and does not store credentials.",
+    "When AUTO_APT_OVERLAY=1, missing known ROS2 deb packages may be downloaded and extracted under Results/tmp only.",
+    "runtime_claimable remains false until colcon build succeeds and live /cloud_registered plus odometry/path outputs are recorded.",
+    "spark_fast_lio publishes odometry on relative topic odometry, so MoSim checks must account for /odometry or remap/namespace policy before claiming /Odometry."
+  ]
+}

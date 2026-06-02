@@ -5,6 +5,21 @@
 
 ## Current Focus
 
+- 2026-06-02 UE/ROS2/MWORKS UAV mainline correction: the manual keyboard/grid
+  mapping path is smoke-only and must not be polished as the product path. User
+  rejected grid-cell movement, synthetic/static point clouds, oversized RViz
+  points, and 2D-only grid review as unsuitable for controller optimization and
+  real UAV simulation. Current goal is a continuous multi-rate UAV loop:
+  MWORKS owns dynamics/controller/IMU/truth, UE owns rendering and scene/sensor
+  oracle, ROS2 owns LiDAR/IMU/TF/FAST-LIO/local 3D map/planner topics, and
+  RViz2 owns point-cloud/map/planner review. Sunray local source is the primary
+  contract reference: `external_fusion` + `sunray_control_node` +
+  Mid360/FAST-LIO + EGO planner + `positionCmd2sunray` +
+  `/uav1/sunray/uav_control_cmd`. First implementation target is Factory only,
+  MWORKS-first continuous state/IMU bridge, Mid360-shaped LiDAR at 10Hz
+  baseline then 20Hz target, IMU 200Hz, controller/setpoint 20Hz, and 3D local
+  map review. Design source: `Docs/Design/09_UE_ROS_MWORKS无人机仿真架构重构.md`.
+
 - 2026-06-01 Windows-native Codex CLI is installed for explicit Windows shell
   use. The installed launcher is `C:\Users\HP\.codex\bin\codex.cmd` pointing to
   `C:\Users\HP\.codex\bin\codex.exe`, copied from the VSCode extension
@@ -20,6 +35,20 @@
   update probe timeout. Detailed route:
   `Docs/Workflows/debug_mcp.md#51-install-windows-native-codex-cli-from-wsl-config`.
 
+- 2026-06-01 ROS-MCP diagnosis: the installed project checkout is
+  version-agnostic and supports ROS1/ROS2 through rosbridge, but this WSL host
+  should use ROS2 Humble. Current checks show `ROS_VERSION=2`,
+  `ROS_DISTRO=humble`, `rviz2` and `turtlesim` installed, ROS apt source
+  `/etc/apt/sources.list.d/ros2.list` using the TUNA ROS2 jammy mirror, keyring
+  `/usr/share/keyrings/ros-archive-keyring.gpg` fingerprint
+  `C1CF 6E31 E6BA DE88 68B1 72B4 F42E D6FB AB17 C654`, and a temporary
+  `apt-get update` probe passed without `NO_PUBKEY` or `EXPKEYSIG`.
+  `rosbridge_server` / `ros-humble-rosbridge-suite` is now installed and port
+  `9090` is listening after manual launch. `/home/linux/mcp-wrappers/ros_mcp.sh`
+  now auto-starts `rosbridge_websocket` in the background when Codex starts
+  ROS-MCP and port `9090` is absent, so a separate rosbridge terminal should not
+  be required for normal MCP use.
+
 - 2026-06-01 VSCode Codex plugin load failure root cause: the extension was
   launching the Windows Codex runtime against `C:\Users\HP\.codex`, whose
   `state_5.sqlite` migration checksums were written by the WSL/Linux Codex
@@ -34,6 +63,21 @@
   for this issue without a backup; it contains visible thread metadata and
   token counters. Detailed recovery is in
   `Docs/Workflows/debug_mcp.md#41-vscode-codex-fails-on-sqlite-migration-checksum`.
+  Later the standalone Windows Codex App showed the same
+  `Codex cannot access its local database` / `migration 1 was previously
+  applied but has been modified` dialog. Final root cause was mixed SQLite
+  migration checksums across the Windows App runtime and Windows CLI/state
+  helpers sharing `C:\Users\HP\.codex`: `state_5.sqlite` was eventually
+  compatible, but `logs_2.sqlite`, `goals_1.sqlite`, and `memories_1.sqlite`
+  still had incompatible migration-1 checksums. Windows CLI was isolated to
+  `C:\Users\HP\.codex-cli` by setting `CODEX_HOME` in
+  `C:\Users\HP\.codex\bin\codex.cmd`; the App keeps `C:\Users\HP\.codex`.
+  Backed up and moved the incompatible split DB families to
+  `C:\Users\HP\.codex\backups\windows_app_split_sqlite_reset_20260601_183309`.
+  Direct `app-server` smoke no longer exits with SQLite migration errors,
+  `doctor` reports all four DBs healthy and rollout/state inventory agrees,
+  and the Windows Codex App opens to the normal chat UI. WSL primary state at
+  `/home/linux/.codex/state_5.sqlite` was not touched.
 
 - 2026-06-01 ROS2 runtime setup: current host is Ubuntu 22.04.5 WSL2, so the
   UE mapping/runtime branch must use ROS2 Humble/RViz2 rather than trying to
@@ -45,11 +89,17 @@
   paths such as `/etc/apt`, `/opt/ros/humble`, and apt caches as an explicit
   project-infrastructure exception. Current ROS2 status: Humble/RViz2/colcon
   are installed and project preflight reports `ros_generation=ros2`,
-  `ros2_replay_ready=true`, and no ROS2 blockers. The local
-  `References/Lab/FAST_LIO` package remains ROS1/Catkin-only, so FAST-LIO
-  localization is still unclaimed until a ROS2 FAST-LIO-family package or an
-  approved ROS1 bridge publishes `/cloud_registered` and `/Odometry`. Headless
-  ROS2 runtime smoke passed for Factory input topics using
+  `ros2_replay_ready=true`, and no ROS2 blockers. The ROS apt key and source
+  issue is resolved: keyring is
+  `/usr/share/keyrings/ros-archive-keyring.gpg`, source is
+  `https://mirrors.tuna.tsinghua.edu.cn/ros2/ubuntu jammy main`, and apt update
+  has no `NO_PUBKEY` or `EXPKEYSIG` error. The local `References/Lab/FAST_LIO`
+  package remains ROS1/Catkin-only, but the native ROS2 `spark-fast-lio`
+  candidate builds and has produced real runtime topics
+  `/cloud_registered`, `/odometry`, and `/path`. FAST-LIO runtime is therefore
+  no longer blocked by ROS2 installation or key state. Derelict now has a real
+  ROS2 FAST-LIO numeric pass with warnings; Factory remains degraded and cannot
+  be claimed. Headless ROS2 runtime smoke passed for Factory input topics using
   `run_fastlio_rviz_replay_ros2.sh` with `START_RVIZ=0 START_FASTLIO=0` and
   `check_fastlio_ros2_topics.sh` with `REQUIRE_FASTLIO_OUTPUTS=0`.
   Follow-up topic-boundary update added `/mosim/replay_odometry` to the ROS2
@@ -63,6 +113,39 @@
   `ros1_catkin_only`, `ros2_candidate_count=0`, and
   `fastlio_ros2_runtime_claimable=false`. Keep `START_FASTLIO=0` on the ROS2
   wrapper until a ROS2 FAST-LIO-family package or approved bridge route exists.
+  Added project-local ROS2 launch package `Scripts/ros/mosim_scene_replay` and
+  wrapper `Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh`. The wrapper
+  builds the launch package under ignored
+  scene-specific `Results/tmp/mosim_scene_replay_ros2_ws_<scene>` workspaces
+  and runs `ros2 launch` for both accepted scenes. Scene-specific workspaces
+  avoid concurrent Factory/Derelict smoke tests deleting each other's build
+  outputs. Verified short launch smoke with `START_RVIZ=0`,
+  `START_FASTLIO=0`, `MAX_FRAMES=3`, `LOOP=0`, plus topic smoke with
+  `REQUIRE_FASTLIO_OUTPUTS=0`.
+  Added `Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh` for a ROS2
+  FAST-LIO2-family candidate based on MIT SPARK `spark-fast-lio`, staged only
+  under ignored `Results/tmp`. Current host state is native ROS2 Humble with
+  `/opt/ros/humble/bin/ros2`, `/opt/ros/humble/bin/rviz2`, `/usr/bin/colcon`,
+  ROS apt key `/usr/share/keyrings/ros-archive-keyring.gpg`, and ROS2 jammy
+  apt source `https://mirrors.tuna.tsinghua.edu.cn/ros2/ubuntu`. The
+  `spark-fast-lio` candidate builds successfully under
+  `Results/tmp/spark_fast_lio_ros2_ws`, and executable
+  `install/spark_fast_lio/lib/spark_fast_lio/spark_lio_mapping` exists.
+  Runtime probe starts `spark_lio_mapping` with MoSim remapped topics
+  `/mosim/lidar_points` and `/mosim/forward/imu`; ROS graph and recordings show
+  `/cloud_registered`, `/odometry`, and `/path`. Fixed
+  `publish_fastlio_replay_ros2.py` so `--wall-time --loop` uses a monotonic
+  global sequence across replay cycles instead of resetting timestamps and
+  triggering FAST-LIO IMU/LiDAR loopback clearing. Added project-local
+  `ROS_LOG_DIR=Results/tmp/ros_logs` handling so ROS2 launch/rclpy logs do not
+  fail when `/home/linux/.ros/log` is read-only. Added a MoSim-specific
+  `spark_fast_lio_mosim.launch.py` with identity LiDAR/IMU extrinsics instead
+  of the upstream MIT campus transform. Current runtime evaluation:
+  Factory fails with RMSE `9.761 m` and max error `18.547 m`;
+  Derelict passes with RMSE `0.814 m` and max error `1.938 m`, but runtime logs
+  still include IMU sufficiency warnings and odometry timestamps are partly
+  nonmonotonic. Treat Derelict as a numeric runtime pass with quality warnings,
+  and Factory as degraded.
 
 - 2026-06-01 mapping-window correction: user rejected HTML point-cloud review.
   The project policy is now explicit in `Docs/Workflows/unreal_renderer.md`:
@@ -950,6 +1033,76 @@
 
 ## Current Unreal Renderer Checkpoints
 
+- 2026-06-02 Weixin notification recovery: the QR login was not the immediate
+  cause of the failed UE/RViz review notification. The adapter passed
+  `--session s1` to `cc-connect send`, but `s1` is cc-connect's internal
+  conversation id; the send API expects the platform session key stored in the
+  session file's `active_session` map. Direct send with the platform key
+  returned `Message sent successfully`. Updated
+  `CoAgent/gateway/cc_connect_weixin.py` so internal ids such as `s1` are
+  resolved to the platform key before sending. Adapter verification with
+  `--session s1` now returns `ok=true` and `Message sent successfully`; evidence
+  is in `Results/tmp/keyboard_mapping/weixin_adapter_send_resolved_session_20260602.json`.
+- 2026-06-01 23:45 CST: user correctly rejected the previous 170-point
+  `/velodyne_points` and coarse local occupancy grid as not representative of a
+  FAST-LIO/RViz review input. Updated
+  `Scripts/ros/publish_mosim_keyboard_mapping_ros2.py` so the manual review
+  publisher samples local collision-proxy surfaces near the vehicle, caps the
+  LiDAR review cloud at 220000 points/frame by default, and publishes
+  `/mosim/local_occupancy_grid` at 0.05 m/cell over an 8 m local radius instead
+  of reusing the internal 0.75 m/0.35 m scene grid. Dry-run evidence:
+  `Results/tmp/keyboard_mapping/factory_high_density_lidar_grid_dryrun_20260601.json`
+  reports 620875 total points over 6 frames and 0.05 m grid cells; Derelict
+  reports 1158285 total points over 6 frames. ROS2 runtime probe
+  `Results/tmp/keyboard_mapping/derelict_high_density_ros2_runtime_probe_20260601.json`
+  confirms `sensor_msgs/msg/PointCloud2`, width 195992, and
+  `nav_msgs/msg/OccupancyGrid` resolution 0.05 with 321x321 cells. This remains
+  sensor/review oracle evidence only; final FAST-LIO and MWORKS solver claims
+  still require real runtime FAST-LIO registered cloud/odometry and MWORKS-side
+  dynamics/control evidence.
+- 2026-06-01 23:55 CST / 2026-06-02 follow-up: user reported the RViz point
+  cloud looked like large balls and clarified that point cloud and grid/map
+  review should still be separate RViz2 windows, but each window should be
+  simplified to only the useful view, like the UE rendered map window. Root
+  cause: the review RViz configs had
+  `Style=Spheres`, `Size (Pixels)=9`, and large meter size for
+  `/velodyne_points`. Changed FAST-LIO point-cloud review configs back to
+  `Style=Points`, `Size (Pixels)=1`, `Size (m)=0.01`. Added
+  `/mosim/local_occupancy_voxels` as a 3D occupied voxel PointCloud2 topic while
+  keeping `/mosim/local_occupancy_grid` as the ROS `nav_msgs/OccupancyGrid` 2D
+  map. Changed `Scripts/UE5/open_keyboard_mapping_rviz_ros2.sh` default to open
+  exactly two simplified RViz2 windows: point-cloud and grid/map. Use
+  `OPEN_RVIZ=0` to run only the publisher when the windows are already open.
+- 2026-06-01 22:55 CST: ROS2/RViz2 manual keyboard mapping point-cloud
+  visibility issue was resolved as an RViz display/audit-layout issue, not a
+  ROS2 topic failure. ROS2 MCP confirmed `/velodyne_points` publishes
+  `sensor_msgs/msg/PointCloud2` in `ue_world` with about 170 points per frame,
+  `/mosim/local_known_map_cloud` is non-empty, and `/mosim/manual_odometry`
+  reports Derelict pose near `(87.54, 23.74, 2.2)`. Added review configs
+  `Config/rviz2/mosim_uav_fastlio_pointcloud_review.rviz` and
+  `Config/rviz2/mosim_uav_planning_grid_review.rviz` that hide the RViz
+  Displays panel and use a close audit view; desktop screenshot confirmed the
+  cyan point cloud is visible. When this repeats, verify ROS topics first, then
+  adjust RViz camera/panel layout before changing the publisher. WeChat notify
+  retry must use `CoAgent/gateway/cc_connect_weixin.py notify --packet ...`;
+  the current send attempt was blocked by `no active session found`, so the
+  WeChat gateway session must be reactivated before relying on milestone
+  delivery again.
+- 2026-06-01 23:15 CST: Factory ROS2/RViz2/UE manual keyboard mapping loop is
+  running. First launch failed because `MoSimSceneLibrary/Content` was still
+  activated for Derelict, causing UE to report `/Game/Maps/Demonstration` not
+  found. Reactivating `local_factoryenvironmentcollect` fixed the map load and
+  UE exposed UDP 5005. UE log confirms first Factory keyboard frame:
+  `scene=factoryenvironmentcollect_manual_keyboard`,
+  `map=local_factoryenvironmentcollect`, `local_map_cells=137`,
+  `lidar_points=171`, `local_plan_points=7`. ROS2 MCP confirmed
+  `/velodyne_points` has `PointCloud2` width 171, `/mosim/local_occupancy_grid`
+  is non-empty, and `/mosim/manual_odometry` moved from about
+  `(-55.58, -24.48, 1.9)` to `(-55.58, -23.73, 1.9)` after publishing
+  `/mosim/keyboard_command` `w/w/a/d/s`. Added scene-independent manual-review
+  RViz2 configs targeting `base_link` so Factory and Derelict do not need
+  separate absolute RViz camera coordinates. The keyboard launcher now defaults
+  to review configs and keeps RViz windows open for manual audit.
 - 2026-06-01 01:35 CST: `DarkRuinsMegascansSample` first-pass manual review is
   rejected for the main daytime rendered scene list. `/Game/Main` can start
   under the forced MoSim review GameMode after the root-level `Content/Main.umap`
@@ -1057,3 +1210,57 @@
   evidence:
   `MWORKS review camera input accepted moved=1` and
   `MWORKS review camera input accepted moved=0 rotated=1`.
+- 2026-06-02 CST: Fixed the Factory ROS2/RViz keyboard mapping review loop after
+  user reported that the point cloud did not update and the grid map was still
+  2D. Root causes: the Python publisher recomputed and republished very large
+  clouds every frame, so the claimed 20Hz path collapsed under rclpy/WSLg load;
+  and the review launcher could set both `--interactive` and
+  `/mosim/keyboard_command`, but the publisher consumed only the ROS command
+  topic in that mode. `publish_mosim_keyboard_mapping_ros2.py` now caches
+  pose-dependent LiDAR/voxel data, refreshes headers at 20Hz while stationary,
+  accepts both terminal keyboard input and `/mosim/keyboard_command`, publishes
+  `/mosim/local_occupancy_voxels` as the primary 3D map surface, and keeps
+  `nav_msgs/OccupancyGrid` as 2D reference only. Runtime probe showed
+  `/velodyne_points` at about 20Hz with `lidar=20000`, odometry changed after
+  `w w w d d`, and the 3D voxel topic published `width=30000`.
+- 2026-06-02 CST: Rejected the keyboard/grid-step route as mainline after user
+  review. Added `Scripts/ros/publish_mworks_uav_state_ros2.py` as the first
+  MWORKS-derived ROS2 replay bridge and verified topic rates without opening
+  RViz: `/mosim/truth/odometry` about 20.0Hz, `/mosim/imu` about 200.0Hz after
+  fixing uniform 5ms IMU scheduling, and `/mosim/lidar_points` about 10.0Hz.
+  This is still replay evidence, not live closed-loop co-simulation. The
+  current Factory LiDAR JSONL contains only about 156-176 points/frame, so it
+  is smoke-only and cannot support a credible FAST-LIO/Mid360 claim. Next
+  mainline step is dense LiDAR/Livox-like scan generation or live UE sensor
+  export tied to MWORKS state, then FAST-LIO runtime output validation.
+- 2026-06-02 CST: CoAgent Weixin gateway progress packets must use the existing
+  whitelisted packet shapes. A generic JSON with `type=progress_update` is
+  rejected as `unsupported packet type`; use `template_type=blocker_notification`
+  with `class=manual_review_required` for non-blocking milestone updates, or a
+  review/result packet when actual human action is needed.
+- 2026-06-02 CST: Added `Scripts/UE5/generate_livox_like_lidar_replay.py` to
+  reuse Sunray's `mid360-real-centr.csv` scan pattern with UE collision truth.
+  Factory dense replay probe generated about 24.5k-25.9k points/frame with
+  `offset_time_ns`, `line`, `reflectivity`, and `tag` attributes. The current
+  Python/rclpy MWORKS bridge can show the dense point cloud, but LiDAR topic
+  rate collapses to about 0.3-0.5Hz for 25k-point frames. Do not optimize this
+  Python route as the final dense LiDAR transport; move dense real-time LiDAR
+  to C++ ROS2, UE C++ sensor bridge, or a Livox-plugin-derived path.
+- 2026-06-02 CST: Added `Scripts/ros/mosim_dense_lidar_cpp` as a minimal C++
+  ROS2 dense LiDAR publisher. Clean `colcon build` passed in
+  `Results/tmp/mosim_dense_lidar_cpp_ws`. A naive C++ timer publisher still
+  measured only about 0.5-0.8Hz for 25k-point frames; after prepacking
+  `PointCloud2` messages and updating only the header timestamp, measured rate
+  improved to about 7-8Hz as seen by `ros2 topic hz`. Added internal publisher
+  stats because the `topic hz` subscriber can become the bottleneck for large
+  `PointCloud2`; with about 21k points/frame, the C++ node reported about
+  9.73Hz and mean publish call time around 100-130 microseconds. This is still a
+  transport prototype, not final FAST-LIO input; next step is actual FAST-LIO
+  subscriber or dedicated C++ subscriber validation plus QoS/DDS/zero-copy or
+  point-density tradeoff.
+- 2026-06-02 CST: Weixin milestone packet
+  `ue_uav_cpp_lidar_transport_status_20260602.json` was accepted by the gateway
+  formatter but cc-connect send failed once with `weixin: sendMessage: ret=-2`.
+  Do not retry in a tight loop; treat it as a transient Weixin/session send
+  failure and continue local work unless a later manual-review notification
+  also fails.

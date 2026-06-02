@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "llama-index-docs": {
-      "type": "http",
-      "url": "https://developers.llamaindex.ai/mcp"
-    }
-  }
-}

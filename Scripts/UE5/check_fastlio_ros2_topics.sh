@@ -9,6 +9,7 @@ ROS_SETUP="${ROS_SETUP:-/opt/ros/humble/setup.bash}"
 DRY_RUN="${DRY_RUN:-0}"
 TIMEOUT_SECONDS="${TIMEOUT_SECONDS:-5}"
 REQUIRE_FASTLIO_OUTPUTS="${REQUIRE_FASTLIO_OUTPUTS:-1}"
+FASTLIO_ODOMETRY_TOPIC="${FASTLIO_ODOMETRY_TOPIC:-/Odometry}"
 INPUT_TOPICS=(
   "/velodyne_points"
   "/imu/data"
@@ -18,7 +19,7 @@ INPUT_TOPICS=(
 )
 FASTLIO_OUTPUT_TOPICS=(
   "/cloud_registered"
-  "/Odometry"
+  "${FASTLIO_ODOMETRY_TOPIC}"
 )
 
 cd "${PROJECT_ROOT}"

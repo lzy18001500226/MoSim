@@ -71,7 +71,22 @@ Therefore, MoSim evidence must be separated as follows:
 | Offline `.ply`, JSONL, CSV handoff files | Input/replay artifacts only; not runtime localization evidence |
 | HTML report preview | Optional report artifact only; never the active point-cloud/map review surface |
 
-The operator-facing default is split RViz windows:
+The operator-facing default for the current keyboard-mapping smoke is two
+simplified RViz2 windows with no left-side configuration panels:
+
+```text
+Point-cloud RViz2 window
+  -> raw `/velodyne_points` small-point view, plus FAST-LIO output placeholders
+
+Grid/map RViz2 window
+  -> `/mosim/local_occupancy_grid`, `/mosim/local_occupancy_voxels`, TF,
+     manual odometry, local plan, and trajectory
+```
+
+This is the same review style as the UE rendered scene window: the operator
+sees the rendered content, not a configuration-heavy UI. Do not open an empty
+RViz window for the normal smoke path, because that leaves topic/display setup
+as manual work.
 
 ```text
 RViz planning/grid window
@@ -99,6 +114,179 @@ Scripts/UE5/run_fastlio_rviz_replay_ros1.sh factoryenvironmentcollect
 Scripts/UE5/check_fastlio_ros1_topics.sh
 ```
 
+The ROS2 manual keyboard mapping loop is now smoke-only. It may be used to
+check RViz2 window layout, topic display configuration, and basic publisher
+plumbing, but it is not a mainline controller, mapping, localization, FAST-LIO,
+or planning evidence path. The user rejected the grid-cell motion and synthetic
+point-cloud route on 2026-06-02 because it cannot support continuous UAV
+control tuning.
+
+For this smoke-only loop, the command opens the two simplified RViz2 windows
+and the ROS2 publisher:
+
+```bash
+set +u
+source /opt/ros/humble/setup.bash
+set -u
+Scripts/UE5/open_keyboard_mapping_rviz_ros2.sh factory
+```
+
+To run only the publisher when RViz is already open:
+
+```bash
+OPEN_RVIZ=0 Scripts/UE5/open_keyboard_mapping_rviz_ros2.sh factory
+```
+
+Before opening the UE rendered window for an imported/local scene, activate the
+matching scene source first:
+
+```bash
+python3 Scripts/UE5/activate_renderer_scene_source.py --scene-source-id local_factoryenvironmentcollect
+UNREAL_EXTRA_ARGS="/Game/Maps/Demonstration -MoSimDayReview" \
+  RESTART_UNREAL_GAME=1 Scripts/UE5/open_unreal_renderer.sh simulation-review
+
+python3 Scripts/UE5/activate_renderer_scene_source.py --scene-source-id local_derelictcorridormegascans
+UNREAL_EXTRA_ARGS="/Game/DerelictCorridor/Maps/DerelictCorridor -MoSimDayReview" \
+  RESTART_UNREAL_GAME=1 Scripts/UE5/open_unreal_renderer.sh simulation-review
+```
+
+The renderer `Content/` links are scene-specific. If Factory is launched while
+Derelict is still activated, UE reports that `/Game/Maps/Demonstration` cannot
+be found. Treat that as a scene-source activation error, not as a bad map path.
+
+If the point-cloud window appears blank, first verify that the data path is
+actually alive before changing the publisher:
+
+```bash
+ros2 topic echo --once /velodyne_points
+ros2 topic echo --once /mosim/manual_odometry
+```
+
+Point-cloud density and grid resolution are part of the review contract. A
+hundred-point local scan is not a credible FAST-LIO-style visual input. Common
+UAV/robot LiDAR setups publish tens of thousands to hundreds of thousands of
+points per scan in RViz: for example, VLP-16-class sensors are roughly
+300k points/s, Livox Mid-360-class sensors are roughly 200k points/s, and
+high-line Ouster sensors can be much higher. The ROS `nav_msgs/OccupancyGrid`
+`resolution` field is meters per cell, and 2D navigation examples commonly use
+about `0.05` m/cell. Therefore the current manual-review publisher keeps the
+20Hz review path bounded enough for Python/rclpy and WSLg:
+
+```text
+/velodyne_points: local surface-sampled PointCloud2, capped at 20000 points/frame, 20Hz target
+/mosim/local_occupancy_grid: 0.05 m/cell local grid, 8 m radius by default
+/mosim/local_occupancy_voxels: 3D occupied voxel cloud, capped at 30000 points/frame, 2Hz target
+```
+
+This is still a local scene-truth sensor/review oracle, not final FAST-LIO
+localization or final MWORKS solver evidence. Final claims require MWORKS-side
+dynamics/control input plus real FAST-LIO-family runtime output topics such as
+registered cloud and odometry.
+
+Do not improve the manual/keyboard loop as a substitute for the real
+MWORKS/UE/ROS2 UAV loop. Mainline work must move the vehicle from continuous
+MWORKS dynamics and controller output, publish IMU/odometry/LiDAR at measured
+rates, and keep planner commands as position/velocity/acceleration/yaw
+setpoints rather than grid-cell steps.
+
+The current minimum MWORKS state bridge is:
+
+```bash
+python3 Scripts/ros/publish_mworks_uav_state_ros2.py \
+  --mworks-raw-csv Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/raw/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.csv \
+  --lidar-point-frames-jsonl Results/unreal_scene_mapping/factoryenvironmentcollect/lidar_point_frames.jsonl \
+  --dry-run --max-frames 20
+```
+
+With ROS2 Humble sourced, the same script publishes:
+
+```text
+/mosim/truth/odometry  about 20Hz
+/mosim/imu             about 200Hz, currently resampled from 20Hz MWORKS rows
+/mosim/lidar_points    about 10Hz
+/tf
+```
+
+Measured on 2026-06-02 after fixing publisher timing: odometry held about
+20.0Hz, IMU held about 200.0Hz, and LiDAR held about 10.0Hz. This proves the
+ROS2 topic-rate bridge, not final co-simulation. The current Factory LiDAR
+input has only about 160 points per frame and is therefore below the density
+needed for credible FAST-LIO/Mid360 review.
+
+Dense replay generation now exists for bounded tests:
+
+```bash
+python3 Scripts/UE5/generate_livox_like_lidar_replay.py \
+  --scene factoryenvironmentcollect \
+  --max-frames 5 \
+  --points-per-frame 30000 \
+  --raycast-step-m 0.15 \
+  --max-range-m 35.0
+```
+
+This reuses Sunray's `mid360-real-centr.csv` scan mode and UE collision truth.
+Factory produced about 25k points/frame in the initial probe. Do not use the
+current Python/rclpy bridge as the final dense LiDAR transport: when publishing
+these 25k-point frames, the point cloud topic was visible but `ros2 topic hz`
+fell to about 0.3-0.5Hz in the current WSL/ROS2 path. Dense real-time LiDAR
+requires a C++ ROS2 node, UE C++ sensor bridge, or direct reuse/adaptation of a
+Livox-style plugin path.
+
+The first C++ ROS2 dense publisher lives under:
+
+```text
+Scripts/ros/mosim_dense_lidar_cpp
+```
+
+Build smoke:
+
+```bash
+set +u
+source /opt/ros/humble/setup.bash
+set -u
+mkdir -p Results/tmp/mosim_dense_lidar_cpp_ws/src
+cp -a Scripts/ros/mosim_dense_lidar_cpp Results/tmp/mosim_dense_lidar_cpp_ws/src/
+cd Results/tmp/mosim_dense_lidar_cpp_ws
+colcon build --packages-select mosim_dense_lidar_cpp
+```
+
+The prepacked C++ publisher reached roughly 7-8Hz for 25k-point frames in the
+current WSL/ROS2 path. That is much better than Python, but still below the
+10Hz dense LiDAR target when measured through `ros2 topic hz`. Publisher-side
+statistics are more encouraging: with about 21k points/frame, the same
+prepacked C++ node reported about 9.73Hz and mean publish call time around
+100-130 microseconds. Treat `ros2 topic hz` as a subscriber-side stress test for
+large point clouds, not as the only publisher truth. Final validation still
+requires FAST-LIO or a dedicated C++ subscriber to consume the stream.
+
+Do not treat `/mosim/local_occupancy_grid` as the primary grid/map review
+window. ROS `nav_msgs/OccupancyGrid` is inherently 2D; keep it as a reference
+topic only. The native grid/map review window should primarily show
+`/mosim/local_occupancy_voxels` as `PointCloud2` so vertical obstacle occupancy
+is visible.
+
+Keep RViz point rendering close to default FAST-LIO practice: `PointCloud2`
+should use `Style=Points`, `Size (Pixels)=1`, and not large spheres/boxes unless
+the user explicitly requests enlarged debugging points. The 2026-06-01 oversized
+point-cloud issue was caused by review configs using `Style=Spheres` and
+`Size (Pixels)=9`.
+
+2026-06-02 runtime note: 80000-220000 points/frame in the Python review
+publisher is visually dense but does not maintain 20Hz on the current
+ROS2/WSLg path. A bounded 20000-point `/velodyne_points` stream reached measured
+`ros2 topic hz` rates around 20Hz after the publisher cached pose-dependent
+cloud/voxel data and refreshed only message headers while stationary. Raise
+`LIDAR_MAX_POINTS` only for density screenshots, not for the default manual
+motion audit.
+
+The 2026-06-01 Derelict review failure was display-side, not topic-side:
+`/velodyne_points` was publishing `sensor_msgs/msg/PointCloud2` in
+`ue_world`, but RViz's Displays panel occupied most of the window and the camera
+was pointed too narrowly for manual audit. The review configs therefore hide the
+left panel and keep a close Derelict-centered view with large cyan point
+spheres. Do not debug this case as a ROS2 publisher failure unless the topic
+subscription itself is empty.
+
 `RVIZ_PROFILE=overview` opens `Config/rviz/mosim_uav_mapping.rviz`.
 `RVIZ_PROFILE=planning_grid` opens
 `Config/rviz/mosim_uav_planning_grid.rviz`. `RVIZ_PROFILE=fastlio_pointcloud`
@@ -120,6 +308,15 @@ External references checked:
   `https://microsoft.github.io/AirSim/airsim_ros_pkgs/`
 - Gazebo ROS/Gazebo Sim demos:
   `https://docs.ros.org/en/rolling/p/ros_gz_sim_demos/index.html`
+- ROS `nav_msgs/OccupancyGrid` / `MapMetaData`:
+  `https://docs.ros.org/en/noetic/api/nav_msgs/html/msg/MapMetaData.html`
+- Nav2 example costmap configuration:
+  `https://docs.nav2.org/configuration/packages/configuring-costmaps.html`
+- FAST-LIO / LiDAR families used as density references:
+  `https://github.com/hku-mars/FAST_LIO`,
+  `https://www.velodynelidar.com/products/puck/`,
+  `https://www.livoxtech.com/mid-360`,
+  `https://ouster.com/products/scanning-lidar/os1-sensor`
 
 The current practical route separates manual Fab/Launcher actions from
 project-local automation:
@@ -865,6 +1062,41 @@ Current evidence reports no local ROS2 FAST-LIO-family candidate. `FAST_LIO`,
 `FAST-LIVO2`, and `Point-LIO-point-lio-with-grid-map` are all
 `ros1_catkin_only`, so `START_FASTLIO=1` must remain disabled for the ROS2
 wrapper until a ROS2 package or an approved bridge route exists.
+
+Use the ROS2 launch workflow when validating the package-style runtime path:
+
+```bash
+DRY_RUN=1 MAX_FRAMES=2 START_RVIZ=0 Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect
+START_RVIZ=0 START_FASTLIO=0 MAX_FRAMES=3 LOOP=0 Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect
+```
+
+The wrapper builds the project-local `Scripts/ros/mosim_scene_replay` launch
+package into ignored scene-specific
+`Results/tmp/mosim_scene_replay_ros2_ws_<scene>` workspaces and runs `ros2
+launch mosim_scene_replay mosim_scene_replay.launch.py`. Scene-specific
+workspaces avoid Factory and Derelict parallel smoke tests deleting each
+other's generated build files. It launches the MoSim mapping publisher and
+FAST-LIO input replay publisher. `start_fastlio` remains false unless a real
+ROS2 FAST-LIO-family launch command is supplied.
+
+For the current native ROS2 FAST-LIO2 candidate, run:
+
+```bash
+Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh
+```
+
+The candidate is MIT SPARK `spark-fast-lio`, staged only under ignored
+`Results/tmp`. The script can download/extract `ros-humble-pcl-ros` under
+ignored `Results/tmp/ros2_overlay_pcl_ros` without sudo, making `pcl_ros`
+visible for the project-local build. Current build status is recorded in
+`Results/unreal_scene_mapping/SPARK_FASTLIO_ROS2_CANDIDATE.md/json`; a build
+attempt has started but can exceed the 60 second interactive timeout during
+PCL/OpenNI discovery. After `BUILD=1
+Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh` succeeds, source
+`Results/tmp/spark_fast_lio_ros2_ws/install/setup.bash` and pass a real
+`FASTLIO_ROS2_LAUNCH_CMD` to the ROS2 launch wrapper. Validate its odometry
+topic with `FASTLIO_ODOMETRY_TOPIC=/odometry` because this candidate publishes
+relative `odometry`, not the older `/Odometry` spelling.
 
 If a scene reports `blocked_missing_ros1_runtime`, install/source a ROS1 Catkin
 environment with FAST-LIO dependencies before attempting a real FAST-LIO run.

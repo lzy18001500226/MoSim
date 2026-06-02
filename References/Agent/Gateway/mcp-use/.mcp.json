@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "mcp-use-docs": {
-      "type": "http",
-      "url": "https://manufact.com/docs/mcp"
-    }
-  }
-}
