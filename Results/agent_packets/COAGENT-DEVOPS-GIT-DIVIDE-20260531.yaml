@@ -1,41 +1,41 @@
 task_id: COAGENT-DEVOPS-GIT-DIVIDE-20260531
-status: planned
-decision: continue_with_next_small_family
+status: running
+decision: continue_with_single_file_tail
 summary: >-
-  The current checkpoint is now focused on the ROS/FAST-LIO bridge slice.
-  Safety probes confirmed `main` is still the active branch, `HEAD...@{upstream}`
-  is `1 0`, `.git/index.lock` is absent, and `core.excludesfile` remains
-  unset. The bounded current batch is the four-file `Scripts/ros` family:
-  `publish_mworks_uav_state_ros2.py`,
-  `mosim_dense_lidar_cpp/CMakeLists.txt`,
-  `mosim_dense_lidar_cpp/src/dense_lidar_replay_node.cpp`, and
-  `mosim_scene_replay/launch/mosim_scene_replay.launch.py`. The slice totals
-  about 44.9 KB and `git diff --check` passed. The diff introduces
-  Livox-compatible point packing, optional Livox `CustomMsg` publishing,
-  and launch wiring for MWORKS state, IMU, and FAST-LIO/RViz2 inputs.
+  Safety probe for the long Git split task is still clean: branch is `main`,
+  `HEAD...@{upstream}` is `0 0`, `.git/index.lock` is absent, and
+  `core.excludesfile` is unset. Path-limited inventory of the remaining UE5
+  tail shows that only `Scripts/UE5/publish_fastlio_replay_ros2.py` is still
+  present as an uncommitted tracked delta in this lane. The file is a safe
+  single-file continuation: it stays inside MoSim, is far below the 100MB
+  ceiling, and `git diff --check` on that file passes.
 evidence:
   - "branch=main"
-  - "upstream_ahead_behind=1 0"
+  - "upstream_ahead_behind=0 0"
   - "index_lock_present=false"
   - "core_excludesfile=unset"
-  - "scripts_ros_batch_total_bytes=44910"
-  - "git_diff_check_passed=true"
-  - "batch_files=4"
-  - "livox_custom_msg_enabled=true"
-  - "mworks_fastlio_launch_wiring_enabled=true"
+  - "single_file_tail=Scripts/UE5/publish_fastlio_replay_ros2.py"
+  - "single_file_diff_check_passed=true"
+  - "file_size_bytes=13518"
+  - "working_tree_probe=path_limited_only"
 risks:
-  - "The worktree still contains many large families, so future batches must remain path-limited."
-  - "A broader `git status` has already timed out earlier in the task, so only bounded probes remain safe."
-  - "The next step must still recheck cached diff and upstream alignment before commit/push."
+  - "Earlier broad `git status` attempts on the large tree timed out, so only bounded probes remain safe."
+  - "Do not mix the remaining UE5 single-file tail with the larger new-tool family in one batch."
+  - "Keep the existing ignore-first rules in place for runtime outputs, generated assets, and large external trees."
 ignore_first_strategy: >-
-  Keep runtime and generated noise isolated before opening the next slice.
-  The existing ignore-first rules should continue suppressing results,
-  UE5/runtime outputs, and other large external trees so later inventory
-  stays small and reviewable.
+  Continue suppressing runtime and generated noise first, then open only the
+  smallest reviewed slice. The current ignore-first rules already cover
+  `Results/**`, UE5/runtime outputs, `*.msr`, secrets, and other large trees,
+  so later inventory stays small and reviewable.
 proposed_batches:
-  - "Batch 1 candidate: `Scripts/ros` bridge slice now under review for commit."
-  - "Batch 2 candidate: the next smallest current-HEAD family after the ROS bridge slice, selected only after a path-limited diff and 100MB scan."
-  - "Batch 3 candidate: if the next family is noisy, first isolate its generated/runtime subtree instead of forcing it into the next commit."
+  - "Batch 1 completed: `Scripts/ros` bridge runtime and adapter slice."
+  - "Batch 2 completed: `Docs/Workflows/debug_mcp.md` and `Docs/Workflows/ros2_runtime_setup.md`."
+  - "Batch 3 completed: `Docs/Workflows/unreal_renderer.md` as its own isolated doc batch."
+  - "Batch 4 completed: UE5 playback/helper batch."
+  - "Batch 5 completed: UE5 FAST-LIO runtime plumbing batch."
+  - "Batch 6 completed: UE5 runtime bundle batch."
+  - "Batch 7 completed: legacy RViz replay launcher removal."
+  - "Batch 8 candidate: `Scripts/UE5/publish_fastlio_replay_ros2.py` as a single-file tail."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -46,7 +46,8 @@ forbidden_actions:
   - "no commit of files at or above 100MB"
   - "no unreviewed unignore of runtime/generated trees"
 next_action: >-
-  Commit the reviewed ROS slice only after a cached diff check and then
-  re-evaluate upstream alignment before moving to the next family.
+  Stage and review only `Scripts/UE5/publish_fastlio_replay_ros2.py` as the
+  next tiny batch, then recheck upstream alignment before opening the new-tool
+  family.
 needs_human: false
 blocked_reason: ""
