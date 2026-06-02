@@ -1,0 +1,33 @@
+{
+  "schema": "mosim.livox_like_lidar_replay_manifest.v1",
+  "scene_id": "factoryenvironmentcollect",
+  "truth_source": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json",
+  "pose_csv": "Results/unreal_scene_mapping/factoryenvironmentcollect/render_replay.csv",
+  "scan_mode_csv": "References/Sunray/simulation/gazebo_plugin/livox_laser_simulation/scan_mode/mid360-real-centr.csv",
+  "output_jsonl": "Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames.jsonl",
+  "frame_count": 5,
+  "points_per_frame_requested": 25000,
+  "points_per_frame_min": 19867,
+  "points_per_frame_max": 21004,
+  "points_per_frame_avg": 20507.6,
+  "lidar_rate_hz": 10.0,
+  "point_rate_hz": 200000.0,
+  "claim": "dense replay sensor oracle only; not live UE raycast and not FAST-LIO runtime output",
+  "occupancy_summary": {
+    "roi_bounds_m": [
+      -125.33,
+      -94.23,
+      14.67,
+      45.77
+    ],
+    "resolution_m": 0.75,
+    "grid_size": [
+      188,
+      188
+    ],
+    "truth_proxy_count": 8658,
+    "flight_relevant_proxy_count": 999,
+    "occupied_cell_count": 16968,
+    "occupied_cell_ratio": 0.480081
+  }
+}

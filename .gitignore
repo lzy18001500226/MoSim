@@ -75,6 +75,7 @@ Results/**/native_result/
 # and promotes a small subset.
 Results/unreal_scene_mapping/**/livox_like_lidar_frames.jsonl
 Results/unreal_scene_mapping/**/livox_like_lidar_manifest.json
+!Results/unreal_scene_mapping/**/livox_like_lidar_manifest.json
 *_backup/
 
 # Large binary outputs

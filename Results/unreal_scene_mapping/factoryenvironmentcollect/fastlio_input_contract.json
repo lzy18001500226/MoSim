@@ -1,0 +1,122 @@
+{
+  "schema": "mosim.fastlio_input_contract.v1",
+  "status": "claimable_input_ready",
+  "dense_lidar_ready": true,
+  "error_count": 0,
+  "warning_count": 1,
+  "paths": {
+    "scene_dir": "Results/unreal_scene_mapping/factoryenvironmentcollect",
+    "config": "Config/ros2/mosim_spark_fast_lio_mid360.yaml",
+    "manifest": "Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_manifest.json",
+    "livox_frames": "Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames.jsonl",
+    "fastlio_dataset": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_replay_dataset.jsonl"
+  },
+  "config": {
+    "common": {
+      "lid_topic": "/mosim/lidar_points",
+      "imu_topic": "/mosim/forward/imu",
+      "time_sync_en": false,
+      "time_offset_lidar_to_imu": 0.0
+    },
+    "preprocess": {
+      "lidar_type": 1,
+      "scan_line": 4,
+      "scan_rate": 10,
+      "timestamp_unit": 2,
+      "blind": 0.5
+    },
+    "mapping": {
+      "extrinsic_est_en": false,
+      "extrinsic_T": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "extrinsic_R": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    }
+  },
+  "manifest_summary": {
+    "schema": "mosim.livox_like_lidar_replay_manifest.v1",
+    "frame_count": 5,
+    "points_per_frame_avg": 20507.6,
+    "lidar_rate_hz": 10.0,
+    "point_rate_hz": 200000.0,
+    "claim": "dense replay sensor oracle only; not live UE raycast and not FAST-LIO runtime output"
+  },
+  "livox_frame_sample": {
+    "frames_sampled": 5,
+    "points_per_frame_min": 19867,
+    "points_per_frame_max": 21004,
+    "points_per_frame_avg": 20507.6,
+    "time_first_s": 0.0,
+    "time_last_s": 1.0,
+    "nonmonotonic_time_pairs": 0,
+    "duplicate_time_pairs": 0,
+    "point_attribute_keys": [
+      "line",
+      "offset_time_ns",
+      "reflectivity",
+      "tag"
+    ],
+    "point_attribute_count_matches_points": true,
+    "observed_lines": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  "fastlio_dataset_sample": {
+    "frames_sampled": 5,
+    "points_per_frame_min": 512,
+    "points_per_frame_max": 512,
+    "points_per_frame_avg": 512.0,
+    "time_first_s": 0.0,
+    "time_last_s": 0.4,
+    "nonmonotonic_time_pairs": 0,
+    "duplicate_time_pairs": 0,
+    "point_attribute_keys": [],
+    "point_attribute_count_matches_points": false,
+    "observed_lines": [],
+    "synthetic_imu_frames_sampled": 5,
+    "measured_imu_frames_sampled": 0,
+    "imu_sources": [
+      "finite_difference_from_scene_truth_replay"
+    ],
+    "yaw_span_rad_sampled": 0.0
+  },
+  "implementation_support": {
+    "spark_fast_lio": {
+      "root": "Results/tmp/fastlio_ros2_candidates/spark-fast-lio",
+      "preprocess_cpp": "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/src/preprocess.cpp",
+      "preprocess_h": "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/include/preprocess.h",
+      "source_exists": true,
+      "pointcloud2_supported_lidar_types": [
+        "OUST64",
+        "KMOUST64",
+        "VELO16"
+      ],
+      "livox_custommsg_guarded": true,
+      "livox_ros2_custommsg_supported": true,
+      "pointcloud2_livox_supported": false
+    }
+  },
+  "findings": [
+    {
+      "severity": "warning",
+      "surface": "legacy FAST-LIO dataset",
+      "detail": "legacy fastlio_replay_dataset is present but is no longer the claimable Mid360 input path.",
+      "action": "Use dense Livox CustomMsg plus MWORKS/ROS2 IMU for runtime gates; keep legacy dataset only as a degraded historical reference."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "mosim.livox_like_lidar_replay_manifest.v1",
+  "scene_id": "derelictcorridormegascans",
+  "truth_source": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json",
+  "pose_csv": "Results/unreal_scene_mapping/derelictcorridormegascans/render_replay.csv",
+  "scan_mode_csv": "References/Sunray/simulation/gazebo_plugin/livox_laser_simulation/scan_mode/mid360-real-centr.csv",
+  "output_jsonl": "Results/unreal_scene_mapping/derelictcorridormegascans/livox_like_lidar_frames.jsonl",
+  "frame_count": 5,
+  "points_per_frame_requested": 25000,
+  "points_per_frame_min": 24241,
+  "points_per_frame_max": 24349,
+  "points_per_frame_avg": 24290.8,
+  "lidar_rate_hz": 10.0,
+  "point_rate_hz": 200000.0,
+  "claim": "dense replay sensor oracle only; not live UE raycast and not FAST-LIO runtime output",
+  "occupancy_summary": {
+    "roi_bounds_m": [
+      49.04,
+      4.14,
+      112.277,
+      40.02
+    ],
+    "resolution_m": 0.35,
+    "grid_size": [
+      182,
+      104
+    ],
+    "truth_proxy_count": 4753,
+    "flight_relevant_proxy_count": 777,
+    "occupied_cell_count": 8206,
+    "occupied_cell_ratio": 0.433538
+  }
+}

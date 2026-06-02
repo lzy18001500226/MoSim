@@ -24,9 +24,31 @@
     "fastlio_replay_dataset_jsonl": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl",
     "fastlio_adapter_manifest_json": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_adapter_manifest.json"
   },
+  "replay_generation": {
+    "mode": "control_reference_smooth_3d_raycast",
+    "fps": 10.0,
+    "fixed_yaw_for_fastlio_input": true,
+    "preferred_pose_source": "Results/unreal_scene_mapping/derelictcorridormegascans/control_reference.csv",
+    "fallback_pose_source": "Results/unreal_scene_mapping/derelictcorridormegascans/render_replay.csv",
+    "lidar_source": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json",
+    "truth_source_for_3d_lidar": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/derelictcorridormegascans_collision_truth.json",
+    "height_index_source_proxy_count": 4327,
+    "lidar_vertical_angles_deg": [
+      -15.0,
+      -10.0,
+      -5.0,
+      0.0,
+      5.0,
+      10.0
+    ],
+    "lidar_max_points_per_frame": 512,
+    "synthetic_imu_is_measured": false
+  },
   "input_evidence": {
     "handoff": "Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_handoff.json",
     "render_replay_csv": "Results/unreal_scene_mapping/derelictcorridormegascans/render_replay.csv",
+    "control_reference_csv": "Results/unreal_scene_mapping/derelictcorridormegascans/control_reference.csv",
+    "occupancy_json": "Results/unreal_scene_mapping/derelictcorridormegascans/occupancy_grid.json",
     "lidar_point_frames_jsonl": "Results/unreal_scene_mapping/derelictcorridormegascans/lidar_point_frames.jsonl",
     "local_known_map_jsonl": "Results/unreal_scene_mapping/derelictcorridormegascans/local_known_map_frames.jsonl",
     "local_plan_jsonl": "Results/unreal_scene_mapping/derelictcorridormegascans/local_plan_frames.jsonl",
@@ -48,19 +70,22 @@
     "uav_path": "/mosim/uav_path",
     "fastlio_outputs_required_for_localization_claim": [
       "/cloud_registered",
-      "/Odometry",
+      "/odometry",
       "/path"
     ]
   },
   "run_commands_after_ros_setup": [
-    "source /opt/ros/humble/setup.bash",
+    "set +u; source /opt/ros/humble/setup.bash; set -u",
     "python3 Scripts/UE5/publish_fastlio_replay_ros2.py --dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl --dry-run",
-    "python3 Scripts/UE5/publish_fastlio_replay_ros2.py --dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl",
-    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans",
-    "Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans",
-    "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh derelictcorridormegascans",
-    "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh derelictcorridormegascans",
+    "python3 Scripts/UE5/publish_fastlio_replay_ros2.py --dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl --fps 10",
+    "DRY_RUN=1 MAX_FRAMES=2 FPS=10 Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans",
+    "FPS=10 Scripts/UE5/open_mapping_rviz_ros2.sh derelictcorridormegascans",
+    "DRY_RUN=1 MAX_FRAMES=2 FPS=10 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh derelictcorridormegascans",
+    "FPS=10 Scripts/UE5/run_fastlio_rviz_replay_ros2.sh derelictcorridormegascans",
+    "FASTLIO_ROS2_LAUNCH_CMD='set +u; source /opt/ros/humble/setup.bash; source Results/tmp/spark_fast_lio_ros2_ws/install/setup.bash; ros2 launch spark_fast_lio mapping_mit_campus.launch.yaml start_rviz:=false scene_id:=mosim robot_name:=base base_frame:=base map_frame:=ue_world config_path:=/mnt/c/Users/HP/Desktop/MoSim/Config/ros2/mosim_spark_fast_lio_velodyne.yaml' START_FASTLIO=1 START_RVIZ=0 FPS=10 MAX_FRAMES=0 LOOP=1 FASTLIO_LIDAR_TOPIC=/mosim/lidar_points FASTLIO_IMU_TOPIC=/mosim/forward/imu FASTLIO_LIDAR_FRAME=base/velodyne_link FASTLIO_IMU_FRAME=base/forward_imu_optical_frame Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh derelictcorridormegascans",
     "Scripts/UE5/check_fastlio_ros2_topics.sh",
+    "python3 Scripts/UE5/record_fastlio_ros2_runtime.py --scene-id derelictcorridormegascans --output-dir Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime --duration-seconds 20 --odom-topic /odometry --path-topic /path --cloud-topic /cloud_registered",
+    "python3 Scripts/UE5/evaluate_fastlio_runtime.py --scene-id derelictcorridormegascans --truth-dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl --odometry-jsonl Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime/fastlio_odometry.jsonl --output-json Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime/FASTLIO_RUNTIME_EVALUATION.json --output-md Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime/FASTLIO_RUNTIME_EVALUATION.md --fail-on-threshold",
     "Optional ROS1 compatibility route for local References/Lab/FAST_LIO:",
     "catkin_make  # from a ROS1 workspace containing References/Lab/FAST_LIO as package fast_lio",
     "source devel/setup.bash",
@@ -71,13 +96,13 @@
     "Scripts/UE5/open_mapping_rviz_ros1.sh derelictcorridormegascans",
     "DRY_RUN=1 MAX_FRAMES=2 Scripts/UE5/run_fastlio_rviz_replay_ros1.sh derelictcorridormegascans",
     "Scripts/UE5/run_fastlio_rviz_replay_ros1.sh derelictcorridormegascans",
-    "Scripts/UE5/check_fastlio_ros1_topics.sh",
-    "python3 Scripts/UE5/record_fastlio_ros1_runtime.py --scene-id derelictcorridormegascans --output-dir Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime --duration-seconds 20",
-    "python3 Scripts/UE5/evaluate_fastlio_runtime.py --scene-id derelictcorridormegascans --truth-dataset Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_replay_dataset.jsonl --odometry-jsonl Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime/fastlio_odometry.jsonl --output-json Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime/FASTLIO_RUNTIME_EVALUATION.json --output-md Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime/FASTLIO_RUNTIME_EVALUATION.md --fail-on-threshold"
+    "Scripts/UE5/check_fastlio_ros1_topics.sh"
   ],
   "claim_boundary": [
     "This manifest is a FAST-LIO input adapter, not a completed FAST-LIO localization result.",
     "The IMU channel is synthetic finite-difference data derived from the replay path, not measured flight IMU.",
+    "When available, FAST-LIO replay uses the smooth control reference and ray-casts multi-line 3D LiDAR from collision truth; this truth is used only to generate validation sensor input, not as planner global-map input.",
+    "Yaw is fixed for FAST-LIO replay input when smooth control reference is used, to avoid nonphysical yaw-rate spikes from grid-path heading discontinuities.",
     "A completed FAST-LIO claim requires ROS runtime output, pose/map topics, logs, and comparison against replay truth.",
     "On Ubuntu 22.04, ROS2/RViz2 is the primary live point-cloud/map review path.",
     "Use record/evaluate tooling only after a real FAST-LIO-family runtime publishes odometry and registered-cloud output.",

@@ -1,0 +1,302 @@
+{
+  "schema": "mosim.fastlio_factory_failure_diagnosis.v1",
+  "scene_id": "factoryenvironmentcollect",
+  "status": "not_claimable",
+  "claim_boundary": [
+    "This report diagnoses existing Factory FAST-LIO runtime evidence; it is not a new localization run.",
+    "Factory FAST-LIO topics exist, but current accuracy fails and must not be used as product evidence.",
+    "UE collision truth is a validation/sensor oracle and must not be fed to the planner as a known global map."
+  ],
+  "inputs": {
+    "scene_dir": "Results/unreal_scene_mapping/factoryenvironmentcollect",
+    "truth_dataset": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_replay_dataset.jsonl",
+    "fastlio_adapter_manifest": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_adapter_manifest.json",
+    "livox_like_lidar_manifest": "Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_manifest.json",
+    "fastlio_config": "Config/ros2/mosim_spark_fast_lio_velodyne.yaml"
+  },
+  "fastlio_config": {
+    "lidar_type": 2,
+    "scan_line": 16,
+    "scan_rate": 10,
+    "timestamp_unit": 2,
+    "blind": 0.2,
+    "extrinsic_est_en": false,
+    "extrinsic_T": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "extrinsic_R": "[1.0, 0.0, 0.0,",
+    "filter_size_map": 0.25,
+    "point_filter_num_for_preprocessing": 1,
+    "point_filter_num": 2
+  },
+  "adapter_replay_generation": {
+    "mode": "control_reference_smooth_3d_raycast",
+    "fps": 10.0,
+    "fixed_yaw_for_fastlio_input": true,
+    "preferred_pose_source": "Results/unreal_scene_mapping/factoryenvironmentcollect/control_reference.csv",
+    "fallback_pose_source": "Results/unreal_scene_mapping/factoryenvironmentcollect/render_replay.csv",
+    "lidar_source": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json",
+    "truth_source_for_3d_lidar": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json",
+    "height_index_source_proxy_count": 4910,
+    "lidar_vertical_angles_deg": [
+      -15.0,
+      -10.0,
+      -5.0,
+      0.0,
+      5.0,
+      10.0
+    ],
+    "lidar_max_points_per_frame": 512,
+    "synthetic_imu_is_measured": false
+  },
+  "truth_time": {
+    "count": 314,
+    "first_s": 0.0,
+    "last_s": 31.288325,
+    "duration_s": 31.288325,
+    "nonmonotonic_pairs": 0,
+    "duplicate_pairs": 0,
+    "min_dt_s": 0.075825,
+    "max_dt_s": 0.1375,
+    "mean_positive_dt_s": 0.0999627,
+    "mean_hz": 10.003731
+  },
+  "truth_motion": {
+    "frames": 314,
+    "total_distance_m": 25.060191,
+    "max_step_m": 0.149327,
+    "mean_step_m": 0.080065,
+    "x_span_m": 23.24955,
+    "y_span_m": 2.25,
+    "z_span_m": 0.0,
+    "yaw_span_rad": 0.0,
+    "mean_abs_yaw_step_rad": 0.0,
+    "fixed_yaw": true
+  },
+  "truth_lidar_and_imu": {
+    "frame_count": 314,
+    "points_per_frame_min": 491,
+    "points_per_frame_max": 512,
+    "points_per_frame_avg": 509.433,
+    "measured_imu_frames": 0,
+    "synthetic_imu_frames": 314,
+    "imu_sources": [
+      "finite_difference_from_scene_truth_replay"
+    ],
+    "point_attributes_present": false,
+    "observed_lines_in_first_frames": [],
+    "z_min_m_first_frames": -2.91171,
+    "z_max_m_first_frames": 2.47449
+  },
+  "livox_like_dense_manifest": {
+    "frame_count": 5,
+    "points_per_frame_requested": 25000,
+    "points_per_frame_min": 19867,
+    "points_per_frame_max": 21004,
+    "points_per_frame_avg": 20507.6,
+    "lidar_rate_hz": 10.0,
+    "point_rate_hz": 200000.0,
+    "scan_mode_csv": "References/Sunray/simulation/gazebo_plugin/livox_laser_simulation/scan_mode/mid360-real-centr.csv",
+    "claim": "dense replay sensor oracle only; not live UE raycast and not FAST-LIO runtime output"
+  },
+  "runtime_summaries": [
+    {
+      "name": "fastlio_runtime",
+      "status": "failed_error_threshold",
+      "metrics": {
+        "truth_frames": 314,
+        "odometry_samples": 339,
+        "odometry_samples_after_time_sort": 339,
+        "aligned_samples": 326,
+        "position_rmse_m": 10.203006,
+        "max_position_error_m": 17.70852,
+        "yaw_rmse_rad": 0.014247
+      },
+      "odometry_time_quality": {
+        "raw_samples": 339,
+        "unique_timestamps": 339,
+        "nonmonotonic_pairs": 2,
+        "first_time_s": 1780305274.861719,
+        "last_time_s": 1780305307.561719,
+        "min_time_s": 1780305274.861719,
+        "max_time_s": 1780305307.561719
+      },
+      "recording_counts": {
+        "odometry": 339,
+        "path": 32,
+        "registered_cloud": 328
+      },
+      "recording_duration_s": 48.0,
+      "odometry_observed": {
+        "count": 339,
+        "first_s": 1780305274.861719,
+        "last_s": 1780305307.561719,
+        "duration_s": 32.7,
+        "nonmonotonic_pairs": 2,
+        "duplicate_pairs": 0,
+        "min_dt_s": -0.0400002,
+        "max_dt_s": 0.100000143,
+        "mean_positive_dt_s": 0.097559524,
+        "mean_hz": 10.250152
+      },
+      "truth_duration_s": 31.288325,
+      "registered_cloud_frames": 328,
+      "registered_cloud_points_min": 491,
+      "registered_cloud_points_max": 512,
+      "registered_cloud_points_avg": 509.543,
+      "first_error_growth_window": {
+        "first_reported_error_m": 0.0,
+        "last_reported_error_m": 1.320142,
+        "first_reported_truth_time_s": 0.0,
+        "last_reported_truth_time_s": 1.875825
+      },
+      "paths": {
+        "evaluation": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime/FASTLIO_RUNTIME_EVALUATION.json",
+        "recording": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime/FASTLIO_RUNTIME_RECORDING.json",
+        "odometry": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime/fastlio_odometry.jsonl",
+        "registered_cloud_summary": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime/fastlio_registered_cloud_summary.jsonl"
+      }
+    },
+    {
+      "name": "fastlio_runtime_scan099",
+      "status": "failed_error_threshold",
+      "metrics": {
+        "truth_frames": 314,
+        "odometry_samples": 2998,
+        "odometry_samples_after_time_sort": 2703,
+        "aligned_samples": 2703,
+        "position_rmse_m": 9.760564,
+        "max_position_error_m": 18.547103,
+        "yaw_rmse_rad": 0.050424
+      },
+      "odometry_time_quality": {
+        "raw_samples": 2998,
+        "unique_timestamps": 2703,
+        "nonmonotonic_pairs": 59,
+        "first_time_s": 1780306918.720531,
+        "last_time_s": 1780306948.320531,
+        "min_time_s": 1780306918.720531,
+        "max_time_s": 1780306948.320531
+      },
+      "recording_counts": {
+        "odometry": 2998,
+        "path": 29,
+        "registered_cloud": 297
+      },
+      "recording_duration_s": 45.0,
+      "odometry_observed": {
+        "count": 2998,
+        "first_s": 1780306918.720531,
+        "last_s": 1780306948.320531,
+        "duration_s": 29.6,
+        "nonmonotonic_pairs": 59,
+        "duplicate_pairs": 235,
+        "min_dt_s": -0.099999905,
+        "max_dt_s": 0.099999905,
+        "mean_positive_dt_s": 0.011808362,
+        "mean_hz": 84.685754
+      },
+      "truth_duration_s": 31.288325,
+      "registered_cloud_frames": 297,
+      "registered_cloud_points_min": 491,
+      "registered_cloud_points_max": 512,
+      "registered_cloud_points_avg": 509.286,
+      "first_error_growth_window": {
+        "first_reported_error_m": 0.0,
+        "last_reported_error_m": 0.309465,
+        "first_reported_truth_time_s": 0.0,
+        "last_reported_truth_time_s": 0.3
+      },
+      "paths": {
+        "evaluation": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_scan099/FASTLIO_RUNTIME_EVALUATION.json",
+        "recording": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_scan099/FASTLIO_RUNTIME_RECORDING.json",
+        "odometry": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_scan099/fastlio_odometry.jsonl",
+        "registered_cloud_summary": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_scan099/fastlio_registered_cloud_summary.jsonl"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "severity": "critical",
+      "surface": "FAST-LIO sensor model",
+      "evidence": "config lidar_type=2, while target Mid360/Livox-style data should use Livox serial semantics.",
+      "recommendation": "Create a Livox/Mid360 FAST-LIO config path (`lidar_type=1`, `scan_line=4`) or route through a FAST-LIO variant confirmed to accept current PointCloud2 fields."
+    },
+    {
+      "severity": "high",
+      "surface": "FAST-LIO scan lines",
+      "evidence": "config scan_line=16; Sunray/Mid360 references use 4 lines, and the dense replay path emits line values 0-3.",
+      "recommendation": "Align scan_line with the actual Mid360/Livox replay contract before retesting localization."
+    },
+    {
+      "severity": "medium",
+      "surface": "LiDAR/IMU extrinsics",
+      "evidence": "extrinsic_est_en=false and extrinsic_T is identity/zero.",
+      "recommendation": "Keep identity only for a controlled synthetic frame; otherwise define the Sunray150 LiDAR-to-IMU mount or enable a validated calibration route."
+    },
+    {
+      "severity": "critical",
+      "surface": "IMU source",
+      "evidence": "314 replay frames use synthetic IMU; sources=['finite_difference_from_scene_truth_replay'].",
+      "recommendation": "Generate/export measured high-rate MWORKS IMU at about 200Hz or a physically consistent simulated IMU before claiming FAST-LIO quality."
+    },
+    {
+      "severity": "critical",
+      "surface": "LiDAR density",
+      "evidence": "FAST-LIO truth replay averages 509.433 points/frame; adapter max is 512.",
+      "recommendation": "Replace the low-density legacy replay with the dense Livox-like C++ transport or a UE C++ raycast sensor before localization tuning."
+    },
+    {
+      "severity": "high",
+      "surface": "Per-point timing",
+      "evidence": "fastlio_replay_dataset.jsonl has no point_attributes in sampled frames, so per-point offset_time/line/tag are absent from the evaluated dataset.",
+      "recommendation": "Use the Livox-like replay frames with offset_time/tag/line, or generate a FAST-LIO dataset that preserves those attributes."
+    },
+    {
+      "severity": "medium",
+      "surface": "Motion excitation",
+      "evidence": "truth yaw span is 0.0 rad and adapter fixed_yaw_for_fastlio_input=True.",
+      "recommendation": "Add realistic yaw and acceleration excitation after the sensor contract is fixed, then evaluate whether observability improves."
+    },
+    {
+      "severity": "critical",
+      "surface": "Runtime quality: fastlio_runtime",
+      "evidence": "status=failed_error_threshold, RMSE=10.203006m, max_error=17.70852m.",
+      "recommendation": "Do not use this Factory run as localization evidence; rerun only after sensor/config/time fixes."
+    },
+    {
+      "severity": "high",
+      "surface": "Odometry timestamps: fastlio_runtime",
+      "evidence": "nonmonotonic_pairs=2, raw_samples=339, unique_timestamps=339.",
+      "recommendation": "Fix replay/runtime timestamp monotonicity before evaluating controller or mapper quality."
+    },
+    {
+      "severity": "critical",
+      "surface": "Runtime quality: fastlio_runtime_scan099",
+      "evidence": "status=failed_error_threshold, RMSE=9.760564m, max_error=18.547103m.",
+      "recommendation": "Do not use this Factory run as localization evidence; rerun only after sensor/config/time fixes."
+    },
+    {
+      "severity": "high",
+      "surface": "Odometry timestamps: fastlio_runtime_scan099",
+      "evidence": "nonmonotonic_pairs=59, raw_samples=2998, unique_timestamps=2703.",
+      "recommendation": "Fix replay/runtime timestamp monotonicity before evaluating controller or mapper quality."
+    },
+    {
+      "severity": "info",
+      "surface": "Dense transport status",
+      "evidence": "Livox-like manifest averages 20507.6 points/frame at 10.0Hz, but this is not the evaluated FAST-LIO dataset.",
+      "recommendation": "Promote the dense Livox-like dataset into the FAST-LIO runtime path after config and IMU synchronization are corrected."
+    }
+  ],
+  "next_actions_ordered": [
+    "Stop treating Factory FAST-LIO as claimable evidence until RMSE/max-error pass the runtime gate.",
+    "Move Factory runtime input from low-density legacy replay to dense Livox/Mid360-shaped data with per-point timing fields.",
+    "Create a Mid360/Livox FAST-LIO config path and test lidar_type/scan_line/timestamp_unit against the selected ROS2 FAST-LIO implementation.",
+    "Replace synthetic finite-difference IMU with high-rate MWORKS IMU or a physically consistent simulated IMU synchronized to LiDAR.",
+    "Fix nonmonotonic odometry/replay timestamp behavior and rerun runtime evaluation.",
+    "Only after localization passes, reconnect local 3D map and planner review windows."
+  ]
+}

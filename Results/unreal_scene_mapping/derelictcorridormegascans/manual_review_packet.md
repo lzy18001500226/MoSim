@@ -13,7 +13,7 @@ Review target:
 Expected evidence:
 - The UE window shows the accepted real rendered scene, not the old STL/blockout preview.
 - A blue UAV body moves inside the map, with propellers, trajectory trail, radar sector, reference marker, local-plan spline, and optional local-known-map debug cells.
-- If a separate point-cloud/map window is required, open RViz with `Scripts/UE5/open_mapping_rviz_ros1.sh`; browser HTML is not the primary review route.
+- If separate map windows are required, open RViz2 with `RVIZ_PROFILE=split Scripts/UE5/open_mapping_rviz_ros2.sh`; browser HTML is not the primary review route.
 - The planner did not receive the global truth map as a prior.
 - Collision validation against exported UE truth is true.
 
@@ -27,7 +27,7 @@ Planner summary:
 
 FAST-LIO status:
 - `offline_simulated_sensor_handoff_ready`
-- adapter: `blocked_missing_ros1_runtime`
+- adapter: `ready_for_ros2_replay`
 - This is still an input handoff/adapter, not a completed FAST-LIO localization result.
 
 Reject if:

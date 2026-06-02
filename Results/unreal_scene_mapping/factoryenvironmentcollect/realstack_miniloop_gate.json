@@ -1,0 +1,99 @@
+{
+  "schema": "mosim.realstack_miniloop_gate.v1",
+  "status": "ready_for_manual_rviz_ue_review",
+  "error_count": 0,
+  "warning_count": 0,
+  "rates_hz": {
+    "truth": 20.0,
+    "imu_required": 200.0,
+    "lidar_required": 10.0,
+    "controller_setpoint": 20.0
+  },
+  "paths": {
+    "mworks_raw_csv": "Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/raw/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.csv",
+    "livox_frames": "Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body.jsonl",
+    "fastlio_contract": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_input_contract.json",
+    "runtime_recording": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_factory_mworks_body_formal_20260602_122033/FASTLIO_RUNTIME_RECORDING.json",
+    "runtime_evaluation": "Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_factory_mworks_body_formal_20260602_122033/FASTLIO_RUNTIME_EVALUATION.json",
+    "rviz_pointcloud": "Config/rviz2/mosim_uav_fastlio_pointcloud.rviz",
+    "rviz_map": "Config/rviz2/mosim_uav_planning_grid.rviz"
+  },
+  "mworks_state": {
+    "sample_count": 8,
+    "monotonic_time": true,
+    "nominal_hz": 20.0,
+    "min_dt_s": 0.05,
+    "max_dt_s": 0.05,
+    "max_step_m": 0.003302,
+    "mean_step_m": 0.001432
+  },
+  "lidar": {
+    "sample_count": 8,
+    "schema": "mosim.livox_like_lidar_frame.v1",
+    "points_per_frame_min": 16416,
+    "points_per_frame_avg": 16487.0,
+    "points_per_frame_max": 16515,
+    "observed_lines": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "attribute_keys": [
+      "line",
+      "offset_time_ns",
+      "reflectivity",
+      "tag"
+    ],
+    "attribute_count_matches_points": true,
+    "nonmonotonic_time_pairs": 0
+  },
+  "fastlio_input_contract_status": "claimable_input_ready",
+  "fastlio_runtime_counts": {
+    "odometry": 80,
+    "path": 8,
+    "registered_cloud": 80
+  },
+  "fastlio_runtime_evaluation": {
+    "status": "pass",
+    "metrics": {
+      "truth_frames": 40,
+      "odometry_samples": 80,
+      "odometry_samples_after_time_sort": 80,
+      "aligned_samples": 42,
+      "position_rmse_m": 0.39454,
+      "max_position_error_m": 0.611542,
+      "yaw_rmse_rad": 0.017802
+    }
+  },
+  "rviz2": {
+    "pointcloud": {
+      "path": "Config/rviz2/mosim_uav_fastlio_pointcloud.rviz",
+      "exists": true,
+      "uses_orbit_view": true,
+      "uses_mosim_lidar_points": true,
+      "uses_lowercase_odometry": false,
+      "uses_fastlio_odometry": true,
+      "uses_registered_cloud": true,
+      "uses_3d_local_voxels": false,
+      "has_enabled_2d_occupancy_grid": false
+    },
+    "map": {
+      "path": "Config/rviz2/mosim_uav_planning_grid.rviz",
+      "exists": true,
+      "uses_orbit_view": true,
+      "uses_mosim_lidar_points": false,
+      "uses_lowercase_odometry": false,
+      "uses_fastlio_odometry": false,
+      "uses_registered_cloud": false,
+      "uses_3d_local_voxels": true,
+      "has_enabled_2d_occupancy_grid": true
+    }
+  },
+  "findings": [],
+  "claim_boundary": [
+    "This gate allows opening RViz2/UE for human review only after headless runtime topics are credible.",
+    "It does not claim final controller integration or planner performance.",
+    "Global UE truth remains a validation oracle, not planner input."
+  ]
+}
