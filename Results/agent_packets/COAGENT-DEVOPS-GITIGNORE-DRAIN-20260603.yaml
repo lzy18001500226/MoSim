@@ -1,0 +1,46 @@
+task_id: COAGENT-DEVOPS-GITIGNORE-DRAIN-20260603
+status: running
+decision: continue_with_tiny_rule_family_batches
+summary: >-
+  This task converts the temporary large-tree `.gitignore` split-routing block
+  into a steady-state policy in very small batches. The first batch removed only
+  the temporary `Docs/Skills/Unreal/mcp` reference-repository rules that had
+  been added for staged Git divide work: the `Content/**/*.uasset`,
+  `Content/**/*.umap`, `Intermediate/`, `Binaries/`, `Saved/`, and
+  `DerivedDataCache/` ignores under `Docs/Skills/Unreal/mcp/**`. No
+  `References/Agent` rules were changed in this round. Path-limited follow-up
+  checks did not surface new untracked files under `Docs/Skills/Unreal/mcp`.
+evidence:
+  - "goal=drain_temporary_gitignore_rules_gradually"
+  - "batch_1_scope=.gitignore:124-132_before_edit"
+  - "batch_1_removed_rule=Docs/Skills/Unreal/mcp/**/Content/**/*.uasset"
+  - "batch_1_removed_rule=Docs/Skills/Unreal/mcp/**/Content/**/*.umap"
+  - "batch_1_removed_rule=Docs/Skills/Unreal/mcp/**/Intermediate/"
+  - "batch_1_removed_rule=Docs/Skills/Unreal/mcp/**/Binaries/"
+  - "batch_1_removed_rule=Docs/Skills/Unreal/mcp/**/Saved/"
+  - "batch_1_removed_rule=Docs/Skills/Unreal/mcp/**/DerivedDataCache/"
+  - "path_limited_untracked_probe=Docs/Skills/Unreal/mcp"
+  - "path_limited_untracked_probe_result=empty"
+  - "git_diff_check=passed"
+risks:
+  - "The remaining `References/Agent` split-routing chain is still large and must be drained in additional tiny batches."
+  - "A wider `.gitignore` cleanup in one turn can re-expose too many files and stall Git; continue with narrow families only."
+ignore_first_strategy: >-
+  Keep the temporary split-routing rules in place except for the smallest safe
+  family being retired in the current batch. Drain one family, verify locally,
+  commit, and only then move to the next family.
+proposed_batches:
+  - "Completed batch 1: remove only the `Docs/Skills/Unreal/mcp` temporary reference-repo rules."
+  - "Next candidate batch: a tiny prefix of the `References/Agent` chain, such as the top-level `References/Agent/` / `!References/Agent/` scaffolding only if path-limited checks stay bounded."
+forbidden_actions:
+  - "no broad git status"
+  - "no git add -A"
+  - "no deleting the full temporary block in one turn"
+  - "no force push"
+  - "no reset --hard"
+  - "no git clean"
+next_action: >-
+  Commit this first `.gitignore` drain batch together with the ledger and result
+  packet, then continue with another tiny rule-family removal in a later round.
+needs_human: false
+blocked_reason: ""
