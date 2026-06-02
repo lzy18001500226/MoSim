@@ -508,6 +508,16 @@ proposed_batches:
   - "batch_79_note=prior content-import attempts hit upstream whitespace-style issues in this subtree, but this drain batch only updates the temporary ignore rule pair and tracking docs."
   - "batch_79_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/cloudflare-deploy/"
   - "batch_79_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/cloudflare-deploy/**"
+  - "batch_80_candidate=References/Agent/Skills/openai-skills/skills/.system"
+  - "batch_80_head_vs_upstream_before=79 0"
+  - "batch_80_index_lock=absent"
+  - "batch_80_candidate_file_count=40"
+  - "batch_80_candidate_tracked_files=40"
+  - "batch_80_candidate_untracked_files=0"
+  - "batch_80_compare_oh_my_openagent_dev_file_count=2771"
+  - "batch_80_compare_oh_my_openagent_dev_src_file_count=2164"
+  - "batch_80_removed_rule=!References/Agent/Skills/openai-skills/skills/.system/"
+  - "batch_80_removed_rule=References/Agent/Skills/openai-skills/skills/.system/*"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -516,9 +526,9 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this seventy-ninth `.gitignore` drain batch together with the ledger
-  and result packet, then re-scan the remaining `.system` and
-  `oh-my-openagent-dev` container rules before considering any broader
-  container-rule drain.
+  Commit this eightieth `.gitignore` drain batch together with the ledger and
+  result packet, then compare `References/Agent/Skills/oh-my-openagent-dev/`
+  against `References/Agent/Skills/oh-my-openagent-dev/src/` again and drain
+  the smaller remaining rule pair next.
 needs_human: false
 blocked_reason: ""
