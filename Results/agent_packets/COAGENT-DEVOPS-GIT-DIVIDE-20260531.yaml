@@ -2,68 +2,46 @@ task_id: COAGENT-DEVOPS-GIT-DIVIDE-20260531
 status: running
 decision: continue_with_small_safe_slices
 summary: >-
-  The long Git split task remains active. Current file-level probes did not find
-  a new tracked residual to commit: the latest candidates in `Docs/Skills/Blender-MCP`
-  and `CoAgent` were already clean by `git diff --name-only HEAD -- <path>`.
-  `main` remains the active branch, and the branch is still ahead of upstream by
-  12 commits from the previous confirmed batches. The completed batches remain
-  the obsolete `Config/rviz2/mosim_uav_planning_grid.rviz` deletion, the
-  `Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo` normalization,
-  the `Scripts/tests/test_fastlio_runtime_evaluation.py` regression expansion,
-  the UE5 `MworksReviewCameraPawn.cpp` follow-mode refinement, the UE5 bridge
-  playback component implementation, the UE5 bridge playback component header
-  controls, the UE5 review camera header controls, the UE5 bridge actor visual
-  controls, the `Results/agent_packets`/ledger coordination update, the tracked
-  `UE5/MoSimSceneLibrary/Content/MworksData/active_scene_links.json` leaf, and
-  `Docs/Workflows/unreal_renderer.md`. Path-limited inventory still shows a true
-  large-tree surface: directory-level diff probes for `Config`, `Models`,
-  `Scripts`, `UE5`, `Docs/Skills/Unreal`, `References/Agent`, `CoAgent`,
-  `Docs/Workflows`, and `Results` have timed out at 60s in prior checks, so the
-  remaining work must stay file-limited.
+  The large-tree Git work is still being handled through ignore-first, path-
+  limited slices. This turn removed the secret-like AndroidFileServer
+  `SecurityToken` section from `UE5/MoSimSceneLibrary/Config/DefaultEngine.ini`,
+  normalized its line endings, and then committed two verified small batches via
+  plumbing because porcelain `git commit` timed out at 60s. The first batch
+  updated the ROS and runtime regression tests under `Scripts/tests/`; the second
+  batch updated UE5 runtime review telemetry in
+  `UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp`
+  and `UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MoSimSceneLibraryGameMode.cpp`.
+  Current `main` is ahead of upstream by 26 commits and no push was attempted.
 evidence:
   - "branch=main"
-  - "upstream_ahead_behind=8 0"
+  - "upstream_ahead_behind=26 0"
   - "index_lock_present=false_after_cleanup"
   - "core_excludesfile=unset"
-  - "bounded_path_probe=Config/rviz2/mosim_uav_planning_grid.rviz"
-  - "bounded_path_probe=Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo"
-  - "bounded_path_probe=Scripts/tests/test_fastlio_runtime_evaluation.py"
-  - "bounded_path_probe=UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.cpp"
-  - "bounded_path_probe=UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackComponent.cpp"
-  - "bounded_path_probe=UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackComponent.h"
-  - "bounded_path_probe=UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.h"
-  - "bounded_path_probe=UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackActor.h"
-  - "batch_files=1_then_1_then_1_then_1_then_1_then_1_then_1_then_1"
-  - "cached_diff_check_passed=true"
-  - "commit_plumbing_used=true"
-  - "commit_batch_1=ac49eba36294ec66945cba17d005a870bea828da"
-  - "commit_batch_2=0bca6f20ab56c55f7c739371dc9e584ecbedc9d1"
-  - "commit_batch_3=9dbea0933001a7a85898c42e786cb5f574f6fb30"
-  - "commit_batch_4=9fec96732e8a013f7738da7b1df9edfac77cef52"
-  - "commit_batch_5=be03e862ae0c51f7ec8e80afbc4c1faa4179fae2"
-  - "commit_batch_6=8a2cac7ea6180eaf3441e62e4759a5466d9daa23"
-  - "commit_batch_7=ab4129b40d61269e508957ca7e86e18850bde0df"
-  - "commit_batch_8=422d5f49f902d5f38b25da9f8b79540c69b631a6"
-  - "status_probe_timeout=true_for_directory_level_paths"
+  - "secret_like_field_removed=UE5/MoSimSceneLibrary/Config/DefaultEngine.ini"
+  - "diff_check_passed_for_defaultengine_ini=true"
+  - "cached_batch_1=Scripts/tests/test_fastlio_rviz_runtime_scripts.py"
+  - "cached_batch_1=Scripts/tests/test_livox_like_lidar_replay.py"
+  - "cached_batch_1=Scripts/tests/test_mworks_uav_state_ros2.py"
+  - "cached_batch_1=Scripts/tests/test_ros_mapping_replay_publisher.py"
+  - "cached_batch_1=Scripts/tests/test_ros_mapping_runtime_env.py"
+  - "cached_batch_1=Scripts/tests/test_scene_runtime_bundle.py"
+  - "cached_batch_1=Scripts/tests/test_unreal_scene_runtime_readiness.py"
+  - "commit_batch_1=4804dd7534976b6592bcaeb002afdf624b194411"
+  - "cached_batch_2=UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp"
+  - "cached_batch_2=UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MoSimSceneLibraryGameMode.cpp"
+  - "commit_batch_2=0111551f5de6270ca58828fae909db7f634252b0"
 risks:
-  - "Directory-level diff/status over the large working tree still times out at 60s, so broad porcelain Git remains unsafe."
-  - "A stale `.git/index.lock` can appear after interrupted Git operations; verify active Git processes before removing it."
-  - "Large families like `UE5`, `References/Agent`, and `Scripts/UE5` still need further file-level splitting before any new batch."
+  - "Porcelain `git commit` still times out at 60s, so future commits should continue to use plumbing when necessary."
+  - "A broad tree scan remains unsafe; keep using path-limited inventory for the remaining work."
+  - "No push has been attempted yet, so remote-side verification is still outstanding."
 ignore_first_strategy: >-
-  Keep runtime/generated noise isolated first, then open only the smallest
-  reviewed slice. Existing ignore-first coverage should continue to suppress
-  `Results/**`, UE5 runtime outputs, `*.msr`, secrets, and other large trees,
-  while the remaining visible work is handled file by file.
+  Keep runtime/generated noise isolated first. The only secret-like UE5 config
+  field found in this round was removed before commit, and future config files
+  should be treated as suspect until diff-reviewed.
 proposed_batches:
-  - "Completed: `Config/rviz2/mosim_uav_planning_grid.rviz` deletion batch."
-  - "Completed: `Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo` metadata/model normalization batch."
-  - "Completed: `Scripts/tests/test_fastlio_runtime_evaluation.py` regression expansion batch."
-  - "Completed: `UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.cpp` follow-mode refinement batch."
-  - "Completed: `UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackComponent.cpp` playback interpolation batch."
-  - "Completed: `UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackComponent.h` playback controls batch."
-  - "Completed: `UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.h` follow controls batch."
-  - "Completed: `UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackActor.h` Sunray visual controls batch."
-  - "Next candidate: another isolated single file or a tiny safe `References/Agent` leaf file."
+  - "Completed: `Scripts/tests/*` regression-contract batch."
+  - "Completed: `UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp` + `UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MoSimSceneLibraryGameMode.cpp` telemetry batch."
+  - "Next candidate family, if any residual changes reappear, should be discovered with path-limited probes before any further stage."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -72,9 +50,10 @@ forbidden_actions:
   - "no force push"
   - "no staging batches over 1000 files"
   - "no commit of files at or above 100MB"
-  - "no unreviewed unignore of runtime/generated trees"
+  - "no commit of secret-like config values"
 next_action: >-
-  Continue with the next smallest safe slice, preferably another isolated single
-  file, or stop if another stale lock or path-level timeout appears.
+  If new dirty paths appear, inspect them with file-limited diff and size checks,
+  then stage the smallest safe batch; otherwise await the next user directive or
+  perform a push only if explicitly requested.
 needs_human: false
 blocked_reason: ""
