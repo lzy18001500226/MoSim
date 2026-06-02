@@ -24,6 +24,352 @@ The map must first pass manual visual review as a believable physical-world
 scene. Only after that should we reconnect quadrotor playback, radar overlays,
 trajectory trails, MWORKS UDP streaming, planning truth, and video recording.
 
+## 2026-06-02 Route Correction
+
+User manual audit rejected the current hand-built RViz2 point-cloud/local-grid
+display route. Do not continue polishing `publish_mosim_mapping_replay_ros2.py`,
+project-authored local occupancy/voxel replay, browser previews, or RViz
+display tuning as product work. These artifacts may remain as smoke/debug
+references, but they are not accepted as the MoSim mapping/localization product
+route.
+
+The next implementation route is UAV-stack-first:
+
+1. Study and reuse RflySim/native UAV simulator patterns before adding more
+   visualization code.
+2. Connect the UAV body/control/sensor interface first: MWORKS
+   dynamics/controller/truth -> UE rendered vehicle/sensor source -> ROS2
+   LiDAR/IMU topics.
+3. Run upstream/native FAST-LIO and its own RViz/RViz2 configuration instead of
+   hand-authoring a MoSim point-cloud/map display.
+4. Only after the UAV and native FAST-LIO pipeline are connected should MoSim
+   add wrappers, metrics, truth-error evaluation, and report evidence.
+
+Any old section below that describes hand-built RViz2 mapping replay is
+deprecated unless explicitly revalidated under this UAV-stack-first route.
+
+## Factory-First UAV Body Gate
+
+The current minimum review gate is Factory scene rendering plus a visible
+YunZong/Sunray150 UAV body driven by the MWORKS/Bridge state path.
+
+Accepted UAV visual sources:
+
+| Priority | Source | Notes |
+|---|---|---|
+| 1 | Approved UE asset for the YunZong/Sunray150 body | Use when a proper imported asset exists in `MoSimSceneLibrary`. |
+| 2 | Runtime procedural mesh loaded from `References/MWORKS/QuadrotorModel/Resources/Visualization/sunray150_mid360_body.stl` plus `References/MWORKS/QuadrotorModel/Resources/Visualization/sunray150_mid360_propeller.stl` | Current implementation path in `QuadrotorMworksPlaybackActor`; use the same visual assets and scale factors as the accepted MWORKS animation. |
+| 3 | Source-model assets under `References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` | Reference for geometry, rotor layout, and future import/LOD work. |
+
+Primitive cube/cylinder UAV geometry is not accepted review evidence. It is
+only allowed as an explicit diagnostic fallback when the Sunray mesh fails to
+load and `bAllowPrimitiveUavFallback=true`. The default must keep this fallback
+disabled. If the user sees a block/primitive UAV, treat the stage as failed and
+fix the Sunray asset path/import/compile problem before continuing.
+
+If the user reports a huge cylinder, broken/fragmented mesh, wrong scale, or
+wrong initial position, the gate has failed. Do not ask for point-cloud,
+FAST-LIO, or planner review. Diagnose with logs first:
+
+```text
+Sunray mesh source path and file size
+binary/ASCII STL detection and triangle count
+raw and scaled mesh bounding box
+body/propeller component visibility
+fallback primitive visibility
+spawn transform and first UDP-driven transform
+review camera initial transform
+```
+
+Before inventing a new UE/UAV behavior fix, check the local reference route:
+Sunray/YunZong SDF/mesh files for vehicle geometry and rotor pose, then local
+RflySim/reference code for renderer/simulation role split and review behavior.
+Only after those are insufficient should the task go online for official docs
+or higher-quality external references. Record the adopted pattern here or in
+`PROGRESS.md` immediately.
+
+Do not request manual review until the latest UE log confirms:
+
+```text
+body loaded from the full STL, not a triangle-stepped/downsampled subset
+propeller bounds are compact and not the old large ASCII STL extent
+primitive cube/cylinder fallback is hidden
+render-only helper geometry is disabled for the vehicle-visual gate
+first UDP position maps to the accepted UAV task start
+```
+
+The bridge must fail loudly instead of destructively reducing the body mesh
+triangle count. If full runtime STL loading is too heavy or still renders
+broken because of material/winding/import behavior, switch to a proper imported
+UE static mesh or LOD asset path; do not accept a visually fragmented STL.
+
+The review UAV initial position should match the accepted task start for this
+gate. The review camera should start near that position but must not be placed
+inside the UAV body. Keep a small camera offset so manual review can move
+without the collision-constrained camera starting inside the vehicle or scene
+geometry. If the UAV start changes, fix the replay CSV or spawn logic; if the
+camera is trapped, fix the camera offset or collision radius, not the UAV
+truth start.
+
+For the vehicle-visual gate, the default review stream must not loop through
+the old mission path. It should either hold the UAV at the first frame or run a
+single bounded pose check, then stop. Continuous path replay belongs to later
+controller/planner review after the vehicle visual gate is accepted.
+
+The current Factory vehicle gate default is first-frame-only. Use
+`STREAM_PATH_REPLAY=1` only after the vehicle body and propeller placement pass
+manual review. If the user reports that the UAV runs to an old position or
+loops a previous mission, treat that as a gate failure and return to the first
+frame hold.
+
+Propeller placement and heading must be traced to the local MWORKS visual model
+before tuning by eye. The MWORKS animation has already been manually validated
+for the upside-down motor/propeller layout, so UE must reproduce that visual
+frame instead of mixing independent SDF link order and UE actor axes.
+
+The current source split is:
+
+```text
+References/MWORKS/QuadrotorModel/package.mo
+  -> body `r_shape={0,0,0.0525}`
+  -> rotor translations `{0.065,-0.065,-0.025}`,
+     `{0.065,0.065,-0.025}`, `{-0.065,0.065,-0.025}`,
+     `{-0.065,-0.065,-0.025}`
+References/Sunray/.../sunray150_with_mid360.sdf
+  -> body visual pose and rotor visual mesh/pose references
+  -> UE visual component order: `rotor_0` front-right
+     `{0.065,-0.065,-0.025}`, `rotor_1` back-left
+     `{-0.065,0.065,-0.025}`, `rotor_2` front-left
+     `{0.065,0.065,-0.025}`, `rotor_3` back-right
+     `{-0.065,-0.065,-0.025}`
+```
+
+The governing rule is now the MWORKS visual frame:
+
+```text
+body lengthDirection={0,-1,0}, widthDirection={1,0,0}
+UE visual yaw offset = -90 deg
+apply the same visual yaw to:
+  body relative rotation
+  per-frame propeller spin rotation
+do not apply the body STL visual yaw to:
+  rotor FixedTranslation positions
+```
+
+STL material limitation: the current MWORKS `sunray150_mid360_body.stl` and
+`sunray150_mid360_propeller.stl` runtime route carries geometry only, not the
+factory texture/material assignments. Do not color the single STL by broad
+position guesses alone. UE therefore uses a DAE-informed procedural material
+palette until a proper textured UE asset is imported. The palette is based on
+local physical component/material evidence:
+
+```text
+References/CUAV/Sunray150-正.png
+References/CUAV/Sunray150-侧.png
+References/MWORKS/QuadrotorModel/package.mo
+References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360/meshes/150.dae
+```
+
+Confirmed DAE component/material cues:
+
+```text
+MAIN_STRUCTURE / TOP_PANNEL: dark graphite
+PROTECTIVE_RING / LAND_GEAR: dark grey
+MID360_PROTECT_ARC*: dark grey / black protective bracket
+MID360_PROTECT_ARC_CONNECTOR*: dark graphite connector blocks
+MID-360 dome / optical surface cue: blue glass
+propellers: grey-white visual cue from MWORKS propeller STL
+```
+
+This is review coloring, not an original manufacturer texture. The bridge logs
+`dae_material_palette=true` and named per-section triangle counts when the body
+STL is procedurally split into material sections. If exact appearance is
+required, replace this path with an imported textured mesh from the
+Sunray/Gazebo DAE or an approved UE asset instead of adding more heuristic STL
+coloring. In particular, the MID-360 protection bracket must not be colored as
+blue glass just because it is physically near the dome.
+
+2026-06-02 correction: the current MWORKS `sunray150_mid360_body.stl` has only
+geometry and a single STL attribute value, so it cannot carry the DAE material
+groups directly. The short-term UE review visual therefore keeps the blue
+MID-360 optical cue as a small independent dome component and colors the STL
+MID360_PROTECT_ARC region dark grey/black. Do not broaden the blue section over
+the arc bounds. The longer-term correct route is to import or parse the DAE as
+named material sections rather than continuing to tune a single merged STL.
+
+2026-06-02 Blender/DAE asset route: Blender MCP is available, but Blender 5.0
+in this environment does not expose the Collada/DAE import operator. Do not
+retry `bpy.ops.wm.collada_import`; it fails because the operator is missing.
+The durable local route is:
+
+```text
+Scripts/UE5/assets/build_sunray150_blender_asset.py
+  reads References/Sunray/.../meshes/150.dae
+  parses 701 named geometries and visual-scene instances
+  groups them by physical role/material cue
+  writes a Blender/FBX/glTF asset bundle
+```
+
+Generated review/import assets:
+
+```text
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Sunray150_Mid360_Textured.blend
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Sunray150_Mid360_Textured.fbx
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Sunray150_Mid360_Textured.glb
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Sunray150_Mid360_Textured_manifest.json
+UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Sunray150_Mid360_Textured_preview.png
+```
+
+The generated asset keeps these review groups:
+
+```text
+CarbonFrame
+DarkGuards
+LightPlastic
+Mid360BaseGrey
+Mid360DomeBlue
+PCBGreen
+ConnectorGold
+MetalFasteners
+CableBlack
+```
+
+Blender 5 localized UI note: do not find the material shader node by the
+English node name `Principled BSDF`. In the Chinese UI it is named
+`原理化 BSDF`. Asset scripts must find the node by
+`node.type == "BSDF_PRINCIPLED"` before setting Base Color, Roughness,
+Metallic, and Alpha.
+
+DAE limitation: the local DAE carries MID-360 bracket geometry, but the blue
+optical dome cue parses as a near-flat strip. The generated asset therefore
+adds two explicitly documented supplemental review meshes:
+
+```text
+Sunray150_Mid360BaseSupplement: grey MID-360 body/base
+Sunray150_Mid360DomeSupplement: blue transparent MID-360 optical dome
+```
+
+This supplement is allowed for visual review because it preserves the physical
+bracket as black/dark grey and records the reason in the manifest. It should be
+replaced only if a manufacturer-textured or fully valid DAE/FBX asset is
+obtained.
+
+The body STL visual orientation and the rotor physical translations are
+separate. If the user reports that the camera looks forward while the UAV nose
+points right, the body visual yaw offset is missing or overwritten. If the user
+reports propeller positions are wrong after adding the body yaw offset, do not
+rotate `Dronefixed1..4`; preserve the raw MWORKS translations and adjust only
+propeller mesh orientation/spin.
+
+Current accepted rule for the procedural UE visual is to reproduce the MWORKS
+MultiBody visual chain directly:
+
+```text
+Actor/root frame = UAV body state frame
+body STL:
+  shapeType = sunray150_mid360_body.stl
+  r_shape = {0,0,0.0525} -> UE component location Z = +5.25 cm
+  length/width/height = 0.03 m -> UE mesh scale = 3.0 cm/unit
+  lengthDirection={0,-1,0}, widthDirection={1,0,0} -> UE visual yaw offset -90 deg
+propeller STL:
+  shapeType = sunray150_mid360_propeller.stl
+  Dronefixed*.r = {+/-0.065,+/-0.065,-0.025}
+    -> UE component locations = (+/-6.5,+/-6.5,-2.5) cm
+  length/width/height = 0.00125 m -> UE mesh scale = 0.125 cm/unit
+  lengthDirection={1,0,0}, widthDirection={0,1,0}
+    -> no body yaw offset and no SDF roll offset on the propeller mesh
+```
+
+The earlier `-7.75 cm` estimate subtracted the body `r_shape` from the rotor
+translation and treated propeller placement as relative to the body visual
+center. That is not the MWORKS visual chain: body and propeller visuals are
+separate components attached to the same body state frame through their own
+shape translations. The earlier compact Gazebo/Sunray `sunray_cw.stl` fallback
+also changed mesh origin, scale, and orientation, so it is not accepted for this
+MWORKS-parity visual gate.
+
+MWORKS fixed translations are the primary position source for the current UE
+procedural visual because MWORKS animation was known-good. SDF remains a source
+for mesh references and future imported assets, but it must not override a
+manual visual result from the MWORKS model without another review.
+
+For the Factory visual placement gate, neutralize only the first-frame yaw to
+`0 rad`. This is a manual body/propeller/heading review pose, not a controller
+or trajectory truth claim. Full replay yaw belongs to later path/controller
+review after this visual gate passes.
+
+When the user reports a manual visual result, treat it as authoritative. Do not
+spend additional time proving whether the review window is still open unless
+the user explicitly asks; implement the reported correction or stop at the next
+review gate.
+
+The manual gate command is:
+
+```bash
+Scripts/UE5/review_factory_uav_platform.sh
+```
+
+To replay into an already-open Factory review window without restarting UE:
+
+```bash
+STREAM_ONLY=1 STREAM_MAX_FRAMES=1 STREAM_FPS=6 \
+  Scripts/UE5/review_factory_uav_platform.sh
+```
+
+The Factory UAV review defaults to the follow/orbit camera view:
+
+```bash
+FOLLOW_UAV_CAMERA=1 STREAM_FPS=60 STREAM_RESAMPLE_HZ=60 STREAM_REPLAY_SPEED=1.0 \
+  Scripts/UE5/review_factory_uav_platform.sh
+```
+
+This mode enables `-MoSimFollowPlaybackCamera` and replays the existing short
+MWORKS/Sysplorer smoke state source once. It must not use sparse
+`render_replay.csv` path points as simulation evidence. The review camera
+follows the playback actor with the
+current accepted close-inspection offset of `80 cm` behind, `20 cm` left, and
+`40 cm` above the UAV. The offset is
+rotated by the UAV yaw, so if the UAV turns, the camera view turns with it.
+In follow-camera mode, the arrow keys are not free-look keys: left/right orbit
+the camera around the UAV azimuth in the manually accepted actual movement
+direction, up/down orbit elevation, and the spherical camera-target radius from
+the current `FollowOffsetCm` is preserved. The
+default offset remains `FVector(-80.0f, -20.0f, 40.0f)`. The camera rotation is
+recomputed to look back at the UAV after each orbit update.
+The display contract is separate from the controller contract: controller/state
+evidence is expected at 20 Hz or higher where the formal MWORKS/Sysplorer
+scenario defines it, but the UE render review should receive 60 Hz visual pose
+frames. Sparse review CSV rows must be resampled before UDP streaming. Do not
+judge control smoothness from a 4 Hz path-point CSV replay; this display replay
+is not MWORKS/Sysplorer simulation evidence. If the UAV appears to translate
+without roll/pitch/yaw dynamics, stop this gate and verify that the source path
+is `Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/raw/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.csv`.
+Tune only the camera distance with `FOLLOW_CAMERA_BACK_CM`,
+`FOLLOW_CAMERA_RIGHT_CM`, and `FOLLOW_CAMERA_UP_CM`; do not use this mode to
+change the UAV pose or vehicle visual mesh.
+
+To deliberately replay the full path after the vehicle visual gate is accepted:
+
+```bash
+STREAM_ONLY=1 STREAM_PATH_REPLAY=1 STREAM_LOOP_COUNT=1 STREAM_FPS=6 \
+  Scripts/UE5/review_factory_uav_platform.sh
+```
+
+The user should review only these facts at this gate:
+
+```text
+Factory map is visible in daytime review mode.
+The UAV body is the YunZong/Sunray150 visual body, not primitive blocks.
+The UAV pose updates through the MWORKS/Bridge replay or UDP path.
+Keyboard/mouse controls only the view/camera, not the UAV pose.
+In the movement follow gate, the UAV moves through the short Factory path, and
+the camera follows UAV translation and yaw closely enough to inspect the body
+without colliding into it.
+```
+
+Do not open RViz/FAST-LIO/point-cloud review as a substitute for this gate.
+Those are later sensor/localization gates after the UE vehicle body is accepted.
+
 ## Native Mapping Window Policy
 
 Point-cloud, grid-map, localization, and planner-state review must use a
@@ -120,6 +466,36 @@ plumbing, but it is not a mainline controller, mapping, localization, FAST-LIO,
 or planning evidence path. The user rejected the grid-cell motion and synthetic
 point-cloud route on 2026-06-02 because it cannot support continuous UAV
 control tuning.
+
+Do not invest product time in improving the keyboard/grid-step route. The
+specific rejected failure modes are:
+
+- pose changes are tied to cell-sized manual steps, so controller tuning cannot
+  be evaluated from smooth physical motion;
+- point clouds and grid cells are not driven by synchronized UAV dynamics,
+  IMU, LiDAR, and estimator state;
+- 2D `OccupancyGrid` review is not a substitute for a UAV local 3D map;
+- RViz point size or marker tuning does not fix missing FAST-LIO/localization
+  semantics;
+- static or synthetic point clouds can only verify display plumbing, not
+  mapping or navigation.
+
+Any manual-control demo must be implemented as a continuous setpoint stream
+into the MWORKS/controller layer. It must not directly overwrite UAV pose.
+
+Before opening UE/RViz2 for a new mapping review, run the headless real-stack
+gate:
+
+```bash
+python3 Scripts/UE5/check_realstack_miniloop_gate.py \
+  --output-json Results/unreal_scene_mapping/factoryenvironmentcollect/realstack_miniloop_gate.json \
+  --output-md Results/unreal_scene_mapping/factoryenvironmentcollect/REALSTACK_MINILOOP_GATE.md
+```
+
+Only open review windows when the gate reports
+`ready_for_manual_rviz_ue_review`. A `blocked_before_manual_review` result means
+the data/runtime stack must be fixed first, even if RViz could be made visually
+prettier.
 
 For this smoke-only loop, the command opens the two simplified RViz2 windows
 and the ROS2 publisher:
@@ -238,6 +614,46 @@ The first C++ ROS2 dense publisher lives under:
 Scripts/ros/mosim_dense_lidar_cpp
 ```
 
+Current ROS2 build command for the project-local C++ LiDAR/IMU/probe package:
+
+```bash
+set +u
+source /opt/ros/humble/setup.bash
+source Results/tmp/spark_fast_lio_ros2_ws/install/setup.bash
+set -u
+colcon --log-base Results/tmp/spark_fast_lio_ros2_ws/log build \
+  --base-paths Scripts/ros/mosim_dense_lidar_cpp \
+  --build-base Results/tmp/spark_fast_lio_ros2_ws/build \
+  --install-base Results/tmp/spark_fast_lio_ros2_ws/install \
+  --packages-select mosim_dense_lidar_cpp \
+  --parallel-workers 4 \
+  --cmake-args -DCMAKE_BUILD_TYPE=Release
+```
+
+The package contains three mainline nodes for the real-stack gate:
+
+```text
+dense_lidar_replay_node          publishes dense PointCloud2 plus Livox CustomMsg
+mworks_state_imu_replay_node     publishes MWORKS truth odometry/TF and 200Hz IMU
+livox_imu_probe_node             C++ subscriber-side Livox CustomMsg + IMU gate
+```
+
+Use `livox_imu_probe_node` for dense Livox+IMU input validation. The Python
+probe `Scripts/UE5/probe_livox_custommsg_ros2.py` remains useful for lightweight
+or single-topic debugging, but it should not be the primary 25k-point Livox +
+200Hz IMU acceptance gate because Python deserialization/callback handling can
+distort the observed IMU rate.
+
+The ROS2 mainline LiDAR publishers must use the Livox-compatible
+`PointCloud2` layout from Sunray `livox2Point.cpp`:
+
+```text
+offset_time:uint32, x/y/z:float32, intensity:float32, tag:uint8, line:uint8
+```
+
+Older Velodyne-style `x/y/z/intensity/time/ring` replay output is reference
+only and is not accepted as FAST-LIO/Mid360 evidence for the MoSim ROS2 path.
+
 Build smoke:
 
 ```bash
@@ -259,11 +675,145 @@ prepacked C++ node reported about 9.73Hz and mean publish call time around
 large point clouds, not as the only publisher truth. Final validation still
 requires FAST-LIO or a dedicated C++ subscriber to consume the stream.
 
+The same package now includes a dedicated subscriber-side probe:
+
+```bash
+set +u
+source /opt/ros/humble/setup.bash
+source Results/tmp/mosim_dense_lidar_cpp_ws/install/setup.bash
+set -u
+
+ros2 run mosim_dense_lidar_cpp dense_lidar_replay_node --ros-args \
+  -p lidar_jsonl:=Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames.jsonl \
+  -p topic:=/mosim/lidar_points \
+  -p rate_hz:=10.0 \
+  -p max_frames:=5 \
+  -p stats_interval_s:=0.0
+
+ros2 run mosim_dense_lidar_cpp dense_lidar_subscriber_probe_node --ros-args \
+  -p topic:=/mosim/lidar_points \
+  -p max_messages:=8 \
+  -p min_rate_hz:=5.0
+```
+
+Latest short probe output recorded about `9.69Hz` subscriber-side with roughly
+`19.9k-21.0k` points/frame, `point_step=22`, Livox fields present, and monotonic
+stamps. This is a transport gate only; it is not FAST-LIO evidence until the
+actual FAST-LIO runtime consumes the same stream and publishes odometry,
+registered cloud, path, logs, and truth-error metrics.
+
+The current Factory headless real-stack gate is:
+
+```bash
+DURATION_SECONDS=12 PROBE_SECONDS=4 STARTUP_PRELOAD_SECONDS=8 \
+  bash Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh
+```
+
+Latest successful run:
+
+```text
+Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_cpp_livox_headless_20260602_090500
+```
+
+Result:
+
+```text
+input gate: passed
+  /mosim/livox/lidar about 18.68Hz, 24.5k-25.9k points/frame
+  /mosim/forward/imu about 187.89Hz
+  latest LiDAR minus IMU stamp about -0.020s
+FAST-LIO runtime: nonzero
+  /Odometry=172, /path=17, /cloud_registered=172
+truth evaluation: failed
+  position RMSE=9.576m, max error=17.900m
+manual review: blocked
+```
+
+Therefore nonzero FAST-LIO topics are not enough to open RViz/UE review. Run
+`Scripts/UE5/check_realstack_miniloop_gate.py` against the latest recording and
+evaluation files. The gate must remain `blocked_before_manual_review` until
+truth evaluation passes.
+
+2026-06-02 same-source/body-frame correction:
+
+- The old Factory FAST-LIO replay mixed LiDAR, IMU/state, and truth sources.
+  Some LiDAR frames came from `control_reference.csv` or older replay artifacts
+  while IMU/state came from the MWORKS raw CSV and evaluation truth came from a
+  separate dataset. This is not a valid localization-quality gate.
+- The old LiDAR replay also wrote world-frame points but the C++ publisher sent
+  them as if they were in `base/mid360_link`. FAST-LIO acceptance input must be
+  body/lidar-frame points when the ROS frame is `base/mid360_link`.
+- The corrected replay generator supports `--pose-stride`,
+  `--points-frame body`, and `--truth-dataset-name` so LiDAR points and truth
+  are generated from the same MWORKS raw trajectory.
+- A low-density smoke dataset generated from the MWORKS raw trajectory with
+  body-frame points produced nonzero FAST-LIO output and reduced the error to
+  RMSE `1.019363m`, max error `1.437659m`:
+  `Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_factory_mworks_body_smoke_20260602_120335`.
+  This is still `blocked_before_manual_review` because the threshold is
+  RMSE `<=1.0m` and the smoke input used only about `6.2k` points/frame.
+
+Formal Gate B runs must use:
+
+```bash
+python3 Scripts/UE5/generate_livox_like_lidar_replay.py \
+  --scene factoryenvironmentcollect \
+  --pose-csv Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/raw/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.csv \
+  --pose-stride 2 \
+  --points-per-frame 20000 \
+  --points-frame body \
+  --truth-dataset-name fastlio_mworks_truth_dataset.jsonl \
+  --lidar-rate-hz 10.0 \
+  --point-rate-hz 200000.0
+```
+
+Then run the headless gate with matching input files and `MIN_LIVOX_POINTS`
+at or above the accepted formal density:
+
+```bash
+LIVOX_FRAMES=Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames_mworks_body.jsonl \
+TRUTH_DATASET=Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_mworks_truth_dataset.jsonl \
+MIN_LIVOX_POINTS=15000 \
+bash Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh
+```
+
+If a full replay generation times out and leaves a partial JSONL, do not use
+that file as evidence. Regenerate it or delete it before running Gate B.
+
+Formal Gate B pass on 2026-06-02:
+
+```text
+dataset:
+  livox_like_lidar_frames_mworks_body.jsonl
+  fastlio_mworks_truth_dataset.jsonl
+  40 frames, body-frame points, min/avg/max points per frame 15607/16094.55/16515
+
+runtime:
+  Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_factory_mworks_body_formal_20260602_122033
+  /Odometry=80, /path=8, /cloud_registered=80
+  Livox probe: 9.887Hz, IMU 198.857Hz, monotonic stamps
+
+evaluation:
+  status=pass
+  position RMSE=0.39454m
+  max position error=0.611542m
+  yaw RMSE=0.017802rad
+
+gate:
+  REALSTACK_MINILOOP_GATE.md -> ready_for_manual_rviz_ue_review
+```
+
+This permits opening the UE render window plus RViz2 FAST-LIO and RViz2 3D
+map windows for manual review. It does not prove final controller integration,
+planner performance, or final product acceptance.
+
 Do not treat `/mosim/local_occupancy_grid` as the primary grid/map review
 window. ROS `nav_msgs/OccupancyGrid` is inherently 2D; keep it as a reference
 topic only. The native grid/map review window should primarily show
 `/mosim/local_occupancy_voxels` as `PointCloud2` so vertical obstacle occupancy
-is visible.
+is visible. The default planning RViz2 configs now use a 3D Orbit view; a
+top-down view is only an auxiliary operator view, not proof that the planner
+map is three-dimensional.
 
 Keep RViz point rendering close to default FAST-LIO practice: `PointCloud2`
 should use `Style=Points`, `Size (Pixels)=1`, and not large spheres/boxes unless
@@ -812,10 +1362,10 @@ Factory review must start inside the real factory navigation/review area. The
 launcher and review pawn now provide a Factory-specific default camera for
 `/Game/Maps/Demonstration`; do not work around a bad start point by disabling
 camera collision. The previous `(-4750, 3850, 180) cm` review point was inside
-a CargoCar collision proxy, so the default Factory point now follows the
-map-authored `PlayerStart` area at approximately
+a CargoCar collision proxy. The current accepted UAV task start is
 `(-5533, 2423, 190) cm`, which corresponds to truth coordinates
-`(-55.33, -24.23, 1.90) m`.
+`(-55.33, -24.23, 1.90) m`; the review camera starts offset at approximately
+`(-5733, 2423, 280) cm` so the user is not trapped inside the UAV center.
 
 Derelict review must also start inside the exported scene-truth bounds. The
 current `/Game/DerelictCorridor/Maps/DerelictCorridor` default review camera is
@@ -842,8 +1392,8 @@ viewport to pure white.
 ```bash
 RESTART_UNREAL_GAME=1 \
 UNREAL_EXTRA_ARGS="/Game/Maps/Demonstration \
-  -MoSimReviewCameraX=-5533 -MoSimReviewCameraY=2423 -MoSimReviewCameraZ=190 \
-  -MoSimReviewCameraPitch=-6 -MoSimReviewCameraYaw=0 -MoSimReviewCameraRoll=0 \
+  -MoSimReviewCameraX=-5733 -MoSimReviewCameraY=2423 -MoSimReviewCameraZ=280 \
+  -MoSimReviewCameraPitch=-12 -MoSimReviewCameraYaw=0 -MoSimReviewCameraRoll=0 \
   -MoSimReviewHeadLightIntensity=8 -MoSimReviewHeadLightRadius=25000 \
   -MoSimReviewSunIntensity=12 -MoSimReviewSkyLightIntensity=3" \
 Scripts/UE5/open_unreal_renderer.sh review-scene
@@ -1632,3 +2182,232 @@ Do not change simulation units or planner truth to satisfy rendering.
 4. Large Fab/Epic asset downloads and runtime caches stay ignored unless a
    small, reviewed subset is intentionally promoted.
 5. Do not commit generated Unreal build outputs.
+
+## FAST-LIO Factory Diagnosis Gate
+
+Factory FAST-LIO must pass a diagnosis gate before it is used as localization,
+mapping, planner, or controller evidence. Topic existence is not sufficient:
+the current Factory recordings publish `/odometry`, `/path`, and
+`/cloud_registered`, but the measured localization error is still too large.
+
+Run the diagnosis from the project root:
+
+```bash
+python3 Scripts/UE5/diagnose_fastlio_factory_failure.py
+python3 Scripts/tests/test_fastlio_factory_failure_diagnosis.py
+```
+
+Current evidence paths:
+
+```text
+Results/unreal_scene_mapping/factoryenvironmentcollect/FASTLIO_FACTORY_FAILURE_DIAGNOSIS.md
+Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_failure_diagnosis.json
+```
+
+Do not proceed from Factory FAST-LIO into planner closure until the report no
+longer marks the scene as `not_claimable`. The current blockers are
+Velodyne-like FAST-LIO config (`lidar_type=2`, `scan_line=16`) against a
+Mid360/Livox target, low-density evaluated input of about 509 points/frame,
+synthetic finite-difference IMU, missing per-point attributes in the evaluated
+dataset, fixed yaw excitation, and nonmonotonic odometry timestamps.
+
+## FAST-LIO Input Contract Gate
+
+Before launching another Factory FAST-LIO run, check the input contract:
+
+```bash
+python3 Scripts/UE5/check_fastlio_input_contract.py \
+  --scene-dir Results/unreal_scene_mapping/factoryenvironmentcollect \
+  --config Config/ros2/mosim_spark_fast_lio_mid360.yaml \
+  --output-json Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_input_contract.json \
+  --output-md Results/unreal_scene_mapping/factoryenvironmentcollect/FASTLIO_INPUT_CONTRACT.md
+python3 Scripts/tests/test_fastlio_input_contract.py
+```
+
+Current ROS2 FAST-LIO defaults now use the MoSim Mid360 route:
+
+```text
+config: Config/ros2/mosim_spark_fast_lio_mid360.yaml
+lidar topic: /mosim/lidar_points
+imu topic: /mosim/forward/imu
+lidar frame: base/mid360_link
+imu frame: base/forward_imu_optical_frame
+mapping smoke lidar topic: /mosim/mapping_smoke/lidar_points
+```
+
+`/mosim/lidar_points` is reserved for the dense Mid360/FAST-LIO input. The
+older sparse visualization-only mapping replay uses
+`/mosim/mapping_smoke/lidar_points` in ROS2 so it cannot be confused with
+claimable FAST-LIO input.
+
+The dense Factory Livox-like replay is now contract-ready as sensor input:
+about 20.5k points/frame, line ids 0-3, and per-point `offset_time_ns`,
+`line`, `reflectivity`, and `tag`. The old `fastlio_replay_dataset.jsonl` is
+not acceptable for localization claims because it has only 512 points/frame,
+no per-point Livox attributes, and synthetic finite-difference IMU. The next
+implementation step is to route the dense Mid360 frames and high-rate
+MWORKS/PX4-equivalent IMU into the selected ROS2 FAST-LIO runtime, then rerun
+truth-error evaluation.
+
+Factory ROS2 replay now uses the dense route for FAST-LIO inputs when both
+artifacts exist:
+
+```text
+Results/unreal_scene_mapping/factoryenvironmentcollect/livox_like_lidar_frames.jsonl
+Results/unreal_scene_mapping/factoryenvironmentcollect/mworks_smoke/raw/sunray150_ue_factoryenvironmentcollect_linear_mpc_smoke.csv
+```
+
+Dry-run evidence:
+
+```bash
+DRY_RUN=1 MAX_FRAMES=2 LOOP=0 START_RVIZ=0 \
+  Scripts/UE5/run_fastlio_rviz_replay_ros2.sh factoryenvironmentcollect
+```
+
+Expected status includes `USE_DENSE_MWORKS_FASTLIO_INPUT=1` and
+`mid360_density_claimable=true`. Derelict now has the same dense Mid360 replay
+gate and should also report `USE_DENSE_MWORKS_FASTLIO_INPUT=1`.
+
+Derelict contract evidence:
+
+```text
+Results/unreal_scene_mapping/derelictcorridormegascans/livox_like_lidar_frames.jsonl
+Results/unreal_scene_mapping/derelictcorridormegascans/FASTLIO_INPUT_CONTRACT.md
+```
+
+The current Derelict dense sample averages about 24.3k points/frame and is
+sensor-input ready, but it remains blocked for localization claims until the
+FAST-LIO runtime uses synchronized high-rate IMU and passes truth-error
+metrics.
+
+Current implementation blocker:
+
+```text
+Results/unreal_scene_mapping/factoryenvironmentcollect/FASTLIO_MID360_RUNTIME_BLOCKER.md
+```
+
+The local ROS2 `spark-fast-lio` candidate does not accept `lidar_type=1`
+Livox/Mid360 data through its `sensor_msgs/PointCloud2` preprocessing path. It
+handles `OUST64`, `KMOUST64`, and `VELO16`; Livox support is guarded behind a
+CustomMsg compile path. A Factory dense Mid360 runtime smoke produced zero
+FAST-LIO output topics and logged `Error LiDAR Type`. Therefore the next
+runtime proof must first solve FAST-LIO implementation/message compatibility:
+Livox `CustomMsg` support, a different Mid360-capable FAST-LIO runtime, or a
+clearly degraded non-Mid360 smoke. Do not treat RViz visualization tuning as a
+fix for this blocker.
+
+## FAST-LIO Runtime Candidate Gate
+
+Before selecting or patching a FAST-LIO runtime, run:
+
+```bash
+python3 Scripts/UE5/check_fastlio_runtime_candidates.py --write
+python3 Scripts/tests/test_fastlio_runtime_candidates.py
+```
+
+Current report:
+
+```text
+Results/unreal_scene_mapping/FASTLIO_RUNTIME_CANDIDATES.md
+Results/unreal_scene_mapping/FASTLIO_RUNTIME_CANDIDATES.json
+```
+
+Current decision is `patch_ros2_livox_custommsg_candidate_first`. The local
+`spark-fast-lio` package is the only native ROS2 FAST-LIO-family candidate, but
+it is a patch target rather than a claimable Mid360 runtime. The scan reports:
+
+- standard `PointCloud2` path rejects Livox/Mid360 `lidar_type=1`;
+- Livox CustomMsg code exists but is guarded;
+- driver package/header naming mixes ROS1 `livox_ros_driver` and ROS2
+  `livox_ros_driver2` conventions;
+- one Livox callback macro is inconsistent.
+
+Therefore the next valid runtime work is patch/build/prove this CustomMsg path
+or switch to another Mid360-capable implementation. ROS1 `FAST_LIO` and Sunray
+Livox Gazebo code remain strong semantic references or bridge candidates, but
+they are not direct Ubuntu 22.04/ROS2 runtime evidence.
+
+## 2026-06-02 Real UAV Stack Review Rule
+
+Do not continue the rejected display-first mapping route. The following are
+smoke-only and cannot be used as product evidence:
+
+- keyboard movement that changes pose by a map-cell step;
+- static or synthetic point clouds;
+- a 2D-only occupancy-grid window;
+- point-size or marker-size tuning as a substitute for FAST-LIO/local-map
+  correctness;
+- lowering point density only to make a fake visualization smoother.
+
+Keyboard mappings may remain in UE/RViz review tools, but they control only the
+view/camera. They must not move the UAV, overwrite MWORKS truth, publish
+synthetic UAV odometry, or stand in for controller/setpoint input.
+
+Manual-control demos must send continuous setpoints into the MWORKS/controller
+layer. They must not overwrite UAV pose. Product review may open UE/RViz2 only
+after the headless gate proves:
+
+```text
+MWORKS continuous state/truth
+  + 200Hz IMU
+  + 10Hz Mid360 baseline LiDAR with per-point timing
+  + coherent TF/extrinsics
+  + nonzero FAST-LIO registered cloud, odometry, and path
+  + 3D local map topic
+```
+
+The accepted visual layout remains separate native windows:
+
+```text
+UE window
+  -> accepted rendered Factory/Derelict scene, UAV body, smooth motion
+
+RViz2 FAST-LIO window
+  -> raw Livox cloud, registered cloud, odometry, path, TF
+
+RViz2 local-map/planner window
+  -> rotatable 3D voxel/SDF/ESDF-style local map and local plan
+```
+
+RflySim uses the same role split: CopterSim/PX4 handles dynamics/control,
+RflySim3D/UE renders and generates perception data, and ROS/upper-layer
+programs consume image, depth, and point-cloud streams. MoSim should mirror
+that boundary with MWORKS replacing CopterSim as the solver/controller
+authority.
+
+## Factory UAV Platform Review
+
+Before any point-cloud or FAST-LIO window review, Factory must first pass the
+UE-only UAV platform gate:
+
+```bash
+Scripts/UE5/review_factory_uav_platform.sh
+```
+
+This script activates `local_factoryenvironmentcollect`, opens
+`/Game/Maps/Demonstration` in `simulation-review`, waits for the bridge UDP
+receiver on port 5005, and streams `render_replay.csv` to the
+`AQuadrotorMworksPlaybackActor` visible UAV body. It does not open RViz/RViz2,
+does not send the old hand-built point-cloud/grid overlays, and does not let
+keyboard/mouse input drive UAV pose.
+
+The Factory stream must use:
+
+```text
+--coordinate-policy mworks_world_m_z_up
+```
+
+Reason: the Factory collision-truth artifact declares
+`mworks_x=unreal_x, mworks_y=-unreal_y, mworks_z=unreal_z`. The accepted
+Factory review camera at approximately `UE (-5533, +2423, 190) cm` corresponds
+to MWORKS/truth coordinates `(-55.33, -24.23, 1.90) m`. If the Factory replay
+is streamed as `ue_world_m_z_up`, the UAV appears on the wrong Y side of the
+scene and the manual review becomes misleading.
+
+Manual acceptance for this gate is limited to:
+
+- visible blue UAV body in the accepted Factory scene;
+- UAV motion comes from the MWORKS/Bridge replay stream;
+- keyboard/mouse controls only the review camera/view;
+- UAV starts in the usable factory area and does not visibly clip through
+  scene geometry.
