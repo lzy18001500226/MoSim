@@ -61,6 +61,8 @@ def test_fastlio_replay_adapter_outputs() -> None:
                 raise AssertionError(manifest)
             if "ros2_topics" not in manifest:
                 raise AssertionError(manifest)
+            if manifest.get("replay_generation", {}).get("mode") != "render_replay_discrete_fallback":
+                raise AssertionError("temporary adapter test should use render replay fallback")
             dataset_path = ROOT / manifest["generated_outputs"]["fastlio_replay_dataset_jsonl"]
             if not dataset_path.exists():
                 dataset_path = output_root / manifest["generated_outputs"]["fastlio_replay_dataset_jsonl"].split("/")[-1]
@@ -71,6 +73,13 @@ def test_fastlio_replay_adapter_outputs() -> None:
                 raise AssertionError(frames[0])
             if frames[0]["synthetic_imu"]["is_measured_imu"]:
                 raise AssertionError(frames[0])
+            accel = frames[0]["synthetic_imu"]["linear_acceleration_m_s2"]
+            if abs(accel[2] - 9.81) > 1e-6:
+                raise AssertionError(frames[0]["synthetic_imu"])
+            if "finite_difference_linear_acceleration_m_s2" not in frames[0]["synthetic_imu"]:
+                raise AssertionError(frames[0]["synthetic_imu"])
+            if frames[0]["synthetic_imu"].get("linear_acceleration_coordinate_frame") != "body_yaw_aligned":
+                raise AssertionError(frames[0]["synthetic_imu"])
 
             result = subprocess.run(
                 [
@@ -94,8 +103,37 @@ def test_fastlio_replay_adapter_outputs() -> None:
                 raise AssertionError(dryrun)
             if dryrun["frames"] != 2 or dryrun["points"] <= 0:
                 raise AssertionError(dryrun)
+            for field in ("offset_time", "intensity", "tag", "line"):
+                if field not in dryrun.get("pointcloud2_fields", []):
+                    raise AssertionError(dryrun)
             if "/cloud_registered" not in dryrun.get("not_published", []):
                 raise AssertionError(dryrun)
+            capped_result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "Scripts" / "UE5" / "publish_fastlio_replay_ros2.py"),
+                    "--dataset",
+                    str(dataset_path),
+                    "--dry-run",
+                    "--max-frames",
+                    "2",
+                    "--fps",
+                    "10",
+                    "--imu-span-s",
+                    "0.12",
+                ],
+                cwd=ROOT,
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            capped = json.loads(capped_result.stdout)
+            if not capped.get("imu_span_capped"):
+                raise AssertionError(capped)
+            if capped.get("requested_imu_span_s") != 0.12:
+                raise AssertionError(capped)
+            if not 0.09 <= float(capped.get("imu_span_s", 0.0)) < 0.1:
+                raise AssertionError(capped)
 
         status_text = (output_root / "FASTLIO_REPLAY_STATUS.md").read_text(encoding="utf-8")
         if "not a FAST-LIO localization result" not in status_text:
