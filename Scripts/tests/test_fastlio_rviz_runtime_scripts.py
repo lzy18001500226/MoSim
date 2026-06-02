@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Regression checks for native FAST-LIO/RViz runtime wrappers."""
+"""Regression checks for current FAST-LIO/RViz runtime entry points."""
 
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -12,11 +13,9 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def run(command: list[str], env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
-    merged_env = None
+    merged_env = os.environ.copy()
+    merged_env.setdefault("ROS_LOG_DIR", str(ROOT / "Results" / "tmp" / "ros_logs"))
     if env:
-        import os
-
-        merged_env = os.environ.copy()
         merged_env.update(env)
     return subprocess.run(
         command,
@@ -26,128 +25,51 @@ def run(command: list[str], env: dict[str, str] | None = None) -> subprocess.Com
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        timeout=60,
     )
 
 
-def test_fastlio_rviz_replay_wrapper_dry_run() -> None:
-    for scene_id in ("factoryenvironmentcollect", "derelictcorridormegascans"):
-        result = run(
-            [
-                "bash",
-                "Scripts/UE5/run_fastlio_rviz_replay_ros1.sh",
-                scene_id,
-            ],
-            env={"DRY_RUN": "1", "MAX_FRAMES": "2", "LOOP": "0", "START_RVIZ": "0"},
-        )
-        if "mosim.fastlio_ros1_publish_dryrun.v1" not in result.stdout:
-            raise AssertionError(result.stdout)
-        if "mosim.ros1_mapping_replay_dryrun.v1" not in result.stdout:
-            raise AssertionError(result.stdout)
-        if "browser" in result.stdout.lower() or "html" in result.stdout.lower():
-            raise AssertionError(result.stdout)
-        if "RVIZ_PROFILE=fastlio_pointcloud" not in result.stdout:
-            raise AssertionError(result.stdout)
-
-
-def test_fastlio_rviz2_replay_wrapper_dry_run() -> None:
-    for scene_id in ("factoryenvironmentcollect", "derelictcorridormegascans"):
-        result = run(
-            [
-                "bash",
-                "Scripts/UE5/run_fastlio_rviz_replay_ros2.sh",
-                scene_id,
-            ],
-            env={"DRY_RUN": "1", "MAX_FRAMES": "2", "LOOP": "0", "START_RVIZ": "0"},
-        )
-        if "mosim.fastlio_ros2_publish_dryrun.v1" not in result.stdout:
-            raise AssertionError(result.stdout)
-        if "mosim.ros2_mapping_replay_dryrun.v1" not in result.stdout:
-            raise AssertionError(result.stdout)
-        if "browser" in result.stdout.lower() or "html" in result.stdout.lower():
-            raise AssertionError(result.stdout)
-        if "RVIZ_PROFILE=fastlio_pointcloud" not in result.stdout:
-            raise AssertionError(result.stdout)
-        if '"/cloud_registered"' not in result.stdout or '"/Odometry"' not in result.stdout:
-            raise AssertionError(result.stdout)
-
-
-def test_mapping_rviz_split_window_dry_run() -> None:
-    result = run(
-        [
-            "bash",
-            "Scripts/UE5/open_mapping_rviz_ros1.sh",
-            "factoryenvironmentcollect",
-        ],
-        env={"DRY_RUN": "1", "MAX_FRAMES": "2", "LOOP": "0", "RVIZ_PROFILE": "split"},
-    )
-    if "mosim.rviz_window_contract_dryrun.v1" not in result.stdout:
-        raise AssertionError(result.stdout)
-    if "mosim_uav_planning_grid.rviz" not in result.stdout:
-        raise AssertionError(result.stdout)
-    if "mosim_uav_fastlio_pointcloud.rviz" not in result.stdout:
-        raise AssertionError(result.stdout)
-    if "mosim.ros1_mapping_replay_dryrun.v1" not in result.stdout:
-        raise AssertionError(result.stdout)
-
-
-def test_mapping_rviz2_split_window_dry_run() -> None:
-    result = run(
-        [
-            "bash",
-            "Scripts/UE5/open_mapping_rviz_ros2.sh",
-            "factoryenvironmentcollect",
-        ],
-        env={"DRY_RUN": "1", "MAX_FRAMES": "2", "LOOP": "0", "RVIZ_PROFILE": "split"},
-    )
-    if "mosim.rviz2_window_contract_dryrun.v1" not in result.stdout:
-        raise AssertionError(result.stdout)
-    if "Config/rviz2/mosim_uav_planning_grid.rviz" not in result.stdout:
-        raise AssertionError(result.stdout)
-    if "Config/rviz2/mosim_uav_fastlio_pointcloud.rviz" not in result.stdout:
-        raise AssertionError(result.stdout)
-    if "mosim.ros2_mapping_replay_dryrun.v1" not in result.stdout:
-        raise AssertionError(result.stdout)
-
-
-def test_fastlio_topic_checker_dry_run_contract() -> None:
-    result = run(
-        ["bash", "Scripts/UE5/check_fastlio_ros1_topics.sh"],
-        env={"DRY_RUN": "1"},
-    )
+def test_factory_fastlio_mid360_headless_dry_run() -> None:
+    result = run(["bash", "Scripts/UE5/run_factory_fastlio_mid360_headless_ros2.sh"], env={"DRY_RUN": "1"})
     payload = json.loads(result.stdout)
-    required = set(payload["required_topics"])
-    for topic in ("/velodyne_points", "/imu/data", "/cloud_registered", "/Odometry"):
-        if topic not in required:
+    if payload.get("schema") != "mosim.factory_fastlio_mid360_headless_dryrun.v1":
+        raise AssertionError(payload)
+    if payload.get("scene_id") != "factoryenvironmentcollect":
+        raise AssertionError(payload)
+    for phase in ("dense_lidar_cpp", "mworks_imu_truth", "fast_lio", "runtime_record", "truth_evaluation"):
+        if phase not in payload.get("phases", []):
             raise AssertionError(payload)
 
 
-def test_fastlio_ros2_topic_checker_dry_run_contract() -> None:
-    result = run(
-        ["bash", "Scripts/UE5/check_fastlio_ros2_topics.sh"],
-        env={"DRY_RUN": "1"},
-    )
+def test_fastlio_ros2_topic_checker_contract() -> None:
+    result = run(["bash", "Scripts/UE5/check_fastlio_ros2_topics.sh"], env={"DRY_RUN": "1"})
     payload = json.loads(result.stdout)
     if payload.get("schema") != "mosim.fastlio_ros2_topic_check_dryrun.v1":
         raise AssertionError(payload)
     required = set(payload["required_topics"])
-    for topic in ("/velodyne_points", "/imu/data", "/cloud_registered", "/Odometry"):
+    for topic in ("/velodyne_points", "/imu/data", "/tf", "/cloud_registered", "/odometry", "/path"):
         if topic not in required:
             raise AssertionError(payload)
-    result_inputs_only = run(
+    for removed_topic in ("/mosim/local_occupancy_grid", "/mosim/local_plan", "/mosim/replay_odometry"):
+        if removed_topic in required:
+            raise AssertionError(payload)
+
+    inputs_only = run(
         ["bash", "Scripts/UE5/check_fastlio_ros2_topics.sh"],
-        env={"DRY_RUN": "1", "REQUIRE_FASTLIO_OUTPUTS": "0"},
+        env={
+            "DRY_RUN": "1",
+            "REQUIRE_FASTLIO_OUTPUTS": "0",
+            "FASTLIO_LIDAR_TOPIC": "/mosim/livox/lidar",
+            "FASTLIO_IMU_TOPIC": "/mosim/forward/imu",
+        },
     )
-    payload_inputs_only = json.loads(result_inputs_only.stdout)
-    if "/cloud_registered" in set(payload_inputs_only["required_topics"]):
-        raise AssertionError(payload_inputs_only)
-    result_spark = run(
-        ["bash", "Scripts/UE5/check_fastlio_ros2_topics.sh"],
-        env={"DRY_RUN": "1", "FASTLIO_ODOMETRY_TOPIC": "/odometry"},
-    )
-    payload_spark = json.loads(result_spark.stdout)
-    required_spark = set(payload_spark["required_topics"])
-    if "/odometry" not in required_spark or "/Odometry" in required_spark:
-        raise AssertionError(payload_spark)
+    input_payload = json.loads(inputs_only.stdout)
+    input_required = set(input_payload["required_topics"])
+    if "/cloud_registered" in input_required or "/odometry" in input_required:
+        raise AssertionError(input_payload)
+    for topic in ("/mosim/livox/lidar", "/mosim/forward/imu", "/tf"):
+        if topic not in input_required:
+            raise AssertionError(input_payload)
 
 
 def test_ros2_launch_workflow_dry_run_contract() -> None:
@@ -159,11 +81,14 @@ def test_ros2_launch_workflow_dry_run_contract() -> None:
         raise AssertionError(result.stdout)
     if "mosim_scene_replay.launch.py" not in result.stdout:
         raise AssertionError(result.stdout)
-    if "mosim_scene_replay_ros2_ws_factoryenvironmentcollect" not in result.stdout:
-        raise AssertionError(result.stdout)
-    if "scene" not in result.stdout or "rviz_profile" not in result.stdout:
-        raise AssertionError(result.stdout)
-    if "browser" in result.stdout.lower() or "html" in result.stdout.lower():
+    for phrase in (
+        'fastlio_lidar_topic": "/mosim/livox/lidar"',
+        'fastlio_pointcloud_topic": "/mosim/lidar_points"',
+        'fastlio_imu_topic": "/mosim/forward/imu"',
+    ):
+        if phrase not in result.stdout:
+            raise AssertionError(result.stdout)
+    if "mapping_lidar_topic" in result.stdout:
         raise AssertionError(result.stdout)
 
 
@@ -175,65 +100,42 @@ def test_ros2_launch_file_show_args_contract() -> None:
             "source /opt/ros/humble/setup.bash && ros2 launch Scripts/ros/mosim_scene_replay/launch/mosim_scene_replay.launch.py --show-args",
         ]
     )
-    for argument in ("scene", "rviz_profile", "start_rviz", "start_fastlio", "fastlio_launch_cmd"):
+    for argument in (
+        "scene",
+        "rviz_profile",
+        "start_rviz",
+        "start_fastlio",
+        "scan_duration_s",
+        "fastlio_launch_cmd",
+        "fastlio_lidar_topic",
+        "fastlio_imu_topic",
+    ):
         if argument not in result.stdout:
             raise AssertionError(result.stdout)
+    if "mapping_lidar_topic" in result.stdout or "planning_grid" in result.stdout:
+        raise AssertionError(result.stdout)
 
 
-def test_spark_fastlio_ros2_candidate_preflight_contract() -> None:
-    temp_root = ROOT / "Results" / "tmp" / "spark_fastlio_candidate_test"
-    temp_root.mkdir(parents=True, exist_ok=True)
-    result = run(
-        ["bash", "Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh"],
-        env={
-            "DRY_RUN": "1",
-            "STATUS_JSON": str(temp_root / "status.json"),
-            "STATUS_MD": str(temp_root / "status.md"),
-        },
-    )
-    payload = json.loads(result.stdout)
-    if payload.get("schema") != "mosim.spark_fastlio_ros2_candidate.v1":
-        raise AssertionError(payload)
-    if payload.get("repo_url") != "https://github.com/MIT-SPARK/spark-fast-lio.git":
-        raise AssertionError(payload)
-    if "spark_fast_lio_ros2_ws" not in payload.get("workspace", ""):
-        raise AssertionError(payload)
-    if "ros2_overlay_pcl_ros" not in payload.get("apt_overlay_dir", ""):
-        raise AssertionError(payload)
-    if payload.get("runtime_claimable"):
-        raise AssertionError(payload)
-    for command_name in ("build", "clean_build", "source_overlay_after_download"):
-        if command_name not in payload.get("commands", {}):
-            raise AssertionError(payload)
-    if not payload.get("auto_apt_overlay"):
-        raise AssertionError(payload)
-
-
-def test_fastlio_workspace_bootstrap_dry_run_contract() -> None:
-    result = run(
-        ["bash", "Scripts/UE5/bootstrap_fastlio_ros1_workspace.sh"],
-        env={"DRY_RUN": "1", "BUILD": "0"},
-    )
-    payload = json.loads(result.stdout)
-    if payload.get("schema") != "mosim.fastlio_ros1_workspace_bootstrap_dryrun.v1":
-        raise AssertionError(payload)
-    if "Results/tmp/fastlio_ros1_ws" not in payload.get("catkin_ws", ""):
-        raise AssertionError(payload)
-    if "no workspace files were created" not in payload.get("claim", ""):
-        raise AssertionError(payload)
+def test_fastlio_rviz_config_is_point_style() -> None:
+    text = (ROOT / "Config/rviz2/mosim_uav_fastlio_pointcloud.rviz").read_text(encoding="utf-8")
+    for phrase in (
+        "Value: /mosim/lidar_points",
+        "Value: /cloud_registered",
+        "Value: /Odometry",
+        "Fixed Frame: camera_init",
+        "Style: Points",
+        "Size (Pixels): 1",
+    ):
+        if phrase not in text:
+            raise AssertionError(phrase)
 
 
 def main() -> int:
-    test_fastlio_rviz_replay_wrapper_dry_run()
-    test_fastlio_rviz2_replay_wrapper_dry_run()
-    test_mapping_rviz_split_window_dry_run()
-    test_mapping_rviz2_split_window_dry_run()
-    test_fastlio_topic_checker_dry_run_contract()
-    test_fastlio_ros2_topic_checker_dry_run_contract()
+    test_factory_fastlio_mid360_headless_dry_run()
+    test_fastlio_ros2_topic_checker_contract()
     test_ros2_launch_workflow_dry_run_contract()
     test_ros2_launch_file_show_args_contract()
-    test_spark_fastlio_ros2_candidate_preflight_contract()
-    test_fastlio_workspace_bootstrap_dry_run_contract()
+    test_fastlio_rviz_config_is_point_style()
     print("[OK] FAST-LIO/RViz runtime script regression")
     return 0
 

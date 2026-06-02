@@ -33,7 +33,7 @@ def test_env_report_contract() -> None:
         },
     )()
     report = module.build_report(args)
-    if report["schema"] != "mosim.ros_mapping_runtime_env.v1":
+    if report["schema"] != "mosim.ros_fastlio_platform_runtime_env.v1":
         raise AssertionError(report)
     if "HTML is not an accepted active point-cloud/map review window." not in report["claim_boundary"]:
         raise AssertionError(report)
@@ -53,16 +53,11 @@ def test_env_report_contract() -> None:
         raise AssertionError(report)
     if "ros2" not in report["packages"]:
         raise AssertionError(report)
-    if "rviz_config" not in report["project_assets"]:
-        raise AssertionError(report)
     for asset_name in (
-        "rviz_planning_grid_config",
         "rviz_fastlio_pointcloud_config",
-        "rviz2_config",
-        "rviz2_planning_grid_config",
         "rviz2_fastlio_pointcloud_config",
-        "open_mapping_rviz_ros2",
-        "run_fastlio_rviz_replay_ros2",
+        "factory_fastlio_mid360_headless_ros2",
+        "mworks_uav_state_ros2_bridge",
         "run_mosim_scene_replay_launch_ros2",
         "mosim_scene_replay_ros2_package",
         "mosim_scene_replay_launch_file",
@@ -82,16 +77,17 @@ def test_env_report_contract() -> None:
         module.write_markdown(md_path, report)
         text = md_path.read_text(encoding="utf-8")
         for phrase in (
-            "ready_for_native_mapping_runtime",
+            "ready_for_native_fastlio_platform_runtime",
             "ros_generation",
             "ros2_replay_ready",
             "fastlio_ros2_runtime_claimable",
             "Recommended setup sequence",
             "Claim boundary",
             "HTML is not an accepted active point-cloud/map review window",
+            "Keyboard/mouse input is accepted only for UE/RViz view control",
             "check_fastlio_family_compatibility.py",
             "run_mosim_scene_replay_launch_ros2.sh",
-            "open_mapping_rviz_ros2.sh",
+            "run_factory_fastlio_mid360_headless_ros2.sh",
         ):
             if phrase not in text:
                 raise AssertionError(text)

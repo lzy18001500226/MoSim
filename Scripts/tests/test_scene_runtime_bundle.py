@@ -113,27 +113,16 @@ def test_runtime_bundle_contract() -> None:
             for command_name in (
                 "unreal_editor_mcp_listener",
                 "ue_rendered_scene_review",
-                "fastlio_ros1_workspace_bootstrap",
-                "rviz_mapping_window",
-                "rviz_planning_grid_window",
                 "rviz_fastlio_pointcloud_window",
-                "fastlio_rviz_runtime",
+                "factory_fastlio_mid360_headless",
                 "fastlio_runtime_record",
                 "fastlio_runtime_evaluate",
             ):
                 if command_name not in bundle["commands"]:
                     raise AssertionError(bundle)
-            if "open_mapping_rviz_ros2.sh" not in bundle["commands"]["rviz_mapping_window"]:
+            if "rviz2 -d Config/rviz2/mosim_uav_fastlio_pointcloud.rviz" not in bundle["commands"]["rviz_fastlio_pointcloud_window"]:
                 raise AssertionError(bundle)
-            if "RVIZ_PROFILE=split" not in bundle["commands"]["rviz_mapping_window"]:
-                raise AssertionError(bundle)
-            if "RVIZ_PROFILE=planning_grid" not in bundle["commands"]["rviz_planning_grid_window"]:
-                raise AssertionError(bundle)
-            if "RVIZ_PROFILE=fastlio_pointcloud" not in bundle["commands"]["rviz_fastlio_pointcloud_window"]:
-                raise AssertionError(bundle)
-            if "run_fastlio_rviz_replay_ros2.sh" not in bundle["commands"]["fastlio_rviz_runtime"]:
-                raise AssertionError(bundle)
-            if "bootstrap_fastlio_ros1_workspace.sh" not in bundle["commands"]["fastlio_ros1_workspace_bootstrap"]:
+            if scene_id == "factoryenvironmentcollect" and "run_factory_fastlio_mid360_headless_ros2.sh" not in bundle["commands"]["factory_fastlio_mid360_headless"]:
                 raise AssertionError(bundle)
             if "open_unreal_editor_mcp_listener.sh" not in bundle["commands"]["unreal_editor_mcp_listener"]:
                 raise AssertionError(bundle)
@@ -144,11 +133,11 @@ def test_runtime_bundle_contract() -> None:
             wrapper = (scene_dir / "run_native_runtime_review.sh").read_text(encoding="utf-8")
             if "Browser HTML is not used" not in wrapper:
                 raise AssertionError(wrapper)
-            if "RVIZ_PROFILE=split" not in wrapper:
+            if "view controls only" not in wrapper:
                 raise AssertionError(wrapper)
             if "PIDS=()" not in wrapper or "wait_for_background" not in wrapper:
                 raise AssertionError(wrapper)
-            if "review_scene_mapping_loop.sh" not in wrapper or "&" not in wrapper:
+            if "review_scene_mapping_loop.sh" not in wrapper or "mosim_uav_fastlio_pointcloud.rviz" not in wrapper:
                 raise AssertionError(wrapper)
     finally:
         if temp_root.exists():

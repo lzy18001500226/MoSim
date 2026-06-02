@@ -94,9 +94,9 @@ def test_runtime_readiness_separates_file_loop_from_runtime_blockers() -> None:
             "mapping_window",
             "html_active_pointcloud_window: `false`",
             "global_truth_used_by_planner: `false`",
-            "RVIZ_PROFILE=split",
-            "open_mapping_rviz_ros2.sh",
-            "run_fastlio_rviz_replay_ros2.sh",
+            "Keyboard/mouse controls are view controls only",
+            "run_factory_fastlio_mid360_headless_ros2.sh",
+            "mosim_uav_fastlio_pointcloud.rviz",
             "check_fastlio_ros2_topics.sh",
             "open_unreal_editor_mcp_listener.sh",
         ):

@@ -55,6 +55,16 @@ def test_mworks_uav_state_dryrun_contract() -> None:
         raise AssertionError(payload)
     if payload["frames"] != 3:
         raise AssertionError(payload)
+    if not payload["source_rate"]["monotonic"]:
+        raise AssertionError(payload)
+    if payload["resampling"]["imu"] != "resampled_from_mworks_state":
+        raise AssertionError(payload)
+    if payload["timestamp_policy"]["imu_substeps"] != 10:
+        raise AssertionError(payload)
+    if payload["odometry_continuity"]["cell_step_motion"]:
+        raise AssertionError(payload)
+    if payload["lidar_input"]["mid360_density_claimable"]:
+        raise AssertionError(payload)
     if payload["target_rates_hz"]["truth_odometry"] != 20.0:
         raise AssertionError(payload)
     if payload["target_rates_hz"]["imu"] != 200.0:
@@ -64,7 +74,7 @@ def test_mworks_uav_state_dryrun_contract() -> None:
     for topic_key in ("truth_odometry", "imu", "lidar", "tf"):
         if topic_key not in payload["topics"]:
             raise AssertionError(payload)
-    if payload["pointcloud2_fields"] != ["x", "y", "z", "intensity", "time", "ring"]:
+    if payload["pointcloud2_fields"] != ["offset_time", "x", "y", "z", "intensity", "tag", "line"]:
         raise AssertionError(payload)
     if "/cloud_registered" not in payload["not_published"]:
         raise AssertionError(payload)
@@ -89,7 +99,7 @@ def test_mworks_uav_state_path_guard_and_math() -> None:
     if (qx, qy, qz, qw) != (0.0, 0.0, 0.0, 1.0):
         raise AssertionError((qx, qy, qz, qw))
     cloud = bridge.pack_livox_like_cloud([[0, 0, 0], [1, 2, 3]], 0.1, 4, 50.0)
-    if len(cloud) != 48:
+    if len(cloud) != 44:
         raise AssertionError(len(cloud))
     try:
         bridge.project_path("/mnt/c/Users/HP/Desktop/not_mosim/file.txt")
