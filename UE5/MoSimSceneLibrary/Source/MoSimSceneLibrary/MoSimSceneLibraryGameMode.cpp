@@ -312,6 +312,10 @@ void AMoSimSceneLibraryGameMode::EnforceSceneReviewCamera(UWorld* World)
         PlayerController->Possess(ReviewPawn);
     }
     ReviewPawn->ApplyReviewInputMode(PlayerController);
+    if (FParse::Param(FCommandLine::Get(), TEXT("MoSimFollowPlaybackCamera")))
+    {
+        ReviewPawn->SetFollowTarget(SpawnedPlaybackActor);
+    }
 
     const double NowSeconds = World->GetTimeSeconds();
     if (bNeedsPossess || NowSeconds - LastReviewCameraPossessLogTimeSeconds > 5.0)
