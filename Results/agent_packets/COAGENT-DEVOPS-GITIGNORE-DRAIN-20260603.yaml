@@ -313,7 +313,8 @@ proposed_batches:
   - "Completed batch 25: remove only the `ECC/tests` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 26: remove only the `awesome-opencode/dist` temporary unignore pair under `References/Agent/Skills/`."
   - "Completed batch 27: remove only the `ECC/scripts` temporary unignore pair under `References/Agent/Skills/`."
-  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill; `ECC/skills` is now the smallest nearby verified remaining `ECC` branch, while `openai-skills` remains a much larger deferred family."
+  - "Completed batch 28: remove only the `ECC/skills` temporary unignore pair under `References/Agent/Skills/`."
+  - "Next candidate batch: another bounded `References/Agent/Skills/*` family with no untracked spill; `ECC/docs/zh-CN` is now the smallest nearby verified remaining `ECC` branch, while `openai-skills` remains a much larger deferred family."
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -322,7 +323,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this twenty-seventh `.gitignore` drain batch together with the ledger and
+  Commit this twenty-eighth `.gitignore` drain batch together with the ledger and
   result packet, then continue with another tiny rule-family removal in a later
   round.
 needs_human: false
