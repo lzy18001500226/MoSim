@@ -427,6 +427,12 @@ proposed_batches:
   - "batch_68_candidate_untracked_files=0"
   - "batch_68_removed_rule=!References/Agent/Skills/oh-my-openagent-dev/src/hooks/"
   - "batch_68_removed_rule=!References/Agent/Skills/oh-my-openagent-dev/src/hooks/**"
+  - "batch_69_candidate=References/Agent/Skills/openai-skills/skills/.curated/define-goal"
+  - "batch_69_candidate_file_count=3"
+  - "batch_69_candidate_tracked_files=3"
+  - "batch_69_candidate_untracked_files=0"
+  - "batch_69_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/define-goal/"
+  - "batch_69_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/define-goal/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -435,8 +441,8 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this sixty-eighth `.gitignore` drain batch together with the ledger
-  and result packet, then continue with another bounded remaining rule-family
-  outside `oh-my-openagent-dev/src/*` in a later round.
+  Commit this sixty-ninth `.gitignore` drain batch together with the ledger
+  and result packet, then continue with `References/Agent/Skills/openai-skills/skills/.curated/cli-creator`
+  as the next bounded candidate in a later round.
 needs_human: false
 blocked_reason: ""
