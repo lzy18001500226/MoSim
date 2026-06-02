@@ -1,0 +1,511 @@
+{
+  "schema": "mosim.fastlio_runtime_candidates.v1",
+  "decision": "evaluate_external_ros2_mid360_fastlio_candidate_first",
+  "next_action": "import the best external ROS2 Mid360 FAST-LIO candidate into ignored temp workspace, build it with ROS2 Humble and local livox_ros_driver2, then run headless truth evaluation",
+  "candidate_count": 7,
+  "preferred_ros2_mid360_count": 0,
+  "patchable_ros2_livox_count": 1,
+  "strong_ros1_mid360_reference_count": 1,
+  "sensor_reference_count": 4,
+  "degraded_standard_lidar_only_count": 0,
+  "ranked_candidates": [
+    {
+      "path": "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio",
+      "exists": true,
+      "package": {
+        "exists": true,
+        "name": "spark_fast_lio",
+        "buildtool_depends": [],
+        "depends": [
+          "geometry_msgs",
+          "livox_ros_driver2",
+          "nav_msgs",
+          "pcl_conversions",
+          "pcl_ros",
+          "rclcpp",
+          "rclcpp_components",
+          "rcutils",
+          "ros2launch",
+          "sensor_msgs",
+          "std_msgs",
+          "tf2_eigen",
+          "tf2_geometry_msgs",
+          "tf2_ros",
+          "tf2_sensor_msgs",
+          "visualization_msgs"
+        ],
+        "parse_error": null
+      },
+      "generation": "ros2_ament",
+      "role": "ros2_candidate_needs_patch",
+      "score": 75,
+      "recommendation": "patch Livox CustomMsg build/subscriber path before any Mid360 runtime claim",
+      "blockers": [
+        "pointcloud2_path_rejects_livox_lidar_type"
+      ],
+      "support": {
+        "mid360_markers": false,
+        "sunray_scan_csv": false,
+        "pointcloud2": true,
+        "pointcloud2_livox_fields": true,
+        "livox_ros_driver_custom_msg": false,
+        "livox_ros_driver2_custom_msg": true,
+        "local_livox_custom_msg": false,
+        "spark_pointcloud2_livox_blocked": true,
+        "livox_custommsg_macro_typo": false,
+        "livox_driver_package_name_mismatch": false,
+        "ros2_candidate_includes_ros1_livox_header": false
+      },
+      "evidence": {
+        "custom_msg": [
+          "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/include/preprocess.h",
+          "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/include/spark_fast_lio.h",
+          "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/src/preprocess.cpp",
+          "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/src/spark_fast_lio.cpp"
+        ],
+        "mid360": [],
+        "pointcloud2": [
+          "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/config/ouster_vbr.yaml",
+          "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/config/velodyne.yaml",
+          "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/config/velodyne_mit.yaml",
+          "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/config/dcist_rrg/rrghusky.yaml",
+          "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/config/kimera_multi/acl_jackal.yaml",
+          "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/config/kimera_multi/acl_jackal2.yaml",
+          "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/config/kimera_multi/apis.yaml",
+          "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/config/kimera_multi/hathor.yaml"
+        ]
+      },
+      "ros2_runtime_visibility": {
+        "visible": false,
+        "path": null,
+        "error": "missing ros2 command"
+      }
+    },
+    {
+      "path": "References/Lab/FAST_LIO",
+      "exists": true,
+      "package": {
+        "exists": true,
+        "name": "fast_lio",
+        "buildtool_depends": [
+          "catkin"
+        ],
+        "depends": [
+          "geometry_msgs",
+          "livox_ros_driver",
+          "message_generation",
+          "message_runtime",
+          "nav_msgs",
+          "pcl_ros",
+          "roscpp",
+          "rospy",
+          "sensor_msgs",
+          "std_msgs",
+          "tf"
+        ],
+        "parse_error": null
+      },
+      "generation": "ros1_catkin",
+      "role": "strong_ros1_mid360_reference",
+      "score": 70,
+      "recommendation": "reuse config/message semantics; runtime requires ROS1 container/bridge or ROS2 port",
+      "blockers": [
+        "requires_ros1_or_bridge_on_ubuntu_22_04",
+        "pointcloud2_path_rejects_livox_lidar_type"
+      ],
+      "support": {
+        "mid360_markers": true,
+        "sunray_scan_csv": false,
+        "pointcloud2": true,
+        "pointcloud2_livox_fields": true,
+        "livox_ros_driver_custom_msg": true,
+        "livox_ros_driver2_custom_msg": false,
+        "local_livox_custom_msg": false,
+        "spark_pointcloud2_livox_blocked": true,
+        "livox_custommsg_macro_typo": false,
+        "livox_driver_package_name_mismatch": false,
+        "ros2_candidate_includes_ros1_livox_header": false
+      },
+      "evidence": {
+        "custom_msg": [
+          "References/Lab/FAST_LIO/README.md",
+          "References/Lab/FAST_LIO/src/laserMapping.cpp",
+          "References/Lab/FAST_LIO/src/preprocess.cpp",
+          "References/Lab/FAST_LIO/src/preprocess.h"
+        ],
+        "mid360": [
+          "References/Lab/FAST_LIO/config/marsim.yaml",
+          "References/Lab/FAST_LIO/config/mid360.yaml",
+          "References/Lab/FAST_LIO/launch/mapping_mid360.launch"
+        ],
+        "pointcloud2": [
+          "References/Lab/FAST_LIO/config/velodyne.yaml",
+          "References/Lab/FAST_LIO/rviz_cfg/loam_livox.rviz",
+          "References/Lab/FAST_LIO/src/IMU_Processing.hpp",
+          "References/Lab/FAST_LIO/src/laserMapping.cpp",
+          "References/Lab/FAST_LIO/src/preprocess.cpp",
+          "References/Lab/FAST_LIO/src/preprocess.h"
+        ]
+      },
+      "ros2_runtime_visibility": {
+        "visible": false,
+        "path": null,
+        "error": "not a ROS2 candidate"
+      }
+    },
+    {
+      "path": "References/Sunray/simulation/gazebo_plugin/livox_laser_simulation",
+      "exists": true,
+      "package": {
+        "exists": true,
+        "name": "livox_laser_simulation",
+        "buildtool_depends": [
+          "catkin"
+        ],
+        "depends": [
+          "livox_ros_driver",
+          "tf"
+        ],
+        "parse_error": null
+      },
+      "generation": "ros1_catkin",
+      "role": "sensor_semantics_reference",
+      "score": 65,
+      "recommendation": "reuse scan pattern and CustomMsg schema when implementing MoSim UE/ROS2 sensor bridge",
+      "blockers": [
+        "requires_ros1_or_bridge_on_ubuntu_22_04"
+      ],
+      "support": {
+        "mid360_markers": false,
+        "sunray_scan_csv": true,
+        "pointcloud2": true,
+        "pointcloud2_livox_fields": true,
+        "livox_ros_driver_custom_msg": false,
+        "livox_ros_driver2_custom_msg": false,
+        "local_livox_custom_msg": true,
+        "spark_pointcloud2_livox_blocked": false,
+        "livox_custommsg_macro_typo": false,
+        "livox_driver_package_name_mismatch": false,
+        "ros2_candidate_includes_ros1_livox_header": false
+      },
+      "evidence": {
+        "custom_msg": [
+          "References/Sunray/simulation/gazebo_plugin/livox_laser_simulation/CMakeLists.txt",
+          "References/Sunray/simulation/gazebo_plugin/livox_laser_simulation/include/livox_points_plugin.h",
+          "References/Sunray/simulation/gazebo_plugin/livox_laser_simulation/src/livox_points_plugin.cpp"
+        ],
+        "mid360": [],
+        "pointcloud2": [
+          "References/Sunray/simulation/gazebo_plugin/livox_laser_simulation/include/livox_points_plugin.h",
+          "References/Sunray/simulation/gazebo_plugin/livox_laser_simulation/src/livox_points_plugin.cpp"
+        ]
+      },
+      "ros2_runtime_visibility": {
+        "visible": false,
+        "path": null,
+        "error": "not a ROS2 candidate"
+      }
+    },
+    {
+      "path": "References/Lab/FAST-LIVO2",
+      "exists": true,
+      "package": {
+        "exists": true,
+        "name": "fast_livo",
+        "buildtool_depends": [
+          "catkin"
+        ],
+        "depends": [
+          "cv_bridge",
+          "geometry_msgs",
+          "image_transport",
+          "message_generation",
+          "message_runtime",
+          "nav_msgs",
+          "pcl_ros",
+          "roscpp",
+          "rospy",
+          "sensor_msgs",
+          "std_msgs",
+          "tf",
+          "vikit_common",
+          "vikit_ros"
+        ],
+        "parse_error": null
+      },
+      "generation": "ros1_catkin",
+      "role": "pointcloud2_conversion_reference",
+      "score": 60,
+      "recommendation": "reuse conversion fields for planner/RViz path; verify target FAST-LIO accepts this PointCloud2 layout",
+      "blockers": [
+        "requires_ros1_or_bridge_on_ubuntu_22_04",
+        "pointcloud2_path_rejects_livox_lidar_type"
+      ],
+      "support": {
+        "mid360_markers": false,
+        "sunray_scan_csv": false,
+        "pointcloud2": true,
+        "pointcloud2_livox_fields": true,
+        "livox_ros_driver_custom_msg": true,
+        "livox_ros_driver2_custom_msg": false,
+        "local_livox_custom_msg": false,
+        "spark_pointcloud2_livox_blocked": true,
+        "livox_custommsg_macro_typo": false,
+        "livox_driver_package_name_mismatch": false,
+        "ros2_candidate_includes_ros1_livox_header": false
+      },
+      "evidence": {
+        "custom_msg": [
+          "References/Lab/FAST-LIVO2/include/LIVMapper.h",
+          "References/Lab/FAST-LIVO2/include/livox_ros_driver/CustomMsg.h",
+          "References/Lab/FAST-LIVO2/include/preprocess.h",
+          "References/Lab/FAST-LIVO2/src/LIVMapper.cpp",
+          "References/Lab/FAST-LIVO2/src/preprocess.cpp"
+        ],
+        "mid360": [],
+        "pointcloud2": [
+          "References/Lab/FAST-LIVO2/include/LIVMapper.h",
+          "References/Lab/FAST-LIVO2/include/preprocess.h",
+          "References/Lab/FAST-LIVO2/rviz_cfg/fast_livo2.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/hilti.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/M300.rviz",
+          "References/Lab/FAST-LIVO2/rviz_cfg/ntu_viral.rviz",
+          "References/Lab/FAST-LIVO2/src/LIVMapper.cpp",
+          "References/Lab/FAST-LIVO2/src/preprocess.cpp"
+        ]
+      },
+      "ros2_runtime_visibility": {
+        "visible": false,
+        "path": null,
+        "error": "not a ROS2 candidate"
+      }
+    },
+    {
+      "path": "References/Lab/Point-LIO-point-lio-with-grid-map",
+      "exists": true,
+      "package": {
+        "exists": true,
+        "name": "point_lio",
+        "buildtool_depends": [
+          "catkin"
+        ],
+        "depends": [
+          "geometry_msgs",
+          "livox_ros_driver",
+          "message_generation",
+          "message_runtime",
+          "nav_msgs",
+          "pcl_ros",
+          "roscpp",
+          "rospy",
+          "sensor_msgs",
+          "std_msgs",
+          "tf"
+        ],
+        "parse_error": null
+      },
+      "generation": "ros1_catkin",
+      "role": "pointcloud2_conversion_reference",
+      "score": 60,
+      "recommendation": "reuse conversion fields for planner/RViz path; verify target FAST-LIO accepts this PointCloud2 layout",
+      "blockers": [
+        "requires_ros1_or_bridge_on_ubuntu_22_04",
+        "pointcloud2_path_rejects_livox_lidar_type"
+      ],
+      "support": {
+        "mid360_markers": false,
+        "sunray_scan_csv": false,
+        "pointcloud2": true,
+        "pointcloud2_livox_fields": true,
+        "livox_ros_driver_custom_msg": true,
+        "livox_ros_driver2_custom_msg": false,
+        "local_livox_custom_msg": false,
+        "spark_pointcloud2_livox_blocked": true,
+        "livox_custommsg_macro_typo": false,
+        "livox_driver_package_name_mismatch": false,
+        "ros2_candidate_includes_ros1_livox_header": false
+      },
+      "evidence": {
+        "custom_msg": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/README.md",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/li_initialization.cpp",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/li_initialization.h",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/parameters.h",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/preprocess.cpp",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/preprocess.h"
+        ],
+        "mid360": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/config/avia.yaml"
+        ],
+        "pointcloud2": [
+          "References/Lab/Point-LIO-point-lio-with-grid-map/config/avia.yaml",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/config/horizon.yaml",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/config/ouster64.yaml",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/config/velody16.yaml",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/rviz_cfg/loam_livox.rviz",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/IMU_Processing.h",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/laserMapping.cpp",
+          "References/Lab/Point-LIO-point-lio-with-grid-map/src/li_initialization.cpp"
+        ]
+      },
+      "ros2_runtime_visibility": {
+        "visible": false,
+        "path": null,
+        "error": "not a ROS2 candidate"
+      }
+    },
+    {
+      "path": "References/Sunray/General_Module/sunray_planner_utils",
+      "exists": true,
+      "package": {
+        "exists": true,
+        "name": "sunray_planner_utils",
+        "buildtool_depends": [
+          "catkin"
+        ],
+        "depends": [
+          "laser_geometry",
+          "message_generation",
+          "message_runtime",
+          "pcl_ros",
+          "roscpp",
+          "std_msgs",
+          "tf"
+        ],
+        "parse_error": null
+      },
+      "generation": "ros1_catkin",
+      "role": "pointcloud2_conversion_reference",
+      "score": 60,
+      "recommendation": "reuse conversion fields for planner/RViz path; verify target FAST-LIO accepts this PointCloud2 layout",
+      "blockers": [
+        "requires_ros1_or_bridge_on_ubuntu_22_04"
+      ],
+      "support": {
+        "mid360_markers": true,
+        "sunray_scan_csv": false,
+        "pointcloud2": true,
+        "pointcloud2_livox_fields": true,
+        "livox_ros_driver_custom_msg": false,
+        "livox_ros_driver2_custom_msg": true,
+        "local_livox_custom_msg": false,
+        "spark_pointcloud2_livox_blocked": false,
+        "livox_custommsg_macro_typo": false,
+        "livox_driver_package_name_mismatch": false,
+        "ros2_candidate_includes_ros1_livox_header": false
+      },
+      "evidence": {
+        "custom_msg": [
+          "References/Sunray/General_Module/sunray_planner_utils/src/livox2Point.cpp"
+        ],
+        "mid360": [
+          "References/Sunray/General_Module/sunray_planner_utils/launch/sunray_ego_single.launch",
+          "References/Sunray/General_Module/sunray_planner_utils/launch/sunray_ego_single_mid360.launch",
+          "References/Sunray/General_Module/sunray_planner_utils/launch/sunray_ego_ugv.launch",
+          "References/Sunray/General_Module/sunray_planner_utils/launch/sunray_ego_ugv_single_search.launch",
+          "References/Sunray/General_Module/sunray_planner_utils/launch/sunray_ego_ugv_swarm.launch",
+          "References/Sunray/General_Module/sunray_planner_utils/launch/sunray_fuel.launch",
+          "References/Sunray/General_Module/sunray_planner_utils/launch/sunray_fuel_mid360.launch",
+          "References/Sunray/General_Module/sunray_planner_utils/launch_driver/mapping_mid360.launch"
+        ],
+        "pointcloud2": [
+          "References/Sunray/General_Module/sunray_planner_utils/config/sunray.rviz",
+          "References/Sunray/General_Module/sunray_planner_utils/config/sunray_fuel.rviz",
+          "References/Sunray/General_Module/sunray_planner_utils/config/sunray_swarm.rviz",
+          "References/Sunray/General_Module/sunray_planner_utils/src/livox2Point.cpp",
+          "References/Sunray/General_Module/sunray_planner_utils/src/point_cloud_transform.cpp",
+          "References/Sunray/General_Module/sunray_planner_utils/src/positionCmd2sunray.cpp",
+          "References/Sunray/General_Module/sunray_planner_utils/src/scan2Point.cpp"
+        ]
+      },
+      "ros2_runtime_visibility": {
+        "visible": false,
+        "path": null,
+        "error": "not a ROS2 candidate"
+      }
+    },
+    {
+      "path": "Scripts/ros/mosim_dense_lidar_cpp",
+      "exists": true,
+      "package": {
+        "exists": true,
+        "name": "mosim_dense_lidar_cpp",
+        "buildtool_depends": [
+          "ament_cmake"
+        ],
+        "depends": [
+          "geometry_msgs",
+          "livox_ros_driver2",
+          "nav_msgs",
+          "rclcpp",
+          "sensor_msgs",
+          "std_msgs",
+          "tf2_ros"
+        ],
+        "parse_error": null
+      },
+      "generation": "ros2_ament",
+      "role": "mosim_transport_probe",
+      "score": 55,
+      "recommendation": "keep as ROS2 PointCloud2 transport/performance probe; not FAST-LIO evidence by itself",
+      "blockers": [],
+      "support": {
+        "mid360_markers": false,
+        "sunray_scan_csv": false,
+        "pointcloud2": true,
+        "pointcloud2_livox_fields": true,
+        "livox_ros_driver_custom_msg": false,
+        "livox_ros_driver2_custom_msg": true,
+        "local_livox_custom_msg": false,
+        "spark_pointcloud2_livox_blocked": false,
+        "livox_custommsg_macro_typo": false,
+        "livox_driver_package_name_mismatch": false,
+        "ros2_candidate_includes_ros1_livox_header": false
+      },
+      "evidence": {
+        "custom_msg": [
+          "Scripts/ros/mosim_dense_lidar_cpp/src/dense_lidar_replay_node.cpp",
+          "Scripts/ros/mosim_dense_lidar_cpp/src/livox_imu_probe_node.cpp"
+        ],
+        "mid360": [],
+        "pointcloud2": [
+          "Scripts/ros/mosim_dense_lidar_cpp/package.xml",
+          "Scripts/ros/mosim_dense_lidar_cpp/src/dense_lidar_replay_node.cpp",
+          "Scripts/ros/mosim_dense_lidar_cpp/src/dense_lidar_subscriber_probe_node.cpp"
+        ]
+      },
+      "ros2_runtime_visibility": {
+        "visible": false,
+        "path": null,
+        "error": "missing ros2 command"
+      }
+    }
+  ],
+  "external_candidate_count": 1,
+  "external_candidates": [
+    {
+      "name": "Ericsii/FAST_LIO_ROS2",
+      "url": "https://github.com/Ericsii/FAST_LIO_ROS2/tree/ros2",
+      "branch": "ros2",
+      "role": "external_ros2_mid360_fastlio_candidate",
+      "score": 90,
+      "status": "not_imported_or_built_locally",
+      "evidence": [
+        "package.xml uses ament_cmake and depends on livox_ros_driver2",
+        "launch/mapping.launch.py defaults config_file to mid360.yaml",
+        "config/mid360.yaml uses /livox/lidar, /livox/imu, lidar_type=1, scan_line=4, scan_rate=10"
+      ],
+      "recommendation": "import into ignored temp workspace first, build on ROS2 Humble with local livox_ros_driver2, then run headless Mid360 truth evaluation",
+      "blockers": [
+        "network_import_timeout_in_current_probe",
+        "not_yet_built_in_mosim_workspace",
+        "not_yet_runtime_verified_with_mosim_livox_custommsg"
+      ]
+    }
+  ],
+  "claim_boundary": [
+    "A candidate is not localization evidence until it publishes FAST-LIO odometry/path/registered cloud at runtime.",
+    "Velodyne/Ouster PointCloud2 smoke does not satisfy the MoSim Mid360/Livox evidence contract.",
+    "MoSim Mid360 evidence requires coherent LiDAR, IMU, TF timestamps, per-point timing, and truth-error evaluation."
+  ]
+}

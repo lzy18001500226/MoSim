@@ -1,0 +1,106 @@
+{
+  "schema": "mosim.spark_fastlio_livox_patch_readiness.v1",
+  "candidate": "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio",
+  "ready": true,
+  "blockers": [],
+  "checks": [
+    {
+      "name": "candidate_tree_exists",
+      "passed": true,
+      "why": "spark-fast-lio candidate source tree must exist under the ignored Results/tmp workspace.",
+      "evidence": [
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio"
+      ]
+    },
+    {
+      "name": "uses_ros2_livox_driver2_package",
+      "passed": true,
+      "why": "ROS2 Humble Mid360 route should use livox_ros_driver2 package naming, not ROS1 livox_ros_driver.",
+      "evidence": [
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/CMakeLists.txt",
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/package.xml"
+      ]
+    },
+    {
+      "name": "does_not_find_ros1_livox_driver",
+      "passed": true,
+      "why": "CMake must not gate the ROS2 CustomMsg path on ROS1 livox_ros_driver.",
+      "evidence": [
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/CMakeLists.txt"
+      ]
+    },
+    {
+      "name": "preprocess_uses_ros2_custommsg_header",
+      "passed": true,
+      "why": "Preprocess header must include ROS2 livox_ros_driver2/msg/custom_msg.hpp.",
+      "evidence": [
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/include/preprocess.h"
+      ]
+    },
+    {
+      "name": "preprocess_drops_ros1_custommsg_header",
+      "passed": true,
+      "why": "Preprocess header must not include ROS1 livox_ros_driver/CustomMsg.h in a ROS2 candidate.",
+      "evidence": [
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/include/preprocess.h"
+      ]
+    },
+    {
+      "name": "preprocess_signature_is_ros2_custommsg",
+      "passed": true,
+      "why": "Preprocess process()/avia_handler() overloads must accept livox_ros_driver2::msg::CustomMsg.",
+      "evidence": [
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/include/preprocess.h",
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/src/preprocess.cpp"
+      ]
+    },
+    {
+      "name": "livox_macro_consistent",
+      "passed": true,
+      "why": "The candidate currently has a typo-prone macro path; all guards should consistently use LIVOX_ROS_DRIVER_FOUND.",
+      "evidence": [
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/src/spark_fast_lio.cpp",
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/CMakeLists.txt"
+      ]
+    },
+    {
+      "name": "livox_callback_binding_consistent",
+      "passed": true,
+      "why": "Subscriber binding must match the declared livoxLiDARCallback symbol exactly.",
+      "evidence": [
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/include/spark_fast_lio.h",
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/src/spark_fast_lio.cpp"
+      ]
+    },
+    {
+      "name": "livox_callback_uses_member_imu_buffer",
+      "passed": true,
+      "why": "Livox callback must use the class member imu_buffer_, not an undeclared imu_buffer.",
+      "evidence": [
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/src/spark_fast_lio.cpp"
+      ]
+    },
+    {
+      "name": "livox_callback_uses_nanoseconds",
+      "passed": true,
+      "why": "rclcpp::Time exposes nanoseconds(); the typo nanseconds() blocks the CustomMsg path.",
+      "evidence": [
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/src/spark_fast_lio.cpp"
+      ]
+    },
+    {
+      "name": "pointcloud2_path_not_used_as_mid360_claim",
+      "passed": true,
+      "why": "Mid360 evidence must go through a Livox-aware path, not only Ouster/Kimera/Velodyne PointCloud2 cases.",
+      "evidence": [
+        "Results/tmp/fastlio_ros2_candidates/spark-fast-lio/spark_fast_lio/src/preprocess.cpp"
+      ]
+    }
+  ],
+  "decision": "ready_for_build_runtime_gate",
+  "next_action": "Build the candidate and run headless MoSim Mid360 truth evaluation.",
+  "claim_boundary": [
+    "Passing this static gate is not FAST-LIO localization evidence.",
+    "Runtime evidence still requires nonzero registered cloud, odometry, path, coherent timestamps, and truth-error metrics."
+  ]
+}
