@@ -99,6 +99,42 @@ colcon is available
 ROS2 mapping dry-runs pass
 ```
 
+Current validated host state on 2026-06-01:
+
+```text
+ROS_DISTRO=humble
+ros2=/opt/ros/humble/bin/ros2
+rviz2=/opt/ros/humble/bin/rviz2
+colcon=/usr/bin/colcon
+ROS apt key=/usr/share/keyrings/ros-archive-keyring.gpg
+ROS apt source=/etc/apt/sources.list.d/ros2.list
+source=deb [arch=amd64 signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] https://mirrors.tuna.tsinghua.edu.cn/ros2/ubuntu jammy main
+apt update probe=passed with no NO_PUBKEY/EXPKEYSIG error
+rosbridge_server=installed
+rosbridge port 9090=listening after manual launch
+```
+
+Status summary: native ROS2 Humble/RViz2/colcon is working. The ROS apt key
+problem is resolved by the keyring/source pair above. Do not reinstall ROS2
+unless these checks fail again.
+
+Set ROS runtime logs to a project-local path before launching ROS2 nodes:
+
+```bash
+export ROS_LOG_DIR=/mnt/c/Users/HP/Desktop/MoSim/Results/tmp/ros_logs
+```
+
+The project ROS2 wrappers set this automatically. Direct `ros2 launch` and
+`rclpy.init()` calls can fail in restricted agent sandboxes if ROS tries to
+write `/home/linux/.ros/log`.
+
+ROS-MCP note: the project checkout supports both ROS and ROS2, but it talks to
+the active ROS runtime through rosbridge. On this host, that means ROS2 Humble
+plus `ros-humble-rosbridge-suite`. The WSL wrapper
+`/home/linux/mcp-wrappers/ros_mcp.sh` auto-starts `rosbridge_websocket` in the
+background when Codex starts ROS-MCP and port `9090` is absent, then reuses it
+for later MCP calls.
+
 Current validated project commands:
 
 ```bash
@@ -185,11 +221,14 @@ Scripts/UE5/prepare_spark_fastlio_ros2_candidate.sh
 ```
 
 Current preflight result is saved at
-`Results/unreal_scene_mapping/SPARK_FASTLIO_ROS2_CANDIDATE.md/json`. Without a
-local overlay it reports missing `pcl_ros`. The script can avoid sudo by
-downloading the `ros-humble-pcl-ros` deb and extracting it under ignored
-`Results/tmp/ros2_overlay_pcl_ros`; this makes `pcl_ros` visible only for the
-current project workflow. The system install equivalent is:
+`Results/unreal_scene_mapping/SPARK_FASTLIO_ROS2_CANDIDATE.md/json`. The
+candidate currently builds successfully under
+`Results/tmp/spark_fast_lio_ros2_ws`; the runnable executable is
+`Results/tmp/spark_fast_lio_ros2_ws/install/spark_fast_lio/lib/spark_fast_lio/spark_lio_mapping`.
+If dependencies are missing on a clean machine, the script can avoid sudo by
+downloading known ROS2 deb packages and extracting them under ignored
+`Results/tmp/ros2_overlay_pcl_ros`; this makes those packages visible only for
+the current project workflow. The system install equivalent is:
 
 ```bash
 sudo apt install -y ros-humble-pcl-ros
@@ -212,9 +251,13 @@ Then source the generated workspace before running MoSim with FAST-LIO enabled:
 
 ```bash
 source Results/tmp/spark_fast_lio_ros2_ws/install/setup.bash
-FASTLIO_ROS2_LAUNCH_CMD='ros2 launch spark_fast_lio mapping_mit_campus.launch.yaml start_rviz:=false scene_id:=mosim robot_name:=base_link base_frame:=base_link map_frame:=ue_world' \
-  START_FASTLIO=1 START_RVIZ=0 \
-  Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect
+FASTLIO_ROS2_LAUNCH_CMD='set +u; source /opt/ros/humble/setup.bash; source Results/tmp/spark_fast_lio_ros2_ws/install/setup.bash; ros2 launch spark_fast_lio mapping_mit_campus.launch.yaml start_rviz:=false scene_id:=mosim robot_name:=base base_frame:=base map_frame:=ue_world' \
+START_FASTLIO=1 START_RVIZ=0 MAX_FRAMES=120 LOOP=1 FPS=10 \
+FASTLIO_LIDAR_TOPIC=/mosim/lidar_points \
+FASTLIO_IMU_TOPIC=/mosim/forward/imu \
+FASTLIO_LIDAR_FRAME=base/velodyne_link \
+FASTLIO_IMU_FRAME=base/forward_imu_optical_frame \
+Scripts/UE5/run_mosim_scene_replay_launch_ros2.sh factoryenvironmentcollect
 ```
 
 Important topic detail: `spark_fast_lio` publishes odometry on the relative
@@ -226,8 +269,40 @@ use:
 FASTLIO_ODOMETRY_TOPIC=/odometry Scripts/UE5/check_fastlio_ros2_topics.sh
 ```
 
-Keep `runtime_claimable=false` until a live run records FAST-LIO output topics,
-not only replay input topics.
+Important frame detail: this candidate accepts visualization frame values such
+as `imu`, `lidar`, and `base`; `base_link` triggered an invalid visualization
+frame crash in the current run. Use `base_frame:=base` and MoSim sensor frames
+under `base/...` until the candidate launch/config is reviewed further.
+
+Current live runtime status: `spark_lio_mapping` starts, subscribes through the
+configured MoSim topic remaps, and real runtime recordings now exist for
+`/cloud_registered`, `/odometry`, and `/path`. A 2026-06-01 fix made the MoSim
+FAST-LIO ROS2 replay stamp sequence monotonic across `LOOP=1` replay cycles to
+avoid FAST-LIO IMU/LiDAR loopback clearing. The current MoSim launch uses
+identity LiDAR/IMU extrinsics in
+`Scripts/ros/mosim_scene_replay/launch/spark_fast_lio_mosim.launch.py`; the
+upstream MIT launch transform is not valid for the synthetic MoSim sensor
+frames.
+
+Keep the claim boundary precise: ROS2 runtime and FAST-LIO output topics are
+working. Latest evaluations:
+
+```text
+Factory:  status=failed_error_threshold, rmse=9.761 m, max_error=18.547 m
+Derelict: status=pass, rmse=0.814 m, max_error=1.938 m
+Thresholds: max_position_rmse_m=1.0, max_position_error_m=3.0
+```
+
+Derelict is a real ROS2 FAST-LIO runtime numeric pass with quality warnings
+(`Not enough IMU data` appears in the runtime log and odometry timestamps are
+partly nonmonotonic). Factory remains degraded and cannot be claimed.
+
+Runtime evidence lives under:
+
+```text
+Results/unreal_scene_mapping/factoryenvironmentcollect/fastlio_runtime_scan099/
+Results/unreal_scene_mapping/derelictcorridormegascans/fastlio_runtime_scan099/
+```
 
 ## References
 

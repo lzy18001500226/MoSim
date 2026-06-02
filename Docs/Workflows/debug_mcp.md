@@ -137,6 +137,125 @@ failure mode is that the App starts in an older default distro such as
 `RflySim-20.04`; then it cannot see `/home/linux/.codex/config.toml`, WSL MCP
 wrappers, or the project toolchain even though VSCode Codex works.
 
+### 4.1 VSCode Codex Fails On SQLite Migration Checksum
+
+Observed 2026-06-01: VSCode Codex failed to load because the extension launched
+the Windows Codex binary against `C:\Users\HP\.codex`, while the visible
+project state had been created by the WSL/Linux Codex runtime. The log symptom
+was:
+
+```text
+failed to initialize sqlite state runtime under C:\Users\HP\.codex:
+migration 1 was previously applied but has been modified
+```
+
+Root cause: the SQL schema text is effectively equivalent, but the SQLx
+migration checksum differs between the Windows and Linux packaged Codex
+runtime. If the state database was initialized by one runtime and then opened
+by the other, the app-server exits before the webview can mount.
+
+Primary fix for this project is to keep VSCode Codex in WSL mode:
+
+```json
+"chatgpt.runCodexInWindowsSubsystemForLinux": true
+```
+
+Set it in:
+
+```text
+C:\Users\HP\AppData\Roaming\Code\User\settings.json
+```
+
+Verification:
+
+```bash
+rg -n "chatgpt.runCodexInWindowsSubsystemForLinux" \
+  /mnt/c/Users/HP/AppData/Roaming/Code/User/settings.json
+
+find /mnt/c/Users/HP/AppData/Roaming/Code/logs \
+  -path '*/openai.chatgpt/Codex.log' -printf '%T@ %p\n' |
+  sort -n | tail
+```
+
+Expected follow-up log after reload:
+
+```text
+[spawn-codex-process] Spawning codex process inside WSL
+[startup][renderer] app routes mounted
+```
+
+If the log still shows `C:\Users\HP\.codex` migration failure after changing
+the setting, fully reload VSCode or close all VSCode windows and reopen the
+MoSim workspace. Do not delete `state_5.sqlite` to fix this without a backup:
+it contains the visible thread index and token counters.
+
+For the standalone Windows Codex App or Windows-native Codex runtime, the same
+checksum failure can block launch with:
+
+```text
+Codex cannot access its local database.
+failed to initialize sqlite state runtime under C:\Users\HP\.codex:
+migration 1 was previously applied but has been modified
+```
+
+When that happens, first verify which Windows runtime is being launched. The
+official Windows Codex App starts its own packaged app-server binary:
+
+```text
+C:\Program Files\WindowsApps\OpenAI.Codex_*\app\resources\codex.exe
+```
+
+Windows CLI checks must not keep recreating App-incompatible state under
+`C:\Users\HP\.codex`. Keep the CLI in a separate home:
+
+```cmd
+set "CODEX_HOME=C:\Users\HP\.codex-cli"
+"C:\Users\HP\.codex-cli\bin\codex.exe" %*
+```
+
+Use that content for `C:\Users\HP\.codex\bin\codex.cmd` when the Windows CLI
+launcher is on PATH. `C:\Users\HP\.codex` remains the Windows App state home;
+`C:\Users\HP\.codex-cli` is only for terminal/doctor use.
+
+Then back up and move the Windows-side SQLite families that have incompatible
+SQLx migration checksums. `state_5.sqlite` is not the only possible conflict:
+`logs_2.sqlite`, `goals_1.sqlite`, and `memories_1.sqlite` can also block
+app-server startup while the dialog still reports a state runtime failure.
+
+```bash
+backup_dir="/mnt/c/Users/HP/.codex/backups/windows_app_split_sqlite_reset_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$backup_dir"
+for base in state_5.sqlite logs_2.sqlite goals_1.sqlite memories_1.sqlite; do
+  for suffix in "" "-shm" "-wal"; do
+    f="/mnt/c/Users/HP/.codex/${base}${suffix}"
+    if [[ -e "$f" ]]; then
+      cp -a "$f" "$backup_dir/"
+      mv "$f" "$backup_dir/$(basename "$f").moved"
+    fi
+  done
+done
+```
+
+Verify from Windows:
+
+```cmd
+set CODEX_HOME=C:\Users\HP\.codex&& C:\Users\HP\.codex-cli\bin\codex.exe doctor
+```
+
+For a direct app-server smoke test, run it with a timeout. A timeout with no
+SQLite error means the server stayed alive; an immediate exit with `migration 1
+was previously applied but has been modified` means one of the SQLite families
+still needs to be moved aside.
+
+```bash
+timeout 8s cmd.exe /c "set CODEX_HOME=C:\Users\HP\.codex&& C:\Users\HP\.codex-cli\bin\codex.exe app-server --analytics-default-enabled"
+```
+
+Expected transition: `doctor` reports all four databases healthy and rollout
+files agree with the state DB. The Windows Codex App opens to the normal chat UI
+without the local database dialog. This repair does not touch the WSL primary
+state DB under `/home/linux/.codex`.
+
 ---
 
 ## 5. Sync Windows-Side Config When Codex App Requires It
@@ -181,7 +300,73 @@ mosim-epic
 mosim-unreal
 ```
 
-### 5.1 Windows-MCP Desktop Automation Server
+### 5.1 Install Windows-Native Codex CLI From WSL Config
+
+Use this route only when the user explicitly needs `codex` to run directly in
+Windows PowerShell/CMD. The primary VSCode project conversation should remain
+WSL-backed unless that policy is intentionally changed.
+
+Known-good install route as of 2026-06-01:
+
+```bash
+mkdir -p /mnt/c/Users/HP/.codex/bin
+cp -f \
+  "/mnt/c/Users/HP/.vscode/extensions/openai.chatgpt-26.527.31454-win32-x64/bin/windows-x86_64/codex.exe" \
+  /mnt/c/Users/HP/.codex/bin/codex.exe
+```
+
+Create `C:\Users\HP\.codex\bin\codex.cmd`:
+
+```bat
+@echo off
+"%~dp0codex.exe" %*
+```
+
+Add `C:\Users\HP\.codex\bin` to the Windows user `Path`.
+
+Copy reusable WSL config inputs, but do not copy WSL session databases or large
+runtime logs as the install mechanism:
+
+```bash
+cp -f /home/linux/.codex/auth.json /mnt/c/Users/HP/.codex/auth.json
+cp -f /home/linux/.codex/rules/default.rules /mnt/c/Users/HP/.codex/rules/default.rules
+cp -a /home/linux/.codex/skills/. /mnt/c/Users/HP/.codex/skills/
+```
+
+When generating the Windows-side `config.toml`, convert paths instead of doing
+a byte-for-byte copy:
+
+| WSL config item | Windows-native config item |
+|---|---|
+| `/mnt/c/Users/HP/Desktop/MoSim` | `C:\Users\HP\Desktop\MoSim` |
+| `/mnt/e/...` | `E:\...` |
+| `/home/linux/...` marketplace or trusted path | `\\wsl.localhost\Ubuntu-22.04\home\linux\...` when a Windows path is required |
+| WSL-only MCP wrapper such as `/home/linux/mcp-wrappers/ros_mcp.sh` | `command = 'C:\Windows\System32\wsl.exe'` with `args = ["-d", "Ubuntu-22.04", "--exec", "/home/linux/mcp-wrappers/ros_mcp.sh"]` |
+| Sysplorer MCP | Windows Python: `D:\Program Files\MWORKS\Sysplorer 2026a\External\python64\python.exe` plus `Tools\sysplorer_mcp\main.py` |
+| Syslab MCP | Windows executable: `D:\Program Files\MWORKS\Syslab 2026a\Tools\syslab-mcp-server\syslab-mcp-server-win64.exe` |
+| Git MCP repo argument | `C:\Users\HP\Desktop\MoSim` with `C:\Users\HP\.local\bin\uvx.exe` |
+
+Verify from Windows:
+
+```cmd
+codex --version
+codex mcp list
+codex doctor
+```
+
+Expected current version:
+
+```text
+codex-cli 0.135.0-alpha.1
+```
+
+Current non-fatal Windows doctor warnings can include missing `rg.exe`, stale
+historical rollout index rows, unrestricted filesystem sandbox, and an update
+probe timeout. The install is usable when `config.toml parse ok`, auth is
+configured, the active provider endpoint is reachable, and the expected MCP
+server list is present.
+
+### 5.2 Windows-MCP Desktop Automation Server
 
 Windows-MCP is a Windows-native desktop automation MCP server. Do not run it
 with WSL Python because its UI, screenshot, PowerShell, registry, and window
@@ -235,6 +420,133 @@ windows-mcp   /home/linux/mcp-wrappers/windows_mcp.sh   enabled
 Security note: Windows-MCP can operate the Windows desktop and run PowerShell
 commands. Use the smallest necessary tool call and avoid broad desktop or
 filesystem actions unless the user explicitly requests them.
+
+### 5.3 ROS-MCP Robot Bridge Server
+
+ROS-MCP connects MCP clients to ROS or ROS 2 systems through rosbridge. The MCP
+server can start without ROS installed, but robot operations require a reachable
+rosbridge websocket, normally `127.0.0.1:9090` or a robot IP on port `9090`.
+The project-local checkout is version-agnostic: its README advertises both ROS
+and ROS2 support. The active ROS generation is determined by the ROS runtime
+behind rosbridge. For this WSL project host, use ROS2 Humble.
+
+Install or repair the source checkout runtime:
+
+```bash
+uv --directory Docs/Skills/ROS-MCP sync
+```
+
+Use a WSL wrapper at:
+
+```text
+/home/linux/mcp-wrappers/ros_mcp.sh
+```
+
+Expected wrapper command:
+
+```bash
+ROOT="${ROS_MCP_ROOT:-/mnt/c/Users/HP/Desktop/MoSim/Docs/Skills/ROS-MCP}"
+ROS_SETUP="${ROS_SETUP:-/opt/ros/humble/setup.bash}"
+ROSBRIDGE_HOST="${ROSBRIDGE_HOST:-127.0.0.1}"
+ROSBRIDGE_PORT="${ROSBRIDGE_PORT:-9090}"
+ROSBRIDGE_AUTO_START="${ROSBRIDGE_AUTO_START:-1}"
+exec /home/linux/.local/bin/uv --directory "$ROOT" run server.py --transport=stdio
+```
+
+The actual wrapper is allowed to perform a small preflight before the final
+`exec`: if `ROSBRIDGE_AUTO_START=1` and `ROSBRIDGE_HOST:ROSBRIDGE_PORT` is not
+listening, it sources `/opt/ros/humble/setup.bash`, verifies
+`rosbridge_server`, launches
+`ros2 launch rosbridge_server rosbridge_websocket_launch.xml port:=9090` with
+`nohup`, writes logs under `Results/logs/rosbridge_mcp/`, waits briefly for the
+port, and then starts the MCP server. If port `9090` is already listening, it
+reuses the existing rosbridge process.
+
+Register it in the Codex config:
+
+```toml
+[mcp_servers."ros-mcp"]
+command = "/home/linux/mcp-wrappers/ros_mcp.sh"
+args = []
+startup_timeout_sec = 180
+tool_timeout_sec = 300
+```
+
+For safety, keep robot write/control tools approval-gated:
+
+```toml
+[mcp_servers."ros-mcp".tools.publish_once]
+approval_mode = "approve"
+
+[mcp_servers."ros-mcp".tools.publish_for_durations]
+approval_mode = "approve"
+
+[mcp_servers."ros-mcp".tools.call_service]
+approval_mode = "approve"
+
+[mcp_servers."ros-mcp".tools.send_action_goal]
+approval_mode = "approve"
+
+[mcp_servers."ros-mcp".tools.cancel_action_goal]
+approval_mode = "approve"
+
+[mcp_servers."ros-mcp".tools.set_parameter]
+approval_mode = "approve"
+
+[mcp_servers."ros-mcp".tools.delete_parameter]
+approval_mode = "approve"
+```
+
+Verify:
+
+```bash
+codex mcp list
+```
+
+Expected entry:
+
+```text
+ros-mcp   /home/linux/mcp-wrappers/ros_mcp.sh   enabled
+```
+
+Current WSL diagnosis on 2026-06-01:
+
+```text
+ROS_VERSION=2
+ROS_DISTRO=humble
+ROS2 apt source=/etc/apt/sources.list.d/ros2.list
+ROS2 apt key=/usr/share/keyrings/ros-archive-keyring.gpg
+apt update probe=passed, no NO_PUBKEY/EXPKEYSIG observed
+rosbridge_server=installed
+port 9090=listening after manual launch; wrapper now auto-starts it when absent
+```
+
+Useful checks:
+
+```bash
+source /opt/ros/humble/setup.bash
+ros2 pkg prefix rosbridge_server
+apt-cache policy ros-humble-rosbridge-suite
+ss -ltnp | grep -E ':9090|rosbridge'
+```
+
+If `rosbridge_server` is missing, install the ROS2 bridge package before
+expecting ROS-MCP to inspect or control the ROS graph:
+
+```bash
+sudo apt install -y ros-humble-rosbridge-suite
+source /opt/ros/humble/setup.bash
+ros2 launch rosbridge_server rosbridge_websocket_launch.xml
+```
+
+Normal Codex usage should not require a separate rosbridge terminal after the
+wrapper is installed. Starting Codex/MCP is enough; the wrapper performs the
+background launch only when the port is absent.
+
+Security note: ROS-MCP can publish topics, call services, send actions, and set
+parameters on a connected robot or simulator. Treat these as robot-control
+operations and run read-only discovery first: `connect_to_robot`,
+`ping_robots`, `get_topics`, `get_nodes`, and `get_services`.
 
 Reference only:
 
@@ -876,4 +1188,112 @@ Pass condition:
 ```text
 syslab tools listed
 sysplorer_mcp tools listed
+```
+
+---
+
+## 11. Blender MCP
+
+Project-local source:
+
+```text
+Docs/Skills/Blender-MCP
+```
+
+Project-local wrapper:
+
+```bash
+Docs/Skills/Blender-MCP/wrappers/blender-mcp.sh
+```
+
+The wrapper runs the local editable install from
+`Docs/Skills/Blender-MCP/.venv` and disables telemetry by default:
+
+```bash
+DISABLE_TELEMETRY=true
+BLENDER_HOST=172.17.48.1
+BLENDER_PORT=9876
+```
+
+Codex registration command:
+
+```bash
+codex mcp add blender \
+  --env DISABLE_TELEMETRY=true \
+  --env BLENDER_HOST=172.17.48.1 \
+  --env BLENDER_PORT=9876 \
+  -- /mnt/c/Users/HP/Desktop/MoSim/Docs/Skills/Blender-MCP/wrappers/blender-mcp.sh
+```
+
+Install/update local Python environment:
+
+```bash
+rm -rf Docs/Skills/Blender-MCP/.venv
+uv venv --python /usr/bin/python3 Docs/Skills/Blender-MCP/.venv
+uv pip install --python Docs/Skills/Blender-MCP/.venv/bin/python -e Docs/Skills/Blender-MCP
+```
+
+The server is two-stage:
+
+1. Codex starts the MCP stdio server through the wrapper.
+2. The MCP server connects to the Blender addon socket.
+
+Blender-side setup:
+
+1. In Blender, install `Docs/Skills/Blender-MCP/addon.py`.
+2. Enable `Interface: Blender MCP`.
+3. In the Blender viewport sidebar, open the `BlenderMCP` tab.
+4. Set port `9876`.
+5. Click `Connect to MCP server`.
+6. Disable addon telemetry in preferences unless explicitly needed.
+
+Smoke checks:
+
+```bash
+codex mcp list
+Docs/Skills/Blender-MCP/.venv/bin/python -c "import blender_mcp.server as s; print(s.DEFAULT_HOST, s.DEFAULT_PORT)"
+```
+
+Expected MCP list entry:
+
+```text
+blender  /mnt/c/Users/HP/Desktop/MoSim/Docs/Skills/Blender-MCP/wrappers/blender-mcp.sh  enabled
+```
+
+If Codex starts the MCP but tools cannot reach Blender, first verify the addon
+socket is running. WSL cannot reach a Windows-only `localhost` listener through
+its own `127.0.0.1`, so the project bootstrap binds the Blender addon server to
+`0.0.0.0` and the Codex MCP env points `BLENDER_HOST` at the WSL default
+gateway, currently `172.17.48.1`.
+
+If `mcp__blender` was started before this host fix, it may keep the old process
+environment:
+
+```bash
+tr '\0' '\n' < /proc/{pid}/environ | rg 'BLENDER_HOST|BLENDER_PORT|DISABLE_TELEMETRY'
+```
+
+An old process showing `BLENDER_HOST=127.0.0.1` must be stopped and the Codex
+session restarted so the MCP tool channel is recreated with the updated config.
+Independent end-to-end validation can be done with a short Python MCP client
+against `Docs/Skills/Blender-MCP/wrappers/blender-mcp.sh`; the pass condition is
+that `list_tools` returns Blender tools and `get_scene_info` returns the default
+`Cube`, `Light`, and `Camera` scene.
+
+When WindowsMCP is available, verify Blender MCP visually instead of inferring
+UI state from logs. Use a WindowsMCP screenshot after launching Blender and
+confirm the terminal/Blender UI shows:
+
+```text
+BlenderMCP addon registered
+BlenderMCP server started on 0.0.0.0:9876
+Connected to client
+```
+
+Safety:
+
+```text
+execute_blender_code can run arbitrary Python inside Blender. Use it only on
+project assets, save before destructive edits, and avoid sending secrets,
+tokens, browser paths, or personal files through Blender MCP.
 ```
