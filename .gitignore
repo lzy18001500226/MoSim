@@ -291,8 +291,6 @@ References/Agent/Skills/openai-skills/skills/.system/*
 !References/Agent/Skills/openai-skills/skills/.system/imagegen/**
 !References/Agent/Skills/openai-skills/skills/.system/openai-docs/
 !References/Agent/Skills/openai-skills/skills/.system/openai-docs/**
-!References/Agent/Skills/openai-skills/skills/.system/skill-creator/
-!References/Agent/Skills/openai-skills/skills/.system/skill-creator/**
 !References/Agent/Skills/openai-skills/skills/.system/skill-installer/
 !References/Agent/Skills/openai-skills/skills/.system/skill-installer/**
 !References/Agent/Skills/oh-my-openagent-dev/
