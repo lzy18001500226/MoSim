@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: sunray150_front_module_backfill_ready_for_commit
-decision: commit_two_visible_project_backfill_files
-summary: "After completing Blender source/blender editors group2 as cbcad36013, source/blender visible untracked count is 0. Global narrow visible-untracked probe showed two project-owned files: one Sunray150 front-module object probe script and one JSON result. These are small project artifacts, not a large external tree. Gates found no files over 100 MB and no high-confidence credential hits. Commit them as a small backfill so global visible untracked returns to zero."
-evidence: "previous_commit=cbcad36013; source_blender_visible_untracked=0; global_visible_untracked_after_previous_commit=2; files=Results/unreal_scene_mapping/sunray150_front_module_objects_20260603.json,Scripts/UE5/assets/probe_sunray150_front_module_objects.py; total_size_bytes=70164; over_100MB=none; credential_hits=none; cached_diff=0_before_backfill; index_lock=absent; broad_status_used=false; broad_add_used=false; git_add_A_used=false; ide_hiding_settings_added=false"
-risks: "Blender source/blender is fully drained, but other ignored reference trees may remain for later split admission. Push is still deferred; branch is ahead of upstream by many local commits."
-next_action: "Stage only these two files plus this result packet; run staged gates; commit with message results: add sunray150 front module probe."
+status: blender_source_blender_rule_compression_ready_for_commit
+decision: compress_completed_source_blender_split_rules
+summary: "After source/blender subdirectories were admitted and the latest backfill commit was 88030fda26, replaced the long temporary source/blender unignore matrix with a single completed-tree rule: !References/Blender/blender/source/blender/**. The compression exposed exactly one missed top-level source file, References/Blender/blender/source/blender/CMakeLists.txt. It is 7641 bytes and passed size and high-confidence credential checks. Commit this as a small cleanup/backfill batch."
+evidence: "previous_commit=88030fda26; source_blender_visible_untracked_before_compression=0; source_blender_visible_untracked_after_compression=1; exposed_file=References/Blender/blender/source/blender/CMakeLists.txt; exposed_file_size_bytes=7641; over_100MB=none; credential_hits=none; cached_diff_before_stage=0; index_lock=absent; broad_status_used=false; broad_add_used=false; git_add_A_used=false; ide_hiding_settings_added=false"
+risks: "Other temporary Blender/PX4 split rules may remain and should be audited in small cleanup batches. Push is still deferred; branch is ahead of upstream by many local commits."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, Results/agent_packets/COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603.yaml, and References/Blender/blender/source/blender/CMakeLists.txt; run staged gates; commit with message refs: compress blender source ignore rules."
 needs_human: false
 blocked_reason: "not_blocked"
