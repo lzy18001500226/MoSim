@@ -126,13 +126,6 @@ References/UnrealScenes/
 #
 # Large reference families are staged deliberately. Keep them ignored by
 # default, then temporarily unignore one reviewed batch when committing it.
-References/Agent/
-!References/Agent/
-References/Agent/*
-!References/Agent/Skills/
-References/Agent/Skills/*
-!References/Agent/Skills/awesome-codex-skills/
-!References/Agent/Skills/awesome-codex-skills/**
 References/Agent/Skills/awesome-opencode/dist/
 References/Agent/**/.git/
 References/Agent/**/__pycache__/

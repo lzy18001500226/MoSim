@@ -1014,6 +1014,21 @@ proposed_batches:
   - "batch_123_removed_rule=!References/Agent/Skills/AutoSkill/**"
   - "batch_123_removed_rule=References/Agent/Skills/AutoSkill/data/*"
   - "batch_123_removed_rule=References/Agent/Skills/AutoSkill/data/eval/"
+  - "batch_124_candidate=References/Agent"
+  - "batch_124_head_vs_upstream_before=123 0"
+  - "batch_124_index_lock=absent"
+  - "batch_124_candidate_tracked_files=100240"
+  - "batch_124_candidate_untracked_files=0"
+  - "batch_124_compare_candidate=References/Agent/Skills/awesome-codex-skills"
+  - "batch_124_compare_candidate_tracked_files=1101"
+  - "batch_124_compare_candidate_untracked_files=0"
+  - "batch_124_removed_rule=References/Agent/"
+  - "batch_124_removed_rule=!References/Agent/"
+  - "batch_124_removed_rule=References/Agent/*"
+  - "batch_124_removed_rule=!References/Agent/Skills/"
+  - "batch_124_removed_rule=References/Agent/Skills/*"
+  - "batch_124_removed_rule=!References/Agent/Skills/awesome-codex-skills/"
+  - "batch_124_removed_rule=!References/Agent/Skills/awesome-codex-skills/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -1022,8 +1037,8 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this one-hundred-twenty-third `.gitignore` drain batch together with the
-  ledger and result packet, then audit and remove remaining `References/Agent`
-  top-level split-routing framework if it has no untracked spill.
+  Commit this one-hundred-twenty-fourth `.gitignore` drain batch together with the
+  ledger and result packet, then perform a full `.gitignore` audit from top to
+  bottom and confirm only long-term ignores remain.
 needs_human: false
 blocked_reason: ""
