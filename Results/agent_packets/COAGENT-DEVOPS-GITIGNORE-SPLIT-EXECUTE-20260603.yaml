@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_main_extern_bullet2_ready_for_commit
-decision: admit_blender_main_extern_bullet2
-summary: "Committed Blender extern group 1 as 50544440a8. Selected References/Blender/blender/extern/bullet2 as the second extern batch. It has 439 files, under the 1000-file ceiling. Gates found no files over 100 MB, no nested .git, and no high-confidence secret/LFS hits. .gitignore now opens extern/bullet2/**, completing the extern top-level split."
-evidence: "blender_extern_group1_commit=50544440a8; candidate=References/Blender/blender/extern/bullet2; files_on_disk=439; over_100MB=none; nested_git=none; high_confidence_secret_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
-risks: "No blocker for this 439-file external dependency source slice. Push remains deferred."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, References/Blender/blender/extern/bullet2, and this result packet; commit this batch; then recheck visible untracked count."
+status: sunray150_mid360_probe_backfill_ready_for_commit
+decision: commit_small_visible_probe_artifacts
+summary: "Committed Blender extern bullet2 as c313914bfb. Post-commit narrow probes showed cached diff 0, upstream relation 36 0, .git/index.lock absent, and 2 visible untracked files. The files are Scripts/UE5/assets/probe_sunray150_mid360_area_objects.py and Results/unreal_scene_mapping/sunray150_mid360_area_objects_20260603.json. Gates found no files over 100 MB and no high-confidence secret hits; file sizes are about 2 KB and 20 KB. This is a small visible-surface backfill, not a broad add."
+evidence: "blender_extern_bullet2_commit=c313914bfb; post_commit_visible_untracked=2; post_commit_cached_diff=0; upstream_ahead_behind=36 0; index_lock=absent; over_100MB=none; high_confidence_secret_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
+risks: "No blocker for this 2-file backfill. Push remains deferred."
+next_action: "Stage only the two visible files plus ledger and result packet; commit the backfill; then continue Blender main split."
 needs_human: false
 blocked_reason: "not_blocked"
