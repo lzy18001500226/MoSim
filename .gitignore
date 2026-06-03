@@ -370,6 +370,8 @@ References/PX4/PX4/boards/*
 !References/PX4/PX4/boards/airmind/
 !References/PX4/PX4/boards/airmind/**
 References/PX4/PX4/boards/airmind/mindpx-v2/firmware.prototype
+!References/PX4/PX4/boards/ark/
+!References/PX4/PX4/boards/ark/**
 !References/PX4/PX4/boards/atl/
 !References/PX4/PX4/boards/atl/**
 !References/PX4/PX4/boards/av/
@@ -415,6 +417,9 @@ References/PX4/PX4/boards/cubepilot/io-v2/firmware.prototype
 !References/PX4/PX4/boards/narinfc/**
 !References/PX4/PX4/boards/omnibus/
 !References/PX4/PX4/boards/omnibus/**
+!References/PX4/PX4/boards/px4/
+!References/PX4/PX4/boards/px4/**
+References/PX4/PX4/boards/px4/io-v2/firmware.prototype
 !References/PX4/PX4/boards/holybro/
 !References/PX4/PX4/boards/holybro/**
 !References/PX4/PX4/boards/nxp/
