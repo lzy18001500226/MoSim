@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_material_remaining_subdirs_ready_for_commit
-decision: admit_blender_material_remaining_subdirs
-summary: "Committed the Material Maker doc slice as 4e9a833504. Current narrow probes showed visible untracked 0, cached diff 0, upstream relation 29 0, and .git/index.lock absent. Selected the remaining References/Blender/material/material_maker subdirectories excluding the already committed doc subtree as one bounded slice. This batch totals 796 files, under the 1000-file ceiling. Gates found no files over 100 MB, no nested .git, and no high-confidence secret/LFS hits. .gitignore now opens library, meshes, environments, misc, fonts, locale, theme, examples, icons, nodes, tools, widgets, windows, and panels under material_maker."
-evidence: "material_doc_commit=4e9a833504; pre_slice_visible_untracked=0; pre_slice_cached_diff=0; upstream_ahead_behind_before_slice=29 0; index_lock=absent; candidates=remaining References/Blender/material/material_maker subdirs excluding doc; files_on_disk=796; over_100MB=none; nested_git=none; high_confidence_secret_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
-risks: "This is a 796-file external reference slice, below the 1000-file batch ceiling. Push remains deferred; branch is increasingly ahead of upstream."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, the remaining material_maker subdirectories, and this result packet; commit this batch; then recheck visible untracked count."
+status: blender_material_final_cleanup_ready_for_commit
+decision: finish_blender_material_tree_opening
+summary: "Committed the remaining Material Maker subdirectories as 70e0ad42cd. Current narrow probes showed visible untracked 0, cached diff 0, upstream relation 30 0, and .git/index.lock absent. Whole-tree gates for References/Blender/material found 2834 files total, no files over 100 MB, no nested .git, and no high-confidence secret/LFS hits. Because prior batches already committed the large subtrees, the final cleanup replaces the temporary subdir matrix with !References/Blender/material/** and admits only the remaining small top-level files and small directories."
+evidence: "material_remaining_subdirs_commit=70e0ad42cd; pre_slice_visible_untracked=0; pre_slice_cached_diff=0; upstream_ahead_behind_before_slice=30 0; index_lock=absent; candidate=References/Blender/material final cleanup; total_tree_files=2834; over_100MB=none; nested_git=none; high_confidence_secret_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
+risks: "This cleanup relies on prior committed sub-batches to keep the new visible surface under 1000. Push remains deferred; branch is increasingly ahead of upstream."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, References/Blender/material, and this result packet; commit the final Material Maker cleanup; then verify visible untracked remains 0."
 needs_human: false
 blocked_reason: "not_blocked"
