@@ -490,10 +490,14 @@ References/PX4/PX4/src/modules/*
 !References/PX4/PX4/src/modules/battery_status/**
 !References/PX4/PX4/src/modules/camera_feedback/
 !References/PX4/PX4/src/modules/camera_feedback/**
+!References/PX4/PX4/src/modules/commander/
+!References/PX4/PX4/src/modules/commander/**
 !References/PX4/PX4/src/modules/control_allocator/
 !References/PX4/PX4/src/modules/control_allocator/**
 !References/PX4/PX4/src/modules/dataman/
 !References/PX4/PX4/src/modules/dataman/**
+!References/PX4/PX4/src/modules/ekf2/
+!References/PX4/PX4/src/modules/ekf2/**
 !References/PX4/PX4/src/modules/esc_battery/
 !References/PX4/PX4/src/modules/esc_battery/**
 !References/PX4/PX4/src/modules/events/
@@ -533,6 +537,8 @@ References/PX4/PX4/src/modules/gyro_fft/
 !References/PX4/PX4/src/modules/logger/**
 !References/PX4/PX4/src/modules/mag_bias_estimator/
 !References/PX4/PX4/src/modules/mag_bias_estimator/**
+!References/PX4/PX4/src/modules/mavlink/
+!References/PX4/PX4/src/modules/mavlink/**
 !References/PX4/PX4/src/modules/manual_control/
 !References/PX4/PX4/src/modules/manual_control/**
 !References/PX4/PX4/src/modules/mc_att_control/
@@ -569,6 +575,8 @@ References/PX4/PX4/src/modules/gyro_fft/
 !References/PX4/PX4/src/modules/rover_mecanum/**
 !References/PX4/PX4/src/modules/sensors/
 !References/PX4/PX4/src/modules/sensors/**
+!References/PX4/PX4/src/modules/simulation/
+!References/PX4/PX4/src/modules/simulation/**
 !References/PX4/PX4/src/modules/spacecraft/
 !References/PX4/PX4/src/modules/spacecraft/**
 !References/PX4/PX4/src/modules/task_watchdog/
