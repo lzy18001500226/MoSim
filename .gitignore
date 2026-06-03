@@ -469,6 +469,8 @@ References/Blender/blender/source/blender/*
 !References/Blender/blender/source/blender/nodes/**
 !References/Blender/blender/source/blender/draw/
 !References/Blender/blender/source/blender/draw/**
+!References/Blender/blender/source/blender/gpu/
+!References/Blender/blender/source/blender/gpu/**
 !References/Blender/blender/source/creator/
 !References/Blender/blender/source/creator/**
 !References/Blender/blender/.clang-format

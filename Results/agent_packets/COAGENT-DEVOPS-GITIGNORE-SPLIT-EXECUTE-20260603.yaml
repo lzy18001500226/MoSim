@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_source_blender_draw_ready_for_commit
-decision: admit_blender_source_blender_draw
-summary: "After committing the Sunray150 material audit backfill as bb81e81ff0, selected the next bounded Blender source slice: source/blender/draw. The group produced 698 visible files, under the 1000-file batch ceiling. Gates found no files over 100 MB, no nested .git directories, and no high-confidence credential hits. .gitignore now opens only this additional source/blender subdirectory; gpu and editors stay isolated."
-evidence: "previous_commit=bb81e81ff0; selected_dir=draw; candidate_visible_file_count=698; over_100MB=none; nested_git=none; credential_hits=none; remaining_dirs=gpu,editors; broad_status_used=false; broad_add_used=false; git_add_A_used=false; ide_hiding_settings_added=false"
-risks: "Remaining Blender source directories must still be admitted in separate batches. editors has 1193 files and must be split below the directory level. Push is still deferred; branch is ahead of upstream by many local commits."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, Results/agent_packets/COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603.yaml, and draw; run staged gates; commit with message refs: add blender source draw."
+status: blender_source_blender_gpu_ready_for_commit
+decision: admit_blender_source_blender_gpu
+summary: "After committing draw as bc621f5a88, selected the next bounded Blender source slice: source/blender/gpu. The group produced 703 visible files, under the 1000-file batch ceiling. Gates found no files over 100 MB, no nested .git directories, and no high-confidence credential hits. .gitignore now opens only this additional source/blender subdirectory; editors stays isolated because it is over the batch ceiling."
+evidence: "previous_commit=bc621f5a88; selected_dir=gpu; candidate_visible_file_count=703; over_100MB=none; nested_git=none; credential_hits=none; remaining_dir=editors; editors_count=1193; broad_status_used=false; broad_add_used=false; git_add_A_used=false; ide_hiding_settings_added=false"
+risks: "Remaining Blender source directory editors has 1193 files and must be split below the directory level. Push is still deferred; branch is ahead of upstream by many local commits."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, Results/agent_packets/COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603.yaml, and gpu; run staged gates; commit with message refs: add blender source gpu."
 needs_human: false
 blocked_reason: "not_blocked"
