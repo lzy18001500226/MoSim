@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: ros_mcp_images_batch_ready_for_commit
-decision: admit_reviewed_ros_mcp_image_slice
-summary: "After committing Scripts/UE5/assets as 5e6908a980, continued the corrected Git-layer-only split execution. Current narrow probes showed unignored files 0, cached diff 0, and upstream relation 18 0. Selected ROS-MCP documentation/example images as the next small slice. Removed only Docs/Skills/ROS-MCP/docs/images/ and Docs/Skills/ROS-MCP/examples/2_gemini/image/ from .gitignore. Recheck showed 9 visible image files. Checks found no files over 100 MB, no LFS pointer markers, and no high-confidence secret hits."
-evidence: "scripts_assets_commit=5e6908a980; upstream_ahead_behind_before_slice=18 0; unignored_before_slice=0; cached_diff_before_slice=0; candidate=Docs/Skills/ROS-MCP images; admitted_untracked_files=9; largest_file_about=16.5MB; over_100MB=none; lfs_pointer_markers=none; high_confidence_secret_hits=none; ide_hiding_settings_added=false"
-risks: "This slice admits documentation images including one GIF about 16.5 MB, below GitHub hard limit. Push is not attempted in this phase."
-next_action: "Commit this 9-file ROS-MCP image batch plus .gitignore, ledger, and result packet. Then audit remaining ignore rules for small real project slices versus true generated/local artifacts."
+status: small_source_test_image_batch_ready_for_commit
+decision: admit_remaining_small_project_files_from_explicit_temp_ignores
+summary: "After committing ROS-MCP images as f4a0b6ad14, continued the corrected Git-layer-only split execution. Current narrow probes showed unignored files 0, cached diff 0, and upstream relation 19 0. Audited remaining small explicit ignore entries and removed the rules for one QuadrotorControllerBlocks model file, image/AGENTS, two Scripts/mworks files, and ten Scripts/tests files. Recheck showed 25 visible files. Checks found no files over 100 MB and no LFS pointer, merge-conflict, or high-confidence secret hits."
+evidence: "ros_mcp_images_commit=f4a0b6ad14; upstream_ahead_behind_before_slice=19 0; unignored_before_slice=0; cached_diff_before_slice=0; candidate=remaining_small_explicit_ignores; admitted_untracked_files=25; over_100MB=none; lfs_pointer_markers=none; conflict_markers=none; high_confidence_secret_hits=none; ide_hiding_settings_added=false"
+risks: "This slice admits small source/test/image files that were still behind temporary ignore rules. Push is not attempted in this phase."
+next_action: "Commit this 25-file small source/test/image batch plus .gitignore, ledger, and result packet. Then audit remaining ignore rules for large/reference/runtime families only."
 needs_human: false
 blocked_reason: "not_blocked"

@@ -285,13 +285,11 @@ References/PX4/**/*.7z
 References/PX4/**/*.tar
 References/PX4/**/*.tar.gz
 MoSim.code-workspace
-Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo_SIL_Constant.mo
 # Source assets are project inputs and should be admitted in reviewed small
 # batches. Keep Blender backup files local-only.
 UE5/MoSimSceneLibrary/SourceAssets/**/*.blend1
 Scripts/UE5/assets/__pycache__/
 Scripts/UE5/assets/**/*.pyc
-image/AGENTS/
 
 # Misgenerated Windows absolute-path directory inside the repository. Keep it
 # isolated at Git layer; do not hide it through IDE settings.
@@ -300,15 +298,3 @@ Results/diagnostics/
 Results/agent_runs/
 Results/unreal_scene_review/
 Results/unreal_scene_mapping/*probe*.json
-Scripts/mworks/check_codegen_sil_equivalence.py
-Scripts/mworks/check_codegen_runtime.py
-Scripts/tests/test_dense_lidar_cpp_contract.py
-Scripts/tests/test_factory_fastlio_mid360_headless.py
-Scripts/tests/test_factory_uav_platform_review.py
-Scripts/tests/test_fastlio_factory_failure_diagnosis.py
-Scripts/tests/test_fastlio_input_contract.py
-Scripts/tests/test_fastlio_runtime_candidates.py
-Scripts/tests/test_mworks_codegen_runtime.py
-Scripts/tests/test_mworks_codegen_sil_equivalence.py
-Scripts/tests/test_realstack_miniloop_gate.py
-Scripts/tests/test_spark_fastlio_livox_patch_readiness.py
