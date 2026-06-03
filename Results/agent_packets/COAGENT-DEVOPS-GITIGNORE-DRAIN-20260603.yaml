@@ -799,6 +799,13 @@ proposed_batches:
   - "batch_102_compare_candidate_file_count=2844"
   - "batch_102_removed_rule=!References/Agent/Skills/openai-skills/skills/.curated/"
   - "batch_102_removed_rule=References/Agent/Skills/openai-skills/skills/.curated/*"
+  - "batch_103_candidate=References/Agent/Skills/ECC"
+  - "batch_103_head_vs_upstream_before=102 0"
+  - "batch_103_index_lock=absent"
+  - "batch_103_candidate_tracked_files=2844"
+  - "batch_103_candidate_untracked_files=0"
+  - "batch_103_removed_rule=!References/Agent/Skills/ECC/"
+  - "batch_103_removed_rule=!References/Agent/Skills/ECC/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -807,8 +814,9 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this one-hundred-second `.gitignore` drain batch together with the ledger
-  and result packet, then re-scan `.gitignore` for the next smallest remaining
-  temporary split-routing pair and continue the drain without widening scope.
+  Commit this one-hundred-third `.gitignore` drain batch together with the ledger
+  and result packet, then continue draining `openai-skills`, `AutoSkill`, and
+  `Docs/Skills/Unreal` residual split-routing chains before the final full
+  `.gitignore` audit.
 needs_human: false
 blocked_reason: ""
