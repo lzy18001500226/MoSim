@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_intern_non_cycles_ready_for_commit
-decision: admit_blender_intern_non_cycles
-summary: "Committed the release clean group as db7eea81ee. Selected all References/Blender/blender/intern top-level directories except cycles as the next bounded slice. This group has 625 files, under the 1000-file ceiling. Gates found no files over 100 MB, no nested .git, no LFS pointer hits, and no credential hits. .gitignore now opens these intern directories while keeping intern/cycles isolated for a separate 932-file batch."
-evidence: "release_clean_group_commit=db7eea81ee; candidate=References/Blender/blender/intern non-cycles; files_on_disk=625; over_100MB=none; nested_git=none; lfs_pointer_hits=none; credential_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
-risks: "intern/cycles remains isolated for a later 932-file batch. Push remains deferred."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, selected intern non-cycles dirs, and this result packet; commit this batch; then process intern/cycles."
+status: blender_intern_cycles_ready_for_commit
+decision: admit_blender_intern_cycles
+summary: "Committed Blender intern non-cycles as 80aaff5382. Selected References/Blender/blender/intern/cycles as the second intern batch. It has 932 files, under the 1000-file ceiling. Gates found no files over 100 MB, no nested .git, no LFS pointer hits, and no credential hits. .gitignore now opens intern/cycles/**, completing the intern top-level split."
+evidence: "intern_non_cycles_commit=80aaff5382; candidate=References/Blender/blender/intern/cycles; files_on_disk=932; over_100MB=none; nested_git=none; lfs_pointer_hits=none; credential_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
+risks: "No blocker for this 932-file intern source slice. Push remains deferred."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, References/Blender/blender/intern/cycles, and this result packet; commit this batch; then recheck visible untracked count."
 needs_human: false
 blocked_reason: "not_blocked"
