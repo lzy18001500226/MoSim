@@ -455,13 +455,8 @@ References/PX4/PX4/boards/saam/saampixv1_1/firmware.prototype
 !References/PX4/PX4/launch/**
 !References/PX4/PX4/msg/
 !References/PX4/PX4/msg/**
-References/PX4/PX4/.github/instructions/docs.en.instructions.md
-References/PX4/PX4/msg/ActuatorTest.msg
-References/PX4/PX4/msg/SensorBaro.msg
-References/PX4/PX4/msg/translation_node/translations/translation_home_position_v1.h
 !References/PX4/PX4/platforms/
 !References/PX4/PX4/platforms/**
-References/PX4/PX4/platforms/nuttx/Debug/NuttX
 !References/PX4/PX4/posix-configs/
 !References/PX4/PX4/posix-configs/**
 !References/PX4/PX4/ROMFS/
@@ -516,12 +511,6 @@ References/PX4/PX4/src/drivers/*
 !References/PX4/PX4/src/drivers/imu/**
 !References/PX4/PX4/src/drivers/ins/
 !References/PX4/PX4/src/drivers/ins/**
-References/PX4/PX4/src/drivers/ins/ilabs/libilabs/src/sensor.cpp
-References/PX4/PX4/src/drivers/ins/vectornav/libvnc/include/vn/math/vector.h
-References/PX4/PX4/src/drivers/ins/vectornav/libvnc/include/vn/protocol/spi.h
-References/PX4/PX4/src/drivers/ins/vectornav/libvnc/include/vn/sensors.h
-References/PX4/PX4/src/drivers/ins/vectornav/libvnc/src/vn/protocol/upack.c
-References/PX4/PX4/src/drivers/ins/vectornav/libvnc/src/vn/protocol/upackf.c
 !References/PX4/PX4/src/drivers/irlock/
 !References/PX4/PX4/src/drivers/irlock/**
 !References/PX4/PX4/src/drivers/lights/
@@ -536,7 +525,6 @@ References/PX4/PX4/src/drivers/ins/vectornav/libvnc/src/vn/protocol/upackf.c
 !References/PX4/PX4/src/drivers/osd/**
 !References/PX4/PX4/src/drivers/pca9685_pwm_out/
 !References/PX4/PX4/src/drivers/pca9685_pwm_out/**
-References/PX4/PX4/src/drivers/pca9685_pwm_out/main.cpp
 !References/PX4/PX4/src/drivers/power_monitor/
 !References/PX4/PX4/src/drivers/power_monitor/**
 !References/PX4/PX4/src/drivers/pps_capture/
@@ -577,8 +565,6 @@ References/PX4/PX4/src/drivers/pca9685_pwm_out/main.cpp
 !References/PX4/PX4/src/drivers/telemetry/**
 !References/PX4/PX4/src/drivers/uavcan/
 !References/PX4/PX4/src/drivers/uavcan/**
-References/PX4/PX4/src/drivers/uavcan/libdronecan/libuavcan/dsdl_compiler/libuavcan_dsdl_compiler/data_type_template.tmpl
-References/PX4/PX4/src/drivers/uavcan/libdronecan/libuavcan/test/dsdl_test/root_ns_a/32768.EmptyMessage.uavcan
 !References/PX4/PX4/src/drivers/temperature_sensor/
 !References/PX4/PX4/src/drivers/temperature_sensor/**
 !References/PX4/PX4/src/drivers/test_ppm/
