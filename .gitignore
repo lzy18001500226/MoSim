@@ -247,6 +247,8 @@ References/Blender/
 References/Blender/*
 !References/Blender/armorpaint-main/
 !References/Blender/armorpaint-main/**
+!References/Blender/xatlas/
+!References/Blender/xatlas/**
 References/PX4/
 !References/PX4/
 References/PX4/*
