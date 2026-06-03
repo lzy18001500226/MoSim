@@ -1231,6 +1231,15 @@ Large batch default strategy:
 7. Record skipped paths and the next batch in the ledger.
 ```
 
+Do not treat IDE visibility settings as a substitute for this strategy.
+Specifically, do not solve a huge untracked surface by setting
+`git.showUntrackedChanges=false`, `git.showIgnoredFiles=false`,
+`files.exclude`, `files.watcherExclude`, or broad `search.exclude` entries for
+the incoming trees. Those settings hide evidence from the operator and can make
+the file explorer/source-control surface misleading. Use `.gitignore` or a
+project-local exclude file for temporary Git isolation, then drain the ignore
+rules with reviewed small batches.
+
 This strategy is mandatory when any of these are true:
 
 ```text
