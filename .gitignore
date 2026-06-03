@@ -288,7 +288,9 @@ Docs/Skills/ROS-MCP/docs/images/
 Docs/Skills/ROS-MCP/examples/2_gemini/image/
 MoSim.code-workspace
 Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo_SIL_Constant.mo
-UE5/MoSimSceneLibrary/SourceAssets/
+# Source assets are project inputs and should be admitted in reviewed small
+# batches. Keep Blender backup files local-only.
+UE5/MoSimSceneLibrary/SourceAssets/**/*.blend1
 Scripts/UE5/assets/
 image/AGENTS/
 

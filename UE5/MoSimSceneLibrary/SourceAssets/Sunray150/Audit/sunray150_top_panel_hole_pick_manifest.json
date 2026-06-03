@@ -1,0 +1,1200 @@
+{
+  "created_at": "2026-06-03 04:38:45",
+  "purpose": "Manual selection of TOP_PANNEL hole centers for MID-360 mounting. Uses boundary loops from the DAE carbon plate, not screw objects.",
+  "sources": {
+    "dae_aircraft": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\150.dae",
+    "standalone_mid360": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae"
+  },
+  "panel_object": "TOP_PANNEL.1\\TOP | TOP_PANNEL.1\\TOPMesh",
+  "panel_offset": [
+    -0.11999999731779099,
+    0.0,
+    0.0
+  ],
+  "radar_offset": [
+    0.14000000059604645,
+    0.0,
+    0.0
+  ],
+  "H_top_panel_hole_candidates": [
+    {
+      "label": "H01",
+      "center_m": [
+        0.01525,
+        0.092,
+        0.049
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H02",
+      "center_m": [
+        -0.01525,
+        0.092,
+        0.049
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H03",
+      "center_m": [
+        -0.01525,
+        0.092,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H04",
+      "center_m": [
+        0.01525,
+        0.092,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H05",
+      "center_m": [
+        0.008997,
+        0.082922,
+        0.050657
+      ],
+      "size_m": [
+        0.010596,
+        0.010493,
+        0.000354
+      ],
+      "boundary_vertex_count": 4
+    },
+    {
+      "label": "H06",
+      "center_m": [
+        -0.01484,
+        0.082214,
+        0.04908
+      ],
+      "size_m": [
+        0.020838,
+        0.015493,
+        0.0005
+      ],
+      "boundary_vertex_count": 65
+    },
+    {
+      "label": "H07",
+      "center_m": [
+        0.015325,
+        0.082075,
+        0.05091
+      ],
+      "size_m": [
+        0.020838,
+        0.015493,
+        0.0005
+      ],
+      "boundary_vertex_count": 65
+    },
+    {
+      "label": "H08",
+      "center_m": [
+        0.016054,
+        0.081537,
+        0.049118
+      ],
+      "size_m": [
+        0.020838,
+        0.015493,
+        0.0005
+      ],
+      "boundary_vertex_count": 80
+    },
+    {
+      "label": "H09",
+      "center_m": [
+        -0.015613,
+        0.080923,
+        0.050924
+      ],
+      "size_m": [
+        0.020838,
+        0.015493,
+        0.0005
+      ],
+      "boundary_vertex_count": 67
+    },
+    {
+      "label": "H10",
+      "center_m": [
+        0.022503,
+        0.080585,
+        0.050657
+      ],
+      "size_m": [
+        0.010596,
+        0.010493,
+        0.000354
+      ],
+      "boundary_vertex_count": 4
+    },
+    {
+      "label": "H11",
+      "center_m": [
+        -0.022529,
+        0.080538,
+        0.050383
+      ],
+      "size_m": [
+        0.010752,
+        0.010837,
+        0.001418
+      ],
+      "boundary_vertex_count": 8
+    },
+    {
+      "label": "H12",
+      "center_m": [
+        -0.033991,
+        0.076074,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H13",
+      "center_m": [
+        -0.033991,
+        0.076074,
+        0.049
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H14",
+      "center_m": [
+        0.033991,
+        0.076074,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H15",
+      "center_m": [
+        0.033991,
+        0.076074,
+        0.049
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H16",
+      "center_m": [
+        -0.001516,
+        0.0716,
+        0.050805
+      ],
+      "size_m": [
+        0.033338,
+        0.017,
+        0.0015
+      ],
+      "boundary_vertex_count": 81
+    },
+    {
+      "label": "H17",
+      "center_m": [
+        0.000551,
+        0.071039,
+        0.049139
+      ],
+      "size_m": [
+        0.033338,
+        0.017,
+        0.0005
+      ],
+      "boundary_vertex_count": 87
+    },
+    {
+      "label": "H18",
+      "center_m": [
+        0.001947,
+        0.064519,
+        0.050567
+      ],
+      "size_m": [
+        0.029138,
+        0.000311,
+        0.000354
+      ],
+      "boundary_vertex_count": 8
+    },
+    {
+      "label": "H19",
+      "center_m": [
+        0.017942,
+        0.05643,
+        0.049
+      ],
+      "size_m": [
+        0.006,
+        0.0059,
+        0.0
+      ],
+      "boundary_vertex_count": 19
+    },
+    {
+      "label": "H20",
+      "center_m": [
+        -0.018,
+        0.056283,
+        0.0505
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H21",
+      "center_m": [
+        -0.018,
+        0.056283,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H22",
+      "center_m": [
+        -0.018,
+        0.056283,
+        0.049
+      ],
+      "size_m": [
+        0.006,
+        0.0059,
+        0.0
+      ],
+      "boundary_vertex_count": 18
+    },
+    {
+      "label": "H23",
+      "center_m": [
+        0.018,
+        0.056283,
+        0.0505
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H24",
+      "center_m": [
+        0.018,
+        0.056283,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H25",
+      "center_m": [
+        -0.000196,
+        0.051843,
+        0.049068
+      ],
+      "size_m": [
+        0.020728,
+        0.014739,
+        0.0005
+      ],
+      "boundary_vertex_count": 59
+    },
+    {
+      "label": "H26",
+      "center_m": [
+        8.9e-05,
+        0.050502,
+        0.050904
+      ],
+      "size_m": [
+        0.020728,
+        0.014739,
+        0.0005
+      ],
+      "boundary_vertex_count": 67
+    },
+    {
+      "label": "H27",
+      "center_m": [
+        0.007516,
+        0.049684,
+        0.050523
+      ],
+      "size_m": [
+        0.008104,
+        0.010113,
+        9.1e-05
+      ],
+      "boundary_vertex_count": 4
+    },
+    {
+      "label": "H28",
+      "center_m": [
+        -0.016164,
+        0.047776,
+        0.050704
+      ],
+      "size_m": [
+        0.018818,
+        0.023107,
+        0.000465
+      ],
+      "boundary_vertex_count": 11
+    },
+    {
+      "label": "H29",
+      "center_m": [
+        0.015849,
+        0.038921,
+        0.049138
+      ],
+      "size_m": [
+        0.0235,
+        0.031526,
+        0.0005
+      ],
+      "boundary_vertex_count": 81
+    },
+    {
+      "label": "H30",
+      "center_m": [
+        0.016075,
+        0.038884,
+        0.050874
+      ],
+      "size_m": [
+        0.0235,
+        0.031526,
+        0.0005
+      ],
+      "boundary_vertex_count": 78
+    },
+    {
+      "label": "H31",
+      "center_m": [
+        -0.016284,
+        0.037645,
+        0.049151
+      ],
+      "size_m": [
+        0.0235,
+        0.031526,
+        0.0005
+      ],
+      "boundary_vertex_count": 80
+    },
+    {
+      "label": "H32",
+      "center_m": [
+        -0.016504,
+        0.036511,
+        0.050891
+      ],
+      "size_m": [
+        0.0235,
+        0.031526,
+        0.0005
+      ],
+      "boundary_vertex_count": 70
+    },
+    {
+      "label": "H33",
+      "center_m": [
+        0.030749,
+        0.016168,
+        0.050682
+      ],
+      "size_m": [
+        0.008598,
+        0.010516,
+        0.000465
+      ],
+      "boundary_vertex_count": 9
+    },
+    {
+      "label": "H34",
+      "center_m": [
+        0.000848,
+        0.013535,
+        0.049079
+      ],
+      "size_m": [
+        0.023689,
+        0.013804,
+        0.0005
+      ],
+      "boundary_vertex_count": 67
+    },
+    {
+      "label": "H35",
+      "center_m": [
+        -0.027264,
+        0.01319,
+        0.050874
+      ],
+      "size_m": [
+        0.022021,
+        0.015254,
+        0.0005
+      ],
+      "boundary_vertex_count": 84
+    },
+    {
+      "label": "H36",
+      "center_m": [
+        -0.000356,
+        0.013163,
+        0.050862
+      ],
+      "size_m": [
+        0.023689,
+        0.013804,
+        0.0005
+      ],
+      "boundary_vertex_count": 85
+    },
+    {
+      "label": "H37",
+      "center_m": [
+        -0.024892,
+        0.013033,
+        0.049084
+      ],
+      "size_m": [
+        0.022021,
+        0.015254,
+        0.0005
+      ],
+      "boundary_vertex_count": 71
+    },
+    {
+      "label": "H38",
+      "center_m": [
+        -0.019327,
+        0.013028,
+        0.050537
+      ],
+      "size_m": [
+        0.008584,
+        0.010796,
+        0.000184
+      ],
+      "boundary_vertex_count": 5
+    },
+    {
+      "label": "H39",
+      "center_m": [
+        0.025258,
+        0.013009,
+        0.050893
+      ],
+      "size_m": [
+        0.022021,
+        0.015254,
+        0.0005
+      ],
+      "boundary_vertex_count": 79
+    },
+    {
+      "label": "H40",
+      "center_m": [
+        0.019801,
+        0.012335,
+        0.049348
+      ],
+      "size_m": [
+        0.008988,
+        0.010671,
+        0.000465
+      ],
+      "boundary_vertex_count": 9
+    },
+    {
+      "label": "H41",
+      "center_m": [
+        0.027562,
+        0.012228,
+        0.049113
+      ],
+      "size_m": [
+        0.022021,
+        0.015254,
+        0.0005
+      ],
+      "boundary_vertex_count": 81
+    },
+    {
+      "label": "H42",
+      "center_m": [
+        -0.035311,
+        0.010496,
+        0.049352
+      ],
+      "size_m": [
+        0.008584,
+        0.010774,
+        0.000465
+      ],
+      "boundary_vertex_count": 8
+    },
+    {
+      "label": "H43",
+      "center_m": [
+        -0.018,
+        0.008283,
+        0.049
+      ],
+      "size_m": [
+        0.006,
+        0.0059,
+        0.0
+      ],
+      "boundary_vertex_count": 18
+    },
+    {
+      "label": "H44",
+      "center_m": [
+        0.018,
+        0.008283,
+        0.049
+      ],
+      "size_m": [
+        0.006,
+        0.0059,
+        0.0
+      ],
+      "boundary_vertex_count": 18
+    },
+    {
+      "label": "H45",
+      "center_m": [
+        -0.018,
+        0.008283,
+        0.0505
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H46",
+      "center_m": [
+        -0.018,
+        0.008283,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H47",
+      "center_m": [
+        0.018,
+        0.008283,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H48",
+      "center_m": [
+        0.018,
+        0.008283,
+        0.0505
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H49",
+      "center_m": [
+        0.002883,
+        0.007432,
+        0.049401
+      ],
+      "size_m": [
+        0.019286,
+        0.000237,
+        0.000354
+      ],
+      "boundary_vertex_count": 10
+    },
+    {
+      "label": "H50",
+      "center_m": [
+        0.045,
+        0.0,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H51",
+      "center_m": [
+        -0.045,
+        0.0,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H52",
+      "center_m": [
+        -0.045,
+        0.0,
+        0.049
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H53",
+      "center_m": [
+        0.045,
+        0.0,
+        0.049
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H54",
+      "center_m": [
+        0.026157,
+        -0.004861,
+        0.049056
+      ],
+      "size_m": [
+        0.014238,
+        0.016438,
+        0.0005
+      ],
+      "boundary_vertex_count": 61
+    },
+    {
+      "label": "H55",
+      "center_m": [
+        -0.025565,
+        -0.00673,
+        0.049095
+      ],
+      "size_m": [
+        0.014238,
+        0.016438,
+        0.0005
+      ],
+      "boundary_vertex_count": 72
+    },
+    {
+      "label": "H56",
+      "center_m": [
+        -0.025554,
+        -0.006777,
+        0.050898
+      ],
+      "size_m": [
+        0.014238,
+        0.016438,
+        0.0005
+      ],
+      "boundary_vertex_count": 74
+    },
+    {
+      "label": "H57",
+      "center_m": [
+        0.024782,
+        -0.007162,
+        0.05094
+      ],
+      "size_m": [
+        0.014238,
+        0.016438,
+        0.0005
+      ],
+      "boundary_vertex_count": 57
+    },
+    {
+      "label": "H58",
+      "center_m": [
+        0.028219,
+        -0.008943,
+        0.04941
+      ],
+      "size_m": [
+        0.009797,
+        0.012223,
+        0.000354
+      ],
+      "boundary_vertex_count": 8
+    },
+    {
+      "label": "H59",
+      "center_m": [
+        -0.033991,
+        -0.011508,
+        0.049
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H60",
+      "center_m": [
+        -0.033991,
+        -0.011508,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H61",
+      "center_m": [
+        0.033991,
+        -0.011508,
+        0.049
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H62",
+      "center_m": [
+        0.033991,
+        -0.011508,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H63",
+      "center_m": [
+        -0.019931,
+        -0.051828,
+        0.050675
+      ],
+      "size_m": [
+        0.000226,
+        0.018794,
+        0.000418
+      ],
+      "boundary_vertex_count": 5
+    },
+    {
+      "label": "H64",
+      "center_m": [
+        -0.026,
+        -0.068851,
+        0.049
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H65",
+      "center_m": [
+        -0.026,
+        -0.068851,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H66",
+      "center_m": [
+        0.026,
+        -0.068851,
+        0.049
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H67",
+      "center_m": [
+        0.026,
+        -0.068851,
+        0.051
+      ],
+      "size_m": [
+        0.003,
+        0.003,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H68",
+      "center_m": [
+        0.005466,
+        -0.070003,
+        0.049937
+      ],
+      "size_m": [
+        0.004438,
+        0.0052,
+        0.00135
+      ],
+      "boundary_vertex_count": 34
+    },
+    {
+      "label": "H69",
+      "center_m": [
+        -0.00584,
+        -0.070339,
+        0.050411
+      ],
+      "size_m": [
+        0.003677,
+        0.005157,
+        0.00135
+      ],
+      "boundary_vertex_count": 40
+    },
+    {
+      "label": "H70",
+      "center_m": [
+        0.005967,
+        -0.070347,
+        0.049
+      ],
+      "size_m": [
+        0.0052,
+        0.005157,
+        0.0
+      ],
+      "boundary_vertex_count": 29
+    },
+    {
+      "label": "H71",
+      "center_m": [
+        -0.008342,
+        -0.07037,
+        0.0495
+      ],
+      "size_m": [
+        0.000762,
+        0.003261,
+        0.0
+      ],
+      "boundary_vertex_count": 8
+    },
+    {
+      "label": "H72",
+      "center_m": [
+        0.006,
+        -0.0706,
+        0.051
+      ],
+      "size_m": [
+        0.0025,
+        0.0025,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H73",
+      "center_m": [
+        -0.006,
+        -0.0706,
+        0.051
+      ],
+      "size_m": [
+        0.0025,
+        0.0025,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H74",
+      "center_m": [
+        -0.006,
+        -0.0706,
+        0.049
+      ],
+      "size_m": [
+        0.0052,
+        0.0052,
+        0.0
+      ],
+      "boundary_vertex_count": 32
+    },
+    {
+      "label": "H75",
+      "center_m": [
+        0.006181,
+        -0.07138,
+        0.05085
+      ],
+      "size_m": [
+        0.002412,
+        0.001477,
+        0.0
+      ],
+      "boundary_vertex_count": 17
+    },
+    {
+      "label": "H76",
+      "center_m": [
+        0.00765,
+        -0.07246,
+        0.0495
+      ],
+      "size_m": [
+        0.001769,
+        0.001547,
+        0.0
+      ],
+      "boundary_vertex_count": 6
+    },
+    {
+      "label": "H77",
+      "center_m": [
+        -0.000292,
+        -0.07294,
+        0.050891
+      ],
+      "size_m": [
+        0.024071,
+        0.003935,
+        0.0005
+      ],
+      "boundary_vertex_count": 23
+    },
+    {
+      "label": "H78",
+      "center_m": [
+        0.000455,
+        -0.073024,
+        0.049047
+      ],
+      "size_m": [
+        0.024072,
+        0.004127,
+        0.000316
+      ],
+      "boundary_vertex_count": 20
+    },
+    {
+      "label": "H79",
+      "center_m": [
+        0.001663,
+        -0.074016,
+        0.050705
+      ],
+      "size_m": [
+        0.013303,
+        0.000316,
+        0.000465
+      ],
+      "boundary_vertex_count": 8
+    }
+  ],
+  "B_radar_mount_candidates": [
+    {
+      "label": "B01",
+      "local_point_m": [
+        -0.024584,
+        -0.018776,
+        0.0
+      ]
+    },
+    {
+      "label": "B02",
+      "local_point_m": [
+        0.024584,
+        -0.018776,
+        0.0
+      ]
+    },
+    {
+      "label": "B03",
+      "local_point_m": [
+        -0.024584,
+        0.018776,
+        0.0
+      ]
+    },
+    {
+      "label": "B04",
+      "local_point_m": [
+        0.024584,
+        0.018776,
+        0.0
+      ]
+    },
+    {
+      "label": "B05",
+      "local_point_m": [
+        -0.028,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "label": "B06",
+      "local_point_m": [
+        0.028,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "label": "B07",
+      "local_point_m": [
+        0.0,
+        -0.028,
+        0.0
+      ]
+    },
+    {
+      "label": "B08",
+      "local_point_m": [
+        0.0,
+        0.028,
+        0.0
+      ]
+    }
+  ],
+  "instruction": "User must choose ordered four H labels and ordered four B labels before transform/scale solving.",
+  "status": "manual_pick_required",
+  "elapsed_sec": 2.87,
+  "outputs": {
+    "blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_top_panel_hole_pick.blend",
+    "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_top_panel_hole_pick_manifest.json"
+  }
+}

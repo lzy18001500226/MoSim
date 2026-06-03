@@ -1,0 +1,562 @@
+{
+  "created_at": "2026-06-03 19:52:09",
+  "purpose": "Full Sunray150 150.dae visible plus standalone Livox MID-360 mount audit. This is a manual review scene, not a final runtime asset.",
+  "aircraft": {
+    "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\150.dae",
+    "object_count": 701,
+    "imported_object_count": 691,
+    "category_counts": {
+      "carbon": 2,
+      "metal": 459,
+      "prop": 0,
+      "bracket": 9,
+      "other": 221
+    },
+    "removed_user_confirmed_propellers": [
+      "PROPELLER_CCW.1\\Scale1 | PROPELLER_CCW.1\\Scale1Mesh",
+      "CircPattern.1 | CircPattern.1Mesh",
+      "PROPELLER_CW.1\\NONE | PROPELLER_CW.1\\NONEMesh",
+      "CircPattern.1_ncl1_1 | CircPattern.1_ncl1_1Mesh",
+      "CircPattern.2 | CircPattern.2Mesh",
+      "PROPELLER_CCW.2\\Scale1 | PROPELLER_CCW.2\\Scale1Mesh",
+      "CircPattern.1_ncl1_2 | CircPattern.1_ncl1_2Mesh",
+      "PROPELLER_CW.2\\NONE | PROPELLER_CW.2\\NONEMesh",
+      "CircPattern.1_ncl1_3 | CircPattern.1_ncl1_3Mesh",
+      "CircPattern.2_ncl1_1 | CircPattern.2_ncl1_1Mesh"
+    ],
+    "visibility_rule": "aircraft frame, brackets, protection arcs, and non-propeller parts are kept visible; only user-confirmed DAE propeller pattern objects are removed"
+  },
+  "mount_reference": {
+    "source": "user-reviewed TOP_PANNEL hole-loop groups from sunray150_top_panel_hole_pick_manifest.json",
+    "holes": [
+      {
+        "label": "front_left_H20_H21_H22",
+        "center_m": [
+          -0.018,
+          0.056283,
+          0.050167
+        ]
+      },
+      {
+        "label": "front_right_H19_H23_H24",
+        "center_m": [
+          0.017981,
+          0.056332,
+          0.050167
+        ]
+      },
+      {
+        "label": "rear_right_H44_H47_H48",
+        "center_m": [
+          0.018,
+          0.008283,
+          0.050167
+        ]
+      },
+      {
+        "label": "rear_left_H43_H45_H46",
+        "center_m": [
+          -0.018,
+          0.008283,
+          0.050167
+        ]
+      }
+    ],
+    "mount_center_m": [
+      -5e-06,
+      0.032295,
+      0.050167
+    ],
+    "rectangle_size_m": [
+      0.036,
+      0.048
+    ],
+    "panel_top_z_m": 0.050167
+  },
+  "mid360": {
+    "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae",
+    "import_result": {
+      "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae",
+      "unit_meter": 0.0254,
+      "created_objects": 22,
+      "triangles": 98907
+    },
+    "orientation_rule": "yaw=270deg; user requested rotating the previous yaw=180deg radar pose by +90deg for direction audit",
+    "yaw_deg": 270.0,
+    "scale": [
+      1.2,
+      1.2,
+      1.2
+    ],
+    "scale_rule": "Import at base visual scale 1.2, then directly fit the four user-identified MID-360 mount-hole object centers 000..003 to the four user-selected frame holes.",
+    "hole_fit": {
+      "method": "direct_four_mount_hole_object_centers_000_001_002_003",
+      "hole_object_names": [
+        "AUDIT_STANDALONE_MID360_000_71839628D0F2A2C7A2738D6245838489666693EB_B8A4396250C5687B1D31E70758B30729E1AC4426",
+        "AUDIT_STANDALONE_MID360_001_ahs_71839628D0F2A2C7A2738D6245838489666693EB_B8A4396250C5687B1D31E70758B30729E1AC4426_1",
+        "AUDIT_STANDALONE_MID360_002_ahs_71839628D0F2A2C7A2738D6245838489666693EB_B8A4396250C5687B1D31E70758B30729E1AC4426_2",
+        "AUDIT_STANDALONE_MID360_003_ahs_71839628D0F2A2C7A2738D6245838489666693EB_B8A4396250C5687B1D31E70758B30729E1AC4426_3"
+      ],
+      "radar_hole_centers_before_fit_m": [
+        [
+          -0.037099,
+          0.0288,
+          -0.013801
+        ],
+        [
+          -0.037099,
+          -0.0288,
+          -0.013801
+        ],
+        [
+          0.006101,
+          0.0288,
+          -0.013801
+        ],
+        [
+          0.006101,
+          -0.0288,
+          -0.013801
+        ]
+      ],
+      "frame_hole_centers_m": [
+        [
+          -0.018,
+          0.056283,
+          0.050167
+        ],
+        [
+          0.017981,
+          0.056332,
+          0.050167
+        ],
+        [
+          0.018,
+          0.008283,
+          0.050167
+        ],
+        [
+          -0.018,
+          0.008283,
+          0.050167
+        ]
+      ],
+      "radar_center_before_fit_m": [
+        -0.015499,
+        0.0,
+        -0.013801
+      ],
+      "frame_center_m": [
+        -5e-06,
+        0.032295,
+        0.050167
+      ],
+      "uniform_scale": 0.833527,
+      "xy_translation_m": [
+        0.012914,
+        0.032295,
+        0.0
+      ],
+      "fitted_radar_hole_centers_m": [
+        [
+          -0.018009,
+          0.056301,
+          -0.011504
+        ],
+        [
+          -0.018009,
+          0.00829,
+          -0.011504
+        ],
+        [
+          0.017999,
+          0.056301,
+          -0.011504
+        ],
+        [
+          0.017999,
+          0.00829,
+          -0.011504
+        ]
+      ],
+      "radar_rms_radius_before_m": 0.036,
+      "frame_rms_radius_m": 0.030007
+    },
+    "placement_rule": "XY is fitted from the four named MID-360 mount-hole object centers; Z snaps full visual bottom to selected top-panel z plane.",
+    "bbox_before": {
+      "min": [
+        -0.032449,
+        -0.008014,
+        -0.013004
+      ],
+      "max": [
+        0.03244,
+        0.06474,
+        0.047107
+      ]
+    },
+    "translation_m": [
+      0.0,
+      0.0,
+      0.063171
+    ],
+    "bbox_after": {
+      "min": [
+        -0.032449,
+        -0.008014,
+        0.050167
+      ],
+      "max": [
+        0.03244,
+        0.06474,
+        0.110278
+      ]
+    }
+  },
+  "propellers": {
+    "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray_cw.stl",
+    "source_rule": "Use sunray150_with_mid360/meshes/sunray_cw.stl as the required three-blade propeller source; DAE propeller objects remain deleted.",
+    "placement_rule": "Fit the two detected STL screw holes (0,+/-2.5,2.5 mm) to each DAE M2x8 screw pair. Scale correction is applied only from screw-hole distance ratio.",
+    "z_rule": "Final propeller transform translation.z is computed from user-audited planes and fine tune: base -0.0161m + ((-0.0193m + 0.0001m) - -0.021098m) + 0.00015m = -0.014052m.",
+    "orientation_mode": "flipped_around_screw_axis",
+    "orientation_warning": "Hole fitting alone does not decide propeller front/back side. User manually accepted flipped_around_screw_axis; candidates mode remains available for future review.",
+    "screw_source": "DAE SCREW_BUTTON_HEAD_M2_8MM.1..8 nearest two screws per SDF rotor center",
+    "triangles_per_propeller": 848,
+    "created": [
+      {
+        "name": "TriBlade_flipped_around_screw_axis_rotor_0_front_right_sunray_cw_stl",
+        "variant": "flipped_around_screw_axis",
+        "rotor": "rotor_0_front_right",
+        "sdf_rotor_center_m": [
+          0.065,
+          -0.065,
+          -0.025
+        ],
+        "target_screw_names": [
+          "SCREW_BUTTON_HEAD_M2_8MM.8\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.8\\HEX_SOCKET_BUTTON_HEADMesh",
+          "SCREW_BUTTON_HEAD_M2_8MM.7\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.7\\HEX_SOCKET_BUTTON_HEADMesh"
+        ],
+        "target_screw_centers_m": [
+          [
+            0.056244,
+            -0.053741,
+            -0.018794
+          ],
+          [
+            0.051247,
+            -0.053738,
+            -0.018746
+          ]
+        ],
+        "target_screw_mid_m": [
+          0.053745,
+          -0.05374,
+          -0.01877
+        ],
+        "fit": {
+          "source_hole_centers_mm": [
+            [
+              0.0,
+              -2.5,
+              2.5
+            ],
+            [
+              0.0,
+              2.5,
+              2.5
+            ]
+          ],
+          "source_hole_distance_m_after_base_scale": 0.005,
+          "target_screw_distance_m": 0.004998,
+          "scale_correction": 0.999507,
+          "yaw_deg": 89.969846,
+          "flip_around_screw_axis": true,
+          "fitted_translation_z_before_user_override_m": -0.021269,
+          "user_audited_base_translation_z_m": -0.0161,
+          "user_audited_contact_plane_z_m": -0.021098,
+          "target_screw_plane_z_m": -0.0193,
+          "clearance_m": 0.0001,
+          "user_fine_tune_z_m": 0.00015,
+          "user_requested_translation_z_m": -0.014052,
+          "translation_m": [
+            0.053745,
+            -0.05374,
+            -0.014052
+          ]
+        },
+        "z_policy": "User-audited face alignment: move measured propeller contact plane z=-0.021098m toward screw plane z=-0.0193m with 0.1mm nominal clearance, then fine-tune propellers upward by 0.15mm. XY screw-hole fit and flipped orientation are unchanged.",
+        "color": "red",
+        "review_offset_note": "",
+        "bounds_min_m": [
+          0.013015,
+          -0.098493,
+          -0.020193
+        ],
+        "bounds_max_m": [
+          0.093477,
+          -0.027381,
+          -0.012878
+        ]
+      },
+      {
+        "name": "TriBlade_flipped_around_screw_axis_rotor_1_back_left_sunray_cw_stl",
+        "variant": "flipped_around_screw_axis",
+        "rotor": "rotor_1_back_left",
+        "sdf_rotor_center_m": [
+          -0.065,
+          0.065,
+          -0.025
+        ],
+        "target_screw_names": [
+          "SCREW_BUTTON_HEAD_M2_8MM.6\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.6\\HEX_SOCKET_BUTTON_HEADMesh",
+          "SCREW_BUTTON_HEAD_M2_8MM.3\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.3\\HEX_SOCKET_BUTTON_HEADMesh"
+        ],
+        "target_screw_centers_m": [
+          [
+            -0.056266,
+            0.053759,
+            -0.018775
+          ],
+          [
+            -0.051255,
+            0.053762,
+            -0.018777
+          ]
+        ],
+        "target_screw_mid_m": [
+          -0.053761,
+          0.05376,
+          -0.018776
+        ],
+        "fit": {
+          "source_hole_centers_mm": [
+            [
+              0.0,
+              -2.5,
+              2.5
+            ],
+            [
+              0.0,
+              2.5,
+              2.5
+            ]
+          ],
+          "source_hole_distance_m_after_base_scale": 0.005,
+          "target_screw_distance_m": 0.005011,
+          "scale_correction": 1.002222,
+          "yaw_deg": -89.968267,
+          "flip_around_screw_axis": true,
+          "fitted_translation_z_before_user_override_m": -0.021282,
+          "user_audited_base_translation_z_m": -0.0161,
+          "user_audited_contact_plane_z_m": -0.021098,
+          "target_screw_plane_z_m": -0.0193,
+          "clearance_m": 0.0001,
+          "user_fine_tune_z_m": 0.00015,
+          "user_requested_translation_z_m": -0.014052,
+          "translation_m": [
+            -0.053761,
+            0.05376,
+            -0.014052
+          ]
+        },
+        "z_policy": "User-audited face alignment: move measured propeller contact plane z=-0.021098m toward screw plane z=-0.0193m with 0.1mm nominal clearance, then fine-tune propellers upward by 0.15mm. XY screw-hole fit and flipped orientation are unchanged.",
+        "color": "blue",
+        "review_offset_note": "",
+        "bounds_min_m": [
+          -0.093579,
+          0.027291,
+          -0.020209
+        ],
+        "bounds_max_m": [
+          -0.012901,
+          0.098633,
+          -0.012875
+        ]
+      },
+      {
+        "name": "TriBlade_flipped_around_screw_axis_rotor_2_front_left_sunray_cw_stl",
+        "variant": "flipped_around_screw_axis",
+        "rotor": "rotor_2_front_left",
+        "sdf_rotor_center_m": [
+          0.065,
+          0.065,
+          -0.025
+        ],
+        "target_screw_names": [
+          "SCREW_BUTTON_HEAD_M2_8MM.4\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.4\\HEX_SOCKET_BUTTON_HEADMesh",
+          "SCREW_BUTTON_HEAD_M2_8MM.5\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.5\\HEX_SOCKET_BUTTON_HEADMesh"
+        ],
+        "target_screw_centers_m": [
+          [
+            0.056246,
+            0.053756,
+            -0.018795
+          ],
+          [
+            0.051245,
+            0.053763,
+            -0.018777
+          ]
+        ],
+        "target_screw_mid_m": [
+          0.053746,
+          0.053759,
+          -0.018786
+        ],
+        "fit": {
+          "source_hole_centers_mm": [
+            [
+              0.0,
+              -2.5,
+              2.5
+            ],
+            [
+              0.0,
+              2.5,
+              2.5
+            ]
+          ],
+          "source_hole_distance_m_after_base_scale": 0.005,
+          "target_screw_distance_m": 0.005002,
+          "scale_correction": 1.000303,
+          "yaw_deg": 89.921732,
+          "flip_around_screw_axis": true,
+          "fitted_translation_z_before_user_override_m": -0.021287,
+          "user_audited_base_translation_z_m": -0.0161,
+          "user_audited_contact_plane_z_m": -0.021098,
+          "target_screw_plane_z_m": -0.0193,
+          "clearance_m": 0.0001,
+          "user_fine_tune_z_m": 0.00015,
+          "user_requested_translation_z_m": -0.014052,
+          "translation_m": [
+            0.053746,
+            0.053759,
+            -0.014052
+          ]
+        },
+        "z_policy": "User-audited face alignment: move measured propeller contact plane z=-0.021098m toward screw plane z=-0.0193m with 0.1mm nominal clearance, then fine-tune propellers upward by 0.15mm. XY screw-hole fit and flipped orientation are unchanged.",
+        "color": "red",
+        "review_offset_note": "",
+        "bounds_min_m": [
+          0.012998,
+          0.008968,
+          -0.020198
+        ],
+        "bounds_max_m": [
+          0.093525,
+          0.08011,
+          -0.012877
+        ]
+      },
+      {
+        "name": "TriBlade_flipped_around_screw_axis_rotor_3_back_right_sunray_cw_stl",
+        "variant": "flipped_around_screw_axis",
+        "rotor": "rotor_3_back_right",
+        "sdf_rotor_center_m": [
+          -0.065,
+          -0.065,
+          -0.025
+        ],
+        "target_screw_names": [
+          "SCREW_BUTTON_HEAD_M2_8MM.2\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.2\\HEX_SOCKET_BUTTON_HEADMesh",
+          "SCREW_BUTTON_HEAD_M2_8MM.1\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.1\\HEX_SOCKET_BUTTON_HEADMesh"
+        ],
+        "target_screw_centers_m": [
+          [
+            -0.056262,
+            -0.053741,
+            -0.018808
+          ],
+          [
+            -0.05126,
+            -0.053736,
+            -0.018792
+          ]
+        ],
+        "target_screw_mid_m": [
+          -0.053761,
+          -0.053739,
+          -0.0188
+        ],
+        "fit": {
+          "source_hole_centers_mm": [
+            [
+              0.0,
+              -2.5,
+              2.5
+            ],
+            [
+              0.0,
+              2.5,
+              2.5
+            ]
+          ],
+          "source_hole_distance_m_after_base_scale": 0.005,
+          "target_screw_distance_m": 0.005003,
+          "scale_correction": 1.000516,
+          "yaw_deg": -89.938389,
+          "flip_around_screw_axis": true,
+          "fitted_translation_z_before_user_override_m": -0.021302,
+          "user_audited_base_translation_z_m": -0.0161,
+          "user_audited_contact_plane_z_m": -0.021098,
+          "target_screw_plane_z_m": -0.0193,
+          "clearance_m": 0.0001,
+          "user_fine_tune_z_m": 0.00015,
+          "user_requested_translation_z_m": -0.014052,
+          "translation_m": [
+            -0.053761,
+            -0.053739,
+            -0.014052
+          ]
+        },
+        "z_policy": "User-audited face alignment: move measured propeller contact plane z=-0.021098m toward screw plane z=-0.0193m with 0.1mm nominal clearance, then fine-tune propellers upward by 0.15mm. XY screw-hole fit and flipped orientation are unchanged.",
+        "color": "blue",
+        "review_offset_note": "",
+        "bounds_min_m": [
+          -0.093501,
+          -0.080182,
+          -0.020199
+        ],
+        "bounds_max_m": [
+          -0.012961,
+          -0.008944,
+          -0.012877
+        ]
+      }
+    ],
+    "status": "manual_review_required_for_hole/shaft alignment"
+  },
+  "visibility": {
+    "audit_view": "radar_mount",
+    "visibility": "radar mount review: only aircraft carbon/bracket collections, standalone MID-360, camera, and light are visible",
+    "visible_collection_names": [
+      "aircraft_bracket",
+      "aircraft_carbon"
+    ],
+    "visible_name_prefixes": [
+      "AUDIT_STANDALONE_MID360"
+    ],
+    "visible_object_count": 33,
+    "hidden_object_count": 698
+  },
+  "review_instruction": "User audits radar x/y/z placement, connector direction, radar scale, and later four official tri-blade propeller shaft/hole alignment. In radar_mount view, non-radar clutter and propellers are hidden only for review.",
+  "camera": {
+    "active_camera": "FullMid360Audit_Camera",
+    "bounds_min": [
+      -0.105751,
+      -0.105751,
+      -0.036
+    ],
+    "bounds_max": [
+      0.105751,
+      0.1089,
+      0.12593
+    ],
+    "extent": 0.22
+  },
+  "elapsed_sec": 5.262,
+  "outputs": {
+    "blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_dae_mid360_full_assembly_audit.blend",
+    "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_dae_mid360_full_assembly_audit_manifest.json"
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "created_at": "2026-06-03 04:58:08",
+  "purpose": "Fit diagnostic using user-selected TOP_PANNEL hole groups and explicit MID-360 90/270 body-rotation candidates. The radar bottom face is snapped to the TOP_PANNEL top surface.",
+  "hole_groups": {
+    "P01_left_upper": [
+      "H20",
+      "H21",
+      "H22"
+    ],
+    "P02_right_upper": [
+      "H19",
+      "H23",
+      "H24"
+    ],
+    "P03_right_lower": [
+      "H44",
+      "H47",
+      "H48"
+    ],
+    "P04_left_lower": [
+      "H43",
+      "H45",
+      "H46"
+    ]
+  },
+  "panel_points_m": {
+    "P01_left_upper": [
+      -0.018,
+      0.056283,
+      0.050167
+    ],
+    "P02_right_upper": [
+      0.017981,
+      0.056332,
+      0.050167
+    ],
+    "P03_right_lower": [
+      0.018,
+      0.008283,
+      0.050167
+    ],
+    "P04_left_lower": [
+      -0.018,
+      0.008283,
+      0.050167
+    ]
+  },
+  "radar_points_m": {
+    "B01_left_lower": [
+      -0.024584,
+      -0.018776,
+      0.0
+    ],
+    "B02_right_lower": [
+      0.024584,
+      -0.018776,
+      0.0
+    ],
+    "B03_left_upper": [
+      -0.024584,
+      0.018776,
+      0.0
+    ],
+    "B04_right_upper": [
+      0.024584,
+      0.018776,
+      0.0
+    ]
+  },
+  "connector_tail_rule": "MID-360 connector/port must face aircraft tail (-X). User correction requires rotating the radar body 90/270 degrees, not merely changing point correspondence.",
+  "mount_surface_rule": "The MID-360 bottom face must sit on the TOP_PANNEL upper surface. Fit XY from selected holes, then snap radar mesh minimum Z to panel_top_z.",
+  "fit_candidates": [
+    {
+      "name": "MID360_tail_connector_yaw90",
+      "fixed_yaw_deg": 90.0,
+      "source_labels_in_panel_order": [
+        "B01_left_lower",
+        "B03_left_upper",
+        "B02_right_lower",
+        "B04_right_upper"
+      ],
+      "scale": 0.9699901011602712,
+      "rms_m": 0.0002741467218176757,
+      "translation_m": [
+        -4.833098500967026e-06,
+        0.03229524940252304,
+        0.05016666650772095
+      ],
+      "panel_top_z_m": 0.05100000277161598,
+      "radar_bottom_z_before_snap_m": 0.035033490508794785,
+      "z_snap_delta_m": 0.015966512262821198,
+      "radar_bounds_after_snap_m": {
+        "min": [
+          -0.22215387225151062,
+          -0.1403483748435974,
+          0.05100000277161598
+        ],
+        "max": [
+          -0.05812855809926987,
+          0.07005155831575394,
+          0.1209523007273674
+        ]
+      },
+      "display_offset_m": [
+        -0.12999999523162842,
+        0.0,
+        0.0
+      ],
+      "note": "Candidate with radar body rotated +90 deg; connector must face tail -X and bottom face must sit on TOP_PANNEL top surface."
+    },
+    {
+      "name": "MID360_tail_connector_yaw270",
+      "fixed_yaw_deg": 270.0,
+      "source_labels_in_panel_order": [
+        "B04_right_upper",
+        "B02_right_lower",
+        "B03_left_upper",
+        "B01_left_lower"
+      ],
+      "scale": 0.9699901011602712,
+      "rms_m": 0.0002741467218176757,
+      "translation_m": [
+        -4.833098500967026e-06,
+        0.03229524940252304,
+        0.05016666650772095
+      ],
+      "panel_top_z_m": 0.05100000277161598,
+      "radar_bottom_z_before_snap_m": 0.035033490508794785,
+      "z_snap_delta_m": 0.015966512262821198,
+      "radar_bounds_after_snap_m": {
+        "min": [
+          0.058118902146816254,
+          -0.1403483748435974,
+          0.05100000277161598
+        ],
+        "max": [
+          0.222144216299057,
+          0.07920394837856293,
+          0.1209523007273674
+        ]
+      },
+      "display_offset_m": [
+        0.12999999523162842,
+        0.0,
+        0.0
+      ],
+      "note": "Candidate with radar body rotated -90/270 deg; connector must face tail -X and bottom face must sit on TOP_PANNEL top surface."
+    }
+  ],
+  "panel_top_z_m": 0.05100000277161598,
+  "status": "diagnostic_manual_review_required",
+  "elapsed_sec": 3.746,
+  "outputs": {
+    "blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_mid360_selected_hole_fit.blend",
+    "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_mid360_selected_hole_fit_manifest.json"
+  }
+}

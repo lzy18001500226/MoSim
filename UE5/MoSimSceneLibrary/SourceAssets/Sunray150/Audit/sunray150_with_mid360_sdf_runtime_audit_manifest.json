@@ -1,0 +1,171 @@
+{
+  "created_at": "2026-06-03 03:24:24",
+  "purpose": "Sunray SDF runtime visual audit: body STL with built-in MID-360 visual + selected tri-blade rotor STL.",
+  "sources": {
+    "sdf": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\sunray150_with_mid360.sdf",
+    "sdf_template": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\sunray150_with_mid360.sdf.jinja",
+    "selected_folder": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360",
+    "rotor_source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray_cw.stl",
+    "source_note": "User-gated source rule: use files inside sunray150_with_mid360 first. The body mesh sunray.stl already contains the visible MID-360, so this audit skips the separate model://livox_mid360 visual to avoid duplicate radar geometry. The SDF text references model://sunray150/meshes/sunray_cw.stl for rotors, but this audit intentionally uses sunray150_with_mid360/meshes/sunray_cw.stl."
+  },
+  "body": {
+    "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray.stl",
+    "pose_xyz_rpy": [
+      0,
+      0,
+      0.0525,
+      0,
+      0,
+      -1.57
+    ],
+    "pose_deg": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      -89.954
+    ],
+    "scale": [
+      0.03,
+      0.03,
+      0.03
+    ],
+    "triangles": 530874
+  },
+  "rotor": {
+    "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray_cw.stl",
+    "poses_xyz": [
+      [
+        0.065,
+        -0.065,
+        -0.025
+      ],
+      [
+        -0.065,
+        0.065,
+        -0.025
+      ],
+      [
+        0.065,
+        0.065,
+        -0.025
+      ],
+      [
+        -0.065,
+        -0.065,
+        -0.025
+      ]
+    ],
+    "visual_pose_xyz_rpy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0.0
+    ],
+    "visual_pose_deg": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0.0
+    ],
+    "yaw_offset_deg": 0.0,
+    "scale": [
+      0.001,
+      0.001,
+      0.001
+    ],
+    "triangles_per_rotor": 848,
+    "orientation_note": "sunray150_with_mid360/meshes/sunray_cw.stl is already horizontal; SDF roll=1.57 is not applied for this selected STL."
+  },
+  "mid360": {
+    "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae",
+    "include_pose_xyz_rpy": [
+      0.036,
+      -0.0155,
+      0.075,
+      0,
+      0,
+      0
+    ],
+    "sdf_visual_pose_xyz_rpy": [
+      0,
+      0,
+      0,
+      1.57,
+      0,
+      3.14159
+    ],
+    "accepted_visual_pose_xyz_rpy": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      3.14159
+    ],
+    "visual_scale": [
+      1.2,
+      1.2,
+      1.2
+    ],
+    "import_separate_visual": false,
+    "import_result": null,
+    "recenter_result": null,
+    "mount_translation_result": null,
+    "source_rule": "sunray150_with_mid360/meshes/sunray.stl already contains the visible MID-360 geometry. Do not add a second visible model://livox_mid360 radar in Blender/UE audit scenes unless explicitly testing the sensor model alone.",
+    "center_rule": "The separate MID-360 sensor visual rule is retained only for standalone sensor audits: recenter the visual mesh so the circular radar base mounting center is the local origin, then mount it. It is not applied in this full-aircraft audit because separate radar import is disabled."
+  },
+  "camera_mounts_from_sdf": {
+    "camera_front": {
+      "pose_xyz_rpy": [
+        0.12,
+        0,
+        0.025,
+        0,
+        0,
+        0
+      ],
+      "pose_deg": [
+        0.12,
+        0,
+        0.025,
+        0,
+        0,
+        0
+      ]
+    },
+    "camera_down": {
+      "pose_xyz_rpy": [
+        -0.01,
+        0,
+        -0.02,
+        0,
+        1.5707963,
+        3.14
+      ],
+      "pose_deg": [
+        -0.01,
+        0,
+        -0.02,
+        0,
+        90.0,
+        179.909
+      ]
+    },
+    "note": "No SDF mount uses 45 deg. The apparent 45 deg issue is likely a review camera, mesh-axis conversion, or UE import transform issue, not the camera_front SDF pose."
+  },
+  "review_camera": {
+    "active_camera": "SDF_Audit_Top_Camera_No_Model_Rotation",
+    "camera_policy": "Top camera is active to avoid mistaking review-camera oblique angle for UAV/model yaw. Other cameras are review-only."
+  },
+  "elapsed_sec": 1.285,
+  "outputs": {
+    "blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_with_mid360_sdf_runtime_audit.blend",
+    "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_with_mid360_sdf_runtime_audit_manifest.json"
+  }
+}

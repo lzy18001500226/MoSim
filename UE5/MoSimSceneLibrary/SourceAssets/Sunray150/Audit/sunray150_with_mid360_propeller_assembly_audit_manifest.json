@@ -1,0 +1,297 @@
+{
+  "created_at": "2026-06-03 02:05:59",
+  "purpose": "sunray150_with_mid360 propeller mechanical assembly audit. Only drone_models/sunray150_with_mid360/meshes/150.dae is imported.",
+  "sources": {
+    "dae_semantic_source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\150.dae"
+  },
+  "detected_semantic_counts": {
+    "propellers": 4,
+    "circpattern_possible_full_propellers": 6,
+    "motor_parts": 360,
+    "m2_8_screw_candidates": 8
+  },
+  "forbidden_sources": [
+    "References/MWORKS/QuadrotorModel/Resources/Visualization",
+    "sensor_models/livox_mid360"
+  ],
+  "rotors": [
+    {
+      "rotor": "rotor_front_right",
+      "runtime_center_m": [
+        0.065,
+        -0.065,
+        -0.025
+      ],
+      "dae_semantic_propeller": "PROPELLER_CW.1\\NONE | PROPELLER_CW.1\\NONEMesh",
+      "dae_semantic_propeller_center_m": [
+        0.053637,
+        -0.053716,
+        -0.016509
+      ],
+      "dae_circpattern_possible_full_prop": "CircPattern.2 | CircPattern.2Mesh",
+      "dae_circpattern_center_m": [
+        0.05394,
+        -0.054807,
+        -0.01674
+      ],
+      "dae_circpattern_bounds_min_m": [
+        0.048883,
+        -0.058568,
+        -0.019188
+      ],
+      "dae_circpattern_bounds_max_m": [
+        0.058557,
+        -0.049544,
+        -0.014484
+      ],
+      "dae_candidate_screws": [
+        {
+          "name": "SCREW_BUTTON_HEAD_M2_8MM.7\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.7\\HEX_SOCKET_BUTTON_HEADMesh",
+          "center_m": [
+            0.051247,
+            -0.053738,
+            -0.018746
+          ],
+          "bounds_min_m": [
+            0.049349,
+            -0.055649,
+            -0.0204
+          ],
+          "bounds_max_m": [
+            0.053149,
+            -0.051849,
+            -0.0113
+          ]
+        },
+        {
+          "name": "SCREW_BUTTON_HEAD_M2_8MM.8\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.8\\HEX_SOCKET_BUTTON_HEADMesh",
+          "center_m": [
+            0.056244,
+            -0.053741,
+            -0.018794
+          ],
+          "bounds_min_m": [
+            0.054349,
+            -0.055649,
+            -0.0204
+          ],
+          "bounds_max_m": [
+            0.058149,
+            -0.051849,
+            -0.0113
+          ]
+        }
+      ]
+    },
+    {
+      "rotor": "rotor_back_left",
+      "runtime_center_m": [
+        -0.065,
+        0.065,
+        -0.025
+      ],
+      "dae_semantic_propeller": "PROPELLER_CW.2\\NONE | PROPELLER_CW.2\\NONEMesh",
+      "dae_semantic_propeller_center_m": [
+        -0.053828,
+        0.053778,
+        -0.016519
+      ],
+      "dae_circpattern_possible_full_prop": "CircPattern.1_ncl1_3 | CircPattern.1_ncl1_3Mesh",
+      "dae_circpattern_center_m": [
+        -0.051992,
+        0.058564,
+        -0.016742
+      ],
+      "dae_circpattern_bounds_min_m": [
+        -0.097773,
+        0.020572,
+        -0.019265
+      ],
+      "dae_circpattern_bounds_max_m": [
+        -0.01305,
+        0.098165,
+        -0.013549
+      ],
+      "dae_candidate_screws": [
+        {
+          "name": "SCREW_BUTTON_HEAD_M2_8MM.6\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.6\\HEX_SOCKET_BUTTON_HEADMesh",
+          "center_m": [
+            -0.056266,
+            0.053759,
+            -0.018775
+          ],
+          "bounds_min_m": [
+            -0.058151,
+            0.051851,
+            -0.0204
+          ],
+          "bounds_max_m": [
+            -0.054351,
+            0.055651,
+            -0.0113
+          ]
+        },
+        {
+          "name": "SCREW_BUTTON_HEAD_M2_8MM.3\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.3\\HEX_SOCKET_BUTTON_HEADMesh",
+          "center_m": [
+            -0.051255,
+            0.053762,
+            -0.018777
+          ],
+          "bounds_min_m": [
+            -0.053151,
+            0.051851,
+            -0.0204
+          ],
+          "bounds_max_m": [
+            -0.049351,
+            0.055651,
+            -0.0113
+          ]
+        }
+      ]
+    },
+    {
+      "rotor": "rotor_front_left",
+      "runtime_center_m": [
+        0.065,
+        0.065,
+        -0.025
+      ],
+      "dae_semantic_propeller": "PROPELLER_CCW.2\\Scale1 | PROPELLER_CCW.2\\Scale1Mesh",
+      "dae_semantic_propeller_center_m": [
+        0.053704,
+        0.053698,
+        -0.016737
+      ],
+      "dae_circpattern_possible_full_prop": "CircPattern.1_ncl1_2 | CircPattern.1_ncl1_2Mesh",
+      "dae_circpattern_center_m": [
+        0.051624,
+        0.050204,
+        -0.016817
+      ],
+      "dae_circpattern_bounds_min_m": [
+        0.012216,
+        0.009142,
+        -0.01926
+      ],
+      "dae_circpattern_bounds_max_m": [
+        0.097379,
+        0.088257,
+        -0.013549
+      ],
+      "dae_candidate_screws": [
+        {
+          "name": "SCREW_BUTTON_HEAD_M2_8MM.5\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.5\\HEX_SOCKET_BUTTON_HEADMesh",
+          "center_m": [
+            0.051245,
+            0.053763,
+            -0.018777
+          ],
+          "bounds_min_m": [
+            0.04935,
+            0.05185,
+            -0.0204
+          ],
+          "bounds_max_m": [
+            0.05315,
+            0.05565,
+            -0.0113
+          ]
+        },
+        {
+          "name": "SCREW_BUTTON_HEAD_M2_8MM.4\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.4\\HEX_SOCKET_BUTTON_HEADMesh",
+          "center_m": [
+            0.056246,
+            0.053756,
+            -0.018795
+          ],
+          "bounds_min_m": [
+            0.05435,
+            0.05185,
+            -0.0204
+          ],
+          "bounds_max_m": [
+            0.05815,
+            0.05565,
+            -0.0113
+          ]
+        }
+      ]
+    },
+    {
+      "rotor": "rotor_back_right",
+      "runtime_center_m": [
+        -0.065,
+        -0.065,
+        -0.025
+      ],
+      "dae_semantic_propeller": "PROPELLER_CCW.1\\Scale1 | PROPELLER_CCW.1\\Scale1Mesh",
+      "dae_semantic_propeller_center_m": [
+        -0.053822,
+        -0.053763,
+        -0.016782
+      ],
+      "dae_circpattern_possible_full_prop": "CircPattern.1 | CircPattern.1Mesh",
+      "dae_circpattern_center_m": [
+        -0.057287,
+        -0.058097,
+        -0.016822
+      ],
+      "dae_circpattern_bounds_min_m": [
+        -0.095284,
+        -0.098358,
+        -0.01926
+      ],
+      "dae_circpattern_bounds_max_m": [
+        -0.010121,
+        -0.019243,
+        -0.013549
+      ],
+      "dae_candidate_screws": [
+        {
+          "name": "SCREW_BUTTON_HEAD_M2_8MM.2\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.2\\HEX_SOCKET_BUTTON_HEADMesh",
+          "center_m": [
+            -0.056262,
+            -0.053741,
+            -0.018808
+          ],
+          "bounds_min_m": [
+            -0.05815,
+            -0.05565,
+            -0.0204
+          ],
+          "bounds_max_m": [
+            -0.05435,
+            -0.05185,
+            -0.0113
+          ]
+        },
+        {
+          "name": "SCREW_BUTTON_HEAD_M2_8MM.1\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_8MM.1\\HEX_SOCKET_BUTTON_HEADMesh",
+          "center_m": [
+            -0.05126,
+            -0.053736,
+            -0.018792
+          ],
+          "bounds_min_m": [
+            -0.05315,
+            -0.05565,
+            -0.0204
+          ],
+          "bounds_max_m": [
+            -0.04935,
+            -0.05185,
+            -0.0113
+          ]
+        }
+      ]
+    }
+  ],
+  "status": "audit_only_not_runtime_parameter_commit",
+  "elapsed_sec": 1.901,
+  "outputs": {
+    "blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_with_mid360_propeller_assembly_audit.blend",
+    "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_with_mid360_propeller_assembly_audit_manifest.json"
+  }
+}

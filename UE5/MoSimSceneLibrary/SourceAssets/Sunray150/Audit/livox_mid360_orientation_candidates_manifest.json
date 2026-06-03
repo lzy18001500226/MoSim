@@ -1,0 +1,111 @@
+{
+  "created_at": "2026-06-03 02:53:35",
+  "purpose": "Direction candidates for model://livox_mid360. User selects the visually correct orientation before updating the final asset rule.",
+  "model_uri": "model://livox_mid360",
+  "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae",
+  "variants": [
+    {
+      "name": "A_sdf_roll90_yaw180",
+      "rpy": [
+        1.57,
+        0,
+        3.14159
+      ],
+      "result": {
+        "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae",
+        "unit_meter": 0.0254,
+        "created_objects": 22,
+        "triangles": 98907
+      }
+    },
+    {
+      "name": "B_roll90_yaw0",
+      "rpy": [
+        1.57,
+        0,
+        0
+      ],
+      "result": {
+        "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae",
+        "unit_meter": 0.0254,
+        "created_objects": 22,
+        "triangles": 98907
+      }
+    },
+    {
+      "name": "C_identity",
+      "rpy": [
+        0,
+        0,
+        0
+      ],
+      "result": {
+        "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae",
+        "unit_meter": 0.0254,
+        "created_objects": 22,
+        "triangles": 98907
+      }
+    },
+    {
+      "name": "D_roll90_yaw90",
+      "rpy": [
+        1.57,
+        0,
+        1.5707963267948966
+      ],
+      "result": {
+        "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae",
+        "unit_meter": 0.0254,
+        "created_objects": 22,
+        "triangles": 98907
+      }
+    },
+    {
+      "name": "E_roll90_yaw270",
+      "rpy": [
+        1.57,
+        0,
+        4.71238898038469
+      ],
+      "result": {
+        "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae",
+        "unit_meter": 0.0254,
+        "created_objects": 22,
+        "triangles": 98907
+      }
+    },
+    {
+      "name": "F_yaw180_only",
+      "rpy": [
+        0,
+        0,
+        3.14159
+      ],
+      "result": {
+        "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae",
+        "unit_meter": 0.0254,
+        "created_objects": 22,
+        "triangles": 98907
+      }
+    }
+  ],
+  "review_camera": {
+    "active_camera": "LivoxMid360_Orientation_Review_Camera",
+    "bounds_min": [
+      -0.4983600080013275,
+      -0.05653432756662369,
+      -0.05443185940384865
+    ],
+    "bounds_max": [
+      0.48892441391944885,
+      0.05653432756662369,
+      0.05651513859629631
+    ],
+    "extent": 0.9872844219207764
+  },
+  "elapsed_sec": 2.342,
+  "outputs": {
+    "blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\livox_mid360_orientation_candidates.blend",
+    "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\livox_mid360_orientation_candidates_manifest.json"
+  }
+}

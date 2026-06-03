@@ -1,0 +1,208 @@
+{
+  "created_at": "2026-06-03 05:06:53",
+  "purpose": "Colored Sunray150 review asset from accepted STL runtime geometry; radar is colored in place, not remounted.",
+  "sources": {
+    "body_stl": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray.stl",
+    "rotor_stl": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray_cw.stl",
+    "reference_images": [
+      "C:\\Users\\HP\\Desktop\\MoSim\\References\\CUAV\\Sunray150-正.png",
+      "C:\\Users\\HP\\Desktop\\MoSim\\References\\CUAV\\Sunray150-侧.png",
+      "C:\\Users\\HP\\Desktop\\MoSim\\References\\CUAV\\MId360.png",
+      "C:\\Users\\HP\\Desktop\\MoSim\\References\\CUAV\\motor.png"
+    ],
+    "web_reference": "https://wiki.yundrone.cn/docs/dong-li-xi-tong"
+  },
+  "body": {
+    "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray.stl",
+    "triangles": 530874,
+    "components": 1985,
+    "material_groups": {
+      "camera_glass": {
+        "components": 170,
+        "triangles": 28660
+      },
+      "carbon_black": {
+        "components": 39,
+        "triangles": 44167
+      },
+      "copper_winding": {
+        "components": 491,
+        "triangles": 75897
+      },
+      "gold_standoff": {
+        "components": 48,
+        "triangles": 17264
+      },
+      "guard_black": {
+        "components": 3,
+        "triangles": 16777
+      },
+      "metal_screw": {
+        "components": 784,
+        "triangles": 120916
+      },
+      "mid360_blue": {
+        "components": 4,
+        "triangles": 1088
+      },
+      "mid360_silver": {
+        "components": 16,
+        "triangles": 20979
+      },
+      "motor_black": {
+        "components": 393,
+        "triangles": 140724
+      },
+      "translucent_prop": {
+        "components": 37,
+        "triangles": 64402
+      }
+    }
+  },
+  "rotors": [
+    {
+      "name": "Sunray150_rotor_front_right_translucent",
+      "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray_cw.stl",
+      "pose_xyz_m": [
+        0.065,
+        -0.065,
+        -0.025
+      ],
+      "triangles": 848,
+      "material": "translucent_prop"
+    },
+    {
+      "name": "Sunray150_rotor_back_left_translucent",
+      "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray_cw.stl",
+      "pose_xyz_m": [
+        -0.065,
+        0.065,
+        -0.025
+      ],
+      "triangles": 848,
+      "material": "translucent_prop"
+    },
+    {
+      "name": "Sunray150_rotor_front_left_translucent",
+      "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray_cw.stl",
+      "pose_xyz_m": [
+        0.065,
+        0.065,
+        -0.025
+      ],
+      "triangles": 848,
+      "material": "translucent_prop"
+    },
+    {
+      "name": "Sunray150_rotor_back_right_translucent",
+      "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray_cw.stl",
+      "pose_xyz_m": [
+        -0.065,
+        -0.065,
+        -0.025
+      ],
+      "triangles": 848,
+      "material": "translucent_prop"
+    }
+  ],
+  "palette": {
+    "carbon_black": [
+      0.018,
+      0.019,
+      0.021,
+      1.0
+    ],
+    "guard_black": [
+      0.026,
+      0.027,
+      0.03,
+      1.0
+    ],
+    "rubber_black": [
+      0.01,
+      0.01,
+      0.01,
+      1.0
+    ],
+    "mid360_silver": [
+      0.73,
+      0.72,
+      0.69,
+      1.0
+    ],
+    "mid360_blue": [
+      0.0,
+      0.32,
+      0.78,
+      0.76
+    ],
+    "translucent_prop": [
+      0.82,
+      0.83,
+      0.82,
+      0.42
+    ],
+    "motor_black": [
+      0.02,
+      0.02,
+      0.019,
+      1.0
+    ],
+    "copper_winding": [
+      0.95,
+      0.43,
+      0.09,
+      1.0
+    ],
+    "metal_screw": [
+      0.5,
+      0.48,
+      0.43,
+      1.0
+    ],
+    "gold_standoff": [
+      0.95,
+      0.64,
+      0.2,
+      1.0
+    ],
+    "pcb_dark": [
+      0.015,
+      0.035,
+      0.045,
+      1.0
+    ],
+    "camera_glass": [
+      0.005,
+      0.006,
+      0.007,
+      1.0
+    ]
+  },
+  "review_camera": {
+    "bounds_min": [
+      -0.12681233882904053,
+      -0.12495356798171997,
+      -0.04312795028090477
+    ],
+    "bounds_max": [
+      0.1267690360546112,
+      0.1249506026506424,
+      0.14809904992580414
+    ],
+    "active_camera": "Sunray150_Colored_Review_Camera"
+  },
+  "rules": [
+    "Do not use the rejected DAE radar/propeller assembly path for this asset.",
+    "sunray.stl already contains the MID-360; color that geometry in place.",
+    "STL has no material names, so this is connected-component geometric coloring and requires manual visual audit.",
+    "CUAV reference photos show black carbon frame/guards, silver MID-360 body, blue MID-360 dome, translucent grey ducts/propellers, black motors with copper windings, and metal/gold fasteners."
+  ],
+  "elapsed_sec": 5.49,
+  "outputs": {
+    "blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\sunray150_stl_colored.blend",
+    "fbx": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\sunray150_stl_colored.fbx",
+    "glb": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\sunray150_stl_colored.glb",
+    "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\sunray150_stl_colored_manifest.json"
+  }
+}

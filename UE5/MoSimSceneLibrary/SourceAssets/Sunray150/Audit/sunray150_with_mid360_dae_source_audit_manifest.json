@@ -1,0 +1,41 @@
+{
+  "created_at": "2026-06-03 03:48:44",
+  "purpose": "sunray150_with_mid360 DAE source audit; only drone_models/sunray150_with_mid360/meshes/150.dae is imported.",
+  "sunray150_with_mid360_source": {
+    "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\150.dae",
+    "unit_meter": 0.0254,
+    "geometry_count": 701,
+    "instance_count": 701,
+    "created_objects": 701,
+    "radar_related_objects": [
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_026_RANGING_LIDAR_CAMERA_BASE.1_RANGING_LIDAR_CAMERA_BASE",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_508_MID-360_4_ASM_AllCATPart.1_3_MANIFOLD_SOLID_BREP #99487",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_509_MID-360_4_ASM_AllCATPart.1_4_MANIFOLD_SOLID_BREP #99677",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_510_MID-360_4_ASM_AllCATPart.1_5_MANIFOLD_SOLID_BREP #99868",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_511_MID-360_4_ASM_AllCATPart.1_6_MANIFOLD_SOLID_BREP #100058",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_512_MID360_PROTECT_ARC1.1_PartBody",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_513_MID360_PROTECT_ARC2.1_PartBody",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_514_MID360_PROTECT_ARC2.2_PartBody",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_515_MID360_PROTECT_ARC_CONNECTOR.1_PartBody",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_516_MID360_PROTECT_ARC_CONNECTOR.2_PartBody",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_517_MID360_PROTECT_ARC_CONNECTOR.3_PartBody",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_518_MID360_PROTECT_ARC_CONNECTOR.4_PartBody",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_519_MID360_PROTECT_ARC_CONNECTOR.5_PartBody",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_520_MID360_PROTECT_ARC_CONNECTOR.6_PartBody"
+    ],
+    "propeller_objects": [
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_475_PROPELLER_CCW.1_Scale1",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_477_PROPELLER_CW.1_NONE",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_481_PROPELLER_CCW.2_Scale1",
+      "SUNRAY150_WITH_MID360_DAE_SOURCE_483_PROPELLER_CW.2_NONE"
+    ]
+  },
+  "forbidden_sources": [
+    "sensor_models/livox_mid360"
+  ],
+  "elapsed_sec": 4.82,
+  "outputs": {
+    "blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_with_mid360_dae_source_audit.blend",
+    "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_with_mid360_dae_source_audit_manifest.json"
+  }
+}

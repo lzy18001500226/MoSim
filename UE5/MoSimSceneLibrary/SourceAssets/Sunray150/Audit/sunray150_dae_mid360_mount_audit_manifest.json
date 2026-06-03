@@ -1,0 +1,98 @@
+{
+  "created_at": "2026-06-03 04:19:35",
+  "purpose": "DAE-derived aircraft cleaning route, MID-360 mount audit only. DAE radar/propellers are hidden; standalone MID-360 is placed at frame screw-pattern center for manual review.",
+  "sources": {
+    "dae_aircraft": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\150.dae",
+    "standalone_mid360": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae"
+  },
+  "hidden_dae_parts": {
+    "rule": "hide DAE PROPELLER/MID360/RANGING_LIDAR/LIVOX/PROTECT_ARC parts before replacement",
+    "count": 18
+  },
+  "mount_screws": [
+    {
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.6\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.6\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        -0.040322,
+        0.069739,
+        0.055932
+      ],
+      "bounds_min_m": [
+        -0.042993,
+        0.067071,
+        0.053005
+      ],
+      "bounds_max_m": [
+        -0.035167,
+        0.074898,
+        0.058855
+      ]
+    },
+    {
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.8\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.8\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        0.040334,
+        0.069732,
+        0.055924
+      ],
+      "bounds_min_m": [
+        0.035167,
+        0.067071,
+        0.053005
+      ],
+      "bounds_max_m": [
+        0.042993,
+        0.074898,
+        0.058855
+      ]
+    },
+    {
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.1\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.1\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        0.03398,
+        0.076092,
+        0.049
+      ],
+      "bounds_min_m": [
+        0.031066,
+        0.073149,
+        0.04735
+      ],
+      "bounds_max_m": [
+        0.036916,
+        0.078999,
+        0.055
+      ]
+    },
+    {
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.3\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.3\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        -0.033998,
+        0.076093,
+        0.049011
+      ],
+      "bounds_min_m": [
+        -0.036916,
+        0.073149,
+        0.04735
+      ],
+      "bounds_max_m": [
+        -0.031066,
+        0.078999,
+        0.055
+      ]
+    }
+  ],
+  "candidate_mount_center_m": [
+    -1e-06,
+    0.072914,
+    0.052467
+  ],
+  "mid360_rule": "standalone MID-360 uses reviewed yaw=pi and local origin at circular base center before translation to candidate mount center",
+  "status": "manual_review_required_before_using_as_runtime_visual",
+  "elapsed_sec": 3.401,
+  "outputs": {
+    "blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_dae_mid360_mount_audit.blend",
+    "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_dae_mid360_mount_audit_manifest.json"
+  }
+}

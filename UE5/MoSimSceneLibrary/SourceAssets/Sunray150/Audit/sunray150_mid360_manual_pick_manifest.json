@@ -1,0 +1,346 @@
+{
+  "created_at": "2026-06-03 04:25:14",
+  "purpose": "Manual point picking for DAE-derived Sunray150 MID-360 replacement. No automatic alignment is accepted from this scene.",
+  "sources": {
+    "dae_aircraft": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\150.dae",
+    "standalone_mid360": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae"
+  },
+  "hidden_dae_parts_count": 18,
+  "aircraft_offset": [
+    -0.14000000059604645,
+    0.0,
+    0.0
+  ],
+  "radar_offset": [
+    0.14000000059604645,
+    0.0,
+    0.0
+  ],
+  "A_aircraft_screw_candidates": [
+    {
+      "label": "A01",
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.6\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.6\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        -0.040322,
+        0.069739,
+        0.055932
+      ]
+    },
+    {
+      "label": "A02",
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.8\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.8\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        0.040334,
+        0.069732,
+        0.055924
+      ]
+    },
+    {
+      "label": "A03",
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.1\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.1\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        0.03398,
+        0.076092,
+        0.049
+      ]
+    },
+    {
+      "label": "A04",
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.3\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.3\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        -0.033998,
+        0.076093,
+        0.049011
+      ]
+    },
+    {
+      "label": "A05",
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.4\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.4\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        0.040318,
+        -0.005159,
+        0.055937
+      ]
+    },
+    {
+      "label": "A06",
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.7\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.7\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        -0.040322,
+        -0.005192,
+        0.05594
+      ]
+    },
+    {
+      "label": "A07",
+      "name": "SCREW_BUTTON_HEAD_M3_8MM.3\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_8MM.3\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        0.045004,
+        2e-06,
+        0.050772
+      ]
+    },
+    {
+      "label": "A08",
+      "name": "SCREW_BUTTON_HEAD_M3_8MM.4\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_8MM.4\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        -0.045005,
+        -1.5e-05,
+        0.050728
+      ]
+    },
+    {
+      "label": "A09",
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.5\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.5\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        0.03398,
+        -0.011491,
+        0.048998
+      ]
+    },
+    {
+      "label": "A10",
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.2\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.2\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        -0.034011,
+        -0.011494,
+        0.049
+      ]
+    },
+    {
+      "label": "A11",
+      "name": "SCREW_BUTTON_HEAD_M2.5_4MM.4\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2.5_4MM.4\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        0.017007,
+        0.08475,
+        0.039764
+      ]
+    },
+    {
+      "label": "A12",
+      "name": "SCREW_BUTTON_HEAD_M2.5_4MM.3\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2.5_4MM.3\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        -0.016992,
+        0.084751,
+        0.039753
+      ]
+    },
+    {
+      "label": "A13",
+      "name": "SCREW_BUTTON_HEAD_M3_8MM.1\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_8MM.1\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        -0.015256,
+        0.091986,
+        0.050723
+      ]
+    },
+    {
+      "label": "A14",
+      "name": "SCREW_BUTTON_HEAD_M3_8MM.2\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_8MM.2\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        0.015249,
+        0.09199,
+        0.050723
+      ]
+    },
+    {
+      "label": "A15",
+      "name": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.1\\SCREW_COUNTERSUNK | HEX_SOCKET_COUNTERSUNK_M2.5_6MM.1\\SCREW_COUNTERSUNKMesh",
+      "center_m": [
+        0.016993,
+        0.027239,
+        0.001226
+      ]
+    },
+    {
+      "label": "A16",
+      "name": "HEX_SOCKET_COUNTERSUNK_M2.5_6MM.2\\SCREW_COUNTERSUNK | HEX_SOCKET_COUNTERSUNK_M2.5_6MM.2\\SCREW_COUNTERSUNKMesh",
+      "center_m": [
+        -0.016999,
+        0.027242,
+        0.001118
+      ]
+    },
+    {
+      "label": "A17",
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.10\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.10\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        -0.003485,
+        0.038567,
+        0.12093
+      ]
+    },
+    {
+      "label": "A18",
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.9\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.9\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        0.003472,
+        0.038588,
+        0.120935
+      ]
+    },
+    {
+      "label": "A19",
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.11\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.11\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        -0.003459,
+        0.025934,
+        0.120924
+      ]
+    },
+    {
+      "label": "A20",
+      "name": "SCREW_BUTTON_HEAD_M3_6MM.12\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M3_6MM.12\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        0.003497,
+        0.025984,
+        0.12093
+      ]
+    },
+    {
+      "label": "A21",
+      "name": "HEX_SOCKET_COUNTERSUNK_M2_10MM.2\\SCREW_COUNTERSUNK | HEX_SOCKET_COUNTERSUNK_M2_10MM.2\\SCREW_COUNTERSUNKMesh",
+      "center_m": [
+        0.010006,
+        0.010001,
+        0.000363
+      ]
+    },
+    {
+      "label": "A22",
+      "name": "HEX_SOCKET_COUNTERSUNK_M2_10MM.1\\SCREW_COUNTERSUNK | HEX_SOCKET_COUNTERSUNK_M2_10MM.1\\SCREW_COUNTERSUNKMesh",
+      "center_m": [
+        -0.009997,
+        0.010017,
+        0.000255
+      ]
+    },
+    {
+      "label": "A23",
+      "name": "SCREW_BUTTON_HEAD_M2_10MM.3\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_10MM.3\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        -0.0295,
+        0.019252,
+        0.000804
+      ]
+    },
+    {
+      "label": "A24",
+      "name": "SCREW_BUTTON_HEAD_M2_10MM.4\\HEX_SOCKET_BUTTON_HEAD | SCREW_BUTTON_HEAD_M2_10MM.4\\HEX_SOCKET_BUTTON_HEADMesh",
+      "center_m": [
+        0.029494,
+        0.019252,
+        0.000788
+      ]
+    },
+    {
+      "label": "A25",
+      "name": "YUNDRONE_AL_COLUMNS_M3_D5_30MM_5LEAD.1\\LEAD_SCREW | YUNDRONE_AL_COLUMNS_M3_D5_30MM_5LEAD.1\\LEAD_SCREWMesh",
+      "center_m": [
+        0.044959,
+        -9e-06,
+        0.01608
+      ]
+    },
+    {
+      "label": "A26",
+      "name": "YUNDRONE_AL_COLUMNS_M3_D5_30MM_5LEAD.2\\LEAD_SCREW | YUNDRONE_AL_COLUMNS_M3_D5_30MM_5LEAD.2\\LEAD_SCREWMesh",
+      "center_m": [
+        -0.045045,
+        -1.3e-05,
+        0.01608
+      ]
+    },
+    {
+      "label": "A27",
+      "name": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.1\\SCREW_COUNTERSUNK | HEX_SOCKET_COUNTERSUNK_M2.5_8MM.1\\SCREW_COUNTERSUNKMesh",
+      "center_m": [
+        -0.017013,
+        0.027249,
+        -0.010215
+      ]
+    },
+    {
+      "label": "A28",
+      "name": "HEX_SOCKET_COUNTERSUNK_M2.5_8MM.4\\SCREW_COUNTERSUNK | HEX_SOCKET_COUNTERSUNK_M2.5_8MM.4\\SCREW_COUNTERSUNKMesh",
+      "center_m": [
+        0.017004,
+        0.027244,
+        -0.010279
+      ]
+    }
+  ],
+  "B_radar_mount_candidates": [
+    {
+      "label": "B01",
+      "local_point_m": [
+        -0.024584,
+        -0.018776,
+        0.0
+      ]
+    },
+    {
+      "label": "B02",
+      "local_point_m": [
+        0.024584,
+        -0.018776,
+        0.0
+      ]
+    },
+    {
+      "label": "B03",
+      "local_point_m": [
+        -0.024584,
+        0.018776,
+        0.0
+      ]
+    },
+    {
+      "label": "B04",
+      "local_point_m": [
+        0.024584,
+        0.018776,
+        0.0
+      ]
+    },
+    {
+      "label": "B05",
+      "local_point_m": [
+        -0.028,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "label": "B06",
+      "local_point_m": [
+        0.028,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "label": "B07",
+      "local_point_m": [
+        0.0,
+        -0.028,
+        0.0
+      ]
+    },
+    {
+      "label": "B08",
+      "local_point_m": [
+        0.0,
+        0.028,
+        0.0
+      ]
+    }
+  ],
+  "instruction": "User must pick ordered four A labels and ordered four B labels before transform/scale solving.",
+  "status": "manual_pick_required",
+  "elapsed_sec": 5.619,
+  "outputs": {
+    "blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_mid360_manual_pick.blend",
+    "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\sunray150_mid360_manual_pick_manifest.json"
+  }
+}

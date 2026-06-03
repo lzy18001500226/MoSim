@@ -1,0 +1,95 @@
+{
+  "created_at": "2026-06-03 03:11:27",
+  "purpose": "Standalone center/origin audit for model://livox_mid360 using accepted F_yaw180_only orientation.",
+  "model_uri": "model://livox_mid360",
+  "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae",
+  "accepted_visual_pose_xyz_rpy": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    3.14159
+  ],
+  "sdf_base_link_origin": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "sdf_imu_origin": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "sdf_laser_sensor_origin": [
+    0.0,
+    0.0,
+    0.10000000149011612
+  ],
+  "visual_bbox_min": [
+    -0.04835997521877289,
+    -0.02342536672949791,
+    -0.01560137141495943
+  ],
+  "visual_bbox_max": [
+    0.03892442584037781,
+    0.054423410445451736,
+    0.05651513859629631
+  ],
+  "visual_bbox_center": [
+    -0.00471777468919754,
+    0.015499021857976913,
+    0.020456884056329727
+  ],
+  "center_rule": "Manual audit rejected the raw DAE/SDF visual origin and full visual bbox center as off-axis. The imported visual mesh is recentered so the circular radar base mounting center becomes the Blender/UE origin.",
+  "recommendation": "Use the corrected radar-base mounting center origin for Blender/UE mounting. Keep SDF base_link and laser sensor origins documented separately for Gazebo/sensor-frame parity.",
+  "import_result": {
+    "source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\sensor_models\\livox_mid360\\meshes\\test2.dae",
+    "unit_meter": 0.0254,
+    "created_objects": 22,
+    "triangles": 98907
+  },
+  "recenter_result": {
+    "base_mount_object": "livox_mid360_center_audit_016_280AE95507C4A9E7FFF822EE9E88F291EF3AAE9A_B8A4396250C5687B1D31E70758B30729E1AC4426",
+    "base_mount_bbox_min_before": [
+      -0.038871679455041885,
+      -0.023372698575258255,
+      -0.01560137141495943
+    ],
+    "base_mount_bbox_max_before": [
+      0.03887175768613815,
+      0.05437074229121208,
+      -0.0058813877403736115
+    ],
+    "base_mount_center_before": [
+      3.91155481338501e-08,
+      0.015499021857976913,
+      -0.010741379112005234
+    ],
+    "applied_translation": [
+      -3.91155481338501e-08,
+      -0.015499021857976913,
+      0.010741379112005234
+    ],
+    "moved_mesh_objects": 22
+  },
+  "review_camera": {
+    "active_camera": "LivoxMid360_Center_Review_Camera",
+    "bounds_min": [
+      -0.04836001247167587,
+      -0.03892438858747482,
+      -0.004859992302954197
+    ],
+    "bounds_max": [
+      0.03892438858747482,
+      0.03892438858747482,
+      0.11109597235918045
+    ],
+    "extent": 0.11595596373081207
+  },
+  "elapsed_sec": 0.378,
+  "outputs": {
+    "blend": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\livox_mid360_center_audit.blend",
+    "manifest": "C:\\Users\\HP\\Desktop\\MoSim\\UE5\\MoSimSceneLibrary\\SourceAssets\\Sunray150\\Audit\\livox_mid360_center_audit_manifest.json"
+  }
+}
