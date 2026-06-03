@@ -459,6 +459,9 @@ References/PX4/PX4/.github/instructions/docs.en.instructions.md
 References/PX4/PX4/msg/ActuatorTest.msg
 References/PX4/PX4/msg/SensorBaro.msg
 References/PX4/PX4/msg/translation_node/translations/translation_home_position_v1.h
+!References/PX4/PX4/platforms/
+!References/PX4/PX4/platforms/**
+References/PX4/PX4/platforms/nuttx/Debug/NuttX
 !References/PX4/PX4/posix-configs/
 !References/PX4/PX4/posix-configs/**
 !References/PX4/PX4/ROMFS/
