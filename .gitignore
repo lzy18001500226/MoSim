@@ -327,6 +327,8 @@ References/Blender/blender/extern/*
 !References/Blender/blender/extern/quadriflow/**
 !References/Blender/blender/extern/audaspace/
 !References/Blender/blender/extern/audaspace/**
+!References/Blender/blender/extern/bullet2/
+!References/Blender/blender/extern/bullet2/**
 !References/Blender/blender/.clang-format
 !References/Blender/blender/.clang-tidy
 !References/Blender/blender/.editorconfig

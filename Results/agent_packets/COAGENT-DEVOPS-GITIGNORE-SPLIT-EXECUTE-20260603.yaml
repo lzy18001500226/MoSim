@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_main_extern_group1_ready_for_commit
-decision: admit_blender_main_extern_group1
-summary: "Committed Blender scripts slice as 1141f4c927. Current narrow probes showed visible untracked 0, cached diff 0, upstream relation 34 0, and .git/index.lock absent. Selected Blender extern group 1: every References/Blender/blender/extern top-level directory except bullet2. This totals 950 files, under the 1000-file ceiling. Gates found no files over 100 MB and no nested .git. Secret/LFS scan had no real credential hits; SECRET matches were xxhash algorithm constants and variable names."
-evidence: "blender_scripts_commit=1141f4c927; pre_slice_visible_untracked=0; pre_slice_cached_diff=0; upstream_ahead_behind_before_slice=34 0; index_lock=absent; candidate=References/Blender/blender/extern group1 excluding bullet2; files_on_disk=950; over_100MB=none; nested_git=none; credential_hits=none; token_hits=xxhash_algorithm_names_only; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
-risks: "This is a 950-file external dependency source slice, below the 1000-file batch ceiling. bullet2 remains isolated for a later 439-file batch. Push remains deferred."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, selected extern group1 directories, and this result packet; commit this batch; then recheck visible untracked count."
+status: blender_main_extern_bullet2_ready_for_commit
+decision: admit_blender_main_extern_bullet2
+summary: "Committed Blender extern group 1 as 50544440a8. Selected References/Blender/blender/extern/bullet2 as the second extern batch. It has 439 files, under the 1000-file ceiling. Gates found no files over 100 MB, no nested .git, and no high-confidence secret/LFS hits. .gitignore now opens extern/bullet2/**, completing the extern top-level split."
+evidence: "blender_extern_group1_commit=50544440a8; candidate=References/Blender/blender/extern/bullet2; files_on_disk=439; over_100MB=none; nested_git=none; high_confidence_secret_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
+risks: "No blocker for this 439-file external dependency source slice. Push remains deferred."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, References/Blender/blender/extern/bullet2, and this result packet; commit this batch; then recheck visible untracked count."
 needs_human: false
 blocked_reason: "not_blocked"
