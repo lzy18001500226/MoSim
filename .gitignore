@@ -140,8 +140,6 @@ References/Agent/Skills/AutoSkill/data/eval/
 References/Agent/Skills/AutoSkill/SkillBank/*
 !References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/
 References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/*
-!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/english_gpt3.5_8_GLM4.7/
-!References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/english_gpt3.5_8_GLM4.7/**
 References/Agent/Skills/awesome-opencode/dist/
 References/Agent/**/.git/
 References/Agent/**/__pycache__/
