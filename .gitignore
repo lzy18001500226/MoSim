@@ -154,7 +154,6 @@ References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/*
 !References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/chinese_gpt4_8/**
 !References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/chinese_gpt4_8_GLM4.7/
 !References/Agent/Skills/AutoSkill/SkillBank/ConvSkill/chinese_gpt4_8_GLM4.7/**
-!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/
 References/Agent/Skills/awesome-opencode/dist/
 References/Agent/**/.git/
 References/Agent/**/__pycache__/
