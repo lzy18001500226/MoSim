@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_source_blender_nodes_ready_for_commit
-decision: admit_blender_source_blender_nodes
-summary: "After committing blenkernel as f1f542dc14, selected the next bounded Blender source slice: source/blender/nodes. The group produced 697 visible files, under the 1000-file batch ceiling. Gates found no files over 100 MB, no nested .git directories, and no high-confidence credential hits. .gitignore now opens only this additional source/blender subdirectory; draw, gpu, and editors stay isolated."
-evidence: "previous_commit=f1f542dc14; selected_dir=nodes; candidate_visible_file_count=697; over_100MB=none; nested_git=none; credential_hits=none; remaining_dirs=draw,gpu,editors; broad_status_used=false; broad_add_used=false; git_add_A_used=false; ide_hiding_settings_added=false"
-risks: "Remaining Blender source directories must still be admitted in separate batches. editors has 1193 files and must be split below the directory level. Push is still deferred; branch is ahead of upstream by many local commits."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, Results/agent_packets/COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603.yaml, and nodes; run staged gates; commit with message refs: add blender source nodes."
+status: sunray150_material_audit_backfill_ready_for_commit
+decision: commit_three_visible_project_backfill_files
+summary: "After committing Blender source nodes as c75f9451b3, narrow visible-untracked probe showed three project-owned files: two Sunray150 material audit package outputs and one closeups manifest writer script. These are small project artifacts, not a large external tree. Gates found no files over 100 MB and no high-confidence credential hits. Commit them as a small backfill before opening another reference slice so visible untracked returns to zero."
+evidence: "previous_commit=c75f9451b3; visible_untracked_after_previous_commit=3; files=Results/unreal_scene_mapping/SUNRAY150_MID360_MATERIAL_AUDIT_PACKAGE_20260603.md,Results/unreal_scene_mapping/sunray150_mid360_material_audit_package_20260603.json,Scripts/UE5/assets/write_sunray150_material_closeups_manifest.py; total_size_bytes=17069; over_100MB=none; credential_hits=none; broad_status_used=false; broad_add_used=false; git_add_A_used=false; ide_hiding_settings_added=false"
+risks: "Remaining Blender source directories still need split admission: draw, gpu, and editors. editors has 1193 files and must be split below the directory level. Push is still deferred."
+next_action: "Stage only these three files plus this result packet; run staged gates; commit with message results: add sunray150 material audit package."
 needs_human: false
 blocked_reason: "not_blocked"

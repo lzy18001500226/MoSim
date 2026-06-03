@@ -1,0 +1,229 @@
+{
+  "status": "manual_blender_material_audit_pending",
+  "do_not_export_to_ue_until_manual_acceptance": true,
+  "component_plan": [
+    {
+      "component": "carbon frame plates / top panel / main structure",
+      "source_names": [
+        "MAIN_STRUCTURE",
+        "TOP_PANNEL",
+        "BOT_PANNEL",
+        "Fill"
+      ],
+      "material": "dark graphite woven carbon fiber",
+      "texture_maps": [
+        "sunray150_carbon_fiber_base.png",
+        "sunray150_carbon_fiber_roughness.png",
+        "sunray150_carbon_fiber_bump.png"
+      ],
+      "evidence": "Local DAE part names and Sunray/CUAV visual references show dark carbon composite frame plates, not white plastic."
+    },
+    {
+      "component": "MID-360 protection structure",
+      "source_names": [
+        "PROTECTIVE_RING",
+        "MID360_PROTECT_ARC*",
+        "MID360_PROTECT_ARC_CONNECTOR*"
+      ],
+      "material": "matte black / dark grey low-reflection plastic or composite",
+      "texture_maps": [
+        "sunray150_black_rubber_base.png",
+        "sunray150_black_rubber_roughness.png",
+        "sunray150_black_rubber_bump.png"
+      ],
+      "evidence": "YunDrone MID-360 protection cover references and local DAE names indicate a dark protective structure; previous white/blue broad coloring was rejected."
+    },
+    {
+      "component": "Livox MID-360 visual sensor",
+      "source_names": [
+        "AUDIT_STANDALONE_MID360_013/014/015/016/017"
+      ],
+      "material": "satin silver-grey housing, blue optical window, black M12 connector/base",
+      "texture_maps": [
+        "mid360_silver_grey_aluminum_base.png",
+        "mid360_silver_grey_aluminum_roughness.png",
+        "mid360_silver_grey_aluminum_bump.png"
+      ],
+      "evidence": "Livox MID-360 product references show blue optical dome/window with grey housing and black connector/base."
+    },
+    {
+      "component": "propellers",
+      "source_names": [
+        "sunray_cw.stl fitted to DAE M2 screw pairs"
+      ],
+      "material": "dark smoked composite propeller",
+      "texture_maps": [
+        "sunray150_smoked_translucent_guard_base.png",
+        "sunray150_smoked_translucent_guard_roughness.png"
+      ],
+      "evidence": "User accepted three-blade geometry from local Sunray source; material remains dark composite until physical photo audit refines it."
+    },
+    {
+      "component": "motors and screws",
+      "source_names": [
+        "MOTOR",
+        "STATOR WIRE",
+        "SCREW",
+        "NUT",
+        "WASHER"
+      ],
+      "material": "black motor bell, copper winding hints, brushed/dark steel screws",
+      "texture_maps": [
+        "sunray150_dark_anodized_metal_base.png",
+        "sunray150_dark_anodized_metal_roughness.png"
+      ],
+      "evidence": "DAE object names expose motor, stator wire, and screw families; material assignment separates metal, copper, and plastic roles."
+    },
+    {
+      "component": "electronics, cameras, connectors, cables",
+      "source_names": [
+        "N150",
+        "PCBModel",
+        "FRONT_CAMERA",
+        "BOTTOM_CAMERA",
+        "USB",
+        "HDMI",
+        "CABLE"
+      ],
+      "material": "black PCB/camera bodies, nickel connector shells, colored cable hints",
+      "texture_maps": [
+        "sunray150_pcb_black_base.png",
+        "sunray150_black_rubber_base.png"
+      ],
+      "evidence": "Local DAE object hierarchy exposes N150/USB/HDMI/camera/cable groups; overlays mark cable and camera-lens intent without changing geometry."
+    }
+  ],
+  "geometry_invariants": {
+    "mid360_uniform_scale": 0.833527,
+    "propeller_source": "C:\\Users\\HP\\Desktop\\MoSim\\References\\Sunray\\simulation\\sunray_simulator\\models\\drone_models\\sunray150_with_mid360\\meshes\\sunray_cw.stl",
+    "propeller_orientation": "flipped_around_screw_axis",
+    "propeller_z_rule": "Final propeller transform translation.z is computed from user-audited planes and fine tune: base -0.0161m + ((-0.0193m + 0.0001m) - -0.021098m) + 0.00015m = -0.014052m.",
+    "ue_export_allowed": false,
+    "status": "manual_blender_material_audit_pending"
+  },
+  "texture_manifest": {
+    "carbon_fiber": {
+      "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_carbon_fiber_base.png",
+      "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_carbon_fiber_roughness.png",
+      "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_carbon_fiber_bump.png"
+    },
+    "dark_metal": {
+      "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_dark_anodized_metal_base.png",
+      "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_dark_anodized_metal_roughness.png",
+      "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_dark_anodized_metal_bump.png"
+    },
+    "gold_aluminum": {
+      "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_gold_anodized_aluminum_base.png",
+      "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_gold_anodized_aluminum_roughness.png",
+      "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_gold_anodized_aluminum_bump.png"
+    },
+    "mid360_silver": {
+      "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/mid360_silver_grey_aluminum_base.png",
+      "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/mid360_silver_grey_aluminum_roughness.png",
+      "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/mid360_silver_grey_aluminum_bump.png"
+    },
+    "black_rubber": {
+      "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_black_rubber_base.png",
+      "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_black_rubber_roughness.png",
+      "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_black_rubber_bump.png"
+    },
+    "smoked_guard": {
+      "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_translucent_guard_base.png",
+      "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_translucent_guard_roughness.png",
+      "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_smoked_translucent_guard_bump.png"
+    },
+    "pcb_black": {
+      "base_color": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_base.png",
+      "roughness": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_roughness.png",
+      "bump": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures/sunray150_pcb_black_bump.png"
+    }
+  },
+  "closeups": [
+    {
+      "name": "mid360_housing_window_connector",
+      "path": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/mid360_housing_window_connector.png",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/mid360_housing_window_connector.png",
+      "center_m": [
+        0.0,
+        0.032,
+        0.086
+      ],
+      "camera_offset_m": [
+        0.03,
+        -0.115,
+        0.03
+      ],
+      "ortho_scale": 0.105,
+      "purpose": "MID-360 silver housing, blue optical window, black connector, screw details, and protection arc."
+    },
+    {
+      "name": "front_usb_camera_battery",
+      "path": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/front_usb_camera_battery.png",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/front_usb_camera_battery.png",
+      "center_m": [
+        0.0,
+        0.072,
+        0.019
+      ],
+      "camera_offset_m": [
+        0.018,
+        -0.12,
+        0.02
+      ],
+      "ortho_scale": 0.115,
+      "purpose": "Front USB camera, battery pack area, connector holes, and black camera/glass material."
+    },
+    {
+      "name": "pcb_connectors_cables",
+      "path": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/pcb_connectors_cables.png",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/pcb_connectors_cables.png",
+      "center_m": [
+        0.03,
+        0.052,
+        0.017
+      ],
+      "camera_offset_m": [
+        0.085,
+        -0.08,
+        0.035
+      ],
+      "ortho_scale": 0.085,
+      "purpose": "N150/ESC PCB stack, USB/HDMI connector metal, and colored cable hints."
+    },
+    {
+      "name": "carbon_frame_gold_standoffs",
+      "path": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/carbon_frame_gold_standoffs.png",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/carbon_frame_gold_standoffs.png",
+      "center_m": [
+        0.0,
+        0.006,
+        0.02
+      ],
+      "camera_offset_m": [
+        0.09,
+        -0.105,
+        0.055
+      ],
+      "ortho_scale": 0.135,
+      "purpose": "Carbon fiber plates, gold aluminum standoffs, screws, and stack separation."
+    },
+    {
+      "name": "motor_prop_guard",
+      "path": "/mnt/c/Users/HP/Desktop/MoSim/UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/motor_prop_guard.png",
+      "project_relative_path": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/material_closeups/motor_prop_guard.png",
+      "center_m": [
+        0.055,
+        0.055,
+        -0.012
+      ],
+      "camera_offset_m": [
+        0.055,
+        -0.07,
+        0.04
+      ],
+      "ortho_scale": 0.08,
+      "purpose": "Motor bell, copper windings, propeller material, screws, and smoked guard."
+    }
+  ],
+  "audit_blend": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_dae_mid360_realistic_material_audit.blend"
+}
