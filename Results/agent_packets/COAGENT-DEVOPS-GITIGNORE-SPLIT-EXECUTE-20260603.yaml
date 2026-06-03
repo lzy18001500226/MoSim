@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: sourceassets_texture_backfill_ready_for_commit
-decision: admit_sourceassets_texture_backfill_before_next_reference_slice
-summary: "After committing PX4 MAVLink as 9b895503f0, the narrow untracked probe showed 22 visible files, all under UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures. These are expected PBR texture PNGs and a manifest for the already admitted SourceAssets set. Gates found no files over 100 MB, no nested .git, no LFS pointer markers, and no high-confidence secret hits."
-evidence: "px4_mavlink_commit=9b895503f0; upstream_ahead_behind_after_mavlink=21 0; unignored_after_mavlink=22; candidate=UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Textures; admitted_untracked_files=22; over_100MB=none; nested_git=none; lfs_pointer_markers=none; high_confidence_secret_hits=none; ide_hiding_settings_added=false"
-risks: "This is a backfill of small texture assets that should have accompanied the SourceAssets batch. Push is not attempted in this phase."
-next_action: "Commit this 22-file SourceAssets texture backfill batch, then continue with another <1000-file reference slice such as References/PX4/mavros-ros2, References/Blender/armorpaint-main, or References/Blender/xatlas."
+status: px4_mavros_ros2_batch_ready_for_commit
+decision: admit_px4_mavros_ros2_reference_slice
+summary: "After committing SourceAssets texture backfill as 01e192a4d5, continued the corrected Git-layer-only split execution. Current narrow probes showed unignored files 0, cached diff 0, and upstream relation 22 0. Selected References/PX4/mavros-ros2 as the next bounded reference slice. It has 456 files. Gates found no files over 100 MB, no nested .git, and no high-confidence secret or LFS pointer hits. The earlier conflict-marker scan hits were Markdown heading separators, not merge conflicts. .gitignore now opens References/PX4/mavros-ros2/** while keeping the rest of large PX4 isolated."
+evidence: "sourceassets_texture_commit=01e192a4d5; upstream_ahead_behind_before_slice=22 0; unignored_before_slice=0; cached_diff_before_slice=0; candidate=References/PX4/mavros-ros2; admitted_untracked_files=456; over_100MB=none; nested_git=none; lfs_pointer_markers=none; high_confidence_secret_hits=none; broad_status_used=false; ide_hiding_settings_added=false"
+risks: "This is a 456-file external reference slice, below the 1000-file batch ceiling. Push is not attempted in this phase."
+next_action: "Commit this 456-file MAVROS ROS2 reference batch plus .gitignore, ledger, and result packet. Then continue with another <1000-file slice such as References/Blender/armorpaint-main or References/Blender/xatlas."
 needs_human: false
 blocked_reason: "not_blocked"
