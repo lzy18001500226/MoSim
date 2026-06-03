@@ -239,3 +239,29 @@ Docs/Skills/Unreal/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset
 Docs/Skills/Unreal/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
 Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/Test/TestGE.uasset
 Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
+
+# Current local untracked intake: isolate first, then admit reviewed slices with
+# `git add -f <reviewed-slice>` after size/secret/diff checks.
+References/Blender/
+Docs/Skills/ROS-MCP/docs/images/
+Docs/Skills/ROS-MCP/examples/2_gemini/image/
+MoSim.code-workspace
+Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo_SIL_Constant.mo
+UE5/MoSimSceneLibrary/SourceAssets/
+Scripts/UE5/assets/
+image/AGENTS/
+Results/diagnostics/
+Results/agent_runs/
+Results/unreal_scene_review/
+Scripts/mworks/check_codegen_sil_equivalence.py
+Scripts/mworks/check_codegen_runtime.py
+Scripts/tests/test_dense_lidar_cpp_contract.py
+Scripts/tests/test_factory_fastlio_mid360_headless.py
+Scripts/tests/test_factory_uav_platform_review.py
+Scripts/tests/test_fastlio_factory_failure_diagnosis.py
+Scripts/tests/test_fastlio_input_contract.py
+Scripts/tests/test_fastlio_runtime_candidates.py
+Scripts/tests/test_mworks_codegen_runtime.py
+Scripts/tests/test_mworks_codegen_sil_equivalence.py
+Scripts/tests/test_realstack_miniloop_gate.py
+Scripts/tests/test_spark_fastlio_livox_patch_readiness.py
