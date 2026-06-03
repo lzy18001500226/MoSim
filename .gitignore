@@ -457,6 +457,10 @@ References/Blender/blender/source/blender/*
 !References/Blender/blender/source/blender/python/**
 !References/Blender/blender/source/blender/io/
 !References/Blender/blender/source/blender/io/**
+!References/Blender/blender/source/blender/compositor/
+!References/Blender/blender/source/blender/compositor/**
+!References/Blender/blender/source/blender/blenlib/
+!References/Blender/blender/source/blender/blenlib/**
 !References/Blender/blender/source/creator/
 !References/Blender/blender/source/creator/**
 !References/Blender/blender/.clang-format
