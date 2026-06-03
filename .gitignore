@@ -284,8 +284,6 @@ References/PX4/**/*.zip
 References/PX4/**/*.7z
 References/PX4/**/*.tar
 References/PX4/**/*.tar.gz
-Docs/Skills/ROS-MCP/docs/images/
-Docs/Skills/ROS-MCP/examples/2_gemini/image/
 MoSim.code-workspace
 Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo_SIL_Constant.mo
 # Source assets are project inputs and should be admitted in reviewed small
