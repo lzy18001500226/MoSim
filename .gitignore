@@ -243,6 +243,10 @@ Docs/Skills/Unreal/mcp/ue-mcp/tests/ue_mcp/Content/TestPCG/PCG_157_Test.uasset
 # Current local untracked intake: isolate first, then admit reviewed slices with
 # `git add -f <reviewed-slice>` after size/secret/diff checks.
 References/Blender/
+!References/Blender/
+References/Blender/*
+!References/Blender/armorpaint-main/
+!References/Blender/armorpaint-main/**
 References/PX4/
 !References/PX4/
 References/PX4/*
