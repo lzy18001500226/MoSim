@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_release_clean_group_ready_for_commit
-decision: admit_blender_release_clean_group
-summary: "Committed the Sunray150 MID360 probe backfill as 18f7197861. Current narrow probes showed cached diff 0, visible untracked 0, upstream relation 37 0, and .git/index.lock absent. Initial release scan found many Git LFS pointer-only assets in release/windows and release/darwin, so those remain isolated. Selected the clean release group bin, extensions, release_notes, pypi, text, lts, freedesktop, and license. This group has 47 files. Gates found no files over 100 MB, no nested .git, no LFS pointer hits, and no credential hits."
-evidence: "sunray_mid360_backfill_commit=18f7197861; pre_slice_visible_untracked=0; pre_slice_cached_diff=0; upstream_ahead_behind_before_slice=37 0; index_lock=absent; candidate=References/Blender/blender/release clean group; files_on_disk=47; over_100MB=none; nested_git=none; lfs_pointer_hits=none; credential_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
-risks: "release/windows, release/darwin, and release/datafiles still need LFS-aware splitting. Push remains deferred."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, selected release clean group dirs, and this result packet; commit this clean release group; then continue with intern batches."
+status: blender_intern_non_cycles_ready_for_commit
+decision: admit_blender_intern_non_cycles
+summary: "Committed the release clean group as db7eea81ee. Selected all References/Blender/blender/intern top-level directories except cycles as the next bounded slice. This group has 625 files, under the 1000-file ceiling. Gates found no files over 100 MB, no nested .git, no LFS pointer hits, and no credential hits. .gitignore now opens these intern directories while keeping intern/cycles isolated for a separate 932-file batch."
+evidence: "release_clean_group_commit=db7eea81ee; candidate=References/Blender/blender/intern non-cycles; files_on_disk=625; over_100MB=none; nested_git=none; lfs_pointer_hits=none; credential_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
+risks: "intern/cycles remains isolated for a later 932-file batch. Push remains deferred."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, selected intern non-cycles dirs, and this result packet; commit this batch; then process intern/cycles."
 needs_human: false
 blocked_reason: "not_blocked"
