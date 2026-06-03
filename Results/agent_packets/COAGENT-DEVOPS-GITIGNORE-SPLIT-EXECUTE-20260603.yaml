@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_main_scripts_ready_for_commit
-decision: admit_blender_main_scripts_slice
-summary: "Committed Blender dotfile backfill as 32f9181138. Selected References/Blender/blender/scripts as the next bounded Blender main slice. It has 831 files, under the 1000-file ceiling. Gates found no files over 100 MB and no nested .git. LFS scan found 5 pointer-only startup.blend files; those exact files remain ignored and are not staged."
-evidence: "blender_dotfile_backfill_commit=32f9181138; candidate=References/Blender/blender/scripts; files_on_disk=831; over_100MB=none; nested_git=none; lfs_pointer_files=5 exact ignored paths; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
-risks: "This is a Blender upstream scripts slice with pointer-only LFS startup templates excluded. Push remains deferred."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, References/Blender/blender/scripts, and this result packet; commit this scripts batch; then recheck visible untracked count."
+status: blender_main_extern_group1_ready_for_commit
+decision: admit_blender_main_extern_group1
+summary: "Committed Blender scripts slice as 1141f4c927. Current narrow probes showed visible untracked 0, cached diff 0, upstream relation 34 0, and .git/index.lock absent. Selected Blender extern group 1: every References/Blender/blender/extern top-level directory except bullet2. This totals 950 files, under the 1000-file ceiling. Gates found no files over 100 MB and no nested .git. Secret/LFS scan had no real credential hits; SECRET matches were xxhash algorithm constants and variable names."
+evidence: "blender_scripts_commit=1141f4c927; pre_slice_visible_untracked=0; pre_slice_cached_diff=0; upstream_ahead_behind_before_slice=34 0; index_lock=absent; candidate=References/Blender/blender/extern group1 excluding bullet2; files_on_disk=950; over_100MB=none; nested_git=none; credential_hits=none; token_hits=xxhash_algorithm_names_only; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
+risks: "This is a 950-file external dependency source slice, below the 1000-file batch ceiling. bullet2 remains isolated for a later 439-file batch. Push remains deferred."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, selected extern group1 directories, and this result packet; commit this batch; then recheck visible untracked count."
 needs_human: false
 blocked_reason: "not_blocked"
