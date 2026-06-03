@@ -165,10 +165,6 @@ References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/*
 !References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/认知行为疗法/
 References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/认知行为疗法/*
 References/Agent/Skills/awesome-opencode/dist/
-!References/Agent/Skills/openai-skills/
-References/Agent/Skills/openai-skills/*
-!References/Agent/Skills/openai-skills/skills/
-References/Agent/Skills/openai-skills/skills/*
 References/Agent/**/.git/
 References/Agent/**/__pycache__/
 References/Agent/**/node_modules/
