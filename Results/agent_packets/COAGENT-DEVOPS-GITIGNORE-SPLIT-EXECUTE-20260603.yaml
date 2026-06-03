@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_source_blender_third_group_ready_for_commit
-decision: admit_blender_source_blender_850_file_group
-summary: "After committing the second source/blender group as 594c36dba5, selected the next bounded Blender source slice: compositor and blenlib. The group produced 850 visible files, under the 1000-file batch ceiling. Gates found no files over 100 MB, no nested .git directories, and no high-confidence credential hits. .gitignore now opens only these two additional source/blender subdirectories; larger remaining subdirectories stay isolated."
-evidence: "previous_commit=594c36dba5; selected_dirs=compositor,blenlib; candidate_visible_file_count=850; over_100MB=none; nested_git=none; credential_hits=none; remaining_dirs=freestyle,blenkernel,nodes,draw,gpu,editors; broad_status_used=false; broad_add_used=false; git_add_A_used=false; ide_hiding_settings_added=false"
-risks: "Remaining Blender source directories must still be admitted in separate batches. editors has 1193 files and must be split below the directory level. Push is still deferred; branch is ahead of upstream by many local commits."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, Results/agent_packets/COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603.yaml, and compositor+blenlib; run staged gates; commit with message refs: add blender source compositor group."
+status: sunray150_audit_script_backfill_ready_for_commit
+decision: commit_single_visible_project_script_backfill
+summary: "After committing Blender source compositor+blenlib as 9be8159048, narrow visible-untracked probe showed exactly one file: Scripts/UE5/assets/write_sunray150_material_audit_package.py. This is a small project-owned script, not a large external tree. Gates found no files over 100 MB and no high-confidence credential hits. Commit it as a one-file backfill before opening another reference slice so visible untracked returns to zero."
+evidence: "previous_commit=9be8159048; visible_untracked_after_previous_commit=1; file=Scripts/UE5/assets/write_sunray150_material_audit_package.py; file_size_bytes=7340; over_100MB=none; credential_hits=none; broad_status_used=false; broad_add_used=false; git_add_A_used=false; ide_hiding_settings_added=false"
+risks: "Remaining Blender source directories still need split admission. This backfill does not push; branch remains ahead of upstream."
+next_action: "Stage only the one script plus this result packet; run staged gates; commit with message scripts: add sunray150 material audit package writer."
 needs_human: false
 blocked_reason: "not_blocked"
