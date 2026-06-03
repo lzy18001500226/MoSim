@@ -1,7 +1,0 @@
-#!/bin/sh
-# Standard apps for an ackermann rover.
-
-. ${R}etc/init.d/rc.rover
-
-# Start rover ackermann module.
-rover_ackermann start
