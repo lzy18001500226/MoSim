@@ -777,6 +777,18 @@ proposed_batches:
   - "batch_100_compare_candidate_file_count=2844"
   - "batch_100_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/认知行为疗法/微技能/"
   - "batch_100_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/认知行为疗法/微技能/**"
+  - "batch_101_candidate=References/Agent/Skills/ECC/docs"
+  - "batch_101_head_vs_upstream_before=100 0"
+  - "batch_101_index_lock=absent"
+  - "batch_101_candidate_file_count=1340"
+  - "batch_101_candidate_tracked_files=1340"
+  - "batch_101_candidate_untracked_files=0"
+  - "batch_101_compare_candidate=References/Agent/Skills/openai-skills/skills/.curated"
+  - "batch_101_compare_candidate_file_count=738"
+  - "batch_101_compare_candidate=References/Agent/Skills/ECC"
+  - "batch_101_compare_candidate_file_count=2844"
+  - "batch_101_removed_rule=!References/Agent/Skills/ECC/docs/"
+  - "batch_101_removed_rule=!References/Agent/Skills/ECC/docs/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -785,7 +797,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this one-hundredth `.gitignore` drain batch together with the ledger
+  Commit this one-hundred-first `.gitignore` drain batch together with the ledger
   and result packet, then re-scan `.gitignore` for the next smallest remaining
   temporary split-routing pair and continue the drain without widening scope.
 needs_human: false
