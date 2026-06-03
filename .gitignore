@@ -369,7 +369,6 @@ References/PX4/PX4/boards/*
 !References/PX4/PX4/boards/accton-godwit/**
 !References/PX4/PX4/boards/airmind/
 !References/PX4/PX4/boards/airmind/**
-References/PX4/PX4/boards/airmind/mindpx-v2/firmware.prototype
 !References/PX4/PX4/boards/ark/
 !References/PX4/PX4/boards/ark/**
 !References/PX4/PX4/boards/atl/
@@ -404,7 +403,6 @@ References/PX4/PX4/boards/airmind/mindpx-v2/firmware.prototype
 !References/PX4/PX4/boards/cuav/**
 !References/PX4/PX4/boards/cubepilot/
 !References/PX4/PX4/boards/cubepilot/**
-References/PX4/PX4/boards/cubepilot/io-v2/firmware.prototype
 !References/PX4/PX4/boards/matek/
 !References/PX4/PX4/boards/matek/**
 !References/PX4/PX4/boards/micoair/
@@ -419,7 +417,6 @@ References/PX4/PX4/boards/cubepilot/io-v2/firmware.prototype
 !References/PX4/PX4/boards/omnibus/**
 !References/PX4/PX4/boards/px4/
 !References/PX4/PX4/boards/px4/**
-References/PX4/PX4/boards/px4/io-v2/firmware.prototype
 !References/PX4/PX4/boards/holybro/
 !References/PX4/PX4/boards/holybro/**
 !References/PX4/PX4/boards/nxp/
@@ -430,7 +427,6 @@ References/PX4/PX4/boards/px4/io-v2/firmware.prototype
 !References/PX4/PX4/boards/radiolink/**
 !References/PX4/PX4/boards/saam/
 !References/PX4/PX4/boards/saam/**
-References/PX4/PX4/boards/saam/saampixv1_1/firmware.prototype
 !References/PX4/PX4/boards/scumaker/
 !References/PX4/PX4/boards/scumaker/**
 !References/PX4/PX4/boards/sky-drones/
