@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_source_blender_blenkernel_ready_for_commit
-decision: admit_blender_source_blender_blenkernel
-summary: "After committing freestyle as 4530974083, selected the next bounded Blender source slice: source/blender/blenkernel. The group produced 567 visible files, under the 1000-file batch ceiling. Gates found no files over 100 MB, no nested .git directories, and no high-confidence credential hits. .gitignore now opens only this additional source/blender subdirectory; larger remaining subdirectories stay isolated."
-evidence: "previous_commit=4530974083; selected_dir=blenkernel; candidate_visible_file_count=567; over_100MB=none; nested_git=none; credential_hits=none; remaining_dirs=nodes,draw,gpu,editors; broad_status_used=false; broad_add_used=false; git_add_A_used=false; ide_hiding_settings_added=false"
+status: blender_source_blender_nodes_ready_for_commit
+decision: admit_blender_source_blender_nodes
+summary: "After committing blenkernel as f1f542dc14, selected the next bounded Blender source slice: source/blender/nodes. The group produced 697 visible files, under the 1000-file batch ceiling. Gates found no files over 100 MB, no nested .git directories, and no high-confidence credential hits. .gitignore now opens only this additional source/blender subdirectory; draw, gpu, and editors stay isolated."
+evidence: "previous_commit=f1f542dc14; selected_dir=nodes; candidate_visible_file_count=697; over_100MB=none; nested_git=none; credential_hits=none; remaining_dirs=draw,gpu,editors; broad_status_used=false; broad_add_used=false; git_add_A_used=false; ide_hiding_settings_added=false"
 risks: "Remaining Blender source directories must still be admitted in separate batches. editors has 1193 files and must be split below the directory level. Push is still deferred; branch is ahead of upstream by many local commits."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, Results/agent_packets/COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603.yaml, and blenkernel; run staged gates; commit with message refs: add blender source blenkernel."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, Results/agent_packets/COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603.yaml, and nodes; run staged gates; commit with message refs: add blender source nodes."
 needs_human: false
 blocked_reason: "not_blocked"
