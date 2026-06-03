@@ -511,7 +511,6 @@ References/PX4/PX4/src/modules/*
 !References/PX4/PX4/src/modules/gyro_calibration/**
 !References/PX4/PX4/src/modules/gyro_fft/
 !References/PX4/PX4/src/modules/gyro_fft/**
-References/PX4/PX4/src/modules/gyro_fft/
 !References/PX4/PX4/src/modules/hardfault_stream/
 !References/PX4/PX4/src/modules/hardfault_stream/**
 !References/PX4/PX4/src/modules/internal_combustion_engine_control/
