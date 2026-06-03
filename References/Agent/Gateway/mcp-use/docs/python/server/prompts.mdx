@@ -1,0 +1,179 @@
+---
+title: "Prompts"
+description: "Define and expose prompts from your MCP server"
+icon: "message-square"
+---
+
+Prompts are reusable message templates that help AI agents interact with your server effectively. They provide structured ways to guide conversations and standardize common interactions.
+
+## Example
+
+```python
+@server.prompt(
+    name="code_review",
+    title="Code Review",
+    description="Generate a code review prompt for a given language and focus area",
+)
+def code_review_prompt(language: str, focus: str = "general") -> str:
+    """Generate a code review prompt."""
+    focus_instructions = {
+        "general": "for overall quality, readability, and best practices.",
+        "security": "focusing on security vulnerabilities and potential exploits.",
+        "performance": "focusing on performance optimizations and efficiency.",
+    }
+    instruction = focus_instructions.get(focus, focus_instructions["general"])
+    return f"Please review the following {language} code {instruction}"
+```
+
+## Anatomy of a Prompt
+
+When a client calls `prompts/list`, the server returns metadata for each prompt including its arguments. Here's the JSON-RPC response that the example above produces when a client calls `prompts/list`:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "prompts": [
+      {
+        "name": "code_review",
+        "title": "Code Review",
+        "description": "Generate a code review prompt for a given language and focus area",
+        "arguments": [
+          {
+            "name": "language",
+            "required": true
+          },
+          {
+            "name": "focus",
+            "required": false
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Here's what maps to what:
+
+| Python | MCP Schema | Notes |
+|--------|-----------|-------|
+| `name="code_review"` | `"name"` | Falls back to function name if omitted |
+| `title="Code Review"` | `"title"` | Human-readable display name |
+| `description="Generate a code review..."` | `"description"` | Falls back to docstring if omitted |
+| `language: str` (no default) | `{"name": "language", "required": true}` | Parameters without defaults are required |
+| `focus: str = "general"` | `{"name": "focus", "required": false}` | Parameters with defaults are optional |
+| `context: Context` | *(not in schema)* | Automatically excluded |
+
+### Argument Descriptions
+
+You can add descriptions to prompt arguments the same way as tools, using `Annotated` and `Field`:
+
+```python
+from typing import Annotated
+from pydantic import Field
+
+@server.prompt(name="code_review")
+def code_review_prompt(
+    language: Annotated[str, Field(description="The programming language of the code")],
+    focus: Annotated[str, Field(description="Review focus area", default="general")],
+) -> str:
+    """Generate a code review prompt."""
+    return f"Please review the following {language} code for {focus}."
+```
+
+This adds `description` to each argument in the response:
+
+```json
+{
+  "arguments": [
+    {
+      "name": "language",
+      "description": "The programming language of the code",
+      "required": true
+    },
+    {
+      "name": "focus",
+      "description": "Review focus area",
+      "required": false
+    }
+  ]
+}
+```
+
+## Minimal Definition
+
+At minimum, a prompt only needs a function:
+
+```python
+@server.prompt()
+def greeting() -> str:
+    """A friendly greeting prompt."""
+    return "Hello! How can I help you today?"
+```
+
+The function name becomes the prompt name, and the docstring becomes the description.
+
+## Using Context
+
+Access the MCP context for advanced features. Add a `Context` parameter  -  it's automatically excluded from the prompt's arguments:
+
+```python
+from mcp_use.server import Context
+
+@server.prompt(name="contextual")
+async def contextual_prompt(context: Context) -> str:
+    """A prompt that uses context information."""
+    return "Based on the current context, please..."
+```
+
+## Multi-Message Prompts
+
+Return structured messages for complex prompts:
+
+```python
+from mcp.types import PromptMessage, TextContent
+
+@server.prompt(name="interview")
+def interview_prompt(role: str) -> list[PromptMessage]:
+    """Generate an interview prompt sequence."""
+    return [
+        PromptMessage(
+            role="user",
+            content=TextContent(
+                type="text",
+                text=f"I'm interviewing for a {role} position.",
+            ),
+        ),
+        PromptMessage(
+            role="assistant",
+            content=TextContent(
+                type="text",
+                text=f"I'll help you prepare for your {role} interview. Let's start with common questions.",
+            ),
+        ),
+    ]
+```
+
+## Async Prompts
+
+Prompts can be async for dynamic content generation:
+
+```python
+@server.prompt(name="daily_brief")
+async def daily_brief() -> str:
+    """Generate a daily briefing prompt."""
+    from datetime import datetime
+    today = datetime.now().strftime("%A, %B %d")
+    return f"Good morning! Today is {today}. What would you like to accomplish?"
+```
+
+## Prompts vs Tools vs Resources
+
+| Aspect | Prompts | Tools | Resources |
+|--------|---------|-------|-----------|
+| Purpose | Guide interactions | Perform actions | Expose data |
+| Returns | Message templates | Action results | Content/data |
+| Use case | Conversation starters, templates | Operations | Files, configs |
+| Invocation | User selects prompt | Agent calls tool | Agent reads resource |

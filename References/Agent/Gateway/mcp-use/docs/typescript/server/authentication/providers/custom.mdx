@@ -1,0 +1,121 @@
+---
+title: "Custom Provider"
+description: "Use any OAuth provider that supports Dynamic Client Registration with your MCP server"
+icon: "code"
+---
+
+Use `oauthCustomProvider` when your identity provider supports Dynamic Client Registration (DCR) and advertises a `registration_endpoint` in its OAuth metadata. Clients will discover the endpoints and register themselves directly with the upstream  -  your server only verifies the resulting tokens.
+
+<Note>
+  If your provider **doesn't** support DCR  -  Google, GitHub, Okta, Azure AD, or any provider where you register an app in a dashboard and receive a fixed `clientId`/`clientSecret`  -  use [`oauthProxy`](/typescript/server/authentication/providers/oauth-proxy) instead.
+</Note>
+
+## Quick start
+
+```typescript
+import { MCPServer, oauthCustomProvider } from "mcp-use/server";
+import { jwtVerify, createRemoteJWKSet } from "jose";
+
+const JWKS = createRemoteJWKSet(
+  new URL("https://auth.example.com/.well-known/jwks.json"),
+);
+
+const server = new MCPServer({
+  name: "my-server",
+  version: "1.0.0",
+  oauth: oauthCustomProvider({
+    issuer: "https://auth.example.com",
+    authEndpoint: "https://auth.example.com/oauth/authorize",
+    tokenEndpoint: "https://auth.example.com/oauth/token",
+
+    async verifyToken(token: string) {
+      const result = await jwtVerify(token, JWKS, {
+        issuer: "https://auth.example.com",
+        audience: "your-audience",
+      });
+      return { payload: result.payload as Record<string, unknown> };
+    },
+
+    getUserInfo(payload) {
+      return {
+        userId: payload.sub as string,
+        email: payload.email as string | undefined,
+        name: payload.name as string | undefined,
+        roles: (payload.roles as string[]) || [],
+      };
+    },
+  }),
+});
+
+await server.listen(3000);
+```
+
+## All configuration options
+
+```typescript
+oauthCustomProvider({
+  // Required: OAuth endpoints
+  issuer: "https://auth.example.com",
+  authEndpoint: "https://auth.example.com/oauth/authorize",
+  tokenEndpoint: "https://auth.example.com/oauth/token",
+
+  // Required: Token verification  -  must return { payload: Record<string, unknown> }
+  async verifyToken(token: string) {
+    const { payload } = await jwtVerify(token, JWKS, { issuer: "..." });
+    return { payload: payload as Record<string, unknown> };
+  },
+
+  // Optional: JWKS endpoint advertised in discovery metadata
+  jwksUrl: "https://auth.example.com/.well-known/jwks.json",
+
+  // Optional: User info endpoint URL
+  userInfoEndpoint: "https://auth.example.com/userinfo",
+
+  // Optional: Override advertised scopes
+  scopesSupported: ["openid", "profile", "email"],
+
+  // Optional: Override advertised grant types
+  // Default: ['authorization_code', 'refresh_token']
+  grantTypesSupported: ["authorization_code", "refresh_token"],
+
+  // Optional: Audience for JWT verification
+  audience: "your-api-identifier",
+
+  // Optional: Custom user info extraction
+  getUserInfo(payload) {
+    return {
+      userId: payload.sub as string,
+      email: payload.email as string | undefined,
+      name: payload.name as string | undefined,
+    };
+  },
+});
+```
+
+## Accessing user info in tools
+
+```typescript
+server.tool(
+  {
+    name: "get-user-info",
+    description: "Get authenticated user info",
+  },
+  async (_args, ctx) => ({
+    userId: ctx.auth.user.userId,
+    email: ctx.auth.user.email,
+    name: ctx.auth.user.name,
+    scopes: ctx.auth.scopes,
+  }),
+);
+```
+
+## Resources
+
+- [jose library](https://github.com/panva/jose)  -  JWT verification
+- [OAuth 2.1 Specification](https://oauth.net/2.1/)
+- [OIDC Specification](https://openid.net/specs/openid-connect-core-1_0.html)
+
+## Next Steps
+
+- [OAuth Proxy](/typescript/server/authentication/providers/oauth-proxy)  -  For providers without DCR support
+- [User Context](/typescript/server/authentication/user-context)  -  Access user information in tools

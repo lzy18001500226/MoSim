@@ -1,0 +1,86 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main, monorepo]
+    paths:
+      - "libraries/python/**"
+      - "libraries/typescript/**"
+      - "docs/**"
+  pull_request:
+    branches: [main, monorepo]
+    paths:
+      - "libraries/python/**"
+      - "libraries/typescript/**"
+      - "docs/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    name: Generate and validate API documentation
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Create virtual environment
+        run: cd libraries/python && uv venv
+
+      - name: Install Python dependencies
+        run: cd libraries/python && uv pip install -e . && uv pip install google-genai
+
+      - name: Install Mintlify CLI
+        run: npm install -g mint
+
+      - name: Generate Python API documentation
+        run: |
+          source libraries/python/.venv/bin/activate
+          cd docs
+          python generate_docs.py ../libraries/python/mcp_use python/api-reference docs.json
+
+      - name: Check for broken links
+        run: |
+          cd docs
+          mint broken-links
+
+      - name: Check for documentation changes
+        id: check_docs
+        run: |
+          if [ -n "$(git status --porcelain docs/)" ]; then
+            echo "docs_outdated=true" >> $GITHUB_OUTPUT
+            echo "❌ API documentation is out of date!"
+            echo ""
+            echo "The following files have been modified:"
+            MODIFIED=$(git status --porcelain docs/)
+            echo "$MODIFIED"
+            echo ""
+            echo "Diff (working tree vs HEAD):"
+            git diff docs/
+            echo "modified_files<<EOF" >> $GITHUB_OUTPUT
+            echo "$MODIFIED" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "docs_outdated=false" >> $GITHUB_OUTPUT
+            echo "✅ API documentation is up to date"
+          fi
+
+      - name: Fail if docs are outdated
+        if: steps.check_docs.outputs.docs_outdated == 'true'
+        run: |
+          echo "Please update the API documentation and commit the changes."
+          exit 1

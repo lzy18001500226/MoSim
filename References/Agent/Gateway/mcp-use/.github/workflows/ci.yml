@@ -1,0 +1,996 @@
+name: CI
+permissions:
+  contents: read
+
+# ============================================================================
+# CI Workflow Overview
+# ============================================================================
+#
+# This workflow provides comprehensive testing for both Python and TypeScript
+# libraries with intelligent path-based filtering to only run relevant tests.
+#
+# WORKFLOW STRUCTURE:
+#
+# 1. detect-changes (Always runs first)
+#    - Uses path filters to determine which parts of the codebase changed
+#    - Outputs: python, typescript, typescript-agent, create-mcp-use-app
+#    - Subsequent jobs use these outputs to conditionally run
+#
+# 2. Python Tests (runs if libraries/python/** changed)
+#    ├─ python-lint: Ruff linting and formatting checks
+#    ├─ python-unit-tests: Matrix [Python 3.11, 3.12]
+#    ├─ python-transport-tests: Matrix [stdio, sse, streamable_http]
+#    │  └─ python-transport-tests-report: Posts PR comment with test results table
+#    ├─ python-primitive-tests: Matrix [7 MCP primitives]
+#    │  └─ python-primitive-tests-report: Posts PR comment with test results table
+#    ├─ python-integration-tests: Other integration tests
+#    └─ python-agent-tests: Matrix [4 agent test suites] (requires API keys)
+#
+# 3. TypeScript Tests (runs if libraries/typescript/** changed)
+#    ├─ typescript-lint: ESLint checks
+#    ├─ typescript-build: Build all packages
+#    ├─ typescript-knip: Unused code/deps report (warning-only — never fails CI)
+#    ├─ typescript/mcp-use: Unit tests + agent integration tests (requires API keys)
+#    ├─ typescript/inspector: Unit tests for inspector package
+#    ├─ typescript/cli: Unit tests for CLI package
+#    └─ typescript-changeset-check: PR validation (PRs only)
+#
+# 4. create-mcp-use-app Tests (runs if packages/create-mcp-use-app/** changed)
+#    ├─ create-mcp-use-app-build: Build and pack the CLI
+#    └─ create-app-tests: Matrix [3 OS × 3 PM × 3 templates × 2 flags]
+#       - Tests project creation across Ubuntu/macOS/Windows
+#       - Tests npm, yarn, pnpm package managers
+#       - Tests starter, mcp-ui, mcp-apps templates
+#       - Collapsed into one expandable job for clean UI
+#
+
+# ============================================================================
+
+on:
+  push:
+    branches: [main, canary]
+  pull_request:
+    branches: [main, canary]
+  workflow_call:
+    inputs:
+      ref:
+        description: "Commit SHA or ref to test"
+        required: true
+        type: string
+      python:
+        description: "Run Python jobs"
+        required: false
+        type: boolean
+        default: true
+      typescript:
+        description: "Run TypeScript jobs"
+        required: false
+        type: boolean
+        default: true
+      create_mcp_use_app:
+        description: "Run create-mcp-use-app jobs"
+        required: false
+        type: boolean
+        default: false
+      run_changeset_check:
+        description: "Run changeset check (usually PR-only)"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      python: ${{ steps.out.outputs.python }}
+      typescript: ${{ steps.out.outputs.typescript }}
+      create-mcp-use-app: ${{ steps.out.outputs.create-mcp-use-app }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+      - uses: dorny/paths-filter@v3
+        id: filter
+        if: github.event_name != 'workflow_call'
+        with:
+          filters: |
+            python:
+              - 'libraries/python/**'
+            typescript:
+              - 'libraries/typescript/**'
+            create-mcp-use-app:
+              - 'libraries/typescript/packages/create-mcp-use-app/**'
+      - name: Compute outputs
+        id: out
+        uses: actions/github-script@v7
+        env:
+          CI_INPUT_PYTHON: ${{ inputs.python }}
+          CI_INPUT_TYPESCRIPT: ${{ inputs.typescript }}
+          CI_INPUT_CREATE: ${{ inputs.create_mcp_use_app }}
+        with:
+          script: |
+            const fromWfCall = context.eventName === 'workflow_call';
+            const py = fromWfCall ? (process.env.CI_INPUT_PYTHON === 'true') : ("${{ steps.filter.outputs.python }}" === 'true');
+            const ts = fromWfCall ? (process.env.CI_INPUT_TYPESCRIPT === 'true') : ("${{ steps.filter.outputs.typescript }}" === 'true');
+            const create = fromWfCall ? (process.env.CI_INPUT_CREATE === 'true') : ("${{ steps.filter.outputs.create-mcp-use-app }}" === 'true');
+            core.setOutput('python', String(py));
+            core.setOutput('typescript', String(ts));
+            core.setOutput('create-mcp-use-app', String(create));
+
+  # Python Jobs
+  python-lint:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.python == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: libraries/python
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+      - name: Lint with ruff
+        run: |
+          ruff check .
+      - name: Format check with ruff
+        run: |
+          ruff format --check .
+
+  # (skipped) python-ty-check job is disabled, pre commits will make use compliant, then we can add this back.
+  # Pietro: this is me, I will check when is a good time to re enable. keep the comment.
+  # python-ty-check:
+  #   needs: python-lint
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: libraries/python
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+  #     - name: Set up Python 3.11
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: "3.11"
+  #     - name: Install dependencies
+  #       run: |
+  #         python -m pip install --upgrade pip
+  #         pip install ty
+  #     - name: Type check with ty
+  #       run: |
+  #         ty check .
+
+  python-unit-tests:
+    needs: python-lint
+    name: "python-unit"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+        deps: ["latest", "minimum"]
+    defaults:
+      run:
+        working-directory: libraries/python
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install uv
+        run: pip install uv
+      - name: Install dependencies (latest)
+        if: matrix.deps == 'latest'
+        run: uv pip install --system -e ".[dev,anthropic,openai,search,e2b]"
+      - name: Install dependencies (minimum)
+        if: matrix.deps == 'minimum'
+        run: uv pip install --system -e ".[dev,anthropic,openai,search,e2b]" --resolution lowest-direct
+      - name: Test with pytest
+        env:
+          MCP_USE_ANONYMIZED_TELEMETRY: false
+        run: pytest -vv tests/unit
+
+  python-transport-tests:
+    needs: python-lint
+    name: "python-transport/${{ matrix.transport }}"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        transport: [stdio, sse, streamable_http]
+    defaults:
+      run:
+        working-directory: libraries/python
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install uv
+        run: |
+          pip install uv
+      - name: Install dependencies
+        run: |
+          uv pip install --system .[dev,anthropic,openai,search,e2b]
+      - name: Run integration tests for ${{ matrix.transport }} transport
+        id: test
+        env:
+          MCP_USE_ANONYMIZED_TELEMETRY: false
+        run: |
+          pytest -vv tests/integration/client/transports/test_${{ matrix.transport }}.py \
+            --junit-xml=test-results-${{ matrix.transport }}.xml || true
+          # Check if tests passed
+          if grep -q 'failures="0"' test-results-${{ matrix.transport }}.xml && \
+             grep -q 'errors="0"' test-results-${{ matrix.transport }}.xml; then
+            echo "status=passed" >> $GITHUB_OUTPUT
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+          fi
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: transport-test-results-${{ matrix.transport }}
+          path: libraries/python/test-results-${{ matrix.transport }}.xml
+          retention-days: 7
+      - name: Fail if tests failed
+        if: steps.test.outputs.status == 'failed'
+        run: exit 1
+
+  python-transport-tests-report:
+    needs: python-transport-tests
+    if: always() && github.event_name == 'pull_request' && needs.python-transport-tests.result != 'skipped'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Download all test results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: transport-test-results-*
+          path: test-results
+          merge-multiple: false
+      - name: Generate PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const transports = ['stdio', 'sse', 'streamable_http'];
+            let tableRows = [];
+            let allPassed = true;
+
+            for (const transport of transports) {
+              const xmlPath = path.join('test-results', `transport-test-results-${transport}`, `test-results-${transport}.xml`);
+              let status = '⏭️ Skipped';
+              let tests = '-';
+              let passed = '-';
+              let failed = '-';
+              let errors = '-';
+              let time = '-';
+
+              if (fs.existsSync(xmlPath)) {
+                const content = fs.readFileSync(xmlPath, 'utf8');
+
+                // Parse basic stats from JUnit XML
+                const testsMatch = content.match(/tests="(\d+)"/);
+                const failuresMatch = content.match(/failures="(\d+)"/);
+                const errorsMatch = content.match(/errors="(\d+)"/);
+                const timeMatch = content.match(/time="([\d.]+)"/);
+
+                if (testsMatch) {
+                  const totalTests = parseInt(testsMatch[1]);
+                  const failureCount = failuresMatch ? parseInt(failuresMatch[1]) : 0;
+                  const errorCount = errorsMatch ? parseInt(errorsMatch[1]) : 0;
+                  const passedCount = totalTests - failureCount - errorCount;
+
+                  tests = totalTests.toString();
+                  passed = passedCount.toString();
+                  failed = failureCount.toString();
+                  errors = errorCount.toString();
+                  time = timeMatch ? `${parseFloat(timeMatch[1]).toFixed(2)}s` : '-';
+
+                  if (failureCount === 0 && errorCount === 0) {
+                    status = '✅ Passed';
+                  } else {
+                    status = '❌ Failed';
+                    allPassed = false;
+                  }
+                }
+              }
+
+              tableRows.push(`| ${transport} | ${status} | ${tests} | ${passed} | ${failed} | ${errors} | ${time} |`);
+            }
+
+            const overallStatus = allPassed ? '✅ All transport tests passed!' : '❌ Some transport tests failed';
+
+            const comment = `## Python Transport Tests Results
+
+            ${overallStatus}
+
+            | Transport | Status | Tests | Passed | Failed | Errors | Time |
+            |-----------|--------|-------|--------|--------|--------|------|
+            ${tableRows.join('\n')}
+            `;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' &&
+              c.body.includes('## Python Transport Tests Results')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment,
+              });
+            }
+
+  python-primitive-tests:
+    needs: python-lint
+    name: "python-primitive/${{ matrix.primitive }}"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        primitive:
+          [
+            sampling,
+            tools,
+            resources,
+            prompts,
+            elicitation,
+            notifications,
+            auth,
+            roots,
+          ]
+    defaults:
+      run:
+        working-directory: libraries/python
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install uv
+        run: |
+          pip install uv
+      - name: Install dependencies
+        run: |
+          uv pip install --system .[dev,anthropic,openai,search,e2b]
+      - name: Run integration tests for ${{ matrix.primitive }} primitive
+        id: test
+        env:
+          MCP_USE_ANONYMIZED_TELEMETRY: false
+        run: |
+          pytest -vv tests/integration/client/primitives/test_${{ matrix.primitive }}.py \
+            --junit-xml=test-results-${{ matrix.primitive }}.xml || true
+          # Check if tests passed
+          if grep -q 'failures="0"' test-results-${{ matrix.primitive }}.xml && \
+             grep -q 'errors="0"' test-results-${{ matrix.primitive }}.xml; then
+            echo "status=passed" >> $GITHUB_OUTPUT
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+          fi
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: primitive-test-results-${{ matrix.primitive }}
+          path: libraries/python/test-results-${{ matrix.primitive }}.xml
+          retention-days: 7
+      - name: Fail if tests failed
+        if: steps.test.outputs.status == 'failed'
+        run: exit 1
+
+  python-primitive-tests-report:
+    needs: python-primitive-tests
+    if: always() && github.event_name == 'pull_request' && needs.python-primitive-tests.result != 'skipped'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Download all test results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: primitive-test-results-*
+          path: test-results
+          merge-multiple: false
+      - name: Generate PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const primitives = ['sampling', 'tools', 'resources', 'prompts', 'elicitation', 'notifications', 'auth', 'roots'];
+            let tableRows = [];
+            let allPassed = true;
+
+            for (const primitive of primitives) {
+              const xmlPath = path.join('test-results', `primitive-test-results-${primitive}`, `test-results-${primitive}.xml`);
+              let status = '⏭️ Skipped';
+              let tests = '-';
+              let passed = '-';
+              let failed = '-';
+              let errors = '-';
+              let time = '-';
+
+              if (fs.existsSync(xmlPath)) {
+                const content = fs.readFileSync(xmlPath, 'utf8');
+
+                // Parse basic stats from JUnit XML
+                const testsMatch = content.match(/tests="(\d+)"/);
+                const failuresMatch = content.match(/failures="(\d+)"/);
+                const errorsMatch = content.match(/errors="(\d+)"/);
+                const timeMatch = content.match(/time="([\d.]+)"/);
+
+                if (testsMatch) {
+                  const totalTests = parseInt(testsMatch[1]);
+                  const failureCount = failuresMatch ? parseInt(failuresMatch[1]) : 0;
+                  const errorCount = errorsMatch ? parseInt(errorsMatch[1]) : 0;
+                  const passedCount = totalTests - failureCount - errorCount;
+
+                  tests = totalTests.toString();
+                  passed = passedCount.toString();
+                  failed = failureCount.toString();
+                  errors = errorCount.toString();
+                  time = timeMatch ? `${parseFloat(timeMatch[1]).toFixed(2)}s` : '-';
+
+                  if (failureCount === 0 && errorCount === 0) {
+                    status = '✅ Passed';
+                  } else {
+                    status = '❌ Failed';
+                    allPassed = false;
+                  }
+                }
+              }
+
+              tableRows.push(`| ${primitive} | ${status} | ${tests} | ${passed} | ${failed} | ${errors} | ${time} |`);
+            }
+
+            const overallStatus = allPassed ? '✅ All primitive tests passed!' : '❌ Some primitive tests failed';
+
+            const comment = `## Python Primitive Tests Results
+
+            ${overallStatus}
+
+            | Primitive | Status | Tests | Passed | Failed | Errors | Time |
+            |-----------|--------|-------|--------|--------|--------|------|
+            ${tableRows.join('\n')}
+            `;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' &&
+              c.body.includes('## Python Primitive Tests Results')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment,
+              });
+            }
+
+  python-integration-tests:
+    needs: python-lint
+    name: "python-integration"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: libraries/python
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install uv
+        run: |
+          pip install uv
+      - name: Install dependencies
+        run: |
+          uv pip install --system .[dev,anthropic,openai,search,e2b]
+      - name: Run other integration tests
+        env:
+          MCP_USE_ANONYMIZED_TELEMETRY: false
+        run: pytest -vv tests/integration/client/others/
+
+  python-agent-tests:
+    needs: python-lint
+    name: "python-agent/${{ matrix.test }}"
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    strategy:
+      fail-fast: false
+      matrix:
+        test: [agent_run, agent_stream, agent_structured_output, server_manager]
+    defaults:
+      run:
+        working-directory: libraries/python
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install uv
+        run: |
+          pip install uv
+      - name: Install dependencies
+        run: |
+          uv pip install --system .[dev,anthropic,openai,search,e2b]
+      - name: Run agent test for ${{ matrix.test }}
+        if: env.OPENAI_API_KEY != ''
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MCP_USE_ANONYMIZED_TELEMETRY: false
+        run: pytest -vv tests/integration/agent/test_${{ matrix.test }}.py
+
+  # TypeScript Jobs
+  typescript-lint:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.typescript == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22]
+    name: typescript-lint (node-${{ matrix.node-version }})
+    defaults:
+      run:
+        working-directory: libraries/typescript
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10.6.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+          cache-dependency-path: libraries/typescript/pnpm-lock.yaml
+
+      - name: Install Dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Check Formatting
+        run: pnpm format:check
+
+      - name: Run Linter
+        run: pnpm lint
+
+  typescript-build:
+    needs: typescript-lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22]
+    name: typescript-build (node-${{ matrix.node-version }})
+    defaults:
+      run:
+        working-directory: libraries/typescript
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10.6.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+          cache-dependency-path: libraries/typescript/pnpm-lock.yaml
+
+      - name: Install Dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build Packages
+        run: pnpm build
+
+  typescript-test-mcp-use:
+    needs: typescript-lint
+    name: "typescript/mcp-use (node-${{ matrix.node-version }})"
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    strategy:
+      matrix:
+        node-version: [20, 22]
+    defaults:
+      run:
+        working-directory: libraries/typescript
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10.6.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+          cache-dependency-path: libraries/typescript/pnpm-lock.yaml
+      - name: Install Dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: Build Packages
+        run: pnpm build
+      - name: Run mcp-use Unit Tests
+        env:
+          MCP_USE_ANONYMIZED_TELEMETRY: false
+        run: pnpm --filter mcp-use --if-present test:unit
+      - name: Run mcp-use Agent Integration Tests
+        if: env.OPENAI_API_KEY != ''
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          MCP_USE_LANGFUSE: true
+          MCP_USE_ANONYMIZED_TELEMETRY: false
+        run: pnpm --filter mcp-use --if-present test:integration:agent
+
+  typescript-knip:
+    needs: typescript-lint
+    name: typescript-knip (warning-only)
+    runs-on: ubuntu-latest
+    # Surface unused-code findings without failing the build. Tighten to
+    # `pnpm knip` (without --no-exit-code) once the baseline is cleaned up.
+    defaults:
+      run:
+        working-directory: libraries/typescript
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10.6.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+          cache-dependency-path: libraries/typescript/pnpm-lock.yaml
+      - name: Install Dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: Run Knip (warning-only)
+        run: |
+          {
+            echo "## Knip Findings"
+            echo ""
+            echo "_Reported as warnings — tighten to fail CI once the baseline is clean._"
+            echo ""
+            echo '```'
+            pnpm exec knip --no-exit-code --no-progress
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  typescript-test-inspector:
+    needs: typescript-lint
+    name: "typescript/inspector (node-${{ matrix.node-version }})"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22]
+    defaults:
+      run:
+        working-directory: libraries/typescript
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10.6.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+          cache-dependency-path: libraries/typescript/pnpm-lock.yaml
+      - name: Install Dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: Build Packages
+        run: pnpm build
+      - name: Run Inspector Tests
+        env:
+          MCP_USE_ANONYMIZED_TELEMETRY: false
+        run: pnpm --filter @mcp-use/inspector --if-present test
+
+  typescript-test-cli:
+    needs: typescript-lint
+    name: "typescript/cli (${{ matrix.os }}, node-${{ matrix.node-version }})"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node-version: [20, 22]
+    defaults:
+      run:
+        working-directory: libraries/typescript
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10.6.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+          cache-dependency-path: libraries/typescript/pnpm-lock.yaml
+      - name: Install Dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: Build Packages
+        run: pnpm build
+      - name: Verify CLI build artifact
+        shell: bash
+        run: test -f packages/cli/dist/index.cjs || { echo "::warning::dist/index.cjs missing after pnpm build, rebuilding CLI explicitly"; pnpm --filter @mcp-use/cli build; }
+      - name: Run CLI Tests
+        env:
+          MCP_USE_ANONYMIZED_TELEMETRY: false
+        run: pnpm --filter @mcp-use/cli --if-present test
+
+  typescript-changeset-check:
+    needs: detect-changes
+    if: ${{ (github.event_name == 'workflow_call' && inputs.run_changeset_check) || (github.event_name == 'pull_request' && github.base_ref != 'canary' && needs.detect-changes.outputs.typescript == 'true') }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: libraries/typescript
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10.6.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+          cache-dependency-path: libraries/typescript/pnpm-lock.yaml
+
+      - name: Install Dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Check for Changesets
+        run: |
+          if [ -n "$(ls -A .changeset/*.md 2>/dev/null | grep -v README.md)" ]; then
+            echo "✅ Changeset found"
+            pnpm changeset status --since=origin/main
+          else
+            echo "⚠️ No changeset found. If this PR includes changes that should be published, please add a changeset:"
+            echo "  pnpm changeset"
+            echo ""
+            echo "If this PR doesn't require a changeset (docs, tests, internal changes), you can ignore this message."
+          fi
+
+  # create-mcp-use-app Tests (only when CLI package changes)
+  create-mcp-use-app-build:
+    needs: [detect-changes, typescript-lint]
+    if: needs.detect-changes.outputs.create-mcp-use-app == 'true'
+    name: "typescript/create-mcp-use-app/build"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10.6.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+          cache-dependency-path: libraries/typescript/pnpm-lock.yaml
+      - name: Install Dependencies
+        working-directory: libraries/typescript
+        run: pnpm install --no-frozen-lockfile
+      - name: Build All Packages
+        working-directory: libraries/typescript
+        run: pnpm build
+      - name: Pack create-mcp-use-app
+        working-directory: libraries/typescript/packages/create-mcp-use-app
+        run: npm pack
+      - name: Pack @mcp-use/cli
+        working-directory: libraries/typescript/packages/cli
+        run: npm pack
+      - name: Pack @mcp-use/inspector
+        working-directory: libraries/typescript/packages/inspector
+        run: npm pack
+      - name: Pack mcp-use
+        working-directory: libraries/typescript/packages/mcp-use
+        run: npm pack
+      - name: Upload All Package Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: workspace-packages
+          path: |
+            libraries/typescript/packages/create-mcp-use-app/create-mcp-use-app-*.tgz
+            libraries/typescript/packages/mcp-use/mcp-use-*.tgz
+            libraries/typescript/packages/cli/mcp-use-cli-*.tgz
+            libraries/typescript/packages/inspector/mcp-use-inspector-*.tgz
+          retention-days: 1
+
+  create-mcp-use-app-tests:
+    needs: create-mcp-use-app-build
+    name: "typescript/create-app-tests"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        pm: [npm, yarn, pnpm]
+        template: [starter, mcp-apps, blank]
+        flag: ["", "--dev"]
+        exclude:
+          # Only test --dev on ubuntu with npm
+          - os: macos-latest
+            flag: "--dev"
+          - os: windows-latest
+            flag: "--dev"
+          - pm: yarn
+            flag: "--dev"
+          - pm: pnpm
+            flag: "--dev"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_call' && inputs.ref || github.sha }}
+      - uses: pnpm/action-setup@v3
+        if: matrix.pm == 'pnpm'
+        with:
+          version: 10.6.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Setup Yarn
+        if: matrix.pm == 'yarn'
+        run: corepack enable
+      - name: Download Package Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: workspace-packages
+          path: ./packages
+      - name: Test CLI Creation
+        shell: bash
+        run: |
+          # Get package path
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            PACKAGE_PATH=$(powershell -Command "(Get-ChildItem -Recurse -Filter 'create-mcp-use-app-*.tgz' | Select-Object -First 1).FullName")
+          else
+            PACKAGE_PATH=$(realpath $(find ./packages -name 'create-mcp-use-app-*.tgz' -type f | head -n1))
+          fi
+
+          # Run create command based on PM
+          case "${{ matrix.pm }}" in
+            npm)
+              npx --yes --package="$PACKAGE_PATH" create-mcp-use-app test-app --template ${{ matrix.template }} ${{ matrix.flag }}
+              ;;
+            yarn)
+              yarn dlx -p "create-mcp-use-app@file:$PACKAGE_PATH" create-mcp-use-app test-app --template ${{ matrix.template }} ${{ matrix.flag }}
+              ;;
+            pnpm)
+              pnpm --package="$PACKAGE_PATH" dlx create-mcp-use-app test-app --template ${{ matrix.template }} ${{ matrix.flag }}
+              ;;
+          esac
+
+          # Verify creation
+          [ -d "test-app" ] || exit 1
+          [ -f "test-app/package.json" ] || exit 1
+          [ -f "test-app/index.ts" ] || exit 1
+          echo "✅ Project created successfully"
+
+      - name: Test dev command (non --dev flag only)
+        if: matrix.flag == ''
+        shell: bash
+        working-directory: test-app
+        run: |
+          # Start dev server in background
+          case "${{ matrix.pm }}" in
+            npm)
+              npm run dev &
+              ;;
+            yarn)
+              yarn dev &
+              ;;
+            pnpm)
+              pnpm dev &
+              ;;
+          esac
+
+          DEV_PID=$!
+
+          # Wait for server to start (10 seconds should be enough)
+          sleep 10
+
+          # Kill the dev server
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            # On Windows, kill by port is more reliable than DEV_PID
+            # because bash's $! may not map to the actual Windows process ID
+            DEV_PORT=3000
+            for pid in $(netstat -ano 2>/dev/null | grep ":$DEV_PORT " | grep "LISTENING" | awk '{print $5}' | sort -u); do
+              taskkill //PID $pid //F 2>/dev/null || true
+            done
+            # Also try the process tree kill as fallback
+            taskkill //PID $DEV_PID //T //F 2>/dev/null || true
+          else
+            kill $DEV_PID 2>/dev/null || true
+          fi
+
+          # Wait for process to exit
+          wait $DEV_PID 2>/dev/null || true
+
+          echo "✅ Dev server started and stopped successfully"

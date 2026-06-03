@@ -1,0 +1,101 @@
+---
+title: Manufact Cloud
+description: Deploy your MCP server to Manufact Cloud with one command
+icon: "/images/logo-mcp-use.svg"
+---
+
+Deploy your MCP server to **Manufact Cloud**, the recommended deployment platform for mcp-use servers. With a single command, you can deploy your server and get a production-ready URL.
+
+## Prerequisites
+**mcp-use Account**: Sign up at [mcp-use.com](https://mcp-use.com) or login via CLI
+
+## Quick Deployment
+
+Deploy your MCP server in one command:
+
+```bash
+# Install the CLI (if you are using create-mcp-use-app this step is not needed)
+npm install -g @mcp-use/cli
+
+# Login to Manufact Cloud
+npm run mcp-use login
+
+# Deploy your server
+npm run mcp-use deploy
+```
+
+
+That's it! Your server will be built and deployed automatically.
+
+## GitHub Repository Deployment
+
+If your project is a GitHub repository, `mcp-use deploy` will automatically detect it and offer to deploy from GitHub:
+
+```bash
+mcp-use deploy
+```
+
+You'll see:
+```
+GitHub repository detected:
+  Repository: your-org/your-repo
+  Branch:     main
+  Commit:     abc1234
+
+Deploy from GitHub repository your-org/your-repo? (y/n):
+```
+
+This approach:
+- ✅ Deploys directly from your GitHub repository
+- ✅ Automatically detects build and start commands
+- ✅ Uses the latest commit from your branch
+- ✅ No need to upload source code manually
+
+
+## After Deployment
+
+Once deployment completes, you'll receive:
+
+### Deployment URLs
+
+```
+✓ Deployment successful!
+
+🌐 MCP Server URL:
+   https://your-deployment/id.deploy.mcp-use.com/mcp
+
+🔍 Inspector URL:
+   https://inspector.mcp-use.com/inspect?autoConnect=https://your-deployment/id.deploy.mcp-use.com/mcp
+```
+
+The `autoConnect` parameter and other Inspector URL options are documented in [Inspector URL parameters](/inspector/url-parameters).
+
+#### Claude Desktop Configuration
+
+```json
+{
+  "mcpServers": {
+    "my-server": {
+      "url": "https://your-deployment/id.deploy.mcp-use.com/mcp"
+    }
+  }
+}
+```
+
+
+### Test Locally First
+
+Before deploying, test your server locally:
+
+```bash
+# Build and test locally
+mcp-use build
+mcp-use start
+```
+
+## Next Steps
+
+- [Deploying to Supabase](./supabase) - Alternative deployment option
+- [Configuration Guide](../configuration) - Advanced server configuration
+- [UI Widgets](../mcp-apps) - Building interactive widgets
+- [API Reference](../api-reference) - Complete API documentation

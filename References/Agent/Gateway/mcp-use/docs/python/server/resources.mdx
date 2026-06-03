@@ -1,0 +1,208 @@
+---
+title: "Resources"
+description: "Define and expose resources from your MCP server"
+icon: "file"
+---
+
+Resources expose data to MCP clients. Unlike tools (which perform actions), resources provide read-only access to content like files, database records, or live data.
+
+## Example
+
+```python
+@server.resource(
+    uri="config://{section}",
+    name="app_config",
+    title="Application Config",
+    description="Get configuration for a specific section",
+    mime_type="application/json",
+)
+def get_config(section: str) -> str:
+    """Get configuration for a specific section."""
+    configs = {
+        "database": '{"host": "localhost", "port": 5432}',
+        "cache": '{"enabled": true, "ttl": 3600}',
+    }
+    return configs.get(section, '{"error": "Section not found"}')
+```
+
+## Anatomy of a Resource
+
+When a client calls `resources/list`, the server returns metadata for each resource. Resources with URI templates (like `{section}`) are returned via `resources/templates/list` instead.
+
+Here's the JSON-RPC response that the example above produces when a client calls `resources/templates/list`:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "resourceTemplates": [
+      {
+        "uriTemplate": "config://{section}",
+        "name": "app_config",
+        "title": "Application Config",
+        "description": "Get configuration for a specific section",
+        "mimeType": "application/json"
+      }
+    ]
+  }
+}
+```
+
+Here's what maps to what:
+
+| Python | MCP Schema | Notes |
+|--------|-----------|-------|
+| `uri="config://{section}"` | `"uriTemplate"` | `{section}` makes it a template; without it, it would be a static `"uri"` |
+| `name="app_config"` | `"name"` | Falls back to function name if omitted |
+| `title="Application Config"` | `"title"` | Human-readable display name |
+| `description="Get configuration..."` | `"description"` | Falls back to docstring if omitted |
+| `mime_type="application/json"` | `"mimeType"` | Tells clients how to interpret the content |
+| `section: str` | *(extracted from URI)* | Parameter matched from the URI template |
+
+<Tip>
+If your URI contains `{param}` placeholders, the resource is registered as a **template**. Otherwise, it's registered as a **static resource**.
+</Tip>
+
+## Static Resources
+
+Resources without URI parameters are static  -  they always return at the same URI:
+
+```python
+from datetime import datetime
+
+@server.resource(
+    uri="time://current",
+    name="current_time",
+    title="Current Time",
+    mime_type="text/plain",
+)
+def current_time() -> str:
+    """Returns the current server time."""
+    return datetime.now().isoformat()
+```
+
+## Resource Templates
+
+Use `{param}` placeholders in the URI to create dynamic resources:
+
+```python
+@server.resource(
+    uri="user://{user_id}",
+    name="user_profile",
+    title="User Profile",
+    description="Get a user's profile by ID",
+    mime_type="application/json",
+)
+def get_user(user_id: str) -> str:
+    """Fetch user profile by ID."""
+    users = {"1": "Alice", "2": "Bob"}
+    name = users.get(user_id, "Unknown")
+    return f'{{"id": "{user_id}", "name": "{name}"}}'
+```
+
+Clients request `user://123` and the function receives `user_id="123"`.
+
+### Multiple Parameters
+
+Templates support multiple parameters:
+
+```python
+@server.resource(
+    uri="file://{folder}/{filename}",
+    name="file_content",
+    mime_type="text/plain",
+)
+def get_file(folder: str, filename: str) -> str:
+    """Read a file from a folder."""
+    return f"Content of {folder}/{filename}"
+```
+
+## Async Resources
+
+Resources can be async for I/O operations:
+
+```python
+import httpx
+
+@server.resource(
+    uri="api://weather",
+    mime_type="application/json",
+)
+async def weather_data() -> str:
+    """Fetch current weather data."""
+    async with httpx.AsyncClient() as client:
+        response = await client.get("https://api.weather.com/current")
+        return response.text
+```
+
+## Binary Resources
+
+Return bytes for binary content:
+
+```python
+@server.resource(
+    uri="image://logo",
+    mime_type="image/png",
+)
+def logo_image() -> bytes:
+    """Return the application logo."""
+    with open("logo.png", "rb") as f:
+        return f.read()
+```
+
+## Resource Subscriptions
+
+Clients can subscribe to resources and receive notifications when they change. This follows the [MCP resource subscriptions spec](https://modelcontextprotocol.io/specification/2025-11-25/server/resources#subscriptions).
+
+### How It Works
+
+1. Client sends `resources/subscribe` with a resource URI
+2. Your server updates the resource and calls `notify_resource_updated()`
+3. All subscribed clients receive a `notifications/resources/updated` notification
+4. Clients re-read the resource to get the new content
+
+MCPServer handles subscribe/unsubscribe tracking automatically  -  you just need to call `notify_resource_updated()` when your resource changes.
+
+### Example
+
+```python
+current_price = 100.0
+
+@server.resource(uri="data://price", name="stock_price", mime_type="text/plain")
+def get_price() -> str:
+    return str(current_price)
+
+@server.tool()
+async def update_price(new_price: float) -> str:
+    """Update the stock price and notify subscribers."""
+    global current_price
+    current_price = new_price
+    await server.notify_resource_updated("data://price")
+    return f"Price updated to {new_price}"
+```
+
+When a client subscribes to `data://price` and then any client calls `update_price`, all subscribers receive the notification and can re-read the resource.
+
+<Note>
+Subscriptions are session-scoped  -  they're automatically cleaned up when a client disconnects. If the server restarts, clients need to re-subscribe.
+</Note>
+
+## Common MIME Types
+
+| MIME Type | Use Case |
+|-----------|----------|
+| `text/plain` | Plain text content |
+| `application/json` | JSON data |
+| `text/markdown` | Markdown documents |
+| `text/html` | HTML content |
+| `image/png` | PNG images |
+
+## Resources vs Tools
+
+| Aspect | Resources | Tools |
+|--------|-----------|-------|
+| Purpose | Expose data | Perform actions |
+| Side effects | None (read-only) | May modify state |
+| Caching | Can be cached | Generally not cached |
+| Use case | Configuration, files, status | Operations, calculations |

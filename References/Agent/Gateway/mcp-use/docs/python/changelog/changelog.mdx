@@ -1,0 +1,203 @@
+---
+title: "Updates"
+description: "New updates and improvements"
+icon: "history"
+---
+
+import { Contributors } from '/snippets/contributors.jsx'
+
+<Update label="v1.7.0 - 2026‑03‑17">
+  <Frame>
+    <img src="https://mcp-use.com/api/og/release?v=1.7.0&title=CLI%20Scaffolding%20and%20Full%20Conformance&date=2026-03-17" alt="Release 1.7.0" />
+  </Frame>
+  ## CLI Scaffolding & Full Conformance
+  - **New**: `create-mcp-use` CLI for scaffolding new MCP projects ([#1097](https://github.com/mcp-use/mcp-use/pull/1097))
+  - **New**: Auto-retry next available port when default is in use ([#1163](https://github.com/mcp-use/mcp-use/pull/1163))
+  - **New**: `mcp_logs_only` option to hide non-MCP HTTP access logs ([#1164](https://github.com/mcp-use/mcp-use/pull/1164))
+  - **New**: Conformance test infrastructure for server + client ([#1008](https://github.com/mcp-use/mcp-use/pull/1008))
+  - **New**: Protocol handlers for logging, completions, subscriptions ([#1004](https://github.com/mcp-use/mcp-use/pull/1004))
+  - **Fix**: 100% client conformance (20/20)  -  SSE retry fix ([#1019](https://github.com/mcp-use/mcp-use/pull/1019))
+  - **Fix**: WeakSet for resource subscriptions to prevent memory leak ([#1093](https://github.com/mcp-use/mcp-use/pull/1093))
+  - **Fix**: Simplified Optional parameter JSON Schema ([#1141](https://github.com/mcp-use/mcp-use/pull/1141))
+  - **Fix**: Respect configured inspector path ([#1176](https://github.com/mcp-use/mcp-use/pull/1176))
+
+  <Contributors users="pietrozullo,renvins,stakeswky,Yuukidiv" />
+</Update>
+
+<Update label="v1.6.0 - 2026‑01‑21">
+  <Frame>
+    <img src="https://mcp-use.com/api/og/release?v=1.6.0&title=Bearer%20Token%20Auth%20and%20Middleware&date=2026-01-21" alt="Release 1.6.0" />
+  </Frame>
+  ## Bearer Token Auth & Middleware
+  - **New**: Bearer Token authentication for Python MCP servers ([#841](https://github.com/mcp-use/mcp-use/pull/841))
+  - **New**: Intercept MCP handshake with `on_initialize` middleware ([#769](https://github.com/mcp-use/mcp-use/pull/769))
+  - **Fix**: DNS rebinding protection for cloud/proxy deployments ([#825](https://github.com/mcp-use/mcp-use/pull/825))
+  - **Fix**: Improved debug and `pretty_print_jsonrpc` behavior ([#814](https://github.com/mcp-use/mcp-use/pull/814))
+  - **Fix**: Added timeout mechanism to `ConnectionManager.stop()` ([#726](https://github.com/mcp-use/mcp-use/pull/726))
+
+  <Contributors users="pietrozullo,renvins,Incharajayaram" />
+</Update>
+
+<Update label="v1.5.2 - 2025‑01‑12">
+  <Frame>
+    <img src="https://mcp-use.com/api/og/release?v=1.5.2&title=Roots%20support%20and%20OAuth%202.1&date=2025-01-12" alt="Release 1.5.2" />
+  </Frame>
+  ## Roots & OAuth 2.1
+  - **New**: Roots support in MCPClient and MCPServer for hierarchical resource organization ([#751](https://github.com/mcp-use/mcp-use/pull/751))
+  - **New**: OAuth 2.1 adaptation from new MCP spec with improved security practices ([#518](https://github.com/mcp-use/mcp-use/pull/518))
+  - **New**: CLAUDE.md files for AI-assisted development guidance ([#775](https://github.com/mcp-use/mcp-use/pull/775))
+  - **Fix**: Inspector CDN path and error fallback handling ([#773](https://github.com/mcp-use/mcp-use/pull/773))
+  - **Fix**: Documentation updates and improvements ([#774](https://github.com/mcp-use/mcp-use/pull/774))
+
+  <Contributors users="Pederzh,renvins,pietrozullo" />
+</Update>
+
+<Update label="v1.5.0 - 2025‑12‑01">
+  <Frame>
+    <img src="https://mcp-use.com/api/og/release?v=1.5.0&title=Complete%20MCP%20Server%20SDK&date=2025-12-01" alt="Release 1.5.0" />
+  </Frame>
+  ## Complete MCP Server SDK
+  - **Major**: Complete MCP Server SDK with MCPServer class, routing, and production features
+  - **New**: MCPRouter for modular server organization (similar to FastAPI's APIRouter)
+  - **New**: Enhanced Context with sampling, elicitation, and notification support
+  - **New**: Advanced logging system with customizable formats and JSON-RPC debugging
+  - **New**: Built-in Inspector integration for real-time debugging and testing
+  - **New**: Multiple transport protocols (stdio, streamable-http, SSE)
+  - **New**: Development tools (docs UI, OpenMCP config, inspector)
+  - **New**: FastMCP compatibility layer for seamless migration
+  - **Enhancement**: Middleware can now modify context parameters ([#522](https://github.com/mcp-use/mcp-use/pull/522))
+  - **Enhancement**: Tool enable/disable support with dynamic notifications
+  - **Enhancement**: Refactored test suite using MCPServer instead of external servers
+  - **Enhancement**: Type checking with ty and pre-commit hooks with prek
+  - **Enhancement**: Moved Ruff configuration to pyproject.toml for better organization
+
+  <Contributors users="pietrozullo,vkrasnoselskikh,renvins,tonxxd" />
+</Update>
+
+<Update label="v1.4.1 - 2025‑11‑20">
+  <Frame>
+    <img src="https://mcp-use.com/api/og/release?v=1.4.1&title=Code%20Mode%20and%20Pretty%20Display&date=2025-11-20" alt="Release 1.4.1" />
+  </Frame>
+  ## Code Mode & Pretty Display
+  - **New**: Code Mode integration for direct code execution through MCP servers with isolated environments
+  - **New**: Pretty Display system with rich, colorful terminal output for agent interactions
+  - **New**: LangChain integration guide and example implementation
+  - **Enhancement**: SSL certificate verification control via `verify` parameter in MCPClient
+  - **Enhancement**: Enhanced schema handling for complex data structures with improved list support
+  - **Fix**: Recursion limit configuration in MCPAgent to prevent stack overflow errors
+  - **Fix**: Client info property in base connector for proper metadata reporting
+
+  <Contributors users="pietrozullo,renvins,tonxxd" />
+</Update>
+
+<Update label="v1.4.0 - 2025‑10‑27">
+  <Frame>
+    <img src="https://mcp-use.com/api/og/release?v=1.4.0&title=LangChain%201.0%20and%20Provider%20Adapters&date=2025-10-27" alt="Release 1.4.0" />
+  </Frame>
+  ## LangChain 1.0 & Provider Adapters
+  - **Major**: Upgraded to LangChain 1.0.0 for improved performance and simplified agent patterns
+  - **New**: Direct provider adapters for OpenAI, Anthropic, and Google - use MCP tools without MCPAgent
+  - **Enhancement**: Agent methods now leverage LangChain 1.0.0's `create_agent()` and internal `astream()` for better loop handling
+  - **Enhancement**: Dynamic tool updates during agent execution
+  - **Enhancement**: Enhanced step tracking and middleware support for better observability
+  - **Enhancement**: Remote mode query streaming delegation
+  - **Fix**: Improved streaming output reliability with proper null checking
+  - **Fix**: Automatic ToolMessage filtering from conversation history
+
+  <Contributors users="pietrozullo,renvins" />
+</Update>
+
+<Update label="v1.3.13 - 2025‑10‑18">
+  ## Package Reorganization
+  - **Refactor**: Reorganized package structure into `client.*` and `agents.*` namespaces for better discoverability
+  - **Deprecation**: Old import paths (auth, middleware, managers, adapters, task_managers) are deprecated but still work with backward compatibility
+  - **Enhancement**: Clearer separation between client and agent concerns for improved maintainability
+  - **Fix**: Temporarily pinned to LangChain 0.3.27 to prevent breaking changes from 1.0.0 release (migration planned)
+</Update>
+
+<Update label="v1.3.12 - 2025‑10‑02">
+  <Frame>
+    <img src="https://mcp-use.com/api/og/release?v=1.3.12&title=Middleware%20and%20Documentation&date=2025-10-02" alt="Release 1.3.12" />
+  </Frame>
+  ## Middleware & Documentation
+  - **New**: Comprehensive middleware system for request/response interception ([#269](https://github.com/mcp-use/mcp-use/pull/269))
+  - **New**: Automatic API documentation generation ([#301](https://github.com/mcp-use/mcp-use/pull/301))
+  - Fix: Tool result standardization for consistent output ([#288](https://github.com/mcp-use/mcp-use/pull/288))
+  - Fix: Duplicate user message prevention in conversation history ([#287](https://github.com/mcp-use/mcp-use/pull/287))
+  - Fix: Agent memory handling to prevent duplicate queries ([#187](https://github.com/mcp-use/mcp-use/pull/187))
+  - Enhancement: Middleware metrics collection for better observability ([#299](https://github.com/mcp-use/mcp-use/pull/299))
+  - Fix: Test server execution with proper executable paths ([#298](https://github.com/mcp-use/mcp-use/pull/298))
+
+  <Contributors users="pietrozullo,renvins" />
+</Update>
+
+<Update label="v1.3.11 - 2025‑09‑29">
+  <Frame>
+    <img src="https://mcp-use.com/api/og/release?v=1.3.11&title=Auth%20Revolution&date=2025-09-29" alt="Release 1.3.11" />
+  </Frame>
+  ## Auth Revolution
+  - **New**: Complete OAuth2 and Bearer token authentication framework ([#149](https://github.com/pietrozullo/mcp-use/pull/149))
+  - Fix: HTTP connector error handling with better diagnostics ([#279](https://github.com/pietrozullo/mcp-use/pull/279))
+  - Fix: Accept empty tool results without validation errors ([#273](https://github.com/pietrozullo/mcp-use/pull/273))
+  - Fix: JSON schema enum validation in jsonschema_to_pydantic conversion ([#270](https://github.com/pietrozullo/mcp-use/pull/270))
+  - Fix: Documentation typo (astream → stream) ([#266](https://github.com/pietrozullo/mcp-use/pull/266))
+  - Enhancement: MCPAgent execution tracking with success status ([#254](https://github.com/pietrozullo/mcp-use/pull/254))
+  - Fix: Subprocess cleanup for multiple MCP clients to prevent memory leaks ([#231](https://github.com/pietrozullo/mcp-use/pull/231))
+
+  <Contributors users="pietrozullo,renvins,Amrithesh-Kakkoth,hetsaraiya,lorenss-m" />
+</Update>
+
+<Update label="v1.3.3 - 2025‑06‑19">
+  ## Stability Boost
+  - Set default logging level to info
+  - Fix: prevent double async cleanup and event loop errors in astream
+  - Fix: Raise import error for fastembed, server manager does not silently fail
+  - Fix: search tools tuple unpacking error
+</Update>
+
+<Update label="v1.3.1 - 2025‑06‑10">
+  ## Stream Power
+  - Remove client options for easier usage
+  - Add streamable HTTP support
+  - Fix websocket error positional arguments (headers were missing)
+  - Fix connection state tracking after SSE disconnection
+  - Add CLAUDE.md for development guidance
+</Update>
+
+<Update label="v1.3.0 - 2025‑05‑27">
+  ## Sandbox Magic
+  - Added optional E2B sandbox execution so MCP servers can run in secure cloud sandboxes.
+  - `MCPAgent.astream()` now lets you stream results **and** automatically log full conversation history.
+</Update>
+
+
+<Update label="v1.2.13 - 2025‑05‑19">
+  ## Resource Discovery
+  - Alpha support for **Resources** & **Prompts** exposed by remote servers.
+  - Routine version bump and stability tweaks across task / connection managers.
+</Update>
+
+<Update label="v1.2.10 - 2025‑05‑11">
+  ## Emergency Patch
+  - Hot‑fix: patched **FastEmbed** import failure that could break vector search.
+</Update>
+
+<Update label="v1.1.5 - 2025‑04‑11">
+  ## Polish Pass
+  - Maintenance release – internal refactors, doc clean‑ups, and incremental API polish.
+</Update>
+
+<Update label="v1.0.1 - 2025‑04‑07">
+  ## Transport Layer
+  - Introduced HTTP transport layer and dynamic multi‑server selection.
+</Update>
+
+<Update label="v1.0.0 - 2025‑04‑03">
+  ## Stable Launch
+  - First stable release of the unified Python client after the 0.0.x preview series.
+</Update>
+
+<Update label="v0.0.6 - 2025‑04‑02">
+  ## Public Preview
+  - Initial public preview published to PyPI; automated publish workflow enabled.
+</Update>

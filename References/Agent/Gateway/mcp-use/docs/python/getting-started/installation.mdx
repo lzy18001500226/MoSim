@@ -1,0 +1,109 @@
+---
+title: "Installation"
+description: "Install mcp-use and get your development environment ready"
+icon: "download"
+---
+
+<Info>
+  **Prerequisites**:
+  - Install [Python](https://python.org/) (version 3.11 or higher)
+  - pip, uv, or poetry package manager
+</Info>
+
+## Install mcp-use
+
+<CodeGroup>
+```bash pip
+pip install mcp-use
+```
+
+```bash uv
+uv add mcp-use
+```
+
+```bash poetry
+poetry add mcp-use
+```
+</CodeGroup>
+
+This gives you access to everything: **MCPAgent**, **MCPClient**, and **MCPServer**.
+
+## LLM Providers (for Agents)
+
+If you're building agents, install your preferred LLM provider:
+
+<CodeGroup>
+```bash OpenAI
+pip install langchain-openai
+```
+
+```bash Anthropic
+pip install langchain-anthropic
+```
+
+```bash Google
+pip install langchain-google-genai
+```
+
+```bash Groq
+pip install langchain-groq
+```
+</CodeGroup>
+
+<Warning>
+**Tool Calling Required**: Only models with tool calling capabilities can be used with mcp-use agents.
+</Warning>
+
+## Environment Variables
+
+Create a `.env` file in your project root:
+
+```bash
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
+GOOGLE_API_KEY=AI...
+GROQ_API_KEY=gsk_...
+```
+
+Load them in your scripts:
+
+```python
+from dotenv import load_dotenv
+load_dotenv()
+```
+
+## Development Installation
+
+Install from source for the latest features or to contribute:
+
+<CodeGroup>
+```bash pip
+git clone https://github.com/mcp-use/mcp-use.git
+cd mcp-use/libraries/python
+pip install -e .
+```
+
+```bash dev mode
+git clone https://github.com/mcp-use/mcp-use.git
+cd mcp-use/libraries/python
+pip install -e ".[dev]"
+```
+</CodeGroup>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Agent" icon="brain" href="/python/agent/building-custom-agents">
+    Build AI Agents with tool calling capabilities through MCP connections
+  </Card>
+  <Card title="Client" icon="router" href="/python/client/connection-types">
+    A full featured MCP Client implementation for Python
+  </Card>
+  <Card title="Server" icon="server" href="/python/server">
+    The MCP Server framework implementation for Python
+  </Card>
+</CardGroup>
+
+<Tip>
+**Need Help?** Join our [Discord](https://discord.gg/XkNkSkMz3V) or [Github](https://github.com/mcp-use/mcp-use) communities.
+</Tip>

@@ -1,0 +1,340 @@
+---
+title: "MCP Logging"
+description: "Clean, configurable logging system designed specifically for MCP servers"
+icon: "activity"
+---
+
+<Card title="" img="https://cdn.mcp-use.com/docs/python/Logging.jpg" horizontal="true"/>
+
+<Info>
+mcp-use provides clean, informative logging about MCP operations, making it easy to understand server activity and debug issues in both production and development.
+</Info>
+
+MCP-specific logging provides detailed information about which MCP methods are being called, including the specific method name, session IDs, and execution details. MCP requests use a distinct `MCP:` prefix to differentiate them from regular HTTP logs.
+
+## Why Use MCP-Specific Logging?
+
+This type of logging is essential because:
+- **Clear visibility** into which MCP methods are being called
+- **Easy debugging** of MCP protocol interactions
+- **Request tracking** with session IDs and method names
+- **Production monitoring** of server usage patterns
+- **Error tracking** for tools, resources, and prompts
+- **Performance insights** with execution timing
+
+## Log Levels
+
+mcp-use provides three logging modes controlled by the `debug` parameter and `DEBUG` environment variable:
+
+### Production Logs (Default: `debug=False`)
+Clean, readable logs showing MCP method calls with the `MCP:` prefix:
+
+```
+MCP:  127.0.0.1:58478 - "POST /mcp [tools/call:search] HTTP/1.1" 200
+MCP:  127.0.0.1:58478 - "POST /mcp [resources/list] HTTP/1.1" 200
+MCP:  127.0.0.1:58478 - "POST /mcp [initialize] HTTP/1.1" 200
+```
+
+### Debug Logs (`debug=True`)
+Same logs as production + development routes (inspector, docs). By default, inspector logs are hidden:
+
+```
+MCP:  127.0.0.1:58478 - "POST /mcp [tools/call:search] HTTP/1.1" 200
+INFO: 127.0.0.1:58478 - "GET  /docs HTTP/1.1" 200
+```
+
+### Full Debug Logs (`DEBUG=2` environment variable)
+Same logs as debug mode + JSON-RPC request/response logging:
+
+```
+MCP:  127.0.0.1:58478 - "POST /mcp [tools/call:search] HTTP/1.1" 200
+MCP:  [tools/call:search] Request (45.2ms): {"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {"name": "search", "arguments": {"query": "test"}}}
+MCP:  [tools/call:search] Response: {"jsonrpc": "2.0", "id": 1, "result": {"content": [...]}}
+```
+
+#### Pretty Print Mode (`pretty_print_jsonrpc=True`)
+For easier debugging, enable pretty-printed JSON-RPC logs with Rich panels:
+
+```python
+server = MCPServer("my-server", pretty_print_jsonrpc=True)
+```
+
+```
+MCP:  127.0.0.1:58478 - "POST /mcp [tools/call:search] HTTP/1.1" 200
+╭─ tools/call:search Request ─────────────────────── 45.2ms ──╮
+│ {                                                           │
+│   "jsonrpc": "2.0",                                         │
+│   "id": 1,                                                  │
+│   "method": "tools/call",                                   │
+│   "params": {                                               │
+│     "name": "search",                                       │
+│     "arguments": {"query": "test"}                          │
+│   }                                                         │
+│ }                                                           │
+╰─────────────────────────────────────────────────────────────╯
+╭─ tools/call:search Response ────────────────────────────────╮
+│ {                                                           │
+│   "jsonrpc": "2.0",                                         │
+│   "id": 1,                                                  │
+│   "result": {"content": [...]}                              │
+│ }                                                           │
+╰─────────────────────────────────────────────────────────────╯
+```
+
+## Understanding the Log Format
+
+Each MCP log line contains detailed information about the request:
+
+```
+MCP:  127.0.0.1:58478 - "POST /mcp [tools/call:search] HTTP/1.1" 200
+```
+
+Breaking down each component:
+
+<Steps>
+  <Step title="Log Prefix">
+    <code style={{color: '#10b981'}}>MCP:</code> - Identifies this as an MCP-specific log (distinct from regular HTTP `INFO:` logs)
+  </Step>
+
+  <Step title="Client Address">
+    <code style={{color: '#3b82f6'}}>127.0.0.1:58478</code> - The IP address and port of the client making the request
+  </Step>
+
+  <Step title="HTTP Method">
+    <code style={{color: '#f59e0b'}}>POST</code> - The HTTP method used for the request
+  </Step>
+
+  <Step title="Endpoint">
+    <code style={{color: '#8b5cf6'}}>/mcp</code> - The MCP server endpoint path
+  </Step>
+
+  <Step title="MCP Method">
+    <code style={{color: '#06b6d4'}}>[tools/call:search]</code> - The specific MCP method being called (e.g., tools/call, resources/list, etc.)
+  </Step>
+
+  <Step title="HTTP Version">
+    <code style={{color: '#64748b'}}>HTTP/1.1</code> - The HTTP protocol version
+  </Step>
+
+  <Step title="Status Code">
+    <code style={{color: '#10b981'}}>200</code> - The HTTP response status code
+  </Step>
+</Steps>
+
+### Common MCP Methods
+
+The logs clearly show which MCP methods are being called, such as:
+- `[initialize]` - Server initialization
+- `[tools/list]` - Listing available tools
+- `[tools/call:search]` - Calling a specific tool
+- `[resources/list]` - Listing available resources
+- `[resources/read:config]` - Reading a specific resource
+- `[prompts/get:assistant]` - Getting a specific prompt
+
+## Configuration
+
+Logging is automatically configured based on the `DEBUG` environment variable:
+
+```bash
+# Production logging (default)
+python server.py
+
+# Debug mode with development routes (inspector, docs)
+DEBUG=1 python server.py
+
+# Full debug mode with JSON-RPC request/response logging
+DEBUG=2 python server.py
+```
+
+Or programmatically:
+
+```python
+# Production logging (default)
+server = MCPServer("my-server")
+server.run(transport="streamable-http")
+
+# Debug mode with dev routes
+server = MCPServer("my-server", debug=True)
+server.run(transport="streamable-http")
+
+# Debug mode with custom paths
+server = MCPServer(
+    name="my-server",
+    debug=True,
+    mcp_path="/api/mcp",  # Custom MCP endpoint
+    docs_path="/custom-docs",
+    inspector_path="/custom"
+)
+server.run(transport="streamable-http")
+
+# Effective routes:
+# - MCP:       /api/mcp
+# - Docs:      /custom-docs
+# - Inspector: /custom/inspector
+```
+
+## Logging Options
+
+### Inspector Logs (`show_inspector_logs`)
+
+By default, inspector-related logs (requests to `/inspector/*`) are hidden to keep the output clean. Enable them if needed:
+
+```python
+# Hide inspector logs (default)
+server = MCPServer("my-server", show_inspector_logs=False)
+
+# Show inspector logs
+server = MCPServer("my-server", show_inspector_logs=True)
+```
+
+**With `show_inspector_logs=False` (default):**
+```
+MCP:  127.0.0.1:58478 - "POST /mcp [initialize] HTTP/1.1" 200
+MCP:  127.0.0.1:58478 - "POST /mcp [tools/list] HTTP/1.1" 200
+```
+
+**With `show_inspector_logs=True`:**
+```
+MCP:  127.0.0.1:58478 - "POST /mcp [initialize] HTTP/1.1" 200
+INFO: 127.0.0.1:58478 - "GET /inspector HTTP/1.1" 200
+INFO: 127.0.0.1:58478 - "GET /inspector/config.json HTTP/1.1" 200
+MCP:  127.0.0.1:58478 - "POST /mcp [tools/list] HTTP/1.1" 200
+```
+
+### MCP Logs Only (`mcp_logs_only`)
+
+By default, the server shows both `MCP:` protocol logs and `INFO:` HTTP access logs. Enable `mcp_logs_only` to suppress all HTTP access logs and only show MCP protocol traffic:
+
+```python
+# Show all logs (default)
+server = MCPServer("my-server", mcp_logs_only=False)
+
+# Only show MCP protocol logs
+server = MCPServer("my-server", mcp_logs_only=True)
+```
+
+**With `mcp_logs_only=False` (default):**
+```
+MCP:  127.0.0.1:58478 - "POST /mcp [initialize] HTTP/1.1" 200
+INFO: 127.0.0.1:58478 - "POST /mcp HTTP/1.1" 200
+MCP:  127.0.0.1:58478 - "POST /mcp [tools/list] HTTP/1.1" 200
+INFO: 127.0.0.1:58478 - "POST /mcp HTTP/1.1" 200
+INFO: 127.0.0.1:58478 - "GET  /docs HTTP/1.1" 200
+```
+
+**With `mcp_logs_only=True`:**
+```
+MCP:  127.0.0.1:58478 - "POST /mcp [initialize] HTTP/1.1" 200
+MCP:  127.0.0.1:58478 - "POST /mcp [tools/list] HTTP/1.1" 200
+```
+
+This removes the duplicate `INFO:` lines for MCP requests and hides non-MCP HTTP traffic (`/docs`, `/inspector`, static files), giving you a clean view of only MCP protocol activity.
+
+### Pretty Print JSON-RPC (`pretty_print_jsonrpc`)
+
+Enable pretty printing to display JSON-RPC requests and responses as formatted Rich panels:
+
+```python
+# Plain text JSON-RPC logs (default)
+server = MCPServer("my-server", pretty_print_jsonrpc=False)
+
+# Pretty-printed JSON-RPC logs with Rich panels
+server = MCPServer("my-server", pretty_print_jsonrpc=True)
+```
+
+**With `pretty_print_jsonrpc=False` (default):**
+```
+MCP:  127.0.0.1:58478 - "POST /mcp [tools/call:search] HTTP/1.1" 200
+MCP:  [tools/call:search] Request (45.2ms): {"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"search"}}
+MCP:  [tools/call:search] Response: {"jsonrpc":"2.0","id":1,"result":{...}}
+```
+
+**With `pretty_print_jsonrpc=True`:**
+```
+MCP:  127.0.0.1:58478 - "POST /mcp [tools/call:search] HTTP/1.1" 200
+╭─ tools/call:search Request ─────────────────────── 45.2ms ──╮
+│ {                                                           │
+│   "jsonrpc": "2.0",                                         │
+│   "id": 1,                                                  │
+│   "method": "tools/call",                                   │
+│   "params": {"name": "search"}                              │
+│ }                                                           │
+╰─────────────────────────────────────────────────────────────╯
+```
+
+### Combined Example
+
+```python
+server = MCPServer(
+    name="my-server",
+    debug=True,
+    show_inspector_logs=False,    # Hide inspector noise
+    mcp_logs_only=True,           # Only show MCP protocol logs
+    pretty_print_jsonrpc=True,    # Pretty-printed JSON-RPC panels
+)
+server.run(transport="streamable-http")
+```
+
+This makes it much easier to understand what's happening with your MCP server and debug any issues in both production and development environments.
+
+## Client Log Messages (MCP Protocol)
+
+In addition to server-side logging, MCP servers can send structured log messages to clients using the [MCP logging protocol](https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/logging). This lets clients display or process server activity in their UI.
+
+### Sending Log Messages
+
+Use `ctx.log()` or the convenience methods inside tool handlers:
+
+```python
+@mcp.tool()
+async def process_data(ctx: Context, data: str) -> str:
+    await ctx.debug("Starting data processing")
+    await ctx.info("Processing 1000 records")
+    await ctx.warning("Skipping 3 malformed records")
+
+    try:
+        result = do_work(data)
+    except Exception as e:
+        await ctx.error(f"Processing failed: {e}")
+        raise
+
+    return result
+```
+
+### Log Levels
+
+Log levels follow [RFC 5424](https://datatracker.ietf.org/doc/html/rfc5424#section-6.2.1) syslog severity, from lowest to highest:
+
+| Level | Description | Use Case |
+|-------|-------------|----------|
+| `debug` | Detailed debugging info | Function entry/exit |
+| `info` | Informational messages | Progress updates |
+| `notice` | Normal but significant | Config changes |
+| `warning` | Warning conditions | Deprecated usage |
+| `error` | Error conditions | Operation failures |
+| `critical` | Critical conditions | Component failures |
+| `alert` | Immediate action needed | Data corruption |
+| `emergency` | System unusable | Complete failure |
+
+### Client-Controlled Filtering
+
+Clients can set a minimum log level via `logging/setLevel`. When a client sets the level to `warning`, the server automatically suppresses `debug`, `info`, and `notice` messages  -  only `warning` and above are sent:
+
+```
+Client → Server:  logging/setLevel { level: "warning" }
+Server → Client:  ✗ ctx.debug("...")     # suppressed
+Server → Client:  ✗ ctx.info("...")      # suppressed
+Server → Client:  ✓ ctx.warning("...")   # sent
+Server → Client:  ✓ ctx.error("...")     # sent
+```
+
+This filtering happens automatically  -  you don't need to check the level yourself. Just call `ctx.log()` at the appropriate level and the server handles the rest.
+
+<Tip>
+The default level is `debug` (all messages sent). Clients opt in to filtering by calling `logging/setLevel`.
+</Tip>
+
+## Next Steps
+
+- [Inspector UI](/python/server/inspector) - Monitor logs in real-time
+- [Running the Server](/python/server/running) - How to run your server
