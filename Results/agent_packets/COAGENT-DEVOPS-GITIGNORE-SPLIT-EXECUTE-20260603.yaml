@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: sunray150_mid360_probe_backfill_ready_for_commit
-decision: commit_small_visible_probe_artifacts
-summary: "Committed Blender extern bullet2 as c313914bfb. Post-commit narrow probes showed cached diff 0, upstream relation 36 0, .git/index.lock absent, and 2 visible untracked files. The files are Scripts/UE5/assets/probe_sunray150_mid360_area_objects.py and Results/unreal_scene_mapping/sunray150_mid360_area_objects_20260603.json. Gates found no files over 100 MB and no high-confidence secret hits; file sizes are about 2 KB and 20 KB. This is a small visible-surface backfill, not a broad add."
-evidence: "blender_extern_bullet2_commit=c313914bfb; post_commit_visible_untracked=2; post_commit_cached_diff=0; upstream_ahead_behind=36 0; index_lock=absent; over_100MB=none; high_confidence_secret_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
-risks: "No blocker for this 2-file backfill. Push remains deferred."
-next_action: "Stage only the two visible files plus ledger and result packet; commit the backfill; then continue Blender main split."
+status: blender_release_clean_group_ready_for_commit
+decision: admit_blender_release_clean_group
+summary: "Committed the Sunray150 MID360 probe backfill as 18f7197861. Current narrow probes showed cached diff 0, visible untracked 0, upstream relation 37 0, and .git/index.lock absent. Initial release scan found many Git LFS pointer-only assets in release/windows and release/darwin, so those remain isolated. Selected the clean release group bin, extensions, release_notes, pypi, text, lts, freedesktop, and license. This group has 47 files. Gates found no files over 100 MB, no nested .git, no LFS pointer hits, and no credential hits."
+evidence: "sunray_mid360_backfill_commit=18f7197861; pre_slice_visible_untracked=0; pre_slice_cached_diff=0; upstream_ahead_behind_before_slice=37 0; index_lock=absent; candidate=References/Blender/blender/release clean group; files_on_disk=47; over_100MB=none; nested_git=none; lfs_pointer_hits=none; credential_hits=none; broad_status_used=false; broad_add_used=false; ide_hiding_settings_added=false"
+risks: "release/windows, release/darwin, and release/datafiles still need LFS-aware splitting. Push remains deferred."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, selected release clean group dirs, and this result packet; commit this clean release group; then continue with intern batches."
 needs_human: false
 blocked_reason: "not_blocked"
