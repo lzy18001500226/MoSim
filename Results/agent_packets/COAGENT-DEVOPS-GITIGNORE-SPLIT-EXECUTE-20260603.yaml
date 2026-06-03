@@ -1,9 +1,9 @@
 task_id: COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603
-status: blender_source_blender_editors_first_group_ready_for_commit
-decision: admit_blender_source_blender_editors_first_group
-summary: "After committing gpu as 57de9486fc, split source/blender/editors because the whole directory has 1193 files and exceeds the 1000-file batch ceiling. Opened only selected small editors subdirectories plus top-level txt files, producing 658 visible files. Gates found no files over 100 MB, no nested .git directories, and no high-confidence credential hits. include, transform, interface, space_outliner, and sculpt_paint remain isolated for a later final editors batch."
-evidence: "previous_commit=57de9486fc; editors_total_files=1193; selected_visible_file_count=658; over_100MB=none; nested_git=none; credential_hits=none; remaining_editors_dirs=include,transform,interface,space_outliner,sculpt_paint; broad_status_used=false; broad_add_used=false; git_add_A_used=false; ide_hiding_settings_added=false"
-risks: "Remaining editors directories must still be admitted in a separate batch. Push is still deferred; branch is ahead of upstream by many local commits."
-next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, Results/agent_packets/COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603.yaml, and the selected editors first group; run staged gates; commit with message refs: add blender source editors group1."
+status: blender_source_blender_editors_second_group_ready_for_commit
+decision: admit_blender_source_blender_editors_second_group
+summary: "After committing editors group1 as afe20aa38c, opened the remaining source/blender/editors subdirectories: include, transform, interface, space_outliner, and sculpt_paint. The group produced 535 visible files, under the 1000-file batch ceiling. Gates found no files over 100 MB, no nested .git directories, and no high-confidence credential hits. This should complete Blender source/blender editors split admission."
+evidence: "previous_commit=afe20aa38c; selected_dirs=include,transform,interface,space_outliner,sculpt_paint; candidate_visible_file_count=535; over_100MB=none; nested_git=none; credential_hits=none; broad_status_used=false; broad_add_used=false; git_add_A_used=false; ide_hiding_settings_added=false"
+risks: "Blender source/blender should be fully admitted after this batch, but final narrow probes are still required. Push is still deferred; branch is ahead of upstream by many local commits."
+next_action: "Stage only .gitignore, Docs/Workflows/agent_task_ledger.md, Results/agent_packets/COAGENT-DEVOPS-GITIGNORE-SPLIT-EXECUTE-20260603.yaml, and the remaining editors directories; run staged gates; commit with message refs: add blender source editors group2."
 needs_human: false
 blocked_reason: "not_blocked"

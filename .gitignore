@@ -564,6 +564,16 @@ References/Blender/blender/source/blender/editors/*
 !References/Blender/blender/source/blender/editors/mesh/**
 !References/Blender/blender/source/blender/editors/space_view3d/
 !References/Blender/blender/source/blender/editors/space_view3d/**
+!References/Blender/blender/source/blender/editors/include/
+!References/Blender/blender/source/blender/editors/include/**
+!References/Blender/blender/source/blender/editors/transform/
+!References/Blender/blender/source/blender/editors/transform/**
+!References/Blender/blender/source/blender/editors/interface/
+!References/Blender/blender/source/blender/editors/interface/**
+!References/Blender/blender/source/blender/editors/space_outliner/
+!References/Blender/blender/source/blender/editors/space_outliner/**
+!References/Blender/blender/source/blender/editors/sculpt_paint/
+!References/Blender/blender/source/blender/editors/sculpt_paint/**
 !References/Blender/blender/source/creator/
 !References/Blender/blender/source/creator/**
 !References/Blender/blender/.clang-format
