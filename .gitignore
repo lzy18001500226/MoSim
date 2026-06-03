@@ -291,7 +291,8 @@ Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo_SIL_Constant.mo
 # Source assets are project inputs and should be admitted in reviewed small
 # batches. Keep Blender backup files local-only.
 UE5/MoSimSceneLibrary/SourceAssets/**/*.blend1
-Scripts/UE5/assets/
+Scripts/UE5/assets/__pycache__/
+Scripts/UE5/assets/**/*.pyc
 image/AGENTS/
 
 # Misgenerated Windows absolute-path directory inside the repository. Keep it

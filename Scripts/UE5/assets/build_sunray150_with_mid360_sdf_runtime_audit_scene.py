@@ -27,10 +27,12 @@ SDF_MODEL = SUNRAY_MODELS / "drone_models" / "sunray150_with_mid360" / "sunray15
 SDF_TEMPLATE = SUNRAY_MODELS / "drone_models" / "sunray150_with_mid360" / "sunray150_with_mid360.sdf.jinja"
 BODY_STL = SUNRAY_MODELS / "drone_models" / "sunray150_with_mid360" / "meshes" / "sunray.stl"
 ROTOR_STL = SUNRAY_MODELS / "drone_models" / "sunray150_with_mid360" / "meshes" / "sunray_cw.stl"
+MID360_DAE = SUNRAY_MODELS / "sensor_models" / "livox_mid360" / "meshes" / "test2.dae"
 OUT_DIR = PROJECT_ROOT / "UE5" / "MoSimSceneLibrary" / "SourceAssets" / "Sunray150" / "Audit"
 OUT_BLEND = OUT_DIR / "sunray150_with_mid360_sdf_runtime_audit.blend"
 OUT_MANIFEST = OUT_DIR / "sunray150_with_mid360_sdf_runtime_audit_manifest.json"
 ROTOR_YAW_OFFSET_DEG = 0.0
+IMPORT_SEPARATE_MID360_VISUAL = False
 
 NS = {"c": "http://www.collada.org/2005/11/COLLADASchema"}
 FBX_ASC_RE = re.compile(r"FBXASC(\d{3})")
@@ -85,15 +87,30 @@ def make_material(name: str, rgba: tuple[float, float, float, float], roughness:
     return mat
 
 
+def add_axis_label(name: str, text: str, location: Vector, color: tuple[float, float, float, float]) -> None:
+    mat = make_material(f"Mat_{name}", color)
+    font_curve = bpy.data.curves.new(name, type="FONT")
+    font_curve.body = text
+    font_curve.size = 0.012
+    font_curve.align_x = "CENTER"
+    obj = bpy.data.objects.new(name, font_curve)
+    obj.location = location
+    obj.rotation_euler = (math.radians(70), 0, 0)
+    obj.data.materials.append(mat)
+    bpy.context.collection.objects.link(obj)
+
+
 def add_axis_markers(length: float = 0.18) -> None:
     """Add body-frame axes so review screenshots cannot hide a yaw mistake."""
     mats = {
         "X_forward_red": make_material("Audit_X_Forward_Red", (0.9, 0.05, 0.03, 1.0)),
+        "X_tail_orange": make_material("Audit_X_Tail_Orange", (1.0, 0.45, 0.0, 1.0)),
         "Y_left_green": make_material("Audit_Y_Left_Green", (0.05, 0.75, 0.08, 1.0)),
         "Z_up_blue": make_material("Audit_Z_Up_Blue", (0.05, 0.20, 0.9, 1.0)),
     }
     axes = [
         ("Audit_X_forward_axis", Vector((length, 0, 0)), mats["X_forward_red"]),
+        ("Audit_X_tail_axis", Vector((-length * 0.75, 0, 0)), mats["X_tail_orange"]),
         ("Audit_Y_left_axis", Vector((0, length, 0)), mats["Y_left_green"]),
         ("Audit_Z_up_axis", Vector((0, 0, length * 0.65)), mats["Z_up_blue"]),
     ]
@@ -108,6 +125,9 @@ def add_axis_markers(length: float = 0.18) -> None:
         obj = bpy.data.objects.new(name, curve)
         obj.data.materials.append(mat)
         bpy.context.collection.objects.link(obj)
+    add_axis_label("Audit_Label_Nose_X", "NOSE +X", Vector((length * 1.08, 0, 0.015)), (0.9, 0.05, 0.03, 1.0))
+    add_axis_label("Audit_Label_Tail_X", "TAIL -X", Vector((-length * 0.9, 0, 0.015)), (1.0, 0.45, 0.0, 1.0))
+    add_axis_label("Audit_Label_Left_Y", "LEFT +Y", Vector((0, length * 1.08, 0.015)), (0.05, 0.75, 0.08, 1.0))
 
 
 def read_stl(path: Path) -> tuple[list[tuple[float, float, float]], list[tuple[int, int, int]]]:
@@ -308,6 +328,56 @@ def import_dae(path: Path, prefix: str, base_transform: Matrix) -> dict:
     return {"source": str(path), "unit_meter": unit_meter, "created_objects": created}
 
 
+def recenter_mid360_mesh_objects_to_base_mount_center(prefix: str) -> dict:
+    objs = [o for o in bpy.context.scene.objects if o.type == "MESH" and o.name.startswith(prefix)]
+    if not objs:
+        return {"moved_mesh_objects": 0}
+    bounds = []
+    for obj in objs:
+        mn = Vector((1e9, 1e9, 1e9))
+        mx = Vector((-1e9, -1e9, -1e9))
+        for c in obj.bound_box:
+            w = obj.matrix_world @ Vector(c)
+            mn.x = min(mn.x, w.x)
+            mn.y = min(mn.y, w.y)
+            mn.z = min(mn.z, w.z)
+            mx.x = max(mx.x, w.x)
+            mx.y = max(mx.y, w.y)
+            mx.z = max(mx.z, w.z)
+        size = mx - mn
+        center = (mn + mx) * 0.5
+        bounds.append({"obj": obj, "min": mn, "max": mx, "size": size, "center": center})
+    candidates = [
+        item
+        for item in bounds
+        if item["size"].x > 0.05
+        and item["size"].y > 0.05
+        and item["size"].z < 0.02
+        and abs(item["size"].x - item["size"].y) < 0.003
+    ]
+    if not candidates:
+        return {"moved_mesh_objects": 0, "error": "Cannot identify circular base mesh."}
+    base = max(candidates, key=lambda item: item["size"].x * item["size"].y)
+    center = base["center"]
+    for obj in objs:
+        obj.location -= center
+    return {
+        "base_mount_object": base["obj"].name,
+        "base_mount_bbox_min_before": list(base["min"]),
+        "base_mount_bbox_max_before": list(base["max"]),
+        "base_mount_center_before": list(center),
+        "applied_translation": list(-center),
+        "moved_mesh_objects": len(objs),
+    }
+
+
+def translate_mesh_objects(prefix: str, translation: Vector) -> dict:
+    objs = [o for o in bpy.context.scene.objects if o.type == "MESH" and o.name.startswith(prefix)]
+    for obj in objs:
+        obj.location += translation
+    return {"translated_mesh_objects": len(objs), "translation": list(translation)}
+
+
 def scene_bounds() -> tuple[Vector, Vector, Vector, float]:
     objs = [o for o in bpy.context.scene.objects if o.type == "MESH"]
     mn = Vector((1e9, 1e9, 1e9))
@@ -387,9 +457,18 @@ def main() -> None:
     for name, x, y, z, mat in rotor_poses:
         add_mesh_object(f"SDF_{name}_sunray_cw_stl", rotor_verts, rotor_faces, pose_matrix(x, y, z, 0, 0, 0) @ rotor_visual, mat)
 
+    mid360 = None
+    mid360_recenter = None
+    mid360_mount_translation = None
+    if IMPORT_SEPARATE_MID360_VISUAL:
+        mid360_mount = Vector((0.036, -0.0155, 0.075))
+        mid360_transform = pose_matrix(0, 0, 0, 0, 0, 3.14159) @ matrix_scale_xyz(1.2, 1.2, 1.2)
+        mid360 = import_dae(MID360_DAE, "SDF_livox_mid360", mid360_transform)
+        mid360_recenter = recenter_mid360_mesh_objects_to_base_mount_center("SDF_livox_mid360")
+        mid360_mount_translation = translate_mesh_objects("SDF_livox_mid360", mid360_mount)
+
     add_axis_markers()
 
-    mid360 = None
     camera_info = frame_camera()
     bpy.context.scene.render.engine = "BLENDER_EEVEE"
     bpy.context.scene.world.color = (0.86, 0.87, 0.88)
@@ -397,13 +476,13 @@ def main() -> None:
 
     manifest = {
         "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "purpose": "Sunray SDF runtime visual audit: body STL + SDF-referenced rotor STL; MWORKS runtime STL is not used as placement authority.",
+        "purpose": "Sunray SDF runtime visual audit: body STL with built-in MID-360 visual + selected tri-blade rotor STL.",
         "sources": {
             "sdf": str(SDF_MODEL),
             "sdf_template": str(SDF_TEMPLATE),
             "selected_folder": str(SUNRAY_MODELS / "drone_models" / "sunray150_with_mid360"),
             "rotor_source": str(ROTOR_STL),
-            "source_note": "User-gated source rule: use files inside sunray150_with_mid360 only. The SDF text references model://sunray150/meshes/sunray_cw.stl, but this audit intentionally uses sunray150_with_mid360/meshes/sunray_cw.stl.",
+            "source_note": "User-gated source rule: use files inside sunray150_with_mid360 first. The body mesh sunray.stl already contains the visible MID-360, so this audit skips the separate model://livox_mid360 visual to avoid duplicate radar geometry. The SDF text references model://sunray150/meshes/sunray_cw.stl for rotors, but this audit intentionally uses sunray150_with_mid360/meshes/sunray_cw.stl.",
         },
         "body": {"source": str(BODY_STL), "pose_xyz_rpy": [0, 0, 0.0525, 0, 0, -1.57], "pose_deg": [0, 0, 0, 0, 0, -89.954], "scale": [0.03, 0.03, 0.03], "triangles": len(body_faces)},
         "rotor": {
@@ -417,7 +496,17 @@ def main() -> None:
             "orientation_note": "sunray150_with_mid360/meshes/sunray_cw.stl is already horizontal; SDF roll=1.57 is not applied for this selected STL.",
         },
         "mid360": {
-            "source_rule": "Do not import standalone sensor_models/livox_mid360 in this audit. Current visual source is limited to drone_models/sunray150_with_mid360.",
+            "source": str(MID360_DAE),
+            "include_pose_xyz_rpy": [0.036, -0.0155, 0.075, 0, 0, 0],
+            "sdf_visual_pose_xyz_rpy": [0, 0, 0, 1.57, 0, 3.14159],
+            "accepted_visual_pose_xyz_rpy": [0, 0, 0, 0, 0, 3.14159],
+            "visual_scale": [1.2, 1.2, 1.2],
+            "import_separate_visual": IMPORT_SEPARATE_MID360_VISUAL,
+            "import_result": mid360,
+            "recenter_result": mid360_recenter,
+            "mount_translation_result": mid360_mount_translation,
+            "source_rule": "sunray150_with_mid360/meshes/sunray.stl already contains the visible MID-360 geometry. Do not add a second visible model://livox_mid360 radar in Blender/UE audit scenes unless explicitly testing the sensor model alone.",
+            "center_rule": "The separate MID-360 sensor visual rule is retained only for standalone sensor audits: recenter the visual mesh so the circular radar base mounting center is the local origin, then mount it. It is not applied in this full-aircraft audit because separate radar import is disabled.",
         },
         "camera_mounts_from_sdf": {
             "camera_front": {"pose_xyz_rpy": [0.12, 0, 0.025, 0, 0, 0], "pose_deg": [0.12, 0, 0.025, 0, 0, 0]},

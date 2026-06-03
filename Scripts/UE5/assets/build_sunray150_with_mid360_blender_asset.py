@@ -12,6 +12,7 @@ import json
 import math
 import os
 import re
+import struct
 import sys
 import time
 import xml.etree.ElementTree as ET
@@ -24,7 +25,11 @@ from mathutils import Matrix, Vector
 
 PROJECT_ROOT = Path(r"C:\Users\HP\Desktop\MoSim")
 DAE_PATH = PROJECT_ROOT / "References" / "Sunray" / "simulation" / "sunray_simulator" / "models" / "drone_models" / "sunray150_with_mid360" / "meshes" / "150.dae"
+TRI_BLADE_PROP_STL = PROJECT_ROOT / "References" / "Sunray" / "simulation" / "sunray_simulator" / "models" / "drone_models" / "sunray150_with_mid360" / "meshes" / "sunray_cw.stl"
 OUT_DIR = PROJECT_ROOT / "UE5" / "MoSimSceneLibrary" / "SourceAssets" / "Sunray150"
+DAE_UNIT_METER = 0.0254
+SDF_METER_TO_DAE_UNIT = 1.0 / DAE_UNIT_METER
+STL_MM_TO_DAE_UNIT = 0.001 / DAE_UNIT_METER
 
 NS = {"c": "http://www.collada.org/2005/11/COLLADASchema"}
 FBX_ASC_RE = re.compile(r"FBXASC(\d{3})")
@@ -253,6 +258,40 @@ def reset_scene() -> None:
             block.remove(item)
 
 
+def read_stl(path: Path) -> tuple[list[tuple[float, float, float]], list[tuple[int, int, int]]]:
+    data = path.read_bytes()
+    if len(data) >= 84:
+        tri_count = struct.unpack_from("<I", data, 80)[0]
+        expected = 84 + tri_count * 50
+        if expected == len(data):
+            verts: list[tuple[float, float, float]] = []
+            faces: list[tuple[int, int, int]] = []
+            offset = 84
+            for _ in range(tri_count):
+                offset += 12
+                face = []
+                for _ in range(3):
+                    v = struct.unpack_from("<fff", data, offset)
+                    offset += 12
+                    verts.append(v)
+                    face.append(len(verts) - 1)
+                faces.append(tuple(face))
+                offset += 2
+            return verts, faces
+    verts = []
+    faces = []
+    current = []
+    for line in data.decode("utf-8", errors="ignore").splitlines():
+        parts = line.strip().split()
+        if len(parts) == 4 and parts[0].lower() == "vertex":
+            verts.append((float(parts[1]), float(parts[2]), float(parts[3])))
+            current.append(len(verts) - 1)
+            if len(current) == 3:
+                faces.append(tuple(current))
+                current = []
+    return verts, faces
+
+
 def build_asset() -> dict:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     start = time.time()
@@ -272,6 +311,19 @@ def build_asset() -> dict:
         if not geom:
             continue
         cls = classify(inst["node_name"] + "_" + geom["name"], geom["source_material"])
+        if cls == "Propeller":
+            mapping.append(
+                {
+                    "node": inst["node_name"],
+                    "geometry": geom["name"],
+                    "source_material": geom["source_material"],
+                    "assigned_group": "SkippedDaePropeller",
+                    "vertices": len(geom["verts"]),
+                    "triangles": len(geom["faces"]),
+                    "skip_reason": "Runtime visual uses tri-blade sunray150_with_mid360/meshes/sunray_cw.stl, not DAE PROPELLER_*.",
+                }
+            )
+            continue
         matrix = inst["matrix"]
         # DAE declares Y_UP and centimeter units. Keep unit scale in mesh data;
         # only rotate from Y-up to Blender Z-up for review/export consistency.
@@ -281,19 +333,9 @@ def build_asset() -> dict:
         for v in geom["verts"]:
             tv = transform @ Vector(v)
             verts.append((tv.x, tv.y, tv.z))
-        if cls == "Propeller":
-            independent_meshes.append(
-                {
-                    "name": clean_name(f"sunray150_with_mid360_{inst['node_name']}"),
-                    "verts": verts,
-                    "faces": list(geom["faces"]),
-                    "class": cls,
-                }
-            )
-        else:
-            base = len(grouped_verts[cls])
-            grouped_verts[cls].extend(verts)
-            grouped_faces[cls].extend((a + base, b + base, c + base) for a, b, c in geom["faces"])
+        base = len(grouped_verts[cls])
+        grouped_verts[cls].extend(verts)
+        grouped_faces[cls].extend((a + base, b + base, c + base) for a, b, c in geom["faces"])
         mapping.append(
             {
                 "node": inst["node_name"],
@@ -302,6 +344,35 @@ def build_asset() -> dict:
                 "assigned_group": cls,
                 "vertices": len(geom["verts"]),
                 "triangles": len(geom["faces"]),
+            }
+        )
+
+    prop_verts, prop_faces = read_stl(TRI_BLADE_PROP_STL)
+    rotor_centers_m = [
+        ("front_right", (0.065, -0.065, -0.025)),
+        ("back_left", (-0.065, 0.065, -0.025)),
+        ("front_left", (0.065, 0.065, -0.025)),
+        ("back_right", (-0.065, -0.065, -0.025)),
+    ]
+    rotor_centers = [
+        (name, tuple(coord * SDF_METER_TO_DAE_UNIT for coord in center))
+        for name, center in rotor_centers_m
+    ]
+    prop_transform_base = Matrix.Diagonal((STL_MM_TO_DAE_UNIT, STL_MM_TO_DAE_UNIT, STL_MM_TO_DAE_UNIT, 1.0))
+    for rotor_name, center in rotor_centers:
+        transform = Matrix.Translation(center) @ prop_transform_base
+        verts = []
+        for v in prop_verts:
+            tv = transform @ Vector(v)
+            verts.append((tv.x, tv.y, tv.z))
+        independent_meshes.append(
+            {
+                "name": f"sunray150_with_mid360_tri_blade_prop_{rotor_name}",
+                "verts": verts,
+                "faces": list(prop_faces),
+                "class": "Propeller",
+                "sdf_center_m": dict(rotor_centers_m)[rotor_name],
+                "dae_center": center,
             }
         )
 
@@ -413,7 +484,11 @@ def build_asset() -> dict:
                 "class": item["class"],
                 "vertices": len(item["verts"]),
                 "triangles": len(item["faces"]),
-                "source_rule": "Propeller remains an independent DAE assembly object so it can be reviewed/replaced without touching body or MID-360.",
+                "source_rule": "Propeller remains an independent tri-blade STL runtime object so it can be reviewed/replaced without touching body or MID-360.",
+                "source": str(TRI_BLADE_PROP_STL),
+                "sdf_center_m": item["sdf_center_m"],
+                "dae_center": item["dae_center"],
+                "unit_rule": "SDF rotor centers are meters; tri-blade STL is millimeter-scale; both are converted into the DAE unit declared by 150.dae, meter=0.0254.",
             }
             for item in independent_meshes
         ],
