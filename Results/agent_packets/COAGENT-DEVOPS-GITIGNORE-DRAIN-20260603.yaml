@@ -693,6 +693,18 @@ proposed_batches:
   - "batch_93_compare_candidate_file_count=343"
   - "batch_93_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/认知行为疗法/一级技能/"
   - "batch_93_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/认知行为疗法/一级技能/**"
+  - "batch_94_candidate=References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/心理动力学"
+  - "batch_94_head_vs_upstream_before=93 0"
+  - "batch_94_index_lock=absent"
+  - "batch_94_candidate_file_count=283"
+  - "batch_94_candidate_tracked_files=283"
+  - "batch_94_candidate_untracked_files=0"
+  - "batch_94_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/行为主义"
+  - "batch_94_compare_candidate_file_count=343"
+  - "batch_94_compare_candidate=References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/认知行为疗法/二级技能"
+  - "batch_94_compare_candidate_file_count=707"
+  - "batch_94_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/心理动力学/"
+  - "batch_94_removed_rule=!References/Agent/Skills/AutoSkill/SkillBank/DocSkill/心理咨询/Family技能/心理动力学/**"
 forbidden_actions:
   - "no broad git status"
   - "no git add -A"
@@ -701,7 +713,7 @@ forbidden_actions:
   - "no reset --hard"
   - "no git clean"
 next_action: >-
-  Commit this ninety-third `.gitignore` drain batch together with the ledger
+  Commit this ninety-fourth `.gitignore` drain batch together with the ledger
   and result packet, then re-scan `.gitignore` for the next smallest remaining
   temporary split-routing pair and continue the drain without widening scope.
 needs_human: false
