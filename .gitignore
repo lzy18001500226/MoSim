@@ -294,6 +294,7 @@ image/AGENTS/
 Results/diagnostics/
 Results/agent_runs/
 Results/unreal_scene_review/
+Results/unreal_scene_mapping/*probe*.json
 Scripts/mworks/check_codegen_sil_equivalence.py
 Scripts/mworks/check_codegen_runtime.py
 Scripts/tests/test_dense_lidar_cpp_contract.py

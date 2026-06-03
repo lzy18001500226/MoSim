@@ -1,0 +1,16 @@
+{
+  "git.showIgnoredFiles": false,
+  "git.autoRepositoryDetection": "subFolders",
+  "files.watcherExclude": {
+    "**/References/Agent/**": true,
+    "**/References/Blender/**": true,
+    "**/References/PX4/**": true,
+    "**/Docs/Skills/Unreal/**": true
+  },
+  "search.exclude": {
+    "**/References/Agent/**": true,
+    "**/References/Blender/**": true,
+    "**/References/PX4/**": true,
+    "**/Docs/Skills/Unreal/**": true
+  }
+}
